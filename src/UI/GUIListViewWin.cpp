@@ -298,7 +298,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const WChar *tex
 	return (SendMessage((HWND)this->hwnd, LVM_SETITEMW, 0, (LPARAM)&item) == TRUE);
 }
 
-Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb)
+Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb)
 {
 	LVITEMW item;
 	sb->AllocLeng(256);

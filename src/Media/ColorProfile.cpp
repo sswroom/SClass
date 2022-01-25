@@ -806,7 +806,7 @@ Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimaries()
 	return &this->primaries;
 }
 
-void Media::ColorProfile::ToString(Text::StringBuilderUTF *sb)
+void Media::ColorProfile::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("-R Transfer: "));
 	sb->Append(Media::CS::TransferFunc::GetTransferFuncName(this->GetRTranParam()->GetTranType()));

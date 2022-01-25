@@ -19,7 +19,7 @@ Crypto::Cert::X509File::FileType Crypto::JKSFile::GetFileType()
 	return FileType::Jks;
 }
 
-void Crypto::JKSFile::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::JKSFile::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 
 }
@@ -31,6 +31,6 @@ Net::ASN1Data *Crypto::JKSFile::Clone()
 	return asn1;
 }
 
-void Crypto::JKSFile::ToString(Text::StringBuilderUTF *sb)
+void Crypto::JKSFile::ToString(Text::StringBuilderUTF8 *sb)
 {
 }

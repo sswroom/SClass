@@ -387,7 +387,7 @@ Text::String *IO::Device::OlympusCameraControl::GetOITrackVersion()
 	return this->oiTrackVersion;
 }
 
-Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF *sb)
+Bool IO::Device::OlympusCameraControl::GetModel(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

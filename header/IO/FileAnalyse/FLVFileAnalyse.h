@@ -4,7 +4,7 @@
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Sync/Mutex.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -29,7 +29,7 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb);
+			UOSInt ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF8 *sb);
 			void ParseScriptData(UInt8 *data, UOSInt ofst, UOSInt endOfst, UOSInt frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
@@ -38,8 +38,8 @@ namespace IO
 
 			virtual const UTF8Char *GetFormatName();
 			virtual UOSInt GetFrameCount();
-			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb);
-			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
+			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
 			virtual FrameDetail *GetFrameDetail(UOSInt index);
 

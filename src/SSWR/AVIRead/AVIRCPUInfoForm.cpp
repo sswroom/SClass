@@ -216,14 +216,14 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	if (cpu.GetCPUTCC(&t))
 	{
 		sb.ClearStr();
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		k = this->lvMain->AddItem((const UTF8Char*)"TCC", 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 	if (cpu.GetCPUTemp(0, &t))
 	{
 		sb.ClearStr();
-		Text::SBAppendF64(&sb, t);
+		sb.AppendDouble(t);
 		k = this->lvMain->AddItem((const UTF8Char*)"Temp", 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}

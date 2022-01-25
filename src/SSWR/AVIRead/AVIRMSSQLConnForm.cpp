@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 	Text::StringBuilderUTF8 sb;
 	if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
 	{
-		if (sb.StartsWith((const UTF8Char*)"jdbc:sqlserver://"))
+		if (sb.StartsWith(UTF8STRC("jdbc:sqlserver://")))
 		{
 			Text::PString sarr[2];
 			Text::PString sarr2[2];

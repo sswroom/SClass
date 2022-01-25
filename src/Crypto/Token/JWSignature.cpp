@@ -85,7 +85,7 @@ Bool Crypto::Token::JWSignature::CalcHash(const UInt8 *buff, UOSInt buffSize)
 	return true;
 }
 
-Bool Crypto::Token::JWSignature::GetHashB64(Text::StringBuilderUTF *sb)
+Bool Crypto::Token::JWSignature::GetHashB64(Text::StringBuilderUTF8 *sb)
 {
 	if (this->hashValSize == 0)
 	{

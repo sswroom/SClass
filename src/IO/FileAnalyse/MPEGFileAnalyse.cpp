@@ -170,7 +170,7 @@ UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
 	return this->packs->GetCount();
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	pack = this->packs->GetItem(index);
@@ -214,7 +214,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	return true;
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MPEGFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;

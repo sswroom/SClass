@@ -4,7 +4,7 @@
 #include "Media/FrameInfo.h"
 #include "Media/LUT.h"
 #include "Media/CS/TransferFunc.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -48,7 +48,7 @@ namespace Media
 		Bool GetBlueTransferParam(Media::CS::TransferParam *param);
 		Bool GetColorPrimaries(Media::ColorProfile::ColorPrimaries *color);
 
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 
 		static ICCProfile *Parse(const UInt8 *buff, UOSInt buffSize);
 
@@ -68,8 +68,8 @@ namespace Media
 		static const UTF8Char *GetNameStandardObserver(Int32 val);
 		static const UTF8Char *GetNameStandardIlluminent(Int32 val);
 
-		static void GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz);
-		static void GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, UInt32 leng);
+		static void GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz);
+		static void GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff, UInt32 leng);
 
 		static Media::CS::TransferType FindTransferType(UOSInt colorCount, UInt16 *curveColors, Double *gamma);
 		static UTF8Char *GetProfilePath(UTF8Char *sbuff);

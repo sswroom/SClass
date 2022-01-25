@@ -311,7 +311,7 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const WChar *text)
 	return true;
 }
 
-Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF *sb)
+Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(index);

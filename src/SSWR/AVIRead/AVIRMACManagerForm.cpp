@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	}
 	else
 	{
-		sb.Replace(sbuff, (const UTF8Char*)"");
+		sb.ReplaceStr(sbuff, 1, UTF8STRC(""));
 	}
 	buff[0] = 0;
 	buff[1] = 0;
@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 			{
 				sb.TrimToLength(i);
 			}
-			sb.TrimRight();
+			sb.RTrim();
 			j = Text::StrSplit(sarr, 3, sb.ToString(), '\t');
 			if (j == 2 || j == 3)
 			{

@@ -894,55 +894,55 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		{
 			break;
 		}
-		if (sb.StartsWith((const UTF8Char*)"CPU implementer	: "))
+		if (sb.StartsWith(UTF8STRC("CPU implementer	: ")))
 		{
 		}
-		else if (sb.StartsWith((const UTF8Char*)"CPU architecture: "))
+		else if (sb.StartsWith(UTF8STRC("CPU architecture: ")))
 		{
 		}
-		else if (sb.StartsWith((const UTF8Char*)"CPU variant	: "))
+		else if (sb.StartsWith(UTF8STRC("CPU variant	: ")))
 		{
 		}
-		else if (sb.StartsWith((const UTF8Char*)"CPU part	: "))
+		else if (sb.StartsWith(UTF8STRC("CPU part	: ")))
 		{
 			cpuPart = Text::StrToInt32(sb.ToString() + 11);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"CPU revision	: "))
+		else if (sb.StartsWith(UTF8STRC("CPU revision	: ")))
 		{
 		}
-		else if (sb.StartsWith((const UTF8Char*)"Hardware	: "))
+		else if (sb.StartsWith(UTF8STRC("Hardware	: ")))
 		{
 			sbHW.ClearStr();
 			sbHW.Append(sb.ToString() + 11);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"vendor_id	: "))
+		else if (sb.StartsWith(UTF8STRC("vendor_id	: ")))
 		{
 			sbVID.ClearStr();
 			sbVID.Append(sb.ToString() + 12);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"cpu family	: "))
+		else if (sb.StartsWith(UTF8STRC("cpu family	: ")))
 		{
 			cpuFamily = Text::StrToInt32(sb.ToString() + 13);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"model		: "))
+		else if (sb.StartsWith(UTF8STRC("model		: ")))
 		{
 			cpuModel = Text::StrToInt32(sb.ToString() + 9);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"stepping	: "))
+		else if (sb.StartsWith(UTF8STRC("stepping	: ")))
 		{
 			cpuStepping = Text::StrToInt32(sb.ToString() + 11);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"system type		: "))
+		else if (sb.StartsWith(UTF8STRC("system type		: ")))
 		{
 			sbSysType.ClearStr();
 			sbSysType.Append(sb.ToString() + 15);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"cpu model		: "))
+		else if (sb.StartsWith(UTF8STRC("cpu model		: ")))
 		{
 			sbCPUModel.ClearStr();
 			sbCPUModel.Append(sb.ToString() + 13);
 		}
-		else if (sb.StartsWith((const UTF8Char*)"model name	: "))
+		else if (sb.StartsWith(UTF8STRC("model name	: ")))
 		{
 			sbModelName.ClearStr();
 			sbModelName.Append(sb.ToString() + 13);
@@ -952,11 +952,11 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 
 	if (sbVID.GetLength() > 0 && cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 	{
-		if (sbVID.Equals((const UTF8Char*)"GenuineIntel"))
+		if (sbVID.Equals(UTF8STRC("GenuineIntel")))
 		{
 			return X86CPUNameToModel(sbModelName.ToString());
 		}
-		else if (sbVID.Equals((const UTF8Char*)"AuthenticAMD"))
+		else if (sbVID.Equals(UTF8STRC("AuthenticAMD")))
 		{
 			Manage::CPUDB::CPUSpecX86 *cpu = 0;
 			cpu = GetCPUSpecX86(Manage::CPUVendor::CB_AMD, cpuFamily, cpuModel, cpuStepping);
@@ -969,7 +969,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		{
 		}
 	}
-	else if (sbCPUModel.StartsWith((const UTF8Char*)"Ingenic Xburst"))
+	else if (sbCPUModel.StartsWith(UTF8STRC("Ingenic Xburst")))
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
 		cpu = GetCPUSpec(sbSysType.ToString());
@@ -978,7 +978,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 			return (const UTF8Char*)cpu->model;
 		}
 	}
-	else if (sbSysType.StartsWith((const UTF8Char*)"Qualcomm Atheros "))
+	else if (sbSysType.StartsWith(UTF8STRC("Qualcomm Atheros ")))
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
 		i = Text::StrIndexOfChar(sbSysType.ToString() + 17, ' ');
@@ -993,7 +993,7 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 			return (const UTF8Char*)cpu->model;
 		}
 	}
-	else if (sbSysType.StartsWith((const UTF8Char*)"MT76"))
+	else if (sbSysType.StartsWith(UTF8STRC("MT76")))
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
 		cpu = GetCPUSpec(sbSysType.ToString());
@@ -1006,33 +1006,33 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 	{
 		const Manage::CPUDB::CPUSpec *cpu = 0;
 		UOSInt i;
-		if (sbHW.StartsWith((const UTF8Char*)"Qualcomm"))
+		if (sbHW.StartsWith(UTF8STRC("Qualcomm")))
 		{
-			if ((i = sbHW.IndexOf((const UTF8Char*)"MSM")) != INVALID_INDEX)
+			if ((i = sbHW.IndexOf(UTF8STRC("MSM"))) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
-			else if ((i = sbHW.IndexOf((const UTF8Char*)"SDM")) != INVALID_INDEX)
+			else if ((i = sbHW.IndexOf(UTF8STRC("SDM"))) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
-			else if ((i = sbHW.IndexOf((const UTF8Char*)"APQ")) != INVALID_INDEX)
+			else if ((i = sbHW.IndexOf(UTF8STRC("APQ"))) != INVALID_INDEX)
 			{
 				cpu = GetCPUSpec(sbHW.ToString() + i);
 			}
 		}
-		else if (sbHW.StartsWith((const UTF8Char*)"MT") && sbHW.ToString()[2] >= '0' && sbHW.ToString()[2] <= '9')
+		else if (sbHW.StartsWith(UTF8STRC("MT")) && sbHW.ToString()[2] >= '0' && sbHW.ToString()[2] <= '9')
 		{
 			cpu = GetCPUSpec(sbHW.ToString());
 		}
-		else if (sbHW.StartsWith((const UTF8Char*)"sun"))
+		else if (sbHW.StartsWith(UTF8STRC("sun")))
 		{
 			sbHW.ToUpper();
 			cpu = GetCPUSpec(sbHW.ToString());
 		}
-		else if (sbHW.StartsWith((const UTF8Char*)"BCM"))
+		else if (sbHW.StartsWith(UTF8STRC("BCM")))
 		{
-			if (sbHW.Equals((const UTF8Char*)"BCM2835"))
+			if (sbHW.Equals(UTF8STRC("BCM2835")))
 			{
 				if (cpuPart == 0xd03)
 				{
@@ -1044,38 +1044,38 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 				}
 			}
 		}
-		else if (sbHW.Equals((const UTF8Char*)"RK30board"))
+		else if (sbHW.Equals(UTF8STRC("RK30board")))
 		{
 		}
-		else if (sbHW.Equals((const UTF8Char*)"Annapurna Labs Alpine"))
+		else if (sbHW.Equals(UTF8STRC("Annapurna Labs Alpine")))
 		{
-			if (sbModelName.IndexOf((const UTF8Char*)" AL314 ") != INVALID_INDEX)
+			if (sbModelName.IndexOf(UTF8STRC(" AL314 ")) != INVALID_INDEX)
 			{
 				return (const UTF8Char*)"AL314";
 			}
 		}
-		else if (sbHW.Equals((const UTF8Char*)"rda8810"))
+		else if (sbHW.Equals(UTF8STRC("rda8810")))
 		{
 			return (const UTF8Char*)"RDA8810";
 		}
-		else if (sbHW.StartsWith((const UTF8Char*)"Atmel"))
+		else if (sbHW.StartsWith(UTF8STRC("Atmel")))
 		{
-			if (sbHW.Equals((const UTF8Char*)"Atmel AT91SAM9G45-EKES"))
+			if (sbHW.Equals(UTF8STRC("Atmel AT91SAM9G45-EKES")))
 			{
 				return (const UTF8Char*)"AT91SAM9G45";
 			}
-			else if (sbHW.Equals((const UTF8Char*)"Atmel AT91SAM9"))
+			else if (sbHW.Equals(UTF8STRC("Atmel AT91SAM9")))
 			{
 				return (const UTF8Char*)"AT91SAM9";
 			}
-			else if (sbHW.Equals((const UTF8Char*)"Atmel AT91SAM (Device Tree)"))
+			else if (sbHW.Equals(UTF8STRC("Atmel AT91SAM (Device Tree)")))
 			{
 				return (const UTF8Char*)"AT91SAM";
 			}
 		}
-		else if (sbHW.StartsWith((const UTF8Char*)"Freescale"))
+		else if (sbHW.StartsWith(UTF8STRC("Freescale")))
 		{
-			if (sbHW.Equals((const UTF8Char*)"Freescale i.MX6 UltraLite (Device Tree)"))
+			if (sbHW.Equals(UTF8STRC("Freescale i.MX6 UltraLite (Device Tree)")))
 			{
 				return (const UTF8Char*)"IMX6UL";
 			}

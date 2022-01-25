@@ -148,7 +148,7 @@ WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
 	return Text::StrUTF8_WChar(buff, sbuff, 0);
 }
 
-Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[40];
 	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
@@ -711,7 +711,7 @@ void Media::HTRecFile::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Media::HTRecFile::GetErrorMsg(Text::StringBuilderUTF *str)
+void Media::HTRecFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

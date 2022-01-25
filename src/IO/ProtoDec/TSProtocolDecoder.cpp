@@ -329,7 +329,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *u
 	return j;
 }
 
-Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::TSProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF8 *sb)
 {
 	if (buffSize < 10)
 		return false;

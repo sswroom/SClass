@@ -4,7 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorInfo.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "UI/GUICore.h"
 
 namespace UI
@@ -17,7 +17,7 @@ namespace UI
 	public:
 		virtual UOSInt GetCount() = 0;
 		virtual const UTF8Char *GetName(UOSInt index) = 0;
-		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF *sb) = 0;
+		virtual Bool GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb) = 0;
 		virtual IO::Stream *GetDataStream(const UTF8Char *name) = 0;
 	};
 
@@ -251,7 +251,7 @@ namespace UI
 		virtual void Close();
 		virtual void SetText(const UTF8Char *text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(Text::StringBuilderUTF *sb);
+		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 		virtual void SetSize(Double width, Double height);
 		virtual void SetSizeP(UOSInt width, UOSInt height);
 		virtual void GetSize(Double *width, Double *height);

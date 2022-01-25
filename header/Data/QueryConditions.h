@@ -31,7 +31,7 @@ namespace Data
 			virtual ~Condition(){};
 
 			virtual ConditionType GetType() = 0;
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem) = 0;
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem) = 0;
 			virtual Bool IsValid(Data::VariObject *obj) = 0;
 			virtual Bool IsValid(Data::ObjectGetter *getter) = 0;
 			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList) = 0;
@@ -74,7 +74,7 @@ namespace Data
 			virtual ~TimeBetweenCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -89,7 +89,7 @@ namespace Data
 			virtual ~Int32Condition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 
 			Text::String *GetFieldName();
@@ -107,7 +107,7 @@ namespace Data
 			virtual ~Int32InCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -122,7 +122,7 @@ namespace Data
 			virtual ~DoubleCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -136,7 +136,7 @@ namespace Data
 			virtual ~StringInCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -150,7 +150,7 @@ namespace Data
 			virtual ~StringContainsCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -164,7 +164,7 @@ namespace Data
 			virtual ~StringEqualsCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -178,7 +178,7 @@ namespace Data
 			virtual ~BooleanCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -189,7 +189,7 @@ namespace Data
 			virtual ~NotNullCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool TestValid(Data::VariItem *item);
 		};
 
@@ -203,7 +203,7 @@ namespace Data
 			virtual ~InnerCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
 			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
@@ -218,7 +218,7 @@ namespace Data
 			virtual ~OrCondition();
 
 			virtual ConditionType GetType();
-			virtual Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
+			virtual Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem);
 			virtual Bool IsValid(Data::VariObject *obj);
 			virtual Bool IsValid(Data::ObjectGetter *getter);
 			virtual void GetFieldList(Data::ArrayList<Text::String*> *fieldList);
@@ -232,7 +232,7 @@ namespace Data
 
 		Bool IsValid(Data::VariObject *obj);
 		Bool IsValid(Data::ObjectGetter *getter);
-		Bool ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions);
+		Bool ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions);
 		UOSInt GetCount();
 		Condition *GetItem(UOSInt index);
 		Data::ArrayList<Condition*> *GetList();

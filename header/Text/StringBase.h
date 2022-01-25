@@ -28,8 +28,11 @@ namespace Text
 		Bool HasUpperCase();
 		Bool ContainChars(const UTF8Char *chars);
 		UOSInt IndexOf(const UTF8Char *s, UOSInt len);
+		UOSInt IndexOf(StringBase<UTF8Char> *s);
+		UOSInt IndexOf(StringBase<const UTF8Char> *s);
+		UOSInt IndexOf(const UTF8Char *s, UOSInt len, UOSInt startIndex);
 		UOSInt IndexOf(UTF8Char c);
-		UOSInt IndexOfICase(const UTF8Char *s);
+		UOSInt IndexOfICase(const UTF8Char *s, UOSInt len);
 		UOSInt LastIndexOf(UTF8Char c);
 		OSInt CompareTo(StringBase<UTF8Char> *s);
 		OSInt CompareTo(const UTF8Char *s);
@@ -51,8 +54,12 @@ namespace Text
 		Bool ToUInt32(UInt32 *outVal);
 		Bool ToInt64(Int64 *outVal);
 		Bool ToUInt64(UInt64 *outVal);
+		Bool ToOSInt(OSInt *outVal);
+		Bool ToUOSInt(UOSInt *outVal);
 		Bool ToDouble(Double *outVal);
 		Bool ToUInt16S(UInt16 *outVal, UInt16 failVal);
+		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal);
+		UOSInt Hex2Bytes(UInt8 *buff);
 
 		Double MatchRating(StringBase<UTF8Char> *s);
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen);
@@ -183,6 +190,28 @@ template <typename T> UOSInt Text::StringBase<T>::IndexOf(const UTF8Char *s, UOS
 	return Text::StrIndexOfC(this->v, this->leng, s, len);
 }
 
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(StringBase<UTF8Char> *s)
+{
+	return IndexOf(s->v, s->leng);
+}
+
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(StringBase<const UTF8Char> *s)
+{
+	return IndexOf(s->v, s->leng);
+}
+
+template <typename T> UOSInt Text::StringBase<T>::IndexOf(const UTF8Char *s, UOSInt len, UOSInt startIndex)
+{
+	if (startIndex >= this->leng)
+	{
+		return INVALID_INDEX;
+	}
+	UOSInt retIndex = Text::StrIndexOfC(&this->v[startIndex], this->leng - startIndex, s, len);
+	if (retIndex == INVALID_INDEX)
+		return INVALID_INDEX;
+	return retIndex + startIndex;
+}
+
 template <typename T> UOSInt Text::StringBase<T>::IndexOf(UTF8Char c)
 {
 	REGVAR const UTF8Char *ptr = this->v;
@@ -205,7 +234,7 @@ template <typename T> UOSInt Text::StringBase<T>::IndexOf(UTF8Char c)
 	return INVALID_INDEX;
 }
 
-template <typename T> UOSInt Text::StringBase<T>::IndexOfICase(const UTF8Char *s)
+template <typename T> UOSInt Text::StringBase<T>::IndexOfICase(const UTF8Char *s, UOSInt len)
 {
 	return Text::StrIndexOfICase(this->v, s);
 }
@@ -358,6 +387,16 @@ template <typename T> Bool Text::StringBase<T>::ToUInt64(UInt64 *outVal)
 	return Text::StrToUInt64(this->v, outVal);
 }
 
+template <typename T> Bool Text::StringBase<T>::ToOSInt(OSInt *outVal)
+{
+	return Text::StrToOSInt(this->v, outVal);
+}
+
+template <typename T> Bool Text::StringBase<T>::ToUOSInt(UOSInt *outVal)
+{
+	return Text::StrToUOSInt(this->v, outVal);
+}
+
 template <typename T> Bool Text::StringBase<T>::ToDouble(Double *outVal)
 {
 	return Text::StrToDouble(this->v, outVal);
@@ -366,6 +405,16 @@ template <typename T> Bool Text::StringBase<T>::ToDouble(Double *outVal)
 template <typename T> Bool Text::StringBase<T>::ToUInt16S(UInt16 *outVal, UInt16 failVal)
 {
 	return Text::StrToUInt16S(this->v, outVal, failVal);
+}
+
+template <typename T> Bool Text::StringBase<T>::ToUInt32S(UInt32 *outVal, UInt32 failVal)
+{
+	return Text::StrToUInt32S(this->v, outVal, failVal);
+}
+
+template<typename T> UOSInt Text::StringBase<T>::Hex2Bytes(UInt8 *buff)
+{
+	return Text::StrHex2Bytes(this->v, buff);
 }
 
 template <typename T> Double Text::StringBase<T>::MatchRating(StringBase<UTF8Char> *s)

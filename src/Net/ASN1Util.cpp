@@ -140,7 +140,7 @@ const UInt8 *Net::ASN1Util::PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb)
+const UInt8 *Net::ASN1Util::PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt len;
 	if (pduEnd - pdu < 2)
@@ -227,7 +227,7 @@ Bool Net::ASN1Util::PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::Date
 	return false;
 }
 
-Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level)
+Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, UOSInt level)
 {
 	Text::StringBuilderUTF8 *innerSb;
 	while (pdu < pduEnd)
@@ -767,7 +767,7 @@ Bool Net::ASN1Util::OIDEqualsText(const UInt8 *oidPDU, UOSInt oidPDULen, const U
 	return OIDCompare(oidPDU, oidPDULen, oid2, oidLen2) == 0;
 }
 
-void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb)
+void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb)
 {
 	UInt32 v = 0;
 	UOSInt i = 1;
@@ -906,7 +906,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	return retSize;
 }
 
-void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb)
+void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF8 *sb)
 {
 	OSInt k;
 	sb->AppendChar('\t', 1);

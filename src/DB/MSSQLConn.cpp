@@ -3,7 +3,7 @@
 #include "DB/ODBCConn.h"
 #include "Text/MyString.h"
 
-DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Text::StringBuilderUTF *errMsg)
+DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, const UTF8Char *database, const UTF8Char *userName, const UTF8Char *password, IO::LogTool *log, Text::StringBuilderUTF8 *errMsg)
 {
 	DB::ODBCConn *conn;
 	Text::String *driverName = GetDriverNameNew();

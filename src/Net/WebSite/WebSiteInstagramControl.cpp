@@ -22,7 +22,7 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(const UTF8C
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(&sb);
-			if (sb.StartsWithC(UTF8STRC("window._sharedData = ")))
+			if (sb.StartsWith(UTF8STRC("window._sharedData = ")))
 			{
 				if (sb.EndsWith(';'))
 				{

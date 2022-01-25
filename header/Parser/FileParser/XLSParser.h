@@ -2,7 +2,7 @@
 #define _SM_PARSER_FILEPARSER_XLSPARSER
 #include "Data/Int32Map.h"
 #include "IO/FileParser.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/SpreadSheet/Workbook.h"
 
 namespace Parser
@@ -51,9 +51,9 @@ namespace Parser
 		private:
 			static Bool ParseWorkbook(IO::IStreamData *fd, UInt64 ofst, UInt64 ofstRef, Text::SpreadSheet::Workbook *wb);
 			static Bool ParseWorksheet(IO::IStreamData *fd, UInt64 ofst, Text::SpreadSheet::Workbook *wb, Text::SpreadSheet::Worksheet *ws, WorkbookStatus *status);
-			static UOSInt ReadUString(UInt8 *buff, Text::StringBuilderUTF *sb);
-			static UOSInt ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF *sb);
-			static UOSInt ReadUStringB(UInt8 *buff, Text::StringBuilderUTF *sb);
+			static UOSInt ReadUString(UInt8 *buff, Text::StringBuilderUTF8 *sb);
+			static UOSInt ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF8 *sb);
+			static UOSInt ReadUStringB(UInt8 *buff, Text::StringBuilderUTF8 *sb);
 			static Double ParseRKNumber(Int32 rkValue);
 		};
 	}

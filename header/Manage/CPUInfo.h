@@ -2,7 +2,7 @@
 #define _SM_MANAGE_CPUINFO
 #include "Data/ArrayList.h"
 #include "Manage/CPUVendor.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Manage
 {
@@ -28,8 +28,8 @@ namespace Manage
 		Bool SupportIntelDTS(); //Digital Thermal Sensor
 
 		UOSInt GetInfoCnt();
-		Bool GetInfoName(UOSInt index, Text::StringBuilderUTF *sb);
-		Bool GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb);
+		Bool GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb);
+		Bool GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb);
 		UOSInt GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoList);
 		void GetFeatureFlags(Int32 *flag1, Int32 *flag2);
 
@@ -42,8 +42,8 @@ namespace Manage
 		static const UTF8Char *GetFeatureShortName(UOSInt index);
 		static const UTF8Char *GetFeatureName(UOSInt index);
 		static const UTF8Char *GetFeatureDesc(UOSInt index);
-		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb);
-		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb);
+		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb);
+		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb);
 	};
 }
 

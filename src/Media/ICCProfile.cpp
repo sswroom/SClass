@@ -832,7 +832,7 @@ Bool Media::ICCProfile::GetColorPrimaries(Media::ColorProfile::ColorPrimaries *c
 	}
 }
 
-void Media::ICCProfile::ToString(Text::StringBuilderUTF *sb)
+void Media::ICCProfile::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UInt8 majorVer;
 	UInt8 minorVer;
@@ -1291,7 +1291,7 @@ const UTF8Char *Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 	}
 }
 
-void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz)
+void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz)
 {
 	sb->AppendC(UTF8STRC("X = "));
 	Text::SBAppendF64(sb, xyz->val[0]);
@@ -1310,7 +1310,7 @@ void Media::ICCProfile::GetDispCIEXYZ(Text::StringBuilderUTF *sb, CIEXYZ *xyz)
 	}
 }
 
-void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF *sb, UInt8 *buff, UInt32 leng)
+void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff, UInt32 leng)
 {
 	Int32 typ = ReadMInt32(buff);
 	Int32 nCh;

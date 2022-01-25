@@ -179,7 +179,7 @@ UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
 	return this->packs->GetCount();
 }
 
-Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
 	pack = this->packs->GetItem(index);

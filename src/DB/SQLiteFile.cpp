@@ -108,7 +108,7 @@ void DB::SQLiteFile::ForceTz(Int8 tzQhr)
 	
 }
 
-void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF *sb)
+void DB::SQLiteFile::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("SQLite:"));
 	sb->Append(this->fileName);
@@ -218,7 +218,7 @@ void DB::SQLiteFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::SQLiteFile::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::SQLiteFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastErrMsg)
 	{
@@ -449,7 +449,7 @@ Text::String *DB::SQLiteReader::GetNewStr(UOSInt colIndex)
 		return Text::String::NewNotNull((const UTF16Char *)outp);
 }
 
-Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	const void *outp = sqlite3_column_text16((sqlite3_stmt*)this->hStmt, (int)colIndex);
 	if (outp == 0)

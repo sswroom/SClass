@@ -1,7 +1,7 @@
 #ifndef _SM_WIN32_SMBIOS
 #define _SM_WIN32_SMBIOS
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Win32
 {
@@ -97,9 +97,9 @@ namespace Win32
 		UTF8Char *GetPlatformName(UTF8Char *buff);
 		UTF8Char *GetPlatformSN(UTF8Char *buff);
 		Int32 GetChassisType();
-		Bool ToString(Text::StringBuilderUTF *sb);
-		static void GetProcessorFamily(Text::StringBuilderUTF *sb, Int32 family);
-		static void GetConnectorType(Text::StringBuilderUTF *sb, UInt8 type);
+		Bool ToString(Text::StringBuilderUTF8 *sb);
+		static void GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family);
+		static void GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type);
 	};
 }
 #endif

@@ -363,7 +363,7 @@ UOSInt Media::V4LVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt m
 	return ret;
 }
 
-void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
+void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 {
 	struct v4l2_capability video_cap;
 	sb->AppendC(UTF8STRC("DevPath: /dev/video"));

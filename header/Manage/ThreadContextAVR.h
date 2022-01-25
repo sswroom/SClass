@@ -16,7 +16,7 @@ namespace Manage
 
 		virtual OSInt GetRegisterCnt();
 		virtual UTF8Char *GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount);
-		virtual void ToString(Text::StringBuilderUTF *sb);
+		virtual void ToString(Text::StringBuilderUTF8 *sb);
 		virtual ContextType GetType();
 		virtual UOSInt GetThreadId();
 		virtual UOSInt GetProcessId();

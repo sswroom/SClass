@@ -1,6 +1,6 @@
 #ifndef _SM_DATA_UUID
 #define _SM_DATA_UUID
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Data
 {
@@ -19,7 +19,7 @@ namespace Data
 		UOSInt GetValue(UInt8 *buff);
 		OSInt CompareTo(UUID *uuid);
 		
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 		UTF8Char *ToString(UTF8Char *sbuff);
 		UUID *Clone();
 		Bool Equals(UUID *uuid);

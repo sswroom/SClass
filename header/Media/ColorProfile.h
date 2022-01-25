@@ -2,7 +2,7 @@
 #define _SM_MEDIA_COLORPROFILE
 #include "Math/Matrix3.h"
 #include "Media/CS/TransferParam.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -177,7 +177,7 @@ namespace Media
 		Media::CS::TransferParam *GetGTranParam();
 		Media::CS::TransferParam *GetBTranParam();
 		Media::ColorProfile::ColorPrimaries *GetPrimaries();
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 
 		void SetRAWICC(const UInt8 *iccData);
 		const UInt8 *GetRAWICC();

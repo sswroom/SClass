@@ -111,7 +111,7 @@ void DB::MySQLConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::MySQLConn::GetConnName(Text::StringBuilderUTF *sb)
+void DB::MySQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("MySQL:"));
 	sb->Append(this->server);
@@ -237,7 +237,7 @@ void DB::MySQLConn::CloseReader(DB::DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::MySQLConn::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::MySQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
 	str->Append(errMsg);
@@ -497,7 +497,7 @@ WChar *DB::MySQLReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (this->row == 0)
 		return 0;

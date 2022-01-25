@@ -27,7 +27,7 @@ namespace UI
 
 		virtual void SetText(const UTF8Char *text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
-		virtual Bool GetText(Text::StringBuilderUTF *sb);
+		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 
 		UOSInt AddItem(Text::String *itemText, void *itemObj);
 		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);

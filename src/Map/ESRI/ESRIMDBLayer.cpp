@@ -436,7 +436,7 @@ void Map::ESRI::ESRIMDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::ESRI::ESRIMDBLayer::GetErrorMsg(Text::StringBuilderUTF *str)
+void Map::ESRI::ESRIMDBLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastDB)
 	{
@@ -497,7 +497,7 @@ WChar *Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Map::ESRI::ESRIMDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }

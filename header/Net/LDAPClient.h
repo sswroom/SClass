@@ -4,7 +4,7 @@
 #include "Net/ASN1PDUBuilder.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -78,7 +78,7 @@ namespace Net
 
 		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
 		static void SearchResObjectFree(SearchResObject *obj);
-		static void SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF *sb);
+		static void SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

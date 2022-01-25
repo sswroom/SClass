@@ -24,7 +24,7 @@ const UInt8 *Net::WirelessLANIE::GetIEBuff()
 	return this->ieBuff;
 }
 
-void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF *sb)
+void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 cmd = ieBuff[0];
 	UOSInt size = ieBuff[1];
@@ -1179,25 +1179,25 @@ void Net::WirelessLANIE::GetWPSInfo(const UInt8 *iebuff, UOSInt ieLen, const UTF
 						sb.ClearStr();
 						sb.AppendC(&iebuff[i + 6], itemSize);
 						SDEL_TEXT(*manuf);
-						if (sb.Equals((const UTF8Char*)"NETGEAR, Inc."))
+						if (sb.Equals(UTF8STRC("NETGEAR, Inc.")))
 						{
 							*manuf = Text::StrCopyNew((const UTF8Char*)"Netgear");
 						}
-						else if (sb.Equals((const UTF8Char*)"NTGR"))
+						else if (sb.Equals(UTF8STRC("NTGR")))
 						{
 							*manuf = Text::StrCopyNew((const UTF8Char*)"Netgear");
 						}
-						else if (sb.Equals((const UTF8Char*)"ASUSTeK Computer Inc."))
+						else if (sb.Equals(UTF8STRC("ASUSTeK Computer Inc.")))
 						{
 							*manuf = Text::StrCopyNew((const UTF8Char*)"ASUS");
 						}
-						else if (sb.Equals((const UTF8Char*)"ASUSTek Computer Inc."))
+						else if (sb.Equals(UTF8STRC("ASUSTek Computer Inc.")))
 						{
 							*manuf = Text::StrCopyNew((const UTF8Char*)"ASUS");
 						}
 						else
 						{
-							sb.Equals((const UTF8Char*)"ASUSTeK Computer Inc.");
+							sb.Equals(UTF8STRC("ASUSTeK Computer Inc."));
 							*manuf = Text::StrCopyNew(sb.ToString());
 						}
 						break;

@@ -7,7 +7,7 @@
 
 #define LOGPREFIX ((const UTF8Char*)"DB:")
 
-Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF *sb, DB::ColDef *colDef)
+Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF8 *sb, DB::ColDef *colDef)
 {
 	if (colDef->IsPK())
 	{
@@ -32,7 +32,7 @@ Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF *sb, DB::Co
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName)
+void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName)
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
@@ -41,7 +41,7 @@ void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF *sb, DB::ColDef *col,
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName, Bool isLast)
+void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName, Bool isLast)
 {
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
 	sb->AppendChar(' ', 1);
@@ -52,7 +52,7 @@ void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF *sb, DB::ColDef *col
 	}
 }
 
-void DB::JavaDBUtil::AppendConstrItem(Text::StringBuilderUTF *sb, Text::String *colName)
+void DB::JavaDBUtil::AppendConstrItem(Text::StringBuilderUTF8 *sb, Text::String *colName)
 {
 	sb->AppendC(UTF8STRC("\t\tthis."));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
@@ -61,7 +61,7 @@ void DB::JavaDBUtil::AppendConstrItem(Text::StringBuilderUTF *sb, Text::String *
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
 
-void DB::JavaDBUtil::AppendGetterSetter(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName)
+void DB::JavaDBUtil::AppendGetterSetter(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName)
 {
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\tpublic "));
@@ -96,7 +96,7 @@ void DB::JavaDBUtil::AppendGetterSetter(Text::StringBuilderUTF *sb, DB::ColDef *
 	sb->AppendC(UTF8STRC("\t}\r\n"));
 }
 
-void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF *sb, DB::ColDef *col, Text::String *colName, Text::String *clsName, Bool isLast)
+void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName, Text::String *clsName, Bool isLast)
 {
 	Bool isObj = true;
 	if (col->IsNotNull())
@@ -153,7 +153,7 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF *sb, DB::ColDef *co
 	}
 }
 
-void DB::JavaDBUtil::AppendHashCodeItem(Text::StringBuilderUTF *sb, Text::String *colName, Bool isLast)
+void DB::JavaDBUtil::AppendHashCodeItem(Text::StringBuilderUTF8 *sb, Text::String *colName, Bool isLast)
 {
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (!isLast)
@@ -162,7 +162,7 @@ void DB::JavaDBUtil::AppendHashCodeItem(Text::StringBuilderUTF *sb, Text::String
 	}
 }
 
-void DB::JavaDBUtil::AppendFieldOrderItem(Text::StringBuilderUTF *sb, Text::String *colName, Bool isLast)
+void DB::JavaDBUtil::AppendFieldOrderItem(Text::StringBuilderUTF8 *sb, Text::String *colName, Bool isLast)
 {
 	sb->AppendC(UTF8STRC("\t\t\""));
 	Text::JavaText::ToJavaName(sb, colName->v, false);
@@ -216,7 +216,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 	return 0;
 }
 
-Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF *sb, Text::String *tableName, DB::ReadingDBTool *db)
+Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tableName, DB::ReadingDBTool *db)
 {
 	Text::StringBuilderUTF8 sbConstrHdr;
 	Text::StringBuilderUTF8 sbConstrItem;

@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 
 	sb.ClearStr();
 	me->txtURL->GetText(&sb);
-	if (!sb.StartsWith((const UTF8Char*)"http://"))
+	if (!sb.StartsWith(UTF8STRC("http://")))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
 		return;

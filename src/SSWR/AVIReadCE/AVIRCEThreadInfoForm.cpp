@@ -255,7 +255,7 @@ SSWR::AVIReadCE::AVIRCEThreadInfoForm::AVIRCEThreadInfoForm(UI::GUIClientControl
 				buffSize = proc->ReadMemory(esp, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));

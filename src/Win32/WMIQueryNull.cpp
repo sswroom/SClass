@@ -54,7 +54,7 @@ void Win32::WMIQuery::ForceTz(Int8 tzQhr)
 {
 }
 
-void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF *sb)
+void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("WMI:"));
 }
@@ -126,7 +126,7 @@ void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
 {
 }
 
-void Win32::WMIQuery::GetErrorMsg(Text::StringBuilderUTF *str)
+void Win32::WMIQuery::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

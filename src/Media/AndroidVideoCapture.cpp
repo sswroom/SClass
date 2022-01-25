@@ -300,7 +300,7 @@ UOSInt Media::AndroidVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSI
 	return ret;
 }
 
-void Media::AndroidVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
+void Media::AndroidVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 {
 	ACameraMetadata *metadataObj;
 	if (ACAMERA_OK != ACameraManager_getCameraCharacteristics((ACameraManager*)this->cameraMgr, this->cameraId, &metadataObj))

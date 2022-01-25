@@ -23,7 +23,7 @@ Math::WKTWriter::~WKTWriter()
 	SDEL_TEXT(this->lastError);
 }
 
-Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF *sb, Math::Vector2D *vec)
+Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 {
 	UTF8Char sbuff[64];
 	if (vec == 0)

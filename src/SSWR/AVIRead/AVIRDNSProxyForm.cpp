@@ -696,7 +696,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 	sb.AppendC(UTF8STRC(", C="));
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
-	Text::SBAppendF64(&sb, timeUsed);
+	sb.AppendDouble(timeUsed);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 
 	ClientInfo *cli;

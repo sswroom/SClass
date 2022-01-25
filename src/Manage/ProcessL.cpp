@@ -257,7 +257,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	return buff;
 }
 
-Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
+Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff[128];
@@ -717,7 +717,7 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 struct Manage::Process::FindProcSess
 {
 	IO::Path::FindFileSession *findFileSess;
-	const UTF8Char *procName;
+	Text::String *procName;
 };
 
 Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
@@ -732,7 +732,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *proc
 	sess->findFileSess = ffsess;
 	if (processName)
 	{
-		sess->procName = Text::StrCopyNew(processName);
+		sess->procName = Text::String::NewNotNull(processName);
 	}
 	else
 	{
@@ -753,7 +753,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *proces
 	sess->findFileSess = ffsess;
 	if (processName)
 	{
-		sess->procName = Text::StrToUTF8New(processName);
+		sess->procName = Text::String::NewNotNull(processName);
 	}
 	else
 	{
@@ -791,11 +791,11 @@ UTF8Char *Manage::Process::FindProcessNext(UTF8Char *processNameBuff, Manage::Pr
 				sb.ClearStr();
 				while (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
+					if (sb.StartsWith(UTF8STRC("PPid:\t")))
 					{
 						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
 					}
-					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
+					else if (sb.StartsWith(UTF8STRC("Threads:\t")))
 					{
 						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
 					}
@@ -860,11 +860,11 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 				sb.ClearStr();
 				while (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"PPid:\t"))
+					if (sb.StartsWith(UTF8STRC("PPid:\t")))
 					{
 						info->parentId = Text::StrToUInt32(sb.ToString() + 6);
 					}
-					else if (sb.StartsWith((const UTF8Char*)"Threads:\t"))
+					else if (sb.StartsWith(UTF8STRC("Threads:\t")))
 					{
 						info->threadCnt = Text::StrToUInt32(sb.ToString() + 9);
 					}
@@ -903,11 +903,11 @@ WChar *Manage::Process::FindProcessNextW(WChar *processNameBuff, Manage::Process
 void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 {
 	IO::Path::FindFileClose(fpsess->findFileSess);
-	SDEL_TEXT(fpsess->procName);
+	SDEL_STRING(fpsess->procName);
 	MemFree(fpsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF8 *result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
@@ -1011,7 +1011,7 @@ Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF8 *result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
@@ -1114,7 +1114,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
 {
 	Text::String *s = Text::String::NewNotNull(cmd);
 	Int32 ret = ExecuteProcess(s->v, s->leng, result);

@@ -123,7 +123,7 @@ UTF8Char *Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, U
 	return 0;
 }
 
-Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::StringBuilderUTF *sb)
+Bool Net::HTTPClient::GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char buff[256];
 	UTF8Char *s2;

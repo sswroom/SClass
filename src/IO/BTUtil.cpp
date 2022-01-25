@@ -1240,7 +1240,7 @@ const UTF8Char *IO::BTUtil::GetManufacturerName(UInt16 manuf)
 	return (const UTF8Char*)"Unknown";
 }
 
-void IO::BTUtil::GetAddrText(Text::StringBuilderUTF *sb, UInt8 *addr)
+void IO::BTUtil::GetAddrText(Text::StringBuilderUTF8 *sb, UInt8 *addr)
 {
 	sb->AppendHex8(addr[5]);
 	sb->AppendC(UTF8STRC(":"));
@@ -1293,7 +1293,7 @@ const UTF8Char *IO::BTUtil::GetUUIDName(UInt16 uuid)
 	return (const UTF8Char*)"Unknown";
 }
 
-void IO::BTUtil::GetServiceName(Text::StringBuilderUTF *sb, void *serviceUUID)
+void IO::BTUtil::GetServiceName(Text::StringBuilderUTF8 *sb, void *serviceUUID)
 {
 	UInt8 *uuid = (UInt8*)serviceUUID;
 	sb->Append(GetUUIDName(ReadUInt16(uuid)));

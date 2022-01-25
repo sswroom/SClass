@@ -42,7 +42,7 @@ namespace Media
 
 		Media::StaticImage *CreateStaticImage();
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 
 		static const UTF8Char *AlphaTypeGetName(AlphaType atype);
 	};

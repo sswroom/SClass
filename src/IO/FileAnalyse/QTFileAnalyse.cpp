@@ -152,7 +152,7 @@ UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
 	return this->packs->GetCount();
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 buff[5];
@@ -169,7 +169,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 	return true;
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;

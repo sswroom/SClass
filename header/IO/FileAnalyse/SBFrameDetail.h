@@ -1,7 +1,7 @@
 #ifndef _SM_IO_FILEANALYSE_SBFRAMEDETAIL
 #define _SM_IO_FILEANALYSE_SBFRAMEDETAIL
 #include "IO/FileAnalyse/FrameDetailHandler.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -10,9 +10,9 @@ namespace IO
 		class SBFrameDetail : public IO::FileAnalyse::FrameDetailHandler
 		{
 		private:
-			Text::StringBuilderUTF *sb;
+			Text::StringBuilderUTF8 *sb;
 		public:
-			SBFrameDetail(Text::StringBuilderUTF *sb);
+			SBFrameDetail(Text::StringBuilderUTF8 *sb);
 			virtual ~SBFrameDetail();
 
 			virtual void AddHeader(const UTF8Char *header);

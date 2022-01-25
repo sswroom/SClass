@@ -5,7 +5,7 @@
 #include "Data/UUID.h"
 #include "Math/Vector2D.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Data
 {
@@ -76,7 +76,7 @@ namespace Data
 		Int64 GetAsI64();
 		UInt64 GetAsU64();
 		Bool GetAsBool();
-		void GetAsString(Text::StringBuilderUTF *sb);
+		void GetAsString(Text::StringBuilderUTF8 *sb);
 		UTF8Char *GetAsStringS(UTF8Char *buff, UOSInt buffSize);
 		Data::DateTime *GetAsNewDate();
 		Data::ReadonlyArray<UInt8> *GetAsNewByteArr();
@@ -114,7 +114,7 @@ namespace Data
 		void Set(VariItem *item);
 
 		VariItem *Clone();
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 
 		static VariItem *NewNull();
 		static VariItem *NewStr(const UTF8Char *str);

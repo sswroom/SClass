@@ -10,7 +10,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb3;
 	me->txtPassword->GetText(&sb1);
 	me->txtRetype->GetText(&sb2);
-	if (!sb1.Equals(sb2.ToString()))
+	if (!sb1.Equals(&sb2))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Password and retype password do not match", (const UTF8Char*)"Error", me);
 		return;

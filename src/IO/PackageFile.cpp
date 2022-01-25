@@ -771,6 +771,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 
 	IO::IStreamData *retFD = 0;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
@@ -793,8 +794,8 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 			if (pf->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
 			{
 				sbuff[0] = 0;
-				pf->GetItemName(sbuff, i);
-				if (sb.Equals(sbuff))
+				sptr = pf->GetItemName(sbuff, i);
+				if (sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 				{
 					pf2 = pf->GetItemPack(i);
 					if (pf2)
@@ -829,8 +830,8 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 		if (pf->GetItemType(i) == IO::PackageFile::POT_STREAMDATA)
 		{
 			sbuff[0] = 0;
-			pf->GetItemName(sbuff, i);
-			if (sb.Equals(sbuff))
+			sptr = pf->GetItemName(sbuff, i);
+			if (sb.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				retFD = pf->GetItemStmData(i);
 				break;
@@ -854,7 +855,7 @@ void IO::PackageFile::SetInfo(InfoType infoType, const UTF8Char *val)
 	}
 }
 
-void IO::PackageFile::GetInfoText(Text::StringBuilderUTF *sb)
+void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt i;
 	UOSInt j;

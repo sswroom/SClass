@@ -6,7 +6,7 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *userAgent, Text::StringBuilderUTF *outSb)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *userAgent, Text::StringBuilderUTF8 *outSb)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;

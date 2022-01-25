@@ -68,9 +68,9 @@ namespace SSWR
 			typedef struct
 			{
 				Int32 videoId;
-				const UTF8Char *anime;
-				const UTF8Char *series;
-				const UTF8Char *volume;
+				Text::String *anime;
+				Text::String *series;
+				Text::String *volume;
 				const UTF8Char *dvdType;
 			} DVDVideoInfo;
 		private:

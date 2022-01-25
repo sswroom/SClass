@@ -2,7 +2,7 @@
 #define _SM_NET_PACKETANALYZERBLUETOOTH
 #include "IO/DeviceDB.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -38,8 +38,8 @@ namespace Net
 		static void AddPeriodicAdv(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 interval);
 		static void AddUnknown(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize);
 
-		static Bool PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
-		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb);
+		static Bool PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb);
+		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb);
 		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 
 		static const UTF8Char *CompanyGetName(UInt16 company);

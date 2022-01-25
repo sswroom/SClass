@@ -2,7 +2,7 @@
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
 #include "Data/ArrayList.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -52,7 +52,7 @@ namespace IO
 			virtual void AddText(UOSInt ofst, const UTF8Char *name);
 			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 
-			void ToString(Text::StringBuilderUTF *sb);
+			void ToString(Text::StringBuilderUTF8 *sb);
 		};
 	}
 }

@@ -200,7 +200,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			if (sb.ToString()[0] == '#')
 			{
 			}
-			else if (sb.StartsWithC(UTF8STRC("nameserver")))
+			else if (sb.StartsWith(UTF8STRC("nameserver")))
 			{
 				if (Text::StrSplitWS(sarr, 3, sb.ToString()) >= 2)
 				{

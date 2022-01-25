@@ -79,7 +79,7 @@ public:
 		return Text::StrUTF8_WChar(buff, this->row[colIndex]->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	{
 		if (this->row == 0)
 			return false;
@@ -318,7 +318,7 @@ void DB::TextDB::CloseReader(DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void DB::TextDB::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::TextDB::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 
 }

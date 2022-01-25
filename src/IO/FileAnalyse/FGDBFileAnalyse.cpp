@@ -126,7 +126,7 @@ UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
 	return this->tags->GetCount();
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::FGDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::FGDBFileAnalyse::TagInfo *tag = this->tags->GetItem(index);
 	if (tag == 0)

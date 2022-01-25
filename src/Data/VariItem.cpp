@@ -466,7 +466,7 @@ Bool Data::VariItem::GetAsBool()
 	return this->GetAsI64() != 0;
 }
 
-void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
+void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -477,10 +477,10 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF *sb)
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	case ItemType::F32:
-		Text::SBAppendF32(sb, this->val.f32);
+		sb->AppendDouble(this->val.f32);
 		return;
 	case ItemType::F64:
-		Text::SBAppendF64(sb, this->val.f64);
+		sb->AppendDouble(this->val.f64);
 		return;
 	case ItemType::I8:
 		sb->AppendI16(this->val.i8);
@@ -1016,7 +1016,7 @@ Data::VariItem *Data::VariItem::Clone()
 	return NEW_CLASS_D(VariItem(this->itemType, ival));
 }
 
-void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
+void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 {
 	Text::String *s;
 	UTF8Char sbuff[64];
@@ -1027,10 +1027,10 @@ void Data::VariItem::ToString(Text::StringBuilderUTF *sb)
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	case ItemType::F32:
-		Text::SBAppendF32(sb, this->val.f32);
+		sb->AppendDouble(this->val.f32);
 		return;
 	case ItemType::F64:
-		Text::SBAppendF64(sb, this->val.f64);
+		sb->AppendDouble(this->val.f64);
 		return;
 	case ItemType::I8:
 		sb->AppendI16(this->val.i8);

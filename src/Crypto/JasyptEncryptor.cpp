@@ -195,7 +195,7 @@ UOSInt Crypto::JasyptEncryptor::DecryptB64(const UTF8Char *b64Buff, UInt8 *outBu
 	return retSize;
 }
 
-UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF *sb, const UInt8 *srcBuff, UOSInt srcLen)
+UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF8 *sb, const UInt8 *srcBuff, UOSInt srcLen)
 {
 	UInt8 *srcTmpBuff = 0;
 	UOSInt nBlock = srcLen / this->ivSize;

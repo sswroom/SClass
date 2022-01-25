@@ -133,7 +133,7 @@ Media::FontRenderer *Parser::FileParser::FNTParser::ParseFontBuff(const UTF8Char
 	return font;
 }
 
-UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF *sb)
+UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF8 *sb)
 {
 	if (fileSize < 100)
 		return 0;
@@ -274,7 +274,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	return hdrSize;
 }
 
-void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF *sb)
+void Parser::FileParser::FNTParser::GetFileDirDesc(const UInt8 *fileBuff, UOSInt fileSize, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt nFonts = ReadUInt16(&fileBuff[0]);
 	UOSInt i = 2;

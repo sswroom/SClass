@@ -57,7 +57,7 @@ UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return ret;
 }
 
-Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 {
 	return GetDataTextH(0, fmtId, sb, 0);
 }
@@ -113,7 +113,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UOSInt)j);
 								i += j + 1;
-								if (sb.StartsWithC(UTF8STRC("file:///")))
+								if (sb.StartsWith(UTF8STRC("file:///")))
 								{
 									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
 									fileNames->Add(Text::StrCopyNew(sbuff));
@@ -127,7 +127,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 							{
 								sb.ClearStr();
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UInt32)leng - i);
-								if (sb.StartsWithC(UTF8STRC("file:///")))
+								if (sb.StartsWith(UTF8STRC("file:///")))
 								{
 									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
 									fileNames->Add(Text::StrCopyNew(sbuff));
@@ -160,7 +160,7 @@ void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileName
 	}
 }
 
-Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF *sb, UInt32 tymed)
+Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -275,7 +275,7 @@ Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 	return true;
 }
 
-Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb)
 {
 	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

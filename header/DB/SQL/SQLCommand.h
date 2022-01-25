@@ -1,7 +1,7 @@
 #ifndef _SM_DB_SQLCOMMAND
 #define _SM_DB_SQLCOMMAND
 #include "DB/DBUtil.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {
@@ -15,7 +15,7 @@ namespace DB
 				CT_CREATE_TABLE
 			} CommandType;
 		private:
-			static const UTF8Char *ParseNextWord(const UTF8Char *sql, Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType);
+			static const UTF8Char *ParseNextWord(const UTF8Char *sql, Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType);
 			static Bool IsPunctuation(const UTF8Char *s);
 		public:
 			virtual ~SQLCommand() {};

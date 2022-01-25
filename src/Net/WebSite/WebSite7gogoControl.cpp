@@ -144,7 +144,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 		{
 			sb.ClearStr();
 			reader->ReadNodeText(&sb);
-			if (sb.StartsWith((const UTF8Char*)"window.__DEHYDRATED_STATES__ = "))
+			if (sb.StartsWith(UTF8STRC("window.__DEHYDRATED_STATES__ = ")))
 			{
 				Text::JSONBase *baseData = Text::JSONBase::ParseJSONStr(sb.ToString() + 31);
 				if (baseData)

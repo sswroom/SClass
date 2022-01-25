@@ -26,7 +26,7 @@ Text::TextBinEnc::Radix64Enc::~Radix64Enc()
 {
 }
 
-UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::Radix64Enc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UOSInt outSize;
 	UTF8Char sptr[4];

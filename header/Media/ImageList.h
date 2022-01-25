@@ -4,6 +4,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"
 #include "Media/Image.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -85,9 +86,9 @@ namespace Media
 		void SetValueInt32(ValueType valType, Int32 val);
 		void SetValueInt64(ValueType valType, Int64 val);
 		void SetValueStr(ValueType valType, const UTF8Char *val);
-		Bool ToValueString(Text::StringBuilderUTF *sb);
+		Bool ToValueString(Text::StringBuilderUTF8 *sb);
 
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 		static const UTF8Char *GetValueTypeName(ValueType valType);
 	};
 }

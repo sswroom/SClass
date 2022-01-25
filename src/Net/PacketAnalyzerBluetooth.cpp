@@ -1979,7 +1979,7 @@ void Net::PacketAnalyzerBluetooth::AddUnknown(IO::FileAnalyse::FrameDetailHandle
 	frame->AddHexBuff(frameOfst, (UInt32)packetSize, "Unknown", packet, true);
 }
 
-Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 mac[6];
 	const UTF8Char *name;
@@ -2090,7 +2090,7 @@ Bool Net::PacketAnalyzerBluetooth::PacketGetName(const UInt8 *packet, UOSInt pac
 	}
 }
 
-void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF *sb)
+void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::SBFrameDetail frame(sb);
 	PacketGetDetail(packet, packetSize, 0, &frame);

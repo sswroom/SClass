@@ -64,7 +64,7 @@ void Media::FrameInfo::Set(const FrameInfo *info)
 	this->ycOfst = info->ycOfst;
 }
 
-void Media::FrameInfo::ToString(Text::StringBuilderUTF *sb)
+void Media::FrameInfo::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("FourCC = "));
 	if (this->fourcc < 1024)

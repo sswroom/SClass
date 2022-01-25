@@ -96,7 +96,7 @@ UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return ret;
 }
 
-Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 {
 	//return GetDataTextH(0, fmtId, sb, 0);
 	return false;
@@ -198,7 +198,7 @@ void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileName
 	}
 }
 
-Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF *sb, UInt32 tymed)
+Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
@@ -312,7 +312,7 @@ Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 	return false;
 }
 
-Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)

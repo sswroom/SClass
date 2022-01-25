@@ -17,7 +17,7 @@ void SSWR::ProcMonForm::AddProg(const UTF8Char *progName, const UTF8Char *progPa
 	prog->procId = 0;
 	if (progPath)
 	{
-		prog->progPath = Text::StrCopyNew(progPath);
+		prog->progPath = Text::String::NewNotNull(progPath);
 	}
 	else
 	{
@@ -41,8 +41,8 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 	UOSInt i;
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
-	i = Text::StrLastIndexOfChar(prog->progPath, IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath[i + 1]);
+	i = prog->progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath->v[i + 1]);
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -79,8 +79,8 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 		Text::StringBuilderUTF8 sb;
 		if (proc.GetFilename(&sb))
 		{
-			SDEL_TEXT(prog->progPath);
-			prog->progPath = Text::StrCopyNew(sb.ToString());
+			SDEL_STRING(prog->progPath);
+			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength());
 			prog->procId = procId;
 			this->txtProgPath->SetText(sb.ToString());
 			this->SaveProgList();
@@ -165,7 +165,7 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem();
 	if (prog && prog->progPath)
 	{
-		me->txtProgPath->SetText(prog->progPath);
+		me->txtProgPath->SetText(prog->progPath->v);
 	}
 	else
 	{
@@ -261,7 +261,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 			{
 				if (!me->SearchProcId(prog))
 				{
-					Manage::Process proc(prog->progPath);
+					Manage::Process proc(prog->progPath->v);
 					if (proc.IsRunning())
 					{
 						prog->procId = proc.GetProcId();
@@ -370,7 +370,7 @@ SSWR::ProcMonForm::~ProcMonForm()
 	while (i-- > 0)
 	{
 		prog = this->progList->GetItem(i);
-		SDEL_TEXT(prog->progPath);
+		SDEL_STRING(prog->progPath);
 		SDEL_TEXT(prog->progName);
 		MemFree(prog);
 	}

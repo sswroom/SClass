@@ -1,33 +1,389 @@
 #ifndef _SM_TEXT_STRINGBUILDERUTF8
 #define _SM_TEXT_STRINGBUILDERUTF8
-#include "Text/StringBuilder.h"
-#include "Text/StringBuilderUTF.h"
+#include "MyMemory.h"
+#include "Data/DateTime.h"
+#include "Text/LineBreakType.h"
+#include "Text/PString.h"
 
 namespace Text
 {
-	class StringBuilderUTF8 : public Text::StringBuilderUTFText<UTF8Char>
+	class StringBuilderUTF8 : public Text::PString
 	{
+	private:
+		UOSInt buffSize;
 	public:
-		StringBuilderUTF8();
-		virtual ~StringBuilderUTF8();
+		StringBuilderUTF8()
+		{
+			this->v = MemAlloc(UTF8Char, this->buffSize = 1024);
+			this->leng = 0;
+			this->v[0] = 0;
+		}
 
-		virtual StringBuilderUTF *Append(Text::PString *s);
-		virtual StringBuilderUTF *Append(const UTF8Char *s);
-		virtual StringBuilderUTF *AppendC(const UTF8Char *s, UOSInt charCnt);
-		virtual StringBuilderUTF *AppendS(const UTF8Char *s, UOSInt maxLen);
-		virtual StringBuilderUTF *AppendChar(UTF32Char c, UOSInt repCnt);
+		~StringBuilderUTF8()
+		{
+			MemFree(this->v);
+		}
+
+		void AllocLeng(UOSInt leng)
+		{
+			if (leng + this->leng + 1 > this->buffSize)
+			{
+				this->buffSize <<= 1;
+				while (leng + this->leng + 1 > this->buffSize)
+				{
+					this->buffSize <<= 1;
+				}
+				UTF8Char *newStr = MemAlloc(UTF8Char, this->buffSize);
+				MemCopyNO(newStr, this->v, this->leng + 1);
+				MemFree(this->v);
+				this->v = newStr;
+			}
+		}
+
+		StringBuilderUTF8 *Append(Text::StringBase<UTF8Char> *s);
+		StringBuilderUTF8 *Append(Text::StringBase<const UTF8Char> *s);
+		StringBuilderUTF8 *Append(const UTF8Char *s);
+		StringBuilderUTF8 *AppendC(const UTF8Char *s, UOSInt charCnt);
+		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);
+		StringBuilderUTF8 *AppendChar(UTF32Char c, UOSInt repCnt);
 		StringBuilderUTF8 *AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
 
+		StringBuilderUTF8 *AppendI16(Int16 iVal)
+		{
+			this->AllocLeng(6);
+			this->leng = (UOSInt)(Text::StrInt16(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendU16(UInt16 iVal)
+		{
+			this->AllocLeng(5);
+			this->leng = (UOSInt)(Text::StrUInt16(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendI32(Int32 iVal)
+		{
+			this->AllocLeng(11);
+			this->leng = (UOSInt)(Text::StrInt32(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendU32(UInt32 iVal)
+		{
+			this->AllocLeng(10);
+			this->leng = (UOSInt)(Text::StrUInt32(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendI64(Int64 iVal)
+		{
+			this->AllocLeng(22);
+			this->leng = (UOSInt)(Text::StrInt64(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendU64(UInt64 iVal)
+		{
+			this->AllocLeng(20);
+			this->leng = (UOSInt)(Text::StrUInt64(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendDouble(Double dVal)
+		{
+			this->AllocLeng(32);
+			this->leng = (UOSInt)(Text::StrDouble(&this->v[this->leng], dVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendDate(Data::DateTime *dt)
+		{
+			this->AllocLeng(19);
+			this->leng = (UOSInt)(dt->ToString(&this->v[this->leng], "yyyy-MM-dd HH:mm:ss") - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendOSInt(OSInt iVal)
+		{
+	#if _OSINT_SIZE == 64
+			this->AllocLeng(22);
+			this->leng = (UOSInt)(Text::StrInt64(&this->v[this->leng], iVal) - this->v);
+	#else
+			this->AllocLeng(11);
+			this->leng = (UOSInt)(Text::StrInt32(&this->v[this->leng], (Int32)iVal) - this->v);
+	#endif
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendUOSInt(UOSInt iVal)
+		{
+	#if _OSINT_SIZE == 64
+			this->AllocLeng(22);
+			this->leng = (UOSInt)(Text::StrUInt64(&this->v[this->leng], iVal) - this->v);
+	#else
+			this->AllocLeng(11);
+			this->leng = (UOSInt)(Text::StrUInt32(&this->v[this->leng], (UInt32)iVal) - this->v);
+	#endif
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendSB(Text::StringBuilderUTF8 *sb)
+		{
+			return Append(sb);
+		}
+
+		StringBuilderUTF8 *AppendHex8(UInt8 iVal)
+		{
+			this->AllocLeng(2);
+			this->leng = (UOSInt)(Text::StrHexByte(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex16(UInt16 iVal)
+		{
+			this->AllocLeng(4);
+			this->leng = (UOSInt)(Text::StrHexVal16(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex24(UInt32 iVal)
+		{
+			this->AllocLeng(6);
+			this->leng = (UOSInt)(Text::StrHexVal24(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex32(UInt32 iVal)
+		{
+			this->AllocLeng(8);
+			this->leng = (UOSInt)(Text::StrHexVal32(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex32V(UInt32 iVal)
+		{
+			this->AllocLeng(8);
+			this->leng = (UOSInt)(Text::StrHexVal32V(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex64(UInt64 iVal)
+		{
+			this->AllocLeng(16);
+			this->leng = (UOSInt)(Text::StrHexVal64(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHex64V(UInt64 iVal)
+		{
+			this->AllocLeng(16);
+			this->leng = (UOSInt)(Text::StrHexVal64V(&this->v[this->leng], iVal) - this->v);
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendHexOS(UOSInt iVal)
+		{
+		#if _OSINT_SIZE == 64
+			return AppendHex64(iVal);
+		#elif _OSINT_SIZE == 32
+			return AppendHex32((UInt32)iVal);
+		#elif _OSINT_SIZE == 16
+			return AppendHex16((Int32)iVal);
+		#endif
+		}
+
+		StringBuilderUTF8 *AppendHexBuff(const UInt8 *buff, UOSInt buffSize, UTF8Char seperator, Text::LineBreakType lineBreak)
+		{
+			if (buffSize == 0)
+				return this;
+			UOSInt lbCnt;
+			OSInt i;
+			if (lineBreak == LineBreakType::None)
+			{
+				lbCnt = 0;
+			}
+			else
+			{
+				lbCnt = (buffSize >> 4);
+				if ((buffSize & 15) == 0)
+					lbCnt -= 1;
+				if (lineBreak == LineBreakType::CRLF)
+					lbCnt = lbCnt << 2;
+			}
+			i = 0;
+			if (seperator == 0)
+			{
+				this->AllocLeng((buffSize << 1) + lbCnt);
+				UTF8Char *buffEnd = &this->v[this->leng];
+				this->leng += (buffSize << 1) + lbCnt;
+				while (buffSize-- > 0)
+				{
+					buffEnd[0] = (UTF8Char)MyString_STRHEXARR[*buff >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRHEXARR[*buff & 15];
+					buffEnd += 2;
+					buff++;
+					i++;
+					if ((i & 15) == 0 && buffSize > 0)
+					{
+						if (lineBreak == LineBreakType::CRLF)
+						{
+							WriteNUInt16(buffEnd, ReadNUInt16("\r\n"));
+							buffEnd += 2;
+						}
+						else if (lineBreak == LineBreakType::CR)
+						{
+							*buffEnd++ = '\r';
+						}
+						else if (lineBreak == LineBreakType::LF)
+						{
+							*buffEnd++ = '\n';
+						}
+					}
+				}
+				buffEnd[0] = 0;
+			}
+			else
+			{
+				this->AllocLeng(buffSize * 3 + lbCnt - 1);
+				UTF8Char *buffEnd = &this->v[this->leng];
+				this->leng += buffSize * 3 + lbCnt - 1;
+				while (buffSize-- > 0)
+				{
+					buffEnd[0] = (UTF8Char)MyString_STRHEXARR[*buff >> 4];
+					buffEnd[1] = (UTF8Char)MyString_STRHEXARR[*buff & 15];
+					buffEnd[2] = seperator;
+					buffEnd += 3;
+					buff++;
+					i++;
+					if ((i & 15) == 0 && buffSize > 0)
+					{
+						if (lineBreak == LineBreakType::CRLF)
+						{
+							WriteNUInt16(buffEnd, ReadNUInt16("\r\n"));
+							buffEnd += 2;
+						}
+						else if (lineBreak == LineBreakType::CR)
+						{
+							*buffEnd++ = '\r';
+						}
+						else if (lineBreak == LineBreakType::LF)
+						{
+							*buffEnd++ = '\n';
+						}
+					}
+				}
+				*--buffEnd = 0;
+			}
+			return this;
+		}
+		StringBuilderUTF8 *AppendLB(Text::LineBreakType lbt)
+		{
+			switch (lbt)
+			{
+ 			case Text::LineBreakType::CRLF:
+				return AppendC(UTF8STRC("\r\n"));
+			case Text::LineBreakType::CR:
+				return AppendChar('\r', 1);
+			case Text::LineBreakType::LF:
+				return AppendChar('\n', 1);
+			case Text::LineBreakType::None:
+			default:
+				return this;
+			}
+		}
 		StringBuilderUTF8 *AppendCSV(const UTF8Char **sarr, UOSInt nStr);
-		StringBuilderUTF8 *AppendToUpper(const UTF8Char *s);
-		StringBuilderUTF8 *AppendToLower(const UTF8Char *s);
+		StringBuilderUTF8 *AppendToUpper(const UTF8Char *s, UOSInt len);
+		StringBuilderUTF8 *AppendToLower(const UTF8Char *s, UOSInt len);
 		StringBuilderUTF8 *RemoveANSIEscapes();
-		Bool EqualsC(const UTF8Char *s, UOSInt len);
-		Bool EqualsICaseC(const UTF8Char *s, UOSInt len);
-		Bool StartsWithC(const UTF8Char *s, UOSInt len);
-		UOSInt IndexOfC(const UTF8Char *s, UOSInt len);
-		void TrimC();
-		void TrimC(UOSInt index);
+
+		StringBuilderUTF8 *SetSubstr(UOSInt index)
+		{
+			if (index >= this->leng)
+			{
+				this->leng = 0;
+				this->v[0] = 0;
+			}
+			else if (index > 0)
+			{
+				MemCopyO(this->v, &this->v[index], this->leng - index + 1);
+				this->leng -= index;
+			}
+			return this;
+		}
+
+		UOSInt ReplaceStr(const UTF8Char *fromStr, UOSInt fromLen, const UTF8Char *toStr, UOSInt toLen)
+		{
+			UOSInt changeCnt;
+			if (fromLen >= toLen)
+			{
+				changeCnt = Text::StrReplace(this->v, fromStr, toStr);
+				this->leng += (UOSInt)((OSInt)changeCnt * (OSInt)(toLen - fromLen));
+			}
+			else
+			{
+				UOSInt i;
+				UOSInt j;
+				changeCnt = 0;
+				i = 0;
+				while (true)
+				{
+					j = Text::StrIndexOfC(&this->v[i], this->leng - i, fromStr, fromLen);
+					if (j == INVALID_INDEX)
+						break;
+					i += j + fromLen;
+					changeCnt++;
+				}
+				if (changeCnt > 0)
+				{
+					this->AllocLeng(this->leng + (toLen - fromLen) * changeCnt);
+					changeCnt = Text::StrReplace(this->v, fromStr, toStr);
+					this->leng += changeCnt * (toLen - fromLen);
+				}
+			}
+			return changeCnt;
+		}
+
+		void ClearStr()
+		{
+			this->leng = 0;
+			this->v[0] = 0;
+		}
+
+		UTF8Char *ToString()
+		{
+			return this->v;
+		}
+
+		UOSInt GetLength()
+		{
+			return this->leng;
+		}
+
+		UOSInt GetCharCnt()
+		{
+			return this->leng;
+		}
+
+		UTF8Char *GetEndPtr()
+		{
+			return &this->v[this->leng];
+		}
+
+		void SetEndPtr(UTF8Char *endPtr)
+		{
+			this->leng = (UOSInt)(endPtr - this->v);
+		}
  	};
+
+	FORCEINLINE void SBAppendF32(Text::StringBuilderUTF8 *sb, Single v)
+	{
+		sb->AppendDouble(v);
+	}	
+
+	FORCEINLINE void SBAppendF64(Text::StringBuilderUTF8 *sb, Double v)
+	{
+		sb->AppendDouble(v);
+	}	
 }
 #endif

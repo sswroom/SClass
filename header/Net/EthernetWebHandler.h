@@ -15,9 +15,9 @@ namespace Net
 		Net::EthernetAnalyzer *analyzer;
 		Data::FastStringMap<RequestHandler> *reqMap;
 
-		static void AppendHeader(Text::StringBuilderUTF *sbOut);
-		void AppendMenu(Text::StringBuilderUTF *sbOut);
-		static void AppendFooter(Text::StringBuilderUTF *sbOut);
+		static void AppendHeader(Text::StringBuilderUTF8 *sbOut);
+		void AppendMenu(Text::StringBuilderUTF8 *sbOut);
+		static void AppendFooter(Text::StringBuilderUTF8 *sbOut);
 
 		static Bool __stdcall DeviceReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 		static Bool __stdcall IPTransferReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);

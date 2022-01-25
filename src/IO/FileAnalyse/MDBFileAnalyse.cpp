@@ -5,6 +5,7 @@
 #include "IO/FileAnalyse/MDBFileAnalyse.h"
 #include "Sync/Thread.h"
 #include "Text/MyStringFloat.h"
+#include "Text/MyStringW.h"
 #include "Text/XLSUtil.h"
 
 UInt32 __stdcall IO::FileAnalyse::MDBFileAnalyse::ParseThread(void *userObj)
@@ -103,7 +104,7 @@ UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
 	return this->packs->GetCount();
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::MDBFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::MDBFileAnalyse::PackInfo *pack;
 	pack = this->packs->GetItem(index);

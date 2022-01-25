@@ -890,7 +890,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
@@ -899,7 +899,7 @@ Int32 __stdcall DasmX86_32_GetFuncStack(Manage::DasmX86_32::DasmX86_32_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			MemFree(buff);
@@ -19256,7 +19256,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 			buffSize = sess.memReader->ReadMemory(sess.regs.EIP, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHex(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->AppendC(UTF8STRC("\r\n"));
 			writer->WriteStrC(outStr->ToString(), outStr->GetLength());

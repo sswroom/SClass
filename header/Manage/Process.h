@@ -5,7 +5,7 @@
 #include "Manage/IMemoryReader.h"
 #include "Manage/ModuleInfo.h"
 #include "Manage/ThreadInfo.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Manage
 {
@@ -58,7 +58,7 @@ namespace Manage
 		Bool IsRunning();
 		Bool Kill();
 		WChar *GetFilename(WChar *buff);
-		Bool GetFilename(Text::StringBuilderUTF *sb);
+		Bool GetFilename(Text::StringBuilderUTF8 *sb);
 		UOSInt GetMemorySize();
 		Bool SetMemorySize(UOSInt minSize, UOSInt maxSize);
 		UOSInt GetThreadIds(Data::ArrayList<UInt32> *threadList);
@@ -96,9 +96,9 @@ namespace Manage
 		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
-		static Int32 ExecuteProcess(Text::PString *cmdLine, Text::StringBuilderUTF *result);
-		static Int32 ExecuteProcess(const UTF8Char *cmdLine, UOSInt cmdLen, Text::StringBuilderUTF *result);
-		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF *result);
+		static Int32 ExecuteProcess(Text::PString *cmdLine, Text::StringBuilderUTF8 *result);
+		static Int32 ExecuteProcess(const UTF8Char *cmdLine, UOSInt cmdLen, Text::StringBuilderUTF8 *result);
+		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF8 *result);
 		static Bool IsAlreadyStarted();
 		static Bool OpenPath(const UTF8Char *path);
 		static Bool OpenPathW(const WChar *path);

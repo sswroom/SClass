@@ -43,8 +43,8 @@ namespace Map
 			virtual ~GPSExtraParser() {};
 			
 			virtual UOSInt GetExtraCount(const UInt8 *buff, UOSInt buffSize) = 0;
-			virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF *sb) = 0;
-			virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF *sb) = 0;
+			virtual Bool GetExtraName(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF8 *sb) = 0;
+			virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF8 *sb) = 0;
 		};
 	private:
 		UInt32 codePage;
@@ -121,8 +121,8 @@ namespace Map
 		void SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize);
 		const UInt8 *GetExtraData(UOSInt trackIndex, UOSInt recIndex, UOSInt *dataSize);
 		UOSInt GetExtraCount(UOSInt trackIndex, UOSInt recIndex);
-		Bool GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF *sb);
-		Bool GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF *sb);
+		Bool GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF8 *sb);
+		Bool GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF8 *sb);
 	};
 
 	class GPSTrackReader : public Map::MapLayerReader
@@ -153,7 +153,7 @@ namespace Map
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal);

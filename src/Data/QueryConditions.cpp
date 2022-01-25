@@ -52,7 +52,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::TimeBetweenCondition
 	return ConditionType::TimeBetween;
 }
 
-Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::TimeBetweenCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	Data::DateTime dt;
@@ -116,7 +116,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int32Condition::GetT
 	return ConditionType::INT32;
 }
 
-Bool Data::QueryConditions::Int32Condition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32Condition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
@@ -222,7 +222,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::Int32InCondition::Ge
 	return ConditionType::Int32In;
 }
 
-Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (this->vals->GetCount() > maxDBItem)
 	{
@@ -313,7 +313,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::DoubleCondition::Get
 	return ConditionType::DOUBLE;
 }
 
-Bool Data::QueryConditions::DoubleCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::DoubleCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
@@ -411,7 +411,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringInCondition::G
 	return ConditionType::StringIn;
 }
 
-Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (this->vals->GetCount() > maxDBItem || this->vals->GetCount() == 0)
 	{
@@ -522,7 +522,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringContainsCondit
 	return ConditionType::StringContains;
 }
 
-Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
@@ -592,7 +592,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsConditio
 	return ConditionType::StringEquals;
 }
 
-Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
@@ -657,7 +657,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::BooleanCondition::Ge
 	return ConditionType::Boolean;
 }
 
-Bool Data::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::BooleanCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	if (!this->val)
 	{
@@ -734,7 +734,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::NotNullCondition::Ge
 	return ConditionType::NotNull;
 }
 
-Bool Data::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::NotNullCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	UTF8Char sbuff[512];
 	DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
@@ -787,7 +787,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::InnerCondition::GetT
 	return ConditionType::Inner;
 }
 
-Bool Data::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	Data::ArrayList<Condition*> clientConditions;
 	Text::StringBuilderUTF8 sbTmp;
@@ -838,7 +838,7 @@ Data::QueryConditions::ConditionType Data::QueryConditions::OrCondition::GetType
 	return ConditionType::Or;
 }
 
-Bool Data::QueryConditions::OrCondition::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
+Bool Data::QueryConditions::OrCondition::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem)
 {
 	sb->AppendC(UTF8STRC(" or "));
 	return true;
@@ -879,7 +879,7 @@ Bool Data::QueryConditions::IsValid(Data::ObjectGetter *getter)
 	return ObjectValid(getter, this->conditionList);
 }
 
-Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
+Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType, Int8 tzQhr, UOSInt maxDBItem, Data::ArrayList<Condition*> *clientConditions)
 {
 	Text::StringBuilderUTF8 sbTmp;
 	Bool hasOr = false;

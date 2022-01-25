@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		sb.AppendC(UTF8STRC(":"));
 		sb.AppendU32(me->packets[i].port);
 		sb.AppendC(UTF8STRC("\r\nData:\r\n"));
-		sb.AppendHex(me->packets[i].buff, me->packets[i].buffSize, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(me->packets[i].buff, me->packets[i].buffSize, ' ', Text::LineBreakType::CRLF);
 		mutUsage.EndUse();
 		me->txtData->SetText(sb.ToString());
 	}

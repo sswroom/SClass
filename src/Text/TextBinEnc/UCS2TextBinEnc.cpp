@@ -12,7 +12,7 @@ Text::TextBinEnc::UCS2TextBinEnc::~UCS2TextBinEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::UCS2TextBinEnc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	if (buffSize & 1)
 		return 0;

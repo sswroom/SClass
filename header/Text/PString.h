@@ -5,7 +5,17 @@ namespace Text
 {
 	struct PString : public StringBase<UTF8Char>
 	{
+		void Trim();
+		void Trim(UOSInt index);
 		void RTrim();
+		void TrimWSCRLF();
+		void TrimToLength(UOSInt newLen);
+		void RemoveChars(UOSInt cnt);
+		void RemoveChars(UOSInt index, UOSInt cnt);
+		void ToUpper();
+		void ToLower();
+		void ToCapital();
+		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
 	};
 
 	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized

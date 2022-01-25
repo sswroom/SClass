@@ -75,7 +75,7 @@ namespace Net
 		Text::String *GetGenerator();
 		Text::String *GetDocs();
 
-		static void GetYoutubeURL(const UTF8Char *channelId, Text::StringBuilderUTF *outURL);
+		static void GetYoutubeURL(const UTF8Char *channelId, Text::StringBuilderUTF8 *outURL);
 	};
 }
 #endif

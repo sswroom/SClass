@@ -123,7 +123,7 @@ UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
 	return Text::StrConcat(buff, (const UTF8Char*)lbl);
 }
 
-Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
 {
 	gchar *lbl = gtk_combo_box_text_get_active_text(GTK_COMBO_BOX_TEXT((GtkWidget*)this->hwnd));
 	sb->Append((const UTF8Char*)lbl);

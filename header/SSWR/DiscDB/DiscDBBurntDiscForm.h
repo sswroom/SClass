@@ -36,7 +36,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				const UTF8Char *fname;
+				Text::String *fname;
 				UInt64 fSize;
 				const UTF8Char *cate;
 				Int32 videoId;

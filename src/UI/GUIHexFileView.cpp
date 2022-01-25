@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
 #include "Text/CharUtil.h"
+#include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "UI/GUIHexFileView.h"
 
 UI::GUIHexFileView::GUIHexFileView(UI::GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng) : UI::GUITextView(ui, parent, deng)
@@ -540,7 +542,7 @@ const UTF8Char *UI::GUIHexFileView::GetAnalyzerName()
 	return 0;
 }
 
-Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF *sb)
+Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF8 *sb)
 {
 	if (this->analyse == 0)
 	{

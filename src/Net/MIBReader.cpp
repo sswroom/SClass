@@ -15,7 +15,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	UOSInt k;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
-		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
+		i = sb->IndexOf(UTF8STRC("*/"), initSize);
 		if (i == INVALID_INDEX)
 		{
 			sb->TrimToLength(initSize);
@@ -26,7 +26,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	}
 	else if (this->escapeType == ET_STRING)
 	{
-		i = sb->IndexOf((const UTF8Char*)"\"", initSize);
+		i = sb->IndexOf(UTF8STRC("\""), initSize);
 		if (i == INVALID_INDEX)
 		{
 			return true;
@@ -36,9 +36,9 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	}
 	while (true)
 	{
-		i = sb->IndexOf((const UTF8Char*)"--", initSize);
-		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
-		k = sb->IndexOf((const UTF8Char*)"\"", initSize);
+		i = sb->IndexOf(UTF8STRC("--"), initSize);
+		j = sb->IndexOf(UTF8STRC("/*"), initSize);
+		k = sb->IndexOf(UTF8STRC("\""), initSize);
 		if (i == INVALID_INDEX && j == INVALID_INDEX && k == INVALID_INDEX)
 		{
 			break;
@@ -46,7 +46,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 
 		if (i != INVALID_INDEX && (j == INVALID_INDEX || j > i) && (k == INVALID_INDEX || k > i))
 		{
-			UOSInt j = sb->IndexOf((const UTF8Char*)"--", i + 2);
+			UOSInt j = sb->IndexOf(UTF8STRC("--"), i + 2);
 			if (j != INVALID_INDEX)
 			{
 				sb->RemoveChars(i, (j - i + 2));
@@ -60,7 +60,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 		}
 		else if (j != INVALID_INDEX && (k == INVALID_INDEX || k > j))
 		{
-			i = sb->IndexOf((const UTF8Char*)"*/", j + 2);
+			i = sb->IndexOf(UTF8STRC("*/"), j + 2);
 			if (i != INVALID_INDEX)
 			{
 				sb->RemoveChars(j, (i - j + 2));
@@ -74,7 +74,7 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 		}
 		else
 		{
-			i = sb->IndexOf((const UTF8Char*)"\"", k + 1);
+			i = sb->IndexOf(UTF8STRC("\""), k + 1);
 			if (i != INVALID_INDEX)
 			{
 				initSize = i + 1;
@@ -86,11 +86,11 @@ Bool Net::MIBReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 			}
 		}
 	}
-	sb->TrimRight();
+	sb->RTrim();
 	return true;
 }
 
-Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
+Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine->GetCharCnt())
 	{
@@ -271,12 +271,12 @@ Net::MIBReader::~MIBReader()
 	DEL_CLASS(this->reader);
 }
 
-Bool Net::MIBReader::PeekWord(Text::StringBuilderUTF *sb)
+Bool Net::MIBReader::PeekWord(Text::StringBuilderUTF8 *sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Net::MIBReader::NextWord(Text::StringBuilderUTF *sb)
+Bool Net::MIBReader::NextWord(Text::StringBuilderUTF8 *sb)
 {
 	return ReadWord(sb, true);
 }
@@ -295,7 +295,7 @@ Bool Net::MIBReader::ReadLine(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Net::MIBReader::GetLastLineBreak(Text::StringBuilderUTF *sb)
+Bool Net::MIBReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
 	return this->reader->GetLastLineBreak(sb);
 }

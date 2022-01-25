@@ -283,7 +283,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	if (req->GetHeaderC(&sb2, UTF8STRC("Range")))
 	{
 		UInt64 fileSize = sizeLeft;
-		if (!sb2.StartsWithC(UTF8STRC("bytes=")))
+		if (!sb2.StartsWith(UTF8STRC("bytes=")))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 			resp->AddDefHeaders(req);

@@ -41,11 +41,11 @@ namespace DB
 		virtual ConnType GetConnType();
 		virtual Int8 GetTzQhr();
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(Text::StringBuilderUTF *sb);
+		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);
 //		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
+		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
 		virtual void Reconnect();
 
@@ -80,7 +80,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal);

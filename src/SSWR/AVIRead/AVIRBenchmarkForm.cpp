@@ -342,7 +342,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(result->testSize);
 			sb.AppendC(UTF8STRC("\t"));
-			Text::SBAppendF64(&sb, result->resultRate);
+			sb.AppendDouble(result->resultRate);
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}

@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509CertReq::GetFileType()
 	return FileType::CertRequest;
 }
 
-void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509CertReq::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -41,7 +41,7 @@ Net::ASN1Data *Crypto::Cert::X509CertReq::Clone()
 	return asn1;
 }
 
-void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509CertReq::ToString(Text::StringBuilderUTF8 *sb)
 {
 	if (IsCertificateRequest(this->buff, this->buff + this->buffSize, "1"))
 	{

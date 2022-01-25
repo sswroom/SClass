@@ -97,7 +97,7 @@ void SSWR::OrganMgr::OrganBook::SetURL(const UTF8Char *url)
 	this->url = Text::StrCopyNew(url);
 }
 
-void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF *sb)
+void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendI32(this->id);;
 	sb->AppendC(UTF8STRC(": "));

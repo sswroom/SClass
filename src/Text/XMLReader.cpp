@@ -161,7 +161,7 @@ Text::XMLReader::~XMLReader()
 	SDEL_CLASS(this->enc);
 }
 
-void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF *sb)
+void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt i = 0;
 	UOSInt j = this->pathList->GetCount();
@@ -1585,7 +1585,7 @@ Bool Text::XMLReader::ReadNext()
 	}
 }
 
-Bool Text::XMLReader::ReadNodeText(Text::StringBuilderUTF *sb)
+Bool Text::XMLReader::ReadNodeText(Text::StringBuilderUTF8 *sb)
 {
 	if (this->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 	{
@@ -1667,7 +1667,7 @@ OSInt Text::XMLReader::GetErrorCode()
 	return this->parseError;
 }
 
-Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
+Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt i;
 	UOSInt j;
@@ -1771,7 +1771,7 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF *sb)
 	return false;
 }
 
-Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::XMLReader::XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	Text::XMLReader *reader;
 	Bool toWrite;

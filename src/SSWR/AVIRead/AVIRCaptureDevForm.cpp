@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 			}
 			devInfo.AppendC(UTF8STRC(")"));
 			devInfo.AppendC(UTF8STRC(" "));
-			Text::SBAppendF64(&devInfo, cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
+			devInfo.AppendDouble(cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
 			devInfo.AppendC(UTF8STRC(" fps\r\n"));
 
 			i++;

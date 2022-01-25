@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Text/JavaText.h"
 
-void Text::JavaText::ToJavaName(Text::StringBuilderUTF *sb, const UTF8Char *usName, Bool isClass)
+void Text::JavaText::ToJavaName(Text::StringBuilderUTF8 *sb, const UTF8Char *usName, Bool isClass)
 {
 	UTF8Char c;
 	while ((c = *usName++) != 0)

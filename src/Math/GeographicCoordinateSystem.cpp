@@ -100,7 +100,7 @@ Bool Math::GeographicCoordinateSystem::IsProjected()
 	return false;
 }
 
-void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
+void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("Geographic File Name: "));
 	sb->Append(this->sourceName);

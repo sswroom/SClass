@@ -20,7 +20,7 @@ typedef struct
 	const UTF8Char *platformSN;
 } SystemInfoData;
 
-Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF *sb)
+Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
 	IO::FileStream *fs;

@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "IO/FileAnalyse/SBFrameDetail.h"
 
-IO::FileAnalyse::SBFrameDetail::SBFrameDetail(Text::StringBuilderUTF *sb)
+IO::FileAnalyse::SBFrameDetail::SBFrameDetail(Text::StringBuilderUTF8 *sb)
 {
 	this->sb = sb;
 }

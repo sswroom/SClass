@@ -734,7 +734,7 @@ WChar *IO::StreamReader::ReadLine(WChar *buff, UOSInt maxCharCnt)
 	return 0;
 }
 
-Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt)
+Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 {
 	WChar *wptr = MemAlloc(WChar, maxCharCnt + 1);
 	WChar *end = ReadLine(wptr, maxCharCnt);
@@ -769,7 +769,7 @@ UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
 	return buff;
 }
 
-Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF *sb)
+Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
 	if (this->lineBreak == 1)
 	{
@@ -825,7 +825,7 @@ WChar *IO::StreamReader::ReadToEnd(WChar *buff)
 	return dest;
 }
 
-Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF *sb)
+Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
 	WChar *wptr = MemAlloc(WChar, 4096);

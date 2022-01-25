@@ -102,7 +102,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 512))
 			{
-				if (sb.StartsWith((const UTF8Char*)"##0018"))
+				if (sb.StartsWith(UTF8STRC("##0018")))
 				{
 					sb.ClearStr();
 					reader->ReadLine(&sb, 512);

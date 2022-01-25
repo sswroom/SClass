@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_JSTEXT
 #define _SM_TEXT_JSTEXT
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -10,7 +10,7 @@ namespace Text
 	public:
 		static UTF8Char *ToJSText(UTF8Char *buff, const UTF8Char *s);
 		static UTF8Char *ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s);
-		static void ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s);
+		static void ToJSTextDQuote(Text::StringBuilderUTF8 *sb, const UTF8Char *s);
 		static WChar *ToJSText(WChar *buff, const WChar *s);
 		static WChar *ToJSTextDQuote(WChar *buff, const WChar *s);
 		static Text::String *ToNewJSText(Text::String *s);
@@ -22,8 +22,8 @@ namespace Text
 		static const WChar *FromNewJSText(const WChar *s);
 		static void FreeNewText(const WChar *s);
 
-		static Bool JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb);
-		static Bool JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb);
+		static Bool JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb);
+		static Bool JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

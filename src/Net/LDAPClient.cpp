@@ -804,7 +804,7 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 	MemFree(obj);
 }
 
-void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF *sb)
+void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt typeLen = Text::StrCharCnt(type);
 	if (Text::StrEqualsC(type, typeLen, UTF8STRC("objectGUID")) || Text::StrEndsWithC(type, typeLen, UTF8STRC("Guid")))

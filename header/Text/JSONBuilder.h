@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_JSONBUILDER
 #define _SM_TEXT_JSONBUILDER
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -14,7 +14,7 @@ namespace Text
 			OT_ARRAY
 		} ObjectType;
 	private:
-		Text::StringBuilderUTF *sb;
+		Text::StringBuilderUTF8 *sb;
 		Data::ArrayList<ObjectType> *objTypes;
 		ObjectType currType;
 		Bool isFirst;
@@ -22,7 +22,7 @@ namespace Text
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 	public:
-		JSONBuilder(Text::StringBuilderUTF *sb, ObjectType rootType);
+		JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType);
 		~JSONBuilder();
 
 		Bool ArrayAddInt32(Int32 val);

@@ -4,7 +4,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/LogTool.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {
@@ -25,13 +25,13 @@ namespace DB
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
 		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
+		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 		void FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 
-		static void BuildURL(Text::StringBuilderUTF *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port);
+		static void BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port);
 	};
 
 	class MongoDBReader : public DB::DBReader
@@ -54,7 +54,7 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal);

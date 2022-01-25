@@ -2,7 +2,7 @@
 #define _SM_MEDIA_FRAMEINFO
 #include "MyMemory.h"
 #include "Media/ColorProfile.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -120,7 +120,7 @@ namespace Media
 		void Deinit();
 		void Clear();
 		void Set(const FrameInfo *info);
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 	};
 
 	const UTF8Char *FrameTypeGetName(FrameType frameType);

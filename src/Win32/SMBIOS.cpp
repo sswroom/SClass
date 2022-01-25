@@ -342,7 +342,7 @@ Int32 Win32::SMBIOS::GetChassisType()
 	return ret;
 }
 
-Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
+Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 {
 	const Char *carr[32];
 	const UInt8 *dataBuff;
@@ -4237,7 +4237,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF *sb)
 	return true;
 }
 
-void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF *sb, Int32 family)
+void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF8 *sb, Int32 family)
 {
 	switch (family)
 	{
@@ -4881,7 +4881,7 @@ void Win32::SMBIOS::GetProcessorFamily(Text::StringBuilderUTF *sb, Int32 family)
 	}
 }
 
-void Win32::SMBIOS::GetConnectorType(Text::StringBuilderUTF *sb, UInt8 type)
+void Win32::SMBIOS::GetConnectorType(Text::StringBuilderUTF8 *sb, UInt8 type)
 {
 	switch (type)
 	{

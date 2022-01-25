@@ -21,7 +21,7 @@ namespace SSWR
 		typedef struct
 		{
 			const UTF8Char *progName;
-			const UTF8Char *progPath;
+			Text::String *progPath;
 			UOSInt procId;
 		} ProgInfo;
 	private:

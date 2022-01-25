@@ -27,7 +27,7 @@ IO::ParserType Net::ASN1Data::GetParserType()
 	return IO::ParserType::ASN1Data;
 }
 
-Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF *sb)
+Bool Net::ASN1Data::ToASN1String(Text::StringBuilderUTF8 *sb)
 {
 	return Net::ASN1Util::PDUToString(this->buff, this->buff + this->buffSize, sb, 0);
 }
@@ -42,7 +42,7 @@ UOSInt Net::ASN1Data::GetASN1BuffSize()
 	return this->buffSize;
 }
 
-void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF *sb, const UInt8 *pdu, UOSInt len)
+void Net::ASN1Data::AppendInteger(Text::StringBuilderUTF8 *sb, const UInt8 *pdu, UOSInt len)
 {
 	if (len == 1)
 	{

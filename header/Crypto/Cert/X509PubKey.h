@@ -15,10 +15,10 @@ namespace Crypto
 			virtual ~X509PubKey();
 
 			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF *sb);
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
 
 			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF *sb);
+			virtual void ToString(Text::StringBuilderUTF8 *sb);
 			
 			Crypto::Cert::X509Key *CreateKey();
 

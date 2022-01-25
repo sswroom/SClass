@@ -11,7 +11,7 @@
 
 #define OBJECTPATH "obj"
 
-void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
+void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val)
 {
 	UTF8Char sbuff[64];
 	IO::SMake::ConfigItem *cfg;
@@ -53,7 +53,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val)
 	sb->AppendC(&val[i], (UOSInt)(valEnd - &val[i]));
 }
 
-void IO::SMake::AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path)
+void IO::SMake::AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path)
 {
 	UOSInt pathLen = Text::StrCharCnt(path);
 	if (Text::StrStartsWithC(path, pathLen, UTF8STRC("~/")))
@@ -76,7 +76,7 @@ void IO::SMake::AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path)
 	}
 }
 
-void IO::SMake::AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg)
+void IO::SMake::AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg)
 {
 	UOSInt i = Text::StrIndexOfChar(compileCfg, '`');
 	if (i != INVALID_INDEX)
@@ -185,13 +185,13 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 		{
 			if (prog)
 			{
-				sb.TrimC(1);
+				sb.Trim(1);
 				prog->subItems->Add(Text::String::New(sb.ToString() + 1, sb.GetLength() - 1));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
 		{
-			sb.TrimC(1);
+			sb.Trim(1);
 			Bool valid = true;
 			sptr1 = sb.ToString() + 1;
 			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("?(")))
@@ -202,7 +202,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 					sptr2 = &sptr1[i + 1];
 					sb2.ClearStr();
 					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
-					sb2.TrimC();
+					sb2.Trim();
 					sptr1 = sb2.ToString();
 					if ((i = Text::StrIndexOfC(sptr1, sb2.GetLength(), UTF8STRC(">="))) != INVALID_INDEX)
 					{
@@ -273,7 +273,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 		else if (sb.ToString()[0] == '$')
 		{
 			Bool valid = true;
-			sb.TrimC(1);
+			sb.Trim(1);
 			sptr1 = sb.ToString() + 1;
 			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("@(")))
 			{
@@ -317,7 +317,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				}
 			}
 		}
-		else if (sb.StartsWithC(UTF8STRC("export ")))
+		else if (sb.StartsWith(UTF8STRC("export ")))
 		{
 			cfg = cfgMap->Get(sb.ToString() + 7);
 			if (cfg)
@@ -326,7 +326,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				env.SetValue(cfg->name->v, cfg->value->v);
 			}
 		}
-		else if ((i = sb.IndexOfC(UTF8STRC("+="))) != INVALID_INDEX)
+		else if ((i = sb.IndexOf(UTF8STRC("+="))) != INVALID_INDEX)
 		{
 			sptr1 = sb.ToString();
 			sptr2 = &sptr1[i + 2];
@@ -363,7 +363,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				cfgMap->Put(cfg->name, cfg);
 			}
 		}
-		else if ((i = sb.IndexOfC(UTF8STRC(":"))) != INVALID_INDEX)
+		else if ((i = sb.IndexOf(UTF8STRC(":"))) != INVALID_INDEX)
 		{
 			if (sb.ToString()[i + 1] == '=')
 			{
@@ -453,13 +453,13 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				}
 			}
 		}
-		else if (sb.StartsWithC(UTF8STRC("include ")))
+		else if (sb.StartsWith(UTF8STRC("include ")))
 		{
 			if (IO::Path::PATH_SEPERATOR != '/')
 			{
 				sb.Replace('/', IO::Path::PATH_SEPERATOR);
 			}
-			sb.TrimC(8);
+			sb.Trim(8);
 			sptr1 = sb.ToString() + 8;
 			if (IO::Path::IsSearchPattern(sptr1))
 			{
@@ -538,10 +538,10 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 1024))
 	{
-		sb.TrimC();
-		if (sb.StartsWithC(UTF8STRC("#include")))
+		sb.Trim();
+		if (sb.StartsWith(UTF8STRC("#include")))
 		{
-			sb.TrimC(8);
+			sb.Trim(8);
 			sptr1 = sb.ToString() + 8;
 			if (sptr1[0] == '"')
 			{
@@ -1321,7 +1321,7 @@ Bool IO::SMake::IsLoadFailed()
 	return this->errorMsg != 0;
 }
 
-Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF *sb)
+Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF8 *sb)
 {
 	Bool ret;
 	Sync::MutexUsage mutUsage(this->errorMsgMut);

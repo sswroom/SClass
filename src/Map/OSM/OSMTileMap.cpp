@@ -337,7 +337,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	urlSb.AppendC(UTF8STRC(".png"));
 
 //	printf("Request URL: %s\r\n", urlSb.ToString());
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
@@ -545,7 +545,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	urlSb.AppendI32(imgY);
 	urlSb.AppendC(UTF8STRC(".png"));
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("OSMTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
 	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{

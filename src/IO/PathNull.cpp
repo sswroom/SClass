@@ -56,7 +56,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return 0;
 }
 
-Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)
+Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 {
 	return false;
 }

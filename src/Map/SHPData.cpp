@@ -702,7 +702,7 @@ void Map::SHPData::CloseReader(DB::DBReader *r)
 	this->dbf->CloseReader(r);
 }
 
-void Map::SHPData::GetErrorMsg(Text::StringBuilderUTF *str)
+void Map::SHPData::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	this->dbf->GetErrorMsg(str);
 

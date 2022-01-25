@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						bss = bssList.GetItem(i);
 
 						sb.AppendChar('|', 1);
-						sb.AppendHex(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
+						sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
 						sb.AppendChar('|', 1);
 						sb.Append(bss->GetSSID());
 						sb.AppendChar('|', 1);

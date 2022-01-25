@@ -5,7 +5,7 @@
 void Text::Cpp::CppParseStatus::FreeDefineInfo(Text::Cpp::CppParseStatus::DefineInfo *defInfo)
 {
 	Text::StrDelNew(defInfo->defineName);
-	SDEL_TEXT(defInfo->defineVal);
+	SDEL_STRING(defInfo->defineVal);
 	SDEL_TEXT(defInfo->defineParam);
 	MemFree(defInfo);
 }
@@ -136,11 +136,11 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 		{
 			defInfo->fileName = 0;
 			defInfo->lineNum = 0;
-			SDEL_TEXT(defInfo->defineVal);
+			SDEL_STRING(defInfo->defineVal);
 			SDEL_TEXT(defInfo->defineParam);
 			if (defVal)
 			{
-				defInfo->defineVal = Text::StrCopyNew(defVal);
+				defInfo->defineVal = Text::String::NewNotNull(defVal);
 			}
 			else
 			{
@@ -162,7 +162,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 		defInfo->lineNum = 0;
 		if (defVal)
 		{
-			defInfo->defineVal = Text::StrCopyNew(defVal);
+			defInfo->defineVal = Text::String::NewNotNull(defVal);
 		}
 		else
 		{
@@ -190,12 +190,12 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 		{
 			defInfo->fileName = fStatus->fileName;
 			defInfo->lineNum = fStatus->lineNum;
-			SDEL_TEXT(defInfo->defineVal);
+			SDEL_STRING(defInfo->defineVal);
 			SDEL_TEXT(defInfo->defineParam);
 			if (defVal)
 			{
-				defInfo->defineVal = Text::StrCopyNew(defVal);
-				Text::StrTrim((UTF8Char*)defInfo->defineVal);
+				defInfo->defineVal = Text::String::NewNotNull(defVal);
+				defInfo->defineVal->Trim();
 			}
 			else
 			{
@@ -236,8 +236,8 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 		defInfo->lineNum = fStatus->lineNum;
 		if (defVal)
 		{
-			defInfo->defineVal = Text::StrCopyNew(defVal);
-			Text::StrTrim((UTF8Char*)defInfo->defineVal);
+			defInfo->defineVal = Text::String::NewNotNull(defVal);
+			defInfo->defineVal->Trim();
 		}
 		else
 		{
@@ -272,7 +272,7 @@ Bool Text::Cpp::CppParseStatus::Undefine(const UTF8Char *defName)
 	return false;
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8Char *defParam, Text::StringBuilderUTF *sbOut)
+Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8Char *defParam, Text::StringBuilderUTF8 *sbOut)
 {
 	DefineInfo *defInfo = this->defines->Get(defName);
 	if (defInfo)
@@ -307,7 +307,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				sb2.ClearStr();
 				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb2.AppendC(UTF8STRC(" "));
-				sb.Replace(sb1.ToString(), sb2.ToString());
+				sb.ReplaceStr(sb1.ToString(), sb1.GetLength(), sb2.ToString(), sb2.GetLength());
 
 				sb1.ClearStr();
 				sb1.Append(defInfo->defineParam);
@@ -315,7 +315,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				sb2.ClearStr();
 				sb2.AppendC(UTF8STRC(" "));
 				sb2.AppendC(sb3.ToString(), sb3.GetLength());
-				sb.Replace(sb1.ToString(), sb2.ToString());
+				sb.ReplaceStr(sb1.ToString(), sb1.GetLength(), sb2.ToString(), sb2.GetLength());
 
 				sb1.ClearStr();
 				sb1.Append(defInfo->defineParam);
@@ -323,7 +323,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				sb2.AppendC(UTF8STRC(" "));
 				sb2.AppendC(sb3.ToString(), sb3.GetLength());
 				sb2.AppendC(UTF8STRC(" "));
-				sb.Replace(sb1.ToString(), sb2.ToString());
+				sb.ReplaceStr(sb1.ToString(), sb1.GetLength(), sb2.ToString(), sb2.GetLength());
 			}
 			sbOut->AppendC(sb.ToString(), sb.GetLength());
 			return true;

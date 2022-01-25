@@ -20,8 +20,8 @@ namespace IO
 		virtual ~UDPFileLog();
 
 		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel);
-		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF *sb, Text::LineBreakType lineBreak);
-		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF *sb);
+		virtual Bool GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak);
+		virtual Bool GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

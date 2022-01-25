@@ -24,7 +24,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType()
 	return FileType::Key;
 }
 
-void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 	sb->Append(KeyTypeGetName(this->keyType));
 	sb->AppendChar(' ', 1);
@@ -39,7 +39,7 @@ Net::ASN1Data *Crypto::Cert::X509Key::Clone()
 	return asn1;
 }
 
-void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509Key::ToString(Text::StringBuilderUTF8 *sb)
 {
 	Bool found = false;
 	if (this->keyType == KeyType::RSA)

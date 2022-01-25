@@ -1,6 +1,6 @@
 #ifndef _SM_NET_ASN1OIDDB
 #define _SM_NET_ASN1OIDDB
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -18,7 +18,7 @@ namespace Net
 		static OIDInfo oidList[];
 
 	public:
-		static void OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb);
+		static void OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb);
 		static OIDInfo *OIDGetEntry(const UInt8 *pdu, UOSInt pduSize);
 	};
 }

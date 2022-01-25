@@ -481,7 +481,7 @@ UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
 	return this->packs->GetCount();
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
 	pack = this->packs->GetItem(index);
@@ -519,7 +519,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	return true;
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::EBMLFileAnalyse::PackInfo *pack;
 	pack = this->packs->GetItem(index);

@@ -124,9 +124,9 @@ Manage::CPUInfo::CPUInfo()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWithC(UTF8STRC("model name")))
+			if (sb.StartsWith(UTF8STRC("model name")))
 			{
-				i = sb.IndexOfC(UTF8STRC(": "));
+				i = sb.IndexOf(UTF8STRC(": "));
 				info->cpuName = Text::StrCopyNew(sb.ToString() + i + 2);
 				break;
 			}
@@ -224,7 +224,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 }
 
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	Int32 cpuInfo[4];
 	switch (index)
@@ -457,7 +457,7 @@ UOSInt Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index >= this->infoCnt)
 		return false;
@@ -1079,7 +1079,7 @@ const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 	return desc[index];
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 	if (edxv & 1)
 		sb->AppendC(UTF8STRC("FPU "));
@@ -1137,7 +1137,7 @@ void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBui
 		sb->AppendC(UTF8STRC("RDRAND "));
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 	if (edxv & 2)
 		sb->AppendC(UTF8STRC("VME "));

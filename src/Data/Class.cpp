@@ -200,7 +200,7 @@ Bool Data::Class::Equals(void *obj1, void *obj2)
 	return true;
 }
 
-void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
+void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("class "));
@@ -272,7 +272,7 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
 
-void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF *sb)
+void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
 {
 	if (clsPrefix == 0)
 	{

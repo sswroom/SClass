@@ -68,7 +68,7 @@ namespace Map
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
 		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
+		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		virtual ObjectClass GetObjectClass();

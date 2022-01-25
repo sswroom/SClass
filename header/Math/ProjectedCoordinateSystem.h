@@ -26,7 +26,7 @@ namespace Math
 		virtual CoordinateSystem *Clone() = 0;
 		virtual CoordinateSystemType GetCoordSysType() = 0;
 		virtual Bool IsProjected();
-		virtual void ToString(Text::StringBuilderUTF *sb);
+		virtual void ToString(Text::StringBuilderUTF8 *sb);
 
 		Math::GeographicCoordinateSystem *GetGeographicCoordinateSystem();
 		virtual void ToGeographicCoordinate(Double projX, Double projY, Double *geoX, Double *geoY) = 0;

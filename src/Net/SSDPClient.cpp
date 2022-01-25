@@ -190,7 +190,7 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 		{
 			sb.ClearStr();
 			reader.GetCurrPath(&sb);
-			if (sb.EqualsICaseC(UTF8STRC("/root/device")))
+			if (sb.EqualsICase(UTF8STRC("/root/device")))
 			{
 				if (reader.GetNodeText()->EqualsICase(UTF8STRC("udn")))
 				{

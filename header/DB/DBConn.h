@@ -2,7 +2,7 @@
 #define _SM_DB_DBCONN
 #include "DB/DBUtil.h"
 #include "DB/ReadingDB.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {
@@ -40,7 +40,7 @@ namespace DB
 		virtual ConnType GetConnType() = 0;
 		virtual Int8 GetTzQhr() = 0;
 		virtual void ForceTz(Int8 tzQhr) = 0;
-		virtual void GetConnName(Text::StringBuilderUTF *sb) = 0;
+		virtual void GetConnName(Text::StringBuilderUTF8 *sb) = 0;
 		virtual void Close() = 0;
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql) = 0;
 		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);

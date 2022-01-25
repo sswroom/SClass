@@ -18,7 +18,7 @@
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
 
-Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr)
+Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 {
 	DB::DBConn *conn = db->GetConn();
 	Text::String *s;

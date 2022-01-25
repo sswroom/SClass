@@ -24,7 +24,7 @@ namespace Math
 		virtual Math::CoordinateSystem *Clone();
 		virtual CoordinateSystemType GetCoordSysType();
 		virtual Bool IsProjected();
-		virtual void ToString(Text::StringBuilderUTF *sb);
+		virtual void ToString(Text::StringBuilderUTF8 *sb);
 
 		Math::EarthEllipsoid *GetEllipsoid();
 		const UTF8Char *GetDatumName();

@@ -4,7 +4,7 @@
 #include "Crypto/Hash/IHash.h"
 #include "Data/RandomBytesGenerator.h"
 #include "IO/ConfigFile.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Crypto
 {
@@ -53,7 +53,7 @@ namespace Crypto
 		UOSInt Decrypt(const UInt8 *srcBuff, UOSInt srcLen, UInt8 *outBuff);
 		UOSInt DecryptB64(const UTF8Char *b64Buff, UOSInt b64Len, UInt8 *outBuff);
 		UOSInt DecryptB64(const UTF8Char *b64Buff, UInt8 *outBuff);
-		UOSInt EncryptAsB64(Text::StringBuilderUTF *sb, const UInt8 *srcBuff, UOSInt srcLen);
+		UOSInt EncryptAsB64(Text::StringBuilderUTF8 *sb, const UInt8 *srcBuff, UOSInt srcLen);
 
 		static const UTF8Char *GetKeyAlgorithmName(KeyAlgorithm keyAlg);
 		static const UTF8Char *GetCipherAlgorithmName(CipherAlgorithm cipherAlg);

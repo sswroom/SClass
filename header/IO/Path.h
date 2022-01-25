@@ -36,7 +36,7 @@ namespace IO
 		static WChar *GetFileDirectoryW(WChar *buff, const WChar *fileName);
 		static UTF8Char *GetProcessFileName(UTF8Char *buff);
 		static WChar *GetProcessFileNameW(WChar *buff);
-		static Bool GetProcessFileName(Text::StringBuilderUTF *sb);
+		static Bool GetProcessFileName(Text::StringBuilderUTF8 *sb);
 		static UTF8Char *ReplaceExt(UTF8Char *fileName, const UTF8Char *ext);
 		static WChar *ReplaceExtW(WChar *fileName, const WChar *ext);
 		static UTF8Char *GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen);

@@ -1083,15 +1083,15 @@ void Map::HKTrafficLayer::ReloadData()
 								{
 									sb.ClearStr();
 									node3->GetInnerText(&sb);
-									if (sb.EqualsICase((const UTF8Char*)"TRAFFIC GOOD"))
+									if (sb.EqualsICase(UTF8STRC("TRAFFIC GOOD")))
 									{
 										lev = SL_GOOD;
 									}
-									else if (sb.EqualsICase((const UTF8Char*)"TRAFFIC AVERAGE"))
+									else if (sb.EqualsICase(UTF8STRC("TRAFFIC AVERAGE")))
 									{
 										lev = SL_AVERAGE;
 									}
-									else if (sb.EqualsICase((const UTF8Char*)"TRAFFIC BAD"))
+									else if (sb.EqualsICase(UTF8STRC("TRAFFIC BAD")))
 									{
 										lev = SL_BAD;
 									}

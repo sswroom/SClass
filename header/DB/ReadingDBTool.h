@@ -61,7 +61,7 @@ namespace DB
 		void CloseReader(DB::DBReader *r);
 		DB::DBUtil::ServerType GetSvrType();
 		Bool IsDataError(const UTF8Char *errCode);
-		void GetLastErrorMsg(Text::StringBuilderUTF *sb);
+		void GetLastErrorMsg(Text::StringBuilderUTF8 *sb);
 		DB::DBConn *GetDBConn();
 		Int8 GetTzQhr();
 		

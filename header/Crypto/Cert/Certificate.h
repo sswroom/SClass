@@ -1,6 +1,6 @@
 #ifndef _SM_CRYPTO_CERT_CERTIFICATE
 #define _SM_CRYPTO_CERT_CERTIFICATE
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Crypto
 {
@@ -11,7 +11,7 @@ namespace Crypto
 		public:
 			virtual ~Certificate() {};
 
-			virtual void ToString(Text::StringBuilderUTF *sb) = 0;
+			virtual void ToString(Text::StringBuilderUTF8 *sb) = 0;
 		};
 	}
 }

@@ -508,7 +508,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										{
 											sb.AppendChar(' ', 1);
 											sb.AppendC(item->valBuff, item->valLen);
-											sb.TrimRight();
+											sb.RTrim();
 										}
 									}
 									reading->name = Text::String::New(sb.ToString(), sb.GetLength());

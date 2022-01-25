@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PubKey::GetFileType()
 	return FileType::PublicKey;
 }
 
-void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt oidLen;
 	Net::ASN1Util::ItemType itemType;
@@ -51,7 +51,7 @@ Net::ASN1Data *Crypto::Cert::X509PubKey::Clone()
 	return asn1;
 }
 
-void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509PubKey::ToString(Text::StringBuilderUTF8 *sb)
 {
 	if (IsPublicKeyInfo(this->buff, this->buff + this->buffSize, "1"))
 	{

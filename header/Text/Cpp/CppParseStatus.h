@@ -17,7 +17,7 @@ namespace Text
 			typedef struct
 			{
 				const UTF8Char *defineName;
-				const UTF8Char *defineVal;
+				Text::String *defineVal;
 				const UTF8Char *defineParam;
 				Text::String *fileName;
 				Int32 lineNum;
@@ -78,7 +78,7 @@ namespace Text
 			Bool AddGlobalDef(const UTF8Char *defName, const UTF8Char *defVal);
 			Bool AddDef(const UTF8Char *defName, const UTF8Char *defParams, const UTF8Char *defVal, Int32 lineNum);
 			Bool Undefine(const UTF8Char *defName);
-			Bool GetDefineVal(const UTF8Char *defName, const UTF8Char *defParams, Text::StringBuilderUTF *sb);
+			Bool GetDefineVal(const UTF8Char *defName, const UTF8Char *defParams, Text::StringBuilderUTF8 *sb);
 
 			UOSInt GetDefineCount();
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);

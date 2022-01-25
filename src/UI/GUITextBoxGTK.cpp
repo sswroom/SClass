@@ -173,7 +173,7 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	}
 }
 
-Bool UI::GUITextBox::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 {
 	TextBoxData *txt = (TextBoxData*)this->clsData;
 	const gchar *lbl;

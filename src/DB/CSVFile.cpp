@@ -104,7 +104,7 @@ void DB::CSVFile::CloseReader(DBReader *r)
 	DEL_CLASS(rdr);
 }
 
-void DB::CSVFile::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::CSVFile::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 
@@ -416,7 +416,7 @@ WChar *DB::CSVReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (colIndex >= nCol)
 		return false;

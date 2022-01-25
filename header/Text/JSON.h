@@ -2,7 +2,7 @@
 #define _SM_TEXT_JSON
 #include "Data/ArrayList.h"
 #include "Data/FastStringMap.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -31,7 +31,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType() = 0;
-		virtual void ToJSONString(Text::StringBuilderUTF *sb) = 0;
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb) = 0;
 		virtual Bool Equals(const UTF8Char *s) = 0;
 		virtual Bool Identical(JSONBase *obj) = 0;
 		void BeginUse();
@@ -46,7 +46,7 @@ namespace Text
 
 	private:
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);
-		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, Text::StringBuilderUTF *sb);
+		static const UTF8Char *ParseJSString(const UTF8Char *jsonStr, Text::StringBuilderUTF8 *sb);
 		static const UTF8Char *ParseJSNumber(const UTF8Char *jsonStr, Double *val);
 		static JSONBase *ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut);
 	};
@@ -63,7 +63,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		Double GetValue();
@@ -81,7 +81,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		Int32 GetValue();
@@ -99,7 +99,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		Int64 GetValue();
@@ -119,7 +119,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		Text::String *GetValue();
@@ -137,7 +137,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		const WChar *GetValue();
@@ -155,7 +155,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		Bool GetValue();
@@ -172,7 +172,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		void SetObjectValue(const UTF8Char *name, UOSInt nameLen, JSONBase *val);
@@ -192,7 +192,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 		void SetArrayValue(UOSInt index, Text::JSONBase *val);
@@ -210,7 +210,7 @@ namespace Text
 
 	public:
 		virtual JSONType GetType();
-		virtual void ToJSONString(Text::StringBuilderUTF *sb);
+		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(const UTF8Char *s);
 		virtual Bool Identical(JSONBase *obj);
 	};

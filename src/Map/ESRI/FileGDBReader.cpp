@@ -306,7 +306,7 @@ WChar *Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData == 0)

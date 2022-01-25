@@ -15,10 +15,10 @@ namespace Crypto
 			virtual ~X509CertReq();
 
 			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF *sb);
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
 			
 			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF *sb);
+			virtual void ToString(Text::StringBuilderUTF8 *sb);
 
 			Bool GetNames(CertNames *names);
 			Bool GetExtensions(CertExtensions *ext);

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 	sb.AppendC(UTF8STRC(": "));
 	if (cmdSize > 0)
 	{
-		sb.AppendHex(cmd, cmdSize, ' ', Text::LineBreakType::None);
+		sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::None);
 	}
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
@@ -314,7 +314,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	Text::StringBuilderUTF8 url;
 	me->txtURL->GetText(&url);
-	if (!url.StartsWith((const UTF8Char*)"http://"))
+	if (!url.StartsWith(UTF8STRC("http://")))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"URL is not valid", (const UTF8Char*)"Error", me);
 		return;
@@ -379,7 +379,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 	Int32 status = 0;
 	Net::HTTPClient *cli;
-	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, url.StartsWith((const UTF8Char*)"https://"));
+	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, url.StartsWith(UTF8STRC("https://")));
 	cli->Connect(url.ToString(), url.GetLength(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
 	cli->AddHeaderC(UTF8STRC("Iot-Program"), UTF8STRC("margorpnomis"));
 	if (cli->IsError())

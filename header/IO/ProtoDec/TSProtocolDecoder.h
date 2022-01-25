@@ -16,7 +16,7 @@ namespace IO
 
 			virtual const UTF8Char *GetName();
 			virtual UOSInt ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize);
-			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb);
+			virtual Bool GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF8 *sb);
 			virtual Bool IsValid(UInt8 *buff, UOSInt buffSize);
 		};
 	}

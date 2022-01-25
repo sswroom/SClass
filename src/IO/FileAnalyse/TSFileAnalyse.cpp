@@ -45,7 +45,7 @@ UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
 	return (UOSInt)(this->fileSize / this->packSize);
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)
@@ -57,7 +57,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 	return true;
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt64 fileOfst = index * this->packSize;
 	if (fileOfst >= this->fileSize)

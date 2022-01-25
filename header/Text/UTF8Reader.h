@@ -2,7 +2,7 @@
 #define _SM_TEXT_UTF8READER
 #include "IO/Reader.h"
 #include "IO/Stream.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -26,11 +26,11 @@ namespace Text
 		virtual void Close();
 		UTF32Char Peek();
 		UTF32Char Read();
-		virtual Bool ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt);
+		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt);
 		virtual UTF8Char *ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
-		virtual Bool GetLastLineBreak(Text::StringBuilderUTF *sb);
-		virtual Bool ReadToEnd(Text::StringBuilderUTF *sb);
+		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
+		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

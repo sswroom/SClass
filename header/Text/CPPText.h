@@ -9,10 +9,10 @@ namespace Text
 	class CPPText
 	{
 	public:
-		static void ToCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str);
-		static void FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str);
+		static void ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str);
+		static void FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str);
 
-		static Bool ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF *sbPrefix);
+		static Bool ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF8 *sbPrefix);
 		static const UTF8Char *GetCppType(Data::VariItem::ItemType itemType);
 	};
 }

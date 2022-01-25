@@ -16,7 +16,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 	Text::StrDelNew(this->fileName);
 }
 
-Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF *sb)
+Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->Append(this->fileName);
 	sb->AppendC(UTF8STRC(" size="));

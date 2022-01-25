@@ -195,7 +195,7 @@ const UTF8Char *Text::JSONBase::ClearWS(const UTF8Char *jsonStr)
 	return jsonStr;
 }
 
-const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::StringBuilderUTF *sb)
+const UTF8Char *Text::JSONBase::ParseJSString(const UTF8Char *jsonStr, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -721,7 +721,7 @@ Text::JSONType Text::JSONNumber::GetType()
 	return Text::JSONType::Number;
 }
 
-void Text::JSONNumber::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONNumber::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	Text::SBAppendF64(sb, this->val);
 }
@@ -757,7 +757,7 @@ Text::JSONType Text::JSONInt32::GetType()
 	return Text::JSONType::INT32;
 }
 
-void Text::JSONInt32::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONInt32::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendI32(this->val);
 }
@@ -793,7 +793,7 @@ Text::JSONType Text::JSONInt64::GetType()
 	return Text::JSONType::INT64;
 }
 
-void Text::JSONInt64::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONInt64::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendI64(this->val);
 }
@@ -840,7 +840,7 @@ Text::JSONType Text::JSONString::GetType()
 	return Text::JSONType::String;
 }
 
-void Text::JSONString::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONString::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[128];
 	const UTF8Char *sptr;
@@ -940,7 +940,7 @@ Text::JSONType Text::JSONBool::GetType()
 	return Text::JSONType::BOOL;
 }
 
-void Text::JSONBool::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONBool::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	if (this->val)
 	{
@@ -996,7 +996,7 @@ Text::JSONType Text::JSONObject::GetType()
 	return Text::JSONType::Object;
 }
 
-void Text::JSONObject::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONObject::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	Text::JSONBase *obj;
 	UOSInt i = 0;
@@ -1096,7 +1096,7 @@ Text::JSONType Text::JSONArray::GetType()
 	return Text::JSONType::Array;
 }
 
-void Text::JSONArray::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONArray::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	Text::JSONBase *obj;
 	UOSInt i = 0;
@@ -1181,7 +1181,7 @@ Text::JSONType Text::JSONNull::GetType()
 	return Text::JSONType::Null;
 }
 
-void Text::JSONNull::ToJSONString(Text::StringBuilderUTF *sb)
+void Text::JSONNull::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC((const UTF8Char*)"null", 4);
 }

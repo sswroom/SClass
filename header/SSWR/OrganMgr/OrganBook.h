@@ -2,7 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANBOOK
 
 #include "Data/DateTime.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace SSWR
 {
@@ -39,7 +39,7 @@ namespace SSWR
 			void SetURL(const UTF8Char *url);
 
 		//	WChar *GetString(WChar *sbuff);
-			void GetString(Text::StringBuilderUTF *sb);
+			void GetString(Text::StringBuilderUTF8 *sb);
 		};
 	}
 }

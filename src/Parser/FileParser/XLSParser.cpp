@@ -1008,7 +1008,7 @@ Bool Parser::FileParser::XLSParser::ParseWorksheet(IO::IStreamData *fd, UInt64 o
 	return eofFound;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuilderUTF *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = ReadUInt16(&buff[0]);
@@ -1096,7 +1096,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buffSize, UInt32 *charCnt, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt currOfst = 0;
 	UInt8 flags = buff[0];
@@ -1201,7 +1201,7 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 	return currOfst;
 }
 
-UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuilderUTF *sb)
+UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt currOfst = 0;
 	UOSInt charCnt = buff[0];

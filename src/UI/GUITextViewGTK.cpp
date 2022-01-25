@@ -7,6 +7,7 @@
 #include "Math/Polyline.h"
 #include "Media/GTKDrawEngine.h"
 #include "Sync/Interlocked.h"
+#include "Text/MyStringW.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUITextView.h"
 #include "UI/MessageDialog.h"

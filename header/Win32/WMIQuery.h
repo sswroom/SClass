@@ -26,7 +26,7 @@ namespace Win32
 		virtual ConnType GetConnType();
 		virtual Int8 GetTzQhr();
 		virtual void ForceTz(Int8 tzQhr);
-		virtual void GetConnName(Text::StringBuilderUTF *sb);
+		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);
 		virtual OSInt ExecuteNonQuery(const WChar *sql);
@@ -41,7 +41,7 @@ namespace Win32
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
 		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *reader);
-		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
+		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		const WChar *GetNS();

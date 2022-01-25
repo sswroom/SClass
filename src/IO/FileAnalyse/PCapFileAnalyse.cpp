@@ -114,7 +114,7 @@ UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()
 	return 1 + this->ofstList->GetCount();
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index == 0)
 	{
@@ -152,7 +152,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index == 0)
 	{

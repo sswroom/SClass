@@ -35,12 +35,12 @@ namespace IO
 		WChar *ReadLine(WChar *buff);
 		virtual UTF8Char *ReadLine(UTF8Char *buff, UOSInt maxCharCnt);
 		WChar *ReadLine(WChar *buff, UOSInt maxCharCnt);
-		virtual Bool ReadLine(Text::StringBuilderUTF *sb, UOSInt maxCharCnt);
+		virtual Bool ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt);
 		virtual UTF8Char *GetLastLineBreak(UTF8Char *buff);
-		virtual Bool GetLastLineBreak(Text::StringBuilderUTF *sb);
+		virtual Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
 		WChar *GetLastLineBreak(WChar *buff);
 		WChar *ReadToEnd(WChar *buff);
-		virtual Bool ReadToEnd(Text::StringBuilderUTF *sb);
+		virtual Bool ReadToEnd(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

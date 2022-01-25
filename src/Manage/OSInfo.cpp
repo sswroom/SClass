@@ -74,7 +74,7 @@ const UTF8Char *Manage::OSInfo::GetDefName(OSType osType)
 	}
 }
 
-void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF *sb, OSType osType, const UTF8Char *osVer)
+void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, const UTF8Char *osVer)
 {
 	UOSInt osVerLen;
 	if (osVer)

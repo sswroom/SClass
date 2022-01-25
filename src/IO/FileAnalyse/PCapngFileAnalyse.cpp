@@ -202,7 +202,7 @@ UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
 	return this->blockList->GetCount();
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
 	if (index >= this->blockList->GetCount())
@@ -291,7 +291,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 	return true;
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;

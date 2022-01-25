@@ -3,14 +3,14 @@
 #include "Data/ArrayList.h"
 #include "DB/DBTool.h"
 #include "Net/SocketFactory.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {
 	class DBManager
 	{
 	public:
-		static Bool GetConnStr(DB::DBTool *db, Text::StringBuilderUTF *connStr);
+		static Bool GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr);
 		static DB::DBTool *OpenConn(Text::String *connStr, IO::LogTool *log, Net::SocketFactory *sockf);
 		static DB::DBTool *OpenConn(const UTF8Char *connStr, IO::LogTool *log, Net::SocketFactory *sockf);
 		static Bool StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTool*> *dbList);

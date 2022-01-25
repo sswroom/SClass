@@ -1123,7 +1123,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 
@@ -1132,7 +1132,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			if (buffSize > 0)
 			{
 				sb.ClearStr();
-				sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+				sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			MemFree(buff);
@@ -19461,7 +19461,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 			buffSize = sess.memReader->ReadMemory(sess.regs.rip, buff, 16);
 			if (buffSize > 0)
 			{
-				outStr->AppendHex(buff, buffSize, ' ', Text::LineBreakType::None);
+				outStr->AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::None);
 			}
 			outStr->AppendC(UTF8STRC("\r\n"));
 			writer->WriteStrC(outStr->ToString(), outStr->GetLength());
@@ -19512,7 +19512,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF8 *outStr, Manage::AddressResolver *addrResol, UInt64 *currRip, Data::ArrayListUInt64 *callAddrs, Data::ArrayListUInt64 *jmpAddrs, UInt64 *blockStart, UInt64 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt64 initIP = *currRip;

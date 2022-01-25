@@ -72,7 +72,7 @@ UTF8Char *Text::JSText::ToJSTextDQuote(UTF8Char *buff, const UTF8Char *s)
 	return buff;
 }
 
-void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF *sb, const UTF8Char *s)
+void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF8 *sb, const UTF8Char *s)
 {
 	UTF8Char c;
 	UTF8Char buff[256];
@@ -797,7 +797,7 @@ void Text::JSText::FreeNewText(const WChar *s)
 	MemFree((void*)s);
 }
 
-Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, Text::StringBuilderUTF *sb)
+Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt lev = initLev;
 	UOSInt i = 0;
@@ -882,7 +882,7 @@ Bool Text::JSText::JSONWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt 
 	return lev == initLev;
 }
 
-Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, Text::StringBuilderUTF *sb)
+Bool Text::JSText::JSWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt initLev, Text::StringBuilderUTF8 *sb)
 {
 	Data::ArrayList<Int32> lastType;
 	UOSInt lev = initLev;

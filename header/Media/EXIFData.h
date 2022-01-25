@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "Data/Int32Map.h"
 #include "IO/IStreamData.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -143,11 +143,11 @@ namespace Media
 		void SetWidth(UInt32 width);
 		void SetHeight(UInt32 height);
 
-		Bool ToString(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix);
-		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonLensType(Text::StringBuilderUTF *sb, UInt16 lensType);
+		Bool ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix);
+		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType);
 		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst);
 		void GetExifBuffSize(UInt32 *size, UInt32 *endOfst);
 

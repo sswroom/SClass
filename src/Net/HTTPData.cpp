@@ -40,7 +40,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		fdh->cli->GetRespHeader(UTF8STRC("Location"), &sb);
-		if (sb.GetLength() > 0 && (sb.StartsWith((const UTF8Char*)"http://") || sb.StartsWith((const UTF8Char*)"https://")))
+		if (sb.GetLength() > 0 && (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://"))))
 		{
 			if (fdh->queue)
 			{

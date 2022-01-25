@@ -270,7 +270,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 		sb.Replace('/', ' ');
 		sb.Replace('&', ' ');
 		sb.Replace('-', ' ');
-		sb.Replace((const UTF8Char*)"  ", (const UTF8Char*)" ");
+		sb.ReplaceStr(UTF8STRC("  "), UTF8STRC(" "));
 		sb.Replace(' ', '_');
 
 		NEW_CLASS(filter, SSWR::SHPConv::ValueFilter(groupCol, s, 3));
@@ -1249,7 +1249,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 	UTF8Char c;
 	while (true)
 	{
-		i = sb.IndexOf((const UTF8Char*)"<%=");
+		i = sb.IndexOf(UTF8STRC("<%="));
 		if (i == INVALID_INDEX)
 		{
 			dbCols->Add(Text::StrCopyNew(sb.ToString()));
@@ -1258,7 +1258,7 @@ void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Dat
 		sb.ToString()[i] = 0;
 		dbCols->Add(Text::StrCopyNew(sb.ToString()));
 		sb.SetSubstr((UOSInt)i + 3);
-		i = sb.IndexOf((const UTF8Char*)"%>");
+		i = sb.IndexOf(UTF8STRC("%>"));
 		if (i != INVALID_INDEX)
 		{
 			sb.ToString()[i] = 0;

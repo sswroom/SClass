@@ -10,7 +10,7 @@
 #include "IO/IProgressHandler.h"
 #include "IO/IStreamData.h"
 #include "IO/ParsedObject.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -115,7 +115,7 @@ namespace IO
 		virtual IO::IStreamData *OpenStreamData(const UTF8Char *fileName);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
-		void GetInfoText(Text::StringBuilderUTF *sb);
+		void GetInfoText(Text::StringBuilderUTF8 *sb);
 		static const UTF8Char *GetInfoTypeName(InfoType infoType);
 	};
 };

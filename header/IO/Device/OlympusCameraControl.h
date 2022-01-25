@@ -6,7 +6,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SocketUtil.h"
 #include "Text/EncodingFactory.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -39,7 +39,7 @@ namespace IO
 
 			Text::String *GetOIVersion();
 			Text::String *GetOITrackVersion();
-			Bool GetModel(Text::StringBuilderUTF *sb);
+			Bool GetModel(Text::StringBuilderUTF8 *sb);
 			
 			static OlympusCameraControl *CreateControl(Net::SocketFactory *sockf, Text::EncodingFactory *encFact);
 		};

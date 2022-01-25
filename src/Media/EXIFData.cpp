@@ -2171,7 +2171,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 	}
 }
 
-Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix)
+Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix)
 {
 	Data::ArrayList<Int32> exifIds;
 	Media::EXIFData::EXIFItem *exItem;
@@ -2684,7 +2684,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF *sb, const UTF8Char *lineP
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3615,7 +3615,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF *sb, co
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3678,7 +3678,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF *sb, const
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3964,7 +3964,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF *sb, const UT
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF *sb, UInt16 lensType)
+Bool Media::EXIFData::ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType)
 {
 	sb->AppendC(UTF8STRC("0x"));
 	sb->AppendHex16(lensType);

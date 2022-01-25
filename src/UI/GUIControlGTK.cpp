@@ -126,7 +126,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::GUIControl::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUIControl::GetText(Text::StringBuilderUTF8 *sb)
 {
 	///////////////////////////////
 	return false;

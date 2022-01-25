@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	sb->ClearStr();
 	me->txtFwdURL->GetText(sb);
 	Net::SSLEngine *ssl = 0;
-	if (!sb->StartsWith((const UTF8Char*)"http://") && !sb->StartsWith((const UTF8Char*)"https://"))
+	if (!sb->StartsWith(UTF8STRC("http://")) && !sb->StartsWith(UTF8STRC("https://")))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Forward URL", (const UTF8Char*)"HTTP Load Balance", me);
 		DEL_CLASS(sb);

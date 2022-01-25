@@ -1221,8 +1221,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpeciesSNameChg(void *userObj)
 		Text::StringBuilderUTF8 sb;;
 		me->txtSpeciesSName->GetText(&sb);
 		sb.ToLower();
-		sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
-		sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
+		sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+		sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
 		me->txtSpeciesDName->SetText(sb.ToString());
 	}
 }

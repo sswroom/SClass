@@ -373,7 +373,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char 
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF *sb, const UTF8Char *name, UOSInt nameLen)
+Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen)
 {
 	Text::String *hdr = this->headers->GetC(name, nameLen);
 	if (hdr == 0)
@@ -558,7 +558,7 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formNam
 	return 0;
 }
 
-void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF *sb)
+void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
 {
 	UInt16 defPort;
 	Text::String *s;

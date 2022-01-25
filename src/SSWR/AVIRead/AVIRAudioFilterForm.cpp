@@ -496,7 +496,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, U
 {
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Text::SBAppendF64(&sb, OSInt2Double((OSInt)scrollPos - 960) * 0.1);
+	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
 	me->lblDTMFVolV->SetText(sb.ToString());
 	if (me->dtmfGen)
@@ -874,7 +874,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, 
 {
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	Text::StringBuilderUTF8 sb;
-	Text::SBAppendF64(&sb, OSInt2Double((OSInt)scrollPos - 960) * 0.1);
+	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
 	me->lblSweepVolV->SetText(sb.ToString());
 	if (me->sweepFilter)

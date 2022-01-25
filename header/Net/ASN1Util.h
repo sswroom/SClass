@@ -1,7 +1,7 @@
 #ifndef _SM_NET_ASN1UTIL
 #define _SM_NET_ASN1UTIL
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -38,12 +38,12 @@ namespace Net
 
 		static const UInt8 *PDUParseSeq(const UInt8 *pdu, const UInt8 *pduEnd, UInt8 *type, const UInt8 **seqEnd);
 		static const UInt8 *PDUParseUInt32(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
-		static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb);
+		static const UInt8 *PDUParseString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb);
 		static const UInt8 *PDUParseChoice(const UInt8 *pdu, const UInt8 *pduEnd, UInt32 *val);
 
 		static Bool PDUParseUTCTimeCont(const UInt8 *pdu, UOSInt len, Data::DateTime *dt);
 
-		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF *sb, UOSInt level);
+		static Bool PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, UOSInt level);
 
 		static const UInt8 *PDUGetItemRAW(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, UOSInt *itemOfst);
 		static const UInt8 *PDUGetItem(const UInt8 *pdu, const UInt8 *pduEnd, const Char *path, UOSInt *len, ItemType *itemType);
@@ -54,11 +54,11 @@ namespace Net
 		static OSInt OIDCompare(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static Bool OIDStartsWith(const UInt8 *oid1, UOSInt oid1Len, const UInt8 *oid2, UOSInt oid2Len);
 		static Bool OIDEqualsText(const UInt8 *oidPDU, UOSInt oidPDULen, const UTF8Char *oidText, UOSInt oidTextLen);
-		static void OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF *sb);
+		static void OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBuilderUTF8 *sb);
 		static UOSInt OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen);
 		static UOSInt OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UInt8 *pduBuff);
 
-		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF *sb);
+		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF8 *sb);
 	private:
 		static UInt32 Str2Digit(const UTF8Char *s);
 	};

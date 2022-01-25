@@ -11,7 +11,6 @@
 #include "Net/TCPClient.h"
 #include "Net/WebStatus.h"
 #include "Net/WebUtil.h"
-#include "Text/StringBuilderUTF.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -57,7 +56,7 @@ namespace Net
 		UOSInt GetRespHeaderCnt();
 		UTF8Char *GetRespHeader(UOSInt index, UTF8Char *buff);
 		UTF8Char *GetRespHeader(const UTF8Char *name, UOSInt nameLen, UTF8Char *valueBuff);
-		Bool GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::StringBuilderUTF *sb);
+		Bool GetRespHeader(const UTF8Char *name, UOSInt nameLen, Text::StringBuilderUTF8 *sb);
 		Text::String *GetRespHeader(UOSInt index);
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();

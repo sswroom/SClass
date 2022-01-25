@@ -1270,7 +1270,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::IsSpeciesExist(const UTF8Char *sName)
 	return found;
 }
 
-Bool SSWR::OrganMgr::OrganEnvWeb::IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF *sb)
+Bool SSWR::OrganMgr::OrganEnvWeb::IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb)
 {
 	Data::ArrayListInt32 spList;
 	DB::SQLBuilder sql(this->db);
@@ -3396,7 +3396,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateUserFilePos(UserFileInfo *userFile, Data
 	return succ;
 }
 
-Bool SSWR::OrganMgr::OrganEnvWeb::GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF *sb)
+Bool SSWR::OrganMgr::OrganEnvWeb::GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb)
 {
 	Data::DateTime dt;
 	dt.SetTicks(userFile->fileTimeTicks);

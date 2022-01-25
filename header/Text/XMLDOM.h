@@ -4,7 +4,7 @@
 #include "IO/Stream.h"
 #include "Text/EncodingFactory.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -53,14 +53,14 @@ namespace Text
 		XMLNode *SearchFirstNode(const UTF8Char *path);
 		void ReleaseSearch(XMLNode** searchResult);
 
-		void GetInnerXML(Text::StringBuilderUTF *sb);
-		void GetInnerText(Text::StringBuilderUTF *sb);
+		void GetInnerXML(Text::StringBuilderUTF8 *sb);
+		void GetInnerText(Text::StringBuilderUTF8 *sb);
 	private:
 		void SearchNodeBegin(const UTF8Char *path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
 		Bool SearchNodeSub(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
-		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF *outSB);
+		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF8 *outSB);
 	public:
 		static const UTF8Char *NodeTypeGetName(NodeType ntype);
 	};
@@ -71,7 +71,7 @@ namespace Text
 		XMLAttrib(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		virtual ~XMLAttrib();
 
-		virtual Bool ToString(Text::StringBuilderUTF *sb);
+		virtual Bool ToString(Text::StringBuilderUTF8 *sb);
 	};
 
 
@@ -90,7 +90,7 @@ namespace Text
 		virtual ~XMLDocument();
 		Bool ParseBuff(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt size);
 		Bool ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm);
-		void AppendXmlDeclaration(Text::StringBuilderUTF *sb);
+		void AppendXmlDeclaration(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

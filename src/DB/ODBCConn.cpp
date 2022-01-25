@@ -96,7 +96,7 @@ void DB::ODBCConn::UpdateConnInfo()
 	}
 	if (this->svrType == DB::DBUtil::ServerType::Unknown)
 	{
-		if (this->connStr->IndexOfICase((const UTF8Char*)"DRIVER=MDBTOOLS;") != INVALID_INDEX)
+		if (this->connStr->IndexOfICase(UTF8STRC("DRIVER=MDBTOOLS;")) != INVALID_INDEX)
 		{
 			this->svrType = DB::DBUtil::ServerType::MDBTools;
 		}
@@ -456,7 +456,7 @@ Int8 DB::ODBCConn::GetTzQhr()
 	return this->tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
+void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
@@ -725,7 +725,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 	}
 }
 
-void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	Int32 recNumber = 1;
 	SQLWCHAR state[6];
@@ -1793,7 +1793,7 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (colIndex >= this->colCnt)
 		return false;

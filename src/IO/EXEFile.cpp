@@ -359,7 +359,7 @@ const UTF8Char *IO::EXEFile::GetResourceTypeName(ResourceType rt)
 	}
 }
 
-void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF *sb)
+void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char u8buff[256];
 	if (res->rt == RT_FONT)

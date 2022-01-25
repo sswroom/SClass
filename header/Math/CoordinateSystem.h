@@ -5,7 +5,7 @@
 #include "Math/Polyline3D.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Math
 {
@@ -72,7 +72,7 @@ namespace Math
 		virtual CoordinateSystem *Clone() = 0;
 		virtual CoordinateSystemType GetCoordSysType() = 0;
 		virtual Bool IsProjected() = 0;
-		virtual void ToString(Text::StringBuilderUTF *sb) = 0;
+		virtual void ToString(Text::StringBuilderUTF8 *sb) = 0;
 
 		virtual IO::ParserType GetParserType();
 

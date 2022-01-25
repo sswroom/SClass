@@ -146,7 +146,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 	{
 		sb.Replace('\n', ' ');
 		sb.Replace('\r', ' ');
-		sb.Replace((const UTF8Char*)"  ", (const UTF8Char*)" ");
+		sb.ReplaceStr(UTF8STRC("  "), UTF8STRC(" "));
 
 		UOSInt digitCnt = 0;
 		UOSInt i = 1;
@@ -194,7 +194,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 					i = 0;
 					while (true)
 					{
-						i = sb.IndexOf((const UTF8Char*)".", i);
+						i = sb.IndexOf(UTF8STRC("."), i);
 						if (i == INVALID_INDEX)
 						{
 							me->txtBookTitle->SetText(sb.ToString());
@@ -228,7 +228,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 							me->txtBookTitle->SetText(sb2.ToString());
 							sb.SetSubstr(k);
 							sb.Trim();
-							k = sb.IndexOf((const UTF8Char*)"http://");
+							k = sb.IndexOf(UTF8STRC("http://"));
 							if (k != INVALID_INDEX)
 							{
 								sb2.ClearStr();

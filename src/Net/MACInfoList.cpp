@@ -165,7 +165,7 @@ void Net::MACInfoList::Load()
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 1024))
 		{
-			if (sb.StartsWith((const UTF8Char*)"\t{") && sb.EndsWith((const UTF8Char*)"\"},"))
+			if (sb.StartsWith(UTF8STRC("\t{")) && sb.EndsWith(UTF8STRC("\"},")))
 			{
 				if (Text::StrSplitTrim(sarr, 3, sb.ToString() + 2, ',') == 3)
 				{

@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnARPHandler(const UInt8 *hwAddr,
 			me->requested = false;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Ping time: round trip = "));
-			Text::SBAppendF64(&sb, t);
+			sb.AppendDouble(t);
 			sb.AppendC(UTF8STRC("ms"));
 			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			me->rlcPing->AddSample(&t);

@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(Text::StringBuilderUTF *sb, Text::Cpp::CppParseStatus *status)
+void SSWR::AVIRead::AVIRCodeProjectForm::DisplayStatus(Text::StringBuilderUTF8 *sb, Text::Cpp::CppParseStatus *status)
 {
 	UOSInt i;
 	UOSInt j;

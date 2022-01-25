@@ -51,7 +51,7 @@ namespace SSWR
 			virtual UTF8Char *GetSpeciesDir(OrganSpecies *sp, UTF8Char *sbuff);
 			virtual Bool CreateSpeciesDir(OrganSpecies *sp);
 			virtual Bool IsSpeciesExist(const UTF8Char *sName);
-			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF *sb);
+			virtual Bool IsBookSpeciesExist(const UTF8Char *sName, Text::StringBuilderUTF8 *sb);
 			virtual Bool AddSpecies(OrganSpecies *sp);
 			virtual Bool DelSpecies(OrganSpecies *sp);
 			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
@@ -91,7 +91,7 @@ namespace SSWR
 			virtual void UpdateUserFileCrop(UserFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 			virtual void UpdateUserFileRot(UserFileInfo *userFile, Int32 rotType);
 			virtual Bool UpdateUserFilePos(UserFileInfo *userFile, Data::DateTime *captureTime, Double lat, Double lon);
-			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF *sb);
+			virtual Bool GetUserFilePath(UserFileInfo *userFile, Text::StringBuilderUTF8 *sb);
 			virtual Bool UpdateUserFileDesc(UserFileInfo *userFile, const UTF8Char *descript);
 			virtual void UpdateWebFileCrop(WebFileInfo *userFile, Double cropLeft, Double cropTop, Double cropRight, Double cropBottom);
 

@@ -9,7 +9,7 @@
 
 UI::GUIDragDataGTK *GUIDragDataGTK_currData = 0;
 
-void GUIDragDataGTK_AppendWC(Text::StringBuilderUTF *sb, const UTF16Char *s, UOSInt slen)
+void GUIDragDataGTK_AppendWC(Text::StringBuilderUTF8 *sb, const UTF16Char *s, UOSInt slen)
 {
 	const UTF16Char *csptr = Text::StrCopyNewC(s, slen);
 	const UTF8Char *csptr2 = Text::StrToUTF8New(csptr);
@@ -96,7 +96,7 @@ const UTF8Char *UI::GUIDragDataGTK::GetName(UOSInt index)
 	return this->targetMap->GetKey(index);
 }
 
-Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, Text::StringBuilderUTF *sb)
+Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, Text::StringBuilderUTF8 *sb)
 {
 	OSInt fmt = this->targetMap->Get(name);
 	if (fmt == 0)

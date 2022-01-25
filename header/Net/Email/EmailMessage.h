@@ -4,7 +4,7 @@
 #include "Data/DateTime.h"
 #include "IO/Stream.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -21,7 +21,7 @@ namespace Net
 
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
 			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val);
-			Bool AppendUTF8Header(Text::StringBuilderUTF *sb, const UTF8Char *val);
+			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val);
 		public:
 			EmailMessage();
 			~EmailMessage();
@@ -41,7 +41,7 @@ namespace Net
 			Data::ArrayList<const UTF8Char*> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
 
-			static Bool GenerateMessageID(Text::StringBuilderUTF *sb, const UTF8Char *fromAddr);
+			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, const UTF8Char *fromAddr);
 		};
 	}
 }

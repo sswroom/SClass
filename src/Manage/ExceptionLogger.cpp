@@ -37,14 +37,14 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			sb.AppendC(UTF8STRC(" "));
 			if (size >= 16)
 			{
-				sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
+				sb.AppendHexBuff(currPtr, 16, ' ', Text::LineBreakType::None);
 				size -= 16;
 				currAddr += 16;
 				currPtr += 16;
 			}
 			else
 			{
-				sb.AppendHex(currPtr, size, ' ', Text::LineBreakType::None);
+				sb.AppendHexBuff(currPtr, size, ' ', Text::LineBreakType::None);
 				currAddr += (UInt32)size;
 				currPtr += size;
 				size = 0;
@@ -66,14 +66,14 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 			sb.AppendC(UTF8STRC(" "));
 			if (size >= 16)
 			{
-				sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
+				sb.AppendHexBuff(currPtr, 16, ' ', Text::LineBreakType::None);
 				size -= 16;
 				currAddr += 16;
 				currPtr += 16;
 			}
 			else
 			{
-				sb.AppendHex(currPtr, size, ' ', Text::LineBreakType::None);
+				sb.AppendHexBuff(currPtr, size, ' ', Text::LineBreakType::None);
 				currAddr += (UInt32)size;
 				currPtr += size;
 				size = 0;
@@ -137,14 +137,14 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 						sb.AppendC(UTF8STRC(" "));
 						if (size >= 16)
 						{
-							sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
+							sb.AppendHexBuff(currPtr, 16, ' ', Text::LineBreakType::None);
 							size -= 16;
 							currAddr += 16;
 							currPtr += 16;
 						}
 						else
 						{
-							sb.AppendHex(currPtr, size, ' ', Text::LineBreakType::None);
+							sb.AppendHexBuff(currPtr, size, ' ', Text::LineBreakType::None);
 							currAddr += (UInt32)size;
 							currPtr += size;
 							size = 0;
@@ -258,14 +258,14 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 						sb.AppendC(UTF8STRC(" "));
 						if (size >= 16)
 						{
-							sb.AppendHex(currPtr, 16, ' ', Text::LineBreakType::None);
+							sb.AppendHexBuff(currPtr, 16, ' ', Text::LineBreakType::None);
 							size -= 16;
 							currAddr += 16;
 							currPtr += 16;
 						}
 						else
 						{
-							sb.AppendHex(currPtr, size, ' ', Text::LineBreakType::None);
+							sb.AppendHexBuff(currPtr, size, ' ', Text::LineBreakType::None);
 							currAddr += (UInt32)size;
 							currPtr += size;
 							size = 0;

@@ -5,7 +5,7 @@
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/FrameDetail.h"
 #include "Sync/Mutex.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -18,8 +18,8 @@ namespace IO
 
 			virtual const UTF8Char *GetFormatName() = 0;
 			virtual UOSInt GetFrameCount() = 0;
-			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF *sb) = 0;
-			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb) = 0;
+			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst) = 0;
 			virtual FrameDetail *GetFrameDetail(UOSInt index) = 0;
 

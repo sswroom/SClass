@@ -172,7 +172,7 @@ Bool Math::PointMappingCoordinateSystem::IsProjected()
 	return this->baseCSys->IsProjected();
 }
 
-void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF *sb)
+void Math::PointMappingCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt i;
 	UOSInt j;

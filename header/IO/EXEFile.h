@@ -3,7 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/ParsedObject.h"
 #include "Manage/DasmBase.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -153,7 +153,7 @@ namespace IO
 	public:
 		static Bool GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTimeOut);
 		static const UTF8Char *GetResourceTypeName(ResourceType rt);
-		static void GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF *sb);
+		static void GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF8 *sb);
 	};
 }
 

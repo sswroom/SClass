@@ -12,10 +12,10 @@ namespace Crypto
 		virtual ~JKSFile();
 
 		virtual FileType GetFileType();
-		virtual void ToShortName(Text::StringBuilderUTF *sb);
+		virtual void ToShortName(Text::StringBuilderUTF8 *sb);
 	
 		virtual Net::ASN1Data *Clone();
-		virtual void ToString(Text::StringBuilderUTF *sb);
+		virtual void ToString(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

@@ -22,15 +22,15 @@ namespace Net
 		EscapeType escapeType;
 
 		Bool ReadLineInner(Text::StringBuilderUTF8 *sb);
-		Bool ReadWord(Text::StringBuilderUTF *sb, Bool move);
+		Bool ReadWord(Text::StringBuilderUTF8 *sb, Bool move);
 	public:
 		MIBReader(IO::Stream *stm);
 		~MIBReader();
 
-		Bool PeekWord(Text::StringBuilderUTF *sb);
-		Bool NextWord(Text::StringBuilderUTF *sb);
+		Bool PeekWord(Text::StringBuilderUTF8 *sb);
+		Bool NextWord(Text::StringBuilderUTF8 *sb);
 		Bool ReadLine(Text::StringBuilderUTF8 *sb);
-		Bool GetLastLineBreak(Text::StringBuilderUTF *sb);
+		Bool GetLastLineBreak(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

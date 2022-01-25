@@ -192,6 +192,7 @@ namespace Text
 	UTF8Char *StrTrim(UTF8Char* str1);
 	UTF8Char *StrTrimC(UTF8Char* str1, UOSInt len);
 	UTF8Char *StrTrimWSCRLF(UTF8Char* str1);
+	UTF8Char *StrTrimWSCRLFC(UTF8Char* str1, UOSInt len);
 	UTF8Char *StrRemoveChar(UTF8Char *str1, UTF8Char c);
 
 	const UTF8Char *StrCopyNew(const UTF8Char *str1);

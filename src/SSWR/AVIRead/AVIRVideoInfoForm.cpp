@@ -302,7 +302,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 	return true;
 }
 
-void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF *sb, UInt32 t)
+void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF8 *sb, UInt32 t)
 {
 	sb->AppendU32(t / 3600000);
 	t = t % 3600000;

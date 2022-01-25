@@ -15,7 +15,7 @@ void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
 }
 
-Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF *output)
+Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output)
 {
 	Bool succ = false;
 	IO::FileStream *fs;

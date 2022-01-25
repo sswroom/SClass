@@ -6,12 +6,12 @@
 #include "Sync/MutexUsage.h"
 #include "Text/StringBuilderUTF8.h"
 
-void Net::EthernetWebHandler::AppendHeader(Text::StringBuilderUTF *sbOut)
+void Net::EthernetWebHandler::AppendHeader(Text::StringBuilderUTF8 *sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<html><head><title>NetRAWCapture</title></head><body>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendMenu(Text::StringBuilderUTF *sbOut)
+void Net::EthernetWebHandler::AppendMenu(Text::StringBuilderUTF8 *sbOut)
 {
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
 	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
@@ -36,7 +36,7 @@ void Net::EthernetWebHandler::AppendMenu(Text::StringBuilderUTF *sbOut)
 	sbOut->AppendC(UTF8STRC("</tr></table>\r\n"));
 }
 
-void Net::EthernetWebHandler::AppendFooter(Text::StringBuilderUTF *sbOut)
+void Net::EthernetWebHandler::AppendFooter(Text::StringBuilderUTF8 *sbOut)
 {
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }

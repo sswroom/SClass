@@ -153,7 +153,7 @@ void Data::VariObject::SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid)
 	this->SetItem(name, Data::VariItem::NewUUIDDirect(uuid));
 }
 
-void Data::VariObject::ToString(Text::StringBuilderUTF *sb)
+void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[512];
 	sb->AppendChar('{', 1);

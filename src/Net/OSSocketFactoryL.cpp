@@ -942,7 +942,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 			break;
 		}
 		sb.Trim();
-		if (sb.StartsWith((const UTF8Char*)"#"))
+		if (sb.StartsWith(UTF8STRC("#")))
 		{
 		}
 		else
@@ -989,7 +989,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 			break;
 		}
 		sb.Trim();
-		if (sb.StartsWith((const UTF8Char*)"#"))
+		if (sb.StartsWith(UTF8STRC("#")))
 		{
 		}
 		else

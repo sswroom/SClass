@@ -339,7 +339,7 @@ WChar *DB::SortableDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 	return 0;
 }
-Bool DB::SortableDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::SortableDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	Data::VariItem *item = this->GetItem(colIndex);
 	if (item == 0)

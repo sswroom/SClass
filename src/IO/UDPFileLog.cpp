@@ -100,7 +100,7 @@ UOSInt IO::UDPFileLog::GetCount(IO::ILogHandler::LogLevel logLevel)
 	}
 }
 
-Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF *sb, Text::LineBreakType lineBreak)
+Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt index, Data::DateTime *dt, Text::StringBuilderUTF8 *sb, Text::LineBreakType lineBreak)
 {
 	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{
@@ -141,7 +141,7 @@ Bool IO::UDPFileLog::GetLogMessage(IO::ILogHandler::LogLevel logLevel, UOSInt in
 	return true;
 }
 
-Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::UDPFileLog::GetLogDescription(IO::ILogHandler::LogLevel logLevel, UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (logLevel == IO::ILogHandler::LOG_LEVEL_RAW)
 	{

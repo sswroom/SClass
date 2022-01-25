@@ -5,7 +5,7 @@
 #include "Text/MyStringW.h"
 #include "Text/Cpp/CppReader.h"
 
-void Text::CPPText::ToCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str)
+void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
 {
 	UTF32Char c;
 	sb->AppendChar('\"', 1);
@@ -97,7 +97,7 @@ void Text::CPPText::ToCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str)
 	sb->AppendChar('\"', 1);
 }
 
-void Text::CPPText::FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *str)
+void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
 {
 	Bool quoted = false;
 	UTF32Char c;
@@ -193,7 +193,7 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF *sb, const UTF8Char *st
 	}
 }
 
-Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF *sbPrefix)
+Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, const UTF8Char *cppEnumStr, Text::StringBuilderUTF8 *sbPrefix)
 {
 	IO::MemoryStream mstm((UInt8*)cppEnumStr, Text::StrCharCnt(cppEnumStr), UTF8STRC("Text.CPPText.ParseEnum"));
 	Text::Cpp::CppReader reader(&mstm);
@@ -202,14 +202,14 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 	{
 		return false;
 	}
-	if (sb.Equals((const UTF8Char*)"typedef"))
+	if (sb.Equals(UTF8STRC("typedef")))
 	{
 		sb.ClearStr();
 		if (!reader.NextWord(&sb))
 		{
 			return false;
 		}
-		if (!sb.Equals((const UTF8Char*)"enum"))
+		if (!sb.Equals(UTF8STRC("enum")))
 		{
 			return false;
 		}
@@ -219,14 +219,14 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 			return false;
 		}
 	}
-	else if (sb.Equals((const UTF8Char*)"enum"))
+	else if (sb.Equals(UTF8STRC("enum")))
 	{
 		sb.ClearStr();
 		if (!reader.NextWord(&sb))
 		{
 			return false;
 		}
-		if (sb.Equals((const UTF8Char*)"class"))
+		if (sb.Equals(UTF8STRC("class")))
 		{
 			if (!reader.NextWord(sbPrefix))
 			{
@@ -241,7 +241,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 		}
 	}
 
-	if (!sb.Equals((const UTF8Char*)"{"))
+	if (!sb.Equals(UTF8STRC("{")))
 	{
 		return false;
 	}
@@ -252,7 +252,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 		{
 			return false;
 		}
-		if (sb.Equals((const UTF8Char*)"}"))
+		if (sb.Equals(UTF8STRC("}")))
 		{
 			return true;
 		}
@@ -264,7 +264,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 			{
 				return false;
 			}
-			if (sb.Equals((const UTF8Char*)"="))
+			if (sb.Equals(UTF8STRC("=")))
 			{
 				sb.ClearStr();
 				if (!reader.NextWord(&sb))
@@ -281,11 +281,11 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 					return false;
 				}
 			}
-			if (sb.Equals((const UTF8Char*)"}"))
+			if (sb.Equals(UTF8STRC("}")))
 			{
 				return true;
 			}
-			else if (!sb.Equals((const UTF8Char*)","))
+			else if (!sb.Equals(UTF8STRC(",")))
 			{
 				return false;
 			}

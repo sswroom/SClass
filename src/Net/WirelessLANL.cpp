@@ -870,19 +870,19 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 			{
 				Text::StringBuilderUTF8 sbTmp;
 				sbTmp.AppendC(&buffCurr[firstOfst], (UOSInt)(len - firstOfst));
-				if (sbTmp.Equals((const UTF8Char*)"IEEE 802.11gn"))
+				if (sbTmp.Equals(UTF8STRC("IEEE 802.11gn")))
 				{
 					bss.phyType = 7;
 				}
-				else if (sbTmp.Equals((const UTF8Char*)"IEEE 802.11bgn"))
+				else if (sbTmp.Equals(UTF8STRC("IEEE 802.11bgn")))
 				{
 					bss.phyType = 7;
 				}
-				else if (sbTmp.Equals((const UTF8Char*)"IEEE 802.11bg"))
+				else if (sbTmp.Equals(UTF8STRC("IEEE 802.11bg")))
 				{
 					bss.phyType = 6;
 				}
-				else if (sbTmp.Equals((const UTF8Char*)"IEEE 802.11AC"))
+				else if (sbTmp.Equals(UTF8STRC("IEEE 802.11AC")))
 				{
 					bss.phyType = 8;
 				}
@@ -1129,7 +1129,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 1024))
 		{
-			sb.TrimC();
+			sb.Trim();
 			i = sb.IndexOf(':');
 			if (i != INVALID_INDEX)
 			{

@@ -34,14 +34,14 @@ IO::SystemInfo::SystemInfo()
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWith((const UTF8Char*)"machine"))
+			if (sb.StartsWith(UTF8STRC("machine")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				data->platformName = Text::StrCopyNew(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWith((const UTF8Char*)"Serial"))
+			else if (sb.StartsWith(UTF8STRC("Serial")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				data->platformSN = Text::StrCopyNew(sb.ToString() + i + 2);
 			}
 			sb.ClearStr();

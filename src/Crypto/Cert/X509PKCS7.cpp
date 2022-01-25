@@ -23,7 +23,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509PKCS7::GetFileType()
 	return FileType::PKCS7;
 }
 
-void Crypto::Cert::X509PKCS7::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509PKCS7::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 /*	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -46,7 +46,7 @@ UOSInt Crypto::Cert::X509PKCS7::GetCertCount()
 	return Net::ASN1Util::PDUCountItem(certListPDU, certListPDU + len, 0);
 }
 
-Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Crypto::Cert::X509PKCS7::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	Net::ASN1Util::ItemType itemType;
 	UOSInt len;
@@ -108,7 +108,7 @@ Net::ASN1Data *Crypto::Cert::X509PKCS7::Clone()
 	return asn1;
 }
 
-void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509PKCS7::ToString(Text::StringBuilderUTF8 *sb)
 {
 /*	if (IsCertificateRequest(this->buff, this->buff + this->buffSize, "1"))
 	{

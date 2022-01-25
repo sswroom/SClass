@@ -6,7 +6,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/WebUtil.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -39,9 +39,9 @@ namespace Net
 
 			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen) = 0;
-			virtual Bool GetHeaderC(Text::StringBuilderUTF *sb, const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
-			Bool GetRefererDomain(Text::StringBuilderUTF *sb);
+			Bool GetRefererDomain(Text::StringBuilderUTF8 *sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
 
 			virtual Text::String *GetRequestURI() = 0;
@@ -67,7 +67,7 @@ namespace Net
 			Bool GetHTTPFormUInt32(const UTF8Char *name, UOSInt nameLen, UInt32 *valOut);
 			Bool GetHTTPFormInt64(const UTF8Char *name, UOSInt nameLen, Int64 *valOut);
 			Bool GetHTTPFormUInt64(const UTF8Char *name, UOSInt nameLen, UInt64 *valOut);
-			virtual void GetRequestURLBase(Text::StringBuilderUTF *sb) = 0;
+			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;
 			virtual UInt16 GetClientPort() = 0;

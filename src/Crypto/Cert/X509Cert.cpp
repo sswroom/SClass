@@ -18,7 +18,7 @@ Crypto::Cert::X509Cert::~X509Cert()
 
 }
 
-void Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509Cert::GetSubjectCN(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt len = 0;
 	Net::ASN1Util::ItemType itemType = Net::ASN1Util::IT_UNKNOWN;
@@ -42,7 +42,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509Cert::GetFileType()
 	return FileType::Cert;
 }
 
-void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509Cert::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 	this->GetSubjectCN(sb);
 }
@@ -52,7 +52,7 @@ UOSInt Crypto::Cert::X509Cert::GetCertCount()
 	return 0;
 }
 
-Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Crypto::Cert::X509Cert::GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index != 0)
 		return false;
@@ -74,7 +74,7 @@ Net::ASN1Data *Crypto::Cert::X509Cert::Clone()
 	return asn1;
 }
 
-void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::X509Cert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	if (IsCertificate(this->buff, this->buff + this->buffSize, "1"))
 	{

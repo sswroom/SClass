@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 	Int64 funcOfst;
 	Text::StringBuilderUTF8 sb;
 	me->lvMyStack->GetSubItem(index, 3, &sb);
-	if (sb.StartsWith((const UTF8Char*)"call 0x"))
+	if (sb.StartsWith(UTF8STRC("call 0x")))
 	{
 		Text::StrConcatS(sbuff, sb.ToString() + 7, 17);
 		i = Text::StrIndexOfChar(sbuff, ' ');
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				buffSize = proc->ReadMemory(eip, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 
@@ -304,7 +304,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				buffSize = proc->ReadMemory(esp, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));
@@ -390,7 +390,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				buffSize = proc->ReadMemory(rip, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 
@@ -401,7 +401,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				buffSize = proc->ReadMemory(rsp, buff, 256);
 				if (buffSize > 0)
 				{
-					sb.AppendHex(buff, buffSize, ' ', Text::LineBreakType::CRLF);
+					sb.AppendHexBuff(buff, buffSize, ' ', Text::LineBreakType::CRLF);
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				this->stacksMem->Add(Text::StrCopyNew(sb.ToString()));

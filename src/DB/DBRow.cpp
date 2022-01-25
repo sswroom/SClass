@@ -720,7 +720,7 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key)
 	return hasKey;
 }
 
-void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
+void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[128];
 	DB::ColDef *col;
@@ -819,7 +819,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF *sb)
 	sb->AppendChar(']', 1);
 }
 
-void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
+void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
 {
 	const UTF8Char *tableName = this->table->GetTableName();
 	UOSInt i = Text::StrIndexOfChar(tableName, '.');
@@ -864,7 +864,7 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF *sb)
 	}
 }
 
-void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF *sb, const UTF8Char *colName)
+void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *colName)
 {
 	Bool nextCap = false;
 	UTF8Char c;

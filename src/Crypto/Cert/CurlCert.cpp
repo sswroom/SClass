@@ -89,7 +89,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CurlCert::CreateX509Cert()
 	return 0;
 }
 
-void Crypto::Cert::CurlCert::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::CurlCert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
 	while (slist)

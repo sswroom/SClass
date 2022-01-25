@@ -462,7 +462,7 @@ Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
 	return false;
 }
 
-void DB::ReadingDBTool::GetLastErrorMsg(Text::StringBuilderUTF *sb)
+void DB::ReadingDBTool::GetLastErrorMsg(Text::StringBuilderUTF8 *sb)
 {
 	sb->Append(this->lastErrMsg->ToString());
 }

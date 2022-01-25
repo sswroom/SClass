@@ -1931,7 +1931,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									if (sb.EqualsC(UTF8STRC("normal")))
+									if (sb.Equals(UTF8STRC("normal")))
 									{
 										isNormal = true;
 									}
@@ -1940,7 +1940,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									if (isNormal && sb.StartsWithC(UTF8STRC("#")))
+									if (isNormal && sb.StartsWith(UTF8STRC("#")))
 									{
 										KMLStyle *style2 = styles->Get(sb.ToString() + 1);
 										if (style2)
@@ -2787,7 +2787,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 				{
 					Text::StringBuilderUTF8 sb;
 					reader->ReadNodeText(&sb);
-					if (sb.StartsWith((const UTF8Char*)"#"))
+					if (sb.StartsWith(UTF8STRC("#")))
 					{
 						KMLStyle *style = styles->Get(sb.ToString() + 1);
 						if (style && style->lineWidth != 0 && style->flags & 1)

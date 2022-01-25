@@ -44,7 +44,7 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	return true;
 }
 
-Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF *sb, const UTF8Char *val)
+Bool Net::Email::EmailMessage::AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val)
 {
 	Text::TextBinEnc::Base64Enc b64;
 	sb->AppendC(UTF8STRC("=?UTF-8?B?"));
@@ -306,7 +306,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 	return true;
 }
 
-Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF *sb, const UTF8Char *mailFrom)
+Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF8 *sb, const UTF8Char *mailFrom)
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();

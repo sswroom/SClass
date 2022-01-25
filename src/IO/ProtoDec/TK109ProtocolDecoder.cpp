@@ -102,7 +102,7 @@ UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void
 	return j;
 }
 
-Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoDec::TK109ProtocolDecoder::GetProtocolDetail(UInt8 *buff, UOSInt buffSize, Text::StringBuilderUTF8 *sb)
 {
 	if (buffSize < 7)
 		return false;
@@ -483,7 +483,7 @@ Bool IO::ProtoDec::TK109ProtocolDecoder::IsValid(UInt8 *buff, UOSInt buffSize)
 	return buff[0] == 0x67 && buff[1] == 0x67;
 }
 
-void IO::ProtoDec::TK109ProtocolDecoder::AppendDevStatus(Text::StringBuilderUTF *sb, UInt16 status)
+void IO::ProtoDec::TK109ProtocolDecoder::AppendDevStatus(Text::StringBuilderUTF8 *sb, UInt16 status)
 {
 	sb->AppendC(UTF8STRC("Device Status=0x"));
 	sb->AppendHex16(status);

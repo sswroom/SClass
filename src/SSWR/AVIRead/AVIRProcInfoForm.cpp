@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 	{
 		sb.ClearStr();
 		size = proc.ReadMemory(addr, buff, size);
-		sb.AppendHex(buff, size, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(buff, size, ' ', Text::LineBreakType::CRLF);
 		me->txtDetHeap->SetText(sb.ToString());
 	}
 	else
@@ -265,10 +265,10 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		UOSInt size2;
 		sb.ClearStr();
 		size2 = proc.ReadMemory(addr, buff, 256);
-		sb.AppendHex(buff, size2, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(buff, size2, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC(".."));
 		size2 = proc.ReadMemory(addr + size - 256, buff, 256);
-		sb.AppendHex(buff, size2, ' ', Text::LineBreakType::CRLF);
+		sb.AppendHexBuff(buff, size2, ' ', Text::LineBreakType::CRLF);
 		me->txtDetHeap->SetText(sb.ToString());
 	}
 }

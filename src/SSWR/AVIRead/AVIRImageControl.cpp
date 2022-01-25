@@ -414,7 +414,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	mutUsage.EndUse();
 }
 
-Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF *sb, Media::EXIFData *exif)
+Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF8 *sb, Media::EXIFData *exif)
 {
 	if (exif == 0)
 	{

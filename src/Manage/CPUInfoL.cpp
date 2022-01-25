@@ -29,9 +29,9 @@ Manage::CPUInfo::CPUInfo()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWithC(UTF8STRC("Hardware"))) //ARM
+			if (sb.StartsWith(UTF8STRC("Hardware"))) //ARM
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				if (i != INVALID_INDEX && sysType <= 1)
 				{
 					if (this->clsData)
@@ -39,77 +39,77 @@ Manage::CPUInfo::CPUInfo()
 					this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
 					sysType = 2;
 				}
-				if (sb.IndexOf((const UTF8Char*)": BCM") != INVALID_INDEX)
+				if (sb.IndexOf(UTF8STRC(": BCM")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_BROADCOM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" AM33") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" AM33")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_TI;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" MSM") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" MSM")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_QUALCOMM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" RK30board") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" RK30board")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ROCKCHIP;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Amlogic") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" Amlogic")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_AMLOGIC;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Qualcomm ") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" Qualcomm ")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_QUALCOMM;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Annapurna Labs Alpine") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" Annapurna Labs Alpine")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ANNAPURNA;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Feroceon") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" Feroceon")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_MARVELL;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" rda") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" rda")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_RDA;
 				}
-				else if (sb.IndexOf((const UTF8Char*)" Atmel") != INVALID_INDEX)
+				else if (sb.IndexOf(UTF8STRC(" Atmel")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ATMEL;
 				}
 			}
-			else if (sb.StartsWithC(UTF8STRC("system type"))) //MIPS
+			else if (sb.StartsWith(UTF8STRC("system type"))) //MIPS
 			{
-				if (sb.IndexOf((const UTF8Char*)": Qualcomm Atheros") != INVALID_INDEX)
+				if (sb.IndexOf(UTF8STRC(": Qualcomm Atheros")) != INVALID_INDEX)
 				{
 					this->brand = Manage::CPUVendor::CB_ATHEROS;
 				}
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				if (this->clsData)
 					Text::StrDelNew((const UTF8Char*)this->clsData);
 				this->clsData = (void*)Text::StrCopyNew(sb.ToString() + i + 2);
 				sysType = 3;
 			}
-			else if (sb.StartsWithC(UTF8STRC("CPU architecture")))
+			else if (sb.StartsWith(UTF8STRC("CPU architecture")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				this->familyId = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWithC(UTF8STRC("CPU variant")))
+			else if (sb.StartsWith(UTF8STRC("CPU variant")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				this->model = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWithC(UTF8STRC("CPU revision")))
+			else if (sb.StartsWith(UTF8STRC("CPU revision")))
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				this->steppingId = Text::StrToInt32(sb.ToString() + i + 2);
 			}
-			else if (sb.StartsWithC(UTF8STRC("model name"))) //x86
+			else if (sb.StartsWith(UTF8STRC("model name"))) //x86
 			{
-				i = sb.IndexOf((const UTF8Char*)": ");
+				i = sb.IndexOf(UTF8STRC(": "));
 				if (i != INVALID_INDEX && sysType <= 0)
 				{
 					if (this->clsData)
@@ -118,7 +118,7 @@ Manage::CPUInfo::CPUInfo()
 					sysType = 1;
 				}
 			}
-			else if (sb.StartsWithC(UTF8STRC("CPU part	:")))
+			else if (sb.StartsWith(UTF8STRC("CPU part	:")))
 			{
 				cpuPart = Text::StrToInt32(sb.ToString() + 11);
 			}
@@ -154,7 +154,7 @@ Bool Manage::CPUInfo::SupportIntelDTS()
 	return false;
 }
 
-Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	return false;
 }
@@ -182,7 +182,7 @@ UOSInt Manage::CPUInfo::GetInfoCnt()
 	return this->infoCnt;
 }
 
-Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index < 0 || index >= this->infoCnt)
 		return false;
@@ -241,10 +241,10 @@ const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 	return 0;
 }
 
-void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 }
 
-void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF *sb)
+void Manage::CPUInfo::AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)
 {
 }

@@ -780,7 +780,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				sbOut.Append(s);
 				s->Release();
 				sbOut.AppendC(UTF8STRC("</h2>\r\n"));
-				if (!sb2.EqualsC(UTF8STRC("/")))
+				if (!sb2.Equals(UTF8STRC("/")))
 				{
 					sbOut.AppendC(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
 				}
@@ -1161,7 +1161,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (req->GetHeaderC(&sb2, UTF8STRC("Range")))
 		{
 			UInt64 fileSize = sizeLeft;
-			if (!sb2.StartsWith((const UTF8Char*)"bytes="))
+			if (!sb2.StartsWith(UTF8STRC("bytes=")))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_REQUESTED_RANGE_NOT_SATISFIABLE);
 				resp->AddDefHeaders(req);

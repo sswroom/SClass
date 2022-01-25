@@ -80,7 +80,7 @@ UInt32 Crypto::HOTP::CalcCode(const UInt8 *key, UOSInt keySize, UInt64 counter, 
 	}
 }
 
-void Crypto::HOTP::GenURI(Text::StringBuilderUTF *sb, const UTF8Char *name)
+void Crypto::HOTP::GenURI(Text::StringBuilderUTF8 *sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
 	sb->AppendC(UTF8STRC("otpauth://hotp/"));

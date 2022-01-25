@@ -260,7 +260,7 @@ Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
 	return oldExif;
 }
 
-void Media::Image::ToString(Text::StringBuilderUTF *sb)
+void Media::Image::ToString(Text::StringBuilderUTF8 *sb)
 {
 	this->info->ToString(sb);
 	if (this->HasHotSpot())

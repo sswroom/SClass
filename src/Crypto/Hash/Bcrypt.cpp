@@ -75,7 +75,7 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 	}
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen
+Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, const UTF8Char *password, UOSInt pwdLen
 )
 {
 	if (cost < 4 || cost > 31)
@@ -88,7 +88,7 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, cons
 	return this->GenHash(sb, cost, salt, password, pwdLen);
 }
 
-Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF *sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen)
+Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, const UInt8 *salt, const UTF8Char *password, UOSInt pwdLen)
 {
 	if (cost < 4 || cost > 31)
 	{

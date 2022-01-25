@@ -202,7 +202,7 @@ namespace DB
 			return Text::StrUTF8_WCharC(buff, row[colIndex]->v, row[colIndex]->leng, 0);
 		}
 
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		{
 			if (this->rows == 0 || colIndex >= this->colCount)
 				return false;
@@ -738,7 +738,7 @@ Bool DB::DBMS::SysVarExist(DB::DBMS::SessionInfo *sess, const UTF8Char *varName,
 	return false;
 }
 
-const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
+const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen)
 {
 	Bool isGlobal = false;
 	if (Text::StrStartsWithICaseC(varName, nameLen, UTF8STRC("GLOBAL.")))
@@ -1152,7 +1152,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 
 }
 
-const UTF8Char *DB::DBMS::UserVarGet(Text::StringBuilderUTF *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
+const UTF8Char *DB::DBMS::UserVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::SessionInfo *sess, const UTF8Char *varName)
 {
 	Text::String *val = sess->userVars->Get(varName);
 	UOSInt i = Text::StrCharCnt(varName);
@@ -1665,7 +1665,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				while (Text::CharUtil::PtrIsWS(&sptr));
 				if (sptr[0] == '(')
 				{
-					if (sb.EqualsICase((const UTF8Char*)"CONCAT"))
+					if (sb.EqualsICase(UTF8STRC("CONCAT")))
 					{
 						sb.ClearStr();
 						Text::String *sVal;
@@ -1709,7 +1709,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 							}
 						}
 					}
-					else if (sb.EqualsICase((const UTF8Char*)"DATABASE"))
+					else if (sb.EqualsICase(UTF8STRC("DATABASE")))
 					{
 						sptr++;
 						while (Text::CharUtil::PtrIsWS(&sptr));

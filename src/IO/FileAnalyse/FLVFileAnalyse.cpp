@@ -6,7 +6,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF *sb)
+UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt ofst, UOSInt endOfst, Text::StringBuilderUTF8 *sb)
 {
 	if (ofst >= endOfst)
 	{
@@ -198,7 +198,7 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
 	return 1 + this->tags->GetCount();
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	if (index == 0)
 	{
@@ -216,7 +216,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	return true;
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 buff[128];
 	UInt8 *tagData;

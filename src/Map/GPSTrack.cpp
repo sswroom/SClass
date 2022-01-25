@@ -1168,7 +1168,7 @@ UOSInt Map::GPSTrack::GetExtraCount(UOSInt trackIndex, UOSInt recIndex)
 	return this->extraParser->GetExtraCount(data, dataSize);
 }
 
-Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF *sb)
+Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (this->extraParser == 0)
 		return false;
@@ -1179,7 +1179,7 @@ Bool Map::GPSTrack::GetExtraName(UOSInt trackIndex, UOSInt recIndex, UOSInt extI
 	return this->extraParser->GetExtraName(data, dataSize, extIndex, sb);
 }
 
-Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF *sb)
+Bool Map::GPSTrack::GetExtraValueStr(UOSInt trackIndex, UOSInt recIndex, UOSInt extIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (this->extraParser == 0)
 		return false;
@@ -1336,7 +1336,7 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 	return 0;
 }
 
-Bool Map::GPSDataReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Map::GPSDataReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[32];
 	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)))

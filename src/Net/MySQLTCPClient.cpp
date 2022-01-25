@@ -180,7 +180,7 @@ public:
 		return Text::StrUTF8_WChar(buff, this->currRow[colIndex]->v, 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	{
 		if (this->currRow == 0)
 		{
@@ -624,7 +624,7 @@ public:
 		return Text::StrUTF8_WChar(buff, sb.ToString(), 0);
 	}
 
-	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+	virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	{
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
@@ -1914,7 +1914,7 @@ void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
 
 }
 
-void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF *sb)
+void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
@@ -2093,7 +2093,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	DEL_CLASS(reader);
 }
 
-void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF *str)
+void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastError)
 	{

@@ -489,7 +489,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))
 	{
-		if (sb.StartsWithC(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), '\t') == 2)
+		if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;

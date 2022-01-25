@@ -9,7 +9,7 @@
 #include "Sync/Mutex.h"
 #include "Sync/ParallelTask.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -50,9 +50,9 @@ namespace IO
 		Text::String *debugObj;
 		Sync::ParallelTask *tasks;
 
-		void AppendCfgItem(Text::StringBuilderUTF *sb, const UTF8Char *val);
-		void AppendCfgPath(Text::StringBuilderUTF *sb, const UTF8Char *path);
-		void AppendCfg(Text::StringBuilderUTF *sb, const UTF8Char *compileCfg);
+		void AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val);
+		void AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path);
+		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg);
 
 		Bool ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		Bool LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen);
@@ -73,7 +73,7 @@ namespace IO
 		virtual IO::ParserType GetParserType();
 
 		Bool IsLoadFailed();
-		Bool GetErrorMsg(Text::StringBuilderUTF *sb);
+		Bool GetErrorMsg(Text::StringBuilderUTF8 *sb);
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
 		void SetDebugObj(const UTF8Char *debugObj, UOSInt len);

@@ -113,7 +113,7 @@ Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *prot
 	return Text::String::NewNotNull(sb.ToString());
 }
 
-Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF *sb)
+Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 *sb)
 {
 	Crypto::Token::JWSignature::Algorithm alg;
 	Text::String *jwk = JWK(key, &alg);

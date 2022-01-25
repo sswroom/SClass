@@ -14,14 +14,14 @@ namespace Crypto
 			virtual ~X509PKCS12();
 
 			virtual FileType GetFileType();
-			virtual void ToShortName(Text::StringBuilderUTF *sb);
+			virtual void ToShortName(Text::StringBuilderUTF8 *sb);
 			
 			virtual UOSInt GetCertCount();
-			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF *sb);
+			virtual Bool GetCertName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual X509Cert *NewCert(UOSInt index);
 
 			virtual ASN1Data *Clone();
-			virtual void ToString(Text::StringBuilderUTF *sb);
+			virtual void ToString(Text::StringBuilderUTF8 *sb);
 		};
 	}
 }

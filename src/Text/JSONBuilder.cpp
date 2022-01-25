@@ -95,7 +95,7 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF *sb, ObjectType rootType)
+Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType)
 {
 	NEW_CLASS(this->objTypes, Data::ArrayList<ObjectType>());
 	this->sb = sb;

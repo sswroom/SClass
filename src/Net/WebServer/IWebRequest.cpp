@@ -66,7 +66,7 @@ Net::WebServer::IWebRequest::~IWebRequest()
 	SDEL_TEXT(this->reqOSVer);
 }
 
-Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF *sb)
+Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
 {
 	Text::String *hdr;
 	UTF8Char domain[256];

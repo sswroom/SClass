@@ -232,7 +232,7 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 	return this->tags->GetCount();
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
 	const UTF8Char *name;
@@ -253,7 +253,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	return true;
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF *sb)
+Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 *tagData;
 	UOSInt i;

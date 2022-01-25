@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 			sb.Append(sbuff);
 			sb.AppendChar('\"', 1);
 			sb.AppendChar(',', 1);
-			Text::SBAppendF64(&sb, (Double)(log->timeTicks - lastTick) / 1000.0);
+			sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);
 			lastTick = log->timeTicks;
 			sb.AppendChar(',', 1);
 			sb.AppendI16(log->rssi);

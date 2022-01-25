@@ -26,7 +26,7 @@ namespace SSWR
 				MyFile(const UTF8Char *fileName, UInt64 fileSize);
 				virtual ~MyFile();
 
-				Bool ToString(Text::StringBuilderUTF *sb);
+				Bool ToString(Text::StringBuilderUTF8 *sb);
 				const UTF8Char *GetName();
 				UInt64 GetSize();
 				virtual OSInt CompareTo(Data::IComparable *obj);

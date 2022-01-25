@@ -33,8 +33,8 @@ namespace DB
 		virtual Int32 GetInt32(UOSInt colIndex) = 0;
 		virtual Int64 GetInt64(UOSInt colIndex) = 0;
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff) = 0;
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb) = 0;
-		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb) = 0;
+		Bool GetStrN(UOSInt colIndex, Text::StringBuilderUTF8 *sb) { sb->ClearStr(); return GetStr(colIndex, sb); }
 		virtual Text::String *GetNewStr(UOSInt colIndex) = 0;
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize) = 0;
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal) = 0;

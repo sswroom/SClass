@@ -166,7 +166,7 @@ UOSInt IO::ProtoHdlr::ProtoMQTTHandler::BuildPacket(UInt8 *buff, Int32 cmdType, 
 	}
 }
 
-Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, Text::StringBuilderUTF *sb)
+Bool IO::ProtoHdlr::ProtoMQTTHandler::ParseUTF8Str(const UTF8Char *buff, UOSInt *index, UOSInt buffSize, Text::StringBuilderUTF8 *sb)
 {
 	UInt16 strSize;
 	if ((buffSize - *index) < 2)

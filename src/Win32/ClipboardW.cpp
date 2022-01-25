@@ -47,7 +47,7 @@ UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	return i;
 }
 
-Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 {
 	HANDLE hand = GetClipboardData(fmtId);
 	return GetDataTextH(hand, fmtId, sb, 1);
@@ -125,7 +125,7 @@ void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileName
 	}
 }
 
-Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF *sb, UInt32 tymed)
+Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed)
 {
 	UInt8 *memptr;
 	WChar sbuff[512];
@@ -573,7 +573,7 @@ Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
 	return true;
 }
 
-Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF *sb)
+Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;

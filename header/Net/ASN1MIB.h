@@ -38,15 +38,15 @@ namespace Net
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
-		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF *errMessage);
-		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
-		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::StringBuilderUTF *errMessage);
-		Bool ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		Bool ApplyOIDs(Text::StringBuilderUTF *errMessage);
-		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF *errMessage);
-		Bool ApplyImports(Text::StringBuilderUTF *errMessage);
-		Bool LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage, Bool postApply);
+		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF8 *errMessage);
+		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);
+		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
+		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);
+		Bool ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
+		Bool ApplyOIDs(Text::StringBuilderUTF8 *errMessage);
+		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
+		Bool ApplyImports(Text::StringBuilderUTF8 *errMessage);
+		Bool LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply);
 
 		static void RemoveSpace(UTF8Char *s);
 		static Bool IsType(const UTF8Char *s);
@@ -63,7 +63,7 @@ namespace Net
 		ModuleInfo *GetModuleByFileName(const UTF8Char *fileName);
 
 		void UnloadAll();
-		Bool LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF *errMessage);
+		Bool LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage);
 	};
 }
 #endif

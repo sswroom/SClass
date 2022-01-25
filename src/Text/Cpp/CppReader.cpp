@@ -16,7 +16,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	UOSInt l;
 	if (this->escapeType == ET_MULTILINE_COMMENT)
 	{
-		i = sb->IndexOf((const UTF8Char*)"*/", initSize);
+		i = sb->IndexOf(UTF8STRC("*/"), initSize);
 		if (i == INVALID_INDEX)
 		{
 			sb->TrimToLength(initSize);
@@ -27,7 +27,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	}
 	else if (this->escapeType == ET_STRING)
 	{
-		i = sb->IndexOf((const UTF8Char*)"\"", initSize);
+		i = sb->IndexOf(UTF8STRC("\""), initSize);
 		if (i == INVALID_INDEX)
 		{
 			return true;
@@ -37,9 +37,9 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 	}
 	while (true)
 	{
-		j = sb->IndexOf((const UTF8Char*)"/*", initSize);
-		k = sb->IndexOf((const UTF8Char*)"\"", initSize);
-		l = sb->IndexOf((const UTF8Char*)"//", initSize);
+		j = sb->IndexOf(UTF8STRC("/*"), initSize);
+		k = sb->IndexOf(UTF8STRC("\""), initSize);
+		l = sb->IndexOf(UTF8STRC("//"), initSize);
 		if (j == INVALID_INDEX && k == INVALID_INDEX && l == INVALID_INDEX)
 		{
 			break;
@@ -53,7 +53,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 
 		if (j != INVALID_INDEX && (k == INVALID_INDEX || k > j))
 		{
-			i = sb->IndexOf((const UTF8Char*)"*/", j + 2);
+			i = sb->IndexOf(UTF8STRC("*/"), j + 2);
 			if (i != INVALID_INDEX)
 			{
 				sb->RemoveChars(j, (i - j + 2));
@@ -67,7 +67,7 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 		}
 		else
 		{
-			i = sb->IndexOf((const UTF8Char*)"\"", k + 1);
+			i = sb->IndexOf(UTF8STRC("\""), k + 1);
 			if (i != INVALID_INDEX)
 			{
 				initSize = i + 1;
@@ -79,11 +79,11 @@ Bool Text::Cpp::CppReader::ReadLineInner(Text::StringBuilderUTF8 *sb)
 			}
 		}
 	}
-	sb->TrimRight();
+	sb->RTrim();
 	return true;
 }
 
-Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF *sb, Bool move)
+Bool Text::Cpp::CppReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 {
 	while (this->currOfst >= this->sbLine->GetCharCnt())
 	{
@@ -216,12 +216,12 @@ Text::Cpp::CppReader::~CppReader()
 	DEL_CLASS(this->reader);
 }
 
-Bool Text::Cpp::CppReader::PeekWord(Text::StringBuilderUTF *sb)
+Bool Text::Cpp::CppReader::PeekWord(Text::StringBuilderUTF8 *sb)
 {
 	return ReadWord(sb, false);
 }
 
-Bool Text::Cpp::CppReader::NextWord(Text::StringBuilderUTF *sb)
+Bool Text::Cpp::CppReader::NextWord(Text::StringBuilderUTF8 *sb)
 {
 	return ReadWord(sb, true);
 }
@@ -240,7 +240,7 @@ Bool Text::Cpp::CppReader::ReadLine(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Bool Text::Cpp::CppReader::GetLastLineBreak(Text::StringBuilderUTF *sb)
+Bool Text::Cpp::CppReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
 	return this->reader->GetLastLineBreak(sb);
 }

@@ -255,7 +255,7 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 	return &buff[retSize];
 }
 
-Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF *sb)
+Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 {
 	UInt32 retSize;
 	WChar *sptr = MemAlloc(WChar, 1024);

@@ -5,7 +5,7 @@
 #include "Text/JSText.h"
 #include "Text/XMLReader.h"
 
-Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
@@ -151,7 +151,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 	return true;
 }
 
-Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	UInt8 c;
 	Bool lineStart = true;
@@ -228,7 +228,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 	return currLev == 0;
 }
 
-Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF *sb, Data::ArrayList<Text::String *> *imgList)
+Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *buff, UOSInt buffSize, Bool singleLine, Text::StringBuilderUTF8 *sb, Data::ArrayList<Text::String *> *imgList)
 {
 	Text::XMLReader *reader;
 	IO::MemoryStream *mstm;
@@ -367,7 +367,7 @@ Bool Text::HTMLUtil::HTMLGetText(Text::EncodingFactory *encFact, const UInt8 *bu
 	return true;
 }
 
-Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF *sb)
+Bool Text::HTMLUtil::XMLWellFormat(const UTF8Char *buff, UOSInt buffSize, UOSInt lev, Text::StringBuilderUTF8 *sb)
 {
 	UOSInt startOfst = 0;
 	UOSInt currOfst = 0;

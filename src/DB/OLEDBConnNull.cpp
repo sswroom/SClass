@@ -64,7 +64,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
+void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
@@ -163,7 +163,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

@@ -136,15 +136,9 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		{
 			dvdVideo = MemAlloc(DVDVideoInfo, 1);
 			dvdVideo->videoId = r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			dvdVideo->anime = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			dvdVideo->series = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(3, &sb);
-			dvdVideo->volume = Text::StrCopyNew(sb.ToString());
+			dvdVideo->anime = r->GetNewStr(1);
+			dvdVideo->series = r->GetNewStr(2);
+			dvdVideo->volume = r->GetNewStr(3);
 			sb.ClearStr();
 			r->GetStr(4, &sb);
 			dvdVideo->dvdType = Text::StrCopyNew(sb.ToString());
@@ -279,9 +273,9 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	while (i-- > 0)
 	{
 		dvdVideo = dvdVideoList->GetItem(i);
-		Text::StrDelNew(dvdVideo->anime);
-		SDEL_TEXT(dvdVideo->series);
-		SDEL_TEXT(dvdVideo->volume);
+		dvdVideo->anime->Release();
+		SDEL_STRING(dvdVideo->series);
+		SDEL_STRING(dvdVideo->volume);
 		Text::StrDelNew(dvdVideo->dvdType);
 		MemFree(dvdVideo);
 	}
@@ -538,10 +532,10 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	{
 		DVDVideoInfo *dvdVideo = MemAlloc(DVDVideoInfo, 1);
 		dvdVideo->videoId = this->db->GetLastIdentity32();
-		dvdVideo->anime = Text::StrCopyNew(anime);
+		dvdVideo->anime = Text::String::NewNotNull(anime);
 		if (series)
 		{
-			dvdVideo->series = Text::StrCopyNew(series);
+			dvdVideo->series = Text::String::NewNotNull(series);
 		}
 		else
 		{
@@ -549,7 +543,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 		}
 		if (volume)
 		{
-			dvdVideo->volume = Text::StrCopyNew(volume);
+			dvdVideo->volume = Text::String::NewNotNull(volume);
 		}
 		else
 		{

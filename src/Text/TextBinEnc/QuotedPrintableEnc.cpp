@@ -10,7 +10,7 @@ Text::TextBinEnc::QuotedPrintableEnc::~QuotedPrintableEnc()
 {
 }
 
-UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(Text::StringBuilderUTF *sb, const UInt8 *dataBuff, UOSInt buffSize)
+UOSInt Text::TextBinEnc::QuotedPrintableEnc::EncodeBin(Text::StringBuilderUTF8 *sb, const UInt8 *dataBuff, UOSInt buffSize)
 {
 	UTF8Char sbuff[78];
 	UOSInt lineCnt = 0;

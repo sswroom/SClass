@@ -2572,6 +2572,25 @@ UTF8Char *Text::StrTrimWSCRLF(UTF8Char* str1)
 	}
 }
 
+UTF8Char *Text::StrTrimWSCRLFC(UTF8Char* str1, UOSInt len1)
+{
+	while (len1 > 0 && (str1[len1 - 1] == ' ' || str1[len1 - 1] == '\t' || str1[len1 - 1] == '\r' || str1[len1 - 1] == '\n'))
+	{
+		str1[--len1] = 0;
+	}
+	UTF8Char *sptr;
+	UTF8Char c;
+	if (str1[0] == ' ' || str1[0] == '\t' || str1[0] == '\r' || str1[0] == '\n')
+	{
+		sptr = str1 + 1;
+		while ((c = *sptr) == ' ' || c == '\t' || str1[0] == '\r' || str1[0] == '\n')
+			sptr++;
+		len1 -= (UOSInt)(sptr - str1);
+		MemCopyO(str1, sptr, len1 + 1);
+	}
+	return &str1[len1];
+}
+
 UTF8Char *Text::StrRemoveChar(UTF8Char *str1, UTF8Char c)
 {
 	UTF8Char *sp = str1;

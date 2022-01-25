@@ -4,7 +4,7 @@
 #include "IO/Stream.h"
 #include "Text/Encoding.h"
 #include "Text/EncodingFactory.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
 namespace Text
@@ -45,7 +45,7 @@ namespace Text
 		XMLReader(Text::EncodingFactory *encFact, IO::Stream *stm, ParseMode mode);
 		~XMLReader();
 
-		void GetCurrPath(Text::StringBuilderUTF *sb);
+		void GetCurrPath(Text::StringBuilderUTF8 *sb);
 		UOSInt GetPathLev();
 		Text::XMLNode::NodeType GetNodeType();
 		Text::String *GetNodeText(); //TextNode = Value, ElementNode = Name
@@ -55,14 +55,14 @@ namespace Text
 		Text::XMLAttrib *GetAttrib(const UTF8Char *name, UOSInt nameLen);
 
 		Bool ReadNext();
-		Bool ReadNodeText(Text::StringBuilderUTF *sb);
+		Bool ReadNodeText(Text::StringBuilderUTF8 *sb);
 		Bool SkipElement();
 		Bool IsElementEmpty();
 		Bool IsComplete();
 		OSInt GetErrorCode();
-		Bool ToString(Text::StringBuilderUTF *sb);
+		Bool ToString(Text::StringBuilderUTF8 *sb);
 
-		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF *sb);
+		static Bool XMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *stm, UOSInt lev, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

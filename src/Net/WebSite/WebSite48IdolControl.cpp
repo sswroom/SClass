@@ -212,7 +212,7 @@ void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite:
 	itemList->Clear();
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF *link)
+Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF8 *link)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)BASEURL "video/");
@@ -255,7 +255,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 	return found;
 }
 
-Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::StringBuilderUTF *name)
+Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::StringBuilderUTF8 *name)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.Append((const UTF8Char*)BASEURL "video/");
@@ -290,7 +290,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::Strin
 	return found;
 }
 
-void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, Text::StringBuilderUTF *dispName)
+void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, Text::StringBuilderUTF8 *dispName)
 {
 	UOSInt i;
 	Text::StringBuilderUTF8 sb;
@@ -320,11 +320,11 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 	sbuff[1] = 0xBC;
 	sbuff[2] = 0x9F;
 	sbuff[3] = 0;
-	sb.Replace((const UTF8Char*)"?", sbuff);
+	sb.ReplaceStr(UTF8STRC("?"), sbuff, 3);
 	sbuff[0] = 0xEF;
 	sbuff[1] = 0xBC;
 	sbuff[2] = 0x9A;
-	sb.Replace((const UTF8Char*)":", sbuff);
+	sb.ReplaceStr(UTF8STRC(":"), sbuff, 3);
 	while (sb.EndsWith(')'))
 	{
 		i = sb.LastIndexOf('(');
@@ -344,7 +344,7 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 		dispName->AppendC(UTF8STRC(" 20"));
 		dispName->AppendC(sb.ToString(), 6);
 	}
-	else if (sb.StartsWith((const UTF8Char*)"[BD/DVD] "))
+	else if (sb.StartsWith(UTF8STRC("[BD/DVD] ")))
 	{
 		dispName->Append(sb.ToString() + 9);
 	}

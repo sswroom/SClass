@@ -49,7 +49,7 @@ namespace Data
 		void SetItemVectorDirect(const UTF8Char *name, Math::Vector2D *vec);
 		void SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid);
 
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 		Class *CreateClass();
 	};
 }

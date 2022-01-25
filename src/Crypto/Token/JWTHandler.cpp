@@ -95,13 +95,14 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 
 Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char *token, JWTParam *param)
 {
-	UOSInt i1 = Text::StrIndexOfChar(token, '.');;
-	UOSInt i2 = Text::StrIndexOfChar(&token[i1 + 1], '.');
+	UOSInt tokenLen = Text::StrCharCnt(token);
+	UOSInt i1 = Text::StrIndexOfCharC(token, tokenLen, '.');;
+	UOSInt i2 = Text::StrIndexOfCharC(&token[i1 + 1], tokenLen - i1 - 1, '.');
 	if (i1 != INVALID_INDEX && i2 != INVALID_INDEX)
 	{
 		i2 += i1 + 1;
 	}
-	UOSInt i3 = Text::StrIndexOfChar(&token[i2 + 1], '.');
+	UOSInt i3 = Text::StrIndexOfCharC(&token[i2 + 1], tokenLen - i2 - 1, '.');
 	if (i2 == INVALID_INDEX || i3 != INVALID_INDEX)
 	{
 		return 0;
@@ -143,7 +144,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 	}
 	Text::StringBuilderUTF8 sb;
 	sign.GetHashB64(&sb);
-	if (!sb.Equals(&token[i2 + 1]))
+	if (!sb.Equals(&token[i2 + 1], tokenLen - i2 - 1))
 	{
 		MemFree(headerBuff);
 		MemFree(payloadBuff);

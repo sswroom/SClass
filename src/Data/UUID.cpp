@@ -89,7 +89,7 @@ OSInt Data::UUID::CompareTo(UUID *uuid)
 	return 0;
 }
 
-void Data::UUID::ToString(Text::StringBuilderUTF *sb)
+void Data::UUID::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendHex32(ReadUInt32(&this->data[0]));
 	sb->AppendChar('-', 1);
