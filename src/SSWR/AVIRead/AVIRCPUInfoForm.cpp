@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			sbURL.AppendC(UTF8STRC("&stepping="));
 			sbURL.AppendI32(cpu.GetStepping());
 
-			sbData.Append(u8buff);
+			sbData.AppendSlow(u8buff);
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
@@ -65,8 +65,9 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	UTF8Char u8buff[512];
+	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
-	if (cpu.GetCPUName(u8buff) == 0)
+	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting CPU Name", (const UTF8Char*)"Error", me);
 	}
@@ -79,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 		sb.AppendChar('\t', 1);
 		sb.AppendI32(cpu.GetStepping());
 		sb.AppendChar('\t', 1);
-		sb.Append(u8buff);
+		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
 		Win32::Clipboard::SetString(me->GetHandle(), sb.ToString());
 	}
 #endif
@@ -192,10 +193,11 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	Double t;
 	Int32 r;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	sb.ClearStr();
-	if (cpu.GetCPUName(u8buff))
+	if ((sptr = cpu.GetCPUName(u8buff)) != 0)
 	{
-		sb.Append(u8buff);
+		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
 		k = this->lvMain->AddItem((const UTF8Char*)"CPU Name", 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}

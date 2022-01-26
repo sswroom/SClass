@@ -36,7 +36,29 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(Text::StringBase<const 
 	return this;
 }
 
-Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(const UTF8Char *s)
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(const Text::StringBase<UTF8Char> &s)
+{
+	if (s.leng > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(s.leng);
+		MemCopyNO(&this->v[this->leng], s.v, s.leng + 1);
+		this->leng += s.leng;
+	}
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(const Text::StringBase<const UTF8Char> &s)
+{
+	if (s.leng > 0)
+	{
+		STRINGBUILDER_ALLOCLENG(s.leng);
+		MemCopyNO(&this->v[this->leng], s.v, s.leng + 1);
+		this->leng += s.leng;
+	}
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendSlow(const UTF8Char *s)
 {
 	if (s == 0)
 	{

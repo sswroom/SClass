@@ -16,9 +16,9 @@ namespace Text
 //http://msdn.microsoft.com/en-us/library/b0084kay.aspx
 			typedef struct
 			{
-				const UTF8Char *defineName;
+				Text::String *defineName;
 				Text::String *defineVal;
-				const UTF8Char *defineParam;
+				Text::String *defineParam;
 				Text::String *fileName;
 				Int32 lineNum;
 				Bool undefined;

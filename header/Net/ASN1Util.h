@@ -58,7 +58,7 @@ namespace Net
 		static UOSInt OIDCalcPDUSize(const UTF8Char *oidText, UOSInt oidTextLen);
 		static UOSInt OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UInt8 *pduBuff);
 
-		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF8 *sb);
+		static void OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, Text::StringBuilderUTF8 *sb);
 	private:
 		static UInt32 Str2Digit(const UTF8Char *s);
 	};

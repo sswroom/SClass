@@ -117,8 +117,8 @@ namespace Crypto
 			void ToShortString(Text::StringBuilderUTF8 *sb);
 			Bool IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X509Key *key);
 
-			static const UTF8Char *FileTypeGetName(FileType fileType);
-			static const UTF8Char *KeyTypeGetName(KeyType keyType);
+			static Text::CString FileTypeGetName(FileType fileType);
+			static Text::CString KeyTypeGetName(KeyType keyType);
 			static Text::CString KeyTypeGetOID(KeyType keyType);
 		};
 	}

@@ -38,7 +38,7 @@ namespace IO
 			void AddStrC(UOSInt frameOfst, UOSInt size, const Char *name, const UTF8Char *vBuff);
 			void AddStrS(UOSInt frameOfst, UOSInt size, const Char *name, const UTF8Char *vBuff);
 			void AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UInt8 *vBuff, Bool multiLine);
-			void AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UInt8 *vBuff, UTF32Char seperator, Bool multiLine);
+			void AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UInt8 *vBuff, UTF8Char seperator, Bool multiLine);
 			void AddIPv4(UOSInt frameOfst, const Char *name, const UInt8 *vBuff);
 			void AddIPv6(UOSInt frameOfst, const Char *name, const UInt8 *vBuff);
 			void AddMACAddr(UOSInt frameOfst, const Char *name, const UInt8 *macBuff, Bool showVendor);

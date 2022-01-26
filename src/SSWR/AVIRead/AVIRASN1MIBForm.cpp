@@ -110,7 +110,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 		}
 		this->lvOID->SetSubItem(i, 2, obj->objectName);
 
-		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName, &sbOIDText);
+		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, &sbOIDText);
 		i++;
 	}
 	this->txtOIDText->SetText(sbOIDText.ToString());

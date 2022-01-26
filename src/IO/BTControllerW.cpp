@@ -208,7 +208,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	info.dwSize = sizeof(info);
 	if (GetInfo != 0 && GetInfo((HANDLE)this->hand, &info) == ERROR_SUCCESS)
 	{
-		this->name = Text::StrToUTF8New(info.szName);
+		this->name = Text::String::NewNotNull(info.szName);
 		this->addr[0] = info.address.rgBytes[0];
 		this->addr[1] = info.address.rgBytes[1];
 		this->addr[2] = info.address.rgBytes[2];
@@ -238,7 +238,7 @@ IO::BTController::~BTController()
 {
 	InternalData *me = (InternalData*)this->internalData;
 	CloseHandle((HANDLE)this->hand);
-	SDEL_TEXT(this->name);
+	SDEL_STRING(this->name);
 	if (Sync::Interlocked::Decrement(&me->useCnt) <= 0)
 	{
 		DEL_CLASS(me->lib);
@@ -294,7 +294,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-const UTF8Char *IO::BTController::GetName()
+Text::String *IO::BTController::GetName()
 {
 	return this->name;
 }

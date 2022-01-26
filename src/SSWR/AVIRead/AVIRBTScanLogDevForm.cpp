@@ -17,6 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		IO::FileStream *fs;
 		IO::BufferedOutputStream *stm;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -35,10 +36,10 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 			log = me->entry->logs->GetItem(i);
 			dt.SetTicks(log->timeTicks);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			sb.ClearStr();
 			sb.AppendChar('\"', 1);
-			sb.Append(sbuff);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendChar('\"', 1);
 			sb.AppendChar(',', 1);
 			sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_ASN1MIB
 #define _SM_NET_ASN1MIB
+#include "Data/ArrayListString.h"
 #include "Data/StringUTF8Map.h"
 #include "Net/MIBReader.h"
 #include "Text/StringBuilderUTF8.h"
@@ -13,9 +14,9 @@ namespace Net
 
 		struct ObjectInfo
 		{
-			const UTF8Char *objectName;
-			const UTF8Char *typeName;
-			const UTF8Char *typeVal;
+			Text::String *objectName;
+			Text::String *typeName;
+			Text::String *typeVal;
 			UInt8 oid[32];
 			UOSInt oidLen;
 			Data::ArrayList<const UTF8Char *> *valName;
@@ -28,7 +29,7 @@ namespace Net
 		{
 			const UTF8Char *moduleName;
 			const UTF8Char *moduleFileName;
-			Data::ArrayListStrUTF8 *objKeys;
+			Data::ArrayListString *objKeys;
 			Data::ArrayList<ObjectInfo*> *objValues;
 			Data::ArrayList<ObjectInfo *> *oidList;
 		};
@@ -38,7 +39,7 @@ namespace Net
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
 		static void ModuleAppendOID(ModuleInfo *module, ObjectInfo *obj);
-		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF8 *errMessage);
+		Bool ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *s, Text::StringBuilderUTF8 *errMessage);
 		Bool ParseObjectBegin(Net::MIBReader *reader, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);
 		Bool ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
 		Bool ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::StringBuilderUTF8 *errMessage);

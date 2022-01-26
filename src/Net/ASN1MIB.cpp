@@ -63,9 +63,9 @@ void Net::ASN1MIB::ModuleAppendOID(Net::ASN1MIB::ModuleInfo *module, ObjectInfo 
 	module->oidList->Insert((UOSInt)i, obj);
 }
 
-Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF8Char *s, Text::StringBuilderUTF8 *errMessage)
+Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *oriS, Text::StringBuilderUTF8 *errMessage)
 {
-	const UTF8Char *oriS = s;
+	const UTF8Char *csptr = oriS->v;
 	UTF8Char c;
 	const UTF8Char *oidName;
 	UOSInt oidNameLen;
@@ -76,7 +76,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	Text::StringBuilderUTF8 sb;
 	while (true)
 	{
-		c = *s++;
+		c = *csptr++;
 		if (c == ' ')
 		{
 
@@ -85,7 +85,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		{
 			break;
 		}
-		else if ((i = module->objKeys->SortedIndexOf(s - 1)) >= 0)
+		else if ((i = module->objKeys->SortedIndexOfPtr(csptr - 1)) >= 0)
 		{
 			ObjectInfo *refObj = module->objValues->GetItem((UOSInt)i);
 			if (!refObj->parsed)
@@ -95,7 +95,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 					return false;
 				}
 			}
-			s = refObj->typeVal;
+			csptr = refObj->typeVal->v;
 		}
 		else
 		{
@@ -108,7 +108,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	}
 	while (true)
 	{
-		c = *s++;
+		c = *csptr++;
 		if (c == ' ')
 		{
 
@@ -123,16 +123,16 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 		}
 		else
 		{
-			oidName = s - 1;
+			oidName = csptr - 1;
 			break;
 		}
 	}
 	while (true)
 	{
-		c = *s++;
+		c = *csptr++;
 		if (c == ' ')
 		{
-			oidNameLen = (UOSInt)(s - oidName - 1);
+			oidNameLen = (UOSInt)(csptr - oidName - 1);
 			break;
 		}
 		else if (c == '}' || c == 0)
@@ -172,7 +172,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	}
 	else
 	{
-		OSInt i = module->objKeys->SortedIndexOf(sb.ToString());
+		OSInt i = module->objKeys->SortedIndexOfPtr(sb.ToString());
 		ObjectInfo *obj2;
 		if (i < 0)
 		{
@@ -227,7 +227,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 	{
 		while (true)
 		{
-			c = *s++;
+			c = *csptr++;
 			if (c == ' ')
 			{
 
@@ -236,7 +236,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			{
 				while (true)
 				{
-					c = *s++;
+					c = *csptr++;
 					if (c == ' ')
 					{
 					}
@@ -256,26 +256,26 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, const UTF
 			}
 			else
 			{
-				oidNextLev = s - 1;
+				oidNextLev = csptr - 1;
 				break;
 			}
 		}
 		while (true)
 		{
-			c = *s++;
+			c = *csptr++;
 			if (c == ' ' || c == '}')
 			{
 				i = 0;
-				while (s[i] == ' ')
+				while (csptr[i] == ' ')
 				{
 					i++;
 				}
-				if (s[i] != '(')
+				if (csptr[i] != '(')
 				{
-					oidNextLen = (UOSInt)(s - oidNextLev - 1);
+					oidNextLen = (UOSInt)(csptr - oidNextLev - 1);
 					if (c == '}')
 					{
-						s--;
+						csptr--;
 					}
 					break;
 				}
@@ -418,7 +418,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 			return false;
 		}
 
-		if (currObj && currObj->objectName && Text::StrEquals(currObj->objectName, (const UTF8Char*)"id-sha1"))
+		if (currObj && currObj->objectName && currObj->objectName->Equals(UTF8STRC("id-sha1")))
 		{
 			i = 0;
 		}
@@ -492,10 +492,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							sbTmp.Append(currObj->typeVal);
 							sbTmp.AppendChar(' ', 1);
 							sbTmp.AppendC(sb.ToString(), sb.GetLength());
-							Text::StrDelNew(currObj->typeVal);
-							currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+							currObj->typeVal->Release();
+							currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 
-							OSInt brkEndIndex = BranketEnd(currObj->typeVal, (UTF8Char*)&brkEndChar);
+							OSInt brkEndIndex = BranketEnd(currObj->typeVal->v, (UTF8Char*)&brkEndChar);
 							if (brkEndIndex >= 0)
 							{
 								objBrkType = 0;
@@ -507,17 +507,17 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								}
 								sbObjValName.ClearStr();
 								sbObjValCont.ClearStr();
-								if (Text::StrEquals(currObj->objectName, (const UTF8Char*)DEBUGOBJ))
+								if (currObj->objectName->Equals(UTF8STRC(DEBUGOBJ)))
 								{
 									sbObjValCont.ClearStr();
 								}
 
-								if (currObj->typeName == 0 || currObj->typeName[0] == '{')
+								if (currObj->typeName == 0 || currObj->typeName->v[0] == '{')
 								{
-									const UTF8Char *sptr = SkipWS(&currObj->typeVal[brkEndIndex]);
+									const UTF8Char *sptr = SkipWS(&currObj->typeVal->v[brkEndIndex]);
 									if (sptr[0] == '(')
 									{
-										OSInt nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+										OSInt nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 										while (nextEndIndex < 0)
 										{
 											sb.ClearStr();
@@ -529,9 +529,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
 												return false;
 											}
-											Text::StrDelNew(currObj->typeVal);
-											currObj->typeVal = Text::StrCopyNew(sb.ToString());
-											nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+											currObj->typeVal->Release();
+											currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+											nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 										}
 										RemoveSpace((UTF8Char*)currObj->typeVal);
 									}
@@ -539,7 +539,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										if (Text::StrIndexOfChar(sptr, '{') != INVALID_INDEX)
 										{
-											OSInt nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+											OSInt nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 											while (nextEndIndex < 0)
 											{
 												sb.ClearStr();
@@ -551,9 +551,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													errMessage->AppendC(sb.ToString(), sb.GetLength());
 													return false;
 												}
-												Text::StrDelNew(currObj->typeVal);
-												currObj->typeVal = Text::StrCopyNew(sb.ToString());
-												nextEndIndex = BranketEnd(&currObj->typeVal[brkEndIndex], 0);
+												currObj->typeVal->Release();
+												currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+												nextEndIndex = BranketEnd(&currObj->typeVal->v[brkEndIndex], 0);
 											}
 											RemoveSpace((UTF8Char*)currObj->typeVal);
 										}
@@ -568,8 +568,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												errMessage->AppendC(sb.ToString(), sb.GetLength());
 												return false;
 											}
-											Text::StrDelNew(currObj->typeVal);
-											currObj->typeVal = Text::StrCopyNew(sb.ToString());
+											currObj->typeVal->Release();
+											currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 										}
 									}
 									else
@@ -599,8 +599,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													sbTmp.Append(currObj->typeVal);
 													sbTmp.AppendChar(' ', 1);
 													sbTmp.AppendC(sb.ToString(), sb.GetLength());
-													Text::StrDelNew(currObj->typeVal);
-													currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+													currObj->typeVal->Release();
+													currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 													RemoveSpace((UTF8Char*)currObj->typeVal);
 												}
 												else
@@ -622,8 +622,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													sb.Append(currObj->typeVal);
 													sb.AppendChar(' ', 1);
 													reader->NextWord(&sb);
-													Text::StrDelNew(currObj->typeVal);
-													currObj->typeVal = Text::StrCopyNew(sb.ToString());
+													currObj->typeVal->Release();
+													currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 													RemoveSpace((UTF8Char*)currObj->typeVal);
 													sb.ClearStr();
 													reader->PeekWord(&sb);
@@ -634,7 +634,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									}
 									currObj = 0;
 								}
-								else if (Text::StrEquals(currObj->typeName, (const UTF8Char*)"OBJECT IDENTIFIER"))
+								else if (currObj->typeName->Equals(UTF8STRC("OBJECT IDENTIFIER")))
 								{
 									currObj = 0;
 								}
@@ -666,7 +666,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									sbTmp.ClearStr();
 									reader->PeekWord(&sbTmp);
 								}
-								currObj->typeVal = Text::StrCopyNew(sb.ToString());
+								currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 								currObj = 0;
 								objIsEqual = false;
 							}
@@ -679,11 +679,11 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 						else
 						{
-							currObj->typeVal = Text::StrCopyNew(sb.ToString());
-							i = Text::StrIndexOfChar(currObj->typeVal, '{');
+							currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
+							i = currObj->typeVal->IndexOf('{');
 							if (i != INVALID_INDEX)
 							{
-								if (Text::StrCountChar(currObj->typeVal, '{') <= Text::StrCountChar(currObj->typeVal, '}'))
+								if (currObj->typeVal->CountChar('{') <= currObj->typeVal->CountChar('}'))
 								{
 									currObj = 0;
 									objIsEqual = false;
@@ -693,7 +693,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									objBrkType = '{';
 								}
 							}
-							else if (Text::StrEndsWith(currObj->typeVal, (const UTF8Char*)" OF"))
+							else if (currObj->typeVal->EndsWith(UTF8STRC(" OF")))
 							{
 								sb.ClearStr();
 								sb.Append(currObj->typeVal);
@@ -710,8 +710,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								{
 									reader->NextWord(&sb);
 								}
-								Text::StrDelNew(currObj->typeVal);
-								currObj->typeVal = Text::StrCopyNew(sb.ToString());
+								currObj->typeVal->Release();
+								currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 								sb.ClearStr();
 								currObj = 0;
 							}
@@ -724,8 +724,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									sbTmp.Append(currObj->typeVal);
 									sbTmp.AppendChar(' ', 1);
 									reader->NextWord(&sbTmp);
-									Text::StrDelNew(currObj->typeVal);
-									currObj->typeVal = Text::StrCopyNew(sbTmp.ToString());
+									currObj->typeVal->Release();
+									currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 								}
 								currObj = 0;
 								objIsEqual = false;
@@ -747,9 +747,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							i++;
 						}
-						currObj->typeVal = Text::StrCopyNew(sb.ToString() + i);
-						UOSInt startCnt = Text::StrCountChar(currObj->typeVal, '{');
-						UOSInt endCnt = Text::StrCountChar(currObj->typeVal, '}');
+						currObj->typeVal = Text::String::New(sb.ToString() + i, sb.GetLength() - i);
+						UOSInt startCnt = currObj->typeVal->CountChar('{');
+						UOSInt endCnt = currObj->typeVal->CountChar('}');
 						if (endCnt >= startCnt)
 						{
 							currObj = 0;
@@ -846,7 +846,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							else
 							{
 								sbObjValName.AppendC(sb.ToString(), i);
-								sbObjValCont.Append(sb.ToString() + i + 1);
+								sbObjValCont.AppendC(sb.ToString() + i + 1, sb.GetLength() - i - 1);
 								sbObjValCont.Trim();
 							}
 							
@@ -1003,9 +1003,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									}
 								}
 								impObj = MemAlloc(ObjectInfo, 1);
-								impObj->objectName = Text::StrCopyNew(impSarr[0]);
-								impObj->typeName = Text::StrCopyNew(sb.ToString());
-								impObj->typeVal = Text::StrCopyNew((const UTF8Char*)"Imported Value");
+								impObj->objectName = Text::String::NewNotNull(impSarr[0]);
+								impObj->typeName = Text::String::New(sb.ToString(), sb.GetLength());
+								impObj->typeVal = Text::String::New(UTF8STRC("Imported Value"));
 								impObj->oidLen = 0;
 								NEW_CLASS(impObj->valName, Data::ArrayList<const UTF8Char*>());
 								NEW_CLASS(impObj->valCont, Data::ArrayList<const UTF8Char*>());
@@ -1182,14 +1182,14 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							k = l;
 						}
 						obj = MemAlloc(ObjectInfo, 1);
-						obj->objectName = Text::StrCopyNewC(sb.ToString(), k);
+						obj->objectName = Text::String::New(sb.ToString(), k);
 						if (j > k)
 						{
 							while (sb.ToString()[k] == ' ' || sb.ToString()[k] == '\t')
 							{
 								k++;
 							}
-							obj->typeName = Text::StrCopyNewC(sb.ToString() + k, (UOSInt)(j - k));
+							obj->typeName = Text::String::New(sb.ToString() + k, (UOSInt)(j - k));
 						}
 						else
 						{
@@ -1205,7 +1205,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						module->objValues->Insert(ui, obj);
 						ui = this->globalModule.objKeys->SortedInsert(obj->objectName);
 						this->globalModule.objValues->Insert(ui, obj);
-						if (Text::StrEquals(obj->objectName, (const UTF8Char*)DEBUGOBJ))
+						if (obj->objectName->Equals(UTF8STRC(DEBUGOBJ)))
 						{
 							currObj = 0;
 						}
@@ -1225,7 +1225,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								i++;
 							}
-							obj->typeVal = Text::StrCopyNew(sb.ToString() + i);
+							obj->typeVal = Text::String::New(sb.ToString() + i, sb.GetLength() - i);
 							currObj = obj;
 							sbObjValName.ClearStr();
 							sbObjValCont.ClearStr();
@@ -1233,10 +1233,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							objIsEqual = false;
 							objBrkType = 0;
 
-							if (Text::StrIndexOfChar(obj->typeVal, '{') != INVALID_INDEX)
+							if (obj->typeVal->IndexOf('{') != INVALID_INDEX)
 							{
-								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '{');
-								UOSInt endCnt = Text::StrCountChar(obj->typeVal, '}');
+								UOSInt startCnt = obj->typeVal->CountChar('{');
+								UOSInt endCnt = obj->typeVal->CountChar('}');
 								if (endCnt >= startCnt)
 								{
 								}
@@ -1246,10 +1246,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									objIsEqual = true;
 								}
 							}
-							else if ((i = Text::StrIndexOfChar(obj->typeVal, '(')) != INVALID_INDEX)
+							else if ((i = obj->typeVal->CountChar('(')) != INVALID_INDEX)
 							{
-								UOSInt startCnt = Text::StrCountChar(obj->typeVal, '(');
-								UOSInt endCnt = Text::StrCountChar(obj->typeVal, ')');
+								UOSInt startCnt = obj->typeVal->CountChar('(');
+								UOSInt endCnt = obj->typeVal->CountChar(')');
 								if (endCnt >= startCnt)
 								{
 								}
@@ -1262,7 +1262,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 
 							if (!objIsEqual)
 							{
-								if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"SIZE"))
+								if (obj->typeVal->EndsWith(UTF8STRC("SIZE")))
 								{
 									sb.ClearStr();
 									sb.Append(obj->typeVal);
@@ -1286,10 +1286,10 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 										reader->NextWord(&sb);
 									}
 									sbObjValCont.ClearStr();
-									Text::StrDelNew(obj->typeVal);
-									obj->typeVal = Text::StrCopyNew(sb.ToString());
+									obj->typeVal->Release();
+									obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 								}
-								else if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)"TEXTUAL-CONVENTION"))
+								else if (obj->typeVal->EndsWith(UTF8STRC("TEXTUAL-CONVENTION")))
 								{
 									while (true)
 									{
@@ -1318,7 +1318,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 										}
 									}
 								}
-								else if (Text::StrEndsWith(obj->typeVal, (const UTF8Char*)" OF"))
+								else if (obj->typeVal->EndsWith(UTF8STRC(" OF")))
 								{
 									sb.ClearStr();
 									sb.Append(obj->typeVal);
@@ -1331,8 +1331,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										reader->NextWord(&sb);
 									}
-									Text::StrDelNew(obj->typeVal);
-									obj->typeVal = Text::StrCopyNew(sb.ToString());
+									obj->typeVal->Release();
+									obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 								}
 								else
 								{
@@ -1346,8 +1346,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 										reader->NextWord(&sb);
 										sb.AppendChar(' ', 1);
 										reader->NextWord(&sb);
-										Text::StrDelNew(obj->typeVal);
-										obj->typeVal = Text::StrCopyNew(sb.ToString());
+										obj->typeVal->Release();
+										obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 									}
 									else if (sbObjValCont.StartsWith(UTF8STRC("(")))
 									{
@@ -1365,8 +1365,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											sb.AppendChar(' ', 1);
 											reader->NextWord(&sb);
 										}
-										Text::StrDelNew(obj->typeVal);
-										obj->typeVal = Text::StrCopyNew(sb.ToString());
+										obj->typeVal->Release();
+										obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
 									}
 									sbObjValCont.ClearStr();
 								}
@@ -1406,12 +1406,12 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 
 						obj = MemAlloc(ObjectInfo, 1);
-						obj->objectName = Text::StrCopyNewC(sb.ToString(), (UOSInt)i);
+						obj->objectName = Text::String::New(sb.ToString(), (UOSInt)i);
 						while (sb.ToString()[i] == ' ' || sb.ToString()[i] == '\t')
 						{
 							i++;
 						}
-						obj->typeName = Text::StrCopyNew(sb.ToString() + i);
+						obj->typeName = Text::String::New(sb.ToString() + i, sb.GetLength() - i);
 						obj->typeVal = 0;
 						obj->oidLen = 0;
 						NEW_CLASS(obj->valName, Data::ArrayList<const UTF8Char*>());
@@ -1422,7 +1422,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						module->objValues->Insert(ui, obj);
 						ui = this->globalModule.objKeys->SortedInsert(obj->objectName);
 						this->globalModule.objValues->Insert(ui, obj);
-						if (Text::StrEquals(obj->objectName, (const UTF8Char*)DEBUGOBJ))
+						if (obj->objectName->Equals(UTF8STRC(DEBUGOBJ)))
 						{
 							currObj = obj;
 						}
@@ -1502,13 +1502,13 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 			}
 		}
 
-		SDEL_TEXT(obj->typeName);
+		SDEL_STRING(obj->typeName);
 		if (impObj->typeName)
 		{
-			obj->typeName = Text::StrCopyNew(impObj->typeName);
+			obj->typeName = impObj->typeName->Clone();
 		}
-		SDEL_TEXT(obj->typeVal);
-		obj->typeVal = SCOPY_TEXT(impObj->typeVal);
+		SDEL_STRING(obj->typeVal);
+		obj->typeVal = SCOPY_STRING(impObj->typeVal);
 		obj->oidLen = impObj->oidLen;
 		if (impObj->oidLen > 0)
 		{
@@ -1528,20 +1528,20 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 	if (obj->typeName && obj->typeVal && obj->oidLen == 0)
 	{
 		valid = true;
-		if (Text::StrEquals(obj->typeName, (const UTF8Char*)"TRAP-TYPE")) valid = false;
-		if (Text::StrEquals(obj->typeName, (const UTF8Char*)"ATTRIBUTE")) valid = false;
-		if (Text::StrEquals(obj->typeName, (const UTF8Char*)"INTEGER")) valid = false;
-		if (Text::StrEquals(obj->typeName, (const UTF8Char*)"NULL")) valid = false;
-		if (Text::StrStartsWith(obj->typeName, (const UTF8Char*)"OCTET STRING")) valid = false;
+		if (obj->typeName->Equals(UTF8STRC("TRAP-TYPE"))) valid = false;
+		if (obj->typeName->Equals(UTF8STRC("ATTRIBUTE"))) valid = false;
+		if (obj->typeName->Equals(UTF8STRC("INTEGER"))) valid = false;
+		if (obj->typeName->Equals(UTF8STRC("NULL"))) valid = false;
+		if (obj->typeName->StartsWith(UTF8STRC("OCTET STRING"))) valid = false;
 
-		if (Text::StrEquals(obj->typeVal, (const UTF8Char*)"Imported Value")) valid = false;
-		if (Text::StrIndexOfChar(obj->typeVal, ',') != INVALID_INDEX) valid = false;
-		if (Text::StrIndexOf(obj->typeVal, (const UTF8Char*)"...") != INVALID_INDEX) valid = false;
+		if (obj->typeVal->Equals(UTF8STRC("Imported Value"))) valid = false;
+		if (obj->typeVal->IndexOf(',') != INVALID_INDEX) valid = false;
+		if (obj->typeVal->IndexOf(UTF8STRC("...")) != INVALID_INDEX) valid = false;
 	}
 	obj->parsed = true;
 	if (valid)
 	{
-		if (Text::StrEquals(obj->typeName, (const UTF8Char*)"OBJECT IDENTIFIER"))
+		if (obj->typeName->Equals(UTF8STRC("OBJECT IDENTIFIER")))
 		{
 			if (!this->ParseObjectOID(module, obj, obj->typeVal, errMessage))
 			{
@@ -1808,7 +1808,7 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 		module = MemAlloc(ModuleInfo, 1);
 		module->moduleName = Text::StrCopyNewC(sbModuleName.ToString(), sbModuleName.GetLength());
 		module->moduleFileName = Text::StrCopyNewC(fileName, fileNameLen);
-		NEW_CLASS(module->objKeys, Data::ArrayListStrUTF8());
+		NEW_CLASS(module->objKeys, Data::ArrayListString());
 		NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
 		NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());
 		this->moduleMap->Put(module->moduleName, module);
@@ -2014,7 +2014,7 @@ UTF8Char Net::ASN1MIB::NextChar(const UTF8Char *s)
 Net::ASN1MIB::ASN1MIB()
 {
 	NEW_CLASS(this->moduleMap, Data::StringUTF8Map<ModuleInfo *>());
-	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListString());
 	NEW_CLASS(this->globalModule.objValues, Data::ArrayList<ObjectInfo*>());
 	NEW_CLASS(this->globalModule.oidList, Data::ArrayList<ObjectInfo*>());
 }
@@ -2064,9 +2064,9 @@ void Net::ASN1MIB::UnloadAll()
 		while (j-- > 0)
 		{
 			obj = objList->GetItem(j);
-			Text::StrDelNew(obj->objectName);
-			SDEL_TEXT(obj->typeName);
-			SDEL_TEXT(obj->typeVal);
+			obj->objectName->Release();
+			SDEL_STRING(obj->typeName);
+			SDEL_STRING(obj->typeVal);
 			k = obj->valName->GetCount();
 			while (k-- > 0)
 			{

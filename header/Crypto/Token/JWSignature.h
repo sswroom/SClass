@@ -45,7 +45,7 @@ namespace Crypto
 			Bool CalcHash(const UInt8 *buff, UOSInt buffSize);
 			Bool GetHashB64(Text::StringBuilderUTF8 *sb);
 
-			static const UTF8Char *AlgorithmGetName(Algorithm alg);
+			static Text::CString AlgorithmGetName(Algorithm alg);
 			static Algorithm AlgorithmGetByName(const UTF8Char *name);
 		};
 	}

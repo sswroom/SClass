@@ -30,7 +30,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("{\"alg\":\""));
-	sptr = Text::StrConcat(sptr, JWSignature::AlgorithmGetName(alg));
+	sptr = JWSignature::AlgorithmGetName(alg).ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\"typ\":\"JWT\"}"));
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));

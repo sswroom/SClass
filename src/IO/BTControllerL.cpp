@@ -262,11 +262,11 @@ IO::BTController::BTController(void *internalData, void *hand)
 	{
 		if (hci_read_local_name(info->dd, 256, name, 1000) >= 0)
 		{
-			this->name = Text::StrCopyNew((const UTF8Char*)name);
+			this->name = Text::String::NewNotNull((const UTF8Char*)name);
 		}
 		else
 		{
-			this->name = Text::StrCopyNew((const UTF8Char*)"");
+			this->name = Text::String::NewEmpty();
 		}
 		if (hci_read_local_version(info->dd, &ver, 1000) >= 0)
 		{
@@ -283,7 +283,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	}
 	else
 	{
-		this->name = Text::StrCopyNew((const UTF8Char*)"");
+		this->name = Text::String::NewEmpty();
 	}
 }
 
@@ -300,7 +300,7 @@ IO::BTController::~BTController()
 		hci_close_dev(info->dd);
 	}
 	MemFree(info);
-	SDEL_TEXT(this->name);
+	SDEL_STRING(this->name);
 }
 
 OSInt IO::BTController::CreateDevices(Data::ArrayList<BTDevice*> *devList, Bool toSearch)
@@ -339,7 +339,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-const UTF8Char *IO::BTController::GetName()
+Text::String *IO::BTController::GetName()
 {
 	return this->name;
 }

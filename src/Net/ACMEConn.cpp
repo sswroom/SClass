@@ -270,7 +270,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	this->accountId = 0;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("https://"));
-	sb.Append(serverHost);
+	sb.Append(this->serverHost);
 	if (port != 0 && port != 443)
 	{
 		sb.AppendChar(':', 1);
@@ -511,7 +511,7 @@ Bool Net::ACMEConn::AccountRetr()
 	return succ;
 }
 
-Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
+Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSInt namesLen)
 {
 	Text::StringBuilderUTF8 sbNames;
 	Text::StringBuilderUTF8 sb;
@@ -520,7 +520,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames)
 	Text::PString sarr[2];
 	Bool found = false;
 	sb.AppendC(UTF8STRC("{\"identifiers\":["));
-	sbNames.Append(domainNames);
+	sbNames.AppendC(domainNames, namesLen);
 	sarr[1].v = sbNames.ToString();
 	sarr[1].leng = sbNames.GetLength();
 	i = 2;

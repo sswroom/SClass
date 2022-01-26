@@ -80,7 +80,7 @@ UInt8 *IO::BTController::GetAddress()
 	return this->addr;
 }
 
-const UTF8Char *IO::BTController::GetName()
+Text::String *IO::BTController::GetName()
 {
 	return this->name;
 }

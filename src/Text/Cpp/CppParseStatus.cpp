@@ -4,9 +4,9 @@
 
 void Text::Cpp::CppParseStatus::FreeDefineInfo(Text::Cpp::CppParseStatus::DefineInfo *defInfo)
 {
-	Text::StrDelNew(defInfo->defineName);
+	defInfo->defineName->Release();
 	SDEL_STRING(defInfo->defineVal);
-	SDEL_TEXT(defInfo->defineParam);
+	SDEL_STRING(defInfo->defineParam);
 	MemFree(defInfo);
 }
 
@@ -137,7 +137,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 			defInfo->fileName = 0;
 			defInfo->lineNum = 0;
 			SDEL_STRING(defInfo->defineVal);
-			SDEL_TEXT(defInfo->defineParam);
+			SDEL_STRING(defInfo->defineParam);
 			if (defVal)
 			{
 				defInfo->defineVal = Text::String::NewNotNull(defVal);
@@ -157,7 +157,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 	else
 	{
 		defInfo = MemAlloc(DefineInfo, 1);
-		defInfo->defineName = Text::StrCopyNew(defName);
+		defInfo->defineName = Text::String::NewNotNull(defName);
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
 		if (defVal)
@@ -191,7 +191,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 			defInfo->fileName = fStatus->fileName;
 			defInfo->lineNum = fStatus->lineNum;
 			SDEL_STRING(defInfo->defineVal);
-			SDEL_TEXT(defInfo->defineParam);
+			SDEL_STRING(defInfo->defineParam);
 			if (defVal)
 			{
 				defInfo->defineVal = Text::String::NewNotNull(defVal);
@@ -203,7 +203,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 			}
 			if (defParam)
 			{
-				defInfo->defineParam = Text::StrCopyNew(defParam);
+				defInfo->defineParam = Text::String::NewNotNull(defParam);
 			}
 			else
 			{
@@ -223,7 +223,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 				return false;
 			}
 			Text::StringBuilderUTF8 sb;
-			sb.Append(defVal);
+			sb.AppendSlow(defVal);
 			sb.Trim();
 			return sb.Equals(defInfo->defineVal);
 		}
@@ -231,7 +231,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 	else
 	{
 		defInfo = MemAlloc(DefineInfo, 1);
-		defInfo->defineName = Text::StrCopyNew(defName);
+		defInfo->defineName = Text::String::NewNotNull(defName);
 		defInfo->fileName = fStatus->fileName;
 		defInfo->lineNum = fStatus->lineNum;
 		if (defVal)
@@ -245,7 +245,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 		}
 		if (defParam)
 		{
-			defInfo->defineParam = Text::StrCopyNew(defParam);
+			defInfo->defineParam = Text::String::NewNotNull(defParam);
 		}
 		else
 		{
@@ -297,7 +297,7 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 					}
 					else
 					{
-						sb3.Append(defParam);
+						sb3.AppendSlow(defParam);
 					}
 				}
 

@@ -324,7 +324,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				sb->Append(innerSb->ToString());
+				sb->Append(innerSb);
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
@@ -445,7 +445,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
 				{
 					sb->AppendC(UTF8STRC(" {\r\n"));
-					sb->Append(innerSb->ToString());
+					sb->Append(innerSb);
 					sb->AppendChar('\t', level);
 					sb->AppendC(UTF8STRC("}\r\n"));
 				}
@@ -502,7 +502,7 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 			if (PDUToString(&pdu[ofst], &pdu[ofst + len], innerSb, level + 1))
 			{
 				sb->AppendC(UTF8STRC("{\r\n"));
-				sb->Append(innerSb->ToString());
+				sb->Append(innerSb);
 				sb->AppendChar('\t', level);
 				sb->AppendC(UTF8STRC("}\r\n"));
 			}
@@ -906,14 +906,14 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 	return retSize;
 }
 
-void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, Text::StringBuilderUTF8 *sb)
+void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, Text::StringBuilderUTF8 *sb)
 {
 	OSInt k;
 	sb->AppendChar('\t', 1);
 	sb->AppendC(UTF8STRC("{\""));
-	sb->Append(objectName);
+	sb->AppendC(objectName, nameLen);
 	sb->AppendC(UTF8STRC("\","));
-	k = (OSInt)(60 - Text::StrCharCnt(objectName));
+	k = (OSInt)(60 - nameLen);
 	if (k > 0)
 	{
 		sb->AppendChar('\t', (UOSInt)(k + 3) >> 2);

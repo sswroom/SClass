@@ -206,7 +206,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt si
 	this->AddHexBuff(frameOfst, size, name, vBuff, ' ', multiLine);
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UTF8Char *vBuff, UTF32Char seperator, Bool multiLine)
+void IO::FileAnalyse::FrameDetailHandler::AddHexBuff(UOSInt frameOfst, UOSInt size, const Char *name, const UTF8Char *vBuff, UTF8Char seperator, Bool multiLine)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendHexBuff(vBuff, size, seperator, multiLine?Text::LineBreakType::CRLF:Text::LineBreakType::None);

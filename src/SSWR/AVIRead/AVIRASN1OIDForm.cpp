@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	{
 		nameCol = 0;
 	}
-	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);
+	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, sarr[nameCol].leng, &sbCPP);
 	while (lineCnt == 2)
 	{
 		lineCnt = Text::StrSplitLineP(lines, 2, lines[1].v, lines[1].leng);
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 			oidLen = Net::ASN1Util::OIDText2PDU(sarr[oidCol].v, sarr[oidCol].leng, oid);
 			if (oidLen != 0)
 			{
-				Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, &sbCPP);
+				Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, sarr[nameCol].leng, &sbCPP);
 			}
 		}
 	}

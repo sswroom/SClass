@@ -60,6 +60,7 @@ namespace Text
 		Bool ToUInt16S(UInt16 *outVal, UInt16 failVal);
 		Bool ToUInt32S(UInt32 *outVal, UInt32 failVal);
 		UOSInt Hex2Bytes(UInt8 *buff);
+		UOSInt CountChar(UTF8Char c);
 
 		Double MatchRating(StringBase<UTF8Char> *s);
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen);
@@ -415,6 +416,11 @@ template <typename T> Bool Text::StringBase<T>::ToUInt32S(UInt32 *outVal, UInt32
 template<typename T> UOSInt Text::StringBase<T>::Hex2Bytes(UInt8 *buff)
 {
 	return Text::StrHex2Bytes(this->v, buff);
+}
+
+template<typename T> UOSInt Text::StringBase<T>::CountChar(UTF8Char c)
+{
+	return Text::StrCountChar(this->v, c);
 }
 
 template <typename T> Double Text::StringBase<T>::MatchRating(StringBase<UTF8Char> *s)

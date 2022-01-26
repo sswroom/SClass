@@ -119,8 +119,8 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Are you sure that \""));
-				Text::StrWriteChar(sbuff, (UTF32Char)me->currChar)[0] = 0;
-				sb.Append(sbuff);
+				sptr = Text::StrWriteChar(sbuff, (UTF32Char)me->currChar);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC("\" is related to \""));
 				i = 0;
 				j = relatedList.GetCount();
@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 					i++;
 				}
 				*sptr = 0;
-				sb.Append(sbuff);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC("\"?"));
 				if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Add Relation", me))
 				{
@@ -264,9 +264,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		if (chInfo.cantonPronun[0])
 		{
 			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[0]);
-			sb.ClearStr();
-			sb.Append(cbuff);
-			this->txtPronun1->SetText(sb.ToString());
+			this->txtPronun1->SetText(cbuff);
 		}
 		else
 		{
@@ -275,9 +273,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		if (chInfo.cantonPronun[1])
 		{
 			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[1]);
-			sb.ClearStr();
-			sb.Append(cbuff);
-			this->txtPronun2->SetText(sb.ToString());
+			this->txtPronun2->SetText(cbuff);
 		}
 		else
 		{
@@ -286,9 +282,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		if (chInfo.cantonPronun[2])
 		{
 			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[2]);
-			sb.ClearStr();
-			sb.Append(cbuff);
-			this->txtPronun3->SetText(sb.ToString());
+			this->txtPronun3->SetText(cbuff);
 		}
 		else
 		{
@@ -297,9 +291,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 		if (chInfo.cantonPronun[3])
 		{
 			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[3]);
-			sb.ClearStr();
-			sb.Append(cbuff);
-			this->txtPronun4->SetText(sb.ToString());
+			this->txtPronun4->SetText(cbuff);
 		}
 		else
 		{

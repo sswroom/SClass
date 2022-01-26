@@ -8,7 +8,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *domain = (const UTF8Char*)"sswroom.no-ip.org";
+	Text::CString domain = {UTF8STRC("sswroom.no-ip.org")};
 	UTF8Char sbuff[512];
 	IO::ConsoleWriter *console;
 	Net::SocketFactory *sockf;
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"ACMEKey.pem");
 	NEW_CLASS(acme, Net::ACMEClient(sockf, (const UTF8Char*)"acme-staging-v02.api.letsencrypt.org", 0, sbuff));
 	Net::ACMEConn *conn = acme->GetConn();
-	Net::ACMEConn::Order *order = conn->OrderNew(domain);
+	Net::ACMEConn::Order *order = conn->OrderNew(domain.v, domain.leng);
 	if (order)
 	{
 		if (order->authURLs)

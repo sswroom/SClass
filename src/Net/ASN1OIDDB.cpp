@@ -11863,7 +11863,7 @@ void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::Str
 		oid = OIDGetEntry(pdu, checkSize);
 		if (oid)
 		{
-			sb->Append((const UTF8Char*)oid->name);
+			sb->AppendSlow((const UTF8Char*)oid->name);
 			v = 0;
 			while (checkSize < pduSize)
 			{

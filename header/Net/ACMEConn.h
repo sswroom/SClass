@@ -88,7 +88,7 @@ namespace Net
 		Bool AccountNew();
 		Bool AccountRetr();
 
-		Order *OrderNew(const UTF8Char *domainNames); //comma seperated
+		Order *OrderNew(const UTF8Char *domainNames, UOSInt namesLen); //comma seperated
 		Challenge *OrderAuthorize(Text::String *authorizeURL, AuthorizeType authType);
 		Order *OrderGetStatus(const UTF8Char *orderURL);
 		Order *OrderFinalize(const UTF8Char *finalizeURL, Crypto::Cert::X509CertReq *csr);

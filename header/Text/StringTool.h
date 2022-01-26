@@ -19,7 +19,7 @@ namespace Text
 		static void BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<const UTF8Char*> *list);
 		static void BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, T *obj, Data::NamedClass<T> *cls);
-		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName);
+		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
 		static void Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, const UTF8Char *seperator);
 		static Bool IsNonASCII(const UTF8Char *s);
 		static Bool IsASCIIText(const UInt8 *buff, UOSInt buffLen);
@@ -31,6 +31,7 @@ namespace Text
 template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, T *obj, Data::NamedClass<T> *cls)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	sb->AppendChar('{', 1);
 	Bool found = false;
 	UOSInt i = 0;
@@ -42,8 +43,8 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 			sb->AppendChar(',', 1);
 		}
 		found = true;
-		Text::JSText::ToJSTextDQuote(sbuff, cls->GetFieldName(i));
-		sb->Append(sbuff);
+		sptr = Text::JSText::ToJSTextDQuote(sbuff, cls->GetFieldName(i));
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendChar(':', 1);
 		Data::VariItem *item = cls->GetNewValue(i, obj);
 		if (item)
@@ -60,7 +61,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 	sb->AppendChar('}', 1);
 }
 
-template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName)
+template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
 {
 	if (list == 0)
 	{
@@ -78,7 +79,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 		{
 			sb->AppendChar(',', 1);
 		}
-		sb->Append(clsName);
+		sb->AppendC(clsName, nameLen);
 		BuildString(sb, list->GetItem(i), cls);
 		i++;
 	}

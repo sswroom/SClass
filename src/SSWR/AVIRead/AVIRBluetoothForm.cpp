@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 
-		me->txtRadioName->SetText(btStatus->bt->GetName());
+		me->txtRadioName->SetText(btStatus->bt->GetName()->v);
 		IO::BTUtil::GetAddrText(&sb, btStatus->bt->GetAddress());
 		me->txtAddr->SetText(sb.ToString());
 		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()));
@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 		if (csptr)
 		{
 			sb.AppendC(UTF8STRC(" ("));
-			sb.Append(csptr);
+			sb.AppendSlow(csptr);
 			sb.AppendC(UTF8STRC(")"));
 		}
 		this->lbCtrl->AddItem(sb.ToString(), btStatus);

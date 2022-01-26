@@ -96,41 +96,41 @@ Bool Crypto::Token::JWSignature::GetHashB64(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-const UTF8Char *Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
+Text::CString Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
 {
 	switch (alg)
 	{
 	case Algorithm::HS256:
-		return (const UTF8Char*)"HS256";
+		return {UTF8STRC("HS256")};
 	case Algorithm::HS384:
-		return (const UTF8Char*)"HS384";
+		return {UTF8STRC("HS384")};
 	case Algorithm::HS512:
-		return (const UTF8Char*)"HS512";
+		return {UTF8STRC("HS512")};
 	case Algorithm::PS256:
-		return (const UTF8Char*)"PS256";
+		return {UTF8STRC("PS256")};
 	case Algorithm::PS384:
-		return (const UTF8Char*)"PS384";
+		return {UTF8STRC("PS384")};
 	case Algorithm::PS512:
-		return (const UTF8Char*)"PS512";
+		return {UTF8STRC("PS512")};
 	case Algorithm::RS256:
-		return (const UTF8Char*)"RS256";
+		return {UTF8STRC("RS256")};
 	case Algorithm::RS384:
-		return (const UTF8Char*)"RS384";
+		return {UTF8STRC("RS384")};
 	case Algorithm::RS512:
-		return (const UTF8Char*)"RS512";
+		return {UTF8STRC("RS512")};
 	case Algorithm::ES256:
-		return (const UTF8Char*)"ES256";
+		return {UTF8STRC("ES256")};
 	case Algorithm::ES256K:
-		return (const UTF8Char*)"ES256K";
+		return {UTF8STRC("ES256K")};
 	case Algorithm::ES384:
-		return (const UTF8Char*)"ES384";
+		return {UTF8STRC("ES384")};
 	case Algorithm::ES512:
-		return (const UTF8Char*)"ES512";
+		return {UTF8STRC("ES512")};
 	case Algorithm::EDDSA:
-		return (const UTF8Char*)"EdDSA";
+		return {UTF8STRC("EdDSA")};
 	case Algorithm::Unknown:
 	default:
-		return (const UTF8Char*)"UNK";
+		return {UTF8STRC("UNK")};
 	}
 }
 

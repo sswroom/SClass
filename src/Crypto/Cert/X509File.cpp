@@ -1023,48 +1023,48 @@ Bool Crypto::Cert::X509File::IsSignatureKey(Net::SSLEngine *ssl, Crypto::Cert::X
 	return true;
 }
 
-const UTF8Char *Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
+Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 {
 	switch (fileType)
 	{
 	case FileType::Cert:
-		return (const UTF8Char*)"Cert";
+		return {UTF8STRC("Cert")};
 	case FileType::CertRequest:
-		return (const UTF8Char*)"CertReq";
+		return {UTF8STRC("CertReq")};
 	case FileType::Key:
-		return (const UTF8Char*)"Key";
+		return {UTF8STRC("Key")};
 	case FileType::PrivateKey:
-		return (const UTF8Char*)"PrivateKey";
+		return {UTF8STRC("PrivateKey")};
 	case FileType::Jks:
-		return (const UTF8Char*)"JavaKeyStore";
+		return {UTF8STRC("JavaKeyStore")};
 	case FileType::PublicKey:
-		return (const UTF8Char*)"PublicKey";
+		return {UTF8STRC("PublicKey")};
 	case FileType::PKCS7:
-		return (const UTF8Char*)"PKCS7";
+		return {UTF8STRC("PKCS7")};
 	case FileType::PKCS12:
-		return (const UTF8Char*)"PKCS12";
+		return {UTF8STRC("PKCS12")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
+Text::CString Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 {
 	switch (keyType)
 	{
 	case KeyType::RSA:
-		return (const UTF8Char*)"RSA";
+		return {UTF8STRC("RSA")};
 	case KeyType::DSA:
-		return (const UTF8Char*)"DSA";
+		return {UTF8STRC("DSA")};
 	case KeyType::ECDSA:
-		return (const UTF8Char*)"ECDSA";
+		return {UTF8STRC("ECDSA")};
 	case KeyType::ED25519:
-		return (const UTF8Char*)"ED25519";
+		return {UTF8STRC("ED25519")};
 	case KeyType::RSAPublic:
-		return (const UTF8Char*)"RSAPublic";
+		return {UTF8STRC("RSAPublic")};
 	case KeyType::Unknown:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
