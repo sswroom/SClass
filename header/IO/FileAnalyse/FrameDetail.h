@@ -37,7 +37,7 @@ namespace IO
 			Data::ArrayList<FieldInfo*> *fields;
 
 			void FreeFieldInfo(FieldInfo *field);
-			void AddFieldInfo(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType);
+			void AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType);
 		public:
 			FrameDetail(UInt64 ofst, UInt64 size);
 			virtual ~FrameDetail();

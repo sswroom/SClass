@@ -39,7 +39,7 @@ namespace IO
 			{
 				UInt32 elementId;
 				ElementType type;
-				const Char *elementName;
+				Text::CString elementName;
 			} ElementInfo;
 		private:
 			IO::IStreamData *fd;

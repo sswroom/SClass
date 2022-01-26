@@ -25,8 +25,6 @@ Math::WKTWriter::~WKTWriter()
 
 Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *vec)
 {
-	UTF8Char sbuff[64];
-	UTF8Char *sptr;
 	if (vec == 0)
 	{
 		this->SetLastError((const UTF8Char*)"Input vector is null");

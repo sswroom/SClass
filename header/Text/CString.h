@@ -1,6 +1,8 @@
 #ifndef _SM_TEXT_CSTRING
 #define _SM_TEXT_CSTRING
 #include "Text/StringBase.h"
+
+#define CSTR(str) {UTF8STRC(str)}
 namespace Text
 {
 	struct CString : public StringBase<const UTF8Char>
@@ -13,6 +15,11 @@ namespace Text
 		{
 			this->v = v;
 			this->leng = leng;
+		}
+
+		static CString FromPtr(const UTF8Char *v)
+		{
+			return CString(v, Text::StrCharCnt(v));
 		}
 	};
 }

@@ -859,6 +859,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
 	Text::CString vName;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UInt8 *packBuff;
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
@@ -866,32 +867,32 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 
 	IO::FileAnalyse::FrameDetail *frame;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
-	frame->AddText(0, sbuff);
-	Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
-	frame->AddText(0, sbuff);
+	sptr = PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
+	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
+	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
+	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
 
 	if (pack->packType == 0)
 	{
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddHex16(0, "Magic number", ReadUInt16(packBuff));
-		frame->AddUInt(2, 2, "Bytes on last page of file", ReadUInt16(&packBuff[2]));
-		frame->AddUInt(4, 2, "Pages in file", ReadUInt16(&packBuff[4]));
-		frame->AddUInt(6, 2, "Relocations", ReadUInt16(&packBuff[6]));
-		frame->AddUInt(8, 2, "Size of header in paragraphs", ReadUInt16(&packBuff[8]));
-		frame->AddUInt(10, 2, "Minimum extra paragraphs needed", ReadUInt16(&packBuff[10]));
-		frame->AddUInt(12, 2, "Maximum extra paragraphs needed", ReadUInt16(&packBuff[12]));
-		frame->AddHex16(14, "Initial (relative) SS value", ReadUInt16(&packBuff[14]));
-		frame->AddHex16(16, "Initial SP value", ReadUInt16(&packBuff[16]));
-		frame->AddHex16(18, "Checksum", ReadUInt16(&packBuff[18]));
-		frame->AddHex16(20, "Initial IP value", ReadUInt16(&packBuff[20]));
-		frame->AddHex16(22, "Initial (relative) CS value", ReadUInt16(&packBuff[22]));
-		frame->AddHex16(24, "File address of relocation table", ReadUInt16(&packBuff[24]));
-		frame->AddUInt(26, 2, "Overlay number", ReadUInt16(&packBuff[26]));
-		frame->AddUInt(36, 2, "OEM identifier", ReadUInt16(&packBuff[36]));
-		frame->AddUInt(38, 2, "OEM information", ReadUInt16(&packBuff[38]));
-		frame->AddHex32(60, "File address of new exe header", ReadUInt32(&packBuff[60]));
+		frame->AddHex16(0, CSTR("Magic number"), ReadUInt16(packBuff));
+		frame->AddUInt(2, 2, CSTR("Bytes on last page of file"), ReadUInt16(&packBuff[2]));
+		frame->AddUInt(4, 2, CSTR("Pages in file"), ReadUInt16(&packBuff[4]));
+		frame->AddUInt(6, 2, CSTR("Relocations"), ReadUInt16(&packBuff[6]));
+		frame->AddUInt(8, 2, CSTR("Size of header in paragraphs"), ReadUInt16(&packBuff[8]));
+		frame->AddUInt(10, 2, CSTR("Minimum extra paragraphs needed"), ReadUInt16(&packBuff[10]));
+		frame->AddUInt(12, 2, CSTR("Maximum extra paragraphs needed"), ReadUInt16(&packBuff[12]));
+		frame->AddHex16(14, CSTR("Initial (relative) SS value"), ReadUInt16(&packBuff[14]));
+		frame->AddHex16(16, CSTR("Initial SP value"), ReadUInt16(&packBuff[16]));
+		frame->AddHex16(18, CSTR("Checksum"), ReadUInt16(&packBuff[18]));
+		frame->AddHex16(20, CSTR("Initial IP value"), ReadUInt16(&packBuff[20]));
+		frame->AddHex16(22, CSTR("Initial (relative) CS value"), ReadUInt16(&packBuff[22]));
+		frame->AddHex16(24, CSTR("File address of relocation table"), ReadUInt16(&packBuff[24]));
+		frame->AddUInt(26, 2, CSTR("Overlay number"), ReadUInt16(&packBuff[26]));
+		frame->AddUInt(36, 2, CSTR("OEM identifier"), ReadUInt16(&packBuff[36]));
+		frame->AddUInt(38, 2, CSTR("OEM information"), ReadUInt16(&packBuff[38]));
+		frame->AddHex32(60, CSTR("File address of new exe header"), ReadUInt32(&packBuff[60]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
@@ -905,7 +906,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	{
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddField(0, 4, (const UTF8Char*)"Magic number", (const UTF8Char*)"PE\\0\\0");
+		frame->AddField(0, 4, {UTF8STRC("Magic number")}, {UTF8STRC("PE\\0\\0")});
 		vName = {0, 0};
 		switch (ReadUInt16(&packBuff[4]))
 		{
@@ -985,16 +986,16 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 			vName = {UTF8STRC("MIPS little-endian WCE v2")};
 			break;
 		}
-		frame->AddHex16Name(4, "Machine", ReadUInt16(&packBuff[4]), vName);
-		frame->AddUInt(6, 2, "NumberOfSections", ReadUInt16(&packBuff[6]));
-		frame->AddUInt(8, 4, "TimeDateStamp", ReadUInt32(&packBuff[8]));
+		frame->AddHex16Name(4, CSTR("Machine"), ReadUInt16(&packBuff[4]), vName);
+		frame->AddUInt(6, 2, CSTR("NumberOfSections"), ReadUInt16(&packBuff[6]));
+		frame->AddUInt(8, 4, CSTR("TimeDateStamp"), ReadUInt32(&packBuff[8]));
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&packBuff[8]));
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(8, 4, (const UTF8Char*)"TimeDateStamp", sbuff);
-		frame->AddHex32(12, "PointerToSymbolTable", ReadUInt32(&packBuff[12]));
-		frame->AddUInt(16, 4, "NumberOfSymbols", ReadUInt32(&packBuff[16]));
-		frame->AddUInt(20, 2, "SizeOfOptionalHeader", ReadUInt16(&packBuff[20]));
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		frame->AddField(8, 4, {UTF8STRC("TimeDateStamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddHex32(12, CSTR("PointerToSymbolTable"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(16, 4, CSTR("NumberOfSymbols"), ReadUInt32(&packBuff[16]));
+		frame->AddUInt(20, 2, CSTR("SizeOfOptionalHeader"), ReadUInt16(&packBuff[20]));
 		UInt16 ch = ReadUInt16(&packBuff[22]);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("0x"));
@@ -1015,42 +1016,42 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		if (ch & 0x2000) sb.AppendC(UTF8STRC(" DLL"));
 		if (ch & 0x4000) sb.AppendC(UTF8STRC(" UP_SYSTEM_ONLY"));
 		if (ch & 0x8000) sb.AppendC(UTF8STRC(" BYTES_REVERSED_HI"));
-		frame->AddField(22, 2, (const UTF8Char*)"Characteristics", sb.ToString());
+		frame->AddField(22, 2, {UTF8STRC("Characteristics")}, sb.ToCString());
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 3 || pack->packType == 4)
 	{
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
-		frame->AddHex16(0, "Magic number", ReadUInt16(&packBuff[0]));
-		frame->AddUInt(2, 1, "LinkerVersionMajor", packBuff[2]);
-		frame->AddUInt(3, 1, "LinkerVersionMinor", packBuff[3]);
-		frame->AddUInt(4, 4, "SizeOfCode", ReadUInt32(&packBuff[4]));
-		frame->AddUInt(8, 4, "SizeOfInitializedData", ReadUInt32(&packBuff[8]));
-		frame->AddUInt(12, 4, "SizeOfUninitializedData", ReadUInt32(&packBuff[12]));
-		frame->AddHex32(16, "AddressOfEntryPoint", ReadUInt32(&packBuff[16]));
-		frame->AddHex32(20, "BaseOfCode", ReadUInt32(&packBuff[20]));
+		frame->AddHex16(0, CSTR("Magic number"), ReadUInt16(&packBuff[0]));
+		frame->AddUInt(2, 1, CSTR("LinkerVersionMajor"), packBuff[2]);
+		frame->AddUInt(3, 1, CSTR("LinkerVersionMinor"), packBuff[3]);
+		frame->AddUInt(4, 4, CSTR("SizeOfCode"), ReadUInt32(&packBuff[4]));
+		frame->AddUInt(8, 4, CSTR("SizeOfInitializedData"), ReadUInt32(&packBuff[8]));
+		frame->AddUInt(12, 4, CSTR("SizeOfUninitializedData"), ReadUInt32(&packBuff[12]));
+		frame->AddHex32(16, CSTR("AddressOfEntryPoint"), ReadUInt32(&packBuff[16]));
+		frame->AddHex32(20, CSTR("BaseOfCode"), ReadUInt32(&packBuff[20]));
 		if (pack->packType == 3)
 		{
-			frame->AddHex32(24, "BaseOfData", ReadUInt32(&packBuff[24]));
-			frame->AddHex32(28, "ImageBase", ReadUInt32(&packBuff[28]));
+			frame->AddHex32(24, CSTR("BaseOfData"), ReadUInt32(&packBuff[24]));
+			frame->AddHex32(28, CSTR("ImageBase"), ReadUInt32(&packBuff[28]));
 		}
 		else
 		{
-			frame->AddHex64(24, "ImageBase", ReadUInt64(&packBuff[24]));
+			frame->AddHex64(24, CSTR("ImageBase"), ReadUInt64(&packBuff[24]));
 		}
-		frame->AddUInt(32, 4, "SectionAlignment", ReadUInt32(&packBuff[32]));
-		frame->AddUInt(36, 4, "FileAlignment", ReadUInt32(&packBuff[36]));
-		frame->AddUInt(40, 2, "OperatingSystemVersionMajor", ReadUInt16(&packBuff[40]));
-		frame->AddUInt(42, 2, "OperatingSystemVersionMinor", ReadUInt16(&packBuff[42]));
-		frame->AddUInt(44, 2, "ImageVersionMajor", ReadUInt16(&packBuff[44]));
-		frame->AddUInt(46, 2, "ImageVersionMinor", ReadUInt16(&packBuff[46]));
-		frame->AddUInt(48, 2, "SubsystemVersionMajor", ReadUInt16(&packBuff[48]));
-		frame->AddUInt(50, 2, "SubsystemVersionMinor", ReadUInt16(&packBuff[50]));
-		frame->AddUInt(52, 4, "Win32VersionValue", ReadUInt32(&packBuff[52]));
-		frame->AddUInt(56, 4, "SizeOfImage", ReadUInt32(&packBuff[56]));
-		frame->AddUInt(60, 4, "SizeOfHeaders", ReadUInt32(&packBuff[60]));
-		frame->AddHex32(64, "CheckSum", ReadUInt32(&packBuff[64]));
+		frame->AddUInt(32, 4, CSTR("SectionAlignment"), ReadUInt32(&packBuff[32]));
+		frame->AddUInt(36, 4, CSTR("FileAlignment"), ReadUInt32(&packBuff[36]));
+		frame->AddUInt(40, 2, CSTR("OperatingSystemVersionMajor"), ReadUInt16(&packBuff[40]));
+		frame->AddUInt(42, 2, CSTR("OperatingSystemVersionMinor"), ReadUInt16(&packBuff[42]));
+		frame->AddUInt(44, 2, CSTR("ImageVersionMajor"), ReadUInt16(&packBuff[44]));
+		frame->AddUInt(46, 2, CSTR("ImageVersionMinor"), ReadUInt16(&packBuff[46]));
+		frame->AddUInt(48, 2, CSTR("SubsystemVersionMajor"), ReadUInt16(&packBuff[48]));
+		frame->AddUInt(50, 2, CSTR("SubsystemVersionMinor"), ReadUInt16(&packBuff[50]));
+		frame->AddUInt(52, 4, CSTR("Win32VersionValue"), ReadUInt32(&packBuff[52]));
+		frame->AddUInt(56, 4, CSTR("SizeOfImage"), ReadUInt32(&packBuff[56]));
+		frame->AddUInt(60, 4, CSTR("SizeOfHeaders"), ReadUInt32(&packBuff[60]));
+		frame->AddHex32(64, CSTR("CheckSum"), ReadUInt32(&packBuff[64]));
 		vName = {0, 0};
 		switch (ReadUInt16(&packBuff[68]))
 		{
@@ -1097,7 +1098,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 			vName = {UTF8STRC("Windows Boot Application")};
 			break;
 		}
-		frame->AddUIntName(68, 2, "Subsystem", ReadUInt16(&packBuff[68]), vName);
+		frame->AddUIntName(68, 2, CSTR("Subsystem"), ReadUInt16(&packBuff[68]), vName);
 		UInt16 ch = ReadUInt16(&packBuff[70]);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("0x"));
@@ -1113,57 +1114,57 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		if (ch & 0x2000) sb.AppendC(UTF8STRC(" WDM_DRIVER"));
 		if (ch & 0x4000) sb.AppendC(UTF8STRC(" GUARD_CF"));
 		if (ch & 0x8000) sb.AppendC(UTF8STRC(" TERMINAL_SERVER_AWARE"));
-		frame->AddField(70, 2, (const UTF8Char*)"DLL Characteristics", sb.ToString());
+		frame->AddField(70, 2, {UTF8STRC("DLL Characteristics")}, sb.ToCString());
 
 		UOSInt ofst;
 		if (pack->packType == 3)
 		{
-			frame->AddUInt(72, 4, "SizeOfStackReserve", ReadUInt32(&packBuff[72]));
-			frame->AddUInt(76, 4, "SizeOfStackCommit", ReadUInt32(&packBuff[76]));
-			frame->AddUInt(80, 4, "SizeOfHeapReserve", ReadUInt32(&packBuff[80]));
-			frame->AddUInt(84, 4, "SizeOfHeapCommit", ReadUInt32(&packBuff[84]));
+			frame->AddUInt(72, 4, CSTR("SizeOfStackReserve"), ReadUInt32(&packBuff[72]));
+			frame->AddUInt(76, 4, CSTR("SizeOfStackCommit"), ReadUInt32(&packBuff[76]));
+			frame->AddUInt(80, 4, CSTR("SizeOfHeapReserve"), ReadUInt32(&packBuff[80]));
+			frame->AddUInt(84, 4, CSTR("SizeOfHeapCommit"), ReadUInt32(&packBuff[84]));
 			ofst = 88;
 		}
 		else
 		{
-			frame->AddUInt64(72, "SizeOfStackReserve", ReadUInt64(&packBuff[72]));
-			frame->AddUInt64(80, "SizeOfStackCommit", ReadUInt64(&packBuff[80]));
-			frame->AddUInt64(88, "SizeOfHeapReserve", ReadUInt64(&packBuff[88]));
-			frame->AddUInt64(96, "SizeOfHeapCommit", ReadUInt64(&packBuff[96]));
+			frame->AddUInt64(72, CSTR("SizeOfStackReserve"), ReadUInt64(&packBuff[72]));
+			frame->AddUInt64(80, CSTR("SizeOfStackCommit"), ReadUInt64(&packBuff[80]));
+			frame->AddUInt64(88, CSTR("SizeOfHeapReserve"), ReadUInt64(&packBuff[88]));
+			frame->AddUInt64(96, CSTR("SizeOfHeapCommit"), ReadUInt64(&packBuff[96]));
 			ofst = 104;
 		}
-		frame->AddUInt(ofst, 4, "LoaderFlags", ReadUInt32(&packBuff[ofst]));
-		frame->AddUInt(ofst + 4, 4, "NumberOfRvaAndSizes", ReadUInt32(&packBuff[ofst + 4]));
-		frame->AddHex32(ofst + 8, "ExportTableVAddr", ReadUInt32(&packBuff[ofst + 8]));
-		frame->AddUInt(ofst + 12, 4, "ExportTableSize", ReadUInt32(&packBuff[ofst + 12]));
-		frame->AddHex32(ofst + 16, "ImportTableVAddr", ReadUInt32(&packBuff[ofst + 16]));
-		frame->AddUInt(ofst + 20, 4, "ImportTableSize", ReadUInt32(&packBuff[ofst + 20]));
-		frame->AddHex32(ofst + 24, "ResourceTableVAddr", ReadUInt32(&packBuff[ofst + 24]));
-		frame->AddUInt(ofst + 28, 4, "ResourceTableSize", ReadUInt32(&packBuff[ofst + 28]));
-		frame->AddHex32(ofst + 32, "ExceptionTableVAddr", ReadUInt32(&packBuff[ofst + 32]));
-		frame->AddUInt(ofst + 36, 4, "ExceptionTableSize", ReadUInt32(&packBuff[ofst + 36]));
-		frame->AddHex32(ofst + 40, "CertificateTableVAddr", ReadUInt32(&packBuff[ofst + 40]));
-		frame->AddUInt(ofst + 44, 4, "CertificateTableSize", ReadUInt32(&packBuff[ofst + 44]));
-		frame->AddHex32(ofst + 48, "BaseRelocationTableVAddr", ReadUInt32(&packBuff[ofst + 48]));
-		frame->AddUInt(ofst + 52, 4, "BaseRelocationTableSize", ReadUInt32(&packBuff[ofst + 52]));
-		frame->AddHex32(ofst + 56, "DebugTableVAddr", ReadUInt32(&packBuff[ofst + 56]));
-		frame->AddUInt(ofst + 60, 4, "DebugTableSize", ReadUInt32(&packBuff[ofst + 60]));
-		frame->AddHex32(ofst + 64, "ArchitectureTableVAddr", ReadUInt32(&packBuff[ofst + 64]));
-		frame->AddUInt(ofst + 68, 4, "ArchitectureTableSize", ReadUInt32(&packBuff[ofst + 68]));
-		frame->AddHex32(ofst + 72, "GlobalPtrTableVAddr", ReadUInt32(&packBuff[ofst + 72]));
-		frame->AddUInt(ofst + 76, 4, "GlobalPtrTableSize", ReadUInt32(&packBuff[ofst + 76]));
-		frame->AddHex32(ofst + 80, "TLSTableVAddr", ReadUInt32(&packBuff[ofst + 80]));
-		frame->AddUInt(ofst + 84, 4, "TLSTableSize", ReadUInt32(&packBuff[ofst + 84]));
-		frame->AddHex32(ofst + 88, "LoadConfigTableVAddr", ReadUInt32(&packBuff[ofst + 88]));
-		frame->AddUInt(ofst + 92, 4, "LoadConfigTableSize", ReadUInt32(&packBuff[ofst + 92]));
-		frame->AddHex32(ofst + 96, "BoundImportTableVAddr", ReadUInt32(&packBuff[ofst + 96]));
-		frame->AddUInt(ofst + 100, 4, "BoundImportTableSize", ReadUInt32(&packBuff[ofst + 100]));
-		frame->AddHex32(ofst + 104, "ImportAddrTableVAddr", ReadUInt32(&packBuff[ofst + 104]));
-		frame->AddUInt(ofst + 108, 4, "ImportAddrTableSize", ReadUInt32(&packBuff[ofst + 108]));
-		frame->AddHex32(ofst + 112, "DelayImportTableVAddr", ReadUInt32(&packBuff[ofst + 112]));
-		frame->AddUInt(ofst + 116, 4, "DelayImportTableSize", ReadUInt32(&packBuff[ofst + 116]));
-		frame->AddHex32(ofst + 2120, "CLRRuntimeTableVAddr", ReadUInt32(&packBuff[ofst + 120]));
-		frame->AddUInt(ofst + 124, 4, "CLRRuntimeTableSize", ReadUInt32(&packBuff[ofst + 124]));
+		frame->AddUInt(ofst, 4, CSTR("LoaderFlags"), ReadUInt32(&packBuff[ofst]));
+		frame->AddUInt(ofst + 4, 4, CSTR("NumberOfRvaAndSizes"), ReadUInt32(&packBuff[ofst + 4]));
+		frame->AddHex32(ofst + 8, CSTR("ExportTableVAddr"), ReadUInt32(&packBuff[ofst + 8]));
+		frame->AddUInt(ofst + 12, 4, CSTR("ExportTableSize"), ReadUInt32(&packBuff[ofst + 12]));
+		frame->AddHex32(ofst + 16, CSTR("ImportTableVAddr"), ReadUInt32(&packBuff[ofst + 16]));
+		frame->AddUInt(ofst + 20, 4, CSTR("ImportTableSize"), ReadUInt32(&packBuff[ofst + 20]));
+		frame->AddHex32(ofst + 24, CSTR("ResourceTableVAddr"), ReadUInt32(&packBuff[ofst + 24]));
+		frame->AddUInt(ofst + 28, 4, CSTR("ResourceTableSize"), ReadUInt32(&packBuff[ofst + 28]));
+		frame->AddHex32(ofst + 32, CSTR("ExceptionTableVAddr"), ReadUInt32(&packBuff[ofst + 32]));
+		frame->AddUInt(ofst + 36, 4, CSTR("ExceptionTableSize"), ReadUInt32(&packBuff[ofst + 36]));
+		frame->AddHex32(ofst + 40, CSTR("CertificateTableVAddr"), ReadUInt32(&packBuff[ofst + 40]));
+		frame->AddUInt(ofst + 44, 4, CSTR("CertificateTableSize"), ReadUInt32(&packBuff[ofst + 44]));
+		frame->AddHex32(ofst + 48, CSTR("BaseRelocationTableVAddr"), ReadUInt32(&packBuff[ofst + 48]));
+		frame->AddUInt(ofst + 52, 4, CSTR("BaseRelocationTableSize"), ReadUInt32(&packBuff[ofst + 52]));
+		frame->AddHex32(ofst + 56, CSTR("DebugTableVAddr"), ReadUInt32(&packBuff[ofst + 56]));
+		frame->AddUInt(ofst + 60, 4, CSTR("DebugTableSize"), ReadUInt32(&packBuff[ofst + 60]));
+		frame->AddHex32(ofst + 64, CSTR("ArchitectureTableVAddr"), ReadUInt32(&packBuff[ofst + 64]));
+		frame->AddUInt(ofst + 68, 4, CSTR("ArchitectureTableSize"), ReadUInt32(&packBuff[ofst + 68]));
+		frame->AddHex32(ofst + 72, CSTR("GlobalPtrTableVAddr"), ReadUInt32(&packBuff[ofst + 72]));
+		frame->AddUInt(ofst + 76, 4, CSTR("GlobalPtrTableSize"), ReadUInt32(&packBuff[ofst + 76]));
+		frame->AddHex32(ofst + 80, CSTR("TLSTableVAddr"), ReadUInt32(&packBuff[ofst + 80]));
+		frame->AddUInt(ofst + 84, 4, CSTR("TLSTableSize"), ReadUInt32(&packBuff[ofst + 84]));
+		frame->AddHex32(ofst + 88, CSTR("LoadConfigTableVAddr"), ReadUInt32(&packBuff[ofst + 88]));
+		frame->AddUInt(ofst + 92, 4, CSTR("LoadConfigTableSize"), ReadUInt32(&packBuff[ofst + 92]));
+		frame->AddHex32(ofst + 96, CSTR("BoundImportTableVAddr"), ReadUInt32(&packBuff[ofst + 96]));
+		frame->AddUInt(ofst + 100, 4, CSTR("BoundImportTableSize"), ReadUInt32(&packBuff[ofst + 100]));
+		frame->AddHex32(ofst + 104, CSTR("ImportAddrTableVAddr"), ReadUInt32(&packBuff[ofst + 104]));
+		frame->AddUInt(ofst + 108, 4, CSTR("ImportAddrTableSize"), ReadUInt32(&packBuff[ofst + 108]));
+		frame->AddHex32(ofst + 112, CSTR("DelayImportTableVAddr"), ReadUInt32(&packBuff[ofst + 112]));
+		frame->AddUInt(ofst + 116, 4, CSTR("DelayImportTableSize"), ReadUInt32(&packBuff[ofst + 116]));
+		frame->AddHex32(ofst + 2120, CSTR("CLRRuntimeTableVAddr"), ReadUInt32(&packBuff[ofst + 120]));
+		frame->AddUInt(ofst + 124, 4, CSTR("CLRRuntimeTableSize"), ReadUInt32(&packBuff[ofst + 124]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 5)
@@ -1171,47 +1172,47 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 
-		frame->AddStrS(0, 8, "Name", packBuff);
-		frame->AddUInt(8, 4, "VirtualSize", ReadUInt32(&packBuff[8]));
-		frame->AddHex32(12, "VirtualAddress", ReadUInt32(&packBuff[12]));
-		frame->AddUInt(16, 4, "SizeOfRawData", ReadUInt32(&packBuff[16]));
-		frame->AddHex32(20, "PointerToRawData", ReadUInt32(&packBuff[20]));
-		frame->AddHex32(24, "PointerToRelocations", ReadUInt32(&packBuff[24]));
-		frame->AddHex32(28, "PointerToLinenumbers", ReadUInt32(&packBuff[28]));
-		frame->AddUInt(32, 2, "NumberOfRelocations", ReadUInt32(&packBuff[32]));
-		frame->AddUInt(34, 2, "NumberOfLinenumbers", ReadUInt32(&packBuff[34]));
-		frame->AddHex32(36, "Characteristics", ReadUInt32(&packBuff[36]));
+		frame->AddStrS(0, 8, CSTR("Name"), packBuff);
+		frame->AddUInt(8, 4, CSTR("VirtualSize"), ReadUInt32(&packBuff[8]));
+		frame->AddHex32(12, CSTR("VirtualAddress"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(16, 4, CSTR("SizeOfRawData"), ReadUInt32(&packBuff[16]));
+		frame->AddHex32(20, CSTR("PointerToRawData"), ReadUInt32(&packBuff[20]));
+		frame->AddHex32(24, CSTR("PointerToRelocations"), ReadUInt32(&packBuff[24]));
+		frame->AddHex32(28, CSTR("PointerToLinenumbers"), ReadUInt32(&packBuff[28]));
+		frame->AddUInt(32, 2, CSTR("NumberOfRelocations"), ReadUInt32(&packBuff[32]));
+		frame->AddUInt(34, 2, CSTR("NumberOfLinenumbers"), ReadUInt32(&packBuff[34]));
+		frame->AddHex32(36, CSTR("Characteristics"), ReadUInt32(&packBuff[36]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 6)
 	{
 		UInt32 nAddr;
 		UInt32 nName;
-		frame->AddHex32(0, "Export Flags", ReadUInt32(&this->imageBuff[pack->fileOfst]));
-		frame->AddUInt(4, 4, "Timestamp", ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
+		frame->AddHex32(0, CSTR("Export Flags"), ReadUInt32(&this->imageBuff[pack->fileOfst]));
+		frame->AddUInt(4, 4, CSTR("Timestamp"), ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(4, 4, (const UTF8Char*)"Timestamp", sbuff);
-		frame->AddUInt(8, 2, "VersionMajor", ReadUInt16(&this->imageBuff[pack->fileOfst + 8]));
-		frame->AddUInt(10, 2, "VersionMinor", ReadUInt16(&this->imageBuff[pack->fileOfst + 10]));
-		frame->AddStrS(12, 4, "Name", &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
-		frame->AddUInt(16, 4, "Ordinal Base", ReadUInt16(&this->imageBuff[pack->fileOfst + 16]));
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddUInt(8, 2, CSTR("VersionMajor"), ReadUInt16(&this->imageBuff[pack->fileOfst + 8]));
+		frame->AddUInt(10, 2, CSTR("VersionMinor"), ReadUInt16(&this->imageBuff[pack->fileOfst + 10]));
+		frame->AddStrS(12, 4, CSTR("Name"), &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
+		frame->AddUInt(16, 4, CSTR("Ordinal Base"), ReadUInt16(&this->imageBuff[pack->fileOfst + 16]));
 		nAddr = ReadUInt32(&this->imageBuff[pack->fileOfst + 20]);
 		nName = ReadUInt32(&this->imageBuff[pack->fileOfst + 24]);
-		frame->AddUInt(20, 4, "Address Table Entries", nAddr);
-		frame->AddUInt(24, 4, "Number of Name Pointers", nName);
-		frame->AddHex32(28, "Export Flags", ReadUInt32(&this->imageBuff[pack->fileOfst + 28]));
-		frame->AddHex32(32, "Name Pointer RVA", ReadUInt32(&this->imageBuff[pack->fileOfst + 32]));
-		frame->AddHex32(36, "Ordinal Table RVA", ReadUInt32(&this->imageBuff[pack->fileOfst + 36]));
+		frame->AddUInt(20, 4, CSTR("Address Table Entries"), nAddr);
+		frame->AddUInt(24, 4, CSTR("Number of Name Pointers"), nName);
+		frame->AddHex32(28, CSTR("Export Flags"), ReadUInt32(&this->imageBuff[pack->fileOfst + 28]));
+		frame->AddHex32(32, CSTR("Name Pointer RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 32]));
+		frame->AddHex32(36, CSTR("Ordinal Table RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 36]));
 		UInt8 *addrTablePtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 28])];
 		UInt8 *nameTablePtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 32])];
 		UInt8 *ordinalTablePtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 36])];
 		UInt32 i = 0;
 		while (i < nName)
 		{
-			frame->AddHex32((UOSInt)(addrTablePtr - &this->imageBuff[pack->fileOfst]), "Addr", ReadUInt32(&addrTablePtr[ReadUInt16(ordinalTablePtr) * 4]));
-			frame->AddField((UOSInt)(nameTablePtr - &this->imageBuff[pack->fileOfst]), 4, (const UTF8Char*)"Name", (const UTF8Char*)&this->imageBuff[ReadUInt32(nameTablePtr)]);
+			frame->AddHex32((UOSInt)(addrTablePtr - &this->imageBuff[pack->fileOfst]), CSTR("Addr"), ReadUInt32(&addrTablePtr[ReadUInt16(ordinalTablePtr) * 4]));
+			frame->AddField((UOSInt)(nameTablePtr - &this->imageBuff[pack->fileOfst]), 4, {UTF8STRC("Name")}, Text::CString::FromPtr(&this->imageBuff[ReadUInt32(nameTablePtr)]));
 			nameTablePtr += 4;
 			ordinalTablePtr += 2;
 			i++;
@@ -1219,15 +1220,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	}
 	else if (pack->packType == 7)
 	{
-		frame->AddHex32(0, "Import Lookup Table RVA", ReadUInt32(&this->imageBuff[pack->fileOfst + 0]));
-		frame->AddUInt(4, 4, "Timestamp", ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
+		frame->AddHex32(0, CSTR("Import Lookup Table RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 0]));
+		frame->AddUInt(4, 4, CSTR("Timestamp"), ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(4, 4, (const UTF8Char*)"Timestamp", sbuff);
-		frame->AddUInt(8, 4, "Forwarder Chain", ReadUInt32(&this->imageBuff[pack->fileOfst + 8]));
-		frame->AddHex32(12, "Name RVA", ReadUInt32(&this->imageBuff[pack->fileOfst + 12]));
-		frame->AddHex32(16, "Import Address Table RVA", ReadUInt32(&this->imageBuff[pack->fileOfst + 16]));
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddUInt(8, 4, CSTR("Forwarder Chain"), ReadUInt32(&this->imageBuff[pack->fileOfst + 8]));
+		frame->AddHex32(12, CSTR("Name RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 12]));
+		frame->AddHex32(16, CSTR("Import Address Table RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 16]));
 //		UInt8 *lutPtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 0])];
 //		UInt8 *nameTablePtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])];
 //		UInt8 *iatPtr = &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 16])];

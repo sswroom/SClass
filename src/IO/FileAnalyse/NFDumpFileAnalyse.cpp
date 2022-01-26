@@ -778,68 +778,68 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	if (pack->packType == 0)
 	{
-		frame->AddHeader((const UTF8Char*)"Type=File header");
+		frame->AddHeader({UTF8STRC("Type=File header")});
 	}
 	else if (pack->packType == 1)
 	{
-		frame->AddHeader((const UTF8Char*)"Type=Stat Record");
+		frame->AddHeader({UTF8STRC("Type=Stat Record")});
 	}
 	else if (pack->packType == 2)
 	{
-		frame->AddHeader((const UTF8Char*)"Type=Data Block Header");
+		frame->AddHeader({UTF8STRC("Type=Data Block Header")});
 	}
 	else if (pack->packType == 3)
 	{
-		frame->AddHeader((const UTF8Char*)"Type=Data Block");
+		frame->AddHeader({UTF8STRC("Type=Data Block")});
 	}
 
 	if (pack->packType == 0)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt(2, 2, "Version", ReadUInt16(&packBuff[2]));
-		frame->AddHex32(4, "Flags", ReadUInt32(&packBuff[4]));
+		frame->AddUInt(2, 2, CSTR("Version"), ReadUInt16(&packBuff[2]));
+		frame->AddHex32(4, CSTR("Flags"), ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
 		{
-			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Compressed");
+			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Compressed")});
 		}
 		if (packBuff[4] & 2)
 		{
-			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Anonimized");
+			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Anonimized")});
 		}
 		if (packBuff[4] & 4)
 		{
-			frame->AddField(4, 4, (const UTF8Char*)"Flags", (const UTF8Char*)" Catalog");
+			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Catalog")});
 		}
-		frame->AddUInt(8, 4, "Number of Blocks", ReadUInt32(&packBuff[8]));
+		frame->AddUInt(8, 4, CSTR("Number of Blocks"), ReadUInt32(&packBuff[8]));
 		UOSInt strLen = Text::StrCharCnt(&packBuff[12]);
-		frame->AddStrS(12, strLen + 1, "Identifier", &packBuff[12]);
+		frame->AddStrS(12, strLen + 1, CSTR("Identifier"), &packBuff[12]);
 		MemFree(packBuff);
 	}
 	else if (pack->packType == 1)
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt64(0, "Number of flows", ReadUInt64(&packBuff[0]));
-		frame->AddUInt64(8, "Number of bytes", ReadUInt64(&packBuff[8]));
-		frame->AddUInt64(16, "Number of packets", ReadUInt64(&packBuff[16]));
-		frame->AddUInt64(24, "Number of flows (TCP)", ReadUInt64(&packBuff[24]));
-		frame->AddUInt64(32, "Number of flows (UDP)", ReadUInt64(&packBuff[32]));
-		frame->AddUInt64(40, "Number of flows (ICMP)", ReadUInt64(&packBuff[40]));
-		frame->AddUInt64(48, "Number of flows (Other)", ReadUInt64(&packBuff[48]));
-		frame->AddUInt64(56, "Number of bytes (TCP)", ReadUInt64(&packBuff[56]));
-		frame->AddUInt64(64, "Number of bytes (UDP)", ReadUInt64(&packBuff[64]));
-		frame->AddUInt64(72, "Number of bytes (ICMP)", ReadUInt64(&packBuff[72]));
-		frame->AddUInt64(80, "Number of bytes (Other)", ReadUInt64(&packBuff[80]));
-		frame->AddUInt64(88, "Number of packets (TCP)", ReadUInt64(&packBuff[88]));
-		frame->AddUInt64(96, "Number of packets (UDP)", ReadUInt64(&packBuff[96]));
-		frame->AddUInt64(104, "Number of packets (ICMP)", ReadUInt64(&packBuff[104]));
-		frame->AddUInt64(112, "Number of packets (Other)", ReadUInt64(&packBuff[112]));
-		frame->AddUInt(120, 4, "Number of flows", ReadUInt32(&packBuff[120]));
-		frame->AddUInt(124, 4, "Number of flows", ReadUInt32(&packBuff[124]));
-		frame->AddUInt(128, 2, "Number of flows", ReadUInt16(&packBuff[128]));
-		frame->AddUInt(130, 2, "Number of flows", ReadUInt16(&packBuff[130]));
-		frame->AddUInt(132, 4, "Number of flows", ReadUInt32(&packBuff[132]));
+		frame->AddUInt64(0, CSTR("Number of flows"), ReadUInt64(&packBuff[0]));
+		frame->AddUInt64(8, CSTR("Number of bytes"), ReadUInt64(&packBuff[8]));
+		frame->AddUInt64(16, CSTR("Number of packets"), ReadUInt64(&packBuff[16]));
+		frame->AddUInt64(24, CSTR("Number of flows (TCP)"), ReadUInt64(&packBuff[24]));
+		frame->AddUInt64(32, CSTR("Number of flows (UDP)"), ReadUInt64(&packBuff[32]));
+		frame->AddUInt64(40, CSTR("Number of flows (ICMP)"), ReadUInt64(&packBuff[40]));
+		frame->AddUInt64(48, CSTR("Number of flows (Other)"), ReadUInt64(&packBuff[48]));
+		frame->AddUInt64(56, CSTR("Number of bytes (TCP)"), ReadUInt64(&packBuff[56]));
+		frame->AddUInt64(64, CSTR("Number of bytes (UDP)"), ReadUInt64(&packBuff[64]));
+		frame->AddUInt64(72, CSTR("Number of bytes (ICMP)"), ReadUInt64(&packBuff[72]));
+		frame->AddUInt64(80, CSTR("Number of bytes (Other)"), ReadUInt64(&packBuff[80]));
+		frame->AddUInt64(88, CSTR("Number of packets (TCP)"), ReadUInt64(&packBuff[88]));
+		frame->AddUInt64(96, CSTR("Number of packets (UDP)"), ReadUInt64(&packBuff[96]));
+		frame->AddUInt64(104, CSTR("Number of packets (ICMP)"), ReadUInt64(&packBuff[104]));
+		frame->AddUInt64(112, CSTR("Number of packets (Other)"), ReadUInt64(&packBuff[112]));
+		frame->AddUInt(120, 4, CSTR("Number of flows"), ReadUInt32(&packBuff[120]));
+		frame->AddUInt(124, 4, CSTR("Number of flows"), ReadUInt32(&packBuff[124]));
+		frame->AddUInt(128, 2, CSTR("Number of flows"), ReadUInt16(&packBuff[128]));
+		frame->AddUInt(130, 2, CSTR("Number of flows"), ReadUInt16(&packBuff[130]));
+		frame->AddUInt(132, 4, CSTR("Number of flows"), ReadUInt32(&packBuff[132]));
 
 		MemFree(packBuff);
 	}
@@ -847,21 +847,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt(0, 4, "Number of records", ReadUInt32(&packBuff[0]));
-		frame->AddUInt(4, 4, "Block size", ReadUInt32(&packBuff[4]));
-		frame->AddUInt(8, 2, "Block ID", ReadUInt16(&packBuff[8]));
-		frame->AddUInt(10, 2, "Flags", ReadUInt16(&packBuff[10]));
+		frame->AddUInt(0, 4, CSTR("Number of records"), ReadUInt32(&packBuff[0]));
+		frame->AddUInt(4, 4, CSTR("Block size"), ReadUInt32(&packBuff[4]));
+		frame->AddUInt(8, 2, CSTR("Block ID"), ReadUInt16(&packBuff[8]));
+		frame->AddUInt(10, 2, CSTR("Flags"), ReadUInt16(&packBuff[10]));
 		if (packBuff[10] == 0)
 		{
-			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"kompatibility");
+			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("kompatibility")});
 		}
 		else if (packBuff[10] == 1)
 		{
-			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"block uncompressed");
+			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("block uncompressed")});
 		}
 		else if (packBuff[10] == 2)
 		{
-			frame->AddField(10, 2, (const UTF8Char*)"Flags", (const UTF8Char*)"block compressed");
+			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("block compressed")});
 		}
 		MemFree(packBuff);
 	}
@@ -876,12 +876,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packBuff, 256, ' ', Text::LineBreakType::CRLF);
-			frame->AddField(0, dispSize, (const UTF8Char*)"LZO Compressed", sb.ToString());
+			frame->AddField(0, dispSize, {UTF8STRC("LZO Compressed")}, sb.ToCString());
 			dispSize = 256;
 		}
 		else
 		{
-			frame->AddHexBuff(0, dispSize, "LZO Compressed", packBuff, true);
+			frame->AddHexBuff(0, dispSize, CSTR("LZO Compressed"), packBuff, true);
 		}
 
 		if (this->hasLZODecomp)

@@ -8,13 +8,13 @@ void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
 	MemFree(field);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value, FieldType fieldType)
+void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value, FieldType fieldType)
 {
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->ofst = (UInt32)ofst;
 	field->size = (UInt32)size;
-	field->name = Text::String::NewNotNull(name);
-	field->value = Text::String::NewOrNull(value);
+	field->name = Text::String::New(name.v, name.leng);
+	field->value = Text::String::New(value.v, name.leng);
 	field->fieldType = fieldType;
 	this->fields->Add(field);
 }
@@ -69,34 +69,34 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<
 	return ret;
 }
 
-void IO::FileAnalyse::FrameDetail::AddHeader(const UTF8Char *header)
+void IO::FileAnalyse::FrameDetail::AddHeader(Text::CString header)
 {
-	this->headers->Add(Text::String::NewNotNull(header));
+	this->headers->Add(Text::String::New(header.v, header.leng));
 }
 
-void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value)
+void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_FIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value)
+void IO::FileAnalyse::FrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value)
 {
 	this->AddFieldInfo(ofst, size, name, value, FT_SUBFIELD);
 }
 
-void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UOSInt ofst, const UTF8Char *name)
+void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UOSInt ofst, Text::CString name)
 {
-	this->AddFieldInfo(ofst, 0, name, 0, FT_SEPERATOR);
+	this->AddFieldInfo(ofst, 0, name, {0, 0}, FT_SEPERATOR);
 }
 
-void IO::FileAnalyse::FrameDetail::AddText(UOSInt ofst, const UTF8Char *name)
+void IO::FileAnalyse::FrameDetail::AddText(UOSInt ofst, Text::CString name)
 {
-	this->AddFieldInfo(ofst, 0, name, 0, FT_TEXT);
+	this->AddFieldInfo(ofst, 0, name, {0, 0}, FT_TEXT);
 }
 
 void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
 {
-	this->AddFieldInfo(ofst, size, (const UTF8Char*)"Subframe", 0, FT_SUBFRAME);
+	this->AddFieldInfo(ofst, size, CSTR("Subframe"), {0, 0}, FT_SUBFRAME);
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb)

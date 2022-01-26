@@ -165,13 +165,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-	frame->AddHex16(0, "Frame Type", ReadUInt16(&packBuff[0]));
-	frame->AddUInt(2, 2, "Free Space", ReadUInt16(&packBuff[2]));
+	frame->AddHex16(0, CSTR("Frame Type"), ReadUInt16(&packBuff[0]));
+	frame->AddUInt(2, 2, CSTR("Free Space"), ReadUInt16(&packBuff[2]));
 	switch (pack->packType)
 	{
 	case 0x100:
-		frame->AddStrS(4, 16, "File Format", &packBuff[4]);
-		frame->AddHex32(20, "File Version", ReadUInt32(&packBuff[20]));
+		frame->AddStrS(4, 16, CSTR("File Format"), &packBuff[4]);
+		frame->AddHex32(20, CSTR("File Version"), ReadUInt32(&packBuff[20]));
 		{
 			WriteUInt32(decBuff, 0x6b39dac7);
 			Crypto::Encrypt::RC4Cipher rc4(decBuff, 4);
@@ -179,28 +179,28 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			{
 				rc4.Decrypt(&packBuff[24], 126, decBuff, 0);
 				Double ddays = ReadDouble(&decBuff[0x5A]);
-				frame->AddHexBuff(24, 0x22, "Unknown", decBuff, true);
-				frame->AddUInt(24 + 0x22, 2, "System Collation", ReadUInt16(&decBuff[0x22]));
-				frame->AddUInt(24 + 0x24, 2, "System Codepage", ReadUInt16(&decBuff[0x24]));
-				frame->AddHex32(24 + 0x26, "Database Key", ReadUInt32(&decBuff[0x26]));
-				frame->AddStrS(24 + 0x2A, 20, "Database password", &decBuff[0x2A]);
-				frame->AddHexBuff(24 + 0x3E, 24, "Unknown", &decBuff[0x3E], true);
-				frame->AddUInt(24 + 0x56, 2, "Unknown", ReadUInt16(&decBuff[0x56]));
+				frame->AddHexBuff(24, 0x22, CSTR("Unknown"), decBuff, true);
+				frame->AddUInt(24 + 0x22, 2, CSTR("System Collation"), ReadUInt16(&decBuff[0x22]));
+				frame->AddUInt(24 + 0x24, 2, CSTR("System Codepage"), ReadUInt16(&decBuff[0x24]));
+				frame->AddHex32(24 + 0x26, CSTR("Database Key"), ReadUInt32(&decBuff[0x26]));
+				frame->AddStrS(24 + 0x2A, 20, CSTR("Database password"), &decBuff[0x2A]);
+				frame->AddHexBuff(24 + 0x3E, 24, CSTR("Unknown"), &decBuff[0x3E], true);
+				frame->AddUInt(24 + 0x56, 2, CSTR("Unknown"), ReadUInt16(&decBuff[0x56]));
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
-				frame->AddHexBuff(24 + 0x62, 28, "Unknown", &decBuff[0x62], true);
+				frame->AddHexBuff(24 + 0x62, 28, CSTR("Unknown"), &decBuff[0x62], true);
 			}
 			else
 			{
 				rc4.Decrypt(&packBuff[24], 128, decBuff, 0);
 				Double ddays = ReadDouble(&decBuff[0x5A]);
 				UInt32 ndays = (UInt32)ddays;
-				frame->AddHexBuff(24, 0x24, "Unkonwn", decBuff, true);
-				frame->AddUInt(24 + 0x24, 2, "System Codepage", ReadUInt16(&decBuff[0x24]));
-				frame->AddHex32(24 + 0x26, "Database Key", ReadUInt32(&decBuff[0x26]));
+				frame->AddHexBuff(24, 0x24, CSTR("Unkonwn"), decBuff, true);
+				frame->AddUInt(24 + 0x24, 2, CSTR("System Codepage"), ReadUInt16(&decBuff[0x24]));
+				frame->AddHex32(24 + 0x26, CSTR("Database Key"), ReadUInt32(&decBuff[0x26]));
 				WriteUInt32(&decBuff[0x2A], ReadUInt32(&decBuff[0x2A]) ^ ndays);
 				WriteUInt32(&decBuff[0x2E], ReadUInt32(&decBuff[0x2E]) ^ ndays);
 				WriteUInt32(&decBuff[0x32], ReadUInt32(&decBuff[0x32]) ^ ndays);
@@ -214,24 +214,24 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&decBuff[0x2A], 20);
 				sptr[0] = 0;
 				frame->AddField(24 + 0x2A, 40, {UTF8STRC("Database Password")}, {sbuff, (UOSInt)(sptr - sbuff)});
-				frame->AddHex32(24 + 0x52, "Unknown", ReadUInt32(&decBuff[0x52]));
-				frame->AddUInt(24 + 0x56, 4, "System Collation", ReadUInt32(&decBuff[0x56]));
+				frame->AddHex32(24 + 0x52, CSTR("Unknown"), ReadUInt32(&decBuff[0x52]));
+				frame->AddUInt(24 + 0x56, 4, CSTR("System Collation"), ReadUInt32(&decBuff[0x56]));
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
 				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
-				frame->AddHexBuff(24 + 0x62, 30, "Unknown", &decBuff[0x62], true);
+				frame->AddHexBuff(24 + 0x62, 30, CSTR("Unknown"), &decBuff[0x62], true);
 
-				frame->AddUInt(152, 4, "Unknown", ReadUInt32(&packBuff[152]));
-				frame->AddStrS(156, 4, "Unknown", &packBuff[156]);
+				frame->AddUInt(152, 4, CSTR("Unknown"), ReadUInt32(&packBuff[152]));
+				frame->AddStrS(156, 4, CSTR("Unknown"), &packBuff[156]);
 			}
 		}
 		break;
 	case 0x101:
-		frame->AddUInt(4, 4, "Data Owner", ReadUInt32(&packBuff[4]));
-		frame->AddUInt(8, 4, "Unknown", ReadUInt32(&packBuff[8]));
-		frame->AddUInt(12, 2, "Record Count", ReadUInt16(&packBuff[12]));
+		frame->AddUInt(4, 4, CSTR("Data Owner"), ReadUInt32(&packBuff[4]));
+		frame->AddUInt(8, 4, CSTR("Unknown"), ReadUInt32(&packBuff[8]));
+		frame->AddUInt(12, 2, CSTR("Record Count"), ReadUInt16(&packBuff[12]));
 		{
 			UOSInt i = 0;
 			UOSInt j = ReadUInt16(&packBuff[12]);
@@ -250,54 +250,54 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
 				frame->AddField(14 + i * 2, 2, {UTF8STRC("Record Offset")}, {sbuff, (UOSInt)(sptr - sbuff)});
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
-				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, (const Char*)sbuff, &packBuff[thisOfst], true);
+				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[thisOfst], true);
 				lastOfst = thisOfst;
 				i++;
 			}
-			frame->AddHexBuff(14 + j * 2, ReadUInt16(&packBuff[2]), "Free Space", &packBuff[14 + j * 2], true);
+			frame->AddHexBuff(14 + j * 2, ReadUInt16(&packBuff[2]), CSTR("Free Space"), &packBuff[14 + j * 2], true);
 		}
 		break;
 	case 0x102:
 		if (this->fileVer == 0)
 		{
-			frame->AddUInt(4, 4, "Next Page", ReadUInt32(&packBuff[4]));
-			frame->AddUInt(8, 4, "Table Length", ReadUInt32(&packBuff[8]));
-			frame->AddUInt(12, 4, "Number of records", ReadUInt32(&packBuff[12]));
-			frame->AddUInt(16, 4, "Next Autonunber", ReadUInt32(&packBuff[16]));
+			frame->AddUInt(4, 4, CSTR("Next Page"), ReadUInt32(&packBuff[4]));
+			frame->AddUInt(8, 4, CSTR("Table Length"), ReadUInt32(&packBuff[8]));
+			frame->AddUInt(12, 4, CSTR("Number of records"), ReadUInt32(&packBuff[12]));
+			frame->AddUInt(16, 4, CSTR("Next Autonunber"), ReadUInt32(&packBuff[16]));
 
 			UOSInt freeSpace = ReadUInt16(&packBuff[2]);
-			frame->AddHexBuff(4096 - freeSpace, freeSpace, "Free Space", &packBuff[4096 - freeSpace], true);
+			frame->AddHexBuff(4096 - freeSpace, freeSpace, CSTR("Free Space"), &packBuff[4096 - freeSpace], true);
 		}
 		else //1
 		{
-			frame->AddUInt(4, 4, "Next Page", ReadUInt32(&packBuff[4]));
-			frame->AddUInt(8, 4, "Table Length", ReadUInt32(&packBuff[8]));
-			frame->AddUInt(12, 4, "Unknown", ReadUInt32(&packBuff[12]));
-			frame->AddUInt(16, 4, "Number of records", ReadUInt32(&packBuff[16]));
-			frame->AddUInt(20, 4, "Next Autonunber", ReadUInt32(&packBuff[20]));
-			frame->AddHex32(24, "Autonunber Flags", ReadUInt32(&packBuff[24]));
-			frame->AddUInt(28, 4, "CT Autonunber", ReadUInt32(&packBuff[28]));
-			frame->AddUInt64(32, "Unknown", ReadUInt64(&packBuff[32]));
-			frame->AddStrC(40, 1, "Table Type", &packBuff[40]);
-			frame->AddUInt(41, 2, "Maximum column", ReadUInt16(&packBuff[41]));
-			frame->AddUInt(43, 2, "Number of Variable Columns", ReadUInt16(&packBuff[43]));
-			frame->AddUInt(45, 2, "Number of columns", ReadUInt16(&packBuff[45]));
-			frame->AddUInt(47, 4, "Number of logical index", ReadUInt32(&packBuff[47]));
-			frame->AddUInt(51, 4, "Number of index", ReadUInt32(&packBuff[51]));
-			frame->AddHex8(55, "Usage Flags", packBuff[55]);
-			frame->AddUInt(56, 3, "Usage Page", ReadUInt24(&packBuff[56]));
-			frame->AddHex8(59, "Free Flags", packBuff[59]);
-			frame->AddUInt(60, 3, "Free Page", ReadUInt24(&packBuff[60]));
+			frame->AddUInt(4, 4, CSTR("Next Page"), ReadUInt32(&packBuff[4]));
+			frame->AddUInt(8, 4, CSTR("Table Length"), ReadUInt32(&packBuff[8]));
+			frame->AddUInt(12, 4, CSTR("Unknown"), ReadUInt32(&packBuff[12]));
+			frame->AddUInt(16, 4, CSTR("Number of records"), ReadUInt32(&packBuff[16]));
+			frame->AddUInt(20, 4, CSTR("Next Autonunber"), ReadUInt32(&packBuff[20]));
+			frame->AddHex32(24, CSTR("Autonunber Flags"), ReadUInt32(&packBuff[24]));
+			frame->AddUInt(28, 4, CSTR("CT Autonunber"), ReadUInt32(&packBuff[28]));
+			frame->AddUInt64(32, CSTR("Unknown"), ReadUInt64(&packBuff[32]));
+			frame->AddStrC(40, 1, CSTR("Table Type"), &packBuff[40]);
+			frame->AddUInt(41, 2, CSTR("Maximum column"), ReadUInt16(&packBuff[41]));
+			frame->AddUInt(43, 2, CSTR("Number of Variable Columns"), ReadUInt16(&packBuff[43]));
+			frame->AddUInt(45, 2, CSTR("Number of columns"), ReadUInt16(&packBuff[45]));
+			frame->AddUInt(47, 4, CSTR("Number of logical index"), ReadUInt32(&packBuff[47]));
+			frame->AddUInt(51, 4, CSTR("Number of index"), ReadUInt32(&packBuff[51]));
+			frame->AddHex8(55, CSTR("Usage Flags"), packBuff[55]);
+			frame->AddUInt(56, 3, CSTR("Usage Page"), ReadUInt24(&packBuff[56]));
+			frame->AddHex8(59, CSTR("Free Flags"), packBuff[59]);
+			frame->AddUInt(60, 3, CSTR("Free Page"), ReadUInt24(&packBuff[60]));
 
 			UOSInt ofst = 63;
 			UOSInt i = 0;
 			UOSInt j = ReadUInt32(&packBuff[51]);
 			while (i < j)
 			{
-				frame->AddUInt(ofst, 4, "Index Unknown", ReadUInt32(&packBuff[ofst]));
-				frame->AddUInt64(ofst + 4, "Number of index rows", ReadUInt64(&packBuff[ofst + 4]));
+				frame->AddUInt(ofst, 4, CSTR("Index Unknown"), ReadUInt32(&packBuff[ofst]));
+				frame->AddUInt64(ofst + 4, CSTR("Number of index rows"), ReadUInt64(&packBuff[ofst + 4]));
 				ofst += 12;
 				i++;
 			}
@@ -306,17 +306,17 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			j = ReadUInt16(&packBuff[45]);
 			while (i < j)
 			{
-				frame->AddUIntName(ofst, 1, "Column Type", packBuff[ofst], ColumnTypeGetName(packBuff[ofst]));
-				frame->AddUInt(ofst + 1, 4, "Unknown", ReadUInt32(&packBuff[ofst + 1]));
-				frame->AddUInt(ofst + 5, 2, "Total Column Number", ReadUInt16(&packBuff[ofst + 5]));
-				frame->AddUInt(ofst + 7, 2, "Offset of Variable Length Column", ReadUInt16(&packBuff[ofst + 7]));
-				frame->AddUInt(ofst + 9, 2, "Column Number", ReadUInt16(&packBuff[ofst + 9]));
-				frame->AddHex32(ofst + 11, "Misc", ReadUInt32(&packBuff[ofst + 11]));
-				frame->AddHex8(ofst + 15, "Flags1", packBuff[ofst + 15]);
-				frame->AddHex8(ofst + 16, "Flags2", packBuff[ofst + 16]);
-				frame->AddUInt(ofst + 17, 4, "Unknown", ReadUInt32(&packBuff[ofst + 17]));
-				frame->AddUInt(ofst + 21, 2, "Offset of Fixed Column", ReadUInt16(&packBuff[ofst + 21]));
-				frame->AddUInt(ofst + 23, 2, "Column Length", ReadUInt16(&packBuff[ofst + 23]));
+				frame->AddUIntName(ofst, 1, CSTR("Column Type"), packBuff[ofst], ColumnTypeGetName(packBuff[ofst]));
+				frame->AddUInt(ofst + 1, 4, CSTR("Unknown"), ReadUInt32(&packBuff[ofst + 1]));
+				frame->AddUInt(ofst + 5, 2, CSTR("Total Column Number"), ReadUInt16(&packBuff[ofst + 5]));
+				frame->AddUInt(ofst + 7, 2, CSTR("Offset of Variable Length Column"), ReadUInt16(&packBuff[ofst + 7]));
+				frame->AddUInt(ofst + 9, 2, CSTR("Column Number"), ReadUInt16(&packBuff[ofst + 9]));
+				frame->AddHex32(ofst + 11, CSTR("Misc"), ReadUInt32(&packBuff[ofst + 11]));
+				frame->AddHex8(ofst + 15, CSTR("Flags1"), packBuff[ofst + 15]);
+				frame->AddHex8(ofst + 16, CSTR("Flags2"), packBuff[ofst + 16]);
+				frame->AddUInt(ofst + 17, 4, CSTR("Unknown"), ReadUInt32(&packBuff[ofst + 17]));
+				frame->AddUInt(ofst + 21, 2, CSTR("Offset of Fixed Column"), ReadUInt16(&packBuff[ofst + 21]));
+				frame->AddUInt(ofst + 23, 2, CSTR("Column Length"), ReadUInt16(&packBuff[ofst + 23]));
 				ofst += 25;
 				i++;
 			}
@@ -324,8 +324,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			while (i < j)
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
-				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
+				frame->AddUInt(ofst, 2, {sbuff, (UOSInt)(sptr - sbuff)}, colSize);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
@@ -337,32 +337,32 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			j = ReadUInt32(&packBuff[51]);
 			while (i < j)
 			{
-				frame->AddUInt(ofst, 4, "Unknown", ReadUInt32(&packBuff[ofst]));
-				frame->AddUInt(ofst + 4, 2, "Column number0", ReadUInt16(&packBuff[ofst + 4]));
-				frame->AddUInt(ofst + 6, 1, "Column order0", packBuff[ofst + 6]);
-				frame->AddUInt(ofst + 7, 2, "Column number1", ReadUInt16(&packBuff[ofst + 7]));
-				frame->AddUInt(ofst + 9, 1, "Column order1", packBuff[ofst + 9]);
-				frame->AddUInt(ofst + 10, 2, "Column number2", ReadUInt16(&packBuff[ofst + 10]));
-				frame->AddUInt(ofst + 12, 1, "Column order2", packBuff[ofst + 12]);
-				frame->AddUInt(ofst + 13, 2, "Column number3", ReadUInt16(&packBuff[ofst + 13]));
-				frame->AddUInt(ofst + 15, 1, "Column order3", packBuff[ofst + 15]);
-				frame->AddUInt(ofst + 16, 2, "Column number4", ReadUInt16(&packBuff[ofst + 16]));
-				frame->AddUInt(ofst + 18, 1, "Column order4", packBuff[ofst + 18]);
-				frame->AddUInt(ofst + 19, 2, "Column number5", ReadUInt16(&packBuff[ofst + 19]));
-				frame->AddUInt(ofst + 21, 1, "Column order5", packBuff[ofst + 21]);
-				frame->AddUInt(ofst + 22, 2, "Column number6", ReadUInt16(&packBuff[ofst + 22]));
-				frame->AddUInt(ofst + 24, 1, "Column order6", packBuff[ofst + 24]);
-				frame->AddUInt(ofst + 25, 2, "Column number7", ReadUInt16(&packBuff[ofst + 25]));
-				frame->AddUInt(ofst + 27, 1, "Column order7", packBuff[ofst + 27]);
-				frame->AddUInt(ofst + 28, 2, "Column number8", ReadUInt16(&packBuff[ofst + 28]));
-				frame->AddUInt(ofst + 30, 1, "Column order8", packBuff[ofst + 30]);
-				frame->AddUInt(ofst + 31, 2, "Column number9", ReadUInt16(&packBuff[ofst + 31]));
-				frame->AddUInt(ofst + 33, 1, "Column order9", packBuff[ofst + 33]);
-				frame->AddHex8(ofst + 34, "Page Flag", packBuff[ofst + 34]);
-				frame->AddUInt(ofst + 35, 3, "Used Page", ReadUInt24(&packBuff[ofst + 35]));
-				frame->AddUInt(ofst + 38, 4, "First Index", ReadUInt32(&packBuff[ofst + 38]));
-				frame->AddHex8(ofst + 42, "Index Flag", packBuff[ofst + 42]);
-				frame->AddHexBuff(ofst + 43, 9, "Unknown", &packBuff[ofst + 43], false);
+				frame->AddUInt(ofst, 4, CSTR("Unknown"), ReadUInt32(&packBuff[ofst]));
+				frame->AddUInt(ofst + 4, 2, CSTR("Column number0"), ReadUInt16(&packBuff[ofst + 4]));
+				frame->AddUInt(ofst + 6, 1, CSTR("Column order0"), packBuff[ofst + 6]);
+				frame->AddUInt(ofst + 7, 2, CSTR("Column number1"), ReadUInt16(&packBuff[ofst + 7]));
+				frame->AddUInt(ofst + 9, 1, CSTR("Column order1"), packBuff[ofst + 9]);
+				frame->AddUInt(ofst + 10, 2, CSTR("Column number2"), ReadUInt16(&packBuff[ofst + 10]));
+				frame->AddUInt(ofst + 12, 1, CSTR("Column order2"), packBuff[ofst + 12]);
+				frame->AddUInt(ofst + 13, 2, CSTR("Column number3"), ReadUInt16(&packBuff[ofst + 13]));
+				frame->AddUInt(ofst + 15, 1, CSTR("Column order3"), packBuff[ofst + 15]);
+				frame->AddUInt(ofst + 16, 2, CSTR("Column number4"), ReadUInt16(&packBuff[ofst + 16]));
+				frame->AddUInt(ofst + 18, 1, CSTR("Column order4"), packBuff[ofst + 18]);
+				frame->AddUInt(ofst + 19, 2, CSTR("Column number5"), ReadUInt16(&packBuff[ofst + 19]));
+				frame->AddUInt(ofst + 21, 1, CSTR("Column order5"), packBuff[ofst + 21]);
+				frame->AddUInt(ofst + 22, 2, CSTR("Column number6"), ReadUInt16(&packBuff[ofst + 22]));
+				frame->AddUInt(ofst + 24, 1, CSTR("Column order6"), packBuff[ofst + 24]);
+				frame->AddUInt(ofst + 25, 2, CSTR("Column number7"), ReadUInt16(&packBuff[ofst + 25]));
+				frame->AddUInt(ofst + 27, 1, CSTR("Column order7"), packBuff[ofst + 27]);
+				frame->AddUInt(ofst + 28, 2, CSTR("Column number8"), ReadUInt16(&packBuff[ofst + 28]));
+				frame->AddUInt(ofst + 30, 1, CSTR("Column order8"), packBuff[ofst + 30]);
+				frame->AddUInt(ofst + 31, 2, CSTR("Column number9"), ReadUInt16(&packBuff[ofst + 31]));
+				frame->AddUInt(ofst + 33, 1, CSTR("Column order9"), packBuff[ofst + 33]);
+				frame->AddHex8(ofst + 34, CSTR("Page Flag"), packBuff[ofst + 34]);
+				frame->AddUInt(ofst + 35, 3, CSTR("Used Page"), ReadUInt24(&packBuff[ofst + 35]));
+				frame->AddUInt(ofst + 38, 4, CSTR("First Index"), ReadUInt32(&packBuff[ofst + 38]));
+				frame->AddHex8(ofst + 42, CSTR("Index Flag"), packBuff[ofst + 42]);
+				frame->AddHexBuff(ofst + 43, 9, CSTR("Unknown"), &packBuff[ofst + 43], false);
 				ofst += 52;
 				i++;
 			}
@@ -370,15 +370,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			j = ReadUInt32(&packBuff[47]);
 			while (i < j)
 			{
-				frame->AddUInt(ofst, 4, "Unknown", ReadUInt32(&packBuff[ofst]));
-				frame->AddUInt(ofst + 4, 4, "Index Number", ReadUInt32(&packBuff[ofst + 4]));
-				frame->AddUInt(ofst + 8, 4, "Index Number2", ReadUInt32(&packBuff[ofst + 8]));
-				frame->AddUInt(ofst + 12, 1, "Rel Table Type", packBuff[ofst + 12]);
-				frame->AddInt(ofst + 13, 4, "Rel Index Num", ReadInt32(&packBuff[ofst + 13]));
-				frame->AddInt(ofst + 17, 4, "Rel Table Page", ReadInt32(&packBuff[ofst + 17]));
-				frame->AddUInt(ofst + 21, 1, "Cascade Updates", packBuff[ofst + 21]);
-				frame->AddUInt(ofst + 22, 1, "Cascade Deletes", packBuff[ofst + 22]);
-				frame->AddUInt(ofst + 23, 1, "Index Type", packBuff[ofst + 23]);
+				frame->AddUInt(ofst, 4, CSTR("Unknown"), ReadUInt32(&packBuff[ofst]));
+				frame->AddUInt(ofst + 4, 4, CSTR("Index Number"), ReadUInt32(&packBuff[ofst + 4]));
+				frame->AddUInt(ofst + 8, 4, CSTR("Index Number2"), ReadUInt32(&packBuff[ofst + 8]));
+				frame->AddUInt(ofst + 12, 1, CSTR("Rel Table Type"), packBuff[ofst + 12]);
+				frame->AddInt(ofst + 13, 4, CSTR("Rel Index Num"), ReadInt32(&packBuff[ofst + 13]));
+				frame->AddInt(ofst + 17, 4, CSTR("Rel Table Page"), ReadInt32(&packBuff[ofst + 17]));
+				frame->AddUInt(ofst + 21, 1, CSTR("Cascade Updates"), packBuff[ofst + 21]);
+				frame->AddUInt(ofst + 22, 1, CSTR("Cascade Deletes"), packBuff[ofst + 22]);
+				frame->AddUInt(ofst + 23, 1, CSTR("Index Type"), packBuff[ofst + 23]);
 				ofst += 28;
 				i++;
 			}
@@ -386,8 +386,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			while (i < j)
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
-				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
+				frame->AddUInt(ofst, 2, {sbuff, (UOSInt)(sptr - sbuff)}, colSize);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
@@ -402,16 +402,16 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Int16 colNum = ReadInt16(&packBuff[ofst]);
 				UInt32 usedPages = ReadUInt32(&packBuff[ofst + 2]);
 				UInt32 freePages = ReadUInt32(&packBuff[ofst + 6]);
-				frame->AddInt(ofst, 2, "Column Number", colNum);
-				frame->AddUInt(ofst + 2, 4, "Used Pages", usedPages);
-				frame->AddUInt(ofst + 6, 4, "Free Pages", freePages);
+				frame->AddInt(ofst, 2, CSTR("Column Number"), colNum);
+				frame->AddUInt(ofst + 2, 4, CSTR("Used Pages"), usedPages);
+				frame->AddUInt(ofst + 6, 4, CSTR("Free Pages"), freePages);
 				if (colNum == -1)
 				{
 					break;
 				}
 				ofst += 10;
 			}
-			frame->AddHexBuff(4096 - freeSpace, freeSpace, "Free Space", &packBuff[4096 - freeSpace], true);
+			frame->AddHexBuff(4096 - freeSpace, freeSpace, CSTR("Free Space"), &packBuff[4096 - freeSpace], true);
 		}
 		break;
 	}
