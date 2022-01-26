@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_PHOTOINFO
 #define _SM_MEDIA_PHOTOINFO
 #include "IO/IStreamData.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/XMLDOM.h"
 
 namespace Media
@@ -30,7 +30,7 @@ namespace Media
 		Bool HasInfo();
 		Bool GetPhotoDate(Data::DateTime *dt);
 
-		void ToString(Text::StringBuilderUTF *sb);
+		void ToString(Text::StringBuilderUTF8 *sb);
 	};
 };
 #endif

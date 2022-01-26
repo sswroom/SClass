@@ -43,7 +43,7 @@ Bool SearchProcId(ProgInfo *prog)
 			sb.ClearStr();
 			if (proc.GetFilename(&sb))
 			{
-				if (sb.Equals(prog->progPath->v))
+				if (sb.Equals(prog->progPath))
 				{
 					Text::StringBuilderUTF8 sb;
 					prog->procId = info.processId;

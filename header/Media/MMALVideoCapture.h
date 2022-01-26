@@ -2,7 +2,7 @@
 #define _SM_MEDIA_MMALVIDEOCAPTURE
 #include "Data/ArrayList.h"
 #include "Media/IVideoCapture.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {
@@ -26,7 +26,7 @@ namespace Media
 
 		virtual void SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 frameRateDenom);
 		virtual UOSInt GetSupportedFormats(VideoFormat *fmtArr, UOSInt maxCnt);
-		virtual void GetInfo(Text::StringBuilderUTF *sb);
+		virtual void GetInfo(Text::StringBuilderUTF8 *sb);
 
 		virtual OSInt GetDataSeekCount();
 

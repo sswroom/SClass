@@ -20,7 +20,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	Text::StringBuilderUTF8 sb;
 	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
 	{
-		if (!sb.EqualsC(UTF8STRC("text/plain")))
+		if (!sb.Equals(UTF8STRC("text/plain")))
 		{
 			printf("Content-Type invalid\r\n");
 			valid = false;
@@ -57,7 +57,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			sb.ClearStr();
 			if (reader->ReadLine(&sb, 512))
 			{
-				if (!sb.Equals((const UTF8Char*)"SBench Result:"))
+				if (!sb.Equals(UTF8STRC("SBench Result:")))
 				{
 					printf("SBench not found\r\n");
 					valid = false;
@@ -74,7 +74,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (!sb.Equals((const UTF8Char*)"Computer Info:"))
+					if (!sb.Equals(UTF8STRC("Computer Info:")))
 					{
 						printf("Computer Info not found\r\n");
 						valid = false;
@@ -92,7 +92,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"Platform: "))
+					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
 						platform = Text::StrCopyNew(sb.ToString() + 10);
 					}
@@ -114,7 +114,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"CPU: "))
+					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{
 						cpu = Text::StrCopyNew(sb.ToString() + 5);
 					}

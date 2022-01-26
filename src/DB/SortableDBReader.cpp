@@ -3,6 +3,7 @@
 #include "Data/FieldComparator.h"
 #include "DB/ColDef.h"
 #include "DB/SortableDBReader.h"
+#include "Text/MyStringW.h"
 
 Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 {

@@ -602,12 +602,12 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqPerMinReq(SSWR::SDNSProx
 	return true;
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendHeader(Text::StringBuilderUTF *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendHeader(Text::StringBuilderUTF8 *sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<html><head><title>SDNSProxy</title></head><body>\r\n"));
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF8 *sbOut)
 {
 	sbOut->AppendC(UTF8STRC("<table border=\"1\"><tr>"));
 	sbOut->AppendC(UTF8STRC("<td><a href=\"/\">Status</a></td>"));
@@ -622,7 +622,7 @@ void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendMenu(Text::StringBuilderUTF *sb
 	sbOut->AppendC(UTF8STRC("</table>\r\n"));
 }
 
-void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(Text::StringBuilderUTF *sbOut)
+void SSWR::SDNSProxy::SDNSProxyWebHandler::AppendFooter(Text::StringBuilderUTF8 *sbOut)
 {
 	sbOut->AppendC(UTF8STRC("</body></html>"));
 }

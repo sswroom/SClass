@@ -6,6 +6,7 @@
 #include "Sync/Thread.h"
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/Clipboard.h"
 #include "UI/GUITextFileView.h"

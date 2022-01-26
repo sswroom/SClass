@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_TOKEN_JWTPARAM
 #define _SM_CRYPTO_TOKEN_JWTPARAM
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Crypto
 {
@@ -38,7 +38,7 @@ namespace Crypto
 			Int64 GetIssuedAt();
 			void SetJWTId(Text::String *id);
 			Text::String *GetJWTId();
-			void ToString(Text::StringBuilderUTF *sb);
+			void ToString(Text::StringBuilderUTF8 *sb);
 		};
 	}
 }

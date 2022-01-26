@@ -14,7 +14,8 @@ namespace Text
 	public:
 		StringBuilderUTF8()
 		{
-			this->v = MemAlloc(UTF8Char, this->buffSize = 1024);
+			this->buffSize = 1024;
+			this->v = MemAlloc(UTF8Char, this->buffSize + 1);
 			this->leng = 0;
 			this->v[0] = 0;
 		}
@@ -26,14 +27,14 @@ namespace Text
 
 		void AllocLeng(UOSInt leng)
 		{
-			if (leng + this->leng + 1 > this->buffSize)
+			if (leng + this->leng > this->buffSize)
 			{
 				this->buffSize <<= 1;
-				while (leng + this->leng + 1 > this->buffSize)
+				while (leng + this->leng > this->buffSize)
 				{
 					this->buffSize <<= 1;
 				}
-				UTF8Char *newStr = MemAlloc(UTF8Char, this->buffSize);
+				UTF8Char *newStr = MemAlloc(UTF8Char, this->buffSize + 1);
 				MemCopyNO(newStr, this->v, this->leng + 1);
 				MemFree(this->v);
 				this->v = newStr;
@@ -43,10 +44,38 @@ namespace Text
 		StringBuilderUTF8 *Append(Text::StringBase<UTF8Char> *s);
 		StringBuilderUTF8 *Append(Text::StringBase<const UTF8Char> *s);
 		StringBuilderUTF8 *Append(const UTF8Char *s);
-		StringBuilderUTF8 *AppendC(const UTF8Char *s, UOSInt charCnt);
+
 		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);
 		StringBuilderUTF8 *AppendChar(UTF32Char c, UOSInt repCnt);
-		StringBuilderUTF8 *AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2);
+
+		StringBuilderUTF8 *AppendC(const UTF8Char *s, UOSInt charCnt)
+		{
+			if (charCnt > 0)
+			{
+				this->AllocLeng(charCnt);
+				MemCopyNO(&this->v[this->leng], s, charCnt);
+				this->leng += charCnt;
+				this->v[this->leng] = 0;
+			}
+			return this;
+		}
+
+		StringBuilderUTF8 *AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
+		{
+			UOSInt tlen = len1 + len2;
+			if (tlen > 0)
+			{
+				this->AllocLeng(tlen);
+				UTF8Char *dptr = &this->v[this->leng];
+				MemCopyNO(dptr, str1, len1);
+				dptr += len1;
+				MemCopyNO(dptr, str2, len2);
+				dptr += len2;
+				*dptr = 0;
+				this->leng += len1 + len2;
+			}
+			return this;
+		}
 
 		StringBuilderUTF8 *AppendI16(Int16 iVal)
 		{

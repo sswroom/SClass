@@ -2,7 +2,6 @@
 #define _SM_NET_SNS_SNSCONTROL
 #include "Data/ArrayList.h"
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
 
 namespace Net
 {

@@ -199,7 +199,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetContentMajor()
 	return 0;
 }
 
-Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::StringBuilderUTF *name)
+Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::StringBuilderUTF8 *name)
 {
 	UOSInt i;
 	UOSInt j;

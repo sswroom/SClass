@@ -5,7 +5,7 @@
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Sync/Mutex.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {

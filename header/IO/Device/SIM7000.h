@@ -2,6 +2,7 @@
 #define _SM_IO_DEVICE_SIM7000
 #include "IO/GSMModemController.h"
 #include "Net/SocketUtil.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -44,8 +45,8 @@ namespace IO
 			//AT+CNSMOD
 			//AT+CSCLK
 			UTF8Char *SIMCOMGetICCID(UTF8Char *ccid); //AT+CCID
-			Bool SIMCOMGetFlashDeviceType(Text::StringBuilderUTF *sb); //AT+CDEVICE
-			Bool SIMCOMGetDeviceProductID(Text::StringBuilderUTF *sb); //AT+GSV
+			Bool SIMCOMGetFlashDeviceType(Text::StringBuilderUTF8 *sb); //AT+CDEVICE
+			Bool SIMCOMGetDeviceProductID(Text::StringBuilderUTF8 *sb); //AT+GSV
 			//AT+SGPIO
 			//AT+SLEDS
 			//AT+CNETLIGHT

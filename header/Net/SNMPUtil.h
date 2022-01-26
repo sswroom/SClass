@@ -1,7 +1,6 @@
 #ifndef _SM_NET_SNMPUTIL
 #define _SM_NET_SNMPUTIL
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
 
 namespace Net
 {

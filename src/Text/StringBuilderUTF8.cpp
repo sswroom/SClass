@@ -51,18 +51,6 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(const UTF8Char *s)
 	return this;
 }
 
-Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendC(const UTF8Char *s, UOSInt charCnt)
-{
-	if (charCnt > 0)
-	{
-		STRINGBUILDER_ALLOCLENG(charCnt);
-		MemCopyNO(&this->v[this->leng], s, charCnt);
-		this->leng += charCnt;
-		this->v[this->leng] = 0;
-	}
-	return this;
-}
-
 Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendS(const UTF8Char *s, UOSInt maxLen)
 {
 	if (maxLen > 0)
@@ -163,23 +151,6 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendChar(UTF32Char c, UOSInt
 	}
 	buffEnd[0] = 0;
 	this->leng = (UOSInt)(buffEnd - this->v);
-	return this;
-}
-
-Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendC2(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2, UOSInt len2)
-{
-	UOSInt tlen = len1 + len2;
-	if (tlen > 0)
-	{
-		STRINGBUILDER_ALLOCLENG(tlen);
-		UTF8Char *dptr = &this->v[this->leng];
-		MemCopyNO(dptr, str1, len1);
-		dptr += len1;
-		MemCopyNO(dptr, str2, len2);
-		dptr += len2;
-		*dptr = 0;
-		this->leng += len1 + len2;
-	}
 	return this;
 }
 

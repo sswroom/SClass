@@ -3,7 +3,7 @@
 #include "IO/Reader.h"
 #include "IO/Stream.h"
 #include "Text/Encoding.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {

@@ -2,7 +2,7 @@
 #define _SM_IO_CAMERACONTROL
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {

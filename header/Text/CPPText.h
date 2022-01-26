@@ -2,7 +2,7 @@
 #define _SM_TEXT_CPPTEXT
 #include "Data/ArrayList.h"
 #include "Data/VariItem.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {

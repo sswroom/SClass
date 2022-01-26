@@ -26,7 +26,7 @@ void DB::MongoDB::CloseReader(DBReader *r)
 {
 }
 
-void DB::MongoDB::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::MongoDB::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 
@@ -44,7 +44,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 {
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
+void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
 {
 }
 

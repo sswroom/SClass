@@ -70,7 +70,7 @@ Bool Data::FieldComparator::IsValid()
 	return this->fieldNames->GetCount() > 0;
 }
 
-Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType)
+Bool Data::FieldComparator::ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType)
 {
 	if (this->fieldNames->GetCount() == 0)
 	{

@@ -3,7 +3,7 @@
 #include "IO/ATCommandChannel.h"
 #include "Data/DateTime.h"
 #include "Text/SMSMessage.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -32,7 +32,7 @@ namespace IO
 		UTF8Char *SendStringCommand(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
 		Bool SendStringCommand(Data::ArrayList<Text::String*> *resList, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
 		UTF8Char *SendStringCommandDirect(UTF8Char *buff, const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
-		Bool SendStringListCommand(Text::StringBuilderUTF *sb, const UTF8Char *cmd, UOSInt cmdLen);
+		Bool SendStringListCommand(Text::StringBuilderUTF8 *sb, const UTF8Char *cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen);
 		Bool SendBoolCommandC(const UTF8Char *cmd, UOSInt cmdLen, Int32 timeoutMS);
 		DialResult SendDialCommand(const UTF8Char *cmd, UOSInt cmdLen);

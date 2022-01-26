@@ -35,7 +35,7 @@ static UInt32 __stdcall SerialViewer(void *userObj)
 		sb->AppendDate(dt);
 		console->WriteLineC(sb->ToString(), sb->GetLength());
 		sb->ClearStr();
-		sb->AppendHex(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
+		sb->AppendHexBuff(readBuff, readSize, ' ', Text::LineBreakType::CRLF);
 		console->WriteLineC(sb->ToString(), sb->GetLength());
 		console->WriteLine();
 	}

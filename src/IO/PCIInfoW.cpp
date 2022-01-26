@@ -110,7 +110,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 			{
 				sb.ClearStr();
 				r->GetStr(devIdCol, &sb);
-				if (sb.StartsWith((const UTF8Char*)"PCI\\VEN_"))
+				if (sb.StartsWith(UTF8STRC("PCI\\VEN_")))
 				{
 					sb.ToString()[12] = 0;
 					sb.ToString()[21] = 0;

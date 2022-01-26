@@ -598,8 +598,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(sbSName.ToString(), sbSName.GetLength());
 						sb.ToLower();
-						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
-						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
+						sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
 						user->unorganSpId = this->SpeciesAdd((const UTF8Char*)"", user->userName->v, sbSName.ToString(), group->id, (const UTF8Char*)"", sb.ToString(), (const UTF8Char*)"", group->cateId);
 					}
 				}
@@ -1984,7 +1984,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF *bookNameOut)
+Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap->GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
@@ -3971,8 +3971,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						sb.ClearStr();
 						sb.Append(sname);
 						sb.ToLower();
-						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
-						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
+						sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
 						Int32 spId = me->SpeciesAdd(STR_PTR(ename), STR_PTR(cname), STR_PTR(sname), id, STR_PTR(descr), sb.ToString(), (const UTF8Char*)"", cateId);
 						if (spId)
 						{
@@ -4016,8 +4016,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 						sb.ClearStr();
 						sb.Append(sname);
 						sb.ToLower();
-						sb.Replace((const UTF8Char*)" ", (const UTF8Char*)"_");
-						sb.Replace((const UTF8Char*)".", (const UTF8Char*)"");
+						sb.ReplaceStr(UTF8STRC(" "), UTF8STRC("_"));
+						sb.ReplaceStr(UTF8STRC("."), UTF8STRC(""));
 						if (me->SpeciesModify(spId, STR_PTR(ename), STR_PTR(cname), STR_PTR(sname), STR_PTR(descr), sb.ToString()))
 						{
 							me->dataMut->UnlockWrite();
@@ -6983,8 +6983,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 			sb.ClearStr();
 			s = Text::XML::ToNewHTMLText(book->title->v);
 			sb.Append(s);
-			sb.Replace((const UTF8Char*)"[i]", (const UTF8Char*)"<i>");
-			sb.Replace((const UTF8Char*)"[/i]", (const UTF8Char*)"</i>");
+			sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
+			sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
 			writer->WriteStrC(sb.ToString(), sb.GetLength());
 			s->Release();
 			writer->WriteLineC(UTF8STRC("</a></td>"));
@@ -7100,8 +7100,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 		sb.ClearStr();
 		sb.Append(s);
 		s->Release();
-		sb.Replace((const UTF8Char*)"[i]", (const UTF8Char*)"<i>");
-		sb.Replace((const UTF8Char*)"[/i]", (const UTF8Char*)"</i>");
+		sb.ReplaceStr(UTF8STRC("[i]"), UTF8STRC("<i>"));
+		sb.ReplaceStr(UTF8STRC("[/i]"), UTF8STRC("</i>"));
 		writer->WriteStrC(sb.ToString(), sb.GetLength());
 		writer->WriteLineC(UTF8STRC("<br/>"));
 

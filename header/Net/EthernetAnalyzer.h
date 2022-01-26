@@ -9,7 +9,6 @@
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
 #include "Sync/MutexUsage.h"
-#include "Text/StringBuilderUTF.h"
 
 namespace Net
 {

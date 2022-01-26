@@ -247,23 +247,23 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 				sb.Append(csptr);
 				Text::StrDelNew(csptr);
 			}
-			if (sb.EqualsICase((const UTF8Char*)"SQLOLEDB"))
+			if (sb.EqualsICase(UTF8STRC("SQLOLEDB")))
 			{
 				return DB::DBUtil::ServerType::MSSQL;
 			}
-			else if (sb.EqualsICase((const UTF8Char*)"Microsoft.SQLSERVER.CE.OLEDB.3.0"))
+			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.3.0")))
 			{
 				return DB::DBUtil::ServerType::MSSQL;
 			}
-			else if (sb.EqualsICase((const UTF8Char*)"Microsoft.SQLSERVER.CE.OLEDB.3.5"))
+			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.3.5")))
 			{
 				return DB::DBUtil::ServerType::MSSQL;
 			}
-			else if (sb.EqualsICase((const UTF8Char*)"Microsoft.SQLSERVER.CE.OLEDB.4.0"))
+			else if (sb.EqualsICase(UTF8STRC("Microsoft.SQLSERVER.CE.OLEDB.4.0")))
 			{
 				return DB::DBUtil::ServerType::MSSQL;
 			}
-			else if (sb.EqualsICase((const UTF8Char*)"Microsoft.Jet.OLEDB.4.0"))
+			else if (sb.EqualsICase(UTF8STRC("Microsoft.Jet.OLEDB.4.0")))
 			{
 				return DB::DBUtil::ServerType::Access;
 			}
@@ -287,7 +287,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 {
 }
 
-void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF *sb)
+void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	ClassData *data = (ClassData *)this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
@@ -463,7 +463,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 	return ret;
 }*/
 
-void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	IErrorInfo *pIErrorInfoAll = 0;
 	GetErrorInfo(0, &pIErrorInfoAll);
@@ -1225,7 +1225,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	ClassDataR *data = (ClassDataR*)this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)

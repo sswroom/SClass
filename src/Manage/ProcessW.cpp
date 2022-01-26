@@ -205,7 +205,7 @@ WChar *Manage::Process::GetFilename(WChar *buff)
 	}
 }
 
-Bool Manage::Process::GetFilename(Text::StringBuilderUTF *sb)
+Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 {
 	if (this->handle)
 	{
@@ -996,7 +996,7 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 	MemFree(pfsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF8 *result)
 {
 	const WChar *wptr = Text::StrToWCharNew(cmd->v);
 	Int32 ret = ExecuteProcessW(wptr, result);
@@ -1004,7 +1004,7 @@ Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF8 *result)
 {
 	const WChar *wptr = Text::StrToWCharNew(cmd);
 	Int32 ret = ExecuteProcessW(wptr, result);
@@ -1012,7 +1012,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::
 	return ret;
 }
 
-Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF *result)
+Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
 {
 	WChar buff[MAX_PATH];
 	WChar progName[MAX_PATH];

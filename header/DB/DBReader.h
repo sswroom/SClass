@@ -6,7 +6,7 @@
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
 #include "Math/Vector2D.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {

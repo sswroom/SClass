@@ -8,7 +8,6 @@
 #include "Net/HTTPClient.h"
 #include "Net/SocketFactory.h"
 #include "Net/TCPClient.h"
-#include "Text/StringBuilderUTF.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net

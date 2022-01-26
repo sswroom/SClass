@@ -4,6 +4,7 @@
 #include "Text/CharUtil.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/MyStringW.h"
 #include "UI/FontDialog.h"
 #include "UI/MessageDialog.h"
 

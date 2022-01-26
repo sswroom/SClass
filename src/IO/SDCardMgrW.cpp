@@ -203,7 +203,7 @@ Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
 
 UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 {
-	Text::StringBuilderUTF16 sb;
+	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt ret = 0;
@@ -230,11 +230,13 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 			{
 				sb.ClearStr();
 				r->GetStr(31, &sb);
-				if (sb.StartsWith(L"SD\\DISK"))
+				if (sb.StartsWith(UTF8STRC("SD\\DISK")))
 				{
 					sb.ClearStr();
 					r->GetStr(11, &sb);
-					sdcard = SDCardMgr_ReadInfo(sb.ToString());
+					const WChar *wptr = Text::StrToWCharNew(sb.ToString());
+					sdcard = SDCardMgr_ReadInfo(wptr);
+					Text::StrDelNew(wptr);
 					if (sdcard)
 					{
 						cardList->Add(sdcard);

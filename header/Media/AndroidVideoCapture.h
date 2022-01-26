@@ -2,7 +2,7 @@
 #define _SM_MEDIA_ANDROIDVIDEOCAPTURE
 #include "Data/ArrayList.h"
 #include "Media/IVideoCapture.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Media
 {

@@ -480,7 +480,7 @@ UOSInt Media::DShow::DShowVideoCapture::GetSupportedFormats(VideoFormat *fmtArr,
 	return outCnt;
 }
 
-void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
+void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 {
 	if (this->baseFilter)
 	{

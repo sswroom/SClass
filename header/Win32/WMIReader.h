@@ -32,7 +32,7 @@ namespace Win32
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 1 = NULL, 2 = Error

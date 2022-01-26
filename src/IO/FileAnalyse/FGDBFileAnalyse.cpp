@@ -5,6 +5,7 @@
 #include "Math/CoordinateSystemManager.h"
 #include "Math/Math.h"
 #include "Sync/Thread.h"
+#include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XLSUtil.h"
 

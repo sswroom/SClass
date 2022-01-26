@@ -4,7 +4,7 @@
 #include "Manage/AddressResolver.h"
 #include "Manage/IMemoryReader.h"
 #include "Manage/ThreadContextX86_32.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Manage
 {
@@ -61,7 +61,7 @@ namespace Manage
 
 		virtual const UTF8Char *GetHeader(Bool fullRegs);
 		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currEip, UInt32 *currEsp, UInt32 *currEbp, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
-		Bool Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
+		Bool Disasm32In(Text::StringBuilderUTF8 *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader); // true = succ
 		virtual Dasm_Regs *CreateRegs();
 		virtual void FreeRegs(Dasm_Regs *regs);
 

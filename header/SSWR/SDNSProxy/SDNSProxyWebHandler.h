@@ -5,7 +5,7 @@
 #include "Net/DNSProxy.h"
 #include "Net/WebServer/WebStandardHandler.h"
 #include "Sync/Mutex.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace SSWR
 {
@@ -34,9 +34,9 @@ namespace SSWR
 			static Bool __stdcall ClientReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 			static Bool __stdcall ReqPerMinReq(SSWR::SDNSProxy::SDNSProxyWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 
-			static void AppendHeader(Text::StringBuilderUTF *sbOut);
-			static void AppendMenu(Text::StringBuilderUTF *sbOut);
-			static void AppendFooter(Text::StringBuilderUTF *sbOut);
+			static void AppendHeader(Text::StringBuilderUTF8 *sbOut);
+			static void AppendMenu(Text::StringBuilderUTF8 *sbOut);
+			static void AppendFooter(Text::StringBuilderUTF8 *sbOut);
 
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 

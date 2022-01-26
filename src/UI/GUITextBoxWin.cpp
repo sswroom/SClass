@@ -83,7 +83,7 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	return buff;
 }
 
-Bool UI::GUITextBox::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);

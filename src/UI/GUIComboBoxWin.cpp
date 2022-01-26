@@ -115,7 +115,7 @@ UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, sbuff);
 }
 
-Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);

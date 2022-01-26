@@ -119,7 +119,7 @@ void DB::MongoDB::CloseReader(DBReader *r)
 	}
 }
 
-void DB::MongoDB::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::MongoDB::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->errorMsg)
 	{
@@ -167,7 +167,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 	names->Clear();
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
+void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	out->AppendC(UTF8STRC("mongodb://"));
@@ -253,7 +253,7 @@ WChar *DB::MongoDBReader::GetStr(UOSInt colIndex, WChar *buff)
 	}
 }
 
-Bool DB::MongoDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool DB::MongoDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	if (colIndex != 0)
 		return false;

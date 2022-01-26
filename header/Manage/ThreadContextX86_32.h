@@ -1,7 +1,7 @@
 #ifndef _SM_MANAGE_THREADCONTEXTX86_32
 #define _SM_MANAGE_THREADCONTEXTX86_32
 #include "Manage/ThreadContext.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Manage
 {
@@ -19,7 +19,7 @@ namespace Manage
 
 		virtual UOSInt GetRegisterCnt();
 		virtual UTF8Char *GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount);
-		virtual void ToString(Text::StringBuilderUTF *sb);
+		virtual void ToString(Text::StringBuilderUTF8 *sb);
 		virtual ContextType GetType();
 		virtual UOSInt GetThreadId();
 		virtual UOSInt GetProcessId();

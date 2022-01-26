@@ -19307,7 +19307,7 @@ Bool Manage::DasmX86_32::Disasm32(IO::Writer *writer, Manage::AddressResolver *a
 	}
 }
 
-Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
+Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF8 *outStr, Manage::AddressResolver *addrResol, UInt32 *currEip, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::IMemoryReader *memReader)
 {
 	UTF8Char sbuff[256];
 	UInt32 initIP = *currEip;

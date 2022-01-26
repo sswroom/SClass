@@ -16,7 +16,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 	}
 }
 
-void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilderUTF *sb)
+void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilderUTF8 *sb)
 {
 	Data::ArrayList<const UTF8Char*> tableNames;
 	if (!this->cli->ChangeSchema(schema))
@@ -36,7 +36,7 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	}
 }
 
-void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuilderUTF *sb)
+void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuilderUTF8 *sb)
 {
 	DB::SQLBuilder sql(this->cli->GetSvrType(), this->cli->GetTzQhr());
 	sql.AppendCmdC(UTF8STRC("check table "));

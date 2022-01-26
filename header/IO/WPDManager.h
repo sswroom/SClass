@@ -1,7 +1,7 @@
 #ifndef _SM_IO_WPDMANAGER
 #define _SM_IO_WPDMANAGER
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {
@@ -30,9 +30,9 @@ namespace IO
 		~WPDManager();
 
 		OSInt GetDevices(Data::ArrayList<WPDeviceInfo*> *devList);
-		Bool GetDevName(const WChar *devId, Text::StringBuilderUTF *sb);
-		Bool GetDevDesc(const WChar *devId, Text::StringBuilderUTF *sb);
-		Bool GetDevManu(const WChar *devId, Text::StringBuilderUTF *sb);
+		Bool GetDevName(const WChar *devId, Text::StringBuilderUTF8 *sb);
+		Bool GetDevDesc(const WChar *devId, Text::StringBuilderUTF8 *sb);
+		Bool GetDevManu(const WChar *devId, Text::StringBuilderUTF8 *sb);
 	};
 };
 #endif

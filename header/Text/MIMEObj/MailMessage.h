@@ -5,7 +5,7 @@
 #include "IO/IStreamData.h"
 #include "Text/EncodingFactory.h"
 #include "Text/IMIMEObj.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/MIMEObj/MIMEHeader.h"
 #include "Text/MIMEObj/TextMIMEObj.h"
 
@@ -51,7 +51,7 @@ namespace Text
 
 			Text::MIMEObj::TextMIMEObj *GetContentText();
 			Text::IMIMEObj *GetContentMajor();
-			Text::IMIMEObj *GetAttachment(OSInt index, Text::StringBuilderUTF *name);
+			Text::IMIMEObj *GetAttachment(OSInt index, Text::StringBuilderUTF8 *name);
 			
 			Text::IMIMEObj *GetRAWContent();
 

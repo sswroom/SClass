@@ -118,7 +118,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 			{
 				sb.ClearStr();
 				r->GetStr(devIdCol, &sb);
-				if (sb.StartsWith((const UTF8Char*)"USB\\VID_"))
+				if (sb.StartsWith(UTF8STRC("USB\\VID_")))
 				{
 					sb.ToString()[12] = 0;
 					sb.ToString()[21] = 0;

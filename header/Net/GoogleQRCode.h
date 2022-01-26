@@ -1,7 +1,7 @@
 #ifndef _SM_NET_GOOGLEQRCODE
 #define _SM_NET_GOOGLEQRCODE
 #include "Text/String.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Net
 {
@@ -15,7 +15,7 @@ namespace Net
 		GoogleQRCode(UOSInt width, UOSInt height, const UTF8Char *dataStr);
 		~GoogleQRCode();
 
-		void GetImageURL(Text::StringBuilderUTF *sb);
+		void GetImageURL(Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

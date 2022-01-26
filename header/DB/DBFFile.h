@@ -6,7 +6,7 @@
 #include "IO/IStreamData.h"
 #include "Sync/Mutex.h"
 #include "Text/Encoding.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {

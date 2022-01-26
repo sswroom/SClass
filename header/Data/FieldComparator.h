@@ -4,7 +4,7 @@
 #include "Data/Comparator.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Data
 {
@@ -19,7 +19,7 @@ namespace Data
 
 		virtual OSInt Compare(VariObject *a, VariObject *b);
 		Bool IsValid();
-		Bool ToOrderClause(Text::StringBuilderUTF *sb, DB::DBUtil::ServerType svrType);
+		Bool ToOrderClause(Text::StringBuilderUTF8 *sb, DB::DBUtil::ServerType svrType);
 
 		static OSInt Compare(VariItem *a, VariItem *b);
 	};

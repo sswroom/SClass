@@ -101,7 +101,7 @@ void Win32::WMIQuery::ForceTz(Int8 tzQhr)
 {
 }
 
-void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF *sb)
+void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("WMI:"));
 	const UTF8Char *csptr = Text::StrToUTF8New(this->ns);
@@ -250,7 +250,7 @@ void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
 	DEL_CLASS(r);
 }
 
-void Win32::WMIQuery::GetErrorMsg(Text::StringBuilderUTF *str)
+void Win32::WMIQuery::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

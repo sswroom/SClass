@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Crypto/Cert/WinHttpCert.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 #include <winhttp.h>
 
@@ -43,7 +44,7 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
 	return Text::StrEquals(this->clsData->certInfo->lpszSubjectInfo, this->clsData->certInfo->lpszIssuerInfo);
 }
 
-void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb)
 {
 	const UTF8Char *csptr;
 	Data::DateTime dt;

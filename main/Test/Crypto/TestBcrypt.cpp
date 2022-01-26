@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::TextBinEnc::Radix64Enc radix64("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
 	Text::StringBuilderUTF8 sb;
 	radix64.EncodeBin(&sb, radixTest, sizeof(radixTest));
-	if (!sb.EqualsC(UTF8STRC("hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk")))
+	if (!sb.Equals(UTF8STRC("hSCvnwM9s4wIX9JeLapehKK5YdLxKcmk")))
 	{
 		return 1;
 	}

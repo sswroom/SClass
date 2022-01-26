@@ -3,7 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace IO
 {

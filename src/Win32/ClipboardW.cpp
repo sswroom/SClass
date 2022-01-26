@@ -5,6 +5,7 @@
 #include "Text/Locale.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
+#include "Text/String.h"
 #include "Win32/Clipboard.h"
 #include <windows.h>
 
@@ -582,9 +583,9 @@ Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUT
 	if (hand)
 	{
 		void *sptr = GlobalLock(hand);
-		const UTF8Char *csptr = Text::StrToUTF8New((WChar*)sptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		Text::String *s = Text::String::NewNotNull((WChar*)sptr);
+		sb->Append(s);
+		s->Release();
 		GlobalUnlock(hand);
 		succ = true;
 	}

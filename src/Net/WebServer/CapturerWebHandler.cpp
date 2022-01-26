@@ -351,7 +351,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	return true;
 }
 
-void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime)
+void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *entryList, Int64 scanTime)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -417,7 +417,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF 
 	sb->AppendC(UTF8STRC("</table>"));
 }
 
-void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
+void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *sb, Net::WebServer::IWebRequest *req, Data::ArrayList<IO::BTScanLog::ScanRecord3*> *entryList, Bool inRangeOnly)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -1,7 +1,7 @@
 #ifndef _SM_CRYPTO_HASH_BCRYPT
 #define _SM_CRYPTO_HASH_BCRYPT
 #include "Crypto/Hash/IHash.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/Radix64Enc.h"
 
 namespace Crypto

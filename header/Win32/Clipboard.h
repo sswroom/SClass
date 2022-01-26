@@ -2,7 +2,7 @@
 #define _SM_WIN32_CLIPBOARD
 #include "Handles.h"
 #include "Data/ArrayList.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Win32
 {

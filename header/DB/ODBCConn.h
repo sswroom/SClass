@@ -5,7 +5,7 @@
 #include "DB/DBTool.h"
 #include "IO/ConfigFile.h"
 #include "IO/LogTool.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace DB
 {

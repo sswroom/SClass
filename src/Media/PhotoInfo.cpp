@@ -193,7 +193,7 @@ Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt)
 	return false;
 }
 
-void Media::PhotoInfo::ToString(Text::StringBuilderUTF *sb)
+void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[32];
 	if (this->make == 0)

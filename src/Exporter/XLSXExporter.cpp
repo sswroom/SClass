@@ -1184,7 +1184,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	return true;
 }
 
-void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF *sb, OfficeFill *fill)
+void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF8 *sb, OfficeFill *fill)
 {
 	if (fill == 0)
 		return;
@@ -1212,7 +1212,7 @@ void Exporter::XLSXExporter::AppendFill(Text::StringBuilderUTF *sb, OfficeFill *
 	}
 }
 
-void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
+void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeLineStyle *lineStyle)
 {
 	if (lineStyle == 0)
 		return;
@@ -1221,7 +1221,7 @@ void Exporter::XLSXExporter::AppendLineStyle(Text::StringBuilderUTF *sb, Text::S
 	sb->AppendC(UTF8STRC("</a:ln>"));
 }
 
-void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF *sb, const UTF8Char *title)
+void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF8 *sb, const UTF8Char *title)
 {
 	sb->AppendC(UTF8STRC("<c:title>"));
 	sb->AppendC(UTF8STRC("<c:tx>"));
@@ -1248,7 +1248,7 @@ void Exporter::XLSXExporter::AppendTitle(Text::StringBuilderUTF *sb, const UTF8C
 	sb->AppendC(UTF8STRC("</c:title>"));
 }
 
-void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
+void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeShapeProp *shapeProp)
 {
 	if (shapeProp == 0)
 		return;
@@ -1258,7 +1258,7 @@ void Exporter::XLSXExporter::AppendShapeProp(Text::StringBuilderUTF *sb, Text::S
 	sb->AppendC(UTF8STRC("</c:spPr>"));
 }
 
-void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
+void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartAxis *axis, UOSInt index)
 {
 	if (axis == 0)
 		return;
@@ -1348,7 +1348,7 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF *sb, Text::Spread
 	}
 }
 
-void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
+void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::OfficeChartSeries *series, UOSInt index)
 {
 	Text::String *s;
 	sb->AppendC(UTF8STRC("<c:ser>"));
@@ -1517,7 +1517,7 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF *sb, Text::Spre
 	sb->AppendC(UTF8STRC("</c:ser>"));
 }
 
-void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name, UOSInt nameLen)
+void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name, UOSInt nameLen)
 {
 	sb->AppendChar('<', 1);
 	sb->AppendC(name, nameLen);

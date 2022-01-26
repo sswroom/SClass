@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_MIMEOBJ_HTMLMIMEOBJ
 #define _SM_TEXT_MIMEOBJ_HTMLMIMEOBJ
 #include "Text/IMIMEObj.h"
-#include "Text/StringBuilderUTF.h"
+#include "Text/StringBuilderUTF8.h"
 
 namespace Text
 {
@@ -25,7 +25,7 @@ namespace Text
 			virtual UOSInt WriteStream(IO::Stream *stm);
 			virtual IMIMEObj *Clone();
 
-			void GetText(Text::StringBuilderUTF *sb);
+			void GetText(Text::StringBuilderUTF8 *sb);
 			Int32 GetCodePage();
 		};
 	}
