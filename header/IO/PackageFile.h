@@ -10,6 +10,7 @@
 #include "IO/IProgressHandler.h"
 #include "IO/IStreamData.h"
 #include "IO/ParsedObject.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -116,7 +117,7 @@ namespace IO
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);
 		void GetInfoText(Text::StringBuilderUTF8 *sb);
-		static const UTF8Char *GetInfoTypeName(InfoType infoType);
+		static Text::CString GetInfoTypeName(InfoType infoType);
 	};
 };
 #endif

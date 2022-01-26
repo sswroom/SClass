@@ -234,7 +234,7 @@ Bool Text::Cpp::CppReader::ReadLine(Text::StringBuilderUTF8 *sb)
 	}
 	else
 	{
-		sb->Append(this->sbLine->ToString() + this->currOfst);
+		sb->AppendC(this->sbLine->ToString() + this->currOfst, this->sbLine->GetLength() - this->currOfst);
 		this->currOfst = this->sbLine->GetCharCnt();
 		return true;
 	}

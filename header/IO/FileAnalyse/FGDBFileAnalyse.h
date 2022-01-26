@@ -5,6 +5,7 @@
 #include "IO/FileAnalyse/IFileAnalyse.h"
 #include "Map/ESRI/FileGDBUtil.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -43,7 +44,7 @@ namespace IO
 			FGDBFileAnalyse(IO::IStreamData *fd);
 			virtual ~FGDBFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName();
+			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
@@ -53,7 +54,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(const UTF8Char *outputFile);
 
-			static const UTF8Char *TagTypeGetName(TagType tagType);
+			static Text::CString TagTypeGetName(TagType tagType);
 		};
 	}
 }

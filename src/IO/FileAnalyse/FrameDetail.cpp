@@ -3,8 +3,8 @@
 
 void IO::FileAnalyse::FrameDetail::FreeFieldInfo(FieldInfo *field)
 {
-	Text::StrDelNew(field->name);
-	SDEL_TEXT(field->value);
+	field->name->Release();
+	SDEL_STRING(field->value);
 	MemFree(field);
 }
 
@@ -13,8 +13,8 @@ void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, const 
 	FieldInfo *field = MemAlloc(FieldInfo, 1);
 	field->ofst = (UInt32)ofst;
 	field->size = (UInt32)size;
-	field->name = Text::StrCopyNew(name);
-	field->value = SCOPY_TEXT(value);
+	field->name = Text::String::NewNotNull(name);
+	field->value = Text::String::NewOrNull(value);
 	field->fieldType = fieldType;
 	this->fields->Add(field);
 }
@@ -23,13 +23,13 @@ IO::FileAnalyse::FrameDetail::FrameDetail(UInt64 ofst, UInt64 size)
 {
 	this->ofst = ofst;
 	this->size = size;
-	NEW_CLASS(this->headers, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->headers, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->fields, Data::ArrayList<FieldInfo*>());
 }
 
 IO::FileAnalyse::FrameDetail::~FrameDetail()
 {
-	LIST_FREE_FUNC(this->headers, Text::StrDelNew);
+	LIST_FREE_STRING(this->headers);
 	DEL_CLASS(this->headers);
 	LIST_FREE_FUNC(this->fields, FreeFieldInfo);
 	DEL_CLASS(this->fields);
@@ -71,7 +71,7 @@ UOSInt IO::FileAnalyse::FrameDetail::GetFieldInfos(UInt64 ofst, Data::ArrayList<
 
 void IO::FileAnalyse::FrameDetail::AddHeader(const UTF8Char *header)
 {
-	this->headers->Add(Text::StrCopyNew(header));
+	this->headers->Add(Text::String::NewNotNull(header));
 }
 
 void IO::FileAnalyse::FrameDetail::AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value)

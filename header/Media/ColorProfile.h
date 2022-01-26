@@ -2,6 +2,7 @@
 #define _SM_MEDIA_COLORPROFILE
 #include "Math/Matrix3.h"
 #include "Media/CS/TransferParam.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -182,9 +183,9 @@ namespace Media
 		void SetRAWICC(const UInt8 *iccData);
 		const UInt8 *GetRAWICC();
 
-		static const UTF8Char *YUVTypeGetName(YUVType yuvType);
-		static const UTF8Char *ColorTypeGetName(ColorType colorType);
-		static const UTF8Char *CommonProfileTypeGetName(CommonProfileType cpt);
+		static Text::CString YUVTypeGetName(YUVType yuvType);
+		static Text::CString ColorTypeGetName(ColorType colorType);
+		static Text::CString CommonProfileTypeGetName(CommonProfileType cpt);
 		static void GetYUVConstants(YUVType yuvType, Double *kr, Double *kb);
 		static void YUV2RGB(YUVType yuvType, Double y, Double u, Double v, Double *r, Double *g, Double *b);
 		static void RGB2RGB(Media::ColorProfile *srcColor, Media::ColorProfile *destColor, Double srcR, Double srcG, Double srcB, Double *destR, Double *destG, Double *destB);

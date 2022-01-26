@@ -3,6 +3,7 @@
 #define _SM_NET_DNSCLIENT
 #include "Data/UInt32Map.h"
 #include "Net/UDPServer.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -60,7 +61,7 @@ namespace Net
 		static void FreeAnswer(RequestAnswer *answer);
 		static UInt32 GetResponseTTL(const UInt8 *buff, UOSInt buffSize);
 		static UOSInt SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst);
-		static const UTF8Char *TypeGetID(UInt16 type);
+		static Text::CString TypeGetID(UInt16 type);
 	};
 }
 #endif

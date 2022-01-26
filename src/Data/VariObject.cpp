@@ -156,6 +156,7 @@ void Data::VariObject::SetItemUUIDDirect(const UTF8Char *name, Data::UUID *uuid)
 void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	sb->AppendChar('{', 1);
 	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
 	Data::ArrayList<VariItem*> *values = this->items->GetValues();
@@ -167,8 +168,8 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 		{
 			sb->AppendChar(',', 1);
 		}
-		Text::JSText::ToJSTextDQuote(sbuff, keys->GetItem(i));
-		sb->Append(sbuff);
+		sptr = Text::JSText::ToJSTextDQuote(sbuff, keys->GetItem(i));
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendChar(':', 1);
 		values->GetItem(i)->ToString(sb);
 		i++;

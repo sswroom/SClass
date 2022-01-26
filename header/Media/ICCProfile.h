@@ -4,6 +4,7 @@
 #include "Media/FrameInfo.h"
 #include "Media/LUT.h"
 #include "Media/CS/TransferFunc.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -58,15 +59,15 @@ namespace Media
 		static Double ReadU16Fixed16Number(const UInt8 *buff);
 		static Double ReadU8Fixed8Number(const UInt8 *buff);
 
-		static const UTF8Char *GetNameCMMType(Int32 val);
-		static const UTF8Char *GetNameProfileClass(Int32 val);
-		static const UTF8Char *GetNameDataColorspace(Int32 val);
-		static const UTF8Char *GetNamePrimaryPlatform(Int32 val);
-		static const UTF8Char *GetNameDeviceManufacturer(Int32 val);
-		static const UTF8Char *GetNameDeviceModel(Int32 val);
-		static const UTF8Char *GetNameTag(Int32 val);
-		static const UTF8Char *GetNameStandardObserver(Int32 val);
-		static const UTF8Char *GetNameStandardIlluminent(Int32 val);
+		static Text::CString GetNameCMMType(Int32 val);
+		static Text::CString GetNameProfileClass(Int32 val);
+		static Text::CString GetNameDataColorspace(Int32 val);
+		static Text::CString GetNamePrimaryPlatform(Int32 val);
+		static Text::CString GetNameDeviceManufacturer(Int32 val);
+		static Text::CString GetNameDeviceModel(Int32 val);
+		static Text::CString GetNameTag(Int32 val);
+		static Text::CString GetNameStandardObserver(Int32 val);
+		static Text::CString GetNameStandardIlluminent(Int32 val);
 
 		static void GetDispCIEXYZ(Text::StringBuilderUTF8 *sb, CIEXYZ *xyz);
 		static void GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff, UInt32 leng);

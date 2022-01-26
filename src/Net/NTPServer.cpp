@@ -39,14 +39,15 @@ void __stdcall Net::NTPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 			{
 				Text::StringBuilderUTF8 sb;
 				UTF8Char sbuff[64];
+				UTF8Char *sptr;
 				sb.AppendC(UTF8STRC("NTP: Client "));
-				Net::SocketUtil::GetAddrName(sbuff, addr, port);
-				sb.Append(sbuff);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				dt.AddMS((OSInt)me->timeDiff);
 				dt.ToLocalTime();
 				sb.AppendC(UTF8STRC(" reply time as "));
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb.Append(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 		}
@@ -60,6 +61,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 	Text::StringBuilderUTF8 *sb;
 	Data::DateTime *dt;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt tsLen;
 	me->threadRunning = true;
 	tsLen = Text::StrCharCnt(me->timeServer);
@@ -78,8 +80,8 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 					sb->ClearStr();
 					sb->AppendC(UTF8STRC("NTP: Time updated from Time Server as "));
 					dt->ToLocalTime();
-					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-					sb->Append(sbuff);
+					sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					me->log->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				}
 				else
@@ -88,8 +90,8 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 					sb->ClearStr();
 					sb->AppendC(UTF8STRC("NTP: Time update to "));
 					dt->ToLocalTime();
-					dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-					sb->Append(sbuff);
+					sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb->AppendC(UTF8STRC(" failed"));
 					me->log->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 					dt->SetCurrTimeUTC();

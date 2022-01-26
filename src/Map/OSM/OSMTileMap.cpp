@@ -9,21 +9,21 @@
 #include "Sync/MutexUsage.h"
 #include "Text/MyString.h"
 
-const UTF8Char *Map::OSM::OSMTileMap::GetNextURL()
+Text::String *Map::OSM::OSMTileMap::GetNextURL()
 {
 	Sync::MutexUsage mutUsage(this->urlMut);
-	const UTF8Char *thisUrl = this->urls->GetItem(this->urlNext);
+	Text::String *thisUrl = this->urls->GetItem(this->urlNext);
 	this->urlNext = (this->urlNext + 1) % this->urls->GetCount();
 	return thisUrl;
 }
 
 Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
-	this->urls->Add(Text::StrCopyNew(url));
+	NEW_CLASS(this->urls, Data::ArrayListString());
+	this->urls->Add(Text::String::NewNotNull(url));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
-	this->cacheDir = Text::StrCopyNew(cacheDir);
+	this->cacheDir = Text::String::NewNotNull(cacheDir);
 	this->spkg = 0;
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -34,8 +34,8 @@ Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, 
 
 Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
-	NEW_CLASS(this->urls, Data::ArrayListStrUTF8());
-	this->urls->Add(Text::StrCopyNew(url));
+	NEW_CLASS(this->urls, Data::ArrayListString());
+	this->urls->Add(Text::String::NewNotNull(url));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
 	this->cacheDir = 0;
@@ -53,20 +53,20 @@ Map::OSM::OSMTileMap::~OSMTileMap()
 	i = this->urls->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->urls->GetItem(i));
+		this->urls->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->urls);
 	DEL_CLASS(this->urlMut);
-	SDEL_TEXT(this->cacheDir);
+	SDEL_STRING(this->cacheDir);
 	SDEL_CLASS(this->spkg);
 }
 
 void Map::OSM::OSMTileMap::AddAlternateURL(const UTF8Char *url)
 {
-	this->urls->Add(Text::StrCopyNew(url));
+	this->urls->Add(Text::String::NewNotNull(url));
 }
 
-const UTF8Char *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
+Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)
 {
 	return this->urls->GetItem(index);
 }
@@ -254,7 +254,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 
 	if (this->cacheDir)
 	{
-		sptru = Text::StrConcat(filePathU, this->cacheDir);
+		sptru = this->cacheDir->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
@@ -325,7 +325,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	if (localOnly)
 		return 0;
 
-	const UTF8Char *thisUrl;
+	Text::String *thisUrl;
 	thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
@@ -434,8 +434,8 @@ UTF8Char *Map::OSM::OSMTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, Int64
 	Int32 imgX = (Int32)(imgId >> 32);
 	Int32 imgY = (Int32)(imgId & 0xffffffffLL);
 	UTF8Char *sptr;
-	const UTF8Char *thisUrl = this->GetNextURL();
-	sptr = Text::StrConcat(sbuff, thisUrl);
+	Text::String *thisUrl = this->GetNextURL();
+	sptr = thisUrl->ConcatTo(sbuff);
 	sptr = Text::StrUOSInt(sptr, level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
@@ -477,7 +477,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 
 	if (this->cacheDir)
 	{
-		sptru = Text::StrConcat(filePathU, this->cacheDir);
+		sptru = this->cacheDir->ConcatTo(filePathU);
 		if (sptru[-1] != IO::Path::PATH_SEPERATOR)
 			*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrUOSInt(sptru, level);
@@ -535,7 +535,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	if (localOnly)
 		return 0;
 
-	const UTF8Char *thisUrl = this->GetNextURL();
+	Text::String *thisUrl = this->GetNextURL();
 	urlSb.ClearStr();
 	urlSb.Append(thisUrl);
 	urlSb.AppendUOSInt(level);

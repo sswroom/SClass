@@ -5,6 +5,7 @@
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/FrameDetail.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -16,7 +17,7 @@ namespace IO
 		public:
 			virtual ~IFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName() = 0;
+			virtual Text::CString GetFormatName() = 0;
 			virtual UOSInt GetFrameCount() = 0;
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb) = 0;
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);

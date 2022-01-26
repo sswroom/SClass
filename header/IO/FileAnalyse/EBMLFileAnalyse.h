@@ -62,7 +62,7 @@ namespace IO
 			EBMLFileAnalyse(IO::IStreamData *fd);
 			virtual ~EBMLFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName();
+			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);

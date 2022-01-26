@@ -1,30 +1,30 @@
 #include "Stdafx.h"
 #include "IO/RAWMonitor.h"
 
-const UTF8Char *IO::RAWMonitor::LinkTypeGetName(UInt32 linkType)
+Text::CString IO::RAWMonitor::LinkTypeGetName(UInt32 linkType)
 {
 	switch (linkType)
 	{
 	case 0:
-		return (const UTF8Char*)"Null";
+		return {UTF8STRC("Null")};
 	case 1:
-		return (const UTF8Char*)"Ethernet";
+		return {UTF8STRC("Ethernet")};
 	case 3:
-		return (const UTF8Char*)"AX 25";
+		return {UTF8STRC("AX 25")};
 	case 6:
-		return (const UTF8Char*)"IEEE802.5";
+		return {UTF8STRC("IEEE802.5")};
 	case 7:
-		return (const UTF8Char*)"ARCNET";
+		return {UTF8STRC("ARCNET")};
 	case 8:
-		return (const UTF8Char*)"SLIP";
+		return {UTF8STRC("SLIP")};
 	case 9:
-		return (const UTF8Char*)"PPP";
+		return {UTF8STRC("PPP")};
 	case 101:
-		return (const UTF8Char*)"IPv4";
+		return {UTF8STRC("IPv4")};
 	case 113:
-		return (const UTF8Char*)"Linux";
+		return {UTF8STRC("Linux")};
 	case 201:
-		return (const UTF8Char*)"Bluetooth";
+		return {UTF8STRC("Bluetooth")};
 	}
-	return 0;
+	return {0, 0};
 }

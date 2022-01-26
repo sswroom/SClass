@@ -287,87 +287,87 @@ UOSInt Map::ESRI::FileGDBUtil::ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 
 	return ofst;
 }
 
-const UTF8Char *Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
+Text::CString Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 {
 	switch (t)
 	{
 	case 0:
-		return (const UTF8Char*)"None";
+		return {UTF8STRC("None")};
 	case 1:
-		return (const UTF8Char*)"Point";
+		return {UTF8STRC("Point")};
 	case 2:
-		return (const UTF8Char*)"Multipoint";
+		return {UTF8STRC("Multipoint")};
 	case 3:
-		return (const UTF8Char*)"Polyline";
+		return {UTF8STRC("Polyline")};
 	case 4:
-		return (const UTF8Char*)"Polygon";
+		return {UTF8STRC("Polygon")};
 	case 5:
-		return (const UTF8Char*)"Rectangle";
+		return {UTF8STRC("Rectangle")};
 	case 6:
-		return (const UTF8Char*)"Path";
+		return {UTF8STRC("Path")};
 	case 7:
-		return (const UTF8Char*)"Mixed";
+		return {UTF8STRC("Mixed")};
 	case 9:
-		return (const UTF8Char*)"Multipath";
+		return {UTF8STRC("Multipath")};
 	case 11:
-		return (const UTF8Char*)"Ring";
+		return {UTF8STRC("Ring")};
 	case 13:
-		return (const UTF8Char*)"Line";
+		return {UTF8STRC("Line")};
 	case 14:
-		return (const UTF8Char*)"Circular Arc";
+		return {UTF8STRC("Circular Arc")};
 	case 15:
-		return (const UTF8Char*)"Bezier Curves";
+		return {UTF8STRC("Bezier Curves")};
 	case 16:
-		return (const UTF8Char*)"Elliptic Curves";
+		return {UTF8STRC("Elliptic Curves")};
 	case 17:
-		return (const UTF8Char*)"Geometry Collection";
+		return {UTF8STRC("Geometry Collection")};
 	case 18:
-		return (const UTF8Char*)"Triangle Strip";
+		return {UTF8STRC("Triangle Strip")};
 	case 19:
-		return (const UTF8Char*)"Triangle Fan";
+		return {UTF8STRC("Triangle Fan")};
 	case 20:
-		return (const UTF8Char*)"Ray";
+		return {UTF8STRC("Ray")};
 	case 21:
-		return (const UTF8Char*)"Sphere";
+		return {UTF8STRC("Sphere")};
 	case 22:
-		return (const UTF8Char*)"TIN";
+		return {UTF8STRC("TIN")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
+Text::CString Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
 {
 	switch (t)
 	{
 	case 0:
-		return (const UTF8Char*)"Int16";
+		return {UTF8STRC("Int16")};
 	case 1:
-		return (const UTF8Char*)"Int32";
+		return {UTF8STRC("Int32")};
 	case 2:
-		return (const UTF8Char*)"Float32";
+		return {UTF8STRC("Float32")};
 	case 3:
-		return (const UTF8Char*)"Float64";
+		return {UTF8STRC("Float64")};
 	case 4:
-		return (const UTF8Char*)"String";
+		return {UTF8STRC("String")};
 	case 5:
-		return (const UTF8Char*)"Datetime";
+		return {UTF8STRC("Datetime")};
 	case 6:
-		return (const UTF8Char*)"ObjectId";
+		return {UTF8STRC("ObjectId")};
 	case 7:
-		return (const UTF8Char*)"Geometry";
+		return {UTF8STRC("Geometry")};
 	case 8:
-		return (const UTF8Char*)"Binary";
+		return {UTF8STRC("Binary")};
 	case 9:
-		return (const UTF8Char*)"Raster";
+		return {UTF8STRC("Raster")};
 	case 10:
-		return (const UTF8Char*)"UUID";
+		return {UTF8STRC("UUID")};
 	case 11:
-		return (const UTF8Char*)"UUID";
+		return {UTF8STRC("UUID")};
 	case 12:
-		return (const UTF8Char*)"XML";
+		return {UTF8STRC("XML")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 

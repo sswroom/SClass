@@ -2,6 +2,7 @@
 #define _SM_NET_PACKETANALYZERBLUETOOTH
 #include "IO/DeviceDB.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Net
@@ -9,7 +10,7 @@ namespace Net
 	class PacketAnalyzerBluetooth
 	{
 	public:
-		static IO::DeviceDB::VendorInfo vendorList[];
+		static IO::DeviceDB::VendorInfo2 vendorList[];
 	public:
 		static void AddDirection(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 dir);
 		static void AddHCIPacketType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 packetType);
@@ -42,11 +43,11 @@ namespace Net
 		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb);
 		static void PacketGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 
-		static const UTF8Char *CompanyGetName(UInt16 company);
-		static const UTF8Char *CmdGetName(UInt16 cmd);
-		static const UTF8Char *HCIPacketTypeGetName(UInt8 packetType);
-		static const UTF8Char *HCIEventGetName(UInt8 evt);
-		static const UTF8Char *LESubEventGetName(UInt8 subEvt);
+		static Text::CString CompanyGetName(UInt16 company);
+		static Text::CString CmdGetName(UInt16 cmd);
+		static Text::CString HCIPacketTypeGetName(UInt8 packetType);
+		static Text::CString HCIEventGetName(UInt8 evt);
+		static Text::CString LESubEventGetName(UInt8 subEvt);
 	};
 }
 #endif

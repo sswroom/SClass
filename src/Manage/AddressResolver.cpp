@@ -15,7 +15,7 @@ Bool Manage::AddressResolver::ResolveNameSB(Text::StringBuilderUTF8 *sb, UInt64 
 	UTF8Char *sptr = this->ResolveName(sbuff, address);
 	if (sptr)
 	{
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;
 	}
 	else

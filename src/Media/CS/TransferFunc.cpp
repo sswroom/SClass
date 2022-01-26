@@ -316,59 +316,59 @@ Double Media::CS::TransferFunc::GetRefLuminance(Media::CS::TransferParam *param)
 	return 0.0;
 }
 
-const UTF8Char *Media::CS::TransferFunc::GetTransferFuncName(Media::CS::TransferType ttype)
+Text::CString Media::CS::TransferFunc::GetTransferFuncName(Media::CS::TransferType ttype)
 {
 	switch (ttype)
 	{
 	case Media::CS::TRANT_sRGB:
-		return (const UTF8Char*)"sRGB";
+		return {UTF8STRC("sRGB")};
 	case Media::CS::TRANT_GAMMA:
-		return (const UTF8Char*)"Constant Gamma";
+		return {UTF8STRC("Constant Gamma")};
 	case Media::CS::TRANT_LINEAR:
-		return (const UTF8Char*)"Linear RGB";
+		return {UTF8STRC("Linear RGB")};
 	case Media::CS::TRANT_BT709:
-		return (const UTF8Char*)"BT.709";
+		return {UTF8STRC("BT.709")};
 	case Media::CS::TRANT_SMPTE240:
-		return (const UTF8Char*)"SMPTE 240M";
+		return {UTF8STRC("SMPTE 240M")};
 	case Media::CS::TRANT_BT1361:
-		return (const UTF8Char*)"BT.1361";
+		return {UTF8STRC("BT.1361")};
 	case Media::CS::TRANT_BT2100:
-		return (const UTF8Char*)"BT.2100/SMPTE ST 2084 (HDR10)";
+		return {UTF8STRC("BT.2100/SMPTE ST 2084 (HDR10)")};
 	case Media::CS::TRANT_HLG:
-		return (const UTF8Char*)"Hybrid Log Gamma (HLG)";
+		return {UTF8STRC("Hybrid Log Gamma (HLG)")};
 	case Media::CS::TRANT_LOG100:
-		return (const UTF8Char*)"Log Transfer (100:1)";
+		return {UTF8STRC("Log Transfer (100:1)")};
 	case Media::CS::TRANT_LOGSQRT10:
-		return (const UTF8Char*)"Log Transfer (100 * Sqrt(10) : 1)";
+		return {UTF8STRC("Log Transfer (100 * Sqrt(10) : 1)")};
 	case Media::CS::TRANT_NLOG:
-		return (const UTF8Char*)"N-Log";
+		return {UTF8STRC("N-Log")};
 	case Media::CS::TRANT_NTSC:
-		return (const UTF8Char*)"NTSC";
+		return {UTF8STRC("NTSC")};
 	case Media::CS::TRANT_SLOG:
-		return (const UTF8Char*)"Sony S-Log";
+		return {UTF8STRC("Sony S-Log")};
 	case Media::CS::TRANT_SLOG1:
-		return (const UTF8Char*)"Sony S-Log1";
+		return {UTF8STRC("Sony S-Log1")};
 	case Media::CS::TRANT_SLOG2:
-		return (const UTF8Char*)"Sony S-Log2";
+		return {UTF8STRC("Sony S-Log2")};
 	case Media::CS::TRANT_SLOG3:
-		return (const UTF8Char*)"Sony S-Log3";
+		return {UTF8STRC("Sony S-Log3")};
 	case Media::CS::TRANT_VLOG:
-		return (const UTF8Char*)"Panasonic V-Log";
+		return {UTF8STRC("Panasonic V-Log")};
 	case Media::CS::TRANT_PROTUNE:
-		return (const UTF8Char*)"GoPro Protune";
+		return {UTF8STRC("GoPro Protune")};
 	case Media::CS::TRANT_LUT:
-		return (const UTF8Char*)"LUT";
+		return {UTF8STRC("LUT")};
 	case Media::CS::TRANT_PARAM1:
-		return (const UTF8Char*)"Parameter Function1";
+		return {UTF8STRC("Parameter Function1")};
 	case Media::CS::TRANT_VDISPLAY:
-		return (const UTF8Char*)"As Display (Video)";
+		return {UTF8STRC("As Display (Video)")};
 	case Media::CS::TRANT_PDISPLAY:
-		return (const UTF8Char*)"As Display (Picture)";
+		return {UTF8STRC("As Display (Picture)")};
 	case Media::CS::TRANT_VUNKNOWN:
-		return (const UTF8Char*)"Unknown (Video)";
+		return {UTF8STRC("Unknown (Video)")};
 	case Media::CS::TRANT_PUNKNOWN:
-		return (const UTF8Char*)"Unknown (Picture)";
+		return {UTF8STRC("Unknown (Picture)")};
 	default:
-		return (const UTF8Char*)"Unknown function";
+		return {UTF8STRC("Unknown function")};
 	}
 }

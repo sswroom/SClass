@@ -16,7 +16,7 @@ Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 	UOSInt i = 2;
 	Int8 dir;
 	UOSInt len;
-	sb.Append(compareConds);
+	sb.AppendSlow(compareConds);
 	sarr[1].v = sb.ToString();
 	sarr[1].leng = sb.GetLength();
 	while (i == 2)

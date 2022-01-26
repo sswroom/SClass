@@ -126,9 +126,9 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"NFDump";
+	return {UTF8STRC("NFDump")};
 }
 
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
@@ -168,6 +168,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameName(UOSInt index, Text::String
 Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UInt8 *extBuff;
 	IO::FileAnalyse::NFDumpFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
@@ -224,7 +225,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendC(UTF8STRC("\r\nNumber of Blocks = "));
 		sb->AppendU32(ReadUInt32(&packBuff[8]));
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((UTF8Char*)&packBuff[12]);
+		sb->AppendSlow((UTF8Char*)&packBuff[12]);
 
 		MemFree(packBuff);
 	}
@@ -347,14 +348,14 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 						sb->AppendU16(ReadUInt16(&decBuff[i + 6]));
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 12]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 8]));
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
 						sb->AppendC(UTF8STRC(", first = "));
-						sb->Append(sbuff);
+						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 						dt.SetUnixTimestamp(ReadUInt32(&decBuff[i + 16]));
 						dt.AddMS(ReadUInt16(&decBuff[i + 10]));
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
 						sb->AppendC(UTF8STRC(", last = "));
-						sb->Append(sbuff);
+						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 
 						sb->AppendC(UTF8STRC(", Fwd Status = "));
 						sb->AppendU16(decBuff[i + 20]);
@@ -382,11 +383,11 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 						else //IPv4
 						{
 							sb->AppendC(UTF8STRC(", src IP = "));
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-							sb->Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
+							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							sb->AppendC(UTF8STRC(", dest IP = "));
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j + 4]));
-							sb->Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j + 4]));
+							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 							j += 8;
 						}
 						sb->AppendC(UTF8STRC(", In Pkts = "));
@@ -467,8 +468,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								else if (extId == 9) //EX_NEXT_HOP_v4
 								{
 									sb->AppendC(UTF8STRC(", Next HOP IP = "));
-									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->Append(sbuff);
+									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
+									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 10) //EX_NEXT_HOP_v6
@@ -481,8 +482,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								else if (extId == 11) //EX_NEXT_HOP_BGP_v4
 								{
 									sb->AppendC(UTF8STRC(", BGP Next IP = "));
-									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->Append(sbuff);
+									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
+									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 12) //EX_NEXT_HOP_BGP_v6
@@ -569,8 +570,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								else if (extId == 23) //EX_ROUTER_IP_v4
 								{
 									sb->AppendC(UTF8STRC(", Router IP = "));
-									Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
-									sb->Append(sbuff);
+									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + j]));
+									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									j += 4;
 								}
 								else if (extId == 24) //EX_ROUTER_IP_v6
@@ -600,8 +601,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 								{
 									sb->AppendC(UTF8STRC(", T Received = "));
 									dt.SetTicks(ReadInt64(&decBuff[i + j]));
-									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
-									sb->Append(sbuff);
+									sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzz");
+									sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									j += 8;
 								}
 								if (j >= recSize)
@@ -666,8 +667,8 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 						sb->AppendC(UTF8STRC(", IP = "));
 						if (j == 2) //AF_INET
 						{
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + 16]));
-							sb->Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32(&decBuff[i + 16]));
+							sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 						}
 						else if (j == 23) //AF_INET6
 						{

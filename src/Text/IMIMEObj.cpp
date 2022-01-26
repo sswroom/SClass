@@ -54,7 +54,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		{
 			Text::StringBuilderUTF8 sb;
 			UOSInt j;
-			sb.Append(&contentType[i + 8]);
+			sb.AppendC(&contentType[i + 8], typeLen - i - 8);
 			j = Text::StrIndexOfChar(sb.ToString(), ';');
 			if (j != INVALID_INDEX)
 			{

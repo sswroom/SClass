@@ -240,7 +240,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 								}
 								else
 								{
-									name->Append(&sbuff[k + 10]);
+									name->AppendC(&sbuff[k + 10], (UOSInt)(sptr - &sbuff[k + 10]));
 								}
 							}
 							else
@@ -252,7 +252,7 @@ Text::IMIMEObj *Text::MIMEObj::MailMessage::GetAttachment(OSInt index, Text::Str
 								}
 								else
 								{
-									name->Append(&sbuff[k + 9]);
+									name->AppendC(&sbuff[k + 9], (UOSInt)(sptr - &sbuff[k + 9]));
 								}
 							}
 						}
@@ -338,15 +338,15 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					buff[i] = 0;
 					if (buff[lineStart] == '\t')
 					{
-						sb.Append((UTF8Char*)&buff[lineStart + 1]);
+						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else if (buff[lineStart] == ' ')
 					{
-						sb.Append((UTF8Char*)&buff[lineStart + 1]);
+						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else
 					{
-						sb.Append((UTF8Char*)&buff[lineStart]);
+						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
 					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{
@@ -382,15 +382,15 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 					buff[i] = 0;
 					if (buff[lineStart] == '\t')
 					{
-						sb.Append((UTF8Char*)&buff[lineStart + 1]);
+						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else if (buff[lineStart] == ' ')
 					{
-						sb.Append((UTF8Char*)&buff[lineStart + 1]);
+						sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 					}
 					else
 					{
-						sb.Append((UTF8Char*)&buff[lineStart]);
+						sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 					}
 					if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 					{

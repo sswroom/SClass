@@ -41,34 +41,34 @@ void ExceptionRecorder_Signal(int signum, siginfo_t *info, void *ucontext)
 	ExceptionRecorder_Handler(&exInfo);
 }
 
-const UTF8Char *Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
+Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 {
 	switch (exCode)
 	{
 	case 1: //SIGHUP
-		return (const UTF8Char*)"Hangup detected on controlling terminal or death of controlling process";
+		return {UTF8STRC("Hangup detected on controlling terminal or death of controlling process")};
 	case 2: //SIGINT
-		return (const UTF8Char*)"Interrupt from keypoard";
+		return {UTF8STRC("Interrupt from keypoard")};
 	case 3: //SIGQUIT
-		return (const UTF8Char*)"Quit from keyboard";
+		return {UTF8STRC("Quit from keyboard")};
 	case 4: //SIGILL
-		return (const UTF8Char*)"Illegal Instruction";
+		return {UTF8STRC("Illegal Instruction")};
 	case 6: //SIGABRT
-		return (const UTF8Char*)"Abort signal";
+		return {UTF8STRC("Abort signal")};
 	case 8: //SIGFPE
-		return (const UTF8Char*)"Floating point exception";
+		return {UTF8STRC("Floating point exception")};
 	case 9: //SIGKILL
-		return (const UTF8Char*)"Kill signal";
+		return {UTF8STRC("Kill signal")};
 	case 11: //SIGSEGV
-		return (const UTF8Char*)"Invalid memory reference";
+		return {UTF8STRC("Invalid memory reference")};
 	case 13: //SIGPIPE
-		return (const UTF8Char*)"Broken pipe: write to pipe with no readers";
+		return {UTF8STRC("Broken pipe: write to pipe with no readers")};
 	case 14: //SIGALRM
-		return (const UTF8Char*)"Timer signal from alarm";
+		return {UTF8STRC("Timer signal from alarm")};
 	case 15: //SIGTERM
-		return (const UTF8Char*)"Termination signal";
+		return {UTF8STRC("Termination signal")};
 	default:
-		return (const UTF8Char*)"Unknown Exception";
+		return {UTF8STRC("Unknown Exception")};
 	}
 }
 

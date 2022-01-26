@@ -61,15 +61,16 @@ Bool Net::HTTPClient::FormAdd(const UTF8Char *name, const UTF8Char *value)
 		return false;
 	}
 	UTF8Char sbuff[256];
-	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
+	UTF8Char *sptr;
+	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	if (this->formSb->GetLength() > 0)
 	{
 		this->formSb->AppendChar('&', 1);
 	}
-	this->formSb->Append(sbuff);
-	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, value);
+	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, value);
 	this->formSb->AppendChar('=', 1);
-	this->formSb->Append(sbuff);
+	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
 

@@ -54,6 +54,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
+	UTF8Char *sptr;
 	UInt32 pal[56];
 	UInt32 defPal[56];
 	Bool found;
@@ -85,8 +86,8 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 
 	sb.AppendC(UTF8STRC("<?xml version=\"1.0\" encoding="));
 	Text::EncodingFactory::GetInternetName(sbuff, enc.GetEncCodePage());
-	Text::XML::ToAttrText(sbuff2, sbuff);
-	sb.Append(sbuff2);
+	sptr = Text::XML::ToAttrText(sbuff2, sbuff);
+	sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
 	sb.AppendC(UTF8STRC("?>"));
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -125,20 +126,20 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 		dt = wb->GetCreateTime();
 		if (dt)
 		{
-			dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
+			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <Created>"));
-			sb.Append(sbuff);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</Created>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 		dt = wb->GetModifyTime();
 		if (dt)
 		{
-			dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
+			sptr = dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ssZ");
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("  <LastSaved>"));
-			sb.Append(sbuff);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC("</LastSaved>"));
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
@@ -360,8 +361,8 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <Interior ss:Color=\"#"));
-					Text::StrHexVal32(sbuff, style->GetFillColor());
-					sb.Append(&sbuff[2]);
+					sptr = Text::StrHexVal32(sbuff, style->GetFillColor());
+					sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 					sb.AppendC(UTF8STRC("\" ss:Pattern=\"Solid\"/>"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -382,9 +383,9 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					}
 					if ((font->GetColor() & 0xffffff) != 0)
 					{
-						Text::StrHexVal32(sbuff, font->GetColor());
+						sptr = Text::StrHexVal32(sbuff, font->GetColor());
 						sb.AppendC(UTF8STRC(" ss:Color=\"#"));
-						sb.Append(&sbuff[2]);
+						sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 						sb.AppendC(UTF8STRC("\""));
 					}
 					if (font->IsBold())
@@ -815,6 +816,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8Char *position, Text::SpreadSheet::CellStyle::BorderStyle *border)
 {
 	UTF8Char sbuff[10];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Text::String *s;
 	sb.AppendC(UTF8STRC("    <Border ss:Position="));
@@ -885,8 +887,8 @@ void Exporter::ExcelXMLExporter::WriteBorderStyle(IO::Writer *writer, const UTF8
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("     ss:Color=\"#"));
-		Text::StrHexVal32(sbuff, border->borderColor);
-		sb.Append(&sbuff[2]);
+		sptr = Text::StrHexVal32(sbuff, border->borderColor);
+		sb.AppendC(&sbuff[2], (UOSInt)(sptr - &sbuff[2]));
 		sb.AppendC(UTF8STRC("\""));
 	}
 	sb.AppendC(UTF8STRC("/>"));

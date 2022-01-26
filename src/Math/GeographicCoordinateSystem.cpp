@@ -109,7 +109,7 @@ void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\nDatum Name: "));
-	sb->Append((const UTF8Char*)this->datum.name);
+	sb->AppendSlow((const UTF8Char*)this->datum.name);
 	sb->AppendC(UTF8STRC("\r\nRotate Center: "));
 	Text::SBAppendF64(sb, this->datum.x0);
 	sb->AppendC(UTF8STRC(", "));

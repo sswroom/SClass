@@ -51,8 +51,8 @@ namespace Data
 		Bool SetFieldClearItem(void *obj, UOSInt index, Data::VariItem *item);
 		Bool Equals(void *obj1, void *obj2);
 
-		void ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb);
-		void ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb);
+		void ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb);
+		void ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb);
 	};
 }
 

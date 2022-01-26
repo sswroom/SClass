@@ -278,12 +278,12 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 		}
 		DEL_CLASS(fs);
 		sbuff2[sz] = 0;
-		sb->Append((const UTF8Char*)sbuff2);
+		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
 	}
 	else
 	{
 		sbuff2[sz] = 0;
-		sb->Append((const UTF8Char*)sbuff2);
+		sb->AppendC((const UTF8Char*)sbuff2, (UOSInt)sz);
 	}
 	return true;
 }
@@ -1131,7 +1131,7 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
-	sb.Append(path);
+	sb.AppendSlow(path);
 	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
 	return ret == 0;
 }

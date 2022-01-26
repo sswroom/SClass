@@ -4,6 +4,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "IO/ParsedObject.h"
 #include "Media/Image.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -51,7 +52,7 @@ namespace Media
 		Data::ArrayList<ValueType> *valTypeI64;
 		Data::ArrayList<Int64> *valI64;
 		Data::ArrayList<ValueType> *valTypeStr;
-		Data::ArrayList<const UTF8Char *> *valStr;
+		Data::ArrayList<Text::String *> *valStr;
 
 		UOSInt thermoWidth;
 		UOSInt thermoHeight;
@@ -89,7 +90,7 @@ namespace Media
 		Bool ToValueString(Text::StringBuilderUTF8 *sb);
 
 		void ToString(Text::StringBuilderUTF8 *sb);
-		static const UTF8Char *GetValueTypeName(ValueType valType);
+		static Text::CString GetValueTypeName(ValueType valType);
 	};
 }
 #endif

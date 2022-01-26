@@ -275,21 +275,21 @@ void Media::Image::ToString(Text::StringBuilderUTF8 *sb)
 	if (this->exif)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		this->exif->ToString(sb, 0);
+		this->exif->ToString(sb, {0, 0});
 	}
 }
 
-const UTF8Char *Media::Image::AlphaTypeGetName(AlphaType atype)
+Text::CString Media::Image::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)
 	{
 	case AT_NO_ALPHA:
-		return (const UTF8Char*)"No Alpha";
+		return {UTF8STRC("No Alpha")};
 	case AT_ALPHA:
-		return (const UTF8Char*)"Standard Alpha";
+		return {UTF8STRC("Standard Alpha")};
 	case AT_PREMUL_ALPHA:
-		return (const UTF8Char*)"Premul Alpha";
+		return {UTF8STRC("Premul Alpha")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

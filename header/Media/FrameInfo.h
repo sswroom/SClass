@@ -2,6 +2,7 @@
 #define _SM_MEDIA_FRAMEINFO
 #include "MyMemory.h"
 #include "Media/ColorProfile.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -123,10 +124,10 @@ namespace Media
 		void ToString(Text::StringBuilderUTF8 *sb);
 	};
 
-	const UTF8Char *FrameTypeGetName(FrameType frameType);
-	const UTF8Char *AlphaTypeGetName(AlphaType atype);
-	const UTF8Char *YCOffsetGetName(YCOffset ycOfst);
-	const UTF8Char *PixelFormatGetName(PixelFormat pf);
+	Text::CString FrameTypeGetName(FrameType frameType);
+	Text::CString AlphaTypeGetName(AlphaType atype);
+	Text::CString YCOffsetGetName(YCOffset ycOfst);
+	Text::CString PixelFormatGetName(PixelFormat pf);
 	PixelFormat PixelFormatGetDef(UInt32 fourcc, UInt32 storeBPP);
 	RotateType RotateTypeCalc(RotateType srcType, RotateType destType);
 	RotateType RotateTypeCombine(RotateType rtype1, RotateType rtype2);

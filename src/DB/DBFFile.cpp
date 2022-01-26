@@ -600,7 +600,7 @@ Bool DB::DBFReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	UTF8Char *sbuff = MemAlloc(UTF8Char, strLen + 1);
 	this->enc->UTF8FromBytes(sbuff, &this->recordData[this->cols[colIndex].colOfst], this->cols[colIndex].colSize, 0);
 	sbuff[strLen] = 0;
-	sb->Append(sbuff);
+	sb->AppendC(sbuff, strLen);
 	MemFree(sbuff);
 	return true;
 }

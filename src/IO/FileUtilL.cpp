@@ -90,7 +90,7 @@ Bool FileUtil_Stat(const UTF8Char *fileName, struct stat *outStat)
 	}
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
-	sb.Append(fileName);
+	sb.AppendSlow(fileName);
 	while (true)
 	{
 		i = sb.LastIndexOf('/');

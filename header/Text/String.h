@@ -29,7 +29,6 @@ namespace Text
 		String *Clone();
 
 		String *ToLower();
-
 	private:
 		String(UOSInt cnt);
 		~String();

@@ -304,9 +304,9 @@ IO::FileAnalyse::EXEFileAnalyse::~EXEFileAnalyse()
 	}
 }
 
-const UTF8Char *IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::EXEFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"EXE";
+	return {UTF8STRC("EXE")};
 }
 
 UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameCount()
@@ -774,7 +774,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		sb->AppendChar('.', 1);
 		sb->AppendU16(ReadUInt16(&this->imageBuff[pack->fileOfst + 10]));
 		sb->AppendC(UTF8STRC("\r\nName = "));
-		sb->Append((const UTF8Char*)&this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
+		sb->AppendSlow((const UTF8Char*)&this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
 		sb->AppendC(UTF8STRC("\r\nOrdinal Base = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[pack->fileOfst + 16]));
 		nAddr = ReadUInt32(&this->imageBuff[pack->fileOfst + 20]);
@@ -798,7 +798,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			sb->AppendC(UTF8STRC("\r\nAddr = 0x"));
 			sb->AppendHex32(ReadUInt32(&addrTablePtr[ReadUInt16(ordinalTablePtr) * 4]));
 			sb->AppendC(UTF8STRC(", Name = "));
-			sb->Append((const UTF8Char*)&this->imageBuff[ReadUInt32(nameTablePtr)]);
+			sb->AppendSlow((const UTF8Char*)&this->imageBuff[ReadUInt32(nameTablePtr)]);
 			nameTablePtr += 4;
 			ordinalTablePtr += 2;
 			i++;
@@ -857,7 +857,7 @@ UOSInt IO::FileAnalyse::EXEFileAnalyse::GetFrameIndex(UInt64 ofst)
 IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index)
 {
 	IO::FileAnalyse::EXEFileAnalyse::PackInfo *pack;
-	const Char *vName;
+	Text::CString vName;
 	UTF8Char sbuff[64];
 	UInt8 *packBuff;
 	pack = this->packs->GetItem(index);
@@ -866,7 +866,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 
 	IO::FileAnalyse::FrameDetail *frame;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Type=")), PackTypeGetName(pack->packType));
+	PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddText(0, sbuff);
 	Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
 	frame->AddText(0, sbuff);
@@ -906,86 +906,86 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddField(0, 4, (const UTF8Char*)"Magic number", (const UTF8Char*)"PE\\0\\0");
-		vName = 0;
+		vName = {0, 0};
 		switch (ReadUInt16(&packBuff[4]))
 		{
 		case 0x0:
-			vName = "Unknown";
+			vName = {UTF8STRC("Unknown")};
 			break;
 		case 0x1d3:
-			vName = "Matsushita AM33";
+			vName = {UTF8STRC("Matsushita AM33")};
 			break;
 		case 0x8664:
-			vName = "AMD64";
+			vName = {UTF8STRC("AMD64")};
 			break;
 		case 0x1c0:
-			vName = "ARM little endian";
+			vName = {UTF8STRC("ARM little endian")};
 			break;
 		case 0xaa64:
-			vName = "ARM64 little endian";
+			vName = {UTF8STRC("ARM64 little endian")};
 			break;
 		case 0x1c4:
-			vName = "ARM Thumb-2 little endian";
+			vName = {UTF8STRC("ARM Thumb-2 little endian")};
 			break;
 		case 0xebc:
-			vName = "EFI byte code";
+			vName = {UTF8STRC("EFI byte code")};
 			break;
 		case 0x14c:
-			vName = "Intel 386 or later processors and compatible processors";
+			vName = {UTF8STRC("Intel 386 or later processors and compatible processors")};
 			break;
 		case 0x200:
-			vName = "Intel Itanium processor family";
+			vName = {UTF8STRC("Intel Itanium processor family")};
 			break;
 		case 0x9041:
-			vName = "Mitsubishi M32R little endian";
+			vName = {UTF8STRC("Mitsubishi M32R little endian")};
 			break;
 		case 0x266:
-			vName = "MIPS16";
+			vName = {UTF8STRC("MIPS16")};
 			break;
 		case 0x366:
-			vName = "MIPS with FPU";
+			vName = {UTF8STRC("MIPS with FPU")};
 			break;
 		case 0x466:
-			vName = "MIPS16 with FPU";
+			vName = {UTF8STRC("MIPS16 with FPU")};
 			break;
 		case 0x1f0:
-			vName = "Power PC little endian";
+			vName = {UTF8STRC("Power PC little endian")};
 			break;
 		case 0x1f1:
-			vName = "Power PC with floating point support";
+			vName = {UTF8STRC("Power PC with floating point support")};
 			break;
 		case 0x166:
-			vName = "MIPS little endian";
+			vName = {UTF8STRC("MIPS little endian")};
 			break;
 		case 0x5032:
-			vName = "RISC-V 32-bit address space";
+			vName = {UTF8STRC("RISC-V 32-bit address space")};
 			break;
 		case 0x5064:
-			vName = "RISC-V 64-bit address space";
+			vName = {UTF8STRC("RISC-V 64-bit address space")};
 			break;
 		case 0x5128:
-			vName = "RISC-V 128-bit address space";
+			vName = {UTF8STRC("RISC-V 128-bit address space")};
 			break;
 		case 0x1a2:
-			vName = "Hitachi SH3";
+			vName = {UTF8STRC("Hitachi SH3")};
 			break;
 		case 0x1a3:
-			vName = "Hitachi SH3 DSP";
+			vName = {UTF8STRC("Hitachi SH3 DSP")};
 			break;
 		case 0x1a6:
-			vName = "Hitachi SH4";
+			vName = {UTF8STRC("Hitachi SH4")};
 			break;
 		case 0x1a8:
-			vName = "Hitachi SH5";
+			vName = {UTF8STRC("Hitachi SH5")};
 			break;
 		case 0x1c2:
-			vName = "Thumb";
+			vName = {UTF8STRC("Thumb")};
 			break;
 		case 0x169:
-			vName = "MIPS little-endian WCE v2";
+			vName = {UTF8STRC("MIPS little-endian WCE v2")};
 			break;
 		}
-		frame->AddHex16Name(4, "Machine", ReadUInt16(&packBuff[4]), (const UTF8Char*)vName);
+		frame->AddHex16Name(4, "Machine", ReadUInt16(&packBuff[4]), vName);
 		frame->AddUInt(6, 2, "NumberOfSections", ReadUInt16(&packBuff[6]));
 		frame->AddUInt(8, 4, "TimeDateStamp", ReadUInt32(&packBuff[8]));
 		Data::DateTime dt;
@@ -1051,53 +1051,53 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(56, 4, "SizeOfImage", ReadUInt32(&packBuff[56]));
 		frame->AddUInt(60, 4, "SizeOfHeaders", ReadUInt32(&packBuff[60]));
 		frame->AddHex32(64, "CheckSum", ReadUInt32(&packBuff[64]));
-		vName = 0;
+		vName = {0, 0};
 		switch (ReadUInt16(&packBuff[68]))
 		{
 		case 0:
-			vName = "Unknown";
+			vName = {UTF8STRC("Unknown")};
 			break;
 		case 1:
-			vName = "Native";
+			vName = {UTF8STRC("Native")};
 			break;
 		case 2:
-			vName = "Windows GUI";
+			vName = {UTF8STRC("Windows GUI")};
 			break;
 		case 3:
-			vName = "Windows CUI";
+			vName = {UTF8STRC("Windows CUI")};
 			break;
 		case 5:
-			vName = "OS/2 CUI";
+			vName = {UTF8STRC("OS/2 CUI")};
 			break;
 		case 7:
-			vName = "Posix CUI";
+			vName = {UTF8STRC("Posix CUI")};
 			break;
 		case 8:
-			vName = "Native Win9x driver";
+			vName = {UTF8STRC("Native Win9x driver")};
 			break;
 		case 9:
-			vName = "Windows CE";
+			vName = {UTF8STRC("Windows CE")};
 			break;
 		case 10:
-			vName = "EFI Application";
+			vName = {UTF8STRC("EFI Application")};
 			break;
 		case 11:
-			vName = "EFI Boot Service Driver";
+			vName = {UTF8STRC("EFI Boot Service Driver")};
 			break;
 		case 12:
-			vName = "EFI Runtime Driver";
+			vName = {UTF8STRC("EFI Runtime Driver")};
 			break;
 		case 13:
-			vName = "EFI ROM";
+			vName = {UTF8STRC("EFI ROM")};
 			break;
 		case 14:
-			vName = "XBOX";
+			vName = {UTF8STRC("XBOX")};
 			break;
 		case 16:
-			vName = "Windows Boot Application";
+			vName = {UTF8STRC("Windows Boot Application")};
 			break;
 		}
-		frame->AddUIntName(68, 2, "Subsystem", ReadUInt16(&packBuff[68]), (const UTF8Char*)vName);
+		frame->AddUIntName(68, 2, "Subsystem", ReadUInt16(&packBuff[68]), vName);
 		UInt16 ch = ReadUInt16(&packBuff[70]);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("0x"));
@@ -1250,53 +1250,53 @@ Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	return false;
 }
 
-const UTF8Char *IO::FileAnalyse::EXEFileAnalyse::PackTypeGetName(Int32 packType)
+Text::CString IO::FileAnalyse::EXEFileAnalyse::PackTypeGetName(Int32 packType)
 {
 	switch (packType)
 	{
 	case 0:
-		return (const UTF8Char*)"MS-DOS Header";
+		return {UTF8STRC("MS-DOS Header")};
 	case 1:
-		return (const UTF8Char*)"MS-DOS Byte Code";
+		return {UTF8STRC("MS-DOS Byte Code")};
 	case 2:
-		return (const UTF8Char*)"COFF File Header";
+		return {UTF8STRC("COFF File Header")};
 	case 3:
-		return (const UTF8Char*)"PE32 Optional Header";
+		return {UTF8STRC("PE32 Optional Header")};
 	case 4:
-		return (const UTF8Char*)"PE32+ Optional Header";
+		return {UTF8STRC("PE32+ Optional Header")};
 	case 5:
-		return (const UTF8Char*)"Section Entry";
+		return {UTF8STRC("Section Entry")};
 	case 6:
-		return (const UTF8Char*)"Export Table";
+		return {UTF8STRC("Export Table")};
 	case 7:
-		return (const UTF8Char*)"Import Table";
+		return {UTF8STRC("Import Table")};
 	case 8:
-		return (const UTF8Char*)"Resource Table";
+		return {UTF8STRC("Resource Table")};
 	case 9:
-		return (const UTF8Char*)"Exception Table";
+		return {UTF8STRC("Exception Table")};
 	case 10:
-		return (const UTF8Char*)"Certificate Table";
+		return {UTF8STRC("Certificate Table")};
 	case 11:
-		return (const UTF8Char*)"Base Relocation Table";
+		return {UTF8STRC("Base Relocation Table")};
 	case 12:
-		return (const UTF8Char*)"Debug";
+		return {UTF8STRC("Debug")};
 	case 13:
-		return (const UTF8Char*)"Architecture";
+		return {UTF8STRC("Architecture")};
 	case 14:
-		return (const UTF8Char*)"Global Ptr";
+		return {UTF8STRC("Global Ptr")};
 	case 15:
-		return (const UTF8Char*)"TLS Table";
+		return {UTF8STRC("TLS Table")};
 	case 16:
-		return (const UTF8Char*)"Load Config Table";
+		return {UTF8STRC("Load Config Table")};
 	case 17:
-		return (const UTF8Char*)"Bound Import";
+		return {UTF8STRC("Bound Import")};
 	case 18:
-		return (const UTF8Char*)"IAT";
+		return {UTF8STRC("IAT")};
 	case 19:
-		return (const UTF8Char*)"Delay Import Descriptor";
+		return {UTF8STRC("Delay Import Descriptor")};
 	case 20:
-		return (const UTF8Char*)"CLR Runtime Header";
+		return {UTF8STRC("CLR Runtime Header")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

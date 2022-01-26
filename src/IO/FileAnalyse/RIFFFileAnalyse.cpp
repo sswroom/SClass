@@ -139,9 +139,9 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"RIFF";
+	return {UTF8STRC("RIFF")};
 }
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()
@@ -160,13 +160,13 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	sb->AppendC(UTF8STRC(": Type="));
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
-	sb->Append((UTF8Char*)buff);
+	sb->AppendSlow((UTF8Char*)buff);
 	if (pack->subPackType != 0)
 	{
 		sb->AppendC(UTF8STRC(", SubType="));
 		*(Int32*)buff = pack->subPackType;
 		buff[4] = 0;
-		sb->Append((UTF8Char*)buff);
+		sb->AppendSlow((UTF8Char*)buff);
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendUOSInt(pack->packSize);
@@ -189,13 +189,13 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	sb->AppendC(UTF8STRC(": Type="));
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
-	sb->Append((UTF8Char*)buff);
+	sb->AppendSlow((UTF8Char*)buff);
 	if (pack->subPackType != 0)
 	{
 		sb->AppendC(UTF8STRC(", SubType="));
 		*(Int32*)buff = pack->subPackType;
 		buff[4] = 0;
-		sb->Append((UTF8Char*)buff);
+		sb->AppendSlow((UTF8Char*)buff);
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendUOSInt(pack->packSize);
@@ -235,7 +235,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 
 		sb->AppendC(UTF8STRC("\r\nfccType = "));
 		*(Int32*)buff = *(Int32*)&packBuff[0];
-		sb->Append((UTF8Char*)buff);
+		sb->AppendSlow((UTF8Char*)buff);
 		sb->AppendC(UTF8STRC("\r\nfccHandler = "));
 		if (*(Int32*)&packBuff[4] == 0)
 		{
@@ -244,7 +244,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		else
 		{
 			*(Int32*)buff = *(Int32*)&packBuff[4];
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 		}
 		sb->AppendC(UTF8STRC("\r\nFlags = 0x"));
 		sb->AppendHex32(ReadUInt32(&packBuff[8]));
@@ -294,7 +294,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			else
 			{
 				*(Int32*)buff = *(Int32*)&packBuff[16];
-				sb->Append((UTF8Char*)buff);
+				sb->AppendSlow((UTF8Char*)buff);
 			}
 			sb->AppendC(UTF8STRC("\r\nbiSizeImage = "));
 			sb->AppendU32(ReadUInt32(&packBuff[20]));
@@ -368,7 +368,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 		{
 			*(Int32*)buff = *(Int32*)&packBuff[k];
 			sb->AppendC(UTF8STRC("\r\nType="));
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 			sb->AppendC(UTF8STRC(", Offset="));
 			sb->AppendU32(ReadUInt32(&packBuff[k + 8]));
 			sb->AppendC(UTF8STRC(", Size="));

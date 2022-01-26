@@ -142,9 +142,9 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"RAR5";
+	return {UTF8STRC("RAR5")};
 }
 
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
@@ -526,7 +526,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	UInt64 iVal;
 	UInt64 headerFlags;
 	UInt64 extraSize;
-	const Char *vName;
+	Text::CString vName;
 	const UInt8 *packPtr;
 	const UInt8 *extraEnd;
 	const UInt8 *packEnd;
@@ -544,26 +544,26 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	packEnd = packBuff + pack->headerSize;
 	packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Header Size", packPtr);
 	nextPtr = ReadVInt(packPtr, &iVal);
-	vName = 0;
+	vName = {0, 0};
 	switch (iVal)
 	{
 	case 1:
-		vName = "Main archive header";
+		vName = {UTF8STRC("Main archive header")};
 		break;
 	case 2:
-		vName = "File header";
+		vName = {UTF8STRC("File header")};
 		break;
 	case 3:
-		vName = "Service header";
+		vName = {UTF8STRC("Service header")};
 		break;
 	case 4:
-		vName = "Archive encryption header";
+		vName = {UTF8STRC("Archive encryption header")};
 		break;
 	case 5:
-		vName = "End of archive header";
+		vName = {UTF8STRC("End of archive header")};
 		break;
 	}
-	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Type", iVal, (const UTF8Char*)vName);
+	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Type", iVal, vName);
 	packPtr = nextPtr;
 	nextPtr = ReadVInt(packPtr, &headerFlags);
 	frame->AddHex64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Flags", headerFlags);
@@ -627,7 +627,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				nextPtr2 = ReadVInt(packPtr, &iVal);
 				if (iVal == 1)
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, (const UTF8Char*)"Locator");
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, {UTF8STRC("Locator")});
 					packPtr = nextPtr2;
 					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Flags", packPtr, &iVal);
 					if (iVal & 1)
@@ -641,7 +641,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				}
 				else
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, 0);
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, {0, 0});
 				}
 				packPtr = nextPtr;
 			}
@@ -708,32 +708,32 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Extra Rec Size", extraSize);
 				packPtr = nextPtr2;
 				nextPtr2 = ReadVInt(packPtr, &iVal);
-				vName = 0;
+				vName = {0, 0};
 				switch (iVal)
 				{
 				case 1:
-					vName = "File encryption";
+					vName = {UTF8STRC("File encryption")};
 					break;
 				case 2:
-					vName = "File hash";
+					vName = {UTF8STRC("File hash")};
 					break;
 				case 3:
-					vName = "File time";
+					vName = {UTF8STRC("File time")};
 					break;
 				case 4:
-					vName = "File version";
+					vName = {UTF8STRC("File version")};
 					break;
 				case 5:
-					vName = "Redirection";
+					vName = {UTF8STRC("Redirection")};
 					break;
 				case 6:
-					vName = "Unix owner";
+					vName = {UTF8STRC("Unix owner")};
 					break;
 				case 7:
-					vName = "Service data";
+					vName = {UTF8STRC("Service data")};
 					break;
 				}
-				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, (const UTF8Char*)vName);
+				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, vName);
 				packPtr = nextPtr2;
 
 				if (iVal == 3)

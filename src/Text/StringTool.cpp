@@ -155,7 +155,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingLis
 	sb->AppendChar('}', 1);
 }
 
-void Text::StringTool::Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, const UTF8Char *seperator)
+void Text::StringTool::Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, Text::CString seperator)
 {
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();

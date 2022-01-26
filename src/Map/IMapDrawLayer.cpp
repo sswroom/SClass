@@ -1011,10 +1011,11 @@ WChar *Map::MapLayerReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (colIndex <= 0)
 		return false;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	sb->Append(sbuff);
+	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
 

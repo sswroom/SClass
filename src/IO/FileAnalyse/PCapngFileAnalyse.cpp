@@ -192,9 +192,9 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 	MemFree(this->packetBuff);
 }
 
-const UTF8Char *IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"pcapng";
+	return {UTF8STRC("pcapng")};
 }
 
 UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
@@ -294,6 +294,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameName(UOSInt index, Text::String
 Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	IO::FileAnalyse::PCapngFileAnalyse::BlockInfo *block;
 	if (index >= this->blockList->GetCount())
 	{
@@ -410,11 +411,11 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		}
 		sb->AppendC(UTF8STRC("\r\nLinkType="));
 		sb->AppendU16(linkType);
-		const UTF8Char *csptr = IO::RAWMonitor::LinkTypeGetName(linkType);
-		if (csptr)
+		Text::CString cstr = IO::RAWMonitor::LinkTypeGetName(linkType);
+		if (cstr.v)
 		{
 			sb->AppendC(UTF8STRC(" ("));
-			sb->Append(csptr);
+			sb->Append(cstr);
 			sb->AppendC(UTF8STRC(")"));
 		}
 		sb->AppendC(UTF8STRC("\r\nReserved=0x"));
@@ -466,19 +467,19 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 			else if (optCode == 4)
 			{
 				sb->AppendC(UTF8STRC("\r\nIPv4 Address="));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 4]));
-				sb->Append(sbuff);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 4]));
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("\r\nNetmask="));
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 8]));
-				sb->Append(sbuff);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&this->packetBuff[i + 8]));
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			else if (optCode == 5)
 			{
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
 				sb->AppendC(UTF8STRC("\r\nIPv6 Address="));
-				Net::SocketUtil::GetAddrName(sbuff, &addr);
-				sb->Append(sbuff);
+				sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb->AppendC(UTF8STRC("/"));
 				sb->AppendU16(this->packetBuff[i + 20]);
 			}
@@ -601,9 +602,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendU32(ifId);
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC("\r\nCaptured Packet Length="));
 		sb->AppendU32(capPSize);
 		sb->AppendC(UTF8STRC("\r\nOriginal Packet Length="));
@@ -698,9 +699,9 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 		sb->AppendU32(ifId);
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(UTF8STRC("\r\nTime="));
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		UInt16 optCode;
 		UInt16 optLeng;
 		UOSInt i = 20;
@@ -746,8 +747,8 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				}
 				SetTime(&dt, ts, block->timeResol);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			else if (optCode == 3)
 			{
@@ -762,8 +763,8 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail(UOSInt index, Text::Stri
 				}
 				SetTime(&dt, ts, block->timeResol);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb->Append(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			else if (optCode == 4)
 			{

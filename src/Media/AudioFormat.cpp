@@ -122,42 +122,42 @@ void Media::AudioFormat::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendU32(this->extraSize);
 }
 
-const UTF8Char *Media::AudioFormat::GetNameFormatId(UInt32 formatId)
+Text::CString Media::AudioFormat::GetNameFormatId(UInt32 formatId)
 {
 	switch (formatId)
 	{
 	case 1:
-		return (const UTF8Char*)"LPCM (Int)";
+		return {UTF8STRC("LPCM (Int)")};
 	case 3:
-		return (const UTF8Char*)"LPCM (Float)";
+		return {UTF8STRC("LPCM (Float)")};
 	case 0x7:
-		return (const UTF8Char*)"G.711 mu-Law";
+		return {UTF8STRC("G.711 mu-Law")};
 	case 0x50:
-		return (const UTF8Char*)"MPEG-1 Audio Layer 2";
+		return {UTF8STRC("MPEG-1 Audio Layer 2")};
 	case 0xFF:
-		return (const UTF8Char*)"AAC";
+		return {UTF8STRC("AAC")};
 	case 0x2080:
-		return (const UTF8Char*)"ADX";
+		return {UTF8STRC("ADX")};
 	case 0x2081:
-		return (const UTF8Char*)"PSSA";
+		return {UTF8STRC("PSSA")};
 	case 0x2082:
-		return (const UTF8Char*)"XA";
+		return {UTF8STRC("XA")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::AudioFormat::GetNameIntType(IntType intType)
+Text::CString Media::AudioFormat::GetNameIntType(IntType intType)
 {
 	switch (intType)
 	{
 	case IT_NORMAL:
-		return (const UTF8Char*)"Little Endian";
+		return {UTF8STRC("Little Endian")};
 	case IT_BIGENDIAN:
-		return (const UTF8Char*)"Big Endian";
+		return {UTF8STRC("Big Endian")};
 	case IT_BIGENDIAN16:
-		return (const UTF8Char*)"Big Endian 16-bit";
+		return {UTF8STRC("Big Endian 16-bit")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

@@ -743,9 +743,9 @@ Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 		MemFree(wptr);
 		return false;
 	}
-	const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-	sb->Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(wptr);
+	sb->Append(s);
+	s->Release();
 	MemFree(wptr);
 	return true;
 }
@@ -830,7 +830,7 @@ Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 	Bool succ = false;
 	WChar *wptr = MemAlloc(WChar, 4096);
 	WChar *sptr;
-	const UTF8Char *csptr;
+	Text::String *s;
 	while (true)
 	{
 		sptr = ReadLine(wptr, 4093);
@@ -840,9 +840,9 @@ Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 		}
 		succ = true;
 		sptr = this->GetLastLineBreak(sptr);
-		csptr = Text::StrToUTF8New(wptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		s = Text::String::NewNotNull(wptr);
+		sb->Append(s);
+		s->Release();
 	}
 	MemFree(wptr);
 	return succ;

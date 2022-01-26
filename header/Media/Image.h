@@ -2,6 +2,7 @@
 #define _SM_MEDIA_IMAGE
 #include "Media/FrameInfo.h"
 #include "Media/EXIFData.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -44,7 +45,7 @@ namespace Media
 		Media::EXIFData *SetEXIFData(Media::EXIFData *exif);
 		void ToString(Text::StringBuilderUTF8 *sb);
 
-		static const UTF8Char *AlphaTypeGetName(AlphaType atype);
+		static Text::CString AlphaTypeGetName(AlphaType atype);
 	};
 }
 #endif

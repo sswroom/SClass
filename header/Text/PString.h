@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_PSTRING
 #define _SM_TEXT_PSTRING
-#include "Text/StringBase.h"
+#include "Text/CString.h"
 namespace Text
 {
 	struct PString : public StringBase<UTF8Char>
@@ -16,6 +16,11 @@ namespace Text
 		void ToLower();
 		void ToCapital();
 		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
+
+		Text::CString ToCString()
+		{
+			return {this->v, this->leng};
+		}
 	};
 
 	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized

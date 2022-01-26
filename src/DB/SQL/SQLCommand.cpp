@@ -20,7 +20,7 @@ const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, Text::St
 			sql--;
 			if (strStart)
 			{
-				sb->Append(strStart);
+				sb->AppendSlow(strStart);
 			}
 			return sql;
 		}

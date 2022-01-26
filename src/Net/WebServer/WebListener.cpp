@@ -172,6 +172,7 @@ void Net::WebServer::WebListener::SetRequestLog(Net::WebServer::IReqLogger *reqL
 void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Double time)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	const UTF8Char *csptr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
@@ -182,8 +183,8 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 	if (this->accLog)
 	{
 		Text::StringBuilderUTF8 sb;
-		Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
-		sb.Append(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC(" "));
 		Text::CString reqMeth = req->GetReqMethodStr();
 		sb.AppendC(reqMeth.v, reqMeth.leng);
@@ -205,7 +206,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		if (csptr)
 		{
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append(csptr);
+			sb.AppendSlow(csptr);
 		}
 		sb.AppendC(UTF8STRC("\""));
 

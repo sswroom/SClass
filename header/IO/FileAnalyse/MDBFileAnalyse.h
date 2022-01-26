@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
 namespace IO
@@ -33,7 +34,7 @@ namespace IO
 			MDBFileAnalyse(IO::IStreamData *fd);
 			virtual ~MDBFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName();
+			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);
@@ -43,7 +44,7 @@ namespace IO
 			virtual Bool IsParsing();
 			virtual Bool TrimPadding(const UTF8Char *outputFile);
 
-			static const UTF8Char *ColumnTypeGetName(UInt8 colType);
+			static Text::CString ColumnTypeGetName(UInt8 colType);
 		};
 	}
 }

@@ -46,10 +46,10 @@ namespace Text
 		StringBuilderUTF8 *Append(const Text::StringBase<UTF8Char> &s);
 		StringBuilderUTF8 *Append(const Text::StringBase<const UTF8Char> &s);
 		StringBuilderUTF8 *AppendSlow(const UTF8Char *s);
-		StringBuilderUTF8 *Append(const UTF8Char *s)
+/*		StringBuilderUTF8 *Append(const UTF8Char *s)
 		{
 			return AppendSlow(s);
-		}
+		}*/
 
 		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);
 		StringBuilderUTF8 *AppendChar(UTF32Char c, UOSInt repCnt);

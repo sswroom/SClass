@@ -237,7 +237,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 			*(Int32*)&cbuff[4] = cpuInfo[3];
 			*(Int32*)&cbuff[8] = cpuInfo[2];
 			cbuff[12] = 0;
-			sb->Append(cbuff);
+			sb->AppendC(cbuff, 12);
 		}
 		return true;
 	case 1:
@@ -366,7 +366,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 			UInt8 buff[16];
 			OSInt i;
 			Bool firstFound;
-			const UTF8Char *csptr;
+			Text::CString cstr;
 			Core::X86Util_cpuid(cpuInfo, 2);
 			*(Int32*)&buff[0] = cpuInfo[0];
 			*(Int32*)&buff[4] = cpuInfo[3];
@@ -376,8 +376,8 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 			i = 1;
 			while (i < 16)
 			{
-				csptr = GetCacheInfo(this->brand, buff[i]);
-				if (csptr)
+				cstr = GetCacheInfo(this->brand, buff[i]);
+				if (cstr.v)
 				{
 					if (firstFound)
 					{
@@ -387,7 +387,7 @@ Bool Manage::CPUInfo::GetInfoValue(UOSInt index, Text::StringBuilderUTF8 *sb)
 					{
 						sb->AppendC(UTF8STRC(", "));
 					}
-					sb->Append(csptr);
+					sb->Append(cstr);
 				}
 				i++;
 			}
@@ -406,7 +406,7 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoL
 	UInt8 buff[16];
 	OSInt i;
 	UOSInt retCnt = 0;
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	Int32 cpuInfo[4];
 	Core::X86Util_cpuid(cpuInfo, 2);
 	*(Int32*)&buff[0] = cpuInfo[0];
@@ -416,10 +416,10 @@ UOSInt Manage::CPUInfo::GetCacheInfoList(Data::ArrayList<const UTF8Char*> *infoL
 	i = 1;
 	while (i < 16)
 	{
-		csptr = GetCacheInfo(this->brand, buff[i]);
-		if (csptr)
+		cstr = GetCacheInfo(this->brand, buff[i]);
+		if (cstr.v)
 		{
-			infoList->Add(csptr);
+			infoList->Add(cstr.v);
 			retCnt++;
 		}
 		i++;
@@ -620,223 +620,223 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 }
 #endif
 
-const UTF8Char *Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
+Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
 	if (brand == Manage::CPUVendor::CB_INTEL)
 	{
 		switch (descType)
 		{
 		case 0x01:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte pages, 4-way set associative, 32 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte pages, 4-way set associative, 32 entries")};
 		case 0x02:
-			return (const UTF8Char*)"Instruction TLB: 4 MByte pages, fully associative, 2 entries";
+			return {UTF8STRC("Instruction TLB: 4 MByte pages, fully associative, 2 entries")};
 		case 0x03:
-			return (const UTF8Char*)"Data TLB: 4 KByte pages, 4-way set associative, 64 entries";
+			return {UTF8STRC("Data TLB: 4 KByte pages, 4-way set associative, 64 entries")};
 		case 0x04:
-			return (const UTF8Char*)"Data TLB: 4 MByte pages, 4-way set associative, 8 entries";
+			return {UTF8STRC("Data TLB: 4 MByte pages, 4-way set associative, 8 entries")};
 		case 0x05:
-			return (const UTF8Char*)"Data TLB1: 4 MByte pages, 4-way set associative, 32 entries";
+			return {UTF8STRC("Data TLB1: 4 MByte pages, 4-way set associative, 32 entries")};
 		case 0x06:
-			return (const UTF8Char*)"1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x08:
-			return (const UTF8Char*)"1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x09:
-			return (const UTF8Char*)"1st-level instruction cache: 32KBytes, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level instruction cache: 32KBytes, 4-way set associative, 64 byte line size")};
 		case 0x0A:
-			return (const UTF8Char*)"1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size";
+			return {UTF8STRC("1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size")};
 		case 0x0B:
-			return (const UTF8Char*)"Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries";
+			return {UTF8STRC("Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries")};
 		case 0x0C:
-			return (const UTF8Char*)"1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x0D:
-			return (const UTF8Char*)"1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size")};
 		case 0x0E:
-			return (const UTF8Char*)"1st-level data cache: 24 KBytes, 6-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 24 KBytes, 6-way set associative, 64 byte line size")};
 		case 0x1D:
-			return (const UTF8Char*)"2nd-level cache: 128 KBytes, 2-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 128 KBytes, 2-way set associative, 64 byte line size")};
 		case 0x21:
-			return (const UTF8Char*)"2nd-level cache: 256 KBytes, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 256 KBytes, 8-way set associative, 64 byte line size")};
 		case 0x22:
-			return (const UTF8Char*)"3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x23:
-			return (const UTF8Char*)"3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x24:
-			return (const UTF8Char*)"2nd-level cache: 1 MBytes, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 1 MBytes, 16-way set associative, 64 byte line size")};
 		case 0x25:
-			return (const UTF8Char*)"3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x29:
-			return (const UTF8Char*)"3rd-level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("3rd-level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x2C:
-			return (const UTF8Char*)"1st-level data cache: 32 KBytes, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 32 KBytes, 8-way set associative, 64 byte line size")};
 		case 0x30:
-			return (const UTF8Char*)"1st-level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size")};
 		case 0x40:
-			return (const UTF8Char*)"No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache";
+			return {UTF8STRC("No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache")};
 		case 0x41:
-			return (const UTF8Char*)"2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x42:
-			return (const UTF8Char*)"2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x43:
-			return (const UTF8Char*)"2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size")};
 		case 0x44:
-			return (const UTF8Char*)"2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size")};
 		case 0x45:
-			return (const UTF8Char*)"2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size")};
 		case 0x46:
-			return (const UTF8Char*)"3rd-level cache: 4 MByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 4 MByte, 4-way set associative, 64 byte line size")};
 		case 0x47:
-			return (const UTF8Char*)"3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size")};
 		case 0x48:
-			return (const UTF8Char*)"2nd-level cache: 3MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 3MByte, 12-way set associative, 64 byte line size")};
 		case 0x49:
-			return (const UTF8Char*)"2nd-level cache: 4 MByte, 16-way set associative, 64 byte line size"; ////3rd-level cache: 4MB, 16-way set associative, 64-byte line size (Intel Xeon processor MP, Family 0FH, Model 06H)
+			return {UTF8STRC("2nd-level cache: 4 MByte, 16-way set associative, 64 byte line size")}; ////3rd-level cache: 4MB, 16-way set associative, 64-byte line size (Intel Xeon processor MP, Family 0FH, Model 06H)
 		case 0x4A:
-			return (const UTF8Char*)"3rd-level cache: 6MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 6MByte, 12-way set associative, 64 byte line size")};
 		case 0x4B:
-			return (const UTF8Char*)"3rd-level cache: 8MByte, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 8MByte, 16-way set associative, 64 byte line size")};
 		case 0x4C:
-			return (const UTF8Char*)"3rd-level cache: 12MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 12MByte, 12-way set associative, 64 byte line size")};
 		case 0x4D:
-			return (const UTF8Char*)"3rd-level cache: 16MByte, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 16MByte, 16-way set associative, 64 byte line size")};
 		case 0x4E:
-			return (const UTF8Char*)"2nd-level cache: 6MByte, 24-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 6MByte, 24-way set associative, 64 byte line size")};
 		case 0x4F:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte pages, 32 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte pages, 32 entries")};
 		case 0x50:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries")};
 		case 0x51:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries")};
 		case 0x52:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries")};
 		case 0x55:
-			return (const UTF8Char*)"Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries";
+			return {UTF8STRC("Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries")};
 		case 0x56:
-			return (const UTF8Char*)"Data TLB0: 4 MByte pages, 4-way set associative, 16 entries";
+			return {UTF8STRC("Data TLB0: 4 MByte pages, 4-way set associative, 16 entries")};
 		case 0x57:
-			return (const UTF8Char*)"Data TLB0: 4 KByte pages, 4-way associative, 16 entries";
+			return {UTF8STRC("Data TLB0: 4 KByte pages, 4-way associative, 16 entries")};
 		case 0x59:
-			return (const UTF8Char*)"Data TLB0: 4 KByte pages, fully associative, 16 entries";
+			return {UTF8STRC("Data TLB0: 4 KByte pages, fully associative, 16 entries")};
 		case 0x5A:
-			return (const UTF8Char*)"Data TLB0: 2-MByte or 4 MByte pages, 4-way set associative, 32 entries";
+			return {UTF8STRC("Data TLB0: 2-MByte or 4 MByte pages, 4-way set associative, 32 entries")};
 		case 0x5B:
-			return (const UTF8Char*)"Data TLB: 4 KByte and 4 MByte pages, 64 entries";
+			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages, 64 entries")};
 		case 0x5C:
-			return (const UTF8Char*)"Data TLB: 4 KByte and 4 MByte pages,128 entries";
+			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages,128 entries")};
 		case 0x5D:
-			return (const UTF8Char*)"Data TLB: 4 KByte and 4 MByte pages,256 entries";
+			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages,256 entries")};
 		case 0x60:
-			return (const UTF8Char*)"1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size")};
 		case 0x61:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte pages, fully associative, 48 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte pages, fully associative, 48 entries")};
 		case 0x63:
-			return (const UTF8Char*)"Data TLB: 1 GByte pages, 4-way set associative, 4 entries";
+			return {UTF8STRC("Data TLB: 1 GByte pages, 4-way set associative, 4 entries")};
 		case 0x66:
-			return (const UTF8Char*)"1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size")};
 		case 0x67:
-			return (const UTF8Char*)"1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size")};
 		case 0x68:
-			return (const UTF8Char*)"1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size")};
 		case 0x70:
-			return (const UTF8Char*)"Trace cache: 12 K-μop, 8-way set associative";
+			return {UTF8STRC("Trace cache: 12 K-μop, 8-way set associative")};
 		case 0x71:
-			return (const UTF8Char*)"Trace cache: 16 K-μop, 8-way set associative";
+			return {UTF8STRC("Trace cache: 16 K-μop, 8-way set associative")};
 		case 0x72:
-			return (const UTF8Char*)"Trace cache: 32 K-μop, 8-way set associative";
+			return {UTF8STRC("Trace cache: 32 K-μop, 8-way set associative")};
 		case 0x76:
-			return (const UTF8Char*)"Instruction TLB: 2M/4M pages, fully associative, 8 entries";
+			return {UTF8STRC("Instruction TLB: 2M/4M pages, fully associative, 8 entries")};
 		case 0x78:
-			return (const UTF8Char*)"2nd-level cache: 1 MByte, 4-way set associative, 64byte line size";
+			return {UTF8STRC("2nd-level cache: 1 MByte, 4-way set associative, 64byte line size")};
 		case 0x79:
-			return (const UTF8Char*)"2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x7A:
-			return (const UTF8Char*)"2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x7B:
-			return (const UTF8Char*)"2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x7C:
-			return (const UTF8Char*)"2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector";
+			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
 		case 0x7D:
-			return (const UTF8Char*)"2nd-level cache: 2 MByte, 8-way set associative, 64byte line size";
+			return {UTF8STRC("2nd-level cache: 2 MByte, 8-way set associative, 64byte line size")};
 		case 0x7F:
-			return (const UTF8Char*)"2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size";
+			return {UTF8STRC("2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size")};
 		case 0x80:
-			return (const UTF8Char*)"2nd-level cache: 512 KByte, 8-way set associative, 64-byte line size";
+			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 64-byte line size")};
 		case 0x82:
-			return (const UTF8Char*)"2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size")};
 		case 0x83:
-			return (const UTF8Char*)"2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size")};
 		case 0x84:
-			return (const UTF8Char*)"2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size")};
 		case 0x85:
-			return (const UTF8Char*)"2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size";
+			return {UTF8STRC("2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size")};
 		case 0x86:
-			return (const UTF8Char*)"2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size")};
 		case 0x87:
-			return (const UTF8Char*)"2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size")};
 		case 0xA0:
-			return (const UTF8Char*)"DTLB: 4k pages, fully associative, 32 entries";
+			return {UTF8STRC("DTLB: 4k pages, fully associative, 32 entries")};
 		case 0xB0:
-			return (const UTF8Char*)"Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries";
+			return {UTF8STRC("Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries")};
 		case 0xB1:
-			return (const UTF8Char*)"Instruction TLB: 2M pages, 4-way, 8 entries or 4M pages, 4-way, 4 entries";
+			return {UTF8STRC("Instruction TLB: 2M pages, 4-way, 8 entries or 4M pages, 4-way, 4 entries")};
 		case 0xB2:
-			return (const UTF8Char*)"Instruction TLB: 4KByte pages, 4-way set associative, 64 entries";
+			return {UTF8STRC("Instruction TLB: 4KByte pages, 4-way set associative, 64 entries")};
 		case 0xB3:
-			return (const UTF8Char*)"Data TLB: 4 KByte pages, 4-way set associative, 128 entries";
+			return {UTF8STRC("Data TLB: 4 KByte pages, 4-way set associative, 128 entries")};
 		case 0xB4:
-			return (const UTF8Char*)"Data TLB1: 4 KByte pages, 4-way associative, 256 entries";
+			return {UTF8STRC("Data TLB1: 4 KByte pages, 4-way associative, 256 entries")};
 		case 0xB5:
-			return (const UTF8Char*)"Instruction TLB: 4KByte pages, 8-way set associative, 64 entries";
+			return {UTF8STRC("Instruction TLB: 4KByte pages, 8-way set associative, 64 entries")};
 		case 0xB6:
-			return (const UTF8Char*)"Instruction TLB: 4KByte pages, 8-way set associative, 128 entries";
+			return {UTF8STRC("Instruction TLB: 4KByte pages, 8-way set associative, 128 entries")};
 		case 0xBA:
-			return (const UTF8Char*)"Data TLB1: 4 KByte pages, 4-way associative, 64 entries";
+			return {UTF8STRC("Data TLB1: 4 KByte pages, 4-way associative, 64 entries")};
 		case 0xC0:
-			return (const UTF8Char*)"Data TLB: 4 KByte and 4 MByte pages, 4-way associative, 8 entries";
+			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages, 4-way associative, 8 entries")};
 		case 0xC1:
-			return (const UTF8Char*)"Shared 2nd-Level TLB: 4 KByte/2MByte pages, 8-way associative, 1024 entries";
+			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte/2MByte pages, 8-way associative, 1024 entries")};
 		case 0xC2:
-			return (const UTF8Char*)"DTLB: 4 KByte/2 MByte pages, 4-way associative, 16 entries";
+			return {UTF8STRC("DTLB: 4 KByte/2 MByte pages, 4-way associative, 16 entries")};
 		case 0xC3:
-			return (const UTF8Char*)"Shared 2nd-Level TLB: 4 KByte /2 MByte pages, 6-way associative, 1536 entries. Also 1GBbyte pages, 4-way, 16 entries.";
+			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte /2 MByte pages, 6-way associative, 1536 entries. Also 1GBbyte pages, 4-way, 16 entries.")};
 		case 0xCA:
-			return (const UTF8Char*)"Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries";
+			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries")};
 		case 0xD0:
-			return (const UTF8Char*)"3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size")};
 		case 0xD1:
-			return (const UTF8Char*)"3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size")};
 		case 0xD2:
-			return (const UTF8Char*)"3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size")};
 		case 0xD6:
-			return (const UTF8Char*)"3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size")};
 		case 0xD7:
-			return (const UTF8Char*)"3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size")};
 		case 0xD8:
-			return (const UTF8Char*)"3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size")};
 		case 0xDC:
-			return (const UTF8Char*)"3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size")};
 		case 0xDD:
-			return (const UTF8Char*)"3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size")};
 		case 0xDE:
-			return (const UTF8Char*)"3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size")};
 		case 0xE2:
-			return (const UTF8Char*)"3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size")};
 		case 0xE3:
-			return (const UTF8Char*)"3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size")};
 		case 0xE4:
-			return (const UTF8Char*)"3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size")};
 		case 0xEA:
-			return (const UTF8Char*)"3rd-level cache: 12MByte, 24-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 12MByte, 24-way set associative, 64 byte line size")};
 		case 0xEB:
-			return (const UTF8Char*)"3rd-level cache: 18MByte, 24-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 18MByte, 24-way set associative, 64 byte line size")};
 		case 0xEC:
-			return (const UTF8Char*)"3rd-level cache: 24MByte, 24-way set associative, 64 byte line size";
+			return {UTF8STRC("3rd-level cache: 24MByte, 24-way set associative, 64 byte line size")};
 		case 0xF0:
-			return (const UTF8Char*)"64-Byte prefetching";
+			return {UTF8STRC("64-Byte prefetching")};
 		case 0xF1:
-			return (const UTF8Char*)"128-Byte prefetching";
+			return {UTF8STRC("128-Byte prefetching")};
 		}
 	}
-	return 0;
+	return {0, 0};
 }
 
 const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)

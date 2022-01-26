@@ -2,6 +2,7 @@
 #define _SM_IO_FILEANALYSE_FRAMEDETAIL
 #include "Data/ArrayList.h"
 #include "IO/FileAnalyse/FrameDetailHandler.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -24,15 +25,15 @@ namespace IO
 			{
 				UInt32 ofst;
 				UInt32 size;
-				const UTF8Char *name;
-				const UTF8Char *value;
+				Text::String *name;
+				Text::String *value;
 				FieldType fieldType;
 			};
 		private:
 			UInt64 ofst;
 			UInt64 size;
 
-			Data::ArrayList<const UTF8Char*> *headers;
+			Data::ArrayList<Text::String*> *headers;
 			Data::ArrayList<FieldInfo*> *fields;
 
 			void FreeFieldInfo(FieldInfo *field);
@@ -45,11 +46,11 @@ namespace IO
 			UInt64 GetSize();
 			UOSInt GetFieldInfos(UInt64 ofst, Data::ArrayList<const FieldInfo*> *fieldList);
 
-			virtual void AddHeader(const UTF8Char *header);
-			virtual void AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddFieldSeperstor(UOSInt ofst, const UTF8Char *name);
-			virtual void AddText(UOSInt ofst, const UTF8Char *name);
+			virtual void AddHeader(Text::CString header);
+			virtual void AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value);
+			virtual void AddSubfield(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value);
+			virtual void AddFieldSeperstor(UOSInt ofst, Text::CString name);
+			virtual void AddText(UOSInt ofst, Text::CString name);
 			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 
 			void ToString(Text::StringBuilderUTF8 *sb);

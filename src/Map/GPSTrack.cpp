@@ -1339,9 +1339,10 @@ WChar *Map::GPSDataReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Map::GPSDataReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[32];
-	if (this->GetStr(colIndex, sbuff, sizeof(sbuff)))
+	UTF8Char *sptr;
+	if ((sptr = this->GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;
 	}
 	return false;

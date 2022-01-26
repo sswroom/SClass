@@ -8,98 +8,98 @@
 #include "Text/Encoding.h"
 #include "Text/StringBuilderUTF8.h"
 
-const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
+Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 {
 	switch (tagType)
 	{
 	case 0x0:
-		return (const UTF8Char*)"Data";
+		return {UTF8STRC("Data")};
 	case 0x01:
-		return (const UTF8Char*)"TMP"; //For temporary use in arithmetic coding
+		return {UTF8STRC("TMP")}; //For temporary use in arithmetic coding
 	case 0xc0:
-		return (const UTF8Char*)"SOF0"; //Baseline DCT
+		return {UTF8STRC("SOF0")}; //Baseline DCT
 	case 0xc1:
-		return (const UTF8Char*)"SOF1"; //Extended sequential DCT
+		return {UTF8STRC("SOF1")}; //Extended sequential DCT
 	case 0xc2:
-		return (const UTF8Char*)"SOF2"; //Progressive DCT
+		return {UTF8STRC("SOF2")}; //Progressive DCT
 	case 0xc3:
-		return (const UTF8Char*)"SOF3"; //Lossless (sequential)
+		return {UTF8STRC("SOF3")}; //Lossless (sequential)
 	case 0xc4:
-		return (const UTF8Char*)"DHT"; //Define Huffman Table
+		return {UTF8STRC("DHT")}; //Define Huffman Table
 	case 0xc5:
-		return (const UTF8Char*)"SOF5"; //Differential sequential DCT
+		return {UTF8STRC("SOF5")}; //Differential sequential DCT
 	case 0xc6:
-		return (const UTF8Char*)"SOF6"; //Differential progressive DCT
+		return {UTF8STRC("SOF6")}; //Differential progressive DCT
 	case 0xc7:
-		return (const UTF8Char*)"SOF7"; //Differential Lossless
+		return {UTF8STRC("SOF7")}; //Differential Lossless
 	case 0xc8:
-		return (const UTF8Char*)"JPG"; //JPG Extension
+		return {UTF8STRC("JPG")}; //JPG Extension
 	case 0xc9:
-		return (const UTF8Char*)"SOF9"; //Extended sequantial DCT
+		return {UTF8STRC("SOF9")}; //Extended sequantial DCT
 	case 0xca:
-		return (const UTF8Char*)"SOF10"; //Progressive DCT
+		return {UTF8STRC("SOF10")}; //Progressive DCT
 	case 0xcb:
-		return (const UTF8Char*)"SOF11"; //Lossless (sequential)
+		return {UTF8STRC("SOF11")}; //Lossless (sequential)
 	case 0xcc:
-		return (const UTF8Char*)"DAC"; //Define arithmetic conditioning table
+		return {UTF8STRC("DAC")}; //Define arithmetic conditioning table
 	case 0xcd:
-		return (const UTF8Char*)"SOF13"; //Differential sequential DCT
+		return {UTF8STRC("SOF13")}; //Differential sequential DCT
 	case 0xce:
-		return (const UTF8Char*)"SOF14"; //Differential progressive DCT
+		return {UTF8STRC("SOF14")}; //Differential progressive DCT
 	case 0xcf:
-		return (const UTF8Char*)"SOF15"; //Differential Lossless
+		return {UTF8STRC("SOF15")}; //Differential Lossless
 	case 0xd8:
-		return (const UTF8Char*)"SOI"; //Start of Image
+		return {UTF8STRC("SOI")}; //Start of Image
 	case 0xd9:
-		return (const UTF8Char*)"EOI"; //End of Image
+		return {UTF8STRC("EOI")}; //End of Image
 	case 0xda:
-		return (const UTF8Char*)"SOS"; //Start of Scan
+		return {UTF8STRC("SOS")}; //Start of Scan
 	case 0xdb:
-		return (const UTF8Char*)"DQT"; //Define quantization table
+		return {UTF8STRC("DQT")}; //Define quantization table
 	case 0xdc:
-		return (const UTF8Char*)"DNL"; //Define number of lines
+		return {UTF8STRC("DNL")}; //Define number of lines
 	case 0xdd:
-		return (const UTF8Char*)"DRI"; //Define restart interval
+		return {UTF8STRC("DRI")}; //Define restart interval
 	case 0xde:
-		return (const UTF8Char*)"DHP"; //Define hierarchial progression
+		return {UTF8STRC("DHP")}; //Define hierarchial progression
 	case 0xdf:
-		return (const UTF8Char*)"EXP"; //Expand reference image(s)
+		return {UTF8STRC("EXP")}; //Expand reference image(s)
 	case 0xe0:
-		return (const UTF8Char*)"APP0";
+		return {UTF8STRC("APP0")};
 	case 0xe1:
-		return (const UTF8Char*)"APP1";
+		return {UTF8STRC("APP1")};
 	case 0xe2:
-		return (const UTF8Char*)"APP2";
+		return {UTF8STRC("APP2")};
 	case 0xe3:
-		return (const UTF8Char*)"APP3";
+		return {UTF8STRC("APP3")};
 	case 0xe4:
-		return (const UTF8Char*)"APP4";
+		return {UTF8STRC("APP4")};
 	case 0xe5:
-		return (const UTF8Char*)"APP5";
+		return {UTF8STRC("APP5")};
 	case 0xe6:
-		return (const UTF8Char*)"APP6";
+		return {UTF8STRC("APP6")};
 	case 0xe7:
-		return (const UTF8Char*)"APP7";
+		return {UTF8STRC("APP7")};
 	case 0xe8:
-		return (const UTF8Char*)"APP8";
+		return {UTF8STRC("APP8")};
 	case 0xe9:
-		return (const UTF8Char*)"APP9";
+		return {UTF8STRC("APP9")};
 	case 0xea:
-		return (const UTF8Char*)"APP10";
+		return {UTF8STRC("APP10")};
 	case 0xeb:
-		return (const UTF8Char*)"APP11";
+		return {UTF8STRC("APP11")};
 	case 0xec:
-		return (const UTF8Char*)"APP12";
+		return {UTF8STRC("APP12")};
 	case 0xed:
-		return (const UTF8Char*)"APP13";
+		return {UTF8STRC("APP13")};
 	case 0xee:
-		return (const UTF8Char*)"APP14";
+		return {UTF8STRC("APP14")};
 	case 0xef:
-		return (const UTF8Char*)"APP15";
+		return {UTF8STRC("APP15")};
 	case 0xfe:
-		return (const UTF8Char*)"COM"; //comment
+		return {UTF8STRC("COM")}; //comment
 	}
-	return 0;
+	return {0, 0};
 }
 
 UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
@@ -222,9 +222,9 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
-const UTF8Char *IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"JPEG";
+	return {UTF8STRC("JPEG")};
 }
 
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
@@ -235,14 +235,14 @@ UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
 Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb)
 {
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
-	const UTF8Char *name;
+	Text::CString name;
 	if (tag == 0)
 		return false;
 	sb->AppendU64(tag->ofst);
 	sb->AppendC(UTF8STRC(": Type=0x"));
 	sb->AppendHex8(tag->tagType);
 	name = GetTagName(tag->tagType);
-	if (name)
+	if (name.v)
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -260,7 +260,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	const UTF8Char *name;
+	Text::CString name;
 	IO::FileAnalyse::JPGFileAnalyse::JPGTag *tag = this->tags->GetItem(index);
 	if (tag == 0)
 		return false;
@@ -269,7 +269,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 	sb->AppendC(UTF8STRC("\r\nTagType = 0x"));
 	sb->AppendHex8(tag->tagType);
 	name = GetTagName(tag->tagType);
-	if (name)
+	if (name.v)
 	{
 		sb->AppendC(UTF8STRC(" ("));
 		sb->Append(name);
@@ -448,7 +448,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((const UTF8Char*)&tagData[4]);
+		sb->AppendSlow((const UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'I' && tagData[7] == 'F' && tagData[8] == 0)
 		{
 			sb->AppendC(UTF8STRC("\r\nVersion = "));
@@ -490,7 +490,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((UTF8Char*)&tagData[4]);
+		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (tagData[4] == 'E' && tagData[5] == 'x' && tagData[6] == 'i' && tagData[7] == 'f' && tagData[8] == 0)
 		{
 			Media::EXIFData::RInt32Func readInt32;
@@ -528,7 +528,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				if (exif)
 				{
 					sb->AppendC(UTF8STRC("\r\n"));
-					exif->ToString(sb, 0);
+					exif->ToString(sb, {0, 0});
 					DEL_CLASS(exif);
 				}
 			}
@@ -545,7 +545,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((UTF8Char*)&tagData[4]);
+		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		if (Text::StrStartsWithC(&tagData[4], tag->size, UTF8STRC("ICC_PROFILE")))
 		{
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagData[18], tag->size - 18);
@@ -563,7 +563,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((UTF8Char*)&tagData[4]);
+		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		MemFree(tagData);
 	}
 	else if (tag->tagType == 0xee) //APP14
@@ -571,7 +571,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		tagData = MemAlloc(UInt8, tag->size);
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		sb->AppendC(UTF8STRC("\r\nIdentifier = "));
-		sb->Append((UTF8Char*)&tagData[4]);
+		sb->AppendSlow((UTF8Char*)&tagData[4]);
 		MemFree(tagData);
 	}
 	return true;
@@ -607,6 +607,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 {
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UInt8 *tagData;
 	UOSInt i;
 	UOSInt j;
@@ -617,15 +618,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
-	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
-	frame->AddHeader(sbuff);
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
+	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
 	if (tag->tagType != 0)
 	{
 		frame->AddHex8(0, "Start of Tag", 0xFF);
 		frame->AddHex8Name(1, "TagType", tag->tagType, GetTagName(tag->tagType));
 	}
-	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
-	frame->AddText(2, sbuff);
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
+	frame->AddText(2, {sbuff, (UOSInt)(sptr - sbuff)});
 	if (tag->tagType == 0xc4)
 	{
 		tagData = MemAlloc(UInt8, tag->size);
@@ -662,8 +663,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		j = 10;
 		while (i < tagData[9])
 		{
-			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
-			frame->AddText((UInt32)j, sbuff);
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
+			frame->AddText((UInt32)j, {sbuff, (UOSInt)(sptr - sbuff)});
 			frame->AddUInt(j, 1, "Component identifier", tagData[j]);
 			frame->AddUInt(j + 1, 1, "Horizontal sampling factor", (UInt16)(tagData[j + 1] >> 4));
 			frame->AddUInt(j + 1, 1, "Vertical sampling factor", tagData[j + 1] & 15);
@@ -684,8 +685,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		i = 0;
 		while (i < tagData[4])
 		{
-			Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
-			frame->AddText((UInt32)j, sbuff);
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
+			frame->AddText((UInt32)j, {sbuff, (UOSInt)(sptr - sbuff)});
 			frame->AddUInt(j, 1, "Scan component selector", tagData[j]);
 			frame->AddUInt(j + 1, 1, "DC entropy coding selector", (UInt16)(tagData[j + 1] >> 4));
 			frame->AddUInt(j + 1, 1, "AC entropy coding selector", tagData[j + 1] & 15);
@@ -742,7 +743,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 					j += 2;
 				}
 			}
-			frame->AddField(5, 128, (const UTF8Char*)"Table", sb.ToString());
+			frame->AddField(5, 128, {UTF8STRC("Table")}, sb.ToCString());
 		}
 		else
 		{
@@ -772,7 +773,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 					j++;
 				}
 			}
-			frame->AddField(5, 64, (const UTF8Char*)"Table", sb.ToString());
+			frame->AddField(5, 64, {UTF8STRC("Table")}, sb.ToCString());
 		}
 		MemFree(tagData);
 	}
@@ -795,20 +796,20 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		}
 		else if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'X' && tagData[7] == 'X' && tagData[8] == 0)
 		{
-			const Char *vName = 0;
+			Text::CString vName = {0, 0};
 			switch (tagData[9])
 			{
 				case 10:
-					vName = "JPEG format";
+					vName = {UTF8STRC("JPEG format")};
 					break;
 				case 11:
-					vName = "8-bit palettized format";
+					vName = {UTF8STRC("8-bit palettized format")};
 					break;
 				case 13:
-					vName = "24-bit RGB format";
+					vName = {UTF8STRC("24-bit RGB format")};
 					break;
 			}
-			frame->AddUIntName(9, 1, "Thumbnail format", tagData[9], (const UTF8Char*)vName);
+			frame->AddUIntName(9, 1, "Thumbnail format", tagData[9], vName);
 		}
 		MemFree(tagData);
 	}
@@ -856,8 +857,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 				if (exif)
 				{
 					Text::StringBuilderUTF8 sb;
-					exif->ToString(&sb, 0);
-					frame->AddText(18, sb.ToString());
+					exif->ToString(&sb, {0, 0});
+					frame->AddText(18, sb.ToCString());
 					DEL_CLASS(exif);
 				}
 			}
@@ -882,7 +883,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 			{
 				Text::StringBuilderUTF8 sb;
 				icc->ToString(&sb);
-				frame->AddText(18, sb.ToString());
+				frame->AddText(18, sb.ToCString());
 				DEL_CLASS(icc);
 			}
 		}

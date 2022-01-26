@@ -1495,7 +1495,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("AuthSwitchRequest received: plugin name = "));
-						sb.Append(&buff[5]);
+						sb.AppendSlow(&buff[5]);
 						me->SetLastError(sb.ToString());
 						me->cli->Close();
 					}
@@ -1917,9 +1917,10 @@ void Net::MySQLTCPClient::ForceTz(Int8 tzQhr)
 void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	sb->AppendC(UTF8STRC("MySQLTCP:"));
-	Net::SocketUtil::GetAddrName(sbuff, &this->addr, this->port);
-	sb->Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &this->addr, this->port);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	if (this->database)
 	{
 		sb->AppendChar('/', 1);
@@ -2103,7 +2104,7 @@ void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF8 *str)
 			str->AppendC(&this->lastError->v[1], 5);
 			str->AppendChar(']', 1);
 			str->AppendChar(' ', 1);
-			str->Append(&this->lastError->v[6]);
+			str->AppendC(&this->lastError->v[6], this->lastError->leng - 6);
 		}
 		else
 		{
@@ -2197,6 +2198,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	UOSInt j;
@@ -2215,14 +2217,14 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 			{
 				sb.AppendChar(',', 1);
 			}
-			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
-			sb.Append(sbuff);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	DB::DBUtil::SDBColUTF8(sbuff, tableName, DB::DBUtil::ServerType::MySQL);
-	sb.Append(sbuff);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName, DB::DBUtil::ServerType::MySQL);
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
@@ -2234,20 +2236,21 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("use "));
 	UOSInt colLen = DB::DBUtil::SDBColUTF8Leng(schemaName, DB::DBUtil::ServerType::MySQL);
 	if (colLen > 127)
 	{
 		UTF8Char *sptr = MemAlloc(UTF8Char, colLen + 1);
-		DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::ServerType::MySQL);
-		sb.Append(sptr);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr, schemaName, DB::DBUtil::ServerType::MySQL);
+		sb.AppendC(sptr, (UOSInt)(sptr2 - sptr));
 		MemFree(sptr);
 	}
 	else
 	{
-		DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
-		sb.Append(sbuff);
+		sptr2 = DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
+		sb.AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	}
 	if (this->ExecuteNonQueryC(sb.ToString(), sb.GetLength()) >= 0)
 	{

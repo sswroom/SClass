@@ -120,130 +120,130 @@ void Media::FrameInfo::ToString(Text::StringBuilderUTF8 *sb)
 	this->color->ToString(sb);
 }
 
-const UTF8Char *Media::FrameTypeGetName(FrameType frameType)
+Text::CString Media::FrameTypeGetName(FrameType frameType)
 {
 	switch (frameType)
 	{
 	case FT_NON_INTERLACE:
-		return (const UTF8Char*)"Non-Interlaced";
+		return {UTF8STRC("Non-Interlaced")};
 	case FT_FIELD_TF:
-		return (const UTF8Char*)"Field (Top Field)";
+		return {UTF8STRC("Field (Top Field)")};
 	case FT_FIELD_BF:
-		return (const UTF8Char*)"Field (Bottom Field)";
+		return {UTF8STRC("Field (Bottom Field)")};
 	case FT_INTERLACED_TFF:
-		return (const UTF8Char*)"Interlaced (Top Field First)";
+		return {UTF8STRC("Interlaced (Top Field First)")};
 	case FT_INTERLACED_BFF:
-		return (const UTF8Char*)"Interlaced (Bottom Field First)";
+		return {UTF8STRC("Interlaced (Bottom Field First)")};
 	case FT_MERGED_TF:
-		return (const UTF8Char*)"Merged Field (Bottom Field)";
+		return {UTF8STRC("Merged Field (Bottom Field)")};
 	case FT_MERGED_BF:
-		return (const UTF8Char*)"Merged Field (Top Field)";
+		return {UTF8STRC("Merged Field (Top Field)")};
 	case FT_DISCARD:
-		return (const UTF8Char*)"Discard";
+		return {UTF8STRC("Discard")};
 	case FT_INTERLACED_NODEINT:
-		return (const UTF8Char*)"Interlaced No-deinterlace";
+		return {UTF8STRC("Interlaced No-deinterlace")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::AlphaTypeGetName(AlphaType atype)
+Text::CString Media::AlphaTypeGetName(AlphaType atype)
 {
 	switch (atype)
 	{
 	case AT_NO_ALPHA:
-		return (const UTF8Char*)"No Alpha";
+		return {UTF8STRC("No Alpha")};
 	case AT_ALPHA:
-		return (const UTF8Char*)"Alpha";
+		return {UTF8STRC("Alpha")};
 	case AT_PREMUL_ALPHA:
-		return (const UTF8Char*)"Premultiply Alpha";
+		return {UTF8STRC("Premultiply Alpha")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::YCOffsetGetName(YCOffset ycOfst)
+Text::CString Media::YCOffsetGetName(YCOffset ycOfst)
 {
 	switch (ycOfst)
 	{
 	case YCOFST_C_TOP_LEFT:
-		return (const UTF8Char*)"Top Left";
+		return {UTF8STRC("Top Left")};
 	case YCOFST_C_TOP_CENTER:
-		return (const UTF8Char*)"Top Center";
+		return {UTF8STRC("Top Center")};
 	case YCOFST_C_CENTER_LEFT:
-		return (const UTF8Char*)"Center Left";
+		return {UTF8STRC("Center Left")};
 	case YCOFST_C_CENTER_CENTER:
-		return (const UTF8Char*)"Center Center";
+		return {UTF8STRC("Center Center")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::PixelFormatGetName(PixelFormat pf)
+Text::CString Media::PixelFormatGetName(PixelFormat pf)
 {
 	switch (pf)
 	{
 	case PF_PAL_1:
-		return (const UTF8Char*)"Indexed 1-bit";
+		return {UTF8STRC("Indexed 1-bit")};
 	case PF_PAL_2:
-		return (const UTF8Char*)"Indexed 2-bit";
+		return {UTF8STRC("Indexed 2-bit")};
 	case PF_PAL_4:
-		return (const UTF8Char*)"Indexed 4-bit";
+		return {UTF8STRC("Indexed 4-bit")};
 	case PF_PAL_8:
-		return (const UTF8Char*)"Indexed 8-bit";
+		return {UTF8STRC("Indexed 8-bit")};
 	case PF_LE_R5G5B5:
-		return (const UTF8Char*)"R5G5B5 (LE)";
+		return {UTF8STRC("R5G5B5 (LE)")};
 	case PF_LE_R5G6B5:
-		return (const UTF8Char*)"R5G6B5 (LE)";
+		return {UTF8STRC("R5G6B5 (LE)")};
 	case PF_LE_B16G16R16A16:
-		return (const UTF8Char*)"B16G16R16A16 (LE)";
+		return {UTF8STRC("B16G16R16A16 (LE)")};
 	case PF_LE_B16G16R16:
-		return (const UTF8Char*)"B16G16R16 (LE)";
+		return {UTF8STRC("B16G16R16 (LE)")};
 	case PF_LE_W16:
-		return (const UTF8Char*)"Grayscale 16-bit";
+		return {UTF8STRC("Grayscale 16-bit")};
 	case PF_LE_A2B10G10R10:
-		return (const UTF8Char*)"A2B10G10R10 (LE)";
+		return {UTF8STRC("A2B10G10R10 (LE)")};
 	case PF_B8G8R8A8:
-		return (const UTF8Char*)"B8G8R8A8";
+		return {UTF8STRC("B8G8R8A8")};
 	case PF_B8G8R8:
-		return (const UTF8Char*)"B8G8R8";
+		return {UTF8STRC("B8G8R8")};
 	case PF_PAL_W1:
-		return (const UTF8Char*)"1-bit B/W";
+		return {UTF8STRC("1-bit B/W")};
 	case PF_PAL_W2:
-		return (const UTF8Char*)"Grayscale 2-bit";
+		return {UTF8STRC("Grayscale 2-bit")};
 	case PF_PAL_W4:
-		return (const UTF8Char*)"Grayscale 4-bit";
+		return {UTF8STRC("Grayscale 4-bit")};
 	case PF_PAL_W8:
-		return (const UTF8Char*)"Grayscale 8-bit";
+		return {UTF8STRC("Grayscale 8-bit")};
 	case PF_W8A8:
-		return (const UTF8Char*)"Grayscale 8-bit w/Alpha";
+		return {UTF8STRC("Grayscale 8-bit w/Alpha")};
 	case PF_LE_W16A16:
-		return (const UTF8Char*)"Grayscale 16-bit (LE) w/Alpha";
+		return {UTF8STRC("Grayscale 16-bit (LE) w/Alpha")};
 	case PF_LE_FB32G32R32A32:
-		return (const UTF8Char*)"B32G32R32A32 (FLE)";
+		return {UTF8STRC("B32G32R32A32 (FLE)")};
 	case PF_LE_FB32G32R32:
-		return (const UTF8Char*)"B32G32R32 (FLE)";
+		return {UTF8STRC("B32G32R32 (FLE)")};
 	case PF_LE_FW32A32:
-		return (const UTF8Char*)"Grayscale 32-bit (FLE) w/Alpha";
+		return {UTF8STRC("Grayscale 32-bit (FLE) w/Alpha")};
 	case PF_LE_FW32:
-		return (const UTF8Char*)"Grayscale 32-bit (FLE)";
+		return {UTF8STRC("Grayscale 32-bit (FLE)")};
 	case PF_R8G8B8A8:
-		return (const UTF8Char*)"R8G8B8A8";
+		return {UTF8STRC("R8G8B8A8")};
 	case PF_R8G8B8:
-		return (const UTF8Char*)"R8G8B8";
+		return {UTF8STRC("R8G8B8")};
 	case PF_PAL_1_A1:
-		return (const UTF8Char*)"Indexed 1-bit + 1-bit Alpha";
+		return {UTF8STRC("Indexed 1-bit + 1-bit Alpha")};
 	case PF_PAL_2_A1:
-		return (const UTF8Char*)"Indexed 2-bit + 1-bit Alpha";
+		return {UTF8STRC("Indexed 2-bit + 1-bit Alpha")};
 	case PF_PAL_4_A1:
-		return (const UTF8Char*)"Indexed 4-bit + 1-bit Alpha";
+		return {UTF8STRC("Indexed 4-bit + 1-bit Alpha")};
 	case PF_PAL_8_A1:
-		return (const UTF8Char*)"Indexed 8-bit + 1-bit Alpha";
+		return {UTF8STRC("Indexed 8-bit + 1-bit Alpha")};
 	case PF_B8G8R8A1:
-		return (const UTF8Char*)"B8G8R8A1";
+		return {UTF8STRC("B8G8R8A1")};
 	case PF_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 

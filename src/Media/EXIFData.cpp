@@ -2171,7 +2171,7 @@ void Media::EXIFData::SetHeight(UInt32 height)
 	}
 }
 
-Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix)
+Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix)
 {
 	Data::ArrayList<Int32> exifIds;
 	Media::EXIFData::EXIFItem *exItem;
@@ -2188,12 +2188,12 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 	{
 		v = exifIds.GetItem(i);
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix)
+		if (linePrefix.v)
 			sb->Append(linePrefix);
 		sb->AppendC(UTF8STRC("Id = "));
 		sb->AppendI32(v);
 		sb->AppendC(UTF8STRC(", name = "));
-		sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v));
+		sb->AppendSlow(Media::EXIFData::GetEXIFName(this->exifMaker, v));
 		exItem = this->GetExifItem(v);
 		if (exItem->type == Media::EXIFData::ET_SUBEXIF)
 		{
@@ -2209,12 +2209,12 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 			{
 				v2 = subExIds.GetItem(i2);
 				sb->AppendC(UTF8STRC("\r\n"));
-				if (linePrefix)
+				if (linePrefix.v)
 					sb->Append(linePrefix);
 				sb->AppendC(UTF8STRC(" Subid = "));
 				sb->AppendI32(v2);
 				sb->AppendC(UTF8STRC(", name = "));
-				sb->Append(Media::EXIFData::GetEXIFName(this->exifMaker, v, v2));
+				sb->AppendSlow(Media::EXIFData::GetEXIFName(this->exifMaker, v, v2));
 
 				subExItem = subExif->GetExifItem(v2);
 				if (subExItem->type == Media::EXIFData::ET_STRING)
@@ -2226,7 +2226,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 					}
 					else
 					{
-						sb->Append((UTF8Char*)subExItem->dataBuff);
+						sb->AppendSlow((UTF8Char*)subExItem->dataBuff);
 					}
 				}
 				else if (subExItem->type == Media::EXIFData::ET_DOUBLE)
@@ -2392,18 +2392,19 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 					if (innerExif)
 					{
 						UTF8Char sbuff[32];
+						UTF8Char *sptr;
 						sb->AppendC(UTF8STRC(", Format = "));
 						sb->Append(GetEXIFMakerName(innerExif->GetEXIFMaker()));
 						sb->AppendC(UTF8STRC(", Inner "));
-						if (linePrefix)
+						if (linePrefix.v)
 						{
-							Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("  ")), linePrefix);
+							sptr = linePrefix.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("  ")));
 						}
 						else
 						{
-							Text::StrConcatC(sbuff, UTF8STRC("  "));
+							sptr = Text::StrConcatC(sbuff, UTF8STRC("  "));
 						}
-						innerExif->ToString(sb, sbuff);
+						innerExif->ToString(sb, {sbuff, (UOSInt)(sptr - sbuff)});
 						DEL_CLASS(innerExif);
 					}
 					else
@@ -2454,7 +2455,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 			}
 			else
 			{
-				sb->Append((UTF8Char*)exItem->dataBuff);
+				sb->AppendSlow((UTF8Char*)exItem->dataBuff);
 			}
 		}
 		else if (exItem->type == Media::EXIFData::ET_DOUBLE)
@@ -2491,17 +2492,15 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 			{
 				if (valBuff[exItem->size - 2] == 0)
 				{
-					const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)valBuff);
-					sb->Append(csptr);
-					Text::StrDelNew(csptr);
+					Text::String *s = Text::String::NewNotNull((const UTF16Char*)valBuff);
+					sb->Append(s);
+					s->Release();
 				}
 				else
 				{
-					const UTF16Char *csptr = Text::StrCopyNewC((const UTF16Char*)valBuff, exItem->size >> 1);
-					const UTF8Char *csptr2 = Text::StrToUTF8New(csptr);
-					sb->Append(csptr2);
-					Text::StrDelNew(csptr2);
-					Text::StrDelNew(csptr);
+					Text::String *s = Text::String::New((const UTF16Char*)valBuff, exItem->size >> 1);
+					sb->Append(s);
+					s->Release();
 				}
 			}
 			else
@@ -2651,7 +2650,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 				}
 				else
 				{
-					sb->Append((UTF8Char*)exItem->dataBuff);
+					sb->AppendSlow((UTF8Char*)exItem->dataBuff);
 				}
 			}
 			else
@@ -2684,7 +2683,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *line
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -2693,7 +2692,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, c
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix)
+		if (linePrefix.v)
 			sb->Append(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
@@ -3615,7 +3614,7 @@ Bool Media::EXIFData::ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, c
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3624,7 +3623,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, cons
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix)
+		if (linePrefix.v)
 			sb->Append(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
@@ -3678,7 +3677,7 @@ Bool Media::EXIFData::ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, cons
 	return true;
 }
 
-Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt)
+Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt)
 {
 	Bool isInt16;
 	Bool isUInt16;
@@ -3687,7 +3686,7 @@ Bool Media::EXIFData::ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, const U
 	while (k < valCnt)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		if (linePrefix)
+		if (linePrefix.v)
 			sb->Append(linePrefix);
 		sb->AppendC(UTF8STRC(" "));
 		isInt16 = false;
@@ -4032,25 +4031,25 @@ Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffS
 	return ret;
 }
 
-const UTF8Char *Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
+Text::CString Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
 {
 	switch (exifMaker)
 	{
 	case Media::EXIFData::EM_PANASONIC:
-		return (const UTF8Char*)"Panasonic";
+		return {UTF8STRC("Panasonic")};
 	case Media::EXIFData::EM_CANON:
-		return (const UTF8Char*)"Canon";
+		return {UTF8STRC("Canon")};
 	case Media::EXIFData::EM_OLYMPUS:
-		return (const UTF8Char*)"Olympus";
+		return {UTF8STRC("Olympus")};
 	case Media::EXIFData::EM_CASIO1:
-		return (const UTF8Char*)"Casio Type 1";
+		return {UTF8STRC("Casio Type 1")};
 	case Media::EXIFData::EM_CASIO2:
-		return (const UTF8Char*)"Casio Type 2";
+		return {UTF8STRC("Casio Type 2")};
 	case Media::EXIFData::EM_FLIR:
-		return (const UTF8Char*)"FLIR";
+		return {UTF8STRC("FLIR")};
 	case Media::EXIFData::EM_STANDARD:
 	default:
-		return (const UTF8Char*)"Standard";
+		return {UTF8STRC("Standard")};
 	}
 }
 

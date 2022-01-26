@@ -45,11 +45,11 @@ namespace Net
 
 		static UOSInt HeaderIPv4GetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame);
 
-		static const UTF8Char *TCPPortGetName(UInt16 port); //null = unknwon
-		static const UTF8Char *UDPPortGetName(UInt16 port); //null = unknwon
-		static const UTF8Char *LSAPGetName(UInt8 lsap);
-		static const UTF8Char *DHCPOptionGetName(UInt8 t);
-		static const UTF8Char *EtherTypeGetName(UInt16 etherType);
+		static Text::CString TCPPortGetName(UInt16 port); //null = unknwon
+		static Text::CString UDPPortGetName(UInt16 port); //null = unknwon
+		static Text::CString LSAPGetName(UInt8 lsap);
+		static Text::CString DHCPOptionGetName(UInt8 t);
+		static Text::CString EtherTypeGetName(UInt16 etherType);
 	};
 }
 #endif

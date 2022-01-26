@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "Data/Int32Map.h"
 #include "IO/IStreamData.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -143,17 +144,17 @@ namespace Media
 		void SetWidth(UInt32 width);
 		void SetHeight(UInt32 height);
 
-		Bool ToString(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix);
-		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
-		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, const UTF8Char *linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToString(Text::StringBuilderUTF8 *sb, Text::CString linePrefix);
+		Bool ToStringCanonCameraSettings(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonFocalLength(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
+		Bool ToStringCanonShotInfo(Text::StringBuilderUTF8 *sb, Text::CString linePrefix, UInt16 *valBuff, UOSInt valCnt);
 		Bool ToStringCanonLensType(Text::StringBuilderUTF8 *sb, UInt16 lensType);
 		void ToExifBuff(UInt8 *buff, UInt32 *startOfst, UInt32 *otherOfst);
 		void GetExifBuffSize(UInt32 *size, UInt32 *endOfst);
 
 		EXIFData *ParseMakerNote(const UInt8 *buff, UOSInt buffSize);
 
-		static const UTF8Char *GetEXIFMakerName(EXIFMaker exifMaker);
+		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id, Int32 subId);
 		static const UTF8Char *GetEXIFTypeName(EXIFType type);

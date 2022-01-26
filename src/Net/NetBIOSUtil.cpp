@@ -37,31 +37,31 @@ UTF8Char *Net::NetBIOSUtil::SetName(UTF8Char *nbBuff, const UTF8Char *name)
 	return nbBuff;
 }
 
-const UTF8Char *Net::NetBIOSUtil::NameTypeGetName(UInt8 nameType)
+Text::CString Net::NetBIOSUtil::NameTypeGetName(UInt8 nameType)
 {
 	switch (nameType)
 	{
 	case 0:
-		return (const UTF8Char*)"Workstation Service";
+		return {UTF8STRC("Workstation Service")};
 	case 1:
-		return (const UTF8Char*)"Browser";
+		return {UTF8STRC("Browser")};
 	case 3:
-		return (const UTF8Char*)"Windows Messenger Service";
+		return {UTF8STRC("Windows Messenger Service")};
 	case 6:
-		return (const UTF8Char*)"Remote Access Service";
+		return {UTF8STRC("Remote Access Service")};
 	case 27:
-		return (const UTF8Char*)"Domain Master Browser";
+		return {UTF8STRC("Domain Master Browser")};
 	case 28:
-		return (const UTF8Char*)"Domain Controllers";
+		return {UTF8STRC("Domain Controllers")};
 	case 29:
-		return (const UTF8Char*)"Master Browser";
+		return {UTF8STRC("Master Browser")};
 	case 30:
-		return (const UTF8Char*)"Browser Election Service";
+		return {UTF8STRC("Browser Election Service")};
 	case 32:
-		return (const UTF8Char*)"File Service";
+		return {UTF8STRC("File Service")};
 	case 33:
-		return (const UTF8Char*)"Remote Access Service Client";
+		return {UTF8STRC("Remote Access Service Client")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

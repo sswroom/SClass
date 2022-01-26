@@ -1,5 +1,6 @@
 #ifndef _SM_MEDIA_AUDIOFORMAT
 #define _SM_MEDIA_AUDIOFORMAT
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -32,8 +33,8 @@ namespace Media
 		void FromAudioFormat(Media::AudioFormat *fmt);
 		void ToString(Text::StringBuilderUTF8 *sb);
 
-		static const UTF8Char *GetNameFormatId(UInt32 formatId);
-		static const UTF8Char *GetNameIntType(IntType intType);
+		static Text::CString GetNameFormatId(UInt32 formatId);
+		static Text::CString GetNameIntType(IntType intType);
 	};
-};
+}
 #endif

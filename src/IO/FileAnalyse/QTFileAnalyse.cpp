@@ -142,9 +142,9 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::QTFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::QTFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"Quicktime";
+	return {UTF8STRC("Quicktime")};
 }
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()
@@ -163,7 +163,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameName(UOSInt index, Text::StringBuil
 	sb->AppendC(UTF8STRC(": Type="));
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
-	sb->Append((UTF8Char*)buff);
+	sb->AppendSlow((UTF8Char*)buff);
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendU64(pack->packSize);
 	return true;
@@ -186,7 +186,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 	sb->AppendC(UTF8STRC(": Type="));
 	*(Int32*)buff = pack->packType;
 	buff[4] = 0;
-	sb->Append((UTF8Char*)buff);
+	sb->AppendSlow((UTF8Char*)buff);
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendU64(pack->packSize);
 	sb->AppendC(UTF8STRC("\r\nLev="));
@@ -200,7 +200,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 
 		sb->AppendC(UTF8STRC("\r\nMajor_Brand = "));
 		*(Int32*)buff = *(Int32*)&packBuff[0];
-		sb->Append((UTF8Char*)buff);
+		sb->AppendSlow((UTF8Char*)buff);
 		sb->AppendC(UTF8STRC("\r\nMinor_Version = "));
 		sb->AppendHex32(ReadMUInt32(&packBuff[4]));
 		i = 8;
@@ -211,7 +211,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendU32((UInt32)i);
 			sb->AppendC(UTF8STRC("] = "));
 			*(Int32*)buff = *(Int32*)&packBuff[i];
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 
 			i += 4;
 		}
@@ -244,7 +244,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendU16(ReadMUInt16(&packBuff[4]));
 			sb->AppendC(UTF8STRC("\r\nAtom type = "));
 			*(Int32*)buff = *(Int32*)&packBuff[6];
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 			sb->AppendC(UTF8STRC("\r\nAtom Index = "));
 			sb->AppendU16(ReadMUInt16(&packBuff[10]));
 			MemFree(packBuff);
@@ -419,10 +419,10 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 			sb->AppendHex24(ReadMUInt32(&packBuff[0]));
 			sb->AppendC(UTF8STRC("\r\nComponent type = "));
 			*(Int32*)buff = *(Int32*)&packBuff[4];
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 			sb->AppendC(UTF8STRC("\r\nComponent subtype = "));
 			*(Int32*)buff = *(Int32*)&packBuff[8];
-			sb->Append((UTF8Char*)buff);
+			sb->AppendSlow((UTF8Char*)buff);
 			sb->AppendC(UTF8STRC("\r\nComponent manufacturer = "));
 			sb->AppendI32(ReadMInt32(&packBuff[12]));
 			sb->AppendC(UTF8STRC("\r\nComponent flags = "));
@@ -501,7 +501,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				}
 				sb->AppendC(UTF8STRC("\r\n-Type = "));
 				*(Int32*)buff = *(Int32*)&packBuff[k + 4];
-				sb->Append((UTF8Char*)buff);
+				sb->AppendSlow((UTF8Char*)buff);
 				sb->AppendC(UTF8STRC("\r\n-Version = "));
 				sb->AppendU16(packBuff[k + 8]);
 				sb->AppendC(UTF8STRC("\r\n-Flags = "));
@@ -540,7 +540,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOSInt index, Text::StringBu
 				}
 				sb->AppendC(UTF8STRC("\r\n-Data format = "));
 				WriteNInt32(buff, ReadNInt32(&packBuff[k + 4]));
-				sb->Append((UTF8Char*)buff);
+				sb->AppendSlow((UTF8Char*)buff);
 				if (ReadNInt32(&packBuff[k + 4]) == *(Int32*)"mp4a")
 				{
 					dataType = 2;

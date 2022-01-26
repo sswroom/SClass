@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_CS_TRANSFERFUNC
 #define _SM_MEDIA_CS_TRANSFERFUNC
 #include "Media/CS/TransferParam.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -23,7 +24,7 @@ namespace Media
 
 			static TransferFunc *CreateFunc(TransferParam *param);
 			static Double GetRefLuminance(TransferParam *param);
-			static const UTF8Char *GetTransferFuncName(Media::CS::TransferType ttype);
+			static Text::CString GetTransferFuncName(Media::CS::TransferType ttype);
 		};
 	};
 };

@@ -23,7 +23,14 @@ UOSInt IO::FileAnalyse::FLVFileAnalyse::ParseScriptDataVal(UInt8 *data, UOSInt o
 	case 1:
 		if (ofst + 2 <= endOfst)
 		{
-			sb->Append(data[ofst + 1]?(const UTF8Char*)"true":(const UTF8Char*)"false");
+			if (data[ofst + 1])
+			{
+				sb->AppendC(UTF8STRC("true"));
+			}
+			else
+			{
+				sb->AppendC(UTF8STRC("false"));
+			}
 		}
 		return ofst + 2;
 	case 2:
@@ -188,9 +195,9 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
-const UTF8Char *IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"FLV";
+	return {UTF8STRC("FLV")};
 }
 
 UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
@@ -348,7 +355,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	UInt8 buff[128];
 	UTF8Char sbuff[128];
 	UInt8 *tagData;
-	const Char *vName;
+	Text::CString vName;
 	if (index == 0)
 	{
 		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, (UInt32)this->hdrSize));
@@ -382,20 +389,20 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	this->fd->GetRealData(tag->ofst, 11, buff);
 	frame->AddUInt(0, 1, "Reserved", (UInt16)(buff[0] >> 6));
 	frame->AddUInt(0, 1, "Filter", (UInt16)((buff[0] >> 5) & 1));
-	vName = 0;
+	vName = {0, 0};
 	switch (tag->tagType)
 	{
 	case 8:
-		vName = "audio";
+		vName = {UTF8STRC("audio")};
 		break;
 	case 9:
-		vName = "video";
+		vName = {UTF8STRC("video")};
 		break;
 	case 18:
-		vName = "script data";
+		vName = {UTF8STRC("script data")};
 		break;
 	}
-	frame->AddUIntName(0, 1, "TagType", buff[0] & 0x1f, (const UTF8Char*)vName);
+	frame->AddUIntName(0, 1, "TagType", buff[0] & 0x1f, vName);
 	frame->AddUInt(1, 3, "DataSize", ReadMUInt24(&buff[1]));
 	frame->AddUInt(4, 3, "Timestamp", ReadMUInt24(&buff[4]));
 	frame->AddUInt(7, 1, "Timestamp Extended", buff[7]);

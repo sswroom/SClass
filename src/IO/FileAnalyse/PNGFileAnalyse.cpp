@@ -91,9 +91,9 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
-const UTF8Char *IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"PNG";
+	return {UTF8STRC("PNG")};
 }
 
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()
@@ -263,7 +263,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		this->fd->GetRealData(tag->ofst, tag->size, tagData);
 		i = Text::StrCharCnt((Char*)&tagData[8]) + 9;
 		sb->AppendC(UTF8STRC("\r\nProfile name = "));
-		sb->Append((UTF8Char*)&tagData[8]);
+		sb->AppendSlow((UTF8Char*)&tagData[8]);
 		sb->AppendC(UTF8STRC("\r\nCompression Method = "));
 		sb->AppendU16(tagData[i]);
 

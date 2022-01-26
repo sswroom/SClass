@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "Math/Math.h"
 #include "Media/PaperSize.h"
@@ -24,7 +25,7 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::IChart:
 
 Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns)
 {
-	const UTF8Char **cols;
+	Text::String **cols;
 	UOSInt i;
 	this->name = Text::String::NewNotNull(name);
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
@@ -33,14 +34,14 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 	this->chart = 0;
 	this->paperHori = false;
 	this->colTypes = MemAlloc(ColType, this->colCount);
-	cols = MemAlloc(const UTF8Char *, this->colCount);
+	cols = MemAlloc(Text::String *, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		colWidthPts[i] = 0;
 		if (columns[i])
 		{
-			cols[i] = Text::StrCopyNew(columns[i]);
+			cols[i] = Text::String::NewNotNull(columns[i]);
 		}
 		else
 		{
@@ -49,9 +50,9 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 		this->colTypes[i] = CT_STRING;
 		i++;
 	}
-	NEW_CLASS(this->preheaders, Data::ArrayList<const UTF8Char **>());
-	NEW_CLASS(this->headers, Data::ArrayList<const UTF8Char **>());
-	NEW_CLASS(this->tableContent, Data::ArrayList<const UTF8Char **>());
+	NEW_CLASS(this->preheaders, Data::ArrayList<Text::String **>());
+	NEW_CLASS(this->headers, Data::ArrayList<Text::String **>());
+	NEW_CLASS(this->tableContent, Data::ArrayList<Text::String **>());
 	NEW_CLASS(this->tableRowType, Data::ArrayList<RowType>());
 	NEW_CLASS(this->urlList, Data::ArrayList<ColURLLatLon*>());
 	NEW_CLASS(this->icons, Data::ArrayList<Data::ArrayList<Text::ReportBuilder::ColIcon*>*>());
@@ -63,7 +64,7 @@ Text::ReportBuilder::~ReportBuilder()
 {
 	ColURLLatLon *url;
 	Text::ReportBuilder::ColIcon *icon;
-	const UTF8Char **cols;
+	Text::String **cols;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
 	UOSInt i;
 	UOSInt j;
@@ -71,16 +72,16 @@ Text::ReportBuilder::~ReportBuilder()
 	while (j-- > 0)
 	{
 		cols = this->headers->GetItem(j);
-		Text::StrDelNew(cols[0]);
-		Text::StrDelNew(cols[1]);
+		cols[0]->Release();
+		cols[1]->Release();
 		MemFree(cols);
 	}
 	j = this->preheaders->GetCount();
 	while (j-- > 0)
 	{
 		cols = this->preheaders->GetItem(j);
-		Text::StrDelNew(cols[0]);
-		Text::StrDelNew(cols[1]);
+		cols[0]->Release();
+		cols[1]->Release();
 		MemFree(cols);
 	}
 	j = this->tableContent->GetCount();
@@ -90,7 +91,7 @@ Text::ReportBuilder::~ReportBuilder()
 		i = this->colCount;
 		while (i-- > 0)
 		{
-			SDEL_TEXT(cols[i]);
+			SDEL_STRING(cols[i]);
 		}
 		MemFree(cols);
 	}
@@ -110,8 +111,8 @@ Text::ReportBuilder::~ReportBuilder()
 			while (j-- > 0)
 			{
 				icon = iconList->GetItem(j);
-				SDEL_TEXT(icon->fileName);
-				SDEL_TEXT(icon->name);
+				SDEL_STRING(icon->fileName);
+				SDEL_STRING(icon->name);
 				MemFree(icon);
 			}
 			DEL_CLASS(iconList);
@@ -159,35 +160,35 @@ void Text::ReportBuilder::AddChart(Data::IChart *chart)
 	this->chart = chart;
 }
 
-void Text::ReportBuilder::AddPreHeader(const UTF8Char *name, const UTF8Char *val)
+void Text::ReportBuilder::AddPreHeader(Text::CString name, Text::CString val)
 {
-	const UTF8Char **cols;
-	cols = MemAlloc(const UTF8Char *, 2);
-	cols[0] = Text::StrCopyNew(name);
-	cols[1] = Text::StrCopyNew(val);
+	Text::String **cols;
+	cols = MemAlloc(Text::String *, 2);
+	cols[0] = Text::String::New(name.v, name.leng);
+	cols[1] = Text::String::New(val.v, val.leng);
 	this->preheaders->Add(cols);
 }
 
-void Text::ReportBuilder::AddHeader(const UTF8Char *name, const UTF8Char *val)
+void Text::ReportBuilder::AddHeader(Text::CString name, Text::CString val)
 {
-	const UTF8Char **cols;
-	cols = MemAlloc(const UTF8Char *, 2);
-	cols[0] = Text::StrCopyNew(name);
-	cols[1] = Text::StrCopyNew(val);
+	Text::String **cols;
+	cols = MemAlloc(Text::String *, 2);
+	cols[0] = Text::String::New(name.v, name.leng);
+	cols[1] = Text::String::New(val.v, val.leng);
 	this->headers->Add(cols);
 }
 
 void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 {
-	const UTF8Char **cols;
+	Text::String **cols;
 	UOSInt i;
-	cols = MemAlloc(const UTF8Char *, this->colCount);
+	cols = MemAlloc(Text::String *, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::StrCopyNew(content[i]);
+			cols[i] = Text::String::NewNotNull(content[i]);
 		}
 		else
 		{
@@ -201,15 +202,15 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 
 void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 {
-	const UTF8Char **cols;
+	Text::String **cols;
 	UOSInt i;
-	cols = MemAlloc(const UTF8Char *, this->colCount);
+	cols = MemAlloc(Text::String *, this->colCount);
 	i = 0;
 	while (i < this->colCount)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::StrCopyNew(content[i]);
+			cols[i] = Text::String::NewNotNull(content[i]);
 		}
 		else
 		{
@@ -221,7 +222,7 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 	this->tableRowType->Add(RT_SUMMARY);
 }
 
-void Text::ReportBuilder::AddIcon(UOSInt index, const UTF8Char *fileName, const UTF8Char *name)
+void Text::ReportBuilder::AddIcon(UOSInt index, Text::CString fileName, Text::CString name)
 {
 	UOSInt cnt = this->tableContent->GetCount() - 1;
 	Data::ArrayList<Text::ReportBuilder::ColIcon*> *iconList;
@@ -238,17 +239,17 @@ void Text::ReportBuilder::AddIcon(UOSInt index, const UTF8Char *fileName, const 
 	}
 	icon = MemAlloc(Text::ReportBuilder::ColIcon, 1);
 	icon->col = index;
-	if (fileName)
+	if (fileName.v)
 	{
-		icon->fileName = Text::StrCopyNew(fileName);
+		icon->fileName = Text::String::New(fileName.v, fileName.leng);
 	}
 	else
 	{
 		icon->fileName = 0;
 	}
-	if (name)
+	if (name.v)
 	{
-		icon->name = Text::StrCopyNew(name);
+		icon->name = Text::String::New(name.v, name.leng);
 	}
 	else
 	{
@@ -298,7 +299,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	Text::SpreadSheet::Workbook *wb;
 	Text::SpreadSheet::Worksheet *ws;
 	Text::SpreadSheet::Worksheet *dataSheet;
-	const UTF8Char **csarr;
+	Text::String **csarr;
 	Text::StringBuilderUTF8 sb;
 	ColURLLatLon *url;
 	Data::ArrayList<Text::ReportBuilder::ColIcon *> *iconList;
@@ -434,11 +435,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						if (this->colTypes[l] == CT_DOUBLE)
 						{
-							ws->SetCellDouble(k, l, Text::StrToDouble(csarr[l]));
+							ws->SetCellDouble(k, l, csarr[l]->ToDouble());
 						}
 						else if (this->colTypes[l] == CT_INT32)
 						{
-							ws->SetCellInt32(k, l, Text::StrToInt32(csarr[l]));
+							ws->SetCellInt32(k, l, csarr[l]->ToInt32());
 						}
 						else
 						{
@@ -703,7 +704,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Double headerW2;
 	Double sz[2];
 	Double currY;
-	const UTF8Char **strs;
+	Text::String **strs;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -724,8 +725,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	colCurrX = MemAlloc(Double, this->colCount);
 
 	Data::ArrayList<Text::ReportBuilder::ColIcon *> *iconList;
-	Data::StringUTF8Map<IconStatus *> iconStatus;
-	Data::ArrayList<IconStatus *> *iconStList;
+	Data::FastStringMap<IconStatus *> iconStatus;
 	IconStatus *iconSt;
 	Text::ReportBuilder::ColIcon *icon;
 
@@ -747,10 +747,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->headers->GetItem(i);
-		g->GetTextSize(f, strs[0], sz);
+		g->GetTextSize(f, strs[0]->v, sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1], sz);
+		g->GetTextSize(f, strs[1]->v, sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -758,10 +758,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->preheaders->GetItem(i);
-		g->GetTextSize(f, strs[0], sz);
+		g->GetTextSize(f, strs[0]->v, sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1], sz);
+		g->GetTextSize(f, strs[1]->v, sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -786,7 +786,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			colCurrX[j] = 0;
 			if (strs[j])
 			{
-				g->GetTextSize(f, strs[j], sz);
+				g->GetTextSize(f, strs[j]->v, sz);
 				colCurrX[j] = sz[0];
 			}
 		}
@@ -803,7 +803,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					if (iconSt == 0)
 					{
 						iconSt = MemAlloc(IconStatus, 1);
-						iconSt->dimg = deng->LoadImage(icon->fileName);
+						iconSt->dimg = deng->LoadImage(icon->fileName->v);
 						iconStatus.Put(icon->fileName, iconSt);
 					}
 
@@ -945,7 +945,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					{
 						if (strs[i])
 						{
-							g->GetTextSize(f, strs[i], sz);
+							g->GetTextSize(f, strs[i]->v, sz);
 							colCurrX[i] = colPos[i] + sz[0];
 						}
 						else
@@ -1025,11 +1025,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	MemFree(colSize);
 	MemFree(colCurrX);
 
-	iconStList = iconStatus.GetValues();
-	i = iconStList->GetCount();
+	i = iconStatus.GetCount();
 	while (i-- > 0)
 	{
-		iconSt = iconStList->GetItem(i);
+		iconSt = iconStatus.GetItem(i);
 		if (iconSt->dimg)
 		{
 			deng->DeleteImage(iconSt->dimg);

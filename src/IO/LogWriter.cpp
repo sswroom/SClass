@@ -34,7 +34,7 @@ Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 Bool IO::LogWriter::WriteStr(const UTF8Char *str)
 {
 	this->mut->Lock();
-	sb->Append(str);
+	sb->AppendSlow(str);
 	this->mut->Unlock();
 	this->CheckLines();
 	return true;
@@ -57,7 +57,7 @@ Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 Bool IO::LogWriter::WriteLine(const UTF8Char *str)
 {
 	this->mut->Lock();
-	sb->Append(str);
+	sb->AppendSlow(str);
 	this->CheckLines();
 	if (sb->GetLength() > 0)
 	{

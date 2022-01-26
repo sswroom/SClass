@@ -161,7 +161,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	sb->AppendC(UTF8STRC("\r\nSize = "));
 	sb->AppendU32(fsize);
 	sb->AppendC(UTF8STRC("\r\nCopyright = "));
-	sb->Append((UTF8Char*)&fileBuff[6]);
+	sb->AppendSlow((UTF8Char*)&fileBuff[6]);
 	sb->AppendC(UTF8STRC("\r\nType = "));
 	sb->AppendU16(ReadUInt16(&fileBuff[66]));
 	sb->AppendC(UTF8STRC("\r\nPoint Size = "));
@@ -214,7 +214,7 @@ UOSInt Parser::FileParser::FNTParser::GetFileDesc(const UInt8 *fileBuff, UOSInt 
 	if (ofst != 0 && ofst < (UOSInt)fileSize)
 	{
 		sb->AppendC(UTF8STRC("\r\nFace Name = "));
-		sb->Append((UTF8Char*)&fileBuff[ofst]);
+		sb->AppendSlow((UTF8Char*)&fileBuff[ofst]);
 	}
 	sb->AppendC(UTF8STRC("\r\nBits Pointer = 0x"));
 	sb->AppendHex32(ReadUInt32(&fileBuff[109]));

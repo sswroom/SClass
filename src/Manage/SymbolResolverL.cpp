@@ -27,7 +27,8 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
-	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
+	UTF8Char *sptr;
+	NEW_CLASS(this->modNames, Data::ArrayListString());
 	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
 	NEW_CLASS(this->modSizes, Data::ArrayListUInt64());
 	this->proc = proc;
@@ -42,8 +43,8 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 		Manage::ModuleInfo *mod;
 		mod = modList->GetItem(i);
 
-		mod->GetModuleFileName(sbuff);
-		this->modNames->Add(Text::StrCopyNew(sbuff));
+		sptr = mod->GetModuleFileName(sbuff);
+		this->modNames->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		mod->GetModuleAddress(&baseAddr, &size);
 		this->modBaseAddrs->Add(baseAddr);
 		this->modSizes->Add(size);
@@ -61,7 +62,7 @@ Manage::SymbolResolver::~SymbolResolver()
 	UOSInt i = this->modNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->modNames->GetItem(i));
+		this->modNames->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->modNames);
 }
@@ -81,7 +82,7 @@ UOSInt Manage::SymbolResolver::GetModuleCount()
 	return this->modNames->GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(UOSInt index)
+Text::String *Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames->GetItem(index);
 }

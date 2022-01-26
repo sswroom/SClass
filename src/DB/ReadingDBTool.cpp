@@ -464,7 +464,7 @@ Bool DB::ReadingDBTool::IsDataError(const UTF8Char *errCode)
 
 void DB::ReadingDBTool::GetLastErrorMsg(Text::StringBuilderUTF8 *sb)
 {
-	sb->Append(this->lastErrMsg->ToString());
+	sb->Append(this->lastErrMsg);
 }
 
 DB::DBConn *DB::ReadingDBTool::GetDBConn()
@@ -550,7 +550,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("GetTableData: "));
-		logMsg.Append(tableName);
+		logMsg.AppendSlow(tableName);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
@@ -588,7 +588,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
-			logMsg.Append(tableName);
+			logMsg.AppendSlow(tableName);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
@@ -926,7 +926,7 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
 		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
 		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
-		sb.Append(tableName);
+		sb.AppendSlow(tableName);
 		sb.AppendC(UTF8STRC("')"));
 		r = 0;
 		i = 4;
@@ -1054,7 +1054,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 		Text::StringBuilderUTF8 sb;
 		Text::String *name = this->db->GetSourceNameObj();
 		UOSInt i = name->LastIndexOf((UTF8Char)IO::Path::PATH_SEPERATOR);
-		sb.Append(&name->v[i + 1]);
+		sb.AppendC(&name->v[i + 1], name->leng - i - 1);
 		i = sb.IndexOf('.');
 		if (i != INVALID_INDEX)
 		{

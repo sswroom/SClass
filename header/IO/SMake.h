@@ -50,9 +50,9 @@ namespace IO
 		Text::String *debugObj;
 		Sync::ParallelTask *tasks;
 
-		void AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val);
-		void AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path);
-		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg);
+		void AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
+		void AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path, UOSInt pathLen);
+		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg, UOSInt cfgLen);
 
 		Bool ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		Bool LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen);
@@ -80,8 +80,8 @@ namespace IO
 		void SetThreadCnt(UOSInt threadCnt);
 
 		Data::ArrayList<ConfigItem*> *GetConfigList();
-		Bool HasProg(const UTF8Char *progName);
-		Bool CompileProg(const UTF8Char *progName, Bool asmListing);
+		Bool HasProg(const UTF8Char *progName, UOSInt nameLen);
+		Bool CompileProg(const UTF8Char *progName, UOSInt nameLen, Bool asmListing);
 		Bool ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();

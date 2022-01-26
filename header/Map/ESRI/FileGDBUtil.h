@@ -2,6 +2,7 @@
 #define _SM_MAP_ESRI_FILEGDBUTIL
 #include "Data/ArrayList.h"
 #include "Math/CoordinateSystem.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace Map
@@ -61,8 +62,8 @@ namespace Map
 			static UOSInt ReadVarUInt(const UInt8 *buff, UOSInt ofst, UInt64 *val);
 			static UOSInt ReadVarInt(const UInt8 *buff, UOSInt ofst, Int64 *val);
 
-			static const UTF8Char *GeometryTypeGetName(UInt8 t);
-			static const UTF8Char *FieldTypeGetName(UInt8 t);
+			static Text::CString GeometryTypeGetName(UInt8 t);
+			static Text::CString FieldTypeGetName(UInt8 t);
 		};
 	}
 }

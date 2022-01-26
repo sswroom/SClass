@@ -362,6 +362,7 @@ const UTF8Char *IO::EXEFile::GetResourceTypeName(ResourceType rt)
 void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	if (res->rt == RT_FONT)
 	{
 		Parser::FileParser::FNTParser::GetFileDesc(res->data, res->dataSize, sb);
@@ -384,7 +385,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendC(UTF8STRC("\r\nValue Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[2]));
 				sb->AppendC(UTF8STRC("\r\nKey = "));
-				sb->Append((UTF8Char*)&res->data[4]);
+				sb->AppendSlow((UTF8Char*)&res->data[4]);
 				sb->AppendC(UTF8STRC("\r\nSignature = 0x"));
 				sb->AppendHex32(ReadUInt32(&res->data[20]));
 				sb->AppendC(UTF8STRC("\r\nStruct Version = "));
@@ -542,7 +543,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendC(UTF8STRC("\r\nString File Value Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[74]));
 				sb->AppendC(UTF8STRC("\r\nString File Key = "));
-				sb->Append((UTF8Char*)&res->data[76]);
+				sb->AppendSlow((UTF8Char*)&res->data[76]);
 				UOSInt strLen = ReadUInt16(&res->data[92]);
 				UOSInt i;
 				sb->AppendC(UTF8STRC("\r\nString Table Length = "));
@@ -550,7 +551,7 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				sb->AppendC(UTF8STRC("\r\nString Table Value Length = "));
 				sb->AppendU16(ReadUInt16(&res->data[94]));
 				sb->AppendC(UTF8STRC("\r\nString Table Key = "));
-				sb->Append((UTF8Char*)&res->data[96]);
+				sb->AppendSlow((UTF8Char*)&res->data[96]);
 				v = (UInt32)Text::StrHex2Int32C((Char*)&res->data[96]);
 				sb->AppendC(UTF8STRC("\r\nLanguage = "));
 				sb->AppendU32((v >> 16) & 0xffff);
@@ -558,15 +559,15 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				if (locale)
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->Append(locale->desc);
+					sb->AppendSlow(locale->desc);
 					sb->AppendC(UTF8STRC(")"));
 				}
 				sb->AppendC(UTF8STRC("\r\nCodePage = "));
 				sb->AppendU32(v & 0xffff);
-				if (Text::EncodingFactory::GetName(u8buff, v & 0xffff))
+				if ((sptr = Text::EncodingFactory::GetName(u8buff, v & 0xffff)) != 0)
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->Append(u8buff);
+					sb->AppendC(u8buff, (UOSInt)(sptr - u8buff));
 					sb->AppendC(UTF8STRC(")"));
 				}
 				Text::Encoding enc(v & 0xffff);
@@ -579,10 +580,10 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 					if (strLen < v || v <= 4)
 						break;
 					sb->AppendC(UTF8STRC("\r\n"));
-					sb->Append((UTF8Char*)&res->data[i + 4]);
-					enc.UTF8FromBytes(u8buff, &res->data[i + v - v2], v2, 0);
+					sb->AppendSlow((UTF8Char*)&res->data[i + 4]);
+					sptr = enc.UTF8FromBytes(u8buff, &res->data[i + v - v2], v2, 0);
 					sb->AppendC(UTF8STRC(" = "));
-					sb->Append(u8buff);
+					sb->AppendC(u8buff, (UOSInt)(sptr - u8buff));
 					v2 = (v + 3) & (UInt32)~3;
 					i += v2;
 					strLen -= v2;

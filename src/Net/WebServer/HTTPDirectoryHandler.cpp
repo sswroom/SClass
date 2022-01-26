@@ -223,15 +223,15 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			sbOut.AppendC(UTF8STRC("<tr><td>"));
 			sbOut.AppendC(UTF8STRC("<a href=\""));
 			sptr = packageFile->GetItemName(u8buff, i);
-			Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
-			sbOut.Append(u8buff2);
+			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
+			sbOut.AppendC(u8buff2, (UOSInt)(sptr2 - u8buff2));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
 				sbOut.AppendC(UTF8STRC("/"));
 			}
 			sbOut.AppendC(UTF8STRC("\">"));
-			Text::XML::ToXMLText(u8buff2, u8buff);
-			sbOut.Append(u8buff2);
+			sptr2 = Text::XML::ToXMLText(u8buff2, u8buff);
+			sbOut.AppendC(u8buff2, (UOSInt)(sptr2 - u8buff2));
 			sbOut.AppendC(UTF8STRC("</a></td><td>"));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
@@ -752,7 +752,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					{
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());
-						sbTmp.Append((UTF8Char*)buff);
+						sbTmp.AppendSlow((UTF8Char*)buff);
 						if (IO::Path::GetPathType(sbTmp.ToString(), sbTmp.GetLength()) == IO::Path::PathType::Unknown)
 						{
 							IO::FileStream *uplFS;

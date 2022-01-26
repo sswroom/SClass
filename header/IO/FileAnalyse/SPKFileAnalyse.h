@@ -45,7 +45,7 @@ namespace IO
 			SPKFileAnalyse(IO::IStreamData *fd);
 			virtual ~SPKFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName();
+			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual UOSInt GetFrameIndex(UInt64 ofst);

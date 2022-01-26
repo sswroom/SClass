@@ -1002,6 +1002,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
@@ -1029,8 +1030,8 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 			{
 				sb.AppendC(UTF8STRC(","));
 			}
-			DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, this->svrType);
-			sb.Append(sbuff);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, this->svrType);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			i++;
 		}
 	}
@@ -1041,13 +1042,13 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 		j = Text::StrIndexOfChar(&name[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			DB::DBUtil::SDBColUTF8(sbuff, &name[i], this->svrType);
-			sb.Append(sbuff);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &name[i], this->svrType);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			break;
 		}
 		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
-		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, this->svrType);
-		sb.Append(sptr + 1);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, this->svrType);
+		sb.AppendC(sptr + 1, (UOSInt)(sptr2 - sptr - 1));
 		sb.AppendChar('.', 1);
 		i += j + 1;
 	}
@@ -1066,13 +1067,13 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("ODBC Error: ["));
-	const UTF8Char *csptr = Text::StrToUTF8New(state);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(state);
+	sb.Append(s);
+	s->Release();
 	sb.AppendC(UTF8STRC("] "));
-	csptr = Text::StrToUTF8New(errMsg);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	s = Text::String::NewNotNull(errMsg);
+	sb.Append(s);
+	s->Release();
 	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 }
 
@@ -1806,7 +1807,7 @@ Bool DB::ODBCReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_UUID:
-		sb->Append(((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData)->ToString());
+		sb->Append((Text::StringBuilderUTF8*)this->colDatas[colIndex].colData);
 		return true;
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:

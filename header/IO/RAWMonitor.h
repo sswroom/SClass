@@ -1,5 +1,6 @@
 #ifndef _SM_IO_RAWMONITOR
 #define _SM_IO_RAWMONITOR
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -28,7 +29,7 @@ namespace IO
 		virtual UOSInt GetMTU() = 0;
 		virtual UOSInt NextPacket(UInt8 *buff, Int64 *timeTicks) = 0;
 
-		static const UTF8Char *LinkTypeGetName(UInt32 linkType);
+		static Text::CString LinkTypeGetName(UInt32 linkType);
 	};
 }
 #endif

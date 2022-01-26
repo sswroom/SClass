@@ -15,6 +15,13 @@ namespace IO
 		typedef struct
 		{
 			UInt16 vendorId;
+			const UTF8Char *vendorName;
+			UOSInt nameLen;
+		} VendorInfo2;
+
+		typedef struct
+		{
+			UInt16 vendorId;
 			UInt16 productId;
 			UInt16 bcdDevice;
 			const Char *dispName;

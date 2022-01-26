@@ -4,6 +4,7 @@
 #include "Data/ObjectGetter.h"
 #include "Data/VariObject.h"
 #include "DB/DBUtil.h"
+#include "Text/CString.h"
 
 namespace Data
 {
@@ -251,7 +252,7 @@ namespace Data
 		QueryConditions *BoolEquals(const UTF8Char *fieldName, UOSInt nameLen, Bool val);
 		QueryConditions *NotNull(const UTF8Char* fieldName, UOSInt nameLen);
 
-		static const UTF8Char *CompareConditionGetStr(CompareCondition cond);
+		static Text::CString CompareConditionGetStr(CompareCondition cond);
 		static Bool ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList);
 		static Bool ObjectValid(Data::ObjectGetter *getter, Data::ArrayList<Condition*> *conditionList);
 	};

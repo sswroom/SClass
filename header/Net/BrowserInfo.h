@@ -1,5 +1,6 @@
 #ifndef _SM_NET_BROWSERINFO
 #define _SM_NET_BROWSERINFO
+#include "Text/CString.h"
 namespace Net
 {
 	class BrowserInfo
@@ -64,8 +65,8 @@ namespace Net
 		} BrowserType;
 
 	public:
-		static const UTF8Char *GetName(BrowserType btype);
-		static const UTF8Char *GetDefName(BrowserType btype);
+		static Text::CString GetName(BrowserType btype);
+		static Text::CString GetDefName(BrowserType btype);
 	};
 }
 #endif

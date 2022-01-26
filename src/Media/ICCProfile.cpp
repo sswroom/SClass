@@ -958,336 +958,336 @@ Double Media::ICCProfile::ReadU8Fixed8Number(const UInt8 *buff)
 	return ((UInt16)ReadMInt16(buff)) / 256.0;
 }
 
-const UTF8Char *Media::ICCProfile::GetNameCMMType(Int32 val)
+Text::CString Media::ICCProfile::GetNameCMMType(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	case 0x33324254:
-		return (const UTF8Char*)"the imaging factory CMM";
+		return {UTF8STRC("the imaging factory CMM")};
 	case 0x41434D53:
-		return (const UTF8Char*)"Agfa CMM";
+		return {UTF8STRC("Agfa CMM")};
 	case 0x41444245:
-		return (const UTF8Char*)"Adobe CMM";
+		return {UTF8STRC("Adobe CMM")};
 	case 0x43434D53:
-		return (const UTF8Char*)"ColorGear CMM";
+		return {UTF8STRC("ColorGear CMM")};
 	case 0x45464920:
-		return (const UTF8Char*)"EFI CMM";
+		return {UTF8STRC("EFI CMM")};
 	case 0x46462020:
-		return (const UTF8Char*)"Fuji Film CMM";
+		return {UTF8STRC("Fuji Film CMM")};
 	case 0x48434d4d:
-		return (const UTF8Char*)"Harlequin RIP CMM";
+		return {UTF8STRC("Harlequin RIP CMM")};
 	case 0x48444d20:
-		return (const UTF8Char*)"Heidelberg CMM";
+		return {UTF8STRC("Heidelberg CMM")};
 	case 0x4b434d53:
-		return (const UTF8Char*)"Kodak CMM";
+		return {UTF8STRC("Kodak CMM")};
 	case 0x4C676f53:
-		return (const UTF8Char*)"LogoSync CMM";
+		return {UTF8STRC("LogoSync CMM")};
 	case 0x4d434d44:
-		return (const UTF8Char*)"Konica Minolta CMM";
+		return {UTF8STRC("Konica Minolta CMM")};
 	case 0x52474d53:
-		return (const UTF8Char*)"DeviceLink CMM";
+		return {UTF8STRC("DeviceLink CMM")};
 	case 0x53494343:
-		return (const UTF8Char*)"SampleICC CMM";
+		return {UTF8STRC("SampleICC CMM")};
 	case 0x5349474E:
-		return (const UTF8Char*)"Mutoh CMM";
+		return {UTF8STRC("Mutoh CMM")};
 	case 0x5543434D:
-		return (const UTF8Char*)"ColorGear CMM Lite";
+		return {UTF8STRC("ColorGear CMM Lite")};
 	case 0x55434D53:
-		return (const UTF8Char*)"ColorGear CMM C";
+		return {UTF8STRC("ColorGear CMM C")};
 	case 0x57544720:
-		return (const UTF8Char*)"Ware to Go CMM";
+		return {UTF8STRC("Ware to Go CMM")};
 	case 0x6170706C:
-		return (const UTF8Char*)"Apple CMM";
+		return {UTF8STRC("Apple CMM")};
 	case 0x6172676C:
-		return (const UTF8Char*)"Argyll CMS CMM";
+		return {UTF8STRC("Argyll CMS CMM")};
 	case 0x7a633030:
-		return (const UTF8Char*)"Zoran CMM";
+		return {UTF8STRC("Zoran CMM")};
 	case 0x6C636d73:
-		return (const UTF8Char*)"Little CMS CMM";
+		return {UTF8STRC("Little CMS CMM")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameProfileClass(Int32 val)
+Text::CString Media::ICCProfile::GetNameProfileClass(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	case 0x73636E72:
-		return (const UTF8Char*)"Input device profile";
+		return {UTF8STRC("Input device profile")};
 	case 0x6D6E7472:
-		return (const UTF8Char*)"Display device profile";
+		return {UTF8STRC("Display device profile")};
 	case 0x70727472:
-		return (const UTF8Char*)"Output device profile";
+		return {UTF8STRC("Output device profile")};
 	case 0x6C696E6B:
-		return (const UTF8Char*)"DeviceLink profile";
+		return {UTF8STRC("DeviceLink profile")};
 	case 0x73706163:
-		return (const UTF8Char*)"ColorSpace profile";
+		return {UTF8STRC("ColorSpace profile")};
 	case 0x61627374:
-		return (const UTF8Char*)"Abstract profile";
+		return {UTF8STRC("Abstract profile")};
 	case 0x6E6D636C:
-		return (const UTF8Char*)"NamedColor profile";
+		return {UTF8STRC("NamedColor profile")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameDataColorspace(Int32 val)
+Text::CString Media::ICCProfile::GetNameDataColorspace(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	case 0x58595A20:
-		return (const UTF8Char*)"nCIEXYZ or PCSXYZ";
+		return {UTF8STRC("nCIEXYZ or PCSXYZ")};
 	case 0x4C616220:
-		return (const UTF8Char*)"CIELAB or PCSLAB";
+		return {UTF8STRC("CIELAB or PCSLAB")};
 	case 0x4C757620:
-		return (const UTF8Char*)"CIELUV";
+		return {UTF8STRC("CIELUV")};
 	case 0x59436272:
-		return (const UTF8Char*)"YCbCr";
+		return {UTF8STRC("YCbCr")};
 	case 0x59787920:
-		return (const UTF8Char*)"CIEYxy";
+		return {UTF8STRC("CIEYxy")};
 	case 0x52474220:
-		return (const UTF8Char*)"RGB";
+		return {UTF8STRC("RGB")};
 	case 0x47524159:
-		return (const UTF8Char*)"Gray";
+		return {UTF8STRC("Gray")};
 	case 0x48535620:
-		return (const UTF8Char*)"HSV";
+		return {UTF8STRC("HSV")};
 	case 0x484C5320:
-		return (const UTF8Char*)"HLS";
+		return {UTF8STRC("HLS")};
 	case 0x434D594B:
-		return (const UTF8Char*)"CMYK";
+		return {UTF8STRC("CMYK")};
 	case 0x434D5920:
-		return (const UTF8Char*)"CMY";
+		return {UTF8STRC("CMY")};
 	case 0x32434C52:
-		return (const UTF8Char*)"2 colour";
+		return {UTF8STRC("2 colour")};
 	case 0x33434C52:
-		return (const UTF8Char*)"3 colour";
+		return {UTF8STRC("3 colour")};
 	case 0x34434C52:
-		return (const UTF8Char*)"4 colour";
+		return {UTF8STRC("4 colour")};
 	case 0x35434C52:
-		return (const UTF8Char*)"5 colour";
+		return {UTF8STRC("5 colour")};
 	case 0x36434C52:
-		return (const UTF8Char*)"6 colour";
+		return {UTF8STRC("6 colour")};
 	case 0x37434C52:
-		return (const UTF8Char*)"7 colour";
+		return {UTF8STRC("7 colour")};
 	case 0x38434C52:
-		return (const UTF8Char*)"8 colour";
+		return {UTF8STRC("8 colour")};
 	case 0x39434C52:
-		return (const UTF8Char*)"9 colour";
+		return {UTF8STRC("9 colour")};
 	case 0x41434C52:
-		return (const UTF8Char*)"10 colour";
+		return {UTF8STRC("10 colour")};
 	case 0x42434C52:
-		return (const UTF8Char*)"11 colour";
+		return {UTF8STRC("11 colour")};
 	case 0x43434C52:
-		return (const UTF8Char*)"12 colour";
+		return {UTF8STRC("12 colour")};
 	case 0x44434C52:
-		return (const UTF8Char*)"13 colour";
+		return {UTF8STRC("13 colour")};
 	case 0x45434C52:
-		return (const UTF8Char*)"14 colour";
+		return {UTF8STRC("14 colour")};
 	case 0x46434C52:
-		return (const UTF8Char*)"15 colour";
+		return {UTF8STRC("15 colour")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNamePrimaryPlatform(Int32 val)
+Text::CString Media::ICCProfile::GetNamePrimaryPlatform(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	case 0x4150504C:
-		return (const UTF8Char*)"Apple Computer, Inc.";
+		return {UTF8STRC("Apple Computer, Inc.")};
 	case 0x4D534654:
-		return (const UTF8Char*)"Microsoft Corporation";
+		return {UTF8STRC("Microsoft Corporation")};
 	case 0x53474920:
-		return (const UTF8Char*)"Silicon Graphics, Inc.";
+		return {UTF8STRC("Silicon Graphics, Inc.")};
 	case 0x53554E57:
-		return (const UTF8Char*)"Sun Microsystems, Inc.";
+		return {UTF8STRC("Sun Microsystems, Inc.")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameDeviceManufacturer(Int32 val)
+Text::CString Media::ICCProfile::GetNameDeviceManufacturer(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameDeviceModel(Int32 val)
+Text::CString Media::ICCProfile::GetNameDeviceModel(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameTag(Int32 val)
+Text::CString Media::ICCProfile::GetNameTag(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"(not used)";
+		return {UTF8STRC("(not used)")};
 	case 0x41324230:
-		return (const UTF8Char*)"AToB0Tag";
+		return {UTF8STRC("AToB0Tag")};
 	case 0x41324231:
-		return (const UTF8Char*)"AToB1Tag";
+		return {UTF8STRC("AToB1Tag")};
 	case 0x41324232:
-		return (const UTF8Char*)"AToB2Tag";
+		return {UTF8STRC("AToB2Tag")};
 	case 0x42324130:
-		return (const UTF8Char*)"BToA0Tag";
+		return {UTF8STRC("BToA0Tag")};
 	case 0x42324131:
-		return (const UTF8Char*)"BToA1Tag";
+		return {UTF8STRC("BToA1Tag")};
 	case 0x42324132:
-		return (const UTF8Char*)"BToA2Tag";
+		return {UTF8STRC("BToA2Tag")};
 	case 0x42324430:
-		return (const UTF8Char*)"BToD0Tag";
+		return {UTF8STRC("BToD0Tag")};
 	case 0x42324431:
-		return (const UTF8Char*)"BToD1Tag";
+		return {UTF8STRC("BToD1Tag")};
 	case 0x42324432:
-		return (const UTF8Char*)"BToD2Tag";
+		return {UTF8STRC("BToD2Tag")};
 	case 0x42324433:
-		return (const UTF8Char*)"BToD3Tag";
+		return {UTF8STRC("BToD3Tag")};
 	case 0x44324230:
-		return (const UTF8Char*)"DToB0Tag";
+		return {UTF8STRC("DToB0Tag")};
 	case 0x44324231:
-		return (const UTF8Char*)"DToB1Tag";
+		return {UTF8STRC("DToB1Tag")};
 	case 0x44324232:
-		return (const UTF8Char*)"DToB2Tag";
+		return {UTF8STRC("DToB2Tag")};
 	case 0x44324233:
-		return (const UTF8Char*)"DToB3Tag";
+		return {UTF8STRC("DToB3Tag")};
 	case 0x62545243:
-		return (const UTF8Char*)"blueTRCTag";
+		return {UTF8STRC("blueTRCTag")};
 	case 0x6258595A:
-		return (const UTF8Char*)"blueMatrixColumnTag";
+		return {UTF8STRC("blueMatrixColumnTag")};
 	case 0x626B7074:
-		return (const UTF8Char*)"mediaBlackPointTag";
+		return {UTF8STRC("mediaBlackPointTag")};
 	case 0x63616C74:
-		return (const UTF8Char*)"calibrationDateTimeTag";
+		return {UTF8STRC("calibrationDateTimeTag")};
 	case 0x63686164:
-		return (const UTF8Char*)"chromaticAdaptationTag";
+		return {UTF8STRC("chromaticAdaptationTag")};
 	case 0x63696973:
-		return (const UTF8Char*)"colorimetricIntentImageStateTag";
+		return {UTF8STRC("colorimetricIntentImageStateTag")};
 	case 0x636C6F74:
-		return (const UTF8Char*)"colorantTableOutTag";
+		return {UTF8STRC("colorantTableOutTag")};
 	case 0x6368726D:
-		return (const UTF8Char*)"chromaticityTag";
+		return {UTF8STRC("chromaticityTag")};
 	case 0x636C726F:
-		return (const UTF8Char*)"colorantOrderTag";
+		return {UTF8STRC("colorantOrderTag")};
 	case 0x636C7274:
-		return (const UTF8Char*)"colorantTableTag";
+		return {UTF8STRC("colorantTableTag")};
 	case 0x63707274:
-		return (const UTF8Char*)"copyrightTag";
+		return {UTF8STRC("copyrightTag")};
 	case 0x64657363:
-		return (const UTF8Char*)"profileDescriptionTag";
+		return {UTF8STRC("profileDescriptionTag")};
 	case 0x646D6464:
-		return (const UTF8Char*)"deviceModelDescTag";
+		return {UTF8STRC("deviceModelDescTag")};
 	case 0x646D6E64:
-		return (const UTF8Char*)"deviceMfgDescTag";
+		return {UTF8STRC("deviceMfgDescTag")};
 	case 0x67545243:
-		return (const UTF8Char*)"greenTRCTag";
+		return {UTF8STRC("greenTRCTag")};
 	case 0x6758595A:
-		return (const UTF8Char*)"greenMatrixColumnTag";
+		return {UTF8STRC("greenMatrixColumnTag")};
 	case 0x67616D74:
-		return (const UTF8Char*)"gamutTag";
+		return {UTF8STRC("gamutTag")};
 	case 0x6B545243:
-		return (const UTF8Char*)"grayTRCTag";
+		return {UTF8STRC("grayTRCTag")};
 	case 0x6C756D69:
-		return (const UTF8Char*)"luminanceTag";
+		return {UTF8STRC("luminanceTag")};
 	case 0x6D656173:
-		return (const UTF8Char*)"measurementTag";
+		return {UTF8STRC("measurementTag")};
 	case 0x6E636C32:
-		return (const UTF8Char*)"namedColor2Tag";
+		return {UTF8STRC("namedColor2Tag")};
 	case 0x70726530:
-		return (const UTF8Char*)"preview0Tag";
+		return {UTF8STRC("preview0Tag")};
 	case 0x70726531:
-		return (const UTF8Char*)"preview1Tag";
+		return {UTF8STRC("preview1Tag")};
 	case 0x70726532:
-		return (const UTF8Char*)"preview2Tag";
+		return {UTF8STRC("preview2Tag")};
 	case 0x70736571:
-		return (const UTF8Char*)"profileSequenceDescTag";
+		return {UTF8STRC("profileSequenceDescTag")};
 	case 0x70736964:
-		return (const UTF8Char*)"profileSequenceIdentifierTag";
+		return {UTF8STRC("profileSequenceIdentifierTag")};
 	case 0x72545243:
-		return (const UTF8Char*)"redTRCTag";
+		return {UTF8STRC("redTRCTag")};
 	case 0x7258595A:
-		return (const UTF8Char*)"redMatrixColumnTag";
+		return {UTF8STRC("redMatrixColumnTag")};
 	case 0x72657370:
-		return (const UTF8Char*)"outputResponseTag";
+		return {UTF8STRC("outputResponseTag")};
 	case 0x72696730:
-		return (const UTF8Char*)"perceptualRenderingIntentGamutTag";
+		return {UTF8STRC("perceptualRenderingIntentGamutTag")};
 	case 0x72696732:
-		return (const UTF8Char*)"saturationRenderingIntentGamutTag";
+		return {UTF8STRC("saturationRenderingIntentGamutTag")};
 	case 0x74617267:
-		return (const UTF8Char*)"charTargetTag";
+		return {UTF8STRC("charTargetTag")};
 	case 0x74656368:
-		return (const UTF8Char*)"technologyTag";
+		return {UTF8STRC("technologyTag")};
 	case 0x76696577:
-		return (const UTF8Char*)"viewingConditionsTag";
+		return {UTF8STRC("viewingConditionsTag")};
 	case 0x76756564:
-		return (const UTF8Char*)"viewingCondDescTag";
+		return {UTF8STRC("viewingCondDescTag")};
 	case 0x77747074:
-		return (const UTF8Char*)"mediaWhitePointTag";
+		return {UTF8STRC("mediaWhitePointTag")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameStandardObserver(Int32 val)
+Text::CString Media::ICCProfile::GetNameStandardObserver(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	case 1:
-		return (const UTF8Char*)"CIE 1931 standard colorimetric observer";
+		return {UTF8STRC("CIE 1931 standard colorimetric observer")};
 	case 2:
-		return (const UTF8Char*)"CIE 1964 standard colorimetric observer";
+		return {UTF8STRC("CIE 1964 standard colorimetric observer")};
 	default:
-		return (const UTF8Char*)"Not defined";
+		return {UTF8STRC("Not defined")};
 	}
 }
 
-const UTF8Char *Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
+Text::CString Media::ICCProfile::GetNameStandardIlluminent(Int32 val)
 {
 	switch (val)
 	{
 	case 0:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	case 1:
-		return (const UTF8Char*)"D50";
+		return {UTF8STRC("D50")};
 	case 2:
-		return (const UTF8Char*)"D65";
+		return {UTF8STRC("D65")};
 	case 3:
-		return (const UTF8Char*)"D93";
+		return {UTF8STRC("D93")};
 	case 4:
-		return (const UTF8Char*)"F2";
+		return {UTF8STRC("F2")};
 	case 5:
-		return (const UTF8Char*)"D55";
+		return {UTF8STRC("D55")};
 	case 6:
-		return (const UTF8Char*)"A";
+		return {UTF8STRC("A")};
 	case 7:
-		return (const UTF8Char*)"Equi-Power (E)";
+		return {UTF8STRC("Equi-Power (E)")};
 	case 8:
-		return (const UTF8Char*)"F8";
+		return {UTF8STRC("F8")};
 	default:
-		return (const UTF8Char*)"Not defined";
+		return {UTF8STRC("Not defined")};
 	}
 }
 
@@ -1317,6 +1317,7 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff,
 	Int32 val;
 	CIEXYZ xyz;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Media::CS::TransferType tt;
 	Double gamma;
 	switch(typ)
@@ -1533,8 +1534,8 @@ void Media::ICCProfile::GetDispTagType(Text::StringBuilderUTF8 *sb, UInt8 *buff,
 			j = 16;
 			while (i-- > 0)
 			{
-				enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
-				sb->Append(sbuff);
+				sptr = enc.UTF8FromBytes(sbuff, &buff[ReadMInt32(&buff[j + 8])], ReadMUInt32(&buff[j + 4]), 0);
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				if (i > 0)
 				{
 					sb->AppendC(UTF8STRC(", "));

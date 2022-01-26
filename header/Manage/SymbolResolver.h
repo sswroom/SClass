@@ -2,7 +2,7 @@
 #define _SM_MANAGE_SYMBOLRESOLVER
 #include "Manage/Process.h"
 #include "Manage/AddressResolver.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "Data/ArrayListUInt64.h"
 
 namespace Manage
@@ -10,7 +10,7 @@ namespace Manage
 	class SymbolResolver : public Manage::AddressResolver
 	{
 	private:
-		Data::ArrayListStrUTF8 *modNames;
+		Data::ArrayListString *modNames;
 		Data::ArrayListUInt64 *modBaseAddrs;
 		Data::ArrayListUInt64 *modSizes;
 		Manage::Process *proc;
@@ -22,7 +22,7 @@ namespace Manage
 		virtual UTF8Char *ResolveName(UTF8Char *buff, UInt64 address);
 
 		UOSInt GetModuleCount();
-		const UTF8Char *GetModuleName(UOSInt index);
+		Text::String *GetModuleName(UOSInt index);
 		UInt64 GetModuleAddr(UOSInt index);
 		UInt64 GetModuleSize(UOSInt index);
 	};

@@ -7,6 +7,7 @@
 #include "IO/Writer.h"
 #include "Manage/AddressResolver.h"
 #include "Manage/StackTracer.h"
+#include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
 namespace Manage
@@ -25,7 +26,7 @@ namespace Manage
 		static Text::String *fileName;
 		static ExceptionAction exAction;
 
-		static const UTF8Char *GetExceptionCodeName(UInt32 exCode);
+		static Text::CString GetExceptionCodeName(UInt32 exCode);
 		static Int32 __stdcall ExceptionHandler(void *exInfo);
 	public:
 		ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction);

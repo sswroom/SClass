@@ -15,11 +15,11 @@ namespace IO
 			SBFrameDetail(Text::StringBuilderUTF8 *sb);
 			virtual ~SBFrameDetail();
 
-			virtual void AddHeader(const UTF8Char *header);
-			virtual void AddField(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddSubfield(UOSInt ofst, UOSInt size, const UTF8Char *name, const UTF8Char *value);
-			virtual void AddFieldSeperstor(UOSInt ofst, const UTF8Char *name);
-			virtual void AddText(UOSInt ofst, const UTF8Char *name);
+			virtual void AddHeader(Text::CString header);
+			virtual void AddField(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value);
+			virtual void AddSubfield(UOSInt ofst, UOSInt size, Text::CString name, Text::CString value);
+			virtual void AddFieldSeperstor(UOSInt ofst, Text::CString name);
+			virtual void AddText(UOSInt ofst, Text::CString name);
 			virtual void AddSubframe(UOSInt ofst, UOSInt size);
 		};
 	}

@@ -1139,7 +1139,7 @@ Int32 __stdcall DasmX86_64_GetFuncStack(Manage::DasmX86_64::DasmX86_64_Sess* ses
 			return -1;
 		}
 		instCnt++;
-		sb.Append(sbuff);
+		sb.AppendSlow(sbuff);
 		if (tmpSess.endType == Manage::DasmX86_64::ET_EXIT)
 		{
 			tmpSess.regs.rip = tmpSess.retAddr;
@@ -19468,7 +19468,7 @@ Bool Manage::DasmX86_64::Disasm64(IO::Writer *writer, Manage::AddressResolver *a
 			DEL_CLASS(outStr);
 			return false;
 		}
-		outStr->Append(sbuff);
+		outStr->AppendSlow(sbuff);
 		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmX86_64::ET_JMP && (UInt64)sess.retAddr >= *blockStart && (UInt64)sess.retAddr <= sess.regs.rip)
 		{
@@ -19555,7 +19555,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF8 *outStr, Manage::Add
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.rip)](&sess);
 		if (!ret)
 			break;
-		outStr->Append(sbuff);
+		outStr->AppendSlow(sbuff);
 		sess.regs.rip = sess.retAddr;
 		*blockStart = sess.retAddr;
 		sess.endType = Manage::DasmX86_64::ET_NOT_END;
@@ -19571,7 +19571,7 @@ Bool Manage::DasmX86_64::Disasm64In(Text::StringBuilderUTF8 *outStr, Manage::Add
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.rip)](&sess);
 		console.WriteStr(sbuff);
-		outStr->Append(sbuff);
+		outStr->AppendSlow(sbuff);
 		if (!ret)
 		{
 			UInt8 buff[256];

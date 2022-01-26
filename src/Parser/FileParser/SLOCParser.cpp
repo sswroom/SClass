@@ -167,8 +167,9 @@ public:
 		case 15:
 			{
 				UTF8Char sbuff[32];
-				Net::SocketUtil::GetIPv4Name(sbuff, extInfo->cliIP);
-				sb->Append(sbuff);
+				UTF8Char *sptr;
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, extInfo->cliIP);
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			return true;
 		case 16:

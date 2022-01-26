@@ -372,7 +372,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 				}
 				else
 				{
-					sb.Append(item->fd->GetShortName());
+					sb.AppendSlow(item->fd->GetShortName());
 				}
 				fd->SetFullName(sb.ToString());
 				return fd;
@@ -615,7 +615,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 	{
 		Text::StringBuilderUTF8 sb;
 		Bool succ = true;
-		sb.Append(destPath);
+		sb.AppendSlow(destPath);
 		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
 		{
 			sb.Append(item->name);
@@ -775,7 +775,7 @@ IO::IStreamData *IO::PackageFile::OpenStreamData(const UTF8Char *fileName)
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(fileName);
+	sb.AppendSlow(fileName);
 	sb.Replace('\\', '/');
 	IO::PackageFile *pf;
 	IO::PackageFile *pf2;
@@ -871,34 +871,34 @@ void IO::PackageFile::GetInfoText(Text::StringBuilderUTF8 *sb)
 		}
 		sb->Append(GetInfoTypeName((InfoType)typeList->GetItem(i)));
 		sb->AppendC(UTF8STRC(": "));
-		sb->Append(valList->GetItem(i));
+		sb->AppendSlow(valList->GetItem(i));
 		i++;
 	}
 }
 
-const UTF8Char *IO::PackageFile::GetInfoTypeName(InfoType infoType)
+Text::CString IO::PackageFile::GetInfoTypeName(InfoType infoType)
 {
 	switch(infoType)
 	{
 	case IT_SYSTEM_ID:
-		return (const UTF8Char*)"System";
+		return {UTF8STRC("System")};
 	case IT_VOLUME_ID:
-		return (const UTF8Char*)"Volume";
+		return {UTF8STRC("Volume")};
 	case IT_VOLUME_SET_ID:
-		return (const UTF8Char*)"Volume Set";
+		return {UTF8STRC("Volume Set")};
 	case IT_PUBLISHER_ID:
-		return (const UTF8Char*)"Publisher";
+		return {UTF8STRC("Publisher")};
 	case IT_DATA_PREPARER_ID:
-		return (const UTF8Char*)"Data Preparer";
+		return {UTF8STRC("Data Preparer")};
 	case IT_APPLICATION_ID:
-		return (const UTF8Char*)"Application ID";
+		return {UTF8STRC("Application ID")};
 	case IT_COPYRIGHT_FILE_ID:
-		return (const UTF8Char*)"Copyright File";
+		return {UTF8STRC("Copyright File")};
 	case IT_ABSTRACT_FILE_ID:
-		return (const UTF8Char*)"Abstract File";
+		return {UTF8STRC("Abstract File")};
 	case IT_BIBLIOGRAHPICAL_FILE_ID:
-		return (const UTF8Char*)"Bibliographical File";
+		return {UTF8STRC("Bibliographical File")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

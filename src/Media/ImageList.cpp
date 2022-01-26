@@ -16,7 +16,7 @@ Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
 	NEW_CLASS(this->valTypeI64, Data::ArrayList<ValueType>());
 	NEW_CLASS(this->valI64, Data::ArrayList<Int64>());
 	NEW_CLASS(this->valTypeStr, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valStr, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->valStr, Data::ArrayList<Text::String *>());
 	this->author = 0;
 	this->imgName = 0;
 	this->thermoPtr = 0;
@@ -32,7 +32,7 @@ Media::ImageList::ImageList(const UTF8Char *fileName) : IO::ParsedObject(fileNam
 	NEW_CLASS(this->valTypeI64, Data::ArrayList<ValueType>());
 	NEW_CLASS(this->valI64, Data::ArrayList<Int64>());
 	NEW_CLASS(this->valTypeStr, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valStr, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->valStr, Data::ArrayList<Text::String *>());
 	this->author = 0;
 	this->imgName = 0;
 	this->thermoPtr = 0;
@@ -56,7 +56,7 @@ Media::ImageList::~ImageList()
 	i = this->valStr->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->valStr->GetItem(i));
+		this->valStr->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->valStr);
 	if (this->thermoPtr)
@@ -260,7 +260,7 @@ void Media::ImageList::SetValueInt64(Media::ImageList::ValueType valType, Int64 
 
 void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, const UTF8Char *val)
 {
-	this->valStr->Add(Text::StrCopyNew(val));
+	this->valStr->Add(Text::String::NewNotNull(val));
 	this->valTypeStr->Add(valType);
 }
 
@@ -383,35 +383,35 @@ void Media::ImageList::ToString(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-const UTF8Char *Media::ImageList::GetValueTypeName(Media::ImageList::ValueType valType)
+Text::CString Media::ImageList::GetValueTypeName(Media::ImageList::ValueType valType)
 {
 	switch (valType)
 	{
 	case VT_IR_WIDTH:
-		return (const UTF8Char*)"IR Width";
+		return {UTF8STRC("IR Width")};
 	case VT_IR_HEIGHT:
-		return (const UTF8Char*)"IR Height";
+		return {UTF8STRC("IR Height")};
 	case VT_VISIBLE_WIDTH:
-		return (const UTF8Char*)"Visible Width";
+		return {UTF8STRC("Visible Width")};
 	case VT_VISIBLE_HEIGHT:
-		return (const UTF8Char*)"Visible Height";
+		return {UTF8STRC("Visible Height")};
 	case VT_FIRMWARE_DATE:
-		return (const UTF8Char*)"Firmware Date";
+		return {UTF8STRC("Firmware Date")};
 	case VT_FIRMWARE_VERSION:
-		return (const UTF8Char*)"Firmware Version";
+		return {UTF8STRC("Firmware Version")};
 	case VT_CAMERA_BRAND:
-		return (const UTF8Char*)"Camera Brand";
+		return {UTF8STRC("Camera Brand")};
 	case VT_CAMERA_MODEL:
-		return (const UTF8Char*)"Camera Model";
+		return {UTF8STRC("Camera Model")};
 	case VT_CAMERA_SN:
-		return (const UTF8Char*)"Camera SN";
+		return {UTF8STRC("Camera SN")};
 	case VT_CAPTURE_DATE:
-		return (const UTF8Char*)"Capture Date";
+		return {UTF8STRC("Capture Date")};
 	case VT_CAPTURE_WIDTH:
-		return (const UTF8Char*)"Capture Width";
+		return {UTF8STRC("Capture Width")};
 	case VT_CAPTURE_HEIGHT:
-		return (const UTF8Char*)"Capture Height";
+		return {UTF8STRC("Capture Height")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

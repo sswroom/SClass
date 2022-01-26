@@ -151,18 +151,20 @@ WChar *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[40];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
+	UTF8Char *sptr;
+	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
 		return false;
-	sb->Append(sbuff);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
 
 Text::String *Media::HTRecFile::HTRecReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)) == 0)
+	UTF8Char *sptr;
+	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) == 0)
 		return 0;
-	return Text::String::NewNotNull(sbuff);
+	return Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

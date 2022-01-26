@@ -3,6 +3,7 @@
 #include "Data/SyncArrayList.h"
 #include "IO/IStreamData.h"
 #include "IO/FileAnalyse/IFileAnalyse.h"
+#include "Text/CString.h"
 #include "Text/StringBuilder.h"
 
 namespace IO
@@ -27,13 +28,13 @@ namespace IO
 			Bool threadToStop;
 			Bool threadStarted;
 
-			static const UTF8Char *GetTagName(UInt8 tagType);
+			static Text::CString GetTagName(UInt8 tagType);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			JPGFileAnalyse(IO::IStreamData *fd);
 			virtual ~JPGFileAnalyse();
 
-			virtual const UTF8Char *GetFormatName();
+			virtual Text::CString GetFormatName();
 			virtual UOSInt GetFrameCount();
 			virtual Bool GetFrameName(UOSInt index, Text::StringBuilderUTF8 *sb);
 			virtual Bool GetFrameDetail(UOSInt index, Text::StringBuilderUTF8 *sb);

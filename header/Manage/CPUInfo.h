@@ -2,6 +2,7 @@
 #define _SM_MANAGE_CPUINFO
 #include "Data/ArrayList.h"
 #include "Manage/CPUVendor.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Manage
@@ -38,7 +39,7 @@ namespace Manage
 		Bool GetCPUTurboRatio(Int32 *ratio);
 		Bool GetCPUTCC(Double *temp);
 
-		static const UTF8Char *GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
+		static Text::CString GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
 		static const UTF8Char *GetFeatureShortName(UOSInt index);
 		static const UTF8Char *GetFeatureName(UOSInt index);
 		static const UTF8Char *GetFeatureDesc(UOSInt index);

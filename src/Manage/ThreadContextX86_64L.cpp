@@ -1134,7 +1134,7 @@ void Manage::ThreadContextX86_64::ToString(Text::StringBuilderUTF8 *sb)
 				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 			}
 
-			sb->Append(sbuff);
+			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 
 		i++;

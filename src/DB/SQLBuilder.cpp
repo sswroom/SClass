@@ -26,7 +26,7 @@ DB::SQLBuilder::~SQLBuilder()
 
 void DB::SQLBuilder::AppendCmd(const UTF8Char *val)
 {
-	sb->Append(val);
+	sb->AppendSlow(val);
 }
 
 void DB::SQLBuilder::AppendCmdC(const UTF8Char *val, UOSInt len)

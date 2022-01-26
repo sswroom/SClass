@@ -30,7 +30,7 @@ Bool Net::Email::EmailMessage::SetHeader(const UTF8Char *name, UOSInt nameLen, c
 	sb.AppendC(name, nameLen);
 	sb.AppendChar(':', 1);
 	sb.AppendChar(' ', 1);
-	sb.Append(val);
+	sb.AppendSlow(val);
 	UOSInt i = this->GetHeaderIndex(name, nameLen);
 	if (i == INVALID_INDEX)
 	{
@@ -141,7 +141,7 @@ Bool Net::Email::EmailMessage::SetMessageId(const UTF8Char *msgId)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendChar('<', 1);
-	sb.Append(msgId);
+	sb.AppendSlow(msgId);
 	sb.AppendChar('>', 1);
 	return this->SetHeader(UTF8STRC("Message-ID"), sb.ToString());
 }
@@ -158,13 +158,13 @@ Bool Net::Email::EmailMessage::SetFrom(const UTF8Char *name, const UTF8Char *add
 		else
 		{
 			sb.AppendChar('"', 1);
-			sb.Append(name);
+			sb.AppendSlow(name);
 			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
 	sb.AppendChar('<', 1);
-	sb.Append(addr);
+	sb.AppendSlow(addr);
 	sb.AppendChar('>', 1);
 	this->SetHeader(UTF8STRC("From"), sb.ToString());
 	SDEL_TEXT(this->fromAddr);
@@ -190,13 +190,13 @@ Bool Net::Email::EmailMessage::AddTo(const UTF8Char *name, const UTF8Char *addr)
 		else
 		{
 			sb.AppendChar('"', 1);
-			sb.Append(name);
+			sb.AppendSlow(name);
 			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
 	sb.AppendChar('<', 1);
-	sb.Append(addr);
+	sb.AppendSlow(addr);
 	sb.AppendChar('>', 1);
 	this->SetHeader(UTF8STRC("To"), sb.ToString());
 	this->recpList->Add(Text::StrCopyNew(addr));
@@ -209,7 +209,7 @@ Bool Net::Email::EmailMessage::AddToList(const UTF8Char *addrs)
 	UOSInt i;
 	UTF8Char *sarr[2];
 	Text::StringBuilderUTF8 sb;
-	sb.Append(addrs);
+	sb.AppendSlow(addrs);
 	sarr[1] = sb.ToString();
 	succ = true;
 	while (true)
@@ -235,7 +235,8 @@ Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 	Text::StringBuilderUTF8 sb;
 	if (i != INVALID_INDEX)
 	{
-		sb.Append(this->headerList->GetItem(i) + 4);
+		Text::String *s = this->headerList->GetItem(i);
+		sb.AppendC(s->v + 4, s->leng - 4);
 		sb.AppendC(UTF8STRC(", "));
 	}
 	if (name)
@@ -247,13 +248,13 @@ Bool Net::Email::EmailMessage::AddCc(const UTF8Char *name, const UTF8Char *addr)
 		else
 		{
 			sb.AppendChar('"', 1);
-			sb.Append(name);
+			sb.AppendSlow(name);
 			sb.AppendChar('"', 1);
 		}
 		sb.AppendChar(' ', 1);
 	}
 	sb.AppendChar('<', 1);
-	sb.Append(addr);
+	sb.AppendSlow(addr);
 	sb.AppendChar('>', 1);
 	this->SetHeader(UTF8STRC("Cc"), sb.ToString());
 	this->recpList->Add(Text::StrCopyNew(addr));
@@ -308,6 +309,7 @@ Bool Net::Email::EmailMessage::WriteToStream(IO::Stream *stm)
 
 Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF8 *sb, const UTF8Char *mailFrom)
 {
+	UOSInt mailFromLen = Text::StrCharCnt(mailFrom);
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	sb->AppendHex64((UInt64)dt.ToTicks());
@@ -315,10 +317,10 @@ Bool Net::Email::EmailMessage::GenerateMessageID(Text::StringBuilderUTF8 *sb, co
 	UInt8 crcVal[4];
 	Crypto::Hash::CRC32R crc;
 	UOSInt i;
-	i = Text::StrIndexOfChar(mailFrom, '@');
+	i = Text::StrIndexOfCharC(mailFrom, mailFromLen, '@');
 	crc.Calc((UInt8*)mailFrom, i);
 	crc.GetValue((UInt8*)&crcVal);
 	sb->AppendHex32(ReadMUInt32(crcVal));
-	sb->Append(&mailFrom[i]);
+	sb->AppendC(&mailFrom[i], mailFromLen - i);
 	return true;
 }

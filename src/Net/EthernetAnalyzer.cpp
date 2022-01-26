@@ -788,6 +788,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 	UInt32 ipAddr;
 //	UInt8 tmpBuff[8];
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	MACStatus *mac;
 	UOSInt i;
 	Bool valid = true;
@@ -973,8 +974,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						sb.AppendC(UTF8STRC(") to "));
 						break;
 					}
-					Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-					sb.Append(sbuff);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
@@ -1082,8 +1083,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						sb.AppendC(UTF8STRC(") from "));
 						break;
 					}
-					Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
-					sb.Append(sbuff);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(", ttl = "));
 					sb.AppendU16(packet[8]);
 					sb.AppendC(UTF8STRC(", size = "));
@@ -1490,8 +1491,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(srcPort);
 									sb.AppendC(UTF8STRC(" NTP request to "));
-									Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-									sb.Append(sbuff);
+									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
+									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
@@ -1525,12 +1526,12 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									sb.AppendC(UTF8STRC(" UDP Port "));
 									sb.AppendU16(destPort);
 									sb.AppendC(UTF8STRC(" NTP reply from "));
-									Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
-									sb.Append(sbuff);
+									sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->srcIP);
+									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									sb.AppendC(UTF8STRC(", time = "));
 									Net::NTPServer::ReadTime(&ipData[40], &dt);
-									dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-									sb.Append(sbuff);
+									sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+									sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
@@ -1708,8 +1709,8 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							sb.AppendC(UTF8STRC(" UDP Port "));
 							sb.AppendU16(srcPort);
 							sb.AppendC(UTF8STRC(" SSDP to "));
-							Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
-							sb.Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip->destIP);
+							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 //							ipData[udpLeng] = 0;
 							UOSInt i = Text::StrIndexOf(&ipData[8], (const UTF8Char*)" * ");
 							if (i != INVALID_INDEX && i > 0)

@@ -3,6 +3,7 @@
 #include "Data/NamedClass.h"
 #include "Data/StringMap.h"
 #include "Data/StringUTF8Map.h"
+#include "Text/CString.h"
 #include "Text/JSText.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -20,7 +21,7 @@ namespace Text
 		static void BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<Text::String*> *list);
 		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, T *obj, Data::NamedClass<T> *cls);
 		template <class T> static void BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen);
-		static void Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, const UTF8Char *seperator);
+		static void Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, Text::CString seperator);
 		static Bool IsNonASCII(const UTF8Char *s);
 		static Bool IsASCIIText(const UInt8 *buff, UOSInt buffLen);
 		static Bool IsEmailAddress(const UTF8Char *s);

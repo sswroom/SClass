@@ -70,15 +70,15 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				buff[i] = 0;
 				if (buff[lineStart] == '\t')
 				{
-					sb.Append((UTF8Char*)&buff[lineStart + 1]);
+					sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 				}
 				else if (buff[lineStart] == ' ')
 				{
-					sb.Append((UTF8Char*)&buff[lineStart + 1]);
+					sb.AppendC((UTF8Char*)&buff[lineStart + 1], i - lineStart - 1);
 				}
 				else
 				{
-					sb.Append((UTF8Char*)&buff[lineStart]);
+					sb.AppendC((UTF8Char*)&buff[lineStart], i - lineStart);
 				}
 				if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 				{
@@ -181,18 +181,18 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, const UTF8Char *defMsg, const UTF8Char *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
 {
 	this->contentType = contentType->Clone();
 	if (defMsg)
 	{
-		this->defMsg = Text::StrCopyNew(defMsg);
+		this->defMsg = defMsg->Clone();
 	}
 	else
 	{
 		this->defMsg = 0;
 	}
-	this->boundary = Text::StrCopyNew(boundary);
+	this->boundary = boundary->Clone();
 	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
 }
 
@@ -201,13 +201,13 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, U
 	this->contentType = Text::String::New(contentType, contTypeLen);
 	if (defMsg)
 	{
-		this->defMsg = Text::StrCopyNew(defMsg);
+		this->defMsg = Text::String::NewNotNull(defMsg);
 	}
 	else
 	{
 		this->defMsg = 0;
 	}
-	this->boundary = Text::StrCopyNew(boundary);
+	this->boundary = Text::String::NewNotNull(boundary);
 	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
 }
 
@@ -219,16 +219,16 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, c
 	sbc.AppendC(UTF8STRC("----------"));
 	sbc.AppendI64(dt.ToTicks());
 	sbc.AppendOSInt((0x7fffffff & (OSInt)this));
-	this->boundary = Text::StrCopyNew(sbc.ToString());
+	this->boundary = Text::String::New(sbc.ToString(), sbc.GetLength());
 	sbc.ClearStr();
-	sbc.Append(contentType);
+	sbc.AppendSlow(contentType);
 	sbc.AppendC(UTF8STRC(";\r\n\tboundary=\""));
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("\""));
 	this->contentType = Text::String::New(sbc.ToString(), sbc.GetLength());
 	if (defMsg)
 	{
-		this->defMsg = Text::StrCopyNew(defMsg);
+		this->defMsg = Text::String::NewNotNull(defMsg);
 	}
 	else
 	{
@@ -242,8 +242,8 @@ Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 	UOSInt i;
 	PartInfo *part;
 	this->contentType->Release();
-	SDEL_TEXT(this->defMsg);
-	Text::StrDelNew(this->boundary);
+	SDEL_STRING(this->defMsg);
+	this->boundary->Release();
 	i = this->parts->GetCount();
 	while (i-- > 0)
 	{
@@ -278,8 +278,8 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 	Text::StringBuilderUTF8 sbc;
 	if (this->defMsg)
 	{
-		len = Text::StrCharCnt(this->defMsg);
-		stm->Write((const UInt8*)this->defMsg, len);
+		len = this->defMsg->leng;
+		stm->Write(this->defMsg->v, len);
 		ret += len;
 	}
 	i = 0;
@@ -292,7 +292,7 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::WriteStream(IO::Stream *stm)
 		sbc.AppendC(UTF8STRC("\r\n--"));
 		sbc.Append(this->boundary);
 		sbc.AppendC(UTF8STRC("\r\n"));
-		stm->Write((const UInt8*)sbc.ToString(), sbc.GetLength());
+		stm->Write(sbc.ToString(), sbc.GetLength());
 		ret += sbc.GetLength();
 
 		k = 0;
@@ -362,7 +362,7 @@ Text::IMIMEObj *Text::MIMEObj::MultipartMIMEObj::Clone()
 	return obj;
 }
 
-const UTF8Char *Text::MIMEObj::MultipartMIMEObj::GetDefMsg()
+Text::String *Text::MIMEObj::MultipartMIMEObj::GetDefMsg()
 {
 	return this->defMsg;
 }

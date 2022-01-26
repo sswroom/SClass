@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_OSM_OSMTILEMAP
 #define _SM_MAP_OSM_OSMTILEMAP
 #include "Data/ArrayListDbl.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/PackageFile.h"
 #include "IO/SPackageFile.h"
 #include "Map/TileMap.h"
@@ -16,11 +16,11 @@ namespace Map
 		class OSMTileMap : public Map::TileMap
 		{
 		private:
-			Data::ArrayListStrUTF8 *urls;
+			Data::ArrayListString *urls;
 			UOSInt urlNext;
 			Sync::Mutex *urlMut;
 
-			const UTF8Char *cacheDir;
+			Text::String *cacheDir;
 			IO::SPackageFile *spkg;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
@@ -29,14 +29,14 @@ namespace Map
 			UOSInt tileWidth;
 			UOSInt tileHeight;
 
-			const UTF8Char *GetNextURL();
+			Text::String *GetNextURL();
 		public:
 			OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMTileMap();
 
 			void AddAlternateURL(const UTF8Char *url);
-			const UTF8Char *GetOSMURL(UOSInt index);
+			Text::String *GetOSMURL(UOSInt index);
 			Bool HasSPackageFile();
 			Bool ImportTiles(IO::PackageFile *pkg);
 			Bool OptimizeToFile(const UTF8Char *fileName);

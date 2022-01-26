@@ -94,9 +94,9 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"MDB";
+	return {UTF8STRC("MDB")};
 }
 
 UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
@@ -156,6 +156,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[256];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UInt8 packBuff[4096];
 	UInt8 decBuff[128];
 	pack = this->packs->GetItem(index);
@@ -188,8 +189,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
-				Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, (const UTF8Char*)"Creation date", sbuff);
+				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
+				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
 				frame->AddHexBuff(24 + 0x62, 28, "Unknown", &decBuff[0x62], true);
 			}
 			else
@@ -210,15 +211,16 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				WriteUInt32(&decBuff[0x46], ReadUInt32(&decBuff[0x46]) ^ ndays);
 				WriteUInt32(&decBuff[0x4A], ReadUInt32(&decBuff[0x4A]) ^ ndays);
 				WriteUInt32(&decBuff[0x4E], ReadUInt32(&decBuff[0x4E]) ^ ndays);
-				Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&decBuff[0x2A], 20)[0] = 0;
-				frame->AddField(24 + 0x2A, 40, (const UTF8Char*)"Database Password", sbuff);
+				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&decBuff[0x2A], 20);
+				sptr[0] = 0;
+				frame->AddField(24 + 0x2A, 40, {UTF8STRC("Database Password")}, {sbuff, (UOSInt)(sptr - sbuff)});
 				frame->AddHex32(24 + 0x52, "Unknown", ReadUInt32(&decBuff[0x52]));
 				frame->AddUInt(24 + 0x56, 4, "System Collation", ReadUInt32(&decBuff[0x56]));
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
-				Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, (const UTF8Char*)"Creation date", sbuff);
+				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
+				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
 				frame->AddHexBuff(24 + 0x62, 30, "Unknown", &decBuff[0x62], true);
 
 				frame->AddUInt(152, 4, "Unknown", ReadUInt32(&packBuff[152]));
@@ -247,7 +249,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
-				frame->AddField(14 + i * 2, 2, (const UTF8Char*)"Record Offset", sbuff);
+				frame->AddField(14 + i * 2, 2, {UTF8STRC("Record Offset")}, {sbuff, (UOSInt)(sptr - sbuff)});
 				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
 				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, (const Char*)sbuff, &packBuff[thisOfst], true);
@@ -324,9 +326,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
 				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
 				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
-				Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1)[0] = 0;
-				frame->AddField(ofst + 2, colSize, sbuff, sbuff2);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
+				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
+				sptr2[0] = 0;
+				frame->AddField(ofst + 2, colSize, {sbuff, (UOSInt)(sptr - sbuff)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)});
 				ofst += 2 + colSize;
 				i++;
 			}
@@ -385,9 +388,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
 				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
 				frame->AddUInt(ofst, 2, (const Char*)sbuff, colSize);
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
-				Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1)[0] = 0;
-				frame->AddField(ofst + 2, colSize, sbuff, sbuff2);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
+				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
+				sptr2[0] = 0;
+				frame->AddField(ofst + 2, colSize, {sbuff, (UOSInt)(sptr - sbuff)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)});
 				ofst += 2 + colSize;
 				i++;
 			}
@@ -429,39 +433,39 @@ Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	return false;
 }
 
-const UTF8Char *IO::FileAnalyse::MDBFileAnalyse::ColumnTypeGetName(UInt8 colType)
+Text::CString IO::FileAnalyse::MDBFileAnalyse::ColumnTypeGetName(UInt8 colType)
 {
 	switch (colType)
 	{
 	case 1:
-		return (const UTF8Char*)"BOOL";
+		return {UTF8STRC("BOOL")};
 	case 2:
-		return (const UTF8Char*)"BYTE";
+		return {UTF8STRC("BYTE")};
 	case 3:
-		return (const UTF8Char*)"INT";
+		return {UTF8STRC("INT")};
 	case 4:
-		return (const UTF8Char*)"LONGINT";
+		return {UTF8STRC("LONGINT")};
 	case 5:
-		return (const UTF8Char*)"MONEY";
+		return {UTF8STRC("MONEY")};
 	case 6:
-		return (const UTF8Char*)"FLOAT";
+		return {UTF8STRC("FLOAT")};
 	case 7:
-		return (const UTF8Char*)"DOUBLE";
+		return {UTF8STRC("DOUBLE")};
 	case 8:
-		return (const UTF8Char*)"DATETIME";
+		return {UTF8STRC("DATETIME")};
 	case 9:
-		return (const UTF8Char*)"BINARY";
+		return {UTF8STRC("BINARY")};
 	case 0xA:
-		return (const UTF8Char*)"TEXT";
+		return {UTF8STRC("TEXT")};
 	case 0xB:
-		return (const UTF8Char*)"OLE"; //Long Binary
+		return {UTF8STRC("OLE")}; //Long Binary
 	case 0xC:
-		return (const UTF8Char*)"MEMO"; //Long Text
+		return {UTF8STRC("MEMO")}; //Long Text
 	case 0xF:
-		return (const UTF8Char*)"REPID";
+		return {UTF8STRC("REPID")};
 	case 0x10:
-		return (const UTF8Char*)"NUMERIC";
+		return {UTF8STRC("NUMERIC")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }

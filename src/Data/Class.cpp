@@ -200,7 +200,7 @@ Bool Data::Class::Equals(void *obj1, void *obj2)
 	return true;
 }
 
-void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
+void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendChar('\t', tabLev);
 	sb->AppendC(UTF8STRC("class "));
@@ -242,19 +242,19 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		const UTF8Char *cppType = Text::CPPText::GetCppType(field->itemType);
+		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
 		sb->AppendC(UTF8STRC("Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->Append(field->name->v + 1);
+		sb->AppendC(field->name->v + 1, field->name->leng - 1);
 		sb->AppendC(UTF8STRC("();\r\n"));
 
 		sb->AppendChar('\t', tabLev + 1);
 		sb->AppendC(UTF8STRC("void Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->Append(field->name->v + 1);
+		sb->AppendC(field->name->v + 1, field->name->leng - 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
@@ -272,11 +272,11 @@ void Data::Class::ToCppClassHeader(const UTF8Char *clsName, UOSInt tabLev, Text:
 	sb->AppendC(UTF8STRC("};\r\n"));
 }
 
-void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
+void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::StringBase<UTF8Char> *clsName, UOSInt tabLev, Text::StringBuilderUTF8 *sb)
 {
 	if (clsPrefix == 0)
 	{
-		clsPrefix = (const UTF8Char*)"";
+		clsPrefix = Text::String::NewEmpty();
 	}
 	Data::ArrayList<FieldInfo *> *fieldList = this->fields;
 	FieldInfo *field;
@@ -363,7 +363,7 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 	while (i < j)
 	{
 		field = fieldList->GetItem(i);
-		const UTF8Char *cppType = Text::CPPText::GetCppType(field->itemType);
+		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
 		sb->AppendChar('\t', tabLev);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);
@@ -371,7 +371,7 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->Append(clsName);
 		sb->AppendC(UTF8STRC("::Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->Append(field->name->v + 1);
+		sb->AppendC(field->name->v + 1, field->name->leng);
 		sb->AppendC(UTF8STRC("()\r\n"));
 		sb->AppendChar('\t', tabLev);
 		sb->AppendC(UTF8STRC("{\r\n"));
@@ -389,7 +389,7 @@ void Data::Class::ToCppClassSource(const UTF8Char *clsPrefix, const UTF8Char *cl
 		sb->Append(clsName);
 		sb->AppendC(UTF8STRC("::Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
-		sb->Append(field->name->v + 1);
+		sb->AppendC(field->name->v + 1, field->name->leng - 1);
 		sb->AppendChar('(', 1);
 		sb->Append(cppType);
 		sb->AppendChar(' ', 1);

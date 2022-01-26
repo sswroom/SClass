@@ -471,9 +471,9 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"EMBL";
+	return {UTF8STRC("EMBL")};
 }
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
@@ -512,7 +512,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	if (element)
 	{
 		sb->AppendChar(' ', 1);
-		sb->Append((const UTF8Char*)element->elementName);
+		sb->AppendSlow((const UTF8Char*)element->elementName);
 	}
 	sb->AppendC(UTF8STRC(", size="));
 	sb->AppendI32((Int32)pack->packSize);
@@ -555,7 +555,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 	if (element)
 	{
 		sb->AppendC(UTF8STRC("\r\nElement Name="));
-		sb->Append((const UTF8Char*)element->elementName);
+		sb->AppendSlow((const UTF8Char*)element->elementName);
 		sb->AppendC(UTF8STRC("\r\nElement Type="));
 		switch (element->type)
 		{
@@ -630,7 +630,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(UOSInt index, Text::String
 			this->fd->GetRealData(pack->fileOfst + pack->hdrSize, pack->packSize - pack->hdrSize, buff);
 			if (buff[pack->packSize - pack->hdrSize - 1] == 0)
 			{
-				sb->Append(buff);
+				sb->AppendC(buff, pack->packSize - pack->hdrSize - 1);
 			}
 			else
 			{

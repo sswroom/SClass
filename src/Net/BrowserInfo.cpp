@@ -2,222 +2,222 @@
 #include "MyMemory.h"
 #include "Net/BrowserInfo.h"
 
-const UTF8Char *Net::BrowserInfo::GetName(BrowserType btype)
+Text::CString Net::BrowserInfo::GetName(BrowserType btype)
 {
 	switch (btype)
 	{
 	case BT_IE:
-		return (const UTF8Char*)"IE";
+		return {UTF8STRC("IE")};
 	case BT_FIREFOX:
-		return (const UTF8Char*)"Firefox";
+		return {UTF8STRC("Firefox")};
 	case BT_CHROME:
-		return (const UTF8Char*)"Chrome";
+		return {UTF8STRC("Chrome")};
 	case BT_SAFARI:
-		return (const UTF8Char*)"Safari";
+		return {UTF8STRC("Safari")};
 	case BT_UCBROWSER:
-		return (const UTF8Char*)"UC Browser";
+		return {UTF8STRC("UC Browser")};
 	case BT_CFNETWORK:
-		return (const UTF8Char*)"CFNetwork";
+		return {UTF8STRC("CFNetwork")};
 	case BT_SOGOUWEB:
-		return (const UTF8Char*)"Sogou Web Spider";
+		return {UTF8STRC("Sogou Web Spider")};
 	case BT_BAIDU:
-		return (const UTF8Char*)"Baidu Spider";
+		return {UTF8STRC("Baidu Spider")};
 	case BT_SEMRUSH:
-		return (const UTF8Char*)"Semrush Bot";
+		return {UTF8STRC("Semrush Bot")};
 	case BT_DALVIK:
-		return (const UTF8Char*)"Dalvik";
+		return {UTF8STRC("Dalvik")};
 	case BT_INDY:
-		return (const UTF8Char*)"Indy Library";
+		return {UTF8STRC("Indy Library")};
 	case BT_GOOGLEBOTS:
-		return (const UTF8Char*)"GoogleBot (Smartphone)";
+		return {UTF8STRC("GoogleBot (Smartphone)")};
 	case BT_ANDROIDWV:
-		return (const UTF8Char*)"Android WebView";
+		return {UTF8STRC("Android WebView")};
 	case BT_SAMSUNG:
-		return (const UTF8Char*)"Samsung Browser";
+		return {UTF8STRC("Samsung Browser")};
 	case BT_WESTWIND:
-		return (const UTF8Char*)"West Wind Internet Protocols";
+		return {UTF8STRC("West Wind Internet Protocols")};
 	case BT_YANDEX:
-		return (const UTF8Char*)"Yandex Bot";
+		return {UTF8STRC("Yandex Bot")};
 	case BT_BING:
-		return (const UTF8Char*)"Bing Bot";
+		return {UTF8STRC("Bing Bot")};
 	case BT_MASSCAN:
-		return (const UTF8Char*)"masscan";
+		return {UTF8STRC("masscan")};
 	case BT_PYREQUESTS:
-		return (const UTF8Char*)"Python Requests";
+		return {UTF8STRC("Python Requests")};
 	case BT_ZGRAB:
-		return (const UTF8Char*)"zgrab";
+		return {UTF8STRC("zgrab")};
 	case BT_EDGE:
-		return (const UTF8Char*)"Edge";
+		return {UTF8STRC("Edge")};
 	case BT_PYURLLIB:
-		return (const UTF8Char*)"Python urllib";
+		return {UTF8STRC("Python urllib")};
 	case BT_GOOGLEBOTD:
-		return (const UTF8Char*)"GoogleBot (Desktop)";
+		return {UTF8STRC("GoogleBot (Desktop)")};
 	case BT_DOTNET:
-		return (const UTF8Char*)".NET Web Client";
+		return {UTF8STRC(".NET Web Client")};
 	case BT_WINDIAG:
-		return (const UTF8Char*)"Microsoft Windows Network Diagnostics";
+		return {UTF8STRC("Microsoft Windows Network Diagnostics")};
 	case BT_SSWR:
-		return (const UTF8Char*)"SSWR";
+		return {UTF8STRC("SSWR")};
 	case BT_SMARTTV:
-		return (const UTF8Char*)"SmartTV";
+		return {UTF8STRC("SmartTV")};
 	case BT_BLEXBOT:
-		return (const UTF8Char*)"BLEXBot";
+		return {UTF8STRC("BLEXBot")};
 	case BT_SOGOUPIC:
-		return (const UTF8Char*)"Sogou Pic Spider";
+		return {UTF8STRC("Sogou Pic Spider")};
 	case BT_NUTCH:
-		return (const UTF8Char*)"Apache Nutch";
+		return {UTF8STRC("Apache Nutch")};
 	case BT_YISOU:
-		return (const UTF8Char*)"Yisou Spider";
+		return {UTF8STRC("Yisou Spider")};
 	case BT_WGET:
-		return (const UTF8Char*)"Wget";
+		return {UTF8STRC("Wget")};
 	case BT_SCRAPY:
-		return (const UTF8Char*)"Scrapy";
+		return {UTF8STRC("Scrapy")};
 	case BT_GOHTTP:
-		return (const UTF8Char*)"Golang HTTP Client";
+		return {UTF8STRC("Golang HTTP Client")};
 	case BT_WINHTTP:
-		return (const UTF8Char*)"WinHTTP Client";
+		return {UTF8STRC("WinHTTP Client")};
 	case BT_NLPPROJECT:
-		return (const UTF8Char*)"NLPProject";
+		return {UTF8STRC("NLPProject")};
 	case BT_APACHEHTTP:
-		return (const UTF8Char*)"Apache HTTP Client";
+		return {UTF8STRC("Apache HTTP Client")};
 	case BT_BANNERDET:
-		return (const UTF8Char*)"HTTP Banner Detection";
+		return {UTF8STRC("HTTP Banner Detection")};
 	case BT_NETCRAFTWEB:
-		return (const UTF8Char*)"Netcraft Web Server Survey";
+		return {UTF8STRC("Netcraft Web Server Survey")};
 	case BT_NETCRAFTAG:
-		return (const UTF8Char*)"Netcraft Survey Agent";
+		return {UTF8STRC("Netcraft Survey Agent")};
 	case BT_AHREFSBOT:
-		return (const UTF8Char*)"Ahrefs Bot";
+		return {UTF8STRC("Ahrefs Bot")};
 	case BT_MJ12BOT:
-		return (const UTF8Char*)"MJ12Bot";
+		return {UTF8STRC("MJ12Bot")};
 	case BT_NETSYSRES:
-		return (const UTF8Char*)"NetSystemsResearch";
+		return {UTF8STRC("NetSystemsResearch")};
 	case BT_WHATSAPP:
-		return (const UTF8Char*)"WhatsApp";
+		return {UTF8STRC("WhatsApp")};
 	case BT_CURL:
-		return (const UTF8Char*)"Curl";
+		return {UTF8STRC("Curl")};
 	case BT_GSA:
-		return (const UTF8Char*)"Google Search App";
+		return {UTF8STRC("Google Search App")};
 	case BT_FACEBOOK:
-		return (const UTF8Char*)"Facebook External Hit";
+		return {UTF8STRC("Facebook External Hit")};
 	case BT_NETSEEN:
-		return (const UTF8Char*)"NetSeen";
+		return {UTF8STRC("NetSeen")};
 	case BT_MSNBOT:
-		return (const UTF8Char*)"MSNBOT";
+		return {UTF8STRC("MSNBOT")};
 	case BT_LIBWWW_PERL:
-		return (const UTF8Char*)"libwww-perl";
+		return {UTF8STRC("libwww-perl")};
 	case BT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Net::BrowserInfo::GetDefName(BrowserType btype)
+Text::CString Net::BrowserInfo::GetDefName(BrowserType btype)
 {
 	switch (btype)
 	{
 	case BT_IE:
-		return (const UTF8Char*)"BT_IE";
+		return {UTF8STRC("BT_IE")};
 	case BT_FIREFOX:
-		return (const UTF8Char*)"BT_FIREFOX";
+		return {UTF8STRC("BT_FIREFOX")};
 	case BT_CHROME:
-		return (const UTF8Char*)"BT_CHROME";
+		return {UTF8STRC("BT_CHROME")};
 	case BT_SAFARI:
-		return (const UTF8Char*)"BT_SAFARI";
+		return {UTF8STRC("BT_SAFARI")};
 	case BT_UCBROWSER:
-		return (const UTF8Char*)"BT_UCBROWSER";
+		return {UTF8STRC("BT_UCBROWSER")};
 	case BT_CFNETWORK:
-		return (const UTF8Char*)"BT_CFNETWORK";
+		return {UTF8STRC("BT_CFNETWORK")};
 	case BT_SOGOUWEB:
-		return (const UTF8Char*)"BT_SOGOUWEB";
+		return {UTF8STRC("BT_SOGOUWEB")};
 	case BT_BAIDU:
-		return (const UTF8Char*)"BT_BAIDU";
+		return {UTF8STRC("BT_BAIDU")};
 	case BT_SEMRUSH:
-		return (const UTF8Char*)"BT_SEMRUSH";
+		return {UTF8STRC("BT_SEMRUSH")};
 	case BT_DALVIK:
-		return (const UTF8Char*)"BT_DALVIK";
+		return {UTF8STRC("BT_DALVIK")};
 	case BT_INDY:
-		return (const UTF8Char*)"BT_INDY";
+		return {UTF8STRC("BT_INDY")};
 	case BT_GOOGLEBOTS:
-		return (const UTF8Char*)"BT_GOOGLEBOTS";
+		return {UTF8STRC("BT_GOOGLEBOTS")};
 	case BT_ANDROIDWV:
-		return (const UTF8Char*)"BT_ANDROIDWV";
+		return {UTF8STRC("BT_ANDROIDWV")};
 	case BT_SAMSUNG:
-		return (const UTF8Char*)"BT_SAMSUNG";
+		return {UTF8STRC("BT_SAMSUNG")};
 	case BT_WESTWIND:
-		return (const UTF8Char*)"BT_WESTWIND";
+		return {UTF8STRC("BT_WESTWIND")};
 	case BT_YANDEX:
-		return (const UTF8Char*)"BT_YANDEX";
+		return {UTF8STRC("BT_YANDEX")};
 	case BT_BING:
-		return (const UTF8Char*)"BT_BING";
+		return {UTF8STRC("BT_BING")};
 	case BT_MASSCAN:
-		return (const UTF8Char*)"BT_MASSCAN";
+		return {UTF8STRC("BT_MASSCAN")};
 	case BT_PYREQUESTS:
-		return (const UTF8Char*)"BT_PYREQUESTS";
+		return {UTF8STRC("BT_PYREQUESTS")};
 	case BT_ZGRAB:
-		return (const UTF8Char*)"BT_ZGRAB";
+		return {UTF8STRC("BT_ZGRAB")};
 	case BT_EDGE:
-		return (const UTF8Char*)"BT_EDGE";
+		return {UTF8STRC("BT_EDGE")};
 	case BT_PYURLLIB:
-		return (const UTF8Char*)"BT_PYURLLIB";
+		return {UTF8STRC("BT_PYURLLIB")};
 	case BT_GOOGLEBOTD:
-		return (const UTF8Char*)"BT_GOOGLEBOTD";
+		return {UTF8STRC("BT_GOOGLEBOTD")};
 	case BT_DOTNET:
-		return (const UTF8Char*)"BT_DOTNET";
+		return {UTF8STRC("BT_DOTNET")};
 	case BT_WINDIAG:
-		return (const UTF8Char*)"BT_WINDIAG";
+		return {UTF8STRC("BT_WINDIAG")};
 	case BT_SSWR:
-		return (const UTF8Char*)"BT_SSWR";
+		return {UTF8STRC("BT_SSWR")};
 	case BT_SMARTTV:
-		return (const UTF8Char*)"BT_SMARTTV";
+		return {UTF8STRC("BT_SMARTTV")};
 	case BT_BLEXBOT:
-		return (const UTF8Char*)"BT_BLEXBOT";
+		return {UTF8STRC("BT_BLEXBOT")};
 	case BT_SOGOUPIC:
-		return (const UTF8Char*)"BT_SOGOUPIC";
+		return {UTF8STRC("BT_SOGOUPIC")};
 	case BT_NUTCH:
-		return (const UTF8Char*)"BT_NUTCH";
+		return {UTF8STRC("BT_NUTCH")};
 	case BT_YISOU:
-		return (const UTF8Char*)"BT_YISOU";
+		return {UTF8STRC("BT_YISOU")};
 	case BT_WGET:
-		return (const UTF8Char*)"BT_WGET";
+		return {UTF8STRC("BT_WGET")};
 	case BT_SCRAPY:
-		return (const UTF8Char*)"BT_SCRAPY";
+		return {UTF8STRC("BT_SCRAPY")};
 	case BT_GOHTTP:
-		return (const UTF8Char*)"BT_GOHTTP";
+		return {UTF8STRC("BT_GOHTTP")};
 	case BT_WINHTTP:
-		return (const UTF8Char*)"BT_WINHTTP";
+		return {UTF8STRC("BT_WINHTTP")};
 	case BT_NLPPROJECT:
-		return (const UTF8Char*)"BT_NLPPROJECT";
+		return {UTF8STRC("BT_NLPPROJECT")};
 	case BT_APACHEHTTP:
-		return (const UTF8Char*)"BT_APACHEHTTP";
+		return {UTF8STRC("BT_APACHEHTTP")};
 	case BT_BANNERDET:
-		return (const UTF8Char*)"BT_BANNERDET";
+		return {UTF8STRC("BT_BANNERDET")};
 	case BT_NETCRAFTWEB:
-		return (const UTF8Char*)"BT_NETCRAFTWEB";
+		return {UTF8STRC("BT_NETCRAFTWEB")};
 	case BT_NETCRAFTAG:
-		return (const UTF8Char*)"BT_NETCRAFTAG";
+		return {UTF8STRC("BT_NETCRAFTAG")};
 	case BT_AHREFSBOT:
-		return (const UTF8Char*)"BT_AHREFSBOT";
+		return {UTF8STRC("BT_AHREFSBOT")};
 	case BT_MJ12BOT:
-		return (const UTF8Char*)"BT_MJ12BOT";
+		return {UTF8STRC("BT_MJ12BOT")};
 	case BT_NETSYSRES:
-		return (const UTF8Char*)"BT_NETSYSRES";
+		return {UTF8STRC("BT_NETSYSRES")};
 	case BT_WHATSAPP:
-		return (const UTF8Char*)"BT_WHATSAPP";
+		return {UTF8STRC("BT_WHATSAPP")};
 	case BT_CURL:
-		return (const UTF8Char*)"BT_CURL";
+		return {UTF8STRC("BT_CURL")};
 	case BT_GSA:
-		return (const UTF8Char*)"BT_GSA";
+		return {UTF8STRC("BT_GSA")};
 	case BT_FACEBOOK:
-		return (const UTF8Char*)"BT_FACEBOOK";
+		return {UTF8STRC("BT_FACEBOOK")};
 	case BT_NETSEEN:
-		return (const UTF8Char*)"BT_NETSEEN";
+		return {UTF8STRC("BT_NETSEEN")};
 	case BT_MSNBOT:
-		return (const UTF8Char*)"BT_NETSEEN";
+		return {UTF8STRC("BT_NETSEEN")};
 	case BT_LIBWWW_PERL:
-		return (const UTF8Char*)"BT_LIBWWW_PERL";
+		return {UTF8STRC("BT_LIBWWW_PERL")};
 	case BT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"BT_UNKNOWN";
+		return {UTF8STRC("BT_UNKNOWN")};
 	}
 }

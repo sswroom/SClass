@@ -500,10 +500,10 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			UOSInt l;
 			Text::StringBuilderUTF8 sb;
 			l = ParseString(sbuff, buff, i + 10, i + 10 + k);
-			sb.Append(sbuff);
+			sb.AppendSlow(sbuff);
 			sb.AppendC(UTF8STRC(", MailAddr="));
 			l = ParseString(sbuff, buff, l, i + 10 + k);
-			sb.Append(sbuff);
+			sb.AppendSlow(sbuff);
 			if (l + 20 <= i + 10 + k)
 			{
 				sb.AppendC(UTF8STRC(", SN="));
@@ -686,100 +686,100 @@ UOSInt Net::DNSClient::SkipString(const UInt8 *buff, UOSInt stringOfst, UOSInt e
 	return i;
 }
 
-const UTF8Char *Net::DNSClient::TypeGetID(UInt16 type)
+Text::CString Net::DNSClient::TypeGetID(UInt16 type)
 {
 	switch (type)
 	{
 	case 1:
-		return (const UTF8Char*)"A";
+		return {UTF8STRC("A")};
 	case 2:
-		return (const UTF8Char*)"NS";
+		return {UTF8STRC("NS")};
 	case 5:
-		return (const UTF8Char*)"CNAME";
+		return {UTF8STRC("CNAME")};
 	case 6:
-		return (const UTF8Char*)"SOA";
+		return {UTF8STRC("SOA")};
 	case 18:
-		return (const UTF8Char*)"AFSDB";
+		return {UTF8STRC("AFSDB")};
 	case 12:
-		return (const UTF8Char*)"PTR";
+		return {UTF8STRC("PTR")};
 	case 15:
-		return (const UTF8Char*)"MX";
+		return {UTF8STRC("MX")};
 	case 16:
-		return (const UTF8Char*)"TXT";
+		return {UTF8STRC("TXT")};
 	case 17:
-		return (const UTF8Char*)"RP";
+		return {UTF8STRC("RP")};
 	case 24:
-		return (const UTF8Char*)"SIG";
+		return {UTF8STRC("SIG")};
 	case 25:
-		return (const UTF8Char*)"KEY";
+		return {UTF8STRC("KEY")};
 	case 28:
-		return (const UTF8Char*)"AAAA";
+		return {UTF8STRC("AAAA")};
 	case 29:
-		return (const UTF8Char*)"LOC";
+		return {UTF8STRC("LOC")};
 	case 33:
-		return (const UTF8Char*)"SRV";
+		return {UTF8STRC("SRV")};
 	case 35:
-		return (const UTF8Char*)"NAPTR";
+		return {UTF8STRC("NAPTR")};
 	case 36:
-		return (const UTF8Char*)"KX";
+		return {UTF8STRC("KX")};
 	case 37:
-		return (const UTF8Char*)"CERT";
+		return {UTF8STRC("CERT")};
 	case 39:
-		return (const UTF8Char*)"DNAME";
+		return {UTF8STRC("DNAME")};
 	case 41:
-		return (const UTF8Char*)"OPT";
+		return {UTF8STRC("OPT")};
 	case 42:
-		return (const UTF8Char*)"APL";
+		return {UTF8STRC("APL")};
 	case 43:
-		return (const UTF8Char*)"DS";
+		return {UTF8STRC("DS")};
 	case 44:
-		return (const UTF8Char*)"SSHFP";
+		return {UTF8STRC("SSHFP")};
 	case 45:
-		return (const UTF8Char*)"IPSECKEY";
+		return {UTF8STRC("IPSECKEY")};
 	case 46:
-		return (const UTF8Char*)"RRSIG";
+		return {UTF8STRC("RRSIG")};
 	case 47:
-		return (const UTF8Char*)"NSEC";
+		return {UTF8STRC("NSEC")};
 	case 48:
-		return (const UTF8Char*)"DNSKEY";
+		return {UTF8STRC("DNSKEY")};
 	case 49:
-		return (const UTF8Char*)"DHCID";
+		return {UTF8STRC("DHCID")};
 	case 50:
-		return (const UTF8Char*)"NSEC3";
+		return {UTF8STRC("NSEC3")};
 	case 51:
-		return (const UTF8Char*)"NSEC3PARAM";
+		return {UTF8STRC("NSEC3PARAM")};
 	case 52:
-		return (const UTF8Char*)"TLSA";
+		return {UTF8STRC("TLSA")};
 	case 53:
-		return (const UTF8Char*)"SMIMEA";
+		return {UTF8STRC("SMIMEA")};
 	case 55:
-		return (const UTF8Char*)"HIP";
+		return {UTF8STRC("HIP")};
 	case 59:
-		return (const UTF8Char*)"CDS";
+		return {UTF8STRC("CDS")};
 	case 60:
-		return (const UTF8Char*)"CDNSKEY";
+		return {UTF8STRC("CDNSKEY")};
 	case 61:
-		return (const UTF8Char*)"OPENPGPKEY";
+		return {UTF8STRC("OPENPGPKEY")};
 	case 62:
-		return (const UTF8Char*)"CSYNC";
+		return {UTF8STRC("CSYNC")};
 	case 249:
-		return (const UTF8Char*)"TKEY";
+		return {UTF8STRC("TKEY")};
 	case 250:
-		return (const UTF8Char*)"TSIG";
+		return {UTF8STRC("TSIG")};
 	case 251:
-		return (const UTF8Char*)"IXFR";
+		return {UTF8STRC("IXFR")};
 	case 252:
-		return (const UTF8Char*)"AXFR";
+		return {UTF8STRC("AXFR")};
 	case 255:
-		return (const UTF8Char*)"*";
+		return {UTF8STRC("*")};
 	case 256:
-		return (const UTF8Char*)"URI";
+		return {UTF8STRC("URI")};
 	case 257:
-		return (const UTF8Char*)"CAA";
+		return {UTF8STRC("CAA")};
 	case 32768:
-		return (const UTF8Char*)"TA";
+		return {UTF8STRC("TA")};
 	case 32769:
-		return (const UTF8Char*)"DLV";
+		return {UTF8STRC("DLV")};
 	}
-	return 0;
+	return {0, 0};
 }

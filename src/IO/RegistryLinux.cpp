@@ -134,13 +134,13 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
-	const UTF8Char *csptr = Text::StrToUTF8New(compName);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(compName);
+	sb.Append(s);
+	s->Release();
 	sb.AppendChar('\\', 1);
-	csptr = Text::StrToUTF8New(appName);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	s = Text::String::NewNotNull(appName);
+	sb.Append(s);
+	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
@@ -157,9 +157,9 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	}
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Software\\"));
-	const UTF8Char *csptr = Text::StrToUTF8New(compName);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(compName);
+	sb.Append(s);
+	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
@@ -222,9 +222,9 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->clsData->cate);
 	sb.AppendChar('\\', 1);
-	const UTF8Char *csptr = Text::StrToUTF8New(name);
-	sb.Append(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(name);
+	sb.Append(s);
+	s->Release();
 	param.currCate = {sb.ToString(), sb.GetLength()};
 	Sync::Interlocked::Increment(&param.reg->useCnt);
 	IO::Registry *reg;
@@ -262,7 +262,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 			}
 			else
 			{
-				sbSubReg.Append(&cate->v[thisCateLen + 1]);
+				sbSubReg.AppendC(&cate->v[thisCateLen + 1], cate->leng - thisCateLen - 1);
 			}
 			if (names.SortedIndexOf(sbSubReg.ToString()) < 0)
 			{

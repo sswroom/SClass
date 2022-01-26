@@ -88,6 +88,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 		if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_32)
 		{
 			UTF8Char sbuff[256];
+			UTF8Char *sptr;
 			Manage::Dasm32 *dasm32 = (Manage::Dasm32*)dasm;
 			UInt32 currInst = (UInt32)context->GetInstAddr();
 			UInt32 currStack = (UInt32)context->GetStackAddr();
@@ -112,9 +113,9 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("("));
-			if (addrResol->ResolveName(sbuff, currInst))
+			if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
 			{
-				sb.Append(sbuff);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -185,10 +186,10 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				writer->WriteStrC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
-				if (addrResol->ResolveName(sbuff, currInst))
+				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.Append(sbuff);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -209,6 +210,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 		else if (dasm->GetRegBitDepth() == Manage::Dasm::RBD_64)
 		{
 			UTF8Char sbuff[256];
+			UTF8Char *sptr;
 			Dasm64 *dasm64 = (Dasm64*)dasm;
 			UInt64 currInst = context->GetInstAddr();
 			UInt64 currStack = context->GetStackAddr();
@@ -233,9 +235,9 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("("));
-			if (addrResol->ResolveName(sbuff, currInst))
+			if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
 			{
-				sb.Append(sbuff);
+				sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				sb.AppendC(UTF8STRC(")"));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
@@ -306,10 +308,10 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 				writer->WriteStrC(sb.ToString(), sb.GetLength());
 
 				sb.ClearStr();
-				if (addrResol->ResolveName(sbuff, currInst))
+				if ((sptr = addrResol->ResolveName(sbuff, currInst)) != 0)
 				{
 					sb.AppendC(UTF8STRC(" ("));
-					sb.Append(sbuff);
+					sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb.AppendC(UTF8STRC(")"));
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
@@ -351,7 +353,7 @@ void Manage::ExceptionLogger::WriteStackTrace(IO::Writer *writer, Manage::StackT
 #endif
 }
 
-Bool Manage::ExceptionLogger::LogToFile(Text::String *fileName, UInt32 exCode, const UTF8Char *exName, UOSInt exAddr, Manage::ThreadContext *context)
+Bool Manage::ExceptionLogger::LogToFile(Text::String *fileName, UInt32 exCode, Text::CString exName, UOSInt exAddr, Manage::ThreadContext *context)
 {
 #ifndef _WIN32_WCE
 	Manage::SymbolResolver *symResol;

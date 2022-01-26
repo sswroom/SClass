@@ -68,6 +68,7 @@ Bool Net::PacketAnalyzerEthernet::PacketEthernetDataGetName(UInt16 etherType, co
 Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if ((packet[0] & 0xf0) != 0x40)
 	{
 		return false;
@@ -89,11 +90,11 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 		ipDataSize = packetSize - ((packet[0] & 0xf) << 2);
 	}
 
-	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
-	sb->Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
-	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
-	sb->Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendChar(' ', 1);
 	return PacketIPDataGetName(packet[9], ipData, ipDataSize, sb);
 }
@@ -101,6 +102,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt packetSize, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if ((packet[0] & 0xf0) != 0x60 || packetSize < 40)
 	{
 		return false;
@@ -110,11 +112,11 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 	Net::SocketUtil::AddressInfo destAddr;
 	Net::SocketUtil::SetAddrInfoV6(&srcAddr, &packet[8], 0);
 	Net::SocketUtil::SetAddrInfoV6(&destAddr, &packet[24], 0);
-	Net::SocketUtil::GetAddrName(sbuff, &srcAddr);
-	sb->Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &srcAddr);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendC(UTF8STRC(" -> "));
-	Net::SocketUtil::GetAddrName(sbuff, &destAddr);
-	sb->Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &destAddr);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb->AppendChar(' ', 1);
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
 }
@@ -150,13 +152,13 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 		if (packetSize >= 4)
 		{
 			UInt16 destPort = 0;
-			const UTF8Char *csptr;
+			Text::CString cstr;
 			destPort = ReadMUInt16(&packet[2]);
-			csptr = UDPPortGetName(destPort);
+			cstr = UDPPortGetName(destPort);
 			sb->AppendChar(' ', 1);
-			if (csptr)
+			if (cstr.v)
 			{
-				sb->Append(csptr);
+				sb->Append(cstr);
 			}
 			else
 			{
@@ -273,44 +275,44 @@ void Net::PacketAnalyzerEthernet::PacketEthernetGetDetail(const UInt8 *packet, U
 
 void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	const Char *vName;
+	Text::CString vName;
 	UInt16 v;
 	v = ReadMUInt16(&packet[0]);
-	vName = 0;
+	vName = {0, 0};
 	switch (v)
 	{
 	case 0:
-		vName = "Unicast to us";
+		vName = {UTF8STRC("Unicast to us")};
 		break;
 	case 1:
-		vName = "Broadcast to us";
+		vName = {UTF8STRC("Broadcast to us")};
 		break;
 	case 2:
-		vName = "Multicast to us";
+		vName = {UTF8STRC("Multicast to us")};
 		break;
 	case 3:
-		vName = "Sent by somebody else to somebody else";
+		vName = {UTF8STRC("Sent by somebody else to somebody else")};
 		break;
 	case 4:
-		vName = "Sent by us";
+		vName = {UTF8STRC("Sent by us")};
 		break;
 	}
-	frame->AddUIntName(frameOfst + 0, 2, "Packet Type", v, (const UTF8Char*)vName);
-	vName = 0;
+	frame->AddUIntName(frameOfst + 0, 2, "Packet Type", v, vName);
+	vName = {0, 0};
 	v = ReadMUInt16(&packet[2]);
 	switch (v)
 	{
 	case 772:
-		vName = "Link Layer Address Type";
+		vName = {UTF8STRC("Link Layer Address Type")};
 		break;
 	case 778:
-		vName = "IP GRE Protocol Type";
+		vName = {UTF8STRC("IP GRE Protocol Type")};
 		break;
 	case 803:
-		vName = "IEEE802.11";
+		vName = {UTF8STRC("IEEE802.11")};
 		break;
 	}
-	frame->AddUIntName(frameOfst + 2, 2, "Link-Layer Device Type", v, (const UTF8Char*)vName);
+	frame->AddUIntName(frameOfst + 2, 2, "Link-Layer Device Type", v, vName);
 	UInt16 len = ReadMUInt16(&packet[4]);
 	frame->AddUInt(frameOfst + 4, 2, "Link-Layer Address Length", len);
 	if (len > 0)
@@ -372,7 +374,7 @@ void Net::PacketAnalyzerEthernet::PacketEthernetDataGetDetail(UInt16 etherType, 
 
 void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	const Char *vName;
+	Text::CString vName;
 	UTF8Char sbuff[32];
 	frame->AddHex8Name(frameOfst + 0, "DSAP Address", packet[0], LSAPGetName(packet[0]));
 	frame->AddHex8Name(frameOfst + 1, "SSAP Address", packet[1], LSAPGetName(packet[1]));
@@ -385,45 +387,45 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 			frame->AddFieldSeperstor(frameOfst + 2, (const UTF8Char*)"Spanning Tree Protocol:");
 			frame->AddHex8(frameOfst + 2, "Control", packet[2]);
 			protoId = ReadMUInt16(&packet[3]);
-			vName = 0;
+			vName = {0, 0};
 			switch (protoId)
 			{
 			case 0:
-				vName = "IEEE 802.1D";
+				vName = {UTF8STRC("IEEE 802.1D")};
 				break;
 			}
-			frame->AddHex16Name(frameOfst + 3, "Protocol ID", protoId, (const UTF8Char*)vName);
-			vName = 0;
+			frame->AddHex16Name(frameOfst + 3, "Protocol ID", protoId, vName);
+			vName = {0, 0};
 			switch (packet[5])
 			{
 			case 0:
-				vName = "Config & TCN";
+				vName = {UTF8STRC("Config & TCN")};
 				break;
 			case 2:
-				vName = "RST";
+				vName = {UTF8STRC("RST")};
 				break;
 			case 3:
-				vName = "MST";
+				vName = {UTF8STRC("MST")};
 				break;
 			case 4:
-				vName = "SPT";
+				vName = {UTF8STRC("SPT")};
 				break;
 			}
-			frame->AddHex8Name(frameOfst + 5, "Version ID", packet[5], (const UTF8Char*)vName);
-			vName = 0;
+			frame->AddHex8Name(frameOfst + 5, "Version ID", packet[5], vName);
+			vName = {0, 0};
 			switch (packet[6])
 			{
 			case 0:
-				vName = "STP Config BPDU";
+				vName = {UTF8STRC("STP Config BPDU")};
 				break;
 			case 2:
-				vName = "RST/MST Config BPDU";
+				vName = {UTF8STRC("RST/MST Config BPDU")};
 				break;
 			case 0x80:
-				vName = "TCN BPDU";
+				vName = {UTF8STRC("TCN BPDU")};
 				break;
 			}
-			frame->AddHex8Name(frameOfst + 6, "BPDU Type", packet[6], (const UTF8Char*)vName);
+			frame->AddHex8Name(frameOfst + 6, "BPDU Type", packet[6], vName);
 			frame->AddHex8(frameOfst + 7, "Flags", packet[7]);
 			frame->AddHex16(frameOfst + 8, "Root Bridge", ReadMUInt16(&packet[8]));
 			Text::StrUInt16(sbuff, (UInt16)(packet[8] >> 4));
@@ -472,7 +474,7 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 	}
 	else
 	{
-		const Char *vName;
+		Text::CString vName;
 		UInt16 htype = ReadMUInt16(&packet[0]);
 		UInt16 ptype = ReadMUInt16(&packet[2]);
 		UInt8 hlen = packet[4];
@@ -482,17 +484,17 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 		frame->AddHex16(frameOfst + 2, "Protocol Type (PTYPE)", ptype);
 		frame->AddUInt(frameOfst + 4, 1, "Hardware address length (HLEN)", hlen);
 		frame->AddUInt(frameOfst + 5, 1, "Protocol address length (PLEN)", plen);
-		vName = 0;
+		vName = {0, 0};
 		switch (oper)
 		{
 		case 1:
-			vName = "Request";
+			vName = {UTF8STRC("Request")};
 			break;
 		case 2:
-			vName = "Reply";
+			vName = {UTF8STRC("Reply")};
 			break;
 		}
-		frame->AddUIntName(frameOfst + 6, 2, "Operation (OPER)", oper, (const UTF8Char*)vName);
+		frame->AddUIntName(frameOfst + 6, 2, "Operation (OPER)", oper, vName);
 		if (htype == 1 && ptype == 0x0800 && hlen == 6 && plen == 4 && packetSize >= 28)
 		{
 			frame->AddMACAddr(frameOfst + 8, "Sender hardware address (SHA)", &packet[8], true);
@@ -559,7 +561,7 @@ void Net::PacketAnalyzerEthernet::PacketIPv6GetDetail(const UInt8 *packet, UOSIn
 void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	UTF8Char sbuff[64];
-	const Char *vName;
+	Text::CString vName;
 	switch (protocol)
 	{
 	case 1: //ICMP
@@ -567,121 +569,122 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 		if (packetSize >= 4)
 		{
 			UOSInt i = 4;
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[0])
 			{
 			case 0:
-				vName = "Echo Reply";
+				vName = {UTF8STRC("Echo Reply")};
 				break;
 			case 3:
-				vName = "Destination Unreachable";
+				vName = {UTF8STRC("Destination Unreachable")};
 				break;
 			case 4:
-				vName = "Source Quench";
+				vName = {UTF8STRC("Source Quench")};
 				break;
 			case 5:
-				vName = "Redirect Message";
+				vName = {UTF8STRC("Redirect Message")};
 				break;
 			case 6:
-				vName = "Alternate Host Address";
+				vName = {UTF8STRC("Alternate Host Address")};
 				break;
 			case 8:
-				vName = "Echo Request";
+				vName = {UTF8STRC("Echo Request")};
 				break;
 			case 9:
-				vName = "Router Advertisement";
+				vName = {UTF8STRC("Router Advertisement")};
 				break;
 			case 10:
-				vName = "Router Solicitation";
+				vName = {UTF8STRC("Router Solicitation")};
 				break;
 			case 11:
-				vName = "Time Exceeded";
+				vName = {UTF8STRC("Time Exceeded")};
 				break;
 			case 12:
-				vName = "Parameter Problem: Bad IP header";
+				vName = {UTF8STRC("Parameter Problem: Bad IP header")};
 				break;
 			case 13:
-				vName = "Timestamp";
+				vName = {UTF8STRC("Timestamp")};
 				break;
 			case 14:
-				vName = "Timestamp Reply";
+				vName = {UTF8STRC("Timestamp Reply")};
 				break;
 			case 15:
-				vName = "Information Request";
+				vName = {UTF8STRC("Information Request")};
 				break;
 			case 16:
-				vName = "Information Reply";
+				vName = {UTF8STRC("Information Reply")};
 				break;
 			case 17:
-				vName = "Address Mask Request";
+				vName = {UTF8STRC("Address Mask Request")};
 				break;
 			case 18:
-				vName = "Address Mask Reply";
+				vName = {UTF8STRC("Address Mask Reply")};
 				break;
 			case 30:
-				vName = "Traceroute";
+				vName = {UTF8STRC("Traceroute")};
 				break;
 			case 42:
-				vName = "Extended Echo Request";
+				vName = {UTF8STRC("Extended Echo Request")};
 				break;
 			case 43:
-				vName = "Extended Echo Reply";
+				vName = {UTF8STRC("Extended Echo Reply")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], vName);
 
+			vName = {0, 0};
 			switch (packet[0])
 			{
 			case 3:
 				switch (packet[1])
 				{
 				case 0:
-					vName = "Destination network unreachable";
+					vName = {UTF8STRC("Destination network unreachable")};
 					break;
 				case 1:
-					vName = "Destination host unreachable";
+					vName = {UTF8STRC("Destination host unreachable")};
 					break;
 				case 2:
-					vName = "Destination protocol unreachable";
+					vName = {UTF8STRC("Destination protocol unreachable")};
 					break;
 				case 3:
-					vName = "Destination port unreachable";
+					vName = {UTF8STRC("Destination port unreachable")};
 					break;
 				case 4:
-					vName = "Fragmentation required";
+					vName = {UTF8STRC("Fragmentation required")};
 					break;
 				case 5:
-					vName = "Source route failed";
+					vName = {UTF8STRC("Source route failed")};
 					break;
 				case 6:
-					vName = "Destination network unknown";
+					vName = {UTF8STRC("Destination network unknown")};
 					break;
 				case 7:
-					vName = "Destination host unknown";
+					vName = {UTF8STRC("Destination host unknown")};
 					break;
 				case 8:
-					vName = "Source host isolated";
+					vName = {UTF8STRC("Source host isolated")};
 					break;
 				case 9:
-					vName = "Network administratively prohibited";
+					vName = {UTF8STRC("Network administratively prohibited")};
 					break;
 				case 10:
-					vName = "Host administratively prohibited";
+					vName = {UTF8STRC("Host administratively prohibited")};
 					break;
 				case 11:
-					vName = "Network unreachable for ToS";
+					vName = {UTF8STRC("Network unreachable for ToS")};
 					break;
 				case 12:
-					vName = "Host unreachable for ToS";
+					vName = {UTF8STRC("Host unreachable for ToS")};
 					break;
 				case 13:
-					vName = "Communication administratively prohibited";
+					vName = {UTF8STRC("Communication administratively prohibited")};
 					break;
 				case 14:
-					vName = "Host Precedence Violation";
+					vName = {UTF8STRC("Host Precedence Violation")};
 					break;
 				case 15:
-					vName = "Precedence cutoff in effect";
+					vName = {UTF8STRC("Precedence cutoff in effect")};
 					break;
 				}
 				break;
@@ -689,16 +692,16 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "Redirect Datagram for the Network";
+					vName = {UTF8STRC("Redirect Datagram for the Network")};
 					break;
 				case 1:
-					vName = "Redirect Datagram for the Host";
+					vName = {UTF8STRC("Redirect Datagram for the Host")};
 					break;
 				case 2:
-					vName = "Redirect Datagram for the ToS & network";
+					vName = {UTF8STRC("Redirect Datagram for the ToS & network")};
 					break;
 				case 3:
-					vName = "Redirect Datagram for the ToS & host";
+					vName = {UTF8STRC("Redirect Datagram for the ToS & host")};
 					break;
 				}
 				break;
@@ -706,10 +709,10 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "TTL expired in transit";
+					vName = {UTF8STRC("TTL expired in transit")};
 					break;
 				case 1:
-					vName = "Fragment reassembly time exceeded";
+					vName = {UTF8STRC("Fragment reassembly time exceeded")};
 					break;
 				}
 				break;
@@ -717,13 +720,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "Pointer indicates the error";
+					vName ={UTF8STRC("Pointer indicates the error")};
 					break;
 				case 1:
-					vName = "Missing a required option";
+					vName = {UTF8STRC("Missing a required option")};
 					break;
 				case 2:
-					vName = "Bad length";
+					vName = {UTF8STRC("Bad length")};
 					break;
 				}
 				break;
@@ -731,24 +734,24 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "No Error";
+					vName = {UTF8STRC("No Error")};
 					break;
 				case 1:
-					vName = "Malformed Query";
+					vName = {UTF8STRC("Malformed Query")};
 					break;
 				case 2:
-					vName = "No Such Interface";
+					vName = {UTF8STRC("No Such Interface")};
 					break;
 				case 3:
-					vName = "No Such Table Entry";
+					vName = {UTF8STRC("No Such Table Entry")};
 					break;
 				case 4:
-					vName = "Multiple Interfaces Satisfy Query";
+					vName = {UTF8STRC("Multiple Interfaces Satisfy Query")};
 					break;
 				}
 				break;
 			}
-			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], vName);
 			frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
 			switch (packet[0])
 			{
@@ -886,32 +889,32 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				UOSInt i = 20;
 				while (i < headerLen)
 				{
-					vName = 0;
+					vName = {0, 0};
 					switch (packet[i])
 					{
 					case 0:
-						vName = "End of option list";
+						vName = {UTF8STRC("End of option list")};
 						break;
 					case 1:
-						vName = "No operation";
+						vName = {UTF8STRC("No operation")};
 						break;
 					case 2:
-						vName = "No operation";
+						vName = {UTF8STRC("No operation")};
 						break;
 					case 3:
-						vName = "Window scale";
+						vName = {UTF8STRC("Window scale")};
 						break;
 					case 4:
-						vName = "SACK permitted";
+						vName = {UTF8STRC("SACK permitted")};
 						break;
 					case 5:
-						vName = "SACK";
+						vName = {UTF8STRC("SACK")};
 						break;
 					case 8:
-						vName = "Time Stamp Option";
+						vName = {UTF8STRC("Time Stamp Option")};
 						break;
 					}
-					frame->AddUIntName(frameOfst + i, 1, "Kind", packet[i], (const UTF8Char*)vName);
+					frame->AddUIntName(frameOfst + i, 1, "Kind", packet[i], vName);
 
 					switch (packet[i])
 					{
@@ -1015,148 +1018,149 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 		frame->AddText(frameOfst, (const UTF8Char*)"ICMPv6:");
 		if (packetSize >= 4)
 		{
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[0])
 			{
 			case 1:
-				vName = "Destination unreachable";
+				vName = {UTF8STRC("Destination unreachable")};
 				break;
 			case 2:
-				vName = "Packet Too Big";
+				vName = {UTF8STRC("Packet Too Big")};
 				break;
 			case 3:
-				vName = "Time exceeded";
+				vName = {UTF8STRC("Time exceeded")};
 				break;
 			case 4:
-				vName = "Parameter problem";
+				vName = {UTF8STRC("Parameter problem")};
 				break;
 			case 100:
-				vName = "Private experimentation";
+				vName = {UTF8STRC("Private experimentation")};
 				break;
 			case 101:
-				vName = "Private experimentation";
+				vName = {UTF8STRC("Private experimentation")};
 				break;
 			case 127:
-				vName = "Reserved for expansion of ICMPv6 error messages";
+				vName = {UTF8STRC("Reserved for expansion of ICMPv6 error messages")};
 				break;
 			case 128:
-				vName = "Echo Request";
+				vName = {UTF8STRC("Echo Request")};
 				break;
 			case 129:
-				vName = "Echo Reply";
+				vName = {UTF8STRC("Echo Reply")};
 				break;
 			case 130:
-				vName = "Multicast Listener Query";
+				vName = {UTF8STRC("Multicast Listener Query")};
 				break;
 			case 131:
-				vName = "Multicast Listener Report";
+				vName = {UTF8STRC("Multicast Listener Report")};
 				break;
 			case 132:
-				vName = "Multicast Listener Done";
+				vName = {UTF8STRC("Multicast Listener Done")};
 				break;
 			case 133:
-				vName = "Router Solicitation";
+				vName = {UTF8STRC("Router Solicitation")};
 				break;
 			case 134:
-				vName = "Router Advertisement";
+				vName = {UTF8STRC("Router Advertisement")};
 				break;
 			case 135:
-				vName = "Neighbor Solicitation";
+				vName = {UTF8STRC("Neighbor Solicitation")};
 				break;
 			case 136:
-				vName = "Neighbor Advertisement";
+				vName = {UTF8STRC("Neighbor Advertisement")};
 				break;
 			case 137:
-				vName = "Redirect Message";
+				vName = {UTF8STRC("Redirect Message")};
 				break;
 			case 138:
-				vName = "Router Renumbering";
+				vName = {UTF8STRC("Router Renumbering")};
 				break;
 			case 139:
-				vName = "ICMP Node Information Query";
+				vName = {UTF8STRC("ICMP Node Information Query")};
 				break;
 			case 140:
-				vName = "ICMP Node Information Response";
+				vName = {UTF8STRC("ICMP Node Information Response")};
 				break;
 			case 141:
-				vName = "Inverse Neighbor Discovery Solicitation Message";
+				vName = {UTF8STRC("Inverse Neighbor Discovery Solicitation Message")};
 				break;
 			case 142:
-				vName = "Inverse Neighbor Discovery Advertisement Message";
+				vName = {UTF8STRC("Inverse Neighbor Discovery Advertisement Message")};
 				break;
 			case 143:
-				vName = "Multicast Listener Discovery (MLDv2) reports";
+				vName = {UTF8STRC("Multicast Listener Discovery (MLDv2) reports")};
 				break;
 			case 144:
-				vName = "Home Agent Address Discovery Request Message";
+				vName = {UTF8STRC("Home Agent Address Discovery Request Message")};
 				break;
 			case 145:
-				vName = "Home Agent Address Discovery Reply Message";
+				vName = {UTF8STRC("Home Agent Address Discovery Reply Message")};
 				break;
 			case 146:
-				vName = "Mobile Prefix Solicitation";
+				vName = {UTF8STRC("Mobile Prefix Solicitation")};
 				break;
 			case 147:
-				vName = "Mobile Prefix Advertisement";
+				vName = {UTF8STRC("Mobile Prefix Advertisement")};
 				break;
 			case 148:
-				vName = "Certification Path Solicitation";
+				vName = {UTF8STRC("Certification Path Solicitation")};
 				break;
 			case 149:
-				vName = "Certification Path Advertisement";
+				vName = {UTF8STRC("Certification Path Advertisement")};
 				break;
 			case 151:
-				vName = "Multicast Router Advertisement";
+				vName = {UTF8STRC("Multicast Router Advertisement")};
 				break;
 			case 152:
-				vName = "Multicast Router Solicitation";
+				vName = {UTF8STRC("Multicast Router Solicitation")};
 				break;
 			case 153:
-				vName = "Multicast Router Termination";
+				vName = {UTF8STRC("Multicast Router Termination")};
 				break;
 			case 155:
-				vName = "RPL Control Message";
+				vName = {UTF8STRC("RPL Control Message")};
 				break;
 			case 200:
-				vName = "Private experimentation";
+				vName = {UTF8STRC("Private experimentation")};
 				break;
 			case 201:
-				vName = "Private experimentation";
+				vName = {UTF8STRC("Private experimentation")};
 				break;
 			case 255:
-				vName = "Reserved for expansion of ICMPv6 informational messages";
+				vName = {UTF8STRC("Reserved for expansion of ICMPv6 informational messages")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "Type", packet[0], vName);
 
+			vName = {0, 0};
 			switch (packet[0])
 			{
 			case 1: //Destination unreachable
 				switch (packet[1])
 				{
 				case 0:
-					vName = "no route to destination";
+					vName = {UTF8STRC("no route to destination")};
 					break;
 				case 1:
-					vName = "communication with destination administratively prohibited";
+					vName = {UTF8STRC("communication with destination administratively prohibited")};
 					break;
 				case 2:
-					vName = "beyond scope of source address";
+					vName = {UTF8STRC("beyond scope of source address")};
 					break;
 				case 3:
-					vName = "address unreachable";
+					vName = {UTF8STRC("address unreachable")};
 					break;
 				case 4:
-					vName = "port unreachable";
+					vName = {UTF8STRC("port unreachable")};
 					break;
 				case 5:
-					vName = "source address failed ingress/egress policy";
+					vName = {UTF8STRC("source address failed ingress/egress policy")};
 					break;
 				case 6:
-					vName = "reject route to destination";
+					vName = {UTF8STRC("reject route to destination")};
 					break;
 				case 7:
-					vName = "Error in Source Routing Header";
+					vName = {UTF8STRC("Error in Source Routing Header")};
 					break;
 				}
 				break;
@@ -1164,10 +1168,10 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "hop limit exceeded in transit";
+					vName = {UTF8STRC("hop limit exceeded in transit")};
 					break;
 				case 1:
-					vName = "fragment reassembly time exceeded";
+					vName = {UTF8STRC("fragment reassembly time exceeded")};
 					break;
 				}
 				break;
@@ -1175,13 +1179,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "erroneous header field encountered";
+					vName = {UTF8STRC("erroneous header field encountered")};
 					break;
 				case 1:
-					vName = "unrecognized Next Header type encountered";
+					vName = {UTF8STRC("unrecognized Next Header type encountered")};
 					break;
 				case 2:
-					vName = "unrecognized IPv6 option encountered";
+					vName = {UTF8STRC("unrecognized IPv6 option encountered")};
 					break;
 				}
 				break;
@@ -1189,13 +1193,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "Router Renumbering Command";
+					vName = {UTF8STRC("Router Renumbering Command")};
 					break;
 				case 1:
-					vName = "Router Renumbering Result";
+					vName = {UTF8STRC("Router Renumbering Result")};
 					break;
 				case 255:
-					vName = "Sequence Number Reset";
+					vName = {UTF8STRC("Sequence Number Reset")};
 					break;
 				}
 				break;
@@ -1203,13 +1207,13 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "The Data field contains an IPv6 address which is the Subject of this Query";
+					vName = {UTF8STRC("The Data field contains an IPv6 address which is the Subject of this Query")};
 					break;
 				case 1:
-					vName = "The Data field contains a name which is the Subject of this Query, or is empty, as in the case of a NOOP";
+					vName = {UTF8STRC("The Data field contains a name which is the Subject of this Query, or is empty, as in the case of a NOOP")};
 					break;
 				case 2:
-					vName = "The Data field contains an IPv4 address which is the Subject of this Query";
+					vName = {UTF8STRC("The Data field contains an IPv4 address which is the Subject of this Query")};
 					break;
 				}
 				break;
@@ -1217,18 +1221,18 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				switch (packet[1])
 				{
 				case 0:
-					vName = "A successful reply. The Reply Data field may or may not be empty";
+					vName = {UTF8STRC("A successful reply. The Reply Data field may or may not be empty")};
 					break;
 				case 1:
-					vName = "The Responder refuses to supply the answer. The Reply Data field will be empty.";
+					vName = {UTF8STRC("The Responder refuses to supply the answer. The Reply Data field will be empty.")};
 					break;
 				case 2:
-					vName = "The Qtype of the Query is unknown to the Responder. The Reply Data field will be empty";
+					vName = {UTF8STRC("The Qtype of the Query is unknown to the Responder. The Reply Data field will be empty")};
 					break;
 				}
 				break;
 			}
-			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 1, 1, "Code", packet[1], vName);
 			frame->AddHex16(frameOfst + 2, "Checksum", ReadMUInt16(&packet[2]));
 			switch (packet[0])
 			{
@@ -1243,17 +1247,17 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 					UOSInt i = 16;
 					while (i + 7 < packetSize)
 					{
-						vName = 0;
+						vName = {0, 0};
 						switch (packet[i])
 						{
 						case 1:
-							vName = "Source Link-layer Address";
+							vName = {UTF8STRC("Source Link-layer Address")};
 							break;
 						case 2:
-							vName = "Target Link-layer Address";
+							vName = {UTF8STRC("Target Link-layer Address")};
 							break;
 						}
-						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], (const UTF8Char*)vName);
+						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], vName);
 						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						switch (packet[i])
 						{
@@ -1290,17 +1294,17 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 					UOSInt i = 24;
 					while (i < packetSize)
 					{
-						vName = 0;
+						vName = {0, 0};
 						switch (packet[i])
 						{
 						case 1:
-							vName = "Source Link-layer Address";
+							vName = {UTF8STRC("Source Link-layer Address")};
 							break;
 						case 2:
-							vName = "Target Link-layer Address";
+							vName = {UTF8STRC("Target Link-layer Address")};
 							break;
 						}
-						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], (const UTF8Char*)vName);
+						frame->AddUIntName(frameOfst + i, 1, "Type", packet[i], vName);
 						frame->AddUInt(frameOfst + i + 1, 1, "Length", packet[i + 1]);
 						frame->AddMACAddr(frameOfst + i + 2, "Address", &packet[i + 2], true);
 						i += 8;
@@ -1325,7 +1329,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 
 void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 destPort, const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	const Char *vName;
+	Text::CString vName;
 	UTF8Char sbuff[64];
 	UTF8Char sbuff2[64];
 	if (destPort == 53)
@@ -1361,17 +1365,17 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		else if (ReadMUInt32(&packet[236]) == 0x63825363)
 		{
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[0])
 			{
 			case 1:
-				vName = "Request";
+				vName = {UTF8STRC("Request")};
 				break;
 			case 2:
-				vName = "Reply";
+				vName = {UTF8STRC("Reply")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "OP", packet[0], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "OP", packet[0], vName);
 			frame->AddUInt(frameOfst + 1, 1, "Hardware Type (HTYPE)", packet[1]);
 			frame->AddUInt(frameOfst + 2, 1, "Hardware Address Length (HLEN)", packet[2]);
 			frame->AddUInt(frameOfst + 3, 1, "HOPS", packet[3]);
@@ -1446,23 +1450,23 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				}
 				else if (t == 53 && len == 1)
 				{
-					vName = 0;
+					vName = {0, 0};
 					switch (currPtr[0])
 					{
 					case 1:
-						vName = "Discover";
+						vName = {UTF8STRC("Discover")};
 						break;
 					case 2:
-						vName = "Offer";
+						vName = {UTF8STRC("Offer")};
 						break;
 					case 3:
-						vName = "Request";
+						vName = {UTF8STRC("Request")};
 						break;
 					case 5:
-						vName = "ACK";
+						vName = {UTF8STRC("ACK")};
 						break;
 					}
-					frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet), 1, "DHCP Type", currPtr[0], (const UTF8Char*)vName);
+					frame->AddUIntName(frameOfst + (UInt32)(currPtr - packet), 1, "DHCP Type", currPtr[0], vName);
 				}
 				else if (t == 54 && len == 4)
 				{
@@ -1549,29 +1553,29 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UOSInt i = 2;
 		UOSInt len;
 		frame->AddText(frameOfst, (const UTF8Char*)"TFTP:");
-		vName = 0;
+		vName = {0, 0};
 		switch (opcode)
 		{
 		case 1:
-			vName = "Read request";
+			vName = {UTF8STRC("Read request")};
 			break;
 		case 2:
-			vName = "Write request";
+			vName = {UTF8STRC("Write request")};
 			break;
 		case 3:
-			vName = "Data";
+			vName = {UTF8STRC("Data")};
 			break;
 		case 4:
-			vName = "Acknowledgment";
+			vName = {UTF8STRC("Acknowledgment")};
 			break;
 		case 5:
-			vName = "Error";
+			vName = {UTF8STRC("Error")};
 			break;
 		case 6:
-			vName = "Options Acknowledgment";
+			vName = {UTF8STRC("Options Acknowledgment")};
 			break;
 		}
-		frame->AddUIntName(frameOfst, 2, "Opcode", opcode, (const UTF8Char*)"vName");
+		frame->AddUIntName(frameOfst, 2, "Opcode", opcode, vName);
 
 		if (opcode == 1 || opcode == 2)
 		{
@@ -1626,74 +1630,74 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		else
 		{
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[0] >> 6)
 			{
 			case 0:
-				vName = "No warning";
+				vName = {UTF8STRC("No warning")};
 				break;
 			case 1:
-				vName = "Last minute of the day has 61 seconds";
+				vName = {UTF8STRC("Last minute of the day has 61 seconds")};
 				break;
 			case 2:
-				vName = "Last minute of the day has 59 seconds";
+				vName = {UTF8STRC("Last minute of the day has 59 seconds")};
 				break;
 			case 3:
-				vName = "Unknown";
+				vName = {UTF8STRC("Unknown")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "Leap Indicator", (UOSInt)packet[0] >> 6, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "Leap Indicator", (UOSInt)packet[0] >> 6, vName);
 			frame->AddUInt(frameOfst + 0, 1, "Version Number", (packet[0] >> 3) & 7);
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[0] & 7)
 			{
 			case 0:
-				vName = "Reserved";
+				vName = {UTF8STRC("Reserved")};
 				break;
 			case 1:
-				vName = "Symmetric active";
+				vName = {UTF8STRC("Symmetric active")};
 				break;
 			case 2:
-				vName = "Symmetric passive";
+				vName = {UTF8STRC("Symmetric passive")};
 				break;
 			case 3:
-				vName = "Client";
+				vName = {UTF8STRC("Client")};
 				break;
 			case 4:
-				vName = "Server";
+				vName = {UTF8STRC("Server")};
 				break;
 			case 5:
-				vName = "Broadcast";
+				vName = {UTF8STRC("Broadcast")};
 				break;
 			case 6:
-				vName = "NTP Control Message";
+				vName = {UTF8STRC("NTP Control Message")};
 				break;
 			case 7:
-				vName = "Reserved for private use";
+				vName = {UTF8STRC("Reserved for private use")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 0, 1, "Mode", packet[0] & 7, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 0, 1, "Mode", packet[0] & 7, vName);
 			if (packet[1] == 0)
 			{
-				vName = "Unspecified or invalid";
+				vName = {UTF8STRC("Unspecified or invalid")};
 			}
 			else if (packet[1] == 1)
 			{
-				vName = "Primary Server";
+				vName = {UTF8STRC("Primary Server")};
 			}
 			else if (packet[1] < 16)
 			{
-				vName = "Secondary Server";
+				vName = {UTF8STRC("Secondary Server")};
 			}
 			else if (packet[1] == 16)
 			{
-				vName = "Unsynchronized";
+				vName = {UTF8STRC("Unsynchronized")};
 			}
 			else
 			{
-				vName = "Reserved";
+				vName = {UTF8STRC("Reserved")};
 			}
-			frame->AddUIntName(frameOfst + 1, 1, "Stratum", packet[1], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 1, 1, "Stratum", packet[1], vName);
 			frame->AddUInt(frameOfst + 2, 1, "Poll", packet[2]);
 			frame->AddInt(frameOfst + 3, 1, "Precision", (Int8)packet[3]);
 			frame->AddFloat(frameOfst + 4, 4, "Root Delay", ReadMUInt32(&packet[4]) / 65536.0);
@@ -1779,25 +1783,25 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddNetBIOSName(frameOfst + i, k - i, "QUESTION_NAME", sbuff);
 			i = k;
 			qType = ReadMUInt16(&packet[i]);
-			vName = 0;
+			vName = {0, 0};
 			switch (qType)
 			{
 			case 0x20:
-				vName = "NB";
+				vName = {UTF8STRC("NB")};
 				break;
 			case 0x21:
-				vName = "NBSTAT";
+				vName = {UTF8STRC("NBSTAT")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + i, 2, "QUESTION_TYPE", qType, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + i, 2, "QUESTION_TYPE", qType, vName);
 
 			qClass = ReadMUInt16(&packet[2 + i]);
-			vName = 0;
+			vName = {0, 0};
 			if (qClass == 1)
 			{
-				vName = "IN";
+				vName = {UTF8STRC("IN")};
 			}
-			frame->AddUIntName(frameOfst + i + 2, 2, "QUESTION_CLASS", qClass, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + i + 2, 2, "QUESTION_CLASS", qClass, vName);
 			i += 4;
 			j++;
 		}
@@ -1809,25 +1813,25 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddNetBIOSName(frameOfst + i, k - i, "RR_NAME", sbuff);
 			i = k;
 			rrType = ReadMUInt16(&packet[i]);
-			vName = 0;
+			vName = {0, 0};
 			switch (rrType)
 			{
 			case 0x20:
-				vName = "NB";
+				vName = {UTF8STRC("NB")};
 				break;
 			case 0x21:
-				vName = "NBSTAT";
+				vName = {UTF8STRC("NBSTAT")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + i, 2, "RR_TYPE", rrType, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + i, 2, "RR_TYPE", rrType, vName);
 
 			rrClass = ReadMUInt16(&packet[2 + i]);
-			vName = 0;
+			vName = {0, 0};
 			if (rrClass == 1)
 			{
-				vName = "IN";
+				vName = {UTF8STRC("IN")};
 			}
-			frame->AddUIntName(frameOfst + i + 2, 2, "RR_CLASS", rrClass, (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + i + 2, 2, "RR_CLASS", rrClass, vName);
 			frame->AddUInt(frameOfst + i + 4, 4, "TTL", ReadMUInt32(&packet[4 + i]));
 			rdLength = ReadMUInt16(&packet[8 + i]);
 			frame->AddUInt(frameOfst + i + 8, 2, "RD_LENGTH", rdLength);
@@ -1902,32 +1906,32 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	{
 		UInt8 msgType = packet[0];
 		frame->AddText(frameOfst, (const UTF8Char*)"NetBIOS-DS:");
-		vName = 0;
+		vName = {0, 0};
 		switch (msgType)
 		{
 		case 0x10:
-			vName = "Direct Unique Datagram";
+			vName = {UTF8STRC("Direct Unique Datagram")};
 			break;
 		case 0x11:
-			vName = "Direct Group Datagram";
+			vName = {UTF8STRC("Direct Group Datagram")};
 			break;
 		case 0x12:
-			vName = "Broadcast Datagram";
+			vName = {UTF8STRC("Broadcast Datagram")};
 			break;
 		case 0x13:
-			vName = "Datagram Error";
+			vName = {UTF8STRC("Datagram Error")};
 			break;
 		case 0x14:
-			vName = "Datagram Query Request";
+			vName = {UTF8STRC("Datagram Query Request")};
 			break;
 		case 0x15:
-			vName = "Datagram Positive Query Response";
+			vName = {UTF8STRC("Datagram Positive Query Response")};
 			break;
 		case 0x16:
-			vName = "Datagram Negative Query Response";
+			vName = {UTF8STRC("Datagram Negative Query Response")};
 			break;
 		}
-		frame->AddHex8Name(frameOfst + 0, "MSG_TYPE", msgType, (const UTF8Char*)vName);
+		frame->AddHex8Name(frameOfst + 0, "MSG_TYPE", msgType, vName);
 		frame->AddHex8(frameOfst + 1, "FLAGS", packet[1]);
 		frame->AddUInt(frameOfst + 2, 2, "DGM_ID", ReadMUInt16(&packet[2]));
 		frame->AddIPv4(frameOfst + 4, "SOURCE_IP", &packet[4]);
@@ -1953,20 +1957,20 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		case 0x13:
 			if (packetSize >= 19)
 			{
-				vName = 0;
+				vName = {0, 0};
 				switch (packet[10])
 				{
 				case 0x82:
-					vName = "Destination Name Not Present";
+					vName = {UTF8STRC("Destination Name Not Present")};
 					break;
 				case 0x83:
-					vName = "Invalid Source Name Format";
+					vName = {UTF8STRC("Invalid Source Name Format")};
 					break;
 				case 0x84:
-					vName = "Invalid Destination Name Format";
+					vName = {UTF8STRC("Invalid Destination Name Format")};
 					break;
 				}
-				frame->AddHex8Name(frameOfst + 10, "ERROR_CODE", packet[10], (const UTF8Char*)vName);
+				frame->AddHex8Name(frameOfst + 10, "ERROR_CODE", packet[10], vName);
 				i = 11;
 			}
 			break;
@@ -2004,44 +2008,44 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UOSInt i;
 		frame->AddText(frameOfst, (const UTF8Char*)"Service Location Protocol:");
 		frame->AddUInt(frameOfst + 0, 1, "Version", packet[0]);
-		vName = 0;
+		vName = {0, 0};
 		switch (packet[1])
 		{
 		case 1:
-			vName = "Service Request";
+			vName = {UTF8STRC("Service Request")};
 			break;
 		case 2:
-			vName = "Service Reply";
+			vName = {UTF8STRC("Service Reply")};
 			break;
 		case 3:
-			vName = "Service Registration";
+			vName = {UTF8STRC("Service Registration")};
 			break;
 		case 4:
-			vName = "Service Deregister";
+			vName = {UTF8STRC("Service Deregister")};
 			break;
 		case 5:
-			vName = "Service Acknowledge";
+			vName = {UTF8STRC("Service Acknowledge")};
 			break;
 		case 6:
-			vName = "Attribute Request";
+			vName = {UTF8STRC("Attribute Request")};
 			break;
 		case 7:
-			vName = "Attribute Reply";
+			vName = {UTF8STRC("Attribute Reply")};
 			break;
 		case 8:
-			vName = "DA Advertisement";
+			vName = {UTF8STRC("DA Advertisement")};
 			break;
 		case 9:
-			vName = "Service Type Request";
+			vName = {UTF8STRC("Service Type Request")};
 			break;
 		case 10:
-			vName = "Service Type Reply";
+			vName = {UTF8STRC("Service Type Reply")};
 			break;
 		case 11:
-			vName = "SA Advertisement";
+			vName = {UTF8STRC("SA Advertisement")};
 			break;
 		}
-		frame->AddUIntName(frameOfst + 1, 1, "Function-ID", packet[1], (const UTF8Char*)vName);
+		frame->AddUIntName(frameOfst + 1, 1, "Function-ID", packet[1], vName);
 		i = 2;
 		UInt16 len;
 		UInt16 len2;
@@ -2112,29 +2116,29 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway:");
 			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[3])
 			{
 			case 0:
-				vName = "PUSH_DATA";
+				vName = {UTF8STRC("PUSH_DATA")};
 				break;
 			case 1:
-				vName = "PUSH_ACK";
+				vName = {UTF8STRC("PUSH_ACK")};
 				break;
 			case 2:
-				vName = "PULL_DATA";
+				vName = {UTF8STRC("PULL_DATA")};
 				break;
 			case 3:
-				vName = "PULL_RESP";
+				vName = {UTF8STRC("PULL_RESP")};
 				break;
 			case 4:
-				vName = "PULL_ACK";
+				vName = {UTF8STRC("PULL_ACK")};
 				break;
 			case 5:
-				vName = "TX_ACK";
+				vName = {UTF8STRC("TX_ACK")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], vName);
 			frame->AddHexBuff(frameOfst + 4, 8, "Gateway UID", &packet[4], 0, false);
 
 			if (packetSize > 12)
@@ -2216,29 +2220,29 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, (const UTF8Char*)"LoRa Gateway PUSH_ACK:");
 			frame->AddUInt(frameOfst + 0, 1, "Protocol Version", packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, "Random Token", ReadMUInt16(&packet[1]));
-			vName = 0;
+			vName = {0, 0};
 			switch (packet[3])
 			{
 			case 0:
-				vName = "PUSH_DATA";
+				vName = {UTF8STRC("PUSH_DATA")};
 				break;
 			case 1:
-				vName = "PUSH_ACK";
+				vName = {UTF8STRC("PUSH_ACK")};
 				break;
 			case 2:
-				vName = "PULL_DATA";
+				vName = {UTF8STRC("PULL_DATA")};
 				break;
 			case 3:
-				vName = "PULL_RESP";
+				vName = {UTF8STRC("PULL_RESP")};
 				break;
 			case 4:
-				vName = "PULL_ACK";
+				vName = {UTF8STRC("PULL_ACK")};
 				break;
 			case 5:
-				vName = "TX_ACK";
+				vName = {UTF8STRC("TX_ACK")};
 				break;
 			}
-			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], (const UTF8Char*)vName);
+			frame->AddUIntName(frameOfst + 3, 1, "Protocol Version", packet[3], vName);
 			if (packetSize > 4)
 			{
 				frame->AddTextHexBuff(frameOfst + 4, packetSize - 4, &packet[4], true);
@@ -2310,53 +2314,53 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
 	UTF8Char sbuff[128];
-	const Char *vName;
+	Text::CString vName;
 	frame->AddUInt(frameOfst + 0, 2, "ID", ReadMUInt16(&packet[0]));
 	frame->AddField(frameOfst + 2, 1, (const UTF8Char*)"QR", (packet[2] & 0x80)?(const UTF8Char*)"1 (Response)":(const UTF8Char*)"0 (Request)");
 	UInt8 opcode = (packet[2] & 0x78) >> 3;
-	vName = 0;
+	vName = {0, 0};
 	switch (opcode)
 	{
 	case 0:
-		vName = "QUERY";
+		vName = {UTF8STRC("QUERY")};
 		break;
 	case 1:
-		vName = "IQUERY";
+		vName = {UTF8STRC("IQUERY")};
 		break;
 	case 2:
-		vName = "STATUS";
+		vName = {UTF8STRC("STATUS")};
 		break;
 	}
-	frame->AddUIntName(frameOfst + 2, 1, "OPCODE", opcode, (const UTF8Char*)vName);
+	frame->AddUIntName(frameOfst + 2, 1, "OPCODE", opcode, vName);
 	frame->AddUInt(frameOfst + 2, 1, "AA", (packet[2] & 4) >> 2);
 	frame->AddUInt(frameOfst + 2, 1, "TC", (packet[2] & 2) >> 1);
 	frame->AddUInt(frameOfst + 2, 1, "RD", (packet[2] & 1));
 	frame->AddUInt(frameOfst + 3, 1, "RA", (packet[3] & 0x80) >> 7);
 	frame->AddUInt(frameOfst + 3, 1, "Z", (packet[3] & 0x70) >> 4);
 	UInt8 rcode = packet[3] & 0xf;
-	vName = 0;
+	vName = {0, 0};
 	switch (rcode)
 	{
 	case 0:
-		vName = "No error";
+		vName = {UTF8STRC("No error")};
 		break;
 	case 1:
-		vName = "Format error";
+		vName = {UTF8STRC("Format error")};
 		break;
 	case 2:
-		vName = "Server failure";
+		vName = {UTF8STRC("Server failure")};
 		break;
 	case 3:
-		vName = "Name Error";
+		vName = {UTF8STRC("Name Error")};
 		break;
 	case 4:
-		vName = "Not Implemented";
+		vName = {UTF8STRC("Not Implemented")};
 		break;
 	case 5:
-		vName = "Refused";
+		vName = {UTF8STRC("Refused")};
 		break;
 	}
-	frame->AddUIntName(frameOfst + 3, 1, "RCODE", rcode, (const UTF8Char*)vName);
+	frame->AddUIntName(frameOfst + 3, 1, "RCODE", rcode, vName);
 
 	UInt16 qdcount = ReadMUInt16(&packet[4]);
 	UInt16 ancount = ReadMUInt16(&packet[6]);
@@ -2577,35 +2581,35 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 
 void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	const Char *vName = 0;
+	Text::CString vName = {0, 0};
 	switch (packet[0] >> 5)
 	{
 	case 0:
-		vName = "Join-request";
+		vName = {UTF8STRC("Join-request")};
 		break;
 	case 1:
-		vName = "Join-accept";
+		vName = {UTF8STRC("Join-accept")};
 		break;
 	case 2:
-		vName = "Unconfirmed Data Up";
+		vName = {UTF8STRC("Unconfirmed Data Up")};
 		break;
 	case 3:
-		vName = "Unconfirmed Data Down";
+		vName = {UTF8STRC("Unconfirmed Data Down")};
 		break;
 	case 4:
-		vName = "Confirmed Data Up";
+		vName = {UTF8STRC("Confirmed Data Up")};
 		break;
 	case 5:
-		vName = "Confirmed Data Down";
+		vName = {UTF8STRC("Confirmed Data Down")};
 		break;
 	case 6:
-		vName = "Rejoin-request";
+		vName = {UTF8STRC("Rejoin-request")};
 		break;
 	case 7:
-		vName = "Proprietary";
+		vName = {UTF8STRC("Proprietary")};
 		break;
 	}
-	frame->AddUIntName(frameOfst + 0, 1, "Message type (MType)", (UInt16)(packet[0] >> 5), (const UTF8Char*)vName);
+	frame->AddUIntName(frameOfst + 0, 1, "Message type (MType)", (UInt16)(packet[0] >> 5), vName);
 	frame->AddUInt(frameOfst + 0, 1, "RFU", (packet[0] >> 2) & 7);
 	frame->AddUInt(frameOfst + 0, 1, "Major", packet[0] & 3);
 	UInt8 mType = (UInt8)(packet[0] >> 5);
@@ -2674,341 +2678,342 @@ UOSInt Net::PacketAnalyzerEthernet::HeaderIPv4GetDetail(const UInt8 *packet, UOS
 	}
 }
 
-const UTF8Char *Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
+Text::CString Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 {
 	switch (port)
 	{
 	case 21:
-		return (const UTF8Char*)"FTP";
+		return {UTF8STRC("FTP")};
 	case 22:
-		return (const UTF8Char*)"SSH";
+		return {UTF8STRC("SSH")};
 	case 23:
-		return (const UTF8Char*)"Telnet";
+		return {UTF8STRC("Telnet")};
 	case 25:
-		return (const UTF8Char*)"SMTP";
+		return {UTF8STRC("SMTP")};
 	case 43:
-		return (const UTF8Char*)"WHOIS";
+		return {UTF8STRC("WHOIS")};
 	case 53:
-		return (const UTF8Char*)"DNS";
+		return {UTF8STRC("DNS")};
 	case 69:
-		return (const UTF8Char*)"TFTP";
+		return {UTF8STRC("TFTP")};
 	case 80:
-		return (const UTF8Char*)"HTTP";
+		return {UTF8STRC("HTTP")};
 	case 110:
-		return (const UTF8Char*)"POP3";
+		return {UTF8STRC("POP3")};
 	case 135:
-		return (const UTF8Char*)"Microsoft EPMAP";
+		return {UTF8STRC("Microsoft EPMAP")};
 	case 139:
-		return (const UTF8Char*)"NetBIOS-SSN";
+		return {UTF8STRC("NetBIOS-SSN")};
 	case 143:
-		return (const UTF8Char*)"IMAP";
+		return {UTF8STRC("IMAP")};
 	case 427:
-		return (const UTF8Char*)"SvrLoc";
+		return {UTF8STRC("SvrLoc")};
 	case 443:
-		return (const UTF8Char*)"HTTPS";
+		return {UTF8STRC("HTTPS")};
 	case 445:
-		return (const UTF8Char*)"Microsoft-DS";
+		return {UTF8STRC("Microsoft-DS")};
 	case 465:
-		return (const UTF8Char*)"SMTPS";
+		return {UTF8STRC("SMTPS")};
 	case 538:
-		return (const UTF8Char*)"GDOMAP";
+		return {UTF8STRC("GDOMAP")};
 	case 587:
-		return (const UTF8Char*)"SMTP STARTTLS";
+		return {UTF8STRC("SMTP STARTTLS")};
 	case 902:
-		return (const UTF8Char*)"VMWare ESX";
+		return {UTF8STRC("VMWare ESX")};
 	case 912:
-		return (const UTF8Char*)"VMWare ESX";
+		return {UTF8STRC("VMWare ESX")};
 	case 993:
-		return (const UTF8Char*)"IMAPS";
+		return {UTF8STRC("IMAPS")};
 	case 995:
-		return (const UTF8Char*)"POP3S";
+		return {UTF8STRC("POP3S")};
 	case 1022:
-		return (const UTF8Char*)"RFC3692-style Experiment 2";
+		return {UTF8STRC("RFC3692-style Experiment 2")};
 	case 3306:
-		return (const UTF8Char*)"MySQL";
+		return {UTF8STRC("MySQL")};
 	case 3389:
-		return (const UTF8Char*)"RDP";
+		return {UTF8STRC("RDP")};
 	}
-	return 0;
+	return {0, 0};
 }
-const UTF8Char *Net::PacketAnalyzerEthernet::UDPPortGetName(UInt16 port)
+
+Text::CString Net::PacketAnalyzerEthernet::UDPPortGetName(UInt16 port)
 {
 	switch (port)
 	{
 	case 53:
-		return (const UTF8Char*)"DNS";
+		return {UTF8STRC("DNS")};
 	case 67:
-		return (const UTF8Char*)"DHCP Server";
+		return {UTF8STRC("DHCP Server")};
 	case 68:
-		return (const UTF8Char*)"DHCP Client";
+		return {UTF8STRC("DHCP Client")};
 	case 69:
-		return (const UTF8Char*)"TFTP";
+		return {UTF8STRC("TFTP")};
 	case 123:
-		return (const UTF8Char*)"NTP";
+		return {UTF8STRC("NTP")};
 	case 137:
-		return (const UTF8Char*)"NetBIOS-NS";
+		return {UTF8STRC("NetBIOS-NS")};
 	case 138:
-		return (const UTF8Char*)"NetBIOS-DS";
+		return {UTF8STRC("NetBIOS-DS")};
 	case 139:
-		return (const UTF8Char*)"NetBIOS-SS";
+		return {UTF8STRC("NetBIOS-SS")};
 	case 161:
-		return (const UTF8Char*)"SNMP";
+		return {UTF8STRC("SNMP")};
 	case 162:
-		return (const UTF8Char*)"SNMP-TRAP";
+		return {UTF8STRC("SNMP-TRAP")};
 	case 427:
-		return (const UTF8Char*)"SLP";
+		return {UTF8STRC("SLP")};
 	case 546:
-		return (const UTF8Char*)"DHCPv6 client";
+		return {UTF8STRC("DHCPv6 client")};
 	case 547:
-		return (const UTF8Char*)"DHCPv6 server";
+		return {UTF8STRC("DHCPv6 server")};
 	case 1700:
-		return (const UTF8Char*)"LoRa Gateway";
+		return {UTF8STRC("LoRa Gateway")};
 	case 1900:
-		return (const UTF8Char*)"SSDP";
+		return {UTF8STRC("SSDP")};
 	case 3702:
-		return (const UTF8Char*)"WS-Discovery";
+		return {UTF8STRC("WS-Discovery")};
 	case 5353:
-		return (const UTF8Char*)"mDNS";
+		return {UTF8STRC("mDNS")};
 	case 17500:
-		return (const UTF8Char*)"Dropbox LAN Sync Discovery";
+		return {UTF8STRC("Dropbox LAN Sync Discovery")};
 	case 55208:
-		return (const UTF8Char*)"JavaME Device Detection";
+		return {UTF8STRC("JavaME Device Detection")};
 	case 55209:
-		return (const UTF8Char*)"JavaME Device Detection";
+		return {UTF8STRC("JavaME Device Detection")};
 	}
-	return 0;
+	return {0, 0};
 }
 
-const UTF8Char *Net::PacketAnalyzerEthernet::LSAPGetName(UInt8 lsap)
+Text::CString Net::PacketAnalyzerEthernet::LSAPGetName(UInt8 lsap)
 {
 	switch (lsap)
 	{
 	case 0:
-		return (const UTF8Char*)"Null LSAP";
+		return {UTF8STRC("Null LSAP")};
 	case 2:
-		return (const UTF8Char*)"Individual LLC Sublayer Mgt";
+		return {UTF8STRC("Individual LLC Sublayer Mgt")};
 	case 4:
-		return (const UTF8Char*)"SNA Path Control (individual)";
+		return {UTF8STRC("SNA Path Control (individual)")};
 	case 6:
-		return (const UTF8Char*)"Reserved for DoD";
+		return {UTF8STRC("Reserved for DoD")};
 	case 0x0E:
-		return (const UTF8Char*)"ProWay-LAN";
+		return {UTF8STRC("ProWay-LAN")};
 	case 0x18:
-		return (const UTF8Char*)"Texas Instruments";
+		return {UTF8STRC("Texas Instruments")};
 	case 0x42:
-		return (const UTF8Char*)"IEEE 802.1 Bridge Spanning Tree Protocol";
+		return {UTF8STRC("IEEE 802.1 Bridge Spanning Tree Protocol")};
 	case 0x4E:
-		return (const UTF8Char*)"EIA-RS 511";
+		return {UTF8STRC("EIA-RS 511")};
 	case 0x5E:
-		return (const UTF8Char*)"ISI IP";
+		return {UTF8STRC("ISI IP")};
 	case 0x7E:
-		return (const UTF8Char*)"ISO 8208 (X.25 over IEEE 802.2 Type LLC)";
+		return {UTF8STRC("ISO 8208 (X.25 over IEEE 802.2 Type LLC)")};
 	case 0x80:
-		return (const UTF8Char*)"Xerox Network Systems (XNS)";
+		return {UTF8STRC("Xerox Network Systems (XNS)")};
 	case 0x82:
-		return (const UTF8Char*)"BACnet/Ethernet";
+		return {UTF8STRC("BACnet/Ethernet")};
 	case 0x86:
-		return (const UTF8Char*)"Nestar";
+		return {UTF8STRC("Nestar")};
 	case 0x8E:
-		return (const UTF8Char*)"ProWay-LAN (IEC 955)";
+		return {UTF8STRC("ProWay-LAN (IEC 955)")};
 	case 0x98:
-		return (const UTF8Char*)"ARPANET Address Resolution Protocol (ARP)";
+		return {UTF8STRC("ARPANET Address Resolution Protocol (ARP)")};
 	case 0xA6:
-		return (const UTF8Char*)"RDE (route determination entity)";
+		return {UTF8STRC("RDE (route determination entity)")};
 	case 0xAA:
-		return (const UTF8Char*)"SNAP Extension Used";
+		return {UTF8STRC("SNAP Extension Used")};
 	case 0xBC:
-		return (const UTF8Char*)"Banyan Vines";
+		return {UTF8STRC("Banyan Vines")};
 	case 0xE0:
-		return (const UTF8Char*)"Novell NetWare";
+		return {UTF8STRC("Novell NetWare")};
 	case 0xF0:
-		return (const UTF8Char*)"IBM NetBIOS";
+		return {UTF8STRC("IBM NetBIOS")};
 	case 0xF4:
-		return (const UTF8Char*)"IBM LAN Management (individual)";
+		return {UTF8STRC("IBM LAN Management (individual)")};
 	case 0xF8:
-		return (const UTF8Char*)"IBM Remote Program Load (RPL)";
+		return {UTF8STRC("IBM Remote Program Load (RPL)")};
 	case 0xFA:
-		return (const UTF8Char*)"Ungermann-Bass";
+		return {UTF8STRC("Ungermann-Bass")};
 	case 0xFE:
-		return (const UTF8Char*)"OSI protocols ISO CLNS IS 8473";
+		return {UTF8STRC("OSI protocols ISO CLNS IS 8473")};
 	case 0x03:
-		return (const UTF8Char*)"Group LLC Sublayer Mgt";
+		return {UTF8STRC("Group LLC Sublayer Mgt")};
 	case 0x05:
-		return (const UTF8Char*)"SNA Path Control (group)";
+		return {UTF8STRC("SNA Path Control (group)")};
 	case 0xF5:
-		return (const UTF8Char*)"IBM LAN Management (group)";
+		return {UTF8STRC("IBM LAN Management (group)")};
 	case 0xFF:
-		return (const UTF8Char*)"Global DSAP (broadcast to all)";
+		return {UTF8STRC("Global DSAP (broadcast to all)")};
 	}
-	return 0;
+	return {0, 0};
 }
 
-const UTF8Char *Net::PacketAnalyzerEthernet::DHCPOptionGetName(UInt8 t)
+Text::CString Net::PacketAnalyzerEthernet::DHCPOptionGetName(UInt8 t)
 {
 	switch (t)
 	{
 	case 1:
-		return (const UTF8Char*)"Subnet Mask";
+		return {UTF8STRC("Subnet Mask")};
 	case 2:
-		return (const UTF8Char*)"Time Offset";
+		return {UTF8STRC("Time Offset")};
 	case 3:
-		return (const UTF8Char*)"Router";
+		return {UTF8STRC("Router")};
 	case 4:
-		return (const UTF8Char*)"Time Server";
+		return {UTF8STRC("Time Server")};
 	case 5:
-		return (const UTF8Char*)"Name Server";
+		return {UTF8STRC("Name Server")};
 	case 6:
-		return (const UTF8Char*)"Domain Name Server";
+		return {UTF8STRC("Domain Name Server")};
 	case 7:
-		return (const UTF8Char*)"Log Server";
+		return {UTF8STRC("Log Server")};
 	case 8:
-		return (const UTF8Char*)"Cookie Server";
+		return {UTF8STRC("Cookie Server")};
 	case 9:
-		return (const UTF8Char*)"LPR Server";
+		return {UTF8STRC("LPR Server")};
 	case 10:
-		return (const UTF8Char*)"Impress server";
+		return {UTF8STRC("Impress server")};
 	case 11:
-		return (const UTF8Char*)"Resource location server";
+		return {UTF8STRC("Resource location server")};
 	case 12:
-		return (const UTF8Char*)"Host name";
+		return {UTF8STRC("Host name")};
 	case 13:
-		return (const UTF8Char*)"Boot file size";
+		return {UTF8STRC("Boot file size")};
 	case 14:
-		return (const UTF8Char*)"Merit dump file";
+		return {UTF8STRC("Merit dump file")};
 	case 15:
-		return (const UTF8Char*)"Domain name";
+		return {UTF8STRC("Domain name")};
 	case 16:
-		return (const UTF8Char*)"Swap server";
+		return {UTF8STRC("Swap server")};
 	case 17:
-		return (const UTF8Char*)"Root path";
+		return {UTF8STRC("Root path")};
 	case 18:
-		return (const UTF8Char*)"Extensions path";
+		return {UTF8STRC("Extensions path")};
 	case 19:
-		return (const UTF8Char*)"Forward On/Off";
+		return {UTF8STRC("Forward On/Off")};
 	case 20:
-		return (const UTF8Char*)"SrcRte On/Off";
+		return {UTF8STRC("SrcRte On/Off")};
 	case 21:
-		return (const UTF8Char*)"Policy Filter";
+		return {UTF8STRC("Policy Filter")};
 	case 22:
-		return (const UTF8Char*)"Max DG Assembly";
+		return {UTF8STRC("Max DG Assembly")};
 	case 23:
-		return (const UTF8Char*)"Default IP TTL";
+		return {UTF8STRC("Default IP TTL")};
 	case 24:
-		return (const UTF8Char*)"MTU Timeout";
+		return {UTF8STRC("MTU Timeout")};
 	case 25:
-		return (const UTF8Char*)"MTU Plateau";
+		return {UTF8STRC("MTU Plateau")};
 	case 26:
-		return (const UTF8Char*)"MTU Interface";
+		return {UTF8STRC("MTU Interface")};
 	case 27:
-		return (const UTF8Char*)"MTU Subnet";
+		return {UTF8STRC("MTU Subnet")};
 	case 28:
-		return (const UTF8Char*)"Broadcast Address";
+		return {UTF8STRC("Broadcast Address")};
 	case 29:
-		return (const UTF8Char*)"Mask Discovery";
+		return {UTF8STRC("Mask Discovery")};
 	case 30:
-		return (const UTF8Char*)"Mask Supplier";
+		return {UTF8STRC("Mask Supplier")};
 	case 31:
-		return (const UTF8Char*)"Router Discovery";
+		return {UTF8STRC("Router Discovery")};
 	case 32:
-		return (const UTF8Char*)"Router Request";
+		return {UTF8STRC("Router Request")};
 	case 33:
-		return (const UTF8Char*)"Static Route";
+		return {UTF8STRC("Static Route")};
 	case 34:
-		return (const UTF8Char*)"Trailers";
+		return {UTF8STRC("Trailers")};
 	case 35:
-		return (const UTF8Char*)"ARP Timeout";
+		return {UTF8STRC("ARP Timeout")};
 	case 36:
-		return (const UTF8Char*)"Ethernet";
+		return {UTF8STRC("Ethernet")};
 	case 37:
-		return (const UTF8Char*)"Default TCP TTL";
+		return {UTF8STRC("Default TCP TTL")};
 	case 38:
-		return (const UTF8Char*)"Keepalive Time";
+		return {UTF8STRC("Keepalive Time")};
 	case 39:
-		return (const UTF8Char*)"Keepalive Data";
+		return {UTF8STRC("Keepalive Data")};
 	case 40:
-		return (const UTF8Char*)"NIS Domain";
+		return {UTF8STRC("NIS Domain")};
 	case 41:
-		return (const UTF8Char*)"NIS Servers";
+		return {UTF8STRC("NIS Servers")};
 	case 42:
-		return (const UTF8Char*)"NTP Servers";
+		return {UTF8STRC("NTP Servers")};
 	case 43:
-		return (const UTF8Char*)"Vendor Specific";
+		return {UTF8STRC("Vendor Specific")};
 	case 44:
-		return (const UTF8Char*)"NETBIOS Name Srv";
+		return {UTF8STRC("NETBIOS Name Srv")};
 	case 45:
-		return (const UTF8Char*)"NETBIOS Dist Srv";
+		return {UTF8STRC("NETBIOS Dist Srv")};
 	case 46:
-		return (const UTF8Char*)"NETBIOS Node Type";
+		return {UTF8STRC("NETBIOS Node Type")};
 	case 47:
-		return (const UTF8Char*)"NETBIOS Scope";
+		return {UTF8STRC("NETBIOS Scope")};
 	case 48:
-		return (const UTF8Char*)"X Window Font";
+		return {UTF8STRC("X Window Font")};
 	case 49:
-		return (const UTF8Char*)"X Window Manager";
+		return {UTF8STRC("X Window Manager")};
 	case 50:
-		return (const UTF8Char*)"Requested IP Address";
+		return {UTF8STRC("Requested IP Address")};
 	case 51:
-		return (const UTF8Char*)"IP Address Least Time";
+		return {UTF8STRC("IP Address Least Time")};
 	case 52:
-		return (const UTF8Char*)"Option overload";
+		return {UTF8STRC("Option overload")};
 	case 53:
-		return (const UTF8Char*)"DHCP Message Type";
+		return {UTF8STRC("DHCP Message Type")};
 	case 54:
-		return (const UTF8Char*)"DHCP Server";
+		return {UTF8STRC("DHCP Server")};
 	case 55:
-		return (const UTF8Char*)"Parameter Request List";
+		return {UTF8STRC("Parameter Request List")};
 	case 56:
-		return (const UTF8Char*)"Message";
+		return {UTF8STRC("Message")};
 	case 57:
-		return (const UTF8Char*)"Maximum DHCP message size";
+		return {UTF8STRC("Maximum DHCP message size")};
 	case 58:
-		return (const UTF8Char*)"Renew Time Value";
+		return {UTF8STRC("Renew Time Value")};
 	case 59:
-		return (const UTF8Char*)"Rebinding Time Value";
+		return {UTF8STRC("Rebinding Time Value")};
 	case 60:
-		return (const UTF8Char*)"Vendor class identifier";
+		return {UTF8STRC("Vendor class identifier")};
 	case 61:
-		return (const UTF8Char*)"Client ID";
+		return {UTF8STRC("Client ID")};
 	case 66:
-		return (const UTF8Char*)"TFTP Server Name";
+		return {UTF8STRC("TFTP Server Name")};
 	case 67:
-		return (const UTF8Char*)"Bootfile name";
+		return {UTF8STRC("Bootfile name")};
 	case 81:
-		return (const UTF8Char*)"Client FQDN";
+		return {UTF8STRC("Client FQDN")};
 	case 82:
-		return (const UTF8Char*)"Agent Information Option";
+		return {UTF8STRC("Agent Information Option")};
 	case 90:
-		return (const UTF8Char*)"Authentication";
+		return {UTF8STRC("Authentication")};
 	case 116:
-		return (const UTF8Char*)"Auto-Config";
+		return {UTF8STRC("Auto-Config")};
 	case 120:
-		return (const UTF8Char*)"SIP Servers";
+		return {UTF8STRC("SIP Servers")};
 	case 249:
-		return (const UTF8Char*)"Microsoft Classless Static Route";
+		return {UTF8STRC("Microsoft Classless Static Route")};
 	case 255:
-		return (const UTF8Char*)"End";
+		return {UTF8STRC("End")};
 	}
-	return 0;
+	return {0, 0};
 }
 
-const UTF8Char *Net::PacketAnalyzerEthernet::EtherTypeGetName(UInt16 etherType)
+Text::CString Net::PacketAnalyzerEthernet::EtherTypeGetName(UInt16 etherType)
 {
 	switch (etherType)
 	{
 	case 0x0004:
-		return (const UTF8Char*)"IEEE802.2 LLC";
+		return {UTF8STRC("IEEE802.2 LLC")};
 	case 0x0006: //ARP
-		return (const UTF8Char*)"ARP";
+		return {UTF8STRC("ARP")};
 	case 0x26: //Legnth = 0x26 (IEEE802.2 LLC)
-		return (const UTF8Char*)"IEEE802.2 LLC";
+		return {UTF8STRC("IEEE802.2 LLC")};
 	case 0x0800: //IPv4
-		return (const UTF8Char*)"IPv4";
+		return {UTF8STRC("IPv4")};
 	case 0x0806: //ARP
-		return (const UTF8Char*)"ARP";
+		return {UTF8STRC("ARP")};
 	case 0x86DD: //IPv6
-		return (const UTF8Char*)"IPv6";
+		return {UTF8STRC("IPv6")};
 	case 0x8874: //broadcom
-		return (const UTF8Char*)"Broadcom";
+		return {UTF8STRC("Broadcom")};
 	}
-	return 0;
+	return {0, 0};
 }

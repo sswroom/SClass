@@ -871,29 +871,29 @@ const UInt8 *Media::ColorProfile::GetRAWICC()
 	return this->rawICC;
 }
 
-const UTF8Char *Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType yuvType)
+Text::CString Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType yuvType)
 {
 	if (yuvType & Media::ColorProfile::YUVT_FLAG_YUV_0_255)
 	{
 		switch (yuvType & Media::ColorProfile::YUVT_MASK)
 		{
 		case Media::ColorProfile::YUVT_BT601:
-			return (const UTF8Char*)"ITU-T BT. 601 (Full Range)";
+			return {UTF8STRC("ITU-T BT. 601 (Full Range)")};
 		case Media::ColorProfile::YUVT_BT709:
-			return (const UTF8Char*)"ITU-T BT. 709 (Full Range)";
+			return {UTF8STRC("ITU-T BT. 709 (Full Range)")};
 		case Media::ColorProfile::YUVT_FCC:
-			return (const UTF8Char*)"FCC (Full Range)";
+			return {UTF8STRC("FCC (Full Range)")};
 		case Media::ColorProfile::YUVT_BT470BG:
-			return (const UTF8Char*)"ITU-T BT. 470BG (Full Range)";
+			return {UTF8STRC("ITU-T BT. 470BG (Full Range)")};
 		case Media::ColorProfile::YUVT_SMPTE170M:
-			return (const UTF8Char*)"SMPTE 170M (Full Range)";
+			return {UTF8STRC("SMPTE 170M (Full Range)")};
 		case Media::ColorProfile::YUVT_SMPTE240M:
-			return (const UTF8Char*)"SMPTE 240M (Full Range)";
+			return {UTF8STRC("SMPTE 240M (Full Range)")};
 		case Media::ColorProfile::YUVT_BT2020:
-			return (const UTF8Char*)"ITU-T BT. 2020 (Full Range)";
+			return {UTF8STRC("ITU-T BT. 2020 (Full Range)")};
 		case Media::ColorProfile::YUVT_UNKNOWN:
 		default:
-			return (const UTF8Char*)"Unknown (Full Range)";
+			return {UTF8STRC("Unknown (Full Range)")};
 		}
 	}
 	else
@@ -901,128 +901,128 @@ const UTF8Char *Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType
 		switch (yuvType & Media::ColorProfile::YUVT_MASK)
 		{
 		case Media::ColorProfile::YUVT_BT601:
-			return (const UTF8Char*)"ITU-T BT. 601";
+			return {UTF8STRC("ITU-T BT. 601")};
 		case Media::ColorProfile::YUVT_BT709:
-			return (const UTF8Char*)"ITU-T BT. 709";
+			return {UTF8STRC("ITU-T BT. 709")};
 		case Media::ColorProfile::YUVT_FCC:
-			return (const UTF8Char*)"FCC";
+			return {UTF8STRC("FCC")};
 		case Media::ColorProfile::YUVT_BT470BG:
-			return (const UTF8Char*)"ITU-T BT. 470BG";
+			return {UTF8STRC("ITU-T BT. 470BG")};
 		case Media::ColorProfile::YUVT_SMPTE170M:
-			return (const UTF8Char*)"SMPTE 170M";
+			return {UTF8STRC("SMPTE 170M")};
 		case Media::ColorProfile::YUVT_SMPTE240M:
-			return (const UTF8Char*)"SMPTE 240M";
+			return {UTF8STRC("SMPTE 240M")};
 		case Media::ColorProfile::YUVT_BT2020:
-			return (const UTF8Char*)"ITU-T BT. 2020";
+			return {UTF8STRC("ITU-T BT. 2020")};
 		case Media::ColorProfile::YUVT_UNKNOWN:
 		default:
-			return (const UTF8Char*)"Unknown";
+			return {UTF8STRC("Unknown")};
 		}
 	}
 }
 
-const UTF8Char *Media::ColorProfile::ColorTypeGetName(ColorType colorType)
+Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 {
 	switch (colorType)
 	{
 	case CT_SRGB:
 	case CT_BT709:
-		return (const UTF8Char*)"BT.709/sRGB";
+		return {UTF8STRC("BT.709/sRGB")};
 	case CT_BT470M:
-		return (const UTF8Char*)"BT.470M";
+		return {UTF8STRC("BT.470M")};
 	case CT_BT470BG:
-		return (const UTF8Char*)"BT.470BG";
+		return {UTF8STRC("BT.470BG")};
 	case CT_SMPTE170M:
-		return (const UTF8Char*)"SMPTE 170M";
+		return {UTF8STRC("SMPTE 170M")};
 	case CT_SMPTE240M:
-		return (const UTF8Char*)"SMPTE 240M";
+		return {UTF8STRC("SMPTE 240M")};
 	case CT_GENERIC_FILM:
-		return (const UTF8Char*)"Generic Film";
+		return {UTF8STRC("Generic Film")};
 	case CT_BT2020:
-		return (const UTF8Char*)"BT.2020";
+		return {UTF8STRC("BT.2020")};
 	case CT_ADOBE:
-		return (const UTF8Char*)"Adobe RGB";
+		return {UTF8STRC("Adobe RGB")};
 	case CT_APPLE:
-		return (const UTF8Char*)"Apple RGB";
+		return {UTF8STRC("Apple RGB")};
 	case CT_CIERGB:
-		return (const UTF8Char*)"CIE RGB";
+		return {UTF8STRC("CIE RGB")};
 	case CT_COLORMATCH:
-		return (const UTF8Char*)"Colormatch RGB";
+		return {UTF8STRC("Colormatch RGB")};
 	case CT_WIDE:
-		return (const UTF8Char*)"Wide";
+		return {UTF8STRC("Wide")};
 	case CT_SGAMUT:
-		return (const UTF8Char*)"Sony S-Gamut";
+		return {UTF8STRC("Sony S-Gamut")};
 	case CT_SGAMUTCINE:
-		return (const UTF8Char*)"Sony S-Gamut3.Cine";
+		return {UTF8STRC("Sony S-Gamut3.Cine")};
 	case CT_DCI_P3:
-		return (const UTF8Char*)"DCI-P3";
+		return {UTF8STRC("DCI-P3")};
 	case CT_ACESGAMUT:
-		return (const UTF8Char*)"ACES-Gamut";
+		return {UTF8STRC("ACES-Gamut")};
 	case CT_ALEXAWIDE:
-		return (const UTF8Char*)"ALEXA Wide Gamut";
+		return {UTF8STRC("ALEXA Wide Gamut")};
 	case CT_VGAMUT:
-		return (const UTF8Char*)"V-Gamut";
+		return {UTF8STRC("V-Gamut")};
 	case CT_CUSTOM:
-		return (const UTF8Char*)"Custom";
+		return {UTF8STRC("Custom")};
 	case CT_DISPLAY:
-		return (const UTF8Char*)"As Display Color";
+		return {UTF8STRC("As Display Color")};
 	case CT_PUNKNOWN:
 	case CT_VUNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 
-const UTF8Char *Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cpt)
+Text::CString Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cpt)
 {
 	switch (cpt)
 	{
 	case CPT_ADOBE:
-		return (const UTF8Char*)"Adobe RGB";
+		return {UTF8STRC("Adobe RGB")};
 	case CPT_APPLE:
-		return (const UTF8Char*)"Apple RGB";
+		return {UTF8STRC("Apple RGB")};
 	case CPT_CIERGB:
-		return (const UTF8Char*)"CIE RGB";
+		return {UTF8STRC("CIE RGB")};
 	case CPT_COLORMATCH:
-		return (const UTF8Char*)"ColorMatch RGB";
+		return {UTF8STRC("ColorMatch RGB")};
 	case CPT_BT709:
-		return (const UTF8Char*)"ITU-R Bt.709";
+		return {UTF8STRC("ITU-R Bt.709")};
 	case CPT_NTSC:
-		return (const UTF8Char*)"NTSC";
+		return {UTF8STRC("NTSC")};
 	case CPT_PAL:
-		return (const UTF8Char*)"PAL";
+		return {UTF8STRC("PAL")};
 	case CPT_SGI:
-		return (const UTF8Char*)"SGI";
+		return {UTF8STRC("SGI")};
 	case CPT_SMPTE240M:
-		return (const UTF8Char*)"SMPTE 240M";
+		return {UTF8STRC("SMPTE 240M")};
 	case CPT_SMPTEC:
-		return (const UTF8Char*)"SMPTE C";
+		return {UTF8STRC("SMPTE C")};
 	case CPT_SRGB:
-		return (const UTF8Char*)"sRGB";
+		return {UTF8STRC("sRGB")};
 	case CPT_WIDE:
-		return (const UTF8Char*)"Wide";
+		return {UTF8STRC("Wide")};
 	case CPT_BT2020:
-		return (const UTF8Char*)"BT.2020";
+		return {UTF8STRC("BT.2020")};
 	case CPT_BT2100:
-		return (const UTF8Char*)"BT.2100";
+		return {UTF8STRC("BT.2100")};
 	case CPT_FILE:
-		return (const UTF8Char*)"File";
+		return {UTF8STRC("File")};
 	case CPT_CUSTOM:
-		return (const UTF8Char*)"Custom";
+		return {UTF8STRC("Custom")};
 	case CPT_PDISPLAY:
-		return (const UTF8Char*)"From Display Unit (For Picture)";
+		return {UTF8STRC("From Display Unit (For Picture)")};
 	case CPT_VDISPLAY:
-		return (const UTF8Char*)"From Display Unit (For Video)";
+		return {UTF8STRC("From Display Unit (For Video)")};
 	case CPT_OS:
-		return (const UTF8Char*)"OS";
+		return {UTF8STRC("OS")};
 	case CPT_EDID:
-		return (const UTF8Char*)"From EDID";
+		return {UTF8STRC("From EDID")};
 	case CPT_VUNKNOWN:
-		return (const UTF8Char*)"Unknown (For Video)";
+		return {UTF8STRC("Unknown (For Video)")};
 	case CPT_PUNKNOWN:
-		return (const UTF8Char*)"Unknwon (For Picture)";
+		return {UTF8STRC("Unknwon (For Picture)")};
 	default:
-		return (const UTF8Char*)"Unknown";
+		return {UTF8STRC("Unknown")};
 	}
 }
 

@@ -117,9 +117,9 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 	DEL_CLASS(this->tags);
 }
 
-const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"FGDB";
+	return {UTF8STRC("FGDB")};
 }
 
 UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
@@ -177,7 +177,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 		return 0;
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
-	Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Type=")), TagTypeGetName(tag->tagType));
+	TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
 	frame->AddHeader(sbuff);
 
 	tagData = MemAlloc(UInt8, tag->size);
@@ -733,19 +733,19 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(const UTF8Char *outputFile)
 	return false;
 }
 
-const UTF8Char *IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
+Text::CString IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
 {
 	switch (tagType)
 	{
 	case TagType::Header:
-		return (const UTF8Char*)"Header";
+		return {UTF8STRC("Header")};
 	case TagType::Field:
-		return (const UTF8Char*)"Field descriptor";
+		return {UTF8STRC("Field descriptor")};
 	case TagType::Row:
-		return (const UTF8Char*)"Row";
+		return {UTF8STRC("Row")};
 	case TagType::FreeSpace:
-		return (const UTF8Char*)"FreeSpace";
+		return {UTF8STRC("FreeSpace")};
 	default:
-		return 0;
+		return {0, 0};
 	}
 }

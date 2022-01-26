@@ -297,45 +297,45 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 	}
 }
 
-const UTF8Char *Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
+Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 {
 	switch (itemType)
 	{
 	case Data::VariItem::ItemType::F32:
-		return (const UTF8Char*)"Single";
+		return {UTF8STRC("Single")};
 	case Data::VariItem::ItemType::F64:
-		return (const UTF8Char*)"Double";
+		return {UTF8STRC("Double")};
 	case Data::VariItem::ItemType::I8:
-		return (const UTF8Char*)"Int8";
+		return {UTF8STRC("Int8")};
 	case Data::VariItem::ItemType::U8:
-		return (const UTF8Char*)"UInt8";
+		return {UTF8STRC("UInt8")};
 	case Data::VariItem::ItemType::I16:
-		return (const UTF8Char*)"Int16";
+		return {UTF8STRC("Int16")};
 	case Data::VariItem::ItemType::U16:
-		return (const UTF8Char*)"UInt16";
+		return {UTF8STRC("UInt16")};
 	case Data::VariItem::ItemType::I32:
-		return (const UTF8Char*)"Int32";
+		return {UTF8STRC("Int32")};
 	case Data::VariItem::ItemType::U32:
-		return (const UTF8Char*)"UInt32";
+		return {UTF8STRC("UInt32")};
 	case Data::VariItem::ItemType::I64:
-		return (const UTF8Char*)"Int64";
+		return {UTF8STRC("Int64")};
 	case Data::VariItem::ItemType::U64:
-		return (const UTF8Char*)"UInt64";
+		return {UTF8STRC("UInt64")};
 	case Data::VariItem::ItemType::BOOL:
-		return (const UTF8Char*)"Bool";
+		return {UTF8STRC("Bool")};
 	case Data::VariItem::ItemType::Str:
-		return (const UTF8Char*)"Text::String*";
+		return {UTF8STRC("Text::String*")};
 	case Data::VariItem::ItemType::Date:
-		return (const UTF8Char*)"Data::DateTime*";
+		return {UTF8STRC("Data::DateTime*")};
 	case Data::VariItem::ItemType::ByteArr:
-		return (const UTF8Char*)"Data::ReadonlyArr<UInt8>*";
+		return {UTF8STRC("Data::ReadonlyArr<UInt8>*")};
 	case Data::VariItem::ItemType::Vector:
-		return (const UTF8Char*)"Math::Vector2D*";
+		return {UTF8STRC("Math::Vector2D*")};
 	case Data::VariItem::ItemType::UUID:
-		return (const UTF8Char*)"Data::UUID*";
+		return {UTF8STRC("Data::UUID*")};
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Null:
 	default:
-		return (const UTF8Char*)"void*";
+		return {UTF8STRC("void*")};
 	}
 }

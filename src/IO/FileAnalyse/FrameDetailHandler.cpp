@@ -67,11 +67,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size,
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sbuff);
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt size, const Char *name, UOSInt v, const UTF8Char *vName)
+void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt size, const Char *name, UOSInt v, Text::CString vName)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(v);
-	if (vName)
+	if (vName.v)
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
@@ -84,11 +84,11 @@ void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt s
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt size, const Char *name, UInt64 v, const UTF8Char *vName)
+void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt size, const Char *name, UInt64 v, Text::CString vName)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendU64(v);
-	if (vName)
+	if (vName.v)
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
@@ -150,12 +150,12 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt siz
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sbuff);
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, const Char *name, UInt8 v, const UTF8Char *vName)
+void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, const Char *name, UInt8 v, Text::CString vName)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex8(v);
-	if (vName)
+	if (vName.v)
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
@@ -168,12 +168,12 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, const Ch
 	this->AddField(frameOfst, 1, (const UTF8Char*)name, sb.ToString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, const Char *name, UInt16 v, const UTF8Char *vName)
+void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, const Char *name, UInt16 v, Text::CString vName)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("0x"));
 	sb.AppendHex16(v);
-	if (vName)
+	if (vName.v)
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
@@ -240,7 +240,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, const Cha
 		entry = Net::MACInfo::GetMACInfoBuff(macBuff);
 		if (entry && entry->name[0])
 		{
-			sb.Append((const UTF8Char*)entry->name);
+			sb.AppendSlow((const UTF8Char*)entry->name);
 		}
 		else
 		{
@@ -256,13 +256,13 @@ void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSIn
 	UTF8Char sbuff2[17];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(nbName);
+	sb.AppendSlow(nbName);
 	if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, nbName)) != 0)
 	{
 		sptr[-1] = 0;
-		Text::StrRTrim(sbuff2);
 		sb.AppendC(UTF8STRC(" ("));
-		sb.Append(sbuff2);
+		sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2 - 1));
+		sb.RTrim();
 		sb.AppendC(UTF8STRC(")"));
 	}
 	this->AddField(frameOfst, size, (const UTF8Char*)name, sb.ToString());

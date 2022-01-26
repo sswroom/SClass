@@ -108,6 +108,7 @@ public:
 	virtual Bool GetExtraValueStr(const UInt8 *buff, UOSInt buffSize, UOSInt extIndex, Text::StringBuilderUTF8 *sb)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		if (extIndex < 18)
 		{
 			switch (extIndex)
@@ -139,8 +140,8 @@ public:
 				sb->AppendI32(ReadInt32(&buff[24]));
 				return true;
 			case 6:
-				Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&buff[28]), ReadUInt16(&buff[32]));
-				sb->Append(sbuff);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadUInt32(&buff[28]), ReadUInt16(&buff[32]));
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 				return true;
 			case 7:
 				sb->AppendI32(ReadInt32(&buff[34]));
@@ -173,7 +174,7 @@ public:
 				sb->AppendI32(ReadInt32(&buff[66]));
 				return true;
 			case 17:
-				sb->Append(&buff[70]);
+				sb->AppendSlow(&buff[70]);
 				return true;
 			}
 		}

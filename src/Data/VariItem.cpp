@@ -1020,6 +1020,7 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 {
 	Text::String *s;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	switch (this->itemType)
 	{
 	case ItemType::Unknown:
@@ -1068,9 +1069,9 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 		s->Release();
 		return;
 	case ItemType::Date:
-		this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sptr = this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendChar('\"', 1);
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendChar('\"', 1);
 		break;
 	case ItemType::ByteArr:

@@ -326,9 +326,10 @@ void Net::WebServer::WebConnection::ProxyShutdown()
 void Net::WebServer::WebConnection::ProcessTimeout()
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	this->cli->GetRemoteName(sbuff);
-	sb.Append(sbuff);
+	sptr = this->cli->GetRemoteName(sbuff);
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(" "));
 	if (this->currReq)
 	{
@@ -776,13 +777,13 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 	if (eventName)
 	{
 		sb.AppendC(UTF8STRC("event:"));
-		sb.Append(eventName);
+		sb.AppendSlow(eventName);
 		sb.AppendLB(Text::LineBreakType::LF);
 	}
 	if (data)
 	{
 		sb.AppendC(UTF8STRC("data:"));
-		sb.Append(data);
+		sb.AppendSlow(data);
 		sb.AppendLB(Text::LineBreakType::LF);
 	}
 	sb.AppendLB(Text::LineBreakType::LF);
