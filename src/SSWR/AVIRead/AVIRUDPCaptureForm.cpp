@@ -102,6 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 	else
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
 		Data::DateTime dt;
 		i = (UOSInt)me->lbData->GetItem(i);
@@ -109,11 +110,11 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		sb.AppendC(UTF8STRC("Recv Time: "));
 		dt.SetTicks(me->packets[i].recvTime);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		sb.Append(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC("\r\nUDP From: "));
-		Net::SocketUtil::GetAddrName(sbuff, &me->packets[i].addr);
-		sb.Append(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->packets[i].addr);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(":"));
 		sb.AppendU32(me->packets[i].port);
 		sb.AppendC(UTF8STRC("\r\nData:\r\n"));

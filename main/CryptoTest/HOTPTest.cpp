@@ -13,6 +13,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt8 key[20];
 	UInt8 decKey[20];
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Data::RandomBytesGenerator random;
 	random.NextBytes(key, 10);
 	IO::ConsoleWriter console;
@@ -39,8 +40,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC("Code "));
 		sb.AppendUOSInt(i);
 		sb.AppendC(UTF8STRC(": "));
-		hotp.CodeString(sbuff, hotp.NextCode());
-		sb.Append(sbuff);
+		sptr = hotp.CodeString(sbuff, hotp.NextCode());
+		sb.AppendP(sbuff, sptr);
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}

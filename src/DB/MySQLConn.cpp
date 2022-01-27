@@ -240,7 +240,7 @@ void DB::MySQLConn::CloseReader(DB::DBReader *r)
 void DB::MySQLConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	UTF8Char *errMsg = (UTF8Char *)mysql_error((MYSQL*)this->mysql);
-	str->Append(errMsg);
+	str->AppendSlow(errMsg);
 }
 
 Bool DB::MySQLConn::IsLastDataError()
@@ -297,6 +297,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select * from "));
 	UOSInt i = 0;
@@ -306,13 +307,13 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 		j = Text::StrIndexOfChar(&tableName[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			DB::DBUtil::SDBColUTF8(sbuff, &tableName[i], DB::DBUtil::ServerType::MySQL);
-			sb.Append(sbuff);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName[i], DB::DBUtil::ServerType::MySQL);
+			sb.AppendP(sbuff, sptr);
 			break;
 		}
 		sptr = Text::StrConcatC(sbuff, &tableName[i], (UOSInt)j);
-		DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
-		sb.Append(sptr + 1);
+		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
+		sb.AppendP(sptr + 1, sptr2);
 		sb.AppendChar('.', 1);
 		i += j + 1;
 	}
@@ -505,7 +506,7 @@ Bool DB::MySQLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		return false;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		sb->Append((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
+		sb->AppendSlow((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 		return true;
 	}
 	else

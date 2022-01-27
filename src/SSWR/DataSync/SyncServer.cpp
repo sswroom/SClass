@@ -102,7 +102,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 		SyncClient *syncCli;
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
-		sb.Append(syncClients);
+		sb.AppendSlow(syncClients);
 		sarr[1] = sb.ToString();
 		while (true)
 		{

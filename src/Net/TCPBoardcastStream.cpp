@@ -14,14 +14,15 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 	if (me->writeBuffSize > 0)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
 		UOSInt size = me->writeBuffSize;
 		me->writeBuffSize = 0;
 		if (me->log)
 		{
 			sb.AppendC(UTF8STRC("Sending to "));
-			me->sockf->GetRemoteName(sbuff, s);
-			sb.Append(sbuff);
+			sptr = me->sockf->GetRemoteName(sbuff, s);
+			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
 			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
@@ -50,11 +51,12 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 	Net::TCPBoardcastStream *me = (Net::TCPBoardcastStream*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (me->log)
 	{
 		sb.AppendC(UTF8STRC("Recv from "));
-		cli->GetRemoteName(sbuff);
-		sb.Append(sbuff);
+		sptr = cli->GetRemoteName(sbuff);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
 		sb.AppendUOSInt(size);
 		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
@@ -105,9 +107,10 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		sb.AppendC(UTF8STRC("Timeout processing "));
-		cli->GetRemoteName(sbuff);
-		sb.Append(sbuff);
+		sptr = cli->GetRemoteName(sbuff);
+		sb.AppendP(sbuff, sptr);
 		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 }
@@ -209,6 +212,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 	UOSInt i;
 	Net::TCPClient *cli;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	void *cliData;
 	Sync::MutexUsage mutUsage;
@@ -224,8 +228,8 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Sending to "));
-			cli->GetRemoteName(sbuff);
-			sb.Append(sbuff);
+			sptr = cli->GetRemoteName(sbuff);
+			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
 			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);

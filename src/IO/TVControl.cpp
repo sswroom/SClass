@@ -49,123 +49,123 @@ IO::TVControl *IO::TVControl::CreateTVControl(IO::Stream *stm, TVType tvType, In
 	}
 }
 
-const UTF8Char *IO::TVControl::GetCommandName(CommandType cmdType)
+Text::CString IO::TVControl::GetCommandName(CommandType cmdType)
 {
 	switch (cmdType)
 	{
 	case CT_POWERON:
-		return (const UTF8Char*)"Power On";
+		return CSTR("Power On");
 	case CT_POWEROFF:
-		return (const UTF8Char*)"Power Off";
+		return CSTR("Power Off");
 	case CT_FORCEPOWEROFF:
-		return (const UTF8Char*)"Force Power Off";
+		return CSTR("Force Power Off");
 	case CT_GETPOWERSTATUS:
-		return (const UTF8Char*)"Get Power Status";
+		return CSTR("Get Power Status");
 	case CT_AUTOSETUP:
-		return (const UTF8Char*)"Auto Setup";
+		return CSTR("Auto Setup");
 	case CT_FACTORYRESET:
-		return (const UTF8Char*)"Factory Reset";
+		return CSTR("Factory Reset");
 	case CT_SCREENRESET:
-		return (const UTF8Char*)"Screen Reset";
+		return CSTR("Screen Reset");
 	case CT_VOLUMEUP:
-		return (const UTF8Char*)"Volume Up";
+		return CSTR("Volume Up");
 	case CT_VOLUMEDOWN:
-		return (const UTF8Char*)"Volume Down";
+		return CSTR("Volume Down");
 	case CT_AUDIOMUTE:
-		return (const UTF8Char*)"Audio Mute";
+		return CSTR("Audio Mute");
 	case CT_INPUT_DSUB:
-		return (const UTF8Char*)"Input - D-Sub";
+		return CSTR("Input - D-Sub");
 	case CT_INPUT_VIDEO:
-		return (const UTF8Char*)"Input - Video";
+		return CSTR("Input - Video");
 	case CT_INPUT_HDMI1:
-		return (const UTF8Char*)"Input - HDMI1";
+		return CSTR("Input - HDMI1");
 	case CT_INPUT_HDMI2:
-		return (const UTF8Char*)"Input - HDMI2";
+		return CSTR("Input - HDMI2");
 	case CT_INPUT_DVI_D:
-		return (const UTF8Char*)"Input - DVI-D";
+		return CSTR("Input - DVI-D");
 	case CT_INPUT_DISPLAYPORT:
-		return (const UTF8Char*)"Input - DisplayPort";
+		return CSTR("Input - DisplayPort");
 	case CT_INPUT_DISPLAYPORT2:
-		return (const UTF8Char*)"Input - DisplayPort2";
+		return CSTR("Input - DisplayPort2");
 	case CT_INPUT_DISPLAYPORT3:
-		return (const UTF8Char*)"Input - DisplayPort3";
+		return CSTR("Input - DisplayPort3");
 	case CT_INPUT_YPBPR:
-		return (const UTF8Char*)"Input - Component";
+		return CSTR("Input - Component");
 	case CT_INPUT_YPBPR2:
-		return (const UTF8Char*)"Input - Component2";
+		return CSTR("Input - Component2");
 	case CT_INPUT_SVIDEO:
-		return (const UTF8Char*)"Input - S-Video";
+		return CSTR("Input - S-Video");
 	case CT_GETCURRINPUT:
-		return (const UTF8Char*)"Get Video Input";
+		return CSTR("Get Video Input");
 	case CT_GETDATETIME:
-		return (const UTF8Char*)"Get Date Time";
+		return CSTR("Get Date Time");
 	case CT_SETCURRDATETIME:
-		return (const UTF8Char*)"Set Current Date Time";
+		return CSTR("Set Current Date Time");
 	case CT_SELFDIAGNOSIS:
-		return (const UTF8Char*)"Self Diagnosis";
+		return CSTR("Self Diagnosis");
 	case CT_GETSERIALNO:
-		return (const UTF8Char*)"Get Serial Number";
+		return CSTR("Get Serial Number");
 	case CT_GETMODEL:
-		return (const UTF8Char*)"Get Model";
+		return CSTR("Get Model");
 	case CT_GETFIRMWARE:
-		return (const UTF8Char*)"Get Firmware Version";
+		return CSTR("Get Firmware Version");
 	case CT_GETFIRMWARE2:
-		return (const UTF8Char*)"Get Firmware2 Version";
+		return CSTR("Get Firmware2 Version");
 	case CT_GETPOWERSAVEMODE:
-		return (const UTF8Char*)"Get Power Save Mode";
+		return CSTR("Get Power Save Mode");
 	case CT_GETPOWERSAVETIME:
-		return (const UTF8Char*)"Get Power Save Time";
+		return CSTR("Get Power Save Time");
 	case CT_GETAUTOSTANDBYTIME:
-		return (const UTF8Char*)"Get Auto Standby Time";
+		return CSTR("Get Auto Standby Time");
 	case CT_GETLANMAC:
-		return (const UTF8Char*)"Get LAN MAC Address";
+		return CSTR("Get LAN MAC Address");
 	case CT_GETLANIP:
-		return (const UTF8Char*)"Get LAN IP Address";
+		return CSTR("Get LAN IP Address");
 	case CT_GETTEMPERATURE1:
-		return (const UTF8Char*)"Get Temperature1";
+		return CSTR("Get Temperature1");
 	case CT_GETTEMPERATURE2:
-		return (const UTF8Char*)"Get Temperature2";
+		return CSTR("Get Temperature2");
 	case CT_GETTEMPERATURE3:
-		return (const UTF8Char*)"Get Temperature3";
+		return CSTR("Get Temperature3");
 	case CT_GETBACKLIGHT:
-		return (const UTF8Char*)"Get Backlight";
+		return CSTR("Get Backlight");
 	case CT_SETBACKLIGHT:
-		return (const UTF8Char*)"Set Backlight";
+		return CSTR("Set Backlight");
 	case CT_GETCONTRAST:
-		return (const UTF8Char*)"Get Contrast";
+		return CSTR("Get Contrast");
 	case CT_SETCONTRAST:
-		return (const UTF8Char*)"Set Contrast";
+		return CSTR("Set Contrast");
 	case CT_GETSHARPNESS:
-		return (const UTF8Char*)"Get Sharpness";
+		return CSTR("Get Sharpness");
 	case CT_SETSHARPNESS:
-		return (const UTF8Char*)"Set Sharpness";
+		return CSTR("Set Sharpness");
 	case CT_GETBRIGHTNESS:
-		return (const UTF8Char*)"Get Brightness";
+		return CSTR("Get Brightness");
 	case CT_SETBRIGNTNESS:
-		return (const UTF8Char*)"Set Brightness";
+		return CSTR("Set Brightness");
 	case CT_GETHUE:
-		return (const UTF8Char*)"Get Hue";
+		return CSTR("Get Hue");
 	case CT_SETHUE:
-		return (const UTF8Char*)"Set Hue";
+		return CSTR("Set Hue");
 	case CT_GETSATURATION:
-		return (const UTF8Char*)"Get Saturation";
+		return CSTR("Get Saturation");
 	case CT_SETSATURATION:
-		return (const UTF8Char*)"Set Saturation";
+		return CSTR("Set Saturation");
 	case CT_GETCOLORTEMP:
-		return (const UTF8Char*)"Get Color Temperature";
+		return CSTR("Get Color Temperature");
 	case CT_SETCOLORTEMP:
-		return (const UTF8Char*)"Set Color Temperature";
+		return CSTR("Set Color Temperature");
 	case CT_IRLOCK:
-		return (const UTF8Char*)"IR Lock";
+		return CSTR("IR Lock");
 	case CT_IRUNLOCK:
-		return (const UTF8Char*)"IR Unlock";
+		return CSTR("IR Unlock");
 	case CT_GETIRSTATUS:
-		return (const UTF8Char*)"Get IR Status";
+		return CSTR("Get IR Status");
 	case CT_GETHPOS:
-		return (const UTF8Char*)"Get H-Pos";
+		return CSTR("Get H-Pos");
 	case CT_GETVPOS:
-		return (const UTF8Char*)"Get V-Pos";
+		return CSTR("Get V-Pos");
 	default:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	}
 }

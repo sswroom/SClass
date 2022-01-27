@@ -505,7 +505,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 					else
 					{
 						sb->ClearStr();
-						sb->Append(stat->folderName);
+						sb->AppendSlow(stat->folderName);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb->AppendUOSInt(stat->lyrId);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);

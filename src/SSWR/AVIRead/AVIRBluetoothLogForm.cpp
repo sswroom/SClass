@@ -134,8 +134,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 		{
 			Text::StrHexBytes(sbuff, log->mac, 6, ':');
 			l = this->lvContent->AddItem(sbuff, log);
-			this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
-			this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
+			this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType).v);
+			this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType).v);
 			if (log->addrType == IO::BTScanLog::AT_RANDOM)
 			{
 				switch (log->mac[0] & 0xc0)
@@ -175,14 +175,14 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 			}
 			else
 			{
-				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
-				if (csptr == 0)
+				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
+				if (cstr.v == 0)
 				{
 					this->lvContent->SetSubItem(l, 6, (const UTF8Char*)"?");
 				}
 				else
 				{
-					this->lvContent->SetSubItem(l, 6, csptr);
+					this->lvContent->SetSubItem(l, 6, cstr.v);
 				}
 			}
 			Text::StrInt32(sbuff, log->measurePower);

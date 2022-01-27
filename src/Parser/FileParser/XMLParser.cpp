@@ -1125,7 +1125,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		}
 		else
 		{
-			sbTableName.Append(shortName);
+			sbTableName.AppendSlow(shortName);
 		}
 
 		while (reader->ReadNext())
@@ -1618,7 +1618,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
-	containerNameSb.Append(sourceName);
+	containerNameSb.AppendSlow(sourceName);
 	Map::IMapDrawLayer *lyr;
 	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)

@@ -26,7 +26,7 @@ namespace SSWR
 			Media::ColorManager *colorMgr;
 			Media::MonitorColorManager *monColor;
 			Bool normalClose;
-			const UTF8Char *monFileName;
+			Text::String *monFileName;
 			MonitorHandle *hMon;
 
 			UI::GUIPanel *pnlMonitor;

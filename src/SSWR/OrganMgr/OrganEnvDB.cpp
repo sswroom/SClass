@@ -524,7 +524,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 					sb.Append(this->cfgImgDirBase);
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				sb.Append(this->currCate->srcDir->v);
+				sb.Append(this->currCate->srcDir);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(5, &sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -1377,11 +1377,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(OrganSpecies *sp)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("insert into species (eng_name, chi_name, sci_name, group_id, description, dirName, idKey, cate_id, mapColor) values ("));
-	sql.AppendStrUTF8(sp->GetEName());
+	sql.AppendStr(sp->GetEName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetCName());
+	sql.AppendStr(sp->GetCName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetSName());
+	sql.AppendStr(sp->GetSName());
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(sp->GetGroupId());
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -1541,9 +1541,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 							else
 							{
 								Text::StringBuilderUTF8 sb;
-								sb.Append(csptr);
+								sb.AppendSlow(csptr);
 								sb.AppendC(UTF8STRC(" "));
-								sb.Append(csptr2);
+								sb.AppendSlow(csptr2);
 								camera = Text::String::NewNotNull(sb.ToString());
 							}
 						}
@@ -2152,6 +2152,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 {
 	UTF8Char sbuff[512];
 	UTF8Char fileName[32];
+	UTF8Char *fileNameEnd;
 	UTF8Char *sptr;
 	sptr = this->GetSpeciesDir(sp, sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -2199,11 +2200,11 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	i = Text::StrLastIndexOfCharC(imgURL->v, imgURL->leng, '.');
 	if ((imgURL->leng - i - 1) > 4)
 	{
-		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), UTF8STRC(".jpg"));
+		fileNameEnd = Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), UTF8STRC(".jpg"));
 	}
 	else
 	{
-		Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), &imgURL->v[i], imgURL->leng - i);
+		fileNameEnd = Text::StrConcatC(Text::StrHexVal32(fileName, crcVal), &imgURL->v[i], imgURL->leng - i);
 	}
 	if (crcVal == 0)
 	{
@@ -2212,7 +2213,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 	Bool succ;
 	sptr[0] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr + 1, fileName);
+	Text::StrConcatC(sptr + 1, fileName, (UOSInt)(fileNameEnd - fileName));
 	IO::StreamRecorder *recorder;
 	NEW_CLASS(recorder, IO::StreamRecorder(sbuff));
 	succ = recorder->AppendStream(stm);
@@ -2232,7 +2233,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->WriteSignature();
-	sb.Append(fileName);
+	sb.AppendP(fileName, fileNameEnd);
 	sb.AppendC(UTF8STRC("\t"));
 	sb.Append(imgURL);
 	sb.AppendC(UTF8STRC("\t"));
@@ -2243,11 +2244,12 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 	if (firstPhoto)
 	{
-		i = Text::StrLastIndexOfChar(fileName, '.');
+		i = Text::StrLastIndexOfCharC(fileName, (UOSInt)(fileNameEnd - fileName), '.');
 		fileName[i] = 0;
+		fileNameEnd = &fileName[i];
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("web"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(sptr, fileName);
+		Text::StrConcatC(sptr, fileName, i);
 		sp->SetPhoto(sbuff);
 		this->SaveSpecies(sp);
 	}
@@ -2255,7 +2257,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	{
 		UTF8Char *u8ptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(u8ptr, fileName);
+		Text::StrConcatC(u8ptr, fileName, (UOSInt)(fileNameEnd - fileName));
 	}
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
 }
@@ -2355,11 +2357,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveSpecies(OrganSpecies *sp)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update species set eng_name="));
-	sql.AppendStrUTF8(sp->GetEName());
+	sql.AppendStr(sp->GetEName());
 	sql.AppendCmdC(UTF8STRC(", chi_name="));
-	sql.AppendStrUTF8(sp->GetCName());
+	sql.AppendStr(sp->GetCName());
 	sql.AppendCmdC(UTF8STRC(", sci_name="));
-	sql.AppendStrUTF8(sp->GetSName());
+	sql.AppendStr(sp->GetSName());
 	sql.AppendCmdC(UTF8STRC(", description="));
 	sql.AppendStrUTF8(sp->GetDesc());
 	sql.AppendCmdC(UTF8STRC(",dirName="));
@@ -2390,13 +2392,13 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveGroup(OrganGroup *grp)
 	sql.AppendCmdC(UTF8STRC("update groups set group_type="));
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmdC(UTF8STRC(", eng_name="));
-	sql.AppendStrUTF8(grp->GetEName());
+	sql.AppendStr(grp->GetEName());
 	sql.AppendCmdC(UTF8STRC(", chi_name="));
-	sql.AppendStrUTF8(grp->GetCName());
+	sql.AppendStr(grp->GetCName());
 	sql.AppendCmdC(UTF8STRC(", description="));
-	sql.AppendStrUTF8(grp->GetDesc());
+	sql.AppendStr(grp->GetDesc());
 	sql.AppendCmdC(UTF8STRC(",idKey="));
-	sql.AppendStrUTF8(grp->GetIDKey());
+	sql.AppendStr(grp->GetIDKey());
 	sql.AppendCmdC(UTF8STRC(",flags="));
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(UTF8STRC(" where id="));
@@ -2465,15 +2467,15 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddGroup(OrganGroup *grp, Int32 parGroupId)
 	sql.AppendCmdC(UTF8STRC("insert into groups (group_type, eng_name, chi_name, description, parent_id, idKey, cate_id, flags) values ("));
 	sql.AppendInt32(grp->GetGroupType());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(grp->GetEName());
+	sql.AppendStr(grp->GetEName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(grp->GetCName());
+	sql.AppendStr(grp->GetCName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(grp->GetDesc());
+	sql.AppendStr(grp->GetDesc());
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(parGroupId);
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(grp->GetIDKey());
+	sql.AppendStr(grp->GetIDKey());
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -2682,21 +2684,21 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (!IO::FileUtil::MoveFile(img->GetImgItem()->GetFullName()->v, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
 			{
 				Text::StringBuilderUTF8 sb;
-				const UTF8Char *csptr;
-				csptr = Text::StrToUTF8New(L"移動");
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
-				sb.Append(img->GetImgItem()->GetDispName()->v);
-				csptr = Text::StrToUTF8New(L"時出錯, 要繼續?");
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
-				csptr = Text::StrToUTF8New(L"錯誤");
-				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), csptr, frm))
+				Text::String *s;
+				s = Text::String::NewNotNull(L"移動");
+				sb.Append(s);
+				s->Release();
+				sb.Append(img->GetImgItem()->GetDispName());
+				s = Text::String::NewNotNull(L"時出錯, 要繼續?");
+				sb.Append(s);
+				s->Release();
+				s = Text::String::NewNotNull(L"錯誤");
+				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, frm))
 				{
-					Text::StrDelNew(csptr);
+					s->Release();
 					break;
 				}
-				Text::StrDelNew(csptr);
+				s->Release();
 			}
 		}
 		i++;
@@ -2707,7 +2709,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 		Text::StringBuilderUTF8 sb;
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		const UTF8Char *name;
+		Text::CString name;
 		const UTF8Char *srcDir = 0;
 		sptr[0] = IO::Path::PATH_SEPERATOR;
 		Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
@@ -2721,14 +2723,14 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEB_IMAGE)
 			{
 				srcDir = img->GetSrcImgDir();
-				name = img->GetImgItem()->GetDispName()->v;
-				name = &name[Text::StrLastIndexOfChar(name, IO::Path::PATH_SEPERATOR) + 1];
+				name = img->GetImgItem()->GetDispName()->ToCString();
+				name = name.Substring(name.LastIndexOf(IO::Path::PATH_SEPERATOR) + 1);
 				sb.ClearStr();
 				sb.Append(name);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.Append(img->GetImgItem()->GetImgURL()->v);
+				sb.Append(img->GetImgItem()->GetImgURL());
 				sb.AppendC(UTF8STRC("\t"));
-				sb.Append(img->GetImgItem()->GetSrcURL()->v);
+				sb.Append(img->GetImgItem()->GetSrcURL());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			i++;
@@ -3491,8 +3493,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	sb->AppendI32(userFile->webuserId);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	UTF8Char u8buff[10];
-	dt.ToString(u8buff, "yyyyMM");
-	sb->Append(u8buff);
+	UTF8Char *sptr;
+	sptr = dt.ToString(u8buff, "yyyyMM");
+	sb->AppendP(u8buff, sptr);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->AppendC(userFile->dataFileName->v, userFile->dataFileName->leng);
 	return true;
@@ -3778,19 +3781,19 @@ void SSWR::OrganMgr::OrganEnvDB::BooksInit()
 		book->SetBookId(r->GetInt32(0));
 		sb.ClearStr();
 		r->GetStr(1, &sb);
-		book->SetTitle(sb.ToString());
+		book->SetTitle(&sb);
 		sb.ClearStr();
 		r->GetStr(2, &sb);
-		book->SetDispAuthor(sb.ToString());
+		book->SetDispAuthor(&sb);
 		sb.ClearStr();
 		r->GetStr(3, &sb);
-		book->SetPress(sb.ToString());
+		book->SetPress(&sb);
 		r->GetDate(4, &dt);
 		book->SetPublishDate(&dt);
 		book->SetGroupId(r->GetInt32(5));
 		sb.ClearStr();
 		r->GetStr(6, &sb);
-		book->SetURL(sb.ToString());
+		book->SetURL(&sb);
 		i = this->bookIds->SortedInsert(book->GetBookId());
 		this->bookObjs->Insert(i, book);
 	}
@@ -4342,10 +4345,10 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvDB::SearchObject(const UTF8C
 
 						foundGroup->SetGroupId(r->GetInt32(0));
 						sb.ClearStr();
-						sb.Append(sbuff2);
+						sb.AppendP(sbuff2, sptr2);
 						foundGroup->SetCName(sb.ToString());
 						sb.ClearStr();
-						sb.Append(sbuff);
+						sb.AppendP(sbuff, sptr);
 						foundGroup->SetEName(sb.ToString());
 						foundGroup->SetGroupType(r->GetInt32(1));
 						sb.ClearStr();
@@ -5060,8 +5063,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			sb.AppendI32(userId);
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			r->GetDate(1, &dt);
-			dt.ToString(sptr2, "yyyyMM");
-			sb.Append(sptr2);
+			sptr3 = dt.ToString(sptr2, "yyyyMM");
+			sb.AppendP(sptr2, sptr3);
 			Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 			IO::Path::CreateDirectory(sbuff);
 

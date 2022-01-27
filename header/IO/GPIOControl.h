@@ -1,6 +1,7 @@
 #ifndef _SM_IO_GPIOCONTROL
 #define _SM_IO_GPIOCONTROL
 #include "IO/IOPin.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -35,7 +36,7 @@ namespace IO
 		Bool HasEvent(UOSInt pinNum);
 		void ClearEvent(UOSInt pinNum);
 
-		static const UTF8Char *PinModeGetName(UOSInt pinNum, UOSInt pinMode);
+		static Text::CString PinModeGetName(UOSInt pinNum, UOSInt pinMode);
 	};
 }
 #endif

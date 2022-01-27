@@ -215,9 +215,9 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						DEL_CLASS(simg);
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
-						status->filePath = Text::StrCopyNew(sbuff);
-						status->cacheFile = Text::StrCopyNew(sbuff2);
-						status->fileName = status->filePath + (sptr - sbuff);
+						status->filePath = Text::String::NewNotNull(sbuff);
+						status->cacheFile = Text::String::NewNotNull(sbuff2);
+						status->fileName = status->filePath->v + (sptr - sbuff);
 						imgSett = imgSettMap->Get(sptr);
 						if (imgSett)
 						{
@@ -388,8 +388,8 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	while (i-- > 0)
 	{
 		status = imgList->GetItem(i);
-		Text::StrDelNew(status->filePath);
-		Text::StrDelNew(status->cacheFile);
+		status->filePath->Release();
+		status->cacheFile->Release();
 		if (status->previewImg)
 		{
 			this->deng->DeleteImage(status->previewImg);
@@ -426,22 +426,22 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF8 *sb,
 	{
 		if (Text::StrStartsWith(model, make))
 		{
-			sb->Append((const UTF8Char*)model);
+			sb->AppendSlow((const UTF8Char*)model);
 		}
 		else
 		{
-			sb->Append((const UTF8Char*)make);
+			sb->AppendSlow((const UTF8Char*)make);
 			sb->AppendC(UTF8STRC(" "));
-			sb->Append((const UTF8Char*)model);
+			sb->AppendSlow((const UTF8Char*)model);
 		}
 	}
 	else if (make)
 	{
-		sb->Append((const UTF8Char*)make);
+		sb->AppendSlow((const UTF8Char*)make);
 	}
 	else if (model)
 	{
-		sb->Append((const UTF8Char*)model);
+		sb->AppendSlow((const UTF8Char*)model);
 	}
 	else
 	{
@@ -708,7 +708,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			status->setting.flags |= 8;
 			if (status->previewImg == 0)
 			{
-				status->previewImg = this->deng->LoadImage(status->cacheFile);
+				status->previewImg = this->deng->LoadImage(status->cacheFile->v);
 				if (status->previewImg)
 				{
 					status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
@@ -731,8 +731,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			if (status->fileName)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append(status->fileName);
-				strLen = Text::StrCharCnt(sb.ToString());
+				sb.AppendSlow(status->fileName);
+				strLen = sb.GetLength();
 				if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
 				{
 					dimg->DrawString((UOSInt2Double(scnW) - strSz[0]) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
@@ -961,7 +961,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	{
 		status = imgList->GetItem(i);
 		sb.ClearStr();
-		sb.Append(status->fileName);
+		sb.AppendSlow(status->fileName);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendI32(status->setting.flags);
 		sb.AppendC(UTF8STRC("\t"));

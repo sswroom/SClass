@@ -33,28 +33,28 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->srcURL = 0;
 	this->location = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("ImageWebTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("ImageWebTitle")).v);
 
-	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebId"))));
+	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebId")).v));
 	this->lblId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtId, UI::GUITextBox(ui, this, imgItem->GetDispName()->v));
 	this->txtId->SetRect(100, 0, 200, 23, false);
 	this->txtId->SetReadOnly(true);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebFileName"))));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebFileName")).v));
 	this->lblFileName->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, imgItem->GetFullName()->v));
 	this->txtFileName->SetRect(100, 24, 680, 23, false);
 	this->txtFileName->SetReadOnly(true);
-	NEW_CLASS(this->lblImageURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebImageURL"))));
+	NEW_CLASS(this->lblImageURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebImageURL")).v));
 	this->lblImageURL->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetImgURL())->v));
 	this->txtImageURL->SetRect(100, 48, 680, 23, false);
 	this->txtImageURL->SetReadOnly(true);
-	NEW_CLASS(this->lblSourceURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebSourceURL"))));
+	NEW_CLASS(this->lblSourceURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebSourceURL")).v));
 	this->lblSourceURL->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetSrcURL())->v));
 	this->txtSourceURL->SetRect(100, 72, 680, 23, false);
-	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebLocation"))));
+	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebLocation")).v));
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, Text::String::OrEmpty(wfile->location)->v));
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
@@ -62,10 +62,10 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	{
 		this->txtLocation->SetReadOnly(true);
 	}
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebOk"))));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebOk")).v));
 	this->btnOK->SetRect(120, 120, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebCancel"))));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebCancel")).v));
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

@@ -70,7 +70,7 @@ private:
 			if (me->fileName)
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->Append(me->fileName);
+				sb->AppendSlow(me->fileName);
 				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
@@ -188,7 +188,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 			Text::StringBuilderUTF8 sb;
 			IO::FileStream *fs;
 			Exporter::MD5Exporter exporter;
-			sb.Append(fileName);
+			sb.AppendC(fileName, fileNameLen);
 			sb.AppendC(UTF8STRC(".md5"));
 			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
@@ -244,7 +244,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Checking "));
-					sb.Append(&sbuff[i + 1]);
+					sb.AppendP(&sbuff[i + 1], sptr);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					ParseFile(sbuff, (UOSInt)(sptr - sbuff));
 					console->WriteLine();

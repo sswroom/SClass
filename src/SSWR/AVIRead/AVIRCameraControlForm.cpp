@@ -63,12 +63,12 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			{
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
 				sb.ClearStr();
-				sb.Append(dlg->GetFolder());
+				sb.AppendSlow(dlg->GetFolder());
 				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				}
-				sb.Append(file->fileName);
+				sb.AppendSlow(file->fileName);
 				
 				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				succ = me->camera->GetFile(file, fs);
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 					IO::Path::DeleteFile(sb.ToString());
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Error in downloading "));
-					sb.Append(file->fileName);
+					sb.AppendSlow(file->fileName);
 					sb.AppendC(UTF8STRC(", continue?"));
 					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Camera Control", me))
 					{

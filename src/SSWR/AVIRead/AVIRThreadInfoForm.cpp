@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sb.AppendC(UTF8STRC(" "));
 				sptr = symbol->ResolveName(sbuff, rip);
 				i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				sb.Append(&sbuff[i + 1]);
+				sb.AppendP(&sbuff[i + 1], sptr);
 				i = this->lbMyStack->AddItem(sb.ToString(), 0);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("RIP = 0x"));

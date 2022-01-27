@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	{
 		me->cmdInfos[i].cmdType = cmdList.GetItem(i);
 		me->cmdInfos[i].cmdFmt = cmdFormats.GetItem(i);
-		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)), &me->cmdInfos[i]);
+		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)).v, &me->cmdInfos[i]);
 		i++;
 	}
 	if (j > 0)
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" success, reply = "));
-				sb.Append(sbuff);
+				sb.AppendSlow(sbuff);
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 				me->txtCommand->SetText(sbuff);
 			}

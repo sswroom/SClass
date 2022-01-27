@@ -118,7 +118,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					Text::String *fileName = 0;
 					sb.ClearStr();
-					sb.Append(url);
+					sb.AppendSlow(url);
 					j = sb.IndexOf('?');
 					if (j != INVALID_INDEX)
 					{

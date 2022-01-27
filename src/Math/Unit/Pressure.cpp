@@ -25,48 +25,48 @@ Double Math::Unit::Pressure::GetUnitRatio(PressureUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Pressure::GetUnitShortName(PressureUnit unit)
+Text::CString Math::Unit::Pressure::GetUnitShortName(PressureUnit unit)
 {
 	switch (unit)
 	{
 	case PU_PASCAL:
-		return (const UTF8Char*)"Pa";
+		return CSTR("Pa");
 	case PU_BAR:
-		return (const UTF8Char*)"bar";
+		return CSTR("bar");
 	case PU_ATM:
-		return (const UTF8Char*)"atm";
+		return CSTR("atm");
 	case PU_TORR:
-		return (const UTF8Char*)"Torr";
+		return CSTR("Torr");
 	case PU_PSI:
-		return (const UTF8Char*)"psi";
+		return CSTR("psi");
 	case PU_KPASCAL:
-		return (const UTF8Char*)"kPa";
+		return CSTR("kPa");
 	case PU_HPASCAL:
-		return (const UTF8Char*)"hPa";
+		return CSTR("hPa");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Pressure::GetUnitName(PressureUnit unit)
+Text::CString Math::Unit::Pressure::GetUnitName(PressureUnit unit)
 {
 	switch (unit)
 	{
 	case PU_PASCAL:
-		return (const UTF8Char*)"Pascal";
+		return CSTR("Pascal");
 	case PU_BAR:
-		return (const UTF8Char*)"Bar";
+		return CSTR("Bar");
 	case PU_ATM:
-		return (const UTF8Char*)"Standard atmosphere";
+		return CSTR("Standard atmosphere");
 	case PU_TORR:
-		return (const UTF8Char*)"Torr";
+		return CSTR("Torr");
 	case PU_PSI:
-		return (const UTF8Char*)"Pounds per square inch";
+		return CSTR("Pounds per square inch");
 	case PU_KPASCAL:
-		return (const UTF8Char*)"Kilo Pascal";
+		return CSTR("Kilo Pascal");
 	case PU_HPASCAL:
-		return (const UTF8Char*)"Hecto Pascal";
+		return CSTR("Hecto Pascal");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Pressure::Convert(PressureUnit fromUnit, PressureUnit toUnit, Double fromValue)

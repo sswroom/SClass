@@ -359,7 +359,7 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		sb.AppendC(UTF8STRC("Decoder: "));
 		if (status.decoderName)
 		{
-			sb.Append(status.decoderName);
+			sb.AppendSlow(status.decoderName);
 		}
 		else
 		{

@@ -1,9 +1,10 @@
 #ifndef _SM_IO_SERIALPORT
 #define _SM_IO_SERIALPORT
 #include "Data/ArrayList.h"
+#include "IO/Stream.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
-#include "IO/Stream.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -39,7 +40,7 @@ namespace IO
 		Bool InitStream();
 	public:
 		static Bool GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes);
-		static const UTF8Char *GetPortTypeName(SerialPortType portType);
+		static Text::CString GetPortTypeName(SerialPortType portType);
 		static UOSInt GetPortWithType(const UTF8Char *portName);
 		static UOSInt GetUSBPort();
 		static UOSInt GetBTPort();

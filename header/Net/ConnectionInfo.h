@@ -4,6 +4,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "Data/DateTime.h"
 #include "Net/SocketUtil.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -77,8 +78,8 @@ namespace Net
 		ConnectionType GetConnectionType();
 		ConnectionStatus GetConnectionStatus();
 
-		static const UTF8Char *GetConnectionTypeName(ConnectionType connType);
-		static const UTF8Char *GetConnectionStatusName(ConnectionStatus connStatus);
+		static Text::CString GetConnectionTypeName(ConnectionType connType);
+		static Text::CString GetConnectionStatusName(ConnectionStatus connStatus);
 	};
 }
 #endif

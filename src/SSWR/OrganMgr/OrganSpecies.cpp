@@ -23,12 +23,9 @@ SSWR::OrganMgr::OrganSpecies::OrganSpecies()
 
 SSWR::OrganMgr::OrganSpecies::~OrganSpecies()
 {
-	if (this->cName)
-		Text::StrDelNew(this->cName);
-	if (this->eName)
-		Text::StrDelNew(this->eName);
-	if (this->sName)
-		Text::StrDelNew(this->sName);
+	SDEL_STRING(this->cName);
+	SDEL_STRING(this->eName);
+	SDEL_STRING(this->sName);
 	if (this->desc)
 		Text::StrDelNew(this->desc);
 	if (this->dirName)
@@ -51,63 +48,33 @@ Int32 SSWR::OrganMgr::OrganSpecies::GetSpeciesId()
 
 void SSWR::OrganMgr::OrganSpecies::SetCName(const UTF8Char *cName)
 {
-	if (this->cName)
-	{
-		Text::StrDelNew(this->cName);
-	}
-	if (cName)
-	{
-		this->cName = Text::StrCopyNew(cName);
-	}
-	else
-	{
-		this->cName = 0;
-	}
+	SDEL_STRING(this->cName);
+	this->cName = Text::String::NewOrNull(cName);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganSpecies::GetCName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetCName()
 {
 	return this->cName;
 }
 
 void SSWR::OrganMgr::OrganSpecies::SetEName(const UTF8Char *eName)
 {
-	if (this->eName)
-	{
-		Text::StrDelNew(this->eName);
-	}
-	if (eName)
-	{
-		this->eName = Text::StrCopyNew(eName);
-	}
-	else
-	{
-		this->eName = 0;
-	}
+	SDEL_STRING(this->eName);
+	this->eName = Text::String::NewOrNull(eName);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetEName()
 {
 	return this->eName;
 }
 
 void SSWR::OrganMgr::OrganSpecies::SetSName(const UTF8Char *sName)
 {
-	if (this->sName)
-	{
-		Text::StrDelNew(this->sName);
-	}
-	if (sName)
-	{
-		this->sName = Text::StrCopyNew(sName);
-	}
-	else
-	{
-		this->sName = 0;
-	}
+	SDEL_STRING(this->sName);
+	this->sName = Text::String::NewOrNull(sName);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganSpecies::GetSName()
+Text::String *SSWR::OrganMgr::OrganSpecies::GetSName()
 {
 	return this->sName;
 }
@@ -271,13 +238,13 @@ UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff)
 	*sptr++ = '+';
 	if (this->cName)
 	{
-		sptr = Text::StrConcat(sptr, this->cName);
+		sptr = this->cName->ConcatTo(sptr);
 	}
 	if (this->sName)
 	{
 		*sptr++ = ' ';
 		*sptr++ = '(';
-		sptr = Text::StrConcat(sptr, this->sName);
+		sptr = this->sName->ConcatTo(sptr);
 		*sptr++ = ')';
 	}
 	*sptr = 0;
@@ -286,7 +253,7 @@ UTF8Char *SSWR::OrganMgr::OrganSpecies::GetItemName(UTF8Char *buff)
 
 UTF8Char *SSWR::OrganMgr::OrganSpecies::GetEngName(UTF8Char *buff)
 {
-	return Text::StrConcat(buff, this->sName);
+	return this->sName->ConcatTo(buff);
 }
 
 SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone()
@@ -294,9 +261,9 @@ SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone()
 	OrganSpecies *newItem;
 	NEW_CLASS(newItem, OrganSpecies());
 	newItem->SetSpeciesId(this->speciesId);
-	newItem->SetCName(this->cName);
-	newItem->SetEName(this->eName);
-	newItem->SetSName(this->sName);
+	newItem->SetCName(STR_PTR(this->cName));
+	newItem->SetEName(STR_PTR(this->eName));
+	newItem->SetSName(STR_PTR(this->sName));
 	newItem->SetGroupId(this->groupId);
 	newItem->SetDesc(this->desc);
 	newItem->SetDirName(this->dirName);

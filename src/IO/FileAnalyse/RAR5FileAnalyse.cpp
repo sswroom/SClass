@@ -25,7 +25,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::ReadVInt(const UInt8 *buffPtr, UI
 	return buffPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -33,7 +33,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -42,7 +42,7 @@ const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVInt(IO::FileAnalyse::FrameDet
 	return nextPtr;
 }
 
-const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val)
+const UInt8 *IO::FileAnalyse::RAR5FileAnalyse::AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val)
 {
 	UInt64 iVal;
 	const UInt8 *nextPtr = ReadVInt(buffPtr, &iVal);
@@ -539,10 +539,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)(pack->headerSize + pack->dataSize)));
 	packBuff = MemAlloc(UInt8, pack->headerSize);
 	this->fd->GetRealData(pack->fileOfst, pack->headerSize, packBuff);
-	frame->AddHex32(0, "Block CRC", ReadUInt32(&packBuff[0]));
+	frame->AddHex32(0, CSTR("Block CRC"), ReadUInt32(&packBuff[0]));
 	packPtr = packBuff + 4;
 	packEnd = packBuff + pack->headerSize;
-	packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Header Size", packPtr);
+	packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Header Size"), packPtr);
 	nextPtr = ReadVInt(packPtr, &iVal);
 	vName = {0, 0};
 	switch (iVal)
@@ -563,19 +563,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		vName = {UTF8STRC("End of archive header")};
 		break;
 	}
-	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Type", iVal, vName);
+	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Header Type"), iVal, vName);
 	packPtr = nextPtr;
 	nextPtr = ReadVInt(packPtr, &headerFlags);
-	frame->AddHex64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Header Flags", headerFlags);
+	frame->AddHex64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Header Flags"), headerFlags);
 	packPtr = nextPtr;
 	extraSize = 0;
 	if (headerFlags & 1)
 	{
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Extra Area Size", packPtr, &extraSize);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Extra Area Size"), packPtr, &extraSize);
 	}
 	if (headerFlags & 2)
 	{
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Data Size", packPtr);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Data Size"), packPtr);
 	}
 
 	if (pack->headerType == 1)
@@ -604,12 +604,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		{
 			sb.AppendC(UTF8STRC(" (Locked archive)"));
 		}
-		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"Archive flags", sb.ToString());
+		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Archive flags"), sb.ToCString());
 		packPtr = nextPtr;
 
 		if (iVal & 2)
 		{
-			packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Volume number", packPtr);
+			packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Volume number"), packPtr);
 		}
 		extraEnd = packPtr + extraSize;
 		if (extraEnd <= packEnd)
@@ -622,26 +622,26 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				{
 					break;
 				}
-				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Extra Rec Size", extraSize);
+				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Extra Rec Size"), extraSize);
 				packPtr = nextPtr2;
 				nextPtr2 = ReadVInt(packPtr, &iVal);
 				if (iVal == 1)
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, {UTF8STRC("Locator")});
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, {UTF8STRC("Locator")});
 					packPtr = nextPtr2;
-					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Flags", packPtr, &iVal);
+					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, &iVal);
 					if (iVal & 1)
 					{
-						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Quick open offset", packPtr, &iVal);
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Quick open offset"), packPtr, &iVal);
 					}
 					if (iVal & 2)
 					{
-						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "Recovery record offset", packPtr, &iVal);
+						packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Recovery record offset"), packPtr, &iVal);
 					}
 				}
 				else
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, {0, 0});
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, {0, 0});
 				}
 				packPtr = nextPtr;
 			}
@@ -669,29 +669,29 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 		{
 			sb.AppendC(UTF8STRC(" (Unpacked size is unknown)"));
 		}
-		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), (const UTF8Char*)"File flags", sb.ToString());
+		frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("File flags"), sb.ToCString());
 		packPtr = nextPtr;
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Unpacked size", packPtr, 0);
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Attributes", packPtr, 0);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Unpacked size"), packPtr, 0);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Attributes"), packPtr, 0);
 		if (headerFlags & 2)
 		{
-			frame->AddUInt((UOSInt)(packPtr - packBuff), 4, "mtime", ReadUInt32(packPtr));
+			frame->AddUInt((UOSInt)(packPtr - packBuff), 4, CSTR("mtime"), ReadUInt32(packPtr));
 			packPtr += 4;
 		}
 		if (headerFlags & 4)
 		{
-			frame->AddHex32((UOSInt)(packPtr - packBuff), "Data CRC32", ReadUInt32(packPtr));
+			frame->AddHex32((UOSInt)(packPtr - packBuff), CSTR("Data CRC32"), ReadUInt32(packPtr));
 			packPtr += 4;
 		}
 		nextPtr = ReadVInt(packPtr, &iVal);
-		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression version", iVal & 0x3f);
-		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression Solid Flag", (iVal & 0x40) >> 6);
-		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression method", (iVal & 0x380) >> 7);
-		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), "Compression dir size", (iVal & 0x3c00) >> 10);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Compression version"), iVal & 0x3f);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Compression Solid Flag"), (iVal & 0x40) >> 6);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Compression method"), (iVal & 0x380) >> 7);
+		frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Compression dir size"), (iVal & 0x3c00) >> 10);
 		packPtr = nextPtr;
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Host OS", packPtr);
-		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Name length", packPtr, &iVal);
-		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, "Name", packPtr);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Host OS"), packPtr);
+		packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Name length"), packPtr, &iVal);
+		frame->AddStrC((UOSInt)(packPtr - packBuff), (UOSInt)iVal, CSTR("Name"), packPtr);
 		packPtr += (UOSInt)iVal;
 
 		extraEnd = packPtr + extraSize;
@@ -705,7 +705,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				{
 					break;
 				}
-				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Extra Rec Size", extraSize);
+				frame->AddUInt64V((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Extra Rec Size"), extraSize);
 				packPtr = nextPtr2;
 				nextPtr2 = ReadVInt(packPtr, &iVal);
 				vName = {0, 0};
@@ -733,14 +733,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 					vName = {UTF8STRC("Service data")};
 					break;
 				}
-				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), "Type", iVal, vName);
+				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, vName);
 				packPtr = nextPtr2;
 
 				if (iVal == 3)
 				{
 					Data::DateTime dt;
 					UTF8Char sbuff[64];
-					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), "Flags", packPtr, &headerFlags);
+					UTF8Char *sptr;
+					packPtr = AddVInt(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, &headerFlags);
 					if (headerFlags & 2)
 					{
 						if (headerFlags & 1)
@@ -753,8 +754,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							dt.SetValueFILETIME((void*)packPtr);
 							nextPtr2 = packPtr + 8;
 						}
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"mtime", sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("mtime"), {sbuff, (UOSInt)(sptr - sbuff)});
 						packPtr = nextPtr2;
 					}
 					if (headerFlags & 4)
@@ -769,8 +770,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							dt.SetValueFILETIME((void*)packPtr);
 							nextPtr2 = packPtr + 8;
 						}
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"ctime", sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("ctime"), {sbuff, (UOSInt)(sptr - sbuff)});
 						packPtr = nextPtr2;
 					}
 					if (headerFlags & 8)
@@ -785,8 +786,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							dt.SetValueFILETIME((void*)packPtr);
 							nextPtr2 = packPtr + 8;
 						}
-						dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), (const UTF8Char*)"atime", sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("atime"), {sbuff, (UOSInt)(sptr - sbuff)});
 						packPtr = nextPtr2;
 					}
 				}
@@ -796,7 +797,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	}
 	else if (pack->headerType == 5)
 	{
-		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), "End of archive flags", packPtr, &headerFlags);
+		packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("End of archive flags"), packPtr, &headerFlags);
 	}
 
 	/*	sb->AppendC(UTF8STRC("\r\nMicroSec Per Frame = "));

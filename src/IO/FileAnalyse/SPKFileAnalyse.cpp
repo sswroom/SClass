@@ -29,7 +29,7 @@ void IO::FileAnalyse::SPKFileAnalyse::ParseV1Directory(UInt64 dirOfst, UInt64 di
 		pack->fileOfst = fileOfst;
 		pack->packSize = (UOSInt)fileSize;
 		pack->packType = PT_FILE;
-		pack->fileName = Text::StrCopyNewC(&buff[ofst + 26], fileNameSize);
+		pack->fileName = Text::String::New(&buff[ofst + 26], fileNameSize);
 		this->packs->Add(pack);
 		ofst += 26 + (UOSInt)fileNameSize;
 	}
@@ -123,7 +123,7 @@ UInt32 __stdcall IO::FileAnalyse::SPKFileAnalyse::ParseThread(void *userObj)
 
 void IO::FileAnalyse::SPKFileAnalyse::FreePackInfo(IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack)
 {
-	SDEL_TEXT(pack->fileName);
+	SDEL_STRING(pack->fileName);
 	MemFree(pack);
 }
 
@@ -169,9 +169,9 @@ IO::FileAnalyse::SPKFileAnalyse::~SPKFileAnalyse()
 	DEL_CLASS(this->packs);
 }
 
-const UTF8Char *IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::SPKFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"SPK";
+	return CSTR("SPK");
 }
 
 UOSInt IO::FileAnalyse::SPKFileAnalyse::GetFrameCount()
@@ -244,6 +244,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail *frame;
 	IO::FileAnalyse::SPKFileAnalyse::PackInfo *pack;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt8 *packBuff;
 	pack = this->packs->GetItem(index);
 	if (pack == 0)
@@ -252,29 +253,29 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	if (pack->packType == PT_HEADER)
 	{
-		frame->AddText(0, (const UTF8Char*)"Type=File header");
+		frame->AddText(0, CSTR("Type=File header"));
 	}
 	else if (pack->packType == PT_V1DIRECTORY)
 	{
-		frame->AddText(0, (const UTF8Char*)"Type=V1 Directory");
+		frame->AddText(0, CSTR("Type=V1 Directory"));
 	}
 	else if (pack->packType == PT_V2DIRECTORY)
 	{
-		frame->AddText(0, (const UTF8Char*)"Type=V2 Directory");
+		frame->AddText(0, CSTR("Type=V2 Directory"));
 	}
 	else if (pack->packType == PT_FILE)
 	{
-		frame->AddText(0, (const UTF8Char*)"Type=Data Block");
+		frame->AddText(0, CSTR("Type=Data Block"));
 	}
-	Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Size="), pack->packSize);
-	frame->AddText(0, sbuff);
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
+	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
 
 	if (pack->fileName)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("File Name="));
 		sb.Append(pack->fileName);
-		frame->AddText(0, sb.ToString());
+		frame->AddText(0, sb.ToCString());
 	}
 
 	if (pack->packType == PT_HEADER)
@@ -284,42 +285,42 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
 
-		frame->AddHex32(4, "Flags", flags = ReadUInt32(&packBuff[4]));
-		frame->AddUInt64(8, "Last Directory Offset", ReadUInt64(&packBuff[8]));
+		frame->AddHex32(4, CSTR("Flags"), flags = ReadUInt32(&packBuff[4]));
+		frame->AddUInt64(8, CSTR("Last Directory Offset"), ReadUInt64(&packBuff[8]));
 		endOfst = 16;
 		if (flags & 2)
 		{
-			frame->AddUInt64(16, "Last Directory Size", ReadUInt64(&packBuff[16]));
+			frame->AddUInt64(16, CSTR("Last Directory Size"), ReadUInt64(&packBuff[16]));
 			endOfst = 24;
 		}
 		if (flags & 1)
 		{
 			Int32 customType;
 			UInt32 customSize;
-			frame->AddInt(endOfst, 4, "Custom Type", customType = ReadInt32(&packBuff[endOfst]));
-			frame->AddUInt(endOfst + 4, 4, "Custom Size", customSize = ReadUInt32(&packBuff[endOfst + 4]));
+			frame->AddInt(endOfst, 4, CSTR("Custom Type"), customType = ReadInt32(&packBuff[endOfst]));
+			frame->AddUInt(endOfst + 4, 4, CSTR("Custom Size"), customSize = ReadUInt32(&packBuff[endOfst + 4]));
 			if (customType == 1)
 			{
 				UOSInt customOfst;
 				UInt8 urlCnt;
 				UInt8 urlI;
-				frame->AddText(endOfst + 8, (const UTF8Char*)"-OSM Tile:");
-				frame->AddUInt(endOfst + 8, 1, "-Number of URL", urlCnt = packBuff[endOfst + 8]);
+				frame->AddText(endOfst + 8, CSTR("-OSM Tile:"));
+				frame->AddUInt(endOfst + 8, 1, CSTR("-Number of URL"), urlCnt = packBuff[endOfst + 8]);
 				urlI = 0;
 				customOfst = 1;
 				while (urlI < urlCnt)
 				{
-					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"-Length"), urlI);
-					frame->AddUInt(endOfst + 8 + customOfst, 1, (const Char *)sbuff, packBuff[endOfst + 8 + customOfst]);
-					Text::StrUInt16(Text::StrConcat(sbuff, (const UTF8Char*)"-URL"), urlI);
-					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], (const Char *)sbuff, &packBuff[endOfst + 8 + customOfst + 1]);
+					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-Length")), urlI);
+					frame->AddUInt(endOfst + 8 + customOfst, 1, {sbuff, (UOSInt)(sptr - sbuff)}, packBuff[endOfst + 8 + customOfst]);
+					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-URL")), urlI);
+					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[endOfst + 8 + customOfst + 1]);
 					customOfst += (UOSInt)packBuff[endOfst + 8 + customOfst] + 1;
 					urlI++;
 				}
 			}
 			else
 			{
-				frame->AddHexBuff(endOfst + 8, customSize, "Custom data", &packBuff[endOfst + 8], false);
+				frame->AddHexBuff(endOfst + 8, customSize, CSTR("Custom data"), &packBuff[endOfst + 8], false);
 			}
 		}
 		MemFree(packBuff);
@@ -335,8 +336,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-		frame->AddUInt64(0, "Prev Directory Offset", ReadUInt64(&packBuff[0]));
-		frame->AddUInt64(8, "Prev Directory Size", ReadUInt64(&packBuff[8]));
+		frame->AddUInt64(0, CSTR("Prev Directory Offset"), ReadUInt64(&packBuff[0]));
+		frame->AddUInt64(8, CSTR("Prev Directory Size"), ReadUInt64(&packBuff[8]));
 		this->GetDetailDirs(packBuff + 16, pack->packSize - 16, 16, frame);
 		MemFree(packBuff);
 	}
@@ -346,7 +347,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 		{
 			packBuff = MemAlloc(UInt8, pack->packSize);
 			this->fd->GetRealData(pack->fileOfst, pack->packSize, packBuff);
-			frame->AddHexBuff(0, pack->packSize, "FileData", packBuff, true);
+			frame->AddHexBuff(0, pack->packSize, CSTR("FileData"), packBuff, true);
 			MemFree(packBuff);
 		}
 		else
@@ -358,7 +359,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 			sb.AppendC(UTF8STRC("\r\n...\r\n"));
 			this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
 			sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-			frame->AddField(0, pack->packSize, (const UTF8Char*)"FileData", sb.ToString());
+			frame->AddField(0, pack->packSize, CSTR("FileData"), sb.ToCString());
 		}
 	}
 	return frame;
@@ -392,11 +393,11 @@ void IO::FileAnalyse::SPKFileAnalyse::GetDetailDirs(const UInt8 *dirBuff, UOSInt
 			break;
 		}
 
-		frame->AddUInt64(frameOfst, "File Offset", fileOfst);
-		frame->AddUInt64(frameOfst + 8, "File Size", fileSize);
-		frame->AddUInt64(frameOfst + 16, "Reserved", ReadUInt64(&dirBuff[ofst + 16]));
-		frame->AddUInt(frameOfst + 24, 2, "File Name Size", fileNameSize);
-		frame->AddStrC(frameOfst + 26, fileNameSize, "File Name", &dirBuff[ofst + 26]);
+		frame->AddUInt64(frameOfst, CSTR("File Offset"), fileOfst);
+		frame->AddUInt64(frameOfst + 8, CSTR("File Size"), fileSize);
+		frame->AddUInt64(frameOfst + 16, CSTR("Reserved"), ReadUInt64(&dirBuff[ofst + 16]));
+		frame->AddUInt(frameOfst + 24, 2, CSTR("File Name Size"), fileNameSize);
+		frame->AddStrC(frameOfst + 26, fileNameSize, CSTR("File Name"), &dirBuff[ofst + 26]);
 		ofst += 26 + (UOSInt)fileNameSize;
 		frameOfst += 26 + (UOSInt)fileNameSize;
 	}

@@ -809,18 +809,18 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			frame->AddField(4, 1, {UTF8STRC("MPEG Version")}, {UTF8STRC("2")});
 			scr_base = (((Int64)(packBuff[4] & 0x38)) << 27) | ((packBuff[4] & 3) << 28) | (packBuff[5] << 20) | ((packBuff[6] & 0xf8) << 12) | ((packBuff[6] & 3) << 13) | (packBuff[7] << 5) | (packBuff[8] >> 3);
 			scr_ext = ((packBuff[8] & 3) << 7) | (packBuff[9] >> 1);
-			frame->AddInt64V(4, 5, "System Clock Reference Base", scr_base);
-			frame->AddInt(8, 2, "System Clock Reference Extension", scr_ext);
-			frame->AddUInt(10, 3, "Program Mux Rate", ReadMUInt24(&packBuff[10]) >> 2);
-			frame->AddUInt(13, 1, "Pack Stuffing Length", packBuff[13] & 7);
+			frame->AddInt64V(4, 5, CSTR("System Clock Reference Base"), scr_base);
+			frame->AddInt(8, 2, CSTR("System Clock Reference Extension"), scr_ext);
+			frame->AddUInt(10, 3, CSTR("Program Mux Rate"), ReadMUInt24(&packBuff[10]) >> 2);
+			frame->AddUInt(13, 1, CSTR("Pack Stuffing Length"), packBuff[13] & 7);
 		}
 		else if ((packBuff[4] & 0xf0) == 0x20)
 		{
 			Int64 scr_base;
 			frame->AddField(4, 1, {UTF8STRC("MPEG Version")}, {UTF8STRC("1")});
 			scr_base = (((Int64)(packBuff[4] & 0xe)) << 29) | (packBuff[5] << 22) | ((packBuff[6] & 0xfe) << 14) | (packBuff[7] << 7) | ((packBuff[8] & 0xfe) >> 1);
-			frame->AddInt64V(4, 5, "System Clock Reference Base", scr_base);
-			frame->AddUInt(9, 3, "Program Mux Rate", (ReadMUInt24(&packBuff[9]) >> 1) & 0x3fffff);
+			frame->AddInt64V(4, 5, CSTR("System Clock Reference Base"), scr_base);
+			frame->AddUInt(9, 3, CSTR("Program Mux Rate"), (ReadMUInt24(&packBuff[9]) >> 1) & 0x3fffff);
 		}
 		else
 		{
@@ -831,23 +831,23 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		{
 			UOSInt i;
 			frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("System header")});
-			frame->AddUInt(6, 3, "Rate Bound", (ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
-			frame->AddUInt(9, 1, "Audio Bound", (UInt16)(packBuff[9] >> 2));
-			frame->AddUInt(9, 1, "Fixed Flag", (UInt16)((packBuff[9] & 2) >> 1));
-			frame->AddUInt(9, 1, "CSPS Flag", packBuff[9] & 1);
-			frame->AddUInt(10, 1, "System Audio Lock Flag", (packBuff[10] & 0x80) >> 7);
-			frame->AddUInt(10, 1, "System Video Lock Flag", (packBuff[10] & 0x40) >> 6);
-			frame->AddUInt(10, 1, "Video Bound", packBuff[10] & 0x1f);
-			frame->AddUInt(11, 1, "Packet Rate Restriction Flag", (packBuff[11] & 0x80) >> 7);
+			frame->AddUInt(6, 3, CSTR("Rate Bound"), (ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
+			frame->AddUInt(9, 1, CSTR("Audio Bound"), (UInt16)(packBuff[9] >> 2));
+			frame->AddUInt(9, 1, CSTR("Fixed Flag"), (UInt16)((packBuff[9] & 2) >> 1));
+			frame->AddUInt(9, 1, CSTR("CSPS Flag"), packBuff[9] & 1);
+			frame->AddUInt(10, 1, CSTR("System Audio Lock Flag"), (packBuff[10] & 0x80) >> 7);
+			frame->AddUInt(10, 1, CSTR("System Video Lock Flag"), (packBuff[10] & 0x40) >> 6);
+			frame->AddUInt(10, 1, CSTR("Video Bound"), packBuff[10] & 0x1f);
+			frame->AddUInt(11, 1, CSTR("Packet Rate Restriction Flag"), (packBuff[11] & 0x80) >> 7);
 			i = 12;
 			while (i < pack->packSize)
 			{
 				if (packBuff[i] & 0x80)
 				{
 					frame->AddText(i, {UTF8STRC("{")});
-					frame->AddHex8(i, "\tStream ID", packBuff[i]);
-					frame->AddUInt(i + 1, 1, "\tSTD Buffer Bound Scale", (packBuff[i + 1] >> 5) & 1);
-					frame->AddInt(i + 1, 2, "\tSTD Buffer Size Bound", ReadMInt16(&packBuff[i + 1]) & 0x1fff);
+					frame->AddHex8(i, CSTR("\tStream ID"), packBuff[i]);
+					frame->AddUInt(i + 1, 1, CSTR("\tSTD Buffer Bound Scale"), (packBuff[i + 1] >> 5) & 1);
+					frame->AddInt(i + 1, 2, CSTR("\tSTD Buffer Size Bound"), ReadMInt16(&packBuff[i + 1]) & 0x1fff);
 					frame->AddText(i + 3, {UTF8STRC("}")});
 				}
 				i += 3;
@@ -863,32 +863,32 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		{
 			UOSInt i;
 			Int64 pts;
-			frame->AddUInt(6, 1, "PES Scrambling Control", (packBuff[6] & 0x30) >> 4);
-			frame->AddUInt(6, 1, "PES Priority", (packBuff[6] & 0x8) >> 3);
-			frame->AddUInt(6, 1, "Data Alignment Indicator", (packBuff[6] & 0x4) >> 2);
-			frame->AddUInt(6, 1, "Copyright", (packBuff[6] & 0x2) >> 1);
-			frame->AddUInt(6, 1, "Original or Copy", packBuff[6] & 0x1);
-			frame->AddUInt(7, 1, "PTS DTS flags", (packBuff[7] & 0xc0) >> 6);
-			frame->AddUInt(7, 1, "ESCR flag", (packBuff[7] & 0x20) >> 5);
-			frame->AddUInt(7, 1, "ES Rate Flag", (packBuff[7] & 0x10) >> 4);
-			frame->AddUInt(7, 1, "DSM Trick Mode flag", (packBuff[7] & 0x8) >> 3);
-			frame->AddUInt(7, 1, "Additional Copy Info flag", (packBuff[7] & 0x4) >> 2);
-			frame->AddUInt(7, 1, "PES CRC flag", (packBuff[7] & 0x2) >> 1);
-			frame->AddUInt(7, 1, "PES Extension flag", packBuff[7] & 0x1);
-			frame->AddUInt(8, 1, "PES Header Data Length", packBuff[8]);
+			frame->AddUInt(6, 1, CSTR("PES Scrambling Control"), (packBuff[6] & 0x30) >> 4);
+			frame->AddUInt(6, 1, CSTR("PES Priority"), (packBuff[6] & 0x8) >> 3);
+			frame->AddUInt(6, 1, CSTR("Data Alignment Indicator"), (packBuff[6] & 0x4) >> 2);
+			frame->AddUInt(6, 1, CSTR("Copyright"), (packBuff[6] & 0x2) >> 1);
+			frame->AddUInt(6, 1, CSTR("Original or Copy"), packBuff[6] & 0x1);
+			frame->AddUInt(7, 1, CSTR("PTS DTS flags"), (packBuff[7] & 0xc0) >> 6);
+			frame->AddUInt(7, 1, CSTR("ESCR flag"), (packBuff[7] & 0x20) >> 5);
+			frame->AddUInt(7, 1, CSTR("ES Rate Flag"), (packBuff[7] & 0x10) >> 4);
+			frame->AddUInt(7, 1, CSTR("DSM Trick Mode flag"), (packBuff[7] & 0x8) >> 3);
+			frame->AddUInt(7, 1, CSTR("Additional Copy Info flag"), (packBuff[7] & 0x4) >> 2);
+			frame->AddUInt(7, 1, CSTR("PES CRC flag"), (packBuff[7] & 0x2) >> 1);
+			frame->AddUInt(7, 1, CSTR("PES Extension flag"), packBuff[7] & 0x1);
+			frame->AddUInt(8, 1, CSTR("PES Header Data Length"), packBuff[8]);
 			i = 9;
 			if ((packBuff[7] & 0xc0) == 0x80)
 			{
 				pts = (((Int64)(packBuff[9] & 0xe)) << 29) | (packBuff[10] << 22) | ((packBuff[11] & 0xfe) << 14) | (packBuff[12] << 7) | (packBuff[13] >> 1);
-				frame->AddInt64V(9, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(9, 5, CSTR("Presentation Time Stamp"), pts);
 				i = 14;
 			}
 			else if ((packBuff[7] & 0xc0) == 0xc0)
 			{
 				pts = (((Int64)(packBuff[9] & 0xe)) << 29) | (packBuff[10] << 22) | ((packBuff[11] & 0xfe) << 14) | (packBuff[12] << 7) | (packBuff[13] >> 1);
-				frame->AddInt64V(9, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(9, 5, CSTR("Presentation Time Stamp"), pts);
 				pts = (((Int64)(packBuff[14] & 0xe)) << 29) | (packBuff[15] << 22) | ((packBuff[16] & 0xfe) << 14) | (packBuff[17] << 7) | (packBuff[18] >> 1);
-				frame->AddInt64V(14, 5, "Decoding Time Stamp", pts);
+				frame->AddInt64V(14, 5, CSTR("Decoding Time Stamp"), pts);
 				i = 19;
 			}
 			if (packBuff[7] & 0x20)
@@ -897,86 +897,86 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				Int32 escr_ext;
 				escr_base = (((Int64)(packBuff[i] & 0x38)) << 27) | ((packBuff[i] & 3) << 28) | (packBuff[i + 1] << 20) | ((packBuff[i + 2] & 0xf8) << 12) | ((packBuff[i + 2] & 3) << 13) | (packBuff[i + 3] << 5) | (packBuff[i + 4] >> 3);
 				escr_ext = ((packBuff[i + 4] & 3) << 7) | (packBuff[i + 5] >> 1);
-				frame->AddInt64V(i, 5, "ESCR Base", escr_base);
-				frame->AddInt(i + 4, 2, "ESCR Extension", escr_ext);
+				frame->AddInt64V(i, 5, CSTR("ESCR Base"), escr_base);
+				frame->AddInt(i + 4, 2, CSTR("ESCR Extension"), escr_ext);
 				i += 6;
 			}
 			if (packBuff[7] & 0x10)
 			{
-				frame->AddUInt(i, 3, "ES Rate", (ReadMUInt24(&packBuff[i]) >> 1) & 0x3fffff);
+				frame->AddUInt(i, 3, CSTR("ES Rate"), (ReadMUInt24(&packBuff[i]) >> 1) & 0x3fffff);
 				i += 3;
 			}
 			if (packBuff[7] & 0x8)
 			{
 				/////////////////////////////////
-				frame->AddUInt(i, 1, "Trick Mode Control", (packBuff[i] & 0xe0) >> 5);
+				frame->AddUInt(i, 1, CSTR("Trick Mode Control"), (packBuff[i] & 0xe0) >> 5);
 				i += 1;
 			}
 			if (packBuff[7] & 0x4)
 			{
-				frame->AddUInt(i, 1, "Additional Copy Info", packBuff[i] & 0x7f);
+				frame->AddUInt(i, 1, CSTR("Additional Copy Info"), packBuff[i] & 0x7f);
 				i += 1;
 			}
 			if (packBuff[7] & 0x2)
 			{
-				frame->AddHex16(i, "Previous PES packet CRC", ReadMUInt16(&packBuff[i]));
+				frame->AddHex16(i, CSTR("Previous PES packet CRC"), ReadMUInt16(&packBuff[i]));
 				i += 2;
 			}
 			if (packBuff[7] & 0x1)
 			{
-				frame->AddUInt(i, 1, "PES Private Data Flag", (packBuff[i] & 0x80) >> 7);
-				frame->AddUInt(i, 1, "Pack Header Field Flag ", (packBuff[i] & 0x40) >> 6);
-				frame->AddUInt(i, 1, "Program Packet Sequence Counter Flag", (packBuff[i] & 0x20) >> 5);
-				frame->AddUInt(i, 1, "P-STD Buffer Flag", (packBuff[i] & 0x10) >> 4);
-				frame->AddUInt(i, 1, "PES Extension Flag 2", packBuff[i] & 0x1);
+				frame->AddUInt(i, 1, CSTR("PES Private Data Flag"), (packBuff[i] & 0x80) >> 7);
+				frame->AddUInt(i, 1, CSTR("Pack Header Field Flag "), (packBuff[i] & 0x40) >> 6);
+				frame->AddUInt(i, 1, CSTR("Program Packet Sequence Counter Flag"), (packBuff[i] & 0x20) >> 5);
+				frame->AddUInt(i, 1, CSTR("P-STD Buffer Flag"), (packBuff[i] & 0x10) >> 4);
+				frame->AddUInt(i, 1, CSTR("PES Extension Flag 2"), packBuff[i] & 0x1);
 				////////////////////////////////////
 				i += 1;
 			}
 
 			i = 9 + (UOSInt)packBuff[8];
-			frame->AddHex8(i, "Stream Type", packBuff[i]);
+			frame->AddHex8(i, CSTR("Stream Type"), packBuff[i]);
 			if ((packBuff[i] & 0xf0) == 0xa0)
 			{
 				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("VOB LPCM Audio")});
-				frame->AddUInt(i + 5, 1, "No. of Channels", (UInt16)((packBuff[i + 5] & 7) + 1));
+				frame->AddUInt(i + 5, 1, CSTR("No. of Channels"), (UInt16)((packBuff[i + 5] & 7) + 1));
 				switch (packBuff[i + 5] & 0xc0)
 				{
 				case 0x0:
-					frame->AddUInt(i + 5, 1, "Bits per Sample", 16);
+					frame->AddUInt(i + 5, 1, CSTR("Bits per Sample"), 16);
 					break;
 				case 0x40:
-					frame->AddUInt(i + 5, 1, "Bits per Sample", 20);
+					frame->AddUInt(i + 5, 1, CSTR("Bits per Sample"), 20);
 					break;
 				case 0x80:
-					frame->AddUInt(i + 5, 1, "Bits per Sample", 24);
+					frame->AddUInt(i + 5, 1, CSTR("Bits per Sample"), 24);
 					break;
 				}
-				frame->AddUInt(i + 5, 1, "Sampling Frequency", (packBuff[i + 5] & 0x30)?96000:48000);
-				frame->AddHexBuff(i, 7, "VOB LPCM Header", &packBuff[i], false);
+				frame->AddUInt(i + 5, 1, CSTR("Sampling Frequency"), (packBuff[i + 5] & 0x30)?96000:48000);
+				frame->AddHexBuff(i, 7, CSTR("VOB LPCM Header"), &packBuff[i], false);
 				i += 7;
 			}
 			else if ((packBuff[i] & 0xf0) == 0x80)
 			{
 				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("VOB AC3 Audio")});
-				frame->AddHexBuff(i, 4, "VOB AC3 Header", &packBuff[i], false);
+				frame->AddHexBuff(i, 4, CSTR("VOB AC3 Header"), &packBuff[i], false);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa0)
 			{
 				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("PSS LPCM Audio")});
-				frame->AddHexBuff(i, 4, "PSS Audio Header", &packBuff[i], false);
+				frame->AddHexBuff(i, 4, CSTR("PSS Audio Header"), &packBuff[i], false);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa1)
 			{
 				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("PSS ADPCM Audio")});
-				frame->AddHexBuff(i, 4, "PSS Audio Header", &packBuff[i], false);
+				frame->AddHexBuff(i, 4, CSTR("PSS Audio Header"), &packBuff[i], false);
 				i += 4;
 			}
 
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, {sbuff, (UOSInt)(sptr - sbuff)});
-			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
+			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
 		else
 		{
@@ -989,27 +989,27 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			}
 			if (i > 6)
 			{
-				frame->AddHexBuff(6, i - 6, "Stuffing Byte", &packBuff[6], false);
+				frame->AddHexBuff(6, i - 6, CSTR("Stuffing Byte"), &packBuff[6], false);
 			}
 			if ((packBuff[i] & 0xc0) == 0x40)
 			{
-				frame->AddUInt(i, 1, "STD Buffer Scale", (packBuff[i] & 0x20) >> 5);
-				frame->AddUInt(i, 2, "STD Buffer Size", ReadMUInt16(&packBuff[i]) & 0x1fff);
+				frame->AddUInt(i, 1, CSTR("STD Buffer Scale"), (packBuff[i] & 0x20) >> 5);
+				frame->AddUInt(i, 2, CSTR("STD Buffer Size"), ReadMUInt16(&packBuff[i]) & 0x1fff);
 				i += 2;
 			}
 
 			if ((packBuff[i] & 0xf0) == 0x20)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				i += 5;
 			}
 			else if ((packBuff[i] & 0xf0) == 0x30)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);;
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				pts = (((Int64)packBuff[i + 5] & 0xe) << 29) | (packBuff[i + 6] << 22) | ((packBuff[i + 7] & 0xfe) << 14) | (packBuff[i + 8] << 7) | (packBuff[i + 9] >> 1);;
-				frame->AddInt64V(i + 5, 5, "Decoding Time Stamp", pts);
+				frame->AddInt64V(i + 5, 5, CSTR("Decoding Time Stamp"), pts);
 				i += 10;
 			}
 			else if (packBuff[i] == 0xf)
@@ -1023,18 +1023,18 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, {sbuff, (UOSInt)(sptr - sbuff)});
-			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
+			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
 		break;
 	case 0xbe:
 		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Padding Stream")});
-		frame->AddUInt(4, pack->packSize - 4, "Padding Size", pack->packSize);
+		frame->AddUInt(4, pack->packSize - 4, CSTR("Padding Size"), pack->packSize);
 		break;
 	case 0xbf:
 		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Private Stream 2")});
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 6);
 		frame->AddText(6, {sbuff, (UOSInt)(sptr - sbuff)});
-		frame->AddHexBuff(6, pack->packSize - 6, "Content", &packBuff[6], true);
+		frame->AddHexBuff(6, pack->packSize - 6, CSTR("Content"), &packBuff[6], true);
 		break;
 	case 0xc0:
 		{
@@ -1048,27 +1048,27 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			}
 			if (i > 6)
 			{
-				frame->AddHexBuff(6, i - 6, "Stuffing Byte", &packBuff[6], false);
+				frame->AddHexBuff(6, i - 6, CSTR("Stuffing Byte"), &packBuff[6], false);
 			}
 			if ((packBuff[i] & 0xc0) == 0x40)
 			{
-				frame->AddUInt(i, 1, "STD Buffer Scale", (packBuff[i] & 0x20) >> 5);
-				frame->AddUInt(i, 2, "STD Buffer Size", ReadMUInt16(&packBuff[i]) & 0x1fff);
+				frame->AddUInt(i, 1, CSTR("STD Buffer Scale"), (packBuff[i] & 0x20) >> 5);
+				frame->AddUInt(i, 2, CSTR("STD Buffer Size"), ReadMUInt16(&packBuff[i]) & 0x1fff);
 				i += 2;
 			}
 
 			if ((packBuff[i] & 0xf0) == 0x20)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);;
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				i += 5;
 			}
 			else if ((packBuff[i] & 0xf0) == 0x30)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);;
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				pts = (((Int64)packBuff[i + 5] & 0xe) << 29) | (packBuff[i + 6] << 22) | ((packBuff[i + 7] & 0xfe) << 14) | (packBuff[i + 8] << 7) | (packBuff[i + 9] >> 1);;
-				frame->AddInt64V(i + 5, 5, "Decoding Time Stamp", pts);
+				frame->AddInt64V(i + 5, 5, CSTR("Decoding Time Stamp"), pts);
 				i += 10;
 			}
 			else if (packBuff[i] == 0xf)
@@ -1082,7 +1082,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, {sbuff, (UOSInt)(sptr - sbuff)});
-			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
+			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
 		break;
 	case 0xe0:
@@ -1091,32 +1091,32 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		{
 			UOSInt i;
 			Int64 pts;
-			frame->AddUInt(6, 1, "PES Scrambling Control", (packBuff[6] & 0x30) >> 4);
-			frame->AddUInt(6, 1, "PES Priority", (packBuff[6] & 0x8) >> 3);
-			frame->AddUInt(6, 1, "Data Alignment Indicator", (packBuff[6] & 0x4) >> 2);
-			frame->AddUInt(6, 1, "Copyright", (packBuff[6] & 0x2) >> 1);
-			frame->AddUInt(6, 1, "Original or Copy", packBuff[6] & 0x1);
-			frame->AddUInt(7, 1, "PTS DTS flags", (packBuff[7] & 0xc0) >> 6);
-			frame->AddUInt(7, 1, "ESCR flag", (packBuff[7] & 0x20) >> 5);
-			frame->AddUInt(7, 1, "ES Rate Flag", (packBuff[7] & 0x10) >> 4);
-			frame->AddUInt(7, 1, "DSM Trick Mode flag", (packBuff[7] & 0x8) >> 3);
-			frame->AddUInt(7, 1, "Additional Copy Info flag", (packBuff[7] & 0x4) >> 2);
-			frame->AddUInt(7, 1, "PES CRC flag", (packBuff[7] & 0x2) >> 1);
-			frame->AddUInt(7, 1, "PES Extension flag", packBuff[7] & 0x1);
-			frame->AddUInt(8, 1, "PES Header Data Length", packBuff[8]);
+			frame->AddUInt(6, 1, CSTR("PES Scrambling Control"), (packBuff[6] & 0x30) >> 4);
+			frame->AddUInt(6, 1, CSTR("PES Priority"), (packBuff[6] & 0x8) >> 3);
+			frame->AddUInt(6, 1, CSTR("Data Alignment Indicator"), (packBuff[6] & 0x4) >> 2);
+			frame->AddUInt(6, 1, CSTR("Copyright"), (packBuff[6] & 0x2) >> 1);
+			frame->AddUInt(6, 1, CSTR("Original or Copy"), packBuff[6] & 0x1);
+			frame->AddUInt(7, 1, CSTR("PTS DTS flags"), (packBuff[7] & 0xc0) >> 6);
+			frame->AddUInt(7, 1, CSTR("ESCR flag"), (packBuff[7] & 0x20) >> 5);
+			frame->AddUInt(7, 1, CSTR("ES Rate Flag"), (packBuff[7] & 0x10) >> 4);
+			frame->AddUInt(7, 1, CSTR("DSM Trick Mode flag"), (packBuff[7] & 0x8) >> 3);
+			frame->AddUInt(7, 1, CSTR("Additional Copy Info flag"), (packBuff[7] & 0x4) >> 2);
+			frame->AddUInt(7, 1, CSTR("PES CRC flag"), (packBuff[7] & 0x2) >> 1);
+			frame->AddUInt(7, 1, CSTR("PES Extension flag"), packBuff[7] & 0x1);
+			frame->AddUInt(8, 1, CSTR("PES Header Data Length"), packBuff[8]);
 			i = 9;
 			if ((packBuff[7] & 0xc0) == 0x80)
 			{
 				pts = (((Int64)(packBuff[9] & 0xe)) << 29) | (packBuff[10] << 22) | ((packBuff[11] & 0xfe) << 14) | (packBuff[12] << 7) | (packBuff[13] >> 1);
-				frame->AddInt64V(9, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(9, 5, CSTR("Presentation Time Stamp"), pts);
 				i = 14;
 			}
 			else if ((packBuff[7] & 0xc0) == 0xc0)
 			{
 				pts = (((Int64)(packBuff[9] & 0xe)) << 29) | (packBuff[10] << 22) | ((packBuff[11] & 0xfe) << 14) | (packBuff[12] << 7) | (packBuff[13] >> 1);
-				frame->AddInt64V(9, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(9, 5, CSTR("Presentation Time Stamp"), pts);
 				pts = (((Int64)(packBuff[14] & 0xe)) << 29) | (packBuff[15] << 22) | ((packBuff[16] & 0xfe) << 14) | (packBuff[17] << 7) | (packBuff[18] >> 1);
-				frame->AddInt64V(14, 5, "Decoding Time Stamp", pts);
+				frame->AddInt64V(14, 5, CSTR("Decoding Time Stamp"), pts);
 				i = 19;
 			}
 			if (packBuff[7] & 0x20)
@@ -1125,45 +1125,45 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 				Int32 escr_ext;
 				escr_base = (((Int64)(packBuff[i] & 0x38)) << 27) | ((packBuff[i] & 3) << 28) | (packBuff[i + 1] << 20) | ((packBuff[i + 2] & 0xf8) << 12) | ((packBuff[i + 2] & 3) << 13) | (packBuff[i + 3] << 5) | (packBuff[i + 4] >> 3);
 				escr_ext = ((packBuff[i + 4] & 3) << 7) | (packBuff[i + 5] >> 1);
-				frame->AddInt64V(i, 5, "ESCR Base", escr_base);
-				frame->AddInt(i + 4, 2, "ESCR Extension", escr_ext);
+				frame->AddInt64V(i, 5, CSTR("ESCR Base"), escr_base);
+				frame->AddInt(i + 4, 2, CSTR("ESCR Extension"), escr_ext);
 				i += 6;
 			}
 			if (packBuff[7] & 0x10)
 			{
-				frame->AddUInt(i, 3, "ES Rate", (ReadMUInt24(&packBuff[i]) >> 1) & 0x3fffff);
+				frame->AddUInt(i, 3, CSTR("ES Rate"), (ReadMUInt24(&packBuff[i]) >> 1) & 0x3fffff);
 				i += 3;
 			}
 			if (packBuff[7] & 0x8)
 			{
 				/////////////////////////////////
-				frame->AddUInt(i, 1, "Trick Mode Control", (packBuff[i] & 0xe0) >> 5);
+				frame->AddUInt(i, 1, CSTR("Trick Mode Control"), (packBuff[i] & 0xe0) >> 5);
 				i += 1;
 			}
 			if (packBuff[7] & 0x4)
 			{
-				frame->AddUInt(i, 1, "Additional Copy Info", packBuff[i] & 0x7f);
+				frame->AddUInt(i, 1, CSTR("Additional Copy Info"), packBuff[i] & 0x7f);
 				i += 1;
 			}
 			if (packBuff[7] & 0x2)
 			{
-				frame->AddHex16(i, "Previous PES packet CRC", ReadMUInt16(&packBuff[i]));
+				frame->AddHex16(i, CSTR("Previous PES packet CRC"), ReadMUInt16(&packBuff[i]));
 				i += 2;
 			}
 			if (packBuff[7] & 0x1)
 			{
-				frame->AddUInt(i, 1, "PES Private Data Flag", (packBuff[i] & 0x80) >> 7);
-				frame->AddUInt(i, 1, "Pack Header Field Flag ", (packBuff[i] & 0x40) >> 6);
-				frame->AddUInt(i, 1, "Program Packet Sequence Counter Flag", (packBuff[i] & 0x20) >> 5);
-				frame->AddUInt(i, 1, "P-STD Buffer Flag", (packBuff[i] & 0x10) >> 4);
-				frame->AddUInt(i, 1, "PES Extension Flag 2", packBuff[i] & 0x1);
+				frame->AddUInt(i, 1, CSTR("PES Private Data Flag"), (packBuff[i] & 0x80) >> 7);
+				frame->AddUInt(i, 1, CSTR("Pack Header Field Flag "), (packBuff[i] & 0x40) >> 6);
+				frame->AddUInt(i, 1, CSTR("Program Packet Sequence Counter Flag"), (packBuff[i] & 0x20) >> 5);
+				frame->AddUInt(i, 1, CSTR("P-STD Buffer Flag"), (packBuff[i] & 0x10) >> 4);
+				frame->AddUInt(i, 1, CSTR("PES Extension Flag 2"), packBuff[i] & 0x1);
 				////////////////////////////////////
 				i += 1;
 			}
 		
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 9 - packBuff[8]);
 			frame->AddText(i, {sbuff, (UOSInt)(sptr - sbuff)});
-			frame->AddHexBuff(9 + (UOSInt)packBuff[8], pack->packSize - 9 - packBuff[8], "Content", &packBuff[9 + packBuff[8]], true);
+			frame->AddHexBuff(9 + (UOSInt)packBuff[8], pack->packSize - 9 - packBuff[8], CSTR("Content"), &packBuff[9 + packBuff[8]], true);
 		}
 		else
 		{
@@ -1176,27 +1176,27 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			}
 			if (i > 6)
 			{
-				frame->AddHexBuff(6, i - 6, "Stuffing Byte", &packBuff[6], false);
+				frame->AddHexBuff(6, i - 6, CSTR("Stuffing Byte"), &packBuff[6], false);
 			}
 			if ((packBuff[i] & 0xc0) == 0x40)
 			{
-				frame->AddUInt(i, 1, "STD Buffer Scale", (packBuff[i] & 0x20) >> 5);
-				frame->AddUInt(i, 2, "STD Buffer Size", ReadMUInt16(&packBuff[i]) & 0x1fff);
+				frame->AddUInt(i, 1, CSTR("STD Buffer Scale"), (packBuff[i] & 0x20) >> 5);
+				frame->AddUInt(i, 2, CSTR("STD Buffer Size"), ReadMUInt16(&packBuff[i]) & 0x1fff);
 				i += 2;
 			}
 
 			if ((packBuff[i] & 0xf0) == 0x20)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);;
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				i += 5;
 			}
 			else if ((packBuff[i] & 0xf0) == 0x30)
 			{
 				pts = (((Int64)packBuff[i] & 0xe) << 29) | (packBuff[i + 1] << 22) | ((packBuff[i + 2] & 0xfe) << 14) | (packBuff[i + 3] << 7) | (packBuff[i + 4] >> 1);;
-				frame->AddInt64V(i, 5, "Presentation Time Stamp", pts);
+				frame->AddInt64V(i, 5, CSTR("Presentation Time Stamp"), pts);
 				pts = (((Int64)packBuff[i + 5] & 0xe) << 29) | (packBuff[i + 6] << 22) | ((packBuff[i + 7] & 0xfe) << 14) | (packBuff[i + 8] << 7) | (packBuff[i + 9] >> 1);;
-				frame->AddInt64V(i + 5, 5, "Decoding Time Stamp", pts);
+				frame->AddInt64V(i + 5, 5, CSTR("Decoding Time Stamp"), pts);
 				i += 10;
 			}
 			else if (packBuff[i] == 0xf)
@@ -1210,7 +1210,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 
 			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - i);
 			frame->AddText(i, {sbuff, (UOSInt)(sptr - sbuff)});
-			frame->AddHexBuff(i, pack->packSize - i, "Content", &packBuff[i], true);
+			frame->AddHexBuff(i, pack->packSize - i, CSTR("Content"), &packBuff[i], true);
 		}
 		break;
 	}

@@ -48,8 +48,8 @@ Bool IO::GSMModemController::GetSMSFormat(SMSFormat *smsFormat)
 
 void IO::GSMModemController::FreeOperator(Operator *oper)
 {
-	Text::StrDelNew(oper->longName);
-	Text::StrDelNew(oper->shortName);
+	oper->longName->Release();
+	oper->shortName->Release();
 	MemFree(oper);
 }
 
@@ -237,8 +237,8 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 										newOper = MemAlloc(Operator, 1);
 										newOper->status = (OperStatus)status;
 										newOper->plmn = plmn;
-										newOper->longName = Text::StrCopyNew(lbuff);
-										newOper->shortName = Text::StrCopyNew(sbuff);
+										newOper->longName = Text::String::NewNotNull(lbuff);
+										newOper->shortName = Text::String::NewNotNull(sbuff);
 										if (k == 4)
 										{
 											newOper->netact = Text::StrToInt32(tmpBuff);
@@ -1328,32 +1328,32 @@ UTF8Char *IO::GSMModemController::GetBERString(UTF8Char *buff, BER ber)
 	}
 }
 
-const UTF8Char *IO::GSMModemController::OperStatusGetName(OperStatus operStatus)
+Text::CString IO::GSMModemController::OperStatusGetName(OperStatus operStatus)
 {
 	switch (operStatus)
 	{
 	case OSTAT_AVAILABLE:
-		return (const UTF8Char*)"Available";
+		return CSTR("Available");
 	case OSTAT_CURRENT:
-		return (const UTF8Char*)"Current";
+		return CSTR("Current");
 	case OSTAT_FORBIDDEN:
-		return (const UTF8Char*)"Forbidden";
+		return CSTR("Forbidden");
 	case OSTAT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
+Text::CString IO::GSMModemController::SIMStatusGetName(SIMStatus simStatus)
 {
 	switch (simStatus)
 	{
 	case SIMS_READY:
-		return (const UTF8Char*)"Ready";
+		return CSTR("Ready");
 	case SIMS_ABSENT:
-		return (const UTF8Char*)"Absent";
+		return CSTR("Absent");
 	case SIMS_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

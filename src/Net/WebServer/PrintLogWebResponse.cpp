@@ -84,7 +84,7 @@ Bool Net::WebServer::PrintLogWebResponse::SSESend(const UTF8Char *eventName, con
 	return this->resp->SSESend(eventName, data);
 }
 
-const UTF8Char *Net::WebServer::PrintLogWebResponse::GetRespHeaders()
+Text::CString Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 {
 	return this->resp->GetRespHeaders();
 }

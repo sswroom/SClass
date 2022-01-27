@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 					sb.ClearStr();
 					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, (const UTF8Char*)uaList[i].osVer);
 					k = this->lvUserAgent->AddItem(sb.ToString(), &uaList[i]);
-					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser));
+					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser).v);
 					if (uaList[i].browserVer)
 					{
 						this->lvUserAgent->SetSubItem(k, 2, (const UTF8Char*)uaList[i].browserVer);
@@ -65,9 +65,9 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 						if (android)
 						{
 							sb.ClearStr();
-							sb.Append((const UTF8Char*)android->brandName);
+							sb.AppendSlow((const UTF8Char*)android->brandName);
 							sb.AppendChar(' ', 1);
-							sb.Append((const UTF8Char*)android->modelName);
+							sb.AppendSlow((const UTF8Char*)android->modelName);
 							this->lvUserAgent->SetSubItem(k, 3, sb.ToString());
 							this->lvUserAgent->SetSubItem(k, 4, (const UTF8Char*)android->cpuName);
 							const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec((const UTF8Char*)android->cpuName);
@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	j = Net::BrowserInfo::BT_LAST;
 	while (i <= j)
 	{
-		this->cboFilterBrowser->AddItem(Net::BrowserInfo::GetName((Net::BrowserInfo::BrowserType)i), (void*)i);
+		this->cboFilterBrowser->AddItem(Net::BrowserInfo::GetName((Net::BrowserInfo::BrowserType)i).v, (void*)i);
 		i++;
 	}
 	this->cboFilterBrowser->SetSelectedIndex(0);

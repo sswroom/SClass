@@ -1196,29 +1196,29 @@ Bool Text::JSONNull::Identical(Text::JSONBase *obj)
 	return obj->GetType() == Text::JSONType::Null;
 }
 
-const UTF8Char *Text::JSONTypeGetName(JSONType t)
+Text::CString Text::JSONTypeGetName(JSONType t)
 {
 	switch (t)
 	{
 	case JSONType::Object:
-		return (const UTF8Char*)"Object";
+		return CSTR("Object");
 	case JSONType::Array:
-		return (const UTF8Char*)"Array";
+		return CSTR("Array");
 	case JSONType::Number:
-		return (const UTF8Char*)"Number";
+		return CSTR("Number");
 	case JSONType::String:
-		return (const UTF8Char*)"String";
+		return CSTR("String");
 	case JSONType::BOOL:
-		return (const UTF8Char*)"BOOL";
+		return CSTR("BOOL");
 	case JSONType::Null:
-		return (const UTF8Char*)"Null";
+		return CSTR("Null");
 	case JSONType::INT32:
-		return (const UTF8Char*)"INT32";
+		return CSTR("INT32");
 	case JSONType::INT64:
-		return (const UTF8Char*)"INT64";
+		return CSTR("INT64");
 	case JSONType::StringWO:
-		return (const UTF8Char*)"StringWO";
+		return CSTR("StringWO");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

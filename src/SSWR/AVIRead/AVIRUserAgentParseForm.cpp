@@ -12,9 +12,9 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 	{
 		Net::UserAgentDB::UAEntry ent;
 		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToString());
-		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser));
+		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser).v);
 		me->txtBrowserVer->SetText(ent.browserVer?((const UTF8Char*)ent.browserVer):((const UTF8Char*)"-"));
-		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os));
+		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os).v);
 		me->txtOSVer->SetText(ent.osVer?((const UTF8Char*)ent.osVer):((const UTF8Char*)"-"));
 		me->txtDeviceName->SetText(ent.devName?((const UTF8Char*)ent.devName):((const UTF8Char*)"-"));
 		SDEL_TEXT(ent.browserVer);

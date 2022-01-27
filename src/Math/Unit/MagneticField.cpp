@@ -19,36 +19,36 @@ Double Math::Unit::MagneticField::GetUnitRatio(MagneticFieldUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::MagneticField::GetUnitShortName(MagneticFieldUnit unit)
+Text::CString Math::Unit::MagneticField::GetUnitShortName(MagneticFieldUnit unit)
 {
 	switch (unit)
 	{
 	case MFU_TESLA:
-		return (const UTF8Char*)"T";
+		return CSTR("T");
 	case MFU_GAUSS:
-		return (const UTF8Char*)"G";
+		return CSTR("G");
 	case MFU_MICROTESLA:
-		return (const UTF8Char*)"uT";
+		return CSTR("uT");
 	case MFU_MILLITESLA:
-		return (const UTF8Char*)"mT";
+		return CSTR("mT");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::MagneticField::GetUnitName(MagneticFieldUnit unit)
+Text::CString Math::Unit::MagneticField::GetUnitName(MagneticFieldUnit unit)
 {
 	switch (unit)
 	{
 	case MFU_TESLA:
-		return (const UTF8Char*)"Tesla";
+		return CSTR("Tesla");
 	case MFU_GAUSS:
-		return (const UTF8Char*)"Gauss";
+		return CSTR("Gauss");
 	case MFU_MICROTESLA:
-		return (const UTF8Char*)"Micro Tesla";
+		return CSTR("Micro Tesla");
 	case MFU_MILLITESLA:
-		return (const UTF8Char*)"Milli Tesla";
+		return CSTR("Milli Tesla");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::MagneticField::Convert(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit, Double fromValue)

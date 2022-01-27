@@ -16,6 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	PingIPInfo *pingIPInfo;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(me->pingIPMut);
 	pingIPInfo = me->pingIPMap->Get(sortableIP);
 	if (pingIPInfo == 0)
@@ -52,11 +53,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	mutUsage.EndUse();
 
 	sb.AppendC(UTF8STRC("Received from "));
-	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(" to "));
-	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", size = "));
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
@@ -407,11 +408,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 	{
 		me->txtMDNSName->SetText(ans->name->v);
 		sptr = Text::StrUInt16(sbuff, ans->recType);
-		const UTF8Char *typeId = Net::DNSClient::TypeGetID(ans->recType);
-		if (typeId)
+		Text::CString typeId = Net::DNSClient::TypeGetID(ans->recType);
+		if (typeId.v)
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-			sptr = Text::StrConcat(sptr, typeId);
+			sptr = typeId.ConcatTo(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		}
 		me->txtMDNSType->SetText(sbuff);
@@ -1018,6 +1019,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	if (mac)
 	{
 		UOSInt cnt;
@@ -1032,8 +1034,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 			{
 				dt.SetTicks(mac->packetTime[i]);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb.Append(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[i]);
@@ -1050,8 +1052,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 			{
 				dt.SetTicks(mac->packetTime[(cnt + i) & 15]);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				sb.Append(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\r\n"));
 				sb.AppendC(UTF8STRC("Dest MAC: "));
 				WriteMUInt64(sbuff, mac->packetDestMAC[(cnt + i) & 15]);

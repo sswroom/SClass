@@ -927,6 +927,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	IO::FileAnalyse::QTFileAnalyse::PackInfo *pack;
 	UInt8 *packBuff;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -936,15 +937,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	frame->AddStrS(0, 4, "Type", (const UTF8Char*)&pack->packType);
+	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);
 	if (pack->packSize >= 0x100000000)
 	{
-		frame->AddUInt64V(4, 4, "Size", 1);
-		frame->AddUInt64(8, "Size64", pack->packSize);
+		frame->AddUInt64V(4, 4, CSTR("Size"), 1);
+		frame->AddUInt64(8, CSTR("Size64"), pack->packSize);
 	}
 	else
 	{
-		frame->AddUInt64V(4, 4, "Size", pack->packSize);
+		frame->AddUInt64V(4, 4, CSTR("Size"), pack->packSize);
 	}
 
 	if (pack->packType == *(Int32*)"dinf" ||
@@ -967,14 +968,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 	{
 		packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 		this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)pack->packSize - 8, packBuff);
-		frame->AddStrS(8, 4, "Major_Brand", &packBuff[0]);
-		frame->AddHex32(12, "Minor_Version", ReadMUInt32(&packBuff[4]));
+		frame->AddStrS(8, 4, CSTR("Major_Brand"), &packBuff[0]);
+		frame->AddHex32(12, CSTR("Minor_Version"), ReadMUInt32(&packBuff[4]));
 		i = 8;
 		j = (UOSInt)(pack->packSize - 8);
 		while (i < j)
 		{
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Compatible_Brands["), i), (const UTF8Char*)"]");
-			frame->AddStrS(i + 8, 4, (const Char*)sbuff, &packBuff[i]);
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Compatible_Brands[")), i), UTF8STRC("]"));
+			frame->AddStrS(i + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[i]);
 			i += 4;
 		}
 		MemFree(packBuff);
@@ -985,7 +986,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddHexBuff(8, (UOSInt)(pack->packSize - 8), "Data", packBuff, true);
+			frame->AddHexBuff(8, (UOSInt)(pack->packSize - 8), CSTR("Data"), packBuff, true);
 			MemFree(packBuff);
 		}
 	}
@@ -995,10 +996,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddInt(8, 4, "Modification date", ReadMInt32(&packBuff[0]));
-			frame->AddUInt(12, 2, "Version number", ReadMUInt16(&packBuff[4]));
-			frame->AddStrS(14, 4, "Atom type", &packBuff[6]);
-			frame->AddInt(18, 2, "Atom Index", ReadMUInt16(&packBuff[10]));
+			frame->AddInt(8, 4, CSTR("Modification date"), ReadMInt32(&packBuff[0]));
+			frame->AddUInt(12, 2, CSTR("Version number"), ReadMUInt16(&packBuff[4]));
+			frame->AddStrS(14, 4, CSTR("Atom type"), &packBuff[6]);
+			frame->AddInt(18, 2, CSTR("Atom Index"), ReadMUInt16(&packBuff[10]));
 			MemFree(packBuff);
 		}
 	}
@@ -1009,19 +1010,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			Data::DateTime dt;
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, (const UTF8Char*)"Creation time", sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, (const UTF8Char*)"Modification time", sbuff);
-			frame->AddUInt(20, 4, "Time Scale", ReadMUInt32(&packBuff[12]));
-			frame->AddUInt(24, 4, "Duration", ReadMUInt32(&packBuff[16]));
-			frame->AddFloat(28, 4, "Preferred rate", ReadMInt32(&packBuff[20]) / 65536.0);
-			frame->AddFloat(32, 2, "Preferred volume", ReadMInt16(&packBuff[24]) / 256.0);
-			frame->AddHexBuff(34, 10, "Reserved", &packBuff[26], false);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddUInt(20, 4, CSTR("Time Scale"), ReadMUInt32(&packBuff[12]));
+			frame->AddUInt(24, 4, CSTR("Duration"), ReadMUInt32(&packBuff[16]));
+			frame->AddFloat(28, 4, CSTR("Preferred rate"), ReadMInt32(&packBuff[20]) / 65536.0);
+			frame->AddFloat(32, 2, CSTR("Preferred volume"), ReadMInt16(&packBuff[24]) / 256.0);
+			frame->AddHexBuff(34, 10, CSTR("Reserved"), &packBuff[26], false);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("a b u   "));
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[36]) / 65536.0);
@@ -1041,14 +1042,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[64]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[68]) / 65536.0);
-			frame->AddField(44, 36, (const UTF8Char*)"Matrix", sb.ToString());
-			frame->AddUInt(80, 4, "Preview time", ReadMUInt32(&packBuff[72]));
-			frame->AddUInt(84, 4, "Preview duration", ReadMUInt32(&packBuff[76]));
-			frame->AddUInt(88, 4, "Poster time", ReadMUInt32(&packBuff[80]));
-			frame->AddUInt(92, 4, "Selection time", ReadMUInt32(&packBuff[84]));
-			frame->AddUInt(96, 4, "Selection duration", ReadMUInt32(&packBuff[88]));
-			frame->AddUInt(100, 4, "Current time", ReadMUInt32(&packBuff[92]));
-			frame->AddUInt(104, 4, "Next track ID", ReadMUInt32(&packBuff[96]));
+			frame->AddField(44, 36, CSTR("Matrix"), sb.ToCString());
+			frame->AddUInt(80, 4, CSTR("Preview time"), ReadMUInt32(&packBuff[72]));
+			frame->AddUInt(84, 4, CSTR("Preview duration"), ReadMUInt32(&packBuff[76]));
+			frame->AddUInt(88, 4, CSTR("Poster time"), ReadMUInt32(&packBuff[80]));
+			frame->AddUInt(92, 4, CSTR("Selection time"), ReadMUInt32(&packBuff[84]));
+			frame->AddUInt(96, 4, CSTR("Selection duration"), ReadMUInt32(&packBuff[88]));
+			frame->AddUInt(100, 4, CSTR("Current time"), ReadMUInt32(&packBuff[92]));
+			frame->AddUInt(104, 4, CSTR("Next track ID"), ReadMUInt32(&packBuff[96]));
 			MemFree(packBuff);
 		}
 	}
@@ -1059,22 +1060,22 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			Data::DateTime dt;
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, (const UTF8Char*)"Creation time", sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, (const UTF8Char*)"Modification time", sbuff);
-			frame->AddUInt(20, 4, "Track ID", ReadMUInt32(&packBuff[12]));
-			frame->AddUInt(24, 4, "Reserved", ReadMUInt32(&packBuff[16]));
-			frame->AddUInt(28, 4, "Duration", ReadMUInt32(&packBuff[20]));
-			frame->AddUInt64(32, "Reserved", ReadMUInt64(&packBuff[24]));
-			frame->AddUInt(40, 2, "Layer", ReadMUInt16(&packBuff[32]));
-			frame->AddUInt(42, 2, "Alternate group", ReadMUInt16(&packBuff[34]));
-			frame->AddUInt(44, 2, "Volume", ReadMUInt16(&packBuff[36]));
-			frame->AddUInt(46, 2, "Reserved", ReadMUInt16(&packBuff[38]));
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddUInt(20, 4, CSTR("Track ID"), ReadMUInt32(&packBuff[12]));
+			frame->AddUInt(24, 4, CSTR("Reserved"), ReadMUInt32(&packBuff[16]));
+			frame->AddUInt(28, 4, CSTR("Duration"), ReadMUInt32(&packBuff[20]));
+			frame->AddUInt64(32, CSTR("Reserved"), ReadMUInt64(&packBuff[24]));
+			frame->AddUInt(40, 2, CSTR("Layer"), ReadMUInt16(&packBuff[32]));
+			frame->AddUInt(42, 2, CSTR("Alternate group"), ReadMUInt16(&packBuff[34]));
+			frame->AddUInt(44, 2, CSTR("Volume"), ReadMUInt16(&packBuff[36]));
+			frame->AddUInt(46, 2, CSTR("Reserved"), ReadMUInt16(&packBuff[38]));
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("a b u   "));
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[40]) / 65536.0);
@@ -1094,9 +1095,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[68]) / 65536.0);
 			sb.AppendC(UTF8STRC(" "));
 			Text::SBAppendF64(&sb, ReadMInt32(&packBuff[72]) / 65536.0);
-			frame->AddField(48, 36, (const UTF8Char*)"Matrix", sb.ToString());
-			frame->AddFloat(84, 4, "Track Width", ReadMInt32(&packBuff[76]) / 65536.0);
-			frame->AddFloat(88, 4, "Track Height", ReadMInt32(&packBuff[80]) / 65536.0);
+			frame->AddField(48, 36, CSTR("Matrix"), sb.ToCString());
+			frame->AddFloat(84, 4, CSTR("Track Width"), ReadMInt32(&packBuff[76]) / 65536.0);
+			frame->AddFloat(88, 4, CSTR("Track Height"), ReadMInt32(&packBuff[80]) / 65536.0);
 			MemFree(packBuff);
 		}
 	}
@@ -1107,18 +1108,18 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			Data::DateTime dt;
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, (const UTF8Char*)"Creation time", sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, (const UTF8Char*)"Modification time", sbuff);
-			frame->AddUInt(20, 4, "Time scale", ReadMUInt32(&packBuff[12]));
-			frame->AddUInt(24, 4, "Duration", ReadMUInt32(&packBuff[16]));
-			frame->AddUInt(28, 2, "Language", ReadMUInt16(&packBuff[20]));
-			frame->AddUInt(30, 2, "Quality", ReadMUInt16(&packBuff[22]));
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddUInt(20, 4, CSTR("Time scale"), ReadMUInt32(&packBuff[12]));
+			frame->AddUInt(24, 4, CSTR("Duration"), ReadMUInt32(&packBuff[16]));
+			frame->AddUInt(28, 2, CSTR("Language"), ReadMUInt16(&packBuff[20]));
+			frame->AddUInt(30, 2, CSTR("Quality"), ReadMUInt16(&packBuff[22]));
 			MemFree(packBuff);
 		}
 	}
@@ -1128,14 +1129,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddStrS(12, 4, "Component type", &packBuff[4]);
-			frame->AddStrS(16, 4, "Component subtype", &packBuff[8]);
-			frame->AddUInt(20, 4, "Component manufacturer", ReadMUInt32(&packBuff[12]));
-			frame->AddUInt(24, 4, "Component flags", ReadMUInt32(&packBuff[16]));
-			frame->AddUInt(28, 4, "Component flags mask", ReadMUInt32(&packBuff[20]));
-			frame->AddStrC(32, pack->packSize - 32, "Component name",&packBuff[24]);
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddStrS(12, 4, CSTR("Component type"), &packBuff[4]);
+			frame->AddStrS(16, 4, CSTR("Component subtype"), &packBuff[8]);
+			frame->AddUInt(20, 4, CSTR("Component manufacturer"), ReadMUInt32(&packBuff[12]));
+			frame->AddUInt(24, 4, CSTR("Component flags"), ReadMUInt32(&packBuff[16]));
+			frame->AddUInt(28, 4, CSTR("Component flags mask"), ReadMUInt32(&packBuff[20]));
+			frame->AddStrC(32, pack->packSize - 32, CSTR("Component name"),&packBuff[24]);
 			MemFree(packBuff);
 		}
 	}
@@ -1145,12 +1146,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 2, "Graphic mode", ReadMUInt16(&packBuff[4]));
-			frame->AddUInt(14, 2, "Opcolor Red", ReadMUInt16(&packBuff[6]));
-			frame->AddUInt(16, 2, "Opcolor Green", ReadMUInt16(&packBuff[8]));
-			frame->AddUInt(18, 2, "Opcolor Blue", ReadMUInt16(&packBuff[10]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 2, CSTR("Graphic mode"), ReadMUInt16(&packBuff[4]));
+			frame->AddUInt(14, 2, CSTR("Opcolor Red"), ReadMUInt16(&packBuff[6]));
+			frame->AddUInt(16, 2, CSTR("Opcolor Green"), ReadMUInt16(&packBuff[8]));
+			frame->AddUInt(18, 2, CSTR("Opcolor Blue"), ReadMUInt16(&packBuff[10]));
 			MemFree(packBuff);
 		}
 	}
@@ -1160,10 +1161,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 2, "Balance", ReadMUInt16(&packBuff[4]));
-			frame->AddUInt(14, 2, "Reserved", ReadMUInt16(&packBuff[6]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 2, CSTR("Balance"), ReadMUInt16(&packBuff[4]));
+			frame->AddUInt(14, 2, CSTR("Reserved"), ReadMUInt16(&packBuff[6]));
 			MemFree(packBuff);
 		}
 	}
@@ -1173,9 +1174,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			k = 8;
 			i = 0;
 			while (i < j)
@@ -1185,11 +1186,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				frame->AddUInt(k + 8, 4, "Entry Size", l);
-				frame->AddStrS(k + 12, 4, "Type", &packBuff[k + 4]);
-				frame->AddUInt(k + 16, 1, "Version", packBuff[k + 8]);
-				frame->AddHex24(k + 17, "Flags", ReadMUInt24(&packBuff[k + 9]));
-				frame->AddHexBuff(k + 20, l - 12, "Entry Data", &packBuff[k + 12], true);
+				frame->AddUInt(k + 8, 4, CSTR("Entry Size"), l);
+				frame->AddStrS(k + 12, 4, CSTR("Type"), &packBuff[k + 4]);
+				frame->AddUInt(k + 16, 1, CSTR("Version"), packBuff[k + 8]);
+				frame->AddHex24(k + 17, CSTR("Flags"), ReadMUInt24(&packBuff[k + 9]));
+				frame->AddHexBuff(k + 20, l - 12, CSTR("Entry Data"), &packBuff[k + 12], true);
 				k += l;
 				i++;
 			}
@@ -1203,9 +1204,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			k = 8;
 			i = 0;
 			while (i < j)
@@ -1216,58 +1217,58 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				frame->AddUInt(k + 8, 4, "Entry Size", l);
-				frame->AddStrS(k + 12, 4, "Data format", &packBuff[k + 4]);
+				frame->AddUInt(k + 8, 4, CSTR("Entry Size"), l);
+				frame->AddStrS(k + 12, 4, CSTR("Data format"), &packBuff[k + 4]);
 				if (ReadNInt32(&packBuff[k + 4]) == *(Int32*)"mp4a")
 				{
 					dataType = 2;
 				}
-				frame->AddHexBuff(k + 16, 6, "Reserved", &packBuff[k + 8], false);
-				frame->AddHex16(k + 22, "Data reference index", ReadMUInt16(&packBuff[k + 14]));
+				frame->AddHexBuff(k + 16, 6, CSTR("Reserved"), &packBuff[k + 8], false);
+				frame->AddHex16(k + 22, CSTR("Data reference index"), ReadMUInt16(&packBuff[k + 14]));
 				if (dataType == 2)
 				{
 					UInt16 version = ReadMUInt16(&packBuff[k + 16]);
 					UOSInt endOfst;
-					frame->AddUInt(k + 24, 2, "Version", version);
-					frame->AddUInt(k + 26, 2, "Revision level", ReadMUInt16(&packBuff[k + 18]));
-					frame->AddUInt(k + 28, 4, "Vendor", ReadMUInt32(&packBuff[k + 20]));
+					frame->AddUInt(k + 24, 2, CSTR("Version"), version);
+					frame->AddUInt(k + 26, 2, CSTR("Revision level"), ReadMUInt16(&packBuff[k + 18]));
+					frame->AddUInt(k + 28, 4, CSTR("Vendor"), ReadMUInt32(&packBuff[k + 20]));
 					if (version == 0)
 					{
-						frame->AddUInt(k + 32, 2, "Number of channels", ReadMUInt16(&packBuff[k + 24]));
-						frame->AddUInt(k + 34, 2, "Sample size (bits)", ReadMUInt16(&packBuff[k + 26]));
-						frame->AddUInt(k + 36, 2, "Compression ID", ReadMUInt16(&packBuff[k + 28]));
-						frame->AddUInt(k + 38, 2, "Packet size", ReadMUInt16(&packBuff[k + 30]));
-						frame->AddFloat(k + 40, 4, "Sample rate", ReadMUInt32(&packBuff[k + 32]) / 65536.0);
+						frame->AddUInt(k + 32, 2, CSTR("Number of channels"), ReadMUInt16(&packBuff[k + 24]));
+						frame->AddUInt(k + 34, 2, CSTR("Sample size (bits)"), ReadMUInt16(&packBuff[k + 26]));
+						frame->AddUInt(k + 36, 2, CSTR("Compression ID"), ReadMUInt16(&packBuff[k + 28]));
+						frame->AddUInt(k + 38, 2, CSTR("Packet size"), ReadMUInt16(&packBuff[k + 30]));
+						frame->AddFloat(k + 40, 4, CSTR("Sample rate"), ReadMUInt32(&packBuff[k + 32]) / 65536.0);
 						endOfst = 36;
 					}
 					else if (version == 1)
 					{
-						frame->AddUInt(k + 32, 2, "Number of channels", ReadMUInt16(&packBuff[k + 24]));
-						frame->AddUInt(k + 34, 2, "Sample size (bits)", ReadMUInt16(&packBuff[k + 26]));
-						frame->AddUInt(k + 36, 2, "Compression ID", ReadMUInt16(&packBuff[k + 28]));
-						frame->AddUInt(k + 38, 2, "Packet size", ReadMUInt16(&packBuff[k + 30]));
-						frame->AddFloat(k + 40, 4, "Sample rate", ReadMUInt32(&packBuff[k + 32]) / 65536.0);
-						frame->AddUInt(k + 44, 4, "Samples per packet", ReadMUInt32(&packBuff[k + 36]));
-						frame->AddUInt(k + 48, 4, "Bytes per packet", ReadMUInt32(&packBuff[k + 40]));
-						frame->AddUInt(k + 52, 4, "Bytes per frame", ReadMUInt32(&packBuff[k + 44]));
-						frame->AddUInt(k + 56, 4, "Bytes per sample", ReadMUInt32(&packBuff[k + 48]));
+						frame->AddUInt(k + 32, 2, CSTR("Number of channels"), ReadMUInt16(&packBuff[k + 24]));
+						frame->AddUInt(k + 34, 2, CSTR("Sample size (bits)"), ReadMUInt16(&packBuff[k + 26]));
+						frame->AddUInt(k + 36, 2, CSTR("Compression ID"), ReadMUInt16(&packBuff[k + 28]));
+						frame->AddUInt(k + 38, 2, CSTR("Packet size"), ReadMUInt16(&packBuff[k + 30]));
+						frame->AddFloat(k + 40, 4, CSTR("Sample rate"), ReadMUInt32(&packBuff[k + 32]) / 65536.0);
+						frame->AddUInt(k + 44, 4, CSTR("Samples per packet"), ReadMUInt32(&packBuff[k + 36]));
+						frame->AddUInt(k + 48, 4, CSTR("Bytes per packet"), ReadMUInt32(&packBuff[k + 40]));
+						frame->AddUInt(k + 52, 4, CSTR("Bytes per frame"), ReadMUInt32(&packBuff[k + 44]));
+						frame->AddUInt(k + 56, 4, CSTR("Bytes per sample"), ReadMUInt32(&packBuff[k + 48]));
 						endOfst = 52;
 					}
 					else if (version == 2)
 					{
-						frame->AddUInt(k + 32, 2, "always3", ReadMUInt16(&packBuff[k + 24]));
-						frame->AddUInt(k + 34, 2, "always16", ReadMUInt16(&packBuff[k + 26]));
-						frame->AddInt(k + 36, 2, "alwaysMinus2", ReadMInt16(&packBuff[k + 28]));
-						frame->AddInt(k + 38, 2, "always0", ReadMInt16(&packBuff[k + 30]));
-						frame->AddUInt(k + 40, 4, "always65536", ReadMUInt32(&packBuff[k + 32]));
-						frame->AddUInt(k + 44, 4, "sizeOfStructOnly", ReadMUInt32(&packBuff[k + 36]));
-						frame->AddFloat(k + 48, 4, "audioSampleRate", ReadMDouble(&packBuff[k + 40]));
-						frame->AddUInt(k + 56, 4, "numAudioChannels", ReadMUInt32(&packBuff[k + 48]));
-						frame->AddHex32(k + 60, "always7F000000", ReadMUInt32(&packBuff[k + 52]));
-						frame->AddUInt(k + 64, 4, "constBitsPerChannel", ReadMUInt32(&packBuff[k + 56]));
-						frame->AddHex32(k + 68, "formatSpecificFlags", ReadMUInt32(&packBuff[k + 60]));
-						frame->AddUInt(k + 72, 4, "constBytesPerAudioPacket", ReadMUInt32(&packBuff[k + 64]));
-						frame->AddUInt(k + 76, 4, "constLPCMFramesPerAudioPacket", ReadMUInt32(&packBuff[k + 68]));
+						frame->AddUInt(k + 32, 2, CSTR("always3"), ReadMUInt16(&packBuff[k + 24]));
+						frame->AddUInt(k + 34, 2, CSTR("always16"), ReadMUInt16(&packBuff[k + 26]));
+						frame->AddInt(k + 36, 2, CSTR("alwaysMinus2"), ReadMInt16(&packBuff[k + 28]));
+						frame->AddInt(k + 38, 2, CSTR("always0"), ReadMInt16(&packBuff[k + 30]));
+						frame->AddUInt(k + 40, 4, CSTR("always65536"), ReadMUInt32(&packBuff[k + 32]));
+						frame->AddUInt(k + 44, 4, CSTR("sizeOfStructOnly"), ReadMUInt32(&packBuff[k + 36]));
+						frame->AddFloat(k + 48, 4, CSTR("audioSampleRate"), ReadMDouble(&packBuff[k + 40]));
+						frame->AddUInt(k + 56, 4, CSTR("numAudioChannels"), ReadMUInt32(&packBuff[k + 48]));
+						frame->AddHex32(k + 60, CSTR("always7F000000"), ReadMUInt32(&packBuff[k + 52]));
+						frame->AddUInt(k + 64, 4, CSTR("constBitsPerChannel"), ReadMUInt32(&packBuff[k + 56]));
+						frame->AddHex32(k + 68, CSTR("formatSpecificFlags"), ReadMUInt32(&packBuff[k + 60]));
+						frame->AddUInt(k + 72, 4, CSTR("constBytesPerAudioPacket"), ReadMUInt32(&packBuff[k + 64]));
+						frame->AddUInt(k + 76, 4, CSTR("constLPCMFramesPerAudioPacket"), ReadMUInt32(&packBuff[k + 68]));
 						endOfst = 72;
 					}
 					else
@@ -1276,12 +1277,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 					}
 					if (endOfst < l)
 					{
-						frame->AddHexBuff(k + endOfst + 8, l - endOfst, "Extra Data", &packBuff[k + endOfst], true);
+						frame->AddHexBuff(k + endOfst + 8, l - endOfst, CSTR("Extra Data"), &packBuff[k + endOfst], true);
 					}
 				}
 				else
 				{
-					frame->AddHexBuff(k + 16 + 8, l - 16, "Data", &packBuff[k + 16], true);
+					frame->AddHexBuff(k + 16 + 8, l - 16, CSTR("Data"), &packBuff[k + 16], true);
 				}
 				k += l;
 				i++;
@@ -1296,9 +1297,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			k = 8;
 			i = 0;
 			while (i < j)
@@ -1307,8 +1308,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				frame->AddInt(k + 8, 4, "Sample Count", ReadMInt32(&packBuff[k + 0]));
-				frame->AddInt(k + 12, 4, "Sample duration", ReadMInt32(&packBuff[k + 4]));
+				frame->AddInt(k + 8, 4, CSTR("Sample Count"), ReadMInt32(&packBuff[k + 0]));
+				frame->AddInt(k + 12, 4, CSTR("Sample duration"), ReadMInt32(&packBuff[k + 4]));
 				k += 8;
 				i++;
 			}
@@ -1322,9 +1323,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Entry count", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Entry count"), j = ReadMUInt32(&packBuff[4]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1337,8 +1338,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				frame->AddInt(k + 8, 4, "Sample Count", ReadMInt32(&packBuff[k + 0]));
-				frame->AddInt(k + 12, 4, "compositionOffset", ReadMInt32(&packBuff[k + 4]));
+				frame->AddInt(k + 8, 4, CSTR("Sample Count"), ReadMInt32(&packBuff[k + 0]));
+				frame->AddInt(k + 12, 4, CSTR("compositionOffset"), ReadMInt32(&packBuff[k + 4]));
 				k += 8;
 				i++;
 			}
@@ -1352,9 +1353,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1367,8 +1368,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Key "), i);
-				frame->AddUInt(k + 8, 4, (const Char*)sbuff, ReadMUInt32(&packBuff[k + 0]));
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Key ")), i);
+				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1382,9 +1383,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1397,9 +1398,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				frame->AddUInt(k + 8, 4, "First chunk", ReadMUInt32(&packBuff[k + 0]));
-				frame->AddUInt(k + 12, 4, "Samples per chunk", ReadMUInt32(&packBuff[k + 4]));
-				frame->AddUInt(k + 16, 4, "Sample description ID", ReadMUInt32(&packBuff[k + 8]));
+				frame->AddUInt(k + 8, 4, CSTR("First chunk"), ReadMUInt32(&packBuff[k + 0]));
+				frame->AddUInt(k + 12, 4, CSTR("Samples per chunk"), ReadMUInt32(&packBuff[k + 4]));
+				frame->AddUInt(k + 16, 4, CSTR("Sample description ID"), ReadMUInt32(&packBuff[k + 8]));
 				k += 12;
 				i++;
 			}
@@ -1413,10 +1414,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Sample size", ReadMUInt32(&packBuff[4]));
-			frame->AddUInt(16, 4, "Number of entries", j = ReadMUInt32(&packBuff[8]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Sample size"), ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(16, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[8]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1429,8 +1430,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Sample size "), i);
-				frame->AddUInt(k + 8, 4, (const Char*)sbuff, ReadMUInt32(&packBuff[k + 0]));
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sample size ")), i);
+				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1444,9 +1445,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1459,8 +1460,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Offset "), i);
-				frame->AddUInt(k + 8, 4, (const Char*)sbuff, ReadMUInt32(&packBuff[k + 0]));
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Offset ")), i);
+				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1474,9 +1475,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		{
 			packBuff = MemAlloc(UInt8, (UOSInt)(pack->packSize - 8));
 			this->fd->GetRealData(pack->fileOfst + 8, (UOSInt)(pack->packSize - 8), packBuff);
-			frame->AddUInt(8, 1, "Version", packBuff[0]);
-			frame->AddHex24(9, "Flags", ReadMUInt24(&packBuff[1]));
-			frame->AddUInt(12, 4, "Number of entries", j = ReadMUInt32(&packBuff[4]));
+			frame->AddUInt(8, 1, CSTR("Version"), packBuff[0]);
+			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
+			frame->AddUInt(12, 4, CSTR("Number of entries"), j = ReadMUInt32(&packBuff[4]));
 			if (j > 3000)
 			{
 				j = 3000;
@@ -1489,8 +1490,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 				{
 					break;
 				}
-				Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Offset "), i);
-				frame->AddUInt64(k + 8, (const Char*)sbuff, ReadMUInt64(&packBuff[k + 0]));
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Offset ")), i);
+				frame->AddUInt64(k + 8, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt64(&packBuff[k + 0]));
 				k += 8;
 				i++;
 			}

@@ -21,7 +21,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("SearchNotFound")), me->env->GetLang(UTF8STRC("SearchTitle")), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("SearchNotFound")).v, me->env->GetLang(UTF8STRC("SearchTitle")).v, me);
 		me->txt->Focus();
 	}
 }
@@ -41,16 +41,16 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, U
 	this->foundGroup = 0;
 	this->parentId = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("SearchTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("SearchTitle")).v);
 
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("SearchName"))));
+	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("SearchName")).v));
 	lbl->SetRect(4, 6, 100, 21, false);
 	NEW_CLASS(this->txt, UI::GUITextBox(ui, this, (const UTF8Char*)""));
 	txt->SetRect(108, 6, 218, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchButton"))));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchButton")).v));
 	this->btnOK->SetRect(76, 36, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchCancel"))));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchCancel")).v));
 	this->btnCancel->SetRect(180, 36, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

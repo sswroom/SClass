@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 			me->lvEntries->AddItem(ans->names[i].nameBuff, 0);
 			Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].nameType);
 			me->lvEntries->SetSubItem(i, 1, sbuff);
-			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType));
+			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType).v);
 			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].flags);
 			me->lvEntries->SetSubItem(i, 3, sbuff);
 			i++;

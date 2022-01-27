@@ -69,7 +69,7 @@ private:
 			if (me->fileName)
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->Append(me->fileName);
+				sb->AppendSlow(me->fileName);
 				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
@@ -195,7 +195,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Text::StringBuilderUTF8 sb;
 					IO::FileStream *fs;
 					Exporter::SFVExporter exporter;
-					sb.Append(cmdLines[1]);
+					sb.AppendSlow(cmdLines[1]);
 					sb.AppendC(UTF8STRC(".sfv"));
 					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					exporter.ExportFile(fs, sb.ToString(), fileChk, 0);

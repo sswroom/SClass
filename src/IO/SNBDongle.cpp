@@ -612,119 +612,119 @@ Bool IO::SNBDongle::SendDevGetStatus(UInt64 devId)
 	return false;
 }
 
-const UTF8Char *IO::SNBDongle::GetHandleName(HandleType handType)
+Text::CString IO::SNBDongle::GetHandleName(HandleType handType)
 {
 	switch (handType)
 	{
 	case HT_DOOR:
-		return (const UTF8Char*)"Door";
+		return CSTR("Door");
 	case HT_TEMPERATURE1:
-		return (const UTF8Char*)"Temperature type1";
+		return CSTR("Temperature type1");
 	case HT_TEMPERATURE2:
-		return (const UTF8Char*)"Temperature type2";
+		return CSTR("Temperature type2");
 	case HT_MOTION:
-		return (const UTF8Char*)"Motion";
+		return CSTR("Motion");
 	case HT_TEMPERATURE2V2:
-		return (const UTF8Char*)"Temperature type2 v2/v3";
+		return CSTR("Temperature type2 v2/v3");
 	case HT_MOBILEPLUG:
-		return (const UTF8Char*)"Mobile Plug";
+		return CSTR("Mobile Plug");
 	case HT_AIR_QUALITY:
-		return (const UTF8Char*)"Air Quality";
+		return CSTR("Air Quality");
 	case HT_WATERLEAKAGE:
-		return (const UTF8Char*)"Water Leakage";
+		return CSTR("Water Leakage");
 	case HT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *IO::SNBDongle::GetReadingName(ReadingType readingType)
+Text::CString IO::SNBDongle::GetReadingName(ReadingType readingType)
 {
 	switch (readingType)
 	{
 	case IO::SNBDongle::RT_TEMPERATURE:
-		return (const UTF8Char*)"Temperature";
+		return CSTR("Temperature");
 	case IO::SNBDongle::RT_AIR_HUMIDITY:
-		return (const UTF8Char*)"Humidity";
+		return CSTR("Humidity");
 	case IO::SNBDongle::RT_AIR_CO:
-		return (const UTF8Char*)"CO Level";
+		return CSTR("CO Level");
 	case IO::SNBDongle::RT_AIR_PM25:
-		return (const UTF8Char*)"PM2.5";
+		return CSTR("PM2.5");
 	case IO::SNBDongle::RT_AIR_PM10:
-		return (const UTF8Char*)"PM10";
+		return CSTR("PM10");
 	case IO::SNBDongle::RT_AIR_HCHO:
-		return (const UTF8Char*)"HCHO";
+		return CSTR("HCHO");
 	case IO::SNBDongle::RT_AIR_VOC:
-		return (const UTF8Char*)"VOC";
+		return CSTR("VOC");
 	case IO::SNBDongle::RT_AIR_CO2:
-		return (const UTF8Char*)"CO2 Level";
+		return CSTR("CO2 Level");
 	case IO::SNBDongle::RT_VOLTAGE:
-		return (const UTF8Char*)"Voltage";
+		return CSTR("Voltage");
 	case IO::SNBDongle::RT_DOOR_CONTACT:
-		return (const UTF8Char*)"Door";
+		return CSTR("Door");
 	case IO::SNBDongle::RT_MOVING_SENSOR:
-		return (const UTF8Char*)"Motion";
+		return CSTR("Motion");
 	case IO::SNBDongle::RT_ONOFF:
-		return (const UTF8Char*)"OnOff";
+		return CSTR("OnOff");
 	case IO::SNBDongle::RT_POWER:
-		return (const UTF8Char*)"Power";
+		return CSTR("Power");
 	case IO::SNBDongle::RT_PARTICLE_0_3UM:
-		return (const UTF8Char*)"Particle 0.3um";
+		return CSTR("Particle 0.3um");
 	case IO::SNBDongle::RT_PARTICLE_0_5UM:
-		return (const UTF8Char*)"Particle 0.5um";
+		return CSTR("Particle 0.5um");
 	case IO::SNBDongle::RT_PARTICLE_1_0UM:
-		return (const UTF8Char*)"Particle 1.0um";
+		return CSTR("Particle 1.0um");
 	case IO::SNBDongle::RT_PARTICLE_2_5UM:
-		return (const UTF8Char*)"Particle 2.5um";
+		return CSTR("Particle 2.5um");
 	case IO::SNBDongle::RT_PARTICLE_5_0UM:
-		return (const UTF8Char*)"Particle 5.0um";
+		return CSTR("Particle 5.0um");
 	case IO::SNBDongle::RT_PARTICLE_10UM:
-		return (const UTF8Char*)"Particle 10um";
+		return CSTR("Particle 10um");
 	case IO::SNBDongle::RT_ALERT:
-		return (const UTF8Char*)"Alert";
+		return CSTR("Alert");
 	case IO::SNBDongle::RT_GAS_CH4:
-		return (const UTF8Char*)"Gas CH4 Level";
+		return CSTR("Gas CH4 Level");
 	case IO::SNBDongle::RT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Value";
+		return CSTR("Value");
 	}
 }
 
-const UTF8Char *IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
+Text::CString IO::SNBDongle::SensorTypeGetName(SensorType sensorType)
 {
 	switch (sensorType)
 	{
 	case IO::SNBDongle::ST_DOOR_CONTACT:
-		return (const UTF8Char*)"Door Contact";
+		return CSTR("Door Contact");
 	case IO::SNBDongle::ST_MOTION:
-		return (const UTF8Char*)"Motion";
+		return CSTR("Motion");
 	case IO::SNBDongle::ST_SENSOR:
-		return (const UTF8Char*)"Mixed";
+		return CSTR("Mixed");
 	case IO::SNBDongle::ST_TEMPERATURE:
-		return (const UTF8Char*)"Temperature";
+		return CSTR("Temperature");
 	case IO::SNBDongle::ST_RETURN_NORMAL:
-		return (const UTF8Char*)"Return normal";
+		return CSTR("Return normal");
 	case IO::SNBDongle::ST_LUX:
-		return (const UTF8Char*)"LUX";
+		return CSTR("LUX");
 	case IO::SNBDongle::ST_HUMIDITY_TEMP:
-		return (const UTF8Char*)"Humidity and Temperature";
+		return CSTR("Humidity and Temperature");
 	case IO::SNBDongle::ST_AIR:
-		return (const UTF8Char*)"Air Quality";
+		return CSTR("Air Quality");
 	case IO::SNBDongle::ST_VIBRATE:
-		return (const UTF8Char*)"Vibration";
+		return CSTR("Vibration");
 	case IO::SNBDongle::ST_POSITION:
-		return (const UTF8Char*)"Position";
+		return CSTR("Position");
 	case IO::SNBDongle::ST_PANIC_BUTTON:
-		return (const UTF8Char*)"Panic Button";
+		return CSTR("Panic Button");
 	case IO::SNBDongle::ST_WAKEUP:
-		return (const UTF8Char*)"Wakeup";
+		return CSTR("Wakeup");
 	case IO::SNBDongle::ST_DOOROPEN:
-		return (const UTF8Char*)"Door Open";
+		return CSTR("Door Open");
 	case IO::SNBDongle::ST_WATERSENSOR:
-		return (const UTF8Char*)"Water Sensor";
+		return CSTR("Water Sensor");
 	case IO::SNBDongle::ST_CUSTOM:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 
 }

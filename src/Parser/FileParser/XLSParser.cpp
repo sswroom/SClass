@@ -304,11 +304,9 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					sb->ClearStr();
 					if (readBuff[i + 11] & 1)
 					{
-						const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
-						const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-						sb->Append(csptr);
-						Text::StrDelNew(csptr);
-						Text::StrDelNew(wptr);
+						Text::String *s = Text::String::New((UTF16Char*)&readBuff[i + 12], readBuff[i + 10]);
+						sb->Append(s);
+						s->Release();
 					}
 					else
 					{
@@ -1019,11 +1017,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 	{
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[3], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[3], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 3 + charCnt * 2;
 		}
 		else
@@ -1037,11 +1033,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		cchExtRst = ReadUInt32(&buff[3]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[7], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[7], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 7 + charCnt * 2;
 		}
 		else
@@ -1057,11 +1051,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		fmtCnt = ReadUInt16(&buff[3]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[5], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[5], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 5 + charCnt * 2;
 		}
 		else
@@ -1078,11 +1070,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUString(UInt8 *buff, Text::StringBuild
 		cchExtRst = ReadUInt32(&buff[5]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[9], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[9], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 9 + charCnt * 2;
 		}
 		else
@@ -1109,11 +1099,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 > buffSize)
 				thisCnt = (buffSize - 1) >> 1;
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[1], thisCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[1], thisCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 1 + thisCnt * 2;
 		}
 		else
@@ -1131,11 +1119,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 1 + cchExtRst > buffSize)
 				thisCnt = (buffSize - 1 - cchExtRst) >> 1;
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[5], thisCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[5], thisCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 5 + thisCnt * 2;
 		}
 		else
@@ -1155,11 +1141,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 3 + (fmtCnt << 2) > buffSize)
 				thisCnt = (buffSize - 3 - (fmtCnt << 2)) >> 1;
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[3], thisCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[3], thisCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 3 + thisCnt * 2;
 		}
 		else
@@ -1180,11 +1164,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringPartial(UInt8 *buff, UOSInt buf
 		{
 			if (thisCnt * 2 + 7 + (fmtCnt << 2) + cchExtRst > buffSize)
 				thisCnt = (buffSize - 7 - (fmtCnt << 2) - cchExtRst) >> 1;
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[7], thisCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[7], thisCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 7 + thisCnt * 2;
 		}
 		else
@@ -1212,11 +1194,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 	{
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[2], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[2], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 3 + charCnt * 2;
 		}
 		else
@@ -1230,11 +1210,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		cchExtRst = ReadUInt32(&buff[2]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[6], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[6], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 7 + charCnt * 2;
 		}
 		else
@@ -1250,11 +1228,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		fmtCnt = ReadUInt16(&buff[2]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[4], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[4], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 5 + charCnt * 2;
 		}
 		else
@@ -1271,11 +1247,9 @@ UOSInt Parser::FileParser::XLSParser::ReadUStringB(UInt8 *buff, Text::StringBuil
 		cchExtRst = ReadUInt32(&buff[4]);
 		if (flags & 1)
 		{
-			const UTF16Char *wptr = Text::StrCopyNewC((UTF16Char*)&buff[8], charCnt);
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			Text::String *s = Text::String::New((UTF16Char*)&buff[8], charCnt);
+			sb->Append(s);
+			s->Release();
 			currOfst += 9 + charCnt * 2;
 		}
 		else

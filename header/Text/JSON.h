@@ -2,6 +2,7 @@
 #define _SM_TEXT_JSON
 #include "Data/ArrayList.h"
 #include "Data/FastStringMap.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Text
@@ -215,6 +216,6 @@ namespace Text
 		virtual Bool Identical(JSONBase *obj);
 	};
 
-	const UTF8Char *JSONTypeGetName(JSONType t);
+	Text::CString JSONTypeGetName(JSONType t);
 }
 #endif

@@ -11,11 +11,9 @@ UI::GUIDragDataGTK *GUIDragDataGTK_currData = 0;
 
 void GUIDragDataGTK_AppendWC(Text::StringBuilderUTF8 *sb, const UTF16Char *s, UOSInt slen)
 {
-	const UTF16Char *csptr = Text::StrCopyNewC(s, slen);
-	const UTF8Char *csptr2 = Text::StrToUTF8New(csptr);
-	sb->Append(csptr2);
-	Text::StrDelNew(csptr2);
-	Text::StrDelNew(csptr);
+	Text::String *str = Text::String::New(s, slen);
+	sb->Append(str);
+	str->Release();
 }
 
 UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Bool readData)
@@ -24,7 +22,7 @@ UI::GUIDragDataGTK::GUIDragDataGTK(void *widget, void *context, UInt32 time, Boo
 	this->context = context;
 	this->time = time;
 	NEW_CLASS(this->targetMap, Data::StringUTF8Map<OSInt>());
-	NEW_CLASS(this->targetText, Data::Int32Map<const UTF8Char *>());
+	NEW_CLASS(this->targetText, Data::Int32Map<Text::String *>());
 	GUIDragDataGTK_currData = this;
 
 	UTF8Char sbuff[128];
@@ -66,11 +64,11 @@ UI::GUIDragDataGTK::~GUIDragDataGTK()
 {
 	GUIDragDataGTK_currData = 0;
 	DEL_CLASS(this->targetMap);
-	Data::ArrayList<const UTF8Char*> *targetList = this->targetText->GetValues();
+	Data::ArrayList<Text::String*> *targetList = this->targetText->GetValues();
 	UOSInt i = targetList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(targetList->GetItem(i));
+		targetList->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->targetText);
 }
@@ -101,7 +99,7 @@ Bool UI::GUIDragDataGTK::GetDataText(const UTF8Char *name, Text::StringBuilderUT
 	OSInt fmt = this->targetMap->Get(name);
 	if (fmt == 0)
 		return false;
-	const UTF8Char *txt = this->targetText->Get((Int32)fmt);
+	Text::String *txt = this->targetText->Get((Int32)fmt);
 	if (txt)
 	{
 		sb->Append(txt);
@@ -199,11 +197,11 @@ void UI::GUIDragDataGTK::OnDataReceived(void *selData)
 		{
 			sb.AppendC((const UTF8Char*)data, dataSize);
 		}
-		this->targetText->Put(itarget, Text::StrCopyNew(sb.ToString()));
+		this->targetText->Put(itarget, Text::String::New(sb.ToString(), sb.GetLength()));
 	}
 	else
 	{
-		this->targetText->Put(itarget, Text::StrCopyNew((const UTF8Char*)""));
+		this->targetText->Put(itarget, Text::String::NewEmpty());
 	}
 	
 }

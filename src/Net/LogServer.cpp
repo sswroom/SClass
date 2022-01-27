@@ -170,6 +170,7 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 	UInt8 reply[18];
 	UOSInt replySize;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	ClientStatus *cliStatus;
 	cliStatus = (ClientStatus*)stmObj;
 	switch (cmdType)
@@ -186,8 +187,8 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			Text::StringBuilderUTF8 sb;
 			if (this->log)
 			{
-				((Net::TCPClient *)stm)->GetRemoteName(sbuff);
-				sb.Append(sbuff);
+				sptr = ((Net::TCPClient *)stm)->GetRemoteName(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);
 				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);

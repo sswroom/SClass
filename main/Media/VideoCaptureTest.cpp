@@ -65,6 +65,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::StringBuilderUTF8 sb;
 	Bool isRunning;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt32 widthLimit = 3840;
 	UInt8 tmpBuff[4];
 	UInt32 prefFmt = 0;
@@ -116,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(", Index "));
 			sb.AppendUOSInt(devInfo->devId);
 			sb.AppendC(UTF8STRC(", Name = "));
-			sb.Append(devInfo->devName);
+			sb.AppendSlow(devInfo->devName);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 
 			i++;
@@ -149,8 +150,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console->WriteLine();
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Capture using "));
-				capture->GetSourceName(sbuff);
-				sb.Append(sbuff);
+				sptr = capture->GetSourceName(sbuff);
+				sb.AppendP(sbuff, sptr);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 
 				console->WriteLineC(UTF8STRC("Supported Formats:"));

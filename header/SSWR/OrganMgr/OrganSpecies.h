@@ -2,6 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANSPECIES
 
 #include "SSWR/OrganMgr/OrganGroupItem.h"
+#include "Text/String.h"
 
 namespace SSWR
 {
@@ -11,9 +12,9 @@ namespace SSWR
 		{
 		private:
 			Int32 speciesId;
-			const UTF8Char *cName;
-			const UTF8Char *eName;
-			const UTF8Char *sName;
+			Text::String *cName;
+			Text::String *eName;
+			Text::String *sName;
 			Int32 groupId;
 			const UTF8Char *desc;
 			const UTF8Char *dirName;
@@ -32,11 +33,11 @@ namespace SSWR
 			void SetSpeciesId(Int32 speciesId);
 			Int32 GetSpeciesId();
 			void SetCName(const UTF8Char *cName);
-			const UTF8Char *GetCName();
+			Text::String *GetCName();
 			void SetEName(const UTF8Char *eName);
-			const UTF8Char *GetEName();
+			Text::String *GetEName();
 			void SetSName(const UTF8Char *sName);
-			const UTF8Char *GetSName();
+			Text::String *GetSName();
 			void SetGroupId(Int32 groupId);
 			Int32 GetGroupId();
 			void SetDesc(const UTF8Char *desc);

@@ -1,5 +1,6 @@
 #ifndef _SM_MANAGE_CPUBRAND
 #define _SM_MANAGE_CPUBRAND
+#include "Text/CString.h"
 
 namespace Manage
 {
@@ -33,7 +34,7 @@ namespace Manage
 			CB_NXP
 		} CPU_BRAND;
 
-		static const UTF8Char *GetBrandName(CPU_BRAND brand);
+		static Text::CString GetBrandName(CPU_BRAND brand);
 	};
 }
 

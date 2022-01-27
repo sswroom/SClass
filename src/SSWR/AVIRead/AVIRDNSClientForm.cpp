@@ -86,18 +86,18 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
 	Net::DNSClient::RequestAnswer *ans = (Net::DNSClient::RequestAnswer*)me->lbAnswer->GetSelectedItem();
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	if (ans)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(ans->name);
 		me->txtAnsName->SetText(sb.ToString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
-		csptr = Net::DNSClient::TypeGetID(ans->recType);
-		if (csptr)
+		cstr = Net::DNSClient::TypeGetID(ans->recType);
+		if (cstr.v)
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-			sptr = Text::StrConcat(sptr, csptr);
+			sptr = cstr.ConcatTo(sptr);
 			*sptr++ = ')';
 			*sptr = 0;
 		}

@@ -15,28 +15,28 @@ Double Math::Unit::Acceleration::GetUnitRatio(AccelerationUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Acceleration::GetUnitShortName(AccelerationUnit unit)
+Text::CString Math::Unit::Acceleration::GetUnitShortName(AccelerationUnit unit)
 {
 	switch (unit)
 	{
 	case AccelerationUnit::MeterPerSecondSquared:
-		return (const UTF8Char*)"m/s^2";
+		return CSTR("m/s^2");
 	case AccelerationUnit::StandardGravity:
-		return (const UTF8Char*)"g";
+		return CSTR("g");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Acceleration::GetUnitName(AccelerationUnit unit)
+Text::CString Math::Unit::Acceleration::GetUnitName(AccelerationUnit unit)
 {
 	switch (unit)
 	{
 	case AccelerationUnit::MeterPerSecondSquared:
-		return (const UTF8Char*)"Meter Per Second Squared";
+		return CSTR("Meter Per Second Squared");
 	case AccelerationUnit::StandardGravity:
-		return (const UTF8Char*)"Gravity";
+		return CSTR("Gravity");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Acceleration::Convert(AccelerationUnit fromUnit, AccelerationUnit toUnit, Double fromValue)

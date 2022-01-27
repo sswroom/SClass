@@ -19,7 +19,7 @@ UOSInt Text::TextBinEnc::CodePageTextBinEnc::EncodeBin(Text::StringBuilderUTF8 *
 	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
 	this->enc->UTF8FromBytes(sbuff, dataBuff, buffSize, 0);
 	sbuff[size] = 0;
-	sb->Append(sbuff);
+	sb->AppendC(sbuff, size);
 	MemFree(sbuff);
 	return size;
 }

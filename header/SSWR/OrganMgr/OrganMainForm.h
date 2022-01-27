@@ -154,7 +154,7 @@ namespace SSWR
 			Data::UInt32Map<OrganSpImgLayer*> *mapImgLyrs;
 			UOSInt imgFontStyle;
 
-			const UTF8Char *initSelObj;
+			Text::String *initSelObj;
 			Text::String *initSelImg;
 
 			Data::ArrayList<UserFileInfo*> *mapUFiles;

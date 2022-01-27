@@ -723,6 +723,7 @@ Bool DB::DBRow::GetSinglePKI64(Int64 *key)
 void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	DB::ColDef *col;
 	DB::DBRow::Field *field;
 	const UInt8 *buff;
@@ -757,9 +758,9 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 				switch (dtype)
 				{
 				case DT_DATETIME:
-					this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzzz");
+					sptr = this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzzz");
 					sb->AppendChar('\"', 1);
-					sb->Append(sbuff);
+					sb->AppendP(sbuff, sptr);
 					sb->AppendChar('\"', 1);
 					break;
 				case DT_BINARY:
@@ -768,38 +769,38 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 					strLen = DB::DBUtil::SDBBinLeng(buff, k, table->GetSvrType());
 					if (strLen < sizeof(sbuff) - 1)
 					{
-						DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
-						sb->Append(sbuff);
+						sptr = DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
+						sb->AppendP(sbuff, sptr);
 					}
 					else
 					{
 						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
-						DB::DBUtil::SDBBin(sbuff, buff, k, table->GetSvrType());
-						sb->Append(tmpBuff);
+						sptr = DB::DBUtil::SDBBin(tmpBuff, buff, k, table->GetSvrType());
+						sb->AppendP(tmpBuff, sptr);
 						MemFree(tmpBuff);
 					}
 					break;
 				case DT_DOUBLE:
-					DB::DBUtil::SDBDbl(sbuff, this->GetFieldDouble(field), table->GetSvrType());
-					sb->Append(sbuff);
+					sptr = DB::DBUtil::SDBDbl(sbuff, this->GetFieldDouble(field), table->GetSvrType());
+					sb->AppendP(sbuff, sptr);
 					break;
 				case DT_INT64:
-					DB::DBUtil::SDBInt64(sbuff, this->GetFieldInt64(field), table->GetSvrType());
-					sb->Append(sbuff);
+					sptr = DB::DBUtil::SDBInt64(sbuff, this->GetFieldInt64(field), table->GetSvrType());
+					sb->AppendP(sbuff, sptr);
 					break;
 				case DT_STRING:
 					buff = this->GetFieldStr(field);
 					strLen = DB::DBUtil::SDBStrUTF8Leng(buff, table->GetSvrType());
 					if (strLen < sizeof(sbuff) - 1)
 					{
-						DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
-						sb->Append(sbuff);
+						sptr = DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
+						sb->AppendP(sbuff, sptr);
 					}
 					else
 					{
 						UTF8Char *tmpBuff = MemAlloc(UTF8Char, strLen + 1);
-						DB::DBUtil::SDBStrUTF8(sbuff, buff, table->GetSvrType());
-						sb->Append(tmpBuff);
+						sptr = DB::DBUtil::SDBStrUTF8(tmpBuff, buff, table->GetSvrType());
+						sb->AppendP(tmpBuff, sptr);
 						MemFree(tmpBuff);
 					}
 					break;

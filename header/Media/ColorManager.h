@@ -2,10 +2,11 @@
 #define _SM_MEDIA_COLORMANAGER
 #include "Handles.h"
 #include "Data/ArrayList.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Media/ColorSess.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -14,11 +15,11 @@ namespace Media
 	class MonitorColorManager
 	{
 	private:
-		const UTF8Char *profileName;
+		Text::String *profileName;
 
 		Media::IColorHandler::YUVPARAM yuv;
 		Media::IColorHandler::RGBPARAM2 *rgb;
-		const UTF8Char *monProfileFile;
+		Text::String *monProfileFile;
 		Bool color10Bit;
 
 		Data::ArrayList<Media::ColorManagerSess *> *sessList;
@@ -28,10 +29,11 @@ namespace Media
 		static void SetDefaultRGB(Media::IColorHandler::RGBPARAM2 *rgb);
 
 	public:
+		MonitorColorManager(Text::String *profileName);
 		MonitorColorManager(const UTF8Char *profileName);
 		~MonitorColorManager();
 
-		const UTF8Char *GetProfileName();
+		Text::String *GetProfileName();
 		Bool Load();
 		Bool Save();
 		void SetDefault();
@@ -58,9 +60,9 @@ namespace Media
 		void SetYGamma(Double newVal);
 		void SetCGamma(Double newVal);
 		void SetMonProfileType(Media::ColorProfile::CommonProfileType newVal);
-		Bool SetMonProfileFile(const UTF8Char *fileName);
+		Bool SetMonProfileFile(Text::String *fileName);
 		void SetMonProfile(Media::ColorProfile *color);
-		const UTF8Char *GetMonProfileFile();
+		Text::String *GetMonProfileFile();
 		void SetMonLuminance(Double newVal);
 		Bool Get10BitColor();
 		void Set10BitColor(Bool color10Bit);
@@ -69,7 +71,7 @@ namespace Media
 		void AddSess(Media::ColorManagerSess *colorSess);
 		void RemoveSess(Media::ColorManagerSess *colorSess);
 	private:
-		Bool SetFromProfileFile(const UTF8Char *fileName);
+		Bool SetFromProfileFile(Text::String *fileName);
 		void SetOSProfile();
 		void SetEDIDProfile();
 
@@ -80,7 +82,7 @@ namespace Media
 	class ColorManager
 	{
 	private:
-		Data::StringUTF8Map<MonitorColorManager*> *monColor;
+		Data::FastStringMap<MonitorColorManager*> *monColor;
 		Sync::Mutex *mut;
 
 		Media::ColorProfile::YUVType defYUVType;
@@ -104,7 +106,7 @@ namespace Media
 		void SetYUVType(Media::ColorProfile::YUVType newVal);
 		Media::ColorProfile::YUVType GetDefYUVType();
 
-		MonitorColorManager *GetMonColorManager(const UTF8Char *profileName);
+		MonitorColorManager *GetMonColorManager(Text::String *profileName);
 		MonitorColorManager *GetMonColorManager(MonitorHandle *hMon);
 		ColorManagerSess *CreateSess(MonitorHandle *hMon);
 		void DeleteSess(ColorManagerSess *sess);

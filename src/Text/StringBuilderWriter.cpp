@@ -19,7 +19,7 @@ Bool Text::StringBuilderWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 
 Bool Text::StringBuilderWriter::WriteStr(const UTF8Char *str)
 {
-	this->sb->Append(str);
+	this->sb->AppendSlow(str);
 	return true;
 }
 
@@ -32,7 +32,7 @@ Bool Text::StringBuilderWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 
 Bool Text::StringBuilderWriter::WriteLine(const UTF8Char *str)
 {
-	this->sb->Append(str);
+	this->sb->AppendSlow(str);
 	this->sb->AppendC(UTF8STRC("\r\n"));
 	return true;
 }

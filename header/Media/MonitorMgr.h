@@ -1,7 +1,7 @@
 #ifndef _SM_MEDIA_MONITORMGR
 #define _SM_MEDIA_MONITORMGR
 #include "Handles.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Sync/Mutex.h"
 
 namespace Media
@@ -16,7 +16,7 @@ namespace Media
 		} MonitorSetting;
 	private:
 		Sync::Mutex *monMut;
-		Data::StringUTF8Map<MonitorSetting*> *monMap;
+		Data::FastStringMap<MonitorSetting*> *monMap;
 
 	public:
 		MonitorMgr();

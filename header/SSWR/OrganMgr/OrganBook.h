@@ -2,6 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANBOOK
 
 #include "Data/DateTime.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace SSWR
@@ -12,12 +13,12 @@ namespace SSWR
 		{
 		private:
 			Int32 id;
-			const UTF8Char *title;
-			const UTF8Char *dispAuthor;
-			const UTF8Char *press;
+			Text::String *title;
+			Text::String *dispAuthor;
+			Text::String *press;
 			Data::DateTime *publishDate;
 			Int32 groupId;
-			const UTF8Char *url;
+			Text::String *url;
 
 		public:
 			OrganBook();
@@ -25,18 +26,22 @@ namespace SSWR
 
 			Int32 GetBookId();
 			void SetBookId(Int32 bookId);
-			const UTF8Char *GetTitle();
+			Text::String *GetTitle();
 			void SetTitle(const UTF8Char *title);
-			const UTF8Char *GetDispAuthor();
+			void SetTitle(Text::StringBase<UTF8Char> *title);
+			Text::String *GetDispAuthor();
 			void SetDispAuthor(const UTF8Char *dispAuthor);
-			const UTF8Char *GetPress();
+			void SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor);
+			Text::String *GetPress();
 			void SetPress(const UTF8Char *press);
+			void SetPress(Text::StringBase<UTF8Char> *press);
 			Data::DateTime *GetPublishDate();
 			void SetPublishDate(Data::DateTime *publishDate);
 			Int32 GetGroupId();
 			void SetGroupId(Int32 groupId);
-			const UTF8Char *GetURL();
+			Text::String *GetURL();
 			void SetURL(const UTF8Char *url);
+			void SetURL(Text::StringBase<UTF8Char> *url);
 
 		//	WChar *GetString(WChar *sbuff);
 			void GetString(Text::StringBuilderUTF8 *sb);

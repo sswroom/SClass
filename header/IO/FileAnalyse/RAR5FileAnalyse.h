@@ -29,9 +29,9 @@ namespace IO
 			Bool threadStarted;
 
 			static const UInt8 *ReadVInt(const UInt8 *buffPtr, UInt64 *val);
-			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr);
-			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val);
-			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, const Char *name, const UInt8 *buffPtr, UInt64 *val);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr);
+			static const UInt8 *AddVInt(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
+			static const UInt8 *AddVHex(IO::FileAnalyse::FrameDetail *frame, UOSInt ofst, Text::CString name, const UInt8 *buffPtr, UInt64 *val);
 			static UInt32 __stdcall ParseThread(void *userObj);
 		public:
 			RAR5FileAnalyse(IO::IStreamData *fd);

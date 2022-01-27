@@ -22,7 +22,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	if (ent.browserVer)
 	{
 		sb.AppendChar('"', 1);
-		sb.Append((const UTF8Char*)ent.browserVer);
+		sb.AppendSlow((const UTF8Char*)ent.browserVer);
 		sb.AppendChar('"', 1);
 	}
 	else
@@ -42,7 +42,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	if (ent.osVer)
 	{
 		sb.AppendChar('"', 1);
-		sb.Append((const UTF8Char*)ent.osVer);
+		sb.AppendSlow((const UTF8Char*)ent.osVer);
 		sb.AppendChar('"', 1);
 	}
 	else
@@ -56,7 +56,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *use
 	if (ent.devName)
 	{
 		sb.AppendChar('"', 1);
-		sb.Append((const UTF8Char*)ent.devName);
+		sb.AppendSlow((const UTF8Char*)ent.devName);
 		sb.AppendChar('"', 1);
 	}
 	else

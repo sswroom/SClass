@@ -321,7 +321,7 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuil
 	gtk_tree_model_get((GtkTreeModel*)data->listStore, &r->iter, subIndex, &txt, -1);
 	if (txt)
 	{
-		sb->Append((const UTF8Char*)txt);
+		sb->AppendSlow((const UTF8Char*)txt);
 		g_free((void*)txt);
 		return true;
 	}

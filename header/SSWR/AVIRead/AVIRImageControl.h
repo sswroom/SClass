@@ -38,8 +38,8 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *fileName;
-				const UTF8Char *filePath;
-				const UTF8Char *cacheFile;
+				Text::String *filePath;
+				Text::String *cacheFile;
 				ImageSetting setting;
 				Media::DrawImage *previewImg;
 				Media::DrawImage *previewImg2;

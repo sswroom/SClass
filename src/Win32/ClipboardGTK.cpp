@@ -184,7 +184,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 					const UTF8Char *csptr = (const UTF8Char*)gtk_selection_data_get_text(data);
 					if (csptr)
 					{
-						sb->Append(csptr);
+						sb->AppendSlow(csptr);
 					}
 					else
 					{
@@ -227,7 +227,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		gchar *s = gtk_clipboard_wait_for_text(clipboard);
 		if (s)
 		{
-			sb->Append((const UTF8Char*)s);
+			sb->AppendSlow((const UTF8Char*)s);
 			g_free(s);
 			return true;
 		}
@@ -250,7 +250,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 				{
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
-				sb->Append((const UTF8Char*)s[i]);
+				sb->AppendSlow((const UTF8Char*)s[i]);
 				i++;
 			}
 			g_strfreev(s);
@@ -284,7 +284,7 @@ Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUT
 	gchar *s = gtk_clipboard_wait_for_text(clipboard);
 	if (s)
 	{
-		sb->Append((const UTF8Char*)s);
+		sb->AppendSlow((const UTF8Char*)s);
 		return true;
 	}
 	else

@@ -122,7 +122,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 				if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 				{
 					grp = (OrganGroup*)gi;
-					if (Text::StrEquals(newGrp->GetEName(), grp->GetEName()))
+					if (newGrp->GetEName()->Equals(grp->GetEName()))
 					{
 						if (grp->GetGroupId() > matchGrpId)
 						{
@@ -158,7 +158,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 
 			if (i == 0)
 			{
-				if (UI::MessageDialog::ShowYesNoDialog(me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuestMsg")), me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuest")), me))
+				if (UI::MessageDialog::ShowYesNoDialog(me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuestMsg")).v, me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuest")).v, me))
 				{
 					me->env->DelGroup(obj->GetGroupId());
 					me->lastGroupObj = 0;
@@ -170,7 +170,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 				sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg1")));
 				sb.AppendUOSInt(i);
 				sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg2")));
-				UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")), me);
+				UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")).v, me);
 			}
 		}
         else
@@ -178,7 +178,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 			sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg1")));
 			sb.AppendUOSInt(i);
 			sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg2")));
-			UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")), me);
+			UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")).v, me);
 		}
 	}
 }
@@ -225,8 +225,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 		if (me->lbDir->GetSelectedIndex() != INVALID_INDEX && me->lbDir->GetSelectedIndex() > 0)
 		{
 			OrganGroup *groupO = (OrganGroup*)me->lbDir->GetItem(me->lbDir->GetSelectedIndex());
-			SDEL_TEXT(me->initSelObj);
-			me->initSelObj = Text::StrCopyNew(groupO->GetEName());
+			SDEL_STRING(me->initSelObj);
+			me->initSelObj = groupO->GetEName()->Clone();
             me->lbDir->SetSelectedIndex(me->lbDir->GetSelectedIndex() - 1);
 		}
 	}
@@ -274,20 +274,20 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		spe = (OrganSpecies*)gi;
 		Text::StrInt32(sbuff, spe->GetSpeciesId());
 		me->txtSpeciesId->SetText(sbuff);
-		me->txtSpeciesEName->SetText(spe->GetEName());
-		me->txtSpeciesCName->SetText(spe->GetCName());
-		me->txtSpeciesSName->SetText(spe->GetSName());
+		me->txtSpeciesEName->SetText(STR_PTR(spe->GetEName()));
+		me->txtSpeciesCName->SetText(STR_PTR(spe->GetCName()));
+		me->txtSpeciesSName->SetText(spe->GetSName()->v);
 		me->txtSpeciesDName->SetText(spe->GetDirName());
 		me->txtSpeciesDesc->SetText(spe->GetDesc());
 		me->txtSpeciesKey->SetText(spe->GetIDKey());
-		if (Text::StrEndsWith(spe->GetSName(), (const UTF8Char*)" female"))
+		if (spe->GetSName()->EndsWith(UTF8STRC(" female")))
 		{
 			sb.ClearStr();
 			sb.Append(spe->GetSName());
 			sb.RemoveChars(7);
 			me->txtSpBook->SetText(sb.ToString());
 		}
-		else if (Text::StrEndsWith(spe->GetSName(), (const UTF8Char*)" male"))
+		else if (spe->GetSName()->EndsWith(UTF8STRC(" male")))
 		{
 			sb.ClearStr();
 			sb.Append(spe->GetSName());
@@ -296,7 +296,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		}
 		else
 		{
-			me->txtSpBook->SetText(spe->GetSName());
+			me->txtSpBook->SetText(spe->GetSName()->v);
 		}
 		me->lastSpeciesObj = spe;
 		me->UpdateSpBook();
@@ -313,10 +313,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjSelChg(void *userObj)
 		Text::StrInt32(sbuff, grp->GetGroupId());
 		me->txtGroupId->SetText(sbuff);
 		me->SelectGroup(me->cboGroupType, grp->GetGroupType());
-		me->txtGroupEName->SetText(grp->GetEName());
-		me->txtGroupCName->SetText(grp->GetCName());
-		me->txtGroupDesc->SetText(grp->GetDesc());
-		me->txtGroupKey->SetText(grp->GetIDKey());
+		me->txtGroupEName->SetText(grp->GetEName()->v);
+		me->txtGroupCName->SetText(grp->GetCName()->v);
+		me->txtGroupDesc->SetText(STR_PTR(grp->GetDesc()));
+		me->txtGroupKey->SetText(STR_PTR(grp->GetIDKey()));
 		me->chkGroupAdmin->SetChecked(grp->GetAdminOnly());
 		me->lastGroupObj = grp;
 	}
@@ -788,7 +788,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 					if (me->env->GetUserFilePath(userFile, &sb))
 					{
 						sb2.ClearStr();
-						sb2.Append(dlg->GetFolder());
+						sb2.AppendSlow(dlg->GetFolder());
 						if (!sb2.EndsWith(IO::Path::PATH_SEPERATOR))
 						{
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -915,23 +915,23 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 							else
 							{
 								UOSInt i;
-								const UTF8Char *csptr;
+								Text::String *s;
 								Text::StringBuilderUTF8 sb;
 								i = Text::StrLastIndexOfChar(sarr[0].v, IO::Path::PATH_SEPERATOR);
-								csptr = Text::StrToUTF8New(L"不能複製檔案: ");
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
-								sb.Append(&sarr[0].v[i + 1]);
-								csptr = Text::StrToUTF8New(L", 要繼續?");
-								sb.Append(csptr);
-								Text::StrDelNew(csptr);
-								csptr = Text::StrToUTF8New(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), csptr, me))
+								s = Text::String::NewNotNull(L"不能複製檔案: ");
+								sb.Append(s);
+								s->Release();
+								sb.AppendC(&sarr[0].v[i + 1], sarr[0].leng - i - 1);
+								s = Text::String::NewNotNull(L", 要繼續?");
+								sb.Append(s);
+								s->Release();
+								s = Text::String::NewNotNull(L"錯誤");
+								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, me))
 								{
-									Text::StrDelNew(csptr);
+									s->Release();
 									break;
 								}
-								Text::StrDelNew(csptr);
+								s->Release();
 							}
 						}
 
@@ -1014,7 +1014,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 					if (gi->GetItemType() == OrganGroupItem::IT_SPECIES)
 					{
 						sp2 = (OrganSpecies*)gi;
-						if (Text::StrEquals(sp->GetSName(), sp2->GetSName()))
+						if (sp->GetSName()->Equals(sp2->GetSName()))
 						{
 							if (sp2->GetSpeciesId() > matchSpId)
 							{
@@ -1435,13 +1435,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		me->lbObj->GetSelectedIndices(&sels);
 		if (sels.GetCount() != 1 && me->inputMode != IM_GROUP)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNonSp")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNonSp")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 			return;
 		}
 		gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
 		if (gi->GetItemType() != OrganGroupItem::IT_SPECIES)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorGroupNonSp")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 			return;
 		}
 		SDEL_STRING(me->initSelImg);
@@ -1473,7 +1473,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 	{
 		if (me->inputMode != IM_SPECIES && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotSpAvail")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotSpAvail")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 			return;
 		}
 
@@ -1496,14 +1496,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 		}
 	}
 	else if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 	{
 		if (me->inputMode != IM_GROUP && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotGrpAvail")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotGrpAvail")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 			return;
 		}
 
@@ -1526,7 +1526,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
 		}
 	}
 }
@@ -1809,8 +1809,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 		{
             this->lbDir->RemoveItem(j);
 			grp = this->groupList->RemoveAt(j);
-			SDEL_TEXT(this->initSelObj);
-			this->initSelObj = Text::StrCopyNew(grp->GetEName());
+			SDEL_STRING(this->initSelObj);
+			this->initSelObj = grp->GetEName()->Clone();
 			DEL_CLASS(grp);
 		}
         this->lastSpeciesObj = 0;
@@ -1872,14 +1872,14 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 				{
 					if (this->inputMode == IM_SPECIES)
 					{
-						if (Text::StrEquals(((OrganSpecies*)item)->GetSName(), this->initSelObj))
+						if (((OrganSpecies*)item)->GetSName()->Equals(this->initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
 					}
 					else if (this->inputMode == IM_GROUP)
 					{
-						if (Text::StrEquals(((OrganGroup*)item)->GetEName(), this->initSelObj))
+						if (((OrganGroup*)item)->GetEName()->Equals(this->initSelObj))
 						{
 							this->lbObj->SetSelectedIndex(k);
 						}
@@ -2238,7 +2238,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 			this->lastGroupObj->SetAdminOnly(this->chkGroupAdmin->IsChecked());
 			if (!this->env->SaveGroup(this->lastGroupObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveGroupError")), this->env->GetLang(UTF8STRC("MainFormSaveGroupTitle")), this);
+				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveGroupError")).v, this->env->GetLang(UTF8STRC("MainFormSaveGroupTitle")).v, this);
 				return true;
 			}
 		}
@@ -2281,7 +2281,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpExist")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
+						UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpExist")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
 						return true;
 					}
 				}
@@ -2308,7 +2308,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			this->lastSpeciesObj->SetIDKey(sb.ToString());
 			if (!this->env->SaveSpecies(this->lastSpeciesObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpError")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
+				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpError")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
 				return true;
 			}
 		}
@@ -2325,25 +2325,25 @@ Bool SSWR::OrganMgr::OrganMainForm::GroupFormValid()
 	UTF8Char sbuff[512];
 	if (this->lbDir->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorLoc")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorLoc")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
 		return false;
 	}
 
     if (this->cboGroupType->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorGrpType")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorGrpType")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
 		return false;
 	}
 
 	if (this->txtGroupCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorCName")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorCName")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
         return false;
 	}
 
 	if (this->txtGroupEName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorEName")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorEName")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
         return false;
 	}
     return true;
@@ -2354,19 +2354,19 @@ Bool SSWR::OrganMgr::OrganMainForm::SpeciesFormValid()
 	UTF8Char sbuff[512];
 	if (this->txtSpeciesCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorCName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorCName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
 		return false;
 	}
 
 	if (this->txtSpeciesSName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorSName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorSName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
 		return false;
 	}
 
 	if (this->txtSpeciesDName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorDName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorDName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
         return false;
 	}
 	return true;
@@ -2522,7 +2522,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->rootGroup = 0;
 	this->mapUpdated = false;
 
-	this->SetText(this->env->GetLang(UTF8STRC("MainFormTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("MainFormTitle")).v);
 
     this->lastSpeciesObj = 0;
     this->lastGroupObj = 0;
@@ -2557,7 +2557,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlLeft, UI::GUIPanel(ui, this));
 	this->pnlLeft->SetArea(0, 0, 100, 100, false);
 	this->pnlLeft->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlLeft, this->env->GetLang(UTF8STRC("MainFormLeft"))));
+	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlLeft, this->env->GetLang(UTF8STRC("MainFormLeft")).v));
 	this->lblLeft->SetArea(0, 0, 88, 20, false);
 	this->lblLeft->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lbDir, UI::GUIListBox(ui, this->pnlLeft, false));
@@ -2568,7 +2568,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlMid, UI::GUIPanel(ui, this));
 	this->pnlMid->SetArea(0, 0, 238, 50, false);
 	this->pnlMid->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblMid, UI::GUILabel(ui, this->pnlMid, this->env->GetLang(UTF8STRC("MainFormMid"))));
+	NEW_CLASS(this->lblMid, UI::GUILabel(ui, this->pnlMid, this->env->GetLang(UTF8STRC("MainFormMid")).v));
 	this->lblMid->SetArea(0,0, 138, 20, false);
 	this->lblMid->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pnlMidBottom, UI::GUIPanel(ui, this->pnlMid));
@@ -2577,13 +2577,13 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->lblPickMsg, UI::GUILabel(ui, this->pnlMidBottom, (const UTF8Char*)""));
 	this->lblPickMsg->SetArea(0, 0, 138, 23, false);
 	this->lblPickMsg->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnObjPick, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidPick"))));
+	NEW_CLASS(this->btnObjPick, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidPick")).v));
 	this->btnObjPick->SetArea(0, 30, 64, 53, false);
 	this->btnObjPick->HandleButtonClick(OnObjPickClicked, this);
-	NEW_CLASS(this->btnObjPlace, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidPlace"))));
+	NEW_CLASS(this->btnObjPlace, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidPlace")).v));
 	this->btnObjPlace->SetArea(72, 30, 136, 53, false);
 	this->btnObjPlace->HandleButtonClick(OnObjPlaceClicked, this);
-	NEW_CLASS(this->btnObjCombine, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidCombine"))));
+	NEW_CLASS(this->btnObjCombine, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidCombine")).v));
 	this->btnObjCombine->SetArea(72, 56, 136, 79, false);
 	this->btnObjCombine->HandleButtonClick(OnObjCombineClicked, this);
 	NEW_CLASS(this->lbObj, UI::GUIListBox(ui, this->pnlMid, false));
@@ -2597,73 +2597,73 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->tcMain->HandleSelChanged(OnTabSelChg, this);
 
 	UI::GUILabel *lbl;
-	this->tpGroup = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabGroup")));
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupId"))));
+	this->tpGroup = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabGroup")).v);
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupId")).v));
 	lbl->SetRect(8, 4, 56, 29, false);
 	NEW_CLASS(this->txtGroupId, UI::GUITextBox(ui, this->tpGroup, (const UTF8Char*)""));
 	this->txtGroupId->SetRect(64, 4, 80, 23, false);
 	this->txtGroupId->SetReadOnly(true);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupType"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupType")).v));
 	lbl->SetRect(8, 28, 56, 23, false);
 	NEW_CLASS(this->cboGroupType, UI::GUIComboBox(ui, this->tpGroup, false));
 	this->cboGroupType->SetRect(64, 28, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEName")).v));
 	lbl->SetRect(8, 52, 56, 23, false);
 	NEW_CLASS(this->txtGroupEName, UI::GUITextBox(ui, this->tpGroup, (const UTF8Char*)""));
 	this->txtGroupEName->SetRect(64, 52, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupCName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupCName")).v));
 	lbl->SetRect(8, 76, 56, 23, false);
 	NEW_CLASS(this->txtGroupCName, UI::GUITextBox(ui, this->tpGroup, (const UTF8Char*)""));
 	this->txtGroupCName->SetRect(64, 76, 144, 23, false);
-	NEW_CLASS(this->chkGroupAdmin, UI::GUICheckBox(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdmin")), false));
+	NEW_CLASS(this->chkGroupAdmin, UI::GUICheckBox(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdmin")).v, false));
 	this->chkGroupAdmin->SetRect(64, 100, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupDesc"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupDesc")).v));
 	lbl->SetRect(8, 124, 56, 23, false);
 	NEW_CLASS(this->txtGroupDesc, UI::GUITextBox(ui, this->tpGroup, (const UTF8Char*)"", true));
 	this->txtGroupDesc->SetRect(8, 148, 200, 83, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupKey"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupKey")).v));
 	lbl->SetRect(8, 232, 80, 23, false);
 	NEW_CLASS(this->txtGroupKey, UI::GUITextBox(ui, this->tpGroup, (const UTF8Char*)""));
 	this->txtGroupKey->SetRect(8, 254, 280, 23, false);
-	NEW_CLASS(this->btnGroupRemove, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupRemove"))));
+	NEW_CLASS(this->btnGroupRemove, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupRemove")).v));
 	this->btnGroupRemove->SetRect(64, 124, 75, 23, false);
 	this->btnGroupRemove->HandleButtonClick(OnGroupRemoveClicked, this);
-	NEW_CLASS(this->btnGroupAdd, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdd"))));
+	NEW_CLASS(this->btnGroupAdd, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdd")).v));
 	this->btnGroupAdd->SetRect(144, 124, 75, 23, false);
 	this->btnGroupAdd->HandleButtonClick(OnGroupAddClicked, this);
-	NEW_CLASS(this->btnGroupEnter, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEnter"))));
+	NEW_CLASS(this->btnGroupEnter, UI::GUIButton(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEnter")).v));
 	this->btnGroupEnter->SetRect(144, 4, 75, 23, false);
 	this->btnGroupEnter->HandleButtonClick(OnGroupEnterClick, this);
 
 
-	this->tpSpecies = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabSpecies")));
+	this->tpSpecies = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabSpecies")).v);
 	NEW_CLASS(this->pnlSpecies, UI::GUIPanel(ui, this->tpSpecies));
 	this->pnlSpecies->SetRect(0, 0, 480, 288, false);
 	this->pnlSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesId"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesId")).v));
 	lbl->SetRect(8, 4, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesId, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesId->SetRect(64, 4, 64, 23, false);
 	this->txtSpeciesId->SetReadOnly(true);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesCName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesCName")).v));
 	lbl->SetRect(8, 28, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesCName, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesCName->SetRect(64, 28, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesSName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesSName")).v));
 	lbl->SetRect(8, 52, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesSName, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesSName->SetRect(64, 52, 236, 23, false);
 	this->txtSpeciesSName->HandleTextChanged(OnSpeciesSNameChg, this);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesEName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesEName")).v));
 	lbl->SetRect(8, 76, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesEName, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesEName->SetRect(64, 76, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDName")).v));
 	lbl->SetRect(8, 100, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesDName, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesDName->SetReadOnly(true);
 	this->txtSpeciesDName->SetRect(64, 100, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDesc"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDesc")).v));
 	lbl->SetRect(8, 124, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesDesc, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)"", true));
 	this->txtSpeciesDesc->SetRect(8, 148, 500, 91, false);
@@ -2671,30 +2671,30 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	lbl->SetRect(8, 240, 80, 23, false);
 	NEW_CLASS(this->txtSpeciesKey, UI::GUITextBox(ui, this->pnlSpecies, (const UTF8Char*)""));
 	this->txtSpeciesKey->SetRect(8, 264, 480, 23, false);
-	NEW_CLASS(this->btnSpeciesRemove, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesRemove"))));
+	NEW_CLASS(this->btnSpeciesRemove, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesRemove")).v));
 	this->btnSpeciesRemove->SetRect(64, 124, 75, 23, false);
 	this->btnSpeciesRemove->HandleButtonClick(OnSpRemoveClicked, this);
-	NEW_CLASS(this->btnSpeciesAdd, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesAdd"))));
+	NEW_CLASS(this->btnSpeciesAdd, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesAdd")).v));
 	this->btnSpeciesAdd->SetRect(144, 124, 75, 23, false);
 	this->btnSpeciesAdd->HandleButtonClick(OnSpAddClicked, this);
-	NEW_CLASS(this->btnSpeciesPasteSName, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesPasteSName"))));
+	NEW_CLASS(this->btnSpeciesPasteSName, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesPasteSName")).v));
 	this->btnSpeciesPasteSName->SetRect(252, 124, 100, 23, false);
 	this->btnSpeciesPasteSName->HandleButtonClick(OnSpPasteSNameClicked, this);
-	NEW_CLASS(this->btnSpeciesColor, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesColor"))));
+	NEW_CLASS(this->btnSpeciesColor, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesColor")).v));
 	this->btnSpeciesColor->SetRect(360, 124, 75, 23, false);
 	this->btnSpeciesColor->HandleButtonClick(OnSpeciesColorClicked, this);
-	NEW_CLASS(this->grpSpBook, UI::GUIGroupBox(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBook"))));
+	NEW_CLASS(this->grpSpBook, UI::GUIGroupBox(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBook")).v));
 	this->grpSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlSpBook, UI::GUIPanel(ui, this->grpSpBook));
 	this->pnlSpBook->SetRect(0, 0, 474, 49, false);
 	this->pnlSpBook->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDisp"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDisp")).v));
 	lbl->SetRect(64, 0, 100, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookYear"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookYear")).v));
 	lbl->SetRect(184, 0, 64, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookName"))));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookName")).v));
 	lbl->SetRect(248, 0, 100, 23, false);
-	NEW_CLASS(this->btnSpBookAdd, UI::GUIButton(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookAdd"))));
+	NEW_CLASS(this->btnSpBookAdd, UI::GUIButton(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookAdd")).v));
 	this->btnSpBookAdd->SetRect(0, 24, 64, 23, false);
 	this->btnSpBookAdd->HandleButtonClick(OnSpBookAddClicked, this);
 	NEW_CLASS(this->txtSpBook, UI::GUITextBox(ui, this->pnlSpBook, (const UTF8Char*)""));
@@ -2707,44 +2707,44 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlSpBookCtrl, UI::GUIPanel(ui, this->grpSpBook));
 	this->pnlSpBookCtrl->SetRect(0, 0, 474, 24, false);
 	this->pnlSpBookCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSpBookDel, UI::GUIButton(ui, this->pnlSpBookCtrl, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDel"))));
+	NEW_CLASS(this->btnSpBookDel, UI::GUIButton(ui, this->pnlSpBookCtrl, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDel")).v));
 	this->btnSpBookDel->SetRect(8, 0, 75, 23, false);
 	NEW_CLASS(this->lvSpBook, UI::GUIListView(ui, this->grpSpBook, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSpBook->SetFullRowSelect(true);
-	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColDisp")), 200);
-	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColName")), 800);
+	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColDisp")).v, 200);
+	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColName")).v, 800);
 	this->lvSpBook->HandleSelChg(OnSpBookSelChg, this);
 	
-	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabImage")));
+	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabImage")).v);
 	NEW_CLASS(this->pnlImage, UI::GUIPanel(ui, this->tpImage));
 	this->pnlImage->SetArea(0, 0, 480, 22, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnImageSaveAll, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageSaveAll"))));
+	NEW_CLASS(this->btnImageSaveAll, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageSaveAll")).v));
 	this->btnImageSaveAll->SetRect(8, 0, 75, 21, false);
 	this->btnImageSaveAll->HandleButtonClick(OnImageSaveAllClicked, this);
-	NEW_CLASS(this->btnImageSave, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageSave"))));
+	NEW_CLASS(this->btnImageSave, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageSave")).v));
 	this->btnImageSave->SetRect(88, 0, 75, 21, false);
 	this->btnImageSave->HandleButtonClick(OnImageSaveClicked, this);
-	NEW_CLASS(this->btnImagePick, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePick"))));
+	NEW_CLASS(this->btnImagePick, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePick")).v));
 	this->btnImagePick->SetRect(168, 0, 75, 21, false);
 	this->btnImagePick->HandleButtonClick(OnImagePickClicked, this);
-	NEW_CLASS(this->btnImagePickAdd, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePickAdd"))));
+	NEW_CLASS(this->btnImagePickAdd, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePickAdd")).v));
 	this->btnImagePickAdd->SetRect(248, 0, 75, 21, false);
 	this->btnImagePickAdd->HandleButtonClick(OnImagePickAddClicked, this);
-	NEW_CLASS(this->btnImagePickAll, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePickAll"))));
+	NEW_CLASS(this->btnImagePickAll, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImagePickAll")).v));
 	this->btnImagePickAll->SetRect(328, 0, 75, 21, false);
 	this->btnImagePickAll->HandleButtonClick(OnImagePickAllClicked, this);
-	NEW_CLASS(this->btnImageDir, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageDir"))));
+	NEW_CLASS(this->btnImageDir, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageDir")).v));
 	this->btnImageDir->SetRect(408, 0, 75, 21, false);
 	this->btnImageDir->HandleButtonClick(OnImgDirClicked, this);
-	NEW_CLASS(this->btnImageRotate, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageRotate"))));
+	NEW_CLASS(this->btnImageRotate, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageRotate")).v));
 	this->btnImageRotate->SetRect(488, 0, 75, 21, false);
 	this->btnImageRotate->HandleButtonClick(OnImageRotateClicked, this);
-	NEW_CLASS(this->btnImageCrop, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageCrop"))));
+	NEW_CLASS(this->btnImageCrop, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageCrop")).v));
 	this->btnImageCrop->SetRect(568, 0, 75, 21, false);
 	this->btnImageCrop->HandleButtonClick(OnImageCropClicked, this);
-	NEW_CLASS(this->btnImageClipboard, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageClipboard"))));
+	NEW_CLASS(this->btnImageClipboard, UI::GUIButton(ui, this->pnlImage, this->env->GetLang(UTF8STRC("MainFormTabImageClipboard")).v));
 	this->btnImageClipboard->SetRect(648, 0, 75, 21, false);
 	this->btnImageClipboard->HandleButtonClick(OnImageClipboardClicked, this);
 	NEW_CLASS(this->lbImage, UI::GUIListBox(ui, this->tpImage, false));
@@ -2763,7 +2763,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->pbImg->HandleDropEvents(this);
 //	RegisterDragDrop((HWND)this->pbImg->GetHandle(), this);
 
-	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabMap")));
+	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabMap")).v);
 	NEW_CLASS(this->pnlMapCtrl, UI::GUIPanel(ui, this->tpMap));
 	this->pnlMapCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlMapCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -2804,27 +2804,27 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuManage")));
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageGroup")), MNU_MANAGE_GROUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageFind")), MNU_MANAGE_FIND, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageList")), MNU_MANAGE_LIST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTest")), MNU_MANAGE_TEST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageClearDir")), MNU_MANAGE_CLEAR_DIR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageLocation")), MNU_MANAGE_LOCATION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTrip")), MNU_MANAGE_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUnkTrip")), MNU_MANAGE_UNK_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDatabase")), MNU_MANAGE_DATABASE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageBook")), MNU_MANAGE_BOOK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUser")), MNU_MANAGE_USER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDataFile")), MNU_MANAGE_DATAFILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuNav")));
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavGoUp")), MNU_GO_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_BACKSPACE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavLeft")), MNU_NAV_LEFT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_LEFT);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavRight")), MNU_NAV_RIGHT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_RIGHT);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavUp")), MNU_NAV_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_UP);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavDown")), MNU_NAV_DOWN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_DOWN);
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuExport")));
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuExportLite")), MNU_EXPORT_LITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuManage")).v);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageGroup")).v, MNU_MANAGE_GROUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageFind")).v, MNU_MANAGE_FIND, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageList")).v, MNU_MANAGE_LIST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTest")).v, MNU_MANAGE_TEST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageClearDir")).v, MNU_MANAGE_CLEAR_DIR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageLocation")).v, MNU_MANAGE_LOCATION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTrip")).v, MNU_MANAGE_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUnkTrip")).v, MNU_MANAGE_UNK_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDatabase")).v, MNU_MANAGE_DATABASE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageBook")).v, MNU_MANAGE_BOOK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUser")).v, MNU_MANAGE_USER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDataFile")).v, MNU_MANAGE_DATAFILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuNav")).v);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavGoUp")).v, MNU_GO_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_BACKSPACE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavLeft")).v, MNU_NAV_LEFT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_LEFT);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavRight")).v, MNU_NAV_RIGHT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_RIGHT);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavUp")).v, MNU_NAV_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_UP);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavDown")).v, MNU_NAV_DOWN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_DOWN);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuExport")).v);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuExportLite")).v, MNU_EXPORT_LITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->rootGroup, OrganGroup());
@@ -2891,7 +2891,7 @@ SSWR::OrganMgr::OrganMainForm::~OrganMainForm()
 	DEL_CLASS(this->mapRenderer);
 	DEL_CLASS(this->mapEnv);
 	DEL_CLASS(this->mapImgLyrs);
-	SDEL_TEXT(this->initSelObj);
+	SDEL_STRING(this->initSelObj);
 	SDEL_STRING(this->initSelImg);
 	this->colorMgr->DeleteSess(this->colorSess);
 }
@@ -2916,8 +2916,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, OrganSearchForm(0, this->ui, this->env));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
-				SDEL_TEXT(this->initSelObj);
-				this->initSelObj = Text::StrCopyNew(frm->GetFoundStr());
+				SDEL_STRING(this->initSelObj);
+				this->initSelObj = Text::String::NewNotNull(frm->GetFoundStr());
 				this->GoToDir(frm->GetFoundGroup(), frm->GetParentId());
 			}
 			DEL_CLASS(frm);
@@ -3163,8 +3163,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			if (i != INVALID_INDEX && i > 0)
 			{
 				OrganGroup *groupO = (OrganGroup*)this->lbDir->GetItem(i);
-				SDEL_TEXT(this->initSelObj);
-				this->initSelObj = Text::StrCopyNew(groupO->GetEName());
+				SDEL_STRING(this->initSelObj);
+				this->initSelObj = groupO->GetEName()->Clone();
 				this->lbDir->SetSelectedIndex(i - 1);
 			}
 		}

@@ -17,6 +17,16 @@ namespace Text
 		void ToCapital();
 		UOSInt Replace(UTF8Char fromChar, UTF8Char toChar);
 
+		PString()
+		{
+		}
+
+		PString(UTF8Char *v, UOSInt leng)
+		{
+			this->v = v;
+			this->leng = leng;
+		}
+
 		Text::CString ToCString()
 		{
 			return {this->v, this->leng};

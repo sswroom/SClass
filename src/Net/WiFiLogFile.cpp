@@ -89,28 +89,28 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 					{
 						if (i >= 7)
 						{
-							if ((log->manuf == 0 || log->manuf[0] == 0) && sarr[4][0] != 0)
+							if ((log->manuf == 0 || log->manuf->v[0] == 0) && sarr[4][0] != 0)
 							{
-								SDEL_TEXT(log->manuf);
-								log->manuf = Text::StrCopyNew(sarr[4]);
+								SDEL_STRING(log->manuf);
+								log->manuf = Text::String::NewNotNull(sarr[4]);
 							}
-							if ((log->model == 0 || log->model[0] == 0) && sarr[5][0] != 0)
+							if ((log->model == 0 || log->model->v[0] == 0) && sarr[5][0] != 0)
 							{
-								SDEL_TEXT(log->model);
-								log->model = Text::StrCopyNew(sarr[5]);
+								SDEL_STRING(log->model);
+								log->model = Text::String::NewNotNull(sarr[5]);
 							}
-							if ((log->serialNum == 0 || log->serialNum[0] == 0) && sarr[6][0] != 0)
+							if ((log->serialNum == 0 || log->serialNum->v[0] == 0) && sarr[6][0] != 0)
 							{
-								SDEL_TEXT(log->serialNum);
-								log->serialNum = Text::StrCopyNew(sarr[6]);
+								SDEL_STRING(log->serialNum);
+								log->serialNum = Text::String::NewNotNull(sarr[6]);
 							}
 						}
 						if (i >= 9)
 						{
-							if ((log->country == 0 || log->country[0] == 0) && sarr[8][0] != 0)
+							if ((log->country == 0 || log->country->v[0] == 0) && sarr[8][0] != 0)
 							{
-								SDEL_TEXT(log->country);
-								log->country = Text::StrCopyNew(sarr[8]);
+								SDEL_STRING(log->country);
+								log->country = Text::String::NewNotNull(sarr[8]);
 							}
 							j = Text::StrSplit(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
@@ -200,14 +200,14 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 						log->mac[4] = buff[6];
 						log->mac[5] = buff[7];
 						log->macInt = iMAC;
-						log->ssid = Text::StrCopyNew(sarr[1]);
+						log->ssid = Text::String::NewNotNull(sarr[1]);
 						log->phyType = Text::StrToInt32(sarr[2]);
 						log->freq = Text::StrToDouble(sarr[3]);
 						if (i >= 7)
 						{
-							log->manuf = Text::StrCopyNew(sarr[4]);
-							log->model = Text::StrCopyNew(sarr[5]);
-							log->serialNum = Text::StrCopyNew(sarr[6]);
+							log->manuf = Text::String::NewNotNull(sarr[4]);
+							log->model = Text::String::NewNotNull(sarr[5]);
+							log->serialNum = Text::String::NewNotNull(sarr[6]);
 						}
 						else
 						{
@@ -224,7 +224,7 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 						}
 						if (i >= 9)
 						{
-							log->country = Text::StrCopyNew(sarr[8]);
+							log->country = Text::String::NewNotNull(sarr[8]);
 							j = Text::StrSplit(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
 							{
@@ -376,11 +376,11 @@ void Net::WiFiLogFile::Clear()
 	while (i-- > 0)
 	{
 		log = this->logList->GetItem(i);
-		SDEL_TEXT(log->ssid);
-		SDEL_TEXT(log->manuf);
-		SDEL_TEXT(log->model);
-		SDEL_TEXT(log->serialNum);
-		SDEL_TEXT(log->country);
+		SDEL_STRING(log->ssid);
+		SDEL_STRING(log->manuf);
+		SDEL_STRING(log->model);
+		SDEL_STRING(log->serialNum);
+		SDEL_STRING(log->country);
 		if (log->ieBuff)
 		{
 			MemFree(log->ieBuff);
@@ -488,13 +488,13 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		MemClear(log->neighbour, sizeof(log->neighbour));
 		MemCopyNO(log->mac, &buff[2], 6);
 		log->macInt = imac;
-		log->ssid = Text::StrCopyNew(bss->GetSSID());
+		log->ssid = Text::String::NewNotNull(bss->GetSSID());
 		log->phyType = bss->GetPHYType();
 		log->freq = bss->GetFreq();
-		log->manuf = SCOPY_TEXT(bss->GetManuf());
-		log->model = SCOPY_TEXT(bss->GetModel());
-		log->serialNum = SCOPY_TEXT(bss->GetSN());
-		log->country = SCOPY_TEXT(bss->GetCountry());
+		log->manuf = Text::String::NewOrNull(bss->GetManuf());
+		log->model =  Text::String::NewOrNull(bss->GetModel());
+		log->serialNum =  Text::String::NewOrNull(bss->GetSN());
+		log->country =  Text::String::NewOrNull(bss->GetCountry());
 		log->lastRSSI = bss->GetRSSI();
 		log->ouis[0][0] = oui1[0];
 		log->ouis[0][1] = oui1[1];
@@ -536,19 +536,19 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		{
 			if (log->manuf == 0 && bss->GetManuf())
 			{
-				log->manuf = Text::StrCopyNew(bss->GetManuf());
+				log->manuf = Text::String::NewNotNull(bss->GetManuf());
 			}
 			if (log->model == 0 && bss->GetModel())
 			{
-				log->model = Text::StrCopyNew(bss->GetModel());
+				log->model = Text::String::NewNotNull(bss->GetModel());
 			}
 			if (log->serialNum == 0 && bss->GetSN())
 			{
-				log->serialNum = Text::StrCopyNew(bss->GetSN());
+				log->serialNum = Text::String::NewNotNull(bss->GetSN());
 			}
 			if (log->country == 0 && bss->GetCountry())
 			{
-				log->country = Text::StrCopyNew(bss->GetCountry());
+				log->country = Text::String::NewNotNull(bss->GetCountry());
 			}
 		}
 		UOSInt l;

@@ -2,6 +2,7 @@
 #define _SM_MATH_UNIT_PRESSURE
 #include "Math/Unit/Substance.h"
 #include "Math/Unit/Temperature.h"
+#include "Text/CString.h"
 namespace Math
 {
 	namespace Unit
@@ -21,8 +22,8 @@ namespace Math
 			} PressureUnit;
 		public:
 			static Double GetUnitRatio(PressureUnit unit);
-			static const UTF8Char *GetUnitShortName(PressureUnit unit);
-			static const UTF8Char *GetUnitName(PressureUnit unit);
+			static Text::CString GetUnitShortName(PressureUnit unit);
+			static Text::CString GetUnitName(PressureUnit unit);
 			static Double Convert(PressureUnit fromUnit, PressureUnit toUnit, Double fromValue);
 
 			static Double VapourPressureAntoine(PressureUnit outputUnit, Math::Unit::Temperature::TemperatureUnit tempUnit, Double tempValue, Math::Unit::Substance::SubstanceType substance); // Antoine equation

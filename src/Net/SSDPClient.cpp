@@ -131,7 +131,7 @@ Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, const UTF8Char *userAgent
 {
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->devMap, Data::UInt32Map<SSDPDevice*>());
-	this->userAgent = SCOPY_TEXT(userAgent);
+	this->userAgent = Text::String::NewOrNull(userAgent);
 	NEW_CLASS(this->udp, Net::UDPServer(sockf, 0, 0, 0, OnPacketRecv, this, 0, 0, 2, false));
 	this->udp->SetBroadcast(true);
 }
@@ -139,7 +139,7 @@ Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, const UTF8Char *userAgent
 Net::SSDPClient::~SSDPClient()
 {
 	DEL_CLASS(this->udp);
-	SDEL_TEXT(this->userAgent);
+	SDEL_STRING(this->userAgent);
 	Data::ArrayList<SSDPDevice*> *devList = this->devMap->GetValues();
 	LIST_FREE_FUNC(devList, SSDPDeviceFree);
 	DEL_CLASS(this->devMap);

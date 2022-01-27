@@ -70,9 +70,9 @@ void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (data->connStr)
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New(data->connStr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		Text::String *s = Text::String::NewNotNull(data->connStr);
+		sb->Append(s);
+		s->Release();
 	}
 }
 

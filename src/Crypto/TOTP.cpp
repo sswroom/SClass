@@ -55,9 +55,10 @@ Bool Crypto::TOTP::IsValid(UInt32 code)
 void Crypto::TOTP::GenURI(Text::StringBuilderUTF8 *sb, const UTF8Char *name)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	sb->AppendC(UTF8STRC("otpauth://totp/"));
-	Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
-	sb->Append(sbuff);
+	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
+	sb->AppendP(sbuff, sptr);
 	sb->AppendC(UTF8STRC("?secret="));
 	Text::TextBinEnc::Base32Enc b32;
 	b32.EncodeBin(sb, this->key, this->keySize);

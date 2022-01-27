@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		currPort = ports->GetItem(i);
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), currPort);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
-		sptr = Text::StrConcat(sptr, IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)));
+		sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		this->cboSerialPort->AddItem(sbuff, (void*)(OSInt)currPort);
 		i++;

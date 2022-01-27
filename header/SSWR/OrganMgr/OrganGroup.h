@@ -2,6 +2,7 @@
 #define _SM_SSWR_ORGANMGR_ORGANGROUP
 
 #include "SSWR/OrganMgr/OrganGroupItem.h"
+#include "Text/String.h"
 
 namespace SSWR
 {
@@ -11,13 +12,13 @@ namespace SSWR
 		{
 		private:
 			Int32 groupId;
-			const UTF8Char *cName;
-			const UTF8Char *eName;
+			Text::String *cName;
+			Text::String *eName;
 			Int32 groupType;
-			const UTF8Char *desc;
+			Text::String *desc;
 			Int32 photoGroup;
 			Int32 photoSpecies;
-			const UTF8Char *idKey;
+			Text::String *idKey;
 			Bool isDefault;
 			Bool adminOnly;
 
@@ -28,19 +29,19 @@ namespace SSWR
 			void SetGroupId(Int32 groupId);
 			Int32 GetGroupId();
 			void SetCName(const UTF8Char *cName);
-			const UTF8Char *GetCName();
+			Text::String *GetCName();
 			void SetEName(const UTF8Char *eName);
-			const UTF8Char *GetEName();
+			Text::String *GetEName();
 			void SetGroupType(Int32 groupType);
 			Int32 GetGroupType();
 			void SetDesc(const UTF8Char *desc);
-			const UTF8Char *GetDesc();
+			Text::String *GetDesc();
 			void SetPhotoGroup(Int32 photoGroup);
 			Int32 GetPhotoGroup();
 			void SetPhotoSpecies(Int32 photoSpecies);
 			Int32 GetPhotoSpecies();
 			void SetIDKey(const UTF8Char *idKey);
-			const UTF8Char *GetIDKey();
+			Text::String *GetIDKey();
 			void SetIsDefault(Bool isDefault);
 			Bool GetIsDefault();
 			void SetAdminOnly(Bool isAdminOnly);

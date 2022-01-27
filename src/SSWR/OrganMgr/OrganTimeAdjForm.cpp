@@ -245,7 +245,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->currFileList, Data::ArrayList<UserFileInfo *>());
 	NEW_CLASS(this->cameraMap, Data::StringUTF8Map<Int32>());
 
-	this->SetText(this->env->GetLang(UTF8STRC("TimeAdjTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("TimeAdjTitle")).v);
 
 	Map::OSM::OSMTileMap *tileMap;
 	Media::StaticImage *stimg;
@@ -314,7 +314,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)"0", false));
 	this->txtTimeAdj->SetRect(154, 4, 50, 23, false);
 	this->txtTimeAdj->SetReadOnly(true);
-	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjPaste"))));
+	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjPaste")).v));
 	this->btnPaste->SetRect(204, 4, 50, 23, false);
 	this->btnPaste->HandleButtonClick(OnPasteClicked, this);
 	NEW_CLASS(this->btnTimeSub, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"-"));
@@ -323,7 +323,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->btnTimeAdd, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"+"));
 	this->btnTimeAdd->SetRect(279, 4, 25, 23, false);
 	this->btnTimeAdd->HandleButtonClick(OnTimeAddClicked, this);
-	NEW_CLASS(this->btnTimeApply, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjApply"))));
+	NEW_CLASS(this->btnTimeApply, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjApply")).v));
 	this->btnTimeApply->SetRect(329, 4, 50, 23, false);
 	this->btnTimeApply->HandleButtonClick(OnTimeApplyClicked, this);
 
@@ -382,7 +382,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		this->txtTimeAdj->SetText(sbuff);
 	}
 
-	this->cboSpecies->AddItem(this->env->GetLang(UTF8STRC("TimeAdjAllSp")), 0);
+	this->cboSpecies->AddItem(this->env->GetLang(UTF8STRC("TimeAdjAllSp")).v, 0);
 	this->env->GetSpeciesItems(&spItems, &spList);
 	i = 0;
 	j = spItems.GetCount();

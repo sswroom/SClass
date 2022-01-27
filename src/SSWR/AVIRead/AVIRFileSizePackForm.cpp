@@ -7,13 +7,13 @@
 
 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(const UTF8Char *fileName, UInt64 fileSize)
 {
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 	this->fileSize = fileSize;
 }
 
 SSWR::AVIRead::AVIRFileSizePackForm::MyFile::~MyFile()
 {
-	Text::StrDelNew(this->fileName);
+	this->fileName->Release();
 }
 
 Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUTF8 *sb)
@@ -24,7 +24,7 @@ Bool SSWR::AVIRead::AVIRFileSizePackForm::MyFile::ToString(Text::StringBuilderUT
 	return true;
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName()
+Text::String *SSWR::AVIRead::AVIRFileSizePackForm::MyFile::GetName()
 {
 	return this->fileName;
 }
@@ -80,8 +80,8 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 			while (i-- > 0)
 			{
 				file = me->packList->GetItem(i);
-				Text::StrConcat(sptr, file->GetName());
-				Text::StrConcat(sptr2, file->GetName());
+				file->GetName()->ConcatTo(sptr);
+				file->GetName()->ConcatTo(sptr2);
 				IO::FileUtil::MoveFile(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 

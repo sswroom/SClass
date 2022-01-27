@@ -22,30 +22,30 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 	if (driverName->Equals(UTF8STRC("ODBC Driver 17 for SQL Server")))
 	{
 		connStr.AppendC(UTF8STRC(";server=tcp:"));
-		connStr.Append(serverHost);
+		connStr.AppendSlow(serverHost);
 		connStr.AppendC(UTF8STRC(","));
 		connStr.AppendU16(port);
 	}
 	else
 	{
 		connStr.AppendC(UTF8STRC(";server="));
-		connStr.Append(serverHost);
+		connStr.AppendSlow(serverHost);
 		connStr.AppendC(UTF8STRC(";port="));
 		connStr.AppendU16(port);
 	}
 	connStr.AppendC(UTF8STRC(";database="));
-	connStr.Append(database);
+	connStr.AppendSlow(database);
 	if (driverName->Equals(UTF8STRC("ODBC Driver 17 for SQL Server")))
 	{
 		if (userName)
 		{
 			connStr.AppendC(UTF8STRC(";UID="));
-			connStr.Append(userName);
+			connStr.AppendSlow(userName);
 		}
 		if (password)
 		{
 			connStr.AppendC(UTF8STRC(";PWD="));
-			connStr.Append(password);
+			connStr.AppendSlow(password);
 		}
 	}
 	else
@@ -53,12 +53,12 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 		if (userName)
 		{
 			connStr.AppendC(UTF8STRC(";user="));
-			connStr.Append(userName);
+			connStr.AppendSlow(userName);
 		}
 		if (password)
 		{
 			connStr.AppendC(UTF8STRC(";password="));
-			connStr.Append(password);
+			connStr.AppendSlow(password);
 		}
 	}
 	driverName->Release();

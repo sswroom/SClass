@@ -79,20 +79,20 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		Media::EDID::EDIDInfo info;
 		if (Media::EDID::Parse(edid, &info))
 		{
-			this->name = Text::StrCopyNew(info.monitorName);
+			this->name = Text::String::NewNotNull(info.monitorName);
 			Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
-			this->monId = Text::StrCopyNew(sbuff);
+			this->monId = Text::String::NewNotNull(sbuff);
 		}
 		else
 		{
-			this->name = Text::StrCopyNew((const UTF8Char*)"Monitor");
+			this->name = Text::String::New(UTF8STRC("Monitor"));
 			this->monId = 0;
 		}
 		this->desc = 0;
 	}
 	else
 	{
-		this->name = Text::StrCopyNew((const UTF8Char*)"Monitor");
+		this->name = Text::String::New(UTF8STRC("Monitor"));
 		this->desc = 0;
 		this->monId = 0;
 	}
@@ -100,22 +100,22 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 
 Media::MonitorInfo::~MonitorInfo()
 {
-	SDEL_TEXT(this->name);
-	SDEL_TEXT(this->desc);
-	SDEL_TEXT(this->monId);
+	SDEL_STRING(this->name);
+	SDEL_STRING(this->desc);
+	SDEL_STRING(this->monId);
 }
 
-const UTF8Char *Media::MonitorInfo::GetName()
+Text::String *Media::MonitorInfo::GetName()
 {
 	return this->name;
 }
 
-const UTF8Char *Media::MonitorInfo::GetDesc()
+Text::String *Media::MonitorInfo::GetDesc()
 {
 	return this->desc;
 }
 
-const UTF8Char *Media::MonitorInfo::GetMonitorID()
+Text::String *Media::MonitorInfo::GetMonitorID()
 {
 	return this->monId;
 }

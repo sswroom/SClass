@@ -9,6 +9,7 @@
 Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderUTF8 *sb, Bool detail)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 
 	if (buffSize == 1 && dataBuff[0] == 0x48)
 	{
@@ -877,8 +878,8 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 					if (cmdSize == 37)
 					{
 						sb->AppendC(UTF8STRC("\r\nServer IP = "));
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
-						sb->Append(sbuff);
+						sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
+						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
 						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));
@@ -889,8 +890,8 @@ Bool IO::UDPLog::ParseLog(UInt8 *dataBuff, UOSInt buffSize, Text::StringBuilderU
 					else if (cmdSize == 56)
 					{
 						sb->AppendC(UTF8STRC("\r\nServer IP = "));
-						Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
-						sb->Append(sbuff);
+						sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&dataBuff[9]));
+						sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 						sb->AppendC(UTF8STRC("\r\nServer Port = "));
 						sb->AppendU16(ReadMUInt16(&dataBuff[13]));
 						sb->AppendC(UTF8STRC("\r\nNew Device ID = "));

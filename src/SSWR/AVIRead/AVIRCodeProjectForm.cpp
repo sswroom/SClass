@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
 					while (i < j)
 					{
-						sb.Append(errMsgs.GetItem(i));
+						sb.AppendSlow(errMsgs.GetItem(i));
 						sb.AppendC(UTF8STRC("\r\n"));
 						i++;
 					}
@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				{
 					while (i < j)
 					{
-						sb.Append(errMsgs.GetItem(i));
+						sb.AppendSlow(errMsgs.GetItem(i));
 						sb.AppendC(UTF8STRC("\r\n"));
 						i++;
 					}

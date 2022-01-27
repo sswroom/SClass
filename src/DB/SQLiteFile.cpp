@@ -274,7 +274,7 @@ DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *tableName, Data::Arra
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select * from "));
-	sb.Append(tableName);
+	sb.AppendSlow(tableName);
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
@@ -456,9 +456,9 @@ Bool DB::SQLiteReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		return false;
 	else
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)outp);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		Text::String *s = Text::String::NewNotNull((const UTF16Char*)outp);
+		sb->Append(s);
+		s->Release();
 		return true;
 	}
 }

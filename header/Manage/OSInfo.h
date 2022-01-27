@@ -1,5 +1,6 @@
 #ifndef _SM_MANAGE_OSINFO
 #define _SM_MANAGE_OSINFO
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Manage
@@ -26,8 +27,8 @@ namespace Manage
 		} OSType;
 
 	public:
-		static const UTF8Char *GetName(OSType osType);
-		static const UTF8Char *GetDefName(OSType osType);
+		static Text::CString GetName(OSType osType);
+		static Text::CString GetDefName(OSType osType);
 		static void GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, const UTF8Char *osVer);
 	};
 }

@@ -30,6 +30,11 @@ namespace Text
 		void WriteSignature();
 		Int32 Flush();
 		void Close();
+
+		Bool WriteStr(Text::CString str)
+		{
+			return WriteStrC(str.v, str.leng);
+		}
 	};
 }
 #endif

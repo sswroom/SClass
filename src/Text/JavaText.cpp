@@ -30,83 +30,83 @@ void Text::JavaText::ToJavaName(Text::StringBuilderUTF8 *sb, const UTF8Char *usN
 	}
 }
 
-const UTF8Char *Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull)
+Text::CString Text::JavaText::GetJavaTypeName(DB::DBUtil::ColType colType, Bool notNull)
 {
 	switch (colType)
 	{
 	case DB::DBUtil::CT_Bool:
 		if (notNull)
 		{
-			return (const UTF8Char*)"boolean";
+			return CSTR("boolean");
 		}
 		else
 		{
-			return (const UTF8Char*)"Boolean";
+			return CSTR("Boolean");
 		}
 	case DB::DBUtil::CT_Byte:
 		if (notNull)
 		{
-			return (const UTF8Char*)"int";
+			return CSTR("int");
 		}
 		else
 		{
-			return (const UTF8Char*)"Integer";
+			return CSTR("Integer");
 		}
 	case DB::DBUtil::CT_Int16:
 	case DB::DBUtil::CT_UInt16:
 		if (notNull)
 		{
-			return (const UTF8Char*)"int";
+			return CSTR("int");
 		}
 		else
 		{
-			return (const UTF8Char*)"Integer";
+			return CSTR("Integer");
 		}
 	case DB::DBUtil::CT_UInt32:
 	case DB::DBUtil::CT_Int32:
 		if (notNull)
 		{
-			return (const UTF8Char*)"int";
+			return CSTR("int");
 		}
 		else
 		{
-			return (const UTF8Char*)"Integer";
+			return CSTR("Integer");
 		}
 	case DB::DBUtil::CT_Int64:
 	case DB::DBUtil::CT_UInt64:
 		if (notNull)
 		{
-			return (const UTF8Char*)"long";
+			return CSTR("long");
 		}
 		else
 		{
-			return (const UTF8Char*)"Long";
+			return CSTR("Long");
 		}
 	case DB::DBUtil::CT_Double:
 	case DB::DBUtil::CT_Float:
 		if (notNull)
 		{
-			return (const UTF8Char*)"double";
+			return CSTR("double");
 		}
 		else
 		{
-			return (const UTF8Char*)"Double";
+			return CSTR("Double");
 		}
 	case DB::DBUtil::CT_VarChar:
 	case DB::DBUtil::CT_Char:
 	case DB::DBUtil::CT_NVarChar:
 	case DB::DBUtil::CT_NChar:
 	case DB::DBUtil::CT_UUID:
-		return (const UTF8Char*)"String";
+		return CSTR("String");
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
-		return (const UTF8Char*)"Timestamp";
+		return CSTR("Timestamp");
 	case DB::DBUtil::CT_Binary:
-		return (const UTF8Char*)"byte[]";
+		return CSTR("byte[]");
 	case DB::DBUtil::CT_Vector:
-		return (const UTF8Char*)"Geometry";
+		return CSTR("Geometry");
 	case DB::DBUtil::CT_Unknown:
 	default:
-		return (const UTF8Char*)"?";
+		return CSTR("?");
 	}
 }

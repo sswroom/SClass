@@ -373,15 +373,15 @@ void Media::V4LVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 	if (ioctl(this->fd, VIDIOC_QUERYCAP, &video_cap) != -1)
 	{
 		sb->AppendC(UTF8STRC("Driver: "));
-		sb->Append((const UTF8Char*)video_cap.driver);
+		sb->AppendSlow((const UTF8Char*)video_cap.driver);
 		sb->AppendC(UTF8STRC("\r\n"));
 
 		sb->AppendC(UTF8STRC("Card: "));
-		sb->Append((const UTF8Char*)video_cap.card);
+		sb->AppendSlow((const UTF8Char*)video_cap.card);
 		sb->AppendC(UTF8STRC("\r\n"));
 
 		sb->AppendC(UTF8STRC("BusInfo: "));
-		sb->Append((const UTF8Char*)video_cap.bus_info);
+		sb->AppendSlow((const UTF8Char*)video_cap.bus_info);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}				
 }

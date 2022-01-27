@@ -913,12 +913,12 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		else if (sb.StartsWith(UTF8STRC("Hardware	: ")))
 		{
 			sbHW.ClearStr();
-			sbHW.Append(sb.ToString() + 11);
+			sbHW.AppendC(sb.ToString() + 11, sb.GetLength() - 11);
 		}
 		else if (sb.StartsWith(UTF8STRC("vendor_id	: ")))
 		{
 			sbVID.ClearStr();
-			sbVID.Append(sb.ToString() + 12);
+			sbVID.AppendC(sb.ToString() + 12, sb.GetLength() - 12);
 		}
 		else if (sb.StartsWith(UTF8STRC("cpu family	: ")))
 		{
@@ -935,17 +935,17 @@ const UTF8Char *Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 		else if (sb.StartsWith(UTF8STRC("system type		: ")))
 		{
 			sbSysType.ClearStr();
-			sbSysType.Append(sb.ToString() + 15);
+			sbSysType.AppendC(sb.ToString() + 15, sb.GetLength() - 15);
 		}
 		else if (sb.StartsWith(UTF8STRC("cpu model		: ")))
 		{
 			sbCPUModel.ClearStr();
-			sbCPUModel.Append(sb.ToString() + 13);
+			sbCPUModel.AppendC(sb.ToString() + 13, sb.GetLength() - 13);
 		}
 		else if (sb.StartsWith(UTF8STRC("model name	: ")))
 		{
 			sbModelName.ClearStr();
-			sbModelName.Append(sb.ToString() + 13);
+			sbModelName.AppendC(sb.ToString() + 13, sb.GetLength() - 13);
 		}
 	}
 	DEL_CLASS(reader);

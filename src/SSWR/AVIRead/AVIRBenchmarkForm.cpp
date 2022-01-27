@@ -286,22 +286,22 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
-				sb.Append(ram->deviceLocator);
+				sb.AppendSlow(ram->deviceLocator);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
-				sb.Append(ram->manufacturer);
+				sb.AppendSlow(ram->manufacturer);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
-				sb.Append(ram->partNo);
+				sb.AppendSlow(ram->partNo);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
-				sb.Append(ram->sn);
+				sb.AppendSlow(ram->sn);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->defSpdMHz);

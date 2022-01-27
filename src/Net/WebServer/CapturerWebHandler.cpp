@@ -392,7 +392,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 			sb->AppendC(UTF8STRC("<tr><td>"));
 			sb->AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
+			sb->AppendSlow((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
 			sb->AppendC(UTF8STRC("</td><td>"));
 			if (entry->ssid)
 			{
@@ -486,7 +486,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 			}
 			else
 			{
-				sb->Append((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
+				sb->AppendSlow((const UTF8Char*)Net::MACInfo::GetMACInfo(entry->macInt)->name);
 			}
 			sb->AppendC(UTF8STRC("</td><td>"));
 			if (entry->name)
@@ -500,9 +500,9 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 			sb->AppendC(UTF8STRC("</td><td>"));
 			sb->AppendI32(entry->txPower);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			sb->Append((const UTF8Char*)(entry->inRange?"Y":"N"));
+			sb->AppendC((const UTF8Char*)(entry->inRange?"Y":"N"), 1);
 			sb->AppendC(UTF8STRC("</td><td>"));
-			sb->Append((const UTF8Char*)(entry->connected?"Y":"N"));
+			sb->AppendC((const UTF8Char*)(entry->connected?"Y":"N"), 1);
 			sb->AppendC(UTF8STRC("</td><td>"));
 			dt.SetTicks(entry->lastSeenTime);
 			dt.ToLocalTime();
@@ -514,10 +514,10 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 			}
 			else
 			{
-				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company);
-				if (csptr)
+				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(entry->company);
+				if (cstr.v)
 				{
-					sb->Append(csptr);
+					sb->Append(cstr);
 				}
 				else
 				{
@@ -554,7 +554,7 @@ OSInt __stdcall Net::WebServer::CapturerWebHandler::WiFiLogRSSICompare(void *obj
 		}
 		else
 		{
-			return Text::StrCompare(log1->ssid, log2->ssid);
+			return log1->ssid->CompareTo(log2->ssid);
 		}
 	}
 	else if (log1->lastRSSI == 0)

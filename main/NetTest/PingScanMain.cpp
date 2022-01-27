@@ -17,10 +17,11 @@ Net::ICMPScanner *scanner;
 void PingScan(UInt32 ip)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Scanning with interface ip "));
-	Net::SocketUtil::GetIPv4Name(sbuff, ip);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+	sb.AppendP(sbuff, sptr);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	
 	if (scanner->Scan(ip))
@@ -33,14 +34,14 @@ void PingScan(UInt32 ip)
 		{
 			result = results->GetItem(i);
 			sb.ClearStr();
-			Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
-			sb.Append(sbuff);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
+			sb.AppendP(sbuff, sptr);
 			sb.AppendChar('\t', 1);
 			Text::SBAppendF64(&sb, result->respTime);
 			sb.AppendChar('\t', 1);
 			sb.AppendHexBuff(result->mac, 6, ':', Text::LineBreakType::None);
 			sb.AppendChar('\t', 1);
-			sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(result->mac)->name);
+			sb.AppendSlow((const UTF8Char*)Net::MACInfo::GetMACInfoBuff(result->mac)->name);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			i++;
 		}

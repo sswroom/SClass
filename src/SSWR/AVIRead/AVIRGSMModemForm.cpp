@@ -204,16 +204,16 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 				smsMsg->GetMessageTime(&dt);
 				sb.ClearStr();
-				sb.Append(dlg->GetFolder());
+				sb.AppendSlow(dlg->GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.AppendC(UTF8STRC("SMS"));
 				sb.AppendI64(dt.ToDotNetTicks());
 				sb.AppendC(UTF8STRC("_"));
 				sb.AppendI32(sms->index);
 				sb.AppendC(UTF8STRC("_"));
-				const UTF8Char *csptr = Text::StrToUTF8New(smsMsg->GetAddress());
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				Text::String *s = Text::String::NewNotNull(smsMsg->GetAddress());
+				sb.Append(s);
+				s->Release();
 				sb.AppendC(UTF8STRC(".sms"));
 
 				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

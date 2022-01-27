@@ -40,10 +40,10 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
 			sb.ClearStr();
 			if (dbName)
 			{
-				sb.Append(dbName);
+				sb.AppendSlow(dbName);
 				sb.AppendChar('.', 1);
 			}
-			sb.Append(tableName = table->GetTableName());
+			sb.AppendSlow(tableName = table->GetTableName());
 			this->tableMap->Put(sb.ToString(), table);
 			j = Text::StrIndexOfChar(tableName, '.');
 			this->tableMap->Put(tableName + j + 1, table);

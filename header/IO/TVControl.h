@@ -1,6 +1,7 @@
 #ifndef _SM_IO_TVCONTROL
 #define _SM_IO_TVCONTROL
 #include "Data/ArrayList.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -99,7 +100,7 @@ namespace IO
 		static OSInt GetTVList(Data::ArrayList<TVType> *tvList);
 		static Bool GetTVInfo(TVType tvType, TVInfo *info);
 		static TVControl *CreateTVControl(IO::Stream *stm, TVType tvType, Int32 monId);
-		static const UTF8Char *GetCommandName(CommandType cmdType);
+		static Text::CString GetCommandName(CommandType cmdType);
 	};
-};
+}
 #endif

@@ -132,11 +132,12 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->timeFormat)
 	{
-		logTime->ToString(sbuff, this->timeFormat);
-		sb.Append(sbuff);
+		sptr = logTime->ToString(sbuff, this->timeFormat);
+		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{

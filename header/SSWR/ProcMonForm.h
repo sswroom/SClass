@@ -2,6 +2,7 @@
 #define _SM_SSWR_PROCMONFORM
 
 #include "IO/LogTool.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
@@ -20,7 +21,7 @@ namespace SSWR
 	private:
 		typedef struct
 		{
-			const UTF8Char *progName;
+			Text::String *progName;
 			Text::String *progPath;
 			UOSInt procId;
 		} ProgInfo;

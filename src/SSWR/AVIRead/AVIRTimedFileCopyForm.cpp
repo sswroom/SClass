@@ -167,7 +167,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 						{
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("Error in copying "));
-							sb.Append(buffStart);
+							sb.AppendP(buffStart, sptr);
 							UI::MessageDialog::ShowDialog(sb.ToString(), this->GetFormName(), this);
 							return false;
 						}

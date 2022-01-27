@@ -389,16 +389,16 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Vendor: "));
-			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+			if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Version: "));
-			if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
+			if (carr[dataBuff[5]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[5]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Starting Address Segment: 0x"));
 			sb->AppendHex16(ReadUInt16(&dataBuff[6]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS Release Date: "));
-			if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
+			if (carr[dataBuff[8]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[8]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("BIOS ROM Size: "));
 			if (dataBuff[9] == 255)
@@ -466,16 +466,16 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Manufacturer: "));
-			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+			if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Product Name: "));
-			if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
+			if (carr[dataBuff[5]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[5]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Version: "));
-			if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+			if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Serial Number: "));
-			if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+			if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (dataBuff[1] >= 25)
 			{
@@ -532,10 +532,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 27)
 			{
 				sb->AppendC(UTF8STRC("SKU Number: "));
-				if (carr[dataBuff[25]]) sb->Append((const UTF8Char*)carr[dataBuff[25]]);
+				if (carr[dataBuff[25]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[25]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Family: "));
-				if (carr[dataBuff[26]]) sb->Append((const UTF8Char*)carr[dataBuff[26]]);
+				if (carr[dataBuff[26]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[26]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -551,22 +551,22 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 8)
 			{
 				sb->AppendC(UTF8STRC("Manufacturer: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Product: "));
-				if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
+				if (carr[dataBuff[5]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[5]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Version: "));
-				if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+				if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Serial Number: "));
-				if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+				if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 9)
 			{
 				sb->AppendC(UTF8STRC("Asset Tag: "));
-				if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
+				if (carr[dataBuff[8]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[8]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 10)
@@ -578,7 +578,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Location in Chassis: "));
-				if (carr[dataBuff[10]]) sb->Append((const UTF8Char*)carr[dataBuff[10]]);
+				if (carr[dataBuff[10]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[10]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 13)
@@ -651,10 +651,17 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 9)
 			{
 				sb->AppendC(UTF8STRC("Manufacturer: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Chassis Lock Present: "));
-				sb->Append((dataBuff[5] & 0x80)?(const UTF8Char*)"Yes":(const UTF8Char*)"No");
+				if (dataBuff[5] & 0x80)
+				{
+					sb->AppendC(UTF8STRC("Yes"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("No"));
+				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Type: "));
 				switch (dataBuff[5] & 0x7f)
@@ -774,13 +781,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Version: "));
-				if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+				if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Serial Number: "));
-				if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+				if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Asset Tag Number: "));
-				if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
+				if (carr[dataBuff[8]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[8]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 9)
@@ -922,7 +929,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				if (dataBuff[1] >= 22 + (n * m))
 				{
 					sb->AppendC(UTF8STRC("SKU Number: "));
-					if (carr[dataBuff[21 + (n * m)]]) sb->Append((const UTF8Char*)carr[dataBuff[21 + (n * m)]]);
+					if (carr[dataBuff[21 + (n * m)]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[21 + (n * m)]]);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 			}
@@ -939,7 +946,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 26)
 			{
 				sb->AppendC(UTF8STRC("Socket Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Type: "));
 				switch (dataBuff[5])
@@ -972,13 +979,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				GetProcessorFamily(sb, dataBuff[6]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Manufacturer: "));
-				if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+				if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor ID: 0x"));
 				sb->AppendHex64(ReadUInt64(&dataBuff[8]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Processor Version: "));
-				if (carr[dataBuff[16]]) sb->Append((const UTF8Char*)carr[dataBuff[16]]);
+				if (carr[dataBuff[16]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[16]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Voltage: "));
 				if (dataBuff[17] & 0x80)
@@ -1207,13 +1214,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 35)
 			{
 				sb->AppendC(UTF8STRC("Serial Number: "));
-				if (carr[dataBuff[32]]) sb->Append((const UTF8Char*)carr[dataBuff[32]]);
+				if (carr[dataBuff[32]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[32]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Asset Tag: "));
-				if (carr[dataBuff[33]]) sb->Append((const UTF8Char*)carr[dataBuff[33]]);
+				if (carr[dataBuff[33]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[33]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Part Number: "));
-				if (carr[dataBuff[34]]) sb->Append((const UTF8Char*)carr[dataBuff[34]]);
+				if (carr[dataBuff[34]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[34]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 40)
@@ -1273,7 +1280,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 12)
 			{
 				sb->AppendC(UTF8STRC("Socket Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Bank Connections: "));
 				sb->AppendU16(dataBuff[5]);
@@ -1307,7 +1314,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 15)
 			{
 				sb->AppendC(UTF8STRC("Socket Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Cache Configuration: 0x"));
 				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
@@ -1494,13 +1501,13 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 9)
 			{
 				sb->AppendC(UTF8STRC("Internal Reference Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Internal Connector Type: "));
 				GetConnectorType(sb, dataBuff[5]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("External Reference Designation: "));
-				if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+				if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("External Connector Type: "));
 				GetConnectorType(sb, dataBuff[7]);
@@ -1640,7 +1647,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 12)
 			{
 				sb->AppendC(UTF8STRC("Slot Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Slot Type: "));
 				switch (dataBuff[5])
@@ -2024,7 +2031,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendC(UTF8STRC("Device "));
 				sb->AppendUOSInt(k);
 				sb->AppendC(UTF8STRC(" Description: "));
-				if (carr[dataBuff[l + 1]]) sb->Append((const UTF8Char*)carr[dataBuff[l + 1]]);
+				if (carr[dataBuff[l + 1]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[l + 1]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				l += 2;
 				k += 1;
@@ -2050,7 +2057,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 					sb->AppendC(UTF8STRC("String "));
 					sb->AppendUOSInt(k);
 					sb->AppendC(UTF8STRC(": "));
-					sb->Append((const UTF8Char*)carr[k]);
+					sb->AppendSlow((const UTF8Char*)carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				k++;
@@ -2076,7 +2083,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 					sb->AppendC(UTF8STRC("String "));
 					sb->AppendUOSInt(k);
 					sb->AppendC(UTF8STRC(": "));
-					sb->Append((const UTF8Char*)carr[k]);
+					sb->AppendSlow((const UTF8Char*)carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				k++;
@@ -2117,7 +2124,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 					sb->AppendC(UTF8STRC("Language "));
 					sb->AppendUOSInt(k);
 					sb->AppendC(UTF8STRC(": "));
-					sb->Append((const UTF8Char*)carr[k]);
+					sb->AppendSlow((const UTF8Char*)carr[k]);
 					sb->AppendC(UTF8STRC("\r\n"));
 				}
 				k++;
@@ -2133,7 +2140,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Group Name: "));
-			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+			if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			k = 5;
 			while (k < dataBuff[1])
@@ -2458,10 +2465,10 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendU16(dataBuff[15]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Locator: "));
-				if (carr[dataBuff[16]]) sb->Append((const UTF8Char*)carr[dataBuff[16]]);
+				if (carr[dataBuff[16]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[16]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Bank Locator: "));
-				if (carr[dataBuff[17]]) sb->Append((const UTF8Char*)carr[dataBuff[17]]);
+				if (carr[dataBuff[17]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[17]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Memory Type: "));
 				switch (dataBuff[18])
@@ -2564,16 +2571,16 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendI16(ReadInt16(&dataBuff[21]));
 				sb->AppendC(UTF8STRC("MT/s\r\n"));
 				sb->AppendC(UTF8STRC("Manufacturer: "));
-				if (carr[dataBuff[23]]) sb->Append((const UTF8Char*)carr[dataBuff[23]]);
+				if (carr[dataBuff[23]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[23]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Serial Number: "));
-				if (carr[dataBuff[24]]) sb->Append((const UTF8Char*)carr[dataBuff[24]]);
+				if (carr[dataBuff[24]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[24]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Asset Tag: "));
-				if (carr[dataBuff[25]]) sb->Append((const UTF8Char*)carr[dataBuff[25]]);
+				if (carr[dataBuff[25]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[25]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Part Number: "));
-				if (carr[dataBuff[26]]) sb->Append((const UTF8Char*)carr[dataBuff[26]]);
+				if (carr[dataBuff[26]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[26]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			if (dataBuff[1] >= 28)
@@ -2797,19 +2804,19 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendHex16(ReadUInt16(&dataBuff[2]));
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Location: "));
-			if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+			if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Manufacturer: "));
-			if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
+			if (carr[dataBuff[5]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[5]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Manufacture Date: "));
-			if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+			if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Serial Number: "));
-			if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+			if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Device Name: "));
-			if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
+			if (carr[dataBuff[8]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[8]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Device Chemistry: "));
 			switch (dataBuff[9])
@@ -2852,7 +2859,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			sb->AppendU16(ReadUInt16(&dataBuff[12]));
 			sb->AppendC(UTF8STRC("mV\r\n"));
 			sb->AppendC(UTF8STRC("SBDS Version Number: "));
-			if (carr[dataBuff[14]]) sb->Append((const UTF8Char*)carr[dataBuff[14]]);
+			if (carr[dataBuff[14]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[14]]);
 			sb->AppendC(UTF8STRC("\r\n"));
 			sb->AppendC(UTF8STRC("Maximum Error in Battery Data: "));
 			sb->AppendU16(dataBuff[15]);
@@ -2870,7 +2877,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendU16(dataBuff[18] & 31);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("SBDS Device Chemistry: "));
-				if (carr[dataBuff[20]]) sb->Append((const UTF8Char*)carr[dataBuff[20]]);
+				if (carr[dataBuff[20]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[20]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Design Capacity Multiplier: "));
 				sb->AppendU16(dataBuff[21]);
@@ -2964,7 +2971,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 20)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Location: "));
 				switch (dataBuff[5] & 0x1f)
@@ -3220,7 +3227,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 15)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[14]]) sb->Append((const UTF8Char*)carr[dataBuff[14]]);
+				if (carr[dataBuff[14]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[14]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -3236,7 +3243,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 20)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Location: "));
 				switch (dataBuff[5] & 0x1f)
@@ -3407,7 +3414,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 20)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Location: "));
 				switch (dataBuff[5] & 0x1f)
@@ -3566,7 +3573,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 6)
 			{
 				sb->AppendC(UTF8STRC("Manufacturer Name: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Connectionx: 0x"));
 				sb->AppendHex8(dataBuff[5]);
@@ -3655,7 +3662,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Type: "));
 				switch (dataBuff[5])
@@ -3748,7 +3755,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Management Device Handle: 0x"));
 				sb->AppendHex16(ReadUInt16(&dataBuff[5]));
@@ -3869,25 +3876,25 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendU16(dataBuff[4]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Location: "));
-				if (carr[dataBuff[5]]) sb->Append((const UTF8Char*)carr[dataBuff[5]]);
+				if (carr[dataBuff[5]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[5]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Name: "));
-				if (carr[dataBuff[6]]) sb->Append((const UTF8Char*)carr[dataBuff[6]]);
+				if (carr[dataBuff[6]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[6]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Manufacturer: "));
-				if (carr[dataBuff[7]]) sb->Append((const UTF8Char*)carr[dataBuff[7]]);
+				if (carr[dataBuff[7]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[7]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Serial Number: "));
-				if (carr[dataBuff[8]]) sb->Append((const UTF8Char*)carr[dataBuff[8]]);
+				if (carr[dataBuff[8]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[8]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Asset Tag Number: "));
-				if (carr[dataBuff[9]]) sb->Append((const UTF8Char*)carr[dataBuff[9]]);
+				if (carr[dataBuff[9]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[9]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Model Part Number: "));
-				if (carr[dataBuff[10]]) sb->Append((const UTF8Char*)carr[dataBuff[10]]);
+				if (carr[dataBuff[10]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[10]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Revision Level: "));
-				if (carr[dataBuff[11]]) sb->Append((const UTF8Char*)carr[dataBuff[11]]);
+				if (carr[dataBuff[11]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[11]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Max Power Capacity: "));
 				if (ReadInt16(&dataBuff[12]) == -0x8000)
@@ -3947,7 +3954,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendU16(dataBuff[k + 3]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("String: "));
-				if (carr[dataBuff[k + 4]]) sb->Append((const UTF8Char*)carr[dataBuff[k + 4]]);
+				if (carr[dataBuff[k + 4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[k + 4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				k += dataBuff[k];
 			}
@@ -3964,7 +3971,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			if (dataBuff[1] >= 11)
 			{
 				sb->AppendC(UTF8STRC("Reference Designation: "));
-				if (carr[dataBuff[4]]) sb->Append((const UTF8Char*)carr[dataBuff[4]]);
+				if (carr[dataBuff[4]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[4]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Type: "));
 				switch (dataBuff[5] & 0x7f)
@@ -4007,7 +4014,14 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Status: "));
-				sb->Append((dataBuff[5] & 0x80)?(const UTF8Char*)"Device Enabled":(const UTF8Char*)"Device Disabled");
+				if (dataBuff[5] & 0x80)
+				{
+					sb->AppendC(UTF8STRC("Device Enabled"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("Device Disabled"));
+				}
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Device Type Instance: "));
 				sb->AppendU16(dataBuff[6]);
@@ -4054,7 +4068,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				}
 				else if (dataBuff[5] == 0 || dataBuff[6] == 0 || dataBuff[7] == 0)
 				{
-					sb->Append(&dataBuff[4]);
+					sb->AppendSlow(&dataBuff[4]);
 				}
 				else
 				{
@@ -4073,7 +4087,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendHex32(ReadUInt32(&dataBuff[14]));
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Description: "));
-				if (carr[dataBuff[18]]) sb->Append((const UTF8Char*)carr[dataBuff[18]]);
+				if (carr[dataBuff[18]]) sb->AppendSlow((const UTF8Char*)carr[dataBuff[18]]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Characteristic: 0x"));
 				sb->AppendHex64(ReadUInt64(&dataBuff[19]));
@@ -4219,7 +4233,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendUOSInt(l);
 				sb->AppendChar(':', 1);
 				sb->AppendChar(' ', 1);
-				sb->Append((const UTF8Char*)carr[l]);
+				sb->AppendSlow((const UTF8Char*)carr[l]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				l++;
 			}

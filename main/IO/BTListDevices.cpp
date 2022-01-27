@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
-		sb.Append(IO::BTUtil::GetManufacturerName(btCtrl->GetManufacturer()));
+		sb.AppendSlow(IO::BTUtil::GetManufacturerName(btCtrl->GetManufacturer()));
 		sb.AppendC(UTF8STRC(" (0x"));
 		sb.AppendHex16(btCtrl->GetManufacturer());
 		sb.AppendC(UTF8STRC(")"));
@@ -80,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Name: "));
-			sb.Append(btDev->GetName());
+			sb.AppendSlow(btDev->GetName());
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Address: "));
@@ -92,15 +92,36 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Connected: "));
-			sb.Append(btDev->IsConnected()?(const UTF8Char*)"TRUE":(const UTF8Char*)"FALSE");
+			if (btDev->IsConnected())
+			{
+				sb.AppendC(UTF8STRC("TRUE"));
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("FALSE"));
+			}
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Remembered: "));
-			sb.Append(btDev->IsRemembered()?(const UTF8Char*)"TRUE":(const UTF8Char*)"FALSE");
+			if (btDev->IsRemembered())
+			{
+				sb.AppendC(UTF8STRC("TRUE"));
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("FALSE"));
+			}
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Is Authenticated: "));
-			sb.Append(btDev->IsAuthenticated()?(const UTF8Char*)"TRUE":(const UTF8Char*)"FALSE");
+			if (btDev->IsAuthenticated())
+			{
+				sb.AppendC(UTF8STRC("TRUE"));
+			}
+			else
+			{
+				sb.AppendC(UTF8STRC("FALSE"));
+			}
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Last Seen: "));

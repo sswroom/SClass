@@ -91,15 +91,15 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				UOSInt buffSize = 1;
 				UOSInt i = 0;
 				UOSInt bSize;
-				const UTF8Char *url;
+				Text::String *url;
 				while (true)
 				{
 					url = osm->GetOSMURL(i);
 					if (url == 0)
 						break;
 
-					bSize = Text::StrCharCnt(url);
-					MemCopyNO(&customBuff[buffSize + 1], url, bSize);
+					bSize = url->leng;
+					MemCopyNO(&customBuff[buffSize + 1], url->v, bSize);
 					customBuff[buffSize] = (UInt8)bSize;
 					buffSize += bSize + 1;
 					i++;

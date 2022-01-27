@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/ModemController.h"
 #include "Text/SMSMessage.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -100,8 +101,8 @@ namespace IO
 
 		typedef struct
 		{
-			const UTF8Char *longName;
-			const UTF8Char *shortName;
+			Text::String *longName;
+			Text::String *shortName;
 			Int32 plmn;
 			OperStatus status;
 			Int32 netact;
@@ -213,8 +214,8 @@ namespace IO
 		static Int32 GetRSSIdBm(RSSI rssi);
 		static UTF8Char *GetRSSIString(UTF8Char *buff, RSSI rssi);
 		static UTF8Char *GetBERString(UTF8Char *buff, BER ber);
-		static const UTF8Char *OperStatusGetName(OperStatus operStatus);
-		static const UTF8Char *SIMStatusGetName(SIMStatus simStatus);
+		static Text::CString OperStatusGetName(OperStatus operStatus);
+		static Text::CString SIMStatusGetName(SIMStatus simStatus);
 	};
 };
 #endif

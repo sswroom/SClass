@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_COORDINATESYSTEMMANAGER
 #define _SM_MATH_COORDINATESYSTEMMANAGER
 #include "Math/ProjectedCoordinateSystem.h"
+#include "Text/CString.h"
 
 namespace Math
 {
@@ -181,8 +182,8 @@ namespace Math
 	private:
 		static Bool ParsePRJString(UTF8Char *prjBuff, UOSInt *strSize);
 	public:
-		static const UTF8Char *GeoCoordSysTypeGetName(GeoCoordSysType gcst);
-		static const UTF8Char *ProjCoordSysTypeGetName(ProjCoordSysType pcst);
+		static Text::CString GeoCoordSysTypeGetName(GeoCoordSysType gcst);
+		static Text::CString ProjCoordSysTypeGetName(ProjCoordSysType pcst);
 	};
 }
 #endif

@@ -295,7 +295,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC("Decoder: "));
 		if (dbg.decoderName)
 		{
-			sb.Append(dbg.decoderName);
+			sb.AppendSlow(dbg.decoderName);
 		}
 		else
 		{

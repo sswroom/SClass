@@ -17,7 +17,7 @@ namespace DB
 		const UTF8Char *database;
 		Data::ArrayList<const UTF8Char*> *tableNames;
 		IO::LogTool *log;
-		const UTF8Char *errorMsg;
+		Text::String *errorMsg;
 	public:
 		MongoDB(const UTF8Char *url, const UTF8Char *database, IO::LogTool *log);
 		virtual ~MongoDB();

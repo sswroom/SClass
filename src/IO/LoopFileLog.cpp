@@ -159,9 +159,9 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 
 	if (!this->closed)
 	{
-		time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
+		sptr = time->ToString(buff, "yyyy-MM-dd HH:mm:ss.fff\t");
 		Text::StringBuilderUTF8 sb;
-		sb.Append(buff);
+		sb.AppendP(buff, sptr);
 		sb.AppendC(logMsg, msgLen);
 		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}

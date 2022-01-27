@@ -840,6 +840,6 @@ void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *val
 	}
 	else
 	{
-		sb->Append(value);
+		sb->AppendSlow(value);
 	}
 }

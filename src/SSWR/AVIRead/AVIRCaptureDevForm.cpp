@@ -55,6 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 	{
 		Data::ArrayListUInt32 supportedCS;
 		UTF8Char u8buff[128];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 devInfo;
 		Text::StringBuilderUTF8 sb;
 		Media::IVideoCapture::VideoFormat fmts[80];
@@ -69,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 		Media::CS::CSConverter::GetSupportedCS(&supportedCS);
 
 		devInfo.AppendC(UTF8STRC("Name: "));
-		me->currCapture->GetSourceName(u8buff);
-		devInfo.Append(u8buff);
+		sptr = me->currCapture->GetSourceName(u8buff);
+		devInfo.AppendP(u8buff, sptr);
 		devInfo.AppendC(UTF8STRC("\r\n"));
 		me->currCapture->GetInfo(&devInfo);
 		devInfo.AppendC(UTF8STRC("Supported Formats:\r\n"));

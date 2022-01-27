@@ -93,14 +93,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				{
 					sb2.AppendChar('&', 1);
 				}
-				Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
-				sb2.Append(sbuff);
+				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
+				sb2.AppendP(sbuff, sptr);
 				sb2.AppendChar('=', 1);
-				Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
-				sb2.Append(sbuff);
+				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
+				sb2.AppendP(sbuff, sptr);
 				i++;
 			}
-			sb.Append(sb2.ToString());
+			sb.Append(sb2);
 		}
 		me->reqBody = 0;
 		me->reqBodyLen = 0;
@@ -255,11 +255,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			{
 				sb2.AppendChar('&', 1);
 			}
-			Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
-			sb2.Append(sbuff);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
+			sb2.AppendP(sbuff, sptr);
 			sb2.AppendChar('=', 1);
-			Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
-			sb2.Append(sbuff);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
+			sb2.AppendP(sbuff, sptr);
 			i++;
 		}
 		me->reqBody = Text::StrCopyNew(sb2.ToString());
@@ -540,7 +540,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (currHeaders)
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.Append(currHeaders);
+					sb.AppendSlow(currHeaders);
 					UTF8Char *sarr[2];
 					UTF8Char *sarr2[2];
 					sarr[1] = sb.ToString();
@@ -603,7 +603,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						if (currHeaders)
 						{
 							Text::StringBuilderUTF8 sb;
-							sb.Append(currHeaders);
+							sb.AppendSlow(currHeaders);
 							UTF8Char *sarr[2];
 							UTF8Char *sarr2[2];
 							sarr[1] = sb.ToString();
@@ -883,7 +883,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	pathEnd = path;
 	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, urlLen, 0);
 	Text::StringBuilderUTF8 sb;
-	sb.Append(cookieStr);
+	sb.AppendSlow(cookieStr);
 	cnt = Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ';');
 	cookieValue = sarr[0].v;
 	i = Text::StrIndexOfCharC(cookieValue, sarr[0].leng, '=');

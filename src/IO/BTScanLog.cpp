@@ -128,73 +128,73 @@ Data::ArrayList<IO::BTScanLog::DevEntry*> *IO::BTScanLog::GetRandomList()
 	return this->randDevs->GetValues();
 }
 
-const UTF8Char *IO::BTScanLog::RadioTypeGetName(RadioType radioType)
+Text::CString IO::BTScanLog::RadioTypeGetName(RadioType radioType)
 {
 	switch (radioType)
 	{
 	case RT_HCI:
-		return (const UTF8Char*)"HCI";
+		return CSTR("HCI");
 	case RT_LE:
-		return (const UTF8Char*)"LE";
+		return CSTR("LE");
 	case RT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"UNK";
+		return CSTR("UNK");
 	}
 }
 
-const UTF8Char *IO::BTScanLog::AddressTypeGetName(AddressType addrType)
+Text::CString IO::BTScanLog::AddressTypeGetName(AddressType addrType)
 {
 	switch (addrType)
 	{
 	case AT_PUBLIC:
-		return (const UTF8Char*)"Public";
+		return CSTR("Public");
 	case AT_RANDOM:
-		return (const UTF8Char*)"Random";
+		return CSTR("Random");
 	case AT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *IO::BTScanLog::AdvTypeGetName(AdvType advType)
+Text::CString IO::BTScanLog::AdvTypeGetName(AdvType advType)
 {
 	switch (advType)
 	{
 	case ADVT_IBEACON:
-		return (const UTF8Char*)"iBeacon";
+		return CSTR("iBeacon");
 	case ADVT_FINDMY_BROADCAST:
-		return (const UTF8Char*)"AirTag";
+		return CSTR("AirTag");
 	case ADVT_HOMEKIT:
-		return (const UTF8Char*)"HomeKit";
+		return CSTR("HomeKit");
 	case ADVT_AIRDROP:
-		return (const UTF8Char*)"AirDrop";
+		return CSTR("AirDrop");
 	case ADVT_AIRPLAY_TARGET:
-		return (const UTF8Char*)"Airplay Target";
+		return CSTR("Airplay Target");
 	case ADVT_AIRPLAY_SRC:
-		return (const UTF8Char*)"Airplay Source";
+		return CSTR("Airplay Source");
 	case ADVT_AIRPRINT:
-		return (const UTF8Char*)"AirPrint";
+		return CSTR("AirPrint");
 	case ADVT_HANDOFF:
-		return (const UTF8Char*)"Handoff";
+		return CSTR("Handoff");
 	case ADVT_MAGIC_SWITCH:
-		return (const UTF8Char*)"Magic Switch";
+		return CSTR("Magic Switch");
 	case ADVT_NEARBY_ACTION:
-		return (const UTF8Char*)"Nearby Action";
+		return CSTR("Nearby Action");
 	case ADVT_NEARBY_INFO:
-		return (const UTF8Char*)"Nearby Info";
+		return CSTR("Nearby Info");
 	case ADVT_PROXIMITY_PAIRING:
-		return (const UTF8Char*)"Proximity Pairing";
+		return CSTR("Proximity Pairing");
 	case ADVT_TETHERING_SRC:
-		return (const UTF8Char*)"Tethering Source";
+		return CSTR("Tethering Source");
 	case ADVT_TETHERING_TARGET:
-		return (const UTF8Char*)"Teghering Target";
+		return CSTR("Teghering Target");
 	case ADVT_EDDYSTONE:
-		return (const UTF8Char*)"Eddystone";
+		return CSTR("Eddystone");
 	case ADVT_ALTBEACON:
-		return (const UTF8Char*)"AltBeacon";
+		return CSTR("AltBeacon");
 	case ADVT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

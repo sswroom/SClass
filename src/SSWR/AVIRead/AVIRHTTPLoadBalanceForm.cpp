@@ -142,6 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	if (me->svr)
 	{
 		Net::WebServer::WebListener::SERVER_STATUS status;
@@ -210,8 +211,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 			dt.ToLocalTime();
 			sb.AppendDate(&dt);
 			sb.AppendC(UTF8STRC(" "));
-			Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
-			sb.Append(sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+			sb.AppendP(sbuff, sptr);
 
 			me->lbAccess->AddItem(sb.ToString(), (void*)(OSInt)logIndex.GetItem(i));
 			i++;
@@ -225,6 +226,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	Text::StringBuilderUTF8 sb;
 	Sync::MutexUsage mutUsage;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	me->reqLog->Use(&mutUsage);
 	UOSInt i = (UOSInt)me->lbAccess->GetSelectedItem();
 	UOSInt j;
@@ -235,8 +237,8 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 	dt.ToLocalTime();
 	sb.AppendDate(&dt);
 	sb.AppendC(UTF8STRC(" "));
-	Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.Append(log->reqURI);
 	sb.AppendC(UTF8STRC("\r\n\r\nHeaders:"));
@@ -247,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.Append(log->headerName->GetItem(i));
 		sb.AppendC(UTF8STRC("\t"));
-		sb.Append(log->headerVal->GetItem(i));
+		sb.AppendSlow(log->headerVal->GetItem(i));
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToString());

@@ -21,11 +21,12 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 	{
 		const Net::MACInfo::MACEntry *macEntry;
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 sb;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("IP = "));
-		Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
-		sb.Append(sbuff);
+		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipv4);
+		sb.AppendP(sbuff, sptr);
 		sb.AppendChar(' ', 18 - sb.GetLength());
 		sb.AppendC(UTF8STRC(", HW Addr = "));
 		sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
@@ -33,7 +34,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 		macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 		if (macEntry)
 		{
-			sb.Append((const UTF8Char*)macEntry->name);
+			sb.AppendSlow((const UTF8Char*)macEntry->name);
 		}
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		ipList->SortedInsert(ipv4);
@@ -51,6 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	const Net::MACInfo::MACEntry *macEntry;
@@ -68,8 +70,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("IP = "));
-			Net::SocketUtil::GetIPv4Name(sbuff, arp->GetIPAddress());
-			sb.Append(sbuff);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, arp->GetIPAddress());
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendChar(' ', 18 - sb.GetLength());
 			sb.AppendC(UTF8STRC(", HW Addr = "));
 			arp->GetPhysicalAddr(hwAddr);
@@ -78,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 			if (macEntry)
 			{
-				sb.Append((const UTF8Char*)macEntry->name);
+				sb.AppendSlow((const UTF8Char*)macEntry->name);
 			}
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			ipList->SortedInsert(arp->GetIPAddress());
@@ -118,11 +120,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC("Adapter: HW Addr = "));
 					sb.AppendHexBuff(hwAddr, 6, ':', Text::LineBreakType::None);
 					sb.AppendC(UTF8STRC(", IP = "));
-					Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					sb.Append(sbuff);
-					connInfo->GetName(sbuff);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+					sb.AppendP(sbuff, sptr);
+					sptr = connInfo->GetName(sbuff);
 					sb.AppendC(UTF8STRC(", Name = "));
-					sb.Append(sbuff);
+					sb.AppendP(sbuff, sptr);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					connInfo->GetName(sbuff);
 					WriteNUInt32(buff, ip);

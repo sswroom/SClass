@@ -451,7 +451,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8
 	}
 	else if (Text::StrEquals(name, (const UTF8Char*)"urn:ogc:def:crs:OGC:1.3:CRS84"))
 	{
-		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84));
+		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);
 	}
 	return 0;
 }
@@ -980,10 +980,10 @@ void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSyst
 
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::ProjCoordSysType pcst)
 {
-	const UTF8Char *name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
-	if (name == 0)
+	Text::CString name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
+	if (name.v == 0)
 		return 0;
-	return CreateProjCoordinateSystem(name, name);
+	return CreateProjCoordinateSystem(name.v, name.v);
 }
 
 Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *projName)
@@ -1064,10 +1064,10 @@ const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemMa
 
 Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst)
 {
-	const UTF8Char *name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
-	if (name == 0)
+	Text::CString name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
+	if (name.v == 0)
 		return 0;
-	return CreateGeogCoordinateSystem(name, name);
+	return CreateGeogCoordinateSystem(name.v, name.v);
 }
 
 Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *geoName)
@@ -1123,38 +1123,38 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	return 0;
 }
 
-const UTF8Char *Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
+Text::CString Math::CoordinateSystemManager::GeoCoordSysTypeGetName(GeoCoordSysType gcst)
 {
 	switch (gcst)
 	{
 	case Math::CoordinateSystemManager::GCST_CGCS2000:
-		return (const UTF8Char*)"CGCS2000";
+		return CSTR("CGCS2000");
 	case Math::CoordinateSystemManager::GCST_MACAU2009:
-		return (const UTF8Char*)"Macau_2009";
+		return CSTR("Macau_2009");
 	case Math::CoordinateSystemManager::GCST_HK1980:
-		return (const UTF8Char*)"HONGKONG";
+		return CSTR("HONGKONG");
 	case Math::CoordinateSystemManager::GCST_WGS84:
 	default:
-		return (const UTF8Char*)"WGS_1984";
+		return CSTR("WGS_1984");
 	}
 }
 
-const UTF8Char *Math::CoordinateSystemManager::ProjCoordSysTypeGetName(ProjCoordSysType pcst)
+Text::CString Math::CoordinateSystemManager::ProjCoordSysTypeGetName(ProjCoordSysType pcst)
 {
 	switch (pcst)
 	{
 	case PCST_HK80:
-		return (const UTF8Char*)"Hong Kong 1980 Grid System";
+		return CSTR("Hong Kong 1980 Grid System");
 	case PCST_UK_NATIONAL_GRID:
-		return (const UTF8Char*)"UK National Grid";
+		return CSTR("UK National Grid");
 	case PCST_IRISH_NATIONAL_GRID:
-		return (const UTF8Char*)"Irish National Grid";
+		return CSTR("Irish National Grid");
 	case PCST_MACAU_GRID:
-		return (const UTF8Char*)"Macau Grid";
+		return CSTR("Macau Grid");
 	case PCST_TWD67:
-		return (const UTF8Char*)"Taiwan 1967 Grid";
+		return CSTR("Taiwan 1967 Grid");
 	case PCST_TWD97:
-		return (const UTF8Char*)"Taiwan 1997 Grid";
+		return CSTR("Taiwan 1997 Grid");
 	}
-	return 0;
+	return {0, 0};
 }

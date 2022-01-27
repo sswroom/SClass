@@ -101,11 +101,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console->WriteLineC(UTF8STRC("Failed"));
 			}
 
-			if (modem->SIMCOMGetUESysInfo(sbuff))
+			if ((sptr = modem->SIMCOMGetUESysInfo(sbuff)) != 0)
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("UE Sys Info: "));
-				sb.Append(sbuff);
+				sb.AppendP(sbuff, sptr);
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 			}
 			else
@@ -121,11 +121,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				Bool valid = true;
 				console->WriteLineC(UTF8STRC("Network started"));
 
-				if (modem->NetGetIFAddr(sbuff))
+				if ((sptr = modem->NetGetIFAddr(sbuff)) != 0)
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("IF Addr: "));
-					sb.Append(sbuff);
+					sb.AppendP(sbuff, sptr);
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 				else
@@ -165,8 +165,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 							{
 								sb.AppendC(UTF8STRC(", "));
 							}
-							Net::SocketUtil::GetIPv4Name(sbuff, dnsList.GetItem(i));
-							sb.Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, dnsList.GetItem(i));
+							sb.AppendP(sbuff, sptr);
 							i++;
 						}
 						console->WriteLineC(sb.ToString(), sb.GetLength());

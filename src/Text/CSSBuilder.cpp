@@ -28,16 +28,16 @@ Bool Text::CSSBuilder::NewStyle(const Char *name, const Char *className)
 		else
 		{
 			this->sb->AppendChar('.', 1);
-			this->sb->Append((const UTF8Char*)className);
+			this->sb->AppendSlow((const UTF8Char*)className);
 		}
 	}
 	else
 	{
-		this->sb->Append((const UTF8Char*)name);
+		this->sb->AppendSlow((const UTF8Char*)name);
 		if (className)
 		{
 			this->sb->AppendChar('.', 1);
-			this->sb->Append((const UTF8Char*)className);
+			this->sb->AppendSlow((const UTF8Char*)className);
 		}
 	}
 	if (this->pm != PM_COMPACT)
@@ -177,7 +177,7 @@ void Text::CSSBuilder::AppendStyleName(const Char *name)
 	{
 		this->sb->AppendChar('\t', 1);
 	}
-	this->sb->Append((const UTF8Char*)name);
+	this->sb->AppendSlow((const UTF8Char*)name);
 	if (this->pm == PM_COMPACT)
 	{
 		this->sb->AppendChar(':', 1);

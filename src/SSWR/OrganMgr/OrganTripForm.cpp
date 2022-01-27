@@ -69,12 +69,12 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	itoDate = toDate.ToUnixTimestamp();
 	if (frDate > toDate)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorTime")), me->env->GetLang(UTF8STRC("TripFormTitle")), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorTime")).v, me->env->GetLang(UTF8STRC("TripFormTitle")).v, me);
 		return;
 	}
 	if (me->locId <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorLocation")), me->env->GetLang(UTF8STRC("TripFormTitle")), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorLocation")).v, me->env->GetLang(UTF8STRC("TripFormTitle")).v, me);
 		return;
 	}
 
@@ -88,8 +88,8 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 		t = (Trip*)me->lbTrips->GetItem((UOSInt)k);
 		if (t->fromDate <= itoDate && t->toDate >= ifrDate)
 		{
-			me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcatC(Text::StrConcat(sbuff, me->env->GetLang(UTF8STRC("TripFormErrorExist"))), UTF8STRC(": ")));
-			UI::MessageDialog::ShowDialog(sbuff, me->env->GetLang(UTF8STRC("TripFormTitle")), me);
+			me->env->LocationGet(t->locId)->cname->ConcatTo(Text::StrConcatC(me->env->GetLang(UTF8STRC("TripFormErrorExist")).ConcatTo(sbuff), UTF8STRC(": ")));
+			UI::MessageDialog::ShowDialog(sbuff, me->env->GetLang(UTF8STRC("TripFormTitle")).v, me);
 			return;
 		}
 		if (t->fromDate > ifrDate)
@@ -111,7 +111,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorUnk")), me->env->GetLang(UTF8STRC("TripFormTitle")), me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("TripFormErrorUnk")).v, me->env->GetLang(UTF8STRC("TripFormTitle")).v, me);
 		return;
 	}
 }
@@ -138,7 +138,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->locId = 0;
 	this->updating = false;
 
-	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")).v);
 
 	NEW_CLASS(this->lbTrips, UI::GUIListBox(ui, this, false));
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
@@ -146,23 +146,23 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->lbTrips->HandleSelectionChange(OnTripSelChg, this);
 	NEW_CLASS(this->pnlDetail, UI::GUIPanel(ui, this));
 	this->pnlDetail->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormFrom"))));
+	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormFrom")).v));
 	this->lblFrom->SetRect(0, 24, 72, 23, false);
 	NEW_CLASS(this->dtpFrom, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpFrom->SetRect(72, 24, 176, 23, false);
-	NEW_CLASS(this->lblTo, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormTo"))));
+	NEW_CLASS(this->lblTo, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormTo")).v));
 	this->lblTo->SetRect(0, 56, 72, 23, false);
 	NEW_CLASS(this->dtpTo, UI::GUIDateTimePicker(ui, this->pnlDetail, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpTo->SetRect(72, 56, 176, 23, false);
-	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormLocation"))));
+	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormLocation")).v));
 	this->lblLocation->SetRect(0, 88, 72, 23, false);
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, (const UTF8Char*)""));
 	this->txtLocation->SetRect(72, 88, 88, 23, false);
 	this->txtLocation->SetReadOnly(true);
-	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect"))));
+	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect")).v));
 	this->btnLocation->SetRect(168, 88, 75, 23, false);
 	this->btnLocation->HandleButtonClick(OnLocationClicked, this);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormAdd"))));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormAdd")).v));
 	this->btnAdd->SetRect(72, 128, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
 

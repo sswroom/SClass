@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_MONITORINFO
 #define _SM_MEDIA_MONITORINFO
 #include "Handles.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -12,17 +13,17 @@ namespace Media
 		Int32 right;
 		Int32 bottom;
 		Bool isPrimary;
-		const UTF8Char *name;
-		const UTF8Char *desc;
-		const UTF8Char *monId;
+		Text::String *name;
+		Text::String *desc;
+		Text::String *monId;
 
 	public:
 		MonitorInfo(MonitorHandle *hMonitor);
 		~MonitorInfo();
 
-		const UTF8Char *GetName();
-		const UTF8Char *GetDesc();
-		const UTF8Char *GetMonitorID();
+		Text::String *GetName();
+		Text::String *GetDesc();
+		Text::String *GetMonitorID();
 		Int32 GetLeft();
 		Int32 GetTop();
 		Int32 GetPixelWidth();

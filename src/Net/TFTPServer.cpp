@@ -12,15 +12,17 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 {
 	Net::TFTPServer *me = (Net::TFTPServer*)userData;
 	const UTF8Char *fileName;
+	UOSInt fileNameLen;
 	const UTF8Char *mode;
 	const UTF8Char *endPtr;
 //	const UTF8Char *optName;
 //	const UTF8Char *optVal;
 	UInt16 opcode;
 	UOSInt blkSize;
-	UOSInt len;
 	UOSInt i;
+	UOSInt len;
 	UInt8 repBuff[32];
+	UTF8Char *sptr;
 	if (dataSize < 4)
 		return;
 	opcode = ReadMUInt16(buff);
@@ -31,8 +33,8 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	blkSize = 512;
 	fileName = &buff[2];
 	endPtr = &buff[dataSize];
-	len = Text::StrCharCnt(fileName);
-	mode = &fileName[len + 1];
+	fileNameLen = Text::StrCharCnt(fileName);
+	mode = &fileName[fileNameLen + 1];
 	if (mode >= endPtr)
 		return;
 	
@@ -44,7 +46,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 		me->svr->SendTo(addr, port, repBuff, i);
 		return;
 	}
-	if (Text::StrIndexOfChar(fileName, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
+	if (Text::StrIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
 		WriteMInt16(&repBuff[0], 5);
 		WriteMInt16(&repBuff[2], 2);
@@ -68,7 +70,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 	
 	Text::StringBuilderUTF8 sb;
 	sb.Append(me->path);
-	sb.Append(fileName);
+	sb.AppendC(fileName, fileNameLen);
 	IO::Path::PathType pt;
 	IO::FileStream *fs;
 	pt = IO::Path::GetPathType(sb.ToString(), sb.GetLength());
@@ -115,10 +117,10 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sending "));
-				sb.Append(fileName);
+				sb.AppendC(fileName, fileNameLen);
 				sb.AppendC(UTF8STRC(" to "));
-				Net::SocketUtil::GetAddrName(repBuff, addr, port);
-				sb.Append(repBuff);
+				sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
+				sb.AppendP(repBuff, sptr);
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 		}
@@ -184,10 +186,10 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 			{
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Receiving "));
-				sb.Append(fileName);
+				sb.AppendC(fileName, fileNameLen);
 				sb.AppendC(UTF8STRC(" to "));
-				Net::SocketUtil::GetAddrName(repBuff, addr, port);
-				sb.Append(repBuff);
+				sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
+				sb.AppendP(repBuff, sptr);
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 		}
@@ -209,6 +211,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 	UInt64 sessId = (((UInt64)ReadMUInt32(addr->addr)) << 16) | port;
 	SessionInfo *sess;
 	UInt8 repBuff[32];
+	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(me->mut);
 	sess = me->sessMap->Get(sessId);
 	if (sess == 0)
@@ -248,10 +251,10 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End receiving "));
 						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-						sb.Append(&sess->fileName->v[i + 1]);
+						sb.AppendC(&sess->fileName->v[i + 1], sess->fileName->leng - i - 1);
 						sb.AppendC(UTF8STRC(" to "));
-						Net::SocketUtil::GetAddrName(repBuff, addr, port);
-						sb.Append(repBuff);
+						sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
+						sb.AppendP(repBuff, sptr);
 						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
 					me->sessMap->Remove(sess->sessId);
@@ -279,10 +282,10 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						UOSInt i;
 						sb.AppendC(UTF8STRC("End sending "));
 						i = sess->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-						sb.Append(&sess->fileName->v[i + 1]);
+						sb.AppendC(&sess->fileName->v[i + 1], sess->fileName->leng - i - 1);
 						sb.AppendC(UTF8STRC(" to "));
-						Net::SocketUtil::GetAddrName(repBuff, addr, port);
-						sb.Append(repBuff);
+						sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
+						sb.AppendP(repBuff, sptr);
 						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
 					me->sessMap->Remove(sess->sessId);
@@ -368,12 +371,12 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;
-	sb.Append(path);
+	sb.AppendSlow(path);
 	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
-	this->path = Text::StrCopyNew(sb.ToString());
+	this->path = Text::String::New(sb.ToString(), sb.GetLength());
 	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, 0, OnDataPacket, this, log, (const UTF8Char*)"TFTP: ", 2, false));
 	if (this->dataSvr->IsError())
 	{
@@ -415,7 +418,7 @@ Net::TFTPServer::~TFTPServer()
 	}
 	DEL_CLASS(this->mut);
 	DEL_CLASS(this->sessMap);
-	Text::StrDelNew(this->path);
+	this->path->Release();
 }
 
 Bool Net::TFTPServer::IsError()

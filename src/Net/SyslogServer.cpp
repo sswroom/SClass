@@ -11,6 +11,7 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 {
 	Net::SyslogServer *me = (Net::SyslogServer*)userData;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (buff[0] == '<')
 	{
 		Net::SyslogServer::IPStatus *status = me->GetIPStatus(addr);
@@ -18,8 +19,8 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 
 		if (me->log)
 		{
-			Net::SocketUtil::GetAddrName(sbuff, addr);
-			sb.Append(sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
 			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);

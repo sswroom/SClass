@@ -1296,7 +1296,7 @@ const UTF8Char *IO::BTUtil::GetUUIDName(UInt16 uuid)
 void IO::BTUtil::GetServiceName(Text::StringBuilderUTF8 *sb, void *serviceUUID)
 {
 	UInt8 *uuid = (UInt8*)serviceUUID;
-	sb->Append(GetUUIDName(ReadUInt16(uuid)));
+	sb->AppendSlow(GetUUIDName(ReadUInt16(uuid)));
 	sb->AppendC(UTF8STRC(" ("));
 	sb->AppendHexBuff(uuid, 4, 0, Text::LineBreakType::None);
 	sb->AppendC(UTF8STRC("-"));

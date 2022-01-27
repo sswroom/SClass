@@ -1201,7 +1201,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		Text::StringBuilderUTF8 sb;
 		if (dev->readingNames[readingIndex])
 		{
-			sb.Append(dev->readingNames[readingIndex]);
+			sb.AppendSlow(dev->readingNames[readingIndex]);
 		}
 		else
 		{
@@ -1706,6 +1706,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	else
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Data::ArrayListInt64 dateList;
 		Data::ArrayListDbl valList;
 		SSWR::SMonitor::ISMonitorCore::DevRecord2 *rec;
@@ -1747,7 +1748,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		dev->mut->LockRead();
 		if (dev->readingNames[readingIndex])
 		{
-			sb.Append(dev->readingNames[readingIndex]);
+			sb.AppendSlow(dev->readingNames[readingIndex]);
 		}
 		else
 		{
@@ -1763,9 +1764,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		Data::DateTime dt;
 		dt.SetTicks(startTime);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd");
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd");
 		sb.AppendC(UTF8STRC(" "));
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 
 		if (dateList.GetCount() >= 2)
 		{

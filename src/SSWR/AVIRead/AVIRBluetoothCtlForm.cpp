@@ -31,10 +31,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	IO::BTDevLog btLog;
 	dt.SetCurrTimeUTC();
-	Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
+	sptr = Text::StrConcatC(Text::StrInt64(sbuff, dt.ToTicks()), UTF8STRC("bt.txt"));
 	Sync::MutexUsage mutUsage;
 	btLog.AppendList(me->bt->GetPublicMap(&mutUsage));
 	mutUsage.EndUse();
@@ -44,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Stored as "));
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Bluetooth Ctrl", me);
 	}
 	else
@@ -115,8 +116,8 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 		{
 			Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 			this->lvDevices->InsertItem(i, sbuff, dev);
-			this->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType));
-			this->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType));
+			this->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType).v);
+			this->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType).v);
 			if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 			{
 				switch (dev->mac[0] & 0xC0)
@@ -163,17 +164,17 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 			}
 			else
 			{
-				const UTF8Char *csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
-				if (csptr)
+				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
+				if (cstr.v)
 				{
-					this->lvDevices->SetSubItem(i, 10, csptr);
+					this->lvDevices->SetSubItem(i, 10, cstr.v);
 				}
 				else
 				{
 					this->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"?");
 				}
 			}
-			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
+			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType).v);
 			statusMap->Put(dev->macInt, 0);
 		}
 		j++;

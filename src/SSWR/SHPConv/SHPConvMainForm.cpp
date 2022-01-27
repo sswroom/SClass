@@ -232,7 +232,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 	DB::DBReader *r;
 	const UTF8Char *s;
 
-	sb.Append(sourceFile);
+	sb.AppendSlow(sourceFile);
 	i = sb.LastIndexOf('.');
 	sb.RemoveChars(sb.GetLength() - i - 1);
 	sb.AppendC(UTF8STRC("dbf"));
@@ -266,7 +266,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 		s = names.GetItem(i);
 
 		sb.ClearStr();
-		sb.Append(s);
+		sb.AppendSlow(s);
 		sb.Replace('/', ' ');
 		sb.Replace('&', ' ');
 		sb.Replace('-', ' ');
@@ -276,7 +276,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(const UTF8Char *sourceFile, c
 		NEW_CLASS(filter, SSWR::SHPConv::ValueFilter(groupCol, s, 3));
 		newFilters.Add(filter);
 		sb2.ClearStr();
-		sb2.Append(outFilePrefix);
+		sb2.AppendSlow(outFilePrefix);
 		sb2.AppendChar('_', 1);
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		shpType = this->ConvertShp(sourceFile, sb2.ToString(), dbCols, blkScale, &newFilters, progress, dbCols2);
@@ -343,7 +343,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		DEL_CLASS(fs);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Failed in converting "));
-		sb.Append(sourceFile);
+		sb.AppendSlow(sourceFile);
 		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", this);
 		return 0;
 	}
@@ -365,7 +365,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	if (shpType == 3 || shpType == 5)
 	{
 		sb.ClearStr();
-		sb.Append(outFilePrefix);
+		sb.AppendSlow(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
@@ -380,7 +380,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
 		{
 			sb.ClearStr();
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			i = sb.LastIndexOf('.');
 			if (i != INVALID_INDEX)
 			{
@@ -403,7 +403,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			cipPos = 8;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Reading "));
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			progress->ProgressStart(sb.ToString(), nRecords);
 
 			while (tRec < nRecords)
@@ -665,7 +665,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Writing "));
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			progress->ProgressStart(sb.ToString(), blks.GetCount());
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
@@ -781,7 +781,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 	else if (shpType == 1 || shpType == 11)
 	{
 		sb.ClearStr();
-		sb.Append(outFilePrefix);
+		sb.AppendSlow(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
@@ -796,7 +796,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 		if (!cip->IsError() && !cix->IsError() && !blk->IsError() && !cib->IsError())
 		{
 			sb.ClearStr();
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			i = sb.LastIndexOf('.');
 			if (i != INVALID_INDEX)
 			{
@@ -819,7 +819,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 			currRec = 0;
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Reading "));
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			progress->ProgressStart(sb.ToString(), nRecords);
 
 			while (tRec < nRecords)
@@ -994,7 +994,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(const UTF8Char *sourceFile, con
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Writing "));
-			sb.Append(sourceFile);
+			sb.AppendSlow(sourceFile);
 			progress->ProgressStart(sb.ToString(), blks.GetCount());
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
@@ -1239,7 +1239,7 @@ void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append(labelStr);
+	sb.AppendSlow(labelStr);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

@@ -22,10 +22,10 @@ OSInt __stdcall SSWR::OrganMgr::BookArrayList::CompareBook(OrganBook *book1, Org
 	OSInt ret = book1->GetPublishDate()->CompareTo(book2->GetPublishDate());
 	if (ret == 0)
 	{
-		ret = Text::StrCompareICase(book1->GetDispAuthor(), book2->GetDispAuthor());
+		ret = book1->GetDispAuthor()->CompareToICase(book2->GetDispAuthor());
 		if (ret == 0)
 		{
-			ret = Text::StrCompareICase(book1->GetTitle(), book2->GetTitle());
+			ret = book1->GetTitle()->CompareToICase(book2->GetTitle());
 		}
 	}
 	return ret;
@@ -103,24 +103,24 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	me->txtBookURL->GetText(&sb4);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputAuthor")), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputAuthor")).v, (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (sb2.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputName")), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputName")).v, (const UTF8Char*)"Error", me);
 		return;
 	}
 	if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputSource")), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormInputSource")).v, (const UTF8Char*)"Error", me);
 		return;
 	}
 	Data::DateTime publishDate;
 	me->dtpBookPublish->GetSelectedTime(&publishDate);
 	if (!me->env->NewBook(sb2.ToString(), sb.ToString(), sb3.ToString(), &publishDate, sb4.ToString()))
 	{
-		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormDBError")), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormDBError")).v, (const UTF8Char*)"Error", me);
 		return;
 	}
 
@@ -285,7 +285,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->changed = false;
 	NEW_CLASS(this->bookList, BookArrayList());
 
-	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")));
+	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")).v);
 	this->SetFont(0, 0, 10.5, false);
 
 	NEW_CLASS(this->pnlBook, UI::GUIPanel(ui, this));
@@ -299,46 +299,46 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->lvBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvBook->SetShowGrid(true);
 	this->lvBook->SetFullRowSelect(true);
-	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColDate")), 60);
-	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColAuthor")), 120);
-	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColName")), 400);
-	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColSource")), 60);
-	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPaste"))));
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColDate")).v, 60);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColAuthor")).v, 120);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColName")).v, 400);
+	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColSource")).v, 60);
+	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPaste")).v));
 	this->btnBookPaste->SetRect(88, 0, 75, 23, false);
 	this->btnBookPaste->HandleButtonClick(OnBookPasteClicked, this);
-	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPublish"))));
+	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPublish")).v));
 	this->lblBookPublish->SetRect(0, 0, 70, 23, false);
 	NEW_CLASS(this->dtpBookPublish, UI::GUIDateTimePicker(ui, this->pnlBookDet, UI::GUIDateTimePicker::ST_CALENDAR));
 	this->dtpBookPublish->SetRect(0, 24, 88, 19, false);
 	this->dtpBookPublish->SetFormat("yyyy/MM/dd");
 	this->dtpBookPublish->HandleDateChange(OnBookPublishChg, this);
-	NEW_CLASS(this->lblBookAuthor, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAuthor"))));
+	NEW_CLASS(this->lblBookAuthor, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAuthor")).v));
 	this->lblBookAuthor->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtBookAuthor, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookAuthor->SetRect(0, 72, 168, 19, false);
-	NEW_CLASS(this->lblBookTitle, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookTitle"))));
+	NEW_CLASS(this->lblBookTitle, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookTitle")).v));
 	this->lblBookTitle->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtBookTitle, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookTitle->SetRect(0, 120, 168, 19, false);
-	NEW_CLASS(this->lblBookSource, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookSource"))));
+	NEW_CLASS(this->lblBookSource, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookSource")).v));
 	this->lblBookSource->SetRect(0, 144, 100, 23, false);
 	NEW_CLASS(this->txtBookSource, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookSource->SetRect(0, 168, 168, 19, false);
-	NEW_CLASS(this->lblBookURL, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookURL"))));
+	NEW_CLASS(this->lblBookURL, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookURL")).v));
 	this->lblBookURL->SetRect(0, 192, 100, 23, false);
 	NEW_CLASS(this->txtBookURL, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookURL->SetRect(0, 216, 168, 19, false);
-	NEW_CLASS(this->lblBookGroup, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookGroup"))));
+	NEW_CLASS(this->lblBookGroup, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookGroup")).v));
 	this->lblBookGroup->SetRect(0, 240, 100, 23, false);
 	NEW_CLASS(this->txtBookGroup, UI::GUITextBox(ui, this->pnlBookDet, (const UTF8Char*)""));
 	this->txtBookGroup->SetRect(0, 264, 168, 19, false);
-	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAdd"))));
+	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAdd")).v));
 	this->btnBookAdd->SetRect(16, 288, 75, 23, false);
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	NEW_CLASS(this->tcBook, UI::GUITabControl(ui, this->pnlBook));
 	this->tcBook->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")));
-	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")));
+	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")).v);
+	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")).v);
 
 	this->env->GetBooksAll(this->bookList);
 	this->bookList->Sort();

@@ -5,6 +5,7 @@
 #include "Net/BrowserInfo.h"
 #include "Net/SocketFactory.h"
 #include "Net/WebUtil.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -80,7 +81,7 @@ namespace Net
 			Manage::OSInfo::OSType GetOS();
 			const UTF8Char *GetOSVer();
 
-			static const Char *RequestProtocolGetName(RequestProtocol reqProto);
+			static Text::CString RequestProtocolGetName(RequestProtocol reqProto);
 		};
 	}
 }

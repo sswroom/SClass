@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 			sb.ClearStr();
 			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 			me->lvResults->SetSubItem(i, 1, sb.ToString());
-			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
+			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType).v);
 			if (item->valBuff)
 			{
 				sb.ClearStr();

@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_SMONITOR_SANALOGSENSOR
 #define _SM_SSWR_SMONITOR_SANALOGSENSOR
+#include "Text/CString.h"
 
 namespace SSWR
 {
@@ -83,8 +84,8 @@ namespace SSWR
 			virtual Bool GetReadings(Double *values) = 0;
 			virtual SensorType GetSensorType() = 0;
 
-			static const UTF8Char *GetReadingTypeName(ReadingType readingType);
-			static const UTF8Char *GetSensorTypeName(SensorType sensorType);
+			static Text::CString GetReadingTypeName(ReadingType readingType);
+			static Text::CString GetSensorTypeName(SensorType sensorType);
 		};
 	}
 }

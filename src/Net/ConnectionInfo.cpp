@@ -191,42 +191,42 @@ Net::ConnectionInfo::ConnectionStatus Net::ConnectionInfo::GetConnectionStatus()
 	return this->ent.connStatus;
 }
 
-const UTF8Char *Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connType)
+Text::CString Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connType)
 {
 	switch (connType)
 	{
 	case CT_ETHERNET:
-		return (const UTF8Char*)"Ethernet";
+		return CSTR("Ethernet");
 	case CT_WIFI:
-		return (const UTF8Char*)"WiFi";
+		return CSTR("WiFi");
 	case CT_LOOPBACK:
-		return (const UTF8Char*)"Loopback";
+		return CSTR("Loopback");
 	case CT_DIALUP:
-		return (const UTF8Char*)"Dial-up";
+		return CSTR("Dial-up");
 	case CT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *Net::ConnectionInfo::GetConnectionStatusName(ConnectionStatus connStatus)
+Text::CString Net::ConnectionInfo::GetConnectionStatusName(ConnectionStatus connStatus)
 {
 	switch (connStatus)
 	{
 	case CS_UP:
-		return (const UTF8Char*)"Up";
+		return CSTR("Up");
 	case CS_DOWN:
-		return (const UTF8Char*)"Down";
+		return CSTR("Down");
 	case CS_TESTING:
-		return (const UTF8Char*)"Testing";
+		return CSTR("Testing");
 	case CS_DORMANT:
-		return (const UTF8Char*)"Dormant";
+		return CSTR("Dormant");
 	case CS_NOTPRESENT:
-		return (const UTF8Char*)"Not Present";
+		return CSTR("Not Present");
 	case CS_LOWERLAYERDOWN:
-		return (const UTF8Char*)"Low Layer Down";
+		return CSTR("Low Layer Down");
 	case CS_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

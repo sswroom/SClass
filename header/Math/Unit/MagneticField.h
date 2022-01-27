@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_MAGNETICFIELD
 #define _SM_MATH_UNIT_MAGNETICFIELD
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -16,8 +18,8 @@ namespace Math
 			} MagneticFieldUnit;
 		public:
 			static Double GetUnitRatio(MagneticFieldUnit unit);
-			static const UTF8Char *GetUnitShortName(MagneticFieldUnit unit);
-			static const UTF8Char *GetUnitName(MagneticFieldUnit unit);
+			static Text::CString GetUnitShortName(MagneticFieldUnit unit);
+			static Text::CString GetUnitName(MagneticFieldUnit unit);
 			static Double Convert(MagneticFieldUnit fromUnit, MagneticFieldUnit toUnit, Double fromValue);
 		};
 	}

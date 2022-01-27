@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_ACCELERATION
 #define _SM_MATH_UNIT_ACCELERATION
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -14,8 +16,8 @@ namespace Math
 			};
 		public:
 			static Double GetUnitRatio(AccelerationUnit unit);
-			static const UTF8Char *GetUnitShortName(AccelerationUnit unit);
-			static const UTF8Char *GetUnitName(AccelerationUnit unit);
+			static Text::CString GetUnitShortName(AccelerationUnit unit);
+			static Text::CString GetUnitName(AccelerationUnit unit);
 			static Double Convert(AccelerationUnit fromUnit, AccelerationUnit toUnit, Double fromValue);
 		};
 	}

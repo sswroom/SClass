@@ -171,7 +171,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 		{
 			sb.AppendI32(statusCode);
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append(&msg[i]);
+			sb.AppendSlow(&msg[i]);
 			sb.AppendC(UTF8STRC("\r\n"));
 			break;
 		}
@@ -295,12 +295,13 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC(".")))
 		{
 			UTF8Char sbuff[256];
+			UTF8Char *sptr;
 			cliStatus->dataMode = false;
-			if (this->mailHdlr(sbuff, this->mailObj, cli, cliStatus))
+			if ((sptr = this->mailHdlr(sbuff, this->mailObj, cli, cliStatus)) != 0)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Ok: queued as "));
-				sb.Append(sbuff);
+				sb.AppendP(sbuff, sptr);
 				WriteMessage(cli, 250, sb.ToString());
 			}
 			else
@@ -364,7 +365,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.Append((UTF8Char*)cliStatus->cliName);
+		sb.AppendSlow(cliStatus->cliName);
 		WriteMessage(cli, 250, sb.ToString());
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("EHLO ")))
@@ -377,7 +378,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.Append((UTF8Char*)cliStatus->cliName);
+		sb.AppendSlow(cliStatus->cliName);
 		sb.AppendC(UTF8STRC("\r\nHELP"));
 		sb.AppendC(UTF8STRC("\r\n8BITMIME"));
 		if (this->connType == Net::Email::SMTPConn::CT_STARTTLS && !cli->IsSSL())

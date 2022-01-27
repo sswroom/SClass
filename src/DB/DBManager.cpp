@@ -114,10 +114,11 @@ Bool DB::DBManager::GetConnStr(DB::DBTool *db, Text::StringBuilderUTF8 *connStr)
 	case DB::DBConn::CT_MYSQLTCP:
 		{
 			UTF8Char sbuff[128];
+			UTF8Char *sptr;
 			Net::MySQLTCPClient *mysql = (Net::MySQLTCPClient*)conn;
 			connStr->AppendC(UTF8STRC("mysqltcp:Server="));
-			Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
-			connStr->Append(sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, mysql->GetConnAddr());
+			connStr->AppendP(sbuff, sptr);
 			connStr->AppendC(UTF8STRC(";Port="));
 			connStr->AppendU16(mysql->GetConnPort());
 			if ((s = mysql->GetConnDB()) != 0)
@@ -163,7 +164,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			const UTF8Char *pwd = 0;
 			const UTF8Char *schema = 0;
 			UOSInt cnt;
-			sb.Append(connStr + 5);
+			sb.AppendC(connStr + 5, connStrLen - 5);
 			Text::PString sarr[2];
 			sarr[1].v = sb.ToString();
 			sarr[1].leng = sb.GetLength();
@@ -225,7 +226,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		const UTF8Char *pwd = 0;
 		const UTF8Char *schema = 0;
 		UOSInt cnt;
-		sb.Append(connStr + 6);
+		sb.AppendC(connStr + 6, connStrLen - 6);
 		Text::PString sarr[2];
 		sarr[1].v = sb.ToString();
 		sarr[1].leng = sb.GetLength();
@@ -321,7 +322,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		const UTF8Char *schema = 0;
 		addr.addrType = Net::AddrType::Unknown;
 		UOSInt cnt;
-		sb.Append(connStr + 9);
+		sb.AppendC(connStr + 9, connStrLen - 9);
 		Text::PString sarr[2];
 		sarr[1].v = sb.ToString();
 		sarr[1].leng = sb.GetLength();

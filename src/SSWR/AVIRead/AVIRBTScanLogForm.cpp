@@ -117,7 +117,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	logList.AddAll(this->btLog->GetPublicList());
 	logList.AddAll(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	UInt8 mac[8];
 	UOSInt i;
 	UOSInt j;
@@ -131,18 +131,18 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		WriteMUInt64(mac, log->macInt);
 		Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 		l = this->lvContent->AddItem(sbuff, log);
-		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
-		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
+		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType).v);
+		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType).v);
 		if (log->company == 0)
 		{
 			this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"-");
 		}
 		else
 		{
-			csptr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
-			if (csptr)
+			cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
+			if (cstr.v)
 			{
-				this->lvContent->SetSubItem(l, 3, csptr);
+				this->lvContent->SetSubItem(l, 3, cstr.v);
 			}
 			else
 			{
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		this->lvContent->SetSubItem(l, 6, sbuff);
 		Text::StrInt16(sbuff, log->measurePower);
 		this->lvContent->SetSubItem(l, 7, sbuff);
-		this->lvContent->SetSubItem(l, 8, IO::BTScanLog::AdvTypeGetName(log->lastAdvType));
+		this->lvContent->SetSubItem(l, 8, IO::BTScanLog::AdvTypeGetName(log->lastAdvType).v);
 
 		i++;
 	}

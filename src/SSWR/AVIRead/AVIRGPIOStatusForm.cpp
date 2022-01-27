@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(void *userObj)
 			isHigh = me->ctrl->IsPinHigh(i);
 			if (me->states[i].pinMode != pinMode)
 			{
-				me->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, pinMode));
+				me->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, pinMode).v);
 				me->states[i].pinMode = pinMode;
 			}
 			if (me->states[i].isHigh != isHigh)
@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(UI::GUIClientControl *pare
 			this->lvStatus->AddItem(sbuff, 0);
 			this->states[i].pinMode = this->ctrl->GetPinMode(i);
 			this->states[i].isHigh = this->ctrl->IsPinHigh(i);
-			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode));
+			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode).v);
 			this->lvStatus->SetSubItem(i, 2, (const UTF8Char*)(this->states[i].isHigh?"1":"0"));
 			i++;
 		}

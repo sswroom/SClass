@@ -16,11 +16,11 @@ SSWR::OrganMgr::OrganBook::OrganBook()
 
 SSWR::OrganMgr::OrganBook::~OrganBook()
 {
-	SDEL_TEXT(this->title);
-	SDEL_TEXT(this->dispAuthor);
-	SDEL_TEXT(this->press);
+	SDEL_STRING(this->title);
+	SDEL_STRING(this->dispAuthor);
+	SDEL_STRING(this->press);
 	DEL_CLASS(this->publishDate);
-	SDEL_TEXT(this->url);
+	SDEL_STRING(this->url);
 }
 
 Int32 SSWR::OrganMgr::OrganBook::GetBookId()
@@ -33,37 +33,55 @@ void SSWR::OrganMgr::OrganBook::SetBookId(Int32 bookId)
 	this->id = bookId;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganBook::GetTitle()
+Text::String *SSWR::OrganMgr::OrganBook::GetTitle()
 {
 	return this->title;
 }
 
 void SSWR::OrganMgr::OrganBook::SetTitle(const UTF8Char *title)
 {
-	SDEL_TEXT(this->title);
-	this->title = Text::StrCopyNew(title);
+	SDEL_STRING(this->title);
+	this->title = Text::String::NewNotNull(title);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganBook::GetDispAuthor()
+void SSWR::OrganMgr::OrganBook::SetTitle(Text::StringBase<UTF8Char> *title)
+{
+	SDEL_STRING(this->title);
+	this->title = Text::String::New(title->v, title->leng);
+}
+
+Text::String *SSWR::OrganMgr::OrganBook::GetDispAuthor()
 {
 	return this->dispAuthor;
 }
 
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(const UTF8Char *dispAuthor)
 {
-	SDEL_TEXT(this->dispAuthor);
-	this->dispAuthor = Text::StrCopyNew(dispAuthor);
+	SDEL_STRING(this->dispAuthor);
+	this->dispAuthor = Text::String::NewNotNull(dispAuthor);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganBook::GetPress()
+void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor)
+{
+	SDEL_STRING(this->dispAuthor);
+	this->dispAuthor = Text::String::New(dispAuthor->v, dispAuthor->leng);
+}
+
+Text::String *SSWR::OrganMgr::OrganBook::GetPress()
 {
 	return this->press;
 }
 
 void SSWR::OrganMgr::OrganBook::SetPress(const UTF8Char *press)
 {
-	SDEL_TEXT(this->press);
-	this->press = Text::StrCopyNew(press);
+	SDEL_STRING(this->press);
+	this->press = Text::String::NewNotNull(press);
+}
+
+void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
+{
+	SDEL_STRING(this->press);
+	this->press = Text::String::New(press->v, press->leng);
 }
 
 Data::DateTime *SSWR::OrganMgr::OrganBook::GetPublishDate()
@@ -86,15 +104,21 @@ void SSWR::OrganMgr::OrganBook::SetGroupId(Int32 groupId)
 	this->groupId = groupId;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganBook::GetURL()
+Text::String *SSWR::OrganMgr::OrganBook::GetURL()
 {
 	return this->url;
 }
 
 void SSWR::OrganMgr::OrganBook::SetURL(const UTF8Char *url)
 {
-	SDEL_TEXT(this->url);
-	this->url = Text::StrCopyNew(url);
+	SDEL_STRING(this->url);
+	this->url = Text::String::NewNotNull(url);
+}
+
+void SSWR::OrganMgr::OrganBook::SetURL(Text::StringBase<UTF8Char> *url)
+{
+	SDEL_STRING(this->url);
+	this->url = Text::String::New(url->v, url->leng);
 }
 
 void SSWR::OrganMgr::OrganBook::GetString(Text::StringBuilderUTF8 *sb)

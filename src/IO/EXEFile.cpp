@@ -311,51 +311,51 @@ Bool IO::EXEFile::GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTime
 	return true;
 }
 
-const UTF8Char *IO::EXEFile::GetResourceTypeName(ResourceType rt)
+Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 {
 	switch (rt)
 	{
 	case RT_VERSIONINFO:
-		return (const UTF8Char*)"VersionInfo";
+		return CSTR("VersionInfo");
 	case RT_BITMAP:
-		return (const UTF8Char*)"Bitmap";
+		return CSTR("Bitmap");
 	case RT_MENU:
-		return (const UTF8Char*)"Menu";
+		return CSTR("Menu");
 	case RT_DIALOG:
-		return (const UTF8Char*)"Dialog";
+		return CSTR("Dialog");
 	case RT_STRINGTABLE:
-		return (const UTF8Char*)"StringTable";
+		return CSTR("StringTable");
 	case RT_ACCELERATOR:
-		return (const UTF8Char*)"Accelerator";
+		return CSTR("Accelerator");
 	case RT_CURSOR:
-		return (const UTF8Char*)"Cursor";
+		return CSTR("Cursor");
 	case RT_ICON:
-		return (const UTF8Char*)"Icon";
+		return CSTR("Icon");
 	case RT_FONT:
-		return (const UTF8Char*)"Font";
+		return CSTR("Font");
 	case RT_FONTDIR:
-		return (const UTF8Char*)"FontDir";
+		return CSTR("FontDir");
 	case RT_RAW_DATA:
-		return (const UTF8Char*)"RawData";
+		return CSTR("RawData");
 	case RT_MESSAGETABLE:
-		return (const UTF8Char*)"MessageTable";
+		return CSTR("MessageTable");
 	case RT_DLGINCLUDE:
-		return (const UTF8Char*)"DlgInclude";
+		return CSTR("DlgInclude");
 	case RT_PLUGPLAY:
-		return (const UTF8Char*)"PlugAndPlay";
+		return CSTR("PlugAndPlay");
 	case RT_VXD:
-		return (const UTF8Char*)"VXD";
+		return CSTR("VXD");
 	case RT_ANICURSOR:
-		return (const UTF8Char*)"AniCursor";
+		return CSTR("AniCursor");
 	case RT_ANIICON:
-		return (const UTF8Char*)"AniIcon";
+		return CSTR("AniIcon");
 	case RT_HTML:
-		return (const UTF8Char*)"HTML";
+		return CSTR("HTML");
 	case RT_MANIFEST:
-		return (const UTF8Char*)"ManiFest";
+		return CSTR("ManiFest");
 	case RT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

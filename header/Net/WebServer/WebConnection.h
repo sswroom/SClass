@@ -70,7 +70,7 @@ namespace Net
 			virtual void ShutdownSend();
 			virtual Bool ResponseSSE(Int32 timeoutMS, SSEDisconnectHandler hdlr, void *userObj);
 			virtual Bool SSESend(const UTF8Char *eventName, const UTF8Char *data);
-			virtual const UTF8Char *GetRespHeaders();
+			virtual Text::CString GetRespHeaders();
 
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);

@@ -179,7 +179,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append(me->respHeaders->GetItem(i));
+			sb.AppendSlow(me->respHeaders->GetItem(i));
 			me->lvHeaders->AddItem(sb.ToString(), 0);
 			i++;
 		}

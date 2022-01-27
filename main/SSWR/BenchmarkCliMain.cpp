@@ -72,16 +72,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Memory Size: "));
 	memSize = sysInfo.GetTotalMemSize();
-	ByteDisp(sbuff, memSize);
-	sb.Append(sbuff);
+	sptr = ByteDisp(sbuff, memSize);
+	sb.AppendP(sbuff, sptr);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform: "));
-	if (sysInfo.GetPlatformName(sbuff))
+	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
 	{
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
@@ -92,9 +92,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("CPU: "));
-	if (cpuInfo.GetCPUName(sbuff))
+	if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
 	{
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
@@ -115,22 +115,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC("RAM: "));
 		if (ram->deviceLocator)
 		{
-			sb.Append(ram->deviceLocator);
+			sb.AppendSlow(ram->deviceLocator);
 		}
 		sb.AppendC(UTF8STRC("\t"));
 		if (ram->manufacturer)
 		{
-			sb.Append(ram->manufacturer);
+			sb.AppendSlow(ram->manufacturer);
 		}
 		sb.AppendC(UTF8STRC("\t"));
 		if (ram->partNo)
 		{
-			sb.Append(ram->partNo);
+			sb.AppendSlow(ram->partNo);
 		}
 		sb.AppendC(UTF8STRC("\t"));
 		if (ram->sn)
 		{
-			sb.Append(ram->sn);
+			sb.AppendSlow(ram->sn);
 		}
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendUOSInt(ram->defSpdMHz);
@@ -197,11 +197,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Copy\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -243,11 +243,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Write\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -289,11 +289,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Read\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));

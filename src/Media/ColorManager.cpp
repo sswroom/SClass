@@ -58,16 +58,20 @@ void Media::MonitorColorManager::SetDefaultRGB(Media::IColorHandler::RGBPARAM2 *
 	rgb->monLuminance = 250.0;
 }
 
+Media::MonitorColorManager::MonitorColorManager(Text::String *profileName)
+{
+	this->profileName = SCOPY_STRING(profileName);
+	this->monProfileFile = 0;
+	NEW_CLASS(this->sessList, Data::ArrayList<Media::ColorManagerSess*>());
+	NEW_CLASS(this->sessMut, Sync::Mutex());
+	NEW_CLASS(this->rgb, Media::IColorHandler::RGBPARAM2());
+	this->SetDefault();
+	this->Load();
+}
+
 Media::MonitorColorManager::MonitorColorManager(const UTF8Char *profileName)
 {
-	if (profileName == 0)
-	{
-		this->profileName = 0;
-	}
-	else
-	{
-		this->profileName = Text::StrCopyNew(profileName);
-	}
+	this->profileName = Text::String::NewOrNull(profileName);
 	this->monProfileFile = 0;
 	NEW_CLASS(this->sessList, Data::ArrayList<Media::ColorManagerSess*>());
 	NEW_CLASS(this->sessMut, Sync::Mutex());
@@ -89,11 +93,11 @@ Media::MonitorColorManager::~MonitorColorManager()
 	DEL_CLASS(this->sessList);
 	DEL_CLASS(this->sessMut);
 	DEL_CLASS(this->rgb);
-	SDEL_TEXT(this->monProfileFile);
-	SDEL_TEXT(this->profileName);
+	SDEL_STRING(this->monProfileFile);
+	SDEL_STRING(this->profileName);
 }
 
-const UTF8Char *Media::MonitorColorManager::GetProfileName()
+Text::String *Media::MonitorColorManager::GetProfileName()
 {
 	return this->profileName;
 }
@@ -112,7 +116,7 @@ Bool Media::MonitorColorManager::Load()
 		reg = regBase;
 		if (this->profileName)
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->profileName);
+			const WChar *wptr = Text::StrToWCharNew(this->profileName->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -185,8 +189,8 @@ Bool Media::MonitorColorManager::Load()
 
 		if (reg->GetValueStr(L"MonProfileFile", sbuff))
 		{
-			SDEL_TEXT(this->monProfileFile);
-			this->monProfileFile = Text::StrToUTF8New(sbuff);
+			SDEL_STRING(this->monProfileFile);
+			this->monProfileFile = Text::String::NewNotNull(sbuff);
 		}
 		if (reg->GetValueI32(L"MonProfileType", &tmpVal))
 		{
@@ -253,7 +257,7 @@ Bool Media::MonitorColorManager::Save()
 		reg = regBase;
 		if (this->profileName)
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->profileName);
+			const WChar *wptr = Text::StrToWCharNew(this->profileName->v);
 			reg2 = reg->OpenSubReg(wptr);
 			Text::StrDelNew(wptr);
 			if (reg2 == 0)
@@ -295,7 +299,7 @@ Bool Media::MonitorColorManager::Save()
 		reg->SetValue(L"MonProfileType", (Int32)this->rgb->monProfileType);
 		if (this->monProfileFile)
 		{
-			const WChar *wptr = Text::StrToWCharNew(this->monProfileFile);
+			const WChar *wptr = Text::StrToWCharNew(this->monProfileFile->v);
 			reg->SetValue(L"MonProfileFile", wptr);
 			Text::StrDelNew(wptr);
 		}
@@ -548,12 +552,12 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 	}
 }
 
-Bool Media::MonitorColorManager::SetMonProfileFile(const UTF8Char *fileName)
+Bool Media::MonitorColorManager::SetMonProfileFile(Text::String *fileName)
 {
 	if (SetFromProfileFile(fileName))
 	{
-		SDEL_TEXT(this->monProfileFile);
-		this->monProfileFile = Text::StrCopyNew(fileName);
+		SDEL_STRING(this->monProfileFile);
+		this->monProfileFile = fileName->Clone();
 		this->rgb->monProfileType = Media::ColorProfile::CPT_FILE;
 		this->RGBUpdated();
 		return true;
@@ -571,7 +575,7 @@ void Media::MonitorColorManager::SetMonProfile(Media::ColorProfile *color)
 	this->RGBUpdated();
 }
 
-const UTF8Char *Media::MonitorColorManager::GetMonProfileFile()
+Text::String *Media::MonitorColorManager::GetMonProfileFile()
 {
 	return this->monProfileFile;
 }
@@ -614,7 +618,7 @@ void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 	mutUsage.EndUse();
 }
 
-Bool Media::MonitorColorManager::SetFromProfileFile(const UTF8Char *fileName)
+Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 {
 	Bool succ = false;
 	UInt8 *fileBuff;
@@ -753,7 +757,7 @@ void Media::MonitorColorManager::YUVUpdated()
 
 Media::ColorManager::ColorManager()
 {
-	NEW_CLASS(this->monColor, Data::StringUTF8Map<MonitorColorManager*>());
+	NEW_CLASS(this->monColor, Data::FastStringMap<MonitorColorManager*>());
 	NEW_CLASS(this->mut, Sync::Mutex());
 
 	this->defVProfileType = Media::ColorProfile::CPT_BT709;
@@ -765,12 +769,11 @@ Media::ColorManager::ColorManager()
 
 Media::ColorManager::~ColorManager()
 {
-	Data::ArrayList<MonitorColorManager*> *monColorList = this->monColor->GetValues();
 	MonitorColorManager *monColor;
-	UOSInt i = monColorList->GetCount();
+	UOSInt i = this->monColor->GetCount();
 	while (i-- > 0)
 	{
-		monColor = monColorList->GetItem(i);
+		monColor = this->monColor->GetItem(i);
 		DEL_CLASS(monColor);
 	}
 	DEL_CLASS(this->monColor);
@@ -885,7 +888,7 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 	return this->defYUVType;
 }
 
-Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(const UTF8Char *profileName)
+Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String *profileName)
 {
 	Media::MonitorColorManager *monColor;
 	Sync::MutexUsage mutUsage(this->mut);
@@ -902,7 +905,7 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(const UTF8Ch
 		NEW_CLASS(monColor, Media::MonitorColorManager(profileName));
 		if (profileName == 0)
 		{
-			this->monColor->Put((const UTF8Char*)"", monColor);
+			this->monColor->Put(Text::String::NewEmpty(), monColor);
 		}
 		else
 		{
@@ -1009,11 +1012,11 @@ Bool Media::ColorManagerSess::Get10BitColor()
 void Media::ColorManagerSess::ChangeMonitor(MonitorHandle *hMon)
 {
 	Media::MonitorInfo monInfo(hMon);
-	const UTF8Char *monName = monInfo.GetMonitorID();
+	Text::String *monName = monInfo.GetMonitorID();
 	if (monName == 0)
 		return;
 	this->mut->LockWrite();
-	if (Text::StrEquals(monName, this->monColor->GetProfileName()))
+	if (monName->Equals(this->monColor->GetProfileName()))
 	{
 		this->mut->UnlockWrite();
 		return;

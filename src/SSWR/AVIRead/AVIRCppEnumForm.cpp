@@ -47,7 +47,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 		{
 			destSb.AppendC(UTF8STRC("case "));
 			destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
-			destSb.Append(enumList.GetItem(i));
+			destSb.AppendSlow(enumList.GetItem(i));
 			destSb.AppendC(UTF8STRC(":\r\n"));
 			i++;
 		}

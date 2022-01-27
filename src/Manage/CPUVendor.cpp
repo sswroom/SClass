@@ -2,56 +2,56 @@
 #include "MyMemory.h"
 #include "Manage/CPUVendor.h"
 
-const UTF8Char *Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
+Text::CString Manage::CPUVendor::GetBrandName(CPU_BRAND brand)
 {
 	switch (brand)
 	{
 	case CB_INTEL:
-		return (const UTF8Char*)"Intel";
+		return CSTR("Intel");
 	case CB_AMD:
-		return (const UTF8Char*)"AMD";
+		return CSTR("AMD");
 	case CB_BROADCOM:
-		return (const UTF8Char*)"Broadcom";
+		return CSTR("Broadcom");
 	case CB_TI:
-		return (const UTF8Char*)"TI";
+		return CSTR("TI");
 	case CB_QUALCOMM:
-		return (const UTF8Char*)"Qualcomm";
+		return CSTR("Qualcomm");
 	case CB_ATHEROS:
-		return (const UTF8Char*)"Atheros";
+		return CSTR("Atheros");
 	case CB_ROCKCHIP:
-		return (const UTF8Char*)"Rockchip";
+		return CSTR("Rockchip");
 	case CB_MEDIATEK:
-		return (const UTF8Char*)"MediaTek";
+		return CSTR("MediaTek");
 	case CB_INGENIC:
-		return (const UTF8Char*)"Ingenic";
+		return CSTR("Ingenic");
 	case CB_ALLWINNER:
-		return (const UTF8Char*)"Allwinner";
+		return CSTR("Allwinner");
 	case CB_MARVELL:
-		return (const UTF8Char*)"Marvell";
+		return CSTR("Marvell");
 	case CB_AMLOGIC:
-		return (const UTF8Char*)"Amlogic";
+		return CSTR("Amlogic");
 	case CB_ATMEL:
-		return (const UTF8Char*)"ATmel";
+		return CSTR("ATmel");
 	case CB_GRAINMEDIA:
-		return (const UTF8Char*)"GrainMedia";
+		return CSTR("GrainMedia");
 	case CB_REALTEK:
-		return (const UTF8Char*)"Realtek";
+		return CSTR("Realtek");
 	case CB_ANNAPURNA:
-		return (const UTF8Char*)"Annapurna Labs";
+		return CSTR("Annapurna Labs");
 	case CB_RDA:
-		return (const UTF8Char*)"RDA";
+		return CSTR("RDA");
 	case CB_VIA:
-		return (const UTF8Char*)"VIA";
+		return CSTR("VIA");
 	case CB_HISILICON:
-		return (const UTF8Char*)"HiSilicon";
+		return CSTR("HiSilicon");
 	case CB_SAMSUNG:
-		return (const UTF8Char*)"Samsung";
+		return CSTR("Samsung");
 	case CB_SPREADTRUM:
-		return (const UTF8Char*)"Spreadtrum";
+		return CSTR("Spreadtrum");
 	case CB_NXP:
-		return (const UTF8Char*)"NXP";
+		return CSTR("NXP");
 	case CB_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

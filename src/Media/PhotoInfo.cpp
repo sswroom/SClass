@@ -196,6 +196,7 @@ Bool Media::PhotoInfo::GetPhotoDate(Data::DateTime *dt)
 void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (this->make == 0)
 	{
 		if (this->model == 0)
@@ -236,8 +237,8 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
 	if (this->fNumber != 0)
 	{
 		sb->AppendC(UTF8STRC(" f/"));
-		Text::StrDoubleFmt(sbuff, this->fNumber, "0.0");
-		sb->Append(sbuff);
+		sptr = Text::StrDoubleFmt(sbuff, this->fNumber, "0.0");
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 
 	if (this->expTime != 0)
@@ -245,8 +246,8 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
 		sb->AppendC(UTF8STRC(" "));
 		if (this->expTime >= 1)
 		{
-			Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
-			sb->Append(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
+			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else if (this->expTime < 0.3)
 		{
@@ -263,8 +264,8 @@ void Media::PhotoInfo::ToString(Text::StringBuilderUTF8 *sb)
 			}
 			else
 			{
-				Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
-				sb->Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, this->expTime, "0.0");
+				sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			}
 		}
 		sb->AppendC(UTF8STRC("sec"));

@@ -330,64 +330,64 @@ Media::CS::CSConverter *Media::CS::CSConverter::NewConverter(UInt32 srcFormat, U
 	return 0;
 }
 
-const UTF8Char *Media::CS::CSConverter::GetFormatName(UInt32 format)
+Text::CString Media::CS::CSConverter::GetFormatName(UInt32 format)
 {
 	if (format == 0)
-		return (const UTF8Char*)"ARGB";
+		return CSTR("ARGB");
 	else if (format == FFMT_YUV444P10LE)
-		return (const UTF8Char*)"YUV 4:4:4 10-bit Planar";
+		return CSTR("YUV 4:4:4 10-bit Planar");
 	else if (format == FFMT_YUV420P10LE)
-		return (const UTF8Char*)"YUV 4:2:0 10-bit Planar";
+		return CSTR("YUV 4:2:0 10-bit Planar");
 	else if (format == FFMT_YUV420P12LE)
-		return (const UTF8Char*)"YUV 4:2:0 12-bit Planar";
+		return CSTR("YUV 4:2:0 12-bit Planar");
 	else if (format == FFMT_YUV420P8)
-		return (const UTF8Char*)"YUV 4:2:0 8-bit Planar";
+		return CSTR("YUV 4:2:0 8-bit Planar");
 	else if (format == FFMT_AYUV444_10)
-		return (const UTF8Char*)"AYUV 4:4:4 10-bit Interleaved";
+		return CSTR("AYUV 4:4:4 10-bit Interleaved");
 	else if (format == FFMT_YUV444P10LEP)
-		return (const UTF8Char*)"YUV 4:4:4 10-bit Planar Conc";
+		return CSTR("YUV 4:4:4 10-bit Planar Conc");
 	else if (format == *(UInt32*)"DIBS")
-		return (const UTF8Char*)"ARGB (Reverse)";
+		return CSTR("ARGB (Reverse)");
 	else if (format == *(UInt32*)"LRGB")
-		return (const UTF8Char*)"Linear RGB 16-bit (LRGB)";
+		return CSTR("Linear RGB 16-bit (LRGB)");
 	else if (format == *(UInt32*)"LR32")
-		return (const UTF8Char*)"Linear RGB 32-bit (LR32)";
+		return CSTR("Linear RGB 32-bit (LR32)");
 	else if (format == *(UInt32*)"YV12")
-		return (const UTF8Char*)"YUV 4:2:0 8-bit (YV12)";
+		return CSTR("YUV 4:2:0 8-bit (YV12)");
 	else if (format == *(UInt32*)"YUY2")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (YUY2)";
+		return CSTR("YUV 4:2:2 8-bit (YUY2)");
 	else if (format == *(UInt32*)"UYVY")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (UYVY)";
+		return CSTR("YUV 4:2:2 8-bit (UYVY)");
 	else if (format == *(UInt32*)"AYUV")
-		return (const UTF8Char*)"AYUV 4:4:4 8-bit (AYUV)";
+		return CSTR("AYUV 4:4:4 8-bit (AYUV)");
 	else if (format == *(UInt32*)"IMC1")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (IMC1)";
+		return CSTR("YUV 4:2:2 8-bit (IMC1)");
 	else if (format == *(UInt32*)"IMC3")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (IMC3)";
+		return CSTR("YUV 4:2:2 8-bit (IMC3)");
 	else if (format == *(UInt32*)"IMC2")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (IMC2)";
+		return CSTR("YUV 4:2:2 8-bit (IMC2)");
 	else if (format == *(UInt32*)"IMC4")
-		return (const UTF8Char*)"YUV 4:2:2 8-bit (IMC4)";
+		return CSTR("YUV 4:2:2 8-bit (IMC4)");
 	else if (format == *(UInt32*)"NV12")
-		return (const UTF8Char*)"YUV 4:2:0 8-bit (NV12)";
+		return CSTR("YUV 4:2:0 8-bit (NV12)");
 	else if (format == *(UInt32*)"Y410")
-		return (const UTF8Char*)"YUV 4:2:2 10-bit (Y410)";
+		return CSTR("YUV 4:2:2 10-bit (Y410)");
 	else if (format == *(UInt32*)"P010")
-		return (const UTF8Char*)"YUV 4:2:0 10-bit (P010)";
+		return CSTR("YUV 4:2:0 10-bit (P010)");
 	else if (format == *(UInt32*)"P016")
-		return (const UTF8Char*)"YUV 4:2:0 16-bit (P016)";
+		return CSTR("YUV 4:2:0 16-bit (P016)");
 	else if (format == *(UInt32*)"P210")
-		return (const UTF8Char*)"YUV 4:2:2 10-bit (P210)";
+		return CSTR("YUV 4:2:2 10-bit (P210)");
 	else if (format == *(UInt32*)"P216")
-		return (const UTF8Char*)"YUV 4:2:2 16-bit (P216)";
+		return CSTR("YUV 4:2:2 16-bit (P216)");
 	else if (format == *(UInt32*)"Y210")
-		return (const UTF8Char*)"YUV 4:2:2 10-bit (Y210)";
+		return CSTR("YUV 4:2:2 10-bit (Y210)");
 	else if (format == *(UInt32*)"Y216")
-		return (const UTF8Char*)"YUV 4:2:2 16-bit (Y216)";
+		return CSTR("YUV 4:2:2 16-bit (Y216)");
 	else if (format == *(UInt32*)"Y416")
-		return (const UTF8Char*)"AYUV 4:4:4 16-bit (Y416)";
+		return CSTR("AYUV 4:4:4 16-bit (Y416)");
 	else
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 /*
 	csList->Add(*(UInt32*)"YVU9");
 	csList->Add(*(UInt32*)"Y422");

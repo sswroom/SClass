@@ -93,17 +93,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			if (cmdLines[i][0] != '-')
 			{
-				if (Text::StrEquals(cmdLines[i], (const UTF8Char*)"clean"))
+				UOSInt cmdLineLen = Text::StrCharCnt(cmdLines[i]); 
+				if (Text::StrEqualsC(cmdLines[i], cmdLineLen, UTF8STRC("clean")))
 				{
 					showHelp = false;
 					smake->CleanFiles();
 				}
 				else
 				{
-					if (smake->HasProg(cmdLines[i]))
+					if (smake->HasProg(cmdLines[i], cmdLineLen))
 					{
 						showHelp = false;
-						if (!smake->CompileProg(cmdLines[i], asmListing))
+						if (!smake->CompileProg(cmdLines[i], cmdLineLen, asmListing))
 						{
 							Text::StringBuilderUTF8 sb;
 							smake->GetErrorMsg(&sb);
@@ -116,7 +117,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("Program "));
-						sb.Append(cmdLines[i]);
+						sb.AppendC(cmdLines[i], cmdLineLen);
 						sb.AppendC(UTF8STRC(" not found"));
 						console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
 						console->WriteLineC(sb.ToString(), sb.GetLength());

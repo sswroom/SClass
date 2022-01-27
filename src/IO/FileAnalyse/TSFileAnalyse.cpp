@@ -35,9 +35,9 @@ IO::FileAnalyse::TSFileAnalyse::~TSFileAnalyse()
 	SDEL_CLASS(this->fd);
 }
 
-const UTF8Char *IO::FileAnalyse::TSFileAnalyse::GetFormatName()
+Text::CString IO::FileAnalyse::TSFileAnalyse::GetFormatName()
 {
-	return (const UTF8Char*)"Transport Stream (TS)";
+	return CSTR("Transport Stream (TS)");
 }
 
 UOSInt IO::FileAnalyse::TSFileAnalyse::GetFrameCount()
@@ -281,6 +281,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 		return 0;
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(fileOfst, this->packSize));
 	UInt8 buff[192];
 	fd->GetRealData(fileOfst, this->packSize, buff);
@@ -290,7 +291,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 	{
 		if (buff[4] == 0x47)
 		{
-			frame->AddInt(0, 4, "Time", ReadMInt32(buff));
+			frame->AddInt(0, 4, CSTR("Time"), ReadMInt32(buff));
 		}
 		currOfst = 4;
 	}
@@ -300,35 +301,35 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 	}
 	if (buff[currOfst] == 0x47)
 	{
-		frame->AddHex8(currOfst, "Packet Sync", buff[currOfst]);
+		frame->AddHex8(currOfst, CSTR("Packet Sync"), buff[currOfst]);
 		UInt32 adaptation_field_control;
-		frame->AddUInt(currOfst + 1, 2, "transport_error_indicator", (buff[currOfst + 1] & 0x80) >> 7);
-		frame->AddUInt(currOfst + 1, 2, "payload_unit_start_indicator", (buff[currOfst + 1] & 0x40) >> 6);
-		frame->AddUInt(currOfst + 1, 2, "transport_priority", (buff[currOfst + 1] & 0x20) >> 5);
-		frame->AddHex16(currOfst + 1, "PID", ReadMInt16(&buff[currOfst + 1]) & 0x1fff);
-		frame->AddUInt(currOfst + 3, 1, "transport_scrambling_control", (UInt8)(buff[currOfst + 3] >> 6));
+		frame->AddUInt(currOfst + 1, 2, CSTR("transport_error_indicator"), (buff[currOfst + 1] & 0x80) >> 7);
+		frame->AddUInt(currOfst + 1, 2, CSTR("payload_unit_start_indicator"), (buff[currOfst + 1] & 0x40) >> 6);
+		frame->AddUInt(currOfst + 1, 2, CSTR("transport_priority"), (buff[currOfst + 1] & 0x20) >> 5);
+		frame->AddHex16(currOfst + 1, CSTR("PID"), ReadMInt16(&buff[currOfst + 1]) & 0x1fff);
+		frame->AddUInt(currOfst + 3, 1, CSTR("transport_scrambling_control"), (UInt8)(buff[currOfst + 3] >> 6));
 		adaptation_field_control = (buff[currOfst + 3] >> 4) & 3;
-		frame->AddUInt(currOfst + 3, 1, "adaptation_field_control", adaptation_field_control);
-		frame->AddUInt(currOfst + 3, 1, "continuity_counter", buff[currOfst + 3] & 15);
+		frame->AddUInt(currOfst + 3, 1, CSTR("adaptation_field_control"), adaptation_field_control);
+		frame->AddUInt(currOfst + 3, 1, CSTR("continuity_counter"), buff[currOfst + 3] & 15);
 
 		currOfst += 4;
 		if (adaptation_field_control == 2 || adaptation_field_control == 3)
 		{
 			UInt8 adaptation_field_length = buff[currOfst];
-			frame->AddUInt(currOfst, 1, "adaptation_field_length", adaptation_field_length	);
+			frame->AddUInt(currOfst, 1, CSTR("adaptation_field_length"), adaptation_field_length	);
 			currOfst += 1;
 			if (adaptation_field_length > 0)
 			{
 				UOSInt adaptationEnd = currOfst + adaptation_field_length;
 				UInt8 flags = buff[currOfst];
-				frame->AddUInt(currOfst, 1, "discontinuity_indicator", (flags & 0x80) >> 7);
-				frame->AddUInt(currOfst, 1, "random_access_indicator", (flags & 0x40) >> 6);
-				frame->AddUInt(currOfst, 1, "elementary_stream_priority_indicator", (flags & 0x20) >> 5);
-				frame->AddUInt(currOfst, 1, "PCR_flag", (flags & 0x10) >> 4);
-				frame->AddUInt(currOfst, 1, "OPCR_flag", (flags & 0x8) >> 3);
-				frame->AddUInt(currOfst, 1, "splicing_point_flag", (flags & 0x4) >> 2);
-				frame->AddUInt(currOfst, 1, "transport_private_data_flag", (flags & 0x2) >> 1);
-				frame->AddUInt(currOfst, 1, "adaptation_field_extension_flag", (flags & 0x1) >> 0);
+				frame->AddUInt(currOfst, 1, CSTR("discontinuity_indicator"), (flags & 0x80) >> 7);
+				frame->AddUInt(currOfst, 1, CSTR("random_access_indicator"), (flags & 0x40) >> 6);
+				frame->AddUInt(currOfst, 1, CSTR("elementary_stream_priority_indicator"), (flags & 0x20) >> 5);
+				frame->AddUInt(currOfst, 1, CSTR("PCR_flag"), (flags & 0x10) >> 4);
+				frame->AddUInt(currOfst, 1, CSTR("OPCR_flag"), (flags & 0x8) >> 3);
+				frame->AddUInt(currOfst, 1, CSTR("splicing_point_flag"), (flags & 0x4) >> 2);
+				frame->AddUInt(currOfst, 1, CSTR("transport_private_data_flag"), (flags & 0x2) >> 1);
+				frame->AddUInt(currOfst, 1, CSTR("adaptation_field_extension_flag"), (flags & 0x1) >> 0);
 				currOfst += 1;
 
 				if (flags & 0x10)
@@ -336,8 +337,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 					UInt64 program_clock_reference = ReadMUInt32(&buff[currOfst]);
 					program_clock_reference = (program_clock_reference << 1) | (UInt32)(buff[currOfst + 4] >> 7);
 					program_clock_reference = program_clock_reference * 300 + (ReadMUInt16(&buff[currOfst + 4]) & 0x1ff);
-					Text::StrUInt64(sbuff, program_clock_reference);
-					frame->AddField(currOfst, 6, (const UTF8Char*)"program_clock_reference", sbuff);
+					sptr = Text::StrUInt64(sbuff, program_clock_reference);
+					frame->AddField(currOfst, 6, CSTR("program_clock_reference"), CSTRP(sbuff, sptr));
 					currOfst += 6;
 				}
 				if (flags & 0x8)
@@ -345,20 +346,20 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 					UInt64 original_program_clock_reference = ReadMUInt32(&buff[currOfst]);
 					original_program_clock_reference = (original_program_clock_reference << 1) | (UInt32)(buff[currOfst + 4] >> 7);
 					original_program_clock_reference = original_program_clock_reference * 300 + (ReadMUInt16(&buff[currOfst + 4]) & 0x1ff);
-					Text::StrUInt64(sbuff, original_program_clock_reference);
-					frame->AddField(currOfst, 6, (const UTF8Char*)"original_program_clock_reference", sbuff);
+					sptr = Text::StrUInt64(sbuff, original_program_clock_reference);
+					frame->AddField(currOfst, 6, CSTR("original_program_clock_reference"), CSTRP(sbuff, sptr));
 					currOfst += 6;
 				}
 				if (flags & 4)
 				{
-					frame->AddUInt(currOfst, 1, "splice_countdown", buff[currOfst]);
+					frame->AddUInt(currOfst, 1, CSTR("splice_countdown"), buff[currOfst]);
 					currOfst += 1;
 				}
 				if (flags & 2)
 				{
 					UInt8 transport_private_data_length = buff[currOfst];
-					frame->AddUInt(currOfst, 1, "transport_private_data_length", transport_private_data_length);
-					frame->AddHexBuff(currOfst + 1, transport_private_data_length, "private_data", &buff[currOfst], false);
+					frame->AddUInt(currOfst, 1, CSTR("transport_private_data_length"), transport_private_data_length);
+					frame->AddHexBuff(currOfst + 1, transport_private_data_length, CSTR("private_data"), &buff[currOfst], false);
 					currOfst += 1 + (UOSInt)transport_private_data_length;
 				}
 				if (flags & 1)
@@ -368,40 +369,40 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::TSFileAnalyse::GetFrameDetail(UOS
 					UOSInt endOfst = currOfst + 1 + adaptation_field_extension_length;
 					currOfst += 2;
 
-					frame->AddUInt(currOfst, 1, "adaptation_field_extension_length", adaptation_field_extension_length);
-					frame->AddUInt(currOfst + 1, 1, "ltw_flag", (adflags & 0x80) >> 7);
-					frame->AddUInt(currOfst + 1, 1, "piecewise_rate_flag", (adflags & 0x40) >> 6);
-					frame->AddUInt(currOfst + 1, 1, "seamless_splice_flag", (adflags & 0x20) >> 5);
+					frame->AddUInt(currOfst, 1, CSTR("adaptation_field_extension_length"), adaptation_field_extension_length);
+					frame->AddUInt(currOfst + 1, 1, CSTR("ltw_flag"), (adflags & 0x80) >> 7);
+					frame->AddUInt(currOfst + 1, 1, CSTR("piecewise_rate_flag"), (adflags & 0x40) >> 6);
+					frame->AddUInt(currOfst + 1, 1, CSTR("seamless_splice_flag"), (adflags & 0x20) >> 5);
 
 					if (adflags & 0x80)
 					{
-						frame->AddUInt(currOfst, 2, "ltw_valid_flag", (buff[currOfst] & 0x80) >> 7);
-						frame->AddUInt(currOfst, 2, "ltw_offset", 0x7fff & ReadMUInt16(&buff[currOfst]));
+						frame->AddUInt(currOfst, 2, CSTR("ltw_valid_flag"), (buff[currOfst] & 0x80) >> 7);
+						frame->AddUInt(currOfst, 2, CSTR("ltw_offset"), 0x7fff & ReadMUInt16(&buff[currOfst]));
 						currOfst += 2;
 					}
 					if (adflags & 0x40)
 					{
-						frame->AddUInt(currOfst, 3, "piecewise_rate", 0x3fffff & ReadMUInt24(&buff[currOfst]));
+						frame->AddUInt(currOfst, 3, CSTR("piecewise_rate"), 0x3fffff & ReadMUInt24(&buff[currOfst]));
 						currOfst += 3;
 					}
 					if (adflags & 0x20)
 					{
 						UInt64 DTS_next_AU;
-						frame->AddUInt(currOfst, 5, "splice_type", (UInt8)(buff[currOfst] >> 4));
+						frame->AddUInt(currOfst, 5, CSTR("splice_type"), (UInt8)(buff[currOfst] >> 4));
 						DTS_next_AU = buff[currOfst] & 0xe;
 						DTS_next_AU = (DTS_next_AU << 29) | ((ReadMUInt16(&buff[currOfst + 1]) & 0xfffe) << 14) | (UInt32)(ReadMUInt16(&buff[currOfst + 3]) >> 1);
-						Text::StrUInt64(sbuff, DTS_next_AU);
-						frame->AddField(currOfst, 5, (const UTF8Char*)"DTS_next_AU", sbuff);
+						sptr = Text::StrUInt64(sbuff, DTS_next_AU);
+						frame->AddField(currOfst, 5, CSTR("DTS_next_AU"), CSTRP(sbuff, sptr));
 						currOfst += 5;
 					}
 
 					currOfst = endOfst;
 				}
-				frame->AddHexBuff(currOfst, adaptationEnd - currOfst, "adaptation_field", &buff[currOfst], true);
+				frame->AddHexBuff(currOfst, adaptationEnd - currOfst, CSTR("adaptation_field"), &buff[currOfst], true);
 				currOfst = adaptationEnd;
 			}
 		}
-		frame->AddHexBuff(currOfst, this->packSize - currOfst, "Packet Data", &buff[currOfst], true);
+		frame->AddHexBuff(currOfst, this->packSize - currOfst, CSTR("Packet Data"), &buff[currOfst], true);
 	}
 	else
 	{

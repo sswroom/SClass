@@ -629,7 +629,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	UOSInt j;
 	UOSInt k;
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	sbDiscId.Append(&s->v[i + 1]);
+	sbDiscId.AppendC(&s->v[i + 1], s->leng - i - 1);
 	i = sbDiscId.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{

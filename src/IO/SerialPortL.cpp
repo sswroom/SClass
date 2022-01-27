@@ -207,23 +207,23 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 	return true;
 }
 
-const UTF8Char *IO::SerialPort::GetPortTypeName(SerialPortType portType)
+Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
 {
 	switch (portType)
 	{
 	case SPT_SERIALPORT:
-		return (const UTF8Char*)"SerialPort";
+		return CSTR("SerialPort");
 	case SPT_BLUETOOTH:
-		return (const UTF8Char*)"BT";
+		return CSTR("BT");
 	case SPT_COM0COM:
-		return (const UTF8Char*)"com0com";
+		return CSTR("com0com");
 	case SPT_DWSERIAL:
-		return (const UTF8Char*)"DWSerialPort";
+		return CSTR("DWSerialPort");
 	case SPT_USBSERIAL:
-		return (const UTF8Char*)"USBSerialPort";
+		return CSTR("USBSerialPort");
 	default:
 	case SPT_UNKNOWN:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

@@ -380,7 +380,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					{
 						sb.AppendU32(id + 1);
 						sb.AppendC(UTF8STRC(" "));
-						sb.Append(info.uid);
+						sb.AppendSlow(info.uid);
 						sb.AppendC(UTF8STRC("\r\n"));
 					}
 					i++;
@@ -416,7 +416,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					Text::StringBuilderUTF8 sb;
 					sb.AppendU32(msgIndex);
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(info.uid);
+					sb.AppendSlow(info.uid);
 					WriteMessage(cli, true, sb.ToString(), sb.GetLength());
 				}
 				else

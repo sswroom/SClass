@@ -184,7 +184,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 
 Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark::BenchmarkWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	const UTF8Char *msg = 0;
+	Text::CString msg = {0, 0};
 	IO::FileStream *fs;
 	UTF8Char fileName[512];
 	UTF8Char path[512];
@@ -272,15 +272,15 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			}
 			if (fileBuff == 0)
 			{
-				msg = (const UTF8Char*)"Upload file not found";
+				msg = CSTR("Upload file not found");
 			}
 			else if (fileSize <= 0 || fileSize > 65536)
 			{
-				msg = (const UTF8Char*)"File size invalid";
+				msg = CSTR("File size invalid");
 			}
 			else if (!Text::StrEquals(fileName, (const UTF8Char*)"cpuinfo"))
 			{
-				msg = (const UTF8Char*)"File name invalid";
+				msg = CSTR("File name invalid");
 			}
 			else
 			{
@@ -293,8 +293,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 				if (cpuModel)
 				{
-					msg = fileName;
-					Text::StrConcat(Text::StrConcatC(fileName, UTF8STRC("Identified as ")), cpuModel);
+					msg.v = fileName;
+					msg.leng = (UOSInt)(Text::StrConcat(Text::StrConcatC(fileName, UTF8STRC("Identified as ")), cpuModel) - fileName);
 
 					IO::Path::GetProcessFileName(path);
 					u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
@@ -325,11 +325,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (fileSize == fs->Write(fileBuff, fileSize))
 					{
-						msg = (const UTF8Char*)"File uploaded successfully";
+						msg = CSTR("File uploaded successfully");
 					}
 					else
 					{
-						msg = (const UTF8Char*)"Error in storing file";
+						msg = CSTR("Error in storing file");
 					}
 					DEL_CLASS(fs);
 				}
@@ -345,7 +345,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	sbOut.AppendC(UTF8STRC("<form name=\"upload\" method=\"POST\" action=\"cpuinfo\" enctype=\"multipart/form-data\">"));
 	sbOut.AppendC(UTF8STRC("Upload /proc/cpuinfo: <input type=\"file\" name=\"uploadfile\"/><br/><input type=\"submit\"/>"));
 	sbOut.AppendC(UTF8STRC("</form>"));
-	if (msg)
+	if (msg.v)
 	{
 		sbOut.Append(msg);
 	}
@@ -370,7 +370,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				{
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
-					sbOut.Append(u8ptr);
+					sbOut.AppendP(u8ptr, u8ptr2);
 					sbOut.AppendC(UTF8STRC("\">Unknown</a></td><td>"));
 					sbOut.AppendC(UTF8STRC("?</td><td>?</td><td>?"));
 					sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
@@ -380,9 +380,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(u8ptr);
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
-					sbOut.Append(u8ptr);
+					sbOut.AppendP(u8ptr, u8ptr2);
 					sbOut.AppendC(UTF8STRC("\">"));
-					sbOut.Append(u8ptr);
+					sbOut.AppendP(u8ptr, u8ptr2);
 					sbOut.AppendC(UTF8STRC("</a></td><td>"));
 					if (cpu)
 					{
@@ -390,7 +390,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 						sbOut.AppendC(UTF8STRC("</td><td>"));
 						if (cpu->name)
 						{
-							sbOut.Append((const UTF8Char*)cpu->name);
+							sbOut.AppendSlow((const UTF8Char*)cpu->name);
 						}
 						sbOut.AppendC(UTF8STRC("</td><td>"));
 						switch (cpu->contextType)

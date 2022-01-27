@@ -267,9 +267,10 @@ WChar *Math::TSPReader::GetStr(UOSInt colIndex, WChar *buff)
 Bool Math::TSPReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
+	UTF8Char *sptr;
+	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		sb->Append(sbuff);
+		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		return true;
 	}
 	return false;

@@ -35,6 +35,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 	UInt16 port;
 	UInt16 etherType;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 *sb;
 	Net::SocketFactory::ErrorType et;
 	Sync::Interlocked::Increment(&threadCnt);
@@ -77,8 +78,8 @@ UInt32 __stdcall RecvThread(void *userObj)
 						{
 							sb->ClearStr();
 							sb->AppendC(UTF8STRC("Received ping from "));
-							Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
-							sb->Append(sbuff);
+							sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(&buff[12]));
+							sb->AppendP(sbuff, sptr);
 							sb->AppendC(UTF8STRC(", Size = "));
 							sb->AppendUOSInt(ipDataSize);
 							logTool->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);

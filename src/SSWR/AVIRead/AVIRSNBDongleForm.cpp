@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			k = me->lvDevice->AddItem(sbuff, dev);
 			Text::StrUInt16(sbuff, (UInt16)dev->shortAddr);
 			me->lvDevice->SetSubItem(k, 1, sbuff);
-			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType));
+			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType).v);
 			if (dev->readingTime)
 			{
 				dt.SetTicks(dev->readingTime);
@@ -294,7 +294,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, U
 				me->devHandlerMap->Put(devId, (Int32)dev->handType);
 				me->devMut->UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
-				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
+				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType).v);
 			}
 			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);
@@ -335,7 +335,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	sb.AppendU32(baudRate);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("remarks="));
-	sb.Append(remarks.ToString());
+	sb.Append(remarks);
 	sb.AppendC(UTF8STRC("\r\n"));
 	sb.AppendC(UTF8STRC("sensor_list="));
 	me->devMut->LockRead();

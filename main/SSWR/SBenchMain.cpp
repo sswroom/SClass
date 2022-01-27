@@ -141,6 +141,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char u8buff[256];
 	UTF16Char u16buff[32];
 	UTF32Char u32buff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Double t;
@@ -165,9 +166,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	writer->WriteLineC(UTF8STRC("Computer Info:"));
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Platform: "));
-	if (sysInfo.GetPlatformName(sbuff))
+	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
 	{
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
@@ -180,9 +181,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Manage::CPUInfoDetail cpuInfo;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU: "));
-		if (cpuInfo.GetCPUName(u8buff))
+		if ((sptr = cpuInfo.GetCPUName(u8buff)) != 0)
 		{
-			sb.Append(u8buff);
+			sb.AppendP(u8buff, sptr);
 		}
 		else
 		{
@@ -196,7 +197,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendC(UTF8STRC("CPU Model: "));
 		if (cpuInfo.GetCPUModel())
 		{
-			sb.Append(cpuInfo.GetCPUModel());
+			sb.AppendSlow(cpuInfo.GetCPUModel());
 			cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
 		}
 		else
@@ -212,7 +213,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			sb.Append(Manage::CPUVendor::GetBrandName(cpuSpec->brand));
 			sb.AppendC(UTF8STRC(" "));
-			sb.Append((const UTF8Char*)cpuSpec->name);
+			sb.AppendSlow((const UTF8Char*)cpuSpec->name);
 		}
 		else
 		{
@@ -241,18 +242,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("OS: "));
-	if (IO::OS::GetDistro(sbuff))
+	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
 	{
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 	}
 	else
 	{
 		sb.AppendC(UTF8STRC("Unknown"));
 	}
-	if (IO::OS::GetVersion(sbuff))
+	if ((sptr = IO::OS::GetVersion(sbuff)) != 0)
 	{
 		sb.AppendC(UTF8STRC(" "));
-		sb.Append(sbuff);
+		sb.AppendP(sbuff, sptr);
 	}
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -277,16 +278,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Memory Size: "));
 	memSize = sysInfo.GetTotalMemSize();
-	ByteDisp(sbuff, memSize);
-	sb.Append(sbuff);
+	sptr = ByteDisp(sbuff, memSize);
+	sb.AppendP(sbuff, sptr);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("Total Usable Memory Size: "));
 	memSize = sysInfo.GetTotalUsableMemSize();
-	ByteDisp(sbuff, memSize);
-	sb.Append(sbuff);
+	sptr = ByteDisp(sbuff, memSize);
+	sb.AppendP(sbuff, sptr);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -303,22 +304,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
-				sb.Append(ram->deviceLocator);
+				sb.AppendSlow(ram->deviceLocator);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
-				sb.Append(ram->manufacturer);
+				sb.AppendSlow(ram->manufacturer);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
-				sb.Append(ram->partNo);
+				sb.AppendSlow(ram->partNo);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
-				sb.Append(ram->sn);
+				sb.AppendSlow(ram->sn);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->defSpdMHz);
@@ -358,9 +359,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendC(UTF8STRC("Monitor "));
 					sb.AppendUOSInt(i);
 					sb.AppendC(UTF8STRC(" - "));
-					sb.Append(edidInfo.monitorName);
+					sb.AppendSlow(edidInfo.monitorName);
 					sb.AppendC(UTF8STRC(" ("));
-					sb.Append(edidInfo.vendorName);
+					sb.AppendSlow(edidInfo.vendorName);
 					sb.AppendC(UTF8STRC(" "));
 					sb.AppendHex16(edidInfo.productCode);
 					sb.AppendC(UTF8STRC(")"));
@@ -788,13 +789,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (hash)
 		{
 			t = HashTestSpeed(hash);
-			hash->GetName(sbuff);
+			sptr = hash->GetName(sbuff);
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Hash "));
-			sb.Append(sbuff);
+			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(": "));
-			Text::StrDoubleFmt(sbuff, t, "#,###.###");
-			sb.Append(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, t, "#,###.###");
+			sb.AppendP(sbuff, sptr);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1238,11 +1239,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Copy\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1278,11 +1279,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Write\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1318,11 +1319,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Read\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1362,11 +1363,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("MemCopyNO\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1406,11 +1407,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("MemCopyO\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1450,11 +1451,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("MemCopyAC\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));
@@ -1494,11 +1495,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("MemCopyANC\t"));
-				ByteDisp(sbuff, currSize);
-				sb.Append(sbuff);
+				sptr = ByteDisp(sbuff, currSize);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				sb.Append(sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendUOSInt(loopCnt);
 				sb.AppendC(UTF8STRC("\t"));

@@ -2,75 +2,75 @@
 #include "MyMemory.h"
 #include "Manage/OSInfo.h"
 
-const UTF8Char *Manage::OSInfo::GetName(OSType osType)
+Text::CString Manage::OSInfo::GetName(OSType osType)
 {
 	switch (osType)
 	{
 	case OT_WINDOWS_NT:
-		return (const UTF8Char*)"Windows NT 32-bit";
+		return CSTR("Windows NT 32-bit");
 	case OT_WINDOWS_CE:
-		return (const UTF8Char*)"Windows CE";
+		return CSTR("Windows CE");
 	case OT_WINDOWS_SVR:
-		return (const UTF8Char*)"Windows Server";
+		return CSTR("Windows Server");
 	case OT_LINUX_X86_64:
-		return (const UTF8Char*)"Linux x86_64";
+		return CSTR("Linux x86_64");
 	case OT_ANDROID:
-		return (const UTF8Char*)"Android";
+		return CSTR("Android");
 	case OT_IPAD:
-		return (const UTF8Char*)"iPad";
+		return CSTR("iPad");
 	case OT_IPHONE:
-		return (const UTF8Char*)"iPhone";
+		return CSTR("iPhone");
 	case OT_DARWIN:
-		return (const UTF8Char*)"Darwin";
+		return CSTR("Darwin");
 	case OT_MACOS:
-		return (const UTF8Char*)"Mac OS";
+		return CSTR("Mac OS");
 	case OT_WINDOWS_NT64:
-		return (const UTF8Char*)"Windows NT 64-bit";
+		return CSTR("Windows NT 64-bit");
 	case OT_CHROMEOS:
-		return (const UTF8Char*)"Chrome OS";
+		return CSTR("Chrome OS");
 	case OT_LINUX_I686:
-		return (const UTF8Char*)"Linux i686";
+		return CSTR("Linux i686");
 	case OT_NETCAST:
-		return (const UTF8Char*)"webOS";
+		return CSTR("webOS");
 	case OT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *Manage::OSInfo::GetDefName(OSType osType)
+Text::CString Manage::OSInfo::GetDefName(OSType osType)
 {
 	switch (osType)
 	{
 	case OT_WINDOWS_NT:
-		return (const UTF8Char*)"OT_WINDOWS_NT";
+		return CSTR("OT_WINDOWS_NT");
 	case OT_WINDOWS_CE:
-		return (const UTF8Char*)"OT_WINDOWS_CE";
+		return CSTR("OT_WINDOWS_CE");
 	case OT_WINDOWS_SVR:
-		return (const UTF8Char*)"OT_WINDOWS_SVR";
+		return CSTR("OT_WINDOWS_SVR");
 	case OT_LINUX_X86_64:
-		return (const UTF8Char*)"OT_LINUX_X86_64";
+		return CSTR("OT_LINUX_X86_64");
 	case OT_ANDROID:
-		return (const UTF8Char*)"OT_ANDROID";
+		return CSTR("OT_ANDROID");
 	case OT_IPAD:
-		return (const UTF8Char*)"OT_IPAD";
+		return CSTR("OT_IPAD");
 	case OT_IPHONE:
-		return (const UTF8Char*)"OT_IPHONE";
+		return CSTR("OT_IPHONE");
 	case OT_DARWIN:
-		return (const UTF8Char*)"OT_DARWIN";
+		return CSTR("OT_DARWIN");
 	case OT_MACOS:
-		return (const UTF8Char*)"OT_MACOS";
+		return CSTR("OT_MACOS");
 	case OT_WINDOWS_NT64:
-		return (const UTF8Char*)"OT_WINDOWS_NT64";
+		return CSTR("OT_WINDOWS_NT64");
 	case OT_CHROMEOS:
-		return (const UTF8Char*)"OT_CHROMEOS";
+		return CSTR("OT_CHROMEOS");
 	case OT_LINUX_I686:
-		return (const UTF8Char*)"OT_LINUX_I686";
+		return CSTR("OT_LINUX_I686");
 	case OT_NETCAST:
-		return (const UTF8Char*)"OT_NETCAST";
+		return CSTR("OT_NETCAST");
 	case OT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"OT_UNKNOWN";
+		return CSTR("OT_UNKNOWN");
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "Data/UInt64Map.h"
 #include "IO/SNBProtocol.h"
 #include "Sync/RWMutex.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -141,9 +142,9 @@ namespace IO
 		Bool SendDevTurnOff(UInt64 devId);
 		Bool SendDevGetStatus(UInt64 devId);
 
-		static const UTF8Char *GetHandleName(HandleType handType);
-		static const UTF8Char *GetReadingName(ReadingType readingType);
-		static const UTF8Char *SensorTypeGetName(SensorType sensorType);
+		static Text::CString GetHandleName(HandleType handType);
+		static Text::CString GetReadingName(ReadingType readingType);
+		static Text::CString SensorTypeGetName(SensorType sensorType);
 	};
 }
 

@@ -280,6 +280,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	Text::StringBuilderUTF8 sb;
 	IO::FileAnalyse::FrameDetail *frame;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	if (index == 0)
 	{
 		UInt16 version_major;
@@ -289,11 +290,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		UInt32 snaplen;
 		UInt32 network;
 		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, 24));
-		frame->AddHeader((const UTF8Char*)"PCAP Header");
+		frame->AddHeader(CSTR("PCAP Header"));
 		fd->GetRealData(0, 24, this->packetBuff);
 		if (this->isBE)
 		{
-			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Big Endian");
+			frame->AddField(0, 4, CSTR("Endian"), CSTR("Big Endian"));
 			version_major = ReadMUInt16(&this->packetBuff[4]);
 			version_minor = ReadMUInt16(&this->packetBuff[6]);
 			thiszone = ReadMInt32(&this->packetBuff[8]);
@@ -303,7 +304,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		}
 		else
 		{
-			frame->AddField(0, 4, (const UTF8Char*)"Endian", (const UTF8Char*)"Little Endian");
+			frame->AddField(0, 4, CSTR("Endian"), CSTR("Little Endian"));
 			version_major = ReadUInt16(&this->packetBuff[4]);
 			version_minor = ReadUInt16(&this->packetBuff[6]);
 			thiszone = ReadInt32(&this->packetBuff[8]);
@@ -311,12 +312,12 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 			snaplen = ReadUInt32(&this->packetBuff[16]);
 			network = ReadUInt32(&this->packetBuff[20]);
 		}
-		frame->AddUInt(4, 2, "VersionMajor", version_major);
-		frame->AddUInt(6, 2, "VersionMinor", version_minor);
-		frame->AddInt(8, 4, "ThisZone", thiszone);
-		frame->AddUInt(12, 4, "Sigfigs", sigfigs);
-		frame->AddUInt(16, 4, "SnapLen", snaplen);
-		frame->AddUIntName(20, 4, "Network", network, IO::RAWMonitor::LinkTypeGetName(network));
+		frame->AddUInt(4, 2, CSTR("VersionMajor"), version_major);
+		frame->AddUInt(6, 2, CSTR("VersionMinor"), version_minor);
+		frame->AddInt(8, 4, CSTR("ThisZone"), thiszone);
+		frame->AddUInt(12, 4, CSTR("Sigfigs"), sigfigs);
+		frame->AddUInt(16, 4, CSTR("SnapLen"), snaplen);
+		frame->AddUIntName(20, 4, CSTR("Network"), network, IO::RAWMonitor::LinkTypeGetName(network));
 		return frame;
 	}
 	UInt64 ofst;
@@ -333,8 +334,8 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	mutUsage.EndUse();
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
-	Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
-	frame->AddHeader(sbuff);
+	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
+	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
 	Data::DateTime dt;
 	if (this->isBE)
 	{
@@ -351,10 +352,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 		psize = ReadUInt32(&this->packetBuff[12]);
 	}
 	dt.ToLocalTime();
-	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	frame->AddField(0, 8, (const UTF8Char*)"Time", sbuff);
-	frame->AddUInt(8, 4, "StorageSize", storeSize);
-	frame->AddUInt(12, 4, "PacketSize", psize);
+	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	frame->AddField(0, 8, CSTR("Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddUInt(8, 4, CSTR("StorageSize"), storeSize);
+	frame->AddUInt(12, 4, CSTR("PacketSize"), psize);
 	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, 16, frame);
 	return frame;
 }

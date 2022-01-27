@@ -26,20 +26,20 @@ IO::SensorOrientation *IO::Sensor::GetSensorOrientation()
 	return 0;
 }
 
-const UTF8Char *IO::Sensor::GetSensorTypeName(SensorType sensorType)
+Text::CString IO::Sensor::GetSensorTypeName(SensorType sensorType)
 {
 	switch (sensorType)
 	{
 	case SensorType::Accelerometer:
-		return (const UTF8Char*)"Accelerometer";
+		return CSTR("Accelerometer");
 	case SensorType::Pressure:
-		return (const UTF8Char*)"Pressure";
+		return CSTR("Pressure");
 	case SensorType::Magnetometer:
-		return (const UTF8Char*)"Magnetometer";
+		return CSTR("Magnetometer");
 	case SensorType::Orientation:
-		return (const UTF8Char*)"Orientation";
+		return CSTR("Orientation");
 	case SensorType::Unknown:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

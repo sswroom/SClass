@@ -19,7 +19,7 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Vendor Name: "));
-			sb.Append(info.vendorName);
+			sb.AppendSlow(info.vendorName);
 			sb.AppendC(UTF8STRC("\r\nProduct Code: "));
 			sb.AppendHex16(info.productCode);
 			sb.AppendC(UTF8STRC("\r\nSN: "));
@@ -43,12 +43,12 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			if (info.monitorName[0])
 			{
 				sb.AppendC(UTF8STRC("\r\nMonitor Name: "));
-				sb.Append(info.monitorName);
+				sb.AppendSlow(info.monitorName);
 			}
 			if (info.monitorSN[0])
 			{
 				sb.AppendC(UTF8STRC("\r\nMonitor SN: "));
-				sb.Append(info.monitorSN);
+				sb.AppendSlow(info.monitorSN);
 			}
 			sb.AppendC(UTF8STRC("\r\n\r\nColor Primaries:"));
 			sb.AppendC(UTF8STRC("\r\nGamma: "));

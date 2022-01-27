@@ -4,6 +4,7 @@
 #include "Net/UDPServer.h"
 #include "Sync/MutexUsage.h"
 #include "Text/EncodingFactory.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -43,7 +44,7 @@ namespace Net
 		};
 	private:
 		Net::UDPServer *udp;
-		const UTF8Char *userAgent;
+		Text::String *userAgent;
 		Sync::Mutex *mut;
 		Data::UInt32Map<SSDPDevice *> *devMap;
 

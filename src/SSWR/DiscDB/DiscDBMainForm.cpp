@@ -36,14 +36,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 			if ((i + 1) >= nFiles)
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.Append(files[i]);
+				sb.AppendSlow(files[i]);
 				failed = true;
 				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me);
 			}
 			else
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.Append(files[i]);
+				sb.AppendSlow(files[i]);
 				sb.AppendC(UTF8STRC(", do you want to continue?"));
 				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me))
 				{

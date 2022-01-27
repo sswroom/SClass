@@ -479,6 +479,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 	UInt8 *packBuff;
 	UInt8 buff[5];
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -487,52 +488,52 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 		return 0;
 
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
-	frame->AddStrS(0, 4, "Type", (const UTF8Char*)&pack->packType);
-	frame->AddUInt(4, 4, "Size", pack->packSize - 8);
+	frame->AddStrS(0, 4, CSTR("Type"), (const UTF8Char*)&pack->packType);
+	frame->AddUInt(4, 4, CSTR("Size"), pack->packSize - 8);
 	if (pack->subPackType != 0)
 	{
-		frame->AddStrS(8, 4, "SubType", (const UTF8Char*)&pack->subPackType);
+		frame->AddStrS(8, 4, CSTR("SubType"), (const UTF8Char*)&pack->subPackType);
 	}
 
 	if (pack->packType == *(Int32*)"avih")
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddUInt(8, 4, "MicroSec Per Frame", ReadUInt32(&packBuff[0]));
-		frame->AddUInt(12, 4, "Max Bytes Per Second", ReadUInt32(&packBuff[4]));
-		frame->AddUInt(16, 4, "Padding Granularity", ReadUInt32(&packBuff[8]));
-		frame->AddHex32(20, "Flags", ReadUInt32(&packBuff[12]));
-		frame->AddUInt(24, 4, "Total Frames", ReadUInt32(&packBuff[16]));
-		frame->AddUInt(28, 4, "Initial Frames", ReadUInt32(&packBuff[20]));
-		frame->AddUInt(32, 4, "Stream Count", ReadUInt32(&packBuff[24]));
-		frame->AddUInt(36, 4, "Suggested Buffer Size", ReadUInt32(&packBuff[28]));
-		frame->AddUInt(40, 4, "Width", ReadUInt32(&packBuff[32]));
-		frame->AddUInt(44, 4, "Height", ReadUInt32(&packBuff[36]));
+		frame->AddUInt(8, 4, CSTR("MicroSec Per Frame"), ReadUInt32(&packBuff[0]));
+		frame->AddUInt(12, 4, CSTR("Max Bytes Per Second"), ReadUInt32(&packBuff[4]));
+		frame->AddUInt(16, 4, CSTR("Padding Granularity"), ReadUInt32(&packBuff[8]));
+		frame->AddHex32(20, CSTR("Flags"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(24, 4, CSTR("Total Frames"), ReadUInt32(&packBuff[16]));
+		frame->AddUInt(28, 4, CSTR("Initial Frames"), ReadUInt32(&packBuff[20]));
+		frame->AddUInt(32, 4, CSTR("Stream Count"), ReadUInt32(&packBuff[24]));
+		frame->AddUInt(36, 4, CSTR("Suggested Buffer Size"), ReadUInt32(&packBuff[28]));
+		frame->AddUInt(40, 4, CSTR("Width"), ReadUInt32(&packBuff[32]));
+		frame->AddUInt(44, 4, CSTR("Height"), ReadUInt32(&packBuff[36]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"strh")
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddStrS(8, 4, "fccType", &packBuff[0]);
+		frame->AddStrS(8, 4, CSTR("fccType"), &packBuff[0]);
 		if (*(Int32*)&packBuff[4] == 0)
 		{
-			frame->AddUInt(12, 4, "fccHandler", 0);
+			frame->AddUInt(12, 4, CSTR("fccHandler"), 0);
 		}
 		else
 		{
-			frame->AddStrS(12, 4, "fccHandler", &packBuff[4]);
+			frame->AddStrS(12, 4, CSTR("fccHandler"), &packBuff[4]);
 		}
-		frame->AddHex32(16, "Flags", ReadUInt32(&packBuff[8]));
-		frame->AddUInt(20, 4, "Priority", ReadUInt32(&packBuff[12]));
-		frame->AddUInt(24, 4, "Initial Frames", ReadUInt32(&packBuff[16]));
-		frame->AddUInt(28, 4, "Scale", ReadUInt32(&packBuff[20]));
-		frame->AddUInt(32, 4, "Rate", ReadUInt32(&packBuff[24]));
-		frame->AddUInt(36, 4, "Start", ReadUInt32(&packBuff[28]));
-		frame->AddUInt(40, 4, "Length", ReadUInt32(&packBuff[32]));
-		frame->AddUInt(44, 4, "Suggested Buffer Size", ReadUInt32(&packBuff[36]));
-		frame->AddUInt(48, 4, "Quality", ReadUInt32(&packBuff[40]));
-		frame->AddUInt(52, 4, "Sample Size", ReadUInt32(&packBuff[44]));
+		frame->AddHex32(16, CSTR("Flags"), ReadUInt32(&packBuff[8]));
+		frame->AddUInt(20, 4, CSTR("Priority"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(24, 4, CSTR("Initial Frames"), ReadUInt32(&packBuff[16]));
+		frame->AddUInt(28, 4, CSTR("Scale"), ReadUInt32(&packBuff[20]));
+		frame->AddUInt(32, 4, CSTR("Rate"), ReadUInt32(&packBuff[24]));
+		frame->AddUInt(36, 4, CSTR("Start"), ReadUInt32(&packBuff[28]));
+		frame->AddUInt(40, 4, CSTR("Length"), ReadUInt32(&packBuff[32]));
+		frame->AddUInt(44, 4, CSTR("Suggested Buffer Size"), ReadUInt32(&packBuff[36]));
+		frame->AddUInt(48, 4, CSTR("Quality"), ReadUInt32(&packBuff[40]));
+		frame->AddUInt(52, 4, CSTR("Sample Size"), ReadUInt32(&packBuff[44]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"strf")
@@ -542,33 +543,33 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 
 		if (ReadUInt32(packBuff) == pack->packSize - 8)
 		{
-			frame->AddUInt(8, 4, "biSize", ReadUInt32(&packBuff[0]));
-			frame->AddUInt(12, 4, "biWidth", ReadUInt32(&packBuff[4]));
-			frame->AddUInt(16, 4, "biHeight", ReadUInt32(&packBuff[8]));
-			frame->AddUInt(20, 2, "biPlanes", ReadUInt16(&packBuff[12]));
-			frame->AddUInt(22, 2, "biBitCount", ReadUInt16(&packBuff[14]));
+			frame->AddUInt(8, 4, CSTR("biSize"), ReadUInt32(&packBuff[0]));
+			frame->AddUInt(12, 4, CSTR("biWidth"), ReadUInt32(&packBuff[4]));
+			frame->AddUInt(16, 4, CSTR("biHeight"), ReadUInt32(&packBuff[8]));
+			frame->AddUInt(20, 2, CSTR("biPlanes"), ReadUInt16(&packBuff[12]));
+			frame->AddUInt(22, 2, CSTR("biBitCount"), ReadUInt16(&packBuff[14]));
 			if (ReadUInt32(&packBuff[16]) == 0)
 			{
-				frame->AddUInt(24, 4, "biCompression", 0);
+				frame->AddUInt(24, 4, CSTR("biCompression"), 0);
 			}
 			else
 			{
-				frame->AddStrS(24, 4, "fccHandler", &packBuff[16]);
+				frame->AddStrS(24, 4, CSTR("fccHandler"), &packBuff[16]);
 			}
-			frame->AddUInt(28, 4, "biSizeImage", ReadUInt32(&packBuff[20]));
-			frame->AddUInt(32, 4, "biXPelsPerMeter", ReadUInt32(&packBuff[24]));
-			frame->AddUInt(36, 4, "biYPelsPerMeter", ReadUInt32(&packBuff[28]));
-			frame->AddUInt(40, 4, "biClrUsed", ReadUInt32(&packBuff[32]));
-			frame->AddUInt(44, 4, "Suggested biClrImportant Size", ReadUInt32(&packBuff[36]));
+			frame->AddUInt(28, 4, CSTR("biSizeImage"), ReadUInt32(&packBuff[20]));
+			frame->AddUInt(32, 4, CSTR("biXPelsPerMeter"), ReadUInt32(&packBuff[24]));
+			frame->AddUInt(36, 4, CSTR("biYPelsPerMeter"), ReadUInt32(&packBuff[28]));
+			frame->AddUInt(40, 4, CSTR("biClrUsed"), ReadUInt32(&packBuff[32]));
+			frame->AddUInt(44, 4, CSTR("Suggested biClrImportant Size"), ReadUInt32(&packBuff[36]));
 		}
 		else
 		{
-			frame->AddHex16(8, "wFormatTag", ReadUInt16(&packBuff[0]));
-			frame->AddUInt(10, 2, "nChannels", ReadUInt16(&packBuff[2]));
-			frame->AddUInt(12, 4, "nSamplesPerSecond", ReadUInt32(&packBuff[4]));
-			frame->AddUInt(16, 4, "nAvgBytesPerSec", ReadUInt32(&packBuff[8]));
-			frame->AddUInt(20, 2, "nBlockAlign", ReadUInt16(&packBuff[12]));
-			frame->AddUInt(22, 2, "wBitsPerSample", ReadUInt16(&packBuff[14]));
+			frame->AddHex16(8, CSTR("wFormatTag"), ReadUInt16(&packBuff[0]));
+			frame->AddUInt(10, 2, CSTR("nChannels"), ReadUInt16(&packBuff[2]));
+			frame->AddUInt(12, 4, CSTR("nSamplesPerSecond"), ReadUInt32(&packBuff[4]));
+			frame->AddUInt(16, 4, CSTR("nAvgBytesPerSec"), ReadUInt32(&packBuff[8]));
+			frame->AddUInt(20, 2, CSTR("nBlockAlign"), ReadUInt16(&packBuff[12]));
+			frame->AddUInt(22, 2, CSTR("wBitsPerSample"), ReadUInt16(&packBuff[14]));
 		}
 
 		MemFree(packBuff);
@@ -577,21 +578,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddHexBuff(8, pack->packSize - 8, "Unused", packBuff, true);
+		frame->AddHexBuff(8, pack->packSize - 8, CSTR("Unused"), packBuff, true);
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"dmlh")
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddUInt(8, 4, "Frame Count", ReadUInt32(&packBuff[0]));
+		frame->AddUInt(8, 4, CSTR("Frame Count"), ReadUInt32(&packBuff[0]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"00db" || pack->packType == *(Int32*)"00dc" || pack->packType == *(Int32*)"01wb" || pack->packType == *(Int32*)"02wb")
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddHexBuff(8, pack->packSize - 8, "Data", packBuff, true);
+		frame->AddHexBuff(8, pack->packSize - 8, CSTR("Data"), packBuff, true);
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"idx1")
@@ -602,13 +603,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 		i = 0;
 		j = (pack->packSize - 8) >> 4;
 		k = 0;
-		frame->AddText(8, (const UTF8Char*)"Index List:");
+		frame->AddText(8, CSTR("Index List:"));
 		while (i < j)
 		{
-			frame->AddStrS(k + 8, 4, "Type", buff);
-			frame->AddUInt(k + 12, 4, "IsKey", ReadUInt32(&packBuff[k + 4]));
-			frame->AddUInt(k + 16, 4, "Offset", ReadUInt32(&packBuff[k + 8]));
-			frame->AddUInt(k + 20, 4, "Size", ReadUInt32(&packBuff[k + 12]));
+			frame->AddStrS(k + 8, 4, CSTR("Type"), buff);
+			frame->AddUInt(k + 12, 4, CSTR("IsKey"), ReadUInt32(&packBuff[k + 4]));
+			frame->AddUInt(k + 16, 4, CSTR("Offset"), ReadUInt32(&packBuff[k + 8]));
+			frame->AddUInt(k + 20, 4, CSTR("Size"), ReadUInt32(&packBuff[k + 12]));
 			k += 16;
 			i++;
 		}
@@ -619,39 +620,39 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddUInt(8, 4, "cbSize", ReadUInt32(&packBuff[0]));
-		frame->AddUInt(12, 4, "Number of Frames", ReadUInt32(&packBuff[4]));
-		frame->AddUInt(16, 4, "Number of Steps", ReadUInt32(&packBuff[8]));
-		frame->AddUInt(20, 4, "Width", ReadUInt32(&packBuff[12]));
-		frame->AddUInt(24, 4, "Height", ReadUInt32(&packBuff[16]));
-		frame->AddUInt(28, 4, "Bits per Pixel", ReadUInt32(&packBuff[20]));
-		frame->AddUInt(32, 4, "Number of color planes", ReadUInt32(&packBuff[24]));
-		frame->AddUInt(36, 4, "Default frame display rate", ReadUInt32(&packBuff[28]));
-		frame->AddHex32(40, "Attributes Flags", ReadUInt32(&packBuff[32]));
+		frame->AddUInt(8, 4, CSTR("cbSize"), ReadUInt32(&packBuff[0]));
+		frame->AddUInt(12, 4, CSTR("Number of Frames"), ReadUInt32(&packBuff[4]));
+		frame->AddUInt(16, 4, CSTR("Number of Steps"), ReadUInt32(&packBuff[8]));
+		frame->AddUInt(20, 4, CSTR("Width"), ReadUInt32(&packBuff[12]));
+		frame->AddUInt(24, 4, CSTR("Height"), ReadUInt32(&packBuff[16]));
+		frame->AddUInt(28, 4, CSTR("Bits per Pixel"), ReadUInt32(&packBuff[20]));
+		frame->AddUInt(32, 4, CSTR("Number of color planes"), ReadUInt32(&packBuff[24]));
+		frame->AddUInt(36, 4, CSTR("Default frame display rate"), ReadUInt32(&packBuff[28]));
+		frame->AddHex32(40, CSTR("Attributes Flags"), ReadUInt32(&packBuff[32]));
 		MemFree(packBuff);
 	}
 	else if (pack->packType == *(Int32*)"icon")
 	{
 		packBuff = MemAlloc(UInt8, pack->packSize - 8);
 		this->fd->GetRealData(pack->fileOfst + 8, pack->packSize - 8, packBuff);
-		frame->AddUInt(8, 2, "File Header", ReadUInt32(&packBuff[0]));
-		frame->AddUInt(10, 2, "File Format", ReadUInt32(&packBuff[2]));
-		frame->AddUInt(12, 2, "Number of Images", ReadUInt32(&packBuff[4]));
+		frame->AddUInt(8, 2, CSTR("File Header"), ReadUInt32(&packBuff[0]));
+		frame->AddUInt(10, 2, CSTR("File Format"), ReadUInt32(&packBuff[2]));
+		frame->AddUInt(12, 2, CSTR("Number of Images"), ReadUInt32(&packBuff[4]));
 
 		UOSInt i = 0;
 		UOSInt j = ReadUInt16(&packBuff[4]);
 		while (i < j)
 		{
-			Text::StrConcat(Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Image "), i), (const UTF8Char*)":");
-			frame->AddText(14 + (i << 4), sbuff);
-			frame->AddUInt(14 + (i << 4), 1, "Width", packBuff[6 + (i << 4)]);
-			frame->AddUInt(15 + (i << 4), 1, "Height", packBuff[7 + (i << 4)]);
-			frame->AddUInt(16 + (i << 4), 1, "Number of Color", packBuff[8 + (i << 4)]);
-			frame->AddUInt(17 + (i << 4), 1, "Reserved", packBuff[9 + (i << 4)]);
-			frame->AddUInt(18 + (i << 4), 2, "HotSpot X", ReadUInt16(&packBuff[10 + (i << 4)]));
-			frame->AddUInt(20 + (i << 4), 2, "HotSpot Y", ReadUInt16(&packBuff[12 + (i << 4)]));
-			frame->AddUInt(22 + (i << 4), 4, "Image Size", ReadUInt16(&packBuff[14 + (i << 4)]));
-			frame->AddUInt(26 + (i << 4), 4, "Offset", ReadUInt16(&packBuff[18 + (i << 4)]));			
+			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image ")), i), UTF8STRC(":"));
+			frame->AddText(14 + (i << 4), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddUInt(14 + (i << 4), 1, CSTR("Width"), packBuff[6 + (i << 4)]);
+			frame->AddUInt(15 + (i << 4), 1, CSTR("Height"), packBuff[7 + (i << 4)]);
+			frame->AddUInt(16 + (i << 4), 1, CSTR("Number of Color"), packBuff[8 + (i << 4)]);
+			frame->AddUInt(17 + (i << 4), 1, CSTR("Reserved"), packBuff[9 + (i << 4)]);
+			frame->AddUInt(18 + (i << 4), 2, CSTR("HotSpot X"), ReadUInt16(&packBuff[10 + (i << 4)]));
+			frame->AddUInt(20 + (i << 4), 2, CSTR("HotSpot Y"), ReadUInt16(&packBuff[12 + (i << 4)]));
+			frame->AddUInt(22 + (i << 4), 4, CSTR("Image Size"), ReadUInt16(&packBuff[14 + (i << 4)]));
+			frame->AddUInt(26 + (i << 4), 4, CSTR("Offset"), ReadUInt16(&packBuff[18 + (i << 4)]));			
 			i++;
 		}
 

@@ -71,7 +71,14 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 	sb.AppendI32(syncTime);
 	sb.AppendC(UTF8STRC("ms\r\n"));
 	sb.AppendC(UTF8STRC("Can Seek = "));
-	sb.Append((const UTF8Char*)(mediaSrc->CanSeek()?"true":"false"));
+	if (mediaSrc->CanSeek())
+	{
+		sb.AppendC(UTF8STRC("true"));
+	}
+	else
+	{
+		sb.AppendC(UTF8STRC("false"));
+	}
 	sb.AppendC(UTF8STRC("\r\n"));
 	if (mediaSrc->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 	{

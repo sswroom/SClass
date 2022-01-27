@@ -196,14 +196,14 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			{
 				UOSInt nPoints;
 				Math::Polyline *pl = (Math::Polyline*)vec;
-				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
+				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
-					Text::StrInt64(sbuff, currId);
+					sptr = Text::StrInt64(sbuff, currId);
 				}
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<Placemark><name>"));
-				sb.Append(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("</name><LineString><coordinates>"));
 
 				Double *points = pl->GetPointList(&nPoints);
@@ -302,15 +302,15 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 				UOSInt nPoints;
 				UOSInt nParts;
 				Math::Polygon *pg = (Math::Polygon*)vec;
-				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
+				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
-					Text::StrInt64(sbuff, currId);
+					sptr = Text::StrInt64(sbuff, currId);
 				}
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<Placemark>"));
 				sb.AppendC(UTF8STRC("<name>"));
-				sb.Append(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("</name>"));
 				sb.AppendC(UTF8STRC("<Polygon>"));
 				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
@@ -373,9 +373,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
 			{
 				Math::VectorImage *img = (Math::VectorImage*)vec;
-				if (layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol) == 0)
+				if ((sptr = layer->GetString(sbuff, sizeof(sbuff), nameArr, currId, nameCol)) == 0)
 				{
-					Text::StrInt64(sbuff, currId);
+					sptr = Text::StrInt64(sbuff, currId);
 				}
 
 				Double minX;
@@ -389,7 +389,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<ScreenOverlay>"));
 					sb.AppendC(UTF8STRC("<name>"));
-					sb.Append(sbuff);
+					sb.AppendP(sbuff, sptr);
 					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
@@ -399,27 +399,27 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						dt.ToUTCTime();
 						dt.SetUnixTimestamp(timeStart);
 						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
 
 						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm:ss");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm:ss");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</begin>"));
 						dt.SetUnixTimestamp(timeEnd);
 						sb.AppendC(UTF8STRC("<end>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm:ss");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm:ss");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
 					}
 					if (img->HasSrcAlpha())
@@ -467,7 +467,7 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<GroundOverlay>"));
 					sb.AppendC(UTF8STRC("<name>"));
-					sb.Append(sbuff);
+					sb.AppendP(sbuff, sptr);
 					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
@@ -477,27 +477,27 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						dt.ToUTCTime();
 						dt.SetUnixTimestamp(timeStart);
 						sb.AppendC(UTF8STRC("<TimeStamp><when>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</when></TimeStamp>"));
 
 						sb.AppendC(UTF8STRC("<TimeSpan><begin>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm:ss");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm:ss");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</begin>"));
 						dt.SetUnixTimestamp(timeEnd);
 						sb.AppendC(UTF8STRC("<end>"));
-						dt.ToString(sbuff, "yyyy-MM-dd");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("T"));
-						dt.ToString(sbuff, "HH:mm:ss");
-						sb.Append(sbuff);
+						sptr = dt.ToString(sbuff, "HH:mm:ss");
+						sb.AppendP(sbuff, sptr);
 						sb.AppendC(UTF8STRC("Z</end></TimeSpan>"));
 					}
 					if (img->HasSrcAlpha())

@@ -13,7 +13,7 @@ void SSWR::ProcMonForm::AddProg(const UTF8Char *progName, const UTF8Char *progPa
 {
 	SSWR::ProcMonForm::ProgInfo *prog;
 	prog = MemAlloc(ProgInfo, 1);
-	prog->progName = Text::StrCopyNew(progName);
+	prog->progName = Text::String::NewNotNull(progName);
 	prog->procId = 0;
 	if (progPath)
 	{
@@ -371,7 +371,7 @@ SSWR::ProcMonForm::~ProcMonForm()
 	{
 		prog = this->progList->GetItem(i);
 		SDEL_STRING(prog->progPath);
-		SDEL_TEXT(prog->progName);
+		SDEL_STRING(prog->progName);
 		MemFree(prog);
 	}
 	DEL_CLASS(this->progList);

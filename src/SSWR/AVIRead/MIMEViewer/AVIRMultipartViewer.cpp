@@ -16,12 +16,12 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 	NEW_CLASS(this->tcParts, UI::GUITabControl(ui, ctrl));
 	this->tcParts->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	const UTF8Char *defMsg = obj->GetDefMsg();
-	if (defMsg && defMsg[0])
+	Text::String *defMsg = obj->GetDefMsg();
+	if (defMsg && defMsg->v[0])
 	{
 		UI::GUITextBox *txt;
 		tp = this->tcParts->AddTabPage((const UTF8Char*)"Default");
-		NEW_CLASS(txt, UI::GUITextBox(ui, tp, obj->GetDefMsg(), true));
+		NEW_CLASS(txt, UI::GUITextBox(ui, tp, obj->GetDefMsg()->v, true));
 		txt->SetDockType(UI::GUIControl::DOCK_FILL);
 		txt->SetReadOnly(true);
 	}

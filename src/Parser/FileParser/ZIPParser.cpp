@@ -71,6 +71,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UInt8 buff[512];
 	UOSInt i;
 	UInt64 currOfst;
@@ -195,7 +196,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 			}
 			if (buff[30 + fnameSize - 1] == '/')
 			{
-				enc.UTF8FromBytes(sbuff, &buff[30], fnameSize - 1, 0);
+				sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize - 1, 0);
 				zipInfo = zipInfos.Get(sbuff);
 				if (zipInfo && (zipInfo->compSize != 0xffffffff))
 				{
@@ -212,7 +213,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb.Append(sptr);
+						sb.AppendC(sptr, i);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)
 						{
@@ -225,7 +226,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					else
 					{
 						sb.AppendC(UTF8STRC("\\"));
-						sb.Append(sptr);
+						sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)
 						{
@@ -258,7 +259,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-						sb.Append(sptr);
+						sb.AppendC(sptr, i);
 						pf3 = pf2->GetPackFile(sptr);
 						if (pf3 == 0)
 						{

@@ -36,7 +36,7 @@ namespace SSWR
 
 			Net::WiFiLogFile *wifiLogFile;
 			Net::MACInfoList *macList;
-			const UTF8Char *filterText;
+			Text::String *filterText;
 
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnStoreClicked(void *userObj);

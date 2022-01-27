@@ -26,15 +26,16 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientEvent(Net::TCPClient *cl
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	ClientStatus *status = (ClientStatus*)cliData;
 	switch (evtType)
 	{
 	case Net::TCPClientMgr::TCP_EVENT_DISCONNECT:
 		{
-			cli->GetRemoteName(sbuff);
+			sptr = cli->GetRemoteName(sbuff);
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("CLI: Client disconnected: "));
-			sb.Append(sbuff);
+			sb.AppendP(sbuff, sptr);
 			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 			if (status->dev)
@@ -86,10 +87,11 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnClientTimeout(Net::TCPClient *
 {
 	SSWR::SMonitor::SMonitorSvrCore *me = (SSWR::SMonitor::SMonitorSvrCore*)userObj;
 	UTF8Char sbuff[32];
-	cli->GetRemoteName(sbuff);
+	UTF8Char *sptr;
+	sptr = cli->GetRemoteName(sbuff);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("CLI: Client process timeout: "));
-	sb.Append(sbuff);
+	sb.AppendP(sbuff, sptr);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 }
 
@@ -1097,9 +1099,9 @@ void SSWR::SMonitor::SMonitorSvrCore::UserPwdCalc(const UTF8Char *userName, cons
 {
 	Crypto::Hash::MD5 md5;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(userName);
+	sb.AppendSlow(userName);
 	sb.AppendC(UTF8STRC(" pwd "));
-	sb.Append(pwd);
+	sb.AppendSlow(pwd);
 	md5.Calc(sb.ToString(), sb.GetLength());
 	md5.GetValue(buff);
 }
@@ -1863,11 +1865,11 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 		}
 		if (i == index)
 		{
-			sb.Append(readingName);
+			sb.AppendSlow(readingName);
 		}
 		else if (dev->readingNames[i])
 		{
-			sb.Append(dev->readingNames[i]);
+			sb.AppendSlow(dev->readingNames[i]);
 		}
 		
 		i++;
@@ -1996,7 +1998,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReadings(DeviceInfo *dev, const U
 		{
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
-			sb.Append(readings);
+			sb.AppendSlow(readings);
 			sarr[1] = sb.ToString();
 			i = 0;
 			while (true)
@@ -2049,7 +2051,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetDigitals(DeviceInfo *dev, const U
 		{
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
-			sb.Append(digitals);
+			sb.AppendSlow(digitals);
 			sarr[1] = sb.ToString();
 			i = 0;
 			while (true)

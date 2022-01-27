@@ -290,14 +290,14 @@ SSWR::OrganMgr::OrganEnv::ErrorType SSWR::OrganMgr::OrganEnv::GetErrorType()
 	return this->errType;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
+Text::CString SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nameLen)
 {
 	if (this->langFile == 0)
-		return name;
+		return {name, nameLen};
 	Text::String *ret = this->langFile->GetValue(name, nameLen);
 	if (ret == 0)
-		return name;
-	return ret->v;
+		return {name, nameLen};
+	return ret->ToCString();
 }
 
 UOSInt SSWR::OrganMgr::OrganEnv::GetCategories(Data::ArrayList<Category*> *categories)
@@ -997,9 +997,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				*sptr = 0;
 				sb->ClearStr();
 				sb->AppendC(UTF8STRC("../../"));
-				sb->Append(pathAppend);
+				sb->AppendSlow(pathAppend);
 				sb->AppendC(UTF8STRC("/"));
-				sb->Append(u8ptr);
+				sb->AppendSlow(u8ptr);
 				sb->AppendC(UTF8STRC("/index.html"));
 				writer->WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(sb->ToString());

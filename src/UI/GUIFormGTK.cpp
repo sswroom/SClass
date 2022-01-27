@@ -33,7 +33,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 	UI::GUIForm *me = (UI::GUIForm *)userData;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<const UTF8Char *> files;
-	sb.Append((const UTF8Char*)gtk_selection_data_get_data(data));
+	sb.AppendSlow((const UTF8Char*)gtk_selection_data_get_data(data));
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

@@ -4,6 +4,7 @@
 #include "IO/LogTool.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -26,7 +27,7 @@ namespace Net
 		IO::LogTool *log;
 		Net::UDPServer *svr;
 		Net::UDPServer *dataSvr;
-		const UTF8Char *path;
+		Text::String *path;
 		Sync::Mutex *mut;
 		Data::UInt64Map<SessionInfo*> *sessMap;
 		Bool threadToStop;

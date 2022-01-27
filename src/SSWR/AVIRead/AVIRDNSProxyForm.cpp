@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append(nameList.GetItem(i));
+			sb.AppendSlow(nameList.GetItem(i));
 			me->lbV4Request->AddItem(sb.ToString(), 0);
 			i++;
 		}
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append(nameList.GetItem(i));
+			sb.AppendSlow(nameList.GetItem(i));
 			me->lbV6Request->AddItem(sb.ToString(), 0);
 			i++;
 		}
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.Append(nameList.GetItem(i));
+			sb.AppendSlow(nameList.GetItem(i));
 			me->lbOthRequest->AddItem(sb.ToString(), 0);
 			i++;
 		}
@@ -522,7 +522,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(nameList.GetItem(i));
+		sb.AppendSlow(nameList.GetItem(i));
 		me->lbSearch->AddItem(sb.ToString(), 0);
 		i++;
 	}
@@ -686,11 +686,12 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.Append(reqName);
+	sb.AppendSlow(reqName);
 	sb.AppendC(UTF8STRC(" from "));
-	Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", T="));
 	sb.AppendI32(reqType);
 	sb.AppendC(UTF8STRC(", C="));
@@ -776,7 +777,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(blackList.GetItem(i));
+		sb.AppendSlow(blackList.GetItem(i));
 		this->lbBlackList->AddItem(sb.ToString(), 0);
 		i++;
 	}

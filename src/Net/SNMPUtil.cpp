@@ -445,44 +445,44 @@ Net::SNMPUtil::ErrorStatus Net::SNMPUtil::PDUParseTrapMessage(const UInt8 *pdu, 
 	}
 }
 
-const UTF8Char *Net::SNMPUtil::TypeGetName(UInt8 type)
+Text::CString Net::SNMPUtil::TypeGetName(UInt8 type)
 {
 	switch (type)
 	{
 	case 2:
-		return (const UTF8Char*)"INTEGER";
+		return CSTR("INTEGER");
 	case 4:
-		return (const UTF8Char*)"OCTET STRING";
+		return CSTR("OCTET STRING");
 	case 5:
-		return (const UTF8Char*)"NULL";
+		return CSTR("NULL");
 	case 6:
-		return (const UTF8Char*)"OBJECT IDENTIFIER";
+		return CSTR("OBJECT IDENTIFIER");
 	case 0x30:
-		return (const UTF8Char*)"SEQUENCE";
+		return CSTR("SEQUENCE");
 	case 0x40:
-		return (const UTF8Char*)"IpAddress";
+		return CSTR("IpAddress");
 	case 0x41:
-		return (const UTF8Char*)"Counter32";
+		return CSTR("Counter32");
 	case 0x42:
-		return (const UTF8Char*)"Gauge32";
+		return CSTR("Gauge32");
 	case 0x43:
-		return (const UTF8Char*)"Timeticks";
+		return CSTR("Timeticks");
 	case 0x44:
-		return (const UTF8Char*)"Opaque";
+		return CSTR("Opaque");
 	case 0x46:
-		return (const UTF8Char*)"Counter64";
+		return CSTR("Counter64");
 	case 0xA0:
-		return (const UTF8Char*)"GetRequest-PDU";
+		return CSTR("GetRequest-PDU");
 	case 0xA1:
-		return (const UTF8Char*)"GetNextRequest-PDU";
+		return CSTR("GetNextRequest-PDU");
 	case 0xA2:
-		return (const UTF8Char*)"GetResponse-PDU";
+		return CSTR("GetResponse-PDU");
 	case 0xA3:
-		return (const UTF8Char*)"SetRequest-PDU";
+		return CSTR("SetRequest-PDU");
 	case 0xA4:
-		return (const UTF8Char*)"Trap-PDU";
+		return CSTR("Trap-PDU");
 	default:
-		return (const UTF8Char*)"UNKNOWN";
+		return CSTR("UNKNOWN");
 	}
 }
 
@@ -585,27 +585,27 @@ void Net::SNMPUtil::FreeBindingItem(BindingItem *item)
 	MemFree(item);
 }
 
-const UTF8Char *Net::SNMPUtil::ErrorStatusToString(ErrorStatus err)
+Text::CString Net::SNMPUtil::ErrorStatusToString(ErrorStatus err)
 {
 	switch (err)
 	{
 	case ES_NOERROR:
-		return (const UTF8Char*)"No Error";
+		return CSTR("No Error");
 	case ES_TOOBIG:
-		return (const UTF8Char*)"Too Big";
+		return CSTR("Too Big");
 	case ES_NOSUCHNAME:
-		return (const UTF8Char*)"No Such Name";
+		return CSTR("No Such Name");
 	case ES_BADVALUE:
-		return (const UTF8Char*)"Bad Value";
+		return CSTR("Bad Value");
 	case ES_READONLY:
-		return (const UTF8Char*)"Read Only";
+		return CSTR("Read Only");
 	case ES_GENERROR:
-		return (const UTF8Char*)"General Error";
+		return CSTR("General Error");
 	case ES_NORESP:
-		return (const UTF8Char*)"No Response";
+		return CSTR("No Response");
 	case ES_UNKRESP:
-		return (const UTF8Char*)"Unknown Response";
+		return CSTR("Unknown Response");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

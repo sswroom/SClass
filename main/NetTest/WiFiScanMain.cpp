@@ -102,7 +102,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendChar('\t', 1);
 					if (bss->GetSSID())
 					{
-						sb.Append(bss->GetSSID());
+						sb.AppendSlow(bss->GetSSID());
 						thisLen = Text::StrCharCnt(bss->GetSSID());
 					}
 					else
@@ -120,7 +120,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendChar('\t', 1);
 					if ((csptr = bss->GetManuf()) != 0)
 					{
-						sb.Append(csptr);
+						sb.AppendSlow(csptr);
 						thisLen = Text::StrCharCnt(csptr);
 					}
 					else
@@ -134,7 +134,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendChar('\t', 1);
 					if ((csptr = bss->GetModel()) != 0)
 					{
-						sb.Append(csptr);
+						sb.AppendSlow(csptr);
 						thisLen = Text::StrCharCnt(csptr);
 					}
 					else
@@ -148,7 +148,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendChar('\t', 1);
 					if ((csptr = bss->GetSN()) != 0)
 					{
-						sb.Append(csptr);
+						sb.AppendSlow(csptr);
 						thisLen = Text::StrCharCnt(csptr);
 					}
 					else
@@ -168,7 +168,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					buff[5] = macPtr[3];
 					buff[6] = macPtr[4];
 					buff[7] = macPtr[5];
-					sb.Append((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMUInt64(buff))->name);					
+					sb.AppendSlow((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMUInt64(buff))->name);					
 					console.WriteLineC(sb.ToString(), sb.GetLength());
 					DEL_CLASS(bss);
 					j++;

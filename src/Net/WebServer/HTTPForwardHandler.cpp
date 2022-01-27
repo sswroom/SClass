@@ -57,7 +57,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	UOSInt j;
 	if (i >= 0)
 	{
-		sb.Append(&uri->v[i]);
+		sb.AppendC(&uri->v[i], uri->leng - i);
 	}
 	Bool kaConn = true;
 	Text::StringBuilderUTF8 sbHeader;

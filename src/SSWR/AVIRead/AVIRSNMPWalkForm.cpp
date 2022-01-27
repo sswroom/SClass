@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 				sb.ClearStr();
 				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 				this->lvResults->SetSubItem(i, 1, sb.ToString());
-				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
+				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType).v);
 				if (item->valBuff)
 				{
 					sb.ClearStr();

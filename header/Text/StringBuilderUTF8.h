@@ -46,10 +46,6 @@ namespace Text
 		StringBuilderUTF8 *Append(const Text::StringBase<UTF8Char> &s);
 		StringBuilderUTF8 *Append(const Text::StringBase<const UTF8Char> &s);
 		StringBuilderUTF8 *AppendSlow(const UTF8Char *s);
-/*		StringBuilderUTF8 *Append(const UTF8Char *s)
-		{
-			return AppendSlow(s);
-		}*/
 
 		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);
 		StringBuilderUTF8 *AppendChar(UTF32Char c, UOSInt repCnt);
@@ -81,6 +77,11 @@ namespace Text
 				this->leng += len1 + len2;
 			}
 			return this;
+		}
+
+		StringBuilderUTF8 *AppendP(const UTF8Char *str, const UTF8Char *strEnd)
+		{
+			return AppendC(str, (UOSInt)(strEnd - str));
 		}
 
 		StringBuilderUTF8 *AppendI16(Int16 iVal)

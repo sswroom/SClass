@@ -2,6 +2,7 @@
 #define _SM_UI_GUIDRAGDROPGTK
 #include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
+#include "Text/String.h"
 #include "UI/GUIControl.h"
 
 namespace UI
@@ -13,7 +14,7 @@ namespace UI
 		void *context;
 		UInt32 time;
 		Data::StringUTF8Map<OSInt> *targetMap;
-		Data::Int32Map<const UTF8Char*> *targetText;
+		Data::Int32Map<Text::String*> *targetText;
 
 		void LoadData();
 	public:

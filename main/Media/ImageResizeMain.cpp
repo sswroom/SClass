@@ -15,8 +15,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
 	UInt32 pxSize;
-	const UTF8Char *srcFile;
-	const UTF8Char *destFile;
+	Text::CString srcFile;
+	Text::CString destFile;
 	//UOSInt cmdCnt;
 	Int32 ret = 1;
 	//UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
@@ -39,15 +39,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 1;
 	}*/
 	
-	srcFile = (const UTF8Char*)"/home/sswroom/Progs/Temp/insp1624622649783.jpg";
-	destFile = (const UTF8Char*)"/home/sswroom/Progs/photo2.jpg";
+	srcFile = CSTR("/home/sswroom/Progs/Temp/insp1624622649783.jpg");
+	destFile = CSTR("/home/sswroom/Progs/photo2.jpg");
 	pxSize = 200;
 
 	Manage::HiResClock clk;
 	Parser::FileParser::GUIImgParser parser;
 	IO::StmData::FileData *fd;
 	Media::ImageList *imgList;
-	NEW_CLASS(fd, IO::StmData::FileData(srcFile, false));
+	NEW_CLASS(fd, IO::StmData::FileData(srcFile.v, false));
 	if (fd->GetDataSize() == 0)
 	{
 		sb.ClearStr();
@@ -78,10 +78,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Exporter::GUIJPGExporter exporter;
 			IO::FileStream *fs;
-			NEW_CLASS(imgList, Media::ImageList(destFile));
+			NEW_CLASS(imgList, Media::ImageList(destFile.v));
 			imgList->AddImage(newImg, 0);
-			NEW_CLASS(fs, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (exporter.ExportFile(fs, destFile, imgList, 0))
+			NEW_CLASS(fs, IO::FileStream(destFile.v, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			if (exporter.ExportFile(fs, destFile.v, imgList, 0))
 			{
 				ret = 0;
 			}

@@ -224,7 +224,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	j = codePhases->GetCount();
 	while (i < j)
 	{
-		debugSB.Append(codePhases->GetItem(i));
+		debugSB.AppendSlow(codePhases->GetItem(i));
 		debugSB.AppendC(UTF8STRC(" "));
 		i++;
 	}
@@ -336,7 +336,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			debugSB.AppendC(UTF8STRC(": missing )"));
 			if (phase)
 			{
-				debugSB.Append(phase);
+				debugSB.AppendSlow(phase);
 			}
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
@@ -364,7 +364,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		if (!Text::StrToInt32(phase, &val))
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
-			debugSB.Append(phase);
+			debugSB.AppendSlow(phase);
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			Text::StrDelNew(phase);
 			return false;
@@ -408,14 +408,14 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 				}
 				else
 				{
-					params.Append(phase2);
+					params.AppendSlow(phase2);
 					Text::StrDelNew(codePhases->RemoveAt(cpIndex));
 				}
 			}
 			if (lev != 0)
 			{
 				debugSB.AppendC(UTF8STRC(": macro not supported "));
-				debugSB.Append(phase);
+				debugSB.AppendSlow(phase);
 				this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 				Text::StrDelNew(phase);
 				return false;
@@ -433,7 +433,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	else
 	{
 		debugSB.AppendC(UTF8STRC(": unknown syntex "));
-		debugSB.Append(phase);
+		debugSB.AppendSlow(phase);
 		this->LogError(status, debugSB.ToString(),debugSB.GetLength(), errMsgs);
 		Text::StrDelNew(phase);
 //		return false;
@@ -744,7 +744,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		else
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
-			debugSB.Append(phase);
+			debugSB.AppendSlow(phase);
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
@@ -795,12 +795,12 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 			if (succ && j > 0)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.Append(cond);
+				sb.AppendSlow(cond);
 				sb.AppendC(UTF8STRC(": unknown phases found:"));
 				while (i < j)
 				{
 					sb.AppendC(UTF8STRC(" "));
-					sb.Append(codePhase.GetItem(i));
+					sb.AppendSlow(codePhase.GetItem(i));
 					i++;
 				}
 			}
@@ -849,17 +849,17 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 		if (fileStatus->lineBuffWS)
 		{
 			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB->ToString());
-			fileStatus->lineBuffSB->Append(lineBuff);
+			fileStatus->lineBuffSB->AppendSlow(lineBuff);
 			wordStart = fileStatus->lineBuffSB->ToString() + j;
 		}
 		else
 		{
-			fileStatus->lineBuffSB->Append(lineBuff);
+			fileStatus->lineBuffSB->AppendSlow(lineBuff);
 		}
 	}
 	else
 	{
-		fileStatus->lineBuffSB->Append(lineBuff);
+		fileStatus->lineBuffSB->AppendSlow(lineBuff);
 	}
 	sptr = fileStatus->lineBuffSB->ToString() + i;
 	if (fileStatus->currMode == Text::Cpp::CppParseStatus::PM_DEFINE)

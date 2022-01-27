@@ -13,23 +13,23 @@ namespace Net
 		UOSInt buffSize;
 
 		Int32 version;
-		const UTF8Char *sessName;
-		const UTF8Char *userName;
-		const UTF8Char *sessId;
-		const UTF8Char *sessVer;
-		const UTF8Char *userAddrType;
-		const UTF8Char *userAddrHost;
+		Text::String *sessName;
+		Text::String *userName;
+		Text::String *sessId;
+		Text::String *sessVer;
+		Text::String *userAddrType;
+		Text::String *userAddrHost;
 		Int64 startTime;
 		Int64 endTime;
-		const UTF8Char *sessTool;
-		const UTF8Char *sessType;
-		const UTF8Char *sessCharset;
-		const UTF8Char *sessControl;
+		Text::String *sessTool;
+		Text::String *sessType;
+		Text::String *sessCharset;
+		Text::String *sessControl;
 		Bool sessRecv;
 		Bool sessSend;
-		const UTF8Char *reqUserAgent;
+		Text::String *reqUserAgent;
 
-		Data::ArrayList<const UTF8Char *> *sessDesc;
+		Data::ArrayList<Text::String *> *sessDesc;
 		Data::ArrayList<Int32> *sessDescType;
 		Data::ArrayList<Net::ISDPMedia *> *sessMedia;
 

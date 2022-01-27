@@ -479,7 +479,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
-				sb.Append(topicSb.ToString());
+				sb.Append(topicSb.ToCString());
 				if (cmdType & 6)
 				{
 					if (cmdSize - i < 2)

@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.Append(this->dispList->GetItem(i));
+		sb.AppendSlow(this->dispList->GetItem(i));
 		if (this->flags & Map::MapEnv::SFLG_TRIM)
 		{
 			sb.Trim();

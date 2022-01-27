@@ -3,6 +3,7 @@
 #include "Text/StringBase.h"
 
 #define CSTR(str) {UTF8STRC(str)}
+#define CSTRP(str, strEnd) {str, (UOSInt)(strEnd - str)}
 namespace Text
 {
 	struct CString : public StringBase<const UTF8Char>
@@ -20,6 +21,18 @@ namespace Text
 		static CString FromPtr(const UTF8Char *v)
 		{
 			return CString(v, Text::StrCharCnt(v));
+		}
+
+		CString Substring(UOSInt index)
+		{
+			if (index >= this->leng)
+			{
+				return {this->v, 0};
+			}
+			else
+			{
+				return {this->v + index, this->leng - index};
+			}
 		}
 	};
 }

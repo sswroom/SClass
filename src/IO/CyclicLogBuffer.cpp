@@ -56,16 +56,16 @@ void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, const UTF8Char* s
 	UOSInt i = this->logInd;
 	while (i-- > 0)
 	{
-		sb->Append(this->logBuff[i]);
-		sb->Append(seperator);
+		sb->AppendSlow(this->logBuff[i]);
+		sb->AppendSlow(seperator);
 	}
 	i = this->buffSize - 1;
 	if (this->logBuff[i])
 	{
 		while (i >= this->logInd)
 		{
-			sb->Append(this->logBuff[i]);
-			sb->Append(seperator);
+			sb->AppendSlow(this->logBuff[i]);
+			sb->AppendSlow(seperator);
 
 			i--;
 		}

@@ -365,7 +365,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
-	sb.Append(topic);
+	sb.AppendSlow(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);

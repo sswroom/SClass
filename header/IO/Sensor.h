@@ -4,6 +4,7 @@
 #include "IO/SensorOrientation.h"
 #include "IO/SensorPressure.h"
 #include "IO/SensorMagnetometer.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -31,8 +32,8 @@ namespace IO
 		virtual IO::SensorMagnetometer *GetSensorMagnetometer();
 		virtual IO::SensorOrientation *GetSensorOrientation();
 
-		static const UTF8Char *GetSensorTypeName(SensorType sensorType);
+		static Text::CString GetSensorTypeName(SensorType sensorType);
 	};
-};
+}
 
 #endif

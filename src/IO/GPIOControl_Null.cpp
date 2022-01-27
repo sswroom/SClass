@@ -76,7 +76,7 @@ void IO::GPIOControl::ClearEvent(UOSInt pinNum)
 {
 }
 
-const UTF8Char *IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinState)
+Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinState)
 {
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }

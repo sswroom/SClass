@@ -533,13 +533,13 @@ void UI::GUIHexFileView::HandleOffsetChg(OffsetChgHandler hdlr, void *hdlrObj)
 	this->hdlrList->Add(hdlr);
 }
 
-const UTF8Char *UI::GUIHexFileView::GetAnalyzerName()
+Text::CString UI::GUIHexFileView::GetAnalyzerName()
 {
 	if (this->analyse)
 	{
 		return this->analyse->GetFormatName();
 	}
-	return 0;
+	return {0, 0};
 }
 
 Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF8 *sb)

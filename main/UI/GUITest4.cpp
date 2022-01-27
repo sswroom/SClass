@@ -45,7 +45,7 @@ void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 	{
 		if (i > 0)
 			sb.AppendC(UTF8STRC("\r\n"));
-		sb.Append(files[i]);
+		sb.AppendSlow(files[i]);
 		i++;
 	}
 	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Drop Files", me);

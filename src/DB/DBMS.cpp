@@ -1228,7 +1228,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				*valid = false;
 
 				sb.AppendC(UTF8STRC("#HY000Unknown system variable '"));
-				sb.Append(val);
+				sb.AppendSlow(val);
 				sb.AppendC(UTF8STRC("'"));
 				SDEL_TEXT(sess->lastError);
 				sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -1700,7 +1700,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#42S22Unknown column '"));
-								sb.Append(val);
+								sb.AppendSlow(val);
 								sb.AppendC(UTF8STRC("' in field list"));
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -1719,7 +1719,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("#42S22Unknown column '"));
-							sb.Append(sptr);
+							sb.AppendSlow(sptr);
 							sb.AppendC(UTF8STRC("' in field list"));
 							SDEL_TEXT(sess->lastError);
 							sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -1754,7 +1754,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("#42S22Unknown column '"));
-		sb.Append(val);
+		sb.AppendSlow(val);
 		sb.AppendC(UTF8STRC("' in field list"));
 		SDEL_TEXT(sess->lastError);
 		sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2117,7 +2117,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.Append(sptr3);
+					sb.AppendSlow(sptr3);
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2438,7 +2438,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-								sb.Append(sptr1);
+								sb.AppendSlow(sptr1);
 								sb.AppendChar('\'', 1);
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2454,7 +2454,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-								sb.Append(sptr1);
+								sb.AppendSlow(sptr1);
 								sb.AppendChar('\'', 1);
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2483,7 +2483,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-							sb.Append(sptr1);
+							sb.AppendSlow(sptr1);
 							sb.AppendChar('\'', 1);
 							SDEL_TEXT(sess->lastError);
 							sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2521,7 +2521,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-								sb.Append(sptr1);
+								sb.AppendSlow(sptr1);
 								sb.AppendChar('\'', 1);
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2537,7 +2537,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-								sb.Append(sptr1);
+								sb.AppendSlow(sptr1);
 								sb.AppendChar('\'', 1);
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2566,7 +2566,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-							sb.Append(sptr1);
+							sb.AppendSlow(sptr1);
 							sb.AppendChar('\'', 1);
 							SDEL_TEXT(sess->lastError);
 							sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2609,7 +2609,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-								sb.Append(sptr1);
+								sb.AppendSlow(sptr1);
 								sb.AppendChar('\'', 1);
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2624,7 +2624,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-					sb.Append(sptr1);
+					sb.AppendSlow(sptr1);
 					sb.AppendChar('\'', 1);
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2648,7 +2648,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
-						sb.Append(sptr1);
+						sb.AppendSlow(sptr1);
 						sb.AppendChar('\'', 1);
 						SDEL_TEXT(sess->lastError);
 						sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2857,7 +2857,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-			sb.Append(sptr1);
+			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2867,7 +2867,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-			sb.Append(sptr1);
+			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2877,7 +2877,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			////////////////////////
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-			sb.Append(sptr1);
+			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2960,7 +2960,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-						sb.Append(sptr1);
+						sb.AppendSlow(sptr1);
 						sb.AppendC(UTF8STRC("' at line 1"));
 						SDEL_TEXT(sess->lastError);
 						sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2972,7 +2972,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-					sb.Append(sptr1);
+					sb.AppendSlow(sptr1);
 					sb.AppendC(UTF8STRC("' at line 1"));
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2982,7 +2982,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-				sb.Append(sptr1);
+				sb.AppendSlow(sptr1);
 				sb.AppendC(UTF8STRC("' at line 1"));
 				SDEL_TEXT(sess->lastError);
 				sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -2992,7 +2992,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-			sb.Append(sptr1);
+			sb.AppendSlow(sptr1);
 			sb.AppendC(UTF8STRC("' at line 1"));
 			SDEL_TEXT(sess->lastError);
 			sess->lastError = Text::StrCopyNew(sb.ToString());
@@ -3002,7 +3002,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("#42000You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '"));
-		sb.Append(sptr1);
+		sb.AppendSlow(sptr1);
 		sb.AppendC(UTF8STRC("' at line 1"));
 		SDEL_TEXT(sess->lastError);
 		sess->lastError = Text::StrCopyNew(sb.ToString());

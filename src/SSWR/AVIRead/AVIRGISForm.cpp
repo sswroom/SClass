@@ -554,7 +554,7 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	Text::UTF8Reader *reader;
 	dt.SetCurrTimeUTC();
 	sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/dirList/"));
-	sb.Append(listFile);
+	sb.AppendSlow(listFile);
 	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
 	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
@@ -579,9 +579,9 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/"));
-		sb.Append(dateStr);
-		sb.Append(filePath);
-		sb.Append(timeStr);
+		sb.AppendSlow(dateStr);
+		sb.AppendSlow(filePath);
+		sb.AppendSlow(timeStr);
 		sb.AppendC(UTF8STRC("/index.kml?t="));
 		sb.AppendI64(dt.ToTicks());
 		this->OpenURL(sb.ToString(), sb.GetLength(), (const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/index.kml");
@@ -1363,13 +1363,13 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						dt.SetCurrTimeUTC();
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_cone_15a_"));
-						sb.Append(sbuff);
+						sb.AppendC(sbuff, 4);
 						sb.AppendC(UTF8STRC(".kml?rand="));
 						sb.AppendI64(dt.ToTicks());
 						this->OpenURL(sb.ToString(), sb.GetLength(), 0);
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_track_15a_e_"));
-						sb.Append(sbuff);
+						sb.AppendC(sbuff, 4);
 						sb.AppendC(UTF8STRC(".xml?rand="));
 						sb.AppendI64(dt.ToTicks());
 						this->OpenURL(sb.ToString(), sb.GetLength(), 0);

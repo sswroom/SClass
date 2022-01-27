@@ -154,6 +154,7 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (this->DoRequest(req, resp, subReq, subReqLen))
 	{
 		return true;
@@ -193,8 +194,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				{
 					sbURI.ClearStr();
 					req->GetRequestURLBase(&sbURI);
-					req->GetRequestPath(sbuff, sizeof(sbuff));
-					sbURI.Append(sbuff);
+					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
+					sbURI.AppendP(sbuff, sptr);
 					json.ObjectBeginObject((const UTF8Char*)"_links");
 					json.ObjectBeginObject((const UTF8Char*)"self");
 					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
@@ -244,8 +245,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					{
 						sbURI.ClearStr();
 						req->GetRequestURLBase(&sbURI);
-						req->GetRequestPath(sbuff, sizeof(sbuff));
-						sbURI.Append(sbuff);
+						sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
+						sbURI.AppendP(sbuff, sptr);
 						if (!sbURI.EndsWith('/'))
 						{
 							sbURI.AppendChar('/', 1);
@@ -277,11 +278,11 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 
 				if (!this->noLinks)
 				{
-					req->GetRequestPath(sbuff, sizeof(sbuff));
+					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
 					json.ObjectBeginObject((const UTF8Char*)"_links");
 					sbURI.ClearStr();
 					req->GetRequestURLBase(&sbURI);
-					sbURI.Append(sbuff);
+					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page=0&size="));
 					sbURI.AppendUOSInt(page->GetPageSize());
 					json.ObjectBeginObject((const UTF8Char*)"first");
@@ -297,7 +298,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					{
 						sbURI.ClearStr();
 						req->GetRequestURLBase(&sbURI);
-						sbURI.Append(sbuff);
+						sbURI.AppendP(sbuff, sptr);
 						sbURI.AppendC(UTF8STRC("?page="));
 						sbURI.AppendUOSInt(page->GetPageNum() + 1);
 						sbURI.AppendC(UTF8STRC("&size="));
@@ -308,7 +309,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					}
 					sbURI.ClearStr();
 					req->GetRequestURLBase(&sbURI);
-					sbURI.Append(sbuff);
+					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page="));
 					sbURI.AppendUOSInt(pageCnt - 1);
 					sbURI.AppendC(UTF8STRC("&size="));

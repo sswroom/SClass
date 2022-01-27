@@ -13,6 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	UInt32 sortableIP = Net::SocketUtil::IPv4ToSortable(srcIP);
 	IPInfo *ipInfo;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Sync::MutexUsage mutUsage(me->ipMut);
 	ipInfo = me->ipMap->Get(sortableIP);
 	if (ipInfo == 0)
@@ -49,11 +50,11 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 	mutUsage.EndUse();
 
 	sb.AppendC(UTF8STRC("Received from "));
-	Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, srcIP);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(" to "));
-	Net::SocketUtil::GetIPv4Name(sbuff, destIP);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
+	sb.AppendP(sbuff, sptr);
 	sb.AppendC(UTF8STRC(", size = "));
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));

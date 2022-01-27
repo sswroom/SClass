@@ -1520,12 +1520,12 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 
 	NEW_CLASS(this->lblTrans, UI::GUILabel(ui, this, (const UTF8Char*)"RGB Transfer Func"));
 	this->lblTrans->SetRect(16, 546, 150, 23, false);
-	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, this, Media::CS::TransferFunc::GetTransferFuncName(this->colorProfile->GetRTranParam()->GetTranType())));
+	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, this, Media::CS::TransferFunc::GetTransferFuncName(this->colorProfile->GetRTranParam()->GetTranType()).v));
 	this->txtTrans->SetRect(166, 546, 100, 23, false);
 	this->txtTrans->SetReadOnly(true);
 	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, this, (const UTF8Char*)"RGB Primaries"));
 	this->lblPrimaries->SetRect(16, 570, 150, 23, false);
-	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
+	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType).v));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);
 	this->txtPrimaries->SetReadOnly(true);
 	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));

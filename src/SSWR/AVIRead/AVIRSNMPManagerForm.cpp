@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 			me->lvAgentReading->AddItem(reading->name, reading);
 			Text::StrUOSInt(sbuff, reading->index);
 			me->lvAgentReading->SetSubItem(i, 1, sbuff);
-			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType));
+			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType).v);
 			if (reading->valValid)
 			{
 				Text::StrDouble(sbuff, reading->currVal);

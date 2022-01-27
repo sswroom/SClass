@@ -764,7 +764,7 @@ void UI::GUITextFileView::CopySelected()
 		j = enc->CountUTF8Chars(rbuff, (UOSInt)(endOfst - startOfst));
 		line = MemAlloc(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
-		sb.Append(&line[selTopX]);
+		sb.AppendSlow(&line[selTopX]);
 		MemFree(line);
 		MemFree(rbuff);
 
@@ -784,7 +784,7 @@ void UI::GUITextFileView::CopySelected()
 		line = MemAlloc(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
-		sb.Append(line);
+		sb.AppendC(line, selBottomX);
 		MemFree(line);
 		MemFree(rbuff);
 

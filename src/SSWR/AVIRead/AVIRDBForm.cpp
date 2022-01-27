@@ -373,11 +373,12 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
+				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
+				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassHeader(sbuff2, 0, &sb);
+				cls->ToCppClassHeader(&hdr, 0, &sb);
 				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
 				DEL_CLASS(cls);
 			}
@@ -389,11 +390,12 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Data::Class *cls = this->CreateTableClass(sbuff);
 			if (cls)
 			{
+				Text::PString hdr = {sbuff2, 0};
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
-				DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]);
+				hdr.leng = (UOSInt)(DB::DBUtil::DB2FieldName(sbuff2, &sbuff[i + 1]) - sbuff2);
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
-				cls->ToCppClassSource(0, sbuff2, 0, &sb);
+				cls->ToCppClassSource(0, &hdr, 0, &sb);
 				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
 				DEL_CLASS(cls);
 			}

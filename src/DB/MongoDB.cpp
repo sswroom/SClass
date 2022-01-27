@@ -74,10 +74,10 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database);
 		char **strv;
 		strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
-		SDEL_TEXT(this->errorMsg);
+		SDEL_STRING(this->errorMsg);
 		if (strv == 0)
 		{
-			this->errorMsg = Text::StrCopyNew((const UTF8Char*)error.message);
+			this->errorMsg = Text::String::NewNotNull((const UTF8Char*)error.message);
 		}
 		else
 		{
@@ -135,13 +135,13 @@ void DB::MongoDB::Reconnect()
 UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 {
 	bson_error_t error;
-	SDEL_TEXT(this->errorMsg);
+	SDEL_STRING(this->errorMsg);
 	if (this->client == 0)
 		return 0;
 	char **strv = mongoc_client_get_database_names_with_opts((mongoc_client_t*)this->client, 0, &error);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::StrCopyNew((const UTF8Char*)error.message);
+		this->errorMsg = Text::String::NewNotNull((const UTF8Char*)error.message);
 		return 0;
 	}
 	else
@@ -170,20 +170,21 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	out->AppendC(UTF8STRC("mongodb://"));
 	if (userName)
 	{
-		Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName);
-		out->Append(sbuff);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName);
+		out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		if (password)
 		{
 			out->AppendChar(':', 1);
-			Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password);
-			out->Append(sbuff);
+			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password);
+			out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		out->AppendChar('@', 1);
 	}
-	out->Append(host);
+	out->AppendSlow(host);
 	out->AppendChar(':', 1);
 	out->AppendU16(port);
 }
@@ -260,7 +261,7 @@ Bool DB::MongoDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		sb->Append((const UTF8Char*)str);
+		sb->AppendSlow((const UTF8Char*)str);
 		bson_free(str);
 		return true;
 	}

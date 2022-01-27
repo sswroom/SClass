@@ -19,22 +19,10 @@ SSWR::OrganMgr::OrganGroup::OrganGroup()
 
 SSWR::OrganMgr::OrganGroup::~OrganGroup()
 {
-	if (this->cName)
-	{
-		Text::StrDelNew(this->cName);
-	}
-	if (this->eName)
-	{
-		Text::StrDelNew(this->eName);
-	}
-	if (this->desc)
-	{
-		Text::StrDelNew(this->desc);
-	}
-	if (this->idKey)
-	{
-		Text::StrDelNew(this->idKey);
-	}
+	SDEL_STRING(this->cName);
+	SDEL_STRING(this->eName);
+	SDEL_STRING(this->desc);
+	SDEL_STRING(this->idKey);
 }
 
 void SSWR::OrganMgr::OrganGroup::SetGroupId(Int32 groupId)
@@ -49,42 +37,22 @@ Int32 SSWR::OrganMgr::OrganGroup::GetGroupId()
 
 void SSWR::OrganMgr::OrganGroup::SetCName(const UTF8Char *cName)
 {
-	if (this->cName)
-	{
-		Text::StrDelNew(this->cName);
-	}
-	if (cName)
-	{
-		this->cName = Text::StrCopyNew(cName);
-	}
-	else
-	{
-		this->cName = 0;
-	}
+	SDEL_STRING(this->cName);
+	this->cName = Text::String::NewOrNull(cName);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroup::GetCName()
+Text::String *SSWR::OrganMgr::OrganGroup::GetCName()
 {
 	return this->cName;
 }
 
 void SSWR::OrganMgr::OrganGroup::SetEName(const UTF8Char *eName)
 {
-	if (this->eName)
-	{
-		Text::StrDelNew(this->eName);
-	}
-	if (eName)
-	{
-		this->eName = Text::StrCopyNew(eName);
-	}
-	else
-	{
-		this->eName = 0;
-	}
+	SDEL_STRING(this->eName);
+	this->eName = Text::String::NewOrNull(eName);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroup::GetEName()
+Text::String *SSWR::OrganMgr::OrganGroup::GetEName()
 {
 	return this->eName;
 }
@@ -101,21 +69,11 @@ Int32 SSWR::OrganMgr::OrganGroup::GetGroupType()
 
 void SSWR::OrganMgr::OrganGroup::SetDesc(const UTF8Char *desc)
 {
-	if (this->desc)
-	{
-		Text::StrDelNew(this->desc);
-	}
-	if (desc)
-	{
-		this->desc = Text::StrCopyNew(desc);
-	}
-	else
-	{
-		this->desc = 0;
-	}
+	SDEL_STRING(this->desc);
+	this->desc = Text::String::NewOrNull(desc);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroup::GetDesc()
+Text::String *SSWR::OrganMgr::OrganGroup::GetDesc()
 {
 	return this->desc;
 }
@@ -142,21 +100,11 @@ Int32 SSWR::OrganMgr::OrganGroup::GetPhotoSpecies()
 
 void SSWR::OrganMgr::OrganGroup::SetIDKey(const UTF8Char *idKey)
 {
-	if (this->idKey)
-	{
-		Text::StrDelNew(this->idKey);
-	}
-	if (idKey)
-	{
-		this->idKey = Text::StrCopyNew(idKey);
-	}
-	else
-	{
-		this->idKey = 0;
-	}
+	SDEL_STRING(this->idKey);
+	this->idKey = Text::String::NewOrNull(idKey);
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroup::GetIDKey()
+Text::String *SSWR::OrganMgr::OrganGroup::GetIDKey()
 {
 	return this->idKey;
 }
@@ -196,13 +144,13 @@ UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff)
 	*sptr++ = '-';
 	if (this->cName)
 	{
-		sptr = Text::StrConcat(sptr, this->cName);
+		sptr = this->cName->ConcatTo(sptr);
 	}
 	if (this->eName)
 	{
 		*sptr++ = ' ';
 		*sptr++ = '(';
-		sptr = Text::StrConcat(sptr, this->eName);
+		sptr = this->eName->ConcatTo(sptr);
 		*sptr++ = ')';
 	}
 	*sptr = 0;
@@ -212,7 +160,7 @@ UTF8Char *SSWR::OrganMgr::OrganGroup::GetItemName(UTF8Char *buff)
 UTF8Char *SSWR::OrganMgr::OrganGroup::GetEngName(UTF8Char *buff)
 {
 	UTF8Char *sptr = buff;
-	sptr = Text::StrConcat(sptr, this->eName);
+	sptr = this->eName->ConcatTo(sptr);
 	return sptr;
 }
 
@@ -221,13 +169,13 @@ SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganGroup::Clone()
 	OrganGroup *newItem;
 	NEW_CLASS(newItem, OrganGroup());
 	newItem->SetGroupId(this->groupId);
-	newItem->SetCName(this->cName);
-	newItem->SetEName(this->eName);
+	newItem->SetCName(STR_PTR(this->cName));
+	newItem->SetEName(STR_PTR(this->eName));
 	newItem->SetGroupType(this->groupType);
-	newItem->SetDesc(this->desc);
+	newItem->SetDesc(STR_PTR(this->desc));
 	newItem->SetPhotoGroup(this->photoGroup);
 	newItem->SetPhotoSpecies(this->photoSpecies);
-	newItem->SetIDKey(this->idKey);
+	newItem->SetIDKey(STR_PTR(this->idKey));
 	newItem->SetIsDefault(this->isDefault);
 	newItem->SetAdminOnly(this->adminOnly);
 	return newItem;

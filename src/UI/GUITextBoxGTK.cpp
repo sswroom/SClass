@@ -185,14 +185,14 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 		gtk_text_buffer_get_start_iter(buff, &startIter);
 		gtk_text_buffer_get_end_iter(buff, &endIter);
 		lbl = gtk_text_buffer_get_text(buff, &startIter, &endIter, TRUE);
-		sb->Append((const UTF8Char*)lbl);
+		sb->AppendSlow((const UTF8Char*)lbl);
 		g_free((gchar*)lbl);
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
 		lbl = gtk_entry_buffer_get_text(buff);
-		sb->Append((const UTF8Char*)lbl);
+		sb->AppendSlow((const UTF8Char*)lbl);
 	}
 	return true;
 }

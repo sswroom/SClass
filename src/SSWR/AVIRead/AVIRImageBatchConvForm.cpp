@@ -35,7 +35,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
 	Text::StringBuilderUTF8 sb;
 	Int32 quality = 0;
 	me->txtQuality->GetText(sbuff);
@@ -81,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 			}
 		}
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptrEnd = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -93,8 +95,8 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					imgList->ToStaticImage(0);
 					((Media::StaticImage*)imgList->GetImage(0, 0))->To32bpp();
 					param = exporter.CreateParam(imgList);
-					Text::StrConcat(sptr2, sptr);
-					IO::Path::ReplaceExt(sptr2, (const UTF8Char*)"jpg");
+					Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
+					sptr2End = IO::Path::ReplaceExt(sptr2, (const UTF8Char*)"jpg");
 					if (param)
 					{
 						exporter.SetParamInt32(param, 0, quality);
@@ -104,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in converting to "));
-						sb.Append(sptr2);
+						sb.AppendP(sptr2, sptr2End);
 						sb.AppendC(UTF8STRC(", do you want to continue?"));
 						if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
 						{
@@ -123,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Error in loading "));
-					sb.Append(sptr);
+					sb.AppendP(sptr, sptrEnd);
 					sb.AppendC(UTF8STRC(", do you want to continue?"));
 					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
 					{

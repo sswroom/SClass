@@ -29,11 +29,11 @@ OSInt Net::WebSite::WebSite48IdolControl::GetTVPageItems(OSInt pageNo, Data::Arr
 		return 0;
 	if (pageNo == 1)
 	{
-		sb.Append((const UTF8Char*)TVBASEURL);
+		sb.AppendC(UTF8STRC(TVBASEURL));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)TVBASEURL);
+		sb.AppendC(UTF8STRC(TVBASEURL));
 		sb.AppendC(UTF8STRC("/page/"));
 		sb.AppendOSInt(pageNo);
 	}
@@ -102,11 +102,11 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 		return 0;
 	if (pageNo == 1)
 	{
-		sb.Append((const UTF8Char*)BASEURL "videos");
+		sb.AppendC(UTF8STRC(BASEURL "videos"));
 	}
 	else
 	{
-		sb.Append((const UTF8Char*)BASEURL);
+		sb.AppendC(UTF8STRC(BASEURL));
 		sb.AppendC(UTF8STRC("videos?page="));
 		sb.AppendOSInt(pageNo);
 	}
@@ -215,7 +215,7 @@ void Net::WebSite::WebSite48IdolControl::FreeItems(Data::ArrayList<Net::WebSite:
 Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 linkId, Text::StringBuilderUTF8 *link)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)BASEURL "video/");
+	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
@@ -258,7 +258,7 @@ Bool Net::WebSite::WebSite48IdolControl::GetDownloadLink(Int32 videoId, Int32 li
 Bool Net::WebSite::WebSite48IdolControl::GetVideoName(Int32 videoId, Text::StringBuilderUTF8 *name)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)BASEURL "video/");
+	sb.AppendC(UTF8STRC(BASEURL "video/"));
 	sb.AppendI32(videoId);
 	Text::XMLReader *reader;
 	Text::XMLAttrib *attr;
@@ -340,13 +340,13 @@ void Net::WebSite::WebSite48IdolControl::Title2DisplayName(Text::String *title, 
 
 	if (sb.ToString()[0] >= '0' && sb.ToString()[0] <= '9' && sb.ToString()[6] == ' ')
 	{
-		dispName->Append(&sb.ToString()[7]);
+		dispName->AppendC(&sb.ToString()[7], sb.GetLength() - 7);
 		dispName->AppendC(UTF8STRC(" 20"));
 		dispName->AppendC(sb.ToString(), 6);
 	}
 	else if (sb.StartsWith(UTF8STRC("[BD/DVD] ")))
 	{
-		dispName->Append(sb.ToString() + 9);
+		dispName->AppendC(sb.ToString() + 9, sb.GetLength() - 9);
 	}
 	else
 	{

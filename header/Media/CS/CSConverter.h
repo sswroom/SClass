@@ -3,6 +3,7 @@
 #include "Data/ArrayListUInt32.h"
 #include "Media/ColorManager.h"
 #include "Media/FrameInfo.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -24,7 +25,7 @@ namespace Media
 			static UOSInt GetSupportedCS(Data::ArrayListUInt32 *csList);
 			static Bool IsSupported(UInt32 fourcc);
 			static CSConverter *NewConverter(UInt32 srcFormat, UOSInt srcNBits, Media::PixelFormat srcPF, const Media::ColorProfile *srcProfile, UInt32 destFormat, UOSInt destNBits, Media::PixelFormat destPF, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess);
-			static const UTF8Char *GetFormatName(UInt32 format);
+			static Text::CString GetFormatName(UInt32 format);
 		};
 	}
 }

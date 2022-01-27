@@ -19,7 +19,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	if (GetMonitorInfoW((HMONITOR)hMonitor, &info))
 	{
 #if defined(_WIN32_WCE)
-		this->name = Text::StrToUTF8New(info.szDevice);
+		this->name = Text::String::NewNotNull(info.szDevice);
 		this->isPrimary = (info.dwFlags & MONITORINFOF_PRIMARY) != 0;
 		this->left = info.rcMonitor.left;
 		this->top = info.rcMonitor.top;
@@ -29,7 +29,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		this->monId = 0;
 #else
 		DISPLAY_DEVICEW dev;
-		this->name = Text::StrToUTF8New(info.szDevice);
+		this->name = Text::String::NewNotNull(info.szDevice);
 		this->isPrimary = (info.dwFlags & MONITORINFOF_PRIMARY) != 0;
 		this->left = info.rcMonitor.left;
 		this->top = info.rcMonitor.top;
@@ -38,12 +38,12 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		dev.cb = sizeof(dev);
 		if (EnumDisplayDevicesW(info.szDevice, 0, &dev, 0))
 		{
-			this->desc = Text::StrToUTF8New(dev.DeviceString);
+			this->desc = Text::String::NewNotNull(dev.DeviceString);
 			Text::StrConcat(sbuff, dev.DeviceID);
 			i = Text::StrSplit(sarr, 3, sbuff, '\\');
 			if (i == 3)
 			{
-				this->monId = Text::StrToUTF8New(sarr[1]);
+				this->monId = Text::String::NewNotNull(sarr[1]);
 			}
 			else
 			{
@@ -72,22 +72,22 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 
 Media::MonitorInfo::~MonitorInfo()
 {
-	SDEL_TEXT(this->name);
-	SDEL_TEXT(this->desc);
-	SDEL_TEXT(this->monId);
+	SDEL_STRING(this->name);
+	SDEL_STRING(this->desc);
+	SDEL_STRING(this->monId);
 }
 
-const UTF8Char *Media::MonitorInfo::GetName()
+Text::String *Media::MonitorInfo::GetName()
 {
 	return this->name;
 }
 
-const UTF8Char *Media::MonitorInfo::GetDesc()
+Text::String *Media::MonitorInfo::GetDesc()
 {
 	return this->desc;
 }
 
-const UTF8Char *Media::MonitorInfo::GetMonitorID()
+Text::String *Media::MonitorInfo::GetMonitorID()
 {
 	return this->monId;
 }

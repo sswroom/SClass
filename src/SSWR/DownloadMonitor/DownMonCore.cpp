@@ -29,11 +29,11 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMux(const UTF8Char *videoFile, co
 	sb.AppendC(UTF8STRC("\""));
 	sb.Append(this->ffmpegPath);
 	sb.AppendC(UTF8STRC("\" -i \""));
-	sb.Append(videoFile);
+	sb.AppendSlow(videoFile);
 	sb.AppendC(UTF8STRC("\" -i \""));
-	sb.Append(audioFile);
+	sb.AppendSlow(audioFile);
 	sb.AppendC(UTF8STRC("\" -map 0:0 -map 1:0 -c:a:0 copy -vcodec copy \""));
-	sb.Append(outFile);
+	sb.AppendSlow(outFile);
 	sb.AppendC(UTF8STRC("\""));
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())
@@ -64,11 +64,11 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	sb.AppendC(UTF8STRC("\""));
 	sb.Append(this->ffmpegPath);
 	sb.AppendC(UTF8STRC("\" -i \""));
-	sb.Append(videoFile);
+	sb.AppendSlow(videoFile);
 	sb.AppendC(UTF8STRC("\" -i \""));
-	sb.Append(audioFile);
+	sb.AppendSlow(audioFile);
 	sb.AppendC(UTF8STRC("\" -map 0:0 -map 1:0 -c:a:0 aac -vcodec copy \""));
-	sb.Append(outFile);
+	sb.AppendSlow(outFile);
 	sb.AppendC(UTF8STRC("\""));
 	Manage::Process proc(sb.ToString());
 	while (proc.IsRunning())

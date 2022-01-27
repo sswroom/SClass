@@ -254,7 +254,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 		j = ipLog->logList->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(ipLog->logList->GetItem(j));
+			ipLog->logList->GetItem(j)->Release();
 		}
 		DEL_CLASS(ipLog->mut);
 		DEL_CLASS(ipLog->logList);
@@ -269,8 +269,8 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		dhcp = dhcpList->GetItem(i);
-		SDEL_TEXT(dhcp->vendorClass);
-		SDEL_TEXT(dhcp->hostName);
+		SDEL_STRING(dhcp->vendorClass);
+		SDEL_STRING(dhcp->hostName);
 		DEL_CLASS(dhcp->mut);
 		MemFree(dhcp);
 	}
@@ -890,7 +890,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						ipLog = MemAlloc(IPLogInfo, 1);
 						ipLog->ip = ip->srcIP;
 						NEW_CLASS(ipLog->mut, Sync::Mutex());
-						NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
+						NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 						this->ipLogMap->Put(sortableIP, ipLog);
 					}
 				}
@@ -983,9 +983,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
-						Text::StrDelNew(ipLog->logList->RemoveAt(0));
+						ipLog->logList->RemoveAt(0)->Release();
 					}
-					ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
+					ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 					mutUsage.EndUse();
 				}
 
@@ -999,7 +999,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 						ipLog = MemAlloc(IPLogInfo, 1);
 						ipLog->ip = ip->destIP;
 						NEW_CLASS(ipLog->mut, Sync::Mutex());
-						NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
+						NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 						this->ipLogMap->Put(sortableIP, ipLog);
 					}
 				}
@@ -1092,9 +1092,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 					Sync::MutexUsage mutUsage(ipLog->mut);
 					while (ipLog->logList->GetCount() >= IPLOGCNT)
 					{
-						Text::StrDelNew(ipLog->logList->RemoveAt(0));
+						ipLog->logList->RemoveAt(0)->Release();
 					}
-					ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
+					ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 					mutUsage.EndUse();
 				}
 				mutUsage.EndUse();
@@ -1372,7 +1372,6 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 							UInt8 msgType = 0;
 							UInt8 t;
 							UInt8 len;
-							UTF8Char *sptr;
 							Sync::MutexUsage mutUsage(dhcp->mut);
 							dhcp->updated = true;
 							while (currPtr < endPtr)
@@ -1395,20 +1394,18 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 								{
 									if (dhcp->hostName == 0)
 									{
-										sptr = MemAlloc(UTF8Char, (UOSInt)len + 1);
-										MemCopyNO(sptr, currPtr, len);
-										sptr[len] = 0;
-										dhcp->hostName = sptr;
+										dhcp->hostName = Text::String::New(len);
+										MemCopyNO(dhcp->hostName->v, currPtr, len);
+										dhcp->hostName->v[len] = 0;
 									}
 								}
 								else if (t == 60 && len >= 1 && msgType == 1)
 								{
 									if (dhcp->vendorClass == 0)
 									{
-										sptr = MemAlloc(UTF8Char, (UOSInt)len + 1);
-										MemCopyNO(sptr, currPtr, len);
-										sptr[len] = 0;
-										dhcp->vendorClass = sptr;
+										dhcp->vendorClass = Text::String::New(len);;
+										MemCopyNO(dhcp->vendorClass->v, currPtr, len);
+										dhcp->vendorClass->v[len] = 0;
 									}
 								}
 								else if (t == 1 && len == 4 && (msgType == 2 || msgType == 5))
@@ -1481,7 +1478,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										ipLog = MemAlloc(IPLogInfo, 1);
 										ipLog->ip = ip->srcIP;
 										NEW_CLASS(ipLog->mut, Sync::Mutex());
-										NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
+										NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 										this->ipLogMap->Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
@@ -1496,9 +1493,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
-										Text::StrDelNew(ipLog->logList->RemoveAt(0));
+										ipLog->logList->RemoveAt(0)->Release();
 									}
-									ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
+									ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
 								}
 							}
@@ -1516,7 +1513,7 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 										ipLog = MemAlloc(IPLogInfo, 1);
 										ipLog->ip = ip->destIP;
 										NEW_CLASS(ipLog->mut, Sync::Mutex());
-										NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
+										NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 										this->ipLogMap->Put(sortableIP, ipLog);
 									}
 									ipLogMutUsage.EndUse();
@@ -1535,9 +1532,9 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 									Sync::MutexUsage mutUsage(ipLog->mut);
 									while (ipLog->logList->GetCount() >= IPLOGCNT)
 									{
-										Text::StrDelNew(ipLog->logList->RemoveAt(0));
+										ipLog->logList->RemoveAt(0)->Release();
 									}
-									ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
+									ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 									mutUsage.EndUse();
 								}
 							}
@@ -1699,7 +1696,7 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 								ipLog = MemAlloc(IPLogInfo, 1);
 								ipLog->ip = ip->srcIP;
 								NEW_CLASS(ipLog->mut, Sync::Mutex());
-								NEW_CLASS(ipLog->logList, Data::ArrayList<const UTF8Char*>());
+								NEW_CLASS(ipLog->logList, Data::ArrayList<Text::String*>());
 								this->ipLogMap->Put(sortableIP, ipLog);
 							}
 							ipLogMutUsage.EndUse();
@@ -1721,9 +1718,9 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							Sync::MutexUsage mutUsage(ipLog->mut);
 							while (ipLog->logList->GetCount() >= IPLOGCNT)
 							{
-								Text::StrDelNew(ipLog->logList->RemoveAt(0));
+								ipLog->logList->RemoveAt(0)->Release();
 							}
-							ipLog->logList->Add(Text::StrCopyNew(sb.ToString()));
+							ipLog->logList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 							mutUsage.EndUse();
 						}
 						valid = true;

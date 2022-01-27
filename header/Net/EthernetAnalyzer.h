@@ -9,6 +9,7 @@
 #include "IO/ParsedObject.h"
 #include "Net/DNSClient.h"
 #include "Sync/MutexUsage.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -102,7 +103,7 @@ namespace Net
 		{
 			UInt32 ip;
 			Sync::Mutex *mut;
-			Data::ArrayList<const UTF8Char*> *logList;
+			Data::ArrayList<Text::String*> *logList;
 		} IPLogInfo;
 
 		typedef struct
@@ -120,8 +121,8 @@ namespace Net
 			UInt32 rebindTime;
 			UInt32 router;
 			UInt32 dns[4];
-			const UTF8Char *hostName;
-			const UTF8Char *vendorClass;
+			Text::String *hostName;
+			Text::String *vendorClass;
 		} DHCPInfo;
 		
 	private:

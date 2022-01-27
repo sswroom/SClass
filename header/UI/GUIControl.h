@@ -4,6 +4,7 @@
 #include "Data/ArrayList.h"
 #include "Media/DrawEngine.h"
 #include "Media/MonitorInfo.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/GUICore.h"
 
@@ -312,7 +313,7 @@ namespace UI
 		Media::DrawFont *CreateDrawFont(Media::DrawImage *img);
 		static UInt32 GUIKey2OSKey(GUIKey guiKey);
 		static GUIKey OSKey2GUIKey(UInt32 osKey);
-		static const UTF8Char *GUIKeyGetName(GUIKey guiKey);
+		static Text::CString GUIKeyGetName(GUIKey guiKey);
 
 		DragErrorType HandleDropEvents(GUIDropHandler *hdlr);
 

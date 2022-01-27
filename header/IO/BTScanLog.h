@@ -101,9 +101,9 @@ namespace IO
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetPublicList();
 		Data::ArrayList<IO::BTScanLog::DevEntry*> *GetRandomList();
 
-		static const UTF8Char *RadioTypeGetName(RadioType radioType);
-		static const UTF8Char *AddressTypeGetName(AddressType addrType);
-		static const UTF8Char *AdvTypeGetName(AdvType advType);
+		static Text::CString RadioTypeGetName(RadioType radioType);
+		static Text::CString AddressTypeGetName(AddressType addrType);
+		static Text::CString AdvTypeGetName(AdvType advType);
 		static Bool ParseBTRAWPacket(ScanRecord3 *rec, Int64 timeTicks, const UInt8 *buff, UOSInt buffSize);
 		static void ParseAdvisement(ScanRecord3 *rec, const UInt8 *buff, UOSInt ofst, UOSInt endOfst);
 	};
