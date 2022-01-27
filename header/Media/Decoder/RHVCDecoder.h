@@ -39,7 +39,7 @@ namespace Media
 			RHVCDecoder(IVideoSource *sourceVideo, Bool toRelease);
 			virtual ~RHVCDecoder();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

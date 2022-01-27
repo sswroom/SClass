@@ -31,7 +31,7 @@ namespace UI
 		GUIPictureBoxSimple(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, Bool hasBorder);
 		virtual ~GUIPictureBoxSimple();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void HandleMouseDown(MouseEventHandler hdlr, void *userObj);

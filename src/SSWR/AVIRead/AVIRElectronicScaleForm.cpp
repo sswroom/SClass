@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 		me->stm = me->core->OpenStream(&st, me, 9600, false);
 		if (me->stm)
 		{
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
 			me->btnStream->SetText((const UTF8Char*)"&Close");
 			me->remoteClosed = false;
 			me->threadRunning = false;

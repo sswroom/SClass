@@ -188,9 +188,9 @@ void UI::GUIHScrollBar::SetAreaP(OSInt left, OSInt top, OSInt right, OSInt botto
 	this->OnSizeChanged(updateScn);
 }
 
-const UTF8Char *UI::GUIHScrollBar::GetObjectClass()
+Text::CString UI::GUIHScrollBar::GetObjectClass()
 {
-	return (const UTF8Char*)"HScrollBar";
+	return CSTR("HScrollBar");
 }
 
 OSInt UI::GUIHScrollBar::OnNotify(UInt32 code, void *lParam)

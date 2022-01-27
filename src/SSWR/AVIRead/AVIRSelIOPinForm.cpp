@@ -98,8 +98,8 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->lblPinType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboPinType, UI::GUIComboBox(ui, this->pnlPinType, false));
 	this->cboPinType->SetRect(104, 4, 200, 23, false);
-	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_GPIO), (void*)SSWR::AVIRead::AVIRCore::IOPT_GPIO);
-	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN), (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
+	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_GPIO).v, (void*)SSWR::AVIRead::AVIRCore::IOPT_GPIO);
+	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN).v, (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
 	this->cboPinType->HandleSelectionChange(OnPinTypeChg, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));

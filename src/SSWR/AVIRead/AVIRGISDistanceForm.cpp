@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	Math::Unit::Distance::DistanceUnit du = Math::Unit::Distance::DU_FIRST;
 	while (du <= Math::Unit::Distance::DU_LAST)
 	{
-		i = this->cboDistanceUnit->AddItem(Math::Unit::Distance::GetUnitShortName(du), (void*)(OSInt)du);
+		i = this->cboDistanceUnit->AddItem(Math::Unit::Distance::GetUnitShortName(du).v, (void*)(OSInt)du);
 		if (du == Math::Unit::Distance::DU_METER)
 		{
 			this->cboDistanceUnit->SetSelectedIndex(i);

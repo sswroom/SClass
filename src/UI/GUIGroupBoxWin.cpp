@@ -91,9 +91,9 @@ UI::GUIGroupBox::~GUIGroupBox()
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 }
 
-const UTF8Char *UI::GUIGroupBox::GetObjectClass()
+Text::CString UI::GUIGroupBox::GetObjectClass()
 {
-	return (const UTF8Char*)"GroupBox";
+	return CSTR("GroupBox");
 }
 
 OSInt UI::GUIGroupBox::OnNotify(UInt32 code, void *lParam)

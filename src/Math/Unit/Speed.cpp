@@ -21,36 +21,36 @@ Double Math::Unit::Speed::GetUnitRatio(SpeedUnit unit)
 }
 
 
-const UTF8Char *Math::Unit::Speed::GetUnitShortName(SpeedUnit unit)
+Text::CString Math::Unit::Speed::GetUnitShortName(SpeedUnit unit)
 {
 	switch (unit)
 	{
 	case SU_METER_PER_SECOND:
-		return (const UTF8Char*)"m/s";
+		return CSTR("m/s");
 	case SU_KM_PER_HOUR:
-		return (const UTF8Char*)"km/h";
+		return CSTR("km/h");
 	case SU_MILE_PER_HOUR:
-		return (const UTF8Char*)"mph";
+		return CSTR("mph");
 	case SU_KNOT:
-		return (const UTF8Char*)"knot";
+		return CSTR("knot");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Speed::GetUnitName(SpeedUnit unit)
+Text::CString Math::Unit::Speed::GetUnitName(SpeedUnit unit)
 {
 	switch (unit)
 	{
 	case SU_METER_PER_SECOND:
-		return (const UTF8Char*)"meter per second";
+		return CSTR("meter per second");
 	case SU_KM_PER_HOUR:
-		return (const UTF8Char*)"kilometer per hour";
+		return CSTR("kilometer per hour");
 	case SU_MILE_PER_HOUR:
-		return (const UTF8Char*)"mile per hour";
+		return CSTR("mile per hour");
 	case SU_KNOT:
-		return (const UTF8Char*)"knot";
+		return CSTR("knot");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Speed::Convert(SpeedUnit fromUnit, SpeedUnit toUnit, Double fromValue)

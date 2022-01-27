@@ -1,6 +1,7 @@
 #ifndef _SM_NET_SNS_SNSCONTROL
 #define _SM_NET_SNS_SNSCONTROL
 #include "Data/ArrayList.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace Net
@@ -46,7 +47,7 @@ namespace Net
 			virtual Int32 GetMinIntevalMS() = 0;
 			virtual Bool Reload() = 0;
 
-			static const UTF8Char *SNSTypeGetName(SNSType snsType);
+			static Text::CString SNSTypeGetName(SNSType snsType);
 			static SNSType SNSTypeFromName(const UTF8Char *name);
 
 			static SNSItem *CreateItem(Text::String *id, Int64 msgTime, Text::String *title, Text::String *message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);

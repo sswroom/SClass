@@ -102,8 +102,8 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			static const UTF8Char *DeviceTypeGetName(DeviceType dt);
+			static Text::CString DeviceTypeGetName(DeviceType dt);
 		};
-	};
-};
+	}
+}
 #endif

@@ -13,9 +13,9 @@ Media::ImageGen::GammaImageGen::~GammaImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::GammaImageGen::GetName()
+Text::CString Media::ImageGen::GammaImageGen::GetName()
 {
-	return (const UTF8Char*)"Gamma Test";
+	return CSTR("Gamma Test");
 }
 
 Media::Image *Media::ImageGen::GammaImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

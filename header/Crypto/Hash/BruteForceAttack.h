@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_HASH_BRUTEFORCEATTACK
 #include "Crypto/Hash/IHash.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Crypto
 {
@@ -56,7 +57,7 @@ namespace Crypto
 			UTF8Char *GetResult(UTF8Char *resultBuff);
 			Bool Start(const UInt8 *hashValue, UOSInt minLeng, UOSInt maxLeng);
 
-			static const UTF8Char *CharLimitGetName(CharLimit charLimit);
+			static Text::CString CharLimitGetName(CharLimit charLimit);
 		};
 	}
 }

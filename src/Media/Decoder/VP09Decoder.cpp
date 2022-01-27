@@ -112,9 +112,9 @@ Media::Decoder::VP09Decoder::~VP09Decoder()
 	DEL_CLASS(this->frameList);
 }
 
-const UTF8Char *Media::Decoder::VP09Decoder::GetFilterName()
+Text::CString Media::Decoder::VP09Decoder::GetFilterName()
 {
-	return (const UTF8Char*)"VP09Decoder";
+	return CSTR("VP09Decoder");
 }
 
 Bool Media::Decoder::VP09Decoder::HasFrameCount()

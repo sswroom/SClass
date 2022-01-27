@@ -16,32 +16,32 @@ Double Math::Unit::ElectricCurrent::GetUnitRatio(ElectricCurrentUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::ElectricCurrent::GetUnitShortName(ElectricCurrentUnit unit)
+Text::CString Math::Unit::ElectricCurrent::GetUnitShortName(ElectricCurrentUnit unit)
 {
 	switch (unit)
 	{
 	case ECU_AMPERE:
-		return (const UTF8Char*)"A";
+		return CSTR("A");
 	case ECU_MILLIAMPERE:
-		return (const UTF8Char*)"mA";
+		return CSTR("mA");
 	case ECU_MICROAMPERE:
-		return (const UTF8Char*)"uA";
+		return CSTR("uA");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::ElectricCurrent::GetUnitName(ElectricCurrentUnit unit)
+Text::CString Math::Unit::ElectricCurrent::GetUnitName(ElectricCurrentUnit unit)
 {
 	switch (unit)
 	{
 	case ECU_AMPERE:
-		return (const UTF8Char*)"Ampere";
+		return CSTR("Ampere");
 	case ECU_MILLIAMPERE:
-		return (const UTF8Char*)"Milliampere";
+		return CSTR("Milliampere");
 	case ECU_MICROAMPERE:
-		return (const UTF8Char*)"Microampere";
+		return CSTR("Microampere");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::ElectricCurrent::Convert(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit, Double fromValue)

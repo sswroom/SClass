@@ -4,6 +4,7 @@
 #include "IO/IFileSelector.h"
 #include "Net/SocketMonitor.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -47,10 +48,10 @@ namespace Net
 		UInt64 GetPacketCnt();
 		UInt64 GetDataSize();
 
-		static const UTF8Char *CaptureTypeGetName(CaptureType type);
+		static Text::CString CaptureTypeGetName(CaptureType type);
 		static Int32 CaptureTypeGetLinkType(CaptureType type);
-		static const UTF8Char *FileFormatGetName(FileFormat format);
-		static const UTF8Char *FileFormatGetExt(FileFormat format);
+		static Text::CString FileFormatGetName(FileFormat format);
+		static Text::CString FileFormatGetExt(FileFormat format);
 		static void AddFilters(IO::IFileSelector *selector);
 	};
 }

@@ -2,6 +2,7 @@
 #define _SM_DATA_COMPRESS_DECOMPRESSOR
 #include "IO/IStreamData.h"
 #include "IO/Stream.h"
+#include "Text/CString.h"
 
 namespace Data
 {
@@ -26,7 +27,7 @@ namespace Data
 			virtual Bool Decompress(IO::Stream *destStm, IO::IStreamData *srcData) = 0;
 
 			static Data::Compress::Decompressor *CreateDecompressor(CompressMethod compMeth);
-			static const UTF8Char *GetCompMethName(CompressMethod compMethod);
+			static Text::CString GetCompMethName(CompressMethod compMethod);
 		};
 	};
 };

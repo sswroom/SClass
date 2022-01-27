@@ -17,7 +17,7 @@ namespace UI
 		GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool checked);
 		virtual ~GUICheckBox();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void EventCheckedChange(Bool newState);

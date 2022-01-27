@@ -18,7 +18,7 @@ namespace Media
 			M2VDecoder(IVideoSource *sourceVideo, Bool toRelease);
 			virtual ~M2VDecoder();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

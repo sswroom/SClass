@@ -12,7 +12,7 @@ namespace Media
 			Gamma64ImageGen();
 			virtual ~Gamma64ImageGen();
 
-			virtual const UTF8Char *GetName();
+			virtual Text::CString GetName();
 			virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height);
 		};
 	}

@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamLatencyForm::OnStreamClicked(void *userO
 			dt.SetCurrTimeUTC();
 			me->lastSentTime = dt.ToTicks();
 
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
 			me->btnStream->SetText((const UTF8Char*)"&Close");
 			me->remoteClosed = false;
 			me->threadRunning = false;

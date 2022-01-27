@@ -262,20 +262,20 @@ UInt64 Net::RAWCapture::GetDataSize()
 	return this->dataSize;
 }
 
-const UTF8Char *Net::RAWCapture::CaptureTypeGetName(CaptureType type)
+Text::CString Net::RAWCapture::CaptureTypeGetName(CaptureType type)
 {
 	switch (type)
 	{
 	case CT_RAW:
-		return (const UTF8Char*)"RAW";
+		return CSTR("RAW");
 	case CT_IPV4:
-		return (const UTF8Char*)"IPv4";
+		return CSTR("IPv4");
 	case CT_UDPV4:
-		return (const UTF8Char*)"UDPv4";
+		return CSTR("UDPv4");
 	case CT_ICMPV4:
-		return (const UTF8Char*)"ICMPv4";
+		return CSTR("ICMPv4");
 	}
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }
 
 Int32 Net::RAWCapture::CaptureTypeGetLinkType(CaptureType type)
@@ -294,28 +294,28 @@ Int32 Net::RAWCapture::CaptureTypeGetLinkType(CaptureType type)
 	return 0;
 }
 
-const UTF8Char *Net::RAWCapture::FileFormatGetName(FileFormat format)
+Text::CString Net::RAWCapture::FileFormatGetName(FileFormat format)
 {
 	switch (format)
 	{
 	case FF_PCAP:
-		return (const UTF8Char*)"pcap";
+		return CSTR("pcap");
 	case FF_PCAPNG:
-		return (const UTF8Char*)"pcapng";
+		return CSTR("pcapng");
 	}
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }
 
-const UTF8Char *Net::RAWCapture::FileFormatGetExt(FileFormat format)
+Text::CString Net::RAWCapture::FileFormatGetExt(FileFormat format)
 {
 	switch (format)
 	{
 	case FF_PCAP:
-		return (const UTF8Char*)"pcap";
+		return CSTR("pcap");
 	case FF_PCAPNG:
-		return (const UTF8Char*)"pcapng";
+		return CSTR("pcapng");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 void Net::RAWCapture::AddFilters(IO::IFileSelector *selector)

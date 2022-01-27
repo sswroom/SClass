@@ -99,7 +99,7 @@ namespace Media
 			IVTCFilter(Media::IVideoSource *srcVideo);
 			virtual ~IVTCFilter();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			void SetEnabled(Bool enabled);
 			virtual void Stop();

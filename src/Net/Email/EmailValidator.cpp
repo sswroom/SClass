@@ -90,25 +90,25 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 	return S_VALID;
 }
 
-const UTF8Char *Net::Email::EmailValidator::StatusGetName(Status status)
+Text::CString Net::Email::EmailValidator::StatusGetName(Status status)
 {
 	switch (status)
 	{
 	case S_VALID:
-		return (const UTF8Char*)"Email Address Valid";
+		return CSTR("Email Address Valid");
 	case S_INVALID_FORMAT:
-		return (const UTF8Char*)"Invalid Format";
+		return CSTR("Invalid Format");
 	case S_NO_SUCH_ADDR:
-		return (const UTF8Char*)"No Such Address";
+		return CSTR("No Such Address");
 	case S_FROM_NOT_ACCEPT:
-		return (const UTF8Char*)"From Address Not Accepted";
+		return CSTR("From Address Not Accepted");
 	case S_CONN_ERROR:
-		return (const UTF8Char*)"Connect Error";
+		return CSTR("Connect Error");
 	case S_COMM_ERROR:
-		return (const UTF8Char*)"Communication Error";
+		return CSTR("Communication Error");
 	case S_DOMAIN_NOT_RESOLVED:
-		return (const UTF8Char*)"Domain not resolved";
+		return CSTR("Domain not resolved");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

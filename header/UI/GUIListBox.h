@@ -54,7 +54,7 @@ namespace UI
 		Text::String *GetItemTextNew(UOSInt index);
 		OSInt GetItemHeight();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

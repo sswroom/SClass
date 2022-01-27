@@ -272,9 +272,9 @@ Media::Decoder::RHVCDecoder::~RHVCDecoder()
 	DEL_CLASS(this->frameMut);
 }
 
-const UTF8Char *Media::Decoder::RHVCDecoder::GetFilterName()
+Text::CString Media::Decoder::RHVCDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"RHVCDecoder";
+	return CSTR("RHVCDecoder");
 }
 
 Bool Media::Decoder::RHVCDecoder::HasFrameCount()

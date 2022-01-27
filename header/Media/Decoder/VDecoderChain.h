@@ -17,7 +17,7 @@ namespace Media
 			VDecoderChain(IVideoSource *sourceVideo);
 			virtual ~VDecoderChain();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			void AddDecoder(Media::IVideoSource *decoder);
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);

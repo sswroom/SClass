@@ -32,7 +32,7 @@ namespace Media
 			MP2GDecoder(IVideoSource *sourceVideo, Bool toRelease);
 			virtual ~MP2GDecoder();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

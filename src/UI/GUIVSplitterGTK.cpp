@@ -94,9 +94,9 @@ UI::GUIVSplitter::~GUIVSplitter()
 {
 }
 
-const UTF8Char *UI::GUIVSplitter::GetObjectClass()
+Text::CString UI::GUIVSplitter::GetObjectClass()
 {
-	return (const UTF8Char*)"VSplitter";
+	return CSTR("VSplitter");
 }
 
 OSInt UI::GUIVSplitter::OnNotify(UInt32 code, void *lParam)

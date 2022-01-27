@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_UNITBASE
 #define _SM_MATH_UNIT_UNITBASE
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -24,7 +26,7 @@ namespace Math
 				VT_TEMPERATURE
 			} ValueType;
 		public:
-			static const UTF8Char *GetUnitShortName(ValueType vt, Int32 unit);
+			static Text::CString GetUnitShortName(ValueType vt, Int32 unit);
 		};
 	}
 }

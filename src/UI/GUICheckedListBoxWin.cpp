@@ -23,9 +23,9 @@ void UI::GUICheckedListBox::SetItemChecked(UOSInt index, Bool isChecked)
 	ListView_SetCheckState((HWND)this->hwnd, index, isChecked?TRUE:FALSE);
 }
 
-const UTF8Char *UI::GUICheckedListBox::GetObjectClass()
+Text::CString UI::GUICheckedListBox::GetObjectClass()
 {
-	return (const UTF8Char*)"CheckedListBox";
+	return CSTR("CheckedListBox");
 }
 
 OSInt UI::GUICheckedListBox::OnNotify(UInt32 code, void *lParam)

@@ -99,41 +99,41 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF
 	return true;
 }
 
-const UTF8Char *Net::MQTTUtil::PacketTypeGetName(UInt8 packetType)
+Text::CString Net::MQTTUtil::PacketTypeGetName(UInt8 packetType)
 {
 	switch (packetType)
 	{
 	case 1:
-		return (const UTF8Char*)"CONNECT";
+		return CSTR("CONNECT");
 	case 2:
-		return (const UTF8Char*)"CONNACK";
+		return CSTR("CONNACK");
 	case 3:
-		return (const UTF8Char*)"PUBLISH";
+		return CSTR("PUBLISH");
 	case 4:
-		return (const UTF8Char*)"PUBACK";
+		return CSTR("PUBACK");
 	case 5:
-		return (const UTF8Char*)"PUBREC";
+		return CSTR("PUBREC");
 	case 6:
-		return (const UTF8Char*)"PUBREL";
+		return CSTR("PUBREL");
 	case 7:
-		return (const UTF8Char*)"PUBCOMP";
+		return CSTR("PUBCOMP");
 	case 8:
-		return (const UTF8Char*)"SUBSCRIBE";
+		return CSTR("SUBSCRIBE");
 	case 9:
-		return (const UTF8Char*)"SUBACK";
+		return CSTR("SUBACK");
 	case 10:
-		return (const UTF8Char*)"UNSUBSCRIBE";
+		return CSTR("UNSUBSCRIBE");
 	case 11:
-		return (const UTF8Char*)"UNSUBACK";
+		return CSTR("UNSUBACK");
 	case 12:
-		return (const UTF8Char*)"PINGREQ";
+		return CSTR("PINGREQ");
 	case 13:
-		return (const UTF8Char*)"PINGRESP";
+		return CSTR("PINGRESP");
 	case 14:
-		return (const UTF8Char*)"DISCONNECT";
+		return CSTR("DISCONNECT");
 	case 15:
-		return (const UTF8Char*)"AUTH";
+		return CSTR("AUTH");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

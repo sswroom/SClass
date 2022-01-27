@@ -12,24 +12,24 @@ Double Math::Unit::ReactivePower::GetUnitRatio(ReactivePowerUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::ReactivePower::GetUnitShortName(ReactivePowerUnit unit)
+Text::CString Math::Unit::ReactivePower::GetUnitShortName(ReactivePowerUnit unit)
 {
 	switch (unit)
 	{
 	case RPU_VAR:
-		return (const UTF8Char*)"var";
+		return CSTR("var");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::ReactivePower::GetUnitName(ReactivePowerUnit unit)
+Text::CString Math::Unit::ReactivePower::GetUnitName(ReactivePowerUnit unit)
 {
 	switch (unit)
 	{
 	case RPU_VAR:
-		return (const UTF8Char*)"Volt-Ampere Reactive";
+		return CSTR("Volt-Ampere Reactive");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::ReactivePower::Convert(ReactivePowerUnit fromUnit, ReactivePowerUnit toUnit, Double fromValue)

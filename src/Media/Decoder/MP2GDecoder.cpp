@@ -352,9 +352,9 @@ Media::Decoder::MP2GDecoder::~MP2GDecoder()
 	}
 }
 
-const UTF8Char *Media::Decoder::MP2GDecoder::GetFilterName()
+Text::CString Media::Decoder::MP2GDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"MP2GDecoder";
+	return CSTR("MP2GDecoder");
 }
 
 Bool Media::Decoder::MP2GDecoder::HasFrameCount()

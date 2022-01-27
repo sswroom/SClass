@@ -400,9 +400,9 @@ void UI::GUIPanel::GetClientSize(Double *w, Double *h)
 		*h = cliH * this->ddpi / this->hdpi;
 }
 
-const UTF8Char *UI::GUIPanel::GetObjectClass()
+Text::CString UI::GUIPanel::GetObjectClass()
 {
-	return (const UTF8Char*)"Panel";
+	return CSTR("Panel");
 }
 
 OSInt UI::GUIPanel::OnNotify(UInt32 code, void *lParam)

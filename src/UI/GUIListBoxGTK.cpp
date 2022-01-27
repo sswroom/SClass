@@ -511,9 +511,9 @@ OSInt UI::GUIListBox::GetItemHeight()
 	return 24;
 }
 
-const UTF8Char *UI::GUIListBox::GetObjectClass()
+Text::CString UI::GUIListBox::GetObjectClass()
 {
-	return (const UTF8Char*)"ListBox";
+	return CSTR("ListBox");
 }
 
 OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)

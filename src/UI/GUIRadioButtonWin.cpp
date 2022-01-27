@@ -48,9 +48,9 @@ UI::GUIRadioButton::~GUIRadioButton()
 	DEL_CLASS(this->selectedChangeObjs);
 }
 
-const UTF8Char *UI::GUIRadioButton::GetObjectClass()
+Text::CString UI::GUIRadioButton::GetObjectClass()
 {
-	return (const UTF8Char*)"RadioButton";
+	return CSTR("RadioButton");
 }
 
 OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)

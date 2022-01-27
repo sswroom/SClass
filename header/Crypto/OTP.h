@@ -1,5 +1,6 @@
 #ifndef _SM_CRYPTO_OTP
 #define _SM_CRYPTO_OTP
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Crypto
@@ -27,7 +28,7 @@ namespace Crypto
 		virtual void GenURI(Text::StringBuilderUTF8 *sb, const UTF8Char *name) = 0;
 
 		UTF8Char *CodeString(UTF8Char *sbuff, UInt32 code);
-		static const UTF8Char *OTPTypeGetName(OTPType type);
+		static Text::CString OTPTypeGetName(OTPType type);
 	};
 }
 #endif

@@ -19,20 +19,20 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	me->txtFileDir->GetText(&sb);
 	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The file dir is not a directory", me->GetFormName(), me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"The file dir is not a directory", me->GetFormName().v, me);
 		return;
 	}
 	dt1.ClearTime();
 	dt2.ClearTime();
 	if (dt1.CompareTo(&dt2) > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The start time is after end time", me->GetFormName(), me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"The start time is after end time", me->GetFormName().v, me);
 		return;
 	}
 	Double days = Data::DateTime::MS2Days(dt2.DiffMS(&dt1));
 	if (days > 90)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The time range is longer than 90 days", me->GetFormName(), me);
+		UI::MessageDialog::ShowDialog((const UTF8Char*)"The time range is longer than 90 days", me->GetFormName().v, me);
 		return;
 	}
 
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating zip file", me->GetFormName(), me);
+			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating zip file", me->GetFormName().v, me);
 		}
 		NEW_CLASS(zip, IO::ZIPBuilder(fs));
 		sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
@@ -168,7 +168,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("Error in copying "));
 							sb.AppendP(buffStart, sptr);
-							UI::MessageDialog::ShowDialog(sb.ToString(), this->GetFormName(), this);
+							UI::MessageDialog::ShowDialog(sb.ToString(), this->GetFormName().v, this);
 							return false;
 						}
 					}
@@ -211,7 +211,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 
 SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 652, 180, ui)
 {
-	this->SetText(this->GetFormName());
+	this->SetText(this->GetFormName().v);
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -242,9 +242,9 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::~AVIRTimedFileCopyForm()
 
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRTimedFileCopyForm::GetFormName()
+Text::CString SSWR::AVIRead::AVIRTimedFileCopyForm::GetFormName()
 {
-	return (const UTF8Char*)"Timed File Copy";
+	return CSTR("Timed File Copy");
 }
 
 void SSWR::AVIRead::AVIRTimedFileCopyForm::OnMonitorChanged()

@@ -15,6 +15,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Parser/ParserList.h"
+#include "Text/CString.h"
 #include "UI/GUICore.h"
 #include "UI/GUIForm.h"
 
@@ -127,8 +128,8 @@ namespace SSWR
 			void SetGISForm(SSWR::AVIRead::AVIRGISForm *frm);
 			SSWR::AVIRead::AVIRGISForm *GetGISForm();
 
-			static const UTF8Char *GetStreamTypeName(StreamType st);
-			static const UTF8Char *GetIOPinTypeName(IOPinType iopt);
+			static Text::CString GetStreamTypeName(StreamType st);
+			static Text::CString GetIOPinTypeName(IOPinType iopt);
 		};
 	}
 }

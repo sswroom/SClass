@@ -27,64 +27,64 @@ Double Math::Unit::Angle::GetUnitRatio(AngleUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Angle::GetUnitShortName(AngleUnit unit)
+Text::CString Math::Unit::Angle::GetUnitShortName(AngleUnit unit)
 {
 	switch (unit)
 	{
 	case AU_RADIAN:
-		return (const UTF8Char*)"rad";
+		return CSTR("rad");
 	case AU_GRADIAN:
-		return (const UTF8Char*)"grad";
+		return CSTR("grad");
 	case AU_TURN:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	case AU_DEGREE:
 	{
 		static const UTF8Char ret[] = {0xc2, 0xb0, 0};
-		return ret;
+		return CSTR(ret);
 	}
 	case AU_ARCMINUTE:
 	{
 		static const UTF8Char ret[] = {0xe2, 0x80, 0xb2, 0};
-		return ret;
+		return CSTR(ret);
 	}
 	case AU_ARCSECOND:
 	{
 		static const UTF8Char ret[] = {0xe2, 0x80, 0xb3, 0};
-		return ret;
+		return CSTR(ret);
 	}
 	case AU_MILLIARCSECOND:
-		return (const UTF8Char*)"mas";
+		return CSTR("mas");
 	case AU_MICROARCSECOND:
 	{
 		static const UTF8Char ret[] = {0xce, 0xbc, 0x61, 0x73, 0};
-		return ret;
+		return CSTR(ret);
 	}
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Angle::GetUnitName(AngleUnit unit)
+Text::CString Math::Unit::Angle::GetUnitName(AngleUnit unit)
 {
 	switch (unit)
 	{
 	case AU_RADIAN:
-		return (const UTF8Char*)"Radian";
+		return CSTR("Radian");
 	case AU_GRADIAN:
-		return (const UTF8Char*)"Gradian";
+		return CSTR("Gradian");
 	case AU_TURN:
-		return (const UTF8Char*)"Turns";
+		return CSTR("Turns");
 	case AU_DEGREE:
-		return (const UTF8Char*)"Degree";
+		return CSTR("Degree");
 	case AU_ARCMINUTE:
-		return (const UTF8Char*)"Arcminute";
+		return CSTR("Arcminute");
 	case AU_ARCSECOND:
-		return (const UTF8Char*)"Arcsecond";
+		return CSTR("Arcsecond");
 	case AU_MILLIARCSECOND:
-		return (const UTF8Char*)"Milliarcsecond";
+		return CSTR("Milliarcsecond");
 	case AU_MICROARCSECOND:
-		return (const UTF8Char*)"Microarcsecond";
+		return CSTR("Microarcsecond");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Angle::Convert(AngleUnit fromUnit, AngleUnit toUnit, Double fromValue)

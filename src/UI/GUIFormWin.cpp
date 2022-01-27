@@ -787,9 +787,9 @@ Bool UI::GUIForm::IsChildVisible()
 	return true;
 }
 
-const UTF8Char *UI::GUIForm::GetObjectClass()
+Text::CString UI::GUIForm::GetObjectClass()
 {
-	return (const UTF8Char*)"WinForm";
+	return CSTR("WinForm");
 }
 
 OSInt UI::GUIForm::OnNotify(UInt32 code, void *lParam)

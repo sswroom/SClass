@@ -12,9 +12,9 @@ Media::ImageGen::Gradian32ImageGen::~Gradian32ImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::Gradian32ImageGen::GetName()
+Text::CString Media::ImageGen::Gradian32ImageGen::GetName()
 {
-	return (const UTF8Char*)"Gradian Test 32-bit";
+	return CSTR("Gradian Test 32-bit");
 }
 
 Media::Image *Media::ImageGen::Gradian32ImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

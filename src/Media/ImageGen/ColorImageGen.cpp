@@ -13,9 +13,9 @@ Media::ImageGen::ColorImageGen::~ColorImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::ColorImageGen::GetName()
+Text::CString Media::ImageGen::ColorImageGen::GetName()
 {
-	return (const UTF8Char*)"Color Test";
+	return CSTR("Color Test");
 }
 
 Media::Image *Media::ImageGen::ColorImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

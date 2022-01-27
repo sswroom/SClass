@@ -251,24 +251,24 @@ Bool Manage::Process::OpenPath(const UTF8Char *path)
 	return false;
 }
 
-const UTF8Char *Manage::Process::GetPriorityName(ProcessPriority priority)
+Text::CString Manage::Process::GetPriorityName(ProcessPriority priority)
 {
 	switch (priority)
 	{
 	case PP_REALTIME:
-		return (const UTF8Char*)"Realtime";
+		return CSTR("Realtime");
 	case PP_HIGH:
-		return (const UTF8Char*)"High";
+		return CSTR("High");
 	case PP_ABOVE_NORMAL:
-		return (const UTF8Char*)"Above Normal";
+		return CSTR("Above Normal");
 	case PP_NORMAL:
-		return (const UTF8Char*)"Normal";
+		return CSTR("Normal");
 	case PP_BELOW_NORMAL:
-		return (const UTF8Char*)"Below Normal";
+		return CSTR("Below Normal");
 	case PP_IDLE:
-		return (const UTF8Char*)"Idle";
+		return CSTR("Idle");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

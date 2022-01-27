@@ -24,7 +24,7 @@ namespace UI
 		virtual void SetText(const UTF8Char *text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleTextChanged(UI::UIEvent hdlr, void *userObj);

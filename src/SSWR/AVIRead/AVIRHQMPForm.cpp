@@ -293,9 +293,9 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		Text::SBAppendF64(&sb, dbg.par);
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.AppendC(UTF8STRC("Decoder: "));
-		if (dbg.decoderName)
+		if (dbg.decoderName.v)
 		{
-			sb.AppendSlow(dbg.decoderName);
+			sb.Append(dbg.decoderName);
 		}
 		else
 		{

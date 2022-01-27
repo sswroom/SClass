@@ -25,7 +25,7 @@ namespace Media
 			VP09Decoder(IVideoSource *sourceVideo, Bool toRelease);
 			virtual ~VP09Decoder();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

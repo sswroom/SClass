@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_APPARENTPOWER
 #define _SM_MATH_UNIT_APPARENTPOWER
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -16,8 +18,8 @@ namespace Math
 			} ApparentPowerUnit;
 		public:
 			static Double GetUnitRatio(ApparentPowerUnit unit);
-			static const UTF8Char *GetUnitShortName(ApparentPowerUnit unit);
-			static const UTF8Char *GetUnitName(ApparentPowerUnit unit);
+			static Text::CString GetUnitShortName(ApparentPowerUnit unit);
+			static Text::CString GetUnitName(ApparentPowerUnit unit);
 			static Double Convert(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit, Double fromValue);
 		};
 	}

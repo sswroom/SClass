@@ -329,9 +329,9 @@ UTF8Char *Net::RTPH264Handler::GetSourceName(UTF8Char *buff)
 	return Text::StrConcatC(buff, UTF8STRC("H.264 over RTP"));
 }
 
-const UTF8Char *Net::RTPH264Handler::GetFilterName()
+Text::CString Net::RTPH264Handler::GetFilterName()
 {
-	return (const UTF8Char*)"RTPH264Handler";
+	return CSTR("RTPH264Handler");
 }
 
 Bool Net::RTPH264Handler::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

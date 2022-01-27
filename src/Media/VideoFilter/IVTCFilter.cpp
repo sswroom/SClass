@@ -2059,9 +2059,9 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 #endif
 }
 
-const UTF8Char *Media::VideoFilter::IVTCFilter::GetFilterName()
+Text::CString Media::VideoFilter::IVTCFilter::GetFilterName()
 {
-	return (const UTF8Char*)"IVTCFilter";
+	return CSTR("IVTCFilter");
 }
 
 void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)

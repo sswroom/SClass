@@ -5,6 +5,7 @@
 #include "Media/FrameInfo.h"
 #include "Media/IMediaSource.h"
 #include "Sync/Event.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -53,7 +54,7 @@ namespace Media
 		virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff) = 0;
-		virtual const UTF8Char *GetFilterName() = 0;
+		virtual Text::CString GetFilterName() = 0;
 
 		virtual void SetBorderCrop(UOSInt cropLeft, UOSInt cropTop, UOSInt cropRight, UOSInt cropBottom) = 0;
 		virtual void GetBorderCrop(UOSInt *cropLeft, UOSInt *cropTop, UOSInt *cropRight, UOSInt *cropBottom) = 0;

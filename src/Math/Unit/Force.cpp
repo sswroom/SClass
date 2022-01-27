@@ -12,24 +12,24 @@ Double Math::Unit::Force::GetUnitRatio(ForceUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Force::GetUnitShortName(ForceUnit unit)
+Text::CString Math::Unit::Force::GetUnitShortName(ForceUnit unit)
 {
 	switch (unit)
 	{
 	case FU_NEWTON:
-		return (const UTF8Char*)"N";
+		return CSTR("N");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Force::GetUnitName(ForceUnit unit)
+Text::CString Math::Unit::Force::GetUnitName(ForceUnit unit)
 {
 	switch (unit)
 	{
 	case FU_NEWTON:
-		return (const UTF8Char*)"Newton";
+		return CSTR("Newton");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Force::Convert(ForceUnit fromUnit, ForceUnit toUnit, Double fromValue)

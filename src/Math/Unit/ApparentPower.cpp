@@ -12,24 +12,24 @@ Double Math::Unit::ApparentPower::GetUnitRatio(ApparentPowerUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::ApparentPower::GetUnitShortName(ApparentPowerUnit unit)
+Text::CString Math::Unit::ApparentPower::GetUnitShortName(ApparentPowerUnit unit)
 {
 	switch (unit)
 	{
 	case APU_VOLTAMPERE:
-		return (const UTF8Char*)"VA";
+		return CSTR("VA");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::ApparentPower::GetUnitName(ApparentPowerUnit unit)
+Text::CString Math::Unit::ApparentPower::GetUnitName(ApparentPowerUnit unit)
 {
 	switch (unit)
 	{
 	case APU_VOLTAMPERE:
-		return (const UTF8Char*)"Volt-Ampere";
+		return CSTR("Volt-Ampere");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::ApparentPower::Convert(ApparentPowerUnit fromUnit, ApparentPowerUnit toUnit, Double fromValue)

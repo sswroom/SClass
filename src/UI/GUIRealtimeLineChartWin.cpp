@@ -242,9 +242,9 @@ UI::GUIRealtimeLineChart::~GUIRealtimeLineChart()
 	MemFree(this->lineColor);
 }
 
-const UTF8Char *UI::GUIRealtimeLineChart::GetObjectClass()
+Text::CString UI::GUIRealtimeLineChart::GetObjectClass()
 {
-	return (const UTF8Char*)"RealtimeLineChart";
+	return CSTR("RealtimeLineChart");
 }
 
 OSInt UI::GUIRealtimeLineChart::OnNotify(UInt32 code, void *lParam)

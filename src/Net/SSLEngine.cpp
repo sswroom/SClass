@@ -186,29 +186,29 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 	}
 }
 
-const UTF8Char *Net::SSLEngine::ErrorTypeGetName(ErrorType err)
+Text::CString Net::SSLEngine::ErrorTypeGetName(ErrorType err)
 {
 	switch (err)
 	{
 	case ErrorType::None:
-		return (const UTF8Char*)"No Error";
+		return CSTR("No Error");
 	case ErrorType::HostnameNotResolved:
-		return (const UTF8Char*)"Hostname cannot not resolve";
+		return CSTR("Hostname cannot not resolve");
 	case ErrorType::OutOfMemory:
-		return (const UTF8Char*)"Out of memory";
+		return CSTR("Out of memory");
 	case ErrorType::CannotConnect:
-		return (const UTF8Char*)"Cannot connect to destination";
+		return CSTR("Cannot connect to destination");
 	case ErrorType::InitSession:
-		return (const UTF8Char*)"Failed in initializing session";
+		return CSTR("Failed in initializing session");
 	case ErrorType::CertNotFound:
-		return (const UTF8Char*)"Server Certification not found";
+		return CSTR("Server Certification not found");
 	case ErrorType::InvalidName:
-		return (const UTF8Char*)"Invalid cert name";
+		return CSTR("Invalid cert name");
 	case ErrorType::SelfSign:
-		return (const UTF8Char*)"Self Signed Certification";
+		return CSTR("Self Signed Certification");
 	case ErrorType::InvalidPeriod:
-		return (const UTF8Char*)"Valid period out of range";
+		return CSTR("Valid period out of range");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

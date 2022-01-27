@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		if (img)
 		{
 			Media::ImageList *imgList;
-			NEW_CLASS(imgList, Media::ImageList(imgGen->GetName()));
+			NEW_CLASS(imgList, Media::ImageList(imgGen->GetName().v));
 			imgList->AddImage(img, 0);
 			me->core->OpenObject(imgList);
 			me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		Media::ImageGenerator *imgGen = this->imgGenMgr->GetGenerator(i);
-		this->cboGenerator->AddItem(imgGen->GetName(), imgGen);
+		this->cboGenerator->AddItem(imgGen->GetName().v, imgGen);
 
 		i++;
 	}

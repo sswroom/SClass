@@ -38,7 +38,7 @@ namespace UI
 		GUIRealtimeLineChart(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng, UOSInt lineCnt, UOSInt sampleCnt, UInt32 updateInterval);
 		virtual ~GUIRealtimeLineChart();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void AddSample(Double *samples);

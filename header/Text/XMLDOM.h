@@ -2,6 +2,7 @@
 #define _SM_TEXT_XMLDOM
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
+#include "Text/CString.h"
 #include "Text/EncodingFactory.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -62,7 +63,7 @@ namespace Text
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);
 		Bool SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, XMLNode *n, const UTF8Char *nameStart, const UTF8Char *nameEnd, Text::StringBuilderUTF8 *outSB);
 	public:
-		static const UTF8Char *NodeTypeGetName(NodeType ntype);
+		static Text::CString NodeTypeGetName(NodeType ntype);
 	};
 
 	class XMLAttrib : public XMLNode

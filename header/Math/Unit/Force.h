@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_FORCE
 #define _SM_MATH_UNIT_FORCE
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -13,8 +15,8 @@ namespace Math
 			} ForceUnit;
 		public:
 			static Double GetUnitRatio(ForceUnit unit);
-			static const UTF8Char *GetUnitShortName(ForceUnit unit);
-			static const UTF8Char *GetUnitName(ForceUnit unit);
+			static Text::CString GetUnitShortName(ForceUnit unit);
+			static Text::CString GetUnitName(ForceUnit unit);
 			static Double Convert(ForceUnit fromUnit, ForceUnit toUnit, Double fromValue);
 		};
 	}

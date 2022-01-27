@@ -54,108 +54,108 @@ Double Math::Unit::Distance::GetUnitRatio(DistanceUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
+Text::CString Math::Unit::Distance::GetUnitShortName(DistanceUnit unit)
 {
 	switch (unit)
 	{
 	case DU_METER:
-		return (const UTF8Char*)"m";
+		return CSTR("m");
 	case DU_CENTIMETER:
-		return (const UTF8Char*)"cm";
+		return CSTR("cm");
 	case DU_MILLIMETER:
-		return (const UTF8Char*)"mm";
+		return CSTR("mm");
 	case DU_MICROMETER:
-		return (const UTF8Char*)"μm";
+		return CSTR("μm");
 	case DU_NANOMETER:
-		return (const UTF8Char*)"nm";
+		return CSTR("nm");
 	case DU_PICOMETER:
-		return (const UTF8Char*)"pm";
+		return CSTR("pm");
 	case DU_KILOMETER:
-		return (const UTF8Char*)"km";
+		return CSTR("km");
 	case DU_INCH:
-		return (const UTF8Char*)"\"";
+		return CSTR("\"");
 	case DU_FOOT:
-		return (const UTF8Char*)"ft";
+		return CSTR("ft");
 	case DU_YARD:
-		return (const UTF8Char*)"yd";
+		return CSTR("yd");
 	case DU_MILE:
-		return (const UTF8Char*)"milw";
+		return CSTR("milw");
 	case DU_NAUTICAL_MILE:
-		return (const UTF8Char*)"nm";
+		return CSTR("nm");
 	case DU_AU:
-		return (const UTF8Char*)"AU";
+		return CSTR("AU");
 	case DU_LIGHTSECOND:
-		return (const UTF8Char*)"ls";
+		return CSTR("ls");
 	case DU_LIGHTMINUTE:
-		return (const UTF8Char*)"lm";
+		return CSTR("lm");
 	case DU_LIGHTHOUR:
-		return (const UTF8Char*)"lh";
+		return CSTR("lh");
 	case DU_LIGHTDAY:
-		return (const UTF8Char*)"ld";
+		return CSTR("ld");
 	case DU_LIGHTWEEK:
-		return (const UTF8Char*)"lw";
+		return CSTR("lw");
 	case DU_LIGHTYEAR:
-		return (const UTF8Char*)"ly";
+		return CSTR("ly");
 	case DU_EMU:
-		return (const UTF8Char*)"emu";
+		return CSTR("emu");
 	case DU_POINT:
-		return (const UTF8Char*)"pt";
+		return CSTR("pt");
 	case DU_PIXEL:
-		return (const UTF8Char*)"px";
+		return CSTR("px");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Distance::GetUnitName(DistanceUnit unit)
+Text::CString Math::Unit::Distance::GetUnitName(DistanceUnit unit)
 {
 	switch (unit)
 	{
 	case DU_METER:
-		return (const UTF8Char*)"Meter";
+		return CSTR("Meter");
 	case DU_CENTIMETER:
-		return (const UTF8Char*)"Centimeter";
+		return CSTR("Centimeter");
 	case DU_MILLIMETER:
-		return (const UTF8Char*)"Millimeter";
+		return CSTR("Millimeter");
 	case DU_MICROMETER:
-		return (const UTF8Char*)"Micrometer";
+		return CSTR("Micrometer");
 	case DU_NANOMETER:
-		return (const UTF8Char*)"Nanometer";
+		return CSTR("Nanometer");
 	case DU_PICOMETER:
-		return (const UTF8Char*)"Picometer";
+		return CSTR("Picometer");
 	case DU_KILOMETER:
-		return (const UTF8Char*)"Kilometer";
+		return CSTR("Kilometer");
 	case DU_INCH:
-		return (const UTF8Char*)"Inch";
+		return CSTR("Inch");
 	case DU_FOOT:
-		return (const UTF8Char*)"Foot";
+		return CSTR("Foot");
 	case DU_YARD:
-		return (const UTF8Char*)"Yard";
+		return CSTR("Yard");
 	case DU_MILE:
-		return (const UTF8Char*)"Mile";
+		return CSTR("Mile");
 	case DU_NAUTICAL_MILE:
-		return (const UTF8Char*)"Nautical Mile";
+		return CSTR("Nautical Mile");
 	case DU_AU:
-		return (const UTF8Char*)"Astronomical unit";
+		return CSTR("Astronomical unit");
 	case DU_LIGHTSECOND:
-		return (const UTF8Char*)"Light-second";
+		return CSTR("Light-second");
 	case DU_LIGHTMINUTE:
-		return (const UTF8Char*)"Light-minute";
+		return CSTR("Light-minute");
 	case DU_LIGHTHOUR:
-		return (const UTF8Char*)"Light-hour";
+		return CSTR("Light-hour");
 	case DU_LIGHTDAY:
-		return (const UTF8Char*)"Light-day";
+		return CSTR("Light-day");
 	case DU_LIGHTWEEK:
-		return (const UTF8Char*)"Light-week";
+		return CSTR("Light-week");
 	case DU_LIGHTYEAR:
-		return (const UTF8Char*)"Light-year";
+		return CSTR("Light-year");
 	case DU_EMU:
-		return (const UTF8Char*)"English Metric Unit";
+		return CSTR("English Metric Unit");
 	case DU_POINT:
-		return (const UTF8Char*)"Point";
+		return CSTR("Point");
 	case DU_PIXEL:
-		return (const UTF8Char*)"Pixel";
+		return CSTR("Pixel");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Distance::Convert(DistanceUnit fromUnit, DistanceUnit toUnit, Double fromValue)

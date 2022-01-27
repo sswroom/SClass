@@ -1,6 +1,7 @@
 #ifndef _SM_MATH_UNIT_SPEED
 #define _SM_MATH_UNIT_SPEED
 #include "Math/Unit/Temperature.h"
+#include "Text/CString.h"
 
 namespace Math
 {
@@ -18,8 +19,8 @@ namespace Math
 			} SpeedUnit;
 		public:
 			static Double GetUnitRatio(SpeedUnit unit);
-			static const UTF8Char *GetUnitShortName(SpeedUnit unit);
-			static const UTF8Char *GetUnitName(SpeedUnit unit);
+			static Text::CString GetUnitShortName(SpeedUnit unit);
+			static Text::CString GetUnitName(SpeedUnit unit);
 			static Double Convert(SpeedUnit fromUnit, SpeedUnit toUnit, Double fromValue);
 			static Double CalcDryAirSpeed(Double temperatureK, SpeedUnit unit);
 		};

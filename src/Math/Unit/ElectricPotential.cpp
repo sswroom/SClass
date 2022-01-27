@@ -14,28 +14,28 @@ Double Math::Unit::ElectricPotential::GetUnitRatio(ElectricPotentialUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::ElectricPotential::GetUnitShortName(ElectricPotentialUnit unit)
+Text::CString Math::Unit::ElectricPotential::GetUnitShortName(ElectricPotentialUnit unit)
 {
 	switch (unit)
 	{
 	case EPU_VOLT:
-		return (const UTF8Char*)"V";
+		return CSTR("V");
 	case EPU_MILLIVOLT:
-		return (const UTF8Char*)"mV";
+		return CSTR("mV");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::ElectricPotential::GetUnitName(ElectricPotentialUnit unit)
+Text::CString Math::Unit::ElectricPotential::GetUnitName(ElectricPotentialUnit unit)
 {
 	switch (unit)
 	{
 	case EPU_VOLT:
-		return (const UTF8Char*)"Volt";
+		return CSTR("Volt");
 	case EPU_MILLIVOLT:
-		return (const UTF8Char*)"Millivolt";
+		return CSTR("Millivolt");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::ElectricPotential::Convert(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit, Double fromValue)

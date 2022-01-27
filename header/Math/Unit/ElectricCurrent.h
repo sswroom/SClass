@@ -1,5 +1,6 @@
 #ifndef _SM_MATH_UNIT_ELECTRICCURRENT
 #define _SM_MATH_UNIT_ELECTRICCURRENT
+#include "Text/CString.h"
 namespace Math
 {
 	namespace Unit
@@ -18,8 +19,8 @@ namespace Math
 			} ElectricCurrentUnit;
 		public:
 			static Double GetUnitRatio(ElectricCurrentUnit unit);
-			static const UTF8Char *GetUnitShortName(ElectricCurrentUnit unit);
-			static const UTF8Char *GetUnitName(ElectricCurrentUnit unit);
+			static Text::CString GetUnitShortName(ElectricCurrentUnit unit);
+			static Text::CString GetUnitName(ElectricCurrentUnit unit);
 			static Double Convert(ElectricCurrentUnit fromUnit, ElectricCurrentUnit toUnit, Double fromValue);
 		};
 	}

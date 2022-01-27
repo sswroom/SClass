@@ -46,7 +46,7 @@ namespace UI
 		virtual void GetSize(Double *width, Double *height);
 		virtual void SetArea(Double left, Double top, Double right, Double bottom, Bool updateScn);
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void HandleSelectionChange(UI::UIEvent hdlr, void *userObj);

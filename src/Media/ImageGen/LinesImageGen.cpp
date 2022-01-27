@@ -13,9 +13,9 @@ Media::ImageGen::LinesImageGen::~LinesImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::LinesImageGen::GetName()
+Text::CString Media::ImageGen::LinesImageGen::GetName()
 {
-	return (const UTF8Char*)"Lines Image";
+	return CSTR("Lines Image");
 }
 
 Media::Image *Media::ImageGen::LinesImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_ENERGY
 #define _SM_MATH_UNIT_ENERGY
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -18,8 +20,8 @@ namespace Math
 			} EnergyUnit;
 		public:
 			static Double GetUnitRatio(EnergyUnit unit);
-			static const UTF8Char *GetUnitShortName(EnergyUnit unit);
-			static const UTF8Char *GetUnitName(EnergyUnit unit);
+			static Text::CString GetUnitShortName(EnergyUnit unit);
+			static Text::CString GetUnitName(EnergyUnit unit);
 			static Double Convert(EnergyUnit fromUnit, EnergyUnit toUnit, Double fromValue);
 		};
 	}

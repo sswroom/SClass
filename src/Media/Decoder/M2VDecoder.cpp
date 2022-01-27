@@ -135,9 +135,9 @@ Media::Decoder::M2VDecoder::~M2VDecoder()
 	}
 }
 
-const UTF8Char *Media::Decoder::M2VDecoder::GetFilterName()
+Text::CString Media::Decoder::M2VDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"M2VDecoder";
+	return CSTR("M2VDecoder");
 }
 
 Bool Media::Decoder::M2VDecoder::HasFrameCount()

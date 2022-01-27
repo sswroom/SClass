@@ -16,32 +16,32 @@ Double Math::Unit::Power::GetUnitRatio(PowerUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Power::GetUnitShortName(PowerUnit unit)
+Text::CString Math::Unit::Power::GetUnitShortName(PowerUnit unit)
 {
 	switch (unit)
 	{
 	case PU_WATT:
-		return (const UTF8Char*)"W";
+		return CSTR("W");
 	case PU_MILLIVOLT:
-		return (const UTF8Char*)"mW";
+		return CSTR("mW");
 	case PU_KILOVOLT:
-		return (const UTF8Char*)"kW";
+		return CSTR("kW");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Power::GetUnitName(PowerUnit unit)
+Text::CString Math::Unit::Power::GetUnitName(PowerUnit unit)
 {
 	switch (unit)
 	{
 	case PU_WATT:
-		return (const UTF8Char*)"Watt";
+		return CSTR("Watt");
 	case PU_MILLIVOLT:
-		return (const UTF8Char*)"Milliwatt";
+		return CSTR("Milliwatt");
 	case PU_KILOVOLT:
-		return (const UTF8Char*)"Kilowatt";
+		return CSTR("Kilowatt");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Power::Convert(PowerUnit fromUnit, PowerUnit toUnit, Double fromValue)

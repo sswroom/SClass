@@ -831,9 +831,9 @@ Bool Media::Decoder::FFMPEGDecoder::CaptureImage(ImageCallback imgCb, void *user
 	return false;
 }
 
-const UTF8Char *Media::Decoder::FFMPEGDecoder::GetFilterName()
+Text::CString Media::Decoder::FFMPEGDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"FFMPEGDecoder";
+	return CSTR("FFMPEGDecoder");
 }
 
 Bool Media::Decoder::FFMPEGDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

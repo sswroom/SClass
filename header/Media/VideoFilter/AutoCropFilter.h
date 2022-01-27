@@ -18,7 +18,7 @@ namespace Media
 			AutoCropFilter(Media::IVideoSource *srcVideo);
 			virtual ~AutoCropFilter();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			void SetEnabled(Bool enabled);
 

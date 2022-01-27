@@ -126,9 +126,9 @@ UI::GUIVideoBoxDD::~GUIVideoBoxDD()
 #endif
 }
 
-const UTF8Char *UI::GUIVideoBoxDD::GetObjectClass()
+Text::CString UI::GUIVideoBoxDD::GetObjectClass()
 {
-	return (const UTF8Char*)"VideoBoxDD";
+	return CSTR("VideoBoxDD");
 }
 
 OSInt UI::GUIVideoBoxDD::OnNotify(UInt32 code, void *lParam)

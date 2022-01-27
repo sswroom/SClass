@@ -17,7 +17,7 @@ namespace Media
 			UVOffsetFilter(Media::IVideoSource *srcVideo);
 			virtual ~UVOffsetFilter();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			void SetOffset(Int32 uOfst, Int32 vOfst);
 		};

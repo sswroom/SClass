@@ -33,9 +33,9 @@ void UI::GUILabel::SetText(const UTF8Char *text)
 	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text);
 }
 
-const UTF8Char *UI::GUILabel::GetObjectClass()
+Text::CString UI::GUILabel::GetObjectClass()
 {
-	return (const UTF8Char*)"Label";
+	return CSTR("Label");
 }
 
 OSInt UI::GUILabel::OnNotify(UInt32 code, void *lParam)

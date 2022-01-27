@@ -230,9 +230,9 @@ UI::GUIPictureBoxSimple::~GUIPictureBoxSimple()
 	MemFree(data);
 }
 
-const UTF8Char *UI::GUIPictureBoxSimple::GetObjectClass()
+Text::CString UI::GUIPictureBoxSimple::GetObjectClass()
 {
-	return (const UTF8Char*)"PictureBoxSimple";
+	return CSTR("PictureBoxSimple");
 }
 
 OSInt UI::GUIPictureBoxSimple::OnNotify(UInt32 code, void *lParam)

@@ -25,7 +25,7 @@ namespace UI
 		virtual void SetText(const UTF8Char *text);
 		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnFocus();
 		virtual void OnFocusLost();

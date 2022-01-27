@@ -281,9 +281,9 @@ void *UI::GUITabControl::GetTabPageFont()
 	return this->GetFont();
 }
 
-const UTF8Char *UI::GUITabControl::GetObjectClass()
+Text::CString UI::GUITabControl::GetObjectClass()
 {
-	return (const UTF8Char*)"TabControl";
+	return CSTR("TabControl");
 }
 
 OSInt UI::GUITabControl::OnNotify(UInt32 code, void *lParam)

@@ -508,7 +508,7 @@ void UI::GUIControl::UpdateFont()
 void UI::GUIControl::UpdatePos(Bool redraw)
 {
 	Bool isForm = false;
-	if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
+	if (this->GetObjectClass().Equals(UTF8STRC("WinForm")))
 	{
 		isForm = true;
 		if (gtk_window_is_maximized((GtkWindow*)this->hwnd))
@@ -592,13 +592,13 @@ void UI::GUIControl::UpdatePos(Bool redraw)
 			g_idle_add(GUIControl_SetNoResize, this->hwnd);
 		}
 	}
-	else if (Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"TabPage"))
+	else if (this->GetObjectClass().Equals(UTF8STRC("TabPage")))
 	{
 
 	}
 	else
 	{
-		printf("%s is not WinForm without parent\r\n", this->GetObjectClass());
+		printf("%s is not WinForm without parent\r\n", this->GetObjectClass().v);
 	}
 }
 
@@ -723,11 +723,11 @@ UI::GUIClientControl *UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
-	const UTF8Char *objCls;
+	Text::CString objCls;
 	while (ctrl)
 	{
 		objCls = ctrl->GetObjectClass();
-		if (Text::StrEquals(objCls, (const UTF8Char*)"WinForm"))
+		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
 			if (ctrl->GetParent() == 0)
 				return (UI::GUIForm*)ctrl;

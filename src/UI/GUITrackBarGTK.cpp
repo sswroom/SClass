@@ -48,9 +48,9 @@ UI::GUITrackBar::~GUITrackBar()
 	DEL_CLASS(this->scrollHandlers);
 }
 
-const UTF8Char *UI::GUITrackBar::GetObjectClass()
+Text::CString UI::GUITrackBar::GetObjectClass()
 {
-	return (const UTF8Char*)"TrackBar";
+	return CSTR("TrackBar");
 }
 
 OSInt UI::GUITrackBar::OnNotify(UInt32 code, void *lParam)

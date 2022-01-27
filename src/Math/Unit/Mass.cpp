@@ -20,40 +20,40 @@ Double Math::Unit::Mass::GetUnitRatio(MassUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Mass::GetUnitShortName(MassUnit unit)
+Text::CString Math::Unit::Mass::GetUnitShortName(MassUnit unit)
 {
 	switch (unit)
 	{
 	case MU_KILOGRAM:
-		return (const UTF8Char*)"kg";
+		return CSTR("kg");
 	case MU_GRAM:
-		return (const UTF8Char*)"g";
+		return CSTR("g");
 	case MU_TONNE:
-		return (const UTF8Char*)"t";
+		return CSTR("t");
 	case MU_POUND:
-		return (const UTF8Char*)"lb";
+		return CSTR("lb");
 	case MU_OZ:
-		return (const UTF8Char*)"oz";
+		return CSTR("oz");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Mass::GetUnitName(MassUnit unit)
+Text::CString Math::Unit::Mass::GetUnitName(MassUnit unit)
 {
 	switch (unit)
 	{
 	case MU_KILOGRAM:
-		return (const UTF8Char*)"Kilogram";
+		return CSTR("Kilogram");
 	case MU_GRAM:
-		return (const UTF8Char*)"Gram";
+		return CSTR("Gram");
 	case MU_TONNE:
-		return (const UTF8Char*)"Tonne";
+		return CSTR("Tonne");
 	case MU_POUND:
-		return (const UTF8Char*)"Pounds";
+		return CSTR("Pounds");
 	case MU_OZ:
-		return (const UTF8Char*)"Ounce";
+		return CSTR("Ounce");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Mass::Convert(MassUnit fromUnit, MassUnit toUnit, Double fromValue)

@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 				NEW_CLASS(me->modbus, IO::MODBUSRTUMaster(me->stm));
 			}
 			NEW_CLASS(me->modbusCtrl, IO::MODBUSController(me->modbus));
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
 			me->btnStream->SetText((const UTF8Char*)"&Close");
 		}
 	}
@@ -272,7 +272,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				break;
 			}
-			Text::StrConcat(sptr, Math::Unit::UnitBase::GetUnitShortName(entry->vt, entry->unit));
+			Math::Unit::UnitBase::GetUnitShortName(entry->vt, entry->unit).ConcatTo(sptr);
 
 			me->lvDevice->SetSubItem(entry->lvIndex, 3, sbuff);
 			i++;
@@ -390,7 +390,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	DeviceType dt = DT_FIRST;
 	while (dt <= DT_LAST)
 	{
-		this->cboDevice->AddItem(DeviceTypeGetName(dt), (void*)(OSInt)dt);
+		this->cboDevice->AddItem(DeviceTypeGetName(dt).v, (void*)(OSInt)dt);
 		dt = (DeviceType)(dt + 1);
 	}
 	this->cboDevice->SetSelectedIndex(0);
@@ -428,15 +428,15 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRMODBUSMasterForm::DeviceTypeGetName(DeviceType dt)
+Text::CString SSWR::AVIRead::AVIRMODBUSMasterForm::DeviceTypeGetName(DeviceType dt)
 {
 	switch (dt)
 	{
 	case DT_SDM120:
-		return (const UTF8Char*)"SDM120";
+		return CSTR("SDM120");
 	case DT_AMGU4241:
-		return (const UTF8Char*)"AMGU4241";
+		return CSTR("AMGU4241");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

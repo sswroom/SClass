@@ -261,24 +261,24 @@ UOSInt Crypto::JasyptEncryptor::EncryptAsB64(Text::StringBuilderUTF8 *sb, const 
 	return sb->GetCharCnt();
 }
 
-const UTF8Char *Crypto::JasyptEncryptor::GetKeyAlgorithmName(KeyAlgorithm keyAlg)
+Text::CString Crypto::JasyptEncryptor::GetKeyAlgorithmName(KeyAlgorithm keyAlg)
 {
 	switch (keyAlg)
 	{
 	case KA_PBEWITHHMACSHA512:
-		return (const UTF8Char*)"PBWITHMACSHA512";
+		return CSTR("PBWITHMACSHA512");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *Crypto::JasyptEncryptor::GetCipherAlgorithmName(CipherAlgorithm cipherAlg)
+Text::CString Crypto::JasyptEncryptor::GetCipherAlgorithmName(CipherAlgorithm cipherAlg)
 {
 	switch (cipherAlg)
 	{
 	case CA_AES256:
-		return (const UTF8Char*)"AES-256";
+		return CSTR("AES-256");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

@@ -29,20 +29,20 @@ Data::Compress::Decompressor *Data::Compress::Decompressor::CreateDecompressor(D
 	return decomp;
 }
 
-const UTF8Char *Data::Compress::Decompressor::GetCompMethName(Data::Compress::Decompressor::CompressMethod compMethod)
+Text::CString Data::Compress::Decompressor::GetCompMethName(Data::Compress::Decompressor::CompressMethod compMethod)
 {
 	switch (compMethod)
 	{
 	case CM_DEFLATE:
-		return (const UTF8Char*)"Deflate";
+		return CSTR("Deflate");
 	case CM_UNCOMPRESSED:
-		return (const UTF8Char*)"Uncompressed";
+		return CSTR("Uncompressed");
 	case CM_MLH:
-		return (const UTF8Char*)"MLH";
+		return CSTR("MLH");
 	case CM_LZO:
-		return (const UTF8Char*)"LZO";
+		return CSTR("LZO");
 	case CM_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_FREQUENCY
 #define _SM_MATH_UNIT_FREQUENCY
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -17,8 +19,8 @@ namespace Math
 			} FrequencyUnit;
 		public:
 			static Double GetUnitRatio(FrequencyUnit unit);
-			static const UTF8Char *GetUnitShortName(FrequencyUnit unit);
-			static const UTF8Char *GetUnitName(FrequencyUnit unit);
+			static Text::CString GetUnitShortName(FrequencyUnit unit);
+			static Text::CString GetUnitName(FrequencyUnit unit);
 			static Double Convert(FrequencyUnit fromUnit, FrequencyUnit toUnit, Double fromValue);
 		};
 	}

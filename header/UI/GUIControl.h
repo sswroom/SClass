@@ -278,7 +278,7 @@ namespace UI
 		virtual OSInt GetScrollVPos();
 		void ScrollTo(OSInt x, OSInt y);
 
-		virtual const UTF8Char *GetObjectClass() = 0;
+		virtual Text::CString GetObjectClass() = 0;
 		virtual OSInt OnNotify(UInt32 code, void *lParam) = 0;
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual void OnPosChanged(Bool updateScn);

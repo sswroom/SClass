@@ -587,9 +587,9 @@ SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 	this->colorSess->RemoveHandler(this);
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRImageControl::GetObjectClass()
+Text::CString SSWR::AVIRead::AVIRImageControl::GetObjectClass()
 {
-	return (const UTF8Char*)"AVIRImageControl";
+	return CSTR("AVIRImageControl");
 }
 
 OSInt SSWR::AVIRead::AVIRImageControl::OnNotify(UInt32 code, void *lParam)

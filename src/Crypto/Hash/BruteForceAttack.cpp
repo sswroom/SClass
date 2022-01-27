@@ -288,17 +288,17 @@ Bool Crypto::Hash::BruteForceAttack::Start(const UInt8 *hashValue, UOSInt minLen
 	return true;
 }
 
-const UTF8Char *Crypto::Hash::BruteForceAttack::CharLimitGetName(CharLimit charLimit)
+Text::CString Crypto::Hash::BruteForceAttack::CharLimitGetName(CharLimit charLimit)
 {
 	switch (charLimit)
 	{
 	case CL_ASCII:
-		return (const UTF8Char*)"ASCII";
+		return CSTR("ASCII");
 	case CL_LETTER_NUM:
-		return (const UTF8Char*)"Letters and Numbers";
+		return CSTR("Letters and Numbers");
 	case CL_WEBPASSWORD:
-		return (const UTF8Char*)"Web Password";
+		return CSTR("Web Password");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

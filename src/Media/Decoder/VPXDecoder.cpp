@@ -68,9 +68,9 @@ Bool Media::Decoder::VPXDecoder::CaptureImage(ImageCallback imgCb, void *userDat
 	return false;
 }
 
-const UTF8Char *Media::Decoder::VPXDecoder::GetFilterName()
+Text::CString Media::Decoder::VPXDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"VPXDecoder";
+	return CSTR("VPXDecoder");
 }
 
 Bool Media::Decoder::VPXDecoder::GetVideoInfo(Media::FrameInfo *info, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)

@@ -18,9 +18,9 @@ UTF8Char *Net::RTPVSource::GetSourceName(UTF8Char *buff)
 	return this->hdlr->GetSourceName(buff);
 }
 
-const UTF8Char *Net::RTPVSource::GetFilterName()
+Text::CString Net::RTPVSource::GetFilterName()
 {
-	return (const UTF8Char*)"RTPVSource";
+	return CSTR("RTPVSource");
 }
 
 Bool Net::RTPVSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

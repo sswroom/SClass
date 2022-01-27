@@ -94,9 +94,9 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 	InitFont();
 }
 
-const UTF8Char *UI::GUIButton::GetObjectClass()
+Text::CString UI::GUIButton::GetObjectClass()
 {
-	return (const UTF8Char*)"BUTTON";
+	return CSTR("BUTTON");
 }
 
 OSInt UI::GUIButton::OnNotify(UInt32 code, void *lParam)

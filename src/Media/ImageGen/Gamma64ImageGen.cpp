@@ -13,9 +13,9 @@ Media::ImageGen::Gamma64ImageGen::~Gamma64ImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::Gamma64ImageGen::GetName()
+Text::CString Media::ImageGen::Gamma64ImageGen::GetName()
 {
-	return (const UTF8Char*)"Gamma Test 64-bit";
+	return CSTR("Gamma Test 64-bit");
 }
 
 Media::Image *Media::ImageGen::Gamma64ImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

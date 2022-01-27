@@ -35,6 +35,11 @@ namespace Text
 		{
 			return WriteStrC(str.v, str.leng);
 		}
+
+		Bool WriteLine(Text::CString str)
+		{
+			return WriteLineC(str.v, str.leng);
+		}
 	};
 }
 #endif

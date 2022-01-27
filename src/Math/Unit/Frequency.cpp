@@ -14,28 +14,28 @@ Double Math::Unit::Frequency::GetUnitRatio(FrequencyUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Frequency::GetUnitShortName(FrequencyUnit unit)
+Text::CString Math::Unit::Frequency::GetUnitShortName(FrequencyUnit unit)
 {
 	switch (unit)
 	{
 	case FU_HERTZ:
-		return (const UTF8Char*)"Hz";
+		return CSTR("Hz");
 	case FU_KILOHERTZ:
-		return (const UTF8Char*)"kHz";
+		return CSTR("kHz");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Frequency::GetUnitName(FrequencyUnit unit)
+Text::CString Math::Unit::Frequency::GetUnitName(FrequencyUnit unit)
 {
 	switch (unit)
 	{
 	case FU_HERTZ:
-		return (const UTF8Char*)"Hertz";
+		return CSTR("Hertz");
 	case FU_KILOHERTZ:
-		return (const UTF8Char*)"Kilohertz";
+		return CSTR("Kilohertz");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Frequency::Convert(FrequencyUnit fromUnit, FrequencyUnit toUnit, Double fromValue)

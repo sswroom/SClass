@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	*sptr++ = '.';
-	Text::StrConcat(sptr, Net::RAWCapture::FileFormatGetExt(format));
+	Net::RAWCapture::FileFormatGetExt(format).ConcatTo(sptr);
 	me->txtFileName->SetText(sbuff);
 }
 
@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	j = Net::RAWCapture::CT_LAST;
 	while (i <= j)
 	{
-		this->cboType->AddItem(Net::RAWCapture::CaptureTypeGetName((Net::RAWCapture::CaptureType)i), (void*)i);
+		this->cboType->AddItem(Net::RAWCapture::CaptureTypeGetName((Net::RAWCapture::CaptureType)i).v, (void*)i);
 		i++;
 	}
 	this->cboType->SetSelectedIndex(0);
@@ -195,7 +195,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	j = Net::RAWCapture::FF_LAST;
 	while (i <= j)
 	{
-		this->cboFormat->AddItem(Net::RAWCapture::FileFormatGetName((Net::RAWCapture::FileFormat)i), (void*)i);
+		this->cboFormat->AddItem(Net::RAWCapture::FileFormatGetName((Net::RAWCapture::FileFormat)i).v, (void*)i);
 		i++;
 	}
 	this->cboFormat->SetSelectedIndex(0);

@@ -27,13 +27,13 @@ Media::Decoder::VDecoderChain::~VDecoderChain()
 	DEL_CLASS(this->srcFilters);
 }
 
-const UTF8Char *Media::Decoder::VDecoderChain::GetFilterName()
+Text::CString Media::Decoder::VDecoderChain::GetFilterName()
 {
 	if (this->sourceVideo)
 	{
 		return this->sourceVideo->GetFilterName();
 	}
-	return (const UTF8Char*)"VDecoderChain";
+	return CSTR("VDecoderChain");
 }
 
 void Media::Decoder::VDecoderChain::AddDecoder(Media::IVideoSource *decoder)

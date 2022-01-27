@@ -12,24 +12,24 @@ Double Math::Unit::Count::GetUnitRatio(CountUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Count::GetUnitShortName(CountUnit unit)
+Text::CString Math::Unit::Count::GetUnitShortName(CountUnit unit)
 {
 	switch (unit)
 	{
 	case CU_UNIT:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Count::GetUnitName(CountUnit unit)
+Text::CString Math::Unit::Count::GetUnitName(CountUnit unit)
 {
 	switch (unit)
 	{
 	case CU_UNIT:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Count::Convert(CountUnit fromUnit, CountUnit toUnit, Double fromValue)

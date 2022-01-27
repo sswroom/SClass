@@ -1,6 +1,7 @@
 #ifndef _SM_NET_EMAIL_EMAILVALIDATOR
 #define _SM_NET_EMAIL_EMAILVALIDATOR
 #include "Net/DNSClient.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -27,7 +28,7 @@ namespace Net
 			~EmailValidator();
 
 			Status Validate(const UTF8Char *emailAddr);
-			static const UTF8Char *StatusGetName(Status status);
+			static Text::CString StatusGetName(Status status);
 		};
 	}
 }

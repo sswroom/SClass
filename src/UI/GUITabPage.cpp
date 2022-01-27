@@ -42,9 +42,9 @@ Bool UI::GUITabPage::IsFormFocused()
 	return this->ctrl->IsFormFocused();
 }
 
-const UTF8Char *UI::GUITabPage::GetObjectClass()
+Text::CString UI::GUITabPage::GetObjectClass()
 {
-	return (const UTF8Char*)"TabPage";
+	return CSTR("TabPage");
 }
 
 OSInt UI::GUITabPage::OnNotify(UInt32 code, void *lParam)

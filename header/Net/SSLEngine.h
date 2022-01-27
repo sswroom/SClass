@@ -5,6 +5,7 @@
 #include "Crypto/Cert/X509Key.h"
 #include "Crypto/Hash/IHash.h"
 #include "Net/SSLClient.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -86,7 +87,7 @@ namespace Net
 		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
-		static const UTF8Char *ErrorTypeGetName(ErrorType err);
+		static Text::CString ErrorTypeGetName(ErrorType err);
 	};
 }
 #endif

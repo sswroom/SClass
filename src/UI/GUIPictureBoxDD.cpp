@@ -442,9 +442,9 @@ UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 	this->colorSess->RemoveHandler(this);
 }
 
-const UTF8Char *UI::GUIPictureBoxDD::GetObjectClass()
+Text::CString UI::GUIPictureBoxDD::GetObjectClass()
 {
-	return (const UTF8Char*)"PictureBoxDD";
+	return CSTR("PictureBoxDD");
 }
 
 OSInt UI::GUIPictureBoxDD::OnNotify(UInt32 code, void *lParam)

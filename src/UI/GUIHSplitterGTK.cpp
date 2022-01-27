@@ -93,9 +93,9 @@ UI::GUIHSplitter::~GUIHSplitter()
 {
 }
 
-const UTF8Char *UI::GUIHSplitter::GetObjectClass()
+Text::CString UI::GUIHSplitter::GetObjectClass()
 {
-	return (const UTF8Char*)"HSplitter";
+	return CSTR("HSplitter");
 }
 
 OSInt UI::GUIHSplitter::OnNotify(UInt32 code, void *lParam)

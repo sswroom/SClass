@@ -145,9 +145,9 @@ void UI::GUIMapTreeView::EventDragItem(TreeItem *dragItem, TreeItem *dropItem)
 	}
 }
 
-const UTF8Char *UI::GUIMapTreeView::GetObjectClass()
+Text::CString UI::GUIMapTreeView::GetObjectClass()
 {
-	return (const UTF8Char*)"MapTreeView";
+	return CSTR("MapTreeView");
 }
 
 void UI::GUIMapTreeView::SetDragHandler(TreeDragHandler dragHdlr, void *dragObj)

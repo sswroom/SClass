@@ -323,9 +323,9 @@ UI::GUIPictureBox::~GUIPictureBox()
 	MemFree(data);
 }
 
-const UTF8Char *UI::GUIPictureBox::GetObjectClass()
+Text::CString UI::GUIPictureBox::GetObjectClass()
 {
-	return (const UTF8Char*)"PictureBox";
+	return CSTR("PictureBox");
 }
 
 OSInt UI::GUIPictureBox::OnNotify(UInt32 code, void *lParam)

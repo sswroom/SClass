@@ -27,7 +27,7 @@ namespace UI
 		GUIDateTimePicker(GUICore *ui, UI::GUIClientControl *parent, SelectType st);
 		virtual ~GUIDateTimePicker();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetValue(Data::DateTime *dt);

@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_DISTANCE
 #define _SM_MATH_UNIT_DISTANCE
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -37,8 +39,8 @@ namespace Math
 			} DistanceUnit;
 		public:
 			static Double GetUnitRatio(DistanceUnit unit);
-			static const UTF8Char *GetUnitShortName(DistanceUnit unit);
-			static const UTF8Char *GetUnitName(DistanceUnit unit);
+			static Text::CString GetUnitShortName(DistanceUnit unit);
+			static Text::CString GetUnitName(DistanceUnit unit);
 			static Double Convert(DistanceUnit fromUnit, DistanceUnit toUnit, Double fromValue);
 		};
 	}

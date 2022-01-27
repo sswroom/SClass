@@ -93,9 +93,9 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-const UTF8Char *UI::GUITextBox::GetObjectClass()
+Text::CString UI::GUITextBox::GetObjectClass()
 {
-	return (const UTF8Char*)"TextBox";
+	return CSTR("TextBox");
 }
 
 OSInt UI::GUITextBox::OnNotify(UInt32 code, void *lParam)

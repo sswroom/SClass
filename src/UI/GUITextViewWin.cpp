@@ -568,9 +568,9 @@ UI::GUITextView::~GUITextView()
 	}
 }
 
-const UTF8Char *UI::GUITextView::GetObjectClass()
+Text::CString UI::GUITextView::GetObjectClass()
 {
-	return (const UTF8Char*)"TextFileView";
+	return CSTR("TextFileView");
 }
 
 OSInt UI::GUITextView::OnNotify(UInt32 code, void *lParam)

@@ -13,9 +13,9 @@ Media::ImageGen::RingsImageGen::~RingsImageGen()
 {
 }
 
-const UTF8Char *Media::ImageGen::RingsImageGen::GetName()
+Text::CString Media::ImageGen::RingsImageGen::GetName()
 {
-	return (const UTF8Char*)"Rings Image";
+	return CSTR("Rings Image");
 }
 
 Media::Image *Media::ImageGen::RingsImageGen::GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height)

@@ -474,9 +474,9 @@ UTF8Char *Media::M2VStreamSource::GetSourceName(UTF8Char *buff)
 	return this->pbc->GetMediaName(buff);
 }
 
-const UTF8Char *Media::M2VStreamSource::GetFilterName()
+Text::CString Media::M2VStreamSource::GetFilterName()
 {
-	return (const UTF8Char*)"M2VStreamSource";
+	return CSTR("M2VStreamSource");
 }
 
 Bool Media::M2VStreamSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

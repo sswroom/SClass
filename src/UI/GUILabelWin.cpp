@@ -31,9 +31,9 @@ void UI::GUILabel::SetText(const UTF8Char *text)
 	Text::StrDelNew(wptr);
 }
 
-const UTF8Char *UI::GUILabel::GetObjectClass()
+Text::CString UI::GUILabel::GetObjectClass()
 {
-	return (const UTF8Char*)"Label";
+	return CSTR("Label");
 }
 
 OSInt UI::GUILabel::OnNotify(UInt32 code, void *lParam)

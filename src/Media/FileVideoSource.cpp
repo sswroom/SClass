@@ -279,9 +279,9 @@ UTF8Char *Media::FileVideoSource::GetSourceName(UTF8Char *buff)
 	return this->data->GetFullName()->ConcatTo(buff);
 }
 
-const UTF8Char *Media::FileVideoSource::GetFilterName()
+Text::CString Media::FileVideoSource::GetFilterName()
 {
-	return (const UTF8Char*)"FileVideoSource";
+	return CSTR("FileVideoSource");
 }
 
 Bool Media::FileVideoSource::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

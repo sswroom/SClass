@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_RATIO
 #define _SM_MATH_UNIT_RATIO
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -17,8 +19,8 @@ namespace Math
 			} RatioUnit;
 		public:
 			static Double GetUnitRatio(RatioUnit unit);
-			static const UTF8Char *GetUnitShortName(RatioUnit unit);
-			static const UTF8Char *GetUnitName(RatioUnit unit);
+			static Text::CString GetUnitShortName(RatioUnit unit);
+			static Text::CString GetUnitName(RatioUnit unit);
 			static Double Convert(RatioUnit fromUnit, RatioUnit toUnit, Double fromValue);
 		};
 	}

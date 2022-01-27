@@ -19,7 +19,7 @@ namespace UI
 		GUITrackBar(GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal);
 		virtual ~GUITrackBar();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		void SetPos(UOSInt pos);

@@ -512,9 +512,9 @@ void UI::GUIListView::EndUpdate()
 	this->SetVisible(true);
 }
 
-const UTF8Char *UI::GUIListView::GetObjectClass()
+Text::CString UI::GUIListView::GetObjectClass()
 {
-	return (const UTF8Char*)"ListView";
+	return CSTR("ListView");
 }
 
 OSInt UI::GUIListView::OnNotify(UInt32 code, void *lParam)

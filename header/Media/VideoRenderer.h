@@ -61,7 +61,7 @@ namespace Media
 			UInt32 dispBitDepth;
 			Media::ColorProfile *color;
 			Media::ColorProfile::YUVType srcYUVType;
-			const UTF8Char *decoderName;
+			Text::CString decoderName;
 			Int32 buffProc;
 			Int32 buffReady;
 			Double hTime;

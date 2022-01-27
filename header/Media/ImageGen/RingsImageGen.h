@@ -12,7 +12,7 @@ namespace Media
 			RingsImageGen();
 			virtual ~RingsImageGen();
 
-			virtual const UTF8Char *GetName();
+			virtual Text::CString GetName();
 			virtual Media::Image *GenerateImage(Media::ColorProfile *colorProfile, UOSInt width, UOSInt height);
 		};
 	}

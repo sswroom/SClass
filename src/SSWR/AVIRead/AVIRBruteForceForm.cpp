@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	j = Crypto::Hash::BruteForceAttack::CL_LAST;
 	while (i <= j)
 	{
-		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName((Crypto::Hash::BruteForceAttack::CharLimit)i), (void*)i);
+		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName((Crypto::Hash::BruteForceAttack::CharLimit)i).v, (void*)i);
 		i++;
 	}
 	this->cboCharType->SetSelectedIndex(0);

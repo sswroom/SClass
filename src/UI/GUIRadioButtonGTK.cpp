@@ -45,7 +45,7 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 		UI::GUIControl *ctrl = this->parent->GetChild(i);
 		if (ctrl != this)
 		{
-			if (Text::StrEquals(ctrl->GetObjectClass(), (const UTF8Char*)"RadioButton"))
+			if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))
 			{
 				radioBtn = (GUIRadioButton*)ctrl;
 			}
@@ -75,9 +75,9 @@ UI::GUIRadioButton::~GUIRadioButton()
 	DEL_CLASS(this->selectedChangeObjs);
 }
 
-const UTF8Char *UI::GUIRadioButton::GetObjectClass()
+Text::CString UI::GUIRadioButton::GetObjectClass()
 {
-	return (const UTF8Char*)"RadioButton";
+	return CSTR("RadioButton");
 }
 
 OSInt UI::GUIRadioButton::OnNotify(UInt32 code, void *lParam)

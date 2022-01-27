@@ -39,7 +39,7 @@ namespace Media
 			RAVCDecoder(IVideoSource *sourceVideo, Bool toRelease, Bool skipHeader);
 			virtual ~RAVCDecoder();
 
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool HasFrameCount();
 			virtual UOSInt GetFrameCount();

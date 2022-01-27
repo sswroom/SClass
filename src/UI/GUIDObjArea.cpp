@@ -238,9 +238,9 @@ void UI::GUIDObjArea::SetHandler(UI::DObj::DObjHandler *dobjHdlr)
 	this->dobjMut->Unlock();
 }
 
-const UTF8Char *UI::GUIDObjArea::GetObjectClass()
+Text::CString UI::GUIDObjArea::GetObjectClass()
 {
-	return (const UTF8Char*)"DObjArea";
+	return CSTR("DObjArea");
 }
 
 OSInt UI::GUIDObjArea::OnNotify(UInt32 code, void *lParam)

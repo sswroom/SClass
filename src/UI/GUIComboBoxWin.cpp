@@ -301,9 +301,9 @@ void UI::GUIComboBox::SetArea(Double left, Double top, Double right, Double bott
 	this->OnSizeChanged(updateScn);
 }
 
-const UTF8Char *UI::GUIComboBox::GetObjectClass()
+Text::CString UI::GUIComboBox::GetObjectClass()
 {
-	return (const UTF8Char*)"ComboBox";
+	return CSTR("ComboBox");
 }
 
 OSInt UI::GUIComboBox::OnNotify(UInt32 code, void *lParam)

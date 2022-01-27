@@ -97,9 +97,9 @@ Media::VideoFilter::AutoCropFilter::~AutoCropFilter()
 {
 }
 
-const UTF8Char *Media::VideoFilter::AutoCropFilter::GetFilterName()
+Text::CString Media::VideoFilter::AutoCropFilter::GetFilterName()
 {
-	return (const UTF8Char*)"AutoCropFilter";
+	return CSTR("AutoCropFilter");
 }
 
 void Media::VideoFilter::AutoCropFilter::SetEnabled(Bool enabled)

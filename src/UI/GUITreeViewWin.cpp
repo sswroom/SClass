@@ -489,9 +489,9 @@ void UI::GUITreeView::BeginEdit(TreeItem *item)
 	SendMessage((HWND)this->hwnd, TVM_EDITLABEL, 0, (LPARAM)item->GetHItem());
 }
 
-const UTF8Char *UI::GUITreeView::GetObjectClass()
+Text::CString UI::GUITreeView::GetObjectClass()
 {
-	return (const UTF8Char*)"TreeView";
+	return CSTR("TreeView");
 }
 
 OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)

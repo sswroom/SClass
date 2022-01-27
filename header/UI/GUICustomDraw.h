@@ -35,7 +35,7 @@ namespace UI
 		GUICustomDraw(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *eng);
 		virtual ~GUICustomDraw();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual Bool OnMouseDown(OSInt scnX, OSInt scnY, MouseButton btn);

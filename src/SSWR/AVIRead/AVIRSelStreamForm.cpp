@@ -271,18 +271,18 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboStreamType, UI::GUIComboBox(ui, this->pnlStreamType, false));
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT), (void*)SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT).v, (void*)SSWR::AVIRead::AVIRCore::ST_SERIAL_PORT);
 	if (this->siLabDriver)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_USBXPRESS), (void*)SSWR::AVIRead::AVIRCore::ST_USBXPRESS);
+		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_USBXPRESS).v, (void*)SSWR::AVIRead::AVIRCore::ST_USBXPRESS);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER), (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT), (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPSERVER).v, (void*)SSWR::AVIRead::AVIRCore::ST_TCPSERVER);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_TCPCLIENT).v, (void*)SSWR::AVIRead::AVIRCore::ST_TCPCLIENT);
 	if (allowReadOnly)
 	{
-		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_FILE), (void*)SSWR::AVIRead::AVIRCore::ST_FILE);
+		this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_FILE).v, (void*)SSWR::AVIRead::AVIRCore::ST_FILE);
 	}
-	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_HID), (void*)SSWR::AVIRead::AVIRCore::ST_HID);
+	this->cboStreamType->AddItem(SSWR::AVIRead::AVIRCore::GetStreamTypeName(SSWR::AVIRead::AVIRCore::ST_HID).v, (void*)SSWR::AVIRead::AVIRCore::ST_HID);
 	this->cboStreamType->HandleSelectionChange(OnStmTypeChg, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));

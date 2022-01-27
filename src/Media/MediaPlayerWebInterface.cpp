@@ -357,9 +357,9 @@ void Media::MediaPlayerWebInterface::WebRequest(Net::WebServer::IWebRequest *req
 		Text::SBAppendF64(&sb, status.par);
 		sb.AppendC(UTF8STRC("<br/>\r\n"));
 		sb.AppendC(UTF8STRC("Decoder: "));
-		if (status.decoderName)
+		if (status.decoderName.v)
 		{
-			sb.AppendSlow(status.decoderName);
+			sb.Append(status.decoderName);
 		}
 		else
 		{

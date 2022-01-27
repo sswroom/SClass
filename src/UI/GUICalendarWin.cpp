@@ -37,9 +37,9 @@ UI::GUICalendar::~GUICalendar()
 	DEL_CLASS(this->dateChangedObjs);
 }
 
-const UTF8Char *UI::GUICalendar::GetObjectClass()
+Text::CString UI::GUICalendar::GetObjectClass()
 {
-	return (const UTF8Char*)"Calendar";
+	return CSTR("Calendar");
 }
 
 OSInt UI::GUICalendar::OnNotify(UInt32 code, void *lParam)

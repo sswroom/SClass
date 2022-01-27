@@ -14,28 +14,28 @@ Double Math::Unit::Ratio::GetUnitRatio(RatioUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Ratio::GetUnitShortName(RatioUnit unit)
+Text::CString Math::Unit::Ratio::GetUnitShortName(RatioUnit unit)
 {
 	switch (unit)
 	{
 	case RU_RATIO:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	case RU_PERCENT:
-		return (const UTF8Char*)"%";
+		return CSTR("%");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Ratio::GetUnitName(RatioUnit unit)
+Text::CString Math::Unit::Ratio::GetUnitName(RatioUnit unit)
 {
 	switch (unit)
 	{
 	case RU_RATIO:
-		return (const UTF8Char*)"Ratio";
+		return CSTR("Ratio");
 	case RU_PERCENT:
-		return (const UTF8Char*)"Percent";
+		return CSTR("Percent");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Ratio::Convert(RatioUnit fromUnit, RatioUnit toUnit, Double fromValue)

@@ -422,9 +422,9 @@ void UI::GUITreeView::BeginEdit(TreeItem *item)
 {
 }
 
-const UTF8Char *UI::GUITreeView::GetObjectClass()
+Text::CString UI::GUITreeView::GetObjectClass()
 {
-	return (const UTF8Char*)"TreeView";
+	return CSTR("TreeView");
 }
 
 OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)

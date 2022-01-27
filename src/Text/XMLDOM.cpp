@@ -669,29 +669,29 @@ Bool Text::XMLNode::SearchEval(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr,
 	}
 }
 
-const UTF8Char *Text::XMLNode::NodeTypeGetName(NodeType ntype)
+Text::CString Text::XMLNode::NodeTypeGetName(NodeType ntype)
 {
 	switch (ntype)
 	{
 	case NT_ELEMENT:
-		return (const UTF8Char*)"Element";
+		return CSTR("Element");
 	case NT_TEXT:
-		return (const UTF8Char*)"Text";
+		return CSTR("Text");
 	case NT_DOCUMENT:
-		return (const UTF8Char*)"Document";
+		return CSTR("Document");
 	case NT_COMMENT:
-		return (const UTF8Char*)"Comment";
+		return CSTR("Comment");
 	case NT_ATTRIBUTE:
-		return (const UTF8Char*)"Attribute";
+		return CSTR("Attribute");
 	case NT_CDATA:
-		return (const UTF8Char*)"CDATA";
+		return CSTR("CDATA");
 	case NT_ELEMENTEND:
-		return (const UTF8Char*)"Element End";
+		return CSTR("Element End");
 	case NT_DOCTYPE:
-		return (const UTF8Char*)"DocType";
+		return CSTR("DocType");
 	case NT_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 
 }

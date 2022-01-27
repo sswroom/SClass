@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_TEMPERATURE
 #define _SM_MATH_UNIT_TEMPERATURE
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -16,8 +18,8 @@ namespace Math
 		public:
 			static Double GetUnitRatio(TemperatureUnit unit);
 			static Double GetUnitScale(TemperatureUnit unit);
-			static const UTF8Char *GetUnitShortName(TemperatureUnit unit);
-			static const UTF8Char *GetUnitName(TemperatureUnit unit);
+			static Text::CString GetUnitShortName(TemperatureUnit unit);
+			static Text::CString GetUnitName(TemperatureUnit unit);
 			static Double Convert(TemperatureUnit fromUnit, TemperatureUnit toUnit, Double fromValue);
 		};
 	}

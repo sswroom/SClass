@@ -23,7 +23,7 @@ namespace Media
 			virtual ~FFMPEGDecoder();
 
 			virtual Bool CaptureImage(ImageCallback imgCb, void *userData);
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 			virtual void Stop();

@@ -46,15 +46,15 @@ UTF8Char *Crypto::OTP::CodeString(UTF8Char *sbuff, UInt32 code)
 	}
 }
 
-const UTF8Char *Crypto::OTP::OTPTypeGetName(OTPType type)
+Text::CString Crypto::OTP::OTPTypeGetName(OTPType type)
 {
 	switch (type)
 	{
 	case OTPType::HOTP:
-		return (const UTF8Char*)"HOTP";
+		return CSTR("HOTP");
 	case OTPType::TOTP:
-		return (const UTF8Char*)"TOTP";
+		return CSTR("TOTP");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

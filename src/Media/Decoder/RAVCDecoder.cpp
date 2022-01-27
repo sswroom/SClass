@@ -435,9 +435,9 @@ Media::Decoder::RAVCDecoder::~RAVCDecoder()
 	DEL_CLASS(this->frameMut);
 }
 
-const UTF8Char *Media::Decoder::RAVCDecoder::GetFilterName()
+Text::CString Media::Decoder::RAVCDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"RAVCDecoder";
+	return CSTR("RAVCDecoder");
 }
 
 Bool Media::Decoder::RAVCDecoder::HasFrameCount()

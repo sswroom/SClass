@@ -14,12 +14,12 @@
 #include "Math/Unit/Temperature.h"
 #include "Math/Unit/UnitBase.h"
 
-const UTF8Char *Math::Unit::UnitBase::GetUnitShortName(ValueType vt, Int32 unit)
+Text::CString Math::Unit::UnitBase::GetUnitShortName(ValueType vt, Int32 unit)
 {
 	switch (vt)
 	{
 	case VT_MAPPING:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	case VT_ELECTRIC_POTENTIAL:
 		return Math::Unit::ElectricPotential::GetUnitShortName((Math::Unit::ElectricPotential::ElectricPotentialUnit)unit);
 	case VT_ELECTRIC_CURRENT:
@@ -45,6 +45,6 @@ const UTF8Char *Math::Unit::UnitBase::GetUnitShortName(ValueType vt, Int32 unit)
 	case VT_TEMPERATURE:
 		return Math::Unit::Temperature::GetUnitShortName((Math::Unit::Temperature::TemperatureUnit)unit);
 	default:
-		return (const UTF8Char*)"";
+		return CSTR("");
 	}
 }

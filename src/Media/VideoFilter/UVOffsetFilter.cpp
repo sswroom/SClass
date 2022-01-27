@@ -106,9 +106,9 @@ Media::VideoFilter::UVOffsetFilter::~UVOffsetFilter()
 {
 }
 
-const UTF8Char *Media::VideoFilter::UVOffsetFilter::GetFilterName()
+Text::CString Media::VideoFilter::UVOffsetFilter::GetFilterName()
 {
-	return (const UTF8Char*)"UVOffsetFilter";
+	return CSTR("UVOffsetFilter");
 }
 
 void Media::VideoFilter::UVOffsetFilter::SetOffset(Int32 uOfst, Int32 vOfst)

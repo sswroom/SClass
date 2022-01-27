@@ -62,9 +62,9 @@ Bool Media::Decoder::VFWDecoder::CaptureImage(ImageCallback imgCb, void *userDat
 	return true;
 }
 
-const UTF8Char *Media::Decoder::VFWDecoder::GetFilterName()
+Text::CString Media::Decoder::VFWDecoder::GetFilterName()
 {
-	return (const UTF8Char*)"VFWDecoder";
+	return CSTR("VFWDecoder");
 }
 
 Bool Media::Decoder::VFWDecoder::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

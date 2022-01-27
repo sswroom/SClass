@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_ELECTRICPOTENTIAL
 #define _SM_MATH_UNIT_ELECTRICPOTENTIAL
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -17,8 +19,8 @@ namespace Math
 			} ElectricPotentialUnit;
 		public:
 			static Double GetUnitRatio(ElectricPotentialUnit unit);
-			static const UTF8Char *GetUnitShortName(ElectricPotentialUnit unit);
-			static const UTF8Char *GetUnitName(ElectricPotentialUnit unit);
+			static Text::CString GetUnitShortName(ElectricPotentialUnit unit);
+			static Text::CString GetUnitName(ElectricPotentialUnit unit);
 			static Double Convert(ElectricPotentialUnit fromUnit, ElectricPotentialUnit toUnit, Double fromValue);
 		};
 	}

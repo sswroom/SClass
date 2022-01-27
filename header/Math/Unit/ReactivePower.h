@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_REACTIVEPOWER
 #define _SM_MATH_UNIT_REACTIVEPOWER
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -16,8 +18,8 @@ namespace Math
 			} ReactivePowerUnit;
 		public:
 			static Double GetUnitRatio(ReactivePowerUnit unit);
-			static const UTF8Char *GetUnitShortName(ReactivePowerUnit unit);
-			static const UTF8Char *GetUnitName(ReactivePowerUnit unit);
+			static Text::CString GetUnitShortName(ReactivePowerUnit unit);
+			static Text::CString GetUnitName(ReactivePowerUnit unit);
 			static Double Convert(ReactivePowerUnit fromUnit, ReactivePowerUnit toUnit, Double fromValue);
 		};
 	}

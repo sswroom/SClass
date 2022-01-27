@@ -37,9 +37,9 @@ UI::GUIDateTimePicker::~GUIDateTimePicker()
 }
 
 
-const UTF8Char *UI::GUIDateTimePicker::GetObjectClass()
+Text::CString UI::GUIDateTimePicker::GetObjectClass()
 {
-	return (const UTF8Char*)"DateTimePicker";
+	return CSTR("DateTimePicker");
 }
 
 OSInt UI::GUIDateTimePicker::OnNotify(UInt32 code, void *lParam)

@@ -34,7 +34,7 @@ void UI::GUIClientControl::InitContainer()
 	{
 		outH = 0;
 	}
-	if (!Text::StrEquals(this->GetObjectClass(), (const UTF8Char*)"WinForm"))
+	if (!this->GetObjectClass().Equals(UTF8STRC("WinForm")))
 	{
 		gtk_widget_set_size_request(data->scrolledWin, Double2Int32(outW * this->hdpi / this->ddpi), Double2Int32(outH * this->hdpi / this->ddpi));
 	}

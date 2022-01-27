@@ -435,7 +435,7 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 			this->lvFiles->SetSubItem(k, 2, sbuff);
 			if (packFile->IsCompressed(i))
 			{
-				this->lvFiles->SetSubItem(k, 4, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)));
+				this->lvFiles->SetSubItem(k, 4, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)).v);
 			}
 			else
 			{

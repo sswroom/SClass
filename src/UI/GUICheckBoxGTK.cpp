@@ -33,9 +33,9 @@ UI::GUICheckBox::~GUICheckBox()
 	DEL_CLASS(this->checkedChangeObjs);
 }
 
-const UTF8Char *UI::GUICheckBox::GetObjectClass()
+Text::CString UI::GUICheckBox::GetObjectClass()
 {
-	return (const UTF8Char*)"CheckBox";
+	return CSTR("CheckBox");
 }
 
 OSInt UI::GUICheckBox::OnNotify(UInt32 code, void *lParam)

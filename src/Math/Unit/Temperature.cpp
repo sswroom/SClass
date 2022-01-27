@@ -30,34 +30,34 @@ Double Math::Unit::Temperature::GetUnitScale(TemperatureUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Temperature::GetUnitShortName(TemperatureUnit unit)
+Text::CString Math::Unit::Temperature::GetUnitShortName(TemperatureUnit unit)
 {
 	static const UTF8Char c[] = {0xE2, 0x84, 0x83, 0};
 	static const UTF8Char f[] = {0xE2, 0x84, 0x89, 0};
 	switch (unit)
 	{
 	case TU_CELSIUS:
-		return c;
+		return CSTR(c);
 	case TU_KELVIN:
-		return (const UTF8Char*)"K";
+		return CSTR("K");
 	case TU_FAHRENHEIT:
-		return f;
+		return CSTR(f);
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Temperature::GetUnitName(TemperatureUnit unit)
+Text::CString Math::Unit::Temperature::GetUnitName(TemperatureUnit unit)
 {
 	switch (unit)
 	{
 	case TU_CELSIUS:
-		return (const UTF8Char*)"Degree Celsius";
+		return CSTR("Degree Celsius");
 	case TU_KELVIN:
-		return (const UTF8Char*)"Kelvin";
+		return CSTR("Kelvin");
 	case TU_FAHRENHEIT:
-		return (const UTF8Char*)"Degree Fahrenheit";
+		return CSTR("Degree Fahrenheit");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Temperature::Convert(TemperatureUnit fromUnit, TemperatureUnit toUnit, Double fromValue)

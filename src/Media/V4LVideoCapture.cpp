@@ -135,9 +135,9 @@ UTF8Char *Media::V4LVideoCapture::GetSourceName(UTF8Char *buff)
 	}
 }
 
-const UTF8Char *Media::V4LVideoCapture::GetFilterName()
+Text::CString Media::V4LVideoCapture::GetFilterName()
 {
-	return (const UTF8Char*)"V4LVideoCapture";
+	return CSTR("V4LVideoCapture");
 }
 
 Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

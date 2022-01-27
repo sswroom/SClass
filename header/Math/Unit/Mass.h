@@ -1,5 +1,7 @@
 #ifndef _SM_MATH_UNIT_MASS
 #define _SM_MATH_UNIT_MASS
+#include "Text/CString.h"
+
 namespace Math
 {
 	namespace Unit
@@ -17,8 +19,8 @@ namespace Math
 			} MassUnit;
 		public:
 			static Double GetUnitRatio(MassUnit unit);
-			static const UTF8Char *GetUnitShortName(MassUnit unit);
-			static const UTF8Char *GetUnitName(MassUnit unit);
+			static Text::CString GetUnitShortName(MassUnit unit);
+			static Text::CString GetUnitName(MassUnit unit);
 			static Double Convert(MassUnit fromUnit, MassUnit toUnit, Double fromValue);
 		};
 	}

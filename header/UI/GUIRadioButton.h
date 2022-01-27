@@ -19,7 +19,7 @@ namespace UI
 		GUIRadioButton(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool selected);
 		virtual ~GUIRadioButton();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		Bool IsSelected();

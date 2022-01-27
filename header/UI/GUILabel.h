@@ -14,7 +14,7 @@ namespace UI
 		virtual ~GUILabel();
 
 		virtual void SetText(const UTF8Char *text);
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		Bool HasTextColor();
 		UInt32 GetTextColor();

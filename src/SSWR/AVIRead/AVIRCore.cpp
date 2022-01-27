@@ -588,36 +588,36 @@ SSWR::AVIRead::AVIRGISForm *SSWR::AVIRead::AVIRCore::GetGISForm()
 	return this->gisForm;
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRCore::GetStreamTypeName(StreamType st)
+Text::CString SSWR::AVIRead::AVIRCore::GetStreamTypeName(StreamType st)
 {
 	switch (st)
 	{
 	case AVIRCore::ST_SERIAL_PORT:
-		return (const UTF8Char*)"Serial Port";
+		return CSTR("Serial Port");
 	case AVIRCore::ST_USBXPRESS:
-		return (const UTF8Char*)"Silicon Laboratories USBXpress";
+		return CSTR("Silicon Laboratories USBXpress");
 	case AVIRCore::ST_TCPSERVER:
-		return (const UTF8Char*)"TCP Server";
+		return CSTR("TCP Server");
 	case AVIRCore::ST_TCPCLIENT:
-		return (const UTF8Char*)"TCP Client";
+		return CSTR("TCP Client");
 	case AVIRCore::ST_FILE:
-		return (const UTF8Char*)"File (Readonly)";
+		return CSTR("File (Readonly)");
 	case AVIRCore::ST_HID:
-		return (const UTF8Char*)"HID";
+		return CSTR("HID");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRCore::GetIOPinTypeName(IOPinType iopt)
+Text::CString SSWR::AVIRead::AVIRCore::GetIOPinTypeName(IOPinType iopt)
 {
 	switch (iopt)
 	{
 	case AVIRCore::IOPT_GPIO:
-		return (const UTF8Char*)"GPIO";
+		return CSTR("GPIO");
 	case AVIRCore::IOPT_VIOPIN:
-		return (const UTF8Char*)"VirtualIOPin";
+		return CSTR("VirtualIOPin");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

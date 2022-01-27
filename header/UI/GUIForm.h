@@ -111,7 +111,7 @@ namespace UI
 		virtual void GetClientSize(Double *w, Double *h);
 		virtual Bool IsChildVisible();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		virtual void OnSizeChanged(Bool updateScn);
 		virtual Bool OnPaint();

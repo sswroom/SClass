@@ -2,21 +2,21 @@
 #include "IO/Path.h"
 #include "Net/SNS/SNSControl.h"
 
-const UTF8Char *Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType snsType)
+Text::CString Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType snsType)
 {
 	switch (snsType)
 	{
 	case ST_RSS:
-		return (const UTF8Char*)"RSS";
+		return CSTR("RSS");
 	case ST_TWITTER:
-		return (const UTF8Char*)"Twitter";
+		return CSTR("Twitter");
 	case ST_7GOGO:
-		return (const UTF8Char*)"7gogo";
+		return CSTR("7gogo");
 	case ST_INSTAGRAM:
-		return (const UTF8Char*)"Instagram";
+		return CSTR("Instagram");
 	case ST_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

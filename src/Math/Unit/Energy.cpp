@@ -16,32 +16,32 @@ Double Math::Unit::Energy::GetUnitRatio(EnergyUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::Energy::GetUnitShortName(EnergyUnit unit)
+Text::CString Math::Unit::Energy::GetUnitShortName(EnergyUnit unit)
 {
 	switch (unit)
 	{
 	case EU_JOULE:
-		return (const UTF8Char*)"J";
+		return CSTR("J");
 	case EU_WATTHOUR:
-		return (const UTF8Char*)"Wh";
+		return CSTR("Wh");
 	case EU_KILOWATTHOUR:
-		return (const UTF8Char*)"kWh";
+		return CSTR("kWh");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::Energy::GetUnitName(EnergyUnit unit)
+Text::CString Math::Unit::Energy::GetUnitName(EnergyUnit unit)
 {
 	switch (unit)
 	{
 	case EU_JOULE:
-		return (const UTF8Char*)"Joule";
+		return CSTR("Joule");
 	case EU_WATTHOUR:
-		return (const UTF8Char*)"Watt-hour";
+		return CSTR("Watt-hour");
 	case EU_KILOWATTHOUR:
-		return (const UTF8Char*)"Kilowatt-hour";
+		return CSTR("Kilowatt-hour");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::Energy::Convert(EnergyUnit fromUnit, EnergyUnit toUnit, Double fromValue)

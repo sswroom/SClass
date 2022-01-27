@@ -14,7 +14,7 @@ namespace UI
 		GUIProgressBar(GUICore *ui, UI::GUIClientControl *parent, UInt64 totalCnt);
 		virtual ~GUIProgressBar();
 
-		virtual const UTF8Char *GetObjectClass();
+		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 
 		virtual void ProgressStart(const UTF8Char *name, UInt64 count);

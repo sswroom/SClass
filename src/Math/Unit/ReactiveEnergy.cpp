@@ -12,24 +12,24 @@ Double Math::Unit::ReactiveEnergy::GetUnitRatio(ReactiveEnergyUnit unit)
 	return 1;
 }
 
-const UTF8Char *Math::Unit::ReactiveEnergy::GetUnitShortName(ReactiveEnergyUnit unit)
+Text::CString Math::Unit::ReactiveEnergy::GetUnitShortName(ReactiveEnergyUnit unit)
 {
 	switch (unit)
 	{
 	case REU_KVARH:
-		return (const UTF8Char*)"kvarh";
+		return CSTR("kvarh");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
-const UTF8Char *Math::Unit::ReactiveEnergy::GetUnitName(ReactiveEnergyUnit unit)
+Text::CString Math::Unit::ReactiveEnergy::GetUnitName(ReactiveEnergyUnit unit)
 {
 	switch (unit)
 	{
 	case REU_KVARH:
-		return (const UTF8Char*)"Kilovolt-amperer hour";
+		return CSTR("Kilovolt-amperer hour");
 	}
-	return (const UTF8Char*)"";
+	return CSTR("");
 }
 
 Double Math::Unit::ReactiveEnergy::Convert(ReactiveEnergyUnit fromUnit, ReactiveEnergyUnit toUnit, Double fromValue)

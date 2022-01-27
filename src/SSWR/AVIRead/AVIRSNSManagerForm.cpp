@@ -89,11 +89,11 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->lvCurrItems->AddColumn((const UTF8Char*)"Message", 400);
 
 	UOSInt i = Net::SNS::SNSControl::ST_FIRST;
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	while (i <= Net::SNS::SNSControl::ST_LAST)
 	{
-		csptr = Net::SNS::SNSControl::SNSTypeGetName((Net::SNS::SNSControl::SNSType)i);
-		this->cboChannel->AddItem(csptr, (void*)(OSInt)i);
+		cstr = Net::SNS::SNSControl::SNSTypeGetName((Net::SNS::SNSControl::SNSType)i);
+		this->cboChannel->AddItem(cstr.v, (void*)(OSInt)i);
 		i++;
 	}
 	this->cboChannel->SetSelectedIndex(0);
