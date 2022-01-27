@@ -131,8 +131,9 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	UInt8 *memptr;
 	WChar sbuff[512];
 	UTF8Char u8buff[512];
+	UTF8Char *sptr;
 	UTF8Char *tmpBuff;
-	const UTF8Char *csptr;
+	Text::String *s;
 	UOSInt leng;
 	UOSInt leng2;
 	if (hand == 0)
@@ -169,9 +170,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		return false;
 	case CF_UNICODETEXT:
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 #if !defined(_WIN32_WCE)
@@ -183,9 +182,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			csptr = Text::StrToUTF8New(sbuff);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
+			sb->AppendW(sbuff);
 			leng++;
 		}
 		return true;
@@ -198,9 +195,9 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 			{
 				sb->AppendU32(locale->lcid);
 				sb->AppendC(UTF8STRC(", "));
-				sb->Append(locale->shortName);
+				sb->AppendSlow(locale->shortName);
 				sb->AppendC(UTF8STRC(", "));
-				sb->Append(locale->desc);
+				sb->AppendSlow(locale->desc);
 				sb->AppendC(UTF8STRC(", "));
 				sb->AppendU32(locale->defCodePage);
 				return true;
@@ -268,32 +265,32 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 #endif
 	}
 	u8buff[0] = 0;
-	GetFormatName(fmtId, u8buff, 256);
-	if (Text::StrEquals(u8buff, (const UTF8Char*)"DataObject"))
+	sptr = GetFormatName(fmtId, u8buff, 256);
+	if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("DataObject")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Rich Text Format"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Rich Text Format")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Hidden Text Banner Format"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Hidden Text Banner Format")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Ole Private Data"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Ole Private Data")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Shell IDList Array"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Shell IDList Array")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"DataObjectAttributes"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("DataObjectAttributes")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"DataObjectAttributesRequiringElevation"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("DataObjectAttributesRequiringElevation")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Shell Object Offsets"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Shell Object Offsets")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"Preferred DropEffect"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("Preferred DropEffect")))
 	{
 		Bool found;
 		UInt32 eff;
@@ -332,18 +329,18 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		}
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"AsyncFlag"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("AsyncFlag")))
 	{
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"DragImageBits"))
-	{
-		memptr = 0;
-	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"DragContext"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("DragImageBits")))
 	{
 		memptr = 0;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"FileName"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("DragContext")))
+	{
+		memptr = 0;
+	}
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("FileName")))
 	{
 		Text::Encoding enc;
 		memptr = (UInt8*)GlobalLock(hand);
@@ -351,21 +348,19 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		leng2 = enc.CountUTF8Chars((UInt8 *)memptr, leng);
 		tmpBuff = MemAlloc(UTF8Char, leng2 + 1);
 		enc.UTF8FromBytes(tmpBuff, (UInt8*)memptr, leng, 0);
-		sb->Append(tmpBuff);
+		sb->AppendC(tmpBuff, leng2);
 		MemFree(tmpBuff);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"FileNameW"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("FileNameW")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"FileContents"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("FileContents")))
 	{
 		if (tymed == 4)
 		{
@@ -398,104 +393,84 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 			}
 		}
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"UniformResourceLocator"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("UniformResourceLocator")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		sb->Append((const UTF8Char*)memptr);
+		sb->AppendSlow((const UTF8Char*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"UniformResourceLocatorW"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("UniformResourceLocatorW")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"application/x-moz-file-promise-url"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("application/x-moz-file-promise-url")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"application/x-moz-file-promise-dest-filename"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("application/x-moz-file-promise-dest-filename")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/html"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/html")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/_moz_htmlcontext"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/_moz_htmlcontext")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/_moz_htmlinfo"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/_moz_htmlinfo")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/x-moz-url"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/x-moz-url")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/x-moz-url-priv"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/x-moz-url-priv")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/x-moz-url-data"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/x-moz-url-data")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/x-moz-url-desc"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/x-moz-url-desc")))
 	{
 		memptr = (UInt8*)GlobalLock(hand);
-		csptr = Text::StrToUTF8New((WChar*)memptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW((WChar*)memptr);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"HTML Format"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("HTML Format")))
 	{
 		Text::Encoding enc;
 		memptr = (UInt8*)GlobalLock(hand);
@@ -503,12 +478,12 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		leng2 = enc.CountUTF8Chars((UInt8 *)memptr, leng);
 		tmpBuff = MemAlloc(UTF8Char, leng2 + 1);
 		enc.UTF8FromBytes(tmpBuff, (UInt8*)memptr, leng, 0);
-		sb->Append(tmpBuff);
+		sb->AppendC(tmpBuff, leng2);
 		MemFree(tmpBuff);
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"_NETSCAPE_URL"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("_NETSCAPE_URL")))
 	{
 		leng = GlobalSize(hand);
 		memptr = (UInt8*)GlobalLock(hand);
@@ -516,7 +491,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/plain;charset=utf-8"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/plain;charset=utf-8")))
 	{
 		leng = GlobalSize(hand);
 		memptr = (UInt8*)GlobalLock(hand);
@@ -524,15 +499,11 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 		GlobalUnlock(hand);
 		return true;
 	}
-	else if (Text::StrEquals(u8buff, (const UTF8Char*)"text/unicode"))
+	else if (Text::StrEqualsC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("text/unicode")))
 	{
 		leng = GlobalSize(hand);
 		memptr = (UInt8*)GlobalLock(hand);
-		const WChar *wptr = Text::StrCopyNewC((const WChar*)memptr, leng >> 1);
-		csptr = Text::StrToUTF8New(wptr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
-		Text::StrDelNew(wptr);
+		sb->AppendW((const WChar*)memptr, leng >> 1);
 		GlobalUnlock(hand);
 		return true;
 	}
@@ -583,9 +554,7 @@ Bool Win32::Clipboard::GetString(ControlHandle *hWndOwner, Text::StringBuilderUT
 	if (hand)
 	{
 		void *sptr = GlobalLock(hand);
-		Text::String *s = Text::String::NewNotNull((WChar*)sptr);
-		sb->Append(s);
-		s->Release();
+		sb->AppendW((WChar*)sptr);
 		GlobalUnlock(hand);
 		succ = true;
 	}

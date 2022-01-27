@@ -218,9 +218,7 @@ Bool Manage::Process::GetFilename(Text::StringBuilderUTF8 *sb)
 		retSize = GetModuleFileNameExW(this->handle, 0, buff, 1024);
 #endif
 		buff[retSize] = 0;
-		const UTF8Char *csptr = Text::StrToUTF8New(buff);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(buff);
 		MemFree(buff);
 		return true;
 	}
@@ -1104,8 +1102,8 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 			NEW_CLASS(reader, IO::StreamReader(fs));
 			while ((linePtr = reader->ReadLine(lineBuff, 124)) != 0)
 			{
-				reader->GetLastLineBreak(linePtr);
-				result->Append(lineBuff);
+				linePtr = reader->GetLastLineBreak(linePtr);
+				result->AppendP(lineBuff, linePtr);
 			}
 			DEL_CLASS(reader);
 			DEL_CLASS(fs);
@@ -1183,24 +1181,24 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 #endif
 }
 
-const UTF8Char *Manage::Process::GetPriorityName(ProcessPriority priority)
+Text::CString Manage::Process::GetPriorityName(ProcessPriority priority)
 {
 	switch (priority)
 	{
 	case PP_REALTIME:
-		return (const UTF8Char*)"Realtime";
+		return CSTR("Realtime");
 	case PP_HIGH:
-		return (const UTF8Char*)"High";
+		return CSTR("High");
 	case PP_ABOVE_NORMAL:
-		return (const UTF8Char*)"Above Normal";
+		return CSTR("Above Normal");
 	case PP_NORMAL:
-		return (const UTF8Char*)"Normal";
+		return CSTR("Normal");
 	case PP_BELOW_NORMAL:
-		return (const UTF8Char*)"Below Normal";
+		return CSTR("Below Normal");
 	case PP_IDLE:
-		return (const UTF8Char*)"Idle";
+		return CSTR("Idle");
 	case PP_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

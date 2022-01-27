@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -55,6 +56,63 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::Append(const Text::StringBase<
 		MemCopyNO(&this->v[this->leng], s.v, s.leng + 1);
 		this->leng += s.leng;
 	}
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendW(const WChar *s)
+{
+	UOSInt charCnt = Text::StrWChar_UTF8Cnt(s);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrWChar_UTF8(&this->v[this->leng], s);
+	this->leng += charCnt;
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendW(const WChar *s, UOSInt len)
+{
+	UOSInt charCnt = Text::StrWChar_UTF8CntC(s, len);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrWChar_UTF8C(&this->v[this->leng], s, len);
+	this->leng += charCnt;
+	this->v[this->leng] = 0;
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s)
+{
+	UOSInt charCnt = Text::StrUTF16_UTF8Cnt(s);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrUTF16_UTF8(&this->v[this->leng], s);
+	this->leng += charCnt;
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendUTF16(const UTF16Char *s, UOSInt len)
+{
+	UOSInt charCnt = Text::StrUTF16_UTF8CntC(s, len);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrUTF16_UTF8C(&this->v[this->leng], s, len);
+	this->leng += charCnt;
+	this->v[this->leng] = 0;
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s)
+{
+	UOSInt charCnt = Text::StrUTF32_UTF8Cnt(s);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrUTF32_UTF8(&this->v[this->leng], s);
+	this->leng += charCnt;
+	return this;
+}
+
+Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendUTF32(const UTF32Char *s, UOSInt len)
+{
+	UOSInt charCnt = Text::StrUTF32_UTF8CntC(s, len);
+	STRINGBUILDER_ALLOCLENG(charCnt);
+	Text::StrUTF32_UTF8C(&this->v[this->leng], s, len);
+	this->leng += charCnt;
+	this->v[this->leng] = 0;
 	return this;
 }
 

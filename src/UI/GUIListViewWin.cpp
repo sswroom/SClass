@@ -310,9 +310,7 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuil
 	Bool ret = (SendMessage((HWND)this->hwnd, LVM_GETITEMW, 0, (LPARAM)&item) == TRUE);
 	if (ret)
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New(item.pszText);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(item.pszText);
 	}
 	else
 	{

@@ -46,7 +46,6 @@ Bool Crypto::Cert::WinHttpCert::IsSelfSigned()
 
 void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb)
 {
-	const UTF8Char *csptr;
 	Data::DateTime dt;
 	sb->AppendC(UTF8STRC("Not Before: "));
 	this->GetNotBefore(&dt);
@@ -56,38 +55,28 @@ void Crypto::Cert::WinHttpCert::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendDate(&dt);
 	if (this->clsData->certInfo->lpszSubjectInfo)
 	{
-		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszSubjectInfo);
 		sb->AppendC(UTF8STRC("\r\nSubject: "));
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->clsData->certInfo->lpszSubjectInfo);
 	}
 	if (this->clsData->certInfo->lpszIssuerInfo)
 	{
-		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszIssuerInfo);
 		sb->AppendC(UTF8STRC("\r\nIssuer: "));
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->clsData->certInfo->lpszIssuerInfo);
 	}
 	if (this->clsData->certInfo->lpszProtocolName)
 	{
-		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszProtocolName);
 		sb->AppendC(UTF8STRC("\r\nProtocol Name: "));
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->clsData->certInfo->lpszProtocolName);
 	}
 	if (this->clsData->certInfo->lpszSignatureAlgName)
 	{
-		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszSignatureAlgName);
 		sb->AppendC(UTF8STRC("\r\nSignature Alg: "));
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->clsData->certInfo->lpszSignatureAlgName);
 	}
 	if (this->clsData->certInfo->lpszEncryptionAlgName)
 	{
-		csptr = Text::StrToUTF8New(this->clsData->certInfo->lpszEncryptionAlgName);
 		sb->AppendC(UTF8STRC("\r\nEncryption Alg: "));
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->clsData->certInfo->lpszEncryptionAlgName);
 	}
 	sb->AppendC(UTF8STRC("\r\nKey Size: "));
 	sb->AppendU32(this->clsData->certInfo->dwKeySize);

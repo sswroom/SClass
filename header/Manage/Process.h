@@ -5,6 +5,7 @@
 #include "Manage/IMemoryReader.h"
 #include "Manage/ModuleInfo.h"
 #include "Manage/ThreadInfo.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Manage
@@ -102,7 +103,7 @@ namespace Manage
 		static Bool IsAlreadyStarted();
 		static Bool OpenPath(const UTF8Char *path);
 		static Bool OpenPathW(const WChar *path);
-		static const UTF8Char *GetPriorityName(ProcessPriority priority);
+		static Text::CString GetPriorityName(ProcessPriority priority);
 	};
 }
 #endif

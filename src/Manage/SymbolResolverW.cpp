@@ -16,7 +16,7 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
-	NEW_CLASS(this->modNames, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->modNames, Data::ArrayListString());
 	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
 	NEW_CLASS(this->modSizes, Data::ArrayListUInt64());
 	this->proc = proc;
@@ -33,7 +33,7 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 		mod = modList->GetItem(i);
 
 		mod->GetModuleFileName(sbuff);
-		this->modNames->Add(Text::StrCopyNew(sbuff));
+		this->modNames->Add(Text::String::NewNotNull(sbuff));
 		mod->GetModuleAddress(&baseAddr, &size);
 		this->modBaseAddrs->Add(baseAddr);
 		this->modSizes->Add(size);
@@ -51,7 +51,7 @@ Manage::SymbolResolver::~SymbolResolver()
 	UOSInt i = this->modNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->modNames->GetItem(i));
+		this->modNames->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->modNames);
 	SymCleanup((HANDLE)this->proc->GetHandle());
@@ -65,7 +65,7 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 	UInt8 tmpBuff[sizeof(SYMBOL_INFO) + 256];
 	DWORD64 disp;
 	Bool found = false;
-	const UTF8Char *name;
+	Text::String *name;
 
 	i = this->modNames->GetCount();
 	while (i-- > 0)
@@ -73,8 +73,8 @@ UTF8Char *Manage::SymbolResolver::ResolveName(UTF8Char *buff, UInt64 address)
 		if (((UInt64)address) >= (UInt64)this->modBaseAddrs->GetItem(i) && ((UInt64)address) < (UInt64)(this->modBaseAddrs->GetItem(i) + this->modSizes->GetItem(i)))
 		{
 			name = this->modNames->GetItem(i);
-			j = Text::StrLastIndexOfChar(name, '\\');
-			buff = Text::StrConcat(buff, &name[j + 1]);
+			j = name->IndexOf('\\');
+			buff = Text::StrConcatC(buff, &name->v[j + 1], name->leng - j - 1);
 			found = true;
 			break;
 		}
@@ -149,7 +149,7 @@ UOSInt Manage::SymbolResolver::GetModuleCount()
 	return this->modNames->GetCount();
 }
 
-const UTF8Char *Manage::SymbolResolver::GetModuleName(UOSInt index)
+Text::String *Manage::SymbolResolver::GetModuleName(UOSInt index)
 {
 	return this->modNames->GetItem(index);
 }

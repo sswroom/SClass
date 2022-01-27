@@ -68,52 +68,52 @@ DWORD WINAPI GetThreadStartAddress(HANDLE hThread)
 }
 #endif
 
-const UTF8Char *Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
+Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 {
 	switch (exCode)
 	{
 	case EXCEPTION_ACCESS_VIOLATION:
-		return (const UTF8Char*)"Access Violation";
+		return CSTR("Access Violation");
 	case EXCEPTION_ARRAY_BOUNDS_EXCEEDED:
-		return (const UTF8Char*)"Array Bounds Exceeded";
+		return CSTR("Array Bounds Exceeded");
 	case EXCEPTION_BREAKPOINT:
-		return (const UTF8Char*)"Breakpoint";
+		return CSTR("Breakpoint");
 	case EXCEPTION_DATATYPE_MISALIGNMENT:
-		return (const UTF8Char*)"Datatype Misalignment";
+		return CSTR("Datatype Misalignment");
 	case EXCEPTION_FLT_DENORMAL_OPERAND:
-		return (const UTF8Char*)"Floating point Denormal Operand";
+		return CSTR("Floating point Denormal Operand");
 	case EXCEPTION_FLT_DIVIDE_BY_ZERO:
-		return (const UTF8Char*)"Floating point Device by Zero";
+		return CSTR("Floating point Device by Zero");
 	case EXCEPTION_FLT_INEXACT_RESULT:
-		return (const UTF8Char*)"Floating poitn Inexact Result";
+		return CSTR("Floating poitn Inexact Result");
 	case EXCEPTION_FLT_INVALID_OPERATION:
-		return (const UTF8Char*)"Floating point Invalid Operation";
+		return CSTR("Floating point Invalid Operation");
 	case EXCEPTION_FLT_OVERFLOW:
-		return (const UTF8Char*)"Floating point overflow";
+		return CSTR("Floating point overflow");
 	case EXCEPTION_FLT_STACK_CHECK:
-		return (const UTF8Char*)"Floating point stack check error";
+		return CSTR("Floating point stack check error");
 	case EXCEPTION_FLT_UNDERFLOW:
-		return (const UTF8Char*)"Floating point underflow";
+		return CSTR("Floating point underflow");
 	case EXCEPTION_ILLEGAL_INSTRUCTION:
-		return (const UTF8Char*)"Illegal Instruction";
+		return CSTR("Illegal Instruction");
 	case EXCEPTION_IN_PAGE_ERROR:
-		return (const UTF8Char*)"In page error";
+		return CSTR("In page error");
 	case EXCEPTION_INT_DIVIDE_BY_ZERO:
-		return (const UTF8Char*)"Integer divide by zero";
+		return CSTR("Integer divide by zero");
 	case EXCEPTION_INT_OVERFLOW:
-		return (const UTF8Char*)"Integer Overflow";
+		return CSTR("Integer Overflow");
 	case EXCEPTION_INVALID_DISPOSITION:
-		return (const UTF8Char*)"Invalid Disposition";
+		return CSTR("Invalid Disposition");
 	case EXCEPTION_NONCONTINUABLE_EXCEPTION:
-		return (const UTF8Char*)"Noncontinuable Exception";
+		return CSTR("Noncontinuable Exception");
 	case EXCEPTION_PRIV_INSTRUCTION:
-		return (const UTF8Char*)"Priv Instruction";
+		return CSTR("Priv Instruction");
 	case EXCEPTION_SINGLE_STEP:
-		return (const UTF8Char*)"Single Step";
+		return CSTR("Single Step");
 	case EXCEPTION_STACK_OVERFLOW:
-		return (const UTF8Char*)"Stack Overflow";
+		return CSTR("Stack Overflow");
 	default:
-		return (const UTF8Char*)"Unknown Exception";
+		return CSTR("Unknown Exception");
 	}
 
 }

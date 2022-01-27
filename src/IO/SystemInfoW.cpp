@@ -211,7 +211,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->deviceLocator)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->deviceLocator);
+					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
 					ram->deviceLocator = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -221,7 +221,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->manufacturer)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->manufacturer);
+					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
 					ram->manufacturer = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -231,7 +231,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->partNo)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->partNo);
+					sb.AppendSlow((const UTF8Char*)mem->partNo);
 					ram->partNo = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -241,7 +241,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->sn)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->sn);
+					sb.AppendSlow((const UTF8Char*)mem->sn);
 					ram->sn = Text::StrCopyNew(sb.ToString());
 				}
 				else

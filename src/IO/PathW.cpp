@@ -265,9 +265,7 @@ Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, sptr, 1024);
 #endif
 	sptr[retSize] = 0;
-	const UTF8Char *csptr = Text::StrToUTF8New(sptr);
-	sb->Append(csptr);
-	Text::StrDelNew(csptr);
+	sb->AppendW(sptr);
 	MemFree(sptr);
 	return true;
 }

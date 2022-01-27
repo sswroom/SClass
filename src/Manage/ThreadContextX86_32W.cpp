@@ -480,7 +480,7 @@ void Manage::ThreadContextX86_32::ToString(Text::StringBuilderUTF8 *sb)
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)", ");
 			}
 
-			sb->Append(sbuff);
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;

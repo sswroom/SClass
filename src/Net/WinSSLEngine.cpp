@@ -1180,11 +1180,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	}
 	Text::StringBuilderUTF8 sb2;
 	sb2.ClearStr();
-	sb2.Append(commonName);
+	sb2.AppendSlow(commonName);
 	sb2.AppendC(UTF8STRC(".crt"));
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
 	sb2.ClearStr();
-	sb2.Append(commonName);
+	sb2.AppendSlow(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
 	Text::String *s = Text::String::New(sb2.ToString(), sb2.GetLength());
 	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s);

@@ -423,14 +423,19 @@ Bool Win32::WMIReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 				ret = true;
 				break;
 			case CIM_BOOLEAN:
-				sb->Append((V_BOOL(&v))?(const UTF8Char*)"True":(const UTF8Char*)"False");
+				if (V_BOOL(&v))
+				{
+					sb->AppendC(UTF8STRC("True"));
+				}
+				else
+				{
+					sb->AppendC(UTF8STRC("False"));
+				}
 				break;
 			case CIM_STRING:
 				{
 					BSTR bs = V_BSTR(&v);
-					const UTF8Char *csptr = Text::StrToUTF8New(bs);
-					sb->Append(csptr);
-					Text::StrDelNew(csptr);
+					sb->AppendW(bs);
 					ret = true;
 				}
 				break;

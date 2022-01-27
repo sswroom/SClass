@@ -489,9 +489,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 		if (S_OK == this->baseFilter->QueryFilterInfo(&finfo))
 		{
 			sb->AppendC(UTF8STRC("Base Filter Name: "));
-			const UTF8Char *csptr = Text::StrToUTF8New(finfo.achName);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
+			sb->AppendW(finfo.achName);
 			sb->AppendC(UTF8STRC("\r\n"));
 			if (finfo.pGraph)
 			{
@@ -502,9 +500,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 		if (S_OK == this->baseFilter->QueryVendorInfo(&vendorName))
 		{
 			sb->AppendC(UTF8STRC("Vendor Info: "));
-			const UTF8Char *csptr = Text::StrToUTF8New(vendorName);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
+			sb->AppendW(vendorName);
 			sb->AppendC(UTF8STRC("\r\n"));
 		}
 	}
@@ -520,9 +516,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 			sb->AppendC(UTF8STRC("Description: "));
 			if (var.vt == VT_BSTR)
 			{
-				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
-				sb->Append(csptr);
-				Text::StrDelNew(csptr);
+				sb->AppendW(var.bstrVal);
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
@@ -534,9 +528,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 			sb->AppendC(UTF8STRC("FriendlyName: "));
 			if (var.vt == VT_BSTR)
 			{
-				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
-				sb->Append(csptr);
-				Text::StrDelNew(csptr);
+				sb->AppendW(var.bstrVal);
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
@@ -548,9 +540,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 			sb->AppendC(UTF8STRC("CLSID: "));
 			if (var.vt == VT_BSTR)
 			{
-				const UTF8Char *csptr = Text::StrToUTF8New(var.bstrVal);
-				sb->Append(csptr);
-				Text::StrDelNew(csptr);
+				sb->AppendW(var.bstrVal);
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			VariantClear(&var);
@@ -559,9 +549,7 @@ void Media::DShow::DShowVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 	if (this->displayName)
 	{
 		sb->AppendC(UTF8STRC("DisplayName: "));
-		const UTF8Char *csptr = Text::StrToUTF8New(this->displayName);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(this->displayName);
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
 }

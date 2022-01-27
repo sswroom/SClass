@@ -130,9 +130,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Source: "));
-							const UTF8Char *csptr = Text::StrToUTF8New(bstr);
-							sb.Append(csptr);
-							Text::StrDelNew(csptr);
+							sb.AppendW(bstr);
 							data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 							SysFreeString(bstr);
 						}
@@ -142,9 +140,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 						{
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Description: "));
-							const UTF8Char *csptr = Text::StrToUTF8New(bstr);
-							sb.Append(csptr);
-							Text::StrDelNew(csptr);
+							sb.AppendW(bstr);
 							data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 							SysFreeString(bstr);
 						}
@@ -235,17 +231,11 @@ DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 			UOSInt j = Text::StrIndexOfChar(&data->connStr[i + 9], ';');
 			if (j != INVALID_INDEX)
 			{
-				const WChar *wptr = Text::StrCopyNewC(&data->connStr[i + 9], (UOSInt)j);
-				const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
-				Text::StrDelNew(wptr);
+				sb.AppendW(&data->connStr[i + 9], (UOSInt)j);
 			}
 			else
 			{
-				const UTF8Char *csptr = Text::StrToUTF8New(&data->connStr[i + 9]);
-				sb.Append(csptr);
-				Text::StrDelNew(csptr);
+				sb.AppendW(&data->connStr[i + 9]);
 			}
 			if (sb.EqualsICase(UTF8STRC("SQLOLEDB")))
 			{
@@ -293,9 +283,7 @@ void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (data->connStr)
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New(data->connStr);
-		sb->Append(csptr);
-		Text::StrDelNew(csptr);
+		sb->AppendW(data->connStr);
 	}
 }
 
@@ -364,9 +352,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteNonQuery: "));
-						const UTF8Char *csptr = Text::StrToUTF8New(bstr);
-						sb.Append(csptr);
-						Text::StrDelNew(csptr);
+						sb.AppendW(bstr);
 						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
@@ -475,9 +461,7 @@ void DB::OLEDBConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 		if (bstr)
 		{
 			str->AppendC(UTF8STRC("Description: "));
-			const UTF8Char *csptr = Text::StrToUTF8New(bstr);
-			str->Append(csptr);
-			Text::StrDelNew(csptr);
+			str->AppendW(bstr);
 			SysFreeString(bstr);
 		}
 		pIErrorInfoAll->Release();
@@ -628,9 +612,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 					{
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteReader: "));
-						const UTF8Char *csptr = Text::StrToUTF8New(bstr);
-						sb.Append(csptr);
-						Text::StrDelNew(csptr);
+						sb.AppendW(bstr);
 						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
@@ -1311,11 +1293,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 		return false;
 	case DBTYPE_WSTR:
 		{
-			const WChar *wptr = Text::StrCopyNewC((const WChar*)val, *valLen / sizeof(WChar));
-			const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-			sb->Append(csptr);
-			Text::StrDelNew(csptr);
-			Text::StrDelNew(wptr);
+			sb->AppendW((const WChar*)val, *valLen / sizeof(WChar));
 		}
 		return true;
 	case DBTYPE_DBDATE:

@@ -664,7 +664,7 @@ void Media::MonitorColorManager::SetOSProfile()
 	dev.cb = sizeof(DISPLAY_DEVICEW);
 	if (this->profileName != 0)
 	{
-		const WChar *wprofileName = Text::StrToWCharNew(this->profileName);
+		const WChar *wprofileName = Text::StrToWCharNew(this->profileName->v);
 		while (EnumDisplayDevicesW(0, i, &dev, 0) != 0)
 		{
 			Text::StrConcat(sbuff2, dev.DeviceName);
@@ -680,9 +680,9 @@ void Media::MonitorColorManager::SetOSProfile()
 						size = 512;
 						if (GetICMProfileW(hdc, &size, sbuff) != 0)
 						{
-							const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
-							succ = SetFromProfileFile(u8ptr);
-							Text::StrDelNew(u8ptr);
+							Text::String *s = Text::String::NewNotNull(sbuff);
+							succ = SetFromProfileFile(s);
+							s->Release();
 						}
 						DeleteDC(hdc);
 					}

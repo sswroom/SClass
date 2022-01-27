@@ -43,7 +43,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Cha
 			Text::StringBuilderUTF8 sb;
 			if (logPrefix)
 			{
-				sb.Append(logPrefix);
+				sb.AppendSlow(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
 			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
@@ -63,7 +63,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Cha
 			Text::StringBuilderUTF8 sb;
 			if (logPrefix)
 			{
-				sb.Append(logPrefix);
+				sb.AppendSlow(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
 			conn->GetErrorMsg(&sb);

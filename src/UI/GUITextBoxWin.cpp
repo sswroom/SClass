@@ -88,9 +88,7 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
 	WChar *wptr = MemAlloc(WChar, leng + 1);
 	GetWindowTextW((HWND)hwnd, wptr, (int)leng + 1);
-	const UTF8Char *csptr = Text::StrToUTF8New(wptr);
-	sb->Append(csptr);
-	Text::StrDelNew(csptr);
+	sb->AppendW(wptr);
 	MemFree(wptr);
 	return true;
 }

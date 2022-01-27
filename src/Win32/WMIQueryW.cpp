@@ -104,9 +104,7 @@ void Win32::WMIQuery::ForceTz(Int8 tzQhr)
 void Win32::WMIQuery::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("WMI:"));
-	const UTF8Char *csptr = Text::StrToUTF8New(this->ns);
-	sb->Append(csptr);
-	Text::StrDelNew(csptr);
+	sb->AppendW(this->ns);
 }
 
 void Win32::WMIQuery::Close()
