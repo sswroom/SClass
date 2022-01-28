@@ -22,20 +22,20 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		sb.ClearStr();
 		Manage::Process::ExecuteProcess(UTF8STRC("getprop"), &sb);
 		u8arr[1].v = sb.ToString();
-		u8arr[1].len = sb.GetLength();
+		u8arr[1].leng = sb.GetLength();
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)
 		{
-			i = Text::StrSplitP(u8arr, 2, u8arr[1].v, u8arr[1].len, '\n');
-			if (Text::StrSplitTrimP(u8arr2, 2, u8arr[0].v, u8arr[0].len, ':') == 2)
+			i = Text::StrSplitP(u8arr, 2, u8arr[1].v, u8arr[1].leng, '\n');
+			if (Text::StrSplitTrimP(u8arr2, 2, u8arr[0].v, u8arr[0].leng, ':') == 2)
 			{
-				if (Text::StrEndsWithC(u8arr2[0].v, u8arr2[0].len, UTF8STRC("]")) && Text::StrEndsWithC(u8arr2[1].v, u8arr2[1].len, UTF8STRC("]")))
+				if (Text::StrEndsWithC(u8arr2[0].v, u8arr2[0].leng, UTF8STRC("]")) && Text::StrEndsWithC(u8arr2[1].v, u8arr2[1].leng, UTF8STRC("]")))
 				{
-					u8arr2[0].v[u8arr2[0].len - 1] = 0;
-					u8arr2[1].v[u8arr2[1].len - 1] = 0;
+					u8arr2[0].v[u8arr2[0].leng - 1] = 0;
+					u8arr2[1].v[u8arr2[1].leng - 1] = 0;
 					if (u8arr2[0].v[0] == '[' && u8arr2[1].v[0] == '[')
 					{
-						cfg->SetValue(0, 0, &u8arr2[0].v[1], u8arr2[0].len - 2, &u8arr2[1].v[1], u8arr2[1].len - 2);
+						cfg->SetValue(0, 0, &u8arr2[0].v[1], u8arr2[0].leng - 2, &u8arr2[1].v[1], u8arr2[1].leng - 2);
 					}
 				}
 			}
