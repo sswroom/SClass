@@ -1276,16 +1276,23 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 			}
 			buff += digiCnt;
 			UTF8Char *src = buff;
-			while (digiCnt-- > 0)
+			while (digiCnt >= 2)
+			{
+				src -= 2;
+				WriteNUInt16(src, ReadNUInt16(&MyString_StrDigit100U8[(thisVal % 100) * 2]));
+				thisVal = thisVal / 100;
+				digiCnt -= 2;
+			}
+			if (digiCnt > 0)
 			{
 				*--src = (UTF8Char)((thisVal % 10) + 0x30);
-				thisVal = thisVal / 10;
 			}
 			break;
 		}
 		case 'm':
 		{
-			if (pattern[1] != 'm')
+			pattern++;
+			if (*pattern != 'm')
 			{
 				if (tval->minute < 10)
 				{
@@ -1293,26 +1300,25 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = (UTF8Char)((tval->minute / 10) + 0x30);
-					buff[1] = (UTF8Char)((tval->minute % 10) + 0x30);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
 					buff += 2;
 				}
-				pattern += 1;
 			}
 			else
 			{
-				buff[0] = (UTF8Char)((tval->minute / 10) + 0x30);
-				buff[1] = (UTF8Char)((tval->minute % 10) + 0x30);
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
 				buff += 2;
 
-				while (*pattern == 'm')
-					pattern++;
+				pattern++;
+//				while (*pattern == 'm')
+//					pattern++;
 			}
 			break;
 		}
 		case 's':
 		{
-			if (pattern[1] != 's')
+			pattern++;
+			if (*pattern != 's')
 			{
 				if (tval->second < 10)
 				{
@@ -1320,26 +1326,25 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = (UTF8Char)((tval->second / 10) + 0x30);
-					buff[1] = (UTF8Char)((tval->second % 10) + 0x30);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
 					buff += 2;
 				}
-				pattern += 1;
 			}
 			else
 			{
-				buff[0] = (UTF8Char)((tval->second / 10) + 0x30);
-				buff[1] = (UTF8Char)((tval->second % 10) + 0x30);
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
 				buff += 2;
 
-				while (*pattern == 's')
-					pattern++;
+				pattern++;
+//				while (*pattern == 's')
+//					pattern++;
 			}
 			break;
 		}
 		case 'd':
 		{
-			if (pattern[1] != 'd')
+			pattern++;
+			if (*pattern != 'd')
 			{
 				if (tval->day < 10)
 				{
@@ -1347,52 +1352,41 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = 0x31;
-					buff[1] = (UTF8Char)((tval->day % 10) + 0x30);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
 					buff += 2;
 				}
-				pattern += 1;
 			}
 			else
 			{
-				buff[0] = (UTF8Char)((tval->day / 10) + 0x30);
-				buff[1] = (UTF8Char)((tval->day % 10) + 0x30);
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
 				buff += 2;
 
-				while (*pattern == 'd')
-					pattern++;
+				pattern++;
+//				while (*pattern == 'd')
+//					pattern++;
 			}
 			break;
 		}
 		case 'f':
 		{
-			UInt8 digiCnt;
-			UInt16 thisMS;
 			if (pattern[1] != 'f')
 			{
-				digiCnt = 1;
-				thisMS = tval->ms / 100;
+				*buff = (UTF8Char)((tval->ms / 100) + 0x30);
 				pattern += 1;
+				buff++;
 			}
 			else if (pattern[2] != 'f')
 			{
-				digiCnt = 2;
-				thisMS = tval->ms / 10;
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
+				buff += 2;
 				pattern += 2;
 			}
 			else
 			{
-				digiCnt = 3;
-				thisMS = tval->ms;
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
+				buff[2] = (UTF8Char)((tval->ms % 10) + 0x30);
+				buff += 3;
 				pattern += 3;
-			}
-
-			buff += digiCnt;
-			UTF8Char *src = buff;
-			while (digiCnt-- > 0)
-			{
-				*--src = (UTF8Char)((thisMS % 10) + 0x30);
-				thisMS = thisMS / 10;
 			}
 			break;
 		}
@@ -1437,7 +1431,8 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 		case 'h':
 		{
 			UInt8 thisH = tval->hour % 12;
-			if (pattern[1] != 'h')
+			pattern++;
+			if (*pattern != 'h')
 			{
 				if (thisH < 10)
 				{
@@ -1445,26 +1440,25 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = (UTF8Char)((thisH / 10) + 0x30);
-					buff[1] = (UTF8Char)((thisH % 10) + 0x30);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
 					buff += 2;
 				}
-				pattern += 1;
 			}
 			else
 			{
-				buff[0] = (UTF8Char)((thisH / 10) + 0x30);
-				buff[1] = (UTF8Char)((thisH % 10) + 0x30);
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
 				buff += 2;
+				pattern++;
 
-				while (*pattern == 'h')
-					pattern++;
+//				while (*pattern == 'h')
+//					pattern++;
 			}
 			break;
 		}
 		case 'H':
 		{
-			if (pattern[1] != 'H')
+			pattern++;
+			if (*pattern != 'H')
 			{
 				if (tval->hour < 10)
 				{
@@ -1472,20 +1466,18 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = (UTF8Char)((tval->hour / 10) + 0x30);
-					buff[1] = (UTF8Char)((tval->hour % 10) + 0x30);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
 					buff += 2;
 				}
-				pattern += 1;
 			}
 			else
 			{
-				buff[0] = (UTF8Char)((tval->hour / 10) + 0x30);
-				buff[1] = (UTF8Char)((tval->hour % 10) + 0x30);
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
 				buff += 2;
 
-				while (*pattern == 'H')
-					pattern++;
+				pattern++;
+//				while (*pattern == 'H')
+//					pattern++;
 			}
 			break;
 		}
@@ -1499,104 +1491,22 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				else
 				{
-					buff[0] = 0x31;
-					buff[1] = (UTF8Char)(tval->month + 38);
+					WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
 					buff += 2;
 				}
 				pattern += 1;
 			}
 			else if (pattern[2] != 'M')
 			{
-				if (tval->month < 10)
-				{
-					buff[0] = 0x30;
-					buff[1] = (UTF8Char)(tval->month + 0x30);
-				}
-				else
-				{
-					buff[0] = 0x31;
-					buff[1] = (UTF8Char)(tval->month + 38);
-				}
+				WriteNUInt16(buff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
 				buff += 2;
 				pattern += 2;
 			}
 			else if (pattern[3] != 'M')
 			{
-				switch (tval->month)
-				{
-				case 1:
-					buff[0] = 'J';
-					buff[1] = 'a';
-					buff[2] = 'n';
-					buff += 3;
-					break;
-				case 2:
-					buff[0] = 'F';
-					buff[1] = 'e';
-					buff[2] = 'b';
-					buff += 3;
-					break;
-				case 3:
-					buff[0] = 'M';
-					buff[1] = 'a';
-					buff[2] = 'r';
-					buff += 3;
-					break;
-				case 4:
-					buff[0] = 'A';
-					buff[1] = 'p';
-					buff[2] = 'r';
-					buff += 3;
-					break;
-				case 5:
-					buff[0] = 'M';
-					buff[1] = 'a';
-					buff[2] = 'y';
-					buff += 3;
-					break;
-				case 6:
-					buff[0] = 'J';
-					buff[1] = 'u';
-					buff[2] = 'n';
-					buff += 3;
-					break;
-				case 7:
-					buff[0] = 'J';
-					buff[1] = 'u';
-					buff[2] = 'l';
-					buff += 3;
-					break;
-				case 8:
-					buff[0] = 'A';
-					buff[1] = 'u';
-					buff[2] = 'g';
-					buff += 3;
-					break;
-				case 9:
-					buff[0] = 'S';
-					buff[1] = 'e';
-					buff[2] = 'p';
-					buff += 3;
-					break;
-				case 10:
-					buff[0] = 'O';
-					buff[1] = 'c';
-					buff[2] = 't';
-					buff += 3;
-					break;
-				case 11:
-					buff[0] = 'N';
-					buff[1] = 'o';
-					buff[2] = 'v';
-					buff += 3;
-					break;
-				case 12:
-					buff[0] = 'D';
-					buff[1] = 'e';
-					buff[2] = 'c';
-					buff += 3;
-					break;
-				}
+				static const Char *monthStr3[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+				WriteNUInt32(buff, ReadNUInt32((const UInt8*)monthStr3[tval->month - 1]));
+				buff += 3;
 				pattern += 3;
 			}
 			else
@@ -1703,6 +1613,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 					break;
 				}
 
+				pattern += 4;
 				while (*pattern == 'M')
 					pattern++;
 			}
@@ -1734,6 +1645,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				buff[1] = 'M';
 				buff += 2;
+				pattern += 2;
 				while (*pattern == 't')
 					pattern++;
 			}
@@ -1756,8 +1668,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				}
 				if (hr >= 10)
 				{
-					buff[1] = (UTF8Char)((hr / 10) + 0x30);
-					buff[2] = (UTF8Char)((hr % 10) + 0x30);
+					WriteNUInt16(&buff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
 					buff += 3;
 				}
 				else
@@ -1778,8 +1689,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 					buff[0] = '-';
 					hr = -hr;
 				}
-				buff[1] = (UTF8Char)((hr / 10) + 0x30);
-				buff[2] = (UTF8Char)((hr % 10) + 0x30);
+				WriteNUInt16(&buff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
 				buff += 3;
 				pattern += 2;
 			}
@@ -1794,10 +1704,8 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 					buff[0] = '-';
 					hr = -hr;
 				}
-				buff[1] = (UTF8Char)((hr / 10) + 0x30);
-				buff[2] = (UTF8Char)((hr % 10) + 0x30);
-				buff[3] = (UTF8Char)((min / 10) + 0x30);
-				buff[4] = (UTF8Char)((min % 10) + 0x30);
+				WriteNUInt16(&buff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
+				WriteNUInt16(&buff[3], ReadNUInt16(&MyString_StrDigit100U8[min * 2]));
 				buff += 5;
 				pattern += 3;
 			}
@@ -1812,13 +1720,11 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 					buff[0] = '-';
 					hr = -hr;
 				}
-				buff[1] = (UTF8Char)((hr / 10) + 0x30);
-				buff[2] = (UTF8Char)((hr % 10) + 0x30);
+				WriteNUInt16(&buff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
 				buff[3] = ':';
-				buff[4] = (UTF8Char)((min / 10) + 0x30);
-				buff[5] = (UTF8Char)((min % 10) + 0x30);
+				WriteNUInt16(&buff[4], ReadNUInt16(&MyString_StrDigit100U8[min * 2]));
 				buff += 6;
-				
+				pattern += 4;
 				while (*pattern == 'z')
 					pattern++;
 			}
@@ -2111,134 +2017,230 @@ void Data::DateTime::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 		if (totalDays < 10957)
 		{
 			t->year = 1970;
-		}
-		else if (totalDays < 14610)
-		{
-			t->year = 2000;
-			totalDays -= 10957;
-		}
-		else if (totalDays < 18262)
-		{
-			t->year = 2010;
-			totalDays -= 14610;
-		}
-		else
-		{
-			t->year = 2020;
-			totalDays -= 18262;
-		}
-		while (true)
-		{
-			if (IsYearLeap(t->year))
+			while (true)
 			{
-				if (totalDays < 366)
+				if (IsYearLeap(t->year))
 				{
-					break;
+					if (totalDays < 366)
+					{
+						break;
+					}
+					else
+					{
+						t->year++;
+						totalDays -= 366;
+					}
 				}
 				else
 				{
-					t->year++;
-					totalDays -= 366;
+					if (totalDays < 365)
+					{
+						break;
+					}
+					else
+					{
+						t->year++;
+						totalDays -= 365;
+					}
+				}
+			}
+		}
+		else
+		{
+			totalDays -= 10957;
+			t->year = 2000 + (UInt16)((totalDays / 1461) << 2);
+			totalDays = totalDays % 1461;
+			t->year += (UInt16)(totalDays / 365);
+			totalDays = totalDays % 365;
+		}
+	}
+
+	if (IsYearLeap(t->year))
+	{
+		if (totalDays < 121)
+		{
+			if (totalDays < 60)
+			{
+				if (totalDays < 31)
+				{
+					t->month = 1;
+					t->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					t->month = 2;
+					t->day = (UInt8)(totalDays - 31 + 1);
 				}
 			}
 			else
 			{
-				if (totalDays < 365)
+				if (totalDays < 91)
 				{
-					break;
+					t->month = 3;
+					t->day = (UInt8)(totalDays - 60 + 1);
 				}
 				else
 				{
-					t->year++;
-					totalDays -= 365;
+					t->month = 4;
+					t->day = (UInt8)(totalDays - 91 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 244)
+			{
+				if (totalDays < 182)
+				{
+					if (totalDays < 152)
+					{
+						t->month = 5;
+						t->day = (UInt8)(totalDays - 121 + 1);
+					}
+					else
+					{
+						t->month = 6;
+						t->day = (UInt8)(totalDays - 152 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 213)
+					{
+						t->month = 7;
+						t->day = (UInt8)(totalDays - 182 + 1);
+					}
+					else
+					{
+						t->month = 8;
+						t->day = (UInt8)(totalDays - 213 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 305)
+				{
+					if (totalDays < 274)
+					{
+						t->month = 9;
+						t->day = (UInt8)(totalDays - 244 + 1);
+					}
+					else
+					{
+						t->month = 10;
+						t->day = (UInt8)(totalDays - 274 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 335)
+					{
+						t->month = 11;
+						t->day = (UInt8)(totalDays - 305 + 1);
+					}
+					else
+					{
+						t->month = 12;
+						t->day = (UInt8)(totalDays - 335 + 1);
+					}
 				}
 			}
 		}
 	}
-
-	Int32 febDays = 28;
-	if (IsYearLeap(t->year))
-		febDays = 29;
-
-	if (totalDays < 31)
+	else
 	{
-		t->month = 1;
-		t->day = (UInt8)(totalDays + 1);
-		return;
+		if (totalDays < 120)
+		{
+			if (totalDays < 59)
+			{
+				if (totalDays < 31)
+				{
+					t->month = 1;
+					t->day = (UInt8)(totalDays + 1);
+				}
+				else
+				{
+					t->month = 2;
+					t->day = (UInt8)(totalDays - 31 + 1);
+				}
+			}
+			else
+			{
+				if (totalDays < 90)
+				{
+					t->month = 3;
+					t->day = (UInt8)(totalDays - 59 + 1);
+				}
+				else
+				{
+					t->month = 4;
+					t->day = (UInt8)(totalDays - 90 + 1);
+				}
+			}
+		}
+		else
+		{
+			if (totalDays < 243)
+			{
+				if (totalDays < 181)
+				{
+					if (totalDays < 151)
+					{
+						t->month = 5;
+						t->day = (UInt8)(totalDays - 120 + 1);
+					}
+					else
+					{
+						t->month = 6;
+						t->day = (UInt8)(totalDays - 151 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 212)
+					{
+						t->month = 7;
+						t->day = (UInt8)(totalDays - 181 + 1);
+					}
+					else
+					{
+						t->month = 8;
+						t->day = (UInt8)(totalDays - 212 + 1);
+					}
+				}
+			}
+			else
+			{
+				if (totalDays < 304)
+				{
+					if (totalDays < 273)
+					{
+						t->month = 9;
+						t->day = (UInt8)(totalDays - 243 + 1);
+					}
+					else
+					{
+						t->month = 10;
+						t->day = (UInt8)(totalDays - 273 + 1);
+					}
+				}
+				else
+				{
+					if (totalDays < 334)
+					{
+						t->month = 11;
+						t->day = (UInt8)(totalDays - 304 + 1);
+					}
+					else
+					{
+						t->month = 12;
+						t->day = (UInt8)(totalDays - 334 + 1);
+					}
+				}
+			}
+		}
 	}
-	totalDays -= 31;
-	if (totalDays < febDays)
-	{
-		t->month = 2;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= febDays;
-	if (totalDays < 31)
-	{
-		t->month = 3;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 31;
-	if (totalDays < 30)
-	{
-		t->month = 4;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 30;
-	if (totalDays < 31)
-	{
-		t->month = 5;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 31;
-	if (totalDays < 30)
-	{
-		t->month = 6;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 30;
-	if (totalDays < 31)
-	{
-		t->month = 7;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 31;
-	if (totalDays < 31)
-	{
-		t->month = 8;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 31;
-	if (totalDays < 30)
-	{
-		t->month = 9;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 30;
-	if (totalDays < 31)
-	{
-		t->month = 10;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 31;
-	if (totalDays < 30)
-	{
-		t->month = 11;
-		t->day = (UInt8)(totalDays + 1);
-		return;
-	}
-	totalDays -= 30;
-	t->month = 12;
-	t->day = (UInt8)(totalDays + 1);
 }
 
 Bool Data::DateTime::IsYearLeap(UInt16 year)

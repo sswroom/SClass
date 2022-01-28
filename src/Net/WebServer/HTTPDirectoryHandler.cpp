@@ -187,16 +187,16 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	UTF8Char u8buff[512];
 	Text::String *s;
 
-	sbOut.AppendC(UTF8STRC("<html><head><title>Index of "));
+	sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 	Text::TextBinEnc::URIEncoding::URIDecode(u8buff, sptr);
 	s = Text::XML::ToNewHTMLText(u8buff);
-	sbOut.Append(s);
-	sbOut.AppendC(UTF8STRC("</title></head>\r\n<body>\r\n"));
-	sbOut.AppendC(UTF8STRC("<h2>Index Of "));
-	sbOut.Append(s);
+	sbOut.AppendNE(s);
+	sbOut.AppendNE(UTF8STRC("</title></head>\r\n<body>\r\n"));
+	sbOut.AppendNE(UTF8STRC("<h2>Index Of "));
+	sbOut.AppendNE(s);
 	s->Release();
-	sbOut.AppendC(UTF8STRC("</h2>\r\n"));
-	sbOut.AppendC(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
+	sbOut.AppendNE(UTF8STRC("</h2>\r\n"));
+	sbOut.AppendNE(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
 /*	if (this->allowUpload)
 	{
 		const WChar *csptr = Text::XML::ToNewAttrText(sptr);
@@ -207,7 +207,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		sbOut.AppendC(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\"/><br/><input type=\"submit\"/>"));
 		sbOut.AppendC(UTF8STRC("</form>"));
 	}*/
-	sbOut.AppendC(UTF8STRC("<table><tr><th>Name</th><th>MIME</th><th>Size</th><th>Modified Date</th></tr>\r\n"));
+	sbOut.AppendNE(UTF8STRC("<table><tr><th>Name</th><th>MIME</th><th>Size</th><th>Modified Date</th></tr>\r\n"));
 
 	UTF8Char u8buff2[256];
 	UTF8Char *sptr2;
@@ -220,38 +220,38 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		pot = packageFile->GetItemType(i);
 		if (pot == IO::PackageFile::POT_STREAMDATA || pot == IO::PackageFile::POT_PACKAGEFILE)
 		{
-			sbOut.AppendC(UTF8STRC("<tr><td>"));
-			sbOut.AppendC(UTF8STRC("<a href=\""));
+			sbOut.AppendNE(UTF8STRC("<tr><td>"));
+			sbOut.AppendNE(UTF8STRC("<a href=\""));
 			sptr = packageFile->GetItemName(u8buff, i);
 			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
-			sbOut.AppendC(u8buff2, (UOSInt)(sptr2 - u8buff2));
+			sbOut.AppendNE(u8buff2, (UOSInt)(sptr2 - u8buff2));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
-				sbOut.AppendC(UTF8STRC("/"));
+				sbOut.AppendNE(UTF8STRC("/"));
 			}
-			sbOut.AppendC(UTF8STRC("\">"));
+			sbOut.AppendNE(UTF8STRC("\">"));
 			sptr2 = Text::XML::ToXMLText(u8buff2, u8buff);
-			sbOut.AppendC(u8buff2, (UOSInt)(sptr2 - u8buff2));
-			sbOut.AppendC(UTF8STRC("</a></td><td>"));
+			sbOut.AppendNE(u8buff2, (UOSInt)(sptr2 - u8buff2));
+			sbOut.AppendNE(UTF8STRC("</a></td><td>"));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
-				sbOut.AppendC(UTF8STRC("Directory"));
-				sbOut.AppendC(UTF8STRC("</td><td>"));
-				sbOut.AppendC(UTF8STRC("-"));
+				sbOut.AppendNE(UTF8STRC("Directory"));
+				sbOut.AppendNE(UTF8STRC("</td><td>"));
+				sbOut.AppendNE(UTF8STRC("-"));
 			}
 			else
 			{
 				sptr2 = IO::Path::GetFileExt(u8buff2, u8buff, (UOSInt)(sptr - u8buff));
 				Text::CString mime = Net::MIME::GetMIMEFromExt(u8buff2, (UOSInt)(sptr2 - u8buff2));
-				sbOut.AppendC(mime.v, mime.leng);
-				sbOut.AppendC(UTF8STRC("</td><td>"));
+				sbOut.AppendNE(mime.v, mime.leng);
+				sbOut.AppendNE(UTF8STRC("</td><td>"));
 				sbOut.AppendU64(packageFile->GetItemSize(i));
 			}
 
 			modTime.SetTicks(packageFile->GetItemModTimeTick(i));
-			sbOut.AppendC(UTF8STRC("</td><td>"));
+			sbOut.AppendNE(UTF8STRC("</td><td>"));
 			sbOut.AppendDate(&modTime);
-			sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+			sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 		}
 		
 		i++;
@@ -771,18 +771,18 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				Bool isRoot = false;
 				Text::String *s;
-				sbOut.AppendC(UTF8STRC("<html><head><title>Index of "));
+				sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
 				Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sb2.ToString());
 				s = Text::XML::ToNewHTMLText(sbuff);
-				sbOut.Append(s);
-				sbOut.AppendC2(UTF8STRC("</title></head>\r\n<body>\r\n"),
+				sbOut.AppendNE(s);
+				sbOut.AppendNE2(UTF8STRC("</title></head>\r\n<body>\r\n"),
 							   UTF8STRC("<h2>Index Of "));
-				sbOut.Append(s);
+				sbOut.AppendNE(s);
 				s->Release();
-				sbOut.AppendC(UTF8STRC("</h2>\r\n"));
+				sbOut.AppendNE(UTF8STRC("</h2>\r\n"));
 				if (!sb2.Equals(UTF8STRC("/")))
 				{
-					sbOut.AppendC(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
+					sbOut.AppendNE(UTF8STRC("<a href=\"..\">Up one level</a><br/>\r\n"));
 				}
 				else
 				{
@@ -791,11 +791,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				if (this->allowUpload)
 				{
 					s = Text::XML::ToNewAttrText(sb2.ToString());
-					sbOut.AppendC(UTF8STRC("<form name=\"upload\" method=\"POST\" action="));
-					sbOut.Append(s);
-					sbOut.AppendC(UTF8STRC(" enctype=\"multipart/form-data\">"));
+					sbOut.AppendNE(UTF8STRC("<form name=\"upload\" method=\"POST\" action="));
+					sbOut.AppendNE(s);
+					sbOut.AppendNE(UTF8STRC(" enctype=\"multipart/form-data\">"));
 					s->Release();
-					sbOut.AppendC2(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
+					sbOut.AppendNE2(UTF8STRC("Upload: <input type=\"file\" name=\"uploadfile\" multiple/><br/><input type=\"submit\"/>"),
 								   UTF8STRC("</form>"));
 				}
 
@@ -806,30 +806,30 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				}
 
 				Text::StringBuilderUTF8 sb3;
-				sb3.AppendC(sb2.ToString(), sb2.GetLength());
+				sb3.AppendNE(sb2.ToString(), sb2.GetLength());
 				sb3.AppendC(UTF8STRC("?sort=1"));
 				s = Text::XML::ToNewAttrText(sb3.ToString());
-				sbOut.AppendC(UTF8STRC("<table><tr><th><a href="));
-				sbOut.Append(s);
+				sbOut.AppendNE(UTF8STRC("<table><tr><th><a href="));
+				sbOut.AppendNE(s);
 				s->Release();
-				sbOut.AppendC(UTF8STRC(">Name</a></th><th>MIME</th><th><a href="));
+				sbOut.AppendNE(UTF8STRC(">Name</a></th><th>MIME</th><th><a href="));
 				sb3.ClearStr();
 				sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=2"));
 				s = Text::XML::ToNewAttrText(sb3.ToString());
-				sbOut.Append(s);
+				sbOut.AppendNE(s);
 				s->Release();
-				sbOut.AppendC(UTF8STRC(">File Size</a></th>"));
+				sbOut.AppendNE(UTF8STRC(">File Size</a></th>"));
 				if (this->statMap)
 				{
-					sbOut.AppendC(UTF8STRC("<th><a href="));
+					sbOut.AppendNE(UTF8STRC("<th><a href="));
 					sb3.ClearStr();
 					sb3.AppendC2(sb2.ToString(), sb2.GetLength(), UTF8STRC("?sort=3"));
 					s = Text::XML::ToNewAttrText(sb3.ToString());
-					sbOut.Append(s);
+					sbOut.AppendNE(s);
 					s->Release();
-					sbOut.AppendC(UTF8STRC(">Download Count</a></th>"));
+					sbOut.AppendNE(UTF8STRC(">Download Count</a></th>"));
 				}
-				sbOut.AppendC(UTF8STRC("<th>Modified Date</th></tr>\r\n"));
+				sbOut.AppendNE(UTF8STRC("<th>Modified Date</th></tr>\r\n"));
 
 				if (isRoot)
 				{
@@ -845,23 +845,23 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						while (i < j)
 						{
 							package = this->packageMap->GetItem(i);
-							sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
+							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
-							sbOut.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 							sbOut.AppendChar('/', 1);
-							sbOut.AppendC(UTF8STRC("\">"));
+							sbOut.AppendNE(UTF8STRC("\">"));
 							sptr2 = Text::XML::ToXMLText(sbuff2, package->fileName->v);
-							sbOut.AppendC2(sbuff2, (UOSInt)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
-							sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
+							sbOut.AppendNE2(sbuff2, (UOSInt)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
+							sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 							sbOut.AppendChar('-', 1);
 							if (this->statMap)
 							{
-								sbOut.AppendC(UTF8STRC("</td><td>0"));
+								sbOut.AppendNE(UTF8STRC("</td><td>0"));
 							}
 							modTime.SetTicks(package->modTime);
-							sbOut.AppendC(UTF8STRC("</td><td>"));
+							sbOut.AppendNE(UTF8STRC("</td><td>"));
 							sbOut.AppendDate(&modTime);
-							sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							
 							i++;
 						}
@@ -921,45 +921,45 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								{
 									cnt = 0;
 								}
-								sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
+								sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 								sptr4 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sptr2);
-								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
+								sbOut.AppendNE(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendChar('/', 1);
 								}
-								sbOut.AppendC(UTF8STRC("\">"));
+								sbOut.AppendNE(UTF8STRC("\">"));
 								if (cnt > 0)
 								{
-									sbOut.AppendC(UTF8STRC("<font color=\"#ff0000\">"));
+									sbOut.AppendNE(UTF8STRC("<font color=\"#ff0000\">"));
 								}
 								sptr4 = Text::XML::ToXMLText(sbuff2, sptr2);
-								sbOut.AppendC(sbuff2, (UOSInt)(sptr4 - sbuff2));
+								sbOut.AppendNE(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (cnt > 0)
 								{
-									sbOut.AppendC(UTF8STRC("</font>"));
+									sbOut.AppendNE(UTF8STRC("</font>"));
 								}
-								sbOut.AppendC(UTF8STRC("</a></td><td>"));
+								sbOut.AppendNE(UTF8STRC("</a></td><td>"));
 								if (pt == IO::Path::PathType::Directory)
 								{
-									sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
+									sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 									sbOut.AppendChar('-', 1);
 								}
 								else
 								{
 									sptr4 = IO::Path::GetFileExt(sbuff2, sptr2, (UOSInt)(sptr3 - sptr2));
 									mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr4 - sbuff2));
-									sbOut.AppendC2(mime.v, mime.leng, UTF8STRC("</td><td>"));
+									sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 									sbOut.AppendU64(fileSize);
 								}
 								if (this->statMap)
 								{
-									sbOut.AppendC(UTF8STRC("</td><td>"));
+									sbOut.AppendNE(UTF8STRC("</td><td>"));
 									sbOut.AppendU32(cnt);
 								}
-								sbOut.AppendC(UTF8STRC("</td><td>"));
+								sbOut.AppendNE(UTF8STRC("</td><td>"));
 								sbOut.AppendDate(&modTime);
-								sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+								sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							}
 						}
 						IO::Path::FindFileClose(sess);
@@ -1021,46 +1021,46 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						while (i < j)
 						{
 							ent = entList.GetItem(i);
-							sbOut.AppendC(UTF8STRC("<tr><td><a href=\""));
+							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr3 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, ent->fileName->v);
-							sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UOSInt)(sptr3 - sbuff2));
 							if (ent->pt == IO::Path::PathType::Directory)
 							{
-								sbOut.AppendC(UTF8STRC("/"));
+								sbOut.AppendNE(UTF8STRC("/"));
 							}
-							sbOut.AppendC(UTF8STRC("\">"));
+							sbOut.AppendNE(UTF8STRC("\">"));
 							if (ent->cnt > 0)
 							{
-								sbOut.AppendC(UTF8STRC("<font color=\"#ff0000\">"));
+								sbOut.AppendNE(UTF8STRC("<font color=\"#ff0000\">"));
 							}
 							sptr3 = Text::XML::ToXMLText(sbuff2, ent->fileName->v);
-							sbOut.AppendC(sbuff2, (UOSInt)(sptr3 - sbuff2));
+							sbOut.AppendNE(sbuff2, (UOSInt)(sptr3 - sbuff2));
 							if (ent->cnt > 0)
 							{
-								sbOut.AppendC(UTF8STRC("</font>"));
+								sbOut.AppendNE(UTF8STRC("</font>"));
 							}
-							sbOut.AppendC(UTF8STRC("</a></td><td>"));
+							sbOut.AppendNE(UTF8STRC("</a></td><td>"));
 							if (ent->pt == IO::Path::PathType::Directory)
 							{
-								sbOut.AppendC2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
+								sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
 								sbOut.AppendChar('-', 1);
 							}
 							else
 							{
 								sptr3 = IO::Path::GetFileExt(sbuff2, ent->fileName->v, ent->fileName->leng);
 								mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr3 - sbuff2));
-								sbOut.AppendC2(mime.v, mime.leng, UTF8STRC("</td><td>"));
+								sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 								sbOut.AppendU64(ent->fileSize);
 							}
 							if (this->statMap)
 							{
-								sbOut.AppendC(UTF8STRC("</td><td>"));
+								sbOut.AppendNE(UTF8STRC("</td><td>"));
 								sbOut.AppendU32(ent->cnt);
 							}
-							sbOut.AppendC(UTF8STRC("</td><td>"));
+							sbOut.AppendNE(UTF8STRC("</td><td>"));
 							modTime.SetTicks(ent->modTime);
 							sbOut.AppendDate(&modTime);
-							sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
+							sbOut.AppendNE(UTF8STRC("</td></tr>\r\n"));
 							ent->fileName->Release();
 							MemFree(ent);
 							i++;

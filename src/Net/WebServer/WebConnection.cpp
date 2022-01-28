@@ -361,23 +361,23 @@ void Net::WebServer::WebConnection::SendHeaders(Net::WebServer::IWebRequest::Req
 	sptr = (UTF8Char*)buff;
 	if (protocol == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 	{
-		sptr = Text::StrConcatC(sptr, UTF8STRC("HTTP/1.0 "));
+		sptr = Text::StrConcatNE(sptr, UTF8STRC("HTTP/1.0 "));
 	}
 	else if (protocol == Net::WebServer::IWebRequest::RequestProtocol::RTSP1_0)
 	{
-		sptr = Text::StrConcatC(sptr, UTF8STRC("RTSP/1.0 "));
+		sptr = Text::StrConcatNE(sptr, UTF8STRC("RTSP/1.0 "));
 	}
 	else
 	{
-		sptr = Text::StrConcatC(sptr, UTF8STRC("HTTP/1.1 "));
+		sptr = Text::StrConcatNE(sptr, UTF8STRC("HTTP/1.1 "));
 	}
 	sptr = Text::StrInt32(sptr, this->respStatus);
 	*sptr++ = ' ';
 	Text::CString codeName = Net::WebStatus::GetCodeName(this->respStatus);
-	sptr = Text::StrConcatC((UTF8Char*)sptr, codeName.v, codeName.leng);
-	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+	sptr = Text::StrConcatNE(sptr, codeName.v, codeName.leng);
+	sptr = Text::StrConcatNE(sptr, UTF8STRC("\r\n"));
 
-	sptr = Text::StrConcatC(sptr, this->respHeaders->ToString(), this->respHeaders->GetLength());
+	sptr = Text::StrConcatNE(sptr, this->respHeaders->ToString(), this->respHeaders->GetLength());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
 
 	if (this->cstm)
@@ -696,7 +696,7 @@ Bool Net::WebServer::WebConnection::AddHeaderC(const UTF8Char *name, UOSInt name
 {
 	if (this->respHeaderSent)
 		return false;
-	this->respHeaders->AppendC2(name, nameLen, UTF8STRC(": "));
+	this->respHeaders->AppendNE2(name, nameLen, UTF8STRC(": "));
 	this->respHeaders->AppendC2(value, valueLen, UTF8STRC("\r\n"));
 
 	if (Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")) && Text::StrEqualsICaseC(name, nameLen, UTF8STRC("Transfer-Encoding")))

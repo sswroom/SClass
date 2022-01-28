@@ -90,7 +90,7 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen)
 {
 	UTF8Char sbuff[5];
-	if (extLen > 4)
+	if (extLen > 4 || extLen < 2)
 	{
 		return {UTF8STRC("application/octet-stream")};
 	}

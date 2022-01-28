@@ -140,14 +140,6 @@ UTF8Char *Text::StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt b
 	return oriStr - 1;
 }
 
-UTF8Char *Text::StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
-{
-	MemCopyO(oriStr, strToJoin, charCnt);
-	oriStr += charCnt;
-	*oriStr = 0;
-	return oriStr;
-}
-
 UTF8Char *Text::StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin)
 {
 	while ((*oriStr++ = (UTF8Char)*strToJoin++) != 0);

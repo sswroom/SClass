@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_MYSTRING
 #define _SM_TEXT_MYSTRING
+#include "MyMemory.h"
 
 #define SCOPY_TEXT(var) (((var) != 0)?Text::StrCopyNew(var):0)
 #define SDEL_TEXT(var) if (var != 0) { Text::StrDelNew(var); var = 0;}
@@ -63,8 +64,22 @@ extern "C"
 
 namespace Text
 {
+	FORCEINLINE UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
+	{
+		MemCopyO(oriStr, strToJoin, charCnt);
+		oriStr += charCnt;
+		*oriStr = 0;
+		return oriStr;
+	}
+
+	FORCEINLINE UTF8Char *StrConcatNE(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt)
+	{
+		MemCopyO(oriStr, strToJoin, charCnt);
+		oriStr += charCnt;
+		return oriStr;
+	}
+
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
-	UTF8Char *StrConcatC(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt);
 	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
 	UTF8Char *StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin);
 
