@@ -74,9 +74,9 @@ UTF8Char *Media::AndroidVideoCapture::GetSourceName(UTF8Char *buff)
 	return Text::StrConcat(buff, (const UTF8Char*)this->cameraId);
 }
 
-const UTF8Char *Media::AndroidVideoCapture::GetFilterName()
+Text::CString Media::AndroidVideoCapture::GetFilterName()
 {
-	return (const UTF8Char*)"AndroidVideoCapture";
+	return CSTR("AndroidVideoCapture");
 }
 
 Bool Media::AndroidVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
