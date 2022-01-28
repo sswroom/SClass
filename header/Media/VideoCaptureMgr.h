@@ -2,6 +2,7 @@
 #define _SM_MEDIA_VIDEOCAPTUREMGR
 #include "Data/ArrayList.h"
 #include "Media/IVideoCapture.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -24,7 +25,7 @@ namespace Media
 		void FreeDeviceList(Data::ArrayList<DeviceInfo *> *devList);
 		Media::IVideoCapture *CreateDevice(Int32 devType, UOSInt devId);
 
-		const UTF8Char *GetDevTypeName(Int32 devType);
+		Text::CString GetDevTypeName(Int32 devType);
 	};
 }
 #endif

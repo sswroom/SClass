@@ -810,7 +810,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 		{
 			if (me->fileMix->LoadFile(dlg->GetFileName()))
 			{
-				me->txtFileMix->SetText(dlg->GetFileName());
+				me->txtFileMix->SetText(dlg->GetFileName()->v);
 			}
 		}
 		DEL_CLASS(dlg);

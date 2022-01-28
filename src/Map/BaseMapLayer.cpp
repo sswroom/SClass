@@ -18,28 +18,28 @@ UOSInt Map::BaseMapLayer::GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTyp
 	return layerTypes->GetCount() - initCnt;
 }
 
-const UTF8Char *Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
+Text::CString Map::BaseMapLayer::BaseLayerTypeGetName(BaseLayerType blt)
 {
 	switch (blt)
 	{
 	case BLT_OSM_TILE:
-		return (const UTF8Char*)"OSM Tile Map";
+		return CSTR("OSM Tile Map");
 	case BLT_OSM_CYCLE:
-		return (const UTF8Char*)"Open Cycle Map";
+		return CSTR("Open Cycle Map");
 	case BLT_OSM_TRANSP:
-		return (const UTF8Char*)"Transport";
+		return CSTR("Transport");
 	case BLT_OSM_LANDSCAPE:
-		return (const UTF8Char*)"Landscape";
+		return CSTR("Landscape");
 	case BLT_OSM_OUTDOORS:
-		return (const UTF8Char*)"Outdoors";
+		return CSTR("Outdoors");
 	case BLT_OSM_TRANSP_DARK:
-		return (const UTF8Char*)"Transport Dark";
+		return CSTR("Transport Dark");
 	case BLT_OSM_SPINAL:
-		return (const UTF8Char*)"Spinal Map";
+		return CSTR("Spinal Map");
 	case BLT_OSM_MAPQUEST:
-		return (const UTF8Char*)"MapQuest";
+		return CSTR("MapQuest");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 

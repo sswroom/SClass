@@ -754,7 +754,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 				dlg->SetFileName(userFile->oriFileName->v);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
-					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName(), IO::FileUtil::FileExistAction::Fail, 0, 0);
+					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName()->v, IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				DEL_CLASS(dlg);
 			}

@@ -23,15 +23,15 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 	MemFree(data);
 }
 
-OSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
 	ManagerData *data = (ManagerData*)this->mgrData;
 	DeviceInfo *devInfo;
 	UTF8Char sbuff[512];
-	Data::ArrayList<Int32> devIdList;
-	OSInt ret = 0;
-	OSInt i = 0;
-	OSInt j = data->v4lMgr->GetDeviceList(&devIdList);
+	Data::ArrayList<UInt32> devIdList;
+	UOSInt ret = 0;
+	UOSInt i = 0;
+	UOSInt j = data->v4lMgr->GetDeviceList(&devIdList);
 	while (i < j)
 	{
 		devInfo = MemAlloc(DeviceInfo, 1);
@@ -68,7 +68,7 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 	}
 }
 
-Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, OSInt devId)
+Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	ManagerData *data = (ManagerData*)this->mgrData;
 	if (devType == 0)
@@ -87,15 +87,15 @@ Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, OSInt 
 	}
 }
 
-const UTF8Char *Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
 	switch (devType)
 	{
 	case 0:
-		return (const UTF8Char*)"V4L";
+		return CSTR("V4L");
 	case 1:
-		return (const UTF8Char*)"Broadcom VC";
+		return CSTR("Broadcom VC");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

@@ -41,7 +41,7 @@ namespace Map
 			Bool ImportTiles(IO::PackageFile *pkg);
 			Bool OptimizeToFile(const UTF8Char *fileName);
 
-			virtual const UTF8Char *GetName();
+			virtual Text::CString GetName();
 			virtual Bool IsError();
 			virtual TileType GetTileType();
 			virtual UOSInt GetLevelCount();

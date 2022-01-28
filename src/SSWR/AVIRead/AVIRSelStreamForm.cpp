@@ -207,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 	}
 	if (ofd->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		me->txtFileName->SetText(ofd->GetFileName());
+		me->txtFileName->SetText(ofd->GetFileName()->v);
 	}
 	DEL_CLASS(ofd);
 }

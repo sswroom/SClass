@@ -7,6 +7,10 @@ DB::ReadingDB::ReadingDB(Text::String *sourceName) : IO::ParsedObject(sourceName
 {
 }
 
+DB::ReadingDB::ReadingDB(Text::CString sourceName) : IO::ParsedObject(sourceName)
+{
+}
+
 DB::ReadingDB::ReadingDB(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
 {
 }

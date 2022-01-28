@@ -3,7 +3,7 @@
 #include "Math/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
-SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer((const UTF8Char*)"ImageLayer", 0, 0)
+SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, 0)
 {
 	NEW_CLASS(this->objList, Data::ArrayList<UserFileInfo*>());
 	this->ClearItems();
@@ -119,7 +119,7 @@ Bool SSWR::OrganMgr::OrganSpImgLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *
 {
 	if (colIndex == 0)
 	{
-		colDef->SetColName((const UTF8Char*)"Descript");
+		colDef->SetColName(CSTR("Descript"));
 		colDef->SetColDP(0);
 		colDef->SetColSize(256);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);

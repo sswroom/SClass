@@ -8,7 +8,7 @@
 
 const UTF8Char *Func1()
 {
-	return (const UTF8Char *)"Func1";
+	return (const UTF8Char*)"Func1";
 }
 
 Text::CString Func2()

@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtSFile->SetText(dlg->GetFileName());
+		me->txtSFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtOFile->SetText(dlg->GetFileName());
+		me->txtOFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

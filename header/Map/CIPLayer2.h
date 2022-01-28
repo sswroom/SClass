@@ -1,8 +1,9 @@
 #ifndef _SM_MAP_CIPLAYER2
 #define _SM_MAP_CIPLAYER2
-#include "Sync/Mutex.h"
-#include "Map/IMapDrawLayer.h"
 #include "Data/Int32Map.h"
+#include "Map/IMapDrawLayer.h"
+#include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -36,7 +37,7 @@ namespace Map
 		CIPBlock *blks;
 		UOSInt maxTextSize;
 		Map::DrawLayerType lyrType;
-		const UTF8Char *layerName;
+		Text::String *layerName;
 		Int64 maxId;
 
 		Data::Int32Map<CIPFileObject*> *lastObjs;
@@ -44,7 +45,7 @@ namespace Map
 
 		Sync::Mutex *mut;
 	public:
-		CIPLayer2(const UTF8Char *layerName);
+		CIPLayer2(Text::CString layerName);
 		virtual ~CIPLayer2();
 
 		Bool IsError();

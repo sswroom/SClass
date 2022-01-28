@@ -66,7 +66,7 @@ namespace Math
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-		const UTF8Char *GetName(UOSInt colIndex);
+		Text::CString GetName(UOSInt colIndex);
 	};
 
 	class TSPHReader : public DB::DBReader
@@ -101,7 +101,7 @@ namespace Math
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-		const UTF8Char *GetName(UOSInt colIndex);
+		Text::CString GetName(UOSInt colIndex);
 	};
 }
 #endif

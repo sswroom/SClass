@@ -2249,9 +2249,9 @@ Bool DB::ODBCReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		return false;
 	}
 
-	const UTF8Char *csptr = Text::StrToUTF8New((const UTF16Char*)sbuff);
-	colDef->SetColName(csptr);
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull((const UTF16Char*)sbuff);
+	colDef->SetColName(s);
+	s->Release();
 	colDef->SetColType(this->ODBCType2DBType(dataType, colSize));
 	colDef->SetColSize(colSize);
 	colDef->SetColDP((UInt16)decimalDigit);

@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName());
+		me->txtFileName->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

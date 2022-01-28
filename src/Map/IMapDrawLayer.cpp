@@ -59,7 +59,7 @@ Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text
 	this->flags = 0;
 }
 
-Map::IMapDrawLayer::IMapDrawLayer(const UTF8Char *sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::IMapDrawLayer::IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
 	this->layerName = Text::String::NewOrNull(layerName);
@@ -1119,7 +1119,7 @@ Bool Map::MapLayerReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (colIndex == 0)
 	{
 		colDef->SetColType(DB::DBUtil::CT_Vector);
-		colDef->SetColName((const UTF8Char*)"Shape");
+		colDef->SetColName(CSTR("Shape"));
 		colDef->SetColDP(0);
 		colDef->SetColSize(0x7fffffff);
 		colDef->SetAttr((const UTF8Char*)"");

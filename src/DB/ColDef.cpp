@@ -101,6 +101,12 @@ void DB::ColDef::SetColName(const UTF8Char *colName)
 	if (colName) this->colName = Text::String::NewOrNull(colName);
 }
 
+void DB::ColDef::SetColName(Text::CString colName)
+{
+	SDEL_STRING(this->colName);
+	if (colName.v) this->colName = Text::String::New(colName.v, colName.leng);
+}
+
 void DB::ColDef::SetColName(Text::String *colName)
 {
 	SDEL_STRING(this->colName);

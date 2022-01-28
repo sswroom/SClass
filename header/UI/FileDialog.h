@@ -14,7 +14,7 @@ namespace UI
 		IO::Registry *reg;
 		WChar *dialogName;
 		const WChar *lastName;
-		const UTF8Char *fileName;
+		Text::String *fileName;
 		Bool isSave;
 		Bool allowMulti;
 		Data::ArrayListString *patterns;
@@ -31,7 +31,7 @@ namespace UI
 		UOSInt GetFilterIndex();
 
 		void SetFileName(const UTF8Char *fileName);
-		const UTF8Char *GetFileName();
+		Text::String *GetFileName();
 
 		UOSInt GetFileNameCount();
 		const UTF8Char *GetFileNames(UOSInt index);

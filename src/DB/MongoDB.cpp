@@ -375,7 +375,7 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex != 0)
 		return false;
-	colDef->SetColName((const UTF8Char*)"Data");
+	colDef->SetColName(CSTR("Data"));
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);

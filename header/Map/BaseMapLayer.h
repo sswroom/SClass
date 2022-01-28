@@ -5,6 +5,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Parser/ParserList.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -24,7 +25,7 @@ namespace Map
 		} BaseLayerType;
 	public:
 		static UOSInt GetLayerTypes(Data::ArrayList<BaseLayerType> *layerTypes);
-		static const UTF8Char *BaseLayerTypeGetName(BaseLayerType blt);
+		static Text::CString BaseLayerTypeGetName(BaseLayerType blt);
 		static Map::IMapDrawLayer *CreateLayer(BaseLayerType blt, Net::SocketFactory *sockf, Net::SSLEngine *ssl, Parser::ParserList *parsers);
 	};
 }

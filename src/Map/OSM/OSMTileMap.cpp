@@ -100,9 +100,9 @@ Bool Map::OSM::OSMTileMap::OptimizeToFile(const UTF8Char *fileName)
 	}
 }
 
-const UTF8Char *Map::OSM::OSMTileMap::GetName()
+Text::CString Map::OSM::OSMTileMap::GetName()
 {
-	return (const UTF8Char*)"OSMTileMap";
+	return CSTR("OSMTileMap");
 }
 
 Bool Map::OSM::OSMTileMap::IsError()

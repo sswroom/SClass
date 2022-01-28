@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			DEL_CLASS(fs);
 			if (!succ)
 			{
-				IO::Path::DeleteFile(dlg->GetFileName());
+				IO::Path::DeleteFile(dlg->GetFileName()->v);
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in downloading the file", (const UTF8Char*)"Camera Control", me);
 			}
 		}
@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesDblClick(void *userO
 			if (me->camera->GetFile(file, mstm))
 			{
 				mstm->SeekFromBeginning(0);
-				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, file->fileName);
+				Map::GPSTrack *trk = IO::GPSNMEA::NMEA2Track(mstm, {file->fileName, Text::StrCharCnt(file->fileName)});
 				SSWR::AVIRead::AVIRGISForm *frm = me->core->GetGISForm();
 				if (frm)
 				{

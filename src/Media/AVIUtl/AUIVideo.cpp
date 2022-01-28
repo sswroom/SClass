@@ -111,9 +111,9 @@ UTF8Char *Media::AVIUtl::AUIVideo::GetSourceName(UTF8Char *buff)
 	return 0;
 }
 
-const UTF8Char *Media::AVIUtl::AUIVideo::GetFilterName()
+Text::CString Media::AVIUtl::AUIVideo::GetFilterName()
 {
-	return (const UTF8Char*)"AUIVideo";
+	return CSTR("AUIVideo");
 }
 
 Bool Media::AVIUtl::AUIVideo::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtOriFile->SetText(dlg->GetFileName());
+		me->txtOriFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtLossyFile->SetText(dlg->GetFileName());
+		me->txtLossyFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

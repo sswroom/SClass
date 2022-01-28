@@ -447,10 +447,10 @@ Bool Media::HTRecFile::HTRecReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	const UTF8Char *s = GetName(colIndex);
-	if (s == 0)
+	Text::CString s = GetName(colIndex);
+	if (s.v == 0)
 		return 0;
-	return Text::StrConcat(buff, s);
+	return s.ConcatTo(buff);
 }
 
 Bool Media::HTRecFile::HTRecReader::IsNull(UOSInt colIndex)
@@ -552,16 +552,16 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 	return false;
 }
 
-const UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
+Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
 {
 	if (this->setting)
 	{
 		switch (colIndex)
 		{
 		case 0:
-			return (const UTF8Char*)"name";
+			return CSTR("name");
 		case 1:
-			return (const UTF8Char*)"value";
+			return CSTR("value");
 		}
 	}
 	else
@@ -569,16 +569,16 @@ const UTF8Char *Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
 		switch (colIndex)
 		{
 		case 0:
-			return (const UTF8Char*)"recno";
+			return CSTR("recno");
 		case 1:
-			return (const UTF8Char*)"time";
+			return CSTR("time");
 		case 2:
-			return (const UTF8Char*)"temperature";
+			return CSTR("temperature");
 		case 3:
-			return (const UTF8Char*)"rh";
+			return CSTR("rh");
 		}
 	}
-	return 0;
+	return {0, 0};
 }
 
 Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->GetFullName())

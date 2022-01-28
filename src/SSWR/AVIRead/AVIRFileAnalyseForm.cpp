@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
 	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->OpenFile(dlg->GetFileName());
+		me->OpenFile(dlg->GetFileName()->v);
 	}
 }
 
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	dlg->SetFileName(sb.ToString());
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		if (me->file->TrimPadding(dlg->GetFileName()))
+		if (me->file->TrimPadding(dlg->GetFileName()->v))
 		{
 		}
 		else

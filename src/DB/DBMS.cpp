@@ -339,6 +339,7 @@ namespace DB
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		{
 			UTF8Char sbuff[256];
+			UTF8Char *sptr;
 			if (this->rowChanged != -1)
 				return false;
 			if (colIndex >= this->colCount)
@@ -349,8 +350,8 @@ namespace DB
 			}
 			else
 			{
-				Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
-				colDef->SetColName(sbuff);
+				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
+				colDef->SetColName({sbuff, (UOSInt)(sptr - sbuff)});
 			}
 			colDef->SetColType(this->colTypes[colIndex]);
 			colDef->SetColSize(256);

@@ -277,7 +277,7 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 	return size + 5;
 }
 
-Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, const UTF8Char *sourceName)
+Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName)
 {
 	Map::GPSTrack *trk;
 	Map::GPSTrack::GPSRecord record;
@@ -289,7 +289,7 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, const UTF8Char *sourceNa
 	record.altitude = 0;
 	record.nSateUsed = 0;
 	record.nSateView = 0;
-	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
+	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName.v));
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)
 	{

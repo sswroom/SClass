@@ -175,9 +175,9 @@ Map::ESRI::ESRITileMap::~ESRITileMap()
 	DEL_CLASS(this->levels);
 }
 
-const UTF8Char *Map::ESRI::ESRITileMap::GetName()
+Text::CString Map::ESRI::ESRITileMap::GetName()
 {
-	return (const UTF8Char*)"ESRITileMap";
+	return CSTR("ESRITileMap");
 }
 
 Bool Map::ESRI::ESRITileMap::IsError()

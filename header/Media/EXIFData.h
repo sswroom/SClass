@@ -157,7 +157,7 @@ namespace Media
 		static Text::CString GetEXIFMakerName(EXIFMaker exifMaker);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id);
 		static const UTF8Char *GetEXIFName(EXIFMaker exifMaker, Int32 id, Int32 subId);
-		static const UTF8Char *GetEXIFTypeName(EXIFType type);
+		static Text::CString GetEXIFTypeName(EXIFType type);
 		static EXIFData *ParseIFD(const UInt8 *buff, UOSInt buffSize, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, EXIFMaker exifMaker, UInt32 readBase);
 		static EXIFData *ParseIFD(IO::IStreamData *fd, UInt64 ofst, RInt32Func readInt32, RInt16Func readInt16, UInt32 *nextOfst, UInt64 readBase);
 	};

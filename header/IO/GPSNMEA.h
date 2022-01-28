@@ -5,6 +5,7 @@
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
 #include "Sync/RWMutex.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -42,7 +43,7 @@ namespace IO
 		virtual ServiceType GetServiceType();
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
-		static Map::GPSTrack *NMEA2Track(IO::Stream *stm, const UTF8Char *sourceName);
+		static Map::GPSTrack *NMEA2Track(IO::Stream *stm, Text::CString sourceName);
 	};
 }
 #endif

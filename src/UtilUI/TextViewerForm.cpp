@@ -93,9 +93,9 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			if (this->txtView->LoadFile(dlg->GetFileName()))
+			if (this->txtView->LoadFile(dlg->GetFileName()->v))
 			{
-				Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), dlg->GetFileName());
+				dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
 				this->SetText(sbuff);
 			}
 		}

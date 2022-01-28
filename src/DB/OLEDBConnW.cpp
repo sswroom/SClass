@@ -1679,13 +1679,13 @@ Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 	if (data->dbColInfo[colIndex].pwszName)
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New(data->dbColInfo[colIndex].pwszName);
-		colDef->SetColName(csptr);
-		Text::StrDelNew(csptr);
+		Text::String *s = Text::String::NewNotNull(data->dbColInfo[colIndex].pwszName);
+		colDef->SetColName(s);
+		s->Release();
 	}
 	else
 	{
-		colDef->SetColName((const UTF8Char*)"");
+		colDef->SetColName(CSTR(""));
 	}
 	colDef->SetColType(DBType2ColType(data->dbColInfo[colIndex].wType));
 	colDef->SetColSize(data->dbColInfo[colIndex].ulColumnSize);

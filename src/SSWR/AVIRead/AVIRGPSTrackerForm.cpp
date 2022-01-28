@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKLogDownloadClicked(void *
 	if (me->mapNavi)
 	{
 		Map::GPSTrack *gpsTrk;
-		NEW_CLASS(gpsTrk, Map::GPSTrack((const UTF8Char*)"MTK_GPS", true, 0, 0));
+		NEW_CLASS(gpsTrk, Map::GPSTrack(CSTR("MTK_GPS"), true, 0, 0));
 		if (mtk->ParseLog(gpsTrk))
 		{
 			me->mapNavi->AddLayer(gpsTrk);

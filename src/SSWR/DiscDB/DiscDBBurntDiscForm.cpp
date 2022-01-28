@@ -871,11 +871,11 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"DVDDB", L"Browse", true));
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		UOSInt i = Text::StrLastIndexOfChar(ofd->GetFileName(), IO::Path::PATH_SEPERATOR);
+		UOSInt i = ofd->GetFileName()->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Text::StringBuilderUTF8 sbBasePath;
 		if (i != INVALID_INDEX)
 		{
-			sbBasePath.AppendC(ofd->GetFileName(), (UOSInt)i);
+			sbBasePath.AppendC(ofd->GetFileName()->v, (UOSInt)i);
 		}
 		me->lbFileName->ClearItems();
 		UOSInt j = me->fileList->GetCount();

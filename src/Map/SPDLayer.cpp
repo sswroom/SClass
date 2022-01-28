@@ -19,14 +19,14 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(const UTF8Char *layerName) : Map::IMapDrawLayer(layerName, 0, 0)
+Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, 0)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
 	IO::FileStream *file;
 	IO::BufferedInputStream *bstm;
-	sptr = Text::StrConcat(fname, layerName);
-	if (Text::StrCompareICase(&sptr[-4], (const UTF8Char*)".SPD") == 0)
+	sptr = layerName.ConcatTo(fname);
+	if (Text::StrEqualsICaseC(&sptr[-4], 4, UTF8STRC(".SPD")))
 	{
 		sptr = &sptr[-4];
 		*sptr = 0;
@@ -466,7 +466,7 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex != 0)
 		return false;
-	colDef->SetColName((const UTF8Char*)"NAME");
+	colDef->SetColName(CSTR("NAME"));
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);

@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.html", (const UTF8Char*)"HTML File");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName());
+		me->LoadFile(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

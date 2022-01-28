@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_CODEIMAGEGEN_CODEIMAGEGEN
 #define _SM_MEDIA_CODEIMAGEGEN_CODEIMAGEGEN
 #include "Media/DrawEngine.h"
+#include "Text/CString.h"
 
 namespace Media
 {
@@ -28,7 +29,7 @@ namespace Media
 			virtual Media::DrawImage *GenCode(const UTF8Char *code, UOSInt codeWidth, Media::DrawEngine *eng) = 0;
 		public:
 			static CodeImageGen *CreateGenerator(CodeType codeType);
-			static const UTF8Char *GetCodeName(CodeType codeType);
+			static Text::CString GetCodeName(CodeType codeType);
 		};
 	}
 }

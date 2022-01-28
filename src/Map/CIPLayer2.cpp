@@ -22,13 +22,13 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerName, 0, 0)
+Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, 0)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
 	IO::FileStream *file;
 	IO::BufferedInputStream *bstm;
-	sptr = Text::StrConcat(fname, layerName);
+	sptr = layerName.ConcatTo(fname);
 	if (Text::StrCompareICase(&sptr[-4], (const UTF8Char*)".CIP") == 0)
 	{
 		sptr = &sptr[-4];
@@ -48,7 +48,7 @@ Map::CIPLayer2::CIPLayer2(const UTF8Char *layerName) : Map::IMapDrawLayer(layerN
 	this->lastObjs = 0;
 	this->currObjs = 0;
 	this->lyrType = (Map::DrawLayerType)0;
-	this->layerName = Text::StrCopyNew(fname);
+	this->layerName = Text::String::New(fname, (UOSInt)(sptr - fname));
 	NEW_CLASS(mut, Sync::Mutex());
 
 	Text::StrConcatC(sptr, UTF8STRC(".blk"));
@@ -183,7 +183,7 @@ Map::CIPLayer2::~CIPLayer2()
 	}
 	if (this->layerName)
 	{
-		Text::StrDelNew(this->layerName);
+		this->layerName->Release();
 		this->layerName = 0;
 	}
 	DEL_CLASS(mut);
@@ -229,7 +229,7 @@ UOSInt Map::CIPLayer2::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **name
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
-		sptr = Text::StrConcat(fileName, this->layerName);
+		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
@@ -395,7 +395,7 @@ UOSInt Map::CIPLayer2::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr
 		UTF8Char fileName[256];
 		UTF8Char *sptr;
 		IO::FileStream *cis;
-		sptr = Text::StrConcat(fileName, this->layerName);
+		sptr = this->layerName->ConcatTo(fileName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".ciu"));
 		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
@@ -578,7 +578,7 @@ Bool Map::CIPLayer2::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex != 0)
 		return false;
-	colDef->SetColName((const UTF8Char*)"NAME");
+	colDef->SetColName(CSTR("NAME"));
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
@@ -722,7 +722,7 @@ void *Map::CIPLayer2::BeginGetObject()
 	UTF8Char fileName[256];
 	UTF8Char *sptr;
 	IO::FileStream *cip;
-	sptr = Text::StrConcat(fileName, this->layerName);
+	sptr = this->layerName->ConcatTo(fileName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".cip"));
 	mut->Lock();
 	if (this->currObjs == 0)

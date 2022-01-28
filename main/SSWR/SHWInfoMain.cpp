@@ -633,7 +633,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("Device "));
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(": "));
-				sb.AppendSlow(videoMgr->GetDevTypeName(dev->devType));
+				sb.Append(videoMgr->GetDevTypeName(dev->devType));
 				sb.AppendC(UTF8STRC(", "));
 				sb.AppendSlow(dev->devName);
 				console->WriteLineC(sb.ToString(), sb.GetLength());

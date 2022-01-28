@@ -121,8 +121,8 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		const UTF8Char *fileName = dlg->GetFileName();
-		UOSInt i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
+		Text::String *fileName = dlg->GetFileName();
+		UOSInt i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		Net::TFTPClient *cli;
 		NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
 		if (cli->IsError())
@@ -137,7 +137,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening file", (const UTF8Char*)"TFTP Client", me);
 			}
-			else if (cli->SendFile(&fileName[i + 1], fs))
+			else if (cli->SendFile(&fileName->v[i + 1], fs))
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"File sent successfully", (const UTF8Char*)"TFTP Client", me);
 			}

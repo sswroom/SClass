@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.mib", (const UTF8Char*)"MIB file");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName());
+		me->LoadFile(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

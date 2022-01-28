@@ -216,7 +216,7 @@ UInt32 __stdcall Map::WebImageLayer::LoadThread(void *userObj)
 	return 0;
 }
 
-Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, const UTF8Char *sourceName, Math::CoordinateSystem *csys, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *parsers, Text::CString sourceName, Math::CoordinateSystem *csys, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->browser = browser;
 	this->parsers = parsers;
@@ -578,7 +578,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex == 0)
 	{
-		colDef->SetColName((const UTF8Char*)"Name");
+		colDef->SetColName(CSTR("Name"));
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetColSize(256);
 		colDef->SetDefVal((const UTF8Char*)0);

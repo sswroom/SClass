@@ -54,11 +54,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 		dlg->SetFileName(sbuff);
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			Text::String *s = Text::String::NewNotNull(dlg->GetFileName());
+			Text::String *s = dlg->GetFileName();
 			if (me->monColor->SetMonProfileFile(s))
 			{
 				SDEL_STRING(me->monFileName);
-				me->monFileName = Text::String::NewNotNull(dlg->GetFileName());
+				me->monFileName = s->Clone();
 
 				const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
 				me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()).v);
@@ -67,7 +67,6 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 				me->txtMonRGBGamma->SetText(sbuff);
 				me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 1);
 			}
-			s->Release();
 		}
 		DEL_CLASS(dlg);
 	}

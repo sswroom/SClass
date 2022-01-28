@@ -101,7 +101,7 @@ void UI::FileDialog::SetFileName(const UTF8Char *fileName)
 	this->fileName = Text::StrCopyNew(fileName);
 }
 
-const UTF8Char *UI::FileDialog::GetFileName()
+Text::String *UI::FileDialog::GetFileName()
 {
 	return this->fileName;
 }

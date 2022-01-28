@@ -597,7 +597,7 @@ Bool Map::CIPLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex != 0)
 		return false;
-	colDef->SetColName((const UTF8Char*)"NAME");
+	colDef->SetColName(CSTR("NAME"));
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);

@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName());
+		me->txtFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

@@ -36,7 +36,7 @@ namespace Media
 			~AUIVideo();
 
 			virtual UTF8Char *GetSourceName(UTF8Char *buff);
-			virtual const UTF8Char *GetFilterName();
+			virtual Text::CString GetFilterName();
 
 			virtual Bool GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize);
 			virtual Bool Init(FrameCallback cb, FrameChangeCallback fcCb, void *userData);

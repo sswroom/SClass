@@ -1,8 +1,9 @@
 #ifndef _SM_MAP_TILEMAP
 #define _SM_MAP_TILEMAP
 #include "Data/ArrayList.h"
-#include "Parser/ParserList.h"
 #include "Media/ImageList.h"
+#include "Parser/ParserList.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -31,7 +32,7 @@ namespace Map
 	public:
 		virtual ~TileMap() {};
 
-		virtual const UTF8Char *GetName() = 0;
+		virtual Text::CString GetName() = 0;
 		virtual Bool IsError() = 0;
 		virtual TileType GetTileType() = 0;
 		virtual UOSInt GetLevelCount() = 0;

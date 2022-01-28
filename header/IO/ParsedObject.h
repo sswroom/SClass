@@ -1,5 +1,6 @@
 #ifndef _SM_IO_PARSEDOBJECT
 #define _SM_IO_PARSEDOBJECT
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace IO
@@ -43,7 +44,7 @@ namespace IO
 
 		ParsedObject(Text::String *sourceName);
 		ParsedObject(const UTF8Char *sourceName);
-		ParsedObject(const UTF8Char *sourceName, UOSInt nameLen);
+		ParsedObject(Text::CString sourceName);
 	public:
 		virtual ~ParsedObject();
 

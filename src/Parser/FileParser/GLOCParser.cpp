@@ -303,7 +303,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 
 	Map::GPSTrack *track;
 	Text::StrInt64(u8buff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->v, true, 0, u8buff));
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, u8buff));
 	track->SetTrackName(u8buff);
 	GLOCExtraParser *parser;
 	NEW_CLASS(parser, GLOCExtraParser());

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 	me->core->GetParserList()->PrepareSelector(dlg, me->t);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtName->SetText(dlg->GetFileName());
+		me->txtName->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

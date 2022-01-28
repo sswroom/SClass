@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName());
+		me->txtFileName->SetText(dlg->GetFileName()->v);
 	}
 }
 

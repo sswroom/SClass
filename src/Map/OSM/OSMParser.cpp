@@ -16,7 +16,7 @@ typedef struct
 	Double lon;
 } OSMNodeInfo;
 
-Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader, const UTF8Char *fileName)
+Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader, Text::CString fileName)
 {
 	Data::Int64Map<OSMNodeInfo*> nodeMap;
 	OSMNodeInfo *node;

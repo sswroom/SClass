@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName());
+		me->txtFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

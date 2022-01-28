@@ -449,9 +449,9 @@ Bool Math::TSPReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Math::TSPReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	const UTF8Char *sptr = this->GetName(colIndex);
-	if (sptr)
-		return Text::StrConcat(buff, sptr);
+	Text::CString cstr = this->GetName(colIndex);
+	if (cstr.v)
+		return cstr.ConcatTo(buff);
 	return 0;
 }
 
@@ -536,45 +536,45 @@ Bool Math::TSPReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-const UTF8Char *Math::TSPReader::GetName(UOSInt colIndex)
+Text::CString Math::TSPReader::GetName(UOSInt colIndex)
 {
 	switch (colIndex)
 	{
 	case 0:
-		return (const UTF8Char*)"AreaId";
+		return CSTR("AreaId");
 	case 1:
-		return (const UTF8Char*)"Shape";
+		return CSTR("Shape");
 	case 2:
-		return (const UTF8Char*)"ScanTime";
+		return CSTR("ScanTime");
 	case 3:
-		return (const UTF8Char*)"ResultX";
+		return CSTR("ResultX");
 	case 4:
-		return (const UTF8Char*)"ResultY";
+		return CSTR("ResultY");
 	case 5:
-		return (const UTF8Char*)"ResultZ";
+		return CSTR("ResultZ");
 	case 6:
-		return (const UTF8Char*)"H-Angle";
+		return CSTR("H-Angle");
 	case 7:
-		return (const UTF8Char*)"V-Angle";
+		return CSTR("V-Angle");
 	case 8:
-		return (const UTF8Char*)"SlopeDistance";
+		return CSTR("SlopeDistance");
 	case 9:
 		if (this->rowSize >= 128)
-			return (const UTF8Char*)"RequestX";
+			return CSTR("RequestX");
 		else
-			return 0;
+			return {0, 0};
 	case 10:
 		if (this->rowSize >= 128)
-			return (const UTF8Char*)"RequestY";
+			return CSTR("RequestY");
 		else
-			return 0;
+			return {0, 0};
 	case 11:
 		if (this->rowSize >= 128)
-			return (const UTF8Char*)"RequestZ";
+			return CSTR("RequestZ");
 		else
-			return 0;
+			return {0, 0};
 	default:
-		return 0;
+		return {0, 0};
 	}
 }
 
@@ -697,9 +697,9 @@ Bool Math::TSPHReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Math::TSPHReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	const UTF8Char *sptr = this->GetName(colIndex);
-	if (sptr)
-		return Text::StrConcat(buff, sptr);
+	Text::CString cstr = this->GetName(colIndex);
+	if (cstr.v)
+		return cstr.ConcatTo(buff);
 	return 0;
 }
 
@@ -752,27 +752,27 @@ Bool Math::TSPHReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-const UTF8Char *Math::TSPHReader::GetName(UOSInt colIndex)
+Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 {
 	switch (colIndex)
 	{
 	case 0:
-		return (const UTF8Char*)"InstX";
+		return CSTR("InstX");
 	case 1:
-		return (const UTF8Char*)"InstY";
+		return CSTR("InstY");
 	case 2:
-		return (const UTF8Char*)"InstZ";
+		return CSTR("InstZ");
 	case 3:
-		return (const UTF8Char*)"FromAngle";
+		return CSTR("FromAngle");
 	case 4:
-		return (const UTF8Char*)"ToAngle";
+		return CSTR("ToAngle");
 	case 5:
-		return (const UTF8Char*)"Radius";
+		return CSTR("Radius");
 	case 6:
-		return (const UTF8Char*)"HAngle";
+		return CSTR("HAngle");
 	case 7:
-		return (const UTF8Char*)"Azimuth";
+		return CSTR("Azimuth");
 	default:
-		return 0;
+		return {0, 0};
 	}
 }

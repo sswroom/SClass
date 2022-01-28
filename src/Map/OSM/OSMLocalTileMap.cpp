@@ -274,9 +274,9 @@ Map::OSM::OSMLocalTileMap::~OSMLocalTileMap()
 	DEL_CLASS(this->pkgFile);
 }
 
-const UTF8Char *Map::OSM::OSMLocalTileMap::GetName()
+Text::CString Map::OSM::OSMLocalTileMap::GetName()
 {
-	return (const UTF8Char*)"OSMLocalTileMap";
+	return CSTR("OSMLocalTileMap");
 }
 
 Bool Map::OSM::OSMLocalTileMap::IsError()

@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LogFileLoad(dlg->GetFileName());
+		me->LogFileLoad(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

@@ -149,9 +149,9 @@ UTF8Char *Media::VFVideoStream::GetSourceName(UTF8Char *buff)
 	return Text::StrWChar_UTF8(buff, this->mfile->fileName);
 }
 
-const UTF8Char *Media::VFVideoStream::GetFilterName()
+Text::CString Media::VFVideoStream::GetFilterName()
 {
-	return (const UTF8Char*)"VFVideoStream";
+	return CSTR("VFVideoStream");
 }
 
 Bool Media::VFVideoStream::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)

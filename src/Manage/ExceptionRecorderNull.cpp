@@ -4,13 +4,13 @@
 #include "Manage/ExceptionRecorder.h"
 #include "Text/MyString.h"
 
-const UTF8Char *Manage::ExceptionRecorder::fileName;
+Text::String *Manage::ExceptionRecorder::fileName;
 Manage::ExceptionRecorder::ExceptionAction Manage::ExceptionRecorder::exAction;
 Int32 (__stdcall *ExceptionRecorder_Handler)(void *);
 
-const UTF8Char *Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
+Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 {
-	return (const UTF8Char*)"Unknown Exception";
+	return CSTR("Unknown Exception");
 }
 
 Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)

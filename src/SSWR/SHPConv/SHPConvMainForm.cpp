@@ -49,7 +49,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
 		UTF8Char sbuff[16];
-		Text::StrInt32(sbuff, me->LoadShape(ofd->GetFileName(), true));
+		Text::StrInt32(sbuff, me->LoadShape(ofd->GetFileName()->v, true));
 		me->txtBlkScale->SetText(sbuff);
 	}
 	DEL_CLASS(ofd);

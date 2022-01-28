@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadRoute->SetText(dlg->GetFileName());
+		me->txtRoadRoute->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtVehicleRes->SetText(dlg->GetFileName());
+		me->txtVehicleRes->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

@@ -2502,11 +2502,12 @@ Map::IMapDrawLayer *Map::MapConfig2TGen::GetDrawLayer(const UTF8Char *name, Data
 			return lyr;
 		}
 	}
-	NEW_CLASS(cip, Map::CIPLayer2(name));
+	UOSInt nameLen = Text::StrCharCnt(name);
+	NEW_CLASS(cip, Map::CIPLayer2({name, nameLen}));
 	if (cip->IsError())
 	{
 		errWriter->WriteStrC(UTF8STRC("Error in loading "));
-		errWriter->WriteLine(name);
+		errWriter->WriteLineC(name, nameLen);
 		DEL_CLASS(cip);
 		return 0;
 	}

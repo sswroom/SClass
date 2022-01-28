@@ -32,7 +32,7 @@ namespace Map
 		const UTF8Char *layerName;
 
 	public:
-		SPDLayer(const UTF8Char *layerName);
+		SPDLayer(Text::CString layerName);
 		virtual ~SPDLayer();
 
 		Bool IsError();

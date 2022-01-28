@@ -4036,20 +4036,20 @@ Text::CString Media::EXIFData::GetEXIFMakerName(EXIFMaker exifMaker)
 	switch (exifMaker)
 	{
 	case Media::EXIFData::EM_PANASONIC:
-		return {UTF8STRC("Panasonic")};
+		return CSTR("Panasonic");
 	case Media::EXIFData::EM_CANON:
-		return {UTF8STRC("Canon")};
+		return CSTR("Canon");
 	case Media::EXIFData::EM_OLYMPUS:
-		return {UTF8STRC("Olympus")};
+		return CSTR("Olympus");
 	case Media::EXIFData::EM_CASIO1:
-		return {UTF8STRC("Casio Type 1")};
+		return CSTR("Casio Type 1");
 	case Media::EXIFData::EM_CASIO2:
-		return {UTF8STRC("Casio Type 2")};
+		return CSTR("Casio Type 2");
 	case Media::EXIFData::EM_FLIR:
-		return {UTF8STRC("FLIR")};
+		return CSTR("FLIR");
 	case Media::EXIFData::EM_STANDARD:
 	default:
-		return {UTF8STRC("Standard")};
+		return CSTR("Standard");
 	}
 }
 
@@ -4168,31 +4168,31 @@ const UTF8Char *Media::EXIFData::GetEXIFName(EXIFMaker exifMaker, Int32 id, Int3
 	return (const UTF8Char*)"Unknown";
 }
 
-const UTF8Char *Media::EXIFData::GetEXIFTypeName(Media::EXIFData::EXIFType type)
+Text::CString Media::EXIFData::GetEXIFTypeName(Media::EXIFData::EXIFType type)
 {
 	switch (type)
 	{
 	case ET_BYTES:
-		return (const UTF8Char*)"Bytes";
+		return CSTR("Bytes");
 	case ET_STRING:
-		return (const UTF8Char*)"String";
+		return CSTR("String");
 	case ET_UINT16:
-		return (const UTF8Char*)"UInt16";
+		return CSTR("UInt16");
 	case ET_UINT32:
-		return (const UTF8Char*)"UInt32";
+		return CSTR("UInt32");
 	case ET_RATIONAL:
-		return (const UTF8Char*)"Rational";
+		return CSTR("Rational");
 	case ET_OTHER:
-		return (const UTF8Char*)"Other";
+		return CSTR("Other");
 	case ET_INT16:
-		return (const UTF8Char*)"Int16";
+		return CSTR("Int16");
 	case ET_SUBEXIF:
-		return (const UTF8Char*)"Exif";
+		return CSTR("Exif");
 	case ET_DOUBLE:
-		return (const UTF8Char*)"Double";
+		return CSTR("Double");
 	case ET_UNKNOWN:
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	};
 }
 

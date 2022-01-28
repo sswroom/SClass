@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadCenterline->SetText(dlg->GetFileName());
+		me->txtRoadCenterline->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

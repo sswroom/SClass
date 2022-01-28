@@ -32,7 +32,7 @@ Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codeP
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
-Map::GPSTrack::GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;
@@ -333,9 +333,10 @@ DB::DBUtil::ColType Map::GPSTrack::GetColumnType(UOSInt colIndex, UOSInt *colSiz
 
 Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	if (colIndex == 0)
+	switch(colIndex)
 	{
-		colDef->SetColName((const UTF8Char*)"Name");
+	case 0:
+		colDef->SetColName(CSTR("Name"));
 		colDef->SetColSize(256);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
@@ -345,10 +346,8 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAutoInc(false);
 		colDef->SetAttr((const UTF8Char*)0);
 		return true;
-	}
-	else if (colIndex == 1)
-	{
-		colDef->SetColName((const UTF8Char*)"Time Range");
+	case 1:
+		colDef->SetColName(CSTR("Time Range"));
 		colDef->SetColSize(41);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
@@ -358,10 +357,8 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAutoInc(false);
 		colDef->SetAttr((const UTF8Char*)0);
 		return true;
-	}
-	else if (colIndex == 2)
-	{
-		colDef->SetColName((const UTF8Char*)"Start Time");
+	case 2:
+		colDef->SetColName(CSTR("Start Time"));
 		colDef->SetColSize(19);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
@@ -371,10 +368,8 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAutoInc(false);
 		colDef->SetAttr((const UTF8Char*)0);
 		return true;
-	}
-	else if (colIndex == 3)
-	{
-		colDef->SetColName((const UTF8Char*)"End Time");
+	case 3:
+		colDef->SetColName(CSTR("End Time"));
 		colDef->SetColSize(19);
 		colDef->SetColDP(0);
 		colDef->SetColType(DB::DBUtil::CT_DateTime);
@@ -384,9 +379,7 @@ Bool Map::GPSTrack::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetAutoInc(false);
 		colDef->SetAttr((const UTF8Char*)0);
 		return true;
-	}
-	else
-	{
+	default:
 		return false;
 	}
 }
@@ -1471,9 +1464,9 @@ Bool Map::GPSDataReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	const UTF8Char *sptr = GetName(colIndex);
-	if (sptr)
-		return Text::StrConcat(buff, sptr);
+	Text::CString cstr = GetName(colIndex);
+	if (cstr.v)
+		return cstr.ConcatTo(buff);
 	return 0;
 }
 
@@ -1607,38 +1600,38 @@ Bool Map::GPSDataReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	}
 }
 
-const UTF8Char *Map::GPSDataReader::GetName(UOSInt colIndex)
+Text::CString Map::GPSDataReader::GetName(UOSInt colIndex)
 {
 	switch (colIndex)
 	{
 	case 0:
-		return (const UTF8Char*)"Time";
+		return CSTR("Time");
 	case 1:
-		return (const UTF8Char*)"Shape";
+		return CSTR("Shape");
 	case 2:
-		return (const UTF8Char*)"Latitude";
+		return CSTR("Latitude");
 	case 3:
-		return (const UTF8Char*)"Longitude";
+		return CSTR("Longitude");
 	case 4:
-		return (const UTF8Char*)"Speed";
+		return CSTR("Speed");
 	case 5:
-		return (const UTF8Char*)"Heading";
+		return CSTR("Heading");
 	case 6:
-		return (const UTF8Char*)"GPSFix";
+		return CSTR("GPSFix");
 	case 7:
-		return (const UTF8Char*)"nSateUsed";
+		return CSTR("nSateUsed");
 	case 8:
-		return (const UTF8Char*)"nSateView";
+		return CSTR("nSateView");
 	case 9:
 		if (this->gps->GetHasAltitude())
 		{
-			return (const UTF8Char*)"Altitude";
+			return CSTR("Altitude");
 		}
 		else
 		{
-			return 0;
+			return {0, 0};
 		}
 	default:
-		return 0;
+		return {0, 0};
 	}
 }

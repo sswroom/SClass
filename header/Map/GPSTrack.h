@@ -5,6 +5,7 @@
 #include "IO/ParsedObject.h"
 #include "Map/IMapDrawLayer.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -73,7 +74,7 @@ namespace Map
 
 	public:
 		GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);
-		GPSTrack(const UTF8Char *sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName);
+		GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName);
 		virtual ~GPSTrack();
 
 		virtual DrawLayerType GetLayerType();
@@ -169,7 +170,7 @@ namespace Map
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-		const UTF8Char *GetName(UOSInt colIndex);
+		Text::CString GetName(UOSInt colIndex);
 	};
 }
 #endif

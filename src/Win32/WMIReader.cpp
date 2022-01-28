@@ -910,9 +910,9 @@ Bool Win32::WMIReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	if (col == 0)
 		return false;
 
-	const UTF8Char *u8ptr = Text::StrToUTF8New(col->name);
-	colDef->SetColName(u8ptr);
-	Text::StrDelNew(u8ptr);
+	Text::String *s = Text::String::NewNotNull(col->name);
+	colDef->SetColName(s);
+	s->Release();
 	switch (col->colType)
 	{
 	case CIM_SINT8:

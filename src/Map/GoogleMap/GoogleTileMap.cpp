@@ -58,9 +58,9 @@ Bool Map::GoogleMap::GoogleTileMap::OptimizeToFile(const UTF8Char *fileName)
 	}
 }
 
-const UTF8Char *Map::GoogleMap::GoogleTileMap::GetName()
+Text::CString Map::GoogleMap::GoogleTileMap::GetName()
 {
-	return (const UTF8Char*)"GoogleTileMap";
+	return CSTR("GoogleTileMap");
 }
 
 Bool Map::GoogleMap::GoogleTileMap::IsError()
@@ -183,6 +183,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	OSInt readSize;
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
 	Bool hasTime = false;
@@ -287,12 +288,12 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendUOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
-	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeader((const UTF8Char*)"If-Modified-Since", u8buff);
+		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
+		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
 	}
 	if (cli->GetRespStatus() == 304)
 	{
@@ -398,6 +399,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	OSInt readSize;
 	UTF8Char filePathU[512];
 	UTF8Char u8buff[64];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
 	Bool hasTime = false;
@@ -493,12 +495,12 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, (const UTF8Char*)"GoogleTileMap/1.0 SSWR/1.0", true, urlSb.StartsWith((const UTF8Char*)"https://"));
-	cli->Connect(urlSb.ToString(), "GET", 0, 0, true);
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeader((const UTF8Char*)"If-Modified-Since", u8buff);
+		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
+		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
 	}
 	if (cli->GetRespStatus() == 304)
 	{

@@ -180,12 +180,12 @@ UTF8Char *Media::MMALVideoCapture::GetSourceName(UTF8Char *buff)
 	return Text::StrConcatC(buff, UTF8STRC("Broadcom VC Camera"));
 }
 
-const UTF8Char *Media::MMALVideoCapture::GetFilterName()
+Text::CString Media::MMALVideoCapture::GetFilterName()
 {
-	return (const UTF8Char*)"MMALVideoCapture";
+	return CSTR("MMALVideoCapture");
 }
 
-Bool Media::MMALVideoCapture::GetVideoInfo(Media::FrameInfo *finfo, Int32 *frameRateNorm, Int32 *frameRateDenorm, UOSInt *maxFrameSize)
+Bool Media::MMALVideoCapture::GetVideoInfo(Media::FrameInfo *finfo, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	MMALInfo *info = (MMALInfo*)this->classData;
 	finfo->dispWidth = info->currWidth;
@@ -292,7 +292,7 @@ Bool Media::MMALVideoCapture::IsRunning()
 	return info->isRunning;
 }
 
-void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, Int32 frameRateNumer, Int32 frameRateDenom)
+void Media::MMALVideoCapture::SetPreferSize(UOSInt width, UOSInt height, UInt32 fourcc, UInt32 bpp, UInt32 frameRateNumer, UInt32 frameRateDenom)
 {
 	MMAL_ES_FORMAT_T *format;
 	MMAL_STATUS_T status;
@@ -428,12 +428,12 @@ UOSInt Media::MMALVideoCapture::GetSupportedFormats(VideoFormat *fmtArr, UOSInt 
 	return ret;
 }
 
-void Media::MMALVideoCapture::GetInfo(Text::StringBuilderUTF *sb)
+void Media::MMALVideoCapture::GetInfo(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("MMAL VideoCapture"));
 }
 
-OSInt Media::MMALVideoCapture::GetDataSeekCount()
+UOSInt Media::MMALVideoCapture::GetDataSeekCount()
 {
 	return 0;
 }

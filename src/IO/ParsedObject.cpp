@@ -12,11 +12,11 @@ IO::ParsedObject::ParsedObject(const UTF8Char *sourceName)
 	this->sourceName = Text::String::NewOrNull(sourceName);
 }
 
-IO::ParsedObject::ParsedObject(const UTF8Char *sourceName, UOSInt nameLen)
+IO::ParsedObject::ParsedObject(Text::CString sourceName)
 {
-	if (sourceName)
+	if (sourceName.v)
 	{
-		this->sourceName = Text::String::New(sourceName, nameLen);
+		this->sourceName = Text::String::New(sourceName.v, sourceName.leng);
 	}
 	else
 	{

@@ -31,19 +31,19 @@ Media::CodeImageGen::CodeImageGen *Media::CodeImageGen::CodeImageGen::CreateGene
 	return codeImgGen;
 }
 
-const UTF8Char *Media::CodeImageGen::CodeImageGen::GetCodeName(CodeType codeType)
+Text::CString Media::CodeImageGen::CodeImageGen::GetCodeName(CodeType codeType)
 {
 	switch (codeType)
 	{
 	case Media::CodeImageGen::CodeImageGen::CT_EAN13:
-		return (const UTF8Char*)"EAN-13";
+		return CSTR("EAN-13");
 	case Media::CodeImageGen::CodeImageGen::CT_EAN8:
-		return (const UTF8Char*)"EAN-8";
+		return CSTR("EAN-8");
 	case Media::CodeImageGen::CodeImageGen::CT_EAN5:
-		return (const UTF8Char*)"EAN-5";
+		return CSTR("EAN-5");
 	case Media::CodeImageGen::CodeImageGen::CT_EAN2:
-		return (const UTF8Char*)"EAN-2";
+		return CSTR("EAN-2");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

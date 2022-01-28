@@ -317,7 +317,7 @@ namespace Text
 	FORCEINLINE UOSInt StrIndexOfChar(const Char *str1, Char c) { return StrIndexOfChar((const UTF8Char*)str1, (UTF8Char)c); }
 	FORCEINLINE UOSInt StrIndexOfICase(const Char *str1, const Char *str2) { return StrIndexOfICase((const UTF8Char*)str1, (const UTF8Char*)str2); };
 	FORCEINLINE UOSInt StrLastIndexOfChar(const Char *str1, Char c) { return StrLastIndexOfChar((const UTF8Char*)str1, (UTF8Char)c); }
-	FORCEINLINE UOSInt StrLastIndexOf(const Char *str1, const Char *str2) { return StrLastIndexOf((const UTF8Char*)str1, (const UTF8Char *)str2); }
+	FORCEINLINE UOSInt StrLastIndexOf(const Char *str1, const Char *str2) { return StrLastIndexOf((const UTF8Char*)str1, (const UTF8Char*)str2); }
 	FORCEINLINE Bool StrContainChars(const Char *str, const Char *chars) { return StrContainChars((const UTF8Char*)str, (const UTF8Char*)chars); }
 	FORCEINLINE Char *StrRTrim(Char* str1) { return (Char*)StrRTrim((UTF8Char*)str1); };
 	FORCEINLINE Char *StrLTrim(Char* str1) { return (Char*)StrLTrim((UTF8Char*)str1); };

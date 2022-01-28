@@ -51,7 +51,7 @@ UI::FileDialog::~FileDialog()
 	IO::Registry::CloseRegistry(this->reg);
 	MemFree(this->dialogName);
 	SDEL_TEXT(this->lastName);
-	SDEL_TEXT(this->fileName);
+	SDEL_STRING(this->fileName);
 	i = this->patterns->GetCount();
 	while (i-- > 0)
 	{
@@ -77,11 +77,11 @@ UOSInt UI::FileDialog::GetFilterIndex()
 
 void UI::FileDialog::SetFileName(const UTF8Char *fileName)
 {
-	SDEL_TEXT(this->fileName);
-	this->fileName = Text::StrCopyNew(fileName);
+	SDEL_STRING(this->fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 }
 
-const UTF8Char *UI::FileDialog::GetFileName()
+Text::String *UI::FileDialog::GetFileName()
 {
 	return this->fileName;
 }
@@ -99,7 +99,7 @@ UOSInt UI::FileDialog::GetFileNameCount()
 const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
 {
 	if (index == 0 && this->fileNames->GetCount() == 0)
-		return this->fileName;
+		return this->fileName->v;
 	return this->fileNames->GetItem(index);
 }
 
@@ -183,7 +183,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 //	fnameBuffSize = MAXFILENAMESIZE;
 	if (this->fileName)
 	{
-		Text::StrUTF8_WChar(fname2, this->fileName, 0);
+		Text::StrUTF8_WChar(fname2, this->fileName->v, 0);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
 			Text::StrReplace(fname2, '/', '_');
@@ -409,11 +409,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		ret = true;
 		Bool toSave = true;
 		this->ClearFileNames();
-		if (this->fileName)
-		{
-			Text::StrDelNew(this->fileName);
-			this->fileName = 0;
-		}
+		SDEL_STRING(this->fileName);
 		this->filterIndex = (UOSInt)-1;
 		GtkFileFilter *filter = gtk_file_chooser_get_filter(chooser);
 		if (filter)
@@ -456,7 +452,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			char *csptr = gtk_file_chooser_get_filename(chooser);
 			Text::StrUTF8_WChar(fnameBuff, (const UTF8Char*)csptr, 0);
-			this->fileName = Text::StrCopyNew((const UTF8Char*)csptr);
+			this->fileName = Text::String::NewNotNull((const UTF8Char*)csptr);
 			g_free(csptr);
 		}
 

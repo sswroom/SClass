@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 	ofd->SetFileName(sb.ToString());
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtSrc->SetText(ofd->GetFileName());
+		me->txtSrc->SetText(ofd->GetFileName()->v);
 	}
 }
 
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 	ofd->SetFileName(sb.ToString());
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtDest->SetText(ofd->GetFileName());
+		me->txtDest->SetText(ofd->GetFileName()->v);
 	}
 }
 

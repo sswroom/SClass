@@ -2,6 +2,7 @@
 #define _SM_MEDIA_AUDIOFILTER_FILEMIXFILTER
 #include "Media/IAudioFilter.h"
 #include "Parser/ParserList.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -24,7 +25,7 @@ namespace Media
 			virtual void GetFormat(AudioFormat *format);
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
-			Bool LoadFile(const UTF8Char *fileName);
+			Bool LoadFile(Text::String *fileName);
 			Bool StartMix();
 			Bool StopMix();
 		};

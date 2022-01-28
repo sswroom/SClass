@@ -126,7 +126,7 @@ UOSInt Media::AudioFilter::FileMixFilter::ReadBlock(UInt8 *buff, UOSInt blkSize)
 	return readSize;
 }
 
-Bool Media::AudioFilter::FileMixFilter::LoadFile(const UTF8Char *fileName)
+Bool Media::AudioFilter::FileMixFilter::LoadFile(Text::String *fileName)
 {
 	Media::MediaFile *mf;
 	IO::StmData::FileData *fd;

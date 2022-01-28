@@ -32,7 +32,7 @@ namespace Map
 			ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~ESRITileMap();
 
-			virtual const UTF8Char *GetName();
+			virtual Text::CString GetName();
 			virtual Bool IsError();
 			virtual TileType GetTileType();
 			virtual UOSInt GetLevelCount();

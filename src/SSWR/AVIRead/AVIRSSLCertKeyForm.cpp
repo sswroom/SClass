@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userOb
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName());
+		me->LoadFile(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName());
+		me->LoadFile(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

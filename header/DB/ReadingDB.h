@@ -15,6 +15,7 @@ namespace DB
 	{
 	public:
 		ReadingDB(Text::String *sourceName);
+		ReadingDB(Text::CString sourceName);
 		ReadingDB(const UTF8Char *sourceName);
 		virtual ~ReadingDB();
 

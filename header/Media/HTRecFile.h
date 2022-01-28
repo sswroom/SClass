@@ -3,6 +3,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/IStreamData.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Media
@@ -44,7 +45,7 @@ namespace Media
 			virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize);
 			virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef);
 
-			const UTF8Char *GetName(UOSInt colIndex);
+			Text::CString GetName(UOSInt colIndex);
 		};
 	private:
 		Data::DateTime *time1;

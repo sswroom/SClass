@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile1->SetText(dlg->GetFileName());
+		me->txtFile1->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile2->SetText(dlg->GetFileName());
+		me->txtFile2->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtOFile->SetText(dlg->GetFileName());
+		me->txtOFile->SetText(dlg->GetFileName()->v);
 	}
 	DEL_CLASS(dlg);
 }

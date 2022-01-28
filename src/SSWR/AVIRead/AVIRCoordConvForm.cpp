@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		return;
 	}
 	DB::ReadingDB *db = 0;
-	if (Text::StrEndsWithICase(dlg->GetFileName(), (const UTF8Char*)".CSV"))
+	if (dlg->GetFileName()->EndsWithICase(UTF8STRC(".CSV")))
 	{
 		DB::CSVFile *csv;
 		NEW_CLASS(csv, DB::CSVFile(dlg->GetFileName(), 0));

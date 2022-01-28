@@ -26,7 +26,7 @@ namespace Map
 			OSMLocalTileMap(IO::PackageFile *pkgFile); //const WChar *tileDir);
 			virtual ~OSMLocalTileMap();
 
-			virtual const UTF8Char *GetName();
+			virtual Text::CString GetName();
 			virtual Bool IsError();
 			virtual TileType GetTileType();
 			virtual UOSInt GetLevelCount();

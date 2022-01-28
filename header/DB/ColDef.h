@@ -2,6 +2,7 @@
 #define _SM_DB_COLDEF
 #include "DB/ReadingDB.h"
 #include "DB/SQLBuilder.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace DB
@@ -36,6 +37,7 @@ namespace DB
 		Bool GetDefVal(DB::SQLBuilder *sql);
 
 		void SetColName(const UTF8Char *colName);
+		void SetColName(Text::CString colName);
 		void SetColName(Text::String *colName);
 		void SetColType(DB::DBUtil::ColType colType);
 		void SetColSize(UOSInt colSize);

@@ -93,15 +93,15 @@ Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt
 	}
 }
 
-const UTF8Char *Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
 	switch (devType)
 	{
 	case 0:
-		return (const UTF8Char*)"V4L";
+		return CSTR("V4L");
 	case 1:
-		return (const UTF8Char*)"Android";
+		return CSTR("Android");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

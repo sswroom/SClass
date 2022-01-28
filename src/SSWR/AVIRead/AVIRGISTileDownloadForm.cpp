@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 		dlg->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesFile(dlg->GetFileName());
+			me->SaveTilesFile(dlg->GetFileName()->v);
 		}
 		DEL_CLASS(dlg);
 	}

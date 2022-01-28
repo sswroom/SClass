@@ -471,9 +471,9 @@ public:
 		}
 	}
 
-	virtual const UTF8Char *GetFilterName()
+	virtual Text::CString GetFilterName()
 	{
-		return (const UTF8Char*)"IMSDKDecoder";
+		return CSTR("IMSDKDecoder");
 	}
 
 	virtual Bool CaptureImage(ImageCallback imgCb, void *userData)

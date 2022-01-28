@@ -441,6 +441,7 @@ DB::DBUtil::ColType Map::TileMapLayer::GetColumnType(UOSInt colIndex, UOSInt *co
 Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt colSize;
 	switch (colIndex)
 	{
@@ -448,8 +449,8 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetPK(true);
 	case 1:
 	case 2:
-		this->GetColumnName(sbuff, colIndex);
-		colDef->SetColName(sbuff);
+		sptr = this->GetColumnName(sbuff, colIndex);
+		colDef->SetColName({sbuff, (UOSInt)(sptr - sbuff)});
 		colDef->SetColType(this->GetColumnType(colIndex, &colSize));
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);

@@ -11,7 +11,7 @@ Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
 }
 
-OSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
+UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
 	return 0;
 }
@@ -20,12 +20,12 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 {
 }
 
-Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, OSInt devId)
+Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
 	return 0;
 }
 
-const UTF8Char *Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
+Text::CString Media::VideoCaptureMgr::GetDevTypeName(Int32 devType)
 {
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }

@@ -185,7 +185,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 			}
 		}*/
-		Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
+		Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, {fileName, fileNameLen}, parsers, browser, pkgFile);
 
 		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
@@ -260,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				if (reader->GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 				{
 					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, 0));
+					NEW_CLASS(track, Map::GPSTrack({fileName, fileNameLen}, true, 0, 0));
 					track->SetTrackName(shortName);
 					while (reader->ReadNext())
 					{
@@ -379,7 +379,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (reader->GetNodeText()->Equals(UTF8STRC("osm")))
 	{
-		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
+		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, {fileName, fileNameLen});
 		if (lyr == 0)
 		{
 			DEL_CLASS(reader);
@@ -547,7 +547,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							{
 								Text::StringBuilderUTF8 sb;
 								reader->ReadNodeText(&sb);
-								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToString(), parsers));
+								NEW_CLASS(lyr, Map::OruxDBLayer({fileName, fileNameLen}, sb.ToString(), parsers));
 								if (lyr->IsError())
 								{
 									DEL_CLASS(lyr);
@@ -737,7 +737,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -839,7 +839,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -997,7 +997,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -1606,7 +1606,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	return 0;
 }
 
-Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLReader *reader, Data::ICaseStringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	KMLStyle *style;
 	UOSInt i;
@@ -1618,7 +1618,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 	Map::WebImageLayer *imgLyr = 0;
 	Text::StringBuilderUTF8 containerNameSb;
-	containerNameSb.AppendSlow(sourceName);
+	containerNameSb.Append(sourceName);
 	Map::IMapDrawLayer *lyr;
 	i = Text::StrLastIndexOfCharC(containerNameSb.ToString(), containerNameSb.GetLength(), '/');
 	if (i != INVALID_INDEX)
@@ -2883,7 +2883,7 @@ void Parser::FileParser::XMLParser::ParseCoordinates(Text::XMLReader *reader, Da
 	}
 }
 
-Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, const UTF8Char *sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
+Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF)
 {
 	Text::StringBuilderUTF8 lyrNameSb;
 	Text::StringBuilderUTF8 sb;

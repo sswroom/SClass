@@ -13,14 +13,14 @@
 #include "Math/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(const UTF8Char *sourceName, const UTF8Char *layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, const UTF8Char *layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
 	NEW_CLASS(this->layerMap, Data::UInt32Map<Map::OruxDBLayer::LayerInfo*>());
 	this->currLayer = (UInt32)-1;
 	this->tileSize = 1;
 	UTF8Char sbuff[512];
-	Text::StrConcat(sbuff, sourceName);
+	sourceName.ConcatTo(sbuff);
 	this->db = 0;
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"OruxMapsImages.db");
 	IO::StmData::FileData *fd;
