@@ -4992,7 +4992,7 @@ Bool Manage::DasmARM64::Disasm64(IO::Writer *writer, Manage::AddressResolver *ad
 			DEL_CLASS(outStr);
 			return false;
 		}
-		outStr->Append(sbuff);
+		outStr->AppendSlow(sbuff);
 		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmARM64::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
