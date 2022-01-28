@@ -13,9 +13,9 @@ IO::ProtoDec::TK109ProtocolDecoder::~TK109ProtocolDecoder()
 {
 }
 
-const UTF8Char *IO::ProtoDec::TK109ProtocolDecoder::GetName()
+Text::CString IO::ProtoDec::TK109ProtocolDecoder::GetName()
 {
-	return (const UTF8Char*)"TK109";
+	return CSTR("TK109");
 }
 
 UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)

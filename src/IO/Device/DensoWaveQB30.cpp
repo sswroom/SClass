@@ -480,260 +480,260 @@ UOSInt IO::Device::DensoWaveQB30::GetCommandList(Data::ArrayList<DeviceCommand> 
 	return cmdList->GetCount() - initCnt;
 }
 
-const UTF8Char *IO::Device::DensoWaveQB30::GetCommandName(DeviceCommand dcmd)
+Text::CString IO::Device::DensoWaveQB30::GetCommandName(DeviceCommand dcmd)
 {
 	switch (dcmd)
 	{
 	case DC_GET_READ_MODE:
-		return (const UTF8Char*)"Get Read Mode";
+		return CSTR("Get Read Mode");
 	case DC_SET_READ_MODE:
-		return (const UTF8Char*)"Set Read Mode";
+		return CSTR("Set Read Mode");
 	case DC_GET_BW_MODE:
-		return (const UTF8Char*)"Get B/W Mode";
+		return CSTR("Get B/W Mode");
 	case DC_SET_BW_MODE:
-		return (const UTF8Char*)"Set B/W Mode";
+		return CSTR("Set B/W Mode");
 	case DC_GET_READ_REPEAT_TIME:
-		return (const UTF8Char*)"Get Read Repeat Time";
+		return CSTR("Get Read Repeat Time");
 	case DC_SET_READ_REPEAT_TIME:
-		return (const UTF8Char*)"Set Read Repeat Time";
+		return CSTR("Set Read Repeat Time");
 	case DC_GET_BRIGHTNESS:
-		return (const UTF8Char*)"Get Brightness";
+		return CSTR("Get Brightness");
 	case DC_SET_BRIGHTNESS:
-		return (const UTF8Char*)"Set Brightness";
+		return CSTR("Set Brightness");
 	case DC_GET_SHT_SIGNAL:
-		return (const UTF8Char*)"Get SHT Signal";
+		return CSTR("Get SHT Signal");
 	case DC_SET_SHT_SIGNAL:
-		return (const UTF8Char*)"Set SHT Signal";
+		return CSTR("Set SHT Signal");
 	case DC_GET_SCAN_MODE:
-		return (const UTF8Char*)"Get Scan Mode";
+		return CSTR("Get Scan Mode");
 	case DC_SET_SCAN_MODE:
-		return (const UTF8Char*)"Set Scan Mode";
+		return CSTR("Set Scan Mode");
 	case DC_GET_SHUTTER_TIME:
-		return (const UTF8Char*)"Get Shutter Time";
+		return CSTR("Get Shutter Time");
 	case DC_SET_SHUTTER_TIME:
-		return (const UTF8Char*)"Set Shutter Time";
+		return CSTR("Set Shutter Time");
 	case DC_GET_GAIN:
-		return (const UTF8Char*)"Get Gain";
+		return CSTR("Get Gain");
 	case DC_SET_GAIN:
-		return (const UTF8Char*)"Set Gain";
+		return CSTR("Set Gain");
 	case DC_GET_LED_LEVEL:
-		return (const UTF8Char*)"Get LED Level";
+		return CSTR("Get LED Level");
 	case DC_SET_LED_LEVEL:
-		return (const UTF8Char*)"Set LED Level";
+		return CSTR("Set LED Level");
 	case DC_GET_LED_MODE:
-		return (const UTF8Char*)"Get LED Mode";
+		return CSTR("Get LED Mode");
 	case DC_SET_LED_MODE:
-		return (const UTF8Char*)"Set LED Mode";
+		return CSTR("Set LED Mode");
 	case DC_GET_OUTPUT_TIMING:
-		return (const UTF8Char*)"Get Data Output Timing";
+		return CSTR("Get Data Output Timing");
 	case DC_SET_OUTPUT_TIMING:
-		return (const UTF8Char*)"Set Data Output Timing";
+		return CSTR("Set Data Output Timing");
 	case DC_GET_UNREAD_DATA_SEND:
-		return (const UTF8Char*)"Get Unread Code Transfer Mode";
+		return CSTR("Get Unread Code Transfer Mode");
 	case DC_SET_UNREAD_DATA_SEND:
-		return (const UTF8Char*)"Set Unread Code Transfer Mode";
+		return CSTR("Set Unread Code Transfer Mode");
 	case DC_GET_INDIR_TIME:
-		return (const UTF8Char*)"Get Indirect Mode One-shot Time";
+		return CSTR("Get Indirect Mode One-shot Time");
 	case DC_SET_INDIR_TIME:
-		return (const UTF8Char*)"Set Indirect Mode One-shot Time";
+		return CSTR("Set Indirect Mode One-shot Time");
 	case DC_GET_TRIGGER_DELAY:
-		return (const UTF8Char*)"Get Trigger Signal Input Delay Time";
+		return CSTR("Get Trigger Signal Input Delay Time");
 	case DC_SET_TRIGGER_DELAY:
-		return (const UTF8Char*)"Set Trigger Signal Input Delay Time";
+		return CSTR("Set Trigger Signal Input Delay Time");
 	case DC_GET_SIGNAL_ON_DUR:
-		return (const UTF8Char*)"Get Signal Output ON Time Range";
+		return CSTR("Get Signal Output ON Time Range");
 	case DC_SET_SIGNAL_ON_DUR:
-		return (const UTF8Char*)"Set Signal Output ON Time Range";
+		return CSTR("Set Signal Output ON Time Range");
 	case DC_GET_SIGNAL_DELAY:
-		return (const UTF8Char*)"Get Signal Output Delay Time";
+		return CSTR("Get Signal Output Delay Time");
 	case DC_SET_SIGNAL_DELAY:
-		return (const UTF8Char*)"Set Signal Output Delay Time";
+		return CSTR("Set Signal Output Delay Time");
 	case DC_GET_LIGHT_LED:
-		return (const UTF8Char*)"Get Light LED";
+		return CSTR("Get Light LED");
 	case DC_SET_LIGHT_LED:
-		return (const UTF8Char*)"Set Light LED";
+		return CSTR("Set Light LED");
 	case DC_GET_MARKER_LIGHT:
-		return (const UTF8Char*)"Get Marker Light";
+		return CSTR("Get Marker Light");
 	case DC_SET_MARKER_LIGHT:
-		return (const UTF8Char*)"Set Marker Light";
+		return CSTR("Set Marker Light");
 	case DC_GET_DECODE_TIME_LIMIT:
-		return (const UTF8Char*)"Get Decode Time Limit";
+		return CSTR("Get Decode Time Limit");
 	case DC_SET_DECODE_TIME_LIMIT:
-		return (const UTF8Char*)"Set Decode Time Limit";
+		return CSTR("Set Decode Time Limit");
 	case DC_GET_OUTPUT1_TYPE:
-		return (const UTF8Char*)"Get Output 1 Setting";
+		return CSTR("Get Output 1 Setting");
 	case DC_SET_OUTPUT1_TYPE:
-		return (const UTF8Char*)"Set Output 1 Setting";
+		return CSTR("Set Output 1 Setting");
 	case DC_GET_OUTPUT2_TYPE:
-		return (const UTF8Char*)"Get Output 2 Setting";
+		return CSTR("Get Output 2 Setting");
 	case DC_SET_OUTPUT2_TYPE:
-		return (const UTF8Char*)"Set Output 2 Setting";
+		return CSTR("Set Output 2 Setting");
 	case DC_GET_AUTO_SENSE_MODE:
-		return (const UTF8Char*)"Get Auto-Sense Mode Read Command";
+		return CSTR("Get Auto-Sense Mode Read Command");
 	case DC_SET_AUTO_SENSE_MODE:
-		return (const UTF8Char*)"Set Auto-Sense Mode Read Command";
+		return CSTR("Set Auto-Sense Mode Read Command");
 	case DC_GET_CONT_READ_MODE_B:
-		return (const UTF8Char*)"Get Continuous Read Mode B Read Command";
+		return CSTR("Get Continuous Read Mode B Read Command");
 	case DC_SET_CONT_READ_MODE_B:
-		return (const UTF8Char*)"Set Continuous Read Mode B Read Command";
+		return CSTR("Set Continuous Read Mode B Read Command");
 	case DC_GET_QRCODE:
-		return (const UTF8Char*)"Get QR Code Reading";
+		return CSTR("Get QR Code Reading");
 	case DC_SET_QRCODE:
-		return (const UTF8Char*)"Set QR Code Reading";
+		return CSTR("Set QR Code Reading");
 	case DC_GET_MICRO_QRCODE:
-		return (const UTF8Char*)"Get Micro QR Code Reading";
+		return CSTR("Get Micro QR Code Reading");
 	case DC_SET_MICRO_QRCODE:
-		return (const UTF8Char*)"Set Micro QR Code Reading";
+		return CSTR("Set Micro QR Code Reading");
 	case DC_GET_PDF417:
-		return (const UTF8Char*)"Get PDF417 Reading";
+		return CSTR("Get PDF417 Reading");
 	case DC_SET_PDF417:
-		return (const UTF8Char*)"Set PDF417 Reading";
+		return CSTR("Set PDF417 Reading");
 	case DC_GET_DATAMATRIX:
-		return (const UTF8Char*)"Get DataMatrix Reading";
+		return CSTR("Get DataMatrix Reading");
 	case DC_SET_DATAMATRIX:
-		return (const UTF8Char*)"Set DataMatrix Reading";
+		return CSTR("Set DataMatrix Reading");
 	case DC_GET_BARCODE:
-		return (const UTF8Char*)"Get UPC-A, UPC-E, EAN-13, EAN-8 Code Reading";
+		return CSTR("Get UPC-A, UPC-E, EAN-13, EAN-8 Code Reading");
 	case DC_SET_BARCODE:
-		return (const UTF8Char*)"Set UPC-A, UPC-E, EAN-13, EAN-8 Code Reading";
+		return CSTR("Set UPC-A, UPC-E, EAN-13, EAN-8 Code Reading");
 	case DC_GET_INTERLEAVED_2OF5:
-		return (const UTF8Char*)"Get Interleaved 2of5 Code Reading";
+		return CSTR("Get Interleaved 2of5 Code Reading");
 	case DC_SET_INTERLEAVED_2OF5:
-		return (const UTF8Char*)"Set Interleaved 2of5 Code Reading";
+		return CSTR("Set Interleaved 2of5 Code Reading");
 	case DC_GET_CODABAR:
-		return (const UTF8Char*)"Get CODEBAR(NW-7) Code Reading";
+		return CSTR("Get CODEBAR(NW-7) Code Reading");
 	case DC_SET_CODABAR:
-		return (const UTF8Char*)"Set CODEBAR(NW-7) Code Reading";
+		return CSTR("Set CODEBAR(NW-7) Code Reading");
 	case DC_GET_CODABAR_START_STOP:
-		return (const UTF8Char*)"Get CODEBAR(NW-7) Start/Stop Code Send";
+		return CSTR("Get CODEBAR(NW-7) Start/Stop Code Send");
 	case DC_SET_CODEBAR_START_STOP:
-		return (const UTF8Char*)"Set CODEBAR(NW-7) Start/Stop Code Send";
+		return CSTR("Set CODEBAR(NW-7) Start/Stop Code Send");
 	case DC_GET_CODE39:
-		return (const UTF8Char*)"Get CODE39 Code Reading";
+		return CSTR("Get CODE39 Code Reading");
 	case DC_SET_CODE39:
-		return (const UTF8Char*)"Set CODE39 Code Reading";
+		return CSTR("Set CODE39 Code Reading");
 	case DC_GET_CODE128:
-		return (const UTF8Char*)"Get CODE128, GSI-128 Code Reading";
+		return CSTR("Get CODE128, GSI-128 Code Reading");
 	case DC_SET_CODE128:
-		return (const UTF8Char*)"Set CODE128, GSI-128 Code Reading";
+		return CSTR("Set CODE128, GSI-128 Code Reading");
 	case DC_GET_QRCODE_REVERSE:
-		return (const UTF8Char*)"Get QR Code, Micro QR Code, SQRC, iQR, DataMatrix, iQR, Aztec Invert";
+		return CSTR("Get QR Code, Micro QR Code, SQRC, iQR, DataMatrix, iQR, Aztec Invert");
 	case DC_SET_QRCODE_REVERSE:
-		return (const UTF8Char*)"Set QR Code, Micro QR Code, SQRC, iQR, DataMatrix, iQR, Aztec Invert";
+		return CSTR("Set QR Code, Micro QR Code, SQRC, iQR, DataMatrix, iQR, Aztec Invert");
 	case DC_GET_QRLINK_CODE:
-		return (const UTF8Char*)"Get QR Link Code Mode Setting";
+		return CSTR("Get QR Link Code Mode Setting");
 	case DC_SET_QRLINK_CODE:
-		return (const UTF8Char*)"Set QR Link Code Mode Setting";
+		return CSTR("Set QR Link Code Mode Setting");
 	case DC_GET_GS1_DATABAR:
-		return (const UTF8Char*)"Get GS1 DataBar Reading";
+		return CSTR("Get GS1 DataBar Reading");
 	case DC_SET_GS1_DATABAR:
-		return (const UTF8Char*)"Set GS1 DataBar Reading";
+		return CSTR("Set GS1 DataBar Reading");
 	case DC_GET_GS1_COMPOSITE:
-		return (const UTF8Char*)"Get GS1 Composite Reading";
+		return CSTR("Get GS1 Composite Reading");
 	case DC_SET_GS1_COMPOSITE:
-		return (const UTF8Char*)"Set GS1 Composite Reading";
+		return CSTR("Set GS1 Composite Reading");
 	case DC_GET_MICRO_PDF417:
-		return (const UTF8Char*)"Get Micro PDF417 Reading";
+		return CSTR("Get Micro PDF417 Reading");
 	case DC_SET_MICRO_PDF417:
-		return (const UTF8Char*)"Set Micro PDF417 Reading";
+		return CSTR("Set Micro PDF417 Reading");
 	case DC_GET_BARCODE_READ_MODE:
-		return (const UTF8Char*)"Get Barcode Reader Mode";
+		return CSTR("Get Barcode Reader Mode");
 	case DC_SET_BARCODE_READ_MODE:
-		return (const UTF8Char*)"Set Barcode Reader Mode";
+		return CSTR("Set Barcode Reader Mode");
 	case DC_GET_SQRC:
-		return (const UTF8Char*)"Get SQRC Reading";
+		return CSTR("Get SQRC Reading");
 	case DC_SET_SQRC:
-		return (const UTF8Char*)"Set SQRC Reading";
+		return CSTR("Set SQRC Reading");
 	case DC_GET_SQRC_KEY_UNMATCH:
-		return (const UTF8Char*)"Get SQRC Key Match Action";
+		return CSTR("Get SQRC Key Match Action");
 	case DC_SET_SQRC_KEY_UNMATCH:
-		return (const UTF8Char*)"Set SQRC Key Match Action";
+		return CSTR("Set SQRC Key Match Action");
 	case DC_GET_SQRC_KEY_MATCH:
-		return (const UTF8Char*)"Get SQRC Key Unmatch Action";
+		return CSTR("Get SQRC Key Unmatch Action");
 	case DC_SET_SQRC_KEY_MATCH:
-		return (const UTF8Char*)"Set SQRC Key Unmatch Action";
+		return CSTR("Set SQRC Key Unmatch Action");
 	case DC_GET_IQRCODE_SQUARE:
-		return (const UTF8Char*)"Get iQR Code(Square) Reading";
+		return CSTR("Get iQR Code(Square) Reading");
 	case DC_SET_IQRCODE_SQUARE:
-		return (const UTF8Char*)"Set iQR Code(Square) Reading";
+		return CSTR("Set iQR Code(Square) Reading");
 	case DC_GET_IQRCODE_RECT:
-		return (const UTF8Char*)"Get iQR Code(Rectangle) Reading";
+		return CSTR("Get iQR Code(Rectangle) Reading");
 	case DC_SET_IQRCODE_RECT:
-		return (const UTF8Char*)"Set iQR Code(Rectangle) Reading";
+		return CSTR("Set iQR Code(Rectangle) Reading");
 	case DC_GET_AZTEC_FULL:
-		return (const UTF8Char*)"Get Aztec Code(Full-range) Reading";
+		return CSTR("Get Aztec Code(Full-range) Reading");
 	case DC_SET_AZTEC_FULL:
-		return (const UTF8Char*)"Set Aztec Code(Full-range) Reading";
+		return CSTR("Set Aztec Code(Full-range) Reading");
 	case DC_GET_AZTEC_COMPACT:
-		return (const UTF8Char*)"Get Aztec Code(Compact) Reading";
+		return CSTR("Get Aztec Code(Compact) Reading");
 	case DC_SET_AZTEC_COMPACT:
-		return (const UTF8Char*)"Set Aztec Code(Compact) Reading";
+		return CSTR("Set Aztec Code(Compact) Reading");
 	case DC_GET_MENU_READ:
-		return (const UTF8Char*)"Get Menu Reading";
+		return CSTR("Get Menu Reading");
 	case DC_SET_MENU_READ:
-		return (const UTF8Char*)"Set Menu Reading";
+		return CSTR("Set Menu Reading");
 	case DC_GET_COMM_SEQ:
-		return (const UTF8Char*)"Get Communication Sequence";
+		return CSTR("Get Communication Sequence");
 	case DC_SET_COMM_SEQ:
-		return (const UTF8Char*)"Set Communication Sequence";
+		return CSTR("Set Communication Sequence");
 	case DC_GET_BAUD_RATE:
-		return (const UTF8Char*)"Get Baud Rate";
+		return CSTR("Get Baud Rate");
 	case DC_SET_BAUD_RATE:
-		return (const UTF8Char*)"Set Baud Rate";
+		return CSTR("Set Baud Rate");
 	case DC_GET_CODE_MARK:
-		return (const UTF8Char*)"Get Code Mark Transmission";
+		return CSTR("Get Code Mark Transmission");
 	case DC_SET_CODE_MARK:
-		return (const UTF8Char*)"Set Code Mark Transmission";
+		return CSTR("Set Code Mark Transmission");
 	case DC_GET_LINE_NUM:
-		return (const UTF8Char*)"Get Line Number Transmission";
+		return CSTR("Get Line Number Transmission");
 	case DC_SET_LINE_NUM:
-		return (const UTF8Char*)"Set Line Number Transmission";
+		return CSTR("Set Line Number Transmission");
 	case DC_GET_BCC:
-		return (const UTF8Char*)"Get BCC Transmission";
+		return CSTR("Get BCC Transmission");
 	case DC_SET_BCC:
-		return (const UTF8Char*)"Set BCC Transmission";
+		return CSTR("Set BCC Transmission");
 	case DC_GET_CTS_SIGNAL:
-		return (const UTF8Char*)"Get CTS Signal Control";
+		return CSTR("Get CTS Signal Control");
 	case DC_SET_CTS_SIGNAL:
-		return (const UTF8Char*)"Set CTS Signal Control";
+		return CSTR("Set CTS Signal Control");
 	case DC_GET_CTS_TIME:
-		return (const UTF8Char*)"Get CTS Interval";
+		return CSTR("Get CTS Interval");
 	case DC_SET_CTS_TIME:
-		return (const UTF8Char*)"Set CTS Interval";
+		return CSTR("Set CTS Interval");
 	case DC_GET_ACK_NAK_TIME:
-		return (const UTF8Char*)"Get ACK/NAK Response Time";
+		return CSTR("Get ACK/NAK Response Time");
 	case DC_SET_ACK_NAK_TIME:
-		return (const UTF8Char*)"Set ACK/NAK Response Time";
+		return CSTR("Set ACK/NAK Response Time");
 	case DC_GET_RECV_HDR:
-		return (const UTF8Char*)"Get Receive Header";
+		return CSTR("Get Receive Header");
 	case DC_SET_RECV_HDR:
-		return (const UTF8Char*)"Set Receive Header";
+		return CSTR("Set Receive Header");
 	case DC_GET_RECV_TERMINATOR:
-		return (const UTF8Char*)"Get Receive Terminator";
+		return CSTR("Get Receive Terminator");
 	case DC_GET_SEND_TERMINATOR:
-		return (const UTF8Char*)"Get Send Terminator";
+		return CSTR("Get Send Terminator");
 	case DC_GET_BUZZER:
-		return (const UTF8Char*)"Get Buzzer Sound";
+		return CSTR("Get Buzzer Sound");
 	case DC_SET_BUZZER:
-		return (const UTF8Char*)"Set Buzzer Sound";
+		return CSTR("Set Buzzer Sound");
 	case DC_GET_READ_ERR_BUZZER:
-		return (const UTF8Char*)"Get Read Error Buzzer";
+		return CSTR("Get Read Error Buzzer");
 	case DC_SET_READ_ERR_BUZZER:
-		return (const UTF8Char*)"Set Read Error Buzzer";
+		return CSTR("Set Read Error Buzzer");
 	case DC_GET_MAGIC_KEY:
-		return (const UTF8Char*)"Get Magic Key Function";
+		return CSTR("Get Magic Key Function");
 	case DC_SET_MAGIC_KEY:
-		return (const UTF8Char*)"Set Magic Key Function";
+		return CSTR("Set Magic Key Function");
 	case DC_GET_POWER_ON_BUZZER:
-		return (const UTF8Char*)"Get Power On Buzzer";
+		return CSTR("Get Power On Buzzer");
 	case DC_SET_POWER_ON_BUZZER:
-		return (const UTF8Char*)"Set Power On Buzzer";
+		return CSTR("Set Power On Buzzer");
 	case DC_GET_BUZZER_OFF:
-		return (const UTF8Char*)"Get Force Buzzer Off";
+		return CSTR("Get Force Buzzer Off");
 	case DC_SET_BUZZER_OFF:
-		return (const UTF8Char*)"Set Force Buzzer Off";
+		return CSTR("Set Force Buzzer Off");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }
 
@@ -1242,487 +1242,487 @@ IO::Device::DensoWaveQB30::CommandType IO::Device::DensoWaveQB30::GetCommandPara
 	}
 }
 
-const UTF8Char *IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal)
+Text::CString IO::Device::DensoWaveQB30::GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal)
 {
 	switch (dcmd)
 	{
 	case DC_GET_READ_MODE:
 	case DC_SET_READ_MODE:
 		if (cmdVal == -1)
-			return (const UTF8Char*)"Unknown";
+			return CSTR("Unknown");
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Continuous Read Mode A";
+			return CSTR("Continuous Read Mode A");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Continuous Read Mode B";
+			return CSTR("Continuous Read Mode B");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Direct Trigger Mode";
+			return CSTR("Direct Trigger Mode");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Indirect Trigger Mode";
+			return CSTR("Indirect Trigger Mode");
 		if (cmdVal == 4)
-			return (const UTF8Char*)"Direct Software Trigger Mode";
+			return CSTR("Direct Software Trigger Mode");
 		if (cmdVal == 5)
-			return (const UTF8Char*)"Indirect Software Trigger Mode";
+			return CSTR("Indirect Software Trigger Mode");
 		if (cmdVal == 6)
-			return (const UTF8Char*)"Auto Sense Mode";
-		return 0;
+			return CSTR("Auto Sense Mode");
+		return {0, 0};
 	case DC_GET_BW_MODE:
 	case DC_SET_BW_MODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Normal Code";
+			return CSTR("Normal Code");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Inverted Code";
+			return CSTR("Inverted Code");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Auto Detect";
-		return 0;
+			return CSTR("Auto Detect");
+		return {0, 0};
 	case DC_GET_READ_REPEAT_TIME:
 	case DC_SET_READ_REPEAT_TIME:
-		return 0;
+		return {0, 0};
 	case DC_GET_BRIGHTNESS:
 	case DC_SET_BRIGHTNESS:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Auto";
+			return CSTR("Auto");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Fixed Shutter, Auto Gain";
+			return CSTR("Fixed Shutter, Auto Gain");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Fixed Shutter, Fixed Gain";
-		return 0;
+			return CSTR("Fixed Shutter, Fixed Gain");
+		return {0, 0};
 	case DC_GET_SHT_SIGNAL:
 	case DC_SET_SHT_SIGNAL:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Tr OFF";
+			return CSTR("Tr OFF");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Tr ON";
-		return 0;
+			return CSTR("Tr ON");
+		return {0, 0};
 	case DC_GET_SCAN_MODE:
 	case DC_SET_SCAN_MODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Capture Mode Off";
+			return CSTR("Capture Mode Off");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Scan Entry Mode";
+			return CSTR("Scan Entry Mode");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"File Entry Mode";
-		return 0;
+			return CSTR("File Entry Mode");
+		return {0, 0};
 	case DC_GET_SHUTTER_TIME:
 	case DC_SET_SHUTTER_TIME:
-		return 0;
+		return {0, 0};
 	case DC_GET_GAIN:
 	case DC_SET_GAIN:
-		return 0;
+		return {0, 0};
 	case DC_GET_LED_LEVEL:
 	case DC_SET_LED_LEVEL:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Strong";
+			return CSTR("Strong");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Medium";
+			return CSTR("Medium");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Weak";
-		return 0;
+			return CSTR("Weak");
+		return {0, 0};
 	case DC_GET_LED_MODE:
 	case DC_SET_LED_MODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"LED Off";
+			return CSTR("LED Off");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"LED On";
-		return 0;
+			return CSTR("LED On");
+		return {0, 0};
 	case DC_GET_OUTPUT_TIMING:
 	case DC_SET_OUTPUT_TIMING:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Sync";
+			return CSTR("Sync");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Async";
-		return 0;
+			return CSTR("Async");
+		return {0, 0};
 	case DC_GET_UNREAD_DATA_SEND:
 	case DC_SET_UNREAD_DATA_SEND:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_INDIR_TIME:
 	case DC_SET_INDIR_TIME:
-		return 0;
+		return {0, 0};
 	case DC_GET_TRIGGER_DELAY:
 	case DC_SET_TRIGGER_DELAY:
-		return 0;
+		return {0, 0};
 	case DC_GET_SIGNAL_ON_DUR:
 	case DC_SET_SIGNAL_ON_DUR:
-		return 0;
+		return {0, 0};
 	case DC_GET_SIGNAL_DELAY:
 	case DC_SET_SIGNAL_DELAY:
-		return 0;
+		return {0, 0};
 	case DC_GET_LIGHT_LED:
 	case DC_SET_LIGHT_LED:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Always Off";
+			return CSTR("Always Off");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Auto";
+			return CSTR("Auto");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Always On";
-		return 0;
+			return CSTR("Always On");
+		return {0, 0};
 	case DC_GET_MARKER_LIGHT:
 	case DC_SET_MARKER_LIGHT:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Always Off";
+			return CSTR("Always Off");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Normal";
-		return 0;
+			return CSTR("Normal");
+		return {0, 0};
 	case DC_GET_DECODE_TIME_LIMIT:
 	case DC_SET_DECODE_TIME_LIMIT:
-		return 0;
+		return {0, 0};
 	case DC_GET_OUTPUT1_TYPE:
 	case DC_SET_OUTPUT1_TYPE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Unused";
+			return CSTR("Unused");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Output OK Signal";
+			return CSTR("Output OK Signal");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Output NG Signal";
+			return CSTR("Output NG Signal");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Output Scan OK Signal";
+			return CSTR("Output Scan OK Signal");
 		if (cmdVal == 4)
-			return (const UTF8Char*)"Output Scan NG Signal";
+			return CSTR("Output Scan NG Signal");
 		if (cmdVal == 5)
-			return (const UTF8Char*)"Output READY Signal";
-		return 0;
+			return CSTR("Output READY Signal");
+		return {0, 0};
 	case DC_GET_OUTPUT2_TYPE:
 	case DC_SET_OUTPUT2_TYPE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Unused";
+			return CSTR("Unused");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Output OK Signal";
+			return CSTR("Output OK Signal");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Output NG Signal";
+			return CSTR("Output NG Signal");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Output Scan OK Signal";
+			return CSTR("Output Scan OK Signal");
 		if (cmdVal == 4)
-			return (const UTF8Char*)"Output Scan NG Signal";
+			return CSTR("Output Scan NG Signal");
 		if (cmdVal == 5)
-			return (const UTF8Char*)"Output READY Signal";
+			return CSTR("Output READY Signal");
 		if (cmdVal == 6)
-			return (const UTF8Char*)"Output SHT Signal";
-		return 0;
+			return CSTR("Output SHT Signal");
+		return {0, 0};
 	case DC_GET_AUTO_SENSE_MODE:
 	case DC_SET_AUTO_SENSE_MODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Disable";
+			return CSTR("Disable");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Enable";
-		return 0;
+			return CSTR("Enable");
+		return {0, 0};
 	case DC_GET_CONT_READ_MODE_B:
 	case DC_SET_CONT_READ_MODE_B:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Disable";
+			return CSTR("Disable");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Enable";
-		return 0;
+			return CSTR("Enable");
+		return {0, 0};
 	case DC_GET_QRCODE:
 	case DC_SET_QRCODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_MICRO_QRCODE:
 	case DC_SET_MICRO_QRCODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_PDF417:
 	case DC_SET_PDF417:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_DATAMATRIX:
 	case DC_SET_DATAMATRIX:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_BARCODE:
 	case DC_SET_BARCODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_INTERLEAVED_2OF5:
 	case DC_SET_INTERLEAVED_2OF5:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No C/D, Allow read";
+			return CSTR("No C/D, Allow read");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer Allowed");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer not Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Read not allowed";
-		return 0;
+			return CSTR("Read not allowed");
+		return {0, 0};
 	case DC_GET_CODABAR:
 	case DC_SET_CODABAR:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No C/D, Allow read";
+			return CSTR("No C/D, Allow read");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer Allowed");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer not Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Read not allowed";
-		return 0;
+			return CSTR("Read not allowed");
+		return {0, 0};
 	case DC_GET_CODABAR_START_STOP:
 	case DC_SET_CODEBAR_START_STOP:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_CODE39:
 	case DC_SET_CODE39:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No C/D, Allow read";
+			return CSTR("No C/D, Allow read");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer Allowed");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Has C/D, Allow read, C/D Transfer not Allowed";
+			return CSTR("Has C/D, Allow read, C/D Transfer not Allowed");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"Read not allowed";
-		return 0;
+			return CSTR("Read not allowed");
+		return {0, 0};
 	case DC_GET_CODE128:
 	case DC_SET_CODE128:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_QRCODE_REVERSE:
 	case DC_SET_QRCODE_REVERSE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Normal Code";
+			return CSTR("Normal Code");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Inverted Code";
-		return 0;
+			return CSTR("Inverted Code");
+		return {0, 0};
 	case DC_GET_QRLINK_CODE:
 	case DC_SET_QRLINK_CODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Non-editing Mode";
+			return CSTR("Non-editing Mode");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"All Editing Mode";
+			return CSTR("All Editing Mode");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Editing Mode";
-		return 0;
+			return CSTR("Editing Mode");
+		return {0, 0};
 	case DC_GET_GS1_DATABAR:
 	case DC_SET_GS1_DATABAR:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_GS1_COMPOSITE:
 	case DC_SET_GS1_COMPOSITE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_MICRO_PDF417:
 	case DC_SET_MICRO_PDF417:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_BARCODE_READ_MODE:
 	case DC_SET_BARCODE_READ_MODE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_SQRC:
 	case DC_SET_SQRC:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_SQRC_KEY_UNMATCH:
 	case DC_SET_SQRC_KEY_UNMATCH:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Reading not allowed";
+			return CSTR("Reading not allowed");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Only Output Public Data";
-		return 0;
+			return CSTR("Only Output Public Data");
+		return {0, 0};
 	case DC_GET_SQRC_KEY_MATCH:
 	case DC_SET_SQRC_KEY_MATCH:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Output Public Data+Private Data";
+			return CSTR("Output Public Data+Private Data");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Only Output Private Data";
-		return 0;
+			return CSTR("Only Output Private Data");
+		return {0, 0};
 	case DC_GET_IQRCODE_SQUARE:
 	case DC_SET_IQRCODE_SQUARE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_IQRCODE_RECT:
 	case DC_SET_IQRCODE_RECT:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_AZTEC_FULL:
 	case DC_SET_AZTEC_FULL:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_AZTEC_COMPACT:
 	case DC_SET_AZTEC_COMPACT:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_MENU_READ:
 	case DC_SET_MENU_READ:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Disallow";
-		return 0;
+			return CSTR("Disallow");
+		return {0, 0};
 	case DC_GET_COMM_SEQ:
 	case DC_SET_COMM_SEQ:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No Protocol";
+			return CSTR("No Protocol");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"ACK/NCK";
-		return 0;
+			return CSTR("ACK/NCK");
+		return {0, 0};
 	case DC_GET_BAUD_RATE:
 	case DC_SET_BAUD_RATE:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"4800bps";
+			return CSTR("4800bps");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"9600bps";
+			return CSTR("9600bps");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"19200bps";
+			return CSTR("19200bps");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"38400bps";
+			return CSTR("38400bps");
 		if (cmdVal == 4)
-			return (const UTF8Char*)"57600bps";
+			return CSTR("57600bps");
 		if (cmdVal == 5)
-			return (const UTF8Char*)"115200bps";
-		return 0;
+			return CSTR("115200bps");
+		return {0, 0};
 	case DC_GET_CODE_MARK:
 	case DC_SET_CODE_MARK:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Not Allow";
+			return CSTR("Not Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Allow";
-		return 0;
+			return CSTR("Allow");
+		return {0, 0};
 	case DC_GET_LINE_NUM:
 	case DC_SET_LINE_NUM:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Not Allow";
+			return CSTR("Not Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Transfer in 2 Lines";
+			return CSTR("Transfer in 2 Lines");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"Transfer in 4 Lines";
-		return 0;
+			return CSTR("Transfer in 4 Lines");
+		return {0, 0};
 	case DC_GET_BCC:
 	case DC_SET_BCC:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Not Allow";
+			return CSTR("Not Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Allow";
-		return 0;
+			return CSTR("Allow");
+		return {0, 0};
 	case DC_GET_CTS_SIGNAL:
 	case DC_SET_CTS_SIGNAL:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No Control";
+			return CSTR("No Control");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Has Control";
-		return 0;
+			return CSTR("Has Control");
+		return {0, 0};
 	case DC_GET_CTS_TIME:
 	case DC_SET_CTS_TIME:
-		return 0;
+		return {0, 0};
 	case DC_GET_ACK_NAK_TIME:
 	case DC_SET_ACK_NAK_TIME:
-		return 0;
+		return {0, 0};
 	case DC_GET_RECV_HDR:
 	case DC_SET_RECV_HDR:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No";
+			return CSTR("No");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"STX";
-		return 0;
+			return CSTR("STX");
+		return {0, 0};
 	case DC_GET_RECV_TERMINATOR:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"ETX";
+			return CSTR("ETX");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"CR";
+			return CSTR("CR");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"LF";
+			return CSTR("LF");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"CR+LF";
-		return 0;
+			return CSTR("CR+LF");
+		return {0, 0};
 	case DC_GET_SEND_TERMINATOR:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No";
+			return CSTR("No");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"ETX";
+			return CSTR("ETX");
 		if (cmdVal == 2)
-			return (const UTF8Char*)"CR";
+			return CSTR("CR");
 		if (cmdVal == 3)
-			return (const UTF8Char*)"LF";
+			return CSTR("LF");
 		if (cmdVal == 4)
-			return (const UTF8Char*)"CR+LF";
+			return CSTR("CR+LF");
 		if (cmdVal == 5)
-			return (const UTF8Char*)"Custom";
-		return 0;
+			return CSTR("Custom");
+		return {0, 0};
 	case DC_GET_BUZZER:
 	case DC_SET_BUZZER:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Not Allow";
-		return 0;
+			return CSTR("Not Allow");
+		return {0, 0};
 	case DC_GET_READ_ERR_BUZZER:
 	case DC_SET_READ_ERR_BUZZER:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Not Allow";
-		return 0;
+			return CSTR("Not Allow");
+		return {0, 0};
 	case DC_GET_MAGIC_KEY:
 	case DC_SET_MAGIC_KEY:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"No Function";
+			return CSTR("No Function");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Marker Switch Mode";
-		return 0;
+			return CSTR("Marker Switch Mode");
+		return {0, 0};
 	case DC_GET_POWER_ON_BUZZER:
 	case DC_SET_POWER_ON_BUZZER:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Allow";
+			return CSTR("Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Not Allow";
-		return 0;
+			return CSTR("Not Allow");
+		return {0, 0};
 	case DC_GET_BUZZER_OFF:
 	case DC_SET_BUZZER_OFF:
 		if (cmdVal == 0)
-			return (const UTF8Char*)"Not Allow";
+			return CSTR("Not Allow");
 		if (cmdVal == 1)
-			return (const UTF8Char*)"Allow";
-		return 0;
+			return CSTR("Allow");
+		return {0, 0};
 	default:
-		return 0;
+		return {0, 0};
 	}
 }
 

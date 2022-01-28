@@ -259,8 +259,8 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	Map::GPSTrack *track;
 	s = Text::String::NewNotNull(sbuff);
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	track->SetTrackName(s->ToCString());
 	s->Release();
-	track->SetTrackName(sbuff);
 	SMDLExtraParser *parser;
 	NEW_CLASS(parser, SMDLExtraParser());
 	track->SetExtraParser(parser);

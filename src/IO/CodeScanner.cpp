@@ -5,15 +5,15 @@
 
 IO::CodeScanner::CodeScanner(const UTF8Char *devName)
 {
-	this->devName = Text::StrCopyNew(devName);
+	this->devName = Text::String::NewNotNull(devName);
 }
 
 IO::CodeScanner::~CodeScanner()
 {
-	Text::StrDelNew(this->devName);
+	this->devName->Release();
 }
 
-const UTF8Char *IO::CodeScanner::GetDevName()
+Text::String *IO::CodeScanner::GetDevName()
 {
 	return this->devName;
 }

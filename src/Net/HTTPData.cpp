@@ -232,11 +232,12 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 			i = fdh->url->LastIndexOf('/');
 			if (i != INVALID_INDEX)
 			{
-				fdh->fileName = &fdh->url->v[i + 1];
+				fdh->fileName.v = &fdh->url->v[i + 1];
+				fdh->fileName.leng = fdh->url->leng - i - 1;
 			}
 			else
 			{
-				fdh->fileName = fdh->url->v;
+				fdh->fileName = fdh->url->ToCString();
 			}
 		}
 	}
@@ -261,11 +262,12 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		i = fdh->url->LastIndexOf('/');
 		if (i != INVALID_INDEX)
 		{
-			fdh->fileName = &fdh->url->v[i + 1];
+			fdh->fileName.v = &fdh->url->v[i + 1];
+			fdh->fileName.leng = fdh->url->leng - i - 1;
 		}
 		else
 		{
-			fdh->fileName = fdh->url->v;
+			fdh->fileName = fdh->url->ToCString();
 		}
 		fdh->cli = 0;
 		NEW_CLASS(fdh->evtTmp, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.fdh.evtTmp"));
@@ -342,10 +344,10 @@ Text::String *Net::HTTPData::GetFullName()
 	return fdh->url;
 }
 
-const UTF8Char *Net::HTTPData::GetShortName()
+Text::CString Net::HTTPData::GetShortName()
 {
 	if (fdh == 0)
-		return 0;
+		return {0, 0};
 	return fdh->fileName;
 }
 
@@ -360,11 +362,12 @@ void Net::HTTPData::SetFullName(const UTF8Char *fullName)
 	i = fdh->url->LastIndexOf('/');
 	if (i != INVALID_INDEX)
 	{
-		fdh->fileName = &fdh->url->v[i + 1];
+		fdh->fileName.v = &fdh->url->v[i + 1];
+		fdh->fileName.leng =  fdh->url->leng - i - 1;
 	}
 	else
 	{
-		fdh->fileName = fdh->url->v;
+		fdh->fileName = fdh->url->ToCString();
 	}
 	mutUsage.EndUse();
 }

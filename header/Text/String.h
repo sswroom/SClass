@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_STRING
 #define _SM_TEXT_STRING
+#include "Text/CString.h"
 #include "Text/PString.h"
 
 namespace Text
@@ -14,6 +15,7 @@ namespace Text
 
 		static String *NewOrNull(const UTF8Char *str);
 		static String *NewNotNull(const UTF8Char *str);
+		static String *New(Text::CString str);
 		static String *New(const UTF8Char *str, UOSInt len);
 		static String *New(UOSInt len);
 		static String *NewOrNull(const UTF16Char *str);

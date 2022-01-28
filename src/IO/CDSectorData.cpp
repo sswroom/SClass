@@ -117,9 +117,9 @@ Text::String *IO::CDSectorStreamData::GetFullName()
 	return this->data->GetSourceNameObj();
 }
 
-const UTF8Char *IO::CDSectorStreamData::GetShortName()
+Text::CString IO::CDSectorStreamData::GetShortName()
 {
-	return this->data->GetSourceNameObj()->v;
+	return this->data->GetSourceNameObj()->ToCString();
 }
 
 UInt64 IO::CDSectorStreamData::GetDataSize()

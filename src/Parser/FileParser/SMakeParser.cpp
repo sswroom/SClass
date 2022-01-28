@@ -36,7 +36,7 @@ IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFile(IO::IStreamData *fd
 	{
 		return 0;
 	}
-	if (!Text::StrEquals(fd->GetShortName(), (const UTF8Char*)"SMake.cfg"))
+	if (!fd->GetShortName().Equals(UTF8STRC("SMake.cfg")))
 	{
 		return 0;
 	}

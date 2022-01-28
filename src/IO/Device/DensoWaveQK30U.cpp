@@ -470,9 +470,9 @@ UOSInt IO::Device::DensoWaveQK30U::GetCommandList(Data::ArrayList<DeviceCommand>
 	return cmdList->GetCount() - initCnt;
 }
 
-const UTF8Char *IO::Device::DensoWaveQK30U::GetCommandName(DeviceCommand dcmd)
+Text::CString IO::Device::DensoWaveQK30U::GetCommandName(DeviceCommand dcmd)
 {
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }
 
 IO::Device::DensoWaveQK30U::CommandType IO::Device::DensoWaveQK30U::GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal)
@@ -608,7 +608,7 @@ IO::Device::DensoWaveQK30U::CommandType IO::Device::DensoWaveQK30U::GetCommandPa
 	}
 }
 
-const UTF8Char *IO::Device::DensoWaveQK30U::GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal)
+Text::CString IO::Device::DensoWaveQK30U::GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal)
 {
 	switch (dcmd)
 	{
@@ -737,7 +737,7 @@ const UTF8Char *IO::Device::DensoWaveQK30U::GetCommandParamName(DeviceCommand dc
 	case DC_GET_BUZZER_OFF:
 	case DC_SET_BUZZER_OFF:
 	default:
-		return 0;
+		return {0, 0};
 	}
 }
 

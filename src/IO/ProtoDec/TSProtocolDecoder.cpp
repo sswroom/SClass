@@ -16,9 +16,9 @@ IO::ProtoDec::TSProtocolDecoder::~TSProtocolDecoder()
 	MemFree(this->protoBuff);
 }
 
-const UTF8Char *IO::ProtoDec::TSProtocolDecoder::GetName()
+Text::CString IO::ProtoDec::TSProtocolDecoder::GetName()
 {
-	return (const UTF8Char*)"TS";
+	return CSTR("TS");
 }
 
 UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)

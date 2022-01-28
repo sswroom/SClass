@@ -195,9 +195,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Model: "));
-		if (cpuInfo.GetCPUModel())
+		if (cpuInfo.GetCPUModel().v)
 		{
-			sb.AppendSlow(cpuInfo.GetCPUModel());
+			sb.Append(cpuInfo.GetCPUModel());
 			cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
 		}
 		else

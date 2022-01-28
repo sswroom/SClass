@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(void *userObj)
 		me->txtRadioName->SetText(btStatus->bt->GetName()->v);
 		IO::BTUtil::GetAddrText(&sb, btStatus->bt->GetAddress());
 		me->txtAddr->SetText(sb.ToString());
-		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()));
+		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()).v);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex16(btStatus->bt->GetSubversion());
@@ -251,7 +251,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->guidList, Data::ArrayList<void *>());
 	Data::ArrayList<IO::BTController*> btList;
 	BTStatus *btStatus;
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	Text::StringBuilderUTF8 sb;
 	this->currDev = 0;
 
@@ -269,11 +269,11 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 
 		sb.ClearStr();
 		sb.Append(btStatus->bt->GetName());
-		csptr = IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer());
-		if (csptr)
+		cstr = IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer());
+		if (cstr.v)
 		{
 			sb.AppendC(UTF8STRC(" ("));
-			sb.AppendSlow(csptr);
+			sb.Append(cstr);
 			sb.AppendC(UTF8STRC(")"));
 		}
 		this->lbCtrl->AddItem(sb.ToString(), btStatus);

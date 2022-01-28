@@ -5,7 +5,12 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 
-IO::HIDInfo::HIDInfo(void *clsData)
+struct IO::HIDInfo::ClassData
+{
+
+};
+
+IO::HIDInfo::HIDInfo(ClassData *clsData)
 {
 }
 
@@ -28,9 +33,9 @@ UInt16 IO::HIDInfo::GetProductId()
 	return 0;
 }
 
-const UTF8Char *IO::HIDInfo::GetDevPath()
+Text::String *IO::HIDInfo::GetDevPath()
 {
-	return (const UTF8Char*)"";
+	return Text::String::NewEmpty();
 }
 
 IO::Stream *IO::HIDInfo::OpenHID()

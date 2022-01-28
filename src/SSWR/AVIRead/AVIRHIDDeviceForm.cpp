@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtVendorId->SetText(sbuff);
 		Text::StrHexVal16(sbuff, hid->GetProductId());
 		me->txtProductId->SetText(sbuff);
-		me->txtDevPath->SetText(hid->GetDevPath());
+		me->txtDevPath->SetText(hid->GetDevPath()->v);
 	}
 }
 

@@ -288,19 +288,19 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				NEW_CLASS(mstm, IO::MemoryStream(fileSize, UTF8STRC("SSWR.Benchmark.BenchmarkWebHandler.CPUInfoReq.mstm")));
 				mstm->Write(fileBuff, fileSize);
 				mstm->SeekFromBeginning(0);
-				const UTF8Char *cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
+				Text::CString cpuModel = Manage::CPUDB::ParseCPUInfo(mstm);
 				DEL_CLASS(mstm);
 
-				if (cpuModel)
+				if (cpuModel.v)
 				{
 					msg.v = fileName;
-					msg.leng = (UOSInt)(Text::StrConcat(Text::StrConcatC(fileName, UTF8STRC("Identified as ")), cpuModel) - fileName);
+					msg.leng = (UOSInt)(cpuModel.ConcatTo(Text::StrConcatC(fileName, UTF8STRC("Identified as "))) - fileName);
 
 					IO::Path::GetProcessFileName(path);
 					u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
 					IO::Path::CreateDirectory(path);
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrConcat(u8ptr, cpuModel);
+					u8ptr = cpuModel.ConcatTo(u8ptr);
 
 					if (IO::Path::GetPathType(path, (UOSInt)(u8ptr - path)) == IO::Path::PathType::Unknown)
 					{
@@ -377,7 +377,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				}
 				else
 				{
-					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(u8ptr);
+					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec({u8ptr, (UOSInt)(u8ptr2 - u8ptr)});
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
 					sbOut.AppendP(u8ptr, u8ptr2);

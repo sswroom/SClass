@@ -288,8 +288,8 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->mnuRecord->AddItem((const UTF8Char*)"&Copy Marked", MNU_MARK_COPY, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_C);
 	this->mnuRecord->AddItem((const UTF8Char*)"&Delete Marked", MNU_MARK_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DELETE);
 
-	Data::ArrayListStrUTF8 *nameArr;
-	NEW_CLASS(nameArr, Data::ArrayListStrUTF8());
+	Data::ArrayListString *nameArr;
+	NEW_CLASS(nameArr, Data::ArrayListString());
 	this->track->GetTrackNames(nameArr);
 	UOSInt i = 0;
 	UOSInt j = nameArr->GetCount();
@@ -349,7 +349,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i;
 			Map::GPSTrack *newTrack;
 			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName()));
-			newTrack->SetTrackName(track->GetTrackName(this->currTrackId));
+			newTrack->SetTrackName(track->GetTrackName(this->currTrackId)->ToCString());
 			Map::GPSTrack::GPSRecord *recs = track->GetTrack(this->currTrackId, &recCnt);
 			i = this->startMark;
 			while (i <= this->endMark)

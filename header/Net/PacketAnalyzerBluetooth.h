@@ -10,7 +10,7 @@ namespace Net
 	class PacketAnalyzerBluetooth
 	{
 	public:
-		static IO::DeviceDB::VendorInfo2 vendorList[];
+		static IO::DeviceDB::VendorInfo vendorList[];
 	public:
 		static void AddDirection(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt32 dir);
 		static void AddHCIPacketType(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt8 packetType);

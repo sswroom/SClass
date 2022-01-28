@@ -3,6 +3,7 @@
 #include "IO/Stream.h"
 #include "Manage/CPUVendor.h"
 #include "Manage/ThreadContext.h"
+#include "Text/CString.h"
 
 namespace Manage
 {
@@ -23,13 +24,13 @@ namespace Manage
 			Int32 nm;
 			Int32 launchYear;
 			Int32 launchQuarter;
-			const Char *brandName;
-			const Char *partNum;
+			Text::CString brandName;
+			Text::CString partNum;
 		} CPUSpecX86;
 
 		typedef struct
 		{
-			const Char *model;
+			Text::CString model;
 			Manage::ThreadContext::ContextType contextType;
 			Manage::CPUVendor::CPU_BRAND brand;
 			const Char *name;
@@ -60,8 +61,8 @@ namespace Manage
 
 		typedef struct
 		{
-			const Char *dispName;
-			const Char *model;
+			Text::CString dispName;
+			Text::CString model;
 		} CPUMapping;
 
 	private:
@@ -72,9 +73,9 @@ namespace Manage
 
 	public:
 		static CPUSpecX86 *GetCPUSpecX86(Manage::CPUVendor::CPU_BRAND brand, Int32 familyId, Int32 modelId, Int32 steppingId);
-		static const CPUSpec *GetCPUSpec(const UTF8Char *model);
-		static const UTF8Char *X86CPUNameToModel(const UTF8Char *x86CPUName);
-		static const UTF8Char *ParseCPUInfo(IO::Stream *stm); // return model
+		static const CPUSpec *GetCPUSpec(Text::CString model);
+		static Text::CString X86CPUNameToModel(Text::CString x86CPUName);
+		static Text::CString ParseCPUInfo(IO::Stream *stm); // return model
 	};
 }
 

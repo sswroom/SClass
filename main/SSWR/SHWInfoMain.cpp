@@ -214,9 +214,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		const Manage::CPUDB::CPUSpec *cpuSpec = 0;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Model: "));
-		if (cpuInfo.GetCPUModel())
+		if (cpuInfo.GetCPUModel().v)
 		{
-			sb.AppendSlow(cpuInfo.GetCPUModel());
+			sb.Append(cpuInfo.GetCPUModel());
 			cpuSpec = Manage::CPUDB::GetCPUSpec(cpuInfo.GetCPUModel());
 		}
 		else
@@ -877,7 +877,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" "));
 			sb.AppendHex16(usb->GetRevision());
 			sb.AppendC(UTF8STRC(" Dev:"));
-			sb.AppendSlow(usb->GetDispName());
+			sb.Append(usb->GetDispName());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -912,7 +912,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("?"));
 			}
 			sb.AppendC(UTF8STRC(" Vendor = "));
-			sb.AppendSlow(IO::DeviceDB::GetUSBVendorName(usb->GetVendorId()));
+			sb.Append(IO::DeviceDB::GetUSBVendorName(usb->GetVendorId()));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -975,7 +975,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("?"));
 			}
 			sb.AppendC(UTF8STRC(" Vendor = "));
-			sb.AppendSlow(IO::DeviceDB::GetPCIVendorName(pci->GetVendorId()));
+			sb.Append(IO::DeviceDB::GetPCIVendorName(pci->GetVendorId()));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1003,7 +1003,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("SD Card "));
 			sb.AppendUOSInt(i);
 			sb.AppendC(UTF8STRC(" - "));
-			sb.AppendSlow(sdcard->GetName());
+			sb.Append(sdcard->GetName());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
@@ -1011,7 +1011,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("Manufacturer ID (MID): "));
 			sb.AppendI32(sdcard->GetManufacturerID());
 			sb.AppendC(UTF8STRC(" ("));
-			sb.AppendSlow(IO::SDCardInfo::GetManufacturerName(sdcard->GetManufacturerID()));
+			sb.Append(IO::SDCardInfo::GetManufacturerName(sdcard->GetManufacturerID()));
 			sb.AppendC(UTF8STRC(")"));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());

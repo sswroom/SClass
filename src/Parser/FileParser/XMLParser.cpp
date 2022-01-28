@@ -261,7 +261,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					Map::GPSTrack *track;
 					NEW_CLASS(track, Map::GPSTrack({fileName, fileNameLen}, true, 0, 0));
-					track->SetTrackName(shortName);
+					track->SetTrackName({shortName, (UOSInt)(fileName + fileNameLen - shortName)});
 					while (reader->ReadNext())
 					{
 						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)

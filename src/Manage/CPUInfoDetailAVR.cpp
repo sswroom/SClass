@@ -4,14 +4,14 @@
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	this->cpuModel = (const UTF8Char*)"ATmega328P";
+	this->cpuModel = CSTR("ATmega328P");
 }
 
 Manage::CPUInfoDetail::~CPUInfoDetail()
 {
 }
 
-const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()
+Text::CString Manage::CPUInfoDetail::GetCPUModel()
 {
 	return this->cpuModel;
 }

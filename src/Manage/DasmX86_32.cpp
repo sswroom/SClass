@@ -19176,15 +19176,15 @@ Manage::DasmX86_32::~DasmX86_32()
 	MemFree(this->codes0f3a);
 }
 
-const UTF8Char *Manage::DasmX86_32::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmX86_32::GetHeader(Bool fullRegs)
 {
 	if (fullRegs)
 	{
-		return (const UTF8Char*)" Esp      Ebp      Eip      Eax      Edx      Ecx      Ebx      Esi      Edi      Code";
+		return CSTR(" Esp      Ebp      Eip      Eax      Edx      Ecx      Ebx      Esi      Edi      Code");
 	}
 	else
 	{
-		return (const UTF8Char*)" Esp      Ebp      Eip      Code";
+		return CSTR(" Esp      Ebp      Eip      Code");
 	}
 }
 

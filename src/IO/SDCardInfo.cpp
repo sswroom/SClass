@@ -11,12 +11,12 @@ IO::SDCardInfo::SDCardInfo(const UTF8Char *name, const UInt8 *cid, const UInt8 *
 	this->isEMMC = (csdType >= 2);
 	MemCopyNO(this->cid, cid, 16);
 	MemCopyNO(this->csd, csd, 16);
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 }
 
 IO::SDCardInfo::~SDCardInfo()
 {
-	Text::StrDelNew(name);
+	this->name->Release();
 }
 
 OSInt IO::SDCardInfo::GetCID(UInt8 *cid)
@@ -31,7 +31,7 @@ OSInt IO::SDCardInfo::GetCSD(UInt8 *csd)
 	return 16;
 }
 
-const UTF8Char *IO::SDCardInfo::GetName()
+Text::String *IO::SDCardInfo::GetName()
 {
 	return this->name;
 }
@@ -365,23 +365,23 @@ Int64 IO::SDCardInfo::GetCardCapacity()
 	}
 }
 
-const UTF8Char *IO::SDCardInfo::GetManufacturerName(UInt8 mid)
+Text::CString IO::SDCardInfo::GetManufacturerName(UInt8 mid)
 {
 	switch (mid)
 	{
 	case 1:
-		return (const UTF8Char*)"Panasonic";
+		return CSTR("Panasonic");
 	case 2:
-		return (const UTF8Char*)"Toshiba";
+		return CSTR("Toshiba");
 	case 3:
-		return (const UTF8Char*)"Sandisk";
+		return CSTR("Sandisk");
 //	case 0x1a:
-//		return (const UTF8Char*)"?PQI";
+//		return CSTR("?PQI");
 	case 0x1b:
-		return (const UTF8Char*)"Samsung";
+		return CSTR("Samsung");
 //	case 0x1c:
-//		return (const UTF8Char*)"?Transcend";
+//		return CSTR("?Transcend");
 	default:
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

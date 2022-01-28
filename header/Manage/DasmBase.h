@@ -4,6 +4,7 @@
 #include "Data/ArrayListUInt64.h"
 #include "IO/Writer.h"
 #include "Manage/IMemoryReader.h"
+#include "Text/CString.h"
 
 namespace Manage
 {
@@ -180,7 +181,7 @@ namespace Manage
 		virtual ~Dasm();
 
 		virtual RegBitDepth GetRegBitDepth() = 0;
-		virtual const UTF8Char *GetHeader(Bool fullRegs) = 0;
+		virtual Text::CString GetHeader(Bool fullRegs) = 0;
 		virtual Dasm_Regs *CreateRegs() = 0;
 		virtual void FreeRegs(Dasm_Regs *regs) = 0;
 	};

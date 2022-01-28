@@ -128,7 +128,7 @@ IO::ParsedObject *Parser::FileParser::PSSParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else if (pkgFile)
 		{
-			sptr = Text::StrConcat(sbuff, fd->GetShortName()) - 5;
+			sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
 /*			IO::StmData::ConcatStreamData *data;
 			stmId = 2;
 			NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));

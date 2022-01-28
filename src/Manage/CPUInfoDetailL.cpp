@@ -13,7 +13,7 @@
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	IO::FileStream *fs;
-	this->cpuModel = 0;
+	this->cpuModel = {0, 0};
 
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
@@ -32,34 +32,34 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		}
 		DEL_CLASS(reader);
 		fs->SeekFromBeginning(0);
-		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
-		if (this->cpuModel == 0)
+		this->cpuModel = Text::CString::FromPtr(Manage::CPUDB::ParseCPUInfo(fs));
+		if (this->cpuModel.v == 0)
 		{
 			if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"spade"))
 			{
-				this->cpuModel = (const UTF8Char*)"MSM8255";
+				this->cpuModel = CSTR("MSM8255");
 			}
 			else if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"Sony Mobile fusion3"))
 			{
-				this->cpuModel = (const UTF8Char*)"APQ8064";
+				this->cpuModel = CSTR("APQ8064");
 			}
 			else if (IO::Path::GetPathType(UTF8STRC("/sys/rk3368_thermal")) == IO::Path::PathType::Directory)
 			{
-				this->cpuModel = (const UTF8Char*)"RK3368";
+				this->cpuModel = CSTR("RK3368");
 			}
 			else if (IO::Path::GetPathType(UTF8STRC("/sys/devices/platform/rk3026-codec")) == IO::Path::PathType::Directory)
 			{
-				this->cpuModel = (const UTF8Char*)"RK3026";
+				this->cpuModel = CSTR("RK3026");
 			}
 			else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/bcm2835_thermal")) == IO::Path::PathType::Directory)
 			{
 				if (cpuPart == 0xd03)
 				{
-					this->cpuModel = (const UTF8Char*)"BCM2837";
+					this->cpuModel = CSTR("BCM2837");
 				}
 				else
 				{
-					this->cpuModel = (const UTF8Char*)"BCM2835";
+					this->cpuModel = CSTR("BCM2835");
 				}
 			}
 			else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/rtk129x-cpufreq")) == IO::Path::PathType::Directory)
@@ -67,21 +67,21 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				OSInt threadCnt = Sync::Thread::GetThreadCnt();
 				if (threadCnt == 2)
 				{
-					this->cpuModel = (const UTF8Char*)"RTD1293";
+					this->cpuModel = CSTR("RTD1293");
 				}
 				else
 				{
 					if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/[RTD129x PCIE Slot2]")) == IO::Path::PathType::Unknown)
 					{
-						this->cpuModel = (const UTF8Char*)"RTD1294";
+						this->cpuModel = CSTR("RTD1294");
 					}
 					else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/devices/9803f000.sata:sata-port@2")) == IO::Path::PathType::Unknown)
 					{
-						this->cpuModel = (const UTF8Char*)"RTD1295";
+						this->cpuModel = CSTR("RTD1295");
 					}
 					else
 					{
-						this->cpuModel = (const UTF8Char*)"RTD1296";
+						this->cpuModel = CSTR("RTD1296");
 					}
 				}
 			}
@@ -117,22 +117,22 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 							{
 								if (hasPRUICSS)
 								{
-									this->cpuModel = (const UTF8Char*)"AM3359";
+									this->cpuModel = CSTR("AM3359");
 								}
 								else
 								{
-									this->cpuModel = (const UTF8Char*)"AM3358";
+									this->cpuModel = CSTR("AM3358");
 								}
 							}
 							else
 							{
 								if (hasPRUICSS)
 								{
-									this->cpuModel = (const UTF8Char*)"AM3357";
+									this->cpuModel = CSTR("AM3357");
 								}
 								else
 								{
-									this->cpuModel = (const UTF8Char*)"AM3356";
+									this->cpuModel = CSTR("AM3356");
 								}
 							}
 						}
@@ -140,16 +140,16 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 						{
 							if (hasGraphics)
 							{
-								this->cpuModel = (const UTF8Char*)"AM3354";
+								this->cpuModel = CSTR("AM3354");
 							}
 							else
 							{
-								this->cpuModel = (const UTF8Char*)"AM3352";
+								this->cpuModel = CSTR("AM3352");
 							}
 						}
 						else
 						{
-							this->cpuModel = (const UTF8Char*)"AM3351";
+							this->cpuModel = CSTR("AM3351");
 						}
 					}
 				}
@@ -160,21 +160,21 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 				OSInt threadCnt = Sync::Thread::GetThreadCnt();
 				if (threadCnt == 8)
 				{
-					this->cpuModel = (const UTF8Char*)"Amlogic S912";
+					this->cpuModel = CSTR("Amlogic S912");
 				}
 				else if (threadCnt == 4)
 				{
 					if (IO::Path::GetPathType(UTF8STRC("/sys/class/amaudio")) != IO::Path::PathType::Directory)
 					{
-						this->cpuModel = (const UTF8Char*)"Amlogic S905";
+						this->cpuModel = CSTR("Amlogic S905");
 					}
 					else if (IO::Path::GetPathType(UTF8STRC("/sys/class/tsdemux")) != IO::Path::PathType::Directory)
 					{
-						this->cpuModel = (const UTF8Char*)"Amlogic S905D";
+						this->cpuModel = CSTR("Amlogic S905D");
 					}
 					else
 					{
-						this->cpuModel = (const UTF8Char*)"Amlogic S905X";
+						this->cpuModel = CSTR("Amlogic S905X");
 					}
 				}
 			}
@@ -188,22 +188,22 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 					{
 						if (!hasSDCard)
 						{
-							this->cpuModel = (const UTF8Char*)"IPQ4018";
+							this->cpuModel = CSTR("IPQ4018");
 						}
 						else
 						{
-							this->cpuModel = (const UTF8Char*)"IPQ4019";
+							this->cpuModel = CSTR("IPQ4019");
 						}
 					}
 					else
 					{
 						if (!hasSDCard)
 						{
-							this->cpuModel = (const UTF8Char*)"IPQ4028";
+							this->cpuModel = CSTR("IPQ4028");
 						}
 						else
 						{
-							this->cpuModel = (const UTF8Char*)"IPQ4029";
+							this->cpuModel = CSTR("IPQ4029");
 						}
 					}
 				}
@@ -212,7 +212,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			else if (this->brand == Manage::CPUVendor::CB_MARVELL)
 			{
 				//////////////////////////////////
-				this->cpuModel = (const UTF8Char*)"88F6281";
+				this->cpuModel = CSTR("88F6281");
 			}
 		}
 	}
@@ -223,7 +223,7 @@ Manage::CPUInfoDetail::~CPUInfoDetail()
 {
 }
 
-const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()
+Text::CString Manage::CPUInfoDetail::GetCPUModel()
 {
 	return this->cpuModel;
 }

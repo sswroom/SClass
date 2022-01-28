@@ -12,56 +12,50 @@
 #include <stdio.h>
 #undef FindNextFile
 
-typedef struct
+struct IO::HIDInfo::ClassData
 {
 IO::HIDInfo::BusType busType;
 UInt16 vendor;
 UInt16 product;
-const UTF8Char *devPath;
-} ClassData;
+Text::String *devPath;
+};
 
 
-IO::HIDInfo::HIDInfo(void *clsData)
+IO::HIDInfo::HIDInfo(ClassData *clsData)
 {
 	this->clsData = clsData;
 }
 
 IO::HIDInfo::~HIDInfo()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	Text::StrDelNew(data->devPath);
-	MemFree(data);
+	this->clsData->devPath->Release();
+	MemFree(this->clsData);
 }
 
 IO::HIDInfo::BusType IO::HIDInfo::GetBusType()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->busType;
+	return this->clsData->busType;
 }
 
 UInt16 IO::HIDInfo::GetVendorId()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->vendor;
+	return this->clsData->vendor;
 }
 
 UInt16 IO::HIDInfo::GetProductId()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->product;
+	return this->clsData->product;
 }
 
-const UTF8Char *IO::HIDInfo::GetDevPath()
+Text::String *IO::HIDInfo::GetDevPath()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->devPath;
+	return this->clsData->devPath;
 }
 
 IO::Stream *IO::HIDInfo::OpenHID()
 {
-	ClassData *data = (ClassData*)this->clsData;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(data->devPath, IO::FileMode::ReadWriteExisting, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(this->clsData->devPath, IO::FileMode::ReadWriteExisting, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -103,7 +97,7 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 						UOSInt j;
 						clsData = MemAlloc(ClassData, 1);
 						clsData->busType = IO::HIDInfo::BT_USB;
-						clsData->devPath = Text::StrToUTF8New(&data2[2]);
+						clsData->devPath = Text::String::NewNotNull(&data2[2]);
 						clsData->product = 0;
 						clsData->vendor = 0;
 						j = Text::StrIndexOf(&data2[2], L"vid_");
@@ -189,8 +183,8 @@ OSInt IO::HIDInfo::GetHIDList(Data::ArrayList<HIDInfo*> *hidList)
 					{
 						if (IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0))
 						{
-							Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
-							clsData->devPath = Text::StrCopyNew(sbuff2);
+							sptr3 = Text::StrConcat(Text::StrConcatC(sbuff2, UTF8STRC("/dev/")), sptr2);
+							clsData->devPath = Text::String::New(sbuff2, (UOSInt)(sptr3 - sbuff2));
 							NEW_CLASS(hid, IO::HIDInfo(clsData));
 							hidList->Add(hid);
 							ret++;

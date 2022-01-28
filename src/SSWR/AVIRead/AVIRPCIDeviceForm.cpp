@@ -35,10 +35,10 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 		if (dev)
 		{
 			me->txtDBName->SetText((const UTF8Char*)dev->productName);
-			const UTF8Char *vendorName = IO::DeviceDB::GetPCIVendorName(dev->vendorId);
-			if (vendorName)
+			Text::CString vendorName = IO::DeviceDB::GetPCIVendorName(dev->vendorId);
+			if (vendorName.v)
 			{
-				me->txtVendorName->SetText(vendorName);
+				me->txtVendorName->SetText(vendorName.v);
 			}
 			else
 			{

@@ -51,7 +51,7 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	}
 
 	this->name = 0;
-	sptr = Text::StrConcat(u8buff, this->stmData->GetShortName());
+	sptr = this->stmData->GetShortName().ConcatTo(u8buff);
 	i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(sptr - u8buff), '.');
 	if (i != INVALID_INDEX)
 	{

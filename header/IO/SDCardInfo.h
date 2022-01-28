@@ -1,5 +1,7 @@
 #ifndef _SM_IO_SDCARDINFO
 #define _SM_IO_SDCARDINFO
+#include "Text/CString.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -9,7 +11,7 @@ namespace IO
 		Bool isEMMC;
 		UInt8 cid[16];
 		UInt8 csd[16];
-		const UTF8Char *name;
+		Text::String *name;
 
 	public:
 		SDCardInfo(const UTF8Char *name, const UInt8 *cid, const UInt8 *csd);
@@ -18,7 +20,7 @@ namespace IO
 		OSInt GetCID(UInt8 *cid);
 		OSInt GetCSD(UInt8 *csd);
 
-		const UTF8Char *GetName();
+		Text::String *GetName();
 		// CID
 		UInt8 GetManufacturerID();
 		UInt16 GetOEMID();
@@ -60,7 +62,7 @@ namespace IO
 
 		Int64 GetCardCapacity();
 
-		static const UTF8Char *GetManufacturerName(UInt8 mid);
+		static Text::CString GetManufacturerName(UInt8 mid);
 	};
-};
+}
 #endif

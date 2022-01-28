@@ -64,7 +64,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, fd->GetShortName());
+		sptr = fd->GetShortName().ConcatTo(sbuff);
 		if ((sptr - sbuff) > 3 && Text::StrEquals(&sptr[-3], (const UTF8Char*)".gz"))
 		{
 			sptr[-3] = 0;

@@ -20,6 +20,10 @@ namespace Text
 
 		static CString FromPtr(const UTF8Char *v)
 		{
+			if (v == 0)
+			{
+				return CString(0, 0);
+			}
 			return CString(v, Text::StrCharCnt(v));
 		}
 

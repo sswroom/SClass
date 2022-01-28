@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::FileParser::LinkArcParser::ParseFile(IO::IStreamData *
 	if (ReadInt32(&hdrBuff[0]) != 0x4b4e494c || ReadInt16(&hdrBuff[4]) != 0x36)
 		return 0;
 	nameSize = hdrBuff[7];
-	if (nameSize > Text::StrCharCnt(fd->GetShortName()) - 4)
+	if (nameSize > fd->GetShortName().leng - 4)
 		return 0;
 	currOfst = 8 + (UOSInt)nameSize;
 	fileSize = fd->GetDataSize();

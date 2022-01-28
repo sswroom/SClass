@@ -208,8 +208,8 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	while (i-- > 0)
 	{
 		devId = keys->GetItem(i);
-		Text::StrInt32(sbuff, devId);
-		track->SetTrackName(sbuff);
+		sptr = Text::StrInt32(sbuff, devId);
+		track->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
 
 		currDev = devRecs->Get(devId);
 		j = 0;

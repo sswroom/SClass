@@ -190,15 +190,15 @@ void IO::GPIOControl::ClearEvent(UOSInt pinNum)
 {
 }
 
-const UTF8Char *IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
+Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinMode)
 {
 	if (pinMode == 0)
 	{
-		return (const UTF8Char*)"Input";
+		return CSTR("Input");
 	}
 	else if (pinMode == 1)
 	{
-		return (const UTF8Char*)"Output";
+		return CSTR("Output");
 	}
-	return (const UTF8Char*)"Unknown";
+	return CSTR("Unknown");
 }

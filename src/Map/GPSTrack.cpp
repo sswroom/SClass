@@ -78,7 +78,7 @@ Map::GPSTrack::~GPSTrack()
 		rec = (Map::GPSTrack::TrackRecord*)currTracks->GetItem(i);
 		if (rec->name)
 		{
-			Text::StrDelNew(rec->name);
+			rec->name->Release();
 		}
 		MemFree(rec->extraData);
 		MemFree(rec->extraDataSize);
@@ -93,7 +93,7 @@ Map::GPSTrack::~GPSTrack()
 	}
 	if (this->currTrackName)
 	{
-		Text::StrDelNew(this->currTrackName);
+		this->currTrackName->Release();
 		this->currTrackName = 0;
 	}
 	DEL_CLASS(this->recMut);
@@ -905,15 +905,12 @@ Bool Map::GPSTrack::GetHasAltitude()
 	return this->hasAltitude;
 }
 
-void Map::GPSTrack::SetTrackName(const UTF8Char *name)
+void Map::GPSTrack::SetTrackName(Text::CString name)
 {
-	if (this->currTrackName)
+	SDEL_STRING(this->currTrackName);
+	if (name.v)
 	{
-		Text::StrDelNew(this->currTrackName);
-	}
-	if (name)
-	{
-		this->currTrackName = Text::StrCopyNew(name);
+		this->currTrackName = Text::String::New(name.v, name.leng);
 	}
 	else
 	{
@@ -921,7 +918,7 @@ void Map::GPSTrack::SetTrackName(const UTF8Char *name)
 	}
 }
 
-void Map::GPSTrack::GetTrackNames(Data::ArrayListStrUTF8 *nameArr)
+void Map::GPSTrack::GetTrackNames(Data::ArrayListString *nameArr)
 {
 	UOSInt i = 0;
 	UOSInt j = this->currTracks->GetCount();
@@ -936,7 +933,7 @@ void Map::GPSTrack::GetTrackNames(Data::ArrayListStrUTF8 *nameArr)
 	}
 }
 
-const UTF8Char *Map::GPSTrack::GetTrackName(UOSInt index)
+Text::String *Map::GPSTrack::GetTrackName(UOSInt index)
 {
 	if (index < this->currTracks->GetCount())
 	{

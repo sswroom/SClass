@@ -3,6 +3,8 @@
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -156,13 +158,13 @@ namespace IO
 		typedef void (__stdcall *ScanHandler)(void *userObj, const UTF8Char *code);
 
 	private:
-		const UTF8Char *devName;
+		Text::String *devName;
 
 	public:
 		CodeScanner(const UTF8Char *devName);
 		virtual ~CodeScanner();
 
-		const UTF8Char *GetDevName();
+		Text::String *GetDevName();
 
 		virtual void SetCurrMode(ModeType currMode) = 0;
 		virtual Bool SoftReset() = 0;
@@ -170,9 +172,9 @@ namespace IO
 		virtual void HandleCodeScanned(ScanHandler hdlr, void *userObj) = 0;
 
 		virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList) = 0;
-		virtual const UTF8Char *GetCommandName(DeviceCommand dcmd) = 0;
+		virtual Text::CString GetCommandName(DeviceCommand dcmd) = 0;
 		virtual CommandType GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal) = 0;
-		virtual const UTF8Char *GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal) = 0;
+		virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal) = 0;
 		virtual Int32 GetCommand(DeviceCommand dcmd) = 0;
 		virtual Bool SetCommand(DeviceCommand dcmd, Int32 val) = 0;
 	};

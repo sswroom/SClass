@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console.WriteLineC(sb.ToString(), sb.GetLength());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Manufacturer: "));
-		sb.AppendSlow(IO::BTUtil::GetManufacturerName(btCtrl->GetManufacturer()));
+		sb.Append(IO::BTUtil::GetManufacturerName(btCtrl->GetManufacturer()));
 		sb.AppendC(UTF8STRC(" (0x"));
 		sb.AppendHex16(btCtrl->GetManufacturer());
 		sb.AppendC(UTF8STRC(")"));

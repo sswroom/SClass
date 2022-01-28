@@ -46,9 +46,9 @@ namespace IO
 			virtual void HandleCodeScanned(ScanHandler hdlr, void *userObj);
 
 			virtual UOSInt GetCommandList(Data::ArrayList<DeviceCommand> *cmdList);
-			virtual const UTF8Char *GetCommandName(DeviceCommand dcmd);
+			virtual Text::CString GetCommandName(DeviceCommand dcmd);
 			virtual CommandType GetCommandParamType(DeviceCommand dcmd, Int32 *minVal, Int32 *maxVal);
-			virtual const UTF8Char *GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal);
+			virtual Text::CString GetCommandParamName(DeviceCommand dcmd, Int32 cmdVal);
 			virtual Int32 GetCommand(DeviceCommand dcmd);
 			virtual Bool SetCommand(DeviceCommand dcmd, Int32 val);
 		};

@@ -328,7 +328,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			}
 			else
 			{
-				sptr = Text::StrConcat(sptr, item->fd->GetShortName());
+				sptr = item->fd->GetShortName().ConcatTo(sptr);
 			}
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
@@ -372,7 +372,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 				}
 				else
 				{
-					sb.AppendSlow(item->fd->GetShortName());
+					sb.Append(item->fd->GetShortName());
 				}
 				fd->SetFullName(sb.ToString());
 				return fd;
@@ -430,7 +430,7 @@ UTF8Char *IO::PackageFile::GetItemName(UTF8Char *sbuff, UOSInt index)
 	}
 	if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 	{
-		return Text::StrConcat(sbuff, item->fd->GetShortName());
+		return item->fd->GetShortName().ConcatTo(sbuff);
 	}
 	else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 	{
@@ -533,8 +533,8 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 			{
-				const UTF8Char *shName = item->fd->GetShortName();
-				if (Text::StrEqualsICaseC(shName, Text::StrCharCnt(shName), name, nameLen))
+				Text::CString shName = item->fd->GetShortName();
+				if (shName.EqualsICase(name, nameLen))
 					return i;
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)

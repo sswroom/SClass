@@ -14,15 +14,16 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	UTF8Char u8buff[512];
+	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
-	if (cpu.GetCPUName(u8buff) == 0)
+	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting CPU Name", (const UTF8Char*)"Error", me);
 	}
 	else
 	{
-		const UTF8Char *cpuModel = Manage::CPUDB::X86CPUNameToModel(u8buff);
-		if (cpuModel == 0)
+		Text::CString cpuModel = Manage::CPUDB::X86CPUNameToModel({u8buff, (UOSInt)(sptr - u8buff)});
+		if (cpuModel.v == 0)
 		{
 			Int32 respStatus;
 			Text::StringBuilderUTF8 sbData;

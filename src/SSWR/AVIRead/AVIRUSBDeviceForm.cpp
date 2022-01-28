@@ -31,17 +31,17 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtProductId->SetText(sbuff);
 		Text::StrHexVal16(sbuff, usb->GetRevision());
 		me->txtDevice->SetText(sbuff);
-		me->txtDispName->SetText(usb->GetDispName());
+		me->txtDispName->SetText(usb->GetDispName().v);
 
 		const IO::DeviceDB::USBDeviceInfo *dev;
 		dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 		if (dev)
 		{
 			me->txtDBName->SetText((const UTF8Char*)dev->productName);
-			const UTF8Char *vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
-			if (vendorName)
+			Text::CString vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
+			if (vendorName.v)
 			{
-				me->txtVendorName->SetText(vendorName);
+				me->txtVendorName->SetText(vendorName.v);
 			}
 			else
 			{

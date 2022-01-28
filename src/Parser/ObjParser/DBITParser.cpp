@@ -164,8 +164,8 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, 0));
 			while (r->ReadNext())
 			{
-				r->GetStr(2, sbuff, sizeof(sbuff));
-				trk->SetTrackName(sbuff);
+				sptr = r->GetStr(2, sbuff, sizeof(sbuff));
+				trk->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
 				i = (UOSInt)r->GetInt32(9);
 				j = (UOSInt)r->GetInt32(10);
 				while (i <= j)

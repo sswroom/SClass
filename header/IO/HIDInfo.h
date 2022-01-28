@@ -2,6 +2,7 @@
 #define _SM_IO_HIDINFO
 #include "Data/ArrayList.h"
 #include "IO/Stream.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -15,16 +16,18 @@ namespace IO
 			BT_I2C
 		} BusType;
 	private:
-		void *clsData;
+		struct ClassData;
 
-		HIDInfo(void *clsData);
+		ClassData *clsData;
+
+		HIDInfo(ClassData *clsData);
 	public:
 		~HIDInfo();
 
 		BusType GetBusType();
 		UInt16 GetVendorId();
 		UInt16 GetProductId();
-		const UTF8Char *GetDevPath();
+		Text::String *GetDevPath();
 
 		IO::Stream *OpenHID();
 

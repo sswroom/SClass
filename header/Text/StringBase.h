@@ -11,6 +11,8 @@ namespace Text
 		T *v;
 		UOSInt leng;
 
+		T *GetEndPtr();
+
 		UTF8Char *ConcatTo(UTF8Char *sbuff);
 		UTF8Char *ConcatWith(UTF8Char *sbuff, const UTF8Char *s1, UOSInt len1);
 		UTF8Char *ConcatToS(UTF8Char *sbuff, UOSInt buffSize);
@@ -39,7 +41,7 @@ namespace Text
 		OSInt CompareTo(const UTF8Char *s);
 		OSInt CompareToICase(StringBase<UTF8Char> *s);
 		OSInt CompareToICase(const UTF8Char *s);
-		OSInt CompareToFast(const UTF8Char *s, UOSInt len);
+		OSInt CompareToFast(StringBase<const UTF8Char> s);
 
 		Int32 ToInt32();
 		UInt32 ToUInt32();
@@ -68,6 +70,10 @@ namespace Text
 	};
 }
 
+template <typename T> T *Text::StringBase<T>::GetEndPtr()
+{
+	return &this->v[this->leng];
+}
 
 template <typename T> UTF8Char *Text::StringBase<T>::ConcatTo(UTF8Char *sbuff)
 {
@@ -271,10 +277,12 @@ template <typename T> OSInt Text::StringBase<T>::CompareToICase(const UTF8Char *
 	return MyString_StrCompareICase(this->v, s);
 }
 
-template <typename T> OSInt Text::StringBase<T>::CompareToFast(const UTF8Char *str2, UOSInt len2)
+template <typename T> OSInt Text::StringBase<T>::CompareToFast(StringBase<const UTF8Char> s)
 {
 	const UTF8Char *s0 = this->v;
 	UOSInt len1 = this->leng;
+	UOSInt len2 = s.leng;
+	const UTF8Char *str2 = s.v;
 	OSInt defRet;
 	if (len1 > len2)
 	{

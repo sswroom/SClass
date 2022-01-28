@@ -36,7 +36,7 @@ namespace IO
 
 			virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer);
 			virtual Text::String *GetFullName();
-			virtual const UTF8Char *GetShortName();
+			virtual Text::CString GetShortName();
 			virtual UInt64 GetDataSize();
 			virtual const UInt8 *GetPointer();
 

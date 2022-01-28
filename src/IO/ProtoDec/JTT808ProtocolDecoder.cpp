@@ -13,9 +13,9 @@ IO::ProtoDec::JTT808ProtocolDecoder::~JTT808ProtocolDecoder()
 {
 }
 
-const UTF8Char *IO::ProtoDec::JTT808ProtocolDecoder::GetName()
+Text::CString IO::ProtoDec::JTT808ProtocolDecoder::GetName()
 {
-	return (const UTF8Char*)"JTT808";
+	return CSTR("JTT808");
 }
 
 UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *userObj, UInt64 fileOfst, UInt8 *buff, UOSInt buffSize)

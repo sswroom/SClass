@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				NEW_CLASS(data, IO::StmData::ConcatStreamData(fd->GetFullName()));
 				data->AddData(fd->GetPartialData(0, fd->GetDataSize()));
 				
-				sptr = Text::StrConcat(sbuff, fd->GetShortName()) - 5;
+				sptr = fd->GetShortName().ConcatTo(sbuff) - 5;
 				while (true)
 				{
 					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));

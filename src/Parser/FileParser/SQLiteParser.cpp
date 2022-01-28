@@ -59,7 +59,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		t.SetCurrTimeUTC();
 		sptr = Text::StrHexVal64(sptr, (UInt64)t.ToTicks());
 		*sptr++ = '_';
-		sptr = Text::StrConcat(sptr, fd->GetShortName());
+		sptr = fd->GetShortName().ConcatTo(sptr);
 
 		Bool valid = false;
 		UInt64 currOfst = 0;

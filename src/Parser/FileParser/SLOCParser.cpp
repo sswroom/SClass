@@ -248,11 +248,11 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 
 	Map::GPSTrack *track;
-	Text::StrInt64(sbuff, devId);
-	s = Text::String::NewNotNull(sbuff);
+	sptr = Text::StrInt64(sbuff, devId);
+	s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	track->SetTrackName(s->ToCString());
 	s->Release();
-	track->SetTrackName(sbuff);
 	SLOCExtraParser *parser;
 	NEW_CLASS(parser, SLOCExtraParser());
 	track->SetExtraParser(parser);

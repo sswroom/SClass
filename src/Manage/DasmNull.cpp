@@ -12,9 +12,9 @@ Manage::DasmNull::~DasmNull()
 {
 }
 
-const UTF8Char *Manage::DasmNull::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmNull::GetHeader(Bool fullRegs)
 {
-	return (const UTF8Char*)"Code";
+	return CSTR("Code");
 }
 
 Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
@@ -23,7 +23,7 @@ Bool Manage::DasmNull::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 	sb.AppendC(UTF8STRC("Unknown opcode "));
 	sb.AppendHexBuff((const UInt8*)(OSInt)*currInst, 16, ' ', Text::LineBreakType::None);
 	sb.AppendC(UTF8STRC("\r\n"));
-	writer->Write(sb.ToString());
+	writer->WriteStrC(sb.ToString(), sb.GetLength());
 	return false;
 }
 

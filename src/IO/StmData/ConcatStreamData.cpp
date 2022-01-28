@@ -119,9 +119,9 @@ Text::String *IO::StmData::ConcatStreamData::GetFullName()
 	return this->cdb->fileName;
 }
 
-const UTF8Char *IO::StmData::ConcatStreamData::GetShortName()
+Text::CString IO::StmData::ConcatStreamData::GetShortName()
 {
-	return this->cdb->fileName->v;
+	return this->cdb->fileName->ToCString();
 }
 
 UInt64 IO::StmData::ConcatStreamData::GetDataSize()

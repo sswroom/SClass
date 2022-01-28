@@ -323,200 +323,200 @@ void IO::GPIOControl::ClearEvent(UOSInt pinNum)
 {
 }
 
-static const Char *GPIOControl_Func0[] = {
-	"i2ssdi",
-	"i2ssdo",
-	"i2sws",
-	"i2sclk",
-	"i2c_sclk",
-	"i2c_sd",
-	"spi_cs1",
-	"spi_clk",
-	"spi_mosi",
-	"spi_miso",
+static Text::CString GPIOControl_Func0[] = {
+	CSTR("i2ssdi"),
+	CSTR("i2ssdo"),
+	CSTR("i2sws"),
+	CSTR("i2sclk"),
+	CSTR("i2c_sclk"),
+	CSTR("i2c_sd"),
+	CSTR("spi_cs1"),
+	CSTR("spi_clk"),
+	CSTR("spi_mosi"),
+	CSTR("spi_miso"),
 
-	"spi_cs0",
-	"gpio",
-	"txd0",
-	"rxd0",
-	"spis_cs",
-	"spis_clk",
-	"spis_miso",
-	"spis_mosi",
-	"pwm_ch0",
-	"pwm_ch1",
+	CSTR("spi_cs0"),
+	CSTR("gpio"),
+	CSTR("txd0"),
+	CSTR("rxd0"),
+	CSTR("spis_cs"),
+	CSTR("spis_clk"),
+	CSTR("spis_miso"),
+	CSTR("spis_mosi"),
+	CSTR("pwm_ch0"),
+	CSTR("pwm_ch1"),
 
-	"txd2",
-	"rxd2",
-	"sd_wp",
-	"sd_cd",
-	"sd_d1",
-	"sd_d0",
-	"sd_clk",
-	"sd_cmd",
-	"sd_d3",
-	"sd_d2",
+	CSTR("txd2"),
+	CSTR("rxd2"),
+	CSTR("sd_wp"),
+	CSTR("sd_cd"),
+	CSTR("sd_d1"),
+	CSTR("sd_d0"),
+	CSTR("sd_clk"),
+	CSTR("sd_cmd"),
+	CSTR("sd_d3"),
+	CSTR("sd_d2"),
 
-	"ephy_led4_k",
-	"ephy_led3_k",
-	"ephy_led2_k",
-	"ephy_led1_k",
-	"ephy_led0_k",
-	"wled_k",
-	"perst_n",
-	"co_clko",
-	"wdt",
-	"ephy_led4_n",
+	CSTR("ephy_led4_k"),
+	CSTR("ephy_led3_k"),
+	CSTR("ephy_led2_k"),
+	CSTR("ephy_led1_k"),
+	CSTR("ephy_led0_k"),
+	CSTR("wled_k"),
+	CSTR("perst_n"),
+	CSTR("co_clko"),
+	CSTR("wdt"),
+	CSTR("ephy_led4_n"),
 
-	"ephy_led3_n",
-	"ephy_led2_n",
-	"ephy_led1_n",
-	"ephy_led0_n",
-	"wled_n",
-	"txd1",
-	"rxd1",
+	CSTR("ephy_led3_n"),
+	CSTR("ephy_led2_n"),
+	CSTR("ephy_led1_n"),
+	CSTR("ephy_led0_n"),
+	CSTR("wled_n"),
+	CSTR("txd1"),
+	CSTR("rxd1"),
 };
 
-static const Char *GPIOControl_Func2[] = {
-	"pcmdrx",
-	"pcmdtx",
-	"pcmclk",
-	"pcmfs",
-	"sutif_txd",
-	"sutif_rxd",
-	"co_clko",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+static Text::CString GPIOControl_Func2[] = {
+	CSTR("pcmdrx"),
+	CSTR("pcmdtx"),
+	CSTR("pcmclk"),
+	CSTR("pcmfs"),
+	CSTR("sutif_txd"),
+	CSTR("sutif_rxd"),
+	CSTR("co_clko"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
 
-	"Unknown",
-	"co_clko",
-	"Unknown",
-	"Unknown",
-	"w_utif[0]",
-	"w_utif[1]",
-	"w_utif[2]",
-	"w_utif[3]",
-	"w_utif[4]",
-	"w_utif[5]",
+	CSTR("Unknown"),
+	CSTR("co_clko"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("w_utif[0]"),
+	CSTR("w_utif[1]"),
+	CSTR("w_utif[2]"),
+	CSTR("w_utif[3]"),
+	CSTR("w_utif[4]"),
+	CSTR("w_utif[5]"),
 
-	"pwm_ch2",
-	"pwm_ch3",
-	"w_utif[10]",
-	"w_utif[11]",
-	"w_utif[12]",
-	"w_utif[13]",
-	"w_utif[14]",
-	"w_utif[15]",
-	"w_utif[16]",
-	"w_utif[17]",
+	CSTR("pwm_ch2"),
+	CSTR("pwm_ch3"),
+	CSTR("w_utif[10]"),
+	CSTR("w_utif[11]"),
+	CSTR("w_utif[12]"),
+	CSTR("w_utif[13]"),
+	CSTR("w_utif[14]"),
+	CSTR("w_utif[15]"),
+	CSTR("w_utif[16]"),
+	CSTR("w_utif[17]"),
 
-	"w_utif_k[6]",
-	"w_utif_k[7]",
-	"w_utif_k[8]",
-	"w_utif_k[9]",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"w_utif_n[6]",
+	CSTR("w_utif_k[6]"),
+	CSTR("w_utif_k[7]"),
+	CSTR("w_utif_k[8]"),
+	CSTR("w_utif_k[9]"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("w_utif_n[6]"),
 
-	"w_utif_n[7]",
-	"w_utif_n[8]",
-	"w_utif_n[9]",
-	"Unknown",
-	"Unknown",
-	"pwm_ch0",
-	"pwm_ch1",
+	CSTR("w_utif_n[7]"),
+	CSTR("w_utif_n[8]"),
+	CSTR("w_utif_n[9]"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("pwm_ch0"),
+	CSTR("pwm_ch1"),
 };
 
-static const Char *GPIOControl_Func3[] = {
-	"antsel[5]",
-	"antsel[4]",
-	"antsel[3]",
-	"antsel[2]",
-	"ext_bgclk",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
+static Text::CString GPIOControl_Func3[] = {
+	CSTR("antsel[5]"),
+	CSTR("antsel[4]"),
+	CSTR("antsel[3]"),
+	CSTR("antsel[2]"),
+	CSTR("ext_bgclk"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
 
-	"Unknown",
-	"perst_n",
-	"Unknown",
-	"Unknown",
-	"pwm_ch0",
-	"pwm_ch1",
-	"txd2",
-	"rxd2",
-	"sd_d7",
-	"sd_d6",
+	CSTR("Unknown"),
+	CSTR("perst_n"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("pwm_ch0"),
+	CSTR("pwm_ch1"),
+	CSTR("txd2"),
+	CSTR("rxd2"),
+	CSTR("sd_d7"),
+	CSTR("sd_d6"),
 
-	"sd_d5",
-	"sd_d4",
-	"w_dbgin",
-	"w_dbgack",
-	"w_jtclk",
-	"w_jtdi",
-	"w_jtdo",
-	"dbg_uart_txd",
-	"w_jtms",
-	"w_jtrst_n",
+	CSTR("sd_d5"),
+	CSTR("sd_d4"),
+	CSTR("w_dbgin"),
+	CSTR("w_dbgack"),
+	CSTR("w_jtclk"),
+	CSTR("w_jtdi"),
+	CSTR("w_jtdo"),
+	CSTR("dbg_uart_txd"),
+	CSTR("w_jtms"),
+	CSTR("w_jtrst_n"),
 
-	"jtrstn_k",
-	"jtclk_k",
-	"jtms_k",
-	"jtdi_k",
-	"jtdo_k",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"Unknown",
-	"jtrstn_n",
+	CSTR("jtrstn_k"),
+	CSTR("jtclk_k"),
+	CSTR("jtms_k"),
+	CSTR("jtdi_k"),
+	CSTR("jtdo_k"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("Unknown"),
+	CSTR("jtrstn_n"),
 
-	"jtclk_n",
-	"jtms_n",
-	"jtdi_n",
-	"jtdo_n",
-	"Unknown",
-	"antsel[1]",
-	"antsel[0]",
+	CSTR("jtclk_n"),
+	CSTR("jtms_n"),
+	CSTR("jtdi_n"),
+	CSTR("jtdo_n"),
+	CSTR("Unknown"),
+	CSTR("antsel[1]"),
+	CSTR("antsel[0]"),
 };
 
-const UTF8Char *IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinState)
+Text::CString IO::GPIOControl::PinModeGetName(UOSInt pinNum, UOSInt pinState)
 {
 	if (pinNum >= 47)
 	{
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 	if (pinState == 1)
 	{
-		return (const UTF8Char*)"Input";
+		return CSTR("Input");
 	}
 	else if (pinState == 4)
 	{
-		return (const UTF8Char*)"Output";
+		return CSTR("Output");
 	}
 	if (pinNum >= 47)
 	{
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 	if (pinState == 0)
 	{
-		return (const UTF8Char*)GPIOControl_Func0[pinNum];	
+		return GPIOControl_Func0[pinNum];	
 	}
 	else if (pinState == 2)
 	{
-		return (const UTF8Char*)GPIOControl_Func2[pinNum];	
+		return GPIOControl_Func2[pinNum];	
 	}
 	else if (pinState == 3)
 	{
-		return (const UTF8Char*)GPIOControl_Func3[pinNum];	
+		return GPIOControl_Func3[pinNum];	
 	}
 	else
 	{
-		return (const UTF8Char*)"Unknown";
+		return CSTR("Unknown");
 	}
 }

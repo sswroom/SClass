@@ -4,32 +4,32 @@
 #include "Math/EarthEllipsoid.h"
 
 Math::EarthEllipsoid::EarthEllipsoidInfo Math::EarthEllipsoid::refEllipsoids[] = {
-	{EET_OTHER,			"Other",					1984, 6378137.0,	191.0},
-	{EET_PLESSIS,		"Plessis",					1817, 6376523.0,	308.64},
-	{EET_EVEREST1830,	"Everest",					1830, 6377299.365,	300.80172554},
-	{EET_EVEREST1830M,	"Everest 1830 Modified",	1967, 6377304.063,	300.8017},
-	{EET_EVEREST1830N,	"Everest 1830 (1967 def)",	1967, 6377298.556,	300.8017},
-	{EET_AIRY1830,		"Airy",						1830, 6377563.396,	299.3249646},
-	{EET_AIRY1830M,		"Airy (Modified)",			1830, 6377340.189,	299.32495141450600500090538973015},
-	{EET_BESSEL1841,	"Bessel",					1841, 6377397.155,	299.1528128},
-	{EET_CLARKE1866,	"Clarke",					1866, 6378206.4,	294.9786982},
-	{EET_CLARKE1878,	"Clarke",					1878, 6378190.0,	293.4659980},
-	{EET_CLARKE1880,	"Clarke 1880 (RGS)",		1880, 6378249.145,	293.465},
-	{EET_HELMERT1906,	"Helmert",					1906, 6378200.0,	298.3},
-	{EET_HAYFORD1910,	"Hayford",					1910, 6378388.0,	297.0},
-	{EET_INTL1924,		"International",			1924, 6378388.0,	297.0},
-	{EET_KRASSOVSKY1940, "Krassovsky",				1940, 6378245.0,	298.3},
-	{EET_WGS66,			"WGS66",					1966, 6378145.0,	298.25},
-	{EET_AUSTRALIAN1966, "Australian National",		1966, 6378160.0,	298.25},
-	{EET_NEWINTL1967,	"New International",		1967, 6378157.5,	298.24961539},
-	{EET_GPS67,			"GPS-67",					1967, 6378160.0,	298.247167427},
-	{EET_SAM1969,		"South American",			1969, 6378160.0,	298.25},
-	{EET_WGS72,			"WGS-72",					1972, 6378135.0,	298.26},
-	{EET_GRS80,			"GRS-80",					1979, 6378137.0,	298.257222101},
-	{EET_WGS84,			"WGS-84",					1984, 6378137.0,	298.257223563},
-	{EET_WGS84_OGC,		"WGS-84 (OGC Values)",		1984, 6378137.0,	298.257222932867},
-	{EET_IERS1989,		"IERS",						1989, 6378136.0,	298.257},
-	{EET_IERS2003,		"IERS",						2003, 6378136.6,	298.25642}
+	{EET_OTHER,			CSTR("Other"),						1984, 6378137.0,	191.0},
+	{EET_PLESSIS,		CSTR("Plessis"),					1817, 6376523.0,	308.64},
+	{EET_EVEREST1830,	CSTR("Everest"),					1830, 6377299.365,	300.80172554},
+	{EET_EVEREST1830M,	CSTR("Everest 1830 Modified"),		1967, 6377304.063,	300.8017},
+	{EET_EVEREST1830N,	CSTR("Everest 1830 (1967 def)"),	1967, 6377298.556,	300.8017},
+	{EET_AIRY1830,		CSTR("Airy"),						1830, 6377563.396,	299.3249646},
+	{EET_AIRY1830M,		CSTR("Airy (Modified)"),			1830, 6377340.189,	299.32495141450600500090538973015},
+	{EET_BESSEL1841,	CSTR("Bessel"),						1841, 6377397.155,	299.1528128},
+	{EET_CLARKE1866,	CSTR("Clarke"),						1866, 6378206.4,	294.9786982},
+	{EET_CLARKE1878,	CSTR("Clarke"),						1878, 6378190.0,	293.4659980},
+	{EET_CLARKE1880,	CSTR("Clarke 1880 (RGS)"),			1880, 6378249.145,	293.465},
+	{EET_HELMERT1906,	CSTR("Helmert"),					1906, 6378200.0,	298.3},
+	{EET_HAYFORD1910,	CSTR("Hayford"),					1910, 6378388.0,	297.0},
+	{EET_INTL1924,		CSTR("International"),				1924, 6378388.0,	297.0},
+	{EET_KRASSOVSKY1940, CSTR("Krassovsky"),				1940, 6378245.0,	298.3},
+	{EET_WGS66,			CSTR("WGS66"),						1966, 6378145.0,	298.25},
+	{EET_AUSTRALIAN1966, CSTR("Australian National"),		1966, 6378160.0,	298.25},
+	{EET_NEWINTL1967,	CSTR("New International"),			1967, 6378157.5,	298.24961539},
+	{EET_GPS67,			CSTR("GPS-67"),						1967, 6378160.0,	298.247167427},
+	{EET_SAM1969,		CSTR("South American"),				1969, 6378160.0,	298.25},
+	{EET_WGS72,			CSTR("WGS-72"),						1972, 6378135.0,	298.26},
+	{EET_GRS80,			CSTR("GRS-80"),						1979, 6378137.0,	298.257222101},
+	{EET_WGS84,			CSTR("WGS-84"),						1984, 6378137.0,	298.257223563},
+	{EET_WGS84_OGC,		CSTR("WGS-84 (OGC Values)"),		1984, 6378137.0,	298.257222932867},
+	{EET_IERS1989,		CSTR("IERS"),						1989, 6378136.0,	298.257},
+	{EET_IERS2003,		CSTR("IERS"),						2003, 6378136.6,	298.25642}
 };
 
 Math::EarthEllipsoid::EarthEllipsoid(Double semiMajorAxis, Double inverseFlattening, EarthEllipsoidType eet)
@@ -227,12 +227,12 @@ Bool Math::EarthEllipsoid::Equals(Math::EarthEllipsoid *ellipsoid)
 	return ellipsoid->semiMajorAxis == this->semiMajorAxis && ellipsoid->inverseFlattening == this->inverseFlattening;
 }
 
-const UTF8Char *Math::EarthEllipsoid::GetName()
+Text::CString Math::EarthEllipsoid::GetName()
 {
 	const EarthEllipsoidInfo *info = GetEarthInfo(this->eet);
 	if (info == 0)
-		return (const UTF8Char*)"Unknwon";
-	return (const UTF8Char*)info->name;
+		return CSTR("Unknwon");
+	return info->name;
 }
 
 void Math::EarthEllipsoid::operator=(const EarthEllipsoid &ellipsoid)

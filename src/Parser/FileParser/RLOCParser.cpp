@@ -240,11 +240,11 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 
 	Map::GPSTrack *track;
-	Text::StrInt32(u8buff, devId);
-	s = Text::String::NewNotNull(u8buff);
+	sptr = Text::StrInt32(u8buff, devId);
+	s = Text::String::New(u8buff, (UOSInt)(sptr - u8buff));
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
+	track->SetTrackName(s->ToCString());
 	s->Release();
-	track->SetTrackName(u8buff);
 	RLOCExtraParser *parser;
 	NEW_CLASS(parser, RLOCExtraParser());
 	track->SetExtraParser(parser);

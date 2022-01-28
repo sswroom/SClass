@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "MyMemory.h"
 #include "Data/ArrayListInt32.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
@@ -6,49 +7,46 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderW.h"
 
-typedef struct
+struct IO::USBInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	const UTF8Char *dispName;
-} ClassData;
+	Text::CString dispName;
+};
 
-IO::USBInfo::USBInfo(void *info)
+IO::USBInfo::USBInfo(ClassData *info)
 {
-	ClassData *srcData = (ClassData*)info;
 	ClassData *clsData = MemAlloc(ClassData, 1);
-	clsData->vendorId = srcData->vendorId;
-	clsData->productId = srcData->productId;
-	clsData->dispName = Text::StrCopyNew(srcData->dispName);
+	clsData->vendorId = info->vendorId;
+	clsData->productId = info->productId;
+	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
+	clsData->dispName.leng = info->dispName.leng;
+	
 	this->clsData = clsData;
 }
 
 IO::USBInfo::~USBInfo()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	Text::StrDelNew(clsData->dispName);
-	MemFree(clsData);
+	Text::StrDelNew(this->clsData->dispName.v);
+	MemFree(this->clsData);
 }
 
 UInt16 IO::USBInfo::GetVendorId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->vendorId;
+	return this->clsData->vendorId;
 }
 
 UInt16 IO::USBInfo::GetProductId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->productId;
+	return this->clsData->productId;
 }
 
-const UTF8Char *IO::USBInfo::GetDispName()
+Text::CString IO::USBInfo::GetDispName()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->dispName;
+	return this->clsData->dispName;
 }
 
-OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
+UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 {
 	return 0;
 }

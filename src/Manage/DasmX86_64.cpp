@@ -19365,15 +19365,15 @@ Manage::DasmX86_64::~DasmX86_64()
 	MemFree(this->codes0f3a);
 }
 
-const UTF8Char *Manage::DasmX86_64::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmX86_64::GetHeader(Bool fullRegs)
 {
 	if (fullRegs)
 	{
-		return (const UTF8Char*)" Rsp              Rbp              Rip              Rax              Rdx              Rcx              Rbx              Rsi              Rdi              R8               R9               R10              R11              R12              R13              R14              R15              Code";
+		return CSTR(" Rsp              Rbp              Rip              Rax              Rdx              Rcx              Rbx              Rsi              Rdi              R8               R9               R10              R11              R12              R13              R14              R15              Code");
 	}
 	else
 	{
-		return (const UTF8Char*)" Rsp              Rbp              Rip              Code";
+		return CSTR(" Rsp              Rbp              Rip              Code");
 	}
 }
 

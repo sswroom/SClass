@@ -407,11 +407,6 @@ namespace Text
 			return this->leng;
 		}
 
-		UTF8Char *GetEndPtr()
-		{
-			return &this->v[this->leng];
-		}
-
 		void SetEndPtr(UTF8Char *endPtr)
 		{
 			this->leng = (UOSInt)(endPtr - this->v);

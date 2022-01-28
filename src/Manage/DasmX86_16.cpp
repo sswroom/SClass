@@ -7958,9 +7958,9 @@ void Manage::DasmX86_16::DeleteSess(Manage::DasmX86_16::DasmX86_16_Sess *sess)
 	}
 }
 
-const UTF8Char *Manage::DasmX86_16::GetHeader(Bool fullRegs)
+Text::CString Manage::DasmX86_16::GetHeader(Bool fullRegs)
 {
-	return (const UTF8Char*)"EAX\tEDX\tECX\tEBX";
+	return CSTR("EAX\tEDX\tECX\tEBX");
 }
 
 Bool Manage::DasmX86_16::Disasm16(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt16 *currInst, UInt16 *currStack, UInt16 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt16 *blockStart, UInt16 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)

@@ -1,5 +1,6 @@
 #ifndef _SM_IO_ISTREAMDATA
 #define _SM_IO_ISTREAMDATA
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace IO
@@ -10,7 +11,7 @@ namespace IO
 		virtual ~IStreamData(){};
 		virtual UOSInt GetRealData(UInt64 offset, UOSInt length, UInt8 *buffer) = 0;
 		virtual Text::String *GetFullName() = 0;
-		virtual const UTF8Char *GetShortName() = 0;
+		virtual Text::CString GetShortName() = 0;
 		virtual void SetFullName(const UTF8Char *fullName) {};
 		virtual UInt64 GetDataSize() = 0;
 		virtual const UInt8 *GetPointer() = 0;

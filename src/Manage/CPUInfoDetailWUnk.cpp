@@ -8,14 +8,14 @@
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	this->cpuModel = 0;
+	this->cpuModel = {0, 0};
 }
 
 Manage::CPUInfoDetail::~CPUInfoDetail()
 {
 }
 
-const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()
+Text::CString Manage::CPUInfoDetail::GetCPUModel()
 {
 	return this->cpuModel;
 }

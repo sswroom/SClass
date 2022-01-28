@@ -53,9 +53,9 @@ Text::String *IO::StmData::MemoryData2::GetFullName()
 	return Text::String::NewEmpty();
 }
 
-const UTF8Char *IO::StmData::MemoryData2::GetShortName()
+Text::CString IO::StmData::MemoryData2::GetShortName()
 {
-	return (const UTF8Char*)"Memory2";
+	return CSTR("Memory2");
 }
 
 UInt64 IO::StmData::MemoryData2::GetDataSize()

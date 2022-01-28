@@ -1,5 +1,6 @@
 #ifndef _SM_IO_DEVICEDB
 #define _SM_IO_DEVICEDB
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -9,15 +10,8 @@ namespace IO
 		typedef struct
 		{
 			UInt16 vendorId;
-			const Char *vendorName;
+			Text::CString vendorName;
 		} VendorInfo;
-
-		typedef struct
-		{
-			UInt16 vendorId;
-			const UTF8Char *vendorName;
-			UOSInt nameLen;
-		} VendorInfo2;
 
 		typedef struct
 		{
@@ -54,9 +48,9 @@ namespace IO
 	public:
 		static const USBDeviceInfo *GetUSBInfo(UInt16 vendorId, UInt16 productId, UInt16 bcdDevice);
 		static const PCIDeviceInfo *GetPCIInfo(UInt16 vendorId, UInt16 productId);
-		static const UTF8Char *GetUSBVendorName(UInt16 vendorId);
-		static const UTF8Char *GetPCIVendorName(UInt16 vendorId);
+		static Text::CString GetUSBVendorName(UInt16 vendorId);
+		static Text::CString GetPCIVendorName(UInt16 vendorId);
 	};
-};
+}
 
 #endif

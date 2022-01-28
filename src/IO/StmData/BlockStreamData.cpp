@@ -65,7 +65,7 @@ Text::String *IO::StmData::BlockStreamData::GetFullName()
 	return this->sd->GetFullName();
 }
 
-const UTF8Char *IO::StmData::BlockStreamData::GetShortName()
+Text::CString IO::StmData::BlockStreamData::GetShortName()
 {
 	return this->sd->GetShortName();
 }

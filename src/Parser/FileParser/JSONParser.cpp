@@ -38,9 +38,9 @@ IO::ParserType Parser::FileParser::JSONParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UInt8 buff[32];
-	const UTF8Char *fileName = fd->GetShortName();
+	Text::CString fileName = fd->GetShortName();
 	Bool valid = false;
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".geojson"))
+	if (fileName.EndsWithICase(UTF8STRC(".geojson")))
 	{
 		valid = true;
 	}
@@ -130,7 +130,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 						vec = ParseGeomJSON((Text::JSONObject*)featGeom, srid);
 						if (vec)
 						{
-							Text::String *s = Text::String::NewNotNull(fd->GetShortName());
+							Text::String *s = Text::String::New(fd->GetShortName());
 							NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_MIXED, fd->GetFullName(), colCnt, tabHdrs, csys, 0, s));
 							s->Release();
 							DEL_CLASS(vec);

@@ -1,7 +1,7 @@
 #ifndef _SM_MAP_GPSTRACK
 #define _SM_MAP_GPSTRACK
 #include "Data/ArrayListInt32.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "IO/ParsedObject.h"
 #include "Map/IMapDrawLayer.h"
 #include "Sync/Mutex.h"
@@ -31,7 +31,7 @@ namespace Map
 			Double maxLon;
 			Double minLat;
 			Double minLon;
-			const UTF8Char *name;
+			Text::String *name;
 			UOSInt nRecords;
 			GPSRecord *records;
 			const UInt8 **extraData;
@@ -58,7 +58,7 @@ namespace Map
 		Double maxLon;
 		Double minLat;
 		Double minLon;
-		const UTF8Char *currTrackName;
+		Text::String *currTrackName;
 		Sync::Mutex *recMut;
 		Data::ArrayListInt64 *currTimes;
 		Data::ArrayList<GPSRecord*> *currRecs;
@@ -107,9 +107,9 @@ namespace Map
 		UOSInt AddRecord(GPSRecord *rec);
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
 		Bool GetHasAltitude();
-		void SetTrackName(const UTF8Char *name);
-		void GetTrackNames(Data::ArrayListStrUTF8 *nameArr);
-		const UTF8Char *GetTrackName(UOSInt index);
+		void SetTrackName(Text::CString name);
+		void GetTrackNames(Data::ArrayListString *nameArr);
+		Text::String *GetTrackName(UOSInt index);
 		Bool GetTrackStartTime(UOSInt index, Data::DateTime *dt);
 		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
 

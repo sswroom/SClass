@@ -6,54 +6,49 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Win32/WMIQuery.h"
 
-typedef struct
+struct IO::USBInfo::ClassData
 {
 	UInt16 idVendor;
 	UInt16 idProduct;
 	UInt16 bcdDevice;
-	const UTF8Char *dispName;
-} ClassData;
+	Text::CString dispName;
+};
 
-IO::USBInfo::USBInfo(void *info)
+IO::USBInfo::USBInfo(ClassData *info)
 {
-	ClassData *srcData = (ClassData*)info;
 	ClassData *clsData = MemAlloc(ClassData, 1);
-	clsData->idVendor = srcData->idVendor;
-	clsData->idProduct = srcData->idProduct;
-	clsData->bcdDevice = srcData->bcdDevice;
-	clsData->dispName = Text::StrCopyNew(srcData->dispName);
+	clsData->idVendor = info->idVendor;
+	clsData->idProduct = info->idProduct;
+	clsData->bcdDevice = info->bcdDevice;
+	clsData->dispName.v = Text::StrCopyNewC(info->dispName.v, info->dispName.leng);
+	clsData->dispName.leng = info->dispName.leng;
 	this->clsData = clsData;
 }
 
 IO::USBInfo::~USBInfo()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	Text::StrDelNew(clsData->dispName);
-	MemFree(clsData);
+	Text::StrDelNew(this->clsData->dispName.v);
+	MemFree(this->clsData);
 }
 
 UInt16 IO::USBInfo::GetVendorId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->idVendor;
+	return this->clsData->idVendor;
 }
 
 UInt16 IO::USBInfo::GetProductId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->idProduct;
+	return this->clsData->idProduct;
 }
 
 UInt16 IO::USBInfo::GetRevision()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->bcdDevice;
+	return this->clsData->bcdDevice;
 }
 
-const UTF8Char *IO::USBInfo::GetDispName()
+Text::CString IO::USBInfo::GetDispName()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->dispName;
+	return this->clsData->dispName;
 }
 
 UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
@@ -80,7 +75,7 @@ UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
 	return (UInt16)(Text::StrHex2Int32C((const UTF8Char*)buff) & 0xffff);
 }
 
-OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
+UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 {
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayListUInt32 existList;
@@ -89,7 +84,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	UInt32 id;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	OSInt ret = 0;
+	UOSInt ret = 0;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
 	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_LogicalDevice", 0, 0, 0, 0, 0);
 	if (r)
@@ -131,7 +126,7 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 						existList.SortedInsert(id);
 						sb.ClearStr();
 						r->GetStr(descCol, &sb);
-						clsData.dispName = sb.ToString();
+						clsData.dispName = sb.ToCString();
 						NEW_CLASS(usb, IO::USBInfo(&clsData));
 						usbList->Add(usb);
 						ret++;
@@ -224,11 +219,11 @@ OSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 						
 						if (sb.GetLength() > 0)
 						{
-							clsData.dispName = sb.ToString();
+							clsData.dispName = sb.ToCString();
 						}
 						else
 						{
-							clsData.dispName = (const UTF8Char*)"USB Device";
+							clsData.dispName = CSTR("USB Device");
 						}
 						NEW_CLASS(usb, IO::USBInfo(&clsData));
 						usbList->Add(usb);

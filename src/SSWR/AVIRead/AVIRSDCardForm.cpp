@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 		UInt8 buff[32];
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		me->txtName->SetText(sdCard->GetName());
+		me->txtName->SetText(sdCard->GetName()->v);
 		sdCard->GetCID(buff);
 		Text::StrHexBytes(sbuff, buff, 16, 0);
 		me->txtCID->SetText(sbuff);
@@ -83,7 +83,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(void *item1, void *it
 {
 	IO::SDCardInfo *sdCard1 = (IO::SDCardInfo*)item1;
 	IO::SDCardInfo *sdCard2 = (IO::SDCardInfo*)item2;
-	return Text::StrCompare(sdCard1->GetName(), sdCard2->GetName());
+	return sdCard1->GetName()->CompareTo(sdCard2->GetName());
 }
 
 SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::
 		sdCard = this->sdCardList->GetItem(i);
 		sptr = Text::StrUOSInt(sbuff, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
-		sptr = Text::StrConcat(sptr, sdCard->GetName());
+		sptr = sdCard->GetName()->ConcatTo(sptr);
 		this->lbDevices->AddItem(sbuff, sdCard);
 		i++;
 	}

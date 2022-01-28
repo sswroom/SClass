@@ -37,17 +37,18 @@ typedef struct
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	UTF8Char u8buff[256];
-	this->cpuModel = 0;
-	if (this->GetCPUName(u8buff))
+	UTF8Char *sptr;
+	this->cpuModel = {0, 0};
+	if ((sptr = this->GetCPUName(u8buff)) != 0)
 	{
-		this->cpuModel = Manage::CPUDB::X86CPUNameToModel(u8buff);
+		this->cpuModel = Manage::CPUDB::X86CPUNameToModel({u8buff, (UOSInt)(sptr - u8buff)});
 	}
-	if (this->cpuModel == 0)
+	if (this->cpuModel.v == 0)
 	{
 		Manage::CPUDB::CPUSpecX86 *cpuSpec = Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId);
 		if (cpuSpec)
 		{
-			this->cpuModel = (const UTF8Char*)cpuSpec->partNum;
+			this->cpuModel = cpuSpec->partNum;
 		}
 	}
 }
@@ -57,7 +58,7 @@ Manage::CPUInfoDetail::~CPUInfoDetail()
 {
 }
 
-const UTF8Char *Manage::CPUInfoDetail::GetCPUModel()
+Text::CString Manage::CPUInfoDetail::GetCPUModel()
 {
 	return this->cpuModel;
 }

@@ -159,7 +159,7 @@ namespace Data
 			k = (i + j) >> 1;
 			if (this->items[k].hash == hash)
 			{
-				l = this->items[k].s->CompareToFast(s, len);
+				l = this->items[k].s->CompareToFast({s, len});
 				if (l > 0)
 				{
 					j = k - 1;

@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 							sb.AppendSlow((const UTF8Char*)android->modelName);
 							this->lvUserAgent->SetSubItem(k, 3, sb.ToString());
 							this->lvUserAgent->SetSubItem(k, 4, (const UTF8Char*)android->cpuName);
-							const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec((const UTF8Char*)android->cpuName);
+							const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec(Text::CString::FromPtr((const UTF8Char*)android->cpuName));
 							if (cpu)
 							{
 								sb.ClearStr();

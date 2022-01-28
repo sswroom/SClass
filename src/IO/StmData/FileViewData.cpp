@@ -32,10 +32,11 @@ IO::StmData::FileViewData::FileViewData(const UTF8Char* fname)
 			if (*name == IO::Path::PATH_SEPERATOR)
 				fname = name;
 		fdh->fullName = Text::String::New((UOSInt)(name - name2 - 1));
-		fdh->fileName = dname = fdh->fullName->v;
+		fdh->fileName.v = dname = fdh->fullName->v;
 		while ((*dname++ = *name2++) != 0)
 			if (dname[-1] == IO::Path::PATH_SEPERATOR)
-				fdh->fileName = dname;
+				fdh->fileName.v = dname;
+		fdh->fileName.leng = (UOSInt)(fdh->fullName->GetEndPtr() - fdh->fileName.v);
 	}
 }
 
@@ -91,10 +92,10 @@ UInt64 IO::StmData::FileViewData::GetDataSize()
 	return dataLength;
 }
 
-const UTF8Char *IO::StmData::FileViewData::GetShortName()
+Text::CString IO::StmData::FileViewData::GetShortName()
 {
 	if (fdh == 0)
-		return 0;
+		return {0, 0};
 	return fdh->fileName;
 }
 

@@ -2,6 +2,7 @@
 #define _SM_MATH_EARTHELLIPSOID
 #include "Math/Polyline3D.h"
 #include "Math/Unit/Distance.h"
+#include "Text/CString.h"
 
 namespace Math
 {
@@ -41,7 +42,7 @@ namespace Math
 		typedef struct
 		{
 			EarthEllipsoidType eet;
-			const Char *name;
+			Text::CString name;
 			Int32 year;
 			Double semiMajorAxis;
 			Double inverseFlattening;
@@ -72,7 +73,7 @@ namespace Math
 		Double CalLatByDist(Double dLat, Double distM);
 		Double CalRadiusAtLat(Double lat);
 		Bool Equals(EarthEllipsoid *ellipsoid);
-		const UTF8Char *GetName();
+		Text::CString GetName();
 
 		void operator=(const EarthEllipsoid &ellipsoid);
 		void operator=(const EarthEllipsoid *ellipsoid);
