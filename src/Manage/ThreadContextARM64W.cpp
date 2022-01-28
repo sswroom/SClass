@@ -169,7 +169,7 @@ UTF8Char *Manage::ThreadContextARM64::GetRegister(UOSInt index, UTF8Char *buff, 
 	}
 }
 
-void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF *sb)
+void Manage::ThreadContextARM64::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
