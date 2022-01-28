@@ -907,7 +907,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		packBuff = MemAlloc(UInt8, (UOSInt)pack->packSize);
 		this->fd->GetRealData(pack->fileOfst, (UOSInt)pack->packSize, packBuff);
 		frame->AddField(0, 4, {UTF8STRC("Magic number")}, {UTF8STRC("PE\\0\\0")});
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (ReadUInt16(&packBuff[4]))
 		{
 		case 0x0:
@@ -1052,7 +1052,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		frame->AddUInt(56, 4, CSTR("SizeOfImage"), ReadUInt32(&packBuff[56]));
 		frame->AddUInt(60, 4, CSTR("SizeOfHeaders"), ReadUInt32(&packBuff[60]));
 		frame->AddHex32(64, CSTR("CheckSum"), ReadUInt32(&packBuff[64]));
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (ReadUInt16(&packBuff[68]))
 		{
 		case 0:

@@ -562,19 +562,19 @@ Text::CString Math::TSPReader::GetName(UOSInt colIndex)
 		if (this->rowSize >= 128)
 			return CSTR("RequestX");
 		else
-			return {0, 0};
+			return CSTR_NULL;
 	case 10:
 		if (this->rowSize >= 128)
 			return CSTR("RequestY");
 		else
-			return {0, 0};
+			return CSTR_NULL;
 	case 11:
 		if (this->rowSize >= 128)
 			return CSTR("RequestZ");
 		else
-			return {0, 0};
+			return CSTR_NULL;
 	default:
-		return {0, 0};
+		return CSTR_NULL;
 	}
 }
 
@@ -773,6 +773,6 @@ Text::CString Math::TSPHReader::GetName(UOSInt colIndex)
 	case 7:
 		return CSTR("Azimuth");
 	default:
-		return {0, 0};
+		return CSTR_NULL;
 	}
 }

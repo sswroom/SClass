@@ -268,7 +268,7 @@ Bool Net::MQTTConn::IsError()
 	return this->cli == 0 || !this->recvRunning;
 }
 
-Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password)
+Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -285,24 +285,24 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8Cha
 	packet1[7] = 2; //Flags;
 	WriteMInt16(&packet1[8], keepAliveS);
 	i = 10;
-	j = Text::StrCharCnt(clientId);
+	j = clientId.leng;
 	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], clientId, j);
+	MemCopyNO(&packet1[i + 2], clientId.v, j);
 	i += j + 2;
-	if (userName)
+	if (userName.leng > 0)
 	{
 		packet1[7] |= 0x80;
-		j = Text::StrCharCnt(userName);
+		j = userName.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], userName, j);
+		MemCopyNO(&packet1[i + 2], userName.v, j);
 		i += j + 2;
 	}
-	if (password)
+	if (password.leng > 0)
 	{
 		packet1[7] |= 0x40;
-		j = Text::StrCharCnt(password);
+		j = password.leng;
 		WriteMInt16(&packet1[i], j);
-		MemCopyNO(&packet1[i + 2], password, j);
+		MemCopyNO(&packet1[i + 2], password.v, j);
 		i += j + 2;
 	}
 	j = this->protoHdlr->BuildPacket(packet2, 0x10, 0, packet1, i, this->cliData);
@@ -439,10 +439,11 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	NEW_CLASS(cli, Net::MQTTConn(sockf, ssl, host, port, 0, 0));
 	if (cli->IsError())
 	{
@@ -453,8 +454,8 @@ Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	Bool succ = false;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("sswrMQTT/")), dt.ToTicks());
-	if (cli->SendConnect(4, 30, sbuff, username, password))
+	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("sswrMQTT/")), dt.ToTicks());
+	if (cli->SendConnect(4, 30, {sbuff, (UOSInt)(sptr - sbuff)}, username, password))
 	{
 		succ = (cli->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
 	}

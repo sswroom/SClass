@@ -4,6 +4,7 @@
 
 #define CSTR(str) {UTF8STRC(str)}
 #define CSTRP(str, strEnd) {str, (UOSInt)(strEnd - str)}
+#define CSTR_NULL {0, 0}
 namespace Text
 {
 	struct CString : public StringBase<const UTF8Char>

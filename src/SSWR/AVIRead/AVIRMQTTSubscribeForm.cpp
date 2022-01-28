@@ -57,28 +57,30 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		}
 		me->client->HandlePublishMessage(OnPublishMessage, me);
 
-		const UTF8Char *username = 0;
-		const UTF8Char *password = 0;
+		Text::CString username = CSTR_NULL;
+		Text::CString password = CSTR_NULL;
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sb.ClearStr();
 		me->txtUsername->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			username = Text::StrCopyNew(sb.ToString());
+			username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+			username.leng = sb.GetLength();
 		}
 		sb.ClearStr();
 		me->txtPassword->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			password = Text::StrCopyNew(sb.ToString());
+			password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+			password.leng = sb.GetLength();
 		}
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("sswrMQTT/"));
 		sb.AppendI64(dt.ToTicks());
-		Bool succ = me->client->SendConnect(4, 30, sb.ToString(), username, password);
-		SDEL_TEXT(username);
-		SDEL_TEXT(password);
+		Bool succ = me->client->SendConnect(4, 30, sb.ToCString(), username, password);
+		SDEL_TEXT(username.v);
+		SDEL_TEXT(password.v);
 		if (succ)
 		{
 			Net::MQTTConn::ConnectStatus status = me->client->WaitConnAck(30000);

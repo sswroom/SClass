@@ -95,7 +95,7 @@ UInt64 IO::StmData::FileViewData::GetDataSize()
 Text::CString IO::StmData::FileViewData::GetShortName()
 {
 	if (fdh == 0)
-		return {0, 0};
+		return CSTR_NULL;
 	return fdh->fileName;
 }
 

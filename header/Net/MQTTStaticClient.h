@@ -22,7 +22,7 @@ namespace Net
 		Sync::Mutex *packetIdMut;
 		IO::Writer *errLog;
 
-		const UTF8Char *clientId;
+		Text::String *clientId;
 		Sync::Mutex *hdlrMut;
 		Data::ArrayList<Net::MQTTConn::PublishMessageHdlr> *hdlrList;
 		Data::ArrayList<void *> *hdlrObjList;
@@ -33,8 +33,8 @@ namespace Net
 		Net::SSLEngine *ssl;
 		const UTF8Char *host;
 		UInt16 port;
-		const UTF8Char *username;
-		const UTF8Char *password;
+		Text::String *username;
+		Text::String *password;
 		Bool autoReconn;
 
 		static UInt32 __stdcall KAThread(void *userObj);
@@ -43,7 +43,7 @@ namespace Net
 		UInt16 GetNextPacketId();
 	public:
 		MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj, IO::Writer *errLog);
-		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
+		MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog);
 		virtual ~MQTTStaticClient();
 
 		Bool IsStarted();

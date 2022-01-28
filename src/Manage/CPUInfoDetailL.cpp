@@ -13,7 +13,7 @@
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	IO::FileStream *fs;
-	this->cpuModel = {0, 0};
+	this->cpuModel = CSTR_NULL;
 
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())

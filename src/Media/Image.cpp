@@ -275,7 +275,7 @@ void Media::Image::ToString(Text::StringBuilderUTF8 *sb)
 	if (this->exif)
 	{
 		sb->AppendC(UTF8STRC("\r\n"));
-		this->exif->ToString(sb, {0, 0});
+		this->exif->ToString(sb, CSTR_NULL);
 	}
 }
 

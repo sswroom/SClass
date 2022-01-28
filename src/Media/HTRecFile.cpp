@@ -578,7 +578,7 @@ Text::CString Media::HTRecFile::HTRecReader::GetName(UOSInt colIndex)
 			return CSTR("rh");
 		}
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->GetFullName())

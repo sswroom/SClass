@@ -8,7 +8,7 @@
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	this->cpuModel = {0, 0};
+	this->cpuModel = CSTR_NULL;
 }
 
 Manage::CPUInfoDetail::~CPUInfoDetail()

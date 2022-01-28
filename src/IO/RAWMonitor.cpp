@@ -6,25 +6,25 @@ Text::CString IO::RAWMonitor::LinkTypeGetName(UInt32 linkType)
 	switch (linkType)
 	{
 	case 0:
-		return {UTF8STRC("Null")};
+		return CSTR("Null");
 	case 1:
-		return {UTF8STRC("Ethernet")};
+		return CSTR("Ethernet");
 	case 3:
-		return {UTF8STRC("AX 25")};
+		return CSTR("AX 25");
 	case 6:
-		return {UTF8STRC("IEEE802.5")};
+		return CSTR("IEEE802.5");
 	case 7:
-		return {UTF8STRC("ARCNET")};
+		return CSTR("ARCNET");
 	case 8:
-		return {UTF8STRC("SLIP")};
+		return CSTR("SLIP");
 	case 9:
-		return {UTF8STRC("PPP")};
+		return CSTR("PPP");
 	case 101:
-		return {UTF8STRC("IPv4")};
+		return CSTR("IPv4");
 	case 113:
-		return {UTF8STRC("Linux")};
+		return CSTR("Linux");
 	case 201:
-		return {UTF8STRC("Bluetooth")};
+		return CSTR("Bluetooth");
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }

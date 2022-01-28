@@ -101,5 +101,5 @@ Text::CString Net::WebStatus::GetCodeName(StatusCode code)
 			return {statInfo[k].name, statInfo[k].nameLen};
 		}
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }

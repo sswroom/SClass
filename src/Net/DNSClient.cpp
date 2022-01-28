@@ -781,5 +781,5 @@ Text::CString Net::DNSClient::TypeGetID(UInt16 type)
 	case 32769:
 		return {UTF8STRC("DLV")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }

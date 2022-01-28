@@ -1626,9 +1626,9 @@ Text::CString Map::GPSDataReader::GetName(UOSInt colIndex)
 		}
 		else
 		{
-			return {0, 0};
+			return CSTR_NULL;
 		}
 	default:
-		return {0, 0};
+		return CSTR_NULL;
 	}
 }

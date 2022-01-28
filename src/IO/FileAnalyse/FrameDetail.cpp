@@ -86,17 +86,17 @@ void IO::FileAnalyse::FrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text::C
 
 void IO::FileAnalyse::FrameDetail::AddFieldSeperstor(UOSInt ofst, Text::CString name)
 {
-	this->AddFieldInfo(ofst, 0, name, {0, 0}, FT_SEPERATOR);
+	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_SEPERATOR);
 }
 
 void IO::FileAnalyse::FrameDetail::AddText(UOSInt ofst, Text::CString name)
 {
-	this->AddFieldInfo(ofst, 0, name, {0, 0}, FT_TEXT);
+	this->AddFieldInfo(ofst, 0, name, CSTR_NULL, FT_TEXT);
 }
 
 void IO::FileAnalyse::FrameDetail::AddSubframe(UOSInt ofst, UOSInt size)
 {
-	this->AddFieldInfo(ofst, size, CSTR("Subframe"), {0, 0}, FT_SUBFRAME);
+	this->AddFieldInfo(ofst, size, CSTR("Subframe"), CSTR_NULL, FT_SUBFRAME);
 }
 
 void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb)

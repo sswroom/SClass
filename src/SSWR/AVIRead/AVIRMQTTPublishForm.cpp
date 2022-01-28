@@ -13,8 +13,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	Text::StringBuilderUTF8 sbHost;
 	const UTF8Char *topic = 0;
 	const UTF8Char *message = 0;
-	const UTF8Char *username = 0;
-	const UTF8Char *password = 0;
+	Text::CString username = CSTR_NULL;
+	Text::CString password = CSTR_NULL;
 	UInt16 port;
 	me->txtHost->GetText(&sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), sbHost.GetLength(), &addr))
@@ -52,13 +52,15 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtUsername->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		username = Text::StrCopyNew(sb.ToString());
+		username.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+		username.leng = sb.GetLength();
 	}
 	sb.ClearStr();
 	me->txtPassword->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		password = Text::StrCopyNew(sb.ToString());
+		password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+		password.leng = sb.GetLength();
 	}
 	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToString(), port, username, password, topic, message))
 	{
@@ -70,8 +72,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 	SDEL_TEXT(topic);
 	SDEL_TEXT(message);
-	SDEL_TEXT(username);
-	SDEL_TEXT(password);
+	SDEL_TEXT(username.v);
+	SDEL_TEXT(password.v);
 }
 
 SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

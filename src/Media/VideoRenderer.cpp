@@ -2321,7 +2321,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	}
 	else
 	{
-		status->decoderName = {0, 0};
+		status->decoderName = CSTR_NULL;
 	}
 	if (this->video)
 	{

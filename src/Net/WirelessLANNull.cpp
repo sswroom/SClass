@@ -98,7 +98,7 @@ Double Net::WirelessLAN::BSSInfo::GetRSSI()
 	return this->rssi;
 }
 
-Int32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
+UInt32 Net::WirelessLAN::BSSInfo::GetLinkQuality()
 {
 	return this->linkQuality;
 }
@@ -140,12 +140,12 @@ const UInt8 *Net::WirelessLAN::BSSInfo::GetChipsetOUI(OSInt index)
 	return this->chipsetOUIs[index];
 }
 
-OSInt Net::WirelessLAN::BSSInfo::GetIECount()
+UOSInt Net::WirelessLAN::BSSInfo::GetIECount()
 {
 	return this->ieList->GetCount();
 }
 
-Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(OSInt index)
+Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 {
 	return this->ieList->GetItem(index);
 }
@@ -153,17 +153,17 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(OSInt index)
 Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData)
 {
 	this->clsData = 0;
-	this->name = Text::StrCopyNew(name);
+	this->name = Text::String::NewNotNull(name);
 	this->id = id;
 	this->state = state;
 }
 
 Net::WirelessLAN::Interface::~Interface()
 {
-	Text::StrDelNew(this->name);
+	this->name->Release();
 }
 
-const UTF8Char *Net::WirelessLAN::Interface::GetName()
+Text::String *Net::WirelessLAN::Interface::GetName()
 {
 	return this->name;
 }
@@ -173,12 +173,12 @@ Bool Net::WirelessLAN::Interface::Scan()
 	return false;
 }
 
-OSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
+UOSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
 {
 	return 0;
 }
 
-OSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) ///////////////////////////////////
+UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) ///////////////////////////////////
 {
 	return 0;
 }
@@ -196,7 +196,7 @@ Bool Net::WirelessLAN::IsError()
 	return true;
 }
 
-Int32 Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
+UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
 {
 	return 0;
 }

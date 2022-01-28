@@ -539,7 +539,7 @@ Text::CString UI::GUIHexFileView::GetAnalyzerName()
 	{
 		return this->analyse->GetFormatName();
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Bool UI::GUIHexFileView::GetFrameName(Text::StringBuilderUTF8 *sb)

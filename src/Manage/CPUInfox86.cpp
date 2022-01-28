@@ -89,9 +89,7 @@ Manage::CPUInfo::CPUInfo()
 	size_t size = 1024;
 	if (sysctlbyname("machdep.cpu.brand_string", cbuff, &size, 0, 0) == 0)
 	{
-		sb.ClearStr();
-		sb.AppendC((const UTF8Char*)cbuff, size);
-		info->cpuName = Text::StrCopyNew(sb.ToString());
+		info->cpuName = Text::StrCopyNewC((const UTF8Char*)cbuff, size);
 	}
 #elif defined(__FreeBSD__)
 	Text::StringBuilderUTF8 sb;
@@ -102,9 +100,7 @@ Manage::CPUInfo::CPUInfo()
 	size_t size = 1024;
 	if (sysctl(mib, 2, cbuff, &size, 0, 0) == 0)
 	{
-		sb.ClearStr();
-		sb.AppendC((const UTF8Char*)cbuff, size);
-		info->cpuName = Text::StrCopyNew(sb.ToString());
+		info->cpuName = Text::StrCopyNewC((const UTF8Char*)cbuff, size);
 	}
 #elif defined(__sun__)
 	processor_info_t pinfo;
@@ -127,7 +123,7 @@ Manage::CPUInfo::CPUInfo()
 			if (sb.StartsWith(UTF8STRC("model name")))
 			{
 				i = sb.IndexOf(UTF8STRC(": "));
-				info->cpuName = Text::StrCopyNew(sb.ToString() + i + 2);
+				info->cpuName = Text::StrCopyNewC(sb.ToString() + i + 2, sb.GetLength() - i - 2);
 				break;
 			}
 			sb.ClearStr();
@@ -836,7 +832,7 @@ Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, 
 			return {UTF8STRC("128-Byte prefetching")};
 		}
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)

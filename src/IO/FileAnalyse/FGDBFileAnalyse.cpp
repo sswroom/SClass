@@ -748,6 +748,6 @@ Text::CString IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
 	case TagType::FreeSpace:
 		return {UTF8STRC("FreeSpace")};
 	default:
-		return {0, 0};
+		return CSTR_NULL;
 	}
 }

@@ -223,7 +223,7 @@ Bool Manage::CPUInfo::GetCPUTCC(Double *temp)
 
 Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType)
 {
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)

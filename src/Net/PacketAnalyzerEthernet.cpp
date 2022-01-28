@@ -278,7 +278,7 @@ void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSI
 	Text::CString vName;
 	UInt16 v;
 	v = ReadMUInt16(&packet[0]);
-	vName = {0, 0};
+	vName = CSTR_NULL;
 	switch (v)
 	{
 	case 0:
@@ -298,7 +298,7 @@ void Net::PacketAnalyzerEthernet::PacketLinuxGetDetail(const UInt8 *packet, UOSI
 		break;
 	}
 	frame->AddUIntName(frameOfst + 0, 2, CSTR("Packet Type"), v, vName);
-	vName = {0, 0};
+	vName = CSTR_NULL;
 	v = ReadMUInt16(&packet[2]);
 	switch (v)
 	{
@@ -388,7 +388,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 			frame->AddFieldSeperstor(frameOfst + 2, CSTR("Spanning Tree Protocol:"));
 			frame->AddHex8(frameOfst + 2, CSTR("Control"), packet[2]);
 			protoId = ReadMUInt16(&packet[3]);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (protoId)
 			{
 			case 0:
@@ -396,7 +396,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 				break;
 			}
 			frame->AddHex16Name(frameOfst + 3, CSTR("Protocol ID"), protoId, vName);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[5])
 			{
 			case 0:
@@ -413,7 +413,7 @@ void Net::PacketAnalyzerEthernet::PacketIEEE802_2LLCGetDetail(const UInt8 *packe
 				break;
 			}
 			frame->AddHex8Name(frameOfst + 5, CSTR("Version ID"), packet[5], vName);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[6])
 			{
 			case 0:
@@ -485,7 +485,7 @@ void Net::PacketAnalyzerEthernet::PacketARPGetDetail(const UInt8 *packet, UOSInt
 		frame->AddHex16(frameOfst + 2, CSTR("Protocol Type (PTYPE)"), ptype);
 		frame->AddUInt(frameOfst + 4, 1, CSTR("Hardware address length (HLEN)"), hlen);
 		frame->AddUInt(frameOfst + 5, 1, CSTR("Protocol address length (PLEN)"), plen);
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (oper)
 		{
 		case 1:
@@ -572,7 +572,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 		if (packetSize >= 4)
 		{
 			UOSInt i = 4;
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0])
 			{
 			case 0:
@@ -635,7 +635,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 			}
 			frame->AddUIntName(frameOfst + 0, 1, CSTR("Type"), packet[0], vName);
 
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0])
 			{
 			case 3:
@@ -892,7 +892,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 				UOSInt i = 20;
 				while (i < headerLen)
 				{
-					vName = {0, 0};
+					vName = CSTR_NULL;
 					switch (packet[i])
 					{
 					case 0:
@@ -1021,7 +1021,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 		frame->AddText(frameOfst, CSTR("ICMPv6:"));
 		if (packetSize >= 4)
 		{
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0])
 			{
 			case 1:
@@ -1135,7 +1135,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 			}
 			frame->AddUIntName(frameOfst + 0, 1, CSTR("Type"), packet[0], vName);
 
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0])
 			{
 			case 1: //Destination unreachable
@@ -1250,7 +1250,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 					UOSInt i = 16;
 					while (i + 7 < packetSize)
 					{
-						vName = {0, 0};
+						vName = CSTR_NULL;
 						switch (packet[i])
 						{
 						case 1:
@@ -1297,7 +1297,7 @@ void Net::PacketAnalyzerEthernet::PacketIPDataGetDetail(UInt8 protocol, const UI
 					UOSInt i = 24;
 					while (i < packetSize)
 					{
-						vName = {0, 0};
+						vName = CSTR_NULL;
 						switch (packet[i])
 						{
 						case 1:
@@ -1370,7 +1370,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		else if (ReadMUInt32(&packet[236]) == 0x63825363)
 		{
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0])
 			{
 			case 1:
@@ -1455,7 +1455,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 				}
 				else if (t == 53 && len == 1)
 				{
-					vName = {0, 0};
+					vName = CSTR_NULL;
 					switch (currPtr[0])
 					{
 					case 1:
@@ -1558,7 +1558,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UOSInt i = 2;
 		UOSInt len;
 		frame->AddText(frameOfst, CSTR("TFTP:"));
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (opcode)
 		{
 		case 1:
@@ -1635,7 +1635,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		}
 		else
 		{
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0] >> 6)
 			{
 			case 0:
@@ -1653,7 +1653,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			}
 			frame->AddUIntName(frameOfst + 0, 1, CSTR("Leap Indicator"), (UOSInt)packet[0] >> 6, vName);
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Version Number"), (packet[0] >> 3) & 7);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[0] & 7)
 			{
 			case 0:
@@ -1788,7 +1788,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("QUESTION_NAME"), sbuff);
 			i = k;
 			qType = ReadMUInt16(&packet[i]);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (qType)
 			{
 			case 0x20:
@@ -1801,7 +1801,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddUIntName(frameOfst + i, 2, CSTR("QUESTION_TYPE"), qType, vName);
 
 			qClass = ReadMUInt16(&packet[2 + i]);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			if (qClass == 1)
 			{
 				vName = {UTF8STRC("IN")};
@@ -1818,7 +1818,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("RR_NAME"), sbuff);
 			i = k;
 			rrType = ReadMUInt16(&packet[i]);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (rrType)
 			{
 			case 0x20:
@@ -1831,7 +1831,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddUIntName(frameOfst + i, 2, CSTR("RR_TYPE"), rrType, vName);
 
 			rrClass = ReadMUInt16(&packet[2 + i]);
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			if (rrClass == 1)
 			{
 				vName = {UTF8STRC("IN")};
@@ -1911,7 +1911,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	{
 		UInt8 msgType = packet[0];
 		frame->AddText(frameOfst, CSTR("NetBIOS-DS:"));
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (msgType)
 		{
 		case 0x10:
@@ -1962,7 +1962,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		case 0x13:
 			if (packetSize >= 19)
 			{
-				vName = {0, 0};
+				vName = CSTR_NULL;
 				switch (packet[10])
 				{
 				case 0x82:
@@ -2001,7 +2001,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			Net::SNMPInfo snmp;
 			Text::StringBuilderUTF8 sb;
 			UOSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, &sb);
-			frame->AddField(frameOfst, (UInt32)i, sb.ToCString(), {0, 0});
+			frame->AddField(frameOfst, (UInt32)i, sb.ToCString(), CSTR_NULL);
 			if (packetSize > i)
 			{
 				frame->AddTextHexBuff(frameOfst + i, packetSize - i, &packet[i], true);
@@ -2013,7 +2013,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		UOSInt i;
 		frame->AddText(frameOfst, CSTR("Service Location Protocol:"));
 		frame->AddUInt(frameOfst + 0, 1, CSTR("Version"), packet[0]);
-		vName = {0, 0};
+		vName = CSTR_NULL;
 		switch (packet[1])
 		{
 		case 1:
@@ -2121,7 +2121,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, CSTR("LoRa Gateway:"));
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Protocol Version"), packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, CSTR("Random Token"), ReadMUInt16(&packet[1]));
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[3])
 			{
 			case 0:
@@ -2153,7 +2153,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					frame->AddText(frameOfst + 12, CSTR("\r\nContent:"));
 					Text::StringBuilderUTF8 sb;
 					Text::JSText::JSONWellFormat(&packet[12], packetSize - 12, 0, &sb);
-					frame->AddField(frameOfst + 12, (UInt32)packetSize - 12, sb.ToCString(), {0, 0});
+					frame->AddField(frameOfst + 12, (UInt32)packetSize - 12, sb.ToCString(), CSTR_NULL);
 					Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(&packet[12], packetSize - 12);
 					if (json)
 					{
@@ -2225,7 +2225,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, CSTR("LoRa Gateway PUSH_ACK:"));
 			frame->AddUInt(frameOfst + 0, 1, CSTR("Protocol Version"), packet[0]);
 			frame->AddUInt(frameOfst + 1, 2, CSTR("Random Token"), ReadMUInt16(&packet[1]));
-			vName = {0, 0};
+			vName = CSTR_NULL;
 			switch (packet[3])
 			{
 			case 0:
@@ -2262,14 +2262,14 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Request:"));
 		Text::String *s = Text::String::New(packet, packetSize);
-		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), {0, 0});
+		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}
 	else if (srcPort == 1900)
 	{
 		frame->AddText(frameOfst, CSTR("SSDP Reply:"));
 		Text::String *s = Text::String::New(packet, packetSize);
-		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), {0, 0});
+		frame->AddField(frameOfst, (UInt32)packetSize, s->ToCString(), CSTR_NULL);
 		s->Release();
 	}
 	else if (destPort == 3702)
@@ -2277,14 +2277,14 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		frame->AddText(frameOfst, CSTR("WS-Discovery Request:"));
 		Text::StringBuilderUTF8 sb;
 		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, &sb);
-		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), {0, 0});
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), CSTR_NULL);
 	}
 	else if (srcPort == 3702)
 	{
 		frame->AddText(frameOfst, CSTR("WS-Discovery Reply:"));
 		Text::StringBuilderUTF8 sb;
 		Text::HTMLUtil::XMLWellFormat(packet, packetSize, 0, &sb);
-		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), {0, 0});
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), CSTR_NULL);
 	}
 	else if (destPort == 5353)
 	{
@@ -2303,7 +2303,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		frame->AddText(frameOfst, CSTR("Dropbox LAN Sync Discovery:"));
 		Text::StringBuilderUTF8 sb;
 		Text::JSText::JSONWellFormat(packet, packetSize, 0, &sb);
-		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), {0, 0});
+		frame->AddField(frameOfst, (UInt32)packetSize, sb.ToCString(), CSTR_NULL);
 	}
 	else if (srcPort >= 1024 && destPort >= 1024)
 	{
@@ -2331,7 +2331,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		frame->AddField(frameOfst + 2, 1, CSTR("QR"), CSTR("0 (Request)"));
 	}
 	UInt8 opcode = (packet[2] & 0x78) >> 3;
-	vName = {0, 0};
+	vName = CSTR_NULL;
 	switch (opcode)
 	{
 	case 0:
@@ -2351,7 +2351,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 	frame->AddUInt(frameOfst + 3, 1, CSTR("RA"), (packet[3] & 0x80) >> 7);
 	frame->AddUInt(frameOfst + 3, 1, CSTR("Z"), (packet[3] & 0x70) >> 4);
 	UInt8 rcode = packet[3] & 0xf;
-	vName = {0, 0};
+	vName = CSTR_NULL;
 	switch (rcode)
 	{
 	case 0:
@@ -2594,7 +2594,7 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 
 void Net::PacketAnalyzerEthernet::PacketLoRaMACGetDetail(const UInt8 *packet, UOSInt packetSize, UInt32 frameOfst, IO::FileAnalyse::FrameDetailHandler *frame)
 {
-	Text::CString vName = {0, 0};
+	Text::CString vName = CSTR_NULL;
 	switch (packet[0] >> 5)
 	{
 	case 0:
@@ -2746,7 +2746,7 @@ Text::CString Net::PacketAnalyzerEthernet::TCPPortGetName(UInt16 port)
 	case 3389:
 		return {UTF8STRC("RDP")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::CString Net::PacketAnalyzerEthernet::UDPPortGetName(UInt16 port)
@@ -2794,7 +2794,7 @@ Text::CString Net::PacketAnalyzerEthernet::UDPPortGetName(UInt16 port)
 	case 55209:
 		return {UTF8STRC("JavaME Device Detection")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::CString Net::PacketAnalyzerEthernet::LSAPGetName(UInt8 lsap)
@@ -2858,7 +2858,7 @@ Text::CString Net::PacketAnalyzerEthernet::LSAPGetName(UInt8 lsap)
 	case 0xFF:
 		return {UTF8STRC("Global DSAP (broadcast to all)")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::CString Net::PacketAnalyzerEthernet::DHCPOptionGetName(UInt8 t)
@@ -3006,7 +3006,7 @@ Text::CString Net::PacketAnalyzerEthernet::DHCPOptionGetName(UInt8 t)
 	case 255:
 		return {UTF8STRC("End")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::CString Net::PacketAnalyzerEthernet::EtherTypeGetName(UInt16 etherType)
@@ -3028,5 +3028,5 @@ Text::CString Net::PacketAnalyzerEthernet::EtherTypeGetName(UInt16 etherType)
 	case 0x8874: //broadcom
 		return {UTF8STRC("Broadcom")};
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }

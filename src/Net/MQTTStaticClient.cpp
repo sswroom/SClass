@@ -66,7 +66,7 @@ void Net::MQTTStaticClient::Connect()
 	}
 	mutUsage.EndUse();
 
-	Bool succ = conn->SendConnect(4, this->kaSeconds, this->clientId, this->username, this->password);
+	Bool succ = conn->SendConnect(4, this->kaSeconds, this->clientId->ToCString(), this->username->ToCString(), this->password->ToCString());
 	if (succ)
 	{
 		Net::MQTTConn::ConnectStatus status = conn->WaitConnAck(30000);
@@ -138,7 +138,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("sswrMQTT/"));
 	sb.AppendI64(dt.ToTicks());
-	this->clientId = Text::StrCopyNew(sb.ToString());
+	this->clientId = Text::String::New(sb.ToString(), sb.GetLength());
 	this->packetId = 1;
 	NEW_CLASS(this->packetIdMut, Sync::Mutex());
 	NEW_CLASS(this->hdlrMut, Sync::Mutex());
@@ -157,14 +157,14 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->password = 0;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
+Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->host = Text::StrCopyNew(host);
 	this->port = port;
-	this->username = SCOPY_TEXT(username);
-	this->password = SCOPY_TEXT(password);
+	this->username = Text::String::New(username);
+	this->password = Text::String::New(password);
 	this->kaSeconds = kaSeconds;
 
 	this->Connect();
@@ -199,10 +199,10 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 	DEL_CLASS(this->topicList);
 	DEL_CLASS(this->packetIdMut);
 	DEL_CLASS(this->kaEvt);
-	SDEL_TEXT(this->username);
-	SDEL_TEXT(this->password);
+	SDEL_STRING(this->username);
+	SDEL_STRING(this->password);
 	Text::StrDelNew(this->host);
-	Text::StrDelNew(this->clientId);
+	this->clientId->Release();
 }
 
 Bool Net::MQTTStaticClient::IsStarted()

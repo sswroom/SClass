@@ -347,7 +347,7 @@ Text::String *Net::HTTPData::GetFullName()
 Text::CString Net::HTTPData::GetShortName()
 {
 	if (fdh == 0)
-		return {0, 0};
+		return CSTR_NULL;
 	return fdh->fileName;
 }
 

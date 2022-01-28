@@ -159,7 +159,7 @@ Text::CString IO::StmData::FileData::GetShortName()
 		return this->fdn->fileName;
 	if (this->fdh)
 		return this->fdh->fileName;
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::String *IO::StmData::FileData::GetFullName()

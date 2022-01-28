@@ -6,6 +6,7 @@
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -66,7 +67,7 @@ namespace Net
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);
 		Bool IsError();
 
-		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password);
+		Bool SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString clientId, Text::CString userName, Text::CString password);
 		Bool SendPublish(const UTF8Char *topic, const UTF8Char *message);
 		Bool SendPubAck(UInt16 packetId);
 		Bool SendPubRec(UInt16 packetId);
@@ -81,7 +82,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password, const UTF8Char *topic, const UTF8Char *message);
+		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message);
 	};
 }
 #endif

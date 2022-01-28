@@ -38,7 +38,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 {
 	UTF8Char u8buff[256];
 	UTF8Char *sptr;
-	this->cpuModel = {0, 0};
+	this->cpuModel = CSTR_NULL;
 	if ((sptr = this->GetCPUName(u8buff)) != 0)
 	{
 		this->cpuModel = Manage::CPUDB::X86CPUNameToModel({u8buff, (UOSInt)(sptr - u8buff)});

@@ -42,7 +42,7 @@ Net::MQTTFailoverClient::~MQTTFailoverClient()
 	DEL_CLASS(this->cliList);
 }
 
-void Net::MQTTFailoverClient::AddClient(const UTF8Char *host, UInt16 port, const UTF8Char *username, const UTF8Char *password)
+void Net::MQTTFailoverClient::AddClient(const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password)
 {
 	ClientInfo *cliInfo = MemAlloc(ClientInfo, 1);
 	cliInfo->me = this;

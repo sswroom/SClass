@@ -99,7 +99,7 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 	case 0xfe:
 		return {UTF8STRC("COM")}; //comment
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 UInt32 __stdcall IO::FileAnalyse::JPGFileAnalyse::ParseThread(void *userObj)
@@ -528,7 +528,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 				if (exif)
 				{
 					sb->AppendC(UTF8STRC("\r\n"));
-					exif->ToString(sb, {0, 0});
+					exif->ToString(sb, CSTR_NULL);
 					DEL_CLASS(exif);
 				}
 			}
@@ -796,7 +796,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		}
 		else if (tagData[4] == 'J' && tagData[5] == 'F' && tagData[6] == 'X' && tagData[7] == 'X' && tagData[8] == 0)
 		{
-			Text::CString vName = {0, 0};
+			Text::CString vName = CSTR_NULL;
 			switch (tagData[9])
 			{
 				case 10:
@@ -857,7 +857,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 				if (exif)
 				{
 					Text::StringBuilderUTF8 sb;
-					exif->ToString(&sb, {0, 0});
+					exif->ToString(&sb, CSTR_NULL);
 					frame->AddText(18, sb.ToCString());
 					DEL_CLASS(exif);
 				}

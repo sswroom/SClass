@@ -60,7 +60,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			{
 				if (i == 0)
 				{
-					return {0, 0};
+					return CSTR_NULL;
 				}
 				i--;
 				if (IO::Path::IsSearchPattern(this->srcStrs[i]))
@@ -105,7 +105,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 						{
 							if (i == 0)
 							{
-								return {0, 0};
+								return CSTR_NULL;
 							}
 							i--;
 							if (IO::Path::IsSearchPattern(this->srcStrs[i]))
@@ -130,7 +130,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 					{
 						if (i == 0)
 						{
-							return {0, 0};
+							return CSTR_NULL;
 						}
 						i--;
 						if (IO::Path::IsSearchPattern(this->srcStrs[i]))

@@ -6,11 +6,11 @@
 
 #if defined(NO_DB)
 Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
-	{0x04, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), {0, 0}}
+	{0x04, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), CSTR_NULL}
 };
 
 Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
-	{0x04, 0x00,  0,   0,   33,   33,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXLV-33"), {0, 0}}
+	{0x04, 0x00,  0,   0,   33,   33,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXLV-33"), CSTR_NULL}
 };
 
 Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
@@ -23,36 +23,36 @@ Manage::CPUDB::CPUMapping Manage::CPUDB::cpuX86Map[] = {
 #else
 Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	//fam  modl step tcc  freq freqo core Th   tdp   nm  year  Q  name
-	{0x04, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), {0, 0}},
-	{0x04, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), {0, 0}},
-	{0x04, 0x02,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 SX"), {0, 0}},
-	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 487"), {0, 0}},
-	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX2"), {0, 0}},
-	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX2 Overdrive"), {0, 0}},
-	{0x04, 0x04,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 SL"), {0, 0}},
-	{0x04, 0x05,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel SX2"), {0, 0}},
-	{0x04, 0x07,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("White-Back Enhanced Intel DX2"), {0, 0}},
-	{0x04, 0x08,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX4"), {0, 0}},
-	{0x05, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium 60/66"), {0, 0}},
-	{0x05, 0x02,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium"), {0, 0}},
-	{0x05, 0x04,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium with MMX"), {0, 0}},
-	{0x06, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium Pro"), {0, 0}},
-	{0x06, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium II model 03"), {0, 0}},
-	{0x06, 0x05,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium II model 05"), {0, 0}},
-	{0x06, 0x06,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Celeron model 06"), {0, 0}},
-	{0x06, 0x07,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 07"), {0, 0}},
-	{0x06, 0x08,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 08"), {0, 0}},
-	{0x06, 0x09,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium M"), {0, 0}},
-	{0x06, 0x0A,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III Xeon model 0Ah"), {0, 0}},
-	{0x06, 0x0B,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 0Bh"), {0, 0}},
-	{0x06, 0x0D,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium M model 0Dh / 90nm"), {0, 0}},
-	{0x06, 0x0E,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core Duo/Core Solo 65nm"), {0, 0}},
-	{0x06, 0x0F,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core 2"), {0, 0}},
+	{0x04, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), CSTR_NULL},
+	{0x04, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 DX"), CSTR_NULL},
+	{0x04, 0x02,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 SX"), CSTR_NULL},
+	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 487"), CSTR_NULL},
+	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX2"), CSTR_NULL},
+	{0x04, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX2 Overdrive"), CSTR_NULL},
+	{0x04, 0x04,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel 486 SL"), CSTR_NULL},
+	{0x04, 0x05,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel SX2"), CSTR_NULL},
+	{0x04, 0x07,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("White-Back Enhanced Intel DX2"), CSTR_NULL},
+	{0x04, 0x08,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel DX4"), CSTR_NULL},
+	{0x05, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium 60/66"), CSTR_NULL},
+	{0x05, 0x02,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium"), CSTR_NULL},
+	{0x05, 0x04,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium with MMX"), CSTR_NULL},
+	{0x06, 0x01,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium Pro"), CSTR_NULL},
+	{0x06, 0x03,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium II model 03"), CSTR_NULL},
+	{0x06, 0x05,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium II model 05"), CSTR_NULL},
+	{0x06, 0x06,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Celeron model 06"), CSTR_NULL},
+	{0x06, 0x07,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 07"), CSTR_NULL},
+	{0x06, 0x08,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 08"), CSTR_NULL},
+	{0x06, 0x09,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium M"), CSTR_NULL},
+	{0x06, 0x0A,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III Xeon model 0Ah"), CSTR_NULL},
+	{0x06, 0x0B,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium III model 0Bh"), CSTR_NULL},
+	{0x06, 0x0D,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium M model 0Dh / 90nm"), CSTR_NULL},
+	{0x06, 0x0E,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core Duo/Core Solo 65nm"), CSTR_NULL},
+	{0x06, 0x0F,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core 2"), CSTR_NULL},
 	{0x06, 0x0F, 11, 100, 2400, 2400,  2,  2,   35,  65, 2007, 2, CSTR("Intel Core2 Duo T7700"), CSTR("Intel T7700")},
 	{0x06, 0x0F, 13, 100, 1800, 1800,  2,  2,   35,  65, 2007, 2, CSTR("Intel Core2 Duo T7100"), CSTR("Intel T7100")},
-	{0x06, 0x15,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel EP80579"), {0, 0}},
-	{0x06, 0x16,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Celeron model 16h"), {0, 0}},
-	{0x06, 0x17,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core 2 Extreme"), {0, 0}},
+	{0x06, 0x15,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Intel EP80579"), CSTR_NULL},
+	{0x06, 0x16,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Celeron model 16h"), CSTR_NULL},
+	{0x06, 0x17,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Core 2 Extreme"), CSTR_NULL},
 	{0x06, 0x1C,  2,  90, 1600, 1600,  1,  2,  2.5,  45, 2008, 2, CSTR("Mobile Intel Atom N270"), CSTR("Intel N270")},
 	{0x06, 0x1C,  2,  90, 1600, 1600,  2,  2,    8,  45, 2008, 3, CSTR("Mobile Intel Atom 330"), CSTR("Intel 330")},
 	{0x06, 0x3A,  9,  65, 3300, 3300,  2,  3,   55,  22, 2012, 3, CSTR("Intel Core i3-3220"), CSTR("Intel i3-3220")},
@@ -74,59 +74,59 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::intelCPU[] = {
 	{0x06, 0x8E, 12, 100, 1600, 4200,  4,  8,   15,  14, 2019, 3, CSTR("Intel Core i5-10210U"), CSTR("Intel i5-10210U")},
 	{0x06, 0x9E,  9,  80, 2700, 3300,  4,  4,   35,  14, 2017, 1, CSTR("Intel Core i5-7500T"), CSTR("Intel i5-7500T")},
 	{0x06, 0x9E, 10, 100, 1600, 3400,  4,  8,   15,  14, 2017, 3, CSTR("Intel Core i5-8250U"), CSTR("Intel i5-8250U")},
-	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium 4 model 0"), {0, 0}}
+	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Pentium 4 model 0"), CSTR_NULL}
 };
 
 Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 	//fam  modl step tcc  freq freqo core Th   tdp   nm  year  Q  name
-	{0x04, 0x00,  0,   0,   33,   33,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXLV-33"), {0, 0}},
-	{0x04, 0x00,  0,   0,   40,   40,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX-40"), {0, 0}},
-	{0x04, 0x00,  0,   0,   50,   50,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-50"), {0, 0}},
-	{0x04, 0x00,  0,   0,   50,   50,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486SX2-50N"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-66"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-66N"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-66NV8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-66SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXL2-66"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486SX2-66"), {0, 0}},
-	{0x04, 0x00,  0,   0,   75,   75,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX4-75SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,   75,   75,  1,  1,    2,   0, 1970, 0, CSTR("AMD S80486DX4-75SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-80"), {0, 0}},
-	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-80NV8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2, 500, 1970, 0, CSTR("AMD A80486DX2-80SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-80V8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXL2-80/3V"), {0, 0}},
-	{0x04, 0x00,  0,   0,   90,   90,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX4-90NV8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100NV8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD S80486DX4-100SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100V8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,  120,  120,  1,  1,    4, 500, 1970, 0, CSTR("AMD A80486DX4-120NV8T"), {0, 0}},
-	{0x04, 0x00,  0,   0,  120,  120,  1,  1,    4, 500, 1970, 0, CSTR("AMD A80486DX4-120SV8B"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD Am486DE2-66V8THC"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD Am486DE2-66V8TGC"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BGC"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BGI"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BHC"), {0, 0}},
-	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BHI"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BGC"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BGI"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BHC"), {0, 0}},
-	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BHI"), {0, 0}},
-	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133V16BGC"), {0, 0}},
-	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133V16BHC"), {0, 0}},
-	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133W16BGC"), {0, 0}},
-	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133W16BHC"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADH"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADW"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1970, 0, CSTR("AMD AMD-X5-133ADY"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADZ"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133SDZ"), {0, 0}},
-	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133SFZ"), {0, 0}},
-	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("K8 Hammer"), {0, 0}},
+	{0x04, 0x00,  0,   0,   33,   33,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXLV-33"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   40,   40,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX-40"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   50,   50,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-50"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   50,   50,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486SX2-50N"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-66"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-66N"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-66NV8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-66SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXL2-66"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486SX2-66"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   75,   75,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX4-75SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   75,   75,  1,  1,    2,   0, 1970, 0, CSTR("AMD S80486DX4-75SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX2-80"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-80NV8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2, 500, 1970, 0, CSTR("AMD A80486DX2-80SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    2,   0, 1970, 0, CSTR("AMD A80486DX2-80V8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   80,   80,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DXL2-80/3V"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   90,   90,  1,  1,    0,   0, 1970, 0, CSTR("AMD A80486DX4-90NV8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100NV8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD S80486DX4-100SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    3, 500, 1970, 0, CSTR("AMD A80486DX4-100V8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  120,  120,  1,  1,    4, 500, 1970, 0, CSTR("AMD A80486DX4-120NV8T"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  120,  120,  1,  1,    4, 500, 1970, 0, CSTR("AMD A80486DX4-120SV8B"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD Am486DE2-66V8THC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    2,   0, 1970, 0, CSTR("AMD Am486DE2-66V8TGC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BGC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BGI"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BHC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,   66,   66,  1,  1,    1, 350, 1970, 0, CSTR("AMD Am486DX2-66V16BHI"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BGC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BGI"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BHC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  100,  100,  1,  1,    2, 350, 1970, 0, CSTR("AMD Am486DX4-100V16BHI"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133V16BGC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133V16BHC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133W16BGC"), CSTR_NULL},
+	{0x04, 0x00,  0,   0,  133,  133,  1,  1,    3, 350, 1970, 0, CSTR("AMD Am486DX5-133W16BHC"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADH"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADW"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1970, 0, CSTR("AMD AMD-X5-133ADY"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133ADZ"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133SDZ"), CSTR_NULL},
+	{0x04, 0x0E,  0,   0,  133,  133,  1,  1,    0, 350, 1995, 4, CSTR("AMD AMD-X5-133SFZ"), CSTR_NULL},
+	{0x0F, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("K8 Hammer"), CSTR_NULL},
 	{0x0F, 0x6B,  2,  95, 1600, 1600,  2,  2,   18,  65, 2009, 3, CSTR("AMD Turion Neo X2 L625"), CSTR("TMZL625OAX5DY")},
 	{0x0F, 0x6B,  2,   0, 3100, 3100,  2,  2,   89,  65, 1970, 0, CSTR("AMD Athlon 64 X2 6000+"), CSTR("ADV6000IAA5DO")},
-	{0x10, 0x06,  2,   0, 3000, 3000,  2,  2,    0,   0, 1970, 0, CSTR("AMD Athlon II X2 250"), {0, 0}},
+	{0x10, 0x06,  2,   0, 3000, 3000,  2,  2,    0,   0, 1970, 0, CSTR("AMD Athlon II X2 250"), CSTR_NULL},
 	{0x10, 0x02,  3,   0, 2300, 2300,  4,  4,    0,  65, 1970, 0, CSTR("AMD Phenom X4 9650"), CSTR("HD9650WCGHBOX")},
 	{0x12, 0x01,  0,   0, 2400, 2400,  2,  2,   65,  32, 2011, 4, CSTR("AMD E2-3200"), CSTR("ED3200OJZ22GX")},
 	{0x12, 0x01,  0,   0, 2500, 2500,  2,  2,   65,  32, 2011, 3, CSTR("AMD A4-3300"), CSTR("AD33000OJZ22HX")},
@@ -142,10 +142,10 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 	{0x12, 0x01,  0,   0, 2900, 2900,  4,  4,  100,  32, 2011, 2, CSTR("AMD A8-3850"), CSTR("AD3850WNZ43GX")},
 	{0x12, 0x01,  0,   0, 3000, 3000,  4,  4,  100,  32, 2011, 4, CSTR("AMD A8-3870K"), CSTR("AD3870WNZ43GX")},
 
-	{0x14, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Bobcat"), {0, 0}},
-	{0x15, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Bulldozer"), {0, 0}},
+	{0x14, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Bobcat"), CSTR_NULL},
+	{0x15, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Bulldozer"), CSTR_NULL},
 	{0x15, 0x65,  1,   0, 3000, 3500,  4,  4,   35,  28, 2016, 2, CSTR("AMD A10-9700E"), CSTR("AD9700AHM44AB")},
-	{0x16, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Jaguar"), {0, 0}},
+	{0x16, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Jaguar"), CSTR_NULL},
 
 	//fam  modl step tcc  freq freqo core Th   tdp   nm  year  Q  name
 	{0x16, 0x00,  0,   0, 2500, 2500,  2,  2,   65,  32, 2012, 1, CSTR("AMD Sempron X2 198"), CSTR("SD198XOJZ22GX")},
@@ -179,12 +179,12 @@ Manage::CPUDB::CPUSpecX86 Manage::CPUDB::amdCPU[] = {
 	{0x16, 0x00,  0,   0, 2500, 3400,  4,  4,   15,  28, 1970, 0, CSTR("AMD A12-9700P"), CSTR("AM970PADY44AB")},
 	{0x16, 0x00,  0,   0, 2600, 3300,  4,  4,   45,  28, 1970, 0, CSTR("AMD A10-9630P"), CSTR("AM963PAEY44AB")},
 	{0x16, 0x00,  0,   0, 2400, 3300,  4,  4,   15,  28, 1970, 0, CSTR("AMD A10-9600P"), CSTR("AM960PADY44AB")},
-	{0x16, 0x00,  0,   0, 2900, 3500,  2,  2,   25,   0, 1970, 0, CSTR("AMD A9-9410"), {0, 0}},
-	{0x16, 0x00,  0,   0, 2400, 2800,  2,  2,   15,   0, 1970, 0, CSTR("AMD A6-9210"), {0, 0}},
-	{0x16, 0x00,  0,   0, 2000, 2200,  2,  2,   15,   0, 1970, 0, CSTR("AMD E2-9010"), {0, 0}},
+	{0x16, 0x00,  0,   0, 2900, 3500,  2,  2,   25,   0, 1970, 0, CSTR("AMD A9-9410"), CSTR_NULL},
+	{0x16, 0x00,  0,   0, 2400, 2800,  2,  2,   15,   0, 1970, 0, CSTR("AMD A6-9210"), CSTR_NULL},
+	{0x16, 0x00,  0,   0, 2000, 2200,  2,  2,   15,   0, 1970, 0, CSTR("AMD E2-9010"), CSTR_NULL},
 
 
-	{0x17, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Zen"), {0, 0}}
+	{0x17, 0x00,  0,   0,    0,    0,  0,  0,    0,   0, 1970, 0, CSTR("Zen"), CSTR_NULL}
 };
 
 Manage::CPUDB::CPUSpec Manage::CPUDB::cpuList[] = {
@@ -868,7 +868,7 @@ Text::CString Manage::CPUDB::X86CPUNameToModel(Text::CString x86CPUName)
 			return cpu->model;
 		}
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }
 
 Text::CString Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
@@ -1089,5 +1089,5 @@ Text::CString Manage::CPUDB::ParseCPUInfo(IO::Stream *stm)
 			return cpu->model;
 		}
 	}
-	return {0, 0};
+	return CSTR_NULL;
 }

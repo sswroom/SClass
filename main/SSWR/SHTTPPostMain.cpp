@@ -53,7 +53,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		if (Text::StrStartsWith(url, (const UTF8Char*)"http://") && fileBuff && fileSize > 0)
 		{
-			Text::CString mime = {0, 0};
+			Text::CString mime = CSTR_NULL;
 			UOSInt fileLen = Text::StrCharCnt(file);
 			i = Text::StrLastIndexOfCharC(file, fileLen, '.');
 			if (i != INVALID_INDEX)
