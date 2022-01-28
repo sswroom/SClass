@@ -264,30 +264,30 @@ UTF8Char *Text::XML::ToXMLText(UTF8Char *buff, const UTF8Char *text)
 			*dptr = 0;
 			return dptr;
 		case '&':
-			WriteNUInt32(dptr, ReadNUInt32("&amp"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&amp"));
 			dptr[4] = ';';
 			dptr += 5;
 			break;
 		case '<':
-			WriteNUInt32(dptr, ReadNUInt32("&lt;"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&lt;"));
 			dptr += 4;
 			break;
 		case '>':
-			WriteNUInt32(dptr, ReadNUInt32("&gt;"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&gt;"));
 			dptr += 4;
 			break;
 		case '\'':
-			WriteNUInt32(dptr, ReadNUInt32("&apo"));
-			WriteNUInt16(&dptr[4], ReadNUInt16("s;"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&apo"));
+			WriteNUInt16(&dptr[4], ReadNUInt16((const UInt8*)"s;"));
 			dptr += 6;
 			break;
 		case '"':
-			WriteNUInt32(dptr, ReadNUInt32("&quo"));
-			WriteNUInt16(&dptr[4], ReadNUInt16("t;"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&quo"));
+			WriteNUInt16(&dptr[4], ReadNUInt16((const UInt8*)"t;"));
 			dptr += 6;
 			break;
 		case '\n':
-			WriteNUInt32(dptr, ReadNUInt32("&#10"));
+			WriteNUInt32(dptr, ReadNUInt32((const UInt8*)"&#10"));
 			dptr[4] = ';';
 			dptr += 5;
 			break;

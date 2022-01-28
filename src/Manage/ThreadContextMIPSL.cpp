@@ -18,13 +18,13 @@ Manage::ThreadContextMIPS::~ThreadContextMIPS()
 	MemFree(this->context);
 }
 
-OSInt Manage::ThreadContextMIPS::GetRegisterCnt()
+UOSInt Manage::ThreadContextMIPS::GetRegisterCnt()
 {
 	OSInt cnt = 17;
 	return cnt;
 }
 
-UTF8Char *Manage::ThreadContextMIPS::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextMIPS::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	switch (index)
 	{
@@ -165,15 +165,15 @@ UTF8Char *Manage::ThreadContextMIPS::GetRegister(OSInt index, UTF8Char *buff, UI
 	}
 }
 
-void Manage::ThreadContextMIPS::ToString(Text::StringBuilderUTF *sb)
+void Manage::ThreadContextMIPS::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UInt32 bitCnt;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
@@ -186,7 +186,7 @@ void Manage::ThreadContextMIPS::ToString(Text::StringBuilderUTF *sb)
 				sptr = Text::StrHexByte(sptr, regBuff[k]);
 			}
 			sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
-			sb->Append(sbuff);
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;
@@ -208,32 +208,32 @@ UOSInt Manage::ThreadContextMIPS::GetProcessId()
 	return this->procId;
 }
 
-OSInt Manage::ThreadContextMIPS::GetInstAddr()
+UOSInt Manage::ThreadContextMIPS::GetInstAddr()
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.pc;
 }
 
-OSInt Manage::ThreadContextMIPS::GetStackAddr()
+UOSInt Manage::ThreadContextMIPS::GetStackAddr()
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[29];
 }
 
-OSInt Manage::ThreadContextMIPS::GetFrameAddr()
+UOSInt Manage::ThreadContextMIPS::GetFrameAddr()
 {
 	return (OSInt)((ucontext_t*)this->context)->uc_mcontext.gregs[30];
 }
 
-void Manage::ThreadContextMIPS::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextMIPS::SetInstAddr(UOSInt instAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.pc = instAddr;
 }
 
-void Manage::ThreadContextMIPS::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextMIPS::SetStackAddr(UOSInt stackAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[29] = stackAddr;
 }
 
-void Manage::ThreadContextMIPS::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextMIPS::SetFrameAddr(UOSInt frameAddr)
 {
 	((ucontext_t*)this->context)->uc_mcontext.gregs[30] = frameAddr;
 }

@@ -83,6 +83,21 @@ DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char 
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
+DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log) : DB::DBConn(dsn)
+{
+	this->log = log;
+	this->tableNames = 0;
+	this->connStr = 0;
+	this->tzQhr = 0;
+	this->lastStmtHand = 0;
+	this->connErr = DB::ODBCConn::CE_NOT_CONNECT;
+	this->dsn = dsn->Clone();
+	this->uid = uid->Clone();
+	this->pwd = pwd->Clone();
+	this->schema = schema->Clone();
+	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
+}
+
 /*DB::ODBCConn::ODBCConn(const WChar *dsn, const WChar *uid, const WChar *pwd, const WChar *schema, IO::LogTool *log) : DB::DBConn(0)
 {
 	this->connHand = 0;
@@ -151,7 +166,7 @@ void DB::ODBCConn::ForceTz(Int8 tzQhr)
 	this->tzQhr = tzQhr;
 }
 
-void DB::ODBCConn::GetConnName(Text::StringBuilderUTF *sb)
+void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendC(UTF8STRC("ODBC:"));
 	if (this->connStr)
@@ -206,7 +221,7 @@ void DB::ODBCConn::CloseReader(DB::DBReader *r)
 {
 }
 
-void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF *str)
+void DB::ODBCConn::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 }
 

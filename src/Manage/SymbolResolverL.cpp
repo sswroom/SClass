@@ -92,8 +92,8 @@ UInt64 Manage::SymbolResolver::GetModuleAddr(UOSInt index)
 	return this->modBaseAddrs->GetItem(index);
 }
 
-UOSInt Manage::SymbolResolver::GetModuleSize(UOSInt index)
+UInt64 Manage::SymbolResolver::GetModuleSize(UOSInt index)
 {
-	return (UOSInt)this->modSizes->GetItem(index);
+	return this->modSizes->GetItem(index);
 }
 

@@ -69,10 +69,10 @@ namespace Manage
 			DasmMIPS_Regs regs;
 			UInt8 *code;
 			UInt16 codeSegm;
-			Data::ArrayListInt32 *callAddrs;
-			Data::ArrayListInt32 *jmpAddrs;
+			Data::ArrayListUInt32 *callAddrs;
+			Data::ArrayListUInt32 *jmpAddrs;
 			UTF8Char *sbuff;
-			Int32 retAddr;
+			UInt32 retAddr;
 			Int32 thisStatus;
 			Int32 endStatus; //0 = not end, 1 = jmp out, 2 = exit program, 3 = func return
 			UInt16 endIP;
@@ -96,7 +96,7 @@ namespace Manage
 		virtual ~DasmMIPS();
 
 		virtual const UTF8Char *GetHeader(Bool fullRegs);
-		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
+		virtual Bool Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs); // true = succ
 		virtual Dasm_Regs *CreateRegs();
 		virtual void FreeRegs(Dasm_Regs *regs);
 

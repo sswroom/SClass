@@ -931,11 +931,11 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 			sptr = buff;
 			MemCopyNO(sptr, name, nameLen);
 			sptr += nameLen;
-			WriteNUInt16(sptr, ReadNUInt16(": "));
+			WriteNUInt16(sptr, ReadNUInt16((const UInt8*)": "));
 			sptr += 2;
 			MemCopyNO(sptr, value, valueLen);
 			sptr += valueLen;
-			WriteNUInt16(sptr, ReadNUInt16("\r\n"));
+			WriteNUInt16(sptr, ReadNUInt16((const UInt8*)"\r\n"));
 			sptr += 2;
 #ifdef SHOWDEBUG
 			*sptr = 0;

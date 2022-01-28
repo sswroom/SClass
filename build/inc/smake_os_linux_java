@@ -53,6 +53,8 @@ Media/MonitorSurfaceMgrFactory.h: ../../src/Media/MonitorSurfaceMgrFactoryLinux.
 @MonitorSurfaceMgrFactory.o
 Media/FBMonitorSurfaceMgr.h: ../../src/Media/FBMonitorSurfaceMgr.cpp
 @FBMonitorSurfaceMgr.o
+Media/FBSurface.h: ../../src/Media/FBSurface.cpp
+@FBSurface.o
 Media/Printer.h: ../../src/Media/PrinterCUPS.cpp
 @Printer.o
 Media/Decoder/FFMPEGDecoder.h: ../../src/Media/Decoder/FFMPEGDecoder.cpp
@@ -118,6 +120,7 @@ ALSARenderer.o: ../../src/Media/ALSARenderer.cpp
 AudioDevice.o: ../../src/Media/AudioDeviceL.cpp
 MonitorSurfaceMgrFactory.o: ../../src/Media/MonitorSurfaceMgrFactoryLinux.cpp
 FBMonitorSurfaceMgr.o: ../../src/Media/FBMonitorSurfaceMgr.cpp
+FBSurface.o: ../../src/Media/FBSurface.cpp
 Printer.o: ../../src/Media/PrinterCUPS.cpp
 $`pkg-config --cflags --libs cairo` `cups-config --cflags`
 !`cups-config --libs`

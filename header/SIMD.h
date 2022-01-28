@@ -490,6 +490,7 @@ Int32x4 FORCEINLINE PMADDWD(Int16x8 v1, Int16x8 v2)
 #define PStoreInt32x8NC(ptr, v) _mm256_stream_si256((__m256i*)ptr, v)
 */
 #else
+#define SIMD_SIMULATE
 typedef struct
 {
 	Int8 vals[4];

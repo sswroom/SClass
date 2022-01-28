@@ -24,7 +24,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
 		{
-			if (sb.StartsWithC(UTF8STRC("CPU part	:")))
+			if (sb.StartsWith(UTF8STRC("CPU part	:")))
 			{
 				cpuPart = Text::StrToInt32(sb.ToString() + 11);
 			}

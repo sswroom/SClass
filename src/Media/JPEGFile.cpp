@@ -523,9 +523,9 @@ void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSI
 					exifBuff[0] = 0xff;
 					exifBuff[1] = 0xe1;
 					WriteMInt16(&exifBuff[2], exifSize + 16);
-					WriteInt32(&exifBuff[4], ReadInt32("Exif"));
+					WriteInt32(&exifBuff[4], ReadInt32((const UInt8*)"Exif"));
 					WriteInt16(&exifBuff[8], 0);
-					WriteInt16(&exifBuff[10], ReadInt16("II"));
+					WriteInt16(&exifBuff[10], ReadInt16((const UInt8*)"II"));
 					WriteInt16(&exifBuff[12], 42);
 					WriteInt32(&exifBuff[14], 8);
 					k = 8;

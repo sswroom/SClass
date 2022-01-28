@@ -88,3 +88,13 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 void Net::HTTPOSClient::SetTimeout(Int32 ms)
 {
 }
+
+Bool Net::HTTPOSClient::IsSecureConn()
+{
+	return false;
+}
+
+Crypto::Cert::Certificate *Net::HTTPOSClient::GetServerCert()
+{
+	return 0;
+}

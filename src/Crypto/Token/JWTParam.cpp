@@ -112,7 +112,7 @@ Text::String *Crypto::Token::JWTParam::GetJWTId()
 	return this->jti;
 }
 
-void Crypto::Token::JWTParam::ToString(Text::StringBuilderUTF *sb)
+void Crypto::Token::JWTParam::ToString(Text::StringBuilderUTF8 *sb)
 {
 	Bool found = false;
 	sb->AppendC(UTF8STRC("Params ["));

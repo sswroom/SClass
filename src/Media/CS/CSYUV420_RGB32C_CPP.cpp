@@ -165,12 +165,12 @@ extern "C" void CSYUV420_RGB32C_VerticalFilterLRGB(UInt8 *inYPt, UInt8 *inUPt, U
 				valTmp[1] = tmpV;
 				i16Val1 = PCONVU16x8_I(PUNPCKUBW8(PUInt8x8Clear(), PUNPCKUBB4(PLoadUInt8x4(&tmpPtr2[*(Int32*)&weight[0]]), PLoadUInt8x4(&tmpPtr3[*(Int32*)&weight[0]]))));
 				i16Val2 = PCONVU16x8_I(PUNPCKUBW8(PUInt8x8Clear(), PUNPCKUBB4(PLoadUInt8x4(&tmpPtr2[*(Int32*)&weight[4]]), PLoadUInt8x4(&tmpPtr3[*(Int32*)&weight[4]]))));
-				valTmp[0] = PADDD4(valTmp[0], PMADDWD(PSHRW8(PUNPCKLWW8(i16Val1, i16Val2), 1), mulVal1));
-				valTmp[1] = PADDD4(valTmp[1], PMADDWD(PSHRW8(PUNPCKHWW8(i16Val1, i16Val2), 1), mulVal1));
+				valTmp[0] = PADDD4(valTmp[0], PMADDWD(PCONVU16x8_I(PSHRW8(PCONVI16x8_U(PUNPCKLWW8(i16Val1, i16Val2)), 1)), mulVal1));
+				valTmp[1] = PADDD4(valTmp[1], PMADDWD(PCONVU16x8_I(PSHRW8(PCONVI16x8_U(PUNPCKHWW8(i16Val1, i16Val2)), 1)), mulVal1));
 				i16Val1 = PCONVU16x8_I(PUNPCKUBW8(PUInt8x8Clear(), PUNPCKUBB4(PLoadUInt8x4(&tmpPtr2[*(Int32*)&weight[8]]), PLoadUInt8x4(&tmpPtr3[*(Int32*)&weight[8]]))));
 				i16Val2 = PCONVU16x8_I(PUNPCKUBW8(PUInt8x8Clear(), PUNPCKUBB4(PLoadUInt8x4(&tmpPtr2[*(Int32*)&weight[12]]), PLoadUInt8x4(&tmpPtr3[*(Int32*)&weight[12]]))));
-				valTmp[0] = PADDD4(valTmp[0], PMADDWD(PSHRW8(PUNPCKLWW8(i16Val1, i16Val2), 1), mulVal2));
-				valTmp[1] = PADDD4(valTmp[1], PMADDWD(PSHRW8(PUNPCKHWW8(i16Val1, i16Val2), 1), mulVal2));
+				valTmp[0] = PADDD4(valTmp[0], PMADDWD(PCONVU16x8_I(PSHRW8(PCONVI16x8_U(PUNPCKLWW8(i16Val1, i16Val2)), 1)), mulVal2));
+				valTmp[1] = PADDD4(valTmp[1], PMADDWD(PCONVU16x8_I(PSHRW8(PCONVI16x8_U(PUNPCKHWW8(i16Val1, i16Val2)), 1)), mulVal2));
 				PStoreInt16x8(tmpPtr, SI32ToI16x8(PSARD4(valTmp[0], 16), PSARD4(valTmp[1], 16)));
 
 				tmpPtr += 16;

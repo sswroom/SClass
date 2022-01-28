@@ -161,3 +161,4 @@ EventPool.o: ../../src/Sync/EventPoolL.cpp
 RWMutex.o: ../../src/Sync/RWMutexL.cpp
 WMIQuery.o: ../../src/Win32/WMIQueryNull.cpp
 sqlite3.o: ../../ThirdParty/sqlite3/sqlite3.c
+!-ldl

@@ -52,7 +52,12 @@ extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize
 			srcBuff += 4;
 		}
 	}*/
+
+#if defined(SIMD_SIMULATE)
+	UInt8 *srcBuff;
+#else
 	volatile UInt8 *srcBuff;
+#endif
 	OSInt cnt;
 	Int32x4 val;
 	while (loopCnt-- > 0)

@@ -874,7 +874,7 @@ const UTF8Char *Manage::DasmMIPS::GetHeader(Bool fullRegs)
 	}
 }
 
-Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListInt32 *callAddrs, Data::ArrayListInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
+Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *addrResol, UInt32 *currInst, UInt32 *currStack, UInt32 *currFrame, Data::ArrayListUInt32 *callAddrs, Data::ArrayListUInt32 *jmpAddrs, UInt32 *blockStart, UInt32 *blockEnd, Manage::Dasm::Dasm_Regs *regs, Manage::IMemoryReader *memReader, Bool fullRegs)
 {
 	UTF8Char sbuff[512];
 	UInt8 buff[16];
@@ -945,7 +945,7 @@ Bool Manage::DasmMIPS::Disasm32(IO::Writer *writer, Manage::AddressResolver *add
 			DEL_CLASS(outStr);
 			return false;
 		}
-		outStr->Append(sbuff);
+		outStr->AppendSlow(sbuff);
 		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmMIPS::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.pc)
 		{
@@ -1005,8 +1005,8 @@ Manage::DasmMIPS::DasmMIPS_Sess *Manage::DasmMIPS::CreateSess(Manage::DasmMIPS::
 	sess->codeSegm = codeSegm;
 	sess->codeHdlrs = (void**)this->codes;
 	//sess->code0fHdlrs = (void**)this->codes0f;
-	NEW_CLASS(sess->callAddrs, Data::ArrayListInt32());
-	NEW_CLASS(sess->jmpAddrs, Data::ArrayListInt32());
+	NEW_CLASS(sess->callAddrs, Data::ArrayListUInt32());
+	NEW_CLASS(sess->jmpAddrs, Data::ArrayListUInt32());
 	MemCopyNO(&sess->regs, regs, sizeof(Manage::DasmMIPS::DasmMIPS_Regs));
 	return sess;
 }
