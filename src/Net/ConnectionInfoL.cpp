@@ -33,7 +33,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	IO::FileStream *fs;
 
 	Text::StringBuilderUTF8 sb;
-	sb.Append((const UTF8Char*)data->name);
+	sb.AppendSlow((const UTF8Char*)data->name);
 	this->ent.internalName = Text::StrCopyNew(data->name);
 	this->ent.name = Text::StrCopyNew(sb.ToString());
 	this->ent.description = Text::StrCopyNew(sb.ToString());
@@ -134,7 +134,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("/sys/class/net/"));
-		sb.Append((const UTF8Char*)data->name);
+		sb.AppendSlow((const UTF8Char*)data->name);
 		sb.AppendC(UTF8STRC("/address"));
 	
 		UOSInt readSize;
