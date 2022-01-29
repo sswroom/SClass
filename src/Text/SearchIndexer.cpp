@@ -25,17 +25,18 @@ Text::SearchIndexer::~SearchIndexer()
 void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	OSInt i;
 	void *sess = this->ta->BeginAnalyze(str);
 	if (sess == 0)
 		return;
-	while (this->ta->NextWord(sbuff, sess))
+	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		Data::ArrayListInt64 *tmpVal = this->strIndex->Get(sbuff);
+		Data::ArrayListInt64 *tmpVal = this->strIndex->Get({sbuff, (UOSInt)(sptr - sbuff)});
 		if (tmpVal == 0)
 		{
 			NEW_CLASS(tmpVal, Data::ArrayListInt64());
-			this->strIndex->Put(sbuff, tmpVal);
+			this->strIndex->Put({sbuff, (UOSInt)(sptr - sbuff)}, tmpVal);
 		}
 		i = tmpVal->SortedIndexOf(key);
 		if (i < 0)
@@ -49,6 +50,7 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF8Char *searchStr, UOSInt maxResults)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Data::ArrayList<Data::ArrayListInt64*> *resultList;
 	Data::ArrayListInt32 *resultListCnt;
 	Data::ArrayListInt64 *tmpIndex;
@@ -58,9 +60,9 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 		return 0;
 	NEW_CLASS(resultList, Data::ArrayList<Data::ArrayListInt64*>());
 	NEW_CLASS(resultListCnt, Data::ArrayListInt32());
-	while (this->ta->NextWord(sbuff, sess))
+	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		tmpIndex = this->strIndex->Get(sbuff);
+		tmpIndex = this->strIndex->Get({sbuff, (UOSInt)(sptr - sbuff)});
 		if (tmpIndex == 0)
 		{
 			this->ta->EndAnalyze(sess);

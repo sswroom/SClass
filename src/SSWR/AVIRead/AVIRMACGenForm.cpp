@@ -109,11 +109,12 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	{
 		if (entList[i].name[0])
 		{
-			macArr = this->macMap->Get((const UTF8Char*)entList[i].name);
+			UOSInt len = Text::StrCharCnt(entList[i].name);
+			macArr = this->macMap->Get({(const UTF8Char*)entList[i].name, len});
 			if (macArr == 0)
 			{
 				NEW_CLASS(macArr, Data::ArrayList<Net::MACInfo::MACEntry*>());
-				this->macMap->Put((const UTF8Char*)entList[i].name, macArr);
+				this->macMap->Put({(const UTF8Char*)entList[i].name, len}, macArr);
 			}
 			macArr->Add(&entList[i]);
 		}

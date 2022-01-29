@@ -162,3 +162,4 @@ Double Math::Unit::Distance::Convert(DistanceUnit fromUnit, DistanceUnit toUnit,
 {
 	return fromValue * GetUnitRatio(fromUnit) / GetUnitRatio(toUnit);
 }
+

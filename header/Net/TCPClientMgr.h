@@ -26,6 +26,7 @@ namespace Net
 
 		typedef struct
 		{
+			UTF8Char debug[6];
 			TCPClient *cli;
 			void *cliData;
 			Data::DateTime *lastDataTime;

@@ -15,14 +15,12 @@ Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 	Text::PString sarr[2];
 	UOSInt i = 2;
 	Int8 dir;
-	UOSInt len;
 	sb.AppendSlow(compareConds);
 	sarr[1] = sb;
 	while (i == 2)
 	{
 		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 		dir = 1;
-		len = sarr[0].leng;
 		if (sarr[0].EndsWithICase(UTF8STRC(" ASC")))
 		{
 			sarr[0].RemoveChars(4);

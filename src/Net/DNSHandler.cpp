@@ -71,7 +71,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv4Mut);
-	dnsStat = this->reqv4Map->GetC(domain, domainLen);
+	dnsStat = this->reqv4Map->Get({domain, domainLen});
 	if (dnsStat)
 	{
 		if (dnsStat->timeout < 0)
@@ -136,7 +136,7 @@ Bool Net::DNSHandler::GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, cons
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv4Map->PutC(domain, domainLen, dnsStat);
+	dnsStat = this->reqv4Map->Put({domain, domainLen}, dnsStat);
 	mutUsage.EndUse();
 	if (dnsStat)
 	{
@@ -156,7 +156,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 	UOSInt j;
 	Net::DNSClient::RequestAnswer *ans;
 	Sync::MutexUsage mutUsage(this->reqv6Mut);
-	dnsStat = this->reqv6Map->GetC(domain, domainLen);
+	dnsStat = this->reqv6Map->Get({domain, domainLen});
 	if (dnsStat)
 	{
 		if (dnsStat->timeout < 0)
@@ -221,7 +221,7 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 		i++;
 	}
 	mutUsage.BeginUse();
-	dnsStat = this->reqv6Map->PutC(domain, domainLen, dnsStat);
+	dnsStat = this->reqv6Map->Put({domain, domainLen}, dnsStat);
 	mutUsage.EndUse();
 	if (dnsStat)
 	{
@@ -240,7 +240,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		Sync::MutexUsage mutUsage(this->reqv4Mut);
-		dnsStat = this->reqv4Map->GetC(domain, domainLen);
+		dnsStat = this->reqv4Map->Get({domain, domainLen});
 		if (dnsStat)
 		{
 			dnsStat->timeout = -1;
@@ -253,7 +253,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 			dnsStat->timeout = -1;
 			dnsStat->addr = *addr;
 			NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-			this->reqv4Map->PutC(domain, domainLen, dnsStat);
+			this->reqv4Map->Put({domain, domainLen}, dnsStat);
 		}
 		mutUsage.EndUse();
 		return true;
@@ -261,7 +261,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 	else if (addr->addrType == Net::AddrType::IPv6)
 	{
 		Sync::MutexUsage mutUsage(this->reqv6Mut);
-		dnsStat = this->reqv6Map->GetC(domain, domainLen);
+		dnsStat = this->reqv6Map->Get({domain, domainLen});
 		if (dnsStat)
 		{
 			dnsStat->timeout = -1;
@@ -274,7 +274,7 @@ Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UT
 			dnsStat->timeout = -1;
 			dnsStat->addr = *addr;
 			NEW_CLASS(dnsStat->answers, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
-			this->reqv6Map->PutC(domain, domainLen, dnsStat);
+			this->reqv6Map->Put({domain, domainLen}, dnsStat);
 		}
 		mutUsage.EndUse();
 		return true;

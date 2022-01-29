@@ -4,6 +4,7 @@
 #include "Crypto/Hash/CRC32RC.h"
 #include "Data/ByteTool.h"
 #include "Data/IMap.h"
+#include "Text/CString.h"
 #include "Text/MyString.h"
 
 namespace Data
@@ -17,10 +18,11 @@ namespace Data
 		BTreeUTF8Node<T> *rightNode;
 		T nodeVal;
 		UInt32 nodeHash;
-		UTF8Char nodeStr[1];
+		UOSInt keyLen;
+		UTF8Char nodeKey[1];
 	};
 
-	template <class T> class BTreeUTF8Map : public IMap<const UTF8Char*, T>
+	template <class T> class BTreeUTF8Map : public IMap<Text::CString, T>
 	{
 	protected:
 		Crypto::Hash::CRC32RC *crc;
@@ -29,24 +31,22 @@ namespace Data
 	protected:
 		void OptimizeNode(BTreeUTF8Node<T> *node);
 		void ReleaseNodeTree(BTreeUTF8Node<T> *node);
-		BTreeUTF8Node<T> *NewNode(const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val);
-		virtual T PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val);
+		BTreeUTF8Node<T> *NewNode(Text::CString key, UInt32 hash, T val);
+		virtual T PutNode(BTreeUTF8Node<T> *node, Text::CString key, UInt32 hash, T val);
 		BTreeUTF8Node<T> *RemoveNode(BTreeUTF8Node<T> *node);
 		void FillArr(T **arr, BTreeUTF8Node<T> *node);
-		void FillNameArr(const UTF8Char ***arr, BTreeUTF8Node<T> *node);
+		void FillNameArr(Text::CString **arr, BTreeUTF8Node<T> *node);
 		virtual UInt32 CalHash(const UTF8Char *key, UOSInt keyLen);
 	public:
 		BTreeUTF8Map();
 		virtual ~BTreeUTF8Map();
 
-		virtual T Put(const UTF8Char *key, T val);
-		virtual T PutC(const UTF8Char *key, UOSInt keyLen, T val);
-		virtual T Get(const UTF8Char *key);
-		virtual T GetC(const UTF8Char *key, UOSInt keyLen);
-		virtual T Remove(const UTF8Char *key);
+		virtual T Put(Text::CString key, T val);
+		virtual T Get(Text::CString key);
+		virtual T Remove(Text::CString key);
 		virtual Bool IsEmpty();
 		virtual T *ToArray(UOSInt *objCnt);
-		virtual const UTF8Char **ToNameArray(UOSInt *objCnt);
+		virtual Text::CString *ToNameArray(UOSInt *objCnt);
 		virtual void Clear();
 	};
 
@@ -93,9 +93,9 @@ namespace Data
 		MemFree(node);
 	}
 
-	template <class T> BTreeUTF8Node<T> *BTreeUTF8Map<T>::NewNode(const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val)
+	template <class T> BTreeUTF8Node<T> *BTreeUTF8Map<T>::NewNode(Text::CString key, UInt32 hash, T val)
 	{
-		BTreeUTF8Node<T> *node = (BTreeUTF8Node<T> *)MAlloc(sizeof(BTreeUTF8Node<T>) + sizeof(UTF8Char) * keyLen);
+		BTreeUTF8Node<T> *node = (BTreeUTF8Node<T> *)MAlloc(sizeof(BTreeUTF8Node<T>) + sizeof(UTF8Char) * key.leng);
 		node->nodeCnt = 0;
 		node->parNode = 0;
 		node->leftNode = 0;
@@ -103,18 +103,19 @@ namespace Data
 		node->nodeVal = val;
 		node->nodeHash = hash;
 		node->maxLev = 0;
-		Text::StrConcatC(node->nodeStr, key, keyLen);
+		node->keyLen = key.leng;
+		key.ConcatTo(node->nodeKey);
 		return node;
 	}
 
-	template <class T> T BTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, const UTF8Char *key, UOSInt keyLen, UInt32 hash, T val)
+	template <class T> T BTreeUTF8Map<T>::PutNode(BTreeUTF8Node<T> *node, Text::CString key, UInt32 hash, T val)
 	{
 		BTreeUTF8Node<T> *tmpNode;
 		T retVal;
 		OSInt i;
 		if (node->nodeHash == hash)
 		{
-			i = Text::StrCompare(node->nodeStr, key);
+			i = Text::StrCompareFastC(node->nodeKey, node->keyLen, key.v, key.leng);
 		}
 		else if (node->nodeHash > hash)
 		{
@@ -135,7 +136,7 @@ namespace Data
 			if (node->leftNode == 0)
 			{
 				tmpNode = node;
-				node->leftNode = NewNode(key, keyLen, hash, val);
+				node->leftNode = NewNode(key, hash, val);
 				node->leftNode->parNode = node;
 				while (node)
 				{
@@ -158,7 +159,7 @@ namespace Data
 			}
 			else
 			{
-				retVal = PutNode(node->leftNode, key, keyLen, hash, val);
+				retVal = PutNode(node->leftNode, key, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->rightNode == 0)
@@ -182,7 +183,7 @@ namespace Data
 			if (node->rightNode == 0)
 			{
 				tmpNode = node;
-				node->rightNode = NewNode(key, keyLen, hash, val);
+				node->rightNode = NewNode(key, hash, val);
 				node->rightNode->parNode = node;
 				while (node)
 				{
@@ -205,7 +206,7 @@ namespace Data
 			}
 			else
 			{
-				retVal = PutNode(node->rightNode, key, keyLen, hash, val);
+				retVal = PutNode(node->rightNode, key, hash, val);
 /*				Int32 leftLev;
 				Int32 rightLev;
 				if (node->leftNode == 0)
@@ -358,17 +359,17 @@ namespace Data
 		FillArr(arr, node->rightNode);
 	}
 
-	template <class T> void BTreeUTF8Map<T>::FillNameArr(const UTF8Char ***arr, BTreeUTF8Node<T> *node)
+	template <class T> void BTreeUTF8Map<T>::FillNameArr(Text::CString **arr, BTreeUTF8Node<T> *node)
 	{
 		if (node == 0)
 			return;
 		FillNameArr(arr, node->leftNode);
-		**arr = node->nodeStr;
+		**arr = {node->nodeKey, node->keyLen};
 		++*arr;
 		FillNameArr(arr, node->rightNode);
 	}
 
-	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : IMap<const UTF8Char*, T>()
+	template <class T> BTreeUTF8Map<T>::BTreeUTF8Map() : IMap<Text::CString, T>()
 	{
 		rootNode = 0;
 		NEW_CLASS(crc, Crypto::Hash::CRC32RC());
@@ -384,49 +385,32 @@ namespace Data
 		DEL_CLASS(crc);
 	}
 
-	template <class T> T BTreeUTF8Map<T>::Put(const UTF8Char *key, T val)
+	template <class T> T BTreeUTF8Map<T>::Put(Text::CString key, T val)
 	{
-		UOSInt keyLen = Text::StrCharCnt(key);
-		UInt32 hash = CalHash(key, keyLen);
+		UInt32 hash = CalHash(key.v, key.leng);
 		if (this->rootNode == 0)
 		{
-			this->rootNode = NewNode(key, keyLen, hash, val);
+			this->rootNode = NewNode(key, hash, val);
 			return 0;
 		}
 		else
 		{
 			T tmpVal;
-			tmpVal = PutNode(this->rootNode, key, keyLen, hash, val);
+			tmpVal = PutNode(this->rootNode, key, hash, val);
 			return tmpVal;
 		}
 	}
 
-	template <class T> T BTreeUTF8Map<T>::PutC(const UTF8Char *key, UOSInt keyLen, T val)
+	template <class T> T BTreeUTF8Map<T>::Get(Text::CString key)
 	{
-		UInt32 hash = CalHash(key, keyLen);
-		if (this->rootNode == 0)
-		{
-			this->rootNode = NewNode(key, keyLen, hash, val);
-			return 0;
-		}
-		else
-		{
-			T tmpVal;
-			tmpVal = PutNode(this->rootNode, key, keyLen, hash, val);
-			return tmpVal;
-		}
-	}
-
-	template <class T> T BTreeUTF8Map<T>::Get(const UTF8Char *key)
-	{
-		UInt32 hash = CalHash(key, Text::StrCharCnt(key));
+		UInt32 hash = CalHash(key.v, key.leng);
 		BTreeUTF8Node<T> *node = this->rootNode;
 		while (node)
 		{
 			OSInt i;
 			if (node->nodeHash == hash)
 			{
-				i = Text::StrCompare(node->nodeStr, key);
+				i = Text::StrCompareFastC(node->nodeKey, node->keyLen, key.v, key.leng);
 			}
 			else if (node->nodeHash > hash)
 			{
@@ -452,46 +436,11 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeUTF8Map<T>::GetC(const UTF8Char *key, UOSInt keyLen)
-	{
-		UInt32 hash = CalHash(key, keyLen);
-		BTreeUTF8Node<T> *node = this->rootNode;
-		while (node)
-		{
-			OSInt i;
-			if (node->nodeHash == hash)
-			{
-				i = Text::StrCompare(node->nodeStr, key);
-			}
-			else if (node->nodeHash > hash)
-			{
-				i = 1;
-			}
-			else
-			{
-				i = -1;
-			}
-			if (i > 0)
-			{
-				node = node->leftNode;
-			}
-			else if (i < 0)
-			{
-				node = node->rightNode;
-			}
-			else
-			{
-				return node->nodeVal;
-			}
-		}
-		return 0;
-	}
-
-	template <class T> T BTreeUTF8Map<T>::Remove(const UTF8Char *key)
+	template <class T> T BTreeUTF8Map<T>::Remove(Text::CString key)
 	{
 		if (this->rootNode == 0)
 			return 0;
-		if (Text::StrCompare(this->rootNode->nodeStr, key) == 0)
+		if (Text::StrEqualsC(this->rootNode->nodeKey, this->rootNode->keyLen, key.v, key.leng))
 		{
 			T nodeVal = this->rootNode->nodeVal;
 			this->rootNode = RemoveNode(this->rootNode);
@@ -499,7 +448,7 @@ namespace Data
 		}
 		else
 		{
-			UInt32 hash = CalHash(key, Text::StrCharCnt(key));
+			UInt32 hash = CalHash(key.v, key.leng);
 			BTreeUTF8Node<T> *parNode = 0;
 			BTreeUTF8Node<T> *node = this->rootNode;
 			while (node)
@@ -507,7 +456,7 @@ namespace Data
 				OSInt i;
 				if (node->nodeHash == hash)
 				{
-					i = Text::StrCompare(node->nodeStr, key);
+					i = Text::StrCompareFastC(node->nodeKey, node->keyLen, key.v, key.leng);
 				}
 				else if (node->nodeHash > hash)
 				{
@@ -564,15 +513,15 @@ namespace Data
 		return outArr;
 	}
 
-	template <class T> const UTF8Char **BTreeUTF8Map<T>::ToNameArray(UOSInt *objCnt)
+	template <class T> Text::CString *BTreeUTF8Map<T>::ToNameArray(UOSInt *objCnt)
 	{
 		UOSInt cnt = 0;
 		if (this->rootNode)
 		{
 			cnt = this->rootNode->nodeCnt + 1;
 		}
-		const UTF8Char **outArr = MemAlloc(const UTF8Char*, cnt);
-		const UTF8Char **tmpArr = outArr;
+		Text::CString *outArr = MemAlloc(Text::CString, cnt);
+		Text::CString *tmpArr = outArr;
 		FillNameArr(&tmpArr, this->rootNode);
 		*objCnt = cnt;
 		return outArr;

@@ -263,7 +263,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Data::DateTime *dt;
 	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
 	Net::TCPClientMgr *me = stat->me;
-	ClassData *clsData = (ClassData*)me->clsData;
+	ClassData *clsData = me->clsData;
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	Int64 lastCheckTime = 0;
 	UOSInt i;
@@ -319,6 +319,10 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 
 void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliStat)
 {
+	if (!Text::StrEqualsC(cliStat->debug, 5, UTF8STRC("debug")))
+	{
+		printf("ProcessClient: not cliStat\r\n");
+	}
 	this->workerTasks->Put(cliStat);
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
@@ -474,6 +478,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	}
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = MemAlloc(Net::TCPClientMgr::TCPClientStatus, 1);
+	Text::StrConcatC(cliStat->debug, UTF8STRC("debug"));
 	cliStat->cli = cli;
 	cliStat->cliData = cliData;
 	NEW_CLASS(cliStat->lastDataTime, Data::DateTime());

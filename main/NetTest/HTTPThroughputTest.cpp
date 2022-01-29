@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Core/Core.h"
+#include "Math/Unit/Count.h"
 #include "Net/HTTPClient.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -198,6 +199,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	reqMeth = METHOD;
 	postSize = POSTSIZE;
 
+	UTF8Char sbuff[256];
 	UOSInt i;
 	UOSInt cmdCnt;
 	UTF8Char **args = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
@@ -307,16 +309,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	printf("URL: %s\r\n", paramUrl.v);
 	printf("Thread Cnt = %lld\r\n", threadCnt);
-	printf("TotalConn = %lld\r\n", paramConnCnt);
-	printf("SuccCnt = %lld\r\n", connCnt);
-	printf("FailCnt = %lld\r\n", failCnt);
+	printf("Total Request = %lld\r\n", paramConnCnt);
+	printf("Succ Count = %lld\r\n", connCnt);
+	printf("Fail Count = %lld\r\n", failCnt);
 	printf("Time used = %lf\r\n", t);
-	printf("Total header Size = %lld\r\n", hdrSize);
-	printf("Total data Size = %lld\r\n", recvSize);
+	Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, (Double)hdrSize), UTF8STRC("B"));
+	printf("Total header Size = %s\r\n", sbuff);
+	Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, (Double)recvSize), UTF8STRC("B"));
+	printf("Total data Size = %s\r\n", sbuff);
 	printf("Avg Resp Time = %lf s\r\n", totalRespTime / (Double)connCnt);
 	printf("Max Resp Time = %lf s\r\n", maxRespTime);
-	printf("Request/s = %lf\r\n", ((Double)connCnt / t));
-	printf("Transfer/s = %lf\r\n", ((Double)(recvSize + hdrSize) / t));
+	Math::Unit::Count::WellFormat(sbuff, ((Double)connCnt / t));
+	printf("Request/s = %s\r\n", sbuff);
+	Text::StrConcatC(Math::Unit::Count::WellFormat(sbuff, ((Double)(recvSize + hdrSize) / t)), UTF8STRC("B/s"));
+	printf("Transfer/s = %s\r\n", sbuff);
 	
 	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);

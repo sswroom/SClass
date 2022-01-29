@@ -537,7 +537,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	CacheInfo *cache;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
-	cache = this->fileCache->GetC(subReq, subReqLen);
+	cache = this->fileCache->Get({subReq, subReqLen});
 	if (cache != 0)
 	{
 		Sync::Interlocked::Increment(&this->fileCacheUsing);
@@ -703,7 +703,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.leng, sizeLeft, cache->buff);
 					Sync::MutexUsage mutUsage(this->fileCacheMut);
-					this->fileCache->PutC(subReq, subReqLen, cache);
+					this->fileCache->Put({subReq, subReqLen}, cache);
 					mutUsage.EndUse();
 				}
 				else
@@ -1286,7 +1286,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime.v, mime.leng, sizeLeft, cache->buff);
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
-				cache = this->fileCache->PutC(subReq, subReqLen, cache);
+				cache = this->fileCache->Put({subReq, subReqLen}, cache);
 				mutUsage.EndUse();
 				if (cache)
 				{

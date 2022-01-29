@@ -72,13 +72,13 @@ void IO::SPackageFile::ReadV2DirEnt(UInt64 ofst, UInt64 size)
 		MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 		sbuff[nameSize] = 0;
 		
-		file = this->fileMap->Get(sbuff);
+		file = this->fileMap->Get({sbuff, nameSize});
 		if (file == 0)
 		{
 			file = MemAlloc(FileInfo, 1);
 			file->ofst = ReadUInt64(&dirBuff[i]);
 			file->size = ReadUInt64(&dirBuff[i + 8]);
-			this->fileMap->Put(sbuff, file);
+			this->fileMap->Put({sbuff, nameSize}, file);
 		}
 		i += 26 + nameSize;
 	}
@@ -338,13 +338,13 @@ IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
 						MemCopyNO(sbuff, &dirBuff[i + 26], nameSize);
 						sbuff[nameSize] = 0;
 						
-						file = this->fileMap->Get(sbuff);
+						file = this->fileMap->Get({sbuff, nameSize});
 						if (file == 0)
 						{
 							file = MemAlloc(FileInfo, 1);
 							file->ofst = ReadUInt64(&dirBuff[i]);
 							file->size = ReadUInt64(&dirBuff[i + 8]);
-							this->fileMap->Put(sbuff, file);
+							this->fileMap->Put({sbuff, nameSize}, file);
 						}
 						i += 26 + nameSize;
 					}
@@ -455,13 +455,13 @@ IO::SPackageFile::~SPackageFile()
 Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, Int64 modTimeTicks)
 {
 	UInt8 dataBuff[512];
-	UOSInt strLen;
+	UOSInt strLen = Text::StrCharCnt(fileName);
 	UInt64 dataSize = fd->GetDataSize();
 	UOSInt writeSize;
 	Bool needCommit = false;
 
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap->Get(fileName) == 0)
+	if (this->fileMap->Get({fileName, strLen}) == 0)
 	{
 	}
 	else
@@ -472,7 +472,6 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], dataSize);
 	WriteInt64(&dataBuff[16], modTimeTicks);
-	strLen = Text::StrCharCnt(fileName);
 	MemCopyNO(&dataBuff[26], fileName, strLen);
 	WriteUInt16(&dataBuff[24], (UInt16)strLen);
 
@@ -520,7 +519,7 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 		FileInfo *file = MemAlloc(FileInfo, 1);
 		file->ofst = this->currOfst;
 		file->size = dataSize;
-		this->fileMap->Put(fileName, file);
+		this->fileMap->Put({fileName, strLen}, file);
 
 		this->mstm->Write(dataBuff, 26 + strLen);
 		this->currOfst += dataSize;
@@ -545,10 +544,10 @@ Bool IO::SPackageFile::AddFile(IO::IStreamData *fd, const UTF8Char *fileName, In
 Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF8Char *fileName, Int64 modTimeTicks)
 {
 	UInt8 dataBuff[512];
-	UOSInt strLen;
+	UOSInt strLen = Text::StrCharCnt(fileName);
 	Bool needCommit = false;
 	Sync::MutexUsage mutUsage(this->mut);
-	if (this->fileMap->Get(fileName) == 0)
+	if (this->fileMap->Get({fileName, strLen}) == 0)
 	{
 	}
 	else
@@ -559,7 +558,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 	WriteUInt64(&dataBuff[0], this->currOfst);
 	WriteUInt64(&dataBuff[8], fileSize);
 	WriteInt64(&dataBuff[16], modTimeTicks);
-	strLen = Text::StrCharCnt(fileName);
+	
 	MemCopyNO(&dataBuff[26], fileName, strLen);
 	WriteInt16(&dataBuff[24], (UInt16)strLen);
 
@@ -574,7 +573,7 @@ Bool IO::SPackageFile::AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF
 		FileInfo *file = MemAlloc(FileInfo, 1);
 		file->ofst = this->currOfst;
 		file->size = fileSize;
-		this->fileMap->Put(fileName, file);
+		this->fileMap->Put({fileName, strLen}, file);
 
 		this->mstm->Write(dataBuff, 26 + strLen);
 		this->currOfst += fileSize;
@@ -698,8 +697,9 @@ void IO::SPackageFile::PauseCommit(Bool pauseCommit)
 IO::IStreamData *IO::SPackageFile::CreateStreamData(const UTF8Char *fileName)
 {
 	IO::IStreamData *fd = 0;
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	Sync::MutexUsage mutUsage(this->mut);
-	FileInfo *file = this->fileMap->Get(fileName);
+	FileInfo *file = this->fileMap->Get({fileName, fileNameLen});
 	if (file)
 	{
 		UInt8 *fileBuff = MemAlloc(UInt8, (UOSInt)file->size);
