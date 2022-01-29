@@ -267,7 +267,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *svc)
 {
 	Net::WebServer::CapturerWebHandler *me = (Net::WebServer::CapturerWebHandler*)svc;
-	if (me->wifiCapture)
+	if (me->wifiCapture == 0)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_IMPLEMENTED);
 		return true;
