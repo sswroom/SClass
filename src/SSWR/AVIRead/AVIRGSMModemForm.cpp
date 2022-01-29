@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveAllClick(void *userObj)
 				smsMsg = Text::SMSMessage::CreateFromPDU(sms->pduMessage);
 				smsMsg->GetMessageTime(&dt);
 				sb.ClearStr();
-				sb.AppendSlow(dlg->GetFolder());
+				sb.Append(dlg->GetFolder());
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.AppendC(UTF8STRC("SMS"));
 				sb.AppendI64(dt.ToDotNetTicks());

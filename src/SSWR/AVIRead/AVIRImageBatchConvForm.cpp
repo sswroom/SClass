@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtDir->SetText(dlg->GetFolder());
+		me->txtDir->SetText(dlg->GetFolder()->v);
 	}
 	DEL_CLASS(dlg);
 }

@@ -788,7 +788,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 					if (me->env->GetUserFilePath(userFile, &sb))
 					{
 						sb2.ClearStr();
-						sb2.AppendSlow(dlg->GetFolder());
+						sb2.Append(dlg->GetFolder());
 						if (!sb2.EndsWith(IO::Path::PATH_SEPERATOR))
 						{
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
@@ -3251,7 +3251,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"OrganMgr", L"ExportList"));
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
-				this->env->ExportLite(dlg->GetFolder());
+				this->env->ExportLite(dlg->GetFolder()->v);
 			}
 			DEL_CLASS(dlg);
 		}

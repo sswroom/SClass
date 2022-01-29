@@ -100,8 +100,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	IO::Path::PathType pt;
 	Text::StringBuilderUTF8 sb;
 
-	sptr = Text::StrConcat(sbuff, this->folderPath);
-	sptr2 = Text::StrConcat(sbuff2, this->folderPath);
+	sptr = this->folderPath->ConcatTo(sbuff);
+	sptr2 = this->folderPath->ConcatTo(sbuff2);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
@@ -270,7 +270,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	if (this->folderPath == 0)
 		return;
 
-	sptr = Text::StrConcat(sbuff, this->folderPath);
+	sptr = this->folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Output"));
@@ -362,7 +362,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	Data::ArrayList<SSWR::AVIRead::AVIRImageControl::ImageStatus*> *imgList;
 	if (this->folderPath == 0)
 		return;
-	sptr = Text::StrConcat(sbuff, this->folderPath);
+	sptr = this->folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
@@ -897,14 +897,14 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(const UTF8Char *folderPath)
 		}
 		Sync::MutexUsage mutUsage(this->folderMut);
 		this->EndFolder();
-		Text::StrDelNew(this->folderPath);
+		this->folderPath->Release();
 		this->folderPath = 0;
 		mutUsage.EndUse();
 	}
 	if (folderPath)
 	{
 		Sync::MutexUsage mutUsage(this->folderMut);
-		this->folderPath = Text::StrCopyNew(folderPath);
+		this->folderPath = Text::String::NewNotNull(folderPath);
 		this->folderChanged = true;
 		mutUsage.EndUse();
 
@@ -919,7 +919,7 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(const UTF8Char *folderPath)
 	this->dispImg = 0;
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRImageControl::GetFolder()
+Text::String *SSWR::AVIRead::AVIRImageControl::GetFolder()
 {
 	return this->folderPath;
 }
@@ -940,7 +940,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	}
 
 	Text::StringBuilderUTF8 sb;
-	sptr = Text::StrConcat(sbuff, this->folderPath);
+	sptr = this->folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));

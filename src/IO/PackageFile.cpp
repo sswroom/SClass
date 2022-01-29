@@ -49,7 +49,7 @@ IO::PackageFile::PackageFile(Text::String *fileName) : IO::ParsedObject(fileName
 	NEW_CLASS(this->infoMap, Data::Int32Map<const UTF8Char *>());
 }
 
-IO::PackageFile::PackageFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
+IO::PackageFile::PackageFile(Text::CString fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->items, Data::ArrayList<PackFileItem*>());
 	NEW_CLASS(this->pkgFiles, Data::FastStringMap<PackFileItem*>());

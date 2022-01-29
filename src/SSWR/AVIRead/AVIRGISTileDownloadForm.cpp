@@ -131,7 +131,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveDirClicked(void *us
 		NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"GISTileDown"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesDir(dlg->GetFolder());
+			me->SaveTilesDir(dlg->GetFolder()->v);
 		}
 		DEL_CLASS(dlg);
 	}

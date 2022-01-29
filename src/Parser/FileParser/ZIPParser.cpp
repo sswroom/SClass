@@ -217,7 +217,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, i});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));
+							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
 							pf2->AddPack(pf3, sptr, dt.ToTicks());
 						}
 						pf2 = pf3;
@@ -230,7 +230,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));
+							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
 							pf2->AddPack(pf3, sptr, dt.ToTicks());
 						}
 						break;
@@ -263,7 +263,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, i});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));
+							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
 							pf2->AddPack(pf3, sptr, dt.ToTicks());
 						}
 						pf2 = pf3;

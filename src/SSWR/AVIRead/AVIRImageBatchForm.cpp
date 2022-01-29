@@ -19,7 +19,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
-	const UTF8Char *path;
+	Text::String *path;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
@@ -28,12 +28,12 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatch"));
 	if (path)
 	{
-		dlg->SetFolder(path);
+		dlg->SetFolder(path->v);
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		path = dlg->GetFolder();
-		sptr = Text::StrConcat(sbuff, path);
+		sptr = path->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -55,8 +55,8 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		}
 		me->selCnt = fileCnt;
 		me->prgMain->ProgressStart((const UTF8Char*)"Loading", fileCnt);
-		me->icMain->SetFolder(path);
-		me->lblFolder->SetText(path);
+		me->icMain->SetFolder(path->v);
+		me->lblFolder->SetText(path->v);
 		me->pbMain->SetImage(0, false);
 		SDEL_CLASS(me->dispImage);
 		SDEL_CLASS(me->previewImage);

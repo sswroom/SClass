@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddDirClicked(void *userOb
 	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"HQMPPlaylistDir"));
 	if (dlg->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		const UTF8Char *folder = dlg->GetFolder();
-		if (me->AddFolder(sbuff, Text::StrConcat(sbuff, folder)))
+		Text::String *folder = dlg->GetFolder();
+		if (me->AddFolder(sbuff, folder->ConcatTo(sbuff)))
 		{
 			me->UpdatePlaylist();
 		}

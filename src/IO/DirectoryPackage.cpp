@@ -8,10 +8,10 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void IO::DirectoryPackage::AddFile(const UTF8Char *fileName, UOSInt fileNameLen)
+void IO::DirectoryPackage::AddFile(Text::CString fileName)
 {
 	UTF8Char sbuff[512];
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName, fileNameLen);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName.v, fileName.leng);
 	if (sess)
 	{
 		Data::DateTime dt;
@@ -19,7 +19,7 @@ void IO::DirectoryPackage::AddFile(const UTF8Char *fileName, UOSInt fileNameLen)
 		IO::Path::PathType pt;
 		if (IO::Path::FindNextFile(sbuff, sess, &dt, &pt, &fileSize))
 		{
-			this->files->Add(Text::String::New(fileName, fileNameLen));
+			this->files->Add(Text::String::New(fileName.v, fileName.leng));
 			this->fileSizes->Add(fileSize);
 			this->fileTimes->Add(dt.ToTicks());
 		}
@@ -70,13 +70,14 @@ void IO::DirectoryPackage::Init()
 	}
 }
 
-IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(dirName->v)
+IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	if (dirName->StartsWith(UTF8STRC("~/")))
 	{
-		Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName->v + 1, dirName->leng - 1);
-		this->dirName = Text::String::NewNotNull(sbuff);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName->v + 1, dirName->leng - 1);
+		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{
@@ -85,19 +86,18 @@ IO::DirectoryPackage::DirectoryPackage(Text::String *dirName) : IO::PackageFile(
 	this->Init();
 }
 
-IO::DirectoryPackage::DirectoryPackage(const UTF8Char *dirName) : IO::PackageFile(dirName)
+IO::DirectoryPackage::DirectoryPackage(Text::CString dirName) : IO::PackageFile(dirName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UOSInt nameLen = Text::StrCharCnt(dirName);
-	if (Text::StrStartsWithC(dirName, nameLen, UTF8STRC("~/")))
+	if (dirName.StartsWith(UTF8STRC("~/")))
 	{
-		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName + 1, nameLen - 1);
+		sptr = Text::StrConcatC(IO::Path::GetUserHome(sbuff), dirName.v + 1, dirName.leng - 1);
 		this->dirName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{
-		this->dirName = Text::String::New(dirName, nameLen);
+		this->dirName = Text::String::New(dirName.v, dirName.leng);
 	}
 	this->Init();
 }
@@ -202,7 +202,7 @@ UInt64 IO::DirectoryPackage::GetItemSize(UOSInt index)
 	return this->fileSizes->GetItem(index);
 }
 
-UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
+UOSInt IO::DirectoryPackage::GetItemIndex(Text::CString name)
 {
 	UOSInt j = this->files->GetCount();
 	UOSInt i;
@@ -212,7 +212,7 @@ UOSInt IO::DirectoryPackage::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 		if (fileName)
 		{
 			i = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			if (Text::StrEqualsC(&fileName->v[i + 1], fileName->leng - i - 1, name, nameLen))
+			if (name.Equals(&fileName->v[i + 1], fileName->leng - i - 1))
 			{
 				return j;
 			}
@@ -243,12 +243,11 @@ Bool IO::DirectoryPackage::AllowWrite()
 	return true;
 }
 
-Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	pt = IO::Path::GetPathType(fileName, fileNameLen);
+	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -258,12 +257,12 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::CopyFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
@@ -276,24 +275,23 @@ Bool IO::DirectoryPackage::CopyFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::CopyDir(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
 	return false;
 }
 
-Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	pt = IO::Path::GetPathType(fileName, fileNameLen);
+	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -303,12 +301,12 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::MoveFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
@@ -321,24 +319,23 @@ Bool IO::DirectoryPackage::MoveFrom(const UTF8Char *fileName, IO::IProgressHandl
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::MoveDir(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	pt = IO::Path::GetPathType(fileName, fileNameLen);
+	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -348,12 +345,12 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::CopyFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
@@ -366,24 +363,23 @@ Bool IO::DirectoryPackage::RetryCopyFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen - i - 1);
-		ret = IO::FileUtil::CopyDir(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
 	return false;
 }
 
-Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	pt = IO::Path::GetPathType(fileName, fileNameLen);
+	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -393,12 +389,12 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen);
-		ret = IO::FileUtil::MoveFile(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::MoveFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}
@@ -411,12 +407,12 @@ Bool IO::DirectoryPackage::RetryMoveFrom(const UTF8Char *fileName, IO::IProgress
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
-		sptr = Text::StrConcatC(sptr, &fileName[i + 1], fileNameLen);
-		ret = IO::FileUtil::MoveDir(fileName, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
+		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile(sbuff, (UOSInt)(sptr - sbuff));
+			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
 		}
 		return ret;
 	}

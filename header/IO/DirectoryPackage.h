@@ -3,6 +3,7 @@
 #include "Data/ArrayListInt64.h"
 #include "Data/ArrayListUInt64.h"
 #include "IO/PackageFile.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace IO
@@ -15,11 +16,11 @@ namespace IO
 		Data::ArrayListInt64 *fileTimes;
 		Text::String *dirName;
 
-		void AddFile(const UTF8Char *fileName, UOSInt fileNameLen);
+		void AddFile(Text::CString fileName);
 		void Init();
 	public:
 		DirectoryPackage(Text::String *dirName);
-		DirectoryPackage(const UTF8Char *dirName);
+		DirectoryPackage(Text::CString dirName);
 		virtual ~DirectoryPackage();
 
 		virtual UOSInt GetCount();
@@ -30,15 +31,15 @@ namespace IO
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
 		virtual UInt64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(const UTF8Char *name, UOSInt nameLen);
+		virtual UOSInt GetItemIndex(Text::CString name);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();
 		virtual Bool AllowWrite();
-		virtual Bool CopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool MoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryCopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 
 		Bool Sort();
 	};

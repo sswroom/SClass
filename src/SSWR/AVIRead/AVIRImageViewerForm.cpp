@@ -394,7 +394,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;
-				NEW_CLASS(this->pkgFile, IO::DirectoryPackage(sbuff));
+				NEW_CLASS(this->pkgFile, IO::DirectoryPackage({sbuff, i}));
 				((IO::DirectoryPackage*)this->pkgFile)->Sort();
 				j = this->pkgFile->GetCount();
 				while (j-- > 0)

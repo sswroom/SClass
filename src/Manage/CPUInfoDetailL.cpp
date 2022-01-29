@@ -32,7 +32,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		}
 		DEL_CLASS(reader);
 		fs->SeekFromBeginning(0);
-		this->cpuModel = Text::CString::FromPtr(Manage::CPUDB::ParseCPUInfo(fs));
+		this->cpuModel = Manage::CPUDB::ParseCPUInfo(fs);
 		if (this->cpuModel.v == 0)
 		{
 			if (this->clsData && Text::StrEquals((const UTF8Char*)this->clsData, (const UTF8Char*)"spade"))

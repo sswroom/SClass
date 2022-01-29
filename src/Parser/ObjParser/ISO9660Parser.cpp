@@ -239,7 +239,7 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 					sptr = fileNameEnd;
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
-					NEW_CLASS(pf2, IO::PackageFile(fileName));
+					NEW_CLASS(pf2, IO::PackageFile({fileName, (UOSInt)(sptr - fileName)}));
 					pkgFile->AddPack(pf2, &fileNameEnd[1], dt.ToTicks());
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}

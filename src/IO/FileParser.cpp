@@ -12,9 +12,9 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(const UTF8Char *filePath)
 	UOSInt i = Text::StrLastIndexOfChar(filePath, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
-		const UTF8Char *dir = Text::StrCopyNewC(filePath, i);
+		Text::String *dir = Text::String::New(filePath, i);
 		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
-		Text::StrDelNew(dir);
+		dir->Release();
 	}
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));	
 	IO::ParsedObject *pobj = this->ParseFile(fd, pkg, IO::ParserType::Unknown);

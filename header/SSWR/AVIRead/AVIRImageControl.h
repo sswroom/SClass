@@ -7,6 +7,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 #include "UI/GUICustomDrawVScroll.h"
 
 namespace SSWR
@@ -62,7 +63,7 @@ namespace SSWR
 
 			Sync::Mutex *ioMut;
 			Sync::Mutex *folderMut;
-			const UTF8Char *folderPath;
+			Text::String *folderPath;
 			Bool folderChanged;
 			Sync::Event *folderThreadEvt;
 			Sync::Event *folderCtrlEvt;
@@ -120,7 +121,7 @@ namespace SSWR
 			virtual void OnKeyDown(UInt32 keyCode);
 
 			void SetFolder(const UTF8Char *folderPath);
-			const UTF8Char *GetFolder();
+			Text::String *GetFolder();
 			Bool SaveSetting();
 			void SetDispImageHandler(DispImageChanged hdlr, void *userObj);
 			void SetProgressHandler(ProgressUpdated hdlr, void *userObj);

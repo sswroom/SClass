@@ -1,6 +1,7 @@
 #ifndef _SM_UI_FOLDERDIALOG
 #define _SM_UI_FOLDERDIALOG
 #include "IO/Registry.h"
+#include "Text/String.h"
 
 namespace UI
 {
@@ -8,7 +9,7 @@ namespace UI
 	{
 	private:
 		IO::Registry *reg;
-		const UTF8Char *dirName;
+		Text::String *dirName;
 		const UTF8Char *message;
 
 		static Int32 __stdcall BrowseCB(void *hwnd, UInt32 uMsg, OSInt lParam, OSInt lpData);
@@ -17,7 +18,7 @@ namespace UI
 		~FolderDialog();
 
 		void SetFolder(const UTF8Char *dirName);
-		const UTF8Char *GetFolder();
+		Text::String *GetFolder();
 		void SetMessage(const UTF8Char *message);
 
 		Bool ShowDialog(void *ownerHandle);

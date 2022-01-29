@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			{
 				IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(i));
 				sb.ClearStr();
-				sb.AppendSlow(dlg->GetFolder());
+				sb.Append(dlg->GetFolder());
 				if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 				{
 					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);

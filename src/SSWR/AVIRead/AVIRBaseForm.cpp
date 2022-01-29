@@ -455,7 +455,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 #endif
 			if (!valid)
 			{
-				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]));
+				NEW_CLASS(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
 				Parser::ParserList *parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
 				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
