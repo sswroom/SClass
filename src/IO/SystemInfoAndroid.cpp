@@ -34,8 +34,8 @@ IO::SystemInfo::SystemInfo()
 		NEW_CLASS(cfg, IO::ConfigFile());
 		while (1)
 		{
-			i = Text::StrSplitP(u8arr, 2, u8arr[1].v, u8arr[1].leng, '\n');
-			if (Text::StrSplitTrimP(u8arr2, 2, u8arr[0].v, u8arr[0].leng, ':') == 2)
+			i = Text::StrSplitP(u8arr, 2, u8arr[1], '\n');
+			if (Text::StrSplitTrimP(u8arr2, 2, u8arr[0], ':') == 2)
 			{
 				if (Text::StrEndsWithC(u8arr2[0].v, u8arr2[0].leng, UTF8STRC("]")) && Text::StrEndsWithC(u8arr2[1].v, u8arr2[1].leng, UTF8STRC("]")))
 				{

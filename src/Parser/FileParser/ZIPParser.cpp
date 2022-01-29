@@ -214,7 +214,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb.AppendC(sptr, i);
-						pf3 = pf2->GetPackFile(sptr);
+						pf3 = pf2->GetPackFile({sptr, i});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));
@@ -227,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sb.AppendC(UTF8STRC("\\"));
 						sb.AppendC(sptr, (UOSInt)(sptrEnd - sptr));
-						pf3 = pf2->GetPackFile(sptr);
+						pf3 = pf2->GetPackFile({sptr, (UOSInt)(sptrEnd - sptr)});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));
@@ -260,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						sptr[i] = 0;
 						sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb.AppendC(sptr, i);
-						pf3 = pf2->GetPackFile(sptr);
+						pf3 = pf2->GetPackFile({sptr, i});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToString()));

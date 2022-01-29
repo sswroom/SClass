@@ -37,14 +37,11 @@ namespace Data
 		OSInt IndexOf(Text::String *s);
 
 		virtual T Put(Text::String *key, T val);
-		T Put(const UTF8Char *key, T val);
-		T PutC(const UTF8Char *key, UOSInt keyLen, T val);
+		T PutC(Text::CString key, T val);
 		virtual T Get(Text::String *key);
-		T Get(const UTF8Char *key);
-		T GetC(const UTF8Char *key, UOSInt keyLen);
+		T GetC(Text::CString key);
 		virtual T Remove(Text::String *key);
-		T Remove(const UTF8Char *key);
-		T RemoveC(const UTF8Char *key, UOSInt keyLen);
+		T RemoveC(Text::CString key);
 		virtual Bool IsEmpty();
 		virtual void Clear();
 	};
@@ -208,31 +205,13 @@ namespace Data
 		}
 	}
 
-	template <class T> T FastStringMap<T>::Put(const UTF8Char *key, T val)
+	template <class T> T FastStringMap<T>::PutC(Text::CString key, T val)
 	{
-		UOSInt len = Text::StrCharCnt(key);
-		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key, len);
+		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index < 0)
 		{
-			this->Insert((UOSInt)~index, hash, Text::String::New(key, len), val);
-			return 0;
-		}
-		else
-		{
-			T oldVal = this->items[index].val;
-			this->items[index].val = val;
-			return oldVal;
-		}
-	}
-
-	template <class T> T FastStringMap<T>::PutC(const UTF8Char *key, UOSInt keyLen, T val)
-	{
-		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key, keyLen);
-		if (index < 0)
-		{
-			this->Insert((UOSInt)~index, hash, Text::String::New(key, keyLen), val);
+			this->Insert((UOSInt)~index, hash, Text::String::New(key.v, key.leng), val);
 			return 0;
 		}
 		else
@@ -254,22 +233,10 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::Get(const UTF8Char *key)
+	template <class T> T FastStringMap<T>::GetC(Text::CString key)
 	{
-		UOSInt len = Text::StrCharCnt(key);
-		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key, len);
-		if (index >= 0)
-		{
-			return this->items[index].val;
-		}
-		return 0;
-	}
-
-	template <class T> T FastStringMap<T>::GetC(const UTF8Char *key, UOSInt keyLen)
-	{
-		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key, keyLen);
+		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
 			return this->items[index].val;
@@ -295,29 +262,10 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T FastStringMap<T>::Remove(const UTF8Char *key)
+	template <class T> T FastStringMap<T>::RemoveC(Text::CString key)
 	{
-		UOSInt len = Text::StrCharCnt(key);
-		UInt32 hash = this->crc->CalcDirect(key, len);
-		OSInt index = this->IndexOf(hash, key, len);
-		if (index >= 0)
-		{
-			T oldVal = this->items[index].val;
-			this->items[index].s->Release();
-			this->cnt--;
-			if ((UOSInt)index < this->cnt)
-			{
-				MemCopyO(&this->items[index], &this->items[index + 1], sizeof(StringItem) * (this->cnt - (UOSInt)index));
-			}
-			return oldVal;
-		}
-		return 0;
-	}
-
-	template <class T> T FastStringMap<T>::RemoveC(const UTF8Char *key, UOSInt keyLen)
-	{
-		UInt32 hash = this->crc->CalcDirect(key, keyLen);
-		OSInt index = this->IndexOf(hash, key, keyLen);
+		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
 			T oldVal = this->items[index].val;

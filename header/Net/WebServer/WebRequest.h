@@ -43,7 +43,7 @@ namespace Net
 			void ParseQuery();
 			void ParseFormStr(Data::FastStringMap<Text::String *> *formMap, const UInt8 *buff, UOSInt buffSize);
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
-			const UTF8Char *ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
+			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
 			WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();

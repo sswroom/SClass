@@ -961,7 +961,7 @@ Bool Net::EthernetWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, N
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
+	RequestHandler reqHdlr = this->reqMap->GetC({subReq, subReqLen});
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -975,23 +975,23 @@ Net::EthernetWebHandler::EthernetWebHandler(Net::EthernetAnalyzer *analyzer)
 	Net::EthernetAnalyzer::AnalyzeType atype = this->analyzer->GetAnalyzeType();
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	if (atype & Net::EthernetAnalyzer::AT_DEVICE)
-		this->reqMap->PutC(UTF8STRC("/device"), DeviceReq);
+		this->reqMap->PutC(CSTR("/device"), DeviceReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPTRANSFER)
-		this->reqMap->PutC(UTF8STRC("/iptransfer"), IPTransferReq);
+		this->reqMap->PutC(CSTR("/iptransfer"), IPTransferReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(UTF8STRC("/dnsreqv4"), DNSReqv4Req);
+		this->reqMap->PutC(CSTR("/dnsreqv4"), DNSReqv4Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(UTF8STRC("/dnsreqv6"), DNSReqv6Req);
+		this->reqMap->PutC(CSTR("/dnsreqv6"), DNSReqv6Req);
 	if (atype & Net::EthernetAnalyzer::AT_DNSREQ)
-		this->reqMap->PutC(UTF8STRC("/dnsreqoth"), DNSReqOthReq);
+		this->reqMap->PutC(CSTR("/dnsreqoth"), DNSReqOthReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSTARGET)
-		this->reqMap->PutC(UTF8STRC("/dnstarget"), DNSTargetReq);
+		this->reqMap->PutC(CSTR("/dnstarget"), DNSTargetReq);
 	if (atype & Net::EthernetAnalyzer::AT_DNSCLI)
-		this->reqMap->PutC(UTF8STRC("/dnsclient"), DNSClientReq);
+		this->reqMap->PutC(CSTR("/dnsclient"), DNSClientReq);
 	if (atype & Net::EthernetAnalyzer::AT_DHCP)
-		this->reqMap->PutC(UTF8STRC("/dhcp"), DHCPReq);
+		this->reqMap->PutC(CSTR("/dhcp"), DHCPReq);
 	if (atype & Net::EthernetAnalyzer::AT_IPLOG)
-		this->reqMap->PutC(UTF8STRC("/iplog"), IPLogReq);
+		this->reqMap->PutC(CSTR("/iplog"), IPLogReq);
 }
 
 Net::EthernetWebHandler::~EthernetWebHandler()

@@ -1042,17 +1042,17 @@ void Text::JSONObject::SetObjectValue(const UTF8Char *name, UOSInt nameLen, Text
 	{
 		val->BeginUse();
 	}
-	Text::JSONBase *obj = this->objVals->GetC(name, nameLen);
+	Text::JSONBase *obj = this->objVals->GetC({name, nameLen});
 	if (obj)
 	{
 		obj->EndUse();
 	}
-	this->objVals->Put(name, val);
+	this->objVals->PutC({name, nameLen}, val);
 }
 
 Text::JSONBase *Text::JSONObject::GetObjectValue(const UTF8Char *name, UOSInt nameLen)
 {
-	return this->objVals->GetC(name, nameLen);
+	return this->objVals->GetC({name, nameLen});
 }
 
 void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
@@ -1068,7 +1068,7 @@ void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
 
 Text::String *Text::JSONObject::GetObjectString(const UTF8Char *name, UOSInt nameLen)
 {
-	Text::JSONBase *baseObj = this->objVals->GetC(name, nameLen);
+	Text::JSONBase *baseObj = this->objVals->GetC({name, nameLen});
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
 	{
 		return 0;

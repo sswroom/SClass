@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		{
 			s = objList.GetItem(i);
 			me->lbProgObject->AddItem(s, 0);
-			prog = me->smake->GetProgItem(s->v);
+			prog = me->smake->GetProgItem(s->ToCString());
 			if (prog && prog->srcFile)
 			{
 				procList.SortedInsert(prog->srcFile);
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 	me->lbProgGroupItems->ClearItems();
 	if (progName)
 	{
-		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName->v);
+		const IO::SMake::ProgramItem *prog = me->smake->GetProgItem(progName->ToCString());
 		if (prog)
 		{
 			UOSInt i = 0;
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	while (i < j)
 	{
 		progName = progList.GetItem(i);
-		if (this->smake->IsProgGroup(progName->v))
+		if (this->smake->IsProgGroup(progName->ToCString()))
 		{
 			this->lbProgGroup->AddItem(progName, (void*)progName);
 		}

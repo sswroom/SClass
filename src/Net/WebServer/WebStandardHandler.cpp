@@ -43,14 +43,14 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 		{
 			if (i == 1)
 			{
-				subHdlr = this->hdlrs->GetC(&subReq[1], i - 1);
+				subHdlr = this->hdlrs->GetC({&subReq[1], i - 1});
 				subReq = &subReq[i];
 				subReqLen -= 1;
 				break;
 			}
 			else
 			{
-				subHdlr = this->hdlrs->GetC(&subReq[1], i - 1);
+				subHdlr = this->hdlrs->GetC({&subReq[1], i - 1});
 				subReq = &subReq[i];
 				subReqLen -= 1;
 				break;
@@ -63,13 +63,13 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 				sbuff = MemAlloc(UTF8Char, i);
 				MemCopyNO(sbuff, &subReq[1], (i - 1) * sizeof(UTF8Char));
 				sbuff[i - 1] = 0;
-				subHdlr = this->hdlrs->GetC(sbuff, i - 1);
+				subHdlr = this->hdlrs->GetC({sbuff, i - 1});
 				MemFree(sbuff);
 			}
 			else
 			{
 				Text::StrConcatC(tmpBuff, &subReq[1], (i - 1));
-				subHdlr = this->hdlrs->GetC(tmpBuff, i - 1);
+				subHdlr = this->hdlrs->GetC({tmpBuff, i - 1});
 			}
 			subReq = &subReq[i];
 			subReqLen -= i;
@@ -163,7 +163,7 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{
-		this->hdlrs->PutC(&absolutePath[1], pathLen - 1, hdlr);
+		this->hdlrs->PutC({&absolutePath[1], pathLen - 1}, hdlr);
 		if (needRelease)
 		{
 			this->relHdlrs->Add(hdlr);
@@ -175,11 +175,11 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 
-		subHdlr = this->hdlrs->GetC(sbuff, i);
+		subHdlr = this->hdlrs->GetC({sbuff, i});
 		if (subHdlr == 0)
 		{
 			NEW_CLASS(subHdlr, Net::WebServer::WebStandardHandler());
-			this->hdlrs->Put(sbuff, subHdlr);
+			this->hdlrs->PutC({sbuff, i}, subHdlr);
 			this->relHdlrs->Add(subHdlr);
 		}
 		MemFree(sbuff);

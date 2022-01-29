@@ -2258,7 +2258,7 @@ Bool SSWR::SMonitor::SMonitorWebHandler::ProcessRequest(Net::WebServer::IWebRequ
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
+	RequestHandler reqHdlr = this->reqMap->GetC({subReq, subReqLen});
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -2272,22 +2272,22 @@ SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::ISMonitor
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
 	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager((const UTF8Char*)"/monitor", OnSessDeleted, this, 60000, OnSessCheck, this));
-	this->reqMap->PutC(UTF8STRC(""), DefaultReq);
-	this->reqMap->PutC(UTF8STRC("/index"), IndexReq);
-	this->reqMap->PutC(UTF8STRC("/login"), LoginReq);
-	this->reqMap->PutC(UTF8STRC("/logout"), LogoutReq);
-	this->reqMap->PutC(UTF8STRC("/device"), DeviceReq);
-	this->reqMap->PutC(UTF8STRC("/devedit"), DeviceEditReq);
-	this->reqMap->PutC(UTF8STRC("/devreading"), DeviceReadingReq);
-	this->reqMap->PutC(UTF8STRC("/devdigitals"), DeviceDigitalsReq);
-	this->reqMap->PutC(UTF8STRC("/devreadingimg"), DeviceReadingImgReq);
-	this->reqMap->PutC(UTF8STRC("/pastdata"), DevicePastDataReq);
-	this->reqMap->PutC(UTF8STRC("/pastdataimg"), DevicePastDataImgReq);
-	this->reqMap->PutC(UTF8STRC("/userpassword"), UserPasswordReq);
-	this->reqMap->PutC(UTF8STRC("/users"), UsersReq);
-	this->reqMap->PutC(UTF8STRC("/useradd"), UserAddReq);
-//	this->reqMap->PutC(UTF8STRC("/userreset"), UserResetReq);
-	this->reqMap->PutC(UTF8STRC("/userassign"), UserAssignReq);
+	this->reqMap->PutC(CSTR(""), DefaultReq);
+	this->reqMap->PutC(CSTR("/index"), IndexReq);
+	this->reqMap->PutC(CSTR("/login"), LoginReq);
+	this->reqMap->PutC(CSTR("/logout"), LogoutReq);
+	this->reqMap->PutC(CSTR("/device"), DeviceReq);
+	this->reqMap->PutC(CSTR("/devedit"), DeviceEditReq);
+	this->reqMap->PutC(CSTR("/devreading"), DeviceReadingReq);
+	this->reqMap->PutC(CSTR("/devdigitals"), DeviceDigitalsReq);
+	this->reqMap->PutC(CSTR("/devreadingimg"), DeviceReadingImgReq);
+	this->reqMap->PutC(CSTR("/pastdata"), DevicePastDataReq);
+	this->reqMap->PutC(CSTR("/pastdataimg"), DevicePastDataImgReq);
+	this->reqMap->PutC(CSTR("/userpassword"), UserPasswordReq);
+	this->reqMap->PutC(CSTR("/users"), UsersReq);
+	this->reqMap->PutC(CSTR("/useradd"), UserAddReq);
+//	this->reqMap->PutC(CSTR("/userreset"), UserResetReq);
+	this->reqMap->PutC(CSTR("/userassign"), UserAssignReq);
 }
 
 SSWR::SMonitor::SMonitorWebHandler::~SMonitorWebHandler()

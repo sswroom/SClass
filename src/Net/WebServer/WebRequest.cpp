@@ -42,18 +42,18 @@ void Net::WebServer::WebRequest::ParseQuery()
 				sbuff2[0] = 0;
 				sptr = sbuff2;
 			}
-			s = this->queryMap->GetC(strs2[0].v, strs2[0].leng);
+			s = this->queryMap->GetC(strs2[0].ToCString());
 			if (s)
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.Append(s);
 				sb.AppendChar(PARAM_SEPERATOR, 1);
 				sb.AppendC(sbuff2, (UOSInt)(sptr - sbuff2));
-				s = this->queryMap->PutC(strs2[0].v, strs2[0].leng, Text::String::New(sb.ToString(), sb.GetLength()));
+				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sb.ToString(), sb.GetLength()));
 			}
 			else
 			{
-				s = this->queryMap->PutC(strs2[0].v, strs2[0].leng, Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
+				s = this->queryMap->PutC(strs2[0].ToCString(), Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2)));
 			}
 			if (s)
 			{
@@ -89,7 +89,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			if (tmpName)
 			{
 				tmpBuff[buffPos] = 0;
-				s = formMap->GetC(tmpBuff, nameLen);
+				s = formMap->GetC({tmpBuff, nameLen});
 				if (s)
 				{
 					charCnt = s->leng + 1;
@@ -97,12 +97,12 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 					charCnt += tmpNameLen;
 					tmpStr = Text::String::New(charCnt);
 					Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-					formMap->PutC(tmpBuff, nameLen, tmpStr);
+					formMap->PutC({tmpBuff, nameLen}, tmpStr);
 					s->Release();
 				}
 				else
 				{
-					formMap->PutC(tmpBuff, nameLen, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+					formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 				}
 				tmpName = 0;
 				buffPos = 0;
@@ -154,7 +154,7 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	if (tmpName)
 	{
 		tmpBuff[buffPos] = 0;
-		s = formMap->GetC(tmpBuff, nameLen);
+		s = formMap->GetC({tmpBuff, nameLen});
 		if (s)
 		{
 			charCnt = s->leng + 1;
@@ -162,12 +162,12 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			charCnt += tmpNameLen;
 			tmpStr = Text::String::New(charCnt);
 			Text::StrConcatC(Text::StrConcatC(s->ConcatTo(tmpStr->v), UTF8STRC(",")), tmpName, tmpNameLen);
-			formMap->PutC(tmpBuff, nameLen, tmpStr);
+			formMap->PutC({tmpBuff, nameLen}, tmpStr);
 			s->Release();
 		}
 		else
 		{
-			formMap->PutC(tmpBuff, nameLen, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
+			formMap->PutC({tmpBuff, nameLen}, Text::String::New(tmpName, (UOSInt)(&tmpBuff[buffPos] - tmpName)));
 		}
 		tmpName = 0;
 		buffPos = 0;
@@ -194,8 +194,8 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	UOSInt j;
 	UOSInt lineStart;
 	Int32 contType = 0;
-	const UTF8Char *formName = 0;
-	const UTF8Char *fileName = 0;
+	Text::CString formName = CSTR_NULL;
+	Text::CString fileName = CSTR_NULL;
 	i = 0;
 	lineStart = 0;
 	while (i < dataSize)
@@ -225,12 +225,12 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 				{
 					if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].leng, UTF8STRC("name=")))
 					{
-						SDEL_TEXT(formName);
+						SDEL_TEXT(formName.v);
 						formName = ParseHeaderVal(&lineStrs[j].v[5], lineStrs[j].leng - 5);
 					}
 					else if (Text::StrStartsWithC(lineStrs[j].v, lineStrs[j].leng, UTF8STRC("filename=")))
 					{
-						SDEL_TEXT(fileName);
+						SDEL_TEXT(fileName.v);
 						contType = 2;
 						fileName = ParseHeaderVal(&lineStrs[j].v[9], lineStrs[j].leng - 9);
 					}
@@ -246,37 +246,37 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 	if (contType == 1)
 	{
 		Text::String *s;
-		if (formName && dataSize > i)
+		if (formName.v && dataSize > i)
 		{
-			s = this->formMap->Get(formName);
+			s = this->formMap->GetC(formName);
 			if (s)
 			{
 				s->Release();
-				formMap->Put(formName, Text::String::New(&data[i], dataSize - i));
+				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i));
 			}
 			else
 			{
-				formMap->Put(formName, Text::String::New(&data[i], dataSize - i));
+				formMap->PutC(formName, Text::String::New(&data[i], dataSize - i));
 			}
 		}
 	}
 	else if (contType == 2)
 	{
-		if (formName)
+		if (formName.v)
 		{
 			FormFileInfo *info = MemAlloc(FormFileInfo, 1);
 			info->ofst = startOfst + i;
 			info->leng = dataSize - i;
-			info->formName = Text::String::NewNotNull(formName);
-			info->fileName = Text::String::NewOrNull(fileName);
+			info->formName = Text::String::New(formName);
+			info->fileName = Text::String::New(fileName);
 			this->formFileList->Add(info);
 		}
 	}
-	SDEL_TEXT(formName);
-	SDEL_TEXT(fileName);
+	SDEL_TEXT(formName.v);
+	SDEL_TEXT(fileName.v);
 }
 
-const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen)
+Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen)
 {
 	UTF8Char *outStr;
 	if (headerData[0] == '"' && headerData[dataLen-1] == '"')
@@ -284,6 +284,7 @@ const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData,
 		outStr = MemAlloc(UTF8Char, dataLen - 1);
 		MemCopyNO(outStr, &headerData[1], dataLen - 2);
 		outStr[dataLen - 2] = 0;
+		dataLen -= 2;
 	}
 	else
 	{
@@ -291,7 +292,7 @@ const UTF8Char *Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData,
 		MemCopyNO(outStr, &headerData[1], dataLen);
 		outStr[dataLen] = 0;
 	}
-	return outStr;
+	return {outStr, dataLen};
 }
 
 Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
@@ -351,21 +352,21 @@ Net::WebServer::WebRequest::~WebRequest()
 
 void Net::WebServer::WebRequest::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
 {
-	Text::String *s = this->headers->PutC(name, nameLen, Text::String::New(value, valueLen));
+	Text::String *s = this->headers->PutC({name, nameLen}, Text::String::New(value, valueLen));
 	SDEL_STRING(s);
 }
 
 Text::String *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name, UOSInt nameLen)
 {
-	return this->headers->GetC(name, nameLen);
+	return this->headers->GetC({name, nameLen});
 }
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen)
 {
-	Text::String *s = this->headers->Get(name);
+	Text::String *s = this->headers->GetC({name, Text::StrCharCnt(name)});
 	if (s)
 	{
-		return Text::StrConcatS(sbuff, s->v, buffLen);
+		return s->ConcatToS(sbuff, buffLen);
 	}
 	else
 	{
@@ -375,7 +376,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char 
 
 Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen)
 {
-	Text::String *hdr = this->headers->GetC(name, nameLen);
+	Text::String *hdr = this->headers->GetC({name, nameLen});
 	if (hdr == 0)
 		return false;
 	sb->Append(hdr);
@@ -426,7 +427,7 @@ Text::String *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name, UO
 	{
 		this->ParseQuery();
 	}
-	return this->queryMap->GetC(name, nameLen);
+	return this->queryMap->GetC({name, nameLen});
 }
 
 Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name, UOSInt nameLen)
@@ -435,7 +436,7 @@ Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name, UOSInt nameLen)
 	{
 		this->ParseQuery();
 	}
-	Text::String *sptr = this->queryMap->GetC(name, nameLen);
+	Text::String *sptr = this->queryMap->GetC({name, nameLen});
 	return sptr != 0;
 }
 
@@ -524,7 +525,7 @@ Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name, U
 {
 	if (this->formMap == 0)
 		return 0;
-	return this->formMap->GetC(name, nameLen);
+	return this->formMap->GetC({name, nameLen});
 }
 
 const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize)

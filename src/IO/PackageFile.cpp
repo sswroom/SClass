@@ -178,9 +178,9 @@ void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 
 	this->namedItems->Put(item->name, item);
 }
 
-IO::PackageFile *IO::PackageFile::GetPackFile(const UTF8Char *name)
+IO::PackageFile *IO::PackageFile::GetPackFile(Text::CString name)
 {
-	IO::PackFileItem *item = this->pkgFiles->Get(name);
+	IO::PackFileItem *item = this->pkgFiles->GetC(name);
 	if (item)
 		return (IO::PackageFile*)item->pobj;
 	return 0;

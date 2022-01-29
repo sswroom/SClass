@@ -76,19 +76,19 @@ namespace IO
 		Bool GetErrorMsg(Text::StringBuilderUTF8 *sb);
 		void SetMessageWriter(IO::Writer *messageWriter);
 		void SetCommandWriter(IO::Writer *cmdWriter);
-		void SetDebugObj(const UTF8Char *debugObj, UOSInt len);
+		void SetDebugObj(Text::CString debugObj);
 		void SetThreadCnt(UOSInt threadCnt);
 
 		Data::ArrayList<ConfigItem*> *GetConfigList();
-		Bool HasProg(const UTF8Char *progName, UOSInt nameLen);
-		Bool CompileProg(const UTF8Char *progName, UOSInt nameLen, Bool asmListing);
+		Bool HasProg(Text::CString progName);
+		Bool CompileProg(Text::CString progName, Bool asmListing);
 		Bool ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 
 		UOSInt GetProgList(Data::ArrayList<Text::String*> *progList); //No release
-		Bool IsProgGroup(const UTF8Char *progName);
-		const ProgramItem *GetProgItem(const UTF8Char *progName);
+		Bool IsProgGroup(Text::CString progName);
+		const ProgramItem *GetProgItem(Text::CString progName);
 	};
 }
 

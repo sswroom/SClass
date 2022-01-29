@@ -815,7 +815,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, U
 	UOSInt topicLen = Text::StrCharCnt(topic);
 	Bool unchanged = false;
 	Sync::MutexUsage topicMutUsage(this->topicMut);
-	topicInfo = this->topicMap->GetC(topic, topicLen);
+	topicInfo = this->topicMap->GetC({topic, topicLen});
 	if (topicInfo == 0)
 	{
 		topicInfo = MemAlloc(TopicInfo, 1);

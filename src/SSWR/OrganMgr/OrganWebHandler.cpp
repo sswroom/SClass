@@ -248,7 +248,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 		while (i < j)
 		{
 			sp = speciesList.GetItem(i);
-			this->spNameMap->Put(sp->sciName->v, sp);
+			this->spNameMap->Put(sp->sciName, sp);
 			i++;
 		}
 	}
@@ -420,7 +420,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 			user = this->userMap->Get(userId);
 			if (user)
 			{
-				this->userNameMap->Remove(user->userName->v);
+				this->userNameMap->Remove(user->userName);
 				SDEL_STRING(user->userName);
 				user->userName = r->GetNewStr(1);
 				SDEL_STRING(user->pwd);
@@ -428,7 +428,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				SDEL_STRING(user->watermark);
 				user->watermark = r->GetNewStr(3);
 				user->userType = r->GetInt32(4);
-				this->userNameMap->Put(user->userName->v, user);
+				this->userNameMap->Put(user->userName, user);
 			}
 			else
 			{
@@ -443,7 +443,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadUsers()
 				NEW_CLASS(user->userFileObj, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 				NEW_CLASS(user->tripCates, Data::Int32Map<Data::Int64Map<SSWR::OrganMgr::OrganWebHandler::TripInfo*>*>());
 				this->userMap->Put(user->id, user);
-				this->userNameMap->Put(user->userName->v, user);
+				this->userNameMap->Put(user->userName, user);
 			}
 		}
 		this->db->CloseReader(r);
@@ -1164,7 +1164,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::SpeciesAdd(const UTF8Char *engName, const
 		NEW_CLASS(species->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 		NEW_CLASS(species->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 		this->spMap->Put(species->speciesId, species);
-		this->spNameMap->Put(species->sciName->v, species);
+		this->spNameMap->PutC(species->sciName->ToCString(), species);
 
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group = this->groupMap->Get(species->groupId);
 		if (group)

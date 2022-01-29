@@ -404,7 +404,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
 				if (sptr1[0] == '+')
 				{
-					prog = progMap->GetC(sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1));
+					prog = progMap->GetC({sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1)});
 					if (prog)
 					{
 					}
@@ -428,7 +428,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				}
 				else
 				{
-					prog = progMap->GetC(sptr1, (UOSInt)(sptr1End - sptr1));
+					prog = progMap->GetC({sptr1, (UOSInt)(sptr1End - sptr1)});
 					if (prog)
 					{
 						ret = false;
@@ -560,7 +560,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 					sptr1End = &sptr1[i];
 					if (procList->SortedIndexOfPtr(sptr1) >= 0)
 					{
-						thisTime = fileTimeMap->GetC(sptr1, i);
+						thisTime = fileTimeMap->GetC({sptr1, i});
 						if (thisTime && thisTime > lastTime)
 						{
 							lastTime = thisTime;
@@ -572,7 +572,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 					}
 					else
 					{
-						prog = progMap->GetC(sptr1, i);
+						prog = progMap->GetC({sptr1, i});
 						if (prog == 0)
 						{
 							Text::StringBuilderUTF8 sb2;
@@ -1356,12 +1356,12 @@ void IO::SMake::SetCommandWriter(IO::Writer *cmdWriter)
 	this->cmdWriter = cmdWriter;
 }
 
-void IO::SMake::SetDebugObj(const UTF8Char *debugObj, UOSInt len)
+void IO::SMake::SetDebugObj(Text::CString debugObj)
 {
 	SDEL_STRING(this->debugObj);
-	if (debugObj)
+	if (debugObj.v)
 	{
-		this->debugObj = Text::String::New(debugObj, len);
+		this->debugObj = Text::String::New(debugObj.v, debugObj.leng);
 	}
 }
 
@@ -1379,19 +1379,19 @@ Data::ArrayList<IO::SMake::ConfigItem*> *IO::SMake::GetConfigList()
 	return this->cfgMap->GetValues();
 }
 
-Bool IO::SMake::HasProg(const UTF8Char *progName, UOSInt nameLen)
+Bool IO::SMake::HasProg(Text::CString progName)
 {
-	return this->progMap->GetC(progName, nameLen) != 0;
+	return this->progMap->GetC(progName) != 0;
 }
 
-Bool IO::SMake::CompileProg(const UTF8Char *progName, UOSInt nameLen, Bool asmListing)
+Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName, nameLen);
+	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName);
 	if (prog == 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Program "));
-		sb.AppendC(progName, nameLen);
+		sb.Append(progName);
 		sb.AppendC(UTF8STRC(" not found"));
 		this->SetErrorMsg(sb.ToString(), sb.GetLength());
 		return false;
@@ -1404,7 +1404,7 @@ Bool IO::SMake::CompileProg(const UTF8Char *progName, UOSInt nameLen, Bool asmLi
 
 Bool IO::SMake::ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->Get(progName->v);
+	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName->ToCString());
 	if (prog == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1471,9 +1471,9 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 	return ret;
 }
 
-Bool IO::SMake::IsProgGroup(const UTF8Char *progName)
+Bool IO::SMake::IsProgGroup(Text::CString progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->Get(progName);
+	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName);
 	if (prog == 0)
 	{
 		return false;
@@ -1492,7 +1492,7 @@ Bool IO::SMake::IsProgGroup(const UTF8Char *progName)
 	return true;
 }
 
-const IO::SMake::ProgramItem *IO::SMake::GetProgItem(const UTF8Char *progName)
+const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CString progName)
 {
-	return this->progMap->Get(progName);
+	return this->progMap->GetC(progName);
 }

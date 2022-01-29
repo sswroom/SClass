@@ -88,7 +88,7 @@ void Net::HKTrafficImage::Init(Text::EncodingFactory *encFact, const UInt8 *buff
 
 						if (lat != 0 && lon != 0 && sbKey.GetLength() > 0 && sbRegion.GetLength() > 0 && sbDesc.GetLength() > 0 && sbURL.GetLength() > 0)
 						{
-							grp = this->groupMap->GetC(sbRegion.ToString(), sbRegion.GetLength());
+							grp = this->groupMap->GetC(sbRegion.ToCString());
 							if (grp == 0)
 							{
 								grp = MemAlloc(GroupInfo, 1);

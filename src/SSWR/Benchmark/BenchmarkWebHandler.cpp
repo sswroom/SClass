@@ -451,7 +451,7 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
+	RequestHandler reqHdlr = this->reqMap->GetC({subReq, subReqLen});
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -463,8 +463,8 @@ Bool SSWR::Benchmark::BenchmarkWebHandler::ProcessRequest(Net::WebServer::IWebRe
 SSWR::Benchmark::BenchmarkWebHandler::BenchmarkWebHandler()
 {
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
-	this->reqMap->PutC(UTF8STRC("/upload"), UploadReq);
-	this->reqMap->PutC(UTF8STRC("/cpuinfo"), CPUInfoReq);
+	this->reqMap->PutC(CSTR("/upload"), UploadReq);
+	this->reqMap->PutC(CSTR("/cpuinfo"), CPUInfoReq);
 }
 
 SSWR::Benchmark::BenchmarkWebHandler::~BenchmarkWebHandler()

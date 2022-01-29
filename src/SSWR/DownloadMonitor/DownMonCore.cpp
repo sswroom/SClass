@@ -137,6 +137,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[512];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
 //	printf("ProcessDir\r\n");
@@ -281,6 +282,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			}
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".MP4")))
 			{
+				sptrEnd = sptr2;
 //				printf("MP4 found: %s\r\n", sptr);
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
@@ -295,7 +297,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					{
 						sptr2 = succPath->ConcatTo(sbuff2);
 						Int32 webType = 0;
-						Int32 id = this->FileGetByName(sptr, &webType);
+						Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
 						if (id != 0 && webType != 0)
 						{
 							this->FileEnd(id, webType);
@@ -321,6 +323,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			}
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".ZIP")))
 			{
+				sptrEnd = sptr2;
 				sptr2 = Text::StrConcat(sbuff2, sbuff);
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
@@ -340,7 +343,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 
 							Int32 webType = 0;
-							Int32 id = this->FileGetByName(sptr, &webType);
+							Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
 							if (id != 0 && webType != 0)
 							{
 								this->FileEnd(id, webType);
@@ -385,6 +388,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				}
 				else
 				{
+					sptrEnd = sptr2;
 					sptr2 = Text::StrConcat(sbuff2, sbuff);
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
@@ -404,7 +408,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								Text::StrConcat(sbuff, sbuff2);
 
 								Int32 webType = 0;
-								Int32 id = this->FileGetByName(sptr, &webType);
+								Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
 								if (id != 0 && webType != 0)
 								{
 									this->FileEnd(id, webType);
@@ -630,12 +634,12 @@ SSWR::DownloadMonitor::DownMonCore::FileInfo *SSWR::DownloadMonitor::DownMonCore
 	return file;
 }
 
-Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(const UTF8Char *fileName, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonCore::FileGetByName(Text::CString fileName, Int32 *webType)
 {
 	Int32 id = 0;
 	SSWR::DownloadMonitor::DownMonCore::FileInfo *file;
 	Sync::MutexUsage mutUsage(this->fileMut);
-	file = this->fileNameMap->Get(fileName);
+	file = this->fileNameMap->GetC(fileName);
 	if (file)
 	{
 		id = file->id;

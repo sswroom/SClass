@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	while (val < DATACNT)
 	{
 		sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("Text")), val);
-		val2 = map.GetC(sbuff, (UOSInt)(sptr - sbuff));
+		val2 = map.GetC({sbuff, (UOSInt)(sptr - sbuff)});
 		if (val != val2)
 		{
 			return 1;

@@ -154,8 +154,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[k] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
-						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
-						pf3 = pf2->GetPackFile(sptr);
+						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
+						pf3 = pf2->GetPackFile({sptr, k});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(srcPath));
@@ -168,8 +168,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[l] = 0;
 						*srcPtr2++ = IO::Path::PATH_SEPERATOR;
-						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
-						pf3 = pf2->GetPackFile(sptr);
+						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
+						pf3 = pf2->GetPackFile({sptr, l});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(srcPath));
@@ -219,8 +219,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[k] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
-						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
-						pf3 = pf2->GetPackFile(sptr);
+						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, k);
+						pf3 = pf2->GetPackFile({sptr, k});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(srcPath));
@@ -233,8 +233,8 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 					{
 						sptr[l] = 0;
 						*srcPtr2++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
-						srcPtr2 = Text::StrConcat(srcPtr2, sptr);
-						pf3 = pf2->GetPackFile(sptr);
+						srcPtr2 = Text::StrConcatC(srcPtr2, sptr, l);
+						pf3 = pf2->GetPackFile({sptr, l});
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(srcPath));

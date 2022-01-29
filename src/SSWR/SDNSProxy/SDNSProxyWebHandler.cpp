@@ -639,7 +639,7 @@ Bool SSWR::SDNSProxy::SDNSProxyWebHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC(subReq, subReqLen);
+	RequestHandler reqHdlr = this->reqMap->GetC({subReq, subReqLen});
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);
@@ -656,15 +656,15 @@ SSWR::SDNSProxy::SDNSProxyWebHandler::SDNSProxyWebHandler(Net::DNSProxy *proxy, 
 	this->log = log;
 	NEW_CLASS(this->logBuff, IO::CyclicLogBuffer(LOGSIZE));
 
-	this->reqMap->PutC(UTF8STRC("/"), StatusReq);
-	this->reqMap->PutC(UTF8STRC("/reqv4"), ReqV4Req);
-	this->reqMap->PutC(UTF8STRC("/reqv6"), ReqV6Req);
-	this->reqMap->PutC(UTF8STRC("/reqoth"), ReqOthReq);
-	this->reqMap->PutC(UTF8STRC("/target"), TargetReq);
-	this->reqMap->PutC(UTF8STRC("/blacklist"), BlacklistReq);
-	this->reqMap->PutC(UTF8STRC("/log"), LogReq);
-	this->reqMap->PutC(UTF8STRC("/client"), ClientReq);
-	this->reqMap->PutC(UTF8STRC("/reqpm"), ReqPerMinReq);
+	this->reqMap->PutC(CSTR("/"), StatusReq);
+	this->reqMap->PutC(CSTR("/reqv4"), ReqV4Req);
+	this->reqMap->PutC(CSTR("/reqv6"), ReqV6Req);
+	this->reqMap->PutC(CSTR("/reqoth"), ReqOthReq);
+	this->reqMap->PutC(CSTR("/target"), TargetReq);
+	this->reqMap->PutC(CSTR("/blacklist"), BlacklistReq);
+	this->reqMap->PutC(CSTR("/log"), LogReq);
+	this->reqMap->PutC(CSTR("/client"), ClientReq);
+	this->reqMap->PutC(CSTR("/reqpm"), ReqPerMinReq);
 
 	this->log->AddLogHandler(this->logBuff, IO::ILogHandler::LOG_LEVEL_RAW);
 }

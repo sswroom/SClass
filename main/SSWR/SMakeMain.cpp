@@ -51,7 +51,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				if (cmdLines[i][1] == 'D')
 				{
-					smake->SetDebugObj(&cmdLines[i][2], Text::StrCharCnt(&cmdLines[i][2]));
+					smake->SetDebugObj({&cmdLines[i][2], Text::StrCharCnt(&cmdLines[i][2])});
 				}
 				else if (cmdLines[i][1] == 'V')
 				{
@@ -101,10 +101,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					if (smake->HasProg(cmdLines[i], cmdLineLen))
+					if (smake->HasProg({cmdLines[i], cmdLineLen}))
 					{
 						showHelp = false;
-						if (!smake->CompileProg(cmdLines[i], cmdLineLen, asmListing))
+						if (!smake->CompileProg({cmdLines[i], cmdLineLen}, asmListing))
 						{
 							Text::StringBuilderUTF8 sb;
 							smake->GetErrorMsg(&sb);

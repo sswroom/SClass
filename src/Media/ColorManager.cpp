@@ -894,7 +894,7 @@ Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String
 	Sync::MutexUsage mutUsage(this->mut);
 	if (profileName == 0)
 	{
-		monColor = this->monColor->Get((const UTF8Char*)"");
+		monColor = this->monColor->GetC(CSTR(""));
 	}
 	else
 	{

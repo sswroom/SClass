@@ -40,5 +40,33 @@ namespace Text
 			}
 		}
 	};
+
+	FORCEINLINE UTF8Char *StrCSVJoinC(UTF8Char *oriStr, Text::CString *strs, UOSInt nStrs)
+	{
+		UOSInt i = 0;
+		const UTF8Char *sptr;
+		UTF8Char c;
+		while (i < nStrs)
+		{
+			if (i)
+				*oriStr++ = ',';
+			*oriStr++ = '"';
+			if ((sptr = strs[i].v) != 0)
+			{
+				while ((c = *sptr++) != 0)
+				{
+					if (c == '"')
+					{
+						*oriStr++ = '"';
+					}
+					*oriStr++ = c;
+				}
+			}
+			*oriStr++ = '"';
+			i++;
+		}
+		*oriStr = 0;
+		return oriStr;
+	}
 }
 #endif

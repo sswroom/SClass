@@ -20,15 +20,15 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	service = this->services->GetC(subReq, subReqLen);
+	service = this->services->GetC({subReq, subReqLen});
 	if (service == 0 && (Text::StrEqualsC(subReq, subReqLen, UTF8STRC("/")) || (subReqLen == 0)))
 	{
-		if (service == 0) service = this->services->GetC(UTF8STRC("/Default.htm"));
-		if (service == 0) service = this->services->GetC(UTF8STRC("/Default.asp"));
-		if (service == 0) service = this->services->GetC(UTF8STRC("/index.htm"));
-		if (service == 0) service = this->services->GetC(UTF8STRC("/index.html"));
-		if (service == 0) service = this->services->GetC(UTF8STRC("/iisstart.htm"));
-		if (service == 0) service = this->services->GetC(UTF8STRC("/default.aspx"));
+		if (service == 0) service = this->services->GetC(CSTR("/Default.htm"));
+		if (service == 0) service = this->services->GetC(CSTR("/Default.asp"));
+		if (service == 0) service = this->services->GetC(CSTR("/index.htm"));
+		if (service == 0) service = this->services->GetC(CSTR("/index.html"));
+		if (service == 0) service = this->services->GetC(CSTR("/iisstart.htm"));
+		if (service == 0) service = this->services->GetC(CSTR("/default.aspx"));
 	}
 	if (service != 0)
 	{
@@ -72,7 +72,7 @@ void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, UOSI
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
 	if (svcPath[0] != '/')
 		return;
-	service = this->services->GetC(svcPath, svcPathLen);
+	service = this->services->GetC({svcPath, svcPathLen});
 	if (service == 0)
 	{
 		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);

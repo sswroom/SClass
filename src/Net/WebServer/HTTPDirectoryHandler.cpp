@@ -268,15 +268,15 @@ void Net::WebServer::HTTPDirectoryHandler::StatLoad(Net::WebServer::HTTPDirector
 	NEW_CLASS(fs, IO::FileStream(stat->statFileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		UTF8Char *sarr[2];
+		Text::PString sarr[2];
 		Text::UTF8Reader *reader;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 1024))
 		{
-			if (Text::StrSplit(sarr, 2, sb.ToString(), '\t') == 2)
+			if (Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 			{
-				stat->cntMap->Put(sarr[1], Text::StrToUInt32(sarr[0]));
+				stat->cntMap->PutC(sarr[1].ToCString(), Text::StrToUInt32(sarr[0].v));
 			}
 			sb.ClearStr();
 		}
@@ -442,7 +442,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		}
 		PackageInfo *package;
 		this->packageMut->LockRead();
-		package = this->packageMap->Get(&sb.ToString()[1]);
+		package = this->packageMap->GetC(sb.ToCString().Substring(1));
 		this->packageMut->UnlockRead();
 		if (package)
 		{
@@ -550,7 +550,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(this->statMut);
-			stat = this->statMap->Get(sb.ToString());
+			stat = this->statMap->GetC(sb.ToCString());
 			if (stat)
 			{
 				sb.AppendC(&subReq[i + 1], subReqLen - i - 1);
@@ -564,8 +564,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("index.html"));
 				}
-				UInt32 cnt = stat->cntMap->GetC(sb.ToString(), sb.GetLength());
-				stat->cntMap->Put(sb.ToString(), cnt + 1);
+				UInt32 cnt = stat->cntMap->GetC(sb.ToCString());
+				stat->cntMap->PutC(sb.ToCString(), cnt + 1);
 				stat->updated = true;
 			}
 			statMutUsage.EndUse();
@@ -881,7 +881,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						{
 							sb2.RemoveChars(1);
 						}
-						stat = this->statMap->Get(sb2.ToString());
+						stat = this->statMap->GetC(sb2.ToCString());
 						if (stat == 0)
 						{
 							stat = MemAlloc(Net::WebServer::HTTPDirectoryHandler::StatInfo, 1);
@@ -915,7 +915,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							{
 								if (stat)
 								{
-									cnt = stat->cntMap->Get(sptr2);
+									cnt = stat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
 								}
 								else
 								{
@@ -982,7 +982,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								ent = MemAlloc(DirectoryEntry, 1);
 								if (stat)
 								{
-									ent->cnt = stat->cntMap->GetC(sptr2, (UOSInt)(sptr3 - sptr2));
+									ent->cnt = stat->cntMap->GetC({sptr2, (UOSInt)(sptr3 - sptr2)});
 								}
 								else
 								{
@@ -1122,11 +1122,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 			if (sb2.ToString()[0] == 0)
 			{
-				stat = this->statMap->GetC(UTF8STRC("/"));
+				stat = this->statMap->GetC(CSTR("/"));
 			}
 			else
 			{
-				stat = this->statMap->GetC(sb2.ToString(), i);
+				stat = this->statMap->GetC({sb2.ToString(), i});
 			}
 			if (stat == 0)
 			{
@@ -1148,7 +1148,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				this->statMap->Put(stat->reqPath, stat);
 				this->StatLoad(stat);
 			}
-			stat->cntMap->PutC(sptr2, sb2.GetLength() - i - 1, stat->cntMap->GetC(sptr2, sb2.GetLength() - i - 1) + 1);
+			stat->cntMap->PutC({sptr2, sb2.GetLength() - i - 1}, stat->cntMap->GetC({sptr2, sb2.GetLength() - i - 1}) + 1);
 			stat->updated = true;
 			mutUsage.EndUse();
 		}
