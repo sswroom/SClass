@@ -91,51 +91,51 @@ UOSInt Text::PString::Replace(UTF8Char fromChar, UTF8Char toChar)
 	return Text::StrReplace(this->v, fromChar, toChar);
 }
 
-UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen, UTF8Char splitChar)
+UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
 {
 	UOSInt i = 0;
 	UTF8Char c;
-	strs[i].v = strToSplit;
-	strs[i].leng = strLen;
+	UTF8Char *sptr = strToSplit.v;
+	strs[i] = strToSplit;
 	i++;
 	while (i < maxStrs)
 	{
-		c = *strToSplit++;
+		c = *sptr++;
 		if (c == 0)
 			break;
 		if (c == splitChar)
 		{
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(strToSplit - strs[i - 1].v - 1);
-			strs[i].v = strToSplit;
+			strs[i - 1].leng = (UOSInt)(sptr - strs[i - 1].v - 1);
+			strs[i].v = sptr;
 			strs[i].leng -= strs[i - 1].leng + 1;
-			strToSplit[-1] = 0;
+			sptr[-1] = 0;
 			i++;
 		}
 	}
 	return i;
 }
 
-UOSInt Text::StrSplitTrimP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen, UTF8Char splitChar)
+UOSInt Text::StrSplitTrimP(Text::PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
 {
 	UOSInt i = 0;
 	UTF8Char c;
 	UTF8Char *lastPtr;
 	UTF8Char *thisPtr;
-	while (*strToSplit == ' ' || *strToSplit == '\r' || *strToSplit == '\n' || *strToSplit == '\t')
+	UTF8Char *sptr = strToSplit.v;
+	while (*sptr == ' ' || *sptr == '\r' || *sptr == '\n' || *sptr == '\t')
 	{
-		strToSplit++;
-		strLen--;
+		sptr++;
 	}
-	strs[i].v = lastPtr = strToSplit;
-	strs[i].leng = strLen;
+	strs[i].v = lastPtr = sptr;
+	strs[i].leng = strToSplit.leng - (UOSInt)(sptr - strToSplit.v);
 	i++;
 	while (i < maxStrs)
 	{
-		c = *strToSplit++;
+		c = *sptr++;
 		if (c == 0)
 		{
-			thisPtr = strToSplit - 1;
+			thisPtr = sptr - 1;
 			while (lastPtr < thisPtr)
 			{
 				c = thisPtr[-1];
@@ -153,9 +153,9 @@ UOSInt Text::StrSplitTrimP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToS
 		}
 		if (c == splitChar)
 		{
-			strToSplit[-1] = 0;
+			sptr[-1] = 0;
 
-			thisPtr = strToSplit - 1;
+			thisPtr = sptr - 1;
 			while (lastPtr < thisPtr)
 			{
 				c = thisPtr[-1];
@@ -167,9 +167,9 @@ UOSInt Text::StrSplitTrimP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToS
 			strs[i].leng = strs[i - 1].leng;
 			strs[i - 1].leng = (UOSInt)(thisPtr - strs[i - 1].v);
 
-			while (*strToSplit == ' ' || *strToSplit == '\r' || *strToSplit == '\n' || *strToSplit == '\t')
-				strToSplit++;
-			strs[i].v = lastPtr = strToSplit;
+			while (*sptr == ' ' || *sptr == '\r' || *sptr == '\n' || *sptr == '\t')
+				sptr++;
+			strs[i].v = lastPtr = sptr;
 			strs[i].leng = strs[i].leng - (UOSInt)(strs[i].v - strs[i - 1].v);
 			i++;
 		}
@@ -177,42 +177,42 @@ UOSInt Text::StrSplitTrimP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToS
 	return i;
 }
 
-UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen)
+UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, PString strToSplit)
 {
 	UOSInt i = 0;
 	UTF8Char c;
-	strs[i].v = strToSplit;
-	strs[i].leng = strLen;
+	UTF8Char *sptr = strToSplit.v;
+	strs[i] = strToSplit;
 	i++;
 	while (i < maxStrs)
 	{
-		c = *strToSplit++;
+		c = *sptr++;
 		if (c == 0)
 			break;
 		if (c == 13)
 		{
-			strToSplit[-1] = 0;
+			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(&strToSplit[-1] - strs[i - 1].v);
-			if (*strToSplit == 10)
+			strs[i - 1].leng = (UOSInt)(&sptr[-1] - strs[i - 1].v);
+			if (*sptr == 10)
 			{
-				strToSplit++;
-				strs[i].v = strToSplit;
+				sptr++;
+				strs[i].v = sptr;
 				strs[i].leng -= strs[i - 1].leng - 2;
 			}
 			else
 			{
-				strs[i].v = strToSplit;
+				strs[i].v = sptr;
 				strs[i].leng -= strs[i - 1].leng - 1;
 			}
 			i++;
 		}
 		else if (c == 10)
 		{
-			strToSplit[-1] = 0;
+			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(&strToSplit[-1] - strs[i - 1].v);
-			strs[i].v = strToSplit;
+			strs[i - 1].leng = (UOSInt)(&sptr[-1] - strs[i - 1].v);
+			strs[i].v = sptr;
 			strs[i].leng -= strs[i - 1].leng - 1;
 			i++;
 		}
@@ -220,47 +220,49 @@ UOSInt Text::StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, 
 	return i;
 }
 
-UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit, UOSInt strLen)
+UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, PString strToSplit)
 {
 	UOSInt i = 0;
 	UTF8Char c;
-	strs[0].v = strToSplit;
+	UOSInt strLen = strToSplit.leng;
+	UTF8Char *sptr = strToSplit.v;
+	strs[0].v = sptr;
 	while (true)
 	{
-		c = *strToSplit++;
+		c = *sptr++;
 		if (c == 0)
 		{
 			return 0;
 		}
 		if (c != 32 && c != '\t')
 		{
-			strs[0].leng = strLen - (UOSInt)(strToSplit - strs[0].v - 1);
-			strs[0].v = strToSplit;
+			strs[0].leng = strLen - (UOSInt)(sptr - strs[0].v - 1);
+			strs[0].v = sptr;
 			i = 1;
 			break;
 		}
 	}
 	while (i < maxStrs)
 	{
-		c = *strToSplit++;
+		c = *sptr++;
 		if (c == 0)
 			break;
 		if (c == 32 || c == '\t')
 		{
-			strToSplit[-1] = 0;
+			sptr[-1] = 0;
 			strs[i].leng = strs[i - 1].leng;
-			strs[i - 1].leng = (UOSInt)(strToSplit - strs[i - 1].v - 1);
+			strs[i - 1].leng = (UOSInt)(sptr - strs[i - 1].v - 1);
 			while (true)
 			{
-				c = *strToSplit++;
+				c = *sptr++;
 				if (c == 0)
 				{
 					return i;
 				}
 				if (c != 32 && c != '\t')
 				{
-					strs[i].v = strToSplit - 1;
-					strs[i].leng = strs[i].leng - (UOSInt)(strToSplit - strs[i - 1].v - 1);
+					strs[i].v = sptr - 1;
+					strs[i].leng = strs[i].leng - (UOSInt)(sptr - strs[i - 1].v - 1);
 					i++;
 					break;
 				}

@@ -16,8 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 		{
 			Text::PString sarr[2];
 			Text::PString sarr2[2];
-			UOSInt i = Text::StrSplitP(sarr, 2, sb.ToString() + 17, sb.GetLength() - 17, ';');
-			if (Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].leng, ':') == 2)
+			UOSInt i = Text::StrSplitP(sarr, 2, sb.Substring(17), ';');
+			if (Text::StrSplitP(sarr2, 2, sarr[0], ':') == 2)
 			{
 				me->txtServer->SetText(sarr2[0].v);
 				me->txtPort->SetText(sarr2[1].v);
@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 			}
 			while (i == 2)
 			{
-				i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
-				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATABASENAME=")))
+				i = Text::StrSplitP(sarr, 2, sarr[1], ';');
+				if (sarr[0].StartsWithICase(UTF8STRC("DATABASENAME=")))
 				{
 					me->txtDatabase->SetText(sarr[0].v + 13);
 				}

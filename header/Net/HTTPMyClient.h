@@ -38,7 +38,7 @@ namespace Net
 		Int32 timeOutMS;
 
 	public:
-		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn);
+		HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPMyClient();
 
 		virtual Bool IsError();
@@ -51,8 +51,8 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 
-		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
-		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual void AddHeaderC(Text::CString name, Text::CString value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
 

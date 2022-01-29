@@ -153,7 +153,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		if (lang)
 		{
-			cli->AddHeaderC(UTF8STRC("Accept-Language"), lang, Text::StrCharCnt(lang));
+			cli->AddHeaderC(CSTR("Accept-Language"), {lang, Text::StrCharCnt(lang)});
 		}
 		Int32 status = cli->GetRespStatus();
 		UOSInt readSize;

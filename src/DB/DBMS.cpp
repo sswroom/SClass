@@ -1063,7 +1063,7 @@ Bool DB::DBMS::SysVarSet(DB::DBMS::SessionInfo *sess, Bool isGlobal, const UTF8C
 		i = 2;
 		while (i == 2)
 		{
-			i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+			i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 			if (Text::StrEqualsICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ALLOW_INVALID_DATES")))
 			{
 				sqlMode = (SQLMODE)(sqlMode | SQLM_ALLOW_INVALID_DATES);

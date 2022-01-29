@@ -1033,7 +1033,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 			{
 				strs[i].v[charCnt - 1] = 0;
 			}
-			nstrs2 = Text::StrSplitTrimP(strs2, 10, &strs[i].v[1], charCnt - 2, ';');
+			nstrs2 = Text::StrSplitTrimP(strs2, 10, {&strs[i].v[1], charCnt - 2}, ';');
 			j = 0;
 			lastIsAndroid = false;
 			while (j < nstrs2)

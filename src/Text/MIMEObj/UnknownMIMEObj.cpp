@@ -16,10 +16,10 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 	Text::PString sarr[2];
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	i = Text::StrSplitTrimP(sarr, 2, (UTF8Char*)tmpPtr, this->contType->leng, ';');
+	i = Text::StrSplitTrimP(sarr, 2, {(UTF8Char*)tmpPtr, this->contType->leng}, ';');
 	while (i == 2)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
 		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("name=")))
 		{
 			j = sarr[0].leng;

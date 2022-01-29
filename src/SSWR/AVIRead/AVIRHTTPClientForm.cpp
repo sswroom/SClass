@@ -299,7 +299,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 				sarr[1].leng = sb.GetLength();
 				while (true)
 				{
-					j = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+					j = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
 					if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("filename=")))
 					{
 						if (sarr[0].v[9] == '\"')
@@ -504,52 +504,52 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqHeaders = 0;
 			
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
 //			NEW_CLASS(cli, Net::HTTPOSClient(me->core->GetSocketFactory(), me->userAgent, me->noShutdown));
-			if (cli->Connect(currURL->v, currURL->leng, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+			if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 			{
 				IO::MemoryStream *mstm;
 				Text::String *contType = 0;
 				NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
-				cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-				cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
-				cli->AddHeaderC(UTF8STRC("User-Agent"), me->userAgent->v, me->userAgent->leng);
+				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+				cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
+				cli->AddHeaderC(CSTR("User-Agent"), me->userAgent->ToCString());
 				if (me->noShutdown)
 				{
-					cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
+					cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 				}
 				else
 				{
-					cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
+					cli->AddHeaderC(CSTR("Connection"), CSTR("close"));
 				}
-				cli->AddHeaderC(UTF8STRC("Accept-Encoding"), UTF8STRC("gzip, deflate"));
+				cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 				
 				sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
 				if (sptr)
 				{
-					cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
+					cli->AddHeaderC(CSTR("Cookie"), {sbuff, (UOSInt)(sptr - sbuff)});
 				}
 
 				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 				{
 					sptr = Text::StrUOSInt(sbuff, currBodyLen);
-					cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
-					cli->AddHeaderC(UTF8STRC("Content-Type"), currBodyType->v, currBodyType->leng);
+					cli->AddHeaderC(CSTR("Content-Length"), {sbuff, (UOSInt)(sptr - sbuff)});
+					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
 					cli->Write(currBody, currBodyLen);
 				}
 				if (currHeaders)
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendSlow(currHeaders);
-					UTF8Char *sarr[2];
-					UTF8Char *sarr2[2];
-					sarr[1] = sb.ToString();
+					Text::PString sarr[2];
+					Text::PString sarr2[2];
+					sarr[1] = sb;
 					while (true)
 					{
-						i = Text::StrSplitLine(sarr, 2, sarr[1]);
-						if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
+						i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+						if (Text::StrSplitTrimP(sarr2, 2, sarr[0], ':') == 2)
 						{
-							cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
+							cli->AddHeaderC(sarr2[0].ToCString(), sarr2[1].ToCString());
 						}
 
 						if (i != 2)
@@ -573,46 +573,46 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->v, me->userAgent->leng, me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
-					if (cli->Connect(currURL->v, currURL->leng, currMeth, &me->respTimeDNS, &me->respTimeConn, false))
+					cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
+					if (cli->Connect(currURL->ToCString(), currMeth, &me->respTimeDNS, &me->respTimeConn, false))
 					{
 						contType = 0;
 						mstm->Clear();
-						cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-						cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+						cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+						cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 						i = (UOSInt)(Text::StrConcat(Text::StrConcatC(Text::StrConcat(buff, currUserName), UTF8STRC(":")), currPassword) - buff);
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
 						b64Enc.EncodeBin(&sbAuth, buff, i);
-						cli->AddHeaderC(UTF8STRC("Authorization"), sbAuth.ToString(), sbAuth.GetLength());
+						cli->AddHeaderC(CSTR("Authorization"), sbAuth.ToCString());
 						
 						sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
 						if (sptr)
 						{
-							cli->AddHeaderC(UTF8STRC("Cookie"), sbuff, (UOSInt)(sptr - sbuff));
+							cli->AddHeaderC(CSTR("Cookie"), {sbuff, (UOSInt)(sptr - sbuff)});
 						}
 
 						if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 						{
 							sptr = Text::StrUOSInt(sbuff, currBodyLen);
-							cli->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
-							cli->AddHeaderC(UTF8STRC("Content-Type"), currBodyType->v, currBodyType->leng);
+							cli->AddHeaderC(CSTR("Content-Length"), {sbuff, (UOSInt)(sptr - sbuff)});
+							cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
 							cli->Write(currBody, currBodyLen);
 						}
 						if (currHeaders)
 						{
 							Text::StringBuilderUTF8 sb;
 							sb.AppendSlow(currHeaders);
-							UTF8Char *sarr[2];
-							UTF8Char *sarr2[2];
-							sarr[1] = sb.ToString();
+							Text::PString sarr[2];
+							Text::PString sarr2[2];
+							sarr[1] = sb;
 							while (true)
 							{
-								i = Text::StrSplitLine(sarr, 2, sarr[1]);
-								if (Text::StrSplitTrim(sarr2, 2, sarr[0], ':') == 2)
+								i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+								if (Text::StrSplitTrimP(sarr2, 2, sarr[0], ':') == 2)
 								{
-									cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
+									cli->AddHeaderC(sarr2[0].ToCString(), sarr2[1].ToCString());
 								}
 
 								if (i != 2)
@@ -653,7 +653,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					i++;
 				}
 				Text::StringBuilderUTF8 sb;
-				if (cli->GetRespHeader(UTF8STRC("Content-Type"), &sb))
+				if (cli->GetRespHeader(CSTR("Content-Type"), &sb))
 				{
 					contType = Text::String::New(sb.ToString(), sb.GetLength());
 				}
@@ -884,7 +884,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, urlLen, 0);
 	Text::StringBuilderUTF8 sb;
 	sb.AppendSlow(cookieStr);
-	cnt = Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ';');
+	cnt = Text::StrSplitTrimP(sarr, 2, sb, ';');
 	cookieValue = sarr[0].v;
 	i = Text::StrIndexOfCharC(cookieValue, sarr[0].leng, '=');
 	if (i == INVALID_INDEX)
@@ -893,7 +893,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	while (cnt == 2)
 	{
-		cnt = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+		cnt = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
 		if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Secure")))
 		{
 			secure = true;

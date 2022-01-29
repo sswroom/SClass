@@ -143,7 +143,7 @@ void Net::RTPAACHandler::SetFormat(const UTF8Char *fmtStr)
 	sarr[1].leng = (UOSInt)(sptr - sbuff);
 	while (true)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ';');
 		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=")))
 		{
 			if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("mode=generic")))

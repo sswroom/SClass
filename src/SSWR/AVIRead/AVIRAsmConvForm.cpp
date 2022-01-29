@@ -225,7 +225,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 				destSb.AppendChar('\t', allTabCnt);
 				destSb.AppendC(UTF8STRC("\"\t"));
 				destSb.AppendC(lineStart, j);
-				sarrCnt = Text::StrSplitTrimP(sarr, 5, &lineStart[j + 1], (UOSInt)(lineEnd - lineStart[j + 1]), ',');
+				sarrCnt = Text::StrSplitTrimP(sarr, 5, {&lineStart[j + 1], (UOSInt)(lineEnd - lineStart[j + 1])}, ',');
 				if (sarrCnt == 1 && sarr[0].v[0] == 0)
 				{
 				}
@@ -311,7 +311,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 											destSb.AppendC(UTF8STRC("-"));
 										}
 										found = false;
-										k = Text::StrSplitTrimP(sarr2, 4, &sarr[j].v[i2 + 1], sarr->leng - i2 - 1, '+');
+										k = Text::StrSplitTrimP(sarr2, 4, sarr[j].Substring(i2 + 1), '+');
 										l = k;
 										while (l-- > 0)
 										{
@@ -333,7 +333,7 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 										{
 											destSb.AppendC(UTF8STRC("-"));
 										}
-										k = Text::StrSplitTrimP(sarr2, 4, &sarr[j].v[i2 + 1], sarr[j].leng - i2 - 1, '+');
+										k = Text::StrSplitTrimP(sarr2, 4, {&sarr[j].v[i2 + 1], sarr[j].leng - i2 - 1}, '+');
 										l = k;
 										while (l-- > 0)
 										{

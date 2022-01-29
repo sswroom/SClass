@@ -31,12 +31,17 @@ namespace Text
 		{
 			return {this->v, this->leng};
 		}
+
+		Text::PString Substring(UOSInt index)
+		{
+			return {this->v + index, this->leng - index};
+		}
 	};
 
-	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen, UTF8Char splitChar); //Optimized
-	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
-	UOSInt StrSplitWSP(PString *strs, UOSInt maxStrs, UTF8Char *str, UOSInt strLen); //Optimized
+	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UOSInt StrSplitTrimP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized
+	UOSInt StrSplitLineP(PString *strs, UOSInt maxStrs, PString strToSplit); //Optimized
+	UOSInt StrSplitWSP(PString *strs, UOSInt maxStrs, PString strToSplit); //Optimized
 	UOSInt StrCSVSplitP(Text::PString *strs, UOSInt maxStrs, UTF8Char *strToSplit);
 }
 #endif

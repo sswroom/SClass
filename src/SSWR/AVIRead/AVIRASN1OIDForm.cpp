@@ -14,12 +14,12 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	Text::PString sarr[10];
 	UOSInt firstRowCnt;
 	UOSInt rowCnt;
-	UOSInt lineCnt = Text::StrSplitLineP(lines, 2, sb.ToString(), sb.GetLength());
+	UOSInt lineCnt = Text::StrSplitLineP(lines, 2, sb);
 	UOSInt oidCol = 10;
 	UOSInt nameCol;
 	UInt8 oid[32];
 	UOSInt oidLen;
-	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].leng, '\t');
+	firstRowCnt = Text::StrSplitTrimP(sarr, 10, lines[0], '\t');
 	rowCnt = 0;
 	while (rowCnt < firstRowCnt)
 	{
@@ -47,8 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	Net::ASN1Util::OIDToCPPCode(oid, oidLen, sarr[nameCol].v, sarr[nameCol].leng, &sbCPP);
 	while (lineCnt == 2)
 	{
-		lineCnt = Text::StrSplitLineP(lines, 2, lines[1].v, lines[1].leng);
-		rowCnt = Text::StrSplitTrimP(sarr, 10, lines[0].v, lines[0].leng, '\t');
+		lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
+		rowCnt = Text::StrSplitTrimP(sarr, 10, lines[0], '\t');
 		if (rowCnt == firstRowCnt)
 		{
 			oidLen = Net::ASN1Util::OIDText2PDU(sarr[oidCol].v, sarr[oidCol].leng, oid);

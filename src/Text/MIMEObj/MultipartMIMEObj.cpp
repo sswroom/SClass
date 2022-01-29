@@ -82,7 +82,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				}
 				if (buff[i - 1] != ';' || (buff[i + 2] != '\t' && buff[i + 2] != ' '))
 				{
-					if (Text::StrSplitTrimP(sarr, 2, sb.ToString(), sb.GetLength(), ':') == 1)
+					if (Text::StrSplitTrimP(sarr, 2, sb, ':') == 1)
 					{
 						lineStart = 0;
 						break;

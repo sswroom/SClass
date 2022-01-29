@@ -27,7 +27,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATE: ")))
 				{
 					time = &sarr[0].v[6];

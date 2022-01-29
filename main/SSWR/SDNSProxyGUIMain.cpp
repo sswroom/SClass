@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 				ip = Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng);
 				if (ip)
 				{
@@ -70,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 				frm->AddBlacklist(sarr[0].v);
 				if (i <= 1)
 					break;

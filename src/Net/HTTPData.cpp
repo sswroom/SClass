@@ -32,14 +32,14 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		{
 			Data::DateTime dt;
 			fs->GetFileTimes(0, 0, &dt);
-			fdh->cli->AddTimeHeader(UTF8STRC("If-Modified-Since"), &dt);
+			fdh->cli->AddTimeHeader(CSTR("If-Modified-Since"), &dt);
 		}
 		DEL_CLASS(fs);
 	}
 	while (fdh->cli->GetRespStatus() == 301)
 	{
 		Text::StringBuilderUTF8 sb;
-		fdh->cli->GetRespHeader(UTF8STRC("Location"), &sb);
+		fdh->cli->GetRespHeader(CSTR("Location"), &sb);
 		if (sb.GetLength() > 0 && (sb.StartsWith(UTF8STRC("http://")) || sb.StartsWith(UTF8STRC("https://"))))
 		{
 			if (fdh->queue)
@@ -106,7 +106,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		else
 		{
 			Text::StringBuilderUTF8 sb;
-			if (!fdh->cli->GetRespHeader(UTF8STRC("Content-Length"), &sb))
+			if (!fdh->cli->GetRespHeader(CSTR("Content-Length"), &sb))
 			{
 				Sync::Event *readEvt;
 				void *sess;

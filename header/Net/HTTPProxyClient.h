@@ -11,12 +11,12 @@ namespace Net
 		UInt32 proxyIP;
 		UInt16 proxyPort;
 		UInt8 *authBuff;
-		OSInt authBuffSize;
+		UOSInt authBuffSize;
 	public:
 		HTTPProxyClient(Net::SocketFactory *sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort);
 		virtual ~HTTPProxyClient();
 
-		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
 		Bool SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdType, const UTF8Char *userName, const UTF8Char *password);
 	};
 }

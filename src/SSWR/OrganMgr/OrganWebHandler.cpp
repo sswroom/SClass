@@ -3481,7 +3481,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 4096))
 			{
-				if (Text::StrSplitP(sarr, 4, sb.ToString(), sb.GetLength(), '\t') == 3)
+				if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 				{
 					if (refURLList->SortedIndexOfPtr(sarr[2].v) < 0)
 					{
@@ -4550,7 +4550,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						found = false;
 						while (reader->ReadLine(&sb, 4096))
 						{
-							if (Text::StrSplitP(sarr, 4, sb.ToString(), sb.GetLength(), '\t') == 3)
+							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
@@ -4913,7 +4913,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						found = false;
 						while (reader->ReadLine(&sb, 4096))
 						{
-							if (Text::StrSplitP(sarr, 4, sb.ToString(), sb.GetLength(), '\t') == 3)
+							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
@@ -5054,7 +5054,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				foundNext = false;
 				while (reader->ReadLine(&sb, 4096))
 				{
-					if (Text::StrSplitP(sarr, 4, sb.ToString(), sb.GetLength(), '\t') == 3)
+					if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 					{
 						if (found)
 						{
@@ -5280,7 +5280,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						found = false;
 						while (reader->ReadLine(&sb, 4096))
 						{
-							if (Text::StrSplitP(sarr, 4, sb.ToString(), sb.GetLength(), '\t') == 3)
+							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
 								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
@@ -7850,7 +7850,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 				while ((sptr2 = reader->ReadLine(u8buff2, 511)) != 0)
 				{
-					if (Text::StrSplitP(sarr, 3, u8buff2, (UOSInt)(sptr2 - u8buff2), '\t') == 2)
+					if (Text::StrSplitP(sarr, 3, {u8buff2, (UOSInt)(sptr2 - u8buff2)}, '\t') == 2)
 					{
 						if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength()))
 						{

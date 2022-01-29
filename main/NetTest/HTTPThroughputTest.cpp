@@ -10,14 +10,19 @@
 #define URL "http://127.0.0.1:8080"
 #define THREADCNT 16
 #define CONNCNT 100000
-#define KACONN true
+#define KACONN false
 #define METHOD Net::WebUtil::RequestMethod::HTTP_GET
 #define POSTSIZE 1048576
 
+Text::CString paramUrl;
+UOSInt threadCnt;
+UOSInt paramConnCnt;
+Bool kaConn;
+Net::WebUtil::RequestMethod reqMeth;
+UOSInt postSize;
+
 UInt32 threadCurrCnt;
 Int32 connLeft;
-UInt32 connCnt;
-UInt32 failCnt;
 Manage::HiResClock *clk;
 Double t;
 Net::SocketFactory *sockf;
@@ -28,6 +33,11 @@ struct ThreadStatus
 	Bool threadRunning;
 	Bool threadToStop;
 	Sync::Event *evt;
+	UInt32 connCnt;
+	UInt32 failCnt;
+	Double totalRespTime;
+	Double maxRespTime;
+	UInt64 recvSize;
 };
 
 UInt32 __stdcall ProcessThread(void *userObj)
@@ -45,24 +55,28 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
+	Manage::HiResClock *respClk;
+	Double respT;
+	UOSInt recvSize;
 	Interlocked_IncrementU32(&threadCurrCnt);
 	status->threadRunning = true;
-	if (KACONN)
+	NEW_CLASS(respClk, Manage::HiResClock());
+	if (kaConn)
 	{
-		cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, false);
+		cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, false);
 		while (!status->threadToStop)
 		{
-			url = {UTF8STRC(URL)};
 			if (Interlocked_DecrementI32(&connLeft) < 0)
 				break;
-			if (cli->Connect(url.v, url.leng, METHOD, &timeDNS, &timeConn, false))
+			respClk->Start();
+			if (cli->Connect(paramUrl, METHOD, &timeDNS, &timeConn, false))
 			{
-				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
-				if (Text::StrEqualsC(UTF8STRC(METHOD), UTF8STRC("POST")))
+				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
+				if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
 				{
 					i = POSTSIZE;
 					sptr = Text::StrUOSInt(buff, i);
-					cli->AddHeaderC(UTF8STRC("Content-Length"), buff, (UOSInt)(sptr - buff));
+					cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
 					while (i >= 2048)
 					{
 						j = cli->Write(buff, 2048);
@@ -80,7 +94,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Interlocked_IncrementU32(&connCnt);
+					status->connCnt++;
 					if (timeResp > 0.5)
 					{
 						if (timeConn > 0.5)
@@ -92,23 +106,32 @@ UInt32 __stdcall ProcessThread(void *userObj)
 							i = 0;
 						}
 					}
-					while (cli->Read(buff, 2048));
+					while ((recvSize = cli->Read(buff, 2048)) > 0)
+					{
+						status->recvSize += recvSize;
+					}
+					respT = respClk->GetTimeDiff();
+					status->totalRespTime += respT;
+					if (respT > status->maxRespTime)
+					{
+						status->maxRespTime = respT;
+					}
 				}
 				else
 				{
-					Interlocked_IncrementU32(&failCnt);
+					status->failCnt++;
 				}
 				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
-					cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
+					cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 				}
 			}
 			else
 			{
 				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
-				Interlocked_IncrementU32(&failCnt);
+				cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+				status->failCnt++;
 			}
 		}
 		DEL_CLASS(cli);
@@ -120,27 +143,39 @@ UInt32 __stdcall ProcessThread(void *userObj)
 			url = {UTF8STRC(URL)};
 			if (Sync::Interlocked::Decrement(&connLeft) < 0)
 				break;
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
-			if (cli->Connect(url.v, url.leng, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
+			respClk->Start();
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+			if (cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 			{
-				cli->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
+				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 				cli->EndRequest(&timeReq, &timeResp);
 				if (timeResp >= 0)
 				{
-					Sync::Interlocked::Increment(&connCnt);
+					while ((recvSize = cli->Read(buff, 2048)) > 0)
+					{
+						status->recvSize += recvSize;
+					}
+					respT = respClk->GetTimeDiff();
+					status->connCnt++;
+					status->totalRespTime += respT;
+					if (respT > status->maxRespTime)
+					{
+						status->maxRespTime = respT;
+					}
 				}
 				else
 				{
-					Sync::Interlocked::Increment(&failCnt);
+					status->failCnt++;
 				}
 			}
 			else
 			{
-				Sync::Interlocked::Increment(&failCnt);
+				status->failCnt++;
 			}
 			DEL_CLASS(cli);
 		}
 	}
+	DEL_CLASS(respClk);
 	status->threadToStop = false;
 	status->threadRunning = false;
 	cnt = Interlocked_DecrementU32(&threadCurrCnt);
@@ -153,21 +188,31 @@ UInt32 __stdcall ProcessThread(void *userObj)
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
+	paramUrl = CSTR(URL);
+	threadCnt = THREADCNT;
+	paramConnCnt = CONNCNT;
+	kaConn = KACONN;
+	reqMeth = METHOD;
+	postSize = POSTSIZE;
+
 	threadCurrCnt = 0;
-	connCnt = 0;
-	failCnt = 0;
-	connLeft = CONNCNT;
+	connLeft = (Int32)paramConnCnt;
 	t = 0;
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, THREADCNT);
+	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
 	clk->Start();
-	UOSInt i = THREADCNT;
+	UOSInt i = threadCnt;
 	while (i-- > 0)
 	{
 		threadStatus[i].threadRunning = false;
 		threadStatus[i].threadToStop = false;
+		threadStatus[i].connCnt = 0;
+		threadStatus[i].failCnt = 0;
+		threadStatus[i].totalRespTime = 0;
+		threadStatus[i].maxRespTime = 0;
+		threadStatus[i].recvSize = 0;
 		NEW_CLASS(threadStatus[i].evt, Sync::Event(true, (const UTF8Char*)"threadStatus.evt"));
 		Sync::Thread::Create(ProcessThread, &threadStatus[i]);
 	}
@@ -175,17 +220,44 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	i = THREADCNT;
+	UInt64 connCnt = 0;
+	UInt64 failCnt = 0;
+	UInt64 recvSize = 0;
+	Double totalRespTime = 0;
+	Double maxRespTime = 0;
+	i = threadCnt;
 	while (i-- > 0)
 	{
 		DEL_CLASS(threadStatus[i].evt);
+		connCnt += threadStatus[i].connCnt;
+		failCnt += threadStatus[i].failCnt;
+		recvSize += threadStatus[i].recvSize;
+		totalRespTime += threadStatus[i].totalRespTime;
+		if (threadStatus[i].maxRespTime > maxRespTime)
+		{
+			maxRespTime = threadStatus[i].maxRespTime;
+		}
 	}
 	MemFree(threadStatus);
 
-	printf("TotalConn = %d\r\n", connCnt);
-	printf("FailCnt = %d\r\n", failCnt);
+	if (kaConn)
+	{
+		printf("Connection Type: keep-alive\r\n");
+	}
+	else
+	{
+		printf("Connection Type: close\r\n");
+	}
+	printf("URL: %s\r\n", paramUrl.v);
+	printf("Thread Cnt = %lld\r\n", threadCnt);
+	printf("TotalConn = %lld\r\n", paramConnCnt);
+	printf("SuccCnt = %lld\r\n", connCnt);
+	printf("FailCnt = %lld\r\n", failCnt);
 	printf("Time used = %lf\r\n", t);
-	printf("Speed = %lf req/s\r\n", (connCnt / t));
+	printf("Total Recv Size = %lld\r\n", recvSize);
+	printf("Avg Resp Time = %lf s\r\n", totalRespTime / (Double)connCnt);
+	printf("Max Resp Time = %lf s\r\n", maxRespTime);
+	printf("Speed = %lf req/s\r\n", ((Double)connCnt / t));
 	
 	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);

@@ -673,7 +673,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	i = 2;
 	while (i == 2)
 	{
-		i = Text::StrSplitTrimP(sarr, 2, sarr[1].v, sarr[1].leng, ':');
+		i = Text::StrSplitTrimP(sarr, 2, sarr[1], ':');
 		sb2.ClearStr();
 		sb2.AppendC(sarr[0].v, sarr[0].leng);
 		sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);

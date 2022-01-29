@@ -76,7 +76,7 @@ void __stdcall HTTPOSClient_StatusCb(HINTERNET hInternet, DWORD_PTR dwContext, D
 	}
 }
 
-Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -91,11 +91,11 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
-	if (userAgent == 0)
+	if (userAgent.v == 0)
 	{
-		userAgent = (const UTF8Char*)"sswr/1.0";
+		userAgent = CSTR("sswr/1.0");
 	}
-	const WChar *wptr = Text::StrToWCharNew(userAgent);
+	const WChar *wptr = Text::StrToWCharNew(userAgent.v);
 #if defined(WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY)
 	data->hSession = WinHttpOpen(wptr, WINHTTP_ACCESS_TYPE_AUTOMATIC_PROXY, WINHTTP_NO_PROXY_NAME, WINHTTP_NO_PROXY_BYPASS, 0);
 #endif
@@ -220,7 +220,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -249,10 +249,10 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	}
 
 	SDEL_STRING(this->url);
-	this->url = Text::String::New(url, urlLen);
-	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
+	this->url = Text::String::New(url.v, url.leng);
+	if (url.StartsWith(UTF8STRC("http://")))
 	{
-		ptr1 = &url[7];
+		ptr1 = &url.v[7];
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
@@ -262,7 +262,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		}
 		else
 		{
-			i = urlLen - 7;
+			i = url.leng - 7;
 			ptr2 = 0;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
@@ -270,9 +270,9 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
+	else if (url.StartsWith(UTF8STRC("https://")))
 	{
-		ptr1 = &url[8];
+		ptr1 = &url.v[8];
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
@@ -282,7 +282,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		}
 		else
 		{
-			i = urlLen - 8;
+			i = url.leng - 8;
 			ptr2 = 0;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
@@ -445,8 +445,8 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	if (data->hRequest)
 	{
 		WinHttpSetStatusCallback(data->hRequest, HTTPOSClient_StatusCb, WINHTTP_CALLBACK_FLAG_SECURE_FAILURE, 0);
-		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 		if (!this->kaConn)
 		{
 			DWORD feature = WINHTTP_DISABLE_KEEP_ALIVE;
@@ -462,23 +462,23 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->hRequest && !writing)
 	{
-		if (Text::StrEquals(name, (const UTF8Char*)"User-Agent"))
+		if (name.Equals(UTF8STRC("User-Agent")))
 		{
 		}
-		else if (Text::StrEquals(name, (const UTF8Char*)"Connection"))
+		else if (name.Equals(UTF8STRC("Connection")))
 		{
 		}
 		else
 		{
 			Text::StringBuilderUTF16 sb;
-			sb.AppendC(name, nameLen);
+			sb.AppendC(name.v, name.leng);
 			sb.AppendC(UTF8STRC(": "));
-			sb.AppendC(value, valueLen);
+			sb.AppendC(value.v, value.leng);
 			WinHttpAddRequestHeaders(data->hRequest, sb.ToString(), (DWORD)sb.GetLength(), WINHTTP_ADDREQ_FLAG_ADD);
 		}
 	}

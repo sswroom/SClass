@@ -113,8 +113,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	sarr[1].leng = sb.GetLength();
 	while (true)
 	{
-		i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
-		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")) && Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].leng, '\t') == 2)
+		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+		if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")) && Text::StrSplitP(sarr2, 2, sarr[0], '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
@@ -185,11 +185,11 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+				i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 				if (i == 2 && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<div class=\"post-thumb\">")) != INVALID_INDEX)
 				{
 					desc = 0;
-					i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+					i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 					j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<img class=\"lazyload\" "));
 					if (i == 2 && j != INVALID_INDEX)
 					{
@@ -208,7 +208,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 					}
 					if (desc)
 					{
-						i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+						i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 						j = Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("<a href=\""));
 						if (i == 2 && j != INVALID_INDEX)
 						{
@@ -489,7 +489,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 4096))
 	{
-		if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), '\t') == 2)
+		if (sb.StartsWith(UTF8STRC("https://")) && Text::StrSplitP(sarr, 2, sb, '\t') == 2)
 		{
 			Int32 id = 0;
 			Int32 webType = 0;

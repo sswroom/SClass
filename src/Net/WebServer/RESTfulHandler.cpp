@@ -386,7 +386,7 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, Net::WebServer::IWebRequest::PARAM_SEPERATOR);
+			i = Text::StrSplitP(sarr, 2, sarr[1], Net::WebServer::IWebRequest::PARAM_SEPERATOR);
 			j = Text::StrIndexOfChar(sarr[0].v, ',');
 			desc = false;
 			if (j != INVALID_INDEX)

@@ -65,7 +65,7 @@ size_t HTTPOSClient_WriteFunc(char *ptr, size_t size, size_t nmemb, void *userda
 	return size * nmemb;
 }
 
-Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
@@ -80,12 +80,11 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userA
 //	this->timeOutMS = 5000;
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
-	if (userAgent == 0)
+	if (userAgent.v == 0)
 	{
-		userAgent = (const UTF8Char*)"sswr/1.0";
-		uaLen = 8;
+		userAgent = CSTR("sswr/1.0");
 	}
-	this->clsData->userAgent = Text::String::New(userAgent, uaLen);
+	this->clsData->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 }
 
 Net::HTTPOSClient::~HTTPOSClient()
@@ -189,7 +188,7 @@ Bool Net::HTTPOSClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
@@ -215,10 +214,10 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	}
 
 	SDEL_STRING(this->url);
-	this->url = Text::String::New(url, urlLen);
-	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
+	this->url = Text::String::New(url.v, url.leng);
+	if (url.StartsWith(UTF8STRC("http://")))
 	{
-		ptr1 = &url[7];
+		ptr1 = &url.v[7];
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
@@ -227,16 +226,16 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		}
 		else
 		{
-			i = urlLen - 7;
+			i = url.leng - 7;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 		defPort = 80;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
+	else if (url.StartsWith(UTF8STRC("https://")))
 	{
-		ptr1 = &url[8];
+		ptr1 = &url.v[8];
 		i = Text::StrIndexOfChar(ptr1, '/');
 		if (i != INVALID_INDEX)
 		{
@@ -245,7 +244,7 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		}
 		else
 		{
-			i = urlLen - 8;
+			i = url.leng - 8;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
@@ -412,24 +411,24 @@ Bool Net::HTTPOSClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	curl_easy_setopt(this->clsData->curl, CURLOPT_SSL_VERIFYHOST, 0);
 	curl_easy_setopt(this->clsData->curl, CURLOPT_CERTINFO, 1L);
 
-	this->AddHeaderC(UTF8STRC("User-Agent"), this->clsData->userAgent->v, this->clsData->userAgent->leng);
+	this->AddHeaderC(CSTR("User-Agent"), this->clsData->userAgent->ToCString());
 	if (defHeaders)
 	{
-		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 		if (this->kaConn)
 		{
-			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
+			this->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 		}
 		else
 		{
-			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
+			this->AddHeaderC(CSTR("Connection"), CSTR("close"));
 		}
 	}
 	return true;
 }
 
-void Net::HTTPOSClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	if (data->curl && !writing)
@@ -443,9 +442,9 @@ void Net::HTTPOSClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 		else
 		{*/
 			Text::StringBuilderUTF8 sb;
-			sb.AppendC(name, nameLen);
+			sb.Append(name);
 			sb.AppendC(UTF8STRC(": "));
-			sb.AppendC(value, valueLen);
+			sb.Append(value);
 			data->headers = curl_slist_append(data->headers, (const Char*)sb.ToString());
 //		}
 	}

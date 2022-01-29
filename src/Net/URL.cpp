@@ -7,21 +7,21 @@
 #include "Text/MyString.h"
 #include "Text/URLString.h"
 
-IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, const UTF8Char *userAgent, UOSInt uaLen, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, Text::CString userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
 	UOSInt urlLen = Text::StrCharCnt(url);
 	if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("http://")))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, false);
-		cli->Connect(url, urlLen, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, false);
+		cli->Connect({url, urlLen}, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		return cli;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("https://")))
 	{
-		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, uaLen, true, true);
-		cli->Connect(url, urlLen, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+		Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, userAgent, true, true);
+		cli->Connect({url, urlLen}, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 		return cli;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("file:///")))

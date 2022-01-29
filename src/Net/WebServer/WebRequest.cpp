@@ -30,9 +30,9 @@ void Net::WebServer::WebRequest::ParseQuery()
 		hasMore = true;
 		while (hasMore)
 		{
-			hasMore = (Text::StrSplitP(strs1, 2, strs1[1].v, strs1[1].leng, '&') == 2);
+			hasMore = (Text::StrSplitP(strs1, 2, strs1[1], '&') == 2);
 
-			scnt = Text::StrSplitP(strs2, 2, strs1[0].v, strs1[0].leng, '=');
+			scnt = Text::StrSplitP(strs2, 2, strs1[0], '=');
 			if (scnt == 2)
 			{
 				sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff2, strs2[1].v);
@@ -219,7 +219,7 @@ void Net::WebServer::WebRequest::ParseFormPart(UInt8 *data, UOSInt dataSize, UOS
 				MemCopyNO(line, &data[lineStart + 31], i - lineStart - 31);
 				line[i - lineStart - 31] = 0;
 
-				strCnt = Text::StrSplitTrimP(lineStrs, 10, line, i - lineStart - 31, ';');
+				strCnt = Text::StrSplitTrimP(lineStrs, 10, {line, i - lineStart - 31}, ';');
 				j = strCnt;
 				while (j-- > 0)
 				{

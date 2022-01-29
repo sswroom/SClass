@@ -2321,7 +2321,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	{
 		sb2.ClearStr();
 		sb2.AppendC(sb.ToString(), sb.GetLength());
-		if (Text::StrSplitP(sarr, 3, sb.ToString(), sb.GetLength(), '\t') == 3)
+		if (Text::StrSplitP(sarr, 3, sb, '\t') == 3)
 		{
 			if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, webFileName, webFileNameLen))
 			{
@@ -2754,7 +2754,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			while (reader->ReadLine(&sb, 512))
 			{
 				sb2.AppendC(sb.ToString(), sb.GetLength());
-				if (Text::StrSplitP(sarr, 4, sb2.ToString(), sb2.GetLength(), '\t') == 3)
+				if (Text::StrSplitP(sarr, 4, sb2, '\t') == 3)
 				{
 					found = false;
 					i = j;

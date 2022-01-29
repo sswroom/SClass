@@ -7,7 +7,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Text::CString url = {UTF8STRC("https://resource.data.one.gov.hk/td/speedmap.xml")};
+	Text::CString url = CSTR("https://resource.data.one.gov.hk/td/speedmap.xml");
 	UInt8 buff[2048];
 	UOSInt readSize;
 	Net::SocketFactory *sockf;
@@ -15,9 +15,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::HTTPClient *cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
-	cli = Net::HTTPClient::CreateClient(sockf, ssl, 0, 0, true, Text::StrStartsWithC(url.v, url.leng, UTF8STRC("https://")));
+	cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 	printf("Connecting to %s\r\n", url.v);
-	cli->Connect(url.v, url.leng, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
 		printf("Read %d bytes\r\n", (Int32)readSize);

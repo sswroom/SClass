@@ -33,12 +33,11 @@ struct Net::HTTPMyClient::ClassData
 
 #define BUFFSIZE 8192
 
-Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
 {
-	if (userAgent == 0)
+	if (userAgent.v == 0)
 	{
-		userAgent = (const UTF8Char*)"sswr/1.0";
-		uaLen = 8;
+		userAgent = CSTR("sswr/1.0");
 	}
 #if defined(LOGREPLY)
 	UTF8Char sbuff[512];
@@ -61,7 +60,7 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->buffOfst = 0;
 	this->contEnc = 0;
 	this->timeOutMS = 5000;
-	this->userAgent = Text::String::New(userAgent, uaLen);
+	this->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
 	NEW_CLASS(this->reqHeaders, Data::ArrayListString());
 	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
@@ -528,7 +527,7 @@ Bool Net::HTTPMyClient::Recover()
 	return false;
 }
 
-Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UOSInt urltmpLen;
@@ -538,27 +537,23 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 
 	UOSInt i;
 	UOSInt hostLen;
-	const UTF8Char *ptr1;
-	UOSInt ptr1Len;
-	const UTF8Char *ptr2;
-	UOSInt ptr2Len;
+	Text::CString ptr1;
+	Text::CString ptr2;
 	Text::PString ptrs[2];
 	UTF8Char *cptr;
 	UInt16 port;
 	Bool secure = false;
 
 	SDEL_STRING(this->url);
-	this->url = Text::String::New(url, urlLen);
-	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
+	this->url = Text::String::New(url.v, url.leng);
+	if (url.StartsWith(UTF8STRC("http://")))
 	{
-		ptr1 = &url[7];
-		ptr1Len = urlLen - 7;
+		ptr1 = url.Substring(7);
 		secure = false;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://")))
+	else if (url.StartsWith(UTF8STRC("https://")))
 	{
-		ptr1 = &url[8];
-		ptr1Len = urlLen - 8;
+		ptr1 = url.Substring(8);
 		secure = true;
 	}
 	else
@@ -590,20 +585,17 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 #ifdef SHOWDEBUG
 	printf("Request URL: %s %s\r\n", method, url);
 #endif
-	i = Text::StrIndexOfCharC(ptr1, ptr1Len, '/');
+	i = ptr1.IndexOf('/');
 	if (i != INVALID_INDEX)
 	{
-		MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
+		MemCopyNO(urltmp, ptr1.v, i * sizeof(UTF8Char));
 		urltmp[i] = 0;
-		ptr2 = &ptr1[i];
-		ptr2Len = ptr1Len - i;
+		ptr2 = ptr1.Substring(i);
 	}
 	else
 	{
-		ptr2 = 0;
-		ptr2Len = 0;
-		MemCopyNO(urltmp, ptr1, ptr1Len * sizeof(UTF8Char));
-		urltmp[ptr1Len] = 0;
+		ptr2 = CSTR_NULL;
+		ptr1.ConcatTo(urltmp);
 	}
 	cptr = Text::TextBinEnc::URIEncoding::URIDecode(urltmp, urltmp);
 	urltmpLen = (UOSInt)(cptr - urltmp);
@@ -643,7 +635,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 	}
 	else
 	{
-		i = Text::StrSplitP(ptrs, 2, urltmp, urltmpLen, ':');
+		i = Text::StrSplitP(ptrs, 2, {urltmp, urltmpLen}, ':');
 		if (i == 2)
 		{
 			Text::StrToUInt16S(ptrs[1].v, &port, 0);
@@ -818,12 +810,11 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		return false;
 	}
 
-	if (ptr2 == 0)
+	if (ptr2.v == 0)
 	{
-		ptr2 = (const UTF8Char*)"/";
-		ptr2Len = 1;
+		ptr2 = CSTR("/");
 	}
-	i = ptr2Len;
+	i = ptr2.leng;
 	if ((i + 16) > BUFFSIZE)
 	{
 		MemFree(this->dataBuff);
@@ -835,28 +826,28 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		this->canWrite = true;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 	case Net::WebUtil::RequestMethod::HTTP_PUT:
 		this->canWrite = true;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("PUT "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 	case Net::WebUtil::RequestMethod::HTTP_PATCH:
 		this->canWrite = true;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("PATCH "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 	case Net::WebUtil::RequestMethod::HTTP_DELETE:
 		this->canWrite = false;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("DELETE "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 	case Net::WebUtil::RequestMethod::HTTP_CONNECT:
@@ -865,7 +856,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		this->canWrite = false;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 		break;
 
@@ -883,7 +874,7 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 		this->canWrite = false;
 		this->writing = false;
 		cptr = Text::StrConcatC(dataBuff, UTF8STRC("TEARDOWN "));
-		cptr = Text::StrConcatC(cptr, ptr2, ptr2Len);
+		cptr = ptr2.ConcatTo(cptr);
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" RTSP/1.0\r\n"));
 		break;
 	}
@@ -892,35 +883,35 @@ Bool Net::HTTPMyClient::Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil
 
 	if (defHeaders)
 	{
-		this->AddHeaderC(UTF8STRC("User-Agent"), this->userAgent->v, this->userAgent->leng);
-		this->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-		this->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+		this->AddHeaderC(CSTR("User-Agent"), this->userAgent->ToCString());
+		this->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+		this->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 		if (this->kaConn)
 		{
-			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
+			this->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
 		}
 		else
 		{
-			this->AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
+			this->AddHeaderC(CSTR("Connection"), CSTR("close"));
 		}
 	}
 	return true;
 }
 
-void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 {
 	UInt8 buff[512];
 	UTF8Char *sptr;
-	if (this->reqHeaders->SortedIndexOfPtr(name) >= 0)
+	if (this->reqHeaders->SortedIndexOfPtr(name.v) >= 0)
 		return;
 
 	if (this->cli && !this->writing)
 	{
-		if (nameLen + valueLen + 5 > 512)
+		if (name.leng + value.leng + 5 > 512)
 		{
-			this->reqMstm->Write(name, nameLen);
+			this->reqMstm->Write(name.v, name.leng);
 			this->reqMstm->Write(UTF8STRC(": "));
-			this->reqMstm->Write(value, valueLen);
+			this->reqMstm->Write(value.v, value.leng);
 			this->reqMstm->Write(UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
 			printf("Add Header: %s: %s\r\n", name, value);
@@ -929,12 +920,12 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 		else
 		{
 			sptr = buff;
-			MemCopyNO(sptr, name, nameLen);
-			sptr += nameLen;
+			MemCopyNO(sptr, name.v, name.leng);
+			sptr += name.leng;
 			WriteNUInt16(sptr, ReadNUInt16((const UInt8*)": "));
 			sptr += 2;
-			MemCopyNO(sptr, value, valueLen);
-			sptr += valueLen;
+			MemCopyNO(sptr, value.v, value.leng);
+			sptr += value.leng;
 			WriteNUInt16(sptr, ReadNUInt16((const UInt8*)"\r\n"));
 			sptr += 2;
 #ifdef SHOWDEBUG
@@ -943,7 +934,7 @@ void Net::HTTPMyClient::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const U
 #endif
 			this->reqMstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 		}
-		this->reqHeaders->SortedInsert(Text::String::New(name, nameLen));
+		this->reqHeaders->SortedInsert(Text::String::New(name.v, name.leng));
 	}
 }
 

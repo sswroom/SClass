@@ -183,12 +183,12 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		sarr[1].leng = sb.GetLength();
 		while (true)
 		{
-			j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ' ');
+			j = Text::StrSplitP(sarr, 2, sarr[1], ' ');
 			retryCnt = 0;
 			while (retryCnt < 3)
 			{
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].leng, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
+				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
+				if (cli->Connect(sarr[0].ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
 					if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".mp4")))
 					{
@@ -254,9 +254,16 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			sarr[1].leng = sb.GetLength();
 			while (true)
 			{
-				j = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ' ');
-				cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
-				if (cli->Connect(sarr[0].v, sarr[0].leng, Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
+				j = Text::StrSplitP(sarr, 2, sarr[1], ' ');
+				if (this->userAgent)
+				{
+					cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, this->userAgent->ToCString(), true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
+				}
+				else
+				{
+					cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR_NULL, true, Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("https://")));
+				}
+				if (cli->Connect(sarr[0].ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
 					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;

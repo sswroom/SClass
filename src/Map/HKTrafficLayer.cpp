@@ -813,12 +813,12 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 			if (status == 301 || status == 302)
 			{
 				Text::StringBuilderUTF8 sb;
-				cli->GetRespHeader(UTF8STRC("Location"), &sb);
+				cli->GetRespHeader(CSTR("Location"), &sb);
 				DEL_CLASS(cli);
 				if (!this->url->Equals(sb.ToString(), sb.GetLength()))
 				{
 					SDEL_STRING(this->url);
-					this->url = Text::String::NewNotNull(sb.ToString());
+					this->url = Text::String::New(sb.ToString(), sb.GetLength());
 					return this->OpenURLStream();
 				}
 				else

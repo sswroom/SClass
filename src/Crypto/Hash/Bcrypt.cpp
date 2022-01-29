@@ -53,7 +53,7 @@ Bool Crypto::Hash::Bcrypt::Matches(const UTF8Char *hash, UOSInt hashLen, const U
 	Text::PString sarr[4];
 	UOSInt sarrCnt; 
 	Text::StrConcatC(hashBuff, hash + 1, hashLen - 1);
-	sarrCnt = Text::StrSplitP(sarr, 4, hashBuff, hashLen - 1, '$');
+	sarrCnt = Text::StrSplitP(sarr, 4, {hashBuff, hashLen - 1}, '$');
 	if (sarrCnt != 3)
 	{
 		MemFree(hashBuff);

@@ -131,7 +131,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 				}
 				else if (this->currReq == 0)
 				{
-					if (Text::StrSplitP(sarr, 4, (UTF8Char*)&this->dataBuff[lineStart], i - lineStart, ' ') == 3)
+					if (Text::StrSplitP(sarr, 4, {(UTF8Char*)&this->dataBuff[lineStart], i - lineStart}, ' ') == 3)
 					{
 						if (Text::StrEqualsC(sarr[2].v, sarr[2].leng, UTF8STRC("RTSP/1.0")))
 						{
@@ -461,9 +461,9 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		clk.Start();
 		if (this->allowProxy)
 		{
-			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, 0, 0, true, reqURI->StartsWith(UTF8STRC("https://")));
+			httpCli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR_NULL, true, reqURI->StartsWith(UTF8STRC("https://")));
 			httpCli->SetTimeout(5000);
-			httpCli->Connect(reqURI->v, reqURI->leng, reqMeth, 0, 0, false);
+			httpCli->Connect(reqURI->ToCString(), reqMeth, 0, 0, false);
 
 			if (httpCli->IsError())
 			{
@@ -506,7 +506,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					else
 					{
 						Text::String *s2 = this->currReq->GetHeaderValue(i);
-						httpCli->AddHeaderC(s->v, s->leng, s2->v, s2->leng);
+						httpCli->AddHeaderC(s->ToCString(), s2->ToCString());
 					}
 					i++;
 				}

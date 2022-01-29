@@ -379,9 +379,9 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 
 	Int32 status = 0;
 	Net::HTTPClient *cli;
-	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, url.StartsWith(UTF8STRC("https://")));
-	cli->Connect(url.ToString(), url.GetLength(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
-	cli->AddHeaderC(UTF8STRC("Iot-Program"), UTF8STRC("margorpnomis"));
+	cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, url.StartsWith(UTF8STRC("https://")));
+	cli->Connect(url.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, 0, 0, false);
+	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Some devices do not have reading yet", (const UTF8Char*)"Error", me);

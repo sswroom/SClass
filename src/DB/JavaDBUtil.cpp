@@ -194,8 +194,8 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		sb.AppendC(&url->v[17], url->leng - 17);
 		sarr[1].v = sb.ToString();
 		sarr[1].leng = sb.GetLength();
-		scnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
-		scnt2 = Text::StrSplitP(sarr2, 2, sarr[0].v, sarr[0].leng, ':');
+		scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+		scnt2 = Text::StrSplitP(sarr2, 2, sarr[0], ':');
 		if (scnt2 == 2)
 		{
 			if (!Text::StrToUInt16(sarr2[1].v, &port))
@@ -205,7 +205,7 @@ DB::DBTool *DB::JavaDBUtil::OpenJDBC(Text::String *url, Text::String *username, 
 		}
 		while (scnt == 2)
 		{
-			scnt = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ';');
+			scnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("databaseName=")))
 			{
 				dbName = &sarr[0].v[13];

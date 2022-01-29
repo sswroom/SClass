@@ -840,7 +840,7 @@ Bool IO::GSMModemController::SMSGetStorageInfo(SMSStorageInfo *reading, SMSStora
 		return false;
 	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPMS: ")))
 		return false;
-	if (Text::StrSplitP(buffs, 10, &sbuff[7], (UOSInt)(sptr - &sbuff[7]), ',') != 9)
+	if (Text::StrSplitP(buffs, 10, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 9)
 		return false;
 	if (reading)
 	{
@@ -986,7 +986,7 @@ Bool IO::GSMModemController::PBGetStorage(PBStorage *storage, Int32 *usedEntry, 
 		return false;
 	if (!Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBS: ")))
 		return false;
-	if (Text::StrSplitP(buffs, 4, &sbuff[7], (UOSInt)(sptr - &sbuff[7]), ',') != 3)
+	if (Text::StrSplitP(buffs, 4, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') != 3)
 		return false;
 	if (storage)
 	{
@@ -1031,9 +1031,9 @@ Bool IO::GSMModemController::PBGetStorageStatus(Int32 *startEntry, Int32 *endEnt
 	Text::PString sarr[4];
 	Text::PString sarr2[3];
 	sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+CPBR=?"), 3000);
-	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBR: ")) && Text::StrSplitP(sarr, 4, &sbuff[7], (UOSInt)(sptr - &sbuff[7]), ',') == 3)
+	if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+CPBR: ")) && Text::StrSplitP(sarr, 4, {&sbuff[7], (UOSInt)(sptr - &sbuff[7])}, ',') == 3)
 	{
-		if (sarr[0].v[0] == '(' && Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(")")) && Text::StrSplitP(sarr2, 3, &sarr[0].v[1], sarr[0].leng - 1, '-') == 2)
+		if (sarr[0].v[0] == '(' && sarr[0].EndsWith(')') && Text::StrSplitP(sarr2, 3, sarr[0].Substring(1), '-') == 2)
 		{
 			sarr2[1].v[sarr2[1].leng - 1] = 0;
 			sarr2[1].leng -= 1;

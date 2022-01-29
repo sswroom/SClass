@@ -37,7 +37,7 @@ namespace Net
 			Text::EncodingFactory *encFact;
 			Text::String *userAgent;
 
-			Text::JSONBase *ParsePageJSON(const UTF8Char *url, UOSInt urlLen);
+			Text::JSONBase *ParsePageJSON(Text::CString url);
 		public:
 			WebSiteInstagramControl(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent);
 			~WebSiteInstagramControl();

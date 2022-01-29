@@ -8,6 +8,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
+#include "Text/PString.h"
 #include "Text/StringBuilderUTF8.h"
 #include "UI/MessageDialog.h"
 
@@ -57,8 +58,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	Text::String *currHeader;
 	IO::FileStream *fs;
 	UInt8 buff[4096];
-	UTF8Char *sarr[2];
-	UTF8Char *sarr2[2];
+	Text::PString sarr[2];
+	Text::PString sarr2[2];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
 	UOSInt i;
@@ -99,31 +100,33 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			}
 			Net::HTTPClient *cli;
 			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, 0, 0, false, currURL->StartsWith(UTF8STRC("https://")));
-			cli->Connect(currURL->v, currURL->leng, Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
+			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
+			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)
 			{
-				currHeader->ConcatTo(sbuff);
-				sarr[1] = sbuff;
+				sptr = currHeader->ConcatTo(sbuff);
+				sarr[1].v = sbuff;
+				sarr[1].leng = (UOSInt)(sptr - sbuff);
 				while (true)
 				{
-					i = Text::StrSplit(sarr, 2, sarr[1], '\r');
-					j = Text::StrSplitTrim(sarr2, 2, sarr[0], ':');
+					i = Text::StrSplitP(sarr, 2, sarr[1], '\r');
+					j = Text::StrSplitTrimP(sarr2, 2, sarr[0], ':');
 					if (j == 2)
 					{
-						if (Text::StrCompareICase(sarr2[0], (const UTF8Char*)"HOST") == 0)
+						if (sarr2[0].EqualsICase(UTF8STRC("HOST")))
 						{
 						}
 						else
 						{
-							cli->AddHeaderC(sarr2[0], Text::StrCharCnt(sarr2[0]), sarr2[1], Text::StrCharCnt(sarr2[1]));
+							cli->AddHeaderC(sarr2[0].ToCString(), sarr2[1].ToCString());
 						}
 					}
 					if (i == 1)
 						break;
-					while (sarr[1][0] == '\n' ||sarr[1][0] == '\r')
+					while (sarr[1].v[0] == '\n' ||sarr[1].v[0] == '\r')
 					{
-						sarr[1] = &sarr[1][1];
+						sarr[1].v = &sarr[1].v[1];
+						sarr[1].leng--;
 					}
 				}
 			}

@@ -68,10 +68,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			me->reqURL = 0;
 
 			NEW_CLASS(cli, Net::HTTPProxyClient(me->core->GetSocketFactory(), false, me->proxyIP, me->proxyPort));
-			cli->Connect(currURL->v, currURL->leng, Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
-			cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC("Test/1.0"));
-			cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-			cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
+			cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
+			cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+			cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 			cli->EndRequest(&me->respTimeReq, &me->respTimeResp);
 			while (cli->Read(buff, 4096) > 0);
 			me->respTimeTotal = cli->GetTotalTime();

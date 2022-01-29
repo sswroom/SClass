@@ -890,7 +890,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1]);
 							OrganEnv::FileStatus fs;
 							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{
@@ -3490,7 +3490,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 						j = 2;
 						while (j == 2)
 						{
-							j = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng);
+							j = Text::StrSplitLineP(sarr, 2, sarr[1]);
 							OrganEnv::FileStatus fs;
 							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("file://")))
 							{

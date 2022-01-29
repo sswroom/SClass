@@ -33,12 +33,11 @@ UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 
 		sbBuff->AppendC(buff, readSize);
 		sbBuff->RemoveANSIEscapes();
-		sarr[1].v = sbBuff->ToString();
-		sarr[1].leng = sbBuff->GetLength();
-		while ((i = Text::StrSplitLineP(sarr, 2, sarr[1].v, sarr[1].leng)) == 2)
+		sarr[1] = *sbBuff;
+		while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
 		{
 			Sync::MutexUsage mutUsage(me->lastCmdMut);
-			if (me->lastCmd && Text::StrEqualsC(me->lastCmd->v, me->lastCmd->leng, sarr[0].v, sarr[0].leng))
+			if (me->lastCmd && me->lastCmd->Equals(sarr[0].v, sarr[0].leng))
 			{
 				me->cmdReady = true;
 			}

@@ -44,10 +44,10 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 #if defined(VERBOSE)
 	printf("Requesting to URL %s\r\n", sb.ToString());
 #endif
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, STR_PTRC(this->userAgent), true, true);
-	cli->Connect(sb.ToString(), sb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
-	cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-	cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, {STR_PTRC(this->userAgent)}, true, true);
+	cli->Connect(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, false);
+	cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+	cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 	cli->SetTimeout(20000);
 #if defined(VERBOSE)
 	printf("HTTP Status code = %d\r\n", cli->GetRespStatus());

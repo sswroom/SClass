@@ -29,7 +29,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(const UTF8Char *fileName)
 			sb.RemoveChars(sb.GetLength() - i);
 		}
 		sb.TrimWSCRLF();
-		if (Text::StrSplitWSP(sarr, 2, sb.ToString(), sb.GetLength()) == 2)
+		if (Text::StrSplitWSP(sarr, 2, sb) == 2)
 		{
 			cfg->SetValue(0, 0, sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
 		}

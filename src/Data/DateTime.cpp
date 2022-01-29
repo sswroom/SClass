@@ -105,7 +105,7 @@ void Data::DateTime::SetTime(TimeValue *t, Text::PString *timeStrs)
 
 	t->hour = (UInt8)Text::StrToUInt32(timeStrs[0].v);
 	t->minute = (UInt8)Text::StrToUInt32(timeStrs[1].v);
-	valTmp = Text::StrSplitP(strs, 2, timeStrs[2].v, timeStrs[2].leng, '.');
+	valTmp = Text::StrSplitP(strs, 2, timeStrs[2], '.');
 	if (valTmp == 1)
 	{
 		t->second = (UInt8)Text::StrToUInt32(strs[0].v);
@@ -436,23 +436,23 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 		dateStrLen -= (UOSInt)(dateStr - startPtr);
 	}
 	Text::StrConcatC(buff, dateStr, dateStrLen);
-	nStrs = Text::StrSplitTrimP(strs2, 5, buff, dateStrLen, ' ');
+	nStrs = Text::StrSplitTrimP(strs2, 5, {buff, dateStrLen}, ' ');
 	if (nStrs == 1)
 	{
-		nStrs = Text::StrSplitP(strs2, 3, buff, dateStrLen, 'T');
+		nStrs = Text::StrSplitP(strs2, 3, {buff, dateStrLen}, 'T');
 	}
 	if (nStrs == 2)
 	{
 		Bool dateSucc = true;
-		if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '-') == 3)
+		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
 			SetDate(tval, strs);
 		}
-		else if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '/') == 3)
+		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
 			SetDate(tval, strs);
 		}
-		else if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, ':') == 3)
+		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
 			SetDate(tval, strs);
 		}
@@ -461,10 +461,10 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			SetCurrTime();
 			dateSucc = false;
 		}
-		UOSInt i = Text::StrIndexOfChar(strs2[1].v, '-');
+		UOSInt i = strs2[1].IndexOf('-');
 		if (i == INVALID_INDEX)
 		{
-			i = Text::StrIndexOfChar(strs2[1].v, '+');
+			i = strs2[1].IndexOf('+');
 		}
 		if (i != INVALID_INDEX)
 		{
@@ -493,7 +493,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			}
 			strs2[1].leng = i;
 		}
-		if (Text::StrSplitP(strs, 3, strs2[1].v, strs2[1].leng, ':') == 3)
+		if (Text::StrSplitP(strs, 3, strs2[1], ':') == 3)
 		{
 			if (strs[2].v[strs[2].leng - 1] == 'Z')
 			{
@@ -516,7 +516,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 	}
 	else if (nStrs == 1)
 	{
-		if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '-') == 3)
+		if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 		{
 			SetDate(tval, strs);
 			tval->hour = 0;
@@ -524,7 +524,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			tval->second = 0;
 			tval->ms = 0;
 		}
-		else if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '/') == 3)
+		else if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 		{
 			SetDate(tval, strs);
 			tval->hour = 0;
@@ -532,7 +532,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			tval->second = 0;
 			tval->ms = 0;
 		}
-		else if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, ':') == 3)
+		else if (Text::StrSplitP(strs, 3, strs2[0], ':') == 3)
 		{
 			SetCurrTime();
 			SetTime(tval, strs);
@@ -574,7 +574,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 		{
 			succ = false;
 		}
-		if (Text::StrSplitP(strs, 3, timeStr, timeStrLen, ':') == 3)
+		if (Text::StrSplitP(strs, 3, {timeStr, timeStrLen}, ':') == 3)
 		{
 			SetTime(tval, strs);
 		}
@@ -628,7 +628,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 		UOSInt splitCnt;
 		while (true)
 		{
-			if ((splitCnt = Text::StrSplitP(strs, 3, strs2[j].v, strs2[j].leng, ':')) == 3)
+			if ((splitCnt = Text::StrSplitP(strs, 3, strs2[j], ':')) == 3)
 			{
 				SetTime(tval, strs);
 			}
@@ -640,7 +640,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 				}
 				if (strs2[j].v[0] == '-')
 				{
-					if (Text::StrSplitP(strs, 3, strs2[j].v, strs2[j].leng, ':') == 2)
+					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
 					{
 						this->tzQhr = (Int8)(-(Int32)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15)));
 					}
@@ -653,7 +653,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 				}
 				else if (strs2[j].v[0] == '+')
 				{
-					if (Text::StrSplitP(strs, 3, strs2[j].v, strs2[j].leng, ':') == 2)
+					if (Text::StrSplitP(strs, 3, strs2[j], ':') == 2)
 					{
 						this->tzQhr = (Int8)((Text::StrToUInt32(&strs[0].v[1]) << 2) + (Text::StrToUInt32(strs[1].v) / 15));
 					}
@@ -669,14 +669,14 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 					i = Text::StrIndexOfChar(strs2[j].v, '/');
 					if (i != INVALID_INDEX && i > 0)
 					{
-						if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '/') == 3)
+						if (Text::StrSplitP(strs, 3, strs2[0], '/') == 3)
 						{
 							SetDate(tval, strs);
 						}
 					}
 					else
 					{
-						if (Text::StrSplitP(strs, 3, strs2[0].v, strs2[0].leng, '-') == 3)
+						if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
 						{
 							SetDate(tval, strs);
 						}
@@ -713,7 +713,7 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 			}
 			else
 			{
-				nStrs = Text::StrSplitP(&strs2[1], 2, strs2[2].v, strs2[2].leng, ' ');
+				nStrs = Text::StrSplitP(&strs2[1], 2, strs2[2], ' ');
 			}
 		}
 	}
@@ -2050,8 +2050,12 @@ void Data::DateTime::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 			totalDays -= 10957;
 			t->year = 2000 + (UInt16)((totalDays / 1461) << 2);
 			totalDays = totalDays % 1461;
-			t->year += (UInt16)(totalDays / 365);
-			totalDays = totalDays % 365;
+			if (totalDays >= 366)
+			{
+				totalDays--;
+				t->year += (UInt16)(totalDays / 365);
+				totalDays = totalDays % 365;
+			}
 		}
 	}
 

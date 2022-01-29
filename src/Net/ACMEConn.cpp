@@ -156,7 +156,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url->v, Net::WebUtil::RequestMethod::HTTP_POST, true);
 	if (cli)
 	{
-		cli->AddContentType(UTF8STRC("application/jose+json"));
+		cli->AddContentType(CSTR("application/jose+json"));
 		cli->AddContentLength(jwsLen);
 		cli->Write(jws->v, jwsLen);
 	}
@@ -164,7 +164,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 
 	Text::StringBuilderUTF8 sb;
 	cli->GetRespStatus();
-	if (cli->GetRespHeader(UTF8STRC("Replay-Nonce"), &sb))
+	if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
 	{
 		SDEL_STRING(this->nonce);
 		this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
@@ -410,7 +410,7 @@ Bool Net::ACMEConn::NewNonce()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_NO_CONTENT)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader(UTF8STRC("Replay-Nonce"), &sb))
+		if (cli->GetRespHeader(CSTR("Replay-Nonce"), &sb))
 		{
 			SDEL_STRING(this->nonce);
 			this->nonce = Text::String::New(sb.ToString(), sb.GetLength());
@@ -458,7 +458,7 @@ Bool Net::ACMEConn::AccountNew()
 						mstm.Clear();
 						cli->ReadToEnd(&mstm, 4096);
 						sb.ClearStr();
-						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(UTF8STRC("Location"), &sb))
+						if (cli->GetRespStatus() == Net::WebStatus::SC_CREATED && cli->GetRespHeader(CSTR("Location"), &sb))
 						{
 							SDEL_STRING(this->accountId);
 							this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
@@ -495,7 +495,7 @@ Bool Net::ACMEConn::AccountRetr()
 	if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 	{
 		Text::StringBuilderUTF8 sb;
-		if (cli->GetRespHeader(UTF8STRC("Location"), &sb))
+		if (cli->GetRespHeader(CSTR("Location"), &sb))
 		{
 			SDEL_STRING(this->accountId);
 			this->accountId = Text::String::New(sb.ToString(), sb.GetLength());
@@ -526,7 +526,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	i = 2;
 	while (i == 2)
 	{
-		i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+		i = Text::StrSplitP(sarr, 2, sarr[1], ',');
 		if (found)
 			sb.AppendChar(',', 1);
 		sb.AppendC(UTF8STRC("{\"type\":\""));
@@ -550,7 +550,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 		Text::StringBuilderUTF8 sb;
 		IO::MemoryStream mstm(UTF8STRC("Net.ACMEConn.OrderNew.mstm"));
 		cli->ReadToEnd(&mstm, 2048);
-		cli->GetRespHeader(UTF8STRC("Location"), &sb);
+		cli->GetRespHeader(CSTR("Location"), &sb);
 		DEL_CLASS(cli);
 
 		const UInt8 *replyBuff = mstm.GetBuff(&i);

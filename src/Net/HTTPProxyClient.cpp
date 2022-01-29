@@ -21,7 +21,7 @@
 
 #define BUFFSIZE 2048
 
-Net::HTTPProxyClient::HTTPProxyClient(Net::SocketFactory *sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(sockf, 0, 0, 0, noShutdown)
+Net::HTTPProxyClient::HTTPProxyClient(Net::SocketFactory *sockf, Bool noShutdown, UInt32 proxyIP, UInt16 proxyPort) : Net::HTTPMyClient(sockf, 0, CSTR_NULL, noShutdown)
 {
 	this->proxyIP = proxyIP;
 	this->proxyPort = proxyPort;
@@ -37,21 +37,22 @@ Net::HTTPProxyClient::~HTTPProxyClient()
 	}
 }
 
-Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Char *method, Double *timeDNS, Double *timeConn, Bool defHeaders)
+Bool Net::HTTPProxyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders)
 {
 	UTF8Char urltmp[256];
 	UTF8Char svrname[256];
 	UTF8Char host[256];
+	UTF8Char *hostEnd;
 
 	UOSInt i;
 	const UTF8Char *ptr1;
-	UTF8Char *ptrs[2];
+	Text::PString ptrs[2];
 	UTF8Char *cptr;
 
-	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")))
+	if (url.StartsWith(UTF8STRC("http://")))
 	{
-		ptr1 = &url[7];
-		i = Text::StrIndexOfChar(ptr1, '/');
+		ptr1 = &url.v[7];
+		i = Text::StrIndexOfCharC(ptr1, url.leng - 7, '/');
 		if (i != INVALID_INDEX)
 		{
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
@@ -59,21 +60,21 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Cha
 		}
 		else
 		{
-			i = Text::StrCharCnt(ptr1);
+			i = url.leng - 7;
 			MemCopyNO(urltmp, ptr1, i * sizeof(UTF8Char));
 			urltmp[i] = 0;
 		}
 		cptr = Text::StrConcatC(host, UTF8STRC("Host: "));
-		cptr = Text::StrConcat(cptr, urltmp);
-		cptr = Text::StrConcatC(cptr, UTF8STRC("\r\n"));
-		i = Text::StrSplit(ptrs, 2, urltmp, ':');
+		cptr = Text::StrConcatC(cptr, urltmp, i);
+		hostEnd = Text::StrConcatC(cptr, UTF8STRC("\r\n"));
+		i = Text::StrSplitP(ptrs, 2, {urltmp, i}, ':');
 		if (i == 2)
 		{
-			Text::StrConcat(svrname, ptrs[0]);
+			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
 		}
 		else
 		{
-			Text::StrConcat(svrname, ptrs[0]);
+			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
 		}
 		this->clk->Start();
 		Double t1;
@@ -109,33 +110,26 @@ Bool Net::HTTPProxyClient::Connect(const UTF8Char *url, UOSInt urlLen, const Cha
 		else
 		{
 			this->sockf->SetLinger(cli->GetSocket(), 0);
-			i = Text::StrCharCnt(url);
+			i = url.leng;
 			if ((i + 16) > BUFFSIZE)
 			{
 				MemFree(this->dataBuff);
 				this->dataBuff = MemAlloc(UInt8, (i + 16));
 			}
-			if (method)
+			if (method == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
-				if (Text::StrEqualsICase(method, "POST"))
-				{
-					this->canWrite = true;
-					this->writing = false;
-					cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
-				}
-				else
-				{
-					cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
-				}
+				this->canWrite = true;
+				this->writing = false;
+				cptr = Text::StrConcatC(dataBuff, UTF8STRC("POST "));
 			}
 			else
 			{
 				cptr = Text::StrConcatC(dataBuff, UTF8STRC("GET "));
 			}
-			cptr = Text::StrConcat(cptr, url);
+			cptr = url.ConcatTo(cptr);
 			cptr = Text::StrConcatC(cptr, UTF8STRC(" HTTP/1.1\r\n"));
 			cli->Write((UInt8*)dataBuff, (UOSInt)(cptr - dataBuff));
-			cli->Write((UInt8*)host, Text::StrCharCnt(host));
+			cli->Write((UInt8*)host, (UOSInt)(hostEnd - host));
 			return true;
 		}
 	}
@@ -170,7 +164,7 @@ Bool Net::HTTPProxyClient::SetAuthen(Net::HTTPProxyTCPClient::PasswordType pwdTy
 		Crypto::Encrypt::Base64 b64;
 		sptr = sptr + b64.Encrypt(userPwd, (UOSInt)(sptr2 - userPwd), sptr, 0);
 		*sptr = 0;
-		this->AddHeaderC(UTF8STRC("Proxy-Authorization"), (const UTF8Char*)buff, (UOSInt)(sptr - buff));
+		this->AddHeaderC(CSTR("Proxy-Authorization"), {(const UTF8Char*)buff, (UOSInt)(sptr - buff)});
 		return true;
 	}
 	return false;

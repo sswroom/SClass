@@ -32,8 +32,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Double respTimeTotal = -1;
 		UInt64 totalReadSize;
 
-		const UTF8Char *url = argv[1];
-		if (Text::StrStartsWith(url, (const UTF8Char*)"http://"))
+		Text::CString url = {argv[1], Text::StrCharCnt(argv[1])};
+		if (url.StartsWith(UTF8STRC("http://")))
 		{
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;
@@ -42,16 +42,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, UTF8STRC("Test/1.0"), false, Text::StrStartsWith(url, (const UTF8Char*)"https://"));
-			if (!cli->Connect(url, Text::StrCharCnt(url), Net::WebUtil::RequestMethod::HTTP_GET, &respTimeDNS, &respTimeConn, false))
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR("Test/1.0"), false, url.StartsWith(UTF8STRC("https://")));
+			if (!cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &respTimeDNS, &respTimeConn, false))
 			{
 				console->WriteLineC(UTF8STRC("Error in requesting to server"));
 			}
 			else
 			{
-				cli->AddHeaderC(UTF8STRC("User-Agent"), UTF8STRC("Test/1.0"));
-				cli->AddHeaderC(UTF8STRC("Accept"), UTF8STRC("*/*"));
-				cli->AddHeaderC(UTF8STRC("Accept-Charset"), UTF8STRC("*"));
+				cli->AddHeaderC(CSTR("User-Agent"), CSTR("Test/1.0"));
+				cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
+				cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
 				cli->EndRequest(&respTimeReq, &respTimeResp);
 
 				httpStatus = cli->GetRespStatus();

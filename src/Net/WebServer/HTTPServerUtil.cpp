@@ -75,7 +75,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
 			Manage::OSInfo::OSType os = req->GetOS();
-			j = Text::StrSplitTrimP(sarr, 10, sb.ToString(), sb.GetLength(), ',');
+			j = Text::StrSplitTrimP(sarr, 10, sb, ',');
 			i = 0;
 			while (i < j)
 			{
@@ -179,7 +179,7 @@ Bool Net::WebServer::HTTPServerUtil::SendContent(Net::WebServer::IWebRequest *re
 		if (needComp && req->GetHeaderC(&sb, UTF8STRC("Accept-Encoding")))
 		{
 			Net::BrowserInfo::BrowserType browser = req->GetBrowser();
-			j = Text::StrSplitTrimP(sarr, 10, sb.ToString(), sb.GetLength(), ',');
+			j = Text::StrSplitTrimP(sarr, 10, sb, ',');
 			i = 0;
 			while (i < j)
 			{

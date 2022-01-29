@@ -151,7 +151,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 512))
 	{
-		colCnt = Text::StrSplitP(sarr, 9, sb.ToString(), sb.GetLength(), '\t');
+		colCnt = Text::StrSplitP(sarr, 9, sb, '\t');
 		if ((colCnt == 4 || colCnt == 6 || colCnt == 7 || colCnt == 8) && sarr[0].leng == 17)
 		{
 			macBuff[0] = 0;
@@ -207,7 +207,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 				UOSInt i = 2;
 				while (i == 2)
 				{
-					i = Text::StrSplitP(sarr, 2, sarr[1].v, sarr[1].leng, ',');
+					i = Text::StrSplitP(sarr, 2, sarr[1], ',');
 					company = Text::StrHex2UInt16C(sarr[0].v);
 				}
 			}

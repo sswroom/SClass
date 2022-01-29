@@ -104,7 +104,7 @@ void LoadProgList()
 			sb.ClearStr();
 			if (!reader->ReadLine(&sb, 4096))
 				break;
-			if (Text::StrSplitP(sarr, 2, sb.ToString(), sb.GetLength(), ',') == 2)
+			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
 			{
 				if (sarr[1].leng > 0)
 				{

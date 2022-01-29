@@ -29,7 +29,7 @@ namespace Net
 		UOSInt buffSize;
 
 	public:
-		HTTPOSClient(Net::SocketFactory *sockf, const UTF8Char *userAgent, UOSInt uaLen, Bool kaConn);
+		HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAgent, Bool kaConn);
 		virtual ~HTTPOSClient();
 
 		virtual Bool IsError();
@@ -41,8 +41,8 @@ namespace Net
 		virtual void Close();
 		virtual Bool Recover();
 
-		virtual Bool Connect(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
-		virtual void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders);
+		virtual void AddHeaderC(Text::CString name, Text::CString value);
 		virtual void EndRequest(Double *timeReq, Double *timeResp);
 		virtual void SetTimeout(Int32 ms);
 
