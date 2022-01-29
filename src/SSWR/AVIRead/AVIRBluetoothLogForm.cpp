@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, (const UTF8Char*)entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 	}
 	else
 	{
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Text::String *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name->v);
+		UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList->GetItem(i);
 		me->UpdateStatus();
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 			log = (const IO::BTDevLog::DevEntry*)me->lvContent->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
-				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+				me->lvContent->SetSubItem(i, 1, entry->name);
 			}
 			i++;
 		}
@@ -126,7 +126,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	{
 		log = logList.GetItem(i);
 		entry = this->macList->GetEntry(log->macInt);
-		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
+		if (unkOnly && (entry != 0 && entry->nameLen != 0) && log->addrType != IO::BTScanLog::AT_RANDOM)
 		{
 
 		}
@@ -158,7 +158,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 			{
 				if (entry)
 				{
-					this->lvContent->SetSubItem(l, 3, (const UTF8Char*)entry->name);
+					this->lvContent->SetSubItem(l, 3, entry->name);
 				}
 				else
 				{

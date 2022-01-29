@@ -86,7 +86,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			macInfo = Net::MACInfo::GetMACInfo(mac->macAddr);
-			sb.AppendSlow((const UTF8Char*)macInfo->name);
+			sb.AppendC(macInfo->name, macInfo->nameLen);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sb.AppendU64(mac->ipv4SrcCnt);
 			sb.AppendC(UTF8STRC("</td><td>"));
@@ -802,7 +802,7 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 			sb.AppendHexBuff(&sbuff[2], 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
-			sb.AppendSlow((const UTF8Char*)macInfo->name);
+			sb.AppendC(macInfo->name, macInfo->nameLen);
 			sb.AppendC(UTF8STRC("</td><td>"));
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);
 			sb.AppendP(sbuff, sptr);

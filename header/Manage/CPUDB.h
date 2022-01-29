@@ -24,13 +24,16 @@ namespace Manage
 			Int32 nm;
 			Int32 launchYear;
 			Int32 launchQuarter;
-			Text::CString brandName;
-			Text::CString partNum;
+			const UTF8Char *brandName;
+			UOSInt brandNameLen;
+			const UTF8Char *partNum;
+			UOSInt partNumLen;
 		} CPUSpecX86;
 
 		typedef struct
 		{
-			Text::CString model;
+			const UTF8Char *model;
+			UOSInt modelLen;
 			Manage::ThreadContext::ContextType contextType;
 			Manage::CPUVendor::CPU_BRAND brand;
 			const Char *name;
@@ -61,8 +64,10 @@ namespace Manage
 
 		typedef struct
 		{
-			Text::CString dispName;
-			Text::CString model;
+			const UTF8Char *dispName;
+			UOSInt dispNameLen;
+			const UTF8Char *model;
+			UOSInt modelLen;
 		} CPUMapping;
 
 	private:

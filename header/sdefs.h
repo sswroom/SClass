@@ -404,6 +404,7 @@ typedef UInt32 UTF32Char;
 #define ROR64(x, n) ((x >> n) | (x << (64 - n)))
 #define INVALID_INDEX ((UOSInt)-1)
 #define UTF8STRC(s) (const UTF8Char*)s, (sizeof(s) - 1)
+#define UTF8STR_NULL (const UTF8Char*)0, 0
 
 #if defined(__GNUC__) && (__cplusplus < 201703L) && (__STDC_VERSION__ < 201703L) && !defined(__clang__)
 #define REGVAR register

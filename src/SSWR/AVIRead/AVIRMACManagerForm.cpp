@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, (const UTF8Char*)entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 	}
 	else
 	{
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Text::String *name = frm->GetNameNew();
-		UOSInt i = me->macList->SetEntry(log->macInt, name->v);
+		UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 		name->Release();
 		entry = me->macList->GetItem(i);
 		me->UpdateStatus();
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 			log = me->logList->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
-				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+				me->lvContent->SetSubItem(i, 1, entry->name);
 			}
 			i++;
 		}
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], (const UTF8Char*)entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], entry->name));
 	}
 	else
 	{
@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		Text::String *name = frm->GetNameNew();
-		i = me->macList->SetEntry(macInt, name->v);
+		i = me->macList->SetEntry(macInt, name->ToCString());
 		name->Release();
 		me->UpdateStatus();
 		entry = me->macList->GetItem(i);
@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 			log = me->logList->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
-				me->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+				me->lvContent->SetSubItem(i, 1, entry->name);
 			}
 			i++;
 		}
@@ -194,7 +194,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 		IO::FileStream *fs;
 		Text::UTF8Reader *reader;
 		Text::StringBuilderUTF8 sb;
-		UTF8Char *sarr[3];
+		Text::PString sarr[3];
 		UOSInt i;
 		UOSInt j;
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 				sb.TrimToLength(i);
 			}
 			sb.RTrim();
-			j = Text::StrSplit(sarr, 3, sb.ToString(), '\t');
+			j = Text::StrSplitP(sarr, 3, sb, '\t');
 			if (j == 2 || j == 3)
 			{
 				UInt8 buff[8];
@@ -226,14 +226,14 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 					sarr[2] = sarr[1];
 				}
 				succ = false;
-				j = Text::StrCharCnt(sarr[0]);
-				if (j == 8 && sarr[0][2] == ':' && sarr[0][5] == ':')
+				j = sarr[0].leng;
+				if (j == 8 && sarr[0].v[2] == ':' && sarr[0].v[5] == ':')
 				{
 					buff[0] = 0;
 					buff[1] = 0;
-					buff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
-					buff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
-					buff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
+					buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+					buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+					buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
 					buff[5] = 0;
 					buff[6] = 0;
 					buff[7] = 0;
@@ -241,29 +241,29 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 					endAddr = startAddr | 0xffffff;
 					succ = true;
 				}
-				else if (j > 18 && sarr[0][17] == '/' && Text::StrToUOSInt(&sarr[0][18], &bitCnt))
+				else if (j > 18 && sarr[0].v[17] == '/' && Text::StrToUOSInt(&sarr[0].v[18], &bitCnt))
 				{
 					buff[0] = 0;
 					buff[1] = 0;
-					buff[2] = Text::StrHex2UInt8C(&sarr[0][0]);
-					buff[3] = Text::StrHex2UInt8C(&sarr[0][3]);
-					buff[4] = Text::StrHex2UInt8C(&sarr[0][6]);
-					buff[5] = Text::StrHex2UInt8C(&sarr[0][9]);
-					buff[6] = Text::StrHex2UInt8C(&sarr[0][12]);
-					buff[7] = Text::StrHex2UInt8C(&sarr[0][15]);
+					buff[2] = Text::StrHex2UInt8C(&sarr[0].v[0]);
+					buff[3] = Text::StrHex2UInt8C(&sarr[0].v[3]);
+					buff[4] = Text::StrHex2UInt8C(&sarr[0].v[6]);
+					buff[5] = Text::StrHex2UInt8C(&sarr[0].v[9]);
+					buff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
+					buff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
 					startAddr = ReadMUInt64(buff);
 					endAddr = startAddr | (((UInt64)1 << (48 - bitCnt)) - 1);
 					succ = true;
 				}
 				else
 				{
-					printf("Error in file2: %s\r\n", sarr[0]);
+					printf("Error in file2: %s\r\n", sarr[0].v);
 				}
 
 				if (succ)
 				{
 					const Net::MACInfo::MACEntry *entry = me->macList->GetEntry(startAddr);
-					if (Text::StrEquals(sarr[2], (const UTF8Char*)"IEEE Registration Authority"))
+					if (sarr[2].Equals(UTF8STRC("IEEE Registration Authority")))
 					{
 
 					}
@@ -273,7 +273,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 					}
 					else
 					{
-						me->macList->SetEntry(startAddr, endAddr, sarr[2]);
+						me->macList->SetEntry(startAddr, endAddr, sarr[2].ToCString());
 					}
 				}
 			}
@@ -422,7 +422,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(i, 1, entry->name);
 			}
 			else
 			{
@@ -440,11 +440,11 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 			if (log->serialNum)
 				this->lvContent->SetSubItem(i, 7, log->serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
-				this->lvContent->SetSubItem(i, 8, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
+				this->lvContent->SetSubItem(i, 8, Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
-				this->lvContent->SetSubItem(i, 9, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
+				this->lvContent->SetSubItem(i, 9, Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
-				this->lvContent->SetSubItem(i, 10, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
+				this->lvContent->SetSubItem(i, 10, Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
 			if (log->country)
 				this->lvContent->SetSubItem(i, 11, log->country);
 			i++;

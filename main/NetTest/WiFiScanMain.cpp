@@ -168,7 +168,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					buff[5] = macPtr[3];
 					buff[6] = macPtr[4];
 					buff[7] = macPtr[5];
-					sb.AppendSlow((const UTF8Char*)Net::MACInfo::GetMACInfo(ReadMUInt64(buff))->name);					
+					const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfo(ReadMUInt64(buff));
+					sb.AppendC(macEntry->name, macEntry->nameLen);
 					console.WriteLineC(sb.ToString(), sb.GetLength());
 					DEL_CLASS(bss);
 					j++;

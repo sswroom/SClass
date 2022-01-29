@@ -173,7 +173,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 4, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(l, 4, entry->name);
 			}
 			else
 			{

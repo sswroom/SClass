@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 					Text::StrHexBytes(sbuff, &id[2], 6, ':');
 					me->lvCurrWifi->SetSubItem(k, 2, sbuff);
 					Text::StrInt32(sbuff, bss->GetBSSType());
-					me->lvCurrWifi->SetSubItem(k, 3, (const UTF8Char*)Net::MACInfo::GetMACInfo(imac)->name);
+					me->lvCurrWifi->SetSubItem(k, 3, Net::MACInfo::GetMACInfo(imac)->name);
 					me->lvCurrWifi->SetSubItem(k, 4, sbuff);
 					Text::StrInt32(sbuff, bss->GetPHYType());
 					me->lvCurrWifi->SetSubItem(k, 5, sbuff);
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 
 						Text::StrHexBytes(sbuff, &id[2], 6, ':');
 						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), sbuff, wifiLog);
-						me->lvLogWifi->SetSubItem(k, 1, (const UTF8Char*)Net::MACInfo::GetMACInfo(imac)->name);
+						me->lvLogWifi->SetSubItem(k, 1, Net::MACInfo::GetMACInfo(imac)->name);
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
 						Text::StrInt32(sbuff, wifiLog->phyType);
 						me->lvLogWifi->SetSubItem(k, 3, sbuff);
@@ -162,11 +162,11 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						if (wifiLog->country)
 							me->lvLogWifi->SetSubItem(k, 8, wifiLog->country);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 9, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0])->name);
+							me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0])->name);
 						if (wifiLog->ouis[1][0] != 0 || wifiLog->ouis[1][1] != 0 || wifiLog->ouis[1][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 10, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1])->name);
+							me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1])->name);
 						if (wifiLog->ouis[2][0] != 0 || wifiLog->ouis[2][1] != 0 || wifiLog->ouis[2][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 11, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2])->name);
+							me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2])->name);
 					}
 					else
 					{
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 9, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
 								}
 								l++;
 							}
@@ -232,7 +232,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 10, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
 								}
 								l++;
 							}
@@ -253,7 +253,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 11, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
 								}
 								l++;
 							}
@@ -538,7 +538,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 			MemCopyNO(&macBuff[2], wifiLog->mac, 6);
 			macBuff[0] = 0;
 			macBuff[1] = 0;
-			if (Text::StrEquals(Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff))->name, "Unknown"))
+			const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfo(ReadMUInt64(macBuff));
+			if (Text::StrEqualsC(ent->name, ent->nameLen, UTF8STRC("Unknown")))
 			{
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);

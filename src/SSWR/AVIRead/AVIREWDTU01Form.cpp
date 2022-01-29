@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 			macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 			if (macEntry)
 			{
-				me->lvDevices->SetSubItem(i, 2, (const UTF8Char*)macEntry->name);
+				me->lvDevices->SetSubItem(i, 2, macEntry->name);
 			}
 			else
 			{

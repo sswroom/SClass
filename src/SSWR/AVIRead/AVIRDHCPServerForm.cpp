@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 				Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDevices->AddItem(sbuff, dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
-				me->lvDevices->SetSubItem(i, 1, (const UTF8Char*)macInfo->name);
+				me->lvDevices->SetSubItem(i, 1, macInfo->name);
 				if (dhcp == currSel)
 				{
 					me->lvDevices->SetSelectedIndex(i);

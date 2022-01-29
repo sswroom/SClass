@@ -65,12 +65,12 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	Net::MACInfo::MACEntry *macList = Net::MACInfo::GetMACEntryList(&i);
 	while (i-- > 0)
 	{
-		if (macList[i].name[0])
+		if (macList[i].nameLen > 0)
 		{
-			si = strList.SortedIndexOf((const UTF8Char*)macList[i].name);
+			si = strList.SortedIndexOf(macList[i].name);
 			if (si < 0)
 			{
-				strList.Insert((UOSInt)~si, (const UTF8Char*)macList[i].name);
+				strList.Insert((UOSInt)~si, macList[i].name);
 			}
 		}
 	}

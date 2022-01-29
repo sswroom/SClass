@@ -862,7 +862,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				WriteMUInt64(macBuff, mac->macAddr);
 				Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
 				me->lvDevice->AddItem(sbuff, mac);
-				me->lvDevice->SetSubItem(i, 1, (const UTF8Char*)Net::MACInfo::GetMACInfo(mac->macAddr)->name);
+				me->lvDevice->SetSubItem(i, 1, Net::MACInfo::GetMACInfo(mac->macAddr)->name);
 				if (mac->name)
 				{
 					me->lvDevice->SetSubItem(i, 8, mac->name);
@@ -945,7 +945,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDHCP->AddItem(sbuff, dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
-				me->lvDHCP->SetSubItem(i, 1, (const UTF8Char*)macInfo->name);
+				me->lvDHCP->SetSubItem(i, 1, macInfo->name);
 				if (dhcp == currSel)
 				{
 					me->lvDHCP->SetSelectedIndex(i);

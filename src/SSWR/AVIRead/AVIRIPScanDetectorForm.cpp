@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanDetectorForm::OnIPScanEvent(const UInt8 
 	const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 	if (macEntry)
 	{
-		sb.AppendSlow((const UTF8Char*)macEntry->name);
+		sb.AppendC(macEntry->name, macEntry->nameLen);
 	}
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }

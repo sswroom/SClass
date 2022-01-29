@@ -107,14 +107,13 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	macCnt--;
 	while (i < macCnt)
 	{
-		if (entList[i].name[0])
+		if (entList[i].nameLen > 0)
 		{
-			UOSInt len = Text::StrCharCnt(entList[i].name);
-			macArr = this->macMap->Get({(const UTF8Char*)entList[i].name, len});
+			macArr = this->macMap->Get({entList[i].name, entList[i].nameLen});
 			if (macArr == 0)
 			{
 				NEW_CLASS(macArr, Data::ArrayList<Net::MACInfo::MACEntry*>());
-				this->macMap->Put({(const UTF8Char*)entList[i].name, len}, macArr);
+				this->macMap->Put({entList[i].name, entList[i].nameLen}, macArr);
 			}
 			macArr->Add(&entList[i]);
 		}
@@ -126,7 +125,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	i = 0;
 	while (i < macCnt)
 	{
-		this->cboVendor->AddItem((const UTF8Char*)macList[i]->GetItem(0)->name, macList[i]);
+		this->cboVendor->AddItem(macList[i]->GetItem(0)->name, macList[i]);
 		i++;
 	}
 	MemFree(macList);

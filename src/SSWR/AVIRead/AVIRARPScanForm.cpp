@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 		macEntry = Net::MACInfo::GetMACInfoBuff(ipInfo->hwAddr);
 		if (macEntry)
 		{
-			this->lvARP->SetSubItem(k, 2, (const UTF8Char*)macEntry->name);
+			this->lvARP->SetSubItem(k, 2, macEntry->name);
 		}
 		i++;
 	}

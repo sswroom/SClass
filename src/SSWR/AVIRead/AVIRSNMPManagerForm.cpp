@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		Text::StrHexBytes(sbuff, agent->mac, 6, ':');
 		me->txtAgentPhyAddr->SetText(sbuff);
 		const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoBuff(agent->mac);
-		me->txtAgentVendor->SetText((const UTF8Char*)ent->name);
+		me->txtAgentVendor->SetText(ent->name);
 		if (agent->model)
 		{
 			me->txtAgentModel->SetText(agent->model->v);	

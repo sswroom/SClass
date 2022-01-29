@@ -34,7 +34,7 @@ void __stdcall ARPHandler(const UInt8 *hwAddr, UInt32 ipv4, void *userData)
 		macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 		if (macEntry)
 		{
-			sb.AppendSlow((const UTF8Char*)macEntry->name);
+			sb.AppendC(macEntry->name, macEntry->nameLen);
 		}
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		ipList->SortedInsert(ipv4);
@@ -80,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			macEntry = Net::MACInfo::GetMACInfoBuff(hwAddr);
 			if (macEntry)
 			{
-				sb.AppendSlow((const UTF8Char*)macEntry->name);
+				sb.AppendC(macEntry->name, macEntry->nameLen);
 			}
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			ipList->SortedInsert(arp->GetIPAddress());

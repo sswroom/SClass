@@ -138,7 +138,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 			}
 			else
 			{
-				this->lvDevices->SetSubItem(i, 4, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->macInt)->name);
+				this->lvDevices->SetSubItem(i, 4, Net::MACInfo::GetMACInfo(dev->macInt)->name);
 			}
 			statusMap->Put(dev->macInt, 1);
 		}

@@ -23,7 +23,8 @@ Net::MACInfoList::MACInfoList()
 		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
 		entry->rangeStart = ents[i].rangeStart;
 		entry->rangeEnd = ents[i].rangeEnd;
-		entry->name = Text::StrCopyNew(ents[i].name);
+		entry->name = Text::StrCopyNewC(ents[i].name, ents[i].nameLen);
+		entry->nameLen = ents[i].nameLen;
 		this->dataList->Add(entry);
 		i++;
 	}
@@ -116,13 +117,13 @@ const Net::MACInfo::MACEntry *Net::MACInfoList::GetEntryOUI(const UInt8 *oui)
 	return 0;
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, const UTF8Char *name)
+UOSInt Net::MACInfoList::SetEntry(UInt64 macInt, Text::CString name)
 {
 	UInt64 mask = 0xffffff;
 	return SetEntry(macInt & ~mask, macInt | mask, name);
 }
 
-UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, const UTF8Char *name)
+UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CString name)
 {
 	Net::MACInfo::MACEntry *entry;
 	this->modified = true;
@@ -131,7 +132,8 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, const UTF8
 	{
 		entry = this->dataList->GetItem((UOSInt)si);
 		SDEL_TEXT(entry->name);
-		entry->name = (const Char*)Text::StrCopyNew(name);
+		entry->name = Text::StrCopyNewC(name.v, name.leng);
+		entry->nameLen = name.leng;
 		return (UOSInt)si;
 	}
 	else
@@ -139,7 +141,8 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, const UTF8
 		entry = MemAlloc(Net::MACInfo::MACEntry, 1);
 		entry->rangeStart = rangeStart;
 		entry->rangeEnd = rangeEnd;
-		entry->name = (const Char*)Text::StrCopyNew(name);
+		entry->name = Text::StrCopyNewC(name.v, name.leng);
+		entry->nameLen = name.leng;
 		this->dataList->Insert((UOSInt)~si, entry);
 		return (UOSInt)~si;
 	}
@@ -152,7 +155,7 @@ void Net::MACInfoList::Load()
 	IO::Path::GetProcessFileName(sbuff);
 	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
-	UTF8Char *sarr[3];
+	Text::PString sarr[3];
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbName;
@@ -167,22 +170,35 @@ void Net::MACInfoList::Load()
 		{
 			if (sb.StartsWith(UTF8STRC("\t{")) && sb.EndsWith(UTF8STRC("\"},")))
 			{
-				if (Text::StrSplitTrim(sarr, 3, sb.ToString() + 2, ',') == 3)
+				if (Text::StrSplitTrimP(sarr, 3, sb.Substring(2), ',') == 3)
 				{
-					if (Text::StrEndsWith(sarr[0], (const UTF8Char*)"LL"))
+					if (sarr[0].EndsWith(UTF8STRC("LL")))
 					{
-						sarr[0][Text::StrCharCnt(sarr[0]) - 2] = 0;
+						sarr[0].RemoveChars(2);
 					}
-					if (Text::StrEndsWith(sarr[1], (const UTF8Char*)"LL"))
+					if (sarr[1].EndsWith(UTF8STRC("LL")))
 					{
-						sarr[1][Text::StrCharCnt(sarr[1]) - 2] = 0;
+						sarr[1].RemoveChars(2);
 					}
-					rangeStart = Text::StrToUInt64(sarr[0]);
-					rangeEnd = Text::StrToUInt64(sarr[1]);
-					sarr[2][Text::StrCharCnt(sarr[2]) - 2] = 0;
+					rangeStart = sarr[0].ToUInt64();
+					rangeEnd = sarr[1].ToUInt64();
+					sarr[2].RemoveChars(2);
 					sbName.ClearStr();
-					Text::CPPText::FromCPPString(&sbName, sarr[2]);
-					this->SetEntry(rangeStart, rangeEnd, sbName.ToString());
+					if (sarr[2].StartsWith(UTF8STRC("CSTR(")) && sarr[2].EndsWith(')'))
+					{
+						sarr[2].RemoveChars(1);
+						Text::CPPText::FromCPPString(&sbName, sarr[2].v + 5);
+					}
+					else if (sarr[2].StartsWith(UTF8STRC("UTF8STRC(")) && sarr[2].EndsWith(')'))
+					{
+						sarr[2].RemoveChars(1);
+						Text::CPPText::FromCPPString(&sbName, sarr[2].v + 9);
+					}
+					else
+					{
+						Text::CPPText::FromCPPString(&sbName, sarr[2].v);
+					}
+					this->SetEntry(rangeStart, rangeEnd, sbName.ToCString());
 				}
 			}
 			else
@@ -227,9 +243,9 @@ Bool Net::MACInfoList::Store()
 		sb.AppendHex64(entry->rangeStart);
 		sb.AppendC(UTF8STRC("LL, 0x"));
 		sb.AppendHex64(entry->rangeEnd);
-		sb.AppendC(UTF8STRC("LL, "));
-		Text::CPPText::ToCPPString(&sb, (const UTF8Char*)entry->name);
-		sb.AppendC(UTF8STRC("},"));
+		sb.AppendC(UTF8STRC("LL, UTF8STRC("));
+		Text::CPPText::ToCPPString(&sb, entry->name);
+		sb.AppendC(UTF8STRC(")},"));
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;
 	}

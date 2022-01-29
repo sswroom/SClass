@@ -91,7 +91,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			Text::StrHexBytes(sbuff, &id[2], 6, ':');
 			this->lvWifi->SetSubItem(i, 2, sbuff);
 			Text::StrInt32(sbuff, bss->GetBSSType());
-			this->lvWifi->SetSubItem(i, 3, (const UTF8Char*)Net::MACInfo::GetMACInfo(imac)->name);
+			this->lvWifi->SetSubItem(i, 3, Net::MACInfo::GetMACInfo(imac)->name);
 			this->lvWifi->SetSubItem(i, 4, sbuff);
 			Text::StrInt32(sbuff, bss->GetPHYType());
 			this->lvWifi->SetSubItem(i, 5, sbuff);
@@ -106,13 +106,13 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 				this->lvWifi->SetSubItem(i, 9, csptr);
 			oui = bss->GetChipsetOUI(0);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-				this->lvWifi->SetSubItem(i, 10, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(oui)->name);
+				this->lvWifi->SetSubItem(i, 10, Net::MACInfo::GetMACInfoOUI(oui)->name);
 			oui = bss->GetChipsetOUI(1);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-				this->lvWifi->SetSubItem(i, 11, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(oui)->name);
+				this->lvWifi->SetSubItem(i, 11, Net::MACInfo::GetMACInfoOUI(oui)->name);
 			oui = bss->GetChipsetOUI(2);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
-				this->lvWifi->SetSubItem(i, 12, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(oui)->name);
+				this->lvWifi->SetSubItem(i, 12, Net::MACInfo::GetMACInfoOUI(oui)->name);
 			if ((csptr = bss->GetManuf()) != 0)
 				this->lvWifi->SetSubItem(i, 13, csptr);
 			if ((csptr = bss->GetModel()) != 0)

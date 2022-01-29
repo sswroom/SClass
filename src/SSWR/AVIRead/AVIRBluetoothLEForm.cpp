@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 			{
 				me->lvDevices->SetSubItem(i, 1, dev->name);
 			}
-			me->lvDevices->SetSubItem(i, 2, (const UTF8Char*)Net::MACInfo::GetMACInfo(dev->mac)->name);
+			me->lvDevices->SetSubItem(i, 2, Net::MACInfo::GetMACInfo(dev->mac)->name);
 			Text::StrInt32(sbuff, dev->rssi);
 			me->lvDevices->SetSubItem(i, 3, sbuff);
 		}

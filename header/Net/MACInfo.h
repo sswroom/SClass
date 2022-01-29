@@ -1,5 +1,7 @@
 #ifndef _SM_NET_MACINFO
 #define _SM_NET_MACINFO
+#include "Text/CString.h"
+
 namespace Net
 {
 	class MACInfo
@@ -9,7 +11,8 @@ namespace Net
 		{
 			UInt64 rangeStart;
 			UInt64 rangeEnd;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 		} MACEntry;
 		
 	private:

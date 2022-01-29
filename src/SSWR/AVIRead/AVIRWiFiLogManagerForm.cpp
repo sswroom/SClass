@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 		Text::StringBuilderUTF8 sb;
 		if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
 		{
-			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToString());
+			UOSInt i = me->macList->SetEntry(log->macInt, sb.ToCString());
 			me->UpdateStatus();
 			me->EntryUpdated(me->macList->GetItem(i));
 		}
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 		SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 		if (entry)
 		{
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, (const UTF8Char*)entry->name));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
 		}
 		else
 		{
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnContentDblClicked(void *
 		if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 		{
 			Text::String *name = frm->GetNameNew();
-			UOSInt i = me->macList->SetEntry(log->macInt, name->v);
+			UOSInt i = me->macList->SetEntry(log->macInt, name->ToCString());
 			name->Release();
 			entry = me->macList->GetItem(i);
 			me->UpdateStatus();
@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 		log = logList->GetItem(i);
 		entry = this->macList->GetEntry(log->macInt);
 		valid = true;
-		if (unkOnly && (entry != 0 && entry->name != 0 && entry->name[0] != 0))
+		if (unkOnly && (entry != 0 && entry->nameLen != 0))
 		{
 			valid = false;
 		}
@@ -179,7 +179,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			{
 				valid = true;
 			}
-			else if (entry && Text::StrIndexOfICase((const UTF8Char*)entry->name, this->filterText->v) != INVALID_INDEX)
+			else if (entry && Text::StrIndexOfICase(entry->name, this->filterText->v) != INVALID_INDEX)
 			{
 				valid = true;
 			}
@@ -188,7 +188,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[0]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -196,7 +196,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[1]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -204,7 +204,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				if (!valid && (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0))
 				{
 					entry2 = this->macList->GetEntryOUI(log->ouis[2]);
-					if (entry2 && Text::StrIndexOfICase((const UTF8Char*)entry2->name, this->filterText->v) != INVALID_INDEX)
+					if (entry2 && Text::StrIndexOfICase(entry2->name, this->filterText->v) != INVALID_INDEX)
 					{
 						valid = true;
 					}
@@ -218,7 +218,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			l = this->lvContent->AddItem(sbuff, log);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)entry->name);
+				this->lvContent->SetSubItem(l, 1, entry->name);
 			}
 			else
 			{
@@ -249,11 +249,11 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			SDEL_TEXT(model);
 			SDEL_TEXT(serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
-				this->lvContent->SetSubItem(l, 8, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
+				this->lvContent->SetSubItem(l, 8, Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
-				this->lvContent->SetSubItem(l, 9, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
+				this->lvContent->SetSubItem(l, 9, Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
-				this->lvContent->SetSubItem(l, 10, (const UTF8Char*)Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
+				this->lvContent->SetSubItem(l, 10, Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
 			if (log->country)
 				this->lvContent->SetSubItem(l, 11, log->country);
 			cnt = 0;
@@ -290,7 +290,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(const Net::MACInfo::MAC
 		log = (const Net::WiFiLogFile::LogFileEntry*)this->lvContent->GetItem(i);
 		if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 		{
-			this->lvContent->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+			this->lvContent->SetSubItem(i, 1, entry->name);
 		}
 		i++;
 	}

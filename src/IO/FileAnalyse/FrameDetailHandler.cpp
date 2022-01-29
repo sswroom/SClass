@@ -256,9 +256,9 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CSt
 		const Net::MACInfo::MACEntry *entry;
 		sb.AppendC(UTF8STRC(" ("));
 		entry = Net::MACInfo::GetMACInfoBuff(macBuff);
-		if (entry && entry->name[0])
+		if (entry && entry->nameLen > 0)
 		{
-			sb.AppendSlow((const UTF8Char*)entry->name);
+			sb.AppendC(entry->name, entry->nameLen);
 		}
 		else
 		{

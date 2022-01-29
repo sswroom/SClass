@@ -48,7 +48,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 		Manage::CPUDB::CPUSpecX86 *cpuSpec = Manage::CPUDB::GetCPUSpecX86(this->brand, this->familyId, this->model, this->steppingId);
 		if (cpuSpec)
 		{
-			this->cpuModel = cpuSpec->partNum;
+			this->cpuModel = {cpuSpec->partNum, cpuSpec->partNumLen};
 		}
 	}
 }
