@@ -212,7 +212,7 @@ void Net::ASN1PDUBuilder::AppendOctetString(Text::String *s)
 	this->AppendOther(4, s->v, s->leng);
 }
 
-void Net::ASN1PDUBuilder::AppendOctetStringS(const UTF8Char *s)
+void Net::ASN1PDUBuilder::AppendOctetStringC(const UTF8Char *s, UOSInt len)
 {
 	if (s == 0)
 	{
@@ -222,7 +222,6 @@ void Net::ASN1PDUBuilder::AppendOctetStringS(const UTF8Char *s)
 		this->currOffset += 2;
 		return;
 	}
-	UOSInt len = Text::StrCharCnt(s);
 	this->AppendOther(4, s, len);
 }
 

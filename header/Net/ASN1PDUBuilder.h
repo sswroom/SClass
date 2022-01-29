@@ -31,7 +31,7 @@ namespace Net
 		void AppendBitStringWith0(const UInt8 *buff, UOSInt len);
 		void AppendOctetString(const UInt8 *buff, UOSInt len);
 		void AppendOctetString(Text::String *s);
-		void AppendOctetStringS(const UTF8Char *s);
+		void AppendOctetStringC(const UTF8Char *s, UOSInt len);
 		void AppendNull();
 		void AppendOID(const UInt8 *oid, UOSInt len);
 		void AppendOIDString(const UTF8Char *oidStr, UOSInt oidStrLen);

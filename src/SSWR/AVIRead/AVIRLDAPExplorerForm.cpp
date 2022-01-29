@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	Bool succ = false;
 	if (me->cboAuthType->GetSelectedIndex() == 0)
 	{
-		succ = me->cli->Bind(0, 0);
+		succ = me->cli->Bind(CSTR_NULL, CSTR_NULL);
 	}
 	else if (me->cboAuthType->GetSelectedIndex() == 1)
 	{
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		sb.ClearStr();
 		me->txtUserDN->GetText(&sb);
 		me->txtPassword->GetText(&sb2);
-		succ = me->cli->Bind(sb.ToString(), sb2.ToString());
+		succ = me->cli->Bind(sb.ToCString(), sb2.ToCString());
 	}
 	if (!succ)
 	{
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	}
 
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
-	succ = me->cli->Search((const UTF8Char*)"", Net::LDAPClient::ST_BASE_OBJECT, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results);
+	succ = me->cli->Search(CSTR(""), Net::LDAPClient::ST_BASE_OBJECT, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results);
 	if (!succ)
 	{
 		DEL_CLASS(me->cli);
@@ -167,13 +167,13 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 	}
 
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
-	if (me->cli->Search(sb.ToString(), Net::LDAPClient::ST_BASE_OBJECT, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results))
+	if (me->cli->Search(sb.ToCString(), Net::LDAPClient::ST_BASE_OBJECT, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results))
 	{
 		me->dispResults->Add(results.RemoveAt(0));
 		Net::LDAPClient::SearchResultsFree(&results);
 		me->lbObjects->AddItem((const UTF8Char*)".", me->dispResults->GetItem(0));
 	}
-	if (me->cli->Search(sb.ToString(), Net::LDAPClient::ST_SINGLE_LEVEL, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results))
+	if (me->cli->Search(sb.ToCString(), Net::LDAPClient::ST_SINGLE_LEVEL, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results))
 	{
 		UOSInt j;
 		UOSInt k;

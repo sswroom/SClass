@@ -6,6 +6,7 @@
 #include "IO/PackageFile.h"
 #include "IO/SeekableStream.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -40,14 +41,14 @@ namespace IO
 		SPackageFile(const UTF8Char *fileName);
 		~SPackageFile();
 
-		Bool AddFile(IO::IStreamData *fd, const UTF8Char *fileName, Int64 modTimeTicks);
-		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, const UTF8Char *fileName, Int64 modTimeTicks);
+		Bool AddFile(IO::IStreamData *fd, Text::CString fileName, Int64 modTimeTicks);
+		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Int64 modTimeTicks);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();
 		Bool OptimizeFile(const UTF8Char *newFile);
 		void PauseCommit(Bool pauseCommit);
 
-		IO::IStreamData *CreateStreamData(const UTF8Char *fileName);
+		IO::IStreamData *CreateStreamData(Text::CString fileName);
 	};
 }
 #endif

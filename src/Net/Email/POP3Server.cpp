@@ -161,11 +161,10 @@ UOSInt Net::Email::POP3Server::WriteMessage(Net::TCPClient *cli, Bool success, c
 	return buffSize;
 }
 
-UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg)
+UOSInt Net::Email::POP3Server::WriteRAW(Net::TCPClient *cli, const UTF8Char *msg, UOSInt msgLen)
 {
-	UOSInt strLen = Text::StrCharCnt(msg);
 	UOSInt buffSize;
-	buffSize = cli->Write(msg, strLen);
+	buffSize = cli->Write(msg, msgLen);
 	if (this->rawLog)
 	{
 		this->rawLog->Write(msg, buffSize);
@@ -244,7 +243,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					i++;
 				}
 				sb.AppendC(UTF8STRC(".\r\n"));
-				WriteRAW(cli, sb.ToString());
+				WriteRAW(cli, sb.ToString(), sb.GetLength());
 			}
 			else
 			{
@@ -312,7 +311,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					{
 						this->rawLog->Write(buff, buffSize);
 					}
-					WriteRAW(cli, (const UTF8Char*)"\r\n.\r\n");
+					WriteRAW(cli, UTF8STRC("\r\n.\r\n"));
 				}
 				else
 				{
@@ -386,7 +385,7 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 					i++;
 				}
 				sb.AppendC(UTF8STRC(".\r\n"));
-				WriteRAW(cli, sb.ToString());
+				WriteRAW(cli, sb.ToString(), sb.GetLength());
 			}
 			else
 			{

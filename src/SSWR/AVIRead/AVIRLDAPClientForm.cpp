@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	Bool succ = false;
 	if (me->cboAuthType->GetSelectedIndex() == 0)
 	{
-		succ = me->cli->Bind(0, 0);
+		succ = me->cli->Bind(CSTR_NULL, CSTR_NULL);
 	}
 	else if (me->cboAuthType->GetSelectedIndex() == 1)
 	{
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		sb.ClearStr();
 		me->txtUserDN->GetText(&sb);
 		me->txtPassword->GetText(&sb2);
-		succ = me->cli->Bind(sb.ToString(), sb2.ToString());
+		succ = me->cli->Bind(sb.ToCString(), sb2.ToCString());
 	}
 	if (succ)
 	{
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchClicked(void *userObj)
 	Data::ArrayList<Net::LDAPClient::SearchResObject*> results;
 	me->txtSearchBase->GetText(&sb);
 	me->txtSearchFilter->GetText(&sb2);
-	if (!me->cli->Search(sb.ToString(), (Net::LDAPClient::ScopeType)(OSInt)me->cboSearchScope->GetSelectedItem(), (Net::LDAPClient::DerefType)(OSInt)me->cboSearchDerefAliases->GetSelectedItem(), 0, 0, false, sb2.ToString(), &results))
+	if (!me->cli->Search(sb.ToCString(), (Net::LDAPClient::ScopeType)(OSInt)me->cboSearchScope->GetSelectedItem(), (Net::LDAPClient::DerefType)(OSInt)me->cboSearchDerefAliases->GetSelectedItem(), 0, 0, false, sb2.ToString(), &results))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in searching from server", (const UTF8Char*)"LDAP Client", me);
 	}

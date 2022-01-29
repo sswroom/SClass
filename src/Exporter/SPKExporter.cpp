@@ -163,7 +163,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						fileBuff = mstm->GetBuff(&fileSize);
-						spkg->AddFile(fileBuff, fileSize, sbuff, modTimeTicks);
+						spkg->AddFile(fileBuff, fileSize, {sbuff, (UOSInt)(sptr - sbuff)}, modTimeTicks);
 					}
 				}
 				orux->ReleaseNameArr(nameArr);
@@ -209,11 +209,11 @@ void Exporter::SPKExporter::ExportPackageFile(IO::SPackageFile *spkg, IO::Packag
 		}
 		else if (pot == IO::PackageFile::POT_STREAMDATA)
 		{
-			pkgFile->GetItemName(buffEnd, i);
+			sptr = pkgFile->GetItemName(buffEnd, i);
 			fd = pkgFile->GetItemStmData(i);
 			if (fd)
 			{
-				spkg->AddFile(fd, buff, pkgFile->GetItemModTimeTick(i));
+				spkg->AddFile(fd, {buff, (UOSInt)(sptr - buff)}, pkgFile->GetItemModTimeTick(i));
 				DEL_CLASS(fd);
 			}
 		}

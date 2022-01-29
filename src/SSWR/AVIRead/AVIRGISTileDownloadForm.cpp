@@ -499,7 +499,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						dt->SetCurrTimeUTC();
 
 //						stat->pkgMut->Lock();
-						stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb->ToString(), dt->ToTicks());
+						stat->spkg->AddFile(fileBuff, (UOSInt)fileSize, sb->ToCString(), dt->ToTicks());
 //						stat->pkgMut->Unlock();
 					}
 					else

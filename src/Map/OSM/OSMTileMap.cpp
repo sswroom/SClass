@@ -228,7 +228,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	UTF8Char u8buff[64];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
-	UTF8Char *sptru;
+	UTF8Char *sptru = filePathU;
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
@@ -299,7 +299,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 		if (fd)
 		{
 			IO::ParserType pt;
@@ -389,7 +389,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, dt.ToTicks());
 //					printf("Add File: %d, %d, %s\r\n", ret, (Int32)contLeng, filePathU);
 				}
 			}
@@ -406,7 +406,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	}
 	else if (this->spkg)
 	{
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
 	if (fd)
 	{
@@ -452,7 +452,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	UTF8Char u8buff[64];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
-	UTF8Char *sptru;
+	UTF8Char *sptru = filePathU;
 	Bool hasTime = false;
 	Data::DateTime dt;
 	Data::DateTime currTime;
@@ -518,7 +518,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 		if (fd)
 		{
 			if (blockX)
@@ -595,7 +595,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, {filePathU, (UOSInt)(sptru - filePathU)}, dt.ToTicks());
 				}
 			}
 			MemFree(imgBuff);
@@ -611,7 +611,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	}
 	else if (this->spkg)
 	{
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData({filePathU, (UOSInt)(sptru - filePathU)});
 	}
 	if (fd)
 	{

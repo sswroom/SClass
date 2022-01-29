@@ -45,7 +45,7 @@ namespace Net
 			static void __stdcall ClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 			static void __stdcall ClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
 			UOSInt WriteMessage(Net::TCPClient *cli, Bool success, const UTF8Char *msg, UOSInt msgLen);
-			UOSInt WriteRAW(Net::TCPClient *cli, const UTF8Char *msg);
+			UOSInt WriteRAW(Net::TCPClient *cli, const UTF8Char *msg, UOSInt msgLen);
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
