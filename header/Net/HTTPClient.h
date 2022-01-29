@@ -30,6 +30,7 @@ namespace Net
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;
 		Data::ArrayList<Text::String*> *headers;
+		UOSInt hdrLen;
 
 		Bool kaConn;
 		Text::String *url;
@@ -67,6 +68,7 @@ namespace Net
 		Net::WebStatus::StatusCode GetRespStatus();
 		const Net::SocketUtil::AddressInfo *GetSvrAddr();
 		Double GetTotalTime();
+		UOSInt GetHdrLen();
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);

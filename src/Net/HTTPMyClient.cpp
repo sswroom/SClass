@@ -543,6 +543,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	UTF8Char *cptr;
 	UInt16 port;
 	Bool secure = false;
+	this->hdrLen = 0;
 
 	SDEL_STRING(this->url);
 	this->url = Text::String::New(url.v, url.leng);
@@ -1108,12 +1109,14 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				if (i == 0)
 				{
 					ptr = &ptr[1];
+					this->hdrLen += (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
 					this->buffSize -= (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
 					MemCopyO(this->dataBuff, ptr, this->buffSize);
 
 					header = false;
 					break;
 				}
+				this->hdrLen += (UOSInt)(ptr - (UTF8Char*)this->dataBuff);
 				this->buffSize = (UOSInt)(ptrEnd - ptr);
 				MemCopyO(this->dataBuff, ptr, this->buffSize);
 				i = cli->Read(&this->dataBuff[this->buffSize], BUFFSIZE - 1 - this->buffSize);

@@ -648,13 +648,28 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		SDEL_CLASS(this->cstm);
 		if (this->sseHdlr == 0)
 		{
-			Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
-			if (this->allowKA && connHdr && connHdr->Equals(UTF8STRC("keep-alive")))
+			if (!this->allowKA)
 			{
+				this->cli->ShutdownSend();
+			}
+			else if (this->currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
+			{
+				Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
+				if (connHdr && connHdr->EqualsICase(UTF8STRC("keep-alive")))
+				{
+				}
+				else
+				{
+					this->cli->ShutdownSend();
+				}
 			}
 			else
 			{
-				this->cli->ShutdownSend();
+				Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
+				if (connHdr && connHdr->EqualsICase(UTF8STRC("close")))
+				{
+					this->cli->ShutdownSend();
+				}
 			}
 			DEL_CLASS(this->currReq);
 			this->currReq = 0;

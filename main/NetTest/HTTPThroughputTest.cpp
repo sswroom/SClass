@@ -10,7 +10,7 @@
 #define URL "http://127.0.0.1:8080"
 #define THREADCNT 16
 #define CONNCNT 100000
-#define KACONN false
+#define KACONN true
 #define METHOD Net::WebUtil::RequestMethod::HTTP_GET
 #define POSTSIZE 1048576
 
@@ -38,6 +38,7 @@ struct ThreadStatus
 	Double totalRespTime;
 	Double maxRespTime;
 	UInt64 recvSize;
+	UInt64 hdrSize;
 };
 
 UInt32 __stdcall ProcessThread(void *userObj)
@@ -111,6 +112,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 						status->recvSize += recvSize;
 					}
 					respT = respClk->GetTimeDiff();
+					status->hdrSize += cli->GetHdrLen();
 					status->totalRespTime += respT;
 					if (respT > status->maxRespTime)
 					{
@@ -156,6 +158,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 						status->recvSize += recvSize;
 					}
 					respT = respClk->GetTimeDiff();
+					status->hdrSize += cli->GetHdrLen();
 					status->connCnt++;
 					status->totalRespTime += respT;
 					if (respT > status->maxRespTime)
@@ -195,6 +198,57 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	reqMeth = METHOD;
 	postSize = POSTSIZE;
 
+	UOSInt i;
+	UOSInt cmdCnt;
+	UTF8Char **args = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
+	Bool showHelp = false;
+
+	i = 1;
+	while (i < cmdCnt)
+	{
+		UOSInt cmdLen = Text::StrCharCnt(args[i]);
+		if (args[i][0] == '-')
+		{
+			switch (args[i][1])
+			{
+			case 'h':
+				showHelp = true;
+				break;
+			case 'c':
+			case 't':
+				threadCnt = Text::StrToUOSInt(&args[i][2]);
+				break;
+			case 'r':
+				paramConnCnt = Text::StrToUOSInt(&args[i][2]);
+				break;
+			case 'k':
+				kaConn = (args[i][2] != 'c');
+				break;
+			default:
+				showHelp = true;
+				break;
+			}
+		}
+		else if (Text::StrStartsWithC(args[i], cmdLen, UTF8STRC("http://")) || Text::StrStartsWithC(args[i], cmdLen, UTF8STRC("https://")))
+		{
+			paramUrl.v = args[i];
+			paramUrl.leng = cmdLen;
+		}
+		i++;
+	}
+	if (showHelp)
+	{
+		printf("Usage: HTTPThroughputTest <Options> <url>\r\n");
+		printf("  Options:\r\n");
+		printf("    -h     This help\r\n");
+		printf("    -tN    Number of concurrent connection/thread\r\n");
+		printf("    -cN    Number of concurrent connection/thread\r\n");
+		printf("    -rN    Number of request to test\r\n");
+		printf("    -kc    Connection Type = close\r\n");
+		printf("    -k     Connection Type = keep-alive\r\n");
+		return 0;
+	}
+
 	threadCurrCnt = 0;
 	connLeft = (Int32)paramConnCnt;
 	t = 0;
@@ -203,7 +257,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
 	clk->Start();
-	UOSInt i = threadCnt;
+	i = threadCnt;
 	while (i-- > 0)
 	{
 		threadStatus[i].threadRunning = false;
@@ -213,6 +267,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		threadStatus[i].totalRespTime = 0;
 		threadStatus[i].maxRespTime = 0;
 		threadStatus[i].recvSize = 0;
+		threadStatus[i].hdrSize = 0;
 		NEW_CLASS(threadStatus[i].evt, Sync::Event(true, (const UTF8Char*)"threadStatus.evt"));
 		Sync::Thread::Create(ProcessThread, &threadStatus[i]);
 	}
@@ -223,6 +278,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt64 connCnt = 0;
 	UInt64 failCnt = 0;
 	UInt64 recvSize = 0;
+	UInt64 hdrSize = 0;
 	Double totalRespTime = 0;
 	Double maxRespTime = 0;
 	i = threadCnt;
@@ -232,6 +288,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		connCnt += threadStatus[i].connCnt;
 		failCnt += threadStatus[i].failCnt;
 		recvSize += threadStatus[i].recvSize;
+		hdrSize += threadStatus[i].hdrSize;
 		totalRespTime += threadStatus[i].totalRespTime;
 		if (threadStatus[i].maxRespTime > maxRespTime)
 		{
@@ -254,10 +311,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	printf("SuccCnt = %lld\r\n", connCnt);
 	printf("FailCnt = %lld\r\n", failCnt);
 	printf("Time used = %lf\r\n", t);
-	printf("Total Recv Size = %lld\r\n", recvSize);
+	printf("Total header Size = %lld\r\n", hdrSize);
+	printf("Total data Size = %lld\r\n", recvSize);
 	printf("Avg Resp Time = %lf s\r\n", totalRespTime / (Double)connCnt);
 	printf("Max Resp Time = %lf s\r\n", maxRespTime);
-	printf("Speed = %lf req/s\r\n", ((Double)connCnt / t));
+	printf("Request/s = %lf\r\n", ((Double)connCnt / t));
+	printf("Transfer/s = %lf\r\n", ((Double)(recvSize + hdrSize) / t));
 	
 	SDEL_CLASS(ssl);
 	DEL_CLASS(sockf);

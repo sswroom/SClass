@@ -24,6 +24,7 @@ Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream
 	this->url = 0;
 	this->hasForm = false;
 	this->formSb = 0;
+	this->hdrLen = 0;
 	this->kaConn = kaConn;
 	this->svrAddr.addrType = Net::AddrType::Unknown;
 	NEW_CLASS(this->headers, Data::ArrayList<Text::String*>());
@@ -207,6 +208,11 @@ Net::WebStatus::StatusCode Net::HTTPClient::GetRespStatus()
 Double Net::HTTPClient::GetTotalTime()
 {
 	return this->clk->GetTimeDiff();
+}
+
+UOSInt Net::HTTPClient::GetHdrLen()
+{
+	return this->hdrLen;
 }
 
 const Net::SocketUtil::AddressInfo *Net::HTTPClient::GetSvrAddr()
