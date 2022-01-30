@@ -25,6 +25,7 @@ test:
 @TestMD5
 @TestPBKDF2
 @TestRC4
+@TestSHA1
 @TestSHA3_224
 @TestSHA3_256
 @TestSHA3_384
@@ -635,6 +636,9 @@ TestPBKDF2:
 TestRC4:
 @TestRC4.o
 @ConsoleStartup.o
+TestSHA1:
+@TestSHA1.o
+@ConsoleStartup.o
 TestSHA3_224:
 @TestSHA3_224.o
 @ConsoleStartup.o
@@ -947,6 +951,7 @@ TestJWT.o: ../../main/Test/Crypto/TestJWT.cpp
 TestMD5.o: ../../main/Test/Crypto/TestMD5.cpp
 TestPBKDF2.o: ../../main/Test/Crypto/TestPBKDF2.cpp
 TestRC4.o: ../../main/Test/Crypto/TestRC4.cpp
+TestSHA1.o: ../../main/Test/Crypto/TestSHA1.cpp
 TestSHA3_224.o: ../../main/Test/Crypto/TestSHA3_224.cpp
 TestSHA3_256.o: ../../main/Test/Crypto/TestSHA3_256.cpp
 TestSHA3_384.o: ../../main/Test/Crypto/TestSHA3_384.cpp

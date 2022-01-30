@@ -31,9 +31,8 @@ global _SHA1_CalcBlock
 	
 	mov eax, %1
 	rol eax, 5
-	add edx, eax
 	add edx, dword [rsp + %6 * 4]
-	add edx, 0x5A827999
+	lea edx, [edx + eax + 0x5A827999]
 	add %5, edx
 	ror %2, 2
 %endmacro
@@ -51,8 +50,7 @@ global _SHA1_CalcBlock
 	rol eax, 5
 	add edx,eax
 	W_T %6
-	add edx, 0x5A827999
-	add %5, edx
+	lea %5, [%5 + edx + 0x5A827999]
 	ror %2, 2
 %endmacro
 
@@ -64,9 +62,8 @@ global _SHA1_CalcBlock
 	
 	mov eax, %1
 	rol eax, 5
-	add edx, eax
 	add edx, dword [rsp + %6 * 4]
-	add edx, 0x6ED9EBA1
+	lea edx, [edx + eax + 0x6ED9EBA1]
 	add %5, edx
 	ror %2, 2
 %endmacro
@@ -81,8 +78,7 @@ global _SHA1_CalcBlock
 	rol eax, 5
 	add edx, eax
 	W_T %6
-	add edx, 0x6ED9EBA1
-	add %5, edx
+	lea %5, [%5 + edx + 0x6ED9EBA1]
 	ror %2, 2
 %endmacro
 
@@ -99,9 +95,8 @@ global _SHA1_CalcBlock
 	
 	mov eax, %1
 	rol eax, 5
-	add edx, eax
 	add edx, dword [rsp + %6 * 4]
-	add edx, 0x8F1BBCDC
+	lea edx, [edx + eax + 0x8F1BBCDC]
 	add %5 ,edx
 	ror %2, 2
 %endmacro
@@ -121,8 +116,7 @@ global _SHA1_CalcBlock
 	rol eax, 5
 	add edx,eax
 	W_T %6
-	add edx, 0x8F1BBCDC
-	add %5, edx
+	lea %5, [%5 + edx + 0x8F1BBCDC]
 	ror %2, 2
 %endmacro
 
@@ -134,9 +128,8 @@ global _SHA1_CalcBlock
 	
 	mov eax, %1
 	rol eax, 5
-	add edx, eax
 	add edx, dword [rsp + %6 * 4]
-	add edx, 0xCA62C1D6
+	lea edx, [edx + eax + 0xCA62C1D6]
 	add %5, edx
 	ror %2, 2
 %endmacro
@@ -151,8 +144,7 @@ global _SHA1_CalcBlock
 	rol eax, 5
 	add edx, eax
 	W_T %6
-	add edx, 0xCA62C1D6
-	add %5, edx
+	lea %5, [%5 + edx + 0xCA62C1D6]
 	ror %2, 2
 %endmacro
 
@@ -168,59 +160,57 @@ SHA1_CalcBlock:
 _SHA1_CalcBlock:
 	push rbp
 	push rbx
-	mov r8,rdi
-	mov r9,rsi
+	mov r8,rdi ;Intermediate_Hash
+	mov r9,rsi ;Message_Block
 	sub rsp,64
-	mov rdi,rsp ;W
-	mov rsi,r9 ;Message_Block
 	mov eax,dword [rsi]
 	bswap eax
-	mov dword [rdi],eax
+	mov dword [rsp],eax
 	mov eax,dword [rsi+4]
 	bswap eax
-	mov dword [rdi+4],eax
+	mov dword [rsp+4],eax
 	mov eax,dword [rsi+8]
 	bswap eax
-	mov dword [rdi+8],eax
+	mov dword [rsp+8],eax
 	mov eax,dword [rsi+12]
 	bswap eax
-	mov dword [rdi+12],eax
+	mov dword [rsp+12],eax
 	mov eax,dword [rsi+16]
 	bswap eax
-	mov dword [rdi+16],eax
+	mov dword [rsp+16],eax
 	mov eax,dword [rsi+20]
 	bswap eax
-	mov dword [rdi+20],eax
+	mov dword [rsp+20],eax
 	mov eax,dword [rsi+24]
 	bswap eax
-	mov dword [rdi+24],eax
+	mov dword [rsp+24],eax
 	mov eax,dword [rsi+28]
 	bswap eax
-	mov dword [rdi+28],eax
+	mov dword [rsp+28],eax
 	mov eax,dword [rsi+32]
 	bswap eax
-	mov dword [rdi+32],eax
+	mov dword [rsp+32],eax
 	mov eax,dword [rsi+36]
 	bswap eax
-	mov dword [rdi+36],eax
+	mov dword [rsp+36],eax
 	mov eax,dword [rsi+40]
 	bswap eax
-	mov dword [rdi+40],eax
+	mov dword [rsp+40],eax
 	mov eax,dword [rsi+44]
 	bswap eax
-	mov dword [rdi+44],eax
+	mov dword [rsp+44],eax
 	mov eax,dword [rsi+48]
 	bswap eax
-	mov dword [rdi+48],eax
+	mov dword [rsp+48],eax
 	mov eax,dword [rsi+52]
 	bswap eax
-	mov dword [rdi+52],eax
+	mov dword [rsp+52],eax
 	mov eax,dword [rsi+56]
 	bswap eax
-	mov dword [rdi+56],eax
+	mov dword [rsp+56],eax
 	mov eax,dword [rsi+60]
 	bswap eax
-	mov dword [rdi+60],eax
+	mov dword [rsp+60],eax
 
 	mov ebx,dword [r8] ;hashVal
 	mov ecx,dword [r8 + 4]
