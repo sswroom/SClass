@@ -839,14 +839,14 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 		}
 		else
 		{
-			i = Text::StrSplitWSP(sarr, 2, sb.ToString(), sb.GetLength());
+			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
 				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
 				{
 					while (true)
 					{
-						i = Text::StrSplitWSP(sarr, 2, sarr[1].v, sarr[1].leng);
+						i = Text::StrSplitWSP(sarr, 2, sarr[1]);
 						dnsHdlr->AddHost(&addr, sarr[0].v);
 						if (i != 2)
 							break;

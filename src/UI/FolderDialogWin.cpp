@@ -63,18 +63,18 @@ UI::FolderDialog::FolderDialog(const WChar *compName, const WChar *appName, cons
 UI::FolderDialog::~FolderDialog()
 {
 //	IO::Registry::CloseRegistry(this->reg);
-	SDEL_TEXT(this->dirName);
+	SDEL_STRING(this->dirName);
 	SDEL_TEXT(this->message);
 	CoUninitialize();
 }
 
 void UI::FolderDialog::SetFolder(const UTF8Char *dirName)
 {
-	SDEL_TEXT(this->dirName);
-	this->dirName = Text::StrCopyNew(dirName);
+	SDEL_STRING(this->dirName);
+	this->dirName = Text::String::NewNotNull(dirName);
 }
 
-const UTF8Char *UI::FolderDialog::GetFolder()
+Text::String *UI::FolderDialog::GetFolder()
 {
 	return this->dirName;
 }
@@ -93,7 +93,7 @@ Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
 	info.pidlRoot = 0;
 	if (this->dirName)
 	{
-		Text::StrUTF8_WChar(sbuff, this->dirName, 0);
+		Text::StrUTF8_WChar(sbuff, this->dirName->v, 0);
 	}
 	else
 	{
@@ -132,10 +132,10 @@ Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
 		CoTaskMemFree(idList);
 		if (this->dirName)
 		{
-			Text::StrDelNew(this->dirName);
+			this->dirName->Release();
 			this->dirName = 0;
 		}
-		this->dirName = Text::StrToUTF8New(sbuff);
+		this->dirName = Text::String::NewNotNull(sbuff);
 		return true;
 	}
 }

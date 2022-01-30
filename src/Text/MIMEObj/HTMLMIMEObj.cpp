@@ -9,10 +9,11 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 {
 	Text::StringBuilderUTF8 sbc;
 	UTF8Char u8buff[64];
+	UTF8Char* sptr;
 	u8buff[0] = 0;
 	sbc.AppendC(UTF8STRC("text/html; charset="));
-	Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
-	sbc.Append(u8buff);
+	sptr = Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
+	sbc.AppendC(u8buff, (UOSInt)(sptr - u8buff));
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
@@ -54,15 +55,16 @@ Text::IMIMEObj *Text::MIMEObj::HTMLMIMEObj::Clone()
 	return txt;
 }
 
-void Text::MIMEObj::HTMLMIMEObj::GetText(Text::StringBuilderUTF *sb)
+void Text::MIMEObj::HTMLMIMEObj::GetText(Text::StringBuilderUTF8 *sb)
 {
 	Text::Encoding enc(this->codePage);
 	OSInt strLen;
 	UTF8Char *sbuff;
+	UTF8Char* sptr;
 	strLen = enc.CountUTF8Chars(this->textBuff, this->buffSize);
 	sbuff = MemAlloc(UTF8Char, strLen + 1);
-	enc.UTF8FromBytes(sbuff, this->textBuff, this->buffSize, 0);
-	sb->Append(sbuff);
+	sptr = enc.UTF8FromBytes(sbuff, this->textBuff, this->buffSize, 0);
+	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	MemFree(sbuff);
 }
 

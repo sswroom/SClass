@@ -65,7 +65,7 @@ UI::FileDialog::~FileDialog()
 	}
 	if (this->fileName)
 	{
-		Text::StrDelNew(this->fileName);
+		this->fileName->Release();
 		this->fileName = 0;
 	}
 	i = this->patterns->GetCount();
@@ -95,10 +95,10 @@ void UI::FileDialog::SetFileName(const UTF8Char *fileName)
 {
 	if (this->fileName)
 	{
-		Text::StrDelNew(this->fileName);
+		this->fileName->Release();
 		this->fileName = 0;
 	}
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 }
 
 Text::String *UI::FileDialog::GetFileName()
@@ -119,7 +119,7 @@ UOSInt UI::FileDialog::GetFileNameCount()
 const UTF8Char *UI::FileDialog::GetFileNames(UOSInt index)
 {
 	if (index == 0 && this->fileNames->GetCount() == 0)
-		return this->fileName;
+		return STR_PTR(this->fileName);
 	return this->fileNames->GetItem(index);
 }
 
@@ -194,7 +194,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	}
 	if (this->fileName)
 	{
-		Text::StrUTF8_WChar(fname2, this->fileName, 0);
+		Text::StrUTF8_WChar(fname2, this->fileName->v, 0);
 		Text::StrReplace(fname2, '/', '_');
 		Text::StrReplace(&fname2[2], ':', '_');
 		Text::StrConcat(fnameBuff, fname2);
@@ -344,7 +344,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		this->ClearFileNames();
 		if (this->fileName)
 		{
-			Text::StrDelNew(this->fileName);
+			this->fileName->Release();
 			this->fileName = 0;
 		}
 		this->filterIndex = ofn.nFilterIndex - 1;
@@ -355,7 +355,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			{
 				Text::StrUTF8_WChar(&fnameBuff[Text::StrCharCnt(fnameBuff)], &pattern->v[1], 0);
 			}
-			this->fileName = Text::StrToUTF8New(fnameBuff);
+			this->fileName = Text::String::NewNotNull(fnameBuff);
 		}
 		else if (!isSave && this->allowMulti)
 		{
@@ -378,22 +378,22 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				if (i == 1)
 				{
-					this->fileName = Text::StrCopyNew(this->fileNames->GetItem(0));
+					this->fileName = Text::String::NewNotNull(this->fileNames->GetItem(0));
 				}
 				else
 				{
-					this->fileName = Text::StrToUTF8New(fnameBuff);
+					this->fileName = Text::String::NewNotNull(fnameBuff);
 					toSave = false;
 				}
 			}
 			else
 			{
-				this->fileName = Text::StrToUTF8New(fnameBuff);
+				this->fileName = Text::String::NewNotNull(fnameBuff);
 			}
 		}
 		else
 		{
-			this->fileName = Text::StrToUTF8New(fnameBuff);
+			this->fileName = Text::String::NewNotNull(fnameBuff);
 		}
 
 		if (toSave)

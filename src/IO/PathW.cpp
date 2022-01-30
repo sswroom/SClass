@@ -365,6 +365,7 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
+	UTF8Char *sptr;
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
 	Text::PString pathArr[5];
@@ -427,7 +428,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		}
 	}
 	Text::StrConcatC(pathTmp, toAppend, toAppendLen);
-	pathCnt = Text::StrSplitP(pathArr, 5, pathTmp, toAppendLen, '\\');
+	pathCnt = Text::StrSplitP(pathArr, 5, {pathTmp, toAppendLen}, '\\');
 	while (true)
 	{
 		if (pathCnt == 5)
@@ -483,7 +484,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].leng, '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4], '\\');
 		}
 		else
 		{
@@ -713,7 +714,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	}
 
 	Text::StrConcatC(pathTmp, toAppend, toAppendLen);
-	pathCnt = Text::StrSplitP(pathArr, 5, pathTmp, toAppendLen, '\\');
+	pathCnt = Text::StrSplitP(pathArr, 5, {pathTmp, toAppendLen}, '\\');
 	while (true)
 	{
 		if (pathCnt == 5)
@@ -771,7 +772,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 
 		if (pathCnt == 5)
 		{
-			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4].v, pathArr[4].leng, '\\');
+			pathCnt = Text::StrSplitP(pathArr, 5, pathArr[4], '\\');
 		}
 		else
 		{

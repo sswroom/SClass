@@ -1,4 +1,12 @@
 #include "Stdafx.h"
+#if _MSC_VER >= 1929
+#include <winrt/Windows.Foundation.h>
+#endif
+#include <winrt/Windows.Devices.Bluetooth.Advertisement.h>
+#include <sdkddkver.h>
+#include <windows.h>
+#include <bluetoothapis.h>
+
 #include "IO/DebugWriter.h"
 #include "IO/OS.h"
 #include "Sync/Thread.h"
@@ -6,12 +14,6 @@
 #include "Win32/WindowsBTScanner.h"
 #include "Win32/WinRTCore.h"
 #include "Data/ByteTool.h"
-#if _MSC_VER >= 1929
-#include <winrt/Windows.Foundation.h>
-#endif
-#include <sdkddkver.h>
-#include <windows.h>
-#include <bluetoothapis.h>
 
 using namespace winrt;
 using namespace Windows::Foundation;

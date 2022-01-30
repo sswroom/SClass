@@ -3,6 +3,7 @@
 #include "IO/FileVersion.h"
 #include "IO/Path.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 
 typedef struct

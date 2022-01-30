@@ -707,11 +707,11 @@ UI::GUIClientControl *UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
-	const UTF8Char *objCls;
+	Text::CString objCls;
 	while (ctrl)
 	{
 		objCls = ctrl->GetObjectClass();
-		if (Text::StrEquals(objCls, (const UTF8Char*)"WinForm"))
+		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
 			if (ctrl->GetParent() == 0)
 				return (UI::GUIForm*)ctrl;

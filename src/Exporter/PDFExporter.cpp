@@ -152,53 +152,53 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (vdoc->GetDocName())
 	{
 		sb.AppendC(UTF8STRC("/Title ("));
-		sb.Append(vdoc->GetDocName());
+		sb.AppendSlow(vdoc->GetDocName());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetAuthor())
 	{
 		sb.AppendC(UTF8STRC("/Author ("));
-		sb.Append(vdoc->GetAuthor());
+		sb.AppendSlow(vdoc->GetAuthor());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetSubject())
 	{
 		sb.AppendC(UTF8STRC("/Subject ("));
-		sb.Append(vdoc->GetSubject());
+		sb.AppendSlow(vdoc->GetSubject());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetKeywords())
 	{
 		sb.AppendC(UTF8STRC("/Keywords ("));
-		sb.Append(vdoc->GetKeywords());
+		sb.AppendSlow(vdoc->GetKeywords());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetCreator())
 	{
 		sb.AppendC(UTF8STRC("/Creator ("));
-		sb.Append(vdoc->GetCreator());
+		sb.AppendSlow(vdoc->GetCreator());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetProducer())
 	{
 		sb.AppendC(UTF8STRC("/Producer ("));
-		sb.Append(vdoc->GetProducer());
+		sb.AppendSlow(vdoc->GetProducer());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetCreateTime())
 	{
 		sb.AppendC(UTF8STRC("/CreationDate (D:"));
 		dt.SetTicks(vdoc->GetCreateTime());
-		dt.ToString(sbuff, "yyyyMMddHHmmss");
-		sb.Append(sbuff);
+		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));
 	}
 	if (vdoc->GetModifyTime())
 	{
 		sb.AppendC(UTF8STRC("/ModDate (D:"));
 		dt.SetTicks(vdoc->GetModifyTime());
-		dt.ToString(sbuff, "yyyyMMddHHmmss");
-		sb.Append(sbuff);
+		sptr = dt.ToString(sbuff, "yyyyMMddHHmmss");
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC("Z)\r"));
 	}
 	sb.AppendC(UTF8STRC(">>\r"));
@@ -224,7 +224,7 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		else
 		{
 			sb.AppendChar('0', 10 - (sptr - sbuff));
-			sb.Append(sbuff);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" 00000 n \r"));
 		}
 		i++;

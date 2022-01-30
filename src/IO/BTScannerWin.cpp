@@ -1,4 +1,7 @@
 #include "Stdafx.h"
+#include <winrt/Windows.Devices.Bluetooth.Advertisement.h>
+#include <windows.h>
+
 #include "IO/BTScanner.h"
 #include "Win32/WindowsBTScanner.h"
 

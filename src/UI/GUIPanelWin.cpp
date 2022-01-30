@@ -152,7 +152,7 @@ OSInt __stdcall UI::GUIPanel::PnlWndProc(void *hWnd, UInt32 msg, UOSInt wParam, 
 			else
 			{
 				void *b = ctrl->GetBGBrush();
-				if (Text::StrEquals(ctrl->GetObjectClass(), (const UTF8Char*)"Label"))
+				if (ctrl->GetObjectClass().Equals(UTF8STRC("Label")))
 				{
 					UI::GUILabel *lbl = (UI::GUILabel*)ctrl;
 					if (lbl->HasTextColor())

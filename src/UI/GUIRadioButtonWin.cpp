@@ -81,7 +81,7 @@ void UI::GUIRadioButton::Select()
 		UI::GUIControl *ctrl = this->parent->GetChild(i);
 		if (ctrl != this)
 		{
-			if (Text::StrEquals(ctrl->GetObjectClass(), (const UTF8Char*)"RadioButton"))
+			if (ctrl->GetObjectClass().Equals(UTF8STRC("RadioButton")))
 			{
 				((UI::GUIRadioButton*)ctrl)->ChangeSelected(false);
 			}
