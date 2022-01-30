@@ -8,12 +8,12 @@
 #define IO_BASE_ADDR 0x10000000
 #define BLOCKSIZE 4096
 
-typedef struct
+struct IO::GPIOControl::ClassData
 {
 	IO::PhysicalMem *mem;
 	volatile UInt32 *gpioPtr;
 	volatile UInt32 *sysCtlPtr;
-} ClassData;
+};
 
 IO::GPIOControl::GPIOControl()
 {
@@ -26,14 +26,13 @@ IO::GPIOControl::GPIOControl()
 
 IO::GPIOControl::~GPIOControl()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	MemFree(clsData);
+	DEL_CLASS(this->clsData->mem);
+	MemFree(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
 {
-	return ((ClassData*)this->clsData)->mem->IsError();
+	return this->clsData->mem->IsError();
 }
 
 UOSInt IO::GPIOControl::GetPinCount()
@@ -45,19 +44,19 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 {
 	if (pinNum < 24)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[8] & (1 << pinNum)) != 0;
+		return (this->clsData->gpioPtr[8] & (1 << pinNum)) != 0;
 	}
 	else if (pinNum < 40)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[18] & (1 << (pinNum - 24))) != 0;
+		return (this->clsData->gpioPtr[18] & (1 << (pinNum - 24))) != 0;
 	}
 	else if (pinNum < 72)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[28] & (1 << (pinNum - 40))) != 0;
+		return (this->clsData->gpioPtr[28] & (1 << (pinNum - 40))) != 0;
 	}
 	else if (pinNum == 72)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[38] & 1) != 0;
+		return (this->clsData->gpioPtr[38] & 1) != 0;
 	}
 	else
 	{
@@ -70,19 +69,19 @@ Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 {
 	if (pinNum < 24)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[9] & (1 << pinNum)) != 0;
+		return (this->clsData->gpioPtr[9] & (1 << pinNum)) != 0;
 	}
 	else if (pinNum < 40)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[19] & (1 << (pinNum - 24))) != 0;
+		return (this->clsData->gpioPtr[19] & (1 << (pinNum - 24))) != 0;
 	}
 	else if (pinNum < 72)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[29] & (1 << (pinNum - 40))) != 0;
+		return (this->clsData->gpioPtr[29] & (1 << (pinNum - 40))) != 0;
 	}
 	else if (pinNum == 72)
 	{
-		return (((ClassData*)this->clsData)->gpioPtr[39] & 1) != 0;
+		return (this->clsData->gpioPtr[39] & 1) != 0;
 	}
 	else
 	{
@@ -107,7 +106,7 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 		break;
 	case 1: //I2C/SUTIF
 	case 2:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 0) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 0) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 3: //SPI
@@ -117,7 +116,7 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 37: //SPI
 	case 38:
 	case 39:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 11) & 3;
+		mode = (this->clsData->sysCtlPtr[18] >> 11) & 3;
 		isGPIO = (mode & 1) || pinNum == 38 || pinNum == 39 || (pinNum == 37 && mode == 3);
 		break;
 	case 7: //UARTF
@@ -128,28 +127,28 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 12:
 	case 13:
 	case 14:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 2) & 7;
+		mode = (this->clsData->sysCtlPtr[18] >> 2) & 7;
 		isGPIO = (mode == 7) || (pinNum >= 7 && pinNum <= 10 && mode == 4) || (pinNum >= 11 && pinNum <= 14 && mode >= 5);
 		break;
 	case 15: //UARTL
 	case 16:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 5) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 5) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 17: //WDT_RST
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 21) & 3;
+		mode = (this->clsData->sysCtlPtr[18] >> 21) & 3;
 		isGPIO = (mode == 2);
 		break;
 	case 18: //PA_PE
 	case 19:
 	case 20:
 	case 21:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 20) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 20) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 22: //MDIO
 	case 23:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 7) & 3;
+		mode = (this->clsData->sysCtlPtr[18] >> 7) & 3;
 		isGPIO = (mode == 2);
 		break;
 	case 24: //RGMII1
@@ -164,11 +163,11 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 33:
 	case 34:
 	case 35:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 9) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 9) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 36: //PERST_N
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 15) & 3;
+		mode = (this->clsData->sysCtlPtr[18] >> 15) & 3;
 		isGPIO = (mode == 2);
 		break;
 	case 40: //SW_PHY_LED/JTAG
@@ -176,7 +175,7 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 42:
 	case 43:
 	case 44:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 15) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 15) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 45: //NAND
@@ -194,7 +193,7 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 57:
 	case 58:
 	case 59:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 15) & 3;
+		mode = (this->clsData->sysCtlPtr[18] >> 15) & 3;
 		isGPIO = (mode == 2);
 		break;
 	case 60: //RGMII2
@@ -209,11 +208,11 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	case 69:
 	case 70:
 	case 71:
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 10) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 10) & 1;
 		isGPIO = (mode == 1);
 		break;
 	case 72: //WLED_N
-		mode = (((ClassData*)this->clsData)->sysCtlPtr[18] >> 13) & 1;
+		mode = (this->clsData->sysCtlPtr[18] >> 13) & 1;
 		isGPIO = (mode == 1);
 		break;
 	}
@@ -233,19 +232,19 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	{
 		if (pinNum < 24)
 		{
-			((ClassData*)this->clsData)->gpioPtr[9] |= (1 << pinNum);
+			this->clsData->gpioPtr[9] |= (1 << pinNum);
 		}
 		else if (pinNum < 40)
 		{
-			((ClassData*)this->clsData)->gpioPtr[19] |= (1 << (pinNum - 24));
+			this->clsData->gpioPtr[19] |= (1 << (pinNum - 24));
 		}
 		else if (pinNum < 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[29] |= (1 << (pinNum - 40));
+			this->clsData->gpioPtr[29] |= (1 << (pinNum - 40));
 		}
 		else if (pinNum == 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[39] |= 1;
+			this->clsData->gpioPtr[39] |= 1;
 		}
 		else
 		{
@@ -256,19 +255,19 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	{
 		if (pinNum < 24)
 		{
-			((ClassData*)this->clsData)->gpioPtr[9] &= ~(1 << pinNum);
+			this->clsData->gpioPtr[9] &= ~(1 << pinNum);
 		}
 		else if (pinNum < 40)
 		{
-			((ClassData*)this->clsData)->gpioPtr[19] &= ~(1 << (pinNum - 24));
+			this->clsData->gpioPtr[19] &= ~(1 << (pinNum - 24));
 		}
 		else if (pinNum < 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[29] &= ~(1 << (pinNum - 40));
+			this->clsData->gpioPtr[29] &= ~(1 << (pinNum - 40));
 		}
 		else if (pinNum == 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[39] &= ~1;
+			this->clsData->gpioPtr[39] &= ~1;
 		}
 		else
 		{
@@ -284,19 +283,19 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	{
 		if (pinNum < 24)
 		{
-			((ClassData*)this->clsData)->gpioPtr[11] |= (1 << pinNum);
+			this->clsData->gpioPtr[11] |= (1 << pinNum);
 		}
 		else if (pinNum < 40)
 		{
-			((ClassData*)this->clsData)->gpioPtr[21] |= (1 << (pinNum - 24));
+			this->clsData->gpioPtr[21] |= (1 << (pinNum - 24));
 		}
 		else if (pinNum < 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[31] |= (1 << (pinNum - 40));
+			this->clsData->gpioPtr[31] |= (1 << (pinNum - 40));
 		}
 		else if (pinNum == 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[41] |= 1;
+			this->clsData->gpioPtr[41] |= 1;
 		}
 		else
 		{
@@ -307,19 +306,19 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	{
 		if (pinNum < 24)
 		{
-			((ClassData*)this->clsData)->gpioPtr[12] |= (1 << pinNum);
+			this->clsData->gpioPtr[12] |= (1 << pinNum);
 		}
 		else if (pinNum < 40)
 		{
-			((ClassData*)this->clsData)->gpioPtr[22] |= (1 << (pinNum - 24));
+			this->clsData->gpioPtr[22] |= (1 << (pinNum - 24));
 		}
 		else if (pinNum < 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[32] |= (1 << (pinNum - 40));
+			this->clsData->gpioPtr[32] |= (1 << (pinNum - 40));
 		}
 		else if (pinNum == 72)
 		{
-			((ClassData*)this->clsData)->gpioPtr[42] |= 1;
+			this->clsData->gpioPtr[42] |= 1;
 		}
 		else
 		{

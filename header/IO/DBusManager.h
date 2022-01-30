@@ -153,7 +153,8 @@ namespace IO
 
 
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 		static const struct MethodTable managerMethods[];
 		static const struct SignalTable managerSignals[];
 		static const struct MethodTable introspectMethods[];

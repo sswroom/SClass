@@ -8,7 +8,8 @@ namespace Manage
 	class ProcessExecution : public Process, public IO::Stream
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 
 		UOSInt NewProcess(const UTF8Char *cmdLine);
 	public:

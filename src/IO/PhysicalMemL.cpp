@@ -15,12 +15,12 @@ typedef struct
 	Int32 useCnt;
 } PhysicalMemInfo;
 
-typedef struct
+struct IO::PhysicalMem::ClassData
 {
 	void *map;
 	void *ptr;
 	OSInt size;
-} ClassData;
+};
 
 static PhysicalMemInfo *PhysicalMem_status = 0;
 
@@ -66,9 +66,8 @@ IO::PhysicalMem::~PhysicalMem()
 {
 	if (this->clsData)
 	{
-		ClassData *clsData = (ClassData*)this->clsData;
-		munmap(clsData->map, clsData->size);
-		MemFree(clsData);
+		munmap(this->clsData->map, this->clsData->size);
+		MemFree(this->clsData);
 		this->clsData = 0;
 	}
 	if (Sync::Interlocked::Decrement(&PhysicalMem_status->useCnt) == 0)
@@ -81,12 +80,12 @@ IO::PhysicalMem::~PhysicalMem()
 
 UInt8 *IO::PhysicalMem::GetPointer()
 {
-	if (clsData == 0)
+	if (this->clsData == 0)
 		return 0;
-	return (UInt8*)((ClassData*)this->clsData)->ptr;
+	return (UInt8*)this->clsData->ptr;
 }
 
 Bool IO::PhysicalMem::IsError()
 {
-	return clsData == 0;
+	return this->clsData == 0;
 }

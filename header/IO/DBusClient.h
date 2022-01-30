@@ -13,7 +13,8 @@ namespace IO
 		typedef void (* ProxyFunction) (ProxyData *proxy, void *user_data);
 		typedef void (* PropertyFunction) (ProxyData *proxy, const Char *name, void *iter, void *user_data);
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 
 		static void OnServiceConnect(IO::DBusManager *dbusManager, void *userData);
 		static void OnServiceDisconnect(IO::DBusManager *dbusManager, void *userData);

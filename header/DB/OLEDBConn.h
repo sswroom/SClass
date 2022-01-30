@@ -27,7 +27,8 @@ namespace DB
 
 		static ProviderInfo providerInfo[];
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 		ConnError connErr;
 
 	protected:
@@ -67,7 +68,9 @@ namespace DB
 	class OLEDBReader : public DB::DBReader
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+
+		ClassData *clsData;
 
 	public:
 		OLEDBReader(void *pIRowset, OSInt rowChanged);

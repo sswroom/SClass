@@ -4,7 +4,7 @@
 
 IO::GPUManager::GPUManager()
 {
-	this->classObj = 0;
+	this->clsData = 0;
 }
 
 IO::GPUManager::~GPUManager()

@@ -7,9 +7,10 @@ namespace IO
 	class PCIInfo
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 	public:
-		PCIInfo(void *info);
+		PCIInfo(ClassData *info);
 		~PCIInfo();
 
 		UInt16 GetVendorId();

@@ -430,7 +430,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 
 void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->curl && !writing)
 	{
 /*		if (Text::StrEquals(name, (const UTF8Char*)"User-Agent"))

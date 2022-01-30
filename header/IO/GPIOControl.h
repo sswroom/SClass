@@ -10,7 +10,8 @@ namespace IO
 	public:
 		typedef void (__stdcall *InterruptHandler)(void *userObj);	
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 	public:
 		GPIOControl();
 		~GPIOControl();

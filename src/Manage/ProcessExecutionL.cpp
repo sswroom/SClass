@@ -4,11 +4,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-typedef struct
+struct Manage::ProcessExecution::ClassData
 {
 	int out[2];
 	int in[2];
-} ClassData;
+};
 
 UOSInt Manage::ProcessExecution::NewProcess(const UTF8Char *cmdLine)
 {
@@ -95,17 +95,15 @@ Manage::ProcessExecution::ProcessExecution(const UTF8Char *cmdLine) : Process(Ne
 
 Manage::ProcessExecution::~ProcessExecution()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	this->Close();
-	MemFree(clsData);
+	MemFree(this->clsData);
 }
 
 UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	if (clsData->in[0] == 0)
+	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = read(clsData->out[0], buff, size);
+	OSInt readSize = read(this->clsData->out[0], buff, size);
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;
@@ -118,10 +116,9 @@ UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)
 
 UOSInt Manage::ProcessExecution::Write(const UInt8 *buff, UOSInt size)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	if (clsData->in[0] == 0)
+	if (this->clsData->in[0] == 0)
 		return 0;
-	OSInt readSize = write(clsData->in[1], buff, size);
+	OSInt readSize = write(this->clsData->in[1], buff, size);
 	if (readSize >= 0)
 	{
 		return (UOSInt)readSize;
@@ -139,21 +136,20 @@ Int32 Manage::ProcessExecution::Flush()
 
 void Manage::ProcessExecution::Close()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (this->IsRunning())
 	{
 		this->Kill();
 	}
-	if (clsData->in[0] != 0)
+	if (this->clsData->in[0] != 0)
 	{
-		close(clsData->in[0]);
-		close(clsData->in[1]);
-		close(clsData->out[0]);
-		close(clsData->out[1]);
-		clsData->in[0] = 0;
-		clsData->in[1] = 0;
-		clsData->out[0] = 0;
-		clsData->out[1] = 0;
+		close(this->clsData->in[0]);
+		close(this->clsData->in[1]);
+		close(this->clsData->out[0]);
+		close(this->clsData->out[1]);
+		this->clsData->in[0] = 0;
+		this->clsData->in[1] = 0;
+		this->clsData->out[0] = 0;
+		this->clsData->out[1] = 0;
 	}
 }
 

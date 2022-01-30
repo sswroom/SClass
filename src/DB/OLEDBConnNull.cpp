@@ -7,11 +7,11 @@
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 
-typedef struct
+struct DB::OLEDBConn::ClassData
 {
 	IO::LogTool *log;
 	const WChar *connStr;
-} ClassData;
+};
 
 DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBConn")
 {
@@ -23,9 +23,8 @@ DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBC
 
 void DB::OLEDBConn::Init(const WChar *connStr)
 {
-	ClassData *data = (ClassData *)this->clsData;
-	SDEL_TEXT(data->connStr);
-	data->connStr = Text::StrCopyNew(connStr);
+	SDEL_TEXT(this->clsData->connStr);
+	this->clsData->connStr = Text::StrCopyNew(connStr);
 	this->connErr = CE_COCREATE;
 }
 
@@ -40,9 +39,8 @@ DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn((c
 
 DB::OLEDBConn::~OLEDBConn()
 {
-	ClassData *data = (ClassData *)this->clsData;
-	SDEL_TEXT(data->connStr);
-	MemFree(data);
+	SDEL_TEXT(this->clsData->connStr);
+	MemFree(this->clsData);
 }
 
 DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
@@ -66,11 +64,10 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
-	ClassData *data = (ClassData *)this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
-	if (data->connStr)
+	if (this->clsData->connStr)
 	{
-		Text::String *s = Text::String::NewNotNull(data->connStr);
+		Text::String *s = Text::String::NewNotNull(this->clsData->connStr);
 		sb->Append(s);
 		s->Release();
 	}
@@ -88,7 +85,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 
 /*OSInt DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastError = 3;
@@ -196,7 +193,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 
 /*DB::DBReader *DB::OLEDBConn::ExecuteReader(const WChar *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastError = 3;
@@ -300,6 +297,5 @@ DB::OLEDBConn::ConnError DB::OLEDBConn::GetConnError()
 
 const WChar *DB::OLEDBConn::GetConnStr()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	return data->connStr;
+	return this->clsData->connStr;
 }

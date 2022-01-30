@@ -12,13 +12,13 @@
 #define GPIOC_BASE 0x11A08000
 #define GPIOD_BASE 0x20932000
 
-typedef struct
+struct IO::GPIOControl::ClassData
 {
 	IO::PhysicalMem *mem;
 	IO::PhysicalMem *memC;
 	volatile UInt32 *gpioPtr;
 	volatile UInt32 *gpiocPtr;
-} ClassData;
+};
 
 IO::GPIOControl::GPIOControl()
 {
@@ -32,16 +32,14 @@ IO::GPIOControl::GPIOControl()
 
 IO::GPIOControl::~GPIOControl()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	DEL_CLASS(clsData->memC);
-	MemFree(clsData);
+	DEL_CLASS(this->clsData->mem);
+	DEL_CLASS(this->clsData->memC);
+	MemFree(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->mem->IsError() || clsData->memC->IsError();
+	return this->clsData->mem->IsError() || this->clsData->memC->IsError();
 }
 
 UOSInt IO::GPIOControl::GetPinCount()
@@ -51,24 +49,23 @@ UOSInt IO::GPIOControl::GetPinCount()
 
 Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	Int32 index = pinNum & 31;
 	OSInt ind = IsPinOutput(pinNum)?4:3;
 	if (pinNum < 32)
 	{
-		return (clsData->gpioPtr[0 + ind] & (1 << index)) != 0;
+		return (this->clsData->gpioPtr[0 + ind] & (1 << index)) != 0;
 	}
 	else if (pinNum < 64)
 	{
-		return (clsData->gpioPtr[1024 + ind] & (1 << index)) != 0;
+		return (this->clsData->gpioPtr[1024 + ind] & (1 << index)) != 0;
 	}
 	else if (pinNum < 96)
 	{
-		return (clsData->gpiocPtr[0 + ind] & (1 << index)) != 0;
+		return (this->clsData->gpiocPtr[0 + ind] & (1 << index)) != 0;
 	}
 	else if (pinNum < 128)
 	{
-		return (clsData->gpioPtr[2048 + ind] & (1 << index)) != 0;
+		return (this->clsData->gpioPtr[2048 + ind] & (1 << index)) != 0;
 	}
 	else
 	{
@@ -78,23 +75,22 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 
 Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	Int32 index = pinNum & 31;
 	if (pinNum < 32)
 	{
-		return (clsData->gpioPtr[0] & (1 << index)) == 0;
+		return (this->clsData->gpioPtr[0] & (1 << index)) == 0;
 	}
 	else if (pinNum < 64)
 	{
-		return (clsData->gpioPtr[1024] & (1 << index)) == 0;
+		return (this->clsData->gpioPtr[1024] & (1 << index)) == 0;
 	}
 	else if (pinNum < 96)
 	{
-		return (clsData->gpiocPtr[14] & (1 << index)) == 0;
+		return (this->clsData->gpiocPtr[14] & (1 << index)) == 0;
 	}
 	else if (pinNum < 128)
 	{
-		return (clsData->gpioPtr[2048] & (1 << index)) == 0;
+		return (this->clsData->gpioPtr[2048] & (1 << index)) == 0;
 	}
 	return false;
 }
@@ -106,24 +102,23 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 
 Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	Int32 index = pinNum & 31;
 	OSInt ind = isOutput?1:2;
 	if (pinNum < 32)
 	{
-		clsData->gpioPtr[0 + ind] = (1 << index);
+		this->clsData->gpioPtr[0 + ind] = (1 << index);
 	}
 	else if (pinNum < 64)
 	{
-		clsData->gpioPtr[1024 + ind] = (1 << index);
+		this->clsData->gpioPtr[1024 + ind] = (1 << index);
 	}
 	else if (pinNum < 96)
 	{
-		clsData->gpiocPtr[0 + ind] = (1 << index);
+		this->clsData->gpiocPtr[0 + ind] = (1 << index);
 	}
 	else if (pinNum < 128)
 	{
-		clsData->gpioPtr[2048 + ind] = (1 << index);
+		this->clsData->gpioPtr[2048 + ind] = (1 << index);
 	}
 	else
 	{
@@ -134,24 +129,23 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 
 Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 {
- 	ClassData *clsData = (ClassData*)this->clsData;
 	Int32 index = pinNum & 31;
 	OSInt ind = isHigh?4:6;
 	if (pinNum < 32)
 	{
-		clsData->gpioPtr[0 + ind] = (1 << index);
+		this->clsData->gpioPtr[0 + ind] = (1 << index);
 	}
 	else if (pinNum < 64)
 	{
-		clsData->gpioPtr[1024 + ind] = (1 << index);
+		this->clsData->gpioPtr[1024 + ind] = (1 << index);
 	}
 	else if (pinNum < 96)
 	{
-		clsData->gpiocPtr[0 + ind] = (1 << index);
+		this->clsData->gpiocPtr[0 + ind] = (1 << index);
 	}
 	else if (pinNum < 128)
 	{
-		clsData->gpioPtr[2048 + ind] = (1 << index);
+		this->clsData->gpioPtr[2048 + ind] = (1 << index);
 	}
 	else
 	{

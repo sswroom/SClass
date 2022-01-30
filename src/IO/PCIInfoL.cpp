@@ -4,16 +4,16 @@
 #include "IO/PCIInfo.h"
 #include "Text/MyString.h"
 
-typedef struct
+struct IO::PCIInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
 	const UTF8Char *dispName;
-} ClassData;
+};
 
-IO::PCIInfo::PCIInfo(void *info)
+IO::PCIInfo::PCIInfo(ClassData *info)
 {
-	ClassData *srcData = (ClassData*)info;
+	ClassData *srcData = info;
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
@@ -23,27 +23,23 @@ IO::PCIInfo::PCIInfo(void *info)
 
 IO::PCIInfo::~PCIInfo()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	Text::StrDelNew(clsData->dispName);
-	MemFree(clsData);
+	Text::StrDelNew(this->clsData->dispName);
+	MemFree(this->clsData);
 }
 
 UInt16 IO::PCIInfo::GetVendorId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->vendorId;
+	return this->clsData->vendorId;
 }
 
 UInt16 IO::PCIInfo::GetProductId()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->productId;
+	return this->clsData->productId;
 }
 
 const UTF8Char *IO::PCIInfo::GetDispName()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->dispName;
+	return this->clsData->dispName;
 }
 
 UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)

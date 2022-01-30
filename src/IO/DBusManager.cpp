@@ -135,7 +135,7 @@ struct IO::DBusManager::SecurityTable
 	SecurityFunction function;
 };
 
-typedef struct
+struct IO::DBusManager::ClassData
 {
 	Int32 refCount;
 	DBusConnection *conn;
@@ -147,7 +147,7 @@ typedef struct
 	UInt32 nextPending;
 	Data::ArrayList<IO::DBusManager::SecurityData*> *pendingSecurity;
 	const IO::DBusManager::SecurityTable *securityTable;
-} ClassData;
+};
 
 const IO::DBusManager::MethodTable IO::DBusManager::managerMethods[] = {
 	{ GDBUS_METHOD("GetManagedObjects", NULL,
@@ -490,7 +490,7 @@ void *IO::DBusManager::Message::GetHandle()
 
 void IO::DBusManager::SetupDbusWithMainLoop()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	dbus_connection_set_watch_functions(data->conn, DBusManager_OnAddWatch, DBusManager_OnRemoveWatch, DBusManager_OnWatchToggled, this, 0);
 	dbus_connection_set_timeout_functions(data->conn, DBusManager_OnAddTimeout, DBusManager_OnRemoveTimeout, DBusManager_OnTimeoutToggled, this, 0);
 	dbus_connection_set_dispatch_status_function(data->conn, DBusManager_OnDispatchStatus, this, 0);
@@ -498,7 +498,7 @@ void IO::DBusManager::SetupDbusWithMainLoop()
 
 Bool IO::DBusManager::SetupBus(const Char *name)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 
 	if (name)
 	{
@@ -560,7 +560,7 @@ IO::DBusManager::DBusManager(DBusType dbType, const Char *name)
 
 IO::DBusManager::~DBusManager()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->conn)
 	{
 		dbus_connection_unref(data->conn);
@@ -572,13 +572,13 @@ IO::DBusManager::~DBusManager()
 
 Bool IO::DBusManager::IsError()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return data->conn == 0;
 }
 
 IO::DBusManager *IO::DBusManager::Ref()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data)
 	{
 		Sync::Interlocked::Increment(&data->refCount);
@@ -588,7 +588,7 @@ IO::DBusManager *IO::DBusManager::Ref()
 
 void IO::DBusManager::Unref()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data)
 	{
 		if (Sync::Interlocked::Decrement(&data->refCount) <= 0)
@@ -600,13 +600,13 @@ void IO::DBusManager::Unref()
 
 void *IO::DBusManager::GetHandle()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return data->conn;
 }
 
 void IO::DBusManager::QueueDispatch(Int32 status)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 
 	if (status == DBUS_DISPATCH_DATA_REMAINS)
 		g_idle_add(DBusManager_MessageDispatch, dbus_connection_ref(data->conn));
@@ -779,7 +779,7 @@ void IO::DBusManager::GenerateInterfaceXml(Text::StringBuilderC *sb, InterfaceDa
 
 void IO::DBusManager::GenerateIntrospectionXml(GenericData *data, const Char *path)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	Text::String *s;
 	Text::StringBuilderC sb;
 	Char **children;
@@ -873,7 +873,7 @@ void IO::DBusManager::AppendObject(GenericData *child, void *itera)
 
 void IO::DBusManager::PendingSuccess(UInt32 pending)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	SecurityData *secdata;
 	UOSInt i = 0;
 	UOSInt j = clsData->pendingSecurity->GetCount();
@@ -916,7 +916,7 @@ Bool IO::DBusManager::SendError(void *message, const Char *name, const Char *err
 
 void IO::DBusManager::PendingError(UInt32 pending, const Char *name, const Char *errMsg)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	SecurityData *secdata;
 	UOSInt i = 0;
 	UOSInt j = clsData->pendingSecurity->GetCount();
@@ -937,7 +937,7 @@ void IO::DBusManager::PendingError(UInt32 pending, const Char *name, const Char 
 
 IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	GenericData *data;
 	if (dbus_connection_get_object_path_data(clsData->conn, path, (void **) &data) == TRUE)
 	{
@@ -973,7 +973,7 @@ IO::DBusManager::GenericData *IO::DBusManager::ObjectPathRef(const Char *path)
 
 Bool IO::DBusManager::AttachObjectManager()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	GenericData *data;
 
 	data = this->ObjectPathRef("/");
@@ -1087,7 +1087,7 @@ IO::DBusManager::HandlerResult IO::DBusManager::ProcessMessage(Message *message,
 
 IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *childPath)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	GenericData *data = NULL;
 	GenericData *child = NULL;
 	GenericData *parent = NULL;
@@ -1146,7 +1146,7 @@ IO::DBusManager::GenericData *IO::DBusManager::InvalidateParentData(const Char *
 
 void IO::DBusManager::AddPending(GenericData *data)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	UInt32 oldId = data->processId;
 
 	data->processId = g_idle_add((GSourceFunc)ProcessChanges, data);
@@ -1302,7 +1302,7 @@ void IO::DBusManager::BuiltinSecurityFunction(const Char *action, Bool interacti
 
 Bool IO::DBusManager::CheckPrivilege(Message *message, const MethodTable *method, void *ifaceUserData)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	const SecurityTable *security;
 
 	security = clsData->securityTable;
@@ -1342,7 +1342,7 @@ Bool IO::DBusManager::CheckPrivilege(Message *message, const MethodTable *method
 
 Bool IO::DBusManager::CheckSignal(const Char *path, const Char *interface, const Char *name, const ArgInfo **args)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	GenericData *data = NULL;
 	InterfaceData *iface;
 	const SignalTable *signal;
@@ -1387,7 +1387,7 @@ Bool IO::DBusManager::CheckSignal(const Char *path, const Char *interface, const
 
 Bool IO::DBusManager::CheckExperimental(Int32 flags, Int32 flag)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!(flags & flag))
 		return false;
 	
@@ -1477,7 +1477,7 @@ void IO::DBusManager::ProcessPropertyChanges(GenericData *data)
 
 void IO::DBusManager::ProcessPropertiesFromInterface(GenericData *data, InterfaceData *iface)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	DBusMessage *signal;
 	DBusMessageIter iter;
 	DBusMessageIter dict;
@@ -1537,7 +1537,7 @@ void IO::DBusManager::ProcessPropertiesFromInterface(GenericData *data, Interfac
 
 void IO::DBusManager::EmitInterfacesAdded(GenericData *data)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	DBusMessage *signal;
 	DBusMessageIter iter, array;
 
@@ -1576,7 +1576,7 @@ void IO::DBusManager::EmitInterfacesAdded(GenericData *data)
 
 void IO::DBusManager::EmitInterfacesRemoved(GenericData *data)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	DBusMessage *signal;
 	DBusMessageIter iter;
 	DBusMessageIter array;
@@ -1608,7 +1608,7 @@ void IO::DBusManager::EmitInterfacesRemoved(GenericData *data)
 
 void IO::DBusManager::Flush()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	GenericData *data;
 	UOSInt i = clsData->pending->GetCount();
 	while (i-- > 0)
@@ -1626,7 +1626,7 @@ void IO::DBusManager::RemovePending(GenericData *data)
 		data->processId = 0;
 	}
 
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	clsData->pending->Remove(data);
 }
 
@@ -1654,7 +1654,7 @@ Bool IO::DBusManager::ProcessChanges(void *userData)
 
 Bool IO::DBusManager::SendMessageWithReply(void *message, void **call, Int32 timeout)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	Bool ret;
 
 	this->Flush();
@@ -1672,7 +1672,7 @@ Bool IO::DBusManager::SendMessageWithReply(void *message, void **call, Int32 tim
 
 Bool IO::DBusManager::SendMessage(void *msg)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	DBusMessage *message = (DBusMessage*)msg;
 	Bool result = false;
 	Bool skip = false;
@@ -1859,7 +1859,7 @@ Bool IO::DBusManager::ListenerUpdateService(void *userObj)
 
 IO::DBusManager::Listener *IO::DBusManager::ListenerFind()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return data->listeners->GetItem(0);
 }
 
@@ -1902,7 +1902,7 @@ void IO::DBusManager::ListenerBuildRule(Listener *listener, Text::StringBuilderC
 
 Bool IO::DBusManager::ListenerAddMatch(Listener *listener, RawMessageFunction hdlr)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	DBusError err;
 	Text::StringBuilderC sb;
 
@@ -1925,7 +1925,7 @@ Bool IO::DBusManager::ListenerAddMatch(Listener *listener, RawMessageFunction hd
 
 Bool IO::DBusManager::ListenerRemoveMatch(Listener *listener)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	DBusError err;
 	Text::StringBuilderC sb;
 
@@ -1975,7 +1975,7 @@ IO::DBusManager::Listener *IO::DBusManager::ListenerFindMatch(const Char *name, 
 
 IO::DBusManager::Listener *IO::DBusManager::ListenerGet(RawMessageFunction filter, const Char *sender, const Char *path, const Char *interface, const Char *member, const Char *argument)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	Listener *listener;
 	const Char *name = 0;
 	const Char *owner = 0;
@@ -2026,7 +2026,7 @@ IO::DBusManager::Listener *IO::DBusManager::ListenerGet(RawMessageFunction filte
 
 IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerAddCallback(Listener *listener, WatchFunction connect, WatchFunction disconnect, SignalFunction signal, DestroyFunction destroy, void *userData)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	ListenerCallbacks *cb = MemAlloc(ListenerCallbacks, 1);
 	MemClear(cb, sizeof(ListenerCallbacks));
 
@@ -2078,7 +2078,7 @@ IO::DBusManager::ListenerCallbacks *IO::DBusManager::ListenerFindCallback(Listen
 
 Bool IO::DBusManager::ListenerRemoveCallback(Listener *listener, ListenerCallbacks *cb)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (listener->callbacks) listener->callbacks->Remove(cb);
 	if (listener->processed) listener->processed->Remove(cb);
 
@@ -2111,7 +2111,7 @@ Bool IO::DBusManager::ListenerRemoveCallback(Listener *listener, ListenerCallbac
 
 void IO::DBusManager::ListenerFree(Listener *listener)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->listeners->GetCount() == 0)
 		dbus_connection_remove_filter(data->conn, DBusManager_WatchMessageFilter, this);
 
@@ -2134,7 +2134,7 @@ void IO::DBusManager::ListenerFree(Listener *listener)
 
 void IO::DBusManager::ListenerCheckService(const Char *name, ListenerCallbacks *callback)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	DBusMessage *message;
 	ServiceData *data;
 
@@ -2187,7 +2187,7 @@ void IO::DBusManager::ListenerCheckService(const Char *name, ListenerCallbacks *
 
 const Char *IO::DBusManager::ListenerCheckNameCache(const Char *name)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	Listener *listener;
 	UOSInt i = clsData->listeners->GetCount();
 	while (i-- > 0)
@@ -2203,7 +2203,7 @@ const Char *IO::DBusManager::ListenerCheckNameCache(const Char *name)
 
 void IO::DBusManager::ListenerUpdateNameCache(const Char *name, const Char *owner)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	Listener *listener;
 	UOSInt i = clsData->listeners->GetCount();
 	while (i-- > 0)
@@ -2219,7 +2219,7 @@ void IO::DBusManager::ListenerUpdateNameCache(const Char *name, const Char *owne
 
 IO::DBusManager::HandlerResult IO::DBusManager::WatchMessageFilter(Message *message)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	IO::DBusManager::Listener *listener;
 	const Char *sender;
 	const Char *path;
@@ -2357,7 +2357,7 @@ UOSInt IO::DBusManager::AddPropertiesWatch(const Char *sender, const Char *path,
 
 Bool IO::DBusManager::RemoveWatch(UOSInt id)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (id == 0)
 		return false;
 
@@ -2383,7 +2383,7 @@ Bool IO::DBusManager::RemoveWatch(UOSInt id)
 
 void IO::DBusManager::RemoveAllWatches()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	Listener *listener;
 	ListenerCallbacks *cb;
 	if (data->listeners)
@@ -2442,7 +2442,7 @@ void IO::DBusManager::AddEmptyStringDict(void *itera)
 
 void IO::DBusManager::AddArguments(void *itera, const Char *action, UInt32 flags)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
 	const Char *busname = dbus_bus_get_unique_name(clsData->conn);
 	const Char *kind = "system-bus-name";
@@ -2502,7 +2502,7 @@ void IO::DBusManager::AuthorizationReply(void *pcall, void *userData)
 
 IO::DBusManager::ErrorType IO::DBusManager::PolkitCheckAuthorization(const Char *action, Bool interaction, PolkitFunction function, void *userData, Int32 timeout)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	ClassData *clsData = this->clsData;
 	AuthorizationData *data;
 	DBusMessage *msg;
 	DBusMessageIter iter;

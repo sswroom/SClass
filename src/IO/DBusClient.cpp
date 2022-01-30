@@ -35,7 +35,7 @@ struct IO::DBusClient::ProxyData
 	Bool pending;
 };
 
-typedef struct
+struct IO::DBusClient::ClassData
 {
 	Int32 refCount;
 	IO::DBusManager *dbusMgr;
@@ -63,7 +63,7 @@ typedef struct
 	IO::DBusClient::PropertyFunction propertyChanged;
 	void *userData;
 	Data::ArrayList<IO::DBusClient::ProxyData*> *proxyList;
-} ClassData;
+};
 
 static DBusHandlerResult DBusClient_MessageFilter(DBusConnection *connection, DBusMessage *message, void *userData)
 {
@@ -91,7 +91,7 @@ void DBusClient_ModifyMatchReply(DBusPendingCall *pending, void *userObj)
 void IO::DBusClient::OnServiceConnect(IO::DBusManager *dbusManager, void *userData)
 {
 	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = (ClassData*)me->clsData;
+	ClassData *client = me->clsData;
 
 	me->Ref();
 
@@ -108,7 +108,7 @@ void IO::DBusClient::OnServiceConnect(IO::DBusManager *dbusManager, void *userDa
 void IO::DBusClient::OnServiceDisconnect(IO::DBusManager *dbusManager, void *userData)
 {
 	IO::DBusClient *me = (IO::DBusClient*)userData;
-	ClassData *client = (ClassData*)me->clsData;
+	ClassData *client = me->clsData;
 
 	client->connected = false;
 
@@ -183,7 +183,7 @@ Bool IO::DBusClient::OnPropertiesChanged(IO::DBusManager *dbusManager, IO::DBusM
 {
 	ProxyData *proxy = (ProxyData*)userData;
 	IO::DBusClient *me = proxy->client;
-	ClassData *client = (ClassData*)me->clsData;
+	ClassData *client = me->clsData;
 	DBusMessageIter iter, entry;
 	const char *interface;
 
@@ -400,7 +400,7 @@ void IO::DBusClient::UpdateProperties(ProxyData *proxy, void *itera, Bool sendCh
 
 void IO::DBusClient::RefreshProperties()
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	UOSInt i = client->proxyList->GetCount();
 	ProxyData *proxy;
 	while (i-- > 0)
@@ -415,7 +415,7 @@ void IO::DBusClient::RefreshProperties()
 
 void IO::DBusClient::GetAllProperties(ProxyData *proxy)
 {
-	ClassData *client = (ClassData*)proxy;
+	ClassData *client = proxy;
 	const Char *serviceName = client->serviceName;
 	DBusMessage *msg;
 
@@ -442,7 +442,7 @@ void IO::DBusClient::GetAllProperties(ProxyData *proxy)
 void IO::DBusClient::AddProperty(ProxyData *proxy, const Char *name, void *itera, Bool sendChanged)
 {
 	DBusMessageIter *iter = (DBusMessageIter*)itera;
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	DBusMessageIter value;
 	PropInfo *prop;
 
@@ -476,7 +476,7 @@ void IO::DBusClient::AddProperty(ProxyData *proxy, const Char *name, void *itera
 
 void IO::DBusClient::GetManagedObjects()
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	DBusMessage *msg;
 
 	if (!client->connected)
@@ -544,7 +544,7 @@ void IO::DBusClient::ParseManagedObjects(void *mesg)
 
 IO::DBusClient::ProxyData *IO::DBusClient::ProxyNew(const Char *path, const Char *interface)
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	ProxyData *proxy;
 
 	proxy = MemAlloc(ProxyData, 1);
@@ -569,7 +569,7 @@ void IO::DBusClient::ProxyAdded(ProxyData *proxy)
 	if (!proxy->pending)
 		return;
 
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	if (client->proxyAdded)
 		client->proxyAdded(proxy, client->userData);
 
@@ -580,7 +580,7 @@ void IO::DBusClient::ProxyFree(ProxyData *proxy)
 {
 	if (proxy->client)
 	{
-		ClassData *client = (ClassData*)this->clsData;
+		ClassData *client = this->clsData;
 
 		if (proxy->getAllCall != NULL) {
 			dbus_pending_call_cancel(proxy->getAllCall);
@@ -606,7 +606,7 @@ void IO::DBusClient::ProxyFree(ProxyData *proxy)
 
 void IO::DBusClient::ProxyRemove(const Char *path, const Char *interface)
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	ProxyData *proxy;
 	UOSInt i = client->proxyList->GetCount();
 	while (i-- > 0)
@@ -641,7 +641,7 @@ IO::DBusClient::ProxyData *IO::DBusClient::ProxyLookup(UOSInt *index, const Char
 	}
 
 	ProxyData *proxy;
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	j = client->proxyList->GetCount();
 	while (i < j)
 	{
@@ -748,7 +748,7 @@ IO::DBusClient::DBusClient(IO::DBusManager *dbusMgr, const Char *service, const 
 
 IO::DBusClient::~DBusClient()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data)
 	{
 		if (data->pendingCall != NULL)
@@ -798,7 +798,7 @@ IO::DBusClient::~DBusClient()
 
 IO::DBusClient *IO::DBusClient::Ref()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data)
 	{
 		Sync::Interlocked::Increment(&data->refCount);
@@ -809,7 +809,7 @@ IO::DBusClient *IO::DBusClient::Ref()
 
 void IO::DBusClient::Unref()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data)
 	{
 		if (Sync::Interlocked::Decrement(&data->refCount) == 0)
@@ -821,7 +821,7 @@ void IO::DBusClient::Unref()
 
 IO::DBusManager::HandlerResult IO::DBusClient::MessageFilter(IO::DBusManager::Message *message)
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	const Char *sender;
 	const Char *path;
 	const Char *interface;
@@ -850,7 +850,7 @@ IO::DBusManager::HandlerResult IO::DBusClient::MessageFilter(IO::DBusManager::Me
 
 Bool IO::DBusClient::ModifyMatch(const Char *member, const Char *rule)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	DBusMessage *msg;
 	DBusPendingCall *call;
 
@@ -906,7 +906,7 @@ void IO::DBusClient::GetAllPropertiesReply(void *pending, ProxyData *proxy)
 
 void IO::DBusClient::GetManagedObjectsReply(void *pending)
 {
-	ClassData *client = (ClassData*)this->clsData;
+	ClassData *client = this->clsData;
 	DBusMessage *reply = dbus_pending_call_steal_reply((DBusPendingCall*)pending);
 	DBusError error;
 

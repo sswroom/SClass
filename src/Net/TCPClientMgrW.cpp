@@ -238,7 +238,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
 	NEW_CLASS(this->workerTasks, Data::SyncCircularBuff<TCPClientStatus*>());
-	this->clsData = (ClassData*)recvEvt;
+	this->clsData = recvEvt;
 	Sync::Thread::Create(ClientThread, this);
 	this->workers = MemAlloc(WorkerStatus, workerCnt);
 	while (workerCnt-- > 0)

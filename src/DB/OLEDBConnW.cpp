@@ -40,7 +40,7 @@ DB::OLEDBConn::ProviderInfo DB::OLEDBConn::providerInfo[] = {
 	{"SQLOLEDB",                         "Microsoft OLE DB Provider for SQL Server",             DB::DBUtil::ServerType::MSSQL}
 };
 
-typedef struct
+struct DB::OLEDBConn::ClassData
 {
 	IO::LogTool *log;
 	const WChar *connStr;
@@ -50,9 +50,9 @@ typedef struct
 	IDBCreateSession *pSession;
 	ITransactionLocal *pITransactionLocal;
 	Data::ArrayList<const UTF8Char *> *tableNames;
-} ClassData;
+};
 
-typedef struct
+struct DB::OLEDBReader::ClassData
 {
 	IRowset *pIRowset;
 	HROW* hRows;
@@ -67,7 +67,7 @@ typedef struct
 	UInt8 *dataBuff;
 	Bool rowValid;
 	OSInt rowChanged;
-} ClassDataR;
+};
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
 
@@ -87,7 +87,7 @@ DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBC
 
 void DB::OLEDBConn::Init(const WChar *connStr)
 {
-	ClassData *data = (ClassData *)this->clsData;
+	ClassData *data = this->clsData;
 	SDEL_TEXT(data->connStr);
 	data->connStr = Text::StrCopyNew(connStr);
 	HRESULT hr;
@@ -179,7 +179,7 @@ DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn((c
 
 DB::OLEDBConn::~OLEDBConn()
 {
-	ClassData *data = (ClassData *)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Abort(0, FALSE, FALSE); 
@@ -221,7 +221,7 @@ DB::OLEDBConn::~OLEDBConn()
 
 DB::DBUtil::ServerType DB::OLEDBConn::GetSvrType()
 {
-	ClassData *data = (ClassData *)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->connStr)
 	{
 		UOSInt i = Text::StrIndexOfICase(data->connStr, L"Provider=");
@@ -279,7 +279,7 @@ void DB::OLEDBConn::ForceTz(Int8 tzQhr)
 
 void DB::OLEDBConn::GetConnName(Text::StringBuilderUTF8 *sb)
 {
-	ClassData *data = (ClassData *)this->clsData;
+	ClassData *data = this->clsData;
 	sb->AppendC(UTF8STRC("OLEDB:"));
 	if (data->connStr)
 	{
@@ -293,7 +293,7 @@ void DB::OLEDBConn::Close()
 
 OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastDataError = DE_CONN_ERROR;
@@ -374,7 +374,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
 
 /*OSInt DB::OLEDBConn::ExecuteNonQuery(const WChar *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastError = 3;
@@ -479,7 +479,7 @@ void DB::OLEDBConn::Reconnect()
 
 UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->tableNames)
 	{
 	}
@@ -552,7 +552,7 @@ DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::Array
 
 DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastDataError = DE_CONN_ERROR;
@@ -637,7 +637,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
 
 /*DB::DBReader *DB::OLEDBConn::ExecuteReader(const WChar *sql)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pSession == 0)
 	{
 		this->lastError = 3;
@@ -723,7 +723,7 @@ void DB::OLEDBConn::CloseReader(DBReader *r)
 
 void *DB::OLEDBConn::BeginTransaction()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pITransactionLocal == 0)
 	{
 		data->pSession->QueryInterface(IID_ITransactionLocal, (void**)&data->pITransactionLocal);
@@ -735,7 +735,7 @@ void *DB::OLEDBConn::BeginTransaction()
 
 void DB::OLEDBConn::Commit(void *tran)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Commit(FALSE, XACTTC_SYNC_PHASEONE, 0);
@@ -746,7 +746,7 @@ void DB::OLEDBConn::Commit(void *tran)
 
 void DB::OLEDBConn::Rollback(void *tran)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->pITransactionLocal)
 	{
 		data->pITransactionLocal->Abort(0, FALSE, FALSE); 
@@ -762,13 +762,13 @@ DB::OLEDBConn::ConnError DB::OLEDBConn::GetConnError()
 
 const WChar *DB::OLEDBConn::GetConnStr()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return data->connStr;
 }
 
 DB::OLEDBReader::OLEDBReader(void *pIRowset, OSInt rowChanged)
 {
-	ClassDataR *data = MemAlloc(ClassDataR, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
 	data->rowChanged = rowChanged;
 	data->pIRowset = (IRowset*)pIRowset;
@@ -838,78 +838,76 @@ DB::OLEDBReader::OLEDBReader(void *pIRowset, OSInt rowChanged)
 
 DB::OLEDBReader::~OLEDBReader()
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
-	if (data->hRows)
+	if (this->clsData->hRows)
 	{
-		if (data->rowCnt)
+		if (this->clsData->rowCnt)
 		{
-			data->pIRowset->ReleaseRows(data->rowCnt, data->hRows, 0, 0, 0);
+			this->clsData->pIRowset->ReleaseRows(this->clsData->rowCnt, this->clsData->hRows, 0, 0, 0);
 		}
-		CoTaskMemFree(data->hRows);
-		data->hRows = 0;
+		CoTaskMemFree(this->clsData->hRows);
+		this->clsData->hRows = 0;
 	}
-	if (data->dataBuff)
+	if (this->clsData->dataBuff)
 	{
-		MemFree(data->dataBuff);
-		data->dataBuff = 0;
+		MemFree(this->clsData->dataBuff);
+		this->clsData->dataBuff = 0;
 	}
-	if (data->pIAccessor)
+	if (this->clsData->pIAccessor)
 	{
 		DBREFCOUNT cnt;
-		if (data->hAccessor)
+		if (this->clsData->hAccessor)
 		{
-			data->pIAccessor->ReleaseAccessor(data->hAccessor, &cnt);
-			data->hAccessor = 0;
+			this->clsData->pIAccessor->ReleaseAccessor(this->clsData->hAccessor, &cnt);
+			this->clsData->hAccessor = 0;
 		}
-		data->pIAccessor->Release();
-		data->pIAccessor = 0;
+		this->clsData->pIAccessor->Release();
+		this->clsData->pIAccessor = 0;
 	}
-	if (data->dbBinding)
+	if (this->clsData->dbBinding)
 	{
-		MemFree(data->dbBinding);
-		data->dbBinding = 0;
+		MemFree(this->clsData->dbBinding);
+		this->clsData->dbBinding = 0;
 	}
-	if (data->colNameBuff)
+	if (this->clsData->colNameBuff)
 	{
-		CoTaskMemFree(data->colNameBuff);
-		data->colNameBuff = 0;
+		CoTaskMemFree(this->clsData->colNameBuff);
+		this->clsData->colNameBuff = 0;
 	}
-	if (data->dbColInfo)
+	if (this->clsData->dbColInfo)
 	{
-		CoTaskMemFree(data->dbColInfo);
-		data->dbColInfo = 0;
+		CoTaskMemFree(this->clsData->dbColInfo);
+		this->clsData->dbColInfo = 0;
 	}
-	data->pIRowset->Release();
-	MemFree(data);
+	this->clsData->pIRowset->Release();
+	MemFree(this->clsData);
 }
 
 Bool DB::OLEDBReader::ReadNext()
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
 	DBCOUNTITEM cRowsObtained = 0;
 	HRESULT hr;
-	data->rowValid = false;
-	if (data->dataBuff == 0 || data->hAccessor == 0)
+	this->clsData->rowValid = false;
+	if (this->clsData->dataBuff == 0 || this->clsData->hAccessor == 0)
 	{
 		return false;
 	}
-	if (data->hRows)
+	if (this->clsData->hRows)
 	{
-		if (data->rowCnt)
+		if (this->clsData->rowCnt)
 		{
-			data->pIRowset->ReleaseRows(data->rowCnt, data->hRows, 0, 0, 0);
+			this->clsData->pIRowset->ReleaseRows(this->clsData->rowCnt, this->clsData->hRows, 0, 0, 0);
 		}
-		CoTaskMemFree(data->hRows);
-		data->hRows = 0;
+		CoTaskMemFree(this->clsData->hRows);
+		this->clsData->hRows = 0;
 	}
-	hr = data->pIRowset->GetNextRows(DB_NULL_HCHAPTER, 0, 1, &cRowsObtained, &data->hRows);
-	data->rowCnt = (UInt32)cRowsObtained;
-	if (SUCCEEDED(hr) && data->rowCnt > 0)
+	hr = this->clsData->pIRowset->GetNextRows(DB_NULL_HCHAPTER, 0, 1, &cRowsObtained, &this->clsData->hRows);
+	this->clsData->rowCnt = (UInt32)cRowsObtained;
+	if (SUCCEEDED(hr) && this->clsData->rowCnt > 0)
 	{
-		hr = data->pIRowset->GetData(data->hRows[0], data->hAccessor, data->dataBuff);
+		hr = this->clsData->pIRowset->GetData(this->clsData->hRows[0], this->clsData->hAccessor, this->clsData->dataBuff);
 		if (SUCCEEDED(hr))
 		{
-			data->rowValid = true;
+			this->clsData->rowValid = true;
 			return true;
 		}
 		else
@@ -925,19 +923,17 @@ Bool DB::OLEDBReader::ReadNext()
 
 UOSInt DB::OLEDBReader::ColCount()
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
-	return data->nCols;
+	return this->clsData->nCols;
 }
 
 OSInt DB::OLEDBReader::GetRowChanged()
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
-	return data->rowChanged;
+	return this->clsData->rowChanged;
 }
 
 Int32 DB::OLEDBReader::GetInt32(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1017,7 +1013,7 @@ Int32 DB::OLEDBReader::GetInt32(UOSInt colIndex)
 
 Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1097,7 +1093,7 @@ Int64 DB::OLEDBReader::GetInt64(UOSInt colIndex)
 
 WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1209,7 +1205,7 @@ WChar *DB::OLEDBReader::GetStr(UOSInt colIndex, WChar *buff)
 
 Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return false;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1331,7 +1327,7 @@ Bool DB::OLEDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 
 Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1365,7 +1361,7 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 
 UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1471,7 +1467,7 @@ UTF8Char *DB::OLEDBReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSi
 
 DB::DBReader::DateErrType DB::OLEDBReader::GetDate(UOSInt colIndex, Data::DateTime *outVal)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return DB::DBReader::DET_ERROR;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1512,7 +1508,7 @@ DB::DBReader::DateErrType DB::OLEDBReader::GetDate(UOSInt colIndex, Data::DateTi
 
 Double DB::OLEDBReader::GetDbl(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1597,7 +1593,7 @@ Bool DB::OLEDBReader::GetBool(UOSInt colIndex)
 
 UOSInt DB::OLEDBReader::GetBinarySize(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBLENGTH *valLen = (DBLENGTH*)&data->dataBuff[data->dbBinding[colIndex].obLength];
@@ -1606,7 +1602,7 @@ UOSInt DB::OLEDBReader::GetBinarySize(UOSInt colIndex)
 
 UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return 0;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1625,8 +1621,6 @@ UOSInt DB::OLEDBReader::GetBinary(UOSInt colIndex, UInt8 *buff)
 
 Math::Vector2D *DB::OLEDBReader::GetVector(UOSInt colIndex)
 {
-//	ClassDataR *data = (ClassDataR*)this->clsData;
-	/////////////////////////////////////////
 	return 0;
 }
 
@@ -1637,7 +1631,7 @@ Bool DB::OLEDBReader::GetUUID(UOSInt colIndex, Data::UUID *uuid)
 
 UTF8Char *DB::OLEDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 		return 0;
 	if (data->dbColInfo[colIndex].pwszName == 0)
@@ -1647,7 +1641,7 @@ UTF8Char *DB::OLEDBReader::GetName(UOSInt colIndex, UTF8Char *buff)
 
 Bool DB::OLEDBReader::IsNull(UOSInt colIndex)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (!data->rowValid || colIndex >= data->nCols)
 		return true;
 	DBSTATUS *status = (DBSTATUS*)&data->dataBuff[data->dbBinding[colIndex].obStatus];
@@ -1656,7 +1650,7 @@ Bool DB::OLEDBReader::IsNull(UOSInt colIndex)
 
 DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, UOSInt *colSize)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 	{
 		if (colSize)
@@ -1672,7 +1666,7 @@ DB::DBUtil::ColType DB::OLEDBReader::GetColType(UOSInt colIndex, UOSInt *colSize
 
 Bool DB::OLEDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
-	ClassDataR *data = (ClassDataR*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->dbColInfo == 0 || colIndex >= data->nCols)
 	{
 		return false;

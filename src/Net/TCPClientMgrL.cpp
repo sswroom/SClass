@@ -64,7 +64,7 @@ UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)
 	Net::TCPClientMgr *me = (Net::TCPClientMgr*)o;
 	Data::DateTime *currTime;
 	Manage::HiResClock *clk;
-	ClassData *clsData = (ClassData*)me->clsData;
+	ClassData *clsData = me->clsData;
 	NEW_CLASS(currTime, Data::DateTime());
 	NEW_CLASS(clk, Manage::HiResClock());
 	OSInt pollRet;
@@ -503,7 +503,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	}
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
-	if (write(((ClassData*)this->clsData)->pipewrfd, "", 1) == -1)
+	if (write((this->clsData)->pipewrfd, "", 1) == -1)
 	{
 		printf("TCPClientMgr: Error in writing to pipe\r\n");
 	}

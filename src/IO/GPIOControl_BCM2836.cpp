@@ -10,11 +10,11 @@
 #define IO_BASE_ADDR 0x3F000000
 #define BLOCKSIZE 4096
 
-typedef struct
+struct IO::GPIOControl::ClassData
 {
 	IO::PhysicalMem *mem;
 	volatile UInt32 *memPtr;
-} ClassData;
+};
 
 IO::GPIOControl::GPIOControl()
 {
@@ -26,14 +26,13 @@ IO::GPIOControl::GPIOControl()
 
 IO::GPIOControl::~GPIOControl()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	MemFree(clsData);
+	DEL_CLASS(this->clsData->mem);
+	MemFree(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
 {
-	return ((ClassData*)this->clsData)->mem->IsError();
+	return this->clsData->mem->IsError();
 }
 
 UOSInt IO::GPIOControl::GetPinCount()
@@ -49,11 +48,11 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 	}
 	if (pinNum < 32)
 	{
-		return (((ClassData*)this->clsData)->memPtr[13] & (1 << pinNum)) != 0;
+		return (this->clsData->memPtr[13] & (1 << pinNum)) != 0;
 	}
 	else
 	{
-		return (((ClassData*)this->clsData)->memPtr[14] & (1 << (pinNum - 32))) != 0;
+		return (this->clsData->memPtr[14] & (1 << (pinNum - 32))) != 0;
 	}
 }
 
@@ -66,27 +65,27 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 {
 	if (pinNum < 10)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[0] >> (3 * pinNum)) & 7);
+		return ((this->clsData->memPtr[0] >> (3 * pinNum)) & 7);
 	}
 	else if (pinNum < 20)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[1] >> (3 * (pinNum - 10))) & 7);
+		return ((this->clsData->memPtr[1] >> (3 * (pinNum - 10))) & 7);
 	}
 	else if (pinNum < 30)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[2] >> (3 * (pinNum - 20))) & 7);
+		return ((this->clsData->memPtr[2] >> (3 * (pinNum - 20))) & 7);
 	}
 	else if (pinNum < 40)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[3] >> (3 * (pinNum - 30))) & 7);
+		return ((this->clsData->memPtr[3] >> (3 * (pinNum - 30))) & 7);
 	}
 	else if (pinNum < 50)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[4] >> (3 * (pinNum - 40))) & 7);
+		return ((this->clsData->memPtr[4] >> (3 * (pinNum - 40))) & 7);
 	}
 	else if (pinNum < 54)
 	{
-		return ((((ClassData*)this->clsData)->memPtr[5] >> (3 * (pinNum - 50))) & 7);
+		return ((this->clsData->memPtr[5] >> (3 * (pinNum - 50))) & 7);
 	}
 
 	return false;
@@ -98,171 +97,171 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	switch (pinNum)
 	{
 	case 0:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~7) | val;
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~7) | val;
 		break;
 	case 1:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 3)) | (val << 3);
 		break;
 	case 2:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 6)) | (val << 6);
 		break;
 	case 3:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 9)) | (val << 9);
 		break;
 	case 4:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 12)) | (val << 12);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 12)) | (val << 12);
 		break;
 	case 5:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 15)) | (val << 15);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 15)) | (val << 15);
 		break;
 	case 6:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 18)) | (val << 18);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 18)) | (val << 18);
 		break;
 	case 7:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 21)) | (val << 21);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 21)) | (val << 21);
 		break;
 	case 8:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 24)) | (val << 24);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 24)) | (val << 24);
 		break;
 	case 9:
-		((ClassData*)this->clsData)->memPtr[0] = (((ClassData*)this->clsData)->memPtr[0] & ~(7 << 27)) | (val << 27);
+		this->clsData->memPtr[0] = (this->clsData->memPtr[0] & ~(7 << 27)) | (val << 27);
 		break;
 
 	case 10:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~7) | val;
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~7) | val;
 		break;
 	case 11:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 3)) | (val << 3);
 		break;
 	case 12:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 6)) | (val << 6);
 		break;
 	case 13:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 9)) | (val << 9);
 		break;
 	case 14:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 12)) | (val << 12);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 12)) | (val << 12);
 		break;
 	case 15:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 15)) | (val << 15);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 15)) | (val << 15);
 		break;
 	case 16:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 18)) | (val << 18);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 18)) | (val << 18);
 		break;
 	case 17:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 21)) | (val << 21);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 21)) | (val << 21);
 		break;
 	case 18:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 24)) | (val << 24);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 24)) | (val << 24);
 		break;
 	case 19:
-		((ClassData*)this->clsData)->memPtr[1] = (((ClassData*)this->clsData)->memPtr[1] & ~(7 << 27)) | (val << 27);
+		this->clsData->memPtr[1] = (this->clsData->memPtr[1] & ~(7 << 27)) | (val << 27);
 		break;
 
 	case 20:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~7) | val;
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~7) | val;
 		break;
 	case 21:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 3)) | (val << 3);
 		break;
 	case 22:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 6)) | (val << 6);
 		break;
 	case 23:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 9)) | (val << 9);
 		break;
 	case 24:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 12)) | (val << 12);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 12)) | (val << 12);
 		break;
 	case 25:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 15)) | (val << 15);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 15)) | (val << 15);
 		break;
 	case 26:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 18)) | (val << 18);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 18)) | (val << 18);
 		break;
 	case 27:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 21)) | (val << 21);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 21)) | (val << 21);
 		break;
 	case 28:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 24)) | (val << 24);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 24)) | (val << 24);
 		break;
 	case 29:
-		((ClassData*)this->clsData)->memPtr[2] = (((ClassData*)this->clsData)->memPtr[2] & ~(7 << 27)) | (val << 27);
+		this->clsData->memPtr[2] = (this->clsData->memPtr[2] & ~(7 << 27)) | (val << 27);
 		break;
 
 	case 30:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~7) | val;
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~7) | val;
 		break;
 	case 31:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 3)) | (val << 3);
 		break;
 	case 32:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 6)) | (val << 6);
 		break;
 	case 33:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 9)) | (val << 9);
 		break;
 	case 34:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 12)) | (val << 12);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 12)) | (val << 12);
 		break;
 	case 35:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 15)) | (val << 15);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 15)) | (val << 15);
 		break;
 	case 36:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 18)) | (val << 18);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 18)) | (val << 18);
 		break;
 	case 37:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 21)) | (val << 21);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 21)) | (val << 21);
 		break;
 	case 38:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 24)) | (val << 24);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 24)) | (val << 24);
 		break;
 	case 39:
-		((ClassData*)this->clsData)->memPtr[3] = (((ClassData*)this->clsData)->memPtr[3] & ~(7 << 27)) | (val << 27);
+		this->clsData->memPtr[3] = (this->clsData->memPtr[3] & ~(7 << 27)) | (val << 27);
 		break;
 
 	case 40:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~7) | val;
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~7) | val;
 		break;
 	case 41:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 3)) | (val << 3);
 		break;
 	case 42:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 6)) | (val << 6);
 		break;
 	case 43:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 9)) | (val << 9);
 		break;
 	case 44:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 12)) | (val << 12);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 12)) | (val << 12);
 		break;
 	case 45:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 15)) | (val << 15);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 15)) | (val << 15);
 		break;
 	case 46:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 18)) | (val << 18);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 18)) | (val << 18);
 		break;
 	case 47:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 21)) | (val << 21);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 21)) | (val << 21);
 		break;
 	case 48:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 24)) | (val << 24);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 24)) | (val << 24);
 		break;
 	case 49:
-		((ClassData*)this->clsData)->memPtr[4] = (((ClassData*)this->clsData)->memPtr[4] & ~(7 << 27)) | (val << 27);
+		this->clsData->memPtr[4] = (this->clsData->memPtr[4] & ~(7 << 27)) | (val << 27);
 		break;
 
 	case 50:
-		((ClassData*)this->clsData)->memPtr[5] = (((ClassData*)this->clsData)->memPtr[5] & ~7) | val;
+		this->clsData->memPtr[5] = (this->clsData->memPtr[5] & ~7) | val;
 		break;
 	case 51:
-		((ClassData*)this->clsData)->memPtr[5] = (((ClassData*)this->clsData)->memPtr[5] & ~(7 << 3)) | (val << 3);
+		this->clsData->memPtr[5] = (this->clsData->memPtr[5] & ~(7 << 3)) | (val << 3);
 		break;
 	case 52:
-		((ClassData*)this->clsData)->memPtr[5] = (((ClassData*)this->clsData)->memPtr[5] & ~(7 << 6)) | (val << 6);
+		this->clsData->memPtr[5] = (this->clsData->memPtr[5] & ~(7 << 6)) | (val << 6);
 		break;
 	case 53:
-		((ClassData*)this->clsData)->memPtr[5] = (((ClassData*)this->clsData)->memPtr[5] & ~(7 << 9)) | (val << 9);
+		this->clsData->memPtr[5] = (this->clsData->memPtr[5] & ~(7 << 9)) | (val << 9);
 		break;
 	default:
 		return false;
@@ -278,22 +277,22 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	{
 		if (pinNum < 32)
 		{
-			((ClassData*)this->clsData)->memPtr[7] = 1 << pinNum;
+			this->clsData->memPtr[7] = 1 << pinNum;
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[8] = 1 << (pinNum - 32);
+			this->clsData->memPtr[8] = 1 << (pinNum - 32);
 		}
 	}
 	else
 	{
 		if (pinNum < 32)
 		{
-			((ClassData*)this->clsData)->memPtr[10] = 1 << pinNum;
+			this->clsData->memPtr[10] = 1 << pinNum;
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[11] = 1 << (pinNum - 32);
+			this->clsData->memPtr[11] = 1 << (pinNum - 32);
 		}
 	}
 	return true;
@@ -305,15 +304,15 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 		return false;
 	if (pt == IO::IOPin::PT_DISABLE)
 	{
-		((ClassData*)this->clsData)->memPtr[37] = 0;
+		this->clsData->memPtr[37] = 0;
 	}
 	else if (pt == IO::IOPin::PT_DOWN)
 	{
-		((ClassData*)this->clsData)->memPtr[37] = 1;
+		this->clsData->memPtr[37] = 1;
 	}
 	else if (pt == IO::IOPin::PT_UP)
 	{
-		((ClassData*)this->clsData)->memPtr[37] = 2;
+		this->clsData->memPtr[37] = 2;
 	}
 	else
 	{
@@ -322,20 +321,20 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	Sync::Thread::Sleepus(1);
 	if (pinNum < 32)
 	{
-		((ClassData*)this->clsData)->memPtr[38] = (1 << pinNum);
+		this->clsData->memPtr[38] = (1 << pinNum);
 	}
 	else
 	{
-		((ClassData*)this->clsData)->memPtr[39] = (1 << (pinNum - 32));
+		this->clsData->memPtr[39] = (1 << (pinNum - 32));
 	}
 	Sync::Thread::Sleepus(1);
 	if (pinNum < 32)
 	{
-		((ClassData*)this->clsData)->memPtr[38] = 0;
+		this->clsData->memPtr[38] = 0;
 	}
 	else
 	{
-		((ClassData*)this->clsData)->memPtr[39] = 0;
+		this->clsData->memPtr[39] = 0;
 	}
 	return true;
 }
@@ -348,22 +347,22 @@ void IO::GPIOControl::SetEventOnHigh(UOSInt pinNum, Bool enable)
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[25] |= (1 << pinNum);
+			this->clsData->memPtr[25] |= (1 << pinNum);
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[25] &= ~(1 << pinNum);
+			this->clsData->memPtr[25] &= ~(1 << pinNum);
 		}
 	}
 	else
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[26] |= (1 << (pinNum - 32));
+			this->clsData->memPtr[26] |= (1 << (pinNum - 32));
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[26] &= ~(1 << (pinNum - 32));
+			this->clsData->memPtr[26] &= ~(1 << (pinNum - 32));
 		}
 	}
 }
@@ -376,22 +375,22 @@ void IO::GPIOControl::SetEventOnLow(UOSInt pinNum, Bool enable)
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[28] |= (1 << pinNum);
+			this->clsData->memPtr[28] |= (1 << pinNum);
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[28] &= ~(1 << pinNum);
+			this->clsData->memPtr[28] &= ~(1 << pinNum);
 		}
 	}
 	else
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[29] |= (1 << (pinNum - 32));
+			this->clsData->memPtr[29] |= (1 << (pinNum - 32));
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[29] &= ~(1 << (pinNum - 32));
+			this->clsData->memPtr[29] &= ~(1 << (pinNum - 32));
 		}
 	}
 }
@@ -404,22 +403,22 @@ void IO::GPIOControl::SetEventOnRaise(UOSInt pinNum, Bool enable)
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[19] |= (1 << pinNum);
+			this->clsData->memPtr[19] |= (1 << pinNum);
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[19] &= ~(1 << pinNum);
+			this->clsData->memPtr[19] &= ~(1 << pinNum);
 		}
 	}
 	else
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[20] |= (1 << (pinNum - 32));
+			this->clsData->memPtr[20] |= (1 << (pinNum - 32));
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[20] &= ~(1 << (pinNum - 32));
+			this->clsData->memPtr[20] &= ~(1 << (pinNum - 32));
 		}
 	}
 }
@@ -432,22 +431,22 @@ void IO::GPIOControl::SetEventOnFall(UOSInt pinNum, Bool enable)
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[22] |= (1 << pinNum);
+			this->clsData->memPtr[22] |= (1 << pinNum);
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[22] &= ~(1 << pinNum);
+			this->clsData->memPtr[22] &= ~(1 << pinNum);
 		}
 	}
 	else
 	{
 		if (enable)
 		{
-			((ClassData*)this->clsData)->memPtr[23] |= (1 << (pinNum - 32));
+			this->clsData->memPtr[23] |= (1 << (pinNum - 32));
 		}
 		else
 		{
-			((ClassData*)this->clsData)->memPtr[23] &= ~(1 << (pinNum - 32));
+			this->clsData->memPtr[23] &= ~(1 << (pinNum - 32));
 		}
 	}
 }
@@ -458,11 +457,11 @@ Bool IO::GPIOControl::HasEvent(UOSInt pinNum)
 		return false;
 	if (pinNum < 32)
 	{
-		return (((ClassData*)this->clsData)->memPtr[16] & (1 << pinNum)) != 0;
+		return (this->clsData->memPtr[16] & (1 << pinNum)) != 0;
 	}
 	else
 	{
-		return (((ClassData*)this->clsData)->memPtr[17] & (1 << (pinNum - 32))) != 0;
+		return (this->clsData->memPtr[17] & (1 << (pinNum - 32))) != 0;
 	}
 }
 
@@ -472,11 +471,11 @@ void IO::GPIOControl::ClearEvent(UOSInt pinNum)
 		return;
 	if (pinNum < 32)
 	{
-		((ClassData*)this->clsData)->memPtr[16] &= ~(1 << pinNum);
+		this->clsData->memPtr[16] &= ~(1 << pinNum);
 	}
 	else
 	{
-		((ClassData*)this->clsData)->memPtr[17] &= ~(1 << (pinNum - 32));
+		this->clsData->memPtr[17] &= ~(1 << (pinNum - 32));
 	}
 }
 

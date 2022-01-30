@@ -9,11 +9,11 @@
 #endif
 #include <windows.h>
 
-typedef struct
+struct Manage::ProcessExecution::ClassData
 {
 	HANDLE out[2];
 	HANDLE in[2];
-} ClassData;
+};
 
 UOSInt Manage::ProcessExecution::NewProcess(const UTF8Char *cmd)
 {
@@ -83,18 +83,16 @@ Manage::ProcessExecution::ProcessExecution(const UTF8Char *cmdLine) : Process(Ne
 
 Manage::ProcessExecution::~ProcessExecution()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	this->Close();
-	MemFree(clsData);
+	MemFree(this->clsData);
 }
 
 UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	if (clsData->in[0] == 0)
+	if (this->clsData->in[0] == 0)
 		return 0;
 	DWORD readSize;
-	if (ReadFile(clsData->out[0], buff, (DWORD)size, &readSize, 0))
+	if (ReadFile(this->clsData->out[0], buff, (DWORD)size, &readSize, 0))
 	{
 		return readSize;
 	}
@@ -106,11 +104,10 @@ UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)
 
 UOSInt Manage::ProcessExecution::Write(const UInt8 *buff, UOSInt size)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	if (clsData->in[0] == 0)
+	if (this->clsData->in[0] == 0)
 		return 0;
 	DWORD writeSize;
-	if (WriteFile(clsData->in[1], buff, (DWORD)size, &writeSize, 0))
+	if (WriteFile(this->clsData->in[1], buff, (DWORD)size, &writeSize, 0))
 	{
 		return writeSize;
 	}
@@ -127,21 +124,20 @@ Int32 Manage::ProcessExecution::Flush()
 
 void Manage::ProcessExecution::Close()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (this->IsRunning())
 	{
 		this->Kill();
 	}
-	if (clsData->in[0] != INVALID_HANDLE_VALUE)
+	if (this->clsData->in[0] != INVALID_HANDLE_VALUE)
 	{
-		CloseHandle(clsData->in[0]);
-		CloseHandle(clsData->in[1]);
-		CloseHandle(clsData->out[0]);
-		CloseHandle(clsData->out[1]);
-		clsData->in[0] = INVALID_HANDLE_VALUE;
-		clsData->in[1] = INVALID_HANDLE_VALUE;
-		clsData->out[0] = INVALID_HANDLE_VALUE;
-		clsData->out[1] = INVALID_HANDLE_VALUE;
+		CloseHandle(this->clsData->in[0]);
+		CloseHandle(this->clsData->in[1]);
+		CloseHandle(this->clsData->out[0]);
+		CloseHandle(this->clsData->out[1]);
+		this->clsData->in[0] = INVALID_HANDLE_VALUE;
+		this->clsData->in[1] = INVALID_HANDLE_VALUE;
+		this->clsData->out[0] = INVALID_HANDLE_VALUE;
+		this->clsData->out[1] = INVALID_HANDLE_VALUE;
 	}
 }
 

@@ -10,13 +10,13 @@
 #define GPIO_BASE_MAP  (0x0300B000)
 #define GPIOL_BASE_MAP  (0x07022000)
 
-typedef struct
+struct IO::GPIOControl::ClassData
 {
 	IO::PhysicalMem *mem;
 	IO::PhysicalMem *memL;
 	volatile UInt32 *gpioPtr;
 	volatile UInt32 *gpioLPtr;
-} ClassData;
+};
 
 void GPIOControl_GetPortNum(UInt16 pinNum, OSInt *portNum, OSInt *index)
 {
@@ -69,16 +69,14 @@ IO::GPIOControl::GPIOControl()
 
 IO::GPIOControl::~GPIOControl()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	DEL_CLASS(clsData->memL);
-	MemFree(clsData);
+	DEL_CLASS(this->clsData->mem);
+	DEL_CLASS(this->clsData->memL);
+	MemFree(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->mem->IsError() || clsData->memL->IsError();
+	return this->clsData->mem->IsError() || this->clsData->memL->IsError();
 }
 
 UOSInt IO::GPIOControl::GetPinCount()
@@ -88,7 +86,6 @@ UOSInt IO::GPIOControl::GetPinCount()
 
 Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return false;
@@ -99,17 +96,16 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 
 	if (portNum >= 8)
 	{
-		return ((clsData->gpioLPtr[(portNum & 7) * 9 + 4] >> index) & 1) != 0;
+		return ((this->clsData->gpioLPtr[(portNum & 7) * 9 + 4] >> index) & 1) != 0;
 	}
 	else
 	{
-		return ((clsData->gpioPtr[portNum * 9 + 4] >> index) & 1) != 0;
+		return ((this->clsData->gpioPtr[portNum * 9 + 4] >> index) & 1) != 0;
 	}
 }
 
 Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return false;
@@ -120,17 +116,16 @@ Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 
 	if (portNum >= 8)
 	{
-		return ((clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
+		return ((this->clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
 	}
 	else
 	{
-		return ((clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
+		return ((this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
 	}
 }
 
 UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return 0;
@@ -141,17 +136,16 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 
 	if (portNum >= 8)
 	{
-		return (clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
+		return (this->clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
 	}
 	else
 	{
-		return (clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
+		return (this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
 	}
 }
 
 Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return false;
@@ -164,18 +158,17 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 	UInt32 v = (isOutput?1:0) << ((index & 7) * 4);
 	if (portNum >= 8)
 	{
-		clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] = (clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] & ~mask) | v;
+		this->clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] = (this->clsData->gpioLPtr[(portNum & 7) * 9 + (index >> 3)] & ~mask) | v;
 	}
 	else
 	{
-		clsData->gpioPtr[portNum * 9 + (index >> 3)] = (clsData->gpioPtr[portNum * 9 + (index >> 3)] & ~mask) | v;
+		this->clsData->gpioPtr[portNum * 9 + (index >> 3)] = (this->clsData->gpioPtr[portNum * 9 + (index >> 3)] & ~mask) | v;
 	}
 	return true;
 }
 
 Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return false;
@@ -187,18 +180,17 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	UInt32 v = isHigh?(1 << index):0;
 	if (portNum >= 8)
 	{
-		clsData->gpioLPtr[(portNum & 7) * 9 + 4] = (clsData->gpioLPtr[(portNum & 7) * 9 + 4] & ~(1 << index)) | v;
+		this->clsData->gpioLPtr[(portNum & 7) * 9 + 4] = (this->clsData->gpioLPtr[(portNum & 7) * 9 + 4] & ~(1 << index)) | v;
 	}
 	else
 	{
-		clsData->gpioPtr[portNum * 9 + 4] = (clsData->gpioPtr[portNum * 9 + 4] & ~(1 << index)) | v;
+		this->clsData->gpioPtr[portNum * 9 + 4] = (this->clsData->gpioPtr[portNum * 9 + 4] & ~(1 << index)) | v;
 	}
 	return true;
 }
 
 Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 93)
 	{
 		return false;
@@ -222,11 +214,11 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	}
 	if (portNum >= 8)
 	{
-		clsData->gpioLPtr[(portNum & 7) * 9 + 7 + (index >> 4)] = (clsData->gpioLPtr[(portNum & 7) * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
+		this->clsData->gpioLPtr[(portNum & 7) * 9 + 7 + (index >> 4)] = (this->clsData->gpioLPtr[(portNum & 7) * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
 	}
 	else
 	{
-		clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] = (clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
+		this->clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] = (this->clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
 	}
 	return true;
 }

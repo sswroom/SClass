@@ -9,11 +9,11 @@
 // Allwinner A64
 #define GPIO_BASE_MAP  (0x01C20800)
 
-typedef struct
+struct IO::GPIOControl::ClassData
 {
 	IO::PhysicalMem *mem;
 	volatile UInt32 *gpioPtr;
-} ClassData;
+};
 
 void GPIOControl_GetPortNum(UInt16 pinNum, OSInt *portNum, OSInt *index)
 {
@@ -64,15 +64,13 @@ IO::GPIOControl::GPIOControl()
 
 IO::GPIOControl::~GPIOControl()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	DEL_CLASS(clsData->mem);
-	MemFree(clsData);
+	DEL_CLASS(this->clsData->mem);
+	MemFree(this->clsData);
 }
 
 Bool IO::GPIOControl::IsError()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->mem->IsError();
+	return this->clsData->mem->IsError();
 }
 
 UOSInt IO::GPIOControl::GetPinCount()
@@ -82,7 +80,6 @@ UOSInt IO::GPIOControl::GetPinCount()
 
 Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return false;
@@ -91,12 +88,11 @@ Bool IO::GPIOControl::IsPinHigh(UOSInt pinNum)
 	OSInt index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
-	return ((clsData->gpioPtr[portNum * 9 + 4] >> index) & 1) != 0;
+	return ((this->clsData->gpioPtr[portNum * 9 + 4] >> index) & 1) != 0;
 }
 
 Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return false;
@@ -105,12 +101,11 @@ Bool IO::GPIOControl::IsPinOutput(UOSInt pinNum)
 	OSInt index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
-	return ((clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
+	return ((this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7) == 1;
 }
 
 UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return 0;
@@ -119,12 +114,11 @@ UOSInt IO::GPIOControl::GetPinMode(UOSInt pinNum)
 	OSInt index;
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
-	return (clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
+	return (this->clsData->gpioPtr[portNum * 9 + (index >> 3)] >> ((index & 7) * 4)) & 7;
 }
 
 Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return false;
@@ -135,13 +129,12 @@ Bool IO::GPIOControl::SetPinOutput(UOSInt pinNum, Bool isOutput)
 
 	UInt32 mask = 7 << ((index & 7) * 4);
 	UInt32 v = (isOutput?1:0) << ((index & 7) * 4);
-	clsData->gpioPtr[portNum * 9 + (index >> 3)] = (clsData->gpioPtr[portNum * 9 + (index >> 3)] & ~mask) | v;
+	this->clsData->gpioPtr[portNum * 9 + (index >> 3)] = (this->clsData->gpioPtr[portNum * 9 + (index >> 3)] & ~mask) | v;
 	return true;
 }
 
 Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return false;
@@ -151,13 +144,12 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	GPIOControl_GetPortNum(pinNum, &portNum, &index);
 
 	UInt32 v = isHigh?(1 << index):0;
-	clsData->gpioPtr[portNum * 9 + 4] = (clsData->gpioPtr[portNum * 9 + 4] & ~(1 << index)) | v;
+	this->clsData->gpioPtr[portNum * 9 + 4] = (this->clsData->gpioPtr[portNum * 9 + 4] & ~(1 << index)) | v;
 	return true;
 }
 
 Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
 	if (pinNum >= 103)
 	{
 		return false;
@@ -179,7 +171,7 @@ Bool IO::GPIOControl::SetPullType(UOSInt pinNum, IO::IOPin::PullType pt)
 	{
 		v = 2 << ((index & 15) * 2);
 	}
-	clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] = (clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
+	this->clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] = (this->clsData->gpioPtr[portNum * 9 + 7 + (index >> 4)] & ~(3 << ((index & 15) * 2))) | v;
 	return true;
 }
 

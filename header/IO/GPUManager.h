@@ -7,7 +7,9 @@ namespace IO
 	class GPUManager
 	{
 	private:
-		void *classObj;
+		struct ClassData;
+		
+		ClassData *clsData;
 
 	public:
 		GPUManager();

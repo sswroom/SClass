@@ -6,7 +6,8 @@ namespace IO
 	class PhysicalMem
 	{
 	private:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 
 	public:
 		PhysicalMem(OSInt addr, OSInt size);

@@ -122,7 +122,7 @@ Net::HTTPOSClient::~HTTPOSClient()
 		MemFree(this->dataBuff);
 		this->dataBuff = 0;
 	}
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->hRequest)
 		WinHttpCloseHandle(data->hRequest);
 	if (data->hConnect)
@@ -135,13 +135,13 @@ Net::HTTPOSClient::~HTTPOSClient()
 
 Bool Net::HTTPOSClient::IsError()
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	return data->hRequest == 0;
 }
 
 UOSInt Net::HTTPOSClient::Read(UInt8 *buff, UOSInt size)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	this->EndRequest(0, 0);
 	if (data->hRequest == 0)
 	{
@@ -234,7 +234,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	UInt16 port;
 	UInt16 defPort;
 	Double t1;
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->hSession == 0)
 	{
 		if (timeDNS)
@@ -464,7 +464,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 
 void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->hRequest && !writing)
 	{
 		if (name.Equals(UTF8STRC("User-Agent")))
@@ -486,7 +486,7 @@ void Net::HTTPOSClient::AddHeaderC(Text::CString name, Text::CString value)
 
 void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 {
-	ClassData *data = (ClassData*)this->clsData;
+	ClassData *data = this->clsData;
 	if (data->hRequest == 0 || (this->writing && !this->canWrite))
 	{
 		if (timeReq)
