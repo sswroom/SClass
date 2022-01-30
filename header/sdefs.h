@@ -361,6 +361,10 @@ UOSInt __inline MulDivUOS(UOSInt x, UOSInt y, UOSInt z)
 #define BSWAP32(x) swap32(x)
 #define BSWAPU32(x) swap32(x)
 #define BSWAP64(x) swap64(x)
+#elif defined(__GNUC__)
+#define BSWAP32(v) (Int32)__builtin_bswap32((UInt32)(v))
+#define BSWAPU32(v) __builtin_bswap32(v)
+#define BSWAP64(v) (Int64)__builtin_bswap64((UInt64)(v))
 #else
 #define BSWAP32(x) \
     ((Int32)( (( (UInt32)x          ) << 24) | \
