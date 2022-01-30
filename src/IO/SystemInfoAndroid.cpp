@@ -9,16 +9,16 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-} SystemData;
+	Text::String *platformName;
+};
 
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
 
@@ -78,7 +78,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			sb.Append(model);
 		}
-		data->platformName = Text::StrCopyNew(sb.ToString());
+		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 		DEL_CLASS(cfg);
 	}
 	else
@@ -89,17 +89,15 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }

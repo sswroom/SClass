@@ -11,33 +11,33 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-	const UTF8Char *platformSN;
-} SystemData;
+	Text::String *platformName;
+	Text::String *platformSN;
+};
 
 IO::SystemInfo::SystemInfo()
 {
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	OSInt i;
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
 	IO::ConfigFile *cfg = IO::IniFile::Parse((const UTF8Char*)"/etc/model.conf", 65001);
 	if (cfg)
 	{
-		const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"System Enclosure", (const UTF8Char*)"VENDOR");
-		const UTF8Char *csptr2 = cfg->GetValue((const UTF8Char*)"System Enclosure", (const UTF8Char*)"MODEL");
-		if (csptr && csptr2)
+		Text::String *s = cfg->GetValue(UTF8STRC("System Enclosure"), UTF8STRC("VENDOR"));
+		Text::String *s2 = cfg->GetValue(UTF8STRC("System Enclosure"), UTF8STRC("MODEL"));
+		if (s && s2)
 		{
 			Text::StringBuilderUTF8 sb;
-			sb.Append(csptr);
+			sb.Append(s);
 			sb.AppendChar(' ', 1);
-			sb.Append(csptr2);
-			data->platformName = Text::StrCopyNew(sb.ToString());
+			sb.Append(s2);
+			data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 		}
 		DEL_CLASS(cfg);
 	}
@@ -45,28 +45,25 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	SDEL_TEXT(data->platformSN);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformSN)
+	if (this->clsData->platformSN)
 	{
-		return Text::StrConcat(sbuff, data->platformSN);
+		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
 	return 0;
 }

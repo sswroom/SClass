@@ -12,6 +12,7 @@
 
 Win32::Clipboard::Clipboard(void *hwnd)
 {
+	this->clsData = 0;
 	this->succ = true;
 }
 

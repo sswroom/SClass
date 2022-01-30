@@ -9,17 +9,17 @@
 #include <sys/sysinfo.h>
 #include <stdio.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-	const UTF8Char *platformSN;
-} SystemData;
+	Text::String *platformName;
+	Text::String *platformSN;
+};
 
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[256];
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
@@ -35,13 +35,13 @@ IO::SystemInfo::SystemInfo()
 			fs->Read(buff, 256);
 			if (buff[32])
 			{
-				SDEL_TEXT(data->platformName);
-				data->platformName = Text::StrCopyNew(&buff[32]);
+				SDEL_STRING(data->platformName);
+				data->platformName = Text::String::NewNotNull(&buff[32]);
 			}
 			if (buff[64])
 			{
-				SDEL_TEXT(data->platformSN);
-				data->platformSN = Text::StrCopyNew(&buff[64]);
+				SDEL_STRING(data->platformSN);
+				data->platformSN = Text::String::NewNotNull(&buff[64]);
 			}
 		}
 	}
@@ -50,28 +50,25 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	SDEL_TEXT(data->platformSN);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformSN)
+	if (this->clsData->platformSN)
 	{
-		return Text::StrConcat(sbuff, data->platformSN);
+		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
 	return 0;
 }

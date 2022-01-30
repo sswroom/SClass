@@ -4,62 +4,60 @@
 #include "IO/SystemInfo.h"
 #include "IO/UnixConfigFile.h"
 #include "Text/MyString.h"
+#include "Text/String.h"
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-} SystemData;
+	Text::String *platformName;
+};
 
 IO::SystemInfo::SystemInfo()
 {
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
-	if (IO::Path::GetPathType((const UTF8Char*)"/etc/OrangePi_Camera.conf") == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(UTF8STRC("/etc/OrangePi_Camera.conf")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/OrangePi_Camera.conf");
 		if (cfg)
 		{
-			const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"Platform:");
-			if (csptr)
+			Text::String *s = cfg->GetValue(UTF8STRC("Platform:"));
+			if (s)
 			{
-				data->platformName = Text::StrCopyNew(csptr);
+				data->platformName = Text::String::New(s->v, s->leng);
 			}
 			DEL_CLASS(cfg);
 		}
 	}
-	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePIH6.dtb") == IO::Path::PathType::File)
+	else if (IO::Path::GetPathType(UTF8STRC("/boot/orangepi/OrangePIH6.dtb")) == IO::Path::PathType::File)
 	{
-		data->platformName = Text::StrCopyNew((const UTF8Char*)"Orange PI One Plus");
+		data->platformName = Text::String::New(UTF8STRC("Orange PI One Plus"));
 	}
-	else if (IO::Path::GetPathType((const UTF8Char*)"/boot/orangepi/OrangePI-A64.dtb") == IO::Path::PathType::File)
+	else if (IO::Path::GetPathType(UTF8STRC("/boot/orangepi/OrangePI-A64.dtb")) == IO::Path::PathType::File)
 	{
-		data->platformName = Text::StrCopyNew((const UTF8Char*)"Orange PI Win Plus");
+		data->platformName = Text::String::New(UTF8STRC("Orange PI Win Plus"));
 	}
 }
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *info = (SystemData*)this->clsData;
 	return 0;
 }
 

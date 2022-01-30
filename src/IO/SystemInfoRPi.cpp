@@ -10,10 +10,10 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-} SystemData;
+	Text::String *platformName;
+};
 
 IO::SystemInfo::SystemInfo()
 {
@@ -21,7 +21,7 @@ IO::SystemInfo::SystemInfo()
 	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
 	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/devicetree/base/model", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -33,31 +33,28 @@ IO::SystemInfo::SystemInfo()
 		{
 		}
 		DEL_CLASS(reader);
-		data->platformName = Text::StrCopyNew(sb.ToString());
+		data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 	DEL_CLASS(fs);
 }
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *info = (SystemData*)this->clsData;
 	return 0;
 }
 

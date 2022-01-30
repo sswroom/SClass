@@ -16,8 +16,10 @@ namespace Win32
 			FPT_MOVE
 		} FilePasteType;
 	private:
+		struct ClassData;
+		
 		Bool succ;
-		void *clsData;
+		ClassData *clsData;
 	public:
 		Clipboard(void *hwnd);
 		~Clipboard();

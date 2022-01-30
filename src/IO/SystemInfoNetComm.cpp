@@ -8,38 +8,38 @@
 #include "Text/UTF8Reader.h"
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-	const UTF8Char *platformSN;
+	Text::String *platformName;
+	Text::String *platformSN;
 } SystemData;
 
 IO::SystemInfo::SystemInfo()
 {
 	Text::StringBuilderUTF8 sb;
 	OSInt i;
-	UTF8Char *u8arr[2];
-	SystemData *data = MemAlloc(SystemData, 1);
+	Text::PString u8arr[2];
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
 
 	sb.ClearStr();
-	Manage::Process::ExecuteProcess((const UTF8Char*)"rdb_get -L", &sb);
-	u8arr[1] = sb.ToString();
+	Manage::Process::ExecuteProcess(UTF8STRC("rdb_get -L"), &sb);
+	u8arr[1] = sb;
 
 	while (true)
 	{
-		i = Text::StrSplitLine(u8arr, 2, u8arr[1]);
-		if (Text::StrStartsWith(u8arr[0], (const UTF8Char*)"system.product.model "))
+		i = Text::StrSplitLineP(u8arr, 2, u8arr[1]);
+		if (u8arr[0].StartsWith(UTF8STRC("system.product.model ")))
 		{
-			SDEL_TEXT(data->platformName);
-			data->platformName = Text::StrCopyNew(&u8arr[0][21]);
+			SDEL_STRING(data->platformName);
+			data->platformName = Text::String::New(&u8arr[0].v[21], u8arr[0].leng - 21);
 		}
-		else if (Text::StrStartsWith(u8arr[0], (const UTF8Char*)"systeminfo.serialnumber "))
+		else if (u8arr[0].StartsWith(UTF8STRC("systeminfo.serialnumber ")))
 		{
-			SDEL_TEXT(data->platformSN);
-			data->platformSN = Text::StrCopyNew(&u8arr[0][24]);
+			SDEL_STRING(data->platformSN);
+			data->platformSN = Text::String::New(&u8arr[0].v[24], u8arr[0].leng - 24);
 		}
 
 		if (i != 2)
@@ -51,28 +51,25 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	SDEL_TEXT(data->platformSN);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformSN)
+	if (this->clsData->platformSN)
 	{
-		return Text::StrConcat(sbuff, data->platformSN);
+		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
 	return 0;
 }

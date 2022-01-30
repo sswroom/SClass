@@ -13,10 +13,10 @@ extern "C"
 	extern void *jniEnv;
 }
 
-typedef struct
+struct Win32::Clipboard::ClassData
 {
 	jobject clipboard;
-} ClassData;
+};
 
 
 Win32::Clipboard::Clipboard(void *hwnd)
@@ -41,15 +41,13 @@ Win32::Clipboard::Clipboard(void *hwnd)
 
 Win32::Clipboard::~Clipboard()
 {
-	ClassData *data = (ClassData*)this->clsData;
-	MemFree(data);
+	MemFree(this->clsData);
 }
 
 
 UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 {
-	ClassData *data = (ClassData*)this->clsData;
-	if (data->clipboard == 0)
+	if (this->clsData->clipboard == 0)
 		return 0;
 	
 	JNIEnv *env = (JNIEnv*)jniEnv;
@@ -63,7 +61,7 @@ UOSInt Win32::Clipboard::GetDataFormats(Data::ArrayList<UInt32> *dataTypes)
 	{
 		return 0;
 	}
-	jobject dataFlavors = env->CallObjectMethod(data->clipboard, mid);
+	jobject dataFlavors = env->CallObjectMethod(this->clsData->clipboard, mid);
 	if (dataFlavors == 0)
 	{
 		return 0;

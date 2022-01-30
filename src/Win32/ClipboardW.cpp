@@ -11,6 +11,7 @@
 
 Win32::Clipboard::Clipboard(void *hwnd)
 {
+	this->clsData = 0;
 	if (OpenClipboard((HWND)hwnd))
 	{
 		this->succ = true;

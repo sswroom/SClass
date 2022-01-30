@@ -6,6 +6,7 @@
 
 IO::SystemInfo::SystemInfo()
 {
+	this->clsData = 0;
 }
 
 IO::SystemInfo::~SystemInfo()

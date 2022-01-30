@@ -8,44 +8,42 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-} SystemData;
+	Text::String *platformName;
+};
 
 IO::SystemInfo::SystemInfo()
 {
 	UTF8Char sbuff[256];
-	SystemData *data = MemAlloc(SystemData, 1);
+	UTF8Char *sptr;
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
 
-	if (IO::OS::GetDistro(sbuff))
+	if ((sptr = IO::OS::GetDistro(sbuff)) != 0)
 	{
-		data->platformName = Text::StrCopyNew(sbuff);
+		data->platformName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 }
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *info = (SystemData*)this->clsData;
 	return 0;
 }
 

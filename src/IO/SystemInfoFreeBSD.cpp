@@ -11,13 +11,13 @@
 #include <sys/types.h>
 #include <sys/sysctl.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *cpuName;
-	const UTF8Char *platformName;
-} SystemInfoData;
+	Text::String *cpuName;
+	Text::String *platformName;
+};
 
-Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF *sb)
+Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
 	IO::FileStream *fs;
@@ -38,7 +38,7 @@ Bool SystemInfo_ReadFile(const UTF8Char *fileName, Text::StringBuilderUTF *sb)
 
 IO::SystemInfo::SystemInfo()
 {
-	SystemInfoData *info = MemAlloc(SystemInfoData, 1);
+	ClassData *info = MemAlloc(ClassData, 1);
 	info->platformName = 0;
 
 	Text::StringBuilderUTF8 sb;
@@ -54,7 +54,7 @@ IO::SystemInfo::SystemInfo()
 	{
 		sb.ClearStr();
 		sb.AppendC((const UTF8Char*)sbuff, size);
-		info->platformName = Text::StrCopyNew(sb.ToString());
+		info->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 	}
 #endif
 
@@ -63,24 +63,21 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemInfoData *info = (SystemInfoData*)this->clsData;
-	SDEL_TEXT(info->platformName);
-	MemFree(info);
+	SDEL_STRING(this->clsData->platformName);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemInfoData *info = (SystemInfoData*)this->clsData;
-	if (info->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, info->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemInfoData *data = (SystemInfoData*)this->clsData;
 	return 0;
 }
 
@@ -155,7 +152,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->deviceLocator)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->deviceLocator);
+					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
 					ram->deviceLocator = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -165,7 +162,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->manufacturer)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->manufacturer);
+					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
 					ram->manufacturer = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -175,7 +172,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->partNo)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->partNo);
+					sb.AppendSlow((const UTF8Char*)mem->partNo);
 					ram->partNo = Text::StrCopyNew(sb.ToString());
 				}
 				else
@@ -185,7 +182,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				if (mem->sn)
 				{
 					sb.ClearStr();
-					sb.Append((const UTF8Char*)mem->sn);
+					sb.AppendSlow((const UTF8Char*)mem->sn);
 					ram->sn = Text::StrCopyNew(sb.ToString());
 				}
 				else

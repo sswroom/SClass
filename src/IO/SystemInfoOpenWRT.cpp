@@ -9,11 +9,11 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-	const UTF8Char *platformSN;
-} SystemData;
+	Text::String *platformName;
+	Text::String *platformSN;
+};
 
 IO::SystemInfo::SystemInfo()
 {
@@ -22,7 +22,7 @@ IO::SystemInfo::SystemInfo()
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
@@ -37,12 +37,12 @@ IO::SystemInfo::SystemInfo()
 			if (sb.StartsWith(UTF8STRC("machine")))
 			{
 				i = sb.IndexOf(UTF8STRC(": "));
-				data->platformName = Text::StrCopyNew(sb.ToString() + i + 2);
+				data->platformName = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
 			}
 			else if (sb.StartsWith(UTF8STRC("Serial")))
 			{
 				i = sb.IndexOf(UTF8STRC(": "));
-				data->platformSN = Text::StrCopyNew(sb.ToString() + i + 2);
+				data->platformSN = Text::String::New(sb.ToString() + i + 2, sb.GetLength() - i - 2);
 			}
 			sb.ClearStr();
 		}
@@ -53,14 +53,14 @@ IO::SystemInfo::SystemInfo()
 	if (data->platformName == 0) //Asus Routers
 	{
 		sb.ClearStr();
-		Manage::Process::ExecuteProcess((const UTF8Char*)"nvram get productid", &sb);
+		Manage::Process::ExecuteProcess(UTF8STRC("nvram get productid"), &sb);
 		if (sb.GetLength() > 0)
 		{
 			while (sb.EndsWith('\r') || sb.EndsWith('\n'))
 			{
 				sb.RemoveChars(1);
 			}
-			data->platformName = Text::StrCopyNew(sb.ToString());
+			data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 		}
 	}
 
@@ -73,7 +73,7 @@ IO::SystemInfo::SystemInfo()
 			sb.ClearStr();
 			if (reader->ReadLine(&sb, 512))
 			{
-				data->platformName = Text::StrCopyNew(sb.ToString());
+				data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 			}
 			DEL_CLASS(reader);
 		}
@@ -83,28 +83,25 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	SDEL_TEXT(data->platformSN);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformSN)
+	if (this->clsData->platformSN)
 	{
-		return Text::StrConcat(sbuff, data->platformSN);
+		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
 	return 0;
 }

@@ -59,7 +59,8 @@ namespace IO
 			CT_STICK_PC
 		} ChassisType;
 	public:
-		void *clsData;
+		struct ClassData;
+		ClassData *clsData;
 	public:
 		SystemInfo();
 		~SystemInfo();
