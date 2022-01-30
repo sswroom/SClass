@@ -9,10 +9,10 @@ namespace Crypto
 		class SHA384 : public Crypto::Hash::IHash
 		{
 		private:
-			UInt64 *intermediateHash;
+			UInt64 intermediateHash[8];
 			UInt64 messageLength;
 			UOSInt messageBlockIndex;
-			UInt8 *messageBlock;
+			UInt8 messageBlock[128];
 
 		public:
 			SHA384();

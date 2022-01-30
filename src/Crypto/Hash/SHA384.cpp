@@ -11,15 +11,11 @@ extern "C"
 
 Crypto::Hash::SHA384::SHA384()
 {
-	this->intermediateHash = MemAlloc(UInt64, 8);
-	this->messageBlock = MemAlloc(UInt8, 128);
 	Clear();
 }
 
 Crypto::Hash::SHA384::~SHA384()
 {
-	MemFree(this->intermediateHash);
-	MemFree(this->messageBlock);
 }
 
 UTF8Char *Crypto::Hash::SHA384::GetName(UTF8Char *sbuff)
@@ -102,20 +98,19 @@ void Crypto::Hash::SHA384::GetValue(UInt8 *buff)
 		MemCopyNO(calBuff, this->messageBlock, messageBlockIndex);
 		i = messageBlockIndex;
 		calBuff[i++] = 0x80;
-		while (i < 120)
+		if (i < 120)
 		{
-			calBuff[i++] = 0;
+			MemClear(&calBuff[i], 120 - i);
 		}
-
 	}
 	else
 	{
 		MemCopyNO(calBuff, this->messageBlock, messageBlockIndex);
 		i = messageBlockIndex;
 		calBuff[i++] = 0x80;
-		while (i < 128)
+		if (i < 128)
 		{
-			calBuff[i++] = 0;
+			MemClear(&calBuff[i], 128 - i);
 		}
 		SHA512_CalcBlock(this->intermediateHash, calBuff);
 
@@ -125,19 +120,11 @@ void Crypto::Hash::SHA384::GetValue(UInt8 *buff)
 	UInt64 msgLeng = this->messageLength;
 	WriteMUInt64(&calBuff[120], msgLeng);
 	SHA512_CalcBlock(this->intermediateHash, calBuff);
-	UInt8 *res = (UInt8*)this->intermediateHash;
 	i = 48;
 	while (i > 0)
 	{
 		i -= 8;
-		buff[i + 0] = res[i + 7];
-		buff[i + 1] = res[i + 6];
-		buff[i + 2] = res[i + 5];
-		buff[i + 3] = res[i + 4];
-		buff[i + 4] = res[i + 3];
-		buff[i + 5] = res[i + 2];
-		buff[i + 6] = res[i + 1];
-		buff[i + 7] = res[i + 0];
+		WriteMUInt64(&buff[i], this->intermediateHash[i >> 3]);
 	}
 	MemCopyNO(this->intermediateHash, intHash, 64);
 }

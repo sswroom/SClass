@@ -2,10 +2,20 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
+#define SHASTEP(v1, v2, v3, v4, v5, v6, v7, v8, n) \
+	s1 = ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \
+	ch = (v5 & v6) ^ ((~v5) & v7); \
+	temp1 = v8 + s1 + ch + K[n] + w[n]; \
+	s0 = ROR64(v1, 28) ^ ROR64(v1, 34) ^ ROR64(v1, 39); \
+	maj = (v1 & v2) ^ (v1 & v3) ^ (v2 & v3); \
+	temp2 = s0 + maj; \
+	v4 += temp1; \
+	v8 = temp1 + temp2;
+
 extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message_Block)
 {
 	UInt64 w[80];
-	const UInt64 K[] =    {
+	static const UInt64 K[] =    {
 		0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc, 0x3956c25bf348b538, 
 		0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118, 0xd807aa98a3030242, 0x12835b0145706fbe, 
 		0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2, 0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 
@@ -54,7 +64,7 @@ extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message
 	g = Intermediate_Hash[6];
 	h = Intermediate_Hash[7];
 
-	t = 0;
+/*	t = 0;
 	while (t < 80)
 	{
         s1 = ROR64(e, 14) ^ ROR64(e, 18) ^ ROR64(e, 41);
@@ -74,7 +84,96 @@ extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message
         a = temp1 + temp2;
 
 		t++;
-    }
+    }*/
+	SHASTEP(a, b, c, d, e, f, g, h, 0);
+	SHASTEP(h, a, b, c, d, e, f, g, 1);
+	SHASTEP(g, h, a, b, c, d, e, f, 2);
+	SHASTEP(f, g, h, a, b, c, d, e, 3);
+	SHASTEP(e, f, g, h, a, b, c, d, 4);
+	SHASTEP(d, e, f, g, h, a, b, c, 5);
+	SHASTEP(c, d, e, f, g, h, a, b, 6);
+	SHASTEP(b, c, d, e, f, g, h, a, 7);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 8);
+	SHASTEP(h, a, b, c, d, e, f, g, 9);
+	SHASTEP(g, h, a, b, c, d, e, f, 10);
+	SHASTEP(f, g, h, a, b, c, d, e, 11);
+	SHASTEP(e, f, g, h, a, b, c, d, 12);
+	SHASTEP(d, e, f, g, h, a, b, c, 13);
+	SHASTEP(c, d, e, f, g, h, a, b, 14);
+	SHASTEP(b, c, d, e, f, g, h, a, 15);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 16);
+	SHASTEP(h, a, b, c, d, e, f, g, 17);
+	SHASTEP(g, h, a, b, c, d, e, f, 18);
+	SHASTEP(f, g, h, a, b, c, d, e, 19);
+	SHASTEP(e, f, g, h, a, b, c, d, 20);
+	SHASTEP(d, e, f, g, h, a, b, c, 21);
+	SHASTEP(c, d, e, f, g, h, a, b, 22);
+	SHASTEP(b, c, d, e, f, g, h, a, 23);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 24);
+	SHASTEP(h, a, b, c, d, e, f, g, 25);
+	SHASTEP(g, h, a, b, c, d, e, f, 26);
+	SHASTEP(f, g, h, a, b, c, d, e, 27);
+	SHASTEP(e, f, g, h, a, b, c, d, 28);
+	SHASTEP(d, e, f, g, h, a, b, c, 29);
+	SHASTEP(c, d, e, f, g, h, a, b, 30);
+	SHASTEP(b, c, d, e, f, g, h, a, 31);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 32);
+	SHASTEP(h, a, b, c, d, e, f, g, 33);
+	SHASTEP(g, h, a, b, c, d, e, f, 34);
+	SHASTEP(f, g, h, a, b, c, d, e, 35);
+	SHASTEP(e, f, g, h, a, b, c, d, 36);
+	SHASTEP(d, e, f, g, h, a, b, c, 37);
+	SHASTEP(c, d, e, f, g, h, a, b, 38);
+	SHASTEP(b, c, d, e, f, g, h, a, 39);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 40);
+	SHASTEP(h, a, b, c, d, e, f, g, 41);
+	SHASTEP(g, h, a, b, c, d, e, f, 42);
+	SHASTEP(f, g, h, a, b, c, d, e, 43);
+	SHASTEP(e, f, g, h, a, b, c, d, 44);
+	SHASTEP(d, e, f, g, h, a, b, c, 45);
+	SHASTEP(c, d, e, f, g, h, a, b, 46);
+	SHASTEP(b, c, d, e, f, g, h, a, 47);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 48);
+	SHASTEP(h, a, b, c, d, e, f, g, 49);
+	SHASTEP(g, h, a, b, c, d, e, f, 50);
+	SHASTEP(f, g, h, a, b, c, d, e, 51);
+	SHASTEP(e, f, g, h, a, b, c, d, 52);
+	SHASTEP(d, e, f, g, h, a, b, c, 53);
+	SHASTEP(c, d, e, f, g, h, a, b, 54);
+	SHASTEP(b, c, d, e, f, g, h, a, 55);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 56);
+	SHASTEP(h, a, b, c, d, e, f, g, 57);
+	SHASTEP(g, h, a, b, c, d, e, f, 58);
+	SHASTEP(f, g, h, a, b, c, d, e, 59);
+	SHASTEP(e, f, g, h, a, b, c, d, 60);
+	SHASTEP(d, e, f, g, h, a, b, c, 61);
+	SHASTEP(c, d, e, f, g, h, a, b, 62);
+	SHASTEP(b, c, d, e, f, g, h, a, 63);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 64);
+	SHASTEP(h, a, b, c, d, e, f, g, 65);
+	SHASTEP(g, h, a, b, c, d, e, f, 66);
+	SHASTEP(f, g, h, a, b, c, d, e, 67);
+	SHASTEP(e, f, g, h, a, b, c, d, 68);
+	SHASTEP(d, e, f, g, h, a, b, c, 69);
+	SHASTEP(c, d, e, f, g, h, a, b, 70);
+	SHASTEP(b, c, d, e, f, g, h, a, 71);
+
+	SHASTEP(a, b, c, d, e, f, g, h, 72);
+	SHASTEP(h, a, b, c, d, e, f, g, 73);
+	SHASTEP(g, h, a, b, c, d, e, f, 74);
+	SHASTEP(f, g, h, a, b, c, d, e, 75);
+	SHASTEP(e, f, g, h, a, b, c, d, 76);
+	SHASTEP(d, e, f, g, h, a, b, c, 77);
+	SHASTEP(c, d, e, f, g, h, a, b, 78);
+	SHASTEP(b, c, d, e, f, g, h, a, 79);
 
 	Intermediate_Hash[0] += a;
 	Intermediate_Hash[1] += b;

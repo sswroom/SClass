@@ -161,8 +161,11 @@ CRC32R_Calc:
 _CRC32R_Calc:
 	xchg r10,rbx
 	mov rax,rcx ;currVal
+	test rsi,rsi buffSize
+	jz calcexit
 	mov r8,rdx ;tab
 	mov r9,rsi ;buffSize
+	
 	cmp dword [r8+512],0x82F63B78
 	jnz calclop0
 	cmp dword [rel _UseSSE42],0
@@ -259,6 +262,27 @@ calcexit:
 
 calcsse42:
 	mov r11,r9
+	shr r9,6
+	jz calcsse42_1a
+
+	align 16
+calcsse42_0:
+	crc32 rax,qword [rdi]
+	crc32 rax,qword [rdi+8]
+	crc32 rax,qword [rdi+16]
+	crc32 rax,qword [rdi+24]
+	crc32 rax,qword [rdi+32]
+	crc32 rax,qword [rdi+40]
+	crc32 rax,qword [rdi+48]
+	crc32 rax,qword [rdi+56]
+	lea rdi,[rdi+64]
+	dec r9
+	jnz calcsse42_0
+	and r11,63
+	jz calcexit
+
+calcsse42_1a:
+	mov r9,r11
 	shr r9,3
 	jz calcsse42_2
 	align 16
@@ -268,15 +292,13 @@ calcsse42_1:
 	dec r9
 	jnz calcsse42_1
 
-	align 16
-calcsse42_2:
 	and r11,7
 	jz calcexit
 
 	align 16
-calcsse42_3:
+calcsse42_2:
 	crc32 eax,byte [rdi]
 	lea rdi,[rdi+1]
 	dec r11
-	jnz calcsse42_3
+	jnz calcsse42_2
 	jmp calcexit

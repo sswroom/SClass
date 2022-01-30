@@ -1319,7 +1319,7 @@ UTF8Char *Text::StrHexByte(UTF8Char *oriStr, UInt8 val)
 
 UTF8Char *Text::StrHexBytes(UTF8Char *oriStr, const UInt8 *buff, UOSInt buffSize, UTF8Char seperator)
 {
-	UInt8 val;
+	UOSInt val;
 	if (seperator == 0)
 	{
 		while (buffSize-- > 0)

@@ -19,6 +19,8 @@ test:
 @TestAES256
 @TestBcrypt
 @TestBlowfish
+@TestCRC16
+@TestCRC16R
 @TestCRC32C
 @TestCRC32R
 @TestJWT
@@ -618,6 +620,12 @@ TestBcrypt:
 TestBlowfish:
 @TestBlowfish.o
 @ConsoleStartup.o
+TestCRC16:
+@TestCRC16.o
+@ConsoleStartup.o
+TestCRC16R:
+@TestCRC16R.o
+@ConsoleStartup.o
 TestCRC32C:
 @TestCRC32C.o
 @ConsoleStartup.o
@@ -945,6 +953,8 @@ TestAES192.o: ../../main/Test/Crypto/TestAES192.cpp
 TestAES256.o: ../../main/Test/Crypto/TestAES256.cpp
 TestBcrypt.o: ../../main/Test/Crypto/TestBcrypt.cpp
 TestBlowfish.o: ../../main/Test/Crypto/TestBlowfish.cpp
+TestCRC16.o: ../../main/Test/Crypto/TestCRC16.cpp
+TestCRC16R.o: ../../main/Test/Crypto/TestCRC16R.cpp
 TestCRC32C.o: ../../main/Test/Crypto/TestCRC32C.cpp
 TestCRC32R.o: ../../main/Test/Crypto/TestCRC32R.cpp
 TestJWT.o: ../../main/Test/Crypto/TestJWT.cpp
