@@ -4,6 +4,14 @@
 #include "Data/ByteTool.h"
 #include "Text/MyString.h"
 
+#if defined(ENABLE_SSE) && (defined(CPU_X86_64) || defined(CPU_X86_32))
+#if defined(_MSC_VER)
+#include <intrin.h>
+#else
+#include <x86intrin.h>
+#endif
+#endif
+
 Char MyString_STRHEXARR[] = "0123456789ABCDEF";
 Char MyString_STRhexarr[] = "0123456789abcdef";
 
@@ -2766,7 +2774,21 @@ UOSInt Text::StrIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
 {
 	REGVAR const UTF8Char *ptr = str1;
 	REGVAR UInt16 c2;
-	while (len1 >= 2)
+
+	while (len1 >= 4)
+	{
+		if (ptr[0] == c)
+			return (UOSInt)(ptr - str1);
+		if (ptr[1] == c)
+			return (UOSInt)(ptr - str1 + 1);
+		if (ptr[2] == c)
+			return (UOSInt)(ptr - str1 + 2);
+		if (ptr[3] == c)
+			return (UOSInt)(ptr - str1 + 3);
+		ptr += 4;
+		len1 -= 4;
+	}
+	if (len1 >= 2)
 	{
 		c2 = ReadUInt16(ptr);
 		if ((UTF8Char)(c2 & 0xff) == c)
@@ -3255,14 +3277,17 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	{
 		REGVAR UInt32 v1 = ReadNUInt32(str1);
 		REGVAR UInt32 v2 = ReadNUInt32(str2);
-		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
-			return false;
-		if (upperArr[(v1 >> 8) & 0xff] != upperArr[(v2 >> 8) & 0xff])
-			return false;
-		if (upperArr[(v1 >> 16) & 0xff] != upperArr[(v2 >> 16) & 0xff])
-			return false;
-		if (upperArr[(v1 >> 24)] != upperArr[(v2 >> 24)])
-			return false;
+		if (v1 != v2)
+		{
+			if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff])
+				return false;
+			if (upperArr[(v1 >> 8) & 0xff] != upperArr[(v2 >> 8) & 0xff])
+				return false;
+			if (upperArr[(v1 >> 16) & 0xff] != upperArr[(v2 >> 16) & 0xff])
+				return false;
+			if (upperArr[(v1 >> 24)] != upperArr[(v2 >> 24)])
+				return false;
+		}
 		str1 += 4;
 		str2 += 4;
 		len2 -= 4;
@@ -3271,9 +3296,12 @@ Bool Text::StrStartsWithICaseC(const UTF8Char *str1, UOSInt len1, const UTF8Char
 	{
 		REGVAR UInt16 v1 = ReadNUInt16(str1);
 		REGVAR UInt16 v2 = ReadNUInt16(str2);
-		if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
-			upperArr[(v1 >> 8)] != upperArr[(v2 >> 8)])
-			return false;
+		if (v1 != v2)
+		{
+			if (upperArr[v1 & 0xff] != upperArr[v2 & 0xff] ||
+				upperArr[(v1 >> 8)] != upperArr[(v2 >> 8)])
+				return false;
+		}
 		str1 += 2;
 		str2 += 2;
 		len2 -= 2;

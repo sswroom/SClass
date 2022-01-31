@@ -59,7 +59,7 @@ Bool Net::WLANLinuxInterface::Scan()
 	ret = ioctl(-1 + (int)(OSInt)this->id, SIOCSIWSCAN, &wrq);
 	if (ret < 0)
 	{
-		printf("SIOCSIWSCAN name = %s, ret = %d, errno = %d\r\n", this->name->v, ret, errno);
+		printf("WLANLinuxInterface Scan failed, name = %s, ret = %d, errno = %d\r\n", this->name->v, ret, errno);
 		if (errno == 14)
 		{
 			this->Reopen();

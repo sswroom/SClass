@@ -792,7 +792,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		i = this->headers->GetCount();
 		while (i-- > 0)
 		{
-			MemFree(this->headers->RemoveAt(i));
+			this->headers->RemoveAt(i)->Release();
 		}
 		this->headers->Clear();
 		LIST_FREE_STRING(this->reqHeaders);
@@ -941,7 +941,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 
 void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 {
-	if (this->cli == 0 || (this->writing && !this->canWrite))
+	if ((this->writing && !this->canWrite) || this->cli == 0)
 	{
 		if (timeReq)
 		{
@@ -1082,12 +1082,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 					this->headers->Add(s);
 
-					if (s->StartsWithICase(UTF8STRC("Content-Length: ")))
-					{
-						s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
-						Text::StrToUInt64S(&s->v[16], &this->contLeng, 0);
-					}
-					else if (s->StartsWithICase(UTF8STRC("Transfer-Encoding: ")))
+					if (s->StartsWithICase(UTF8STRC("Transfer-Encoding: ")))
 					{
 						if (Text::StrStartsWithC(&s->v[19], s->leng - 19, UTF8STRC("chunked")))
 						{
@@ -1095,9 +1090,17 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 							this->chunkSizeLeft = 0;
 						}
 					}
-					else if (s->StartsWithICase(UTF8STRC("Content-Type: text/event-stream")))
+					else if (s->StartsWithICase(UTF8STRC("Content-")))
 					{
-						eventStream = true;
+						if (s->StartsWithICase(8, UTF8STRC("Length: ")))
+						{
+							s->leng = (UOSInt)(Text::StrTrimC(&s->v[16], s->leng - 16) - s->v);
+							Text::StrToUInt64S(&s->v[16], &this->contLeng, 0);
+						}
+						else if (s->StartsWithICase(8, UTF8STRC("Type: text/event-stream")))
+						{
+							eventStream = true;
+						}
 					}
 					else if (s->StartsWithICase(UTF8STRC("Keep-Alive: timeout=")))
 					{

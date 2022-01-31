@@ -8,7 +8,6 @@
 extern "C"
 {
 	void CRC32R_InitTable(UInt32 *tab, UInt32 rpn);
-	UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal);
 }
 
 Bool Crypto::Hash::CRC32RC::tabInited = false;
@@ -70,9 +69,4 @@ UOSInt Crypto::Hash::CRC32RC::GetResultSize()
 UInt32 Crypto::Hash::CRC32RC::GetValueU32()
 {
 	return ~this->currVal;
-}
-
-UInt32 Crypto::Hash::CRC32RC::CalcDirect(const UInt8 *buff, UOSInt buffSize)
-{
-	return ~CRC32R_Calc(buff, buffSize, this->crctab, 0xffffffff);
 }
