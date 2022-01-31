@@ -223,13 +223,107 @@ UTF8Char *Text::StrUInt16(UTF8Char *oriStr, UInt16 val)
 
 UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 {
-	UTF8Char buff[10];
-	UTF8Char *str;
 	if (val < 0)
 	{
 		val = -val;
 		*oriStr++ = '-';
 	}
+#if 1
+	if (val < 10)
+	{
+		*oriStr = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr++;
+	}
+	else if (val < 100)
+	{
+		WriteNInt16((UInt8*)oriStr, ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 2;
+	}
+	else if (val < 1000)
+	{
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 3;
+	}
+	else if (val < 10000)
+	{
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 4;
+	}
+	else if (val < 100000)
+	{
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 5;
+	}
+	else if (val < 1000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 6;
+	}
+	else if (val < 10000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 7;
+	}
+	else if (val < 100000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 8;
+	}
+	else if (val < 1000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 9;
+	}
+	else
+	{
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 10;
+	}
+	*oriStr = 0;
+	return oriStr;
+#else
+	UTF8Char buff[10];
+	UTF8Char *str;
 	str = &buff[10];
 	if (val == 0)
 	{
@@ -237,7 +331,6 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 	}
 	else
 	{
-#if 1
 		UInt32 uval = (UInt32)val;
 		while (uval)
 		{
@@ -249,24 +342,6 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 		{
 			str++;
 		}
-#else
-		while (val >= 100)
-		{
-			str -= 2;
-			WriteNInt16(str, ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2];
-			val = val / 100;
-		}
-		if (val >= 10)
-		{
-			str -= 2;
-			WriteNInt16(str, ReadNInt16(&MyString_StrDigit100U8[val * 2];
-		}
-		else
-		{
-			str -= 1;
-			*str = MyString_StrDigit100U8[val * 2 + 1];
-		}
-#endif
 	}
 	UOSInt len = (UOSInt)(&buff[10] - str);
 	while (len >= 4)
@@ -289,10 +364,105 @@ UTF8Char *Text::StrInt32(UTF8Char *oriStr, Int32 val)
 	}
 	*oriStr = 0;
 	return oriStr;
+#endif
 }
 
 UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 {
+#if 1
+	if (val < 10)
+	{
+		*oriStr = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr++;
+	}
+	else if (val < 100)
+	{
+		WriteNInt16((UInt8*)oriStr, ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 2;
+	}
+	else if (val < 1000)
+	{
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 3;
+	}
+	else if (val < 10000)
+	{
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 4;
+	}
+	else if (val < 100000)
+	{
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 5;
+	}
+	else if (val < 1000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 6;
+	}
+	else if (val < 10000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 7;
+	}
+	else if (val < 100000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 8;
+	}
+	else if (val < 1000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 9;
+	}
+	else
+	{
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 10;
+	}
+	*oriStr = 0;
+	return oriStr;
+#else
 	UTF8Char buff[10];
 	UTF8Char *str;
 	str = &buff[10];
@@ -302,7 +472,6 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 	}
 	else
 	{
-#if 1
 		while (val)
 		{
 			str -= 2;
@@ -313,24 +482,6 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 		{
 			str++;
 		}
-#else
-		while (val >= 100)
-		{
-			str -= 2;
-			WriteNInt16(str, ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2];
-			val = val / 100;
-		}
-		if (val >= 10)
-		{
-			str -= 2;
-			WriteNInt16(str, ReadNInt16(&MyString_StrDigit100U8[val * 2];
-		}
-		else
-		{
-			str -= 1;
-			*str = MyString_StrDigit100U8[val * 2 + 1];
-		}
-#endif
 	}
 	while (str < &buff[10])
 	{
@@ -338,6 +489,7 @@ UTF8Char *Text::StrUInt32(UTF8Char *oriStr, UInt32 val)
 	}
 	*oriStr = 0;
 	return oriStr;
+#endif
 }
 
 UTF8Char *Text::StrInt32S(UTF8Char *oriStr, Int32 val, UTF8Char seperator, UOSInt sepCnt)
@@ -406,13 +558,201 @@ UTF8Char *Text::StrUInt32S(UTF8Char *oriStr, UInt32 val, UTF8Char seperator, UOS
 #if _OSINT_SIZE == 64
 UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 {
-	UTF8Char buff[20];
-	UTF8Char *str;
 	if (val < 0)
 	{
 		val = -val;
 		*oriStr++ = '-';
 	}
+#if 1
+	if (val < 0x100000000)
+	{
+		return Text::StrUInt32(oriStr, (UInt32)val);
+	}
+	if (val < 10000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 10;
+	}
+	else if (val < 100000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 11;
+	}
+	else if (val < 1000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 12;
+	}
+	else if (val < 10000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 13;
+	}
+	else if (val < 100000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 14;
+	}
+	else if (val < 1000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 15;
+	}
+	else if (val < 10000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[14], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 16;
+	}
+	else if (val < 100000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[15], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 17;
+	}
+	else if (val < 1000000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[16], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[14], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 18;
+	}
+	else
+	{
+		WriteNInt16((UInt8*)&oriStr[17], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[15], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 19;
+	}
+	*oriStr = 0;
+	return oriStr;
+#else
+	UTF8Char buff[20];
+	UTF8Char *str;
 	str = &buff[20];
 	if (val == 0)
 	{
@@ -420,18 +760,6 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 	}
 	else
 	{
-#if 0
-		while (val)
-		{
-			str -= 2;
-			WriteNInt16(str, ReadNInt16(&MyString_StrDigit100U8[(val % 100) * 2];
-			val = val / 100;
-		}
-		if (*str == '0')
-		{
-			str++;
-		}
-#else
 		while (val >= 100)
 		{
 			str -= 2;
@@ -448,7 +776,6 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 			str -= 1;
 			*str = MyString_StrDigit100U8[val * 2 + 1];
 		}
-#endif
 	}
 	while (str < &buff[20])
 	{
@@ -456,10 +783,222 @@ UTF8Char *Text::StrInt64(UTF8Char *oriStr, Int64 val)
 	}
 	*oriStr = 0;
 	return oriStr;
+#endif
 }
 
 UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 {
+#if 1
+	if (val < 0x100000000)
+	{
+		return Text::StrUInt32(oriStr, (UInt32)val);
+	}
+	if (val < 10000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 10;
+	}
+	else if (val < 100000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 11;
+	}
+	else if (val < 1000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 12;
+	}
+	else if (val < 10000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 13;
+	}
+	else if (val < 100000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 14;
+	}
+	else if (val < 1000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 15;
+	}
+	else if (val < 10000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[14], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 16;
+	}
+	else if (val < 100000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[15], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 17;
+	}
+	else if (val < 1000000000000000000)
+	{
+		WriteNInt16((UInt8*)&oriStr[16], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[14], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 18;
+	}
+	else if (val < 10000000000000000000ULL)
+	{
+		WriteNInt16((UInt8*)&oriStr[17], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[15], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[13], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[11], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[9], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[7], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[5], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[3], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[1], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		oriStr[0] = MyString_StrDigit100U8[val * 2 + 1];
+		oriStr += 19;
+	}
+	else
+	{
+		WriteNInt16((UInt8*)&oriStr[18], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[16], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[14], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[12], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[10], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[8], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[6], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[4], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[2], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[(val % 100) * 2]));
+		val /= 100;
+		WriteNInt16((UInt8*)&oriStr[0], ReadNInt16((const UInt8*)&MyString_StrDigit100U8[val * 2]));
+		oriStr += 18;
+	}
+	*oriStr = 0;
+	return oriStr;
+#else
 	UTF8Char buff[20];
 	UTF8Char *str;
 	str = &buff[20];
@@ -486,6 +1025,7 @@ UTF8Char *Text::StrUInt64(UTF8Char *oriStr, UInt64 val)
 	}
 	*oriStr = 0;
 	return oriStr;
+#endif
 }
 
 UTF8Char *Text::StrInt64S(UTF8Char *oriStr, Int64 val, UTF8Char seperator, UOSInt sepCnt)
