@@ -173,11 +173,11 @@ void Text::String::Release()
 {
 #if defined(THREADSAFE)
 #if _OSINT_SIZE == 64
-	Interlocked_DecrementU64(&this->cnt);
+	UOSInt cnt = Interlocked_DecrementU64(&this->useCnt);
 #else
-	Interlocked_DecrementU32(&this->cnt);
+	UOSInt cnt = Interlocked_DecrementU32(&this->useCnt);
 #endif
-	if (this->cnt == 0)
+	if (cnt == 0)
 	{
 		MemFree(this);
 	}
@@ -196,9 +196,9 @@ Text::String *Text::String::Clone()
 	return New(this->v, this->leng);
 #elif defined(THREADSAFE)
 	#if _OSINT_SIZE == 64
-	Interlocked_IncrementU64(&this->cnt);
+	Interlocked_IncrementU64(&this->useCnt);
 	#else
-	Interlocked_IncrementU32(&this->cnt);
+	Interlocked_IncrementU32(&this->useCnt);
 	#endif
 	return this;
 #else

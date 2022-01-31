@@ -150,37 +150,19 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 	return this->ieList->GetItem(index);
 }
 
-Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData)
+Net::WirelessLAN::Interface::Interface()
 {
-	this->clsData = 0;
-	this->name = Text::String::NewNotNull(name);
-	this->id = id;
-	this->state = state;
+	this->name = 0;
 }
 
 Net::WirelessLAN::Interface::~Interface()
 {
-	this->name->Release();
+	SDEL_STRING(this->name);
 }
 
 Text::String *Net::WirelessLAN::Interface::GetName()
 {
 	return this->name;
-}
-
-Bool Net::WirelessLAN::Interface::Scan()
-{
-	return false;
-}
-
-UOSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
-{
-	return 0;
-}
-
-UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) ///////////////////////////////////
-{
-	return 0;
 }
 
 Net::WirelessLAN::WirelessLAN()

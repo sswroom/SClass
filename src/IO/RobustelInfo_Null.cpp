@@ -8,7 +8,7 @@ Text::String *IO::RobustelInfo::GetIMEI()
 
 Text::String *IO::RobustelInfo::GetCellID()
 {
-	return 0;
+	return Text::String::NewEmpty();
 }
 
 Bool IO::RobustelInfo::GetRSSI(Int8 *val)
@@ -28,5 +28,7 @@ Bool IO::RobustelInfo::GetRSRQ(Int8 *val)
 
 Bool IO::RobustelInfo::GetPosition(Double *lat, Double *lon)
 {
-	return false;
+	*lat = 0;
+	*lon = 0;
+	return true;
 }

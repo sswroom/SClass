@@ -84,21 +84,17 @@ namespace Net
 
 		class Interface
 		{
-		private:
-			void *clsData;
+		protected:
 			Text::String *name;
-			void *id;
-			INTERFACE_STATE state;
 
-			void Reopen();
 		public:
-			Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData);
-			~Interface();
+			Interface();
+			virtual ~Interface();
 
 			Text::String *GetName();
-			Bool Scan();
-			UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList);
-			UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList);
+			virtual Bool Scan() = 0;
+			virtual UOSInt GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList) = 0;
+			virtual UOSInt GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList) = 0;
 		};
 
 	public:

@@ -119,6 +119,10 @@ Net/WinSSLEngine.h: ../../src/Net/WinSSLEngine.cpp
 @WinSSLEngine.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANW.cpp
 @WirelessLAN.o
+Net/WLANWindowsCore.h: ../../src/Net/WLANWindowsCore.cpp
+@WLANWindowsCore.o
+Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
+@WLANWindowsInterface.o
 
 Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
@@ -195,6 +199,8 @@ WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 !-lsecur32
 !-lcrypt32
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
+WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
+WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
 WinRTCore.o: ../../src/Win32/WinRTCore.cpp

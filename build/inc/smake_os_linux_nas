@@ -70,6 +70,10 @@ Net/SSLEngineFactory.h: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 @SSLEngineFactory.o
 Net/WirelessLAN.h: ../../src/Net/WirelessLANL.cpp
 @WirelessLAN.o
+Net/WLANLinuxInterface.h: ../../src/Net/WLANLinuxInterface.cpp
+@WLANLinuxInterface.o
+Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
+@WLANLinuxMTKInterface.o
 
 Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 @Thread.o
@@ -108,5 +112,7 @@ OCVUtil.o: ../../src/Media/OpenCV/OCVUtil.cpp
 HTTPOSClient.o: ../../src/Net/HTTPOSClientNull.cpp
 SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
+WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
+WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

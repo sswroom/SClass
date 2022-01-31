@@ -2,75 +2,13 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 #include "Net/WirelessLAN.h"
+#include "Net/WLANWindowsCore.h"
+#include "Net/WLANWindowsInterface.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Text/StringBuilderUTF8.h"
 #include <windows.h>
 #include <wlanapi.h>
-
-typedef void (__stdcall *FreeMemoryFunc)(void *pMemory);
-typedef UInt32 (__stdcall *OpenHandleFunc)(UInt32 dwClientVersion, void *pReserved, UInt32 *pdwNegoiatedVersion, void **phClientHandle);
-typedef UInt32 (__stdcall *CloseHandleFunc)(void *hClientHandle, void *pReserved);
-typedef UInt32 (__stdcall *ScanFunc)(void *hClientHandle, void *pInterfaceGuid, void *pDot11Ssid, void *pIeData, void *pReserved);
-typedef UInt32 (__stdcall *EnumInterfacesFunc)(void *hClientHandle, void *pReserved, void **ppInterfaceList);
-typedef UInt32 (__stdcall *GetAvailableNetworkListFunc)(void *hClientHandle, void *pInterfaceGuid, UInt32 dwFlags, void *pReserved, void **ppAvailableNetworkList);
-typedef UInt32 (__stdcall *GetNetworkBssListFunc)(void *hClientHandle, void *pInterfaceGuid, void *pDot11Ssid, Int32 dot11BssType, Int32 bSecurityEnabled, void *pReserved, void **ppWlanBssList);
-
-typedef struct
-{
-	IO::Library *apiLib;
-	void *hand;
-	FreeMemoryFunc WlanFreeMemoryFunc;
-	ScanFunc WlanScanFunc;
-	EnumInterfacesFunc WlanEnumInterfacesFunc;
-	GetAvailableNetworkListFunc WlanGetAvailableNetworkListFunc;
-	GetNetworkBssListFunc WlanGetNetworkBssListFunc;
-} ClassData;
-
-
-void WirelessLAN_FreeMemory(ClassData *clsData, void *pMemory)
-{
-	if (clsData->WlanFreeMemoryFunc)
-	{
-		clsData->WlanFreeMemoryFunc(pMemory);
-	}
-}
-
-UInt32 WirelessLAN_Scan(ClassData *clsData, void *pInterfaceGuid, void *pDot11Ssid, void *pIeData, void *pReserved)
-{
-	if (clsData->WlanScanFunc)
-	{
-		return clsData->WlanScanFunc(clsData->hand, pInterfaceGuid, pDot11Ssid, pIeData, pReserved);
-	}
-	return ERROR_INVALID_PARAMETER;
-}
-
-UInt32 WirelessLAN_EnumInterfaces(ClassData *clsData, void *pReserved, void **ppInterfaceList)
-{
-	if (clsData->WlanEnumInterfacesFunc)
-	{
-		return clsData->WlanEnumInterfacesFunc(clsData->hand, pReserved, ppInterfaceList);
-	}
-	return ERROR_INVALID_PARAMETER;
-}
-
-UInt32 WirelessLAN_GetAvailableNetworkList(ClassData *clsData, void *pInterfaceGuid, UInt32 dwFlags, void *pReserved, void **ppAvailableNetworkList)
-{
-	if (clsData->WlanGetAvailableNetworkListFunc)
-	{
-		return clsData->WlanGetAvailableNetworkListFunc(clsData->hand, pInterfaceGuid, dwFlags, pReserved, ppAvailableNetworkList);
-	}
-	return ERROR_INVALID_PARAMETER;
-}
-
-UInt32 WirelessLAN_GetNetworkBssList(ClassData *clsData, void *pInterfaceGuid, void *pDot11Ssid, Int32 dot11BssType, Int32 bSecurityEnabled, void *pReserved, void **ppWlanBssList)
-{
-	if (clsData->WlanGetNetworkBssListFunc)
-	{
-		return clsData->WlanGetNetworkBssListFunc(clsData->hand, pInterfaceGuid, pDot11Ssid, dot11BssType, bSecurityEnabled, pReserved, ppWlanBssList);
-	}
-	return ERROR_INVALID_PARAMETER;
-}
 
 Net::WirelessLAN::Network::Network(const UTF8Char *ssid, Double rssi)
 {
@@ -318,18 +256,13 @@ Net::WirelessLANIE *Net::WirelessLAN::BSSInfo::GetIE(UOSInt index)
 	return this->ieList->GetItem(index);
 }
 
-Net::WirelessLAN::Interface::Interface(const UTF8Char *name, void *id, INTERFACE_STATE state, void *clsData)
+Net::WirelessLAN::Interface::Interface()
 {
-	this->clsData = clsData;
-	this->name = Text::String::NewNotNull(name);
-	this->id = MemAlloc(GUID, 1);
-	MemCopyNO(this->id, id, sizeof(GUID));
-	this->state = state;
+	this->name = 0;
 }
 
 Net::WirelessLAN::Interface::~Interface()
 {
-	MemFree(this->id);
 	this->name->Release();
 }
 
@@ -338,107 +271,32 @@ Text::String *Net::WirelessLAN::Interface::GetName()
 	return this->name;
 }
 
-Bool Net::WirelessLAN::Interface::Scan()
-{
-	return WirelessLAN_Scan((ClassData*)this->clsData, this->id, 0, 0, 0) == ERROR_SUCCESS;
-}
-
-UOSInt Net::WirelessLAN::Interface::GetNetworks(Data::ArrayList<Net::WirelessLAN::Network*> *networkList)
-{
-	WLAN_AVAILABLE_NETWORK_LIST *list;
-	UOSInt retVal = 0;
-	if (ERROR_SUCCESS == WirelessLAN_GetAvailableNetworkList((ClassData*)this->clsData, this->id, 0, 0, (void**)&list))
-	{
-		UInt32 i = 0;
-		UInt32 j = list->dwNumberOfItems;
-		while (i < j)
-		{
-			Net::WirelessLAN::Network *net;
-			UTF8Char buff[33];
-			Text::StrConcatC(buff, list->Network[i].dot11Ssid.ucSSID, list->Network[i].dot11Ssid.uSSIDLength);
-			NEW_CLASS(net, Net::WirelessLAN::Network(buff, -100 + 0.5 * list->Network[i].wlanSignalQuality));
-			networkList->Add(net);
-			retVal++;
-			i++;
-		}
-		WirelessLAN_FreeMemory((ClassData*)this->clsData, list);
-	}
-	return retVal;
-}
-
-UOSInt Net::WirelessLAN::Interface::GetBSSList(Data::ArrayList<Net::WirelessLAN::BSSInfo*> *bssList)
-{
-	WLAN_BSS_LIST *list;
-	UOSInt retVal = 0;
-	if (ERROR_SUCCESS == WirelessLAN_GetNetworkBssList((ClassData*)this->clsData, this->id, 0, 0, 0, 0, (void**)&list))
-	{
-		UInt32 i = 0;
-		UInt32 j = list->dwNumberOfItems;
-		while (i < j)
-		{
-			Net::WirelessLAN::BSSInfo *bss;
-			UTF8Char buff[33];
-			Text::StrConcatC(buff, list->wlanBssEntries[i].dot11Ssid.ucSSID, list->wlanBssEntries[i].dot11Ssid.uSSIDLength);
-			NEW_CLASS(bss, Net::WirelessLAN::BSSInfo(buff, &list->wlanBssEntries[i]));
-			bssList->Add(bss);
-			retVal++;
-			i++;
-		}
-		WirelessLAN_FreeMemory((ClassData*)this->clsData, list);
-	}
-	return retVal;
-}
 
 Net::WirelessLAN::WirelessLAN()
 {
-	ClassData *clsData = MemAlloc(ClassData, 1);
-	this->clsData = clsData;
-	UInt32 ver;
-	NEW_CLASS(clsData->apiLib, IO::Library((const UTF8Char*)"Wlanapi.dll"));
-	if (!clsData->apiLib->IsError())
-	{
-		clsData->WlanFreeMemoryFunc = (FreeMemoryFunc)clsData->apiLib->GetFunc("WlanFreeMemory");
-		clsData->WlanScanFunc = (ScanFunc)clsData->apiLib->GetFunc("WlanScan");
-		clsData->WlanEnumInterfacesFunc = (EnumInterfacesFunc)clsData->apiLib->GetFunc("WlanEnumInterfaces");
-		clsData->WlanGetAvailableNetworkListFunc = (GetAvailableNetworkListFunc)clsData->apiLib->GetFunc("WlanGetAvailableNetworkList");
-		clsData->WlanGetNetworkBssListFunc = (GetNetworkBssListFunc)clsData->apiLib->GetFunc("WlanGetNetworkBssList");
-		OpenHandleFunc func = (OpenHandleFunc)clsData->apiLib->GetFunc("WlanOpenHandle");
-		func(1, 0, &ver, &clsData->hand);
-	}
-	else
-	{
-		clsData->WlanFreeMemoryFunc = 0;
-		clsData->WlanScanFunc = 0;
-		clsData->WlanEnumInterfacesFunc = 0;
-		clsData->WlanGetAvailableNetworkListFunc = 0;
-		clsData->WlanGetNetworkBssListFunc = 0;
-	}
+	Net::WLANWindowsCore *core;
+	NEW_CLASS(core, Net::WLANWindowsCore());
+	this->clsData = core;
 }
 
 Net::WirelessLAN::~WirelessLAN()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	if (!clsData->apiLib->IsError())
-	{
-		CloseHandleFunc func = (CloseHandleFunc)clsData->apiLib->GetFunc("WlanCloseHandle");
-		func(clsData->hand, 0);
-	}
-	DEL_CLASS(clsData->apiLib);
-	MemFree(clsData);
+	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
+	DEL_CLASS(core);
 }
 
 Bool Net::WirelessLAN::IsError()
 {
-	ClassData *clsData = (ClassData*)this->clsData;
-	return clsData->apiLib->IsError();
+	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
+	return core->IsError();
 }
 
 UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interface*> *outArr)
 {
-	ClassData *clsData = (ClassData*)this->clsData;
+	Net::WLANWindowsCore *core = (Net::WLANWindowsCore*)this->clsData;
 	WLAN_INTERFACE_INFO_LIST *list;
 	UOSInt retVal = 0;
-	if (ERROR_SUCCESS == WirelessLAN_EnumInterfaces(clsData, 0, (void**)&list))
+	if (ERROR_SUCCESS == core->EnumInterfaces(0, (void**)&list))
 	{
 		UInt32 i;
 		UInt32 j;
@@ -447,14 +305,14 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 		while (i < j)
 		{
 			Net::WirelessLAN::Interface *interf;
-			const UTF8Char *csptr = Text::StrToUTF8New(list->InterfaceInfo[i].strInterfaceDescription);
-			NEW_CLASS(interf, Net::WirelessLAN::Interface(csptr, &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, this->clsData));
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::NewNotNull(list->InterfaceInfo[i].strInterfaceDescription);
+			NEW_CLASS(interf, Net::WLANWindowsInterface(s, &list->InterfaceInfo[i].InterfaceGuid, (Net::WirelessLAN::INTERFACE_STATE)list->InterfaceInfo[i].isState, core));
+			s->Release();
 			outArr->Add(interf);
 			retVal++;
 			i++;
 		}
-		WirelessLAN_FreeMemory(clsData, list);
+		core->FreeMemory(list);
 	}
 
 	return retVal;

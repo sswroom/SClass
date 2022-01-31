@@ -150,6 +150,12 @@ TCPClientMgr.o: $(CLASSDIR)src/Net/TCPClientMgrL.cpp
 WirelessLAN.o: $(CLASSDIR)src/Net/WirelessLANL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+WLANLinuxInterface.o: $(CLASSDIR)src/Net/WLANLinuxInterface.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
+WLANLinuxMTKInterface.o: $(CLASSDIR)src/Net/WLANLinuxMTKInterface.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 EventPool.o: $(CLASSDIR)src/Sync/EventPoolL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
