@@ -7,22 +7,23 @@ extern "C" UInt32 Adler32_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 abVal)
 	UOSInt i = buffSize >> 3;
 	while (i-- > 0)
 	{
-		a = (a + *buff++);
+		a = (a + buff[0]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[1]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[2]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[3]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[4]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[5]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[6]);
 		b = (b + a);
-		a = (a + *buff++);
+		a = (a + buff[7]);
 		b = (b + a);
+		buff += 8;
 
 		while (a >= 65521)
 			a -= 65521;

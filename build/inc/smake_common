@@ -14,6 +14,7 @@ mcu:
 @MCU_SIM7000
 
 test:
+@TestAdler32
 @TestAES128
 @TestAES192
 @TestAES256
@@ -605,6 +606,9 @@ ThreadSleepusTest:
 @ConsoleStartup.o
 
 #Test
+TestAdler32:
+@TestAdler32.o
+@ConsoleStartup.o
 TestAES128:
 @TestAES128.o
 @ConsoleStartup.o
@@ -948,6 +952,7 @@ SSerialViewerMain.o: ../../main/SSWR/SSerialViewerMain.cpp
 STCPSpdCliMain.o: ../../main/SSWR/STCPSpdCliMain.cpp
 EventTest.o: ../../main/Sync/EventTest.cpp
 ThreadSleepusTest.o: ../../main/Sync/ThreadSleepusTest.cpp
+TestAdler32.o: ../../main/Test/Crypto/TestAdler32.cpp
 TestAES128.o: ../../main/Test/Crypto/TestAES128.cpp
 TestAES192.o: ../../main/Test/Crypto/TestAES192.cpp
 TestAES256.o: ../../main/Test/Crypto/TestAES256.cpp

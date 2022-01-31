@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Crypto/Hash/Adler32.h"
+#include "Data/ByteTool.h"
 #include "Text/MyString.h"
 
 extern "C"
@@ -46,7 +47,7 @@ void Crypto::Hash::Adler32::Calc(const UInt8 *buff, UOSInt buffSize)
 
 void Crypto::Hash::Adler32::GetValue(UInt8 *buff)
 {
-	*(UInt32*)buff = this->abVal;
+	WriteMUInt32(buff, this->abVal);
 }
 
 UOSInt Crypto::Hash::Adler32::GetBlockSize()
