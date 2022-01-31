@@ -16,10 +16,10 @@ extern _UseSSE42
 	align 16
 CRC32R_InitTable:
 _CRC32R_InitTable:
-	mov rcx,256
+	xor rcx,rcx
 	align 16
 crc32clop:
-	lea rax,[rcx-1]
+	mov rax,rcx
 	mov edx,8
 	align 16
 crc32clop2:
@@ -30,108 +30,76 @@ crc32clop2:
 crc32clop3:
 	dec edx
 	jnz crc32clop2
-	mov dword [rdi+rcx*4-4],eax
-	dec rcx
+	mov dword [rdi+rcx*4],eax
+	inc cl
 	jnz crc32clop
 
-	mov r8,rbx
-	mov rcx,256
+	xor rcx,rcx
 	align 16
 crc32ritlop4:
-	lea eax,[rcx-1]
-	mov ebx,dword [rdi+rcx*4-4]
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+1024-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+2048-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+3072-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+4096-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+5120-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+6144-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+7168-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+8192-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+9216-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+10240-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+11264-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+12288-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+13312-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+14336-4],edx
-	mov ebx,edx
-	movzx edx,bl
-	shr ebx,8
-	mov edx,dword [rdi+rdx*4]
-	xor edx,ebx
-	mov dword [rdi+rcx*4+15360-4],edx
-	dec rcx
+	mov eax,dword [rdi+rcx*4]
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+1024],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+2048],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+3072],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+4096],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+5120],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+6144],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+7168],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+8192],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+9216],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+10240],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+11264],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+12288],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+13312],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+14336],eax
+	movzx edx,al
+	shr eax,8
+	xor eax,dword [rdi+rdx*4]
+	mov dword [rdi+rcx*4+15360],eax
+	inc cl
 	jnz crc32ritlop4
-	mov rbx,r8
 	ret
 
 ;UInt32 CRC32R_Reverse(UInt32 polynomial)
@@ -140,129 +108,189 @@ crc32ritlop4:
 	align 16
 CRC32R_Reverse:
 _CRC32R_Reverse:
-	mov edx,32
 	xor rax,rax
-	align 16
-crc32rlop:
+
 	shl edi,1
 	rcr eax,1
-	dec edx
-	jnz crc32rlop
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+	shl edi,1
+	rcr eax,1
+
 	ret
 
 ;UInt32 CRC32R_Calc(const UInt8 *buff, UOSInt buffSize, UInt32 *tab, UInt32 currVal)
 ;0 retAddr
-;rdi rcx buff
-;rsi rdx buffSize
-;rdx r8 tab
-;rcx r9 currVal
+;rdi buff
+;rsi buffSize
+;rdx tab
+;rcx currVal
 	align 16
 CRC32R_Calc:
 _CRC32R_Calc:
-	xchg r10,rbx
 	mov rax,rcx ;currVal
 	test rsi,rsi ;buffSize
 	jz calcexit
-	mov r8,rdx ;tab
-	mov r9,rsi ;buffSize
 	
-	cmp dword [r8+512],0x82F63B78
+	cmp dword [rdx+512],0x82F63B78
 	jnz calclop0
 	cmp dword [rel _UseSSE42],0
 	jnz calcsse42
 	align 16
 calclop0:
-	mov r11,r9 ;buffSize
-	shr r9,4 ;buffSize 
+	mov r8,rsi ;buffSize
+	shr r8,4 ;buffSize 
 	jz calclop1
+	mov r9,rax
 calclop:
-	mov ebx,dword [rdi] ;buff
-	xor ebx,eax
-	movzx rdx,bl
-	mov eax,dword [r8+rdx*4+15360]
-	movzx edx,bh
-	shr ebx,16
-	xor eax,dword [r8+rdx*4+14336]
-	movzx edx,bl
-	xor eax,dword [r8+rdx*4+13312]
-	movzx edx,bh
-	xor eax,dword [r8+rdx*4+12288]
-	movzx rdx,byte [rdi+4]
-	xor eax,dword [r8+rdx*4+11264]
-	movzx rdx,byte [rdi+5]
-	xor eax,dword [r8+rdx*4+10240]
-	movzx rdx,byte [rdi+6]
-	xor eax,dword [r8+rdx*4+9216]
-	movzx rdx,byte [rdi+7]
-	xor eax,dword [r8+rdx*4+8192]
-	movzx rdx,byte [rdi+8]
-	xor eax,dword [r8+rdx*4+7168]
-	movzx rdx,byte [rdi+9]
-	xor eax,dword [r8+rdx*4+6144]
-	movzx rdx,byte [rdi+10]
-	xor eax,dword [r8+rdx*4+5120]
-	movzx rdx,byte [rdi+11]
-	xor eax,dword [r8+rdx*4+4096]
-	movzx rdx,byte [rdi+12]
-	xor eax,dword [r8+rdx*4+3072]
-	movzx rdx,byte [rdi+13]
-	xor eax,dword [r8+rdx*4+2048]
-	movzx rdx,byte [rdi+14]
-	xor eax,dword [r8+rdx*4+1024]
-	movzx rdx,byte [rdi+15]
-	xor eax,dword [r8+rdx*4+0]
+	mov eax,dword [rdi] ;buff
+	xor eax,r9d
+	movzx rcx,byte [rdi+15]
+	mov r9d,dword [rdx+rcx*4+0]
+	movzx rcx,byte [rdi+14]
+	xor r9d,dword [rdx+rcx*4+1024]
+	movzx rcx,byte [rdi+13]
+	xor r9d,dword [rdx+rcx*4+2048]
+	movzx rcx,byte [rdi+12]
+	xor r9d,dword [rdx+rcx*4+3072]
+	movzx rcx,byte [rdi+11]
+	xor r9d,dword [rdx+rcx*4+4096]
+	movzx rcx,byte [rdi+10]
+	xor r9d,dword [rdx+rcx*4+5120]
+	movzx rcx,byte [rdi+9]
+	xor r9d,dword [rdx+rcx*4+6144]
+	movzx rcx,byte [rdi+8]
+	xor r9d,dword [rdx+rcx*4+7168]
+	movzx rcx,byte [rdi+7]
+	xor r9d,dword [rdx+rcx*4+8192]
+	movzx rcx,byte [rdi+6]
+	xor r9d,dword [rdx+rcx*4+9216]
+	movzx rcx,byte [rdi+5]
+	xor r9d,dword [rdx+rcx*4+10240]
+	movzx rcx,byte [rdi+4]
+	xor r9d,dword [rdx+rcx*4+11264]
+	movzx rcx,al
+	xor r9d,dword [rdx+rcx*4+15360]
+	movzx ecx,ah
+	shr eax,16
+	xor r9d,dword [rdx+rcx*4+14336]
+	movzx rcx,al
+	xor r9d,dword [rdx+rcx*4+13312]
+	movzx ecx,ah
+	xor r9d,dword [rdx+rcx*4+12288]
 
 	lea rdi,[rdi+16]
-	dec r9
+	dec r8
 	jnz calclop
-	
+	mov rax,r9
+	and rsi,15
+	jz calcexit	
+
 	align 16
 calclop1:
-	mov r9,r11
-	and r9,15
-	shr r9,2
+	mov r8,rsi
+	shr r8,2
 	jz calclop2
+	mov r9,rax
 	align 16
 calclop1a:
 	xor eax,dword [rdi]
 	lea rdi,[rdi+4]
-	movzx rdx,al
-	mov ebx,dword [r8+rdx*4+3072]
-	movzx edx,ah
+	movzx rcx,al
+	mov r9d,dword [rdx+rcx*4+3072]
+	movzx ecx,ah
 	shr eax,16
-	xor ebx,dword [r8+rdx*4+2048]
-	movzx rdx,al
-	xor ebx,dword [r8+rdx*4+1024]
-	movzx edx,ah
-	xor ebx,dword [r8+rdx*4]
+	xor r9d,dword [rdx+rcx*4+2048]
+	movzx rcx,al
+	xor r9d,dword [rdx+rcx*4+1024]
+	movzx ecx,ah
+	xor r9d,dword [rdx+rcx*4]
 
-	dec r9
-	mov eax,ebx
+	dec r8
+	mov rax,r9
 	jnz calclop1a
 	
+	and rsi,3
+	jz calcexit
+
 	align 16
 calclop2:
-	and r11,3
-	jz calcexit
-	
-	align 16
-calclop3:
-	movzx rdx,al
+	movzx rcx,al
 	shr rax,8
-	xor dl,byte [rdi]
+	xor cl,byte [rdi]
 	lea rdi,[rdi+1]
-	xor eax,dword [r8+rdx*4]
-	dec r11
-	jnz calclop3
+	xor eax,dword [rdx+rcx*4]
+	dec rsi
+	jnz calclop2
 	
 	align 16
 calcexit:
-	mov rbx,r10
 	ret
 
 calcsse42:
-	mov r11,r9
-	shr r9,6
+	mov r8,rsi
+	shr r8,6
 	jz calcsse42_1a
 
 	align 16
@@ -276,29 +304,29 @@ calcsse42_0:
 	crc32 rax,qword [rdi+48]
 	crc32 rax,qword [rdi+56]
 	lea rdi,[rdi+64]
-	dec r9
+	dec r8
 	jnz calcsse42_0
-	and r11,63
+	and rsi,63
 	jz calcexit
 
 calcsse42_1a:
-	mov r9,r11
-	shr r9,3
+	mov r8,rsi
+	shr r8,3
 	jz calcsse42_2
 	align 16
 calcsse42_1:
 	crc32 rax,qword [rdi]
 	lea rdi,[rdi+8]
-	dec r9
+	dec r8
 	jnz calcsse42_1
 
-	and r11,7
+	and rsi,7
 	jz calcexit
 
 	align 16
 calcsse42_2:
 	crc32 eax,byte [rdi]
 	lea rdi,[rdi+1]
-	dec r11
+	dec rsi
 	jnz calcsse42_2
 	jmp calcexit
