@@ -2,45 +2,42 @@
 #include "MyMemory.h"
 #include "Data/ByteTool.h"
 
-#define SHASTEP(v1, v2, v3, v4, v5, v6, v7, v8, n) \
-	s1 = ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \
-	ch = (v5 & v6) ^ ((~v5) & v7); \
-	temp1 = v8 + s1 + ch + K[n] + w[n]; \
-	s0 = ROR64(v1, 28) ^ ROR64(v1, 34) ^ ROR64(v1, 39); \
-	maj = (v1 & v2) ^ (v1 & v3) ^ (v2 & v3); \
-	temp2 = s0 + maj; \
+#define SHASTEP(v1, v2, v3, v4, v5, v6, v7, v8, n, k) \
+	temp1 = ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \
+	temp1 += (v5 & v6) ^ ((~v5) & v7); \
+	temp1 += v8 + k + w[n]; \
+	temp2 = ROR64(v1, 28) ^ ROR64(v1, 34) ^ ROR64(v1, 39); \
+	temp2 += (v1 & v2) ^ (v1 & v3) ^ (v2 & v3); \
+	v4 += temp1; \
+	v8 = temp1 + temp2;
+
+#define SHASTEP1(v1, v2, v3, v4, v5, v6, v7, v8, n, k) \
+	temp1 = w[n] = ReadMUInt64(&Message_Block[n * 8]); \
+	temp1 += ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \
+	temp1 += (v5 & v6) ^ ((~v5) & v7); \
+	temp1 += v8 + k; \
+	temp2 = ROR64(v1, 28) ^ ROR64(v1, 34) ^ ROR64(v1, 39); \
+	temp2 += (v1 & v2) ^ (v1 & v3) ^ (v2 & v3); \
+	v4 += temp1; \
+	v8 = temp1 + temp2;
+
+#define SHASTEP2(v1, v2, v3, v4, v5, v6, v7, v8, n, k) \
+	temp1 = w[n] = w[n - 16] + (ROR64(w[n - 15], 1) ^ ROR64(w[n - 15], 8) ^ (w[n - 15] >> 7)) + w[n - 7] + (ROR64(w[n - 2], 19) ^ ROR64(w[n - 2],  61) ^ (w[n - 2] >> 6)); \
+	temp1 += ROR64(v5, 14) ^ ROR64(v5, 18) ^ ROR64(v5, 41); \
+	temp1 += (v5 & v6) ^ ((~v5) & v7); \
+	temp1 += v8 + k; \
+	temp2 = ROR64(v1, 28) ^ ROR64(v1, 34) ^ ROR64(v1, 39); \
+	temp2 += (v1 & v2) ^ (v1 & v3) ^ (v2 & v3); \
 	v4 += temp1; \
 	v8 = temp1 + temp2;
 
 extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message_Block)
 {
 	UInt64 w[80];
-	static const UInt64 K[] =    {
-		0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc, 0x3956c25bf348b538, 
-		0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118, 0xd807aa98a3030242, 0x12835b0145706fbe, 
-		0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2, 0x72be5d74f27b896f, 0x80deb1fe3b1696b1, 0x9bdc06a725c71235, 
-		0xc19bf174cf692694, 0xe49b69c19ef14ad2, 0xefbe4786384f25e3, 0x0fc19dc68b8cd5b5, 0x240ca1cc77ac9c65, 
-		0x2de92c6f592b0275, 0x4a7484aa6ea6e483, 0x5cb0a9dcbd41fbd4, 0x76f988da831153b5, 0x983e5152ee66dfab, 
-		0xa831c66d2db43210, 0xb00327c898fb213f, 0xbf597fc7beef0ee4, 0xc6e00bf33da88fc2, 0xd5a79147930aa725, 
-		0x06ca6351e003826f, 0x142929670a0e6e70, 0x27b70a8546d22ffc, 0x2e1b21385c26c926, 0x4d2c6dfc5ac42aed, 
-		0x53380d139d95b3df, 0x650a73548baf63de, 0x766a0abb3c77b2a8, 0x81c2c92e47edaee6, 0x92722c851482353b, 
-		0xa2bfe8a14cf10364, 0xa81a664bbc423001, 0xc24b8b70d0f89791, 0xc76c51a30654be30, 0xd192e819d6ef5218, 
-		0xd69906245565a910, 0xf40e35855771202a, 0x106aa07032bbd1b8, 0x19a4c116b8d2d0c8, 0x1e376c085141ab53, 
-		0x2748774cdf8eeb99, 0x34b0bcb5e19b48a8, 0x391c0cb3c5c95a63, 0x4ed8aa4ae3418acb, 0x5b9cca4f7763e373, 
-		0x682e6ff3d6b2b8a3, 0x748f82ee5defb2fc, 0x78a5636f43172f60, 0x84c87814a1f0ab72, 0x8cc702081a6439ec, 
-		0x90befffa23631e28, 0xa4506cebde82bde9, 0xbef9a3f7b2c67915, 0xc67178f2e372532b, 0xca273eceea26619c, 
-		0xd186b8c721c0c207, 0xeada7dd6cde0eb1e, 0xf57d4f7fee6ed178, 0x06f067aa72176fba, 0x0a637dc5a2c898a6, 
-		0x113f9804bef90dae, 0x1b710b35131c471b, 0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 
-		0x431d67c49c100d4c, 0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817};
-	UOSInt t;
-	UInt64 s0;
-	UInt64 s1;
-	UInt64 ch;
-	UInt64 maj;
 	UInt64 temp1, temp2;
 	UInt64 a, b, c, d, e, f, g, h;
 
-	t = 0;
+/*	t = 0;
 	while (t < 16)
 	{
 		w[t] = ReadMUInt64(&Message_Block[t * 8]);
@@ -53,7 +50,7 @@ extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message
 		s1 = ROR64(w[t - 2], 19) ^ ROR64(w[t - 2],  61) ^ (w[t - 2] >> 6);
 		w[t] = w[t - 16] + s0 + w[t - 7] + s1;
 		t++;
-	}
+	}*/
 
 	a = Intermediate_Hash[0];
 	b = Intermediate_Hash[1];
@@ -85,95 +82,95 @@ extern "C" void SHA512_CalcBlock(UInt64 *Intermediate_Hash, const UInt8 *Message
 
 		t++;
     }*/
-	SHASTEP(a, b, c, d, e, f, g, h, 0);
-	SHASTEP(h, a, b, c, d, e, f, g, 1);
-	SHASTEP(g, h, a, b, c, d, e, f, 2);
-	SHASTEP(f, g, h, a, b, c, d, e, 3);
-	SHASTEP(e, f, g, h, a, b, c, d, 4);
-	SHASTEP(d, e, f, g, h, a, b, c, 5);
-	SHASTEP(c, d, e, f, g, h, a, b, 6);
-	SHASTEP(b, c, d, e, f, g, h, a, 7);
+	SHASTEP1(a, b, c, d, e, f, g, h, 0, 0x428a2f98d728ae22);
+	SHASTEP1(h, a, b, c, d, e, f, g, 1, 0x7137449123ef65cd);
+	SHASTEP1(g, h, a, b, c, d, e, f, 2, 0xb5c0fbcfec4d3b2f);
+	SHASTEP1(f, g, h, a, b, c, d, e, 3, 0xe9b5dba58189dbbc);
+	SHASTEP1(e, f, g, h, a, b, c, d, 4, 0x3956c25bf348b538);
+	SHASTEP1(d, e, f, g, h, a, b, c, 5, 0x59f111f1b605d019);
+	SHASTEP1(c, d, e, f, g, h, a, b, 6, 0x923f82a4af194f9b);
+	SHASTEP1(b, c, d, e, f, g, h, a, 7, 0xab1c5ed5da6d8118);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 8);
-	SHASTEP(h, a, b, c, d, e, f, g, 9);
-	SHASTEP(g, h, a, b, c, d, e, f, 10);
-	SHASTEP(f, g, h, a, b, c, d, e, 11);
-	SHASTEP(e, f, g, h, a, b, c, d, 12);
-	SHASTEP(d, e, f, g, h, a, b, c, 13);
-	SHASTEP(c, d, e, f, g, h, a, b, 14);
-	SHASTEP(b, c, d, e, f, g, h, a, 15);
+	SHASTEP1(a, b, c, d, e, f, g, h, 8, 0xd807aa98a3030242);
+	SHASTEP1(h, a, b, c, d, e, f, g, 9, 0x12835b0145706fbe);
+	SHASTEP1(g, h, a, b, c, d, e, f, 10, 0x243185be4ee4b28c);
+	SHASTEP1(f, g, h, a, b, c, d, e, 11, 0x550c7dc3d5ffb4e2);
+	SHASTEP1(e, f, g, h, a, b, c, d, 12, 0x72be5d74f27b896f);
+	SHASTEP1(d, e, f, g, h, a, b, c, 13, 0x80deb1fe3b1696b1);
+	SHASTEP1(c, d, e, f, g, h, a, b, 14, 0x9bdc06a725c71235);
+	SHASTEP1(b, c, d, e, f, g, h, a, 15, 0xc19bf174cf692694);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 16);
-	SHASTEP(h, a, b, c, d, e, f, g, 17);
-	SHASTEP(g, h, a, b, c, d, e, f, 18);
-	SHASTEP(f, g, h, a, b, c, d, e, 19);
-	SHASTEP(e, f, g, h, a, b, c, d, 20);
-	SHASTEP(d, e, f, g, h, a, b, c, 21);
-	SHASTEP(c, d, e, f, g, h, a, b, 22);
-	SHASTEP(b, c, d, e, f, g, h, a, 23);
+	SHASTEP2(a, b, c, d, e, f, g, h, 16, 0xe49b69c19ef14ad2);
+	SHASTEP2(h, a, b, c, d, e, f, g, 17, 0xefbe4786384f25e3);
+	SHASTEP2(g, h, a, b, c, d, e, f, 18, 0x0fc19dc68b8cd5b5);
+	SHASTEP2(f, g, h, a, b, c, d, e, 19, 0x240ca1cc77ac9c65);
+	SHASTEP2(e, f, g, h, a, b, c, d, 20, 0x2de92c6f592b0275);
+	SHASTEP2(d, e, f, g, h, a, b, c, 21, 0x4a7484aa6ea6e483);
+	SHASTEP2(c, d, e, f, g, h, a, b, 22, 0x5cb0a9dcbd41fbd4);
+	SHASTEP2(b, c, d, e, f, g, h, a, 23, 0x76f988da831153b5);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 24);
-	SHASTEP(h, a, b, c, d, e, f, g, 25);
-	SHASTEP(g, h, a, b, c, d, e, f, 26);
-	SHASTEP(f, g, h, a, b, c, d, e, 27);
-	SHASTEP(e, f, g, h, a, b, c, d, 28);
-	SHASTEP(d, e, f, g, h, a, b, c, 29);
-	SHASTEP(c, d, e, f, g, h, a, b, 30);
-	SHASTEP(b, c, d, e, f, g, h, a, 31);
+	SHASTEP2(a, b, c, d, e, f, g, h, 24, 0x983e5152ee66dfab);
+	SHASTEP2(h, a, b, c, d, e, f, g, 25, 0xa831c66d2db43210);
+	SHASTEP2(g, h, a, b, c, d, e, f, 26, 0xb00327c898fb213f);
+	SHASTEP2(f, g, h, a, b, c, d, e, 27, 0xbf597fc7beef0ee4);
+	SHASTEP2(e, f, g, h, a, b, c, d, 28, 0xc6e00bf33da88fc2);
+	SHASTEP2(d, e, f, g, h, a, b, c, 29, 0xd5a79147930aa725);
+	SHASTEP2(c, d, e, f, g, h, a, b, 30, 0x06ca6351e003826f);
+	SHASTEP2(b, c, d, e, f, g, h, a, 31, 0x142929670a0e6e70);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 32);
-	SHASTEP(h, a, b, c, d, e, f, g, 33);
-	SHASTEP(g, h, a, b, c, d, e, f, 34);
-	SHASTEP(f, g, h, a, b, c, d, e, 35);
-	SHASTEP(e, f, g, h, a, b, c, d, 36);
-	SHASTEP(d, e, f, g, h, a, b, c, 37);
-	SHASTEP(c, d, e, f, g, h, a, b, 38);
-	SHASTEP(b, c, d, e, f, g, h, a, 39);
+	SHASTEP2(a, b, c, d, e, f, g, h, 32, 0x27b70a8546d22ffc);
+	SHASTEP2(h, a, b, c, d, e, f, g, 33, 0x2e1b21385c26c926);
+	SHASTEP2(g, h, a, b, c, d, e, f, 34, 0x4d2c6dfc5ac42aed);
+	SHASTEP2(f, g, h, a, b, c, d, e, 35, 0x53380d139d95b3df);
+	SHASTEP2(e, f, g, h, a, b, c, d, 36, 0x650a73548baf63de);
+	SHASTEP2(d, e, f, g, h, a, b, c, 37, 0x766a0abb3c77b2a8);
+	SHASTEP2(c, d, e, f, g, h, a, b, 38, 0x81c2c92e47edaee6);
+	SHASTEP2(b, c, d, e, f, g, h, a, 39, 0x92722c851482353b);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 40);
-	SHASTEP(h, a, b, c, d, e, f, g, 41);
-	SHASTEP(g, h, a, b, c, d, e, f, 42);
-	SHASTEP(f, g, h, a, b, c, d, e, 43);
-	SHASTEP(e, f, g, h, a, b, c, d, 44);
-	SHASTEP(d, e, f, g, h, a, b, c, 45);
-	SHASTEP(c, d, e, f, g, h, a, b, 46);
-	SHASTEP(b, c, d, e, f, g, h, a, 47);
+	SHASTEP2(a, b, c, d, e, f, g, h, 40, 0xa2bfe8a14cf10364);
+	SHASTEP2(h, a, b, c, d, e, f, g, 41, 0xa81a664bbc423001);
+	SHASTEP2(g, h, a, b, c, d, e, f, 42, 0xc24b8b70d0f89791);
+	SHASTEP2(f, g, h, a, b, c, d, e, 43, 0xc76c51a30654be30);
+	SHASTEP2(e, f, g, h, a, b, c, d, 44, 0xd192e819d6ef5218);
+	SHASTEP2(d, e, f, g, h, a, b, c, 45, 0xd69906245565a910);
+	SHASTEP2(c, d, e, f, g, h, a, b, 46, 0xf40e35855771202a);
+	SHASTEP2(b, c, d, e, f, g, h, a, 47, 0x106aa07032bbd1b8);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 48);
-	SHASTEP(h, a, b, c, d, e, f, g, 49);
-	SHASTEP(g, h, a, b, c, d, e, f, 50);
-	SHASTEP(f, g, h, a, b, c, d, e, 51);
-	SHASTEP(e, f, g, h, a, b, c, d, 52);
-	SHASTEP(d, e, f, g, h, a, b, c, 53);
-	SHASTEP(c, d, e, f, g, h, a, b, 54);
-	SHASTEP(b, c, d, e, f, g, h, a, 55);
+	SHASTEP2(a, b, c, d, e, f, g, h, 48, 0x19a4c116b8d2d0c8);
+	SHASTEP2(h, a, b, c, d, e, f, g, 49, 0x1e376c085141ab53);
+	SHASTEP2(g, h, a, b, c, d, e, f, 50, 0x2748774cdf8eeb99);
+	SHASTEP2(f, g, h, a, b, c, d, e, 51, 0x34b0bcb5e19b48a8);
+	SHASTEP2(e, f, g, h, a, b, c, d, 52, 0x391c0cb3c5c95a63);
+	SHASTEP2(d, e, f, g, h, a, b, c, 53, 0x4ed8aa4ae3418acb);
+	SHASTEP2(c, d, e, f, g, h, a, b, 54, 0x5b9cca4f7763e373);
+	SHASTEP2(b, c, d, e, f, g, h, a, 55, 0x682e6ff3d6b2b8a3);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 56);
-	SHASTEP(h, a, b, c, d, e, f, g, 57);
-	SHASTEP(g, h, a, b, c, d, e, f, 58);
-	SHASTEP(f, g, h, a, b, c, d, e, 59);
-	SHASTEP(e, f, g, h, a, b, c, d, 60);
-	SHASTEP(d, e, f, g, h, a, b, c, 61);
-	SHASTEP(c, d, e, f, g, h, a, b, 62);
-	SHASTEP(b, c, d, e, f, g, h, a, 63);
+	SHASTEP2(a, b, c, d, e, f, g, h, 56, 0x748f82ee5defb2fc);
+	SHASTEP2(h, a, b, c, d, e, f, g, 57, 0x78a5636f43172f60);
+	SHASTEP2(g, h, a, b, c, d, e, f, 58, 0x84c87814a1f0ab72);
+	SHASTEP2(f, g, h, a, b, c, d, e, 59, 0x8cc702081a6439ec);
+	SHASTEP2(e, f, g, h, a, b, c, d, 60, 0x90befffa23631e28);
+	SHASTEP2(d, e, f, g, h, a, b, c, 61, 0xa4506cebde82bde9);
+	SHASTEP2(c, d, e, f, g, h, a, b, 62, 0xbef9a3f7b2c67915);
+	SHASTEP2(b, c, d, e, f, g, h, a, 63, 0xc67178f2e372532b);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 64);
-	SHASTEP(h, a, b, c, d, e, f, g, 65);
-	SHASTEP(g, h, a, b, c, d, e, f, 66);
-	SHASTEP(f, g, h, a, b, c, d, e, 67);
-	SHASTEP(e, f, g, h, a, b, c, d, 68);
-	SHASTEP(d, e, f, g, h, a, b, c, 69);
-	SHASTEP(c, d, e, f, g, h, a, b, 70);
-	SHASTEP(b, c, d, e, f, g, h, a, 71);
+	SHASTEP2(a, b, c, d, e, f, g, h, 64, 0xca273eceea26619c);
+	SHASTEP2(h, a, b, c, d, e, f, g, 65, 0xd186b8c721c0c207);
+	SHASTEP2(g, h, a, b, c, d, e, f, 66, 0xeada7dd6cde0eb1e);
+	SHASTEP2(f, g, h, a, b, c, d, e, 67, 0xf57d4f7fee6ed178);
+	SHASTEP2(e, f, g, h, a, b, c, d, 68, 0x06f067aa72176fba);
+	SHASTEP2(d, e, f, g, h, a, b, c, 69, 0x0a637dc5a2c898a6);
+	SHASTEP2(c, d, e, f, g, h, a, b, 70, 0x113f9804bef90dae);
+	SHASTEP2(b, c, d, e, f, g, h, a, 71, 0x1b710b35131c471b);
 
-	SHASTEP(a, b, c, d, e, f, g, h, 72);
-	SHASTEP(h, a, b, c, d, e, f, g, 73);
-	SHASTEP(g, h, a, b, c, d, e, f, 74);
-	SHASTEP(f, g, h, a, b, c, d, e, 75);
-	SHASTEP(e, f, g, h, a, b, c, d, 76);
-	SHASTEP(d, e, f, g, h, a, b, c, 77);
-	SHASTEP(c, d, e, f, g, h, a, b, 78);
-	SHASTEP(b, c, d, e, f, g, h, a, 79);
+	SHASTEP2(a, b, c, d, e, f, g, h, 72, 0x28db77f523047d84);
+	SHASTEP2(h, a, b, c, d, e, f, g, 73, 0x32caab7b40c72493);
+	SHASTEP2(g, h, a, b, c, d, e, f, 74, 0x3c9ebe0a15c9bebc);
+	SHASTEP2(f, g, h, a, b, c, d, e, 75, 0x431d67c49c100d4c);
+	SHASTEP2(e, f, g, h, a, b, c, d, 76, 0x4cc5d4becb3e42b6);
+	SHASTEP2(d, e, f, g, h, a, b, c, 77, 0x597f299cfc657e2a);
+	SHASTEP2(c, d, e, f, g, h, a, b, 78, 0x5fcb6fab3ad6faec);
+	SHASTEP2(b, c, d, e, f, g, h, a, 79, 0x6c44198c4a475817);
 
 	Intermediate_Hash[0] += a;
 	Intermediate_Hash[1] += b;

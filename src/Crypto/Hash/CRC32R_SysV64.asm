@@ -161,7 +161,7 @@ CRC32R_Calc:
 _CRC32R_Calc:
 	xchg r10,rbx
 	mov rax,rcx ;currVal
-	test rsi,rsi buffSize
+	test rsi,rsi ;buffSize
 	jz calcexit
 	mov r8,rdx ;tab
 	mov r9,rsi ;buffSize
