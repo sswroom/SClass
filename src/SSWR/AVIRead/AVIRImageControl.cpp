@@ -168,8 +168,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	}
 	DEL_CLASS(fs);
 
-	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sptr3 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
 	if (sess)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
@@ -181,7 +181,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 		resizer.SetTargetHeight(this->previewSize);
 		parsers = this->core->GetParserList();
 		UOSInt currCnt = 0;
-		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while (this->threadCtrlCode != 2 && this->threadCtrlCode != 3 && (sptr3 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					if (simg)
 					{
 						Media::StaticImage *simg2;
-						Text::StrConcatC(Text::StrConcat(sptr2, sptr), UTF8STRC(".png"));
+						Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
 						simg2 = resizer.ProcessToNew(simg);
 						NEW_CLASS(imgList, Media::ImageList(sptr));
