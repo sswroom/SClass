@@ -143,6 +143,8 @@ global _ImageUtil_UVInterleaveShiftW
 global ImageUtil_YUV_Y416ShiftW
 global _ImageUtil_YUV_Y416ShiftW
 
+extern _UseSSE42
+
 ;void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
 ;0 retAddr
 ;rdi imgPtr
@@ -1983,11 +1985,12 @@ cargb24_32lop2:
 	align 16
 ImageUtil_ConvR8G8B8_ARGB32:
 _ImageUtil_ConvR8G8B8_ARGB32:
+	cmp dword [rel _UseSSE42],0
+	jnz cargb24r_32simd
 	lea rax,[rdx+rdx*2]
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
-	
 	align 16
 cargb24r_32lop:
 	mov r10,rdx
@@ -2008,6 +2011,125 @@ cargb24r_32lop2:
 	add rsi,r9 ;dbpl
 	dec rcx
 	jnz cargb24r_32lop
+	ret
+
+	align 16
+cargb24r_32simd_addr:
+	db 2,1,0,0xff
+	db 5,4,3,0xff
+	db 8,7,6,0xff
+	db 11,10,9,0xff
+cargb24r_32simd_mask:
+	db 0,0,0,0xff
+	db 0,0,0,0xff
+	db 0,0,0,0xff
+	db 0,0,0,0xff
+	align 16
+cargb24r_32simd:
+	test r9,15
+	jnz cargb24r_32simdna
+	lea rax,[rdx+rdx*2]
+	sub r8,rax ;sbpl
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	movdqa xmm1,[rel cargb24r_32simd_addr]
+	movdqa xmm2,[rel cargb24r_32simd_mask]
+
+	align 16
+cargb24r_32simd1:
+	mov r10,rdx
+	shr r10,2
+	jz cargb24r_32simd2
+	align 16
+cargb24r_32simd1a:
+	movq xmm0,[rdi]
+	pinsrd xmm0,[rdi+8],2
+	pshufb xmm0,xmm1
+	por xmm0,xmm2
+	movntdq [rsi],xmm0
+	lea rdi,[rdi+12]
+	lea rsi,[rsi+16]
+	dec r10
+	jnz cargb24r_32simd1a
+
+	align 16
+cargb24r_32simd2:
+	mov r10,rdx
+	and r10,3
+	jz cargb24r_32simd3
+
+	align 16
+cargb24r_32simd2a:
+	movzx eax,byte [rdi]
+	or eax,0xff00
+	shl eax,16
+	mov ah,byte [rdi+1]
+	mov al,byte [rdi+2]
+	lea rdi,[rdi+3]
+	movnti dword [rsi],eax
+	lea rsi,[rsi+4]
+	dec r10
+	jnz cargb24r_32simd2a
+
+	align 16
+cargb24r_32simd3:
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cargb24r_32simd1
+	ret
+
+	align 16
+cargb24r_32simdna:
+	lea rax,[rdx+rdx*2]
+	sub r8,rax ;sbpl
+	lea rax,[rdx*4]
+	sub r9,rax ;dbpl
+	movdqa xmm1,[rel cargb24r_32simd_addr]
+	movdqa xmm2,[rel cargb24r_32simd_mask]
+
+	align 16
+cargb24r_32simdna1:
+	mov r10,rdx
+	shr r10,2
+	jz cargb24r_32simdna2
+	align 16
+cargb24r_32simdna1a:
+	movq xmm0,[rdi]
+	pinsrd xmm0,[rdi+8],2
+	pshufb xmm0,xmm1
+	por xmm0,xmm2
+	movdqu [rsi],xmm0
+	lea rdi,[rdi+12]
+	lea rsi,[rsi+16]
+	dec r10
+	jnz cargb24r_32simdna1a
+
+	align 16
+cargb24r_32simdna2:
+	mov r10,rdx
+	and r10,3
+	jz cargb24r_32simdna3
+
+	align 16
+cargb24r_32simdna2a:
+	movzx eax,byte [rdi]
+	or eax,0xff00
+	shl eax,16
+	mov ah,byte [rdi+1]
+	mov al,byte [rdi+2]
+	lea rdi,[rdi+3]
+	movnti dword [rsi],eax
+	lea rsi,[rsi+4]
+	dec r10
+	jnz cargb24r_32simdna2a
+
+	align 16
+cargb24r_32simdna3:
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cargb24r_32simdna1
 	ret
 
 ;void ImageUtil_ConvR8G8B8A8_ARGB32(UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl);

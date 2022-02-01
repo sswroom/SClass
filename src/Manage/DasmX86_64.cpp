@@ -3857,7 +3857,7 @@ Bool __stdcall DasmX86_64_8d(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	UTF8Char reg[8];
 	UInt64 memVal;
 	UInt64 *regPtr;
-	UInt64 memAddr;
+	UInt64 memAddr = 0;
 	sess->regs.rip++;
 	DasmX86_64_ParseModRM32(sess, mem, &destReg, &memVal, &memAddr);
 	DasmX86_64_ParseReg(sess, reg, destReg, &regPtr);

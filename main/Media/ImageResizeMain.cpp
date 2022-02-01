@@ -39,8 +39,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 1;
 	}*/
 	
-	srcFile = CSTR("/home/sswroom/Progs/Temp/insp1624622649783.jpg");
-	destFile = CSTR("/home/sswroom/Progs/photo2.jpg");
+	srcFile = CSTR("/home/sswroom/Progs/Temp/src.jpg");
+	destFile = CSTR("/home/sswroom/Progs/Temp/photo2.jpg");
 	pxSize = 200;
 
 	Manage::HiResClock clk;
