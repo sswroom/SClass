@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 	if (sb.GetLength() > 0)
 	{
 		Net::UserAgentDB::UAEntry ent;
-		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToString());
+		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToCString());
 		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser).v);
 		me->txtBrowserVer->SetText(ent.browserVer?((const UTF8Char*)ent.browserVer):((const UTF8Char*)"-"));
 		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os).v);

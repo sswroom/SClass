@@ -903,73 +903,72 @@ Net::UserAgentDB::UAEntry *Net::UserAgentDB::GetUAEntryList(UOSInt *cnt)
 	return uaList;
 }
 
-void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8Char *userAgent)
+void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CString userAgent)
 {
 	ent->browser = Net::BrowserInfo::BT_UNKNOWN;
 	ent->browserVer = 0;
 	ent->devName = 0;
 	ent->osVer = 0;
 	ent->os = Manage::OSInfo::OT_UNKNOWN;
-	ent->userAgent = (const Char *)userAgent;
-	UOSInt uaLen = Text::StrCharCnt(userAgent);
+	ent->userAgent = (const Char *)userAgent.v;
 
 	UOSInt i;
-	if (Text::StrEqualsC(userAgent, uaLen, UTF8STRC("Microsoft Windows Network Diagnostics")))
+	if (userAgent.Equals(UTF8STRC("Microsoft Windows Network Diagnostics")))
 	{
 		ent->browser = Net::BrowserInfo::BT_WINDIAG;
 		return;
 	}
-	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("West Wind Internet Protocols ")))
+	else if (userAgent.StartsWith(UTF8STRC("West Wind Internet Protocols ")))
 	{
 		ent->browser = Net::BrowserInfo::BT_WESTWIND;
-		ent->browserVer = Text::StrCopyNew(&ent->userAgent[29]);
+		ent->browserVer = Text::StrCopyNewC(&ent->userAgent[29], userAgent.leng - 29);
 		return;
 	}
-	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("Sogou web spider/")))
+	else if (userAgent.StartsWith(UTF8STRC("Sogou web spider/")))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUWEB;
-		i = Text::StrIndexOfChar(userAgent, '(');
+		i = userAgent.IndexOf('(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 		}
 		else
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], uaLen - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17);
 		}
 		return;
 	}
-	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("Sogou Pic Spider/")))
+	else if (userAgent.StartsWith(UTF8STRC("Sogou Pic Spider/")))
 	{
 		ent->browser = Net::BrowserInfo::BT_SOGOUPIC;
-		i = Text::StrIndexOfChar(userAgent, '(');
+		i = userAgent.IndexOf('(');
 		if (i != INVALID_INDEX)
 		{
 			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], i - 17);
 		}
 		else
 		{
-			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], uaLen - 17);
+			ent->browserVer = Text::StrCopyNewC(&ent->userAgent[17], userAgent.leng - 17);
 		}
 		return;
 	}
-	else if (Text::StrEqualsC(userAgent, uaLen, UTF8STRC("Nutch Master Test/Dolphin-0.1-Beta")))
+	else if (userAgent.Equals(UTF8STRC("Nutch Master Test/Dolphin-0.1-Beta")))
 	{
 		ent->browser = Net::BrowserInfo::BT_NUTCH;
 		ent->browserVer = Text::StrCopyNewC("0.1", 3);
 		return;
 	}
-	else if (Text::StrEqualsC(userAgent, uaLen, UTF8STRC("YisouSpider")))
+	else if (userAgent.Equals(UTF8STRC("YisouSpider")))
 	{
 		ent->browser = Net::BrowserInfo::BT_YISOU;
 		return;
 	}
-	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("HTTP Banner Detection")))
+	else if (userAgent.StartsWith(UTF8STRC("HTTP Banner Detection")))
 	{
 		ent->browser = Net::BrowserInfo::BT_BANNERDET;
 		return;
 	}
-	else if (Text::StrStartsWithC(userAgent, uaLen, UTF8STRC("NetSystemsResearch ")))
+	else if (userAgent.StartsWith(UTF8STRC("NetSystemsResearch ")))
 	{
 		ent->browser = Net::BrowserInfo::BT_NETSYSRES;
 		return;
@@ -984,14 +983,14 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, const UTF8
 	UOSInt k;
 	Bool bst;
 	Bool lastIsAndroid;
-	UTF8Char *sbuff = MemAlloc(UTF8Char, uaLen + 1);
+	UTF8Char *sbuff = MemAlloc(UTF8Char, userAgent.leng + 1);
 	UTF8Char *sbuffEnd;
-	sbuffEnd = Text::StrConcatC(sbuff, userAgent, uaLen);
-	if (sbuff[0] == '"' && sbuff[uaLen - 1] == '"')
+	sbuffEnd = userAgent.ConcatTo(sbuff);
+	if (sbuff[0] == '"' && sbuff[userAgent.leng - 1] == '"')
 	{
-		sbuff[uaLen - 1] = 0;
+		sbuff[userAgent.leng - 1] = 0;
 		sbuff[0] = ' ';
-		sbuffEnd = Text::StrTrimC(sbuff, uaLen - 1);
+		sbuffEnd = Text::StrTrimC(sbuff, userAgent.leng - 1);
 	}
 	if (Text::StrEqualsC(sbuff, (UOSInt)(sbuffEnd - sbuff), UTF8STRC("nlpproject.info research")))
 	{

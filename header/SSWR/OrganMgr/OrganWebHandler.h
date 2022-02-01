@@ -145,6 +145,7 @@ namespace SSWR
 				Text::String *engName;
 				Text::String *chiName;
 				Text::String *sciName;
+				UInt32 sciNameHash;
 				Int32 groupId;
 				Text::String *descript;
 				Text::String *dirName;

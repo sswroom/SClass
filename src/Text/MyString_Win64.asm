@@ -1914,12 +1914,34 @@ MyString_StrCharCnt:
 	mov rax,rcx
 	align 16
 scclop:
-	movzx edx,byte [rax]
-	lea rax,[rax+1]
-	test dl,dl
-	jnz scclop
+	test byte[rax],0xff
+	jz scclop0
+	test byte[rax+1],0xff
+	jz scclop1
+	test byte[rax+2],0xff
+	jz scclop2
+	test byte[rax+3],0xff
+	jz scclop3
+	lea rax,[rax+4]
+	jmp scclop
+	align 16
+scclop0:
 	sub rax,rcx
-	dec rax
+	ret
+	align 16
+scclop1:
+	sub rax,rcx
+	inc rax
+	ret
+	align 16
+scclop2:
+	sub rax,rcx
+	add rax,2
+	ret
+	align 16
+scclop3:
+	sub rax,rcx
+	add rax,3
 	ret
 
 ;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)

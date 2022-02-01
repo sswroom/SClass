@@ -6,7 +6,7 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(const UTF8Char *userAgent, Text::StringBuilderUTF8 *outSb)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userAgent, Text::StringBuilderUTF8 *outSb)
 {
 	Text::StringBuilderUTF8 sb;
 	Net::UserAgentDB::UAEntry ent;
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb3;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	UOSInt i;
 	me->txtSource->GetText(&sb);
 	if (sb.GetLength() <= 0)
@@ -90,13 +90,13 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 		me->txtOutput->SetText((const UTF8Char*)"");
 		return;
 	}
-	sarr[1] = sb.ToString();
+	sarr[1] = sb;
 	while (true)
 	{
-		i = Text::StrSplitLine(sarr, 2, sarr[1]);
-		if (sarr[0][0] != 0)
+		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+		if (sarr[0].v[0] != 0)
 		{
-			UserAgent2Output(sarr[0], &sb3);
+			UserAgent2Output(sarr[0].ToCString(), &sb3);
 		}
 
 		if (i != 2)
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateClicked(void *user
 	SSWR::AVIRead::AVIRUserAgentBatchForm *me = (SSWR::AVIRead::AVIRUserAgentBatchForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtSource->GetText(&sb);
-	me->UpdateByText(sb.ToString());
+	me->UpdateByText(sb.ToString(), sb.GetLength());
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *userObj)
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	Win32::Clipboard::GetString(me->GetHandle(), &sb);
 	if (sb.GetLength() > 0)
 	{
-		me->UpdateByText(sb.ToString());
+		me->UpdateByText(sb.ToString(), sb.GetLength());
 	}
 	else
 	{
@@ -132,35 +132,36 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	}
 }
 
-void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
+void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt txtLen)
 {
-	Data::ArrayListStrUTF8 uaList;
+	Data::ArrayListString uaList;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
 	Net::UserAgentDB::UAEntry *entList = Net::UserAgentDB::GetUAEntryList(&j);
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	Bool found;
 	i = 0;
 	while (i < j)
 	{
-		k = uaList.SortedIndexOf((const UTF8Char*)entList[i].userAgent);
+		k = uaList.SortedIndexOfPtr((const UTF8Char*)entList[i].userAgent);
 		if (k < 0)
 		{
-			uaList.Insert((UOSInt)~k, Text::StrCopyNew((const UTF8Char*)entList[i].userAgent));
+			uaList.Insert((UOSInt)~k, Text::String::NewNotNull((const UTF8Char*)entList[i].userAgent));
 		}
 		i++;
 	}
-	sarr[1] = txt;
+	sarr[1].v = txt;
+	sarr[1].leng = txtLen;
 	while (true)
 	{
-		i = Text::StrSplitLine(sarr, 2, sarr[1]);
-		if (sarr[0][0] != 0)
+		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+		if (sarr[0].v[0] != 0)
 		{
-			k = uaList.SortedIndexOf(sarr[0]);
+			k = uaList.SortedIndexOfPtr(sarr[0].v);
 			if (k < 0)
 			{
-				uaList.Insert((UOSInt)~k, Text::StrCopyNew(sarr[0]));
+				uaList.Insert((UOSInt)~k, Text::String::New(sarr[0].v, sarr[0].leng));
 				found = true;
 			}
 		}
@@ -179,7 +180,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
 		j = uaList.GetCount();
 		while (i < j)
 		{
-			UserAgent2Output(uaList.GetItem(i), &sb);
+			UserAgent2Output(uaList.GetItem(i)->ToCString(), &sb);
 			i++;
 		}
 		this->txtOutput->SetText(sb.ToString());
@@ -191,11 +192,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Nothing to update", (const UTF8Char*)"User Agent Update", this);
 	}
 	
-	i = uaList.GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(uaList.GetItem(i));
-	}
+	LIST_FREE_STRING(&uaList);
 }
 
 SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

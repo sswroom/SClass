@@ -62,7 +62,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		allRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::StrCopyNew(sbuff);
+		reg->fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 		NEW_CLASS(reg->mut, Sync::Mutex());
 		reg->cfg = IO::IniFile::Parse(reg->fileName, 65001);
 		reg->modified = false;
@@ -86,7 +86,7 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		thisRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::StrCopyNew(sbuff);
+		reg->fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 		NEW_CLASS(reg->mut, Sync::Mutex());
 		reg->cfg = IO::IniFile::Parse(reg->fileName, 65001);
 		reg->modified = false;
@@ -273,7 +273,7 @@ WChar *IO::Registry::GetSubReg(WChar *buff, UOSInt index)
 				}
 				else
 				{
-					names.SortedInsert(Text::StrCopyNew(sbSubReg.ToString()));
+					names.SortedInsert(Text::StrCopyNewC(sbSubReg.ToString(), sbSubReg.GetLength()));
 				}
 			}
 		}

@@ -44,6 +44,8 @@ namespace Data
 		T RemoveC(Text::CString key);
 		virtual Bool IsEmpty();
 		virtual void Clear();
+		
+		UInt32 CalcHash(const UTF8Char *s, UOSInt len);
 	};
 
 	template <class T> void FastStringMap<T>::Insert(UOSInt index, UInt32 hash, Text::String *s, T val)
@@ -293,6 +295,11 @@ namespace Data
 			this->items[i].s->Release();
 		}
 		this->cnt = 0;
+	}
+
+	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len)
+	{
+		return this->crc->CalcDirect(s, len);
 	}
 }
 

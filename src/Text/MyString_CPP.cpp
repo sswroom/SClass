@@ -330,8 +330,18 @@ extern "C" OSInt MyString_StrCompareICaseUTF32(const UTF32Char *str1, const UTF3
 extern "C" UOSInt MyString_StrCharCnt(const UTF8Char *s)
 {
 	const UTF8Char*src = s;
-	while (*src++) ;
-	return src - s - 1;
+	while (true)
+	{
+		if (src[0] == 0)
+			return src - s;
+		if (src[1] == 0)
+			return src - s + 1;
+		if (src[2] == 0)
+			return src - s + 2;
+		if (src[3] == 0)
+			return src - s + 3;
+		src += 4;
+	}
 }
 
 extern "C" UOSInt MyString_StrCharCntUTF16(const UTF16Char *s)

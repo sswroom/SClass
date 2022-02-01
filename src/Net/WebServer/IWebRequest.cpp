@@ -43,7 +43,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		return;
 	}
 	Net::UserAgentDB::UAEntry ua;
-	Net::UserAgentDB::ParseUserAgent(&ua, uaHdr->v);
+	Net::UserAgentDB::ParseUserAgent(&ua, uaHdr->ToCString());
 	this->reqBrowser = ua.browser;
 	this->reqBrowserVer = (const UTF8Char*)ua.browserVer;
 	this->reqOS = ua.os;

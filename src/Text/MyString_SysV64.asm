@@ -2194,8 +2194,10 @@ scmplop:
 	cmp dl,'0'
 	jb scmplop5
 	
-	xor rax,rax
-	xor rdx,rdx
+	lea rax,[rcx-48]
+	lea rdx,[rdx-48]
+	lea rdi,[rdi+1]
+	lea rsi,[rsi+1]
 	align 16
 scmplop6:
 	movzx rcx,byte [rdi]
@@ -2213,17 +2215,17 @@ scmplop2:
 	test dl,dl
 	jz scmplop4
 	mov rax,-1
-	jmp scmpret
+	ret
 	
 	align 16
 scmplop3:
 	mov rax,1
-	jmp scmpret
+	ret
 	
 	align 16
 scmplop4:
 	mov rax,0
-	jmp scmpret
+	ret
 
 	align 16
 scmplop7:
@@ -2244,12 +2246,12 @@ scmplop8:
 	ja scmplop10
 scmplop9:
 	mov rax,-1
-	jmp scmpret
+	ret
 	
 	align 16
 scmplop10:
 	mov rax,1
-	jmp scmpret
+	ret
 	
 	align 16
 scmplop5:
@@ -2259,10 +2261,6 @@ scmplop5:
 	lea rsi,[rsi+1]
 	lea rdi,[rdi+1]
 	jmp scmplop
-
-	align 16	
-scmpret:
-	ret
 
 ;OSInt MyString_StrCompareICase(const Char *str1, const Char *str2)
 ;0 retAddr
@@ -2787,17 +2785,39 @@ scmpicu32ret:
 ;0 retAdddr
 ;rdi s
 	align 16
-MyString_StrCharCnt:
 _MyString_StrCharCnt:
+MyString_StrCharCnt:
 	mov rax,rdi
 	align 16
 scclop:
-	movzx edx,byte [rax]
-	lea rax,[rax+1]
-	test dl,dl
-	jnz scclop
+	cmp byte[rax],0
+	jz scclop0
+	cmp byte[rax+1],0
+	jz scclop1
+	cmp byte[rax+2],0
+	jz scclop2
+	cmp byte[rax+3],0
+	jz scclop3
+	lea rax,[rax+4]
+	jmp scclop
+	align 16
+scclop0:
 	sub rax,rdi
-	dec rax
+	ret
+	align 16
+scclop1:
+	sub rax,rdi
+	inc rax
+	ret
+	align 16
+scclop2:
+	sub rax,rdi
+	add rax,2
+	ret
+	align 16
+scclop3:
+	sub rax,rdi
+	add rax,3
 	ret
 
 ;OSInt MyString_StrCharCntUTF16(const UTF16Char *s)

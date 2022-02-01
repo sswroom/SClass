@@ -41,6 +41,7 @@ test:
 @TestFastStringMap
 @TestFloat16
 @TestFloat
+@TestMyString
 @TestPunycode
 @TestStrCompareICase
 @TestStrConcat
@@ -687,6 +688,9 @@ TestFloat16:
 TestFloat:
 @TestFloat.o
 @ConsoleStartup.o
+TestMyString:
+@TestMyString.o
+@ConsoleStartup.o
 TestPunycode:
 @TestPunycode.o
 @ConsoleStartup.o
@@ -979,6 +983,7 @@ TestDateTime.o: ../../main/Test/Data/TestDateTime.cpp
 TestFastStringMap.o: ../../main/Test/Data/TestFastStringMap.cpp
 TestFloat16.o: ../../main/Test/Data/TestFloat16.cpp
 TestFloat.o: ../../main/Test/Math/TestFloat.cpp
+TestMyString.o: ../../main/Test/Text/TestMyString.cpp
 TestPunycode.o: ../../main/Test/Text/TestPunycode.cpp
 TestStrCompareICase.o: ../../main/Test/Text/TestStrCompareICase.cpp
 TestStrConcat.o: ../../main/Test/Text/TestStrConcat.cpp

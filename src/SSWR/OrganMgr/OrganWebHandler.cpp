@@ -48,7 +48,18 @@ SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::~SpeciesSciNameCompar
 
 OSInt SSWR::OrganMgr::OrganWebHandler::SpeciesSciNameComparator::Compare(SpeciesInfo *a, SpeciesInfo *b)
 {
-	return a->sciName->CompareTo(b->sciName);
+	if (a->sciNameHash > b->sciNameHash)
+	{
+		return 1;
+	}
+	else if (a->sciNameHash < b->sciNameHash)
+	{
+		return -1;
+	}
+	else
+	{
+		return a->sciName->CompareToFast(b->sciName->ToCString());
+	}
 }
 
 SSWR::OrganMgr::OrganWebHandler::UserFileTimeComparator::~UserFileTimeComparator()
@@ -91,8 +102,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 	UOSInt i;
 	IO::ConfigFile *lang;
 
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Langs");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Langs"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
@@ -151,8 +162,8 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				cate->dirName = r->GetNewStr(2);
 				sb.ClearStr();
 				r->GetStr(3, &sb);
-				this->imageDir->ConcatTo(sbuff);
-				sptr = IO::Path::AppendPath(sbuff, sb.ToString());
+				sptr = this->imageDir->ConcatTo(sbuff);
+				sptr = IO::Path::AppendPathC(sbuff, sptr, sb.ToString(), sb.GetLength());
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					sptr[0] = IO::Path::PATH_SEPERATOR;
@@ -236,6 +247,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadSpecies()
 			NEW_CLASS(sp->files, Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::UserFileInfo*>());
 			NEW_CLASS(sp->wfiles, Data::Int32Map<SSWR::OrganMgr::OrganWebHandler::WebFileInfo*>());
 			this->spMap->Put(sp->speciesId, sp);
+			sp->sciNameHash = this->spNameMap->CalcHash(sp->sciName->v, sp->sciName->leng);
 		}
 		this->db->CloseReader(r);
 
@@ -7786,9 +7798,9 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			Text::StringBuilderUTF8 sb;
 			if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 			{
-				this->cacheDir->ConcatTo(u8buff);
-				Text::StrInt32(u8buff2, cate->cateId);
-				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
+				u8ptr = this->cacheDir->ConcatTo(u8buff);
+				sptr2 = Text::StrInt32(u8buff2, cate->cateId);
+				u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, u8buff2, (UOSInt)(sptr2 - u8buff2));
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
 				u8ptr = sp->dirName->ConcatTo(u8ptr);
 				IO::Path::CreateDirectory(u8buff);
@@ -8103,8 +8115,8 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		dt.ToUTCTime();
 		rotateType = userFile->rotType;
 
-		this->cacheDir->ConcatTo(u8buff2);
-		u8ptr = IO::Path::AppendPath(u8buff2, (const UTF8Char*)"UserFile");
+		u8ptr = this->cacheDir->ConcatTo(u8buff2);
+		u8ptr = IO::Path::AppendPathC(u8buff2, u8ptr, UTF8STRC("UserFile"));
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
@@ -8423,8 +8435,8 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 		{
 			Data::DateTime dt;
 
-			this->cacheDir->ConcatTo(u8buff2);
-			u8ptr = IO::Path::AppendPath(u8buff2, (const UTF8Char*)"WebFile");
+			u8ptr = this->cacheDir->ConcatTo(u8buff2);
+			u8ptr = IO::Path::AppendPathC(u8buff2, u8ptr, UTF8STRC("WebFile"));
 			*u8ptr++ = IO::Path::PATH_SEPERATOR;
 			u8ptr = Text::StrInt32(u8ptr, wfile->id >> 10);
 			IO::Path::CreateDirectory(u8buff2);
