@@ -3,7 +3,7 @@
 NDK_PATH=~/android-ndk-r19c
 CC:=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang++
 CC2:=$(NDK_PATH)/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android21-clang
-ASM:=yasm
+ASM:=nasm
 LD:=ld
 STRIP:=strip
 CLASSDIR:=../../

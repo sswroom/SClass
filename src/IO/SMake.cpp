@@ -1101,6 +1101,15 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 					sb.Append(asmflagsCfg->value);
 					sb.AppendChar(' ', 1);
 				}
+				if (asmListing)
+				{
+					sb.AppendC(UTF8STRC("-l "));
+					sb.AppendC(UTF8STRC(OBJECTPATH));
+					sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
+					sb.Append(subProg->name);
+					sb.RemoveChars(1);
+					sb.AppendC(UTF8STRC("lst "));
+				}
 				sb.AppendC(UTF8STRC("-o "));
 				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);

@@ -17,7 +17,7 @@
 #include "Text/MyStringFloat.h"
 #include <gdk/gdk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <wchar.h>
+#include <stdio.h>
 
 Parser::FileParser::GUIImgParser::GUIImgParser()
 {
@@ -156,7 +156,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 		}
 		else
 		{
-			wprintf(L"GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
+			printf("GUIImgParser: unsupport: width = %d, height = %d, nChannels = %d, bps = %d, bpl = %d, xdpi = %lf, ydpi = %lf\r\n", width, height, nChannels, bps, bpl, xdpi, ydpi);
 		}
 
 		if (img)

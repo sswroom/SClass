@@ -1,7 +1,7 @@
 AR:=ar
 CC:=g++
 CC2:=gcc
-ASM:=yasm
+ASM:=nasm
 LD:=ld
 STRIP:=strip
 CLASSDIR:=../../

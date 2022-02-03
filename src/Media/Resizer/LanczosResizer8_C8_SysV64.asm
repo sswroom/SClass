@@ -525,8 +525,10 @@ hflop:
 	movq xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movq [rdi],xmm1
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+4]
+;	lea rdi,[rdi+8]
+;	lea rcx,[rcx+4]
+	add rdi,8
+	add rcx,8
 
 	align 16
 hflop4:
@@ -559,8 +561,10 @@ hflop4:
 	paddsw xmm1,xmm0
 	movdqu [rdi],xmm1
 
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+8]
+;	lea rdi,[rdi+16]
+;	lea rcx,[rcx+8]
+	add rdi,16
+	add rcx,8
 	dec rbp
 	jnz hflop4
 
@@ -583,15 +587,18 @@ hflop3:
 	pmaddwd xmm0,[rdi]
 	paddd xmm2,xmm0
 	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
+;	lea rdi,[rdi+16]
+;	lea rbx,[rbx+16]
+	add rdi,16
+	add rbx,16
 	dec rdx
 	jnz hflop3
 
 	psrad xmm2,15
 	packssdw xmm2,xmm3
 	movq [rsi],xmm2
-	lea rsi,[rsi+8]
+;	lea rsi,[rsi+8]
+	add rsi,8
 	dec rbp
 	jnz hflop2
 
@@ -630,8 +637,10 @@ hf6lop:
 	movq xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movq [rdi],xmm1
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+4]
+;	lea rdi,[rdi+8]
+;	lea rcx,[rcx+4]
+	add rdi,8
+	add rcx,4
 
 	align 16
 hf6lop4:
@@ -664,8 +673,10 @@ hf6lop4:
 	paddsw xmm1,xmm0
 	movdqu [rdi],xmm1
 
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+8]
+;	lea rdi,[rdi+16]
+;	lea rcx,[rcx+8]
+	add rdi,16
+	add rcx,8
 	dec rbp
 	jnz hf6lop4
 
@@ -715,14 +726,17 @@ hf6lop2:
 	pmaddwd xmm0,[rdi+80]
 	paddd xmm3,xmm0
 
-	lea rdi,[rdi+96]
-	lea rbx,[rbx+48]
+;	lea rdi,[rdi+96]
+;	lea rbx,[rbx+48]
+	add rdi,96
+	add rbx,48
 
 	psrad xmm1,15
 	psrad xmm3,15
 	packssdw xmm1,xmm3
 	movdqu [rsi],xmm1
-	lea rsi,[rsi+16]
+;	lea rsi,[rsi+16]
+	add rsi,16
 	dec rbp
 	jnz hf6lop2
 
@@ -762,8 +776,10 @@ hf2lop:
 	movq xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movq [rdi],xmm1
-	lea rdi,[rdi+8]
-	lea rcx,[rcx+4]
+;	lea rdi,[rdi+8]
+;	lea rcx,[rcx+4]
+	add rdi,8
+	add rcx,4
 
 	align 16
 hf2lop4:
@@ -772,32 +788,30 @@ hf2lop4:
 	movzx rdx,al
 	movq xmm1,[rsi+rdx*8+266240]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+266240]
+	movhpd xmm1,[rsi+rdx*8+266240]
 	movzx edx,ah
-	punpcklqdq xmm1,xmm2
 	movq xmm0,[rsi+rdx*8+264192]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+264192]
+	movhpd xmm0,[rsi+rdx*8+264192]
 	shr eax,16
 	shr ebx,16
-	punpcklqdq xmm0,xmm2
 	paddsw xmm1,xmm0
 	movzx edx,al
 	movq xmm0,[rsi+rdx*8+262144]
 	movzx edx,bl
-	movq xmm2,[rsi+rdx*8+262144]
-	punpcklqdq xmm0,xmm2
+	movhpd xmm0,[rsi+rdx*8+262144]
 	paddsw xmm1,xmm0
 	movzx edx,ah
 	movq xmm0,[rsi+rdx*8+268288]
 	movzx edx,bh
-	movq xmm2,[rsi+rdx*8+268288]
-	punpcklqdq xmm0,xmm2
+	movhpd xmm0,[rsi+rdx*8+268288]
 	paddsw xmm1,xmm0
 	movdqu [rdi],xmm1
 
-	lea rdi,[rdi+16]
-	lea rcx,[rcx+8]
+;	lea rdi,[rdi+16]
+;	lea rcx,[rcx+8]
+	add rdi,16
+	add rcx,8
 	dec rbp
 	jnz hf2lop4
 
@@ -821,8 +835,10 @@ hf2lop3:
 	pmaddwd xmm0,[rdi]
 	paddd xmm2,xmm0
 	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
+;	lea rdi,[rdi+16]
+;	lea rbx,[rbx+16]
+	add rdi,16
+	add rbx,16
 	dec rdx
 	jnz hf2lop3
 
@@ -837,8 +853,10 @@ hf2lop3b:
 	pmaddwd xmm0,[rdi]
 	paddd xmm3,xmm0
 	
-	lea rdi,[rdi+16]
-	lea rbx,[rbx+16]
+;	lea rdi,[rdi+16]
+;	lea rbx,[rbx+16]
+	add rdi,16
+	add rbx,16
 	dec rdx
 	jnz hf2lop3b
 
@@ -846,7 +864,8 @@ hf2lop3b:
 	psrad xmm3,15
 	packssdw xmm2,xmm3
 	movdqu [rsi],xmm2
-	lea rsi,[rsi+16]
+;	lea rsi,[rsi+16]
+	add rsi,16
 	dec rbp
 	jnz hf2lop2
 
@@ -1124,34 +1143,33 @@ vflop6:
 	dec rdx
 	jnz vflop6
 
-
 	psrad xmm2,15
 	psrad xmm6,15
 	packssdw xmm2,xmm6
-	pextrw rbx,xmm2,2
-	pextrw rdx,xmm2,3
-	mov al,byte [rdi+rbx+131072]
-	mov ah,byte [rdi+rdx+196608]
-	shl eax,16
-	pextrw rbx,xmm2,0
-	pextrw rdx,xmm2,1
-	mov al,byte [rdi+rbx]
-	mov ah,byte [rdi+rdx+65536]
-	movd xmm0,eax
 
 	pextrw rbx,xmm2,6
 	pextrw rdx,xmm2,7
 	mov al,byte [rdi+rbx+131072]
 	mov ah,byte [rdi+rdx+196608]
-	shl eax,16
+	shl rax,16
 	pextrw rbx,xmm2,4
 	pextrw rdx,xmm2,5
 	mov al,byte [rdi+rbx]
 	mov ah,byte [rdi+rdx+65536]
-	movd xmm1,eax
-	punpckldq xmm0,xmm1
+	shl rax,16
 
-	movq [rcx],xmm0
+	pextrw rbx,xmm2,2
+	pextrw rdx,xmm2,3
+	mov al,byte [rdi+rbx+131072]
+	mov ah,byte [rdi+rdx+196608]
+	shl rax,16
+	pextrw rbx,xmm2,0
+	pextrw rdx,xmm2,1
+	mov al,byte [rdi+rbx]
+	mov ah,byte [rdi+rdx+65536]
+	shl rax,16
+
+	movnti qword [rcx],rax
 	lea rcx,[rcx+8]
 	lea rsi,[rsi+16]
 	dec rbp
@@ -1314,8 +1332,8 @@ exppalop2:
 ;24 rgbTable
 
 	align 16
-LanczosResizer8_C8_collapse
-_LanczosResizer8_C8_collapse
+LanczosResizer8_C8_collapse:
+_LanczosResizer8_C8_collapse:
 	push rbp
 	push rbx
 	lea rbx,[rdx*8] ;width

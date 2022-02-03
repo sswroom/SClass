@@ -1,6 +1,6 @@
 CC:=~/android_16/i686-linux-android/bin/i686-linux-android-clang++
 CC2:=~/android_16/i686-linux-android/bin/i686-linux-android-clang
-ASM:=yasm
+ASM:=nasm
 LD:=ld
 STRIP:=strip
 CLASSDIR:=../../

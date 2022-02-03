@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	
 	srcFile = CSTR("/home/sswroom/Progs/Temp/src.jpg");
 	destFile = CSTR("/home/sswroom/Progs/Temp/photo2.jpg");
-	pxSize = 200;
+	pxSize = 7680;
 
 	Manage::HiResClock clk;
 	Parser::FileParser::GUIImgParser parser;

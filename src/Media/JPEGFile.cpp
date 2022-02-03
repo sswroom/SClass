@@ -119,7 +119,7 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 		{
 			tagBuff = MemAlloc(UInt8, j);
 			fd->GetRealData(ofst + 4, j, tagBuff);
-			if (Text::StrStartsWithC(tagBuff, j, UTF8STRC("ICC_PROFILE")) == 0)
+			if (Text::StrStartsWithC(tagBuff, j, UTF8STRC("ICC_PROFILE")))
 			{
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagBuff[14], j - 14);
 				if (icc)

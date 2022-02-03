@@ -14,7 +14,7 @@ void IO::FileAnalyse::FrameDetail::AddFieldInfo(UOSInt ofst, UOSInt size, Text::
 	field->ofst = (UInt32)ofst;
 	field->size = (UInt32)size;
 	field->name = Text::String::New(name.v, name.leng);
-	field->value = Text::String::New(value.v, name.leng);
+	field->value = Text::String::New(value.v, value.leng);
 	field->fieldType = fieldType;
 	this->fields->Add(field);
 }
