@@ -100,7 +100,7 @@ void UI::GUIButton::SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHei
 	GtkWidget *widget = gtk_bin_get_child((GtkBin*)this->hwnd);
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle("label", 0);
+	builder.NewStyle(CSTR("label"), CSTR_NULL);
 	if (name) builder.AddFontFamily(name);
 	if (fontHeight != 0) builder.AddFontSize(fontHeight, Math::Unit::Distance::DU_PIXEL);
 	if (isBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);

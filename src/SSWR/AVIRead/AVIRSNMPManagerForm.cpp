@@ -16,6 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	Text::StringBuilderUTF8 sb;
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	me->txtAgentAddr->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
@@ -101,8 +102,8 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 		while (i < j)
 		{
 			agent = agentList.GetItem(i);
-			Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
-			k = me->lbAgent->AddItem(sbuff, agent);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
+			k = me->lbAgent->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, agent);
 			if (i == 0)
 			{
 				me->lbAgent->SetSelectedIndex(k);

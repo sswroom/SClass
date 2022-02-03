@@ -834,6 +834,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	Data::ArrayListInt64 objIds;
 	void *nameArr;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt cnt = lyr->GetColumnCnt();
 	UOSInt i;
 	UOSInt j;
@@ -844,8 +845,8 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 		j = objIds.GetCount();
 		while (i < j)
 		{
-			lyr->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), 0);
-			this->lbImages->AddItem(sbuff, (void*)(OSInt)objIds.GetItem(i));
+			sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), 0);
+			this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)objIds.GetItem(i));
 			i++;
 		}
 	}
@@ -855,8 +856,8 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 		j = objIds.GetCount();
 		while (i < j)
 		{
-			Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Image ")), (Int32)i);
-			this->lbImages->AddItem(sbuff, (void*)(OSInt)objIds.GetItem(i));
+			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Image ")), (Int32)i);
+			this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)objIds.GetItem(i));
 			i++;
 		}
 	}

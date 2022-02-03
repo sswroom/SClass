@@ -61,7 +61,8 @@ SSWR::AVIRead::AVIRWIADevForm::AVIRWIADevForm(UI::GUIClientControl *parent, UI::
 	j = this->wiaMgr->GetDeviceCount();
 	while (i < j)
 	{
-		this->lbDevice->AddItem(this->wiaMgr->GetDeviceName(i), (void*)i);
+		const UTF8Char *name = this->wiaMgr->GetDeviceName(i);
+		this->lbDevice->AddItem({name, Text::StrCharCnt(name)}, (void*)i);
 		i++;
 	}
 }

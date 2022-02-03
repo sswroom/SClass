@@ -97,14 +97,14 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		if (Text::StrEquals(item->type, (const UTF8Char*)"rootDomainNamingContext"))
 		{
 			Text::StringBuilderUTF8 sb;
-			UTF8Char *sarr[32];
+			Text::PString sarr[32];
 			UOSInt j;
 			sb.AppendSlow(item->value);
-			j = Text::StrSplit(sarr, 32, sb.ToString(), ',');
+			j = Text::StrSplitP(sarr, 32, sb, ',');
 			me->rootLev = j;
 			while (j-- > 0)
 			{
-				me->lbPath->AddItem(sarr[j], 0);
+				me->lbPath->AddItem(sarr[j].ToCString(), 0);
 			}
 			me->lbPath->SetSelectedIndex(me->rootLev - 1);
 			succ = true;
@@ -171,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 	{
 		me->dispResults->Add(results.RemoveAt(0));
 		Net::LDAPClient::SearchResultsFree(&results);
-		me->lbObjects->AddItem((const UTF8Char*)".", me->dispResults->GetItem(0));
+		me->lbObjects->AddItem(CSTR("."), me->dispResults->GetItem(0));
 	}
 	if (me->cli->Search(sb.ToCString(), Net::LDAPClient::ST_SINGLE_LEVEL, Net::LDAPClient::DT_DEREF_IN_SEARCHING, 0, 0, false, (const UTF8Char*)"", &results))
 	{
@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 						k++;
 					}
 				}
-				me->lbObjects->AddItem(sb.ToString(), obj);
+				me->lbObjects->AddItem(sb.ToCString(), obj);
 			}
 			i++;
 		}
@@ -262,11 +262,12 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 {
 	SSWR::AVIRead::AVIRLDAPExplorerForm *me = (SSWR::AVIRead::AVIRLDAPExplorerForm*)userObj;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt i = me->lbObjects->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 		return;
-	me->lbObjects->GetItemText(sbuff, i);
-	if (Text::StrEquals(sbuff, (const UTF8Char*)"."))
+	sptr = me->lbObjects->GetItemText(sbuff, i);
+	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".")))
 	{
 		i = me->lbPath->GetSelectedIndex();
 		if (i >= me->rootLev)
@@ -276,7 +277,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 	}
 	else
 	{
-		UOSInt j = me->lbPath->AddItem(sbuff, 0);
+		UOSInt j = me->lbPath->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		me->lbPath->SetSelectedIndex(j);
 	}
 }

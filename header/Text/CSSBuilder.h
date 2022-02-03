@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_CSSBUILDER
 #define _SM_TEXT_CSSBUILDER
 #include "Math/Unit/Distance.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Text
@@ -41,7 +42,7 @@ namespace Text
 		CSSBuilder(PrettyMode pm);
 		~CSSBuilder();
 
-		Bool NewStyle(const Char *name, const Char *className);
+		Bool NewStyle(Text::CString name, Text::CString className);
 		Bool EndStyle();
 
 		Bool AddColorRGBA(UInt32 argb);
@@ -56,7 +57,7 @@ namespace Text
 
 	private:
 		void AppendNewLine();
-		void AppendStyleName(const Char *name);
+		void AppendStyleName(Text::CString name);
 		void AppendRGBAColor(UInt32 argb);
 		void NextEntry();
 	};

@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	while (i < cnt)
 	{
 		Media::VideoCaptureMgr::DeviceInfo *dev = this->devInfoList->GetItem(i);
-		this->lbDevice->AddItem(dev->devName, dev);
+		this->lbDevice->AddItem({dev->devName, Text::StrCharCnt(dev->devName)}, dev);
 		i++;
 	}
 

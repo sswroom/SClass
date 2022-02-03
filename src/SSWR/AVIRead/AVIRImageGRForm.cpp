@@ -184,14 +184,15 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	this->lbLayers->ClearItems();
 	this->currLayer = INVALID_INDEX;
 	i = 0;
 	j = this->grFilter->GetLayerCount();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
-		this->lbLayers->AddItem(sbuff, (void*)i);
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
+		this->lbLayers->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 		i++;
 	}
 }

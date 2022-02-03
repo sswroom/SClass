@@ -6,7 +6,7 @@
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 {
 	UTF8Char sbuff[512];
-//	UTF8Char *sptr;
+	UTF8Char *sptr;
 	UInt8 buff[16];
 	UInt32 ipAddr;
 	UOSInt i;
@@ -83,8 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		i = 0;
 		while ((ipAddr = connInfo->GetIPAddress(i++)) != 0)
 		{
-			Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-			me->lbAdaptorIP->AddItem(sbuff, 0);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
+			me->lbAdaptorIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		ipAddr = connInfo->GetDefaultGW();
 		if (ipAddr)
@@ -100,8 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		i = 0;
 		while ((ipAddr = connInfo->GetDNSAddress(i++)) != 0)
 		{
-			Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-			me->lbAdaptorDNS->AddItem(sbuff, 0);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
+			me->lbAdaptorDNS->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 
 		if (connInfo->IsDhcpEnabled())
@@ -428,6 +428,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::ReleaseConns()
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->ReleaseConns();
 	this->core->GetSocketFactory()->GetConnInfoList(this->conns);
 	UOSInt i;
@@ -439,8 +440,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	while (i < j)
 	{
 		connInfo = this->conns->GetItem(i);
-		connInfo->GetName(sbuff);
-		this->lbAdaptors->AddItem(sbuff, connInfo);
+		sptr = connInfo->GetName(sbuff);
+		this->lbAdaptors->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, connInfo);
 		i++;
 	}
 }

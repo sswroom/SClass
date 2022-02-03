@@ -55,7 +55,7 @@ SSWR::OrganMgr::OrganSelCategoryForm::OrganSelCategoryForm(UI::GUIClientControl 
 	{
 		Category *cate;
 		cate = cates->GetItem(i);
-		this->lbCategory->AddItem(cate->chiName->v, cate);
+		this->lbCategory->AddItem(cate->chiName, cate);
 		i++;
 	}
 	DEL_CLASS(cates);

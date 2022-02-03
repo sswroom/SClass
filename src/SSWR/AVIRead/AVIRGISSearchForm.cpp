@@ -70,7 +70,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 		{
 			sb.ToCapital();
 		}
-		this->lbResults->AddItem(sb.ToString(), 0);
+		this->lbResults->AddItem(sb.ToCString(), 0);
 
 		i++;
 	}

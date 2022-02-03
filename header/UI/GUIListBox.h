@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUILISTBOX
 #define _SM_UI_GUILISTBOX
+#include "Text/CString.h"
 #include "Text/String.h"
 #include "UI/GUIClientControl.h"
 
@@ -32,10 +33,10 @@ namespace UI
 		void EventRightClick(OSInt x, OSInt y);
 
 		UOSInt AddItem(Text::String *itemText, void *itemObj);
-		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void *GetItem(UOSInt index);

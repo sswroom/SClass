@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 	{
 		me->sanList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->txtSAN->SetText((const UTF8Char*)"");
-		me->lbSAN->AddItem(sb.ToString(), 0);
+		me->lbSAN->AddItem(sb.ToCString(), 0);
 	}
 }
 

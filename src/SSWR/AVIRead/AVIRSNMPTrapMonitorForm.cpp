@@ -88,14 +88,15 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 	{
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage(me->packetMut);
 		while (i < j)
 		{
 			packet = me->packetList->GetItem(i);
 			dt.SetTicks(packet->t);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lbResults->AddItem(sbuff, packet);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lbResults->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, packet);
 			i++;
 		}
 		mutUsage.EndUse();

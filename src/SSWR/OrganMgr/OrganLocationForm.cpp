@@ -17,7 +17,7 @@ void SSWR::OrganMgr::OrganLocationForm::DispId(Int32 id)
 	while (i-- > 0)
 	{
 		l = locList.GetItem(i);
-		this->lbLocation->AddItem(l->cname->v, l);
+		this->lbLocation->AddItem(l->cname, l);
 	}
 	i = locList.GetCount();
 	if (i > 0)
@@ -51,7 +51,7 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 		while (i < j)
 		{
 			l = locSubList->GetItem(i);
-			this->lbSublocations->AddItem(l->cname->v, l);
+			this->lbSublocations->AddItem(l->cname, l);
 			i++;
 		}
 		DEL_CLASS(locSubList);
@@ -159,7 +159,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocDblClk(void *userObj)
 		if (me->ToSave())
 			return;
 		Location *loc = (Location*)me->lbSublocations->GetItem(i);
-		i = me->lbLocation->AddItem(loc->cname->v, loc);
+		i = me->lbLocation->AddItem(loc->cname, loc);
 		me->lbLocation->SetSelectedIndex(i);
 	}
 }

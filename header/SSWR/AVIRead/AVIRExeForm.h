@@ -25,7 +25,7 @@ namespace SSWR
 				UInt16 segm;
 				UInt16 addr;
 				UInt16 endAddr;
-				Data::ArrayListStrUTF8 *codeList;
+				Data::ArrayListString *codeList;
 			} ExeB16Addr;
 		private:
 			UI::GUITabControl *tcEXE;
@@ -55,9 +55,9 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			IO::EXEFile *exeFile;
 			Data::ArrayList<ExeB16Addr*> *parts;
-			Data::ArrayList<Data::ArrayListStrUTF8*> *codesList;
+			Data::ArrayList<Data::ArrayListString*> *codesList;
 
-			void ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStrUTF8 *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partIndex, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize);
+			void ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListString *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partIndex, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize);
 			void InitSess16();
 			static void __stdcall On16BitFuncsChg(void *userObj);
 			static void __stdcall OnImportSelChg(void *userObj);

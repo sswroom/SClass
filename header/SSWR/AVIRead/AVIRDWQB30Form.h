@@ -57,7 +57,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			IO::CodeScanner *scanner;
 			Sync::Mutex *codeMut;
-			const UTF8Char *newCode;
+			Text::String *newCode;
 			Bool codeUpdate;
 
 			static void __stdcall OnPortClicked(void *userObj);

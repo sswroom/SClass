@@ -10,10 +10,11 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		MapFilter *filter = frm->GetFilter();
 		me->filters->Add(filter);
-		filter->ToString(sbuff);
-		me->lbFilters->AddItem(sbuff, filter);
+		sptr = filter->ToString(sbuff);
+		me->lbFilters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, filter);
 	}
 	DEL_CLASS(frm);
 }
@@ -60,6 +61,7 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	this->btnOK->HandleButtonClick(OnOkClicked, this);
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	MapFilter *filter;
@@ -68,8 +70,8 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	while (i < j)
 	{
 		filter = this->filters->GetItem(i);
-		filter->ToString(sbuff);
-		this->lbFilters->AddItem(sbuff, filter);
+		sptr = filter->ToString(sbuff);
+		this->lbFilters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, filter);
 		i++;
 	}
 }

@@ -154,6 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSDevForm *me = (SSWR::AVIRead::AVIRGPSDevForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -173,8 +174,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->alertList->GetCount();
 		while (i < j)
 		{
-			Text::StrInt32(sbuff, me->alertList->GetItem(i));
-			me->lbAlert->AddItem(sbuff, 0);
+			sptr = Text::StrInt32(sbuff, me->alertList->GetItem(i));
+			me->lbAlert->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -188,8 +189,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->deviceList->GetCount();
 		while (i < j)
 		{
-			Text::StrInt64(sbuff, me->deviceList->GetItem(i));
-			me->lbDevice->AddItem(sbuff, 0);
+			sptr = Text::StrInt64(sbuff, me->deviceList->GetItem(i));
+			me->lbDevice->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -203,8 +204,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->userList->GetCount();
 		while (i < j)
 		{
-			Text::StrInt32(sbuff, me->userList->GetItem(i));
-			me->lbUser->AddItem(sbuff, 0);
+			sptr = Text::StrInt32(sbuff, me->userList->GetItem(i));
+			me->lbUser->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -291,8 +292,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->alertContDevs->GetCount();
 		while (i < j)
 		{
-			Text::StrInt64(sbuff, me->alertContDevs->GetItem(i));
-			me->lbAlertDev->AddItem(sbuff, 0);;
+			sptr = Text::StrInt64(sbuff, me->alertContDevs->GetItem(i));
+			me->lbAlertDev->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);;
 			i++;
 		}
 		mutUsage.EndUse();
@@ -315,8 +316,8 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		j = me->userContDevs->GetCount();
 		while (i < j)
 		{
-			Text::StrInt64(sbuff, me->userContDevs->GetItem(i));
-			me->lbUserDev->AddItem(sbuff, 0);;
+			sptr = Text::StrInt64(sbuff, me->userContDevs->GetItem(i));
+			me->lbUserDev->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);;
 			i++;
 		}
 		mutUsage.EndUse();

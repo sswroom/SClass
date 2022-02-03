@@ -60,15 +60,16 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
-	this->lbDevice->AddItem((const UTF8Char*)"Default", 0);
+	this->lbDevice->AddItem(CSTR("Default"), 0);
 	i = 0;
 	j = Media::AudioDevice::GetDeviceCount();
 	while (i < j)
 	{
-		if (Media::AudioDevice::GetDeviceName(sbuff, i))
+		if ((sptr = Media::AudioDevice::GetDeviceName(sbuff, i)) != 0)
 		{
-			k = this->lbDevice->AddItem(sbuff, 0);
+			k = this->lbDevice->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			if (devName && Text::StrStartsWith(sbuff, devName))
 			{
 				this->lbDevice->SetSelectedIndex(k);

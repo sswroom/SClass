@@ -1041,8 +1041,8 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 							if ((symTab[l +12] & 15) == 2)
 							{
 								tmpVal = (UInt32)readInt32(&symTab[l]);
-								ToFuncName(sbuff2, &strTab[tmpVal]);
-								exef->AddExportFunc(sbuff2);
+								sptr = ToFuncName(sbuff2, &strTab[tmpVal]);
+								exef->AddExportFunc({sbuff2, (UOSInt)(sptr - sbuff2)});
 							}
 							else
 							{

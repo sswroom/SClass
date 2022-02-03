@@ -106,13 +106,13 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnGroupClicked(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(frm, SSWR::SHPConv::SHPConvGroupForm(0, me->ui));
-	frm->AddGroup((const UTF8Char*)"-- None --");
+	frm->AddGroup(CSTR("-- None --"));
 	i = 0;
 	j = me->lstRecords->GetCount();
 	while (i < j)
 	{
 		s = me->lstRecords->GetItemTextNew(i);
-		frm->AddGroup(s->v);
+		frm->AddGroup(s->ToCString());
 		s->Release();
 		i++;
 	}
@@ -1118,6 +1118,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 {
 	IO::FileStream *fs;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt8 buff[100];
 	Double xMin;
 	Double yMin;
@@ -1189,8 +1190,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(const UTF8Char *fileName, Bool u
 			dbOfst = 0;
 			while (dbOfst < dbRecCnt)
 			{
-				dbf->GetColumnName(dbOfst, sbuff);
-				this->lstRecords->AddItem(sbuff, 0);
+				sptr = dbf->GetColumnName(dbOfst, sbuff);
+				this->lstRecords->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 				dbOfst++;
 			}
 			dbRecCnt = dbf->GetRowCnt();
@@ -1509,15 +1510,16 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	UInt32 sysCP = Text::EncodingFactory::GetSystemCodePage();
 	UInt32 cp;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Data::ArrayList<UInt32> codePages;
 	Text::EncodingFactory::GetCodePages(&codePages);
 	UOSInt i;
-	i = this->lstLang->AddItem((const UTF8Char*)"utf16", (void*)1200);
+	i = this->lstLang->AddItem(CSTR("utf16"), (void*)1200);
 	if (sysCP == 1200)
 	{
 		this->lstLang->SetSelectedIndex(i);
 	}
-	i = this->lstLang->AddItem((const UTF8Char*)"utf8", (void*)65001);
+	i = this->lstLang->AddItem(CSTR("utf8"), (void*)65001);
 	if (sysCP == 65001)
 	{
 		this->lstLang->SetSelectedIndex(i);
@@ -1537,8 +1539,8 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 		}
 		else
 		{
-			Text::EncodingFactory::GetDotNetName(sbuff, cp);
-			k = this->lstLang->AddItem(sbuff, (void*)(OSInt)cp);
+			sptr = Text::EncodingFactory::GetDotNetName(sbuff, cp);
+			k = this->lstLang->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)cp);
 			if (cp == sysCP)
 			{
 				this->lstLang->SetSelectedIndex(k);

@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	me->txtWatermark->GetText(&sb);
 	if (me->resizer->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, outType, outParam, sb.ToString(), sizeType))
 	{
-		me->lbProfile->AddItem(sbuff, 0);
+		me->lbProfile->AddItem({sbuff, Text::StrCharCnt(sbuff)}, 0);
 		me->txtProfileName->SetText((const UTF8Char*)"");
 		me->resizer->SaveProfile(0);
 	}
@@ -189,7 +189,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 	while (i < j)
 	{
 		profile = this->resizer->GetProfile(i);
-		this->lbProfile->AddItem(profile->profileName, (void*)profile);
+		this->lbProfile->AddItem({profile->profileName, Text::StrCharCnt(profile->profileName)}, (void*)profile);
 		i++;
 	}
 

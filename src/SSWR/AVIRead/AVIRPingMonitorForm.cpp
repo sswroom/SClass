@@ -182,6 +182,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRPingMonitorForm *me = (SSWR::AVIRead::AVIRPingMonitorForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (me->ipContUpdated)
 	{
 		me->ipContUpdated = false;
@@ -203,8 +204,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			ipInfo = ipList->GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
-			me->lbIP->AddItem(sbuff, ipInfo);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
+			me->lbIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipInfo);
 			if (ipInfo == me->currIP)
 			{
 				me->lbIP->SetSelectedIndex(i);

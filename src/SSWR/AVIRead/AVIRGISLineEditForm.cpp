@@ -9,6 +9,7 @@
 void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 {
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	this->lbLayer->ClearItems();
@@ -16,8 +17,8 @@ void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 	j = this->lineLayers->GetCount();
 	while (i < j)
 	{
-		Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
-		this->lbLayer->AddItem(sbuff, this->lineLayers->GetItem(i));
+		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
+		this->lbLayer->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, this->lineLayers->GetItem(i));
 		i++;
 	}
 }
@@ -75,9 +76,10 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj
 	lyr->pattern = 0;
 	lyr->nPattern = 0;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	UOSInt i = me->lineLayers->Add(lyr);
-	Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
-	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem(sbuff, lyr));
+	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
+	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, lyr));
 	me->UpdatePreview();
 }
 

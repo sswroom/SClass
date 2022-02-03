@@ -59,6 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPCaptureForm *me = (SSWR::AVIRead::AVIRUDPCaptureForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (me->packetsChg)
 	{
 		Data::DateTime dt;
@@ -79,8 +80,8 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 			}
 			dt.SetTicks(me->packets[i].recvTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "HH:mm:ss.fff");
-			me->lbData->AddItem(sbuff, (void*)i);
+			sptr = dt.ToString(sbuff, "HH:mm:ss.fff");
+			me->lbData->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 
 			if (i == me->packetCurr)
 				break;
@@ -170,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastClicked(void *userO
 		if (ip != 0)
 		{
 			me->svr->AddMulticastIP(ip);
-			me->lbMulticastCurr->AddItem(sb.ToString(), 0);
+			me->lbMulticastCurr->AddItem(sb.ToCString(), 0);
 		}
 	}
 }
@@ -299,7 +300,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
 	NEW_CLASS(this->lbMulticastCurr, UI::GUIListBox(ui, this->pnlMulticast, false));
 	this->lbMulticastCurr->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lbMulticastCommon->AddItem((const UTF8Char*)"239.255.255.250", (void*)(const UTF8Char*)"239.255.255.250");
+	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)(const UTF8Char*)"239.255.255.250");
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
 	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);

@@ -503,6 +503,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->pingIPContUpdated)
 	{
 		me->pingIPContUpdated = false;
@@ -524,8 +525,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			pingIPInfo = pingIPList->GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, pingIPInfo->ip);
-			me->lbPingIP->AddItem(sbuff, pingIPInfo);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pingIPInfo->ip);
+			me->lbPingIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, pingIPInfo);
 			if (pingIPInfo == me->currPingIP)
 			{
 				me->lbPingIP->SetSelectedIndex(i);
@@ -614,8 +615,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			target = targetList.GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
-			me->lbDNSTarget->AddItem(sbuff, target);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
+			me->lbDNSTarget->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, target);
 			if (target == currSel)
 			{
 				me->lbDNSTarget->SetSelectedIndex(i);
@@ -662,8 +663,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			cli = cliList.GetItem(i);
-			Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
-			me->lbDNSClient->AddItem(sbuff, cli);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
+			me->lbDNSClient->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, cli);
 			if (cli == currSel)
 			{
 				me->lbDNSClient->SetSelectedIndex(i);
@@ -688,8 +689,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			ipLog = ipLogList.GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
-			me->lbIPLog->AddItem(sbuff, ipLog);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
+			me->lbIPLog->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipLog);
 			if (ipLog == currSel)
 			{
 				me->lbIPLog->SetSelectedIndex(i);
@@ -763,8 +764,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			while (i < j)
 			{
 				ipTran = ipTrans->GetItem(i);
-				Net::SocketUtil::GetIPv4Name(sbuff, ipTran->ip);
-				me->lbIPTran->AddItem(sbuff, ipTran);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipTran->ip);
+				me->lbIPTran->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipTran);
 				if (currSel == ipTran)
 				{
 					me->lbIPTran->SetSelectedIndex(i);

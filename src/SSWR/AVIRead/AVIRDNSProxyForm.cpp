@@ -10,6 +10,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt32 ip = me->proxy->GetServerIP();
 	if (ip != me->currServer)
 	{
@@ -33,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		{
 			sb.ClearStr();
 			sb.AppendSlow(nameList.GetItem(i));
-			me->lbV4Request->AddItem(sb.ToString(), 0);
+			me->lbV4Request->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 	}
@@ -52,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		{
 			sb.ClearStr();
 			sb.AppendSlow(nameList.GetItem(i));
-			me->lbV6Request->AddItem(sb.ToString(), 0);
+			me->lbV6Request->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 	}
@@ -71,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		{
 			sb.ClearStr();
 			sb.AppendSlow(nameList.GetItem(i));
-			me->lbOthRequest->AddItem(sb.ToString(), 0);
+			me->lbOthRequest->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 	}
@@ -89,8 +90,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			target = targetList.GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
-			me->lbTarget->AddItem(sbuff, target);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
+			me->lbTarget->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, target);
 			if (me->currTarget == target)
 			{
 				me->lbTarget->SetSelectedIndex(i);
@@ -523,7 +524,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	{
 		sb.ClearStr();
 		sb.AppendSlow(nameList.GetItem(i));
-		me->lbSearch->AddItem(sb.ToString(), 0);
+		me->lbSearch->AddItem(sb.ToCString(), 0);
 		i++;
 	}
 }
@@ -778,7 +779,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 	{
 		sb.ClearStr();
 		sb.AppendSlow(blackList.GetItem(i));
-		this->lbBlackList->AddItem(sb.ToString(), 0);
+		this->lbBlackList->AddItem(sb.ToCString(), 0);
 		i++;
 	}
 	

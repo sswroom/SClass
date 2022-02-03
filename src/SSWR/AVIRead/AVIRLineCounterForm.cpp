@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsAddClicked(void *
 		}
 	}
 	me->extList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
-	me->lbExtensions->AddItem(sb.ToString(), 0);
+	me->lbExtensions->AddItem(sb.ToCString(), 0);
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnExtensionsRemoveClicked(void *userObj)

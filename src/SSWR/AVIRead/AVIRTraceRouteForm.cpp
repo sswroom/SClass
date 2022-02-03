@@ -11,6 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	UInt32 targetIP;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	me->txtTargetIP->GetText(&sb);
@@ -40,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 				while (i < j)
 				{
 					ip = ipList.GetItem(i);
-					Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					me->lbIP->AddItem(sbuff, (void*)(OSInt)ip);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+					me->lbIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 					i++;
 				}
 			}

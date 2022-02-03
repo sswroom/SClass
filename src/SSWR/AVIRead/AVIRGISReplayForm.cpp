@@ -388,6 +388,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UOSInt i;
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
 	Map::GPSTrack::GPSRecord *recs = this->track->GetTrack(this->currTrackId, &recCnt);
@@ -413,8 +414,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		while (i < recCnt)
 		{
 			dt.SetTicks(recs[i].utcTimeTicks);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lbRecord->AddItem(sbuff, 0);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			this->lbRecord->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			i++;
 		}
 		this->startMark = 0;

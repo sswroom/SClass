@@ -56,7 +56,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	{
 		sb.ClearStr();
 		this->clsFile->FieldsGetDecl(i, &sb);
-		this->lbFields->AddItem(sb.ToString(), (void*)i);
+		this->lbFields->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
 
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	{
 		sb.ClearStr();
 		this->clsFile->MethodsGetDecl(i, &sb);
-		this->lbMethods->AddItem(sb.ToString(), (void*)i);
+		this->lbMethods->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
 

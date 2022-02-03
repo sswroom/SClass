@@ -260,8 +260,8 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, const
 {
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
 	Sync::MutexUsage mutUsage(me->codeMut);
-	SDEL_TEXT(me->newCode);
-	me->newCode = Text::StrCopyNew(code);
+	SDEL_STRING(me->newCode);
+	me->newCode = Text::String::NewNotNull(code);
 	me->codeUpdate = true;
 	mutUsage.EndUse();
 }
@@ -275,9 +275,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 		Sync::MutexUsage mutUsage(me->codeMut);
 		if (me->newCode)
 		{
-			me->txtScan->SetText(me->newCode);
+			me->txtScan->SetText(me->newCode->v);
 			me->lbScan->AddItem(me->newCode, 0);
-			Text::StrDelNew(me->newCode);
+			me->newCode->Release();
 			me->newCode = 0;
 		}
 		mutUsage.EndUse();
@@ -381,7 +381,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 SSWR::AVIRead::AVIRDWQB30Form::~AVIRDWQB30Form()
 {
 	SDEL_CLASS(this->scanner);
-	SDEL_TEXT(this->newCode);
+	SDEL_STRING(this->newCode);
 	DEL_CLASS(this->codeMut);
 }
 

@@ -371,7 +371,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnTimerTick(void *userObj)
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &log->cliAddr, log->cliPort);
 			sb.AppendP(sbuff, sptr);
 
-			me->lbAccess->AddItem(sb.ToString(), (void*)(OSInt)logIndex.GetItem(i));
+			me->lbAccess->AddItem(sb.ToCString(), (void*)(OSInt)logIndex.GetItem(i));
 			i++;
 		}
 	}

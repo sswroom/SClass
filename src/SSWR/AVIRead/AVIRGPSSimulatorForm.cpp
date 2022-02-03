@@ -18,6 +18,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, O
 	Double mapX;
 	Double mapY;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
 	Double lat;
 	Double lon;
@@ -43,8 +44,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, O
 	}
 	else
 	{
-		Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, lat), UTF8STRC(", ")), lon);
-		me->lbPoints->AddItem(sbuff, 0);
+		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, lat), UTF8STRC(", ")), lon);
+		me->lbPoints->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		me->points->Add(lon);
 		me->points->Add(lat);
 	}

@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 		}
 		sb.ClearStr();
 		sb.Append(ans->name);
-		me->lbAnswer->AddItem(sb.ToString(), ans);
+		me->lbAnswer->AddItem(sb.ToCString(), ans);
 		i++;
 	}
 	if (j > 0)

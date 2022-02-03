@@ -17,6 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRFontRendererForm::OnCharSelChg(void *userObj)
 SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::FontRenderer *font) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->font = font;
 	this->core = core;
@@ -41,8 +42,8 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	UTF32Char j = font->GetMaxChar();
 	while (i <= j)
 	{
-		Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)i);
-		this->lbChar->AddItem(sbuff, (void*)(OSInt)i);
+		sptr = Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)i);
+		this->lbChar->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)i);
 		i++;
 	}
 }

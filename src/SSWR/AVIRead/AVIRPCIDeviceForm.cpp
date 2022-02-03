@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, pci->GetProductId());
-		this->lbDevices->AddItem(sbuff, pci);
+		this->lbDevices->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, pci);
 		i++;
 	}
 }

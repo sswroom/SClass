@@ -116,7 +116,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 		{
 			this->dropMap->Put(csptr, Text::StrCopyNew((const UTF8Char*)"Cannot get data"));
 		}
-		this->lbType->AddItem(csptr, 0);
+		this->lbType->AddItem({csptr, Text::StrCharCnt(csptr)}, 0);
 		i++;
 	}
 /*	WChar sbuff[512];

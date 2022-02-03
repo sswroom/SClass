@@ -182,14 +182,14 @@ UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::NewNotNull(itemText);
-	item->lbl = gtk_label_new((const Char*)itemText);
+	item->txt = Text::String::New(itemText.v, itemText.leng);
+	item->lbl = gtk_label_new((const Char*)itemText.v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16
@@ -268,14 +268,14 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	ItemData *item = MemAlloc(ItemData, 1);
 	item->row = GTK_LIST_BOX_ROW(gtk_list_box_row_new());
 	item->userData = itemObj;
-	item->txt = Text::String::NewNotNull(itemText);
-	item->lbl = gtk_label_new((const Char*)itemText);
+	item->txt = Text::String::New(itemText.v, itemText.leng);
+	item->lbl = gtk_label_new((const Char*)itemText.v);
 	gtk_label_set_ellipsize((GtkLabel*)item->lbl, PANGO_ELLIPSIZE_END);
 #if GTK_MAJOR_VERSION == 3
 #if GTK_MINOR_VERSION >= 16

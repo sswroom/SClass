@@ -598,6 +598,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
 	this->SetText(sbuff);
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
@@ -656,8 +657,8 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	UOSInt j = this->imgList->GetCount();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), i);
-		this->lbImages->AddItem(sbuff, 0);
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), i);
+		this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		i++;
 	}
 	if (j > 0)

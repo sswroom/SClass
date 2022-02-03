@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnDeviceSelChg(void *userObj)
 			guid = me->guidList->GetItem(i);
 			sb.ClearStr();
 			IO::BTUtil::GetServiceName(&sb, guid);
-			me->lbDevServices->AddItem(sb.ToString(), guid);
+			me->lbDevServices->AddItem(sb.ToCString(), guid);
 			i++;
 		}
 	}
@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 			sb.Append(cstr);
 			sb.AppendC(UTF8STRC(")"));
 		}
-		this->lbCtrl->AddItem(sb.ToString(), btStatus);
+		this->lbCtrl->AddItem(sb.ToCString(), btStatus);
 		i++;
 	}
 }

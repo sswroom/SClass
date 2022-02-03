@@ -9,7 +9,7 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListStrUTF8 *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
+void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListString *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
 	UTF8Char buff[512];
 	UTF8Char *sptr;
@@ -37,11 +37,11 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 				UOSInt sizeLeft = codeSize - sess->regs.IP;
 				if (sizeLeft > 16)
 					sizeLeft = 16;
-				Text::StrHexBytes(Text::StrConcatC(&buff[::Text::StrCharCnt(buff)], UTF8STRC("Unknown opcodes: ")), &sess->code[oriIP], sizeLeft, ' ');
-				codes->Add(Text::StrCopyNew(buff));
+				sptr = Text::StrHexBytes(Text::StrConcatC(&buff[::Text::StrCharCnt(buff)], UTF8STRC("Unknown opcodes: ")), &sess->code[oriIP], sizeLeft, ' ');
+				codes->Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
 				break;
 			}
-			codes->Add(Text::StrCopyNew(buff));
+			codes->Add(Text::String::NewNotNull(buff));
 			if (sess->endStatus != 0)
 			{
 				UInt32 nextAddr = sess->regs.CS;
@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 			}
 			if (found)
 				break;
-			NEW_CLASS(codes, Data::ArrayListStrUTF8());
+			NEW_CLASS(codes, Data::ArrayListString());
 			this->codesList->Add(codes);
 			startAddr = MemAlloc(ExeB16Addr, 1);
 			startAddr->segm = sess->regs.CS;
@@ -104,10 +104,11 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	Manage::DasmX86_16::DasmX86_16_Regs regs;
 	Manage::DasmX86_16 *dasm;
 	Manage::DasmX86_16::DasmX86_16_Sess *sess;
-	Data::ArrayListStrUTF8 *codes;
+	Data::ArrayListString *codes;
 	Data::ArrayList<ExeB16Addr*> *parts;
 	Data::ArrayListInt32 *partInd;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	ExeB16Addr *eaddr;
 	UOSInt codeSize;
 	UOSInt i;
@@ -118,8 +119,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 	this->exeFile->GetDOSInitRegs(&regs);
 	NEW_CLASS(parts, Data::ArrayList<ExeB16Addr*>());
 	NEW_CLASS(partInd, Data::ArrayListInt32());
-	NEW_CLASS(this->codesList, Data::ArrayList<Data::ArrayListStrUTF8*>());
-	NEW_CLASS(codes, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->codesList, Data::ArrayList<Data::ArrayListString*>());
+	NEW_CLASS(codes, Data::ArrayListString());
 	this->codesList->Add(codes);
 	eaddr = MemAlloc(ExeB16Addr, 1);
 	eaddr->segm = regs.CS;
@@ -153,7 +154,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 				funcCalls->Insert((UOSInt)-si - 1, faddr);
 				sess = dasm->CreateSess(&regs, this->exeFile->GetDOSCodePtr(&codeSize), this->exeFile->GetDOSCodeSegm());
 				sess->regs.IP = (::UInt16)faddr;
-				NEW_CLASS(codes, Data::ArrayListStrUTF8());
+				NEW_CLASS(codes, Data::ArrayListString());
 				this->codesList->Add(codes);
 				eaddr = MemAlloc(ExeB16Addr, 1);
 				eaddr->segm = sess->regs.CS;
@@ -188,8 +189,8 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		}
 		else
 		{
-			Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, eaddr->segm), UTF8STRC(":")), eaddr->addr);
-			this->lb16BitFuncs->AddItem(sbuff, eaddr);
+			sptr = Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, eaddr->segm), UTF8STRC(":")), eaddr->addr);
+			this->lb16BitFuncs->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, eaddr);
 			lastAddr = eaddr;
 		}
 		i++;
@@ -418,7 +419,7 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 	}
 	if (this->codesList)
 	{
-		Data::ArrayListStrUTF8 *codes;
+		Data::ArrayListString *codes;
 		i = this->codesList->GetCount();
 		while (i-- > 0)
 		{
@@ -426,7 +427,7 @@ SSWR::AVIRead::AVIRExeForm::~AVIRExeForm()
 			j = codes->GetCount();
 			while (j-- > 0)
 			{
-				Text::StrDelNew(codes->GetItem(j));
+				codes->GetItem(j)->Release();
 			}
 			DEL_CLASS(codes);
 		}

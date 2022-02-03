@@ -61,7 +61,7 @@ IO::EXEFile::~EXEFile()
 	while (i-- > 0)
 	{
 		ImportInfo *imp = this->importList->GetItem(i);
-		Text::StrDelNew(imp->moduleName);
+		imp->moduleName->Release();
 		j = imp->funcs->GetCount();
 		while (j-- > 0)
 		{
@@ -76,7 +76,7 @@ IO::EXEFile::~EXEFile()
 	while (i-- > 0)
 	{
 		ExportInfo *exp = this->exportList->GetItem(i);
-		Text::StrDelNew(exp->funcName);
+		exp->funcName->Release();
 		MemFree(exp);
 	}
 	DEL_CLASS(this->exportList);
@@ -85,7 +85,7 @@ IO::EXEFile::~EXEFile()
 	while (i-- > 0)
 	{
 		ResourceInfo *res = this->resList->GetItem(i);
-		Text::StrDelNew(res->name);
+		res->name->Release();
 		MemFree((void*)res->data);
 		MemFree(res);
 	}
@@ -121,12 +121,12 @@ const UTF8Char *IO::EXEFile::GetPropValue(UOSInt index)
 	return this->propValues->GetItem(index);
 }
 
-UOSInt IO::EXEFile::AddImportModule(const UTF8Char *moduleName)
+UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 {
 	ImportInfo *imp;
 	imp = MemAlloc(ImportInfo, 1);
 	NEW_CLASS(imp->funcs, Data::ArrayList<const UTF8Char*>());
-	imp->moduleName = Text::StrCopyNew(moduleName);
+	imp->moduleName = Text::String::New(moduleName.v, moduleName.leng);
 	return this->importList->Add(imp);
 }
 
@@ -145,7 +145,7 @@ UOSInt IO::EXEFile::GetImportCount()
 	return this->importList->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetImportName(UOSInt modIndex)
+Text::String *IO::EXEFile::GetImportName(UOSInt modIndex)
 {
 	ImportInfo *imp = this->importList->GetItem(modIndex);
 	if (imp)
@@ -175,10 +175,10 @@ const UTF8Char *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex)
 	return 0;
 }
 
-void IO::EXEFile::AddExportFunc(const UTF8Char *funcName)
+void IO::EXEFile::AddExportFunc(Text::CString funcName)
 {
 	ExportInfo *exp = MemAlloc(ExportInfo, 1);
-	exp->funcName = Text::StrCopyNew(funcName);
+	exp->funcName = Text::String::New(funcName.v, funcName.leng);
 	this->exportList->Add(exp);
 }
 
@@ -187,7 +187,7 @@ UOSInt IO::EXEFile::GetExportCount()
 	return this->exportList->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetExportName(UOSInt index)
+Text::String *IO::EXEFile::GetExportName(UOSInt index)
 {
 	ExportInfo *exp = this->exportList->GetItem(index);
 	if (exp)
@@ -249,7 +249,7 @@ UInt16 IO::EXEFile::GetDOSCodeSegm()
 void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
 {
 	ResourceInfo *res = MemAlloc(ResourceInfo, 1);
-	res->name = Text::StrCopyNew(name);
+	res->name = Text::String::NewNotNull(name);
 	res->data = MemAlloc(UInt8, dataSize);
 	MemCopyNO((UInt8*)res->data, data, dataSize);
 	res->dataSize = dataSize;

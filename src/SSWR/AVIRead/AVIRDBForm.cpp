@@ -319,7 +319,8 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	j = tableNames->GetCount();
 	while (i < j)
 	{
-		this->lbTable->AddItem(tableNames->GetItem(i), 0);
+		const UTF8Char *tableName = tableNames->GetItem(i);
+		this->lbTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
 		i++;
 	}
 

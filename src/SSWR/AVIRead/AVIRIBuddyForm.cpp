@@ -136,14 +136,14 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->lbHead, UI::GUIListBox(ui, this->pnlMain, false));
 	this->lbHead->SetRect(104, 4, 200, 120, false);
 	this->lbHead->HandleSelectionChange(OnHeadChanged, this);
-	this->lbHead->AddItem((const UTF8Char*)"Off", (void*)IO::Device::IBuddy::IBHDE_OFF);
-	this->lbHead->AddItem((const UTF8Char*)"Red", (void*)IO::Device::IBuddy::IBHDE_LIGHT_RED);
-	this->lbHead->AddItem((const UTF8Char*)"Green", (void*)IO::Device::IBuddy::IBHDE_LIGHT_GREEN);
-	this->lbHead->AddItem((const UTF8Char*)"Blue", (void*)IO::Device::IBuddy::IBHDE_LIGHT_BLUE);
-	this->lbHead->AddItem((const UTF8Char*)"Yellow", (void*)IO::Device::IBuddy::IBHDE_LIGHT_YELLOW);
-	this->lbHead->AddItem((const UTF8Char*)"Magenta", (void*)IO::Device::IBuddy::IBHDE_LIGHT_MAGENTA);
-	this->lbHead->AddItem((const UTF8Char*)"Cyan", (void*)IO::Device::IBuddy::IBHDE_LIGHT_CYAN);
-	this->lbHead->AddItem((const UTF8Char*)"White", (void*)IO::Device::IBuddy::IBHDE_LIGHT_WHITE);
+	this->lbHead->AddItem(CSTR("Off"), (void*)IO::Device::IBuddy::IBHDE_OFF);
+	this->lbHead->AddItem(CSTR("Red"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_RED);
+	this->lbHead->AddItem(CSTR("Green"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_GREEN);
+	this->lbHead->AddItem(CSTR("Blue"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_BLUE);
+	this->lbHead->AddItem(CSTR("Yellow"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_YELLOW);
+	this->lbHead->AddItem(CSTR("Magenta"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_MAGENTA);
+	this->lbHead->AddItem(CSTR("Cyan"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_CYAN);
+	this->lbHead->AddItem(CSTR("White"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_WHITE);
 	NEW_CLASS(this->lblHeart, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Heart"));
 	this->lblHeart->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->chkHeart, UI::GUICheckBox(ui, this->pnlMain, (const UTF8Char*)"Turn On", false));
@@ -167,6 +167,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	this->btnWingDown->HandleButtonUpDown(OnWingDownDown, this);
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k = 0;
@@ -182,10 +183,10 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 		}
 		else
 		{
-			Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
+			sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Device ")), k);
 			k++;
 			this->buddyList->Add(buddy);
-			this->lbDevice->AddItem(sbuff, buddy);
+			this->lbDevice->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, buddy);
 		}
 		i++;
 	}

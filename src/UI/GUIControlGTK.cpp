@@ -325,7 +325,7 @@ void UI::GUIControl::InitFont()
 	this->hFont = font;
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle("label", 0);
+	builder.NewStyle(CSTR("label"), CSTR_NULL);
 	if (this->fontName) builder.AddFontFamily(this->fontName->v);
 	if (this->fontHeightPt != 0) builder.AddFontSize(this->fontHeightPt * this->hdpi / this->ddpi, Math::Unit::Distance::DU_PIXEL);
 	if (this->fontIsBold) builder.AddFontWeight(Text::CSSBuilder::FONT_WEIGHT_BOLD);
@@ -380,7 +380,7 @@ void UI::GUIControl::SetBGColor(UInt32 bgColor)
 {
 #if GDK_VERSION_AFTER(3, 16)
 	Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-	builder.NewStyle(0, 0);
+	builder.NewStyle(CSTR_NULL, CSTR_NULL);
 	builder.AddBGColorRGBA(bgColor);
 
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
@@ -488,7 +488,7 @@ void UI::GUIControl::UpdateFont()
 		Double height = pango_font_description_get_size((PangoFontDescription*)font) / (Double)PANGO_SCALE;
 		
 		Text::CSSBuilder builder(Text::CSSBuilder::PM_SPACE);
-		builder.NewStyle(0, 0);
+		builder.NewStyle(CSTR_NULL, CSTR_NULL);
 		if (family) builder.AddFontFamily((const UTF8Char*)family);
 		if (height != 0) builder.AddFontSize(height, Math::Unit::Distance::DU_PIXEL);
 		if (weight != 0) builder.AddFontWeight((Text::CSSBuilder::FontWeight)weight);

@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			file = this->fileList->GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
-			this->lbFileDir->AddItem(sb.ToString(), file);
+			this->lbFileDir->AddItem(sb.ToCString(), file);
 			i++;
 		}
 	}
@@ -212,7 +212,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			file = this->fileList->GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
-			this->lbFilePack->AddItem(sb.ToString(), file);
+			this->lbFilePack->AddItem(sb.ToCString(), file);
 			i++;
 		}
 		sb.ClearStr();
@@ -235,7 +235,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 			file = this->packList->GetItem(i);
 			sb.ClearStr();
 			file->ToString(&sb);
-			this->lbFilePack->AddItem(sb.ToString(), file);
+			this->lbFilePack->AddItem(sb.ToCString(), file);
 			i++;
 		}
 		sb.ClearStr();

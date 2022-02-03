@@ -241,6 +241,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRLineChartForm *me = (SSWR::AVIRead::AVIRLineChartForm *)userObj;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i = me->cboYAxis->GetSelectedIndex();
 	UOSInt col;
 	if (i == INVALID_INDEX)
@@ -249,8 +250,8 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 		return;
 	}
 	col = (UOSInt)me->cboYAxis->GetItem(i);
-	me->cboYAxis->GetItemText(sbuff, i);
-	me->lbYAxis->AddItem(sbuff, (void*)col);
+	sptr = me->cboYAxis->GetItemText(sbuff, i);
+	me->lbYAxis->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)col);
 	me->yCols->Add((UInt32)col);
 }
 

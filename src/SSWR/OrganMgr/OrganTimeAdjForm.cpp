@@ -24,7 +24,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnSpeciesChg(void *userObj)
 		if (spId == 0 || userFile->speciesId == spId)
 		{
 			me->currFileList->Add(userFile);
-			me->lbPictures->AddItem(userFile->oriFileName->v, userFile);
+			me->lbPictures->AddItem(userFile->oriFileName->ToCString(), userFile);
 		}
 		i++;
 	}
@@ -331,6 +331,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	if (this->gpsTrk)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Map::GPSTrack::GPSRecord *records;
 		Data::DateTime dt;
 		records = this->gpsTrk->GetTrack(0, &j);
@@ -339,8 +340,8 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 		{
 			dt.SetTicks(records[i].utcTimeTicks);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lbTrack->AddItem(sbuff, &records[i]);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			this->lbTrack->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, &records[i]);
 			i++;
 		}
 	}

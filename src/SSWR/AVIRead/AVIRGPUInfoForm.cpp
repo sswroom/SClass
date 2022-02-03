@@ -74,7 +74,8 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, UI
 	while (i < j)
 	{
 		gpu = this->gpuMgr->GetGPUControl(i);
-		this->lbGPU->AddItem(gpu->GetName(), gpu);
+		const UTF8Char *name = gpu->GetName();
+		this->lbGPU->AddItem({name, Text::StrCharCnt(name)}, gpu);
 		i++;
 	}
 }

@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 					sptr = Text::StrInt32(sptr, (Int32)(currCnt - 1));
 					me->lbPackList->RemoveItem((UOSInt)j);
-					me->lbPackList->AddItem(sbuff, 0);
+					me->lbPackList->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 					j++;
 				}
 				else
@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 					sptr = Text::StrInt32(sptr, (Int32)(j * PER_PAGE + PER_PAGE - 1));
 					me->lbPackList->RemoveItem((UOSInt)j);
-					me->lbPackList->AddItem(sbuff, 0);
+					me->lbPackList->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 
 				}
 			}
@@ -100,14 +100,14 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTimerTick(void *userObj)
 				sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 				sptr = Text::StrInt32(sptr, (Int32)(j * PER_PAGE + PER_PAGE - 1));
-				me->lbPackList->AddItem(sbuff, 0);
+				me->lbPackList->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 			}
 			if (j == i)
 			{
 				sptr = Text::StrInt32(sbuff, (Int32)j * PER_PAGE);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 				sptr = Text::StrInt32(sptr, (Int32)(currCnt - 1));
-				me->lbPackList->AddItem(sbuff, 0);
+				me->lbPackList->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 				j++;
 			}
 
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackListChanged(void *userO
 	{
 		sb.ClearStr();
 		me->file->GetFrameName(i, &sb);
-		me->lbPackItems->AddItem(sb.ToString(), (void*)i);
+		me->lbPackItems->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
 }

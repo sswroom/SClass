@@ -18,7 +18,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateDiscId()
 	while (i < j)
 	{
 		disc = discList.GetItem(i);
-		this->lbDiscId->AddItem(disc->discId, disc);
+		this->lbDiscId->AddItem({disc->discId, Text::StrCharCnt(disc->discId)}, disc);
 		i++;
 	}
 }
@@ -53,7 +53,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateBrand()
 	while (i < j)
 	{
 		brand = brandList.GetItem(i);
-		this->lbBrand->AddItem(brand, 0);
+		this->lbBrand->AddItem({brand, Text::StrCharCnt(brand)}, 0);
 		Text::StrDelNew(brand);
 		i++;
 	}
@@ -388,7 +388,7 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 			if (pt == IO::Path::PathType::File)
 			{
 				file = this->BurntFileNew(sptr, &relPath[1], size);
-				this->lbFileName->AddItem(&relPath[1], file);
+				this->lbFileName->AddItem({&relPath[1], Text::StrCharCnt(&relPath[1])}, file);
 				this->fileList->Add(file);
 				currSize += size;
 			}
@@ -1119,7 +1119,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 		sptr = Text::StrConcat(sptr, discType->mid);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 		sptr = Text::StrConcat(sptr, discType->name);
-		me->lbDVDName->AddItem(sbuff, (void*)discType);
+		me->lbDVDName->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)discType);
 
 		i++;
 	}

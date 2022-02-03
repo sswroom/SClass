@@ -151,7 +151,8 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	j = infoList.GetCount();
 	while (i < j)
 	{
-		this->lbCache->AddItem(infoList.GetItem(i), 0);
+		const UTF8Char *info = infoList.GetItem(i);
+		this->lbCache->AddItem({info, Text::StrCharCnt(info)}, 0);
 		i++;
 	}
 

@@ -196,6 +196,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	UOSInt i = me->lbObj->GetSelectedIndex();
 	//System::Int32 i = lbObj->IndexFromPoint(lbObj->PointToClient(this->MousePosition));
 	if (i == INVALID_INDEX)
@@ -210,8 +211,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	{
 		me->lastSpeciesObj = 0;
 		me->lastGroupObj = 0;
-		gi->GetItemName(u8buff);
-		me->lbDir->AddItem(u8buff, gi);
+		sptr = gi->GetItemName(u8buff);
+		me->lbDir->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, gi);
 		me->groupList->Add((OrganGroup*)gi);
 		me->groupItems->RemoveAt(i);
 		me->lbDir->SetSelectedIndex(me->lbDir->GetCount() - 1);
@@ -1770,6 +1771,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 	OrganGroup *grp;
 	OrganGroupItem *item;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	if (ToSaveGroup())
 	{
         this->lbDir->SetSelectedIndex(this->lastDirIndex);
@@ -1839,8 +1841,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			while (i < j)
 			{
 				item = this->groupItems->GetItem(i);
-				item->GetItemName(u8buff);
-				k = this->lbObj->AddItem(u8buff, item);
+				sptr = item->GetItemName(u8buff);
+				k = this->lbObj->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, item);
 				i++;
 			}
 		}
@@ -1866,8 +1868,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			while (i < j)
 			{
 				item = this->groupItems->GetItem(i);
-				item->GetItemName(u8buff);
-				k = this->lbObj->AddItem(u8buff, item);
+				sptr = item->GetItemName(u8buff);
+				k = this->lbObj->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, item);
 				if (i > 0 && this->initSelObj)
 				{
 					if (this->inputMode == IM_SPECIES)
@@ -1991,7 +1993,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			while (i < j)
 			{
 				imgItem = this->imgItems->GetItem(i);
-				this->lbImage->AddItem(imgItem->GetDispName()->v, imgItem);
+				this->lbImage->AddItem(imgItem->GetDispName()->ToCString(), imgItem);
 				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
 				{
 					initSel = i;
@@ -2086,7 +2088,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					}
 				}
 
-				this->lbImage->AddItem(sbuff, imgItem);
+				this->lbImage->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, imgItem);
 
 				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
 				{
@@ -2103,7 +2105,6 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 	}
 	else if (this->inputMode == IM_GROUP)
 	{
-		UTF8Char u8buff[256];
 		OrganGroupItem *gi;
 		OrganGroup *o;
 		UOSInt i = 0;
@@ -2114,8 +2115,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			if (gi->GetItemType() != OrganGroupItem::IT_PARENT)
 			{
 				o = (OrganGroup*)gi;
-				o->GetItemName(u8buff);
-				this->lbImage->AddItem(u8buff, o);
+				sptr = o->GetItemName(sbuff);
+				this->lbImage->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, o);
 			}
 			i += 1;
 		}
@@ -2441,6 +2442,7 @@ void SSWR::OrganMgr::OrganMainForm::SelectGroup(UI::GUIComboBox *cbo, Int32 grou
 void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	OrganGroup *group;
 	UOSInt j;
 	UOSInt i = this->groupList->GetCount();
@@ -2460,8 +2462,8 @@ void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 	while (i < j)
 	{
 		grp = this->groupList->GetItem(i);
-		grp->GetItemName(sbuff);
-		this->lbDir->AddItem(sbuff, grp);
+		sptr = grp->GetItemName(sbuff);
+		this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, grp);
 		i++;
 	}
 	this->lbDir->SetSelectedIndex(j - 1);
@@ -2514,7 +2516,8 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 
 SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->SetFont(UTF8STRC("Arial"), 10.5, false);
 	this->colorMgr = env->GetColorMgr();
 	this->colorSess = this->colorMgr->CreateSess(this->GetHMonitor());
@@ -2836,8 +2839,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->rootGroup->SetPhotoSpecies(-1);
 	this->rootGroup->SetPhotoGroup(-1);
 	this->rootGroup->SetIDKey((const UTF8Char*)"");
-	this->rootGroup->GetItemName(u8buff);
-	this->lbDir->AddItem(u8buff, this->rootGroup);
+	sptr = this->rootGroup->GetItemName(sbuff);
+	this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, this->rootGroup);
 	this->groupList->Add(this->rootGroup);
 
 	UpdateSpBookList();
@@ -2932,6 +2935,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			UOSInt i;
 			UOSInt j;
 			UTF8Char sbuff[256];
+			UTF8Char *sptr;
 			if (selObj->GetGroupId() <= 0)
 				return;
 
@@ -2946,8 +2950,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			g->SetPhotoSpecies(-1);
 			g->SetIDKey((const UTF8Char*)"");
 			this->groupList->Add(g);
-			g->GetItemName(sbuff);
-			this->lbDir->SetSelectedIndex(this->lbDir->AddItem(sbuff, g));
+			sptr = g->GetItemName(sbuff);
+			this->lbDir->SetSelectedIndex(this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, g));
 
 			NEW_CLASS(spList, Data::ArrayList<OrganSpecies*>());
 			this->env->GetGroupAllSpecies(spList, selObj);
@@ -2957,8 +2961,8 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			{
 				item = spList->GetItem(i);
 				this->groupItems->Add(item);
-				item->GetItemName(sbuff);
-				this->lbObj->AddItem(sbuff, item);
+				sptr = item->GetItemName(sbuff);
+				this->lbObj->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, item);
 				i++;
 			}
 			DEL_CLASS(spList);

@@ -32,6 +32,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UI::GUILabel *lbl;
 	
 	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Code Pages"));
@@ -61,8 +62,8 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		codePage = codePages.GetItem(i);
-		Text::EncodingFactory::GetName(Text::StrConcatC(Text::StrUInt32(sbuff, codePage), UTF8STRC(" ")), codePage);
-		ind = this->lbCodePages->AddItem(sbuff, (void*)(OSInt)codePage);
+		sptr = Text::EncodingFactory::GetName(Text::StrConcatC(Text::StrUInt32(sbuff, codePage), UTF8STRC(" ")), codePage);
+		ind = this->lbCodePages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)codePage);
 		if (codePage == currCodePage)
 		{
 			this->lbCodePages->SetSelectedIndex(ind);

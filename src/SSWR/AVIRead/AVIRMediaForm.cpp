@@ -84,8 +84,8 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 					*sptr++ = '*';
 				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
-			medSource->GetSourceName(sptr);
-			this->lbFiles->AddItem(sbuff, medSource);
+			sptr = medSource->GetSourceName(sptr);
+			this->lbFiles->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, medSource);
 		}
 		i++;
 	}

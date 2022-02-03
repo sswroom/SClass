@@ -46,7 +46,7 @@ void SSWR::SHPConv::SHPConvGroupForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::SHPConv::SHPConvGroupForm::AddGroup(const UTF8Char *grpName)
+void SSWR::SHPConv::SHPConvGroupForm::AddGroup(Text::CString grpName)
 {
 	this->lbGroup->AddItem(grpName, 0);
 }

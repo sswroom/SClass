@@ -106,7 +106,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateDatabaseList()
 	while (i < j)
 	{
 		dbName = dbNames.GetItem(i);
-		this->lbDatabase->AddItem(dbName, 0);
+		this->lbDatabase->AddItem({dbName, Text::StrCharCnt(dbName)}, 0);
 		i++;
 	}
 	this->currDB->ReleaseDatabaseNames(&dbNames);
@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	while (i < j)
 	{
 		tableName = tableNames.GetItem(i);
-		this->lbTable->AddItem(tableName, 0);
+		this->lbTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
 		i++;
 	}
 	this->currDB->ReleaseTableNames(&tableNames);
@@ -405,7 +405,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 			db = this->dbList->GetItem(i);
 			sb.ClearStr();
 			db->GetConn()->GetConnName(&sb);
-			this->lbConn->AddItem(sb.ToString(), db);
+			this->lbConn->AddItem(sb.ToCString(), db);
 
 			i++;
 		}
@@ -581,5 +581,5 @@ void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 	this->dbList->Add(db);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(&sb);
-	this->lbConn->AddItem(sb.ToString(), db);
+	this->lbConn->AddItem(sb.ToCString(), db);
 }

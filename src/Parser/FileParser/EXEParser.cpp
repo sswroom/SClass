@@ -639,8 +639,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 								{
 									break;
 								}
-								Text::StrConcatC(sbuff, &exeImage[nameRVA], 64);
-								j = exef->AddImportModule(sbuff);
+								sptr = Text::StrConcatS(sbuff, &exeImage[nameRVA], 64);
+								j = exef->AddImportModule({sbuff, (UOSInt)(sptr - sbuff)});
 								if (magic == 0x10b)
 								{
 									UInt32 funcRVA;
@@ -706,8 +706,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 									rva = ReadUInt32(&exeImage[namePtrRVA]);
 									if (rva == 0)
 										break;
-									Text::StrConcatC(sbuff, &exeImage[rva], 64);
-									exef->AddExportFunc(sbuff);
+									sptr = Text::StrConcatS(sbuff, &exeImage[rva], 64);
+									exef->AddExportFunc({sbuff, (UOSInt)(sptr - sbuff)});
 									namePtrRVA += 4;
 								}
 							}

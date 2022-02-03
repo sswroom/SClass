@@ -164,7 +164,8 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 	j = this->playlist->GetCount();
 	while (i < j)
 	{
-		this->lbPlaylist->AddItem(this->playlist->GetTitle(i), (void*)i);
+		const UTF8Char *title = this->playlist->GetTitle(i);
+		this->lbPlaylist->AddItem({title, Text::StrCharCnt(title)}, (void*)i);
 		i++;
 	}
 }

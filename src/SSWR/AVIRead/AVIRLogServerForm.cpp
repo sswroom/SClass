@@ -71,16 +71,16 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt
 	{
 		ipLog = MemAlloc(IPLog, 1);
 		ipLog->ip = ip;
-		NEW_CLASS(ipLog->logMessage, Data::ArrayList<const UTF8Char*>());
+		NEW_CLASS(ipLog->logMessage, Data::ArrayList<Text::String*>());
 		me->ipMap->Put(ip, ipLog);
 		me->ipListUpd = true;
 	}
 
 	while (ipLog->logMessage->GetCount() >= 100)
 	{
-		Text::StrDelNew(ipLog->logMessage->RemoveAt(0));
+		ipLog->logMessage->RemoveAt(0)->Release();
 	}
-	ipLog->logMessage->Add(Text::StrCopyNew(message));
+	ipLog->logMessage->Add(Text::String::NewNotNull(message));
 	if (me->currIP == ip)
 	{
 		me->msgListUpd = true;
@@ -92,6 +92,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRLogServerForm *me = (SSWR::AVIRead::AVIRLogServerForm*)userObj;
 	UTF8Char sbuff[20];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->ipListUpd)
@@ -105,8 +106,8 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnTimerTick(void *userObj)
 		j = ipList->GetCount();
 		while (i < j)
 		{
-			Net::SocketUtil::GetIPv4Name(sbuff, ipList->GetItem(i));
-			me->lbClient->AddItem(sbuff, (void*)(OSInt)ipList->GetItem(i));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipList->GetItem(i));
+			me->lbClient->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ipList->GetItem(i));
 			i++;
 		}
 		mutUsage.EndUse();
@@ -184,7 +185,7 @@ SSWR::AVIRead::AVIRLogServerForm::~AVIRLogServerForm()
 		j = ipLog->logMessage->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(ipLog->logMessage->GetItem(j));
+			ipLog->logMessage->GetItem(j)->Release();
 		}
 		DEL_CLASS(ipLog->logMessage);
 		MemFree(ipLog);

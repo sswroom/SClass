@@ -10,6 +10,7 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	Trip *trip;
 	Data::ArrayList<Trip*> *tripList = this->env->TripGetList();
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	this->updating = true;
@@ -18,8 +19,8 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	while (i < j)
 	{
 		trip = tripList->GetItem(i);
-		trip->ToString(sbuff);
-		this->lbTrips->AddItem(sbuff, trip);
+		sptr = trip->ToString(sbuff);
+		this->lbTrips->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, trip);
 		i++;
 	}
 	this->updating = false;

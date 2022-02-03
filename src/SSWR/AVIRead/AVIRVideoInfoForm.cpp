@@ -303,7 +303,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 		{
 			sb.AppendC(UTF8STRC(" (Subtitle)"));
 		}
-		this->lbStream->AddItem(sb.ToString(), (void*)i);
+		this->lbStream->AddItem(sb.ToCString(), (void*)i);
 		i++;
 	}
 	return true;

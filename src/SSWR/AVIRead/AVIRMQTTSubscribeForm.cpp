@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 				if (me->client->WaitSubAck(1, 30000) <= 2)
 				{
 					me->txtSTopic->SetText((const UTF8Char*)"");
-					me->lbSTopic->AddItem(sb.ToString(), 0);
+					me->lbSTopic->AddItem(sb.ToCString(), 0);
 				}
 			}
 		}

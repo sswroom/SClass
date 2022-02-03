@@ -26,9 +26,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		frm->SetText((const UTF8Char*)"GUI Test 5");
 		NEW_CLASS(lb, UI::GUIListBox(core, frm, false));
 		lb->SetDockType(UI::GUIControl::DOCK_FILL);
-		lb->AddItem((const UTF8Char*)"Item 1", 0);
-		lb->AddItem((const UTF8Char*)"Item 2", 0);
-		lb->AddItem((const UTF8Char*)"Item 3", 0);
+		lb->AddItem(CSTR("Item 1"), 0);
+		lb->AddItem(CSTR("Item 2"), 0);
+		lb->AddItem(CSTR("Item 3"), 0);
 		lb->HandleDoubleClicked(OnLBDblClick, frm);
 		frm->SetExitOnClose(true);
 		frm->Show();

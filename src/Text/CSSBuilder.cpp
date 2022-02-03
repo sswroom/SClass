@@ -16,28 +16,28 @@ Text::CSSBuilder::~CSSBuilder()
 	DEL_CLASS(this->sb);
 }
 
-Bool Text::CSSBuilder::NewStyle(const Char *name, const Char *className)
+Bool Text::CSSBuilder::NewStyle(Text::CString name, Text::CString className)
 {
 	this->EndStyle();
-	if (name == 0)
+	if (name.v == 0)
 	{
-		if (className == 0)
+		if (className.v == 0)
 		{
 			this->sb->AppendC(UTF8STRC("*"));
 		}
 		else
 		{
 			this->sb->AppendChar('.', 1);
-			this->sb->AppendSlow((const UTF8Char*)className);
+			this->sb->Append(className);
 		}
 	}
 	else
 	{
-		this->sb->AppendSlow((const UTF8Char*)name);
-		if (className)
+		this->sb->Append(name);
+		if (className.v)
 		{
 			this->sb->AppendChar('.', 1);
-			this->sb->AppendSlow((const UTF8Char*)className);
+			this->sb->Append(className);
 		}
 	}
 	if (this->pm != PM_COMPACT)
@@ -74,7 +74,7 @@ Bool Text::CSSBuilder::EndStyle()
 Bool Text::CSSBuilder::AddColorRGBA(UInt32 argb)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("color");
+	this->AppendStyleName(CSTR("color"));
 	this->AppendRGBAColor(argb);
 	return true;
 }
@@ -82,7 +82,7 @@ Bool Text::CSSBuilder::AddColorRGBA(UInt32 argb)
 Bool Text::CSSBuilder::AddColorRGB(UInt32 rgb)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("color");
+	this->AppendStyleName(CSTR("color"));
 	this->sb->AppendChar('#', 1);
 	this->sb->AppendHex24(rgb);
 	return true;
@@ -91,7 +91,7 @@ Bool Text::CSSBuilder::AddColorRGB(UInt32 rgb)
 Bool Text::CSSBuilder::AddBGColorRGBA(UInt32 argb)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("background-color");
+	this->AppendStyleName(CSTR("background-color"));
 	this->AppendRGBAColor(argb);
 	return true;
 }
@@ -99,7 +99,7 @@ Bool Text::CSSBuilder::AddBGColorRGBA(UInt32 argb)
 Bool Text::CSSBuilder::AddFontFamily(const UTF8Char *family)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("font-family");
+	this->AppendStyleName(CSTR("font-family"));
 	Text::String *s = Text::JSText::ToNewJSTextDQuote(family);
 	this->sb->Append(s);
 	s->Release();
@@ -109,7 +109,7 @@ Bool Text::CSSBuilder::AddFontFamily(const UTF8Char *family)
 Bool Text::CSSBuilder::AddFontSize(Double size, Math::Unit::Distance::DistanceUnit du)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("font-size");
+	this->AppendStyleName(CSTR("font-size"));
 	if (du == Math::Unit::Distance::DU_PIXEL)
 	{
 		Text::SBAppendF64(this->sb, size);
@@ -131,7 +131,7 @@ Bool Text::CSSBuilder::AddFontSize(Double size, Math::Unit::Distance::DistanceUn
 Bool Text::CSSBuilder::AddFontWeight(FontWeight weight)
 {
 	if (this->bstate == BS_ROOT) return false;
-	this->AppendStyleName("font-weight");
+	this->AppendStyleName(CSTR("font-weight"));
 	switch (weight)
 	{
 		case FONT_WEIGHT_NORMAL:
@@ -170,14 +170,14 @@ void Text::CSSBuilder::AppendNewLine()
 	this->sb->AppendC(UTF8STRC("\r\n"));
 }
 
-void Text::CSSBuilder::AppendStyleName(const Char *name)
+void Text::CSSBuilder::AppendStyleName(Text::CString name)
 {
 	this->NextEntry();
 	if (this->pm == PM_LINES)
 	{
 		this->sb->AppendChar('\t', 1);
 	}
-	this->sb->AppendSlow((const UTF8Char*)name);
+	this->sb->Append(name);
 	if (this->pm == PM_COMPACT)
 	{
 		this->sb->AppendChar(':', 1);

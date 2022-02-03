@@ -4,6 +4,7 @@
 #include "IO/ParsedObject.h"
 #include "Manage/DasmBase.h"
 #include "Text/CString.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace IO
@@ -92,19 +93,19 @@ namespace IO
 
 		typedef struct
 		{
-			const UTF8Char *moduleName;
+			Text::String *moduleName;
 			Data::ArrayList<const UTF8Char *> *funcs;
 		} ImportInfo;
 
 		typedef struct
 		{
-			const UTF8Char *funcName;
+			Text::String *funcName;
 		} ExportInfo;
 
 		typedef struct
 		{
 			ResourceType rt;
-			const UTF8Char *name;
+			Text::String *name;
 			UInt32 codePage;
 			const UInt8 *data;
 			UOSInt dataSize;
@@ -130,16 +131,16 @@ namespace IO
 		const UTF8Char *GetPropName(UOSInt index);
 		const UTF8Char *GetPropValue(UOSInt index);
 
-		UOSInt AddImportModule(const UTF8Char *moduleName);
+		UOSInt AddImportModule(Text::CString moduleName);
 		void AddImportFunc(UOSInt modIndex, const UTF8Char *funcName);
 		UOSInt GetImportCount();
-		const UTF8Char *GetImportName(UOSInt modIndex);
+		Text::String *GetImportName(UOSInt modIndex);
 		UOSInt GetImportFuncCount(UOSInt modIndex);
 		const UTF8Char *GetImportFunc(UOSInt modIndex, UOSInt funcIndex);
 
-		void AddExportFunc(const UTF8Char *funcName);
+		void AddExportFunc(Text::CString funcName);
 		UOSInt GetExportCount();
-		const UTF8Char *GetExportName(UOSInt index);
+		Text::String *GetExportName(UOSInt index);
 
 		Bool HasDOS();
 		void AddDOSEnv(UOSInt b16CodeLen, Manage::Dasm::DasmX86_16_Regs *b16Regs, UInt16 b16CodeSegm);

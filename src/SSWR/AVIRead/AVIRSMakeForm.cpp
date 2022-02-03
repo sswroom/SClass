@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 			s = procList.GetItem(i);
 			if (s->v[0] == '@')
 			{
-				me->lbProgSource->AddItem(s->v + 1, 0);
+				me->lbProgSource->AddItem({s->v + 1, s->leng - 1}, 0);
 			}
 			else
 			{

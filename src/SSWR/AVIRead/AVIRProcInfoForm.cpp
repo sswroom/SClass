@@ -66,6 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRProcInfoForm *me = (SSWR::AVIRead::AVIRProcInfoForm*)userObj;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[12];
+	UTF8Char *sptr;
 	ProcessInfo *procInfo;
 	Manage::Process::ProcessInfo proc;
 	UOSInt i;
@@ -101,8 +102,8 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, sbuff2, procInfo);
 				me->lvSummary->SetSubItem(i, 1, sbuff);
-				Text::StrConcat(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")), procInfo->procName);
-				me->lbDetail->InsertItem(i, sbuff, procInfo);
+				sptr = Text::StrConcat(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")), procInfo->procName);
+				me->lbDetail->InsertItem(i, {sbuff, (UOSInt)(sptr - sbuff)}, procInfo);
 			}
 
 			Manage::Process proc(procInfo->procId, false);
@@ -370,6 +371,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		Manage::Process proc(this->currProc, false);
 		Data::ArrayListUInt32 heapList;
 		UTF8Char sbuff[20];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 
@@ -380,8 +382,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		j = heapList.GetCount();
 		while (i < j)
 		{
-			Text::StrUInt32(sbuff, heapList.GetItem(i));
-			this->lbDetHeap->AddItem(sbuff, (void*)(UOSInt)heapList.GetItem(i));
+			sptr = Text::StrUInt32(sbuff, heapList.GetItem(i));
+			this->lbDetHeap->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(UOSInt)heapList.GetItem(i));
 			i++;
 		}
 	}
