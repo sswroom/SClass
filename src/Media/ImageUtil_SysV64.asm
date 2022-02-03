@@ -245,7 +245,7 @@ clop2:
 	align 16
 ImageUtil_ColorReplace32A:
 _ImageUtil_ColorReplace32A:
-	movd xmm4,rcx
+	movd xmm4,ecx
 	mov rax,rsi ;w
 	mul rdx ;h
 	mov rdx,rax
@@ -282,7 +282,7 @@ dslop1:
 	align 16
 ImageUtil_ColorReplace32A2:
 _ImageUtil_ColorReplace32A2:
-	movd xmm2,rcx ;col
+	movd xmm2,ecx ;col
 	mov rax,rsi
 	mul rdx
 	pxor xmm1,xmm1
@@ -1851,8 +1851,8 @@ _ImageUtil_ConvB5G5R5_ARGB32:
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
-	mov rax,0x00840084
-	movd xmm2,rax
+	mov eax,0x00840084
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -1901,8 +1901,8 @@ _ImageUtil_ConvB5G6R5_ARGB32:
 	sub r8,rax ;sbpl
 	lea rax,[rdx*4]
 	sub r9,rax ;dbpl
-	mov rax,0x00410084
-	movd xmm2,rax
+	mov eax,0x00410084
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3514,8 +3514,8 @@ _ImageUtil_ConvB5G5R5_ARGB64:
 	sub r8,rax ;sbpl
 	lea rax,[rdx*8]
 	sub r9,rax ;dbpl
-	mov rax,0x08420842
-	movd xmm2,rax
+	mov eax,0x08420842
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3563,8 +3563,8 @@ _ImageUtil_ConvB5G6R5_ARGB64:
 	sub r8,rax ;sbpl
 	lea rax,[rdx*8]
 	sub r9,rax ;dbpl
-	mov rax,0x04100842
-	movd xmm2,rax
+	mov eax,0x04100842
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3871,8 +3871,8 @@ _ImageUtil_ConvFB32G32R32A32_64:
 	sub r8,rax ;sbpl
 	mov rax,65535
 	cvtsi2ss xmm1,rax
-	mov rax,32768
-	movd xmm2,rax
+	mov eax,32768
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -3921,8 +3921,8 @@ _ImageUtil_ConvFB32G32R32_64:
 	sub r8,rax ;sbpl
 	mov rax,65535
 	cvtsi2ss xmm1,rax
-	mov rax,32768
-	movd xmm2,rax
+	mov eax,32768
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -3973,8 +3973,8 @@ _ImageUtil_ConvFW32A32_64:
 	sub r8,rax ;sbpl
 	mov rax,65535
 	cvtsi2ss xmm1,rax
-	mov rax,32768
-	movd xmm2,rax
+	mov eax,32768
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -4026,8 +4026,8 @@ _ImageUtil_ConvFW32_64:
 	sub r9,rax ;dbpl
 	mov rax,65535
 	cvtsi2ss xmm1,rax
-	mov rax,32768
-	movd xmm2,rax
+	mov eax,32768
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -4718,7 +4718,7 @@ ImageUtil_YUV_Y416ShiftW:
 _ImageUtil_YUV_Y416ShiftW:
 	mov rax,-1
 	shr r8,3
-	movd xmm3,rax
+	movd xmm3,eax
 	punpckldq xmm3,xmm3
 	punpckldq xmm3,xmm3
 	cmp r9,6
