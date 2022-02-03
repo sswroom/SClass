@@ -209,7 +209,7 @@ ImageUtil_ColorReplace32A:
 	mul rdx
 	mov rdx,rcx
 	mov rcx,rax
-	movd xmm4,r9
+	movd xmm4,r9d
 	pxor xmm5,xmm5
 	punpckldq xmm4,xmm4
 	punpcklbw xmm4,xmm4
@@ -248,7 +248,7 @@ ImageUtil_ColorReplace32A2:
 	pxor xmm1,xmm1
 
 	mov rcx,rax ;pxCnt
-	movd xmm2,r9
+	movd xmm2,r9d
 	punpcklbw xmm2,xmm1
 	align 16
 cr32a2lop2a:
@@ -1903,8 +1903,8 @@ ImageUtil_ConvB5G5R5_ARGB32:
 	sub qword [rsp+40],rax ;sbpl
 	lea rax,[r8*4]
 	sub qword [rsp+48],rax ;dbpl
-	mov rax,0x00840084
-	movd xmm2,rax
+	mov eax,0x00840084
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -1953,8 +1953,8 @@ ImageUtil_ConvB5G6R5_ARGB32:
 	sub qword [rsp+40],rax ;sbpl
 	lea rax,[r8*4]
 	sub qword [rsp+48],rax ;dbpl
-	mov rax,0x00410084
-	movd xmm2,rax
+	mov eax,0x00410084
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3450,8 +3450,8 @@ ImageUtil_ConvB5G5R5_ARGB64:
 	sub qword [rsp+40],rax ;sbpl
 	lea rax,[r8*8]
 	sub qword [rsp+48],rax ;dbpl
-	mov rax,0x08420842
-	movd xmm2,rax
+	mov eax,0x08420842
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3498,8 +3498,8 @@ ImageUtil_ConvB5G6R5_ARGB64:
 	sub qword [rsp+40],rax ;sbpl
 	lea rax,[r8*8]
 	sub qword [rsp+48],rax ;dbpl
-	mov rax,0x04100842
-	movd xmm2,rax
+	mov eax,0x04100842
+	movd xmm2,eax
 	pxor xmm1,xmm1
 	punpckldq xmm2,xmm2
 
@@ -3795,7 +3795,7 @@ ImageUtil_ConvFB32G32R32A32_64:
 	mov rax,65535
 	cvtsi2ss xmm1,rax
 	mov rax,32768
-	movd xmm2,rax
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -3844,7 +3844,7 @@ ImageUtil_ConvFB32G32R32_64:
 	mov rax,65535
 	cvtsi2ss xmm1,rax
 	mov rax,32768
-	movd xmm2,rax
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -3895,7 +3895,7 @@ ImageUtil_ConvFW32A32_64:
 	mov rax,65535
 	cvtsi2ss xmm1,rax
 	mov rax,32768
-	movd xmm2,rax
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -3947,7 +3947,7 @@ ImageUtil_ConvFW32_64:
 	mov rax,65535
 	cvtsi2ss xmm1,rax
 	mov rax,32768
-	movd xmm2,rax
+	movd xmm2,eax
 	unpcklps xmm1,xmm1
 	unpcklps xmm1,xmm1
 	punpckldq xmm2,xmm2
@@ -4665,7 +4665,7 @@ ImageUtil_YUV_Y416ShiftW:
 	mov rbx,qword [rsp+64] ;pixelCnt
 	mov rcx,qword [rsp+72] ;shiftCnt
 	shr rbx,3
-	movd xmm3,rax
+	movd xmm3,eax
 	punpckldq xmm3,xmm3
 	punpckldq xmm3,xmm3
 	cmp rcx,6

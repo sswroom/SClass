@@ -8,7 +8,7 @@ Net::WLANWindowsInterface::WLANWindowsInterface(Text::String *name, void *guid, 
 	this->core = core;
 	this->name = name->Clone();
 	this->id = MemAlloc(GUID, 1);
-	MemCopyNO(this->id, id, sizeof(GUID));
+	MemCopyNO(this->id, guid, sizeof(GUID));
 	this->state = state;
 }
 

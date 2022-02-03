@@ -116,7 +116,6 @@ void Crypto::Hash::SHA1::GetValue(UInt8 *buff)
 
 	WriteMInt64(&calBuff[56], this->messageLength);
 	SHA1_CalcBlock(this->intermediateHash, calBuff);
-	UInt8 *res = (UInt8*)this->intermediateHash;
 	i = 20;
 	while (i > 0)
 	{

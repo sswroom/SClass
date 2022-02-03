@@ -134,7 +134,6 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	UTF8Char u8buff[512];
 	UTF8Char *sptr;
 	UTF8Char *tmpBuff;
-	Text::String *s;
 	UOSInt leng;
 	UOSInt leng2;
 	if (hand == 0)

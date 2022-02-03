@@ -32,7 +32,7 @@ global CSNV12_LRGBC_do_yv12rgb2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; 224 rgbGammaCorr
 
 	align 16
-CSNV12_LRGBC_VerticalFilterLRGB
+CSNV12_LRGBC_VerticalFilterLRGB:
 	mov eax,32768
 	push rbp
 	push rbx

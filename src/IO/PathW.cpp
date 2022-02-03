@@ -365,7 +365,6 @@ UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
 UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
-	UTF8Char *sptr;
 	UTF8Char *lastSep;
 	UTF8Char *firstSep;
 	Text::PString pathArr[5];

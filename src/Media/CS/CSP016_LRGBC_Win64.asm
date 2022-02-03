@@ -31,7 +31,7 @@ global CSP016_LRGBC_do_yv12rgb2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; 224 rgbGammaCorr
 
 	align 16
-CSP016_LRGBC_VerticalFilterLRGB
+CSP016_LRGBC_VerticalFilterLRGB:
 	mov eax,32768
 	push rbp
 	push rbx

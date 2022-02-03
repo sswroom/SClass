@@ -119,11 +119,11 @@ UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
 	return i;
 }
 
-UOSInt UI::GUIListBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
 {
-	UOSInt i = Text::StrUTF8_WCharCnt(itemText);
+	UOSInt i = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *s = MemAlloc(WChar, i + 1);
-	Text::StrUTF8_WChar(s, itemText, 0);
+	Text::StrUTF8_WChar(s, itemText.v, 0);
 	i = (UOSInt)SendMessage((HWND)hwnd, LB_ADDSTRING, 0, (LPARAM)s);
 	MemFree(s);
 	if (i == INVALID_INDEX)
@@ -161,9 +161,9 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIListBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText);
+	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, LB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
@@ -304,7 +304,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	}
 }
 
-void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
+void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
 {
 	void *item = GetItem(index);
 	this->RemoveItem(index);

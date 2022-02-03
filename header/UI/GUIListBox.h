@@ -51,7 +51,7 @@ namespace UI
 		Text::String *GetSelectedItemTextNew();
 		UTF8Char *GetItemText(UTF8Char *buff, UOSInt index);
 		WChar *GetItemText(WChar *buff, UOSInt index);
-		void SetItemText(UOSInt index, const UTF8Char *text);
+		void SetItemText(UOSInt index, Text::CString text);
 		Text::String *GetItemTextNew(UOSInt index);
 		OSInt GetItemHeight();
 

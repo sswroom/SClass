@@ -285,7 +285,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				sptr = symbol->ResolveName(sbuff, eip);
 				i  = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 				sb.AppendP(&sbuff[i + 1], sptr);
-				i = this->lbMyStack->AddItem(sb.ToString(), 0);
+				i = this->lbMyStack->AddItem(sb.ToCString(), 0);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("EIP = 0x"));
 				sb.AppendHex32(eip);

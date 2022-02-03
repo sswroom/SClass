@@ -488,14 +488,14 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 	return Text::StrUTF8_WChar(buff, item->txt->v, 0);
 }
 
-void UI::GUIListBox::SetItemText(UOSInt index, const UTF8Char *text)
+void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
 {
 	ItemData *item = this->items->GetItem(index);
 	if (item == 0)
 		return;
-	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text);
+	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text.v);
 	item->txt->Release();
-	item->txt = Text::String::NewNotNull(text);
+	item->txt = Text::String::New(text.v, text.leng);
 }
 
 Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
