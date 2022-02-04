@@ -460,7 +460,7 @@ Bool IO::FileAnalyse::FLVFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::FLVFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::FLVFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

@@ -42,7 +42,7 @@ namespace IO
 
 			virtual Bool IsError();
 			virtual Bool IsParsing();
-			virtual Bool TrimPadding(const UTF8Char *outputFile);
+			virtual Bool TrimPadding(Text::CString outputFile);
 
 			static Text::CString ColumnTypeGetName(UInt8 colType);
 		};

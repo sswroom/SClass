@@ -61,11 +61,11 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 	sptr = ctrl->GetDirName(sptr);
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (reader->ReadLine(&sb, 1024))
 	{
@@ -86,6 +86,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	dt.SetTicks(item->msgTime);
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	sptr = this->dataPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
@@ -95,13 +96,13 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dt.ToString(sptr, "yyyyMM");
-	Text::StrConcatC(sptr, UTF8STRC(".csv"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
 
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	Text::String *s;
 	s = Text::String::NewCSVRec(item->id->v);
@@ -192,18 +193,18 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				{
 					if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".mp4")))
 					{
-						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
+						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					}
 					else if (Text::StrEndsWithC(sarr[0].v, sarr[0].leng, UTF8STRC(".png")))
 					{
-						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
+						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".png"));
 					}
 					else
 					{
-						Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".jpg"));
+						sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".jpg"));
 					}
 					leng = 0;
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					while (true)
 					{
 						k = cli->Read(tmpBuff, 65536);
@@ -265,9 +266,9 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 				}
 				if (cli->Connect(sarr[0].ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true))
 				{
-					Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
+					sptr2 = Text::StrConcatC(Text::StrUOSInt(sptr, i), UTF8STRC(".mp4"));
 					leng = 0;
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					while (true)
 					{
 						k = cli->Read(tmpBuff, 65536);
@@ -318,11 +319,11 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 	sptr = channel->ctrl->GetDirName(sptr);
 	IO::Path::CreateDirectory(sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	UOSInt i = 0;
 	UOSInt j = channel->currItems->GetCount();
@@ -478,10 +479,10 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
 			{
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
-				Text::StrConcatC(sptr2, UTF8STRC("channel.txt"));
+				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("channel.txt"));
 				IO::FileStream *fs;
 				Text::UTF8Reader *reader;
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 1024))
@@ -576,10 +577,10 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 		sptr = ctrl->GetDirName(sptr);
 		IO::Path::CreateDirectory(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcatC(sptr, UTF8STRC("channel.txt"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC("channel.txt"));
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		writer->WriteLine(Net::SNS::SNSControl::SNSTypeGetName(ctrl->GetSNSType()));
 		Text::String *s = ctrl->GetChannelId();

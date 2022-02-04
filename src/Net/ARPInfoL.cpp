@@ -102,7 +102,7 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	ARPData data;
 	Int32 flags;
 	Net::ARPInfo *arp;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/arp", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/arp"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 

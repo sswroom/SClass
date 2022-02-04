@@ -154,12 +154,13 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnItemsDblClick(void *userObj, 
 void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -178,13 +179,14 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"RSSList.txt");
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(writer, Text::UTF8Writer(fs));

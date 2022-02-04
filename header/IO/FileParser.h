@@ -13,7 +13,7 @@ namespace IO
 
 		virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType) = 0;
 
-		IO::ParsedObject *ParseFilePath(const UTF8Char *filePath);
+		IO::ParsedObject *ParseFilePath(Text::CString filePath);
 	};
 }
 #endif

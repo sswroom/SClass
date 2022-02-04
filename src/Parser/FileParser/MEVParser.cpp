@@ -153,9 +153,9 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrUTF8_WCharC(sptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
-		const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
-		imgFileArr[i].envIndex = env->AddImage(u8ptr, this->parsers);
-		Text::StrDelNew(u8ptr);
+		Text::String *s = Text::String::NewNotNull(sbuff);
+		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), this->parsers);
+		s->Release();
 		i++;
 		currPos += 16;
 	}
@@ -264,9 +264,9 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 			{
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
-			const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
-			Map::IMapDrawLayer *layer = this->mapMgr->LoadLayer(u8ptr, this->parsers, env);
-			Text::StrDelNew(u8ptr);
+			Text::String *s = Text::String::NewNotNull(sbuff);
+			Map::IMapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
+			s->Release();
 			if (layer)
 			{
 				Map::MapEnv::LayerItem setting;

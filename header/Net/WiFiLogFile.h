@@ -35,8 +35,8 @@ namespace Net
 		WiFiLogFile();
 		~WiFiLogFile();
 
-		void LoadFile(const UTF8Char *fileName);
-		Bool StoreFile(const UTF8Char *fileName);
+		void LoadFile(Text::CString fileName);
+		Bool StoreFile(Text::CString fileName);
 		void Clear();
 		LogFileEntry *Get(UInt64 iMAC);
 		OSInt GetIndex(UInt64 iMAC);

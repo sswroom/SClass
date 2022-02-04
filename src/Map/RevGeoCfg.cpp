@@ -5,7 +5,7 @@
 #include "Map/RevGeoCfg.h"
 #include "Text/MyString.h"
 
-Map::RevGeoCfg::RevGeoCfg(const UTF8Char *fileName, Map::MapSearchManager *mapSrchMgr)
+Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrchMgr)
 {
 	UTF8Char filePath[256];
 	UTF8Char *filePathName;

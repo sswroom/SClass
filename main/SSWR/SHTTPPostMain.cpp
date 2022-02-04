@@ -32,7 +32,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UInt8 *fileBuff = 0;
 		UOSInt fileSize = 0;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(file, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({file, Text::StrCharCnt(file)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = fs->GetLength();
 		if (fileSize > 0)
 		{

@@ -52,7 +52,7 @@ Text::CString IO::USBInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UInt16 USBInfo_ReadI16(const UTF8Char *fileName)
+UInt16 USBInfo_ReadI16(Text::CString fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;
@@ -87,6 +87,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 	UOSInt readSize;
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	UTF8Char *sptr3;
 	IO::Path::FindFileSession *sess;
 	IO::FileStream *fs;
 	IO::Path::PathType pt;
@@ -99,17 +100,17 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 		{
 			if (sptr[0] != '.')
 			{
-				Text::StrConcatC(sptr2, UTF8STRC("/idVendor"));
-				clsData.idVendor = USBInfo_ReadI16(sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC("/idProduct"));
-				clsData.idProduct = USBInfo_ReadI16(sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC("/bcdDevice"));
-				clsData.bcdDevice = USBInfo_ReadI16(sbuff);
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/idVendor"));
+				clsData.idVendor = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/idProduct"));
+				clsData.idProduct = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/bcdDevice"));
+				clsData.bcdDevice = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
 				if (clsData.idVendor != 0)
 				{
 					sb.ClearStr();
-					Text::StrConcatC(sptr2, UTF8STRC("/manufacturer"));
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/manufacturer"));
+					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(cbuff, 250);
@@ -133,8 +134,8 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					}
 					DEL_CLASS(fs);
 					
-					Text::StrConcatC(sptr2, UTF8STRC("/product"));
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/product"));
+					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(cbuff, 250);

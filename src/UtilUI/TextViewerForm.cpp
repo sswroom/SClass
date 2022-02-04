@@ -77,7 +77,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char sbuff[530];
 	UI::FileDialog *dlg;
 	UtilUI::TextGotoDialog *gotoDlg;
-	const UTF8Char *fileName;
+	Text::String *fileName;
 	switch (cmdId)
 	{
 	case MNU_FILE_OPEN:
@@ -89,7 +89,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		fileName = this->txtView->GetFileName();
 		if (fileName)
 		{
-			dlg->SetFileName(fileName);
+			dlg->SetFileName(fileName->v);
 		}
 		if (dlg->ShowDialog(this->GetHandle()))
 		{

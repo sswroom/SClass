@@ -1,6 +1,7 @@
 #ifndef _SM_IO_MEMFILEBUFFER
 #define _SM_IO_MEMFILEBUFFER
 #include "IO/IFileBuffer.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -11,7 +12,7 @@ namespace IO
 		UInt64 fileSize;
 
 	public:
-		MemFileBuffer(const UTF8Char *fileName);
+		MemFileBuffer(Text::CString fileName);
 		virtual ~MemFileBuffer();
 
 		virtual UInt8 *GetPointer();

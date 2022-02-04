@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter key file", (const UTF8Char*)"ACME Client", me);
 		return;
 	}
-	NEW_CLASS(me->client, Net::ACMEClient(me->sockf, sb.ToString(), port, sbKey.ToString()));
+	NEW_CLASS(me->client, Net::ACMEClient(me->sockf, sb.ToString(), port, sbKey.ToCString()));
 	if (me->client->IsError())
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Server does not have valid response", (const UTF8Char*)"ACME Client", me);

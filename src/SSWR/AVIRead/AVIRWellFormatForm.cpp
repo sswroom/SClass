@@ -24,7 +24,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 
 	if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".json")))
 	{
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
@@ -39,7 +39,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 	}
 	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".html")) || Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".htm")))
 	{
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{
@@ -49,7 +49,7 @@ Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSI
 	}
 	else if (Text::StrEndsWithICaseC(fileName, fileNameLen, UTF8STRC(".xml")))
 	{
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileLen = fs->GetLength();
 		if (fileLen > 0 && fileLen < 1048576)
 		{

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, co
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->playlist->AddFile(files[i]))
+		if (me->playlist->AddFile({files[i], Text::StrCharCnt(files[i])}))
 		{
 			changed = true;
 		}
@@ -47,7 +47,8 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnAddClicked(void *userObj)
 		j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			if (me->playlist->AddFile(dlg->GetFileNames(i)))
+			const UTF8Char *fileName = dlg->GetFileNames(i);
+			if (me->playlist->AddFile({fileName, Text::StrCharCnt(fileName)}))
 			{
 				changed = true;
 			}
@@ -130,7 +131,7 @@ Bool SSWR::AVIRead::AVIRHQMPPlaylistForm::AddFolder(UTF8Char *folderBuff, UTF8Ch
 				
 				if (!toSkip)
 				{
-					if (this->playlist->AddFile(folderBuff))
+					if (this->playlist->AddFile({folderBuff, (UOSInt)(sptr - folderBuff)}))
 					{
 						changed = true;
 					}

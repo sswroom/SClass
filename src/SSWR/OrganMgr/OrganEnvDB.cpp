@@ -756,7 +756,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 				}
 				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".JPG")))
 				{
-					Media::EXIFData *exif = ParseJPGExif(sbuff);
+					Media::EXIFData *exif = ParseJPGExif({sbuff, (UOSInt)(sptr2 - sbuff)});
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
 					imgItem->SetIsCoverPhoto(isCoverPhoto);
@@ -784,7 +784,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 				}
 				else if (Text::StrEqualsICaseC(&sptr[i], (UOSInt)(sptr2 - &sptr[i]), UTF8STRC(".TIF")))
 				{
-					Media::EXIFData *exif = ParseTIFExif(sbuff);
+					Media::EXIFData *exif = ParseTIFExif({sbuff, (UOSInt)(sptr2 - sbuff)});
 					NEW_CLASS(imgItem, OrganImageItem(this->userId));
 					imgItem->SetDispName(sptr);
 					imgItem->SetIsCoverPhoto(isCoverPhoto);
@@ -854,7 +854,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 		{
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 
 			while (reader->ReadLine(sbuff2, 511))
@@ -1469,13 +1469,14 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 	{
 		return FS_NOTSUPPORT;
 	}
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	if (fileType == 1)
 	{
 		IO::MemoryStream *mstm;
 		IO::FileStream *fs;
 		UInt8 *readBuff;
 		UOSInt readSize;
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -1752,7 +1753,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		Bool valid = false;
 		Media::DrawImage *graphImg = 0;
 		fileTime.SetTicks(0);
-		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -1772,7 +1773,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 		crc.GetValue(crcBuff);
 		crcVal = ReadMUInt32(crcBuff);
 
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+		NEW_CLASS(fd, IO::StmData::FileData({fileName, fileNameLen}, false));
 		pobj = this->parsers->ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)
@@ -1946,7 +1947,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 						sptr = Text::StrHexVal32(sptr, crcVal);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						graphImg->SavePng(fs);
 						DEL_CLASS(fs);
 						this->drawEng->DeleteImage(graphImg);
@@ -2122,7 +2123,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 		IO::FileStream *fs;
 		UInt8 *buff = mstm->GetBuff(&i);
-		NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fs->Write(buff, i);
 		DEL_CLASS(fs);
 		DEL_CLASS(mstm);
@@ -2154,6 +2155,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	UTF8Char fileName[32];
 	UTF8Char *fileNameEnd;
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	sptr = this->GetSpeciesDir(sp, sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
@@ -2213,9 +2215,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 
 	Bool succ;
 	sptr[0] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr + 1, fileName, (UOSInt)(fileNameEnd - fileName));
+	sptrEnd = Text::StrConcatC(sptr + 1, fileName, (UOSInt)(fileNameEnd - fileName));
 	IO::StreamRecorder *recorder;
-	NEW_CLASS(recorder, IO::StreamRecorder(sbuff));
+	NEW_CLASS(recorder, IO::StreamRecorder({sbuff, (UOSInt)(sptrEnd - sbuff)}));
 	succ = recorder->AppendStream(stm);
 	succ = succ && (recorder->GetRecordedLength() > 0);
 	DEL_CLASS(recorder);
@@ -2229,8 +2231,8 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	writer->WriteSignature();
 	sb.AppendP(fileName, fileNameEnd);
@@ -2292,7 +2294,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	sptr = this->GetSpeciesDir(sp, sbuff);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
-	Text::StrConcatC(sptr, UTF8STRC(".txt"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 	UOSInt webFileNameLen = Text::StrCharCnt(webFileName);
 	UOSInt srcURLLen = Text::StrCharCnt(srcURL);
@@ -2314,7 +2316,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	NEW_CLASS(writer, Text::UTF8Writer(mstm));
 	writer->WriteSignature();
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 4095))
@@ -2343,7 +2345,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::UpdateSpeciesWebFileOld(OrganSpecies *sp, const
 	DEL_CLASS(writer);
 	if (found)
 	{
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		UOSInt size;
 		UInt8 *buff = mstm->GetBuff(&size);
 		fs->Write(buff, size);
@@ -2712,10 +2714,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 		Text::CString name;
 		const UTF8Char *srcDir = 0;
 		sptr[0] = IO::Path::PATH_SEPERATOR;
-		Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
+		sptr = Text::StrConcatC(sptr + 1, UTF8STRC("web.txt"));
 		j = i;
 		i = 0;
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		while (i < j)
 		{
@@ -2744,11 +2746,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			Text::StringBuilderUTF8 sb2;
 			sptr = Text::StrConcat(sbuff, srcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
-			Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			Data::ArrayList<const UTF8Char *> webLines;
 			Text::PString sarr[4];
 			Bool found;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, IO::StreamReader(fs, 65001));
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 512))
@@ -2786,7 +2788,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 			if (webLines.GetCount() > 0)
 			{
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(writer, Text::UTF8Writer(fs));
 				i = 0;
 				j = webLines.GetCount();
@@ -3081,7 +3083,7 @@ Int32 SSWR::OrganMgr::OrganEnvDB::NewBook(const UTF8Char *title, const UTF8Char 
 	return id;
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
+Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	IO::ParserType t;
@@ -3103,8 +3105,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 	UOSInt k;
 	UOSInt l;
 
-	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
-	oriFileName = &fileName[i + 1];
+	i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	oriFileName = &fileName.v[i + 1];
 
 
 	if (pobj)
@@ -3199,12 +3201,12 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(const UTF8Char *fileName)
 		sptr = Text::StrInt32(sptr, this->userId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrInt64(sptr, startDT.ToTicks());
-		i = Text::StrLastIndexOfChar(fileName, '.');
+		i = fileName.LastIndexOf('.');
 		if (i != INVALID_INDEX)
 		{
-			Text::StrConcat(sptr, &fileName[i]);
+			Text::StrConcatC(sptr, &fileName.v[i], fileName.leng - i);
 		}
-		if (IO::FileUtil::CopyFile(fileName, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
+		if (IO::FileUtil::CopyFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0))
 		{
 			DB::SQLBuilder sql(this->db);
 			sql.AppendCmdC(UTF8STRC("insert into datafile (fileType, startTime, endTime, oriFileName, dataFileName, webuser_id) values ("));
@@ -3358,7 +3360,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
-			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
+			NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(sptr - u8buff)}, false));
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
@@ -3402,7 +3404,7 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dataFile->fileName->ConcatTo(sptr);
-	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+	NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 	Map::GPSTrack *trk = 0;
 	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 	if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
@@ -3844,7 +3846,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			{
 				sptr = userFile->dataFileName->ConcatTo(sptr);
 			}
-			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 			if (pobj == 0)
@@ -3910,7 +3912,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 			sptr = Text::StrInt32(sptr, wfile->id);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
-			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 			if (pobj == 0)
@@ -3959,7 +3961,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseImage(OrganImageItem *img, Us
 		{
 			*outWebFile = 0;
 		}
-		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName()->v, false));
+		NEW_CLASS(fd, IO::StmData::FileData(img->GetFullName(), false));
 		IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 		DEL_CLASS(fd);
 		if (pobj == 0)
@@ -4033,7 +4035,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
-		if (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		if ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
@@ -4044,13 +4046,13 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".JPG") == 0)
 				{
-					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr2 - sbuff)}, false));
 					pobj = this->parsers->ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
 				else if (Text::StrCompareICase(&sptr[i], (const UTF8Char*)".TIF") == 0)
 				{
-					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr2 - sbuff)}, false));
 					pobj = this->parsers->ParseFile(fd, 0);
 					DEL_CLASS(fd);
 				}
@@ -4071,9 +4073,9 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 			{
 				Text::UTF8Reader *reader;
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
-
+				
 				while (reader->ReadLine(sbuff2, 511))
 				{
 					if (Text::StrSplit(cols, 4, sbuff2, '\t') == 3)
@@ -4083,7 +4085,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 						sptr2 = Text::StrConcat(sptr2, cols[0]);
 						if (Text::StrStartsWith(sptr, coverName))
 						{
-							NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+							NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr2 - sbuff)}, false));
 							pobj = this->parsers->ParseFile(fd, 0);
 							DEL_CLASS(fd);
 							break;
@@ -4131,7 +4133,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseFileImage(UserFileInfo *userF
 	sptr = dt.ToString(sptr, "yyyyMM");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = userFile->dataFileName->ConcatTo(sptr);
-	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+	NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 	DEL_CLASS(fd);
 	if (pobj == 0)
@@ -4186,7 +4188,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseWebImage(WebFileInfo *wfile)
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, wfile->id);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
-	NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+	NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 	IO::ParsedObject *pobj = parsers->ParseFile(fd, &pt);
 	DEL_CLASS(fd);
 	if (pobj == 0)
@@ -4747,7 +4749,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeDB2()
 			allSucc = true;
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 
 			while (reader->ReadLine(sbuff2, 511))
@@ -4969,6 +4971,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
 	UTF8Char *sptr3;
+	UTF8Char *sptr3End;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
@@ -4978,8 +4981,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, UTF8STRC("OrganWeb64.cfg"));
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb64.cfg"));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		valid = false;
@@ -5063,8 +5066,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			sb.AppendI32(userId);
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			r->GetDate(1, &dt);
-			sptr3 = dt.ToString(sptr2, "yyyyMM");
-			sb.AppendP(sptr2, sptr3);
+			sptr2End = dt.ToString(sptr2, "yyyyMM");
+			sb.AppendP(sptr2, sptr2End);
 			Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
 			IO::Path::CreateDirectory(sbuff);
 
@@ -5072,14 +5075,14 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 			r->GetStr(3, &sb);
 			
 			sptr2End = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
-			Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
+			sptr3End = Text::StrConcatC(sptr3, sb.ToString(), sb.GetLength());
 			if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr2End - sbuff)) == IO::Path::PathType::Unknown)
 			{
 				if (fileType == 1 && Text::StrEndsWithICaseC(sptr2, (UOSInt)(sptr2End - sptr2), UTF8STRC(".jpg")))
 				{
 					IO::FileStream *fs;
 					IO::StmData::FileData *fd;
-					NEW_CLASS(fd, IO::StmData::FileData(sbuff2, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff2, (UOSInt)(sptr3End - sbuff2)}, false));
 					Media::ImageList *imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 					DEL_CLASS(fd);
 
@@ -5106,7 +5109,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 						}
 						param = exporter->CreateParam(imgList);
 						exporter->SetParamInt32(param, 0, 95);
-						NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2End - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						exporter->ExportFile(fs, sbuff, imgList, param);
 						DEL_CLASS(fs);
 						DEL_CLASS(imgList);

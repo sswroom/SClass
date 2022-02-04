@@ -2,6 +2,7 @@
 #define _SM_MEDIA_DRAWENGINE
 #include "IO/SeekableStream.h"
 #include "Media/Image.h"
+#include "Text/CString.h"
 #include "Text/String.h"
 
 namespace Media
@@ -63,7 +64,7 @@ namespace Media
 		virtual ~DrawEngine(){};
 
 		virtual DrawImage *CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype) = 0;
-		virtual DrawImage *LoadImage(const UTF8Char *fileName) = 0;
+		virtual DrawImage *LoadImage(Text::CString fileName) = 0;
 		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm) = 0;
 		virtual DrawImage *ConvImage(Media::Image *img) = 0;
 		virtual DrawImage *CloneImage(DrawImage *img) = 0;

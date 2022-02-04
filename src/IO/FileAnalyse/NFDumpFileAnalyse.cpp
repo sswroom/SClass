@@ -1324,7 +1324,7 @@ Bool IO::FileAnalyse::NFDumpFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::NFDumpFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::NFDumpFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

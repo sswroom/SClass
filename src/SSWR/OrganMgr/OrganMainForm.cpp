@@ -861,7 +861,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 
 					if (IO::Path::GetFileSize(fileNameSb.ToString()) > 0)
 					{
-						NEW_CLASS(fs, IO::FileStream(fileNameSb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(fileNameSb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						Text::String *url = Text::String::New(urlSb.ToString(), urlSb.GetLength());
 						succ = (me->env->AddSpeciesWebFile((OrganSpecies*)gi, url, url, fs, sbuff) == OrganEnv::FS_SUCCESS);
 						url->Release();
@@ -1634,7 +1634,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapMouseMove(void *userObj, OSIn
 					IO::StmData::FileData *fd;
 					Media::ImageList *imgList;
 					me->env->GetUserFilePath(ufile, &sb);
-					NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
+					NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
 					imgList = (Media::ImageList*)me->env->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 					DEL_CLASS(fd);
 
@@ -2493,6 +2493,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	Media::ImageList *imgList;
 	Map::MapEnv::LayerItem sett;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt imgInd;
 	UOSInt lyrInd;
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
@@ -2501,8 +2502,8 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	stimg->FillColor(mapColor);
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"PointImage"));
 	imgList->AddImage(stimg, 0);
-	Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
-	imgInd = this->mapEnv->AddImage(sbuff, imgList);
+	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
+	imgInd = this->mapEnv->AddImage({sbuff, (UOSInt)(sptr - sbuff)}, imgList);
 	lyrInd = this->mapEnv->AddLayer(0, lyr, true);
 	this->mapEnv->GetLayerProp(&sett, 0, lyrInd);
 	sett.fontStyle = this->imgFontStyle;

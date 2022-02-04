@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnFileDrop(void *userObj, const 
 	i = 0;
 	while (i < fileCnt)
 	{
-		if (me->env->AddImage(fileNames[i], me->parsers) >= 0)
+		if (me->env->AddImage({fileNames[i], Text::StrCharCnt(fileNames[i])}, me->parsers) >= 0)
 		{
 			loaded = true;
 		}

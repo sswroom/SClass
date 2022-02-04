@@ -759,6 +759,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	const UTF8Char *key = (const UTF8Char*)"WEBnAPI";
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::ConsoleWriter console;
 	IO::LogTool log;
 	Net::OSSocketFactory sockf(false);
@@ -792,12 +793,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC(" rows of records loaded"));
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
-				IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
-				if (DB::DBDataFile<LamppostData>::SaveFile(sbuff, &dataList, cls))
+				sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
+				if (DB::DBDataFile<LamppostData>::SaveFile({sbuff, (UOSInt)(sptr - sbuff)}, &dataList, cls))
 				{
 					console.WriteLineC(UTF8STRC("File saved"));
 				}
-				if (DB::DBDataFile<LamppostData>::LoadFile(sbuff, cls, &dataList2))
+				if (DB::DBDataFile<LamppostData>::LoadFile({sbuff, (UOSInt)(sptr - sbuff)}, cls, &dataList2))
 				{
 					sb.ClearStr();
 					sb.AppendUOSInt(dataList2.GetCount());

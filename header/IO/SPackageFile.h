@@ -38,14 +38,14 @@ namespace IO
 	public:
 		SPackageFile(IO::SeekableStream *stm, Bool toRelease);
 		SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 customType, UOSInt customSize, const UInt8 *customBuff);
-		SPackageFile(const UTF8Char *fileName);
+		SPackageFile(Text::CString fileName);
 		~SPackageFile();
 
 		Bool AddFile(IO::IStreamData *fd, Text::CString fileName, Int64 modTimeTicks);
 		Bool AddFile(const UInt8 *fileBuff, UOSInt fileSize, Text::CString fileName, Int64 modTimeTicks);
 		Bool AddPackage(IO::PackageFile *pkg, UTF8Char pathSeperator);
 		Bool Commit();
-		Bool OptimizeFile(const UTF8Char *newFile);
+		Bool OptimizeFile(Text::CString newFile);
 		void PauseCommit(Bool pauseCommit);
 
 		IO::IStreamData *CreateStreamData(Text::CString fileName);

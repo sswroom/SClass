@@ -212,7 +212,7 @@ void Media::ProfiledResizer::ProcessFile(const UTF8Char *fileName)
 	this->loader->AddFileName(fileName);
 }
 
-Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
+Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
@@ -223,11 +223,11 @@ Bool Media::ProfiledResizer::SaveProfile(const UTF8Char *fileName)
 	UOSInt i;
 	UOSInt j;
 	ResizeProfile *profile;
-	if (fileName == 0)
+	if (fileName.leng == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
 	{

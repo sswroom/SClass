@@ -3,7 +3,7 @@
 #include "IO/Path.h"
 #include "IO/PowerInfo.h"
 
-Bool Power_ReadIntFile(const UTF8Char *filePath, Int32 *val)
+Bool Power_ReadIntFile(Text::CString filePath, Int32 *val)
 {
 	IO::FileStream *fs;
 	UInt8 buff[128];
@@ -38,7 +38,7 @@ Bool Power_ReadIntFile(const UTF8Char *filePath, Int32 *val)
 	return succ;
 }
 
-Bool Power_ReadStrFile(const UTF8Char *filePath, UTF8Char *val, UOSInt maxCharCnt)
+Bool Power_ReadStrFile(Text::CString filePath, UTF8Char *val, UOSInt maxCharCnt)
 {
 	IO::FileStream *fs;
 	UOSInt readSize;
@@ -77,7 +77,7 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 	UTF8Char cbuff[128];
 	Int32 ival;
 	MemClear(power, sizeof(PowerStatus));
-	if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/AC/online", &ival))
+	if (Power_ReadIntFile(CSTR("/sys/class/power_supply/AC/online"), &ival))
 	{
 		if (ival == 1)
 		{
@@ -88,7 +88,7 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 			power->acStatus = ACS_OFF;
 		}
 	}
-	else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/ac/online", &ival))
+	else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/ac/online"), &ival))
 	{
 		if (ival == 1)
 		{
@@ -99,7 +99,7 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 			power->acStatus = ACS_OFF;
 		}
 	}
-	else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/rk-ac/online", &ival))
+	else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/rk-ac/online"), &ival))
 	{
 		if (ival == 1)
 		{
@@ -110,7 +110,7 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 			power->acStatus = ACS_OFF;
 		}
 	}
-	else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/usb/online", &ival))
+	else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/usb/online"), &ival))
 	{
 		if (ival == 1)
 		{
@@ -121,7 +121,7 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 			power->acStatus = ACS_OFF;
 		}
 	}
-	else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/ACAD/online", &ival))
+	else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/ACAD/online"), &ival))
 	{
 		if (ival == 1)
 		{
@@ -136,122 +136,122 @@ Bool IO::PowerInfo::GetPowerStatus(PowerStatus *power)
 	{
 		power->acStatus = ACS_UNKNOWN;
 	}
-	if (Power_ReadStrFile((const UTF8Char*)"/sys/class/power_supply/battery/status", cbuff, 127))
+	if (Power_ReadStrFile(CSTR("/sys/class/power_supply/battery/status"), cbuff, 127))
 	{
 		power->hasBattery = true;
 		power->batteryCharging = Text::StrEquals(cbuff, (const UTF8Char*)"Charging");
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/capacity", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/capacity"), &ival))
 		{
 			power->batteryPercent = (UInt32)ival;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/voltage_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/voltage_now"), &ival))
 		{
 			power->batteryVoltage = ival * 0.000001;
 		}
-		else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/batt_vol", &ival))
+		else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/batt_vol"), &ival))
 		{
 			power->batteryVoltage = ival * 0.001;
 		}
 
 		power->batteryChargeCurrent = 0;
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/current_now"), &ival))
 		{
 			power->batteryChargeCurrent -= ival * 0.000001;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/input_current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/input_current_now"), &ival))
 		{
 			power->batteryChargeCurrent += ival * 0.000001;
 		}
-		else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/chg_current", &ival))
+		else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/chg_current"), &ival))
 		{
 			power->batteryChargeCurrent += ival * 0.001;
 		}
 
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/temp", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/temp"), &ival))
 		{
 			power->batteryTemp = ival * 0.1;
 		}
-		else if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/battery/batt_temp", &ival))
+		else if (Power_ReadIntFile(CSTR("/sys/class/power_supply/battery/batt_temp"), &ival))
 		{
 			power->batteryTemp = ival * 0.1;
 		}
 	}
-	else if (Power_ReadStrFile((const UTF8Char*)"/sys/class/power_supply/BAT0/status", cbuff, 127))
+	else if (Power_ReadStrFile(CSTR("/sys/class/power_supply/BAT0/status"), cbuff, 127))
 	{
 		power->batteryCharging = Text::StrEquals(cbuff, (const UTF8Char*)"Charging");
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT0/present", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT0/present"), &ival))
 		{
 			power->hasBattery = (ival != 0);
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT0/capacity", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT0/capacity"), &ival))
 		{
 			power->batteryPercent = (UInt32)ival;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT0/voltage_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT0/voltage_now"), &ival))
 		{
 			power->batteryVoltage = ival * 0.000001;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT0/current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT0/current_now"), &ival))
 		{
 			power->batteryChargeCurrent = ival * 0.000001;
 		}
 	}
-	else if (Power_ReadStrFile((const UTF8Char*)"/sys/class/power_supply/BAT1/status", cbuff, 127))
+	else if (Power_ReadStrFile(CSTR("/sys/class/power_supply/BAT1/status"), cbuff, 127))
 	{
 		power->batteryCharging = Text::StrEquals(cbuff, (const UTF8Char*)"Charging");
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT1/present", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT1/present"), &ival))
 		{
 			power->hasBattery = (ival != 0);
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT1/capacity", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT1/capacity"), &ival))
 		{
 			power->batteryPercent = (UInt32)ival;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT1/voltage_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT1/voltage_now"), &ival))
 		{
 			power->batteryVoltage = ival * 0.000001;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/BAT1/current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/BAT1/current_now"), &ival))
 		{
 			power->batteryChargeCurrent = ival * 0.000001;
 		}
 	}
-	else if (Power_ReadStrFile((const UTF8Char*)"/sys/class/power_supply/rk-bat/status", cbuff, 127))
+	else if (Power_ReadStrFile(CSTR("/sys/class/power_supply/rk-bat/status"), cbuff, 127))
 	{
 		power->batteryCharging = Text::StrEquals(cbuff, (const UTF8Char*)"Charging");
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/rk-bat/present", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/rk-bat/present"), &ival))
 		{
 			power->hasBattery = (ival != 0);
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/rk-bat/capacity", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/rk-bat/capacity"), &ival))
 		{
 			power->batteryPercent = (UInt32)ival;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/rk-bat/voltage_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/rk-bat/voltage_now"), &ival))
 		{
 			power->batteryVoltage = ival * 0.000001;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/rk-bat/current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/rk-bat/current_now"), &ival))
 		{
 			power->batteryChargeCurrent = ival * 0.000001;
 		}
 	}
-	else if (Power_ReadStrFile((const UTF8Char*)"/sys/class/power_supply/Battery/status", cbuff, 127))
+	else if (Power_ReadStrFile(CSTR("/sys/class/power_supply/Battery/status"), cbuff, 127))
 	{
 		power->batteryCharging = Text::StrEquals(cbuff, (const UTF8Char*)"Charging");
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/Battery/present", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/Battery/present"), &ival))
 		{
 			power->hasBattery = (ival != 0);
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/Battery/capacity", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/Battery/capacity"), &ival))
 		{
 			power->batteryPercent = (UInt32)ival;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/Battery/voltage_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/Battery/voltage_now"), &ival))
 		{
 			power->batteryVoltage = ival * 0.000001;
 		}
-		if (Power_ReadIntFile((const UTF8Char*)"/sys/class/power_supply/Battery/current_now", &ival))
+		if (Power_ReadIntFile(CSTR("/sys/class/power_supply/Battery/current_now"), &ival))
 		{
 			power->batteryChargeCurrent = ival * 0.000001;
 		}

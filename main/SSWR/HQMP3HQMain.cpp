@@ -31,7 +31,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char **argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	while (argc-- > 1)
 	{
-		Bool succ = frm->OpenFile(argv[argc]);
+		Bool succ = frm->OpenFile({argv[argc], Text::StrCharCnt(argv[argc])});
 		if (succ)
 		{
 			break;

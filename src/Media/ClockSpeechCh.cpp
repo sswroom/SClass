@@ -5,7 +5,7 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
-void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, const UTF8Char *fileName)
+void Media::ClockSpeechCh::AppendWAV(Media::AudioConcatSource *source, Parser::FileParser::WAVParser *parser, Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
@@ -58,30 +58,30 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 	{
 		if (hour >= 20)
 		{
-			AppendWAV(source, parser, (const UTF8Char*)"Num2.wav");
+			AppendWAV(source, parser, CSTR("Num2.wav"));
 		}
-		AppendWAV(source, parser, (const UTF8Char*)"Num10.wav");
+		AppendWAV(source, parser, CSTR("Num10.wav"));
 		hour = hour % 10;
 		if (hour)
 		{
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, hour);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-			AppendWAV(source, parser, sbuff);
+			AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
 		}
 	}
 	else if (hour == 2)
 	{
-		AppendWAV(source, parser, (const UTF8Char*)"Num2_.wav");
+		AppendWAV(source, parser, CSTR("Num2_.wav"));
 	}
 	else
 	{
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 		sptr = Text::StrInt32(sptr, hour);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-		AppendWAV(source, parser, sbuff);
+		AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
 	}
-	AppendWAV(source, parser, (const UTF8Char*)"Hour.wav");
+	AppendWAV(source, parser, CSTR("Hour.wav"));
 	if (minute)
 	{
 		if (minute >= 10)
@@ -91,31 +91,31 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute / 10);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-				AppendWAV(source, parser, sbuff);
+				AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
 			}
-			AppendWAV(source, parser, (const UTF8Char*)"Num10.wav");
+			AppendWAV(source, parser, CSTR("Num10.wav"));
 			minute = minute % 10;
 			if (minute)
 			{
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-				AppendWAV(source, parser, sbuff);
+				AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
 			}
 		}
 		else
 		{
-			AppendWAV(source, parser, (const UTF8Char*)"Num0.wav");
+			AppendWAV(source, parser, CSTR("Num0.wav"));
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, minute);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-			AppendWAV(source, parser, sbuff);
+			AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
 		}
-		AppendWAV(source, parser, (const UTF8Char*)"Minute.wav");
+		AppendWAV(source, parser, CSTR("Minute.wav"));
 	}
 	else
 	{
-		AppendWAV(source, parser, (const UTF8Char*)"FullHour.wav");
+		AppendWAV(source, parser, CSTR("FullHour.wav"));
 	}
 	DEL_CLASS(parser);
 	return source;

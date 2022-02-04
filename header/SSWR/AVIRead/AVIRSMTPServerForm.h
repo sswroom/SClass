@@ -3,6 +3,7 @@
 #include "Net/Email/POP3Server.h"
 #include "Net/Email/SMTPServer.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/ListBoxLogger.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
@@ -32,7 +33,7 @@ namespace SSWR
 				Int64 recvTime;
 				const UTF8Char *fromAddr;
 				Data::ArrayList<const UTF8Char *> *rcptList;
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				const UTF8Char *uid;
 				UOSInt fileSize;
 				Bool isDeleted;

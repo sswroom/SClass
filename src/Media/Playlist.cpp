@@ -54,7 +54,7 @@ IO::ParserType Media::Playlist::GetParserType()
 	return IO::ParserType::Playlist;
 }
 
-Bool Media::Playlist::AddFile(const UTF8Char *fileName)
+Bool Media::Playlist::AddFile(Text::CString fileName)
 {
 	Media::MediaFile *file;
 	IO::StmData::FileData *fd;
@@ -89,7 +89,7 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 			}
 
 			ent = MemAlloc(PlaylistEntry, 1);
-			ent->fileName = Text::String::NewNotNull(fileName);
+			ent->fileName = Text::String::New(fileName.v, fileName.leng);
 			ent->title = Text::StrCopyNew(chap->GetChapterName(i));
 			artist = chap->GetChapterArtist(i);
 			if (artist)
@@ -110,9 +110,9 @@ Bool Media::Playlist::AddFile(const UTF8Char *fileName)
 	else
 	{
 		ent = MemAlloc(PlaylistEntry, 1);
-		ent->fileName = Text::String::NewNotNull(fileName);
-		i = Text::StrLastIndexOfCharC(fileName, ent->fileName->leng, IO::Path::PATH_SEPERATOR);
-		ent->title = Text::StrCopyNew(&fileName[i + 1]);
+		ent->fileName = Text::String::New(fileName.v, fileName.leng);
+		i = Text::StrLastIndexOfCharC(fileName.v, fileName.leng, IO::Path::PATH_SEPERATOR);
+		ent->title = Text::StrCopyNewC(&fileName.v[i + 1], fileName.leng - i - 1);
 		ent->artist = 0;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;

@@ -173,7 +173,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	cli->GetRemoteAddr(&email->remoteAddr);
 	email->remotePort = cli->GetRemotePort();
 	NEW_CLASS(email->rcptList, Data::ArrayList<const UTF8Char*>());
-	email->fileName = Text::StrCopyNew(sb.ToString());
+	email->fileName = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.ClearStr();
 	sb.AppendSlow(mail->mailFrom);
 	email->fromAddr = Text::StrCopyNew(sb.ToString());
@@ -452,7 +452,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 	{
 		email = this->mailList->GetItem(i);
 		Text::StrDelNew(email->fromAddr);
-		Text::StrDelNew(email->fileName);
+		email->fileName->Release();
 		Text::StrDelNew(email->uid);
 		j = email->rcptList->GetCount();
 		while (j-- > 0)
@@ -558,7 +558,7 @@ Bool SSWR::AVIRead::AVIRSMTPServerForm::GetMessageContent(Int32 userId, UInt32 m
 	email = this->mailList->GetItem(msgId);
 	if (email)
 	{
-		NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(email->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 

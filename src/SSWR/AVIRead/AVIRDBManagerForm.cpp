@@ -17,7 +17,7 @@
 #include "Win32/Clipboard.h"
 
 #define MAX_ROW_CNT 1000
-#define DBCONNFILE ((const UTF8Char*)"DBConn.dat")
+#define DBCONNFILE CSTR("DBConn.dat")
 
 typedef enum
 {

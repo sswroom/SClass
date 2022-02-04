@@ -39,6 +39,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	UTF8Char sbuff[1024];
 	UTF8Char sbuff2[1024];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
 	sptr = this->iface->GetOpenedFile()->GetSourceNameObj()->ConcatTo(sbuff);
@@ -47,8 +48,8 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 
 	if (fname)
 	{
-		fname->ConcatTo(sptr);
-		if (this->iface->OpenFile(sbuff))
+		sptr2 = fname->ConcatTo(sptr);
+		if (this->iface->OpenFile({sbuff, (UOSInt)(sptr2 - sbuff)}))
 		{
 			this->iface->PBStart();
 			resp->RedirectURL(req, UTF8STRC("/"), 0);
@@ -61,7 +62,6 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	IO::Path::FindFileSession *sess;
 	UInt8 *buff;
 	Text::String *s;
-	UTF8Char *sptr2;
 	UOSInt size;
 	UInt64 fileSize;
 

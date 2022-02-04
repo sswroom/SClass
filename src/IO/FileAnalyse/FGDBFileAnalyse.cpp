@@ -269,7 +269,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					*sptr = 0;
 					frame->AddField(ofst + 2, srsLen, {UTF8STRC("SRS")}, {sbuff, (UOSInt)(sptr - sbuff)});
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
-					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->v, sbuff, csysLen, &csysLen);
+					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;
@@ -730,7 +730,7 @@ Bool IO::FileAnalyse::FGDBFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::FGDBFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

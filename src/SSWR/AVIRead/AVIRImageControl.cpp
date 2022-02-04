@@ -94,6 +94,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
 	UTF8Char *sptr3;
 	UTF8Char *sarr[6];
 	IO::Path::FindFileSession *sess;
@@ -121,8 +122,8 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	IO::FileStream *fs;
 	IO::StmData::FileData *fd;
 	NEW_CLASS(imgSettMap, Data::ICaseStringUTF8Map<ImageSetting*>());
-	Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	sptr3 = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -186,7 +187,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 			if (pt == IO::Path::PathType::File)
 			{
 				Sync::MutexUsage mutUsage(this->ioMut);
-				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr3 - sbuff)}, false));
 				Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
 				DEL_CLASS(fd);
 				mutUsage.EndUse();
@@ -201,13 +202,13 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 					if (simg)
 					{
 						Media::StaticImage *simg2;
-						Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
+						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
 						simg2 = resizer.ProcessToNew(simg);
 						NEW_CLASS(imgList, Media::ImageList(sptr));
 						imgList->AddImage(simg2, 0);
 						mutUsage.BeginUse();
-						NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+						NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2End - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						exporter.ExportFile(fs, sbuff2, imgList, 0);
 						DEL_CLASS(fs);
 						mutUsage.EndUse();
@@ -267,6 +268,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	if (this->folderPath == 0)
 		return;
 
@@ -302,8 +304,8 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			if (this->exportFmt == EF_JPG)
 			{
 				img->To32bpp();
-				IO::Path::ReplaceExt(sptr, (const UTF8Char*)"jpg");
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+				sptr2 = IO::Path::ReplaceExt(sptr, (const UTF8Char*)"jpg");
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				void *param = jpgExporter.CreateParam(imgList);
 				if (param)
 				{
@@ -318,8 +320,8 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			}
 			else if (this->exportFmt == EF_TIF)
 			{
-				IO::Path::ReplaceExt(sptr, (const UTF8Char*)"tif");
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+				sptr2 = IO::Path::ReplaceExt(sptr, (const UTF8Char*)"tif");
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				tifExporter.ExportFile(fs, sbuff, imgList, 0);
 				DEL_CLASS(fs);
 			}
@@ -470,12 +472,12 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraNa
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPath(sbuff, cameraName);
-	Text::StrConcatC(sptr, UTF8STRC(".gamma"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	Data::ArrayList<Double> gammaVals;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	while (true)
 	{
@@ -708,7 +710,7 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 			status->setting.flags |= 8;
 			if (status->previewImg == 0)
 			{
-				status->previewImg = this->deng->LoadImage(status->cacheFile->v);
+				status->previewImg = this->deng->LoadImage(status->cacheFile->ToCString());
 				if (status->previewImg)
 				{
 					status->previewImg2 = this->deng->CreateImage32((UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetWidth()) * hdpi / ddpi), (UInt32)Double2Int32(UOSInt2Double(status->previewImg->GetHeight()) * hdpi / ddpi), Media::AT_NO_ALPHA);
@@ -943,9 +945,9 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	sptr = this->folderPath->ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("Setting.txt"));
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

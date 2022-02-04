@@ -110,7 +110,7 @@ UOSInt Media::AudioFilter::AudioCaptureFilter::ReadBlock(UInt8 *buff, UOSInt blk
 	return readSize;
 }
 
-Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(const UTF8Char *fileName)
+Bool Media::AudioFilter::AudioCaptureFilter::StartCapture(Text::CString fileName)
 {
 	if (this->sourceAudio == 0)
 		return false;

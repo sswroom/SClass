@@ -370,7 +370,7 @@ Bool IO::FileAnalyse::PCapFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PCapFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::PCapFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

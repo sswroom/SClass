@@ -1246,7 +1246,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::EXEFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

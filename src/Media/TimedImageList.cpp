@@ -27,7 +27,7 @@ void Media::TimedImageList::ScanFile()
 	this->currFileOfst = currOfst;
 }
 
-Media::TimedImageList::TimedImageList(const UTF8Char *fileName)
+Media::TimedImageList::TimedImageList(Text::CString fileName)
 {
 	UInt8 hdr[16];
 	NEW_CLASS(this->indexStm, IO::MemoryStream(UTF8STRC("Media.TimedImageLIst.indexStm")));

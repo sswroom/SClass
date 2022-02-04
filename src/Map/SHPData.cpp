@@ -42,18 +42,11 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	}
 	else
 	{
-		Text::StrConcatC(u8ptr, UTF8STRC(".prj"));
+		u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".prj"));
 	}
-	this->csys = Math::CoordinateSystemManager::ParsePRJFile(u8buff);
+	this->csys = Math::CoordinateSystemManager::ParsePRJFile({u8buff, (UOSInt)(u8ptr - u8buff)});
 
-	if (u8ptr[-4] == '.')
-	{
-		Text::StrConcatC(&u8ptr[-3], UTF8STRC("dbf"));
-	}
-	else
-	{
-		Text::StrConcatC(u8ptr, UTF8STRC(".dbf"));
-	}
+	Text::StrConcatC(&u8ptr[-3], UTF8STRC("dbf"));
 
 	if (ReadMInt32(shpHdr) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
 	{
@@ -317,7 +310,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	}
 
 	IO::StmData::FileData *dbfData;
-	NEW_CLASS(dbfData, IO::StmData::FileData(u8buff, false));
+	NEW_CLASS(dbfData, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
 	if (dbfData->GetDataSize() > 0)
 	{
 		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));

@@ -29,6 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::IImgResizer *resizer;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Double t0;
 	Double t1;
 	Double t2;
@@ -62,8 +63,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Test.tif"));
 		imgList->AddImage(simg2, 0);
 		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::AppendPath(sbuff, (const UTF8Char*)"NearestNeighbourTest.tif");
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"NearestNeighbourTest.tif");
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		exporter.ExportFile(fs, sbuff, imgList, 0);
 		DEL_CLASS(fs);
 		DEL_CLASS(simg2);

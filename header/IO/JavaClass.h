@@ -154,7 +154,7 @@ namespace IO
 		void Init(const UInt8 *buff, UOSInt buffSize);
 	public:
 		JavaClass(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-		JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+		JavaClass(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JavaClass();
 
 		virtual IO::ParserType GetParserType();
@@ -177,9 +177,9 @@ namespace IO
 		EndType DecompileCondBranch(const UInt8 *codePtr, const UInt8 *codeEnd, CondType ct, DecompileEnv *env, UOSInt lev, Text::StringBuilderUTF8 *sb);
 		UTF8Char *DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff, UInt16 *classIndex, UTF8Char *retType, DecompileEnv *env, Text::StringBuilderUTF8 *sb);
 	public:
-		static JavaClass *ParseFile(const UTF8Char *fileName);
+		static JavaClass *ParseFile(Text::CString fileName);
 		static JavaClass *ParseBuff(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-		static JavaClass *ParseBuff(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+		static JavaClass *ParseBuff(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		static Text::CString EndTypeGetName(EndType et);
 	};
 }

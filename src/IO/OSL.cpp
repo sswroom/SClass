@@ -24,7 +24,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(UTF8STRC("/etc/os-release")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/os-release");
+		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
 			Text::String *s = cfg->GetValue(UTF8STRC("NAME"));
@@ -63,7 +63,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		UOSInt i;
 		UOSInt j;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/release", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		line[0] = 0;
 		reader->ReadLine(line, 512);
@@ -95,7 +95,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		Text::StringBuilderUTF8 sb;
 		UTF8Char *ret = 0;
 
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/usr/sbin/ENG/stringlist_ENG.txt", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/usr/sbin/ENG/stringlist_ENG.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -156,7 +156,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		UTF8Char *ret = 0;
 		Text::UTF8Reader *reader;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/debian_version", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/debian_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -168,7 +168,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(UTF8STRC("/etc/os-release")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/os-release");
+		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
 			Text::String *s = cfg->GetValue(UTF8STRC("VERSION"));
@@ -191,7 +191,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		UTF8Char *ret = 0;
 		Text::UTF8Reader *reader;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/openwrt_version", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/openwrt_version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (!fs->IsError())
 		{
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -216,7 +216,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 	}
 	if (IO::Path::GetPathType(UTF8STRC("/etc/VERSION")) == IO::Path::PathType::File)
 	{
-		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/VERSION");
+		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/VERSION"));
 		Text::String *s;
 		if (cfg)
 		{
@@ -241,7 +241,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		UOSInt i;
 		UOSInt j;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/release", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/release"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		line[0] = 0;
 		reader->ReadLine(line, 512);
@@ -275,7 +275,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		Text::UTF8Reader *reader;
 		UTF8Char *sptr;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/version.txt", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/version.txt"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sptr = reader->ReadLine(sbuff, 512);
 		DEL_CLASS(reader);
@@ -291,7 +291,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		Text::UTF8Reader *reader;
 		UTF8Char *sptr;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/mlinux-version", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTR("/etc/mlinux-version"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sptr = reader->ReadLine(sbuff, 512);
 		DEL_CLASS(reader);

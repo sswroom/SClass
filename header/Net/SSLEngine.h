@@ -84,7 +84,7 @@ namespace Net
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen) = 0;
 
-		Bool SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile);
+		Bool SetServerCerts(Text::CString certFile, Text::CString keyFile);
 		void ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *userObj);
 
 		static Text::CString ErrorTypeGetName(ErrorType err);

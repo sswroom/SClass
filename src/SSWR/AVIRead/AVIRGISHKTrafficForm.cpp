@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	me->txtRoadCenterline->GetText(&sb);
 	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData(sb.ToString(), false));
+	NEW_CLASS(fd, IO::StmData::FileData(sb.ToCString(), false));
 	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::MapLayer);
 	DEL_CLASS(fd);
 	if (lyr)

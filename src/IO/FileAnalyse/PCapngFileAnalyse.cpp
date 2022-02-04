@@ -1430,7 +1430,7 @@ Bool IO::FileAnalyse::PCapngFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::PCapngFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

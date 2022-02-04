@@ -10,12 +10,13 @@
 #include "Text/MyStringW.h"
 
 //#define FILEBUFFER(name) IO::ViewFileBuffer(name)
-#define FILEBUFFER(name) IO::MemFileBuffer(name)
+#define FILEBUFFER(name, nameLen) IO::MemFileBuffer({name, nameLen})
 
 Map::MapLayerData::MapLayerData(const UTF8Char *filePath)
 {
 	UTF8Char fileName[256];
 	UTF8Char *str;
+	UTF8Char *sptrEnd;
 
 	str = Text::StrConcat(fileName, filePath);
 	this->cipFile = 0;
@@ -23,20 +24,20 @@ Map::MapLayerData::MapLayerData(const UTF8Char *filePath)
 	this->ciuFile = 0;
 	this->blkFile = 0;
 
-	Text::StrConcatC(str, UTF8STRC(".cip"));
-	NEW_CLASS(this->cipFileObj, FILEBUFFER(fileName));
+	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cip"));
+	NEW_CLASS(this->cipFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->cipFile = this->cipFileObj->GetPointer();
 
-	Text::StrConcatC(str, UTF8STRC(".cix"));
-	NEW_CLASS(this->cixFileObj, FILEBUFFER(fileName));
+	sptrEnd = Text::StrConcatC(str, UTF8STRC(".cix"));
+	NEW_CLASS(this->cixFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->cixFile = this->cixFileObj->GetPointer();
 
-	Text::StrConcatC(str, UTF8STRC(".ciu"));
-	NEW_CLASS(this->ciuFileObj, FILEBUFFER(fileName));
+	sptrEnd = Text::StrConcatC(str, UTF8STRC(".ciu"));
+	NEW_CLASS(this->ciuFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->ciuFile = this->ciuFileObj->GetPointer();
 
-	Text::StrConcatC(str, UTF8STRC(".blk"));
-	NEW_CLASS(this->blkFileObj, FILEBUFFER(fileName));
+	sptrEnd = Text::StrConcatC(str, UTF8STRC(".blk"));
+	NEW_CLASS(this->blkFileObj, FILEBUFFER(fileName, (UOSInt)(sptrEnd - fileName)));
 	this->blkFile = this->blkFileObj->GetPointer();
 }
 

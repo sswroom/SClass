@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else
 		{
-			if (!player->OpenFile(cmdLines[1]))
+			if (!player->OpenFile({cmdLines[1], Text::StrCharCnt(cmdLines[1])}))
 			{
 				console.WriteLineC(UTF8STRC("Error in loading file"));
 			}

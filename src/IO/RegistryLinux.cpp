@@ -17,7 +17,7 @@ void *IO::Registry::allRegistryFile = 0;
 
 struct Registry_File
 {
-	const UTF8Char *fileName;
+	Text::String *fileName;
 	Sync::Mutex *mut;
 	IO::ConfigFile *cfg;
 	UInt32 useCnt;
@@ -62,9 +62,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		allRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		NEW_CLASS(reg->mut, Sync::Mutex());
-		reg->cfg = IO::IniFile::Parse(reg->fileName, 65001);
+		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
 	case IO::Registry::REG_USER_THIS:
@@ -86,9 +86,9 @@ void *IO::Registry::OpenUserType(RegistryUser usr)
 		thisRegistryFile = reg;
 		reg->useCnt = 1;
 		reg->usr = usr;
-		reg->fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+		reg->fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		NEW_CLASS(reg->mut, Sync::Mutex());
-		reg->cfg = IO::IniFile::Parse(reg->fileName, 65001);
+		reg->cfg = IO::IniFile::Parse(reg->fileName->ToCString(), 65001);
 		reg->modified = false;
 		return reg;
 	default:
@@ -111,7 +111,7 @@ void IO::Registry::CloseInternal(void *data)
 		}
 		DEL_CLASS(reg->mut);
 		SDEL_CLASS(reg->cfg);
-		Text::StrDelNew(reg->fileName);
+		reg->fileName->Release();
 		if (reg->usr == REG_USER_ALL)
 		{
 			allRegistryFile = 0;

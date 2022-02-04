@@ -10,12 +10,13 @@
 IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"application.properties");
-	return Parse(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"application.properties");
+	return Parse({sbuff, (UOSInt)(sptr - sbuff)});
 }
 
-IO::ConfigFile *IO::UnixConfigFile::Parse(const UTF8Char *fileName)
+IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream *fstm;

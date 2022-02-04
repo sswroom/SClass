@@ -8,7 +8,7 @@
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
-	IO::JavaClass *cls = IO::JavaClass::ParseFile((const UTF8Char*)"Test.class");
+	IO::JavaClass *cls = IO::JavaClass::ParseFile(CSTR("Test.class"));
 	console.WriteLineC(UTF8STRC("ParseFile Returned\r\n"));
 	if (cls)
 	{

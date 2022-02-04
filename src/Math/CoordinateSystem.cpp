@@ -11,7 +11,7 @@ Math::CoordinateSystem::CoordinateSystem(Text::String *sourceName, UInt32 srid, 
 	this->srid = srid;
 }
 
-Math::CoordinateSystem::CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
+Math::CoordinateSystem::CoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName) : IO::ParsedObject(sourceName)
 {
 	this->csysName = Text::String::NewNotNull(csysName);
 	this->srid = srid;

@@ -664,7 +664,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			Text::String *hdrVal;
 
 			sptr3 = IO::Path::GetFileExt(sbuff, sptr, sptrLen);
-			NEW_CLASS(fs, IO::FileStream(sptr, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			fs->GetFileTimes(0, 0, &t);
 
 			if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
@@ -756,7 +756,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						if (IO::Path::GetPathType(sbTmp.ToString(), sbTmp.GetLength()) == IO::Path::PathType::Unknown)
 						{
 							IO::FileStream *uplFS;
-							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 							uplFS->Write(uplfile, uplSize);
 							DEL_CLASS(uplFS);
 						}
@@ -1086,7 +1086,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		UInt64 sizeLeft;
 		Text::String *hdrVal;
 
-		NEW_CLASS(fs, IO::FileStream(sptr, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		NEW_CLASS(fs, IO::FileStream({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		fs->GetFileTimes(0, 0, &t);
 
 		if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
@@ -1384,7 +1384,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr2 - sbuff)}, false));
 				pf = (IO::PackageFile*)parsers->ParseFileType(fd, IO::ParserType::PackageFile);
 				DEL_CLASS(fd);
 				if (pf)

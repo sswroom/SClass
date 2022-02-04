@@ -268,7 +268,7 @@ const IO::EXEFile::ResourceInfo *IO::EXEFile::GetResource(UOSInt index)
 	return this->resList->GetItem(index);
 }
 
-Bool IO::EXEFile::GetFileTime(const UTF8Char *fileName, Data::DateTime *fileTimeOut)
+Bool IO::EXEFile::GetFileTime(Text::CString fileName, Data::DateTime *fileTimeOut)
 {
 	IO::FileStream *fs;
 	UInt8 buff[64];

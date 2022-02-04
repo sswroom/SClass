@@ -168,12 +168,14 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
+	UOSInt nameLen1 = Text::StrCharCnt(file1);
+	UOSInt nameLen2 = Text::StrCharCnt(file2);
 	if (fea == FileExistAction::Fail)
 	{
 		if (IO::Path::GetPathType(file2, Text::StrCharCnt(file2)) != IO::Path::PathType::Unknown)
 			return false;
 	}
-	NEW_CLASS(fs1, IO::FileStream(file1, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs1, IO::FileStream({file1, nameLen1}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs1->IsError())
 	{
 		DEL_CLASS(fs1);
@@ -181,11 +183,11 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	}
 	if (fea == FileExistAction::Continue)
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASS(fs2, IO::FileStream({file2, nameLen2}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	else
 	{
-		NEW_CLASS(fs2, IO::FileStream(file2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+		NEW_CLASS(fs2, IO::FileStream({file2, nameLen2}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	}
 	if (fs2->IsError())
 	{

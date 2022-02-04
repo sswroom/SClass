@@ -11,7 +11,7 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
-Map::MapSearch::MapSearch(const UTF8Char *fileName, Map::MapSearchManager *manager)
+Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;

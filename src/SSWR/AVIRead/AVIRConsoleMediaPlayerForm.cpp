@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->player->OpenFile(files[i]))
+		if (me->player->OpenFile({files[i], Text::StrCharCnt(files[i])}))
 		{
 			return;
 		}

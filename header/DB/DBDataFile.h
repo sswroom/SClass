@@ -6,6 +6,7 @@
 #include "Data/NamedClass.h"
 #include "IO/BufferedOutputStream.h"
 #include "IO/FileStream.h"
+#include "Text/CString.h"
 
 namespace DB
 {
@@ -21,15 +22,15 @@ namespace DB
 		static UOSInt ReadInt(const UInt8 *buff, UOSInt ofst, UOSInt *outVal);
 		static UOSInt WriteInt(UInt8 *buff, UOSInt ofst, UOSInt val);
 
-		DBDataFile(const UTF8Char *fileName, Data::NamedClass<T> *cls, Bool append);
+		DBDataFile(Text::CString fileName, Data::NamedClass<T> *cls, Bool append);
 		~DBDataFile();
 
 		Bool IsError();
 		void AddRecord(T *obj);
 
 	public:
-		static Bool LoadFile(const UTF8Char *fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut);
-		static Bool SaveFile(const UTF8Char *fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls);
+		static Bool LoadFile(Text::CString fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut);
+		static Bool SaveFile(Text::CString fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls);
 	};
 }
 
@@ -114,7 +115,7 @@ template <class T> UOSInt DB::DBDataFile<T>::WriteInt(UInt8 *buff, UOSInt ofst, 
 #endif
 }
 
-template <class T> DB::DBDataFile<T>::DBDataFile(const UTF8Char *fileName, Data::NamedClass<T> *cls, Bool append)
+template <class T> DB::DBDataFile<T>::DBDataFile(Text::CString fileName, Data::NamedClass<T> *cls, Bool append)
 {
 	this->cls = cls;
 	this->recordBuff = 0;
@@ -327,7 +328,7 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 	}
 }
 
-template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
+template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data::NamedClass<T> *cls, Data::ArrayList<T*> *dataListOut)
 {
 	UOSInt maxBuffSize = 65536;
 	IO::FileStream *fs;
@@ -562,7 +563,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(const UTF8Char *fileName, Da
 	return succ;
 }
 
-template <class T> Bool DB::DBDataFile<T>::SaveFile(const UTF8Char *fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls)
+template <class T> Bool DB::DBDataFile<T>::SaveFile(Text::CString fileName, Data::ArrayList<T*> *dataList, Data::NamedClass<T> *cls)
 {
 	DB::DBDataFile<T> *file;
 	NEW_CLASS(file, DB::DBDataFile<T>(fileName, cls, false));

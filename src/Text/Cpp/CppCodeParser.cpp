@@ -2302,7 +2302,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 	IO::FileStream *fs;
 
 	lineBuff = MemAlloc(UTF8Char, 65536);
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (fs->IsError())
 	{
 		Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();

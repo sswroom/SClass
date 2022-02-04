@@ -256,7 +256,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt nameLen = Text::StrCharCnt(fileName);
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	NEW_CLASS(fs, IO::FileStream({fileName, nameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	fs->GetFileTimes(0, 0, &t);
 
 	if (req->GetHeaderC(&sb2, UTF8STRC("If-Modified-Since")))

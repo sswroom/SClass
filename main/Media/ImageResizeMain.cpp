@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Parser::FileParser::GUIImgParser parser;
 	IO::StmData::FileData *fd;
 	Media::ImageList *imgList;
-	NEW_CLASS(fd, IO::StmData::FileData(srcFile.v, false));
+	NEW_CLASS(fd, IO::StmData::FileData(srcFile, false));
 	if (fd->GetDataSize() == 0)
 	{
 		sb.ClearStr();
@@ -80,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			IO::FileStream *fs;
 			NEW_CLASS(imgList, Media::ImageList(destFile.v));
 			imgList->AddImage(newImg, 0);
-			NEW_CLASS(fs, IO::FileStream(destFile.v, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (exporter.ExportFile(fs, destFile.v, imgList, 0))
 			{
 				ret = 0;

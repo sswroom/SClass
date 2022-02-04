@@ -33,6 +33,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff1[512];
 	UTF8Char sbuff2[512];
+	UTF8Char *sptr1;
+	UTF8Char *sptr2;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	initSucc = false;
@@ -40,10 +42,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (ssl)
 	{
 		IO::Path::GetProcessFileName(sbuff1);
-		IO::Path::AppendPath(sbuff1, (const UTF8Char*)"ADFSCert.crt");
+		sptr1 = IO::Path::AppendPath(sbuff1, (const UTF8Char*)"ADFSCert.crt");
 		IO::Path::GetProcessFileName(sbuff2);
-		IO::Path::AppendPath(sbuff2, (const UTF8Char*)"ADFSCert.key");
-		if (ssl->SetServerCerts(sbuff1, sbuff2))
+		sptr2 = IO::Path::AppendPath(sbuff2, (const UTF8Char*)"ADFSCert.key");
+		if (ssl->SetServerCerts({sbuff1, (UOSInt)(sptr1 - sbuff1)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)}))
 		{
 			initSucc = true;
 		}

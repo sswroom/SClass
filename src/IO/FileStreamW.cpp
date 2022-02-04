@@ -210,16 +210,10 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	Text::StrDelNew(wptr);
 }
 
-IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName.v, fileName.leng)
 {
 	handle = (void*)-1;
-	if (fileName == 0)
-	{
-		this->currPos = 0;
-		handle = INVALID_HANDLE_VALUE;
-		return;
-	}
-	else if (*fileName == 0)
+	if (fileName.leng == 0)
 	{
 		this->currPos = 0;
 		handle = INVALID_HANDLE_VALUE;
@@ -272,7 +266,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, IO::FileMode mode, FileShar
 	}
 
 
-	const WChar *wptr = Text::StrToWCharNew(fileName);
+	const WChar *wptr = Text::StrToWCharNew(fileName.v);
 	if (mode == IO::FileMode::Create)
 	{
 		handle = CreateFileW(wptr, GENERIC_READ | GENERIC_WRITE, shflag, &secAttr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL | fileFlag, 0);
@@ -547,7 +541,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\pipe\\"));
 	sptr = Text::StrConcat(sptr, pipeName);
 	IO::FileStream *outStm;
-	NEW_CLASS(outStm, IO::FileStream(sbuff, IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(outStm, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (outStm->IsError())
 	{
 		DEL_CLASS(outStm);
@@ -557,7 +551,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 #endif
 }
 
-UOSInt IO::FileStream::LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal));

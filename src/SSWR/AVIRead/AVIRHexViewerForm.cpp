@@ -15,7 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->hexView->LoadFile(files[i], dynamicSize))
+		UOSInt nameLen = Text::StrCharCnt(files[i]);
+		if (me->hexView->LoadFile({files[i], nameLen}, dynamicSize))
 		{
 			Text::CString name = me->hexView->GetAnalyzerName();
 			if (name.v)
@@ -33,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Hex Viewer - "));
-			sb.AppendSlow(files[i]);
+			sb.AppendC(files[i], nameLen);
 			me->SetText(sb.ToString());
 			break;
 		}

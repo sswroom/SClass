@@ -2,17 +2,16 @@
 #include "IO/Path.h"
 #include "Net/ACMEClient.h"
 
-Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port, const UTF8Char *keyFile)
+Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port, Text::CString keyFile)
 {
 	NEW_CLASS(this->acme, Net::ACMEConn(sockf, serverHost, port));
 	this->keyReady = false;
 	this->accReady = false;
 	if (!this->acme->IsError())
 	{
-		UOSInt keyFileLen = Text::StrCharCnt(keyFile);
-		if (IO::Path::GetPathType(keyFile, keyFileLen) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(keyFile.v, keyFile.leng) == IO::Path::PathType::File)
 		{
-			this->keyReady = this->acme->LoadKey(keyFile, keyFileLen);
+			this->keyReady = this->acme->LoadKey(keyFile);
 			if (this->keyReady)
 			{
 				this->accReady = this->acme->NewNonce() && this->acme->AccountRetr();
@@ -20,7 +19,7 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 		}
 		else
 		{
-			this->keyReady = (this->acme->NewKey() && this->acme->SaveKey(keyFile, keyFileLen));
+			this->keyReady = (this->acme->NewKey() && this->acme->SaveKey(keyFile));
 			if (this->keyReady)
 			{
 				this->accReady = this->acme->NewNonce() && this->acme->AccountNew();

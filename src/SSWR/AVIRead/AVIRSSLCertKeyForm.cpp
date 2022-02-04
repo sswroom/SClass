@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userOb
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->v);
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->v);
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -98,11 +98,11 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, cons
 	UOSInt i = nFiles;
 	while (i-- > 0)
 	{
-		me->LoadFile(files[i]);
+		me->LoadFile({files[i], Text::StrCharCnt(files[i])});
 	}
 }
 
-void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));

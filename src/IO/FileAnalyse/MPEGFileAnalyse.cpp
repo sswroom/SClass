@@ -1229,7 +1229,7 @@ Bool IO::FileAnalyse::MPEGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::MPEGFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	UInt8 *readBuff;
 	UOSInt readSize;

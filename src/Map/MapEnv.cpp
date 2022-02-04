@@ -1095,12 +1095,12 @@ Media::StaticImage *Map::MapEnv::GetImage(UOSInt index, UInt32 *imgDurMS)
 	return 0;
 }
 
-OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parserList)
+OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	IO::StmData::FileData *fd;
 	ImageInfo *imgInfo;
-	if ((imgInfo = this->images->Get(fileName)) != 0)
+	if ((imgInfo = this->images->Get(fileName.v)) != 0)
 	{
 		return (OSInt)imgInfo->index;
 	}
@@ -1115,7 +1115,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			UOSInt i;
 			imgInfo = MemAlloc(ImageInfo, 1);
 			Media::ImageList *imgList = (Media::ImageList*)pobj;
-			imgInfo->fileName = Text::String::NewNotNull(fileName);
+			imgInfo->fileName = Text::String::New(fileName.v, fileName.leng);
 			imgInfo->index = this->GetImageCnt();
 			imgInfo->cnt = imgList->GetCount();
 			imgInfo->imgs = imgList;
@@ -1133,7 +1133,7 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 			{
 				imgInfo->cnt = 1;
 			}
-			this->images->Put(fileName, imgInfo);
+			this->images->Put(fileName.v, imgInfo);
 			this->imgList->Add(imgInfo);
 			return (OSInt)imgInfo->index;
 		}
@@ -1146,18 +1146,18 @@ OSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Parser::ParserList *parser
 	return -1;
 }
 
-UOSInt Map::MapEnv::AddImage(const UTF8Char *fileName, Media::ImageList *imgList)
+UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
-	if ((imgInfo = this->images->Get(fileName)) != 0)
+	if ((imgInfo = this->images->Get(fileName.v)) != 0)
 	{
 		DEL_CLASS(imgList);
 		return imgInfo->index;
 	}
 	UOSInt i;
 	imgInfo = MemAlloc(ImageInfo, 1);
-	imgInfo->fileName = Text::String::NewNotNull(fileName);
+	imgInfo->fileName = Text::String::New(fileName.v, fileName.leng);
 	imgInfo->index = this->GetImageCnt();
 	imgInfo->cnt = imgList->GetCount();
 	imgInfo->imgs = imgList;

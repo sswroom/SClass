@@ -18,10 +18,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::FileStream *fs;
 	const UTF8Char *fileName;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 	fileName = (const UTF8Char*)"test.html";
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, fileName);
+	sptr = IO::Path::AppendPath(sbuff, fileName);
 
 	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
 	NEW_CLASS(doc, Text::Doc::TextDocument());
@@ -51,7 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(validator, Text::Doc::DocValidator());
 	section->Add(validator);
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	exporter->ExportFile(fs, sbuff, doc, 0);
 	DEL_CLASS(fs);
 

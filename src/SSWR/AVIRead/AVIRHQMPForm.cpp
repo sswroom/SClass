@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, const UTF8
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile(files[i]))
+		if (me->OpenFile({files[i], Text::StrCharCnt(files[i])}))
 			return;
 		i++;
 	}
@@ -361,9 +361,10 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		UOSInt i;
 		UOSInt j;
 		UTF8Char *u8ptr;
+		UTF8Char *u8ptrEnd;
 		Int32 partNum;
-		u8ptr = me->GetOpenedFile()->GetSourceName(u8buff);
-		i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), '.');
+		u8ptrEnd = me->GetOpenedFile()->GetSourceName(u8buff);
+		i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptrEnd - u8buff), '.');
 		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{
@@ -374,7 +375,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 				partNum++;
 				if (partNum == 10)
 				{
-					Text::StrConcat(&u8buff[i + 2], &u8buff[i + 1]);
+					u8ptrEnd = Text::StrConcat(&u8buff[i + 2], &u8buff[i + 1]);
 					u8ptr = Text::StrInt32(&u8buff[j + 4], partNum);
 					*u8ptr++ = '.';
 				}
@@ -384,7 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 					*u8ptr++ = '.';
 				}
 
-				if (me->OpenFile(u8buff))
+				if (me->OpenFile({u8buff, (UOSInt)(u8ptrEnd - u8buff)}))
 				{
 					if (!me->player->IsPlaying())
 					{
@@ -825,7 +826,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(fname->v);
+					this->OpenFile(fname->ToCString());
 				}
 				else
 				{

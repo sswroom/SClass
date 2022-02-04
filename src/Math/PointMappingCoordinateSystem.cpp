@@ -11,7 +11,7 @@ Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::String *s
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
 }
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());

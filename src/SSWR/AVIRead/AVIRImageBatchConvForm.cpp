@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptrEnd - sbuff)}, false));
 				imgList = (Media::ImageList*)me->core->GetParserList()->ParseFileType(fd, IO::ParserType::ImageList);
 				DEL_CLASS(fd);
 				if (imgList)
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					{
 						exporter.SetParamInt32(param, 0, quality);
 					}
-					NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2End - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!exporter.ExportFile(fs, sbuff2, imgList, param))
 					{
 						sb.ClearStr();

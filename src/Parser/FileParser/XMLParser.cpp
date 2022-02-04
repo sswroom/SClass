@@ -724,7 +724,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																attr = reader->GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
-																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->v);
+																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
 																	if (csys)
 																	{
 																		srid = csys->GetSRID();
@@ -826,7 +826,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																attr = reader->GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
-																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->v);
+																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
 																	if (csys)
 																	{
 																		srid = csys->GetSRID();
@@ -984,7 +984,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																attr = reader->GetAttrib(i);
 																if (attr->name->Equals(UTF8STRC("srsName")))
 																{
-																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->v);
+																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
 																	if (csys)
 																	{
 																		srid = csys->GetSRID();

@@ -19,7 +19,7 @@ IO::ConfigFile *IO::IniFile::Parse(IO::Stream *stm, UInt32 codePage)
 	return cfg;
 }
 
-IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, UInt32 codePage)
+IO::ConfigFile *IO::IniFile::Parse(Text::CString fileName, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
 	IO::FileStream *fstm;
@@ -35,9 +35,10 @@ IO::ConfigFile *IO::IniFile::Parse(const UTF8Char *fileName, UInt32 codePage)
 IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"cfg");
-	return Parse(sbuff, codePage);
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"cfg");
+	return Parse({sbuff, (UOSInt)(sptr - sbuff)}, codePage);
 }
 
 IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)

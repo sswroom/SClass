@@ -69,7 +69,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream({path, pathLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fchk);
@@ -188,7 +188,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 	sess = IO::Path::FindFile(fullPath, (UOSInt)(sptr2 - fullPath));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::Directory)
 			{
@@ -206,7 +206,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 			}
 			else if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+				NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr2 - fullPath)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -389,6 +389,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UOSInt i;
 	Crypto::Hash::IHash *hash;
 	IO::FileStream *fs;
@@ -403,11 +404,11 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	sptr = &sbuff[i];
 	if (fileName[0] == '/' || fileName[0] == '\\')
 	{
-		Text::StrConcat(sptr, fileName);
+		sptrEnd = Text::StrConcat(sptr, fileName);
 	}
 	else
 	{
-		Text::StrConcat(sptr + 1, fileName);
+		sptrEnd = Text::StrConcat(sptr + 1, fileName);
 	}
 	if (IO::Path::PATH_SEPERATOR == '/')
 	{
@@ -421,7 +422,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (hash == 0)
 		return false;
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

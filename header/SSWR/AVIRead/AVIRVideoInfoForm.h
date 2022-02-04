@@ -49,7 +49,7 @@ namespace SSWR
 			static void __stdcall OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles);
 			static void __stdcall OnStreamChg(void *userObj);
 			static void __stdcall OnDecodeClicked(void *userObj);
-			Bool OpenFile(const UTF8Char *fileName);
+			Bool OpenFile(Text::CString fileName);
 			void AppendTime(Text::StringBuilderUTF8 *sb, UInt32 t);
 			void ClearDecode();
 		public:

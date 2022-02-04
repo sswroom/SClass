@@ -11,6 +11,7 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, Text::CString userAg
 {
 	IO::ParsedObject *pobj;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt urlLen = Text::StrCharCnt(url);
 	if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("http://")))
 	{
@@ -26,8 +27,8 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, Text::CString userAg
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("file:///")))
 	{
-		Text::URLString::GetURLFilePath(sbuff, url, urlLen);
-		NEW_CLASS(pobj, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr = Text::URLString::GetURLFilePath(sbuff, url, urlLen);
+		NEW_CLASS(pobj, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		return pobj;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("ftp://")))

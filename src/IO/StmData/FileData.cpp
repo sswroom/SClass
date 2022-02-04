@@ -12,7 +12,7 @@ void IO::StmData::FileData::ReopenFile()
 		return;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fdh->filePath->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fdh->filePath->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -54,7 +54,7 @@ IO::StmData::FileData::FileData(Text::String* fname, Bool deleteOnClose)
 	fdh = 0;
 	IO::FileStream *fs;
 	this->fdn = 0;
-	NEW_CLASS(fs, IO::FileStream(fname->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fname->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -79,7 +79,7 @@ IO::StmData::FileData::FileData(Text::String* fname, Bool deleteOnClose)
 	}
 }
 
-IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
+IO::StmData::FileData::FileData(Text::CString fname, Bool deleteOnClose)
 {
 	fdh = 0;
 	IO::FileStream *fs;
@@ -95,7 +95,7 @@ IO::StmData::FileData::FileData(const UTF8Char* fname, Bool deleteOnClose)
 	{
 		fdh = MemAlloc(IO::StmData::FileData::FILEDATAHANDLE, 1);
 		fdh->file = fs;
-		fdh->filePath = Text::String::NewNotNull(fname);
+		fdh->filePath = Text::String::New(fname.v, fname.leng);
 		dataLength = fdh->fileLength = fs->GetLength();
 		fdh->currentOffset = fs->GetPosition();
 		fdh->objectCnt = 1;

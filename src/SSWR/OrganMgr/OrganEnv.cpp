@@ -172,7 +172,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Lang");
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("zh-hk.txt"));
-	this->langFile = IO::IniFile::Parse(sbuff, 65001);
+	this->langFile = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 65001);
 }
 
 SSWR::OrganMgr::OrganEnv::~OrganEnv()
@@ -696,7 +696,7 @@ void SSWR::OrganMgr::OrganEnv::FreeCategory(Category *cate)
 	MemFree(cate);
 }
 
-Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseJPGExif(const UTF8Char *fileName)
+Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseJPGExif(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
@@ -705,7 +705,7 @@ Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseJPGExif(const UTF8Char *fileName
 	return exif;
 }
 
-Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseTIFExif(const UTF8Char *fileName)
+Media::EXIFData *SSWR::OrganMgr::OrganEnv::ParseTIFExif(Text::CString fileName)
 {
 	return 0;
 	//////////////////////////////////
@@ -715,6 +715,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = Text::StrConcat(sbuff, exportDir);
+	UTF8Char *sptrEnd;
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -722,7 +723,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	Text::StrConcatC(sptr, UTF8STRC("indexhd"));
 	IO::Path::CreateDirectory(sbuff);
 
-	Text::StrConcatC(sptr, UTF8STRC("indexhd.html"));
+	sptrEnd = Text::StrConcatC(sptr, UTF8STRC("indexhd.html"));
 
 	Text::UTF8Writer *writer;
 	IO::FileStream *fs;
@@ -733,7 +734,7 @@ void SSWR::OrganMgr::OrganEnv::ExportWeb(const UTF8Char *exportDir, Bool include
 	UOSInt thisPhSpeciesCnt;
 	Text::StringBuilderUTF8 *sb;
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	ExportBeginPage(writer, this->currCate->chiName->v);
@@ -922,9 +923,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				{
 					sptr = Text::StrInt32(Text::StrConcatC(pathAppend, UTF8STRC("indexhd\\grp")), grp->GetGroupId());
 					IO::Path::CreateDirectory(fullPath);
-					Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
@@ -977,9 +978,9 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 				{
 					sptr = Text::StrInt32(Text::StrConcatC(pathAppend, UTF8STRC("indexhd\\grp")), grp->GetGroupId());
 					IO::Path::CreateDirectory(fullPath);
-					Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("\\index.html"));
 
-					NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 					NEW_CLASS(sb, Text::StringBuilderUTF8());
 					sb->AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
@@ -1102,12 +1103,12 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	IO::Path::CreateDirectory(fullPath);
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("index.html"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("index.html"));
 
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
-	NEW_CLASS(fs, IO::FileStream(fullPath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({fullPath, (UOSInt)(sptr - fullPath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	sb.AppendC(this->currCate->chiName->v, this->currCate->chiName->leng);
 	sb.AppendC(UTF8STRC(" - "));

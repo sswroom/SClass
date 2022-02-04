@@ -128,7 +128,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 					if (startTime->CompareTo(&dt) <= 0 && endTime->CompareTo(&dt) >= 0)
 					{
 						IO::FileStream *fs;
-						NEW_CLASS(fs, IO::FileStream(buffStart, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({buffStart, (UOSInt)(sptr - buffStart)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fs->IsError())
 						{
 							succ = false;

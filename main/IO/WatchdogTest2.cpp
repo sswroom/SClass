@@ -3,6 +3,7 @@
 #include "Core/Core.h"
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
+#include "IO/IOTool.h"
 #include "IO/Watchdog.h"
 #include "IO/Device/AM2315.h"
 #include "Net/HTTPClient.h"
@@ -113,27 +114,12 @@ UInt32 __stdcall HTTPThread(void *userObj)
 	return 0;
 }
 
-Bool EchoFile(const UTF8Char *fileName, const Char *msg)
-{
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
-	{
-		DEL_CLASS(fs);
-		return false;
-	}
-	UOSInt fileSize = Text::StrCharCnt(msg);
-	fs->Write((const UInt8*)msg, fileSize);
-	DEL_CLASS(fs);
-	return true;
-}
-
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	IO::ConsoleWriter console;
-	EchoFile((const UTF8Char*)"/sys/class/gpio/export", "71");
-	EchoFile((const UTF8Char*)"/sys/class/gpio/gpio71/direction", "out");
-	EchoFile((const UTF8Char*)"/sys/class/gpio/gpio71/value", "1");
+	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/export"), CSTR("71"));
+	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/gpio71/direction"), CSTR("out"));
+	IO::IOTool::EchoFile(CSTR("/sys/class/gpio/gpio71/value"), CSTR("1"));
 	Sync::Thread::Sleep(3000);
 	consoleWriter = &console;
 

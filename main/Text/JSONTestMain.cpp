@@ -12,7 +12,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt8 *buff;
 	UInt64 flen;
 	
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"test.json", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("test.json"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	flen = fs->GetLength();
 	if (flen > 0)
 	{

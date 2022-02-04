@@ -42,7 +42,7 @@ const UTF8Char *IO::PCIInfo::GetDispName()
 	return this->clsData->dispName;
 }
 
-UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
+UInt16 PCIInfo_ReadI16(Text::CString fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;
@@ -74,6 +74,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
+	UTF8Char *sptr3;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	clsData.dispName = (const UTF8Char*)"PCI Device";
@@ -86,10 +87,10 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 		{
 			if (sptr[0] != '.')
 			{
-				Text::StrConcatC(sptr2, UTF8STRC("/vendor"));
-				clsData.vendorId = PCIInfo_ReadI16(sbuff);
-				Text::StrConcatC(sptr2, UTF8STRC("/device"));
-				clsData.productId = PCIInfo_ReadI16(sbuff);
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/vendor"));
+				clsData.vendorId = PCIInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/device"));
+				clsData.productId = PCIInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
 				if (clsData.vendorId != 0)
 				{
 					NEW_CLASS(pci, IO::PCIInfo(&clsData));

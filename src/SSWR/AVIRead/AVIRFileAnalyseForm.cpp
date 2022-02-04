@@ -16,7 +16,8 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, con
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile(files[i]))
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		if (me->OpenFile({files[i], fileNameLen}))
 			break;
 		i++;
 	}
@@ -30,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileClicked(void *userObj)
 	IO::FileAnalyse::IFileAnalyse::AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->OpenFile(dlg->GetFileName()->v);
+		me->OpenFile(dlg->GetFileName()->ToCString());
 	}
 }
 
@@ -45,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	dlg->SetFileName(sb.ToString());
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		if (me->file->TrimPadding(dlg->GetFileName()->v))
+		if (me->file->TrimPadding(dlg->GetFileName()->ToCString()))
 		{
 		}
 		else
@@ -157,7 +158,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 	me->txtPack->SetText(sb.ToString());
 }
 
-Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(const UTF8Char *fileName)
+Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	IO::FileAnalyse::IFileAnalyse *file;
@@ -168,7 +169,7 @@ Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(const UTF8Char *fileName)
 	{
 		SDEL_CLASS(this->file);
 		this->file = file;
-		this->txtFile->SetText(fileName);
+		this->txtFile->SetText(fileName.v);
 		this->lastPackCount = 0;
 		this->lbPackList->ClearItems();
 		this->lbPackItems->ClearItems();

@@ -179,8 +179,8 @@ namespace Map
 
 		UOSInt GetImageCnt();
 		Media::StaticImage *GetImage(UOSInt index, UInt32 *imgDurMS);
-		OSInt AddImage(const UTF8Char *fileName, Parser::ParserList *parserList); // -1 = fail
-		UOSInt AddImage(const UTF8Char *fileName, Media::ImageList *imgList);
+		OSInt AddImage(Text::CString fileName, Parser::ParserList *parserList); // -1 = fail
+		UOSInt AddImage(Text::CString fileName, Media::ImageList *imgList);
 		
 		UOSInt GetImageFileCnt();
 		Bool GetImageFileInfo(UOSInt index, Map::MapEnv::ImageInfo *info);

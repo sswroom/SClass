@@ -113,7 +113,7 @@ Manage::CPUInfo::CPUInfo()
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		sb.ClearStr();

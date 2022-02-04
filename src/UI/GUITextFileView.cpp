@@ -909,7 +909,7 @@ UI::GUITextFileView::~GUITextFileView()
 	}
 	if (this->fileName)
 	{
-		Text::StrDelNew(this->fileName);
+		this->fileName->Release();
 		this->fileName = 0;
 	}
 	DEL_CLASS(this->evtThread);
@@ -1532,9 +1532,9 @@ Bool UI::GUITextFileView::LoadFile(const UTF8Char *fileName)
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->fileName)
 	{
-		Text::StrDelNew(this->fileName);
+		this->fileName->Release();
 	}
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::NewNotNull(fileName);
 	this->loadNewFile = true;
 	this->fileSize = 0;
 
@@ -1555,7 +1555,7 @@ Bool UI::GUITextFileView::LoadFile(const UTF8Char *fileName)
 	return true;
 }
 
-const UTF8Char *UI::GUITextFileView::GetFileName()
+Text::String *UI::GUITextFileView::GetFileName()
 {
 	return this->fileName;
 }

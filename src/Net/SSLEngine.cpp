@@ -94,12 +94,12 @@ Net::SSLEngine::~SSLEngine()
 	DEL_CLASS(this->threadMut);
 }
 
-Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *keyFile)
+Bool Net::SSLEngine::SetServerCerts(Text::CString certFile, Text::CString keyFile)
 {
 	Parser::FileParser::X509Parser parser;
 	Crypto::Cert::X509File *certASN1 = 0;
 	Crypto::Cert::X509File *keyASN1 = 0;
-	if (certFile)
+	if (certFile.leng > 0)
 	{
 		if ((certASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(certFile)) == 0)
 		{
@@ -111,7 +111,7 @@ Bool Net::SSLEngine::SetServerCerts(const UTF8Char *certFile, const UTF8Char *ke
 			return false;
 		}
 	}
-	if (keyFile)
+	if (keyFile.leng > 0)
 	{
 		if ((keyASN1 = (Crypto::Cert::X509File*)parser.ParseFilePath(keyFile)) == 0)
 		{

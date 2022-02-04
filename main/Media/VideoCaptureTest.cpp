@@ -33,9 +33,9 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		Media::StaticImage *simg;
 		Media::ImageList *imgList;
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-		const UTF8Char *fileName = (const UTF8Char*)"Capture.tif";
+		Text::CString fileName = CSTR("Capture.tif");
 		NEW_CLASS(simg, Media::StaticImage(info.dispWidth, info.dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
-		NEW_CLASS(imgList, Media::ImageList(fileName));
+		NEW_CLASS(imgList, Media::ImageList(fileName.v));
 		imgList->AddImage(simg, 0);
 
 		if (converter)
@@ -43,7 +43,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 			converter->ConvertV2(imgData, simg->data, info.dispWidth, info.dispHeight, info.storeWidth, info.storeHeight, (OSInt)info.storeWidth * 4, frameType, info.ycOfst);
 		}
 		NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		exporter.ExportFile(fs, fileName, imgList, 0);
+		exporter.ExportFile(fs, fileName.v, imgList, 0);
 		DEL_CLASS(fs);
 		DEL_CLASS(imgList);
 	}

@@ -9,8 +9,8 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *fileName = (const UTF8Char*)"/media/sswroom/Extreme SSD/Map/HKTIle.spk";
-	const UTF8Char *destFile = (const UTF8Char*)"/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml";
+	Text::CString fileName = CSTR("/media/sswroom/Extreme SSD/Map/HKTIle.spk");
+	Text::CString destFile = CSTR("/media/sswroom/Extreme SSD/Map/Temp/Temp.otrk2.xml");
 	Parser::ParserList *parsers;
 	IO::StmData::FileData *fd;
 	IO::PackageFile *pkg;

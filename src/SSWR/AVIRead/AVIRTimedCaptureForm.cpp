@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnStartClicked(void *userObj
 
 			sb.ClearStr();
 			me->txtFileName->GetText(&sb);
-			NEW_CLASS(me->timedImageList, Media::TimedImageList(sb.ToString()));
+			NEW_CLASS(me->timedImageList, Media::TimedImageList(sb.ToCString()));
 			if (me->timedImageList->IsError())
 			{
 				DEL_CLASS(me->timedImageList);

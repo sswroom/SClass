@@ -64,9 +64,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Unknown"));
 	}
-	Text::StrConcatC(sptr, UTF8STRC(".txt"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
 
 	sb.ClearStr();

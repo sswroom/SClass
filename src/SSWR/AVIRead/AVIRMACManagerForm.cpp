@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LogFileLoad(dlg->GetFileName()->v);
+		me->LogFileLoad(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -286,7 +286,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 	
 }
 
-void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
@@ -406,7 +406,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(const UTF8Char *fileName)
 			sb.ClearStr();
 		}
 
-		this->txtFile->SetText(fileName);
+		this->txtFile->SetText(fileName.v);
 		DEL_CLASS(reader);
 
 		const Net::MACInfo::MACEntry *entry;

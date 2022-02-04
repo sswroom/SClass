@@ -103,9 +103,9 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	this->InitStream(0, mode, share, buffType);
 }
 
-IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName.v, fileName.leng)
 {
-	if (fileName == 0 || fileName[0] == 0)
+	if (fileName.leng == 0)
 	{
 		this->currPos = 0;
 		this->handle = 0;
@@ -113,7 +113,7 @@ IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare sh
 	}
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	this->handle = clsData;
-	clsData->fileName = Text::String::NewNotNull(fileName);
+	clsData->fileName = Text::String::New(fileName.v, fileName.leng);
 	this->InitStream(0, mode, share, buffType);
 }
 
@@ -388,7 +388,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 	utime((const Char*)clsData->fileName, &t);
 }
 
-UOSInt IO::FileStream::LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal));

@@ -50,7 +50,7 @@ Net::WiFiLogFile::~WiFiLogFile()
 	DEL_CLASS(this->logList);
 }
 
-void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
+void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
@@ -283,7 +283,7 @@ void Net::WiFiLogFile::LoadFile(const UTF8Char *fileName)
 	DEL_CLASS(fs);
 }
 
-Bool Net::WiFiLogFile::StoreFile(const UTF8Char *fileName)
+Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 {
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;

@@ -25,7 +25,7 @@ namespace Map
 		MapManager();
 		~MapManager();
 
-		Map::IMapDrawLayer *LoadLayer(const UTF8Char *fileName, Parser::ParserList *parsers, Map::MapEnv *env);
+		Map::IMapDrawLayer *LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env);
 		void ClearMap(Map::MapEnv *env);
 	};
 }

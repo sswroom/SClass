@@ -4,7 +4,7 @@
 #include "IO/IOTool.h"
 #include "Text/MyString.h"
 
-Bool IO::IOTool::EchoFile(const UTF8Char *fileName, const Char *msg)
+Bool IO::IOTool::EchoFile(Text::CString fileName, Text::CString msg)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::CreateWrite, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -13,8 +13,7 @@ Bool IO::IOTool::EchoFile(const UTF8Char *fileName, const Char *msg)
 		DEL_CLASS(fs);
 		return false;
 	}
-	UOSInt fileSize = Text::StrCharCnt(msg);
-	fs->Write((const UInt8*)msg, fileSize);
+	fs->Write(msg.v, msg.leng);
 	DEL_CLASS(fs);
 	return true;
 }

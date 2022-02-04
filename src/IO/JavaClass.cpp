@@ -5226,7 +5226,7 @@ IO::JavaClass::JavaClass(Text::String *sourceName, const UInt8 *buff, UOSInt buf
 	this->Init(buff, buffSize);
 }
 
-IO::JavaClass::JavaClass(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+IO::JavaClass::JavaClass(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
 {
 	this->Init(buff, buffSize);
 }
@@ -8855,7 +8855,7 @@ UTF8Char *IO::JavaClass::DecompileMethod(UInt16 methodIndex, UTF8Char *nameBuff,
 	return this->GetConstName(nameBuff, ReadMUInt16(&constPtr[1]));
 }
 
-IO::JavaClass *IO::JavaClass::ParseFile(const UTF8Char *fileName)
+IO::JavaClass *IO::JavaClass::ParseFile(Text::CString fileName)
 {
 	IO::FileStream *fs;
 	IO::JavaClass *cls = 0;
@@ -8890,7 +8890,7 @@ IO::JavaClass *IO::JavaClass::ParseBuff(Text::String *sourceName, const UInt8 *b
 	return cls;
 }
 
-IO::JavaClass *IO::JavaClass::ParseBuff(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize)
+IO::JavaClass *IO::JavaClass::ParseBuff(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize)
 {
 	if (buffSize < 26)
 	{

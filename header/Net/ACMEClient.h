@@ -12,7 +12,7 @@ namespace Net
 		Bool accReady;
 
 	public:
-		ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port, const UTF8Char *keyFile);
+		ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port, Text::CString keyFile);
 		~ACMEClient();
 
 		Bool IsError();

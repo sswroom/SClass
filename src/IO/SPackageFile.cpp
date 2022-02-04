@@ -254,7 +254,7 @@ IO::SPackageFile::SPackageFile(IO::SeekableStream *stm, Bool toRelease, Int32 cu
 	this->mstm->Write(hdr, 16);
 }
 
-IO::SPackageFile::SPackageFile(const UTF8Char *fileName)
+IO::SPackageFile::SPackageFile(Text::CString fileName)
 {
 	UInt8 hdr[24];
 	UInt64 flength;
@@ -647,7 +647,7 @@ Bool IO::SPackageFile::Commit()
 	return succ;
 }
 
-Bool IO::SPackageFile::OptimizeFile(const UTF8Char *newFile)
+Bool IO::SPackageFile::OptimizeFile(Text::CString newFile)
 {
 	UInt8 hdr[24];
 	if ((this->flags & 2) == 0)

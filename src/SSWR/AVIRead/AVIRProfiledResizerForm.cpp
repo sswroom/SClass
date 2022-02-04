@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedDelProfile(void 
 		{
 			me->resizer->RemoveProfile(i);
 		}
-		me->resizer->SaveProfile(0);
+		me->resizer->SaveProfile(CSTR_NULL);
 	}
 }
 
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	{
 		me->lbProfile->AddItem({sbuff, Text::StrCharCnt(sbuff)}, 0);
 		me->txtProfileName->SetText((const UTF8Char*)"");
-		me->resizer->SaveProfile(0);
+		me->resizer->SaveProfile(CSTR_NULL);
 	}
 	else
 	{

@@ -77,7 +77,7 @@ namespace SSWR
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items);
 			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url);
 
-			virtual Bool AddDataFile(const UTF8Char *fileName);
+			virtual Bool AddDataFile(Text::CString fileName);
 			virtual Bool DelDataFile(DataFileInfo *dataFile);
 			virtual Bool GetGPSPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon);
 			virtual Map::GPSTrack *OpenGPSTrack(DataFileInfo *dataFile);

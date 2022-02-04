@@ -924,7 +924,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 {
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -970,7 +970,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 {
 	Text::UTF8Reader *reader;
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -1023,7 +1023,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 	Net::SocketUtil::AddressInfo addr;
 	UOSInt i;
 	UTF8Char *sarr[2];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/hosts", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/hosts"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
@@ -1108,7 +1108,7 @@ UOSInt Net::OSSocketFactory::GetConnInfoList(Data::ArrayList<Net::ConnectionInfo
 	UInt32 gw;
 	UOSInt i;
 	UTF8Char *sarr[4];
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/route", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/route"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -1204,7 +1204,7 @@ Bool Net::OSSocketFactory::GetUDPInfo(UDPInfo *info)
 	return true;
 }
 
-UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	IO::FileStream *fs;
@@ -1306,7 +1306,7 @@ UOSInt OSSocketFactory_LoadPortInfo(Data::ArrayList<Net::SocketFactory::PortInfo
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	IO::FileStream *fs;
@@ -1408,7 +1408,7 @@ UOSInt OSSocketFactory_LoadPortInfov4(Data::ArrayList<Net::SocketFactory::PortIn
 	return ret;
 }
 
-UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, const UTF8Char *path, Net::SocketFactory::ProtocolType protoType)
+UOSInt OSSocketFactory_LoadPortInfov6(Data::ArrayList<Net::SocketFactory::PortInfo2*> *portInfoList, Text::CString path, Net::SocketFactory::ProtocolType protoType)
 {
 	UOSInt ret = 0;
 	IO::FileStream *fs;
@@ -1520,15 +1520,15 @@ UOSInt Net::OSSocketFactory::QueryPortInfos(Data::ArrayList<Net::SocketFactory::
 	UOSInt retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
-		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, (const UTF8Char*)"/proc/net/tcp", PT_TCP);
+		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, CSTR("/proc/net/tcp"), PT_TCP);
 	}
 	if (protoType & Net::SocketFactory::PT_UDP)
 	{
-		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, (const UTF8Char*)"/proc/net/udp", PT_UDP);
+		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, CSTR("/proc/net/udp"), PT_UDP);
 	}
 	if (protoType & Net::SocketFactory::PT_RAW)
 	{
-		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, (const UTF8Char*)"/proc/net/raw", PT_RAW);
+		retCnt += OSSocketFactory_LoadPortInfo(portInfoList, CSTR("/proc/net/raw"), PT_RAW);
 	}
 	return retCnt;
 }
@@ -1547,27 +1547,27 @@ UOSInt Net::OSSocketFactory::QueryPortInfos2(Data::ArrayList<Net::SocketFactory:
 	UOSInt retCnt = 0;
 	if (protoType & Net::SocketFactory::PT_TCP)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, (const UTF8Char*)"/proc/net/tcp", PT_TCP);
+		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, CSTR("/proc/net/tcp"), PT_TCP);
 	}
 	if (protoType & Net::SocketFactory::PT_TCP6)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, (const UTF8Char*)"/proc/net/tcp6", PT_TCP6);
+		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, CSTR("/proc/net/tcp6"), PT_TCP6);
 	}
 	if (protoType & Net::SocketFactory::PT_UDP)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, (const UTF8Char*)"/proc/net/udp", PT_UDP);
+		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, CSTR("/proc/net/udp"), PT_UDP);
 	}
 	if (protoType & Net::SocketFactory::PT_UDP6)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, (const UTF8Char*)"/proc/net/udp6", PT_UDP6);
+		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, CSTR("/proc/net/udp6"), PT_UDP6);
 	}
 	if (protoType & Net::SocketFactory::PT_RAW)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, (const UTF8Char*)"/proc/net/raw", PT_RAW);
+		retCnt += OSSocketFactory_LoadPortInfov4(portInfoList, CSTR("/proc/net/raw"), PT_RAW);
 	}
 	if (protoType & Net::SocketFactory::PT_RAW6)
 	{
-		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, (const UTF8Char*)"/proc/net/raw6", PT_RAW6);
+		retCnt += OSSocketFactory_LoadPortInfov6(portInfoList, CSTR("/proc/net/raw6"), PT_RAW6);
 	}
 	return retCnt;
 }

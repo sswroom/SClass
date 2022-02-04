@@ -24,9 +24,9 @@ Map::MapManager::~MapManager()
 	DEL_CLASS(layerArr);
 }
 
-Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser::ParserList *parsers, Map::MapEnv *env)
+Map::IMapDrawLayer *Map::MapManager::LoadLayer(Text::CString fileName, Parser::ParserList *parsers, Map::MapEnv *env)
 {
-	Map::MapManager::MapLayerInfo *info = this->layerArr->Get(fileName);
+	Map::MapManager::MapLayerInfo *info = this->layerArr->Get(fileName.v);
 	if (info)
 	{
 		if (info->envList->IndexOf(env) == INVALID_INDEX)
@@ -54,7 +54,7 @@ Map::IMapDrawLayer *Map::MapManager::LoadLayer(const UTF8Char *fileName, Parser:
 	NEW_CLASS(info->envList, Data::ArrayList<Map::MapEnv*>());
 	info->layer = lyr;
 	info->envList->Add(env);
-	this->layerArr->Put(fileName, info);
+	this->layerArr->Put(fileName.v, info);
 	return lyr;
 }
 

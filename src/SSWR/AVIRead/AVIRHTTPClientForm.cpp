@@ -170,7 +170,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			IO::FileStream *fs;
 			UInt64 fileLength;
 			UInt64 ofst;
-			NEW_CLASS(fs, IO::FileStream(s->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(s->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			fileLength = fs->GetLength();
 			if (fileLength > 0 && fileLength < 104857600)
 			{

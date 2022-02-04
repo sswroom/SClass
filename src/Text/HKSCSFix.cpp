@@ -16,9 +16,9 @@ Text::HKSCSFix::HKSCSFix()
 	IO::Path::GetProcessFileName(fileName);
 	sptr = IO::Path::GetFileDirectory(dir, fileName);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(sptr, UTF8STRC("HKSCSTab.dat"));
+	sptr = Text::StrConcatC(sptr, UTF8STRC("HKSCSTab.dat"));
 	IO::FileStream *file;
-	NEW_CLASS(file, IO::FileStream(dir, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(file, IO::FileStream({dir, (UOSInt)(sptr - dir)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!file->IsError())
 	{
 		if (file->GetLength() == 32768)

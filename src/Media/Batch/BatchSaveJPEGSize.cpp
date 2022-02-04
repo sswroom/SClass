@@ -41,7 +41,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	Media::Image *img;
 
 	sptr = Text::StrConcat(sbuff, fileId);
-	Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
+	sptr = Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
 
 	img = imgList->GetImage(0, 0);
 	targetSize = (img->info->dispWidth * img->info->dispHeight * img->info->storeBPP >> 3) / this->sizePercent;
@@ -108,7 +108,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 		}
 	}
 
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	exporter->SetParamInt32(param, 0, currIndex);
 	exporter->ExportFile(fs, sbuff, imgList, param);
 	DEL_CLASS(fs);

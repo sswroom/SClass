@@ -803,7 +803,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					if (iconSt == 0)
 					{
 						iconSt = MemAlloc(IconStatus, 1);
-						iconSt->dimg = deng->LoadImage(icon->fileName->v);
+						iconSt->dimg = deng->LoadImage(icon->fileName->ToCString());
 						iconStatus.Put(icon->fileName, iconSt);
 					}
 

@@ -3,6 +3,7 @@
 #include "Data/DateTime.h"
 #include "IO/FileMode.h"
 #include "IO/SeekableStream.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -27,7 +28,7 @@ namespace IO
 		void InitStream(const WChar *fileName, FileMode mode, FileShare share, BufferType buffType);
 	public:
 		FileStream(Text::String *fileName, FileMode mode, FileShare share, BufferType buffType);
-		FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, BufferType buffType);
+		FileStream(Text::CString fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
@@ -50,7 +51,7 @@ namespace IO
 
 		static IO::FileStream *CreateNamedPipe(const UTF8Char *pipeName, UInt32 buffSize);
 		static IO::FileStream *OpenNamedPipe(const UTF8Char *server, const UTF8Char *pipeName);
-		static UOSInt LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize);
+		static UOSInt LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize);
 	};
 }
 #endif

@@ -62,6 +62,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 	Text::PString sarr2[2];
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -88,18 +89,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
 			i = currURL->LastIndexOf('/');
-			Text::StrConcatC(sptr, &currURL->v[i + 1], currURL->leng - i - 1);
-			i = Text::StrIndexOfChar(sptr, '?');
+			sptrEnd = Text::StrConcatC(sptr, &currURL->v[i + 1], currURL->leng - i - 1);
+			i = Text::StrIndexOfCharC(sptr, (UOSInt)(sptrEnd - sptr), '?');
 			if (i == 0)
 			{
-				Text::StrConcatC(sptr, UTF8STRC("download.dat"));
+				sptrEnd = Text::StrConcatC(sptr, UTF8STRC("download.dat"));
 			}
 			else if (i != INVALID_INDEX)
 			{
 				sptr[i] = 0;
+				sptrEnd = &sptr[i];
 			}
 			Net::HTTPClient *cli;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), me->ssl, CSTR_NULL, false, currURL->StartsWith(UTF8STRC("https://")));
 			cli->Connect(currURL->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, &me->respTimeDNS, &me->respTimeConn, false);
 			if (currHeader)

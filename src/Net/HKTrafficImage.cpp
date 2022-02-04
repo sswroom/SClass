@@ -120,7 +120,7 @@ Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UInt8 
 	this->Init(encFact, buff, buffSize);
 }
 
-Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, const UTF8Char *fileName)
+Net::HKTrafficImage::HKTrafficImage(Text::EncodingFactory *encFact, Text::CString fileName)
 {
 	NEW_CLASS(this->groupMap, Data::FastStringMap<GroupInfo*>());
 	IO::FileStream *fs;

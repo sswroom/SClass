@@ -38,7 +38,7 @@ namespace IO
 		virtual SupportType IsObjectSupported(IO::ParsedObject *pobj) = 0;
 		virtual Bool GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8Char *fileNameBuff) = 0;
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param) = 0;
-		Bool ExportNewFile(const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
+		Bool ExportNewFile(Text::CString fileName, IO::ParsedObject *pobj, void *param);
 
 		virtual void SetCodePage(UInt32 codePage);
 		virtual void SetEncFactory(Text::EncodingFactory *encFact);

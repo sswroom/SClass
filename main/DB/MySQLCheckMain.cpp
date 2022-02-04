@@ -146,7 +146,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(".log"));
 			IO::FileStream *fs;
 			Text::UTF8Writer *writer;
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);

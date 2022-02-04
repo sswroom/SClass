@@ -528,7 +528,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::PNGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::PNGFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

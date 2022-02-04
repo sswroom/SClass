@@ -96,7 +96,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			if (time.GetDay() != lastVal)
 			{
 				newFile = true;
-				GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time);
 			}
 		}
 		else if (logStyle == ILogHandler::LOG_TYPE_PER_MONTH)
@@ -104,7 +104,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			if (time.GetMonth() != lastVal)
 			{
 				newFile = true;
-				GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time);
 			}
 		}
 		else if (logStyle == ILogHandler::LOG_TYPE_PER_YEAR)
@@ -112,7 +112,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			if (time.GetYear() != lastVal)
 			{
 				newFile = true;
-				GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time);
 			}
 		}
 		else if (logStyle == ILogHandler::LOG_TYPE_PER_HOUR)
@@ -120,7 +120,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			if (lastVal != (time.GetDay() * 24 + time.GetHour()))
 			{
 				newFile = true;
-				GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time);
 			}
 		}
 
@@ -131,7 +131,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			DEL_CLASS(cstm);
 			DEL_CLASS(fileStm);
 
-			NEW_CLASS(fileStm, FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
 			NEW_CLASS(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
@@ -206,6 +206,7 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 	Char cbuff[256];
 	UOSInt i;
 	NEW_CLASS(mut, Sync::Mutex());
@@ -248,9 +249,9 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	GetNewName(buff, &dt);
+	sptr = GetNewName(buff, &dt);
 
-	NEW_CLASS(fileStm, FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
 	NEW_CLASS(log, Text::UTF8Writer(cstm));
 	log->WriteSignature();

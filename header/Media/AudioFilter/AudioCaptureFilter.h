@@ -35,7 +35,7 @@ namespace Media
 			virtual UInt32 SeekToTime(UInt32 time); //ms, ret actual time
 			virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size
 
-			Bool StartCapture(const UTF8Char *fileName);
+			Bool StartCapture(Text::CString fileName);
 			void StopCapture();
 		};
 	}

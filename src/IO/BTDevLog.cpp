@@ -132,7 +132,7 @@ void IO::BTDevLog::ClearList()
 	this->pubDevs->Clear();
 }
 
-Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
+Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
@@ -222,7 +222,7 @@ Bool IO::BTDevLog::LoadFile(const UTF8Char *fileName)
 	return true;
 }
 
-Bool IO::BTDevLog::StoreFile(const UTF8Char *fileName)
+Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;

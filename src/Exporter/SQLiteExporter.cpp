@@ -120,7 +120,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 			{
 				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
-				NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(debugFS, IO::FileStream(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 				debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
 				DEL_CLASS(debugWriter);
@@ -152,7 +152,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 
 					IO::FileStream *debugFS;
 					Text::UTF8Writer *debugWriter;
-					NEW_CLASS(debugFS, IO::FileStream((const UTF8Char*)"Debug.txt", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(debugFS, IO::FileStream(CSTR("Debug.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(debugWriter, Text::UTF8Writer(debugFS));
 					debugWriter->WriteLineC(sql.ToString(), sql.GetLength());
 					debugWriter->WriteLineC(sb.ToString(), sb.GetLength());

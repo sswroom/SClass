@@ -27,7 +27,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i = 1;
 		while (i < argc)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(argv[i], false));
+			NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
 			succ = frm->ParseFile(fd);
 			DEL_CLASS(fd);
 			if (succ)

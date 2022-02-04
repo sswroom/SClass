@@ -920,7 +920,7 @@ Bool IO::FileAnalyse::JPGFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::JPGFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

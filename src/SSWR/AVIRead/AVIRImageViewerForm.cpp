@@ -28,7 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRImageViewerForm::OnFileDrop(void *userObj, con
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
 		succ = me->ParseFile(fd);
 		DEL_CLASS(fd);
 		if (succ)

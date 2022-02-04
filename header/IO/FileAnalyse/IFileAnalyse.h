@@ -26,7 +26,7 @@ namespace IO
 
 			virtual Bool IsError() = 0;
 			virtual Bool IsParsing() = 0;
-			virtual Bool TrimPadding(const UTF8Char *outputFile) = 0;
+			virtual Bool TrimPadding(Text::CString outputFile) = 0;
 
 			static IFileAnalyse *AnalyseFile(IO::IStreamData *fd);
 			static void AddFilters(IO::IFileSelector *selector);

@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userOb
 	me->txtFileName->GetText(&sb);
 	if (ip && sb.GetLength() > 0)
 	{
-		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToString(), (const UTF8Char*)"AVIRead"));
+		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), (const UTF8Char*)"AVIRead"));
 		if (me->capture->IsError())
 		{
 			DEL_CLASS(me->capture);

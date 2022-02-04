@@ -22,7 +22,7 @@ namespace Text
 		virtual IO::ParserType GetParserType();
 
 		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, const UTF8Char *contentType, UOSInt typeLen);
-		static Text::IMIMEObj *ParseFromFile(const UTF8Char *fileName);
+		static Text::IMIMEObj *ParseFromFile(Text::CString fileName);
 	};
 }
 #endif

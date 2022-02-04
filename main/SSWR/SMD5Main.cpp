@@ -147,7 +147,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 		Bool succ = true;
 		IO::StmData::FileData *fd;
 		IO::FileCheck *fileChk;
-		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
+		NEW_CLASS(fd, IO::StmData::FileData({fileName, fileNameLen}, false));
 		fileChk = (IO::FileCheck *)parser.ParseFile(fd, 0, IO::ParserType::FileCheck);
 		DEL_CLASS(fd);
 		if (fileChk == 0)
@@ -190,7 +190,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 			Exporter::MD5Exporter exporter;
 			sb.AppendC(fileName, fileNameLen);
 			sb.AppendC(UTF8STRC(".md5"));
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			exporter.ExportFile(fs, sb.ToString(), fileChk, 0);
 			DEL_CLASS(fs);
 			DEL_CLASS(fileChk);

@@ -329,7 +329,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				sptr = item->fd->GetShortName().ConcatTo(sptr);
 			}
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
 
 			hash->Clear();
@@ -362,7 +362,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				IO::StmData::FileData *fd;
 				Text::StringBuilderUTF8 sb;
-				NEW_CLASS(fd, IO::StmData::FileData(sbuff, true));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, true));
 				sb.Append(this->sourceName);
 				sb.AppendC(UTF8STRC("\\"));
 				if (item->name)
@@ -649,7 +649,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 			UOSInt resSize;
 			UOSInt i;
 			Bool diff = false;
-			NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
 
 			hash->Clear();
@@ -694,7 +694,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 				if (succ)
 				{
 					IO::FileStream *fs;
-					NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					succ = (fs->Write(tmpBuff, (UOSInt)fileSize) == fileSize);
 					DEL_CLASS(fs);
 				}
@@ -705,7 +705,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 				UInt8 *tmpBuff = MemAlloc(UInt8, 1048576);
 				UInt64 currOfst = 0;
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+				NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				while (currOfst < fileSize)
 				{
 					if ((fileSize - currOfst) >= 1048576)

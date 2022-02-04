@@ -148,7 +148,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 						{
 							Text::StringBuilderUTF8 sb;
 							rdr->GetStr(1, &sb);
-							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->v, sb.ToString(), sb.GetLength(), 0);
+							csys = Math::CoordinateSystemManager::ParsePRJBuff(fd->GetFullFileName()->ToCString(), sb.ToString(), sb.GetLength(), 0);
 							if (csys)
 							{
 								srid = csys->GetSRID();

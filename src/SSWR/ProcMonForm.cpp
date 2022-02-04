@@ -91,14 +91,15 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 void SSWR::ProcMonForm::LoadProgList()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char *sarr[2];
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(fs, 65001));
@@ -128,6 +129,7 @@ void SSWR::ProcMonForm::LoadProgList()
 void SSWR::ProcMonForm::SaveProgList()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Text::StringBuilderUTF8 sb;
@@ -136,8 +138,8 @@ void SSWR::ProcMonForm::SaveProgList()
 	ProgInfo *prog;
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer));
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	i = 0;
 	j = this->progList->GetCount();

@@ -835,7 +835,7 @@ Bool IO::FileAnalyse::RAR5FileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::RAR5FileAnalyse::TrimPadding(Text::CString outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

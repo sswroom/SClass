@@ -10,7 +10,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	const UTF8Char *fileName = 0;
+	Text::String *fileName = 0;
 	DataInfo *info = 0;
 	Bool found;
 	UOSInt i;
@@ -28,7 +28,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			Sync::MutexUsage mutUsage(state->me->reqMut);
 			if (state->me->fileNames->HasItems())
 			{
-				fileName = (const UTF8Char*)state->me->fileNames->Get();
+				fileName = state->me->fileNames->Get();
 				info = 0;
 				found = true;
 				state->processing = true;
@@ -36,7 +36,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 			else if (state->me->datas->HasItems())
 			{
 				fileName = 0;
-				info = (DataInfo*)state->me->datas->Get();
+				info = state->me->datas->Get();
 				found = true;
 			}
 			else
@@ -67,7 +67,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 						}
 						mutUsage.EndUse();
 						
-						sptr = Text::StrConcat(sbuff, fileName);
+						sptr = fileName->ConcatTo(sbuff);
 						i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 						if (i != INVALID_INDEX)
 						{
@@ -86,7 +86,7 @@ UInt32 __stdcall Media::Batch::BatchLoader::ThreadProc(void *userObj)
 					mutUsage.EndUse();
 				}
 
-				Text::StrDelNew(fileName);
+				fileName->Release();
 			}
 			else
 			{
@@ -137,8 +137,8 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 	this->hdlr = hdlr;
 	NEW_CLASS(this->ioMut, Sync::Mutex());
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->fileNames, Data::SyncLinkedList());
-	NEW_CLASS(this->datas, Data::SyncLinkedList());
+	NEW_CLASS(this->fileNames, Data::SyncCircularBuff<Text::String*>());
+	NEW_CLASS(this->datas, Data::SyncCircularBuff<DataInfo*>());
 	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.Batch.BatchLoader.mainEvt"));
 
 	this->nextThread = 0;
@@ -215,14 +215,14 @@ Media::Batch::BatchLoader::~BatchLoader()
 	DEL_CLASS(this->ioMut);
 	DEL_CLASS(this->reqMut);
 
-	const UTF8Char *fileName;
-	while ((fileName = (const UTF8Char*)this->fileNames->Get()) != 0)
+	Text::String *fileName;
+	while ((fileName = this->fileNames->Get()) != 0)
 	{
-		Text::StrDelNew(fileName);
+		fileName->Release();
 	}
 	DEL_CLASS(this->fileNames);
 
-	while ((data = (DataInfo*)this->datas->Get()) != 0)
+	while ((data = this->datas->Get()) != 0)
 	{
 		DEL_CLASS(data->data);
 		Text::StrDelNew(data->fileId);
@@ -235,7 +235,7 @@ Media::Batch::BatchLoader::~BatchLoader()
 void Media::Batch::BatchLoader::AddFileName(const UTF8Char *fileName)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
-	this->fileNames->Put((void*)Text::StrCopyNew(fileName));
+	this->fileNames->Put(Text::String::NewNotNull(fileName));
 	this->threadStates[this->nextThread].evt->Set();
 	this->nextThread = (this->nextThread + 1) % this->threadCnt;
 	mutUsage.EndUse();

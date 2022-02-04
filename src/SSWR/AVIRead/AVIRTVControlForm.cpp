@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	}
 	if (me->chkLogFile->IsChecked())
 	{
-		NEW_CLASS(me->port, IO::StreamLogger(port, true, (const UTF8Char*)"TVRecv.dat", (const UTF8Char*)"TVSend.dat"));
+		NEW_CLASS(me->port, IO::StreamLogger(port, true, CSTR("TVRecv.dat"), CSTR("TVSend.dat")));
 	}
 	else
 	{

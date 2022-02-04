@@ -420,6 +420,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	UTF8Char filePath[512];
 	UTF8Char url[512];
 	UTF8Char *sptr;
+	UTF8Char *filePathEnd;
 	Net::HTTPClient *cli;
 	IO::FileStream *fs;
 	IO::StmData::FileData *fd;
@@ -470,8 +471,8 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	IO::Path::CreateDirectory(filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
 	sptr = Text::StrInt32(sptr, imgX);
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
+	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		IO::ParserType pt;
@@ -500,7 +501,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrInt32(sptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
 		fs->Write(dataBuff, readSize);
@@ -508,7 +509,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	DEL_CLASS(cli);
 	DEL_CLASS(fs);
 
-	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(filePathEnd - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		IO::ParserType pt;
@@ -599,7 +600,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".dat"));
-	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(u8ptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		if (blockX)
@@ -624,7 +625,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
-	NEW_CLASS(fs, IO::FileStream(filePath, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(u8ptr - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
 		fs->Write(dataBuff, readSize);
@@ -632,7 +633,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	DEL_CLASS(cli);
 	DEL_CLASS(fs);
 
-	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
+	NEW_CLASS(fd, IO::StmData::FileData({filePath, (UOSInt)(u8ptr - filePath)}, false));
 	if (fd->GetDataSize() > 0)
 	{
 		if (blockX)

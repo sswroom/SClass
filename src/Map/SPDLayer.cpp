@@ -23,6 +23,7 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::FileStream *file;
 	IO::BufferedInputStream *bstm;
 	sptr = layerName.ConcatTo(fname);
@@ -44,8 +45,8 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 	this->layerName = Text::StrCopyNew(fname);
 	NEW_CLASS(this->mut, Sync::Mutex());
 
-	Text::StrConcatC(sptr, UTF8STRC(".spb"));
-	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spb"));
+	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 	if (!file->IsError())
 	{
@@ -68,8 +69,8 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 	DEL_CLASS(bstm);
 	DEL_CLASS(file);
 
-	Text::StrConcatC(sptr, UTF8STRC(".spi"));
-	NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spi"));
+	NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 	if (!file->IsError())
 	{
 		i = (UOSInt)file->GetLength();
@@ -82,8 +83,8 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 	missFile = false;
 	if (!IsError())
 	{
-		Text::StrConcatC(sptr, UTF8STRC(".spd"));
-		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".spd"));
+		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!file->IsError())
 		{
 			file->Read((UInt8*)&i, 4);
@@ -95,8 +96,8 @@ Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName,
 		}
 		DEL_CLASS(file);
 
-		Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(file, IO::FileStream(fname, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		sptr2 = Text::StrConcatC(sptr, UTF8STRC(".sps"));
+		NEW_CLASS(file, IO::FileStream({fname, (UOSInt)(sptr2 - fname)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		NEW_CLASS(bstm, IO::BufferedInputStream(file, 65536));
 		if (!file->IsError())
 		{
@@ -185,7 +186,7 @@ UOSInt Map::SPDLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameA
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while (k < this->nblks)
 		{
@@ -320,7 +321,7 @@ UOSInt Map::SPDLayer::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 		IO::FileStream *cis;
 		sptr = Text::StrConcat(fileName, this->layerName);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sps"));
-		NEW_CLASS(cis, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(cis, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		
 		while ((UOSInt)k < this->nblks)
 		{
@@ -542,7 +543,7 @@ void *Map::SPDLayer::BeginGetObject()
 //	this->mut->Lock();
 	sptr = Text::StrConcat(fileName, this->layerName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".spd"));
-	NEW_CLASS(cip, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(cip, IO::FileStream({fileName, (UOSInt)(sptr - fileName)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	return cip;
 }
 

@@ -144,7 +144,7 @@ Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::
 	{3857, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1, "WGS 84"}
 };
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(const UTF8Char *fileName)
+Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(Text::CString fileName)
 {
 	UInt8 buff[512];
 	UOSInt buffSize;
@@ -395,15 +395,16 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	}
 	Math::ProjectedCoordinateSystem *csys;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sbuff, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sbuff, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	DEL_CLASS(gcsys);
@@ -428,35 +429,36 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 		return 0;
 	}
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Math::GeographicCoordinateSystem *csys;
-	Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
+	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(&data, datum, (const UTF8Char*)datum->datumName, &ellipsoid, spheroid);
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sbuff, epsgId, (const UTF8Char*)geogcs->name, &data, geogcs->primem, geogcs->unit));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, epsgId, (const UTF8Char*)geogcs->name, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(const UTF8Char *name)
+Math::CoordinateSystem *Math::CoordinateSystemManager::CreateFromName(Text::CString name)
 {
-	if (Text::StrStartsWith(name, (const UTF8Char*)"EPSG:"))
+	if (name.StartsWith(UTF8STRC("EPSG:")))
 	{
-		UInt32 epsgId = Text::StrToUInt32(&name[5]);
+		UInt32 epsgId = Text::StrToUInt32(&name.v[5]);
 		return SRCreateCSys(epsgId);
 	}
-	else if (Text::StrStartsWith(name, (const UTF8Char*)"urn:ogc:def:crs:EPSG::"))
+	else if (name.StartsWith(UTF8STRC("urn:ogc:def:crs:EPSG::")))
 	{
-		UInt32 epsgId = Text::StrToUInt32(&name[22]);
+		UInt32 epsgId = Text::StrToUInt32(&name.v[22]);
 		return SRCreateCSys(epsgId);
 	}
-	else if (Text::StrEquals(name, (const UTF8Char*)"urn:ogc:def:crs:OGC:1.3:CRS84"))
+	else if (name.Equals(UTF8STRC("urn:ogc:def:crs:OGC:1.3:CRS84")))
 	{
 		return CreateGeogCoordinateSystem(name, Math::CoordinateSystemManager::GeoCoordSysTypeGetName(Math::CoordinateSystemManager::GCST_WGS84).v);
 	}
 	return 0;
 }
 
-Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(const UTF8Char *sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
+Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize)
 {
 	UOSInt i;
 	UOSInt j;
@@ -983,10 +985,10 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	Text::CString name = Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst);
 	if (name.v == 0)
 		return 0;
-	return CreateProjCoordinateSystem(name.v, name.v);
+	return CreateProjCoordinateSystem(name, name.v);
 }
 
-Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *projName)
+Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordinateSystem(Text::CString sourceName, const UTF8Char *projName)
 {
 	const Math::CoordinateSystemManager::ProjectedCSysInfo *coord = GetProjCoordinateSystemInfo(projName);
 	Math::GeographicCoordinateSystem *gcs;
@@ -1067,10 +1069,10 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	Text::CString name = Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst);
 	if (name.v == 0)
 		return 0;
-	return CreateGeogCoordinateSystem(name.v, name.v);
+	return CreateGeogCoordinateSystem(name, name.v);
 }
 
-Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *geoName)
+Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoordinateSystem(Text::CString sourceName, const UTF8Char *geoName)
 {
 	const Math::CoordinateSystemManager::GeographicCSysInfo *coord = GetGeogCoordinateSystemInfo(geoName);
 	Math::GeographicCoordinateSystem *csys;

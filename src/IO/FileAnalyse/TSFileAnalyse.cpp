@@ -422,7 +422,7 @@ Bool IO::FileAnalyse::TSFileAnalyse::IsParsing()
 	return false;
 }
 
-Bool IO::FileAnalyse::TSFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::TSFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

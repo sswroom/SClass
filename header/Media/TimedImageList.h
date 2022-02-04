@@ -31,7 +31,7 @@ namespace Media
 
 		void ScanFile();
 	public:
-		TimedImageList(const UTF8Char *fileName);
+		TimedImageList(Text::CString fileName);
 		~TimedImageList();
 
 		Bool IsError();

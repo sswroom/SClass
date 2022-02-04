@@ -23,43 +23,43 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
-		cfg = IO::IniFile::Parse(sbuff, 0);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
+		cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		break;
 	case Text::VSProject::VSV_VS8:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
-		cfg= IO::IniFile::Parse(sbuff, 0);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
+		cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		break;
 	case Text::VSProject::VSV_VS9:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS10:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS11:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS12:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS6:
@@ -306,43 +306,43 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	switch (vsv)
 	{
 	case Text::VSProject::VSV_VS71:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
-		cfg = IO::IniFile::Parse(sbuff, 0);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\7.1\\VCComponents.dat"));
+		cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		break;
 	case Text::VSProject::VSV_VS8:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
-		cfg= IO::IniFile::Parse(sbuff, 0);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\8.0\\VCComponents.dat"));
+		cfg= IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		break;
 	case Text::VSProject::VSV_VS9:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\9.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\9.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS10:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\10.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\10.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS11:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\11.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\11.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS12:
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
-		if ((cfg = IO::IniFile::Parse(sbuff, 0)) == 0)
+		sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VisualStudio\\12.0\\VCComponents.dat"));
+		if ((cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0)) == 0)
 		{
-			Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
-			cfg = IO::IniFile::Parse(sbuff, 0);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\\Microsoft\\VCExpress\\12.0\\VCComponents.dat"));
+			cfg = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		break;
 	case Text::VSProject::VSV_VS6:

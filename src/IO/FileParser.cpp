@@ -5,14 +5,14 @@
 #include "IO/StmData/FileData.h"
 #include "Text/MyString.h"
 
-IO::ParsedObject *IO::FileParser::ParseFilePath(const UTF8Char *filePath)
+IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 {
 	IO::PackageFile *pkg = 0;
 	IO::StmData::FileData *fd;
-	UOSInt i = Text::StrLastIndexOfChar(filePath, IO::Path::PATH_SEPERATOR);
+	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
-		Text::String *dir = Text::String::New(filePath, i);
+		Text::String *dir = Text::String::New(filePath.v, i);
 		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
 		dir->Release();
 	}

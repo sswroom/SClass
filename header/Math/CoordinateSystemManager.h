@@ -149,7 +149,7 @@ namespace Math
 		static ProjectedCSysInfo pcsysList[];
 
 	public:
-		static Math::CoordinateSystem *ParsePRJFile(const UTF8Char *fileName);
+		static Math::CoordinateSystem *ParsePRJFile(Text::CString fileName);
 
 		static const SpatialRefInfo *SRGetSpatialRef(UInt32 epsgId);
 		static const SpatialRefInfo *SRGetSpatialRefPrev(UInt32 epsgId);
@@ -162,21 +162,21 @@ namespace Math
 		static Math::ProjectedCoordinateSystem *SRCreateProjCSys(UInt32 epsgId);
 		static Math::GeographicCoordinateSystem *SRCreateGeogCSys(UInt32 epsgId);
 
-		static Math::CoordinateSystem *CreateFromName(const UTF8Char *name);
-		static Math::CoordinateSystem *ParsePRJBuff(const UTF8Char *sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
+		static Math::CoordinateSystem *CreateFromName(Text::CString name);
+		static Math::CoordinateSystem *ParsePRJBuff(Text::CString sourceName, UTF8Char *prjBuff, UOSInt buffSize, UOSInt *parsedSize);
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(UInt32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
 		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const UTF8Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
-		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(const UTF8Char *sourceNmae, const UTF8Char *projName);
+		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CString sourceNmae, const UTF8Char *projName);
 		static UOSInt GetProjCoordinateSystems(Data::ArrayList<ProjCoordSysType> *csysList);
 		static UOSInt GetProjCoordinateSystemNames(Data::ArrayList<const UTF8Char *> *nameList);
 		static const ProjectedCSysInfo *GetProjCoordinateSystemInfo(const UTF8Char *projName);
 
 		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystemDefName(GeoCoordSysType gcst);
-		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(const UTF8Char *sourceName, const UTF8Char *geoName);
+		static Math::GeographicCoordinateSystem *CreateGeogCoordinateSystem(Text::CString sourceName, const UTF8Char *geoName);
 		static UOSInt GetGeogCoordinateSystems(Data::ArrayList<GeoCoordSysType> *csysList);
 		static const GeographicCSysInfo *GetGeogCoordinateSystemInfo(const UTF8Char *geoName);
 	private:

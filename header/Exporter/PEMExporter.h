@@ -17,7 +17,7 @@ namespace Exporter
 		virtual Bool ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param);
 
 		static Bool ExportStream(IO::SeekableStream *stm, Crypto::Cert::X509File *x509);
-		static Bool ExportFile(const UTF8Char *fileName, Crypto::Cert::X509File *x509);
+		static Bool ExportFile(Text::CString fileName, Crypto::Cert::X509File *x509);
 	};
 }
 #endif

@@ -371,7 +371,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 	return 0;
 }
 
-Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTool*> *dbList)
+Bool DB::DBManager::StoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool*> *dbList)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -418,7 +418,7 @@ Bool DB::DBManager::StoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTo
 	return true;
 }
 
-Bool DB::DBManager::RestoreConn(const UTF8Char *fileName, Data::ArrayList<DB::DBTool*> *dbList, IO::LogTool *log, Net::SocketFactory *sockf)
+Bool DB::DBManager::RestoreConn(Text::CString fileName, Data::ArrayList<DB::DBTool*> *dbList, IO::LogTool *log, Net::SocketFactory *sockf)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

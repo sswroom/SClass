@@ -80,6 +80,7 @@ UTF8Char *IO::FileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 	Char cbuff[256];
 	if (dateFormat)
 	{
@@ -119,9 +120,9 @@ void IO::FileLog::Init(LogType style, LogGroup groupStyle, const Char *dateForma
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	GetNewName(buff, &dt);
+	sptr = GetNewName(buff, &dt);
 
-	NEW_CLASS(fileStm, FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
 }
@@ -181,7 +182,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		if (time->GetDay() != lastVal)
 		{
 			newFile = true;
-			GetNewName(buff, time);
+			sptr = GetNewName(buff, time);
 		}
 	}
 	else if (logStyle == ILogHandler::LOG_TYPE_PER_MONTH)
@@ -189,7 +190,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		if (time->GetMonth() != lastVal)
 		{
 			newFile = true;
-			GetNewName(buff, time);
+			sptr = GetNewName(buff, time);
 		}
 	}
 	else if (logStyle == ILogHandler::LOG_TYPE_PER_YEAR)
@@ -197,7 +198,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		if (time->GetYear() != lastVal)
 		{
 			newFile = true;
-			GetNewName(buff, time);
+			sptr = GetNewName(buff, time);
 		}
 	}
 	else if (logStyle == ILogHandler::LOG_TYPE_PER_HOUR)
@@ -205,7 +206,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		if (lastVal != (time->GetDay() * 24 + time->GetHour()))
 		{
 			newFile = true;
-			GetNewName(buff, time);
+			sptr = GetNewName(buff, time);
 		}
 	}
 
@@ -215,7 +216,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		DEL_CLASS(log);
 		DEL_CLASS(fileStm);
 
-		NEW_CLASS(fileStm, IO::FileStream(buff, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));
 		log->WriteSignature();
 

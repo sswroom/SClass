@@ -19,7 +19,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				UOSInt index;
 			} FileQueue;
 

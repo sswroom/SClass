@@ -72,7 +72,7 @@ DB::DBReader *DB::CSVFile::GetTableData(const UTF8Char *tableName, Data::ArrayLi
 		IO::Reader *rdr;
 		DB::CSVReader *r;
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream(this->fileName->v, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+		NEW_CLASS(fs, IO::FileStream(this->fileName->ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		if (!fs->IsError())
 		{
 			if (codePage == 65001)

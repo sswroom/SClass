@@ -70,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i = 1;
 		while (i < argc)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(argv[i], false));
+			NEW_CLASS(fd, IO::StmData::FileData({argv[i], Text::StrCharCnt(argv[i])}, false));
 			core->LoadData(fd, 0);
 			DEL_CLASS(fd);
 

@@ -151,9 +151,10 @@ UOSInt Net::MACInfoList::SetEntry(UInt64 rangeStart, UInt64 rangeEnd, Text::CStr
 void Net::MACInfoList::Load()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->modified = false;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
 	Text::PString sarr[3];
 	Text::UTF8Reader *reader;
@@ -161,7 +162,7 @@ void Net::MACInfoList::Load()
 	Text::StringBuilderUTF8 sbName;
 	UInt64 rangeStart;
 	UInt64 rangeEnd;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
@@ -215,13 +216,14 @@ void Net::MACInfoList::Load()
 Bool Net::MACInfoList::Store()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
 	IO::FileStream *fs;
 	IO::BufferedOutputStream *cstm;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

@@ -5,7 +5,7 @@
 #include "IO/SDCardMgr.h"
 #include "Text/MyString.h"
 
-Bool SDCardMgr_ReadId(const UTF8Char *fileName, UInt8 *buff)
+Bool SDCardMgr_ReadId(Text::CString fileName, UInt8 *buff)
 {
 	UOSInt i;
 	Bool ret = false;
@@ -32,6 +32,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *sptr3;
+	UTF8Char *sptr4;
 	UInt8 cid[16];
 	UInt8 csd[16];
 	IO::Path::PathType pt;
@@ -59,11 +60,11 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 							Bool valid = true;
 							Text::StrConcat(nameBuff, sptr2);
 
-							Text::StrConcatC(sptr3, UTF8STRC("/cid"));
-							if (!SDCardMgr_ReadId(sbuff, cid))
+							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("/cid"));
+							if (!SDCardMgr_ReadId({sbuff, (UOSInt)(sptr4 - sbuff)}, cid))
 								valid = false;
-							Text::StrConcatC(sptr3, UTF8STRC("/csd"));
-							if (!SDCardMgr_ReadId(sbuff, csd))
+							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("/csd"));
+							if (!SDCardMgr_ReadId({sbuff, (UOSInt)(sptr4 - sbuff)}, csd))
 								valid = false;
 							if (valid)
 							{

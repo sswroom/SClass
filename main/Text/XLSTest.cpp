@@ -13,13 +13,14 @@ using namespace Text::SpreadSheet;
 void TestEmpty()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
+	UTF8Char *sptr;
+	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	wb->AddWorksheet((const UTF8Char*)"Sheet1");
 	wb->AddWorksheet((const UTF8Char*)"Sheet2");
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(fileName, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
@@ -31,8 +32,9 @@ void TestChart()
 {
 	UOSInt testRowCnt = 2;
 	UTF8Char fileName[512];
+	UTF8Char *sptr;
 	UTF8Char sbuff2[32];
-	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
+	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
@@ -89,7 +91,7 @@ void TestChart()
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(fileName, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
@@ -100,7 +102,8 @@ void TestChart()
 void TestCols()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
+	UTF8Char *sptr;
+	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
@@ -116,7 +119,7 @@ void TestCols()
 	}
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(fileName, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
@@ -127,7 +130,8 @@ void TestCols()
 void TestColWidth()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
+	UTF8Char *sptr;
+	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
@@ -142,7 +146,7 @@ void TestColWidth()
 	sheet->SetColWidth(8, 75.75, Math::Unit::Distance::DU_POINT);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(fileName, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));
@@ -153,7 +157,8 @@ void TestColWidth()
 void TestBorder()
 {
 	UTF8Char fileName[512];
-	IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
+	UTF8Char *sptr;
+	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
 	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
@@ -174,7 +179,7 @@ void TestBorder()
 	sheet->SetCellInt32(1, 3, normalStyle, 8);
 
 	Exporter::XLSXExporter exporter;
-	if (!exporter.ExportNewFile(fileName, wb, 0))
+	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
 		IO::ConsoleWriter console;
 		console.WriteLineC(UTF8STRC("Error in writing to file"));

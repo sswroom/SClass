@@ -264,7 +264,7 @@ UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 	}
 }
 
-Bool SerialPort_WriteInt32(const UTF8Char *path, Int32 num)
+Bool SerialPort_WriteInt32(Text::CString path, Int32 num)
 {
 	UTF8Char sbuff[32];
 	IO::FileStream *fs;
@@ -311,8 +311,8 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 		if (i == INVALID_INDEX)
 			return false;
 		sptr = &sbuff[i + 1];
-		Text::StrConcatC(sptr, UTF8STRC("authorized"));
-		if (SerialPort_WriteInt32(sbuff, 0) && SerialPort_WriteInt32(sbuff, 1))
+		sptr = Text::StrConcatC(sptr, UTF8STRC("authorized"));
+		if (SerialPort_WriteInt32({sbuff, (UOSInt)(sptr - sbuff)}, 0) && SerialPort_WriteInt32({sbuff, (UOSInt)(sptr - sbuff)}, 1))
 		{
 			return true;
 		}

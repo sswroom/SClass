@@ -68,6 +68,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff3[256];
 	UTF8Char u8buff[512];
 	UTF8Char *fileName;
+	UTF8Char *baseDirEnd;
 	UTF8Char *sarr[20];
 	UTF8Char *sptr;
 	UOSInt i;
@@ -236,8 +237,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
+				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -263,8 +264,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 
-				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
+				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -291,8 +292,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
+				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -333,11 +334,11 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 				OSInt si;
-				Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
-				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer(baseDir, this->parsers, env);
+				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				Text::StrConcat(sbuff3, sbuff2);
-				IO::Path::AppendPath(sbuff3, sarr[4]);
-				si = env->AddImage(sbuff3, this->parsers);
+				baseDirEnd = IO::Path::AppendPath(sbuff3, sarr[4]);
+				si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
 				if (lyr && si != -1)
 				{
 					i = env->AddLayer(currGroup, lyr, false);
@@ -392,7 +393,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Double *ptList;
 		Double *hList;
 
-		NEW_CLASS(fs2, IO::FileStream(u8buff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs2, IO::FileStream({u8buff, (UOSInt)(fileName - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
 		while (reader2->ReadLine(sbuff2, 512))
 		{

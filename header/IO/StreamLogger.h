@@ -18,7 +18,7 @@ namespace IO
 		IO::FileStream *writeLog;
 		IO::FileStream *readLog;
 	public:
-		StreamLogger(IO::Stream *srcStream, Bool needRelease, const UTF8Char *readLogPath, const UTF8Char *writeLogPath);
+		StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
 		virtual ~StreamLogger();
 
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);

@@ -847,8 +847,8 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnCaptureStartClicked(void *u
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		dt.SetCurrTimeUTC();
-		Text::StrConcatC(Text::StrInt64(&sbuff[i + 1], dt.ToTicks()), UTF8STRC(".wav"));
-		me->audioCapture->StartCapture(sbuff);
+		sptr = Text::StrConcatC(Text::StrInt64(&sbuff[i + 1], dt.ToTicks()), UTF8STRC(".wav"));
+		me->audioCapture->StartCapture({sbuff, (UOSInt)(sptr - sbuff)});
 	}
 }
 

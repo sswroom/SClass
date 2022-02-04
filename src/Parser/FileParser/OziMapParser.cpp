@@ -185,7 +185,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			Media::ImageList *imgList = 0;
 			fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, fileName);
-			NEW_CLASS(imgFd, IO::StmData::FileData(sbuff, false));
+			NEW_CLASS(imgFd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
 			DEL_CLASS(imgFd);
 

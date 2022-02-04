@@ -538,11 +538,11 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 	Crypto::Cert::X509File *x509;
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
 		{
 			if (fileSize > 0 && fileSize <= sizeof(dataBuff))
 			{
-				if (IO::FileStream::LoadFile(sbuff, dataBuff, sizeof(dataBuff)) == fileSize)
+				if (IO::FileStream::LoadFile({sbuff, (UOSInt)(sptr2 - sbuff)}, dataBuff, sizeof(dataBuff)) == fileSize)
 				{
 					Text::String *s = Text::String::NewNotNull(sbuff);
 					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, s);

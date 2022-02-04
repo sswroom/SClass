@@ -12,13 +12,14 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *fileName = (const UTF8Char*)"E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb";
+	Text::CString fileName = CSTR("E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\Basemap.mdb");
 	const UTF8Char *destPath = (const UTF8Char*)"E:\\myworks\\0_req\\20120925 Macau Layer\\GeoDatabase\\";
 	IO::LogTool *log;
 	IO::ConsoleWriter *console;
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(log, IO::LogTool());
@@ -49,9 +50,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			lyr = lyrColl->GetItem(i);
 			sptr = lyr->GetName()->ConcatTo(sbuff);
 			sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR) + 1];
-			Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
+			sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
 
-			NEW_CLASS(fs, IO::FileStream(sbuff2, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			shpExp->ExportFile(fs, sbuff2, lyr, 0);
 			DEL_CLASS(fs);
 			i++;

@@ -85,14 +85,14 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	return obj;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(const UTF8Char *fileName)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
 {
 	Text::CString contentType;
 	IO::StmData::FileData *fd;
 	Text::IMIMEObj *obj;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	sptr = IO::Path::GetFileExt(sbuff, fileName, Text::StrCharCnt(fileName));
+	sptr = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
 	contentType = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	if (fd->GetDataSize() <= 0)

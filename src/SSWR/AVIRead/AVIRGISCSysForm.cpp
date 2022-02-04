@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnOKClicked(void *userObj)
 		if (i != INVALID_INDEX)
 		{
 			const UTF8Char *projName = (const UTF8Char*)me->cboProj->GetItem(i);
-			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem(projName, projName);
+			me->outCSys = Math::CoordinateSystemManager::CreateProjCoordinateSystem({projName, Text::StrCharCnt(projName)}, projName);
 			if (me->outCSys)
 			{
 				me->SetDialogResult(UI::GUIForm::DR_OK);

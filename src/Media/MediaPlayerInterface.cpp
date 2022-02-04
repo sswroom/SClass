@@ -33,7 +33,7 @@ Media::MediaPlayerInterface::~MediaPlayerInterface()
 	SDEL_CLASS(this->player);
 }
 
-Bool Media::MediaPlayerInterface::OpenFile(const UTF8Char *fileName)
+Bool Media::MediaPlayerInterface::OpenFile(Text::CString fileName)
 {
 	IO::ParsedObject *pobj;
 	IO::StmData::FileData *fd;
@@ -126,7 +126,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 							{
 								IO::StmData::FileData *fd;
 								Media::MediaFile *audFile;
-								NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+								NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 								audFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 								DEL_CLASS(fd);
 								if (audFile)

@@ -5,6 +5,7 @@
 #include "Math/Polyline3D.h"
 #include "Math/Unit/Angle.h"
 #include "Math/Unit/Distance.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Math
@@ -62,7 +63,7 @@ namespace Math
 		UInt32 srid;
 
 		CoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName);
-		CoordinateSystem(const UTF8Char *sourceName, UInt32 srid, const UTF8Char *csysName);
+		CoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName);
 	public:
 		virtual ~CoordinateSystem();
 

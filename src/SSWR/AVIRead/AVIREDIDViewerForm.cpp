@@ -130,7 +130,8 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, cons
 	i = 0;
 	while (i < fileCnt)
 	{
-		NEW_CLASS(fs, IO::FileStream(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		UOSInt fileNameLen = Text::StrCharCnt(fileNames[i]);
+		NEW_CLASS(fs, IO::FileStream({fileNames[i], fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 		{

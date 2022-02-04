@@ -262,7 +262,7 @@ namespace SSWR
 			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url) = 0;
 
 			WebUserInfo *GetWebUser(Int32 userId);
-			virtual Bool AddDataFile(const UTF8Char *fileName) = 0;
+			virtual Bool AddDataFile(Text::CString fileName) = 0;
 			Data::ArrayList<DataFileInfo*> *GetDataFiles();
 			virtual Bool DelDataFile(DataFileInfo *dataFile) = 0;
 			void ReleaseDataFile(DataFileInfo *dataFile);
@@ -314,8 +314,8 @@ namespace SSWR
 		protected:
 			virtual void LoadGroupTypes() = 0;
 			void FreeCategory(Category *cate);
-			Media::EXIFData *ParseJPGExif(const UTF8Char *fileName);
-			Media::EXIFData *ParseTIFExif(const UTF8Char *fileName);
+			Media::EXIFData *ParseJPGExif(Text::CString fileName);
+			Media::EXIFData *ParseTIFExif(Text::CString fileName);
 
 		public:
 			void ExportWeb(const UTF8Char *exportDir, Bool includeWebPhoto, Bool includeNoPhoto, Int32 locId, UOSInt *photoCnt, UOSInt     *speciesCnt);

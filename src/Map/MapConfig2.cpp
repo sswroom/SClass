@@ -3951,7 +3951,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		Text::StrDelNew(lastLbl);
 }
 
-Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -4027,7 +4027,7 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 			case 2:
 				if (forceBase == 0)
 				{
-					Text::StrConcat(layerName, fileName);
+					fileName.ConcatTo(layerName);
 					baseDir = IO::Path::AppendPath(layerName, strs[1]);
 //					baseDir = Text::StrConcat(layerName, strs[1]);
 				}
@@ -4185,7 +4185,7 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 				{
 					IO::StmData::FileData *fd;
 					IO::ParserType pt;
-					NEW_CLASS(fd, IO::StmData::FileData(strs[4], false));
+					NEW_CLASS(fd, IO::StmData::FileData({strs[4], Text::StrCharCnt(strs[4])}, false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)
@@ -4220,7 +4220,7 @@ Map::MapConfig2::MapConfig2(const UTF8Char *fileName, Media::DrawEngine *eng, Da
 				}
 				if (currLayer->img == 0)
 				{
-					currLayer->img = this->drawEng->LoadImage(strs[4]);
+					currLayer->img = this->drawEng->LoadImage({strs[4], Text::StrCharCnt(strs[4])});
 				}
 				if (currLayer->img == 0)
 				{

@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 		dlg->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
-			me->SaveTilesFile(dlg->GetFileName()->v);
+			me->SaveTilesFile(dlg->GetFileName()->ToCString());
 		}
 		DEL_CLASS(dlg);
 	}
@@ -342,7 +342,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 	}
 }
 
-void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileName)
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
@@ -521,7 +521,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						{
 							sb->AppendC(UTF8STRC(".jpg"));
 						}
-						NEW_CLASS(fs, IO::FileStream(sb->ToString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+						NEW_CLASS(fs, IO::FileStream(sb->ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						fs->Write(fileBuff, (UOSInt)fileSize);
 						DEL_CLASS(fs);
 					}

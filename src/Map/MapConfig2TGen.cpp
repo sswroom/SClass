@@ -48,9 +48,9 @@ private:
 	UOSInt scnW;
 	UOSInt scnH;
 public:
-	MapLogger(const UTF8Char *fileName, Map::MapView *view)
+	MapLogger(Text::CString fileName, Map::MapView *view)
 	{
-		if (fileName)
+		if (fileName.leng > 0)
 		{
 			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(writer, Text::UTF8Writer(fs));
@@ -4182,7 +4182,7 @@ void Map::MapConfig2TGen::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, 
 		Text::StrDelNew(lastLbl);
 }
 
-void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, const UTF8Char *fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream)
+void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen::MapLabels2 *labels, UOSInt maxLabel, UOSInt *labelCnt, Map::MapView *view, Data::ArrayList<MapFontStyle*> **fonts, Media::DrawEngine *drawEng, Double *objBounds, UOSInt *objCnt, Text::CString fileName, Int32 xId, Int32 yId, Double xOfst, Double yOfst, IO::Stream *dbStream)
 {
 	IO::FileStream *fs = 0;
 	IO::StreamReader *reader;
@@ -4197,7 +4197,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	}
 	else
 	{
-		sptr = Text::StrConcat(sbuff, fileName);
+		sptr = fileName.ConcatTo(sbuff);
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		UTF8Char *fname = &sbuff[i + 1];
 		fname[-1] = 0;
@@ -4213,7 +4213,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		sptr = Text::StrInt32(sptr, yId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".db"));
 
-		NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -4428,7 +4428,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 	}
 }
 
-Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -4512,7 +4512,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 			case 2:
 				if (forceBase == 0)
 				{
-					Text::StrConcat(layerName, fileName);
+					fileName.ConcatTo(layerName);
 					baseDir = IO::Path::AppendPath(layerName, strs[1]);
 				}
 				break;
@@ -4684,9 +4684,9 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 				{
 					IO::StmData::FileData *fd;
 					IO::ParserType pt;
-					Text::StrConcat(sbuff, fileName);
-					IO::Path::AppendPath(sbuff, strs[4]);
-					NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+					fileName.ConcatTo(sbuff);
+					sptr = IO::Path::AppendPath(sbuff, strs[4]);
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)
@@ -4720,7 +4720,7 @@ Map::MapConfig2TGen::MapConfig2TGen(const UTF8Char *fileName, Media::DrawEngine 
 					}
 					if (currLayer->img == 0)
 					{
-						currLayer->img = this->drawEng->LoadImage(strs[4]);
+						currLayer->img = this->drawEng->LoadImage({strs[4], Text::StrCharCnt(strs[4])});
 					}
 					if (currLayer->img == 0)
 					{
@@ -4922,7 +4922,7 @@ Media::DrawPen *Map::MapConfig2TGen::CreatePen(Media::DrawImage *img, UInt32 lin
 	return 0;
 }
 
-WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, const UTF8Char *dbOutput, DrawParam *params)
+WChar *Map::MapConfig2TGen::DrawMap(Media::DrawImage *img, Map::MapView *view, Bool *isLayerEmpty, Map::MapScheduler *mapSch, Media::IImgResizer *resizer, Text::CString dbOutput, DrawParam *params)
 {
 //	Manage::HiResClock clk;
 	UInt32 index;

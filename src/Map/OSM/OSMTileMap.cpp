@@ -88,7 +88,7 @@ Bool Map::OSM::OSMTileMap::ImportTiles(IO::PackageFile *pkg)
 	}
 }
 
-Bool Map::OSM::OSMTileMap::OptimizeToFile(const UTF8Char *fileName)
+Bool Map::OSM::OSMTileMap::OptimizeToFile(Text::CString fileName)
 {
 	if (this->spkg)
 	{
@@ -264,7 +264,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
@@ -346,7 +346,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -373,7 +373,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
@@ -402,7 +402,7 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 	fd = 0;
 	if (this->cacheDir)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	}
 	else if (this->spkg)
 	{
@@ -487,7 +487,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
@@ -554,7 +554,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -579,7 +579,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream({filePathU, (UOSInt)(sptru - filePathU)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
@@ -607,7 +607,7 @@ IO::IStreamData *Map::OSM::OSMTileMap::LoadTileImageData(UOSInt level, Int64 img
 	fd = 0;
 	if (this->cacheDir)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData({filePathU, (UOSInt)(sptru - filePathU)}, false));
 	}
 	else if (this->spkg)
 	{

@@ -952,6 +952,7 @@ Data::NamedClass<Lamppost> *Lamppost::CreateClass()
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::ConsoleWriter console;
 	Manage::HiResClock clk;
 	IO::DirectoryPackage *dir;
@@ -999,9 +1000,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			t1 = clk.GetTimeDiff();
 			fileGDB->CloseReader(r);
 
-			IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/Lamppost.csv"));
+			sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/Lamppost.csv"));
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			clk.Start();
 			DB::DBUtil::SaveCSV(fs, &lamppostList, cls);
 			t2 = clk.GetTimeDiff();

@@ -27,7 +27,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnFileClicked(void *userObj)
 		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			me->btLog->LoadFile(dlg->GetFileNames(i));
+			const UTF8Char *name = dlg->GetFileNames(i);
+			UOSInt nameLen = Text::StrCharCnt(name);
+			me->btLog->LoadFile({name, nameLen});
 			i++;
 		}
 		me->LogFileStore();
@@ -102,9 +104,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnUnkOnlyChkChg(void *userOb
 Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
-	return this->btLog->StoreFile(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
+	return this->btLog->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
 }
 
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
@@ -243,9 +246,10 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	this->UpdateStatus();
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
-	this->btLog->LoadFile(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
+	this->btLog->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
 	this->LogUIUpdate();
 }
 

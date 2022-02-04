@@ -1512,7 +1512,7 @@ Bool IO::FileAnalyse::QTFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::QTFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

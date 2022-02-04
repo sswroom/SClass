@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 		j = me->lvFiles->AddItem(&files[i][j + 1], 0);
 
 		file = MemAlloc(FileQueue, 1);
-		file->fileName = Text::StrCopyNew(files[i]);;
+		file->fileName = Text::String::NewNotNull(files[i]);;
 		file->index = j;
 		Sync::MutexUsage mutUsage(me->fileMut);
 		me->fileList->Add(file);
@@ -121,7 +121,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::ProcessThread(void *userOb
 				update->status = 2;
 			}
 
-			Text::StrDelNew(file->fileName);
+			file->fileName->Release();
 			MemFree(file);
 
 			Sync::MutexUsage mutUsage(me->updateMut);
@@ -149,7 +149,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 		file = this->fileList->RemoveAt(i);
 		this->lvFiles->SetSubItem(file->index, 1, (const UTF8Char*)"Cancelled");
 
-		Text::StrDelNew(file->fileName);
+		file->fileName->Release();
 		MemFree(file);
 	}
 	mutUsage.EndUse();

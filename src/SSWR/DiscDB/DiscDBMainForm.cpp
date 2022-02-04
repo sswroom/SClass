@@ -24,7 +24,8 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 	while (i < nFiles)
 	{
 		succ = false;
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+		UOSInt nameLen = Text::StrCharCnt(files[i]);
+		NEW_CLASS(fd, IO::StmData::FileData({files[i], nameLen}, false));
 		if (fd->GetDataSize() > 0)
 		{
 			succ = me->env->AddMD5(fd);
@@ -36,14 +37,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 			if ((i + 1) >= nFiles)
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.AppendSlow(files[i]);
+				sb.AppendC(files[i], nameLen);
 				failed = true;
 				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me);
 			}
 			else
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.AppendSlow(files[i]);
+				sb.AppendC(files[i], nameLen);
 				sb.AppendC(UTF8STRC(", do you want to continue?"));
 				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me))
 				{

@@ -675,7 +675,7 @@ Bool IO::FileAnalyse::RIFFFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::RIFFFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

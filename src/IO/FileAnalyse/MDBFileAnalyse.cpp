@@ -428,7 +428,7 @@ Bool IO::FileAnalyse::MDBFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::MDBFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

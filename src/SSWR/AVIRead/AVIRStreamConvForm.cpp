@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 		{
 			if (me->chkStreamLog1->IsChecked())
 			{
-				NEW_CLASS(me->stmLog1, IO::FileStream((const UTF8Char*)"Stm1Log.dat", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(me->stmLog1, IO::FileStream(CSTR("Stm1Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
 			me->txtStream1->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
 			me->btnStream1->SetText((const UTF8Char*)"&Close");
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 		{
 			if (me->chkStreamLog2->IsChecked())
 			{
-				NEW_CLASS(me->stmLog2, IO::FileStream((const UTF8Char*)"Stm2Log.dat", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(me->stmLog2, IO::FileStream(CSTR("Stm2Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
 			me->txtStream2->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
 			me->btnStream2->SetText((const UTF8Char*)"&Close");

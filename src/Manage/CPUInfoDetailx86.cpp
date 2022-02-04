@@ -118,17 +118,17 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 //	InfoData *info = (InfoData*)this->clsData;
-	const UTF8Char *path = 0;
+	Text::CString path = {0, 0};
 	switch (index)
 	{
 	case 0:
-		path = (const UTF8Char*)"/sys/class/hwmon/hwmon0/temp1_input";
+		path = CSTR("/sys/class/hwmon/hwmon0/temp1_input");
 		break;
 	case 1:
-		path = (const UTF8Char*)"/sys/class/hwmon/hwmon1/temp2_input";
+		path = CSTR("/sys/class/hwmon/hwmon1/temp2_input");
 		break;
 	}
-	if (path == 0)
+	if (path.leng == 0)
 		return false;
 	Bool succ = false;
 	Int32 val;

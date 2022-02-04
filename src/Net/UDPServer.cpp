@@ -54,7 +54,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 					sptr = stat->me->logPrefix->ConcatTo(sbuff);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
 					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(stat->me->logFileR, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				}
 
 				if (stat->me->logFileR)
@@ -126,7 +126,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 					sptr = stat->me->logPrefix->ConcatTo(sbuff);
 					sptr = logTime.ToString(sptr, "yyyyMMdd");
 					sptr = Text::StrConcatC(sptr, UTF8STRC("r.udp"));
-					NEW_CLASS(stat->me->logFileR, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(stat->me->logFileR, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				}
 
 				if (stat->me->logFileR)
@@ -455,7 +455,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 			sptr = this->logPrefix->ConcatTo(sbuff);
 			sptr = logTime.ToString(sptr, "yyyyMMdd");
 			sptr = Text::StrConcatC(sptr, UTF8STRC("s.udp"));
-			NEW_CLASS(this->logFileS, IO::FileStream(sbuff, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(this->logFileS, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		}
 
 		if (this->logFileS)

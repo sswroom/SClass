@@ -1,6 +1,6 @@
 #ifndef _SM_MEDIA_BATCH_BATCHLOADER
 #define _SM_MEDIA_BATCH_BATCHLOADER
-#include "Data/SyncLinkedList.h"
+#include "Data/SyncCircularBuff.h"
 #include "Media/Batch/BatchHandler.h"
 #include "Parser/ParserList.h"
 #include "Sync/Event.h"
@@ -33,8 +33,8 @@ namespace Media
 			Sync::Event *mainEvt;
 			Sync::Mutex *ioMut;
 			Sync::Mutex *reqMut;
-			Data::SyncLinkedList *fileNames;
-			Data::SyncLinkedList *datas;
+			Data::SyncCircularBuff<Text::String*> *fileNames;
+			Data::SyncCircularBuff<DataInfo*> *datas;
 			UOSInt threadCnt;
 			ThreadState *threadStates;
 			UOSInt nextThread;

@@ -375,7 +375,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::SPKFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 	return false;
 }

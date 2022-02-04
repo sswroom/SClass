@@ -24,8 +24,8 @@ void Media::Batch::BatchSavePNG::ImageOutput(Media::ImageList *imgList, const UT
 	IO::FileStream *fs;
 	sptr = Text::StrConcat(sbuff, fileId);
 	void *param;
-	Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".png"));
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+	sptr = Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".png"));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	param = exporter->CreateParam(imgList);
 	exporter->ExportFile(fs, sbuff, imgList, param);
 	exporter->DeleteParam(param);

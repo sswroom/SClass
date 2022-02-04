@@ -415,10 +415,11 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UInt64 flen = fs->GetLength();
@@ -467,10 +468,11 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	this->devMut->UnlockRead();
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"snb.dat");
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(dataBuff, k);
 	DEL_CLASS(fs);
 	MemFree(dataBuff);

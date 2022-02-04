@@ -11,7 +11,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, cons
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->env->AddDataFile(files[i]))
+		if (me->env->AddDataFile({files[i], Text::StrCharCnt(files[i])}))
 		{
 			chg = true;
 		}

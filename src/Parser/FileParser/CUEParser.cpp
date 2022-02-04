@@ -144,8 +144,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		IO::ParsedObject *pobj;
 
 		fd->GetFullName()->ConcatTo(sbuff);
-		IO::Path::AppendPath(sbuff, fileName);
-		NEW_CLASS(data, IO::StmData::FileData(sbuff, false));
+		sptr = IO::Path::AppendPath(sbuff, fileName);
+		NEW_CLASS(data, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 		pobj = this->parsers->ParseFile(data, &pt);
 		DEL_CLASS(data);
 		if (pobj)

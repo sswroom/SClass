@@ -1125,7 +1125,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	return 0;
 #else
-	IO::ConfigFile *cfg = IO::IniFile::Parse((const UTF8Char*)"/etc/odbcinst.ini", 65001);
+	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)
 	{
 		Data::ArrayList<Text::String*> cateList;
@@ -1148,7 +1148,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName, UOSInt n
 #if defined(WIN32) || defined(_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 	return 0;
 #else
-	IO::ConfigFile *cfg = IO::IniFile::Parse((const UTF8Char*)"/etc/odbcinst.ini", 65001);
+	IO::ConfigFile *cfg = IO::IniFile::Parse(CSTR("/etc/odbcinst.ini"), 65001);
 	if (cfg)
 	{
 		IO::ConfigFile *cfgRet = cfg->CloneCate(driverName, nameLen);

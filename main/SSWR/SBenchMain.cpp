@@ -156,8 +156,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(mainEvt, Sync::Event(true, (const UTF8Char*)"SBenchMain.mainEvt"));
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	console->WriteLineC(UTF8STRC("SBench Result:"));

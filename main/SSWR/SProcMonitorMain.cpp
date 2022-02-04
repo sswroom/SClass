@@ -87,14 +87,15 @@ void AddProg(const UTF8Char *progName, UOSInt progNameLen, const UTF8Char *progP
 void LoadProgList()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Text::PString sarr[2];
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Text::StringBuilderUTF8 sb;
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, Text::UTF8Reader(fs));

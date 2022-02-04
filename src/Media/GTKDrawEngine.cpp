@@ -50,7 +50,7 @@ Media::DrawImage *Media::GTKDrawEngine::CreateImageScn(void *cr, OSInt left, OSI
 	return dimg;
 }
 
-Media::DrawImage *Media::GTKDrawEngine::LoadImage(const UTF8Char *fileName)
+Media::DrawImage *Media::GTKDrawEngine::LoadImage(Text::CString fileName)
 {
 	Media::ImageList *imgList = 0;
 	IO::StmData::FileData *fd;

@@ -358,7 +358,7 @@ Bool Manage::ExceptionLogger::LogToFile(Text::String *fileName, UInt32 exCode, T
 #ifndef _WIN32_WCE
 	Manage::SymbolResolver *symResol;
 	Manage::Process proc;
-	IO::FileStream fs(fileName->v, IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
+	IO::FileStream fs(fileName->ToCString(), IO::FileMode::Append, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal);
 	Text::UTF8Writer writer(&fs);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime d;

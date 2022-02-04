@@ -86,7 +86,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	}
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(const UTF8Char *zipFile, const UTF8Char *mp4File)
+Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, const UTF8Char *mp4File)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -112,7 +112,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(const UTF8Char *zipFile, con
 	return valid;
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(const UTF8Char *fileName)
+Bool SSWR::DownloadMonitor::DownMonCore::VideoValid(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
@@ -184,12 +184,12 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
 							}
 							sptr3 = Text::StrConcat(sptr3, sptr) - 11;
-							Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
+							sptr3 = Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MUXING;
 							if (FFMPEGMux(sbuff, sbuff2, sbuff3))
 							{
 								this->chkStatus = CS_VALIDATING;
-								if (VideoValid(sbuff3))
+								if (VideoValid({sbuff3, (UOSInt)(sptr3 - sbuff3)}))
 								{
 									IO::Path::DeleteFile(sbuff);
 									IO::Path::DeleteFile(sbuff2);
@@ -239,12 +239,12 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
 							}
 							sptr3 = Text::StrConcat(sptr3, sptr) - 12;
-							Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
+							sptr3 = Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MUXING;
 							if (FFMPEGMuxAAC(sbuff, sbuff2, sbuff3))
 							{
 								this->chkStatus = CS_VALIDATING;
-								if (VideoValid(sbuff3))
+								if (VideoValid({sbuff3, (UOSInt)(sptr3 - sbuff3)}))
 								{
 									IO::Path::DeleteFile(sbuff);
 									IO::Path::DeleteFile(sbuff2);
@@ -293,7 +293,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				else
 				{
 					this->chkStatus = CS_VALIDATING;
-					if (VideoValid(sbuff))
+					if (VideoValid({sbuff, (UOSInt)(sptrEnd - sbuff)}))
 					{
 						sptr2 = succPath->ConcatTo(sbuff2);
 						Int32 webType = 0;
@@ -334,10 +334,10 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 					this->chkStatus = CS_EXTRACTING;
-					if (ExtractZIP(sbuff, sbuff2))
+					if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
 					{
 						this->chkStatus = CS_VALIDATING;
-						if (VideoValid(sbuff2))
+						if (VideoValid({sbuff2, (UOSInt)(sptr2 - sbuff2)}))
 						{
 							IO::Path::DeleteFile(sbuff);
 							Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -397,12 +397,12 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					else
 					{
 						sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
-						Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
+						sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 						this->chkStatus = CS_EXTRACTING;
-						if (ExtractZIP(sbuff, sbuff2))
+						if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
 						{
 							this->chkStatus = CS_VALIDATING;
-							if (VideoValid(sbuff2))
+							if (VideoValid({sbuff2, (UOSInt)(sptr2 - sbuff2)}))
 							{
 								IO::Path::DeleteFile(sbuff);
 								Text::StrConcat(sbuff, sbuff2);

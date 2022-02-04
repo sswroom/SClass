@@ -140,7 +140,7 @@ Bool Exporter::PEMExporter::ExportStream(IO::SeekableStream *stm, Crypto::Cert::
 	return false;
 }
 
-Bool Exporter::PEMExporter::ExportFile(const UTF8Char *fileName, Crypto::Cert::X509File *x509)
+Bool Exporter::PEMExporter::ExportFile(Text::CString fileName, Crypto::Cert::X509File *x509)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));

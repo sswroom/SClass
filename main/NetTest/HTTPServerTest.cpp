@@ -98,7 +98,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (useSSL)
 	{
 		ssl = Net::SSLEngineFactory::Create(sockf, true);
-		if (ssl == 0 || !ssl->SetServerCerts((const UTF8Char*)"test.crt", (const UTF8Char*)"test.key"))
+		if (ssl == 0 || !ssl->SetServerCerts(CSTR("test.crt"), CSTR("test.key")))
 		{
 			console->WriteLineC(UTF8STRC("Error in initializing SSL"));
 			sptr = ssl->GetErrorDetail(sbuff);

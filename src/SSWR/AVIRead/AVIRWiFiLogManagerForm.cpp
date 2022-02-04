@@ -29,7 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userOb
 		UOSInt j = dlg->GetFileNameCount();
 		while (i < j)
 		{
-			me->wifiLogFile->LoadFile(dlg->GetFileNames(i));
+			const UTF8Char *fileName = dlg->GetFileNames(i);
+			me->wifiLogFile->LoadFile({fileName, Text::StrCharCnt(fileName)});
 			i++;
 		}
 		me->LogFileStore();
@@ -136,9 +137,10 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFilterClicked(void *user
 Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
-	return this->wifiLogFile->StoreFile(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
+	return this->wifiLogFile->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
 }
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
@@ -369,9 +371,10 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->UpdateStatus();
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
-	this->wifiLogFile->LoadFile(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
+	this->wifiLogFile->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
 	this->LogUIUpdate();
 }
 

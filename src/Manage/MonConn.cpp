@@ -288,6 +288,7 @@ void Manage::MonConn::AddCommand(UInt8 *data, UOSInt dataSize, UInt16 cmdType)
 Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *sockf, IO::Writer *msgWriter)
 {
 	UTF8Char buff[256];
+	UTF8Char *sptr;
 	NEW_CLASS(lastReqTime, Data::DateTime());
 	NEW_CLASS(cmdList, Data::SyncArrayList<UInt8*>());
 	NEW_CLASS(cmdSeqMut, Sync::Mutex());
@@ -310,9 +311,9 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT | SEM_NOGPFAULTERRORBOX);
 #endif
 
-	IO::Path::GetTempFile(buff, (const UTF8Char*)"SvrMonitor.dat");
+	sptr = IO::Path::GetTempFile(buff, (const UTF8Char*)"SvrMonitor.dat");
 	IO::FileStream *file;
-	NEW_CLASS(file, IO::FileStream(buff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(file, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!file->IsError())
 	{
 		file->Read((UInt8*)&this->port, 2);

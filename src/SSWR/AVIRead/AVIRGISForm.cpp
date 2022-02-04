@@ -140,7 +140,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 		pobj = 0;
 		if (pathType == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+			NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
 			pobj = parsers->ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 		}
@@ -1134,7 +1134,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						dlg->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
 						if (dlg->ShowDialog(this->GetHandle()))
 						{
-							osm->OptimizeToFile(dlg->GetFileName()->v);
+							osm->OptimizeToFile(dlg->GetFileName()->ToCString());
 						}
 						DEL_CLASS(dlg);
 					}

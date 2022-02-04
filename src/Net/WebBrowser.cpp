@@ -74,7 +74,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(url, false));
+		NEW_CLASS(fd, IO::StmData::FileData({url, urlLen}, false));
 		if (contentType)
 		{
 			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
@@ -86,9 +86,9 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 		return 0;
 	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
-		Text::URLString::GetURLFilePath(sbuff, url, urlLen);
+		sptr = Text::URLString::GetURLFilePath(sbuff, url, urlLen);
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
+		NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 		if (contentType)
 		{
 			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);

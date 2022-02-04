@@ -82,8 +82,8 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				sptr = Text::StrConcatC(sbuff, s->v, s->leng - 5);
 				while (true)
 				{
-					Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-					NEW_CLASS(concatFile, IO::StmData::FileData(sbuff, false));
+					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
+					NEW_CLASS(concatFile, IO::StmData::FileData({sbuff, (UOSInt)(sptr2 - sbuff)}, false));
 					if (concatFile->GetDataSize() <= 0)
 					{
 						DEL_CLASS(concatFile);

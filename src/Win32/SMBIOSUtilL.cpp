@@ -15,7 +15,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	UInt8 buffTmp[1024];
 
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/dmi/tables/smbios_entry_point", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/smbios_entry_point"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		buffSize = fs->Read(buffTmp, 128);
@@ -28,7 +28,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				buffSize = ReadUInt16(&buffTmp[0x16]);
 //				UInt32 cnt = ReadUInt16(&buffTmp[0x1c]);
 
-				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/dmi/tables/DMI", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
@@ -49,7 +49,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				UInt64 ofst = 0;//ReadInt64(&buffTmp[0x10]);
 				buffSize = ReadUInt32(&buffTmp[0x0c]);
 
-				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/dmi/tables/DMI", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
@@ -71,7 +71,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				buffSize = ReadUInt16(&buffTmp[0x06]);
 //				UInt32 cnt = ReadUInt16(&buffTmp[0x0c]);
 
-				NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/dmi/tables/DMI", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/dmi/tables/DMI"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (!fs->IsError())
 				{
 					dataBuff = MemAlloc(UInt8, buffSize);
@@ -114,7 +114,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				if (sptr[0] != '.')
 				{
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/raw"));
-					NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(buffTmp, 1024);

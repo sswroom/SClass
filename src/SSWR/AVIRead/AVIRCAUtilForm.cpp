@@ -21,7 +21,8 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
 		pobj = parsers->ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)

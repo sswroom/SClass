@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 			UOSInt buffSize;
 			buff = mstm->GetBuff(&buffSize);
 			IO::FileStream *fs;
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating file", (const UTF8Char*)"TFTP Client", me);

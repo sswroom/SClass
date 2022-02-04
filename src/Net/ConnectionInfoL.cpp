@@ -138,7 +138,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		sb.AppendC(UTF8STRC("/address"));
 	
 		UOSInt readSize;
-		NEW_CLASS(fs, IO::FileStream(sb.ToString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		readSize = fs->Read(buff, 63);
 		DEL_CLASS(fs);
 		buff[readSize] = 0;
@@ -188,7 +188,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	
 	Text::UTF8Reader *reader;
 	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32(4));
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/etc/resolv.conf", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UTF8Char *sarr[3];

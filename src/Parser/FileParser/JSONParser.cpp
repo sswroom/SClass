@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 					{
 						if (crsName->GetType() == Text::JSONType::String)
 						{
-							csys = Math::CoordinateSystemManager::CreateFromName(((Text::JSONString*)crsName)->GetValue()->v);
+							csys = Math::CoordinateSystemManager::CreateFromName(((Text::JSONString*)crsName)->GetValue()->ToCString());
 							if (csys)
 							{
 								srid = csys->GetSRID();

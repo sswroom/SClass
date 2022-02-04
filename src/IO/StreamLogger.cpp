@@ -2,11 +2,11 @@
 #include "MyMemory.h"
 #include "IO/StreamLogger.h"
 
-IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, const UTF8Char *readLogPath, const UTF8Char *writeLogPath) : IO::Stream(srcStream->GetSourceNameObj())
+IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath) : IO::Stream(srcStream->GetSourceNameObj())
 {
 	this->stm = srcStream;
 	this->needRelease = needRelease;
-	if (readLogPath)
+	if (readLogPath.leng > 0)
 	{
 		NEW_CLASS(this->readLog, IO::FileStream(readLogPath, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
@@ -14,7 +14,7 @@ IO::StreamLogger::StreamLogger(IO::Stream *srcStream, Bool needRelease, const UT
 	{
 		this->readLog = 0;
 	}
-	if (writeLogPath)
+	if (writeLogPath.leng > 0)
 	{
 		NEW_CLASS(this->writeLog, IO::FileStream(writeLogPath, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}

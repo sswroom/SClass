@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, co
 	Bool succ;
 	while (i < nFiles)
 	{
-		succ = me->OpenFile(files[i]);
+		succ = me->OpenFile({files[i], Text::StrCharCnt(files[i])});
 		if (succ)
 			break;
 		i++;
@@ -260,7 +260,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	me->lblDecode->SetText((const UTF8Char*)"End Decoding");
 }
 
-Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
+Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	Media::MediaFile *mediaFile;
@@ -273,7 +273,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(const UTF8Char *fileName)
 	}
 	SDEL_CLASS(this->currFile);
 	this->currFile = mediaFile;
-	this->txtFile->SetText(fileName);
+	this->txtFile->SetText(fileName.v);
 
 	this->lbStream->ClearItems();
 	this->ClearDecode();

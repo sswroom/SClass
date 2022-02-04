@@ -962,7 +962,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::IsParsing()
 	return this->threadRunning;
 }
 
-Bool IO::FileAnalyse::EBMLFileAnalyse::TrimPadding(const UTF8Char *outputFile)
+Bool IO::FileAnalyse::EBMLFileAnalyse::TrimPadding(Text::CString outputFile)
 {
 /*	UInt8 *readBuff;
 	OSInt readSize;

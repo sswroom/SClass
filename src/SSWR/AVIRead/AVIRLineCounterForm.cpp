@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRLineCounterForm::CalcDir(UTF8Char *pathBuff, UTF8Char *p
 				if (found)
 				{
 					lineCnt = 0;
-					NEW_CLASS(fs, IO::FileStream(pathBuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({pathBuff, (UOSInt)(sptr - pathBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(reader, Text::UTF8Reader(fs));
 					while (true)
 					{

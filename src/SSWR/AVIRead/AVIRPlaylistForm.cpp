@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRPlaylistForm::OnFileDrop(void *userObj, const 
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->playlist->AddFile(files[i]))
+		if (me->playlist->AddFile({files[i], Text::StrCharCnt(files[i])}))
 		{
 			changed = true;
 		}
