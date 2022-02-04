@@ -45,9 +45,9 @@ namespace UI
 	public:
 		virtual ~GUIMenu();
 
-		UOSInt AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
+		UOSInt AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey);
 		void AddSeperator();
-		GUIMenu *AddSubMenu(const UTF8Char *name);
+		GUIMenu *AddSubMenu(Text::CString name);
 		void *GetHMenu();
 		UOSInt GetAllKeys(Data::ArrayList<ShortcutKey*> *keys);
 		UOSInt GetShortcutKeyCnt();

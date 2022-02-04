@@ -19,8 +19,8 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"Save", MNU_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("Save"), MNU_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (this->asn1->GetASN1Type() == Net::ASN1Data::ASN1Type::X509)
 	{
 		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509Cert*)this->asn1;
@@ -28,12 +28,12 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 		UI::GUIMenu *mnu2;
 		UOSInt i;
 		UOSInt j;
-		mnu2 = mnu->AddSubMenu((const UTF8Char*)"Certs");
+		mnu2 = mnu->AddSubMenu(CSTR("Certs"));
 		i = 0;
 		j = x509->GetCertCount();
 		if (j == 0)
 		{
-			mnu2->AddItem((const UTF8Char*)"None", MNU_CERT_0, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			mnu2->AddItem(CSTR("None"), MNU_CERT_0, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		}
 		else
 		{
@@ -46,7 +46,7 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 					sb.AppendC(UTF8STRC("Cert "));
 					sb.AppendUOSInt(i);
 				}
-				mnu2->AddItem(sb.ToString(), (UInt16)(MNU_CERT_0 + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				mnu2->AddItem(sb.ToCString(), (UInt16)(MNU_CERT_0 + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				i++;
 			}
 		}

@@ -282,11 +282,11 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->lvExtra->AddColumn((const UTF8Char*)"Value", 128);
 
 	NEW_CLASS(this->mnuRecord, UI::GUIPopupMenu());
-	this->mnuRecord->AddItem((const UTF8Char*)"Mark &Start", MNU_MARK_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
-	this->mnuRecord->AddItem((const UTF8Char*)"Mark &End", MNU_MARK_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_E);
+	this->mnuRecord->AddItem(CSTR("Mark &Start"), MNU_MARK_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
+	this->mnuRecord->AddItem(CSTR("Mark &End"), MNU_MARK_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_E);
 	this->mnuRecord->AddSeperator();
-	this->mnuRecord->AddItem((const UTF8Char*)"&Copy Marked", MNU_MARK_COPY, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_C);
-	this->mnuRecord->AddItem((const UTF8Char*)"&Delete Marked", MNU_MARK_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DELETE);
+	this->mnuRecord->AddItem(CSTR("&Copy Marked"), MNU_MARK_COPY, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_C);
+	this->mnuRecord->AddItem(CSTR("&Delete Marked"), MNU_MARK_DELETE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DELETE);
 
 	Data::ArrayListString *nameArr;
 	NEW_CLASS(nameArr, Data::ArrayListString());

@@ -61,12 +61,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
 		frm->SetText((const UTF8Char*)"GUI Test 4");
 		NEW_CLASS(mainMenu, UI::GUIMainMenu());
-		UI::GUIMenu *mnu = mainMenu->AddSubMenu((const UTF8Char*)"&File");
-		mnu->AddItem((const UTF8Char*)"E&xit", MNU_EXIT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_X);
-		mnu = mainMenu->AddSubMenu((const UTF8Char*)"&Item");
-		mnu->AddItem((const UTF8Char*)"Item &1", MNU_ITEM1, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_1);
-		mnu->AddItem((const UTF8Char*)"Item &2", MNU_ITEM2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_2);
-		mnu->AddItem((const UTF8Char*)"Item &3", MNU_ITEM3, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_3);
+		UI::GUIMenu *mnu = mainMenu->AddSubMenu(CSTR("&File"));
+		mnu->AddItem(CSTR("E&xit"), MNU_EXIT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_X);
+		mnu = mainMenu->AddSubMenu(CSTR("&Item"));
+		mnu->AddItem(CSTR("Item &1"), MNU_ITEM1, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_1);
+		mnu->AddItem(CSTR("Item &2"), MNU_ITEM2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_2);
+		mnu->AddItem(CSTR("Item &3"), MNU_ITEM3, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_3);
 		frm->SetMenu(mainMenu);
 		frm->HandleMenuClicked(OnMenuEvent, frm);
 		frm->HandleDropFiles(OnFileDrop, frm);

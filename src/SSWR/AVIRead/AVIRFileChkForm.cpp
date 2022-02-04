@@ -18,9 +18,9 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 	this->SetText(sbuff);
 	
 	NEW_CLASS(this->mnu, UI::GUIMainMenu());
-	UI::GUIMenu *mnu = this->mnu->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"&Save", MNU_FILE_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"&Validate", MNU_FILE_VALIDATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	UI::GUIMenu *mnu = this->mnu->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("&Save"), MNU_FILE_SAVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("&Validate"), MNU_FILE_VALIDATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnu);
 
 	NEW_CLASS(this->lvFileChk, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

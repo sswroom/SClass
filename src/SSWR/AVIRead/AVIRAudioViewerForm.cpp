@@ -248,13 +248,13 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnu, UI::GUIMainMenu());
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Navigate");
-	mnu->AddItem((const UTF8Char*)"&Next Sample", MNU_NEXT_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
-	mnu->AddItem((const UTF8Char*)"&Prev Sample", MNU_PREV_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
-	mnu->AddItem((const UTF8Char*)"N&ext Page", MNU_NEXT_PAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEDOWN);
-	mnu->AddItem((const UTF8Char*)"P&rev Page", MNU_PREV_PAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEUP);
-	mnu->AddItem((const UTF8Char*)"Go to &Beginning", MNU_BEGIN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_HOME);
-	mnu->AddItem((const UTF8Char*)"Go to E&nd", MNU_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_END);
+	mnu = this->mnu->AddSubMenu(CSTR("&Navigate"));
+	mnu->AddItem(CSTR("&Next Sample"), MNU_NEXT_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
+	mnu->AddItem(CSTR("&Prev Sample"), MNU_PREV_SAMPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
+	mnu->AddItem(CSTR("N&ext Page"), MNU_NEXT_PAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEDOWN);
+	mnu->AddItem(CSTR("P&rev Page"), MNU_PREV_PAGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEUP);
+	mnu->AddItem(CSTR("Go to &Beginning"), MNU_BEGIN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_HOME);
+	mnu->AddItem(CSTR("Go to E&nd"), MNU_END, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_END);
 	this->SetMenu(this->mnu);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

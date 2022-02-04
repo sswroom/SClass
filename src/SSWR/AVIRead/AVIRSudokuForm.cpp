@@ -28,10 +28,10 @@ SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(UI::GUIClientControl *parent, UI::
 	this->svMain->HandleNumberInput(EventNumInput, this);
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Board");
-	mnu->AddItem((const UTF8Char*)"&Clear", MNU_CLEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"&Solve", MNU_SOLVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"S&olve One", MNU_SOLVE_ONE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Board"));
+	mnu->AddItem(CSTR("&Clear"), MNU_CLEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("&Solve"), MNU_SOLVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("S&olve One"), MNU_SOLVE_ONE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(mnuMain);
 	this->svMain->Focus();
 }

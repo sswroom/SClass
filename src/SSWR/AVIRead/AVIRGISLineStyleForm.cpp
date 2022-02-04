@@ -124,7 +124,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	this->SetCancelButton(this->btnCancel);
 
 	NEW_CLASS(this->mnuLayer, UI::GUIPopupMenu());
-	this->mnuLayer->AddItem((const UTF8Char*)"&Set as default", MNU_SET_DEFAULT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuLayer->AddItem(CSTR("&Set as default"), MNU_SET_DEFAULT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->lineSelector->SetPopupMenu(this->mnuLayer);
 }
 

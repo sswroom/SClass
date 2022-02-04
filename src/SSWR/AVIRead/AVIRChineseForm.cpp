@@ -389,9 +389,9 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Goto");
-	mnu->AddItem((const UTF8Char*)"Char Code", MNU_CHARCODE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu->AddItem((const UTF8Char*)"Related", MNU_RELATED, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_R);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Goto"));
+	mnu->AddItem(CSTR("Char Code"), MNU_CHARCODE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("Related"), MNU_RELATED, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_R);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->lblCharCode, UI::GUILabel(ui, this, (const UTF8Char*)"Char Code"));

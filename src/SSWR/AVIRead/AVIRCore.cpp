@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRCore::EndLoad()
 		Map::MapEnv *env;
 		Map::MapView *view;
 		Math::CoordinateSystem *csys = this->batchLyrs->GetItem(0)->GetCoordinateSystem();
-		NEW_CLASS(env, Map::MapEnv((const UTF8Char*)"Untitled", 0xffc0c0ff, csys?(csys->Clone()):0));
+		NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, csys?(csys->Clone()):0));
 		if (this->batchLyrs->GetCount() > 0)
 		{
 			view = this->batchLyrs->GetItem(0)->CreateMapView(320, 240);

@@ -377,23 +377,23 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Connection");
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"&New Connection");
-	mnu2->AddItem((const UTF8Char*)"ODBC DSN", MNU_CONN_ODBCDSN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"ODBC Connection String", MNU_CONN_ODBCSTR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"MySQL TCP", MNU_CONN_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SQL Server", MNU_CONN_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Access File", MNU_CONN_ACCESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Connection"));
+	mnu2 = mnu->AddSubMenu(CSTR("&New Connection"));
+	mnu2->AddItem(CSTR("ODBC DSN"), MNU_CONN_ODBCDSN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("ODBC Connection String"), MNU_CONN_ODBCSTR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("MySQL TCP"), MNU_CONN_MYSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SQL Server"), MNU_CONN_MSSQL, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Access File"), MNU_CONN_ACCESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->mnuConn, UI::GUIPopupMenu());
-	this->mnuConn->AddItem((const UTF8Char*)"Remove", MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuConn->AddItem((const UTF8Char*)"Copy Conn String", MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuConn->AddItem(CSTR("Remove"), MNU_CONN_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuConn->AddItem(CSTR("Copy Conn String"), MNU_CONN_COPY_STR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	NEW_CLASS(this->mnuTable, UI::GUIPopupMenu());
-	this->mnuTable->AddItem((const UTF8Char*)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuTable->AddItem((const UTF8Char*)"Copy as C++ Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuTable->AddItem((const UTF8Char*)"Copy as C++ Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem(CSTR("Copy as C++ Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuTable->AddItem(CSTR("Copy as C++ Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	if (DB::DBManager::RestoreConn(DBCONNFILE, this->dbList, this->log, this->core->GetSocketFactory()))
 	{
 		Text::StringBuilderUTF8 sb;

@@ -317,14 +317,14 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	UI::GUIMainMenu *mmnu;
 	UI::GUIMenu *mnu;
 	NEW_CLASS(mmnu, UI::GUIMainMenu());
-	mnu = mmnu->AddSubMenu((const UTF8Char*)"&Export");
-	mnu->AddItem((const UTF8Char*)"Export Selected", MNU_EXPORT_SEL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu->AddItem((const UTF8Char*)"Export as TIF", MNU_EXPORT_TIF, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
-	mnu = mmnu->AddSubMenu((const UTF8Char*)"&Navigate");
-	mnu->AddItem((const UTF8Char*)"Move Up", MNU_MOVE_UP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_UP);
-	mnu->AddItem((const UTF8Char*)"Move Down", MNU_MOVE_DOWN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DOWN);
+	mnu = mmnu->AddSubMenu(CSTR("&Export"));
+	mnu->AddItem(CSTR("Export Selected"), MNU_EXPORT_SEL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("Export as TIF"), MNU_EXPORT_TIF, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
+	mnu = mmnu->AddSubMenu(CSTR("&Navigate"));
+	mnu->AddItem(CSTR("Move Up"), MNU_MOVE_UP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_UP);
+	mnu->AddItem(CSTR("Move Down"), MNU_MOVE_DOWN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_DOWN);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"Select All", MNU_SEL_ALL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_A);
+	mnu->AddItem(CSTR("Select All"), MNU_SEL_ALL, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_A);
 	this->SetMenu(mmnu);
 	this->SetClosingHandler(OnFormClosing, this);
 }

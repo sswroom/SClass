@@ -71,14 +71,14 @@ SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(UI::GUICore *ui, UI::GUIClientContr
 	UI::GUIMenu *mnu;
 
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Maintain");
-	mnu->AddItem((const UTF8Char*)"&DVDType", MNU_DVDTYPE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Maintain"));
+	mnu->AddItem(CSTR("&DVDType"), MNU_DVDTYPE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&New");
-	mnu->AddItem((const UTF8Char*)"&Burnt Disc", MNU_BURNT_DISC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&New"));
+	mnu->AddItem(CSTR("&Burnt Disc"), MNU_BURNT_DISC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Search");
-	mnu->AddItem((const UTF8Char*)"&Burnt Disc", MNU_SEARCH_DISC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Search"));
+	mnu->AddItem(CSTR("&Burnt Disc"), MNU_SEARCH_DISC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	this->SetMenu(this->mnuMain);
 	this->HandleDropFiles(OnFileDrop, this);

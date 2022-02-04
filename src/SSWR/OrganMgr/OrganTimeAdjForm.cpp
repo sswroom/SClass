@@ -261,7 +261,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	this->mapTile = tileMap;
 	NEW_CLASS(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
-	NEW_CLASS(this->mapEnv, Map::MapEnv((const UTF8Char*)"File", 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
+	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(stimg, Media::StaticImage(7, 7, 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	stimg->FillColor(0xff40ffff);

@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRCoreWin::OpenObject(IO::ParsedObject *pobj)
 		{
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)pobj;
 			Map::MapEnv *env;
-			NEW_CLASS(env, Map::MapEnv((const UTF8Char*)"Untitled", 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
+			NEW_CLASS(env, Map::MapEnv(CSTR("Untitled"), 0xffc0c0ff, lyr->GetCoordinateSystem()->Clone()));
 			NEW_CLASS(frm, AVIRead::AVIRGISForm(0, this->ui, this, env, lyr->CreateMapView(320, 240)));
 			((AVIRead::AVIRGISForm*)frm)->AddLayer(lyr);
 			InitForm(frm);

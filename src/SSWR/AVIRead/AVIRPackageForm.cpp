@@ -531,15 +531,15 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 //	UI::GUIMenu *mnu2;
 	UOSInt ind;
 	NEW_CLASS(mnuMain, UI::GUIMainMenu());
-	mnu = mnuMain->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"Save &As...", MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu = mnuMain->AddSubMenu((const UTF8Char*)"&Edit");
-	ind = mnu->AddItem((const UTF8Char*)"&Paste", MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
-	mnu->AddItem((const UTF8Char*)"Copy To...", MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Copy All To...", MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = mnuMain->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("Save &As..."), MNU_SAVEAS, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu = mnuMain->AddSubMenu(CSTR("&Edit"));
+	ind = mnu->AddItem(CSTR("&Paste"), MNU_PASTE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_V);
+	mnu->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Copy All To..."), MNU_COPYALLTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	NEW_CLASS(this->mnuPopup, UI::GUIPopupMenu());
-	this->mnuPopup->AddItem((const UTF8Char*)"Copy To...", MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuPopup->AddItem(CSTR("Copy To..."), MNU_COPYTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	if (!packFile->AllowWrite())
 	{

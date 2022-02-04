@@ -172,84 +172,84 @@ SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, UI
 	this->lbContent->HandleDoubleClicked(OnContentClick, this);
 	
 	NEW_CLASS(menu, Data::ArrayList<MenuInfo*>());
-	menu->Add(NewMenuItem(L"Process Info", MNU_PROC_INFO));
-	menu->Add(NewMenuItem(L"Exit", MNU_EXIT));
+	menu->Add(NewMenuItem(L"Process Info"), MNU_PROC_INFO));
+	menu->Add(NewMenuItem(L"Exit"), MNU_EXIT));
 	this->menuItems->Put(MNU_MISC, menu);
 	this->lbCategory->AddItem(L"Misc", (void*)MNU_MISC);
 	NEW_CLASS(menu, Data::ArrayList<MenuInfo*>());
-	menu->Add(NewMenuItem(L"About", MNU_ABOUT));
+	menu->Add(NewMenuItem(L"About"), MNU_ABOUT));
 	this->menuItems->Put(MNU_HELP, menu);
 	this->lbCategory->AddItem(L"Help", (void*)MNU_HELP);
 
 /*	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
 	mnu = this->mnuMain->AddSubMenu(L"M&isc");
-	mnu->AddItem(L"Open File", MNU_OPEN_FILE, MOD_CONTROL, 'O');
-	mnu->AddItem(L"Open &ODBC", MNU_OPEN_ODBC, 0, 0);
+	mnu->AddItem(L"Open File"), MNU_OPEN_FILE, MOD_CONTROL, 'O');
+	mnu->AddItem(L"Open &ODBC"), MNU_OPEN_ODBC, 0, 0);
 	mnu->AddSeperator();
-	mnu->AddItem(L"Stream Converter", MNU_STREAM_CONV, 0, 0);
-	mnu->AddItem(L"Stream Terminal", MNU_STMTERM, 0, 0);
-	mnu->AddItem(L"File Extractor", MNU_FILEEX, 0, 0);
-	mnu->AddItem(L"File Hash", MNU_FILE_HASH, 0, 0);
-	mnu->AddItem(L"Log Backup", MNU_LOG_BACKUP, 0, 0);
-	mnu->AddItem(L"Text Viewer", MNU_TEXT_VIEWER, 0, 0);
+	mnu->AddItem(L"Stream Converter"), MNU_STREAM_CONV, 0, 0);
+	mnu->AddItem(L"Stream Terminal"), MNU_STMTERM, 0, 0);
+	mnu->AddItem(L"File Extractor"), MNU_FILEEX, 0, 0);
+	mnu->AddItem(L"File Hash"), MNU_FILE_HASH, 0, 0);
+	mnu->AddItem(L"Log Backup"), MNU_LOG_BACKUP, 0, 0);
+	mnu->AddItem(L"Text Viewer"), MNU_TEXT_VIEWER, 0, 0);
 	mnu->AddSeperator();
-	mnu->AddItem(L"Sudoku Solver", MNU_SUDOKU_SOLVER, 0, 0);
-	mnu->AddItem(L"Process Info", MNU_PROC_INFO, 0, 0);
-	mnu->AddItem(L"Text Encrypt", MNU_TEXT_ENCRYPT, 0, 0);
+	mnu->AddItem(L"Sudoku Solver"), MNU_SUDOKU_SOLVER, 0, 0);
+	mnu->AddItem(L"Process Info"), MNU_PROC_INFO, 0, 0);
+	mnu->AddItem(L"Text Encrypt"), MNU_TEXT_ENCRYPT, 0, 0);
 	mnu->AddSeperator();
-	mnu->AddItem(L"Protocol Decoder", MNU_PROTODEC, 0, 0);
+	mnu->AddItem(L"Protocol Decoder"), MNU_PROTODEC, 0, 0);
 	
 	mnu = this->mnuMain->AddSubMenu(L"&Setting");
-	mnu->AddItem(L"Set &CodePage", MNU_SET_CODEPAGE, 0, 0);
-	mnu->AddItem(L"Set &Monitor Color", MNU_SET_COLOR, 0, 0);
-	mnu->AddItem(L"Set &Audio Device", MNU_SET_AUDIO, 0, 0);
-	mnu->AddItem(L"Set Monitor &DPI", MNU_SET_DPI, 0, 0);
+	mnu->AddItem(L"Set &CodePage"), MNU_SET_CODEPAGE, 0, 0);
+	mnu->AddItem(L"Set &Monitor Color"), MNU_SET_COLOR, 0, 0);
+	mnu->AddItem(L"Set &Audio Device"), MNU_SET_AUDIO, 0, 0);
+	mnu->AddItem(L"Set Monitor &DPI"), MNU_SET_DPI, 0, 0);
 
 	mnu = this->mnuMain->AddSubMenu(L"&Network");
-	mnu->AddItem(L"Network Info", MNU_NET_INFO, 0, 0);
+	mnu->AddItem(L"Network Info"), MNU_NET_INFO, 0, 0);
 	mnu->AddSeperator();
-	mnu->AddItem(L"HTTP Server", MNU_HTTP_SVR, 0, 0);
-	mnu->AddItem(L"HTTP Client", MNU_HTTPCLIENT, 0, 0);
-	mnu->AddItem(L"HTTP Proxy Client", MNU_HTTPPROXYCLIENT, 0, 0);
-	mnu->AddItem(L"NTP Client", MNU_NTPCLIENT, 0, 0);
-	mnu->AddItem(L"DNS Client", MNU_DNSCLIENT, 0, 0);
-	mnu->AddItem(L"DNS Proxy", MNU_DNSPROXY, 0, 0);
-	mnu->AddItem(L"SMTP Server", MNU_SMTPSERVER, 0, 0);
-	mnu->AddItem(L"Ping", MNU_NET_PING, 0, 0);
-	mnu->AddItem(L"UDP Capture", MNU_UDP_CAPTURE, 0, 0);
-	mnu->AddItem(L"WHOIS Client", MNU_WHOISCLIENT, 0, 0);
-//	mnu->AddItem(L"Proxy Server", MNU_PROXYSERVER, 0, 0);
+	mnu->AddItem(L"HTTP Server"), MNU_HTTP_SVR, 0, 0);
+	mnu->AddItem(L"HTTP Client"), MNU_HTTPCLIENT, 0, 0);
+	mnu->AddItem(L"HTTP Proxy Client"), MNU_HTTPPROXYCLIENT, 0, 0);
+	mnu->AddItem(L"NTP Client"), MNU_NTPCLIENT, 0, 0);
+	mnu->AddItem(L"DNS Client"), MNU_DNSCLIENT, 0, 0);
+	mnu->AddItem(L"DNS Proxy"), MNU_DNSPROXY, 0, 0);
+	mnu->AddItem(L"SMTP Server"), MNU_SMTPSERVER, 0, 0);
+	mnu->AddItem(L"Ping"), MNU_NET_PING, 0, 0);
+	mnu->AddItem(L"UDP Capture"), MNU_UDP_CAPTURE, 0, 0);
+	mnu->AddItem(L"WHOIS Client"), MNU_WHOISCLIENT, 0, 0);
+//	mnu->AddItem(L"Proxy Server"), MNU_PROXYSERVER, 0, 0);
 	mnu->AddSeperator();
 	mnu2 = mnu->AddSubMenu(L"Test");
-	mnu2->AddItem(L"TCP Conn Test", MNU_TCPTEST, 0, 0);
-	mnu2->AddItem(L"HTTP Test", MNU_HTTPTEST, 0, 0);
+	mnu2->AddItem(L"TCP Conn Test"), MNU_TCPTEST, 0, 0);
+	mnu2->AddItem(L"HTTP Test"), MNU_HTTPTEST, 0, 0);
 
 	mnu = this->mnuMain->AddSubMenu(L"M&edia");
-	mnu->AddItem(L"&Generate Image", MNU_GEN_IMAGE, 0, 0);
-	mnu->AddItem(L"Media Playlist", MNU_PLAYLIST, 0, 0);
-	mnu->AddItem(L"MPEG Tool", MNU_MPEG_TOOL, 0, 0);
-	mnu->AddItem(L"Audio Filter", MNU_AUDIOFILTER, 0, 0);
-	mnu->AddItem(L"Image Batch Tool", MNU_IMAGE_BATCH, 0, 0);
-	mnu->AddItem(L"Profiled Resizer", MNU_PROF_RESIZER, 0, 0);
+	mnu->AddItem(L"&Generate Image"), MNU_GEN_IMAGE, 0, 0);
+	mnu->AddItem(L"Media Playlist"), MNU_PLAYLIST, 0, 0);
+	mnu->AddItem(L"MPEG Tool"), MNU_MPEG_TOOL, 0, 0);
+	mnu->AddItem(L"Audio Filter"), MNU_AUDIOFILTER, 0, 0);
+	mnu->AddItem(L"Image Batch Tool"), MNU_IMAGE_BATCH, 0, 0);
+	mnu->AddItem(L"Profiled Resizer"), MNU_PROF_RESIZER, 0, 0);
 
 	mnu = this->mnuMain->AddSubMenu(L"&Map");
-	mnu->AddItem(L"Add ESRI Tile Map", MNU_ESRI_MAP, 0, 0);
+	mnu->AddItem(L"Add ESRI Tile Map"), MNU_ESRI_MAP, 0, 0);
 	mnu2 = mnu->AddSubMenu(L"Add &OSM Layer");
-	mnu2->AddItem(L"OSM Tile", MNU_OSM_TILE, 0, 0);
-	mnu2->AddItem(L"Open Cycle Map", MNU_OSM_CYCLE, 0, 0);
-	mnu2->AddItem(L"Transport", MNU_OSM_TRANSP, 0, 0);
-	mnu2->AddItem(L"MapQuest", MNU_OSM_MAPQUEST, 0, 0);
+	mnu2->AddItem(L"OSM Tile"), MNU_OSM_TILE, 0, 0);
+	mnu2->AddItem(L"Open Cycle Map"), MNU_OSM_CYCLE, 0, 0);
+	mnu2->AddItem(L"Transport"), MNU_OSM_TRANSP, 0, 0);
+	mnu2->AddItem(L"MapQuest"), MNU_OSM_MAPQUEST, 0, 0);
 	
 	mnu = this->mnuMain->AddSubMenu(L"&Device");
-	mnu->AddItem(L"&Capture Device", MNU_CAP_DEV, 0, 0);
-	mnu->AddItem(L"&MTK GPS Tracker", MNU_MTK_GPS, 0, 0);
-	mnu->AddItem(L"&GSM Modem", MNU_GSM_MODEM, 0, 0);
-	mnu->AddItem(L"G&PS Tracker", MNU_GPS_TRACKER, 0, 0);
-//	mnu->AddItem(L"&WIA Device", MNU_WIA_DEV, 0, 0);
-	mnu->AddItem(L"&TV Control", MNU_TV_CONTROL, 0, 0);
+	mnu->AddItem(L"&Capture Device"), MNU_CAP_DEV, 0, 0);
+	mnu->AddItem(L"&MTK GPS Tracker"), MNU_MTK_GPS, 0, 0);
+	mnu->AddItem(L"&GSM Modem"), MNU_GSM_MODEM, 0, 0);
+	mnu->AddItem(L"G&PS Tracker"), MNU_GPS_TRACKER, 0, 0);
+//	mnu->AddItem(L"&WIA Device"), MNU_WIA_DEV, 0, 0);
+	mnu->AddItem(L"&TV Control"), MNU_TV_CONTROL, 0, 0);
 
 	mnu = this->mnuMain->AddSubMenu(L"&Help");
-	mnu->AddItem(L"&About...", MNU_ABOUT, 0, 0);*/
+	mnu->AddItem(L"&About..."), MNU_ABOUT, 0, 0);*/
 
 //	this->SetMenu(this->mnuMain);
 }

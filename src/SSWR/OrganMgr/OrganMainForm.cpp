@@ -2794,7 +2794,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->mapTile = tileMap;
 	NEW_CLASS(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
-	NEW_CLASS(this->mapEnv, Map::MapEnv((const UTF8Char*)"File", 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
+	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	this->mapEnv->AddLayer(0, this->mapTileLyr, true);
 	this->imgFontStyle = this->mapEnv->AddFontStyle((const UTF8Char*)"Temp", (const UTF8Char*)"Arial", 12, false, 0xff000000, 2, 0x80ffffff);
 
@@ -2808,27 +2808,27 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuManage")).v);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageGroup")).v, MNU_MANAGE_GROUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageFind")).v, MNU_MANAGE_FIND, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageList")).v, MNU_MANAGE_LIST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTest")).v, MNU_MANAGE_TEST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageClearDir")).v, MNU_MANAGE_CLEAR_DIR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageLocation")).v, MNU_MANAGE_LOCATION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTrip")).v, MNU_MANAGE_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUnkTrip")).v, MNU_MANAGE_UNK_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDatabase")).v, MNU_MANAGE_DATABASE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageBook")).v, MNU_MANAGE_BOOK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUser")).v, MNU_MANAGE_USER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDataFile")).v, MNU_MANAGE_DATAFILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuNav")).v);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavGoUp")).v, MNU_GO_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_BACKSPACE);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavLeft")).v, MNU_NAV_LEFT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_LEFT);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavRight")).v, MNU_NAV_RIGHT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_RIGHT);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavUp")).v, MNU_NAV_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_UP);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavDown")).v, MNU_NAV_DOWN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_DOWN);
-	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuExport")).v);
-	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuExportLite")).v, MNU_EXPORT_LITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuManage")));
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageGroup")), MNU_MANAGE_GROUP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageFind")), MNU_MANAGE_FIND, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageList")), MNU_MANAGE_LIST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTest")), MNU_MANAGE_TEST, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_T);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageClearDir")), MNU_MANAGE_CLEAR_DIR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageLocation")), MNU_MANAGE_LOCATION, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageTrip")), MNU_MANAGE_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUnkTrip")), MNU_MANAGE_UNK_TRIP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDatabase")), MNU_MANAGE_DATABASE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageBook")), MNU_MANAGE_BOOK, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageUser")), MNU_MANAGE_USER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuManageDataFile")), MNU_MANAGE_DATAFILE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuNav")));
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavGoUp")), MNU_GO_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_BACKSPACE);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavLeft")), MNU_NAV_LEFT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_LEFT);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavRight")), MNU_NAV_RIGHT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_RIGHT);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavUp")), MNU_NAV_UP, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_UP);
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuNavDown")), MNU_NAV_DOWN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_DOWN);
+	mnu = this->mnuMain->AddSubMenu(this->env->GetLang(UTF8STRC("MainFormMenuExport")));
+	mnu->AddItem(this->env->GetLang(UTF8STRC("MainFormMenuExportLite")), MNU_EXPORT_LITE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->rootGroup, OrganGroup());

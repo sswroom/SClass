@@ -101,7 +101,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->v, ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
+		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
 		env->SetNString(Text::StrToUInt32(sarr[4]));
 		fileName = baseDir;
 

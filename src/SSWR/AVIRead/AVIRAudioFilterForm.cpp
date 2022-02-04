@@ -1233,8 +1233,8 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 		UI::GUIMainMenu *mmnu;
 		UI::GUIMenu *mnu;
 		NEW_CLASS(mmnu, UI::GUIMainMenu());
-		mnu = mmnu->AddSubMenu((const UTF8Char*)"Setting");
-		mnu->AddItem((const UTF8Char*)"&Set Audio Device", MNU_SET_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		mnu = mmnu->AddSubMenu(CSTR("Setting"));
+		mnu->AddItem(CSTR("&Set Audio Device"), MNU_SET_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		this->SetMenu(mmnu);
 	}
 

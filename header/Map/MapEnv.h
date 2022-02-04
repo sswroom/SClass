@@ -127,7 +127,7 @@ namespace Map
 		void AddGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 		void RemoveGroupUpdatedHandler(GroupItem *group, Map::IMapDrawLayer::UpdatedHandler hdlr, void *obj);
 	public:
-		MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
+		MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys);
 		virtual ~MapEnv();
 
 		virtual IO::ParserType GetParserType();

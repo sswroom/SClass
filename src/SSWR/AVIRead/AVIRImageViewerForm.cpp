@@ -247,17 +247,17 @@ SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(UI::GUIClientControl *pa
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Setting");
-	mnu->AddItem((const UTF8Char*)"Set &Monitor Color", MNU_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Image");
-	mnu->AddItem((const UTF8Char*)"&Save", MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu->AddItem((const UTF8Char*)"&Allow Enlarge", MNU_IMAGE_ENLARGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Info", MNU_IMAGE_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Present");
-	mnu->AddItem((const UTF8Char*)"&Next Image", MNU_IMAGE_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEDOWN);
-	mnu->AddItem((const UTF8Char*)"&Prev Image", MNU_IMAGE_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEUP);
-	mnu->AddItem((const UTF8Char*)"Switch &Fullscreen", MNU_SWITCH_FS, UI::GUIMenu::KM_SHIFT, UI::GUIControl::GK_F5);
-	mnu->AddItem((const UTF8Char*)"Hide Mouse Cursor", MNU_MOUSE_CURSOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_PERIOD);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Setting"));
+	mnu->AddItem(CSTR("Set &Monitor Color"), MNU_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Image"));
+	mnu->AddItem(CSTR("&Save"), MNU_IMAGE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("&Allow Enlarge"), MNU_IMAGE_ENLARGE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Info"), MNU_IMAGE_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Present"));
+	mnu->AddItem(CSTR("&Next Image"), MNU_IMAGE_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEDOWN);
+	mnu->AddItem(CSTR("&Prev Image"), MNU_IMAGE_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_PAGEUP);
+	mnu->AddItem(CSTR("Switch &Fullscreen"), MNU_SWITCH_FS, UI::GUIMenu::KM_SHIFT, UI::GUIControl::GK_F5);
+	mnu->AddItem(CSTR("Hide Mouse Cursor"), MNU_MOUSE_CURSOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_PERIOD);
 	this->SetMenu(this->mnuMain);
 
 	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, this, this->colorSess, this->allowEnlarge, false));

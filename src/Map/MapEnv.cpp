@@ -115,7 +115,7 @@ void Map::MapEnv::RemoveGroupUpdatedHandler(Map::MapEnv::GroupItem *group, Map::
 	
 }
 
-Map::MapEnv::MapEnv(const UTF8Char *fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
+Map::MapEnv::MapEnv(Text::CString fileName, UInt32 bgColor, Math::CoordinateSystem *csys) : IO::ParsedObject(fileName)
 {
 	this->bgColor = bgColor;
 	this->nStr = 1000;

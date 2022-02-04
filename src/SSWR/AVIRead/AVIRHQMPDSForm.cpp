@@ -15,7 +15,7 @@
 #include "UI/GUIVideoBoxDDLQ.h"
 #include "UI/MessageDialog.h"
 
-#include <windows.h>
+//#include <windows.h>
 #define VFSMODE true
 
 typedef enum
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UT
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile(files[i]))
+		if (me->OpenFile({files[i], Text::StrCharCnt(files[i])}))
 			return;
 		i++;
 	}
@@ -263,7 +263,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnDebugClosed(void *userObj, UI::G
 	me->dbgFrm = 0;
 }
 
-Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(const UTF8Char *fileName)
+Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenFile(Text::CString fileName)
 {
 	Parser::ParserList *parsers = this->core->GetParserList();
 	IO::ParsedObject *pobj;
@@ -318,19 +318,19 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 				sptr = Text::StrConcat(sptr, this->currChapInfo->GetChapterName(j));
-				this->mnuChapters->AddItem(sbuff, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				this->mnuChapters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
 		}
 		else
 		{
-			this->mnuChapters->AddItem((const UTF8Char*)"No Chapters", MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			this->mnuChapters->AddItem(CSTR("No Chapters"), MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 		}
 	}
 	else
 	{
-		this->mnuChapters->AddItem((const UTF8Char*)"No Chapter info", MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		this->mnuChapters->AddItem(CSTR("No Chapter info"), MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 	}
 	this->UpdateMenu();
@@ -360,7 +360,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	}
 
 	this->mnuChapters->ClearItems();
-	this->mnuChapters->AddItem((const UTF8Char*)"No Chapters", MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuChapters->AddItem(CSTR("No Chapters"), MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 	this->UpdateMenu();
 }
@@ -391,135 +391,135 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, UI::
 	UI::GUIMenu *mnu2;
 	UI::GUIMenu *mnu3;
 	NEW_CLASS(this->mnu, UI::GUIMainMenu());
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"&Open...", MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
-	mnu->AddItem((const UTF8Char*)"Open C&apture Device", MNU_FILE_CAPTURE_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Create Playlist", MNU_FILE_PLAYLIST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnu->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
+	mnu->AddItem(CSTR("Open C&apture Device"), MNU_FILE_CAPTURE_DEVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Create Playlist"), MNU_FILE_PLAYLIST, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"Set Monitor Color", MNU_FILE_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Set Audio Device", MNU_FILE_AUDIO_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Set Monitor Color"), MNU_FILE_MON_COLOR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Set Audio Device"), MNU_FILE_AUDIO_DEV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"Show &Info", MNU_FILE_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"&Close", MNU_FILE_CLOSE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);//VK_F4);
+	mnu->AddItem(CSTR("Show &Info"), MNU_FILE_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("&Close"), MNU_FILE_CLOSE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_L);//VK_F4);
 
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Playback");
-	mnu->AddItem((const UTF8Char*)"&Start", MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
-	mnu->AddItem((const UTF8Char*)"S&top", MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
-	mnu->AddItem((const UTF8Char*)"&Forward 10 Seconds", MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ADD);
-	mnu->AddItem((const UTF8Char*)"&Backward 10 Seconds", MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SUBTRACT);
-	mnu->AddItem((const UTF8Char*)"&Forward 1 Minute", MNU_PB_FWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_ADD);
-	mnu->AddItem((const UTF8Char*)"&Backward 1 Minute", MNU_PB_BWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_SUBTRACT);
-	mnu->AddItem((const UTF8Char*)"Store Curr Time", MNU_PB_STORE_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_Q);
-	mnu->AddItem((const UTF8Char*)"Resume Stored Time", MNU_PB_RESUME_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_W);
+	mnu = this->mnu->AddSubMenu(CSTR("&Playback"));
+	mnu->AddItem(CSTR("&Start"), MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
+	mnu->AddItem(CSTR("S&top"), MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("&Forward 10 Seconds"), MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ADD);
+	mnu->AddItem(CSTR("&Backward 10 Seconds"), MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SUBTRACT);
+	mnu->AddItem(CSTR("&Forward 1 Minute"), MNU_PB_FWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_ADD);
+	mnu->AddItem(CSTR("&Backward 1 Minute"), MNU_PB_BWD2, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_SUBTRACT);
+	mnu->AddItem(CSTR("Store Curr Time"), MNU_PB_STORE_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_Q);
+	mnu->AddItem(CSTR("Resume Stored Time"), MNU_PB_RESUME_TIME, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_W);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"&Previous Chapter", MNU_PB_CHAP_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
-	mnu->AddItem((const UTF8Char*)"&Next Chapter", MNU_PB_CHAP_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
-	this->mnuChapters = mnu->AddSubMenu((const UTF8Char*)"&Chapters");
+	mnu->AddItem(CSTR("&Previous Chapter"), MNU_PB_CHAP_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
+	mnu->AddItem(CSTR("&Next Chapter"), MNU_PB_CHAP_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
+	this->mnuChapters = mnu->AddSubMenu(CSTR("&Chapters"));
 
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Video");
-	mnu->AddItem((const UTF8Char*)"&Original Size", MNU_VIDEO_ORISIZE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_1);
-	mnu->AddItem((const UTF8Char*)"Switch &Fullscreen", MNU_VIDEO_FULLSCN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_ENTER);
+	mnu = this->mnu->AddSubMenu(CSTR("&Video"));
+	mnu->AddItem(CSTR("&Original Size"), MNU_VIDEO_ORISIZE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_1);
+	mnu->AddItem(CSTR("Switch &Fullscreen"), MNU_VIDEO_FULLSCN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_ENTER);
 	mnu->AddSeperator();
-//	mnu->AddItem((const UTF8Char*)"&Crop Detect", MNU_VIDEO_CROP, 0, UI::GUIControl::GK_R);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"&Deinterlace");
-	mnu2->AddItem((const UTF8Char*)"&From Video", MNU_VIDEO_DEINT_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force &Progressive", MNU_VIDEO_DEINT_PROG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force Interlaced (&TFF)", MNU_VIDEO_DEINT_TFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force Interlaced (&BFF)", MNU_VIDEO_DEINT_BFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"30P Mode", MNU_VIDEO_DEINT_30P, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Transfer Func");
-	mnu2->AddItem((const UTF8Char*)"sRGB", MNU_VIDEO_TRANT_sRGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"BT.709", MNU_VIDEO_TRANT_BT709, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Constant Gamma", MNU_VIDEO_TRANT_GAMMA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SMPTE 240M", MNU_VIDEO_TRANT_SMPTE240, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Linear RGB", MNU_VIDEO_TRANT_LINEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"BT.1361", MNU_VIDEO_TRANT_BT1361, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Log100", MNU_VIDEO_TRANT_LOG100, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"LogSqrt10", MNU_VIDEO_TRANT_LOGSQRT10, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"NTSC", MNU_VIDEO_TRANT_NTSC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Log", MNU_VIDEO_TRANT_SLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Log1", MNU_VIDEO_TRANT_SLOG1, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Log2", MNU_VIDEO_TRANT_SLOG2, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Log3", MNU_VIDEO_TRANT_SLOG3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Panasonic V-Log", MNU_VIDEO_TRANT_VLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"YUV Type");
-	mnu2->AddItem((const UTF8Char*)"BT.601", MNU_VIDEO_YUVT_BT601, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"BT.709", MNU_VIDEO_YUVT_BT709, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"FCC", MNU_VIDEO_YUVT_FCC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"BT.470BG", MNU_VIDEO_YUVT_BT470BG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SMPTE170M", MNU_VIDEO_YUVT_SMPTE170M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SMPTE240M", MNU_VIDEO_YUVT_SMPTE240M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Color Primaries");
-	mnu2->AddItem((const UTF8Char*)"From Video", MNU_VIDEO_PRIMARIES_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"sRGB", MNU_VIDEO_PRIMARIES_SRGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Bt.470M", MNU_VIDEO_PRIMARIES_BT470M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Bt.470BG", MNU_VIDEO_PRIMARIES_BT470BG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SMPTE 170M", MNU_VIDEO_PRIMARIES_SMPTE170M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"SMPTE 240M", MNU_VIDEO_PRIMARIES_SMPTE240M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Generic Film", MNU_VIDEO_PRIMARIES_GENERIC_FILM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Bt.2020", MNU_VIDEO_PRIMARIES_BT2020, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Adobe RGB", MNU_VIDEO_PRIMARIES_ADOBE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Apple RGB", MNU_VIDEO_PRIMARIES_APPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"CIE RGB", MNU_VIDEO_PRIMARIES_CIERGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"ColorMatch RGB", MNU_VIDEO_PRIMARIES_COLORMATCH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Wide", MNU_VIDEO_PRIMARIES_WIDE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Gamut3 (S-Gamut)", MNU_VIDEO_PRIMARIES_SGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Sony S-Gamut3.Cine", MNU_VIDEO_PRIMARIES_SGAMUTCINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"DCI-P3", MNU_VIDEO_PRIMARIES_DCI_P3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"ACES-Gamut", MNU_VIDEO_PRIMARIES_ACESGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"ALEXA Wide", MNU_VIDEO_PRIMARIES_ALEXAWIDE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Panasonic V-Gamut", MNU_VIDEO_PRIMARIES_VGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3 = mnu2->AddSubMenu((const UTF8Char*)"Custom White Point");
-	mnu3->AddItem((const UTF8Char*)"D50", MNU_VIDEO_WP_D50, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"D65", MNU_VIDEO_WP_D65, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"2000K", MNU_VIDEO_WP_2000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"2500K", MNU_VIDEO_WP_2500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"3000K", MNU_VIDEO_WP_3000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"3500K", MNU_VIDEO_WP_3500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"4000K", MNU_VIDEO_WP_4000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"4500K", MNU_VIDEO_WP_4500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"5000K", MNU_VIDEO_WP_5000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"5500K", MNU_VIDEO_WP_5500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"6000K", MNU_VIDEO_WP_6000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"6500K", MNU_VIDEO_WP_6500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"7000K", MNU_VIDEO_WP_7000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"7500K", MNU_VIDEO_WP_7500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"8000K", MNU_VIDEO_WP_8000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"8500K", MNU_VIDEO_WP_8500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"9000K", MNU_VIDEO_WP_9000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"9500K", MNU_VIDEO_WP_9500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"10000K", MNU_VIDEO_WP_10000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"11000K", MNU_VIDEO_WP_11000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"12000K", MNU_VIDEO_WP_12000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"13000K", MNU_VIDEO_WP_13000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"14000K", MNU_VIDEO_WP_14000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"15000K", MNU_VIDEO_WP_15000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"16000K", MNU_VIDEO_WP_16000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"17000K", MNU_VIDEO_WP_17000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"18000K", MNU_VIDEO_WP_18000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"19000K", MNU_VIDEO_WP_19000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Source PAR");
-	mnu2->AddItem((const UTF8Char*)"From Video", MNU_VIDEO_SPAR_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Square Pixel", MNU_VIDEO_SPAR_SQR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"1.333", MNU_VIDEO_SPAR_1333, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"0.889 (4:3 on DVD)", MNU_VIDEO_SPAR_DVD4_3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"1.185 (16:9 on DVD)", MNU_VIDEO_SPAR_DVD16_9, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Monitor PAR");
-	mnu2->AddItem((const UTF8Char*)"Square Pixel", MNU_VIDEO_MPAR_SQR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"1:2", MNU_VIDEO_MPAR_1_2, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"Filter");
-	mnu3 = mnu2->AddSubMenu((const UTF8Char*)"IVTC");
-	mnu3->AddItem((const UTF8Char*)"Enable", MNU_VIDEO_IVTC_ENABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3->AddItem((const UTF8Char*)"Disable", MNU_VIDEO_IVTC_DISABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3 = mnu2->AddSubMenu((const UTF8Char*)"UV Offset");
-	mnu3->AddItem((const UTF8Char*)"Move Left", MNU_VIDEO_UVOFST_LEFT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_4);
-	mnu3->AddItem((const UTF8Char*)"Move Right", MNU_VIDEO_UVOFST_RIGHT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_6);
-	mnu3->AddItem((const UTF8Char*)"Reset", MNU_VIDEO_UVOFST_RESET, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu3 = mnu2->AddSubMenu((const UTF8Char*)"Auto Crop");
-	mnu3->AddItem((const UTF8Char*)"Enable", MNU_VIDEO_CROP_ENABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_R);
-	mnu3->AddItem((const UTF8Char*)"Disable", MNU_VIDEO_CROP_DISABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+//	mnu->AddItem(CSTR("&Crop Detect"), MNU_VIDEO_CROP, 0, UI::GUIControl::GK_R);
+	mnu2 = mnu->AddSubMenu(CSTR("&Deinterlace"));
+	mnu2->AddItem(CSTR("&From Video"), MNU_VIDEO_DEINT_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force &Progressive"), MNU_VIDEO_DEINT_PROG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force Interlaced (&TFF)"), MNU_VIDEO_DEINT_TFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force Interlaced (&BFF)"), MNU_VIDEO_DEINT_BFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("30P Mode"), MNU_VIDEO_DEINT_30P, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Transfer Func"));
+	mnu2->AddItem(CSTR("sRGB"), MNU_VIDEO_TRANT_sRGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("BT.709"), MNU_VIDEO_TRANT_BT709, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Constant Gamma"), MNU_VIDEO_TRANT_GAMMA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SMPTE 240M"), MNU_VIDEO_TRANT_SMPTE240, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Linear RGB"), MNU_VIDEO_TRANT_LINEAR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("BT.1361"), MNU_VIDEO_TRANT_BT1361, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Log100"), MNU_VIDEO_TRANT_LOG100, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("LogSqrt10"), MNU_VIDEO_TRANT_LOGSQRT10, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("NTSC"), MNU_VIDEO_TRANT_NTSC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Log"), MNU_VIDEO_TRANT_SLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Log1"), MNU_VIDEO_TRANT_SLOG1, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Log2"), MNU_VIDEO_TRANT_SLOG2, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Log3"), MNU_VIDEO_TRANT_SLOG3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Panasonic V-Log"), MNU_VIDEO_TRANT_VLOG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("YUV Type"));
+	mnu2->AddItem(CSTR("BT.601"), MNU_VIDEO_YUVT_BT601, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("BT.709"), MNU_VIDEO_YUVT_BT709, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("FCC"), MNU_VIDEO_YUVT_FCC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("BT.470BG"), MNU_VIDEO_YUVT_BT470BG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SMPTE170M"), MNU_VIDEO_YUVT_SMPTE170M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SMPTE240M"), MNU_VIDEO_YUVT_SMPTE240M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Color Primaries"));
+	mnu2->AddItem(CSTR("From Video"), MNU_VIDEO_PRIMARIES_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("sRGB"), MNU_VIDEO_PRIMARIES_SRGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Bt.470M"), MNU_VIDEO_PRIMARIES_BT470M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Bt.470BG"), MNU_VIDEO_PRIMARIES_BT470BG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SMPTE 170M"), MNU_VIDEO_PRIMARIES_SMPTE170M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("SMPTE 240M"), MNU_VIDEO_PRIMARIES_SMPTE240M, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Generic Film"), MNU_VIDEO_PRIMARIES_GENERIC_FILM, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Bt.2020"), MNU_VIDEO_PRIMARIES_BT2020, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Adobe RGB"), MNU_VIDEO_PRIMARIES_ADOBE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Apple RGB"), MNU_VIDEO_PRIMARIES_APPLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("CIE RGB"), MNU_VIDEO_PRIMARIES_CIERGB, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("ColorMatch RGB"), MNU_VIDEO_PRIMARIES_COLORMATCH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Wide"), MNU_VIDEO_PRIMARIES_WIDE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Gamut3 (S-Gamut)"), MNU_VIDEO_PRIMARIES_SGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Sony S-Gamut3.Cine"), MNU_VIDEO_PRIMARIES_SGAMUTCINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("DCI-P3"), MNU_VIDEO_PRIMARIES_DCI_P3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("ACES-Gamut"), MNU_VIDEO_PRIMARIES_ACESGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("ALEXA Wide"), MNU_VIDEO_PRIMARIES_ALEXAWIDE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Panasonic V-Gamut"), MNU_VIDEO_PRIMARIES_VGAMUT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3 = mnu2->AddSubMenu(CSTR("Custom White Point"));
+	mnu3->AddItem(CSTR("D50"), MNU_VIDEO_WP_D50, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("D65"), MNU_VIDEO_WP_D65, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("2000K"), MNU_VIDEO_WP_2000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("2500K"), MNU_VIDEO_WP_2500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("3000K"), MNU_VIDEO_WP_3000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("3500K"), MNU_VIDEO_WP_3500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("4000K"), MNU_VIDEO_WP_4000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("4500K"), MNU_VIDEO_WP_4500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("5000K"), MNU_VIDEO_WP_5000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("5500K"), MNU_VIDEO_WP_5500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("6000K"), MNU_VIDEO_WP_6000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("6500K"), MNU_VIDEO_WP_6500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("7000K"), MNU_VIDEO_WP_7000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("7500K"), MNU_VIDEO_WP_7500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("8000K"), MNU_VIDEO_WP_8000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("8500K"), MNU_VIDEO_WP_8500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("9000K"), MNU_VIDEO_WP_9000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("9500K"), MNU_VIDEO_WP_9500K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("10000K"), MNU_VIDEO_WP_10000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("11000K"), MNU_VIDEO_WP_11000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("12000K"), MNU_VIDEO_WP_12000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("13000K"), MNU_VIDEO_WP_13000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("14000K"), MNU_VIDEO_WP_14000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("15000K"), MNU_VIDEO_WP_15000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("16000K"), MNU_VIDEO_WP_16000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("17000K"), MNU_VIDEO_WP_17000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("18000K"), MNU_VIDEO_WP_18000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("19000K"), MNU_VIDEO_WP_19000K, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Source PAR"));
+	mnu2->AddItem(CSTR("From Video"), MNU_VIDEO_SPAR_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Square Pixel"), MNU_VIDEO_SPAR_SQR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("1.333"), MNU_VIDEO_SPAR_1333, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("0.889 (4:3 on DVD)"), MNU_VIDEO_SPAR_DVD4_3, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("1.185 (16:9 on DVD)"), MNU_VIDEO_SPAR_DVD16_9, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Monitor PAR"));
+	mnu2->AddItem(CSTR("Square Pixel"), MNU_VIDEO_MPAR_SQR, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("1:2"), MNU_VIDEO_MPAR_1_2, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("Filter"));
+	mnu3 = mnu2->AddSubMenu(CSTR("IVTC"));
+	mnu3->AddItem(CSTR("Enable"), MNU_VIDEO_IVTC_ENABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3->AddItem(CSTR("Disable"), MNU_VIDEO_IVTC_DISABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3 = mnu2->AddSubMenu(CSTR("UV Offset"));
+	mnu3->AddItem(CSTR("Move Left"), MNU_VIDEO_UVOFST_LEFT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_4);
+	mnu3->AddItem(CSTR("Move Right"), MNU_VIDEO_UVOFST_RIGHT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_OEM_6);
+	mnu3->AddItem(CSTR("Reset"), MNU_VIDEO_UVOFST_RESET, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu3 = mnu2->AddSubMenu(CSTR("Auto Crop"));
+	mnu3->AddItem(CSTR("Enable"), MNU_VIDEO_CROP_ENABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_R);
+	mnu3->AddItem(CSTR("Disable"), MNU_VIDEO_CROP_DISABLE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Audio");
+	mnu = this->mnu->AddSubMenu(CSTR("&Audio"));
 
 	this->SetMenu(this->mnu);
 
@@ -587,11 +587,11 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == 1 || i == INVALID_INDEX)
 				{
-					this->OpenFile(dlg->GetFileName()->v);
+					this->OpenFile(dlg->GetFileName()->ToCString());
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, UTF8STRC("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
 						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);

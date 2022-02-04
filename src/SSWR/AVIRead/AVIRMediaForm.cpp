@@ -114,19 +114,19 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
 				sptr = Text::StrConcat(sptr, this->currChapters->GetChapterName(j));
-				this->mnuChapters->AddItem(sbuff, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				this->mnuChapters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
 		}
 		else
 		{
-			this->mnuChapters->AddItem((const UTF8Char*)"No Chapters", MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			this->mnuChapters->AddItem(CSTR("No Chapters"), MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 		}
 	}
 	else
 	{
-		this->mnuChapters->AddItem((const UTF8Char*)"No Chapter info", MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		this->mnuChapters->AddItem(CSTR("No Chapter info"), MNU_PB_CHAPTERS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 		this->mnuChapters->SetItemEnabled(MNU_PB_CHAPTERS, false);
 	}
 	this->UpdateMenu();
@@ -342,39 +342,39 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GU
 	UI::GUIMenu *mnu;
 	UI::GUIMenu *mnu2;
 	NEW_CLASS(this->mnu, UI::GUIMainMenu());
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Playback");
-	mnu->AddItem((const UTF8Char*)"&Start", MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
-	mnu->AddItem((const UTF8Char*)"S&top", MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
-	mnu->AddItem((const UTF8Char*)"&Forward 10 Seconds", MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ADD);
-	mnu->AddItem((const UTF8Char*)"&Backward 10 Seconds", MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SUBTRACT);
+	mnu = this->mnu->AddSubMenu(CSTR("&Playback"));
+	mnu->AddItem(CSTR("&Start"), MNU_PB_START, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SPACE);
+	mnu->AddItem(CSTR("S&top"), MNU_PB_STOP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_S);
+	mnu->AddItem(CSTR("&Forward 10 Seconds"), MNU_PB_FWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_ADD);
+	mnu->AddItem(CSTR("&Backward 10 Seconds"), MNU_PB_BWD, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_SUBTRACT);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"&Previous Chapter", MNU_PB_CHAP_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
-	mnu->AddItem((const UTF8Char*)"&Next Chapter", MNU_PB_CHAP_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
-	this->mnuChapters = mnu->AddSubMenu((const UTF8Char*)"&Chapters");
+	mnu->AddItem(CSTR("&Previous Chapter"), MNU_PB_CHAP_PREV, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_LEFT);
+	mnu->AddItem(CSTR("&Next Chapter"), MNU_PB_CHAP_NEXT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_RIGHT);
+	this->mnuChapters = mnu->AddSubMenu(CSTR("&Chapters"));
 
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Video");
-	mnu->AddItem((const UTF8Char*)"&Original Size", MNU_VIDEO_ORISIZE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_1);
-	mnu->AddItem((const UTF8Char*)"Switch &Fullscreen", MNU_VIDEO_FULLSCN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_ENTER);
+	mnu = this->mnu->AddSubMenu(CSTR("&Video"));
+	mnu->AddItem(CSTR("&Original Size"), MNU_VIDEO_ORISIZE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_1);
+	mnu->AddItem(CSTR("Switch &Fullscreen"), MNU_VIDEO_FULLSCN, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_ENTER);
 	mnu->AddSeperator();
-	mnu->AddItem((const UTF8Char*)"&Crop Detect", MNU_VIDEO_CROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_R);
-	mnu2 = mnu->AddSubMenu((const UTF8Char*)"&Deinterlace");
-	mnu2->AddItem((const UTF8Char*)"&From Video", MNU_VIDEO_DEINT_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force &Progressive", MNU_VIDEO_DEINT_PROG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force Interlaced (&TFF)", MNU_VIDEO_DEINT_TFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"Force Interlaced (&BFF)", MNU_VIDEO_DEINT_BFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu2->AddItem((const UTF8Char*)"&30P Mode", MNU_VIDEO_DEINT_30P, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("&Crop Detect"), MNU_VIDEO_CROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_R);
+	mnu2 = mnu->AddSubMenu(CSTR("&Deinterlace"));
+	mnu2->AddItem(CSTR("&From Video"), MNU_VIDEO_DEINT_AUTO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force &Progressive"), MNU_VIDEO_DEINT_PROG, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force Interlaced (&TFF)"), MNU_VIDEO_DEINT_TFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("Force Interlaced (&BFF)"), MNU_VIDEO_DEINT_BFF, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("&30P Mode"), MNU_VIDEO_DEINT_30P, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 	
-	mnu = this->mnu->AddSubMenu((const UTF8Char*)"&Audio");
+	mnu = this->mnu->AddSubMenu(CSTR("&Audio"));
 
 	this->SetMenu(this->mnu);
 
 	NEW_CLASS(this->mnuVideo, UI::GUIPopupMenu());
-	this->mnuVideo->AddItem((const UTF8Char*)"&Remove", MNU_POPV_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuVideo->AddItem((const UTF8Char*)"&Save Timecode file", MNU_POPV_SAVE_TIMECODE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuVideo->AddItem(CSTR("&Remove"), MNU_POPV_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuVideo->AddItem(CSTR("&Save Timecode file"), MNU_POPV_SAVE_TIMECODE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	NEW_CLASS(this->mnuAudio, UI::GUIPopupMenu());
-	this->mnuAudio->AddItem((const UTF8Char*)"&Remove", MNU_POPA_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	this->mnuAudio->AddItem((const UTF8Char*)"Frequency Graph", MNU_POPA_FREQ_GRAPH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuAudio->AddItem(CSTR("&Remove"), MNU_POPA_REMOVE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	this->mnuAudio->AddItem(CSTR("Frequency Graph"), MNU_POPA_FREQ_GRAPH, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 
 
 	this->currDecoder = 0;

@@ -55,11 +55,11 @@ UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore
 	this->HandleDropFiles(OnFileDrop, this);
 	this->txtView->HandleTextPosUpdate(OnTextPosUpd, this);
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"&Open...", MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Edit");
-	mnu->AddItem((const UTF8Char*)"&GoTo...", MNU_EDIT_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
-	mnu->AddItem((const UTF8Char*)"&Search", MNU_EDIT_SEARCH, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("&Open..."), MNU_FILE_OPEN, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_O);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Edit"));
+	mnu->AddItem(CSTR("&GoTo..."), MNU_EDIT_GOTO, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_G);
+	mnu->AddItem(CSTR("&Search"), MNU_EDIT_SEARCH, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_F);
 	this->SetMenu(this->mnuMain);
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }

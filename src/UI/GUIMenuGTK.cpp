@@ -479,7 +479,7 @@ UI::GUIMenu::~GUIMenu()
 	DEL_CLASS(this->items);
 }
 
-UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 	UOSInt id = this->itemCnt++;
 	Char buff[128];
@@ -488,7 +488,7 @@ UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyM
 	Bool hasUL = false;
 	MenuItemInfo *mnuItem;
 	GtkWidget *menuItem;
-	Text::StrConcat((UTF8Char*)buff, name);
+	name.ConcatTo((UTF8Char*)buff);
 	while (true)
 	{
 		c = *sptr++;
@@ -537,7 +537,7 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(const UTF8Char *name)
+UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 {
 	UI::GUIMenu *subMenu;
 	NEW_CLASS(subMenu, UI::GUIMenu(true));
@@ -548,18 +548,23 @@ UI::GUIMenu *UI::GUIMenu::AddSubMenu(const UTF8Char *name)
 	Char c;
 	Bool hasUL = false;
 	GtkWidget *menuItem;
-	Text::StrConcat((UTF8Char*)buff, name);
+	name.ConcatTo((UTF8Char*)buff);
 	while (true)
 	{
-		c = *sptr++;
+		c = *sptr;
 		if (c == '&')
 		{
-			sptr[-1] = '_';
+			*sptr = '_';
 			hasUL = true;
+			sptr++;
 		}
 		else if (c == 0)
 		{
 			break;
+		}
+		else
+		{
+			sptr++;
 		}
 	}
 	menuItem = gtk_menu_item_new_with_label(buff);

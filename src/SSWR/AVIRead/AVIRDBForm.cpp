@@ -259,23 +259,24 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&File");
-	mnu->AddItem((const UTF8Char*)"&Save as", MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Table");
-	mnu->AddItem((const UTF8Char*)"Copy as CPP Header", MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Copy as CPP Source", MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu->AddItem((const UTF8Char*)"Copy as Java Entity", MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
-	mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Chart");
-	mnu->AddItem((const UTF8Char*)"&Line Chart", MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&File"));
+	mnu->AddItem(CSTR("&Save as"), MNU_FILE_SAVE, UI::GUIMenu::KM_CONTROL, UI::GUIControl::GK_S);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Table"));
+	mnu->AddItem(CSTR("Copy as CPP Header"), MNU_TABLE_CPP_HEADER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Copy as CPP Source"), MNU_TABLE_CPP_SOURCE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Copy as Java Entity"), MNU_TABLE_JAVA, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu = this->mnuMain->AddSubMenu(CSTR("&Chart"));
+	mnu->AddItem(CSTR("&Line Chart"), MNU_CHART_LINE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	NEW_CLASS(this->dbNames, Data::ArrayList<const UTF8Char*>());
 	if (this->dbt && this->dbt->GetDatabaseNames(this->dbNames) > 0)
 	{
 		UOSInt i = 0;
 		UOSInt j = this->dbNames->GetCount();
-		mnu = this->mnuMain->AddSubMenu((const UTF8Char*)"&Database");
+		mnu = this->mnuMain->AddSubMenu(CSTR("&Database"));
 		while (i < j)
 		{
-			mnu->AddItem(this->dbNames->GetItem(i), (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+			const UTF8Char *dbName = this->dbNames->GetItem(i);
+			mnu->AddItem({dbName, Text::StrCharCnt(dbName)}, (UInt16)(MNU_DATABASE_START + i), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 			i++;
 		}
 	}

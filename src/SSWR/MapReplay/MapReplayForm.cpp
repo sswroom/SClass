@@ -138,7 +138,7 @@ SSWR::MapReplay::MapReplayForm::MapReplayForm(UI::MSWindowUI *ui, UI::MSWindowFo
 	this->SetFormState(FS_MAXIMIZED);
 	this->HandleDropFiles(OnFileDrop, this);
 	NEW_CLASS(this->mnu, UI::MSWindowMainMenu());
-	this->mnu->AddItem(L"Map", MNU_MAP, 0, 0);
+	this->mnu->AddItem(L"Map"), MNU_MAP, 0, 0);
 	this->SetMenu(this->mnu);
 	this->SetFont(0, 9, false);
 
