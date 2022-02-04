@@ -1022,7 +1022,15 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_REPLAY:
 		{
-			this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, (Map::GPSTrack*)((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer, this)), this->popNode);
+			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
+			if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+			{
+				this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISReplayForm(0, this->ui, this->core, (Map::GPSTrack*)lyr, this)), this->popNode);
+			}
+			else
+			{
+				UI::MessageDialog::ShowDialog((const UTF8Char*)"This layer does not support Replay", (const UTF8Char*)"GIS Form", this);
+			}
 		}
 		break;
 	case MNU_LAYER_OPENDB:

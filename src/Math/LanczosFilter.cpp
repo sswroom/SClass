@@ -18,7 +18,9 @@ Double Math::LanczosFilter::Weight(Double phase, UOSInt nTap)
 		return 0.0;
 	}
 
-	ret = Math_Sin(Math::PI * phase) * Math_Sin(Math::PI * phase / dnTap * 2) / (Math::PI * Math::PI * phase * phase / dnTap * 2);
+	Double pp = Math::PI * phase;
+	Double itap = 2 / dnTap;
+	ret = Math_Sin(pp) * Math_Sin(pp * itap) / (pp * pp * itap);
 
 	return ret;
 }

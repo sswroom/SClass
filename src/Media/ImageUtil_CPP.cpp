@@ -398,15 +398,54 @@ extern "C" void ImageUtil_ImageFillAlpha32(UInt8 *pixelPtr, OSInt w, OSInt h, OS
 {
 	OSInt cnt;
 	bpl -= w * 4;
-	while (h-- > 0)
+	if (w & 7)
 	{
-		cnt = w;
-		while (cnt-- > 0)
+		while (h-- > 0)
 		{
-			pixelPtr[3] = a;
-			pixelPtr += 4;
+			if ((cnt = w >> 3) != 0)
+			{
+				while (cnt-- > 0)
+				{
+					pixelPtr[3] = a;
+					pixelPtr[7] = a;
+					pixelPtr[11] = a;
+					pixelPtr[15] = a;
+					pixelPtr[19] = a;
+					pixelPtr[23] = a;
+					pixelPtr[27] = a;
+					pixelPtr[31] = a;
+					pixelPtr += 32;
+				}
+			}
+			cnt = w & 7;
+			while (cnt-- > 0)
+			{
+				pixelPtr[3] = a;
+				pixelPtr += 4;
+			}
+			pixelPtr += bpl;
 		}
-		pixelPtr += bpl;
+	}
+	else
+	{
+		w >>= 3;
+		while (h-- > 0)
+		{
+			cnt = w;
+			while (cnt-- > 0)
+			{
+				pixelPtr[3] = a;
+				pixelPtr[7] = a;
+				pixelPtr[11] = a;
+				pixelPtr[15] = a;
+				pixelPtr[19] = a;
+				pixelPtr[23] = a;
+				pixelPtr[27] = a;
+				pixelPtr[31] = a;
+				pixelPtr += 32;
+			}
+			pixelPtr += bpl;
+		}
 	}
 }
 

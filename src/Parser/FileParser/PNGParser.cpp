@@ -794,7 +794,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 	UInt8 *lastLineStart;
 	UInt8 lastPx[4];
 	UInt8 a;
-	Bool semiTr = false;
+	UInt8 aAnd = 0xff;
 	lastLineStart = 0;
 	currY = initY;
 	while (currY < maxY)
@@ -809,10 +809,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				lineStart[currX * 4 + 1] = srcData[1];
 				lineStart[currX * 4 + 2] = srcData[0];
 				a = lineStart[currX * 4 + 3] = srcData[3];
-				if (a != 0xff)
-				{
-					semiTr = true;
-				}
+				aAnd &= a;
 				srcData += 4;
 				currX += xAdd;
 			}
@@ -829,14 +826,8 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				lastPx[1] = (UInt8)(lastPx[1] + srcData[1]);
 				lastPx[2] = (UInt8)(lastPx[2] + srcData[0]);
 				lastPx[3] = (UInt8)(lastPx[3] + srcData[3]);
-				lineStart[currX * 4 + 0] = lastPx[0];
-				lineStart[currX * 4 + 1] = lastPx[1];
-				lineStart[currX * 4 + 2] = lastPx[2];
-				lineStart[currX * 4 + 3] = lastPx[3];
-				if (lastPx[3] != 0xff)
-				{
-					semiTr = true;
-				}
+				WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
+				aAnd &= lastPx[3];
 				srcData += 4;
 				currX += xAdd;
 			}
@@ -851,10 +842,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 					lineStart[currX * 4 + 1] = (UInt8)(lastLineStart[currX * 4 + 1] + srcData[1]);
 					lineStart[currX * 4 + 2] = (UInt8)(lastLineStart[currX * 4 + 2] + srcData[0]);
 					a = lineStart[currX * 4 + 3] = (UInt8)(lastLineStart[currX * 4 + 3] + srcData[3]);
-					if (a != 0xff)
-					{
-						semiTr = true;
-					}
+					aAnd &= a;
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -867,10 +855,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 					lineStart[currX * 4 + 1] = srcData[1];
 					lineStart[currX * 4 + 2] = srcData[0];
 					a = lineStart[currX * 4 + 3] = srcData[3];
-					if (a != 0xff)
-					{
-						semiTr = true;
-					}
+					aAnd &= a;
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -890,14 +875,8 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 					lastPx[1] = (UInt8)(((lastPx[1] + lastLineStart[currX * 4 + 1]) >> 1) + srcData[1]);
 					lastPx[2] = (UInt8)(((lastPx[2] + lastLineStart[currX * 4 + 2]) >> 1) + srcData[0]);
 					lastPx[3] = (UInt8)(((lastPx[3] + lastLineStart[currX * 4 + 3]) >> 1) + srcData[3]);
-					lineStart[currX * 4 + 0] = lastPx[0];
-					lineStart[currX * 4 + 1] = lastPx[1];
-					lineStart[currX * 4 + 2] = lastPx[2];
-					lineStart[currX * 4 + 3] = lastPx[3];
-					if (lastPx[3] != 0xff)
-					{
-						semiTr = true;
-					}
+					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
+					aAnd &= lastPx[3];
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -914,14 +893,8 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 					lastPx[1] = (UInt8)((lastPx[1] >> 1) + srcData[1]);
 					lastPx[2] = (UInt8)((lastPx[2] >> 1) + srcData[0]);
 					lastPx[3] = (UInt8)((lastPx[3] >> 1) + srcData[3]);
-					lineStart[currX * 4 + 0] = lastPx[0];
-					lineStart[currX * 4 + 1] = lastPx[1];
-					lineStart[currX * 4 + 2] = lastPx[2];
-					lineStart[currX * 4 + 3] = lastPx[3];
-					if (lastPx[3] != 0xff)
-					{
-						semiTr = true;
-					}
+					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
+					aAnd &= lastPx[3];
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -951,14 +924,8 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 						lastPx[2] = (UInt8)(PNGParser_PaethPredictor(lastPx[2], lastLineStart[currX * 4 + 2], lastLineStart[(currX - xAdd) * 4 + 2]) + srcData[0]);
 						lastPx[3] = (UInt8)(PNGParser_PaethPredictor(lastPx[3], lastLineStart[currX * 4 + 3], lastLineStart[(currX - xAdd) * 4 + 3]) + srcData[3]);
 					}
-					lineStart[currX * 4 + 0] = lastPx[0];
-					lineStart[currX * 4 + 1] = lastPx[1];
-					lineStart[currX * 4 + 2] = lastPx[2];
-					lineStart[currX * 4 + 3] = lastPx[3];
-					if (lastPx[3] != 0xff)
-					{
-						semiTr = true;
-					}
+					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
+					aAnd &= lastPx[3];
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -985,14 +952,8 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 						lastPx[2] = (UInt8)(lastPx[2] + srcData[0]);
 						lastPx[3] = (UInt8)(lastPx[3] + srcData[3]);
 					}
-					lineStart[currX * 4 + 0] = lastPx[0];
-					lineStart[currX * 4 + 1] = lastPx[1];
-					lineStart[currX * 4 + 2] = lastPx[2];
-					lineStart[currX * 4 + 3] = lastPx[3];
-					if (lastPx[3] != 0xff)
-					{
-						semiTr = true;
-					}
+					WriteNUInt32(&lineStart[currX * 4], ReadNUInt32(&lastPx[0]));
+					aAnd &= lastPx[3];
 					srcData += 4;
 					currX += xAdd;
 				}
@@ -1006,10 +967,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 				lineStart[currX * 4 + 1] = srcData[1];
 				lineStart[currX * 4 + 2] = srcData[0];
 				a = lineStart[currX * 4 + 3] = srcData[3];
-				if (a != 0xff)
-				{
-					semiTr = true;
-				}
+				aAnd &= a;
 				srcData += 4;
 				currX += xAdd;
 			}
@@ -1018,7 +976,7 @@ UInt8 *PNGParser_ParsePixelsARGB32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, 
 		lastLineStart = lineStart;
 		lineStart += bpl * yAdd;
 	}
-	if (semiTr)
+	if (aAnd != 0xff)
 	{
 		*alphaFound = true;
 	}
@@ -1792,8 +1750,9 @@ UInt8 *PNGParser_ParsePixelsAW32(UInt8 *srcData, UInt8 *destBuff, UOSInt bpl, UO
 void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, UInt8 *dataBuff, Media::FrameInfo *info, Media::ImageList *imgList, UInt32 imgDelay, UInt32 imgX, UInt32 imgY, UInt32 imgW, UInt32 imgH, UInt8 interlaceMeth, UInt8 *palette)
 {
 	Media::StaticImage *simg;
-	if (colorType == 0) //Grayscale
+	switch (colorType)
 	{
+	case 0: //Grayscale
 		if (bitDepth < 8)
 		{
 			UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
@@ -1827,7 +1786,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				pxShift = 4;
 			}
 
-			MemClear(tmpData, storeWidth * info->dispHeight);
+			MemClearAC(tmpData, storeWidth * info->dispHeight);
 				
 			if (interlaceMeth == 1)
 			{
@@ -1951,7 +1910,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			if (info->dispWidth != imgW || info->dispHeight != imgH)
 			{
-				MemClear(simg->data, info->byteSize);
+				MemClearAC(simg->data, info->byteSize);
 			}
 
 			if (interlaceMeth == 1)
@@ -2021,9 +1980,8 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			imgList->AddImage(simg, imgDelay);
 		}
-	}
-	else if (colorType == 2) //RGB
-	{
+		break;
+	case 2: //RGB
 		if (bitDepth == 8)
 		{
 			UOSInt lineAdd;
@@ -2108,358 +2066,363 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 			}
 			imgList->AddImage(simg, imgDelay);
 		}
-	}
-	else if (colorType == 3 && palette != 0) //Indexed
-	{
-		if (bitDepth < 8)
+		break;
+	case 3: //Indexed
+		if (palette != 0)
 		{
-			UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
-			UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispHeight);
-			UInt8 *lineStart;
-			OSInt pxMask;
-			OSInt pxAMask;
-			OSInt pxShift;
-			if (bitDepth == 1)
+			if (bitDepth < 8)
 			{
-				pxMask = 7;
-				pxAMask = 1;
-				pxShift = 1;
-			}
-			else if (bitDepth == 2)
-			{
-				pxMask = 3;
-				pxAMask = 3;
-				pxShift = 2;
-			}
-			else if (bitDepth == 4)
-			{
-				pxMask = 1;
-				pxAMask = 15;
-				pxShift = 4;
-			}
-			else
-			{
-				pxMask = 1;
-				pxAMask = 15;
-				pxShift = 4;
-			}
-
-			MemClear(tmpData, storeWidth * info->dispHeight);
-				
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 4, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 4, imgW, imgH, 4, 8, pxMask, pxAMask, pxShift);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 2, 0, imgW, imgH, 4, 4, pxMask, pxAMask, pxShift);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 2, imgW, imgH, 2, 4, pxMask, pxAMask, pxShift);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 1, 0, imgW, imgH, 2, 2, pxMask, pxAMask, pxShift);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 1, imgW, imgH, 1, 2, pxMask, pxAMask, pxShift);
-			}
-			else
-			{
-				dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 1, 1, pxMask, pxAMask, pxShift);
-			}
-
-			info->atype = Media::AT_ALPHA;
-			info->storeWidth = storeWidth;
-			UOSInt byteCnt;
-			if (bitDepth == 1)
-			{
-				info->storeBPP = 1;
-				info->pf = Media::PF_PAL_1;
-				info->byteSize = storeWidth * info->storeHeight >> 3;
-				NEW_CLASS(simg, Media::StaticImage(info));
-				MemCopyNO(simg->pal, palette, 8);
-
-				byteCnt = info->byteSize;
-				dataBuff = tmpData;
-				lineStart = simg->data;
-				while (byteCnt-- > 0)
+				UOSInt storeWidth = ((info->dispWidth + 15) >> 4) << 4;
+				UInt8 *tmpData = MemAllocA(UInt8, storeWidth * info->dispHeight);
+				UInt8 *lineStart;
+				OSInt pxMask;
+				OSInt pxAMask;
+				OSInt pxShift;
+				if (bitDepth == 1)
 				{
-					*lineStart++ = (UInt8)((dataBuff[0] << 7) | (dataBuff[1] << 6) | (dataBuff[2] << 5) | (dataBuff[3] << 4) | (dataBuff[4] << 3) | (dataBuff[5] << 2) | (dataBuff[6] << 1) | dataBuff[7]);
-					dataBuff += 8;
+					pxMask = 7;
+					pxAMask = 1;
+					pxShift = 1;
+				}
+				else if (bitDepth == 2)
+				{
+					pxMask = 3;
+					pxAMask = 3;
+					pxShift = 2;
+				}
+				else if (bitDepth == 4)
+				{
+					pxMask = 1;
+					pxAMask = 15;
+					pxShift = 4;
+				}
+				else
+				{
+					pxMask = 1;
+					pxAMask = 15;
+					pxShift = 4;
+				}
+
+				MemClearAC(tmpData, storeWidth * info->dispHeight);
+
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 4, 0, imgW, imgH, 8, 8, pxMask, pxAMask, pxShift);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 4, imgW, imgH, 4, 8, pxMask, pxAMask, pxShift);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 2, 0, imgW, imgH, 4, 4, pxMask, pxAMask, pxShift);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 2, imgW, imgH, 2, 4, pxMask, pxAMask, pxShift);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 1, 0, imgW, imgH, 2, 2, pxMask, pxAMask, pxShift);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 1, imgW, imgH, 1, 2, pxMask, pxAMask, pxShift);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsBits(dataBuff, tmpData + imgY * storeWidth + imgX, storeWidth, 0, 0, imgW, imgH, 1, 1, pxMask, pxAMask, pxShift);
+				}
+
+				info->atype = Media::AT_ALPHA;
+				info->storeWidth = storeWidth;
+				UOSInt byteCnt;
+				if (bitDepth == 1)
+				{
+					info->storeBPP = 1;
+					info->pf = Media::PF_PAL_1;
+					info->byteSize = storeWidth * info->storeHeight >> 3;
+					NEW_CLASS(simg, Media::StaticImage(info));
+					MemCopyNO(simg->pal, palette, 8);
+
+					byteCnt = info->byteSize;
+					dataBuff = tmpData;
+					lineStart = simg->data;
+					while (byteCnt-- > 0)
+					{
+						*lineStart++ = (UInt8)((dataBuff[0] << 7) | (dataBuff[1] << 6) | (dataBuff[2] << 5) | (dataBuff[3] << 4) | (dataBuff[4] << 3) | (dataBuff[5] << 2) | (dataBuff[6] << 1) | dataBuff[7]);
+						dataBuff += 8;
+					}
+
+					imgList->AddImage(simg, imgDelay);
+				}
+				else if (bitDepth == 2)
+				{
+					info->storeBPP = 2;
+					info->pf = Media::PF_PAL_2;
+					info->byteSize = storeWidth * info->storeHeight >> 2;
+					NEW_CLASS(simg, Media::StaticImage(info));
+					MemCopyNO(simg->pal, palette, 16);
+
+					byteCnt = info->byteSize;
+					dataBuff = tmpData;
+					lineStart = simg->data;
+					while (byteCnt-- > 0)
+					{
+						*lineStart++ = (UInt8)((dataBuff[0] << 6) | (dataBuff[1] << 4) | (dataBuff[2] << 2) | dataBuff[3]);
+						dataBuff += 4;
+					}
+
+					imgList->AddImage(simg, imgDelay);
+				}
+				else if (bitDepth == 4)
+				{
+					info->storeBPP = 4;
+					info->pf = Media::PF_PAL_4;
+					info->byteSize = storeWidth * info->storeHeight >> 1;
+					NEW_CLASS(simg, Media::StaticImage(info));
+					MemCopyNO(simg->pal, palette, 64);
+
+					byteCnt = info->byteSize;
+					dataBuff = tmpData;
+					lineStart = simg->data;
+					while (byteCnt-- > 0)
+					{
+						*lineStart++ = (UInt8)((dataBuff[0] << 4) | dataBuff[1]);
+						dataBuff += 2;
+					}
+
+					imgList->AddImage(simg, imgDelay);
+				}
+
+				MemFreeA(tmpData);
+			}
+			else if (bitDepth == 8)
+			{
+				info->atype = Media::AT_ALPHA;
+				info->storeWidth = info->dispWidth;
+				info->storeBPP = 8;
+				info->pf = Media::PF_PAL_8;
+				info->byteSize = info->storeWidth * info->storeHeight;
+				NEW_CLASS(simg, Media::StaticImage(info));
+				MemCopyNO(simg->pal, palette, 1024);
+
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 8, 8);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 4, 0, imgW, imgH, 8, 8);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 4, imgW, imgH, 4, 8);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 2, 0, imgW, imgH, 4, 4);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 2, imgW, imgH, 2, 4);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 1, 0, imgW, imgH, 2, 2);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 1, imgW, imgH, 1, 2);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 1, 1);
 				}
 
 				imgList->AddImage(simg, imgDelay);
 			}
-			else if (bitDepth == 2)
+		}
+		break;
+	case 4: //Alpha + White
+		{
+			Bool semiTr = false;
+			if (bitDepth == 8)
 			{
-				info->storeBPP = 2;
-				info->pf = Media::PF_PAL_2;
-				info->byteSize = storeWidth * info->storeHeight >> 2;
-				NEW_CLASS(simg, Media::StaticImage(info));
-				MemCopyNO(simg->pal, palette, 16);
+				UOSInt lineAdd;
 
-				byteCnt = info->byteSize;
-				dataBuff = tmpData;
-				lineStart = simg->data;
-				while (byteCnt-- > 0)
+				info->atype = Media::AT_ALPHA;
+				info->storeBPP = 16;
+				info->pf = Media::PF_W8A8;
+				info->byteSize = info->storeWidth * info->storeHeight * 2;
+				lineAdd = imgList->GetCount();
+				if (lineAdd > 0)
 				{
-					*lineStart++ = (UInt8)((dataBuff[0] << 6) | (dataBuff[1] << 4) | (dataBuff[2] << 2) | dataBuff[3]);
-					dataBuff += 4;
+					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
+					simg = (Media::StaticImage*)simg->Clone();
+					simg->FillColor(0);
 				}
-
+				else
+				{
+					NEW_CLASS(simg, Media::StaticImage(info));
+				}
+				UOSInt bpl = simg->GetDataBpl();
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+				}
+				if (!semiTr)
+				{
+					simg->info->atype = Media::AT_NO_ALPHA;
+				}
 				imgList->AddImage(simg, imgDelay);
 			}
-			else if (bitDepth == 4)
+			else if (bitDepth == 16)
 			{
-				info->storeBPP = 4;
-				info->pf = Media::PF_PAL_4;
-				info->byteSize = storeWidth * info->storeHeight >> 1;
-				NEW_CLASS(simg, Media::StaticImage(info));
-				MemCopyNO(simg->pal, palette, 64);
+				UOSInt lineAdd;
 
-				byteCnt = info->byteSize;
-				dataBuff = tmpData;
-				lineStart = simg->data;
-				while (byteCnt-- > 0)
+				info->atype = Media::AT_ALPHA;
+				info->storeBPP = 32;
+				info->pf = Media::PF_LE_W16A16;
+				info->byteSize = info->storeWidth * info->storeHeight * 4;
+				lineAdd = imgList->GetCount();
+				if (lineAdd > 0)
 				{
-					*lineStart++ = (UInt8)((dataBuff[0] << 4) | dataBuff[1]);
-					dataBuff += 2;
+					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
+					simg = (Media::StaticImage*)simg->Clone();
+					simg->FillColor(0);
 				}
-
+				else
+				{
+					NEW_CLASS(simg, Media::StaticImage(info));
+				}
+				UOSInt bpl = simg->GetDataBpl();
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+				}
+				if (!semiTr)
+				{
+					simg->info->atype = Media::AT_NO_ALPHA;
+				}
 				imgList->AddImage(simg, imgDelay);
 			}
-
-			MemFreeA(tmpData);
+			break;
 		}
-		else if (bitDepth == 8)
+	case 6: //ARGB
 		{
-			info->atype = Media::AT_ALPHA;
-			info->storeWidth = info->dispWidth;
-			info->storeBPP = 8;
-			info->pf = Media::PF_PAL_8;
-			info->byteSize = info->storeWidth * info->storeHeight;
-			NEW_CLASS(simg, Media::StaticImage(info));
-			MemCopyNO(simg->pal, palette, 1024);
+			Bool semiTr = false;
+			if (bitDepth == 8)
+			{
+				UOSInt lineAdd;
 
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 8, 8);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 4, 0, imgW, imgH, 8, 8);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 4, imgW, imgH, 4, 8);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 2, 0, imgW, imgH, 4, 4);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 2, imgW, imgH, 2, 4);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 1, 0, imgW, imgH, 2, 2);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 1, imgW, imgH, 1, 2);
+				info->atype = Media::AT_ALPHA;
+				info->storeBPP = 32;
+				info->pf = Media::PF_B8G8R8A8;
+				info->byteSize = info->storeWidth * info->storeHeight * 4;
+				lineAdd = imgList->GetCount();
+				if (lineAdd > 0)
+				{
+					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
+					simg = (Media::StaticImage*)simg->Clone();
+					simg->FillColor(0);
+				}
+				else
+				{
+					NEW_CLASS(simg, Media::StaticImage(info));
+				}
+				UOSInt bpl = simg->GetDataBpl();
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+				}
+				if (!semiTr)
+				{
+					simg->info->atype = Media::AT_NO_ALPHA;
+				}
+				imgList->AddImage(simg, imgDelay);
 			}
-			else
+			else if (bitDepth == 16)
 			{
-				dataBuff = PNGParser_ParsePixelsByte(dataBuff, simg->data + imgY * info->storeWidth + imgX, info->storeWidth, 0, 0, imgW, imgH, 1, 1);
-			}
+				UOSInt lineAdd;
 
-			imgList->AddImage(simg, imgDelay);
-		}
-	}
-	else if (colorType == 4) //Alpha + White
-	{
-		Bool semiTr = false;
-		if (bitDepth == 8)
-		{
-			UOSInt lineAdd;
-
-			info->atype = Media::AT_ALPHA;
-			info->storeBPP = 16;
-			info->pf = Media::PF_W8A8;
-			info->byteSize = info->storeWidth * info->storeHeight * 2;
-			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
-			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
-				simg->FillColor(0);
+				info->atype = Media::AT_ALPHA;
+				info->storeBPP = 64;
+				info->pf = Media::PF_LE_B16G16R16A16;
+				info->byteSize = info->storeWidth * info->storeHeight * 8;
+				lineAdd = imgList->GetCount();
+				if (lineAdd > 0)
+				{
+					simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
+					simg = (Media::StaticImage*)simg->Clone();
+					simg->FillColor(0);
+				}
+				else
+				{
+					NEW_CLASS(simg, Media::StaticImage(info));
+				}
+				UOSInt bpl = simg->GetDataBpl();
+				if (interlaceMeth == 1)
+				{
+					//Pass1
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass2
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
+					//Pass3
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
+					//Pass4
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
+					//Pass5
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
+					//Pass6
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
+					//Pass7
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
+				}
+				else
+				{
+					dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
+				}
+				if (!semiTr)
+				{
+					simg->info->atype = Media::AT_NO_ALPHA;
+				}
+				imgList->AddImage(simg, imgDelay);
 			}
-			else
-			{
-				NEW_CLASS(simg, Media::StaticImage(info));
-			}
-			UOSInt bpl = simg->GetDataBpl();
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
-			}
-			else
-			{
-				dataBuff = PNGParser_ParsePixelsAW16(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 2, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
-			}
-			if (!semiTr)
-			{
-				simg->info->atype = Media::AT_NO_ALPHA;
-			}
-			imgList->AddImage(simg, imgDelay);
-		}
-		else if (bitDepth == 16)
-		{
-			UOSInt lineAdd;
-
-			info->atype = Media::AT_ALPHA;
-			info->storeBPP = 32;
-			info->pf = Media::PF_LE_W16A16;
-			info->byteSize = info->storeWidth * info->storeHeight * 4;
-			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
-			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
-				simg->FillColor(0);
-			}
-			else
-			{
-				NEW_CLASS(simg, Media::StaticImage(info));
-			}
-			UOSInt bpl = simg->GetDataBpl();
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
-			}
-			else
-			{
-				dataBuff = PNGParser_ParsePixelsAW32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
-			}
-			if (!semiTr)
-			{
-				simg->info->atype = Media::AT_NO_ALPHA;
-			}
-			imgList->AddImage(simg, imgDelay);
-		}
-	}
-	else if (colorType == 6) //ARGB
-	{
-		Bool semiTr = false;
-		if (bitDepth == 8)
-		{
-			UOSInt lineAdd;
-
-			info->atype = Media::AT_ALPHA;
-			info->storeBPP = 32;
-			info->pf = Media::PF_B8G8R8A8;
-			info->byteSize = info->storeWidth * info->storeHeight * 4;
-			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
-			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
-				simg->FillColor(0);
-			}
-			else
-			{
-				NEW_CLASS(simg, Media::StaticImage(info));
-			}
-			UOSInt bpl = simg->GetDataBpl();
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
-			}
-			else
-			{
-				dataBuff = PNGParser_ParsePixelsARGB32(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 4, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
-			}
-			if (!semiTr)
-			{
-				simg->info->atype = Media::AT_NO_ALPHA;
-			}
-			imgList->AddImage(simg, imgDelay);
-		}
-		else if (bitDepth == 16)
-		{
-			UOSInt lineAdd;
-
-			info->atype = Media::AT_ALPHA;
-			info->storeBPP = 64;
-			info->pf = Media::PF_LE_B16G16R16A16;
-			info->byteSize = info->storeWidth * info->storeHeight * 8;
-			lineAdd = imgList->GetCount();
-			if (lineAdd > 0)
-			{
-				simg = (Media::StaticImage*)imgList->GetImage(lineAdd - 1, 0);
-				simg = (Media::StaticImage*)simg->Clone();
-				simg->FillColor(0);
-			}
-			else
-			{
-				NEW_CLASS(simg, Media::StaticImage(info));
-			}
-			UOSInt bpl = simg->GetDataBpl();
-			if (interlaceMeth == 1)
-			{
-				//Pass1
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass2
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 4, 0, imgW, imgH, 8, 8, &semiTr);
-				//Pass3
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 4, imgW, imgH, 4, 8, &semiTr);
-				//Pass4
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 2, 0, imgW, imgH, 4, 4, &semiTr);
-				//Pass5
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 2, imgW, imgH, 2, 4, &semiTr);
-				//Pass6
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 1, 0, imgW, imgH, 2, 2, &semiTr);
-				//Pass7
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 1, imgW, imgH, 1, 2, &semiTr);
-			}
-			else
-			{
-				dataBuff = PNGParser_ParsePixelsARGB64(dataBuff, simg->data + imgY * bpl + (UOSInt)imgX * 8, bpl, 0, 0, imgW, imgH, 1, 1, &semiTr);
-			}
-			if (!semiTr)
-			{
-				simg->info->atype = Media::AT_NO_ALPHA;
-			}
-			imgList->AddImage(simg, imgDelay);
+			break;
 		}
 	}
 }

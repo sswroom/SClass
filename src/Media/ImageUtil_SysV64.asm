@@ -745,20 +745,64 @@ _ImageUtil_ImageFillAlpha32:
 	mov r9,rcx ;bpl
 	sub r9,rax ;bpl
 	mov al,r8b ;a
-	
+	test rsi,7
+	jnz ifa32lop
+	shr rsi,3
+	align 16
+ifa32lop4:
+	mov rcx,rsi ;w >> 2
+	align 16
+ifa32lop4b:
+	mov byte [rdi+3],al
+	mov byte [rdi+7],al
+	mov byte [rdi+11],al
+	mov byte [rdi+15],al
+	mov byte [rdi+19],al
+	mov byte [rdi+23],al
+	mov byte [rdi+27],al
+	mov byte [rdi+31],al
+	add rdi,32
+	dec rcx
+	jnz ifa32lop4b
+	add rdi,r9 ;bpl
+	dec rdx ;h
+	jnz ifa32lop4
+	ret
+
 	align 16
 ifa32lop:
 	mov rcx,rsi ;w
+	shr rcx,3
+	jz ifa32lop2b
 	align 16
 ifa32lop2:
 	mov byte [rdi+3],al
-	lea rdi,[rdi+4]
+	mov byte [rdi+7],al
+	mov byte [rdi+11],al
+	mov byte [rdi+15],al
+	mov byte [rdi+19],al
+	mov byte [rdi+23],al
+	mov byte [rdi+27],al
+	mov byte [rdi+31],al
+	add rdi,32
 	dec rcx
 	jnz ifa32lop2
+	align 16
+ifa32lop2b:
+	mov rcx,rsi
+	and rcx,7
+	align 16
+ifa32lop2c:
+	mov	byte[rdi+3],al
+	add rdi,4
+	dec rcx
+	jnz ifa32lop2c
+
 	add rdi,r9 ;bpl
 	dec rdx ;h
 	jnz ifa32lop
 	ret
+
 
 ;void ImageUtil_ImageAlphaMul32(UInt8 *pixelPtr, OSInt w, OSInt h, OSInt bpl, UInt32 a);
 ;0 retAddr
