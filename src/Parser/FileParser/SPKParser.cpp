@@ -102,13 +102,13 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 			srcPath[customBuff[1]] = 0;
 			j = 2 + (UOSInt)customBuff[1];
 			NEW_CLASS(spkg, IO::SPackageFile(fd->GetFullFileName()->ToCString()));
-			NEW_CLASS(tileMap, Map::OSM::OSMTileMap(srcPath, spkg, 18, this->sockf, this->ssl));
+			NEW_CLASS(tileMap, Map::OSM::OSMTileMap({srcPath, customBuff[1]}, spkg, 18, this->sockf, this->ssl));
 			i = 1;
 			while (i < customBuff[0])
 			{
 				MemCopyNO(srcPath, &customBuff[j + 1], customBuff[j]);
 				srcPath[customBuff[j]] = 0;
-				tileMap->AddAlternateURL(srcPath);
+				tileMap->AddAlternateURL({srcPath, customBuff[j]});
 				i++;
 			}
 			MemFree(customBuff);

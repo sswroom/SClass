@@ -1456,8 +1456,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_TEST:
 		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMCacheTest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://127.0.0.1/", u8buff, 18, this->core->GetSocketFactory(), this->ssl));
+		u8ptr = IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMCacheTest");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {u8buff, (UOSInt)(u8ptr - u8buff)}, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;

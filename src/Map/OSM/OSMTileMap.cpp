@@ -17,13 +17,13 @@ Text::String *Map::OSM::OSMTileMap::GetNextURL()
 	return thisUrl;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::NewNotNull(url));
+	this->urls->Add(Text::String::New(url.v, url.leng));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
-	this->cacheDir = Text::String::NewNotNull(cacheDir);
+	this->cacheDir = Text::String::New(cacheDir.v, cacheDir.leng);
 	this->spkg = 0;
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -32,10 +32,10 @@ Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, 
 	this->maxLevel = maxLevel;
 }
 
-Map::OSM::OSMTileMap::OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::OSM::OSMTileMap::OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::NewNotNull(url));
+	this->urls->Add(Text::String::New(url.v, url.leng));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
 	this->cacheDir = 0;
@@ -61,9 +61,9 @@ Map::OSM::OSMTileMap::~OSMTileMap()
 	SDEL_CLASS(this->spkg);
 }
 
-void Map::OSM::OSMTileMap::AddAlternateURL(const UTF8Char *url)
+void Map::OSM::OSMTileMap::AddAlternateURL(Text::CString url)
 {
-	this->urls->Add(Text::String::NewNotNull(url));
+	this->urls->Add(Text::String::New(url.v, url.leng));
 }
 
 Text::String *Map::OSM::OSMTileMap::GetOSMURL(UOSInt index)

@@ -8,6 +8,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/SSLEngine.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -31,11 +32,11 @@ namespace Map
 
 			Text::String *GetNextURL();
 		public:
-			OSMTileMap(const UTF8Char *url, const UTF8Char *cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
-			OSMTileMap(const UTF8Char *url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CString url, Text::CString cacheDir, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMTileMap(Text::CString url, IO::SPackageFile *spkg, UOSInt maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMTileMap();
 
-			void AddAlternateURL(const UTF8Char *url);
+			void AddAlternateURL(Text::CString url);
 			Text::String *GetOSMURL(UOSInt index);
 			Bool HasSPackageFile();
 			Bool ImportTiles(IO::PackageFile *pkg);

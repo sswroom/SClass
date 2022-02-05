@@ -2789,9 +2789,9 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->txtMapPos->SetReadOnly(true);
 
 	Map::OSM::OSMTileMap *tileMap;
-	NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.opencyclemap.org/cycle/", this->env->GetCacheDir()->v, 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
-	tileMap->AddAlternateURL((const UTF8Char*)"http://b.tile.opencyclemap.org/cycle/");
-	tileMap->AddAlternateURL((const UTF8Char*)"http://c.tile.opencyclemap.org/cycle/");
+	NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.opencyclemap.org/cycle/"), this->env->GetCacheDir()->ToCString(), 18, this->env->GetSocketFactory(), this->env->GetSSLEngine()));
+	tileMap->AddAlternateURL(CSTR("http://b.tile.opencyclemap.org/cycle/"));
+	tileMap->AddAlternateURL(CSTR("http://c.tile.opencyclemap.org/cycle/"));
 	this->mapTile = tileMap;
 	NEW_CLASS(this->mapTileLyr, Map::TileMapLayer(tileMap, this->env->GetParserList()));
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
