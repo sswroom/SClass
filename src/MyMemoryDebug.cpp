@@ -64,7 +64,7 @@ void MemInit()
 	}
 }
 
-void MemSetLogFile(const WChar *logFile)
+void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
 {
 }
 

@@ -207,9 +207,9 @@ Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text:
 	this->Init(conn, srid, tableName);
 }
 
-Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
 {
-	this->Init(conn, srid, tableName);
+	this->Init(conn, srid, tableName.v);
 }
 
 Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()

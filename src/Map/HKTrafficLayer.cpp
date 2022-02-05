@@ -842,7 +842,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	}
 }
 
-Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::IMapDrawLayer(CSTR("HKTraffic"), 0, (const UTF8Char*)"HKTraffic")
+Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact) : Map::IMapDrawLayer(CSTR("HKTraffic"), 0, CSTR("HKTraffic"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -1365,7 +1365,7 @@ Map::IMapDrawLayer *Map::HKTrafficLayer::GetNodePoints()
 	const UTF8Char *sptr = sbuff;
 	const UTF8Char *col = (const UTF8Char*)"id";
 	Math::Point *pt;
-	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80), 0, (const UTF8Char*)"HKTrafficNode"));
+	NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("HKTrafficNode"), 1, &col, Math::CoordinateSystemManager::CreateProjCoordinateSystemDefName(Math::CoordinateSystemManager::PCST_HK80), 0, CSTR("HKTrafficNode")));
 	OSInt i = 0;
 	OSInt j = sizeof(nodeTable) / sizeof(nodeTable[0]);
 	while (i < j)

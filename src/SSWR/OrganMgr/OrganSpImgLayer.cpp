@@ -3,7 +3,7 @@
 #include "Math/Point.h"
 #include "SSWR/OrganMgr/OrganSpImgLayer.h"
 
-SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, 0)
+SSWR::OrganMgr::OrganSpImgLayer::OrganSpImgLayer() : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
 	NEW_CLASS(this->objList, Data::ArrayList<UserFileInfo*>());
 	this->ClearItems();

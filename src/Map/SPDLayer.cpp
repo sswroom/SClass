@@ -19,7 +19,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, 0)
+Map::SPDLayer::SPDLayer(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;

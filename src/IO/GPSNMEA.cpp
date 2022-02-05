@@ -289,7 +289,7 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 	record.altitude = 0;
 	record.nSateUsed = 0;
 	record.nSateView = 0;
-	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName.v));
+	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)
 	{

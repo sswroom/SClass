@@ -25,69 +25,69 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 	Map::VectorLayer *layers[OSMTYPECNT];
 	const UTF8Char *colName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Elevation"};
 	const UTF8Char *pgName[2] = {(const UTF8Char*)"Name", (const UTF8Char*)"Type"};
-	static const UTF8Char *layerNames[OSMTYPECNT] = {
-		(const UTF8Char*)"Coastline",
-		(const UTF8Char*)"ResidentialArea",
-		(const UTF8Char*)"CommercialArea",
-		(const UTF8Char*)"IndustrialArea",
-		(const UTF8Char*)"Park", //5
-		(const UTF8Char*)"SchoolArea",
-		(const UTF8Char*)"ParkingArea",
-		(const UTF8Char*)"RiverBank",
-		0,
-		(const UTF8Char*)"Pool", //10
-		(const UTF8Char*)"Stream",
-		0,
-		0,
-		0,
-		(const UTF8Char*)"Railline", //15
-		(const UTF8Char*)"Centerline",
-		(const UTF8Char*)"Footpath",
-		(const UTF8Char*)"Building",
-		(const UTF8Char*)"Cycleway",
-		(const UTF8Char*)"Test", //20
-		(const UTF8Char*)"WireFence",
-		(const UTF8Char*)"GardenCentre",
-		0,
-		0,
-		0, //25
-		0,
-		0,
-		0,
-		0,
-		0, //30
-		(const UTF8Char*)"GuidePost",
-		(const UTF8Char*)"InfoMap",
-		(const UTF8Char*)"LiftGate",
-		(const UTF8Char*)"GraveYard",
-		(const UTF8Char*)"MotorwayJunction", //35
-		(const UTF8Char*)"Shelter",
-		(const UTF8Char*)"Toilet",
-		(const UTF8Char*)"Peak",
-		(const UTF8Char*)"Village",
-		(const UTF8Char*)"Telephone", //40
-		(const UTF8Char*)"BusStation",
-		(const UTF8Char*)"PlaceOfWorship",
-		(const UTF8Char*)"Place",
-		(const UTF8Char*)"Parking",
-		(const UTF8Char*)"Clock", //45
-		(const UTF8Char*)"Taxi",
-		(const UTF8Char*)"Gate",
-		(const UTF8Char*)"Crossing",
-		(const UTF8Char*)"TrafficSignal",
-		(const UTF8Char*)"TurningCircle", //50
-		(const UTF8Char*)"Viewpoint",
-		(const UTF8Char*)"Campsite",
-		(const UTF8Char*)"RailwayStation",
-		(const UTF8Char*)"PowerStation",
-		(const UTF8Char*)"Supermarket", //55
-		(const UTF8Char*)"UnusedMine",
-		(const UTF8Char*)"BBQArea",
-		(const UTF8Char*)"Rock",
-		(const UTF8Char*)"BoundaryStone",
-		(const UTF8Char*)"Pier", //60
-		(const UTF8Char*)"Marina",
-		(const UTF8Char*)"SwimmingPool",
+	static Text::CString layerNames[OSMTYPECNT] = {
+		CSTR("Coastline"),
+		CSTR("ResidentialArea"),
+		CSTR("CommercialArea"),
+		CSTR("IndustrialArea"),
+		CSTR("Park"), //5
+		CSTR("SchoolArea"),
+		CSTR("ParkingArea"),
+		CSTR("RiverBank"),
+		CSTR_NULL,
+		CSTR("Pool"), //10
+		CSTR("Stream"),
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR("Railline"), //15
+		CSTR("Centerline"),
+		CSTR("Footpath"),
+		CSTR("Building"),
+		CSTR("Cycleway"),
+		CSTR("Test"), //20
+		CSTR("WireFence"),
+		CSTR("GardenCentre"),
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR_NULL, //25
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR_NULL,
+		CSTR_NULL, //30
+		CSTR("GuidePost"),
+		CSTR("InfoMap"),
+		CSTR("LiftGate"),
+		CSTR("GraveYard"),
+		CSTR("MotorwayJunction"), //35
+		CSTR("Shelter"),
+		CSTR("Toilet"),
+		CSTR("Peak"),
+		CSTR("Village"),
+		CSTR("Telephone"), //40
+		CSTR("BusStation"),
+		CSTR("PlaceOfWorship"),
+		CSTR("Place"),
+		CSTR("Parking"),
+		CSTR("Clock"), //45
+		CSTR("Taxi"),
+		CSTR("Gate"),
+		CSTR("Crossing"),
+		CSTR("TrafficSignal"),
+		CSTR("TurningCircle"), //50
+		CSTR("Viewpoint"),
+		CSTR("Campsite"),
+		CSTR("RailwayStation"),
+		CSTR("PowerStation"),
+		CSTR("Supermarket"), //55
+		CSTR("UnusedMine"),
+		CSTR("BBQArea"),
+		CSTR("Rock"),
+		CSTR("BoundaryStone"),
+		CSTR("Pier"), //60
+		CSTR("Marina"),
+		CSTR("SwimmingPool"),
 	};
 	Text::XMLAttrib *attr;
 	UOSInt i;
@@ -1375,7 +1375,7 @@ Map::IMapDrawLayer *Map::OSM::OSMParser::ParseLayerNode(Text::XMLReader *reader,
 		MemFree(nodeList->GetItem(i));
 	}
 	Map::MapLayerCollection *layerList;
-	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, (const UTF8Char*)"OSM"));
+	NEW_CLASS(layerList, Map::MapLayerCollection(fileName, CSTR("OSM")));
 	i = 0;
 	while (i < OSMTYPECNT)
 	{

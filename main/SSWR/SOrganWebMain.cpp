@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::String *s;
 	
 //	MemSetBreakPoint(0x4ab9e78);
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"Error.txt", Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	dataHdlr = 0;
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));

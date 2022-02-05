@@ -147,8 +147,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Double t;
 	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SBench.log", Manage::ExceptionRecorder::EA_CLOSE));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBench.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(mut, Sync::Mutex());

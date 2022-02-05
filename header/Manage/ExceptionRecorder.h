@@ -29,7 +29,7 @@ namespace Manage
 		static Text::CString GetExceptionCodeName(UInt32 exCode);
 		static Int32 __stdcall ExceptionHandler(void *exInfo);
 	public:
-		ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction);
+		ExceptionRecorder(Text::CString fileName, ExceptionAction exAction);
 		~ExceptionRecorder();
 	};
 }

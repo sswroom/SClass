@@ -59,10 +59,10 @@ Map::IMapDrawLayer::IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text
 	this->flags = 0;
 }
 
-Map::IMapDrawLayer::IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, const UTF8Char *layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
+Map::IMapDrawLayer::IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName) : DB::ReadingDB(sourceName)//IO::ParsedObject(sourceName)
 {
 	this->nameCol = nameCol;
-	this->layerName = Text::String::NewOrNull(layerName);
+	this->layerName = Text::String::New(layerName.v, layerName.leng);
 	this->csys = 0;
 
 	this->pgColor = 0;

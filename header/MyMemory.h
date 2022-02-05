@@ -47,7 +47,7 @@ void MemPtrChk(void *ptr);
 void MemInit();
 void MemSetBreakPoint(OSInt address);
 void MemSetBreakPoint(OSInt address, UOSInt size);
-void MemSetLogFile(const UTF8Char *logFile);
+void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen);
 void MemLock();
 void MemUnlock();
 void *MAlloc(UOSInt size);

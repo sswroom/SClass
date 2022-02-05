@@ -131,8 +131,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt l;
 	UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SHWInfo.log", Manage::ExceptionRecorder::EA_CLOSE));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SHWInfo.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	IO::Path::GetProcessFileName(sbuff);

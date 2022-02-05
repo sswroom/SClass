@@ -18,7 +18,7 @@ void __stdcall Map::ReloadableMapLayer::InnerUpdated(void *userObj)
 	me->innerLayerMut->UnlockRead();
 }
 
-Map::ReloadableMapLayer::ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, const UTF8Char *layerName) : Map::IMapDrawLayer(fileName, 0, layerName)
+Map::ReloadableMapLayer::ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName) : Map::IMapDrawLayer(fileName, 0, layerName)
 {
 	this->parsers = parsers;
 	this->browser = browser;

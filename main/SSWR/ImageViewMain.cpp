@@ -7,7 +7,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Manage::ExceptionRecorder exHdlr((const UTF8Char*)"Error.txt", Manage::ExceptionRecorder::EA_CLOSE);
+	Manage::ExceptionRecorder exHdlr(CSTR("Error.txt"), Manage::ExceptionRecorder::EA_CLOSE);
 	SSWR::AVIRead::AVIRImageViewerForm *frm;
 	SSWR::AVIRead::AVIRCore *core;
 	UI::GUICore *ui;

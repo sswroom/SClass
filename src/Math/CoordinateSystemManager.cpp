@@ -34,22 +34,22 @@ Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumSRI
 
 Math::CoordinateSystemManager::GeogcsSRInfo Math::CoordinateSystemManager::geogcsSRID[] = {
 //	{srid,  datum, name,    primem,   unit},
-	{4326,  6326,  "WGS 84", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4600,  6600,  "Anguilla 1957", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4601,  6601,  "Antigua 1943", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4602,  6602,  "Dominica 1945", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4603,  6603,  "Grenada 1953", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
-	{4611,  6611,  "Hong Kong 1980", Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4326,  6326,  UTF8STRC("WGS 84"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4600,  6600,  UTF8STRC("Anguilla 1957"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4601,  6601,  UTF8STRC("Antigua 1943"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4602,  6602,  UTF8STRC("Dominica 1945"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4603,  6603,  UTF8STRC("Grenada 1953"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
+	{4611,  6611,  UTF8STRC("Hong Kong 1980"), Math::CoordinateSystem::PT_GREENWICH, Math::CoordinateSystem::UT_DEGREE},
 };
 
 Math::CoordinateSystemManager::ProjcsSRInfo Math::CoordinateSystemManager::projcsSRID[] = {
 //	{srid, geogcsSRID, csysType, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, unit};
-	{2000, 4600, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Anguilla 1957 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2001, 4601, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Antigua 1943 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2002, 4602, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Dominica 1945 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2003, 4603, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Grenada 1953 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
-	{2326, 4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
-	{3857, 4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
+	{2000, 4600, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Anguilla 1957 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2001, 4601, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Antigua 1943 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2002, 4602, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Dominica 1945 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2003, 4603, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Grenada 1953 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, Math::CoordinateSystem::UT_METRE},
+	{2326, 4611, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, Math::CoordinateSystem::UT_METRE},
+	{3857, 4326, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, Math::CoordinateSystem::UT_METRE},
 
 };
 
@@ -103,45 +103,45 @@ Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumLis
 
 Math::CoordinateSystemManager::GeographicCSysInfo Math::CoordinateSystemManager::csysList[] = {
 //	{"srid","geoName", datumName, eet},
-	{0,    "AIRY_1830", "AIRY_1830", Math::EarthEllipsoid::EET_AIRY1830},
-	{0,    "AIRY_1830M", "AIRY_1830", Math::EarthEllipsoid::EET_AIRY1830M},
-	{0,    "Anguilla 1957", "Anguilla_1957", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "Antigua 1943", "Antigua_1943", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "Beijing 1954", "Beijing_1954", Math::EarthEllipsoid::EET_KRASSOVSKY1940},
-	{0,    "CGCS2000", "CGCS2000", Math::EarthEllipsoid::EET_INTL1924},
-	{0,    "Dominica 1945", "Dominica_1945", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "Grenada 1953", "Grenada_1953", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "Hong Kong 1980", "Hong_Kong_1980", Math::EarthEllipsoid::EET_INTL1924},
-	{0,    "HONGKONG", "D_HONGKONG", Math::EarthEllipsoid::EET_INTL1924},
-	{0,    "Macau_2009", "D_Macau_2009", Math::EarthEllipsoid::EET_INTL1924},
-	{0,    "Montserrat 1958", "Montserrat_1958", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "St. Kitts 1955", "St_Kitts_1955", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "St. Lucia 1955", "St_Lucia_1955", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "St. Vincent 1945", "St_Vincent_1945", Math::EarthEllipsoid::EET_CLARKE1880},
-	{0,    "Taiwan_1967", "Taiwan_1967", Math::EarthEllipsoid::EET_SAM1969},
-	{0,    "Taiwan_1997", "Taiwan_1997", Math::EarthEllipsoid::EET_GRS80},
-	{0,    "WGS_1984", "WGS_1984", Math::EarthEllipsoid::EET_WGS84},
-	{4326, "WGS 84", "WGS_1984", Math::EarthEllipsoid::EET_WGS84}
+	{0,    UTF8STRC("AIRY_1830"), "AIRY_1830", Math::EarthEllipsoid::EET_AIRY1830},
+	{0,    UTF8STRC("AIRY_1830M"), "AIRY_1830", Math::EarthEllipsoid::EET_AIRY1830M},
+	{0,    UTF8STRC("Anguilla 1957"), "Anguilla_1957", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("Antigua 1943"), "Antigua_1943", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("Beijing 1954"), "Beijing_1954", Math::EarthEllipsoid::EET_KRASSOVSKY1940},
+	{0,    UTF8STRC("CGCS2000"), "CGCS2000", Math::EarthEllipsoid::EET_INTL1924},
+	{0,    UTF8STRC("Dominica 1945"), "Dominica_1945", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("Grenada 1953"), "Grenada_1953", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("Hong Kong 1980"), "Hong_Kong_1980", Math::EarthEllipsoid::EET_INTL1924},
+	{0,    UTF8STRC("HONGKONG"), "D_HONGKONG", Math::EarthEllipsoid::EET_INTL1924},
+	{0,    UTF8STRC("Macau_2009"), "D_Macau_2009", Math::EarthEllipsoid::EET_INTL1924},
+	{0,    UTF8STRC("Montserrat 1958"), "Montserrat_1958", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("St. Kitts 1955"), "St_Kitts_1955", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("St. Lucia 1955"), "St_Lucia_1955", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("St. Vincent 1945"), "St_Vincent_1945", Math::EarthEllipsoid::EET_CLARKE1880},
+	{0,    UTF8STRC("Taiwan_1967"), "Taiwan_1967", Math::EarthEllipsoid::EET_SAM1969},
+	{0,    UTF8STRC("Taiwan_1997"), "Taiwan_1997", Math::EarthEllipsoid::EET_GRS80},
+	{0,    UTF8STRC("WGS_1984"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84},
+	{4326, UTF8STRC("WGS 84"), "WGS_1984", Math::EarthEllipsoid::EET_WGS84}
 };
 
 Math::CoordinateSystemManager::ProjectedCSysInfo Math::CoordinateSystemManager::pcsysList[] = {
 //	{srid, projName, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, geoName};
-	{2000, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Anguilla 1957 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "Anguilla 1957"},
-	{2001, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Antigua 1943 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "Antigua 1943"},
-	{2435, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Beijing 1954 / 3-degree Gauss-Kruger CM 114E", 500000, 0, 114, 0, 1, "Beijing 1954"},
-	{2002, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Dominica 1945 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "Dominica 1945"},
-	{2003, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Grenada 1953 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "Grenada 1953"},
-	{2326, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Hong Kong 1980 Grid System", 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, "Hong Kong 1980"},
-	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Irish National Grid", 200000, 250000, -8, 53.5, 1.000035, "AIRY_1830M"},
-	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Macau Grid", 20000.00, 20000.00, 113.53646944444444444444444444444, 22.21239722222222222222222222222222, 1, "Macau_2009"},
-	{2004, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Montserrat 1958 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "Montserrat 1958"},
-	{2005, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "St. Kitts 1955 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "St. Kitts 1955"},
-	{2006, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "St. Lucia 1955 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "St. Lucia 1955"},
-	{2006, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "St. Vincent 45 / British West Indies Grid", 400000, 0, -62, 0, 0.9995, "St. Vincent 1945"},
-	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Taiwan 1967 Grid", 250000.00, 0.00, 121.0, 0, 0.9999, "Taiwan_1967"},
-	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "Taiwan 1997 Grid", 250000.00, 0.00, 121.0, 0, 0.9999, "Taiwan_1997"},
-	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, "UK National Grid", 400000, -100000, -2, 49, 0.9996012717, "AIRY_1830"},
-	{3857, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, "WGS 84 / Pseudo-Mercator", 0, 0, 0, 0, 1, "WGS 84"}
+	{2000, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Anguilla 1957 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "Anguilla 1957"},
+	{2001, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Antigua 1943 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "Antigua 1943"},
+	{2435, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Beijing 1954 / 3-degree Gauss-Kruger CM 114E"), 500000, 0, 114, 0, 1, "Beijing 1954"},
+	{2002, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Dominica 1945 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "Dominica 1945"},
+	{2003, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Grenada 1953 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "Grenada 1953"},
+	{2326, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Hong Kong 1980 Grid System"), 836694.05, 819069.80, 114.17855555555555555555555555556, 22.312133333333333333333333333333, 1, "Hong Kong 1980"},
+	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Irish National Grid"), 200000, 250000, -8, 53.5, 1.000035, "AIRY_1830M"},
+	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Macau Grid"), 20000.00, 20000.00, 113.53646944444444444444444444444, 22.21239722222222222222222222222222, 1, "Macau_2009"},
+	{2004, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Montserrat 1958 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "Montserrat 1958"},
+	{2005, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("St. Kitts 1955 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "St. Kitts 1955"},
+	{2006, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("St. Lucia 1955 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "St. Lucia 1955"},
+	{2006, Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("St. Vincent 45 / British West Indies Grid"), 400000, 0, -62, 0, 0.9995, "St. Vincent 1945"},
+	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Taiwan 1967 Grid"), 250000.00, 0.00, 121.0, 0, 0.9999, "Taiwan_1967"},
+	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("Taiwan 1997 Grid"), 250000.00, 0.00, 121.0, 0, 0.9999, "Taiwan_1997"},
+	{0,    Math::CoordinateSystem::CoordinateSystemType::MercatorProjected, UTF8STRC("UK National Grid"), 400000, -100000, -2, 49, 0.9996012717, "AIRY_1830"},
+	{3857, Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected, UTF8STRC("WGS 84 / Pseudo-Mercator"), 0, 0, 0, 0, 1, "WGS 84"}
 };
 
 Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJFile(Text::CString fileName)
@@ -399,12 +399,12 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, (const UTF8Char*)projcs->projName, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	DEL_CLASS(gcsys);
@@ -435,7 +435,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(&data, datum, (const UTF8Char*)datum->datumName, &ellipsoid, spheroid);
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, epsgId, (const UTF8Char*)geogcs->name, &data, geogcs->primem, geogcs->unit));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
 
@@ -463,6 +463,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 	UOSInt i;
 	UOSInt j;
 	UOSInt nameOfst;
+	UOSInt nameLen;
 	UOSInt datumOfst = 0;
 	UOSInt spIndex = 0;
 	Double a = 0;
@@ -477,11 +478,11 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 	if (Text::StrStartsWithC(prjBuff, buffSize, UTF8STRC("GEOGCS[")))
 	{
 		i = 7;
-		if (!ParsePRJString(&prjBuff[i], &j))
+		if (!ParsePRJString(&prjBuff[i], &nameLen))
 			return 0;
 		nameOfst = i + 1;
-		prjBuff[i + j - 1] = 0;
-		i += j;
+		prjBuff[i + nameLen - 1] = 0;
+		i += nameLen;
 		while (true)
 		{
 			c = prjBuff[i];
@@ -657,7 +658,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			FillDatumData(&data, datum, &prjBuff[datumOfst], &ellipsoid, 0);
-			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, (const UTF8Char*)&prjBuff[nameOfst], &data, primem, unit));
+			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
 			return csys;
 		}
 		else
@@ -666,7 +667,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 			const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
 			FillDatumData(&data, datum, &prjBuff[datumOfst], &ellipsoid, 0);
-			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, (const UTF8Char*)&prjBuff[nameOfst], &data, primem, unit));
+			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
 			return csys;
 		}
 	}
@@ -684,11 +685,11 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 		Bool commaFound;
 
 		i = 7;
-		if (!ParsePRJString(&prjBuff[i], &j))
+		if (!ParsePRJString(&prjBuff[i], &nameLen))
 			return 0;
 		nameOfst = i + 1;
-		prjBuff[i + j - 1] = 0;
-		i += j;
+		prjBuff[i + nameLen - 1] = 0;
+		i += nameLen;
 		while (true)
 		{
 			c = prjBuff[i];
@@ -861,12 +862,12 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 		}
 		if (cst == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || cst == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 		{
-			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, (const UTF8Char*)&prjBuff[nameOfst], falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
 			return csys;
 		}
 		else if (cst == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 		{
-			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, (const UTF8Char*)&prjBuff[nameOfst], falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
+			NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, falseEasting, falseNorthing, centralMeridian, latitudeOfOrigin, scaleFactor, gcs, unit));
 			return csys;
 		}
 		else
@@ -1004,11 +1005,11 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::CreateProjCoordi
 	}
 	if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, coord->srid, (const UTF8Char*)coord->projName, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(sourceName, coord->srid, {coord->projName, coord->projNameLen}, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
 	}
 	else if (coord->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, coord->srid, (const UTF8Char*)coord->projName, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(sourceName, coord->srid, {coord->projName, coord->projNameLen}, coord->falseEasting, coord->falseNorthing, coord->centralMeridian, coord->latitudeOfOrigin, coord->scaleFactor, gcs, Math::CoordinateSystem::UT_METRE));
 	}
 	return csys;
 }
@@ -1046,7 +1047,7 @@ const Math::CoordinateSystemManager::ProjectedCSysInfo *Math::CoordinateSystemMa
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareICase(pcsysList[k].projName, (const Char*)name);
+		l = Text::StrCompareICase(pcsysList[k].projName, name);
 		if (l > 0)
 		{
 			j = k - 1;
@@ -1088,7 +1089,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(&data, datum, 0, &ellipsoid, SRGetSpheroid(datum->spheroid));
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, (const UTF8Char*)coord->geoName, &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, {coord->geoName, coord->geoNameLen}, &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
 
@@ -1108,7 +1109,7 @@ const Math::CoordinateSystemManager::GeographicCSysInfo *Math::CoordinateSystemM
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareICase(csysList[k].geoName, (const Char*)name);
+		l = Text::StrCompareICase(csysList[k].geoName, name);
 		if (l > 0)
 		{
 			j = k - 1;

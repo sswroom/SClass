@@ -38,13 +38,14 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::AVIRead::AVIRCore *core;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 	UOSInt argc;
 	UOSInt i;
 	UTF8Char **argv;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile((const UTF8Char*)"Memory.log");
+	MemSetLogFile(UTF8STRC("Memory.log"));
 #ifdef USE_FFMPEG
 	Media::Decoder::FFMPEGDecoder::Enable();
 #endif
@@ -56,8 +57,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #endif
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_CLOSE));
+	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"log");
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_CLOSE));
 	ui = Core::IProgControl::CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRBaseForm(0, ui, core));

@@ -260,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				if (reader->GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 				{
 					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack({fileName, fileNameLen}, true, 0, 0));
+					NEW_CLASS(track, Map::GPSTrack({fileName, fileNameLen}, true, 0, CSTR_NULL));
 					track->SetTrackName({shortName, (UOSInt)(fileName + fileNameLen - shortName)});
 					while (reader->ReadNext())
 					{
@@ -547,7 +547,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							{
 								Text::StringBuilderUTF8 sb;
 								reader->ReadNodeText(&sb);
-								NEW_CLASS(lyr, Map::OruxDBLayer({fileName, fileNameLen}, sb.ToString(), parsers));
+								NEW_CLASS(lyr, Map::OruxDBLayer({fileName, fileNameLen}, sb.ToCString(), parsers));
 								if (lyr->IsError())
 								{
 									DEL_CLASS(lyr);
@@ -737,7 +737,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -839,7 +839,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -997,7 +997,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, 0));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -1647,7 +1647,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 					const UTF8Char *layerName = 0;
 					const UTF8Char *url = 0;
 					Int32 interval = 0;
-					NEW_CLASS(lyr, Map::ReloadableMapLayer(sourceName, parsers, browser, 0));
+					NEW_CLASS(lyr, Map::ReloadableMapLayer(sourceName, parsers, browser, CSTR_NULL));
 				
 					while (reader->ReadNext())
 					{
@@ -1993,7 +1993,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 				}
 
 				const UTF8Char *name = 0;
@@ -2170,7 +2170,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 			{
 				if (imgLyr == 0)
 				{
-					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToString()));
+					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 				}
 
 				const UTF8Char *name = 0;
@@ -2391,7 +2391,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	{
 		Map::MapLayerCollection *lyrColl;
 		UOSInt j;
-		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToString()));
+		NEW_CLASS(lyrColl, Map::MapLayerCollection(sourceName, containerNameSb.ToCString()));
 		i = 0;
 		j = layers.GetCount();
 		while (i < j)
@@ -2919,7 +2919,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE3D, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
 
 				while (reader->ReadNext())
 				{
@@ -3036,7 +3036,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				DB::DBUtil::ColType colType = DB::DBUtil::CT_VarChar;
 				UOSInt colSize = 256;
 				UOSInt colDP = 0;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POINT, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
 				lyr->SetLabelVisible(true);
 				while (reader->ReadNext())
 				{
@@ -3133,7 +3133,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				UOSInt colDP = 0;
 				Data::ArrayListDbl *coord;
 				Data::ArrayListDbl *altList;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, sourceName, 1, &cols, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), &colType, &colSize, &colDP, 0, lyrNameSb.ToCString()));
 
 				NEW_CLASS(coord, Data::ArrayListDbl());
 				NEW_CLASS(altList, Data::ArrayListDbl());
@@ -3217,7 +3217,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GX:MULTITRACK")))
 			{
 				Map::GPSTrack *lyr;
-				NEW_CLASS(lyr, Map::GPSTrack(sourceName, true, 65001, lyrNameSb.ToString()));
+				NEW_CLASS(lyr, Map::GPSTrack(sourceName, true, 65001, lyrNameSb.ToCString()));
 				ParseKMLPlacemarkTrack(reader, lyr, styles);
 				if (style)
 				{

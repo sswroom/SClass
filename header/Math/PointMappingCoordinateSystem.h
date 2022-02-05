@@ -11,8 +11,8 @@ namespace Math
 		Data::ArrayList<Double*> *mappingList;
 
 	public:
-		PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys);
-		PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys);
+		PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys);
+		PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys);
 		virtual ~PointMappingCoordinateSystem();
 
 		void AddMappingPoint(Double mapX, Double mapY, Double baseX, Double baseY);

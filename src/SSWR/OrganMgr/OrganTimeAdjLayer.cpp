@@ -3,7 +3,7 @@
 #include "Math/Point.h"
 #include "SSWR/OrganMgr/OrganTimeAdjLayer.h"
 
-SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, 0)
+SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList) : Map::IMapDrawLayer(CSTR("ImageLayer"), 0, CSTR_NULL)
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;

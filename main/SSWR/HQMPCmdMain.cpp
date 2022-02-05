@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Media::ColorManager *colorMgr;
 		Parser::ParserList *parsers;
 		Media::AudioDevice *audioDev;
-		NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"HQMPCmd.log", Manage::ExceptionRecorder::EA_CLOSE));
+		NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("HQMPCmd.log"), Manage::ExceptionRecorder::EA_CLOSE));
 		NEW_CLASS(monMgr, Media::MonitorMgr());
 		NEW_CLASS(colorMgr, Media::ColorManager());
 		NEW_CLASS(parsers, Parser::FullParserList());

@@ -12,14 +12,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::SMonitor::SMonitorSvrCore *core;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	IO::ConsoleWriter *console;
 
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"SMonitorSvrMem.log");
-	MemSetLogFile(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SMonitorSvrMem.log");
+	MemSetLogFile(sbuff, (UOSInt)(sptr - sbuff));
 	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"SMonitorSvr.err");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SMonitorSvr.err");
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Media::DrawEngineFactory::CreateDrawEngine()));
 	if (!core->IsError())

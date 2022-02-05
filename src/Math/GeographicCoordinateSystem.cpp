@@ -15,7 +15,7 @@ Earth�fs gravitational constant: GM=3.986004418 * 10^14 m^3/s^2
 Angular velocity of the Earth: ��=7.292115 * 10^-5 rad/s
 */
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -38,7 +38,7 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourc
 	this->unit = unit;
 }
 
-Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
@@ -86,7 +86,7 @@ Double Math::GeographicCoordinateSystem::CalPLDistance3D(Math::Polyline3D *pl, M
 Math::CoordinateSystem *Math::GeographicCoordinateSystem::Clone()
 {
 	Math::CoordinateSystem *csys;
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->v, &this->datum, this->primem, this->unit));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), &this->datum, this->primem, this->unit));
 	return csys;
 }
 

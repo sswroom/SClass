@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 				Media::SharedImage *simg;
 				Math::VectorImage *vimg;
 				Media::Image *stimg;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, {files[i], fileNameLen}, 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, {files[i], fileNameLen}, 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;
 				Double calcImgH;
@@ -213,7 +213,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW * 0.5, OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, files[i], 0, 0));
+				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, {files[i], fileNameLen}, 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);
@@ -835,7 +835,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
 			Map::VectorLayer *layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, 0));
+			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, CSTR("Image Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -846,7 +846,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
 			Map::VectorLayer *layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, 0));
+			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POINT, CSTR("Point Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -857,7 +857,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
 			Map::VectorLayer *layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, 0));
+			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Polyline Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -868,7 +868,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj();
 			Map::VectorLayer *layer;
 			const UTF8Char *cols = (const UTF8Char*)"Name";
-			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, 0));
+			NEW_CLASS(layer, Map::VectorLayer(Map::DRAW_LAYER_POLYGON, CSTR("Polygon Layer"), 1, &cols, this->env->GetCoordinateSystem()->Clone(), 0, CSTR_NULL));
 			this->env->AddLayer((Map::MapEnv::GroupItem*)ind->item, layer, true);
 			layer->AddUpdatedHandler(OnMapLayerUpdated, this);
 			this->mapTree->UpdateTree();
@@ -1169,7 +1169,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, true));
 				if (mtk->IsMTKDevice())
 				{
-					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, 0));
+					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
 					if (mtk->ParseLog(trk))
 					{
 						Data::DateTime dt;
@@ -1258,7 +1258,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(gps, IO::GPSNMEA(frm->stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASS(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, 0));
+				NEW_CLASS(trk, Map::GPSTrack(CSTR("GPS_Tracker"), true, 0, CSTR_NULL));
 				gpsFrm->SetGPSTrack(trk);
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
@@ -1280,7 +1280,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(gps, IO::Device::MTKGPSNMEA(frm->stm, true));
 				NEW_CLASS(gpsFrm, SSWR::AVIRead::AVIRGPSTrackerForm(0, this->ui, this->core, gps, true));
 				this->AddSubForm(gpsFrm);
-				NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, 0));
+				NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_GPS_Tracker"), true, 0, CSTR_NULL));
 				gpsFrm->SetGPSTrack(trk);
 				gpsFrm->SetMapNavigator(this);
 				this->AddLayer(trk);
@@ -1295,7 +1295,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Map::VectorLayer *lyr;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_POLYLINE, CSTR("Google Polyline"), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
 				lyr->AddVector(frm->GetPolyline(), (const UTF8Char**)0);
 				this->AddLayer(lyr);
 			}

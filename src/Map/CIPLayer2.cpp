@@ -22,7 +22,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, 0)
+Map::CIPLayer2::CIPLayer2(Text::CString layerName) : Map::IMapDrawLayer(layerName, 0, CSTR_NULL)
 {
 	UTF8Char fname[256];
 	UTF8Char *sptr;

@@ -22,7 +22,7 @@ Map::MapLayerCollection::MapLayerCollection(Text::String *sourceName, Text::Stri
 	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
 }
 
-Map::MapLayerCollection::MapLayerCollection(Text::CString sourceName, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::MapLayerCollection::MapLayerCollection(Text::CString sourceName, Text::CString layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	NEW_CLASS(this->layerList, Data::ArrayList<Map::IMapDrawLayer*>());
 	NEW_CLASS(this->mut, Sync::RWMutex());

@@ -30,7 +30,7 @@ namespace Map
 		DB::DBConn *db;
 
 	public:
-		OruxDBLayer(Text::CString sourceName, const UTF8Char *layerName, Parser::ParserList *parsers);
+		OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers);
 		virtual ~OruxDBLayer();
 
 		Bool IsError();

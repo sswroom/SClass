@@ -14,16 +14,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::AVIRead::AVIRCore *core;
 	Manage::ExceptionRecorder *exHdlr;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile((const UTF8Char*)"Memory.log");
+	MemSetLogFile(UTF8STRC("Memory.log"));
 	IO::Path::GetProcessFileName(sbuff);
 #ifdef _WIN64
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl64.log");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl64.log");
 #else
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl.log");
+	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl.log");
 #endif
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_CLOSE));
 	ui = progCtrl->CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;

@@ -112,9 +112,9 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 	return 0;
 }
 
-Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction)
+Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAction exAction)
 {
-	Manage::ExceptionRecorder::fileName = Text::String::NewNotNull(fileName);
+	Manage::ExceptionRecorder::fileName = Text::String::New(fileName.v, fileName.leng);
 	Manage::ExceptionRecorder::exAction = exAction;
 	ExceptionRecorder_Handler = ExceptionHandler;
 

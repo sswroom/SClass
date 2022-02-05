@@ -16,8 +16,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::SDNSProxy::SDNSProxyCore *core;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SDNSProxy.log", Manage::ExceptionRecorder::EA_RESTART));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)

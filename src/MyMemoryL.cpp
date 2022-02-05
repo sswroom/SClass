@@ -48,7 +48,7 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const UTF8Char *logFile)
+void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
 {
 	if (mcLogFile)
 	{
@@ -57,9 +57,8 @@ void MemSetLogFile(const UTF8Char *logFile)
 	}
 	if (logFile)
 	{
-		UOSInt size = Text::StrCharCnt(logFile);
-		mcLogFile = (const UTF8Char*)malloc((size + 1) * sizeof(UTF8Char));
-		Text::StrConcatC((UTF8Char*)mcLogFile, logFile, size);
+		mcLogFile = (const UTF8Char*)malloc((nameLen + 1) * sizeof(UTF8Char));
+		Text::StrConcatC((UTF8Char*)mcLogFile, logFile, nameLen);
 	}
 }
 

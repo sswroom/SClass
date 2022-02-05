@@ -31,8 +31,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Text::StrToUInt16(argv[1], &webPort);
 	}
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Error.txt"));
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(sbuff, Manage::ExceptionRecorder::EA_RESTART));
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Error.txt"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(wifiCapturer, Net::WiFiCapturer());
 	NEW_CLASS(btCapturer, IO::BTCapturer());
 	if (wifiCapturer->IsError())

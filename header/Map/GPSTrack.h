@@ -74,7 +74,7 @@ namespace Map
 
 	public:
 		GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);
-		GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName);
+		GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName);
 		virtual ~GPSTrack();
 
 		virtual DrawLayerType GetLayerType();

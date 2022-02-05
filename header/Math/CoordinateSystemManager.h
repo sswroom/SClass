@@ -75,7 +75,8 @@ namespace Math
 		{
 			UInt32 srid;
 			UInt32 datum;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 			Math::CoordinateSystem::PrimemType primem;
 			Math::CoordinateSystem::UnitType unit;
 		} GeogcsSRInfo;
@@ -85,7 +86,8 @@ namespace Math
 			UInt32 srid;
 			UInt32 geogcsSRID;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
-			const Char *projName;
+			const UTF8Char *projName;
+			UOSInt projNameLen;
 			Double falseEasting;
 			Double falseNorthing;
 			Double centralMeridian;
@@ -121,7 +123,8 @@ namespace Math
 		{
 			UInt32 srid;
 			Math::CoordinateSystem::CoordinateSystemType csysType;
-			const Char *projName;
+			const UTF8Char *projName;
+			UOSInt projNameLen;
 			Double falseEasting;
 			Double falseNorthing;
 			Double centralMeridian;
@@ -133,7 +136,8 @@ namespace Math
 		typedef struct
 		{
 			UInt32 srid;
-			const Char *geoName;
+			const UTF8Char *geoName;
+			UOSInt geoNameLen;
 			const Char *datumName;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
 		} GeographicCSysInfo;

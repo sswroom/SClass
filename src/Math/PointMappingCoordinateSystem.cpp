@@ -5,13 +5,13 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
 }
 
-Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
+Math::PointMappingCoordinateSystem::PointMappingCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, Math::CoordinateSystem *baseCSys) : Math::CoordinateSystem(sourceName, srid, csysName)
 {
 	this->baseCSys = baseCSys;
 	NEW_CLASS(this->mappingList, Data::ArrayList<Double*>());
@@ -150,7 +150,7 @@ Math::CoordinateSystem *Math::PointMappingCoordinateSystem::Clone()
 	UOSInt i;
 	UOSInt j;
 	Double *ptItem;
-	NEW_CLASS(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->v, this->baseCSys->Clone()));
+	NEW_CLASS(csys, Math::PointMappingCoordinateSystem(this->sourceName, this->srid, this->csysName->ToCString(), this->baseCSys->Clone()));
 	i = 0;
 	j = this->mappingList->GetCount();
 	while (i < j)

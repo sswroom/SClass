@@ -32,7 +32,7 @@ Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codeP
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 }
 
-Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, const UTF8Char *layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codePage, Text::CString layerName) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->codePage = codePage;
 	this->currTrackName = 0;

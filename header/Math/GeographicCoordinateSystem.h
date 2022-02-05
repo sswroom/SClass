@@ -15,8 +15,8 @@ namespace Math
 		UnitType unit;
 
 	public:
-		GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
-		GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, const UTF8Char *csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+		GeographicCoordinateSystem(Text::String *sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
+		GeographicCoordinateSystem(Text::CString sourceName, UInt32 srid, Text::CString csysName, const DatumData1 *datum, PrimemType primem, UnitType unit);
 		virtual ~GeographicCoordinateSystem();
 
 		virtual Double CalSurfaceDistanceXY(Double x1, Double y1, Double x2, Double y2, Math::Unit::Distance::DistanceUnit unit);

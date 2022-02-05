@@ -105,7 +105,7 @@ Map::IMapDrawLayer *Map::HKTDVehRestrict::CreateTonnesSignLayer()
 	UOSInt colSize[] = {11, 32, 255};
 	UOSInt colDP[] = {0, 10, 0};
 	Map::VectorLayer *lyr = 0;
-	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, (const UTF8Char*)"VehRestrict"));
+	NEW_CLASS(lyr, Map::VectorLayer(layerType, CSTR("HKTDVehRestirct"), 3, colNames, this->csys->Clone(), colTypes, colSize, colDP, 0, CSTR("VehRestrict")));
 	
 	DB::DBReader *r = this->db->GetTableData((const UTF8Char*)"VEHICLE_RESTRICTION", 0, 0, 0, 0, 0);
 	if (r)

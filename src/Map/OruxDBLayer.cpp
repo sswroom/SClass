@@ -13,7 +13,7 @@
 #include "Math/VectorImage.h"
 #include "Media/SharedImage.h"
 
-Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, const UTF8Char *layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
+Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName, Parser::ParserList *parsers) : Map::IMapDrawLayer(sourceName, 0, layerName)
 {
 	this->parsers = parsers;
 	NEW_CLASS(this->layerMap, Data::UInt32Map<Map::OruxDBLayer::LayerInfo*>());
@@ -357,7 +357,7 @@ Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
 		y1 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
 		n = Math::PI - 2.0 * Math::PI * projY2;
 		y2 = 180.0 / Math::PI * Math_ArcTan(0.5 * (Math_Exp(n) - Math_Exp(-n)));
-		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, x1, y2, x1 + (lyr->mapXMax - lyr->mapXMin) / lyr->maxX, y1, false, (const UTF8Char*)0, 0, 0));
+		NEW_CLASS(vimg, Math::VectorImage(4326, shImg, x1, y2, x1 + (lyr->mapXMax - lyr->mapXMin) / lyr->maxX, y1, false, CSTR_NULL, 0, 0));
 		DEL_CLASS(shImg);
 		return vimg;
 	}

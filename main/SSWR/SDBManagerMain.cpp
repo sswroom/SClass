@@ -13,8 +13,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::AVIRead::AVIRCore *core;
 	Manage::ExceptionRecorder *exHdlr;
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SDBManager.log", Manage::ExceptionRecorder::EA_RESTART));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDBManager.log"), Manage::ExceptionRecorder::EA_RESTART));
 	ui = Core::IProgControl::CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRDBManagerForm(0, ui, core));

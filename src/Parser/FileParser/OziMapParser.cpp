@@ -194,7 +194,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 				Math::PointMappingCoordinateSystem *csys = 0;
 				Math::VectorImage *vimg;
 				Media::SharedImage *shimg;
-				NEW_CLASS(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, (const UTF8Char*)"PointMapping", Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
+				NEW_CLASS(csys, Math::PointMappingCoordinateSystem(fd->GetFullName(), 4326, CSTR("PointMapping"), Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84)));
 				currPt = 0;
 				while (currPt < nPts)
 				{
@@ -202,7 +202,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 					currPt++;
 				}
 				NEW_CLASS(shimg, Media::SharedImage(imgList, true));
-				NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), shimg, 0, 0, imgW, imgH, false, sbuff, 0, 0));
+				NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), shimg, 0, 0, imgW, imgH, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 				Text::String *s = Text::String::NewNotNull(&sbuff[i + 1]);
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s));

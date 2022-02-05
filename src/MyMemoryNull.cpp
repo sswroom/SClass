@@ -32,7 +32,7 @@ void MemSetBreakPoint(Int32 address)
 	mcBreakPt = address;
 }
 
-void MemSetLogFile(const WChar *logFile)
+void MemSetLogFile(const UTF8Char *logFile, UOSInt nameLen)
 {
 }
 

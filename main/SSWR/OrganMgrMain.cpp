@@ -17,9 +17,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::OrganMgr::OrganSelCategoryForm *cateFrm;
 	SSWR::OrganMgr::OrganEnv *env;
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
+	MemSetLogFile(UTF8STRC("Memory.log"));
 
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"Error.log", Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
 	if (Manage::Process::IsAlreadyStarted())
 	{
 	}

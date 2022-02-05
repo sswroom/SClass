@@ -27,9 +27,9 @@ namespace Math
 		
 	public:
 		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::String *srcAddr, Int64 timeStart, Int64 timeEnd);
-		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd);
+		VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd);
 		virtual ~VectorImage();
 
 		virtual VectorType GetVectorType();

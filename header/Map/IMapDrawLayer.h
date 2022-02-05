@@ -94,7 +94,7 @@ namespace Map
 		typedef void (__stdcall *UpdatedHandler)(void *userObj);
 
 		IMapDrawLayer(Text::String *sourceName, UOSInt nameCol, Text::String *layerName);
-		IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, const UTF8Char *layerName);
+		IMapDrawLayer(Text::CString sourceName, UOSInt nameCol, Text::CString layerName);
 		virtual ~IMapDrawLayer();
 
 		virtual void SetCurrScale(Double scale);

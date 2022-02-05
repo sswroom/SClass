@@ -39,8 +39,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Manage::ExceptionRecorder *exHdlr;
 	IO::ConsoleWriter *console;
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SBenchmarkCli.log", Manage::ExceptionRecorder::EA_CLOSE));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SBenchmarkCli.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	IO::SystemInfo sysInfo;

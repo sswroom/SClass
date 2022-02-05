@@ -163,9 +163,9 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 	}
 }
 
-Manage::ExceptionRecorder::ExceptionRecorder(const UTF8Char *fileName, ExceptionAction exAction)
+Manage::ExceptionRecorder::ExceptionRecorder(Text::CString fileName, ExceptionAction exAction)
 {
-	Manage::ExceptionRecorder::fileName = Text::String::NewNotNull(fileName);
+	Manage::ExceptionRecorder::fileName = Text::String::New(fileName.v, fileName.leng);
 	Manage::ExceptionRecorder::exAction = exAction;
 #ifndef _WIN32_WCE
 	SetUnhandledExceptionFilter((LPTOP_LEVEL_EXCEPTION_FILTER)&ExceptionHandler);

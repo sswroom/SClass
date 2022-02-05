@@ -53,7 +53,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -93,7 +93,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::NewOrNull(srcAddr);
+	this->srcAddr = Text::String::New(srcAddr.v, srcAddr.leng);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;
@@ -149,7 +149,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->zIndex = 0;
 }
 
-Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, const UTF8Char *srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
+Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool scnCoord, Text::CString srcAddr, Int64 timeStart, Int64 timeEnd) : Math::Vector2D(srid)
 {
 	this->img = img->Clone();
 	if (scnCoord)
@@ -189,7 +189,7 @@ Math::VectorImage::VectorImage(UInt32 srid, Media::SharedImage *img, Double x1, 
 	this->scnCoord = scnCoord;
 	this->hasHeight = false;
 	this->height = 0;
-	this->srcAddr = Text::String::NewOrNull(srcAddr);
+	this->srcAddr = Text::String::New(srcAddr.v, srcAddr.leng);
 	this->timeStart = timeStart;
 	this->timeEnd = timeEnd;
 	this->srcAlpha = -1;

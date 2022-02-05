@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::Decoder::IMSDKDecoder::Enable();
 #endif
 
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"Error.log", Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_CLOSE));
 	ui = progCtrl->CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRHQMPForm(0, ui, core, SSWR::AVIRead::AVIRHQMPForm::QM_HQ));

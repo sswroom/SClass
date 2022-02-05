@@ -34,7 +34,7 @@ namespace Map
 
 		static void __stdcall InnerUpdated(void *userObj);
 	public:
-		ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, const UTF8Char *layerName);
+		ReloadableMapLayer(Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, Text::CString layerName);
 		virtual ~ReloadableMapLayer();
 
 		virtual void SetCurrScale(Double scale);

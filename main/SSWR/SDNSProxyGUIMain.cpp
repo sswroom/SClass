@@ -18,8 +18,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConfigFile *cfg;
 
 //	MemSetBreakPoint(0x014746E8);
-	MemSetLogFile((const UTF8Char*)"Memory.log");
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"SDNSProxy.log", Manage::ExceptionRecorder::EA_RESTART));
+	MemSetLogFile(UTF8STRC("Memory.log"));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("SDNSProxy.log"), Manage::ExceptionRecorder::EA_RESTART));
 	ui = Core::IProgControl::CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, ui, core));

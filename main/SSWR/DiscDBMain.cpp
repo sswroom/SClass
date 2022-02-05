@@ -13,9 +13,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UI::GUICore *ui;
 	SSWR::DiscDB::DiscDBEnv *env;
 
-	MemSetLogFile((const UTF8Char*)"Memory.log");
+	MemSetLogFile(UTF8STRC("Memory.log"));
 
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder((const UTF8Char*)"Error.log", Manage::ExceptionRecorder::EA_RESTART));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTR("Error.log"), Manage::ExceptionRecorder::EA_RESTART));
 	ui = progCtrl->CreateGUICore(progCtrl);
 	NEW_CLASS(env, SSWR::DiscDB::DiscDBEnv());
 
