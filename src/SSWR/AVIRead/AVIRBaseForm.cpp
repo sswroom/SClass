@@ -785,6 +785,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[16];
 	UTF8Char *u8ptr;
+	UTF8Char *u8ptr2;
 	Map::TileMap *tileMap;
 	Map::IMapDrawLayer *mapLyr;
 
@@ -966,9 +967,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				const UTF8Char *url = frm->GetSelectedURL();
 				crc.Calc((UInt8*)url, Text::StrCharCnt(url) * sizeof(WChar));
 				crc.GetValue(crcVal);
-				IO::Path::GetProcessFileName(u8buff);
-				Text::StrInt32(u8buff2, ReadMInt32(crcVal));
-				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
+				u8ptr = IO::Path::GetProcessFileName(u8buff);
+				u8ptr2 = Text::StrInt32(u8buff2, ReadMInt32(crcVal));
+				u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, u8buff2, (UOSInt)(u8ptr2 - u8buff2));
 				*u8ptr++ = (UTF8Char)IO::Path::PATH_SEPERATOR;
 				*u8ptr = 0;
 				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory(), this->ssl));
@@ -1455,8 +1456,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TEST:
-		IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMCacheTest");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMCacheTest"));
 		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), {u8buff, (UOSInt)(u8ptr - u8buff)}, 18, this->core->GetSocketFactory(), this->ssl));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);

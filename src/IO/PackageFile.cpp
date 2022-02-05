@@ -315,8 +315,8 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			UOSInt resSize;
 			UOSInt i;
 			Bool diff = false;
-			IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"temp");
+			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("temp"));
 			IO::Path::CreateDirectory(sbuff);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrHexVal64(sptr, (UInt64)t->ToTicks());

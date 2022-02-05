@@ -3956,7 +3956,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
 	UTF8Char *baseDir = layerName;
-	UTF8Char *strs[10];
+	Text::PString strs[10];
 	UTF8Char *sptr;
 	IO::FileStream *fstm;
 	IO::StreamReader *rdr;
@@ -3994,20 +3994,20 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 		{
 			baseDir = Text::StrConcat(layerName, forceBase);
 		}
-		while (rdr->ReadLine(lineBuff, 1023))
+		while ((sptr = rdr->ReadLine(lineBuff, 1023)) != 0)
 		{
 			UOSInt strCnt;
 			Int32 lyrType;
-			strCnt = Text::StrSplitTrim(strs, 10, lineBuff, ',');
+			strCnt = Text::StrSplitTrimP(strs, 10, {lineBuff, (UOSInt)(sptr - lineBuff)}, ',');
 
-			lyrType = Text::StrToInt32(strs[0]);
+			lyrType = Text::StrToInt32(strs[0].v);
 			switch (lyrType)
 			{
 			case 1:
-				this->bgColor = ToColor(strs[1]);
-				this->nLine = Text::StrToUInt32(strs[2]);
-				this->nFont = Text::StrToUInt32(strs[3]);
-				this->nStr = Text::StrToUInt32(strs[4]);
+				this->bgColor = ToColor(strs[1].v);
+				this->nLine = Text::StrToUInt32(strs[2].v);
+				this->nFont = Text::StrToUInt32(strs[3].v);
+				this->nStr = Text::StrToUInt32(strs[4].v);
 				this->lines = MemAlloc(Data::ArrayList<MapLineStyle*>*, this->nLine);
 				this->fonts = MemAlloc(Data::ArrayList<MapFontStyle*>*, this->nFont);
 				i = this->nLine;
@@ -4027,13 +4027,13 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 			case 2:
 				if (forceBase == 0)
 				{
-					fileName.ConcatTo(layerName);
-					baseDir = IO::Path::AppendPath(layerName, strs[1]);
+					baseDir = fileName.ConcatTo(layerName);
+					baseDir = IO::Path::AppendPathC(layerName, baseDir, strs[1].v, strs[1].leng);
 //					baseDir = Text::StrConcat(layerName, strs[1]);
 				}
 				break;
 			case 3:
-				i = Text::StrToUInt32(strs[1]);
+				i = Text::StrToUInt32(strs[1].v);
 				if (i >= this->nLine)
 				{
 					PrintDebug(L"Error found in MapLayer files, line id too large\r\n");
@@ -4047,9 +4047,9 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				if (strCnt == 5)
 				{
 					currLine = MemAlloc(MapLineStyle, 1);
-					currLine->lineType = Text::StrToInt32(strs[2]);
-					currLine->lineWidth = Text::StrToInt32(strs[3]);
-					currLine->color = ToColor(strs[4]);
+					currLine->lineType = Text::StrToInt32(strs[2].v);
+					currLine->lineWidth = Text::StrToInt32(strs[3].v);
+					currLine->color = ToColor(strs[4].v);
 					currLine->styles = 0;
 					this->lines[i]->Add(currLine);
 				}
@@ -4058,21 +4058,21 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					j = 6;
 					while (j < strCnt)
 					{
-						strs[j++][-1] = ',';
+						strs[j++].v[-1] = ',';
 					}
-					sptr = strs[strCnt-1];
+					sptr = strs[strCnt-1].v;
 					while (*sptr++);
 					currLine = MemAlloc(MapLineStyle, 1);
-					currLine->lineType = Text::StrToInt32(strs[2]);
-					currLine->lineWidth = Text::StrToInt32(strs[3]);
-					currLine->color = ToColor(strs[4]);
-					currLine->styles = MemAlloc(UTF8Char, (UOSInt)(sptr - strs[5]));
-					Text::StrConcat(currLine->styles, strs[5]);
+					currLine->lineType = Text::StrToInt32(strs[2].v);
+					currLine->lineWidth = Text::StrToInt32(strs[3].v);
+					currLine->color = ToColor(strs[4].v);
+					currLine->styles = MemAlloc(UTF8Char, (UOSInt)(sptr - strs[5].v));
+					Text::StrConcatC(currLine->styles, strs[5].v, (UOSInt)(sptr - strs[5].v - 1));
 					this->lines[i]->Add(currLine);
 				}
 				break;
 			case 5:
-				i = Text::StrToUInt32(strs[1]);
+				i = Text::StrToUInt32(strs[1].v);
 				if (i >= this->nFont)
 				{
 					PrintDebug(L"Error found in MapLayer files, font id too large\r\n");
@@ -4084,14 +4084,12 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				}
 
 				currFont = MemAlloc(MapFontStyle, 1);
-				currFont->fontType = Text::StrToInt32(strs[2]);
-				sptr = strs[3];
-				while (*sptr++);
-				currFont->fontName = MemAlloc(UTF8Char, (UOSInt)(sptr - strs[3]));
-				Text::StrConcat(currFont->fontName, strs[3]);
-				currFont->fontSizePt = (Text::StrToUInt32(strs[4]) * 3) >> 2;
-				currFont->thick = Text::StrToInt32(strs[5]);
-				currFont->color = ToColor(strs[6]);
+				currFont->fontType = Text::StrToInt32(strs[2].v);
+				currFont->fontName = MemAlloc(UTF8Char, strs[3].leng + 1);
+				strs[3].ConcatTo(currFont->fontName);
+				currFont->fontSizePt = (Text::StrToUInt32(strs[4].v) * 3) >> 2;
+				currFont->thick = Text::StrToInt32(strs[5].v);
+				currFont->color = ToColor(strs[6].v);
 				this->fonts[i]->Add(currFont);
 				break;
 			case 0:
@@ -4102,11 +4100,11 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				{
 					currLayer = MemAlloc(MapLayerStyle, 1);
 					currLayer->drawType = 6;
-					currLayer->minScale = Text::StrToInt32(strs[2]);
-					currLayer->maxScale = Text::StrToInt32(strs[3]);
+					currLayer->minScale = Text::StrToInt32(strs[2].v);
+					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
 
-					Text::StrConcat(baseDir, strs[1]);
+					strs[1].ConcatTo(baseDir);
 					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
@@ -4114,7 +4112,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					}
 					else
 					{
-						currLayer->style = Text::StrToUInt32(strs[4]);
+						currLayer->style = Text::StrToUInt32(strs[4].v);
 						currLayer->bkColor = 0;
 						if (currLayer->style < this->nLine)
 						{
@@ -4127,10 +4125,10 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				{
 					currLayer = MemAlloc(MapLayerStyle, 1);
 					currLayer->drawType = 7;
-					currLayer->minScale = Text::StrToInt32(strs[2]);
-					currLayer->maxScale = Text::StrToInt32(strs[3]);
+					currLayer->minScale = Text::StrToInt32(strs[2].v);
+					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
-					Text::StrConcat(baseDir, strs[1]);
+					strs[1].ConcatTo(baseDir);
 					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
@@ -4138,8 +4136,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					}
 					else
 					{
-						currLayer->style = Text::StrToUInt32(strs[4]);
-						currLayer->bkColor = ToColor(strs[5]);
+						currLayer->style = Text::StrToUInt32(strs[4].v);
+						currLayer->bkColor = ToColor(strs[5].v);
 						if (currLayer->style < this->nLine)
 						{
 							this->drawList->Add(currLayer);
@@ -4155,10 +4153,10 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				{
 					currLayer = MemAlloc(MapLayerStyle, 1);
 					currLayer->drawType = 9;
-					currLayer->minScale = Text::StrToInt32(strs[2]);
-					currLayer->maxScale = Text::StrToInt32(strs[3]);
+					currLayer->minScale = Text::StrToInt32(strs[2].v);
+					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
-					Text::StrConcat(baseDir, strs[1]);
+					strs[1].ConcatTo(baseDir);
 					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
@@ -4166,9 +4164,9 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					}
 					else
 					{
-						currLayer->priority = Text::StrToInt32(strs[4]);
-						currLayer->style = Text::StrToUInt32(strs[5]);
-						currLayer->bkColor = Text::StrToUInt32(strs[6]);
+						currLayer->priority = Text::StrToInt32(strs[4].v);
+						currLayer->style = Text::StrToUInt32(strs[5].v);
+						currLayer->bkColor = Text::StrToUInt32(strs[6].v);
 						if (currLayer->style < this->nFont)
 						{
 							this->drawList->Add(currLayer);
@@ -4179,13 +4177,13 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 			case 10:
 				currLayer = MemAlloc(MapLayerStyle, 1);
 				currLayer->drawType = 10;
-				currLayer->minScale = Text::StrToInt32(strs[2]);
-				currLayer->maxScale = Text::StrToInt32(strs[3]);
+				currLayer->minScale = Text::StrToInt32(strs[2].v);
+				currLayer->maxScale = Text::StrToInt32(strs[3].v);
 				currLayer->img = 0;
 				{
 					IO::StmData::FileData *fd;
 					IO::ParserType pt;
-					NEW_CLASS(fd, IO::StmData::FileData({strs[4], Text::StrCharCnt(strs[4])}, false));
+					NEW_CLASS(fd, IO::StmData::FileData(strs[4].ToCString(), false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)
@@ -4220,7 +4218,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				}
 				if (currLayer->img == 0)
 				{
-					currLayer->img = this->drawEng->LoadImage({strs[4], Text::StrCharCnt(strs[4])});
+					currLayer->img = this->drawEng->LoadImage(strs[4].ToCString());
 				}
 				if (currLayer->img == 0)
 				{
@@ -4228,7 +4226,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				}
 				else
 				{
-					Text::StrConcat(baseDir, strs[1]);
+					strs[1].ConcatTo(baseDir);
 					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
@@ -4256,10 +4254,10 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				{
 					Map::MapConfig2::MapArea *area;
 					area = MemAlloc(Map::MapConfig2::MapArea, 1);
-					area->mcc = Text::StrToInt32(strs[1]);
+					area->mcc = Text::StrToInt32(strs[1].v);
 					if (strCnt > 2)
 					{
-						Text::StrConcat(baseDir, strs[2]);
+						strs[2].ConcatTo(baseDir);
 						NEW_CLASS(area->data, Map::MapLayerData(layerName));
 					}
 					else

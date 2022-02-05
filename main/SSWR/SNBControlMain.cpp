@@ -18,11 +18,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 //	MemSetBreakPoint(0x014746E8);
 	MemSetLogFile(UTF8STRC("Memory.log"));
-	IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::GetProcessFileName(sbuff);
 #ifdef _WIN64
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl64.log");
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBControl64.log"));
 #else
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"SNBControl.log");
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBControl.log"));
 #endif
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_CLOSE));
 	ui = progCtrl->CreateGUICore(progCtrl);

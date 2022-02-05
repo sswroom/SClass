@@ -62,8 +62,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Media::ImageList *imgList;
 		NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Test.tif"));
 		imgList->AddImage(simg2, 0);
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"NearestNeighbourTest.tif");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("NearestNeighbourTest.tif"));
 		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		exporter.ExportFile(fs, sbuff, imgList, 0);
 		DEL_CLASS(fs);

@@ -89,7 +89,7 @@ namespace SSWR
 			void *keyObj;
 
 			Sync::Mutex *cameraMut;
-			Data::StringUTF8Map<CameraCorr*> *cameraMap;
+			Data::StringMap<CameraCorr*> *cameraMap;
 
 			Int32 threadState; //0 = not started, 1 = idle, 2 = initDir, 3 = exporting
 			Int32 threadCtrlCode; //0 = no control, 1 = initDir, 2 = stop thread, 3 = force idle
@@ -103,7 +103,7 @@ namespace SSWR
 			void ThreadCancelTasks();
 			void EndFolder();
 			Bool GetCameraName(Text::StringBuilderUTF8 *sb, Media::EXIFData *exif);
-			Double *GetCameraGamma(const UTF8Char *cameraName, UInt32 *gammaCnt);
+			Double *GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt);
 		public:
 			AVIRImageControl(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::AVIRead::AVIRCore *core, UI::GUIForm *frm, Media::ColorManagerSess *colorSess);
 			virtual ~AVIRImageControl();

@@ -153,8 +153,8 @@ void Net::MACInfoList::Load()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	this->modified = false;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("MACList.txt"));
 	IO::FileStream *fs;
 	Text::PString sarr[3];
 	Text::UTF8Reader *reader;
@@ -217,8 +217,8 @@ Bool Net::MACInfoList::Store()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"MACList.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("MACList.txt"));
 	IO::FileStream *fs;
 	IO::BufferedOutputStream *cstm;
 	UOSInt i;

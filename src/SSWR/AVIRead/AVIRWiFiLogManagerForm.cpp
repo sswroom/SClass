@@ -138,8 +138,8 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("WiFiLog.txt"));
 	return this->wifiLogFile->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
 }
 
@@ -372,8 +372,8 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"WiFiLog.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("WiFiLog.txt"));
 	this->wifiLogFile->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
 	this->LogUIUpdate();
 }

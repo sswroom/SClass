@@ -452,7 +452,7 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF8 *sb,
 	return true;
 }
 
-Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraName, UInt32 *gammaCnt)
+Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName, UInt32 *gammaCnt)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -470,8 +470,8 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(const UTF8Char *cameraNa
 	camera->gammaParam = 0;
 	this->cameraMap->Put(cameraName, camera);
 
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, cameraName);
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, cameraName.v, cameraName.leng);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
@@ -531,7 +531,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 	Media::ColorProfile destColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->dispResizer, Media::Resizer::LanczosResizer8_C8(3, 3, &srcColor, &destColor, colorSess, Media::AT_NO_ALPHA));
 	NEW_CLASS(this->cameraMut, Sync::Mutex());
-	NEW_CLASS(this->cameraMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRImageControl::CameraCorr*>());
+	NEW_CLASS(this->cameraMap, Data::StringMap<SSWR::AVIRead::AVIRImageControl::CameraCorr*>());
 	this->imgMapUpdated = true;
 	this->imgUpdated = false;
 	this->previewSize = 160;
@@ -1059,7 +1059,7 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	Text::StringBuilderUTF8 sb;
 	if (this->GetCameraName(&sb, srcImg->exif))
 	{
-		gammaParam = this->GetCameraGamma(sb.ToString(), &gammaCnt);
+		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
 	}
 	else
 	{
@@ -1097,7 +1097,7 @@ void SSWR::AVIRead::AVIRImageControl::UpdateImgPreview(SSWR::AVIRead::AVIRImageC
 	Media::EXIFData *exif = srcImg->GetEXIF();
 	if (exif && this->GetCameraName(&sb, exif))
 	{
-		gammaParam = this->GetCameraGamma(sb.ToString(), &gammaCnt);
+		gammaParam = this->GetCameraGamma(sb.ToCString(), &gammaCnt);
 	}
 	else
 	{

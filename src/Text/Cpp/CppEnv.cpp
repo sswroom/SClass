@@ -116,7 +116,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 				}
 				else
 				{
-					this->includePaths->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+					this->includePaths->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;
@@ -140,7 +140,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 Text::Cpp::CppEnv::CppEnv(Text::VSProject::VisualStudioVersion vsv)
 {
 	this->pt = Text::CodeProject::PROJT_VSPROJECT;
-	NEW_CLASS(this->includePaths, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->includePaths, Data::ArrayListString());
 	this->vsv = vsv;
 	this->baseFile = 0;
 }
@@ -149,7 +149,7 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 {
 	this->pt = proj->GetProjectType();
 	this->baseFile = proj->GetSourceNameObj()->Clone();
-	NEW_CLASS(this->includePaths, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->includePaths, Data::ArrayListString());
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
@@ -181,7 +181,7 @@ Text::Cpp::CppEnv::~CppEnv()
 	UOSInt i = this->includePaths->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->includePaths->GetItem(i));
+		this->includePaths->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->includePaths);
 	SDEL_STRING(this->baseFile);
@@ -189,7 +189,7 @@ Text::Cpp::CppEnv::~CppEnv()
 
 void Text::Cpp::CppEnv::AddIncludePath(const UTF8Char *includePath)
 {
-	this->includePaths->Add(Text::StrCopyNew(includePath));
+	this->includePaths->Add(Text::String::NewNotNull(includePath));
 }
 
 UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, UOSInt includeFileLen, Text::String *sourceFile)
@@ -216,13 +216,14 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 	{
 		if (this->baseFile)
 		{
-			this->baseFile->ConcatTo(buff);
-			sptr = IO::Path::AppendPath(buff, this->includePaths->GetItem(i));
+			sptr = this->baseFile->ConcatTo(buff);
+			Text::String *s = this->includePaths->GetItem(i);
+			sptr = IO::Path::AppendPathC(buff, sptr, s->v, s->leng);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		else
 		{
-			sptr = Text::StrConcat(buff, this->includePaths->GetItem(i));
+			sptr = this->includePaths->GetItem(i)->ConcatTo(buff);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr2 = Text::StrConcatC(sptr, includeFile, includeFileLen);
@@ -402,7 +403,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 				}
 				else
 				{
-					env->includePaths->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+					env->includePaths->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
 				if (c == 0)
 					break;
@@ -481,14 +482,14 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 		{
 			if (reg2->GetValueStr(L"InstallDir", wbuff))
 			{
-				Text::StrWChar_UTF8(sbuff, wbuff);
+				sptr = Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
 				{
-					sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"..\\..\\Vc7\\");
+					sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("..\\..\\Vc7\\"));
 				}
 				else
 				{
-					sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"..\\..\\Vc\\");
+					sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("..\\..\\Vc\\"));
 				}
 			}
 			IO::Registry::CloseRegistry(reg2);

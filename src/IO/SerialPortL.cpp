@@ -296,13 +296,13 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 	else if (portNum <= 64)
 	{
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb-serial/devices/ttyUSB")), portNum - 33);
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/usb-serial/devices/ttyUSB")), portNum - 33);
 		if ((si = readlink((const Char*)sbuff, (Char*)sbuff2, 511)) <= 0)
 		{
 			return false;
 		}
 		sbuff2[si] = 0;
-		sptr = IO::Path::AppendPath(sbuff, sbuff2);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, sbuff2, (UOSInt)si);
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '/');
 		if (i == INVALID_INDEX)
 			return false;

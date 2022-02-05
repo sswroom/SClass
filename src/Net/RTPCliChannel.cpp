@@ -581,9 +581,11 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, const UTF8Char *ctrlURL, Net::IRTPController *playCtrl)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char *sarr[5];
 	Net::RTPCliChannel *ch;
 	const UTF8Char *desc;
+	UOSInt descLen;
 	NEW_CLASS(ch, Net::RTPCliChannel(sockf, 0));
 	ch->SetPlayControl(playCtrl->Clone());
 	Bool ctrlFound = false;
@@ -595,34 +597,35 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 	while (i < j)
 	{
 		desc = sdpDesc->GetItem(i);
-		if (Text::StrStartsWith(desc, (const UTF8Char*)"m="))
+		descLen = Text::StrCharCnt(desc);
+		if (Text::StrStartsWithC(desc, descLen, UTF8STRC("m=")))
 		{
-			if (Text::StrStartsWith(desc, (const UTF8Char*)"m=video "))
+			if (Text::StrStartsWithC(desc, descLen, UTF8STRC("m=video ")))
 			{
 				ch->SetMediaType(Media::MEDIA_TYPE_VIDEO);
 			}
-			else if (Text::StrStartsWith(desc, (const UTF8Char*)"m=audio "))
+			else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("m=audio ")))
 			{
 				ch->SetMediaType(Media::MEDIA_TYPE_AUDIO);
 			}
 		}
-		else if (Text::StrStartsWith(desc, (const UTF8Char*)"a=control:"))
+		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=control:")))
 		{
 			ctrlFound = true;
-			if (Text::StrIndexOf(&desc[10], (const UTF8Char*)"://") != INVALID_INDEX)
+			if (Text::StrIndexOfC(&desc[10], descLen - 10, UTF8STRC("://")) != INVALID_INDEX)
 			{
 				ch->SetControlURL(&desc[10]);
 			}
 			else
 			{
 				Text::StrConcatC(Text::StrConcat(sbuff, ctrlURL), UTF8STRC("/"));
-				Text::URLString::AppendURLPath(sbuff, &desc[10]);
+				Text::URLString::AppendURLPath(sbuff, &desc[10], descLen - 10);
 				ch->SetControlURL(sbuff);
 			}
 		}
-		else if (Text::StrStartsWith(desc, (const UTF8Char*)"a=rtpmap:"))
+		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=rtpmap:")))
 		{
-			Text::StrConcat(sbuff, &desc[9]);
+			Text::StrConcatC(sbuff, &desc[9], descLen - 9);
 			if (Text::StrSplit(sarr, 3, sbuff, ' ') == 2)
 			{
 				payloadType = Text::StrToInt32(sarr[0]);
@@ -641,9 +644,9 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 				}
 			}
 		}
-		else if (Text::StrStartsWith(desc, (const UTF8Char*)"a=fmtp:"))
+		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=fmtp:")))
 		{
-			Text::StrConcat(sbuff, &desc[7]);
+			Text::StrConcatC(sbuff, &desc[7], descLen - 7);
 			if (Text::StrSplit(sarr, 2, sbuff, ' ') == 2)
 			{
 				payloadType = Text::StrToInt32(sarr[0]);

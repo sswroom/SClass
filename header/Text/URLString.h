@@ -15,7 +15,7 @@ namespace Text
 		static UTF8Char *GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLQueryString(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 
-		static UTF8Char *AppendURLPath(UTF8Char *sbuff, const UTF8Char *path);
+		static UTF8Char *AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen);
 	};
 }
 #endif

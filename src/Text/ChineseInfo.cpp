@@ -9,8 +9,8 @@ Text::ChineseInfo::ChineseInfo()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Chinese.dat");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Chinese.dat"));
 	NEW_CLASS(this->fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->currCharBuff = MemAlloc(UInt8, 256);
 	this->currCharCode = 0;

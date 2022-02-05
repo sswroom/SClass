@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	UInt8 buff[40];
 	UTF8Char sbuff[1024];
 	UTF8Char *sptr;
-	const UTF8Char *fileName = 0;
+	Text::String *fileName = 0;
 	UTF8Char *tmpArr[6];
 	Map::VectorLayer *lyr = 0;
 	Bool valid;
@@ -80,7 +80,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 	sptr = reader->ReadLine(sbuff, 1024); //File Name
 	if (sptr)
 	{
-		fileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+		fileName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	else
 	{
@@ -183,8 +183,8 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 		{
 			IO::StmData::FileData *imgFd;
 			Media::ImageList *imgList = 0;
-			fd->GetFullFileName()->ConcatTo(sbuff);
-			sptr = IO::Path::AppendPath(sbuff, fileName);
+			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
+			sptr = IO::Path::AppendPathC(sbuff, sptr, fileName->v, fileName->leng);
 			NEW_CLASS(imgFd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
 			DEL_CLASS(imgFd);
@@ -216,7 +216,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			MemFree(ptStatus);
 		}
 	}
-	SDEL_TEXT(fileName);
+	SDEL_STRING(fileName);
 	DEL_CLASS(reader);
 	DEL_CLASS(stm);
 	return lyr;

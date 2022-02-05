@@ -45,8 +45,8 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	}
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, sb.ToString());
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, sb.ToString(), sb.GetLength());
 	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Unknown)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"File is already exist", (const UTF8Char*)"TFTP Client", me);

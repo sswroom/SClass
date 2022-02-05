@@ -41,10 +41,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	ssl = Net::SSLEngineFactory::Create(sockf, false);
 	if (ssl)
 	{
-		IO::Path::GetProcessFileName(sbuff1);
-		sptr1 = IO::Path::AppendPath(sbuff1, (const UTF8Char*)"ADFSCert.crt");
-		IO::Path::GetProcessFileName(sbuff2);
-		sptr2 = IO::Path::AppendPath(sbuff2, (const UTF8Char*)"ADFSCert.key");
+		sptr1 = IO::Path::GetProcessFileName(sbuff1);
+		sptr1 = IO::Path::AppendPathC(sbuff1, sptr1, UTF8STRC("ADFSCert.crt"));
+		sptr2 = IO::Path::GetProcessFileName(sbuff2);
+		sptr2 = IO::Path::AppendPathC(sbuff2, sptr2, UTF8STRC("ADFSCert.key"));
 		if (ssl->SetServerCerts({sbuff1, (UOSInt)(sptr1 - sbuff1)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)}))
 		{
 			initSucc = true;

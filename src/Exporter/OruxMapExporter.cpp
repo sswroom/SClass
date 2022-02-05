@@ -126,8 +126,8 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 		s = Text::XML::ToNewXMLText(fileName2);
 		succ = false;
 
-		Text::StrConcatC(u8fileName, fileName, fileNameLen);
-		IO::Path::AppendPath(u8fileName, (const UTF8Char*)"OruxMapsImages.db");
+		sptr = Text::StrConcatC(u8fileName, fileName, fileNameLen);
+		IO::Path::AppendPathC(u8fileName, sptr, UTF8STRC("OruxMapsImages.db"));
 		NEW_CLASS(db, DB::SQLiteFile(u8fileName));
 		if (!db->IsError())
 		{

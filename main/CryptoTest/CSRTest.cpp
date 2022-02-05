@@ -16,8 +16,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ConsoleWriter console;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"ACMEKey.pem");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
 	UOSInt buffSize = IO::FileStream::LoadFile({sbuff, (UOSInt)(sptr - sbuff)}, buff, 4096);
 	if (buffSize == 0)
 	{
@@ -61,8 +61,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Crypto::Cert::X509CertReq *csr = Crypto::Cert::CertUtil::CertReqCreate(ssl, &names, key, &ext);
 	if (csr)
 	{
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"CSRTestOut.pem");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("CSRTestOut.pem"));
 		Exporter::PEMExporter::ExportFile({sbuff, (UOSInt)(sptr - sbuff)}, csr);
 		DEL_CLASS(csr);
 	}

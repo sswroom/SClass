@@ -50,7 +50,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamReader *reader;
 	UOSInt currTrack;
 	UOSInt maxTrack = 0;
-	const UTF8Char *fileName = 0;
+	Text::String *fileName = 0;
 	const UTF8Char *artists[100];
 	const UTF8Char *titles[100];
 	UInt32 stmTime[100];
@@ -71,9 +71,9 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, 0));
-	while (reader->ReadLine(sbuff, 511))
+	while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
 	{
-		sptr = Text::StrTrim(sbuff);
+		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
 		{
 			ReadString(sbuff2, &sbuff[10]);
@@ -96,13 +96,13 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
-			ReadString(sbuff2, &sbuff[5]);
+			sptr = ReadString(sbuff2, &sbuff[5]);
 			if (fileName != 0)
 			{
 				errorFound = true;
 				break;
 			}
-			fileName = Text::StrCopyNew(sbuff2);
+			fileName = Text::String::New(sbuff2, (UOSInt)(sptr - sbuff2));
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TRACK ")))
 		{
@@ -143,8 +143,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		IO::ParserType pt;
 		IO::ParsedObject *pobj;
 
-		fd->GetFullName()->ConcatTo(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, fileName);
+		sptr = fd->GetFullName()->ConcatTo(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, fileName->v, fileName->leng);
 		NEW_CLASS(data, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 		pobj = this->parsers->ParseFile(data, &pt);
 		DEL_CLASS(data);
@@ -187,7 +187,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 			}
 		}
 	}
-	SDEL_TEXT(fileName);
+	SDEL_STRING(fileName);
 	i = 100;
 	while (i-- > 0)
 	{

@@ -16,13 +16,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Text::Doc::DocValidator *validator;
 	Exporter::DocHTMLExporter *exporter;
 	IO::FileStream *fs;
-	const UTF8Char *fileName;
+	Text::CString fileName;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 
-	fileName = (const UTF8Char*)"test.html";
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, fileName);
+	fileName = CSTR("test.html");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, fileName.v, fileName.leng);
 
 	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
 	NEW_CLASS(doc, Text::Doc::TextDocument());

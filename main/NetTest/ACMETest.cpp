@@ -18,8 +18,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"ACMEKey.pem");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
 	NEW_CLASS(acme, Net::ACMEClient(sockf, (const UTF8Char*)"acme-staging-v02.api.letsencrypt.org", 0, {sbuff, (UOSInt)(sptr - sbuff)}));
 	Net::ACMEConn *conn = acme->GetConn();
 	Net::ACMEConn::Order *order = conn->OrderNew(domain.v, domain.leng);

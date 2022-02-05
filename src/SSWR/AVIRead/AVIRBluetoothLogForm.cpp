@@ -105,8 +105,8 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
 	return this->btLog->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
 }
 
@@ -247,8 +247,8 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
 	this->btLog->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
 	this->LogUIUpdate();
 }

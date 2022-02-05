@@ -1151,16 +1151,16 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		UTF8Char *sptr;
 		IO::FileStream *fs;
 		Text::UTF8Reader *reader;
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("UserAgent.txt"));
 		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->uaLog->ReadLogs(reader);
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
 
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Referer.txt"));
 		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->refererLog->ReadLogs(reader);
@@ -2583,8 +2583,8 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 		UTF8Char *sptr;
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"UserAgent.txt");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("UserAgent.txt"));
 		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->uaLog->WriteLogs(writer);
@@ -2615,8 +2615,8 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 		UTF8Char *sptr;
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Referer.txt");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Referer.txt"));
 		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->refererLog->WriteLogs(writer);

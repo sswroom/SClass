@@ -95,9 +95,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::WebServer::HTTPForwardHandler *hdlr;
 			Net::WebServer::WebListener *svr;
 			NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, sbuff, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-			IO::Path::GetProcessFileName(sbuff);
-			IO::Path::AppendPath(sbuff, (const UTF8Char*)"FwdLog");
-			IO::Path::AppendPath(sbuff, (const UTF8Char*)"fwdLog");
+			sptr = IO::Path::GetProcessFileName(sbuff);
+			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("FwdLog"));
+			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("fwdLog"));
 			logger->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 			hdlr->HandleForwardRequest(OnForwardRequest, 0);
 			NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, listenPort, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));

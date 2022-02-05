@@ -24,8 +24,10 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			Text::CodeFile *file = (Text::CodeFile*)obj;
 			UTF8Char u8buff[512];
 			UTF8Char *sptr;
-			me->proj->GetSourceName(u8buff);
-			sptr = IO::Path::AppendPath(u8buff, file->GetFileName()->v);
+			Text::String *s;
+			sptr = me->proj->GetSourceName(u8buff);
+			s = file->GetFileName();
+			sptr = IO::Path::AppendPathC(u8buff, sptr, s->v, s->leng);
 			if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;

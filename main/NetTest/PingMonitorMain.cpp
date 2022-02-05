@@ -136,8 +136,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (rawSock)
 	{
 		NEW_CLASS(logTool, IO::LogTool());
-		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"PingLog");
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("PingLog"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		Text::StrConcatC(sptr, UTF8STRC("Log"));
 		logTool->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);

@@ -69,8 +69,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char u8buff[512];
 	UTF8Char *fileName;
 	UTF8Char *baseDirEnd;
-	UTF8Char *sarr[20];
+	Text::PString sarr[20];
+	const UTF8Char *csarr[20];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -93,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		Map::MapEnv *env;
 		Map::MapEnv::GroupItem *currGroup = 0;
-		if (Text::StrSplitTrim(sarr, 8, sbuff, ',') != 5)
+		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
 			DEL_CLASS(reader);
 			DEL_CLASS(stm);
@@ -101,15 +103,15 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		}
 
 		Math::CoordinateSystem *csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1])), csys));
-		env->SetNString(Text::StrToUInt32(sarr[4]));
+		NEW_CLASS(env, Map::MapEnv(fd->GetFullName()->ToCString(), ToColor(Text::StrHex2UInt32C(sarr[1].v)), csys));
+		env->SetNString(Text::StrToUInt32(sarr[4].v));
 		fileName = baseDir;
 
 		while ((sptr = reader->ReadLine(sbuff, 255)) != 0)
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("2,")))
 			{
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 2)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 2)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -117,13 +119,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				fd->GetFullFileName()->ConcatTo(baseDir);
-				fileName = IO::Path::AppendPath(baseDir, sarr[1]);
+				fileName = fd->GetFullFileName()->ConcatTo(baseDir);
+				fileName = IO::Path::AppendPathC(baseDir, fileName, sarr[1].v, sarr[1].leng);
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3,")))
 			{
 				UInt8 *pattern;
-				if ((i = Text::StrSplitTrim(sarr, 10, sbuff, ',')) < 5)
+				if ((i = Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',')) < 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -131,7 +133,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				j = Text::StrToUInt32(sarr[1]);
+				j = Text::StrToUInt32(sarr[1].v);
 				if (env->GetLineStyleCount() <= j)
 				{
 					j = env->AddLineStyle();
@@ -142,14 +144,14 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					pattern = MemAlloc(UInt8, k - 5);
 					while (k-- > 5)
 					{
-						pattern[k - 5] = (UInt8)Text::StrToInt32(sarr[k]);
+						pattern[k - 5] = (UInt8)Text::StrToInt32(sarr[k].v);
 					}
 				}
 				else
 				{
 					pattern = 0;
 				}
-				env->AddLineStyleLayer(j, ToColor(Text::StrHex2UInt32C(sarr[4])), Text::StrToUInt32(sarr[3]), pattern, i - 5);
+				env->AddLineStyleLayer(j, ToColor(Text::StrHex2UInt32C(sarr[4].v)), Text::StrToUInt32(sarr[3].v), pattern, i - 5);
 				if (pattern)
 				{
 					MemFree(pattern);
@@ -158,7 +160,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("13,")))
 			{
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 3)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 3)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -166,7 +168,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				env->SetLineStyleName(Text::StrToUInt32(sarr[1]), sarr[2]);
+				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].v);
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
@@ -179,7 +181,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				UInt32 buffColor;
 				Int32 addFont;
 
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 7)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -187,7 +189,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				i = Text::StrToUInt32(sarr[1]);
+				i = Text::StrToUInt32(sarr[1].v);
 				if (env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor))
 				{
 					addFont = 1;
@@ -195,23 +197,23 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				else
 				{
 					addFont = 2;
-					pfontName = sarr[3];
-					fontSize = Text::StrToDouble(sarr[4]);
+					pfontName = sarr[3].v;
+					fontSize = Text::StrToDouble(sarr[4].v);
 					bold = false;
 					fontColor = 0;
 					buffSize = 0;
 					buffColor = 0;
 				}
-				j = Text::StrToUInt32(sarr[2]);
+				j = Text::StrToUInt32(sarr[2].v);
 				if (j == 0)
 				{
-					bold = Text::StrToInt32(sarr[5]) != 0;
-					fontColor = ToColor(Text::StrHex2UInt32C(sarr[6]));
+					bold = Text::StrToInt32(sarr[5].v) != 0;
+					fontColor = ToColor(Text::StrHex2UInt32C(sarr[6].v));
 				}
 				else if (j == 4)
 				{
-					buffSize = Text::StrToUInt32(sarr[5]);
-					buffColor = ToColor(Text::StrHex2UInt32C(sarr[6]));
+					buffSize = Text::StrToUInt32(sarr[5].v);
+					buffColor = ToColor(Text::StrHex2UInt32C(sarr[6].v));
 				}
 				else
 				{
@@ -229,7 +231,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("6,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 5)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -237,7 +239,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
@@ -245,9 +247,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 					if (env->GetLayerProp(&setting, currGroup, i))
 					{
-						setting.minScale = Text::StrToInt32(sarr[2]);
-						setting.maxScale = Text::StrToInt32(sarr[3]);
-						setting.lineStyle = Text::StrToUInt32(sarr[4]);
+						setting.minScale = Text::StrToInt32(sarr[2].v);
+						setting.maxScale = Text::StrToInt32(sarr[3].v);
+						setting.lineStyle = Text::StrToUInt32(sarr[4].v);
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}
@@ -255,7 +257,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("7,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 6)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 6)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -264,7 +266,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 
-				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
@@ -272,10 +274,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 					if (env->GetLayerProp(&setting, currGroup, i))
 					{
-						setting.minScale = Text::StrToUInt32(sarr[2]);
-						setting.maxScale = Text::StrToUInt32(sarr[3]);
-						setting.lineStyle = Text::StrToUInt32(sarr[4]);
-						setting.fillStyle = ToColor(Text::StrHex2UInt32C(sarr[5]));
+						setting.minScale = Text::StrToUInt32(sarr[2].v);
+						setting.maxScale = Text::StrToUInt32(sarr[3].v);
+						setting.lineStyle = Text::StrToUInt32(sarr[4].v);
+						setting.fillStyle = ToColor(Text::StrHex2UInt32C(sarr[5].v));
 						env->SetLayerProp(&setting, currGroup, i);
 					}
 				}
@@ -284,7 +286,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("9,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 7)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -292,7 +294,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				if (lyr)
 				{
@@ -300,11 +302,11 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 					if (env->GetLayerProp(&setting, currGroup, i))
 					{
-						setting.minScale = Text::StrToInt32(sarr[2]);
-						setting.maxScale = Text::StrToInt32(sarr[3]);
-						setting.priority = Text::StrToInt32(sarr[4]);
-						setting.fontStyle = Text::StrToUInt32(sarr[5]);
-						j = Text::StrToUInt32(sarr[6]);
+						setting.minScale = Text::StrToInt32(sarr[2].v);
+						setting.maxScale = Text::StrToInt32(sarr[3].v);
+						setting.priority = Text::StrToInt32(sarr[4].v);
+						setting.fontStyle = Text::StrToUInt32(sarr[5].v);
+						j = Text::StrToUInt32(sarr[6].v);
 						setting.flags = Map::MapEnv::SFLG_HIDESHAPE | Map::MapEnv::SFLG_SHOWLABEL;
 						if (j & 1)
 						{
@@ -325,7 +327,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("10,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrim(sarr, 10, sbuff, ',') != 5)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -334,10 +336,10 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 				OSInt si;
-				baseDirEnd = Text::StrConcatC(Text::StrConcat(fileName, sarr[1]), UTF8STRC(".cip"));
+				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
-				Text::StrConcat(sbuff3, sbuff2);
-				baseDirEnd = IO::Path::AppendPath(sbuff3, sarr[4]);
+				baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
+				baseDirEnd = IO::Path::AppendPathC(sbuff3, baseDirEnd, sarr[4].v, sarr[4].leng);
 				si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
 				if (lyr && si != -1)
 				{
@@ -345,8 +347,8 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 					if (env->GetLayerProp(&setting, currGroup, i))
 					{
-						setting.minScale = Text::StrToInt32(sarr[2]);
-						setting.maxScale = Text::StrToInt32(sarr[3]);
+						setting.minScale = Text::StrToInt32(sarr[2].v);
+						setting.maxScale = Text::StrToInt32(sarr[3].v);
 						setting.imgIndex = (UOSInt)si;
 						env->SetLayerProp(&setting, currGroup, i);
 					}
@@ -395,9 +397,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 
 		NEW_CLASS(fs2, IO::FileStream({u8buff, (UOSInt)(fileName - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
-		while (reader2->ReadLine(sbuff2, 512))
+		while ((sptr2 = reader2->ReadLine(sbuff2, 512)) != 0)
 		{
-			i = Text::StrSplit(sarr, 4, sbuff2, ',');
+			i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');
 			if (i == 1)
 			{
 				if (currId != 0)
@@ -450,13 +452,13 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				ptX.Clear();
 				ptY.Clear();
 				ptZ.Clear();
-				currId = Text::StrToInt32(sarr[0]);
+				currId = Text::StrToInt32(sarr[0].v);
 			}
 			else if (i == 3)
 			{
-				ptX.Add(Text::StrToDouble(sarr[0]));
-				ptY.Add(Text::StrToDouble(sarr[1]));
-				ptZ.Add(Text::StrToDouble(sarr[2]));
+				ptX.Add(Text::StrToDouble(sarr[0].v));
+				ptY.Add(Text::StrToDouble(sarr[1].v));
+				ptZ.Add(Text::StrToDouble(sarr[2].v));
 			}
 		}
 		DEL_CLASS(reader2);
@@ -533,19 +535,23 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		{
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
-		j = Text::StrSplit(sarr, 20, sbuff, ',');
+		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 2, 0));
-		while (reader->ReadLine(sbuff, 512))
+		while ((sptr = reader->ReadLine(sbuff, 512)) != 0)
 		{
-			i = Text::StrSplit(sarr, 20, sbuff, ',');
+			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 			if (i == j)
 			{
-				currId = Text::StrToInt32(sarr[1]);
+				currId = Text::StrToInt32(sarr[1].v);
 				vec = vecMap.Get(currId);
 				if (vec)
 				{
+					while (i-- > 0)
+					{
+						csarr[i] = sarr[i].v;
+					}
 					vecUsed.Put(currId, true);
-					lyr->AddVector(vec, (const UTF8Char **)sarr);
+					lyr->AddVector(vec, csarr);
 				}
 			}
 		}

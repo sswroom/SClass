@@ -615,7 +615,7 @@ void Map::ReloadableMapLayer::AddInnerLayer(const UTF8Char *name, const UTF8Char
 	sb.Append(this->GetSourceNameObj());
 	urlLen = Text::StrCharCnt(url);
 	sb.AllocLeng(urlLen);
-	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), url));
+	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), url, urlLen));
 	InnerLayerInfo *innerLayer;
 	innerLayer = MemAlloc(InnerLayerInfo, 1);
 	innerLayer->innerLayer = 0;

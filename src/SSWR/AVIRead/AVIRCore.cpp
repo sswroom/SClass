@@ -48,8 +48,8 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	this->forwardedUI = this->ui->IsForwarded();
 	this->currCodePage = 0;
 	this->eng = ui->CreateDrawEngine();
-	IO::Path::GetProcessFileName(u8buff);
-	sptr = IO::Path::AppendPath(u8buff, (const UTF8Char*)"CacheDir");
+	sptr = IO::Path::GetProcessFileName(u8buff);
+	sptr = IO::Path::AppendPathC(u8buff, sptr, UTF8STRC("CacheDir"));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	NEW_CLASS(this->mapMgr, Map::MapManager());
 	NEW_CLASS(this->colorMgr, Media::ColorManager());

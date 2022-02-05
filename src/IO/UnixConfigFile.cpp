@@ -11,8 +11,8 @@ IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"application.properties");
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("application.properties"));
 	return Parse({sbuff, (UOSInt)(sptr - sbuff)});
 }
 

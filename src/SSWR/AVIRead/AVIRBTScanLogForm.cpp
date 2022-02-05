@@ -103,8 +103,9 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnContentSelChg(void *userObj)
 Bool SSWR::AVIRead::AVIRBTScanLogForm::LogFileStore()
 {
 	UTF8Char sbuff[512];
-	IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPath(sbuff, (const UTF8Char*)"BTDevLog.txt");
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
 	return false; //this->btLog->StoreFile(sbuff);
 }
 

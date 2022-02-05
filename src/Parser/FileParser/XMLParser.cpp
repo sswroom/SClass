@@ -2054,7 +2054,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									imgLyr->GetSourceName(sbuff);
-									Text::URLString::AppendURLPath(sbuff, sb.ToString());
+									Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{
@@ -2228,7 +2228,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									imgLyr->GetSourceName(sbuff);
-									Text::URLString::AppendURLPath(sbuff, sb.ToString());
+									Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{

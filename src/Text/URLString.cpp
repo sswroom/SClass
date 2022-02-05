@@ -208,29 +208,29 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	}
 }
 
-UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
+UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
 {
-	UOSInt i = Text::StrIndexOf(path, (const UTF8Char*)"://");
+	UOSInt i = Text::StrIndexOfC(path, pathLen, UTF8STRC("://"));
 	if (i != INVALID_INDEX)
 	{
-		return Text::StrConcat(sbuff, path);
+		return Text::StrConcatC(sbuff, path, pathLen);
 	}
 	UTF8Char* sbuffEnd = &sbuff[Text::StrCharCnt(sbuff)];
 	if (sbuff[0] != 0)
 	{
 		if (sbuff[1] == ':' && sbuff[2] == '\\')
 		{
-			UTF8Char *sptr = IO::Path::AppendPath(sbuff, path);
+			UTF8Char *sptr = IO::Path::AppendPathC(sbuff, sbuffEnd, path, pathLen);
 			Text::StrReplace(sbuff, '/', '\\');
 			return sptr;
 		}
 		IO::Path::PathType pt = IO::Path::GetPathType(sbuff, (UOSInt)(sbuffEnd - sbuff));
 		if (pt != IO::Path::PathType::Unknown)
 		{
-			return IO::Path::AppendPath(sbuff, path);
+			return IO::Path::AppendPathC(sbuff, sbuffEnd, path, pathLen);
 		}
 	}
-	i = Text::StrIndexOf(sbuff, (const UTF8Char*)"://");
+	i = Text::StrIndexOfC(sbuff, (UOSInt)(sbuffEnd - sbuff), UTF8STRC("://"));
 	if (i == INVALID_INDEX)
 		return 0;
 	sbuff = &sbuff[3];
@@ -239,11 +239,11 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 		i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sbuffEnd - sbuff), '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcat(sbuffEnd, path);
+			return Text::StrConcatC(sbuffEnd, path, pathLen);
 		}
 		else
 		{
-			return Text::StrConcat(&sbuff[i], path);
+			return Text::StrConcatC(&sbuff[i], path, pathLen);
 		}
 	}
 	else
@@ -257,15 +257,16 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path)
 				sbuffEnd = &sbuff[i];
 			}
 			path = &path[3];
+			pathLen -= 3;
 		}
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sbuffEnd - sbuff), '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcat(sbuffEnd, path);
+			return Text::StrConcatC(sbuffEnd, path, pathLen);
 		}
 		else
 		{
-			return Text::StrConcat(&sbuff[i + 1], path);
+			return Text::StrConcatC(&sbuff[i + 1], path, pathLen);
 		}
 	}
 	////////////////////////////////

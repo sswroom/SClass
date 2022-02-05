@@ -274,7 +274,7 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPath(UTF8Char *path, const UTF8Char *toAppend)
+UTF8Char *IO::Path::AppendPathSlow(UTF8Char *path, const UTF8Char *toAppend)
 {
 	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
 	if (toAppend[0] == '/')

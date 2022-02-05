@@ -20,11 +20,12 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		me->txtPort->GetText(&sb);
 		if (sb.ToUInt16(&port))
 		{
-			IO::Path::GetProcessFileName(sbuff);
-			IO::Path::AppendPath(sbuff, (const UTF8Char*)"LogSvr");
+			sptr = IO::Path::GetProcessFileName(sbuff);
+			IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("LogSvr"));
 			NEW_CLASS(me->svr, Net::SyslogServer(me->core->GetSocketFactory(), port, sbuff, 0, false));
 			if (me->svr->IsError())
 			{

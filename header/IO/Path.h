@@ -41,7 +41,7 @@ namespace IO
 		static WChar *ReplaceExtW(WChar *fileName, const WChar *ext);
 		static UTF8Char *GetFileExt(UTF8Char *fileBuff, const UTF8Char *path, UOSInt pathLen);
 		static WChar *GetFileExtW(WChar *fileBuff, const WChar *path);
-		static UTF8Char *AppendPath(UTF8Char *path, const UTF8Char *toAppend);
+		static UTF8Char *AppendPathSlow(UTF8Char *path, const UTF8Char *toAppend);
 		static UTF8Char *AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen);
 		static WChar *AppendPathW(WChar *path, const WChar *toAppend);
 		static Bool AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend, UOSInt toAppendLen);

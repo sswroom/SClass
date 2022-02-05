@@ -154,7 +154,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	if (toAppend[0] == '/')
 	{
 		sb->ClearStr();
-		sb->Append(toAppend);
+		sb->AppendC(toAppend, toAppendLen);
 		return true;
 	}
 	UOSInt i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
@@ -163,7 +163,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		sb->RemoveChars(sb->GetLength() - i);
 		i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 	}
-	while (Text::StrStartsWith(toAppend, (const UTF8Char*)"../"))
+	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
@@ -171,9 +171,10 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 			i = Text::StrLastIndexOfCharC(sb->ToString(), sb->GetLength(), '/');
 		}
 		toAppend += 3;
+		toAppendLen -= 3;
 	}
 	sb->AppendChar('/', 1);
-	sb->Append(toAppend);
+	sb->AppendC(toAppend, toAppendLen);
 	return true;
 }
 
@@ -428,7 +429,7 @@ Bool IO::Path::IsSearchPattern(const UTF8Char *path)
 	return isSrch;
 }
 
-UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path)
+UTF8Char *IO::Path::GetRealPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
 {
-	return Text::StrConcat(sbuff, path);
+	return Text::StrConcatC(sbuff, path, pathLen);
 }
