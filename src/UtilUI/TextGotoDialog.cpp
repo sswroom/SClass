@@ -36,7 +36,7 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, UI::GUICore
 
 	NEW_CLASS(this->lblLine, UI::GUILabel(ui, this, (const UTF8Char*)"Line Number:"));
 	this->lblLine->SetRect(8, 16, 80, 21, false);
-	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtLine->SetRect(88, 14, 100, 23, false);
 	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));
 	this->btnOk->SetRect(8, 56, 100, 23, false);

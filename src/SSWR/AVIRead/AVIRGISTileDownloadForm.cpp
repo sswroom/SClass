@@ -586,17 +586,17 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 
 	NEW_CLASS(this->lblLayer, UI::GUILabel(ui, this, (const UTF8Char*)"Curr Layer"));
 	this->lblLayer->SetRect(4, 36, 100, 23, false);
-	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLayer->SetReadOnly(true);
 	this->txtLayer->SetRect(104, 36, 60, 23, false);
 	NEW_CLASS(this->lblImages, UI::GUILabel(ui, this, (const UTF8Char*)"Images"));
 	this->lblImages->SetRect(4, 60, 100, 23, false);
-	NEW_CLASS(this->txtImages, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtImages, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtImages->SetReadOnly(true);
 	this->txtImages->SetRect(104, 60, 100, 23, false);
 	NEW_CLASS(this->lblError, UI::GUILabel(ui, this, (const UTF8Char*)"Error"));
 	this->lblError->SetRect(4, 84, 100, 23, false);
-	NEW_CLASS(this->txtError, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtError, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtError->SetReadOnly(true);
 	this->txtError->SetRect(104, 84, 100, 23, false);
 

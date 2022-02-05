@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, (const UTF8Char*)"69"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("69")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblFilePath, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"File Path"));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
@@ -85,15 +85,16 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
+		sptr = &sbuff[i];
 	}
-	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, sbuff));
+	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtFilePath->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

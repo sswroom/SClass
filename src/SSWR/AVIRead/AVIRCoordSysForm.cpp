@@ -12,7 +12,7 @@ SSWR::AVIRead::AVIRCoordSysForm::AVIRCoordSysForm(UI::GUIClientControl *parent, 
 
 	Text::StringBuilderUTF8 sb;
 	this->csys->ToString(&sb);
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this, sb.ToString(), true));
+	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this, sb.ToCString(), true));
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDesc->SetReadOnly(true);
 }

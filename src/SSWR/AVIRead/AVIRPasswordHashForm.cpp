@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 
 	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
 	this->lblPassword->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Type"));
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
@@ -54,7 +54,7 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Value"));
 	this->lblHashValue->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHashValue->SetRect(104, 76, 400, 23, false);
 	this->txtHashValue->SetReadOnly(true);
 

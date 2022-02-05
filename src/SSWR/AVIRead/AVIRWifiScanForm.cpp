@@ -167,15 +167,15 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
 	NEW_CLASS(this->lblScanTime, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Scan Time"));
 	this->lblScanTime->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->txtScanTime, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtScanTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtScanTime->SetReadOnly(true);
 	this->txtScanTime->SetRect(204, 4, 100, 23, false);
 	NEW_CLASS(this->lblResultTime, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Result Time"));
 	this->lblResultTime->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->txtResultTime, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtResultTime, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtResultTime->SetReadOnly(true);
 	this->txtResultTime->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->txtWifi, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtWifi, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtWifi->SetRect(0, 0, 100, 128, false);
 	this->txtWifi->SetReadOnly(true);
 	this->txtWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);

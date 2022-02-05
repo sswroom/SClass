@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	this->btnPinModeOutput->HandleButtonClick(OnPinModeOutputClicked, this);
 	NEW_CLASS(this->lblPinState, UI::GUILabel(ui, this, (const UTF8Char*)"Pin State"));
 	this->lblPinState->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPinState, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPinState, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPinState->SetRect(104, 52, 100, 23, false);
 	this->txtPinState->SetReadOnly(true);
 	NEW_CLASS(this->btnPinHigh, UI::GUIButton(ui, this, (const UTF8Char*)"High"));

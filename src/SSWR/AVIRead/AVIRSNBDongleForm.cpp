@@ -506,7 +506,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnDongleInfo->HandleButtonClick(OnDongleInfoClicked, this);
 	NEW_CLASS(this->lblDongleId, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Dongle Id"));
 	this->lblDongleId->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->txtDongleId, UI::GUITextBox(ui, this->pnlDevice, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDongleId, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtDongleId->SetRect(184, 4, 200, 23, false);
 	this->txtDongleId->SetReadOnly(true);
 
@@ -524,11 +524,11 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnAddDevice->HandleButtonClick(OnAddDeviceClicked, this);
 	NEW_CLASS(this->lblRemarks, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Remarks"));
 	this->lblRemarks->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtRemarks, UI::GUITextBox(ui, this->pnlDevice, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRemarks, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtRemarks->SetRect(104, 52, 600, 23, false);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"URL"));
 	this->lblURL->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlDevice, (const UTF8Char*)""));
+	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtURL->SetRect(104, 76, 600, 23, false);
 	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Upload"));
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->lvDevice->HandleDblClk(OnDeviceDblClk, this);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

@@ -112,7 +112,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblChannelId, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"ChannelId"));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->btnRequestUser, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
 	this->btnRequestUser->SetRect(254, 4, 75, 23, false);
@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblShortCode, UI::GUILabel(ui, this->pnlPage, (const UTF8Char*)"ShortCode"));
 	this->lblShortCode->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtShortCode, UI::GUITextBox(ui, this->pnlPage, (const UTF8Char*)""));
+	NEW_CLASS(this->txtShortCode, UI::GUITextBox(ui, this->pnlPage, CSTR("")));
 	this->txtShortCode->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->btnPage, UI::GUIButton(ui, this->pnlPage, (const UTF8Char*)"Request"));
 	this->btnPage->SetRect(254, 4, 75, 23, false);

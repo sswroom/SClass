@@ -169,7 +169,7 @@ void Map::IMapDrawLayer::SetNameCol(UOSInt nameCol)
 
 Text::String *Map::IMapDrawLayer::GetName()
 {
-	if (this->layerName)
+	if (this->layerName && this->layerName->leng > 0)
 	{
 		return this->layerName;
 	}

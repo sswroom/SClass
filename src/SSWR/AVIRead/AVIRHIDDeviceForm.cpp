@@ -71,17 +71,17 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 	this->pnlDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblVendorId, UI::GUILabel(ui, this->pnlDevices, (const UTF8Char*)"VendorId"));
 	this->lblVendorId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtVendorId, UI::GUITextBox(ui, this->pnlDevices, (const UTF8Char*)""));
+	NEW_CLASS(this->txtVendorId, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
 	this->txtVendorId->SetRect(104, 4, 100, 23, false);
 	this->txtVendorId->SetReadOnly(true);
 	NEW_CLASS(this->lblProductId, UI::GUILabel(ui, this->pnlDevices, (const UTF8Char*)"ProductId"));
 	this->lblProductId->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtProductId, UI::GUITextBox(ui, this->pnlDevices, (const UTF8Char*)""));
+	NEW_CLASS(this->txtProductId, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
 	this->txtProductId->SetRect(104, 28, 100, 23, false);
 	this->txtProductId->SetReadOnly(true);
 	NEW_CLASS(this->lblDevPath, UI::GUILabel(ui, this->pnlDevices, (const UTF8Char*)"Dev Path"));
 	this->lblDevPath->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtDevPath, UI::GUITextBox(ui, this->pnlDevices, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDevPath, UI::GUITextBox(ui, this->pnlDevices, CSTR("")));
 	this->txtDevPath->SetRect(104, 52, 600, 23, false);
 	this->txtDevPath->SetReadOnly(true);
 

@@ -213,7 +213,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"UDP Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Reuse Addr", true));
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
@@ -229,12 +229,12 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbData->HandleSelectionChange(OnDataSelChg, this);
 	NEW_CLASS(this->hspData, UI::GUIHSplitter(ui, this->tpData, 3, false));
-	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->tpData, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this->tpData, CSTR(""), true));
 	this->txtData->SetReadOnly(true);
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMulticastCurr, UI::GUILabel(ui, this->pnlMulticastCtrl, (const UTF8Char*)"Multicast IP"));
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->btnMulticastAdd, UI::GUIButton(ui, this->pnlMulticastCtrl, (const UTF8Char*)"&Add"));
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);

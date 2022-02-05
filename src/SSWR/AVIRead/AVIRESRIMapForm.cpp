@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 	this->cboPredefine->SetRect(108, 8, 150, 23, false);
 	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Other", false));
 	this->radOther->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOther->SetRect(108, 32, 500, 23, false);
 	this->txtOther->HandleTextChanged(OnOtherChanged, this);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));

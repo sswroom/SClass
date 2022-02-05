@@ -223,7 +223,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->cboRecent->HandleSelectionChange(OnRecentSelChg, this);
 	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlURL, (const UTF8Char*)"URL"));
 	this->lblURL->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, (const UTF8Char*)""));
+	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, CSTR("")));
 	this->txtURL->SetRect(104, 28, 600, 23, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlURL, (const UTF8Char*)"Request"));
 	this->btnRequest->SetRect(704, 28, 75, 23, false);

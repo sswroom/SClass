@@ -49,7 +49,7 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->radNotEq->SetRect(136, 32, 96, 24, false);
 	NEW_CLASS(this->lblValue, UI::GUILabel(ui, this, (const UTF8Char*)"Value"));
 	this->lblValue->SetRect(8, 56, 56, 23, false);
-	NEW_CLASS(this->txtValue, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtValue->SetRect(72, 56, 136, 20, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
 	this->btnOK->SetRect(24, 96, 75, 23, false);

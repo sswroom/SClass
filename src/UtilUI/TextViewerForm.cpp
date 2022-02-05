@@ -45,7 +45,7 @@ UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore
 	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this));
 	this->pnlStatus->SetRect(0, 0, 100, 24, false);
 	this->pnlStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 	this->txtStatus->SetRect(0, 0, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	this->txtStatus->SetDockType(UI::GUIControl::DOCK_LEFT);

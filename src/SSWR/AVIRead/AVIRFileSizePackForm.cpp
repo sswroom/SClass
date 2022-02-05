@@ -356,7 +356,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Directory"));
 	this->lblDir->SetRect(16, 8, 100, 23, false);
-	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlFile, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDir->SetRect(120, 8, 192, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(328, 8, 75, 23, false);
@@ -371,12 +371,12 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->cboMaxSize->SetRect(120, 42, 104, 23, false);
 	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Total Size"));
 	this->lblTotalSize->SetRect(224, 42, 72, 23, false);
-	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->pnlFile, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtTotalSize->SetReadOnly(true);
 	this->txtTotalSize->SetRect(296, 42, 100, 23, false);
 	NEW_CLASS(this->lblDirName, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Dir Name"));
 	this->lblDirName->SetRect(16, 76, 100, 23, false);
-	NEW_CLASS(this->txtDirName, UI::GUITextBox(ui, this->pnlFile, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDirName, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDirName->SetRect(120, 76, 104, 23, false);
 	NEW_CLASS(this->btnMove, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Move"));
 	this->btnMove->SetRect(232, 76, 75, 23, false);

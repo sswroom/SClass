@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lblSN, UI::GUILabel(ui, this, (const UTF8Char*)"SN"));
 	this->lblSN->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSN, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSN, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSN->SetRect(104, 4, 200, 23, false);
 	this->txtSN->SetReadOnly(true);
 	NEW_CLASS(this->btnSN, UI::GUIButton(ui, this, (const UTF8Char*)"Read SN"));
@@ -70,7 +70,7 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, UI
 	this->btnSN->HandleButtonClick(OnSNClicked, this);
 	NEW_CLASS(this->lblTemp, UI::GUILabel(ui, this, (const UTF8Char*)"Temperature"));
 	this->lblTemp->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtTemp->SetRect(104, 28, 100, 23, false);
 	this->txtTemp->SetReadOnly(true);
 	NEW_CLASS(this->btnRead, UI::GUIButton(ui, this, (const UTF8Char*)"Read"));
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRDS18B20Form::AVIRDS18B20Form(UI::GUIClientControl *parent, UI
 	this->chkAutoRead->SetRect(184, 52, 100, 23, false);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
 	this->lblStatus->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 76, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

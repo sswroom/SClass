@@ -468,7 +468,7 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, (const UTF8Char*)"12345"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblDocDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Doc Path"));
 	this->lblDocDir->SetRect(8, 32, 100, 23, false);
@@ -477,14 +477,15 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	if (i != INVALID_INDEX)
 	{
 		sbuff[i] = 0;
+		sptr = &sbuff[i];
 	}
-	NEW_CLASS(this->txtDocDir, UI::GUITextBox(ui, this->grpParam, sbuff));
+	NEW_CLASS(this->txtDocDir, UI::GUITextBox(ui, this->grpParam, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtDocDir->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
 	this->lblLogDir->SetRect(8, 56, 100, 23, false);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
-	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
+	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
+	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtLogDir->SetRect(108, 56, 500, 23, false);
 	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"SSL"));
 	this->lblSSL->SetRect(8, 80, 100, 23, false);
@@ -536,42 +537,42 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Curr"));
 	this->lblConnCurr->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtConnCurr, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtConnCurr, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtConnCurr->SetRect(104, 4, 100, 23, false);
 	this->txtConnCurr->SetReadOnly(true);
 	NEW_CLASS(this->lblConnTotal, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Total"));
 	this->lblConnTotal->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtConnTotal, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtConnTotal, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtConnTotal->SetRect(104, 28, 100, 23, false);
 	this->txtConnTotal->SetReadOnly(true);
 	NEW_CLASS(this->lblDataRateR, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Data Rate(R)"));
 	this->lblDataRateR->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtDataRateR, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtDataRateR, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataRateR->SetRect(104, 52, 100, 23, false);
 	this->txtDataRateR->SetReadOnly(true);
 	NEW_CLASS(this->lblDataRateW, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Data Rate(W)"));
 	this->lblDataRateW->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtDataRateW, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtDataRateW, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataRateW->SetRect(104, 76, 100, 23, false);
 	this->txtDataRateW->SetReadOnly(true);
 	NEW_CLASS(this->lblDataTotalR, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Total Data(R)"));
 	this->lblDataTotalR->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtDataTotalR, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtDataTotalR, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataTotalR->SetRect(104, 100, 100, 23, false);
 	this->txtDataTotalR->SetReadOnly(true);
 	NEW_CLASS(this->lblDataTotalW, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Total Data(W)"));
 	this->lblDataTotalW->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtDataTotalW, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtDataTotalW, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataTotalW->SetRect(104, 124, 100, 23, false);
 	this->txtDataTotalW->SetReadOnly(true);
 	NEW_CLASS(this->lblReqRate, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Request Rate"));
 	this->lblReqRate->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->txtReqRate, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtReqRate, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtReqRate->SetRect(104, 148, 100, 23, false);
 	this->txtReqRate->SetReadOnly(true);
 	NEW_CLASS(this->lblReqTotal, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Request Total"));
 	this->lblReqTotal->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->txtReqTotal, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtReqTotal, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtReqTotal->SetRect(104, 172, 100, 23, false);
 	this->txtReqTotal->SetReadOnly(true);
 
@@ -580,10 +581,10 @@ SSWR::AVIRead::AVIRHTTPSvrForm::AVIRHTTPSvrForm(UI::GUIClientControl *parent, UI
 	this->lbAccess->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbAccess->HandleSelectionChange(OnAccessSelChg, this);
 	NEW_CLASS(this->hspAccess, UI::GUIHSplitter(ui, this->tpAccess, 3, false));
-	NEW_CLASS(this->txtAccess, UI::GUITextBox(ui, this->tpAccess, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtAccess, UI::GUITextBox(ui, this->tpAccess, CSTR(""), true));
 	this->txtAccess->SetReadOnly(true);
 	this->txtAccess->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

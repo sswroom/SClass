@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Control Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	this->txtPort->SetReadOnly(true);
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, (const UTF8Char*)"Stop"));

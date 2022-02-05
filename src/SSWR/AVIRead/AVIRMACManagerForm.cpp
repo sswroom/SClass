@@ -509,13 +509,13 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Log File"));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Open"));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this->tpFile, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this->tpFile, CSTR(""), true));
 	this->txtFileIE->SetRect(0, 0, 100, 256, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);
@@ -542,7 +542,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->tpInput = this->tcMain->AddTabPage((const UTF8Char*)"Input");
 	NEW_CLASS(this->lblInput, UI::GUILabel(ui, this->tpInput, (const UTF8Char*)"MAC Input"));
 	this->lblInput->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, (const UTF8Char*)""));
+	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
 	this->txtInput->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->btnInput, UI::GUIButton(ui, this->tpInput, (const UTF8Char*)"&Edit"));
 	this->btnInput->SetRect(104, 28, 75, 23, false);

@@ -127,11 +127,11 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Name"));
 	this->lblName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->grpNew, (const UTF8Char*)""));
+	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtName->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Key"));
 	this->lblKey->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, (const UTF8Char*)""));
+	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
 	NEW_CLASS(this->btnKeyRand80, UI::GUIButton(ui, this->grpNew, (const UTF8Char*)"Random 80-bit"));
 	this->btnKeyRand80->SetRect(404, 28, 75, 23, false);

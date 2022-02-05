@@ -7,7 +7,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::AVIRMIMEJSONViewer(SSWR::AVIRead:
 {
 	this->obj = obj;
 
-	NEW_CLASS(this->txtJSON, UI::GUITextBox(ui, ctrl, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtJSON, UI::GUITextBox(ui, ctrl, CSTR(""), true));
 	this->txtJSON->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtJSON->SetReadOnly(true);
 

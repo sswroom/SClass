@@ -382,7 +382,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->grpSMTP->SetRect(0, 24, 250, 88, false);
 	NEW_CLASS(this->lblSMTPPort, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Port"));
 	this->lblSMTPPort->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtSMTPPort, UI::GUITextBox(ui, this->grpSMTP, (const UTF8Char*)"25"));
+	NEW_CLASS(this->txtSMTPPort, UI::GUITextBox(ui, this->grpSMTP, CSTR("25")));
 	this->txtSMTPPort->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->lblSMTPType, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Type"));
 	this->lblSMTPType->SetRect(0, 24, 100, 23, false);
@@ -400,7 +400,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->grpPOP3->SetRect(250, 24, 250, 88, false);
 	NEW_CLASS(this->lblPOP3Port, UI::GUILabel(ui, this->grpPOP3, (const UTF8Char*)"Port"));
 	this->lblPOP3Port->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->grpPOP3, (const UTF8Char*)"110"));
+	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->grpPOP3, CSTR("110")));
 	this->txtPOP3Port->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->grpPOP3, (const UTF8Char*)"Enable SSL", false));
 	this->chkPOP3SSL->SetRect(100, 24, 100, 23, false);
@@ -422,7 +422,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->lvEmail->AddColumn((const UTF8Char*)"Rcpt", 200);
 	this->lvEmail->HandleDblClk(OnEmailDblClicked, this);
 
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

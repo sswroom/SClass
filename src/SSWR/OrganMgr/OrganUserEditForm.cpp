@@ -84,21 +84,21 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditUserName")).v));
 	this->lblUserName->SetRect(64, 4, 100, 23, false);
-	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUserName->SetRect(164, 4, 200, 23, false);
 	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditPassword")).v));
 	this->lblPassword->SetRect(64, 28, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(164, 28, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
 	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditRetype")).v));
 	this->lblRetype->SetRect(64, 52, 100, 23, false);
-	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRetype->SetRect(164, 52, 200, 23, false);
 	this->txtRetype->SetPasswordChar('*');
 	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditWatermark")).v));
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
-	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditOk")).v));
 	this->btnOK->SetRect(164, 108, 75, 23, false);

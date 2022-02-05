@@ -21,7 +21,7 @@ namespace SSWR
 
 			static void __stdcall OnOKClicked(void *userObj);
 		public:
-			AVIRStringMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *title, const UTF8Char *msg);
+			AVIRStringMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *title, Text::CString msg);
 			virtual ~AVIRStringMsgForm();
 
 			virtual void OnMonitorChanged();

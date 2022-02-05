@@ -81,11 +81,11 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 
 	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 150, 23, false);
 	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, (const UTF8Char*)"Message"));
 	this->lblMessage->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMessage->SetRect(104, 76, 400, 23, false);
 	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, this, (const UTF8Char*)"Decrypt"));
 	this->btnDecrypt->SetRect(104, 100, 75, 23, false);
@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, (const UTF8Char*)"Result"));
 	this->lblResult->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtResult->SetRect(104, 124, 400, 23, false);
 	this->txtResult->SetReadOnly(true);
 }

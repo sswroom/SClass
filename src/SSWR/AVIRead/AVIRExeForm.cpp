@@ -370,7 +370,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lbResource->HandleSelectionChange(OnResourceSelChg, this);
 	this->lbResource->HandleDoubleClicked(OnResourceDblClk, this);
 	NEW_CLASS(this->hspResource, UI::GUIHSplitter(ui, this->tpResource, 3, false));
-	NEW_CLASS(this->txtResource, UI::GUITextBox(ui, this->tpResource, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtResource, UI::GUITextBox(ui, this->tpResource, CSTR(""), true));
 	this->txtResource->SetReadOnly(true);
 	this->txtResource->SetDockType(UI::GUIControl::DOCK_FILL);
 	i = 0;

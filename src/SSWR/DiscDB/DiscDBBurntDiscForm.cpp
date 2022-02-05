@@ -1385,16 +1385,16 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->btnNewDisc->SetRect(8, 78, 83, 25, false);
 	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Disc ID"));
 	this->lblDiscId->SetRect(96, 9, 56, 25, false);
-	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlBurntDisc, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDiscId->SetRect(160, 9, 96, 20, false);
 	this->txtDiscId->HandleTextChanged(OnDiscIdTextChg, this);
 	NEW_CLASS(this->lblDiscType, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Disc Type"));
 	this->lblDiscType->SetRect(96, 43, 64, 25, false);
-	NEW_CLASS(this->txtDiscType, UI::GUITextBox(ui, this->pnlBurntDisc, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDiscType, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDiscType->SetRect(160, 43, 96, 20, false);
 	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Date"));
 	this->lblDate->SetRect(96, 78, 56, 25, false);
-	NEW_CLASS(this->txtDate, UI::GUITextBox(ui, this->pnlBurntDisc, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDate, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDate->SetRect(160, 78, 96, 20, false);
 	NEW_CLASS(this->lbDiscId, UI::GUIListBox(ui, this->pnlBurntDisc, false));
 	this->lbDiscId->SetRect(256, 0, 80, 121, false);
@@ -1449,7 +1449,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->btnBuildMovie->SetRect(128, 251, 75, 25, false);
 	NEW_CLASS(this->lblSectorSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Sector Size"));
 	this->lblSectorSize->SetRect(16, 277, 72, 25, false);
-	NEW_CLASS(this->txtSectorSize, UI::GUITextBox(ui, this->pnlFile, (const UTF8Char*)"231000"));
+	NEW_CLASS(this->txtSectorSize, UI::GUITextBox(ui, this->pnlFile, CSTR("231000")));
 	this->txtSectorSize->SetRect(96, 277, 100, 20, false);
 	NEW_CLASS(this->btnSectorSize, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Apply"));
 	this->btnSectorSize->SetRect(120, 303, 75, 25, false);

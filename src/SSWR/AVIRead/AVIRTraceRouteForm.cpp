@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->cboSelfIP->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblTargetIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Target IP"));
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbIP->HandleSelectionChange(OnIPSelChg, this);
 	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);
 

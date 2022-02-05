@@ -149,11 +149,11 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"389"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("389")));
 	this->txtPort->SetRect(104, 28, 120, 23, false);
 	NEW_CLASS(this->lblAuthType, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Auth Type"));
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
@@ -164,11 +164,11 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->cboAuthType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblUserDN, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"User DN"));
 	this->lblUserDN->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtUserDN, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtUserDN, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtUserDN->SetRect(104, 76, 200, 23, false);
 	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Password"));
 	this->lblPassword->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
 	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Connect"));
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->pnlSearchRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSearchBase, UI::GUILabel(ui, this->pnlSearchRequest, (const UTF8Char*)"Base Object"));
 	this->lblSearchBase->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSearchBase, UI::GUITextBox(ui, this->pnlSearchRequest, (const UTF8Char*)"dc=corp,dc=stoneroad,dc=com,dc=hk"));
+	NEW_CLASS(this->txtSearchBase, UI::GUITextBox(ui, this->pnlSearchRequest, CSTR("dc=simon,dc=local")));
 	this->txtSearchBase->SetRect(104, 4, 400, 23, false);
 	NEW_CLASS(this->lblSearchScope, UI::GUILabel(ui, this->pnlSearchRequest, (const UTF8Char*)"Scope"));
 	this->lblSearchScope->SetRect(4, 28, 100, 23, false);
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->cboSearchDerefAliases->SetSelectedIndex(1);
 	NEW_CLASS(this->lblSearchFilter, UI::GUILabel(ui, this->pnlSearchRequest, (const UTF8Char*)"Filter"));
 	this->lblSearchFilter->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtSearchFilter, UI::GUITextBox(ui, this->pnlSearchRequest, (const UTF8Char*)"(&(objectClass=user)(userPrincipalName=enma@corp.stoneroad.com.hk))"));
+	NEW_CLASS(this->txtSearchFilter, UI::GUITextBox(ui, this->pnlSearchRequest, CSTR("(&(objectClass=user)(userPrincipalName=admin@simon.local))")));
 	this->txtSearchFilter->SetRect(104, 76, 400, 23, false);
 	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearchRequest, (const UTF8Char*)"Search"));
 	this->btnSearch->SetRect(104, 100, 75, 23, false);

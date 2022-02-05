@@ -144,17 +144,17 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Thread Id"));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtThreadId->SetRect(100, 0, 100, 23, false);
 	this->txtThreadId->SetReadOnly(true);
 	NEW_CLASS(this->lblStartAddr, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Start Address"));
 	this->lblStartAddr->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtStartAddr, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtStartAddr, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartAddr->SetRect(100, 24, 120, 23, false);
 	this->txtStartAddr->SetReadOnly(true);
 	NEW_CLASS(this->lblStartName, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Start Name"));
 	this->lblStartName->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
 	this->txtStartName->SetReadOnly(true);
 
@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->hspMyStack, UI::GUIHSplitter(ui, this->tpMyStack, 3, false));
 	NEW_CLASS(this->pnlMyStack, UI::GUIPanel(ui, this->tpMyStack));
 	this->pnlMyStack->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtMyStackMem, UI::GUITextBox(ui, this->pnlMyStack, CSTR(""), true));
 	this->txtMyStackMem->SetRect(0, 0, 100, 200, false);
 	this->txtMyStackMem->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->txtMyStackMem->SetReadOnly(true);

@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, (const UTF8Char*)"1234"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, (const UTF8Char*)"Multi-Thread", false));
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);

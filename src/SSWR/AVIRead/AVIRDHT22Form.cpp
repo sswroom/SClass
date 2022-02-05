@@ -56,17 +56,17 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, UI::GU
 
 	NEW_CLASS(this->lblTemp, UI::GUILabel(ui, this, (const UTF8Char*)"Temperature"));
 	this->lblTemp->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTemp, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtTemp->SetRect(104, 4, 100, 23, false);
 	this->txtTemp->SetReadOnly(true);
 	NEW_CLASS(this->lblRH, UI::GUILabel(ui, this, (const UTF8Char*)"RH"));
 	this->lblRH->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtRH, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRH, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRH->SetRect(104, 28, 100, 23, false);
 	this->txtRH->SetReadOnly(true);
 	NEW_CLASS(this->lblHumidity, UI::GUILabel(ui, this, (const UTF8Char*)"Absolute Humidity"));
 	this->lblHumidity->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtHumidity, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtHumidity, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHumidity->SetRect(104, 52, 100, 23, false);
 	this->txtHumidity->SetReadOnly(true);
 	NEW_CLASS(this->btnRead, UI::GUIButton(ui, this, (const UTF8Char*)"Read"));
@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, UI::GU
 	this->chkAutoRead->SetRect(184, 76, 100, 23, false);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Abs Humidity"));
 	this->lblStatus->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 100, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

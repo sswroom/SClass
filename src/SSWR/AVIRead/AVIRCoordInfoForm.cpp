@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"SRID"));
 	this->lblSRID->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this->pnlCoord, (const UTF8Char*)"4326"));
+	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this->pnlCoord, CSTR("4326")));
 	this->txtSRID->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnSRID, UI::GUIButton(ui, this->pnlCoord, (const UTF8Char*)"View"));
 	this->btnSRID->SetRect(204, 4, 75, 23, false);
@@ -107,12 +107,12 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnSRIDNext, UI::GUIButton(ui, this->pnlCoord, (const UTF8Char*)"Next"));
 	this->btnSRIDNext->SetRect(364, 4, 75, 23, false);
 	this->btnSRIDNext->HandleButtonClick(OnSRIDNextClicked, this);
-	NEW_CLASS(this->txtWKT, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtWKT, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtWKT->SetRect(0, 0, 300, 23, false);
 	this->txtWKT->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->txtWKT->SetReadOnly(true);
 	NEW_CLASS(this->hspWKT, UI::GUIHSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtDisp, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtDisp, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDisp->SetReadOnly(true);
 

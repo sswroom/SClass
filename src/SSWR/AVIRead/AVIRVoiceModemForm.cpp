@@ -193,24 +193,24 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
 	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacture"));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemManu->SetRect(108, 8, 200, 23, false);
 	this->txtModemManu->SetReadOnly(true);
 	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Model"));
 	this->lblModemModel->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemModel->SetRect(108, 32, 200, 23, false);
 	this->txtModemModel->SetReadOnly(true);
 	NEW_CLASS(this->lblModemRev, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Revision"));
 	this->lblModemRev->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->txtModemRev, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtModemRev, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemRev->SetRect(108, 56, 200, 23, false);
 	this->txtModemRev->SetReadOnly(true);
 
 	this->tpDial = this->tcMain->AddTabPage((const UTF8Char*)"Dial");
 	NEW_CLASS(this->lblDialNum, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Dial Num"));
 	this->lblDialNum->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialNum->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->btnDial, UI::GUIButton(ui, this->tpDial, (const UTF8Char*)"Dial"));
 	this->btnDial->SetRect(104, 28, 75, 23, false);
@@ -220,12 +220,12 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->btnHangUp->HandleButtonClick(OnHangUpClicked, this);
 	NEW_CLASS(this->lblDialStatus, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Status"));
 	this->lblDialStatus->SetRect(4, 52, 250, 23, false);
-	NEW_CLASS(this->txtDialStatus, UI::GUITextBox(ui, this->tpDial, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDialStatus, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialStatus->SetReadOnly(true);
 	this->txtDialStatus->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->lblDialTones, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Tones"));
 	this->lblDialTones->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtDialTones, UI::GUITextBox(ui, this->tpDial, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDialTones, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialTones->SetReadOnly(true);
 	this->txtDialTones->SetRect(104, 76, 200, 23, false);
 

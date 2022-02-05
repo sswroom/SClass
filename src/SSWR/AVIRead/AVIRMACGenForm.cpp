@@ -80,12 +80,12 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblColonFormat, UI::GUILabel(ui, this, (const UTF8Char*)"Colon Format"));
 	this->lblColonFormat->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtColonFormat, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtColonFormat, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtColonFormat->SetRect(104, 52, 150, 23, false);
 	this->txtColonFormat->SetReadOnly(true);
 	NEW_CLASS(this->lblPlainFormat, UI::GUILabel(ui, this, (const UTF8Char*)"Plain Format"));
 	this->lblPlainFormat->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtPlainFormat, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPlainFormat, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPlainFormat->SetRect(104, 76, 150, 23, false);
 	this->txtPlainFormat->SetReadOnly(true);
 	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this, (const UTF8Char*)"Adapter"));

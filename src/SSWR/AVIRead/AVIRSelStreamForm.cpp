@@ -328,7 +328,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	DEL_CLASS(ports);
 	NEW_CLASS(this->lblBaudRate, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Baud Rate"));
 	this->lblBaudRate->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, (const UTF8Char*)"115200"));
+	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, CSTR("115200")));
 	this->txtBaudRate->SetRect(108, 32, 100, 23, false);
 	NEW_CLASS(this->lblParity, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Parity"));
 	this->lblParity->SetRect(8, 56, 100, 23, false);
@@ -347,12 +347,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 		NEW_CLASS(this->lblDLLVer, UI::GUILabel(ui, this->pnlSLInfo, (const UTF8Char*)"DLL Version"));
 		this->lblDLLVer->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtDLLVer, UI::GUITextBox(ui, this->pnlSLInfo, (const UTF8Char*)""));
+		NEW_CLASS(this->txtDLLVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDLLVer->SetRect(104, 4, 100, 23, false);
 		this->txtDLLVer->SetReadOnly(true);
 		NEW_CLASS(this->lblDriverVer, UI::GUILabel(ui, this->pnlSLInfo, (const UTF8Char*)"Driver Version"));
 		this->lblDriverVer->SetRect(4, 28, 100, 23, false);
-		NEW_CLASS(this->txtDriverVer, UI::GUITextBox(ui, this->pnlSLInfo, (const UTF8Char*)""));
+		NEW_CLASS(this->txtDriverVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
 		this->txtDriverVer->SetReadOnly(true);
 
@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 		NEW_CLASS(this->lblSLBaudRate, UI::GUILabel(ui, this->pnlSLControl, (const UTF8Char*)"Baud Rate"));
 		this->lblSLBaudRate->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtSLBaudRate, UI::GUITextBox(ui, this->pnlSLControl, (const UTF8Char*)"115200"));
+		NEW_CLASS(this->txtSLBaudRate, UI::GUITextBox(ui, this->pnlSLControl, CSTR("115200")));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
 
 		NEW_CLASS(this->lvSLPort, UI::GUIListView(ui, this->tpSiLabPort, UI::GUIListView::LVSTYLE_TABLE, 5));
@@ -442,7 +442,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tpTCPSvr = this->tcConfig->AddTabPage((const UTF8Char*)"TCP Server");
 	NEW_CLASS(this->lblTCPSvrPort, UI::GUILabel(ui, this->tpTCPSvr, (const UTF8Char*)"Port"));
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, CSTR("")));
 	this->txtTCPSvrPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, (const UTF8Char*)"Boardcast", true));
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
@@ -450,11 +450,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tpTCPCli = this->tcConfig->AddTabPage((const UTF8Char*)"TCP Client");
 	NEW_CLASS(this->lblTCPCliHost, UI::GUILabel(ui, this->tpTCPCli, (const UTF8Char*)"Host"));
 	this->lblTCPCliHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliHost->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblTCPCliPort, UI::GUILabel(ui, this->tpTCPCli, (const UTF8Char*)"Port"));
 	this->lblTCPCliPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
 
 	if (allowReadOnly)
@@ -462,7 +462,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->tpFile = this->tcConfig->AddTabPage((const UTF8Char*)"File");
 		NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)"File Name"));
 		this->lblFileName->SetRect(4, 4, 100, 23, false);
-		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, (const UTF8Char*)""));
+		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);
 		this->txtFileName->SetReadOnly(true);
 		NEW_CLASS(this->btnFileBrowse, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"Browse"));

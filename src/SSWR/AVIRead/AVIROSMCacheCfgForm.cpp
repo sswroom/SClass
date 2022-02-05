@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 
 	NEW_CLASS(this->lblHTTPPort, UI::GUILabel(ui, this, (const UTF8Char*)"HTTP Port"));
 	this->lblHTTPPort->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtHTTPPort, UI::GUITextBox(ui, this, (const UTF8Char*)"80"));
+	NEW_CLASS(this->txtHTTPPort, UI::GUITextBox(ui, this, CSTR("80")));
 	this->txtHTTPPort->SetRect(108, 32, 100, 23, false);
 
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));

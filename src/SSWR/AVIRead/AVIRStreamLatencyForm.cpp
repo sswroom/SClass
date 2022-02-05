@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, (const UTF8Char*)"Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, (const UTF8Char*)"-"));
+	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -238,12 +238,12 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
 	NEW_CLASS(this->lblSentCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Sent Cnt"));
 	this->lblSentCnt->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtSentCnt->SetRect(100, 0, 150, 23, false);
 	this->txtSentCnt->SetReadOnly(true);
 	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Recv Cnt"));
 	this->lblRecvCnt->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->tpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtRecvCnt->SetRect(100, 24, 150, 23, false);
 	this->txtRecvCnt->SetReadOnly(true);
 

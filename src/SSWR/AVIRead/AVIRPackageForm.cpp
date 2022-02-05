@@ -553,7 +553,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
 		NEW_CLASS(this->lblStatusFile, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Copy From"));
 		this->lblStatusFile->SetRect(0, 0, 100, 23, false);
-		NEW_CLASS(this->txtStatusFile, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+		NEW_CLASS(this->txtStatusFile, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusFile->SetRect(100, 0, 800, 23, false);
 		this->txtStatusFile->SetReadOnly(true);
 		NEW_CLASS(this->pnlStatusBNT, UI::GUIPanel(ui, this->pnlStatus));
@@ -561,22 +561,22 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		this->pnlStatusBNT->SetRect(900, 0, 23, 23, false);
 		NEW_CLASS(this->lblStatusFileSize, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"File Size"));
 		this->lblStatusFileSize->SetRect(0, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusFileSize, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+		NEW_CLASS(this->txtStatusFileSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusFileSize->SetRect(100, 24, 100, 23, false);
 		this->txtStatusFileSize->SetReadOnly(true);
 		NEW_CLASS(this->lblStatusCurrSize, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Curr Size"));
 		this->lblStatusCurrSize->SetRect(220, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusCurrSize, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+		NEW_CLASS(this->txtStatusCurrSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusCurrSize->SetRect(320, 24, 100, 23, false);
 		this->txtStatusCurrSize->SetReadOnly(true);
 		NEW_CLASS(this->lblStatusCurrSpeed, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Curr Speed"));
 		this->lblStatusCurrSpeed->SetRect(440, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusCurrSpeed, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+		NEW_CLASS(this->txtStatusCurrSpeed, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusCurrSpeed->SetRect(540, 24, 100, 23, false);
 		this->txtStatusCurrSpeed->SetReadOnly(true);
 		NEW_CLASS(this->lblStatusTimeLeft, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Time Left"));
 		this->lblStatusTimeLeft->SetRect(660, 24, 100, 23, false);
-		NEW_CLASS(this->txtStatusTimeLeft, UI::GUITextBox(ui, this->pnlStatus, (const UTF8Char*)""));
+		NEW_CLASS(this->txtStatusTimeLeft, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
 		this->txtStatusTimeLeft->SetReadOnly(true);
 		NEW_CLASS(this->rlcStatus, UI::GUIRealtimeLineChart(ui, this->tpStatus, this->core->GetDrawEngine(), 1, 720, 1000));
@@ -595,7 +595,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	}
 
 	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
 	this->txtInfo->SetReadOnly(true);
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	Text::StringBuilderUTF8 sb;

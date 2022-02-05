@@ -12,8 +12,8 @@ namespace UI
 		void *clsData;
 
 	public:
-		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText);
-		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool isMultiline);
+		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText);
+		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline);
 		virtual ~GUITextBox();
 
 		void EventTextChange();

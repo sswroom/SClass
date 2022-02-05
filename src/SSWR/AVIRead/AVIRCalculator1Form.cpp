@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIRCalculator1Form::AVIRCalculator1Form(UI::GUIClientControl *pa
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtResult->SetRect(8, 4, 392, 64, false);
 	this->txtResult->SetReadOnly(true);
 

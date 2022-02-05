@@ -10,6 +10,7 @@
 SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const Net::SocketUtil::AddressInfo *addr, Text::String *community) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"SNMP Walk");
 
@@ -21,8 +22,8 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
-	Net::SocketUtil::GetAddrName(sbuff, addr);
-	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, sbuff));
+	sptr=  Net::SocketUtil::GetAddrName(sbuff, addr);
+	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->txtAgent->SetReadOnly(true);
 	NEW_CLASS(this->lvResults, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

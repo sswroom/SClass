@@ -153,18 +153,18 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 
 	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this, (const UTF8Char*)"Folder"));
 	this->lblDir->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"&Browse"));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, this, (const UTF8Char*)"Quality"));
 	this->lblQuality->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, this, (const UTF8Char*)"100"));
+	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, this, CSTR("100")));
 	this->txtQuality->SetRect(100, 24, 100, 23, false);
 	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, (const UTF8Char*)"Subdir", true));
 	this->chkSubdir->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, (const UTF8Char*)"JPEG"));
+	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, CSTR("JPEG")));
 	this->txtSubdir->SetRect(100, 48, 100, 23, false);
 	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, (const UTF8Char*)"&Convert"));
 	this->btnConvert->SetRect(100, 72, 75, 23, false);

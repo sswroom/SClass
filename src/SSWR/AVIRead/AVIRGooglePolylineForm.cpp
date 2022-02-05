@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRGooglePolylineForm::AVIRGooglePolylineForm(UI::GUIClientContr
 
 	NEW_CLASS(this->lblPolylineText, UI::GUILabel(ui, this, (const UTF8Char*)"Polyline Text"));
 	this->lblPolylineText->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPolylineText, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPolylineText, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPolylineText->SetRect(104, 4, 800, 23, false);
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
 	this->btnCancel->SetRect(104, 28, 75, 23, false);

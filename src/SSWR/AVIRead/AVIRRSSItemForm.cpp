@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 #endif
 
 	this->tpText = this->tcMain->AddTabPage((const UTF8Char*)"Items");
-	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->tpText, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtText, UI::GUITextBox(ui, this->tpText, CSTR(""), true));
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
 

@@ -123,19 +123,19 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, (const UTF8Char*)"12345"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(158, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
 	this->tpReqText = this->tcMain->AddTabPage((const UTF8Char*)"ReqText");
-	NEW_CLASS(this->txtReqText, UI::GUITextBox(ui, this->tpReqText, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtReqText, UI::GUITextBox(ui, this->tpReqText, CSTR(""), true));
 	this->txtReqText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtReqText->SetReadOnly(true);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

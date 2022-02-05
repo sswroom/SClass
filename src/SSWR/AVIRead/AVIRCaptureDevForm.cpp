@@ -186,7 +186,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	this->lblFormat->SetRect(8, 96, 100, 23, false);
 	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, this, false));
 	this->cboFormat->SetRect(112, 96, 264, 23, false);
-	NEW_CLASS(this->txtDeviceInfo, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtDeviceInfo, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtDeviceInfo->SetReadOnly(true);
 	this->txtDeviceInfo->SetRect(376, 8, 384, 168, false);
 

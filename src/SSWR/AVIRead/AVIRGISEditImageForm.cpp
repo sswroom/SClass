@@ -812,22 +812,22 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Left"));
 	this->lblLeft->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtLeft, UI::GUITextBox(ui, this->pnlMain, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLeft, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtLeft->SetRect(100, 0, 100, 23, false);
 	this->txtLeft->SetReadOnly(true);
 	NEW_CLASS(this->lblTop, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Top"));
 	this->lblTop->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtTop, UI::GUITextBox(ui, this->pnlMain, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTop, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtTop->SetRect(100, 24, 100, 23, false);
 	this->txtTop->SetReadOnly(true);
 	NEW_CLASS(this->lblRight, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Right"));
 	this->lblRight->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtRight, UI::GUITextBox(ui, this->pnlMain, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRight, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtRight->SetRect(100, 48, 100, 23, false);
 	this->txtRight->SetReadOnly(true);
 	NEW_CLASS(this->lblBottom, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Bottom"));
 	this->lblBottom->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtBottom, UI::GUITextBox(ui, this->pnlMain, (const UTF8Char*)""));
+	NEW_CLASS(this->txtBottom, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtBottom->SetRect(100, 72, 100, 23, false);
 	this->txtBottom->SetReadOnly(true);
 

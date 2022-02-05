@@ -237,7 +237,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->hsbHOfst->SetRect(104, 28, 300, 23, false);
 	this->hsbHOfst->InitScrollBar(0, 210, 100, 10);
 	this->hsbHOfst->HandlePosChanged(OnHOfstChanged, this);
-	NEW_CLASS(this->txtHOfst, UI::GUITextBox(ui, this->pnlSetting, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtHOfst, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtHOfst->SetRect(404, 28, 100, 23, false);
 	this->txtHOfst->SetReadOnly(true);
 	NEW_CLASS(this->lblVOfst, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"V Offset"));
@@ -246,7 +246,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->hsbVOfst->SetRect(104, 52, 300, 23, false);
 	this->hsbVOfst->InitScrollBar(0, 210, 100, 10);
 	this->hsbVOfst->HandlePosChanged(OnVOfstChanged, this);
-	NEW_CLASS(this->txtVOfst, UI::GUITextBox(ui, this->pnlSetting, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtVOfst, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtVOfst->SetRect(404, 52, 100, 23, false);
 	this->txtVOfst->SetReadOnly(true);
 	NEW_CLASS(this->lblLevel, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"Level"));
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->hsbLevel->SetRect(104, 76, 300, 23, false);
 	this->hsbLevel->InitScrollBar(0, 210, 100, 10);
 	this->hsbLevel->HandlePosChanged(OnLevelChanged, this);
-	NEW_CLASS(this->txtLevel, UI::GUITextBox(ui, this->pnlSetting, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtLevel, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtLevel->SetRect(404, 76, 100, 23, false);
 	this->txtLevel->SetReadOnly(true);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"Type"));

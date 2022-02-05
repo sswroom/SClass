@@ -475,7 +475,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->pnlMonitor->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMonitor, UI::GUILabel(ui, this->pnlMonitor, (const UTF8Char*)"Monitor"));
 	this->lblMonitor->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtMonitor, UI::GUITextBox(ui, this->pnlMonitor, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtMonitor, UI::GUITextBox(ui, this->pnlMonitor, CSTR(""), false));
 	this->txtMonitor->SetRect(100, 0, 300, 23, false);
 	this->txtMonitor->SetReadOnly(true);
 	if (monName)
@@ -538,18 +538,18 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->grpMonProfile->SetRect(0, 24, 500, 72, false);
 	NEW_CLASS(this->lblMonTran, UI::GUILabel(ui, this->grpMonProfile, (const UTF8Char*)"Transfer Characteristics"));
 	this->lblMonTran->SetRect(0, 0, 150, 23, false);
-	NEW_CLASS(this->txtMonTran, UI::GUITextBox(ui, this->grpMonProfile, (const UTF8Char*)"");
-	this->txtMonTran->SetRect(150, 0, 150, 23, false));
+	NEW_CLASS(this->txtMonTran, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
+	this->txtMonTran->SetRect(150, 0, 150, 23, false);
 	this->txtMonTran->SetReadOnly(true);
 	NEW_CLASS(this->lblMonRGBGamma, UI::GUILabel(ui, this->grpMonProfile, (const UTF8Char*)"Gamma"));
 	this->lblMonRGBGamma->SetRect(300, 0, 80, 23, false);
-	NEW_CLASS(this->txtMonRGBGamma, UI::GUITextBox(ui, this->grpMonProfile, (const UTF8Char*)""));
+	NEW_CLASS(this->txtMonRGBGamma, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
 	this->txtMonRGBGamma->SetRect(380, 0, 100, 23, false);
 	this->txtMonRGBGamma->SetReadOnly(true);
 	NEW_CLASS(this->lblMonPrimaries, UI::GUILabel(ui, this->grpMonProfile, (const UTF8Char*)"Color Primaries"));
 	this->lblMonPrimaries->SetRect(0, 24, 150, 23, false);
-	NEW_CLASS(this->txtMonPrimaries, UI::GUITextBox(ui, this->grpMonProfile, (const UTF8Char*)"");
-	this->txtMonPrimaries->SetRect(150, 24, 150, 23, false));
+	NEW_CLASS(this->txtMonPrimaries, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
+	this->txtMonPrimaries->SetRect(150, 24, 150, 23, false);
 	this->txtMonPrimaries->SetReadOnly(true);
 	NEW_CLASS(this->btnMonCustom, UI::GUIButton(ui, this->grpMonProfile, (const UTF8Char*)"Custom"));
 	this->btnMonCustom->SetRect(300, 24, 75, 23, false);
@@ -589,7 +589,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->chk10Bit->HandleCheckedChange(On10BitChanged, this);
 	NEW_CLASS(this->lblLuminance, UI::GUILabel(ui, this->tpSetting, (const UTF8Char*)"Luminance"));
 	this->lblLuminance->SetRect(0, 176, 100, 23, false);
-	NEW_CLASS(this->txtLuminance, UI::GUITextBox(ui, this->tpSetting, (const UTF8Char*)"250"));
+	NEW_CLASS(this->txtLuminance, UI::GUITextBox(ui, this->tpSetting, CSTR("250")));
 	this->txtLuminance->SetRect(100, 176, 50, 23, false);
 	NEW_CLASS(this->lblLuminanceUnit, UI::GUILabel(ui, this->tpSetting, (const UTF8Char*)"cd/m2"));
 	this->lblLuminanceUnit->SetRect(150, 176, 100, 23, false);

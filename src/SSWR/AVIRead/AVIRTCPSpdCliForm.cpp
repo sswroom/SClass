@@ -204,11 +204,11 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, (const UTF8Char*)"127.0.0.1"));
+	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, (const UTF8Char*)"1234"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this, (const UTF8Char*)"Conn"));
 	this->btnConn->SetRect(104, 52, 75, 23, false);
@@ -216,12 +216,12 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblSendSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Send Speed"));
 	this->lblSendSpeed->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtSendSpeed, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSendSpeed, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSendSpeed->SetRect(104, 100, 150, 23, false);
 	this->txtSendSpeed->SetReadOnly(true);
 	NEW_CLASS(this->lblRecvSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Recv Speed"));
 	this->lblRecvSpeed->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtRecvSpeed, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRecvSpeed, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRecvSpeed->SetRect(104, 124, 150, 23, false);
 	this->txtRecvSpeed->SetReadOnly(true);
 

@@ -147,18 +147,18 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->lblSFile, UI::GUILabel(ui, this, (const UTF8Char*)"Source File"));
 	this->lblSFile->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSFile, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSFile->SetRect(104, 4, 560, 23, false);
 	NEW_CLASS(this->btnSFile, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnSFile->SetRect(660, 4, 75, 23, false);
 	this->btnSFile->HandleButtonClick(OnSFileClicked, this);
 	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this, (const UTF8Char*)"Prefix"));
 	this->lblPrefix->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPrefix->SetRect(104, 28, 560, 23, false);
 	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, (const UTF8Char*)"Output"));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
 	NEW_CLASS(this->btnOFile, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
@@ -172,7 +172,7 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblSuffix, UI::GUILabel(ui, this, (const UTF8Char*)"Suffix to add"));
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSuffix->SetRect(104, 100, 560, 23, false);
 	NEW_CLASS(this->btnExtract, UI::GUIButton(ui, this, (const UTF8Char*)"Extract"));
 	this->btnExtract->SetRect(200, 124, 75, 23, false);

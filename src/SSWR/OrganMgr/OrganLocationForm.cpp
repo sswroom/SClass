@@ -303,12 +303,12 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->lblEName->SetRect(11, 48, 80, 23, false);
 	NEW_CLASS(this->lblCName, UI::GUILabel(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationCName")).v));
 	this->lblCName->SetRect(11, 80, 80, 23, false);
-	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this->pnlLocation, (const UTF8Char*)""));	
+	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtID->SetRect(99, 16, 88, 23, false);
 	this->txtID->SetReadOnly(true);
-	NEW_CLASS(this->txtEName, UI::GUITextBox(ui, this->pnlLocation, (const UTF8Char*)""));	
+	NEW_CLASS(this->txtEName, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtEName->SetRect(99, 48, 96, 23, false);
-	NEW_CLASS(this->txtCName, UI::GUITextBox(ui, this->pnlLocation, (const UTF8Char*)""));	
+	NEW_CLASS(this->txtCName, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtCName->SetRect(99, 80, 96, 23, false);
 	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationAdd")).v));
 	this->btnAdd->SetRect(99, 120, 75, 23, false);

@@ -114,7 +114,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(UI::GUIClientControl *pare
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, (const UTF8Char*)"Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, (const UTF8Char*)"-"));
+	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(UI::GUIClientControl *pare
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblDataSize, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Data Size"));
 	this->lblDataSize->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtDataSize, UI::GUITextBox(ui, this->grpStatus, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtDataSize, UI::GUITextBox(ui, this->grpStatus, CSTR("0")));
 	this->txtDataSize->SetRect(100, 0, 150, 23, false);
 	this->txtDataSize->SetReadOnly(true);
 	this->AddTimer(1000, OnTimerTick, this);

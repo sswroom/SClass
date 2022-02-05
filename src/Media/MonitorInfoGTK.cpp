@@ -11,6 +11,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 	OSInt monNum = ((OSInt)hMonitor) - 1;
 	GdkRectangle rect;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 //#define GDK_MAJOR_VERSION (3)
 //#define GDK_MINOR_VERSION (22)
 //#define GDK_MICRO_VERSION (11)		
@@ -80,8 +81,8 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		if (Media::EDID::Parse(edid, &info))
 		{
 			this->name = Text::String::NewNotNull(info.monitorName);
-			Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
-			this->monId = Text::String::NewNotNull(sbuff);
+			sptr = Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
+			this->monId = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{

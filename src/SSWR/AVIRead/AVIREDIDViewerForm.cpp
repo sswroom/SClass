@@ -178,7 +178,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Save"));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
-	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtEDID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtEDID->SetReadOnly(true);
 

@@ -60,18 +60,18 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, UI::
 	this->grpGenerate->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblCost, UI::GUILabel(ui, this->grpGenerate, (const UTF8Char*)"Cost"));
 	this->lblCost->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCost, UI::GUITextBox(ui, this->grpGenerate, (const UTF8Char*)"10"));
+	NEW_CLASS(this->txtCost, UI::GUITextBox(ui, this->grpGenerate, CSTR("10")));
 	this->txtCost->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblGenPassword, UI::GUILabel(ui, this->grpGenerate, (const UTF8Char*)"Password"));
 	this->lblGenPassword->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtGenPassword, UI::GUITextBox(ui, this->grpGenerate, (const UTF8Char*)""));
+	NEW_CLASS(this->txtGenPassword, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
 	this->txtGenPassword->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->grpGenerate, (const UTF8Char*)"Generate"));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenHashClicked, this);
 	NEW_CLASS(this->lblGenHash, UI::GUILabel(ui, this->grpGenerate, (const UTF8Char*)"Hash"));
 	this->lblGenHash->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtGenHash, UI::GUITextBox(ui, this->grpGenerate, (const UTF8Char*)""));
+	NEW_CLASS(this->txtGenHash, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
 	this->txtGenHash->SetRect(104, 76, 500, 23, false);
 	this->txtGenHash->SetReadOnly(true);
 
@@ -79,18 +79,18 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, UI::
 	this->grpCheck->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblCheckHash, UI::GUILabel(ui, this->grpCheck, (const UTF8Char*)"Hash"));
 	this->lblCheckHash->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCheckHash, UI::GUITextBox(ui, this->grpCheck, (const UTF8Char*)""));
+	NEW_CLASS(this->txtCheckHash, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
 	this->txtCheckHash->SetRect(104, 4, 500, 23, false);
 	NEW_CLASS(this->lblCheckPassword, UI::GUILabel(ui, this->grpCheck, (const UTF8Char*)"Password"));
 	this->lblCheckPassword->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCheckPassword, UI::GUITextBox(ui, this->grpCheck, (const UTF8Char*)""));
+	NEW_CLASS(this->txtCheckPassword, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
 	this->txtCheckPassword->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->btnCheck, UI::GUIButton(ui, this->grpCheck, (const UTF8Char*)"Check"));
 	this->btnCheck->SetRect(104, 52, 75, 23, false);
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	NEW_CLASS(this->lblCheckResult, UI::GUILabel(ui, this->grpCheck, (const UTF8Char*)"Result"));
 	this->lblCheckResult->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtCheckResult, UI::GUITextBox(ui, this->grpCheck, (const UTF8Char*)""));
+	NEW_CLASS(this->txtCheckResult, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
 	this->txtCheckResult->SetRect(104, 76, 200, 23, false);
 	this->txtCheckResult->SetReadOnly(true);
 }

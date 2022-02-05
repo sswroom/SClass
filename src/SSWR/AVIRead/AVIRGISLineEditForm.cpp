@@ -316,7 +316,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, (const UTF8Char*)"Name:"));
 	this->lblName->SetRect(0, 32, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlStyle, (const UTF8Char*)""));
+	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlStyle, CSTR("")));
 	this->txtName->SetRect(100, 32, 112, 23, false);
 
 	NEW_CLASS(this->lbLayer, UI::GUIListBox(ui, this->pnlLayers, false));
@@ -344,14 +344,14 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->hsbAlpha, UI::GUIHScrollBar(ui, this->pnlLayer, 144));
 	this->hsbAlpha->SetPosition(96, 32);
 	this->hsbAlpha->InitScrollBar(0, 255, 255, 1);
-	NEW_CLASS(this->txtThick, UI::GUITextBox(ui, this->pnlLayer, (const UTF8Char*)"1"));
+	NEW_CLASS(this->txtThick, UI::GUITextBox(ui, this->pnlLayer, CSTR("1")));
 	this->txtThick->SetRect(96, 56, 40, 23, false);
 	this->txtThick->HandleTextChanged(ThickChanged, this);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlLayer, 120));
 	this->hsbThick->SetPosition(136, 56);
 	this->hsbThick->InitScrollBar(0, 21, 1, 1);
 	this->hsbThick->HandlePosChanged(OnThickScrolled, this);
-	NEW_CLASS(this->txtPattern, UI::GUITextBox(ui, this->pnlLayer, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPattern, UI::GUITextBox(ui, this->pnlLayer, CSTR("")));
 	this->txtPattern->SetRect(96, 80, 100, 23, false);
 	this->txtPattern->HandleTextChanged(PatternChanged, this);
 

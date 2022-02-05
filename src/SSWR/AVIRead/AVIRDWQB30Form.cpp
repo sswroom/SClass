@@ -313,7 +313,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->cboDevType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpConn, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(160, 24, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, CSTR(""), false));
 	this->txtPort->SetRect(260, 24, 100, 23, false);
 	this->txtPort->SetReadOnly(true);
 	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, (const UTF8Char*)"Open"));
@@ -324,7 +324,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->grpCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblMode, UI::GUILabel(ui, this->grpCtrl, (const UTF8Char*)"Mode"));
 	this->lblMode->SetRect(160, 0, 100, 23, false);
-	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, CSTR("")));
 	this->txtMode->SetRect(260, 0, 100, 23, false);
 	this->txtMode->SetReadOnly(true);
 	NEW_CLASS(this->btnModeScan, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Scan Mode"));
@@ -352,7 +352,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblScan, UI::GUILabel(ui, this->pnlScan, (const UTF8Char*)"Last Result"));
 	this->lblScan->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtScan, UI::GUITextBox(ui, this->pnlScan, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtScan, UI::GUITextBox(ui, this->pnlScan, CSTR(""), false));
 	this->txtScan->SetReadOnly(true);
 	this->txtScan->SetRect(104, 4, 400, 23, false);
 	NEW_CLASS(this->lbScan, UI::GUIListBox(ui, this->tpScan, false));
@@ -369,7 +369,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnSetCmd, UI::GUIButton(ui, this->tpSetting, (const UTF8Char*)"Send"));
 	this->btnSetCmd->SetRect(414, 4, 75, 23, false);
 	this->btnSetCmd->HandleButtonClick(OnSetCmdClicked, this);
-	NEW_CLASS(this->txtSetCmd, UI::GUITextBox(ui, this->tpSetting, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtSetCmd, UI::GUITextBox(ui, this->tpSetting, CSTR(""), false));
 	this->txtSetCmd->SetRect(494, 4, 100, 23, false);
 	this->txtSetCmd->SetReadOnly(true);
 

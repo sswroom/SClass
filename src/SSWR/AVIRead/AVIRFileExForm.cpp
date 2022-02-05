@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 
 	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this, (const UTF8Char*)"Source File"));
 	this->lblSrc->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
 	this->txtSrc->HandleTextChanged(OnSrcChanged, this);
 	NEW_CLASS(this->btnSrc, UI::GUIButton(ui, this, (const UTF8Char*)"B&rowse"));
@@ -159,23 +159,23 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this, (const UTF8Char*)"Dest File"));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
 	NEW_CLASS(this->btnDest, UI::GUIButton(ui, this, (const UTF8Char*)"&Browse"));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
 	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, this, (const UTF8Char*)"File Size"));
 	this->lblFileSize->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtFileSize, UI::GUITextBox(ui, this, (const UTF8Char*)"Unknown"));
+	NEW_CLASS(this->txtFileSize, UI::GUITextBox(ui, this, CSTR("Unknown")));
 	this->txtFileSize->SetRect(104, 52, 160, 23, false);
 	this->txtFileSize->SetReadOnly(true);
 	NEW_CLASS(this->lblStartOfst, UI::GUILabel(ui, this, (const UTF8Char*)"Start Offset"));
 	this->lblStartOfst->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtStartOfst, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtStartOfst, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtStartOfst->SetRect(104, 76, 160, 23, false);
 	NEW_CLASS(this->lblEndOfst, UI::GUILabel(ui, this, (const UTF8Char*)"End Offset"));
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"&Start"));
 	this->btnStart->SetRect(304, 76, 75, 23, false);

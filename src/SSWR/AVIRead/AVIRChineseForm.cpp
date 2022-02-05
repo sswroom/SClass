@@ -396,7 +396,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lblCharCode, UI::GUILabel(ui, this, (const UTF8Char*)"Char Code"));
 	this->lblCharCode->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCharCode, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtCharCode, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCharCode->SetRect(104, 4, 100, 23, false);
 	this->txtCharCode->SetReadOnly(true);
 	NEW_CLASS(this->btnCharPrev, UI::GUIButton(ui, this, (const UTF8Char*)"Prev"));
@@ -407,18 +407,18 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	this->btnCharNext->HandleButtonClick(OnCharNextClicked, this);
 	NEW_CLASS(this->lblChar, UI::GUILabel(ui, this, (const UTF8Char*)"Character"));
 	this->lblChar->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtChar, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtChar, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtChar->SetRect(104, 52, 23, 23, false);
 	this->txtChar->HandleTextChanged(OnCharChg, this);
 	this->txtChar->Focus();
 	NEW_CLASS(this->lblRelatedCurr, UI::GUILabel(ui, this, (const UTF8Char*)"Related (Curr)"));
 	this->lblRelatedCurr->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtRelatedCurr, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRelatedCurr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRelatedCurr->SetRect(104, 100, 100, 23, false);
 	this->txtRelatedCurr->SetReadOnly(true);
 	NEW_CLASS(this->lblRelatedAdd, UI::GUILabel(ui, this, (const UTF8Char*)"Related (Add)"));
 	this->lblRelatedAdd->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->txtRelatedAdd, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRelatedAdd, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRelatedAdd->SetRect(104, 124, 23, 23, false);
 	this->txtRelatedAdd->HandleTextChanged(OnRelatedAddChg, this);
 	NEW_CLASS(this->btnRelatedGo, UI::GUIButton(ui, this, (const UTF8Char*)"Show Related"));
@@ -433,14 +433,14 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	this->grpCharInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->lblRadical, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Radical"));
 	this->lblRadical->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtRadical, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtRadical, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtRadical->SetRect(100, 0, 23, 23, false);
 	this->txtRadical->HandleTextChanged(OnRadicalChg, this);
 	NEW_CLASS(this->lblRadicalV, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)""));
 	this->lblRadicalV->SetRect(124, 0, 100, 23, false);
 	NEW_CLASS(this->lblStrokeCount, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Stroke Count"));
 	this->lblStrokeCount->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtStrokeCount, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtStrokeCount, UI::GUITextBox(ui, this->grpCharInfo, CSTR("0")));
 	this->txtStrokeCount->SetRect(100, 24, 50, 23, false);
 	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Char Type"));
 	this->lblCharType->SetRect(0, 48, 100, 23, false);
@@ -459,19 +459,19 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	this->chkMainChar->SetRect(100, 72, 120, 23, false);
 	NEW_CLASS(this->lblPronun1, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Pronun 1"));
 	this->lblPronun1->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtPronun1, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPronun1, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtPronun1->SetRect(100, 96, 100, 23, false);
 	NEW_CLASS(this->lblPronun2, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Pronun 2"));
 	this->lblPronun2->SetRect(0, 120, 100, 23, false);
-	NEW_CLASS(this->txtPronun2, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPronun2, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtPronun2->SetRect(100, 120, 100, 23, false);
 	NEW_CLASS(this->lblPronun3, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Pronun 3"));
 	this->lblPronun3->SetRect(0, 144, 100, 23, false);
-	NEW_CLASS(this->txtPronun3, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPronun3, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtPronun3->SetRect(100, 144, 100, 23, false);
 	NEW_CLASS(this->lblPronun4, UI::GUILabel(ui, this->grpCharInfo, (const UTF8Char*)"Pronun 4"));
 	this->lblPronun4->SetRect(0, 168, 100, 23, false);
-	NEW_CLASS(this->txtPronun4, UI::GUITextBox(ui, this->grpCharInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPronun4, UI::GUITextBox(ui, this->grpCharInfo, CSTR("")));
 	this->txtPronun4->SetRect(100, 168, 100, 23, false);
 }
 

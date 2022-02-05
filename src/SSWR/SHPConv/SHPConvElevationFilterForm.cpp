@@ -41,7 +41,7 @@ SSWR::SHPConv::SHPConvElevationFilterForm::SHPConvElevationFilterForm(UI::GUICli
 	this->cboCol->SetRect(72, 8, 176, 21, false);
 	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this, (const UTF8Char*)"Height"));
 	this->lblHeight->SetRect(8, 32, 56, 23, false);
-	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this, (const UTF8Char*)"20"));
+	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this, CSTR("20")));
 	this->txtHeight->SetRect(72, 32, 80, 20, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
 	this->btnOK->SetRect(72, 56, 75, 23, false);

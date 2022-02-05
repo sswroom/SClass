@@ -183,10 +183,10 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"File Name"));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->pnlInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
 	this->txtFileName->SetReadOnly(true);
-	NEW_CLASS(this->txtRemark, UI::GUITextBox(ui, this->tpInfo, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtRemark, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
 	this->txtRemark->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtRemark->SetReadOnly(true);
 

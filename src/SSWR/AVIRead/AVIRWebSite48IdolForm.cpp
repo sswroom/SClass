@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPageNo, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"PageNo"));
 	this->lblPageNo->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPageNo, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPageNo, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPageNo->SetRect(104, 4, 60, 23, false);
 	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
 	this->btnRequestPage->SetRect(164, 4, 75, 23, false);
@@ -119,28 +119,28 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->tpDownloadLink = this->tcMain->AddTabPage((const UTF8Char*)"Download Link");
 	NEW_CLASS(this->lblVideoId, UI::GUILabel(ui, this->tpDownloadLink, (const UTF8Char*)"VideoId"));
 	this->lblVideoId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtVideoId, UI::GUITextBox(ui, this->tpDownloadLink, (const UTF8Char*)""));
+	NEW_CLASS(this->txtVideoId, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
 	this->txtVideoId->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnDownloadLink, UI::GUIButton(ui, this->tpDownloadLink, (const UTF8Char*)"Get Link"));
 	this->btnDownloadLink->SetRect(204, 4, 75, 23, false);
 	this->btnDownloadLink->HandleButtonClick(OnDownloadLinkClicked, this);
 	NEW_CLASS(this->lblDownloadLink, UI::GUILabel(ui, this->tpDownloadLink, (const UTF8Char*)"Link"));
 	this->lblDownloadLink->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtDownloadLink, UI::GUITextBox(ui, this->tpDownloadLink, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDownloadLink, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
 	this->txtDownloadLink->SetRect(104, 28, 500, 23, false);
 	this->txtDownloadLink->SetReadOnly(true);
 
 	this->tpVideoName = this->tcMain->AddTabPage((const UTF8Char*)"Video Name");
 	NEW_CLASS(this->lblNameVideoId, UI::GUILabel(ui, this->tpVideoName, (const UTF8Char*)"VideoId"));
 	this->lblNameVideoId->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtNameVideoId, UI::GUITextBox(ui, this->tpVideoName, (const UTF8Char*)""));
+	NEW_CLASS(this->txtNameVideoId, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));
 	this->txtNameVideoId->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnVideoName, UI::GUIButton(ui, this->tpVideoName, (const UTF8Char*)"Get Name"));
 	this->btnVideoName->SetRect(204, 4, 75, 23, false);
 	this->btnVideoName->HandleButtonClick(OnVideoNameClicked, this);
 	NEW_CLASS(this->lblVideoName, UI::GUILabel(ui, this->tpVideoName, (const UTF8Char*)"Video Name"));
 	this->lblVideoName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtVideoName, UI::GUITextBox(ui, this->tpVideoName, (const UTF8Char*)""));
+	NEW_CLASS(this->txtVideoName, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));
 	this->txtVideoName->SetRect(104, 28, 500, 23, false);
 	this->txtVideoName->SetReadOnly(true);
 }

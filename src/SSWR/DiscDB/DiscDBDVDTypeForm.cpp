@@ -87,7 +87,7 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 
 	NEW_CLASS(this->lblID, UI::GUILabel(ui, this, (const UTF8Char*)"ID"));
 	this->lblID->SetRect(8, 9, 80, 25, false);
-	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtID->SetRect(96, 9, 100, 20, false);
 	this->txtID->SetReadOnly(true);
 	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this, (const UTF8Char*)"N&ew"));
@@ -97,11 +97,11 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->btnCancel->SetVisible(false);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, (const UTF8Char*)"Name"));
 	this->lblName->SetRect(8, 43, 80, 25, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtName->SetRect(96, 43, 100, 20, false);
 	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, this, (const UTF8Char*)"Description"));
 	this->lblDescription->SetRect(8, 78, 80, 25, false);
-	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
 	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, this, (const UTF8Char*)""));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);

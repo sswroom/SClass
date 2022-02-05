@@ -335,7 +335,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 			this->imgList->ToString(&sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
 			sbTitle.Append(this->imgList->GetSourceNameObj());
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStringMsgForm(0, this->ui, this->core, sbTitle.ToString(), sbImg.ToString()));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRStringMsgForm(0, this->ui, this->core, sbTitle.ToString(), sbImg.ToCString()));
 			frm->ShowDialog(this);
 			DEL_CLASS(frm);
 		}

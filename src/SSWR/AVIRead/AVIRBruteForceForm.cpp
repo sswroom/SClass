@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboHashType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Value"));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this, (const UTF8Char*)"Encoding"));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
@@ -140,11 +140,11 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboEncoding->SetSelectedIndex(0);
 	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, (const UTF8Char*)"Min Length"));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, this, (const UTF8Char*)"4"));
+	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, this, CSTR("4")));
 	this->txtMinLen->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, this, (const UTF8Char*)"Max Length"));
 	this->lblMaxLen->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, this, (const UTF8Char*)"16"));
+	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, this, CSTR("16")));
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this, (const UTF8Char*)"Char Type"));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
@@ -163,7 +163,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 172, 250, 23, false);
 	this->txtStatus->SetReadOnly(true);
 

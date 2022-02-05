@@ -103,7 +103,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI
 	this->btnDriverInfo->HandleButtonClick(OnDriverInfoClicked, this);
 	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, (const UTF8Char*)"Conn Str"));
 	this->lblConnStr->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 28, 800, 23, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
 	this->btnOK->SetRect(104, 56, 75, 23, false);

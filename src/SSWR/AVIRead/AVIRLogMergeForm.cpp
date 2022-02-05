@@ -231,21 +231,21 @@ SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->lblFile1, UI::GUILabel(ui, this, (const UTF8Char*)"File1"));
 	this->lblFile1->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFile1, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFile1, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFile1->SetRect(104, 4, 560, 23, false);
 	NEW_CLASS(this->btnFile1, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnFile1->SetRect(660, 4, 75, 23, false);
 	this->btnFile1->HandleButtonClick(OnFile1Clicked, this);
 	NEW_CLASS(this->lblFile2, UI::GUILabel(ui, this, (const UTF8Char*)"File2"));
 	this->lblFile2->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtFile2, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFile2, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFile2->SetRect(104, 28, 560, 23, false);
 	NEW_CLASS(this->btnFile2, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnFile2->SetRect(660, 28, 75, 23, false);
 	this->btnFile2->HandleButtonClick(OnFile2Clicked, this);
 	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, (const UTF8Char*)"Output"));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
 	NEW_CLASS(this->btnOFile, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);

@@ -169,12 +169,12 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, UI::
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);
 	NEW_CLASS(this->lblMagnifyRatio, UI::GUILabel(ui, this->pnlBtn, (const UTF8Char*)"OS Magnify Ratio"));
 	this->lblMagnifyRatio->SetRect(4, 4, 150, 23, false);
-	NEW_CLASS(this->txtMagnifyRatio, UI::GUITextBox(ui, this->pnlBtn, (const UTF8Char*)""));
+	NEW_CLASS(this->txtMagnifyRatio, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtMagnifyRatio->SetRect(154, 4, 100, 23, false);
 	this->txtMagnifyRatio->SetReadOnly(true);
 	NEW_CLASS(this->lblDesktopDPI, UI::GUILabel(ui, this->pnlBtn, (const UTF8Char*)"Desktop DPI"));
 	this->lblDesktopDPI->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->txtDesktopDPI, UI::GUITextBox(ui, this->pnlBtn, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDesktopDPI, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtDesktopDPI->SetRect(404, 4, 100, 23, false);
 	NEW_CLASS(this->btnStandard, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"Standard Size"));
 	this->btnStandard->SetRect(504, 4, 75, 23, false);

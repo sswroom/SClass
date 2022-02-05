@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	this->lblSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->cboSrc, UI::GUIComboBox(ui, this->pnlSrcCtrl, false));
 	this->cboSrc->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this->pnlSrc, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this->pnlSrc, CSTR(""), true));
 	this->txtSrc->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, (const UTF8Char*)"Dest Encryption"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->cboDest, UI::GUIComboBox(ui, this->pnlDestCtrl, false));
 	this->cboDest->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this->pnlDest, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this->pnlDest, CSTR(""), true));
 	this->txtDest->SetReadOnly(true);
 	this->txtDest->SetDockType(UI::GUIControl::DOCK_FILL);
 

@@ -208,11 +208,11 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	this->pbFontPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStyleName, UI::GUILabel(ui, this, (const UTF8Char*)"Style Name"));
 	this->lblStyleName->SetRect(0, 68, 100, 23, false);
-	NEW_CLASS(this->txtStyleName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtStyleName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStyleName->SetRect(104, 68, 100, 23, false);
 	NEW_CLASS(this->lblFontName, UI::GUILabel(ui, this, (const UTF8Char*)"Font Name"));
 	this->lblFontName->SetRect(0, 92, 100, 23, false);
-	NEW_CLASS(this->txtFontName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFontName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFontName->SetReadOnly(true);
 	this->txtFontName->SetRect(104, 92, 100, 23, false);
 	NEW_CLASS(this->btnFontName, UI::GUIButton(ui, this, (const UTF8Char*)"S&elect"));

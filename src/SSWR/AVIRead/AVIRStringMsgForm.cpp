@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRStringMsgForm::OnOKClicked(void *userObj)
 	me->Close();
 }
 
-SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *title, const UTF8Char *msg) : UI::GUIForm(parent, 480, 144, ui)
+SSWR::AVIRead::AVIRStringMsgForm::AVIRStringMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *title, Text::CString msg) : UI::GUIForm(parent, 480, 144, ui)
 {
 	this->SetText(title);
 	this->SetFont(0, 0, 8.25, false);

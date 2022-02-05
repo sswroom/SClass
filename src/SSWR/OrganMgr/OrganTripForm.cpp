@@ -157,7 +157,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->dtpTo->SetRect(72, 56, 176, 23, false);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormLocation")).v));
 	this->lblLocation->SetRect(0, 88, 72, 23, false);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
 	this->txtLocation->SetRect(72, 88, 88, 23, false);
 	this->txtLocation->SetReadOnly(true);
 	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect")).v));

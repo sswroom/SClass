@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, (const UTF8Char*)"Stream Type"));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, (const UTF8Char*)"-"));
+	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->cboRecvType->AddItem(CSTR("Display as Text"), 0);
 	this->cboRecvType->SetSelectedIndex(0);
 	this->cboRecvType->HandleSelectionChange(OnRecvTypeChg, this);
-	NEW_CLASS(this->txtRecvDisp, UI::GUITextBox(ui, this->grpRecv, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtRecvDisp, UI::GUITextBox(ui, this->grpRecv, CSTR(""), true));
 	this->txtRecvDisp->SetReadOnly(true);
 	this->txtRecvDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlSendOption, UI::GUIPanel(ui, this->grpSend));
@@ -319,7 +319,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->radSendText->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->radSendHex, UI::GUIRadioButton(ui, this->pnlSendOption, (const UTF8Char*)"Hex", false));
 	this->radSendHex->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->txtSendValue, UI::GUITextBox(ui, this->pnlSend, (const UTF8Char*)""));
+	NEW_CLASS(this->txtSendValue, UI::GUITextBox(ui, this->pnlSend, CSTR("")));
 	this->txtSendValue->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->cboSendType, UI::GUIComboBox(ui, this->grpSend, false));
 	this->cboSendType->SetRect(0, 0, 100, 23, false);
@@ -328,7 +328,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->cboSendType->AddItem(CSTR("Display as Text"), 0);
 	this->cboSendType->SetSelectedIndex(0);
 	this->cboSendType->HandleSelectionChange(OnSendTypeChg, this);
-	NEW_CLASS(this->txtSendDisp, UI::GUITextBox(ui, this->grpSend, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtSendDisp, UI::GUITextBox(ui, this->grpSend, CSTR(""), true));
 	this->txtSendDisp->SetReadOnly(true);
 	this->txtSendDisp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->AddTimer(1000, OnTimerTick, this);

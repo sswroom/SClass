@@ -26,7 +26,7 @@ SSWR::AVIRead::AVIRPaintCntForm::AVIRPaintCntForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->lblCnt, UI::GUILabel(ui, this, (const UTF8Char*)"Paint Cnt"));
 	this->lblCnt->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtCnt, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtCnt, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCnt->SetReadOnly(true);
 	this->txtCnt->SetRect(104, 4, 150, 23, false);
 

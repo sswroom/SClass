@@ -80,11 +80,11 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlSource, (const UTF8Char*)"Convert"));
 	this->btnConvert->SetRect(4, 4, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
-	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->tpSource, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->tpSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpCPP = this->tcMain->AddTabPage((const UTF8Char*)"CPP");
-	NEW_CLASS(this->txtCPP, UI::GUITextBox(ui, this->tpCPP, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtCPP, UI::GUITextBox(ui, this->tpCPP, CSTR(""), true));
 	this->txtCPP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtCPP->SetReadOnly(true);
 }

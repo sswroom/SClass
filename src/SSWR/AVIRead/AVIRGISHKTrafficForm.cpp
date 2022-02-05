@@ -79,7 +79,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *
 
 	NEW_CLASS(this->lblRoadCenterline, UI::GUILabel(ui, this, (const UTF8Char*)"Centerline"));
 	this->lblRoadCenterline->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtRoadCenterline, UI::GUITextBox(ui, this, (const UTF8Char*)"20180628 Road Traffic\\CENTRELINE.mdb"));
+	NEW_CLASS(this->txtRoadCenterline, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\CENTRELINE.mdb")));
 	this->txtRoadCenterline->SetRect(104, 4, 800, 23, false);
 	NEW_CLASS(this->btnRoadCenterline, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
 	this->btnRoadCenterline->SetRect(904, 4, 75, 23, false);

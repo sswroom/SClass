@@ -196,11 +196,11 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 	this->pnlMQTT->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlMQTT, (const UTF8Char*)"MQTT Server"));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this->pnlMQTT, (const UTF8Char*)"127.0.0.1"));
+	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this->pnlMQTT, CSTR("127.0.0.1")));
 	this->txtServer->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlMQTT, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(254, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlMQTT, (const UTF8Char*)"1883"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlMQTT, CSTR("1883")));
 	this->txtPort->SetRect(354, 4, 50, 23, false);
 	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlMQTT, (const UTF8Char*)"Connect"));
 	this->btnConnect->SetRect(404, 4, 75, 23, false);

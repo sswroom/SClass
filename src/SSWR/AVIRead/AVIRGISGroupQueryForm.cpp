@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	this->SetText(sb.ToString());
 	this->SetFont(0, 0, 8.25, false);
 
-	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLayer->SetRect(0, 0, 100, 23, false);
 	this->txtLayer->SetReadOnly(true);
 	this->txtLayer->SetDockType(UI::GUIControl::DOCK_TOP);

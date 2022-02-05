@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
 
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -272,7 +272,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnCommand, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Send"));
 	this->btnCommand->SetRect(258, 8, 75, 23, false);
 	this->btnCommand->HandleButtonClick(OnSendCommandClicked, this);
-	NEW_CLASS(this->txtCommand, UI::GUITextBox(ui, this->tpControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtCommand, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtCommand->SetRect(338, 8, 120, 23, false);
 	this->txtCommand->SetReadOnly(true);
 

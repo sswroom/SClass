@@ -47,15 +47,15 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lblDSN, UI::GUILabel(ui, this, (const UTF8Char*)"DSN"));
 	this->lblDSN->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtDSN, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDSN, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDSN->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, (const UTF8Char*)"User Name"));
 	this->lblUID->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUID->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
 	this->lblPWD->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));

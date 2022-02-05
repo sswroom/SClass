@@ -17,7 +17,7 @@ SSWR::AVIRead::AVIRSMBIOSForm::AVIRSMBIOSForm(UI::GUIClientControl *parent, UI::
 		smbios->ToString(&sb);
 		DEL_CLASS(smbios);
 	}
-	NEW_CLASS(this->txtSMBIOS, UI::GUITextBox(ui, this, sb.ToString(), true));
+	NEW_CLASS(this->txtSMBIOS, UI::GUITextBox(ui, this, sb.ToCString(), true));
 	this->txtSMBIOS->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtSMBIOS->SetReadOnly(true);
 }

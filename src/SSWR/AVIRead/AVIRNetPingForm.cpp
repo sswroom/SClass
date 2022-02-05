@@ -111,7 +111,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->vspRequest, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Target"));
 	this->lblTarget->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtTarget->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblRepeat, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Repeat"));
 	this->lblRepeat->SetRect(4, 28, 100, 23, false);

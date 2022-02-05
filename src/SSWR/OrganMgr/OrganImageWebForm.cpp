@@ -37,26 +37,26 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 
 	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebId")).v));
 	this->lblId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtId, UI::GUITextBox(ui, this, imgItem->GetDispName()->v));
+	NEW_CLASS(this->txtId, UI::GUITextBox(ui, this, imgItem->GetDispName()->ToCString()));
 	this->txtId->SetRect(100, 0, 200, 23, false);
 	this->txtId->SetReadOnly(true);
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebFileName")).v));
 	this->lblFileName->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, imgItem->GetFullName()->v));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, imgItem->GetFullName()->ToCString()));
 	this->txtFileName->SetRect(100, 24, 680, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	NEW_CLASS(this->lblImageURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebImageURL")).v));
 	this->lblImageURL->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetImgURL())->v));
+	NEW_CLASS(this->txtImageURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetImgURL())->ToCString()));
 	this->txtImageURL->SetRect(100, 48, 680, 23, false);
 	this->txtImageURL->SetReadOnly(true);
 	NEW_CLASS(this->lblSourceURL, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebSourceURL")).v));
 	this->lblSourceURL->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetSrcURL())->v));
+	NEW_CLASS(this->txtSourceURL, UI::GUITextBox(ui, this, Text::String::OrEmpty(imgItem->GetSrcURL())->ToCString()));
 	this->txtSourceURL->SetRect(100, 72, 680, 23, false);
 	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebLocation")).v));
 	this->lblLocation->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, Text::String::OrEmpty(wfile->location)->v));
+	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this, Text::String::OrEmpty(wfile->location)->ToCString()));
 	this->txtLocation->SetRect(100, 96, 680, 23, false);
 	if (wfile == 0)
 	{

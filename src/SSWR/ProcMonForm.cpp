@@ -298,7 +298,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtLog->SetReadOnly(true);
@@ -318,25 +318,25 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	this->grpProgAdd->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblProgAddName, UI::GUILabel(ui, this->grpProgAdd, (const UTF8Char*)"Prog Name"));
 	this->lblProgAddName->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtProgAddName, UI::GUITextBox(ui, this->grpProgAdd, (const UTF8Char*)""));
+	NEW_CLASS(this->txtProgAddName, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
 	this->txtProgAddName->SetRect(100, 0, 200, 23, false);
 	NEW_CLASS(this->lblProgAddId, UI::GUILabel(ui, this->grpProgAdd, (const UTF8Char*)"Process Id"));
 	this->lblProgAddId->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtProgAddId, UI::GUITextBox(ui, this->grpProgAdd, (const UTF8Char*)""));
+	NEW_CLASS(this->txtProgAddId, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
 	this->txtProgAddId->SetRect(100, 24, 100, 23, false);
 	NEW_CLASS(this->btnProgAdd, UI::GUIButton(ui, this->grpProgAdd, (const UTF8Char*)"&Add"));
 	this->btnProgAdd->SetRect(200, 24, 75, 23, false);
 	this->btnProgAdd->HandleButtonClick(OnProgAddClicked, this);
 	NEW_CLASS(this->lblProcId, UI::GUILabel(ui, this->pnlProg, (const UTF8Char*)"Process Id"));
 	this->lblProcId->SetRect(4, 68, 100, 23, false);
-	NEW_CLASS(this->txtProcId, UI::GUITextBox(ui, this->pnlProg, (const UTF8Char*)""));
+	NEW_CLASS(this->txtProcId, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
 	this->txtProcId->SetRect(104, 68, 100, 23, false);
 	NEW_CLASS(this->btnProcId, UI::GUIButton(ui, this->pnlProg, (const UTF8Char*)"Set"));
 	this->btnProcId->SetRect(204, 68, 75, 23, false);
 	this->btnProcId->HandleButtonClick(OnProcIdClicked, this);
 	NEW_CLASS(this->lblProgPath, UI::GUILabel(ui, this->pnlProg, (const UTF8Char*)"Path"));
 	this->lblProgPath->SetRect(4, 92, 100, 23, false);
-	NEW_CLASS(this->txtProgPath, UI::GUITextBox(ui, this->pnlProg, (const UTF8Char*)""));
+	NEW_CLASS(this->txtProgPath, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
 	this->txtProgPath->SetRect(104, 92, 600, 23, false);
 	this->txtProgPath->SetReadOnly(true);
 

@@ -209,15 +209,15 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, (const UTF8Char*)"12345"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
-	Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
-	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, sbuff));
+	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
+	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));
 	this->lblAllowProxy->SetRect(8, 56, 100, 23, false);
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->chkAllowKA->SetRect(108, 104, 100, 23, false);
 	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Database"));
 	this->lblDatabase->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, (const UTF8Char*)""));
+	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, CSTR("")));
 	this->txtDatabase->SetRect(108, 128, 150, 23, false);
 	this->txtDatabase->SetReadOnly(true);
 	NEW_CLASS(this->btnDatabaseMySQL, UI::GUIButton(ui, this->grpParam, (const UTF8Char*)"MySQL"));
@@ -258,7 +258,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->lvTable->AddColumn((const UTF8Char*)"Row Count", 100);
 
 	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

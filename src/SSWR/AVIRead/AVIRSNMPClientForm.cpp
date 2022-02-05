@@ -107,15 +107,15 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"127.0.0.1"));
+	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTR("127.0.0.1")));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Community"));
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"public"));
+	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlRequest, CSTR("public")));
 	this->txtCommunity->SetRect(104, 28, 120, 23, false);
 	NEW_CLASS(this->lblOID, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"OID"));
 	this->lblOID->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtOID, UI::GUITextBox(ui, this->pnlRequest, (const UTF8Char*)"1.3.6.1.2.1"));
+	NEW_CLASS(this->txtOID, UI::GUITextBox(ui, this->pnlRequest, CSTR("1.3.6.1.2.1")));
 	this->txtOID->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->lblCommandType, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Command Type"));
 	this->lblCommandType->SetRect(4, 76, 100, 23, false);

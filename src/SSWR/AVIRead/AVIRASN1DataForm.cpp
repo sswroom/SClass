@@ -57,11 +57,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpDesc = this->tcMain->AddTabPage((const UTF8Char*)"Desc");
-	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this->tpDesc, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtDesc, UI::GUITextBox(ui, this->tpDesc, CSTR(""), true));
 	this->txtDesc->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpASN1 = this->tcMain->AddTabPage((const UTF8Char*)"ASN1");
-	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtASN1, UI::GUITextBox(ui, this->tpASN1, CSTR(""), true));
 	this->txtASN1->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	Text::StringBuilderUTF8 sb;

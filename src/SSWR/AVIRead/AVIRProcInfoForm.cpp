@@ -506,27 +506,27 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->lblDetProcId, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Id"));
 	this->lblDetProcId->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->txtDetProcId, UI::GUITextBox(ui, this->tpDetInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtDetProcId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetProcId->SetRect(100, 0, 50, 23, false);
 	this->txtDetProcId->SetReadOnly(true);
 	NEW_CLASS(this->lblDetParentId, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Parent Id"));
 	this->lblDetParentId->SetRect(0, 24, 100, 23, false);
-	NEW_CLASS(this->txtDetParentId, UI::GUITextBox(ui, this->tpDetInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtDetParentId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetParentId->SetRect(100, 24, 50, 23, false);
 	this->txtDetParentId->SetReadOnly(true);
 	NEW_CLASS(this->lblDetName, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Name"));
 	this->lblDetName->SetRect(0, 48, 100, 23, false);
-	NEW_CLASS(this->txtDetName, UI::GUITextBox(ui, this->tpDetInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtDetName, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetName->SetRect(100, 48, 200, 23, false);
 	this->txtDetName->SetReadOnly(true);
 	NEW_CLASS(this->lblDetPath, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Path"));
 	this->lblDetPath->SetRect(0, 72, 100, 23, false);
-	NEW_CLASS(this->txtDetPath, UI::GUITextBox(ui, this->tpDetInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtDetPath, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPath->SetRect(100, 72, 700, 23, false);
 	this->txtDetPath->SetReadOnly(true);
 	NEW_CLASS(this->lblDetPriority, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Priority"));
 	this->lblDetPriority->SetRect(0, 96, 100, 23, false);
-	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPriority->SetRect(100, 96, 100, 23, false);
 	this->txtDetPriority->SetReadOnly(true);
 
@@ -570,7 +570,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lbDetHeap->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->lbDetHeap->HandleSelectionChange(OnDetHeapSelChg, this);
 	NEW_CLASS(this->hspDetHeap, UI::GUIHSplitter(ui, this->tpDetHeap, 3, false));
-	NEW_CLASS(this->txtDetHeap, UI::GUITextBox(ui, this->tpDetHeap, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtDetHeap, UI::GUITextBox(ui, this->tpDetHeap, CSTR(""), true));
 	this->txtDetHeap->SetReadOnly(true);
 	this->txtDetHeap->SetRect(0, 0, 100, 128, false);
 	this->txtDetHeap->SetDockType(UI::GUIControl::DOCK_BOTTOM);

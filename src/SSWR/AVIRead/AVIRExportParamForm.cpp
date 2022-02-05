@@ -84,8 +84,8 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		if (pi.paramType == ::IO::FileExporter::ParamType::INT32)
 		{
 			UI::GUITextBox *txt;
-			Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
-			NEW_CLASS(txt, UI::GUITextBox(ui, this, sbuff));
+			sptr = Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
+			NEW_CLASS(txt, UI::GUITextBox(ui, this, {sbuff, (UOSInt)(sptr - sbuff)}));
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
 			this->ctrls[i] = txt;
 		}

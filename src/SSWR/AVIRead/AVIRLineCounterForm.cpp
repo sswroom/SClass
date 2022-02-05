@@ -238,11 +238,11 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPath, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Path"));
 	this->lblPath->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPath, UI::GUITextBox(ui, this->pnlConfig, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPath, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtPath->SetRect(104, 4, 700, 23, false);
 	NEW_CLASS(this->lblExtensions, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Extensions"));
 	this->lblExtensions->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtExtensions, UI::GUITextBox(ui, this->pnlConfig, (const UTF8Char*)""));
+	NEW_CLASS(this->txtExtensions, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtExtensions->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->btnExtensionsAdd, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Add"));
 	this->btnExtensionsAdd->SetRect(204, 28, 75, 23, false);
@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->lblResult->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->lblTotalLine, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Total Lines"));
 	this->lblTotalLine->SetRect(104, 196, 100, 23, false);
-	NEW_CLASS(this->txtTotalLine, UI::GUITextBox(ui, this->pnlConfig, (const UTF8Char*)""));
+	NEW_CLASS(this->txtTotalLine, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtTotalLine->SetReadOnly(true);
 	this->txtTotalLine->SetRect(204, 196, 100, 23, false);
 	NEW_CLASS(this->btnResultSave, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Save Result"));

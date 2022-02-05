@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->pnlChannel->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->cboChannel, UI::GUIComboBox(ui, this->pnlChannel, false));
 	this->cboChannel->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlChannel, (const UTF8Char*)""));
+	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlChannel, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 300, 23, false);
 	NEW_CLASS(this->btnChannelAdd, UI::GUIButton(ui, this->pnlChannel, (const UTF8Char*)"Add"));
 	this->btnChannelAdd->SetRect(404, 4, 75, 23, false);

@@ -111,12 +111,12 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 	this->cboServer->AddItem(CSTR("3.pool.ntp.org"), 0);
 	NEW_CLASS(this->lblServerTime, UI::GUILabel(ui, this, (const UTF8Char*)"Server Time"));
 	this->lblServerTime->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtServerTime, UI::GUITextBox(ui, this, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtServerTime, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtServerTime->SetRect(104, 28, 200, 23, false);
 	this->txtServerTime->SetReadOnly(true);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtStatus->SetRect(104, 52, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->btnGetTime, UI::GUIButton(ui, this, (const UTF8Char*)"&Get Time"));

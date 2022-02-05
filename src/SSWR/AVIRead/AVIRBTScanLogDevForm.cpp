@@ -61,6 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const IO::BTScanLog::DevEntry *entry) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt8 mac[8];
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText((const UTF8Char*)"Bluetooth Scan Log Entry");
@@ -74,13 +75,20 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"MAC"));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	WriteMUInt64(mac, entry->macInt);
-	Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, sbuff));
+	sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, {sbuff, (UOSInt)(sptr - sbuff)}));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"Name"));
 	this->lblName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, (entry->name?entry->name->v:(const UTF8Char*)"")));
+	if (entry->name)
+	{
+		NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, entry->name->ToCString()));
+	}
+	else
+	{
+		NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlDevInfo, CSTR("")));
+	}
 	this->txtName->SetRect(104, 28, 200, 23, false);
 	this->txtName->SetReadOnly(true);
 	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, (const UTF8Char*)"Save CSV"));

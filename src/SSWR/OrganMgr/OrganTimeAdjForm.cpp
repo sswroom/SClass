@@ -311,7 +311,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->cboCamera, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboCamera->SetRect(4, 4, 150, 23, false);
 	this->cboCamera->HandleSelectionChange(OnCameraChg, this);
-	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)"0", false));
+	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, CSTR("0"), false));
 	this->txtTimeAdj->SetRect(154, 4, 50, 23, false);
 	this->txtTimeAdj->SetReadOnly(true);
 	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjPaste")).v));

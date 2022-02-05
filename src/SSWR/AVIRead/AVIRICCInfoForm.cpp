@@ -87,12 +87,12 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, (const UTF8Char*)"File Name"));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 800, 23, false);
 	this->txtFileName->SetReadOnly(true);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this, (const UTF8Char*)"Info"));
 	this->lblInfo->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtInfo->SetRect(104, 28, 800, 676, false);
 	this->txtInfo->SetReadOnly(true);
 	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, this, (const UTF8Char*)"View R LUT"));

@@ -72,25 +72,25 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	
 	NEW_CLASS(this->lblOriW, UI::GUILabel(ui, this, (const UTF8Char*)"Ori Width"));
 	this->lblOriW->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOriW->SetRect(104, 4, 100, 23, false);
 	this->txtOriW->SetReadOnly(true);
 	NEW_CLASS(this->lblOriH, UI::GUILabel(ui, this, (const UTF8Char*)"Ori Height"));
 	this->lblOriH->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOriH->SetRect(104, 28, 100, 23, false);
 	this->txtOriH->SetReadOnly(true);
 	NEW_CLASS(this->lblOutW, UI::GUILabel(ui, this, (const UTF8Char*)"Out Width"));
 	this->lblOutW->SetRect(4, 64, 100, 23, false);
-	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOutW->SetRect(104, 64, 100, 23, false);
 	NEW_CLASS(this->lblOutH, UI::GUILabel(ui, this, (const UTF8Char*)"Out Height"));
 	this->lblOutH->SetRect(4, 88, 100, 23, false);
-	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOutH->SetRect(104, 88, 100, 23, false);
 	NEW_CLASS(this->lblNTap, UI::GUILabel(ui, this, (const UTF8Char*)"N-Tap"));
 	this->lblNTap->SetRect(4, 112, 100, 23, false);
-	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, this, (const UTF8Char*)"16"));
+	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, this, CSTR("16")));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);
 
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));

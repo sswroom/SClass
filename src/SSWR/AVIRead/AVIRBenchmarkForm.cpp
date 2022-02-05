@@ -411,12 +411,12 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblPlatform, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"Platform"));
 	this->lblPlatform->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPlatform, UI::GUITextBox(ui, this->pnlInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPlatform, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtPlatform->SetRect(104, 4, 300, 23, false);
 	this->txtPlatform->SetReadOnly(true);
 	NEW_CLASS(this->lblCPU, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"CPU"));
 	this->lblCPU->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtCPU, UI::GUITextBox(ui, this->pnlInfo, (const UTF8Char*)""));
+	NEW_CLASS(this->txtCPU, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtCPU->SetRect(104, 28, 300, 23, false);
 	this->txtCPU->SetReadOnly(true);
 	NEW_CLASS(this->lvRAM, UI::GUIListView(ui, this->tpInfo, UI::GUIListView::LVSTYLE_TABLE, 9));

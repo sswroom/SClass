@@ -325,7 +325,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Unknown Only", true));
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
-	NEW_CLASS(this->txtFilter, UI::GUITextBox(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtFilter, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtFilter->SetRect(184, 4, 150, 23, false);
 	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Filter"));
 	this->btnFilter->SetRect(334, 4, 75, 23, false);
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->cboDblClk->AddItem(CSTR("Edit"), 0);
 	this->cboDblClk->AddItem(CSTR("Paste"), 0);
 	this->cboDblClk->SetSelectedIndex(0);
-	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtFileIE->SetRect(0, 0, 100, 255, false);
 	this->txtFileIE->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->txtFileIE->SetReadOnly(true);

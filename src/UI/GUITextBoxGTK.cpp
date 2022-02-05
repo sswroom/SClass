@@ -29,15 +29,14 @@ void GUITextBox_InsText(GtkEntryBuffer *buffer, guint position, char *chars, gui
 	me->EventTextChange();
 }
 
-void GUITextBox_InitTextBox(TextBoxData *txt, const UTF8Char *lbl, Bool multiLine, UI::GUITextBox *me)
+void GUITextBox_InitTextBox(TextBoxData *txt, Text::CString lbl, Bool multiLine, UI::GUITextBox *me)
 {
-	UOSInt lblLeng = Text::StrCharCnt(lbl);
 	if (multiLine)
 	{
 		txt->multiLine = true;
 		txt->widget = gtk_text_view_new();
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lbl.leng);
 		g_signal_connect(buff, "changed", G_CALLBACK(GUITextBox_Changed), me);
 	}
 	else
@@ -45,7 +44,7 @@ void GUITextBox_InitTextBox(TextBoxData *txt, const UTF8Char *lbl, Bool multiLin
 		txt->multiLine = false;
 		txt->widget = gtk_entry_new();
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v, (gint)lbl.leng);
 		gtk_widget_set_vexpand(txt->widget, false);
 		gtk_widget_set_hexpand(txt->widget, false);
 		g_signal_connect(buff, "deleted-text", G_CALLBACK(GUITextBox_DelText), me);
@@ -53,7 +52,7 @@ void GUITextBox_InitTextBox(TextBoxData *txt, const UTF8Char *lbl, Bool multiLin
 	}
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
@@ -66,7 +65,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	this->Show();
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());

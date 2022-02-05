@@ -154,11 +154,11 @@ SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this, (const UTF8Char*)"Log Dir"));
 	this->lblLogDir->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtLogDir->SetRect(104, 4, 600, 23, false);
 	NEW_CLASS(this->lblLogName, UI::GUILabel(ui, this, (const UTF8Char*)"Log Name"));
 	this->lblLogName->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, this, (const UTF8Char*)"", false));
+	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtLogName->SetRect(104, 28, 600, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"&Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);

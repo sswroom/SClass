@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->pnlSource));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Parse"));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
 	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, this, 3, false));
-	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, this, (const UTF8Char*)"", true));
+	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtOutput->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOutput->SetReadOnly(true);
 

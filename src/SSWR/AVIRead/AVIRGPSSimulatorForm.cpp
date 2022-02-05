@@ -294,7 +294,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 
 	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, (const UTF8Char*)"Stream Type"));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, this, (const UTF8Char*)"-"));
+	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtStreamType->SetRect(104, 4, 200, 23, false);
 	this->txtStreamType->SetReadOnly(true);
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this, (const UTF8Char*)"Open"));
@@ -304,22 +304,22 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->chkAddPoints->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Speed (km/s)"));
 	this->lblSpeed->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this, (const UTF8Char*)"50"));
+	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this, CSTR("50")));
 	this->txtSpeed->SetRect(104, 52, 100, 23, false);
 	this->txtSpeed->SetReadOnly(true);
-	NEW_CLASS(this->txtSpeedInput, UI::GUITextBox(ui, this, (const UTF8Char*)"50"));
+	NEW_CLASS(this->txtSpeedInput, UI::GUITextBox(ui, this, CSTR("50")));
 	this->txtSpeedInput->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this, (const UTF8Char*)"Set"));
 	this->btnSpeed->SetRect(304, 52, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	NEW_CLASS(this->lblCurrLat, UI::GUILabel(ui, this, (const UTF8Char*)"Current Lat"));
 	this->lblCurrLat->SetRect(4, 76, 100, 23, false);
-	NEW_CLASS(this->txtCurrLat, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtCurrLat, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCurrLat->SetRect(104, 76, 150, 23, false);
 	this->txtCurrLat->SetReadOnly(true);
 	NEW_CLASS(this->lblCurrLon, UI::GUILabel(ui, this, (const UTF8Char*)"Current Lon"));
 	this->lblCurrLon->SetRect(4, 100, 100, 23, false);
-	NEW_CLASS(this->txtCurrLon, UI::GUITextBox(ui, this, (const UTF8Char*)"0"));
+	NEW_CLASS(this->txtCurrLon, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCurrLon->SetRect(104, 100, 150, 23, false);
 	this->txtCurrLon->SetReadOnly(true);
 	NEW_CLASS(this->lblPoints, UI::GUILabel(ui, this, (const UTF8Char*)"Points"));
