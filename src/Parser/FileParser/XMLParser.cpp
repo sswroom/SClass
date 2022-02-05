@@ -1942,7 +1942,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									reader->ReadNodeText(&sb);
 									if (isNormal && sb.StartsWith(UTF8STRC("#")))
 									{
-										KMLStyle *style2 = styles->Get(sb.ToString() + 1);
+										KMLStyle *style2 = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
 										if (style2)
 										{
 											style->iconSpotX = style2->iconSpotX;
@@ -2789,7 +2789,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 					reader->ReadNodeText(&sb);
 					if (sb.StartsWith(UTF8STRC("#")))
 					{
-						KMLStyle *style = styles->Get(sb.ToString() + 1);
+						KMLStyle *style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
 						if (style && style->lineWidth != 0 && style->flags & 1)
 						{
 							lyr->SetLineStyle(style->lineColor, style->lineWidth);
@@ -2909,7 +2909,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 				reader->ReadNodeText(&sb);
 				if (sb.ToString()[0] == '#')
 				{
-					style = styles->Get(sb.ToString() + 1);
+					style = styles->Get({sb.ToString() + 1, sb.GetLength() - 1});
 				}
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINESTRING")))
@@ -3397,7 +3397,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 	UOSInt i;
 	Text::CodeProjectCfg *cfg;
 	Text::XMLAttrib *attr;
-	const UTF8Char *cfgName;
+	Text::String *cfgName;
 	while (reader->ReadNext())
 	{
 		if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -3416,7 +3416,7 @@ Bool Parser::FileParser::XMLParser::ParseVSConfFile(Text::XMLReader *reader, Tex
 					attr = reader->GetAttrib(i);
 					if (attr->name->Equals(UTF8STRC("Name")))
 					{
-						cfgName = attr->value->v;
+						cfgName = attr->value;
 						break;
 					}
 				}

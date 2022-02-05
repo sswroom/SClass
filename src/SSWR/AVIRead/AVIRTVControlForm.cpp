@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	{
 		me->cmdInfos[i].cmdType = cmdList.GetItem(i);
 		me->cmdInfos[i].cmdFmt = cmdFormats.GetItem(i);
-		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)).v, &me->cmdInfos[i]);
+		me->cboCommand->AddItem(IO::TVControl::GetCommandName(cmdList.GetItem(i)), &me->cmdInfos[i]);
 		i++;
 	}
 	if (j > 0)
@@ -184,6 +184,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnCmdChanged(void *userObj)
 SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayList<IO::TVControl::TVType> tvTypes;
@@ -221,7 +222,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	{
 		if (IO::TVControl::GetTVInfo(tvTypes.GetItem(i), &tvInfo))
 		{
-			this->cboTVType->AddItem(tvInfo.name, (void*)(OSInt)tvInfo.tvType);
+			this->cboTVType->AddItem({tvInfo.name, tvInfo.nameLen}, (void*)(OSInt)tvInfo.tvType);
 		}
 		i++;
 	}
@@ -237,8 +238,8 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	j = ports->GetCount();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports->GetItem(i));
-		this->cboPort->AddItem(sbuff, (void*)ports->GetItem(i));
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports->GetItem(i));
+		this->cboPort->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)ports->GetItem(i));
 		i++;
 	}
 	if (j > 0)

@@ -121,9 +121,9 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->lblCommandType->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboCommandType, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboCommandType->SetRect(104, 76, 120, 23, false);
-	this->cboCommandType->AddItem((const UTF8Char*)"GetRequest", (void*)1);
-	this->cboCommandType->AddItem((const UTF8Char*)"GetNextRequest", (void*)2);
-	this->cboCommandType->AddItem((const UTF8Char*)"Walk", (void*)3);
+	this->cboCommandType->AddItem(CSTR("GetRequest"), (void*)1);
+	this->cboCommandType->AddItem(CSTR("GetNextRequest"), (void*)2);
+	this->cboCommandType->AddItem(CSTR("Walk"), (void*)3);
 	this->cboCommandType->SetSelectedIndex(2);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
 	this->btnRequest->SetRect(104, 100, 75, 23, false);

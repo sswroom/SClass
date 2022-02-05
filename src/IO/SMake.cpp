@@ -14,6 +14,7 @@
 void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	IO::SMake::ConfigItem *cfg;
 	const UTF8Char *valEnd = &val[valLen];
 	UOSInt i = 0;
@@ -41,9 +42,9 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, 
 		}
 		else
 		{
-			Text::StrConcatC(sbuff, &val[i + 2], (UOSInt)j - 2);
+			sptr = Text::StrConcatC(sbuff, &val[i + 2], (UOSInt)j - 2);
 			i += j + 1;
-			cfg = cfgMap->Get(sbuff);
+			cfg = cfgMap->Get({sbuff, (UOSInt)(sptr - sbuff)});
 			if (cfg)
 			{
 				sb->Append(cfg->value);
@@ -210,7 +211,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 					{
 						Text::StrTrimC(&sptr1[i + 2], sb2.GetLength() - i - 2);
 						sptr1[i] = 0;
-						Text::StrTrimC(sptr1, i);
+						sptr1End = Text::StrTrimC(sptr1, i);
 						Int32 val1 = 0;
 						Int32 val2 = 0;
 						if (sptr1[0] >= '0' && sptr1[0] <= '9')
@@ -219,7 +220,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 						}
 						else
 						{
-							cfg = cfgMap->Get(sptr1);
+							cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 							if (cfg)
 							{
 								val1 = cfg->value->ToInt32();
@@ -231,7 +232,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 						}
 						else
 						{
-							cfg = cfgMap->Get(&sptr1[i + 2]);
+							cfg = cfgMap->Get({&sptr1[i + 2], (UOSInt)(sptr1End - &sptr1[i + 2])});
 							if (cfg)
 							{
 								val2 = cfg->value->ToInt32();
@@ -301,7 +302,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 			{
 				const UTF8Char *ccfg = sptr1;
 				const UTF8Char *ccfgEnd = sptr1End;
-				IO::SMake::ConfigItem *cfg = cfgMap->Get(sptr1);
+				IO::SMake::ConfigItem *cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 				if (cfg)
 				{
 					ccfg = cfg->value->v;
@@ -324,7 +325,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 		}
 		else if (sb.StartsWith(UTF8STRC("export ")))
 		{
-			cfg = cfgMap->Get(sb.ToString() + 7);
+			cfg = cfgMap->Get({sb.ToString() + 7, sb.GetLength() - 7});
 			if (cfg)
 			{
 				Manage::EnvironmentVar env;
@@ -336,9 +337,9 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 			sptr1 = sb.ToString();
 			sptr2 = &sptr1[i + 2];
 			sptr1[i] = 0;
-			Text::StrTrimC(sptr1, i);
+			sptr1End = Text::StrTrimC(sptr1, i);
 			sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-			cfg = cfgMap->Get(sptr1);
+			cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 			if (cfg)
 			{
 				if (cfg->value->leng > 0)
@@ -375,9 +376,9 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				sptr1 = sb.ToString();
 				sptr2 = &sptr1[i + 2];
 				sptr1[i] = 0;
-				Text::StrTrimC(sptr1, i);
+				sptr1End = Text::StrTrimC(sptr1, i);
 				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-				cfg = cfgMap->Get(sptr1);
+				cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 				if (cfg)
 				{
 					cfg->value->Release();
@@ -558,7 +559,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 				{
 					sptr1[i] = 0;
 					sptr1End = &sptr1[i];
-					if (procList->SortedIndexOfPtr(sptr1) >= 0)
+					if (procList->SortedIndexOfPtr(sptr1, i) >= 0)
 					{
 						thisTime = fileTimeMap->GetC({sptr1, i});
 						if (thisTime && thisTime > lastTime)
@@ -655,7 +656,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 
 Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile, UOSInt sourceFileLen)
 {
-	IO::SMake::ConfigItem *cfg = this->cfgMap->Get((const UTF8Char*)"INCLUDEPATH");
+	IO::SMake::ConfigItem *cfg = this->cfgMap->Get(CSTR("INCLUDEPATH"));
 	if (cfg == 0)
 	{
 		this->SetErrorMsg(UTF8STRC("INCLUDEPATH config not found"));
@@ -764,7 +765,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 		return true;
 	}
 
-	IO::SMake::ConfigItem *cfg = cfgMap->Get((const UTF8Char*)"DEPS");
+	IO::SMake::ConfigItem *cfg = cfgMap->Get(CSTR("DEPS"));
 	if (cfg)
 	{
 		subProg = progMap->Get(cfg->value);
@@ -856,7 +857,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
 	{
-		IO::SMake::ConfigItem *testCfg = cfgMap->Get((const UTF8Char*)"ENABLE_TEST");
+		IO::SMake::ConfigItem *testCfg = cfgMap->Get(CSTR("ENABLE_TEST"));
 		if (testCfg && testCfg->value->Equals(UTF8STRC("1")))
 		{
 			enableTest = true;
@@ -894,12 +895,12 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	IO::SMake::ConfigItem *cppCfg = cfgMap->Get((const UTF8Char*)"CXX");
-	IO::SMake::ConfigItem *ccCfg = cfgMap->Get((const UTF8Char*)"CC");
-	IO::SMake::ConfigItem *asmCfg = cfgMap->Get((const UTF8Char*)"ASM");
-	IO::SMake::ConfigItem *asmflagsCfg = cfgMap->Get((const UTF8Char*)"ASMFLAGS");
-	IO::SMake::ConfigItem *cflagsCfg = cfgMap->Get((const UTF8Char*)"CFLAGS");
-	IO::SMake::ConfigItem *libsCfg = cfgMap->Get((const UTF8Char*)"LIBS");
+	IO::SMake::ConfigItem *cppCfg = cfgMap->Get(CSTR("CXX"));
+	IO::SMake::ConfigItem *ccCfg = cfgMap->Get(CSTR("CC"));
+	IO::SMake::ConfigItem *asmCfg = cfgMap->Get(CSTR("ASM"));
+	IO::SMake::ConfigItem *asmflagsCfg = cfgMap->Get(CSTR("ASMFLAGS"));
+	IO::SMake::ConfigItem *cflagsCfg = cfgMap->Get(CSTR("CFLAGS"));
+	IO::SMake::ConfigItem *libsCfg = cfgMap->Get(CSTR("LIBS"));
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 	Bool errorState = false;
@@ -1148,7 +1149,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		return false;
 	}
 
-	IO::SMake::ConfigItem *postfixItem = this->cfgMap->Get((const UTF8Char*)"OUTPOSTFIX");
+	IO::SMake::ConfigItem *postfixItem = this->cfgMap->Get(CSTR("OUTPOSTFIX"));
 	sb.ClearStr();
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));

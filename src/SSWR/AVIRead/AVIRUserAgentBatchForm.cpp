@@ -144,10 +144,11 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 	i = 0;
 	while (i < j)
 	{
-		k = uaList.SortedIndexOfPtr((const UTF8Char*)entList[i].userAgent);
+		UOSInt uaLen = Text::StrCharCnt(entList[i].userAgent);
+		k = uaList.SortedIndexOfPtr((const UTF8Char*)entList[i].userAgent, uaLen);
 		if (k < 0)
 		{
-			uaList.Insert((UOSInt)~k, Text::String::NewNotNull((const UTF8Char*)entList[i].userAgent));
+			uaList.Insert((UOSInt)~k, Text::String::New((const UTF8Char*)entList[i].userAgent, uaLen));
 		}
 		i++;
 	}
@@ -158,7 +159,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 		i = Text::StrSplitLineP(sarr, 2, sarr[1]);
 		if (sarr[0].v[0] != 0)
 		{
-			k = uaList.SortedIndexOfPtr(sarr[0].v);
+			k = uaList.SortedIndexOfPtr(sarr[0].v, sarr[0].leng);
 			if (k < 0)
 			{
 				uaList.Insert((UOSInt)~k, Text::String::New(sarr[0].v, sarr[0].leng));

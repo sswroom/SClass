@@ -99,8 +99,8 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	while (i < j)
 	{
 		enc = encs->GetItem(i);
-		this->cboSrc->AddItem(enc->GetName().v, enc);
-		this->cboDest->AddItem(enc->GetName().v, enc);
+		this->cboSrc->AddItem(enc->GetName(), enc);
+		this->cboDest->AddItem(enc->GetName(), enc);
 		i++;
 	}
 	if (j > 0)

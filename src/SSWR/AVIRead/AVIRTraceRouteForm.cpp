@@ -120,6 +120,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -136,8 +137,8 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 			ip = connInfo->GetIPAddress(k);
 			if (ip == 0)
 				break;
-			Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboSelfIP->AddItem(sbuff, (void*)(OSInt)ip);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			this->cboSelfIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 			k++;
 		}
 		DEL_CLASS(connInfo);

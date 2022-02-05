@@ -65,6 +65,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -83,8 +84,8 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 				ip = connInfo->GetIPAddress(k);
 				if (ip == 0)
 					break;
-				Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboAdapter->AddItem(sbuff, (void*)(OSInt)ip);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+				this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 				k++;
 			}
 		}

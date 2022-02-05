@@ -3,6 +3,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayCmpMap.h"
 #include "Data/ArrayListString.h"
+#include "Text/CString.h"
 
 namespace Data
 {
@@ -14,11 +15,11 @@ namespace Data
 		virtual ~StringMap();
 
 		virtual T Put(Text::String *key, T val);
-		T Put(const UTF8Char *key, T val);
+		T Put(Text::CString key, T val);
 		virtual T Get(Text::String *key);
-		T Get(const UTF8Char *key);
+		T Get(Text::CString key);
 		virtual T Remove(Text::String *key);
-		T Remove(const UTF8Char *key);
+		T Remove(Text::CString key);
 		virtual Text::String *GetKey(UOSInt index);
 		virtual void Clear();
 		virtual StringMap<T> *Clone();
@@ -71,10 +72,10 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Put(const UTF8Char *key, T val)
+	template <class T> T StringMap<T>::Put(Text::CString key, T val)
 	{
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key);
+		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			T oldVal = this->vals->GetItem((UOSInt)i);
@@ -83,7 +84,7 @@ namespace Data
 		}
 		else
 		{
-			this->keys->Insert((UOSInt)~i, Text::String::NewNotNull(key));
+			this->keys->Insert((UOSInt)~i, Text::String::New(key.v, key.leng));
 			this->vals->Insert((UOSInt)~i, val);
 			return 0;
 		}
@@ -103,10 +104,10 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Get(const UTF8Char *key)
+	template <class T> T StringMap<T>::Get(Text::CString key)
 	{
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key);
+		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			return this->vals->GetItem((UOSInt)i);
@@ -132,10 +133,10 @@ namespace Data
 		}
 	}
 
-	template <class T> T StringMap<T>::Remove(const UTF8Char *key)
+	template <class T> T StringMap<T>::Remove(Text::CString key)
 	{
 		OSInt i;
-		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key);
+		i = ((Data::ArrayListString*)this->keys)->SortedIndexOfPtr(key.v, key.leng);
 		if (i >= 0)
 		{
 			this->keys->RemoveAt((UOSInt)i)->Release();

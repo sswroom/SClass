@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		Media::ImageGenerator *imgGen = this->imgGenMgr->GetGenerator(i);
-		this->cboGenerator->AddItem(imgGen->GetName().v, imgGen);
+		this->cboGenerator->AddItem(imgGen->GetName(), imgGen);
 
 		i++;
 	}
@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	j = Media::ColorProfile::CPT_LAST;
 	while (i <= j)
 	{
-		this->cboColorProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i).v, (void*)i);
+		this->cboColorProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		i++;
 	}
 	this->cboColorProfile->SetSelectedIndex(0);

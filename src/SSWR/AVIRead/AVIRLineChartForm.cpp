@@ -349,7 +349,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	}
 	else
 	{
-		this->cboXAxis->AddItem((const UTF8Char*)"Auto Number", (void*)-1);
+		this->cboXAxis->AddItem(CSTR("Auto Number"), (void*)-1);
 		this->cboXAxis->SetSelectedIndex(0);
 		UOSInt i;
 		UOSInt j = reader->ColCount();

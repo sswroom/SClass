@@ -274,16 +274,16 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv4GetInfo(sbuff, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv4GetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
-				sb.AppendSlow(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 				sb.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 				reqTime.ToLocalTime();
@@ -387,16 +387,16 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv6GetInfo(sbuff, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv6GetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
-				sb.AppendSlow(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 				sb.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 				reqTime.ToLocalTime();
@@ -500,16 +500,16 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqOthGetInfo(sbuff, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqOthGetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
-				sb.AppendSlow(sbuff);
+				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("</td></tr>\r\n"));
 				sb.AppendC(UTF8STRC("<tr><td>Request Time</td><td>"));
 				reqTime.ToLocalTime();

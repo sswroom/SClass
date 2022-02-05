@@ -66,6 +66,7 @@ void Net::ASN1MIB::ModuleAppendOID(Net::ASN1MIB::ModuleInfo *module, ObjectInfo 
 Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::String *oriS, Text::StringBuilderUTF8 *errMessage)
 {
 	const UTF8Char *csptr = oriS->v;
+	const UTF8Char *csptrEnd = oriS->GetEndPtr();
 	UTF8Char c;
 	const UTF8Char *oidName;
 	UOSInt oidNameLen;
@@ -85,7 +86,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		{
 			break;
 		}
-		else if ((i = module->objKeys->SortedIndexOfPtr(csptr - 1)) >= 0)
+		else if ((i = module->objKeys->SortedIndexOfPtr(csptr - 1, (UOSInt)(csptrEnd - csptr - 1))) >= 0)
 		{
 			ObjectInfo *refObj = module->objValues->GetItem((UOSInt)i);
 			if (!refObj->parsed)
@@ -172,7 +173,7 @@ Bool Net::ASN1MIB::ParseObjectOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 	}
 	else
 	{
-		OSInt i = module->objKeys->SortedIndexOfPtr(sb.ToString());
+		OSInt i = module->objKeys->SortedIndexOfPtr(sb.ToString(), sb.GetLength());
 		ObjectInfo *obj2;
 		if (i < 0)
 		{

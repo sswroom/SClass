@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	}
 	Net::LDAPClient::SearchResObject *obj;
 	obj = results.GetItem(0);
-	if (obj == 0 || obj->name[0] != 0 || obj->items == 0)
+	if (obj == 0 || obj->name->v[0] != 0 || obj->items == 0)
 	{
 		Net::LDAPClient::SearchResultsFree(&results);
 		DEL_CLASS(me->cli);
@@ -194,30 +194,30 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 				k = 0;
 				while (true)
 				{
-					if (obj->name[k] == '\\')
+					if (obj->name->v[k] == '\\')
 					{
-						if (obj->name[k + 1] != 0)
+						if (obj->name->v[k + 1] != 0)
 						{
-							sb.AppendChar(obj->name[k + 1], 1);
+							sb.AppendChar(obj->name->v[k + 1], 1);
 							k += 2;
 						}
 						else
 						{
-							sb.AppendChar(obj->name[k], 1);
+							sb.AppendChar(obj->name->v[k], 1);
 							k++;
 						}
 					}
-					else if (obj->name[k] == ',')
+					else if (obj->name->v[k] == ',')
 					{
 						break;
 					}
-					else if (obj->name[k] == 0)
+					else if (obj->name->v[k] == 0)
 					{
 						break;
 					}
 					else
 					{
-						sb.AppendChar(obj->name[k], 1);
+						sb.AppendChar(obj->name->v[k], 1);
 						k++;
 					}
 				}
@@ -306,8 +306,8 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboAuthType, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboAuthType->SetRect(104, 52, 120, 23, false);
-	this->cboAuthType->AddItem((const UTF8Char*)"Anonymous", (void*)1);
-	this->cboAuthType->AddItem((const UTF8Char*)"Simple Password", (void*)2);
+	this->cboAuthType->AddItem(CSTR("Anonymous"), (void*)1);
+	this->cboAuthType->AddItem(CSTR("Simple Password"), (void*)2);
 	this->cboAuthType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblUserDN, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"User DN"));
 	this->lblUserDN->SetRect(4, 76, 100, 23, false);

@@ -38,7 +38,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	
 	Data::StringMap<Text::String*> *result = jwt->Parse((const UTF8Char*)"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8", &param);
-	s = result->Get((const UTF8Char*)"name");
+	s = result->Get(CSTR("name"));
 	if (s == 0 || !s->Equals(UTF8STRC("John Doe")))
 	{
 		jwt->FreeResult(result);

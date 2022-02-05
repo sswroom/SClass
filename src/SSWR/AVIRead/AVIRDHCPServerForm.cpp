@@ -259,6 +259,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -278,8 +279,8 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 			Net::IPType ipType = Net::SocketUtil::GetIPv4Type(ip);
 			if (ipType == Net::IPType::Private)
 			{
-				Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboIP->AddItem(sbuff, (void*)(OSInt)ip);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+				this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 			}
 			k++;
 		}

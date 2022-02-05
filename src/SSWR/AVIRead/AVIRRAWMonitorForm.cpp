@@ -243,7 +243,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqv4GetInfo(name, &ansList, &reqTime, &ttl))
+		UOSInt nameLen = Text::StrCharCnt(name);
+		if (me->analyzer->DNSReqv4GetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
@@ -284,7 +285,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqv6GetInfo(name, &ansList, &reqTime, &ttl))
+		UOSInt nameLen = Text::StrCharCnt(name);
+		if (me->analyzer->DNSReqv6GetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
@@ -325,7 +327,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		if (me->analyzer->DNSReqOthGetInfo(name, &ansList, &reqTime, &ttl))
+		UOSInt nameLen = Text::StrCharCnt(name);
+		if (me->analyzer->DNSReqOthGetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
@@ -1418,6 +1421,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -1434,8 +1438,8 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 			ip = connInfo->GetIPAddress(k);
 			if (ip == 0)
 				break;
-			Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboIP->AddItem(sbuff, (void*)(OSInt)ip);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 			k++;
 		}
 		DEL_CLASS(connInfo);

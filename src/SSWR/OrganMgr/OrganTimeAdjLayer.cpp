@@ -7,7 +7,7 @@ SSWR::OrganMgr::OrganTimeAdjLayer::OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data
 {
 	this->gpsTrk = gpsTrk;
 	this->userFileList = userFileList;
-	NEW_CLASS(this->cameraMap, Data::StringUTF8Map<Int32>());
+	NEW_CLASS(this->cameraMap, Data::StringMap<Int32>());
 }
 
 SSWR::OrganMgr::OrganTimeAdjLayer::~OrganTimeAdjLayer()
@@ -129,7 +129,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *sessio
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera->v));
+		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
 	this->gpsTrk->GetLatLonByTime(&dt, &dobj->pointArr[1], &dobj->pointArr[0]);
 	dobj->flags = 0;
@@ -149,7 +149,7 @@ Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, 
 	dt.SetTicks(ufile->fileTimeTicks);
 	if (ufile->camera)
 	{
-		dt.AddSecond(this->cameraMap->Get(ufile->camera->v));
+		dt.AddSecond(this->cameraMap->Get(ufile->camera));
 	}
 	this->gpsTrk->GetLatLonByTime(&dt, &lat, &lon);
 	NEW_CLASS(pt, Math::Point(this->csys->GetSRID(), lon, lat));
@@ -167,7 +167,12 @@ Map::IMapDrawLayer::ObjectClass SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectClas
 	return Map::IMapDrawLayer::OC_OTHER;
 }
 
-void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(const UTF8Char *camera, Int32 timeAdj)
+void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::String *camera, Int32 timeAdj)
+{
+	this->cameraMap->Put(camera, timeAdj);
+}
+
+void SSWR::OrganMgr::OrganTimeAdjLayer::SetTimeAdj(Text::CString camera, Int32 timeAdj)
 {
 	this->cameraMap->Put(camera, timeAdj);
 }

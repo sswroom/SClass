@@ -142,14 +142,14 @@ UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 	return cnt;
 }
 
-UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
-	this->itemTexts->Add(Text::String::NewNotNull(itemText));
+	this->itemTexts->Add(Text::String::New(itemText.v, itemText.leng));
 	this->items->Add(itemObj);
 	if (!this->autoComplete)
 	{
-		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText);
+		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v);
 	}
 	return cnt;
 }
@@ -165,14 +165,14 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *i
 	return index;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
 	if (index >= cnt)
 		index = cnt;
-	this->itemTexts->Insert(index, Text::String::NewNotNull(itemText));
+	this->itemTexts->Insert(index, Text::String::New(itemText.v, itemText.leng));
 	this->items->Insert(index, itemObj);
-	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText);
+	gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, (gint)index, 0, (const Char*)itemText.v);
 	return index;
 }
 

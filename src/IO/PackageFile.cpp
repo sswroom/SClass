@@ -226,13 +226,13 @@ const IO::PackFileItem *IO::PackageFile::GetPackFileItem(const UTF8Char *name)
 			nameLen = (UOSInt)(sptr - name - 1);
 			if (nameLen <= 0)
 				return 0;
-			return this->namedItems->Get(name);
+			return this->namedItems->Get({name, nameLen});
 		}
 		else if (c == '/' || c == '\\')
 		{
 			nameLen = (UOSInt)(sptr - name - 1);
 			Text::StrConcatC(sbuff, name, nameLen);
-			IO::PackFileItem *item = this->namedItems->Get(sbuff);
+			IO::PackFileItem *item = this->namedItems->Get({sbuff, nameLen});
 			if (item == 0)
 			{
 				return 0;

@@ -114,22 +114,21 @@ Double Math::EarthEllipsoid::CalPLDistance(Math::Polyline *pl, Math::Unit::Dista
 	UOSInt j = nPoint;
 	UOSInt k;
 	Double totalDist = 0;
-	Bool hasLast;
 	Double lastX;
 	Double lastY;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
-		hasLast = false;
-		while (j-- > k)
+		if (j-- > k)
 		{
-			if (hasLast)
-			{
-				totalDist += CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
-			}
-			hasLast = true;
 			lastX = points[(j << 1)];
 			lastY = points[(j << 1) + 1];
+			while (j-- > k)
+			{
+				totalDist += CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
+				lastX = points[(j << 1)];
+				lastY = points[(j << 1) + 1];
+			}
 		}
 		j++;
 	}
@@ -152,26 +151,28 @@ Double Math::EarthEllipsoid::CalPLDistance3D(Math::Polyline3D *pl, Math::Unit::D
 	UOSInt k;
 	Double dist;
 	Double totalDist = 0;
-	Bool hasLast;
 	Double lastX;
 	Double lastY;
 	Double lastH;
+	Double altDiff;
 	while (i-- > 0)
 	{
 		k = ptOfsts[i];
-		hasLast = false;
-		while (j-- > k)
+		if (j-- > k)
 		{
-			if (hasLast)
-			{
-				dist = CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
-				dist = Math_Sqrt(dist * dist + (alts[j] - lastH) * (alts[j] - lastH));
-				totalDist += dist;
-			}
-			hasLast = true;
 			lastX = points[(j << 1)];
 			lastY = points[(j << 1) + 1];
 			lastH = alts[j];
+			while (j-- > k)
+			{
+				dist = CalSurfaceDistance(lastY, lastX, points[(j << 1) + 1], points[(j << 1)], unit);
+				altDiff = (alts[j] - lastH);
+				dist = Math_Sqrt(dist * dist + altDiff * altDiff);
+				totalDist += dist;
+				lastX = points[(j << 1)];
+				lastY = points[(j << 1) + 1];
+				lastH = alts[j];
+			}
 		}
 		j++;
 	}

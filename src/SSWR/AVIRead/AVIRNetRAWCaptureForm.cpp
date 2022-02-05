@@ -154,6 +154,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -170,8 +171,8 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 			ip = connInfo->GetIPAddress(k);
 			if (ip == 0)
 				break;
-			Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboIP->AddItem(sbuff, (void*)(OSInt)ip);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
 			k++;
 		}
 		DEL_CLASS(connInfo);
@@ -186,7 +187,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	j = Net::RAWCapture::CT_LAST;
 	while (i <= j)
 	{
-		this->cboType->AddItem(Net::RAWCapture::CaptureTypeGetName((Net::RAWCapture::CaptureType)i).v, (void*)i);
+		this->cboType->AddItem(Net::RAWCapture::CaptureTypeGetName((Net::RAWCapture::CaptureType)i), (void*)i);
 		i++;
 	}
 	this->cboType->SetSelectedIndex(0);
@@ -195,7 +196,7 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	j = Net::RAWCapture::FF_LAST;
 	while (i <= j)
 	{
-		this->cboFormat->AddItem(Net::RAWCapture::FileFormatGetName((Net::RAWCapture::FileFormat)i).v, (void*)i);
+		this->cboFormat->AddItem(Net::RAWCapture::FileFormatGetName((Net::RAWCapture::FileFormat)i), (void*)i);
 		i++;
 	}
 	this->cboFormat->SetSelectedIndex(0);

@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, no adapter is selected", (const UTF8Char*)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
+		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName->v, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
 		if (me->arpHdlr->IsError())
 		{
 			DEL_CLASS(me->arpHdlr);
@@ -169,6 +169,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
@@ -185,8 +186,8 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 				adapter = MemAlloc(SSWR::AVIRead::AVIRARPPingForm::AdapterInfo, 1);
 				ip = connInfo->GetIPAddress(0);
 				sbuff[0] = 0;
-				connInfo->GetName(sbuff);
-				adapter->ifName = Text::StrCopyNew(sbuff);
+				sptr = connInfo->GetName(sbuff);
+				adapter->ifName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				adapter->ipAddr = ip;
 				MemCopyNO(adapter->hwAddr, hwAddr, 6);
 				this->adapters->Add(adapter);
@@ -217,7 +218,7 @@ SSWR::AVIRead::AVIRARPPingForm::~AVIRARPPingForm()
 	while (i-- > 0)
 	{
 		adapter = this->adapters->GetItem(i);
-		Text::StrDelNew(adapter->ifName);
+		adapter->ifName->Release();
 		MemFree(adapter);
 	}
 	DEL_CLASS(this->adapters);

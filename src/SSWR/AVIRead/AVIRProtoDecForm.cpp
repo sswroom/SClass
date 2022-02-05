@@ -179,7 +179,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		protoDec = this->decList->GetItem(i);
-		this->cboDecoder->AddItem(protoDec->GetName().v, protoDec);
+		this->cboDecoder->AddItem(protoDec->GetName(), protoDec);
 		i++;
 	}
 	if (j > 0)

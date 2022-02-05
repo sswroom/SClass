@@ -64,17 +64,17 @@ Text::Cpp::CppParseStatus::FileParseStatus *Text::Cpp::CppParseStatus::GetFileSt
 	return this->statuses->GetItem(this->statuses->GetCount() - 1);
 }
 
-Bool Text::Cpp::CppParseStatus::BeginParseFile(const UTF8Char *fileName)
+Bool Text::Cpp::CppParseStatus::BeginParseFile(Text::CString fileName)
 {
 	Text::String *fname;
-	OSInt i = this->fileNames->SortedIndexOfPtr(fileName);
+	OSInt i = this->fileNames->SortedIndexOfPtr(fileName.v, fileName.leng);
 	if (i >= 0)
 	{
 		fname = this->fileNames->GetItem((UOSInt)i);
 	}
 	else
 	{
-		fname = Text::String::NewNotNull(fileName);
+		fname = Text::String::New(fileName.v, fileName.leng);
 		this->fileNames->Insert((UOSInt)~i, fname);
 	}
 

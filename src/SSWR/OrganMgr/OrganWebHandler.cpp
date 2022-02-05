@@ -3495,7 +3495,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			{
 				if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 				{
-					if (refURLList->SortedIndexOfPtr(sarr[2].v) < 0)
+					if (refURLList->SortedIndexOfPtr(sarr[2].v, sarr[2].leng) < 0)
 					{
 						refURLList->SortedInsert(Text::String::New(sarr[2].v, sarr[2].leng));
 					}
@@ -4381,6 +4381,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
 	{
 		UTF8Char fileName[512];
+		UTF8Char *fileNameEnd;
 		Int32 fileId;
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -5047,9 +5048,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				return true;
 			}
 		}
-		else if (req->GetQueryValueStr(UTF8STRC("file"), fileName, 512))
+		else if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("file"), fileName, 512)) != 0)
 		{
-			if (Text::StrStartsWith(fileName, (const UTF8Char*)"web") && fileName[3] == IO::Path::PATH_SEPERATOR)
+			if (Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), UTF8STRC("web")) && fileName[3] == IO::Path::PATH_SEPERATOR)
 			{
 				Text::String *srcURL = 0;
 				Text::String *imgURL = 0;
@@ -5240,7 +5241,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						}
 					}
 					IO::Path::FindFileClose(sess);
-					i = (UOSInt)fileNameList->SortedIndexOfPtr(fileName);
+					i = (UOSInt)fileNameList->SortedIndexOfPtr(fileName, (UOSInt)(fileNameEnd - fileName));
 					if ((OSInt)i < 0)
 					{
 						LIST_FREE_STRING(fileNameList);

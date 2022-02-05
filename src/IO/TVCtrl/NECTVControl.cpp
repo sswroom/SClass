@@ -1031,7 +1031,9 @@ void IO::TVCtrl::NECTVControl::GetSupportedCmd(Data::ArrayList<CommandType> *cmd
 
 Bool IO::TVCtrl::NECTVControl::GetInfo(IO::TVControl::TVInfo *info)
 {
-	info->name = (const UTF8Char*)"NEC LCD Monitor";
+	Text::CString cstr = CSTR("NEC LCD Monitor");
+	info->name = cstr.v;
+	info->nameLen = cstr.leng;
 	info->tvType = IO::TVControl::TVT_NEC;
 	info->defBaudRate = 9600;
 	return true;

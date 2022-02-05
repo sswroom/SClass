@@ -116,14 +116,14 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 	this->lblMapType->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboMapType, UI::GUIComboBox(ui, this, false));
 	this->cboMapType->SetRect(108, 8, 100, 23, false);
-	this->cboMapType->AddItem((const UTF8Char*)"OSM Tile", (void*)0);
-	this->cboMapType->AddItem((const UTF8Char*)"Open Cycle Map", (void*)1);
-	this->cboMapType->AddItem((const UTF8Char*)"Transport", (void*)2);
-	this->cboMapType->AddItem((const UTF8Char*)"MapQuest", (void*)3);
-	this->cboMapType->AddItem((const UTF8Char*)"Landscape", (void*)4);
-	this->cboMapType->AddItem((const UTF8Char*)"Outdoors", (void*)5);
-	this->cboMapType->AddItem((const UTF8Char*)"Transport Dark", (void*)6);
-	this->cboMapType->AddItem((const UTF8Char*)"Spinal Map", (void*)7);
+	this->cboMapType->AddItem(CSTR("OSM Tile"), (void*)0);
+	this->cboMapType->AddItem(CSTR("Open Cycle Map"), (void*)1);
+	this->cboMapType->AddItem(CSTR("Transport"), (void*)2);
+	this->cboMapType->AddItem(CSTR("MapQuest"), (void*)3);
+	this->cboMapType->AddItem(CSTR("Landscape"), (void*)4);
+	this->cboMapType->AddItem(CSTR("Outdoors"), (void*)5);
+	this->cboMapType->AddItem(CSTR("Transport Dark"), (void*)6);
+	this->cboMapType->AddItem(CSTR("Spinal Map"), (void*)7);
 	this->cboMapType->SetSelectedIndex(0);
 
 	NEW_CLASS(this->lblHTTPPort, UI::GUILabel(ui, this, (const UTF8Char*)"HTTP Port"));

@@ -43,12 +43,13 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	WChar sbuff[512];
 	WChar sbuff2[32];
 	UTF8Char u8buff[512];
+	UTF8Char *sptr;
 	this->ui = ui;
 	this->forwardedUI = this->ui->IsForwarded();
 	this->currCodePage = 0;
 	this->eng = ui->CreateDrawEngine();
 	IO::Path::GetProcessFileName(u8buff);
-	IO::Path::AppendPath(u8buff, (const UTF8Char*)"CacheDir");
+	sptr = IO::Path::AppendPath(u8buff, (const UTF8Char*)"CacheDir");
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	NEW_CLASS(this->mapMgr, Map::MapManager());
 	NEW_CLASS(this->colorMgr, Media::ColorManager());
@@ -56,7 +57,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	NEW_CLASS(this->encFact, Text::EncodingFactory());
 	NEW_CLASS(this->exporters, Exporter::ExporterList());
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, u8buff));
+	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, {u8buff, (UOSInt)(sptr - u8buff)}));
 	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -92,7 +93,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 		OSInt i = 0;
 		while (true)
 		{
-			Text::StrOSInt(Text::StrConcat(sbuff2, L"AudioDevice"), i);
+			Text::StrOSInt(Text::StrConcatC(sbuff2, L"AudioDevice", 11), i);
 			if (reg->GetValueStr(sbuff2, sbuff) != 0)
 			{
 				const UTF8Char *devName = Text::StrToUTF8New(sbuff);

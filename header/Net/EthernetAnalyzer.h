@@ -179,13 +179,13 @@ namespace Net
 		UOSInt DNSCliGetCount();
 		UOSInt DNSReqv4GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv4GetCount();
-		Bool DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		Bool DNSReqv4GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
 		UOSInt DNSReqv6GetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqv6GetCount();
-		Bool DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		Bool DNSReqv6GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
 		UOSInt DNSReqOthGetList(Data::ArrayList<Text::String *> *reqList); //no need release
 		UOSInt DNSReqOthGetCount();
-		Bool DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
+		Bool DNSReqOthGetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl);
 		UOSInt DNSTargetGetList(Data::ArrayList<DNSTargetInfo *> *targetList); //no need release
 		UOSInt DNSTargetGetCount();
 		UOSInt MDNSGetList(Data::ArrayList<Net::DNSClient::RequestAnswer *> *mdnsList); //no need release

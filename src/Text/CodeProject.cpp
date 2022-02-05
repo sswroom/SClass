@@ -24,17 +24,17 @@ Text::CodeObject::ObjectType Text::CodeFile::GetObjectType()
 	return Text::CodeObject::OT_FILE;
 }
 
-Text::CodeProjectCfg::CodeProjectCfg(const UTF8Char *name)
+Text::CodeProjectCfg::CodeProjectCfg(Text::String *name)
 {
-	this->cfgName = Text::StrCopyNew(name);
+	this->cfgName = name->Clone();
 }
 
 Text::CodeProjectCfg::~CodeProjectCfg()
 {
-	Text::StrDelNew(this->cfgName);
+	this->cfgName->Release();
 }
 
-const UTF8Char *Text::CodeProjectCfg::GetCfgName()
+Text::String *Text::CodeProjectCfg::GetCfgName()
 {
 	return this->cfgName;
 }

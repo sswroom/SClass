@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	j = strList.GetCount();
 	while (i < j)
 	{
-		this->cboName->AddItem(strList.GetItem(i), 0);
+		this->cboName->AddItem({strList.GetItem(i), Text::StrCharCnt(strList.GetItem(i))}, 0);
 		i++;
 	}
 	UTF8Char sbuff[32];

@@ -145,7 +145,7 @@ void IO::Device::OlympusCameraControl::GetImageList()
 
 void IO::Device::OlympusCameraControl::GetGPSLogList()
 {
-	if (this->cmdList->SortedIndexOfPtr((const UTF8Char*)"get_gpsloglist") < 0)
+	if (this->cmdList->SortedIndexOfPtr(UTF8STRC("get_gpsloglist")) < 0)
 	{
 		return;
 	}
@@ -194,7 +194,7 @@ void IO::Device::OlympusCameraControl::GetGPSLogList()
 
 void IO::Device::OlympusCameraControl::GetSNSLogList()
 {
-	if (this->cmdList->SortedIndexOfPtr((const UTF8Char*)"get_snsloglist") < 0)
+	if (this->cmdList->SortedIndexOfPtr(UTF8STRC("get_snsloglist")) < 0)
 	{
 		return;
 	}

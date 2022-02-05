@@ -35,7 +35,7 @@ namespace Net
 
 		typedef struct
 		{
-			const UTF8Char *name;
+			Text::String *name;
 			Bool isRef;
 			Data::ArrayList<SearchResItem*> *items;
 		} SearchResObject;

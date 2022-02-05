@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 			}
 			sb.AppendC(UTF8STRC(")"));
 
-			me->cboFormat->AddItem(sb.ToString(), cfmt);
+			me->cboFormat->AddItem(sb.ToCString(), cfmt);
 			me->currFormats->Add(cfmt);
 
 			devInfo.AppendUOSInt(cfmt->width);

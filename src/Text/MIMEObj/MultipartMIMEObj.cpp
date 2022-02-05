@@ -111,13 +111,13 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		return;
 	}
 
-	si = hdrNames.SortedIndexOfPtr((const UTF8Char*)"Content-Type");
+	si = hdrNames.SortedIndexOfPtr(UTF8STRC("Content-Type"));
 	if (si >= 0)
 	{
 		Text::String *contType = hdrValues.GetItem((UOSInt)si);
 		Text::IMIMEObj *obj = 0;
 		IO::StmData::MemoryData *mdata;
-		si = hdrNames.SortedIndexOfPtr((const UTF8Char*)"Content-Transfer-Encoding");
+		si = hdrNames.SortedIndexOfPtr(UTF8STRC("Content-Transfer-Encoding"));
 		if (si >= 0)
 		{
 			Text::String *tenc = hdrValues.GetItem((UOSInt)si);

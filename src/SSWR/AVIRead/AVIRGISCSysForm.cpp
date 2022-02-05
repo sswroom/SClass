@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	j = gcsysList.GetCount();
 	while (i < j)
 	{
-		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)).v, (void*)(OSInt)gcsysList.GetItem(i));
+		this->cboGeo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcsysList.GetItem(i)), (void*)(OSInt)gcsysList.GetItem(i));
 		i++;
 	}
 	if (j > 0)
@@ -110,7 +110,8 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	j = pcsysList.GetCount();
 	while (i < j)
 	{
-		this->cboProj->AddItem(pcsysList.GetItem(i), (void*)pcsysList.GetItem(i));
+		const UTF8Char *name = pcsysList.GetItem(i);
+		this->cboProj->AddItem({name, Text::StrCharCnt(name)}, (void*)pcsysList.GetItem(i));
 		i++;
 	}
 	if (j > 0)

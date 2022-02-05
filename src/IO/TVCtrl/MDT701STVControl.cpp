@@ -237,7 +237,9 @@ void IO::TVCtrl::MDT701STVControl::GetSupportedCmd(Data::ArrayList<CommandType> 
 
 Bool IO::TVCtrl::MDT701STVControl::GetInfo(IO::TVControl::TVInfo *info)
 {
-	info->name = (const UTF8Char*)"Mitsubishi MDT701S";
+	Text::CString cstr = CSTR("Mitsubishi MDT701S");
+	info->name = cstr.v;
+	info->nameLen = cstr.leng;
 	info->tvType = IO::TVControl::TVT_MDT701S;
 	info->defBaudRate = 9600;
 	return true;

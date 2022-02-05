@@ -61,13 +61,14 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->SetCancelButton(this->btnCancel);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt i = 0;
 	UOSInt j = this->dbf->GetColCount();
 	this->cboCol->ClearItems();
 	while (i < j)
 	{
-		this->dbf->GetColumnName(i, sbuff);
-		this->cboCol->AddItem(sbuff, 0);
+		sptr = this->dbf->GetColumnName(i, sbuff);
+		this->cboCol->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		i++;
 	}
 	this->cboCol->SetSelectedIndex(0);

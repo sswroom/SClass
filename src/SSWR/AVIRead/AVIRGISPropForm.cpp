@@ -365,6 +365,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	Map::MapEnv::LayerItem setting;
 	Map::MapEnv::LayerItem *lyr;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 	if (this->env->GetLayerProp(&setting, this->group, this->index))
 	{
 		lyr = (Map::MapEnv::LayerItem*)this->env->GetItem(this->group, this->index);
@@ -372,13 +373,13 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		UOSInt i = 0;
 		while (i < j)
 		{
-			if (lyr->layer->GetColumnName(u8buff, i))
+			if ((sptr = lyr->layer->GetColumnName(u8buff, i)) != 0)
 			{
-				this->cboColName->AddItem(u8buff, 0);
+				this->cboColName->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, 0);
 			}
 			else
 			{
-				this->cboColName->AddItem((const UTF8Char*)"Unknown", 0);
+				this->cboColName->AddItem(CSTR("Unknown"), 0);
 			}
 			i++;
 		}

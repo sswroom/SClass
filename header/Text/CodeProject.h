@@ -43,12 +43,12 @@ namespace Text
 	class CodeProjectCfg : public IO::ConfigFile
 	{
 	private:
-		const UTF8Char *cfgName;
+		Text::String *cfgName;
 	public:
-		CodeProjectCfg(const UTF8Char *name);
+		CodeProjectCfg(Text::String *name);
 		virtual ~CodeProjectCfg();
 
-		const UTF8Char *GetCfgName();
+		Text::String *GetCfgName();
 	};
 
 	class CodeProject : public IO::ParsedObject, public CodeContainer

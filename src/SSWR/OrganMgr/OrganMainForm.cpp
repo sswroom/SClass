@@ -1155,7 +1155,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookYearChg(void *userObj)
 		book = items.GetItem(i);
 		sb.ClearStr();
 		book->GetString(&sb);
-		me->cboSpBook->AddItem(sb.ToString(), book);
+		me->cboSpBook->AddItem(sb.ToCString(), book);
 
 		i++;
 	}
@@ -2180,7 +2180,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBookList()
 		book = bookList.GetItem(i);
 		sb.ClearStr();
 		book->GetString(&sb);
-		this->cboSpBook->AddItem(sb.ToString(), book);
+		this->cboSpBook->AddItem(sb.ToCString(), book);
 
 		i++;
 	}
@@ -2403,6 +2403,7 @@ void SSWR::OrganMgr::OrganMainForm::ClearGroupForm()
 void SSWR::OrganMgr::OrganMainForm::FillGroupCboBox()
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::ArrayList<OrganGroupType*> *grpTypes = this->env->GetGroupTypes();
 	OrganGroupType *grpType;
 	UOSInt i = 0;
@@ -2411,8 +2412,8 @@ void SSWR::OrganMgr::OrganMainForm::FillGroupCboBox()
 	while (i < j)
 	{
 		grpType = grpTypes->GetItem(i);
-		grpType->ToString(sbuff);
-		this->cboGroupType->AddItem(sbuff, grpType);
+		sptr = grpType->ToString(sbuff);
+		this->cboGroupType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, grpType);
 		i++;
 	}
 }

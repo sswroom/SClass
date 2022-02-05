@@ -417,28 +417,22 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 
 void SSWR::AVIRead::AVIRCoordConvForm::FillCoordGeo(UI::GUIComboBox *cbo)
 {
-	Text::StringBuilderUTF8 sb;
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::GeoCoordSysType gcst = Math::CoordinateSystemManager::GCST_FIRST;
 	while (gcst <= Math::CoordinateSystemManager::GCST_LAST)
 	{
-		sb.ClearStr();
-		sb.Append(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst));
-		cbo->AddItem(sb.ToString(), (void*)(OSInt)gcst);
+		cbo->AddItem(Math::CoordinateSystemManager::GeoCoordSysTypeGetName(gcst), (void*)(OSInt)gcst);
 		gcst = (Math::CoordinateSystemManager::GeoCoordSysType)(gcst + 1);
 	}
 }
 
 void SSWR::AVIRead::AVIRCoordConvForm::FillCoordProj(UI::GUIComboBox *cbo)
 {
-	Text::StringBuilderUTF8 sb;
 	cbo->ClearItems();
 	Math::CoordinateSystemManager::ProjCoordSysType pcst = Math::CoordinateSystemManager::PCST_FIRST;
 	while (pcst <= Math::CoordinateSystemManager::PCST_LAST)
 	{
-		sb.ClearStr();
-		sb.Append(Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst));
-		cbo->AddItem(sb.ToString(), (void*)(OSInt)pcst);
+		cbo->AddItem(Math::CoordinateSystemManager::ProjCoordSysTypeGetName(pcst), (void*)(OSInt)pcst);
 		pcst = (Math::CoordinateSystemManager::ProjCoordSysType)(pcst + 1);
 	}
 }

@@ -289,8 +289,8 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboRecvType, UI::GUIComboBox(ui, this->grpRecv, false));
 	this->cboRecvType->SetRect(0, 0, 100, 23, false);
 	this->cboRecvType->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->cboRecvType->AddItem((const UTF8Char*)"Display as Hex", 0);
-	this->cboRecvType->AddItem((const UTF8Char*)"Display as Text", 0);
+	this->cboRecvType->AddItem(CSTR("Display as Hex"), 0);
+	this->cboRecvType->AddItem(CSTR("Display as Text"), 0);
 	this->cboRecvType->SetSelectedIndex(0);
 	this->cboRecvType->HandleSelectionChange(OnRecvTypeChg, this);
 	NEW_CLASS(this->txtRecvDisp, UI::GUITextBox(ui, this->grpRecv, (const UTF8Char*)"", true));
@@ -310,10 +310,10 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	this->lblSendLBreak->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->cboSendLBreak, UI::GUIComboBox(ui, this->pnlSendOption, false));
 	this->cboSendLBreak->SetRect(100, 24, 100, 23, false);
-	this->cboSendLBreak->AddItem((const UTF8Char*)"CR+LF", 0);
-	this->cboSendLBreak->AddItem((const UTF8Char*)"CR", 0);
-	this->cboSendLBreak->AddItem((const UTF8Char*)"LF", 0);
-	this->cboSendLBreak->AddItem((const UTF8Char*)"<null>", 0);
+	this->cboSendLBreak->AddItem(CSTR("CR+LF"), 0);
+	this->cboSendLBreak->AddItem(CSTR("CR"), 0);
+	this->cboSendLBreak->AddItem(CSTR("LF"), 0);
+	this->cboSendLBreak->AddItem(CSTR("<null>"), 0);
 	this->cboSendLBreak->SetSelectedIndex(1);
 	NEW_CLASS(this->radSendText, UI::GUIRadioButton(ui, this->pnlSendOption, (const UTF8Char*)"Text", true));
 	this->radSendText->SetRect(0, 0, 100, 23, false);
@@ -324,8 +324,8 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboSendType, UI::GUIComboBox(ui, this->grpSend, false));
 	this->cboSendType->SetRect(0, 0, 100, 23, false);
 	this->cboSendType->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->cboSendType->AddItem((const UTF8Char*)"Display as Hex", 0);
-	this->cboSendType->AddItem((const UTF8Char*)"Display as Text", 0);
+	this->cboSendType->AddItem(CSTR("Display as Hex"), 0);
+	this->cboSendType->AddItem(CSTR("Display as Text"), 0);
 	this->cboSendType->SetSelectedIndex(0);
 	this->cboSendType->HandleSelectionChange(OnSendTypeChg, this);
 	NEW_CLASS(this->txtSendDisp, UI::GUITextBox(ui, this->grpSend, (const UTF8Char*)"", true));

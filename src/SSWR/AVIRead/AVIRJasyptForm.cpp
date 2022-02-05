@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	j = Crypto::JasyptEncryptor::KA_LAST;
 	while (i <= j)
 	{
-		this->cboKeyAlg->AddItem(Crypto::JasyptEncryptor::GetKeyAlgorithmName((Crypto::JasyptEncryptor::KeyAlgorithm)i).v, (void*)i);
+		this->cboKeyAlg->AddItem(Crypto::JasyptEncryptor::GetKeyAlgorithmName((Crypto::JasyptEncryptor::KeyAlgorithm)i), (void*)i);
 		i++;
 	}
 	this->cboKeyAlg->SetSelectedIndex(0);
@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	j = Crypto::JasyptEncryptor::CA_LAST;
 	while (i <= j)
 	{
-		this->cboEncAlg->AddItem(Crypto::JasyptEncryptor::GetCipherAlgorithmName((Crypto::JasyptEncryptor::CipherAlgorithm)i).v, (void*)i);
+		this->cboEncAlg->AddItem(Crypto::JasyptEncryptor::GetCipherAlgorithmName((Crypto::JasyptEncryptor::CipherAlgorithm)i), (void*)i);
 		i++;
 	}
 	this->cboEncAlg->SetSelectedIndex(0);

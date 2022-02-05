@@ -47,6 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(void *userObj)
 SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 512, 104, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 
@@ -72,8 +73,8 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	j = Media::Printer::GetPrinterCount();
 	while (i < j)
 	{
-		Media::Printer::GetPrinterName(sbuff, i);
-		this->cboPrinter->AddItem(sbuff, 0);
+		sptr = Media::Printer::GetPrinterName(sbuff, i);
+		this->cboPrinter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		i++;
 	}
 	if (j > 0)

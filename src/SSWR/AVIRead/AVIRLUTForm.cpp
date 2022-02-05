@@ -164,6 +164,7 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::LUT *lut) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	this->lut = lut;
@@ -205,12 +206,12 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	j = this->lut->GetInputCh();
 	while (i < j)
 	{
-		Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
-		this->cboChannels->AddItem(sbuff, (void*)i);
+		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
+		this->cboChannels->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 		this->lvValues->AddColumn(sbuff, 60);
 		i++;
 	}
-	this->cboChannels->AddItem((const UTF8Char*)"All Channels", (void*)-1);
+	this->cboChannels->AddItem(CSTR("All Channels"), (void*)-1);
 	this->cboChannels->SetSelectedIndex(0);
 	
 	this->txtFileName->SetText(this->lut->GetSourceNameObj()->v);

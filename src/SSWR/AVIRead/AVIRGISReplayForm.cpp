@@ -167,6 +167,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::GPSTrack *track, IMapNavigator *navi) : UI::GUIForm(parent, 416, 560, ui)
 {
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	this->core = core;
 	this->track = track;
 	this->navi = navi;
@@ -297,8 +298,8 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	{
 		if (nameArr->GetItem(i) == 0)
 		{
-			Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
-			this->cboName->AddItem(sbuff, 0);
+			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
+			this->cboName->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		else
 		{

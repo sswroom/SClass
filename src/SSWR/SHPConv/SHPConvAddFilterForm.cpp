@@ -64,9 +64,9 @@ SSWR::SHPConv::SHPConvAddFilterForm::SHPConvAddFilterForm(UI::GUIClientControl *
 	this->lblFilter->SetRect(8, 16, 64, 23, false);
 	NEW_CLASS(this->cboFilter, UI::GUIComboBox(ui, this, false));
 	this->cboFilter->SetRect(80, 16, 121, 21, false);
-	this->cboFilter->AddItem((const UTF8Char*)"Value Filter", 0);
-	this->cboFilter->AddItem((const UTF8Char*)"Range Filter", 0);
-	this->cboFilter->AddItem((const UTF8Char*)"Elevation Filter", 0);
+	this->cboFilter->AddItem(CSTR("Value Filter"), 0);
+	this->cboFilter->AddItem(CSTR("Range Filter"), 0);
+	this->cboFilter->AddItem(CSTR("Elevation Filter"), 0);
 	this->cboFilter->SetSelectedIndex(0);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
 	this->btnOK->SetRect(8, 56, 75, 23, false);

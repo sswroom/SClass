@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	while (i <= Net::SNS::SNSControl::ST_LAST)
 	{
 		cstr = Net::SNS::SNSControl::SNSTypeGetName((Net::SNS::SNSControl::SNSType)i);
-		this->cboChannel->AddItem(cstr.v, (void*)(OSInt)i);
+		this->cboChannel->AddItem(cstr, (void*)(OSInt)i);
 		i++;
 	}
 	this->cboChannel->SetSelectedIndex(0);

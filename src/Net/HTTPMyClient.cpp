@@ -903,7 +903,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 {
 	UInt8 buff[512];
 	UTF8Char *sptr;
-	if (this->reqHeaders->SortedIndexOfPtr(name.v) >= 0)
+	if (this->reqHeaders->SortedIndexOfPtr(name.v, name.leng) >= 0)
 		return;
 
 	if (this->cli && !this->writing)

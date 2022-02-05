@@ -125,7 +125,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	i = 0;
 	while (i < macCnt)
 	{
-		this->cboVendor->AddItem(macList[i]->GetItem(0)->name, macList[i]);
+		Net::MACInfo::MACEntry *ent = macList[i]->GetItem(0);
+		this->cboVendor->AddItem({ent->name, ent->nameLen}, macList[i]);
 		i++;
 	}
 	MemFree(macList);
@@ -138,6 +139,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt j;
 	sockf->GetConnInfoList(&connInfoList);
 	i = 0;
@@ -147,8 +149,8 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 		connInfo = connInfoList.GetItem(i);
 		if (connInfo->GetConnectionType() != Net::ConnectionInfo::CT_LOOPBACK)
 		{
-			connInfo->GetName(sbuff);
-			this->cboAdapter->AddItem(sbuff, 0);
+			sptr = connInfo->GetName(sbuff);
+			this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 		}
 		DEL_CLASS(connInfo);
 		i++;

@@ -166,11 +166,11 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 				{
 					if (dvdVideo->volume)
 					{
-						this->cboVolume->AddItem(dvdVideo->volume->v, dvdVideo);
+						this->cboVolume->AddItem(dvdVideo->volume, dvdVideo);
 					}
 					else
 					{
-						this->cboVolume->AddItem((const UTF8Char*)"", dvdVideo);
+						this->cboVolume->AddItem(CSTR(""), dvdVideo);
 					}
 				}
 			}
@@ -1437,8 +1437,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->lblDVDType->SetRect(8, 121, 48, 25, false);
 	NEW_CLASS(this->cboDVDType, UI::GUIComboBox(ui, this->pnlDVDV, false));
 	this->cboDVDType->SetRect(64, 121, 121, 21, false);
-	this->cboDVDType->AddItem((const UTF8Char*)"ROM5", 0);
-	this->cboDVDType->AddItem((const UTF8Char*)"ROM9", 0);
+	this->cboDVDType->AddItem(CSTR("ROM5"), 0);
+	this->cboDVDType->AddItem(CSTR("ROM9"), 0);
 	NEW_CLASS(this->btnAllFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"All File Same Category"));
 	this->btnAllFile->SetRect(24, 217, 136, 25, false);
 	this->btnAllFile->HandleButtonClick(OnAllFileClicked, this);

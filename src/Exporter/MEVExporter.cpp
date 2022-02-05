@@ -78,7 +78,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		if (j != INVALID_INDEX)
 		{
 			u8buff[j] = 0;
-			si = dirArr->SortedIndexOfPtr(u8buff);
+			si = dirArr->SortedIndexOfPtr(u8buff, j);
 			if (si < 0)
 			{
 				dirArr->Insert((UOSInt)~si, Text::String::New(u8buff, j));
@@ -135,7 +135,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		*(Int32*)&buff[0] = 0;
 		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
 		u8buff[k] = 0;
-		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOfPtr(u8buff);
+		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOfPtr(u8buff, k);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
 		stm->Write(buff, 16);
@@ -291,7 +291,7 @@ void Exporter::MEVExporter::GetMapDirs(Map::MapEnv *env, Data::ArrayListString *
 				if (k != INVALID_INDEX)
 				{
 					sbuff[k] = 0;
-					si = dirArr->SortedIndexOfPtr(sbuff);
+					si = dirArr->SortedIndexOfPtr(sbuff, k);
 					if (si < 0)
 					{
 						dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, k));
@@ -321,7 +321,7 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 
 UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, const UTF8Char *strVal, UOSInt strLen, UInt32 fileOfst)
 {
-	MEVStrRecord *strRec = strArr->Get(strVal);
+	MEVStrRecord *strRec = strArr->Get({strVal, strLen});
 	if (strRec == 0)
 	{
 		strRec = MemAlloc(MEVStrRecord, 1);
@@ -329,7 +329,7 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 		strRec->strBytes = MemAlloc(UInt8, strRec->byteSize + 1);
 		NEW_CLASS(strRec->ofstList, Data::ArrayListUInt32());
 		MemCopyNO(strRec->strBytes, strVal, strRec->byteSize);
-		strArr->Put(strVal, strRec);
+		strArr->Put({strVal, strLen}, strRec);
 	}
 	strRec->ofstList->Add(fileOfst);
 	return strRec->byteSize;
@@ -381,7 +381,7 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			if (k != INVALID_INDEX)
 			{
 				u8buff[k] = 0;
-				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(u8buff);
+				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(u8buff, k);
 			}
 			else
 			{

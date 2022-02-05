@@ -24,7 +24,7 @@ OSInt Data::ArrayListString::CompareItem(Text::String* obj1, Text::String* obj2)
 	return obj1->CompareTo(obj2);
 }
 
-OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val)
+OSInt Data::ArrayListString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len)
 {
 	OSInt i;
 	OSInt j;

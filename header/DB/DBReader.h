@@ -62,6 +62,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[256];
+	UTF8Char *sptr;
 	Data::StringMap<UOSInt> colMap2;
 	Bool clsValid = true;
 	UOSInt i = 0;
@@ -69,8 +70,8 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 	while (i < j)
 	{
 		this->GetName(i, sbuff);
-		DB::DBUtil::DB2FieldName(sbuff2, sbuff);
-		colMap2.Put(sbuff2, i);
+		sptr = DB::DBUtil::DB2FieldName(sbuff2, sbuff);
+		colMap2.Put({sbuff2, (UOSInt)(sptr - sbuff2)}, i);
 
 		i++;
 	}

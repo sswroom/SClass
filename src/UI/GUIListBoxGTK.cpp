@@ -200,8 +200,8 @@ UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
 	gtk_widget_set_halign((GtkWidget*)item->lbl, GTK_ALIGN_START);
 #endif
 #endif
-	gtk_widget_show(item->lbl);
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
+	gtk_widget_show(item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
 	UOSInt ret = this->items->Add(item);

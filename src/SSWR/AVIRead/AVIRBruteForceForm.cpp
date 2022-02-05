@@ -108,6 +108,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	OSInt i;
 	OSInt j;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Type"));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this, false));
@@ -119,8 +120,8 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	while (i <= j)
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
-		hash->GetName(sbuff);
-		this->cboHashType->AddItem(sbuff, (void*)i);
+		sptr = hash->GetName(sbuff);
+		this->cboHashType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 		DEL_CLASS(hash);
 		i++;
 	}
@@ -133,9 +134,9 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, this, false));
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
-	this->cboEncoding->AddItem((const UTF8Char*)"UTF-8", (void*)Crypto::Hash::BruteForceAttack::CE_UTF8);
-	this->cboEncoding->AddItem((const UTF8Char*)"UTF-16LE", (void*)Crypto::Hash::BruteForceAttack::CE_UTF16LE);
-	this->cboEncoding->AddItem((const UTF8Char*)"UTF-32LE", (void*)Crypto::Hash::BruteForceAttack::CE_UTF32LE);
+	this->cboEncoding->AddItem(CSTR("UTF-8"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF8);
+	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF16LE);
+	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF32LE);
 	this->cboEncoding->SetSelectedIndex(0);
 	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, (const UTF8Char*)"Min Length"));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
@@ -153,7 +154,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	j = Crypto::Hash::BruteForceAttack::CL_LAST;
 	while (i <= j)
 	{
-		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName((Crypto::Hash::BruteForceAttack::CharLimit)i).v, (void*)i);
+		this->cboCharType->AddItem(Crypto::Hash::BruteForceAttack::CharLimitGetName((Crypto::Hash::BruteForceAttack::CharLimit)i), (void*)i);
 		i++;
 	}
 	this->cboCharType->SetSelectedIndex(0);

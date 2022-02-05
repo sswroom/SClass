@@ -59,13 +59,14 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 	this->txtHashValue->SetReadOnly(true);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Crypto::Hash::IHash *hash;
 	OSInt i = Crypto::Hash::HT_FIRST;
 	while (i <= Crypto::Hash::HT_LAST)
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
-		hash->GetName(sbuff);
-		this->cboHashType->AddItem(sbuff, (void*)i);
+		sptr = hash->GetName(sbuff);
+		this->cboHashType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 		DEL_CLASS(hash);
 		i++;
 	}

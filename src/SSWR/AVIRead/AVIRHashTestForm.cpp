@@ -113,6 +113,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->lvCompare->SetFullRowSelect(true);
 
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	OSInt i = Crypto::Hash::HT_FIRST;
 	Crypto::Hash::IHash *hash;
 	while (i <= Crypto::Hash::HT_LAST)
@@ -120,8 +121,8 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
 		if (hash)
 		{
-			hash->GetName(sbuff);
-			this->cboAlgorithm->AddItem(sbuff, (void*)i);
+			sptr = hash->GetName(sbuff);
+			this->cboAlgorithm->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
 			DEL_CLASS(hash);
 		}
 		i++;

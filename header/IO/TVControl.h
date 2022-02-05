@@ -85,6 +85,7 @@ namespace IO
 		{
 			TVType tvType;
 			const UTF8Char *name;
+			UOSInt nameLen;
 			UInt32 defBaudRate;
 		} TVInfo;
 	protected:

@@ -1100,7 +1100,7 @@ OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserLi
 	Sync::MutexUsage mutUsage(this->mut);
 	IO::StmData::FileData *fd;
 	ImageInfo *imgInfo;
-	if ((imgInfo = this->images->Get(fileName.v)) != 0)
+	if ((imgInfo = this->images->Get(fileName)) != 0)
 	{
 		return (OSInt)imgInfo->index;
 	}
@@ -1133,7 +1133,7 @@ OSInt Map::MapEnv::AddImage(Text::CString fileName, Parser::ParserList *parserLi
 			{
 				imgInfo->cnt = 1;
 			}
-			this->images->Put(fileName.v, imgInfo);
+			this->images->Put(fileName, imgInfo);
 			this->imgList->Add(imgInfo);
 			return (OSInt)imgInfo->index;
 		}
@@ -1150,7 +1150,7 @@ UOSInt Map::MapEnv::AddImage(Text::CString fileName, Media::ImageList *imgList)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	ImageInfo *imgInfo;
-	if ((imgInfo = this->images->Get(fileName.v)) != 0)
+	if ((imgInfo = this->images->Get(fileName)) != 0)
 	{
 		DEL_CLASS(imgList);
 		return imgInfo->index;

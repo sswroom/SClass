@@ -19,7 +19,7 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UInt8 hashResult[4];
-	sptr = Text::StrConcat(buff, this->cacheDir);
+	sptr = this->cacheDir->ConcatTo(buff);
 	if (sptr != buff && sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -49,11 +49,11 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 	}
 }
 
-Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *cacheDir)
+Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->cacheDir = Text::StrCopyNew(cacheDir);
+	this->cacheDir = Text::String::New(cacheDir.v, cacheDir.leng);
 	NEW_CLASS(this->hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
 	NEW_CLASS(this->queue, Net::HTTPQueue(sockf, ssl));
 }
@@ -61,7 +61,7 @@ Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, cons
 Net::WebBrowser::~WebBrowser()
 {
 	DEL_CLASS(this->queue);
-	Text::StrDelNew(this->cacheDir);
+	this->cacheDir->Release();
 	DEL_CLASS(this->hash);
 }
 

@@ -378,8 +378,8 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->lblMethod->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboMethod, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboMethod->SetRect(104, 52, 100, 23, false);
-	this->cboMethod->AddItem((const UTF8Char*)"GET", (void*)0);
-	this->cboMethod->AddItem((const UTF8Char*)"POST", (void*)1);
+	this->cboMethod->AddItem(CSTR("GET"), (void*)0);
+	this->cboMethod->AddItem(CSTR("POST"), (void*)1);
 	this->cboMethod->SetSelectedIndex(0);
 	NEW_CLASS(this->lblPostSize, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"POST Size"));
 	this->lblPostSize->SetRect(204, 52, 100, 23, false);

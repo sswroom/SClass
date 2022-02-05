@@ -1,6 +1,6 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANTIMEADJFORM
 #define _SM_SSWR_ORGANMGR_ORGANTIMEADJFORM
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "Map/MapView.h"
 #include "Map/TileMapLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"
@@ -36,7 +36,7 @@ namespace SSWR
 			Data::ArrayList<UserFileInfo*> *userFileList;
 			Data::ArrayList<UserFileInfo*> *currFileList;
 			Media::ImageList *dispImg;
-			Data::StringUTF8Map<Int32> *cameraMap;
+			Data::StringMap<Int32> *cameraMap;
 			Text::String *selImgCamera;
 			Int64 selImgTimeTicks;
 

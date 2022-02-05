@@ -131,9 +131,9 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->lblSSLType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboSSLType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboSSLType->SetRect(104, 52, 200, 23, false);
-	this->cboSSLType->AddItem((const UTF8Char*)"Plain", (void*)(OSInt)Net::Email::SMTPConn::CT_PLAIN);
-	this->cboSSLType->AddItem((const UTF8Char*)"STARTTLS", (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
-	this->cboSSLType->AddItem((const UTF8Char*)"SSL", (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
+	this->cboSSLType->AddItem(CSTR("Plain"), (void*)(OSInt)Net::Email::SMTPConn::CT_PLAIN);
+	this->cboSSLType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
+	this->cboSSLType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
 	this->cboSSLType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Username"));
 	this->lblUsername->SetRect(4, 76, 100, 23, false);

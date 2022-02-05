@@ -40,7 +40,7 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *id;
-				const UTF8Char *name;
+				Text::String *name;
 			} CategoryInfo;
 
 			typedef struct

@@ -4020,7 +4020,7 @@ void IO::JavaClass::AppendCodeClassName(Text::StringBuilderUTF8 *sb, const UTF8C
 	{
 		Text::StringBuilderUTF8 sbCls;
 		sbCls.AppendC(className, classNameLen - 2);
-		if (importList->SortedIndexOfPtr(sbCls.ToString()) >= 0)
+		if (importList->SortedIndexOfPtr(sbCls.ToString(), sbCls.GetLength()) >= 0)
 		{
 			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
@@ -4030,12 +4030,12 @@ void IO::JavaClass::AppendCodeClassName(Text::StringBuilderUTF8 *sb, const UTF8C
 	}
 	else
 	{
-		if (importList->SortedIndexOfPtr(className) >= 0)
+		if (importList->SortedIndexOfPtr(className, classNameLen) >= 0)
 		{
 			sb->AppendC(className + i + 1, classNameLen - i - 1);
 			return;
 		}
-		importList->SortedInsert(Text::String::NewNotNull(className));
+		importList->SortedInsert(Text::String::New(className, classNameLen));
 		sb->AppendC(className + i + 1, classNameLen - i - 1);
 	}
 }
@@ -4773,15 +4773,15 @@ const UTF8Char *IO::JavaClass::AppendCodeType2String(Text::StringBuilderUTF8 *sb
 				{
 					
 				}
-				else if (Text::StrStartsWith(sptr, (const UTF8Char*)"java.lang.") && i == 9)
+				else if (Text::StrStartsWithC(sptr, sptrLen, UTF8STRC("java.lang.")) && i == 9)
 				{
 
 				}
 				else if (importList)
 				{
-					if (importList->SortedIndexOfPtr(sptr) < 0)
+					if (importList->SortedIndexOfPtr(sptr, sptrLen) < 0)
 					{
-						importList->SortedInsert(Text::String::NewNotNull(sptr));
+						importList->SortedInsert(Text::String::New(sptr, sptrLen));
 					}
 				}
 				else

@@ -143,8 +143,8 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lblType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->grpNew, false));
 	this->cboType->SetRect(104, 52, 150, 23, false);
-	this->cboType->AddItem((const UTF8Char*)"Counter-Based (HOTP)", 0);
-	this->cboType->AddItem((const UTF8Char*)"Time-Based (TOTP)", 0);
+	this->cboType->AddItem(CSTR("Counter-Based (HOTP)"), 0);
+	this->cboType->AddItem(CSTR("Time-Based (TOTP)"), 0);
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this->grpNew, (const UTF8Char*)"New"));
 	this->btnNew->SetRect(104, 76, 75, 23, false);

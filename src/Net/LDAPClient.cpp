@@ -223,7 +223,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 			printf("LDAPMessage: searchResEntry, objectName = %s\r\n", sb.ToString());
 			#endif
 			obj = MemAlloc(Net::LDAPClient::SearchResObject, 1);
-			obj->name = Text::StrCopyNew(sb.ToString());
+			obj->name = Text::String::New(sb.ToString(), sb.GetLength());
 			obj->isRef = false;
 			NEW_CLASS(obj->items, Data::ArrayList<Net::LDAPClient::SearchResItem*>());
 			msgBuff = Net::ASN1Util::PDUParseSeq(msgBuff, seqEnd, &type, &attrEnd);
@@ -343,7 +343,7 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 					Net::LDAPClient::SearchResObject *obj;
 					obj = MemAlloc(Net::LDAPClient::SearchResObject, 1);
 					obj->isRef = true;
-					obj->name = Text::StrCopyNew(sb.ToString());
+					obj->name = Text::String::New(sb.ToString(), sb.GetLength());
 					obj->items = 0;
 					req->searchObjs->Add(obj);
 				}
@@ -786,7 +786,7 @@ void Net::LDAPClient::SearchResultsFree(Data::ArrayList<Net::LDAPClient::SearchR
 
 void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 {
-	Text::StrDelNew(obj->name);
+	obj->name->Release();
 	if (obj->items)
 	{
 		Net::LDAPClient::SearchResItem *item;

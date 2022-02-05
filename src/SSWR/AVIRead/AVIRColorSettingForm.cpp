@@ -504,29 +504,29 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	j = Media::ColorProfile::CPT_LAST;
 	while (i < j)
 	{
-		k = this->cboMonProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i).v, (void*)i);
+		k = this->cboMonProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == rgbParam->monProfileType)
 		{
 			this->cboMonProfile->SetSelectedIndex(k);
 		}
 		i++;
 	}
-	k = this->cboMonProfile->AddItem((const UTF8Char*)"As OS", (void*)Media::ColorProfile::CPT_OS);
+	k = this->cboMonProfile->AddItem(CSTR("As OS"), (void*)Media::ColorProfile::CPT_OS);
 	if (rgbParam->monProfileType == Media::ColorProfile::CPT_OS)
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
 	}
-	k = this->cboMonProfile->AddItem((const UTF8Char*)"EDID", (void*)Media::ColorProfile::CPT_EDID);
+	k = this->cboMonProfile->AddItem(CSTR("EDID"), (void*)Media::ColorProfile::CPT_EDID);
 	if (rgbParam->monProfileType == Media::ColorProfile::CPT_EDID)
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
 	}
-	k = this->cboMonProfile->AddItem((const UTF8Char*)"CUSTOM", (void*)Media::ColorProfile::CPT_CUSTOM);
+	k = this->cboMonProfile->AddItem(CSTR("CUSTOM"), (void*)Media::ColorProfile::CPT_CUSTOM);
 	if (rgbParam->monProfileType == Media::ColorProfile::CPT_CUSTOM)
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
 	}
-	k = this->cboMonProfile->AddItem((const UTF8Char*)"File", (void*)Media::ColorProfile::CPT_FILE);
+	k = this->cboMonProfile->AddItem(CSTR("File"), (void*)Media::ColorProfile::CPT_FILE);
 	if (rgbParam->monProfileType == Media::ColorProfile::CPT_FILE)
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
@@ -568,12 +568,12 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	j = Media::ColorProfile::CPT_LAST;
 	while (i < j)
 	{
-		k = this->cboDefVProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i).v, (void*)i);
+		k = this->cboDefVProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == this->colorMgr->GetDefVProfileType())
 		{
 			this->cboDefVProfile->SetSelectedIndex(k);
 		}
-		k = this->cboDefPProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i).v, (void*)i);
+		k = this->cboDefPProfile->AddItem(Media::ColorProfile::CommonProfileTypeGetName((Media::ColorProfile::CommonProfileType)i), (void*)i);
 		if (i == this->colorMgr->GetDefPProfileType())
 		{
 			this->cboDefPProfile->SetSelectedIndex(k);

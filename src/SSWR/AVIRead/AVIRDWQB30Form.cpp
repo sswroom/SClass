@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj
 		j = cmdList.GetCount();
 		while (i < j)
 		{
-			me->cboSetCmd->AddItem(me->scanner->GetCommandName(cmdList.GetItem(i)).v, (void*)(OSInt)cmdList.GetItem(i));
+			me->cboSetCmd->AddItem(me->scanner->GetCommandName(cmdList.GetItem(i)), (void*)(OSInt)cmdList.GetItem(i));
 			i++;
 		}
 		if (j > 0)
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
 				i = me->cmdMin;
 				while (i <= me->cmdMax)
 				{
-					me->cboSetParam->AddItem(me->scanner->GetCommandParamName(dcmd, i).v, (void*)(OSInt)i); 
+					me->cboSetParam->AddItem(me->scanner->GetCommandParamName(dcmd, i), (void*)(OSInt)i); 
 					i++;
 				}
 			}
@@ -308,8 +308,8 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->lblDevType->SetRect(160, 0, 100, 23, false);
 	NEW_CLASS(this->cboDevType, UI::GUIComboBox(ui, this->grpConn, false));
 	this->cboDevType->SetRect(260, 0, 150, 23, false);
-	this->cboDevType->AddItem((const UTF8Char*)"Denso Wave QB30", 0);
-	this->cboDevType->AddItem((const UTF8Char*)"Denso Wave QK30-U", 0);
+	this->cboDevType->AddItem(CSTR("Denso Wave QB30"), 0);
+	this->cboDevType->AddItem(CSTR("Denso Wave QK30-U"), 0);
 	this->cboDevType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpConn, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(160, 24, 100, 23, false);

@@ -37,7 +37,7 @@ void IO::StringLogger::ReadLogs(IO::Reader *reader)
 void IO::StringLogger::LogStr(const UTF8Char *s, UOSInt len)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	OSInt i = this->strList->SortedIndexOfPtr(s);
+	OSInt i = this->strList->SortedIndexOfPtr(s, len);
 	if (i < 0)
 	{
 		this->strList->Insert((UOSInt)~i, Text::String::New(s, len));

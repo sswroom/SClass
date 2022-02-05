@@ -30,9 +30,9 @@ namespace UI
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 
 		UOSInt AddItem(Text::String *itemText, void *itemObj);
-		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void ClearItems();
 		UOSInt GetCount();

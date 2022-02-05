@@ -1481,9 +1481,9 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->lblSeperator->SetRect(16, 344, 75, 25, false);
 	NEW_CLASS(this->cboSeperator, UI::GUIComboBox(ui, this, true));
 	this->cboSeperator->SetText((const UTF8Char*)", ");
-	this->cboSeperator->AddItem((const UTF8Char*)", ", 0);
-	this->cboSeperator->AddItem((const UTF8Char*)"", 0);
-	this->cboSeperator->AddItem((const UTF8Char*)"-", 0);
+	this->cboSeperator->AddItem(CSTR(", "), 0);
+	this->cboSeperator->AddItem(CSTR(""), 0);
+	this->cboSeperator->AddItem(CSTR("-"), 0);
 	this->cboSeperator->SetRect(104, 344, 96, 21, false);
 	NEW_CLASS(this->btnGroup, UI::GUIButton(ui, this, (const UTF8Char*)"Group"));
 	this->btnGroup->SetRect(240, 344, 104, 23, false);

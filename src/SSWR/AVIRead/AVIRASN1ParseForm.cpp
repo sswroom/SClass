@@ -73,7 +73,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlOptions, false));
 	this->cboType->SetRect(104, 4, 200, 23, false);
-	this->cboType->AddItem((const UTF8Char*)"X.509 Certificate", 0);
+	this->cboType->AddItem(CSTR("X.509 Certificate"), 0);
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblData, UI::GUILabel(ui, this->pnlOptions, (const UTF8Char*)"Base64 encoded data"));
 	this->lblData->SetRect(4, 28, 100, 23, false);

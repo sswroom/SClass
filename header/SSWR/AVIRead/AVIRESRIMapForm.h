@@ -16,8 +16,10 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const Char *name;
-				const Char *url;
+				const UTF8Char *name;
+				UOSInt nameLen;
+				const UTF8Char *url;
+				UOSInt urlLen;
 			} MapServer;
 		private:
 			static MapServer mapSvrs[];

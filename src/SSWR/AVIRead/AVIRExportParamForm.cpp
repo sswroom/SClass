@@ -64,6 +64,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	this->SetFont(0, 0, 8.25, false);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt cnt = this->exporter->GetParamCnt();
 	UOSInt i;
 	UI::GUILabel *lbl;
@@ -98,9 +99,9 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 
 			UOSInt j;
 			j = 0;
-			while (this->exporter->GetParamSelItems(this->param, i, j, sbuff))
+			while ((sptr = this->exporter->GetParamSelItems(this->param, i, j, sbuff)) != 0)
 			{
-				cbo->AddItem(sbuff, 0);
+				cbo->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
 				j++;
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);

@@ -24,7 +24,7 @@ OSInt Data::ArrayListICaseString::CompareItem(Text::String* obj1, Text::String* 
 	return obj1->CompareToICase(obj2);
 }
 
-OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val)
+OSInt Data::ArrayListICaseString::SortedIndexOfPtr(const UTF8Char *val, UOSInt len)
 {
 	OSInt i;
 	OSInt j;

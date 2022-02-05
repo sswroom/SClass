@@ -71,7 +71,7 @@ namespace Text
 			~CppParseStatus();
 
 			FileParseStatus *GetFileStatus();
-			Bool BeginParseFile(const UTF8Char *fileName);
+			Bool BeginParseFile(Text::CString fileName);
 			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
 
 			Bool IsDefined(const UTF8Char *defName);

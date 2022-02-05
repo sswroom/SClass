@@ -390,7 +390,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	DeviceType dt = DT_FIRST;
 	while (dt <= DT_LAST)
 	{
-		this->cboDevice->AddItem(DeviceTypeGetName(dt).v, (void*)(OSInt)dt);
+		this->cboDevice->AddItem(DeviceTypeGetName(dt), (void*)(OSInt)dt);
 		dt = (DeviceType)(dt + 1);
 	}
 	this->cboDevice->SetSelectedIndex(0);

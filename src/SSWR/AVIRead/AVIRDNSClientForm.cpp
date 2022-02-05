@@ -151,12 +151,12 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->txtRequest->Focus();
 	NEW_CLASS(this->cboRequest, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboRequest->SetRect(124, 52, 200, 23, false);
-	this->cboRequest->AddItem((const UTF8Char*)"1 - A (IPv4)", (void*)1);
-	this->cboRequest->AddItem((const UTF8Char*)"2 - NS (Name Server)", (void*)2);
-	this->cboRequest->AddItem((const UTF8Char*)"6 - SOA (Start of authority)", (void*)6);
-	this->cboRequest->AddItem((const UTF8Char*)"12 - PTR (Domain from IP)", (void*)12);
-	this->cboRequest->AddItem((const UTF8Char*)"15 - MX (Mail)", (void*)15);
-	this->cboRequest->AddItem((const UTF8Char*)"28 - AAAA (IPv6)", (void*)28);
+	this->cboRequest->AddItem(CSTR("1 - A (IPv4)"), (void*)1);
+	this->cboRequest->AddItem(CSTR("2 - NS (Name Server)"), (void*)2);
+	this->cboRequest->AddItem(CSTR("6 - SOA (Start of authority)"), (void*)6);
+	this->cboRequest->AddItem(CSTR("12 - PTR (Domain from IP)"), (void*)12);
+	this->cboRequest->AddItem(CSTR("15 - MX (Mail)"), (void*)15);
+	this->cboRequest->AddItem(CSTR("28 - AAAA (IPv6)"), (void*)28);
 	this->cboRequest->SetSelectedIndex(0);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Request"));
 	this->btnRequest->SetRect(324, 52, 75, 23, false);

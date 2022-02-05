@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			if (si < 0)
 			{
 				j = me->rssList->SortedInsert(Text::StrCopyNew(sb.ToString()));
-				me->cboRecent->InsertItem(j, sb.ToString(), 0);
+				me->cboRecent->InsertItem(j, sb.ToCString(), 0);
 				me->RSSListStore();
 			}
 			me->rss = rss;
@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 		while (reader->ReadLine(&sb, 4096))
 		{
 			i = this->rssList->SortedInsert(Text::StrCopyNew(sb.ToString()));
-			this->cboRecent->InsertItem(i, sb.ToString(), 0);
+			this->cboRecent->InsertItem(i, sb.ToCString(), 0);
 			sb.ClearStr();
 		}
 		DEL_CLASS(reader);

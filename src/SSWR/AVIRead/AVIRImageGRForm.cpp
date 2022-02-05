@@ -262,9 +262,9 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->lblType->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlSetting, false));
 	this->cboType->SetRect(104, 100, 150, 23, false);
-	this->cboType->AddItem((const UTF8Char*)"H GR", 0);
-	this->cboType->AddItem((const UTF8Char*)"V GR", 0);
-	this->cboType->AddItem((const UTF8Char*)"HV GR", 0);
+	this->cboType->AddItem(CSTR("H GR"), 0);
+	this->cboType->AddItem(CSTR("V GR"), 0);
+	this->cboType->AddItem(CSTR("HV GR"), 0);
 	this->cboType->HandleSelectionChange(OnTypeChanged, this);
 	NEW_CLASS(this->chkEnable, UI::GUICheckBox(ui, this->pnlSetting, (const UTF8Char*)"Enabled", true));
 	this->chkEnable->SetRect(104, 124, 200, 23, false);

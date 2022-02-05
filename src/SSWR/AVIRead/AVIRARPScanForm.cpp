@@ -190,6 +190,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	Net::IPType ipType;
 	UInt8 hwAddr[32];
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UOSInt k;
 	UInt32 ip;
 	this->core->GetSocketFactory()->GetConnInfoList(&connInfoList);
@@ -216,8 +217,8 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 					adapter->ipAddr = ip;
 					MemCopyNO(adapter->hwAddr, hwAddr, 6);
 					this->adapters->Add(adapter);
-					Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					this->cboAdapter->AddItem(sbuff, adapter);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+					this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, adapter);
 				}
 			}
 			k++;

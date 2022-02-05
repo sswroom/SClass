@@ -78,6 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnPinTypeChg(void *userObj)
 SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::ArrayListInt32 *ports;
@@ -98,8 +99,8 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->lblPinType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboPinType, UI::GUIComboBox(ui, this->pnlPinType, false));
 	this->cboPinType->SetRect(104, 4, 200, 23, false);
-	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_GPIO).v, (void*)SSWR::AVIRead::AVIRCore::IOPT_GPIO);
-	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN).v, (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
+	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_GPIO), (void*)SSWR::AVIRead::AVIRCore::IOPT_GPIO);
+	this->cboPinType->AddItem(SSWR::AVIRead::AVIRCore::GetIOPinTypeName(SSWR::AVIRead::AVIRCore::IOPT_VIOPIN), (void*)SSWR::AVIRead::AVIRCore::IOPT_VIOPIN);
 	this->cboPinType->HandleSelectionChange(OnPinTypeChg, this);
 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
@@ -135,8 +136,8 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 		while (i < j)
 		{
 			currPort = (Int32)i;
-			Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("GPIO")), currPort);
-			this->cboGPIO->AddItem(sbuff, (void*)(OSInt)currPort);
+			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("GPIO")), currPort);
+			this->cboGPIO->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)currPort);
 			i++;
 		}
 		if (j > 0)
@@ -152,8 +153,8 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	while (i < j)
 	{
 		currPort = ports->GetItem(i);
-		Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("VirtualIOPin")), currPort);
-		this->cboVirtualPin->AddItem(sbuff, (void*)(OSInt)currPort);
+		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("VirtualIOPin")), currPort);
+		this->cboVirtualPin->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)currPort);
 		i++;
 	}
 	if (j > 0)

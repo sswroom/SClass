@@ -2327,7 +2327,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 		return false;
 	}
 
-	status->BeginParseFile(fileName);
+	status->BeginParseFile({fileName, fileNameLen});
 	Bool succ = true;
 
 	NEW_CLASS(reader, IO::StreamReader(fs, 0));

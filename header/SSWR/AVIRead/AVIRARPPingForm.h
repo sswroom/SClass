@@ -27,7 +27,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *ifName;
+				Text::String *ifName;
 				UInt32 ipAddr;
 				UInt8 hwAddr[6];
 			} AdapterInfo;

@@ -364,9 +364,9 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	NEW_CLASS(this->lblMaxSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Maximum Size"));
 	this->lblMaxSize->SetRect(16, 42, 100, 23, false);
 	NEW_CLASS(this->cboMaxSize, UI::GUIComboBox(ui, this->pnlFile, true));
-	this->cboMaxSize->AddItem((const UTF8Char*)"4697620480", 0);
-	this->cboMaxSize->AddItem((const UTF8Char*)"25000000000", 0);
-	this->cboMaxSize->AddItem((const UTF8Char*)"737126400", 0);
+	this->cboMaxSize->AddItem(CSTR("4697620480"), 0);
+	this->cboMaxSize->AddItem(CSTR("25000000000"), 0);
+	this->cboMaxSize->AddItem(CSTR("737126400"), 0);
 	this->cboMaxSize->SetText((const UTF8Char*)"25000000000");
 	this->cboMaxSize->SetRect(120, 42, 104, 23, false);
 	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Total Size"));

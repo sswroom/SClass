@@ -96,7 +96,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	j = Media::CodeImageGen::CodeImageGen::CT_LAST;
 	while (i <= j)
 	{
-		this->cboCodeType->AddItem(Media::CodeImageGen::CodeImageGen::GetCodeName((Media::CodeImageGen::CodeImageGen::CodeType)i).v, (void*)i);
+		this->cboCodeType->AddItem(Media::CodeImageGen::CodeImageGen::GetCodeName((Media::CodeImageGen::CodeImageGen::CodeType)i), (void*)i);
 		i++;
 	}
 	this->cboCodeType->SetSelectedIndex(0);

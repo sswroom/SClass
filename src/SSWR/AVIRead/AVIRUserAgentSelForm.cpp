@@ -152,7 +152,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	this->osList->Add(osItem);
 	sb.ClearStr();
 	Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
-	i = this->cboFilterOS->AddItem(sb.ToString(), osItem);
+	i = this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 	this->cboFilterOS->SetSelectedIndex(i);
 	i = 0;
 	while (i < j)
@@ -176,7 +176,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 			this->osList->Add(osItem);
 			sb.ClearStr();
 			Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
-			this->cboFilterOS->AddItem(sb.ToString(), osItem);
+			this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 		}
 
 		if (uaList[i].osVer)
@@ -200,7 +200,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 				this->osList->Add(osItem);
 				sb.ClearStr();
 				Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
-				this->cboFilterOS->AddItem(sb.ToString(), osItem);
+				this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 			}
 		}
 		i++;
@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	j = Net::BrowserInfo::BT_LAST;
 	while (i <= j)
 	{
-		this->cboFilterBrowser->AddItem(Net::BrowserInfo::GetName((Net::BrowserInfo::BrowserType)i).v, (void*)i);
+		this->cboFilterBrowser->AddItem(Net::BrowserInfo::GetName((Net::BrowserInfo::BrowserType)i), (void*)i);
 		i++;
 	}
 	this->cboFilterBrowser->SetSelectedIndex(0);

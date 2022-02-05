@@ -350,7 +350,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqv4GetCount()
 	return this->dnsReqv4Map->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv4GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv4Mut);
@@ -384,7 +384,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqv6GetCount()
 	return this->dnsReqv6Map->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqv6GetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqv6Mut);
@@ -418,7 +418,7 @@ UOSInt Net::EthernetAnalyzer::DNSReqOthGetCount()
 	return this->dnsReqOthMap->GetCount();
 }
 
-Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(const UTF8Char *req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
+Bool Net::EthernetAnalyzer::DNSReqOthGetInfo(Text::CString req, Data::ArrayList<Net::DNSClient::RequestAnswer*> *ansList, Data::DateTime *reqTime, UInt32 *ttl)
 {
 	Net::EthernetAnalyzer::DNSRequestResult *result;
 	Sync::MutexUsage mutUsage(this->dnsReqOthMut);

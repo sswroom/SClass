@@ -269,10 +269,10 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->lblCheckType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboCheckType, UI::GUIComboBox(ui, this->pnlCheckType, false));
 	this->cboCheckType->SetRect(104, 4, 100, 23, false);
-	this->cboCheckType->AddItem((const UTF8Char*)"MD5", (void*)(OSInt)IO::FileCheck::CheckType::MD5);
-	this->cboCheckType->AddItem((const UTF8Char*)"MD4", (void*)(OSInt)IO::FileCheck::CheckType::MD4);
-	this->cboCheckType->AddItem((const UTF8Char*)"CRC", (void*)(OSInt)IO::FileCheck::CheckType::CRC32);
-	this->cboCheckType->AddItem((const UTF8Char*)"SHA1", (void*)(OSInt)IO::FileCheck::CheckType::SHA1);
+	this->cboCheckType->AddItem(CSTR("MD5"), (void*)(OSInt)IO::FileCheck::CheckType::MD5);
+	this->cboCheckType->AddItem(CSTR("MD4"), (void*)(OSInt)IO::FileCheck::CheckType::MD4);
+	this->cboCheckType->AddItem(CSTR("CRC"), (void*)(OSInt)IO::FileCheck::CheckType::CRC32);
+	this->cboCheckType->AddItem(CSTR("SHA1"), (void*)(OSInt)IO::FileCheck::CheckType::SHA1);
 	this->cboCheckType->SetSelectedIndex(0);
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

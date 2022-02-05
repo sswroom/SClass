@@ -167,8 +167,8 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->lblType->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this, false));
 	this->cboType->SetRect(104, 76, 200, 23, false);
-	this->cboType->AddItem((const UTF8Char*)"Preserve line", 0);
-	this->cboType->AddItem((const UTF8Char*)"No Date and prefix", 0);
+	this->cboType->AddItem(CSTR("Preserve line"), 0);
+	this->cboType->AddItem(CSTR("No Date and prefix"), 0);
 	this->cboType->SetSelectedIndex(0);
 	NEW_CLASS(this->lblSuffix, UI::GUILabel(ui, this, (const UTF8Char*)"Suffix to add"));
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);

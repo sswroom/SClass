@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 #define _SM_SSWR_ORGANMGR_ORGANTIMEADJLAYER
 
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "Map/GPSTrack.h"
 #include "Map/IMapDrawLayer.h"
 #include "SSWR/OrganMgr/OrganEnv.h"
@@ -15,7 +15,7 @@ namespace SSWR
 		private:
 			Map::GPSTrack *gpsTrk;
 			Data::ArrayList<UserFileInfo *> *userFileList;
-			Data::StringUTF8Map<Int32> *cameraMap;
+			Data::StringMap<Int32> *cameraMap;
 		public:
 			OrganTimeAdjLayer(Map::GPSTrack *gpsTrk, Data::ArrayList<UserFileInfo *> *userFileList);
 			virtual ~OrganTimeAdjLayer();
@@ -42,7 +42,8 @@ namespace SSWR
 
 			virtual ObjectClass GetObjectClass();
 
-			void SetTimeAdj(const UTF8Char *camera, Int32 timeAdj);
+			void SetTimeAdj(Text::String *camera, Int32 timeAdj);
+			void SetTimeAdj(Text::CString camera, Int32 timeAdj);
 		};
 	}
 }

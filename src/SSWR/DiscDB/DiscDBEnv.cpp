@@ -81,9 +81,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 			sb.ClearStr();
 			r->GetStr(0, &sb);
 			cate->id = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			cate->name = Text::StrCopyNew(sb.ToString());
+			cate->name = r->GetNewStr(1);
 			this->cateMap->Put(cate->id, cate);
 		}
 		this->db->CloseReader(r);
@@ -243,7 +241,7 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	{
 		cate = cateList->GetItem(i);
 		Text::StrDelNew(cate->id);
-		Text::StrDelNew(cate->name);
+		cate->name->Release();
 		MemFree(cate);
 	}
 	DEL_CLASS(this->cateMap);

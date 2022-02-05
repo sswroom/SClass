@@ -349,8 +349,8 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->lblFwdType->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->cboFwdType, UI::GUIComboBox(ui, this->grpParam,false));
 	this->cboFwdType->SetRect(108, 176, 100, 23, false);
-	this->cboFwdType->AddItem((const UTF8Char*)"Normal", (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
-	this->cboFwdType->AddItem((const UTF8Char*)"Transparent", (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
+	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
+	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
 	this->cboFwdType->SetSelectedIndex(0);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(200, 300, 75, 23, false);
