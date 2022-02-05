@@ -158,74 +158,217 @@ _AlphaBlend8_C8_DoBlendPA:
 	sub rcx,rbx ;sAdd		OSInt sAdd = sbpl - width * 4;
 	sub rsi,rbx ;dAdd		OSInt dAdd = dbpl - width * 4;
 
-	xor eax,eax
-	mov ebx,0x10101010
-	
-	movd xmm2,eax
-	movd xmm4,ebx
-	punpcklbw xmm4, xmm2
 	mov r10,rcx ;sAdd
 	mov r11,rsi ;dAdd
 	mov rsi,rdx ;src
 
 	mov rdx,qword [rsp+24] ;rgbTable
+	shr r8,1
+	jb iabbldpalopodd
+
 	ALIGN 16
 iabbldpalop:
 	mov rcx,r8 ;width
 	align 16
 iadbldpalop2:
+	mov al,byte [rsi+7]
+	mov ah,al
+	movzx rbx,ax
+	shl eax,16
+	or eax,ebx
+	shl rax,16
+	mov al,byte [rsi+3]
+	mov ah,al
+	movzx rbx,ax
+	shl rax,16
+	or rax,rbx
+
+	mov rbx,-1
+	sub rbx,rax
+	mov eax,0xff000000
+	or ebx,eax
+	shl rax,32
+	or rbx,rax
+	movq xmm3,rbx
+
+	movzx rax,byte [rdi+2]
+	movq xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rdi+6]
+	movhps xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rdi+1]
+	movq xmm2,[rdx+rax*8+272384]
+	movzx rax,byte [rdi+5]
+	movhps xmm2,[rdx+rax*8+272384]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+0]
+	movq xmm2,[rdx+rax*8+274432]
+	movzx rax,byte [rdi+4]
+	movhps xmm2,[rdx+rax*8+274432]
+	paddsw xmm0,xmm2
+
+	movzx rax,byte [rsi+2]
+	movq xmm1,[rdx+rax*8+262144]
+	movzx rax,byte [rsi+6]
+	movhps xmm1,[rdx+rax*8+262144]
+	movzx rax,byte [rsi+1]
+	movq xmm2,[rdx+rax*8+264192]
+	movzx rax,byte [rsi+5]
+	movhps xmm2,[rdx+rax*8+264192]
+	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+0]
+	movq xmm2,[rdx+rax*8+266240]
+	movzx rax,byte [rsi+4]
+	movhps xmm2,[rdx+rax*8+266240]
+	paddsw xmm1,xmm2
+
+	punpcklbw xmm3, xmm3
+	pmulhuw xmm0,xmm3
+	paddusw xmm0,xmm1
+
+	mov bh,0xff
+	pextrw rax,xmm0,6
+	mov bl,byte [rdx+rax+131072]
+	shl ebx,16
+	pextrw rax,xmm0,4
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,5
+	mov bh,byte [rdx+rax+65536]
+	shl rbx,16
+	mov bh,0xff
+	pextrw rax,xmm0,2
+	mov bl,byte [rdx+rax+131072]
+	shl rbx,16
+	pextrw rax,xmm0,0
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,1
+	mov bh,byte [rdx+rax+65536]
+	mov qword [rdi],rbx
+
+	add rsi,8
+	add rdi,8
+	dec rcx
+	jnz iadbldpalop2
+
+	add rsi,r10 ;sAdd
+	add rdi,r11 ;dAdd
+	dec r9
+	jnz iabbldpalop
+	pop rbx
+	pop rbp
+	ret
+
+
+	ALIGN 16
+iabbldpalopodd:
+	mov rcx,r8 ;width
+	align 16
+iadbldpalopodd2:
+	mov al,byte [rsi+7]
+	mov ah,al
+	movzx rbx,ax
+	shl eax,16
+	or eax,ebx
+	shl rax,16
+	mov al,byte [rsi+3]
+	mov ah,al
+	movzx rbx,ax
+	shl rax,16
+	or rax,rbx
+
+	mov rbx,-1
+	sub rbx,rax
+	mov eax,0xff000000
+	or ebx,eax
+	shl rax,32
+	or rbx,rax
+	movq xmm3,rbx
+
+	movzx rax,byte [rdi+2]
+	movq xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rdi+6]
+	movhps xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rdi+1]
+	movq xmm2,[rdx+rax*8+272384]
+	movzx rax,byte [rdi+5]
+	movhps xmm2,[rdx+rax*8+272384]
+	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+0]
+	movq xmm2,[rdx+rax*8+274432]
+	movzx rax,byte [rdi+4]
+	movhps xmm2,[rdx+rax*8+274432]
+	paddsw xmm0,xmm2
+
+	movzx rax,byte [rsi+2]
+	movq xmm1,[rdx+rax*8+262144]
+	movzx rax,byte [rsi+6]
+	movhps xmm1,[rdx+rax*8+262144]
+	movzx rax,byte [rsi+1]
+	movq xmm2,[rdx+rax*8+264192]
+	movzx rax,byte [rsi+5]
+	movhps xmm2,[rdx+rax*8+264192]
+	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+0]
+	movq xmm2,[rdx+rax*8+266240]
+	movzx rax,byte [rsi+4]
+	movhps xmm2,[rdx+rax*8+266240]
+	paddsw xmm1,xmm2
+
+	punpcklbw xmm3, xmm3
+	pmulhuw xmm0,xmm3
+	paddusw xmm0,xmm1
+
+	mov bh,0xff
+	pextrw rax,xmm0,6
+	mov bl,byte [rdx+rax+131072]
+	shl ebx,16
+	pextrw rax,xmm0,4
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,5
+	mov bh,byte [rdx+rax+65536]
+	shl rbx,16
+	mov bh,0xff
+	pextrw rax,xmm0,2
+	mov bl,byte [rdx+rax+131072]
+	shl rbx,16
+	pextrw rax,xmm0,0
+	mov bl,byte [rdx+rax]
+	pextrw rax,xmm0,1
+	mov bh,byte [rdx+rax+65536]
+	mov qword [rdi],rbx
+
+	add rsi,8
+	add rdi,8
+
+	dec rcx
+	jnz iadbldpalopodd2
+
 	mov al,byte [rsi+3]
 	mov ah,al
 	movzx rbx,ax
 	shl eax,16
 	or eax,ebx
 
-	movd xmm0,eax
 	mov ebx,0xffffffff
 	sub ebx,eax
 	or ebx,0xff000000
 	movd xmm3,ebx
 
-;	movzx rax,byte [rsi+2]
-;	movzx rbx,word [rdx+rax*2+262144]
-;	movd xmm2,ebx
-;	movzx rax,byte [rsi+1]
-;	movzx ebx,word [rdx+rax*2+262656]
-;	shl ebx,16
-;	movzx rax,byte [rsi]
-;	mov bx,word [rdx+rax*2+263168]
-;	movd xmm1,ebx
-;	punpckldq xmm1,xmm2
-
-;	movzx rax,byte [rdi+2]
-;	movzx ebx,word [rdx+rax*2+263680]
-;	movd xmm2,ebx
-;	movzx rax,byte [rdi+1]
-;	movzx ebx,word [rdx+rax*2+264192]
-;	shl ebx,16
-;	movzx rax,byte [rdi]
-;	mov bx,word [rdx+rax*2+264704]
-;	movd xmm0,ebx
-;	punpckldq xmm0,xmm2
-
-	movzx rax,byte [rsi+2]
-	movq xmm1,[rdx+rax*8+262144]
-	movzx rax,byte [rsi+1]
-	movq xmm2,[rdx+rax*8+264192]
-	paddsw xmm1,xmm2
-	movzx rax,byte [rsi+0]
-	movq xmm2,[rdx+rax*8+266240]
-	paddsw xmm1,xmm2
-
 	movzx rax,byte [rdi+2]
 	movq xmm0,[rdx+rax*8+270336]
+	movzx rax,byte [rsi+2]
+	movhps xmm0,[rdx+rax*8+262144]
 	movzx rax,byte [rdi+1]
 	movq xmm2,[rdx+rax*8+272384]
+	movzx rax,byte [rsi+1]
+	movhps xmm2,[rdx+rax*8+264192]
 	paddsw xmm0,xmm2
 	movzx rax,byte [rdi+0]
 	movq xmm2,[rdx+rax*8+274432]
+	movzx rax,byte [rsi+0]
+	movhps xmm2,[rdx+rax*8+266240]
 	paddsw xmm0,xmm2
 
+	movhlps xmm1,xmm0
 	punpcklbw xmm3, xmm3
 	pmulhuw xmm0,xmm3
 	paddusw xmm0,xmm1
@@ -240,15 +383,13 @@ iadbldpalop2:
 	mov bh,byte [rdx+rax+65536]
 	mov dword [rdi],ebx
 
-	lea rsi,[rsi+4]
-	lea rdi,[rdi+4]
-	dec rcx
-	jnz iadbldpalop2
+	add rsi,4
+	add rdi,4
 
 	add rsi,r10 ;sAdd
 	add rdi,r11 ;dAdd
 	dec r9
-	jnz iabbldpalop
+	jnz iabbldpalopodd
 	pop rbx
 	pop rbp
 	ret
