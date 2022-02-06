@@ -2,6 +2,7 @@
 #define _SM_MEDIA_AUDIOFILTER_DTMFGENERATOR
 #include "Media/IAudioFilter.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -23,7 +24,7 @@ namespace Media
 			UInt32 tonesBreakSamples;
 			Double tonesVol;
 			UInt32 tonesCurrSample;
-			const UTF8Char *tonesVals;
+			Text::String *tonesVals;
 			
 		public:
 			DTMFGenerator(IAudioSource *sourceAudio);

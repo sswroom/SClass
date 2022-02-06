@@ -1248,8 +1248,9 @@ UTF8Char *SSWR::OrganMgr::OrganEnvWeb::GetSpeciesDir(OrganSpecies *sp, UTF8Char 
 Bool SSWR::OrganMgr::OrganEnvWeb::CreateSpeciesDir(OrganSpecies *sp)
 {
 	UTF8Char sbuff[512];
-	GetSpeciesDir(sp, sbuff);
-	if (IO::Path::GetPathType(sbuff) == IO::Path::PathType::Directory)
+	UTF8Char *sptr;
+	sptr = GetSpeciesDir(sp, sbuff);
+	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::Directory)
 		return true;
 	return IO::Path::CreateDirectory(sbuff);
 }
@@ -1335,11 +1336,11 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddSpecies(OrganSpecies *sp)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("insert into species (eng_name, chi_name, sci_name, group_id, description, dirName, idKey, cate_id, mapColor) values ("));
-	sql.AppendStrUTF8(sp->GetEName());
+	sql.AppendStr(sp->GetEName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetCName());
+	sql.AppendStr(sp->GetCName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetSName());
+	sql.AppendStr(sp->GetSName());
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(sp->GetGroupId());
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -1386,8 +1387,8 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 	UOSInt j;
 	Int32 fileType = 0;
 	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	i = Text::StrLastIndexOfChar(fileName, IO::Path::PATH_SEPERATOR);
-	j = Text::StrLastIndexOfChar(&fileName[i + 1], '.');
+	i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
+	j = Text::StrLastIndexOfCharC(&fileName[i + 1], fileNameLen - i - 1, '.');
 	if (j == INVALID_INDEX)
 	{
 		return FS_NOTSUPPORT;

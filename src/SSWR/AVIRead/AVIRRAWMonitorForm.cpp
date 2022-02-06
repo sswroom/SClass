@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	const UTF8Char *name = (const UTF8Char*)me->lbDNSReqv4->GetSelectedItem();
+	Text::String *name = (Text::String*)me->lbDNSReqv4->GetSelectedItem();
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -243,12 +243,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		UOSInt nameLen = Text::StrCharCnt(name);
-		if (me->analyzer->DNSReqv4GetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqv4GetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqv4Name->SetText(name);
+			me->txtDNSReqv4Name->SetText(name->v);
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			me->txtDNSReqv4ReqTime->SetText(sbuff);
@@ -277,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	const UTF8Char *name = (const UTF8Char*)me->lbDNSReqv6->GetSelectedItem();
+	Text::String *name = (Text::String*)me->lbDNSReqv6->GetSelectedItem();
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -285,12 +284,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		UOSInt nameLen = Text::StrCharCnt(name);
-		if (me->analyzer->DNSReqv6GetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqv6GetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqv6Name->SetText(name);
+			me->txtDNSReqv6Name->SetText(name->v);
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			me->txtDNSReqv6ReqTime->SetText(sbuff);
@@ -319,7 +317,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRRAWMonitorForm *me = (SSWR::AVIRead::AVIRRAWMonitorForm*)userObj;
-	const UTF8Char *name = (const UTF8Char*)me->lbDNSReqOth->GetSelectedItem();
+	Text::String *name = (Text::String*)me->lbDNSReqOth->GetSelectedItem();
 	if (name)
 	{
 		UTF8Char sbuff[64];
@@ -327,12 +325,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
 		Net::DNSClient::RequestAnswer *ans;
-		UOSInt nameLen = Text::StrCharCnt(name);
-		if (me->analyzer->DNSReqOthGetInfo({name, nameLen}, &ansList, &reqTime, &ttl))
+		if (me->analyzer->DNSReqOthGetInfo(name->ToCString(), &ansList, &reqTime, &ttl))
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqOthName->SetText(name);
+			me->txtDNSReqOthName->SetText(name->v);
 			reqTime.ToLocalTime();
 			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			me->txtDNSReqOthReqTime->SetText(sbuff);

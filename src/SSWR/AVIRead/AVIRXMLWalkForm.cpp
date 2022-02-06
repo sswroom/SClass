@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.html", (const UTF8Char*)"HTML File");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->v);
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -25,26 +25,25 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnFileDrop(void *userObj, const U
 	SSWR::AVIRead::AVIRXMLWalkForm *me = (SSWR::AVIRead::AVIRXMLWalkForm*)userObj;
 	if (nFiles > 0)
 	{
-		me->LoadFile(fileNames[0]);
+		me->LoadFile({fileNames[0], Text::StrCharCnt(fileNames[0])});
 	}
 }
 
-void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::XMLReader *reader;
 	Text::XMLReader::ParseMode mode;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	UOSInt i;
 	this->lvXML->ClearItems();
-	this->txtFile->SetText(fileName);
-	i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
-	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("html")))
+	this->txtFile->SetText(fileName.v);
+	i = fileName.LastIndexOf('.');
+	if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileName.leng - i - 1, UTF8STRC("html")))
 	{
 		mode = Text::XMLReader::PM_HTML;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("htm")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileName.leng - i - 1, UTF8STRC("htm")))
 	{
 		mode = Text::XMLReader::PM_HTML;
 	}
@@ -52,7 +51,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(const UTF8Char *fileName)
 	{
 		mode = Text::XMLReader::PM_XML;
 	}
-	NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::XMLReader(this->core->GetEncFactory(), fs, mode));
 	while (reader->ReadNext())
 	{

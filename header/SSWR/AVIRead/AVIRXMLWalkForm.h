@@ -26,7 +26,7 @@ namespace SSWR
 			static void __stdcall OnBrowseClick(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt nFiles);
 
-			void LoadFile(const UTF8Char *fileName);
+			void LoadFile(Text::CString fileName);
 		public:
 			AVIRXMLWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRXMLWalkForm();

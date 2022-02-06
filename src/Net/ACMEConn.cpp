@@ -87,30 +87,30 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, Text::String *url
 	return Text::String::NewNotNull(sb.ToString());
 }
 
-Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, const UTF8Char *protStr, const UTF8Char *data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
+Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-	b64.EncodeBin(&sb, protStr, Text::StrCharCnt(protStr));
+	b64.EncodeBin(&sb, protStr.v, protStr.leng);
 	sb.AppendChar('.', 1);
-	b64.EncodeBin(&sb, data, Text::StrCharCnt(data));
+	b64.EncodeBin(&sb, data.v, data.leng);
 	Crypto::Token::JWSignature *sign;
 	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize()));
 	sign->CalcHash(sb.ToString(), sb.GetLength());
 
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("{\"protected\":\""));
-	b64.EncodeBin(&sb, protStr, Text::StrCharCnt(protStr));
+	b64.EncodeBin(&sb, protStr.v, protStr.leng);
 	sb.AppendC(UTF8STRC("\",\"payload\":\""));
-	b64.EncodeBin(&sb, data, Text::StrCharCnt(data));
+	b64.EncodeBin(&sb, data.v, data.leng);
 	sb.AppendC(UTF8STRC("\",\"signature\":\""));
 	sign->GetHashB64(&sb);
 	sb.AppendC(UTF8STRC("\"}"));
 	DEL_CLASS(sign);
-	printf("Protected: %s\r\n", protStr);
-	printf("Payload: %s\r\n", data);
+	printf("Protected: %s\r\n", protStr.v);
+	printf("Payload: %s\r\n", data.v);
 	printf("JWS: %s\r\n", sb.ToString());
-	return Text::String::NewNotNull(sb.ToString());
+	return Text::String::New(sb.ToString(), sb.GetLength());
 }
 
 Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 *sb)
@@ -131,7 +131,7 @@ Bool Net::ACMEConn::KeyHash(Crypto::Cert::X509Key *key, Text::StringBuilderUTF8 
 	return true;
 }
 
-Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
+Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, Text::CString data)
 {
 	if (this->nonce == 0)
 	{
@@ -145,7 +145,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, const Char *data)
 		return 0;
 	}
 	Text::String *jws;
-	jws = EncodeJWS(ssl, protStr->v, (const UTF8Char*)data, this->key, alg);
+	jws = EncodeJWS(ssl, protStr->ToCString(), data, this->key, alg);
 	protStr->Release();
 	if (jws == 0)
 	{
@@ -427,7 +427,7 @@ Bool Net::ACMEConn::AccountNew()
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, "{\"onlyReturnExisting\":true}");
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, CSTR("{\"onlyReturnExisting\":true}"));
 	if (cli == 0)
 	{
 		return false;
@@ -452,7 +452,7 @@ Bool Net::ACMEConn::AccountNew()
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
 					sb.AppendChar('}', 1);
-					cli = this->ACMEPost(this->urlNewAccount, (const Char*)sb.ToString());
+					cli = this->ACMEPost(this->urlNewAccount, sb.ToCString());
 					if (cli)
 					{
 						mstm.Clear();
@@ -486,7 +486,7 @@ Bool Net::ACMEConn::AccountRetr()
 	{
 		return false;
 	}
-	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, "{\"onlyReturnExisting\":true}");
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewAccount, CSTR("{\"onlyReturnExisting\":true}"));
 	if (cli == 0)
 	{
 		return false;
@@ -544,7 +544,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	}
 	sb.AppendC(UTF8STRC("]}"));
 
-	Net::HTTPClient *cli = this->ACMEPost(this->urlNewOrder, (const Char*)sb.ToString());
+	Net::HTTPClient *cli = this->ACMEPost(this->urlNewOrder, sb.ToCString());
 	if (cli->GetRespStatus() == 201)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -570,7 +570,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 
 Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeURL, AuthorizeType authType)
 {
-	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, "");
+	Net::HTTPClient *cli = this->ACMEPost(authorizeURL, CSTR(""));
 	if (cli)
 	{
 		cli->GetRespStatus();
@@ -651,7 +651,7 @@ void Net::ACMEConn::OrderFree(Order *order)
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(Text::String *challURL)
 {
-	Net::HTTPClient *cli = this->ACMEPost(challURL, "{}");
+	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR("{}"));
 	if (cli)
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
@@ -674,7 +674,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeBegin(Text::String *challURL)
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeGetStatus(Text::String *challURL)
 {
-	Net::HTTPClient *cli = this->ACMEPost(challURL, "");
+	Net::HTTPClient *cli = this->ACMEPost(challURL, CSTR(""));
 	if (cli)
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)

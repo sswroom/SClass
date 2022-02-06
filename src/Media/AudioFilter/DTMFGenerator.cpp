@@ -25,7 +25,7 @@ Media::AudioFilter::DTMFGenerator::DTMFGenerator(IAudioSource *sourceAudio) : Me
 Media::AudioFilter::DTMFGenerator::~DTMFGenerator()
 {
 	SDEL_CLASS(this->tonesMut);
-	SDEL_TEXT(this->tonesVals);
+	SDEL_STRING(this->tonesVals);
 }
 
 void Media::AudioFilter::DTMFGenerator::GetFormat(AudioFormat *format)
@@ -73,7 +73,7 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			UOSInt sampleLeft;
 			UInt32 tonesOfst = this->tonesCurrSample / (this->tonesSignalSamples + this->tonesBreakSamples);
 			UInt32 tonesStartOfst;
-			UOSInt tonesCnt = Text::StrCharCnt(this->tonesVals);
+			UOSInt tonesCnt = this->tonesVals->leng;
 			Int32 freq1;
 			Int32 freq2;
 			i = 0;
@@ -81,13 +81,13 @@ UOSInt Media::AudioFilter::DTMFGenerator::ReadBlock(UInt8 *buff, UOSInt blkSize)
 			{
 				if (tonesOfst >= tonesCnt)
 				{
-					Text::StrDelNew(this->tonesVals);
+					this->tonesVals->Release();
 					this->tonesVals = 0;
 					break;
 				}
 
 				tonesStartOfst = tonesOfst * (this->tonesSignalSamples + this->tonesBreakSamples);
-				switch (this->tonesVals[tonesOfst])
+				switch (this->tonesVals->v[tonesOfst])
 				{
 				case '1':
 					freq1 = 697;
@@ -339,7 +339,7 @@ Bool Media::AudioFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 break
 		return false;
 	const UTF8Char *sptr = tones;
 	UTF8Char c;
-	while ((c = (*sptr++)) != 0)
+	while ((c = *sptr) != 0)
 	{
 		if (c >= '0' && c <= '9')
 		{
@@ -354,11 +354,12 @@ Bool Media::AudioFilter::DTMFGenerator::GenTones(UInt32 signalTime, UInt32 break
 		{
 			return false;
 		}
+		sptr++;
 	}
 
 	Sync::MutexUsage mutUsage(this->tonesMut);
-	SDEL_TEXT(this->tonesVals);
-	this->tonesVals = Text::StrCopyNew(tones);
+	SDEL_STRING(this->tonesVals);
+	this->tonesVals = Text::String::New(tones, (UOSInt)(sptr - tones));
 	this->tonesSignalSamples = this->format.frequency * signalTime / 1000;
 	this->tonesBreakSamples = this->format.frequency * breakTime / 1000;
 	this->tonesVol = vol;
