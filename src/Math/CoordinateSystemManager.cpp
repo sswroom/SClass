@@ -465,7 +465,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 	UOSInt nameOfst;
 	UOSInt nameLen;
 	UOSInt datumOfst = 0;
-	UOSInt datumLen;
+	UOSInt datumLen = 0;
 	UOSInt spIndex = 0;
 	Double a = 0;
 	Double f_1 = 0;
