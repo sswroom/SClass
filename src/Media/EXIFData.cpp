@@ -2404,7 +2404,7 @@ Bool Media::EXIFData::ToString(Text::StringBuilderUTF8 *sb, Text::CString linePr
 						{
 							sptr = Text::StrConcatC(sbuff, UTF8STRC("  "));
 						}
-						innerExif->ToString(sb, {sbuff, (UOSInt)(sptr - sbuff)});
+						innerExif->ToString(sb, CSTRP(sbuff, sptr));
 						DEL_CLASS(innerExif);
 					}
 					else

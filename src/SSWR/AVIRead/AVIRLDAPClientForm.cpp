@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *use
 			item = obj->items->GetItem(i);
 			k = me->lvSearch->AddItem(item->type, 0);
 			sb.ClearStr();
-			Net::LDAPClient::SearchResDisplay(item->type, item->value, &sb);
+			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), &sb);
 			me->lvSearch->SetSubItem(k, 1, sb.ToString());
 			i++;
 		}

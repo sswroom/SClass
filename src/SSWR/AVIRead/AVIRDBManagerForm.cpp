@@ -254,7 +254,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 		r->GetStr(0, sb);
 		if (sb->GetLength() > colSize[0])
 			colSize[0] = sb->GetLength();
-		k = this->lvTableResult->AddItem(sb->ToString(), 0);
+		k = this->lvTableResult->AddItem(sb->ToCString(), 0);
 		while (i < j)
 		{
 			sb->ClearStr();

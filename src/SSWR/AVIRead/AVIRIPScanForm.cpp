@@ -15,6 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 	SSWR::AVIRead::AVIRIPScanForm *me = (SSWR::AVIRead::AVIRIPScanForm*)userObj;
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Net::ICMPScanner::ScanResult *result;
 	UOSInt i;
 	UOSInt j;
@@ -40,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 		while (i < j)
 		{
 			result = resultList->GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
-			me->lvIP->AddItem(sbuff, result);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
+			me->lvIP->AddItem(CSTRP(sbuff, sptr), result);
 			Text::StrHexBytes(sbuff, result->mac, 6, ':');
 			me->lvIP->SetSubItem(i, 1, sbuff);
 			me->lvIP->SetSubItem(i, 2, Net::MACInfo::GetMACInfoBuff(result->mac)->name);
@@ -112,7 +113,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 				if (ipType == Net::IPType::Private)
 				{
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+					this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 				}
 				k++;
 			}

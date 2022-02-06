@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		{
 			sb.ClearStr();
 			me->track->GetExtraName(me->currTrackId, (UOSInt)i, j, &sb);
-			l = me->lvExtra->AddItem(sb.ToString(), 0);
+			l = me->lvExtra->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
 			me->track->GetExtraValueStr(me->currTrackId, (UOSInt)i, j, &sb);
 			me->lvExtra->SetSubItem(l, 1, sb.ToString());
@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 		if (nameArr->GetItem(i) == 0)
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Track")), (Int32)i);
-			this->cboName->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			this->cboName->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 		else
 		{
@@ -416,7 +416,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		{
 			dt.SetTicks(recs[i].utcTimeTicks);
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lbRecord->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			this->lbRecord->AddItem(CSTRP(sbuff, sptr), 0);
 			i++;
 		}
 		this->startMark = 0;

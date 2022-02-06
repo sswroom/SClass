@@ -65,7 +65,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					bss = bssList.GetItem(j);
 					if (bss->GetSSID())
 					{
-						thisLen = Text::StrCharCnt(bss->GetSSID());
+						thisLen = bss->GetSSID()->leng;
 						if (thisLen > maxSSIDLen)
 							maxSSIDLen = thisLen;
 
@@ -102,8 +102,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.AppendChar('\t', 1);
 					if (bss->GetSSID())
 					{
-						sb.AppendSlow(bss->GetSSID());
-						thisLen = Text::StrCharCnt(bss->GetSSID());
+						Text::String *s = bss->GetSSID();
+						sb.Append(s);
+						thisLen = s->leng;
 					}
 					else
 					{

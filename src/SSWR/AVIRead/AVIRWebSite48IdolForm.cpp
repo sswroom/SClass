@@ -8,6 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 	SSWR::AVIRead::AVIRWebSite48IdolForm *me = (SSWR::AVIRead::AVIRWebSite48IdolForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Int32 pageNo = 0;
 	me->txtPageNo->GetText(&sb);
 	sb.ToInt32(&pageNo);
@@ -25,8 +26,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 		while (i < j)
 		{
 			item = itemList.GetItem(i);
-			Text::StrInt32(sbuff, item->id);
-			me->lvItems->AddItem(sbuff, 0);
+			sptr = Text::StrInt32(sbuff, item->id);
+			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
 			me->lvItems->SetSubItem(i, 1, sbuff);

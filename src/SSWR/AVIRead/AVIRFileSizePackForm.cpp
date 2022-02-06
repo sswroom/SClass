@@ -57,7 +57,9 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UTF8Char *sptr2;
+	UTF8Char *sptr2End;
 	if (me->filePath)
 	{
 		sptr = Text::StrConcat(sbuff, me->filePath);
@@ -80,9 +82,9 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 			while (i-- > 0)
 			{
 				file = me->packList->GetItem(i);
-				file->GetName()->ConcatTo(sptr);
-				file->GetName()->ConcatTo(sptr2);
-				IO::FileUtil::MoveFile(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
+				sptrEnd = file->GetName()->ConcatTo(sptr);
+				sptr2End = file->GetName()->ConcatTo(sptr2);
+				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 
 			sptr = me->txtDirName->GetText(sbuff);

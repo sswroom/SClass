@@ -362,21 +362,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 		NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(0, (UInt32)this->hdrSize));
 		this->fd->GetRealData(0, this->hdrSize, buff);
 		sptr = Text::StrConcatC(sbuff, buff, 3);
-		frame->AddField(0, 3, CSTR("Magic"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(0, 3, CSTR("Magic"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, buff[3]);
-		frame->AddField(3, 1, CSTR("Version"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(3, 1, CSTR("Version"), CSTRP(sbuff, sptr));
 		sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), buff[4]);
-		frame->AddField(4, 1, CSTR("TypeFlags"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(4, 1, CSTR("TypeFlags"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, (UInt16)(buff[4] >> 3));
-		frame->AddSubfield(4, 1, CSTR("Reserved"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddSubfield(4, 1, CSTR("Reserved"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, (UInt16)((buff[4] >> 2) & 1));
-		frame->AddSubfield(4, 1, CSTR("Audio"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddSubfield(4, 1, CSTR("Audio"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, (UInt16)((buff[4] >> 1) & 1));
-		frame->AddSubfield(4, 1, CSTR("Reserved"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddSubfield(4, 1, CSTR("Reserved"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, (UInt16)(buff[4] & 1));
-		frame->AddSubfield(4, 1, CSTR("Video"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddSubfield(4, 1, CSTR("Video"), CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, ReadMUInt32(&buff[5]));
-		frame->AddField(5, 4, CSTR("DataOffset"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(5, 4, CSTR("DataOffset"), CSTRP(sbuff, sptr));
 		return frame;
 	}
 	IO::FileAnalyse::FLVFileAnalyse::FLVTag *tag = this->tags->GetItem(index - 1);
@@ -385,7 +385,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
-	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	this->fd->GetRealData(tag->ofst, 11, buff);
 	frame->AddUInt(0, 1, CSTR("Reserved"), (UInt16)(buff[0] >> 6));

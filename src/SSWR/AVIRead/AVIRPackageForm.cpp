@@ -405,6 +405,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnStatusDblClick(void *userObj, U
 void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt maxWidth = 0;
 	UOSInt w;
@@ -418,9 +419,9 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 	j = packFile->GetCount();
 	while (i < j)
 	{
-		packFile->GetItemName(sbuff, i);
+		sptr = packFile->GetItemName(sbuff, i);
 		pot = packFile->GetItemType(i);
-		k = this->lvFiles->AddItem(sbuff, (void*)i);
+		k = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		w = this->lvFiles->GetStringWidth(sbuff);
 		if (w > maxWidth)
 			maxWidth = w;

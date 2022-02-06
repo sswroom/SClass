@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 	while (i < j)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Layer ")), i + 1);
-		this->lbLayers->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
+		this->lbLayers->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		i++;
 	}
 }

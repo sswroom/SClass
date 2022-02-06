@@ -140,9 +140,9 @@ UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText);
+	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_ADDSTRING, 0, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
@@ -151,7 +151,7 @@ UOSInt UI::GUIComboBox::AddItem(const UTF8Char *itemText, void *itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Add(Text::String::NewNotNull(itemText));
+	this->itemTexts->Add(Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
@@ -170,9 +170,9 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *i
 	return (UOSInt)i;
 }
 
-UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
-	const WChar *wptr = Text::StrToWCharNew(itemText);
+	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	OSInt i = SendMessage((HWND)hwnd, CB_INSERTSTRING, index, (LPARAM)wptr);
 	Text::StrDelNew(wptr);
 	if (i < 0)
@@ -181,7 +181,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, const UTF8Char *itemText, void 
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Insert(index, Text::String::NewNotNull(itemText));
+	this->itemTexts->Insert(index, Text::String::New(itemText));
 	return (UOSInt)i;
 }
 

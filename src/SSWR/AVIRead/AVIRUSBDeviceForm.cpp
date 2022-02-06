@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent
 		sptr = Text::StrHexVal16(sbuff, usb->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, usb->GetProductId());
-		this->lbDevices->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, usb);
+		this->lbDevices->AddItem(CSTRP(sbuff, sptr), usb);
 		i++;
 	}
 }

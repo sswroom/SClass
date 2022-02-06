@@ -7,6 +7,7 @@
 void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 {
 	UTF8Char sbuff[512];
-	IO::Path::GetProcessFileName(sbuff);
-	IO::EXEFile::GetFileTime(sbuff, dt);
+	UTF8Char *sptr;
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	IO::EXEFile::GetFileTime(CSTRP(sbuff, sptr), dt);
 }

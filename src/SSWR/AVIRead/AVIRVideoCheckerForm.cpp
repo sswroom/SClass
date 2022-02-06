@@ -21,10 +21,11 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 	while (i < nFiles)
 	{
 		j = Text::StrLastIndexOfChar(files[i], IO::Path::PATH_SEPERATOR);
-		j = me->lvFiles->AddItem(&files[i][j + 1], 0);
+		const UTF8Char *name = &files[i][j + 1];
+		j = me->lvFiles->AddItem({name, Text::StrCharCnt(name)}, 0);
 
 		file = MemAlloc(FileQueue, 1);
-		file->fileName = Text::String::NewNotNull(files[i]);;
+		file->fileName = Text::String::NewNotNull(files[i]);
 		file->index = j;
 		Sync::MutexUsage mutUsage(me->fileMut);
 		me->fileList->Add(file);

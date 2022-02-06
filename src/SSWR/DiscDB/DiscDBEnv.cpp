@@ -377,9 +377,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(const UTF8Char *discId, Data::Arra
 		{
 			file = MemAlloc(DiscFileInfo, 1);
 			file->fileId = (UInt32)r->GetInt32(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			file->fileName = Text::StrCopyNew(sb.ToString());
+			file->fileName = r->GetNewStr(1);
 			file->fileSize = (UInt64)r->GetInt64(2);
 			sb.ClearStr();
 			r->GetStr(3, &sb);
@@ -401,7 +399,7 @@ void SSWR::DiscDB::DiscDBEnv::FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fil
 	while (i-- > 0)
 	{
 		file = fileList->GetItem(i);
-		Text::StrDelNew(file->fileName);
+		file->fileName->Release();
 		MemFree(file);
 	}
 	fileList->Clear();

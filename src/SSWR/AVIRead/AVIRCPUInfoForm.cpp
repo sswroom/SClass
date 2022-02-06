@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	{
 		sb.ClearStr();
 		cpu.GetInfoName(i, &sb);
-		k = this->lvMain->AddItem(sb.ToString(), 0);
+		k = this->lvMain->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
 		cpu.GetInfoValue(i, &sb);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
@@ -171,8 +171,8 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 		{
 			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"0");
 		}
-		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i));
-		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i));
+		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i).v);
+		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i).v);
 		i++;
 	}
 	i = 0;
@@ -187,8 +187,8 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 		{
 			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"0");
 		}
-		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i + 32));
-		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i + 32));
+		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i + 32).v);
+		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i + 32).v);
 		i++;
 	}
 
@@ -200,35 +200,35 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	if ((sptr = cpu.GetCPUName(u8buff)) != 0)
 	{
 		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
-		k = this->lvMain->AddItem((const UTF8Char*)"CPU Name", 0);
+		k = this->lvMain->AddItem(CSTR("CPU Name"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 	if (cpu.GetCPURatio(&r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
-		k = this->lvMain->AddItem((const UTF8Char*)"Ratio", 0);
+		k = this->lvMain->AddItem(CSTR("Ratio"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 	if (cpu.GetCPUTurboRatio(&r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
-		k = this->lvMain->AddItem((const UTF8Char*)"Turbo Ratio", 0);
+		k = this->lvMain->AddItem(CSTR("Turbo Ratio"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 	if (cpu.GetCPUTCC(&t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);
-		k = this->lvMain->AddItem((const UTF8Char*)"TCC", 0);
+		k = this->lvMain->AddItem(CSTR("TCC"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 	if (cpu.GetCPUTemp(0, &t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);
-		k = this->lvMain->AddItem((const UTF8Char*)"Temp", 0);
+		k = this->lvMain->AddItem(CSTR("Temp"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToString());
 	}
 }

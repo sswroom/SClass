@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 		UOSInt j = ans->namesCnt;
 		while (i < j)
 		{
-			me->lvEntries->AddItem(ans->names[i].nameBuff, 0);
+			me->lvEntries->AddItem({ans->names[i].nameBuff, Text::StrCharCnt(ans->names[i].nameBuff)}, 0);
 			Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].nameType);
 			me->lvEntries->SetSubItem(i, 1, sbuff);
 			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType).v);
@@ -68,6 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 	if (me->tableUpdated)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		me->tableUpdated = false;
 		me->lvAnswers->ClearItems();
 		Sync::MutexUsage mutUsage;
@@ -79,8 +80,8 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			ans = ansList->GetItem(i);
-			Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32((UInt8*)&ans->sortableIP));
-			me->lvAnswers->AddItem(sbuff, ans);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32((UInt8*)&ans->sortableIP));
+			me->lvAnswers->AddItem(CSTRP(sbuff, sptr), ans);
 			Text::StrHexBytes(sbuff, ans->unitId, 6, ':');
 			me->lvAnswers->SetSubItem(i, 1, sbuff);
 			const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfoBuff(ans->unitId);

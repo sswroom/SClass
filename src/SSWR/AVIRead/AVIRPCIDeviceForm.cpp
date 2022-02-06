@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 		me->txtVendorId->SetText(sbuff);
 		Text::StrHexVal16(sbuff, pci->GetProductId());
 		me->txtProductId->SetText(sbuff);
-		me->txtDispName->SetText(pci->GetDispName());
+		me->txtDispName->SetText(pci->GetDispName().v);
 
 		const IO::DeviceDB::PCIDeviceInfo *dev;
 		dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent
 		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, pci->GetProductId());
-		this->lbDevices->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, pci);
+		this->lbDevices->AddItem(CSTRP(sbuff, sptr), pci);
 		i++;
 	}
 }

@@ -547,7 +547,7 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".algorithm"));
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {sbuff, (UOSInt)(sptr - sbuff)});
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
 		}
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)

@@ -8,6 +8,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 	SSWR::AVIRead::AVIRWebSite7gogoForm *me = (SSWR::AVIRead::AVIRWebSite7gogoForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	me->txtChannelId->GetText(&sb);
 	me->lvItems->ClearItems();
 	if (sb.GetLength() > 0)
@@ -27,8 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 		while (i < j)
 		{
 			item = itemList.GetItem(i);
-			Text::StrInt64(sbuff, item->id);
-			me->lvItems->AddItem(sbuff, 0);
+			sptr = Text::StrInt64(sbuff, item->id);
+			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
 			dt.ToLocalTime();
 			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");

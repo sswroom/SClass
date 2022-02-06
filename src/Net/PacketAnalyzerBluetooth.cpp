@@ -1284,7 +1284,7 @@ void Net::PacketAnalyzerBluetooth::AddRSSI(IO::FileAnalyse::FrameDetailHandler *
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(Text::StrInt16(sbuff, rssi), UTF8STRC("dBm"));
-	frame->AddField(frameOfst, 1, CSTR("RSSI"), {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddField(frameOfst, 1, CSTR("RSSI"), CSTRP(sbuff, sptr));
 }
 
 void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, const UInt8 *packet, UOSInt packetSize)
@@ -1961,7 +1961,7 @@ void Net::PacketAnalyzerBluetooth::AddTxPower(IO::FileAnalyse::FrameDetailHandle
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(Text::StrInt16(sbuff, txPower), UTF8STRC("dBm"));
-	frame->AddField(frameOfst, 1, CSTR("TxPower"), {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddField(frameOfst, 1, CSTR("TxPower"), CSTRP(sbuff, sptr));
 }
 
 void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(IO::FileAnalyse::FrameDetailHandler *frame, UInt32 frameOfst, UInt16 interval)

@@ -59,19 +59,19 @@ IO::BTController::BTDevice::~BTDevice()
 	MemFree(this->devInfo);
 	if (this->clsData)
 	{
-		Text::StrDelNew((const UTF8Char*)this->clsData);
+		((Text::String*)this->clsData)->Release();
 		this->clsData = 0;
 	}
 }
 
-const UTF8Char *IO::BTController::BTDevice::GetName()
+Text::String *IO::BTController::BTDevice::GetName()
 {
 	BLUETOOTH_DEVICE_INFO *dev = (BLUETOOTH_DEVICE_INFO*)this->devInfo;
 	if (this->clsData == 0)
 	{
-		this->clsData = (void*)Text::StrToUTF8New(dev->szName);
+		this->clsData = (void*)Text::String::NewNotNull(dev->szName);
 	}
-	return (const UTF8Char*)this->clsData;
+	return (Text::String*)this->clsData;
 }
 
 UInt8 *IO::BTController::BTDevice::GetAddress()

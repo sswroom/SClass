@@ -271,7 +271,7 @@ void Net::WiFiCapturer::StoreStatus()
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
 	Sync::MutexUsage mutUsage(this->logMut);
-	if (this->wifiLog->StoreFile({sbuff, (UOSInt)(sptr - sbuff)}))
+	if (this->wifiLog->StoreFile(CSTRP(sbuff, sptr)))
 	{
 		if (this->lastFileName)
 		{

@@ -165,7 +165,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 			while (r->ReadNext())
 			{
 				sptr = r->GetStr(2, sbuff, sizeof(sbuff));
-				trk->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
+				trk->SetTrackName(CSTRP(sbuff, sptr));
 				i = (UOSInt)r->GetInt32(9);
 				j = (UOSInt)r->GetInt32(10);
 				while (i <= j)

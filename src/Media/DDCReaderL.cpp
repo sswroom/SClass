@@ -45,7 +45,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
 							edidSize = fs->Read(edid, 1024);
@@ -84,7 +84,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
-									NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr4 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+									NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 									if (!fs->IsError())
 									{
 										edidSize = fs->Read(edid, 1024);
@@ -238,7 +238,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (!fs->IsError())
 						{
 							edidSize = fs->Read(edid, 1024);
@@ -273,7 +273,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
-									NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr4 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+									NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 									if (!fs->IsError())
 									{
 										edidSize = fs->Read(edid, 1024);

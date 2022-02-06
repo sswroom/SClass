@@ -329,7 +329,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				sptr = item->fd->GetShortName().ConcatTo(sptr);
 			}
-			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			NEW_CLASS(hashStm, Crypto::Hash::HashStream(fs, hash));
 
 			hash->Clear();
@@ -362,7 +362,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			{
 				IO::StmData::FileData *fd;
 				Text::StringBuilderUTF8 sb;
-				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, true));
+				NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), true));
 				sb.Append(this->sourceName);
 				sb.AppendC(UTF8STRC("\\"));
 				if (item->name)

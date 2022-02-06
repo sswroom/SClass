@@ -452,8 +452,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					{
 						if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 						{
-							currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-							currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+							currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+							currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 						}
 						sbObjValName.ClearStr();
 						sbObjValCont.ClearStr();
@@ -503,8 +503,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								objIsEqual = false;
 								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 								{
-									currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-									currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+									currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+									currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 								}
 								sbObjValName.ClearStr();
 								sbObjValCont.ClearStr();
@@ -737,8 +737,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					{
 						if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 						{
-							currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-							currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+							currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+							currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 						}
 						sbObjValName.ClearStr();
 						sbObjValCont.ClearStr();
@@ -772,8 +772,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							objIsEqual = false;
 							if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 							{
-								currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-								currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+								currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 							}
 							sbObjValName.ClearStr();
 							sbObjValCont.ClearStr();
@@ -791,8 +791,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 							{
-								currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-								currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+								currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 							}
 							sbObjValName.ClearStr();
 							sbObjValCont.ClearStr();
@@ -815,8 +815,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							}
 							else
 							{
-								currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-								currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+								currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 								sbObjValName.ClearStr();
 								sbObjValCont.ClearStr();
 							}
@@ -869,8 +869,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 								{
-									currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-									currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+									currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+									currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 								}
 								sbObjValName.ClearStr();
 								sbObjValCont.ClearStr();
@@ -888,8 +888,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 								{
-									currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-									currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+									currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+									currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 								}
 								sbObjValName.ClearStr();
 								sbObjValCont.ClearStr();
@@ -1008,8 +1008,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								impObj->typeName = Text::String::New(sb.ToString(), sb.GetLength());
 								impObj->typeVal = Text::String::New(UTF8STRC("Imported Value"));
 								impObj->oidLen = 0;
-								NEW_CLASS(impObj->valName, Data::ArrayList<const UTF8Char*>());
-								NEW_CLASS(impObj->valCont, Data::ArrayList<const UTF8Char*>());
+								NEW_CLASS(impObj->valName, Data::ArrayList<Text::String*>());
+								NEW_CLASS(impObj->valCont, Data::ArrayList<Text::String*>());
 								impObj->impModule = impModule;
 								impObj->parsed = false;
 								ui = module->objKeys->SortedInsert(impObj->objectName);
@@ -1109,8 +1109,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					{
 						if (sbObjValName.GetLength() > 0 && sbObjValCont.GetLength() > 0)
 						{
-							currObj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-							currObj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+							currObj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+							currObj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 						}
 						sbObjValName.ClearStr();
 						sbObjValCont.ClearStr();
@@ -1198,8 +1198,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 						obj->typeVal = 0;
 						obj->oidLen = 0;
-						NEW_CLASS(obj->valName, Data::ArrayList<const UTF8Char*>());
-						NEW_CLASS(obj->valCont, Data::ArrayList<const UTF8Char*>());
+						NEW_CLASS(obj->valName, Data::ArrayList<Text::String*>());
+						NEW_CLASS(obj->valCont, Data::ArrayList<Text::String*>());
 						obj->impModule = 0;
 						obj->parsed = false;
 						UOSInt ui = module->objKeys->SortedInsert(obj->objectName);
@@ -1308,8 +1308,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											{
 												reader->NextWord(&sbObjValCont);
 											}
-											obj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-											obj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+											obj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+											obj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 											sbObjValCont.ClearStr();
 										}
 										else
@@ -1415,8 +1415,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						obj->typeName = Text::String::New(sb.ToString() + i, sb.GetLength() - i);
 						obj->typeVal = 0;
 						obj->oidLen = 0;
-						NEW_CLASS(obj->valName, Data::ArrayList<const UTF8Char*>());
-						NEW_CLASS(obj->valCont, Data::ArrayList<const UTF8Char*>());
+						NEW_CLASS(obj->valName, Data::ArrayList<Text::String*>());
+						NEW_CLASS(obj->valCont, Data::ArrayList<Text::String*>());
 						obj->impModule = 0;
 						obj->parsed = false;
 						UOSInt ui = module->objKeys->SortedInsert(obj->objectName);
@@ -1444,8 +1444,8 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								{
 									reader->NextWord(&sbObjValCont);
 								}
-								obj->valName->Add(Text::StrCopyNew(sbObjValName.ToString()));
-								obj->valCont->Add(Text::StrCopyNew(sbObjValCont.ToString()));
+								obj->valName->Add(Text::String::New(sbObjValName.ToCString()));
+								obj->valCont->Add(Text::String::New(sbObjValCont.ToCString()));
 								sbObjValCont.ClearStr();
 							}
 							else if (sbObjValCont.Equals(UTF8STRC("::=")))
@@ -1520,8 +1520,8 @@ Bool Net::ASN1MIB::ApplyModuleOID(ModuleInfo *module, ObjectInfo *obj, Text::Str
 		UOSInt ul = impObj->valName->GetCount();
 		while (uk < ul)
 		{
-			obj->valName->Add(Text::StrCopyNew(impObj->valName->GetItem(uk)));
-			obj->valCont->Add(Text::StrCopyNew(impObj->valCont->GetItem(uk)));
+			obj->valName->Add(impObj->valName->GetItem(uk)->Clone());
+			obj->valCont->Add(impObj->valCont->GetItem(uk)->Clone());
 			uk++;
 		}
 	}
@@ -2071,8 +2071,8 @@ void Net::ASN1MIB::UnloadAll()
 			k = obj->valName->GetCount();
 			while (k-- > 0)
 			{
-				Text::StrDelNew(obj->valName->GetItem(k));
-				Text::StrDelNew(obj->valCont->GetItem(k));
+				obj->valName->GetItem(k)->Release();
+				obj->valCont->GetItem(k)->Release();
 			}
 			DEL_CLASS(obj->valName);
 			DEL_CLASS(obj->valCont);

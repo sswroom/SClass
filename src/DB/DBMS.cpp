@@ -351,7 +351,7 @@ namespace DB
 			else
 			{
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("column")), colIndex + 1);
-				colDef->SetColName({sbuff, (UOSInt)(sptr - sbuff)});
+				colDef->SetColName(CSTRP(sbuff, sptr));
 			}
 			colDef->SetColType(this->colTypes[colIndex]);
 			colDef->SetColSize(256);

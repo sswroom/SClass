@@ -10,14 +10,21 @@
 #include <windows.h>
 #include <wlanapi.h>
 
-Net::WirelessLAN::Network::Network(const UTF8Char *ssid, Double rssi)
+Net::WirelessLAN::Network::Network(Text::String *ssid, Double rssi)
 {
-	this->ssid = Text::StrCopyNew(ssid);
+	this->ssid = ssid->Clone();
 	this->rssi = rssi;
 }
+
+Net::WirelessLAN::Network::Network(Text::CString ssid, Double rssi)
+{
+	this->ssid = Text::String::New(ssid);
+	this->rssi = rssi;
+}
+
 Net::WirelessLAN::Network::~Network()
 {
-	Text::StrDelNew(this->ssid);
+	this->ssid->Release();
 }
 
 Double Net::WirelessLAN::Network::GetRSSI()
@@ -25,7 +32,7 @@ Double Net::WirelessLAN::Network::GetRSSI()
 	return this->rssi;
 }
 
-const UTF8Char *Net::WirelessLAN::Network::GetSSID()
+Text::String *Net::WirelessLAN::Network::GetSSID()
 {
 	return this->ssid;
 }
@@ -34,7 +41,7 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 {
 	OSInt i;
 	WLAN_BSS_ENTRY *bss = (WLAN_BSS_ENTRY*)bssEntry;
-	this->ssid = Text::StrCopyNew(ssid);
+	this->ssid = Text::String::NewNotNull(ssid);
 	this->phyId = bss->uPhyId;
 	memcpy(this->mac, bss->dot11Bssid, 6);
 	this->bssType = (BSSType)bss->dot11BssType;
@@ -170,13 +177,13 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 		DEL_CLASS(ie);
 	}
 	DEL_CLASS(this->ieList);
-	SDEL_TEXT(this->ssid);
+	SDEL_STRING(this->ssid);
 	SDEL_TEXT(this->devManuf);
 	SDEL_TEXT(this->devModel);
 	SDEL_TEXT(this->devSN);
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetSSID()
+Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
 {
 	return this->ssid;
 }

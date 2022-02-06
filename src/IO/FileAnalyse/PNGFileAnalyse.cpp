@@ -365,7 +365,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 		return 0;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcat(sbuff, (const UTF8Char*)"Tag"), index);
-	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddHeader(CSTRP(sbuff, sptr));
 	frame->AddUInt(0, 4, CSTR("Size"), tag->size - 12);
 	frame->AddStrC(4, 4, CSTR("TagType"), (const UTF8Char*)&tag->tagType);
 	if (tag->tagType == *(Int32*)"IHDR")
@@ -506,7 +506,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UO
 				sptr = Text::StrUInt16(sptr, tagData[j + 1]);
 				sptr = Text::StrConcat(sptr, (const UTF8Char*)"B");
 				sptr = Text::StrUInt16(sptr, tagData[j + 2]);
-				frame->AddField(8 + j, 3, {sbuff, (UOSInt)(sptr - sbuff)}, {sptr2, (UOSInt)(sptr - sptr2)});
+				frame->AddField(8 + j, 3, CSTRP(sbuff, sptr), {sptr2, (UOSInt)(sptr - sptr2)});
 				
 				i++;
 				j += 3;

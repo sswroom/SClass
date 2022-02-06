@@ -163,7 +163,7 @@ Bool Exporter::SPKExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 						sptr = Text::StrInt32(sptr, tileY + yAdd);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 						fileBuff = mstm->GetBuff(&fileSize);
-						spkg->AddFile(fileBuff, fileSize, {sbuff, (UOSInt)(sptr - sbuff)}, modTimeTicks);
+						spkg->AddFile(fileBuff, fileSize, CSTRP(sbuff, sptr), modTimeTicks);
 					}
 				}
 				orux->ReleaseNameArr(nameArr);

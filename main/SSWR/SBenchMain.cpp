@@ -157,7 +157,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 
 	console->WriteLineC(UTF8STRC("SBench Result:"));
@@ -304,22 +304,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
-				sb.AppendSlow(ram->deviceLocator);
+				sb.Append(ram->deviceLocator);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
-				sb.AppendSlow(ram->manufacturer);
+				sb.Append(ram->manufacturer);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
-				sb.AppendSlow(ram->partNo);
+				sb.Append(ram->partNo);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
-				sb.AppendSlow(ram->sn);
+				sb.Append(ram->sn);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->defSpdMHz);

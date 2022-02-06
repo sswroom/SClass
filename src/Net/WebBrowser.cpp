@@ -88,7 +88,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 	{
 		sptr = Text::URLString::GetURLFilePath(sbuff, url, urlLen);
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		if (contentType)
 		{
 			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);

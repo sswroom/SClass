@@ -71,6 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 	Data::ArrayList<DeviceInfo*> devList;
 	DeviceInfo *dev;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt i;
 	UOSInt j;
@@ -94,8 +95,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			dev->mut->LockRead();
 			dev->readingChg = false;
 			
-			Text::StrUInt64(sbuff, dev->devId);
-			k = me->lvDevice->AddItem(sbuff, dev);
+			sptr = Text::StrUInt64(sbuff, dev->devId);
+			k = me->lvDevice->AddItem(CSTRP(sbuff, sptr), dev);
 			Text::StrUInt16(sbuff, (UInt16)dev->shortAddr);
 			me->lvDevice->SetSubItem(k, 1, sbuff);
 			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType).v);
@@ -419,7 +420,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("snb.dat"));
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		UInt64 flen = fs->GetLength();
@@ -472,7 +473,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("snb.dat"));
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(dataBuff, k);
 	DEL_CLASS(fs);
 	MemFree(dataBuff);

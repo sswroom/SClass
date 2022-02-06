@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			while (i < j)
 			{
 				tableName = tableNames.GetItem(i);
-				k = me->lvTable->AddItem(tableName, 0);
+				k = me->lvTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
 				Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, sbuff);
 				i++;
@@ -217,7 +217,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sbuff[i] = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
-	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, CSTRP(sbuff, sptr)));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));
 	this->lblAllowProxy->SetRect(8, 56, 100, 23, false);

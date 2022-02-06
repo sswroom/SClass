@@ -341,7 +341,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 			dt.SetTicks(records[i].utcTimeTicks);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lbTrack->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, &records[i]);
+			this->lbTrack->AddItem(CSTRP(sbuff, sptr), &records[i]);
 			i++;
 		}
 	}

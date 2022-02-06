@@ -163,14 +163,15 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 //			printf("File: %s\r\n", sptr);
 			if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.MP4")))
 			{
-				sptr2 = Text::StrConcat(sbuff2, sbuff);
+				sptrEnd = sptr2;
+				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
-					sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
+					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".aac"));
 					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
@@ -183,7 +184,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							{
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
 							}
-							sptr3 = Text::StrConcat(sptr3, sptr) - 11;
+							sptr3 = Text::StrConcatC(sptr3, sptr, (UOSInt)(sptrEnd - sptr)) - 11;
 							sptr3 = Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MUXING;
 							if (FFMPEGMux(sbuff, sbuff2, sbuff3))
@@ -207,9 +208,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 								}
-								Text::StrConcat(sptr2, sptr);
+								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -218,14 +219,15 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			}
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(" - DASH.WEBM")))
 			{
-				sptr2 = Text::StrConcat(sbuff2, sbuff);
+				sptrEnd = sptr2;
+				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
-					sptr2 = Text::StrConcat(sbuff2, sbuff) - 5;
+					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 5;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".opus"));
 					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
@@ -238,7 +240,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							{
 								*sptr3++ = IO::Path::PATH_SEPERATOR;
 							}
-							sptr3 = Text::StrConcat(sptr3, sptr) - 12;
+							sptr3 = Text::StrConcatC(sptr3, sptr, (UOSInt)(sptrEnd - sptr)) - 12;
 							sptr3 = Text::StrConcatC(sptr3, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MUXING;
 							if (FFMPEGMuxAAC(sbuff, sbuff2, sbuff3))
@@ -258,9 +260,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 									{
 										*sptr2++ = IO::Path::PATH_SEPERATOR;
 									}
-									Text::StrConcat(sptr2, sptr);
+									sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 									this->chkStatus = CS_MOVING;
-									IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+									IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								}
 								this->chkStatus = CS_CHECKING;
 							}
@@ -271,9 +273,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 								}
-								Text::StrConcat(sptr2, sptr);
+								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 								this->chkStatus = CS_CHECKING;
 							}
 						}
@@ -284,7 +286,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 			{
 				sptrEnd = sptr2;
 //				printf("MP4 found: %s\r\n", sptr);
-				sptr2 = Text::StrConcat(sbuff2, sbuff);
+				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
@@ -315,29 +317,29 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					{
 						*sptr2++ = IO::Path::PATH_SEPERATOR;
 					}
-					Text::StrConcat(sptr2, sptr);
+					sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
 					this->chkStatus = CS_MOVING;
-					IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+					IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 					this->chkStatus = CS_CHECKING;
 				}
 			}
 			else if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".ZIP")))
 			{
 				sptrEnd = sptr2;
-				sptr2 = Text::StrConcat(sbuff2, sbuff);
+				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
-					sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
+					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 					this->chkStatus = CS_EXTRACTING;
 					if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
 					{
 						this->chkStatus = CS_VALIDATING;
-						if (VideoValid({sbuff2, (UOSInt)(sptr2 - sbuff2)}))
+						if (VideoValid(CSTRP(sbuff2, sptr2)))
 						{
 							IO::Path::DeleteFile(sbuff);
 							Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
@@ -359,9 +361,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
 							}
 							sptr2 = Text::StrConcat(sptr2, sptr) - 4;
-							Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 						}
 						else
 						{
@@ -372,9 +374,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 							{
 								*sptr2++ = IO::Path::PATH_SEPERATOR;
 							}
-							Text::StrConcat(sptr2, sptr);
+							sptr2 = Text::StrConcat(sptr2, sptr);
 							this->chkStatus = CS_MOVING;
-							IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, &bnt);
+							IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, &bnt);
 						}
 					}
 					this->chkStatus = CS_CHECKING;
@@ -389,23 +391,23 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				else
 				{
 					sptrEnd = sptr2;
-					sptr2 = Text::StrConcat(sbuff2, sbuff);
+					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
 					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
 					{
 					}
 					else
 					{
-						sptr2 = Text::StrConcat(sbuff2, sbuff) - 4;
+						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 						sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 						this->chkStatus = CS_EXTRACTING;
 						if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
 						{
 							this->chkStatus = CS_VALIDATING;
-							if (VideoValid({sbuff2, (UOSInt)(sptr2 - sbuff2)}))
+							if (VideoValid(CSTRP(sbuff2, sptr2)))
 							{
 								IO::Path::DeleteFile(sbuff);
-								Text::StrConcat(sbuff, sbuff2);
+								Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
 
 								Int32 webType = 0;
 								Int32 id = this->FileGetByName({sptr, (UOSInt)(sptrEnd - sptr)}, &webType);
@@ -423,10 +425,10 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 								}
-								sptr2 = Text::StrConcat(sptr2, sptr) - 4;
-								Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
+								sptr2 = Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr)) - 4;
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Overwrite, 0, &bnt);
 							}
 							else
 							{
@@ -437,9 +439,9 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 								{
 									*sptr2++ = IO::Path::PATH_SEPERATOR;
 								}
-								Text::StrConcat(sptr2, sptr);
+								sptr2 = Text::StrConcat(sptr2, sptr);
 								this->chkStatus = CS_MOVING;
-								IO::FileUtil::MoveFile(sbuff, sbuff2, IO::FileUtil::FileExistAction::Fail, 0, &bnt);
+								IO::FileUtil::MoveFile(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, &bnt);
 							}
 						}
 						this->chkStatus = CS_CHECKING;

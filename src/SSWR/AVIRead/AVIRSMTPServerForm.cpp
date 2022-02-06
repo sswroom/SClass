@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 			email = me->mailList->GetItem(i);
 			sb.ClearStr();
 			sb.AppendI64(email->id);
-			k = me->lvEmail->AddItem(sb.ToString(), email);
+			k = me->lvEmail->AddItem(sb.ToCString(), email);
 			dt.SetTicks(email->recvTime);
 			dt.ToString(sbuff);
 			me->lvEmail->SetSubItem(k, 1, sbuff);

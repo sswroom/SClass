@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 	mutUsage.EndUse();
 	btLog.AppendList(me->bt->GetRandomMap(&mutUsage));
 	mutUsage.EndUse();
-	if (btLog.StoreFile({sbuff, (UOSInt)(sptr - sbuff)}))
+	if (btLog.StoreFile(CSTRP(sbuff, sptr)))
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Stored as "));
@@ -100,6 +100,7 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	Sync::MutexUsage mutUsage;
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = devMap->GetValues();
@@ -114,8 +115,8 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 		Sync::MutexUsage devMutUsage(this->devMut);
 		if (statusMap->GetIndex(dev->macInt) < 0)
 		{
-			Text::StrHexBytes(sbuff, dev->mac, 6, ':');
-			this->lvDevices->InsertItem(i, sbuff, dev);
+			sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
+			this->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
 			this->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType).v);
 			this->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType).v);
 			if (dev->addrType == IO::BTScanLog::AT_RANDOM)

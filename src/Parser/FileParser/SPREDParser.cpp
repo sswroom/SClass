@@ -209,7 +209,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	{
 		devId = keys->GetItem(i);
 		sptr = Text::StrInt32(sbuff, devId);
-		track->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
+		track->SetTrackName(CSTRP(sbuff, sptr));
 
 		currDev = devRecs->Get(devId);
 		j = 0;

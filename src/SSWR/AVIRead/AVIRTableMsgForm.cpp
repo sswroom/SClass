@@ -36,7 +36,7 @@ void SSWR::AVIRead::AVIRTableMsgForm::AddRow(const UTF8Char **row)
 	UOSInt k;
 	UOSInt i = 1;
 	UOSInt j = this->colCnt;
-	k = this->lvTable->AddItem(row[0], 0);
+	k = this->lvTable->AddItem({row[0], Text::StrCharCnt(row[0])}, 0);
 	while (i < j)
 	{
 		this->lvTable->SetSubItem(k, i, row[i]);

@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 		{
 			ipInfo = ipList->GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ip);
-			me->lbIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipInfo);
+			me->lbIP->AddItem(CSTRP(sbuff, sptr), ipInfo);
 			if (ipInfo == me->currIP)
 			{
 				me->lbIP->SetSelectedIndex(i);
@@ -320,7 +320,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 				if (ip == 0)
 					break;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 				k++;
 			}
 		}

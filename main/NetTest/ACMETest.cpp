@@ -20,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
-	NEW_CLASS(acme, Net::ACMEClient(sockf, (const UTF8Char*)"acme-staging-v02.api.letsencrypt.org", 0, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(acme, Net::ACMEClient(sockf, (const UTF8Char*)"acme-staging-v02.api.letsencrypt.org", 0, CSTRP(sbuff, sptr)));
 	Net::ACMEConn *conn = acme->GetConn();
 	Net::ACMEConn::Order *order = conn->OrderNew(domain.v, domain.leng);
 	if (order)

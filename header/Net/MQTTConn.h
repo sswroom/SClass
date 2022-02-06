@@ -31,7 +31,7 @@ namespace Net
 			UInt8 content[1];
 		} PacketInfo;
 
-		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize);
+		typedef void (__stdcall *PublishMessageHdlr)(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
 		typedef void (__stdcall *DisconnectHdlr)(void *userObj);
 	private:
 		Net::SocketFactory *sockf;
@@ -57,7 +57,7 @@ namespace Net
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
 		static UInt32 __stdcall RecvThread(void *userObj);
 
-		void OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
+		void OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize);
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 	public:

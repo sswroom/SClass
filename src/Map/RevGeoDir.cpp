@@ -40,7 +40,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 			Map::RevGeoCfg *revGeo;
 			RevGeoFile *file;
 			UOSInt i;
-			NEW_CLASS(revGeo, Map::RevGeoCfg({sbuff, (UOSInt)(sptr2 - sbuff)}, this->mapSrchMgr));
+			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), this->mapSrchMgr));
 			file = MemAlloc(RevGeoFile, 1);
 			file->cfg = revGeo;
 			i = Text::StrIndexOfChar(sptr, '.');

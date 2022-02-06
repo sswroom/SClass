@@ -73,7 +73,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		UInt8 keyBuff[4096];
 		UOSInt keySize;
-		keySize = IO::FileStream::LoadFile({sbuff, (UOSInt)(sptr - sbuff)}, keyBuff, 4096);
+		keySize = IO::FileStream::LoadFile(CSTRP(sbuff, sptr), keyBuff, 4096);
 		if (keySize == 0)
 		{
 			SDEL_CLASS(ssl);

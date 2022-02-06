@@ -23,7 +23,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::String *fileName;
 				Int32 status;
 			} FileStatus;
 

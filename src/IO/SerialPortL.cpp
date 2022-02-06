@@ -312,7 +312,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 			return false;
 		sptr = &sbuff[i + 1];
 		sptr = Text::StrConcatC(sptr, UTF8STRC("authorized"));
-		if (SerialPort_WriteInt32({sbuff, (UOSInt)(sptr - sbuff)}, 0) && SerialPort_WriteInt32({sbuff, (UOSInt)(sptr - sbuff)}, 1))
+		if (SerialPort_WriteInt32(CSTRP(sbuff, sptr), 0) && SerialPort_WriteInt32(CSTRP(sbuff, sptr), 1))
 		{
 			return true;
 		}

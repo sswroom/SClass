@@ -104,6 +104,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 	Text::StringBuilderUTF8 sb;
 	Win32::Clipboard::GetString(me->GetHandle(), &sb);
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::PString sarr[2];
 	Text::PString sarr2[2];
 	Bool changed = false;
@@ -129,8 +130,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, webType, &mutUsage);
 					if (file != 0)
 					{
-						Text::StrInt32(sbuff, file->id);
-						j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+						sptr = Text::StrInt32(sbuff, file->id);
+						j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 						me->lvFiles->SetSubItem(j, 1, file->fileName);
 						changed = true;
 					}
@@ -156,6 +157,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 	UOSInt j;
 	UInt32 fmtId = (UInt32)-1;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	const UTF8Char *url;
 	UOSInt urlLen;
 	Text::PString sarr[2];
@@ -255,8 +257,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 							SSWR::DownloadMonitor::DownMonCore::FileInfo *file = me->core->FileGet(id, 3, &mutUsage);
 							if (file != 0)
 							{
-								Text::StrInt32(sbuff, file->id);
-								j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+								sptr = Text::StrInt32(sbuff, file->id);
+								j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 								me->lvFiles->SetSubItem(j, 1, file->fileName);
 								changed = true;
 							}
@@ -349,6 +351,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Int32 maxId = me->core->FileGetMaxId(webType);
 	OSInt currPage = 1;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> pageList;
 	Data::ArrayList<Net::WebSite::WebSite48IdolControl::ItemData*> totalList;
@@ -399,8 +402,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 				UOSInt j;
 				if (file != 0)
 				{
-					Text::StrInt32(sbuff, file->id);
-					j = me->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+					sptr = Text::StrInt32(sbuff, file->id);
+					j = me->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 					me->lvFiles->SetSubItem(j, 1, file->fileName);
 					changed = true;
 				}
@@ -483,6 +486,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 	Bool updated = false;
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::PString sarr[2];
 	UOSInt i;
 	NEW_CLASS(fs, IO::FileStream(this->core->GetListFile(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -521,8 +525,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 					SSWR::DownloadMonitor::DownMonCore::FileInfo *file = this->core->FileGet(id, webType, &mutUsage);
 					if (file != 0)
 					{
-						Text::StrInt32(sbuff, file->id);
-						i = this->lvFiles->AddItem(sbuff, (void*)(OSInt)((file->webType << 24) | file->id));
+						sptr = Text::StrInt32(sbuff, file->id);
+						i = this->lvFiles->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)((file->webType << 24) | file->id));
 						this->lvFiles->SetSubItem(i, 1, file->fileName);
 					}
 				}

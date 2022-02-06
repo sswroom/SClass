@@ -8,7 +8,7 @@ struct IO::PCIInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	const UTF8Char *dispName;
+	Text::CString dispName;
 };
 
 IO::PCIInfo::PCIInfo(ClassData *info)
@@ -17,13 +17,14 @@ IO::PCIInfo::PCIInfo(ClassData *info)
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
-	clsData->dispName = Text::StrCopyNew(srcData->dispName);
+	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng);
+	clsData->dispName.leng = srcData->dispName.leng;
 	this->clsData = clsData;
 }
 
 IO::PCIInfo::~PCIInfo()
 {
-	Text::StrDelNew(this->clsData->dispName);
+	Text::StrDelNew(this->clsData->dispName.v);
 	MemFree(this->clsData);
 }
 
@@ -37,7 +38,7 @@ UInt16 IO::PCIInfo::GetProductId()
 	return this->clsData->productId;
 }
 
-const UTF8Char *IO::PCIInfo::GetDispName()
+Text::CString IO::PCIInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
@@ -77,7 +78,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	UTF8Char *sptr3;
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
-	clsData.dispName = (const UTF8Char*)"PCI Device";
+	clsData.dispName = CSTR("PCI Device");
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("/sys/bus/pci/devices/"));
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
@@ -88,9 +89,9 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 			if (sptr[0] != '.')
 			{
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/vendor"));
-				clsData.vendorId = PCIInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				clsData.vendorId = PCIInfo_ReadI16(CSTRP(sbuff, sptr3));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/device"));
-				clsData.productId = PCIInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				clsData.productId = PCIInfo_ReadI16(CSTRP(sbuff, sptr3));
 				if (clsData.vendorId != 0)
 				{
 					NEW_CLASS(pci, IO::PCIInfo(&clsData));

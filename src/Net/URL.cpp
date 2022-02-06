@@ -28,7 +28,7 @@ IO::ParsedObject *Net::URL::OpenObject(const UTF8Char *url, Text::CString userAg
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("file:///")))
 	{
 		sptr = Text::URLString::GetURLFilePath(sbuff, url, urlLen);
-		NEW_CLASS(pobj, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(pobj, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		return pobj;
 	}
 	else if (Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("ftp://")))

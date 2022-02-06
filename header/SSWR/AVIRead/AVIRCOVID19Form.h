@@ -1,7 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #define _SM_SSWR_AVIREAD_AVIRCOVID19FORM
 #include "Data/Int64Map.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "Net/SSLEngine.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "UI/GUIButton.h"
@@ -27,8 +27,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				const UTF8Char *isoCode;
-				const UTF8Char *name;
+				Text::String *isoCode;
+				Text::String *name;
 				Double population;
 				Data::Int64Map<DailyRecord*> *records;
 			} CountryInfo;
@@ -36,7 +36,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Data::StringUTF8Map<CountryInfo*> *countries;
+			Data::StringMap<CountryInfo*> *countries;
 
 			UI::GUIPanel *pnlRequest;
 			UI::GUIButton *btnFile;

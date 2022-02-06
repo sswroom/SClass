@@ -16,8 +16,8 @@ void __stdcall Media::Playlist::OnPBEnd(void *userObj)
 
 void Media::Playlist::FreeEntry(PlaylistEntry* ent)
 {
-	SDEL_TEXT(ent->title);
-	SDEL_TEXT(ent->artist);
+	SDEL_STRING(ent->title);
+	SDEL_STRING(ent->artist);
 	SDEL_STRING(ent->fileName);
 	MemFree(ent);
 }
@@ -68,7 +68,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 
 
 	Media::ChapterInfo *chap = file->GetChapterInfo();
-	const UTF8Char *artist;
+	Text::String *artist;
 	UOSInt i;
 	UOSInt j;
 	Int32 nextTime;
@@ -90,11 +90,11 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 
 			ent = MemAlloc(PlaylistEntry, 1);
 			ent->fileName = Text::String::New(fileName.v, fileName.leng);
-			ent->title = Text::StrCopyNew(chap->GetChapterName(i));
+			ent->title = chap->GetChapterName(i)->Clone();
 			artist = chap->GetChapterArtist(i);
 			if (artist)
 			{
-				ent->artist = Text::StrCopyNew(artist);
+				ent->artist = artist->Clone();
 			}
 			else
 			{
@@ -112,7 +112,7 @@ Bool Media::Playlist::AddFile(Text::CString fileName)
 		ent = MemAlloc(PlaylistEntry, 1);
 		ent->fileName = Text::String::New(fileName.v, fileName.leng);
 		i = Text::StrLastIndexOfCharC(fileName.v, fileName.leng, IO::Path::PATH_SEPERATOR);
-		ent->title = Text::StrCopyNewC(&fileName.v[i + 1], fileName.leng - i - 1);
+		ent->title = Text::String::New(&fileName.v[i + 1], fileName.leng - i - 1);
 		ent->artist = 0;
 		ent->timeStart = 0;
 		ent->timeEnd = -1;
@@ -144,10 +144,10 @@ Bool Media::Playlist::AppendPlaylist(Media::Playlist *playlist)
 		plent = playlist->entries->GetItem(i);
 		ent = MemAlloc(PlaylistEntry, 1);
 		ent->fileName = plent->fileName->Clone();
-		ent->title = Text::StrCopyNew(plent->title);
+		ent->title = plent->title->Clone();
 		if (plent->artist)
 		{
-			ent->artist = Text::StrCopyNew(plent->artist);
+			ent->artist = plent->artist->Clone();
 		}
 		else
 		{
@@ -178,7 +178,7 @@ UOSInt Media::Playlist::GetCount()
 	return this->entries->GetCount();
 }
 
-const UTF8Char *Media::Playlist::GetTitle(UOSInt index)
+Text::String *Media::Playlist::GetTitle(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)
@@ -186,7 +186,7 @@ const UTF8Char *Media::Playlist::GetTitle(UOSInt index)
 	return ent->title;
 }
 
-const UTF8Char *Media::Playlist::GetArtist(UOSInt index)
+Text::String *Media::Playlist::GetArtist(UOSInt index)
 {
 	PlaylistEntry *ent = this->entries->GetItem(index);
 	if (ent == 0)

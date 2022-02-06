@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(UI::GUIClientControl *parent, UI::GU
 
 	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, (const UTF8Char*)"Conn String"));
 	this->lblConnStr->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 4, 800, 23, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
 	this->btnOK->SetRect(104, 28, 75, 23, false);

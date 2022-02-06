@@ -33,59 +33,59 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		{
 			Text::String *s;
 			Data::DateTime *dt;
-			i = me->lvInfo->AddItem((const UTF8Char*)"Title", 0);
+			i = me->lvInfo->AddItem(CSTR("Title"), 0);
 			if ((s = rss->GetTitle()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Link", 0);
+			i = me->lvInfo->AddItem(CSTR("Link"), 0);
 			if ((s = rss->GetLink()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Description", 0);
+			i = me->lvInfo->AddItem(CSTR("Description"), 0);
 			if ((s = rss->GetDescription()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Language", 0);
+			i = me->lvInfo->AddItem(CSTR("Language"), 0);
 			if ((s = rss->GetLanguage()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Copyright", 0);
+			i = me->lvInfo->AddItem(CSTR("Copyright"), 0);
 			if ((s = rss->GetCopyright()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"ManagingEditor", 0);
+			i = me->lvInfo->AddItem(CSTR("ManagingEditor"), 0);
 			if ((s = rss->GetManagingEditor()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"WebMaster", 0);
+			i = me->lvInfo->AddItem(CSTR("WebMaster"), 0);
 			if ((s = rss->GetWebMaster()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"PubDate", 0);
+			i = me->lvInfo->AddItem(CSTR("PubDate"), 0);
 			if ((dt = rss->GetPubDate()) != 0)
 			{
 				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, sbuff);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"LastBuildDate", 0);
+			i = me->lvInfo->AddItem(CSTR("LastBuildDate"), 0);
 			if ((dt = rss->GetLastBuildDate()) != 0)
 			{
 				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 				me->lvInfo->SetSubItem(i, 1, sbuff);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Generator", 0);
+			i = me->lvInfo->AddItem(CSTR("Generator"), 0);
 			if ((s = rss->GetGenerator()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
 			}
-			i = me->lvInfo->AddItem((const UTF8Char*)"Docs", 0);
+			i = me->lvInfo->AddItem(CSTR("Docs"), 0);
 			if ((s = rss->GetDocs()) != 0)
 			{
 				me->lvInfo->SetSubItem(i, 1, s);
@@ -160,7 +160,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;
@@ -186,7 +186,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	Text::UTF8Writer *writer;
 	UOSInt i;
 	UOSInt j;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(writer, Text::UTF8Writer(fs));

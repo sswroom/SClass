@@ -80,7 +80,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Name: "));
-			sb.AppendSlow(btDev->GetName());
+			sb.Append(btDev->GetName());
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Address: "));

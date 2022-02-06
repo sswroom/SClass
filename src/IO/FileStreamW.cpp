@@ -541,7 +541,7 @@ IO::FileStream *IO::FileStream::OpenNamedPipe(const UTF8Char *server, const UTF8
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\pipe\\"));
 	sptr = Text::StrConcat(sptr, pipeName);
 	IO::FileStream *outStm;
-	NEW_CLASS(outStm, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(outStm, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Device, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (outStm->IsError())
 	{
 		DEL_CLASS(outStm);

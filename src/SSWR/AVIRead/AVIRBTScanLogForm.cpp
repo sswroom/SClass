@@ -118,6 +118,7 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	logList.AddAll(this->btLog->GetPublicList());
 	logList.AddAll(this->btLog->GetRandomList());
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Text::CString cstr;
 	UInt8 mac[8];
 	UOSInt i;
@@ -130,8 +131,8 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 	{
 		log = logList.GetItem(i);
 		WriteMUInt64(mac, log->macInt);
-		Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-		l = this->lvContent->AddItem(sbuff, log);
+		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+		l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType).v);
 		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType).v);
 		if (log->company == 0)

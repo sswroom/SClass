@@ -1048,7 +1048,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				Net::SocketUtil::AddressInfo addr;
 				Net::SocketUtil::SetAddrInfoV6(&addr, &this->packetBuff[i + 4], 0);
 				sptr = Text::StrUInt16(Text::StrConcatC(Net::SocketUtil::GetAddrName(sbuff, &addr), UTF8STRC("/")), this->packetBuff[i + 20]);
-				frame->AddField(i + 4, 17, CSTR("IPv6 Address"), {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(i + 4, 17, CSTR("IPv6 Address"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 6)
 			{
@@ -1072,7 +1072,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 					speed = ReadInt64(&this->packetBuff[i + 4]);
 				}
 				sptr = Text::StrConcatC(Text::StrInt64(sbuff, speed), UTF8STRC("bps"));
-				frame->AddField(i + 4, 8, CSTR("Speed"), {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(i + 4, 8, CSTR("Speed"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 9)
 			{
@@ -1123,7 +1123,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 					tsOffset = ReadInt64(&this->packetBuff[i + 4]);
 				}
 				sptr = Text::StrConcatC(Text::StrInt64(sbuff, tsOffset), UTF8STRC("sec."));
-				frame->AddField(i + 4, 8, CSTR("TS Offset"), {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(i + 4, 8, CSTR("TS Offset"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 15)
 			{
@@ -1175,7 +1175,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		frame->AddField(12, 8, CSTR("Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(12, 8, CSTR("Time"), CSTRP(sbuff, sptr));
 		frame->AddUInt(20, 4, CSTR("Captured Packet Length"), capPSize);
 		frame->AddUInt(24, 4, CSTR("Original Packet Length"), oriPSize);
 		UInt32 i;
@@ -1276,7 +1276,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 		SetTime(&dt, ts, block->timeResol);
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		frame->AddField(12, 8, CSTR("Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(12, 8, CSTR("Time"), CSTRP(sbuff, sptr));
 		UInt16 optCode;
 		UInt16 optLeng;
 		UInt32 i = 20;
@@ -1320,7 +1320,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				SetTime(&dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				frame->AddField(i + 4, 8, CSTR("Start Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(i + 4, 8, CSTR("Start Time"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 3)
 			{
@@ -1335,7 +1335,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapngFileAnalyse::GetFrameDetail
 				SetTime(&dt, ts, block->timeResol);
 				dt.ToLocalTime();
 				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				frame->AddField(i + 4, 8, CSTR("End Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(i + 4, 8, CSTR("End Time"), CSTRP(sbuff, sptr));
 			}
 			else if (optCode == 4)
 			{

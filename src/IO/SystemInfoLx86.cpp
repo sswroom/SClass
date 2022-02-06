@@ -229,7 +229,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->deviceLocator);
-					ram->deviceLocator = Text::StrCopyNew(sb.ToString());
+					ram->deviceLocator = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -239,7 +239,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->manufacturer);
-					ram->manufacturer = Text::StrCopyNew(sb.ToString());
+					ram->manufacturer = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -249,7 +249,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->partNo);
-					ram->partNo = Text::StrCopyNew(sb.ToString());
+					ram->partNo = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -259,7 +259,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 				{
 					sb.ClearStr();
 					sb.AppendSlow((const UTF8Char*)mem->sn);
-					ram->sn = Text::StrCopyNew(sb.ToString());
+					ram->sn = Text::String::New(sb.ToCString());
 				}
 				else
 				{
@@ -293,10 +293,10 @@ void IO::SystemInfo::FreeRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 	while (i-- > 0)
 	{
 		ram = ramList->GetItem(i);
-		SDEL_TEXT(ram->deviceLocator);
-		SDEL_TEXT(ram->manufacturer);
-		SDEL_TEXT(ram->partNo);
-		SDEL_TEXT(ram->sn);
+		SDEL_STRING(ram->deviceLocator);
+		SDEL_STRING(ram->manufacturer);
+		SDEL_STRING(ram->partNo);
+		SDEL_STRING(ram->sn);
 		MemFree(ram);
 	}
 }

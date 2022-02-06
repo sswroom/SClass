@@ -4213,7 +4213,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 		sptr = Text::StrInt32(sptr, yId);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".db"));
 
-		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -4684,7 +4684,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 					IO::ParserType pt;
 					sptr = fileName.ConcatTo(sbuff);
 					sptr = IO::Path::AppendPathC(sbuff, sptr, strs[4].v, strs[4].leng);
-					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+					NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);
 					if (obj)

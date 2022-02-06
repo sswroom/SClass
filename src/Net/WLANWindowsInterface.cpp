@@ -34,8 +34,8 @@ UOSInt Net::WLANWindowsInterface::GetNetworks(Data::ArrayList<Net::WirelessLAN::
 		{
 			Net::WirelessLAN::Network *net;
 			UTF8Char buff[33];
-			Text::StrConcatC(buff, list->Network[i].dot11Ssid.ucSSID, list->Network[i].dot11Ssid.uSSIDLength);
-			NEW_CLASS(net, Net::WirelessLAN::Network(buff, -100 + 0.5 * list->Network[i].wlanSignalQuality));
+			UTF8Char *sptr = Text::StrConcatC(buff, list->Network[i].dot11Ssid.ucSSID, list->Network[i].dot11Ssid.uSSIDLength);
+			NEW_CLASS(net, Net::WirelessLAN::Network(CSTRP(buff, sptr), -100 + 0.5 * list->Network[i].wlanSignalQuality));
 			networkList->Add(net);
 			retVal++;
 			i++;

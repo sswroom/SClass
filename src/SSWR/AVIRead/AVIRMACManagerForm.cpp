@@ -291,6 +291,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
@@ -417,8 +418,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		while (i < j)
 		{
 			log = this->logList->GetItem(i);
-			Text::StrHexBytes(sbuff, log->mac, 6, ':');
-			this->lvContent->AddItem(sbuff, log);
+			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
+			this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{

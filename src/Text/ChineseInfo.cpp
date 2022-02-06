@@ -11,7 +11,7 @@ Text::ChineseInfo::ChineseInfo()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Chinese.dat"));
-	NEW_CLASS(this->fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	this->currCharBuff = MemAlloc(UInt8, 256);
 	this->currCharCode = 0;
 	this->fileSize = this->fs->GetLength();

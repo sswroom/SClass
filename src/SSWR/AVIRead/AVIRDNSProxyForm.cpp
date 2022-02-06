@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		{
 			target = targetList.GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
-			me->lbTarget->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, target);
+			me->lbTarget->AddItem(CSTRP(sbuff, sptr), target);
 			if (me->currTarget == target)
 			{
 				me->lbTarget->SetSelectedIndex(i);
@@ -635,7 +635,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnClientSelChg(void *userObj)
 			sptr = Text::StrConcatC(sptr, UTF8STRC("-"));
 			sptr = Text::StrInt32(sptr, hInfo->hour);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(":00"));
-			j = me->lvClient->AddItem(sbuff, 0);
+			j = me->lvClient->AddItem(CSTRP(sbuff, sptr), 0);
 			Text::StrInt64(sbuff, hInfo->reqCount);
 			me->lvClient->SetSubItem(j, 1, sbuff);
 		}

@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 		{
 			UI::GUITextBox *txt;
 			sptr = Text::StrInt32(sbuff, this->exporter->GetParamInt32(this->param, i));
-			NEW_CLASS(txt, UI::GUITextBox(ui, this, {sbuff, (UOSInt)(sptr - sbuff)}));
+			NEW_CLASS(txt, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
 			txt->SetRect(140, (Int32)i * 24, 120, 23, false);
 			this->ctrls[i] = txt;
 		}
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 			j = 0;
 			while ((sptr = this->exporter->GetParamSelItems(this->param, i, j, sbuff)) != 0)
 			{
-				cbo->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+				cbo->AddItem(CSTRP(sbuff, sptr), 0);
 				j++;
 			}
 			cbo->SetRect(140, (Int32)(i * 24), 120, 23, false);

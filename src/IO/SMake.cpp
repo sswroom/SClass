@@ -44,7 +44,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, 
 		{
 			sptr = Text::StrConcatC(sbuff, &val[i + 2], (UOSInt)j - 2);
 			i += j + 1;
-			cfg = cfgMap->Get({sbuff, (UOSInt)(sptr - sbuff)});
+			cfg = cfgMap->Get(CSTRP(sbuff, sptr));
 			if (cfg)
 			{
 				sb->Append(cfg->value);

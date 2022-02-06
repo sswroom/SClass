@@ -284,6 +284,7 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 {
 	SSWR::AVIRead::AVIRMODBUSMasterForm *me = (SSWR::AVIRead::AVIRMODBUSMasterForm *)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	MODBUSEntry *entry = MemAlloc(MODBUSEntry, 1);
 	entry->name = Text::StrCopyNew(name);
 	entry->devAddr = devAddr;
@@ -292,8 +293,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	entry->vt = vt;
 	entry->unit = unit;
 	entry->denorm = denorm;
-	Text::StrUInt16(sbuff, devAddr);
-	entry->lvIndex = me->lvDevice->AddItem(sbuff, entry);
+	sptr = Text::StrUInt16(sbuff, devAddr);
+	entry->lvIndex = me->lvDevice->AddItem(CSTRP(sbuff, sptr), entry);
 	entry->val = 0;
 	me->entryList->Add(entry);
 	Text::StrUInt16(sbuff, (UInt16)regAddr);

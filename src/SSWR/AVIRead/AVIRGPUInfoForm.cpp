@@ -21,25 +21,25 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(void *userObj)
 		if (gpu->GetTemperature(&val))
 		{
 			Text::StrDouble(sbuff, val);
-			i = me->lvMain->AddItem((const UTF8Char*)"Temperature", 0);
+			i = me->lvMain->AddItem(CSTR("Temperature"), 0);
 			me->lvMain->SetSubItem(i, 1, sbuff);
 		}
 		if (gpu->GetCoreClock(&val))
 		{
 			Text::StrDouble(sbuff, val);
-			i = me->lvMain->AddItem((const UTF8Char*)"Core Clock (MHz)", 0);
+			i = me->lvMain->AddItem(CSTR("Core Clock (MHz)"), 0);
 			me->lvMain->SetSubItem(i, 1, sbuff);
 		}
 		if (gpu->GetMemoryClock(&val))
 		{
 			Text::StrDouble(sbuff, val);
-			i = me->lvMain->AddItem((const UTF8Char*)"Memory Clock (MHz)", 0);
+			i = me->lvMain->AddItem(CSTR("Memory Clock (MHz)"), 0);
 			me->lvMain->SetSubItem(i, 1, sbuff);
 		}
 		if (gpu->GetVoltage(&val))
 		{
 			Text::StrDouble(sbuff, val);
-			i = me->lvMain->AddItem((const UTF8Char*)"Core Voltage (V)", 0);
+			i = me->lvMain->AddItem(CSTR("Core Voltage (V)"), 0);
 			me->lvMain->SetSubItem(i, 1, sbuff);
 		}
 	}

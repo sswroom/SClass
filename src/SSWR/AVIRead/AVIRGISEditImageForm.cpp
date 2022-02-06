@@ -846,7 +846,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 		while (i < j)
 		{
 			sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, objIds.GetItem(i), 0);
-			this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)objIds.GetItem(i));
+			this->lbImages->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)objIds.GetItem(i));
 			i++;
 		}
 	}
@@ -857,7 +857,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 		while (i < j)
 		{
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Image ")), (Int32)i);
-			this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)objIds.GetItem(i));
+			this->lbImages->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)objIds.GetItem(i));
 			i++;
 		}
 	}

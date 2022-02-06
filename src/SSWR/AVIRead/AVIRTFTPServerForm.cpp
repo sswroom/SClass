@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 		sbuff[i] = 0;
 		sptr = &sbuff[i];
 	}
-	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, CSTRP(sbuff, sptr)));
 	this->txtFilePath->SetRect(108, 32, 500, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(100, 56, 75, 23, false);

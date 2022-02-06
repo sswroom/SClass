@@ -482,8 +482,8 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = Text::StrConcat(sptr, this->currChapInfo->GetChapterName(j));
-				this->mnuChapters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				sptr = this->currChapInfo->GetChapterName(j)->ConcatTo(sptr);
+				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
 		}

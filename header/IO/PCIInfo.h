@@ -1,6 +1,7 @@
 #ifndef _SM_IO_PCIINFO
 #define _SM_IO_PCIINFO
 #include "Data/ArrayList.h"
+#include "Text/CString.h"
 
 namespace IO
 {
@@ -15,7 +16,7 @@ namespace IO
 
 		UInt16 GetVendorId();
 		UInt16 GetProductId();
-		const UTF8Char *GetDispName();
+		Text::CString GetDispName();
 
 		static UOSInt GetPCIList(Data::ArrayList<PCIInfo*> *pciList);
 	};

@@ -268,13 +268,13 @@ void Net::LDAPClient::ParseLDAPMessage(const UInt8 *msgBuff, UOSInt msgLen)
 						}
 						#if defined(VERBOSE)
 						sb3.ClearStr();
-						SearchResDisplay(sb.ToString(), sb2.ToString(), &sb3);
+						SearchResDisplay(sb.ToCString(), sb2.ToCString(), &sb3);
 						printf("LDAPMessage: searchResEntry: -%s = %s\r\n", sb.ToString(), sb3.ToString());
 						#endif
 						Net::LDAPClient::SearchResItem *item;
 						item = MemAlloc(Net::LDAPClient::SearchResItem, 1);
-						item->type = Text::StrCopyNew(sb.ToString());
-						item->value = Text::StrCopyNewC(sb2.ToString(), sb2.GetLength());
+						item->type = Text::String::New(sb.ToCString());
+						item->value = Text::String::New(sb2.ToCString());
 						obj->items->Add(item);
 					}
 				}
@@ -794,8 +794,8 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 		while (i-- > 0)
 		{
 			item = obj->items->GetItem(i);
-			Text::StrDelNew(item->type);
-			Text::StrDelNew(item->value);
+			item->type->Release();
+			item->value->Release();
 			MemFree(item);
 		}
 		DEL_CLASS(obj->items);
@@ -803,42 +803,41 @@ void Net::LDAPClient::SearchResObjectFree(Net::LDAPClient::SearchResObject *obj)
 	MemFree(obj);
 }
 
-void Net::LDAPClient::SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF8 *sb)
+void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, Text::StringBuilderUTF8 *sb)
 {
-	UOSInt typeLen = Text::StrCharCnt(type);
-	if (Text::StrEqualsC(type, typeLen, UTF8STRC("objectGUID")) || Text::StrEndsWithC(type, typeLen, UTF8STRC("Guid")))
+	if (type.Equals(UTF8STRC("objectGUID")) || type.EndsWith(UTF8STRC("Guid")))
 	{
-		sb->AppendHex32(ReadUInt32(&value[0]));
+		sb->AppendHex32(ReadUInt32(&value.v[0]));
 		sb->AppendChar('-', 1);
-		sb->AppendHex16(ReadUInt16(&value[4]));
+		sb->AppendHex16(ReadUInt16(&value.v[4]));
 		sb->AppendChar('-', 1);
-		sb->AppendHex16(ReadUInt16(&value[6]));
+		sb->AppendHex16(ReadUInt16(&value.v[6]));
 		sb->AppendChar('-', 1);
-		sb->AppendHex16(ReadMUInt16(&value[8]));
+		sb->AppendHex16(ReadMUInt16(&value.v[8]));
 		sb->AppendChar('-', 1);
-		sb->AppendHexBuff(&value[10], 6, 0, Text::LineBreakType::None);
+		sb->AppendHexBuff(&value.v[10], 6, 0, Text::LineBreakType::None);
 	}
-	else if (Text::StrEqualsC(type, typeLen, UTF8STRC("dSASignature")))
+	else if (type.Equals(UTF8STRC("dSASignature")))
 	{
-		sb->AppendHexBuff(value, 40, 0, Text::LineBreakType::None);
+		sb->AppendHexBuff(value.v, 40, 0, Text::LineBreakType::None);
 	}
-	else if (Text::StrEqualsC(type, typeLen, UTF8STRC("objectSid")))
+	else if (type.Equals(UTF8STRC("objectSid")))
 	{
 		sb->AppendC(UTF8STRC("S-"));
-		sb->AppendU16(value[0]);
+		sb->AppendU16(value.v[0]);
 		sb->AppendChar('-', 1);
-		sb->AppendU16(value[7]);
+		sb->AppendU16(value.v[7]);
 		sb->AppendChar('-', 1);
-		sb->AppendU32(ReadUInt32(&value[8]));
+		sb->AppendU32(ReadUInt32(&value.v[8]));
 		sb->AppendChar('-', 1);
-		sb->AppendU32(ReadUInt32(&value[12]));
+		sb->AppendU32(ReadUInt32(&value.v[12]));
 		sb->AppendChar('-', 1);
-		sb->AppendU32(ReadUInt32(&value[16]));
+		sb->AppendU32(ReadUInt32(&value.v[16]));
 		sb->AppendChar('-', 1);
-		sb->AppendU32(ReadUInt32(&value[20]));
+		sb->AppendU32(ReadUInt32(&value.v[20]));
 	}
 	else
 	{
-		sb->AppendSlow(value);
+		sb->Append(value);
 	}
 }

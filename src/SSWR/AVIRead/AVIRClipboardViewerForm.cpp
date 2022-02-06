@@ -46,7 +46,7 @@ SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientCon
 		fmt = formats.GetItem(i);
 		if ((sptr = Win32::Clipboard::GetFormatName(fmt, sbuff, 256)) != 0)
 		{
-			this->lbType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)fmt);
+			this->lbType->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)fmt);
 		}
 		else
 		{

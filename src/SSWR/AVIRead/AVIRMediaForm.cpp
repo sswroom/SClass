@@ -85,7 +85,7 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateStreamList()
 				Text::StrConcatC(sptr, UTF8STRC("(A)"));
 			}
 			sptr = medSource->GetSourceName(sptr);
-			this->lbFiles->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, medSource);
+			this->lbFiles->AddItem(CSTRP(sbuff, sptr), medSource);
 		}
 		i++;
 	}
@@ -113,8 +113,8 @@ void SSWR::AVIRead::AVIRMediaForm::UpdateChapters()
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = Text::StrConcat(sptr, this->currChapters->GetChapterName(j));
-				this->mnuChapters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+				sptr = this->currChapters->GetChapterName(j)->ConcatTo(sptr);
+				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
 		}

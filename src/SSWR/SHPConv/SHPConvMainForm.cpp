@@ -621,7 +621,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 									strRec->recId = currRec;
 									if (dbfr)
 									{
-										strRec->str = this->GetDBFName(dbf, dbCols, tRec, dbCols2);
+										strRec->str = this->GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 									}
 									else
 									{
@@ -643,7 +643,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 								strRec->recId = currRec;
 								if (dbfr)
 								{
-									strRec->str = this->GetDBFName(dbf, dbCols, tRec, dbCols2);
+									strRec->str = this->GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 								}
 								else
 								{
@@ -749,7 +749,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItem(k);
-					SDEL_TEXT(strRec->str);
+					SDEL_STRING(strRec->str);
 					MemFree(strRec);
 					k++;
 				}
@@ -950,7 +950,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 									strRec->recId = currRec;
 									if (dbfr)
 									{
-										strRec->str = GetDBFName(dbf, dbCols, tRec, dbCols2);
+										strRec->str = GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 									}
 									else
 									{
@@ -971,7 +971,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 								strRec->recId = currRec;
 								if (dbfr)
 								{
-									strRec->str = GetDBFName(dbf, dbCols, tRec, dbCols2);
+									strRec->str = GetNewDBFName(dbf, dbCols, tRec, dbCols2);
 								}
 								else
 								{
@@ -1078,7 +1078,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 				while (k < l)
 				{
 					strRec = theBlk->records->GetItem(k);
-					SDEL_TEXT(strRec->str);
+					SDEL_STRING(strRec->str);
 					MemFree(strRec);
 					k++;
 				}
@@ -1181,7 +1181,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 		i = Text::StrLastIndexOfChar(sbuff, '.');
 		sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("dbf"));
 
-		NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		NEW_CLASS(dbf, DB::DBFFile(fd, (UInt32)(UOSInt)this->lstLang->GetSelectedItem()));
 		if (!dbf->IsError())
 		{
@@ -1191,7 +1191,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 			while (dbOfst < dbRecCnt)
 			{
 				sptr = dbf->GetColumnName(dbOfst, sbuff);
-				this->lstRecords->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+				this->lstRecords->AddItem(CSTRP(sbuff, sptr), 0);
 				dbOfst++;
 			}
 			dbRecCnt = dbf->GetRowCnt();
@@ -1321,7 +1321,7 @@ void SSWR::SHPConv::SHPConvMainForm::FreeLabelStr(Data::ArrayList<const UTF8Char
 	dbCols2->Clear();
 }
 
-const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
+Text::String *SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Data::ArrayList<const UTF8Char*> *dbCols, UOSInt currRec, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF16 output;
 	UOSInt i;
@@ -1373,7 +1373,7 @@ const UTF8Char *SSWR::SHPConv::SHPConvMainForm::GetDBFName(DB::DBFFile *dbf, Dat
 	}
 	this->hkscsConv->FixString(output.ToString());
 	output.Trim();
-	return Text::StrToUTF8New(output.ToString());
+	return Text::String::NewNotNull(output.ToString());
 }
 
 SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
@@ -1540,7 +1540,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 		else
 		{
 			sptr = Text::EncodingFactory::GetDotNetName(sbuff, cp);
-			k = this->lstLang->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)cp);
+			k = this->lstLang->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)cp);
 			if (cp == sysCP)
 			{
 				this->lstLang->SetSelectedIndex(k);

@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 	{
 		sb.ClearStr();
 		sb.AppendSlow(this->fileChk->GetEntryName(i));
-		this->lvFileChk->AddItem(sb.ToString(), 0);
+		this->lvFileChk->AddItem(sb.ToCString(), 0);
 		this->fileChk->GetEntryHash(i, hash);
 		Text::StrHexBytes(sbuff, hash, hashSize, 0);
 		this->lvFileChk->SetSubItem(i, 1, sbuff);

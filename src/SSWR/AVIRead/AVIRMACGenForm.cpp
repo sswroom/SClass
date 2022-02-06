@@ -150,7 +150,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 		if (connInfo->GetConnectionType() != Net::ConnectionInfo::CT_LOOPBACK)
 		{
 			sptr = connInfo->GetName(sbuff);
-			this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			this->cboAdapter->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 		DEL_CLASS(connInfo);
 		i++;

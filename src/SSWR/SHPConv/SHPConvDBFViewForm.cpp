@@ -40,12 +40,12 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 		j = 300;
 	}
 	Text::HKSCSFix hkscs;
-	const UTF8Char *csptr;
+	Text::String *s;
 	while (i < j)
 	{
-		csptr = eng->GetDBFName(dbf, &dbCols, i, &dbCols2);
-		m = this->lvDBF->AddItem(csptr, 0);
-		Text::StrDelNew(csptr);
+		s = eng->GetNewDBFName(dbf, &dbCols, i, &dbCols2);
+		m = this->lvDBF->AddItem(s, 0);
+		s->Release();
 		k = 0;
 		l = dbf->GetColCount();
 		while (k < l)

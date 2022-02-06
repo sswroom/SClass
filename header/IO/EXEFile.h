@@ -94,7 +94,7 @@ namespace IO
 		typedef struct
 		{
 			Text::String *moduleName;
-			Data::ArrayList<const UTF8Char *> *funcs;
+			Data::ArrayList<Text::String *> *funcs;
 		} ImportInfo;
 
 		typedef struct
@@ -111,8 +111,8 @@ namespace IO
 			UOSInt dataSize;
 		} ResourceInfo;
 	private:
-		Data::ArrayList<const UTF8Char *> *propNames;
-		Data::ArrayList<const UTF8Char *> *propValues;
+		Data::ArrayList<Text::String *> *propNames;
+		Data::ArrayList<Text::String *> *propValues;
 		Data::ArrayList<ImportInfo*> *importList;
 		Data::ArrayList<ExportInfo*> *exportList;
 		Data::ArrayList<ResourceInfo*> *resList;
@@ -126,17 +126,17 @@ namespace IO
 
 		virtual IO::ParserType GetParserType();
 
-		void AddProp(const UTF8Char *name, const UTF8Char *value);
+		void AddProp(Text::CString name, Text::CString value);
 		UOSInt GetPropCount();
-		const UTF8Char *GetPropName(UOSInt index);
-		const UTF8Char *GetPropValue(UOSInt index);
+		Text::String *GetPropName(UOSInt index);
+		Text::String *GetPropValue(UOSInt index);
 
 		UOSInt AddImportModule(Text::CString moduleName);
-		void AddImportFunc(UOSInt modIndex, const UTF8Char *funcName);
+		void AddImportFunc(UOSInt modIndex, Text::CString funcName);
 		UOSInt GetImportCount();
 		Text::String *GetImportName(UOSInt modIndex);
 		UOSInt GetImportFuncCount(UOSInt modIndex);
-		const UTF8Char *GetImportFunc(UOSInt modIndex, UOSInt funcIndex);
+		Text::String *GetImportFunc(UOSInt modIndex, UOSInt funcIndex);
 
 		void AddExportFunc(Text::CString funcName);
 		UOSInt GetExportCount();
@@ -149,7 +149,7 @@ namespace IO
 		void GetDOSInitRegs(Manage::Dasm::DasmX86_16_Regs *regs);
 		UInt16 GetDOSCodeSegm();
 
-		void AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
+		void AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt);
 		UOSInt GetResourceCount();
 		const ResourceInfo *GetResource(UOSInt index);
 	public:

@@ -178,7 +178,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
 	sptr = TagTypeGetName(tag->tagType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
-	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddHeader(CSTRP(sbuff, sptr));
 
 	tagData = MemAlloc(UInt8, tag->size);
 	this->fd->GetRealData(tag->ofst, tag->size, tagData);
@@ -215,7 +215,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			{
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]);
 				sptr[0] = 0;
-				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Field Name")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Field Name")}, CSTRP(sbuff, sptr));
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -231,7 +231,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			{
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]);
 				sptr[0] = 0;
-				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Alias Name")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Alias Name")}, CSTRP(sbuff, sptr));
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -267,7 +267,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					frame->AddUInt(ofst, 2, CSTR("SRS Length"), srsLen);
 					sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 2], srsLen >> 1);
 					*sptr = 0;
-					frame->AddField(ofst + 2, srsLen, {UTF8STRC("SRS")}, {sbuff, (UOSInt)(sptr - sbuff)});
+					frame->AddField(ofst + 2, srsLen, {UTF8STRC("SRS")}, CSTRP(sbuff, sptr));
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
 					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
 					if (csys)
@@ -393,7 +393,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 				{
 					isNull = ((tagData[4 + (nullIndex >> 3)] & (1 << (nullIndex & 7))) != 0);
 					sptr = Text::StrConcatC(field->name->ConcatTo(sbuff), UTF8STRC(" isNull"));
-					frame->AddUInt(4 + (nullIndex >> 3), 1, {sbuff, (UOSInt)(sptr - sbuff)}, isNull?1:0);
+					frame->AddUInt(4 + (nullIndex >> 3), 1, CSTRP(sbuff, sptr), isNull?1:0);
 					nullIndex++;
 				}
 				if (!isNull && ofst < tag->size)
@@ -430,11 +430,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					{
 						Double t = ReadDouble(&tagData[ofst]);
 						sptr = field->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RAW ")));
-						frame->AddFloat(ofst, 8, {sbuff, (UOSInt)(sptr - sbuff)}, t);
+						frame->AddFloat(ofst, 8, CSTRP(sbuff, sptr), t);
 						Data::DateTime dt;
 						Text::XLSUtil::Number2Date(&dt, t);
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-						frame->AddField(ofst, 8, field->name->ToCString(), {sbuff, (UOSInt)(sptr - sbuff)});
+						frame->AddField(ofst, 8, field->name->ToCString(), CSTRP(sbuff, sptr));
 						ofst += 8;
 					}
 					else if (field->fieldType == 6) //ObjectId
@@ -691,7 +691,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					{
 						Data::UUID uuid(&tagData[ofst]);
 						sptr = uuid.ToString(sbuff);
-						frame->AddField(ofst, 16, field->name->ToCString(), {sbuff, (UOSInt)(sptr - sbuff)});
+						frame->AddField(ofst, 16, field->name->ToCString(), CSTRP(sbuff, sptr));
 						ofst += 16;
 					}
 					else if (field->fieldType == 12) //XML

@@ -24,7 +24,7 @@ typedef struct
 {
 	BTControllerInfo *ctrlInfo;
 	UInt8 addr[6];
-	const UTF8Char *name;
+	Text::String *name;
 } BTDeviceInfo;
 
 IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *devInfo)
@@ -35,11 +35,11 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	dev->name = 0;
 	if (hci_read_remote_name(dev->ctrlInfo->dd, (bdaddr_t *)dev->addr, 256, name, 2000) >= 0)
 	{
-		dev->name = Text::StrCopyNew((const UTF8Char*)name);
+		dev->name = Text::String::NewNotNull((const UTF8Char*)name);
 	}
 	else
 	{
-		dev->name = Text::StrCopyNew((const UTF8Char*)"");
+		dev->name = Text::String::NewEmpty();
 	}
 	this->devInfo = (UInt8*)dev;
 }
@@ -47,11 +47,11 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 IO::BTController::BTDevice::~BTDevice()
 {
 	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
-	SDEL_TEXT(dev->name);
+	SDEL_STRING(dev->name);
 	MemFree(this->devInfo);
 }
 
-const UTF8Char *IO::BTController::BTDevice::GetName()
+Text::String *IO::BTController::BTDevice::GetName()
 {
 	BTDeviceInfo *dev = (BTDeviceInfo*)this->devInfo;
 	return dev->name;

@@ -144,49 +144,49 @@ UInt32 __stdcall Net::MQTTBroker::SysInfoThread(void *userObj)
 
 	dt->SetCurrTimeUTC();
 	i = (UOSInt)(dt->ToString(Text::StrConcatC(sbuff, UTF8STRC("SMQTT ")), "yyyyMMdd") - sbuff);
-	me->UpdateTopic((const UTF8Char*)"$SYS/broker/version", sbuff, i, true);
+	me->UpdateTopic(CSTR("$SYS/broker/version"), sbuff, i, true);
 	me->sysInfoRunning = true;
 	while (!me->sysInfoToStop)
 	{
 		dt->SetCurrTimeUTC();
 		i = (UOSInt)(Text::StrConcatC(Text::StrInt64(sbuff, (dt->ToTicks() - me->infoStartTime) / 1000), UTF8STRC(" seconds")) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/uptime", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/uptime"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoTotalRecv) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/load/bytes/received", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/load/bytes/received"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoTotalSent) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/load/bytes/sent", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/load/bytes/sent"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrUOSInt(sbuff, me->cliMgr->GetClientCount()) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/connected", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/clients/connected"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoCliDisconn) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/disconnected", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/clients/disconnected"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrUInt64(sbuff, me->infoCliMax) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/clients/maximum", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/clients/maximum"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgRecv) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/received", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/received"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoMsgSent) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/sent", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/sent"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubDrop) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/dropped", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/dropped"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubRecv) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/received", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/received"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrInt64(sbuff, me->infoPubSent) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/publish/sent", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/publish/sent"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrUOSInt(sbuff, me->topicMap->GetCount()) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/messages/retained/count", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/messages/retained/count"), sbuff, i, true);
 
 		i = (UOSInt)(Text::StrUOSInt(sbuff, me->subscribeList->GetCount()) - sbuff);
-		me->UpdateTopic((const UTF8Char*)"$SYS/broker/subscriptions/count", sbuff, i, true);
+		me->UpdateTopic(CSTR("$SYS/broker/subscriptions/count"), sbuff, i, true);
 
 		me->sysInfoEvt->Wait(10000);
 	}
@@ -541,7 +541,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					this->publishHdlr(this->publishObj, topicSb.ToString(), packetId, message, messageSize);
 				}
-				this->UpdateTopic(topicSb.ToString(), message, messageSize, false);
+				this->UpdateTopic(topicSb.ToCString(), message, messageSize, false);
 				if ((cmdType & 6) == 2)
 				{
 					WriteMInt16(packet, packetId);
@@ -809,17 +809,16 @@ void Net::MQTTBroker::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *bu
 {
 }
 
-void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
+void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg)
 {
 	TopicInfo *topicInfo;
-	UOSInt topicLen = Text::StrCharCnt(topic);
 	Bool unchanged = false;
 	Sync::MutexUsage topicMutUsage(this->topicMut);
-	topicInfo = this->topicMap->GetC({topic, topicLen});
+	topicInfo = this->topicMap->GetC(topic);
 	if (topicInfo == 0)
 	{
 		topicInfo = MemAlloc(TopicInfo, 1);
-		topicInfo->topic = Text::String::New(topic, topicLen);
+		topicInfo->topic = Text::String::New(topic);
 		topicInfo->message = MemAlloc(UInt8, msgSize);
 		MemCopyNO(topicInfo->message, message, msgSize);
 		topicInfo->msgSize = msgSize;
@@ -874,7 +873,7 @@ void Net::MQTTBroker::UpdateTopic(const UTF8Char *topic, const UInt8 *message, U
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
-		if (Net::MQTTUtil::TopicMatch(topic, topicLen, subscribe->topic))
+		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic))
 		{
 			topicMutUsage.BeginUse();
 			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
@@ -1058,7 +1057,7 @@ void Net::MQTTBroker::HandleTopicUpdate(TopicUpdateHandler topicUpdHdlr, void *u
 		while (i < j)
 		{
 			topic = this->topicMap->GetItem(i);
-			this->topicUpdHdlr(this->topicUpdObj, topic->topic->v, topic->message, topic->msgSize);
+			this->topicUpdHdlr(this->topicUpdObj, topic->topic->ToCString(), topic->message, topic->msgSize);
 			i++;
 		}
 		mutUsage.EndUse();

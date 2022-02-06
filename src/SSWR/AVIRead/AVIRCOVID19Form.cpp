@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Int32 *counts;
 	Int64 *dates;
 	UTF8Char sbuff[256];
-	Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")), country->name);
+	country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
 	NEW_CLASS(chart, Data::LineChart(sbuff));
 	chart->SetFontHeightPt(9.0);
 	chart->SetDateFormat("yyyy-MM-dd");
@@ -116,8 +116,8 @@ void SSWR::AVIRead::AVIRCOVID19Form::ClearRecords()
 	while (i-- > 0)
 	{
 		country = countryList->GetItem(i);
-		Text::StrDelNew(country->isoCode);
-		Text::StrDelNew(country->name);
+		country->isoCode->Release();
+		country->name->Release();
 		recordList = country->records->GetValues();
 		j = recordList->GetCount();
 		while (j-- > 0)
@@ -198,14 +198,14 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	Int64 t;
 	while (r->ReadNext())
 	{
-		r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
-		country = this->countries->Get(sbuff);
+		sptr = r->GetStr(colIsoCode, sbuff, sizeof(sbuff));
+		country = this->countries->Get(CSTRP(sbuff, sptr));
 		if (country == 0)
 		{
 			country = MemAlloc(SSWR::AVIRead::AVIRCOVID19Form::CountryInfo, 1);
-			country->isoCode = Text::StrCopyNew(sbuff);
-			r->GetStr(colLocation, sbuff, sizeof(sbuff));
-			country->name = Text::StrCopyNew(sbuff);
+			country->isoCode = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			sptr = r->GetStr(colLocation, sbuff, sizeof(sbuff));
+			country->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			r->GetStr(colPopulation, sbuff, sizeof(sbuff));
 			country->population = Text::StrToDouble(sbuff);
 			NEW_CLASS(country->records, Data::Int64Map<SSWR::AVIRead::AVIRCOVID19Form::DailyRecord *>());
@@ -233,7 +233,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	while (i < j)
 	{
 		country = countryList->GetItem(i);
-		k = this->lvCountry->AddItem(country->isoCode, country);
+		k = this->lvCountry->AddItem(country->isoCode->ToCString(), country);
 		this->lvCountry->SetSubItem(k, 1, country->name);
 		record = country->records->GetValues()->GetItem(country->records->GetCount() - 1);
 		Text::StrInt64(sbuff, record->totalCases);
@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->countries, Data::StringUTF8Map<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>());
+	NEW_CLASS(this->countries, Data::StringMap<SSWR::AVIRead::AVIRCOVID19Form::CountryInfo*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));

@@ -61,10 +61,10 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 							Text::StrConcat(nameBuff, sptr2);
 
 							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("/cid"));
-							if (!SDCardMgr_ReadId({sbuff, (UOSInt)(sptr4 - sbuff)}, cid))
+							if (!SDCardMgr_ReadId(CSTRP(sbuff, sptr4), cid))
 								valid = false;
 							sptr4 = Text::StrConcatC(sptr3, UTF8STRC("/csd"));
-							if (!SDCardMgr_ReadId({sbuff, (UOSInt)(sptr4 - sbuff)}, csd))
+							if (!SDCardMgr_ReadId(CSTRP(sbuff, sptr4), csd))
 								valid = false;
 							if (valid)
 							{

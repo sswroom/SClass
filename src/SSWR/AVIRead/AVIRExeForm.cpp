@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRExeForm::InitSess16()
 		else
 		{
 			sptr = Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, eaddr->segm), UTF8STRC(":")), eaddr->addr);
-			this->lb16BitFuncs->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, eaddr);
+			this->lb16BitFuncs->AddItem(CSTRP(sbuff, sptr), eaddr);
 			lastAddr = eaddr;
 		}
 		i++;
@@ -321,13 +321,13 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	const UTF8Char *csptr;
+	Text::String *s;
 	i = 0;
 	j = this->exeFile->GetPropCount();
 	while (i < j)
 	{
-		csptr = this->exeFile->GetPropName(i);
-		k = this->lvProp->AddItem(csptr, 0);
+		s = this->exeFile->GetPropName(i);
+		k = this->lvProp->AddItem(s, 0);
 		this->lvProp->SetSubItem(k, 1, this->exeFile->GetPropValue(i));
 
 		i++;

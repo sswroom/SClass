@@ -679,7 +679,7 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	UTF8Char *sptr;
 	MYSQL_FIELD *field = mysql_fetch_field_direct((MYSQL_RES*)this->result, (UInt32)colIndex);
 	sptr = Text::StrConcatC(sbuff, (UInt8*)field->name, field->name_length);
-	colDef->SetColName({sbuff, (UOSInt)(sptr - sbuff)});
+	colDef->SetColName(CSTRP(sbuff, sptr));
 	colDef->SetColType(ToColType(field->type, field->flags, field->length));
 	colDef->SetColSize(field->length);
 	colDef->SetColDP(field->decimals);

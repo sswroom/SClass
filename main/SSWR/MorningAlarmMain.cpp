@@ -87,7 +87,7 @@ UInt32 __stdcall PlayThread(void *obj)
 		sptr = Text::StrUOSInt(sptr, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
 
-		NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		file = (Media::MediaFile*)parser->ParseFile(fd, 0, IO::ParserType::MediaFile);
 		DEL_CLASS(fd);
 		if (file)

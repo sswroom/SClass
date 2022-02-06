@@ -114,7 +114,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 				if (sptr[0] != '.')
 				{
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/raw"));
-					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(buffTmp, 1024);

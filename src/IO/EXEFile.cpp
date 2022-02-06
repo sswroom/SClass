@@ -11,8 +11,8 @@
 
 IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->propNames, Data::ArrayList<const UTF8Char *>());
-	NEW_CLASS(this->propValues, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->propNames, Data::ArrayList<Text::String *>());
+	NEW_CLASS(this->propValues, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->importList, Data::ArrayList<ImportInfo*>());
 	NEW_CLASS(this->exportList, Data::ArrayList<ExportInfo*>());
 	NEW_CLASS(this->resList, Data::ArrayList<ResourceInfo*>());
@@ -21,8 +21,8 @@ IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
 
 IO::EXEFile::EXEFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->propNames, Data::ArrayList<const UTF8Char *>());
-	NEW_CLASS(this->propValues, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->propNames, Data::ArrayList<Text::String *>());
+	NEW_CLASS(this->propValues, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->importList, Data::ArrayList<ImportInfo*>());
 	NEW_CLASS(this->exportList, Data::ArrayList<ExportInfo*>());
 	NEW_CLASS(this->resList, Data::ArrayList<ResourceInfo*>());
@@ -51,8 +51,8 @@ IO::EXEFile::~EXEFile()
 	i = this->propNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->propNames->GetItem(i));
-		Text::StrDelNew(this->propValues->GetItem(i));
+		this->propNames->GetItem(i)->Release();
+		this->propValues->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->propNames);
 	DEL_CLASS(this->propValues);
@@ -65,7 +65,7 @@ IO::EXEFile::~EXEFile()
 		j = imp->funcs->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(imp->funcs->GetItem(j));
+			imp->funcs->GetItem(j)->Release();
 		}
 		DEL_CLASS(imp->funcs);
 		MemFree(imp);
@@ -97,12 +97,12 @@ IO::ParserType IO::EXEFile::GetParserType()
 	return IO::ParserType::EXEFile;
 }
 
-void IO::EXEFile::AddProp(const UTF8Char *name, const UTF8Char *value)
+void IO::EXEFile::AddProp(Text::CString name, Text::CString value)
 {
-	if (name != 0 && value != 0)
+	if (name.leng != 0 && value.leng != 0)
 	{
-		this->propNames->Add(Text::StrCopyNew(name));
-		this->propValues->Add(Text::StrCopyNew(value));
+		this->propNames->Add(Text::String::New(name));
+		this->propValues->Add(Text::String::New(value));
 	}
 }
 
@@ -111,12 +111,12 @@ UOSInt IO::EXEFile::GetPropCount()
 	return this->propNames->GetCount();
 }
 
-const UTF8Char *IO::EXEFile::GetPropName(UOSInt index)
+Text::String *IO::EXEFile::GetPropName(UOSInt index)
 {
 	return this->propNames->GetItem(index);
 }
 
-const UTF8Char *IO::EXEFile::GetPropValue(UOSInt index)
+Text::String *IO::EXEFile::GetPropValue(UOSInt index)
 {
 	return this->propValues->GetItem(index);
 }
@@ -125,18 +125,18 @@ UOSInt IO::EXEFile::AddImportModule(Text::CString moduleName)
 {
 	ImportInfo *imp;
 	imp = MemAlloc(ImportInfo, 1);
-	NEW_CLASS(imp->funcs, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(imp->funcs, Data::ArrayList<Text::String*>());
 	imp->moduleName = Text::String::New(moduleName.v, moduleName.leng);
 	return this->importList->Add(imp);
 }
 
-void IO::EXEFile::AddImportFunc(UOSInt modIndex, const UTF8Char *funcName)
+void IO::EXEFile::AddImportFunc(UOSInt modIndex, Text::CString funcName)
 {
 	ImportInfo *imp;
 	imp = this->importList->GetItem(modIndex);
 	if (imp)
 	{
-		imp->funcs->Add(Text::StrCopyNew(funcName));
+		imp->funcs->Add(Text::String::New(funcName));
 	}
 }
 
@@ -165,7 +165,7 @@ UOSInt IO::EXEFile::GetImportFuncCount(UOSInt modIndex)
 	return 0;
 }
 
-const UTF8Char *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex)
+Text::String *IO::EXEFile::GetImportFunc(UOSInt modIndex, UOSInt funcIndex)
 {
 	ImportInfo *imp = this->importList->GetItem(modIndex);
 	if (imp)
@@ -246,10 +246,10 @@ UInt16 IO::EXEFile::GetDOSCodeSegm()
 	return this->envDOS->b16CodeSegm;
 }
 
-void IO::EXEFile::AddResource(const UTF8Char *name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
+void IO::EXEFile::AddResource(Text::CString name, const UInt8 *data, UOSInt dataSize, UInt32 codePage, ResourceType rt)
 {
 	ResourceInfo *res = MemAlloc(ResourceInfo, 1);
-	res->name = Text::String::NewNotNull(name);
+	res->name = Text::String::New(name);
 	res->data = MemAlloc(UInt8, dataSize);
 	MemCopyNO((UInt8*)res->data, data, dataSize);
 	res->dataSize = dataSize;

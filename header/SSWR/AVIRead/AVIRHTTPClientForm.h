@@ -25,15 +25,15 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *name;
-				const UTF8Char *value;
+				Text::String *name;
+				Text::String *value;
 			} ParamValue;
 
 			typedef struct
 			{
-				const UTF8Char *name;
-				const UTF8Char *value;
-				const UTF8Char *domain;
+				Text::String *name;
+				Text::String *value;
+				Text::String *domain;
 				Text::String *path;
 				Int64 expireTime;
 				Bool secure;

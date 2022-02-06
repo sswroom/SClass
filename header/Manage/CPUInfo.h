@@ -40,9 +40,9 @@ namespace Manage
 		Bool GetCPUTCC(Double *temp);
 
 		static Text::CString GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, UInt8 descType);
-		static const UTF8Char *GetFeatureShortName(UOSInt index);
-		static const UTF8Char *GetFeatureName(UOSInt index);
-		static const UTF8Char *GetFeatureDesc(UOSInt index);
+		static Text::CString GetFeatureShortName(UOSInt index);
+		static Text::CString GetFeatureName(UOSInt index);
+		static Text::CString GetFeatureDesc(UOSInt index);
 		static void AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb);
 		static void AppendNameInfo11(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb);
 	};

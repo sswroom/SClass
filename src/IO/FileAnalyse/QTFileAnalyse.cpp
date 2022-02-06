@@ -975,7 +975,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 		while (i < j)
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Compatible_Brands[")), i), UTF8STRC("]"));
-			frame->AddStrS(i + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[i]);
+			frame->AddStrS(i + 8, 4, CSTRP(sbuff, sptr), &packBuff[i]);
 			i += 4;
 		}
 		MemFree(packBuff);
@@ -1014,10 +1014,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(12, 4, CSTR("Creation time"), CSTRP(sbuff, sptr));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(16, 4, CSTR("Modification time"), CSTRP(sbuff, sptr));
 			frame->AddUInt(20, 4, CSTR("Time Scale"), ReadMUInt32(&packBuff[12]));
 			frame->AddUInt(24, 4, CSTR("Duration"), ReadMUInt32(&packBuff[16]));
 			frame->AddFloat(28, 4, CSTR("Preferred rate"), ReadMInt32(&packBuff[20]) / 65536.0);
@@ -1064,10 +1064,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(12, 4, CSTR("Creation time"), CSTRP(sbuff, sptr));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(16, 4, CSTR("Modification time"), CSTRP(sbuff, sptr));
 			frame->AddUInt(20, 4, CSTR("Track ID"), ReadMUInt32(&packBuff[12]));
 			frame->AddUInt(24, 4, CSTR("Reserved"), ReadMUInt32(&packBuff[16]));
 			frame->AddUInt(28, 4, CSTR("Duration"), ReadMUInt32(&packBuff[20]));
@@ -1112,10 +1112,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 			frame->AddHex24(9, CSTR("Flags"), ReadMUInt24(&packBuff[1]));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[4]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(12, 4, CSTR("Creation time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(12, 4, CSTR("Creation time"), CSTRP(sbuff, sptr));
 			dt.SetUnixTimestamp(ReadMUInt32(&packBuff[8]));
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			frame->AddField(16, 4, CSTR("Modification time"), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddField(16, 4, CSTR("Modification time"), CSTRP(sbuff, sptr));
 			frame->AddUInt(20, 4, CSTR("Time scale"), ReadMUInt32(&packBuff[12]));
 			frame->AddUInt(24, 4, CSTR("Duration"), ReadMUInt32(&packBuff[16]));
 			frame->AddUInt(28, 2, CSTR("Language"), ReadMUInt16(&packBuff[20]));
@@ -1369,7 +1369,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 					break;
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Key ")), i);
-				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
+				frame->AddUInt(k + 8, 4, CSTRP(sbuff, sptr), ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1431,7 +1431,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 					break;
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sample size ")), i);
-				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
+				frame->AddUInt(k + 8, 4, CSTRP(sbuff, sptr), ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1461,7 +1461,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 					break;
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Offset ")), i);
-				frame->AddUInt(k + 8, 4, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt32(&packBuff[k + 0]));
+				frame->AddUInt(k + 8, 4, CSTRP(sbuff, sptr), ReadMUInt32(&packBuff[k + 0]));
 				k += 4;
 				i++;
 			}
@@ -1491,7 +1491,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::QTFileAnalyse::GetFrameDetail(UOS
 					break;
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Offset ")), i);
-				frame->AddUInt64(k + 8, {sbuff, (UOSInt)(sptr - sbuff)}, ReadMUInt64(&packBuff[k + 0]));
+				frame->AddUInt64(k + 8, CSTRP(sbuff, sptr), ReadMUInt64(&packBuff[k + 0]));
 				k += 8;
 				i++;
 			}

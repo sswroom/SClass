@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	}
 	col = (UOSInt)me->cboYAxis->GetItem(i);
 	sptr = me->cboYAxis->GetItemText(sbuff, i);
-	me->lbYAxis->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)col);
+	me->lbYAxis->AddItem(CSTRP(sbuff, sptr), (void*)col);
 	me->yCols->Add((UInt32)col);
 }
 

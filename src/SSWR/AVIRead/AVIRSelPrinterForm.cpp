@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	while (i < j)
 	{
 		sptr = Media::Printer::GetPrinterName(sbuff, i);
-		this->cboPrinter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+		this->cboPrinter->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	if (j > 0)

@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 		{
 			sb.ClearStr();
 			sb.AppendSlow(me->respHeaders->GetItem(i));
-			me->lvHeaders->AddItem(sb.ToString(), 0);
+			me->lvHeaders->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 		me->respHdrChanged = false;

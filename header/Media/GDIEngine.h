@@ -30,7 +30,7 @@ namespace Media
 		virtual DrawImage *CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype);
 		GDIImage *CreateImage24(UOSInt width, UOSInt height);
 		DrawImage *CreateImageScn(void *hdc, OSInt left, OSInt top, OSInt right, OSInt bottom);
-		virtual DrawImage *LoadImage(const UTF8Char *fileName);
+		virtual DrawImage *LoadImage(Text::CString fileName);
 		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm);
 		virtual DrawImage *ConvImage(Media::Image *img);
 		virtual DrawImage *CloneImage(DrawImage *img);

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnTimerTick(void *userObj)
 		{
 			dev = devList->GetItem(i);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &dev->addr);
-			me->lbDevice->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, dev);
+			me->lbDevice->AddItem(CSTRP(sbuff, sptr), dev);
 			i++;
 		}
 	}

@@ -399,12 +399,12 @@ Math::ProjectedCoordinateSystem *Math::CoordinateSystemManager::SRCreateProjCSys
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::MercatorProjected || projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::GausskrugerProjected)
 	{
-		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::MercatorProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	else if (projcs->csysType == Math::CoordinateSystem::CoordinateSystemType::Mercator1SPProjected)
 	{
-		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
+		NEW_CLASS(csys, Math::Mercator1SPProjectedCoordinateSystem(CSTRP(sbuff, sptr), projcs->srid, {projcs->projName, projcs->projNameLen}, projcs->falseEasting, projcs->falseNorthing, projcs->centralMeridian, projcs->latitudeOfOrigin, projcs->scaleFactor, gcsys, projcs->unit));
 		return csys;
 	}
 	DEL_CLASS(gcsys);
@@ -435,7 +435,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
 	FillDatumData(&data, datum, {datum->datumName, datum->datumNameLen}, &ellipsoid, spheroid);
-	NEW_CLASS(csys, Math::GeographicCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
+	NEW_CLASS(csys, Math::GeographicCoordinateSystem(CSTRP(sbuff, sptr), epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
 

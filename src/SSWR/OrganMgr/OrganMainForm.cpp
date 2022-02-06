@@ -755,7 +755,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 				dlg->SetFileName(userFile->oriFileName->v);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
-					IO::FileUtil::CopyFile(sb.ToString(), dlg->GetFileName()->v, IO::FileUtil::FileExistAction::Fail, 0, 0);
+					IO::FileUtil::CopyFile(sb.ToCString(), dlg->GetFileName()->ToCString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
 				}
 				DEL_CLASS(dlg);
 			}
@@ -795,7 +795,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveAllClicked(void *userOb
 							sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						}
 						sb2.AppendC(userFile->oriFileName->v, userFile->oriFileName->leng);
-						IO::FileUtil::CopyFile(sb.ToString(), sb2.ToString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
+						IO::FileUtil::CopyFile(sb.ToCString(), sb2.ToCString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
 					}
 				}
 				i++;
@@ -1196,7 +1196,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	if (me->env->NewSpeciesBook(me->lastSpeciesObj->GetSpeciesId(), bk->GetBookId(), sb.ToString()))
 	{
 		UOSInt i;
-		i = me->lvSpBook->AddItem(sb.ToString(), 0);
+		i = me->lvSpBook->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
 		bk->GetString(&sb);
 		me->lvSpBook->SetSubItem(i, 1, sb.ToString());
@@ -2088,7 +2088,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 					}
 				}
 
-				this->lbImage->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, imgItem);
+				this->lbImage->AddItem(CSTRP(sbuff, sptr), imgItem);
 
 				if (this->initSelImg && imgItem->GetDispName()->Equals(this->initSelImg))
 				{
@@ -2116,7 +2116,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateImgDir()
 			{
 				o = (OrganGroup*)gi;
 				sptr = o->GetItemName(sbuff);
-				this->lbImage->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, o);
+				this->lbImage->AddItem(CSTRP(sbuff, sptr), o);
 			}
 			i += 1;
 		}
@@ -2156,7 +2156,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBook()
 	while (i < j)
 	{
 		spBook = spBooks.GetItem(i);
-		this->lvSpBook->AddItem(spBook->dispName->v, 0);
+		this->lvSpBook->AddItem(spBook->dispName, 0);
 		sb.ClearStr();
 		spBook->book->GetString(&sb);
 		this->lvSpBook->SetSubItem(i, 1, sb.ToString());
@@ -2256,6 +2256,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UOSInt i;
 	if (this->lastSpeciesObj == 0)
 		return false;
@@ -2269,14 +2270,14 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			this->txtSpeciesDName->GetText(u8buff);
 			if (!Text::StrEquals(this->lastSpeciesObj->GetDirName(), u8buff))
 			{
-				this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
-				sptr = Text::StrConcat(u8buff, u8buff2);
-				i = Text::StrLastIndexOfChar(u8buff2, IO::Path::PATH_SEPERATOR);
-				this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
+				sptr2 = this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
+				sptr = Text::StrConcatC(u8buff, u8buff2, (UOSInt)(sptr2 - u8buff2));
+				i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(sptr2 - u8buff2), IO::Path::PATH_SEPERATOR);
+				sptr2 = this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
 				
 				if (IO::Path::GetPathType(u8buff, (UOSInt)(sptr - u8buff)) == IO::Path::PathType::Directory)
 				{
-					if (IO::FileUtil::MoveFile(u8buff, u8buff2, IO::FileUtil::FileExistAction::Fail, 0, 0))
+					if (IO::FileUtil::MoveFile(CSTRP(u8buff, sptr), CSTRP(u8buff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{
 						this->lastSpeciesObj->SetDirName(&u8buff2[i + 1]);
 					}
@@ -2413,7 +2414,7 @@ void SSWR::OrganMgr::OrganMainForm::FillGroupCboBox()
 	{
 		grpType = grpTypes->GetItem(i);
 		sptr = grpType->ToString(sbuff);
-		this->cboGroupType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, grpType);
+		this->cboGroupType->AddItem(CSTRP(sbuff, sptr), grpType);
 		i++;
 	}
 }
@@ -2464,7 +2465,7 @@ void SSWR::OrganMgr::OrganMainForm::GoToDir(OrganGroup *grp, Int32 parentId)
 	{
 		grp = this->groupList->GetItem(i);
 		sptr = grp->GetItemName(sbuff);
-		this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, grp);
+		this->lbDir->AddItem(CSTRP(sbuff, sptr), grp);
 		i++;
 	}
 	this->lbDir->SetSelectedIndex(j - 1);
@@ -2504,7 +2505,7 @@ SSWR::OrganMgr::OrganSpImgLayer *SSWR::OrganMgr::OrganMainForm::GetImgLayer(UInt
 	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"PointImage"));
 	imgList->AddImage(stimg, 0);
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("Image")), mapColor);
-	imgInd = this->mapEnv->AddImage({sbuff, (UOSInt)(sptr - sbuff)}, imgList);
+	imgInd = this->mapEnv->AddImage(CSTRP(sbuff, sptr), imgList);
 	lyrInd = this->mapEnv->AddLayer(0, lyr, true);
 	this->mapEnv->GetLayerProp(&sett, 0, lyrInd);
 	sett.fontStyle = this->imgFontStyle;
@@ -2842,7 +2843,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->rootGroup->SetPhotoGroup(-1);
 	this->rootGroup->SetIDKey((const UTF8Char*)"");
 	sptr = this->rootGroup->GetItemName(sbuff);
-	this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, this->rootGroup);
+	this->lbDir->AddItem(CSTRP(sbuff, sptr), this->rootGroup);
 	this->groupList->Add(this->rootGroup);
 
 	UpdateSpBookList();
@@ -2953,7 +2954,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			g->SetIDKey((const UTF8Char*)"");
 			this->groupList->Add(g);
 			sptr = g->GetItemName(sbuff);
-			this->lbDir->SetSelectedIndex(this->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, g));
+			this->lbDir->SetSelectedIndex(this->lbDir->AddItem(CSTRP(sbuff, sptr), g));
 
 			NEW_CLASS(spList, Data::ArrayList<OrganSpecies*>());
 			this->env->GetGroupAllSpecies(spList, selObj);
@@ -2964,7 +2965,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 				item = spList->GetItem(i);
 				this->groupItems->Add(item);
 				sptr = item->GetItemName(sbuff);
-				this->lbObj->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, item);
+				this->lbObj->AddItem(CSTRP(sbuff, sptr), item);
 				i++;
 			}
 			DEL_CLASS(spList);

@@ -794,11 +794,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console.WriteLineC(sb.ToString(), sb.GetLength());
 
 				sptr = IO::Path::GetRealPath(sbuff, UTF8STRC("~/Progs/Temp/LamppostData.ddf"));
-				if (DB::DBDataFile<LamppostData>::SaveFile({sbuff, (UOSInt)(sptr - sbuff)}, &dataList, cls))
+				if (DB::DBDataFile<LamppostData>::SaveFile(CSTRP(sbuff, sptr), &dataList, cls))
 				{
 					console.WriteLineC(UTF8STRC("File saved"));
 				}
-				if (DB::DBDataFile<LamppostData>::LoadFile({sbuff, (UOSInt)(sptr - sbuff)}, cls, &dataList2))
+				if (DB::DBDataFile<LamppostData>::LoadFile(CSTRP(sbuff, sptr), cls, &dataList2))
 				{
 					sb.ClearStr();
 					sb.AppendUOSInt(dataList2.GetCount());

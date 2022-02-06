@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Agent"));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	sptr=  Net::SocketUtil::GetAddrName(sbuff, addr);
-	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTRP(sbuff, sptr)));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
 	this->txtAgent->SetReadOnly(true);
 	NEW_CLASS(this->lvResults, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 				item = itemList.GetItem(i);
 				sb.ClearStr();
 				Net::ASN1Util::OIDToString(item->oid, item->oidLen, &sb);
-				this->lvResults->AddItem(sb.ToString(), 0);
+				this->lvResults->AddItem(sb.ToCString(), 0);
 				sb.ClearStr();
 				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 				this->lvResults->SetSubItem(i, 1, sb.ToString());

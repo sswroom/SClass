@@ -9,7 +9,7 @@
 
 #include <stdio.h>
 
-void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize)
+void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnMQTTMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize)
 {
 	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
 	Text::JSONBase *jsonObj = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
@@ -126,6 +126,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIREWDTU01Form *me = (SSWR::AVIRead::AVIREWDTU01Form *)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->dataChg)
 	{
 		DeviceEntry *entry;
@@ -138,8 +139,8 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			entry = dataList->GetItem(i);
-			Text::StrHexBytes(sbuff, entry->mac, 6, ':');
-			me->lvDevices->AddItem(sbuff, entry);
+			sptr = Text::StrHexBytes(sbuff, entry->mac, 6, ':');
+			me->lvDevices->AddItem(CSTRP(sbuff, sptr), entry);
 			if (entry->name)
 			{
 				me->lvDevices->SetSubItem(i, 1, entry->name);

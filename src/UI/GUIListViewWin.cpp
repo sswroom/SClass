@@ -197,11 +197,11 @@ UOSInt UI::GUIListView::AddItem(Text::String *itemText, void *itemObj)
 	return strLen;
 }
 
-UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::CString itemText, void *itemObj)
 {
-	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(itemText.v);
 	WChar *ws = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(ws, itemText, 0);
+	Text::StrUTF8_WChar(ws, itemText.v, 0);
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
@@ -226,15 +226,15 @@ UOSInt UI::GUIListView::AddItem(const WChar *itemText, void *itemObj)
 	return (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEMW, 0, (LPARAM)&item);
 }
 
-UOSInt UI::GUIListView::AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex)
 {
 	LVITEMW item;
 	item.iItem = (Int32)GetCount();
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE;
 	item.lParam = (LPARAM)itemObj;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText);
-	item.cchTextMax = (int)Text::StrCharCnt(itemText);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(itemText.v);
+	item.cchTextMax = (int)itemText.leng;
 	item.iImage = (Int32)imageIndex;
 	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
@@ -319,14 +319,14 @@ Bool UI::GUIListView::GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuil
 	return ret;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
 	LVITEMW item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.mask = LVIF_PARAM | LVIF_TEXT;
 	item.lParam = (LPARAM)itemObj;
-	const WChar *wptr = Text::StrToWCharNew(itemText);
+	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	item.pszText = (LPWSTR)wptr;
 	item.cchTextMax = 256;
 	UOSInt ret = (UOSInt)SendMessage((HWND)this->hwnd, LVM_INSERTITEM, 0, (LPARAM)&item);

@@ -99,11 +99,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				procInfo->procName = Text::StrCopyNew(sbuff);
 				me->procIds->Insert(i, procInfo->procId);
 				me->procList->Insert(i, procInfo);
-				Text::StrUInt32(sbuff2, procInfo->procId);
-				me->lvSummary->InsertItem(i, sbuff2, procInfo);
+				sptr = Text::StrUInt32(sbuff2, procInfo->procId);
+				me->lvSummary->InsertItem(i, CSTRP(sbuff2, sptr), procInfo);
 				me->lvSummary->SetSubItem(i, 1, sbuff);
 				sptr = Text::StrConcat(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")), procInfo->procName);
-				me->lbDetail->InsertItem(i, {sbuff, (UOSInt)(sptr - sbuff)}, procInfo);
+				me->lbDetail->InsertItem(i, CSTRP(sbuff, sptr), procInfo);
 			}
 
 			Manage::Process proc(procInfo->procId, false);
@@ -286,6 +286,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		Data::ArrayList<Manage::ModuleInfo *> modList;
 		Manage::ModuleInfo *module;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -300,8 +301,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 		while (i < j)
 		{
 			module = modList.GetItem(i);
-			module->GetModuleFileName(sbuff);
-			k = this->lvDetModule->AddItem(sbuff, 0);
+			sptr = module->GetModuleFileName(sbuff);
+			k = this->lvDetModule->AddItem(CSTRP(sbuff, sptr), 0);
 			if (module->GetModuleAddress(&addr, &size))
 			{
 				Text::StrHexValOS(sbuff, addr);
@@ -341,8 +342,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 		while (i < j)
 		{
 			t = threadList.GetItem(i);
-			Text::StrUOSInt(sbuff, t->GetThreadId());
-			k = this->lvDetThread->AddItem(sbuff, (void*)(OSInt)t->GetThreadId(), 0);
+			sptr = Text::StrUOSInt(sbuff, t->GetThreadId());
+			k = this->lvDetThread->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)t->GetThreadId(), 0);
 			addr = t->GetStartAddress();
 			Text::StrHexVal64(sbuff, addr);
 			this->lvDetThread->SetSubItem(k, 1, sbuff);
@@ -383,7 +384,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeaps()
 		while (i < j)
 		{
 			sptr = Text::StrUInt32(sbuff, heapList.GetItem(i));
-			this->lbDetHeap->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(UOSInt)heapList.GetItem(i));
+			this->lbDetHeap->AddItem(CSTRP(sbuff, sptr), (void*)(UOSInt)heapList.GetItem(i));
 			i++;
 		}
 	}
@@ -398,7 +399,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 	else if (this->currProc == Manage::Process::GetCurrProcId())
 	{
 		this->lvDetHeap->ClearItems();
-		this->lvDetHeap->AddItem((const UTF8Char*)"Showing heap of current process is not allowed", 0, 0);
+		this->lvDetHeap->AddItem(CSTR("Showing heap of current process is not allowed"), 0, 0);
 	}
 	else
 	{
@@ -406,6 +407,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		Data::ArrayList<Manage::Process::HeapInfo*> heapList;
 		Manage::Process::HeapInfo *heap;
 		UTF8Char sbuff[20];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -419,8 +421,8 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		while (i < j)
 		{
 			heap = heapList.GetItem(i);
-			Text::StrHexValOS(Text::StrConcatC(sbuff, UTF8STRC("0x")), heap->startAddr);
-			k = this->lvDetHeap->AddItem(sbuff, (void*)heap->startAddr, 0);
+			sptr = Text::StrHexValOS(Text::StrConcatC(sbuff, UTF8STRC("0x")), heap->startAddr);
+			k = this->lvDetHeap->AddItem(CSTRP(sbuff, sptr), (void*)heap->startAddr, 0);
 			Text::StrUOSInt(sbuff, heap->size);
 			this->lvDetHeap->SetSubItem(k, 1, sbuff);
 			switch (heap->heapType)

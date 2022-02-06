@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	this->txtHost->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->lblKeyFile, UI::GUILabel(ui, this, (const UTF8Char*)"KeyFile"));
 	this->lblKeyFile->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, this, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
 	this->txtKeyFile->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
 	this->btnStart->SetRect(104, 52, 75, 23, false);

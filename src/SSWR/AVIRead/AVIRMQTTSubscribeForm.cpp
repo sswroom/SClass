@@ -250,12 +250,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
 	SSWR::AVIRead::AVIRMQTTSubscribeForm *me = (SSWR::AVIRead::AVIRMQTTSubscribeForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
-	sb.AppendSlow(topic);
+	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
@@ -268,7 +268,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishMessage(void *user
 	if (topicSt == 0)
 	{
 		topicSt = MemAlloc(TopicStatus, 1);
-		topicSt->topic = Text::StrCopyNew(topic);
+		topicSt->topic = Text::String::New(topic);
 		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
 		Text::StrConcatC(topicSt->currValue, message, msgSize);
 		topicSt->currValueLen = msgSize;
@@ -398,7 +398,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringUTF8Map<TopicStatus*>());
+	NEW_CLASS(this->topicMap, Data::StringMap<TopicStatus*>());
 	this->currTopic = 0;
 	this->dispImg = 0;
 
@@ -497,7 +497,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::~AVIRMQTTSubscribeForm()
 	while (i-- > 0)
 	{
 		topicSt = topicList->GetItem(i);
-		Text::StrDelNew(topicSt->topic);
+		topicSt->topic->Release();
 		MemFree(topicSt->currValue);
 		MemFree(topicSt);
 	}

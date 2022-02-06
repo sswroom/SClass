@@ -137,7 +137,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 		{
 			currPort = (Int32)i;
 			sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("GPIO")), currPort);
-			this->cboGPIO->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)currPort);
+			this->cboGPIO->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
 			i++;
 		}
 		if (j > 0)
@@ -154,7 +154,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	{
 		currPort = ports->GetItem(i);
 		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("VirtualIOPin")), currPort);
-		this->cboVirtualPin->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)currPort);
+		this->cboVirtualPin->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
 		i++;
 	}
 	if (j > 0)

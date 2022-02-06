@@ -1091,7 +1091,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 			UOSInt retryCnt = 20;
 			while (true)
 			{
-				NEW_CLASS(fs, IO::FileStream(tmpFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASS(fs, IO::FileStream(CSTRP(tmpFile, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				if (!fs->IsError() || retryCnt-- <= 0)
 				{
 					break;

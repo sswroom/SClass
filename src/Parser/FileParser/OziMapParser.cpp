@@ -185,7 +185,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 			Media::ImageList *imgList = 0;
 			sptr = fd->GetFullFileName()->ConcatTo(sbuff);
 			sptr = IO::Path::AppendPathC(sbuff, sptr, fileName->v, fileName->leng);
-			NEW_CLASS(imgFd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+			NEW_CLASS(imgFd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(imgFd, IO::ParserType::ImageList);
 			DEL_CLASS(imgFd);
 
@@ -202,7 +202,7 @@ IO::ParsedObject *Parser::FileParser::OziMapParser::ParseFile(IO::IStreamData *f
 					currPt++;
 				}
 				NEW_CLASS(shimg, Media::SharedImage(imgList, true));
-				NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), shimg, 0, 0, imgW, imgH, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
+				NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), shimg, 0, 0, imgW, imgH, false, CSTRP(sbuff, sptr), 0, 0));
 				UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 				Text::String *s = Text::String::NewNotNull(&sbuff[i + 1]);
 				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, (const UTF8Char**)0, csys, 0, s));

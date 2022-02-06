@@ -84,17 +84,17 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
-	const UTF8Char *csptr;
+	Text::String *s;
 	this->lvPlaylist->ClearItems();
 	i = 0;
 	j = this->playlist->GetCount();
 	while (i < j)
 	{
 		k = this->lvPlaylist->AddItem(this->playlist->GetTitle(i), (void*)i);
-		csptr = this->playlist->GetArtist(i);
-		if (csptr)
+		s = this->playlist->GetArtist(i);
+		if (s)
 		{
-			this->lvPlaylist->SetSubItem(k, 1, csptr);
+			this->lvPlaylist->SetSubItem(k, 1, s->v);
 		}
 		i++;
 	}

@@ -33,11 +33,13 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 		UOSInt i;
 		UOSInt packetId = ReadMUInt16(&cmd[0]);
 		UTF8Char *topic = 0;
+		UOSInt topicLen = 0;
 		if ((UOSInt)(packetId + 2) <= cmdSize)
 		{
 			topic = MemAlloc(UTF8Char, packetId + 1);
 			MemCopyNO(topic, &cmd[2], packetId);
 			topic[packetId] = 0;
+			topicLen = packetId;
 		}
 		i = packetId + 2;
 		if (qosLev == 1 || qosLev == 2)
@@ -54,7 +56,7 @@ void Net::MQTTConn::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int
 		}
 		if (topic && i <= cmdSize)
 		{
-			this->OnPublishMessage(topic, &cmd[i], cmdSize - i);
+			this->OnPublishMessage({topic, topicLen}, &cmd[i], cmdSize - i);
 		}
 		if (qosLev == 1)
 		{
@@ -127,7 +129,7 @@ UInt32 __stdcall Net::MQTTConn::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::MQTTConn::OnPublishMessage(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
+void Net::MQTTConn::OnPublishMessage(Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
 	UOSInt i = this->hdlrList->GetCount();
 	while (i-- > 0)
@@ -455,7 +457,7 @@ Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("sswrMQTT/")), dt.ToTicks());
-	if (cli->SendConnect(4, 30, {sbuff, (UOSInt)(sptr - sbuff)}, username, password))
+	if (cli->SendConnect(4, 30, CSTRP(sbuff, sptr), username, password))
 	{
 		succ = (cli->WaitConnAck(30000) == Net::MQTTConn::CS_ACCEPTED);
 	}

@@ -25,7 +25,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName,
 	this->db = 0;
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OruxMapsImages.db"));
 	IO::StmData::FileData *fd;
-	NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 	DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);
 	if (db)
 	{

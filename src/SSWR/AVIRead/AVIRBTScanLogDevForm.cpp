@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	WriteMUInt64(mac, entry->macInt);
 	sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, {sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, CSTRP(sbuff, sptr)));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"Name"));
@@ -119,8 +119,8 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 		log = entry->logs->GetItem(i);
 		dt.SetTicks(log->timeTicks);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		k = this->lvContent->AddItem(sbuff, log);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		k = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 		Text::StrDouble(sbuff, (Double)(log->timeTicks - lastTick) / 1000.0);
 		this->lvContent->SetSubItem(k, 1, sbuff);
 		lastTick = log->timeTicks;

@@ -108,19 +108,19 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			chkType = me->currHashType;
 			if (chkType == IO::FileCheck::CheckType::MD5)
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md5"));
+				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".md5"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::CRC32)
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sfv"));
+				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".sfv"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::SHA1)
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".sha1"));
+				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".sha1"));
 			}
 			else if (chkType == IO::FileCheck::CheckType::MD4)
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(sbuff, status->fileName), UTF8STRC(".md4"));
+				sptr = Text::StrConcatC(status->fileName->ConcatTo(sbuff), UTF8STRC(".md4"));
 			}
 			else
 			{
@@ -129,7 +129,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 			}
 			if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::Unknown)
 			{
-				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName, chkType, me, false);
+				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->v, chkType, me, false);
 				IO::FileStream *fs;
 				if (fchk)
 				{
@@ -156,7 +156,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 					if (exporter)
 					{
 						exporter->SetCodePage(me->core->GetCurrCodePage());
-						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						exporter->ExportFile(fs, sbuff, fchk, 0);
 						DEL_CLASS(fs);
 						DEL_CLASS(exporter);
@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRFileHashForm::AddFile(const UTF8Char *fileName)
 	Sync::MutexUsage mutUsage(this->fileMut);
 	status = MemAlloc(FileStatus, 1);
 	status->status = 0;
-	status->fileName = Text::StrCopyNew(fileName);
+	status->fileName = Text::String::NewNotNull(fileName);
 	this->fileList->Add(status);
 	mutUsage.EndUse();
 	this->fileEvt->Set();
@@ -350,7 +350,7 @@ SSWR::AVIRead::AVIRFileHashForm::~AVIRFileHashForm()
 	while (i-- > 0)
 	{
 		status = this->fileList->GetItem(i);
-		Text::StrDelNew(status->fileName);
+		status->fileName->Release();
 		MemFree(status);
 	}
 	DEL_CLASS(this->fileEvt);

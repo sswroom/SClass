@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnAddClicked(void *userObj)
 	me->txtName->GetText(&sb);
 	if (sb.GetLength() <= 0)
 		return;
-	me->nameList->Add(Text::StrCopyNew(sb.ToString()));
+	me->nameList->Add(Text::String::New(sb.ToCString()));
 	me->xList->Add(x);
 	me->yList->Add(y);
 	me->zList->Add(z);
@@ -319,7 +319,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 	i = this->nameList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->nameList->GetItem(i));
+		this->nameList->GetItem(i)->Release();
 	}
 	this->nameList->Clear();
 	this->xList->Clear();
@@ -386,7 +386,7 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 	j = this->nameList->GetCount();
 	while (i < j)
 	{
-		k = this->lvCoord->AddItem(this->nameList->GetItem(i), 0);
+		k = this->lvCoord->AddItem(this->nameList->GetItem(i)->ToCString(), 0);
 		x = this->xList->GetItem(i);
 		y = this->yList->GetItem(i);
 		z = this->zList->GetItem(i);
@@ -444,7 +444,7 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->nameList, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->nameList, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->xList, Data::ArrayList<Double>());
 	NEW_CLASS(this->yList, Data::ArrayList<Double>());
 	NEW_CLASS(this->zList, Data::ArrayList<Double>());

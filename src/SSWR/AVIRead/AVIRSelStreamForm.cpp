@@ -318,7 +318,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 		sptr = IO::SerialPort::GetPortTypeName(portTypeList.GetItem(i)).ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
-		this->cboSerialPort->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)currPort);
+		this->cboSerialPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)currPort);
 		i++;
 	}
 	if (j > 0)
@@ -410,8 +410,8 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		while (i < j)
 		{
 			UInt32 v;
-			Text::StrUOSInt(sbuff, i);
-			k = this->lvSLPort->AddItem(sbuff, (void*)(OSInt)i);
+			sptr = Text::StrUOSInt(sbuff, i);
+			k = this->lvSLPort->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)i);
 			v = 0;
 			if (this->siLabDriver->GetDeviceVID((UInt32)i, &v))
 			{

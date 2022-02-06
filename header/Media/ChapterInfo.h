@@ -1,6 +1,7 @@
 #ifndef _SM_MEDIA_CHAPTERINFO
 #define _SM_MEDIA_CHAPTERINFO
 #include "Data/ArrayListUInt32.h"
+#include "Text/String.h"
 
 namespace Media
 {
@@ -8,8 +9,8 @@ namespace Media
 	{
 	private:
 		Data::ArrayListUInt32 *chapterTimes;
-		Data::ArrayList<const UTF8Char *> *chapterNames;
-		Data::ArrayList<const UTF8Char *> *chapterArtists;
+		Data::ArrayList<Text::String *> *chapterNames;
+		Data::ArrayList<Text::String *> *chapterArtists;
 
 	public:
 		ChapterInfo();
@@ -19,8 +20,8 @@ namespace Media
 		UOSInt GetChapterIndex(UInt32 currTime);
 		UInt32 GetChapterTime(UOSInt index);
 		UOSInt GetChapterCnt();
-		const UTF8Char *GetChapterName(UOSInt index);
-		const UTF8Char *GetChapterArtist(UOSInt index);
+		Text::String *GetChapterName(UOSInt index);
+		Text::String *GetChapterArtist(UOSInt index);
 	};
 }
 #endif

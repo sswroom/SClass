@@ -10,7 +10,7 @@ struct IO::PCIInfo::ClassData
 {
 	UInt16 vendorId;
 	UInt16 productId;
-	const UTF8Char *dispName;
+	Text::CString dispName;
 };
 
 IO::PCIInfo::PCIInfo(ClassData *info)
@@ -19,13 +19,14 @@ IO::PCIInfo::PCIInfo(ClassData *info)
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->vendorId = srcData->vendorId;
 	clsData->productId = srcData->productId;
-	clsData->dispName = Text::StrCopyNew(srcData->dispName);
+	clsData->dispName.v = Text::StrCopyNewC(srcData->dispName.v, srcData->dispName.leng);
+	clsData->dispName.leng = srcData->dispName.leng;
 	this->clsData = clsData;
 }
 
 IO::PCIInfo::~PCIInfo()
 {
-	Text::StrDelNew(this->clsData->dispName);
+	Text::StrDelNew(this->clsData->dispName.v);
 	MemFree(this->clsData);
 }
 
@@ -39,12 +40,12 @@ UInt16 IO::PCIInfo::GetProductId()
 	return this->clsData->productId;
 }
 
-const UTF8Char *IO::PCIInfo::GetDispName()
+Text::CString IO::PCIInfo::GetDispName()
 {
 	return this->clsData->dispName;
 }
 
-UInt16 PCIInfo_ReadI16(const UTF8Char *fileName)
+UInt16 PCIInfo_ReadI16(Text::CString fileName)
 {
 	UInt8 buff[33];
 	UOSInt readSize;
@@ -118,7 +119,7 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 						existList.SortedInsert(id);
 						sb.ClearStr();
 						r->GetStr(descCol, &sb);
-						clsData.dispName = sb.ToString();
+						clsData.dispName = sb.ToCString();
 						NEW_CLASS(pci, IO::PCIInfo(&clsData));
 						pciList->Add(pci);
 						ret++;
@@ -132,9 +133,10 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 	{
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
+		UTF8Char *sptr2End;
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
-		clsData.dispName = (const UTF8Char*)"PCI Device";
+		clsData.dispName = CSTR("PCI Device");
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Z:\\sys\\bus\\pci\\devices\\"));
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 		sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
@@ -144,10 +146,10 @@ UOSInt IO::PCIInfo::GetPCIList(Data::ArrayList<PCIInfo*> *pciList)
 			{
 				if (sptr[0] != '.')
 				{
-					Text::StrConcatC(sptr2, UTF8STRC("\\vendor"));
-					clsData.vendorId = PCIInfo_ReadI16(sbuff);
-					Text::StrConcatC(sptr2, UTF8STRC("\\device"));
-					clsData.productId = PCIInfo_ReadI16(sbuff);
+					sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\vendor"));
+					clsData.vendorId = PCIInfo_ReadI16(CSTRP(sbuff, sptr2End));
+					sptr2End = Text::StrConcatC(sptr2, UTF8STRC("\\device"));
+					clsData.productId = PCIInfo_ReadI16(CSTRP(sbuff, sptr2End));
 					if (clsData.vendorId != 0)
 					{
 						NEW_CLASS(pci, IO::PCIInfo(&clsData));

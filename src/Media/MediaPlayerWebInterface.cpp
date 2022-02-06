@@ -49,7 +49,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	if (fname)
 	{
 		sptr2 = fname->ConcatTo(sptr);
-		if (this->iface->OpenFile({sbuff, (UOSInt)(sptr2 - sbuff)}))
+		if (this->iface->OpenFile(CSTRP(sbuff, sptr2)))
 		{
 			this->iface->PBStart();
 			resp->RedirectURL(req, UTF8STRC("/"), 0);

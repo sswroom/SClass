@@ -52,6 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 		if (me->listUpdated)
 		{
 			UTF8Char sbuff[32];
+			UTF8Char *sptr;
 			Data::ArrayList<UInt16> portList;
 			UOSInt i;
 			UOSInt j;
@@ -65,8 +66,8 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 			while (i < j)
 			{
 				port = portList.GetItem(i);
-				Text::StrUInt16(sbuff, port);
-				me->lvPort->AddItem(sbuff, (void*)(UOSInt)port);
+				sptr = Text::StrUInt16(sbuff, port);
+				me->lvPort->AddItem(CSTRP(sbuff, sptr), (void*)(UOSInt)port);
 				cstr = Net::PacketAnalyzerEthernet::TCPPortGetName(port);
 				if (cstr.v)
 				{

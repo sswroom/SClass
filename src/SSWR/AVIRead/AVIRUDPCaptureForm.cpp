@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnTimerTick(void *userObj)
 			dt.SetTicks(me->packets[i].recvTime);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "HH:mm:ss.fff");
-			me->lbData->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
+			me->lbData->AddItem(CSTRP(sbuff, sptr), (void*)i);
 
 			if (i == me->packetCurr)
 				break;
@@ -250,29 +250,29 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lvPorts->HandleDblClk(OnPortsDblClk, this);
 	this->lvPorts->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvPorts->AddColumn((const UTF8Char*)"Port", 100);
-	i = this->lvPorts->AddItem((const UTF8Char*)"DNS", (void*)53);
+	i = this->lvPorts->AddItem(CSTR("DNS"), (void*)53);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"53");
-	i = this->lvPorts->AddItem((const UTF8Char*)"DHCP Server", (void*)67);
+	i = this->lvPorts->AddItem(CSTR("DHCP Server"), (void*)67);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"67");
-	i = this->lvPorts->AddItem((const UTF8Char*)"DHCP Client", (void*)68);
+	i = this->lvPorts->AddItem(CSTR("DHCP Client"), (void*)68);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"68");
-	i = this->lvPorts->AddItem((const UTF8Char*)"NTP", (void*)123);
+	i = this->lvPorts->AddItem(CSTR("NTP"), (void*)123);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"123");
-	i = this->lvPorts->AddItem((const UTF8Char*)"NetBIOS Name Service", (void*)137);
+	i = this->lvPorts->AddItem(CSTR("NetBIOS Name Service"), (void*)137);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"137");
-	i = this->lvPorts->AddItem((const UTF8Char*)"NetBIOS Datagram Service", (void*)138);
+	i = this->lvPorts->AddItem(CSTR("NetBIOS Datagram Service"), (void*)138);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"138");
-	i = this->lvPorts->AddItem((const UTF8Char*)"NetBIOS Session Service", (void*)139);
+	i = this->lvPorts->AddItem(CSTR("NetBIOS Session Service"), (void*)139);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"139");
-	i = this->lvPorts->AddItem((const UTF8Char*)"ISAKMP", (void*)500);
+	i = this->lvPorts->AddItem(CSTR("ISAKMP"), (void*)500);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"500");
-	i = this->lvPorts->AddItem((const UTF8Char*)"DHCPv6 Server", (void*)546);
+	i = this->lvPorts->AddItem(CSTR("DHCPv6 Server"), (void*)546);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"546");
-	i = this->lvPorts->AddItem((const UTF8Char*)"DHCPv6 Client", (void*)547);
+	i = this->lvPorts->AddItem(CSTR("DHCPv6 Client"), (void*)547);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"547");
-	i = this->lvPorts->AddItem((const UTF8Char*)"SSDP", (void*)1900);
+	i = this->lvPorts->AddItem(CSTR("SSDP"), (void*)1900);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"1900");
-	i = this->lvPorts->AddItem((const UTF8Char*)"WS-Discovery", (void*)3702);
+	i = this->lvPorts->AddItem(CSTR("WS-Discovery"), (void*)3702);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"3702");
 
 	this->tpMulticast = this->tcMain->AddTabPage((const UTF8Char*)"Multicast");

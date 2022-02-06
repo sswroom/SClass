@@ -34,7 +34,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 		{
 			if (sbCont.GetLength() > 0)
 			{
-				i = this->lvXML->AddItem(sbPath.ToString(), 0);
+				i = this->lvXML->AddItem(sbPath.ToCString(), 0);
 				this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 				sbCont.ClearStr();
 			}
@@ -65,7 +65,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 				i++;
 			}
 			sbCont.AppendC(UTF8STRC("?>"));
-			i = this->lvXML->AddItem(sbPath.ToString(), 0);
+			i = this->lvXML->AddItem(sbPath.ToCString(), 0);
 			this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 			sbCont.ClearStr();
 		}
@@ -80,7 +80,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			sbCont.AppendC(UTF8STRC(">"));
 			sb.ClearStr();
 			reader->GetCurrPath(&sb);
-			i = this->lvXML->AddItem(sb.ToString(), 0);
+			i = this->lvXML->AddItem(sb.ToCString(), 0);
 			this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 			sbCont.ClearStr();
 		}
@@ -104,7 +104,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 		{
 			if (sbCont.GetLength() > 0)
 			{
-				i = this->lvXML->AddItem(sbPath.ToString(), 0);
+				i = this->lvXML->AddItem(sbPath.ToCString(), 0);
 				this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 				sbCont.ClearStr();
 			}
@@ -135,7 +135,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 			if (reader->IsElementEmpty())
 			{
 				sbCont.AppendC(UTF8STRC("/>"));
-				i = this->lvXML->AddItem(sbPath.ToString(), 0);
+				i = this->lvXML->AddItem(sbPath.ToCString(), 0);
 				this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 				sbCont.ClearStr();
 			}
@@ -147,13 +147,13 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEXMLViewer::AVIRMIMEXMLViewer(SSWR::AVIRead::A
 	}
 	if (sbCont.GetLength() > 0)
 	{
-		i = this->lvXML->AddItem(sbPath.ToString(), 0);
+		i = this->lvXML->AddItem(sbPath.ToCString(), 0);
 		this->lvXML->SetSubItem(i, 1, sbCont.ToString());
 		sbCont.ClearStr();
 	}
 	if (!reader->IsComplete())
 	{
-		this->lvXML->AddItem((const UTF8Char*)"Incomplete file parsing", 0);
+		this->lvXML->AddItem(CSTR("Incomplete file parsing"), 0);
 	}
 	DEL_CLASS(reader);
 	DEL_CLASS(mstm);

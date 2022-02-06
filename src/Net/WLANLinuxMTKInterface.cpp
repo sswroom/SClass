@@ -96,7 +96,6 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 	UOSInt retVal = 0;
 	Net::WirelessLAN::BSSInfo *bssInfo;
 	BSSEntry bss;
-	Net::WirelessLANIE *ie;
 	struct iwreq wrq;
 	int ret;
 	UInt8 *buff;

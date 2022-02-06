@@ -107,7 +107,7 @@ Bool SSWR::AVIRead::AVIRBluetoothLogForm::LogFileStore()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
-	return this->btLog->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
+	return this->btLog->StoreFile(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
@@ -119,6 +119,7 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 	logList.AddAll(this->btLog->GetRandomList());
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt l;
@@ -135,8 +136,8 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::LogUIUpdate()
 		}
 		else
 		{
-			Text::StrHexBytes(sbuff, log->mac, 6, ':');
-			l = this->lvContent->AddItem(sbuff, log);
+			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
+			l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 			this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType).v);
 			this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType).v);
 			if (log->addrType == IO::BTScanLog::AT_RANDOM)
@@ -249,7 +250,7 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
-	this->btLog->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
+	this->btLog->LoadFile(CSTRP(sbuff, sptr));
 	this->LogUIUpdate();
 }
 

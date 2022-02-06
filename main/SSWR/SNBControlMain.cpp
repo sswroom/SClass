@@ -24,7 +24,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #else
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBControl.log"));
 #endif
-	NEW_CLASS(exHdlr, Manage::ExceptionRecorder({sbuff, (UOSInt)(sptr - sbuff)}, Manage::ExceptionRecorder::EA_CLOSE));
+	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
 	ui = progCtrl->CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));
 	SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;

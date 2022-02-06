@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *topic;
+				Text::String *topic;
 				UTF8Char *currValue;
 				UOSInt currValueLen;
 				Bool updated;
@@ -41,7 +41,7 @@ namespace SSWR
 			Net::MQTTConn *client;
 			IO::LogTool *log;
 			Sync::Mutex *topicMut;
-			Data::StringUTF8Map<TopicStatus*> *topicMap;
+			Data::StringMap<TopicStatus*> *topicMap;
 			Bool topicListChanged;
 			TopicStatus *currTopic;
 			Media::DrawImage *dispImg;
@@ -86,7 +86,7 @@ namespace SSWR
 			static void __stdcall OnTopicSelChg(void *userObj);
 			static void __stdcall OnPingTimerTick(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnPublishMessage(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
+			static void __stdcall OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 
 			void UpdateTopicChart();
 			void ServerStop();

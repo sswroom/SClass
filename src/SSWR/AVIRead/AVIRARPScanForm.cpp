@@ -98,6 +98,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 
 	const Net::MACInfo::MACEntry *macEntry;
 	SSWR::AVIRead::AVIRARPScanForm::IPMapInfo *ipInfo;
@@ -109,8 +110,8 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 	while (i < j)
 	{
 		ipInfo = arpList->GetItem(i);
-		Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ipAddr);
-		k = this->lvARP->AddItem(sbuff, ipInfo);
+		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ipAddr);
+		k = this->lvARP->AddItem(CSTRP(sbuff, sptr), ipInfo);
 		Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
 		this->lvARP->SetSubItem(k, 1, sbuff);
 		macEntry = Net::MACInfo::GetMACInfoBuff(ipInfo->hwAddr);
@@ -218,7 +219,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 					MemCopyNO(adapter->hwAddr, hwAddr, 6);
 					this->adapters->Add(adapter);
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, adapter);
+					this->cboAdapter->AddItem(CSTRP(sbuff, sptr), adapter);
 				}
 			}
 			k++;

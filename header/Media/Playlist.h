@@ -12,8 +12,8 @@ namespace Media
 	private:
 		typedef struct
 		{
-			const UTF8Char *title;
-			const UTF8Char *artist;
+			Text::String *title;
+			Text::String *artist;
 			Text::String *fileName;
 			UInt32 timeStart;
 			Int32 timeEnd;
@@ -38,8 +38,8 @@ namespace Media
 		void ClearFiles();
 
 		UOSInt GetCount();
-		const UTF8Char *GetTitle(UOSInt index);
-		const UTF8Char *GetArtist(UOSInt index);
+		Text::String *GetTitle(UOSInt index);
+		Text::String *GetArtist(UOSInt index);
 		Text::String *GetFileName(UOSInt index);
 		UInt32 GetTimeStart(UOSInt index);
 		Int32 GetTimeEnd(UOSInt index);

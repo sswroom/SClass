@@ -67,7 +67,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, hour);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-			AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
+			AppendWAV(source, parser, CSTRP(sbuff, sptr));
 		}
 	}
 	else if (hour == 2)
@@ -79,7 +79,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 		sptr = Text::StrInt32(sptr, hour);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-		AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
+		AppendWAV(source, parser, CSTRP(sbuff, sptr));
 	}
 	AppendWAV(source, parser, CSTR("Hour.wav"));
 	if (minute)
@@ -91,7 +91,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute / 10);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-				AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
+				AppendWAV(source, parser, CSTRP(sbuff, sptr));
 			}
 			AppendWAV(source, parser, CSTR("Num10.wav"));
 			minute = minute % 10;
@@ -100,7 +100,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 				sptr = Text::StrInt32(sptr, minute);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-				AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
+				AppendWAV(source, parser, CSTRP(sbuff, sptr));
 			}
 		}
 		else
@@ -109,7 +109,7 @@ Media::IAudioSource *Media::ClockSpeechCh::GetSpeech(Data::DateTime *time)
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("Num"));
 			sptr = Text::StrInt32(sptr, minute);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".wav"));
-			AppendWAV(source, parser, {sbuff, (UOSInt)(sptr - sbuff)});
+			AppendWAV(source, parser, CSTRP(sbuff, sptr));
 		}
 		AppendWAV(source, parser, CSTR("Minute.wav"));
 	}

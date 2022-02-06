@@ -335,7 +335,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(ofst, (UInt32)size));
 	fd->GetRealData(ofst, (UOSInt)size, this->packetBuff);
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("TotalSize=")), size);
-	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddHeader(CSTRP(sbuff, sptr));
 	Data::DateTime dt;
 	if (this->isBE)
 	{
@@ -353,7 +353,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::PCapFileAnalyse::GetFrameDetail(U
 	}
 	dt.ToLocalTime();
 	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	frame->AddField(0, 8, CSTR("Time"), {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddField(0, 8, CSTR("Time"), CSTRP(sbuff, sptr));
 	frame->AddUInt(8, 4, CSTR("StorageSize"), storeSize);
 	frame->AddUInt(12, 4, CSTR("PacketSize"), psize);
 	Net::PacketAnalyzer::PacketDataGetDetail(linkType, &this->packetBuff[16], psize, 16, frame);

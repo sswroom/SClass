@@ -43,7 +43,7 @@ namespace SSWR
 			Bool dataChg;
 			Data::UInt64Map<DeviceEntry*> *dataMap;
 
-			static void __stdcall OnMQTTMessage(void *userObj, const UTF8Char *topic, const UInt8 *buff, UOSInt buffSize);
+			static void __stdcall OnMQTTMessage(void *userObj, Text::CString topic, const UInt8 *buff, UOSInt buffSize);
 			static void __stdcall OnConnectClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			void DataClear();

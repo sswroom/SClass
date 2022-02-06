@@ -25,7 +25,7 @@ namespace SSWR
 			{
 				UInt8 mac[6];
 				Double freq;
-				const UTF8Char *ssid;
+				Text::String *ssid;
 				Int32 phyType;
 				Int32 bssType;
 			} BSSStatus;
@@ -33,7 +33,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt8 mac[6];
-				const UTF8Char *ssid;
+				Text::String *ssid;
 				Int32 phyType;
 				Double freq;
 				const UTF8Char *manuf;

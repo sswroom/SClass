@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent
 		sptr = Text::StrHexVal16(sbuff, hid->GetVendorId());
 		*sptr++ = ':';
 		sptr = Text::StrHexVal16(sptr, hid->GetProductId());
-		this->lbDevices->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, hid);
+		this->lbDevices->AddItem(CSTRP(sbuff, sptr), hid);
 		i++;
 	}
 }

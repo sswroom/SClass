@@ -101,16 +101,16 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 			if (sptr[0] != '.')
 			{
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/idVendor"));
-				clsData.idVendor = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				clsData.idVendor = USBInfo_ReadI16(CSTRP(sbuff, sptr3));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/idProduct"));
-				clsData.idProduct = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				clsData.idProduct = USBInfo_ReadI16(CSTRP(sbuff, sptr3));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/bcdDevice"));
-				clsData.bcdDevice = USBInfo_ReadI16({sbuff, (UOSInt)(sptr3 - sbuff)});
+				clsData.bcdDevice = USBInfo_ReadI16(CSTRP(sbuff, sptr3));
 				if (clsData.idVendor != 0)
 				{
 					sb.ClearStr();
 					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/manufacturer"));
-					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(cbuff, 250);
@@ -135,7 +135,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 					DEL_CLASS(fs);
 					
 					sptr3 = Text::StrConcatC(sptr2, UTF8STRC("/product"));
-					NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr3 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fs->IsError())
 					{
 						readSize = fs->Read(cbuff, 250);

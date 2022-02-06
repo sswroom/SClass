@@ -68,7 +68,7 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	while (i < j)
 	{
 		sptr = this->dbf->GetColumnName(i, sbuff);
-		this->cboCol->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+		this->cboCol->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	this->cboCol->SetSelectedIndex(0);

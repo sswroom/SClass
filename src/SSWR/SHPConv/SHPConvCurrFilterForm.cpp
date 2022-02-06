@@ -14,7 +14,7 @@ void __stdcall SSWR::SHPConv::SHPConvCurrFilterForm::OnAddClicked(void *userObj)
 		MapFilter *filter = frm->GetFilter();
 		me->filters->Add(filter);
 		sptr = filter->ToString(sbuff);
-		me->lbFilters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, filter);
+		me->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
 	}
 	DEL_CLASS(frm);
 }
@@ -71,7 +71,7 @@ SSWR::SHPConv::SHPConvCurrFilterForm::SHPConvCurrFilterForm(UI::GUIClientControl
 	{
 		filter = this->filters->GetItem(i);
 		sptr = filter->ToString(sbuff);
-		this->lbFilters->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, filter);
+		this->lbFilters->AddItem(CSTRP(sbuff, sptr), filter);
 		i++;
 	}
 }

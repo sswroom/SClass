@@ -85,15 +85,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 		addr = addrList.GetItem(i);
 		if (addr->type == Text::MIMEObj::MailMessage::AT_TO)
 		{
-			k = this->lvRecp->AddItem((const UTF8Char*)"To", 0);
+			k = this->lvRecp->AddItem(CSTR("To"), 0);
 		}
 		else if (addr->type == Text::MIMEObj::MailMessage::AT_CC)
 		{
-			k = this->lvRecp->AddItem((const UTF8Char*)"CC", 0);
+			k = this->lvRecp->AddItem(CSTR("CC"), 0);
 		}
 		else
 		{
-			k = this->lvRecp->AddItem((const UTF8Char*)"Unk", 0);
+			k = this->lvRecp->AddItem(CSTR("Unk"), 0);
 		}
 		if (addr->name)
 		{

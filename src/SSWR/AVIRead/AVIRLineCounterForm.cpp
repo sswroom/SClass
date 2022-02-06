@@ -77,8 +77,8 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	while (i < j)
 	{
 		fi = me->resList->GetItem(i);
-		Text::StrUOSInt(sbuff, fi->lineCnt);
-		k = me->lvResult->AddItem(sbuff, fi);
+		sptr = Text::StrUOSInt(sbuff, fi->lineCnt);
+		k = me->lvResult->AddItem(CSTRP(sbuff, sptr), fi);
 		me->lvResult->SetSubItem(k, 1, fi->fileName);
 		totalLine += fi->lineCnt;
 		i++;

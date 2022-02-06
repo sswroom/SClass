@@ -140,7 +140,7 @@ Bool SSWR::AVIRead::AVIRWiFiLogManagerForm::LogFileStore()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("WiFiLog.txt"));
-	return this->wifiLogFile->StoreFile({sbuff, (UOSInt)(sptr - sbuff)});
+	return this->wifiLogFile->StoreFile(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
@@ -151,6 +151,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> *logList = this->wifiLogFile->GetLogList();
 	Bool unkOnly = this->chkUnkOnly->IsChecked();
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -216,8 +217,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 
 		if (valid)
 		{
-			Text::StrHexBytes(sbuff, log->mac, 6, ':');
-			l = this->lvContent->AddItem(sbuff, log);
+			sptr = Text::StrHexBytes(sbuff, log->mac, 6, ':');
+			l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 			if (entry)
 			{
 				this->lvContent->SetSubItem(l, 1, entry->name);
@@ -374,7 +375,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("WiFiLog.txt"));
-	this->wifiLogFile->LoadFile({sbuff, (UOSInt)(sptr - sbuff)});
+	this->wifiLogFile->LoadFile(CSTRP(sbuff, sptr));
 	this->LogUIUpdate();
 }
 

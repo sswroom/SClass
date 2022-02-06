@@ -51,14 +51,15 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(UI::GUIClientControl *pare
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
+		UTF8Char *sptr2;
 		UOSInt i = 0;
 		UOSInt j = this->ctrl->GetPinCount();
 		this->states = MemAlloc(SSWR::AVIRead::AVIRGPIOStatusForm::PinState, j);
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Pin "));
 		while (i < j)
 		{
-			Text::StrUOSInt(sptr, i);
-			this->lvStatus->AddItem(sbuff, 0);
+			sptr2 = Text::StrUOSInt(sptr, i);
+			this->lvStatus->AddItem(CSTRP(sbuff, sptr2), 0);
 			this->states[i].pinMode = this->ctrl->GetPinMode(i);
 			this->states[i].isHigh = this->ctrl->IsPinHigh(i);
 			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode).v);

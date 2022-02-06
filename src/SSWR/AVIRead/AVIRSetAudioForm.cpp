@@ -69,7 +69,7 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	{
 		if ((sptr = Media::AudioDevice::GetDeviceName(sbuff, i)) != 0)
 		{
-			k = this->lbDevice->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			k = this->lbDevice->AddItem(CSTRP(sbuff, sptr), 0);
 			if (devName && Text::StrStartsWith(sbuff, devName))
 			{
 				this->lbDevice->SetSelectedIndex(k);

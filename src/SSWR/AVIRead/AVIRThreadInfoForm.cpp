@@ -22,8 +22,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 	const UTF8Char *sMem = me->stacksMem->GetItem(i);
 	UOSInt slen;
 	UTF8Char *sbuff;
-	UTF8Char *sline[2];
-	UTF8Char *sarr[18];
+	Text::PString sline[2];
+	Text::PString sarr[18];
 	Bool hasNext;
 
 	if (sMem)
@@ -39,26 +39,27 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 	{
 		slen = Text::StrCharCnt(s);
 		sbuff = MemAlloc(UTF8Char, slen + 1);
-		Text::StrConcat(sbuff, s);
-		sline[1] = sbuff;
+		Text::StrConcatC(sbuff, s, slen);
+		sline[1].v = sbuff;
+		sline[1].leng = slen;
 
 		if (me->contextType == Manage::ThreadContext::CT_X86_32)
 		{
 			while (true)
 			{
-				hasNext = Text::StrSplit(sline, 2, sline[1], '\r') == 2;
-				if (Text::StrSplit(sarr, 10, sline[0], ' ') == 10)
+				hasNext = Text::StrSplitP(sline, 2, sline[1], '\r') == 2;
+				if (Text::StrSplitP(sarr, 10, sline[0], ' ') == 10)
 				{
-					i = me->lvMyStack->AddItem(sarr[0], 0);
-					me->lvMyStack->SetSubItem(i, 1, sarr[1]);
-					me->lvMyStack->SetSubItem(i, 2, sarr[2]);
-					me->lvMyStack->SetSubItem(i, 3, sarr[9]);
-					me->lvMyStack->SetSubItem(i, 4, sarr[3]);
-					me->lvMyStack->SetSubItem(i, 5, sarr[4]);
-					me->lvMyStack->SetSubItem(i, 6, sarr[5]);
-					me->lvMyStack->SetSubItem(i, 7, sarr[6]);
-					me->lvMyStack->SetSubItem(i, 8, sarr[7]);
-					me->lvMyStack->SetSubItem(i, 9, sarr[8]);
+					i = me->lvMyStack->AddItem(sarr[0].ToCString(), 0);
+					me->lvMyStack->SetSubItem(i, 1, sarr[1].v);
+					me->lvMyStack->SetSubItem(i, 2, sarr[2].v);
+					me->lvMyStack->SetSubItem(i, 3, sarr[9].v);
+					me->lvMyStack->SetSubItem(i, 4, sarr[3].v);
+					me->lvMyStack->SetSubItem(i, 5, sarr[4].v);
+					me->lvMyStack->SetSubItem(i, 6, sarr[5].v);
+					me->lvMyStack->SetSubItem(i, 7, sarr[6].v);
+					me->lvMyStack->SetSubItem(i, 8, sarr[7].v);
+					me->lvMyStack->SetSubItem(i, 9, sarr[8].v);
 				}
 				if (!hasNext)
 					break;
@@ -68,27 +69,27 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 		{
 			while (true)
 			{
-				hasNext = Text::StrSplit(sline, 2, sline[1], '\r') == 2;
-				if (Text::StrSplit(sarr, 18, sline[0], ' ') == 18)
+				hasNext = Text::StrSplitP(sline, 2, sline[1], '\r') == 2;
+				if (Text::StrSplitP(sarr, 18, sline[0], ' ') == 18)
 				{
-					i = me->lvMyStack->AddItem(sarr[0], 0);
-					me->lvMyStack->SetSubItem(i, 1, sarr[1]);
-					me->lvMyStack->SetSubItem(i, 2, sarr[2]);
-					me->lvMyStack->SetSubItem(i, 3, sarr[17]);
-					me->lvMyStack->SetSubItem(i, 4, sarr[3]);
-					me->lvMyStack->SetSubItem(i, 5, sarr[4]);
-					me->lvMyStack->SetSubItem(i, 6, sarr[5]);
-					me->lvMyStack->SetSubItem(i, 7, sarr[6]);
-					me->lvMyStack->SetSubItem(i, 8, sarr[7]);
-					me->lvMyStack->SetSubItem(i, 9, sarr[8]);
-					me->lvMyStack->SetSubItem(i, 10, sarr[9]);
-					me->lvMyStack->SetSubItem(i, 11, sarr[10]);
-					me->lvMyStack->SetSubItem(i, 12, sarr[11]);
-					me->lvMyStack->SetSubItem(i, 13, sarr[12]);
-					me->lvMyStack->SetSubItem(i, 14, sarr[13]);
-					me->lvMyStack->SetSubItem(i, 15, sarr[14]);
-					me->lvMyStack->SetSubItem(i, 16, sarr[15]);
-					me->lvMyStack->SetSubItem(i, 17, sarr[16]);
+					i = me->lvMyStack->AddItem(sarr[0].ToCString(), 0);
+					me->lvMyStack->SetSubItem(i, 1, sarr[1].v);
+					me->lvMyStack->SetSubItem(i, 2, sarr[2].v);
+					me->lvMyStack->SetSubItem(i, 3, sarr[17].v);
+					me->lvMyStack->SetSubItem(i, 4, sarr[3].v);
+					me->lvMyStack->SetSubItem(i, 5, sarr[4].v);
+					me->lvMyStack->SetSubItem(i, 6, sarr[5].v);
+					me->lvMyStack->SetSubItem(i, 7, sarr[6].v);
+					me->lvMyStack->SetSubItem(i, 8, sarr[7].v);
+					me->lvMyStack->SetSubItem(i, 9, sarr[8].v);
+					me->lvMyStack->SetSubItem(i, 10, sarr[9].v);
+					me->lvMyStack->SetSubItem(i, 11, sarr[10].v);
+					me->lvMyStack->SetSubItem(i, 12, sarr[11].v);
+					me->lvMyStack->SetSubItem(i, 13, sarr[12].v);
+					me->lvMyStack->SetSubItem(i, 14, sarr[13].v);
+					me->lvMyStack->SetSubItem(i, 15, sarr[14].v);
+					me->lvMyStack->SetSubItem(i, 16, sarr[15].v);
+					me->lvMyStack->SetSubItem(i, 17, sarr[16].v);
 				}
 				if (!hasNext)
 					break;
@@ -223,8 +224,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 		while (true)
 		{
 			currAddr = tracer->GetCurrentAddr();
-			Text::StrHexVal64(sbuff, currAddr);
-			i = this->lvStack->AddItem(sbuff, 0, 0);
+			sptr = Text::StrHexVal64(sbuff, currAddr);
+			i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
 			sptr = symbol->ResolveName(sbuff, currAddr);
 			j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
 			this->lvStack->SetSubItem(i, 1, &sbuff[j + 1]);
@@ -434,8 +435,8 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			j = context->GetRegisterCnt();
 			while (i < j)
 			{
-				context->GetRegister(i, sbuff, buff, &bitCnt);
-				k = this->lvContext->AddItem(sbuff, 0);
+				sptr = context->GetRegister(i, sbuff, buff, &bitCnt);
+				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0);
 				if (bitCnt == 8)
 				{
 					Text::StrHexByte(sbuff, buff[0]);

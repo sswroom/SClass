@@ -104,12 +104,13 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, U
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	ProtocolItem *item;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	item = MemAlloc(ProtocolItem, 1);
 	item->fileOfst = fileOfst;
 	item->size = size;
-	Text::StrUInt64(sbuff, fileOfst);
-	i = me->lvLogs->AddItem(sbuff, item);
+	sptr = Text::StrUInt64(sbuff, fileOfst);
+	i = me->lvLogs->AddItem(CSTRP(sbuff, sptr), item);
 	Text::StrInt32(sbuff, (Int32)size);
 	me->lvLogs->SetSubItem(i, 1, sbuff);
 	me->lvLogs->SetSubItem(i, 2, typeName);

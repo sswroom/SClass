@@ -36,19 +36,20 @@ namespace Net
 		class Network
 		{
 		private:
-			const UTF8Char *ssid;
+			Text::String *ssid;
 			Double rssi;
 		public:
-			Network(const UTF8Char *ssid, Double rssi);
+			Network(Text::String *ssid, Double rssi);
+			Network(Text::CString ssid, Double rssi);
 			~Network();
 			Double GetRSSI();
-			const UTF8Char *GetSSID();
+			Text::String *GetSSID();
 		};
 
 		class BSSInfo
 		{
 		private:
-			const UTF8Char *ssid;
+			Text::String *ssid;
 			UInt32 phyId;
 			UInt8 mac[6];
 			BSSType bssType;
@@ -65,7 +66,7 @@ namespace Net
 		public:
 			BSSInfo(const UTF8Char *ssid, const void *bssEntry);
 			~BSSInfo();
-			const UTF8Char *GetSSID();
+			Text::String *GetSSID();
 			UInt32 GetPHYId();
 			const UInt8 *GetMAC();
 			BSSType GetBSSType();

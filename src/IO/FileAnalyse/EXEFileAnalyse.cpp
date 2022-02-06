@@ -868,9 +868,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 	IO::FileAnalyse::FrameDetail *frame;
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	sptr = PackTypeGetName(pack->packType).ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Type=")));
-	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddText(0, CSTRP(sbuff, sptr));
 	sptr = Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
-	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddText(0, CSTRP(sbuff, sptr));
 
 	if (pack->packType == 0)
 	{
@@ -992,7 +992,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&packBuff[8]));
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(8, 4, {UTF8STRC("TimeDateStamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(8, 4, {UTF8STRC("TimeDateStamp")}, CSTRP(sbuff, sptr));
 		frame->AddHex32(12, CSTR("PointerToSymbolTable"), ReadUInt32(&packBuff[12]));
 		frame->AddUInt(16, 4, CSTR("NumberOfSymbols"), ReadUInt32(&packBuff[16]));
 		frame->AddUInt(20, 2, CSTR("SizeOfOptionalHeader"), ReadUInt16(&packBuff[20]));
@@ -1193,7 +1193,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, CSTRP(sbuff, sptr));
 		frame->AddUInt(8, 2, CSTR("VersionMajor"), ReadUInt16(&this->imageBuff[pack->fileOfst + 8]));
 		frame->AddUInt(10, 2, CSTR("VersionMinor"), ReadUInt16(&this->imageBuff[pack->fileOfst + 10]));
 		frame->AddStrS(12, 4, CSTR("Name"), &this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
@@ -1225,7 +1225,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UO
 		Data::DateTime dt;
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, {sbuff, (UOSInt)(sptr - sbuff)});
+		frame->AddField(4, 4, {UTF8STRC("Timestamp")}, CSTRP(sbuff, sptr));
 		frame->AddUInt(8, 4, CSTR("Forwarder Chain"), ReadUInt32(&this->imageBuff[pack->fileOfst + 8]));
 		frame->AddHex32(12, CSTR("Name RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 12]));
 		frame->AddHex32(16, CSTR("Import Address Table RVA"), ReadUInt32(&this->imageBuff[pack->fileOfst + 16]));

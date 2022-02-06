@@ -26,6 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UOSInt i = Crypto::Hash::HT_FIRST;
 	UOSInt j;
 	Double speed;
@@ -38,8 +39,8 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 		{
 			sbuff[0] = 0;
 			speed = HashTestSpeed(hash);
-			hash->GetName(sbuff);
-			j = me->lvCompare->AddItem(sbuff, 0);
+			sptr = hash->GetName(sbuff);
+			j = me->lvCompare->AddItem(CSTRP(sbuff, sptr), 0);
 			Text::StrDouble(sbuff, speed);
 			me->lvCompare->SetSubItem(j, 1, sbuff);
 			DEL_CLASS(hash);
@@ -122,7 +123,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 		if (hash)
 		{
 			sptr = hash->GetName(sbuff);
-			this->cboAlgorithm->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
+			this->cboAlgorithm->AddItem(CSTRP(sbuff, sptr), (void*)i);
 			DEL_CLASS(hash);
 		}
 		i++;

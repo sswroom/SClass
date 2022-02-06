@@ -1097,8 +1097,8 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 					if (Text::StrCSVSplit(sbuffs, 5, sbuff) >= 4)
 					{
 						ent = MemAlloc(PBEntry, 1);
-						ent->number = Text::StrCopyNew((const UTF8Char*)sbuffs[1]);
-						ent->name = Text::StrCopyNew((const UTF8Char*)sbuffs[3]);
+						ent->number = Text::String::NewNotNull((const UTF8Char*)sbuffs[1]);
+						ent->name = Text::String::NewNotNull((const UTF8Char*)sbuffs[3]);
 						ent->index = Text::StrToInt32(sbuffs[0]);
 						phoneList->Add(ent);
 					}
@@ -1140,8 +1140,8 @@ Bool IO::GSMModemController::PBReadAllEntries(Data::ArrayList<PBEntry*> *phoneLi
 
 void IO::GSMModemController::PBFreeEntry(PBEntry *entry)
 {
-	SDEL_TEXT(entry->name);
-	SDEL_TEXT(entry->number);
+	SDEL_STRING(entry->name);
+	SDEL_STRING(entry->number);
 	MemFree(entry);
 }
 

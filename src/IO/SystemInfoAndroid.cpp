@@ -22,7 +22,7 @@ IO::SystemInfo::SystemInfo()
 	data->platformName = 0;
 	this->clsData = data;
 
-	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/system/build.prop");
+	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/system/build.prop"));
 	if (cfg == 0)
 	{
 		Text::PString u8arr[2];

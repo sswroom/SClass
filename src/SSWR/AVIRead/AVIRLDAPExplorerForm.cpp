@@ -94,12 +94,12 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	while (i-- > 0)
 	{
 		item = obj->items->GetItem(i);
-		if (Text::StrEquals(item->type, (const UTF8Char*)"rootDomainNamingContext"))
+		if (item->type->Equals(UTF8STRC("rootDomainNamingContext")))
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::PString sarr[32];
 			UOSInt j;
-			sb.AppendSlow(item->value);
+			sb.Append(item->value);
 			j = Text::StrSplitP(sarr, 32, sb, ',');
 			me->rootLev = j;
 			while (j-- > 0)
@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 			item = obj->items->GetItem(i);
 			k = me->lvValues->AddItem(item->type, 0);
 			sb.ClearStr();
-			Net::LDAPClient::SearchResDisplay(item->type, item->value, &sb);
+			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), &sb);
 			me->lvValues->SetSubItem(k, 1, sb.ToString());
 			i++;
 		}
@@ -277,7 +277,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 	}
 	else
 	{
-		UOSInt j = me->lbPath->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+		UOSInt j = me->lbPath->AddItem(CSTRP(sbuff, sptr), 0);
 		me->lbPath->SetSelectedIndex(j);
 	}
 }

@@ -54,7 +54,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		UInt64 imac;
 		Manage::HiResClock clk;
 		const UTF8Char *csptr;
-		const UTF8Char *ssid;
+		Text::String *ssid;
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
 		Double t1;

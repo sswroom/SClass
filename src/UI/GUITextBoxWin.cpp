@@ -11,7 +11,7 @@
 #include <richedit.h>
 #endif
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
@@ -21,10 +21,10 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
-UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool isMultiline) : UI::GUIControl(ui, parent)
+UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool isMultiline) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
@@ -38,7 +38,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, const 
 	{
 		style |= ES_WANTRETURN | ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"EDIT", initText.v, style, WS_EX_CLIENTEDGE, 0, 0, 200, 28);
 }
 
 UI::GUITextBox::~GUITextBox()

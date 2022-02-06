@@ -93,10 +93,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				{
 					sb2.AppendChar('&', 1);
 				}
-				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
+				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 				sb2.AppendP(sbuff, sptr);
 				sb2.AppendChar('=', 1);
-				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
+				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 				sb2.AppendP(sbuff, sptr);
 				i++;
 			}
@@ -150,10 +150,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			mstm.Write((const UInt8*)"--", 2);
 			mstm.Write(sbBoundary.ToString(), sbBoundary.GetCharCnt());
 			mstm.Write(UTF8STRC("\r\nContent-Disposition: form-data; name=\""));
-			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 			mstm.Write(sbuff, (UOSInt)(sptr - sbuff));
 			mstm.Write((const UInt8*)"\"\r\n\r\n", 5);
-			mstm.Write(param->value, Text::StrCharCnt(param->value));
+			mstm.Write(param->value->v, param->value->leng);
 			mstm.Write((const UInt8*)"\r\n", 2);
 
 			i++;
@@ -234,7 +234,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		while (i < j)
 		{
 			param = me->params->GetItem(i);
-			json->ObjectAddStrUTF8(param->name, param->value);
+			json->ObjectAddStrUTF8(param->name->v, param->value->v);
 			i++;
 		}
 		DEL_CLASS(json);
@@ -255,10 +255,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			{
 				sb2.AppendChar('&', 1);
 			}
-			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 			sb2.AppendP(sbuff, sptr);
 			sb2.AppendChar('=', 1);
-			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value);
+			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 			sb2.AppendP(sbuff, sptr);
 			i++;
 		}
@@ -397,20 +397,20 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			if (eqInd != INVALID_INDEX)
 			{
 				sptr[eqInd] = 0;
-				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
-				param->name = Text::StrCopyNew(sbuff);
-				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
-				param->value = Text::StrCopyNew(sbuff);
+				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
+				param->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, &sptr[eqInd + 1]);
+				param->value = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			}
 			else
 			{
-				Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
-				param->name = Text::StrCopyNew(sbuff);
-				param->value = Text::StrCopyNew((const UTF8Char*)"");
+				sptr = Text::TextBinEnc::FormEncoding::FormDecode(sbuff, sptr);
+				param->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+				param->value = Text::String::NewEmpty();
 			}
 			me->params->Add(param);
 			i = me->lvReqData->AddItem(param->name, param);
-			me->lvReqData->SetSubItem(i, 1, param->value);
+			me->lvReqData->SetSubItem(i, 1, param->value->v);
 
 			if (spInd == INVALID_INDEX)
 			{
@@ -527,13 +527,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
 				if (sptr)
 				{
-					cli->AddHeaderC(CSTR("Cookie"), {sbuff, (UOSInt)(sptr - sbuff)});
+					cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
 				}
 
 				if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 				{
 					sptr = Text::StrUOSInt(sbuff, currBodyLen);
-					cli->AddHeaderC(CSTR("Content-Length"), {sbuff, (UOSInt)(sptr - sbuff)});
+					cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 					cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
 					cli->Write(currBody, currBodyLen);
 				}
@@ -590,13 +590,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
 						if (sptr)
 						{
-							cli->AddHeaderC(CSTR("Cookie"), {sbuff, (UOSInt)(sptr - sbuff)});
+							cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
 						}
 
 						if (currMeth != Net::WebUtil::RequestMethod::HTTP_GET && currBody)
 						{
 							sptr = Text::StrUOSInt(sbuff, currBodyLen);
-							cli->AddHeaderC(CSTR("Content-Length"), {sbuff, (UOSInt)(sptr - sbuff)});
+							cli->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 							cli->AddHeaderC(CSTR("Content-Type"), currBodyType->ToCString());
 							cli->Write(currBody, currBodyLen);
 						}
@@ -832,8 +832,8 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearParams()
 	while (i-- > 0)
 	{
 		param = this->params->GetItem(i);
-		Text::StrDelNew(param->name);
-		Text::StrDelNew(param->value);
+		param->name->Release();
+		param->value->Release();
 		MemFree(param);
 	}
 	this->params->Clear();
@@ -847,9 +847,9 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearCookie()
 	while (i-- > 0)
 	{
 		cookie = this->cookieList->GetItem(i);
-		Text::StrDelNew(cookie->name);
-		Text::StrDelNew(cookie->value);
-		Text::StrDelNew(cookie->domain);
+		cookie->name->Release();
+		cookie->value->Release();
+		cookie->domain->Release();
 		SDEL_STRING(cookie->path);
 		MemFree(cookie);
 	}
@@ -950,14 +950,14 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 	if (valid)
 	{
-		const UTF8Char *cookieName = Text::StrCopyNewC(cookieValue, (UOSInt)i);
+		Text::String *cookieName = Text::String::New(cookieValue, (UOSInt)i);
 		SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie;
 		Bool eq;
 		UOSInt j = this->cookieList->GetCount();
 		while (j-- > 0)
 		{
 			cookie = this->cookieList->GetItem(j);
-			eq = Text::StrEquals(cookie->domain, domain) && cookie->secure == secure && Text::StrEquals(cookie->name, cookieName);
+			eq = Text::StrEquals(cookie->domain->v, domain) && cookie->secure == secure && cookie->name->Equals(cookieName);
 			if (cookie->path == 0)
 			{
 				eq = eq && (path[0] == 0);
@@ -969,16 +969,15 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 			if (eq)
 			{
 				Sync::MutexUsage mutUsage(this->cookieMut);
-				SDEL_TEXT(cookie->value);
-				cookie->value  = Text::StrCopyNew(&cookieValue[i + 1]);
+				SDEL_STRING(cookie->value);
+				cookie->value  = Text::String::NewNotNull(&cookieValue[i + 1]);
 				mutUsage.EndUse();
-				Text::StrDelNew(cookieName);
+				cookieName->Release();
 				return cookie;
 			}
 		}
-		Text::StrDelNew(cookieName);
 		cookie = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie, 1);
-		cookie->domain = Text::StrCopyNew(domain);
+		cookie->domain = Text::String::NewNotNull(domain);
 		if (path[0])
 		{
 			cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path));
@@ -989,8 +988,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		}
 		cookie->secure = secure;
 		cookie->expireTime = expiryTime;
-		cookie->name = Text::StrCopyNewC(cookieValue, (UOSInt)i);
-		cookie->value = Text::StrCopyNew(&cookieValue[i + 1]);
+		cookie->name = cookieName;
+		cookie->value = Text::String::NewNotNull(&cookieValue[i + 1]);
 		Sync::MutexUsage mutUsage(this->cookieMut);
 		this->cookieList->Add(cookie);
 		mutUsage.EndUse();
@@ -1024,17 +1023,17 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 	while (i < j)
 	{
 		cookie = this->cookieList->GetItem(i);
-		len2 = Text::StrCharCnt(cookie->domain);
+		len2 = cookie->domain->leng;
 		Bool valid = false;
-		if (len1 == len2 && Text::StrEquals(buff, cookie->domain))
+		if (len1 == len2 && cookie->domain->Equals(buff, len1))
 		{
 			valid = true;
 		}
-		else if (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain))
+		else if (len1 > len2 && buff[len1 - len2 - 1] == '.' && Text::StrEquals(&buff[len1 - len2], cookie->domain->v))
 		{
 			valid = true;
 		}
-		else if (len1 + 1 == len2 && cookie->domain[0] == '.' && Text::StrEquals(buff, &cookie->domain[1]))
+		else if (len1 + 1 == len2 && cookie->domain->v[0] == '.' && Text::StrEquals(buff, &cookie->domain->v[1]))
 		{
 			valid = true;
 		}
@@ -1044,15 +1043,15 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 			{
 				if (cookiePtr == 0)
 				{
-					cookiePtr = Text::StrConcat(sbuff, cookie->name);
+					cookiePtr = cookie->name->ConcatTo(sbuff);
 				}
 				else
 				{
 					cookiePtr = Text::StrConcatC(cookiePtr, UTF8STRC("; "));
-					cookiePtr = Text::StrConcat(cookiePtr, cookie->name);
+					cookiePtr = cookie->name->ConcatTo(cookiePtr);
 				}
 				cookiePtr = Text::StrConcatC(cookiePtr, UTF8STRC("="));
-				cookiePtr = Text::StrConcat(cookiePtr, cookie->value);
+				cookiePtr = cookie->value->ConcatTo(cookiePtr);
 			}
 		}
 		i++;

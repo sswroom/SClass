@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	{
 		codePage = codePages.GetItem(i);
 		sptr = Text::EncodingFactory::GetName(Text::StrConcatC(Text::StrUInt32(sbuff, codePage), UTF8STRC(" ")), codePage);
-		ind = this->lbCodePages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)codePage);
+		ind = this->lbCodePages->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)codePage);
 		if (codePage == currCodePage)
 		{
 			this->lbCodePages->SetSelectedIndex(ind);

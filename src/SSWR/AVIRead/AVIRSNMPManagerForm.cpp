@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 		{
 			agent = agentList.GetItem(i);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
-			k = me->lbAgent->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, agent);
+			k = me->lbAgent->AddItem(CSTRP(sbuff, sptr), agent);
 			if (i == 0)
 			{
 				me->lbAgent->SetSelectedIndex(k);

@@ -66,6 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	UOSInt j;
 	UInt8 buff[8];
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Data::ArrayList<BTDevice*> *devList;
 	BTDevice *dev;
 
@@ -81,8 +82,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 			dev->shown = true;
 			dev->updated = false;
 			WriteMUInt64(buff, dev->mac);
-			Text::StrHexBytes(sbuff, &buff[2], 6, ':');
-			me->lvDevices->InsertItem(i, sbuff, dev);
+			sptr = Text::StrHexBytes(sbuff, &buff[2], 6, ':');
+			me->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
 			if (dev->name)
 			{
 				me->lvDevices->SetSubItem(i, 1, dev->name);

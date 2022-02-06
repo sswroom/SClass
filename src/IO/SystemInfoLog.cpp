@@ -11,7 +11,7 @@ void IO::SystemInfoLog::FreeServerRole(ServerRole *serverRole)
 
 void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 {
-	SDEL_TEXT(deviceInfo->desc);
+	SDEL_STRING(deviceInfo->desc);
 	SDEL_TEXT(deviceInfo->hwId);
 	SDEL_TEXT(deviceInfo->service);
 	SDEL_TEXT(deviceInfo->driver);
@@ -20,7 +20,7 @@ void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 
 void IO::SystemInfoLog::FreeDriverInfo(DriverInfo *driverInfo)
 {
-	SDEL_TEXT(driverInfo->fileName);
+	SDEL_STRING(driverInfo->fileName);
 	SDEL_TEXT(driverInfo->creationDate);
 	SDEL_TEXT(driverInfo->version);
 	SDEL_TEXT(driverInfo->manufacturer);
@@ -126,7 +126,7 @@ Data::ArrayList<IO::SystemInfoLog::ServerRole*> *IO::SystemInfoLog::GetServerRol
 void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver)
 {
 	DeviceInfo *dev = MemAlloc(DeviceInfo, 1);
-	dev->desc = SCOPY_TEXT(desc);
+	dev->desc = Text::String::NewOrNull(desc);
 	dev->hwId = SCOPY_TEXT(hwId);
 	dev->service = SCOPY_TEXT(service);
 	dev->driver = SCOPY_TEXT(driver);
@@ -141,7 +141,7 @@ Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *IO::SystemInfoLog::GetDeviceInf
 void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude)
 {
 	DriverInfo *driver = MemAlloc(DriverInfo, 1);
-	driver->fileName = SCOPY_TEXT(fileName);
+	driver->fileName = Text::String::NewOrNull(fileName);
 	driver->fileSize = fileSize;
 	driver->creationDate = SCOPY_TEXT(creationDate);
 	driver->version = SCOPY_TEXT(version);

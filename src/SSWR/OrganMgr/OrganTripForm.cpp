@@ -20,7 +20,7 @@ void SSWR::OrganMgr::OrganTripForm::UpdateList()
 	{
 		trip = tripList->GetItem(i);
 		sptr = trip->ToString(sbuff);
-		this->lbTrips->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, trip);
+		this->lbTrips->AddItem(CSTRP(sbuff, sptr), trip);
 		i++;
 	}
 	this->updating = false;

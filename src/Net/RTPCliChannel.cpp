@@ -581,7 +581,6 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, const UTF8Char *ctrlURL, Net::IRTPController *playCtrl)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
 	UTF8Char *sarr[5];
 	Net::RTPCliChannel *ch;
 	const UTF8Char *desc;

@@ -142,6 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 	if (me->svr)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		UInt8 mac[8];
 		UOSInt i;
 		UOSInt j;
@@ -160,8 +161,8 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 			{
 				dhcp = dhcpList->GetItem(i);
 				WriteMUInt64(mac, dhcp->hwAddr);
-				Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-				me->lvDevices->AddItem(sbuff, dhcp);
+				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+				me->lvDevices->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
 				me->lvDevices->SetSubItem(i, 1, macInfo->name);
 				if (dhcp == currSel)
@@ -280,7 +281,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 			if (ipType == Net::IPType::Private)
 			{
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+				this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 			}
 			k++;
 		}

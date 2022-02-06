@@ -33,13 +33,13 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	NEW_CLASS(me->mainEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRThreadSpeedForm.mainEvt"));
 	me->t = 0;
 
-	i = me->lvResult->AddItem((const UTF8Char*)"Thread Count", 0);
+	i = me->lvResult->AddItem(CSTR("Thread Count"), 0);
 	Text::StrUOSInt(sbuff, Sync::Thread::GetThreadCnt());
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
 	me->clk->Start();
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"Check Time", 0);
+	i = me->lvResult->AddItem(CSTR("Check Time"), 0);
 	Text::StrDouble(sbuff, t);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		Sync::Thread::GetThreadId();
 	}
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"GetThreadId", 0);
+	i = me->lvResult->AddItem(CSTR("GetThreadId"), 0);
 	Text::StrDouble(sbuff, t / 1000.0);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		mutUsage.EndUse();
 	}
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"Mutex Lock Unlock", 0);
+	i = me->lvResult->AddItem(CSTR("Mutex Lock Unlock"), 0);
 	Text::StrDouble(sbuff, t / 1000.0);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		Sync::Interlocked::Increment(&me->tmpVal);
 	}
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"Interlocked Increment", 0);
+	i = me->lvResult->AddItem(CSTR("Interlocked Increment"), 0);
 	Text::StrDouble(sbuff, t / 1000.0);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		me->mainEvt->Set();
 	}
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"Event.Set", 0);
+	i = me->lvResult->AddItem(CSTR("Event.Set"), 0);
 	Text::StrDouble(sbuff, t / 1000.0);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -94,10 +94,10 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	Sync::Thread::Create(TestThread, me);
 	me->mainEvt->Wait(1000);
 	t = me->clk->GetTimeDiff();
-	i = me->lvResult->AddItem((const UTF8Char*)"Thread Create", 0);
+	i = me->lvResult->AddItem(CSTR("Thread Create"), 0);
 	Text::StrDouble(sbuff, me->t);
 	me->lvResult->SetSubItem(i, 1, sbuff);
-	i = me->lvResult->AddItem((const UTF8Char*)"Event Wake", 0);
+	i = me->lvResult->AddItem(CSTR("Event Wake"), 0);
 	Text::StrDouble(sbuff, t);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		t = me->clk->GetTimeDiff();
 		mutUsage.EndUse();
 	}
-	i = me->lvResult->AddItem((const UTF8Char*)"Mutex Lock Relase", 0);
+	i = me->lvResult->AddItem(CSTR("Mutex Lock Relase"), 0);
 	Text::StrDouble(sbuff, t);
 	me->lvResult->SetSubItem(i, 1, sbuff);
 

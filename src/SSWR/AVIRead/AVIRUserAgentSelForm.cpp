@@ -53,7 +53,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 				{
 					sb.ClearStr();
 					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, (const UTF8Char*)uaList[i].osVer);
-					k = this->lvUserAgent->AddItem(sb.ToString(), &uaList[i]);
+					k = this->lvUserAgent->AddItem(sb.ToCString(), &uaList[i]);
 					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser).v);
 					if (uaList[i].browserVer)
 					{

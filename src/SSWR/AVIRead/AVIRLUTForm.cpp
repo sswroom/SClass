@@ -12,6 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRLUTForm::OnChannelChg(void *userObj)
 void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt currCh = (UOSInt)this->cboChannels->GetSelectedItem();
@@ -33,8 +34,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt8(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
+				sptr = Text::StrUInt32(sbuff, inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -55,8 +56,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueUInt8(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
+				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
 				i = 1;
 				while (i < outputCh)
 				{
@@ -78,8 +79,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueUInt16(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
+				sptr = Text::StrUInt32(sbuff, inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -100,8 +101,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueUInt16(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
+				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -123,8 +124,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[0] < inputLev)
 			{
 				this->lut->GetValueSingle(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[0]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[0]);
+				sptr = Text::StrUInt32(sbuff, inputValues[0]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[0]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -145,8 +146,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 			while (inputValues[currCh] < inputLev)
 			{
 				this->lut->GetValueSingle(inputValues, values);
-				Text::StrUInt32(sbuff, inputValues[currCh]);
-				j = this->lvValues->AddItem(sbuff, (void*)(OSInt)inputValues[currCh]);
+				sptr = Text::StrUInt32(sbuff, inputValues[currCh]);
+				j = this->lvValues->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)inputValues[currCh]);
 				i = 0;
 				while (i < outputCh)
 				{
@@ -207,7 +208,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	while (i < j)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
-		this->cboChannels->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
+		this->cboChannels->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		this->lvValues->AddColumn(sbuff, 60);
 		i++;
 	}

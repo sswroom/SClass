@@ -47,7 +47,7 @@ namespace Net
 		typedef ConnectStatus (__stdcall *ConnectHandler)(void *userObj, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password, const Net::SocketUtil::AddressInfo *addr);
 		typedef void (__stdcall *PublishHandler)(void *userObj, const UTF8Char *topic, UInt16 packetId, const UInt8 *message, UOSInt msgSize);
 		typedef ConnectStatus (__stdcall *SubscribeHandler)(void *userObj, const UTF8Char *clientId, const UTF8Char *topic);
-		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
+		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
@@ -92,7 +92,7 @@ namespace Net
 
 		virtual void DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize);
 		virtual void DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *buff, UOSInt buffSize);
-		void UpdateTopic(const UTF8Char *topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
+		void UpdateTopic(Text::CString topic, const UInt8 *message, UOSInt msgSize, Bool suppressUnchg);
 		Bool TopicSend(IO::Stream *stm, void *stmData, const TopicInfo *topic);
 	public:
 		MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Bool sysInfo);

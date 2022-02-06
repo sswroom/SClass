@@ -263,6 +263,7 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 {
 	OrganBook *book;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i = 0;
 	UOSInt j = this->bookList->GetCount();
 	UOSInt k;
@@ -270,8 +271,8 @@ void SSWR::OrganMgr::OrganBookForm::UpdateBookList()
 	while (i < j)
 	{
 		book = this->bookList->GetItem(i);;
-		book->GetPublishDate()->ToString(sbuff, "yyyy-MM");
-		k = this->lvBook->AddItem(sbuff, book);
+		sptr = book->GetPublishDate()->ToString(sbuff, "yyyy-MM");
+		k = this->lvBook->AddItem(CSTRP(sbuff, sptr), book);
 		this->lvBook->SetSubItem(k, 1, book->GetDispAuthor());
 		this->lvBook->SetSubItem(k, 2, book->GetTitle());
 		this->lvBook->SetSubItem(k, 3, book->GetPress());

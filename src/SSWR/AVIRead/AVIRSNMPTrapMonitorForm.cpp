@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 		item = packet->itemList->GetItem(i);
 		sb.ClearStr();
 		Net::ASN1Util::OIDToString(item->oid, item->oidLen, &sb);
-		me->lvResults->AddItem(sb.ToString(), 0);
+		me->lvResults->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
 		Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
 		me->lvResults->SetSubItem(i, 1, sb.ToString());
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnTimerTick(void *userObj
 			dt.SetTicks(packet->t);
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lbResults->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, packet);
+			me->lbResults->AddItem(CSTRP(sbuff, sptr), packet);
 			i++;
 		}
 		mutUsage.EndUse();

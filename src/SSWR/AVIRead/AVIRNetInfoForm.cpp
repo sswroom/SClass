@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		while ((ipAddr = connInfo->GetIPAddress(i++)) != 0)
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-			me->lbAdaptorIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			me->lbAdaptorIP->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 		ipAddr = connInfo->GetDefaultGW();
 		if (ipAddr)
@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		while ((ipAddr = connInfo->GetDNSAddress(i++)) != 0)
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-			me->lbAdaptorDNS->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+			me->lbAdaptorDNS->AddItem(CSTRP(sbuff, sptr), 0);
 		}
 
 		if (connInfo->IsDhcpEnabled())
@@ -361,7 +361,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
-//	UTF8Char *sptr;
+	UTF8Char *sptr;
 	UInt32 ipAddr;
 	UInt8 buff[32];
 	UOSInt v;
@@ -377,8 +377,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 	{
 		arp = arpList.GetItem(i);
 		ipAddr = arp->GetIPAddress();
-		Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-		k = this->lvARPInfo->AddItem(sbuff, 0);
+		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
+		k = this->lvARPInfo->AddItem(CSTRP(sbuff, sptr), 0);
 		v = arp->GetPhysicalAddr(buff);
 		if (v > 0)
 		{
@@ -441,7 +441,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateConns()
 	{
 		connInfo = this->conns->GetItem(i);
 		sptr = connInfo->GetName(sbuff);
-		this->lbAdaptors->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, connInfo);
+		this->lbAdaptors->AddItem(CSTRP(sbuff, sptr), connInfo);
 		i++;
 	}
 }
@@ -572,11 +572,11 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 		{
 			if (portInfo->protoType == Net::SocketFactory::PT_TCP)
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"TCP", 0);
+				k = this->lvPortInfo->AddItem(CSTR("TCP"), 0);
 			}
 			else
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"TCP6", 0);
+				k = this->lvPortInfo->AddItem(CSTR("TCP6"), 0);
 			}			
 			Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
 			this->lvPortInfo->SetSubItem(k, 1, sbuff);
@@ -632,23 +632,23 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 		{
 			if (portInfo->protoType == Net::SocketFactory::PT_UDP)
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"UDP", 0);
+				k = this->lvPortInfo->AddItem(CSTR("UDP"), 0);
 			}
 			else if (portInfo->protoType == Net::SocketFactory::PT_UDP6)
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"UDP6", 0);
+				k = this->lvPortInfo->AddItem(CSTR("UDP6"), 0);
 			}
 			else if (portInfo->protoType == Net::SocketFactory::PT_RAW)
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"RAW", 0);
+				k = this->lvPortInfo->AddItem(CSTR("RAW"), 0);
 			}
 			else if (portInfo->protoType == Net::SocketFactory::PT_RAW6)
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"RAW6", 0);
+				k = this->lvPortInfo->AddItem(CSTR("RAW6"), 0);
 			}
 			else
 			{
-				k = this->lvPortInfo->AddItem((const UTF8Char*)"?", 0);
+				k = this->lvPortInfo->AddItem(CSTR("?"), 0);
 			}
 			Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
 			this->lvPortInfo->SetSubItem(k, 1, sbuff);

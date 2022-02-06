@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 				{
 					ip = ipList.GetItem(i);
 					sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-					me->lbIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+					me->lbIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 					i++;
 				}
 			}
@@ -138,7 +138,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 			if (ip == 0)
 				break;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboSelfIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+			this->cboSelfIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 			k++;
 		}
 		DEL_CLASS(connInfo);

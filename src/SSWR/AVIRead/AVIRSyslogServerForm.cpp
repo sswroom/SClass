@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipList->GetItem(i));
-			me->lbClient->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ipList->GetItem(i));
+			me->lbClient->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ipList->GetItem(i));
 			i++;
 		}
 		mutUsage.EndUse();

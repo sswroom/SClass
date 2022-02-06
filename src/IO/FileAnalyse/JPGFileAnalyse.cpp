@@ -619,14 +619,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 	
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(tag->ofst, (UInt32)tag->size));
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Tag")), index);
-	frame->AddHeader({sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddHeader(CSTRP(sbuff, sptr));
 	if (tag->tagType != 0)
 	{
 		frame->AddHex8(0, CSTR("Start of Tag"), 0xFF);
 		frame->AddHex8Name(1, CSTR("TagType"), tag->tagType, GetTagName(tag->tagType));
 	}
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), tag->size);
-	frame->AddText(2, {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddText(2, CSTRP(sbuff, sptr));
 	if (tag->tagType == 0xc4)
 	{
 		tagData = MemAlloc(UInt8, tag->size);
@@ -638,7 +638,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		while (i < 16)
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Code length ")), i + 1), UTF8STRC(" count"));
-			frame->AddUInt(5 + i, 1, {sbuff, (UOSInt)(sptr - sbuff)}, tagData[5 + i]);
+			frame->AddUInt(5 + i, 1, CSTRP(sbuff, sptr), tagData[5 + i]);
 
 			i++;
 		}
@@ -664,7 +664,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		while (i < tagData[9])
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
-			frame->AddText((UInt32)j, {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddText((UInt32)j, CSTRP(sbuff, sptr));
 			frame->AddUInt(j, 1, CSTR("Component identifier"), tagData[j]);
 			frame->AddUInt(j + 1, 1, CSTR("Horizontal sampling factor"), (UInt16)(tagData[j + 1] >> 4));
 			frame->AddUInt(j + 1, 1, CSTR("Vertical sampling factor"), tagData[j + 1] & 15);
@@ -686,7 +686,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 		while (i < tagData[4])
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Component ")), i), UTF8STRC(":"));
-			frame->AddText((UInt32)j, {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddText((UInt32)j, CSTRP(sbuff, sptr));
 			frame->AddUInt(j, 1, CSTR("Scan component selector"), tagData[j]);
 			frame->AddUInt(j + 1, 1, CSTR("DC entropy coding selector"), (UInt16)(tagData[j + 1] >> 4));
 			frame->AddUInt(j + 1, 1, CSTR("AC entropy coding selector"), tagData[j + 1] & 15);

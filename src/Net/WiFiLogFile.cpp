@@ -488,7 +488,7 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		MemClear(log->neighbour, sizeof(log->neighbour));
 		MemCopyNO(log->mac, &buff[2], 6);
 		log->macInt = imac;
-		log->ssid = Text::String::NewNotNull(bss->GetSSID());
+		log->ssid = bss->GetSSID()->Clone();
 		log->phyType = bss->GetPHYType();
 		log->freq = bss->GetFreq();
 		log->manuf = Text::String::NewOrNull(bss->GetManuf());

@@ -13,7 +13,7 @@ IO::ConfigFile *IO::UnixConfigFile::ParseAppProp()
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("application.properties"));
-	return Parse({sbuff, (UOSInt)(sptr - sbuff)});
+	return Parse(CSTRP(sbuff, sptr));
 }
 
 IO::ConfigFile *IO::UnixConfigFile::Parse(Text::CString fileName)

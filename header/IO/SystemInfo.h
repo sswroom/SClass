@@ -1,6 +1,7 @@
 #ifndef _SM_IO_SYSTEMINFO
 #define _SM_IO_SYSTEMINFO
 #include "Data/ArrayList.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -9,10 +10,10 @@ namespace IO
 	public:
 		typedef struct
 		{
-			const UTF8Char *deviceLocator;
-			const UTF8Char *manufacturer;
-			const UTF8Char *partNo;
-			const UTF8Char *sn;
+			Text::String *deviceLocator;
+			Text::String *manufacturer;
+			Text::String *partNo;
+			Text::String *sn;
 			UOSInt defSpdMHz;
 			UOSInt confSpdMHz;
 			UInt32 dataWidth;

@@ -1,6 +1,7 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
 #define _SM_SSWR_AVIREAD_AVIRCOORDCONVFORM
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIComboBox.h"
 #include "UI/GUIForm.h"
@@ -42,7 +43,7 @@ namespace SSWR
 			UI::GUIListView *lvCoord;
 
 			SSWR::AVIRead::AVIRCore *core;
-			Data::ArrayList<const UTF8Char *> *nameList;
+			Data::ArrayList<Text::String *> *nameList;
 			Data::ArrayList<Double> *xList;
 			Data::ArrayList<Double> *yList;
 			Data::ArrayList<Double> *zList;

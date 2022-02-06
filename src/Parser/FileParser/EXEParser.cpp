@@ -75,38 +75,38 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 	NEW_CLASS(exef, IO::EXEFile(fd->GetFullName()));
 	UOSInt codeLen;
 
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[2]));
-	exef->AddProp((const UTF8Char*)"(DOS)Bytes on last page of file", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[4]));
-	exef->AddProp((const UTF8Char*)"(DOS)Pages in file", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[6]));
-	exef->AddProp((const UTF8Char*)"(DOS)Relocations", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[8]));
-	exef->AddProp((const UTF8Char*)"(DOS)Size of header in paragraphs", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[0xa]));
-	exef->AddProp((const UTF8Char*)"(DOS)Minimum extra paragraphs needed", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[0xc]));
-	exef->AddProp((const UTF8Char*)"(DOS)Maximum extra paragraphs needed", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0xe]));
-	exef->AddProp((const UTF8Char*)"(DOS)Initial (relative) SS value", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x10]));
-	exef->AddProp((const UTF8Char*)"(DOS)Initial SP value", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x12]));
-	exef->AddProp((const UTF8Char*)"(DOS)Checksum", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x14]));
-	exef->AddProp((const UTF8Char*)"(DOS)Initial IP value", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x16]));
-	exef->AddProp((const UTF8Char*)"(DOS)Initial (relative) CS value", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x18]));
-	exef->AddProp((const UTF8Char*)"(DOS)File address of relocation table", sbuff);
-	Text::StrInt32(sbuff, ReadUInt16(&hdr[0x1a]));
-	exef->AddProp((const UTF8Char*)"(DOS)Overlay number", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x24]));
-	exef->AddProp((const UTF8Char*)"(DOS)OEM identifier", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x26]));
-	exef->AddProp((const UTF8Char*)"(DOS)OEM information", sbuff);
-	Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x3c]));
-	exef->AddProp((const UTF8Char*)"(DOS)Offset to extended header", sbuff);
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[2]));
+	exef->AddProp(CSTR("(DOS)Bytes on last page of file"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[4]));
+	exef->AddProp(CSTR("(DOS)Pages in file"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[6]));
+	exef->AddProp(CSTR("(DOS)Relocations"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[8]));
+	exef->AddProp(CSTR("(DOS)Size of header in paragraphs"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[0xa]));
+	exef->AddProp(CSTR("(DOS)Minimum extra paragraphs needed"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[0xc]));
+	exef->AddProp(CSTR("(DOS)Maximum extra paragraphs needed"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0xe]));
+	exef->AddProp(CSTR("(DOS)Initial (relative) SS value"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x10]));
+	exef->AddProp(CSTR("(DOS)Initial SP value"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x12]));
+	exef->AddProp(CSTR("(DOS)Checksum"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x14]));
+	exef->AddProp(CSTR("(DOS)Initial IP value"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x16]));
+	exef->AddProp(CSTR("(DOS)Initial (relative) CS value"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x18]));
+	exef->AddProp(CSTR("(DOS)File address of relocation table"), CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, ReadUInt16(&hdr[0x1a]));
+	exef->AddProp(CSTR("(DOS)Overlay number"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x24]));
+	exef->AddProp(CSTR("(DOS)OEM identifier"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x26]));
+	exef->AddProp(CSTR("(DOS)OEM information"), CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&hdr[0x3c]));
+	exef->AddProp(CSTR("(DOS)Offset to extended header"), CSTRP(sbuff, sptr));
 
 
 	exef->AddDOSEnv(fileSize - hdrSize + 256, &regs, 0x70);
@@ -195,89 +195,89 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 			UInt32 sizeOfOptionalHeader = ReadUInt16(&peBuff[20]);
 			UInt16 characteristics = ReadUInt16(&peBuff[22]);
 
-			exef->AddProp((const UTF8Char*)"Extended Header Format", (const UTF8Char*)"Portable Executable");
+			exef->AddProp(CSTR("Extended Header Format"), CSTR("Portable Executable"));
 			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), machine);
 			switch (machine)
 			{
 			case 0x1d3:
-				Text::StrConcatC(sptr, UTF8STRC(" Matsushita AM33"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Matsushita AM33"));
 				break;
 			case 0x8664:
-				Text::StrConcatC(sptr, UTF8STRC(" x64"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" x64"));
 				break;
 			case 0x1c0:
-				Text::StrConcatC(sptr, UTF8STRC(" ARM little endian"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" ARM little endian"));
 				break;
 			case 0x1c4:
-				Text::StrConcatC(sptr, UTF8STRC(" ARMv7 (or higher) Thumb mode only"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" ARMv7 (or higher) Thumb mode only"));
 				break;
 			case 0xaa64:
-				Text::StrConcatC(sptr, UTF8STRC(" ARMv8 in 64-bit mode"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" ARMv8 in 64-bit mode"));
 				break;
 			case 0xebc:
-				Text::StrConcatC(sptr, UTF8STRC(" EFI byte code"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" EFI byte code"));
 				break;
 			case 0x14c:
-				Text::StrConcatC(sptr, UTF8STRC(" i386"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" i386"));
 				break;
 			case 0x200:
-				Text::StrConcatC(sptr, UTF8STRC(" Intel Itanium"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Intel Itanium"));
 				break;
 			case 0x9041:
-				Text::StrConcatC(sptr, UTF8STRC(" Mitsubishi M32R little endian"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Mitsubishi M32R little endian"));
 				break;
 			case 0x266:
-				Text::StrConcatC(sptr, UTF8STRC(" MIPS16"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" MIPS16"));
 				break;
 			case 0x366:
-				Text::StrConcatC(sptr, UTF8STRC(" MIPS with FPU"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" MIPS with FPU"));
 				break;
 			case 0x466:
-				Text::StrConcatC(sptr, UTF8STRC(" MIPS16 with FPU"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" MIPS16 with FPU"));
 				break;
 			case 0x1f0:
-				Text::StrConcatC(sptr, UTF8STRC(" Power PC little endian"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Power PC little endian"));
 				break;
 			case 0x1f1:
-				Text::StrConcatC(sptr, UTF8STRC(" Power PC with floating point support"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Power PC with floating point support"));
 				break;
 			case 0x166:
-				Text::StrConcatC(sptr, UTF8STRC(" MIPS little endian"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" MIPS little endian"));
 				break;
 			case 0x1a2:
-				Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH3"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH3"));
 				break;
 			case 0x1a3:
-				Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH3 DSP"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH3 DSP"));
 				break;
 			case 0x1a6:
-				Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH4"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH4"));
 				break;
 			case 0x1a8:
-				Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH5"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" Hitachi SH5"));
 				break;
 			case 0x1c2:
-				Text::StrConcatC(sptr, UTF8STRC(" ARM or Thumb"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" ARM or Thumb"));
 				break;
 			case 0x169:
-				Text::StrConcatC(sptr, UTF8STRC(" MIPS little-endian WCE v2"));
+				sptr = Text::StrConcatC(sptr, UTF8STRC(" MIPS little-endian WCE v2"));
 				break;
 			}
-			exef->AddProp((const UTF8Char*)"Machine", sbuff);
-			Text::StrUInt32(sbuff, numberOfSections);
-			exef->AddProp((const UTF8Char*)"Number Of Sections", sbuff);
+			exef->AddProp(CSTR("Machine"), CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, numberOfSections);
+			exef->AddProp(CSTR("Number Of Sections"), CSTRP(sbuff, sptr));
 			Data::DateTime dt;
 			dt.SetUnixTimestamp((UInt32)timeDateStamp);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-			exef->AddProp((const UTF8Char*)"File Time", sbuff);
-			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), pointerToSymbolTable);
-			exef->AddProp((const UTF8Char*)"Pointer to symbol table", sbuff);
-			Text::StrUInt32(sbuff, numberOfSymbols);
-			exef->AddProp((const UTF8Char*)"Number Of Symbools", sbuff);
-			Text::StrUInt32(sbuff, sizeOfOptionalHeader);
-			exef->AddProp((const UTF8Char*)"Size Of Optional Header", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), characteristics);
-			exef->AddProp((const UTF8Char*)"Characteristics", sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+			exef->AddProp(CSTR("File Time"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), pointerToSymbolTable);
+			exef->AddProp(CSTR("Pointer to symbol table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, numberOfSymbols);
+			exef->AddProp(CSTR("Number Of Symbools"), CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, sizeOfOptionalHeader);
+			exef->AddProp(CSTR("Size Of Optional Header"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), characteristics);
+			exef->AddProp(CSTR("Characteristics"), CSTRP(sbuff, sptr));
 
 			if (sizeOfOptionalHeader >= 96)
 			{
@@ -291,206 +291,206 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 					switch (magic)
 					{
 					case 0x10b:
-						Text::StrConcatC(sptr, UTF8STRC(" PE32"));
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" PE32"));
 						break;
 					case 0x20b:
-						Text::StrConcatC(sptr, UTF8STRC(" PE32+"));
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" PE32+"));
 						break;
 					case 0x107:
-						Text::StrConcatC(sptr, UTF8STRC(" ROM image"));
+						sptr = Text::StrConcatC(sptr, UTF8STRC(" ROM image"));
 						break;
 					}
-					exef->AddProp((const UTF8Char*)"Magic", sbuff);
-					Text::StrInt32(sbuff, optionalHdr[2]);
+					exef->AddProp(CSTR("Magic"), CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, optionalHdr[2]);
 					if (magic == 0x10b || magic == 0x20b)
 					{
 						UInt32 sizeOfImage;
 						UInt8 *exeImage;
 
-						exef->AddProp((const UTF8Char*)"Major Linker Version", sbuff);
-						Text::StrInt32(sbuff, optionalHdr[3]);
-						exef->AddProp((const UTF8Char*)"Minor Linker Version", sbuff);
-						Text::StrInt32(sbuff, ReadInt32(&optionalHdr[4]));
-						exef->AddProp((const UTF8Char*)"Size Of Code", sbuff);
-						Text::StrInt32(sbuff, ReadInt32(&optionalHdr[8]));
-						exef->AddProp((const UTF8Char*)"Size Of Initialized Data", sbuff);
-						Text::StrInt32(sbuff, ReadInt32(&optionalHdr[12]));
-						exef->AddProp((const UTF8Char*)"Size Of Uninitialized Data", sbuff);
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[16]));
-						exef->AddProp((const UTF8Char*)"Address Of Entry Point", sbuff);
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[20]));
-						exef->AddProp((const UTF8Char*)"Base Of Code", sbuff);
+						exef->AddProp(CSTR("Major Linker Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, optionalHdr[3]);
+						exef->AddProp(CSTR("Minor Linker Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[4]));
+						exef->AddProp(CSTR("Size Of Code"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[8]));
+						exef->AddProp(CSTR("Size Of Initialized Data"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[12]));
+						exef->AddProp(CSTR("Size Of Uninitialized Data"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[16]));
+						exef->AddProp(CSTR("Address Of Entry Point"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[20]));
+						exef->AddProp(CSTR("Base Of Code"), CSTRP(sbuff, sptr));
 						if (magic == 0x10b)
 						{
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[24]));
-							exef->AddProp((const UTF8Char*)"Base Of Data", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[28]));
-							exef->AddProp((const UTF8Char*)"Image Base", sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[24]));
+							exef->AddProp(CSTR("Base Of Data"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[28]));
+							exef->AddProp(CSTR("Image Base"), CSTRP(sbuff, sptr));
 						}
 						else
 						{
-							Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt64(&optionalHdr[24]));
-							exef->AddProp((const UTF8Char*)"Image Base", sbuff);
+							sptr = Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt64(&optionalHdr[24]));
+							exef->AddProp(CSTR("Image Base"), CSTRP(sbuff, sptr));
 						}
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[32]));
-						exef->AddProp((const UTF8Char*)"Section Alignment", sbuff);
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[36]));
-						exef->AddProp((const UTF8Char*)"File Alignment", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[40]));
-						exef->AddProp((const UTF8Char*)"Major Operating System Version", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[42]));
-						exef->AddProp((const UTF8Char*)"Minor Operating System Version", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[44]));
-						exef->AddProp((const UTF8Char*)"Major Image Version", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[46]));
-						exef->AddProp((const UTF8Char*)"Minor Image Version", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[48]));
-						exef->AddProp((const UTF8Char*)"Major Subsystem Version", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[50]));
-						exef->AddProp((const UTF8Char*)"Minor Subsystem Version", sbuff);
-						Text::StrInt32(sbuff, ReadInt32(&optionalHdr[52]));
-						exef->AddProp((const UTF8Char*)"Win32 Version Value", sbuff);
-						Text::StrUInt32(sbuff, sizeOfImage = ReadUInt32(&optionalHdr[56]));
-						exef->AddProp((const UTF8Char*)"Size Of Image", sbuff);
-						Text::StrUInt32(sbuff, ReadUInt32(&optionalHdr[60]));
-						exef->AddProp((const UTF8Char*)"Size Of Headers", sbuff);
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[64]));
-						exef->AddProp((const UTF8Char*)"Check Sum", sbuff);
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[32]));
+						exef->AddProp(CSTR("Section Alignment"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[36]));
+						exef->AddProp(CSTR("File Alignment"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[40]));
+						exef->AddProp(CSTR("Major Operating System Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[42]));
+						exef->AddProp(CSTR("Minor Operating System Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[44]));
+						exef->AddProp(CSTR("Major Image Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[46]));
+						exef->AddProp(CSTR("Minor Image Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[48]));
+						exef->AddProp(CSTR("Major Subsystem Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&optionalHdr[50]));
+						exef->AddProp(CSTR("Minor Subsystem Version"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[52]));
+						exef->AddProp(CSTR("Win32 Version Value"), CSTRP(sbuff, sptr));
+						sptr = Text::StrUInt32(sbuff, sizeOfImage = ReadUInt32(&optionalHdr[56]));
+						exef->AddProp(CSTR("Size Of Image"), CSTRP(sbuff, sptr));
+						sptr = Text::StrUInt32(sbuff, ReadUInt32(&optionalHdr[60]));
+						exef->AddProp(CSTR("Size Of Headers"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[64]));
+						exef->AddProp(CSTR("Check Sum"), CSTRP(sbuff, sptr));
 						Int32 subsys = ReadUInt16(&optionalHdr[68]);
 						sptr = Text::StrInt32(sbuff, subsys);
 						switch (subsys)
 						{
 						case 0:
-							Text::StrConcatC(sptr, UTF8STRC(" Unknown"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Unknown"));
 							break;
 						case 1:
-							Text::StrConcatC(sptr, UTF8STRC(" Native/Device Driver"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Native/Device Driver"));
 							break;
 						case 2:
-							Text::StrConcatC(sptr, UTF8STRC(" Windows GUI"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Windows GUI"));
 							break;
 						case 3:
-							Text::StrConcatC(sptr, UTF8STRC(" Console"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Console"));
 							break;
 						case 7:
-							Text::StrConcatC(sptr, UTF8STRC(" POSIX"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" POSIX"));
 							break;
 						case 9:
-							Text::StrConcatC(sptr, UTF8STRC(" Windows CE"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" Windows CE"));
 							break;
 						case 10:
-							Text::StrConcatC(sptr, UTF8STRC(" EFI application"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" EFI application"));
 							break;
 						case 11:
-							Text::StrConcatC(sptr, UTF8STRC(" EFI driver with boot services"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" EFI driver with boot services"));
 							break;
 						case 12:
-							Text::StrConcatC(sptr, UTF8STRC(" EFI driver with run-time services"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" EFI driver with run-time services"));
 							break;
 						case 13:
-							Text::StrConcatC(sptr, UTF8STRC(" EFI ROM image"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" EFI ROM image"));
 							break;
 						case 14:
-							Text::StrConcatC(sptr, UTF8STRC(" XBOX"));
+							sptr = Text::StrConcatC(sptr, UTF8STRC(" XBOX"));
 							break;
 						}
-						exef->AddProp((const UTF8Char*)"Subsystem", sbuff);
-						Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&optionalHdr[70]));
-						exef->AddProp((const UTF8Char*)"DLL Characteristics", sbuff);
+						exef->AddProp(CSTR("Subsystem"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&optionalHdr[70]));
+						exef->AddProp(CSTR("DLL Characteristics"), CSTRP(sbuff, sptr));
 						if (magic == 0x10b)
 						{
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[72]));
-							exef->AddProp((const UTF8Char*)"Size Of Stack Reserve", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[76]));
-							exef->AddProp((const UTF8Char*)"Size Of Stack Commit", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[80]));
-							exef->AddProp((const UTF8Char*)"Size Of Heap Reserve", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[84]));
-							exef->AddProp((const UTF8Char*)"Size Of Heap Commit", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[88]));
-							exef->AddProp((const UTF8Char*)"Loader Flags", sbuff);
-							Text::StrUInt32(sbuff, rvaSize = ReadUInt32(&optionalHdr[92]));
-							exef->AddProp((const UTF8Char*)"Number Of Rva And Sizes", sbuff);
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[72]));
+							exef->AddProp(CSTR("Size Of Stack Reserve"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[76]));
+							exef->AddProp(CSTR("Size Of Stack Commit"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[80]));
+							exef->AddProp(CSTR("Size Of Heap Reserve"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[84]));
+							exef->AddProp(CSTR("Size Of Heap Commit"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[88]));
+							exef->AddProp(CSTR("Loader Flags"), CSTRP(sbuff, sptr));
+							sptr = Text::StrUInt32(sbuff, rvaSize = ReadUInt32(&optionalHdr[92]));
+							exef->AddProp(CSTR("Number Of Rva And Sizes"), CSTRP(sbuff, sptr));
 							ofst = 96;
 						}
 						else
 						{
-							Text::StrInt64(sbuff, ReadInt64(&optionalHdr[72]));
-							exef->AddProp((const UTF8Char*)"Size Of Stack Reserve", sbuff);
-							Text::StrInt64(sbuff, ReadInt64(&optionalHdr[80]));
-							exef->AddProp((const UTF8Char*)"Size Of Stack Commit", sbuff);
-							Text::StrInt64(sbuff, ReadInt64(&optionalHdr[88]));
-							exef->AddProp((const UTF8Char*)"Size Of Heap Reserve", sbuff);
-							Text::StrInt64(sbuff, ReadInt64(&optionalHdr[96]));
-							exef->AddProp((const UTF8Char*)"Size Of Heap Commit", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[104]));
-							exef->AddProp((const UTF8Char*)"Loader Flags", sbuff);
-							Text::StrUInt32(sbuff, rvaSize = ReadUInt32(&optionalHdr[108]));
-							exef->AddProp((const UTF8Char*)"Number Of Rva And Sizes", sbuff);
+							sptr = Text::StrInt64(sbuff, ReadInt64(&optionalHdr[72]));
+							exef->AddProp(CSTR("Size Of Stack Reserve"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt64(sbuff, ReadInt64(&optionalHdr[80]));
+							exef->AddProp(CSTR("Size Of Stack Commit"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt64(sbuff, ReadInt64(&optionalHdr[88]));
+							exef->AddProp(CSTR("Size Of Heap Reserve"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt64(sbuff, ReadInt64(&optionalHdr[96]));
+							exef->AddProp(CSTR("Size Of Heap Commit"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[104]));
+							exef->AddProp(CSTR("Loader Flags"), CSTRP(sbuff, sptr));
+							sptr = Text::StrUInt32(sbuff, rvaSize = ReadUInt32(&optionalHdr[108]));
+							exef->AddProp(CSTR("Number Of Rva And Sizes"), CSTRP(sbuff, sptr));
 							ofst = 112;
 						}
 						if (rvaSize >= 16)
 						{
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 0]));
-							exef->AddProp((const UTF8Char*)"Export Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 4]));
-							exef->AddProp((const UTF8Char*)"Export Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 8]));
-							exef->AddProp((const UTF8Char*)"Import Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 12]));
-							exef->AddProp((const UTF8Char*)"Import Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 16]));
-							exef->AddProp((const UTF8Char*)"Resource Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 20]));
-							exef->AddProp((const UTF8Char*)"Resource Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 24]));
-							exef->AddProp((const UTF8Char*)"Exception Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 28]));
-							exef->AddProp((const UTF8Char*)"Exception Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 32]));
-							exef->AddProp((const UTF8Char*)"Certificate Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 36]));
-							exef->AddProp((const UTF8Char*)"Certificate Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 40]));
-							exef->AddProp((const UTF8Char*)"Base Relocation Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 44]));
-							exef->AddProp((const UTF8Char*)"Base Relocation Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 48]));
-							exef->AddProp((const UTF8Char*)"Debug Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 52]));
-							exef->AddProp((const UTF8Char*)"Debug Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 64]));
-							exef->AddProp((const UTF8Char*)"Global Ptr. Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 68]));
-							exef->AddProp((const UTF8Char*)"Global Ptr. Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 72]));
-							exef->AddProp((const UTF8Char*)"TLS Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 76]));
-							exef->AddProp((const UTF8Char*)"TLS Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 80]));
-							exef->AddProp((const UTF8Char*)"Load Config Table Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 84]));
-							exef->AddProp((const UTF8Char*)"Load Config Table Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 88]));
-							exef->AddProp((const UTF8Char*)"Bound Import Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 92]));
-							exef->AddProp((const UTF8Char*)"Bound Import Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 96]));
-							exef->AddProp((const UTF8Char*)"IAT Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 100]));
-							exef->AddProp((const UTF8Char*)"IAT Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 104]));
-							exef->AddProp((const UTF8Char*)"Delay Import Descriptor Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 108]));
-							exef->AddProp((const UTF8Char*)"Delay Import Descriptor Size", sbuff);
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 112]));
-							exef->AddProp((const UTF8Char*)"CLR Runtime Header Address", sbuff);
-							Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 116]));
-							exef->AddProp((const UTF8Char*)"CLR Runtime Size", sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 0]));
+							exef->AddProp(CSTR("Export Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 4]));
+							exef->AddProp(CSTR("Export Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 8]));
+							exef->AddProp(CSTR("Import Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 12]));
+							exef->AddProp(CSTR("Import Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 16]));
+							exef->AddProp(CSTR("Resource Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 20]));
+							exef->AddProp(CSTR("Resource Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 24]));
+							exef->AddProp(CSTR("Exception Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 28]));
+							exef->AddProp(CSTR("Exception Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 32]));
+							exef->AddProp(CSTR("Certificate Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 36]));
+							exef->AddProp(CSTR("Certificate Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 40]));
+							exef->AddProp(CSTR("Base Relocation Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 44]));
+							exef->AddProp(CSTR("Base Relocation Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 48]));
+							exef->AddProp(CSTR("Debug Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 52]));
+							exef->AddProp(CSTR("Debug Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 64]));
+							exef->AddProp(CSTR("Global Ptr. Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 68]));
+							exef->AddProp(CSTR("Global Ptr. Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 72]));
+							exef->AddProp(CSTR("TLS Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 76]));
+							exef->AddProp(CSTR("TLS Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 80]));
+							exef->AddProp(CSTR("Load Config Table Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 84]));
+							exef->AddProp(CSTR("Load Config Table Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 88]));
+							exef->AddProp(CSTR("Bound Import Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 92]));
+							exef->AddProp(CSTR("Bound Import Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 96]));
+							exef->AddProp(CSTR("IAT Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 100]));
+							exef->AddProp(CSTR("IAT Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 104]));
+							exef->AddProp(CSTR("Delay Import Descriptor Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 108]));
+							exef->AddProp(CSTR("Delay Import Descriptor Size"), CSTRP(sbuff, sptr));
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&optionalHdr[ofst + 112]));
+							exef->AddProp(CSTR("CLR Runtime Header Address"), CSTRP(sbuff, sptr));
+							sptr = Text::StrInt32(sbuff, ReadInt32(&optionalHdr[ofst + 116]));
+							exef->AddProp(CSTR("CLR Runtime Size"), CSTRP(sbuff, sptr));
 						}
 
-						Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), sizeOfOptionalHeader + peOfst + 24);
-						exef->AddProp((const UTF8Char*)"End Of Optional Header", sbuff);
+						sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), sizeOfOptionalHeader + peOfst + 24);
+						exef->AddProp(CSTR("End Of Optional Header"), CSTRP(sbuff, sptr));
 
 						UInt32 rva;
 //						UInt32 tabSize;
@@ -516,7 +516,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Name"));
 							sptr = Text::StrConcatS(sbuff, &sectionHeaders[sOfst], 9);
-							exef->AddProp(sb.ToString(), sbuff);
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							if (virtSize < dataSize)
 							{
@@ -553,64 +553,64 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Virtual Size"));
-							Text::StrUInt32(sbuff, virtSize);
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrUInt32(sbuff, virtSize);
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Virtual Address"));
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), virtAddr);
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), virtAddr);
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Size Of Raw Data"));
-							Text::StrUInt32(sbuff, dataSize);
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrUInt32(sbuff, dataSize);
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Pointer To Raw Data"));
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), dataAddr);
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), dataAddr);
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Pointer To Relocations"));
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 24]));
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 24]));
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Pointer To Line numbers"));
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 28]));
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 28]));
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Number Of Relocations"));
-							Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 32]));
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 32]));
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Number Of Line numbers"));
-							Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 34]));
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrInt32(sbuff, ReadUInt16(&sectionHeaders[sOfst + 34]));
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Section "));
 							sb.AppendUOSInt(i);
 							sb.AppendC(UTF8STRC(" Characteristics"));
-							Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 36]));
-							exef->AddProp(sb.ToString(), sbuff);
+							sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&sectionHeaders[sOfst + 36]));
+							exef->AddProp(sb.ToCString(), CSTRP(sbuff, sptr));
 
 							if (dataSize > 0)
 							{
@@ -640,7 +640,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 									break;
 								}
 								sptr = Text::StrConcatS(sbuff, &exeImage[nameRVA], 64);
-								j = exef->AddImportModule({sbuff, (UOSInt)(sptr - sbuff)});
+								j = exef->AddImportModule(CSTRP(sbuff, sptr));
 								if (magic == 0x10b)
 								{
 									UInt32 funcRVA;
@@ -651,13 +651,13 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 											break;
 										if (funcRVA & 0x80000000)
 										{
-											Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("(by ordinal ")), funcRVA & 0x7fff), UTF8STRC(")"));
-											exef->AddImportFunc(j, sbuff);
+											sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("(by ordinal ")), funcRVA & 0x7fff), UTF8STRC(")"));
+											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										else
 										{
-											Text::StrConcatC(sbuff, &exeImage[funcRVA + 2], 64);
-											exef->AddImportFunc(j, sbuff);
+											sptr = Text::StrConcatC(sbuff, &exeImage[funcRVA + 2], 64);
+											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										ilut += 4;
 									}
@@ -672,13 +672,13 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 											break;
 										if (funcRVA & 0x8000000000000000LL)
 										{
-											Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("(by ordinal ")), (Int32)(funcRVA & 0x7fff)), UTF8STRC(")"));
-											exef->AddImportFunc(j, sbuff);
+											sptr = Text::StrConcatC(Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("(by ordinal ")), (Int32)(funcRVA & 0x7fff)), UTF8STRC(")"));
+											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										else
 										{
-											Text::StrConcatC(sbuff, &exeImage[(funcRVA + 2) & 0x7fffffff], 64);
-											exef->AddImportFunc(j, sbuff);
+											sptr = Text::StrConcatC(sbuff, &exeImage[(funcRVA + 2) & 0x7fffffff], 64);
+											exef->AddImportFunc(j, CSTRP(sbuff, sptr));
 										}
 										ilut += 8;
 									}
@@ -707,7 +707,7 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 									if (rva == 0)
 										break;
 									sptr = Text::StrConcatS(sbuff, &exeImage[rva], 64);
-									exef->AddExportFunc({sbuff, (UOSInt)(sptr - sbuff)});
+									exef->AddExportFunc(CSTRP(sbuff, sptr));
 									namePtrRVA += 4;
 								}
 							}
@@ -726,55 +726,55 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 			MemCopyNO(neBuff, peBuff, 24);
 			fd->GetRealData(peOfst + 24, 40, &neBuff[24]);
 
-			exef->AddProp((const UTF8Char*)"Extended Header Format", (const UTF8Char*)"New Executable");
-			Text::StrInt32(sbuff, neBuff[2]);
-			exef->AddProp((const UTF8Char*)"Version of this linker", sbuff);
-			Text::StrInt32(sbuff, neBuff[3]);
-			exef->AddProp((const UTF8Char*)"Revision of this linker", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[4]));
-			exef->AddProp((const UTF8Char*)"Entry table file offset", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[6]));
-			exef->AddProp((const UTF8Char*)"Number of bytes in the entry table", sbuff);
-			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&neBuff[8]));
-			exef->AddProp((const UTF8Char*)"32-bit CRC of entire contents of file", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[12]));
-			exef->AddProp((const UTF8Char*)"Flag word", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[14]));
-			exef->AddProp((const UTF8Char*)"Segment number of automatic data segment", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[16]));
-			exef->AddProp((const UTF8Char*)"Initial size, in bytes, of dynamic heap added to the data segment", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[18]));
-			exef->AddProp((const UTF8Char*)"Initial size, in bytes, of stack added to the data segment", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, ReadUInt16(&neBuff[22])), UTF8STRC(":")), ReadUInt16(&neBuff[20]));
-			exef->AddProp((const UTF8Char*)"CS:IP", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, ReadUInt16(&neBuff[26])), UTF8STRC(":")), ReadUInt16(&neBuff[24]));
-			exef->AddProp((const UTF8Char*)"SS:SP", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[28]));
-			exef->AddProp((const UTF8Char*)"Number of entries in the Segment Table", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[30]));
-			exef->AddProp((const UTF8Char*)"Number of entries in the Module Reference Table", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[32]));
-			exef->AddProp((const UTF8Char*)"Number of bytes in the Non-Resident Name Table", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[34]));
-			exef->AddProp((const UTF8Char*)"Segment Table file offset", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[36]));
-			exef->AddProp((const UTF8Char*)"Resource Table file offset", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[38]));
-			exef->AddProp((const UTF8Char*)"Resident Name Table file offset", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[40]));
-			exef->AddProp((const UTF8Char*)"Module Reference Table file offset", sbuff);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[42]));
-			exef->AddProp((const UTF8Char*)"Imported Names Table file offset", sbuff);
-			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&neBuff[44]));
-			exef->AddProp((const UTF8Char*)"Non-Resident Name Table offset", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[48]));
-			exef->AddProp((const UTF8Char*)"Number of movable entries in the Entry Table", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[50]));
-			exef->AddProp((const UTF8Char*)"Logical sector alignment shift count", sbuff);
-			Text::StrInt32(sbuff, ReadUInt16(&neBuff[52]));
-			exef->AddProp((const UTF8Char*)"Number of resource entries", sbuff);
-			Text::StrInt32(sbuff, neBuff[54]);
-			exef->AddProp((const UTF8Char*)"Executable type", sbuff);
+			exef->AddProp(CSTR("Extended Header Format"), CSTR("New Executable"));
+			sptr = Text::StrInt32(sbuff, neBuff[2]);
+			exef->AddProp(CSTR("Version of this linker"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, neBuff[3]);
+			exef->AddProp(CSTR("Revision of this linker"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[4]));
+			exef->AddProp(CSTR("Entry table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[6]));
+			exef->AddProp(CSTR("Number of bytes in the entry table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&neBuff[8]));
+			exef->AddProp(CSTR("32-bit CRC of entire contents of file"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[12]));
+			exef->AddProp(CSTR("Flag word"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[14]));
+			exef->AddProp(CSTR("Segment number of automatic data segment"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[16]));
+			exef->AddProp(CSTR("Initial size, in bytes, of dynamic heap added to the data segment"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[18]));
+			exef->AddProp(CSTR("Initial size, in bytes, of stack added to the data segment"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, ReadUInt16(&neBuff[22])), UTF8STRC(":")), ReadUInt16(&neBuff[20]));
+			exef->AddProp(CSTR("CS:IP"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(Text::StrHexVal16(sbuff, ReadUInt16(&neBuff[26])), UTF8STRC(":")), ReadUInt16(&neBuff[24]));
+			exef->AddProp(CSTR("SS:SP"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[28]));
+			exef->AddProp(CSTR("Number of entries in the Segment Table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[30]));
+			exef->AddProp(CSTR("Number of entries in the Module Reference Table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[32]));
+			exef->AddProp(CSTR("Number of bytes in the Non-Resident Name Table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[34]));
+			exef->AddProp(CSTR("Segment Table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[36]));
+			exef->AddProp(CSTR("Resource Table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[38]));
+			exef->AddProp(CSTR("Resident Name Table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[40]));
+			exef->AddProp(CSTR("Module Reference Table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&neBuff[42]));
+			exef->AddProp(CSTR("Imported Names Table file offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt32(&neBuff[44]));
+			exef->AddProp(CSTR("Non-Resident Name Table offset"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[48]));
+			exef->AddProp(CSTR("Number of movable entries in the Entry Table"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[50]));
+			exef->AddProp(CSTR("Logical sector alignment shift count"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadUInt16(&neBuff[52]));
+			exef->AddProp(CSTR("Number of resource entries"), CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, neBuff[54]);
+			exef->AddProp(CSTR("Executable type"), CSTRP(sbuff, sptr));
 
 			UOSInt tableStart;
 			UOSInt tableSize;
@@ -791,8 +791,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 				j = 0;
 				while (j < tableSize && nameTable[j] != 0)
 				{
-					Text::StrConcatC(sbuff, &nameTable[j + 1], nameTable[j]);
-					exef->AddProp((const UTF8Char*)"ResidentName", sbuff);
+					sptr = Text::StrConcatC(sbuff, &nameTable[j + 1], nameTable[j]);
+					exef->AddProp(CSTR("ResidentName"), CSTRP(sbuff, sptr));
 
 					i++;
 					j += (UOSInt)nameTable[j] + 1;
@@ -810,8 +810,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 				j = 0;
 				while (j < tableSize && nameTable[j] != 0)
 				{
-					Text::StrConcatC(sbuff, &nameTable[j + 1], nameTable[j]);
-					exef->AddProp((const UTF8Char*)"NonResidentName", sbuff);
+					sptr = Text::StrConcatC(sbuff, &nameTable[j + 1], nameTable[j]);
+					exef->AddProp(CSTR("NonResidentName"), CSTRP(sbuff, sptr));
 
 					i++;
 					j += (UOSInt)nameTable[j] + 1;
@@ -826,8 +826,8 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 			{
 				nameTable = MemAlloc(UInt8, tableSize);
 				fd->GetRealData(tableStart, tableSize, nameTable);
-				Text::StrInt32(sbuff, ReadUInt16(&nameTable[0]));
-				exef->AddProp((const UTF8Char*)"Resource Table: Alignment shift count", sbuff);
+				sptr = Text::StrInt32(sbuff, ReadUInt16(&nameTable[0]));
+				exef->AddProp(CSTR("Resource Table: Alignment shift count"), CSTRP(sbuff, sptr));
 				j = 2;
 				while (j < tableSize)
 				{
@@ -837,30 +837,30 @@ IO::ParsedObject *Parser::FileParser::EXEParser::ParseFile(IO::IStreamData *fd, 
 						break;
 					}
 					IO::EXEFile::ResourceType rt = GetResourceType(ReadUInt16(&nameTable[j]) & 0x7fff);
-					Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j]));
-					exef->AddProp((const UTF8Char*)"-Type ID", sbuff);
+					sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j]));
+					exef->AddProp(CSTR("-Type ID"), CSTRP(sbuff, sptr));
 					i = ReadUInt16(&nameTable[j + 2]);
-					Text::StrOSInt(sbuff, ReadUInt16(&nameTable[j + 2]));
-					exef->AddProp((const UTF8Char*)"-Number of resources for this type", sbuff);
+					sptr = Text::StrOSInt(sbuff, ReadUInt16(&nameTable[j + 2]));
+					exef->AddProp(CSTR("-Number of resources for this type"), CSTRP(sbuff, sptr));
 					j += 8;
 					while (j < tableSize && i-- > 0)
 					{
-						Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(Text::StrInt32(sbuff, ReadUInt16(&nameTable[j])), UTF8STRC(" (0x")), (UInt32)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0]))), UTF8STRC(")"));
-						exef->AddProp((const UTF8Char*)"--File offset to the contents of the resource data", sbuff);
-						Text::StrInt32(sbuff, ReadUInt16(&nameTable[j + 2]));
-						exef->AddProp((const UTF8Char*)"--Length of the resource in the file", sbuff);
-						Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 4]));
-						exef->AddProp((const UTF8Char*)"--Flag word", sbuff);
-						Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 6]));
-						exef->AddProp((const UTF8Char*)"--Resource ID", sbuff);
+						sptr = Text::StrConcatC(Text::StrHexVal32(Text::StrConcatC(Text::StrInt32(sbuff, ReadUInt16(&nameTable[j])), UTF8STRC(" (0x")), (UInt32)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0]))), UTF8STRC(")"));
+						exef->AddProp(CSTR("--File offset to the contents of the resource data"), CSTRP(sbuff, sptr));
+						sptr = Text::StrInt32(sbuff, ReadUInt16(&nameTable[j + 2]));
+						exef->AddProp(CSTR("--Length of the resource in the file"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 4]));
+						exef->AddProp(CSTR("--Flag word"), CSTRP(sbuff, sptr));
+						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ReadUInt16(&nameTable[j + 6]));
+						exef->AddProp(CSTR("--Resource ID"), CSTRP(sbuff, sptr));
 
 						UInt8 *resBuff;
 						UOSInt resSize = (UOSInt)ReadUInt16(&nameTable[j + 2]) << ReadUInt16(&nameTable[0]);
 						resBuff = MemAlloc(UInt8, resSize);
 						fd->GetRealData((UInt64)(ReadUInt16(&nameTable[j]) << ReadUInt16(&nameTable[0])), resSize, resBuff);
 
-						Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("Resource 0x")), ReadUInt16(&nameTable[j + 6]));
-						exef->AddResource(sbuff, resBuff, resSize, 0, rt);
+						sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("Resource 0x")), ReadUInt16(&nameTable[j + 6]));
+						exef->AddResource(CSTRP(sbuff, sptr), resBuff, resSize, 0, rt);
 						MemFree(resBuff);
 						j += 12;
 					}
@@ -933,7 +933,7 @@ void Parser::FileParser::EXEParser::ParseResourceData(IO::EXEFile *exef, UInt32 
 	UInt32 size = ReadUInt32(&resBuff[resOfst + 4]);
 	UInt32 codePage = ReadUInt32(&resBuff[resOfst + 8]);
 	IO::EXEFile::ResourceType rt = GetResourceType(resType);
-	exef->AddResource(sbuff, &exeImage[dataRVA], size, codePage, rt);
+	exef->AddResource(CSTRP(sbuff, sbuffEnd), &exeImage[dataRVA], size, codePage, rt);
 }
 
 IO::EXEFile::ResourceType Parser::FileParser::EXEParser::GetResourceType(UInt32 resType)

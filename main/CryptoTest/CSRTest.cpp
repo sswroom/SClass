@@ -18,7 +18,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter console;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
-	UOSInt buffSize = IO::FileStream::LoadFile({sbuff, (UOSInt)(sptr - sbuff)}, buff, 4096);
+	UOSInt buffSize = IO::FileStream::LoadFile(CSTRP(sbuff, sptr), buff, 4096);
 	if (buffSize == 0)
 	{
 		console.WriteLineC(UTF8STRC("Error in loading ACMEKey.pem"));
@@ -63,7 +63,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("CSRTestOut.pem"));
-		Exporter::PEMExporter::ExportFile({sbuff, (UOSInt)(sptr - sbuff)}, csr);
+		Exporter::PEMExporter::ExportFile(CSTRP(sbuff, sptr), csr);
 		DEL_CLASS(csr);
 	}
 	else

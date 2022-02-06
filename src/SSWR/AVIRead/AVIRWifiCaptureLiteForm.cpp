@@ -24,6 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm::BSSStatus *bsss;
 	UInt8 id[8];
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	UInt64 maxIMAC;
 	Int32 maxRSSI;
@@ -40,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 			if (me->wlanScan-- <= 0)
 			{
 				const UTF8Char *csptr;
-				const UTF8Char *ssid;
+				Text::String *ssid;
 				Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 				Net::WirelessLAN::BSSInfo *bss;
 				me->wlanInterf->GetBSSList(&bssList);
@@ -103,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						wifiLog = MemAlloc(SSWR::AVIRead::AVIRWifiCaptureLiteForm::WifiLog, 1);
 						MemClear(wifiLog->neighbour, sizeof(wifiLog->neighbour));
 						MemCopyNO(wifiLog->mac, &id[2], 6);
-						wifiLog->ssid = Text::StrCopyNew(ssid);
+						wifiLog->ssid = ssid->Clone();
 						wifiLog->phyType = bss->GetPHYType();
 						wifiLog->freq = bss->GetFreq();
 						csptr = bss->GetManuf();
@@ -145,8 +146,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						}
 						me->wifiLogMap->Put(imac, wifiLog);
 
-						Text::StrHexBytes(sbuff, &id[2], 6, ':');
-						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), sbuff, wifiLog);
+						sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
+						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
 						me->lvLogWifi->SetSubItem(k, 1, Net::MACInfo::GetMACInfo(imac)->name);
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
 						Text::StrInt32(sbuff, wifiLog->phyType);
@@ -291,7 +292,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						MemCopyNO(bsss->mac, &id[2], 6);
 						if (ssid)
 						{
-							bsss->ssid = Text::StrCopyNew(ssid);
+							bsss->ssid = ssid->Clone();
 						}
 						else
 						{
@@ -301,7 +302,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 					}
 					else if (ssid && bsss->ssid == 0)
 					{
-						bsss->ssid = Text::StrCopyNew(ssid);
+						bsss->ssid = ssid->Clone();
 					}
 
 					i++;
@@ -412,7 +413,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		succ = true;
@@ -428,7 +429,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 			sb.ClearStr();
 			sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("\t"));
-			sb.AppendSlow(wifiLog->ssid);
+			sb.Append(wifiLog->ssid);
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendI32(wifiLog->phyType);
 			sb.AppendC(UTF8STRC("\t"));
@@ -522,7 +523,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	Bool succ = false;
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		succ = true;
@@ -544,7 +545,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 				sb.ClearStr();
 				sb.AppendHexBuff(wifiLog->mac, 6, ':', Text::LineBreakType::None);
 				sb.AppendC(UTF8STRC("\t"));
-				sb.AppendSlow(wifiLog->ssid);
+				sb.Append(wifiLog->ssid);
 				sb.AppendC(UTF8STRC("\t"));
 				sb.AppendI32(wifiLog->phyType);
 				sb.AppendC(UTF8STRC("\t"));
@@ -677,7 +678,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 	while (i-- > 0)
 	{
 		bss = bssList->GetItem(i);
-		SDEL_TEXT(bss->ssid);
+		SDEL_STRING(bss->ssid);
 		MemFree(bss);
 	}
 	DEL_CLASS(this->bssMap);
@@ -688,7 +689,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::~AVIRWifiCaptureLiteForm()
 	while (i-- > 0)
 	{
 		wifiLog = wifiLogList->GetItem(i);
-		Text::StrDelNew(wifiLog->ssid);
+		wifiLog->ssid->Release();
 		SDEL_TEXT(wifiLog->manuf);
 		SDEL_TEXT(wifiLog->model);
 		SDEL_TEXT(wifiLog->serialNum);

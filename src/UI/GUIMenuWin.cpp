@@ -454,7 +454,7 @@ UI::GUIMenu::~GUIMenu()
 	DestroyMenu((HMENU)this->hMenu);
 }
 
-UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 	UOSInt id = this->itemCnt++;
 	if (shortcutKey)
@@ -462,7 +462,7 @@ UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyM
 		WChar sbuff[256];
 		UTF8Char u8buff[64];
 		WChar *sptr;
-		sptr = Text::StrUTF8_WChar(sbuff, name, 0);
+		sptr = Text::StrUTF8_WChar(sbuff, name.v, 0);
 		sptr = Text::StrConcat(sptr, L"\t");
 		ToKeyDisplay(u8buff, keyModifier, shortcutKey);
 		sptr = Text::StrUTF8_WChar(sptr, u8buff, 0);
@@ -475,7 +475,7 @@ UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyM
 	}
 	else
 	{
-		const WChar *wptr = Text::StrToWCharNew(name);
+		const WChar *wptr = Text::StrToWCharNew(name.v);
 		AppendMenuW((HMENU)this->hMenu, 0, cmdId, wptr);
 		Text::StrDelNew(wptr);
 	}
@@ -488,13 +488,13 @@ void UI::GUIMenu::AddSeperator()
 	AppendMenuW((HMENU)this->hMenu, MF_SEPARATOR, id, 0);
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(const UTF8Char *name)
+UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 {
 	UI::GUIMenu *subMenu;
 	NEW_CLASS(subMenu, UI::GUIMenu(true));
 	this->subMenus->Add(subMenu);
 	
-	const WChar *wptr = Text::StrToWCharNew(name);
+	const WChar *wptr = Text::StrToWCharNew(name.v);
 	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UOSInt)subMenu->hMenu, wptr);
 	Text::StrDelNew(wptr);
 

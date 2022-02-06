@@ -71,55 +71,55 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	this->txtText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtText->SetReadOnly(true);
 
-	i = this->lvInfo->AddItem((const UTF8Char*)"Title", 0);
+	i = this->lvInfo->AddItem(CSTR("Title"), 0);
 	if (rssItem->title)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->title);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Link", 0);
+	i = this->lvInfo->AddItem(CSTR("Link"), 0);
 	if (rssItem->link)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->link);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Author", 0);
+	i = this->lvInfo->AddItem(CSTR("Author"), 0);
 	if (rssItem->author)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->author);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Category", 0);
+	i = this->lvInfo->AddItem(CSTR("Category"), 0);
 	if (rssItem->category)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->category);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Comments", 0);
+	i = this->lvInfo->AddItem(CSTR("Comments"), 0);
 	if (rssItem->comments)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->comments);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Enclosure", 0);
+	i = this->lvInfo->AddItem(CSTR("Enclosure"), 0);
 	if (rssItem->enclosure)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->enclosure);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"PubDate", 0);
+	i = this->lvInfo->AddItem(CSTR("PubDate"), 0);
 	if (rssItem->pubDate)
 	{
 		rssItem->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
 		this->lvInfo->SetSubItem(i, 1, sbuff);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"Source", 0);
+	i = this->lvInfo->AddItem(CSTR("Source"), 0);
 	if (rssItem->source)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->source);
 	}
-	i = this->lvInfo->AddItem((const UTF8Char*)"GUID", 0);
+	i = this->lvInfo->AddItem(CSTR("GUID"), 0);
 	if (rssItem->guid)
 	{
 		this->lvInfo->SetSubItem(i, 1, rssItem->guid);
 	}
 	if (rssItem->objectId)
 	{
-		i = this->lvInfo->AddItem((const UTF8Char*)"ObjectId", 0);
+		i = this->lvInfo->AddItem(CSTR("ObjectId"), 0);
 		this->lvInfo->SetSubItem(i, 1, rssItem->objectId);
 	}
 

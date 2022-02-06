@@ -80,7 +80,7 @@ void Net::HTTPClient::AddTimeHeader(Text::CString name, Data::DateTime *dt)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = Date2Str(sbuff, dt);
-	this->AddHeaderC(name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddHeaderC(name, CSTRP(sbuff, sptr));
 }
 
 void Net::HTTPClient::AddContentType(Text::CString contType)
@@ -93,7 +93,7 @@ void Net::HTTPClient::AddContentLength(UOSInt leng)
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(sbuff, leng);
-	this->AddHeaderC(CSTR("Content-Length"), {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddHeaderC(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 }
 
 UOSInt Net::HTTPClient::GetRespHeaderCnt()
@@ -188,7 +188,7 @@ Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 	this->EndRequest(0, 0);
 	if ((sptr = this->GetRespHeader(CSTR("Last-Modified"), sbuff)) != 0)
 	{
-		ParseDateStr(dt, {sbuff, (UOSInt)(sptr - sbuff)});
+		ParseDateStr(dt, CSTRP(sbuff, sptr));
 		return true;
 	}
 	return false;
@@ -260,7 +260,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 	else
 	{
 		sptr = dateStr.ConcatTo(sbuff);
-		i = Text::StrSplitP(ptrs, 6, {sbuff, (UOSInt)(sptr - sbuff)}, ' ');
+		i = Text::StrSplitP(ptrs, 6, CSTRP(sbuff, sptr), ' ');
 		if (i > 3)
 		{
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');

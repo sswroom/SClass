@@ -243,15 +243,15 @@ UOSInt UI::GUIListView::AddItem(Text::String *text, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj)
+UOSInt UI::GUIListView::AddItem(Text::CString text, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::String::NewNotNull(text);
+	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v, -1);
 	return ret;
 }
 
@@ -267,15 +267,15 @@ UOSInt UI::GUIListView::AddItem(const WChar *text, void *itemObj)
 	return ret;
 }
 
-UOSInt UI::GUIListView::AddItem(const UTF8Char *text, void *itemObj, UOSInt imageIndex)
+UOSInt UI::GUIListView::AddItem(Text::CString text, void *itemObj, UOSInt imageIndex)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::String::NewNotNull(text);
+	row->txt = Text::String::New(text);
 	gtk_list_store_append(data->listStore, &row->iter);
 	UOSInt ret = data->rows->Add(row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)text.v, -1);
 	return ret;
 }
 
@@ -343,15 +343,15 @@ UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::String *itemText, void *i
 	return index;
 }
 
-UOSInt UI::GUIListView::InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj)
+UOSInt UI::GUIListView::InsertItem(UOSInt index, Text::CString itemText, void *itemObj)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *row = MemAlloc(MyRow, 1);
 	row->data = itemObj;
-	row->txt = Text::String::NewNotNull(itemText);
+	row->txt = Text::String::New(itemText);
 	gtk_list_store_insert(data->listStore, &row->iter, (gint)index);
 	data->rows->Insert(index, row);
-	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText, -1);
+	gtk_list_store_set(data->listStore, &row->iter, 0, (const Char*)itemText.v, -1);
 	return index;
 }
 

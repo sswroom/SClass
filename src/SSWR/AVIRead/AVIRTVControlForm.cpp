@@ -239,7 +239,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("COM")), ports->GetItem(i));
-		this->cboPort->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)ports->GetItem(i));
+		this->cboPort->AddItem(CSTRP(sbuff, sptr), (void*)ports->GetItem(i));
 		i++;
 	}
 	if (j > 0)

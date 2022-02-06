@@ -57,7 +57,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 	{
 		sb.ClearStr();
 		reader->GetCurrPath(&sb);
-		i = this->lvXML->AddItem(sb.ToString(), 0);
+		i = this->lvXML->AddItem(sb.ToCString(), 0);
 		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader->GetNodeType()).v);
 		this->lvXML->SetSubItem(i, 2, reader->GetNodeText());
 	}

@@ -18,7 +18,7 @@ void SSWR::AVIRead::AVIRGISLineEditForm::LineStyleUpdated()
 	while (i < j)
 	{
 		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
-		this->lbLayer->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, this->lineLayers->GetItem(i));
+		this->lbLayer->AddItem(CSTRP(sbuff, sptr), this->lineLayers->GetItem(i));
 		i++;
 	}
 }
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::NewLayerClicked(void *userObj
 	UTF8Char *sptr;
 	UOSInt i = me->lineLayers->Add(lyr);
 	sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Layer")), (Int32)i);
-	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, lyr));
+	me->lbLayer->SetSelectedIndex(me->lbLayer->AddItem(CSTRP(sbuff, sptr), lyr));
 	me->UpdatePreview();
 }
 

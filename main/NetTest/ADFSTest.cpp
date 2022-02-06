@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sptr1 = IO::Path::AppendPathC(sbuff1, sptr1, UTF8STRC("ADFSCert.crt"));
 		sptr2 = IO::Path::GetProcessFileName(sbuff2);
 		sptr2 = IO::Path::AppendPathC(sbuff2, sptr2, UTF8STRC("ADFSCert.key"));
-		if (ssl->SetServerCerts({sbuff1, (UOSInt)(sptr1 - sbuff1)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)}))
+		if (ssl->SetServerCerts(CSTRP(sbuff1, sptr1), CSTRP(sbuff2, sptr2)))
 		{
 			initSucc = true;
 		}

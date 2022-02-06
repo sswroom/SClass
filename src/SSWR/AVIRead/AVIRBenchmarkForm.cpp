@@ -32,6 +32,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 {
 	UOSInt i;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Double oriT;
 	Double t;
 	Manage::HiResClock clk;
@@ -78,8 +79,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			{
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t * 2.0;
 
-				ByteDisp(sbuff, currSize);
-				i = this->lvCopy->AddItem(sbuff, 0);
+				sptr = ByteDisp(sbuff, currSize);
+				i = this->lvCopy->AddItem(CSTRP(sbuff, sptr), 0);
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvCopy->SetSubItem(i, 1, sbuff);
 
@@ -118,8 +119,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			{
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
-				ByteDisp(sbuff, currSize);
-				i = this->lvWrite->AddItem(sbuff, 0);
+				sptr = ByteDisp(sbuff, currSize);
+				i = this->lvWrite->AddItem(CSTRP(sbuff, sptr), 0);
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvWrite->SetSubItem(i, 1, sbuff);
 
@@ -158,8 +159,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 			{
 				Double rate = (Double)(currSize * (UInt64)loopCnt) / t;
 
-				ByteDisp(sbuff, currSize);
-				i = this->lvRead->AddItem(sbuff, 0);
+				sptr = ByteDisp(sbuff, currSize);
+				i = this->lvRead->AddItem(CSTRP(sbuff, sptr), 0);
 				Text::StrDoubleFmt(sbuff, rate, "0.0");
 				this->lvRead->SetSubItem(i, 1, sbuff);
 
@@ -286,22 +287,22 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 			sb.AppendC(UTF8STRC("RAM: "));
 			if (ram->deviceLocator)
 			{
-				sb.AppendSlow(ram->deviceLocator);
+				sb.Append(ram->deviceLocator);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->manufacturer)
 			{
-				sb.AppendSlow(ram->manufacturer);
+				sb.Append(ram->manufacturer);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->partNo)
 			{
-				sb.AppendSlow(ram->partNo);
+				sb.Append(ram->partNo);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (ram->sn)
 			{
-				sb.AppendSlow(ram->sn);
+				sb.Append(ram->sn);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendUOSInt(ram->defSpdMHz);

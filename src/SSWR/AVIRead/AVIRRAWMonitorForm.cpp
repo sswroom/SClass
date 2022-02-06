@@ -469,7 +469,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 			*sptr++ = ' ';
 			sptr = Text::StrInt32(sptr, hourInfo->hour);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(":00"));
-			me->lvDNSClient->AddItem(sbuff, 0);
+			me->lvDNSClient->AddItem(CSTRP(sbuff, sptr), 0);
 			Text::StrUInt64(sbuff, hourInfo->reqCount);
 			me->lvDNSClient->SetSubItem(i, 1, sbuff);
 			i++;
@@ -526,7 +526,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		{
 			pingIPInfo = pingIPList->GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, pingIPInfo->ip);
-			me->lbPingIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, pingIPInfo);
+			me->lbPingIP->AddItem(CSTRP(sbuff, sptr), pingIPInfo);
 			if (pingIPInfo == me->currPingIP)
 			{
 				me->lbPingIP->SetSelectedIndex(i);
@@ -616,7 +616,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		{
 			target = targetList.GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, target->ip);
-			me->lbDNSTarget->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, target);
+			me->lbDNSTarget->AddItem(CSTRP(sbuff, sptr), target);
 			if (target == currSel)
 			{
 				me->lbDNSTarget->SetSelectedIndex(i);
@@ -664,7 +664,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		{
 			cli = cliList.GetItem(i);
 			sptr = Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
-			me->lbDNSClient->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, cli);
+			me->lbDNSClient->AddItem(CSTRP(sbuff, sptr), cli);
 			if (cli == currSel)
 			{
 				me->lbDNSClient->SetSelectedIndex(i);
@@ -690,7 +690,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		{
 			ipLog = ipLogList.GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipLog->ip);
-			me->lbIPLog->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipLog);
+			me->lbIPLog->AddItem(CSTRP(sbuff, sptr), ipLog);
 			if (ipLog == currSel)
 			{
 				me->lbIPLog->SetSelectedIndex(i);
@@ -765,7 +765,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				ipTran = ipTrans->GetItem(i);
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipTran->ip);
-				me->lbIPTran->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, ipTran);
+				me->lbIPTran->AddItem(CSTRP(sbuff, sptr), ipTran);
 				if (currSel == ipTran)
 				{
 					me->lbIPTran->SetSelectedIndex(i);
@@ -861,8 +861,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				mac = macList->GetItem(i);
 				WriteMUInt64(macBuff, mac->macAddr);
-				Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
-				me->lvDevice->AddItem(sbuff, mac);
+				sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
+				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
 				me->lvDevice->SetSubItem(i, 1, Net::MACInfo::GetMACInfo(mac->macAddr)->name);
 				if (mac->name)
 				{
@@ -943,8 +943,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 			{
 				dhcp = dhcpList->GetItem(i);
 				WriteMUInt64(mac, dhcp->iMAC);
-				Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-				me->lvDHCP->AddItem(sbuff, dhcp);
+				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+				me->lvDHCP->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
 				me->lvDHCP->SetSubItem(i, 1, macInfo->name);
 				if (dhcp == currSel)
@@ -1159,22 +1159,22 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvIPTranInfo->SetShowGrid(true);
 	this->lvIPTranInfo->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvIPTranInfo->AddColumn((const UTF8Char*)"Value", 100);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv TCP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send TCP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv TCP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send TCP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv UDP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send UDP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv UDP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send UDP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv ICMP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send ICMP Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv ICMP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send ICMP Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv Other Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send Other Cnt", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Recv Other Size", 0);
-	this->lvIPTranInfo->AddItem((const UTF8Char*)"Send Other Size", 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv TCP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send TCP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv TCP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send TCP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv UDP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send UDP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv UDP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send UDP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv ICMP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send ICMP Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv ICMP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send ICMP Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv Other Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send Other Cnt"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Recv Other Size"), 0);
+	this->lvIPTranInfo->AddItem(CSTR("Send Other Size"), 0);
 	this->tpIPTranWhois = this->tcIPTran->AddTabPage((const UTF8Char*)"Whois");
 	NEW_CLASS(this->txtIPTranWhois, UI::GUITextBox(ui, this->tpIPTranWhois, CSTR(""), true));
 	this->txtIPTranWhois->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -1436,7 +1436,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 			if (ip == 0)
 				break;
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->cboIP->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+			this->cboIP->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 			k++;
 		}
 		DEL_CLASS(connInfo);

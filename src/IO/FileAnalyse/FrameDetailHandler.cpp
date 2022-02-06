@@ -23,7 +23,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddBool(UOSInt frameOfst, Text::CStrin
 		UTF8Char sbuff[16];
 		UTF8Char *sptr;
 		sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-		this->AddField(frameOfst, 1, name, {sbuff, (UOSInt)(sptr - sbuff)});
+		this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
 	}
 }
 
@@ -32,7 +32,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt64(UOSInt frameOfst, Text::CStri
 	UTF8Char sbuff[24];
 	UTF8Char *sptr;
 	sptr = Text::StrInt64(sbuff, v);
-	this->AddField(frameOfst, 8, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddInt64V(UOSInt frameOfst, UOSInt size, Text::CString name, Int64 v)
@@ -40,7 +40,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt64V(UOSInt frameOfst, UOSInt siz
 	UTF8Char sbuff[24];
 	UTF8Char *sptr;
 	sptr = Text::StrInt64(sbuff, v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddUInt64(UOSInt frameOfst, Text::CString name, UInt64 v)
@@ -48,7 +48,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64(UOSInt frameOfst, Text::CStr
 	UTF8Char sbuff[24];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt64(sbuff, v);
-	this->AddField(frameOfst, 8, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddUInt64V(UOSInt frameOfst, UOSInt size, Text::CString name, UInt64 v)
@@ -56,7 +56,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64V(UOSInt frameOfst, UOSInt si
 	UTF8Char sbuff[24];
 	UTF8Char *sptr;
 	sptr = Text::StrUInt64(sbuff, v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddInt(UOSInt frameOfst, UOSInt size, Text::CString name, OSInt v)
@@ -64,7 +64,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddInt(UOSInt frameOfst, UOSInt size, 
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrOSInt(sbuff, v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size, Text::CString name, UOSInt v)
@@ -72,7 +72,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt(UOSInt frameOfst, UOSInt size,
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrUOSInt(sbuff, v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt size, Text::CString name, UOSInt v, Text::CString vName)
@@ -114,7 +114,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddFloat(UOSInt frameOfst, UOSInt size
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = Text::StrDouble(sbuff, v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex8(UOSInt frameOfst, Text::CString name, UInt8 v)
@@ -122,7 +122,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8(UOSInt frameOfst, Text::CStrin
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, 1, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 1, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex16(UOSInt frameOfst, Text::CString name, UInt16 v)
@@ -130,7 +130,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex16(UOSInt frameOfst, Text::CStri
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, 2, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 2, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex24(UOSInt frameOfst, Text::CString name, UInt32 v)
@@ -138,7 +138,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex24(UOSInt frameOfst, Text::CStri
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal24(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, 3, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 3, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex32(UOSInt frameOfst, Text::CString name, UInt32 v)
@@ -146,7 +146,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex32(UOSInt frameOfst, Text::CStri
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, 4, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 4, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex64(UOSInt frameOfst, Text::CString name, UInt64 v)
@@ -154,7 +154,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex64(UOSInt frameOfst, Text::CStri
 	UTF8Char sbuff[19];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal64(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, 8, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 8, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt size, Text::CString name, UInt64 v)
@@ -162,7 +162,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex64V(UOSInt frameOfst, UOSInt siz
 	UTF8Char sbuff[19];
 	UTF8Char *sptr;
 	sptr = Text::StrHexVal64V(Text::StrConcatC(sbuff, UTF8STRC("0x")), v);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, Text::CString name, UInt8 v, Text::CString vName)
@@ -213,7 +213,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddStrS(UOSInt frameOfst, UOSInt size,
 	UTF8Char *sbuff = MemAlloc(UTF8Char, size + 1);
 	UTF8Char *sptr;
 	sptr = Text::StrConcatS(sbuff, vBuff, size + 1);
-	this->AddField(frameOfst, size, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, size, name, CSTRP(sbuff, sptr));
 	MemFree(sbuff);
 }
 
@@ -234,7 +234,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv4(UOSInt frameOfst, Text::CStrin
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadNUInt32(vBuff));
-	this->AddField(frameOfst, 4, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 4, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff)
@@ -244,7 +244,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddIPv6(UOSInt frameOfst, Text::CStrin
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV6(&addr, vBuff, 0);
 	sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
-	this->AddField(frameOfst, 16, name, {sbuff, (UOSInt)(sptr - sbuff)});
+	this->AddField(frameOfst, 16, name, CSTRP(sbuff, sptr));
 }
 
 void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CString name, const UInt8 *macBuff, Bool showVendor)

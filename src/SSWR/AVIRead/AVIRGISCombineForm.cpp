@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 		j = name->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
 		{
-			this->lbLayers->AddItem(&name->v[j + 1], 0);
+			this->lbLayers->AddItem({&name->v[j + 1], name->leng - j - 1}, 0);
 		}
 		else
 		{

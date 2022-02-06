@@ -227,7 +227,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	{
 		IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
-		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
 	{

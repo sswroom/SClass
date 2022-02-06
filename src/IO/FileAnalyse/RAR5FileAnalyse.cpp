@@ -755,7 +755,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("mtime"), {sbuff, (UOSInt)(sptr - sbuff)});
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("mtime"), CSTRP(sbuff, sptr));
 						packPtr = nextPtr2;
 					}
 					if (headerFlags & 4)
@@ -771,7 +771,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("ctime"), {sbuff, (UOSInt)(sptr - sbuff)});
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("ctime"), CSTRP(sbuff, sptr));
 						packPtr = nextPtr2;
 					}
 					if (headerFlags & 8)
@@ -787,7 +787,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 							nextPtr2 = packPtr + 8;
 						}
 						sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("atime"), {sbuff, (UOSInt)(sptr - sbuff)});
+						frame->AddField((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("atime"), CSTRP(sbuff, sptr));
 						packPtr = nextPtr2;
 					}
 				}

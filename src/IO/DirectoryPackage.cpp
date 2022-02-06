@@ -259,10 +259,10 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::CopyFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		ret = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -280,7 +280,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler
 		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -303,10 +303,10 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::MoveFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		ret = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -324,7 +324,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler
 		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -347,10 +347,10 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHa
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::CopyFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		ret = IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -368,7 +368,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHa
 		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -391,10 +391,10 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHa
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::MoveFile(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		ret = IO::FileUtil::MoveFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}
@@ -412,7 +412,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHa
 		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
-			this->AddFile({sbuff, (UOSInt)(sptr - sbuff)});
+			this->AddFile(CSTRP(sbuff, sptr));
 		}
 		return ret;
 	}

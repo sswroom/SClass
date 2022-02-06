@@ -45,7 +45,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, O
 	else
 	{
 		sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, lat), UTF8STRC(", ")), lon);
-		me->lbPoints->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+		me->lbPoints->AddItem(CSTRP(sbuff, sptr), 0);
 		me->points->Add(lon);
 		me->points->Add(lat);
 	}

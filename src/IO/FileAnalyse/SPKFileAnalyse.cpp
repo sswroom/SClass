@@ -268,7 +268,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 		frame->AddText(0, CSTR("Type=Data Block"));
 	}
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Size=")), pack->packSize);
-	frame->AddText(0, {sbuff, (UOSInt)(sptr - sbuff)});
+	frame->AddText(0, CSTRP(sbuff, sptr));
 
 	if (pack->fileName)
 	{
@@ -311,9 +311,9 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::SPKFileAnalyse::GetFrameDetail(UO
 				while (urlI < urlCnt)
 				{
 					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-Length")), urlI);
-					frame->AddUInt(endOfst + 8 + customOfst, 1, {sbuff, (UOSInt)(sptr - sbuff)}, packBuff[endOfst + 8 + customOfst]);
+					frame->AddUInt(endOfst + 8 + customOfst, 1, CSTRP(sbuff, sptr), packBuff[endOfst + 8 + customOfst]);
 					sptr = Text::StrUInt16(Text::StrConcatC(sbuff, UTF8STRC("-URL")), urlI);
-					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[endOfst + 8 + customOfst + 1]);
+					frame->AddStrC(endOfst + 8 + customOfst + 1, packBuff[endOfst + 8 + customOfst], CSTRP(sbuff, sptr), &packBuff[endOfst + 8 + customOfst + 1]);
 					customOfst += (UOSInt)packBuff[endOfst + 8 + customOfst] + 1;
 					urlI++;
 				}

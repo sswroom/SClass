@@ -43,7 +43,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	while (i <= j)
 	{
 		sptr = Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)i);
-		this->lbChar->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)i);
+		this->lbChar->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)i);
 		i++;
 	}
 }

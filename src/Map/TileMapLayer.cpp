@@ -450,7 +450,7 @@ Bool Map::TileMapLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	case 1:
 	case 2:
 		sptr = this->GetColumnName(sbuff, colIndex);
-		colDef->SetColName({sbuff, (UOSInt)(sptr - sbuff)});
+		colDef->SetColName(CSTRP(sbuff, sptr));
 		colDef->SetColType(this->GetColumnType(colIndex, &colSize));
 		colDef->SetColSize(colSize);
 		colDef->SetColDP(0);

@@ -79,7 +79,7 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 		return !ret;
 	}
 
-	if (this->env->LocationUpdate(currLoc->id, {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
+	if (this->env->LocationUpdate(currLoc->id, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
 		SDEL_STRING(this->currLoc->ename);
 		SDEL_STRING(this->currLoc->cname);
@@ -194,7 +194,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 		parId = parLoc->id;
 	}
 	
-	if (me->env->LocationAdd(parId, {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
+	if (me->env->LocationAdd(parId, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
 		me->currLoc = 0;
 		me->txtCName->SetText((const UTF8Char*)"");

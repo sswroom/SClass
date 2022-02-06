@@ -25,7 +25,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *topic;
+				Text::String *topic;
 				UInt8 *message;
 				UOSInt msgSize;
 				Bool updated;
@@ -40,7 +40,7 @@ namespace SSWR
 			Net::MQTTBroker *broker;
 			IO::LogTool *log;
 			UI::ListBoxLogger *logger;
-			Data::StringUTF8Map<TopicStatus*> *topicMap;
+			Data::StringMap<TopicStatus*> *topicMap;
 			Sync::Mutex *topicMut;
 			Bool topicListUpdated;
 
@@ -66,7 +66,7 @@ namespace SSWR
 			static void __stdcall OnSSLCertClicked(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnTopicUpdate(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize);
+			static void __stdcall OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 
 			void ServerStop();
 		public:

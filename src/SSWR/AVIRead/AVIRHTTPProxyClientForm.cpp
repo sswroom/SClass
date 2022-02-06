@@ -56,6 +56,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 	Net::HTTPClient *cli;
 	UInt8 buff[4096];
 	UTF8Char *sbuff;
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	me->threadRunning = true;
@@ -80,8 +81,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::ProcessThread(void *use
 			j = cli->GetRespHeaderCnt();
 			while (i < j)
 			{
-				cli->GetRespHeader(i, sbuff);
-				me->respHeaders->Add(Text::StrCopyNew(sbuff));
+				sptr = cli->GetRespHeader(i, sbuff);
+				me->respHeaders->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				i++;
 			}
 			me->respSvrAddr = *cli->GetSvrAddr();
@@ -174,7 +175,7 @@ void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 	i = this->respHeaders->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->respHeaders->RemoveAt(i));
+		this->respHeaders->RemoveAt(i)->Release();
 	}
 }
 
@@ -191,7 +192,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->threadToStop = false;
 	this->reqURL = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
-	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 79, false);

@@ -644,7 +644,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RIFFFileAnalyse::GetFrameDetail(U
 		while (i < j)
 		{
 			sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image ")), i), UTF8STRC(":"));
-			frame->AddText(14 + (i << 4), {sbuff, (UOSInt)(sptr - sbuff)});
+			frame->AddText(14 + (i << 4), CSTRP(sbuff, sptr));
 			frame->AddUInt(14 + (i << 4), 1, CSTR("Width"), packBuff[6 + (i << 4)]);
 			frame->AddUInt(15 + (i << 4), 1, CSTR("Height"), packBuff[7 + (i << 4)]);
 			frame->AddUInt(16 + (i << 4), 1, CSTR("Number of Color"), packBuff[8 + (i << 4)]);

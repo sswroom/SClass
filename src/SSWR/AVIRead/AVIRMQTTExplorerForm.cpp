@@ -362,12 +362,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 }
 
 
-void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Received message, topic = "));
-	sb.AppendSlow(topic);
+	sb.Append(topic);
 	sb.AppendC(UTF8STRC(", message = "));
 	sb.AppendC((const UTF8Char*)message, msgSize);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
@@ -380,7 +380,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishMessage(void *userO
 	if (topicSt == 0)
 	{
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus, 1);
-		topicSt->topic = Text::StrCopyNew(topic);
+		topicSt->topic = Text::String::New(topic);
 		topicSt->currValue = MemAlloc(UTF8Char, msgSize + 1);
 		Text::StrConcatC(topicSt->currValue, message, msgSize);
 		topicSt->currValueLen = msgSize;
@@ -512,7 +512,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::ClearTopics()
 	while (i-- > 0)
 	{
 		topicSt = topicList->GetItem(i);
-		Text::StrDelNew(topicSt->topic);
+		topicSt->topic->Release();
 		MemFree(topicSt->currValue);
 		MemFree(topicSt);
 	}
@@ -528,7 +528,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
+	NEW_CLASS(this->topicMap, Data::StringMap<SSWR::AVIRead::AVIRMQTTExplorerForm::TopicStatus*>());
 	this->currTopic = 0;
 	this->dispImg = 0;
 	this->cliCert = 0;

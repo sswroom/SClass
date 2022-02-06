@@ -51,15 +51,15 @@ namespace UI
 		Bool ClearAll();
 
 		UOSInt AddItem(Text::String *itemText, void *itemObj);
-		UOSInt AddItem(const UTF8Char *itemText, void *itemObj);
+		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
-		UOSInt AddItem(const UTF8Char *itemText, void *itemObj, UOSInt imageIndex);
+		UOSInt AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::String *text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);
-		UOSInt InsertItem(UOSInt index, const UTF8Char *itemText, void *itemObj);
+		UOSInt InsertItem(UOSInt index, Text::CString itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, const WChar *itemText, void *itemObj);
 		void *RemoveItem(UOSInt index);
 		void *GetItem(UOSInt index);

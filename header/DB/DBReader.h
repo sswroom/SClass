@@ -71,7 +71,7 @@ template <class T> Bool DB::DBReader::ReadAll(Data::ArrayList<T*> *outList, Data
 	{
 		this->GetName(i, sbuff);
 		sptr = DB::DBUtil::DB2FieldName(sbuff2, sbuff);
-		colMap2.Put({sbuff2, (UOSInt)(sptr - sbuff2)}, i);
+		colMap2.Put(CSTRP(sbuff2, sptr), i);
 
 		i++;
 	}

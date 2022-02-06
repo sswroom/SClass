@@ -22,7 +22,7 @@ namespace IO
 			BTDevice(void *internalData, void *hRadio, void *devInfo);
 			~BTDevice();
 
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			UInt8 *GetAddress();
 			UInt32 GetDevClass();
 			Bool IsConnected();

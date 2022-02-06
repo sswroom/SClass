@@ -32,6 +32,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 		UOSInt i;
 		UOSInt j;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		Data::ArrayList<Map::IMapDrawLayer*> layers;
 		Map::IMapDrawLayer *lyr;
 		me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
@@ -124,8 +125,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 			while (i < j)
 			{
 				sbuff[0] = 0;
-				lyr->GetColumnName(sbuff, i);
-				me->lvInfo->AddItem(sbuff, 0);
+				sptr = lyr->GetColumnName(sbuff, i);
+				me->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
 				lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
 				me->lvInfo->SetSubItem(i, 1, sbuff);
 				i++;

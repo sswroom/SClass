@@ -141,8 +141,8 @@ namespace IO
 		typedef struct
 		{
 			Int32 index;
-			const UTF8Char *name;
-			const UTF8Char *number;
+			Text::String *name;
+			Text::String *number;
 		} PBEntry;
 
 	protected:

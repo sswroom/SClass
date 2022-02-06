@@ -1119,7 +1119,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrandSelChg(void *userObj)
 		sptr = Text::StrConcat(sptr, discType->mid);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
 		sptr = Text::StrConcat(sptr, discType->name);
-		me->lbDVDName->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)discType);
+		me->lbDVDName->AddItem(CSTRP(sbuff, sptr), (void*)discType);
 
 		i++;
 	}

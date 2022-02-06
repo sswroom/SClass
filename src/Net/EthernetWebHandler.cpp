@@ -280,7 +280,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv4GetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv4GetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);
@@ -393,7 +393,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqv6GetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqv6GetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);
@@ -506,7 +506,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 			Net::DNSClient::RequestAnswer *ans;
 			Data::DateTime reqTime;
 			UInt32 ttl;
-			if (me->analyzer->DNSReqOthGetInfo({sbuff, (UOSInt)(sptr - sbuff)}, &ansList, &reqTime, &ttl))
+			if (me->analyzer->DNSReqOthGetInfo(CSTRP(sbuff, sptr), &ansList, &reqTime, &ttl))
 			{
 				sb.AppendC(UTF8STRC("<table border=\"1\"><tr><td>Request Name</td><td>"));
 				sb.AppendP(sbuff, sptr);

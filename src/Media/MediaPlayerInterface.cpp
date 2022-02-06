@@ -126,7 +126,7 @@ Bool Media::MediaPlayerInterface::OpenVideo(Media::MediaFile *mf)
 							{
 								IO::StmData::FileData *fd;
 								Media::MediaFile *audFile;
-								NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
+								NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 								audFile = (Media::MediaFile*)this->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 								DEL_CLASS(fd);
 								if (audFile)

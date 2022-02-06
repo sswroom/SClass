@@ -160,7 +160,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, const UTF8Char *topic, const UInt8 *message, UOSInt msgSize)
+void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize)
 {
 	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
 	SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus *topicSt;
@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTopicUpdate(void *userObj, c
 	else
 	{
 		topicSt = MemAlloc(SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus, 1);
-		topicSt->topic = Text::StrCopyNew(topic);
+		topicSt->topic = Text::String::New(topic);
 		topicSt->message = MemAlloc(UInt8, msgSize);
 		topicSt->msgSize = msgSize;
 		topicSt->updated = true;
@@ -215,7 +215,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->sslCert = 0;
 	this->sslKey = 0;
 	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicMap, Data::StringUTF8Map<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>());
+	NEW_CLASS(this->topicMap, Data::StringMap<SSWR::AVIRead::AVIRMQTTBrokerForm::TopicStatus*>());
 	this->topicListUpdated = false;
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::~AVIRMQTTBrokerForm()
 	while (i-- > 0)
 	{
 		topic = topicList->GetItem(i);
-		Text::StrDelNew(topic->topic);
+		topic->topic->Release();
 		MemFree(topic->message);
 		MemFree(topic);
 	}

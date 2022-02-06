@@ -16,7 +16,7 @@ namespace IO
 
 		struct DeviceInfo
 		{
-			const UTF8Char *desc;
+			Text::String *desc;
 			const UTF8Char *hwId;
 			const UTF8Char *service;
 			const UTF8Char *driver;
@@ -24,7 +24,7 @@ namespace IO
 
 		struct DriverInfo
 		{
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UInt64 fileSize;
 			const UTF8Char *creationDate;
 			const UTF8Char *version;

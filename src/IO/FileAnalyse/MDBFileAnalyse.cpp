@@ -190,7 +190,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, CSTRP(sbuff, sptr));
 				frame->AddHexBuff(24 + 0x62, 28, CSTR("Unknown"), &decBuff[0x62], true);
 			}
 			else
@@ -213,14 +213,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				WriteUInt32(&decBuff[0x4E], ReadUInt32(&decBuff[0x4E]) ^ ndays);
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&decBuff[0x2A], 20);
 				sptr[0] = 0;
-				frame->AddField(24 + 0x2A, 40, {UTF8STRC("Database Password")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(24 + 0x2A, 40, {UTF8STRC("Database Password")}, CSTRP(sbuff, sptr));
 				frame->AddHex32(24 + 0x52, CSTR("Unknown"), ReadUInt32(&decBuff[0x52]));
 				frame->AddUInt(24 + 0x56, 4, CSTR("System Collation"), ReadUInt32(&decBuff[0x56]));
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, CSTRP(sbuff, sptr));
 				frame->AddHexBuff(24 + 0x62, 30, CSTR("Unknown"), &decBuff[0x62], true);
 
 				frame->AddUInt(152, 4, CSTR("Unknown"), ReadUInt32(&packBuff[152]));
@@ -249,10 +249,10 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
-				frame->AddField(14 + i * 2, 2, {UTF8STRC("Record Offset")}, {sbuff, (UOSInt)(sptr - sbuff)});
+				frame->AddField(14 + i * 2, 2, {UTF8STRC("Record Offset")}, CSTRP(sbuff, sptr));
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
-				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, {sbuff, (UOSInt)(sptr - sbuff)}, &packBuff[thisOfst], true);
+				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, CSTRP(sbuff, sptr), &packBuff[thisOfst], true);
 				lastOfst = thisOfst;
 				i++;
 			}
@@ -325,11 +325,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name Size ")), i);
-				frame->AddUInt(ofst, 2, {sbuff, (UOSInt)(sptr - sbuff)}, colSize);
+				frame->AddUInt(ofst, 2, CSTRP(sbuff, sptr), colSize);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Column Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
-				frame->AddField(ofst + 2, colSize, {sbuff, (UOSInt)(sptr - sbuff)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)});
+				frame->AddField(ofst + 2, colSize, CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 				ofst += 2 + colSize;
 				i++;
 			}
@@ -387,11 +387,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 			{
 				UOSInt colSize = ReadUInt16(&packBuff[ofst]);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name Size ")), i);
-				frame->AddUInt(ofst, 2, {sbuff, (UOSInt)(sptr - sbuff)}, colSize);
+				frame->AddUInt(ofst, 2, CSTRP(sbuff, sptr), colSize);
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Index Name ")), i);
 				sptr2 = Text::StrUTF16_UTF8C(sbuff2, (const UTF16Char*)&packBuff[ofst + 2], colSize >> 1);
 				sptr2[0] = 0;
-				frame->AddField(ofst + 2, colSize, {sbuff, (UOSInt)(sptr - sbuff)}, {sbuff2, (UOSInt)(sptr2 - sbuff2)});
+				frame->AddField(ofst + 2, colSize, CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 				ofst += 2 + colSize;
 				i++;
 			}

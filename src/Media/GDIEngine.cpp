@@ -204,7 +204,7 @@ Media::DrawImage *Media::GDIEngine::CreateImageScn(void *hdc, OSInt left, OSInt 
 	return img;
 }
 
-Media::DrawImage *Media::GDIEngine::LoadImage(const UTF8Char *fileName)
+Media::DrawImage *Media::GDIEngine::LoadImage(Text::CString fileName)
 {
 	IO::FileStream *fstm;
 

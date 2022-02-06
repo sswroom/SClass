@@ -29,8 +29,8 @@ namespace Net
 
 		typedef struct
 		{
-			const UTF8Char *type;
-			const UTF8Char *value;
+			Text::String *type;
+			Text::String *value;
 		} SearchResItem;
 
 		typedef struct
@@ -79,7 +79,7 @@ namespace Net
 
 		static void SearchResultsFree(Data::ArrayList<SearchResObject*> *results);
 		static void SearchResObjectFree(SearchResObject *obj);
-		static void SearchResDisplay(const UTF8Char *type, const UTF8Char *value, Text::StringBuilderUTF8 *sb);
+		static void SearchResDisplay(Text::CString type, Text::CString value, Text::StringBuilderUTF8 *sb);
 	};
 }
 #endif

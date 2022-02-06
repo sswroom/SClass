@@ -22,6 +22,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 	if (j > 0)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 *sb;
 		Data::DateTime *dt;
 
@@ -32,8 +33,8 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 			sb->ClearStr();
 			this->logFile->GetLogMessage(this->logLevel, i, dt, sb, Text::LineBreakType::CRLF);
 			dt->ToLocalTime();
-			dt->ToString(sbuff);
-			k = this->lvLogs->AddItem(sbuff, 0);
+			sptr = dt->ToString(sbuff);
+			k = this->lvLogs->AddItem(CSTRP(sbuff, sptr), 0);
 			this->lvLogs->SetSubItem(k, 1, sb->ToString());
 
 			i++;

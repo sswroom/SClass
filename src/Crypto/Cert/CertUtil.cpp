@@ -542,7 +542,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		{
 			if (fileSize > 0 && fileSize <= sizeof(dataBuff))
 			{
-				if (IO::FileStream::LoadFile({sbuff, (UOSInt)(sptr2 - sbuff)}, dataBuff, sizeof(dataBuff)) == fileSize)
+				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
 					Text::String *s = Text::String::NewNotNull(sbuff);
 					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, s);

@@ -123,7 +123,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 //					printf("LangId = %d\r\n", langId);
 					if (langId)
 					{
-						lang = IO::IniFile::Parse({sbuff, (UOSInt)(sptr - sbuff)}, 65001);
+						lang = IO::IniFile::Parse(CSTRP(sbuff, sptr), 65001);
 						lang = this->langMap->Put(langId, lang);
 						if (lang)
 						{
@@ -1527,7 +1527,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				}
 
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				Bool succ = (fs->Write(fileCont, fileSize) == fileSize);
 				DEL_CLASS(fs);
 				if (succ)
@@ -1731,7 +1731,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 					sptr = Text::StrConcatC(sptr, &fileName[i], fileNameLen - i);
 				}
 				IO::FileStream *fs;
-				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				Bool succ = (fs->Write(fileCont, fileSize) == fileSize);
 				DEL_CLASS(fs);
 				if (succ)
@@ -1814,7 +1814,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 						sptr = Text::StrHexVal32(sptr, crcVal);
 						sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 						graphImg->SavePng(fs);
 						DEL_CLASS(fs);
 						this->eng->DeleteImage(graphImg);
@@ -3488,7 +3488,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 			Text::UTF8Reader *reader;
 			IO::FileStream *fs;
 			Text::PString sarr[4];
-			NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2 - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			NEW_CLASS(reader, Text::UTF8Reader(fs));
 			sb.ClearStr();
 			while (reader->ReadLine(&sb, 4096))
@@ -7295,7 +7295,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrInt32(sptr, book->id);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".pdf"));
-		NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		UInt64 fileLen = fs->GetLength();
 		if (fileLen <= 16)
 		{

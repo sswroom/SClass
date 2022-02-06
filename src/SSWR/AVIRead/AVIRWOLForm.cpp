@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 				if (ip == 0)
 					break;
 				sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
-				this->cboAdapter->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)(OSInt)ip);
+				this->cboAdapter->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)ip);
 				k++;
 			}
 		}

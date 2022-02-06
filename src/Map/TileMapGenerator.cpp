@@ -62,7 +62,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 	}
 
 	sptr = GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".db");
-	NEW_CLASS(sfs, IO::FileStream({sbuff2, (UOSInt)(sptr - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(sfs, IO::FileStream(CSTRP(sbuff2, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!sfs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(sfs, 65001));
@@ -119,7 +119,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	dimg2 = geng->CreateImage32(16, 16, Media::AT_NO_ALPHA);
 	dimg2->SetHDPI(96.0 * UOSInt2Double(this->osSize));
 	dimg2->SetVDPI(96.0 * UOSInt2Double(this->osSize));
-	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, {sbuff, (UOSInt)(sptr - sbuff)}, &params);
+	mcfg->DrawMap(dimg2, &view, &isLayerEmpty, mapSch, resizer, CSTRP(sbuff, sptr), &params);
 	mutUsage.BeginUse();
 	this->dbGenList->RemoveAt((UOSInt)this->dbGenList->SortedIndexOf(id));
 	dbEvt->Set();
@@ -225,7 +225,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	}
 	DEL_CLASS(mstm);
 
-	NEW_CLASS(dfs, IO::FileStream({sbuff2, (UOSInt)(sptr - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(dfs, IO::FileStream(CSTRP(sbuff2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	dimg->SavePng(dfs);
 	geng->DeleteImage(dimg);
 	DEL_CLASS(dfs);

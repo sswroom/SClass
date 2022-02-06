@@ -19,8 +19,8 @@ namespace Net
 			Text::String *typeVal;
 			UInt8 oid[32];
 			UOSInt oidLen;
-			Data::ArrayList<const UTF8Char *> *valName;
-			Data::ArrayList<const UTF8Char *> *valCont;
+			Data::ArrayList<Text::String *> *valName;
+			Data::ArrayList<Text::String *> *valCont;
 			ModuleInfo *impModule;
 			Bool parsed;
 		};

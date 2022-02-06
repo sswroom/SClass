@@ -106,7 +106,7 @@ void IO::BTCapturer::StoreStatus()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("bt"));
 	sptr = dt.ToString(sptr, "yyyyMMddHHmmss");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
-	if (btLog.StoreFile({sbuff, (UOSInt)(sptr - sbuff)}))
+	if (btLog.StoreFile(CSTRP(sbuff, sptr)))
 	{
 		if (this->lastFileName)
 		{

@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	keySize = b32.DecodeBin(sbKey.ToString(), sbKey.GetLength(), buff);
 	EntryInfo *entry;
 	entry = MemAlloc(EntryInfo, 1);
-	entry->name = Text::StrCopyNew(sbName.ToString());
+	entry->name = Text::String::New(sbName.ToCString());
 	if (type == 0)
 	{
 		NEW_CLASS(entry->otp, Crypto::HOTP(buff, keySize, 1));
@@ -165,7 +165,7 @@ SSWR::AVIRead::AVIROTPForm::~AVIROTPForm()
 	while (i-- > 0)
 	{
 		entry = this->entryList->GetItem(i);
-		Text::StrDelNew(entry->name);
+		entry->name->Release();
 		DEL_CLASS(entry->otp);
 		MemFree(entry);
 	}

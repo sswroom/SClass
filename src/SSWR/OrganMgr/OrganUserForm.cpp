@@ -38,14 +38,15 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[12];
+	UTF8Char *sptr;
 	OrganWebUser *user;
 	i = 0;
 	j = this->userList->GetCount();
 	while (i < j)
 	{
 		user = this->userList->GetItem(i);
-		Text::StrInt32(sbuff, user->id);
-		k = this->lvUser->AddItem(sbuff, user);
+		sptr = Text::StrInt32(sbuff, user->id);
+		k = this->lvUser->AddItem(CSTRP(sbuff, sptr), user);
 		this->lvUser->SetSubItem(k, 1, user->userName->v);
 		this->lvUser->SetSubItem(k, 2, user->watermark->v);
 		i++;

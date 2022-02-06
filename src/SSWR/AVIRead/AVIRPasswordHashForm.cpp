@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 	{
 		hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)i);
 		sptr = hash->GetName(sbuff);
-		this->cboHashType->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, (void*)i);
+		this->cboHashType->AddItem(CSTRP(sbuff, sptr), (void*)i);
 		DEL_CLASS(hash);
 		i++;
 	}

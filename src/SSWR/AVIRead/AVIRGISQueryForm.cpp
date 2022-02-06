@@ -74,13 +74,18 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->lvInfo->SetFullRowSelect(true);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UOSInt i = 0;
 	UOSInt j = this->lyr->GetColumnCnt();
 	while (i < j)
 	{
 		sbuff[0] = 0;
-		this->lyr->GetColumnName(sbuff, i);
-		this->lvInfo->AddItem(sbuff, 0);
+		sptr = this->lyr->GetColumnName(sbuff, i);
+		if (sptr == 0)
+		{
+			sptr = sbuff;
+		}
+		this->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 

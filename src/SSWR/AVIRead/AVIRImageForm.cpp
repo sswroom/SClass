@@ -658,7 +658,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	while (i < j)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Image")), i);
-		this->lbImages->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, 0);
+		this->lbImages->AddItem(CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	if (j > 0)

@@ -32,11 +32,11 @@ void Text::SearchIndexer::IndexString(const UTF8Char *str, Int64 key)
 		return;
 	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		Data::ArrayListInt64 *tmpVal = this->strIndex->Get({sbuff, (UOSInt)(sptr - sbuff)});
+		Data::ArrayListInt64 *tmpVal = this->strIndex->Get(CSTRP(sbuff, sptr));
 		if (tmpVal == 0)
 		{
 			NEW_CLASS(tmpVal, Data::ArrayListInt64());
-			this->strIndex->Put({sbuff, (UOSInt)(sptr - sbuff)}, tmpVal);
+			this->strIndex->Put(CSTRP(sbuff, sptr), tmpVal);
 		}
 		i = tmpVal->SortedIndexOf(key);
 		if (i < 0)
@@ -62,7 +62,7 @@ UOSInt Text::SearchIndexer::SearchString(Data::ArrayListInt64 *outArr, const UTF
 	NEW_CLASS(resultListCnt, Data::ArrayListInt32());
 	while ((sptr = this->ta->NextWord(sbuff, sess)) != 0)
 	{
-		tmpIndex = this->strIndex->Get({sbuff, (UOSInt)(sptr - sbuff)});
+		tmpIndex = this->strIndex->Get(CSTRP(sbuff, sptr));
 		if (tmpIndex == 0)
 		{
 			this->ta->EndAnalyze(sess);

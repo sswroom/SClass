@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::CIPParser::ParseFile(IO::IStreamData *fd, 
 
 	Map::CIPLayer2 *layer;
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".cip"));
-	NEW_CLASS(layer, Map::CIPLayer2({sbuff, (UOSInt)(sptr - sbuff)}));
+	NEW_CLASS(layer, Map::CIPLayer2(CSTRP(sbuff, sptr)));
 	if (layer->IsError())
 	{
 		DEL_CLASS(layer);

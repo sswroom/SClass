@@ -187,7 +187,7 @@ SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::
 		sptr = Text::StrUOSInt(sbuff, i);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
 		sptr = sdCard->GetName()->ConcatTo(sptr);
-		this->lbDevices->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, sdCard);
+		this->lbDevices->AddItem(CSTRP(sbuff, sptr), sdCard);
 		i++;
 	}
 }

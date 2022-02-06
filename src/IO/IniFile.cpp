@@ -38,7 +38,7 @@ IO::ConfigFile *IO::IniFile::ParseProgConfig(UInt32 codePage)
 	UTF8Char *sptr;
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"cfg");
-	return Parse({sbuff, (UOSInt)(sptr - sbuff)}, codePage);
+	return Parse(CSTRP(sbuff, sptr), codePage);
 }
 
 IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)

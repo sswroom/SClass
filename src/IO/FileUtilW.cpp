@@ -324,13 +324,13 @@ typedef struct
 	return writeSize == fileSize;
 }*/
 
-Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	IO::FileStream *fs1;
 	IO::FileStream *fs2;
 	IO::ActiveStreamReader *asr;
 	WChar wfile2[MAX_PATH];
-	Text::StrUTF8_WChar(wfile2, file2, 0);
+	Text::StrUTF8_WChar(wfile2, file2.v, 0);
 	if (fea == IO::FileUtil::FileExistAction::Fail)
 	{
 		if (IO::Path::GetPathTypeW(wfile2) != IO::Path::PathType::Unknown)
@@ -360,7 +360,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	UInt64 ramSize = 104857600;//MemGetRAMSize();
 	UInt64 writeSize = 0;
 	UInt64 writenSize;
-	Bool samePart = IO::FileUtil::IsSamePartition(file1, file2);
+	Bool samePart = IO::FileUtil::IsSamePartition(file1.v, file2.v);
 	UInt8 *buff;
 	if (fea == IO::FileUtil::FileExistAction::Continue)
 	{
@@ -386,7 +386,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 
 	if (progHdlr)
 	{
-		progHdlr->ProgressStart(file1, fileSize);
+		progHdlr->ProgressStart(file1.v, fileSize);
 	}
 	if (fileSize < 1048576)
 	{
@@ -460,7 +460,7 @@ Bool IO::FileUtil::CopyFile(const UTF8Char *file1, const UTF8Char *file2, FileEx
 	}
 	DEL_CLASS(fs2);
 	DEL_CLASS(fs1);
-	const WChar *wptr = Text::StrToWCharNew(file1);
+	const WChar *wptr = Text::StrToWCharNew(file1.v);
 	UInt32 attr = GetFileAttributesW(wptr);
 	Text::StrDelNew(wptr);
 	SetFileAttributesW(wfile2, attr);
@@ -541,6 +541,7 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *dptr;
+	UTF8Char *dptr2;
 	IO::Path::FindFileSession *sess;
 	const WChar *wptr;
 	wptr = Text::StrToWCharNew(srcDir);
@@ -569,12 +570,12 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	{
 		IO::Path::PathType pt;
 		Bool succ = true;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				Text::StrConcat(dptr, sptr);
-				if (!CopyFile(sbuff, dbuff, fea, progHdlr, bnt))
+				dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+				if (!CopyFile(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt))
 				{
 					succ = false;
 					break;
@@ -641,13 +642,13 @@ Bool IO::FileUtil::CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	}
 }*/
 
-Bool IO::FileUtil::MoveFile(const UTF8Char *srcFile, const UTF8Char *destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
-	Bool samePart = IsSamePartition(srcFile, destFile);
+	Bool samePart = IsSamePartition(srcFile.v, destFile.v);
 	if (samePart)
 	{
-		const WChar *sFile = Text::StrToWCharNew(srcFile);
-		const WChar *dFile = Text::StrToWCharNew(destFile);
+		const WChar *sFile = Text::StrToWCharNew(srcFile.v);
+		const WChar *dFile = Text::StrToWCharNew(destFile.v);
 		BOOL retV = MoveFileW(sFile, dFile);
 		Text::StrDelNew(sFile);
 		Text::StrDelNew(dFile);
@@ -663,11 +664,11 @@ Bool IO::FileUtil::MoveFile(const UTF8Char *srcFile, const UTF8Char *destFile, F
 	samePart = IO::FileUtil::CopyFile(srcFile, destFile, fea, progHdlr, bnt);
 	if (samePart)
 	{
-		if (DeleteFile(srcFile, true))
+		if (DeleteFile(srcFile.v, true))
 			return true;
 		else
 		{
-			DeleteFile(destFile, true);
+			DeleteFile(destFile.v, true);
 			return false;
 		}
 	}
@@ -762,6 +763,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *dptr;
+	UTF8Char *dptr2;
 	IO::Path::FindFileSession *sess;
 	Bool succ;
 
@@ -795,7 +797,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (sptr[0] == '.' && sptr[1] == 0)
 			{
@@ -807,8 +809,8 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					Text::StrConcat(dptr, sptr);
-					succ = IO::FileUtil::MoveFile(sbuff, dbuff, fea, progHdlr, bnt);
+					dptr2 = Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
+					succ = IO::FileUtil::MoveFile(CSTRP(sbuff, sptr2), CSTRP(dbuff, dptr2), fea, progHdlr, bnt);
 					if (!succ)
 					{
 						break;
@@ -816,7 +818,7 @@ Bool IO::FileUtil::MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, File
 				}
 				else if (pt == IO::Path::PathType::Directory)
 				{
-					Text::StrConcat(dptr, sptr);
+					Text::StrConcatC(dptr, sptr, (UOSInt)(sptr2 - sptr));
 					succ = IO::FileUtil::MoveDir(sbuff, dbuff, fea, progHdlr, bnt);
 					if (!succ)
 					{
