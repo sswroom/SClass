@@ -113,6 +113,8 @@ CRC16_Calc:
 _CRC16_Calc:
 	mov rax,rcx
 	xor rcx,rcx
+	test rsi,rsi
+	jz crc16calcexit
 ;	jmp crc16calclop3
 	mov r8,rsi
 	shr r8,4
@@ -186,6 +188,7 @@ crc16calclop1a:
 	jnz crc16calclop1a
 	
 	and rsi,3
+	jz crc16calcexit
 	
 	align 16
 crc16calclop3:
