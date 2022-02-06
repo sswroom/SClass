@@ -2238,6 +2238,13 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *wri
 	xmlTxt->Release();
 }
 
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::String *txt)
+{
+	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt->v);
+	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	xmlTxt->Release();
+}
+
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, const UTF8Char *txt)
 {
 	Text::String *xmlTxt = Text::XML::ToNewAttrText(txt);
@@ -2245,7 +2252,21 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *wri
 	xmlTxt->Release();
 }
 
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteAttrText(IO::Writer *writer, Text::String *txt)
+{
+	Text::String *xmlTxt = Text::XML::ToNewAttrText(txt->v);
+	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	xmlTxt->Release();
+}
+
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, const UTF8Char *txt)
+{
+	Text::String *jsTxt = Text::JSText::ToNewJSText(txt);
+	writer->WriteStrC(jsTxt->v, jsTxt->leng);
+	jsTxt->Release();
+}
+
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteJSText(IO::Writer *writer, Text::String *txt)
 {
 	Text::String *jsTxt = Text::JSText::ToNewJSText(txt);
 	writer->WriteStrC(jsTxt->v, jsTxt->leng);

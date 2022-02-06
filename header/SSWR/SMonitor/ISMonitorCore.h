@@ -51,12 +51,12 @@ namespace SSWR
 			typedef struct
 			{
 				Int64 cliId;
-				const UTF8Char *platformName;
-				const UTF8Char *cpuName;
+				Text::String *platformName;
+				Text::String *cpuName;
 				Int32 flags; //0: allow anonymous
 				Int64 lastKATime;
 				Sync::RWMutex *mut;
-				const UTF8Char *devName;
+				Text::String *devName;
 				IO::Stream *stm;
 				Net::SocketUtil::AddressInfo udpAddr;
 				UInt16 udpPort;

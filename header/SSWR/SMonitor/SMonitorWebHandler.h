@@ -42,8 +42,11 @@ namespace SSWR
 			static void __stdcall WriteHeaderEnd(IO::Writer *writer);
 			static void __stdcall WriteMenu(IO::Writer *writer, Net::WebServer::IWebSession *sess);
 			static void __stdcall WriteHTMLText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteHTMLText(IO::Writer *writer, Text::String *txt);
 			static void __stdcall WriteAttrText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteAttrText(IO::Writer *writer, Text::String *txt);
 			static void __stdcall WriteJSText(IO::Writer *writer, const UTF8Char *txt);
+			static void __stdcall WriteJSText(IO::Writer *writer, Text::String *txt);
 
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 

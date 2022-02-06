@@ -342,27 +342,27 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnDataUDPPacket(const Net::Socke
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					const UTF8Char *name = Text::StrCopyNewC(&buff[12], dataSize - 14);
+					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetName(cliId, name);
-					Text::StrDelNew(name);
+					name->Release();
 				}
 				break;
 			case 18:
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					const UTF8Char *name = Text::StrCopyNewC(&buff[12], dataSize - 14);
+					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetPlatform(cliId, name);
-					Text::StrDelNew(name);
+					name->Release();
 				}
 				break;
 			case 20:
 				if (dataSize > 14)
 				{
 					Int64 cliId = ReadInt64(&buff[4]);
-					const UTF8Char *name = Text::StrCopyNewC(&buff[12], dataSize - 14);
+					Text::String *name = Text::String::New(&buff[12], dataSize - 14);
 					me->DeviceSetCPUName(cliId, name);
-					Text::StrDelNew(name);
+					name->Release();
 				}
 				break;
 			case 22:
@@ -869,12 +869,8 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			dev = MemAlloc(DeviceInfo, 1);
 			NEW_CLASS(dev->mut, Sync::RWMutex());
 			dev->cliId = r->GetInt64(0);
-			sb.ClearStr();
-			r->GetStr(1, &sb);
-			dev->cpuName = Text::StrCopyNew(sb.ToString());
-			sb.ClearStr();
-			r->GetStr(2, &sb);
-			dev->platformName = Text::StrCopyNew(sb.ToString());
+			dev->cpuName = r->GetNewStr(1);
+			dev->platformName = r->GetNewStr(2);
 			r->GetDate(3, &dt);
 			dev->lastKATime = dt.ToTicks();
 			dev->flags = r->GetInt32(4);
@@ -906,15 +902,7 @@ void SSWR::SMonitor::SMonitorSvrCore::LoadData()
 			dev->readings[6].reading = r->GetDbl(22);
 			WriteInt64(dev->readings[7].status, r->GetInt64(23));
 			dev->readings[7].reading = r->GetDbl(24);
-			sb.ClearStr();
-			if (r->GetStr(25, &sb))
-			{
-				dev->devName = Text::StrCopyNew(sb.ToString());
-			}
-			else
-			{
-				dev->devName = 0;
-			}
+			dev->devName = r->GetNewStr(25);
 			i = SMONITORCORE_DEVREADINGCNT;
 			while (i-- > 0)
 			{
@@ -1197,7 +1185,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				sb.ClearStr();
 				sb.Append(s);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
-				this->dataDir = Text::String::NewNotNull(sb.ToString());
+				this->dataDir = Text::String::New(sb.ToString(), sb.GetLength());
 			}
 			else
 			{
@@ -1406,9 +1394,9 @@ SSWR::SMonitor::SMonitorSvrCore::~SMonitorSvrCore()
 	while (i-- > 0)
 	{
 		dev = devList->GetItem(i);
-		SDEL_TEXT(dev->devName);
-		SDEL_TEXT(dev->cpuName);
-		SDEL_TEXT(dev->platformName);
+		SDEL_STRING(dev->devName);
+		SDEL_STRING(dev->cpuName);
+		SDEL_STRING(dev->platformName);
 		j = SMONITORCORE_DEVREADINGCNT;
 		while (j-- > 0)
 		{
@@ -1536,8 +1524,8 @@ SSWR::SMonitor::SMonitorSvrCore::DeviceInfo *SSWR::SMonitor::SMonitorSvrCore::De
 		dev = MemAlloc(DeviceInfo, 1);
 		NEW_CLASS(dev->mut, Sync::RWMutex());
 		dev->cliId = cliId;
-		dev->cpuName = Text::StrCopyNew(cpuName);
-		dev->platformName = Text::StrCopyNew(platformName);
+		dev->cpuName = Text::String::NewNotNull(cpuName);
+		dev->platformName = Text::String::NewNotNull(platformName);
 		dev->lastKATime = dt.ToTicks();
 		dev->flags = 0;
 		dev->version = 0;
@@ -1718,16 +1706,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceKARecv(DeviceInfo *dev, Int64 kaTime
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char *devName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, Text::String *devName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (devName == 0 || devName[0] == 0)
+	if (devName == 0 || devName->leng == 0)
 		return false;
 	dev->mut->LockRead();
-	if (dev->devName && Text::StrEquals(dev->devName, devName))
+	if (dev->devName && dev->devName->Equals(devName))
 	{
 		dev->mut->UnlockRead();
 		return true;
@@ -1739,16 +1727,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update device set devName = "));
-	sql.AppendStrUTF8(devName);
+	sql.AppendStr(devName);
 	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
 		dev->mut->LockWrite();
-		SDEL_TEXT(dev->devName);
+		SDEL_STRING(dev->devName);
 		if (devName)
 		{
-			dev->devName = Text::StrCopyNew(devName);
+			dev->devName = devName->Clone();
 		}
 		dev->mut->UnlockWrite();
 		succ = true;
@@ -1756,16 +1744,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetName(Int64 cliId, const UTF8Char 
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8Char *platformName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, Text::String *platformName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (platformName == 0 || platformName[0] == 0)
+	if (platformName == 0 || platformName->leng == 0)
 		return false;
 	dev->mut->LockRead();
-	if (dev->platformName && Text::StrEquals(dev->platformName, platformName))
+	if (dev->platformName && dev->platformName->Equals(platformName))
 	{
 		dev->mut->UnlockRead();
 		return true;
@@ -1777,16 +1765,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update device set platformName = "));
-	sql.AppendStrUTF8(platformName);
+	sql.AppendStr(platformName);
 	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
 		dev->mut->LockWrite();
-		SDEL_TEXT(dev->platformName);
+		SDEL_STRING(dev->platformName);
 		if (platformName)
 		{
-			dev->platformName = Text::StrCopyNew(platformName);
+			dev->platformName = platformName->Clone();
 		}
 		dev->mut->UnlockWrite();
 		succ = true;
@@ -1794,16 +1782,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetPlatform(Int64 cliId, const UTF8C
 	return succ;
 }
 
-Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Char *cpuName)
+Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, Text::String *cpuName)
 {
 	SSWR::SMonitor::ISMonitorCore::DeviceInfo *dev;
 	dev = this->DeviceGet(cliId);
 	if (dev == 0)
 		return false;
-	if (cpuName == 0 || cpuName[0] == 0)
+	if (cpuName == 0 || cpuName->leng == 0)
 		return false;
 	dev->mut->LockRead();
-	if (dev->cpuName && Text::StrEquals(dev->cpuName, cpuName))
+	if (dev->cpuName && dev->cpuName->Equals(cpuName))
 	{
 		dev->mut->UnlockRead();
 		return true;
@@ -1815,16 +1803,16 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetCPUName(Int64 cliId, const UTF8Ch
 	DB::DBTool *db = this->UseDB(&dbMutUsage);
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update device set cpuName = "));
-	sql.AppendStrUTF8(cpuName);
+	sql.AppendStr(cpuName);
 	sql.AppendCmdC(UTF8STRC(" where id = "));
 	sql.AppendInt64(dev->cliId);
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
 		dev->mut->LockWrite();
-		SDEL_TEXT(dev->cpuName);
+		SDEL_STRING(dev->cpuName);
 		if (cpuName)
 		{
-			dev->cpuName = Text::StrCopyNew(cpuName);
+			dev->cpuName = cpuName->Clone();
 		}
 		dev->mut->UnlockWrite();
 		succ = true;
@@ -1956,10 +1944,10 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceModify(Int64 cliId, const UTF8Char *
 	if (db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
 	{
 		dev->mut->LockWrite();
-		SDEL_TEXT(dev->devName);
+		SDEL_STRING(dev->devName);
 		if (devName)
 		{
-			dev->devName = Text::StrCopyNew(devName);
+			dev->devName = Text::String::NewNotNull(devName);
 		}
 		dev->flags = flags;
 		dev->mut->UnlockWrite();
