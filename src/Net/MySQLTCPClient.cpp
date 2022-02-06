@@ -870,7 +870,7 @@ public:
 				item->SetF64(0);
 				return true;
 			case 8:
-				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + this->currRow->rowBuff[col->ofst + 5] * 3600 + this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7];
+				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + (UInt32)this->currRow->rowBuff[col->ofst + 5] * 3600 + (UInt32)this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7];
 				if (this->currRow->rowBuff[col->ofst])
 				{
 					item->SetF64(-v);
@@ -881,7 +881,7 @@ public:
 				}
 				return true;
 			case 12:
-				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + this->currRow->rowBuff[col->ofst + 5] * 3600 + this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7] + (ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) / 1000000);
+				v = ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) * 86400 + (UInt32)this->currRow->rowBuff[col->ofst + 5] * 3600 + (UInt32)this->currRow->rowBuff[col->ofst + 6] * 60 + this->currRow->rowBuff[col->ofst + 7] + (ReadUInt32(&this->currRow->rowBuff[col->ofst + 1]) / 1000000);
 				if (this->currRow->rowBuff[col->ofst])
 				{
 					item->SetF64(-v);

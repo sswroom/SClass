@@ -105,7 +105,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		while (env->funcName[0] >= '1' && env->funcName[0] <= '9')
 		{
 			c = *env->funcName++;
-			i = c - '0';
+			i = (UOSInt)(c - '0');
 			c = *env->funcName++;
 			if (c >= '0' && c <= '9')
 			{
@@ -144,7 +144,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 			c = *env->funcName++;
 			if (c >= '1' && c <= '9')
 			{
-				i = c - '0';
+				i = (UOSInt)(c - '0');
 				if (foundName)
 				{
 					*env->sbuff++ = '.';

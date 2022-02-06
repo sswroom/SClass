@@ -1281,7 +1281,7 @@ UTF8Char *Data::DateTime::ToString(UTF8Char *buff, const Char *pattern)
 				src -= 2;
 				WriteNUInt16(src, ReadNUInt16(&MyString_StrDigit100U8[(thisVal % 100) * 2]));
 				thisVal = thisVal / 100;
-				digiCnt -= 2;
+				digiCnt = (UInt8)(digiCnt - 2);
 			}
 			if (digiCnt > 0)
 			{
@@ -2048,12 +2048,12 @@ void Data::DateTime::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 		else
 		{
 			totalDays -= 10957;
-			t->year = 2000 + (UInt16)((totalDays / 1461) << 2);
+			t->year = (UInt16)(2000 + ((totalDays / 1461) << 2));
 			totalDays = totalDays % 1461;
 			if (totalDays >= 366)
 			{
 				totalDays--;
-				t->year += (UInt16)(totalDays / 365);
+				t->year = (UInt16)(t->year + totalDays / 365);
 				totalDays = totalDays % 365;
 			}
 		}
