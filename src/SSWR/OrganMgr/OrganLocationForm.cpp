@@ -62,22 +62,24 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sbuffEnd;
 	UTF8Char sbuff2[256];
+	UTF8Char *sbuff2End;
 	if (this->currLoc == 0)
 		return false;
 
-	if (this->txtEName->GetText(sbuff) == sbuff)
+	if ((sbuffEnd = this->txtEName->GetText(sbuff)) == sbuff)
 	{
 		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(UTF8STRC("LocationQuestionEName")).v, this->env->GetLang(UTF8STRC("LocationQuestion")).v, this);
 		return !ret;
 	}
-	if (this->txtCName->GetText(sbuff2) == sbuff2)
+	if ((sbuff2End = this->txtCName->GetText(sbuff2)) == sbuff2)
 	{
 		Bool ret = UI::MessageDialog::ShowYesNoDialog(this->env->GetLang(UTF8STRC("LocationQuestionCName")).v, this->env->GetLang(UTF8STRC("LocationQuestion")).v, this);
 		return !ret;
 	}
 
-	if (this->env->LocationUpdate(currLoc->id, sbuff, sbuff2))
+	if (this->env->LocationUpdate(currLoc->id, {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
 		SDEL_STRING(this->currLoc->ename);
 		SDEL_STRING(this->currLoc->cname);
@@ -168,13 +170,15 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 {
 	OrganLocationForm *me = (OrganLocationForm*)userObj;
 	UTF8Char sbuff[256];
+	UTF8Char *sbuffEnd;
 	UTF8Char sbuff2[256];
-	if (me->txtEName->GetText(sbuff) == sbuff)
+	UTF8Char *sbuff2End;
+	if ((sbuffEnd = me->txtEName->GetText(sbuff)) == sbuff)
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationInputEName")).v, me->env->GetLang(UTF8STRC("LocationTitle")).v, me);
 		return;
 	}
-	if (me->txtCName->GetText(sbuff2) == sbuff2)
+	if ((sbuff2End = me->txtCName->GetText(sbuff2)) == sbuff2)
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("LocationInputCName")).v, me->env->GetLang(UTF8STRC("LocationTitle")).v, me);
 		return;
@@ -190,7 +194,7 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 		parId = parLoc->id;
 	}
 	
-	if (me->env->LocationAdd(parId, sbuff, sbuff2))
+	if (me->env->LocationAdd(parId, {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
 		me->currLoc = 0;
 		me->txtCName->SetText((const UTF8Char*)"");

@@ -24,12 +24,12 @@ UTF8Char *SSWR::OrganMgr::Trip::ToString(UTF8Char *sbuff)
 	return dt2.ToString(Text::StrConcatC(dt.ToString(sbuff, "yyyy-MM-dd HH:mm"), UTF8STRC(" - ")), "yyyy-MM-dd HH:mm");
 }
 
-SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, const UTF8Char *ename, const UTF8Char *cname, Int32 locType)
+SSWR::OrganMgr::Location::Location(Int32 id, Int32 parId, Text::CString ename, Text::CString cname, Int32 locType)
 {
 	this->id = id;
 	this->parId = parId;
-	this->ename = Text::String::NewNotNull(ename);
-	this->cname = Text::String::NewNotNull(cname);
+	this->ename = Text::String::New(ename);
+	this->cname = Text::String::New(cname);
 	this->locType = locType;
 }
 
@@ -44,17 +44,17 @@ UTF8Char *SSWR::OrganMgr::Location::ToString(UTF8Char *sbuff)
 	return this->cname->ConcatTo(sbuff);
 }
 
-SSWR::OrganMgr::LocationType::LocationType(Int32 id, const UTF8Char *engName, const UTF8Char *chiName)
+SSWR::OrganMgr::LocationType::LocationType(Int32 id, Text::CString engName, Text::CString chiName)
 {
 	this->id = id;
-	this->engName = Text::StrCopyNew(engName);
-	this->chiName = Text::StrCopyNew(chiName);
+	this->engName = Text::String::New(engName);
+	this->chiName = Text::String::New(chiName);
 }
 
 SSWR::OrganMgr::LocationType::~LocationType()
 {
-	Text::StrDelNew(this->engName);
-	Text::StrDelNew(this->chiName);
+	this->engName->Release();
+	this->chiName->Release();
 }
 
 

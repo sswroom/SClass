@@ -292,8 +292,8 @@ namespace SSWR
 			OSInt LocationGetIndex(Int32 locId);
 			Location *LocationGet(Int32 locId);
 			Data::ArrayList<Location*> *LocationGetSub(Int32 locId);
-			virtual Bool LocationUpdate(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName) = 0;
-			virtual Bool LocationAdd(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName) = 0;
+			virtual Bool LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
+			virtual Bool LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName) = 0;
 			OSInt LocationGetTypeIndex(Int32 lType);
 
 			SpeciesInfo *GetSpeciesInfo(Int32 speciesId, Bool createNew);

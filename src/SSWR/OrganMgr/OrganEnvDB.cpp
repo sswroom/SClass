@@ -3571,7 +3571,9 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	DB::DBReader *r;
 	DB::SQLBuilder sql(this->db);
 	UTF8Char sbuff[256];
+	UTF8Char *sbuffEnd;
 	UTF8Char sbuff2[256];
+	UTF8Char *sbuff2End;
 	this->TripRelease();
 
 	LocationType *locT;
@@ -3587,9 +3589,9 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	{
 		while (r->ReadNext())
 		{
-			r->GetStr(1, sbuff, sizeof(sbuff));
-			r->GetStr(2, sbuff2, sizeof(sbuff2));
-			NEW_CLASS(locT, LocationType(r->GetInt32(0), sbuff, sbuff2))
+			sbuffEnd = r->GetStr(1, sbuff, sizeof(sbuff));
+			sbuff2End = r->GetStr(2, sbuff2, sizeof(sbuff2));
+			NEW_CLASS(locT, LocationType(r->GetInt32(0), {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 			this->locType->Add(locT);
 		}
 		this->db->CloseReader(r);
@@ -3604,9 +3606,9 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 	{
 		while (r->ReadNext())
 		{
-			r->GetStr(2, sbuff, sizeof(sbuff));
-			r->GetStr(3, sbuff2, sizeof(sbuff2));
-			NEW_CLASS(loc, Location(r->GetInt32(0), r->GetInt32(1), sbuff, sbuff2, r->GetInt32(4)));
+			sbuffEnd = r->GetStr(2, sbuff, sizeof(sbuff));
+			sbuff2End = r->GetStr(3, sbuff2, sizeof(sbuff2));
+			NEW_CLASS(loc, Location(r->GetInt32(0), r->GetInt32(1), {sbuff, (UOSInt)(sbuffEnd - sbuff)}, {sbuff2, (UOSInt)(sbuff2End - sbuff2)}, r->GetInt32(4)));
 			this->locs->Add(loc);
 		}
 		this->db->CloseReader(r);
@@ -3675,7 +3677,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::TripAdd(Data::DateTime *fromDate, Data::DateTim
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName)
+Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, Text::CString engName, Text::CString chiName)
 {
 	Location *loc = this->LocationGet(locId);
 	if (loc == 0)
@@ -3683,9 +3685,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *eng
 
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(UTF8STRC("update location set ename="));
-	sql.AppendStrUTF8(engName);
+	sql.AppendStrUTF8(engName.v);
 	sql.AppendCmdC(UTF8STRC(", cname="));
-	sql.AppendStrUTF8(chiName);
+	sql.AppendStrUTF8(chiName.v);
 	sql.AppendCmdC(UTF8STRC(" where id="));
 	sql.AppendInt32(locId);
 	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == -2)
@@ -3694,13 +3696,13 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationUpdate(Int32 locId, const UTF8Char *eng
 	{
 		SDEL_STRING(loc->ename);
 		SDEL_STRING(loc->cname);
-		loc->ename = Text::String::NewOrNull(engName);
-		loc->cname = Text::String::NewOrNull(chiName);
+		loc->ename = Text::String::New(engName);
+		loc->cname = Text::String::New(chiName);
 		return true;
 	}
 }
 
-Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, const UTF8Char *engName, const UTF8Char *chiName)
+Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, Text::CString engName, Text::CString chiName)
 {
 	Location *loc;
 	Int32 lType;
@@ -3726,9 +3728,9 @@ Bool SSWR::OrganMgr::OrganEnvDB::LocationAdd(Int32 locId, const UTF8Char *engNam
 	sql.AppendCmdC(UTF8STRC("insert into location (parentId, ename, cname, cate_id, locType) values ("));
 	sql.AppendInt32(locId);
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(engName);
+	sql.AppendStrUTF8(engName.v);
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(chiName);
+	sql.AppendStrUTF8(chiName.v);
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -4383,7 +4385,9 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	UOSInt i;
 	Int32 seq;
 	UTF8Char cname[64];
+	UTF8Char *cnameEnd;
 	UTF8Char ename[64];
+	UTF8Char *enameEnd;
 	i = this->grpTypes->GetCount();
 	while (i-- > 0)
 	{
@@ -4400,9 +4404,9 @@ void SSWR::OrganMgr::OrganEnvDB::LoadGroupTypes()
 	while (r->ReadNext())
 	{
 		seq = r->GetInt32(0);
-		r->GetStr(1, cname, sizeof(cname));
-		r->GetStr(2, ename, sizeof(ename));
-		NEW_CLASS(grpType, OrganGroupType(seq, cname, ename));
+		cnameEnd = r->GetStr(1, cname, sizeof(cname));
+		enameEnd = r->GetStr(2, ename, sizeof(ename));
+		NEW_CLASS(grpType, OrganGroupType(seq, {cname, (UOSInt)(cnameEnd - cname)}, {ename, (UOSInt)(enameEnd - ename)}));
 		this->grpTypes->Add(grpType);
 	}
 	this->db->CloseReader(r);

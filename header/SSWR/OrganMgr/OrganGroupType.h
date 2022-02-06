@@ -1,5 +1,7 @@
 #ifndef _SM_SSWR_ORGANMGR_ORGANGROUPTYPE
 #define _SM_SSWR_ORGANMGR_ORGANGROUPTYPE
+#include "Text/CString.h"
+#include "Text/String.h"
 
 namespace SSWR
 {
@@ -9,16 +11,16 @@ namespace SSWR
 		{
 		private:
 			Int32 seq;
-			const UTF8Char *cName;
-			const UTF8Char *eName;
+			Text::String *cName;
+			Text::String *eName;
 
 		public:
-			OrganGroupType(Int32 seq, const UTF8Char *cName, const UTF8Char *eName);
+			OrganGroupType(Int32 seq, Text::CString cName, Text::CString eName);
 			~OrganGroupType();
 
 			Int32 GetSeq();
-			const UTF8Char *GetCName();
-			const UTF8Char *GetEName();
+			Text::String *GetCName();
+			Text::String *GetEName();
 			UTF8Char *ToString(UTF8Char *sbuff);
 		};
 	}

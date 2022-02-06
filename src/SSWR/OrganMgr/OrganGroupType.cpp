@@ -3,17 +3,17 @@
 #include "SSWR/OrganMgr/OrganGroupType.h"
 #include "Text/MyString.h"
 
-SSWR::OrganMgr::OrganGroupType::OrganGroupType(Int32 seq, const UTF8Char *cName, const UTF8Char *eName)
+SSWR::OrganMgr::OrganGroupType::OrganGroupType(Int32 seq, Text::CString cName, Text::CString eName)
 {
 	this->seq = seq;
-	this->cName = Text::StrCopyNew(cName);
-	this->eName = Text::StrCopyNew(eName);
+	this->cName = Text::String::New(cName.v, cName.leng);
+	this->eName = Text::String::New(eName.v, eName.leng);
 }
 
 SSWR::OrganMgr::OrganGroupType::~OrganGroupType()
 {
-	Text::StrDelNew(this->cName);
-	Text::StrDelNew(this->eName);
+	this->cName->Release();
+	this->eName->Release();
 }
 
 Int32 SSWR::OrganMgr::OrganGroupType::GetSeq()
@@ -21,17 +21,17 @@ Int32 SSWR::OrganMgr::OrganGroupType::GetSeq()
 	return this->seq;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroupType::GetCName()
+Text::String *SSWR::OrganMgr::OrganGroupType::GetCName()
 {
 	return this->cName;
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganGroupType::GetEName()
+Text::String *SSWR::OrganMgr::OrganGroupType::GetEName()
 {
 	return this->eName;
 }
 
 UTF8Char *SSWR::OrganMgr::OrganGroupType::ToString(UTF8Char *sbuff)
 {
-	return Text::StrConcat(Text::StrConcatC(Text::StrInt32(sbuff, this->seq), UTF8STRC(" ")), this->cName);
+	return this->cName->ConcatTo(Text::StrConcatC(Text::StrInt32(sbuff, this->seq), UTF8STRC(" ")));
 }

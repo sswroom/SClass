@@ -76,7 +76,7 @@ UTF8Char *SSWR::OrganMgr::OrganSpImgLayer::GetString(UTF8Char *buff, UOSInt buff
 	{
 		if (ufile->descript)
 		{
-			return Text::StrConcatS(buff, ufile->descript->v, buffSize);
+			return ufile->descript->ConcatToS(buff, buffSize);
 		}
 		else
 		{

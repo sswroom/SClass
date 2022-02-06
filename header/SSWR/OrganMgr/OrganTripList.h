@@ -4,6 +4,8 @@
 #include "Data/DateTime.h"
 #include "Data/ArrayList.h"
 #include "DB/DBTool.h"
+#include "Text/CString.h"
+#include "Text/String.h"
 
 namespace SSWR
 {
@@ -33,7 +35,7 @@ namespace SSWR
 			Double lon;
 			Int32 locType;
 
-			Location(Int32 id, Int32 parId, const UTF8Char *ename, const UTF8Char *cname, Int32 locType);
+			Location(Int32 id, Int32 parId, Text::CString ename, Text::CString cname, Int32 locType);
 			~Location();
 			UTF8Char *ToString(UTF8Char *sbuff);
 		};
@@ -42,10 +44,10 @@ namespace SSWR
 		{
 		public:
 			Int32 id;
-			const UTF8Char *engName;
-			const UTF8Char *chiName;
+			Text::String *engName;
+			Text::String *chiName;
 
-			LocationType(Int32 id, const UTF8Char *engName, const UTF8Char *chiName);
+			LocationType(Int32 id, Text::CString engName, Text::CString chiName);
 			~LocationType();
 		};
 
