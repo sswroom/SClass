@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj
 
 void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo)
 {
-	Char sbuff[1024];
+	UTF8Char sbuff[1024];
 	if (srinfo == 0)
 	{
 
@@ -72,7 +72,7 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;
 			wkt.WriteCSys(csys, sbuff, 0, Text::LineBreakType::CRLF);
-			this->txtWKT->SetText((const UTF8Char*)sbuff);
+			this->txtWKT->SetText(sbuff);
 			csys->ToString(&sb);
 			this->txtDisp->SetText(sb.ToString());
 			DEL_CLASS(csys);

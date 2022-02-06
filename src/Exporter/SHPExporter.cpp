@@ -488,9 +488,9 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
 	if (csys)
 	{
-		Char projArr[1024];
+		UTF8Char projArr[1024];
 		Math::SRESRIWKTWriter wkt;
-		Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
+		UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
 		NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 		DEL_CLASS(shx);

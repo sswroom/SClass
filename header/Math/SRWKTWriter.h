@@ -11,13 +11,13 @@ namespace Math
 		SRWKTWriter();
 		virtual ~SRWKTWriter();
 
-		Char *WriteCSys(Math::CoordinateSystem *csys, Char *buff, UOSInt lev, Text::LineBreakType lbt);
-		Char *WriteDatum(const Math::CoordinateSystem::DatumData1 *datum, Char *buff, UOSInt lev, Text::LineBreakType lbt);
-		Char *WriteNextLine(Char *buff, UOSInt lev, Text::LineBreakType lbt);
-		virtual Char *WriteSRID(Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt) = 0;
-		virtual Char *WritePrimem(Char *buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt) = 0;
-		virtual Char *WriteUnit(Char *buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt) = 0;
-		virtual Char *WriteProjExtra(Char *buff, Math::CoordinateSystem *pcsys, UOSInt lev, Text::LineBreakType lbt) = 0;
+		UTF8Char *WriteCSys(Math::CoordinateSystem *csys, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
+		UTF8Char *WriteDatum(const Math::CoordinateSystem::DatumData1 *datum, UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
+		UTF8Char *WriteNextLine(UTF8Char *buff, UOSInt lev, Text::LineBreakType lbt);
+		virtual UTF8Char *WriteSRID(UTF8Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt) = 0;
+		virtual UTF8Char *WritePrimem(UTF8Char *buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt) = 0;
+		virtual UTF8Char *WriteUnit(UTF8Char *buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt) = 0;
+		virtual UTF8Char *WriteProjExtra(UTF8Char *buff, Math::CoordinateSystem *pcsys, UOSInt lev, Text::LineBreakType lbt) = 0;
 	};
 }
 #endif

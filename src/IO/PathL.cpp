@@ -274,41 +274,6 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPathSlow(UTF8Char *path, const UTF8Char *toAppend)
-{
-	UOSInt toAppendLen = Text::StrCharCnt(toAppend);
-	if (toAppend[0] == '/')
-		return Text::StrConcatC(path, toAppend, toAppendLen);
-	UOSInt pathLen = Text::StrCharCnt(path);
-	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	IO::Path::PathType pt = GetPathType(path, pathLen);
-	if (pt == PathType::File && i != INVALID_INDEX)
-	{
-		path[i] = 0;
-		pathLen = i;
-		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	}
-	else if (i == pathLen - 1)
-	{
-		path[i] = 0;
-		pathLen = i;
-		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	}
-	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
-	{
-		if (i != INVALID_INDEX)
-		{
-			path[i] = 0;
-			pathLen = i;
-			i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-		}
-		toAppend += 3;
-		toAppendLen -= 3;
-	}
-	path[pathLen] = '/';
-	return Text::StrConcatC(&path[pathLen + 1], toAppend, toAppendLen);
-}
-
 UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	if (toAppend[0] == '/')

@@ -50,14 +50,16 @@ namespace Math
 		{
 			UInt32 srid;
 			Math::EarthEllipsoid::EarthEllipsoidType eet;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 		} SpheroidInfo;
 
 		typedef struct
 		{
 			UInt32 srid;
 			UInt32 spheroid;
-			const Char *datumName;
+			const UTF8Char *datumName;
+			UOSInt datumNameLen;
 			Double x0;
 			Double y0;
 			Double z0;
@@ -171,7 +173,7 @@ namespace Math
 
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfo(UInt32 srid);
 		static const Math::CoordinateSystemManager::DatumInfo *GetDatumInfoByName(const UTF8Char *name);
-		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, const UTF8Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
+		static void FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid);
 
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystemDefName(ProjCoordSysType pcst);
 		static Math::ProjectedCoordinateSystem *CreateProjCoordinateSystem(Text::CString sourceNmae, const UTF8Char *projName);

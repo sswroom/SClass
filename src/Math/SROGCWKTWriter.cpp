@@ -12,27 +12,27 @@ Math::SROGCWKTWriter::~SROGCWKTWriter()
 
 }
 
-Char *Math::SROGCWKTWriter::WriteSRID(Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SROGCWKTWriter::WriteSRID(UTF8Char *buff, UInt32 srid, UOSInt lev, Text::LineBreakType lbt)
 {
 	if (srid != 0)
 	{
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
-		buff = Text::StrConcat(buff, "AUTHORITY[\"EPSG\",\"");
+		buff = Text::StrConcatC(buff, UTF8STRC("AUTHORITY[\"EPSG\",\""));
 		buff = Text::StrUInt32(buff, srid);
-		buff = Text::StrConcat(buff, "\"]");
+		buff = Text::StrConcatC(buff, UTF8STRC("\"]"));
 	}
 	return buff;
 }
 
-Char *Math::SROGCWKTWriter::WritePrimem(Char *buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SROGCWKTWriter::WritePrimem(UTF8Char *buff, Math::CoordinateSystem::PrimemType primem, UOSInt lev, Text::LineBreakType lbt)
 {
 	switch (primem)
 	{
 	case Math::CoordinateSystem::PT_GREENWICH:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
-		buff = Text::StrConcat(buff, "PRIMEM[\"Greenwich\",0");
+		buff = Text::StrConcatC(buff, UTF8STRC("PRIMEM[\"Greenwich\",0"));
 		buff = this->WriteSRID(buff, primem, lev + 1, lbt);
 		*buff++ = ']';
 		*buff = 0;
@@ -40,14 +40,14 @@ Char *Math::SROGCWKTWriter::WritePrimem(Char *buff, Math::CoordinateSystem::Prim
 	}
 	return buff;
 }
-Char *Math::SROGCWKTWriter::WriteUnit(Char *buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SROGCWKTWriter::WriteUnit(UTF8Char *buff, Math::CoordinateSystem::UnitType unit, UOSInt lev, Text::LineBreakType lbt)
 {
 	switch (unit)
 	{
 	case Math::CoordinateSystem::UT_DEGREE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
-		buff = Text::StrConcat(buff, "UNIT[\"degree\",0.01745329251994328");
+		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"degree\",0.01745329251994328"));
 		buff = this->WriteSRID(buff, unit, lev + 1, lbt);
 		*buff++ = ']';
 		*buff = 0;
@@ -55,7 +55,7 @@ Char *Math::SROGCWKTWriter::WriteUnit(Char *buff, Math::CoordinateSystem::UnitTy
 	case Math::CoordinateSystem::UT_METRE:
 		*buff++ = ',';
 		buff = WriteNextLine(buff, lev, lbt);
-		buff = Text::StrConcat(buff, "UNIT[\"metre\",1");
+		buff = Text::StrConcatC(buff, UTF8STRC("UNIT[\"metre\",1"));
 		buff = this->WriteSRID(buff, unit, lev + 1, lbt);
 		*buff++ = ']';
 		*buff = 0;
@@ -64,13 +64,13 @@ Char *Math::SROGCWKTWriter::WriteUnit(Char *buff, Math::CoordinateSystem::UnitTy
 	return buff;
 }
 
-Char *Math::SROGCWKTWriter::WriteProjExtra(Char *buff, Math::CoordinateSystem *pcsys, UOSInt lev, Text::LineBreakType lbt)
+UTF8Char *Math::SROGCWKTWriter::WriteProjExtra(UTF8Char *buff, Math::CoordinateSystem *pcsys, UOSInt lev, Text::LineBreakType lbt)
 {
 	*buff++ = ',';
 	buff = WriteNextLine(buff, lev, lbt);
-	buff = Text::StrConcat(buff, "AXIS[\"Easting\",EAST]");
+	buff = Text::StrConcatC(buff, UTF8STRC("AXIS[\"Easting\",EAST]"));
 	*buff++ = ',';
 	buff = WriteNextLine(buff, lev, lbt);
-	buff = Text::StrConcat(buff, "AXIS[\"Northing\",NORTH]");
+	buff = Text::StrConcatC(buff, UTF8STRC("AXIS[\"Northing\",NORTH]"));
 	return buff;
 }

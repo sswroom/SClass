@@ -36,7 +36,8 @@ namespace Math
 		struct SpheroidData
 		{
 			UInt32 srid;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 			Math::EarthEllipsoid *ellipsoid;
 		};
 		
@@ -44,7 +45,8 @@ namespace Math
 		{
 			UInt32 srid;
 			SpheroidData spheroid;
-			const Char *name;
+			const UTF8Char *name;
+			UOSInt nameLen;
 			Double x0;
 			Double y0;
 			Double z0;

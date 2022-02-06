@@ -19,10 +19,12 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::String *sourc
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
-	this->datum.spheroid.name = Text::StrCopyNew(datum->spheroid.name);
+	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen);
+	this->datum.spheroid.nameLen = datum->spheroid.nameLen;
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = Text::StrCopyNew(datum->name);
+	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen);
+	this->datum.nameLen = datum->nameLen;
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;
 	this->datum.z0 = datum->z0;
@@ -42,10 +44,12 @@ Math::GeographicCoordinateSystem::GeographicCoordinateSystem(Text::CString sourc
 {
 	this->datum.spheroid.srid = datum->spheroid.srid;
 	this->datum.spheroid.ellipsoid = datum->spheroid.ellipsoid->Clone();
-	this->datum.spheroid.name = Text::StrCopyNew(datum->spheroid.name);
+	this->datum.spheroid.name = Text::StrCopyNewC(datum->spheroid.name, datum->spheroid.nameLen);
+	this->datum.spheroid.nameLen = datum->spheroid.nameLen;
 	this->datum.srid = datum->srid;
 	Double aRatio = Math::Unit::Angle::GetUnitRatio(datum->aunit);
-	this->datum.name = Text::StrCopyNew(datum->name);
+	this->datum.name = Text::StrCopyNewC(datum->name, datum->nameLen);
+	this->datum.nameLen = datum->nameLen;
 	this->datum.x0 = datum->x0;
 	this->datum.y0 = datum->y0;
 	this->datum.z0 = datum->z0;
@@ -109,7 +113,7 @@ void Math::GeographicCoordinateSystem::ToString(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(UTF8STRC("\r\nGeographic Name: "));
 	sb->Append(this->csysName);
 	sb->AppendC(UTF8STRC("\r\nDatum Name: "));
-	sb->AppendSlow((const UTF8Char*)this->datum.name);
+	sb->AppendC(this->datum.name, this->datum.nameLen);
 	sb->AppendC(UTF8STRC("\r\nRotate Center: "));
 	Text::SBAppendF64(sb, this->datum.x0);
 	sb->AppendC(UTF8STRC(", "));

@@ -357,11 +357,6 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPathSlow(UTF8Char *path, const UTF8Char *toAppend)
-{
-	return AppendPathC(path, &path[Text::StrCharCnt(path)], toAppend, Text::StrCharCnt(toAppend));
-}
-
 UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
 {
 	UTF8Char pathTmp[512];
@@ -382,7 +377,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 	}
 	if (path[0] == '\\' && path[1] == '\\')
 	{
-		firstSep = &path[2 + Text::StrIndexOfChar(&path[2], '\\')];
+		firstSep = &path[2 + Text::StrIndexOfCharC(&path[2], (UOSInt)(pathEnd - &path[2]), '\\')];
 	}
 	else if (path[1] == ':' && path[2] == '\\')
 	{
@@ -403,7 +398,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 	{
 		return Text::StrConcatC(firstSep, toAppend, toAppendLen);
 	}
-	lastSep = &path[Text::StrLastIndexOfChar(path, '\\')];
+	lastSep = &path[Text::StrLastIndexOfCharC(path, (UOSInt)(pathEnd - path), '\\')];
 	if (lastSep < path)
 	{
 		lastSep = path;

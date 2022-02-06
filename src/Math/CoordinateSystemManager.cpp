@@ -17,19 +17,19 @@
 
 Math::CoordinateSystemManager::SpheroidInfo Math::CoordinateSystemManager::spheroidSRID[] = {
 //	{srid, Math::EarthEllipsoid::EarthEllipsoidType, name}
-	{7012, Math::EarthEllipsoid::EET_CLARKE1880, "Clarke 1880 (RGS)"},	
-	{7022, Math::EarthEllipsoid::EET_INTL1924,   "International 1924"},	
-	{7030, Math::EarthEllipsoid::EET_WGS84,      "WGS 84"},	
+	{7012, Math::EarthEllipsoid::EET_CLARKE1880, UTF8STRC("Clarke 1880 (RGS)")},
+	{7022, Math::EarthEllipsoid::EET_INTL1924,   UTF8STRC("International 1924")},
+	{7030, Math::EarthEllipsoid::EET_WGS84,      UTF8STRC("WGS 84")},
 };
 
 Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumSRID[] = {
 //	{srid, spheroid,"name", x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale},
-	{6326,  7030,  "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{6600,  7012,  "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{6601,  7012,  "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{6602,  7012,  "Dominica_1945", 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{6603,  7012,  "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{6611,  7022,  "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, Math::Unit::Angle::AU_ARCSECOND},
+	{6326,  7030,  UTF8STRC("WGS_1984"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{6600,  7012,  UTF8STRC("Anguilla_1957"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{6601,  7012,  UTF8STRC("Antigua_1943"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{6602,  7012,  UTF8STRC("Dominica_1945"), 0, 0, 0, 725, 685, 536, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{6603,  7012,  UTF8STRC("Grenada_1953"), 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{6611,  7022,  UTF8STRC("Hong_Kong_1980"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753, -2.24365, -1.15883, -1.09425, Math::Unit::Angle::AU_ARCSECOND},
 };
 
 Math::CoordinateSystemManager::GeogcsSRInfo Math::CoordinateSystemManager::geogcsSRID[] = {
@@ -82,23 +82,23 @@ Math::CoordinateSystemManager::SpatialRefInfo Math::CoordinateSystemManager::srI
 
 Math::CoordinateSystemManager::DatumInfo Math::CoordinateSystemManager::datumList[] = {
 //	{srid, spheroid,"name", x0, y0, z0, cX, cY, cZ, xAngle, yAngle, zAngle, scale},
-	{0,     0,     "AIRY_1830", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "Anguilla_1957", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "Antigua_1943", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "Beijing_1954", 0, 0, 0, 15.8, -154.4, -82.3, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Dominica_1945", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "Grenada_1953", 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "CGCS2000", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "HONGKONG", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Hong_Kong_1980", 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Macau_2009", -2361554.788, 5417536.177, 2391608.926, -202.865, -303.990, -155.873, -34.079, 76.126, 32.660, 6.096, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Montserrat_1958", 0, 0, 0, 174, 159, 365, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "St_Kitts_1955", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{0,     0,     "St_Lucia_1955", 0, 0, 0, -149, 128, 296, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "St_Lucia_1955", 0, 0, 0, 195.671, 332.517, 274.607, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Taiwan_1967", 0, 0, 0, -730.160, -346.212, -472.186, -7.968, -3.5498, -0.4063, -18.2, Math::Unit::Angle::AU_ARCSECOND},
-	{0,     0,     "Taiwan_1997", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
-	{6326,  7030,  "WGS_1984", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("AIRY_1830"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("Anguilla_1957"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("Antigua_1943"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("Beijing_1954"), 0, 0, 0, 15.8, -154.4, -82.3, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Dominica_1945"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("Grenada_1953"), 0, 0, 0, 72, 213.7, 93, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("CGCS2000"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("HONGKONG"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Hong_Kong_1980"), 0, 0, 0, -162.619, -276.959, -161.764, 0.067753 / 0.999998905754, -2.243648 / 0.999998905754, -1.158828 / 0.999998905754, -1.094246, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Macau_2009"), -2361554.788, 5417536.177, 2391608.926, -202.865, -303.990, -155.873, -34.079, 76.126, 32.660, 6.096, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Montserrat_1958"), 0, 0, 0, 174, 159, 365, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("St_Kitts_1955"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{0,     0,     UTF8STRC("St_Lucia_1955"), 0, 0, 0, -149, 128, 296, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("St_Lucia_1955"), 0, 0, 0, 195.671, 332.517, 274.607, 0, 0, 0, 0, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Taiwan_1967"), 0, 0, 0, -730.160, -346.212, -472.186, -7.968, -3.5498, -0.4063, -18.2, Math::Unit::Angle::AU_ARCSECOND},
+	{0,     0,     UTF8STRC("Taiwan_1997"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
+	{6326,  7030,  UTF8STRC("WGS_1984"), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, Math::Unit::Angle::AU_RADIAN},
 };
 
 Math::CoordinateSystemManager::GeographicCSysInfo Math::CoordinateSystemManager::csysList[] = {
@@ -434,7 +434,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::SRCreateGeogCSy
 	sptr = Text::StrUInt32(Text::StrConcatC(sbuff, UTF8STRC("EPSG:")), epsgId);
 	Math::EarthEllipsoid ellipsoid(spheroid->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(&data, datum, (const UTF8Char*)datum->datumName, &ellipsoid, spheroid);
+	FillDatumData(&data, datum, {datum->datumName, datum->datumNameLen}, &ellipsoid, spheroid);
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem({sbuff, (UOSInt)(sptr - sbuff)}, epsgId, {geogcs->name, geogcs->nameLen}, &data, geogcs->primem, geogcs->unit));
 	return csys;
 }
@@ -465,6 +465,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 	UOSInt nameOfst;
 	UOSInt nameLen;
 	UOSInt datumOfst = 0;
+	UOSInt datumLen;
 	UOSInt spIndex = 0;
 	Double a = 0;
 	Double f_1 = 0;
@@ -497,11 +498,11 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 				if (Text::StrStartsWithC(&prjBuff[i], buffSize - i, UTF8STRC("DATUM[")))
 				{
 					i += 6;
-					if (!ParsePRJString(&prjBuff[i], &j))
+					if (!ParsePRJString(&prjBuff[i], &datumLen))
 						return 0;
 					datumOfst = i + 1;
-					prjBuff[i + j - 1] = 0;
-					i += j;
+					prjBuff[i + datumLen - 1] = 0;
+					i += datumLen;
 					while (true)
 					{
 						c = prjBuff[i];
@@ -657,7 +658,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 			const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			FillDatumData(&data, datum, &prjBuff[datumOfst], &ellipsoid, 0);
+			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen}, &ellipsoid, 0);
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
 			return csys;
 		}
@@ -666,7 +667,7 @@ Math::CoordinateSystem *Math::CoordinateSystemManager::ParsePRJBuff(Text::CStrin
 			Math::EarthEllipsoid ellipsoid(a, f_1, eet);
 			const Math::CoordinateSystemManager::DatumInfo *datum = GetDatumInfoByName((const UTF8Char*)&prjBuff[datumOfst]);
 			Math::GeographicCoordinateSystem::DatumData1 data;
-			FillDatumData(&data, datum, &prjBuff[datumOfst], &ellipsoid, 0);
+			FillDatumData(&data, datum, {&prjBuff[datumOfst], datumLen}, &ellipsoid, 0);
 			NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, srid, {&prjBuff[nameOfst], nameLen}, &data, primem, unit));
 			return csys;
 		}
@@ -915,7 +916,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareICase(datumList[k].datumName, (const Char*)name);
+		l = Text::StrCompareICase(datumList[k].datumName, name);
 		if (l > 0)
 		{
 			j = k - 1;
@@ -932,7 +933,7 @@ const Math::CoordinateSystemManager::DatumInfo *Math::CoordinateSystemManager::G
 	return 0;
 }
 
-void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const Math::CoordinateSystemManager::DatumInfo *datum, const UTF8Char *name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid)
+void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSystem::DatumData1 *data, const Math::CoordinateSystemManager::DatumInfo *datum, Text::CString name, Math::EarthEllipsoid *ee, const SpheroidInfo *spheroid)
 {
 	if (datum)
 	{
@@ -942,12 +943,15 @@ void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSyst
 		if (spheroid)
 		{
 			data->spheroid.name = spheroid->name;
+			data->spheroid.nameLen = spheroid->nameLen;
 		}
 		else
 		{
 			data->spheroid.name = datum->datumName;
+			data->spheroid.nameLen = datum->datumNameLen;
 		}
 		data->name = datum->datumName;
+		data->nameLen = datum->datumNameLen;
 		data->x0 = datum->x0;
 		data->y0 = datum->y0;
 		data->z0 = datum->z0;
@@ -965,8 +969,10 @@ void Math::CoordinateSystemManager::FillDatumData(Math::GeographicCoordinateSyst
 		data->srid = 0;
 		data->spheroid.ellipsoid = ee;
 		data->spheroid.srid = 0;
-		data->spheroid.name = (const Char*)name;
-		data->name = (const Char*)name;
+		data->spheroid.name = name.v;
+		data->spheroid.nameLen = name.leng;
+		data->name = name.v;
+		data->nameLen = name.leng;
 		data->x0 = 0;
 		data->y0 = 0;
 		data->z0 = 0;
@@ -1088,7 +1094,7 @@ Math::GeographicCoordinateSystem *Math::CoordinateSystemManager::CreateGeogCoord
 	}
 	Math::EarthEllipsoid ellipsoid(coord->eet);
 	Math::GeographicCoordinateSystem::DatumData1 data;
-	FillDatumData(&data, datum, 0, &ellipsoid, SRGetSpheroid(datum->spheroid));
+	FillDatumData(&data, datum, CSTR_NULL, &ellipsoid, SRGetSpheroid(datum->spheroid));
 	NEW_CLASS(csys, Math::GeographicCoordinateSystem(sourceName, coord->srid, {coord->geoName, coord->geoNameLen}, &data, Math::GeographicCoordinateSystem::PT_GREENWICH, Math::GeographicCoordinateSystem::UT_DEGREE));
 	return csys;
 }
