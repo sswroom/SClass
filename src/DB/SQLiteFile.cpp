@@ -335,7 +335,7 @@ void DB::SQLiteReader::UpdateColTypes()
 	}
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));
@@ -349,7 +349,7 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *lo
 	return db;
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));

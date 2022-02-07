@@ -176,7 +176,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 {
 	Text::StringBuilderUTF8 sb;
 	this->dbConn->GetConnName(&sb);
-	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, (const UTF8Char*)"DB: "));
+	NEW_CLASS(this->db, DB::DBTool(this->dbConn, false, this->log, CSTR("DB: ")));
 	NEW_CLASS(this->dbModel, DB::DBModel());
 	this->dbModel->LoadDatabase(this->db, 0);
 	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));

@@ -357,7 +357,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
 	if (!conn->IsConnError())
 	{
-		NEW_CLASS(db, DB::DBTool(conn, true, log, 0));
+		NEW_CLASS(db, DB::DBTool(conn, true, log, CSTR_NULL));
 		return db;
 	}
 	else
@@ -367,7 +367,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -384,7 +384,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Cha
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;

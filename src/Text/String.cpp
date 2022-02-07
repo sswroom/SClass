@@ -33,6 +33,19 @@ Text::String *Text::String::NewNotNull(const UTF8Char *str)
 	return s;
 }
 
+Text::String *Text::String::NewOrNull(Text::CString str)
+{
+	if (str.v == 0) return 0;
+	if (str.leng == 0) return NewEmpty();
+	Text::String *s = (Text::String*)MAlloc(str.leng + sizeof(String));
+	s->v = s->vbuff;
+	s->leng = str.leng;
+	s->useCnt = 1;
+	MemCopyNO(s->v, str.v, str.leng);
+	s->v[str.leng] = 0;
+	return s;
+}
+
 Text::String *Text::String::New(Text::CString str)
 {
 	if (str.leng == 0) return NewEmpty();

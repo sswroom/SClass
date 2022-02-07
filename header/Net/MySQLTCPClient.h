@@ -6,6 +6,7 @@
 #include "Net/TCPClient.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -56,7 +57,7 @@ namespace Net
 		void SetLastError(const UTF8Char *errMsg);
 	public:
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database);
-		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database);
+		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);
 		virtual ~MySQLTCPClient();
 
 		virtual DB::DBUtil::ServerType GetSvrType();
@@ -101,8 +102,8 @@ namespace Net
 		Text::String *GetConnPWD();
 
 		static UInt16 GetDefaultPort();
-		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
-		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix);
+		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
+		static DB::DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
 	};
 }
 #endif

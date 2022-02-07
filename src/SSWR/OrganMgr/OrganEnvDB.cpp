@@ -86,11 +86,11 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	log->AddFileLog((const UTF8Char*)"OrganMgr.log", IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, 0, false);
 	if (cfgMySQLDB && cfgMySQLHost)
 	{
-		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost->v, cfgMySQLDB->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, log, 0);
+		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), log, CSTR_NULL);
 	}
 	else if (cfgDSN)
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, 0, log, 0);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, 0, log, CSTR_NULL);
 	}
 	if (db == 0)
 	{

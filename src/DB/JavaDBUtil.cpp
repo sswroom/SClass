@@ -5,7 +5,7 @@
 #include "Text/JavaText.h"
 #include "Text/JSText.h"
 
-#define LOGPREFIX ((const UTF8Char*)"DB:")
+#define LOGPREFIX CSTR("DB:")
 
 Text::String *DB::JavaDBUtil::AppendFieldAnno(Text::StringBuilderUTF8 *sb, DB::ColDef *colDef)
 {

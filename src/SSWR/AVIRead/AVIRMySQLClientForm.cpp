@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sbUser;
 	Text::StringBuilderUTF8 sbPwd;
 	Text::StringBuilderUTF8 sbDatabase;
-	const UTF8Char *sDatabase;
+	Text::CString sDatabase;
 	me->txtHost->GetText(&sbUser);
 	me->txtPort->GetText(&sbPwd);
 	if (sbUser.GetLength() == 0)
@@ -74,15 +74,15 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	}
 	if (sbDatabase.GetLength() > 0)
 	{
-		sDatabase = sbDatabase.ToString();
+		sDatabase = sbDatabase.ToCString();
 	}
 	else
 	{
-		sDatabase = 0;
+		sDatabase = CSTR_NULL;
 	}
 	
 	me->cliConnected = false;
-	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetSocketFactory(), &addr, port, sbUser.ToString(), sbPwd.ToString(), sDatabase));
+	NEW_CLASS(me->cli, Net::MySQLTCPClient(me->core->GetSocketFactory(), &addr, port, sbUser.ToCString(), sbPwd.ToCString(), sDatabase));
 	if (me->cli->IsError())
 	{
 		sbUser.ClearStr();

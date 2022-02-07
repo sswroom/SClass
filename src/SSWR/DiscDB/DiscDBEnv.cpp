@@ -169,20 +169,20 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID")))->v,
 				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD")))->v,
 				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("Schema")))->v,
-				this->log, (const UTF8Char*)"DB: ");
+				this->log, CSTR("DB: "));
 		}
 		else if ((s = cfg->GetValue(UTF8STRC("MySQLServer"))) != 0)
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
-				s->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("MySQLDB")))->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID")))->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD")))->v,
-				this->log, (const UTF8Char*)"DB: ");
+				s,
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("MySQLDB"))),
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID"))),
+				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD"))),
+				this->log, CSTR("DB: "));
 		}
 		else if ((s = cfg->GetValue(UTF8STRC("MDBFile"))) != 0)
 		{
-			this->db = DB::MDBFileConn::CreateDBTool(s->v, this->log, (const UTF8Char*)"DB: ");
+			this->db = DB::MDBFileConn::CreateDBTool(s->v, this->log, CSTR("DB: "));
 		}
 		DEL_CLASS(cfg);
 

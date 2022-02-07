@@ -1197,7 +1197,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		s2 = cfg->GetValue(UTF8STRC("MySQLDB"));
 		if (s && s2)
 		{
-			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, cfg->GetValue(UTF8STRC("UID")), cfg->GetValue(UTF8STRC("PWD")), log, (const UTF8Char*)"DB: ");
+			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, s2, cfg->GetValue(UTF8STRC("UID")), cfg->GetValue(UTF8STRC("PWD")), log, CSTR("DB: "));
 			NEW_CLASS(this->dbMut, Sync::Mutex());
 			if (this->db == 0)
 			{
@@ -1215,7 +1215,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			s3 = cfg->GetValue(UTF8STRC("PWD"));
 			if (s)
 			{
-				this->db = DB::ODBCConn::CreateDBTool(s, s2, s3, cfg->GetValue(UTF8STRC("Schema")), log, (const UTF8Char*)"DB: ");
+				this->db = DB::ODBCConn::CreateDBTool(s, s2, s3, cfg->GetValue(UTF8STRC("Schema")), log, CSTR("DB: "));
 				NEW_CLASS(this->dbMut, Sync::Mutex());
 				if (this->db == 0)
 				{

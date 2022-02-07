@@ -28,7 +28,7 @@ namespace DB
 		void *tran;
 
 	public:
-		DBTool(DBConn *conn, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix);
+		DBTool(DBConn *conn, Bool needRelease, IO::LogTool *log, Text::CString logPrefix);
 		virtual ~DBTool();
 
 /*		static DBTool *NullSource(IO::LogTool *);*/

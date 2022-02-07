@@ -577,7 +577,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::OnMonitorChanged()
 void SSWR::AVIRead::AVIRDBManagerForm::ConnAdd(DB::DBConn *conn)
 {
 	DB::DBTool *db;
-	NEW_CLASS(db, DB::DBTool(conn, true, this->log, (const UTF8Char*)"DB: "));
+	NEW_CLASS(db, DB::DBTool(conn, true, this->log, CSTR("DB: ")));
 	this->dbList->Add(db);
 	Text::StringBuilderUTF8 sb;
 	conn->GetConnName(&sb);

@@ -50,8 +50,8 @@ namespace DB
 		Bool IsError();
 		Text::String *GetFileName();
 
-		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix);
-		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix);
+		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Text::CString logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader

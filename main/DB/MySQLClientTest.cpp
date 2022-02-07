@@ -447,21 +447,21 @@ void TestBinaryRead(DB::DBTool *db)
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *mysqlServer;
-	const UTF8Char *mysqlDB;
-	const UTF8Char *mysqlUID;
-	const UTF8Char *mysqlPWD;
-	mysqlServer = (const UTF8Char*)"192.168.0.15";
-	mysqlDB = (const UTF8Char*)"organism";
-	mysqlUID = (const UTF8Char*)"sswr";
-	mysqlPWD = (const UTF8Char*)"simon5";
+	Text::CString mysqlServer;
+	Text::CString mysqlDB;
+	Text::CString mysqlUID;
+	Text::CString mysqlPWD;
+	mysqlServer = CSTR("192.168.0.15");
+	mysqlDB = CSTR("organism");
+	mysqlUID = CSTR("organ");
+	mysqlPWD = CSTR("organ");
 
 	IO::LogTool log;
 	Net::SocketFactory *sockf;
 	DB::DBTool *db;
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, (const UTF8Char*)"DB: ");
+	db = Net::MySQLTCPClient::CreateDBTool(sockf, mysqlServer, mysqlDB, mysqlUID, mysqlPWD, &log, CSTR("DB: "));
 	if (db)
 	{
 		TestBinaryRead(db);

@@ -85,15 +85,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		if (cfg->GetValue(UTF8STRC("MDBFile")))
 		{
-			db = DB::MDBFileConn::CreateDBTool(cfg->GetValue(UTF8STRC("MDBFile")), log, (const UTF8Char*)"DB: ");
+			db = DB::MDBFileConn::CreateDBTool(cfg->GetValue(UTF8STRC("MDBFile")), log, CSTR("DB: "));
 		}
 		else if (cfg->GetValue(UTF8STRC("MySQLServer")))
 		{
-			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue(UTF8STRC("MySQLServer")), cfg->GetValue(UTF8STRC("MySQLDB")), cfg->GetValue(UTF8STRC("MySQLUID")), cfg->GetValue(UTF8STRC("MySQLPwd")), log, (const UTF8Char*)"DB: ");
+			db = Net::MySQLTCPClient::CreateDBTool(sockf, cfg->GetValue(UTF8STRC("MySQLServer")), cfg->GetValue(UTF8STRC("MySQLDB")), cfg->GetValue(UTF8STRC("MySQLUID")), cfg->GetValue(UTF8STRC("MySQLPwd")), log, CSTR("DB: "));
 		}
 		else
 		{
-			db = DB::ODBCConn::CreateDBTool(cfg->GetValue(UTF8STRC("DBDSN")), cfg->GetValue(UTF8STRC("DBUID")), cfg->GetValue(UTF8STRC("DBPwd")), cfg->GetValue(UTF8STRC("DBSchema")), log, (const UTF8Char*)"DB: ");
+			db = DB::ODBCConn::CreateDBTool(cfg->GetValue(UTF8STRC("DBDSN")), cfg->GetValue(UTF8STRC("DBUID")), cfg->GetValue(UTF8STRC("DBPwd")), cfg->GetValue(UTF8STRC("DBSchema")), log, CSTR("DB: "));
 		}
 		UInt16 port;
 		cfg->GetValue(UTF8STRC("SvrPort"))->ToUInt16S(&port, 0);

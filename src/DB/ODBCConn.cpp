@@ -1159,7 +1159,7 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName, UOSInt n
 #endif
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;
@@ -1176,7 +1176,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Tex
 	}
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;

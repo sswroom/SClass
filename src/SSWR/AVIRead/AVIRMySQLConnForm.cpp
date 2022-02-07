@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving server host", (const UTF8Char*)"MySQL Connection", me);
 		return;
 	}
-	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, port, sb2.ToString(), sb3.ToString(), sb4.ToString()));
+	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);

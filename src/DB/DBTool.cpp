@@ -19,7 +19,7 @@
 #include "Text/UTF8Writer.h"
 
 
-DB::DBTool::DBTool(DB::DBConn *conn, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
+DB::DBTool::DBTool(DB::DBConn *conn, Bool needRelease, IO::LogTool *log, Text::CString logPrefix) : DB::ReadingDBTool(conn, needRelease, log, logPrefix)
 {
 	this->nqFail = 0;
 	this->tran = 0;

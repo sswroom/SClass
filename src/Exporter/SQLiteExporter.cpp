@@ -61,7 +61,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, (const UTF8Char*)"DB: ");
+	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, CSTR("DB: "));
 	if (destDB == 0)
 		return false;
 	Bool succ = true;
@@ -71,7 +71,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	sDB->GetTableNames(&tables);
 	if (sDB->IsFullConn())
 	{
-		NEW_CLASS(srcDB, DB::ReadingDBTool((DB::DBConn*)sDB, false, &log, (const UTF8Char*)"SDB: "));
+		NEW_CLASS(srcDB, DB::ReadingDBTool((DB::DBConn*)sDB, false, &log, CSTR("SDB: ")));
 	}
 	else
 	{

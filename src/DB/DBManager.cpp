@@ -14,7 +14,7 @@
 #include "Text/UTF8Writer.h"
 #include "Win32/WMIQuery.h"
 
-#define DBPREFIX ((const UTF8Char*)"DB:")
+#define DBPREFIX CSTR("DB:")
 #define ENCKEY "sswr"
 #define ENCKEYLEN (sizeof(ENCKEY) - 1)
 
@@ -316,9 +316,9 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		Text::StringBuilderUTF8 sb;
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port = 0;
-		const UTF8Char *uid = 0;
-		const UTF8Char *pwd = 0;
-		const UTF8Char *schema = 0;
+		Text::String *uid = 0;
+		Text::String *pwd = 0;
+		Text::String *schema = 0;
 		addr.addrType = Net::AddrType::Unknown;
 		UOSInt cnt;
 		sb.AppendC(connStr + 9, connStrLen - 9);
@@ -338,18 +338,18 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_TEXT(uid);
-				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+				SDEL_STRING(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+				SDEL_STRING(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_TEXT(schema);
-				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].leng - 9);
+				SDEL_STRING(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -358,6 +358,9 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		}
 		Net::MySQLTCPClient *cli;
 		NEW_CLASS(cli, Net::MySQLTCPClient(sockf, &addr, port, uid, pwd, schema));
+		SDEL_STRING(uid);
+		SDEL_STRING(pwd);
+		SDEL_STRING(schema);
 		if (cli->IsError())
 		{
 			DEL_CLASS(cli);

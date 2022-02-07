@@ -1299,7 +1299,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							ptrEnd = &buff[packetSize + 4];
 							sptr = Text::StrConcatS(sbuff, &buff[5], packetSize - 1);
 							ptrCurr = &buff[6] + (sptr - sbuff);
-							me->svrVer = Text::String::NewNotNull(sbuff);
+							me->svrVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 #if defined(VERBOSE)
 							printf("MySQLTCP Server ver = %s\r\n", me->svrVer->v);
 #endif
@@ -1481,7 +1481,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					}
 					else if (buff[3] != 2)
 					{
-						me->SetLastError((const UTF8Char*)"Invalid login reply");
+						me->SetLastError(UTF8STRC("Invalid login reply"));
 						me->cli->Close();
 					}
 					else if (buff[4] == 0)
@@ -1501,7 +1501,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 					}
 					else
 					{
-						me->SetLastError((const UTF8Char*)"Invalid reply on login");
+						me->SetLastError(UTF8STRC("Invalid reply on login"));
 						me->cli->Close();
 					}
 					readSize = 0;
@@ -1833,7 +1833,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->Reconnect();
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
+Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -1847,8 +1847,8 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->svrCap = 0;
 	this->tableNames = 0;
 	this->lastError = 0;
-	this->userName = Text::String::NewNotNull(userName);
-	this->password = Text::String::NewNotNull(password);
+	this->userName = Text::String::New(userName);
+	this->password = Text::String::New(password);
 	this->database = Text::String::NewOrNull(database);
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
 	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
@@ -2138,7 +2138,7 @@ void Net::MySQLTCPClient::Reconnect()
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
-		this->SetLastError((const UTF8Char*)"Cannot connect to server");
+		this->SetLastError(UTF8STRC("Cannot connect to server"));
 	}
 	else
 	{
@@ -2334,7 +2334,7 @@ UInt16 Net::MySQLTCPClient::GetDefaultPort()
 	return 3306;
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
@@ -2359,12 +2359,12 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::S
 	}
 }
 
-DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (sockf->DNSResolveIP(serverName, Text::StrCharCnt(serverName), &addr))
+	if (sockf->DNSResolveIP(serverName.v, serverName.leng, &addr))
 	{
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)

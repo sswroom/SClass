@@ -43,7 +43,7 @@ namespace DB
 		DBUtil::ServerType svrType;
 
 	public:
-		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, const UTF8Char *logPrefix);
+		static ReadingDBTool *MongoDBSource(const UTF8Char *url, IO::LogTool *log, Text::CString logPrefix);
 
 	protected:
 		void AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev);
@@ -52,7 +52,7 @@ namespace DB
 		UOSInt SplitMSSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 		UOSInt SplitUnkSQL(UTF8Char **outStrs, UOSInt maxCnt, UTF8Char *oriStr);
 	public:
-		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix);
+		ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix);
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);

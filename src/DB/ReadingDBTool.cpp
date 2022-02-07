@@ -40,7 +40,7 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogH
 	}
 }
 
-DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *log, Text::CString logPrefix)
 {
 	this->db = db;
 	this->needRelease = needRelease;
