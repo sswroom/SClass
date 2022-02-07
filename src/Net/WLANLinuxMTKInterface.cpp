@@ -124,6 +124,8 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 		UOSInt ssidInd = INVALID_INDEX;
 		UOSInt bssidInd = INVALID_INDEX;
 		buff[wrq.u.data.length] = 0;
+
+//		syslog(LOG_DEBUG, (const Char*)buff);
 //			printf("%s\r\n", buff);
 		lineCnt = Text::StrSplitLine(lines, 2, buff);
 		if (lines[0][0] == 0 && lineCnt == 2)
@@ -351,7 +353,12 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 					{
 						bss.phyType = 8;
 					}
-					bss.rssi = Text::StrToInt32(cols[4]);
+					Int32 quality = Text::StrToInt32(cols[4]);
+					if (quality > 0)
+						bss.rssi = (quality / 2) - 100;
+					else
+						bss.rssi = quality;
+					
 					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo((const UTF8Char*)cols[1], &bss));
 					bssList->Add(bssInfo);
 					retVal++;
