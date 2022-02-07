@@ -38,7 +38,23 @@ void DB::MySQLConn::Connect()
 	}
 }
 
-DB::MySQLConn::MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *database, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"MySQLConn")
+DB::MySQLConn::MySQLConn(Text::String *server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
+{
+	if (Sync::Interlocked::Increment(&useCnt) == 1)
+	{
+	}
+
+	this->mysql = 0;
+	this->server = SCOPY_STRING(server);
+	this->uid = SCOPY_STRING(uid);
+	this->pwd = SCOPY_STRING(pwd);
+	this->database = SCOPY_STRING(database);
+	this->log = log;
+	this->tableNames = 0;
+	Connect();
+}
+
+DB::MySQLConn::MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
@@ -54,7 +70,7 @@ DB::MySQLConn::MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8
 	Connect();
 }
 
-DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"MySQLConn")
+DB::MySQLConn::MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log) : DB::DBConn(CSTR("MySQLConn"))
 {
 	if (Sync::Interlocked::Increment(&useCnt) == 1)
 	{
@@ -350,7 +366,7 @@ Text::String *DB::MySQLConn::GetConnPWD()
 	return this->pwd;
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log)
+/*DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -365,9 +381,9 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 		DEL_CLASS(conn);
 		return 0;
 	}
-}
+}*/
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -384,7 +400,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, const UTF8Cha
 	}
 }
 
-DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MySQLConn *conn;
 	DB::DBTool *db;
@@ -400,6 +416,23 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *db
 		return 0;
 	}
 }
+
+/*DB::DBTool *DB::MySQLConn::CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix)
+{
+	DB::MySQLConn *conn;
+	DB::DBTool *db;
+	NEW_CLASS(conn, DB::MySQLConn(serverName, uid, pwd, dbName, log));
+	if (!conn->IsConnError())
+	{
+		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
+		return db;
+	}
+	else
+	{
+		DEL_CLASS(conn);
+		return 0;
+	}
+}*/
 
 DB::MySQLReader::MySQLReader(OSInt rowChanged, void *result)
 {

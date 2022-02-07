@@ -1115,7 +1115,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 	dt.ClearTime();
 	this->currDate = dt.ToTicks();
 	NEW_CLASS(this->dateMut, Sync::RWMutex());
-	NEW_CLASS(this->checkEvt, Sync::Event(true, (const UTF8Char*)"SSWR.SMonitor.SMonitorSvrCore.checkEvt"));
+	NEW_CLASS(this->checkEvt, Sync::Event(true));
 	this->checkRunning = false;
 	this->checkToStop = false;
 	this->initErr = false;
@@ -1250,7 +1250,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					sb.ClearStr();
 					IO::Path::GetProcessFileName(&sb);
 					IO::Path::AppendPath(&sb, UTF8STRC("files"));
-					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToString(), false, 0, false));
+					NEW_CLASS(fileshdlr, Net::WebServer::HTTPDirectoryHandler(sb.ToCString(), false, 0, false));
 					shdlr->HandlePath(UTF8STRC("/files"), fileshdlr, true);
 					hdlr->HandlePath(UTF8STRC("/monitor"), shdlr, true);
 					hdlr->HandlePath(UTF8STRC("/benchmark"), benchhdlr, true);

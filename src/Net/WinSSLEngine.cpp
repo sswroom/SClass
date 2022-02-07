@@ -1182,7 +1182,7 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	sb2.ClearStr();
 	sb2.AppendSlow(commonName);
 	sb2.AppendC(UTF8STRC(".crt"));
-	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
+	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToCString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
 	sb2.ClearStr();
 	sb2.AppendSlow(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
@@ -1232,7 +1232,7 @@ Crypto::Cert::X509Key *Net::WinSSLEngine::GenerateRSAKey()
 	}
 
 	Crypto::Cert::X509Key *key;
-	NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"RSAKey.key", certBuff, certBuffSize, Crypto::Cert::X509File::KeyType::RSA));
+	NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("RSAKey.key"), certBuff, certBuffSize, Crypto::Cert::X509File::KeyType::RSA));
 	CryptDestroyKey(hKey);
 	CryptReleaseContext(hProv, 0);
 	return key;

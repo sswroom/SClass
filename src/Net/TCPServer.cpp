@@ -90,7 +90,7 @@ UInt32 __stdcall Net::TCPServer::Svrv4Thread(void *o)
 	if (sthreadCnt > 0)
 	{
 		sthreads = MemAlloc(SubthreadStatus, sthreadCnt);
-		NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPServer.threadEvt"));
+		NEW_CLASS(threadEvt, Sync::Event(true));
 		i = sthreadCnt;
 		while (i-- > 0)
 		{
@@ -220,7 +220,7 @@ UInt32 __stdcall Net::TCPServer::Svrv6Thread(void *o)
 	if (sthreadCnt > 0)
 	{
 		sthreads = MemAlloc(SubthreadStatus, sthreadCnt);
-		NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPServer.threadEvt"));
+		NEW_CLASS(threadEvt, Sync::Event(true));
 		i = sthreadCnt;
 		while (i-- > 0)
 		{
@@ -364,7 +364,7 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 	this->userObj = userObj;
 	this->threadRunning = 0;
 	NEW_CLASS(this->socs, Data::SyncLinkedList());
-	NEW_CLASS(this->socsEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPServer.socsEvt"));
+	NEW_CLASS(this->socsEvt, Sync::Event(true));
 
 	Sync::Thread::Create(Svrv4Thread, this);
 	while (true)

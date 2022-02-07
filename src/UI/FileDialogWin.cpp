@@ -283,7 +283,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			while (i < filterCnt)
 			{
 				Text::String *pattern = this->patterns->GetItem(i);
-				if (IO::Path::FileNameMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
+				if (IO::Path::FilePathMatch(u8fname->v, u8fname->leng, pattern->v, pattern->leng))
 				{
 					if (!found)
 					{

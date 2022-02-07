@@ -189,7 +189,7 @@ Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UT
 
 	NEW_CLASS(this->packetMut, Sync::Mutex());
 	NEW_CLASS(this->packetList, Data::ArrayList<PacketInfo*>());
-	NEW_CLASS(this->packetEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTConn.packetEvt"));
+	NEW_CLASS(this->packetEvt, Sync::Event(true));
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
 
 	if (this->ssl)

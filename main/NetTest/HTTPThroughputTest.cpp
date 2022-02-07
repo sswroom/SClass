@@ -270,7 +270,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		threadStatus[i].maxRespTime = 0;
 		threadStatus[i].recvSize = 0;
 		threadStatus[i].hdrSize = 0;
-		NEW_CLASS(threadStatus[i].evt, Sync::Event(true, (const UTF8Char*)"threadStatus.evt"));
+		NEW_CLASS(threadStatus[i].evt, Sync::Event(true));
 		Sync::Thread::Create(ProcessThread, &threadStatus[i]);
 	}
 	while (threadCurrCnt > 0 || connLeft > 0)

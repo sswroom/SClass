@@ -327,15 +327,15 @@ Bool DB::ODBCConn::Connect(Text::String *connStr)
 	return true;
 }
 
-Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
+Bool DB::ODBCConn::Connect(Text::CString connStr)
 {
-	Text::String *s = Text::String::NewNotNull(connStr);
+	Text::String *s = Text::String::New(connStr);
 	Bool ret = this->Connect(s);
 	s->Release();
 	return ret;
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -356,7 +356,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBCon
 	this->forceTz = false;
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -375,7 +375,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->enableDebug = false;
 	this->tzQhr = 0;
 	this->forceTz = false;
-	Text::String *s = Text::String::NewNotNull(connStr);
+	Text::String *s = Text::String::New(connStr);
 	this->Connect(s);
 	s->Release();
 }
@@ -400,7 +400,7 @@ DB::ODBCConn::ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, 
 	this->Connect(this->dsn, this->uid, this->pwd, this->schema);
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->tableNames = 0;
@@ -1176,7 +1176,7 @@ DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Tex
 	}
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::ODBCConn *conn;
 	DB::DBTool *db;

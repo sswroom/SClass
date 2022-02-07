@@ -367,7 +367,7 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	this->dataSvr = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"Net.TFTPServer.chkEvt"));
+	NEW_CLASS(this->chkEvt, Sync::Event(true));
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;

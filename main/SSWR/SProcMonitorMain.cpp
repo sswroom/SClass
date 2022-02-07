@@ -192,7 +192,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (progList->GetCount() > 0)
 	{
-		NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));
+		NEW_CLASS(threadEvt, Sync::Event(true));
 		threadRunning = false;
 		threadToStop = false;
 		Sync::Thread::Create(CheckThread, 0);

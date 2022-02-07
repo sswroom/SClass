@@ -56,8 +56,9 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		return false;
 	}
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	IO::Path::DeleteFile(fileName);
-	if (!DB::MDBFileConn::CreateMDBFile(fileName))
+	if (!DB::MDBFileConn::CreateMDBFile({fileName, fileNameLen}))
 	{
 		return false;
 	}
@@ -72,7 +73,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	mdb = DB::MDBFileConn::CreateDBTool(fileName, &log, CSTR("DB: "));
+	mdb = DB::MDBFileConn::CreateDBTool({fileName, fileNameLen}, &log, CSTR("DB: "));
 	if (mdb == 0)
 		return false;
 	Bool succ = true;

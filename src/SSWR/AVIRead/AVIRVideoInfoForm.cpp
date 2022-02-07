@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	Sync::Event *evt;
 	Media::Decoder::VideoDecoderFinder *vdecoders;
 	Media::Decoder::AudioDecoderFinder *adecoders;
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRVideoInfoForm.OnDecodeClicked.evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 	NEW_CLASS(vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(adecoders, Media::Decoder::AudioDecoderFinder());
 	Bool isEnd;

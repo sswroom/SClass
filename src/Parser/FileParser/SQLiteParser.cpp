@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 	if (fd->IsFullFile())
 	{
 		DB::SQLiteFile *pf;
-		NEW_CLASS(pf, DB::SQLiteFile(fd->GetFullFileName()->v));
+		NEW_CLASS(pf, DB::SQLiteFile(fd->GetFullFileName()));
 		pf->SetSourceName(fd->GetFullName());
 		return pf;
 	}
@@ -84,7 +84,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		if (valid)
 		{
 			DB::SQLiteFile *pf;
-			NEW_CLASS(pf, DB::SQLiteFile(sbuff));
+			NEW_CLASS(pf, DB::SQLiteFile(CSTRP(sbuff, sptr)));
 			pf->SetDeleteOnClose(true);
 			pf->SetSourceName(fd->GetFullName());
 			return pf;

@@ -51,7 +51,7 @@ Net::TFTPClient::TFTPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Ad
 	this->recvSize = 0;
 	this->replyRecv = false;
 	this->nextId = 0;
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.TFTPClient.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, OnDataPacket, this, 0, 0, 2, false));
 	if (this->svr->IsError())
 	{

@@ -13,7 +13,7 @@ Sync::RWMutex::RWMutex()
 	Sync::Event *evt;
 	this->writeTId = 0;
 	this->readCnt = 0;
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"Sync.RWMutex.hand"));
+	NEW_CLASS(evt, Sync::Event(true));
 	this->hand = evt;
 	this->mutHand = malloc(sizeof(pthread_mutex_t));
 	pthread_mutex_init((pthread_mutex_t*)this->mutHand, 0);

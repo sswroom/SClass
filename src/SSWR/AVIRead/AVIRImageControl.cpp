@@ -519,8 +519,8 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 	this->keyObj = 0;
 	NEW_CLASS(this->ioMut, Sync::Mutex());
 	NEW_CLASS(this->folderMut, Sync::Mutex());
-	NEW_CLASS(this->folderThreadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRImageControl.folderThreadEvt"));
-	NEW_CLASS(this->folderCtrlEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRImageControl.folderCtrlEvt"));
+	NEW_CLASS(this->folderThreadEvt, Sync::Event(true));
+	NEW_CLASS(this->folderCtrlEvt, Sync::Event(true));
 	NEW_CLASS(this->imgMap, Data::ICaseStringUTF8Map<SSWR::AVIRead::AVIRImageControl::ImageStatus*>());
 	NEW_CLASS(this->imgMut, Sync::Mutex());
 	NEW_CLASS(this->filterMut, Sync::Mutex());

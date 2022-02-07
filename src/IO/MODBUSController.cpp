@@ -110,7 +110,7 @@ IO::MODBUSController::MODBUSController(IO::MODBUSMaster *modbus)
 {
 	this->modbus = modbus;
 	this->timeout = 200;
-	NEW_CLASS(this->cbEvt, Sync::Event(true, (const UTF8Char*)"IO.MODBUSDevice.cbEvt"));
+	NEW_CLASS(this->cbEvt, Sync::Event(true));
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->devMap, Data::Int32Map<UInt8>());
 	this->reqResult = 0;

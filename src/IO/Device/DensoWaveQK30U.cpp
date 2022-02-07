@@ -252,7 +252,7 @@ IO::Device::DensoWaveQK30U::DensoWaveQK30U(IO::Stream *stm) : IO::CodeScanner((c
 
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->recvMut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"IO.TVControl.recvEvt"));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = true;

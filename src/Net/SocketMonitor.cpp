@@ -50,7 +50,7 @@ Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDat
 	this->soc = soc;
 	if (this->soc)
 	{
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true, (const UTF8Char*)"Net.UDPServer.ctrlEvt"));
+		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
 		this->threadStats = MemAlloc(ThreadStat, this->threadCnt);
 		i = this->threadCnt;
@@ -58,7 +58,7 @@ Net::SocketMonitor::SocketMonitor(Net::SocketFactory *sockf, Socket *soc, RAWDat
 		{
 			this->threadStats[i].toStop = false;
 			this->threadStats[i].threadRunning = false;
-			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Net.UDPServer.threadEvt"));
+			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 			this->threadStats[i].me = this;
 			Sync::Thread::Create(DataThread, &this->threadStats[i]);
 		}

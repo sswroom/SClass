@@ -538,7 +538,7 @@ Bool DB::DBQueue::IsExecTimeout()
 
 DB::DBHandler::DBHandler(DB::DBQueue *dbQ, DB::DBTool *db)
 {
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"DB.DBHandler.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->procTime, Data::DateTime());
 	this->processing = false;

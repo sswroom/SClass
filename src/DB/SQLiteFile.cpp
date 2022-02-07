@@ -59,9 +59,9 @@ DB::SQLiteFile::SQLiteFile(Text::String *fileName) : DB::DBConn(fileName)
 	this->Init();
 }
 
-DB::SQLiteFile::SQLiteFile(const UTF8Char *fileName) : DB::DBConn(fileName)
+DB::SQLiteFile::SQLiteFile(Text::CString fileName) : DB::DBConn(fileName)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->Init();
 }
 
@@ -349,7 +349,7 @@ DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::String *fileName, IO::LogTool *lo
 	return db;
 }
 
-DB::DBTool *DB::SQLiteFile::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::SQLiteFile::CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::SQLiteFile *conn;
 	NEW_CLASS(conn, DB::SQLiteFile(fileName));

@@ -1538,14 +1538,14 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	this->SetCancelButton(this->btnCancel);
 
 	this->genThreadCnt = Sync::Thread::GetThreadCnt();
-	NEW_CLASS(this->genEvt, Sync::Event(true, (const UTF8Char*)"UtilUI.ColorDialog.genEvt"));
+	NEW_CLASS(this->genEvt, Sync::Event(true));
 	UOSInt i;
 	this->genStats = MemAlloc(ThreadStat, this->genThreadCnt);
 	Bool running;
 	i = this->genThreadCnt;
 	while (i-- > 0)
 	{
-		NEW_CLASS(this->genStats[i].evt, Sync::Event(true, (const UTF8Char*)"UtilUI.ColorDialog.genStats.evt"));
+		NEW_CLASS(this->genStats[i].evt, Sync::Event(true));
 		this->genStats[i].me = this;
 		this->genStats[i].status = 0;
 		Sync::Thread::Create(GenThread, &this->genStats[i], 65536);

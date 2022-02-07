@@ -287,7 +287,7 @@ IO::MODBUSDevice::MODBUSDevice(IO::MODBUSMaster *modbus, UInt8 addr)
 	this->modbus = modbus;
 	this->addr = addr;
 	this->timeout = 200;
-	NEW_CLASS(this->cbEvt, Sync::Event(true, (const UTF8Char*)"IO.MODBUSDevice.cbEvt"));
+	NEW_CLASS(this->cbEvt, Sync::Event(true));
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	this->reqDResult = 0;
 	this->reqIResult = 0;

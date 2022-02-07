@@ -1080,7 +1080,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->reqUserName = 0;
 	this->reqPassword = 0;
 	this->reqHeaders = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->respMut, Sync::Mutex());
 	NEW_CLASS(this->params, Data::ArrayList<SSWR::AVIRead::AVIRHTTPClientForm::ParamValue*>());

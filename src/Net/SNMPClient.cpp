@@ -63,7 +63,7 @@ Net::SNMPClient::SNMPClient(Net::SocketFactory *sockf)
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, OnSNMPPacket, this, 0, 0, 1, false));
 	this->reqId = 1;
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->respEvt, Sync::Event(true, (const UTF8Char*)"Net.SNMPClient.respEvt"));
+	NEW_CLASS(this->respEvt, Sync::Event(true));
 	this->hasResp = true;
 	this->respStatus = Net::SNMPUtil::ES_NOERROR;
 	this->respList = 0;

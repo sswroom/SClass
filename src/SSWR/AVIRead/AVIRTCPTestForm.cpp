@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 		me->threadStatus[i].me = me;
 		me->threadStatus[i].threadRunning = false;
 		me->threadStatus[i].threadToStop = false;
-		NEW_CLASS(me->threadStatus[i].evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRTCPTestForm.threadStatus.evt"));
+		NEW_CLASS(me->threadStatus[i].evt, Sync::Event(true));
 		Sync::Thread::Create(ProcessThread, &me->threadStatus[i]);
 	}
 }

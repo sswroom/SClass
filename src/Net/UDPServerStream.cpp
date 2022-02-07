@@ -38,7 +38,7 @@ Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 	this->lastPort = 0;
 	this->buffSize = 0;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->readEvt, Sync::Event(true, (const UTF8Char*)"Net.UDPServerStream.readEvt"));
+	NEW_CLASS(this->readEvt, Sync::Event(true));
 	NEW_CLASS(this->dataMut, Sync::Mutex());
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, OnUDPPacket, this, log, (const UTF8Char*)"UDPStm: ", 2, false));
 	if (this->svr->IsError())

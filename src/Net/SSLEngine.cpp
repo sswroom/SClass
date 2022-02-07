@@ -168,7 +168,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 		{
 			i = this->currThreadCnt;
 			this->currThreadCnt++;
-			NEW_CLASS(this->threadSt[i].evt, Sync::Event(true, (const UTF8Char*)"Net.SSLEngine.threadSt.evt"));
+			NEW_CLASS(this->threadSt[i].evt, Sync::Event(true));
 			this->threadSt[i].clientReady = readyHdlr;
 			this->threadSt[i].clientReadyObj = userObj;
 			this->threadSt[i].s = s;

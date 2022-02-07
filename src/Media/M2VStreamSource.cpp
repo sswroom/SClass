@@ -443,7 +443,7 @@ Media::M2VStreamSource::M2VStreamSource(Media::IStreamControl *pbc)
 
 	this->playing = false;
 	this->playToStop = false;
-	NEW_CLASS(this->playEvt, Sync::Event(true, (const UTF8Char*)"Media.M2VStreamSource.playEvt"));
+	NEW_CLASS(this->playEvt, Sync::Event(true));
 	NEW_CLASS(this->playMut, Sync::Mutex());
 	NEW_CLASS(this->pbcMut, Sync::Mutex());
 	playBuff = MemAlloc(FrameBuff, PLAYBUFFSIZE);

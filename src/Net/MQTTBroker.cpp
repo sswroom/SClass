@@ -945,7 +945,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	this->infoStartTime = 0;
 	this->sysInfoRunning = false;
 	this->sysInfoToStop = false;
-	NEW_CLASS(this->sysInfoEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTTBroker.sysInfoEvt"));
+	NEW_CLASS(this->sysInfoEvt, Sync::Event(true));
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	this->infoStartTime = dt.ToTicks();

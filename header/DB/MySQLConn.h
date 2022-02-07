@@ -28,7 +28,8 @@ namespace DB
 		void Connect();
 
 	public:
-		MySQLConn(const UTF8Char *server, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *database, IO::LogTool *log);
+		MySQLConn(Text::String *server, Text::String *uid, Text::String *pwd, Text::String *database, IO::LogTool *log);
+		MySQLConn(Text::CString server, Text::CString uid, Text::CString pwd, Text::CString database, IO::LogTool *log);
 		MySQLConn(const WChar *server, const WChar *uid, const WChar *pwd, const WChar *database, IO::LogTool *log);
 		virtual ~MySQLConn();
 		virtual DB::DBUtil::ServerType GetSvrType();
@@ -60,9 +61,10 @@ namespace DB
 		Text::String *GetConnUID();
 		Text::String *GetConnPWD();
 
-		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log);
-		static DBTool *CreateDBTool(Net::SocketFactory *sockf, const UTF8Char *serverName, const UTF8Char *dbName, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix);
+//		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log);
+		static DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::String *serverName, Text::String *dbName, Text::String *uid, Text::String *pwd, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Net::SocketFactory *sockf, Text::CString serverName, Text::CString dbName, Text::CString uid, Text::CString pwd, IO::LogTool *log, Text::CString logPrefix);
+//		static DBTool *CreateDBTool(const WChar *serverName, const WChar *dbName, const WChar *uid, const WChar *pwd, IO::LogTool *log, Text::CString logPrefix);
 	};
 
 	class MySQLReader : public DB::DBReader

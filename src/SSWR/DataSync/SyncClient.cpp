@@ -212,8 +212,8 @@ SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId
 	this->cliPort = cliPort;
 	NEW_CLASS(this->dataMgr, SSWR::DataSync::SyncClientDataMgr());
 
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DataSync.SyncClient.recvEvt"));
-	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DataSync.SyncClient.kaEvt"));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
+	NEW_CLASS(this->kaEvt, Sync::Event(true));
 	this->recvRunning = false;
 	this->kaRunning = false;
 	this->toStop = false;

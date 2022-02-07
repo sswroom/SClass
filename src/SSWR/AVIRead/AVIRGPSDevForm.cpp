@@ -627,7 +627,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->dispConn = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRGPSDevForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	Sync::Thread::Create(ClientThread, this);
 	while (!this->threadRunning)
 	{

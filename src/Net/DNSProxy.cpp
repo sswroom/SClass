@@ -425,7 +425,7 @@ Net::DNSProxy::CliRequestStatus *Net::DNSProxy::NewCliReq(UInt32 id)
 {
 	CliRequestStatus *req = MemAlloc(CliRequestStatus, 1);
 	req->respSize = 0;
-	NEW_CLASS(req->finEvt, Sync::Event(true, (const UTF8Char*)"Net.DNSProxy.CliRequestStatus.finEvt"));
+	NEW_CLASS(req->finEvt, Sync::Event(true));
 	Sync::MutexUsage mutUsage(this->cliReqMut);
 	this->cliReqMap->Put(id, req);
 	mutUsage.EndUse();

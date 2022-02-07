@@ -34,7 +34,7 @@ Net::NTPClient::NTPClient(Net::SocketFactory *sockf, UInt16 port)
 	this->sockf = sockf;
 	this->resultTime = 0;
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.NTPClient.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, 1, false));
 }
 

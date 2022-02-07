@@ -165,10 +165,10 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		Text::String *s;
 		if ((s = cfg->GetValue(UTF8STRC("DSN"))) != 0)
 		{
-			this->db = DB::ODBCConn::CreateDBTool(s->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID")))->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD")))->v,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("Schema")))->v,
+			this->db = DB::ODBCConn::CreateDBTool(s,
+				cfg->GetValue(UTF8STRC("UID")),
+				cfg->GetValue(UTF8STRC("PWD")),
+				cfg->GetValue(UTF8STRC("Schema")),
 				this->log, CSTR("DB: "));
 		}
 		else if ((s = cfg->GetValue(UTF8STRC("MySQLServer"))) != 0)
@@ -182,7 +182,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 		}
 		else if ((s = cfg->GetValue(UTF8STRC("MDBFile"))) != 0)
 		{
-			this->db = DB::MDBFileConn::CreateDBTool(s->v, this->log, CSTR("DB: "));
+			this->db = DB::MDBFileConn::CreateDBTool(s->ToCString(), this->log, CSTR("DB: "));
 		}
 		DEL_CLASS(cfg);
 

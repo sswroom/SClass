@@ -459,7 +459,7 @@ UInt32 __stdcall Data::Sort::ArtificialQuickSort::ProcessThread(void *userObj)
 Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 {
 	this->threadCnt = Sync::Thread::GetThreadCnt();
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Data.Sort.ArtificialQuickSort.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->arr = 0;
 	this->tasks = MemAlloc(OSInt, 65536);
@@ -473,7 +473,7 @@ Data::Sort::ArtificialQuickSort::ArtificialQuickSort()
 		this->threads[i].state = 0;
 		this->threads[i].toStop = false;
 		this->threads[i].threadId = i;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true, (const UTF8Char*)"Data.Sort.ArtificialQuickSort.threads.evt"));
+		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 
 		Sync::Thread::Create(ProcessThread, &this->threads[i]);
 	}

@@ -889,7 +889,7 @@ UI::GUITextFileView::GUITextFileView(UI::GUICore *ui, UI::GUIClientControl *pare
 	NEW_CLASS(this->textPosUpdHdlr, Data::ArrayList<TextPosEvent>());
 	NEW_CLASS(this->textPosUpdObj, Data::ArrayList<void *>());
 
-	NEW_CLASS(this->evtThread, Sync::Event(true, (const UTF8Char*)"UI.GUITextFileView.evtThread"));
+	NEW_CLASS(this->evtThread, Sync::Event(true));
 	NEW_CLASS(this->mut, Sync::Mutex());
 	Sync::Thread::Create(ProcThread, this);
 }

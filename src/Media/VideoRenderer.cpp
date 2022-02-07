@@ -1809,8 +1809,8 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	this->threadToStop = false;
 	this->timeDelay = 0;
 	NEW_CLASS(this->buffMut, Sync::Mutex());
-	NEW_CLASS(this->buffEvt, Sync::Event(true, (const UTF8Char*)"Media.VideoRenderer.buffEvt"));
-	NEW_CLASS(this->dispEvt, Sync::Event(true, (const UTF8Char*)"Media.VideoRenderer.dispEvt"));
+	NEW_CLASS(this->buffEvt, Sync::Event(true));
+	NEW_CLASS(this->dispEvt, Sync::Event(true));
 	NEW_CLASS(this->dispMut, Sync::RWMutex());
 	this->videoPause = false;
 	this->videoProcCnt = 0;
@@ -1861,7 +1861,7 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 		this->tstats[i].resizerSrcRefLuminance = 0;
 		this->tstats[i].resizer10Bit = false;
 		this->tstats[i].me = this;
-		NEW_CLASS(this->tstats[i].evt, Sync::Event(true, (const UTF8Char*)"UI.MSWindowVideoBoxDD.tstats.evt"));
+		NEW_CLASS(this->tstats[i].evt, Sync::Event(true));
 		Sync::Thread::Create(ProcessThread, &this->tstats[i]);
 	}
 

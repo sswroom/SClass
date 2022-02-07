@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else
 				{
-					NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
+					NEW_CLASS(evt, Sync::Event(true));
 					threadRunning = false;
 					threadToStop = false;
 					pin->SetPinOutput(true);

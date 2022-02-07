@@ -159,10 +159,10 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		if (Text::StrStartsWithC(connStr + 5, connStrLen - 5, UTF8STRC("DSN=")))
 		{
 			Text::StringBuilderUTF8 sb;
-			const UTF8Char *dsn = 0;
-			const UTF8Char *uid = 0;
-			const UTF8Char *pwd = 0;
-			const UTF8Char *schema = 0;
+			Text::String *dsn = 0;
+			Text::String *uid = 0;
+			Text::String *pwd = 0;
+			Text::String *schema = 0;
 			UOSInt cnt;
 			sb.AppendC(connStr + 5, connStrLen - 5);
 			Text::PString sarr[2];
@@ -172,23 +172,23 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 				cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 				if (sarr[0].StartsWithICase(UTF8STRC("DSN=")))
 				{
-					SDEL_TEXT(dsn);
-					dsn = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+					SDEL_STRING(dsn);
+					dsn = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 				{
-					SDEL_TEXT(uid);
-					uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+					SDEL_STRING(uid);
+					uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 				{
-					SDEL_TEXT(pwd);
-					pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+					SDEL_STRING(pwd);
+					pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 				}
 				else if (sarr[0].StartsWithICase(UTF8STRC("SCHEMA=")))
 				{
-					SDEL_TEXT(schema);
-					schema = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].leng - 7);
+					SDEL_STRING(schema);
+					schema = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
 				}
 				if (cnt != 2)
 				{
@@ -196,10 +196,10 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 				}
 			}
 			db = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, schema, log, DBPREFIX);
-			SDEL_TEXT(dsn);
-			SDEL_TEXT(uid);
-			SDEL_TEXT(pwd);
-			SDEL_TEXT(schema);
+			SDEL_STRING(dsn);
+			SDEL_STRING(uid);
+			SDEL_STRING(pwd);
+			SDEL_STRING(schema);
 			if (db)
 			{
 				return db;
@@ -208,7 +208,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 		else
 		{
 			DB::ODBCConn *conn;
-			NEW_CLASS(conn, DB::ODBCConn(connStr + 5, (const UTF8Char*)"ODBCConn", log));
+			NEW_CLASS(conn, DB::ODBCConn({connStr + 5, connStrLen - 5}, CSTR("ODBCConn"), log));
 			if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 			{
 				NEW_CLASS(db, DB::DBTool(conn, true, log, DBPREFIX));
@@ -220,10 +220,10 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 	else if (Text::StrStartsWithC(connStr, connStrLen, UTF8STRC("mysql:")))
 	{
 		Text::StringBuilderUTF8 sb;
-		const UTF8Char *server = 0;
-		const UTF8Char *uid = 0;
-		const UTF8Char *pwd = 0;
-		const UTF8Char *schema = 0;
+		Text::String *server = 0;
+		Text::String *uid = 0;
+		Text::String *pwd = 0;
+		Text::String *schema = 0;
 		UOSInt cnt;
 		sb.AppendC(connStr + 6, connStrLen - 6);
 		Text::PString sarr[2];
@@ -234,23 +234,23 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
 			{
-				SDEL_TEXT(server);
-				server = Text::StrCopyNewC(sarr[0].v + 7, sarr[0].leng - 7);
+				SDEL_STRING(server);
+				server = Text::String::New(sarr[0].v + 7, sarr[0].leng - 7);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("UID=")))
 			{
-				SDEL_TEXT(uid);
-				uid = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+				SDEL_STRING(uid);
+				uid = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PWD=")))
 			{
-				SDEL_TEXT(pwd);
-				pwd = Text::StrCopyNewC(sarr[0].v + 4, sarr[0].leng - 4);
+				SDEL_STRING(pwd);
+				pwd = Text::String::New(sarr[0].v + 4, sarr[0].leng - 4);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("DATABASE=")))
 			{
-				SDEL_TEXT(schema);
-				schema = Text::StrCopyNewC(sarr[0].v + 9, sarr[0].leng - 9);
+				SDEL_STRING(schema);
+				schema = Text::String::New(sarr[0].v + 9, sarr[0].leng - 9);
 			}
 			if (cnt != 2)
 			{
@@ -258,10 +258,10 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			}
 		}
 		db = DB::MySQLConn::CreateDBTool(sockf, server, schema, uid, pwd, log, DBPREFIX);
-		SDEL_TEXT(server);
-		SDEL_TEXT(uid);
-		SDEL_TEXT(pwd);
-		SDEL_TEXT(schema);
+		SDEL_STRING(server);
+		SDEL_STRING(uid);
+		SDEL_STRING(pwd);
+		SDEL_STRING(schema);
 		if (db)
 		{
 			return db;
@@ -271,7 +271,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 	{
 		if (Text::StrStartsWithICaseC(connStr + 7, connStrLen - 7, UTF8STRC("FILE=")))
 		{
-			db = DB::SQLiteFile::CreateDBTool(connStr + 12, log, DBPREFIX);
+			db = DB::SQLiteFile::CreateDBTool({connStr + 12, connStrLen - 12}, log, DBPREFIX);
 			if (db)
 			{
 				return db;

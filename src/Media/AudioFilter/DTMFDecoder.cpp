@@ -473,7 +473,7 @@ Media::AudioFilter::DTMFDecoder::DTMFDecoder(Media::IAudioSource *audSrc, UOSInt
 	this->toneChgObj = 0;
 	NEW_CLASS(this->sampleMut, Sync::Mutex());
 	NEW_CLASS(this->calcMut, Sync::Mutex());
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Media.AudioFilter.DTMFDecoder.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->threadToStop = false;
 	this->threadRunning = false;
 	Sync::Thread::Create(CalcThread, this);

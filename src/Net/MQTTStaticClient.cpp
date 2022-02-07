@@ -128,7 +128,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->kaRunning = false;
 	this->kaToStop = false;
 	this->kaSeconds = 30;
-	NEW_CLASS(this->kaEvt, Sync::Event(true, (const UTF8Char*)"Net.MQTThandler.kaEvt"));
+	NEW_CLASS(this->kaEvt, Sync::Event(true));
 	NEW_CLASS(this->connMut, Sync::Mutex());
 	this->conn = 0;
 	this->errLog = errLog;

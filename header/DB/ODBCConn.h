@@ -50,12 +50,12 @@ namespace DB
 
 	protected:		
 		Bool Connect(Text::String *connStr);
-		Bool Connect(const UTF8Char *connStr);
-		ODBCConn(const UTF8Char *sourceName, IO::LogTool *log);
+		Bool Connect(Text::CString connStr);
+		ODBCConn(Text::CString sourceName, IO::LogTool *log);
 	public:
 		ODBCConn(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log);
-		ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log);
-		ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log);
+		ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log);
+		ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log);
 		virtual ~ODBCConn();
 
 		virtual DB::DBUtil::ServerType GetSvrType();
@@ -100,7 +100,7 @@ namespace DB
 		static UOSInt GetDriverList(Data::ArrayList<Text::String*> *driverList);
 		static IO::ConfigFile *GetDriverInfo(const UTF8Char *driverName, UOSInt nameLen);
 		static DBTool *CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix);
 	};
 
 	class ODBCReader : public DB::DBReader

@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt argc;
 	running = false;
 	toStop = false;
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 
 	argv = progCtrl->GetCommandLines(progCtrl, &argc);
 	if (argc >= 2 && Text::StrToInt32(argv[1], &wdId))

@@ -138,7 +138,7 @@ Map::TileMapGenerator::TileMapGenerator(Map::MapConfig2TGen *mcfg, Media::DrawEn
 	this->tileDir = Text::StrCopyNew(tileDir);
 	NEW_CLASS(this->dbGenList, Data::ArrayListInt64());
 	NEW_CLASS(this->dbMut, Sync::Mutex());
-	NEW_CLASS(this->dbEvt, Sync::Event(true, (const UTF8Char*)"Map.TileMapGenerator.dbEvt"));
+	NEW_CLASS(this->dbEvt, Sync::Event(true));
 	NEW_CLASS(this->resizer, Media::Resizer::LanczosResizerH8_8(3, 3, Media::AT_NO_ALPHA));
 }
 

@@ -99,7 +99,7 @@ Net::RSSReader::RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Net::S
 	this->threadToStop = false;
 	NEW_CLASS(this->currRSSMaps, Data::FastStringMap<RSSStatus*>());
 	NEW_CLASS(this->nextDT, Data::DateTime());
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.RSSReader.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->nextDT->SetCurrTimeUTC();
 	Sync::Thread::Create(RSSThread, this);
 	while (!this->threadRunning)

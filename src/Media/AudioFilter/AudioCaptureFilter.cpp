@@ -44,7 +44,7 @@ Media::AudioFilter::AudioCaptureFilter::AudioCaptureFilter(Media::IAudioSource *
 {
 	NEW_CLASS(this->readMut, Sync::Mutex());
 	NEW_CLASS(this->writeMut, Sync::Mutex());
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Media.AudioFilter.AudioCaptureFilter.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	this->sourceAudio = sourceAudio;
 	this->waveStm = 0;
 	this->readBuff = MemAlloc(UInt8, BUFFSIZE);

@@ -13,7 +13,7 @@ struct DB::OLEDBConn::ClassData
 	const WChar *connStr;
 };
 
-DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBConn")
+DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -28,7 +28,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_COCREATE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBConn")
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;

@@ -111,7 +111,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 				Sync::Event *readEvt;
 				void *sess;
 
-				NEW_CLASS(readEvt, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.LoadThread.readEvt"));
+				NEW_CLASS(readEvt, Sync::Event(false));
 				NEW_CLASS(fdh->file, IO::FileStream(fdh->localFile, IO::FileMode::Create, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 				while (true)
 				{
@@ -270,7 +270,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 			fdh->fileName = fdh->url->ToCString();
 		}
 		fdh->cli = 0;
-		NEW_CLASS(fdh->evtTmp, Sync::Event(false, (const UTF8Char*)"Net.HTTPData.fdh.evtTmp"));
+		NEW_CLASS(fdh->evtTmp, Sync::Event(false));
 		Sync::Thread::Create(LoadThread, fdh);
 		while (fdh->cli == 0 && fdh->isLoading)
 		{

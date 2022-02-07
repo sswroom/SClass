@@ -106,7 +106,7 @@ Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(const UTF8Char 
 	NEW_CLASS(this->sessIds, Data::ArrayListInt64());
 	NEW_CLASS(this->sesses, Data::ArrayList<Net::WebServer::MemoryWebSession*>());
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"Net.WebServer.MemoryWebSessionManager.chkEvt"));
+	NEW_CLASS(this->chkEvt, Sync::Event(true));
 	this->chkToStop = false;
 	this->chkRunning = false;
 	Sync::Thread::Create(CheckThread, this);

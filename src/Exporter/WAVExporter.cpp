@@ -107,7 +107,7 @@ Bool Exporter::WAVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	fileSize = headerSize;
 	UOSInt blockSize;
 	Sync::Event *evt;
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"Exporter.WAVExporter.evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 	if (audio->Start(evt, (UOSInt)(1048576 - headerSize)))
 	{
 		while ((blockSize = audio->ReadBlock(&buff[(UOSInt)headerSize], (UOSInt)(1048576 - headerSize))) > 0)

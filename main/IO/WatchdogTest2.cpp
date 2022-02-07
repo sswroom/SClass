@@ -141,8 +141,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		return 0;
 	}
 
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"evt"));
-	NEW_CLASS(httpEvt, Sync::Event(true, (const UTF8Char*)"evt"));
+	NEW_CLASS(evt, Sync::Event(true));
+	NEW_CLASS(httpEvt, Sync::Event(true));
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 

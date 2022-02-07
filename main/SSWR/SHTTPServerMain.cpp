@@ -22,13 +22,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::WebServer::WebStandardHandler *hdlr;
 	Text::StringBuilderUTF8 sb;
 	UInt16 port;
-	const UTF8Char *path;
+	Text::CString path;
 
 #if defined(DEBUGCON)
-	path = (const UTF8Char*)"/";
+	path = CSTR("/");
 	NEW_CLASS(console, IO::DebugWriter());
 #else
-	path = (const UTF8Char*)".";
+	path = CSTR(".");
 	NEW_CLASS(console, IO::ConsoleWriter());
 #endif
 

@@ -10,7 +10,7 @@ Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 	this->ssl = ssl;
 	NEW_CLASS(this->statusMap, Data::StringUTF8Map<DomainStatus*>());
 	NEW_CLASS(this->statusMut, Sync::Mutex());
-	NEW_CLASS(this->statusEvt, Sync::Event(true, (const UTF8Char*)"Net.HTTPQueue.statusEvt"));
+	NEW_CLASS(this->statusEvt, Sync::Event(true));
 }
 
 Net::HTTPQueue::~HTTPQueue()

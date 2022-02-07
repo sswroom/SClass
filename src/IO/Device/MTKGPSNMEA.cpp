@@ -36,7 +36,7 @@ void IO::Device::MTKGPSNMEA::ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen)
 IO::Device::MTKGPSNMEA::MTKGPSNMEA(IO::Stream *stm, Bool relStm) : IO::GPSNMEA(stm, relStm)
 {
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.MTKTracker.cmdEvt"));
+	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	NEW_CLASS(this->cmdWResults, Data::SyncArrayList<Text::String *>());
 	this->firmwareBuild = 0;
 	this->firmwareRel = 0;

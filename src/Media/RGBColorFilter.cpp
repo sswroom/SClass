@@ -69,7 +69,7 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	this->colorMgr = colorMgr;
 	this->lut = 0;
 	this->nThread = Sync::Thread::GetThreadCnt();
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Media.RGBColorFilter.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	this->threadStats = MemAlloc(ThreadStat, this->nThread);
 	this->hdrLev = 0;
 	this->gammaParam = 0;
@@ -83,7 +83,7 @@ Media::RGBColorFilter::RGBColorFilter(Media::ColorManager *colorMgr)
 	UOSInt i = this->nThread;
 	while (i-- > 0)
 	{
-		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Media.RGBColorFilter.threadStats.evt"));
+		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		Sync::Thread::Create(ProcessThread, &this->threadStats[i]);

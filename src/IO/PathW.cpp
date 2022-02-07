@@ -974,44 +974,41 @@ IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 #endif
 }
 
-Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FileNameMatch(const UTF8Char *fileName, UOSInt fileNameLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
-	UTF8Char sbuff[256];
-	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
-	const UTF8Char *fileName = &path[i + 1];
-	Text::StrConcatC(sbuff, searchPattern, patternLen);
+	const UTF8Char *fileNameEnd = &fileName[fileNameLen];
+	UOSInt i;
 	Bool isWC = false;
-	UTF8Char *patternStart = 0;
-	UTF8Char *currPattern = sbuff;
+	const UTF8Char *patternStart = 0;
+	const UTF8Char *currPattern = searchPattern;
 	UTF8Char c;
 	while (true)
 	{
 		c = *currPattern;
-		if (c == 0)
+		switch (c)
 		{
+		case 0:
 			if (isWC)
 			{
 				if (patternStart == 0)
 					return true;
-				return Text::StrEndsWith(fileName, patternStart);
+				return Text::StrEndsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
 			}
 			else if (patternStart)
 			{
-				return Text::StrCompareICase(fileName, patternStart) == 0;
+				return Text::StrEqualsICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart));
 			}
 			else
 			{
 				return *fileName == 0;
 			}
-		}
-		else if (c == '?' || c == '*')
-		{
+		case '?':
+		case '*':
 			if (isWC)
 			{
 				if (patternStart == 0)
 					return false;
-				*currPattern = 0;
-				if ((i = Text::StrIndexOf(fileName, patternStart)) == INVALID_INDEX)
+				if ((i = Text::StrIndexOfC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart))) == INVALID_INDEX)
 					return false;
 				fileName += i + currPattern - patternStart;
 				patternStart = 0;
@@ -1019,8 +1016,7 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 			}
 			else if (patternStart)
 			{
-				*currPattern = 0;
-				if (!Text::StrStartsWithICase(fileName, patternStart))
+				if (!Text::StrStartsWithICaseC(fileName, (UOSInt)(fileNameEnd - fileName), patternStart, (UOSInt)(currPattern - patternStart)))
 					return false;
 				fileName += currPattern - patternStart;
 				patternStart = 0;
@@ -1039,19 +1035,25 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 				patternStart = 0;
 				currPattern++;
 			}
-		}
-		else
-		{
+			break;
+		default:
 			if (patternStart == 0)
 			{
 				patternStart = currPattern;
 			}
 			currPattern++;
+			break;
 		}
 	}
 }
 
-Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
+Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+{
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '\\');
+	return FileNameMatch(&path[i + 1], pathLen - i - 1, searchPattern, patternLen);
+}
+
+Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 {
 	WChar sbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '\\');

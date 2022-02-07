@@ -36,12 +36,12 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 	}
 	if (this->threadCnt > 1)
 	{
-		NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Sync.ParallelTask.evtMain"));
+		NEW_CLASS(this->mainEvt, Sync::Event(true));
 		this->stats = MemAlloc(Sync::ParallelTask::ThreadStatus, this->threadCnt);
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			NEW_CLASS(this->stats[i].evt, Sync::Event(true, (const UTF8Char*)"Sync.ParallelTask.stats.evt"));
+			NEW_CLASS(this->stats[i].evt, Sync::Event(true));
 			this->stats[i].me = this;
 			this->stats[i].running = false;
 			this->stats[i].toStop = false;

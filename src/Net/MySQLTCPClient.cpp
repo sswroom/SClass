@@ -64,8 +64,8 @@ public:
 		this->nextRow = 0;
 		this->colCount = 0;
 		this->nextRowReady = false;
-		NEW_CLASS(this->nextRowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPReader.nextRowEvt"));
-		NEW_CLASS(this->rowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPReader.nextRowEvt"));
+		NEW_CLASS(this->nextRowEvt, Sync::Event(true));
+		NEW_CLASS(this->rowEvt, Sync::Event(true));
 	}
 
 	virtual ~MySQLTCPReader()
@@ -512,8 +512,8 @@ public:
 		this->colCount = 0;
 		this->nextRowReady = false;
 		this->stmtId = 0;
-		NEW_CLASS(this->nextRowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPBinaryReader.nextRowEvt"));
-		NEW_CLASS(this->rowEvt, Sync::Event(true, (const UTF8Char*)"MySQLTCPBinaryReader.nextRowEvt"));
+		NEW_CLASS(this->nextRowEvt, Sync::Event(true));
+		NEW_CLASS(this->rowEvt, Sync::Event(true));
 	}
 
 	virtual ~MySQLTCPBinaryReader()
@@ -1806,7 +1806,7 @@ void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg)
 #endif
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
+Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -1824,7 +1824,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->password = password->Clone();
 	this->database = SCOPY_STRING(database);
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
+	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
 	this->cmdResultType = CmdResultType::Processing;
@@ -1833,7 +1833,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->Reconnect();
 }
 
-Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn((const UTF8Char*)"MySQLTCPClient")
+Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database) : DB::DBConn(CSTR("MySQLTCPClient"))
 {
 	this->sockf = sockf;
 	this->recvRunning = false;
@@ -1851,7 +1851,7 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->password = Text::String::New(password);
 	this->database = Text::String::NewOrNull(database);
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"Net.MySQLTCPCLient.cmdEvt"));
+	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
 	this->cmdResultType = CmdResultType::Processing;

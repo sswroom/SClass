@@ -197,9 +197,9 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->recvRunning = false;
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	NEW_CLASS(this->clk, Manage::HiResClock());
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRTCPSpeedCliForm.mainEvt"));
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRTCPSpeedCliForm.recvEvt"));
-	NEW_CLASS(this->procEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRTCPSpeedCliForm.procEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
+	NEW_CLASS(this->procEvt, Sync::Event(true));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));

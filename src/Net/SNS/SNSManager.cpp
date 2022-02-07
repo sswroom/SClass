@@ -450,7 +450,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.SNS.SNSManager.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	if (dataPath)
 	{

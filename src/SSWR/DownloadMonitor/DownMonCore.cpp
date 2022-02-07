@@ -481,7 +481,7 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	this->chkToStop = false;
 	NEW_CLASS(this->sockf, Net::OSSocketFactory(true));
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->chkEvt, Sync::Event(true, (const UTF8Char*)"SSWR.DownloadMonitor.DownMonCore.chkEvt"));
+	NEW_CLASS(this->chkEvt, Sync::Event(true));
 	this->chkStatus = CS_IDLE;
 	NEW_CLASS(this->fileMut, Sync::Mutex());
 	NEW_CLASS(this->fileTypeMap, Data::Int32Map<SSWR::DownloadMonitor::DownMonCore::FileInfo*>());

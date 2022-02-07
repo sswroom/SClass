@@ -62,7 +62,7 @@ DB::DBConn *DB::MSSQLConn::OpenConnTCP(const UTF8Char *serverHost, UInt16 port, 
 		}
 	}
 	driverName->Release();
-	NEW_CLASS(conn, DB::ODBCConn(connStr.ToString(), (const UTF8Char*)"MSSQLConn", log));
+	NEW_CLASS(conn, DB::ODBCConn(connStr.ToCString(), CSTR("MSSQLConn"), log));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		return conn;

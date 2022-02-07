@@ -50,13 +50,13 @@ void Win32::WMIQuery::InitQuery(const WChar *ns)
 	}
 }
 
-Win32::WMIQuery::WMIQuery() : DB::DBConn((const UTF8Char*)"WMIQuery")
+Win32::WMIQuery::WMIQuery() : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(L"root\\WMI");
 	this->InitQuery(this->ns);
 }
 
-Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn((const UTF8Char*)"WMIQuery")
+Win32::WMIQuery::WMIQuery(const WChar *ns) : DB::DBConn(CSTR("WMIQuery"))
 {
 	this->ns = Text::StrCopyNew(ns);
 	this->InitQuery(this->ns);

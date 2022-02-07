@@ -334,7 +334,7 @@ IO::TVCtrl::NECTVControl::NECTVControl(IO::Stream *stm, Int32 monId)
 	this->nextTime->SetCurrTimeUTC();
 
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"IO.TVControl.recvEvt"));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = false;

@@ -262,7 +262,7 @@ IO::Device::DensoWaveQB30::DensoWaveQB30(IO::Stream *stm) : IO::CodeScanner((con
 
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->recvMut, Sync::Mutex());
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.DensoWaveQB30.recvEvt"));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	this->recvBuff = MemAlloc(UInt8, RECVBUFFSIZE);
 	this->recvSize = 0;
 	this->recvRunning = true;

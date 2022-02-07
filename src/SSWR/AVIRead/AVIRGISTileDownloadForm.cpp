@@ -610,13 +610,13 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	{
 		this->threadCnt = 1;
 	}
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRGISTileDownloadForm.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadStat = MemAlloc(ThreadStat, this->threadCnt);
 	i = 0;
 	while (i < this->threadCnt)
 	{
 		this->threadStat[i].me = this;
-		NEW_CLASS(this->threadStat[i].threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRGISTileDownloadForm.threadStat.threadEvt"));
+		NEW_CLASS(this->threadStat[i].threadEvt, Sync::Event(true));
 		this->threadStat[i].threadStat = 0;
 		this->threadStat[i].lyrId = 0;
 		this->threadStat[i].imageId = 0;

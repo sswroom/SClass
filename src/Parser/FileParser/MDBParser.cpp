@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	}
 #ifndef _WIN32_WCE
 	DB::MDBFileConn *mdb;
-	NEW_CLASS(mdb, DB::MDBFileConn(fd->GetFullFileName()->v, 0, this->codePage, 0, 0));
+	NEW_CLASS(mdb, DB::MDBFileConn(fd->GetFullFileName()->ToCString(), 0, this->codePage, 0, 0));
 	if (mdb->GetConnError() != DB::ODBCConn::CE_NONE)
 	{
 		DEL_CLASS(mdb);

@@ -144,7 +144,7 @@ Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *l
 	this->refTime = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.NTPServer.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	this->cli = 0;
 	InitServer(sockf, port);
 	if (this->svr)

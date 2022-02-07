@@ -567,7 +567,7 @@ Net::LDAPClient::LDAPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Ad
 	NEW_CLASS(this->msgIdMut, Sync::Mutex());
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->reqMap, Data::UInt32Map<Net::LDAPClient::ReqStatus*>());
-	NEW_CLASS(this->respEvt, Sync::Event(true, (const UTF8Char*)"Net.LDAPClient.respEvt"));
+	NEW_CLASS(this->respEvt, Sync::Event(true));
 	NEW_CLASS(this->cli, Net::TCPClient(sockf, addr, port));
 	if (!this->cli->IsConnectError() && !this->cli->IsClosed())
 	{

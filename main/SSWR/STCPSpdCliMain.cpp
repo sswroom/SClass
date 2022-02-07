@@ -160,10 +160,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		recvRunning = false;
 		NEW_CLASS(cliMut, Sync::Mutex());
 		NEW_CLASS(clk, Manage::HiResClock());
-		NEW_CLASS(mainEvt, Sync::Event(true, (const UTF8Char*)"mainEvt"));
-		NEW_CLASS(recvEvt, Sync::Event(true, (const UTF8Char*)"recvEvt"));
-		NEW_CLASS(procEvt, Sync::Event(true, (const UTF8Char*)"procEvt"));
-		NEW_CLASS(dispEvt, Sync::Event(true, (const UTF8Char*)"dispEvt"));
+		NEW_CLASS(mainEvt, Sync::Event(true));
+		NEW_CLASS(recvEvt, Sync::Event(true));
+		NEW_CLASS(procEvt, Sync::Event(true));
+		NEW_CLASS(dispEvt, Sync::Event(true));
 
 		UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 		UOSInt i;

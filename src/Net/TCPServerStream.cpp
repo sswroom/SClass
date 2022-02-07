@@ -32,7 +32,7 @@ Net::TCPServerStream::TCPServerStream(Net::SocketFactory *sockf, UInt16 port, IO
 	this->sockf = sockf;
 	this->log = log;
 	this->currCli = 0;
-	NEW_CLASS(this->readEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPServerStream.readEvt"));
+	NEW_CLASS(this->readEvt, Sync::Event(true));
 	NEW_CLASS(this->connMut, Sync::Mutex());
 	NEW_CLASS(this->readMut, Sync::Mutex());
 	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHandler, this, CSTR("SStm: ")));

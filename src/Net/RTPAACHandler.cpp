@@ -245,7 +245,7 @@ Bool Net::RTPAACHandler::Start(Sync::Event *evt, UOSInt blkSize)
 	{
 		return true;
 	}
-	NEW_CLASS(this->dataEvt, Sync::Event(true, (const UTF8Char*)"Net.RTPAACHandler.dataEvt"));
+	NEW_CLASS(this->dataEvt, Sync::Event(true));
 	return true;
 }
 

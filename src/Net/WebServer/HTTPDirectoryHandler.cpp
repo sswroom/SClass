@@ -334,9 +334,9 @@ Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::String *rootDir
 	this->statMut = 0;
 }
 
-Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
+Net::WebServer::HTTPDirectoryHandler::HTTPDirectoryHandler(Text::CString rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload)
 {
-	this->rootDir = Text::String::NewNotNull(rootDir);
+	this->rootDir = Text::String::New(rootDir);
 	this->allowBrowsing = allowBrowsing;
 	this->allowUpload = allowUpload;
 	this->ctype = CT_DEFAULT;
@@ -1323,7 +1323,7 @@ void Net::WebServer::HTTPDirectoryHandler::SetExpirePeriod(Int32 period)
 	this->expirePeriod = period;
 }
 
-void Net::WebServer::HTTPDirectoryHandler::SetAllowOrigin(const UTF8Char *origin)
+void Net::WebServer::HTTPDirectoryHandler::SetAllowOrigin(Text::CString origin)
 {
 	SDEL_STRING(this->allowOrigin);
 	this->allowOrigin = Text::String::NewOrNull(origin);

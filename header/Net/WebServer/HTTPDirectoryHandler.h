@@ -62,14 +62,13 @@ namespace Net
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
-			Bool MIMEToCompress(const UTF8Char *mime);
 			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen, IO::PackageFile *packageFile);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
 		public:
 			HTTPDirectoryHandler(Text::String *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
-			HTTPDirectoryHandler(const UTF8Char *rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
+			HTTPDirectoryHandler(Text::CString rootDir, Bool allowBrowsing, UInt64 fileCacheSize, Bool allowUpload);
 
 		protected:
 			virtual ~HTTPDirectoryHandler();
@@ -77,7 +76,7 @@ namespace Net
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
-			void SetAllowOrigin(const UTF8Char *origin);
+			void SetAllowOrigin(Text::CString origin);
 			void ClearFileCache();
 			void ExpandPackageFiles(Parser::ParserList *parsers);
 			void EnableStats();

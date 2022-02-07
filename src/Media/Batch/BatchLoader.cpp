@@ -139,7 +139,7 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->fileNames, Data::SyncCircularBuff<Text::String*>());
 	NEW_CLASS(this->datas, Data::SyncCircularBuff<DataInfo*>());
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.Batch.BatchLoader.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 
 	this->nextThread = 0;
 	i = this->threadCnt = Sync::Thread::GetThreadCnt();
@@ -150,7 +150,7 @@ Media::Batch::BatchLoader::BatchLoader(Parser::ParserList *parsers, Media::Batch
 		this->threadStates[i].running = false;
 		this->threadStates[i].processing = false;
 		this->threadStates[i].me = this;
-		NEW_CLASS(this->threadStates[i].evt, Sync::Event(true, (const UTF8Char*)"Media.Batch.BatchLoader.threadStates.evt"));
+		NEW_CLASS(this->threadStates[i].evt, Sync::Event(true));
 		Sync::Thread::Create(ThreadProc, &this->threadStates[i]);
 	}
 

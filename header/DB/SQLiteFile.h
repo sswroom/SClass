@@ -21,7 +21,7 @@ namespace DB
 		void Init();
 	public:
 		SQLiteFile(Text::String *fileName);
-		SQLiteFile(const UTF8Char *fileName);
+		SQLiteFile(Text::CString fileName);
 		virtual ~SQLiteFile();
 
 		virtual DB::DBUtil::ServerType GetSvrType();
@@ -51,7 +51,7 @@ namespace DB
 		Text::String *GetFileName();
 
 		static DBTool *CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix);
-		static DBTool *CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Text::CString logPrefix);
+		static DBTool *CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix);
 	};
 
 	class SQLiteReader : public DB::DBReader

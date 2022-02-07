@@ -191,7 +191,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->reqURL = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPClientForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));

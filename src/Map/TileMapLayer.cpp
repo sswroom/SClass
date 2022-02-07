@@ -164,7 +164,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 	NEW_CLASS(this->idleImgs, Data::ArrayList<CachedImage*>());
 	NEW_CLASS(this->idleMut, Sync::Mutex());
 	NEW_CLASS(this->taskQueued, Data::SyncLinkedList());
-	NEW_CLASS(this->taskEvt, Sync::Event(true, (const UTF8Char*)"Map.ResizableTileMapRenderer.taskEvt"));
+	NEW_CLASS(this->taskEvt, Sync::Event(true));
 	NEW_CLASS(this->taskMut, Sync::Mutex());
 
 	UOSInt i;
@@ -179,7 +179,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 		this->threads[i].toStop = false;
 		this->threads[i].me = this;
 		this->threads[i].isIdle = false;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true, (const UTF8Char*)"Map.ResizableTileMapRenderer.threads.evt"));
+		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 		Sync::Thread::Create(TaskThread, &this->threads[i]);
 	}
 	Bool running = false;

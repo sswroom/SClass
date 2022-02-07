@@ -217,9 +217,9 @@ Media::FileVideoSource::FileVideoSource(IO::IStreamData *data, Media::FrameInfo 
 	this->outputCount = 0;
 	this->outputFrames = MemAlloc(OutputFrameInfo, BUFFCNT);
 	NEW_CLASS(this->outputMut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.FileVideoSource.mainEvt"));
-	NEW_CLASS(this->playEvt, Sync::Event(true, (const UTF8Char*)"Media.FileVideoSource.playEvt"));
-	NEW_CLASS(this->outputEvt, Sync::Event(true, (const UTF8Char*)"Media.FileVideoSource.outputEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
+	NEW_CLASS(this->playEvt, Sync::Event(true));
+	NEW_CLASS(this->outputEvt, Sync::Event(true));
 	NEW_CLASS(this->pbcMut, Sync::Mutex());
 }
 

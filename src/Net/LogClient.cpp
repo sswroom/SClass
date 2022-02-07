@@ -160,10 +160,10 @@ Net::LogClient::LogClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->lastSendTime = 0;
 	this->sendRunning = false;
 	this->sendToStop = false;
-	NEW_CLASS(this->sendEvt, Sync::Event(true, (const UTF8Char*)"Net.LogClient.sendEvt"));
+	NEW_CLASS(this->sendEvt, Sync::Event(true));
 	this->recvRunning = false;
 	this->recvToStop = false;
-	NEW_CLASS(this->recvEvt, Sync::Event(true, (const UTF8Char*)"Net.LogClient.recvEvt"));
+	NEW_CLASS(this->recvEvt, Sync::Event(true));
 	Sync::Thread::Create(SendThread, this);
 	Sync::Thread::Create(RecvThread, this);
 	while (!this->sendRunning || !this->recvRunning)

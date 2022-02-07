@@ -333,7 +333,7 @@ Net::RTPCliChannel::RTPCliChannel(Net::SocketFactory *sockf, UInt16 port)
 	this->chData->playing = false;
 	this->chData->lastSeqNumHi = 0;
 	this->chData->lastSeqNumLo = 0;
-	NEW_CLASS(this->chData->playEvt, Sync::Event(true, (const UTF8Char*)"Net.RTPCliChannel.playEvt"));
+	NEW_CLASS(this->chData->playEvt, Sync::Event(true));
 	this->chData->mediaType = Media::MEDIA_TYPE_UNKNOWN;
 	this->chData->threadCnt = 5;
 	this->chData->buffCnt = 32;

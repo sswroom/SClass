@@ -210,7 +210,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	Char cbuff[256];
 	UOSInt i;
 	NEW_CLASS(mut, Sync::Mutex());
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"IO.MTFileLog.evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 	NEW_CLASS(dateList, Data::ArrayListInt64());
 	NEW_CLASS(msgList, Data::ArrayListString());
 	if (dateFormat == 0)

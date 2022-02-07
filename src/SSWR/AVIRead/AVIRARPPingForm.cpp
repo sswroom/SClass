@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		}
 		else
 		{
-			NEW_CLASS(me->reqEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRARPPingForm.reqEvt"));
+			NEW_CLASS(me->reqEvt, Sync::Event(true));
 			me->requested = true;
 			me->clk->Start();
 			if (me->arpHdlr->MakeRequest(ReadNUInt32(me->targetAddr.addr)))

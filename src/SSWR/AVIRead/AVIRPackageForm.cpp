@@ -475,7 +475,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->packFile = packFile;
 	this->statusChg = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRPackageForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	NEW_CLASS(this->fileMut, Sync::Mutex());
 	NEW_CLASS(this->fileNames, Data::ArrayList<Text::String *>());
 	NEW_CLASS(this->fileAction, Data::ArrayList<ActionType>());

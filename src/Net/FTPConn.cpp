@@ -93,7 +93,7 @@ Net::FTPConn::FTPConn(const UTF8Char *host, UInt16 port, Net::SocketFactory *soc
 	this->logged = true;
 	this->msgRet = 0;
 	this->statusChg = false;
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.FTPConn.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->cli, Net::TCPClient(sockf, host, port));
 	NEW_CLASS(this->writer, IO::StreamWriter(this->cli, codePage));
 	Sync::Thread::Create(FTPThread, this);

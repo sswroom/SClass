@@ -436,7 +436,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	this->AddTimer(1000, OnTimerTick, this);
 
-	NEW_CLASS(this->modemEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRGSMModemForm.modemEvt"));
+	NEW_CLASS(this->modemEvt, Sync::Event(true));
 	this->toStop = false;
 	this->running = false;
 	Sync::Thread::Create(ModemThread, this);

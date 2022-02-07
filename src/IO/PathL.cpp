@@ -25,8 +25,9 @@
 struct IO::Path::FindFileSession
 {
 	Text::String *searchPattern;
-	Text::String *searchDir;
 	DIR *dirObj;
+	UTF8Char pathBuff[512];
+	UTF8Char *pathEnd;
 };
 
 UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'/';
@@ -372,7 +373,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pa
 	FindFileSession *sess = 0;
 	const UTF8Char *searchPattern;
 	UOSInt searchPatternLen;
-	Text::String *searchDir;
+	Text::CString searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath, pathLen, '/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
@@ -380,14 +381,14 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pa
 		dirObj = opendir(".");
 		searchPattern = utfPath;
 		searchPatternLen = pathLen;
-		searchDir = Text::String::New(UTF8STRC("./"));
+		searchDir = CSTR("./");
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
 		searchPattern = utfPath + 1;
 		searchPatternLen = pathLen - 1;
-		searchDir = Text::String::New(UTF8STRC("/"));
+		searchDir = CSTR("/");
 	}
 	else
 	{
@@ -396,9 +397,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pa
 		dirObj = opendir((const Char*)tmpBuff);
 		searchPattern = utfPath + i + 1;
 		searchPatternLen = pathLen - i - 1;
-		tmpBuff[i + 1] = 0;
-		tmpBuff[i] = '/';
-		searchDir = Text::String::New(tmpBuff, i + 1);
+		searchDir = {utfPath, i + 1};
 		MemFree(tmpBuff);
 	}
 	if (dirObj)
@@ -406,11 +405,7 @@ IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pa
 		sess = MemAlloc(FindFileSession, 1);
 		sess->searchPattern = Text::String::New(searchPattern, searchPatternLen);
 		sess->dirObj = dirObj;
-		sess->searchDir = searchDir;
-	}
-	else
-	{
-		searchDir->Release();
+		sess->pathEnd = searchDir.ConcatTo(sess->pathBuff);
 	}
 	return sess;
 }
@@ -420,42 +415,35 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 	FindFileSession *sess = 0;
 	Text::String *utfPath = Text::String::NewNotNull(path);
 	const UTF8Char *searchPattern;
-	Text::String *searchDir;
+	Text::CString searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
 	{
 		dirObj = opendir(".");
 		searchPattern = utfPath->v;
-		searchDir = Text::String::New(UTF8STRC("./"));
+		searchDir = CSTR("./");
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
 		searchPattern = utfPath->v + 1;
-		searchDir = Text::String::New(UTF8STRC("/"));
+		searchDir = CSTR("/");
 	}
 	else
 	{
 		utfPath->v[i] = 0;
 		dirObj = opendir((const Char*)utfPath->v);
 		searchPattern = utfPath->v + i + 1;
-		UTF8Char c = utfPath->v[i + 1];
-		utfPath->v[i + 1] = 0;
 		utfPath->v[i] = '/';
-		searchDir = Text::String::New(utfPath->v, i + 1);
-		utfPath->v[i + 1] = c;
+		searchDir = {utfPath->v, i + 1};
 	}
 	if (dirObj)
 	{
 		sess = MemAlloc(FindFileSession, 1);
 		sess->searchPattern = Text::String::NewNotNull(searchPattern);
 		sess->dirObj = dirObj;
-		sess->searchDir = searchDir;
-	}
-	else
-	{
-		searchDir->Release();
+		sess->pathEnd = searchDir.ConcatTo(sess->pathBuff);
 	}
 	utfPath->Release();
 	return sess;
@@ -463,20 +451,19 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 
 UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
-	UTF8Char sbuff[512];
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
 		UOSInt len = Text::StrCharCnt(ent->d_name);
 		if (FileNameMatch((const UTF8Char*)ent->d_name, len, sess->searchPattern->v, sess->searchPattern->leng))
 		{
-			sess->searchDir->ConcatWith(sbuff, (const UTF8Char*)ent->d_name, len);
+			Text::StrConcatC(sess->pathEnd, (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
-			int status = lstat64((const Char*)sbuff, &s);
+			int status = lstat64((const Char*)sess->pathBuff, &s);
 #else
 			struct stat s;
-			int status = lstat((const Char*)sbuff, &s);
+			int status = lstat((const Char*)sess->pathBuff, &s);
 #endif
 			if (status == 0)
 			{
@@ -507,20 +494,19 @@ UTF8Char *IO::Path::FindNextFile(UTF8Char *buff, IO::Path::FindFileSession *sess
 
 WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Data::DateTime *modTime, IO::Path::PathType *pt, UInt64 *fileSize)
 {
-	UTF8Char sbuff[512];
 	struct dirent *ent;
 	while ((ent = readdir(sess->dirObj)) != 0)
 	{
 		UOSInt len = Text::StrCharCnt(ent->d_name);
 		if (FileNameMatch((const UTF8Char*)ent->d_name, len, sess->searchPattern->v, sess->searchPattern->leng))
 		{
-			Text::StrConcatC(sess->searchDir->ConcatTo(sbuff), (const UTF8Char*)ent->d_name, len);
+			Text::StrConcatC(sess->pathEnd, (const UTF8Char*)ent->d_name, len);
 #if defined(__USE_LARGEFILE64)
 			struct stat64 s;
-			int status = lstat64((const Char*)sbuff, &s);
+			int status = lstat64((const Char*)sess->pathBuff, &s);
 #else
 			struct stat s;
-			int status = lstat((const Char*)sbuff, &s);
+			int status = lstat((const Char*)sess->pathBuff, &s);
 #endif
 			if (status == 0)
 			{
@@ -551,7 +537,6 @@ WChar *IO::Path::FindNextFileW(WChar *buff, IO::Path::FindFileSession *sess, Dat
 void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 {
 	sess->searchPattern->Release();
-	sess->searchDir->Release();
 	closedir(sess->dirObj);
 	MemFree(sess);
 }

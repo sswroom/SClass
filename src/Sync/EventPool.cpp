@@ -10,7 +10,7 @@ Sync::EventPool::EventPool()
 	NEW_CLASS(this->evtList, Data::ArrayList<Sync::Event*>());
 	NEW_CLASS(this->objList, Data::ArrayList<void*>());
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Sync.EventPool.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->state = 0;
 	this->handList->Add(this->mainEvt->GetHandle());
 	this->evtList->Add(this->mainEvt);

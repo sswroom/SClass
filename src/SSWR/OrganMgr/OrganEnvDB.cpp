@@ -90,7 +90,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	}
 	else if (cfgDSN)
 	{
-		this->db = DB::ODBCConn::CreateDBTool(cfgDSN->v, Text::String::OrEmpty(cfgUID)->v, Text::String::OrEmpty(cfgPassword)->v, 0, log, CSTR_NULL);
+		this->db = DB::ODBCConn::CreateDBTool(cfgDSN, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), 0, log, CSTR_NULL);
 	}
 	if (db == 0)
 	{

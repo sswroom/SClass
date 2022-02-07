@@ -255,7 +255,7 @@ Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, const UTF8Char *host, UIn
 	this->cliData->host = Text::StrCopyNew(host);
 	this->cliData->port = port;
 	NEW_CLASS(this->cliData->cliMut, Sync::Mutex());
-	NEW_CLASS(this->cliData->reqEvt, Sync::Event(true, (const UTF8Char*)"Net.RTSPClient.reqEvt"));
+	NEW_CLASS(this->cliData->reqEvt, Sync::Event(true));
 	NEW_CLASS(this->cliData->reqMut, Sync::Mutex());
 
 	Sync::Thread::Create(ControlThread, this->cliData);

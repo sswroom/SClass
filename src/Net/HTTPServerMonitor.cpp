@@ -32,7 +32,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.HTTPServerMonitor.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)
@@ -49,7 +49,7 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.HTTPServerMonitor.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ThreadProc, this);
 	while (!this->threadRunning)

@@ -445,7 +445,7 @@ UI::GUIDDrawControl::GUIDDrawControl(GUICore *ui, UI::GUIClientControl *parent, 
 	this->imgCopy = 0;
 	this->joystickId = 0;
 	this->jsLastButtons = 0;
-	NEW_CLASS(this->drawEvt, Sync::Event(false, (const UTF8Char*)"UI.GUIDDrawControl.drawEvt"));
+	NEW_CLASS(this->drawEvt, Sync::Event(false));
 	NEW_CLASS(this->surfaceMut, Sync::Mutex());
 	this->rootForm = parent->GetRootForm();
 	this->fullScnMode = SM_WINDOWED;

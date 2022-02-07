@@ -90,7 +90,7 @@ Net::TraceRoute::TraceRoute(Net::SocketFactory *sockf, UInt32 ip)
 	this->socV4 = this->sockf->CreateICMPIPv4Socket(ip);
 	this->threadToStop = false;
 	this->threadRunning = false;
-	NEW_CLASS(this->resEvt, Sync::Event(true, (const UTF8Char*)"Net.TraceRoute.resEvt"));
+	NEW_CLASS(this->resEvt, Sync::Event(true));
 	if (this->socV4)
 	{
 		Sync::Thread::Create(RecvThread, this);

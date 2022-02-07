@@ -241,7 +241,7 @@ Map::WebImageLayer::WebImageLayer(Net::WebBrowser *browser, Parser::ParserList *
 	NEW_CLASS(this->loadedList, Data::ArrayList<ImageStat *>());
 	NEW_CLASS(loadedMut, Sync::RWMutex());
 	NEW_CLASS(loadingMut, Sync::Mutex());
-	NEW_CLASS(this->loadEvt, Sync::Event(true, (const UTF8Char*)"Map.WebImageLayer.loadEvt"));
+	NEW_CLASS(this->loadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(LoadThread, this);
 }

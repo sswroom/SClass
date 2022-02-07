@@ -1965,7 +1965,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	{
 		this->threadCnt = 1;
 	}
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.VideoFilter.IVTCFilter.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadStats = MemAlloc(ThreadStat, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1973,7 +1973,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		this->threadStats[i].threadStat = 0;
 		this->threadStats[i].me = this;
 		this->threadStats[i].currCmd = 0;
-		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Media.VideoFilter.IVTCFilter.threadStats.evt"));
+		NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 		Sync::Thread::Create(CalcThread, &this->threadStats[i]);
 	}
 
@@ -1991,7 +1991,7 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		this->mainEvt->Wait(100);
 	}
 	this->ivtcTToStop = false;
-	NEW_CLASS(this->ivtcTEvt, Sync::Event(true, (const UTF8Char*)"Media.VideoFilter.IVTCFilter.ivtcTEvt"));
+	NEW_CLASS(this->ivtcTEvt, Sync::Event(true));
 	this->ivtcTStatus = 0;
 	this->ivtcTRequest = false;
 	Sync::Thread::Create(IVTCThread, this);

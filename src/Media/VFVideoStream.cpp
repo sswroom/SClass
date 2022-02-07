@@ -111,7 +111,7 @@ Media::VFVideoStream::VFVideoStream(Media::VFMediaFile *mfile)
 	this->playing = false;
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Media.VFVideoStream.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	Sync::Thread::Create(PlayThread, this);
 	while (!this->threadRunning)
 	{

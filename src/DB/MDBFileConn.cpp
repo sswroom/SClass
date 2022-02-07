@@ -16,11 +16,11 @@
 #endif
 #include <odbcinst.h>
 
-DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb)};Dbq="));
-	sb.AppendSlow(fileName);
+	sb.Append(fileName);
 	if (codePage != 0)
 	{
 		UTF8Char sbuff[16];
@@ -55,11 +55,11 @@ DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 
 			s->Release();
 		}
 	}
-	if (!Connect(sb.ToString()))
+	if (!Connect(sb.ToCString()))
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq="));
-		sb.AppendSlow(fileName);
+		sb.Append(fileName);
 		if (codePage != 0)
 		{
 			UTF8Char sbuff[16];
@@ -94,11 +94,11 @@ DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 
 				s->Release();
 			}
 		}
-		if (!Connect(sb.ToString()))
+		if (!Connect(sb.ToCString()))
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Driver=MDBTools;DBQ=\""));
-			sb.AppendSlow(fileName);
+			sb.Append(fileName);
 			sb.AppendC(UTF8STRC("\""));
 			if (codePage != 0)
 			{
@@ -134,33 +134,33 @@ DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 
 					s->Release();
 				}
 			}
-			Connect(sb.ToString());
+			Connect(sb.ToCString());
 		}
 	}
 }
 
-Bool DB::MDBFileConn::CreateMDBFile(const UTF8Char *fileName)
+Bool DB::MDBFileConn::CreateMDBFile(Text::CString fileName)
 {
 #if _WCHAR_SIZE == 4
 	BOOL fCreated;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DB="));
-	sptr = Text::StrConcat(sptr, fileName);
+	sptr = fileName.ConcatTo(sptr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 	sptr[1] = 0;
 	fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb)", (Char*)sbuff);
 	if (fCreated == 0)
 	{
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DBV4="));
-		sptr = Text::StrConcat(sptr, fileName);
+		sptr = fileName.ConcatTo(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 		sptr[1] = 0;
 		fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "Microsoft Access Driver (*.mdb, *.accdb)", (Char*)sbuff);
 		if (fCreated == 0)
 		{
 			sptr = Text::StrConcatC(sbuff, UTF8STRC("CREATE_DB="));
-			sptr = Text::StrConcat(sptr, fileName);
+			sptr = fileName.ConcatTo(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" General"));
 			sptr[1] = 0;
 			fCreated = SQLConfigDataSource(0, ODBC_ADD_DSN, "MDBTools", (Char*)sbuff);
@@ -172,14 +172,14 @@ Bool DB::MDBFileConn::CreateMDBFile(const UTF8Char *fileName)
 	UTF16Char sbuff[512];
 	UTF16Char *sptr;
 	sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DB=", 0);
-	sptr = Text::StrUTF8_UTF16(sptr, fileName, 0);
+	sptr = Text::StrUTF8_UTF16(sptr, fileName.v, 0);
 	sptr = Text::StrUTF8_UTF16(sptr, (const UTF8Char*)" General");
 	sptr[1] = 0;
 	fCreated = SQLConfigDataSourceW(0, ODBC_ADD_DSN, L"Microsoft Access Driver (*.mdb)", sbuff);
 	if (fCreated == 0)
 	{
 		sptr = Text::StrUTF8_UTF16(sbuff, (const UTF8Char*)"CREATE_DBV4=", 0);
-		sptr = Text::StrUTF8_UTF16(sptr, fileName, 0);
+		sptr = Text::StrUTF8_UTF16(sptr, fileName.v, 0);
 		sptr = Text::StrUTF8_UTF16(sptr, (const UTF8Char*)" General");
 		sptr[1] = 0;
 		fCreated = SQLConfigDataSourceW(0, ODBC_ADD_DSN, L"Microsoft Access Driver (*.mdb, *.accdb)", sbuff);
@@ -192,7 +192,7 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *l
 {
 	DB::MDBFileConn *conn;
 	DB::DBTool *db;
-	NEW_CLASS(conn, DB::MDBFileConn(fileName->v, log, 0, 0, 0));
+	NEW_CLASS(conn, DB::MDBFileConn(fileName->ToCString(), log, 0, 0, 0));
 	if (conn->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		NEW_CLASS(db, DB::DBTool(conn, true, log, logPrefix));
@@ -205,7 +205,7 @@ DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *l
 	}
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, Text::CString logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	DB::MDBFileConn *conn;
 	DB::DBTool *db;

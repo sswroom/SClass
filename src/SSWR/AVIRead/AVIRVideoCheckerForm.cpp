@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	NEW_CLASS(this->checker, Media::VideoChecker(false));
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRVideoCheckerForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
 	Sync::Thread::Create(ProcessThread, this);
 	this->AddTimer(1000, OnTimerTick, this);

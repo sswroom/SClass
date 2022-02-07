@@ -33,7 +33,7 @@ void __stdcall Media::VideoChecker::OnAudioEnd(void *userData)
 Media::VideoChecker::VideoChecker(Bool allowTimeSkip)
 {
 	this->allowTimeSkip = allowTimeSkip;
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Media.VideoChecker.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->vdecoders, Media::Decoder::VideoDecoderFinder());
 	NEW_CLASS(this->adecoders, Media::Decoder::AudioDecoderFinder());
 }

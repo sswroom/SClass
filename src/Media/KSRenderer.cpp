@@ -77,7 +77,7 @@ UInt32 __stdcall Media::KSRenderer::PlayThread(void *obj)
 			buffLeng = 8192;
 	}
 
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"Media.KSRenderer.PlayThread.evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 	me->clk->Start(audStartTime);
 	me->playing = true;
 	me->audsrc->Start(evt, buffLeng);
@@ -352,7 +352,7 @@ Bool Media::KSRenderer::BindAudio(Media::IAudioSource *audsrc)
 	if (this->pPin != 0)
 	{
 		this->audsrc = audsrc;
-		NEW_CLASS(this->playEvt, Sync::Event(true, (const UTF8Char*)"Media.KSRenderer.playEvt"));
+		NEW_CLASS(this->playEvt, Sync::Event(true));
 		return true;
 	}
 	else

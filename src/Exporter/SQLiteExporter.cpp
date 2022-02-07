@@ -61,7 +61,8 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, CSTR("DB: "));
+	UOSInt fileNameLen = Text::StrCharCnt(fileName);
+	destDB = DB::SQLiteFile::CreateDBTool({fileName, fileNameLen}, &log, CSTR("DB: "));
 	if (destDB == 0)
 		return false;
 	Bool succ = true;

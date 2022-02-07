@@ -28,7 +28,7 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 {
 	RequestStatus *req = MemAlloc(RequestStatus, 1);
 	req->respSize = 0;
-	NEW_CLASS(req->finEvt, Sync::Event(true, (const UTF8Char*)"Net.DNSClient.RequestStatus.finEvt"));
+	NEW_CLASS(req->finEvt, Sync::Event(true));
 	Sync::MutexUsage mutUsage(this->reqMut);
 	this->reqMap->Put(id, req);
 	mutUsage.EndUse();

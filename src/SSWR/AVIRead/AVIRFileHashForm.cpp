@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->fileMut, Sync::Mutex());
 	NEW_CLASS(this->fileList, Data::ArrayList<FileStatus*>());
 	NEW_CLASS(this->readMut, Sync::Mutex());
-	NEW_CLASS(this->fileEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRFileHashForm.fileEvt"));
+	NEW_CLASS(this->fileEvt, Sync::Event(true));
 	this->progName = 0;
 	this->progNameChg = false;
 	this->progLastCount = 0;

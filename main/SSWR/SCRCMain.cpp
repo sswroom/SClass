@@ -91,7 +91,7 @@ public:
 
 		this->threadRunning = false;
 		this->threadToStop = false;
-		NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"ProgressHandler.evt"));
+		NEW_CLASS(this->evt, Sync::Event(true));
 		Sync::Thread::Create(CheckThread, this);
 		while (!this->threadRunning)
 		{

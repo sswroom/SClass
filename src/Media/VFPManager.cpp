@@ -86,7 +86,7 @@ UOSInt Media::VFPManager::LoadFile(const UTF8Char *fileName, Data::ArrayList<Med
 	while (i-- > 0)
 	{
 		plugin = this->plugins->GetItem(i);
-		if (IO::Path::FileNameMatchW(sbuff, plugin->searchPattern))
+		if (IO::Path::FilePathMatchW(sbuff, plugin->searchPattern))
 		{
 			funcs = (VF_PluginFunc*)plugin->funcs;
 			if (funcs->OpenFile(cFile, &fhand) == VF_OK)

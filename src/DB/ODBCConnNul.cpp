@@ -21,18 +21,18 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 	return false;
 }
 
-Bool DB::ODBCConn::Connect(const UTF8Char *connStr)
+Bool DB::ODBCConn::Connect(Text::CString connStr)
 {
 	if (this->connStr)
 	{
 		this->connStr->Release();
 	}
-	this->connStr = Text::String::NewNotNull(connStr);
+	this->connStr = Text::String::New(connStr);
 	this->connErr = CE_NOT_CONNECT;
 	return false;
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	connHand = 0;
 	envHand = 0;
@@ -52,7 +52,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *sourceName, IO::LogTool *log) : DB::DBCon
 	this->tzQhr = 0;
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
+DB::ODBCConn::ODBCConn(Text::CString connStr, Text::CString sourceName, IO::LogTool *log) : DB::DBConn(sourceName)
 {
 	this->connHand = 0;
 	this->envHand = 0;
@@ -68,7 +68,7 @@ DB::ODBCConn::ODBCConn(const UTF8Char *connStr, const UTF8Char *sourceName, IO::
 	this->Connect(connStr);
 }
 
-DB::ODBCConn::ODBCConn(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log) : DB::DBConn(dsn)
+DB::ODBCConn::ODBCConn(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log) : DB::DBConn(dsn)
 {
 	this->log = log;
 	this->tableNames = 0;
@@ -335,12 +335,12 @@ IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName, UOSInt n
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::String *dsn, Text::String *uid, Text::String *pwd, Text::String *schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }
 
-DB::DBTool *DB::ODBCConn::CreateDBTool(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, const UTF8Char *schema, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::ODBCConn::CreateDBTool(Text::CString dsn, Text::CString uid, Text::CString pwd, Text::CString schema, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }

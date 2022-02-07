@@ -118,7 +118,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendU16(port);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		MyHandler *myHdlr;
-		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler((const UTF8Char*)".", true, 0, true));
+		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("."), true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
 		hdlr->HandlePath(UTF8STRC("/api"), myHdlr, true);
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, true));

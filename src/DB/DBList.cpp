@@ -6,7 +6,7 @@ DB::DBList::DBList()
 {
 	NEW_CLASS(this->dbList, Data::ArrayList<DBInfo *>());
 	NEW_CLASS(this->dbMut, Sync::Mutex());
-	NEW_CLASS(this->dbEvt, Sync::Event(true, (const UTF8Char*)"DB.DBList.dbEvt"));
+	NEW_CLASS(this->dbEvt, Sync::Event(true));
 	this->nextIndex = 0;
 }
 

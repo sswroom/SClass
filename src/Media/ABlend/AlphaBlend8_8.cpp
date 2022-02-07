@@ -131,7 +131,7 @@ UInt32 __stdcall Media::ABlend::AlphaBlend8_8::ProcessThread(void *userObj)
 Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 {
 	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"Media.ABlend.AlphaBlend8_C8.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadCnt = Sync::Thread::GetThreadCnt();
 	if (this->threadCnt > 4)
 	{
@@ -142,7 +142,7 @@ Media::ABlend::AlphaBlend8_8::AlphaBlend8_8() : Media::ImageAlphaBlend()
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
-		NEW_CLASS(this->stats[i].evt, Sync::Event(true, (const UTF8Char*)"Media.ABlend.AlphaBlend8_8.stats.evt"));
+		NEW_CLASS(this->stats[i].evt, Sync::Event(true));
 		this->stats[i].status = 0;
 		Sync::Thread::Create(ProcessThread, &this->stats[i], 65536);
 	}

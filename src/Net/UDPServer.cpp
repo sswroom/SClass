@@ -259,7 +259,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			this->logDateR = 0;
 			this->logDateS = 0;
 		}
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true, (const UTF8Char*)"Net.UDPServer.ctrlEvt"));
+		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
 		this->v4threadStats = MemAlloc(ThreadStat, this->threadCnt);
 		if (this->socV6)
@@ -271,7 +271,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 		{
 			this->v4threadStats[i].toStop = false;
 			this->v4threadStats[i].threadRunning = false;
-			NEW_CLASS(this->v4threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Net.UDPServer.threadEvt"));
+			NEW_CLASS(this->v4threadStats[i].evt, Sync::Event(true));
 			this->v4threadStats[i].me = this;
 			Sync::Thread::Create(DataV4Thread, &this->v4threadStats[i]);
 
@@ -279,7 +279,7 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 			{
 				this->v6threadStats[i].toStop = false;
 				this->v6threadStats[i].threadRunning = false;
-				NEW_CLASS(this->v6threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Net.UDPServer.threadEvt"));
+				NEW_CLASS(this->v6threadStats[i].evt, Sync::Event(true));
 				this->v6threadStats[i].me = this;
 				Sync::Thread::Create(DataV6Thread, &this->v6threadStats[i]);
 			}

@@ -183,7 +183,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 		{
 			cacheSize = 4096;
 		}
-		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb->ToString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
+		NEW_CLASS(me->dirHdlr, Net::WebServer::HTTPDirectoryHandler(sb->ToCString(), me->chkAllowBrowse->IsChecked(), cacheSize, true));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->dirHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			}
 			if (me->chkCrossOrigin->IsChecked())
 			{
-				me->dirHdlr->SetAllowOrigin((const UTF8Char*)"*");
+				me->dirHdlr->SetAllowOrigin(CSTR("*"));
 			}
 			if (me->chkDownloadCnt->IsChecked())
 			{

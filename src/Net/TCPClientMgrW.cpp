@@ -233,7 +233,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		workerCnt = 1;
 	this->workerCnt = workerCnt;
 	Sync::Event *recvEvt;
-	NEW_CLASS(recvEvt, Sync::Event(false, (const UTF8Char*)"Net.TCPClientMgr.RecvEvt"));
+	NEW_CLASS(recvEvt, Sync::Event(false));
 	NEW_CLASS(cliArr, Data::ArrayList<Net::TCPClientMgr::TCPClientStatus*>());
 	NEW_CLASS(cliIdArr, Data::ArrayListUInt64());
 	NEW_CLASS(cliMut, Sync::Mutex());
@@ -248,7 +248,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		this->workers[workerCnt].isPrimary = (workerCnt == 0);
 		this->workers[workerCnt].cliStat = 0;
 		this->workers[workerCnt].me = this;
-		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true, (const UTF8Char*)"Net.TCPClientMgr.workers.evt"));
+		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
 		
 		Sync::Thread::Create(WorkerThread, &this->workers[workerCnt]);
 	}

@@ -125,7 +125,7 @@ Bool __stdcall IO::Device::SIM7000::CheckATCommand(void *userObj, const UTF8Char
 
 IO::Device::SIM7000::SIM7000(IO::ATCommandChannel *channel, Bool needRelease) : IO::GSMModemController(channel, needRelease)
 {
-	NEW_CLASS(this->respEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.SIM7000.respEvt"));
+	NEW_CLASS(this->respEvt, Sync::Event(true));
 	NEW_CLASS(this->dnsMut, Sync::Mutex());
 	this->dnsReq = 0;
 	this->dnsResp = 0;

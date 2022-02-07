@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char*)"Access Conn", me);
 		return;
 	}
-	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToString(), me->core->GetLog(), 0, 0, 0));
+	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
 	if (((DB::MDBFileConn*)me->conn)->GetConnError() == DB::ODBCConn::CE_NONE)
 	{
 		me->SetDialogResult(UI::GUIForm::DR_OK);

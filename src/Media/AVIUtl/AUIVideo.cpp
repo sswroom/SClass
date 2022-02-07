@@ -75,7 +75,7 @@ Media::AVIUtl::AUIVideo::AUIVideo(Media::AVIUtl::AUIPlugin *plugin, Media::AVIUt
 	this->threadToStop = false;
 	this->playCb = 0;
 	this->playCbData = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Media.AVIUtl.AUIVideo.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	NEW_CLASS(this->frameNumMut, Sync::Mutex());
 
 	Sync::Thread::Create(PlayThread, this);

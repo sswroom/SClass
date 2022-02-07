@@ -280,7 +280,7 @@ Bool Net::ICMPScanner::Scan(UInt32 ip)
 	else
 	{
 		PingStatus *status = MemAlloc(PingStatus, (1 << THREADLEV));
-		NEW_CLASS(status[0].evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRIPScanForm.OnStartClicked.evt"));
+		NEW_CLASS(status[0].evt, Sync::Event(true));
 		UOSInt i = 0;
 		while (i < (UOSInt)(1 << THREADLEV))
 		{

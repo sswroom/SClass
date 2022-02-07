@@ -83,7 +83,7 @@ Net::TCPPortScanner::TCPPortScanner(Net::SocketFactory *sockf, UOSInt threadCnt,
 	this->hdlrObj = userObj;
 	this->threadCnt = 0;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPPortScanner.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	UOSInt i = threadCnt;
 	if (threadCnt <= 0)
 	{

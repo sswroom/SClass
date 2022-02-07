@@ -118,7 +118,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	addr.addrType = Net::AddrType::Unknown;
 	sockf->DNSResolveIP(host, hostLen, &addr);
 	this->logWriter = logWriter;
-	NEW_CLASS(this->evt, Sync::Event(true, (const UTF8Char*)"Net.SMTPConn.evt"));
+	NEW_CLASS(this->evt, Sync::Event(true));
 	if (connType == CT_SSL)
 	{
 		Net::SSLEngine::ErrorType err;

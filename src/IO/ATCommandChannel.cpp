@@ -120,7 +120,7 @@ IO::ATCommandChannel::ATCommandChannel(IO::Stream *stm, Bool needRelease)
 	this->stm = stm;
 	this->stmRelease = needRelease;
 	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true, (const UTF8Char*)"IO.ATCommandChannel.cmdEvt"));
+	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	NEW_CLASS(this->cmdResultMut, Sync::Mutex());
 	NEW_CLASS(this->cmdResults, Data::ArrayList<Text::String *>());
 	this->evtHdlr = 0;

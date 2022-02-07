@@ -19,7 +19,7 @@ UInt32 __stdcall TestThread(void *userObj)
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(evt, Sync::Event(false, (const UTF8Char*)"Test"));
+	NEW_CLASS(evt, Sync::Event(false));
 	Sync::Thread::Create(TestThread, 0);
 	Sync::Thread::Sleep(10);
 	clk->Start();

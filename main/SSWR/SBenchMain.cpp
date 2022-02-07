@@ -152,8 +152,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(clk, Manage::HiResClock());
 	NEW_CLASS(mut, Sync::Mutex());
-	NEW_CLASS(threadEvt, Sync::Event(true, (const UTF8Char*)"SBenchMain.threadEvt"));
-	NEW_CLASS(mainEvt, Sync::Event(true, (const UTF8Char*)"SBenchMain.mainEvt"));
+	NEW_CLASS(threadEvt, Sync::Event(true));
+	NEW_CLASS(mainEvt, Sync::Event(true));
 
 	IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");

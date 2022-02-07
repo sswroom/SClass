@@ -71,7 +71,7 @@ struct DB::OLEDBReader::ClassData
 
 //https://github.com/StevenChangZH/OleDbVCExample/blob/master/OleDbProject/OleDbSQL.cpp
 
-DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBConn")
+DB::OLEDBConn::OLEDBConn(IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -162,7 +162,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 	this->connErr = CE_NONE;
 }
 
-DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn((const UTF8Char*)"OLEDBConn")
+DB::OLEDBConn::OLEDBConn(const WChar *connStr, IO::LogTool *log) : DB::DBConn(CSTR("OLEDBConn"))
 {
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;

@@ -81,7 +81,7 @@ Media::ImageCopy::ImageCopy()
 {
 	UOSInt i;
 	Bool found;
-	NEW_CLASS(evtMain, Sync::Event(true, (const UTF8Char*)"Media.ImageCopy.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event(true));
 #if defined(CPU_X86_64)
 	if (CPUBrand == 2)
 	{
@@ -103,7 +103,7 @@ Media::ImageCopy::ImageCopy()
 	while (i-- > 0)
 	{
 		stats[i].status = 0;
-		NEW_CLASS(stats[i].evt, Sync::Event(true, (const UTF8Char*)"Media.ImageCopy.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event(true));
 		stats[i].evtMain = this->evtMain;
 		Sync::Thread::Create(WorkerThread, &stats[i]);
 	}

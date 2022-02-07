@@ -7,16 +7,16 @@
 #if defined(_MSC_VER) || defined(__MINGW32__)
 #include <windows.h>
 
-Sync::Event::Event(const UTF8Char *name)
+Sync::Event::Event()
 {
-	this->hand = CreateEvent(0, FALSE, FALSE, 0);//name);
+	this->hand = CreateEvent(0, FALSE, FALSE, 0);
 	this->isSet = false;
 	this->isAuto = true;
 }
 
-Sync::Event::Event(Bool isAuto, const UTF8Char *name)
+Sync::Event::Event(Bool isAuto)
 {
-	this->hand = CreateEvent(0, !isAuto, FALSE, 0);//name);
+	this->hand = CreateEvent(0, !isAuto, FALSE, 0);
 	this->isSet = false;
 	this->isAuto = isAuto;
 }
@@ -61,14 +61,14 @@ void *Sync::Event::GetHandle()
 	return this->hand;
 }
 #elif defined(AVR)
-Sync::Event::Event(const UTF8Char *name)
+Sync::Event::Event()
 {
 	this->hand = 0;
 	this->isSet = false;
 	this->isAuto = true;
 }
 
-Sync::Event::Event(Bool isAuto, const UTF8Char *name)
+Sync::Event::Event(Bool isAuto)
 {
 	this->hand = 0;
 	this->isSet = false;
@@ -168,7 +168,7 @@ typedef struct
 	UInt32 useCnt;
 } EventStatus;
 
-Sync::Event::Event(const UTF8Char *name)
+Sync::Event::Event()
 {
 	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;
@@ -179,7 +179,7 @@ Sync::Event::Event(const UTF8Char *name)
 	this->isAuto = true;
 }
 
-Sync::Event::Event(Bool isAuto, const UTF8Char *name)
+Sync::Event::Event(Bool isAuto)
 {
 	EventStatus *status = MemAllocA(EventStatus, 1);
 	this->hand = status;

@@ -57,7 +57,7 @@ Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, c
 
 	if (this->soc)
 	{
-		NEW_CLASS(this->ctrlEvt, Sync::Event(true, (const UTF8Char*)"Net.ARPHandler.ctrlEvt"));
+		NEW_CLASS(this->ctrlEvt, Sync::Event(true));
 
 		this->threadStats = MemAlloc(Net::ARPHandler::ThreadStat, this->threadCnt);
 
@@ -66,7 +66,7 @@ Net::ARPHandler::ARPHandler(Net::SocketFactory *sockf, const UTF8Char *ifName, c
 		{
 			this->threadStats[i].toStop = false;
 			this->threadStats[i].threadRunning = false;
-			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true, (const UTF8Char*)"Net.ARPHandler.threadEvt"));
+			NEW_CLASS(this->threadStats[i].evt, Sync::Event(true));
 			this->threadStats[i].me = this;
 			Sync::Thread::Create(DataThread, &this->threadStats[i]);
 		}

@@ -281,7 +281,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->reqURL = 0;
 	this->reqHeader = 0;
 	this->downPath = 0;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRHTTPDownloaderForm.threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
 
 	Data::DateTime t;

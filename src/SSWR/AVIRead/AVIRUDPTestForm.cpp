@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	this->lastSentSuccCnt = 0;
 	NEW_CLASS(this->lastTime, Data::DateTime());
 	this->lastTime->SetCurrTimeUTC();
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRUDPTestForm.mainEvt"));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->grpServer, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Server"));
@@ -307,7 +307,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	{
 		this->threads[i].destAddr.addrType = Net::AddrType::Unknown;
 		this->threads[i].destPort = 0;
-		NEW_CLASS(this->threads[i].evt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRUDPTestForm.threads.evt"));
+		NEW_CLASS(this->threads[i].evt, Sync::Event(true));
 		this->threads[i].me = this;
 		this->threads[i].reqCnt = 0;
 		this->threads[i].status = 0;

@@ -11,8 +11,8 @@ namespace Sync
 	public:
 		void *hand;
 
-		Event(const UTF8Char *name);
-		Event(Bool isAuto, const UTF8Char *name);
+		Event();
+		Event(Bool isAuto);
 		~Event();
 		void Wait();
 		Bool Wait(UOSInt timeout); //true if timed out

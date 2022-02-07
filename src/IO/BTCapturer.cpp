@@ -38,7 +38,7 @@ IO::BTCapturer::BTCapturer()
 	}
 	this->threadRunning = false;
 	this->threadToStop = false;
-	NEW_CLASS(this->threadEvt, Sync::Event(true, (const UTF8Char*)"threadEvt"));
+	NEW_CLASS(this->threadEvt, Sync::Event(true));
 }
 
 IO::BTCapturer::~BTCapturer()

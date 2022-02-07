@@ -71,7 +71,7 @@ IO::Device::SIM7000SocketFactory::SIM7000SocketFactory(IO::Device::SIM7000 *mode
 		this->status[i].state = SocketState::Empty;
 		NEW_CLASS(this->status[i].dataMut, Sync::Mutex());
 		NEW_CLASS(this->status[i].dataList, Data::SyncLinkedList());
-		NEW_CLASS(this->status[i].dataEvt, Sync::Event(true, (const UTF8Char*)"IO.Device.SIM7000SocketFactory.status.dataEvt"));
+		NEW_CLASS(this->status[i].dataEvt, Sync::Event(true));
 	}
 	this->Init();
 }

@@ -29,8 +29,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 
 	NEW_CLASS(me->clk, Manage::HiResClock());
 	NEW_CLASS(me->mut, Sync::Mutex());
-	NEW_CLASS(me->threadEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRThreadSpeedForm.threadEvt"));
-	NEW_CLASS(me->mainEvt, Sync::Event(true, (const UTF8Char*)"SSWR.AVIRead.AVIRThreadSpeedForm.mainEvt"));
+	NEW_CLASS(me->threadEvt, Sync::Event(true));
+	NEW_CLASS(me->mainEvt, Sync::Event(true));
 	me->t = 0;
 
 	i = me->lvResult->AddItem(CSTR("Thread Count"), 0);
