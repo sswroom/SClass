@@ -8,7 +8,7 @@ namespace Crypto
 	{
 	public:
 		JKSFile(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-		JKSFile(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+		JKSFile(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		virtual ~JKSFile();
 
 		virtual FileType GetFileType();

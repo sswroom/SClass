@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509CertReq(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509CertReq(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509CertReq(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509CertReq();
 
 			virtual FileType GetFileType();

@@ -54,8 +54,11 @@ namespace IO
 		static Bool PathExists(const UTF8Char *path, UOSInt pathLen);
 		static Bool PathExistsW(const WChar *path);
 		static WChar *GetFullPathW(WChar *buff, const WChar *path);
-		static Bool FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen);
-		static Bool FileNameMatchW(const WChar *path, const WChar *searchPattern);
+	private:
+		static Bool FileNameMatch(const UTF8Char *fileName, UOSInt fileNameLen, const UTF8Char *searchPattern, UOSInt patternLen);
+	public:
+		static Bool FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen);
+		static Bool FilePathMatchW(const WChar *path, const WChar *searchPattern);
 		static UInt64 GetFileSize(const UTF8Char *path);
 		static UInt64 GetFileSizeW(const WChar *path);
 		static WChar *GetSystemProgramPathW(WChar *buff);

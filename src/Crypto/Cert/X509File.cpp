@@ -201,7 +201,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, {UTF8STRC("subjectPublicKeyInfo")});
 			Crypto::Cert::X509PubKey *pubKey;
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", itemPDU, itemOfst + itemLen));
+			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), itemPDU, itemOfst + itemLen));
 			key = pubKey->CreateKey();
 			if (key)
 			{
@@ -372,7 +372,7 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, {UTF8STRC("subjectPublicKeyInfo")});
 			Crypto::Cert::X509PubKey *pubKey;
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", itemPDU, itemOfst + itemLen));
+			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), itemPDU, itemOfst + itemLen));
 			key = pubKey->CreateKey();
 			if (key)
 			{
@@ -432,7 +432,7 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, {UTF8STRC("PubKey")});
 		Crypto::Cert::X509PubKey *pubKey;
 		Crypto::Cert::X509Key *key;
-		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey((const UTF8Char*)"PubKey", buff, itemOfst + buffSize));
+		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), buff, itemOfst + buffSize));
 		key = pubKey->CreateKey();
 		if (key)
 		{
@@ -875,7 +875,7 @@ Crypto::Cert::X509Key *Crypto::Cert::X509File::PublicKeyGet(const UInt8 *pdu, co
 				bstrLen--;
 			}
 			Crypto::Cert::X509Key *key;
-			NEW_CLASS(key, Crypto::Cert::X509Key((const UTF8Char*)"public.key", bstrPDU, bstrLen, keyType));
+			NEW_CLASS(key, Crypto::Cert::X509Key(CSTR("public.key"), bstrPDU, bstrLen, keyType));
 			return key;
 		}
 	}
@@ -952,7 +952,7 @@ Crypto::Cert::X509File::X509File(Text::String *sourceName, const UInt8 *buff, UO
 {
 }
 
-Crypto::Cert::X509File::X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
+Crypto::Cert::X509File::X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Net::ASN1Data(sourceName, buff, buffSize)
 {
 }
 

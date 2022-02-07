@@ -99,7 +99,7 @@ void __stdcall Net::WebServer::WebListener::OnDataSent(void *userObj, UOSInt buf
 	Interlocked_AddU64(&me->status.totalWrite, buffSize);
 }
 
-Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA)
+Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, Bool allowKA)
 {
 	this->hdlr = hdlr;
 
@@ -112,9 +112,9 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	this->timeoutHdlr = 0;
 	this->timeoutObj = 0;
 	this->proxyCliMgr = 0;
-	if (svrName)
+	if (svrName.leng > 0)
 	{
-		this->svrName = Text::String::NewNotNull(svrName);
+		this->svrName = Text::String::New(svrName);
 	}
 	else
 	{
@@ -128,7 +128,7 @@ Net::WebServer::WebListener::WebListener(Net::SocketFactory *sockf, Net::SSLEngi
 	NEW_CLASS(this->accLogMut, Sync::Mutex());
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(timeoutSeconds, ClientEvent, ClientData, this, workerCnt, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, (const UTF8Char*)"Web: "));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHdlr, this, CSTR("Web: ")));
 	if (this->allowProxy)
 	{
 		NEW_CLASS(this->proxyCliMgr, Net::TCPClientMgr(240, ProxyClientEvent, ProxyClientData, this, workerCnt, ProxyTimeout));

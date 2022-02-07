@@ -121,7 +121,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler((const UTF8Char*)".", true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
 		hdlr->HandlePath(UTF8STRC("/api"), myHdlr, true);
-		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));
+		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, true));
 		if (!svr->IsError())
 		{
 			progCtrl->WaitForExit(progCtrl);

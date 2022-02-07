@@ -1256,7 +1256,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					hdlr->HandlePath(UTF8STRC("/benchmark"), benchhdlr, true);
 					hdlr->ExpandPackageFiles(this->parsers);
 					this->webHdlr = hdlr;
-					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, (const UTF8Char*)"SSWRServer/1.0", false, true));
+					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true));
 					if (this->listener->IsError())
 					{
 						DEL_CLASS(this->listener);
@@ -1291,7 +1291,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 			if (s->ToUInt16(&port) && port > 0)
 			{
 				NEW_CLASS(this->cliMgr, Net::TCPClientMgr(300, OnClientEvent, OnClientData, this, 4, OnClientTimeout));
-				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, (const UTF8Char*)"CLI: "));
+				NEW_CLASS(this->cliSvr, Net::TCPServer(this->sockf, port, this->log, OnServerConn, this, CSTR("CLI: ")));
 				if (this->cliSvr->IsV4Error())
 				{
 					DEL_CLASS(this->cliSvr);

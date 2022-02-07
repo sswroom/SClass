@@ -5,7 +5,7 @@ Crypto::JKSFile::JKSFile(Text::String *sourceName, const UInt8 *buff, UOSInt buf
 {
 }
 
-Crypto::JKSFile::JKSFile(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::JKSFile::JKSFile(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 }
 

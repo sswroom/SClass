@@ -332,7 +332,7 @@ Crypto::Cert::X509CertReq *Crypto::Cert::CertUtil::CertReqCreate(Net::SSLEngine 
 	sb.Append(names->commonName);
 	sb.AppendC(UTF8STRC(".csr"));
 	Crypto::Cert::X509CertReq *csr;
-	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
+	NEW_CLASS(csr, Crypto::Cert::X509CertReq(sb.ToCString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return csr;
 }
 
@@ -387,7 +387,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::SelfSignedCertCreate(Net::SSLEng
 	sb.Append(names->commonName);
 	sb.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(sb.ToCString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;
 }
 
@@ -489,7 +489,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::IssueCert(Net::SSLEngine *ssl, C
 	builder.EndLevel();
 	sbFileName.AppendC(UTF8STRC(".crt"));
 	Crypto::Cert::X509Cert *cert;
-	NEW_CLASS(cert, Crypto::Cert::X509Cert(sbFileName.ToString(), builder.GetBuff(0), builder.GetBuffSize()));
+	NEW_CLASS(cert, Crypto::Cert::X509Cert(sbFileName.ToCString(), builder.GetBuff(0), builder.GetBuffSize()));
 	return cert;
 }
 
@@ -530,7 +530,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 		return 0;
 	}
 	sptr = &sbuff[i + 1];
-	sptr2 = Text::StrConcat(sptr, IO::Path::ALL_FILES);
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Parser::FileParser::X509Parser parser;
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	IO::Path::PathType pt;
@@ -544,7 +544,7 @@ Crypto::Cert::X509Cert *Crypto::Cert::CertUtil::FindIssuer(Crypto::Cert::X509Cer
 			{
 				if (IO::FileStream::LoadFile(CSTRP(sbuff, sptr2), dataBuff, sizeof(dataBuff)) == fileSize)
 				{
-					Text::String *s = Text::String::NewNotNull(sbuff);
+					Text::String *s = Text::String::New(sbuff, (UOSInt)(sptr2 - sbuff));
 					x509 = parser.ParseBuff(dataBuff, (UOSInt)fileSize, s);
 					s->Release();
 					if (x509)

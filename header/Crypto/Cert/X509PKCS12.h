@@ -10,7 +10,7 @@ namespace Crypto
 		{
 		public:
 			X509PKCS12(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509PKCS12(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509PKCS12(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PKCS12();
 
 			virtual FileType GetFileType();

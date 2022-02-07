@@ -9,7 +9,7 @@ Crypto::Cert::X509Key::X509Key(Text::String *sourceName, const UInt8 *buff, UOSI
 	this->keyType = keyType;
 }
 
-Crypto::Cert::X509Key::X509Key(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509Key::X509Key(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize, KeyType keyType) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 	this->keyType = keyType;
 }

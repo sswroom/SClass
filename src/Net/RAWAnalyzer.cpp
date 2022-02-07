@@ -36,7 +36,7 @@ Net::RAWAnalyzer::RAWAnalyzer(Net::SocketFactory *sockf, UInt16 infoPort, IO::Wr
 	this->threadToStop = false;
 
 	NEW_CLASS(this->webHdlr, Net::EthernetWebHandler(this->analyzer));
-	NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 8, (const UTF8Char*)"NetRAWCapture/1.0", false, true));
+	NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->webHdlr, infoPort, 120, 8, CSTR("NetRAWCapture/1.0"), false, true));
 	if (this->listener->IsError())
 	{
 		DEL_CLASS(this->listener);

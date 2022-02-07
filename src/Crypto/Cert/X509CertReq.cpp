@@ -8,7 +8,7 @@ Crypto::Cert::X509CertReq::X509CertReq(Text::String *sourceName, const UInt8 *bu
 
 }
 
-Crypto::Cert::X509CertReq::X509CertReq(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509CertReq::X509CertReq(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }

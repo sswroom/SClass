@@ -832,7 +832,7 @@ Net::MySQLServer::MySQLServer(Net::SocketFactory *sockf, UInt16 port, DB::DBMS *
 	NEW_CLASS(this->randMut, Sync::Mutex());
 
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, (const UTF8Char*)"MySQL: "));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MySQL: ")));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);

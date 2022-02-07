@@ -180,7 +180,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		if (s && s->v[0] != 0 && s->ToUInt16(&managePort))
 		{
 			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));
-			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, (const UTF8Char*)"SDNSProxy/1.0", false, true));
+			NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, this->hdlr, managePort, 60, 4, CSTR("SDNSProxy/1.0"), false, true));
 			if (this->listener->IsError())
 			{
 				console->WriteLineC(UTF8STRC("Error in listening to ManagePort"));

@@ -2776,6 +2776,8 @@ Net/WebServer/PrintLogWebResponse.h: ../../src/Net/WebServer/PrintLogWebResponse
 @PrintLogWebResponse.o
 Net/WebServer/RESTfulHandler.h: ../../src/Net/WebServer/RESTfulHandler.cpp
 @RESTfulHandler.o
+Net/WebServer/SAMLHandler.h: ../../src/Net/WebServer/SAMLHandler.cpp
+@SAMLHandler.o
 Net/WebServer/SiteRootHandler.h: ../../src/Net/WebServer/SiteRootHandler.cpp
 @SiteRootHandler.o
 Net/WebServer/WebConnection.h: ../../src/Net/WebServer/WebConnection.cpp
@@ -4694,6 +4696,7 @@ OAuth2Handler.o: ../../src/Net/WebServer/OAuth2Handler.cpp
 PrintLogWebHandler.o: ../../src/Net/WebServer/PrintLogWebHandler.cpp
 PrintLogWebResponse.o: ../../src/Net/WebServer/PrintLogWebResponse.cpp
 RESTfulHandler.o: ../../src/Net/WebServer/RESTfulHandler.cpp
+SAMLHandler.o: ../../src/Net/WebServer/SAMLHandler.cpp
 SiteRootHandler.o: ../../src/Net/WebServer/SiteRootHandler.cpp
 WebConnection.o: ../../src/Net/WebServer/WebConnection.cpp
 WebListener.o: ../../src/Net/WebServer/WebListener.cpp

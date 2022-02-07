@@ -2939,9 +2939,24 @@ UOSInt Text::StrLastIndexOfChar(const UTF8Char *str1, UTF8Char c)
 
 UOSInt Text::StrLastIndexOfCharC(const UTF8Char *str1, UOSInt len1, UTF8Char c)
 {
-	UInt16 c2;
-	while (len1 >= 2)
+	while (len1 >= 4)
 	{
+		UInt16 c2;
+		len1 -= 4;
+		c2 = ReadUInt16(&str1[len1 + 2]);
+		if ((UTF8Char)(c2 >> 8) == c)
+			return len1 + 3;
+		if ((UTF8Char)(c2 & 0xff) == c)
+			return len1 + 2;
+		c2 = ReadUInt16(&str1[len1]);
+		if ((UTF8Char)(c2 >> 8) == c)
+			return len1 + 1;
+		if ((UTF8Char)(c2 & 0xff) == c)
+			return len1;
+	}
+	if (len1 >= 2)
+	{
+		UInt16 c2;
 		len1 -= 2;
 		c2 = ReadUInt16(&str1[len1]);
 		if ((UTF8Char)(c2 >> 8) == c)

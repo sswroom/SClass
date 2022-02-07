@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 		switch (me->cboType->GetSelectedIndex())
 		{
 		case 0:
-			NEW_CLASS(x509, Crypto::Cert::X509Cert((const UTF8Char*)"Cert", buff, len));
+			NEW_CLASS(x509, Crypto::Cert::X509Cert(CSTR("Cert"), buff, len));
 			break;
 		}
 		MemFree(buff);

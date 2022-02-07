@@ -349,7 +349,7 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 		this->hdlr((UInt32*)s, this->userObj);*/
 	}	
 }
-Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, const UTF8Char *logPrefix)
+Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix)
 {
 	this->socf = socf;
 	this->toStop = false;

@@ -63,7 +63,7 @@ namespace Net
 
 			static void __stdcall OnDataSent(void *userObj, UOSInt buffSize);
 		public:
-			WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, const UTF8Char *svrName, Bool allowProxy, Bool allowKA);
+			WebListener(Net::SocketFactory *sockf, Net::SSLEngine *ssl, IWebHandler *hdlr, UInt16 port, Int32 timeoutSeconds, UOSInt workerCnt, Text::CString svrName, Bool allowProxy, Bool allowKA);
 			~WebListener();
 
 			Bool IsError();

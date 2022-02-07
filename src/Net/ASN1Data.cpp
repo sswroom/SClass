@@ -10,7 +10,7 @@ Net::ASN1Data::ASN1Data(Text::String *sourceName, const UInt8 *buff, UOSInt buff
 	MemCopyNO(this->buff, buff, buffSize);
 }
 
-Net::ASN1Data::ASN1Data(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
+Net::ASN1Data::ASN1Data(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : IO::ParsedObject(sourceName)
 {
 	this->buff = MemAlloc(UInt8, buffSize);
 	this->buffSize = buffSize;

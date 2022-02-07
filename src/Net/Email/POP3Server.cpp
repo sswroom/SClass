@@ -469,7 +469,7 @@ Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ss
 	this->greeting = Text::String::NewNotNull(greeting);
 	this->mailCtrl = mailCtrl;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, 0));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
 	NEW_CLASS(this->rawLog, IO::FileStream(CSTR("POP3Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 }
 

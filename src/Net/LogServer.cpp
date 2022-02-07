@@ -131,7 +131,7 @@ Net::LogServer::LogServer(Net::SocketFactory *sockf, UInt16 port, const UTF8Char
 	NEW_CLASS(this->ipMap, Data::UInt32Map<IPStatus*>());
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoLogCliHandler(this));
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, ClientEvent, ClientData, this, 4, ClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, 0));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));
 }
 
 Net::LogServer::~LogServer()

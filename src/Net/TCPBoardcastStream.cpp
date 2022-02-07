@@ -127,7 +127,7 @@ Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 po
 	this->readBuffPtr1 = 0;
 	this->readBuffPtr2 = 0;
 	this->writeBuffSize = 0;
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHandler, this, (const UTF8Char*)"BStm: "));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, ConnHandler, this, CSTR("BStm: ")));
 	if (this->svr->IsV4Error())
 	{
 		SDEL_CLASS(this->svr);

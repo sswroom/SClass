@@ -5,6 +5,7 @@
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
 #include "Net/WebServer/PrintLogWebHandler.h"
+#include "Net/WebServer/SAMLHandler.h"
 #include "Net/WebServer/WebListener.h"
 #include "Net/WebServer/WebServiceHandler.h"
 
@@ -61,9 +62,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (initSucc)
 	{
 		MyADFSService *svcHdlr;
+		Net::WebServer::SAMLHandler *samlHdlr;
+		Net::WebServer::SAMLConfig cfg;
+		cfg.serverHost = CSTR("samltest.simontest.local:4321");
+		cfg.metadataPath = CSTR("/saml/metadata");
+		cfg.logoutPath = CSTR("/saml/SingleLogout");
+		cfg.ssoPath = CSTR("/saml/SSO");
+		cfg.signCertPath = CSTR("/home/sswroom/Progs/Temp/saml_token.crt");
+		cfg.signKeyPath = CSTR("/home/sswroom/Progs/Temp/saml_token.key");
 		NEW_CLASS(svcHdlr, MyADFSService());
-		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(svcHdlr, console));
-		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, ssl, logHdlr, 4321, 120, 4, (const UTF8Char*)"ADFSTest/1.0", false, true));
+		NEW_CLASS(samlHdlr, Net::WebServer::SAMLHandler(&cfg, ssl, svcHdlr));
+		NEW_CLASS(logHdlr, Net::WebServer::PrintLogWebHandler(samlHdlr, console));
+		NEW_CLASS(listener, Net::WebServer::WebListener(sockf, ssl, logHdlr, 4321, 120, 4, CSTR("ADFSTest/1.0"), false, true));
 		if (listener->IsError())
 		{
 			console->WriteLineC(UTF8STRC("Error in listening to port 4321"));
@@ -75,6 +85,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Server stopping"));
 		}
 		logHdlr->Release();
+		svcHdlr->Release();
 		DEL_CLASS(listener);
 	}
 	SDEL_CLASS(ssl);

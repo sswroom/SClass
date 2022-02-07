@@ -19,6 +19,7 @@ namespace Parser
 			virtual IO::ParsedObject *ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType);
 
 			static Crypto::Cert::X509File *ParseBuff(const UInt8 *buff, UOSInt buffSize, Text::String *fileName);
+			static Crypto::Cert::X509File *ToType(IO::ParsedObject *pobj, Crypto::Cert::X509File::FileType ftype);
 		};
 	}
 }

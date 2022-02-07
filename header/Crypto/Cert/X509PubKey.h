@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509PubKey(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509PubKey(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509PubKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509PubKey();
 
 			virtual FileType GetFileType();

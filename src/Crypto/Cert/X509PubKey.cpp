@@ -8,7 +8,7 @@ Crypto::Cert::X509PubKey::X509PubKey(Text::String *sourceName, const UInt8 *buff
 
 }
 
-Crypto::Cert::X509PubKey::X509PubKey(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PubKey::X509PubKey(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }

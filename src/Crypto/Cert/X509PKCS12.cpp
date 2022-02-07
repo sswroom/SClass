@@ -7,7 +7,7 @@ Crypto::Cert::X509PKCS12::X509PKCS12(Text::String *sourceName, const UInt8 *buff
 
 }
 
-Crypto::Cert::X509PKCS12::X509PKCS12(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
+Crypto::Cert::X509PKCS12::X509PKCS12(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize) : Crypto::Cert::X509File(sourceName, buff, buffSize)
 {
 
 }

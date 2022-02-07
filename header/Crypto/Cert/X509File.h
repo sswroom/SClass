@@ -102,7 +102,7 @@ namespace Crypto
 			static KeyType KeyTypeFromOID(const UInt8 *oid, UOSInt oidLen, Bool pubKey);
 
 			X509File(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509File(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509File(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 		public:
 			virtual ~X509File();
 

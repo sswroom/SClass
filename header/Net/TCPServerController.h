@@ -38,7 +38,7 @@ namespace Net
 		static void __stdcall DataHdlr(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 		static void __stdcall TimeoutHdlr(Net::TCPClient *cli, void *userObj, void *cliData);
 	public:
-		TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, const UTF8Char *prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec);
+		TCPServerController(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Text::CString prefix, UOSInt maxBuffSize, TCPServerHandler *hdlr, UOSInt workerCnt, Int32 timeoutSec);
 		~TCPServerController();
 
 		Bool IsError();

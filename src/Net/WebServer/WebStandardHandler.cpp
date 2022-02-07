@@ -21,11 +21,6 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	DEL_CLASS(this->relHdlrs);
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
-{
-	return DoRequest(req, resp, subReq, subReqLen);
-}
-
 Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
 {
 	if (subReq[0] != '/')
@@ -144,6 +139,11 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 void Net::WebServer::WebStandardHandler::Release()
 {
 	DEL_CLASS(this);
+}
+
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+{
+	return DoRequest(req, resp, subReq, subReqLen);
 }
 
 void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath, UOSInt pathLen, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)

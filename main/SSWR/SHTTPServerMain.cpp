@@ -52,7 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(path, true, 65536, true));
-	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 8, (const UTF8Char*)"sswr/1.0", false, true));
+	NEW_CLASS(svr, Net::WebServer::WebListener(sockf, 0, hdlr, port, 120, 8, CSTR("sswr/1.0"), false, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);

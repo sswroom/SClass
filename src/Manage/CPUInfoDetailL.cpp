@@ -15,7 +15,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 	IO::FileStream *fs;
 	this->cpuModel = CSTR_NULL;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Int32 cpuPart = 0;
@@ -89,7 +89,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			{
 				IO::FileStream *fs2;
 				UInt8 fileBuff[33];
-				NEW_CLASS(fs2, IO::FileStream((const UTF8Char*)"/sys/devices/soc0/machine", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs2, IO::FileStream(CSTR("/sys/devices/soc0/machine"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (!fs2->IsError())
 				{
 					UOSInt i = fs2->Read(fileBuff, 32);
@@ -105,7 +105,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 							break;
 						}
 					}
-					if (Text::StrEquals(fileBuff, (const UTF8Char*)"AM335X"))
+					if (Text::StrEqualsC(fileBuff, i, UTF8STRC("AM335X")))
 					{
 						Bool hasCAN = (IO::Path::GetPathType(UTF8STRC("/proc/net/can")) == IO::Path::PathType::Directory);
 						Bool hasGraphics = false;
@@ -237,11 +237,12 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 {
 	Bool ret = false;
 	UTF8Char sbuff[256];
-	Text::StrConcatC(Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
+	UTF8Char *sptr;
+	sptr = Text::StrConcatC(Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))
@@ -262,8 +263,8 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	if (ret)
 		return true;
 
-	Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
-	NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/hwmon/hwmon")), index), UTF8STRC("/device/temperature"));
+	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(reader, Text::UTF8Reader(fs));
 	sb.ClearStr();
 	if (reader->ReadLine(&sb, 512))

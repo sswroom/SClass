@@ -98,7 +98,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			return 0;
 		}
 		Crypto::Cert::X509Cert *svrCert;
-		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, certBuff, (UInt32)certLen));
+		NEW_CLASS(svrCert, Crypto::Cert::X509Cert({hostName, hostNameLen}, certBuff, (UInt32)certLen));
 		Data::DateTime dt;
 		Int64 currTime;
 		dt.SetCurrTimeUTC();

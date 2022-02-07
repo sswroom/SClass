@@ -126,7 +126,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 		}
 	}
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, 2, OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, (const UTF8Char*)"Sync: "));
+	NEW_CLASS(this->svr, Net::TCPServer(sockf, port, log, OnClientConn, this, CSTR("Sync: ")));
 }
 
 SSWR::DataSync::SyncServer::~SyncServer()

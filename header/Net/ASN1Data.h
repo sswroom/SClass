@@ -17,7 +17,7 @@ namespace Net
 		UOSInt buffSize;
 
 		ASN1Data(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-		ASN1Data(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+		ASN1Data(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 	public:
 		virtual ~ASN1Data();
 

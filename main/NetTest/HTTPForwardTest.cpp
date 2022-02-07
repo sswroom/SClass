@@ -43,7 +43,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Net::WebServer::HTTPForwardHandler *hdlr;
 		Net::WebServer::WebListener *svr;
 		NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, ssl, fwdUrl, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
-		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, (const UTF8Char*)"sswr/1.0", false, true));
+		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, true));
 		if (!svr->IsError())
 		{
 			console->WriteLineC(UTF8STRC("HTTP Forwarding started"));

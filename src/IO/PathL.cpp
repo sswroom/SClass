@@ -719,11 +719,10 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	}
 }
 
-Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+Bool IO::Path::FileNameMatch(const UTF8Char *fileName, UOSInt fileNameLen, const UTF8Char *searchPattern, UOSInt patternLen)
 {
-	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	const UTF8Char *fileName = &path[i + 1];
-	const UTF8Char *fileNameEnd = &path[pathLen];
+	const UTF8Char *fileNameEnd = &fileName[fileNameLen];
+	UOSInt i;
 	Bool isWC = false;
 	const UTF8Char *patternStart = 0;
 	const UTF8Char *currPattern = searchPattern;
@@ -793,7 +792,13 @@ Bool IO::Path::FileNameMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 	}
 }
 
-Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
+Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Char *searchPattern, UOSInt patternLen)
+{
+	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
+	return FileNameMatch(&path[i + 1], pathLen - i - 1, searchPattern, patternLen);
+}
+
+Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 {
 	WChar sbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '/');

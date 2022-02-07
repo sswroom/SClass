@@ -46,7 +46,7 @@ namespace Net
 		static UInt32 __stdcall SvrThread2(void *o);
 		void AcceptSocket(Socket *svrSoc);
 	public:
-		TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, const UTF8Char *logPrefix);
+		TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TCPServerConn hdlr, void *userObj, Text::CString logPrefix);
 		~TCPServer();
 		void Close();
 		Bool IsV4Error();

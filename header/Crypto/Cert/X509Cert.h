@@ -11,7 +11,7 @@ namespace Crypto
 		{
 		public:
 			X509Cert(Text::String *sourceName, const UInt8 *buff, UOSInt buffSize);
-			X509Cert(const UTF8Char *sourceName, const UInt8 *buff, UOSInt buffSize);
+			X509Cert(Text::CString sourceName, const UInt8 *buff, UOSInt buffSize);
 			virtual ~X509Cert();
 
 			void GetSubjectCN(Text::StringBuilderUTF8 *sb);

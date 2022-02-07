@@ -168,3 +168,30 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	}
 	return ret;
 }
+
+Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject *pobj, Crypto::Cert::X509File::FileType ftype)
+{
+	Net::ASN1Data *asn1;
+	if (pobj == 0)
+	{
+		return 0;
+	}
+	if (pobj->GetParserType() != IO::ParserType::ASN1Data)
+	{
+		DEL_CLASS(pobj);
+		return 0;
+	}
+	asn1 = (Net::ASN1Data*)pobj;
+	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
+	{
+		DEL_CLASS(pobj);
+		return 0;
+	}
+	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
+	if (x509->GetFileType() == ftype)
+	{
+		return x509;
+	}
+	DEL_CLASS(x509);
+	return 0;
+}

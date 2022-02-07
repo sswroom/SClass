@@ -956,7 +956,7 @@ Net::MQTTBroker::MQTTBroker(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt
 	NEW_CLASS(this->subscribeList, Data::ArrayList<SubscribeInfo*>());
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoMQTTHandler(this));
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(240, OnClientEvent, OnClientData, this, Sync::Thread::GetThreadCnt(), OnClientTimeout));
-	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, (const UTF8Char*)"MQTT: "));
+	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, this->log, OnClientConn, this, CSTR("MQTT: ")));
 	if (this->svr->IsV4Error())
 	{
 		DEL_CLASS(this->svr);
