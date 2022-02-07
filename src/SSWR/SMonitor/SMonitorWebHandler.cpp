@@ -1449,7 +1449,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Exporter::GUIPNGExporter *exporter;
 	Media::ImageList *imgList;
 
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"temp.png"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 
@@ -1799,7 +1799,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Exporter::GUIPNGExporter *exporter;
 	Media::ImageList *imgList;
 
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"temp.png"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("temp.png")));
 	imgList->AddImage(dimg->ToStaticImage(), 0);
 	deng->DeleteImage(dimg);
 

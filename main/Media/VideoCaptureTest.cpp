@@ -35,7 +35,7 @@ void __stdcall CaptureTest(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, U
 		Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
 		Text::CString fileName = CSTR("Capture.tif");
 		NEW_CLASS(simg, Media::StaticImage(info.dispWidth, info.dispHeight, 0, 32, Media::PF_B8G8R8A8, 0, &color, Media::ColorProfile::YUVT_BT601, info.atype, info.ycOfst));
-		NEW_CLASS(imgList, Media::ImageList(fileName.v));
+		NEW_CLASS(imgList, Media::ImageList(fileName));
 		imgList->AddImage(simg, 0);
 
 		if (converter)

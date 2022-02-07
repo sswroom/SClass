@@ -64,7 +64,7 @@ namespace Media
 		ThermoType thermoType;
 
 		ImageList(Text::String *name);
-		ImageList(const UTF8Char *name);
+		ImageList(Text::CString name);
 		virtual ~ImageList();
 
 		virtual IO::ParserType GetParserType();

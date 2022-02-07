@@ -8050,7 +8050,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					else
 					{
 						void *param;
-						Media::ImageList nimgList((const UTF8Char*)"Temp");
+						Media::ImageList nimgList(CSTR("Temp"));
 						NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 						nimgList.AddImage(dimg, 0);
 						Exporter::GUIJPGExporter exporter;
@@ -8377,7 +8377,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				else
 				{
 					void *param;
-					Media::ImageList nimgList((const UTF8Char*)"Temp");
+					Media::ImageList nimgList(CSTR("Temp"));
 					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;
@@ -8595,7 +8595,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					}
 
 					void *param;
-					Media::ImageList nimgList((const UTF8Char*)"Temp");
+					Media::ImageList nimgList(CSTR("Temp"));
 					NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR::OrganMgr::OrganWebHandler.WebRequest")));
 					nimgList.AddImage(dimg, 0);
 					Exporter::GUIJPGExporter exporter;

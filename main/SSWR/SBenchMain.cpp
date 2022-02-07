@@ -1579,7 +1579,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Temp"));
+			NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
 #if defined(EXPORT_IMAGE)
 			IO::Path::GetProcessFileName(sbuff);
 			IO::Path::AppendPath(sbuff, csptr = (const UTF8Char*)"RingsImage64.tif");
@@ -1684,7 +1684,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-			NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Temp"));
+			NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
 			imgList->AddImage(newImg, 0);
 
 			console->WriteLineC(UTF8STRC("Resizer: LanczosResizer (16->8) H4V3 taps, no alpha"));

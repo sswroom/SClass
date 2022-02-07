@@ -69,6 +69,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 	Media::StaticImage *newImg;
 	Bool succ;
 	UTF8Char u8buff[256];
+	UTF8Char *sptr;
 
 
 	i = this->targetParam->GetCount();
@@ -84,8 +85,8 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		}
 
 		succ = true;
-		imgList->GetSourceName(u8buff);
-		NEW_CLASS(newImgList, Media::ImageList(u8buff));
+		sptr = imgList->GetSourceName(u8buff);
+		NEW_CLASS(newImgList, Media::ImageList(CSTRP(u8buff, sptr)));
 		j = 0;
 		k = imgList->GetCount();
 		while (j < k)

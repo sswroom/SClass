@@ -508,7 +508,7 @@ Bool Media::VectorGraph::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	Media::StaticImage *stImg;
 	Math::VectorImage *vimg;
 	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
 	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, tly + UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, CSTR_NULL, 0, 0));
@@ -528,7 +528,7 @@ Bool Media::VectorGraph::DrawImagePt2(Media::StaticImage *img, Double tlx, Doubl
 	Media::SharedImage *simg;
 	Math::VectorImage *vimg;
 	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(img->CreateStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
 	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, tlx, tly, tlx + UOSInt2Double(img->info->dispWidth) * this->GetHDPI() / img->info->hdpi, tly + UOSInt2Double(img->info->dispHeight) * img->info->par2 * this->GetVDPI() / img->info->vdpi, true, CSTR_NULL, 0, 0));
@@ -549,7 +549,7 @@ Bool Media::VectorGraph::DrawImagePt3(DrawImage *img, Double destX, Double destY
 	Media::SharedImage *simg;
 	Math::VectorImage *vimg;
 	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"VectorGraphImage"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("VectorGraphImage")));
 	imgList->AddImage(stImg = img->ToStaticImage(), 0);
 	NEW_CLASS(simg, Media::SharedImage(imgList, false));
 	NEW_CLASS(vimg, Math::VectorImage(this->srid, simg, destX, destY, destX + UOSInt2Double(stImg->info->dispWidth) * this->GetHDPI() / stImg->info->hdpi, destY + UOSInt2Double(stImg->info->dispHeight) * stImg->info->par2 * this->GetVDPI() / stImg->info->vdpi, true, CSTR_NULL, 0, 0));

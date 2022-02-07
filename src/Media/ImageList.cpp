@@ -22,7 +22,7 @@ Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
 	this->thermoPtr = 0;
 }
 
-Media::ImageList::ImageList(const UTF8Char *fileName) : IO::ParsedObject(fileName)
+Media::ImageList::ImageList(Text::CString fileName) : IO::ParsedObject(fileName)
 {
 	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());
 	NEW_CLASS(this->imgTimes, Data::ArrayListUInt32());

@@ -205,7 +205,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						sptr2End = Text::StrConcatC(Text::StrConcatC(sptr2, sptr, (UOSInt)(sptr3 - sptr)), UTF8STRC(".png"));
 						simg->To32bpp();
 						simg2 = resizer.ProcessToNew(simg);
-						NEW_CLASS(imgList, Media::ImageList(sptr));
+						NEW_CLASS(imgList, Media::ImageList(CSTRP(sptr, sptr2End)));
 						imgList->AddImage(simg2, 0);
 						mutUsage.BeginUse();
 						NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2End - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
@@ -297,8 +297,8 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 		if (img)
 		{
 			this->ApplySetting(img, img, &status->setting);
-			Text::StrConcat(sptr, status->fileName);
-			NEW_CLASS(imgList, Media::ImageList(sbuff));
+			sptr2 = Text::StrConcat(sptr, status->fileName);
+			NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr2)));
 			imgList->AddImage(img, 0);
 			Sync::MutexUsage ioMutUsage(this->ioMut);
 			if (this->exportFmt == EF_JPG)

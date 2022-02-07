@@ -265,7 +265,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	Media::ColorProfile srcColor(Media::ColorProfile::CPT_SRGB);
 	NEW_CLASS(stimg, Media::StaticImage(7, 7, 0, 32, Media::PF_B8G8R8A8, 0, &srcColor, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 	stimg->FillColor(0xff40ffff);
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"PointImage"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("PointImage")));
 	imgList->AddImage(stimg, 0);
 	this->mapEnv->AddImage(CSTR("PointImage"), imgList);
 	NEW_CLASS(this->adjLyr, OrganTimeAdjLayer(this->gpsTrk, this->currFileList));

@@ -640,11 +640,12 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Test", this);
 
 				UTF8Char sbuff[512];
+				UTF8Char *sptr;
 				Media::ImageList *imgList;
 				Media::StaticImage *simg = img->ToStaticImage();
 				this->core->GetDrawEngine()->DeleteImage(img);
-				audio->GetSourceName(sbuff);
-				NEW_CLASS(imgList, Media::ImageList(sbuff));
+				sptr = audio->GetSourceName(sbuff);
+				NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr)));
 				imgList->AddImage(simg, 0);
 				this->core->OpenObject(imgList);
 			}

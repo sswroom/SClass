@@ -60,7 +60,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Exporter::TIFFExporter exporter;
 		IO::FileStream *fs;
 		Media::ImageList *imgList;
-		NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"Test.tif"));
+		NEW_CLASS(imgList, Media::ImageList(CSTR("Test.tif")));
 		imgList->AddImage(simg2, 0);
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("NearestNeighbourTest.tif"));

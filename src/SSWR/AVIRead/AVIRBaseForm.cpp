@@ -1653,7 +1653,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (img)
 			{
 				Media::ImageList *imgList;
-				NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"ScreenCapture"));
+				NEW_CLASS(imgList, Media::ImageList(CSTR("ScreenCapture")));
 				imgList->AddImage(img, 0);
 				this->core->OpenObject(imgList);
 			}
