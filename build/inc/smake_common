@@ -102,6 +102,7 @@ nodeps:
 @ExecuteProcessTest
 @ExecuteProcess2
 @HiResClock
+@MapSearchTest
 @OruxMapTest
 @LanczosFilterTest
 @GUIExportJPG
@@ -361,6 +362,9 @@ HiResClock:
 @ConsoleStartup.o
 
 #Map
+MapSearchTest:
+@MapSearchTest.o
+@ConsoleStartup.o
 OruxMapTest:
 @OruxMapTest.o
 @ConsoleStartup.o
@@ -878,6 +882,7 @@ ExceptionRecorderTest.o: ../../main/Manage/ExceptionRecorderTest.cpp
 ExecuteProcess.o: ../../main/Manage/ExecuteProcess.cpp
 ExecuteProcess2.o: ../../main/Manage/ExecuteProcess2.cpp
 HiResClockMain.o: ../../main/Manage/HiResClock.cpp
+MapSearchTest.o: ../../main/Map/MapSearchTest.cpp
 OruxMapTest.o: ../../main/Map/OruxMapTest.cpp
 LanczosFilterTest.o: ../../main/Math/LanczosFilterTest.cpp
 MCU_Console.o: ../../main/MCU/MCU_Console.cpp

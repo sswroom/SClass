@@ -12,13 +12,13 @@
 //#define FILEBUFFER(name) IO::ViewFileBuffer(name)
 #define FILEBUFFER(name, nameLen) IO::MemFileBuffer({name, nameLen})
 
-Map::MapLayerData::MapLayerData(const UTF8Char *filePath)
+Map::MapLayerData::MapLayerData(Text::CString filePath)
 {
 	UTF8Char fileName[256];
 	UTF8Char *str;
 	UTF8Char *sptrEnd;
 
-	str = Text::StrConcat(fileName, filePath);
+	str = filePath.ConcatTo(fileName);
 	this->cipFile = 0;
 	this->cixFile = 0;
 	this->ciuFile = 0;
@@ -319,83 +319,93 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 
 				currFound = 0;
 				Double calBase;
-				Double calH;
-				Double calW;
+				Double xDiff;
+				Double yDiff;
 				Double calX = 0;
 				Double calY = 0;
 				Double calD;
 				Double calPtX = 0.0;
 				Double calPtY = 0.0;
+				Double thisPtX;
+				Double thisPtY;
+				Double lastPtX;
+				Double lastPtY;
 				Int32 part;
 
 				while (i--)
 				{
 					part = parts[i];
 					j--;
+					thisPtX = points[(j << 1) + 0];
+					thisPtY = points[(j << 1) + 1];
 					while (j-- > part)
 					{
-						calH = points[(j << 1) + 1] - (Double)points[(j << 1) + 3];
-						calW = points[(j << 1) + 0] - (Double)points[(j << 1) + 2];
+						lastPtX = thisPtX;
+						lastPtY = thisPtY;
+						thisPtX = points[(j << 1) + 0];
+						thisPtY = points[(j << 1) + 1];
+						xDiff = thisPtX - lastPtX;
+						yDiff = thisPtY - lastPtY;
 
-						if (calH == 0)
+						if (thisPtY == lastPtY)
 						{
-							calX = (Double)xpos;
+							calX = xpos;
 						}
 						else
 						{
-							calX = (calBase = (calW * calW)) * xpos;
-							calBase += calH * calH;
-							calX += calH * calH * (points[(j << 1) + 0]);
-							calX += (ypos - (Double)points[(j << 1) + 1]) * calH * calW;
+							calX = (calBase = (xDiff * xDiff)) * xpos;
+							calBase += yDiff * yDiff;
+							calX += yDiff * yDiff * thisPtX;
+							calX += (ypos - thisPtY) * xDiff * yDiff;
 							calX /= calBase;
 						}
 
-						if (calW == 0)
+						if (thisPtX == lastPtX)
 						{
-							calY = (Double)ypos;
+							calY = ypos;
 						}
 						else
 						{
-							calY = ((calX - (Double)(points[(j << 1) + 0])) * calH / calW) + (Double)points[(j << 1) + 1];
+							calY = ((calX - thisPtX) * yDiff / xDiff) + thisPtY;
 						}
 
-						if (calW < 0)
+						if (thisPtX < lastPtX)
 						{
-							if (points[(j << 1) + 0] > calX)
+							if (thisPtX > calX)
 								continue;
-							if (points[(j << 1) + 2] < calX)
-								continue;
-						}
-						else
-						{
-							if (points[(j << 1) + 0] < calX)
-								continue;
-							if (points[(j << 1) + 2] > calX)
-								continue;
-						}
-
-						if (calH < 0)
-						{
-							if (points[(j << 1) + 1] > calY)
-								continue;
-							if (points[(j << 1) + 3] < calY)
+							if (lastPtX < calX)
 								continue;
 						}
 						else
 						{
-							if (points[(j << 1) + 1] < calY)
+							if (thisPtX < calX)
 								continue;
-							if (points[(j << 1) + 3] > calY)
+							if (lastPtX > calX)
 								continue;
 						}
 
-						calH = ypos - calY;
-						calW = xpos - calX;
-						calD = calW * calW + calH * calH;
+						if (thisPtY < lastPtY)
+						{
+							if (thisPtY > calY)
+								continue;
+							if (lastPtY < calY)
+								continue;
+						}
+						else
+						{
+							if (thisPtY < calY)
+								continue;
+							if (lastPtY > calY)
+								continue;
+						}
+
+						yDiff = ypos - calY;
+						xDiff = xpos - calX;
+						calD = xDiff * xDiff + yDiff * yDiff;
 						if (calD < dist)
 						{
 							currFound = 1;
-							dist = (UInt32)calD;
+							dist = calD;
 							calPtX = calX;
 							calPtY = calY;
 						}
@@ -404,13 +414,13 @@ UTF8Char *Map::MapLayerData::GetPLLabelD(UTF8Char *buff, Double xposD, Double yp
 				j = nPoints;
 				while (j-- > 0)
 				{
-					calW = xpos - points[(j << 1) + 0];
-					calH = ypos - points[(j << 1) + 1];
-					calD = calW * calW + calH * calH;
+					xDiff = xpos - points[(j << 1) + 0];
+					yDiff = ypos - points[(j << 1) + 1];
+					calD = xDiff * xDiff + yDiff * yDiff;
 					if (calD < dist)
 					{
 						currFound = 1;
-						dist = (UInt32)calD;
+						dist = calD;
 						calPtX = calX;
 						calPtY = calY;
 					}

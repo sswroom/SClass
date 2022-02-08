@@ -2,6 +2,7 @@
 #define _SM_MAP_MAPLAYERDATA
 #include "IO/IFileBuffer.h"
 #include "Map/IMapSearchLayer.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -17,7 +18,7 @@ namespace Map
 		IO::IFileBuffer *ciuFileObj;
 		IO::IFileBuffer *blkFileObj;
 	public:
-		MapLayerData(const UTF8Char *filePath);
+		MapLayerData(Text::CString filePath);
 		virtual ~MapLayerData();
 
 		virtual Bool IsError();
@@ -25,5 +26,5 @@ namespace Map
 		virtual UTF8Char *GetPGLabelD(UTF8Char *buff, Double xpos, Double ypos);
 		virtual UTF8Char *GetPLLabelD(UTF8Char *buff, Double xpos, Double ypos, Double *xposOut, Double *yposOut);
 	};
-};
+}
 #endif

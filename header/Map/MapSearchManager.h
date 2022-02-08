@@ -2,6 +2,7 @@
 #define _SM_MAP_MAPSEARCHMANAGER
 #include "Data/ArrayListStrUTF8.h"
 #include "Map/IMapSearchLayer.h"
+#include "Text/CString.h"
 
 namespace Map
 {
@@ -15,7 +16,7 @@ namespace Map
 		MapSearchManager();
 		~MapSearchManager();
 
-		Map::IMapSearchLayer *LoadLayer(const UTF8Char *fileName);
+		Map::IMapSearchLayer *LoadLayer(Text::CString fileName);
 	};
-};
+}
 #endif

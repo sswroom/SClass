@@ -24,14 +24,14 @@ Map::MapSearchManager::~MapSearchManager()
 	DEL_CLASS(this->layerArr);
 }
 
-Map::IMapSearchLayer *Map::MapSearchManager::LoadLayer(const UTF8Char *fileName)
+Map::IMapSearchLayer *Map::MapSearchManager::LoadLayer(Text::CString fileName)
 {
-	OSInt i = this->nameArr->SortedIndexOf(fileName);
+	OSInt i = this->nameArr->SortedIndexOf(fileName.v);
 	if (i >= 0)
 	{
 		return this->layerArr->GetItem((UOSInt)i);
 	}
-	i = (OSInt)this->nameArr->SortedInsert(Text::StrCopyNew(fileName));
+	i = (OSInt)this->nameArr->SortedInsert(Text::StrCopyNewC(fileName.v, fileName.leng));
 	Map::MapLayerData *lyr;
 	NEW_CLASS(lyr, Map::MapLayerData(fileName));
 	this->layerArr->Insert((UOSInt)i, lyr);

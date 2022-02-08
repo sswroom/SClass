@@ -21,7 +21,7 @@ Manage::CPUInfo::CPUInfo()
 	this->steppingId = 0;
 	this->clsData = 0;
 
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/cpuinfo", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Int32 cpuPart = 0;
@@ -226,19 +226,19 @@ Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, 
 	return CSTR_NULL;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureShortName(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureShortName(UOSInt index)
 {
-	return 0;
+	return CSTR_NULL;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureName(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureName(UOSInt index)
 {
-	return 0;
+	return CSTR_NULL;
 }
 
-const UTF8Char *Manage::CPUInfo::GetFeatureDesc(UOSInt index)
+Text::CString Manage::CPUInfo::GetFeatureDesc(UOSInt index)
 {
-	return 0;
+	return CSTR_NULL;
 }
 
 void Manage::CPUInfo::AppendNameInfo10(UInt32 ecxv, UInt32 edxv, Text::StringBuilderUTF8 *sb)

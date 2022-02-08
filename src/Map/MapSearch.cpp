@@ -17,7 +17,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 	UTF8Char *sptr;
 	UTF8Char u8buff[256];
 	UTF8Char *tmp;
-	UTF8Char *strs[5];
+	Text::PString strs[5];
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	UOSInt i;
@@ -40,7 +40,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 	sptr = reader->ReadLine(sbuff, 256);
 	while (sptr)
 	{
-		i = Text::StrSplit(strs, 5, sbuff, ',');
+		i = Text::StrSplitP(strs, 5, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 		/*
 		layerType
 		0: baseDir
@@ -51,31 +51,31 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 
 		if (i == 2)
 		{
-			if (Text::StrToInt32(strs[0], &layerType))
+			if (strs[0].ToInt32(&layerType))
 			{
 				if (layerType == 0)
 				{
-					this->baseDir = Text::StrCopyNew(strs[1]);
+					this->baseDir = Text::String::New(strs[1].v, strs[1].leng);
 				}
 				else if (layerType == 3)
 				{
-					this->concatType = Text::StrToInt32(strs[1]);
+					this->concatType = strs[1].ToInt32();
 				}
 			}
 		}
 		else if (i == 3)
 		{
-			layerId = Text::StrToInt32(strs[1]);
-			layerType = Text::StrToInt32(strs[0]);
+			layerId = strs[1].ToInt32();
+			layerType = strs[0].ToInt32();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = Text::StrConcat(u8buff, this->baseDir);
-				Text::StrConcat(tmp, strs[2]);
+				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = 0;
-				lyr->mapLayer = manager->LoadLayer(u8buff);
+				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
 				lyr->searchStr = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -83,18 +83,18 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 		}
 		else if (i == 4)
 		{
-			layerId = Text::StrToInt32(strs[1]);
-			layerType = Text::StrToInt32(strs[0]);
-			layerDist = Text::StrToDouble(strs[3]);
+			layerId = strs[1].ToInt32();
+			layerType = strs[0].ToInt32();
+			layerDist = strs[3].ToDouble();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = Text::StrConcat(u8buff, this->baseDir);
-				Text::StrConcat(tmp, strs[2]);
+				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
-				lyr->mapLayer = manager->LoadLayer(u8buff);
+				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
 				lyr->searchStr = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -102,25 +102,25 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 		}
 		else if (i == 5)
 		{
-			layerId = Text::StrToInt32(strs[1]);
-			layerType = Text::StrToInt32(strs[0]);
-			layerDist = Text::StrToDouble(strs[3]);
+			layerId = strs[1].ToInt32();
+			layerType = strs[0].ToInt32();
+			layerDist = strs[3].ToDouble();
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = Text::StrConcat(u8buff, this->baseDir);
-				Text::StrConcat(tmp, strs[2]);
+				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
-				lyr->mapLayer = manager->LoadLayer(u8buff);
-				if (strs[4][0] == 0)
+				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
+				if (strs[4].v[0] == 0)
 				{
 					lyr->searchStr = 0;
 				}
 				else
 				{
-					lyr->searchStr = Text::StrCopyNew(strs[4]);
+					lyr->searchStr = Text::String::New(strs[4].v, strs[4].leng);
 				}
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -138,7 +138,7 @@ Map::MapSearch::~MapSearch()
 	UOSInt j;
 	if (this->baseDir)
 	{
-		Text::StrDelNew(this->baseDir);
+		this->baseDir->Release();
 		this->baseDir = 0;
 	}
 	i = MAPSEARCH_LAYER_TYPES;
@@ -150,7 +150,7 @@ Map::MapSearch::~MapSearch()
 			Map::MapSearchLayer *lyr = (Map::MapSearchLayer*)this->layersArr[i]->RemoveAt(j);
 			if (lyr->searchStr)
 			{
-				Text::StrDelNew(lyr->searchStr);
+				lyr->searchStr->Release();
 			}
 			MemFree(lyr);
 		}
@@ -162,7 +162,7 @@ Map::MapSearch::~MapSearch()
 UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Double lat, Double lon)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *outArrs[MAPSEARCH_LAYER_TYPES];
+	Text::PString outArrs[MAPSEARCH_LAYER_TYPES];
 	Double outPos[2 * MAPSEARCH_LAYER_TYPES];
 	Int32 resTypes[MAPSEARCH_LAYER_TYPES];
 	SearchNames(sbuff, outArrs, outPos, resTypes, lat, lon);
@@ -170,11 +170,11 @@ UTF8Char *Map::MapSearch::SearchName(UTF8Char *buff, Double lat, Double lon)
 	return ptr;
 }
 
-Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *outPos, Int32 *resTypes, Double lat, Double lon)
+Int32 Map::MapSearch::SearchNames(UTF8Char *buff, Text::PString *outArrs, Double *outPos, Int32 *resTypes, Double lat, Double lon)
 {
-	UTF8Char sbuff[128];
 	UTF8Char sbufftmp[128];
-	UTF8Char *inptr;
+	UTF8Char *sptr;
+	UTF8Char *sptrtmp;
 	UTF8Char *outptr;
 	Int32 resType;
 	OSInt i;
@@ -194,8 +194,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 		xposNear = 0;
 		yposNear = 0;
 		resType = 0;
-		inptr = sbuff;
-		*inptr = 0;
+		sptr = 0;
 		minDist = 63781370;
 
 		j = this->layersArr[i]->GetCount();
@@ -205,15 +204,15 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 			Map::MapSearchLayer *lyr = (Map::MapSearchLayer*)this->layersArr[i]->GetItem(k++);
 			if (lyr->searchType == 2)
 			{
-				if (lyr->mapLayer->GetPGLabelD(sbufftmp, lon, lat))
+				if ((sptrtmp = lyr->mapLayer->GetPGLabelD(sbufftmp, lon, lat)) != 0)
 				{
 					if (lyr->searchStr)
 					{
-						Text::StrConcat(Text::StrConcat(inptr, lyr->searchStr), sbufftmp);
+						sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 					}
 					else
 					{
-						Text::StrConcat(inptr, sbufftmp);
+						sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 					}
 					xposNear = lon;
 					yposNear = lat;
@@ -225,7 +224,7 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 			{
 				Double xposout;
 				Double yposout;
-				if (lyr->mapLayer->GetPLLabelD(sbufftmp, lon, lat, &xposout, &yposout))
+				if ((sptrtmp = lyr->mapLayer->GetPLLabelD(sbufftmp, lon, lat, &xposout, &yposout)) != 0)
 				{
 					Double tmp;
 					tmp = xposout - lon;
@@ -240,11 +239,11 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 							minDist = thisDist;
 							if (lyr->searchStr)
 							{
-								Text::StrConcat(Text::StrConcat(inptr, lyr->searchStr), sbufftmp);
+								sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 							}
 							else
 							{
-								Text::StrConcat(inptr, sbufftmp);
+								sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 							}
 							xposNear = xposout;
 							yposNear = yposout;
@@ -257,11 +256,11 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 						minDist = thisDist;
 						if (lyr->searchStr)
 						{
-							Text::StrConcat(Text::StrConcat(inptr, lyr->searchStr), sbufftmp);
+							sptr = Text::StrConcatC(lyr->searchStr->ConcatTo(outptr), sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 						}
 						else
 						{
-							Text::StrConcat(inptr, sbufftmp);
+							sptr = Text::StrConcatC(outptr, sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 						}
 						xposNear = xposout;
 						yposNear = yposout;
@@ -274,31 +273,33 @@ Int32 Map::MapSearch::SearchNames(UTF8Char *buff, UTF8Char **outArrs, Double *ou
 		outPos[(i << 1) + 1] = xposNear;
 		outPos[(i << 1) + 0] = yposNear;
 		resTypes[i] = resType;
-		if (*inptr)
+		if (sptr && *outptr)
 		{
-			outArrs[i] = outptr;
-			outptr = Text::StrConcat(outptr, inptr) + 1;
+			outArrs[i].v = outptr;
+			outArrs[i].leng = (UOSInt)(sptr - outptr);
+			outptr = sptr + 1;
 			l++;
 		}
 		else
 		{
-			outArrs[i] = 0;
+			outArrs[i] = {0, 0};
 		}
 	}
 	return l;
 }
 
-UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 concatType)
+UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, Text::PString *strArrs, Int32 concatType)
 {
 	UTF8Char *outptr = 0;
 	UOSInt i = 0;
 	UTF8Char sbufftmp[128];
-	UTF8Char *stmp[2];
+	UTF8Char *sptrtmp;
+	Text::PString stmp[2];
 	while (i < MAPSEARCH_LAYER_TYPES)
 	{
-		if (strArrs[i] != 0)
+		if (strArrs[i].leng != 0)
 		{
-			outptr = strArrs[i];
+			outptr = strArrs[i].v;
 			break;
 		}
 		i++;
@@ -322,110 +323,110 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 	buff[0] = 0;
 	if (concatType == 1 || (concatType == 0 && langType == 0))
 	{
-		if (strArrs[3] == 0)
+		if (strArrs[3].leng == 0)
 		{
-			if (strArrs[1] == 0)
+			if (strArrs[1].leng == 0)
 			{
-				if (strArrs[0] == 0)
+				if (strArrs[0].leng == 0)
 				{
-					if (strArrs[2] == 0)
+					if (strArrs[2].leng == 0)
 					{
-						if (strArrs[6] == 0)
+						if (strArrs[6].leng == 0)
 						{
 							*outptr = 0;
 						}
 						else
 						{
-							outptr = Text::StrConcat(outptr, strArrs[6]);
+							outptr = strArrs[6].ConcatTo(outptr);
 						}
 					}
 					else
 					{
-						outptr = Text::StrConcat(outptr, strArrs[2]);
+						outptr = strArrs[2].ConcatTo(outptr);
 					}
 				}
 				else
 				{
-					if (strArrs[2] != 0)
+					if (strArrs[2].leng != 0)
 					{
-						outptr = Text::StrConcat(outptr, strArrs[2]);
+						outptr = strArrs[2].ConcatTo(outptr);
 						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 					}
-					outptr = Text::StrConcat(outptr, strArrs[0]);
+					outptr = strArrs[0].ConcatTo(outptr);
 				}
 			}
 			else
 			{
-                if (strArrs[2] != 0)
+                if (strArrs[2].leng != 0)
 				{
-					outptr = Text::StrConcat(outptr, strArrs[2]);
+					outptr = strArrs[2].ConcatTo(outptr);
 					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
-				outptr = Text::StrConcat(outptr, strArrs[1]);
+				outptr = strArrs[1].ConcatTo(outptr);
 			}
 		}
 		else
 		{
-			if (strArrs[2] == 0)
+			if (strArrs[2].leng == 0)
 			{
 				outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
-				outptr = Text::StrConcat(outptr, strArrs[3]);
+				outptr = strArrs[3].ConcatTo(outptr);
 			}
 			else
 			{
-				i = Text::StrIndexOfChar(strArrs[2], ' ');
+				i = strArrs[2].IndexOf(' ');
 				if (i != INVALID_INDEX)
-					Text::StrConcatC(sbufftmp, strArrs[2], (UOSInt)i);
+					sptrtmp = Text::StrConcatC(sbufftmp, strArrs[2].v, (UOSInt)i);
 				else
-					Text::StrConcat(sbufftmp, strArrs[2]);
+					sptrtmp = strArrs[2].ConcatTo(sbufftmp);
 
-				i = Text::StrIndexOf(strArrs[3], sbufftmp);
+				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
-					outptr = Text::StrConcat(outptr, strArrs[3]);
+					outptr = strArrs[3].ConcatTo(outptr);
 				}
 				else
 				{
-					if (strArrs[1] == 0)
+					if (strArrs[1].leng == 0)
 					{
-						if (strArrs[0] == 0)
+						if (strArrs[0].leng == 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[2]);
+							outptr = strArrs[2].ConcatTo(outptr);
 						}
 						else
 						{
-							if (strArrs[2] != 0)
+							if (strArrs[2].leng != 0)
 							{
-								outptr = Text::StrConcat(outptr, strArrs[2]);
+								outptr = strArrs[2].ConcatTo(outptr);
 								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 							}
-							outptr = Text::StrConcat(outptr, strArrs[0]);
+							outptr = strArrs[0].ConcatTo(outptr);
 						}
 					}
 					else
 					{
-						if (strArrs[2] != 0)
+						if (strArrs[2].leng != 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[2]);
+							outptr = strArrs[2].ConcatTo(outptr);
 							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
-						outptr = Text::StrConcat(outptr, strArrs[1]);
-						if (strArrs[0] != 0)
+						outptr = strArrs[1].ConcatTo(outptr);
+						if (strArrs[0].leng != 0)
 						{
 							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-							outptr = Text::StrConcat(outptr, strArrs[0]);
+							outptr = strArrs[0].ConcatTo(outptr);
 						}
 					}
 
 					if (buff[0] == 0)
 					{
 						outptr = Text::StrConcatC(outptr, UTF8STRC("Near "));
-						outptr = Text::StrConcat(outptr, strArrs[3]);
+						outptr = strArrs[3].ConcatTo(outptr);
 					}
 					else
 					{
 						outptr = Text::StrConcatC(outptr, UTF8STRC(", Near "));
-						outptr = Text::StrConcat(outptr, strArrs[3]);
+						outptr = strArrs[3].ConcatTo(outptr);
 					}
 				}
 			}
@@ -433,21 +434,21 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 	}
 	else if (concatType == 2 || (concatType == 0 && langType != 0))
 	{
-		if (strArrs[3] == 0)
+		if (strArrs[3].leng == 0)
 		{
-			if (strArrs[1] == 0)
+			if (strArrs[1].leng == 0)
 			{
-				if (strArrs[0] == 0)
+				if (strArrs[0].leng == 0)
 				{
-					if (strArrs[2] == 0)
+					if (strArrs[2].leng == 0)
 					{
-						if (strArrs[5] != 0)
+						if (strArrs[5].leng != 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[5]);
+							outptr = strArrs[5].ConcatTo(outptr);
 						}
-						else if (strArrs[6] != 0)
+						else if (strArrs[6].leng != 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[6]);
+							outptr = strArrs[6].ConcatTo(outptr);
 						}
 						else
 						{
@@ -456,120 +457,114 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 					}
 					else
 					{
-						if (strArrs[5] != 0)
+						if (strArrs[5].leng != 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[5]);
+							outptr = strArrs[5].ConcatTo(outptr);
 							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
-						outptr = Text::StrConcat(outptr, strArrs[2]);
+						outptr = strArrs[2].ConcatTo(outptr);
 					}
 				}
 				else
 				{
-					outptr = Text::StrConcat(outptr, strArrs[0]);
-					if (strArrs[5] != 0)
+					outptr = strArrs[0].ConcatTo(outptr);
+					if (strArrs[5].leng != 0)
 					{
 						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = Text::StrConcat(outptr, strArrs[5]);
+						outptr = strArrs[5].ConcatTo(outptr);
 					}
-					if (strArrs[2] != 0)
+					if (strArrs[2].leng != 0)
 					{
 						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = Text::StrConcat(outptr, strArrs[2]);
+						outptr = strArrs[2].ConcatTo(outptr);
 					}
 				}
 			}
 			else
 			{
-				if (strArrs[0] != 0)
+				if (strArrs[0].leng != 0)
 				{
-					outptr = Text::StrConcat(outptr, strArrs[0]);
+					outptr = strArrs[0].ConcatTo(outptr);
 					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
-				outptr = Text::StrConcat(outptr, strArrs[1]);
-				if (strArrs[5] != 0)
+				outptr = strArrs[1].ConcatTo(outptr);
+				if (strArrs[5].leng != 0)
 				{
 					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-					outptr = Text::StrConcat(outptr, strArrs[5]);
+					outptr = strArrs[5].ConcatTo(outptr);
 				}
-				if (strArrs[2] != 0)
+				if (strArrs[2].leng != 0)
 				{
 					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-					outptr = Text::StrConcat(outptr, strArrs[2]);
+					outptr = strArrs[2].ConcatTo(outptr);
 				}
 			}
 		}
 		else
 		{
-			if (strArrs[2] == 0)
+			if (strArrs[2].leng == 0)
 			{
-				WChar tbuff[2];
-				tbuff[0] = 0x8FD1;
-				tbuff[1] = 0;
-				outptr = Text::StrWChar_UTF8(outptr, tbuff);
-				outptr = Text::StrConcat(outptr, strArrs[3]);
+				outptr = Text::StrWriteChar(outptr, 0x8FD1);
+				outptr = strArrs[3].ConcatTo(outptr);
 			}
 			else
 			{
-				Text::StrConcat(sbufftmp, strArrs[2]);
-				Text::StrSplit(stmp, 2, sbufftmp, ' ');
-				i = Text::StrIndexOfChar(sbufftmp, '-');
+				sptrtmp = strArrs[2].ConcatTo(sbufftmp);
+				Text::StrSplitP(stmp, 2, {sbufftmp, (UOSInt)(sptrtmp - sbufftmp)}, ' ');
+				i = Text::StrIndexOfCharC(sbufftmp, (UOSInt)(sptrtmp - sbufftmp), '-');
 				if (i != INVALID_INDEX)
 				{
-					Text::StrConcat(sbufftmp, &sbufftmp[i + 1]);
+					sptrtmp = Text::StrConcatC(sbufftmp, &sbufftmp[i + 1], (UOSInt)(sptrtmp - &sbufftmp[i + 1]));
 				}
 
-				i = Text::StrIndexOf(strArrs[3], sbufftmp);
+				i = strArrs[3].IndexOf(sbufftmp, (UOSInt)(sptrtmp - sbufftmp));
 				if (i != INVALID_INDEX)
 				{
-					outptr = Text::StrConcat(outptr, strArrs[3]);
+					outptr = strArrs[3].ConcatTo(outptr);
 				}
 				else
 				{
-					if (strArrs[1] == 0)
+					if (strArrs[1].leng == 0)
 					{
-						if (strArrs[0] == 0)
+						if (strArrs[0].leng == 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[2]);
+							outptr = strArrs[2].ConcatTo(outptr);
 						}
 						else
 						{
-							outptr = Text::StrConcat(outptr, strArrs[0]);
-							if (strArrs[2] != 0)
+							outptr = strArrs[0].ConcatTo(outptr);
+							if (strArrs[2].leng != 0)
 							{
 								outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-								outptr = Text::StrConcat(outptr, strArrs[2]);
+								outptr = strArrs[2].ConcatTo(outptr);
 							}
 						}
 					}
 					else
 					{
-						if (strArrs[0] != 0)
+						if (strArrs[0].leng != 0)
 						{
-							outptr = Text::StrConcat(outptr, strArrs[0]);
+							outptr = strArrs[0].ConcatTo(outptr);
 							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 						}
-						outptr = Text::StrConcat(outptr, strArrs[1]);
-						if (strArrs[2] != 0)
+						outptr = strArrs[1].ConcatTo(outptr);
+						if (strArrs[2].leng != 0)
 						{
 							outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-							outptr = Text::StrConcat(outptr, strArrs[2]);
+							outptr = strArrs[2].ConcatTo(outptr);
 						}
 					}
 
-					WChar tbuff[2];
-					tbuff[0] = 0x8FD1;
-					tbuff[1] = 0;
 					if (buff[0] == 0)
 					{
-						outptr = Text::StrWChar_UTF8(outptr, tbuff);
-						outptr = Text::StrConcat(outptr, strArrs[3]);
+						outptr = Text::StrWriteChar(outptr, 0x8FD1);
+						outptr = strArrs[3].ConcatTo(outptr);
 					}
 					else
 					{
 						outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
-						outptr = Text::StrWChar_UTF8(outptr, tbuff);
-						outptr = Text::StrConcat(outptr, strArrs[3]);
+						outptr = Text::StrWriteChar(outptr, 0x8FD1);
+						outptr = strArrs[3].ConcatTo(outptr);
 					}
 				}
 			}
@@ -581,13 +576,13 @@ UTF8Char *Map::MapSearch::ConcatNames(UTF8Char *buff, UTF8Char **strArrs, Int32 
 		i = 0;
 		while (i < MAPSEARCH_LAYER_TYPES)
 		{
-			if (strArrs[i] != 0)
+			if (strArrs[i].leng != 0)
 			{
 				if (outptr != buff)
 				{
 					outptr = Text::StrConcatC(outptr, UTF8STRC(", "));
 				}
-				outptr = Text::StrConcat(outptr, strArrs[i]);
+				outptr = strArrs[i].ConcatTo(outptr);
 			}
 			i++;
 		}
