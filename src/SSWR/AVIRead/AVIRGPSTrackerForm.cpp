@@ -51,6 +51,18 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Data::DateTime dt;
 
+	if (me->locSvc->IsDown() != me->lastDown)
+	{
+		me->lastDown = !me->lastDown;
+		if (me->lastDown)
+		{
+			me->txtStreamStatus->SetText((const UTF8Char*)"Down");
+		}
+		else
+		{
+			me->txtStreamStatus->SetText((const UTF8Char*)"Up");
+		}
+	}
 	if (me->recUpdated)
 	{
 		me->lastUpdateTime->SetCurrTimeUTC();
@@ -185,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(void *userObj, Bo
 	me->SetAlwaysOnTop(newState);
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 348, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 372, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
@@ -200,6 +212,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->lastLat = 0;
 	this->lastLon = 0;
 	this->dist = 0;
+	this->lastDown = true;
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
@@ -214,65 +227,70 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpLocation = this->tcMain->AddTabPage((const UTF8Char*)"Location");
 
+	NEW_CLASS(this->lblStreamStatus, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Stream Status"));
+	this->lblStreamStatus->SetRect(8, 8, 100, 23, false);
+	NEW_CLASS(this->txtStreamStatus, UI::GUITextBox(ui, this->tpLocation, CSTR("Down")));
+	this->txtStreamStatus->SetRect(108, 8, 150, 23, false);
+	this->txtStreamStatus->SetReadOnly(true);
 	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"GPS Time"));
-	this->lblGPSTime->SetRect(8, 8, 100, 23, false);
+	this->lblGPSTime->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtGPSTime, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtGPSTime->SetRect(108, 8, 150, 23, false);
+	this->txtGPSTime->SetRect(108, 32, 150, 23, false);
 	this->txtGPSTime->SetReadOnly(true);
 	NEW_CLASS(this->lblLatitude, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Latutide"));
-	this->lblLatitude->SetRect(8, 32, 100, 23, false);
+	this->lblLatitude->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->txtLatitude, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtLatitude->SetRect(108, 32, 100, 23, false);
+	this->txtLatitude->SetRect(108, 56, 100, 23, false);
 	this->txtLatitude->SetReadOnly(true);
 	NEW_CLASS(this->lblLongitude, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Longitude"));
-	this->lblLongitude->SetRect(8, 56, 100, 23, false);
+	this->lblLongitude->SetRect(8, 80, 100, 23, false);
 	NEW_CLASS(this->txtLongitude, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtLongitude->SetRect(108, 56, 100, 23, false);
+	this->txtLongitude->SetRect(108, 80, 100, 23, false);
 	this->txtLongitude->SetReadOnly(true);
 	NEW_CLASS(this->lblAltitude, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Altitude"));
-	this->lblAltitude->SetRect(8, 80, 100, 23, false);
+	this->lblAltitude->SetRect(8, 104, 100, 23, false);
 	NEW_CLASS(this->txtAltitude, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtAltitude->SetRect(108, 80, 100, 23, false);
+	this->txtAltitude->SetRect(108, 104, 100, 23, false);
 	this->txtAltitude->SetReadOnly(true);
 	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Speed"));
-	this->lblSpeed->SetRect(8, 104, 100, 23, false);
+	this->lblSpeed->SetRect(8, 128, 100, 23, false);
 	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtSpeed->SetRect(108, 104, 100, 23, false);
+	this->txtSpeed->SetRect(108, 128, 100, 23, false);
 	this->txtSpeed->SetReadOnly(true);
 	NEW_CLASS(this->lblHeading, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Heading"));
-	this->lblHeading->SetRect(8, 128, 100, 23, false);
+	this->lblHeading->SetRect(8, 152, 100, 23, false);
 	NEW_CLASS(this->txtHeading, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtHeading->SetRect(108, 128, 100, 23, false);
+	this->txtHeading->SetRect(108, 152, 100, 23, false);
 	this->txtHeading->SetReadOnly(true);
 	NEW_CLASS(this->lblGPSValid, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"GPSValid"));
-	this->lblGPSValid->SetRect(8, 152, 100, 23, false);
+	this->lblGPSValid->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->txtGPSValid, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtGPSValid->SetRect(108, 152, 100, 23, false);
+	this->txtGPSValid->SetRect(108, 176, 100, 23, false);
 	this->txtGPSValid->SetReadOnly(true);
 	NEW_CLASS(this->lblNSateUsed, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite Used"));
-	this->lblNSateUsed->SetRect(8, 176, 100, 23, false);
+	this->lblNSateUsed->SetRect(8, 200, 100, 23, false);
 	NEW_CLASS(this->txtNSateUsed, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtNSateUsed->SetRect(108, 176, 100, 23, false);
+	this->txtNSateUsed->SetRect(108, 200, 100, 23, false);
 	this->txtNSateUsed->SetReadOnly(true);
 	NEW_CLASS(this->lblNSateView, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View"));
-	this->lblNSateView->SetRect(8, 200, 100, 23, false);
+	this->lblNSateView->SetRect(8, 224, 100, 23, false);
 	NEW_CLASS(this->txtNSateView, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtNSateView->SetRect(108, 200, 100, 23, false);
+	this->txtNSateView->SetRect(108, 224, 100, 23, false);
 	this->txtNSateView->SetReadOnly(true);
 	NEW_CLASS(this->chkAutoPan, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Auto Pan", true));
-	this->chkAutoPan->SetRect(108, 224, 100, 23, false);
+	this->chkAutoPan->SetRect(108, 248, 100, 23, false);
 	NEW_CLASS(this->chkTopMost, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Top Most", false));
-	this->chkTopMost->SetRect(208, 224, 100, 23, false);
+	this->chkTopMost->SetRect(208, 248, 100, 23, false);
 	this->chkTopMost->HandleCheckedChange(OnTopMostChg, this);
 	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Prevent Sleep", true));
-	this->chkNoSleep->SetRect(108, 248, 100, 23, false);
+	this->chkNoSleep->SetRect(108, 272, 100, 23, false);
 	NEW_CLASS(this->btnDispOff, DisplayOffButton(ui, this->tpLocation, (const UTF8Char*)"Display Off", this));
-	this->btnDispOff->SetRect(208, 248, 100, 23, false);
+	this->btnDispOff->SetRect(208, 272, 100, 23, false);
 	this->btnDispOff->HandleButtonClick(OnDispOffClicked, this);
 	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"H-Distance"));
-	this->lblDistance->SetRect(8, 272, 100, 23, false);
+	this->lblDistance->SetRect(8, 296, 100, 23, false);
 	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtDistance->SetRect(108, 272, 100, 23, false);
+	this->txtDistance->SetRect(108, 296, 100, 23, false);
 	this->txtDistance->SetReadOnly(true);
 
 	this->tpAlert = this->tcMain->AddTabPage((const UTF8Char*)"Alert");

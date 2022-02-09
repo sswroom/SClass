@@ -37,6 +37,7 @@ namespace IO
 		GPSNMEA(IO::Stream *stm, Bool relStm);
 		virtual ~GPSNMEA();
 
+		virtual Bool IsDown();
 		virtual void RegisterLocationHandler(LocationHandler hdlr, void *userObj);
 		virtual void UnregisterLocationHandler(LocationHandler hdlr, void *userObj);
 		virtual void ErrorRecover();

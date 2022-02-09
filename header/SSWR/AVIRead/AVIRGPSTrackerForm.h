@@ -44,6 +44,7 @@ namespace SSWR
 			Double lastLat;
 			Double lastLon;
 			Double dist;
+			Bool lastDown;
 			Data::DateTime *lastUpdateTime;
 			Bool dispOffClk;
 			Int64 dispOffTime;
@@ -52,6 +53,8 @@ namespace SSWR
 			UI::GUITabControl *tcMain;
 
 			UI::GUITabPage *tpLocation;
+			UI::GUILabel *lblStreamStatus;
+			UI::GUITextBox *txtStreamStatus;
 			UI::GUILabel *lblGPSTime;
 			UI::GUITextBox *txtGPSTime;
 			UI::GUILabel *lblLatitude;

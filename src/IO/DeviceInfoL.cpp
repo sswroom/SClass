@@ -27,7 +27,7 @@ IO::DeviceInfo::~DeviceInfo()
 //	Text::StrDelNew(this->name);
 }
 
-const UTF8Char *IO::DeviceInfo::GetName()
+Text::String *IO::DeviceInfo::GetName()
 {
 	return this->name;
 }

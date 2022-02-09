@@ -17,6 +17,7 @@ namespace Map
 
 		virtual ~ILocationService() {};
 
+		virtual Bool IsDown() = 0;
 		virtual void RegisterLocationHandler(LocationHandler hdlr, void *userObj) = 0;
 		virtual void UnregisterLocationHandler(LocationHandler hdlr, void *userObj) = 0;
 		virtual void ErrorRecover() = 0;

@@ -222,6 +222,11 @@ IO::GPSNMEA::~GPSNMEA()
 	DEL_CLASS(this->hdlrMut);
 }
 
+Bool IO::GPSNMEA::IsDown()
+{
+	return this->stm->IsDown();
+}
+
 void IO::GPSNMEA::RegisterLocationHandler(LocationHandler hdlr, void *userObj)
 {
 	this->hdlrMut->LockWrite();
