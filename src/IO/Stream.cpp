@@ -6,11 +6,7 @@ IO::Stream::Stream(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
-IO::Stream::Stream(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
-{
-}
-
-IO::Stream::Stream(const UTF8Char *sourceName, UOSInt nameLen) : IO::ParsedObject({sourceName, nameLen})
+IO::Stream::Stream(Text::CString sourceName) : IO::ParsedObject(sourceName)
 {
 }
 

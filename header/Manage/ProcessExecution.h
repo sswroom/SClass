@@ -11,11 +11,12 @@ namespace Manage
 		struct ClassData;
 		ClassData *clsData;
 
-		UOSInt NewProcess(const UTF8Char *cmdLine);
+		UOSInt NewProcess(Text::CString cmdLine);
 	public:
-		ProcessExecution(const UTF8Char *cmdLine);
+		ProcessExecution(Text::CString cmdLine);
 		virtual ~ProcessExecution();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 		virtual Int32 Flush();

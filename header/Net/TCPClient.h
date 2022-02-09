@@ -21,12 +21,13 @@ namespace Net
 		Sync::Event *writeEvent;
 
 	public:
-		TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt16 port);
+		TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port);
 		TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port);
 		TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port);
 		TCPClient(Net::SocketFactory *sockf, Socket *s);
 		virtual ~TCPClient();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

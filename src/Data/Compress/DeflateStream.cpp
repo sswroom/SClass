@@ -48,6 +48,11 @@ Data::Compress::DeflateStream::~DeflateStream()
 	MemFree(this->clsData);
 }
 
+Bool Data::Compress::DeflateStream::IsDown()
+{
+	return this->clsData->srcStm->IsDown();
+}
+
 UOSInt Data::Compress::DeflateStream::Read(UInt8 *buff, UOSInt size)
 {
 	UOSInt initSize = size;

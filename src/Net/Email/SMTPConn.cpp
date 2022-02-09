@@ -102,7 +102,7 @@ UInt32 Net::Email::SMTPConn::WaitForResult()
 		return 0;
 }
 
-Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, ConnType connType, IO::Writer *logWriter)
+Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, ConnType connType, IO::Writer *logWriter)
 {
 	this->threadStarted = false;
 	this->threadRunning = false;
@@ -113,10 +113,9 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 	this->maxSize = 0;
 	this->authLogin = false;
 	this->authPlain = false;
-	UOSInt hostLen = Text::StrCharCnt(host);
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
-	sockf->DNSResolveIP(host, hostLen, &addr);
+	sockf->DNSResolveIP(host.v, host.leng, &addr);
 	this->logWriter = logWriter;
 	NEW_CLASS(this->evt, Sync::Event(true));
 	if (connType == CT_SSL)
@@ -195,7 +194,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, c
 		UTF8Char sbuff[128];
 		UTF8Char *sptr;
 		sb.AppendC(UTF8STRC("Connect to "));
-		sb.AppendC(host, hostLen);
+		sb.Append(host);
 		sb.AppendC(UTF8STRC("("));
 		sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));

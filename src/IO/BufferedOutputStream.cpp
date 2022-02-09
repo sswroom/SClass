@@ -21,6 +21,11 @@ IO::BufferedOutputStream::~BufferedOutputStream()
 	this->cacheBuff = 0;
 }
 
+Bool IO::BufferedOutputStream::IsDown()
+{
+	return this->outStm->IsDown();
+}
+
 UOSInt IO::BufferedOutputStream::Read(UInt8 *buff, UOSInt size)
 {
 	return this->outStm->Read(buff, size);

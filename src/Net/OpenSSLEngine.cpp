@@ -53,13 +53,13 @@ Net::SSLClient *Net::OpenSSLEngine::CreateServerConn(Socket *s)
 	}
 }
 
-Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, const UTF8Char *hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err)
 {
 	SSL *ssl = (SSL*)sslObj;
 	this->sockf->SetNoDelay(s, true);
 	this->sockf->SetRecvTimeout(s, 2000);
 	SSL_set_fd(ssl, this->sockf->SocketGetFD(s));
-	SSL_set_tlsext_host_name(ssl, hostName);
+	SSL_set_tlsext_host_name(ssl, hostName.v);
 	int ret;
 	if ((ret = SSL_connect(ssl)) <= 0)
 	{
@@ -84,7 +84,6 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 				*err = ErrorType::CertNotFound;
 			return 0;
 		}
-		UOSInt hostNameLen = Text::StrCharCnt(hostName);
 		UInt8 certBuff[4096];
 		UInt8 *certPtr = certBuff;
 		Int32 certLen = i2d_X509(cert, &certPtr);
@@ -98,7 +97,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 			return 0;
 		}
 		Crypto::Cert::X509Cert *svrCert;
-		NEW_CLASS(svrCert, Crypto::Cert::X509Cert({hostName, hostNameLen}, certBuff, (UInt32)certLen));
+		NEW_CLASS(svrCert, Crypto::Cert::X509Cert(hostName, certBuff, (UInt32)certLen));
 		Data::DateTime dt;
 		Int64 currTime;
 		dt.SetCurrTimeUTC();
@@ -121,7 +120,7 @@ Net::SSLClient *Net::OpenSSLEngine::CreateClientConn(void *sslObj, Socket *s, co
 				*err = ErrorType::InvalidPeriod;
 			return 0;
 		}
-		if (!svrCert->DomainValid(hostName, hostNameLen))
+		if (!svrCert->DomainValid(hostName))
 		{
 			DEL_CLASS(svrCert);
 			this->sockf->DestroySocket(s);
@@ -337,10 +336,10 @@ UTF8Char *Net::OpenSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return &sbuff[Text::StrCharCnt(sbuff)];
 }
 
-Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::Connect(Text::CString hostName, UInt16 port, ErrorType *err)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!this->sockf->DNSResolveIP(hostName, Text::StrCharCnt(hostName), &addr))
+	if (!this->sockf->DNSResolveIP(hostName.v, hostName.leng, &addr))
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;
@@ -395,7 +394,7 @@ Net::SSLClient *Net::OpenSSLEngine::Connect(const UTF8Char *hostName, UInt16 por
 	return CreateClientConn(ssl, s, hostName, err);
 }
 
-Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err)
+Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)
 {
 	SSL *ssl = SSL_new(this->clsData->ctx);
 	if (ssl == 0)

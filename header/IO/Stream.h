@@ -9,9 +9,9 @@ namespace IO
 	{
 	public:
 		Stream(Text::String *sourceName);
-		Stream(const UTF8Char *sourceName);
-		Stream(const UTF8Char *sourceName, UOSInt nameLen);
+		Stream(Text::CString sourceName);
 		virtual ~Stream(){};
+		virtual Bool IsDown() = 0;
 		virtual UOSInt Read(UInt8 *buff, UOSInt size) = 0;
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size) = 0;
 

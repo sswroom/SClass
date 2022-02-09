@@ -221,6 +221,11 @@ IO::FileStream::~FileStream()
 	Close();
 }
 
+Bool IO::FileStream::IsDown()
+{
+	return this->handle == 0;
+}
+
 Bool IO::FileStream::IsError()
 {
 	return this->handle == 0;

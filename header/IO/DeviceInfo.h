@@ -2,19 +2,20 @@
 #ifndef _SM_IO_DEVICEINFO
 #define _SM_IO_DEVICEINFO
 #include "IO/Stream.h"
+#include "Text/String.h"
 
 namespace IO
 {
 	class DeviceInfo
 	{
 	private:
-		const UTF8Char *name;
+		Text::String *name;
 
 	public:
 		DeviceInfo(void *hDevInfo, void *interfData);
 		~DeviceInfo();
 
-		const UTF8Char *GetName();
+		Text::String *GetName();
 		IO::Stream *CreateStream();
 	};
 };

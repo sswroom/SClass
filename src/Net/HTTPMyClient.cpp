@@ -691,7 +691,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			if (secure)
 			{
 				Net::SSLEngine::ErrorType err;
-				this->cli = this->ssl->Connect(this->cliHost->v, port, &err);
+				this->cli = this->ssl->Connect(this->cliHost->ToCString(), port, &err);
 #ifdef SHOWDEBUG				
 				if (this->cli == 0)
 				{

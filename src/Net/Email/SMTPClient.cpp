@@ -3,11 +3,11 @@
 #include "Net/Email/SMTPClient.h"
 #include "Sync/Thread.h"
 
-Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter)
+Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->host = Text::StrCopyNew(host);
+	this->host = Text::String::New(host);
 	this->port = port;
 	this->connType = connType;
 	this->logWriter = logWriter;
@@ -17,7 +17,7 @@ Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ss
 
 Net::Email::SMTPClient::~SMTPClient()
 {
-	Text::StrDelNew(this->host);
+	this->host->Release();
 	SDEL_TEXT(this->authUser);
 	SDEL_TEXT(this->authPassword);
 }
@@ -42,7 +42,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 		return false;
 	}
 	Net::Email::SMTPConn *conn;
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, this->ssl, this->host, this->port, this->connType, this->logWriter));
+	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, this->ssl, this->host->ToCString(), this->port, this->connType, this->logWriter));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);

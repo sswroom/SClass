@@ -13,7 +13,7 @@
 #define TCP_HEADER_SIZE 20
 #define WRITE_BUFFER_SIZE ((1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE) * 4)
 
-Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse(UTF8STRC("WebConnection"))
+Net::WebServer::WebConnection::WebConnection(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::TCPClient *cli, WebListener *svr, IWebHandler *hdlr, Bool allowProxy, Bool allowKA) : Net::WebServer::IWebResponse(CSTR("WebConnection"))
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -427,7 +427,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 		}
 	
 		sbuff[i] = 0;
-		NEW_CLASS(proxyCli, Net::TCPClient(this->sockf, sbuff, (UInt16)Text::StrToInt32(&sbuff[i + 1])));
+		NEW_CLASS(proxyCli, Net::TCPClient(this->sockf, {sbuff, i}, (UInt16)Text::StrToInt32(&sbuff[i + 1])));
 		if (proxyCli->IsConnectError())
 		{
 			DEL_CLASS(proxyCli);
@@ -808,6 +808,11 @@ Bool Net::WebServer::WebConnection::SSESend(const UTF8Char *eventName, const UTF
 Text::CString Net::WebServer::WebConnection::GetRespHeaders()
 {
 	return this->respHeaders->ToCString();
+}
+
+Bool Net::WebServer::WebConnection::IsDown()
+{
+	return this->respDataEnd;
 }
 
 UOSInt Net::WebServer::WebConnection::Read(UInt8 *buff, UOSInt size)

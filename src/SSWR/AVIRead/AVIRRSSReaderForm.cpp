@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		Net::RSSItem *item;
 		const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
 		Text::String *ua = Text::String::NewNotNull(userAgent);
-		NEW_CLASS(rss, Net::RSS(sb.ToString(), ua, me->core->GetSocketFactory(), me->ssl));
+		NEW_CLASS(rss, Net::RSS(sb.ToCString(), ua, me->core->GetSocketFactory(), me->ssl));
 		ua->Release();
 		if (!rss->IsError())
 		{

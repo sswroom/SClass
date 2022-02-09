@@ -61,7 +61,7 @@ namespace Net
 		PacketInfo *GetNextPacket(UInt8 packetType, UOSInt timeoutMS);
 		Bool SendPacket(const UInt8 *packet, UOSInt packetSize);
 	public:
-		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj);
+		MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj);
 		virtual ~MQTTConn();
 
 		void HandlePublishMessage(PublishMessageHdlr hdlr, void *userObj);
@@ -82,7 +82,7 @@ namespace Net
 		UInt64 GetTotalUpload();
 		UInt64 GetTotalDownload();
 
-		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message);
+		static Bool PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message);
 	};
 }
 #endif

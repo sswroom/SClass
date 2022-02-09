@@ -14,6 +14,11 @@ IO::StreamDataStream::~StreamDataStream()
 	DEL_CLASS(data);
 }
 
+Bool IO::StreamDataStream::IsDown()
+{
+	return false;
+}
+
 UOSInt IO::StreamDataStream::Read(UInt8 *buff, UOSInt size)
 {
 	UOSInt thisSize = size;

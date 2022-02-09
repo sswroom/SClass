@@ -17,6 +17,11 @@ IO::BufferedInputStream::~BufferedInputStream()
 	MemFree(buff);
 }
 
+Bool IO::BufferedInputStream::IsDown()
+{
+	return this->stm->IsDown();
+}
+
 UOSInt IO::BufferedInputStream::Read(UInt8 *buff, UOSInt size)
 {
 	UOSInt copySize = 0;

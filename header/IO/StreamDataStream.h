@@ -15,6 +15,8 @@ namespace IO
 	public:
 		StreamDataStream(IO::IStreamData *data);
 		virtual ~StreamDataStream();
+
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

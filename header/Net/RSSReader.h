@@ -23,7 +23,7 @@ namespace Net
 			Net::RSSItem *item;
 		} RSSStatus;
 	private:
-		const UTF8Char *url;
+		Text::String *url;
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		RSSHandler *hdlr;
@@ -38,7 +38,7 @@ namespace Net
 
 		static UInt32 __stdcall RSSThread(void *userObj);
 	public:
-		RSSReader(const UTF8Char *url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr);
+		RSSReader(Text::CString url, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt32 refreshSecond, RSSHandler *hdlr);
 		~RSSReader();
 
 		Bool IsError();

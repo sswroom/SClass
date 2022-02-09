@@ -9,6 +9,7 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 {
 	UTF8Char filePath[256];
 	UTF8Char *filePathName;
+	UTF8Char *filePathNameEnd;
 	UTF8Char sbuff[512];
 	UTF8Char *sptrs[2];
 	OSInt i = REVGEO_MAXID;
@@ -47,8 +48,8 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 						if (srchLyr < 0 || srchLyr >= REVGEO_MAXID)
 							continue;
 
-						Text::StrConcat(filePathName, sptrs[1]);
-						mdata = mapSrchMgr->LoadLayer(filePath);
+						filePathNameEnd = Text::StrConcat(filePathName, sptrs[1]);
+						mdata = mapSrchMgr->LoadLayer(CSTRP(filePath, filePathNameEnd));
 						if (!mdata->IsError())
 						{
 							layer = MemAlloc(Map::RevGeoCfg::SearchLayer, 1);

@@ -324,7 +324,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	}
 }
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(UTF8STRC("SerialPort"))
+IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
 	this->rdEvt = 0;
@@ -361,6 +361,23 @@ IO::SerialPort::~SerialPort()
 
 	SDEL_CLASS(this->rdEvt);
 	SDEL_CLASS(this->rdMut);
+}
+
+Bool IO::SerialPort::IsDown()
+{
+	if (this->IsError())
+	{
+		return true;
+	}
+	if (this->flowCtrl)
+	{
+		int status;
+		if (ioctl((int)(OSInt)this->handle, TIOCMGET, &status) == 0)
+		{
+			return (status & TIOCM_DSR) == 0;
+		}
+	}
+	return false;
 }
 
 UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)

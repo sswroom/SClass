@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #endif
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt16 port) : IO::Stream(name)
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 port) : IO::Stream(name)
 {
 	this->currCnt = 0;
 	this->flags = 0;
@@ -26,7 +26,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->timeoutMS = 0;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(name, Text::StrCharCnt(name), &addr))
+	if (!sockf->DNSResolveIP(name.v, name.leng, &addr))
 	{
 		this->flags = 12;
 		return;
@@ -64,7 +64,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const UTF8Char *name, UInt1
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream(UTF8STRC(""))
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -99,7 +99,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, UInt32 ip, UInt16 port) : I
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : IO::Stream(UTF8STRC(""))
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port) : IO::Stream(CSTR(""))
 {
 	this->currCnt = 0;
 	this->s = 0;
@@ -161,7 +161,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->cliId = sockf->GenSocketId(s);
 }
 
-Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(UTF8STRC(""))
+Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(CSTR(""))
 {
 	this->sockf = sockf;
 	this->s = s;
@@ -190,6 +190,15 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Socket *s) : IO::Stream(UTF
 Net::TCPClient::~TCPClient()
 {
 	Close();
+}
+
+Bool Net::TCPClient::IsDown()
+{
+	if (this->s == 0 || (this->flags & 6) != 0)
+	{
+		return true;
+	}
+	return false;
 }
 
 UOSInt Net::TCPClient::Read(UInt8 *buff, UOSInt size)

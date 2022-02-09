@@ -18,7 +18,7 @@ namespace Net
 			Net::SocketFactory *sockf;
 			Net::TCPClient *cli;
 			Sync::Mutex *cliMut;
-			const UTF8Char *host;
+			Text::String *host;
 			UInt16 port;
 			Int32 nextSeq;
 
@@ -43,7 +43,7 @@ namespace Net
 
 		RTSPClient(RTSPClient *cli);
 	public:
-		RTSPClient(Net::SocketFactory *sockf, const UTF8Char *host, UInt16 port);
+		RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port);
 		~RTSPClient();
 
 

@@ -31,6 +31,7 @@ namespace IO
 		FileStream(Text::CString fileName, FileMode mode, FileShare share, BufferType buffType);
 		virtual ~FileStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

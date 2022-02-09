@@ -10,7 +10,7 @@ struct Manage::ProcessExecution::ClassData
 	int in[2];
 };
 
-UOSInt Manage::ProcessExecution::NewProcess(const UTF8Char *cmdLine)
+UOSInt Manage::ProcessExecution::NewProcess(Text::CString cmdLine)
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	clsData->in[0] = 0;
@@ -20,11 +20,11 @@ UOSInt Manage::ProcessExecution::NewProcess(const UTF8Char *cmdLine)
 	this->clsData = clsData;
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
-	const UTF8Char *cptr = cmdLine;
+	const UTF8Char *cptr = cmdLine.v;
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
-	UOSInt cmdLen = Text::StrCharCnt(cmdLine);
+	UOSInt cmdLen = cmdLine.leng;
 	UTF8Char *pptr;
 	if (cmdLen >= 64)
 	{
@@ -89,7 +89,7 @@ UOSInt Manage::ProcessExecution::NewProcess(const UTF8Char *cmdLine)
 	return (UOSInt)pid;
 }
 
-Manage::ProcessExecution::ProcessExecution(const UTF8Char *cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
+Manage::ProcessExecution::ProcessExecution(Text::CString cmdLine) : Process(NewProcess(cmdLine), false), IO::Stream(cmdLine)
 {
 }
 
@@ -97,6 +97,11 @@ Manage::ProcessExecution::~ProcessExecution()
 {
 	this->Close();
 	MemFree(this->clsData);
+}
+
+Bool Manage::ProcessExecution::IsDown()
+{
+	return !this->IsRunning();
 }
 
 UOSInt Manage::ProcessExecution::Read(UInt8 *buff, UOSInt size)

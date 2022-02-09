@@ -7,14 +7,14 @@
 
 #include <windows.h>
 
-IO::DeviceStream::DeviceStream(const UTF8Char *devPath) : IO::Stream(devPath)
+IO::DeviceStream::DeviceStream(Text::CString devPath) : IO::Stream(devPath)
 {
 	SECURITY_ATTRIBUTES attr;
 	attr.nLength = sizeof(attr);
 	attr.bInheritHandle = true;
 	attr.lpSecurityDescriptor = 0;
 
-	const WChar *wptr = Text::StrToWCharNew(devPath);
+	const WChar *wptr = Text::StrToWCharNew(devPath.v);
 	this->hand = CreateFileW(wptr, 0xC0000000, FILE_SHARE_WRITE | FILE_SHARE_READ, &attr, OPEN_EXISTING, 0, 0);
 	Text::StrDelNew(wptr);
 }
@@ -22,6 +22,11 @@ IO::DeviceStream::DeviceStream(const UTF8Char *devPath) : IO::Stream(devPath)
 IO::DeviceStream::~DeviceStream()
 {
 	this->Close();
+}
+
+Bool IO::DeviceStream::IsDown()
+{
+	return this->hand == 0;
 }
 
 UOSInt IO::DeviceStream::Read(UInt8 *buff, UOSInt size)

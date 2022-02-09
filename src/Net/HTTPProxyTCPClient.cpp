@@ -6,13 +6,12 @@
 #include "Text/Encoding.h"
 #include "Text/MyString.h"
 
-Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF8Char *proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
+Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, Text::CString proxyHost, UInt16 proxyPort, PasswordType pt, const UTF8Char *userName, const UTF8Char *pwd, Text::CString destHost, UInt16 destPort) : Net::TCPClient(sockf, (Socket*)0)
 {
-	UOSInt destHostLen = Text::StrCharCnt(destHost);
-	this->SetSourceName(destHost, destHostLen);
+	this->SetSourceName(destHost.v, destHost.leng);
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(proxyHost, Text::StrCharCnt(proxyHost), &addr))
+	if (!sockf->DNSResolveIP(proxyHost.v, proxyHost.leng, &addr))
 	{
 		this->flags |= 12;
 		return;
@@ -53,7 +52,7 @@ Net::HTTPProxyTCPClient::HTTPProxyTCPClient(Net::SocketFactory *sockf, const UTF
 	UTF8Char *sptr = Text::StrConcatC(reqBuff, UTF8STRC("CONNECT "));
 	UTF8Char *sptr2;
 	UOSInt respSize;
-	sptr = Text::StrConcatC(sptr, destHost, destHostLen);
+	sptr = destHost.ConcatTo(sptr);
 	*sptr++ = ':';
 	sptr = Text::StrUInt16(sptr, destPort);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" HTTP/1.1\r\n"));

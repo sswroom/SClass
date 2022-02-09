@@ -17,6 +17,7 @@ namespace Crypto
 			HashStream(IO::Stream *srcStm, Crypto::Hash::IHash *hash);
 			virtual ~HashStream();
 
+			virtual Bool IsDown();
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

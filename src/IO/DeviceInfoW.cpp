@@ -17,21 +17,21 @@ IO::DeviceInfo::DeviceInfo(void *hDevInfo, void *interfData)
 	*(Int32*)data2 = sizeof(SP_DEVICE_INTERFACE_DETAIL_DATA_W);
 	if (SetupDiGetDeviceInterfaceDetailW(devInfo, data, (SP_DEVICE_INTERFACE_DETAIL_DATA_W*)&data2, 254, (DWORD*)&reqSize, 0))
 	{
-		this->name = Text::StrToUTF8New(&data2[2]);
+		this->name = Text::String::NewNotNull(&data2[2]);
 	}
 	else
 	{
-		this->name = Text::StrCopyNew((const UTF8Char*)"Unknown");
+		this->name = Text::String::New(UTF8STRC("Unknown"));
 	}
 
 }
 
 IO::DeviceInfo::~DeviceInfo()
 {
-	Text::StrDelNew(this->name);
+	this->name->Release();
 }
 
-const UTF8Char *IO::DeviceInfo::GetName()
+Text::String *IO::DeviceInfo::GetName()
 {
 	return this->name;
 }
@@ -39,6 +39,6 @@ const UTF8Char *IO::DeviceInfo::GetName()
 IO::Stream *IO::DeviceInfo::CreateStream()
 {
 	IO::DeviceStream *stm;
-	NEW_CLASS(stm, IO::DeviceStream(this->name));
+	NEW_CLASS(stm, IO::DeviceStream(this->name->ToCString()));
 	return stm;
 }

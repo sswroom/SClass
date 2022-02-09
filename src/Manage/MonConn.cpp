@@ -133,7 +133,7 @@ UInt32 __stdcall Manage::MonConn::ConnRThread(void *conn)
 		if (me->cli == 0)
 		{
 			me->cliErr = true;
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, (const UTF8Char*)"127.0.0.1", me->port));
+			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, CSTR("127.0.0.1"), me->port));
 			me->cliErr = me->cli->IsConnectError();
 			if (!me->cliErr)
 				me->svrMonConn++;

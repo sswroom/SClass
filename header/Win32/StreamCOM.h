@@ -15,6 +15,7 @@ namespace Win32
 		StreamCOM(IStream *stm, Bool toRelease);
 		virtual ~StreamCOM();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

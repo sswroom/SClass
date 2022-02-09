@@ -109,7 +109,7 @@ void IO::FileStream::InitStream(const WChar *fileName, FileMode mode, FileShare 
 	}
 }
 
-IO::FileStream::FileStream() : IO::SeekableStream((const UTF8Char*)"FileStream")
+IO::FileStream::FileStream() : IO::SeekableStream(CSTR("FileStream"))
 {
 	this->handle = INVALID_HANDLE_VALUE;
 	this->currPos = 0;
@@ -210,7 +210,7 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	Text::StrDelNew(wptr);
 }
 
-IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName.v, fileName.leng)
+IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare share, BufferType buffType) : IO::SeekableStream(fileName)
 {
 	handle = (void*)-1;
 	if (fileName.leng == 0)
@@ -302,6 +302,11 @@ IO::FileStream::FileStream(Text::CString fileName, IO::FileMode mode, FileShare 
 IO::FileStream::~FileStream()
 {
 	Close();
+}
+
+Bool IO::FileStream::IsDown()
+{
+	return this->handle == INVALID_HANDLE_VALUE;
 }
 
 Bool IO::FileStream::IsError()

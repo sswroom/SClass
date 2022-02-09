@@ -31,7 +31,7 @@ namespace Net
 		MQTTFailoverClient(Net::FailoverType foType, Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 kaSeconds);
 		virtual ~MQTTFailoverClient();
 
-		void AddClient(const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password);
+		void AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password);
 
 		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj);
 		virtual Bool Subscribe(const UTF8Char *topic);

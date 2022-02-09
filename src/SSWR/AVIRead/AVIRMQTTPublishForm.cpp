@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 		password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 		password.leng = sb.GetLength();
 	}
-	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToString(), port, username, password, topic, message))
+	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, username, password, topic, message))
 	{
 		me->txtStatus->SetText((const UTF8Char*)"Success");
 	}

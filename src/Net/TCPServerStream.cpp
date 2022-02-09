@@ -27,7 +27,7 @@ void __stdcall Net::TCPServerStream::ConnHandler(Socket *s, void *userObj)
 	me->readEvt->Set();
 }
 
-Net::TCPServerStream::TCPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(UTF8STRC("Net.TCPBoardcastSream"))
+Net::TCPServerStream::TCPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -48,6 +48,15 @@ Net::TCPServerStream::~TCPServerStream()
 	DEL_CLASS(this->readMut);
 	DEL_CLASS(this->connMut);
 	DEL_CLASS(this->readEvt);
+}
+
+Bool Net::TCPServerStream::IsDown()
+{
+	if (this->svr == 0)
+		return true;
+	if (this->currCli == 0)
+		return true;
+	return false;
 }
 
 UOSInt Net::TCPServerStream::Read(UInt8 *buff, UOSInt size)

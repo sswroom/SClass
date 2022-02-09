@@ -102,7 +102,7 @@ UInt32 __stdcall IO::RS232GPIO::ReadThread(void *userObj)
 	return 0;
 }
 
-IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(UTF8STRC("RS-232"))
+IO::RS232GPIO::RS232GPIO(IO::GPIOControl *gpio, UOSInt rxdPin, UOSInt txdPin, UInt32 baudRate) : IO::Stream(CSTR("RS-232"))
 {
 	this->running = false;
 	this->toStop = false;
@@ -126,6 +126,11 @@ IO::RS232GPIO::~RS232GPIO()
 {
 	this->Close();
 	MemFree(this->readBuff);
+}
+
+Bool IO::RS232GPIO::IsDown()
+{
+	return !this->running;
 }
 
 UOSInt IO::RS232GPIO::Read(UInt8 *buff, UOSInt size)

@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	message->AddTo((const UTF8Char*)"Simon", (const UTF8Char*)"sswroom@yahoo.com");
 
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	NEW_CLASS(client, Net::Email::SMTPClient(sockf, 0, (const UTF8Char*)"127.0.0.1", 25, Net::Email::SMTPConn::CT_PLAIN, &writer));
+	NEW_CLASS(client, Net::Email::SMTPClient(sockf, 0, CSTR("127.0.0.1"), 25, Net::Email::SMTPConn::CT_PLAIN, &writer));
 	client->Send(message);
 	DEL_CLASS(message)
 	DEL_CLASS(client);

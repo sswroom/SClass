@@ -7,7 +7,7 @@
 
 #define BUFFSIZE 1048576
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize) : IO::Stream(UTF8STRC("InflateStream"))
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSize) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -22,7 +22,7 @@ Data::Compress::InflateStream::InflateStream(IO::Stream *outStm, UOSInt headerSi
 	mz_inflateInit2(mzstm, -MZ_DEFAULT_WINDOW_BITS);
 }
 
-Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream(UTF8STRC("InflateStream"))
+Data::Compress::InflateStream::InflateStream(IO::Stream *outStm) : IO::Stream(CSTR("InflateStream"))
 {
 	this->outStm = outStm;
 	this->writeBuff = MemAlloc(UInt8, BUFFSIZE);
@@ -43,6 +43,11 @@ Data::Compress::InflateStream::~InflateStream()
 	mz_inflateEnd(mzstm);
 	MemFree(this->writeBuff);
 	MemFree(mzstm);
+}
+
+Bool Data::Compress::InflateStream::IsDown()
+{
+	return this->outStm->IsDown();
 }
 
 UOSInt Data::Compress::InflateStream::Read(UInt8 *buff, UOSInt size)

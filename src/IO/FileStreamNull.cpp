@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 
-IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream((const UTF8Char*)"FileStream")
+IO::FileStream::FileStream(Text::String *fileName, IO::FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	this->handle = 0;
 	this->currPos = -1;
@@ -10,7 +10,7 @@ IO::FileStream::FileStream(const WChar *fileName, IO::FileMode mode, FileShare s
 	return;
 }
 
-IO::FileStream::FileStream(const UTF8Char *fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
+IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	this->handle = 0;
 	this->currPos = -1;
@@ -21,17 +21,22 @@ IO::FileStream::~FileStream()
 {
 }
 
+Bool IO::FileStream::IsDown()
+{
+	return true;
+}
+
 Bool IO::FileStream::IsError()
 {
 	return true;
 }
 
-OSInt IO::FileStream::Read(UInt8 *buff, OSInt size)
+UOSInt IO::FileStream::Read(UInt8 *buff, UOSInt size)
 {
 	return 0;
 }
 
-OSInt IO::FileStream::Write(const UInt8 *buff, OSInt size)
+UOSInt IO::FileStream::Write(const UInt8 *buff, UOSInt size)
 {
 	return 0;
 }
@@ -50,22 +55,32 @@ Bool IO::FileStream::Recover()
 	return false;
 }
 
-Int64 IO::FileStream::Seek(IO::SeekableStream::SeekType origin, Int64 position)
+UInt64 IO::FileStream::SeekFromBeginning(UInt64 position)
 {
-	return -1;
+	return 0;
 }
 
-Int64 IO::FileStream::GetPosition()
+UInt64 IO::FileStream::SeekFromCurrent(Int64 position)
+{
+	return 0;
+}
+
+UInt64 IO::FileStream::SeekFromEnd(Int64 position)
+{
+	return 0;
+}
+
+UInt64 IO::FileStream::GetPosition()
 {
 	return this->currPos;
 }
 
-Int64 IO::FileStream::GetLength()
+UInt64 IO::FileStream::GetLength()
 {
-	return -1;
+	return 0;
 }
 
-void IO::FileStream::SetLength(Int64 newLength)
+void IO::FileStream::SetLength(UInt64 newLength)
 {
 }
 
@@ -81,7 +96,7 @@ void IO::FileStream::SetFileTimes(Data::DateTime *creationTime, Data::DateTime *
 {
 }
 
-UOSInt IO::FileStream::LoadFile(const UTF8Char *fileName, UInt8 *buff, UOSInt maxBuffSize)
+UOSInt IO::FileStream::LoadFile(Text::CString fileName, UInt8 *buff, UOSInt maxBuffSize)
 {
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(fileName, FileMode::ReadOnly, FileShare::DenyNone, BufferType::Normal));

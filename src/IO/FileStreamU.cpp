@@ -103,7 +103,7 @@ IO::FileStream::FileStream(Text::String *fileName, FileMode mode, FileShare shar
 	this->InitStream(0, mode, share, buffType);
 }
 
-IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName.v, fileName.leng)
+IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare share, IO::FileStream::BufferType buffType) : IO::SeekableStream(fileName)
 {
 	if (fileName.leng == 0)
 	{
@@ -126,6 +126,14 @@ IO::FileStream::~FileStream()
 		clsData->fileName->Release();
 		MemFree(clsData);
 	}
+}
+
+Bool IO::FileStream::IsDown()
+{
+	if (this->handle == 0)
+		return true;
+	ClassData *clsData = (ClassData*)this->handle;
+	return clsData->hand == 0;
 }
 
 Bool IO::FileStream::IsError()

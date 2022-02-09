@@ -89,6 +89,11 @@ Text::CString Net::WebServer::PrintLogWebResponse::GetRespHeaders()
 	return this->resp->GetRespHeaders();
 }
 
+Bool Net::WebServer::PrintLogWebResponse::IsDown()
+{
+	return this->resp->IsDown();
+}
+
 UOSInt Net::WebServer::PrintLogWebResponse::Read(UInt8 *buff, UOSInt size)
 {
 	return this->resp->Read(buff, size);

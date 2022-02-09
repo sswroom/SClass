@@ -60,7 +60,7 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		emailSvr->Release();
 		return S_DOMAIN_NOT_RESOLVED;
 	}
-	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr->v, 25, Net::Email::SMTPConn::CT_PLAIN, 0));
+	NEW_CLASS(conn, Net::Email::SMTPConn(this->sockf, 0, emailSvr->ToCString(), 25, Net::Email::SMTPConn::CT_PLAIN, 0));
 	emailSvr->Release();
 	if (conn->IsError())
 	{

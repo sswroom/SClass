@@ -218,10 +218,10 @@ Bool Net::WinSSLEngine::InitServer(Method method, void *cred, void *caCred)
 	return status == 0;
 }
 
-Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, const UTF8Char *hostName, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err)
 {
 	CtxtHandle ctxt;
-	const WChar *wptr = Text::StrToWCharNew(hostName);
+	const WChar *wptr = Text::StrToWCharNew(hostName.v);
 	UInt32 retFlags = ISC_REQ_SEQUENCE_DETECT | ISC_REQ_REPLAY_DETECT | ISC_REQ_CONFIDENTIALITY | ISC_REQ_ALLOCATE_MEMORY | ISC_REQ_STREAM;
 	TimeStamp ts;
 	SecBuffer outputBuff[3];
@@ -1013,7 +1013,7 @@ UTF8Char *Net::WinSSLEngine::GetErrorDetail(UTF8Char *sbuff)
 	return sbuff;
 }
 
-Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::Connect(Text::CString hostName, UInt16 port, ErrorType *err)
 {
 	if (!this->clsData->cliInit)
 	{
@@ -1029,7 +1029,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 
 	Net::SocketUtil::AddressInfo addr;
 	Socket *s;
-	if (!this->sockf->DNSResolveIP(hostName, Text::StrCharCnt(hostName), &addr))
+	if (!this->sockf->DNSResolveIP(hostName.v, hostName.leng, &addr))
 	{
 		if (err)
 			*err = ErrorType::HostnameNotResolved;
@@ -1066,7 +1066,7 @@ Net::SSLClient *Net::WinSSLEngine::Connect(const UTF8Char *hostName, UInt16 port
 	return CreateClientConn(0, s, hostName, err);
 }
 
-Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err)
+Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CString hostName, ErrorType *err)
 {
 	if (!this->clsData->cliInit)
 	{

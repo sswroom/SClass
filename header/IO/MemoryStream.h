@@ -20,6 +20,7 @@ namespace IO
 
 		UInt8 *GetBuff(UOSInt *buffSize);
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

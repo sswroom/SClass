@@ -21,6 +21,7 @@ namespace IO
 		StreamLogger(IO::Stream *srcStream, Bool needRelease, Text::CString readLogPath, Text::CString writeLogPath);
 		virtual ~StreamLogger();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

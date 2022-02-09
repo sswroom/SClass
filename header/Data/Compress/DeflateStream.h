@@ -23,6 +23,7 @@ namespace Data
 			DeflateStream(IO::Stream *srcStm, UInt64 srcLeng, Crypto::Hash::IHash *hash, CompLevel level, Bool hasHeader);
 			virtual ~DeflateStream();
 
+			virtual Bool IsDown();
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

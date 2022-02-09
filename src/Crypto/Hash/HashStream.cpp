@@ -12,6 +12,11 @@ Crypto::Hash::HashStream::~HashStream()
 {
 }
 
+Bool Crypto::Hash::HashStream::IsDown()
+{
+	return this->srcStm->IsDown();
+}
+
 UOSInt Crypto::Hash::HashStream::Read(UInt8 *buff, UOSInt size)
 {
 	UOSInt retSize = this->srcStm->Read(buff, size);

@@ -23,6 +23,7 @@ namespace Data
 			UInt16 nextTableOfst;
 			UOSInt tableSize;
 			OSInt codeSizeAdj;
+			IO::Stream *stm;
 			IO::BitWriter *writer;
 			Bool toRelease;
 
@@ -32,6 +33,7 @@ namespace Data
 			LZWEncStream2(IO::Stream *stm, Bool lsb, UOSInt minCodeSize, UOSInt maxCodeSize, OSInt codeSizeAdj);
 			virtual ~LZWEncStream2();
 
+			virtual Bool IsDown();
 			virtual UOSInt Read(UInt8 *buff, UOSInt size);
 			virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

@@ -115,7 +115,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 	}
 }
 
-Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(UTF8STRC("Net.TCPBoardcastSream"))
+Net::TCPBoardcastStream::TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.TCPBoardcastSream"))
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -146,6 +146,15 @@ Net::TCPBoardcastStream::~TCPBoardcastStream()
 	DEL_CLASS(this->readMut);
 	MemFree(this->readBuff);
 	MemFree(this->writeBuff);
+}
+
+Bool Net::TCPBoardcastStream::IsDown()
+{
+	if (this->svr == 0)
+	{
+		return true;
+	}
+	return this->cliMgr->GetClientCount() == 0;
 }
 
 UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)

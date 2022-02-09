@@ -11,8 +11,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::MQTTFailoverClient *cli;
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
 	NEW_CLASS(cli, Net::MQTTFailoverClient(Net::FT_MASTER_SLAVE, sockf, 0, 30));
-	cli->AddClient((const UTF8Char*)"127.0.0.1", 1883, CSTR_NULL, CSTR_NULL);
-	cli->AddClient((const UTF8Char*)"127.0.0.1", 1884, CSTR_NULL, CSTR_NULL);
+	cli->AddClient(CSTR("127.0.0.1"), 1883, CSTR_NULL, CSTR_NULL);
+	cli->AddClient(CSTR("127.0.0.1"), 1884, CSTR_NULL, CSTR_NULL);
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UOSInt i = 30;

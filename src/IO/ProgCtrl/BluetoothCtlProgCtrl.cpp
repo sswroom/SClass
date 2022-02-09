@@ -409,7 +409,7 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl()
 	this->agentOn = false;
 	this->scanOn = false;
 	this->cmdReady = false;
-	NEW_CLASS(this->prog, Manage::ProcessExecution((const UTF8Char*)"bluetoothctl"));
+	NEW_CLASS(this->prog, Manage::ProcessExecution(CSTR("bluetoothctl")));
 	if (this->prog->IsRunning())
 	{
 		Sync::Thread::Create(ReadThread, this);

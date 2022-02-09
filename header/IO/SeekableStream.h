@@ -10,10 +10,7 @@ namespace IO
 		SeekableStream(Text::String *sourceName) : IO::Stream(sourceName)
 		{};
 
-		SeekableStream(const UTF8Char *sourceName) : IO::Stream(sourceName)
-		{};
-
-		SeekableStream(const UTF8Char *sourceName, UOSInt nameLen) : IO::Stream(sourceName, nameLen)
+		SeekableStream(Text::CString sourceName) : IO::Stream(sourceName)
 		{};
 
 		virtual ~SeekableStream(){};

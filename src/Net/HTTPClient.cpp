@@ -15,7 +15,7 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
-Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream(UTF8STRC("HTTPClient"))
+Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream(CSTR("HTTPClient"))
 {
 	this->sockf = sockf;
 	this->canWrite = false;
@@ -41,6 +41,11 @@ Net::HTTPClient::~HTTPClient()
 	SDEL_CLASS(this->formSb);
 	SDEL_STRING(this->url);
 	DEL_CLASS(this->clk);
+}
+
+Bool Net::HTTPClient::IsDown()
+{
+	return this->IsError();
 }
 
 Bool Net::HTTPClient::FormBegin()

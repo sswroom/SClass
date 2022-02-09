@@ -38,7 +38,7 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 		if (cliData->cli == 0)
 		{
 			Sync::MutexUsage mutUsage(cliData->cliMut);
-			NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host, cliData->port));
+			NEW_CLASS(cliData->cli, Net::TCPClient(cliData->sockf, cliData->host->ToCString(), cliData->port));
 			mutUsage.EndUse();
 		}
 		if (content)
@@ -240,7 +240,7 @@ Net::RTSPClient::RTSPClient(Net::RTSPClient *cli)
 	this->cliData->useCnt++;
 }
 
-Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, const UTF8Char *host, UInt16 port)
+Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port)
 {
 	this->cliData = MemAlloc(ClientData, 1);
 	this->cliData->useCnt = 1;
@@ -252,7 +252,7 @@ Net::RTSPClient::RTSPClient(Net::SocketFactory *sockf, const UTF8Char *host, UIn
 	this->cliData->reqReplySize = 0;
 	this->cliData->reqStrs = 0;
 	this->cliData->cli = 0;
-	this->cliData->host = Text::StrCopyNew(host);
+	this->cliData->host = Text::String::New(host);
 	this->cliData->port = port;
 	NEW_CLASS(this->cliData->cliMut, Sync::Mutex());
 	NEW_CLASS(this->cliData->reqEvt, Sync::Event(true));
@@ -281,7 +281,7 @@ Net::RTSPClient::~RTSPClient()
 			Sync::Thread::Sleep(10);
 		}
 		this->NextRequest();
-		Text::StrDelNew(this->cliData->host);
+		this->cliData->host->Release();
 		DEL_CLASS(this->cliData->cliMut);
 		DEL_CLASS(this->cliData->reqMut);
 		DEL_CLASS(this->cliData->reqEvt);
@@ -421,19 +421,20 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF8Char *url, UOSInt urlLen)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Net::RTSPClient *cli;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 
 	UInt16 port = 554;
-	Text::URLString::GetURLDomain(sbuff, url, urlLen, &port);
+	sptr = Text::URLString::GetURLDomain(sbuff, url, urlLen, &port);
 	if (port == 0)
 	{
 		port = 554;
 	}
 
-	NEW_CLASS(cli, Net::RTSPClient(sockf, sbuff, port));
+	NEW_CLASS(cli, Net::RTSPClient(sockf, CSTRP(sbuff, sptr), port));
 
 	Net::SDPFile *sdp = cli->GetMediaInfo(url);
 	if (sdp)

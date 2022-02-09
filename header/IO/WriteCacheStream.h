@@ -15,6 +15,7 @@ namespace IO
 		WriteCacheStream(IO::Stream *outStm);
 		virtual ~WriteCacheStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

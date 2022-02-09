@@ -41,6 +41,7 @@ namespace Net
 
 		virtual Bool IsError() = 0;
 
+		virtual Bool IsDown();
 		virtual Bool Connect(Text::CString url, Net::WebUtil::RequestMethod method, Double *timeDNS, Double *timeConn, Bool defHeaders) = 0;
 		virtual void AddHeaderC(Text::CString name, Text::CString value) = 0;
 		virtual void EndRequest(Double *timeReq, Double *timeResp) = 0;

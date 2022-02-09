@@ -21,6 +21,11 @@ Text::MailBase64Stream::~MailBase64Stream()
 	DEL_CLASS(this->b64);
 }
 
+Bool Text::MailBase64Stream::IsDown()
+{
+	return this->stm->IsDown();
+}
+
 UOSInt Text::MailBase64Stream::Read(UInt8 *buff, UOSInt size)
 {
 	return 0;

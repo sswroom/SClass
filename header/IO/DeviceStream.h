@@ -10,9 +10,10 @@ namespace IO
 		void *hand;
 
 	public:
-		DeviceStream(const UTF8Char *devPath);
+		DeviceStream(Text::CString devPath);
 		virtual ~DeviceStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 		virtual Int32 Flush();

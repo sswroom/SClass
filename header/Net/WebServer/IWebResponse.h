@@ -17,7 +17,7 @@ namespace Net
 			typedef void (__stdcall *SSEDisconnectHandler)(Net::WebServer::IWebResponse *resp, void *userObj);
 		public:
 			IWebResponse(Text::String *sourceName);
-			IWebResponse(const UTF8Char *sourceName, UOSInt nameLen);
+			IWebResponse(Text::CString sourceName);
 			virtual ~IWebResponse();
 
 			virtual void EnableWriteBuffer() = 0;

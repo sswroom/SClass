@@ -12,7 +12,7 @@ namespace Net
 		Bool skipCertCheck;
 
 		virtual Net::SSLClient *CreateServerConn(Socket *s);
-		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, const UTF8Char *hostName, ErrorType *err);
+		Net::SSLClient *CreateClientConn(void *sslObj, Socket *s, Text::CString hostName, ErrorType *err);
 	public:
 		OpenSSLEngine(Net::SocketFactory *sockf, Method method);
 		virtual ~OpenSSLEngine();
@@ -22,8 +22,8 @@ namespace Net
 		virtual Bool SetServerCertsASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1, Crypto::Cert::X509Cert *caCert);
 		virtual Bool SetClientCertASN1(Crypto::Cert::X509Cert *certASN1, Crypto::Cert::X509File *keyASN1);
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff);
-		virtual Net::SSLClient *Connect(const UTF8Char *hostName, UInt16 port, ErrorType *err);
-		virtual Net::SSLClient *ClientInit(Socket *s, const UTF8Char *hostName, ErrorType *err);
+		virtual Net::SSLClient *Connect(Text::CString hostName, UInt16 port, ErrorType *err);
+		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err);
 		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1);
 		virtual Crypto::Cert::X509Key *GenerateRSAKey();
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen);

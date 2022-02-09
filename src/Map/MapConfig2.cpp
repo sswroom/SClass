@@ -4257,8 +4257,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					area->mcc = Text::StrToInt32(strs[1].v);
 					if (strCnt > 2)
 					{
-						strs[2].ConcatTo(baseDir);
-						NEW_CLASS(area->data, Map::MapLayerData(layerName));
+						UTF8Char *baseDirEnd = strs[2].ConcatTo(baseDir);
+						NEW_CLASS(area->data, Map::MapLayerData(CSTRP(layerName, baseDirEnd)));
 					}
 					else
 					{

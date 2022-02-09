@@ -174,7 +174,7 @@ Bool Net::MQTTConn::SendPacket(const UInt8 *packet, UOSInt packetSize)
 	return sendSize == packetSize;
 }
 
-Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj)
+Net::MQTTConn::MQTTConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, DisconnectHdlr discHdlr, void *discHdlrObj)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -441,7 +441,7 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];

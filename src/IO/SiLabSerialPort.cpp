@@ -27,14 +27,14 @@ typedef struct
 } OVERLAPPED;
 #endif
 
-IO::SiLabSerialPort::SiLabSerialPort(void *handle, IO::SiLabDriver *driver) : IO::Stream(UTF8STRC("SiLabSerialPort"))
+IO::SiLabSerialPort::SiLabSerialPort(void *handle, IO::SiLabDriver *driver) : IO::Stream(CSTR("SiLabSerialPort"))
 {
 	this->driver = driver;
 	this->handle = handle;
 	this->rdEvt = 0;
 	this->rdMut = 0;
 	this->reading = 0;
-	NEW_CLASS(this->rdEvt, Sync::Event((const UTF8Char*)"IO.SerialPort.rdEvt"));
+	NEW_CLASS(this->rdEvt, Sync::Event());
 	NEW_CLASS(this->rdMut, Sync::Mutex());
 }
 
@@ -64,6 +64,11 @@ IO::SiLabSerialPort::~SiLabSerialPort()
 		DEL_CLASS(this->rdMut);
 		this->rdMut = 0;
 	}
+}
+
+Bool IO::SiLabSerialPort::IsDown()
+{
+	return this->handle == 0;
 }
 
 UOSInt IO::SiLabSerialPort::Read(UInt8 *buff, UOSInt size)

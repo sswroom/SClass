@@ -48,7 +48,7 @@ void __stdcall Net::MQTTStaticClient::OnDisconnect(void *userObj)
 void Net::MQTTStaticClient::Connect()
 {
 	Net::MQTTConn *conn;
-	NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host, this->port, OnDisconnect, this));
+	NEW_CLASS(conn, Net::MQTTConn(this->sockf, this->ssl, this->host->ToCString(), this->port, OnDisconnect, this));
 	if (conn->IsError())
 	{
 		if (errLog) errLog->WriteLineC(UTF8STRC("MQTT: Error in connecting to server"));
@@ -157,11 +157,11 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->password = 0;
 }
 
-Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
+Net::MQTTStaticClient::MQTTStaticClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Net::MQTTConn::PublishMessageHdlr hdlr, void *userObj, UInt16 kaSeconds, IO::Writer *errLog) : Net::MQTTStaticClient(hdlr, userObj, errLog)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->host = Text::StrCopyNew(host);
+	this->host = Text::String::New(host);
 	this->port = port;
 	this->username = Text::String::New(username);
 	this->password = Text::String::New(password);
@@ -201,7 +201,7 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 	DEL_CLASS(this->kaEvt);
 	SDEL_STRING(this->username);
 	SDEL_STRING(this->password);
-	Text::StrDelNew(this->host);
+	this->host->Release();
 	this->clientId->Release();
 }
 

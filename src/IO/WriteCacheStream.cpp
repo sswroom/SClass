@@ -20,6 +20,11 @@ IO::WriteCacheStream::~WriteCacheStream()
 	}
 }
 
+Bool IO::WriteCacheStream::IsDown()
+{
+	return this->outStm->IsDown();
+}
+
 UOSInt IO::WriteCacheStream::Read(UInt8 *buff, UOSInt size)
 {
 	return this->outStm->Read(buff, size);

@@ -18,6 +18,7 @@ namespace IO
 		BufferedInputStream(IO::SeekableStream *stm, UOSInt buffSize);
 		virtual ~BufferedInputStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

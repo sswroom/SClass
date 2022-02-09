@@ -34,6 +34,11 @@ IO::StreamLogger::~StreamLogger()
 	SDEL_CLASS(this->readLog);
 }
 
+Bool IO::StreamLogger::IsDown()
+{
+	return this->stm->IsDown();
+}
+
 UOSInt IO::StreamLogger::Read(UInt8 *buff, UOSInt size)
 {
 	UOSInt readCnt = this->stm->Read(buff, size);

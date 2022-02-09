@@ -479,8 +479,8 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	while (i < j)
 	{
 		dev = this->devList->GetItem(i);
-		const UTF8Char *name = dev->GetName();
-		this->lbHIDDevice->AddItem({name, Text::StrCharCnt(name)}, dev);
+		Text::String *name = dev->GetName();
+		this->lbHIDDevice->AddItem(name->ToCString(), dev);
 		i++;
 	}
 

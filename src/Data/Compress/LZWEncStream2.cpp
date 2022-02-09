@@ -35,6 +35,7 @@ Data::Compress::LZWEncStream2::LZWEncStream2(IO::Stream *stm, Bool lsb, UOSInt m
 	this->endCode = (UInt16)(this->resetCode + 1);
 	this->encBuff = MemAlloc(UInt8, this->tableSize);
 	this->buffSize = 0;
+	this->stm  = stm;
 	if (lsb)
 	{
 		NEW_CLASS(this->writer, IO::BitWriterLSB(stm));
@@ -118,6 +119,11 @@ Data::Compress::LZWEncStream2::~LZWEncStream2()
 		DEL_CLASS(this->writer);
 	}
 	MemFree(this->encBuff);
+}
+
+Bool Data::Compress::LZWEncStream2::IsDown()
+{
+	return this->stm->IsDown();
 }
 
 UOSInt Data::Compress::LZWEncStream2::Read(UInt8 *buff, UOSInt size)

@@ -12,7 +12,7 @@
 
 #include "Win32/StreamCOM.h"
 
-Win32::StreamCOM::StreamCOM(IStream *stm, Bool toRelease) : IO::SeekableStream((const UTF8Char*)"")
+Win32::StreamCOM::StreamCOM(IStream *stm, Bool toRelease) : IO::SeekableStream(CSTR(""))
 {
 	this->stm = stm;
 	this->toRelease = toRelease;
@@ -24,6 +24,11 @@ Win32::StreamCOM::~StreamCOM()
 	{
 		this->stm->Release();
 	}
+}
+
+Bool Win32::StreamCOM::IsDown()
+{
+	return false;
 }
 
 UOSInt Win32::StreamCOM::Read(UInt8 *buff, UOSInt size)

@@ -52,7 +52,7 @@ Data::Compress::LZWDecStream::LZWDecStream(IO::Stream *stm, Bool lsb, UOSInt min
 	ResetTable();
 }
 
-Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(UTF8STRC("LZWStream"))
+Data::Compress::LZWDecStream::LZWDecStream(IO::BitReader *reader, Bool toRelease, UOSInt minCodeSize, UOSInt maxCodeSize, UOSInt codeSizeAdj) : IO::Stream(CSTR("LZWStream"))
 {
 	this->tableSize = ((UOSInt)1 << maxCodeSize);
 	this->lzwTable = MemAlloc(UInt8, this->tableSize * 4);
@@ -76,6 +76,11 @@ Data::Compress::LZWDecStream::~LZWDecStream()
 	{
 		DEL_CLASS(this->reader);
 	}
+}
+
+Bool Data::Compress::LZWDecStream::IsDown()
+{
+	return false;
 }
 
 UOSInt Data::Compress::LZWDecStream::Read(UInt8 *buff, UOSInt size)

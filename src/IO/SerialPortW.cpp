@@ -305,7 +305,7 @@ Bool IO::SerialPort::ResetPort(UOSInt portNum)
 	return false;
 }
 
-IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(UTF8STRC("SerialPort"))
+IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl) : IO::Stream(CSTR("SerialPort"))
 {
 	this->handle = 0;
 	this->rdEvt = 0;
@@ -350,6 +350,23 @@ IO::SerialPort::~SerialPort()
 		DEL_CLASS(this->rdMut);
 		this->rdMut = 0;
 	}
+}
+
+Bool IO::SerialPort::IsDown()
+{
+	if (this->handle == 0)
+	{
+		return true;
+	}
+	if (this->flowCtrl)
+	{
+		DWORD dwModemStatus;
+		if (GetCommModemStatus(this->handle, &dwModemStatus))
+		{
+			return (MS_DSR_ON & dwModemStatus) == 0;
+		}
+	}
+	return false;
 }
 
 UOSInt IO::SerialPort::Read(UInt8 *buff, UOSInt size)

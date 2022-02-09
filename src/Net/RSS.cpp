@@ -240,7 +240,7 @@ Text::String *Net::RSSItem::GetId()
 	}
 }
 
-Net::RSS::RSS(const UTF8Char *url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Net::RSS::RSS(Text::CString url, Text::String *userAgent, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	this->isError = true;
 	this->title = 0;

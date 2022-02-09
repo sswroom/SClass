@@ -14,7 +14,7 @@
 #define DEF_CAPACITY 1024
 #endif
 
-IO::MemoryStream::MemoryStream(const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(UTF8STRC("MemoryStream"))
+IO::MemoryStream::MemoryStream(const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	capacity = DEF_CAPACITY;
 	currSize = 0;
@@ -23,7 +23,7 @@ IO::MemoryStream::MemoryStream(const UTF8Char *dbg, UOSInt dbgLen) : IO::Seekabl
 	this->dbg = Text::StrCopyNewC(dbg, dbgLen);
 }
 
-IO::MemoryStream::MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(UTF8STRC("MemoryStream"))
+IO::MemoryStream::MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	if (capacity == 0)
 	{
@@ -36,7 +36,7 @@ IO::MemoryStream::MemoryStream(UOSInt capacity, const UTF8Char *dbg, UOSInt dbgL
 	this->dbg = Text::StrCopyNewC(dbg, dbgLen);
 }
 
-IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(UTF8STRC("MemoryStream"))
+IO::MemoryStream::MemoryStream(UInt8 *buff, UOSInt buffSize, const UTF8Char *dbg, UOSInt dbgLen) : IO::SeekableStream(CSTR("MemoryStream"))
 {
 	this->capacity = 0;
 	this->currSize = buffSize;
@@ -58,6 +58,11 @@ UInt8 *IO::MemoryStream::GetBuff(UOSInt *buffSize)
 {
 	*buffSize = currSize;
 	return this->memPtr;
+}
+
+Bool IO::MemoryStream::IsDown()
+{
+	return false;
 }
 
 UOSInt IO::MemoryStream::Read(UInt8 *buff, UOSInt size)

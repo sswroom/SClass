@@ -4,7 +4,7 @@
 #include "Sync/Thread.h"
 #include "Net/FTPClient.h"
 
-Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage) : IO::Stream(url)
+Net::FTPClient::FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage) : IO::Stream(url)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -13,7 +13,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 	UTF8Char *host = 0;
 	UTF8Char *port = 0;
 	UTF8Char c;
-	sptr = Text::StrConcat(sbuff, url);
+	sptr = url.ConcatTo(sbuff);
 	this->userName = 0;
 	this->password = 0;
 	this->host = 0;
@@ -45,7 +45,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 					this->password = Text::StrCopyNew(password);
 				}
 			}
-			this->host = Text::StrCopyNew(host);
+			this->host = Text::String::New(host, (UOSInt)(sptr - host - 1));
 			if (port)
 			{
 				if (!Text::StrToUInt16(port, &this->port))
@@ -57,7 +57,7 @@ Net::FTPClient::FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool p
 			{
 				this->port = 21;
 			}
-			NEW_CLASS(this->conn, Net::FTPConn(this->host, this->port, sockf, this->codePage));
+			NEW_CLASS(this->conn, Net::FTPConn(this->host->ToCString(), this->port, sockf, this->codePage));
 			this->conn->SendUser(this->userName);
 			if (this->password)
 			{
@@ -135,14 +135,16 @@ Net::FTPClient::~FTPClient()
 	{
 		Text::StrDelNew(this->password);
 	}
-	if (this->host)
-	{
-		Text::StrDelNew(this->host);
-	}
+	SDEL_STRING(this->host);
 	if (this->path)
 	{
 		Text::StrDelNew(this->path);
 	}
+}
+
+Bool Net::FTPClient::IsDown()
+{
+	return this->cli2 == 0;
 }
 
 UOSInt Net::FTPClient::Read(UInt8 *buff, UOSInt size)

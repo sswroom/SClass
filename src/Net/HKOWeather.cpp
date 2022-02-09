@@ -124,7 +124,7 @@ Net::HKOWeather::HKOWeather(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text
 	this->ssl = ssl;
 	this->encFact = encFact;
 	this->hdlr = hdlr;
-	NEW_CLASS(this->rss, Net::RSSReader((const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", this->sockf, this->ssl, 10, this));
+	NEW_CLASS(this->rss, Net::RSSReader(CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), this->sockf, this->ssl, 10, this));
 }
 
 Net::HKOWeather::~HKOWeather()

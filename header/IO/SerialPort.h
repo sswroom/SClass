@@ -50,6 +50,7 @@ namespace IO
 		SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, Bool flowCtrl);
 		virtual ~SerialPort();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 		Bool HasData();

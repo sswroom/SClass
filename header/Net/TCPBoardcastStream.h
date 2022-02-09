@@ -31,6 +31,7 @@ namespace Net
 		TCPBoardcastStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log);
 		~TCPBoardcastStream();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

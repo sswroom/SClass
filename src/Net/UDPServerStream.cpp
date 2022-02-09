@@ -30,7 +30,7 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressI
 	}
 }
 
-Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(UTF8STRC("Net.UDPServerSream"))
+Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.UDPServerSream"))
 {
 	this->sockf = sockf;
 	this->log = log;
@@ -54,6 +54,11 @@ Net::UDPServerStream::~UDPServerStream()
 	DEL_CLASS(this->dataMut);
 	DEL_CLASS(this->readEvt);
 	MemFree(this->buff);
+}
+
+Bool Net::UDPServerStream::IsDown()
+{
+	return this->svr == 0;
 }
 
 UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)

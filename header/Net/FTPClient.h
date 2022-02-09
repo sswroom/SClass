@@ -12,7 +12,7 @@ namespace Net
 	private:
 		const UTF8Char *userName;
 		const UTF8Char *password;
-		const UTF8Char *host;
+		Text::String *host;
 		UInt16 port;
 		const UTF8Char *path;
 		UInt32 codePage;
@@ -20,9 +20,10 @@ namespace Net
 		Net::TCPClient *cli2;
 
 	public:
-		FTPClient(const UTF8Char *url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage);
+		FTPClient(Text::CString url, Net::SocketFactory *sockf, Bool passiveMode, UInt32 codePage);
 		~FTPClient();
 
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

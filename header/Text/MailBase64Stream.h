@@ -17,6 +17,8 @@ namespace Text
 	public:
 		MailBase64Stream(IO::Stream *stm);
 		virtual ~MailBase64Stream();
+
+		virtual Bool IsDown();
 		virtual UOSInt Read(UInt8 *buff, UOSInt size);
 		virtual UOSInt Write(const UInt8 *buff, UOSInt size);
 

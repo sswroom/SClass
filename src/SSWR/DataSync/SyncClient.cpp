@@ -48,7 +48,7 @@ UInt32 __stdcall SSWR::DataSync::SyncClient::RecvThread(void *userObj)
 		{
 
 			Net::TCPClient *cli;
-			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->v, me->cliPort));
+			NEW_CLASS(cli, Net::TCPClient(me->sockf, me->cliHost->ToCString(), me->cliPort));
 			if (cli->IsClosed())
 			{
 				DEL_CLASS(cli);

@@ -251,7 +251,7 @@ Bool Crypto::Cert::X509Cert::GetNotAfter(Data::DateTime *dt)
 	return false;
 }
 
-Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain, UOSInt domainLen)
+Bool Crypto::Cert::X509Cert::DomainValid(Text::CString domain)
 {
 	Crypto::Cert::CertExtensions exts;
 	UOSInt i;
@@ -264,11 +264,11 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain, UOSInt domainLe
 	{
 		if (subjNames.commonName->v[0] == '*' && subjNames.commonName->v[1] == '.')
 		{
-			valid = Text::StrEqualsICaseC(domain, domainLen, &subjNames.commonName->v[2], subjNames.commonName->leng - 2) || Text::StrEndsWithICaseC(domain, domainLen, &subjNames.commonName->v[1], subjNames.commonName->leng - 1);
+			valid = domain.EqualsICase(&subjNames.commonName->v[2], subjNames.commonName->leng - 2) || domain.EndsWithICase(&subjNames.commonName->v[1], subjNames.commonName->leng - 1);
 		}
 		else
 		{
-			valid = Text::StrEqualsICaseC(domain, domainLen, subjNames.commonName->v, subjNames.commonName->leng);
+			valid = domain.EqualsICase(subjNames.commonName);
 		}
 		Crypto::Cert::CertNames::FreeNames(&subjNames);
 		if (valid)
@@ -289,11 +289,11 @@ Bool Crypto::Cert::X509Cert::DomainValid(const UTF8Char *domain, UOSInt domainLe
 				s = exts.subjectAltName->GetItem(i);
 				if (s->v[0] == '*' && s->v[1] == '.')
 				{
-					valid = Text::StrEqualsICaseC(domain, domainLen, &s->v[2], s->leng - 2) || Text::StrEndsWithICaseC(domain, domainLen, &s->v[1], s->leng - 1);
+					valid = domain.EqualsICase(&s->v[2], s->leng - 2) || domain.EndsWithICase(&s->v[1], s->leng - 1);
 				}
 				else
 				{
-					valid = Text::StrEqualsICaseC(domain, domainLen, s->v, s->leng);
+					valid = domain.EqualsICase(s);
 				}
 				if (valid)
 					break;
