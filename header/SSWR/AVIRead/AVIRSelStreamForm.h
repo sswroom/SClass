@@ -65,6 +65,10 @@ namespace SSWR
 			UI::GUILabel *lblTCPCliPort;
 			UI::GUITextBox *txtTCPCliPort;
 
+			UI::GUITabPage *tpUDPSvr;
+			UI::GUILabel *lblUDPSvrPort;
+			UI::GUITextBox *txtUDPSvrPort;
+
 			UI::GUITabPage *tpFile;
 			UI::GUILabel *lblFileName;
 			UI::GUITextBox *txtFileName;
@@ -91,6 +95,6 @@ namespace SSWR
 			void SetInitSerialPort(UOSInt port);
 			void SetInitBaudRate(Int32 baudRate);
 		};
-	};
-};
+	}
+}
 #endif

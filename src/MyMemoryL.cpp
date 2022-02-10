@@ -8,6 +8,7 @@
 #include "Text/MyString.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <syslog.h>
 #if !defined(__FreeBSD__) && !defined(__APPLE__)
 #include <malloc.h>
 #endif
@@ -28,7 +29,11 @@ void MemPtrChk(void *ptr)
 {
 	if ((OSInt)ptr == mcBreakPt)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory");
+#else
 		printf("Out of Memory\n");
+#endif
 	}
 } 
 
@@ -81,7 +86,11 @@ void *MAlloc(UOSInt size)
 	void *ptr = malloc(size + 4);
 	if ((OSInt)ptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory: size = %d", (UInt32)size);
+#else
 		printf("Out of Memory: size = %d\n", (UInt32)size);
+#endif
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
@@ -102,7 +111,11 @@ void *MAllocA(UOSInt size)
 //	wprintf(L"MAllocA %x\r\n", mptr);
 	if ((OSInt)mptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory: Asize = %d", (UInt32)size);
+#else
 		printf("Out of Memory: Asize = %d\n", (UInt32)size);
+#endif
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
@@ -124,7 +137,11 @@ void *MAllocA64(UOSInt size)
 //	wprintf(L"MAllocA64 %lx\r\n", mptr);
 	if ((OSInt)mptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of A64Memory: size = %d", (UInt32)size);
+#else
 		printf("Out of Memory: A64size = %d\n", (UInt32)size);
+#endif
 		Sync::Mutex_Unlock(&mcMut);
 		return 0;
 	}
@@ -165,7 +182,11 @@ void *MAlloc(UOSInt size)
 	REGVAR void *ptr = malloc(size + 4);
 	if ((OSInt)ptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory: size = %d", (UInt32)size);
+#else
 		printf("Out of Memory: size = %d\n", (UInt32)size);
+#endif
 		return 0;
 	}
 	*(Int32*)ptr = Interlocked_IncrementI32(&mcBlockId);
@@ -180,7 +201,11 @@ void *MAllocA(UOSInt size)
 	REGVAR UInt8 *sptr = mptr;
 	if ((OSInt)mptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory: Asize = %d", (UInt32)size);
+#else
 		printf("Out of Memory: Asize = %d\n", (UInt32)size);
+#endif
 		return 0;
 	}
 	mptr += 16;
@@ -197,7 +222,11 @@ void *MAllocA64(UOSInt size)
 	REGVAR UInt8 *sptr = mptr;
 	if ((OSInt)mptr == 0)
 	{
+#if defined(DEBUGCON)
+		syslog(LOG_DEBUG, "Out of Memory: A64size = %d", (UInt32)size);
+#else
 		printf("Out of Memory: A64size = %d\n", (UInt32)size);
+#endif
 		return 0;
 	}
 	mptr += 16;

@@ -36,7 +36,8 @@ namespace SSWR
 				ST_TCPSERVER = 3,
 				ST_TCPCLIENT = 4,
 				ST_FILE = 5,
-				ST_HID = 6
+				ST_HID = 6,
+				ST_UDPSERVER = 7
 			} StreamType;
 
 			typedef enum

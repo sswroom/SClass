@@ -12,17 +12,17 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record, SateRecord *sateRec)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
 	if (lineLen <= 3)
 	{
-		return PS_NOT_NMEA;
+		return ParseStatus::NotNMEA;
 	}
 	if (line[lineLen - 3] != '*' || line[0] != '$')
 	{
-		return PS_NOT_NMEA;
+		return ParseStatus::NotNMEA;
 	}
 	else
 	{
@@ -34,7 +34,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		}
 		if (c != Text::StrHex2UInt8C(&line[lineLen - 2]))
 		{
-			return PS_NOT_NMEA;
+			return ParseStatus::NotNMEA;
 		}
 	}
 
@@ -50,7 +50,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				record->altitude = Text::StrToDouble(sarr[9]);
 			}
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGSA")))
 	{
@@ -85,16 +85,44 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 			record->nSateUsedSBAS = nSateSBAS;
 			record->nSateUsedGLO = nSateGLO;
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGSV")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 4)
 		{
-			record->nSateViewGPS = (UInt8)Text::StrToUInt32(sarr[3]);
+			UInt32 nSateView = Text::StrToUInt32(sarr[3]);
+			if (nSateView > record->nSateViewGPS)
+			{
+				record->nSateViewGPS = (UInt8)nSateView;
+			}
+			if (sateRec && nSateView == record->nSateViewGPS)
+			{
+				UOSInt i = 4;
+				UOSInt j;
+				while (i + 4 < scnt)
+				{
+					j = sateRec->sateCnt;
+					sateRec->sates[j].sateType = SateType::GPS;
+					sateRec->sates[j].prn = (UInt8)Text::StrToUInt32(sarr[i]);
+					sateRec->sates[j].elev = (UInt8)Text::StrToUInt32(sarr[i + 1]);
+					Text::StrToUInt16S(sarr[i + 2], &sateRec->sates[j].azimuth, 0);
+					if (sarr[i + 3][0])
+					{
+						sateRec->sates[j].snr = (Int8)Text::StrToInt32(sarr[i + 3]);
+					}
+					else
+					{
+						sateRec->sates[j].snr = -1;
+					}
+
+					sateRec->sateCnt++;
+					i += 4;
+				}
+			}
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GLGSV")))
 	{
@@ -103,7 +131,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		{
 			record->nSateViewGLO = (UInt8)Text::StrToUInt32(sarr[3]);
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GAGSV")))
 	{
@@ -112,7 +140,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		{
 			record->nSateViewGA = (UInt8)Text::StrToUInt32(sarr[3]);
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GQGSV")))
 	{
@@ -121,7 +149,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		{
 			record->nSateViewQZSS = (UInt8)Text::StrToUInt32(sarr[3]);
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GBGSV")))
 	{
@@ -130,7 +158,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		{
 			record->nSateViewBD = (UInt8)Text::StrToUInt32(sarr[3]);
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$BDGSV")))
 	{
@@ -139,12 +167,12 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		{
 			record->nSateViewBD = (UInt8)Text::StrToUInt32(sarr[3]);
 		}
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPVTG")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
-		return PS_HANDLED;
+		return ParseStatus::Handled;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPRMC")))
 	{
@@ -195,16 +223,16 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 				}
 				record->lon = ddeg;
 			}
-			return PS_NEW_RECORD;
+			return ParseStatus::NewRecord;
 		}
 		else
 		{
-			return PS_UNSUPPORTED;
+			return ParseStatus::Unsupported;
 		}
 	}
 	else
 	{
-		return PS_UNSUPPORTED;
+		return ParseStatus::Unsupported;
 	}
 }
 
@@ -215,8 +243,10 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
 	Map::GPSTrack::GPSRecord2 record;
+	SateRecord sateRec;
 
 	MemClear(&record, sizeof(record));
+	MemClear(&sateRec, sizeof(sateRec));
 	me->threadRunning = true;
 	NEW_CLASS(reader, Text::UTF8Reader(me->stm));
 
@@ -229,24 +259,30 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 			{
 				me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
 			}
-			ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record);
-			if (ps == PS_NOT_NMEA)
+			ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record, &sateRec);
+			switch (ps)
 			{
-
-			}
-			else if (ps == PS_UNSUPPORTED)
-			{
+			case ParseStatus::NotNMEA:
+				break;
+			case ParseStatus::Unsupported:
 				me->ParseUnknownCmd(sbuff);
-			}
-			else if (ps == PS_NEW_RECORD)
-			{
-				me->hdlrMut->LockRead();
-				UOSInt i = me->hdlrList->GetCount();
-				while (i-- > 0)
+				break;
+			case ParseStatus::NewRecord:
 				{
-					me->hdlrList->GetItem(i)(me->hdlrObjs->GetItem(i), &record);
+					me->hdlrMut->LockRead();
+					UOSInt i = me->hdlrList->GetCount();
+					while (i-- > 0)
+					{
+						me->hdlrList->GetItem(i)(me->hdlrObjs->GetItem(i), &record, sateRec.sateCnt, sateRec.sates);
+					}
+					me->hdlrMut->UnlockRead();
+					MemClear(&record, sizeof(record));
+					sateRec.sateCnt = 0;
+					break;
 				}
-				me->hdlrMut->UnlockRead();
+			case ParseStatus::Handled:
+			default:
+				break;
 			}
 		}
 		else
@@ -366,10 +402,12 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 {
 	Map::GPSTrack *trk;
 	Map::GPSTrack::GPSRecord2 record;
+	SateRecord sateRec;
 	Text::StringBuilderUTF8 sb;
 	Text::UTF8Reader *reader;
 	ParseStatus ps;
 	MemClear(&record, sizeof(record));
+	MemClear(&sateRec, sizeof(sateRec));
 	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)
@@ -379,10 +417,11 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 		{
 			break;
 		}
-		ps = ParseNMEALine(sb.ToString(), sb.GetLength(), &record);
-		if (ps == PS_NEW_RECORD)
+		ps = ParseNMEALine(sb.ToString(), sb.GetLength(), &record, &sateRec);
+		if (ps == ParseStatus::NewRecord)
 		{
 			trk->AddRecord(&record);
+			MemClear(&record, sizeof(record));
 		}
 	}
 	DEL_CLASS(reader);

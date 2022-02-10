@@ -11,6 +11,7 @@
 #include "UI/GUIHSplitter.h"
 #include "UI/GUILabel.h"
 #include "UI/GUIListBox.h"
+#include "UI/GUIListView.h"
 #include "UI/GUITabControl.h"
 #include "UI/GUITabPage.h"
 #include "UI/GUITextBox.h"
@@ -40,6 +41,8 @@ namespace SSWR
 			Map::GPSTrack *gpsTrk;
 			Sync::Mutex *recMut;
 			Bool recUpdated;
+			UOSInt recSateCnt;
+			Map::ILocationService::SateStatus recSates[32];
 			SSWR::AVIRead::IMapNavigator *mapNavi;
 			Math::GeographicCoordinateSystem *wgs84;
 			Double lastLat;
@@ -77,8 +80,22 @@ namespace SSWR
 			UI::GUITextBox *txtGPSValid;
 			UI::GUILabel *lblNSateUsed;
 			UI::GUITextBox *txtNSateUsed;
-			UI::GUILabel *lblNSateView;
-			UI::GUITextBox *txtNSateView;
+			UI::GUILabel *lblNSateUsedGPS;
+			UI::GUITextBox *txtNSateUsedGPS;
+			UI::GUILabel *lblNSateUsedSBAS;
+			UI::GUITextBox *txtNSateUsedSBAS;
+			UI::GUILabel *lblNSateUsedGLO;
+			UI::GUITextBox *txtNSateUsedGLO;
+			UI::GUILabel *lblNSateViewGPS;
+			UI::GUITextBox *txtNSateViewGPS;
+			UI::GUILabel *lblNSateViewGLO;
+			UI::GUITextBox *txtNSateViewGLO;
+			UI::GUILabel *lblNSateViewGA;
+			UI::GUITextBox *txtNSateViewGA;
+			UI::GUILabel *lblNSateViewQZSS;
+			UI::GUITextBox *txtNSateViewQZSS;
+			UI::GUILabel *lblNSateViewBD;
+			UI::GUITextBox *txtNSateViewBD;
 			UI::GUICheckBox *chkAutoPan;
 			UI::GUICheckBox *chkNoSleep;
 			UI::GUICheckBox *chkTopMost;
@@ -112,10 +129,13 @@ namespace SSWR
 			UI::GUIButton *btnMTKFactoryReset;
 			UI::GUIButton *btnMTKTest;
 
+			UI::GUITabPage *tpSate;
+			UI::GUIListView *lvSate;
+
 			UI::GUITabPage *tpNMEA;
 			UI::GUIListBox *lbNMEA;
 
-			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record);
+			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMTKFirmwareClicked(void *userObj);
 			static void __stdcall OnMTKLogDownloadClicked(void *userObj);

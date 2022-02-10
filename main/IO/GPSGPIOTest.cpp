@@ -14,7 +14,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord2 *record)
+void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Lat = "));

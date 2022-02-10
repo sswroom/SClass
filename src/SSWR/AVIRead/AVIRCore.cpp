@@ -605,6 +605,8 @@ Text::CString SSWR::AVIRead::AVIRCore::GetStreamTypeName(StreamType st)
 		return CSTR("File (Readonly)");
 	case AVIRCore::ST_HID:
 		return CSTR("HID");
+	case AVIRCore::ST_UDPSERVER:
+		return CSTR("UDP Server");
 	default:
 		return CSTR("Unknown");
 	}

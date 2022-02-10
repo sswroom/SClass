@@ -13,7 +13,25 @@ namespace Map
 			ST_MTK
 		} ServiceType;
 
-		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord2 *record);
+		enum class SateType
+		{
+			GPS,
+			GLONASS,
+			Galileo,
+			QZSS,
+			BeiDou
+		};
+
+		struct SateStatus
+		{
+			SateType sateType;
+			UInt8 prn;
+			UInt8 elev;
+			UInt16 azimuth;
+			Int8 snr;
+		};
+
+		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, SateStatus *sates);
 
 		virtual ~ILocationService() {};
 
@@ -22,6 +40,8 @@ namespace Map
 		virtual void UnregisterLocationHandler(LocationHandler hdlr, void *userObj) = 0;
 		virtual void ErrorRecover() = 0;
 		virtual ServiceType GetServiceType() = 0;
+
+		static Text::CString SateTypeGetName(SateType sateType);
 	};
-};
+}
 #endif

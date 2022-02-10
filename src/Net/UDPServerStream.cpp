@@ -4,6 +4,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilder.h"
+
 #define BUFFSIZE 2048
 
 void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
@@ -28,6 +29,7 @@ void __stdcall Net::UDPServerStream::OnUDPPacket(const Net::SocketUtil::AddressI
 		MemCopyNO(&me->buff[me->buffSize], buff, dataSize);
 		me->buffSize += dataSize;
 	}
+	me->readEvt->Set();
 }
 
 Net::UDPServerStream::UDPServerStream(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log) : IO::Stream(CSTR("Net.UDPServerSream"))
@@ -74,7 +76,7 @@ UOSInt Net::UDPServerStream::Read(UInt8 *buff, UOSInt size)
 	if (this->buffSize > size)
 	{
 		MemCopyNO(buff, this->buff, size);
-		MemCopyNO(this->buff, &this->buff[size], this->buffSize - size);
+		MemCopyO(this->buff, &this->buff[size], this->buffSize - size);
 		this->buffSize -= size;
 		ret = size;
 	}
@@ -106,6 +108,7 @@ Int32 Net::UDPServerStream::Flush()
 void Net::UDPServerStream::Close()
 {
 	SDEL_CLASS(this->svr);
+	this->readEvt->Set();
 }
 
 Bool Net::UDPServerStream::Recover()

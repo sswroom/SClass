@@ -1805,9 +1805,10 @@ Map/HKTDVehRestrict.h: ../../src/Map/HKTDVehRestrict.cpp
 Map/HKTrafficLayer.h: ../../src/Map/HKTrafficLayer.cpp
 @HKTrafficLayer.o
 Map/IAssistedReverseGeocoder.h:
+Map/ILocationService.h: ../../src/Map/ILocationService.cpp
+@ILocationService.o
 Map/IMapDrawLayer.h: ../../src/Map/IMapDrawLayer.cpp
 @IMapDrawLayer.o
-Map/ILocationService.h:
 Map/IMapSearchLayer.h:
 Map/IReverseGeocoder.h:
 Map/LayerTools.h: ../../src/Map/LayerTools.cpp
@@ -4257,6 +4258,7 @@ FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp
 HKTDVehRestrict.o: ../../src/Map/HKTDVehRestrict.cpp
 HKTrafficLayer.o: ../../src/Map/HKTrafficLayer.cpp
+ILocationService.o: ../../src/Map/ILocationService.cpp
 IMapDrawLayer.o: ../../src/Map/IMapDrawLayer.cpp
 LayerTools.o: ../../src/Map/LayerTools.cpp
 LeveledMapView.o: ../../src/Map/LeveledMapView.cpp

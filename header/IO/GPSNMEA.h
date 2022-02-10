@@ -13,14 +13,21 @@ namespace IO
 	{
 	public:
 		typedef void (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
+
 	private:
-		typedef enum
+		enum class ParseStatus
 		{
-			PS_NOT_NMEA,
-			PS_UNSUPPORTED,
-			PS_HANDLED,
-			PS_NEW_RECORD
-		} ParseStatus;
+			NotNMEA,
+			Unsupported,
+			Handled,
+			NewRecord
+		};
+
+		struct SateRecord
+		{
+			UOSInt sateCnt;
+			SateStatus sates[32];
+		};
 	protected:
 		IO::Stream *stm;
 	private:
@@ -35,7 +42,7 @@ namespace IO
 		Bool threadToStop;
 	private:
 		virtual void ParseUnknownCmd(const UTF8Char *cmd);
-		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record);
+		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record, SateRecord *sateRec);
 		static UInt32 __stdcall NMEAThread(void *userObj);
 	public:
 		GPSNMEA(IO::Stream *stm, Bool relStm);

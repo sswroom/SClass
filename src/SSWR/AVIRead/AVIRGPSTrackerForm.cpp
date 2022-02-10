@@ -23,12 +23,14 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::OnFocusLost()
 	this->frm->DispOffFocusLost();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record, UOSInt sateCnt, Map::ILocationService::SateStatus *sates)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
 	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord2));
+	me->recSateCnt = sateCnt;
+	MemCopyNO(me->recSates, sates, sateCnt * sizeof(Map::ILocationService::SateStatus));
 	me->recUpdated = true;
 	if (me->gpsTrk && record->valid)
 	{
@@ -85,10 +87,45 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		me->txtGPSValid->SetText(me->recCurr.valid?(const UTF8Char*)"Valid":(const UTF8Char*)"Invalid");
 		Text::StrInt32(sbuff, me->recCurr.nSateUsed);
 		me->txtNSateUsed->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateUsedGPS);
+		me->txtNSateUsedGPS->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateUsedSBAS);
+		me->txtNSateUsedSBAS->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateUsedGLO);
+		me->txtNSateUsedGLO->SetText(sbuff);
 		Text::StrInt32(sbuff, me->recCurr.nSateViewGPS);
-		me->txtNSateView->SetText(sbuff);
+		me->txtNSateViewGPS->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateViewGLO);
+		me->txtNSateViewGLO->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateViewGA);
+		me->txtNSateViewGA->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateViewQZSS);
+		me->txtNSateViewQZSS->SetText(sbuff);
+		Text::StrInt32(sbuff, me->recCurr.nSateViewBD);
+		me->txtNSateViewBD->SetText(sbuff);
 		Text::StrDouble(sbuff, me->dist);
 		me->txtDistance->SetText(sbuff);
+
+		me->lvSate->ClearItems();
+		UOSInt i = 0;
+		while (i < me->recSateCnt)
+		{
+			me->lvSate->AddItem(Map::ILocationService::SateTypeGetName(me->recSates[i].sateType), 0);
+			Text::StrUInt16(sbuff, me->recSates[i].prn);
+			me->lvSate->SetSubItem(i, 1, sbuff);
+			Text::StrUInt16(sbuff, me->recSates[i].elev);
+			me->lvSate->SetSubItem(i, 2, sbuff);
+			Text::StrUInt16(sbuff, me->recSates[i].azimuth);
+			me->lvSate->SetSubItem(i, 3, sbuff);
+			if (me->recSates[i].snr >= 0)
+			{
+				Text::StrInt16(sbuff, me->recSates[i].snr);
+				me->lvSate->SetSubItem(i, 4, sbuff);
+			}
+			i++;
+		}
+
+
 		me->recUpdated = false;
 		if (me->mapNavi && me->recCurr.valid)
 		{
@@ -229,16 +266,16 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 	me->nmeaUpdated = true;
 }
 
-SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 372, ui)
+SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetNoResize(true);
 	this->SetText((const UTF8Char*)"GPS Tracker");
 
 	this->core = core;
 	this->locSvc = locSvc;
 	this->relLocSvc = toRelease;
 	this->recUpdated = false;
+	this->recSateCnt = 0;
 	this->gpsTrk = 0;
 	this->mapNavi = 0;
 	this->lastLat = 0;
@@ -309,25 +346,60 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtNSateUsed, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
 	this->txtNSateUsed->SetRect(108, 200, 100, 23, false);
 	this->txtNSateUsed->SetReadOnly(true);
-	NEW_CLASS(this->lblNSateView, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View"));
-	this->lblNSateView->SetRect(8, 224, 100, 23, false);
-	NEW_CLASS(this->txtNSateView, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtNSateView->SetRect(108, 224, 100, 23, false);
-	this->txtNSateView->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateUsedGPS, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite Used GPS"));
+	this->lblNSateUsedGPS->SetRect(8, 224, 100, 23, false);
+	NEW_CLASS(this->txtNSateUsedGPS, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateUsedGPS->SetRect(108, 224, 100, 23, false);
+	this->txtNSateUsedGPS->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateUsedSBAS, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite Used SBAS"));
+	this->lblNSateUsedSBAS->SetRect(8, 248, 100, 23, false);
+	NEW_CLASS(this->txtNSateUsedSBAS, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateUsedSBAS->SetRect(108, 248, 100, 23, false);
+	this->txtNSateUsedSBAS->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateUsedGLO, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite Used GLO"));
+	this->lblNSateUsedGLO->SetRect(8, 272, 100, 23, false);
+	NEW_CLASS(this->txtNSateUsedGLO, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateUsedGLO->SetRect(108, 272, 100, 23, false);
+	this->txtNSateUsedGLO->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateViewGPS, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View GPS"));
+	this->lblNSateViewGPS->SetRect(8, 296, 100, 23, false);
+	NEW_CLASS(this->txtNSateViewGPS, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateViewGPS->SetRect(108, 296, 100, 23, false);
+	this->txtNSateViewGPS->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateViewGLO, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View GLO"));
+	this->lblNSateViewGLO->SetRect(8, 320, 100, 23, false);
+	NEW_CLASS(this->txtNSateViewGLO, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateViewGLO->SetRect(108, 320, 100, 23, false);
+	this->txtNSateViewGLO->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateViewGA, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View GA"));
+	this->lblNSateViewGA->SetRect(8, 344, 100, 23, false);
+	NEW_CLASS(this->txtNSateViewGA, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateViewGA->SetRect(108, 344, 100, 23, false);
+	this->txtNSateViewGA->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateViewQZSS, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View QZSS"));
+	this->lblNSateViewQZSS->SetRect(8, 368, 100, 23, false);
+	NEW_CLASS(this->txtNSateViewQZSS, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateViewQZSS->SetRect(108, 368, 100, 23, false);
+	this->txtNSateViewQZSS->SetReadOnly(true);
+	NEW_CLASS(this->lblNSateViewBD, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Satelite View BD"));
+	this->lblNSateViewBD->SetRect(8, 392, 100, 23, false);
+	NEW_CLASS(this->txtNSateViewBD, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
+	this->txtNSateViewBD->SetRect(108, 392, 100, 23, false);
+	this->txtNSateViewBD->SetReadOnly(true);
 	NEW_CLASS(this->chkAutoPan, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Auto Pan", true));
-	this->chkAutoPan->SetRect(108, 248, 100, 23, false);
+	this->chkAutoPan->SetRect(108, 416, 100, 23, false);
 	NEW_CLASS(this->chkTopMost, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Top Most", false));
-	this->chkTopMost->SetRect(208, 248, 100, 23, false);
+	this->chkTopMost->SetRect(208, 416, 100, 23, false);
 	this->chkTopMost->HandleCheckedChange(OnTopMostChg, this);
 	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Prevent Sleep", true));
-	this->chkNoSleep->SetRect(108, 272, 100, 23, false);
+	this->chkNoSleep->SetRect(108, 440, 100, 23, false);
 	NEW_CLASS(this->btnDispOff, DisplayOffButton(ui, this->tpLocation, (const UTF8Char*)"Display Off", this));
-	this->btnDispOff->SetRect(208, 272, 100, 23, false);
+	this->btnDispOff->SetRect(208, 440, 100, 23, false);
 	this->btnDispOff->HandleButtonClick(OnDispOffClicked, this);
 	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"H-Distance"));
-	this->lblDistance->SetRect(8, 296, 100, 23, false);
+	this->lblDistance->SetRect(8, 464, 100, 23, false);
 	NEW_CLASS(this->txtDistance, UI::GUITextBox(ui, this->tpLocation, CSTR("")));
-	this->txtDistance->SetRect(108, 296, 100, 23, false);
+	this->txtDistance->SetRect(108, 464, 100, 23, false);
 	this->txtDistance->SetReadOnly(true);
 
 	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
@@ -389,6 +461,17 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 		this->btnMTKTest->SetRect(0, 140, 75, 23, false);
 		this->btnMTKTest->HandleButtonClick(OnMTKTestClicked, this);*/
 	}
+
+	this->tpSate = this->tcMain->AddTabPage(CSTR("Satellite"));
+	NEW_CLASS(this->lvSate, UI::GUIListView(ui, this->tpSate, UI::GUIListView::LVSTYLE_TABLE, 5));
+	this->lvSate->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lvSate->AddColumn((const UTF8Char*)"Type", 80);
+	this->lvSate->AddColumn((const UTF8Char*)"PRN", 60);
+	this->lvSate->AddColumn((const UTF8Char*)"Elevation", 60);
+	this->lvSate->AddColumn((const UTF8Char*)"Azimuth", 60);
+	this->lvSate->AddColumn((const UTF8Char*)"SNR", 60);
+	this->lvSate->SetShowGrid(true);
+	this->lvSate->SetFullRowSelect(true);
 
 	this->tpNMEA = this->tcMain->AddTabPage(CSTR("NMEA"));
 	NEW_CLASS(this->lbNMEA, UI::GUIListBox(ui, this->tpNMEA, false));
