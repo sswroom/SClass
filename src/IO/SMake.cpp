@@ -592,7 +592,8 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 							UOSInt i = prog->subItems->GetCount();
 							while (i-- > 0)
 							{
-								if (this->debugObj && this->messageWriter && prog->subItems->GetItem(i)->Equals(this->debugObj))
+								Text::String *subItem = prog->subItems->GetItem(i);
+								if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
 									sb2.Append(debugObj);
@@ -600,9 +601,9 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 									sb2.AppendC(sourceFile, sourceFileLen);
 									this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 								}
-								if (objList->SortedIndexOf(prog->subItems->GetItem(i)) < 0)
+								if (objList->SortedIndexOf(subItem) < 0)
 								{
-									objList->SortedInsert(prog->subItems->GetItem(i));
+									objList->SortedInsert(subItem);
 								}
 							}
 							i = prog->libs->GetCount();
@@ -756,6 +757,14 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			*progGroup = false;
+		}
+		if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
+		{
+			Text::StringBuilderUTF8 sb2;
+			sb2.Append(debugObj);
+			sb2.AppendC(UTF8STRC(" depends by "));
+			sb2.Append(prog->name);
+			this->messageWriter->WriteLineC(sb2.ToString(), sb2.GetLength());
 		}
 		objList->SortedInsert(subItem);
 	}

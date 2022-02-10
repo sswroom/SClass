@@ -79,6 +79,7 @@ nodeps:
 @DS18B20Test
 @GPIOOutput
 @GPIOReadAll
+@GPIOServer
 @GPSGPIOTest
 @GSMModemTest
 @JavaClassTest
@@ -288,6 +289,9 @@ GPIOOutput:
 @ConsoleStartup.o
 GPIOReadAll:
 @GPIOReadAll.o
+@ConsoleStartup.o
+GPIOServer:
+@GPIOServer.o
 @ConsoleStartup.o
 GPSGPIOTest:
 @GPSGPIOTest.o
@@ -859,6 +863,7 @@ DHT22Test.o: ../../main/IO/DHT22Test.cpp
 DS18B20Test.o: ../../main/IO/DS18B20Test.cpp
 GPIOOutput.o: ../../main/IO/GPIOOutput.cpp
 GPIOReadAll.o: ../../main/IO/GPIOReadAll.cpp
+GPIOServer.o: ../../main/IO/GPIOServer.cpp
 GPSGPIOTest.o: ../../main/IO/GPSGPIOTest.cpp
 GSMModemTest.o: ../../main/IO/GSMModemTest.cpp
 JavaClassTest.o: ../../main/IO/JavaClassTest.cpp

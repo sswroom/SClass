@@ -19,8 +19,8 @@ IO::GPIOControl::GPIOControl()
 {
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	NEW_CLASS(clsData->mem, IO::PhysicalMem(IO_BASE_ADDR, BLOCKSIZE));
-	clsData->gpioPtr = (volatile UInt32 *)clsData->mem->GetPointer() + 0x600;
-	clsData->sysCtlPtr = (volatile UInt32 *)clsData->mem->GetPointer() + 0x000;
+	clsData->gpioPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x600);
+	clsData->sysCtlPtr = (volatile UInt32 *)(clsData->mem->GetPointer() + 0x000);
 	this->clsData = clsData;
 }
 

@@ -1,0 +1,11 @@
+Pin 5 = USR LED
+Pin 6 = WIFI LED
+Pin 7 = ?
+
+Pin 13 = RUN LED
+Pin 14 = MODEM LED
+Pin 15 = NET LED
+Pin 16 = GSM Red LED
+Pin 17 = GSM Green LED
+
+Pin 19 = Reboot?

@@ -255,15 +255,15 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	{
 		if (pinNum < 32)
 		{
-			this->clsData->gpioPtr[12] |= (1 << pinNum);
+			this->clsData->gpioPtr[12] = (1 << pinNum);
 		}
 		else if (pinNum < 64)
 		{
-			this->clsData->gpioPtr[13] |= (1 << (pinNum - 32));
+			this->clsData->gpioPtr[13] = (1 << (pinNum - 32));
 		}
 		else if (pinNum < 96)
 		{
-			this->clsData->gpioPtr[14] |= (1 << (pinNum - 64));
+			this->clsData->gpioPtr[14] = (1 << (pinNum - 64));
 		}
 		else
 		{
@@ -274,15 +274,15 @@ Bool IO::GPIOControl::SetPinState(UOSInt pinNum, Bool isHigh)
 	{
 		if (pinNum < 32)
 		{
-			this->clsData->gpioPtr[16] |= (1 << pinNum);
+			this->clsData->gpioPtr[16] = (1 << pinNum);
 		}
 		else if (pinNum < 64)
 		{
-			this->clsData->gpioPtr[17] |= (1 << (pinNum - 32));
+			this->clsData->gpioPtr[17] = (1 << (pinNum - 32));
 		}
 		else if (pinNum < 96)
 		{
-			this->clsData->gpioPtr[18] |= (1 << (pinNum - 64));
+			this->clsData->gpioPtr[18] = (1 << (pinNum - 64));
 		}
 		else
 		{
