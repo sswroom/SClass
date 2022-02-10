@@ -619,7 +619,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->tcImage, UI::GUITabControl(ui, this));
 	this->tcImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpImage = this->tcImage->AddTabPage((const UTF8Char*)"Image");
+	this->tpImage = this->tcImage->AddTabPage(CSTR("Image"));
 	NEW_CLASS(this->txtImageStatus, UI::GUITextBox(ui, this->tpImage, CSTR("")));
 	this->txtImageStatus->SetRect(0, 0, 100, 23, false);
 	this->txtImageStatus->SetReadOnly(true);
@@ -627,7 +627,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->pbImage, UI::GUIPictureBoxDD(ui, this->tpImage, this->colorSess, this->allowEnlarge, false));
 	this->pbImage->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbImage->HandleMouseMove(OnImageMouseMove, this);
-	this->tpInfo = this->tcImage->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcImage->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);

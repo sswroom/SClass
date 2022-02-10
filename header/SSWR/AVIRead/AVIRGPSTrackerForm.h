@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_AVIREAD_AVIRGPSTRACKERFORM
 #define _SM_SSWR_AVIREAD_AVIRGPSTRACKERFORM
+#include "Data/SyncCircularBuff.h"
 #include "IO/GPSNMEA.h"
 #include "SSWR/AVIRead/AVIRCore.h"
 #include "SSWR/AVIRead/IMapNavigator.h"
@@ -49,6 +50,11 @@ namespace SSWR
 			Bool dispOffClk;
 			Int64 dispOffTime;
 			Bool dispIsOff;
+
+			Sync::Mutex *nmeaMut;
+			Text::String **nmeaBuff;
+			UOSInt nmeaIndex;
+			Bool nmeaUpdated;
 
 			UI::GUITabControl *tcMain;
 
@@ -106,6 +112,9 @@ namespace SSWR
 			UI::GUIButton *btnMTKFactoryReset;
 			UI::GUIButton *btnMTKTest;
 
+			UI::GUITabPage *tpNMEA;
+			UI::GUIListBox *lbNMEA;
+
 			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord *record);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMTKFirmwareClicked(void *userObj);
@@ -115,6 +124,7 @@ namespace SSWR
 			static void __stdcall OnMTKFactoryResetClicked(void *userObj);
 			static void __stdcall OnDispOffClicked(void *userObj);
 			static void __stdcall OnTopMostChg(void *userObj, Bool newState);
+			static void __stdcall OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen);
 		public:
 			AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease);
 			virtual ~AVIRGPSTrackerForm();

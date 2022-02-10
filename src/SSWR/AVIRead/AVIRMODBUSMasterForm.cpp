@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpGetValue = this->tcMain->AddTabPage((const UTF8Char*)"GetValue");
+	this->tpGetValue = this->tcMain->AddTabPage(CSTR("GetValue"));
 	NEW_CLASS(this->lblDevAddr, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"Dev Addr"));
 	this->lblDevAddr->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->lblRegAddr, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"Reg Addr"));
@@ -376,7 +376,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtF32Value->SetRect(384, 52, 200, 23, false);
 	this->txtF32Value->SetReadOnly(true);
 
-	this->tpDevice = this->tcMain->AddTabPage((const UTF8Char*)"Device");
+	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);

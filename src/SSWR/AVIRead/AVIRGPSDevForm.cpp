@@ -520,14 +520,14 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblStatusConn, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Status"));
 	this->lblStatusConn->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStatusConn, UI::GUITextBox(ui, this->tpStatus, CSTR("Not Connected")));
 	this->txtStatusConn->SetRect(104, 4, 100, 23, false);
 	this->txtStatusConn->SetReadOnly(true);
 
-	this->tpDevice = this->tcMain->AddTabPage((const UTF8Char*)"Device");
+	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	NEW_CLASS(this->pnlDeviceC, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDeviceC->SetRect(0, 0, 200, 23, false);
 	this->pnlDeviceC->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -541,14 +541,14 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->hspDevice, UI::GUIHSplitter(ui, this->tpDevice, 3, false));
 	NEW_CLASS(this->tcDevice, UI::GUITabControl(ui, this->tpDevice));
 	this->tcDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpDevInfo = this->tcDevice->AddTabPage((const UTF8Char*)"Info");
+	this->tpDevInfo = this->tcDevice->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lvDevInfo, UI::GUIListView(ui, this->tpDevInfo, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvDevInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevInfo->SetFullRowSelect(true);
 	this->lvDevInfo->SetShowGrid(true);
 	this->lvDevInfo->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvDevInfo->AddColumn((const UTF8Char*)"Value", 400);
-	this->tpDevAlert = this->tcDevice->AddTabPage((const UTF8Char*)"Alert");
+	this->tpDevAlert = this->tcDevice->AddTabPage(CSTR("Alert"));
 	NEW_CLASS(this->lvDevAlert, UI::GUIListView(ui, this->tpDevAlert, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvDevAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevAlert->SetFullRowSelect(true);
@@ -559,7 +559,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvDevAlert->AddColumn((const UTF8Char*)"isFirst", 60);
 	this->lvDevAlert->AddColumn((const UTF8Char*)"Begin Time (UTC)", 200);
 	this->lvDevAlert->AddColumn((const UTF8Char*)"Last Time (UTC)", 200);
-	this->tpDevGuard = this->tcDevice->AddTabPage((const UTF8Char*)"Guard");
+	this->tpDevGuard = this->tcDevice->AddTabPage(CSTR("Guard"));
 	NEW_CLASS(this->lvDevGuard, UI::GUIListView(ui, this->tpDevGuard, UI::GUIListView::LVSTYLE_TABLE, 11));
 	this->lvDevGuard->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevGuard->SetFullRowSelect(true);
@@ -576,7 +576,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus4", 60);
 	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus5", 60);
 
-	this->tpUser = this->tcMain->AddTabPage((const UTF8Char*)"User");
+	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	NEW_CLASS(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUserC->SetRect(0, 0, 200, 23, false);
 	this->pnlUserC->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -600,7 +600,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvUser->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvUser->AddColumn((const UTF8Char*)"Value", 400);
 
-	this->tpAlert = this->tcMain->AddTabPage((const UTF8Char*)"Alert");
+	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
 	NEW_CLASS(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlertC->SetRect(0, 0, 200, 23, false);
 	this->pnlAlertC->SetDockType(UI::GUIControl::DOCK_LEFT);

@@ -11,6 +11,8 @@ namespace IO
 {
 	class GPSNMEA : public Map::ILocationService
 	{
+	public:
+		typedef void (__stdcall *CommandHandler)(void *userObj, const UTF8Char *cmd, UOSInt cmdLen);
 	private:
 		typedef enum
 		{
@@ -26,12 +28,14 @@ namespace IO
 		Data::ArrayList<LocationHandler> *hdlrList;
 		Data::ArrayList<void *> *hdlrObjs;
 		Sync::RWMutex *hdlrMut;
+		CommandHandler cmdHdlr;
+		void *cmdHdlrObj;
 
 		Bool threadRunning;
 		Bool threadToStop;
 	private:
 		virtual void ParseUnknownCmd(const UTF8Char *cmd);
-		static ParseStatus ParseNMEALine(UTF8Char *line, Map::GPSTrack::GPSRecord *record);
+		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord *record);
 		static UInt32 __stdcall NMEAThread(void *userObj);
 	public:
 		GPSNMEA(IO::Stream *stm, Bool relStm);
@@ -42,6 +46,8 @@ namespace IO
 		virtual void UnregisterLocationHandler(LocationHandler hdlr, void *userObj);
 		virtual void ErrorRecover();
 		virtual ServiceType GetServiceType();
+
+		void HandleCommand(CommandHandler cmdHdlr, void *userObj);
 
 		static UOSInt GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff);
 		static Map::GPSTrack *NMEA2Track(IO::Stream *stm, Text::CString sourceName);

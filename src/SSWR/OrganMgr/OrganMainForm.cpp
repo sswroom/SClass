@@ -2603,7 +2603,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->tcMain->HandleSelChanged(OnTabSelChg, this);
 
 	UI::GUILabel *lbl;
-	this->tpGroup = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabGroup")).v);
+	this->tpGroup = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabGroup")));
 	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupId")).v));
 	lbl->SetRect(8, 4, 56, 29, false);
 	NEW_CLASS(this->txtGroupId, UI::GUITextBox(ui, this->tpGroup, CSTR("")));
@@ -2642,7 +2642,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->btnGroupEnter->HandleButtonClick(OnGroupEnterClick, this);
 
 
-	this->tpSpecies = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabSpecies")).v);
+	this->tpSpecies = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabSpecies")));
 	NEW_CLASS(this->pnlSpecies, UI::GUIPanel(ui, this->tpSpecies));
 	this->pnlSpecies->SetRect(0, 0, 480, 288, false);
 	this->pnlSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -2722,7 +2722,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColName")).v, 800);
 	this->lvSpBook->HandleSelChg(OnSpBookSelChg, this);
 	
-	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabImage")).v);
+	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabImage")));
 	NEW_CLASS(this->pnlImage, UI::GUIPanel(ui, this->tpImage));
 	this->pnlImage->SetArea(0, 0, 480, 22, false);
 	this->pnlImage->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -2769,7 +2769,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->pbImg->HandleDropEvents(this);
 //	RegisterDragDrop((HWND)this->pbImg->GetHandle(), this);
 
-	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabMap")).v);
+	this->tpMap = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabMap")));
 	NEW_CLASS(this->pnlMapCtrl, UI::GUIPanel(ui, this->tpMap));
 	this->pnlMapCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlMapCtrl->SetDockType(UI::GUIControl::DOCK_TOP);

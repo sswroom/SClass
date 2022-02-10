@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpItems = this->tcMain->AddTabPage((const UTF8Char*)"Items");
+	this->tpItems = this->tcMain->AddTabPage(CSTR("Items"));
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpItems));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->lvItems->AddColumn((const UTF8Char*)"Date", 120);
 	this->lvItems->AddColumn((const UTF8Char*)"Title", 600);
 
-	this->tpDownloadLink = this->tcMain->AddTabPage((const UTF8Char*)"Download Link");
+	this->tpDownloadLink = this->tcMain->AddTabPage(CSTR("Download Link"));
 	NEW_CLASS(this->lblVideoId, UI::GUILabel(ui, this->tpDownloadLink, (const UTF8Char*)"VideoId"));
 	this->lblVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtVideoId, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->txtDownloadLink->SetRect(104, 28, 500, 23, false);
 	this->txtDownloadLink->SetReadOnly(true);
 
-	this->tpVideoName = this->tcMain->AddTabPage((const UTF8Char*)"Video Name");
+	this->tpVideoName = this->tcMain->AddTabPage(CSTR("Video Name"));
 	NEW_CLASS(this->lblNameVideoId, UI::GUILabel(ui, this->tpVideoName, (const UTF8Char*)"VideoId"));
 	this->lblNameVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtNameVideoId, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));

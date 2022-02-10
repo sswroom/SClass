@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpFileStruct = this->tcMain->AddTabPage((const UTF8Char*)"File Structure");
+	this->tpFileStruct = this->tcMain->AddTabPage(CSTR("File Structure"));
 	NEW_CLASS(this->txtFileStruct, UI::GUITextBox(ui, this->tpFileStruct, CSTR(""), true));
 	this->txtFileStruct->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtFileStruct->SetReadOnly(true);
@@ -31,11 +31,11 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->clsFile->FileStructDetail(&sb);
 	this->txtFileStruct->SetText(sb.ToString());
 
-	this->tpFields = this->tcMain->AddTabPage((const UTF8Char*)"Fields");
+	this->tpFields = this->tcMain->AddTabPage(CSTR("Fields"));
 	NEW_CLASS(this->lbFields, UI::GUIListBox(ui, this->tpFields, false));
 	this->lbFields->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpMethods = this->tcMain->AddTabPage((const UTF8Char*)"Methods");
+	this->tpMethods = this->tcMain->AddTabPage(CSTR("Methods"));
 	NEW_CLASS(this->lbMethods, UI::GUIListBox(ui, this->tpMethods, false));
 	this->lbMethods->SetRect(0, 0, 100, 300, false);
 	this->lbMethods->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -45,7 +45,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtMethods->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtMethods->SetReadOnly(true);
 
-	this->tpDecompile = this->tcMain->AddTabPage((const UTF8Char*)"Decompile");
+	this->tpDecompile = this->tcMain->AddTabPage(CSTR("Decompile"));
 	NEW_CLASS(this->txtDecompile, UI::GUITextBox(ui, this->tpDecompile, CSTR(""), true));
 	this->txtDecompile->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDecompile->SetReadOnly(true);

@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpFile = this->tcMain->AddTabPage((const UTF8Char*)"File");
+	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));
 	NEW_CLASS(this->btnFileCert, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"Cert"));
 	this->btnFileCert->SetRect(4, 4, 75, 23, false);
 	this->btnFileCert->HandleButtonClick(OnFileCertClicked, this);
@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->btnFileConfirm->SetRect(4, 52, 75, 23, false);
 	this->btnFileConfirm->HandleButtonClick(OnFileConfirmClicked, this);
 
-	this->tpGenerate = this->tcMain->AddTabPage((const UTF8Char*)"Generate");
+	this->tpGenerate = this->tcMain->AddTabPage(CSTR("Generate"));
 	NEW_CLASS(this->lblGenCountry, UI::GUILabel(ui, this->tpGenerate, (const UTF8Char*)"Country"));
 	this->lblGenCountry->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtGenCountry, UI::GUITextBox(ui, this->tpGenerate, CSTR("HK")));

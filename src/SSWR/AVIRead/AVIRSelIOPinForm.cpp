@@ -116,13 +116,13 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, this));
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpGPIO = this->tcConfig->AddTabPage((const UTF8Char*)"GPIO");
+	this->tpGPIO = this->tcConfig->AddTabPage(CSTR("GPIO"));
 	NEW_CLASS(this->lblGPIO, UI::GUILabel(ui, this->tpGPIO, (const UTF8Char*)"GPIO Pin"));
 	this->lblGPIO->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboGPIO, UI::GUIComboBox(ui, this->tpGPIO, false));
 	this->cboGPIO->SetRect(108, 8, 100, 23, false);
 
-	this->tpVirtualPin = this->tcConfig->AddTabPage((const UTF8Char*)"VirtualPin");
+	this->tpVirtualPin = this->tcConfig->AddTabPage(CSTR("VirtualPin"));
 	NEW_CLASS(this->lblVirtualPin, UI::GUILabel(ui, this->tpVirtualPin, (const UTF8Char*)"VirtualPin"));
 	this->lblVirtualPin->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboVirtualPin, UI::GUIComboBox(ui, this->tpVirtualPin, false));

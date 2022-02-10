@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	NEW_CLASS(this->tcDB, UI::GUITabControl(ui, this));
 	this->tcDB->SetRect(0, 0, 100, 400, false);
 	this->tcDB->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->tpTable = this->tcDB->AddTabPage((const UTF8Char*)"Tables");
+	this->tpTable = this->tcDB->AddTabPage(CSTR("Tables"));
 //	this->tpSQL = this->tcDB->AddTabPage(L"SQL");
 	NEW_CLASS(this->vspDB, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 1));

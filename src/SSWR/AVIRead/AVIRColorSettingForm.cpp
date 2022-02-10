@@ -494,7 +494,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpSetting = this->tcMain->AddTabPage((const UTF8Char*)"Setting");
+	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	NEW_CLASS(this->lblMonProfile, UI::GUILabel(ui, this->tpSetting, (const UTF8Char*)"Monitor Profile"));
 	this->lblMonProfile->SetRect(0, 0, 150, 23, false);
 	NEW_CLASS(this->cboMonProfile, UI::GUIComboBox(ui, this->tpSetting, false);
@@ -614,7 +614,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->radYUVDefSMPTE240M->SetRect(144, 48, 100, 23, false);
 	this->radYUVDefSMPTE240M->HandleSelectedChange(OnYUVDefSMPTE240MChg, this);
 
-	this->tpCal = this->tcMain->AddTabPage((const UTF8Char*)"Calibrate");
+	this->tpCal = this->tcMain->AddTabPage(CSTR("Calibrate"));
 	NEW_CLASS(this->pnlCalRed, UI::GUIPanel(ui, this->tpCal));
 	this->pnlCalRed->SetBGColor(0xffffc0c0);
 	this->pnlCalRed->SetRect(0, 0, 608, 104, false);
@@ -701,7 +701,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->lblCalBlueGV, UI::GUILabel(ui, this->pnlCalBlue, (const UTF8Char*)""));
 	this->lblCalBlueGV->SetRect(520, 56, 64, 16, false);
 
-	this->tpRGB = this->tcMain->AddTabPage((const UTF8Char*)"RGB");
+	this->tpRGB = this->tcMain->AddTabPage(CSTR("RGB"));
 	NEW_CLASS(this->lblMonVBrig, UI::GUILabel(ui, this->tpRGB, (const UTF8Char*)"Monitor Video Brightness"));
 	this->lblMonVBrig->SetRect(8, 8, 128, 16, false);
 	NEW_CLASS(this->hsbMonVBrig, UI::GUIHScrollBar(ui, this->tpRGB, 16));
@@ -746,7 +746,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->lblMonBBrigV, UI::GUILabel(ui, this->tpRGB, (const UTF8Char*)""));
 	this->lblMonBBrigV->SetRect(528, 104, 64, 16, false);
 
-	this->tpYUV = this->tcMain->AddTabPage((const UTF8Char*)"YUV");
+	this->tpYUV = this->tcMain->AddTabPage(CSTR("YUV"));
 	NEW_CLASS(this->lblYUVBrig, UI::GUILabel(ui, this->tpYUV, (const UTF8Char*)"Brightness"));
 	this->lblYUVBrig->SetRect(8, 8, 120, 16, false);
 	NEW_CLASS(this->hsbYUVBrig, UI::GUIHScrollBar(ui, this->tpYUV, 16));

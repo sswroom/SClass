@@ -138,10 +138,10 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
-	this->tpContext = this->tcMain->AddTabPage((const UTF8Char*)"Context");
-	this->tpStack = this->tcMain->AddTabPage((const UTF8Char*)"Stack");
-	this->tpMyStack = this->tcMain->AddTabPage((const UTF8Char*)"My Stack");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
+	this->tpContext = this->tcMain->AddTabPage(CSTR("Context"));
+	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
+	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
 
 	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Thread Id"));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);

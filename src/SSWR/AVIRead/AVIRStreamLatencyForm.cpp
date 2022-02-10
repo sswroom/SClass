@@ -223,11 +223,11 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpLatency = this->tcMain->AddTabPage((const UTF8Char*)"Latency (ms)");
+	this->tpLatency = this->tcMain->AddTabPage(CSTR("Latency (ms)"));
 	NEW_CLASS(this->rlcLatency, UI::GUIRealtimeLineChart(ui, this->tpLatency, this->core->GetDrawEngine(), 1, 256, 1000));
 	this->rlcLatency->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblSentCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Sent Cnt"));
 	this->lblSentCnt->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));

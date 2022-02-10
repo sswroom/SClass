@@ -107,7 +107,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpUser = this->tcMain->AddTabPage((const UTF8Char*)"User");
+	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpUser));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->lvItems->AddColumn((const UTF8Char*)"MoreImages", 60);
 	this->lvItems->AddColumn((const UTF8Char*)"Message", 400);
 
-	this->tpPage = this->tcMain->AddTabPage((const UTF8Char*)"Page");
+	this->tpPage = this->tcMain->AddTabPage(CSTR("Page"));
 	NEW_CLASS(this->pnlPage, UI::GUIPanel(ui, this->tpPage));
 	this->pnlPage->SetRect(0, 0, 100, 31, false);
 	this->pnlPage->SetDockType(UI::GUIControl::DOCK_TOP);

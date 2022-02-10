@@ -515,7 +515,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 
-	this->tpFiles = this->tcMain->AddTabPage((const UTF8Char*)"Files");
+	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->AddColumn((const UTF8Char*)"Item Name", 150);
@@ -548,7 +548,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	}
 	else
 	{
-		this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+		this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 		NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
 		this->pnlStatus->SetRect(0, 0, 100, 48, false);
 		this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -595,7 +595,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		Sync::Thread::Create(ProcessThread, this);
 	}
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->tpInfo, CSTR(""), true));
 	this->txtInfo->SetReadOnly(true);
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);

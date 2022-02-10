@@ -254,8 +254,8 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);

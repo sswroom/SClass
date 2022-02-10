@@ -109,7 +109,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProgGroup = this->tcMain->AddTabPage((const UTF8Char*)"Program Group");
+	this->tpProgGroup = this->tcMain->AddTabPage(CSTR("Program Group"));
 	NEW_CLASS(this->lbProgGroup, UI::GUIListBox(ui, this->tpProgGroup, false));
 	this->lbProgGroup->SetRect(0, 0, 150, 23, false);
 	this->lbProgGroup->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->lbProgGroupItems, UI::GUIListBox(ui, this->tpProgGroup, false));
 	this->lbProgGroupItems->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProg = this->tcMain->AddTabPage((const UTF8Char*)"Program");
+	this->tpProg = this->tcMain->AddTabPage(CSTR("Program"));
 	NEW_CLASS(this->lbProg, UI::GUIListBox(ui, this->tpProg, false));
 	this->lbProg->SetRect(0, 0, 150, 23, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -130,19 +130,19 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->tcProg, UI::GUITabControl(ui, this->tpProg));
 	this->tcProg->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProgObject = this->tcProg->AddTabPage((const UTF8Char*)"Object");
+	this->tpProgObject = this->tcProg->AddTabPage(CSTR("Object"));
 	NEW_CLASS(this->lbProgObject, UI::GUIListBox(ui, this->tpProgObject, false));
 	this->lbProgObject->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProgHeader = this->tcProg->AddTabPage((const UTF8Char*)"Header");
+	this->tpProgHeader = this->tcProg->AddTabPage(CSTR("Header"));
 	NEW_CLASS(this->lbProgHeader, UI::GUIListBox(ui, this->tpProgHeader, false));
 	this->lbProgHeader->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProgSource = this->tcProg->AddTabPage((const UTF8Char*)"Source");
+	this->tpProgSource = this->tcProg->AddTabPage(CSTR("Source"));
 	NEW_CLASS(this->lbProgSource, UI::GUIListBox(ui, this->tpProgSource, false));
 	this->lbProgSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpConfig = this->tcMain->AddTabPage((const UTF8Char*)"Config");
+	this->tpConfig = this->tcMain->AddTabPage(CSTR("Config"));
 	NEW_CLASS(this->lvConfig, UI::GUIListView(ui, this->tpConfig, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvConfig->SetShowGrid(true);

@@ -1038,7 +1038,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnStart->SetRect(100, 144, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
-	this->tpVolLevel = this->tcFilter->AddTabPage((const UTF8Char*)"VolLevel");
+	this->tpVolLevel = this->tcFilter->AddTabPage(CSTR("VolLevel"));
 	NEW_CLASS(this->rlcVolLevel, UI::GUIRealtimeLineChart(ui, this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100));
 	this->rlcVolLevel->SetRect(0, 0, 100, 200, false);
 	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1053,7 +1053,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->pbsFFT->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbsFFT->SetNoBGColor(true);*/
 
-	this->tpDTMF = this->tcFilter->AddTabPage((const UTF8Char*)"DTMF");
+	this->tpDTMF = this->tcFilter->AddTabPage(CSTR("DTMF"));
 	NEW_CLASS(this->pnlDTMF, UI::GUIPanel(ui, this->tpDTMF));
 	this->pnlDTMF->SetRect(0, 0, 100, 56, false);
 	this->pnlDTMF->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1073,7 +1073,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFClear->HandleButtonClick(OnDTMFClearClicked, this);
 	NEW_CLASS(this->tcDTMF, UI::GUITabControl(ui, this->tpDTMF));
 	this->tcDTMF->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpDTMFGen = this->tcDTMF->AddTabPage((const UTF8Char*)"Generate");
+	this->tpDTMFGen = this->tcDTMF->AddTabPage(CSTR("Generate"));
 	NEW_CLASS(this->btnDTMF1, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"1"));
 	this->btnDTMF1->SetRect(4, 4, 150, 47, false);
 	this->btnDTMF1->HandleButtonUpDown(OnDTMF1UpDown, this);
@@ -1129,7 +1129,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->tbDTMFVol->HandleScrolled(OnDTMFVolChg, this);
 	NEW_CLASS(this->lblDTMFVolV, UI::GUILabel(ui, this->tpDTMFGen, (const UTF8Char*)"0dB"));
 	this->lblDTMFVolV->SetRect(504, 228, 100, 23, false);
-	this->tpDTMFGen2 = this->tcDTMF->AddTabPage((const UTF8Char*)"Tones");
+	this->tpDTMFGen2 = this->tcDTMF->AddTabPage(CSTR("Tones"));
 	NEW_CLASS(this->lblDTMFSignalTime, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"Signal Time"));
 	this->lblDTMFSignalTime->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDTMFSignalTime, UI::GUITextBox(ui, this->tpDTMFGen2, CSTR("120")));
@@ -1154,7 +1154,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFTones->SetRect(104, 100, 75, 23, false);
 	this->btnDTMFTones->HandleButtonClick(OnDTMFTonesClicked, this);
 
-	this->tpVolBoost = this->tcFilter->AddTabPage((const UTF8Char*)"VolBoost");
+	this->tpVolBoost = this->tcFilter->AddTabPage(CSTR("VolBoost"));
 	NEW_CLASS(this->chkVolBoost, UI::GUICheckBox(ui, this->tpVolBoost, (const UTF8Char*)"Enabled", false));
 	this->chkVolBoost->SetRect(4, 4, 100, 23, false);
 	this->chkVolBoost->HandleCheckedChange(OnVolBoostChg, this);
@@ -1166,7 +1166,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->lblVolBoostBGVol, UI::GUILabel(ui, this->tpVolBoost, (const UTF8Char*)"-60dB"));
 	this->lblVolBoostBGVol->SetRect(404, 28, 100, 23, false);
 
-	this->tpFileMix = this->tcFilter->AddTabPage((const UTF8Char*)"File Mix");
+	this->tpFileMix = this->tcFilter->AddTabPage(CSTR("File Mix"));
 	NEW_CLASS(this->lblFileMix, UI::GUILabel(ui, this->tpFileMix, (const UTF8Char*)"Audio File"));
 	this->lblFileMix->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileMix, UI::GUITextBox(ui, this->tpFileMix, CSTR("")));
@@ -1182,7 +1182,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnFileMixStop->SetRect(184, 28, 75, 23, false);
 	this->btnFileMixStop->HandleButtonClick(OnFileMixStopClicked, this);
 
-	this->tpCapture = this->tcFilter->AddTabPage((const UTF8Char*)"Capture");
+	this->tpCapture = this->tcFilter->AddTabPage(CSTR("Capture"));
 	NEW_CLASS(this->btnCaptureStart, UI::GUIButton(ui, this->tpCapture, (const UTF8Char*)"Start"));
 	this->btnCaptureStart->SetRect(4, 4, 75, 23, false);
 	this->btnCaptureStart->HandleButtonClick(OnCaptureStartClicked, this);
@@ -1190,12 +1190,12 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnCaptureStop->SetRect(84, 4, 75, 23, false);
 	this->btnCaptureStop->HandleButtonClick(OnCaptureStopClicked, this);
 
-	this->tpSoundGen = this->tcFilter->AddTabPage((const UTF8Char*)"SoundGen");
+	this->tpSoundGen = this->tcFilter->AddTabPage(CSTR("SoundGen"));
 	NEW_CLASS(this->btnSoundGenBell, UI::GUIButton(ui, this->tpSoundGen, (const UTF8Char*)"Bell"));
 	this->btnSoundGenBell->SetRect(4, 4, 75, 23, false);
 	this->btnSoundGenBell->HandleButtonClick(OnSoundGenBellClicked, this);
 
-	this->tpSweep = this->tcFilter->AddTabPage((const UTF8Char*)"Sweep");
+	this->tpSweep = this->tcFilter->AddTabPage(CSTR("Sweep"));
 	NEW_CLASS(this->lblSweepVol, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"Volume"));
 	this->lblSweepVol->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->tbSweepVol, UI::GUITrackBar(ui, this->tpSweep, 0, 960, 960));
@@ -1219,7 +1219,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnSweepStart->SetRect(104, 100, 75, 23, false);
 	this->btnSweepStart->HandleButtonClick(OnSweepStartClicked, this);
 
-	this->tpAmplifier = this->tcFilter->AddTabPage((const UTF8Char*)"Amplifier");
+	this->tpAmplifier = this->tcFilter->AddTabPage(CSTR("Amplifier"));
 	NEW_CLASS(this->lblAmplifierVol, UI::GUILabel(ui, this->tpAmplifier, (const UTF8Char*)"Volume"));
 	this->lblAmplifierVol->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->tbAmplifierVol, UI::GUITrackBar(ui, this->tpAmplifier, 0, 800, 100));

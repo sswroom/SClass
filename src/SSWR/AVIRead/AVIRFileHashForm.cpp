@@ -277,9 +277,9 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	this->cboCheckType->HandleSelectionChange(OnCheckTypeChg, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
-	this->tpTasks = this->tcMain->AddTabPage((const UTF8Char*)"Tasks");
-	this->tpFiles = this->tcMain->AddTabPage((const UTF8Char*)"Files");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
+	this->tpTasks = this->tcMain->AddTabPage(CSTR("Tasks"));
+	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
 
 	NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
 	this->pnlStatus->SetRect(0, 0, 100, 72, false);

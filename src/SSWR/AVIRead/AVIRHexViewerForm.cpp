@@ -234,7 +234,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	this->hexView->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hexView->HandleOffsetChg(OnOffsetChg, this);
 	
-	this->tpValues = this->tcMain->AddTabPage((const UTF8Char*)"Values");
+	this->tpValues = this->tcMain->AddTabPage(CSTR("Values"));
 	NEW_CLASS(this->lblEndian, UI::GUILabel(ui, this->tpValues, (const UTF8Char*)"Endian"));
 	this->lblEndian->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->radEndianLittle, UI::GUIRadioButton(ui, this->tpValues, (const UTF8Char*)"Little Endian", true));
@@ -306,7 +306,7 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, (const UTF8Char*)"Dynamic Size", false));
 	this->chkDynamicSize->SetRect(164, 124, 100, 23, false);
 
-	this->tpAnalyse = this->tcMain->AddTabPage((const UTF8Char*)"Analyse");
+	this->tpAnalyse = this->tcMain->AddTabPage(CSTR("Analyse"));
 	NEW_CLASS(this->lblFileFormat, UI::GUILabel(ui, this->tpAnalyse, (const UTF8Char*)"File Format"));
 	this->lblFileFormat->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileFormat, UI::GUITextBox(ui, this->tpAnalyse, CSTR("")));

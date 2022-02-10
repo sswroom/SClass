@@ -297,7 +297,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -306,7 +306,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	this->tpProg = this->tcMain->AddTabPage((const UTF8Char*)"Prog");
+	this->tpProg = this->tcMain->AddTabPage(CSTR("Prog"));
 	NEW_CLASS(this->lbProg, UI::GUIListBox(ui, this->tpProg, false));
 	this->lbProg->SetRect(0, 0, 150, 100, false);
 	this->lbProg->SetDockType(UI::GUIControl::DOCK_LEFT);

@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpObjects = this->tcMain->AddTabPage((const UTF8Char*)"Objects");
+	this->tpObjects = this->tcMain->AddTabPage(CSTR("Objects"));
 	NEW_CLASS(this->lvObjectsVal, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvObjectsVal->SetRect(0, 0, 100, 150, false);
 	this->lvObjectsVal->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvObjects->AddColumn((const UTF8Char*)"Value", 200);
 	this->lvObjects->HandleSelChg(OnObjectsSelChg, this);
 
-	this->tpOID = this->tcMain->AddTabPage((const UTF8Char*)"OID");
+	this->tpOID = this->tcMain->AddTabPage(CSTR("OID"));
 	NEW_CLASS(this->lvOID, UI::GUIListView(ui, this->tpOID, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvOID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvOID->SetShowGrid(true);
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvOID->AddColumn((const UTF8Char*)"DB Name", 200);
 	this->lvOID->AddColumn((const UTF8Char*)"Name", 200);
 
-	this->tpOIDText = this->tcMain->AddTabPage((const UTF8Char*)"OIDText");
+	this->tpOIDText = this->tcMain->AddTabPage(CSTR("OIDText"));
 	NEW_CLASS(this->txtOIDText, UI::GUITextBox(ui, this->tpOIDText, CSTR(""), true));
 	this->txtOIDText->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtOIDText->SetReadOnly(true);

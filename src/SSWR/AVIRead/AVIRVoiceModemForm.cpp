@@ -190,7 +190,7 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacture"));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->txtModemRev->SetRect(108, 56, 200, 23, false);
 	this->txtModemRev->SetReadOnly(true);
 
-	this->tpDial = this->tcMain->AddTabPage((const UTF8Char*)"Dial");
+	this->tpDial = this->tcMain->AddTabPage(CSTR("Dial"));
 	NEW_CLASS(this->lblDialNum, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Dial Num"));
 	this->lblDialNum->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, CSTR("")));

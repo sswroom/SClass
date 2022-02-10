@@ -20,7 +20,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMultipartViewer::AVIRMultipartViewer(SSWR::AVIRea
 	if (defMsg && defMsg->v[0])
 	{
 		UI::GUITextBox *txt;
-		tp = this->tcParts->AddTabPage((const UTF8Char*)"Default");
+		tp = this->tcParts->AddTabPage(CSTR("Default"));
 		NEW_CLASS(txt, UI::GUITextBox(ui, tp, obj->GetDefMsg()->ToCString(), true));
 		txt->SetDockType(UI::GUIControl::DOCK_FILL);
 		txt->SetReadOnly(true);

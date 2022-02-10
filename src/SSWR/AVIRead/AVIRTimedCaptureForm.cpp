@@ -308,7 +308,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Capture Format"));
 	this->lblFormat->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, this->tpControl, false));
@@ -333,7 +333,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->txtDeviceInfo->SetRect(4, 144, 384, 168, false);
 	this->txtDeviceInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblFrameCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Frame Count"));
 	this->lblFrameCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFrameCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("")));

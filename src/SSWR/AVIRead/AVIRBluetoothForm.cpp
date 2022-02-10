@@ -183,7 +183,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblRadioName, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Radio Name"));
 	this->lblRadioName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRadioName, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
@@ -210,7 +210,7 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->txtClass->SetRect(104, 100, 100, 23, false);
 	this->txtClass->SetReadOnly(true);
 
-	this->tpDevice = this->tcMain->AddTabPage((const UTF8Char*)"Device");
+	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);

@@ -202,9 +202,9 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"B&rowse"));
 	this->btnFile->SetRect(608, 8, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	this->tpContent = this->tcMain->AddTabPage((const UTF8Char*)"Content");
-	this->tpStream = this->tcMain->AddTabPage((const UTF8Char*)"Stream");
-	this->tpTool = this->tcMain->AddTabPage((const UTF8Char*)"Tool");
+	this->tpContent = this->tcMain->AddTabPage(CSTR("Content"));
+	this->tpStream = this->tcMain->AddTabPage(CSTR("Stream"));
+	this->tpTool = this->tcMain->AddTabPage(CSTR("Tool"));
 
 	NEW_CLASS(this->lbPackList, UI::GUIListBox(ui, this->tpContent, false));
 	this->lbPackList->SetRect(0, 0, 200, 100, false);

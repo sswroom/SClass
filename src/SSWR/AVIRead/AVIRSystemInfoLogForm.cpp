@@ -13,7 +13,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpSystem = this->tcMain->AddTabPage((const UTF8Char*)"System");
+	this->tpSystem = this->tcMain->AddTabPage(CSTR("System"));
 	NEW_CLASS(this->lblOSName, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"OS Name"));
 	this->lblOSName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtOSName, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
@@ -40,7 +40,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->txtProductType->SetRect(104, 100, 400, 23, false);
 	this->txtProductType->SetReadOnly(true);
 
-	this->tpDevices = this->tcMain->AddTabPage((const UTF8Char*)"Devices");
+	this->tpDevices = this->tcMain->AddTabPage(CSTR("Devices"));
 	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this->tpDevices, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
@@ -50,7 +50,7 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->lvDevices->AddColumn((const UTF8Char*)"Service", 100);
 	this->lvDevices->AddColumn((const UTF8Char*)"Driver", 100);
 
-	this->tpDrivers = this->tcMain->AddTabPage((const UTF8Char*)"Devices");
+	this->tpDrivers = this->tcMain->AddTabPage(CSTR("Devices"));
 	NEW_CLASS(this->lvDrivers, UI::GUIListView(ui, this->tpDrivers, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvDrivers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDrivers->SetShowGrid(true);

@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->tpControl, CSTR("127.0.0.1")));
@@ -309,7 +309,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->txtStatus->SetRect(104, 148, 150, 23, false);
 	this->txtStatus->SetReadOnly(true);
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblServerVer, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Server Ver"));
 	this->lblServerVer->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtServerVer, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
@@ -336,7 +336,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->txtServerCS->SetRect(104, 100, 100, 23, false);
 	this->txtServerCS->SetReadOnly(true);
 
-	tpQuery = this->tcMain->AddTabPage((const UTF8Char*)"Query");
+	tpQuery = this->tcMain->AddTabPage(CSTR("Query"));
 	NEW_CLASS(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
 	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);

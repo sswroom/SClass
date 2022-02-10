@@ -298,7 +298,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcConfig, UI::GUITabControl(ui, this));
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpSerialPort = this->tcConfig->AddTabPage((const UTF8Char*)"Serial Port");
+	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
 	NEW_CLASS(this->lblSerialPort, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Port"));
 	this->lblSerialPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboSerialPort, UI::GUIComboBox(ui, this->tpSerialPort, false));
@@ -341,7 +341,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 
 	if (this->siLabDriver)
 	{
-		this->tpSiLabPort = this->tcConfig->AddTabPage((const UTF8Char*)"SiLab");
+		this->tpSiLabPort = this->tcConfig->AddTabPage(CSTR("SiLab"));
 		NEW_CLASS(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -439,7 +439,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		}
 	}
 
-	this->tpTCPSvr = this->tcConfig->AddTabPage((const UTF8Char*)"TCP Server");
+	this->tpTCPSvr = this->tcConfig->AddTabPage(CSTR("TCP Server"));
 	NEW_CLASS(this->lblTCPSvrPort, UI::GUILabel(ui, this->tpTCPSvr, (const UTF8Char*)"Port"));
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, CSTR("")));
@@ -447,7 +447,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, (const UTF8Char*)"Boardcast", true));
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
 
-	this->tpTCPCli = this->tcConfig->AddTabPage((const UTF8Char*)"TCP Client");
+	this->tpTCPCli = this->tcConfig->AddTabPage(CSTR("TCP Client"));
 	NEW_CLASS(this->lblTCPCliHost, UI::GUILabel(ui, this->tpTCPCli, (const UTF8Char*)"Host"));
 	this->lblTCPCliHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
@@ -459,7 +459,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 
 	if (allowReadOnly)
 	{
-		this->tpFile = this->tcConfig->AddTabPage((const UTF8Char*)"File");
+		this->tpFile = this->tcConfig->AddTabPage(CSTR("File"));
 		NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)"File Name"));
 		this->lblFileName->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
@@ -470,7 +470,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->btnFileBrowse->HandleButtonClick(OnFileBrowseClick, this);
 	}
 
-	this->tpHID = tcConfig->AddTabPage((const UTF8Char*)"HID");
+	this->tpHID = tcConfig->AddTabPage(CSTR("HID"));
 	NEW_CLASS(this->lbHIDDevice, UI::GUIListBox(ui, this->tpHID, false));
 	this->lbHIDDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	IO::DeviceInfo *dev;

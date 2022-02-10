@@ -676,7 +676,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpAdaptor = this->tcMain->AddTabPage((const UTF8Char*)"Adaptor");
+	this->tpAdaptor = this->tcMain->AddTabPage(CSTR("Adaptor"));
 	NEW_CLASS(this->lbAdaptors, UI::GUIListBox(ui, this->tpAdaptor, false));
 	this->lbAdaptors->SetRect(0, 0, 200, 100, false);
 	this->lbAdaptors->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -754,7 +754,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->txtAdaptorDHCPLeaseExpire->SetRect(104, 460, 200, 23, false);
 	this->txtAdaptorDHCPLeaseExpire->SetReadOnly(true);
 
-	this->tpIPInfo = this->tcMain->AddTabPage((const UTF8Char*)"IP Info");
+	this->tpIPInfo = this->tcMain->AddTabPage(CSTR("IP Info"));
 	NEW_CLASS(this->lblIPStatForwarding, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"IP Forwarding"));
 	this->lblIPStatForwarding->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtIPStatForwarding, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
@@ -871,7 +871,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->txtIPStatNRoute->SetRect(154, 532, 100, 23, false);
 	this->txtIPStatNRoute->SetReadOnly(true);
 
-	this->tpTCPInfo = this->tcMain->AddTabPage((const UTF8Char*)"TCP Info");
+	this->tpTCPInfo = this->tcMain->AddTabPage(CSTR("TCP Info"));
 	NEW_CLASS(this->lblTCPStatRtoAlgorithm, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"RTO Algorithm"));
 	this->lblTCPStatRtoAlgorithm->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatRtoAlgorithm, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
@@ -948,7 +948,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->txtTCPStatNumConns->SetRect(154, 340, 100, 23, false);
 	this->txtTCPStatNumConns->SetReadOnly(true);
 
-	this->tpUDPInfo = this->tcMain->AddTabPage((const UTF8Char*)"UDP Info");
+	this->tpUDPInfo = this->tcMain->AddTabPage(CSTR("UDP Info"));
 	NEW_CLASS(this->lblUDPStatInDatagrams, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"Recv Datagrams"));
 	this->lblUDPStatInDatagrams->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatInDatagrams, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
@@ -975,7 +975,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->txtUDPStatNumAddrs->SetRect(154, 100, 100, 23, false);
 	this->txtUDPStatNumAddrs->SetReadOnly(true);
 
-	this->tpARPInfo = this->tcMain->AddTabPage((const UTF8Char*)"ARP Info");
+	this->tpARPInfo = this->tcMain->AddTabPage(CSTR("ARP Info"));
 	NEW_CLASS(this->lvARPInfo, UI::GUIListView(ui, this->tpARPInfo, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvARPInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvARPInfo->AddColumn((const UTF8Char*)"IP Address", 150);
@@ -983,7 +983,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->lvARPInfo->AddColumn((const UTF8Char*)"Adaptor", 100);
 	this->lvARPInfo->AddColumn((const UTF8Char*)"Type", 150);
 
-	this->tpPortInfo = this->tcMain->AddTabPage((const UTF8Char*)"Port Info");
+	this->tpPortInfo = this->tcMain->AddTabPage(CSTR("Port Info"));
 	NEW_CLASS(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
 	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1003,21 +1003,21 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 
 	if (!this->wlan->IsError())
 	{
-		this->tpWIFIInfo = this->tcMain->AddTabPage((const UTF8Char*)"Wireless");
+		this->tpWIFIInfo = this->tcMain->AddTabPage(CSTR("Wireless"));
 		NEW_CLASS(this->lbWIFIIFs, UI::GUIListBox(ui, this->tpWIFIInfo, false));
 		this->lbWIFIIFs->SetRect(0, 0, 200, 100, false);
 		this->lbWIFIIFs->SetDockType(UI::GUIControl::DOCK_LEFT);
 		NEW_CLASS(this->hspWIFI, UI::GUIHSplitter(ui, this->tpWIFIInfo, 3, false));
 		NEW_CLASS(this->tcWIFI, UI::GUITabControl(ui, this->tpWIFIInfo));
 		this->tcWIFI->SetDockType(UI::GUIControl::DOCK_FILL);
-		this->tpWIFIAP = this->tcWIFI->AddTabPage((const UTF8Char*)"AP");
+		this->tpWIFIAP = this->tcWIFI->AddTabPage(CSTR("AP"));
 		NEW_CLASS(this->lvWIFINetwork, UI::GUIListView(ui, this->tpWIFIAP, UI::GUIListView::LVSTYLE_TABLE, 2));
 		this->lvWIFINetwork->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFINetwork->SetShowGrid(true);
 		this->lvWIFINetwork->SetFullRowSelect(true);
 		this->lvWIFINetwork->AddColumn((const UTF8Char*)"SSID", 200);
 		this->lvWIFINetwork->AddColumn((const UTF8Char*)"RSSI", 100);
-		this->tpWIFIBSS = this->tcWIFI->AddTabPage((const UTF8Char*)"BSS");
+		this->tpWIFIBSS = this->tcWIFI->AddTabPage(CSTR("BSS"));
 		NEW_CLASS(this->lvWIFIBSS, UI::GUIListView(ui, this->tpWIFIBSS, UI::GUIListView::LVSTYLE_TABLE, 10));
 		this->lvWIFIBSS->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFIBSS->SetShowGrid(true);

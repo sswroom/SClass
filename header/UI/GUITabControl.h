@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUITABCONTROL
 #define _SM_UI_GUITABCONTROL
+#include "Text/CString.h"
 #include "UI/GUIClientControl.h"
 
 namespace UI
@@ -22,11 +23,11 @@ namespace UI
 		virtual ~GUITabControl();
 
 		GUITabPage *AddTabPage(Text::String *itemText);
-		GUITabPage *AddTabPage(const UTF8Char *itemText);
+		GUITabPage *AddTabPage(Text::CString itemText);
 		void SetSelectedIndex(UOSInt index);
 		void SetSelectedPage(GUITabPage *page);
 		UOSInt GetSelectedIndex();
-		void SetTabPageName(UOSInt index, const UTF8Char *name);
+		void SetTabPageName(UOSInt index, Text::CString name);
 		UTF8Char *GetTabPageName(UOSInt index, UTF8Char *buff);
 		void GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h);
 		void *GetTabPageFont();

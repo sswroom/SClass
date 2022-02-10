@@ -369,9 +369,9 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
-	this->tpEmail = this->tcMain->AddTabPage((const UTF8Char*)"Email");
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
+	this->tpEmail = this->tcMain->AddTabPage(CSTR("Email"));
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
 	NEW_CLASS(this->btnCertKey, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Cert/Key"));
 	this->btnCertKey->SetRect(0, 0, 75, 23, false);

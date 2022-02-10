@@ -616,7 +616,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpCurr = this->tcMain->AddTabPage((const UTF8Char*)"Current");
+	this->tpCurr = this->tcMain->AddTabPage(CSTR("Current"));
 	NEW_CLASS(this->lvCurrWifi, UI::GUIListView(ui, this->tpCurr, UI::GUIListView::LVSTYLE_TABLE, 12));
 	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrWifi->SetShowGrid(true);
@@ -634,7 +634,7 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->lvCurrWifi->AddColumn((const UTF8Char*)"Model", 100);
 	this->lvCurrWifi->AddColumn((const UTF8Char*)"S/N", 100);
 
-	this->tpLogWifi = this->tcMain->AddTabPage((const UTF8Char*)"Wifi Log");
+	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);

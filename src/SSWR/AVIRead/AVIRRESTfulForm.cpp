@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 176, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -249,7 +249,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->btnStop->SetRect(300, 188, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
-	this->tpTable = this->tcMain->AddTabPage((const UTF8Char*)"Table");
+	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
 	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
@@ -257,7 +257,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->lvTable->AddColumn((const UTF8Char*)"TableName", 150);
 	this->lvTable->AddColumn((const UTF8Char*)"Row Count", 100);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);

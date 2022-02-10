@@ -221,7 +221,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"SSL"));
 	this->lblSSL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, (const UTF8Char*)"Enable", false));
@@ -239,7 +239,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
-	this->tpTopic = this->tcMain->AddTabPage((const UTF8Char*)"Topic");
+	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topic"));
 	NEW_CLASS(this->lvTopic, UI::GUIListView(ui, this->tpTopic, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvTopic->SetDockType(UI::GUIClientControl::DOCK_FILL);
 	this->lvTopic->SetFullRowSelect(true);
@@ -248,7 +248,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lvTopic->AddColumn((const UTF8Char*)"Message", 200);
 	this->lvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

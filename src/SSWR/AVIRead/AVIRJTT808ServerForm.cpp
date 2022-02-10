@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("42463")));
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRJTT808ServerForm::AVIRJTT808ServerForm(UI::GUIClientControl *
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

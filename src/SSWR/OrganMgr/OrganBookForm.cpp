@@ -338,8 +338,8 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	NEW_CLASS(this->tcBook, UI::GUITabControl(ui, this->pnlBook));
 	this->tcBook->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")).v);
-	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")).v);
+	this->tpBookRef = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabRef")));
+	this->tpBookAuthor = this->tcBook->AddTabPage(this->env->GetLang(UTF8STRC("BookFormTabAuthor")));
 
 	this->env->GetBooksAll(this->bookList);
 	this->bookList->Sort();

@@ -504,7 +504,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpFile = this->tcMain->AddTabPage((const UTF8Char*)"WiFi Log");
+	this->tpFile = this->tcMain->AddTabPage(CSTR("WiFi Log"));
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -540,7 +540,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->lvContent->AddColumn((const UTF8Char*)"Vendor3", 120);
 	this->lvContent->AddColumn((const UTF8Char*)"Country", 50);
 
-	this->tpInput = this->tcMain->AddTabPage((const UTF8Char*)"Input");
+	this->tpInput = this->tcMain->AddTabPage(CSTR("Input"));
 	NEW_CLASS(this->lblInput, UI::GUILabel(ui, this->tpInput, (const UTF8Char*)"MAC Input"));
 	this->lblInput->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
@@ -549,7 +549,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->btnInput->SetRect(104, 28, 75, 23, false);
 	this->btnInput->HandleButtonClick(OnInputClicked, this);
 
-	this->tpWireshark = this->tcMain->AddTabPage((const UTF8Char*)"Wireshark");
+	this->tpWireshark = this->tcMain->AddTabPage(CSTR("Wireshark"));
 	NEW_CLASS(this->btnWireshark, UI::GUIButton(ui, this->tpWireshark, (const UTF8Char*)"Load manuf"));
 	this->btnWireshark->SetRect(4, 4, 75, 23, false);
 	this->btnWireshark->HandleButtonClick(OnWiresharkClicked, this);

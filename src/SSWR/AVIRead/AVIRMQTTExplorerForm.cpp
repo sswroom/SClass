@@ -573,7 +573,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpRecv = this->tcDetail->AddTabPage((const UTF8Char*)"Recv");
+	this->tpRecv = this->tcDetail->AddTabPage(CSTR("Recv"));
 	NEW_CLASS(this->pbRecvTopic, UI::GUIPictureBoxSimple(ui, this->tpRecv, this->core->GetDrawEngine(), false));
 	this->pbRecvTopic->SetRect(0, 0, 100, 300, false);
 	this->pbRecvTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -588,7 +588,7 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->lvRecvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
 	this->lvRecvTopic->HandleSelChg(OnTopicSelChg, this);
 
-	this->tpPublish = this->tcDetail->AddTabPage((const UTF8Char*)"Publish");
+	this->tpPublish = this->tcDetail->AddTabPage(CSTR("Publish"));
 	NEW_CLASS(this->pnlPubTopic, UI::GUIPanel(ui, this->tpPublish));
 	this->pnlPubTopic->SetRect(0, 0, 100, 31, false);
 	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);

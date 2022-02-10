@@ -29,7 +29,7 @@ SSWR::AVIRead::AVIRFontRendererForm::AVIRFontRendererForm(UI::GUIClientControl *
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpChar = this->tcMain->AddTabPage((const UTF8Char*)"Char");
+	this->tpChar = this->tcMain->AddTabPage(CSTR("Char"));
 	NEW_CLASS(this->lbChar, UI::GUIListBox(ui, this->tpChar, false));
 	this->lbChar->SetRect(0, 0, 150, 23, false);
 	this->lbChar->SetDockType(UI::GUIControl::DOCK_LEFT);

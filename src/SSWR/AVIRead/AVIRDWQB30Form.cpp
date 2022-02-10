@@ -346,7 +346,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpScan = this->tcMain->AddTabPage((const UTF8Char*)"Scan");
+	this->tpScan = this->tcMain->AddTabPage(CSTR("Scan"));
 	NEW_CLASS(this->pnlScan, UI::GUIPanel(ui, this->tpScan));
 	this->pnlScan->SetRect(0, 0, 100, 32, false);
 	this->pnlScan->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -358,7 +358,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->lbScan, UI::GUIListBox(ui, this->tpScan, false));
 	this->lbScan->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpSetting = this->tcMain->AddTabPage((const UTF8Char*)"Setting");
+	this->tpSetting = this->tcMain->AddTabPage(CSTR("Setting"));
 	NEW_CLASS(this->lblSetCmd, UI::GUILabel(ui, this->tpSetting, (const UTF8Char*)"Command"));
 	this->lblSetCmd->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboSetCmd, UI::GUIComboBox(ui, this->tpSetting, false));

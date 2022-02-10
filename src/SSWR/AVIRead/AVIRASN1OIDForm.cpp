@@ -73,7 +73,7 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 		
-	this->tpSource = this->tcMain->AddTabPage((const UTF8Char*)"Source");
+	this->tpSource = this->tcMain->AddTabPage(CSTR("Source"));
 	NEW_CLASS(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->tpSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpCPP = this->tcMain->AddTabPage((const UTF8Char*)"CPP");
+	this->tpCPP = this->tcMain->AddTabPage(CSTR("CPP"));
 	NEW_CLASS(this->txtCPP, UI::GUITextBox(ui, this->tpCPP, CSTR(""), true));
 	this->txtCPP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtCPP->SetReadOnly(true);

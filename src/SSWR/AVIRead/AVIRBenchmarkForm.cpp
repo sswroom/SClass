@@ -382,7 +382,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpCopy = this->tcMain->AddTabPage((const UTF8Char*)"Copy");
+	this->tpCopy = this->tcMain->AddTabPage(CSTR("Copy"));
 	NEW_CLASS(this->lvCopy, UI::GUIListView(ui, this->tpCopy, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvCopy->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCopy->SetShowGrid(true);
@@ -390,7 +390,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvCopy->AddColumn((const UTF8Char*)"Buffer Size", 200);
 	this->lvCopy->AddColumn((const UTF8Char*)"Data Rate", 150);
 
-	this->tpRead = this->tcMain->AddTabPage((const UTF8Char*)"Read");
+	this->tpRead = this->tcMain->AddTabPage(CSTR("Read"));
 	NEW_CLASS(this->lvRead, UI::GUIListView(ui, this->tpRead, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvRead->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRead->SetShowGrid(true);
@@ -398,7 +398,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvRead->AddColumn((const UTF8Char*)"Buffer Size", 200);
 	this->lvRead->AddColumn((const UTF8Char*)"Data Rate", 150);
 
-	this->tpWrite = this->tcMain->AddTabPage((const UTF8Char*)"Write");
+	this->tpWrite = this->tcMain->AddTabPage(CSTR("Write"));
 	NEW_CLASS(this->lvWrite, UI::GUIListView(ui, this->tpWrite, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvWrite->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWrite->SetShowGrid(true);
@@ -406,7 +406,7 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvWrite->AddColumn((const UTF8Char*)"Buffer Size", 200);
 	this->lvWrite->AddColumn((const UTF8Char*)"Data Rate", 150);
 
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 52, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);

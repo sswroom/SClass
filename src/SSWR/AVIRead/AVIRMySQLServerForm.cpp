@@ -82,7 +82,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpUser = this->tcMain->AddTabPage((const UTF8Char*)"User");
+	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	NEW_CLASS(this->lbUser, UI::GUIListBox(ui, this->tpUser, false));
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->btnUserAdd->SetRect(100, 56, 75, 23, false);
 	this->btnUserAdd->HandleButtonClick(OnUserAddClicked, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);

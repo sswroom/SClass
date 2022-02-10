@@ -99,7 +99,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpCPU = this->tcMain->AddTabPage((const UTF8Char*)"CPU");
+	this->tpCPU = this->tcMain->AddTabPage(CSTR("CPU"));
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -116,11 +116,11 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	this->lvMain->AddColumn((const UTF8Char*)"Name", 200);
 	this->lvMain->AddColumn((const UTF8Char*)"Value", 550);
 
-	this->tpCache = this->tcMain->AddTabPage((const UTF8Char*)"Cache");
+	this->tpCache = this->tcMain->AddTabPage(CSTR("Cache"));
 	NEW_CLASS(this->lbCache, UI::GUIListBox(ui, this->tpCache, false));
 	this->lbCache->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpFeature = this->tcMain->AddTabPage((const UTF8Char*)"Feature");
+	this->tpFeature = this->tcMain->AddTabPage(CSTR("Feature"));
 	NEW_CLASS(this->lvFeature, UI::GUIListView(ui, this->tpFeature, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvFeature->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFeature->SetFullRowSelect(true);

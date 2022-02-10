@@ -337,9 +337,9 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpDetail = this->tcMain->AddTabPage((const UTF8Char*)"Detail");
+	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
 
-	this->tpDatabase = this->tcMain->AddTabPage((const UTF8Char*)"Database");
+	this->tpDatabase = this->tcMain->AddTabPage(CSTR("Database"));
 	NEW_CLASS(this->lbDatabase, UI::GUIListBox(ui, this->tpDatabase, false));
 	this->lbDatabase->SetRect(0, 0, 150, 23, false);
 	this->lbDatabase->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -347,7 +347,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->btnDatabase->SetRect(154, 4, 75, 23, false);
 	this->btnDatabase->HandleButtonClick(OnDatabaseClicked, this);
 
-	this->tpTable = this->tcMain->AddTabPage((const UTF8Char*)"Table");
+	this->tpTable = this->tcMain->AddTabPage(CSTR("Table"));
 	NEW_CLASS(this->pnlTable, UI::GUIPanel(ui, this->tpTable));
 	this->pnlTable->SetRect(0, 0, 100, 250, false);
 	this->pnlTable->SetDockType(UI::GUIControl::DOCK_TOP);

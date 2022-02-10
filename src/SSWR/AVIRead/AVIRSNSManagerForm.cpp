@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcChannels, UI::GUITabControl(ui, this));
 	this->tcChannels->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpCurrItems = this->tcChannels->AddTabPage((const UTF8Char*)"Curr Items");
+	this->tpCurrItems = this->tcChannels->AddTabPage(CSTR("Curr Items"));
 	NEW_CLASS(this->lvCurrItems, UI::GUIListView(ui, this->tpCurrItems, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvCurrItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrItems->SetFullRowSelect(true);

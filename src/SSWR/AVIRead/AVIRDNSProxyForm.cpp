@@ -799,7 +799,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblDNSPort, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Listening Port"));
 	this->lblDNSPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDNSPort, UI::GUITextBox(ui, this->tpStatus, CSTR("53")));
@@ -838,7 +838,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->btnWPAD->SetRect(204, 340, 75, 23, false);
 	this->btnWPAD->HandleButtonClick(OnWPADClicked, this);
 
-	this->tpV4Main = this->tcMain->AddTabPage((const UTF8Char*)"Req v4");
+	this->tpV4Main = this->tcMain->AddTabPage(CSTR("Req v4"));
 	NEW_CLASS(this->lbV4Request, UI::GUIListBox(ui, this->tpV4Main, false));
 	this->lbV4Request->SetRect(0, 0, 200, 100, false);
 	this->lbV4Request->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -890,7 +890,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtV4AnsRD->SetRect(104, 100, 160, 23, false);
 	this->txtV4AnsRD->SetReadOnly(true);
 
-	this->tpV6Main = this->tcMain->AddTabPage((const UTF8Char*)"Req v6");
+	this->tpV6Main = this->tcMain->AddTabPage(CSTR("Req v6"));
 	NEW_CLASS(this->lbV6Request, UI::GUIListBox(ui, this->tpV6Main, false));
 	this->lbV6Request->SetRect(0, 0, 200, 100, false);
 	this->lbV6Request->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -942,7 +942,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtV6AnsRD->SetRect(104, 100, 160, 23, false);
 	this->txtV6AnsRD->SetReadOnly(true);
 
-	this->tpOthMain = this->tcMain->AddTabPage((const UTF8Char*)"Req Oth");
+	this->tpOthMain = this->tcMain->AddTabPage(CSTR("Req Oth"));
 	NEW_CLASS(this->lbOthRequest, UI::GUIListBox(ui, this->tpOthMain, false));
 	this->lbOthRequest->SetRect(0, 0, 200, 100, false);
 	this->lbOthRequest->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -994,7 +994,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtOthAnsRD->SetRect(104, 100, 160, 23, false);
 	this->txtOthAnsRD->SetReadOnly(true);
 
-	this->tpTarget = this->tcMain->AddTabPage((const UTF8Char*)"Target");
+	this->tpTarget = this->tcMain->AddTabPage(CSTR("Target"));
 	NEW_CLASS(this->lbTarget, UI::GUIListBox(ui, this->tpTarget, false));
 	this->lbTarget->SetRect(0, 0, 150, 100, false);
 	this->lbTarget->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -1002,7 +1002,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->hspTarget, UI::GUIHSplitter(ui, this->tpTarget, 3, false));
 	NEW_CLASS(this->tcTarget, UI::GUITabControl(ui, this->tpTarget));
 	this->tcTarget->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpTargetInfo = this->tcTarget->AddTabPage((const UTF8Char*)"Info");
+	this->tpTargetInfo = this->tcTarget->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblTargetName, UI::GUILabel(ui, this->tpTargetInfo, (const UTF8Char*)"Name"));
 	this->lblTargetName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTargetName, UI::GUITextBox(ui, this->tpTargetInfo, CSTR("")));
@@ -1017,12 +1017,12 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lblTargetDomains->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->lbTargetDomains, UI::GUIListBox(ui, this->tpTargetInfo, false));
 	this->lbTargetDomains->SetRect(104, 52, 400, 300, false);
-	this->tpTargetWhois = this->tcTarget->AddTabPage((const UTF8Char*)"Whois");
+	this->tpTargetWhois = this->tcTarget->AddTabPage(CSTR("Whois"));
 	NEW_CLASS(this->txtTargetWhois, UI::GUITextBox(ui, this->tpTargetWhois, CSTR(""), true));
 	this->txtTargetWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtTargetWhois->SetReadOnly(true);
 
-	this->tpSearch = this->tcMain->AddTabPage((const UTF8Char*)"Search");
+	this->tpSearch = this->tcMain->AddTabPage(CSTR("Search"));
 	NEW_CLASS(this->pnlSearch, UI::GUIPanel(ui, this->tpSearch));
 	this->pnlSearch->SetRect(0, 0, 100, 31, false);
 	this->pnlSearch->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1088,7 +1088,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->txtSAnsRD->SetRect(104, 100, 160, 23, false);
 	this->txtSAnsRD->SetReadOnly(true);
 
-	this->tpBlackList = this->tcMain->AddTabPage((const UTF8Char*)"Blacklist");
+	this->tpBlackList = this->tcMain->AddTabPage(CSTR("Blacklist"));
 	NEW_CLASS(this->pnlBlackList, UI::GUIPanel(ui, this->tpBlackList));
 	this->pnlBlackList->SetRect(0, 0, 100, 32, false);
 	this->pnlBlackList->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -1100,7 +1100,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->btnBlackList->SetRect(204, 4, 75, 23, false);
 	this->btnBlackList->HandleButtonClick(OnBlackListClicked, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR(""), false));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);
@@ -1108,7 +1108,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpClient = this->tcMain->AddTabPage((const UTF8Char*)"Client");
+	this->tpClient = this->tcMain->AddTabPage(CSTR("Client"));
 	NEW_CLASS(this->lbClientIP, UI::GUIListBox(ui, this->tpClient, false));
 	this->lbClientIP->SetRect(0, 0, 150, 23, false);
 	this->lbClientIP->SetDockType(UI::GUIControl::DOCK_LEFT);

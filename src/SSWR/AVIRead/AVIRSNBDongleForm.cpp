@@ -498,7 +498,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpDevice = this->tcMain->AddTabPage((const UTF8Char*)"Device");
+	this->tpDevice = this->tcMain->AddTabPage(CSTR("Device"));
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 103, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -566,7 +566,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->lvDevice->AddColumn((const UTF8Char*)"Values", 400);
 	this->lvDevice->HandleDblClk(OnDeviceDblClk, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);

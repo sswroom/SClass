@@ -256,7 +256,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpIP = this->tcMain->AddTabPage((const UTF8Char*)"IP");
+	this->tpIP = this->tcMain->AddTabPage(CSTR("IP"));
 	NEW_CLASS(this->lbIP, UI::GUIListBox(ui, this->tpIP, false));
 	this->lbIP->SetRect(0, 0, 150, 23, false);
 	this->lbIP->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -264,7 +264,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->hspIP, UI::GUIHSplitter(ui, this->tpIP, 3, false));
 	NEW_CLASS(this->tcIP, UI::GUITabControl(ui, this->tpIP));
 	this->tcIP->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpIPInfo = this->tcIP->AddTabPage((const UTF8Char*)"Info");
+	this->tpIPInfo = this->tcIP->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->lblIPCount, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Count"));
 	this->lblIPCount->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIPCount, UI::GUITextBox(ui, this->tpIPInfo, CSTR("0")));
@@ -280,12 +280,12 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtIPCountry, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPCountry->SetRect(104, 52, 100, 23, false);
 	this->txtIPCountry->SetReadOnly(true);
-	this->tpIPWhois = this->tcIP->AddTabPage((const UTF8Char*)"Whois");
+	this->tpIPWhois = this->tcIP->AddTabPage(CSTR("Whois"));
 	NEW_CLASS(this->txtIPWhois, UI::GUITextBox(ui, this->tpIPWhois, CSTR(""), true));
 	this->txtIPWhois->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtIPWhois->SetReadOnly(true);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetRect(0, 0, 100, 23, false);

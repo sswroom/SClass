@@ -259,11 +259,11 @@ SSWR::AVIRead::AVIRAudioViewerForm::AVIRAudioViewerForm(UI::GUIClientControl *pa
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpSample = this->tcMain->AddTabPage((const UTF8Char*)"Sample");
+	this->tpSample = this->tcMain->AddTabPage(CSTR("Sample"));
 	NEW_CLASS(this->pbsSample, UI::GUIPictureBoxSimple(ui, this->tpSample, this->eng, false));
 	this->pbsSample->SetNoBGColor(true);
 	this->pbsSample->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpFreq = this->tcMain->AddTabPage((const UTF8Char*)"Frequency");
+	this->tpFreq = this->tcMain->AddTabPage(CSTR("Frequency"));
 	NEW_CLASS(this->pbsFreq, UI::GUIPictureBoxSimple(ui, this->tpFreq, this->eng, false));
 	this->pbsFreq->SetNoBGColor(true);
 	this->pbsFreq->SetDockType(UI::GUIControl::DOCK_FILL);

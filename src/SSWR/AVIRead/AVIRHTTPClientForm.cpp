@@ -1096,7 +1096,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpRequest = this->tcMain->AddTabPage((const UTF8Char*)"Request");
+	this->tpRequest = this->tcMain->AddTabPage(CSTR("Request"));
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
 	this->pnlRequest->SetRect(0, 0, 100, 292, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1171,7 +1171,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvReqData->AddColumn((const UTF8Char*)"Name", 150);
 	this->lvReqData->AddColumn((const UTF8Char*)"Value", 400);
 
-	this->tpResponse = this->tcMain->AddTabPage((const UTF8Char*)"Response");
+	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 223, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
@@ -1235,12 +1235,12 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->SetFullRowSelect(true);
 	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
 
-	this->tpCert = this->tcMain->AddTabPage((const UTF8Char*)"Cert");
+	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
 	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this->tpCert, CSTR(""), true));
 	this->txtCert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtCert->SetReadOnly(true);
 
-	this->tpCookie = this->tcMain->AddTabPage((const UTF8Char*)"Cookie");
+	this->tpCookie = this->tcMain->AddTabPage(CSTR("Cookie"));
 	NEW_CLASS(this->lvCookie, UI::GUIListView(ui, this->tpCookie, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvCookie->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCookie->SetShowGrid(true);

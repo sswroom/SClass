@@ -340,9 +340,9 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpInfo = this->tcMain->AddTabPage((const UTF8Char*)"Info");
-	this->tpPhoneBook = this->tcMain->AddTabPage((const UTF8Char*)"PhoneBook");
-	this->tpSMS = this->tcMain->AddTabPage((const UTF8Char*)"SMS");
+	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
+	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
+	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
 	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacture"));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));

@@ -839,7 +839,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblMotion, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Motion"));
 	this->lblMotion->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtMotion, UI::GUITextBox(ui, this->tpStatus, CSTR("No Accelerator found")));
@@ -897,7 +897,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->btnCapture->SetRect(104, 244, 120, 23, false);
 	this->btnCapture->HandleButtonClick(OnCaptureClicked, this);
 
-	this->tpCurr = this->tcMain->AddTabPage((const UTF8Char*)"Current");
+	this->tpCurr = this->tcMain->AddTabPage(CSTR("Current"));
 	NEW_CLASS(this->lvCurrWifi, UI::GUIListView(ui, this->tpCurr, UI::GUIListView::LVSTYLE_TABLE, 12));
 	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrWifi->SetShowGrid(true);
@@ -915,7 +915,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->lvCurrWifi->AddColumn((const UTF8Char*)"Model", 100);
 	this->lvCurrWifi->AddColumn((const UTF8Char*)"S/N", 100);
 
-	this->tpLogWifi = this->tcMain->AddTabPage((const UTF8Char*)"Wifi Log");
+	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);

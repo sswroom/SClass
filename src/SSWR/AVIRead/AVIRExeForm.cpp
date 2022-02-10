@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->tcEXE, UI::GUITabControl(ui, this));
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpProp = this->tcEXE->AddTabPage((const UTF8Char*)"Properties");
+	this->tpProp = this->tcEXE->AddTabPage(CSTR("Properties"));
 	NEW_CLASS(this->lvProp, UI::GUIListView(ui, this->tpProp, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvProp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProp->SetShowGrid(true);
@@ -333,7 +333,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 		i++;
 	}
 
-	this->tpImport = this->tcEXE->AddTabPage((const UTF8Char*)"Import");
+	this->tpImport = this->tcEXE->AddTabPage(CSTR("Import"));
 	NEW_CLASS(this->lbImport, UI::GUIListBox(ui, this->tpImport, false));
 	this->lbImport->SetRect(0, 0, 150, 23, false);
 	this->lbImport->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -352,7 +352,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 		i++;
 	}
 
-	this->tpExport = this->tcEXE->AddTabPage((const UTF8Char*)"Export");
+	this->tpExport = this->tcEXE->AddTabPage(CSTR("Export"));
 	NEW_CLASS(this->lbExport, UI::GUIListBox(ui, this->tpExport, false));
 	this->lbExport->SetDockType(UI::GUIControl::DOCK_FILL);
 	i = 0;
@@ -363,7 +363,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 		i++;
 	}
 
-	this->tpResource = this->tcEXE->AddTabPage((const UTF8Char*)"Resource");
+	this->tpResource = this->tcEXE->AddTabPage(CSTR("Resource"));
 	NEW_CLASS(this->lbResource, UI::GUIListBox(ui, this->tpResource, false));
 	this->lbResource->SetRect(0, 0, 200, 100, false);
 	this->lbResource->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -385,7 +385,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 
 	if (this->exeFile->HasDOS())
 	{
-		this->tp16Bit = this->tcEXE->AddTabPage((const UTF8Char*)"16 Bit");
+		this->tp16Bit = this->tcEXE->AddTabPage(CSTR("16 Bit"));
 		NEW_CLASS(this->pnl16BitInfo, UI::GUIPanel(ui, this->tp16Bit));
 		this->pnl16BitInfo->SetRect(0, 0, 100, 40, false);
 		this->pnl16BitInfo->SetDockType(UI::GUIControl::DOCK_TOP);

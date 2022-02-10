@@ -471,8 +471,8 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpSummary = this->tcMain->AddTabPage((const UTF8Char*)"Summary");
-	this->tpDetail = this->tcMain->AddTabPage((const UTF8Char*)"Detail");
+	this->tpSummary = this->tcMain->AddTabPage(CSTR("Summary"));
+	this->tpDetail = this->tcMain->AddTabPage(CSTR("Detail"));
 
 	NEW_CLASS(this->pnlSummary, UI::GUIPanel(ui, this->tpSummary));
 	this->pnlSummary->SetRect(0, 0, 100, 48, false);
@@ -500,11 +500,11 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->hspDetail, UI::GUIHSplitter(ui, this->tpDetail, 3, false));
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this->tpDetail));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpDetInfo = this->tcDetail->AddTabPage((const UTF8Char*)"Info");
-	this->tpDetModule = this->tcDetail->AddTabPage((const UTF8Char*)"Module");
-	this->tpDetThread = this->tcDetail->AddTabPage((const UTF8Char*)"Thread");
-	this->tpDetHeap = this->tcDetail->AddTabPage((const UTF8Char*)"Heap");
-	this->tpDetChart = this->tcDetail->AddTabPage((const UTF8Char*)"Chart");
+	this->tpDetInfo = this->tcDetail->AddTabPage(CSTR("Info"));
+	this->tpDetModule = this->tcDetail->AddTabPage(CSTR("Module"));
+	this->tpDetThread = this->tcDetail->AddTabPage(CSTR("Thread"));
+	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
+	this->tpDetChart = this->tcDetail->AddTabPage(CSTR("Chart"));
 
 	NEW_CLASS(this->lblDetProcId, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Id"));
 	this->lblDetProcId->SetRect(0, 0, 100, 23, false);

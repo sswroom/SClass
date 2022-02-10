@@ -405,7 +405,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Host"));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->tpStatus, CSTR("127.0.0.1")));
@@ -426,7 +426,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
-	this->tpSTopic = this->tcMain->AddTabPage((const UTF8Char*)"Subscribe Topic");
+	this->tpSTopic = this->tcMain->AddTabPage(CSTR("Subscribe Topic"));
 	NEW_CLASS(this->lblSTopic, UI::GUILabel(ui, this->tpSTopic, (const UTF8Char*)"Topic"));
 	this->lblSTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSTopic, UI::GUITextBox(ui, this->tpSTopic, CSTR("")));
@@ -437,7 +437,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	NEW_CLASS(this->lbSTopic, UI::GUIListBox(ui, this->tpSTopic, false));
 	this->lbSTopic->SetRect(104, 28, 150, 119, false);
 
-	this->tpPublish = this->tcMain->AddTabPage((const UTF8Char*)"Publish");
+	this->tpPublish = this->tcMain->AddTabPage(CSTR("Publish"));
 	NEW_CLASS(this->lblPublishTopic, UI::GUILabel(ui, this->tpPublish, (const UTF8Char*)"Topic"));
 	this->lblPublishTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPublishTopic, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
@@ -450,7 +450,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnPublish->SetRect(104, 52, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 
-	this->tpTopic = this->tcMain->AddTabPage((const UTF8Char*)"Topics");
+	this->tpTopic = this->tcMain->AddTabPage(CSTR("Topics"));
 	NEW_CLASS(this->pbTopic, UI::GUIPictureBoxSimple(ui, this->tpTopic, this->core->GetDrawEngine(), false));
 	this->pbTopic->SetRect(0, 0, 100, 300, false);
 	this->pbTopic->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -465,7 +465,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
 	this->lvTopic->HandleSelChg(OnTopicSelChg, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

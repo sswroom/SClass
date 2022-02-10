@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("123")));
@@ -87,7 +87,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);

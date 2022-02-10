@@ -7,6 +7,8 @@
 #include "Text/MyStringFloat.h"
 #include "UI/MessageDialog.h"
 
+#define NMEAMAXSIZE 128
+
 SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
 {
 	this->frm = frm;
@@ -213,6 +215,11 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->lastLon = 0;
 	this->dist = 0;
 	this->lastDown = true;
+	NEW_CLASS(this->nmeaMut, Sync::Mutex());
+	this->nmeaIndex = 0;
+	this->nmeaUpdated = false;
+	this->nmeaBuff = MemAlloc(Text::String*, NMEAMAXSIZE);
+	MemClear(this->nmeaBuff, NMEAMAXSIZE * sizeof(Text::String*));
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	this->dispOffClk = false;
 	this->dispOffTime = 0;
@@ -225,7 +232,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpLocation = this->tcMain->AddTabPage((const UTF8Char*)"Location");
+	this->tpLocation = this->tcMain->AddTabPage(CSTR("Location"));
 
 	NEW_CLASS(this->lblStreamStatus, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"Stream Status"));
 	this->lblStreamStatus->SetRect(8, 8, 100, 23, false);
@@ -293,17 +300,17 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->txtDistance->SetRect(108, 296, 100, 23, false);
 	this->txtDistance->SetReadOnly(true);
 
-	this->tpAlert = this->tcMain->AddTabPage((const UTF8Char*)"Alert");
+	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
 	NEW_CLASS(this->tcAlert, UI::GUITabControl(ui, this->tpAlert));
 	this->tcAlert->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpAlertAdd = this->tcAlert->AddTabPage((const UTF8Char*)"Add");
+	this->tpAlertAdd = this->tcAlert->AddTabPage(CSTR("Add"));
 	NEW_CLASS(this->lbAlertLyr, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertLyr->SetRect(0, 0, 100, 23, false);
 	this->lbAlertLyr->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->hspAlertAdd, UI::GUIHSplitter(ui, this->tpAlertAdd, 3, false));
 	NEW_CLASS(this->lbAlertAdd, UI::GUIListBox(ui, this->tpAlertAdd, false));
 	this->lbAlertAdd->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpAlertView = this->tcAlert->AddTabPage((const UTF8Char*)"View");
+	this->tpAlertView = this->tcAlert->AddTabPage(CSTR("View"));
 	NEW_CLASS(this->pnlAlertView, UI::GUIPanel(ui, this->tpAlertView));
 	this->pnlAlertView->SetRect(0, 0, 100, 31, false);
 	this->pnlAlertView->SetDockType(UI::GUIControl::DOCK_BOTTOM);
@@ -312,7 +319,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 
 	if (this->locSvc->GetServiceType() == Map::ILocationService::ST_MTK)
 	{
-		this->tpMTK = this->tcMain->AddTabPage((const UTF8Char*)"MTK");
+		this->tpMTK = this->tcMain->AddTabPage(CSTR("MTK"));
 		NEW_CLASS(this->grpMTKFirmware, UI::GUIGroupBox(ui, this->tpMTK, (const UTF8Char*)"Firmware"));
 		this->grpMTKFirmware->SetRect(0, 0, 340, 116, false);
 		NEW_CLASS(this->lblMTKRelease, UI::GUILabel(ui, this->grpMTKFirmware, (const UTF8Char*)"Release"));
@@ -352,6 +359,11 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 		this->btnMTKTest->SetRect(0, 140, 75, 23, false);
 		this->btnMTKTest->HandleButtonClick(OnMTKTestClicked, this);*/
 	}
+
+	this->tpNMEA = this->tcMain->AddTabPage(CSTR("NMEA"));
+	NEW_CLASS(this->lbNMEA, UI::GUIListBox(ui, this->tpNMEA, false));
+	this->lbNMEA->SetDockType(UI::GUIControl::DOCK_FILL);
+
 	this->AddTimer(1000, OnTimerTick, this);
 }
 
@@ -370,6 +382,13 @@ SSWR::AVIRead::AVIRGPSTrackerForm::~AVIRGPSTrackerForm()
 	}
 	DEL_CLASS(this->recMut);
 	DEL_CLASS(this->wgs84);
+	UOSInt i = NMEAMAXSIZE;
+	while (i-- > 0)
+	{
+		SDEL_STRING(this->nmeaBuff[i]);
+	}
+	MemFree(this->nmeaBuff);
+	DEL_CLASS(this->nmeaMut);
 }
 
 void SSWR::AVIRead::AVIRGPSTrackerForm::OnMonitorChanged()

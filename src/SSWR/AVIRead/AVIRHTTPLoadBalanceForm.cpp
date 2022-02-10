@@ -301,10 +301,10 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpControl = this->tcMain->AddTabPage((const UTF8Char*)"Control");
-	this->tpStatus = this->tcMain->AddTabPage((const UTF8Char*)"Status");
-	this->tpAccess = this->tcMain->AddTabPage((const UTF8Char*)"Access");
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
+	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
+	this->tpAccess = this->tcMain->AddTabPage(CSTR("Access"));
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
 	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"Parameters"));
 	this->grpParam->SetRect(0, 0, 620, 256, false);

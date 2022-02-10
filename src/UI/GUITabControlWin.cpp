@@ -155,12 +155,12 @@ UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::String *tabName)
 	}
 }
 
-UI::GUITabPage *UI::GUITabControl::AddTabPage(const UTF8Char *tabName)
+UI::GUITabPage *UI::GUITabControl::AddTabPage(Text::CString tabName)
 {
 	UOSInt index;
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(tabName.v);
 	item.cchTextMax = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_INSERTITEMW, this->tabPages->GetCount(), (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);
@@ -234,11 +234,11 @@ UOSInt UI::GUITabControl::GetSelectedIndex()
 	return this->selIndex;
 }
 
-void UI::GUITabControl::SetTabPageName(UOSInt index, const UTF8Char *name)
+void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
 {
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)Text::StrToWCharNew(name);
+	item.pszText = (LPWSTR)Text::StrToWCharNew(name.v);
 	item.cchTextMax = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_SETITEMW, index, (LPARAM)&item);
 	Text::StrDelNew((const WChar*)item.pszText);

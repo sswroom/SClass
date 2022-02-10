@@ -223,7 +223,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpData = this->tcMain->AddTabPage((const UTF8Char*)"Data");
+	this->tpData = this->tcMain->AddTabPage(CSTR("Data"));
 	NEW_CLASS(this->lbData, UI::GUIListBox(ui, this->tpData, false));
 	this->lbData->SetRect(0, 0, 200, 100, false);
 	this->lbData->SetDockType(UI::GUIControl::DOCK_LEFT);
@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->txtData->SetReadOnly(true);
 	this->txtData->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpLog = this->tcMain->AddTabPage((const UTF8Char*)"Log");
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLog->HandleSelectionChange(OnLogSelChg, this);
 
-	this->tpPorts = this->tcMain->AddTabPage((const UTF8Char*)"Common Ports");
+	this->tpPorts = this->tcMain->AddTabPage(CSTR("Common Ports"));
 	NEW_CLASS(this->lvPorts, UI::GUIListView(ui, this->tpPorts, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvPorts->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPorts->SetFullRowSelect(true);
@@ -275,7 +275,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	i = this->lvPorts->AddItem(CSTR("WS-Discovery"), (void*)3702);
 	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"3702");
 
-	this->tpMulticast = this->tcMain->AddTabPage((const UTF8Char*)"Multicast");
+	this->tpMulticast = this->tcMain->AddTabPage(CSTR("Multicast"));
 	NEW_CLASS(this->pnlMulticastCommon, UI::GUIPanel(ui, this->tpMulticast));
 	this->pnlMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DOCK_LEFT);

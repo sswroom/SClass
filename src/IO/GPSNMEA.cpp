@@ -12,16 +12,15 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrack::GPSRecord *record)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord *record)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
-	UOSInt slen = Text::StrCharCnt(line);
-	if (slen <= 3)
+	if (lineLen <= 3)
 	{
 		return PS_NOT_NMEA;
 	}
-	if (line[slen - 3] != '*' || line[0] != '$')
+	if (line[lineLen - 3] != '*' || line[0] != '$')
 	{
 		return PS_NOT_NMEA;
 	}
@@ -29,17 +28,17 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 	{
 		UTF8Char c = 0;
 		UTF8Char *sptr2 = &line[1];
-		while (sptr2 < &line[slen - 3])
+		while (sptr2 < &line[lineLen - 3])
 		{
 			c = c ^ *sptr2++;
 		}
-		if (c != Text::StrHex2UInt8C(&line[slen - 2]))
+		if (c != Text::StrHex2UInt8C(&line[lineLen - 2]))
 		{
 			return PS_NOT_NMEA;
 		}
 	}
 
-	if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGGA")))
+	if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGGA")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 15)
@@ -53,7 +52,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		}
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGSA")))
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGSA")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 18)
@@ -69,12 +68,12 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, Map::GPSTrac
 		}
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPGSV")))
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGSV")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		return PS_HANDLED;
 	}
-	else if (Text::StrStartsWithC(line, slen, UTF8STRC("$GPRMC")))
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPRMC")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 12)
@@ -157,7 +156,11 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 		sptr = reader->ReadLine(sbuff, 8192);
 		if (sptr && (sptr - sbuff) > 3)
 		{
-			ParseStatus ps = ParseNMEALine(sbuff, &record);
+			if (me->cmdHdlr)
+			{
+				me->cmdHdlr(me->cmdHdlrObj, sbuff, (UOSInt)(sptr - sbuff));
+			}
+			ParseStatus ps = ParseNMEALine(sbuff, (UOSInt)(sptr - sbuff), &record);
 			if (ps == PS_NOT_NMEA)
 			{
 
@@ -191,6 +194,8 @@ IO::GPSNMEA::GPSNMEA(IO::Stream *stm, Bool relStm)
 {
 	this->stm = stm;
 	this->relStm = relStm;
+	this->cmdHdlr = 0;
+	this->cmdHdlrObj = 0;
 	NEW_CLASS(this->hdlrMut, Sync::RWMutex());
 	NEW_CLASS(this->hdlrList, Data::ArrayList<LocationHandler>());
 	NEW_CLASS(this->hdlrObjs, Data::ArrayList<void *>());
@@ -261,6 +266,12 @@ Map::ILocationService::ServiceType IO::GPSNMEA::GetServiceType()
 	return Map::ILocationService::ST_NMEA;
 }
 
+void IO::GPSNMEA::HandleCommand(CommandHandler cmdHdlr, void *userObj)
+{
+	this->cmdHdlrObj = userObj;
+	this->cmdHdlr = cmdHdlr;
+}
+
 UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *buff)
 {
 	UOSInt size;
@@ -303,7 +314,7 @@ Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName
 		{
 			break;
 		}
-		ps = ParseNMEALine(sb.ToString(), &record);
+		ps = ParseNMEALine(sb.ToString(), sb.GetLength(), &record);
 		if (ps == PS_NEW_RECORD)
 		{
 			trk->AddRecord(&record);

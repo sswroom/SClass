@@ -212,8 +212,8 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->tpMain = this->tcMain->AddTabPage((const UTF8Char*)"Main");
-	this->tpProfile = this->tcMain->AddTabPage((const UTF8Char*)"Edit Profiles");
+	this->tpMain = this->tcMain->AddTabPage(CSTR("Main"));
+	this->tpProfile = this->tcMain->AddTabPage(CSTR("Edit Profiles"));
 
 	NEW_CLASS(this->btnChgProfile, UI::GUIButton(ui, this->tpMain, (const UTF8Char*)"&Change Profile"));
 	this->btnChgProfile->SetRect(60, 200, 180, 22, false);

@@ -9,7 +9,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	this->tcHeader->SetRect(0,0, 100, 96, false);
 	this->tcHeader->SetDockType(UI::GUIControl::DOCK_TOP);
 
-	this->tpHeading = this->tcHeader->AddTabPage((const UTF8Char*)"Heading");
+	this->tpHeading = this->tcHeader->AddTabPage(CSTR("Heading"));
 	NEW_CLASS(this->lvRecp, UI::GUIListView(ui, this->tpHeading, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvRecp->SetRect(0, 0, 300, 23, false);
 	this->lvRecp->SetDockType(UI::GUIControl::DOCK_RIGHT);
@@ -45,7 +45,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	this->txtDate->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtDate->SetReadOnly(true);
 
-	this->tpRAW = this->tcHeader->AddTabPage((const UTF8Char*)"RAW Headers");
+	this->tpRAW = this->tcHeader->AddTabPage(CSTR("RAW Headers"));
 	NEW_CLASS(this->lvRAW, UI::GUIListView(ui, this->tpRAW, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvRAW->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->lvRAW->AddColumn((const UTF8Char*)"Name", 100);
