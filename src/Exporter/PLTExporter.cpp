@@ -65,7 +65,7 @@ Bool Exporter::PLTExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UOSInt k;
 	UOSInt l;
 	Text::UTF8Writer *writer;
-	Map::GPSTrack::GPSRecord *recs;
+	Map::GPSTrack::GPSRecord2 *recs;
 	Data::DateTime dt;
 	Data::DateTime refTime;
 	

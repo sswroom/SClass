@@ -35,11 +35,11 @@ IO::ParserType Parser::FileParser::SPREDParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*> *devRecs = 0;
-	Data::ArrayList<Map::GPSTrack::GPSRecord*> *currDev = 0;
+	Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord2*>*> *devRecs = 0;
+	Data::ArrayList<Map::GPSTrack::GPSRecord2*> *currDev = 0;
 	Int32 currDevId = -1;
 	Int32 devId;
-	Map::GPSTrack::GPSRecord *rec;
+	Map::GPSTrack::GPSRecord2 *rec;
 	UInt8 buff[384];
 	Bool error = false;
 	UTF8Char u8buff[256];
@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	{
 		return 0;
 	}
-	NEW_CLASS(devRecs, Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord*>*>());
+	NEW_CLASS(devRecs, Data::Int32Map<Data::ArrayList<Map::GPSTrack::GPSRecord2*>*>());
 	currPos += buffSize;
 	while (true)
 	{
@@ -140,12 +140,12 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 					currDev = devRecs->Get(devId);
 					if (currDev == 0)
 					{
-						NEW_CLASS(currDev, Data::ArrayList<Map::GPSTrack::GPSRecord*>());
+						NEW_CLASS(currDev, Data::ArrayList<Map::GPSTrack::GPSRecord2*>());
 						devRecs->Put(devId, currDev);
 					}
 					currDevId = devId;
 				}
-				rec = MemAlloc(Map::GPSTrack::GPSRecord, 1);
+				rec = MemAlloc(Map::GPSTrack::GPSRecord2, 1);
 				rec->lat = (*(Int32*)&buff[i + 8]) / 200000.0;
 				rec->lon = (*(Int32*)&buff[i + 12]) / 200000.0;
 				rec->speed = *(Int32*)&buff[i + 16] * 0.0001;
@@ -153,12 +153,23 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 				rec->utcTimeTicks = 1000LL * *(UInt32*)&buff[i + 22];
 				rec->altitude = *(Int32*)&buff[i + 26] * 0.01;
 				rec->valid = (buff[i + 43] & 0x80) >> 7;
-				rec->nSateUsed = (*(UInt16*)&buff[i + 42]) & 0x7fff;
-				if (rec->nSateUsed & 0x4000)
+				UInt16 nSateUsed = (*(UInt16*)&buff[i + 42]) & 0x7fff;
+				if (nSateUsed & 0x4000)
 				{
-					rec->nSateUsed -= 0x8000;
+					rec->nSateUsedGPS = (UInt8)(nSateUsed - 0x8000);
 				}
-				rec->nSateView = 0;
+				else
+				{
+					rec->nSateUsedGPS = (UInt8)nSateUsed;
+				}
+				rec->nSateUsed = rec->nSateUsedGPS;
+				rec->nSateUsedGLO = 0;
+				rec->nSateUsedSBAS = 0;
+				rec->nSateViewGPS = 0;
+				rec->nSateViewGLO = 0;
+				rec->nSateViewGA = 0;
+				rec->nSateViewQZSS = 0;
+				rec->nSateViewBD = 0;
 				currDev->Add(rec);
 
 			}
@@ -183,7 +194,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 	}
 	if (error)
 	{
-		Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord *> *>*recs = devRecs->GetValues();
+		Data::ArrayList<Data::ArrayList<Map::GPSTrack::GPSRecord2 *> *>*recs = devRecs->GetValues();
 		i = recs->GetCount();
 		while (i-- > 0)
 		{

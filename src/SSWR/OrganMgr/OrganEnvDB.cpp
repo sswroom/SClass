@@ -3118,7 +3118,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 			{
 				Bool found = false;
 				Map::GPSTrack *gpsTrk = (Map::GPSTrack*)lyr;
-				Map::GPSTrack::GPSRecord *recArr;
+				Map::GPSTrack::GPSRecord2 *recArr;
 				i = 0;
 				j = gpsTrk->GetTrackCnt();
 				while (i < j)

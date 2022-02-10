@@ -20,10 +20,17 @@ namespace Map
 			Double altitude;
 			Double speed;
 			Double heading;
-			Int32 valid;
-			Int32 nSateUsed;
-			Int32 nSateView;
-		} GPSRecord;
+			Bool valid;
+			UInt8 nSateUsed;
+			UInt8 nSateUsedGPS;
+			UInt8 nSateUsedSBAS;
+			UInt8 nSateUsedGLO; //GLONASS
+			UInt8 nSateViewGPS; //GPS
+			UInt8 nSateViewGLO; //GLONASS
+			UInt8 nSateViewGA; //Galileo
+			UInt8 nSateViewQZSS; //QZSS
+			UInt8 nSateViewBD; //BeiDou
+		} GPSRecord2;
 
 		typedef struct
 		{
@@ -33,7 +40,7 @@ namespace Map
 			Double minLon;
 			Text::String *name;
 			UOSInt nRecords;
-			GPSRecord *records;
+			GPSRecord2 *records;
 			const UInt8 **extraData;
 			UOSInt *extraDataSize;
 		} TrackRecord;
@@ -61,11 +68,11 @@ namespace Map
 		Text::String *currTrackName;
 		Sync::Mutex *recMut;
 		Data::ArrayListInt64 *currTimes;
-		Data::ArrayList<GPSRecord*> *currRecs;
+		Data::ArrayList<GPSRecord2*> *currRecs;
 		Data::ArrayList<const UInt8 *> *currExtraData;
 		Data::ArrayList<UOSInt> *currExtraSize;
 		Data::ArrayList<TrackRecord*> *currTracks;
-		Map::GPSTrack::GPSRecord *tmpRecord;
+		Map::GPSTrack::GPSRecord2 *tmpRecord;
 		GPSExtraParser *extraParser;
 
 		Sync::Mutex *updMut;
@@ -104,7 +111,7 @@ namespace Map
 		virtual ObjectClass GetObjectClass();
 
 		void NewTrack();
-		UOSInt AddRecord(GPSRecord *rec);
+		UOSInt AddRecord(GPSRecord2 *rec);
 		Bool RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recEnd);
 		Bool GetHasAltitude();
 		void SetTrackName(Text::CString name);
@@ -114,7 +121,7 @@ namespace Map
 		Bool GetTrackEndTime(UOSInt index, Data::DateTime *dt);
 
 		UOSInt GetTrackCnt();
-		GPSRecord *GetTrack(UOSInt index, UOSInt *recordCnt);
+		GPSRecord2 *GetTrack(UOSInt index, UOSInt *recordCnt);
 		void GetLatLonByTime(Data::DateTime *dt, Double *lat, Double *lon);
 		void GetLatLonByTicks(Int64 tiemTicks, Double *lat, Double *lon);
 
@@ -142,7 +149,7 @@ namespace Map
 	private:
 		Map::GPSTrack *gps;
 		OSInt currRow;
-		GPSTrack::GPSRecord *currRec;
+		GPSTrack::GPSRecord2 *currRec;
 	public:
 		GPSDataReader(Map::GPSTrack *gps);
 		virtual ~GPSDataReader();

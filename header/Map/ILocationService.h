@@ -13,7 +13,7 @@ namespace Map
 			ST_MTK
 		} ServiceType;
 
-		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord *record);
+		typedef void (__stdcall *LocationHandler)(void *userObj, Map::GPSTrack::GPSRecord2 *record);
 
 		virtual ~ILocationService() {};
 

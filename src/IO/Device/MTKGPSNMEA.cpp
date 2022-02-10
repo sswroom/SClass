@@ -594,7 +594,7 @@ UOSInt IO::Device::MTKGPSNMEA::GetMTKSerialPort()
 Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 {
 	Int32 bitmask;
-	Map::GPSTrack::GPSRecord rec;
+	Map::GPSTrack::GPSRecord2 rec;
 	bitmask = *(Int32*)&block[2];
 	if ((bitmask & 0x3f) != 0x3f)
 		return false;
@@ -711,14 +711,14 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 			}
 			if (bitmask & 0x1000) // NSAT
 			{
-				rec.nSateUsed = block[currOfst];
-				rec.nSateView = block[currOfst + 1];
+				rec.nSateUsedGPS = block[currOfst];
+				rec.nSateViewGPS = block[currOfst + 1];
 				currOfst += 2;
 			}
 			else
 			{
-				rec.nSateUsed = 0;
-				rec.nSateView = 0;
+				rec.nSateUsedGPS = 0;
+				rec.nSateViewGPS = 0;
 			}
 			if (bitmask & 0x2000) //SID-ELEVATION-AZIMUTH-SNR
 			{
@@ -758,6 +758,13 @@ Bool IO::Device::MTKGPSNMEA::ParseBlock(UInt8 *block, Map::GPSTrack *gps)
 				printf("MTKGPSNMEA: not star\r\n");
 				return false;
 			}
+			rec.nSateUsed = rec.nSateUsedGPS;
+			rec.nSateUsedGLO = 0;
+			rec.nSateUsedSBAS = 0;
+			rec.nSateViewGLO = 0;
+			rec.nSateViewGA = 0;
+			rec.nSateViewQZSS = 0;
+			rec.nSateViewBD = 0;
 			UInt8 chk = 0;
 			while (recStart < currOfst)
 			{

@@ -58,7 +58,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnMapScaleScroll(void *userObj,
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTrackChg(void *userObj)
 {
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
-	Map::GPSTrack::GPSRecord *rec = (Map::GPSTrack::GPSRecord *)me->lbTrack->GetSelectedItem();
+	Map::GPSTrack::GPSRecord2 *rec = (Map::GPSTrack::GPSRecord2 *)me->lbTrack->GetSelectedItem();
 	if (rec)
 	{
 		if (!me->mapView->InViewXY(rec->lon, rec->lat))
@@ -332,7 +332,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	{
 		UTF8Char sbuff[32];
 		UTF8Char *sptr;
-		Map::GPSTrack::GPSRecord *records;
+		Map::GPSTrack::GPSRecord2 *records;
 		Data::DateTime dt;
 		records = this->gpsTrk->GetTrack(0, &j);
 		i = 0;

@@ -160,7 +160,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		r = db->GetTableData((const UTF8Char*)"Line", 0, 0, 0, 0, 0);
 		if (r)
 		{
-			Map::GPSTrack::GPSRecord gpsRec;
+			Map::GPSTrack::GPSRecord2 gpsRec;
 			NEW_CLASS(trk, Map::GPSTrack(pobj->GetSourceNameObj(), true, 0, 0));
 			while (r->ReadNext())
 			{
@@ -180,8 +180,15 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 						gpsRec.speed = rec->speed;
 						gpsRec.heading = 0;
 						gpsRec.valid = true;
-						gpsRec.nSateUsed = -1;
-						gpsRec.nSateView = -1;
+						gpsRec.nSateUsed = 0;
+						gpsRec.nSateUsedGPS = 0;
+						gpsRec.nSateUsedGLO = 0;
+						gpsRec.nSateUsedSBAS = 0;
+						gpsRec.nSateViewGPS = 0;
+						gpsRec.nSateViewGLO = 0;
+						gpsRec.nSateViewGA = 0;
+						gpsRec.nSateViewQZSS = 0;
+						gpsRec.nSateViewBD = 0;
 						trk->AddRecord(&gpsRec);
 					}
 					i++;

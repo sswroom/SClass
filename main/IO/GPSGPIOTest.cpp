@@ -14,7 +14,7 @@
 #include "Text/StringBuilderUTF8.h"
 
 IO::ConsoleWriter *console;
-void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord *record)
+void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord2 *record)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Lat = "));
@@ -27,10 +27,10 @@ void __stdcall OnGPSPos(void *userObj, Map::GPSTrack::GPSRecord *record)
 	Text::SBAppendF64(&sb, record->speed);
 	sb.AppendC(UTF8STRC(", Heading = "));
 	Text::SBAppendF64(&sb, record->heading);
-	sb.AppendC(UTF8STRC(", nSateUsed = "));
-	sb.AppendI32(record->nSateUsed);
-	sb.AppendC(UTF8STRC(", nSateView = "));
-	sb.AppendI32(record->nSateView);
+	sb.AppendC(UTF8STRC(", nSateUsedGPS = "));
+	sb.AppendI32(record->nSateUsedGPS);
+	sb.AppendC(UTF8STRC(", nSateViewGPS = "));
+	sb.AppendI32(record->nSateViewGPS);
 	console->WriteLineC(sb.ToString(), sb.GetLength());
 }
 

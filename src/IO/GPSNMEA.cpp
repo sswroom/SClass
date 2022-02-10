@@ -12,7 +12,7 @@ void IO::GPSNMEA::ParseUnknownCmd(const UTF8Char *cmd)
 {
 }
 
-IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord *record)
+IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record)
 {
 	UTF8Char *sarr[32];
 	UOSInt scnt;
@@ -44,7 +44,7 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		if (scnt >= 15)
 		{
 			record->valid = (Text::StrToInt32(sarr[6]) != 0);
-			record->nSateView = Text::StrToInt32(sarr[7]);
+			record->nSateUsed = (UInt8)Text::StrToUInt32(sarr[7]);
 			if (record->valid)
 			{
 				record->altitude = Text::StrToDouble(sarr[9]);
@@ -57,18 +57,91 @@ IO::GPSNMEA::ParseStatus IO::GPSNMEA::ParseNMEALine(UTF8Char *line, UOSInt lineL
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		if (scnt >= 18)
 		{
-			Int32 nSate = 0;
-			OSInt i = 15;
+			UInt8 nSateGPS = 0;
+			UInt8 nSateSBAS = 0;
+			UInt8 nSateGLO = 0;
+			UInt32 prn;
+			UOSInt i = 15;
 			while (i-- > 3)
 			{
 				if (sarr[i][0] != 0)
-					nSate++;
+				{
+					prn = Text::StrToUInt32(sarr[i]);
+					if (prn <= 32)
+					{
+						nSateGPS++;
+					}
+					else if (prn <= 64)
+					{
+						nSateSBAS++;
+					}
+					else if (prn <= 96)
+					{
+						nSateGLO++;
+					}
+				}
 			}
-			record->nSateUsed = nSate;
+			record->nSateUsedGPS = nSateGPS;
+			record->nSateUsedSBAS = nSateSBAS;
+			record->nSateUsedGLO = nSateGLO;
 		}
 		return PS_HANDLED;
 	}
 	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewGPS = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GLGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewGLO = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GAGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewGA = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GQGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewQZSS = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GBGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewBD = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$BDGSV")))
+	{
+		scnt = Text::StrSplit(sarr, 32, line, ',');
+		if (scnt >= 4)
+		{
+			record->nSateViewBD = (UInt8)Text::StrToUInt32(sarr[3]);
+		}
+		return PS_HANDLED;
+	}
+	else if (Text::StrStartsWithC(line, lineLen, UTF8STRC("$GPVTG")))
 	{
 		scnt = Text::StrSplit(sarr, 32, line, ',');
 		return PS_HANDLED;
@@ -141,13 +214,9 @@ UInt32 __stdcall IO::GPSNMEA::NMEAThread(void *userObj)
 	Text::UTF8Reader *reader;
 	UTF8Char sbuff[8200];
 	UTF8Char *sptr;
-	Map::GPSTrack::GPSRecord record;
+	Map::GPSTrack::GPSRecord2 record;
 
-	record.lat = 0;
-	record.lon = 0;
-	record.altitude = 0;
-	record.nSateUsed = 0;
-	record.nSateView = 0;
+	MemClear(&record, sizeof(record));
 	me->threadRunning = true;
 	NEW_CLASS(reader, Text::UTF8Reader(me->stm));
 
@@ -296,15 +365,11 @@ UOSInt IO::GPSNMEA::GenNMEACommand(const UTF8Char *cmd, UOSInt cmdLen, UInt8 *bu
 Map::GPSTrack *IO::GPSNMEA::NMEA2Track(IO::Stream *stm, Text::CString sourceName)
 {
 	Map::GPSTrack *trk;
-	Map::GPSTrack::GPSRecord record;
+	Map::GPSTrack::GPSRecord2 record;
 	Text::StringBuilderUTF8 sb;
 	Text::UTF8Reader *reader;
 	ParseStatus ps;
-	record.lat = 0;
-	record.lon = 0;
-	record.altitude = 0;
-	record.nSateUsed = 0;
-	record.nSateView = 0;
+	MemClear(&record, sizeof(record));
 	NEW_CLASS(trk, Map::GPSTrack(sourceName, true, 65001, sourceName));
 	NEW_CLASS(reader, Text::UTF8Reader(stm));
 	while (true)

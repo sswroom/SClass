@@ -20,7 +20,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	Double *latLon;
 	UOSInt recCnt;
 	UOSInt i;
-	Map::GPSTrack::GPSRecord *recs;
+	Map::GPSTrack::GPSRecord2 *recs;
 	UTF8Char sbuff[512];
 
 	me->threadRunning = true;
@@ -63,7 +63,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 	{
 		UTF8Char sbuff[64];
 		UOSInt recCnt = 0;
-		Map::GPSTrack::GPSRecord *recs = me->track->GetTrack(me->currTrackId, &recCnt);
+		Map::GPSTrack::GPSRecord2 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
 		Data::DateTime dt;
 		dt.SetTicks(recs[i].utcTimeTicks);
 		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 		me->txtHeading->SetText(sbuff);
 		Text::StrInt32(sbuff, recs[i].valid);
 		me->txtValid->SetText(sbuff);
-		Text::StrInt32(sbuff, recs[i].nSateView);
+		Text::StrInt32(sbuff, recs[i].nSateViewGPS);
 		me->txtNSateView->SetText(sbuff);
 		Text::StrInt32(sbuff, recs[i].nSateUsed);
 		me->txtNSateUsed->SetText(sbuff);
@@ -351,7 +351,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 			Map::GPSTrack *newTrack;
 			NEW_CLASS(newTrack, Map::GPSTrack(this->track->GetSourceNameObj(), this->track->GetHasAltitude(), this->track->GetCodePage(), this->track->GetName()));
 			newTrack->SetTrackName(track->GetTrackName(this->currTrackId)->ToCString());
-			Map::GPSTrack::GPSRecord *recs = track->GetTrack(this->currTrackId, &recCnt);
+			Map::GPSTrack::GPSRecord2 *recs = track->GetTrack(this->currTrackId, &recCnt);
 			i = this->startMark;
 			while (i <= this->endMark)
 			{
@@ -392,7 +392,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	UTF8Char *sptr;
 	Data::DateTime dt;
 	UOSInt recCnt = 0;
-	Map::GPSTrack::GPSRecord *recs = this->track->GetTrack(this->currTrackId, &recCnt);
+	Map::GPSTrack::GPSRecord2 *recs = this->track->GetTrack(this->currTrackId, &recCnt);
 	if (recs)
 	{
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();

@@ -35,7 +35,7 @@ namespace IO
 		Bool threadToStop;
 	private:
 		virtual void ParseUnknownCmd(const UTF8Char *cmd);
-		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord *record);
+		static ParseStatus ParseNMEALine(UTF8Char *line, UOSInt lineLen, Map::GPSTrack::GPSRecord2 *record);
 		static UInt32 __stdcall NMEAThread(void *userObj);
 	public:
 		GPSNMEA(IO::Stream *stm, Bool relStm);

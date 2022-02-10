@@ -36,7 +36,7 @@ namespace SSWR
 			Map::ILocationService *locSvc;
 			Bool relLocSvc;
 
-			Map::GPSTrack::GPSRecord recCurr;
+			Map::GPSTrack::GPSRecord2 recCurr;
 			Map::GPSTrack *gpsTrk;
 			Sync::Mutex *recMut;
 			Bool recUpdated;
@@ -115,7 +115,7 @@ namespace SSWR
 			UI::GUITabPage *tpNMEA;
 			UI::GUIListBox *lbNMEA;
 
-			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord *record);
+			static void __stdcall OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnMTKFirmwareClicked(void *userObj);
 			static void __stdcall OnMTKLogDownloadClicked(void *userObj);

@@ -216,7 +216,7 @@ IO::ParserType Parser::FileParser::SLOCParser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	Map::GPSTrack::GPSRecord rec;
+	Map::GPSTrack::GPSRecord2 rec;
 	UInt8 buff[384];
 	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
@@ -271,8 +271,15 @@ IO::ParsedObject *Parser::FileParser::SLOCParser::ParseFile(IO::IStreamData *fd,
 		extInfo.status = ReadUInt32(&buff[26]);
 		extInfo.inStatus = ReadUInt32(&buff[30]);
 		extInfo.outStatus = ReadUInt32(&buff[34]);
+		rec.nSateUsedGPS = buff[38];
 		rec.nSateUsed = buff[38];
-		rec.nSateView = 0;
+		rec.nSateUsedGLO = 0;
+		rec.nSateUsedSBAS = 0;
+		rec.nSateViewGPS = 0;
+		rec.nSateViewGA = 0;
+		rec.nSateViewGLO = 0;
+		rec.nSateViewQZSS = 0;
+		rec.nSateViewBD = 0;
 		rec.valid = buff[39] & 1;
 		extInfo.fixMode = buff[40];
 		extInfo.gpsFix = buff[41];

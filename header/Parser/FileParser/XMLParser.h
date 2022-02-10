@@ -50,7 +50,7 @@ namespace Parser
 			static void ParseKMLPlacemarkTrack(Text::XMLReader *reader, Map::GPSTrack *lyr, Data::StringMap<KMLStyle*> *styles);
 			static void ParseCoordinates(Text::XMLReader *reader, Data::ArrayList<Double> *coordList, Data::ArrayList<Double> *altList);
 			static Map::IMapDrawLayer *ParseKMLPlacemarkLyr(Text::XMLReader *reader, Data::StringMap<KMLStyle*> *styles, Text::CString sourceName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *basePF);
-			static Bool ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord *rec);
+			static Bool ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord2 *rec);
 			static Bool ParseVSProjFile(Text::XMLReader *reader, Text::VSProjContainer *container);
 			static Bool ParseVSConfFile(Text::XMLReader *reader, Text::CodeProject *proj);
 		};

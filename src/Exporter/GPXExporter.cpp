@@ -71,7 +71,7 @@ Bool Exporter::GPXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UOSInt l;
 	IO::BufferedOutputStream *cstm;
 	IO::StreamWriter *writer;
-	Map::GPSTrack::GPSRecord *recs;
+	Map::GPSTrack::GPSRecord2 *recs;
 	Data::DateTime dt;
 
 	Text::Encoding enc(this->codePage);

@@ -171,7 +171,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)
 	{
 		Map::GPSTrack *track;
-		Map::GPSTrack::GPSRecord rec;
+		Map::GPSTrack::GPSRecord2 rec;
 		Data::DateTime dt;
 		NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), altCol != INVALID_INDEX, this->codePage, 0));
 		track->SetTrackName(fd->GetShortName());
@@ -264,20 +264,27 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 						tmpArr2[nSateCol].v[i] = 0;
 						Text::StrTrimC(tmpArr2[nSateCol].v, i);
 						Text::StrTrimC(&tmpArr2[nSateCol].v[i + 1], tmpArr2[nSateCol].leng - i - 1);
-						rec.nSateUsed = Text::StrToInt32(tmpArr2[nSateCol].v);
-						rec.nSateView = Text::StrToInt32(&tmpArr2[nSateCol].v[i + 1]);
+						rec.nSateUsedGPS = Text::StrToInt32(tmpArr2[nSateCol].v);
+						rec.nSateViewGPS = Text::StrToInt32(&tmpArr2[nSateCol].v[i + 1]);
 					}
 					else
 					{
-						rec.nSateUsed = 0;
-						rec.nSateView = 0;
+						rec.nSateUsedGPS = 0;
+						rec.nSateViewGPS = 0;
 					}
 				}
 				else
 				{
-					rec.nSateUsed = 0;
-					rec.nSateView = 0;
+					rec.nSateUsedGPS = 0;
+					rec.nSateViewGPS = 0;
 				}
+				rec.nSateUsed = rec.nSateUsedGPS;
+				rec.nSateUsedGLO = 0;
+				rec.nSateUsedSBAS = 0;
+				rec.nSateViewGLO = 0;
+				rec.nSateViewGA = 0;
+				rec.nSateViewQZSS = 0;
+				rec.nSateViewBD = 0;
 				track->AddRecord(&rec);
 			}
 		}		

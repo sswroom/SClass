@@ -76,7 +76,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	if (layer->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
 	{
 		Map::GPSTrack *track = (Map::GPSTrack*)layer;
-		Map::GPSTrack::GPSRecord *rec;
+		Map::GPSTrack::GPSRecord2 *rec;
 		UOSInt recCnt;
 		Double v;
 		Int32 currInd = 1;
@@ -137,9 +137,9 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" km/h, "));
 				sptr = Text::StrDoubleFmt(sptr, rec[k].heading, "0.000000");
 				sptr = Text::StrConcatC(sptr, UTF8STRC(", "));
-				sptr = Text::StrInt32(sptr, rec[k].nSateUsed);
+				sptr = Text::StrInt32(sptr, rec[k].nSateUsedGPS);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
-				sptr = Text::StrInt32(sptr, rec[k].nSateView);
+				sptr = Text::StrInt32(sptr, rec[k].nSateViewGPS);
 				writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 
 				currInd++;

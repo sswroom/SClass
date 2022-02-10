@@ -283,7 +283,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									{
 										if (reader->GetNodeText()->EqualsICase(UTF8STRC("TRKPT")))
 										{
-											Map::GPSTrack::GPSRecord rec;
+											Map::GPSTrack::GPSRecord2 rec;
 											if (ParseGPXPoint(reader, &rec))
 											{
 												track->AddRecord(&rec);
@@ -2459,10 +2459,17 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 								{
 									if (timeList.GetCount() == coordList.GetCount())
 									{
-										Map::GPSTrack::GPSRecord rec;
+										Map::GPSTrack::GPSRecord2 rec;
 										rec.heading = 0;
 										rec.nSateUsed = 0;
-										rec.nSateView = 0;
+										rec.nSateUsedGPS = 0;
+										rec.nSateUsedSBAS = 0;
+										rec.nSateUsedGLO = 0;
+										rec.nSateViewGPS = 0;
+										rec.nSateViewGLO = 0;
+										rec.nSateViewGA = 0;
+										rec.nSateViewQZSS = 0;
+										rec.nSateViewBD = 0;
 										rec.speed = 0;
 										rec.valid = true;
 										Data::DateTime dt;
@@ -2505,7 +2512,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										coordList.Clear();
 									}
 									UOSInt recCnt;
-									Map::GPSTrack::GPSRecord *recs = lyr->GetTrack(0, &recCnt);
+									Map::GPSTrack::GPSRecord2 *recs = lyr->GetTrack(0, &recCnt);
 									while (reader->ReadNext())
 									{
 										if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -2598,7 +2605,8 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 																		reader->ReadNodeText(&sb);
 																		if (j < recCnt)
 																		{
-																			recs[j].nSateUsed = Double2Int32(Text::StrToDouble(sb.ToString()));
+																			recs[j].nSateUsed = (UInt8)Double2Int32(Text::StrToDouble(sb.ToString()));
+																			recs[j].nSateUsedGPS = recs[j].nSateUsed;
 																		}
 																		j++;
 																	}
@@ -2642,10 +2650,17 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 						if (timeList.GetCount() == coordList.GetCount())
 						{
-							Map::GPSTrack::GPSRecord rec;
+							Map::GPSTrack::GPSRecord2 rec;
 							rec.heading = 0;
 							rec.nSateUsed = 0;
-							rec.nSateView = 0;
+							rec.nSateUsedGPS = 0;
+							rec.nSateUsedGLO = 0;
+							rec.nSateUsedSBAS = 0;
+							rec.nSateViewGPS = 0;
+							rec.nSateViewGLO = 0;
+							rec.nSateViewGA = 0;
+							rec.nSateViewQZSS = 0;
+							rec.nSateViewBD = 0;
 							rec.speed = 0;
 							rec.valid = true;
 							Data::DateTime dt;
@@ -2733,10 +2748,17 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 
 				if (timeList.GetCount() == coordList.GetCount())
 				{
-					Map::GPSTrack::GPSRecord rec;
+					Map::GPSTrack::GPSRecord2 rec;
 					rec.heading = 0;
 					rec.nSateUsed = 0;
-					rec.nSateView = 0;
+					rec.nSateUsedGPS = 0;
+					rec.nSateUsedGLO = 0;
+					rec.nSateUsedSBAS = 0;
+					rec.nSateViewGPS = 0;
+					rec.nSateViewGLO = 0;
+					rec.nSateViewGA = 0;
+					rec.nSateViewQZSS = 0;
+					rec.nSateViewBD = 0;
 					rec.speed = 0;
 					rec.valid = true;
 					Data::DateTime dt;
@@ -3248,7 +3270,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 	return 0;
 }
 
-Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord *rec)
+Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::GPSTrack::GPSRecord2 *rec)
 {
 	UOSInt i;
 	UOSInt j;
@@ -3314,8 +3336,15 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 		i++;
 	}
 	rec->heading = 0;
-	rec->nSateUsed = -1;
-	rec->nSateView = -1;
+	rec->nSateUsed = 0;
+	rec->nSateUsedGPS = 0;
+	rec->nSateUsedGLO = 0;
+	rec->nSateUsedSBAS = 0;
+	rec->nSateViewGPS = 0;
+	rec->nSateViewGLO = 0;
+	rec->nSateViewGA = 0;
+	rec->nSateViewQZSS = 0;
+	rec->nSateViewBD = 0;
 	rec->valid = true;
 	return succ;
 }

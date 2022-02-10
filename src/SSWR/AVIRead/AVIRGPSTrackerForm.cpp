@@ -23,12 +23,12 @@ void SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::OnFocusLost()
 	this->frm->DispOffFocusLost();
 }
 
-void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord *record)
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map::GPSTrack::GPSRecord2 *record)
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Double dist;
 	Sync::MutexUsage mutUsage(me->recMut);
-	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord));
+	MemCopyNO(&me->recCurr, record, sizeof(Map::GPSTrack::GPSRecord2));
 	me->recUpdated = true;
 	if (me->gpsTrk && record->valid)
 	{
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		me->txtGPSValid->SetText(me->recCurr.valid?(const UTF8Char*)"Valid":(const UTF8Char*)"Invalid");
 		Text::StrInt32(sbuff, me->recCurr.nSateUsed);
 		me->txtNSateUsed->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateView);
+		Text::StrInt32(sbuff, me->recCurr.nSateViewGPS);
 		me->txtNSateView->SetText(sbuff);
 		Text::StrDouble(sbuff, me->dist);
 		me->txtDistance->SetText(sbuff);
@@ -112,6 +112,26 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		{
 			me->lastUpdateTime->SetCurrTimeUTC();
 			me->locSvc->ErrorRecover();
+		}
+	}
+	if (me->nmeaUpdated)
+	{
+		Sync::MutexUsage nmeaMut(me->nmeaMut);
+		me->nmeaUpdated = false;
+		UOSInt i = me->nmeaIndex;
+		me->lbNMEA->ClearItems();
+		if (me->nmeaBuff[i])
+		{
+			me->lbNMEA->AddItem(me->nmeaBuff[i]->ToCString(), 0);
+		}
+		i = (i + 1) & (NMEAMAXSIZE - 1);
+		while (i != me->nmeaIndex)
+		{
+			if (me->nmeaBuff[i])
+			{
+				me->lbNMEA->AddItem(me->nmeaBuff[i]->ToCString(), 0);
+			}
+			i = (i + 1) & (NMEAMAXSIZE - 1);
 		}
 	}
 }
@@ -197,6 +217,16 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTopMostChg(void *userObj, Bo
 {
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	me->SetAlwaysOnTop(newState);
+}
+
+void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, const UTF8Char *line, UOSInt lineLen)
+{
+	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
+	Sync::MutexUsage mutUsage(me->nmeaMut);
+	SDEL_STRING(me->nmeaBuff[me->nmeaIndex]);
+	me->nmeaBuff[me->nmeaIndex] = Text::String::New(line, lineLen);
+	me->nmeaIndex = (me->nmeaIndex + 1) & (NMEAMAXSIZE - 1);
+	me->nmeaUpdated = true;
 }
 
 SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 372, ui)
@@ -363,6 +393,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->tpNMEA = this->tcMain->AddTabPage(CSTR("NMEA"));
 	NEW_CLASS(this->lbNMEA, UI::GUIListBox(ui, this->tpNMEA, false));
 	this->lbNMEA->SetDockType(UI::GUIControl::DOCK_FILL);
+	((IO::GPSNMEA*)this->locSvc)->HandleCommand(OnNMEALine, this);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }
