@@ -6,7 +6,7 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
-#include <stdio.h>
+//#include <stdio.h>
 #define CMDDELAY 0
 
 UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
@@ -24,7 +24,7 @@ UInt32 __stdcall IO::MODBUSTCPMaster::ThreadProc(void *userObj)
 	while (!me->threadToStop)
 	{
 		readSize = me->stm->Read(&buff[buffSize], 1024 - buffSize);
-//		printf("ReadSize: %d\r\n", readSize);
+//		printf("ReadSize: %d\r\n", (UInt32)readSize);
 		if (readSize > 0)
 		{
 //			sb->ClearStr();

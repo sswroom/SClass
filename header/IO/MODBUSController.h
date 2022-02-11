@@ -15,9 +15,10 @@ namespace IO
 			DT_I32,
 			DT_F32,
 			DT_U16,
-			DT_IU32,
-			DT_IU16,
-			DT_OS16 //One's complement
+			DT_IU32, //UInt32 in Intel byte order
+			DT_IU16, //UInt16 in Intel byte order
+			DT_OS16, //One's complement
+			DT_U8
 		} DataType;
 	private:
 		IO::MODBUSMaster *modbus;
@@ -37,6 +38,7 @@ namespace IO
 		static void __stdcall SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt);
 
 		Bool ReadRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *resBuff, UInt16 resSize);
+		Bool WriteRegister(UInt8 devAddr, UInt32 regAddr, UInt8 *regBuff, UInt16 regSize);
 	public:
 		MODBUSController(IO::MODBUSMaster *modbus);
 		~MODBUSController();
@@ -47,6 +49,8 @@ namespace IO
 		Bool ReadRegisterF32(UInt8 devAddr, UInt32 regAddr, Single *outVal);
 		Bool ReadRegisterU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal);
 		Bool ReadRegisterIU16(UInt8 devAddr, UInt32 regAddr, UInt16 *outVal); //Intel byte order
+		Bool ReadRegisterU8(UInt8 devAddr, UInt32 regAddr, UInt8 *outVal);
+		Bool WriteRegisterBool(UInt8 devAddr, UInt32 regAddr, Bool val);
 	};
 }
 #endif

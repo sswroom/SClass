@@ -104,6 +104,36 @@ void __stdcall IO::MODBUSDevice::ReadResult(void *userObj, UInt8 funcCode, const
 			}
 		}
 	}
+	else if (funcCode == 1)
+	{
+		if (me->reqIResult)
+		{
+			if (resultSize == 1)
+			{
+				me->reqIResult[0] = result[0];
+				me->reqHasResult = true;
+				me->cbEvt->Set();
+			}
+			else if (resultSize == 2)
+			{
+				me->reqIResult[0] = ReadUInt16(result);
+				me->reqHasResult = true;
+				me->cbEvt->Set();
+			}
+			else if (resultSize == 3)
+			{
+				me->reqIResult[0] = (Int32)ReadUInt24(result);
+				me->reqHasResult = true;
+				me->cbEvt->Set();
+			}
+			else if (resultSize == 4)
+			{
+				me->reqIResult[0] = ReadInt32(result);
+				me->reqHasResult = true;
+				me->cbEvt->Set();
+			}
+		}
+	}
 }
 
 void __stdcall IO::MODBUSDevice::SetResult(void *userObj, UInt8 funcCode, UInt16 startAddr, UInt16 cnt)
@@ -258,6 +288,26 @@ Bool IO::MODBUSDevice::WriteHoldingF32(UInt16 addr, Single val)
 	return this->reqHasResult;
 }
 
+Bool IO::MODBUSDevice::ReadDInput(UInt16 addr)
+{
+	Int32 outVal = 0;
+	Sync::MutexUsage mutUsage(this->reqMut);
+	this->reqHasResult = false;
+	this->reqIResult = &outVal;
+	this->cbEvt->Clear();
+	this->modbus->ReadInputs(this->addr, addr, 1);
+	this->cbEvt->Wait(this->timeout);
+	this->reqIResult = 0;
+	if (this->reqHasResult)
+	{
+		return outVal != 0;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 Bool IO::MODBUSDevice::ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
@@ -268,6 +318,26 @@ Bool IO::MODBUSDevice::ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal)
 	this->cbEvt->Wait(this->timeout);
 	this->reqIResult = 0;
 	return this->reqHasResult;
+}
+
+Bool IO::MODBUSDevice::ReadCoil(UInt16 addr)
+{
+	Int32 outVal = 0;
+	Sync::MutexUsage mutUsage(this->reqMut);
+	this->reqHasResult = false;
+	this->reqIResult = &outVal;
+	this->cbEvt->Clear();
+	this->modbus->ReadCoils(this->addr, addr, 1);
+	this->cbEvt->Wait(this->timeout);
+	this->reqIResult = 0;
+	if (this->reqHasResult)
+	{
+		return outVal != 0;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 Bool IO::MODBUSDevice::WriteDOutput(UInt16 addr, Bool isHigh)

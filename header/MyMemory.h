@@ -32,6 +32,9 @@ void MemDecCounter(void *ptr);
 #if  0
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);MemIncCounter(variable);}
 #define DEL_CLASS(variable) {delete variable;MemDecCounter(variable);}
+#elif defined(THREADSAFE)
+#define NEW_CLASS(variable, className) {MemLock(); variable = new className;MemPtrChk(variable); MemUnlock();}
+#define DEL_CLASS(variable) {MemLock(); delete variable; MemUnlock();}
 #else
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);}
 #define DEL_CLASS(variable) {delete variable;}

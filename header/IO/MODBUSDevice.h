@@ -3,13 +3,14 @@
 #include "IO/MODBUSController.h"
 #include "IO/MODBUSMaster.h"
 #include "Math/Unit/UnitBase.h"
+#include "Text/CString.h"
 
 namespace IO
 {
 	class MODBUSDevice
 	{
 	public:
-		typedef void (__stdcall *MODBUSDataEntry)(void *userObj, const UTF8Char *name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
+		typedef void (__stdcall *MODBUSDataEntry)(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 	private:
 		IO::MODBUSMaster *modbus;
 		UOSInt timeout;
@@ -38,7 +39,9 @@ namespace IO
 		Bool WriteHoldingsU16(UInt16 addr, UInt16 cnt, UInt16 *vals);
 		Bool WriteHoldingI32(UInt16 addr, Int32 val);
 		Bool WriteHoldingF32(UInt16 addr, Single val);
+		Bool ReadDInput(UInt16 addr);
 		Bool ReadDInputs(UInt16 addr, UInt16 cnt, Int32 *outVal);
+		Bool ReadCoil(UInt16 addr);
 		Bool WriteDOutput(UInt16 addr, Bool isHigh);
 	public:
 		MODBUSDevice(IO::MODBUSMaster *modbus, UInt8 addr);

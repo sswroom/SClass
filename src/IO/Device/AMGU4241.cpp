@@ -37,9 +37,9 @@ Bool IO::Device::AMGU4241::ReadTemperature(Double *temp)
 
 void IO::Device::AMGU4241::GetDataEntries(UInt8 addr, MODBUSDataEntry dataHdlr, void *userObj)
 {
-	dataHdlr(userObj, (const UTF8Char*)"Number of people",       addr, 40001, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 1);
-	dataHdlr(userObj, (const UTF8Char*)"Human Coordinates",      addr, 40002, IO::MODBUSController::DT_IU32, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
-	dataHdlr(userObj, (const UTF8Char*)"Exist/absence data",     addr, 40004, IO::MODBUSController::DT_IU16, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
-	dataHdlr(userObj, (const UTF8Char*)"Moving directions",      addr, 40005, IO::MODBUSController::DT_IU32, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
-	dataHdlr(userObj, (const UTF8Char*)"Temperature data",       addr, 40007, IO::MODBUSController::DT_OS16, Math::Unit::UnitBase::VT_TEMPERATURE,        Math::Unit::Temperature::TU_CELSIUS, 256);
+	dataHdlr(userObj, CSTR("Number of people"),       addr, 40001, IO::MODBUSController::DT_U16,  Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 1);
+	dataHdlr(userObj, CSTR("Human Coordinates"),      addr, 40002, IO::MODBUSController::DT_IU32, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
+	dataHdlr(userObj, CSTR("Exist/absence data"),     addr, 40004, IO::MODBUSController::DT_IU16, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
+	dataHdlr(userObj, CSTR("Moving directions"),      addr, 40005, IO::MODBUSController::DT_IU32, Math::Unit::UnitBase::VT_COUNT,              Math::Unit::Count::CU_UNIT, 0);
+	dataHdlr(userObj, CSTR("Temperature data"),       addr, 40007, IO::MODBUSController::DT_OS16, Math::Unit::UnitBase::VT_TEMPERATURE,        Math::Unit::Temperature::TU_CELSIUS, 256);
 }

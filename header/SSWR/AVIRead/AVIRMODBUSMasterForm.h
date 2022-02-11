@@ -30,14 +30,15 @@ namespace SSWR
 			{
 				DT_SDM120,
 				DT_AMGU4241,
+				DT_ED538,
 
 				DT_FIRST = DT_SDM120,
-				DT_LAST = DT_AMGU4241
+				DT_LAST = DT_ED538
 			} DeviceType;
 
 			typedef struct
 			{
-				const UTF8Char *name;
+				Text::String *name;
 				UInt8 devAddr;
 				UInt32 regAddr;
 				IO::MODBUSController::DataType dt;
@@ -66,6 +67,16 @@ namespace SSWR
 			UI::GUILabel *lblDevAddr;
 			UI::GUILabel *lblRegAddr;
 			UI::GUILabel *lblValue;
+			UI::GUILabel *lblU8Name;
+			UI::GUITextBox *txtU8DevAddr;
+			UI::GUITextBox *txtU8RegAddr;
+			UI::GUIButton *btnU8Get;
+			UI::GUITextBox *txtU8Value;
+			UI::GUILabel *lblU16Name;
+			UI::GUITextBox *txtU16DevAddr;
+			UI::GUITextBox *txtU16RegAddr;
+			UI::GUIButton *btnU16Get;
+			UI::GUITextBox *txtU16Value;
 			UI::GUILabel *lblI32Name;
 			UI::GUITextBox *txtI32DevAddr;
 			UI::GUITextBox *txtI32RegAddr;
@@ -76,6 +87,17 @@ namespace SSWR
 			UI::GUITextBox *txtF32RegAddr;
 			UI::GUIButton *btnF32Get;
 			UI::GUITextBox *txtF32Value;
+
+			UI::GUITabPage *tpSetValue;
+			UI::GUILabel *lblSetDevAddr;
+			UI::GUILabel *lblSetRegAddr;
+			UI::GUILabel *lblSetValue;
+			UI::GUILabel *lblSetU8Name;
+			UI::GUITextBox *txtSetU8DevAddr;
+			UI::GUITextBox *txtSetU8RegAddr;
+			UI::GUIButton *btnSetU8Low;
+			UI::GUIButton *btnSetU8High;
+			UI::GUITextBox *txtSetU8Value;
 
 			UI::GUITabPage *tpDevice;
 			UI::GUIPanel *pnlDevice;
@@ -88,12 +110,16 @@ namespace SSWR
 
 		private:
 			static void __stdcall OnStreamClicked(void *userObj);
+			static void __stdcall OnU8GetClicked(void *userObj);
+			static void __stdcall OnU16GetClicked(void *userObj);
 			static void __stdcall OnI32GetClicked(void *userObj);
 			static void __stdcall OnF32GetClicked(void *userObj);
+			static void __stdcall OnSetU8LowClicked(void *userObj);
+			static void __stdcall OnSetU8HighClicked(void *userObj);
 			static void __stdcall OnDeviceAddClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 
-			static void __stdcall OnMODBUSEntry(void *userObj, const UTF8Char *name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
+			static void __stdcall OnMODBUSEntry(void *userObj, Text::CString name, UInt8 devAddr, UInt32 regAddr, IO::MODBUSController::DataType dt, Math::Unit::UnitBase::ValueType vt, Int32 unit, Int32 denorm);
 			void StopStream();
 
 		public:

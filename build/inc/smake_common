@@ -1660,6 +1660,8 @@ IO/Device/DHT22.h: ../../src/IO/Device/DHT22.cpp
 @DHT22.o
 IO/Device/DS18B20.h: ../../src/IO/Device/DS18B20.cpp
 @DS18B20.o
+IO/Device/ED538.h: ../../src/IO/Device/ED538.cpp
+@ED538.o
 IO/Device/GoProCameraControl.h: ../../src/IO/Device/GoProCameraControl.cpp
 @GoProCameraControl.o
 IO/Device/IBuddy.h: ../../src/IO/Device/IBuddy.cpp
@@ -4191,6 +4193,7 @@ DensoWaveQB30.o: ../../src/IO/Device/DensoWaveQB30.cpp
 DensoWaveQK30U.o: ../../src/IO/Device/DensoWaveQK30U.cpp
 DHT22.o: ../../src/IO/Device/DHT22.cpp
 DS18B20.o: ../../src/IO/Device/DS18B20.cpp
+ED538.o: ../../src/IO/Device/ED538.cpp
 GoProCameraControl.o: ../../src/IO/Device/GoProCameraControl.cpp
 HCSR04.o: ../../src/IO/Device/HCSR04.cpp
 IBuddy.o: ../../src/IO/Device/IBuddy.cpp
