@@ -528,7 +528,7 @@ hflop:
 ;	lea rdi,[rdi+8]
 ;	lea rcx,[rcx+4]
 	add rdi,8
-	add rcx,8
+	add rcx,4
 
 	align 16
 hflop4:
@@ -1167,9 +1167,8 @@ vflop6:
 	pextrw rdx,xmm2,1
 	mov al,byte [rdi+rbx]
 	mov ah,byte [rdi+rdx+65536]
-	shl rax,16
 
-	movnti qword [rcx],rax
+	mov qword [rcx],rax
 	lea rcx,[rcx+8]
 	lea rsi,[rsi+16]
 	dec rbp

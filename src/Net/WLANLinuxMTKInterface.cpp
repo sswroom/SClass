@@ -61,7 +61,13 @@ Bool Net::WLANLinuxMTKInterface::Scan()
 	wrq.u.data.flags = 0;
 //	Sync::MutexUsage mutUsage(cmds->mut);
 //	printf("before ioctl, cmd = %04x, leng = %d\r\n", cmds->setCmd, wrq.u.data.length);
+#if defined(THREADSAFE)
+	MemLock();
 	ret = ioctl(-1 + (int)(OSInt)this->id, this->setCmd, &wrq);
+	MemUnlock();
+#else
+	ret = ioctl(-1 + (int)(OSInt)this->id, this->setCmd, &wrq);
+#endif
 //		printf("set SiteSurvey=1 ret = %d, errno = %d\r\n", ret, errno);
 //	mutUsage.EndUse();
 	return ret >= 0;
@@ -109,7 +115,13 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 	wrq.u.data.length = (UInt16)buffSize;
 //	Sync::MutexUsage mutUsage(cmds->mut);
 //		printf("SiteSurvey ioctl before\r\n");
+#if defined(THREADSAFE)
+	MemLock();
 	ret = ioctl(-1 + (int)(OSInt)this->id, this->siteSurveyCmd, &wrq);
+	MemUnlock();
+#else
+	ret = ioctl(-1 + (int)(OSInt)this->id, this->siteSurveyCmd, &wrq);
+#endif
 //		printf("get_site_survey return %d, errno = %d, len = %d\r\n", ret, errno, wrq.u.data.length);
 //	mutUsage.EndUse();
 	if (ret == 0)

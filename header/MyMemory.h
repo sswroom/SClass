@@ -32,9 +32,6 @@ void MemDecCounter(void *ptr);
 #if  0
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);MemIncCounter(variable);}
 #define DEL_CLASS(variable) {delete variable;MemDecCounter(variable);}
-#elif defined(THREADSAFE)
-#define NEW_CLASS(variable, className) {MemLock(); variable = new className;MemPtrChk(variable); MemUnlock();}
-#define DEL_CLASS(variable) {MemLock(); delete variable; MemUnlock();}
 #else
 #define NEW_CLASS(variable, className) {variable = new className;MemPtrChk(variable);}
 #define DEL_CLASS(variable) {delete variable;}
@@ -70,6 +67,24 @@ template <class T> T MemNewClass(T cls)
 	//MemIncCounter(cls);
 	return cls;
 }
+
+#if 0 && defined(__cplusplus) && defined(THREADSAFE)
+#include <stdlib.h>
+FORCEINLINE void *operator new(size_t size)
+{
+	MemLock();
+	void *ret = malloc((UOSInt)size);
+	MemUnlock();
+	return ret;
+}
+
+FORCEINLINE void operator delete(void *p)
+{
+	MemLock();
+	free(p);
+	MemUnlock();
+}
+#endif
 
 #define SMEMFREE(ptr) {if (ptr) {MemFree(ptr); ptr = 0;} }
 
