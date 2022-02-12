@@ -473,19 +473,22 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 	this->SetText(sbuff);
 }
 
-void SSWR::AVIRead::AVIRGISForm::CloseCtrlForm()
+void SSWR::AVIRead::AVIRGISForm::CloseCtrlForm(Bool closing)
 {
 	if (this->ctrlForm)
 	{
 		this->ctrlForm->Close();
-		this->HideMarker();
-		this->SetSelectedVector(0);
+		if (!closing)
+		{
+			this->HideMarker();
+			this->SetSelectedVector(0);
+		}
 	}
 }
 
 void SSWR::AVIRead::AVIRGISForm::SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item)
 {
-	this->CloseCtrlForm();
+	this->CloseCtrlForm(false);
 	this->ctrlItem = item;
 	this->ctrlForm = frm;
 	this->ctrlForm->HandleFormClosed(OnCtrlFormClosed, this);
@@ -761,7 +764,7 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	//this->mapCtrl->SetRenderer(0);
 	UOSInt i;
 	this->pauseUpdate = true;
-	this->CloseCtrlForm();
+	this->CloseCtrlForm(true);
 	i = this->subForms->GetCount();
 	while (i-- > 0)
 	{
@@ -823,7 +826,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_GROUP_REMOVE:
 		{
-			if (this->ctrlItem == this->popNode) this->CloseCtrlForm();
+			if (this->ctrlItem == this->popNode) this->CloseCtrlForm(false);
 			this->mapTree->RemoveItem(this->popNode);
 			this->UpdateTimeRange();
 			this->mapCtrl->UpdateMap();
@@ -900,7 +903,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_LAYER_REMOVE:
 		{
-			if (this->ctrlItem == this->popNode) this->CloseCtrlForm();
+			if (this->ctrlItem == this->popNode) this->CloseCtrlForm(false);
 			this->mapTree->RemoveItem(this->popNode);
 			this->UpdateTimeRange();
 			this->mapCtrl->UpdateMap();

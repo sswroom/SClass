@@ -90,7 +90,7 @@ namespace SSWR
 			static void __stdcall OnTreeDrag(void *userObj, UI::GUIMapTreeView::ItemIndex *dragItem, UI::GUIMapTreeView::ItemIndex *dropItem);
 			static void __stdcall OnTimerTick(void *userObj);
 			void UpdateTitle();
-			void CloseCtrlForm();
+			void CloseCtrlForm(Bool closing);
 			void SetCtrlForm(UI::GUIForm *frm, UI::GUITreeView::TreeItem *item);
 			Bool ParseObject(IO::ParsedObject *pobj);
 			void OpenURL(const UTF8Char *url, UOSInt urlLen, const UTF8Char *customName);

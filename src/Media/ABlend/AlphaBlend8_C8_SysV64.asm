@@ -261,6 +261,9 @@ iadbldpalop2:
 	ALIGN 16
 iabbldpalopodd:
 	mov rcx,r8 ;width
+	test rcx,rcx
+	jz iadbldpalopodd2b
+
 	align 16
 iadbldpalopodd2:
 	mov al,byte [rsi+7]
@@ -342,6 +345,7 @@ iadbldpalopodd2:
 	dec rcx
 	jnz iadbldpalopodd2
 
+iadbldpalopodd2b:
 	mov al,byte [rsi+3]
 	mov ah,al
 	movzx rbx,ax
