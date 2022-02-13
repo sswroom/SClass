@@ -36,6 +36,12 @@ namespace Map
 			SFLG_HIDESHAPE = 64
 		} SettingFlag;
 
+		enum class FontType
+		{
+			GlobalStyle,
+			LayerStyle
+		};
+
 		struct MapItem
 		{
 			ItemType itemType;
@@ -50,7 +56,7 @@ namespace Map
 			UOSInt lineThick;
 			UInt32 lineColor;
 			UInt32 fillStyle;
-			Int32 fontType;
+			FontType fontType;
 			UOSInt fontStyle;
 			Text::String *fontName;
 			Double fontSizePt;

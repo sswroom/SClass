@@ -212,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontModifyClicked(void *userObj
 	{
 		UOSInt w;
 		UOSInt h;
-		me->fontType = 1;
+		me->fontType = Map::MapEnv::FontType::LayerStyle;
 		SDEL_STRING(me->fontName);
 		me->fontName = frm->GetFontName()->Clone();
 		me->fontSizePt = frm->GetFontSizePt();
@@ -244,7 +244,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnFontStyleClicked(void *userObj)
 		UOSInt w;
 		UOSInt h;
 		me->fontStyle = frm->GetFontStyle();
-		me->fontType = 0;
+		me->fontType = Map::MapEnv::FontType::GlobalStyle;
 
 		if (me->imgFont)
 		{
@@ -418,11 +418,11 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 		dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 		dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-		if (setting.fontType == 0)
+		if (setting.fontType == Map::MapEnv::FontType::GlobalStyle)
 		{
 			this->core->GenFontStylePreview(dimg, this->eng, this->env, setting.fontStyle, this->colorConv);
 		}
-		else if (setting.fontType == 1)
+		else if (setting.fontType == Map::MapEnv::FontType::LayerStyle)
 		{
 			this->core->GenFontPreview(dimg, this->eng, setting.fontName->v, setting.fontName->leng, setting.fontSizePt, setting.fontColor, this->colorConv);
 		}
@@ -585,11 +585,11 @@ void SSWR::AVIRead::AVIRGISPropForm::RGBParamChanged(const Media::IColorHandler:
 	dimg = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 	dimg->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
 	dimg->SetVDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	if (this->fontType == 0)
+	if (this->fontType == Map::MapEnv::FontType::GlobalStyle)
 	{
 		this->core->GenFontStylePreview(dimg, this->eng, this->env, this->fontStyle, this->colorConv);
 	}
-	else if (this->fontType == 1)
+	else if (this->fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		this->core->GenFontPreview(dimg, this->eng, this->fontName->v, this->fontName->leng, this->fontSizePt, this->fontColor, this->colorConv);
 	}

@@ -611,7 +611,7 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 				lyr->fillStyle = 0xffc0c0c0;
 			}
 		}
-		lyr->fontType = 0;
+		lyr->fontType = FontType::GlobalStyle;
 		lyr->fontStyle = this->defFontStyle;
 		lyr->fontName = 0;
 		lyr->fontSizePt = 9.0;

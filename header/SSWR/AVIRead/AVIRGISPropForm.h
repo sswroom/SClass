@@ -61,7 +61,7 @@ namespace SSWR
 			UOSInt lineThick;
 			UInt32 lineColor;
 			UInt32 fillStyle;
-			Int32 fontType;
+			Map::MapEnv::FontType fontType;
 			UOSInt fontStyle;
 			Text::String *fontName;
 			Double fontSizePt;

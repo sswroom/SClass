@@ -3204,7 +3204,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddDataFile(Text::CString fileName)
 		i = fileName.LastIndexOf('.');
 		if (i != INVALID_INDEX)
 		{
-			Text::StrConcatC(sptr, &fileName.v[i], fileName.leng - i);
+			sptr = Text::StrConcatC(sptr, &fileName.v[i], fileName.leng - i);
 		}
 		if (IO::FileUtil::CopyFile(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, 0, 0))
 		{
@@ -3407,14 +3407,21 @@ Map::GPSTrack *SSWR::OrganMgr::OrganEnvDB::OpenGPSTrack(DataFileInfo *dataFile)
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 	Map::GPSTrack *trk = 0;
 	Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
-	if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+	if (lyr)
 	{
-		trk = (Map::GPSTrack*)lyr;
+		if (lyr->GetObjectClass() == Map::IMapDrawLayer::OC_GPS_TRACK)
+		{
+			trk = (Map::GPSTrack*)lyr;
+		}
+		else
+		{
+			trk = 0;
+			DEL_CLASS(lyr);
+		}
 	}
 	else
 	{
-		trk = 0;
-		DEL_CLASS(lyr);
+		lyr = 0;
 	}
 	DEL_CLASS(fd);
 	return trk;
