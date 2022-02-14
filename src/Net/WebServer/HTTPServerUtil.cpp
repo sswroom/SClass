@@ -31,6 +31,10 @@ Bool Net::WebServer::HTTPServerUtil::MIMEToCompress(const UTF8Char *umime, UOSIn
 		{
 			return true;
 		}
+		else if (Text::StrEqualsC(&umime[12], mimeLen - 12, UTF8STRC("samlmetadata+xml")))
+		{
+			return true;
+		}
 	}
 	else if (Text::StrStartsWithC(umime, mimeLen, UTF8STRC("text/")))
 	{

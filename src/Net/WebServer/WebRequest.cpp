@@ -5,6 +5,11 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/TextBinEnc/URIEncoding.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 #define MAX_DATA_SIZE 104857600
 
 void Net::WebServer::WebRequest::ParseQuery()
@@ -89,6 +94,9 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 			if (tmpName)
 			{
 				tmpBuff[buffPos] = 0;
+#if defined(VERBOSE)
+				printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
+#endif
 				s = formMap->GetC({tmpBuff, nameLen});
 				if (s)
 				{
@@ -154,6 +162,9 @@ void Net::WebServer::WebRequest::ParseFormStr(Data::FastStringMap<Text::String *
 	if (tmpName)
 	{
 		tmpBuff[buffPos] = 0;
+#if defined(VERBOSE)
+		printf("WebRequest: Form: %s = %s\r\n", tmpBuff, tmpName);
+#endif
 		s = formMap->GetC({tmpBuff, nameLen});
 		if (s)
 		{
@@ -682,6 +693,7 @@ Bool Net::WebServer::WebRequest::DataFull()
 		return true;
 	return false;
 }
+
 UOSInt Net::WebServer::WebRequest::DataPut(const UInt8 *data, UOSInt dataSize)
 {
 	if (this->reqData == 0)

@@ -4,6 +4,10 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
 struct Net::OpenSSLClient::ClassData
 {
 	SSL *ssl;
@@ -50,10 +54,16 @@ UOSInt Net::OpenSSLClient::Read(UInt8 *buff, UOSInt size)
 		int ret = SSL_read(this->clsData->ssl, buff, (int)(OSInt)size);
 		if (ret > 0)
 		{
+#if defined(VERBOSE)
+			printf("OSSLClient: Read %d bytes\r\n", (UInt32)ret);
+#endif
 			this->currCnt += (UInt32)ret;
 			return (UInt32)ret;
 		}
 		UInt32 err = this->GetLastErrorCode();
+#if defined(VERBOSE)
+		printf("OSSLClient: Read error: %x\r\n", err);
+#endif
 		if (err == SSL_ERROR_ZERO_RETURN)
 		{
 			return 0;
@@ -74,6 +84,9 @@ UOSInt Net::OpenSSLClient::Write(const UInt8 *buff, UOSInt size)
 		int ret = SSL_write(this->clsData->ssl, buff, (int)size);
 		if (ret > 0)
 		{
+#if defined(VERBOSE)
+			printf("OSSLClient: Write %d bytes\r\n", (UOSInt)ret);
+#endif
 			this->currCnt += (UInt32)ret;
 			return (UInt32)ret;
 		}

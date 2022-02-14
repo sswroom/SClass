@@ -8,7 +8,7 @@
 #include "Net/TCPClient.h"
 #include "Sync/MutexUsage.h"
 
-#define TCP_BUFF_SIZE 2048
+#define TCP_BUFF_SIZE 16384
 
 namespace Net
 {

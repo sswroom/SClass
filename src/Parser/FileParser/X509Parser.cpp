@@ -192,6 +192,19 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ToType(IO::ParsedObject 
 	{
 		return x509;
 	}
+	if (x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
+	{
+		Crypto::Cert::X509Key *key = (Crypto::Cert::X509Key*)x509;
+		if (ftype == Crypto::Cert::X509File::FileType::PrivateKey)
+		{
+			if (key->IsPrivateKey())
+			{
+				Crypto::Cert::X509PrivKey *pkey = Crypto::Cert::X509PrivKey::CreateFromKey(key);
+				DEL_CLASS(key);
+				return pkey;
+			}
+		}
+	}
 	DEL_CLASS(x509);
 	return 0;
 }

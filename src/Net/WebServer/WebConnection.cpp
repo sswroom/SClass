@@ -9,6 +9,11 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
+//#define VERBOSE
+#if defined(VERBOSE)
+#include <stdio.h>
+#endif
+
 #define IP_HEADER_SIZE 20
 #define TCP_HEADER_SIZE 20
 #define WRITE_BUFFER_SIZE ((1500 - IP_HEADER_SIZE - TCP_HEADER_SIZE) * 4)
@@ -61,6 +66,9 @@ Net::WebServer::WebConnection::~WebConnection()
 
 void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 {
+#if defined(VERBOSE)
+	printf("WebConn: Received %d bytes\r\n", (UInt32)size);
+#endif		
 	Text::PString sarr[4];
 	UOSInt i;
 	UOSInt j;
@@ -112,6 +120,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 			if (this->dataBuff[i] == 13 && this->dataBuff[i + 1] == 10)
 			{
 				this->dataBuff[i] = 0;
+#if defined(VERBOSE)
+				printf("WebConn: %s\r\n", &this->dataBuff[lineStart]);
+#endif		
 				if (lineStart == i)
 				{
 					if (this->currReq)
@@ -119,6 +130,9 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						if (this->currReq->HasData())
 						{
 							this->currReq->DataStart();
+#if defined(VERBOSE)
+							printf("WebConn: Post data %d bytes\r\n", (UInt32)(j - i - 1));
+#endif		
 							i += this->currReq->DataPut(&this->dataBuff[i + 2], j - i - 1);
 							if (!this->currReq->DataFull())
 							{
