@@ -1,6 +1,8 @@
 #ifndef _SM_MAP_VECTORLAYER
 #define _SM_MAP_VECTORLAYER
 #include "Map/IMapDrawLayer.h"
+#include "Text/PString.h"
+#include "Text/String.h"
 
 namespace Map
 {
@@ -19,6 +21,7 @@ namespace Map
 		const UTF8Char **colNames;
 		UOSInt strCnt;
 		UOSInt *maxStrLen;
+		UOSInt *thisStrLen;
 		Data::ArrayList<Math::Vector2D*> *vectorList;
 		Data::ArrayList<const UTF8Char **> *strList;
 		Double minX;
@@ -32,6 +35,7 @@ namespace Map
 	private:
 		const UTF8Char **CopyStrs(const UTF8Char **strs);
 		const UTF8Char **CopyStrs(Text::String **strs);
+		const UTF8Char **CopyStrs(Text::PString *strs);
 		void UpdateMapRate();
 	public:
 		VectorLayer(Map::DrawLayerType layerType, Text::String *sourceName, UOSInt strCnt, const UTF8Char **colNames, Math::CoordinateSystem *csys, UOSInt nameCol, Text::String *layerName);
@@ -62,7 +66,9 @@ namespace Map
 		virtual void ReleaseObject(void *session, DrawObjectL *obj);
 
 		virtual ObjectClass GetObjectClass();
+		Bool VectorValid(Math::Vector2D *vec);
 		Bool AddVector(Math::Vector2D *vec, Text::String **strs);
+		Bool AddVector(Math::Vector2D *vec, Text::PString *strs);
 		Bool AddVector(Math::Vector2D *vec, const UTF8Char **strs);
 		Bool SplitPolyline(Double x, Double y);
 		void OptimizePolylinePath();

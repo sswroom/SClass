@@ -54,6 +54,15 @@ namespace Text
 		StringBuilderUTF8 *AppendSlow(const UTF8Char *s);
 
 		StringBuilderUTF8 *AppendS(const UTF8Char *s, UOSInt maxLen);
+		StringBuilderUTF8 *AppendUTF8Char(UTF8Char c)
+		{
+			this->AllocLeng(1);
+			this->v[this->leng] = c;
+			this->v[this->leng + 1] = 0;
+			this->leng++;
+			return this;
+		}
+
 		StringBuilderUTF8 *AppendChar(UTF32Char c, UOSInt repCnt);
 
 		StringBuilderUTF8 *AppendNE(const UTF8Char *s, UOSInt charCnt)

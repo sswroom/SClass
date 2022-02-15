@@ -285,7 +285,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		rec.altitude = ReadDouble(&buff[32]);
 		rec.speed = ReadDouble(&buff[40]);
 		rec.heading = ReadDouble(&buff[48]);
-		rec.nSateUsedGPS = ReadInt32(&buff[56]);
+		rec.nSateUsedGPS = (UInt8)ReadInt32(&buff[56]);
 		rec.nSateUsed = rec.nSateUsedGLO;
 		rec.nSateUsedGLO = 0;
 		rec.nSateUsedSBAS = 0;

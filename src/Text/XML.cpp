@@ -1186,3 +1186,133 @@ Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, IO::St
 	}
 	return false;
 }
+
+Bool Text::XML::HTMLAppendCharRef(const UTF8Char *chrRef, UOSInt refSize, Text::StringBuilderUTF8 *sb)
+{
+	UTF8Char sbuff[6];
+	UTF32Char wcs;
+	if (chrRef[0] != '&')
+	{
+		return false;
+	}
+	if (refSize == 4)
+	{
+		if (chrRef[1] == '#')
+		{
+			sbuff[0] = chrRef[2];
+			sbuff[1] = 0;
+			sbuff[0] = (UInt8)Text::StrToUInt32(sbuff);
+			sb->AppendUTF8Char((UInt8)Text::StrToUInt32(sbuff));
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&lt;")))
+		{
+			sb->AppendUTF8Char('<');
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&gt;")))
+		{
+			sb->AppendUTF8Char('>');
+			return true;
+		}
+	}
+	else if (refSize == 5)
+	{
+		if (chrRef[1] == '#')
+		{
+			if (chrRef[2] == 'x')
+			{
+				sb->AppendChar(Text::StrHex2UInt8C(&chrRef[3]), 1);
+				return true;
+			}
+			else
+			{
+				sbuff[0] = chrRef[2];
+				sbuff[1] = chrRef[3];
+				sbuff[2] = 0;
+				wcs = (UTF32Char)Text::StrToUInt32(sbuff);
+				sb->AppendChar(wcs, 1);
+				return true;
+			}
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&amp;")))
+		{
+			sb->AppendUTF8Char('&');
+			return true;
+		}
+	}
+	else if (refSize == 6)
+	{
+		if (chrRef[1] == '#')
+		{
+			if (chrRef[2] == 'x')
+			{
+				wcs = Text::StrHex2UInt8C(&chrRef[3]);
+			}
+			else
+			{
+				sbuff[0] = chrRef[2];
+				sbuff[1] = chrRef[3];
+				sbuff[2] = chrRef[4];
+				sbuff[3] = 0;
+				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+			}
+			sb->AppendChar(wcs, 1);
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&apos;")))
+		{
+			sb->AppendUTF8Char('\'');
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&bull;")))
+		{
+			sb->AppendChar(0x2022, 1);
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&quot;")))
+		{
+			sb->AppendUTF8Char('\"');
+			return true;
+		}
+	}
+	else if (refSize == 7)
+	{
+		if (chrRef[1] == '#')
+		{
+			if (chrRef[2] == 'x')
+			{
+				wcs = Text::StrHex2UInt8C(&chrRef[4]);
+				if (chrRef[3] <= '9')
+				{
+					wcs += (UTF32Char)(chrRef[3] - '0') << 8;
+				}
+				else if (chrRef[3] <= 'F')
+				{
+					wcs += (UTF32Char)(chrRef[3] - 0x37) << 8;
+				}
+				else if (chrRef[3] <= 'f')
+				{
+					wcs += (UTF32Char)(chrRef[3] - 0x57) << 8;
+				}
+			}
+			else
+			{
+				sbuff[0] = chrRef[2];
+				sbuff[1] = chrRef[3];
+				sbuff[2] = chrRef[4];
+				sbuff[3] = chrRef[5];
+				sbuff[4] = 0;
+				wcs = (UTF32Char)Text::StrToInt32(sbuff);
+			}
+			sb->AppendChar(wcs, 1);
+			return true;
+		}
+		else if (Text::StrStartsWithC(chrRef, refSize, UTF8STRC("&raquo;")))
+		{
+			sb->AppendChar(0xbb, 1);
+			return true;
+		}
+	}
+	return false;
+}

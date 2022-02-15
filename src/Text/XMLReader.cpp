@@ -5,7 +5,7 @@
 #include "Text/XML.h"
 #include "Text/XMLReader.h"
 
-#define BUFFSIZE 4096
+#define BUFFSIZE 65536
 
 #include <stdio.h>
 
@@ -167,12 +167,12 @@ void Text::XMLReader::GetCurrPath(Text::StringBuilderUTF8 *sb)
 	UOSInt j = this->pathList->GetCount();
 	if (j == 0)
 	{
-		sb->AppendChar('/', 1);
+		sb->AppendUTF8Char('/');
 		return;
 	}
 	while (i < j)
 	{
-		sb->AppendChar('/', 1);
+		sb->AppendUTF8Char('/');
 		sb->Append(this->pathList->GetItem(i));
 		i++;
 	}
@@ -339,7 +339,7 @@ Bool Text::XMLReader::ReadNext()
 					this->nodeText = Text::String::New(sb.ToString(), sb.GetLength());
 					return true;
 				}
-				sb.AppendChar(this->readBuff[this->parseOfst++], 1);
+				sb.AppendUTF8Char(this->readBuff[this->parseOfst++]);
 			}
 		}
 		else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], lenLeft, UTF8STRC("<![CDATA[")))
@@ -419,12 +419,12 @@ Bool Text::XMLReader::ReadNext()
 							{
 								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 								{
-									sb.AppendChar('<', 1);
+									sb.AppendUTF8Char('<');
 									this->parseOfst += 3;
 								}
 								else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 								{
-									sb.AppendChar('>', 1);
+									sb.AppendUTF8Char('>');
 									this->parseOfst += 3;
 								}
 								else
@@ -437,12 +437,12 @@ Bool Text::XMLReader::ReadNext()
 							{
 								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 								{
-									sb.AppendChar('&', 1);
+									sb.AppendUTF8Char('&');
 									this->parseOfst += 4;
 								}
 								else if (this->readBuff[this->parseOfst + 1] == '#')
 								{
-									sb.AppendChar(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]), 1);
+									sb.AppendUTF8Char(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]));
 									this->parseOfst += 4;
 								}
 								else
@@ -455,12 +455,12 @@ Bool Text::XMLReader::ReadNext()
 							{
 								if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 								{
-									sb.AppendChar('"', 1);
+									sb.AppendUTF8Char('"');
 									this->parseOfst += 5;
 								}
 								else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 								{
-									sb.AppendChar('\'', 1);
+									sb.AppendUTF8Char('\'');
 									this->parseOfst += 5;
 								}
 								else
@@ -477,7 +477,7 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else
 						{
-							sb.AppendChar(c, 1);
+							sb.AppendUTF8Char(c);
 						}
 					}
 					else if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
@@ -567,7 +567,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else
 					{
-						sb.AppendChar(c, 1);
+						sb.AppendUTF8Char(c);
 					}
 					this->parseOfst++;
 				}
@@ -616,12 +616,12 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 							{
-								sb.AppendChar('<', 1);
+								sb.AppendUTF8Char('<');
 								this->parseOfst += 3;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 							{
-								sb.AppendChar('>', 1);
+								sb.AppendUTF8Char('>');
 								this->parseOfst += 3;
 							}
 							else
@@ -634,12 +634,12 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 							{
-								sb.AppendChar('&', 1);
+								sb.AppendUTF8Char('&');
 								this->parseOfst += 4;
 							}
 							else if (this->readBuff[this->parseOfst + 1] == '#')
 							{
-								sb.AppendChar(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]), 1);
+								sb.AppendUTF8Char(Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]));
 								this->parseOfst += 4;
 							}
 							else
@@ -652,12 +652,12 @@ Bool Text::XMLReader::ReadNext()
 						{
 							if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 							{
-								sb.AppendChar('"', 1);
+								sb.AppendUTF8Char('"');
 								this->parseOfst += 5;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 							{
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								this->parseOfst += 5;
 							}
 							else
@@ -674,7 +674,7 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else
 					{
-						sb.AppendChar(c, 1);
+						sb.AppendUTF8Char(c);
 					}
 				}
 				else if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
@@ -812,7 +812,7 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else
 				{
-					sb.AppendChar(c, 1);
+					sb.AppendUTF8Char(c);
 				}
 				this->parseOfst++;
 			}
@@ -900,7 +900,7 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else
 				{
-					sb.AppendChar(c, 1);
+					sb.AppendUTF8Char(c);
 				}
 				this->parseOfst++;
 			}
@@ -910,12 +910,11 @@ Bool Text::XMLReader::ReadNext()
 		else
 		{
 			this->nt = Text::XMLNode::NT_ELEMENT;
-			IO::MemoryStream mstm(128, UTF8STRC("Text.XMLReader.ReadNextType"));
-			IO::MemoryStream mstmOri(128, UTF8STRC("Text.XMLReader.ReadNextType"));
+			Text::StringBuilderUTF8 sbText;
+			Text::StringBuilderUTF8 sbOri;
 			Bool isEqual = false;
 			UTF8Char isQuote = 0;
 			UTF8Char c;
-			UInt8 b[4];
 			this->parseOfst += 1;
 			while (true)
 			{
@@ -937,16 +936,12 @@ Bool Text::XMLReader::ReadNext()
 					if (c == isQuote)
 					{
 						isQuote = 0;
-						b[0] = c;
-						mstmOri.Write(b, 1);
+						sbOri.AppendUTF8Char(c);
 
 						if (this->nodeText == 0)
 						{
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							this->nodeText = Text::String::New(buff, len);
-							buff = mstmOri.GetBuff(&len);
-							this->nodeOriText = Text::String::New(buff, len);
+							this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+							this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 						}
 						else if (isEqual)
 						{
@@ -954,68 +949,58 @@ Bool Text::XMLReader::ReadNext()
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
-								UOSInt mlen;
-								UInt8 *buff = mstm.GetBuff(&mlen);
-								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 								attr->value = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->value->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->value->v, sbText.ToString(), sbText.GetLength(), 0);
 								attr->value->v[len] = 0;
 
-								buff = mstmOri.GetBuff(&mlen);
-								len = this->enc->CountUTF8Chars(buff, mlen);
+								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 								attr->valueOri = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->valueOri->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								UOSInt len;
-								UInt8 *buff = mstm.GetBuff(&len);
-								attr->value = Text::String::New(buff, len);
-								buff = mstmOri.GetBuff(&len);
-								attr->valueOri = Text::String::New(buff, len);
+								attr->value = Text::String::New(sbText.ToString(), sbText.GetLength());
+								attr->valueOri = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 							}
 							isEqual = false;
 						}
 						else
 						{
 							Text::XMLAttrib *attr;
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							NEW_CLASS(attr, Text::XMLAttrib(buff, len, 0, 0));
+							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
 							this->attrList->Add(attr);
 						}
-						mstm.Clear();
-						mstmOri.Clear();
+						sbText.ClearStr();
+						sbOri.ClearStr();
 					}
 					else if (c == '&')
 					{
 						UOSInt l = this->buffSize - this->parseOfst;
 						if (l >= 4 && this->readBuff[this->parseOfst + 3] == ';')
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 4);
-							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 4, &mstm))
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 4);
+							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 4, &sbText))
 							{
 								this->parseOfst += 3;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 							{
-								mstm.Write((const UInt8*)"<", 1);
+								sbText.AppendUTF8Char('<');
 								this->parseOfst += 3;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 							{
-								mstm.Write((const UInt8*)">", 1);
+								sbText.AppendUTF8Char('>');
 								this->parseOfst += 3;
 							}
 							else if (this->readBuff[this->parseOfst + 1] == '#')
 							{
-								UTF8Char sbuff[6];
 								UTF32Char wcs;
 								this->readBuff[this->parseOfst + 3] = 0;
 								wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
-								sbuff[0] = (UTF8Char)wcs;
-								mstm.Write(sbuff, 1);
+								sbText.AppendUTF8Char((UTF8Char)wcs);
 								this->parseOfst += 3;
 							}
 							else
@@ -1026,19 +1011,18 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (l >= 5 && this->readBuff[this->parseOfst + 4] == ';')
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 5);
-							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 5, &mstm))
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 5);
+							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 5, &sbText))
 							{
 								this->parseOfst += 4;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 							{
-								mstm.Write((const UInt8*)"&", 1);
+								sbText.AppendUTF8Char('&');
 								this->parseOfst += 4;
 							}
 							else if (this->readBuff[this->parseOfst + 1] == '#')
 							{
-								UTF8Char sbuff[6];
 								UTF32Char wcs;
 								this->readBuff[this->parseOfst + 4] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
@@ -1049,8 +1033,7 @@ Bool Text::XMLReader::ReadNext()
 								{
 									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
 								}
-								sbuff[0] = (UTF8Char)wcs;
-								mstm.Write(sbuff, 1);
+								sbText.AppendUTF8Char((UTF8Char)wcs);
 								this->parseOfst += 4;
 							}
 							else
@@ -1061,24 +1044,23 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (l >= 6 && this->readBuff[this->parseOfst + 5] == ';')
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 6);
-							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 6, &mstm))
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 6);
+							if (this->mode == Text::XMLReader::PM_HTML && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 6, &sbText))
 							{
 								this->parseOfst += 5;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 							{
-								mstm.Write((const UInt8*)"\"", 1);
+								sbText.AppendUTF8Char('\"');
 								this->parseOfst += 5;
 							}
 							else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 							{
-								mstm.Write((const UInt8*)"\'", 1);
+								sbText.AppendUTF8Char('\'');
 								this->parseOfst += 5;
 							}
 							else if (this->readBuff[this->parseOfst + 1] == '#')
 							{
-								UTF8Char sbuff[6];
 								UTF32Char wcs;
 								this->readBuff[this->parseOfst + 5] = 0;
 								if (this->readBuff[this->parseOfst + 2] == 'x')
@@ -1089,8 +1071,7 @@ Bool Text::XMLReader::ReadNext()
 								{
 									wcs = (UTF32Char)Text::StrToInt32(&this->readBuff[this->parseOfst + 2]);
 								}
-								sbuff[0] = (UTF8Char)wcs;
-								mstm.Write(sbuff, 1);
+								sbText.AppendUTF8Char((UTF8Char)wcs);
 								this->parseOfst += 5;
 							}
 							else
@@ -1101,20 +1082,20 @@ Bool Text::XMLReader::ReadNext()
 						}
 						else if (this->mode == Text::XMLReader::PM_HTML)
 						{
-							if (l >= 7 && this->readBuff[this->parseOfst + 6] == ';' && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 7, &mstm))
+							if (l >= 7 && this->readBuff[this->parseOfst + 6] == ';' && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 7, &sbText))
 							{
-								mstmOri.Write(&this->readBuff[this->parseOfst], 7);
+								sbOri.AppendC(&this->readBuff[this->parseOfst], 7);
 								this->parseOfst += 6;
 							}
-							else if (l >= 8 && this->readBuff[this->parseOfst + 7] == ';' && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 8, &mstm))
+							else if (l >= 8 && this->readBuff[this->parseOfst + 7] == ';' && Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 8, &sbText))
 							{
-								mstmOri.Write(&this->readBuff[this->parseOfst], 8);
+								sbOri.AppendC(&this->readBuff[this->parseOfst], 8);
 								this->parseOfst += 7;
 							}
 							else
 							{
-								mstmOri.Write((const UInt8*)"&", 1);
-								mstm.Write((const UInt8*)"&", 1);
+								sbOri.AppendUTF8Char('&');
+								sbText.AppendUTF8Char('&');
 							}
 						}
 						else
@@ -1125,22 +1106,18 @@ Bool Text::XMLReader::ReadNext()
 					}
 					else
 					{
-						b[0] = c;
-						mstm.Write(b, 1);
-						mstmOri.Write(b, 1);
+						sbText.AppendUTF8Char(c);
+						sbOri.AppendUTF8Char(c);
 					}
 				}
 				else if (c == ' ' || c == '\r' || c == '\n' || c == '\t')
 				{
-					if (mstm.GetLength() > 0)
+					if (sbText.GetLength() > 0)
 					{
 						if (this->nodeText == 0)
 						{
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							this->nodeText = Text::String::New(buff, len);
-							buff = mstmOri.GetBuff(&len);
-							this->nodeOriText = Text::String::New(buff, len);
+							this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+							this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 						}
 						else if (isEqual)
 						{
@@ -1148,52 +1125,41 @@ Bool Text::XMLReader::ReadNext()
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
-								UOSInt mlen;
-								UInt8 *buff = mstm.GetBuff(&mlen);
-								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 								attr->value = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->value->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->value->v, sbText.ToString(), sbText.GetLength(), 0);
 								attr->value->v[len] = 0;
 
-								buff = mstmOri.GetBuff(&mlen);
-								len = this->enc->CountUTF8Chars(buff, mlen);
+								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 								attr->valueOri = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->valueOri->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								UOSInt len;
-								UInt8 *buff = mstm.GetBuff(&len);
-								attr->value = Text::String::New(buff, len);
-								buff = mstmOri.GetBuff(&len);
-								attr->valueOri = Text::String::New(buff, len);
+								attr->value = Text::String::New(sbText.ToString(), sbText.GetLength());
+								attr->valueOri = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 							}
 							isEqual = false;
 						}
 						else
 						{
 							Text::XMLAttrib *attr;
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							NEW_CLASS(attr, Text::XMLAttrib(buff, len, 0, 0));
+							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
 							this->attrList->Add(attr);
 						}
-						mstm.Clear();
-						mstmOri.Clear();
+						sbText.ClearStr();
+						sbOri.ClearStr();
 					}
 				}
 				else if (c == '/')
 				{
-					if (mstm.GetLength() > 0)
+					if (sbText.GetLength() > 0)
 					{
 						if (this->nodeText == 0)
 						{
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							this->nodeText = Text::String::New(buff, len);
-							buff = mstmOri.GetBuff(&len);
-							this->nodeOriText = Text::String::New(buff, len);
+							this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+							this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 						}
 						else if (isEqual)
 						{
@@ -1201,39 +1167,31 @@ Bool Text::XMLReader::ReadNext()
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
-								UOSInt mlen;
-								UInt8 *buff = mstm.GetBuff(&mlen);
-								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 								attr->value = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->value->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->value->v, sbText.ToString(), sbText.GetLength(), 0);
 								attr->value->v[len] = 0;
 
-								buff = mstmOri.GetBuff(&mlen);
-								len = this->enc->CountUTF8Chars(buff, mlen);
+								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 								attr->valueOri = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->valueOri->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								UOSInt len;
-								UInt8 *buff = mstm.GetBuff(&len);
-								attr->value = Text::String::New(buff, len);
-								buff = mstmOri.GetBuff(&len);
-								attr->valueOri = Text::String::New(buff, len);
+								attr->value = Text::String::New(sbText.ToString(), sbText.GetLength());
+								attr->valueOri = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 							}
 							isEqual = false;
 						}
 						else
 						{
 							Text::XMLAttrib *attr;
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							NEW_CLASS(attr, Text::XMLAttrib(buff, len, 0, 0));
+							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
 							this->attrList->Add(attr);
 						}
-						mstm.Clear();
-						mstmOri.Clear();
+						sbText.ClearStr();
+						sbOri.ClearStr();
 					}
 					if (this->parseOfst + 1 >= this->buffSize)
 					{
@@ -1261,15 +1219,12 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else if (c == '>')
 				{
-					if (mstm.GetLength() > 0)
+					if (sbText.GetLength() > 0)
 					{
 						if (this->nodeText == 0)
 						{
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							this->nodeText = Text::String::New(buff, len);
-							buff = mstmOri.GetBuff(&len);
-							this->nodeOriText = Text::String::New(buff, len);
+							this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+							this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 						}
 						else if (isEqual)
 						{
@@ -1277,39 +1232,31 @@ Bool Text::XMLReader::ReadNext()
 							SDEL_STRING(attr->value);
 							if (this->enc && !this->stmEnc)
 							{
-								UOSInt mlen;
-								UInt8 *buff = mstm.GetBuff(&mlen);
-								UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+								UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 								attr->value = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->value->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->value->v, sbText.ToString(), sbText.GetLength(), 0);
 								attr->value->v[len] = 0;
 
-								buff = mstmOri.GetBuff(&mlen);
-								len = this->enc->CountUTF8Chars(buff, mlen);
+								len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 								attr->valueOri = Text::String::New(len);
-								this->enc->UTF8FromBytes(attr->valueOri->v, buff, mlen, 0);
+								this->enc->UTF8FromBytes(attr->valueOri->v, sbOri.ToString(), sbOri.GetLength(), 0);
 								attr->valueOri->v[len] = 0;
 							}
 							else
 							{
-								UOSInt len;
-								UInt8 *buff = mstm.GetBuff(&len);
-								attr->value = Text::String::New(buff, len);
-								buff = mstmOri.GetBuff(&len);
-								attr->valueOri = Text::String::New(buff, len);
+								attr->value = Text::String::New(sbText.ToString(), sbText.GetLength());
+								attr->valueOri = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 							}
 							isEqual = false;
 						}
 						else
 						{
 							Text::XMLAttrib *attr;
-							UOSInt len;
-							UInt8 *buff = mstm.GetBuff(&len);
-							NEW_CLASS(attr, Text::XMLAttrib(buff, len, 0, 0));
+							NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
 							this->attrList->Add(attr);
 						}
-						mstm.Clear();
-						mstmOri.Clear();
+						sbText.ClearStr();
+						sbOri.ClearStr();
 					}
 					this->parseOfst += 1;
 					this->emptyNode = false;
@@ -1317,15 +1264,13 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else if (c == '=')
 				{
-					if (mstm.GetLength() > 0)
+					if (sbText.GetLength() > 0)
 					{
 						Text::XMLAttrib *attr;
-						UOSInt len;
-						UInt8 *buff = mstm.GetBuff(&len);
-						NEW_CLASS(attr, Text::XMLAttrib(buff, len, 0, 0));
+						NEW_CLASS(attr, Text::XMLAttrib(sbText.ToString(), sbText.GetLength(), 0, 0));
 						this->attrList->Add(attr);
-						mstm.Clear();
-						mstmOri.Clear();
+						sbText.ClearStr();
+						sbOri.ClearStr();
 					}
 					if (this->nodeText == 0)
 					{
@@ -1356,7 +1301,7 @@ Bool Text::XMLReader::ReadNext()
 						return false;
 					}
 					isQuote = '"';
-					mstmOri.Write((const UInt8*)"\"", 1);
+					sbOri.AppendUTF8Char('\"');
 				}
 				else if (c == '\'')
 				{
@@ -1366,13 +1311,12 @@ Bool Text::XMLReader::ReadNext()
 						return false;
 					}
 					isQuote = '\'';
-					mstmOri.Write((const UInt8*)"\'", 1);
+					sbOri.AppendUTF8Char('\'');
 				}
 				else
 				{
-					b[0] = c;
-					mstm.Write(b, 1);
-					mstmOri.Write(b, 1);
+					sbText.AppendUTF8Char(c);
+					sbOri.AppendUTF8Char(c);
 				}
 				this->parseOfst++;
 			}
@@ -1382,8 +1326,8 @@ Bool Text::XMLReader::ReadNext()
 	}
 	else
 	{
-		IO::MemoryStream mstm(128, UTF8STRC("Text.XMLReader.ReadNextAny.mstm"));
-		IO::MemoryStream mstmOri(128, UTF8STRC("Text.XMLReader.ReadNextAny.mstm"));
+		Text::StringBuilderUTF8 sbText;
+		Text::StringBuilderUTF8 sbOri;
 		UTF8Char c;
 		UInt8 b[1];
 		this->nt = Text::XMLNode::NT_TEXT;
@@ -1398,26 +1342,20 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (this->enc && !this->stmEnc)
 					{
-						UOSInt mlen;
-						UInt8 *buff = mstm.GetBuff(&mlen);
-						UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+						UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 						this->nodeText = Text::String::New(len);
-						this->enc->UTF8FromBytes(this->nodeText->v, buff, mlen, 0);
+						this->enc->UTF8FromBytes(this->nodeText->v, sbText.ToString(), sbText.GetLength(), 0);
 						this->nodeText->v[len] = 0;
 
-						buff = mstmOri.GetBuff(&mlen);
-						len = this->enc->CountUTF8Chars(buff, mlen);
+						len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 						this->nodeOriText = Text::String::New(len);
-						this->enc->UTF8FromBytes(this->nodeOriText->v, buff, mlen, 0);
+						this->enc->UTF8FromBytes(this->nodeOriText->v, sbOri.ToString(), sbOri.GetLength(), 0);
 						this->nodeOriText->v[len] = 0;
 					}
 					else
 					{
-						UOSInt mlen;
-						UInt8 *buff = mstm.GetBuff(&mlen);
-						this->nodeText = Text::String::New(buff, mlen);
-						buff = mstmOri.GetBuff(&mlen);
-						this->nodeOriText = Text::String::New(buff, mlen);
+						this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+						this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 					}
 					return true;
 				}
@@ -1428,34 +1366,27 @@ Bool Text::XMLReader::ReadNext()
 			{
 				if (isHTMLScript && !Text::StrStartsWithC(&this->readBuff[this->parseOfst + 1], (this->buffSize - this->parseOfst - 1), UTF8STRC("/script>")))
 				{
-					b[0] = c;
-					mstm.Write(b, 1);
-					mstmOri.Write(b, 1);
+					sbText.AppendUTF8Char(c);
+					sbOri.AppendUTF8Char(c);
 				}
 				else
 				{
 					if (this->enc && !this->stmEnc)
 					{
-						UOSInt mlen;
-						UInt8 *buff = mstm.GetBuff(&mlen);
-						UOSInt len = this->enc->CountUTF8Chars(buff, mlen);
+						UOSInt len = this->enc->CountUTF8Chars(sbText.ToString(), sbText.GetLength());
 						this->nodeText = Text::String::New(len);
-						this->enc->UTF8FromBytes(this->nodeText->v, buff, mlen, 0);
+						this->enc->UTF8FromBytes(this->nodeText->v, sbText.ToString(), sbText.GetLength(), 0);
 						this->nodeText->v[len] = 0;
 
-						buff = mstmOri.GetBuff(&mlen);
-						len = this->enc->CountUTF8Chars(buff, mlen);
+						len = this->enc->CountUTF8Chars(sbOri.ToString(), sbOri.GetLength());
 						this->nodeOriText = Text::String::New(len);
-						this->enc->UTF8FromBytes(this->nodeOriText->v, buff, mlen, 0);
+						this->enc->UTF8FromBytes(this->nodeOriText->v, sbOri.ToString(), sbOri.GetLength(), 0);
 						this->nodeOriText->v[len] = 0;
 					}
 					else
 					{
-						UOSInt mlen;
-						UInt8 *buff = mstm.GetBuff(&mlen);
-						this->nodeText = Text::String::New(buff, mlen);
-						buff = mstmOri.GetBuff(&mlen);
-						this->nodeOriText = Text::String::New(buff, mlen);
+						this->nodeText = Text::String::New(sbText.ToString(), sbText.GetLength());
+						this->nodeOriText = Text::String::New(sbOri.ToString(), sbOri.GetLength());
 					}
 					return true;
 				}
@@ -1467,27 +1398,27 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&lt;")))
 					{
-						mstm.Write((const UInt8*)"<", 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 4);
+						sbText.AppendUTF8Char('<');
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 4);
 						this->parseOfst += 3;
 					}
 					else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&gt;")))
 					{
-						mstm.Write((const UInt8*)">", 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 4);
+						sbText.AppendUTF8Char('>');
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 4);
 						this->parseOfst += 3;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML)
 					{
-						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 4, &mstm))
+						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 4, &sbText))
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 4);
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 4);
 							this->parseOfst += 3;
 						}
 						else
 						{
-							mstm.Write((const UInt8*)"&", 1);
-							mstmOri.Write(&this->readBuff[this->parseOfst], 1);
+							sbText.AppendUTF8Char('&');
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 1);
 						}
 					}
 					else
@@ -1500,28 +1431,28 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&amp;")))
 					{
-						mstm.Write((const UInt8*)"&", 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 5);
+						sbText.AppendUTF8Char('&');
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 5);
 						this->parseOfst += 4;
 					}
 					else if (this->readBuff[this->parseOfst + 1] == '#')
 					{
 						b[0] = Text::StrHex2UInt8C(&this->readBuff[this->parseOfst + 2]);
-						mstm.Write(b, 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 5);
+						sbText.AppendUTF8Char(b[0]);
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 5);
 						this->parseOfst += 4;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML)
 					{
-						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 5, &mstm))
+						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 5, &sbText))
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 5);
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 5);
 							this->parseOfst += 4;
 						}
 						else
 						{
-							mstm.Write((const UInt8*)"&", 1);
-							mstmOri.Write(&this->readBuff[this->parseOfst], 1);
+							sbText.AppendUTF8Char('&');
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 1);
 						}
 					}
 					else
@@ -1534,27 +1465,27 @@ Bool Text::XMLReader::ReadNext()
 				{
 					if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&quot;")))
 					{
-						mstm.Write((const UInt8*)"\"", 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 6);
+						sbText.AppendUTF8Char('\"');
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 6);
 						this->parseOfst += 5;
 					}
 					else if (Text::StrStartsWithC(&this->readBuff[this->parseOfst], l, UTF8STRC("&apos;")))
 					{
-						mstm.Write((const UInt8*)"\'", 1);
-						mstmOri.Write(&this->readBuff[this->parseOfst], 6);
+						sbText.AppendUTF8Char('\'');
+						sbOri.AppendC(&this->readBuff[this->parseOfst], 6);
 						this->parseOfst += 5;
 					}
 					else if (this->mode == Text::XMLReader::PM_HTML)
 					{
-						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 6, &mstm))
+						if (Text::XML::HTMLAppendCharRef(&this->readBuff[this->parseOfst], 6, &sbText))
 						{
-							mstmOri.Write(&this->readBuff[this->parseOfst], 6);
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 6);
 							this->parseOfst += 5;
 						}
 						else
 						{
-							mstm.Write((const UInt8*)"&", 1);
-							mstmOri.Write(&this->readBuff[this->parseOfst], 1);
+							sbText.AppendUTF8Char('&');
+							sbOri.AppendC(&this->readBuff[this->parseOfst], 1);
 						}
 					}
 					else
@@ -1565,8 +1496,8 @@ Bool Text::XMLReader::ReadNext()
 				}
 				else if (this->mode == Text::XMLReader::PM_HTML)
 				{
-					mstm.Write((const UInt8*)"&", 1);
-					mstmOri.Write((const UInt8*)"&", 1);
+					sbText.AppendUTF8Char('&');
+					sbOri.AppendUTF8Char('&');
 				}
 				else
 				{
@@ -1576,9 +1507,8 @@ Bool Text::XMLReader::ReadNext()
 			}
 			else
 			{
-				b[0] = c;
-				mstm.Write(b, 1);
-				mstmOri.Write(b, 1);
+				sbText.AppendUTF8Char(c);
+				sbOri.AppendUTF8Char(c);
 			}
 			this->parseOfst++;
 		}
@@ -1675,45 +1605,45 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 	switch (this->nt)
 	{
 	case Text::XMLNode::NT_DOCUMENT:
-		sb->AppendChar('<', 1);
-		sb->AppendChar('?', 1);
+		sb->AppendUTF8Char('<');
+		sb->AppendUTF8Char('?');
 		sb->Append(this->nodeText);
 		i = 0;
 		j = this->attrList->GetCount();
 		while (i < j)
 		{
 			attr = this->attrList->GetItem(i);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;
 		}
-		sb->AppendChar('?', 1);
-		sb->AppendChar('>', 1);
+		sb->AppendUTF8Char('?');
+		sb->AppendUTF8Char('>');
 		return true;
 	case Text::XMLNode::NT_ELEMENT:
-		sb->AppendChar('<', 1);
+		sb->AppendUTF8Char('<');
 		sb->Append(this->nodeText);
 		i = 0;
 		j = this->attrList->GetCount();
 		while (i < j)
 		{
 			attr = this->attrList->GetItem(i);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;
 		}
 
 		if (this->emptyNode)
 		{
-			sb->AppendChar('/', 1);
+			sb->AppendUTF8Char('/');
 		}
-		sb->AppendChar('>', 1);
+		sb->AppendUTF8Char('>');
 		return true;
 	case Text::XMLNode::NT_ELEMENTEND:
-		sb->AppendChar('<', 1);
-		sb->AppendChar('/', 1);
+		sb->AppendUTF8Char('<');
+		sb->AppendUTF8Char('/');
 		sb->Append(this->nodeText);
-		sb->AppendChar('>', 1);
+		sb->AppendUTF8Char('>');
 		return true;
 	case Text::XMLNode::NT_TEXT:
 		if (this->nodeOriText)
@@ -1748,24 +1678,24 @@ Bool Text::XMLReader::ToString(Text::StringBuilderUTF8 *sb)
 	case Text::XMLNode::NT_UNKNOWN:
 		break;
 	case Text::XMLNode::NT_DOCTYPE:
-		sb->AppendChar('<', 1);
-		sb->AppendChar('!', 1);
+		sb->AppendUTF8Char('<');
+		sb->AppendUTF8Char('!');
 		sb->Append(this->nodeText);
 		i = 0;
 		j = this->attrList->GetCount();
 		while (i < j)
 		{
 			attr = this->attrList->GetItem(i);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			attr->ToString(sb);
 			i++;
 		}
 
 		if (this->emptyNode)
 		{
-			sb->AppendChar('/', 1);
+			sb->AppendUTF8Char('/');
 		}
-		sb->AppendChar('>', 1);
+		sb->AppendUTF8Char('>');
 		return true;
 	}
 	return false;

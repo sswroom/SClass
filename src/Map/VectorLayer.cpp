@@ -9,6 +9,10 @@
 
 const UTF8Char **Map::VectorLayer::CopyStrs(const UTF8Char **strs)
 {
+	if (this->thisStrLen == 0)
+	{
+		this->thisStrLen = MemAlloc(UOSInt, this->strCnt);
+	}
 	UOSInt i = this->strCnt;
 	UOSInt j = 0;
 	UOSInt k;
@@ -17,7 +21,7 @@ const UTF8Char **Map::VectorLayer::CopyStrs(const UTF8Char **strs)
 	{
 		if (strs[i])
 		{
-			k = Text::StrCharCnt(strs[i]);
+			this->thisStrLen[i] = k = Text::StrCharCnt(strs[i]);
 			j += k + 1;
 			if (this->maxStrLen[i] < k)
 			{
@@ -37,7 +41,7 @@ const UTF8Char **Map::VectorLayer::CopyStrs(const UTF8Char **strs)
 		if (strs[k])
 		{
 			newStrs[k] = sptr;
-			sptr = Text::StrConcat(sptr, strs[k]) + 1;
+			sptr = Text::StrConcatC(sptr, strs[k], this->thisStrLen[k]) + 1;
 		}
 		else
 		{
@@ -79,6 +83,48 @@ const UTF8Char **Map::VectorLayer::CopyStrs(Text::String **strs)
 		{
 			newStrs[k] = sptr;
 			sptr = strs[k]->ConcatTo(sptr) + 1;
+		}
+		else
+		{
+			newStrs[k] = 0;
+		}
+		k++;
+	}
+	return newStrs;
+}
+
+
+const UTF8Char **Map::VectorLayer::CopyStrs(Text::PString *strs)
+{
+	UOSInt i = this->strCnt;
+	UOSInt j = 0;
+	UOSInt k;
+	UTF8Char *sptr = 0;
+	while (i-- > 0)
+	{
+		if (strs[i].v)
+		{
+			k = strs[i].leng;
+			j += k + 1;
+			if (this->maxStrLen[i] < k)
+			{
+				this->maxStrLen[i] = k;
+			}
+		}
+	}
+	const UTF8Char **newStrs = MemAlloc(const UTF8Char*, this->strCnt);
+	if (j > 0)
+	{
+		sptr = MemAlloc(UTF8Char, j);
+	}
+	i = this->strCnt;
+	k = 0;
+	while (k < i)
+	{
+		if (strs[k].v)
+		{
+			newStrs[k] = sptr;
+			sptr = strs[k].ConcatTo(sptr) + 1;
 		}
 		else
 		{
@@ -136,6 +182,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->maxX = 0;
 	this->maxY = 0;
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
@@ -168,6 +215,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->maxX = 0;
 	this->maxY = 0;
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = 0;
 	this->mapRate = 10000000.0;
@@ -200,6 +248,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::String *source
 	this->maxX = 0;
 	this->maxY = 0;
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
@@ -235,6 +284,7 @@ Map::VectorLayer::VectorLayer(Map::DrawLayerType layerType, Text::CString source
 	this->maxX = 0;
 	this->maxY = 0;
 	this->maxStrLen = MemAlloc(UOSInt, strCnt);
+	this->thisStrLen = 0;
 	this->colNames = MemAlloc(const UTF8Char*, strCnt);
 	this->cols = MemAlloc(Map::VectorLayer::ColInfo, strCnt);
 	this->mapRate = 10000000.0;
@@ -267,6 +317,11 @@ Map::VectorLayer::~VectorLayer()
 	{
 		MemFree(this->maxStrLen);
 		this->maxStrLen = 0;
+	}
+	if (this->thisStrLen)
+	{
+		MemFree(this->thisStrLen);
+		this->thisStrLen = 0;
 	}
 	if (this->colNames)
 	{
@@ -623,45 +678,98 @@ Map::IMapDrawLayer::ObjectClass Map::VectorLayer::GetObjectClass()
 	return Map::IMapDrawLayer::OC_VECTOR_LAYER;
 }
 
-Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
+Bool Map::VectorLayer::VectorValid(Math::Vector2D *vec)
 {
-	if (this->layerType == Map::DRAW_LAYER_POINT)
+	switch (this->layerType)
 	{
+	case Map::DRAW_LAYER_POINT:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point)
 			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
-	{
+		break;
+	case Map::DRAW_LAYER_POINT3D:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->Support3D())
 			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
-	{
+		break;
+	case Map::DRAW_LAYER_POLYLINE:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
 			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
-	{
+		break;
+	case Map::DRAW_LAYER_POLYLINE3D:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
 			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
-	{
+		break;
+	case Map::DRAW_LAYER_POLYGON:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
 			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_IMAGE)
-	{
+		break;
+	case Map::DRAW_LAYER_IMAGE:
 		if (vec->GetVectorType() != Math::Vector2D::VectorType::Image)
 			return false;
+		break;
+	case Map::DRAW_LAYER_MIXED:
+		break;
+	case Map::DRAW_LAYER_UNKNOWN:
+	default:
+		return false;
 	}
-	else if (this->layerType == Map::DRAW_LAYER_MIXED)
+	return true;
+}
+
+Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
+{
+	if (!this->VectorValid(vec))
+		return false;
+	const UTF8Char **newStrs = CopyStrs(strs);
+
+	Double x1;
+	Double y1;
+	Double x2;
+	Double y2;
+	Bool updated = false;
+	vec->GetBounds(&x1, &y1, &x2, &y2);
+	if (this->vectorList->GetCount() == 0)
 	{
+		this->minX = x1;
+		this->minY = y1;
+		this->maxX = x2;
+		this->maxY = y2;
+		updated = true;
 	}
 	else
 	{
-		return false;
+		if (this->minX > x1)
+		{
+			this->minX = x1;
+			updated = true;
+		}
+		if (this->minY > y1)
+		{
+			this->minY = y1;
+			updated = true;
+		}
+		if (this->maxX < x2)
+		{
+			this->maxX = x2;
+			updated = true;
+		}
+		if (this->maxY < y2)
+		{
+			this->maxY = y2;
+			updated = true;
+		}
 	}
+
+	this->vectorList->Add(vec);
+	this->strList->Add(newStrs);
+	if (updated)
+		this->UpdateMapRate();
+	return true;
+}
+
+Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::PString *strs)
+{
+	if (!this->VectorValid(vec))
+		return false;
 	const UTF8Char **newStrs = CopyStrs(strs);
 
 	Double x1;
@@ -711,43 +819,8 @@ Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, Text::String **strs)
 
 Bool Map::VectorLayer::AddVector(Math::Vector2D *vec, const UTF8Char **strs)
 {
-	if (this->layerType == Map::DRAW_LAYER_POINT)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point)
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POINT3D)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Point || !vec->Support3D())
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline)
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYLINE3D)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polyline || !vec->Support3D())
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_POLYGON)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Polygon)
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_IMAGE)
-	{
-		if (vec->GetVectorType() != Math::Vector2D::VectorType::Image)
-			return false;
-	}
-	else if (this->layerType == Map::DRAW_LAYER_MIXED)
-	{
-	}
-	else
-	{
+	if (!this->VectorValid(vec))
 		return false;
-	}
 	const UTF8Char **newStrs = CopyStrs(strs);
 
 	Double x1;

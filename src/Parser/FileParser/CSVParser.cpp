@@ -264,8 +264,8 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 						tmpArr2[nSateCol].v[i] = 0;
 						Text::StrTrimC(tmpArr2[nSateCol].v, i);
 						Text::StrTrimC(&tmpArr2[nSateCol].v[i + 1], tmpArr2[nSateCol].leng - i - 1);
-						rec.nSateUsedGPS = Text::StrToInt32(tmpArr2[nSateCol].v);
-						rec.nSateViewGPS = Text::StrToInt32(&tmpArr2[nSateCol].v[i + 1]);
+						rec.nSateUsedGPS = (UInt8)Text::StrToUInt32(tmpArr2[nSateCol].v);
+						rec.nSateViewGPS = (UInt8)Text::StrToUInt32(&tmpArr2[nSateCol].v[i + 1]);
 					}
 					else
 					{

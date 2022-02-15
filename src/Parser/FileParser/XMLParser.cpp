@@ -653,11 +653,12 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UInt32 srid = 0;
 		UOSInt colCnt = 0;
 		Data::ArrayList<const UTF8Char *> nameList;
-		Data::ArrayList<const UTF8Char *> valList;
+		Data::ArrayList<Text::String *> valList;
 		Text::StringBuilderUTF8 sb;
 		Map::VectorLayer *lyr = 0;
 		Map::DrawLayerType layerType = Map::DRAW_LAYER_UNKNOWN;
-		const UTF8Char **cols;
+		Text::String **scols;
+		const UTF8Char **ccols;
 		UOSInt i;
 		Text::XMLAttrib *attr;
 		UTF8Char *sarr[4];
@@ -694,7 +695,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 										reader->ReadNodeText(&sb);
 										if (sb.GetLength() > 0)
 										{
-											valList.Add(Text::StrCopyNew(sb.ToString()));
+											valList.Add(Text::String::New(sb.ToString(), sb.GetLength()));
 										}
 										else
 										{
@@ -736,8 +737,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														if (lyr == 0)
 														{
 															colCnt = nameList.GetCount();
-															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
+															ccols = nameList.GetArray(&i);
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -745,7 +746,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl yPts;
 															Data::ArrayListDbl zPts;
 															Math::Point3D *pt;
-															cols = valList.GetArray(&i);
+															scols = valList.GetArray(&i);
 															while (reader->ReadNext())
 															{
 																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -776,7 +777,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																		if (xPts.GetCount() == 1)
 																		{
 																			NEW_CLASS(pt, Math::Point3D(srid, xPts.GetItem(0), yPts.GetItem(0), zPts.GetItem(0)));
-																			lyr->AddVector(pt, cols);
+																			lyr->AddVector(pt, scols);
 																		}
 																	}
 																	else
@@ -838,8 +839,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														if (lyr == 0)
 														{
 															colCnt = nameList.GetCount();
-															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
+															ccols = nameList.GetArray(&i);
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -848,7 +849,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Data::ArrayListDbl zPts;
 															Math::Polygon *pg;
 															Double *ptList;
-															cols = valList.GetArray(&i);
+															scols = valList.GetArray(&i);
 															while (reader->ReadNext())
 															{
 																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -915,7 +916,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																											ptList[(i << 1)] = xPts.GetItem(i);
 																											ptList[(i << 1) + 1] = yPts.GetItem(i);
 																										}
-																										lyr->AddVector(pg, cols);
+																										lyr->AddVector(pg, scols);
 																									}
 																								}
 																								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
@@ -996,8 +997,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														if (lyr == 0)
 														{
 															colCnt = nameList.GetCount();
-															cols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, cols, csys, 0, CSTR_NULL));
+															ccols = nameList.GetArray(&i);
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -1007,7 +1008,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 															Math::Polyline3D *pl;
 															Double *ptList;
 															Double *hList;
-															cols = valList.GetArray(&i);
+															scols = valList.GetArray(&i);
 															while (reader->ReadNext())
 															{
 																if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -1046,7 +1047,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 																				ptList[(i << 1)] = xPts.GetItem(i);
 																				ptList[(i << 1) + 1] = yPts.GetItem(i);
 																			}
-																			lyr->AddVector(pl, cols);
+																			lyr->AddVector(pl, scols);
 																		}
 																	}
 																	else
@@ -1086,7 +1087,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							{
 								if (valList.GetItem(i))
 								{
-									Text::StrDelNew(valList.GetItem(i));
+									valList.GetItem(i)->Release();
 								}
 							}
 							valList.Clear();
@@ -1216,10 +1217,11 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 									{
 										if (reader->GetNodeText()->StartsWith(UTF8STRC("fme:")))
 										{
-											nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + 4));
+											Text::String *txt = reader->GetNodeText();
+											nameList.Add(Text::StrCopyNewC(txt->v + 4, txt->leng - 4));
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
-											valList.Add(Text::StrCopyNew(sb.ToString()));
+											valList.Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 										}
 										else
 										{
@@ -1357,7 +1359,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												roleName = Text::StrCopyNew(sb.ToString());
+												roleName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("DATA")))
@@ -1366,7 +1368,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												roleData = Text::StrCopyNew(sb.ToString());
+												roleData = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
@@ -1419,7 +1421,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												desc = Text::StrCopyNew(sb.ToString());
+												desc = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("HARDWAREID")))
@@ -1428,7 +1430,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												hwId = Text::StrCopyNew(sb.ToString());
+												hwId = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("SERVICE")))
@@ -1437,7 +1439,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												service = Text::StrCopyNew(sb.ToString());
+												service = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("DRIVER")))
@@ -1446,7 +1448,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												driver = Text::StrCopyNew(sb.ToString());
+												driver = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else
@@ -1505,7 +1507,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												fileName = Text::StrCopyNew(sb.ToString());
+												fileName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("FILESIZE")))
@@ -1522,7 +1524,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												createDate = Text::StrCopyNew(sb.ToString());
+												createDate = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("VERSION")))
@@ -1531,7 +1533,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												version = Text::StrCopyNew(sb.ToString());
+												version = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("MANUFACTURER")))
@@ -1540,7 +1542,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												manufacturer = Text::StrCopyNew(sb.ToString());
+												manufacturer = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("PRODUCTNAME")))
@@ -1549,7 +1551,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												productName = Text::StrCopyNew(sb.ToString());
+												productName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("GROUP")))
@@ -1558,7 +1560,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											sb.ClearStr();
 											if (reader->ReadNodeText(&sb))
 											{
-												group = Text::StrCopyNew(sb.ToString());
+												group = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 											}
 										}
 										else if (reader->GetNodeText()->Equals(UTF8STRC("ALTITUDE")))
@@ -1662,7 +1664,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
 								SDEL_TEXT(layerName);
-								layerName = Text::StrCopyNew(sb.ToString());
+								layerName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 							}
 							else if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINK")))
 							{
@@ -1679,7 +1681,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
 											SDEL_TEXT(url);
-											url = Text::StrCopyNew(sb.ToString());
+											url = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 										}
 										else if (reader->GetNodeText()->EqualsICase(UTF8STRC("REFRESHINTERVAL")))
 										{
@@ -2027,7 +2029,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 							{
 								Text::StrDelNew(name);
 							}
-							name = Text::StrCopyNew(sb.ToString());
+							name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
@@ -2201,7 +2203,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 							{
 								Text::StrDelNew(name);
 							}
-							name = Text::StrCopyNew(sb.ToString());
+							name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
@@ -2877,7 +2879,7 @@ void Parser::FileParser::XMLParser::ParseCoordinates(Text::XMLReader *reader, Da
 						sptr2++;
 					}
 					*sptr2 = 0;
-					Text::StrConcat(sbuff, sptr);
+					Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
 					*sptr2 = c;
 					sptr = sptr2;
 					i = Text::StrSplit(sarr, 4, sbuff, ',');
@@ -2990,7 +2992,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 								sptr2++;
 							}
 							*sptr2 = 0;
-							Text::StrConcat(sbuff, sptr);
+							Text::StrConcatC(sbuff, sptr, (UOSInt)(sptr2 - sptr));
 							*sptr2 = c;
 							sptr = sptr2;
 							i = Text::StrSplit(sarr, 4, sbuff, ',');
@@ -3013,7 +3015,6 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							UOSInt nPoints;
 							Double *ptArr;
 							Double *altArr;
-							const UTF8Char *csptr;
 							UOSInt j;
 
 							NEW_CLASS(pl, Math::Polyline3D(4326, 1, altList->GetCount()));
@@ -3023,8 +3024,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							i = altList->GetCount();
 							MemCopyNO(ptArr, coord->GetArray(&j), sizeof(Double) * 2 * i);
 							MemCopyNO(altArr, altList->GetArray(&j), sizeof(Double) * i);
-							csptr = sb.ToString();
-							lyr->AddVector(pl, &csptr);
+							lyr->AddVector(pl, &sb);
 						}
 						DEL_CLASS(coord);
 						DEL_CLASS(altList);
@@ -3084,9 +3084,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							y = Text::StrToDouble(sarr[1]);
 							z = Text::StrToDouble(sarr[2]);
 							NEW_CLASS(pt, Math::Point3D(4326, x, y, z));
-							const UTF8Char *csptr;
-							csptr = sb.ToString();
-							lyr->AddVector(pt, &csptr);
+							lyr->AddVector(pt, &sb);
 						}
 						else if (i == 2)
 						{
@@ -3094,9 +3092,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							x = Text::StrToDouble(sarr[0]);
 							y = Text::StrToDouble(sarr[1]);
 							NEW_CLASS(pt, Math::Point3D(4326, x, y, 0));
-							const UTF8Char *csptr;
-							csptr = sb.ToString();
-							lyr->AddVector(pt, &csptr);
+							lyr->AddVector(pt, &sb);
 						}
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
@@ -3187,7 +3183,6 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					UOSInt nPoints;
 					Double *ptArr;
 					UInt32 *ptList;
-					const UTF8Char *csptr;
 					UOSInt i;
 
 					if (altList->GetCount() > 0)
@@ -3199,8 +3194,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
 						MemCopyNO(&ptArr[coord->GetCount()], altList->GetArray(&i), sizeof(Double) * altList->GetCount());
-						csptr = sb.ToString();
-						lyr->AddVector(pg, &csptr);
+						lyr->AddVector(pg, &sb);
 					}
 					else
 					{
@@ -3209,8 +3203,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						ptList[0] = 0;
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
-						csptr = sb.ToString();
-						lyr->AddVector(pg, &csptr);
+						lyr->AddVector(pg, &sb);
 					}
 				}
 				DEL_CLASS(coord);

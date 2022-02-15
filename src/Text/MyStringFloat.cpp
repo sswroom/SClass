@@ -1982,16 +1982,16 @@ Bool Text::StrToDouble(const UTF8Char *str1, Double *outVal)
 	}
 	if (c == '.')
 	{
-		Double f = 0.0;
+		Double fmul = 1;
         while (true)
 		{
 			c = *str1++;
 			if (c < '0' || c > '9')
 				break;
-			f = (f * 10.0) + (c - '0');
+			fmul *= 0.1;
+			r += (c - '0') * fmul;
             n++;
         }
-		r += f / Math_Pow(10.0, OSInt2Double(n));
     }
 	else if (c == 0)
 	{
