@@ -83,7 +83,7 @@ void UI::GUIComboBox::EventTextChanged()
 			{
 				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString(), sb.GetLength()))
 				{
-					this->SetText(this->itemTexts->GetItem(i)->v);
+					this->SetText(this->itemTexts->GetItem(i)->ToCString());
 					//this->SetSelectedIndex(i);
 					this->SetTextSelection(sb.GetLength(), this->itemTexts->GetItem(i)->leng);
 					break;
@@ -96,19 +96,19 @@ void UI::GUIComboBox::EventTextChanged()
 	}
 }
 
-void UI::GUIComboBox::SetText(const UTF8Char *text)
+void UI::GUIComboBox::SetText(Text::CString text)
 {
 	if (this->allowEdit)
 	{
 		GtkWidget *entry = gtk_bin_get_child((GtkBin*)this->hwnd);
-		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text);
+		gtk_entry_set_text((GtkEntry*)entry, (const gchar *)text.v);
 	}
 	else
 	{
 		UOSInt i = this->itemTexts->GetCount();
 		while (i-- > 0)
 		{
-			if (this->itemTexts->GetItem(i)->Equals(text, Text::StrCharCnt(text)))
+			if (this->itemTexts->GetItem(i)->Equals(text.v, text.leng))
 			{
 				this->SetSelectedIndex(i);
 				return;

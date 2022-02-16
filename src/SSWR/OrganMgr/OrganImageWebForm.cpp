@@ -33,7 +33,7 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	this->srcURL = 0;
 	this->location = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("ImageWebTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("ImageWebTitle")));
 
 	NEW_CLASS(this->lblId, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("ImageWebId")).v));
 	this->lblId->SetRect(0, 0, 100, 23, false);
@@ -62,10 +62,10 @@ SSWR::OrganMgr::OrganImageWebForm::OrganImageWebForm(UI::GUIClientControl *paren
 	{
 		this->txtLocation->SetReadOnly(true);
 	}
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebOk")).v));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebOk"))));
 	this->btnOK->SetRect(120, 120, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebCancel")).v));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageWebCancel"))));
 	this->btnCancel->SetRect(200, 120, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

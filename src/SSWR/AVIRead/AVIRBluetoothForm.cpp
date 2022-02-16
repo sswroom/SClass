@@ -11,28 +11,28 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothForm::OnCtrlChanged(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 
-		me->txtRadioName->SetText(btStatus->bt->GetName()->v);
+		me->txtRadioName->SetText(btStatus->bt->GetName()->ToCString());
 		IO::BTUtil::GetAddrText(&sb, btStatus->bt->GetAddress());
-		me->txtAddr->SetText(sb.ToString());
-		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()).v);
+		me->txtAddr->SetText(sb.ToCString());
+		me->txtManu->SetText(IO::BTUtil::GetManufacturerName(btStatus->bt->GetManufacturer()));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex16(btStatus->bt->GetSubversion());
-		me->txtSubver->SetText(sb.ToString());
+		me->txtSubver->SetText(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("0x"));
 		sb.AppendHex32(btStatus->bt->GetDevClass());
-		me->txtClass->SetText(sb.ToString());
+		me->txtClass->SetText(sb.ToCString());
 
 		me->UpdateDevList(btStatus);
 	}
 	else
 	{
-		me->txtRadioName->SetText((const UTF8Char*)"");
-		me->txtAddr->SetText((const UTF8Char*)"");
-		me->txtManu->SetText((const UTF8Char*)"");
-		me->txtSubver->SetText((const UTF8Char*)"");
-		me->txtClass->SetText((const UTF8Char*)"");
+		me->txtRadioName->SetText(CSTR(""));
+		me->txtAddr->SetText(CSTR(""));
+		me->txtManu->SetText(CSTR(""));
+		me->txtSubver->SetText(CSTR(""));
+		me->txtClass->SetText(CSTR(""));
 
 		me->ClearGUIDs();
 		me->lvDevice->ClearItems();
@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
 
 SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Bluetooth Form");
+	this->SetText(CSTR("Bluetooth Form"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -214,10 +214,10 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDeviceSrch, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Search"));
+	NEW_CLASS(this->btnDeviceSrch, UI::GUIButton(ui, this->pnlDevice, CSTR("Search")));
 	this->btnDeviceSrch->SetRect(4, 4, 75, 23, false);
 	this->btnDeviceSrch->HandleButtonClick(OnDeviceSrchClicked, this);
-	NEW_CLASS(this->btnDeviceUpdate, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Update"));
+	NEW_CLASS(this->btnDeviceUpdate, UI::GUIButton(ui, this->pnlDevice, CSTR("Update")));
 	this->btnDeviceUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnDeviceUpdate->HandleButtonClick(OnDeviceUpdateClicked, this);
 	NEW_CLASS(this->pnlDevDetail, UI::GUIPanel(ui, this->tpDevice));
@@ -227,10 +227,10 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlDevCtrl, UI::GUIPanel(ui, this->pnlDevDetail));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDevAuthen, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Pair"));
+	NEW_CLASS(this->btnDevAuthen, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Pair")));
 	this->btnDevAuthen->SetRect(4, 4, 75, 23, false);
 	this->btnDevAuthen->HandleButtonClick(OnDevAuthenClicked, this);
-	NEW_CLASS(this->btnDevUnauthen, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Unpair"));
+	NEW_CLASS(this->btnDevUnauthen, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Unpair")));
 	this->btnDevUnauthen->SetRect(84, 4, 75, 23, false);
 	this->btnDevUnauthen->HandleButtonClick(OnDevUnauthenClicked, this);
 	NEW_CLASS(this->lbDevServices, UI::GUIListBox(ui, this->pnlDevDetail, false));

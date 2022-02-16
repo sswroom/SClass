@@ -9,16 +9,17 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnColorChg(void *userObj, UOSI
 {
 	SSWR::AVIRead::AVIRImageColorForm *me = (SSWR::AVIRead::AVIRImageColorForm*)userObj;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
 	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
 	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
-	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
-	me->lblBrightV->SetText(sbuff);
-	Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
-	me->lblContrV->SetText(sbuff);
-	Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
-	me->lblGammaV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
+	me->lblBrightV->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
+	me->lblContrV->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
+	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
 
 	Media::ColorProfile *color;
 	color = me->srcImg->info->color;
@@ -92,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRImageColorForm::OnLastValueClick(void *userObj
 SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Image Color");
+	this->SetText(CSTR("Image Color"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -133,13 +134,13 @@ SSWR::AVIRead::AVIRImageColorForm::AVIRImageColorForm(UI::GUIClientControl *pare
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this, (const UTF8Char*)""));
 	this->lblGammaV->SetRect(550, 48, 50, 24, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(240, 72, 75, 24, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(325, 72, 75, 24, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
-	NEW_CLASS(this->btnLastValue, UI::GUIButton(ui, this, (const UTF8Char*)"&Last Value"));
+	NEW_CLASS(this->btnLastValue, UI::GUIButton(ui, this, CSTR("&Last Value")));
 	this->btnLastValue->SetRect(410, 72, 75, 24, false);
 	this->btnLastValue->HandleButtonClick(OnLastValueClick, this);
 	this->SetDefaultButton(this->btnOK);

@@ -14,6 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	UInt32 ip;
 	Net::WhoisRecord *rec;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	me->txtIP->GetText(&sb);
 	ip = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
 	if (ip == 0)
@@ -27,8 +28,8 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 	Double t;
 	rec = cli.RequestIP(ip);
 	t = clk.GetTimeDiff();
-	Text::StrDoubleFmt(sbuff, t, "0.0000000000");
-	me->txtRespTime->SetText(sbuff);
+	sptr = Text::StrDoubleFmt(sbuff, t, "0.0000000000");
+	me->txtRespTime->SetText(CSTRP(sbuff, sptr));
 	me->lbResponse->ClearItems();
 	if (rec)
 	{
@@ -46,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRWHOISClientForm::OnRequestClicked(void *userOb
 SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"WHOIS Client");
+	this->SetText(CSTR("WHOIS Client"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -59,7 +60,7 @@ SSWR::AVIRead::AVIRWHOISClientForm::AVIRWHOISClientForm(UI::GUIClientControl *pa
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIP, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtIP->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(504, 4, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lblRespTime, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Response Time"));

@@ -15,18 +15,19 @@ void __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::OnDevicesSelChg(void *userObj)
 	hid = (IO::HIDInfo*)me->lbDevices->GetSelectedItem();
 	if (hid == 0)
 	{
-		me->txtVendorId->SetText((const UTF8Char*)"");
-		me->txtProductId->SetText((const UTF8Char*)"");
-		me->txtDevPath->SetText((const UTF8Char*)"");
+		me->txtVendorId->SetText(CSTR(""));
+		me->txtProductId->SetText(CSTR(""));
+		me->txtDevPath->SetText(CSTR(""));
 	}
 	else
 	{
 		UTF8Char sbuff[32];
-		Text::StrHexVal16(sbuff, hid->GetVendorId());
-		me->txtVendorId->SetText(sbuff);
-		Text::StrHexVal16(sbuff, hid->GetProductId());
-		me->txtProductId->SetText(sbuff);
-		me->txtDevPath->SetText(hid->GetDevPath()->v);
+		UTF8Char *sptr;
+		sptr = Text::StrHexVal16(sbuff, hid->GetVendorId());
+		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrHexVal16(sbuff, hid->GetProductId());
+		me->txtProductId->SetText(CSTRP(sbuff, sptr));
+		me->txtDevPath->SetText(hid->GetDevPath()->ToCString());
 	}
 }
 
@@ -59,7 +60,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRHIDDeviceForm::ItemCompare(void *item1, void 
 SSWR::AVIRead::AVIRHIDDeviceForm::AVIRHIDDeviceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"HID Devices");
+	this->SetText(CSTR("HID Devices"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));

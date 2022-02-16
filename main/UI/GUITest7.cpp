@@ -15,7 +15,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UI::GUIForm *frm;
 		UI::GUILabel *lbl;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText((const UTF8Char*)"GUI Test 7");
+		frm->SetText(CSTR("GUI Test 7");
 		NEW_CLASS(btn, UI::GUIButton(core, frm, (const UTF8Char*)"Button"));
 		btn->SetRect(4, 4, 75, 23, false);
 		btn->SetFont((const UTF8Char*)"Arial", 5, true);

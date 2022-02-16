@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 
 SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"CPU Info");
+	this->SetText(CSTR("CPU Info"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -103,10 +103,10 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this->tpCPU));
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Upload Info"));
+	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlMain, CSTR("Upload Info")));
 	this->btnUpload->SetRect(4, 4, 100, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClick, this);
-	NEW_CLASS(this->btnCopyInfo, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Copy Info"));
+	NEW_CLASS(this->btnCopyInfo, UI::GUIButton(ui, this->pnlMain, CSTR("Copy Info")));
 	this->btnCopyInfo->SetRect(108, 4, 100, 23, false);
 	this->btnCopyInfo->HandleButtonClick(OnCopyInfoClick, this);
 	NEW_CLASS(this->lvMain, UI::GUIListView(ui, this->tpCPU, UI::GUIListView::LVSTYLE_TABLE, 2));

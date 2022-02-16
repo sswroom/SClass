@@ -15,23 +15,24 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileChg(void *userOb
 	if (me->inited)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Media::ColorProfile::CommonProfileType cpt = (Media::ColorProfile::CommonProfileType)(OSInt)me->cboMonProfile->GetSelectedItem();
 		if (cpt == Media::ColorProfile::CPT_FILE)
 		{
 			const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
-			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()).v);
-			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType).v);
-			Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
-			me->txtMonRGBGamma->SetText(sbuff);
+			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
+			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
+			sptr = Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
+			me->txtMonRGBGamma->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
 			me->monColor->SetMonProfileType(cpt);
 			const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
-			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()).v);
-			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType).v);
-			Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
-			me->txtMonRGBGamma->SetText(sbuff);
+			me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
+			me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
+			sptr = Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
+			me->txtMonRGBGamma->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 }
@@ -61,10 +62,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 				me->monFileName = s->Clone();
 
 				const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
-				me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()).v);
-				me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType).v);
-				Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
-				me->txtMonRGBGamma->SetText(sbuff);
+				me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
+				me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
+				sptr = Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
+				me->txtMonRGBGamma->SetText(CSTRP(sbuff, sptr));
 				me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 1);
 			}
 		}
@@ -78,16 +79,17 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonCustomClicked(void *use
 	if (me->inited)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		SSWR::AVIRead::AVIRColorCustomForm *frm;
 		NEW_CLASS(frm, SSWR::AVIRead::AVIRColorCustomForm(0, me->ui, me->core, me->monColor));
 		frm->ShowDialog(me);
 		DEL_CLASS(frm);
 
 		const Media::IColorHandler::RGBPARAM2 *rgbParam = me->monColor->GetRGBParam();
-		me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()).v);
-		me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType).v);
-		Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
-		me->txtMonRGBGamma->SetText(sbuff);
+		me->txtMonTran->SetText(Media::CS::TransferFunc::GetTransferFuncName(rgbParam->monProfile->GetRTranParam()->GetTranType()));
+		me->txtMonPrimaries->SetText(Media::ColorProfile::ColorTypeGetName(rgbParam->monProfile->GetPrimaries()->colorType));
+		sptr = Text::StrDouble(sbuff, rgbParam->monProfile->GetRTranParam()->GetGamma());
+		me->txtMonRGBGamma->SetText(CSTRP(sbuff, sptr));
 		me->cboMonProfile->SetSelectedIndex(me->cboMonProfile->GetCount() - 2);
 	}
 }
@@ -152,9 +154,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCancelClicked(void *userOb
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedBChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalRedBV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalRedBV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetRMonBright(UOSInt2Double(newPos) * 0.001);
@@ -164,9 +167,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedBChg(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedCChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalRedCV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalRedCV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetRMonContr(UOSInt2Double(newPos) * 0.001);
@@ -176,10 +180,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedCChg(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedGChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblCalRedGV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblCalRedGV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetRMonGamma(v);
@@ -189,9 +194,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalRedGChg(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenBChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalGreenBV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalGreenBV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetGMonBright(UOSInt2Double(newPos) * 0.001);
@@ -201,9 +207,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenBChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenCChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalGreenCV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalGreenCV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetGMonContr(UOSInt2Double(newPos) * 0.001);
@@ -213,10 +220,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenCChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenGChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblCalGreenGV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblCalGreenGV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetGMonGamma(v);
@@ -226,9 +234,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalGreenGChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueBChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalBlueBV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalBlueBV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetBMonBright(UOSInt2Double(newPos) * 0.001);
@@ -238,9 +247,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueBChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueCChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblCalBlueCV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblCalBlueCV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetBMonContr(UOSInt2Double(newPos) * 0.001);
@@ -250,10 +260,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueCChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueGChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblCalBlueGV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblCalBlueGV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetBMonGamma(v);
@@ -263,9 +274,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnCalBlueGChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonVBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblMonVBrigV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblMonVBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetMonVBright(UOSInt2Double(newPos) * 0.001);
@@ -275,9 +287,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonVBrigChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonPBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblMonPBrigV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblMonPBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetMonPBright(UOSInt2Double(newPos) * 0.001);
@@ -287,9 +300,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonPBrigChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonRBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblMonRBrigV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblMonRBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetMonRBright(UOSInt2Double(newPos) * 0.001);
@@ -299,9 +313,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonRBrigChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonGBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblMonGBrigV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblMonGBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetMonGBright(UOSInt2Double(newPos) * 0.001);
@@ -311,9 +326,10 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonGBrigChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonBBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
-	Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
-	me->lblMonBBrigV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, UOSInt2Double(newPos) * 0.1), UTF8STRC("%"));
+	me->lblMonBBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetMonBBright(UOSInt2Double(newPos) * 0.001);
@@ -323,10 +339,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonBBrigChg(void *userObj,
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVBrigChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblYUVBrigV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblYUVBrigV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetYUVBright(v);
@@ -336,10 +353,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVBrigChg(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVContChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblYUVContV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblYUVContV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetYUVContr(v);
@@ -349,10 +367,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVContChg(void *userObj, 
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVSatChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblYUVSatV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblYUVSatV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetYUVSat(v);
@@ -362,10 +381,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVSatChg(void *userObj, U
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVYGammaChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblYUVYGammaV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblYUVYGammaV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetYGamma(v);
@@ -375,10 +395,11 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVYGammaChg(void *userObj
 void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVCGammaChg(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRColorSettingForm *me = (SSWR::AVIRead::AVIRColorSettingForm*)userObj;
 	Double v = UOSInt2Double(newPos) * 0.001;
-	Text::StrDouble(sbuff, v);
-	me->lblYUVCGammaV->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	me->lblYUVCGammaV->SetText(CSTRP(sbuff, sptr));
 	if (me->inited)
 	{
 		me->monColor->SetCGamma(v);
@@ -441,7 +462,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnYUVDefSMPTE240MChg(void *u
 
 SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, MonitorHandle *hMon) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetText((const UTF8Char*)"Monitor Color Setting");
+	this->SetText(CSTR("Monitor Color Setting"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
@@ -452,6 +473,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	Media::MonitorInfo monInfo(this->hMon);
 	Text::String *monName = monInfo.GetDesc();
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 
 	this->normalClose = false;
 	this->inited = false;
@@ -480,15 +502,15 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	this->txtMonitor->SetReadOnly(true);
 	if (monName)
 	{
-		this->txtMonitor->SetText(monName->v);
+		this->txtMonitor->SetText(monName->ToCString());
 	}
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
 	this->pnlButtons->SetRect(0, 0, 100, 40, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
 	this->btnOK->SetRect(216, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(304, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -531,7 +553,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	{
 		this->cboMonProfile->SetSelectedIndex(k);
 	}
-	NEW_CLASS(this->btnMonProfile, UI::GUIButton(ui, this->tpSetting, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnMonProfile, UI::GUIButton(ui, this->tpSetting, CSTR("B&rowse")));
 	this->btnMonProfile->SetRect(300, 0, 75, 23, false);
 	this->btnMonProfile->HandleButtonClick(OnMonProfileClicked, this);
 	NEW_CLASS(this->grpMonProfile, UI::GUIGroupBox(ui, this->tpSetting, (const UTF8Char*)"Monitor Profile"));
@@ -551,7 +573,7 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtMonPrimaries, UI::GUITextBox(ui, this->grpMonProfile, CSTR("")));
 	this->txtMonPrimaries->SetRect(150, 24, 150, 23, false);
 	this->txtMonPrimaries->SetReadOnly(true);
-	NEW_CLASS(this->btnMonCustom, UI::GUIButton(ui, this->grpMonProfile, (const UTF8Char*)"Custom"));
+	NEW_CLASS(this->btnMonCustom, UI::GUIButton(ui, this->grpMonProfile, CSTR("Custom")));
 	this->btnMonCustom->SetRect(300, 24, 75, 23, false);
 	this->btnMonCustom->HandleButtonClick(OnMonCustomClicked, this);
 	NEW_CLASS(this->lblDefVProfile, UI::GUILabel(ui, this->tpSetting, (const UTF8Char*)"Def Video Profile"));
@@ -839,8 +861,8 @@ SSWR::AVIRead::AVIRColorSettingForm::AVIRColorSettingForm(UI::GUIClientControl *
 	case Media::ColorProfile::YUVT_UNKNOWN:
 		break;
 	}
-	Text::StrDouble(sbuff, rgbParam->monLuminance);
-	this->txtLuminance->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, rgbParam->monLuminance);
+	this->txtLuminance->SetText(CSTRP(sbuff, sptr));
 
 	this->inited = true;
 	OnMonProfileChg(this);

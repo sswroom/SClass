@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnSANAddClicked(void *userObj)
 	if (sb.GetLength() > 0)
 	{
 		me->sanList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
-		me->txtSAN->SetText((const UTF8Char*)"");
+		me->txtSAN->SetText(CSTR(""));
 		me->lbSAN->AddItem(sb.ToCString(), 0);
 	}
 }
@@ -324,7 +324,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 {
 	if (this->key == 0)
 	{
-		this->lblKeyDetail->SetText((const UTF8Char*)"-");
+		this->lblKeyDetail->SetText(CSTR("-"));
 	}
 	else
 	{
@@ -333,19 +333,19 @@ void SSWR::AVIRead::AVIRCertUtilForm::UpdateKeyDetail()
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
-		this->lblKeyDetail->SetText(sb.ToString());
+		this->lblKeyDetail->SetText(sb.ToCString());
 	}
 }
 
 void SSWR::AVIRead::AVIRCertUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
 {
-	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->v);
-	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->v);
-	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->v);
-	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->v);
-	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->v);
-	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->v);
-	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->v);
+	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
+	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());
+	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->ToCString());
+	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->ToCString());
+	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->ToCString());
+	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->ToCString());
+	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->ToCString());
 }
 
 void SSWR::AVIRead::AVIRCertUtilForm::UpdateExtensions(Crypto::Cert::CertExtensions *exts)
@@ -375,7 +375,7 @@ void SSWR::AVIRead::AVIRCertUtilForm::ClearExtensions()
 
 SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Cert Utility");
+	this->SetText(CSTR("Cert Utility"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -387,13 +387,13 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->lblKey->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->lblKeyDetail, UI::GUILabel(ui, this, (const UTF8Char*)"-"));
 	this->lblKeyDetail->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnKeyGenerate, UI::GUIButton(ui, this, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnKeyGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
 	this->btnKeyGenerate->SetRect(304, 4, 75, 23, false);
 	this->btnKeyGenerate->HandleButtonClick(OnKeyGenerateClicked, this);
-	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnKeyView->SetRect(384, 4, 75, 23, false);
 	this->btnKeyView->HandleButtonClick(OnKeyViewClicked, this);
-	NEW_CLASS(this->btnKeySave, UI::GUIButton(ui, this, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnKeySave, UI::GUIButton(ui, this, CSTR("Save")));
 	this->btnKeySave->SetRect(464, 4, 75, 23, false);
 	this->btnKeySave->HandleButtonClick(OnKeySaveClicked, this);
 	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, this, (const UTF8Char*)"C"));
@@ -434,18 +434,18 @@ SSWR::AVIRead::AVIRCertUtilForm::AVIRCertUtilForm(UI::GUIClientControl *parent, 
 	this->lblSAN->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->txtSAN, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSAN->SetRect(104, 244, 200, 23, false);
-	NEW_CLASS(this->btnSANAdd, UI::GUIButton(ui, this, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnSANAdd, UI::GUIButton(ui, this, CSTR("Add")));
 	this->btnSANAdd->SetRect(304, 244, 75, 23, false);
 	this->btnSANAdd->HandleButtonClick(OnSANAddClicked, this);
 	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
 	this->lbSAN->SetRect(104, 268, 200, 95, false);
-	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, (const UTF8Char*)"Clear"));
+	NEW_CLASS(this->btnSANClear, UI::GUIButton(ui, this, CSTR("Clear")));
 	this->btnSANClear->SetRect(304, 268, 75, 23, false);
 	this->btnSANClear->HandleButtonClick(OnSANClearClicked, this);
-	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, (const UTF8Char*)"Generate CSR"));
+	NEW_CLASS(this->btnCSRGenerate, UI::GUIButton(ui, this, CSTR("Generate CSR")));
 	this->btnCSRGenerate->SetRect(104, 364, 150, 23, false);
 	this->btnCSRGenerate->HandleButtonClick(OnCSRGenerateClicked, this);
-	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, (const UTF8Char*)"Self-Signed Cert"));
+	NEW_CLASS(this->btnSelfSignedCert, UI::GUIButton(ui, this, CSTR("Self-Signed Cert")));
 	this->btnSelfSignedCert->SetRect(254, 364, 150, 23, false);
 	this->btnSelfSignedCert->HandleButtonClick(OnSelfSignedCertClicked, this);
 

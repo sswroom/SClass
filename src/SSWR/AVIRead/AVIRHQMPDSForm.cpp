@@ -348,15 +348,15 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	this->currPBC = this->player;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ");
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ");
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3");
+		this->SetText(CSTR("HQMP3");
 	}
 
 	this->mnuChapters->ClearItems();
@@ -374,15 +374,15 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, UI::
 	this->qMode = qMode;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ");
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ");
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3");
+		this->SetText(CSTR("HQMP3");
 	}
 	this->playlist = 0;
 	this->storeTime = -1;
@@ -668,7 +668,7 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);
-			this->dbgFrm->SetText((const UTF8Char*)"Info");
+			this->dbgFrm->SetText(CSTR("Info");
 			this->dbgFrm->Show();
 			this->dbgFrm->HandleFormClosed(OnDebugClosed, this);
 		}

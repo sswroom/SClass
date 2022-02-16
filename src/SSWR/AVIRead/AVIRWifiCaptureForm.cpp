@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
-			me->txtBattery->SetText(sbuff);
+			sptr = Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
+			me->txtBattery->SetText(CSTRP(sbuff, sptr));
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
 				Sync::MutexUsage mutUsage(me->captureMut);
@@ -50,19 +50,19 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			me->txtBattery->SetText((const UTF8Char*)"Battery not found");
+			me->txtBattery->SetText(CSTR("Battery not found"));
 		}
 	}
 	else
 	{
-		me->txtBattery->SetText((const UTF8Char*)"Cannot read battery status");
+		me->txtBattery->SetText(CSTR("Cannot read battery status"));
 	}
 	if (me->motion)
 	{
 		me->motion->UpdateStatus();
 		if (me->motion->IsMovving())
 		{
-			me->txtMotion->SetText((const UTF8Char*)"Moving");
+			me->txtMotion->SetText(CSTR("Moving"));
 			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 1)
 			{
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			me->txtMotion->SetText((const UTF8Char*)"Stopped");
+			me->txtMotion->SetText(CSTR("Stopped"));
 			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 0)
 			{
@@ -93,22 +93,22 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		me->gpsChg = false;
-		Text::StrDouble(sbuff, me->currLat);
-		me->txtGPSLat->SetText(sbuff);
-		Text::StrDouble(sbuff, me->currLon);
-		me->txtGPSLon->SetText(sbuff);
-		Text::StrDouble(sbuff, me->currAlt);
-		me->txtGPSAlt->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, me->currLat);
+		me->txtGPSLat->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->currLon);
+		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->currAlt);
+		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
 		dt.SetTicks(me->currGPSTimeTick);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		me->txtGPSTime->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		if (me->currActive)
 		{
-			me->txtGPSActive->SetText((const UTF8Char*)"Active");
+			me->txtGPSActive->SetText(CSTR("Active"));
 		}
 		else
 		{
-			me->txtGPSActive->SetText((const UTF8Char*)"Void");
+			me->txtGPSActive->SetText(CSTR("Void"));
 		}
 	}
 	if (me->wlanInterf)
@@ -119,7 +119,6 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 			if (me->wlanScan-- <= 0)
 			{
 				Text::String *s;
-				const UTF8Char *csptr;
 				Text::String *ssid;
 				Bool bssListUpd = false;
 				Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
@@ -430,16 +429,16 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					DEL_CLASS(bss);
 				}
 
-				Text::StrUOSInt(sbuff, j);
-				me->txtCurrWifiCnt->SetText(sbuff);
+				sptr = Text::StrUOSInt(sbuff, j);
+				me->txtCurrWifiCnt->SetText(CSTRP(sbuff, sptr));
 				me->wlanInterf->Scan();
 
 				me->wlanScan = 10;
 
 				if (bssListUpd)
 				{
-					Text::StrUOSInt(sbuff, me->bssMap->GetCount());
-					me->txtBSSCount->SetText(sbuff);
+					sptr = Text::StrUOSInt(sbuff, me->bssMap->GetCount());
+					me->txtBSSCount->SetText(CSTRP(sbuff, sptr));
 				}
 			}
 			dt.SetCurrTimeUTC();
@@ -460,7 +459,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 		}
 		me->locSvc = 0;
 		me->locSvcRel = false;
-		me->txtGPS->SetText((const UTF8Char*)"Not opened");
+		me->txtGPS->SetText(CSTR("Not opened"));
 	}
 	else
 	{
@@ -470,7 +469,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(stm->GetSourceNameObj());
-			me->txtGPS->SetText(sb.ToString());
+			me->txtGPS->SetText(sb.ToCString());
 			me->locSvcRel = true;
 			NEW_CLASS(me->locSvc, IO::GPSNMEA(stm, true));
 			me->locSvc->RegisterLocationHandler(OnGPSData, me);
@@ -789,7 +788,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Wifi Capture");
+	this->SetText(CSTR("Wifi Capture"));
 
 	this->core = core;
 	this->motion = 0;
@@ -850,7 +849,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, this->tpStatus, CSTR("Not opened")));
 	this->txtGPS->SetReadOnly(true);
 	this->txtGPS->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Open"));
+	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, CSTR("Open")));
 	this->btnGPS->SetRect(304, 28, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClicked, this);
 	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"GPS Time"));
@@ -893,7 +892,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtBSSCount, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtBSSCount->SetReadOnly(true);
 	this->txtBSSCount->SetRect(104, 220, 200, 23, false);
-	NEW_CLASS(this->btnCapture, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Start Capture"));
+	NEW_CLASS(this->btnCapture, UI::GUIButton(ui, this->tpStatus, CSTR("Start Capture")));
 	this->btnCapture->SetRect(104, 244, 120, 23, false);
 	this->btnCapture->HandleButtonClick(OnCaptureClicked, this);
 
@@ -919,10 +918,10 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save")));
 	this->btnLogWifiSave->SetRect(4, 4, 75, 23, false);
 	this->btnLogWifiSave->HandleButtonClick(OnLogWifiSaveClicked, this);
-	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save Unk only"));
+	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save Unk only")));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
 	NEW_CLASS(this->lvLogWifi, UI::GUIListView(ui, this->tpLogWifi, UI::GUIListView::LVSTYLE_TABLE, 12));

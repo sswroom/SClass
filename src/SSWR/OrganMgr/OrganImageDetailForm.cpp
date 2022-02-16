@@ -27,7 +27,7 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 	this->env = env;
 	this->descript = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("ImageDetailTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("ImageDetailTitle")));
 
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
@@ -72,10 +72,10 @@ SSWR::OrganMgr::OrganImageDetailForm::OrganImageDetailForm(UI::GUIClientControl 
 	NEW_CLASS(this->txtLon, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
 	this->txtLon->SetRect(100, 144, 150, 23, false);
 	this->txtLon->SetReadOnly(true);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageDetailOk")).v));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageDetailOk"))));
 	this->btnOK->SetRect(120, 168, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageDetailCancel")).v));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("ImageDetailCancel"))));
 	this->btnCancel->SetRect(200, 168, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

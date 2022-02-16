@@ -57,15 +57,15 @@ namespace SSWR
 			UI::GUIListView *lvSMS;
 
 			Bool initStrs;
-			const UTF8Char *initModemManu;
-			const UTF8Char *initModemModel;
-			const UTF8Char *initModemVer;
-			const UTF8Char *initIMEI;
+			Text::String *initModemManu;
+			Text::String *initModemModel;
+			Text::String *initModemVer;
+			Text::String *initIMEI;
 			Data::ArrayList<IO::GSMModemController::SMSMessage *> *msgList;
 
 			IO::GSMModemController::RSSI signalQuality;
 			Bool operUpdated;
-			const UTF8Char *operName;
+			Text::String *operName;
 			Data::DateTime *operNextTime;
 
 			Bool toStop;

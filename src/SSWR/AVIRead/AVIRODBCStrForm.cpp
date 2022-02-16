@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverSelChg(void *userObj)
 		sb2.AppendC(UTF8STRC("Driver={"));
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		sb2.AppendUTF8Char('}');
-		me->txtConnStr->SetText(sb2.ToString());
+		me->txtConnStr->SetText(sb2.ToCString());
 	}
 }
 
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 			const UTF8Char *sarr[2];
 			sarr[0] = (const UTF8Char*)"Name";
 			sarr[1] = (const UTF8Char*)"Value";
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRTableMsgForm(0, me->ui, me->core, sb.ToString(), 2, sarr));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRTableMsgForm(0, me->ui, me->core, sb.ToCString(), 2, sarr));
 			driver->GetKeys((Text::String*)0, &keys);
 			i = 0;
 			j = keys.GetCount();
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 108, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ODBC String Connection");
+	this->SetText(CSTR("ODBC String Connection"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -98,17 +98,17 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->cboDriver, UI::GUIComboBox(ui, this, false));
 	this->cboDriver->SetRect(104, 4, 200, 23, false);
 	this->cboDriver->HandleSelectionChange(OnDriverSelChg, this);
-	NEW_CLASS(this->btnDriverInfo, UI::GUIButton(ui, this, (const UTF8Char*)"Info"));
+	NEW_CLASS(this->btnDriverInfo, UI::GUIButton(ui, this, CSTR("Info")));
 	this->btnDriverInfo->SetRect(304, 4, 75, 23, false);
 	this->btnDriverInfo->HandleButtonClick(OnDriverInfoClicked, this);
 	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, (const UTF8Char*)"Conn Str"));
 	this->lblConnStr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 28, 800, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 56, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 56, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

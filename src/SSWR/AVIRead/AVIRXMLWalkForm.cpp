@@ -37,7 +37,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 	Text::XMLReader::ParseMode mode;
 	UOSInt i;
 	this->lvXML->ClearItems();
-	this->txtFile->SetText(fileName.v);
+	this->txtFile->SetText(fileName);
 	i = fileName.LastIndexOf('.');
 	if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileName.leng - i - 1, UTF8STRC("html")))
 	{
@@ -74,7 +74,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 
 SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"XML Walk");
+	this->SetText(CSTR("XML Walk"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Browse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, CSTR("Browse")));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClick, this);
 	NEW_CLASS(this->lvXML, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));

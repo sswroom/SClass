@@ -3,7 +3,7 @@
 
 SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SystemInfoLog *sysInfo) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"System Info Log");
+	this->SetText(CSTR("System Info Log"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -65,28 +65,29 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->lvDrivers->AddColumn((const UTF8Char*)"Altitude", 100);
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (this->sysInfo->GetOSName())
 	{
-		this->txtOSName->SetText(this->sysInfo->GetOSName());
+		this->txtOSName->SetText(this->sysInfo->GetOSName()->ToCString());
 	}
 	if (this->sysInfo->GetOSVer())
 	{
-		this->txtOSVer->SetText(this->sysInfo->GetOSVer());
+		this->txtOSVer->SetText(this->sysInfo->GetOSVer()->ToCString());
 	}
 	if (this->sysInfo->GetOSLocale())
 	{
-		Text::StrUInt32(sbuff, this->sysInfo->GetOSLocale());
-		this->txtOSLocale->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, this->sysInfo->GetOSLocale());
+		this->txtOSLocale->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->sysInfo->GetArchitecture())
 	{
-		Text::StrUInt32(sbuff, this->sysInfo->GetArchitecture());
-		this->txtArchitecture->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, this->sysInfo->GetArchitecture());
+		this->txtArchitecture->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->sysInfo->GetProductType())
 	{
-		Text::StrUInt32(sbuff, this->sysInfo->GetProductType());
-		this->txtProductType->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, this->sysInfo->GetProductType());
+		this->txtProductType->SetText(CSTRP(sbuff, sptr));
 	}
 
 	Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *devList = this->sysInfo->GetDeviceInfos();

@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	{
 		DEL_CLASS(me->bforce);
 		me->bforce = 0;
-		me->txtStatus->SetText((const UTF8Char*)"Stopped");
+		me->txtStatus->SetText(CSTR("Stopped"));
 		return;
 	}
 	me->txtMinLen->GetText(&sb);
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	Crypto::Hash::BruteForceAttack *bforce;
 	NEW_CLASS(bforce, Crypto::Hash::BruteForceAttack(hash, true, (Crypto::Hash::BruteForceAttack::CharEncoding)(OSInt)me->cboEncoding->GetSelectedItem()));
 	bforce->SetCharLimit((Crypto::Hash::BruteForceAttack::CharLimit)(OSInt)me->cboCharType->GetSelectedItem());
-	me->txtStatus->SetText((const UTF8Char*)"Processing");
+	me->txtStatus->SetText(CSTR("Processing"));
 	me->bforce = bforce;
 	me->lastCnt = 0;
 	bforce->Start(hashBuff, minLeng, maxLeng);
@@ -68,25 +68,26 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRBruteForceForm *me = (SSWR::AVIRead::AVIRBruteForceForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->bforce)
 	{
 		if (me->bforce->IsProcessing())
 		{
 			UInt64 thisCnt = me->bforce->GetTestCnt();
 			
-			me->bforce->GetCurrKey(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), thisCnt - me->lastCnt), UTF8STRC(", key=")));
+			sptr = me->bforce->GetCurrKey(Text::StrConcatC(Text::StrUInt64(Text::StrConcatC(sbuff, UTF8STRC("Processing, spd=")), thisCnt - me->lastCnt), UTF8STRC(", key=")));
 			me->lastCnt = thisCnt;
-			me->txtStatus->SetText(sbuff);
+			me->txtStatus->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			if (me->bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd="))))
+			if ((sptr = me->bforce->GetResult(Text::StrConcatC(sbuff, UTF8STRC("Pwd=")))) != 0)
 			{
-				me->txtStatus->SetText(sbuff);
+				me->txtStatus->SetText(CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->txtStatus->SetText((const UTF8Char*)"Finished, pwd not found");
+				me->txtStatus->SetText(CSTR("Finished, pwd not found"));
 			}
 			DEL_CLASS(me->bforce);
 			me->bforce = 0;			
@@ -96,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnTimerTick(void *userObj)
 
 SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 240, ui)
 {
-	this->SetText((const UTF8Char*)"Brute Force");
+	this->SetText(CSTR("Brute Force"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
@@ -158,7 +159,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 		i++;
 	}
 	this->cboCharType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 148, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));

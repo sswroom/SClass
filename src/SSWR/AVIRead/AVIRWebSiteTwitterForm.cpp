@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(void 
 
 SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Twitter");
+	this->SetText(CSTR("Twitter"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequestPage->SetRect(254, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
 	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

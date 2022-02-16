@@ -67,7 +67,7 @@ OSInt UI::GUIProgressBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, UInt64 count)
+void UI::GUIProgressBar::ProgressStart(Text::CString name, UInt64 count)
 {
 	ClassData *data = (ClassData*)this->clsData;
 	data->currCnt = 0;

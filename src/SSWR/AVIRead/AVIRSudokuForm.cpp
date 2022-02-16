@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRSudokuForm::EventNumInput(void *userObj, UOSIn
 
 SSWR::AVIRead::AVIRSudokuForm::AVIRSudokuForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Sudoku Solver");
+	this->SetText(CSTR("Sudoku Solver"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

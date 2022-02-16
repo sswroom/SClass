@@ -35,6 +35,7 @@ namespace Data
 		Text::String *GetKey(UOSInt index);
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len);
 		OSInt IndexOf(Text::String *s);
+		OSInt IndexOfC(Text::CString s);
 
 		virtual T Put(Text::String *key, T val);
 		T PutC(Text::CString key, T val);
@@ -188,6 +189,12 @@ namespace Data
 	{
 		UInt32 hash = this->crc->CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
+	}
+
+	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CString s)
+	{
+		UInt32 hash = this->crc->CalcDirect(s.v, s.leng);
+		return IndexOf(hash, s.v, s.leng);
 	}
 
 	template <class T> T FastStringMap<T>::Put(Text::String *key, T val)

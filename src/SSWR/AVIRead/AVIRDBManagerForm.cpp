@@ -321,7 +321,7 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(const UTF8Char *
 SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Database Manager");
+	this->SetText(CSTR("Database Manager"));
 	this->core = core;
 	this->currDB = 0;
 	NEW_CLASS(this->dbList, Data::ArrayList<DB::DBTool*>());
@@ -343,7 +343,7 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbDatabase, UI::GUIListBox(ui, this->tpDatabase, false));
 	this->lbDatabase->SetRect(0, 0, 150, 23, false);
 	this->lbDatabase->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDatabase, UI::GUIButton(ui, this->tpDatabase, (const UTF8Char*)"Change"));
+	NEW_CLASS(this->btnDatabase, UI::GUIButton(ui, this->tpDatabase, CSTR("Change")));
 	this->btnDatabase->SetRect(154, 4, 75, 23, false);
 	this->btnDatabase->HandleButtonClick(OnDatabaseClicked, this);
 

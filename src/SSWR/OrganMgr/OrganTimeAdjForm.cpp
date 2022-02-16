@@ -96,11 +96,12 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnCameraChg(void *userObj)
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(&sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
-	Text::StrInt32(sbuff, timeAdj);
-	me->txtTimeAdj->SetText(sbuff);
+	sptr = Text::StrInt32(sbuff, timeAdj);
+	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
@@ -108,6 +109,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	if (Win32::Clipboard::GetString(me->GetHandle(), &sb))
 	{
 		sb.Trim();
@@ -115,8 +117,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnPasteClicked(void *userObj)
 		Int32 timeAdj;
 		if (sb.ToInt32(&timeAdj))
 		{
-			Text::StrInt32(sbuff, timeAdj);
-			me->txtTimeAdj->SetText(sbuff);
+			sptr = Text::StrInt32(sbuff, timeAdj);
+			me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 			sb.ClearStr();
 			me->cboCamera->GetText(&sb);
 			me->cameraMap->Put(sb.ToCString(), timeAdj);
@@ -133,6 +135,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(void *userObj)
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(&sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
@@ -140,8 +143,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeAddClicked(void *userObj)
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
 	me->cameraMap->Put(sb.ToCString(), timeAdj);
-	Text::StrInt32(sbuff, timeAdj);
-	me->txtTimeAdj->SetText(sbuff);
+	sptr = Text::StrInt32(sbuff, timeAdj);
+	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	me->mapMain->UpdateMap();
 	me->mapMain->Redraw();
 }
@@ -151,6 +154,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(void *userObj)
 	OrganTimeAdjForm *me = (OrganTimeAdjForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	Int32 timeAdj;
 	me->cboCamera->GetText(&sb);
 	timeAdj = me->cameraMap->Get(sb.ToCString());
@@ -158,8 +162,8 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeSubClicked(void *userObj)
 	me->adjLyr->SetTimeAdj(sb.ToCString(), timeAdj);
 	me->UpdateSelTime(sb.ToString(), sb.GetLength(), timeAdj);
 	me->cameraMap->Put(sb.ToCString(), timeAdj);
-	Text::StrInt32(sbuff, timeAdj);
-	me->txtTimeAdj->SetText(sbuff);
+	sptr = Text::StrInt32(sbuff, timeAdj);
+	me->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	me->mapMain->UpdateMap();
 	me->mapMain->Redraw();
 }
@@ -245,7 +249,7 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->currFileList, Data::ArrayList<UserFileInfo *>());
 	NEW_CLASS(this->cameraMap, Data::StringMap<Int32>());
 
-	this->SetText(this->env->GetLang(UTF8STRC("TimeAdjTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("TimeAdjTitle")));
 
 	Map::OSM::OSMTileMap *tileMap;
 	Media::StaticImage *stimg;
@@ -314,16 +318,16 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->txtTimeAdj, UI::GUITextBox(ui, this->pnlControl, CSTR("0"), false));
 	this->txtTimeAdj->SetRect(154, 4, 50, 23, false);
 	this->txtTimeAdj->SetReadOnly(true);
-	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjPaste")).v));
+	NEW_CLASS(this->btnPaste, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjPaste"))));
 	this->btnPaste->SetRect(204, 4, 50, 23, false);
 	this->btnPaste->HandleButtonClick(OnPasteClicked, this);
-	NEW_CLASS(this->btnTimeSub, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"-"));
+	NEW_CLASS(this->btnTimeSub, UI::GUIButton(ui, this->pnlControl, CSTR("-")));
 	this->btnTimeSub->SetRect(254, 4, 25, 23, false);
 	this->btnTimeSub->HandleButtonClick(OnTimeSubClicked, this);
-	NEW_CLASS(this->btnTimeAdd, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"+"));
+	NEW_CLASS(this->btnTimeAdd, UI::GUIButton(ui, this->pnlControl, CSTR("+")));
 	this->btnTimeAdd->SetRect(279, 4, 25, 23, false);
 	this->btnTimeAdd->HandleButtonClick(OnTimeAddClicked, this);
-	NEW_CLASS(this->btnTimeApply, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjApply")).v));
+	NEW_CLASS(this->btnTimeApply, UI::GUIButton(ui, this->pnlControl, this->env->GetLang(UTF8STRC("TimeAdjApply"))));
 	this->btnTimeApply->SetRect(329, 4, 50, 23, false);
 	this->btnTimeApply->HandleButtonClick(OnTimeApplyClicked, this);
 
@@ -378,9 +382,10 @@ SSWR::OrganMgr::OrganTimeAdjForm::OrganTimeAdjForm(UI::GUIClientControl *parent,
 	if (cameraList->GetCount() > 0)
 	{
 		UTF8Char sbuff[16];
+		UTF8Char *sptr;
 		this->cboCamera->SetSelectedIndex(0);
-		Text::StrInt32(sbuff, this->cameraMap->Get(cameraList->GetItem(0)));
-		this->txtTimeAdj->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, this->cameraMap->Get(cameraList->GetItem(0)));
+		this->txtTimeAdj->SetText(CSTRP(sbuff, sptr));
 	}
 
 	this->cboSpecies->AddItem(this->env->GetLang(UTF8STRC("TimeAdjAllSp")), 0);

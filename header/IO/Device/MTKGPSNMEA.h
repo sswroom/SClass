@@ -47,10 +47,10 @@ namespace IO
 
 			Data::SyncArrayList<Text::String *> *cmdWResults;
 
-			const UTF8Char *firmwareRel;
-			const UTF8Char *firmwareBuild;
-			const UTF8Char *productMode;
-			const UTF8Char *sdkVer;
+			Text::String *firmwareRel;
+			Text::String *firmwareBuild;
+			Text::String *productMode;
+			Text::String *sdkVer;
 		private:
 			virtual void ParseUnknownCmd(const UTF8Char *cmd, UOSInt cmdLen);
 		public:
@@ -86,10 +86,10 @@ namespace IO
 			UOSInt GetLogSize(); //Bytes
 			Text::String *SendMTKCommand(const UInt8 *cmdBuff, UOSInt cmdSize, const UTF8Char *resultStart, UOSInt resultStartLen, Int32 timeoutMS);
 
-			const UTF8Char *GetFirmwareRel();
-			const UTF8Char *GetFirmwareBuild();
-			const UTF8Char *GetProductMode();
-			const UTF8Char *GetSDKVer();
+			Text::String *GetFirmwareRel();
+			Text::String *GetFirmwareBuild();
+			Text::String *GetProductMode();
+			Text::String *GetSDKVer();
 
 			static UOSInt GetMTKSerialPort();
 			static Bool ParseBlock(UInt8 *block, Map::GPSTrack *gps);

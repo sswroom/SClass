@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 	i = me->lbData->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		me->txtData->SetText((const UTF8Char*)"");
+		me->txtData->SetText(CSTR(""));
 	}
 	else
 	{
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnDataSelChg(void *userObj)
 		sb.AppendC(UTF8STRC("\r\nData:\r\n"));
 		sb.AppendHexBuff(me->packets[i].buff, me->packets[i].buffSize, ' ', Text::LineBreakType::CRLF);
 		mutUsage.EndUse();
-		me->txtData->SetText(sb.ToString());
+		me->txtData->SetText(sb.ToCString());
 	}
 }
 
@@ -131,11 +131,12 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnPortsDblClk(void *userObj, U
 	if (me->svr)
 		return;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	UInt16 port = (UInt16)(UOSInt)me->lvPorts->GetItem(index);
 	if (port != 0)
 	{
-		Text::StrUInt16(sbuff, port);
-		me->txtPort->SetText(sbuff);
+		sptr = Text::StrUInt16(sbuff, port);
+		me->txtPort->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -182,14 +183,14 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnMulticastDoubleClk(void *use
 	const UTF8Char *ip = (const UTF8Char*)me->lbMulticastCommon->GetSelectedItem();
 	if (ip)
 	{
-		me->txtMulticastCurr->SetText(ip);
+		me->txtMulticastCurr->SetText({ip, Text::StrCharCnt(ip)});
 	}
 }
 
 
 SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"UDP Capture");
+	this->SetText(CSTR("UDP Capture"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -217,7 +218,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Reuse Addr", true));
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(244, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -295,7 +296,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->btnMulticastAdd, UI::GUIButton(ui, this->pnlMulticastCtrl, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnMulticastAdd, UI::GUIButton(ui, this->pnlMulticastCtrl, CSTR("&Add")));
 	this->btnMulticastAdd->SetRect(200, 0, 75, 23, false);
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
 	NEW_CLASS(this->lbMulticastCurr, UI::GUIListBox(ui, this->pnlMulticast, false));

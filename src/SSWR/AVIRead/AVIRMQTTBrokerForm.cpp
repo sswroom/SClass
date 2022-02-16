@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 		me->sslCert->ToShortString(&sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
-		me->lblSSLCert->SetText(sb.ToString());
+		me->lblSSLCert->SetText(sb.ToCString());
 	}
 	DEL_CLASS(frm);
 
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -207,7 +207,7 @@ void SSWR::AVIRead::AVIRMQTTBrokerForm::ServerStop()
 SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MQTT Broker");
+	this->SetText(CSTR("MQTT Broker"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -226,7 +226,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lblSSL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, (const UTF8Char*)"Enable", false));
 	this->chkSSL->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Cert/Key"));
+	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpStatus, CSTR("Cert/Key")));
 	this->btnSSLCert->SetRect(204, 4, 75, 23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)""));
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, CSTR("Start")));
 	this->btnStart->SetRect(204, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 

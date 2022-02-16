@@ -34,7 +34,7 @@ namespace SSWR
 				Data::ArrayList<StrRecord*> *records;
 			} Block;
 
-			static const Char *typeName[];
+			static Text::CString typeName[];
 		private:
 			UI::GUILabel *lblDirectory;
 			UI::GUITextBox *txtDirectory;
@@ -87,7 +87,7 @@ namespace SSWR
 			Media::DrawEngine *deng;
 			Media::MonitorMgr *monMgr;
 			Data::ArrayList<MapFilter *> *globalFilters;
-			const UTF8Char *progressName;
+			Text::CString progressName;
 			UInt64 totalVal;
 			UOSInt currGroup;
 			Text::HKSCSFix *hkscsConv;
@@ -117,7 +117,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressStart(Text::CString name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};

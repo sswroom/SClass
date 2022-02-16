@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRJavaClassForm::OnMethodsSelChg(void *userObj)
 	SSWR::AVIRead::AVIRJavaClassForm *me = (SSWR::AVIRead::AVIRJavaClassForm*)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->clsFile->MethodsGetDetail((UOSInt)me->lbMethods->GetSelectedIndex(), 0, true, &sb);
-	me->txtMethods->SetText(sb.ToString());
+	me->txtMethods->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::JavaClass *clsFile) : UI::GUIForm(parent, 1024, 768, ui)
@@ -18,7 +18,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	sb.AppendC(UTF8STRC("Java Class - "));
 	sb.Append(clsFile->GetSourceNameObj());
-	this->SetText(sb.ToString());
+	this->SetText(sb.ToCString());
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -29,7 +29,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 	this->txtFileStruct->SetReadOnly(true);
 	sb.ClearStr();
 	this->clsFile->FileStructDetail(&sb);
-	this->txtFileStruct->SetText(sb.ToString());
+	this->txtFileStruct->SetText(sb.ToCString());
 
 	this->tpFields = this->tcMain->AddTabPage(CSTR("Fields"));
 	NEW_CLASS(this->lbFields, UI::GUIListBox(ui, this->tpFields, false));
@@ -72,7 +72,7 @@ SSWR::AVIRead::AVIRJavaClassForm::AVIRJavaClassForm(UI::GUIClientControl *parent
 
 	sb.ClearStr();
 	this->clsFile->DecompileFile(&sb);
-	this->txtDecompile->SetText(sb.ToString());
+	this->txtDecompile->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRJavaClassForm::~AVIRJavaClassForm()

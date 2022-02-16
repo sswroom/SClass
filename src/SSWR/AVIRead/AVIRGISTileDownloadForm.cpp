@@ -261,6 +261,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt currLyr;
 	UOSInt lyrCnt = tileMap->GetLevelCount();
 	Data::ArrayList<Int64> imgIdList;
@@ -270,13 +271,13 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 	OSInt err = 0;
 	Bool found;
 	this->errCnt = 0;
-	this->txtError->SetText((const UTF8Char*)"0");
+	this->txtError->SetText(CSTR("0"));
 	this->stopDownload = false;
 	currLyr = 0;
 	while (currLyr < lyrCnt)
 	{
-		Text::StrUOSInt(sbuff, currLyr);
-		this->txtLayer->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, currLyr);
+		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
 		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
@@ -284,8 +285,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
-			this->txtImages->SetText(sbuff);
+			sptr = Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
+			this->txtImages->SetText(CSTRP(sbuff, sptr));
 			this->ui->ProcessMessages();
 
 			found = false;
@@ -314,8 +315,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesDir(const UTF8Char *folder
 			if (err != this->errCnt)
 			{
 				err = this->errCnt;
-				Text::StrOSInt(sbuff, err);
-				this->txtError->SetText(sbuff);
+				sptr = Text::StrOSInt(sbuff, err);
+				this->txtError->SetText(CSTRP(sbuff, sptr));
 			}
 			if (this->stopDownload)
 				break;
@@ -346,6 +347,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt currLyr;
 	UOSInt lyrCnt = tileMap->GetLevelCount();
 	Data::ArrayList<Int64> imgIdList;
@@ -355,7 +357,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 	OSInt err = 0;
 	Bool found;
 	this->errCnt = 0;
-	this->txtError->SetText((const UTF8Char*)"0");
+	this->txtError->SetText(CSTR("0"));
 	this->stopDownload = false;
 
 	IO::SPackageFile *spkg;
@@ -366,8 +368,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 	currLyr = 0;
 	while (currLyr < lyrCnt)
 	{
-		Text::StrUOSInt(sbuff, currLyr);
-		this->txtLayer->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, currLyr);
+		this->txtLayer->SetText(CSTRP(sbuff, sptr));
 
 		imgIdList.Clear();
 		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
@@ -375,8 +377,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
-			this->txtImages->SetText(sbuff);
+			sptr = Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, cnt - i), UTF8STRC("/")), cnt);
+			this->txtImages->SetText(CSTRP(sbuff, sptr));
 			this->ui->ProcessMessages();
 
 			found = false;
@@ -406,8 +408,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTilesFile(Text::CString fileNam
 			if (err != this->errCnt)
 			{
 				err = this->errCnt;
-				Text::StrOSInt(sbuff, err);
-				this->txtError->SetText(sbuff);
+				sptr = Text::StrOSInt(sbuff, err);
+				this->txtError->SetText(CSTRP(sbuff, sptr));
 			}
 			if (this->stopDownload)
 				break;
@@ -561,7 +563,7 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->navi = navi;
 	sb.AppendC(UTF8STRC("Tile Downloader - "));
 	sb.Append(lyr->GetSourceNameObj());
-	this->SetText(sb.ToString());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->selecting = false;
@@ -574,13 +576,13 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->selY2 = 0;
 	this->stopDownload = false;
 
-	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, (const UTF8Char*)"Select Area"));
+	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, CSTR("Select Area")));
 	this->btnArea->SetRect(4, 4, 100, 23, false);
 	this->btnArea->HandleButtonClick(OnAreaClicked, this);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this, (const UTF8Char*)"Save As"));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this, CSTR("Save As")));
 	this->btnSave->SetRect(114, 4, 100, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveFileClicked, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, (const UTF8Char*)"Stop Downloading"));
+	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop Downloading")));
 	this->btnStop->SetRect(224, 4, 100, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 

@@ -74,6 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPSpdCliForm *me = (SSWR::AVIRead::AVIRTCPSpdCliForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->connected)
 	{
 		if (me->cli == 0)
@@ -87,15 +88,15 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnTimerTick(void *userObj)
 		UInt64 currSendSize = me->sendSize;
 		if (currTime > me->lastTime)
 		{
-			Text::StrDouble(sbuff, (Double)(currSendSize - me->lastSendSize) / (currTime - me->lastTime));
-			me->txtSendSpeed->SetText(sbuff);
-			Text::StrDouble(sbuff, (Double)(currRecvSize - me->lastRecvSize) / (currTime - me->lastTime));
-			me->txtRecvSpeed->SetText(sbuff);
+			sptr = Text::StrDouble(sbuff, (Double)(currSendSize - me->lastSendSize) / (currTime - me->lastTime));
+			me->txtSendSpeed->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, (Double)(currRecvSize - me->lastRecvSize) / (currTime - me->lastTime));
+			me->txtRecvSpeed->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtSendSpeed->SetText((const UTF8Char*)"0");
-			me->txtRecvSpeed->SetText((const UTF8Char*)"0");
+			me->txtSendSpeed->SetText(CSTR("0"));
+			me->txtRecvSpeed->SetText(CSTR("0"));
 		}
 		me->lastTime = currTime;
 		me->lastRecvSize = currRecvSize;
@@ -181,7 +182,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::RecvThread(void *userObj)
 SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"TCP Speed Client");
+	this->SetText(CSTR("TCP Speed Client"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -210,7 +211,7 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this, (const UTF8Char*)"Conn"));
+	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this, CSTR("Conn")));
 	this->btnConn->SetRect(104, 52, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClick, this);
 

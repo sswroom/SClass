@@ -18,14 +18,14 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnTimerTick(void *userObj)
 	{
 		me->toneChg = false;
 		Sync::MutexUsage mutUsage(me->toneMut);
-		me->txtDialTones->SetText(me->toneSb->ToString());
+		me->txtDialTones->SetText(me->toneSb->ToCString());
 		mutUsage.EndUse();
 	}
 
 	if (me->hasEvt)
 	{
 		me->hasEvt = false;
-		me->txtDialStatus->SetText((const UTF8Char*)"Remote Disconnected");
+		me->txtDialStatus->SetText(CSTR("Remote Disconnected"));
 	}
 }
 
@@ -42,12 +42,12 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 		me->txtDialNum->GetText(&sb);
 		if (sb.GetLength() <= 0)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Enter dial num");
+			me->txtDialStatus->SetText(CSTR("Enter dial num"));
 			return;
 		}
 		if (sb.GetLength() > 20)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Dial num too long");
+			me->txtDialStatus->SetText(CSTR("Dial num too long"));
 			return;
 		}
 		sptr = sb.ToString();
@@ -70,45 +70,45 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnDialClicked(void *userObj)
 			}
 			else
 			{
-				me->txtDialStatus->SetText((const UTF8Char*)"Dial num is not valid");
+				me->txtDialStatus->SetText(CSTR("Dial num is not valid"));
 				return;
 			}
 		}
 		if (!me->modem->VoiceSetType(IO::Device::RockwellModemController::VT_VOICE))
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Failed to set Voice Type");
+			me->txtDialStatus->SetText(CSTR("Failed to set Voice Type"));
 			return;
 		}
 		if (!me->modem->VoiceSetVoiceLineType(IO::Device::RockwellModemController::VLT_EMULATION))
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Failed to set Voice Line Type");
+			me->txtDialStatus->SetText(CSTR("Failed to set Voice Line Type"));
 			return;
 		}
 		IO::ModemController::DialResult res = me->modem->VoiceToneDial(phoneBuff);
 		if (res == IO::ModemController::DR_NO_CARRIER)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"No Carrier");
+			me->txtDialStatus->SetText(CSTR("No Carrier"));
 		}
 		else if (res == IO::ModemController::DR_NO_DIALTONE)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"No Dial Tone");
+			me->txtDialStatus->SetText(CSTR("No Dial Tone"));
 		}
 		else if (res == IO::ModemController::DR_CONNECT)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Connected");
+			me->txtDialStatus->SetText(CSTR("Connected"));
 			me->isConnected = true;
 		}
 		else if (res == IO::ModemController::DR_BUSY)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Busy");
+			me->txtDialStatus->SetText(CSTR("Busy"));
 		}
 		else if (res == IO::ModemController::DR_ERROR)
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Error");
+			me->txtDialStatus->SetText(CSTR("Error"));
 		}
 		else
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Unknown Error");
+			me->txtDialStatus->SetText(CSTR("Unknown Error"));
 		}
 	}
 }
@@ -120,11 +120,11 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnHangUpClicked(void *userObj)
 	{
 		if (me->modem->HangUp())
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Hang Up Successfully");
+			me->txtDialStatus->SetText(CSTR("Hang Up Successfully"));
 		}
 		else
 		{
-			me->txtDialStatus->SetText((const UTF8Char*)"Failed to Hang Up");
+			me->txtDialStatus->SetText(CSTR("Failed to Hang Up"));
 		}
 		me->isConnected = false;
 	}
@@ -172,7 +172,7 @@ void __stdcall SSWR::AVIRead::AVIRVoiceModemForm::OnModemEvent(void *userObj, UI
 
 SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Device::RockwellModemController *modem, IO::ATCommandChannel *channel, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Voice Modem");
+	this->SetText(CSTR("Voice Modem"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->modem = modem;
@@ -212,10 +212,10 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->lblDialNum->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialNum->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnDial, UI::GUIButton(ui, this->tpDial, (const UTF8Char*)"Dial"));
+	NEW_CLASS(this->btnDial, UI::GUIButton(ui, this->tpDial, CSTR("Dial")));
 	this->btnDial->SetRect(104, 28, 75, 23, false);
 	this->btnDial->HandleButtonClick(OnDialClicked, this);
-	NEW_CLASS(this->btnHangUp, UI::GUIButton(ui, this->tpDial, (const UTF8Char*)"Hang Up"));
+	NEW_CLASS(this->btnHangUp, UI::GUIButton(ui, this->tpDial, CSTR("Hang Up")));
 	this->btnHangUp->SetRect(184, 28, 75, 23, false);
 	this->btnHangUp->HandleButtonClick(OnHangUpClicked, this);
 	NEW_CLASS(this->lblDialStatus, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Status"));
@@ -230,29 +230,30 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->txtDialTones->SetRect(104, 76, 200, 23, false);
 
 	UTF8Char sbuff[128];
-	if (this->modem->VoiceGetManufacturer(sbuff))
+	UTF8Char *sptr;
+	if ((sptr = this->modem->VoiceGetManufacturer(sbuff)) != 0)
 	{
-		this->txtModemManu->SetText(sbuff);
+		this->txtModemManu->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtModemManu->SetText((const UTF8Char*)"Unknown");
+		this->txtModemManu->SetText(CSTR("Unknown"));
 	}
-	if (this->modem->VoiceGetModel(sbuff))
+	if ((sptr = this->modem->VoiceGetModel(sbuff)) != 0)
 	{
-		this->txtModemModel->SetText(sbuff);
-	}
-	else
-	{
-		this->txtModemModel->SetText((const UTF8Char*)"Unknown");
-	}
-	if (this->modem->VoiceGetRevision(sbuff))
-	{
-		this->txtModemRev->SetText(sbuff);
+		this->txtModemModel->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtModemRev->SetText((const UTF8Char*)"Unknown");
+		this->txtModemModel->SetText(CSTR("Unknown"));
+	}
+	if ((sptr = this->modem->VoiceGetRevision(sbuff)) != 0)
+	{
+		this->txtModemRev->SetText(CSTRP(sbuff, sptr));
+	}
+	else
+	{
+		this->txtModemRev->SetText(CSTR("Unknown"));
 	}
 	this->AddTimer(200, OnTimerTick, this);
 }

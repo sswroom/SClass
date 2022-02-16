@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRESRIMapForm::OnOtherChanged(void *userObj)
 
 SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 120, ui)
 {
-	this->SetText((const UTF8Char*)"Add ESRI Map");
+	this->SetText(CSTR("Add ESRI Map"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -96,10 +96,10 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOther->SetRect(108, 32, 500, 23, false);
 	this->txtOther->HandleTextChanged(OnOtherChanged, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(250, 64, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(330, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 

@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *user
 
 SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 240, ui)
 {
-	this->SetText((const UTF8Char*)"Console Media Player");
+	this->SetText(CSTR("Console Media Player"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -44,7 +44,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
 	this->txtPort->SetReadOnly(true);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, (const UTF8Char*)"Stop"));
+	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop")));
 	this->btnStop->SetRect(4, 28, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, this, (const UTF8Char*)"Rotate"));
@@ -64,6 +64,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initialize player", (const UTF8Char*)"Console Media Player", this);
 	}
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt16 port = 8080;
 	NEW_CLASS(this->webIface, Media::MediaPlayerWebInterface(this->player, false));
 	while (port < 8090)
@@ -77,8 +78,8 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 		}
 		else
 		{
-			Text::StrUInt16(sbuff, port);
-			this->txtPort->SetText(sbuff);
+			sptr = Text::StrUInt16(sbuff, port);
+			this->txtPort->SetText(CSTRP(sbuff, sptr));
 			break;
 		}
 	}

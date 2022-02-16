@@ -10,7 +10,7 @@ enum MenuItem
 
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"ASN1 Data");
+	this->SetText(CSTR("ASN1 Data"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -66,10 +66,10 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 
 	Text::StringBuilderUTF8 sb;
 	this->asn1->ToString(&sb);
-	this->txtDesc->SetText(sb.ToString());
+	this->txtDesc->SetText(sb.ToCString());
 	sb.ClearStr();
 	this->asn1->ToASN1String(&sb);
-	this->txtASN1->SetText(sb.ToString());
+	this->txtASN1->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRASN1DataForm::~AVIRASN1DataForm()

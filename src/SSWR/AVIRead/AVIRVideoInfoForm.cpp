@@ -56,14 +56,14 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 	SSWR::AVIRead::AVIRVideoInfoForm::DecodeStatus *decStatus;
 	if (me->currFile == 0)
 	{
-		me->txtStream->SetText((const UTF8Char*)"");
+		me->txtStream->SetText(CSTR(""));
 		return;
 	}
 	Int32 syncTime;
 	Media::IMediaSource *mediaSrc = me->currFile->GetStream((UOSInt)i, &syncTime);
 	if (mediaSrc == 0)
 	{
-		me->txtStream->SetText((const UTF8Char*)"");
+		me->txtStream->SetText(CSTR(""));
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -143,7 +143,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnStreamChg(void *userObj)
 		}
 	}
 
-	me->txtStream->SetText(sb.ToString());
+	me->txtStream->SetText(sb.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
@@ -257,7 +257,7 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnDecodeClicked(void *userObj)
 	DEL_CLASS(vdecoders);
 	DEL_CLASS(evt);
 
-	me->lblDecode->SetText((const UTF8Char*)"End Decoding");
+	me->lblDecode->SetText(CSTR("End Decoding"));
 }
 
 Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CString fileName)
@@ -273,7 +273,7 @@ Bool SSWR::AVIRead::AVIRVideoInfoForm::OpenFile(Text::CString fileName)
 	}
 	SDEL_CLASS(this->currFile);
 	this->currFile = mediaFile;
-	this->txtFile->SetText(fileName.v);
+	this->txtFile->SetText(fileName);
 
 	this->lbStream->ClearItems();
 	this->ClearDecode();
@@ -349,13 +349,13 @@ void SSWR::AVIRead::AVIRVideoInfoForm::ClearDecode()
 		MemFree(status);
 	}
 	this->decStatus->Clear();
-	this->lblDecode->SetText((const UTF8Char*)"");
+	this->lblDecode->SetText(CSTR(""));
 }
 
 SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Video Info");
+	this->SetText(CSTR("Video Info"));
 	
 	this->core = core;
 	this->currFile = 0;
@@ -370,7 +370,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 800, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Test Decode"));
+	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, this->pnlFile, CSTR("Test Decode")));
 	this->btnDecode->SetRect(104, 28, 150, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
 	NEW_CLASS(this->lblDecode, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)""));

@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIReadCE::AVIRCEProcInfoForm::OnProcSelChg(void *userObj)
 	SDEL_CLASS(me->currProcObj);
 	if (procInfo == 0)
 	{
-		me->txtDetProcId->SetText((const UTF8Char*)"");
-		me->txtDetParentId->SetText((const UTF8Char*)"");
-		me->txtDetName->SetText((const UTF8Char*)"");
-		me->txtDetPath->SetText((const UTF8Char*)"");
-		me->txtDetPriority->SetText((const UTF8Char*)"");
+		me->txtDetProcId->SetText(CSTR("");
+		me->txtDetParentId->SetText(CSTR("");
+		me->txtDetName->SetText(CSTR("");
+		me->txtDetPath->SetText(CSTR("");
+		me->txtDetPriority->SetText(CSTR("");
 		me->currProc = 0;
 		me->rlcDetChartCPU->ClearChart();
 		me->rlcDetChartCount->ClearChart();
@@ -410,7 +410,7 @@ void SSWR::AVIReadCE::AVIRCEProcInfoForm::UpdateProcHeapDetail(Int32 heapId)
 SSWR::AVIReadCE::AVIRCEProcInfoForm::AVIRCEProcInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 240, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Process Info");
+	this->SetText(CSTR("Process Info");
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;

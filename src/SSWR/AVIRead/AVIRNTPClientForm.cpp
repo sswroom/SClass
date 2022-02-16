@@ -7,6 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 	SSWR::AVIRead::AVIRNTPClientForm *me = (SSWR::AVIRead::AVIRNTPClientForm*)userObj;
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	me->cboServer->GetText(&sb);
 	if (sb.GetLength() > 0)
@@ -27,13 +28,13 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnGetTimeClicked(void *userObj)
 		if (cli->GetServerTime(sb.ToString(), destPort, &dt))
 		{
 			dt.ToLocalTime();
-			dt.ToString(sbuff);
-			me->txtServerTime->SetText(sbuff);
-			me->txtStatus->SetText((const UTF8Char*)"Time received from server");
+			sptr = dt.ToString(sbuff);
+			me->txtServerTime->SetText(CSTRP(sbuff, sptr));
+			me->txtStatus->SetText(CSTR("Time received from server"));
 		}
 		else
 		{
-			me->txtStatus->SetText((const UTF8Char*)"Error in getting server time");
+			me->txtStatus->SetText(CSTR("Error in getting server time"));
 		}
 		DEL_CLASS(cli);
 	}
@@ -45,6 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 	Text::StringBuilderUTF8 sb;
 	Net::NTPClient *cli;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	me->cboServer->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
@@ -65,19 +67,19 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 		{
 			if (dt.SetAsComputerTime())
 			{
-				me->txtStatus->SetText((const UTF8Char*)"Time is sync");
+				me->txtStatus->SetText(CSTR("Time is sync"));
 			}
 			else
 			{
-				me->txtStatus->SetText((const UTF8Char*)"Error in setting as computer time");
+				me->txtStatus->SetText(CSTR("Error in setting as computer time"));
 			}
 			dt.ToLocalTime();
-			dt.ToString(sbuff);
-			me->txtServerTime->SetText(sbuff);
+			sptr = dt.ToString(sbuff);
+			me->txtServerTime->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtStatus->SetText((const UTF8Char*)"Error in getting server time");
+			me->txtStatus->SetText(CSTR("Error in getting server time"));
 		}
 		DEL_CLASS(cli);
 	}
@@ -85,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPClientForm::OnSyncTimeClicked(void *userObj
 
 SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 160, ui)
 {
-	this->SetText((const UTF8Char*)"NTP Client");
+	this->SetText(CSTR("NTP Client"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -119,10 +121,10 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtStatus->SetRect(104, 52, 200, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->btnGetTime, UI::GUIButton(ui, this, (const UTF8Char*)"&Get Time"));
+	NEW_CLASS(this->btnGetTime, UI::GUIButton(ui, this, CSTR("&Get Time")));
 	this->btnGetTime->SetRect(104, 76, 100, 23, false);
 	this->btnGetTime->HandleButtonClick(OnGetTimeClicked, this);
-	NEW_CLASS(this->btnSyncTime, UI::GUIButton(ui, this, (const UTF8Char*)"&Sync Time"));
+	NEW_CLASS(this->btnSyncTime, UI::GUIButton(ui, this, CSTR("&Sync Time")));
 	this->btnSyncTime->SetRect(214, 76, 100, 23, false);
 	this->btnSyncTime->HandleButtonClick(OnSyncTimeClicked, this);
 	this->cboServer->SetSelectedIndex(0);

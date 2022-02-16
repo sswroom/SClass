@@ -114,12 +114,12 @@ public:
 		DEL_CLASS(mut);
 	}
 
-	virtual void ProgressStart(const UTF8Char *name, UInt64 count)
+	virtual void ProgressStart(Text::CString name, UInt64 count)
 	{
 		UOSInt i;
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
-		this->name = Text::String::NewNotNull(name);
+		this->name = Text::String::New(name);
 		i = Text::StrLastIndexOfCharC(this->name->v, this->name->leng, IO::Path::PATH_SEPERATOR);
 		this->fileName = &this->name->v[i + 1];
 		this->lastCount = 0;

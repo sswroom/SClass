@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->txtUserName->SetReadOnly(false);
 		me->txtPassword->SetReadOnly(false);
 		me->txtDatabase->SetReadOnly(false);
-		me->txtStatus->SetText((const UTF8Char*)"Disconnected");
+		me->txtStatus->SetText(CSTR("Disconnected"));
 		return;
 	}
 	Net::SocketUtil::AddressInfo addr;
@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	{
 		sb.ClearStr();
 		me->cli->GetErrorMsg(&sb);
-		me->txtQueryStatus->SetText(sb.ToString());
+		me->txtQueryStatus->SetText(sb.ToCString());
 	}
 }
 
@@ -133,6 +133,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRMySQLClientForm *me = (SSWR::AVIRead::AVIRMySQLClientForm*)userObj;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UInt8 buff[48];
 	UOSInt i;
 	Text::String *s;
@@ -142,17 +143,17 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 		{
 			me->cliConnected = true;
 			s = Text::String::OrEmpty(me->cli->GetServerVer());
-			me->txtServerVer->SetText(s->v);
-			Text::StrUInt32(sbuff, me->cli->GetConnId());
-			me->txtConnId->SetText(sbuff);
+			me->txtServerVer->SetText(s->ToCString());
+			sptr = Text::StrUInt32(sbuff, me->cli->GetConnId());
+			me->txtConnId->SetText(CSTRP(sbuff, sptr));
 			i = me->cli->GetAuthPluginData(buff);
-			Text::StrHexBytes(sbuff, buff, i, ' ');
-			me->txtAuthPluginData->SetText(sbuff);
-			Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), me->cli->GetServerCap());
-			me->txtServerCap->SetText(sbuff);
-			Text::StrUInt16(sbuff, me->cli->GetServerCS());
-			me->txtServerCS->SetText(sbuff);
-			me->txtStatus->SetText((const UTF8Char*)"Connected");
+			sptr = Text::StrHexBytes(sbuff, buff, i, ' ');
+			me->txtAuthPluginData->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrHexVal32(Text::StrConcatC(sbuff, UTF8STRC("0x")), me->cli->GetServerCap());
+			me->txtServerCap->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, me->cli->GetServerCS());
+			me->txtServerCS->SetText(CSTRP(sbuff, sptr));
+			me->txtStatus->SetText(CSTR("Connected"));
 		}
 		if (me->cli->IsError())
 		{
@@ -166,7 +167,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnTimerTick(void *userObj)
 			me->txtUserName->SetReadOnly(false);
 			me->txtPassword->SetReadOnly(false);
 			me->txtDatabase->SetReadOnly(false);
-			me->txtStatus->SetText(sb.ToString());
+			me->txtStatus->SetText(sb.ToCString());
 		}
 	}
 }
@@ -185,7 +186,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 	rowChg = r->GetRowChanged();
 	if (rowChg == -1)
 	{
-		this->txtQueryStatus->SetText((const UTF8Char*)"");
+		this->txtQueryStatus->SetText(CSTR(""));
 		this->lvQueryResult->ClearAll();
 
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
@@ -263,7 +264,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
 		sb->AppendC(UTF8STRC("Record changed = "));
 		sb->AppendOSInt(rowChg);
-		this->txtQueryStatus->SetText(sb->ToString());
+		this->txtQueryStatus->SetText(sb->ToCString());
 		DEL_CLASS(sb);
 	}
 }
@@ -271,7 +272,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"MySQL Client");
+	this->SetText(CSTR("MySQL Client"));
 	this->SetFont(0, 0, 8.25, false);
 	this->cli = 0;
 
@@ -300,7 +301,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->lblDatabase->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtDatabase->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Status"));
@@ -340,7 +341,7 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlQuery, UI::GUIPanel(ui, this->tpQuery));
 	this->pnlQuery->SetRect(0, 0, 100, 31, false);
 	this->pnlQuery->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnQuery, UI::GUIButton(ui, this->pnlQuery, (const UTF8Char*)"Query"));
+	NEW_CLASS(this->btnQuery, UI::GUIButton(ui, this->pnlQuery, CSTR("Query")));
 	this->btnQuery->SetRect(4, 4, 75, 23, false);
 	this->btnQuery->HandleButtonClick(OnQueryClicked, this);
 	NEW_CLASS(this->txtQuery, UI::GUITextBox(ui, this->tpQuery, CSTR(""), true));

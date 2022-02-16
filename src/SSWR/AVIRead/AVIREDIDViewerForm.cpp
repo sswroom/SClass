@@ -69,16 +69,16 @@ void SSWR::AVIRead::AVIREDIDViewerForm::UpdateEDIDDisp()
 			Text::SBAppendF64(&sb, info.wx);
 			sb.AppendC(UTF8STRC(", "));
 			Text::SBAppendF64(&sb, info.wy);
-			this->txtEDID->SetText(sb.ToString());
+			this->txtEDID->SetText(sb.ToCString());
 		}
 		else
 		{
-			this->txtEDID->SetText((const UTF8Char*)"");
+			this->txtEDID->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		this->txtEDID->SetText((const UTF8Char*)"");
+		this->txtEDID->SetText(CSTR(""));
 	}
 }
 
@@ -166,7 +166,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, cons
 SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"EDID Viewer");
+	this->SetText(CSTR("EDID Viewer"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->edid = 0;
@@ -175,7 +175,7 @@ SSWR::AVIRead::AVIREDIDViewerForm::AVIREDIDViewerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, CSTR("Save")));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
 	NEW_CLASS(this->txtEDID, UI::GUITextBox(ui, this, CSTR(""), true));

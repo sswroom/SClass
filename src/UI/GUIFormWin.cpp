@@ -680,9 +680,9 @@ void UI::GUIForm::Close()
 	DestroyWindow((HWND)hwnd);
 }
 
-void UI::GUIForm::SetText(const UTF8Char *text)
+void UI::GUIForm::SetText(Text::CString text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text);
+	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
 	Text::StrDelNew(wptr);
 }

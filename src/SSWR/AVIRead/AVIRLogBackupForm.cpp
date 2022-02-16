@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 
 SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Log Backup");
+	this->SetText(CSTR("Log Backup"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -160,7 +160,7 @@ SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent
 	this->lblLogName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtLogName->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("&Start")));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }

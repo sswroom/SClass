@@ -242,6 +242,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x, OSInt y)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Double mapX;
 	Double mapY;
 	Double lat;
@@ -249,8 +250,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	me->mapCtrl->ScnXY2MapXY(x, y, &mapX, &mapY);
 
-	Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapX), UTF8STRC(", ")), mapY);
-	me->txtLatLon->SetText(sbuff);
+	sptr = Text::StrDouble(Text::StrConcatC(Text::StrDouble(sbuff, mapX), UTF8STRC(", ")), mapY);
+	me->txtLatLon->SetText(CSTRP(sbuff, sptr));
 	
 	Math::CoordinateSystem *csys = me->env->GetCoordinateSystem();
 	if (csys)
@@ -264,8 +265,8 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x
 	}
 
 	Math::UTMGridConvertDbl conv;
-	conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, lat, lon);
-	me->txtUTMGrid->SetText(sbuff);
+	sptr = conv.WGS84_Grid(sbuff, 5, 0, 0, 0, 0, lat, lon);
+	me->txtUTMGrid->SetText(CSTRP(sbuff, sptr));
 
 	UOSInt i;
 	i = me->mouseMoveHdlrs->GetCount();
@@ -309,17 +310,18 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapScaleChanged(void *userObj, Doub
 {
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (me->scaleChanging)
 	{
-		Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
-		me->txtScale->SetText(sbuff);
+		sptr = Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
+		me->txtScale->SetText(CSTRP(sbuff, sptr));
 		return;
 	}
 	me->scaleChanging = true;
 	me->tbScale->SetPos((UOSInt)Double2OSInt(Math_Log10(newScale / MIN_SCALE) * 65536.0 / Math_Log10(MAX_SCALE / (Double)MIN_SCALE)));
 	me->scaleChanging = false;
-	Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
-	me->txtScale->SetText(sbuff);
+	sptr = Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("1:")), me->mapCtrl->GetViewScale(), "0.#");
+	me->txtScale->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapUpdated(void *userObj, Double centerX, Double centerY, Double timeUsed)
@@ -456,8 +458,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
 	{
 		me->mapUpdTChanged = false;
 		UTF8Char sbuff[64];
-		Text::StrDouble(sbuff, me->mapUpdT);
-		me->txtTimeUsed->SetText(sbuff);
+		UTF8Char *sptr;
+		sptr = Text::StrDouble(sbuff, me->mapUpdT);
+		me->txtTimeUsed->SetText(CSTRP(sbuff, sptr));
 	}
 	if (me->mapLyrUpdated)
 	{
@@ -469,8 +472,9 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimerTick(void *userObj)
 void SSWR::AVIRead::AVIRGISForm::UpdateTitle()
 {
 	UTF8Char sbuff[512];
-	this->env->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("GISForm - ")));
-	this->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = this->env->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("GISForm - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRGISForm::CloseCtrlForm(Bool closing)
@@ -1047,7 +1051,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Map::IMapDrawLayer *lyr = ((Map::MapEnv::LayerItem*)((UI::GUIMapTreeView::ItemIndex*)this->popNode->GetItemObj())->item)->layer;
 			AVIRGISCSysForm *frm;
 			NEW_CLASS(frm, AVIRGISCSysForm(0, this->ui, this->core, lyr->GetCoordinateSystem()));
-			frm->SetText((const UTF8Char*)"Assign Coordinate System");
+			frm->SetText(CSTR("Assign Coordinate System"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				lyr->SetCoordinateSystem(frm->GetCSys());
@@ -1065,7 +1069,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			{
 				Map::VectorLayer *vec = (Map::VectorLayer*)lyr;
 				NEW_CLASS(frm, AVIRGISCSysForm(0, this->ui, this->core, lyr->GetCoordinateSystem()));
-				frm->SetText((const UTF8Char*)"Convert Coordinate System");
+				frm->SetText(CSTR("Convert Coordinate System"));
 				if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 				{
 					vec->ConvCoordinateSystem(frm->GetCSys());
@@ -1180,7 +1184,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 						dt.ToLocalTime();
 						if (mtk->QueryFirmware())
 						{
-							sptr = Text::StrConcat(sbuff, mtk->GetProductMode());
+							sptr = mtk->GetProductMode()->ConcatTo(sbuff);
 							*sptr++ = '_';
 						}
 						else
@@ -1252,7 +1256,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, true));
-			frm->SetText((const UTF8Char*)"Select GPS Tracker");
+			frm->SetText(CSTR("Select GPS Tracker"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
@@ -1273,7 +1277,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText((const UTF8Char*)"Select MTK GPS Tracker");
+			frm->SetText(CSTR("Select MTK GPS Tracker"));
 			frm->SetInitSerialPort(IO::Device::MTKGPSNMEA::GetMTKSerialPort());
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
@@ -1763,11 +1767,12 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 		this->tbTimeRange->SetEnabled(false);
 		this->chkTime->SetChecked(false);
 		this->chkTime->SetEnabled(false);
-		this->chkTime->SetText((const UTF8Char*)"Unavailable");
+		this->chkTime->SetText(CSTR("Unavailable"));
 	}
 	else
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Data::DateTime dt;
 		if (timeEnd == 0)
 		{
@@ -1789,8 +1794,8 @@ void SSWR::AVIRead::AVIRGISForm::UpdateTimeRange()
 		this->chkTime->SetChecked(this->useTime);
 		dt.SetUnixTimestamp(timeStart);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		this->chkTime->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		this->chkTime->SetText(CSTRP(sbuff, sptr));
 	}
 }
 

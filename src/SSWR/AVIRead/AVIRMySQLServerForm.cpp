@@ -50,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRMySQLServerForm *me = (SSWR::AVIRead::AVIRMySQLServerForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"MySQL Server");
+	this->SetText(CSTR("MySQL Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("3306")));
 	this->txtPort->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(184, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -98,7 +98,7 @@ SSWR::AVIRead::AVIRMySQLServerForm::AVIRMySQLServerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, CSTR("")));
 	this->txtPassword->SetRect(108, 32, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnUserAdd, UI::GUIButton(ui, this->pnlUser, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnUserAdd, UI::GUIButton(ui, this->pnlUser, CSTR("Add")));
 	this->btnUserAdd->SetRect(100, 56, 75, 23, false);
 	this->btnUserAdd->HandleButtonClick(OnUserAddClicked, this);
 

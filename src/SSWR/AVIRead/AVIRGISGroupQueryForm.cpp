@@ -110,14 +110,14 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 		me->lvInfo->ClearItems();
 		if (id == -1)
 		{
-			me->txtLayer->SetText((const UTF8Char*)"");
+			me->txtLayer->SetText(CSTR(""));
 			me->navi->SetSelectedVector(0);
 		}
 		else
 		{
 			Data::ArrayListInt64 arr;
 			void *nameArr;
-			me->txtLayer->SetText(lyr->GetName()->v);
+			me->txtLayer->SetText(lyr->GetName()->ToCString());
 			sess = lyr->BeginGetObject();
 			lyr->GetObjectIdsMapXY(&arr, &nameArr, mapX, mapY, mapX, mapY, true);
 			i = 0;
@@ -164,7 +164,7 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 			sb.AppendC(UTF8STRC("Unknown"));
 		}
 	}
-	this->SetText(sb.ToString());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));

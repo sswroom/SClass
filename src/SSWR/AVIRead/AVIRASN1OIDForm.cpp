@@ -58,14 +58,14 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 			}
 		}
 	}
-	me->txtCPP->SetText(sbCPP.ToString());
+	me->txtCPP->SetText(sbCPP.ToCString());
 	me->tcMain->SetSelectedIndex(1);
 }
 
 SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ASN.1 OID");
+	this->SetText(CSTR("ASN.1 OID"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRASN1OIDForm::AVIRASN1OIDForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlSource, UI::GUIPanel(ui, this->tpSource));
 	this->pnlSource->SetRect(0, 0, 100, 31, false);
 	this->pnlSource->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlSource, (const UTF8Char*)"Convert"));
+	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlSource, CSTR("Convert")));
 	this->btnConvert->SetRect(4, 4, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->tpSource, CSTR(""), true));

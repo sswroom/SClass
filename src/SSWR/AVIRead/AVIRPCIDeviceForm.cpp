@@ -15,40 +15,41 @@ void __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::OnDevicesSelChg(void *userObj)
 	pci = (IO::PCIInfo*)me->lbDevices->GetSelectedItem();
 	if (pci == 0)
 	{
-		me->txtVendorId->SetText((const UTF8Char*)"");
-		me->txtVendorName->SetText((const UTF8Char*)"");
-		me->txtProductId->SetText((const UTF8Char*)"");
-		me->txtDispName->SetText((const UTF8Char*)"");
-		me->txtDBName->SetText((const UTF8Char*)"");
+		me->txtVendorId->SetText(CSTR(""));
+		me->txtVendorName->SetText(CSTR(""));
+		me->txtProductId->SetText(CSTR(""));
+		me->txtDispName->SetText(CSTR(""));
+		me->txtDBName->SetText(CSTR(""));
 	}
 	else
 	{
 		UTF8Char sbuff[32];
-		Text::StrHexVal16(sbuff, pci->GetVendorId());
-		me->txtVendorId->SetText(sbuff);
-		Text::StrHexVal16(sbuff, pci->GetProductId());
-		me->txtProductId->SetText(sbuff);
-		me->txtDispName->SetText(pci->GetDispName().v);
+		UTF8Char *sptr;
+		sptr = Text::StrHexVal16(sbuff, pci->GetVendorId());
+		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrHexVal16(sbuff, pci->GetProductId());
+		me->txtProductId->SetText(CSTRP(sbuff, sptr));
+		me->txtDispName->SetText(pci->GetDispName());
 
 		const IO::DeviceDB::PCIDeviceInfo *dev;
 		dev = IO::DeviceDB::GetPCIInfo(pci->GetVendorId(), pci->GetProductId());
 		if (dev)
 		{
-			me->txtDBName->SetText((const UTF8Char*)dev->productName);
+			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCnt(dev->productName)});
 			Text::CString vendorName = IO::DeviceDB::GetPCIVendorName(dev->vendorId);
 			if (vendorName.v)
 			{
-				me->txtVendorName->SetText(vendorName.v);
+				me->txtVendorName->SetText(vendorName);
 			}
 			else
 			{
-				me->txtVendorName->SetText((const UTF8Char*)"");
+				me->txtVendorName->SetText(CSTR(""));
 			}
 		}
 		else
 		{
-			me->txtDBName->SetText((const UTF8Char*)"");
-			me->txtVendorName->SetText((const UTF8Char*)"");
+			me->txtDBName->SetText(CSTR(""));
+			me->txtVendorName->SetText(CSTR(""));
 		}
 	}
 }
@@ -82,7 +83,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRPCIDeviceForm::ItemCompare(void *item1, void 
 SSWR::AVIRead::AVIRPCIDeviceForm::AVIRPCIDeviceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"PCI Devices");
+	this->SetText(CSTR("PCI Devices"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));

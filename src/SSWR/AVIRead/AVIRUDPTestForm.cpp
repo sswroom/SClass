@@ -113,6 +113,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRUDPTestForm *me = (SSWR::AVIRead::AVIRUDPTestForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt64 thisRecvCnt = me->recvCnt;
 	UInt64 thisRecvSize = me->recvSize;
 	UInt64 sendSuccCnt;
@@ -130,31 +131,31 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnTimerTick(void *userObj)
 	}
 	dt.SetCurrTimeUTC();
 	diffMS = dt.DiffMS(me->lastTime);
-	Text::StrUInt64(sbuff, thisRecvCnt);
-	me->txtRecvCnt->SetText(sbuff);
-	Text::StrUInt64(sbuff, thisRecvSize);
-	me->txtRecvSize->SetText(sbuff);
-	Text::StrUInt64(sbuff, sendSuccCnt);
-	me->txtSentSuccCnt->SetText(sbuff);
-	Text::StrUInt64(sbuff, sendFailCnt);
-	me->txtSentFailCnt->SetText(sbuff);
+	sptr = Text::StrUInt64(sbuff, thisRecvCnt);
+	me->txtRecvCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt64(sbuff, thisRecvSize);
+	me->txtRecvSize->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt64(sbuff, sendSuccCnt);
+	me->txtSentSuccCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt64(sbuff, sendFailCnt);
+	me->txtSentFailCnt->SetText(CSTRP(sbuff, sptr));
 	if (diffMS == 0)
 	{
-		me->txtRecvCntRate->SetText((const UTF8Char*)"0");
-		me->txtRecvSizeRate->SetText((const UTF8Char*)"0");
-		me->txtSentSuccCntRate->SetText((const UTF8Char*)"0");
-		me->txtSentFailCntRate->SetText((const UTF8Char*)"0");
+		me->txtRecvCntRate->SetText(CSTR("0"));
+		me->txtRecvSizeRate->SetText(CSTR("0"));
+		me->txtSentSuccCntRate->SetText(CSTR("0"));
+		me->txtSentFailCntRate->SetText(CSTR("0"));
 	}
 	else
 	{
-		Text::StrDouble(sbuff, (Double)(thisRecvCnt - me->lastRecvCnt) * 1000.0 / (Double)diffMS);
-		me->txtRecvCntRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (Double)(thisRecvSize - me->lastRecvSize) * 1000.0 / (Double)diffMS);
-		me->txtRecvSizeRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (Double)(sendSuccCnt - me->lastSentSuccCnt) * 1000.0 / (Double)diffMS);
-		me->txtSentSuccCntRate->SetText(sbuff);
-		Text::StrDouble(sbuff, (Double)(sendFailCnt - me->lastSentFailCnt) * 1000.0 / (Double)diffMS);
-		me->txtSentFailCntRate->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, (Double)(thisRecvCnt - me->lastRecvCnt) * 1000.0 / (Double)diffMS);
+		me->txtRecvCntRate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, (Double)(thisRecvSize - me->lastRecvSize) * 1000.0 / (Double)diffMS);
+		me->txtRecvSizeRate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, (Double)(sendSuccCnt - me->lastSentSuccCnt) * 1000.0 / (Double)diffMS);
+		me->txtSentSuccCntRate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, (Double)(sendFailCnt - me->lastSentFailCnt) * 1000.0 / (Double)diffMS);
+		me->txtSentFailCntRate->SetText(CSTRP(sbuff, sptr));
 	}
 	me->lastRecvCnt = thisRecvCnt;
 	me->lastRecvSize = thisRecvSize;
@@ -212,7 +213,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRUDPTestForm::ProcThread(void *userObj)
 SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 384, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"UDP Test");
+	this->SetText(CSTR("UDP Test"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -238,7 +239,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	this->lblServerPort->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtServerPort, UI::GUITextBox(ui, this->grpServer, CSTR("")));
 	this->txtServerPort->SetRect(54, 4, 75, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->grpServer, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->grpServer, CSTR("Start")));
 	this->btnStart->SetRect(54, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, (const UTF8Char*)"Auto Reply", false));
@@ -259,7 +260,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	this->lblDestCount->SetRect(4, 52, 50, 23, false);
 	NEW_CLASS(this->txtDestCount, UI::GUITextBox(ui, this->grpDest, CSTR("10000")));
 	this->txtDestCount->SetRect(54, 52, 75, 23, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->grpDest, (const UTF8Char*)"Send"));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->grpDest, CSTR("Send")));
 	this->btnSend->SetRect(54, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));

@@ -104,13 +104,13 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	cli->Send(msg);
 	DEL_CLASS(msg);
 	DEL_CLASS(cli);
-	me->txtLog->SetText(sbLog.ToString());
+	me->txtLog->SetText(sbLog.ToCString());
 }
 
 SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SMTP Client");
+	this->SetText(CSTR("SMTP Client"));
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
@@ -168,7 +168,7 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->lblContent->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtContent, UI::GUITextBox(ui, this->pnlControl, CSTR(""), true));
 	this->txtContent->SetRect(4, 292, 300, 71, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Send"));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlControl, CSTR("Send")));
 	this->btnSend->SetRect(4, 364, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR(""), true));

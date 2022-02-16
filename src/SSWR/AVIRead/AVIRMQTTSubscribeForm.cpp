@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 			{
 				if (me->client->WaitSubAck(1, 30000) <= 2)
 				{
-					me->txtSTopic->SetText((const UTF8Char*)"");
+					me->txtSTopic->SetText(CSTR(""));
 					me->lbSTopic->AddItem(sb.ToCString(), 0);
 				}
 			}
@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -157,7 +157,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(void *user
 		{
 			if (me->client->SendPublish(sbTopic.ToString(), sbMsg.ToString()))
 			{
-				me->txtPublishMessage->SetText((const UTF8Char*)"");
+				me->txtPublishMessage->SetText(CSTR(""));
 			}
 		}
 	}
@@ -393,7 +393,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::ServerStop()
 SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MQTT Subsribe");
+	this->SetText(CSTR("MQTT Subsribe"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -422,7 +422,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpStatus, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
@@ -431,7 +431,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblSTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSTopic, UI::GUITextBox(ui, this->tpSTopic, CSTR("")));
 	this->txtSTopic->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnSTopic, UI::GUIButton(ui, this->tpSTopic, (const UTF8Char*)"Subscribe"));
+	NEW_CLASS(this->btnSTopic, UI::GUIButton(ui, this->tpSTopic, CSTR("Subscribe")));
 	this->btnSTopic->SetRect(254, 4, 75, 23, false);
 	this->btnSTopic->HandleButtonClick(OnSTopicClicked, this);
 	NEW_CLASS(this->lbSTopic, UI::GUIListBox(ui, this->tpSTopic, false));
@@ -446,7 +446,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lblPublishMessage->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPublishMessage, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishMessage->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this->tpPublish, (const UTF8Char*)"Publish"));
+	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this->tpPublish, CSTR("Publish")));
 	this->btnPublish->SetRect(104, 52, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 

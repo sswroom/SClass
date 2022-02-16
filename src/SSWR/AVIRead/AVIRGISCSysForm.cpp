@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCSysForm::OnProjSelChg(void *userObj)
 
 SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Math::CoordinateSystem *csys) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetText((const UTF8Char*)"Coordinate System");
+	this->SetText(CSTR("Coordinate System"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -76,10 +76,10 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->cboProj, UI::GUIComboBox(ui, this->pnlSel, false));
 	this->cboProj->SetRect(100, 28, 200, 23, false);
 	this->cboProj->HandleSelectionChange(OnProjSelChg, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlSel, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlSel, CSTR("OK")));
 	this->btnOK->SetRect(70, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlSel, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlSel, CSTR("Cancel")));
 	this->btnCancel->SetRect(150, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this));
@@ -129,7 +129,7 @@ SSWR::AVIRead::AVIRGISCSysForm::AVIRGISCSysForm(UI::GUIClientControl *parent, UI
 	{
 		this->oriCSys->ToString(&sb);
 	}
-	this->txtCurrCSys->SetText(sb.ToString());
+	this->txtCurrCSys->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRGISCSysForm::~AVIRGISCSysForm()

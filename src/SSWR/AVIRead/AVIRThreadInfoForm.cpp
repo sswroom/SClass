@@ -28,11 +28,11 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 
 	if (sMem)
 	{
-		me->txtMyStackMem->SetText(sMem);
+		me->txtMyStackMem->SetText({sMem, Text::StrCharCnt(sMem)});
 	}
 	else
 	{
-		me->txtMyStackMem->SetText((const UTF8Char*)"");
+		me->txtMyStackMem->SetText(CSTR(""));
 	}
 	me->lvMyStack->ClearItems();
 	if (s)
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackDblClk(void *userObj,
 SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Manage::Process *proc, Manage::SymbolResolver *symbol, UInt32 threadId) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Thread Info");
+	this->SetText(CSTR("Thread Info"));
 
 	this->core = core;
 	NEW_CLASS(this->stacks, Data::ArrayList<const UTF8Char *>());
@@ -201,13 +201,13 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	NEW_CLASS(thread, Manage::ThreadInfo(proc->GetProcId(), threadId));
 
 	startAddr = thread->GetStartAddress();
-	Text::StrUInt32(sbuff, threadId);
-	this->txtThreadId->SetText(sbuff);
-	Text::StrHexVal64(sbuff, startAddr);
-	this->txtStartAddr->SetText(sbuff);
+	sptr = Text::StrUInt32(sbuff, threadId);
+	this->txtThreadId->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrHexVal64(sbuff, startAddr);
+	this->txtStartAddr->SetText(CSTRP(sbuff, sptr));
 	sptr = symbol->ResolveName(sbuff, startAddr);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-	this->txtStartName->SetText(&sbuff[i + 1]);
+	this->txtStartName->SetText(CSTRP(&sbuff[i + 1], sptr));
 
 	if (thread->IsCurrThread())
 	{

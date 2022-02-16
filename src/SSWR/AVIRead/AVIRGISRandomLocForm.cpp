@@ -140,7 +140,7 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(UI::GUIClientControl *
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->navi = navi;
-	this->SetText((const UTF8Char*)"Random Location");
+	this->SetText(CSTR("Random Location"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->selecting = false;
@@ -152,10 +152,10 @@ SSWR::AVIRead::AVIRGISRandomLocForm::AVIRGISRandomLocForm(UI::GUIClientControl *
 	this->selX2 = 0;
 	this->selY2 = 0;
 
-	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, (const UTF8Char*)"Select Area"));
+	NEW_CLASS(this->btnArea, UI::GUIButton(ui, this, CSTR("Select Area")));
 	this->btnArea->SetRect(4, 4, 100, 23, false);
 	this->btnArea->HandleButtonClick(OnAreaClicked, this);
-	NEW_CLASS(this->btnRandom, UI::GUIButton(ui, this, (const UTF8Char*)"Random"));
+	NEW_CLASS(this->btnRandom, UI::GUIButton(ui, this, CSTR("Random")));
 	this->btnRandom->SetRect(114, 4, 100, 23, false);
 	this->btnRandom->HandleButtonClick(OnRandomClicked, this);
 

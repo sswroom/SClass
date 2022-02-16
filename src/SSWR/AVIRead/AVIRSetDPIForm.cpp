@@ -50,29 +50,31 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnDPIChanged(void *userObj, UOSInt
 {
 	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
-	me->lblDPIV->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrDouble(sbuff, UOSInt2Double(newVal) * 0.1);
+	me->lblDPIV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnStandardClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
-	me->txtDesktopDPI->SetText((const UTF8Char*)"96.0");
+	me->txtDesktopDPI->SetText(CSTR("96.0"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::On1xClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
 	UTF8Char sbuff[32];
-	me->lblDPIV->GetText(sbuff);
-	me->txtDesktopDPI->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = me->lblDPIV->GetText(sbuff);
+	me->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnLaptopClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSetDPIForm *me = (SSWR::AVIRead::AVIRSetDPIForm*)userObj;
-	me->txtDesktopDPI->SetText((const UTF8Char*)"144.0");
+	me->txtDesktopDPI->SetText(CSTR("144.0"));
 }
 
 void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
@@ -141,8 +143,9 @@ void SSWR::AVIRead::AVIRSetDPIForm::UpdatePreview()
 SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 174, ui)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Set Monitor DPI");
+	this->SetText(CSTR("Set Monitor DPI"));
 
 	this->pimg = 0;
 	this->core = core;
@@ -176,28 +179,28 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, UI::
 	this->lblDesktopDPI->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->txtDesktopDPI, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtDesktopDPI->SetRect(404, 4, 100, 23, false);
-	NEW_CLASS(this->btnStandard, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"Standard Size"));
+	NEW_CLASS(this->btnStandard, UI::GUIButton(ui, this->pnlBtn, CSTR("Standard Size")));
 	this->btnStandard->SetRect(504, 4, 75, 23, false);
 	this->btnStandard->HandleButtonClick(OnStandardClicked, this);
-	NEW_CLASS(this->btn1x, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"1x"));
+	NEW_CLASS(this->btn1x, UI::GUIButton(ui, this->pnlBtn, CSTR("1x")));
 	this->btn1x->SetRect(584, 4, 75, 23, false);
 	this->btn1x->HandleButtonClick(On1xClicked, this);
-	NEW_CLASS(this->btnLaptop, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"Laptop/Tablet"));
+	NEW_CLASS(this->btnLaptop, UI::GUIButton(ui, this->pnlBtn, CSTR("Laptop/Tablet")));
 	this->btnLaptop->SetRect(664, 4, 75, 23, false);
 	this->btnLaptop->HandleButtonClick(OnLaptopClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlBtn, CSTR("OK")));
 	this->btnOK->SetRect(300, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlBtn, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlBtn, CSTR("Cancel")));
 	this->btnCancel->SetRect(400, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
 	Double v = ui->GetMagnifyRatio(this->GetHMonitor());
-	Text::StrDouble(sbuff, v);
-	this->txtMagnifyRatio->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	this->txtMagnifyRatio->SetText(CSTRP(sbuff, sptr));
 	v = this->core->GetMonitorDDPI(this->GetHMonitor());
-	Text::StrDouble(sbuff, v);
-	this->txtDesktopDPI->SetText(sbuff);
+	sptr = Text::StrDouble(sbuff, v);
+	this->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
 	OnDPIChanged(this, this->hsbDPI->GetPos());
 }
 
@@ -212,10 +215,11 @@ void SSWR::AVIRead::AVIRSetDPIForm::OnMonitorChanged()
 	Double ddpi = this->core->GetMonitorDDPI(this->GetHMonitor());
 	Double r = this->ui->GetMagnifyRatio(this->GetHMonitor());
 	UTF8Char sbuff[32];
-	Text::StrDouble(sbuff, ddpi);
-	this->txtDesktopDPI->SetText(sbuff);
-	Text::StrDouble(sbuff, r);
-	this->txtMagnifyRatio->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrDouble(sbuff, ddpi);
+	this->txtDesktopDPI->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, r);
+	this->txtMagnifyRatio->SetText(CSTRP(sbuff, sptr));
 	this->hsbDPI->SetPos((UOSInt)Double2OSInt(hdpi * 10));
 	this->SetDPI(hdpi, ddpi);
 	OnDPIChanged(this, this->hsbDPI->GetPos());

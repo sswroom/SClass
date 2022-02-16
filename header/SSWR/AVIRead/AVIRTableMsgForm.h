@@ -16,7 +16,7 @@ namespace SSWR
 			UOSInt colCnt;
 
 		public:
-			AVIRTableMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *title, UOSInt colCnt, const UTF8Char **colName);
+			AVIRTableMsgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::CString title, UOSInt colCnt, const UTF8Char **colName);
 			virtual ~AVIRTableMsgForm();
 
 			virtual void OnMonitorChanged();

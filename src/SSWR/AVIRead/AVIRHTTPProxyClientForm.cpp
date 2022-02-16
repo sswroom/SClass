@@ -105,56 +105,57 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnTimerTick(void *userObj
 {
 	SSWR::AVIRead::AVIRHTTPProxyClientForm *me = (SSWR::AVIRead::AVIRHTTPProxyClientForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->respChanged)
 	{
-		Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
-		me->txtSvrIP->SetText(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{
-			me->txtTimeDNS->SetText((const UTF8Char*)"-1");
+			me->txtTimeDNS->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
-			me->txtTimeDNS->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
+			me->txtTimeDNS->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeConn == -1)
 		{
-			me->txtTimeConn->SetText((const UTF8Char*)"-1");
+			me->txtTimeConn->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
-			me->txtTimeConn->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
+			me->txtTimeConn->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeReq == -1)
 		{
-			me->txtTimeSendHdr->SetText((const UTF8Char*)"-1");
+			me->txtTimeSendHdr->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
-			me->txtTimeSendHdr->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
+			me->txtTimeSendHdr->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeResp == -1)
 		{
-			me->txtTimeResp->SetText((const UTF8Char*)"-1");
+			me->txtTimeResp->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
-			me->txtTimeResp->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
+			me->txtTimeResp->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeTotal == -1)
 		{
-			me->txtTimeTotal->SetText((const UTF8Char*)"-1");
+			me->txtTimeTotal->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
-			me->txtTimeTotal->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
+			me->txtTimeTotal->SetText(CSTRP(sbuff, sptr));
 		}
 
 		me->lvHeaders->ClearItems();
@@ -182,7 +183,7 @@ void SSWR::AVIRead::AVIRHTTPProxyClientForm::ClearHeaders()
 SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"HTTP Proxy Client");
+	this->SetText(CSTR("HTTP Proxy Client"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -209,7 +210,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->lblProxyPort->SetRect(304, 28, 50, 23, false);
 	NEW_CLASS(this->txtProxyPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("80")));
 	this->txtProxyPort->SetRect(354, 28, 60, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 56, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->grpResponse, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Response"));

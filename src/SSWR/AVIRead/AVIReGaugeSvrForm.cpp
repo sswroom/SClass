@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIReGaugeSvrForm *me = (SSWR::AVIRead::AVIReGaugeSvrForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -83,7 +83,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnTimerTick(void *userObj)
 	{
 		Sync::MutexUsage mutUsage(me->reqMut);
 		me->reqUpdated = false;
-		me->txtReqText->SetText(me->reqLast);
+		me->txtReqText->SetText(me->reqLast->ToCString());
 		mutUsage.EndUse();
 	}
 }
@@ -94,11 +94,9 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, con
 	Sync::MutexUsage mutUsage(me->reqMut);
 	if (me->reqLast)
 	{
-		MemFree(me->reqLast);
+		me->reqLast->Release();
 	}
-	me->reqLast = MemAlloc(UTF8Char, dataSize + 1);
-	MemCopyNO(me->reqLast, data, dataSize);
-	me->reqLast[dataSize] = 0;
+	me->reqLast = Text::String::New(data, dataSize);
 	me->reqUpdated = true;
 	mutUsage.EndUse();
 }
@@ -106,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIReGaugeSvrForm::OnEGaugeData(void *userObj, con
 SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"eGauge Server");
+	this->SetText(CSTR("eGauge Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -125,7 +123,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::AVIReGaugeSvrForm(UI::GUIClientControl *parent
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(158, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
@@ -156,7 +154,7 @@ SSWR::AVIRead::AVIReGaugeSvrForm::~AVIReGaugeSvrForm()
 	}
 	if (this->reqLast)
 	{
-		MemFree(this->reqLast);
+		this->reqLast->Release();
 		this->reqLast = 0;
 	}
 	DEL_CLASS(this->reqMut);

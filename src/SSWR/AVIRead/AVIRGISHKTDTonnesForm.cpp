@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadRoute->SetText(dlg->GetFileName()->v);
+		me->txtRoadRoute->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtVehicleRes->SetText(dlg->GetFileName()->v);
+		me->txtVehicleRes->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnCancelClicked(void *userO
 
 SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 144, ui)
 {
-	this->SetText((const UTF8Char*)"Hong Kong Tonnes Sign");
+	this->SetText(CSTR("Hong Kong Tonnes Sign"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -131,20 +131,20 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb")));
 	this->txtRoadRoute->SetRect(154, 4, 750, 23, false);
-	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
+	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnRoadRoute->SetRect(904, 4, 75, 23, false);
 	this->btnRoadRoute->HandleButtonClick(OnRoadRouteClicked, this);
 	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, this, (const UTF8Char*)"Vehicle Restriction"));
 	this->lblVehicleRes->SetRect(4, 28, 150, 23, false);
 	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb")));
 	this->txtVehicleRes->SetRect(154, 28, 750, 23, false);
-	NEW_CLASS(this->btnVehicleRes, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
+	NEW_CLASS(this->btnVehicleRes, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnVehicleRes->SetRect(904, 28, 75, 23, false);
 	this->btnVehicleRes->HandleButtonClick(OnVehicleResClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(154, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(234, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

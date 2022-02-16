@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 
 SSWR::AVIRead::AVIRThreadSpeedForm::AVIRThreadSpeedForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"Thread Speed");
+	this->SetText(CSTR("Thread Speed"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRThreadSpeedForm::AVIRThreadSpeedForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnTest, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Test"));
+	NEW_CLASS(this->btnTest, UI::GUIButton(ui, this->pnlCtrl, CSTR("Test")));
 	this->btnTest->SetRect(4, 4, 75, 23, false);
 	this->btnTest->HandleButtonClick(OnTestClicked, this);
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));

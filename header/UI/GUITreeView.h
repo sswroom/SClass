@@ -27,7 +27,7 @@ namespace UI
 			void *GetItemObj();
 			void SetHItem(void *hTreeItem);
 			void *GetHItem();
-			void SetText(const UTF8Char *txt);
+			void SetText(Text::CString txt);
 			Text::String *GetText();
 			UOSInt GetChildCount();
 			TreeItem *GetChild(UOSInt index);

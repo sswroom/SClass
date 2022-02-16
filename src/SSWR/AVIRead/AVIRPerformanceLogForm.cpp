@@ -20,11 +20,11 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userO
 	if (me->testBuff)
 	{
 		me->Stop();
-		me->btnStart->SetText((const UTF8Char*)"Start");
+		me->btnStart->SetText(CSTR("Start"));
 	}
 	else if (me->Start())
 	{
-		me->btnStart->SetText((const UTF8Char*)"Stop");
+		me->btnStart->SetText(CSTR("Stop"));
 	}
 	else
 	{
@@ -99,12 +99,12 @@ void SSWR::AVIRead::AVIRPerformanceLogForm::TestSpeed()
 	this->rlcWRate->AddSample(&spd);
 	sb.ClearStr();
 	Text::SBAppendF64(&sb, spd);
-	this->txtCurrWRate->SetText(sb.ToString());
+	this->txtCurrWRate->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetText((const UTF8Char*)"Performance Log");
+	this->SetText(CSTR("Performance Log"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 52, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(104, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblCurrWRate, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"W Rate"));

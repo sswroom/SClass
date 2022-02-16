@@ -593,7 +593,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(void *userO
 SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Wifi Capture Lite");
+	this->SetText(CSTR("Wifi Capture Lite"));
 
 	this->core = core;
 	this->lastTimeTick = 0;
@@ -637,10 +637,10 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save")));
 	this->btnLogWifiSave->SetRect(4, 4, 75, 23, false);
 	this->btnLogWifiSave->HandleButtonClick(OnLogWifiSaveClicked, this);
-	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save Unk only"));
+	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save Unk only")));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
 	NEW_CLASS(this->lvLogWifi, UI::GUIListView(ui, this->tpLogWifi, UI::GUIListView::LVSTYLE_TABLE, 12));

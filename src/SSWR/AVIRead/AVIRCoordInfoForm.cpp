@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDPrevClicked(void *userObj
 		{
 			sb.ClearStr();
 			sb.AppendU32(srinfo->srid);
-			me->txtSRID->SetText(sb.ToString());
+			me->txtSRID->SetText(sb.ToCString());
 		}
 	}
 	me->ShowInfo(srinfo);
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj
 		{
 			sb.ClearStr();
 			sb.AppendU32(srinfo->srid);
-			me->txtSRID->SetText(sb.ToString());
+			me->txtSRID->SetText(sb.ToCString());
 		}
 	}
 	me->ShowInfo(srinfo);
@@ -60,6 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordInfoForm::OnSRIDNextClicked(void *userObj
 void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemManager::SpatialRefInfo *srinfo)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	if (srinfo == 0)
 	{
 
@@ -71,21 +72,21 @@ void SSWR::AVIRead::AVIRCoordInfoForm::ShowInfo(const Math::CoordinateSystemMana
 		{
 			Text::StringBuilderUTF8 sb;
 			Math::SROGCWKTWriter wkt;
-			wkt.WriteCSys(csys, sbuff, 0, Text::LineBreakType::CRLF);
-			this->txtWKT->SetText(sbuff);
+			sptr = wkt.WriteCSys(csys, sbuff, 0, Text::LineBreakType::CRLF);
+			this->txtWKT->SetText(CSTRP(sbuff, sptr));
 			csys->ToString(&sb);
-			this->txtDisp->SetText(sb.ToString());
+			this->txtDisp->SetText(sb.ToCString());
 			DEL_CLASS(csys);
 			return;
 		}
 	}
-	this->txtWKT->SetText((const UTF8Char*)"");
-	this->txtDisp->SetText((const UTF8Char*)"");
+	this->txtWKT->SetText(CSTR(""));
+	this->txtDisp->SetText(CSTR(""));
 }
 
 SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Coordinate Info");
+	this->SetText(CSTR("Coordinate Info"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -98,13 +99,13 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	this->lblSRID->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this->pnlCoord, CSTR("4326")));
 	this->txtSRID->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnSRID, UI::GUIButton(ui, this->pnlCoord, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnSRID, UI::GUIButton(ui, this->pnlCoord, CSTR("View")));
 	this->btnSRID->SetRect(204, 4, 75, 23, false);
 	this->btnSRID->HandleButtonClick(OnSRIDClicked, this);
-	NEW_CLASS(this->btnSRIDPrev, UI::GUIButton(ui, this->pnlCoord, (const UTF8Char*)"Prev"));
+	NEW_CLASS(this->btnSRIDPrev, UI::GUIButton(ui, this->pnlCoord, CSTR("Prev")));
 	this->btnSRIDPrev->SetRect(284, 4, 75, 23, false);
 	this->btnSRIDPrev->HandleButtonClick(OnSRIDPrevClicked, this);
-	NEW_CLASS(this->btnSRIDNext, UI::GUIButton(ui, this->pnlCoord, (const UTF8Char*)"Next"));
+	NEW_CLASS(this->btnSRIDNext, UI::GUIButton(ui, this->pnlCoord, CSTR("Next")));
 	this->btnSRIDNext->SetRect(364, 4, 75, 23, false);
 	this->btnSRIDNext->HandleButtonClick(OnSRIDNextClicked, this);
 	NEW_CLASS(this->txtWKT, UI::GUITextBox(ui, this, CSTR(""), true));

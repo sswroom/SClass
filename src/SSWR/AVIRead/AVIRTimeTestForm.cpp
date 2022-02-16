@@ -19,11 +19,11 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepMSClicked(void *userObj)
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
 		Text::SBAppendF64(&sb, tDiff);
-		me->txtActualTime->SetText(sb.ToString());
+		me->txtActualTime->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtActualTime->SetText((const UTF8Char*)"Invalid Input");
+		me->txtActualTime->SetText(CSTR("Invalid Input"));
 	}
 }
 
@@ -42,18 +42,18 @@ void __stdcall SSWR::AVIRead::AVIRTimeTestForm::OnSleepUSClicked(void *userObj)
 		tDiff = clk.GetTimeDiff();
 		sb.ClearStr();
 		Text::SBAppendF64(&sb, tDiff);
-		me->txtActualTime->SetText(sb.ToString());
+		me->txtActualTime->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtActualTime->SetText((const UTF8Char*)"Invalid Input");
+		me->txtActualTime->SetText(CSTR("Invalid Input"));
 	}
 }
 
 SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"Timing Test");
+	this->SetText(CSTR("Timing Test"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -62,14 +62,14 @@ SSWR::AVIRead::AVIRTimeTestForm::AVIRTimeTestForm(UI::GUIClientControl *parent, 
 	this->lblSleepMS->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSleepMS, UI::GUITextBox(ui, this, CSTR("100")));
 	this->txtSleepMS->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnSleepMS, UI::GUIButton(ui, this, (const UTF8Char*)"Test"));
+	NEW_CLASS(this->btnSleepMS, UI::GUIButton(ui, this, CSTR("Test")));
 	this->btnSleepMS->SetRect(204, 4, 75, 23, false);
 	this->btnSleepMS->HandleButtonClick(OnSleepMSClicked, this);
 	NEW_CLASS(this->lblSleepUS, UI::GUILabel(ui, this, (const UTF8Char*)"Sleep Time (us)"));
 	this->lblSleepUS->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSleepUS, UI::GUITextBox(ui, this, CSTR("100")));
 	this->txtSleepUS->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnSleepUS, UI::GUIButton(ui, this, (const UTF8Char*)"Test"));
+	NEW_CLASS(this->btnSleepUS, UI::GUIButton(ui, this, CSTR("Test")));
 	this->btnSleepUS->SetRect(204, 28, 75, 23, false);
 	this->btnSleepUS->HandleButtonClick(OnSleepUSClicked, this);
 	NEW_CLASS(this->lblActualTime, UI::GUILabel(ui, this, (const UTF8Char*)"Actual Time (s)"));

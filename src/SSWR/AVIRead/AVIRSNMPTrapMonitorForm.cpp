@@ -14,45 +14,46 @@ void __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnResultSelChg(void *user
 	me->lvResults->ClearItems();
 	if (packet == 0)
 	{
-		me->txtCommunity->SetText((const UTF8Char*)"");
-		me->txtEnterpriseOID->SetText((const UTF8Char*)"");
-		me->txtEnterpriseName->SetText((const UTF8Char*)"");
-		me->txtRemoteIP->SetText((const UTF8Char*)"");
-		me->txtRemotePort->SetText((const UTF8Char*)"");
-		me->txtAgentAddr->SetText((const UTF8Char*)"");
-		me->txtGenericTrap->SetText((const UTF8Char*)"");
-		me->txtSpecificTrap->SetText((const UTF8Char*)"");
-		me->txtRecvTime->SetText((const UTF8Char*)"");
-		me->txtTrapTime->SetText((const UTF8Char*)"");
+		me->txtCommunity->SetText(CSTR(""));
+		me->txtEnterpriseOID->SetText(CSTR(""));
+		me->txtEnterpriseName->SetText(CSTR(""));
+		me->txtRemoteIP->SetText(CSTR(""));
+		me->txtRemotePort->SetText(CSTR(""));
+		me->txtAgentAddr->SetText(CSTR(""));
+		me->txtGenericTrap->SetText(CSTR(""));
+		me->txtSpecificTrap->SetText(CSTR(""));
+		me->txtRecvTime->SetText(CSTR(""));
+		me->txtTrapTime->SetText(CSTR(""));
 		return;
 	}
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::DateTime dt;
 	Text::StringBuilderUTF8 sb;
-	me->txtCommunity->SetText(packet->trap.community);
+	me->txtCommunity->SetText({packet->trap.community, Text::StrCharCnt(packet->trap.community)});
 	Net::ASN1Util::OIDToString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
-	me->txtEnterpriseOID->SetText(sb.ToString());
+	me->txtEnterpriseOID->SetText(sb.ToCString());
 	sb.ClearStr();
 	Net::ASN1OIDDB::OIDToNameString(packet->trap.entOID, packet->trap.entOIDLen, &sb);
-	me->txtEnterpriseName->SetText(sb.ToString());
-	Net::SocketUtil::GetAddrName(sbuff, &packet->addr);
-	me->txtRemoteIP->SetText(sbuff);
-	Text::StrUInt16(sbuff, packet->port);
-	me->txtRemotePort->SetText(sbuff);
-	Net::SocketUtil::GetIPv4Name(sbuff, packet->trap.agentIPv4);
-	me->txtAgentAddr->SetText(sbuff);
-	Text::StrUInt32(sbuff, packet->trap.genericTrap);
-	me->txtGenericTrap->SetText(sbuff);
-	Text::StrUInt32(sbuff, packet->trap.specificTrap);
-	me->txtSpecificTrap->SetText(sbuff);
+	me->txtEnterpriseName->SetText(sb.ToCString());
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &packet->addr);
+	me->txtRemoteIP->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt16(sbuff, packet->port);
+	me->txtRemotePort->SetText(CSTRP(sbuff, sptr));
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, packet->trap.agentIPv4);
+	me->txtAgentAddr->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, packet->trap.genericTrap);
+	me->txtGenericTrap->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, packet->trap.specificTrap);
+	me->txtSpecificTrap->SetText(CSTRP(sbuff, sptr));
 	dt.SetTicks(packet->t);
 	dt.ToLocalTime();
-	dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-	me->txtRecvTime->SetText(sbuff);
-	Text::StrUInt32(sbuff, packet->trap.timeStamp);
-	me->txtTrapTime->SetText(sbuff);
+	sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+	me->txtRecvTime->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, packet->trap.timeStamp);
+	me->txtTrapTime->SetText(CSTRP(sbuff, sptr));
 
 	Net::SNMPUtil::BindingItem *item;
 	me->lvResults->ClearItems();
@@ -125,7 +126,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSNMPTrapMonitorForm::OnSNMPTrapPacket(void *us
 SSWR::AVIRead::AVIRSNMPTrapMonitorForm::AVIRSNMPTrapMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SNMP Trap Monitor");
+	this->SetText(CSTR("SNMP Trap Monitor"));
 
 	this->core = core;
 	NEW_CLASS(this->packetMut, Sync::Mutex());

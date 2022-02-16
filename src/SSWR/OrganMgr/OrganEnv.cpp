@@ -656,7 +656,7 @@ Text::String *SSWR::OrganMgr::OrganEnv::GetLocName(Int32 userId, Data::DateTime 
 		NEW_CLASS(frm, OrganTripForm(0, ui, this));
 		sb.AppendC(UTF8STRC("Trip not found at "));
 		sb.AppendDate(dt);
-		frm->SetText(sb.ToString());
+		frm->SetText(sb.ToCString());
 		frm->SetTimes(&dt2, &dt3);
 		frm->ShowDialog(ownerFrm);
 		DEL_CLASS(frm);
@@ -897,7 +897,6 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 	Text::StringBuilderUTF8 *sb;
 	UTF8Char *sptr;
 	Text::String *s;
-	const UTF8Char *u8ptr;
 	UTF8Char backBuff[64];
 	Text::StrConcatC(Text::StrInt32(Text::StrConcatC(backBuff, UTF8STRC("../../indexhd/grp")), grp->GetGroupId()), UTF8STRC("/index.html"));
 
@@ -991,16 +990,16 @@ void SSWR::OrganMgr::OrganEnv::ExportGroup(OrganGroup *grp, Data::Int32Map<Data:
 					ExportBeginPage(writer, sb->ToString());
 				}
 				
-				u8ptr = sp->GetDirName();
+				s = sp->GetDirName();
 				sptr = pathAppend;
-				*sptr++ = u8ptr[0];
-				*sptr++ = u8ptr[1];
+				*sptr++ = s->v[0];
+				*sptr++ = s->v[1];
 				*sptr = 0;
 				sb->ClearStr();
 				sb->AppendC(UTF8STRC("../../"));
-				sb->AppendSlow(pathAppend);
+				sb->AppendC(pathAppend, 2);
 				sb->AppendC(UTF8STRC("/"));
-				sb->AppendSlow(u8ptr);
+				sb->Append(s);
 				sb->AppendC(UTF8STRC("/index.html"));
 				writer->WriteStrC(UTF8STRC("<a href="));
 				s = Text::XML::ToNewAttrText(sb->ToString());
@@ -1061,7 +1060,6 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 	Data::ArrayList<OrganImageItem*> items;
 	Bool myPhotoExist = false;
 	Text::String *s;
-	const UTF8Char *csptr;
 	UTF8Char *sptr;
 	GetSpeciesImages(&items, sp);
 
@@ -1094,12 +1092,12 @@ Bool SSWR::OrganMgr::OrganEnv::ExportSpecies(OrganSpecies *sp, const UTF8Char *b
 		return false;
 	}
 
-	csptr = sp->GetDirName();
+	s = sp->GetDirName();
 	sptr = pathAppend;
-	*sptr++ = csptr[0];
-	*sptr++ = csptr[1];
+	*sptr++ = s->v[0];
+	*sptr++ = s->v[1];
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, csptr);
+	sptr = s->ConcatTo(sptr);
 	IO::Path::CreateDirectory(fullPath);
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;

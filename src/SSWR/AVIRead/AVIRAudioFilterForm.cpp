@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		me->txtBitCount->SetReadOnly(false);
 		me->txtBuffSize->SetReadOnly(false);
 		me->txtDTMFInterval->SetReadOnly(false);
-		me->txtFileMix->SetText((const UTF8Char*)"");
+		me->txtFileMix->SetText(CSTR(""));
 		me->dtmfSb->ClearStr();
 		me->dtmfMod = true;
 	}
@@ -219,12 +219,13 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnVolBoostBGChg(void *userObj
 {
 	SSWR::AVIRead::AVIRAudioFilterForm *me = (SSWR::AVIRead::AVIRAudioFilterForm *)userObj;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	if (me->volBooster)
 	{
 		me->volBooster->SetBGLevel(Math_Pow(10, OSInt2Double((OSInt)scrollPos - 192) / 20.0));
 	}
-	Text::StrConcatC(Text::StrOSInt(sbuff, (OSInt)scrollPos - 192), UTF8STRC("dB"));
-	me->lblVolBoostBGVol->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrOSInt(sbuff, (OSInt)scrollPos - 192), UTF8STRC("dB"));
+	me->lblVolBoostBGVol->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFClearClicked(void *userObj)
@@ -498,7 +499,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFVolChg(void *userObj, U
 	Text::StringBuilderUTF8 sb;
 	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
-	me->lblDTMFVolV->SetText(sb.ToString());
+	me->lblDTMFVolV->SetText(sb.ToCString());
 	if (me->dtmfGen)
 	{
 		me->dtmfGen->SetVolume(Math_Pow(10, OSInt2Double((OSInt)scrollPos - 960) / 200.0));
@@ -777,7 +778,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnLevelTimerTick(void *userOb
 	{
 		me->dtmfMod = false;
 		Sync::MutexUsage mutUsage(me->dtmfMut);
-		me->txtDTMFDecode->SetText(me->dtmfSb->ToString());
+		me->txtDTMFDecode->SetText(me->dtmfSb->ToCString());
 		mutUsage.EndUse();
 	}
 }
@@ -810,7 +811,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 		{
 			if (me->fileMix->LoadFile(dlg->GetFileName()))
 			{
-				me->txtFileMix->SetText(dlg->GetFileName()->v);
+				me->txtFileMix->SetText(dlg->GetFileName()->ToCString());
 			}
 		}
 		DEL_CLASS(dlg);
@@ -876,7 +877,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepVolChg(void *userObj, 
 	Text::StringBuilderUTF8 sb;
 	sb.AppendDouble(OSInt2Double((OSInt)scrollPos - 960) * 0.1);
 	sb.AppendC(UTF8STRC("dB"));
-	me->lblSweepVolV->SetText(sb.ToString());
+	me->lblSweepVolV->SetText(sb.ToCString());
 	if (me->sweepFilter)
 	{
 		me->sweepFilter->SetVolume(Math_Pow(10, OSInt2Double((OSInt)scrollPos - 960) / 200.0));
@@ -920,7 +921,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnAmplifierVolChg(void *userO
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(scrollPos);
 	sb.AppendC(UTF8STRC("%"));
-	me->lblAmplifierVolV->SetText(sb.ToString());
+	me->lblAmplifierVolV->SetText(sb.ToCString());
 	if (me->audioAmp)
 	{
 		me->audioAmp->SetLevel(UOSInt2Double(scrollPos) * 0.01);
@@ -967,7 +968,7 @@ void SSWR::AVIRead::AVIRAudioFilterForm::StopAudio()
 
 SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Bool showMenu) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Audio Filter");
+	this->SetText(CSTR("Audio Filter"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -1034,7 +1035,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->lblBitCount->SetRect(0, 120, 100, 23, false);
 	NEW_CLASS(this->txtBitCount, UI::GUITextBox(ui, this->pnlInput, CSTR("16")));
 	this->txtBitCount->SetRect(100, 120, 50, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlInput, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlInput, CSTR("&Start")));
 	this->btnStart->SetRect(100, 144, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
@@ -1068,58 +1069,58 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtDTMFDecode, UI::GUITextBox(ui, this->pnlDTMF, CSTR("")));
 	this->txtDTMFDecode->SetRect(104, 28, 500, 23, false);
 	this->txtDTMFDecode->SetReadOnly(true);
-	NEW_CLASS(this->btnDTMFClear, UI::GUIButton(ui, this->pnlDTMF, (const UTF8Char*)"&Clear"));
+	NEW_CLASS(this->btnDTMFClear, UI::GUIButton(ui, this->pnlDTMF, CSTR("&Clear")));
 	this->btnDTMFClear->SetRect(604, 28, 75, 23, false);
 	this->btnDTMFClear->HandleButtonClick(OnDTMFClearClicked, this);
 	NEW_CLASS(this->tcDTMF, UI::GUITabControl(ui, this->tpDTMF));
 	this->tcDTMF->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpDTMFGen = this->tcDTMF->AddTabPage(CSTR("Generate"));
-	NEW_CLASS(this->btnDTMF1, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"1"));
+	NEW_CLASS(this->btnDTMF1, UI::GUIButton(ui, this->tpDTMFGen, CSTR("1")));
 	this->btnDTMF1->SetRect(4, 4, 150, 47, false);
 	this->btnDTMF1->HandleButtonUpDown(OnDTMF1UpDown, this);
-	NEW_CLASS(this->btnDTMF2, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"2"));
+	NEW_CLASS(this->btnDTMF2, UI::GUIButton(ui, this->tpDTMFGen, CSTR("2")));
 	this->btnDTMF2->SetRect(164, 4, 150, 47, false);
 	this->btnDTMF2->HandleButtonUpDown(OnDTMF2UpDown, this);
-	NEW_CLASS(this->btnDTMF3, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"3"));
+	NEW_CLASS(this->btnDTMF3, UI::GUIButton(ui, this->tpDTMFGen, CSTR("3")));
 	this->btnDTMF3->SetRect(324, 4, 150, 47, false);
 	this->btnDTMF3->HandleButtonUpDown(OnDTMF3UpDown, this);
-	NEW_CLASS(this->btnDTMFA, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"A"));
+	NEW_CLASS(this->btnDTMFA, UI::GUIButton(ui, this->tpDTMFGen, CSTR("A")));
 	this->btnDTMFA->SetRect(484, 4, 150, 47, false);
 	this->btnDTMFA->HandleButtonUpDown(OnDTMFAUpDown, this);
-	NEW_CLASS(this->btnDTMF4, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"4"));
+	NEW_CLASS(this->btnDTMF4, UI::GUIButton(ui, this->tpDTMFGen, CSTR("4")));
 	this->btnDTMF4->SetRect(4, 60, 150, 47, false);
 	this->btnDTMF4->HandleButtonUpDown(OnDTMF4UpDown, this);
-	NEW_CLASS(this->btnDTMF5, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"5"));
+	NEW_CLASS(this->btnDTMF5, UI::GUIButton(ui, this->tpDTMFGen, CSTR("5")));
 	this->btnDTMF5->SetRect(164, 60, 150, 47, false);
 	this->btnDTMF5->HandleButtonUpDown(OnDTMF5UpDown, this);
-	NEW_CLASS(this->btnDTMF6, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"6"));
+	NEW_CLASS(this->btnDTMF6, UI::GUIButton(ui, this->tpDTMFGen, CSTR("6")));
 	this->btnDTMF6->SetRect(324, 60, 150, 47, false);
 	this->btnDTMF6->HandleButtonUpDown(OnDTMF6UpDown, this);
-	NEW_CLASS(this->btnDTMFB, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"B"));
+	NEW_CLASS(this->btnDTMFB, UI::GUIButton(ui, this->tpDTMFGen, CSTR("B")));
 	this->btnDTMFB->SetRect(484, 60, 150, 47, false);
 	this->btnDTMFB->HandleButtonUpDown(OnDTMFBUpDown, this);
-	NEW_CLASS(this->btnDTMF7, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"7"));
+	NEW_CLASS(this->btnDTMF7, UI::GUIButton(ui, this->tpDTMFGen, CSTR("7")));
 	this->btnDTMF7->SetRect(4, 116, 150, 47, false);
 	this->btnDTMF7->HandleButtonUpDown(OnDTMF7UpDown, this);
-	NEW_CLASS(this->btnDTMF8, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"8"));
+	NEW_CLASS(this->btnDTMF8, UI::GUIButton(ui, this->tpDTMFGen, CSTR("8")));
 	this->btnDTMF8->SetRect(164, 116, 150, 47, false);
 	this->btnDTMF8->HandleButtonUpDown(OnDTMF8UpDown, this);
-	NEW_CLASS(this->btnDTMF9, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"9"));
+	NEW_CLASS(this->btnDTMF9, UI::GUIButton(ui, this->tpDTMFGen, CSTR("9")));
 	this->btnDTMF9->SetRect(324, 116, 150, 47, false);
 	this->btnDTMF9->HandleButtonUpDown(OnDTMF9UpDown, this);
-	NEW_CLASS(this->btnDTMFC, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"C"));
+	NEW_CLASS(this->btnDTMFC, UI::GUIButton(ui, this->tpDTMFGen, CSTR("C")));
 	this->btnDTMFC->SetRect(484, 116, 150, 47, false);
 	this->btnDTMFC->HandleButtonUpDown(OnDTMFCUpDown, this);
-	NEW_CLASS(this->btnDTMFStar, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"*"));
+	NEW_CLASS(this->btnDTMFStar, UI::GUIButton(ui, this->tpDTMFGen, CSTR("*")));
 	this->btnDTMFStar->SetRect(4, 172, 150, 47, false);
 	this->btnDTMFStar->HandleButtonUpDown(OnDTMFStarUpDown, this);
-	NEW_CLASS(this->btnDTMF0, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"0"));
+	NEW_CLASS(this->btnDTMF0, UI::GUIButton(ui, this->tpDTMFGen, CSTR("0")));
 	this->btnDTMF0->SetRect(164, 172, 150, 47, false);
 	this->btnDTMF0->HandleButtonUpDown(OnDTMF0UpDown, this);
-	NEW_CLASS(this->btnDTMFSharp, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"#"));
+	NEW_CLASS(this->btnDTMFSharp, UI::GUIButton(ui, this->tpDTMFGen, CSTR("#")));
 	this->btnDTMFSharp->SetRect(324, 172, 150, 47, false);
 	this->btnDTMFSharp->HandleButtonUpDown(OnDTMFSharpUpDown, this);
-	NEW_CLASS(this->btnDTMFD, UI::GUIButton(ui, this->tpDTMFGen, (const UTF8Char*)"D"));
+	NEW_CLASS(this->btnDTMFD, UI::GUIButton(ui, this->tpDTMFGen, CSTR("D")));
 	this->btnDTMFD->SetRect(484, 172, 150, 47, false);
 	this->btnDTMFD->HandleButtonUpDown(OnDTMFDUpDown, this);
 	NEW_CLASS(this->lblDTMFVol, UI::GUILabel(ui, this->tpDTMFGen, (const UTF8Char*)"Volume"));
@@ -1150,7 +1151,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->lblDTMFTones->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDTMFTones, UI::GUITextBox(ui, this->tpDTMFGen2, CSTR("")));
 	this->txtDTMFTones->SetRect(104, 76, 300, 23, false);
-	NEW_CLASS(this->btnDTMFTones, UI::GUIButton(ui, this->tpDTMFGen2, (const UTF8Char*)"&Generate"));
+	NEW_CLASS(this->btnDTMFTones, UI::GUIButton(ui, this->tpDTMFGen2, CSTR("&Generate")));
 	this->btnDTMFTones->SetRect(104, 100, 75, 23, false);
 	this->btnDTMFTones->HandleButtonClick(OnDTMFTonesClicked, this);
 
@@ -1172,26 +1173,26 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtFileMix, UI::GUITextBox(ui, this->tpFileMix, CSTR("")));
 	this->txtFileMix->SetRect(104, 4, 400, 23, false);
 	this->txtFileMix->SetReadOnly(true);
-	NEW_CLASS(this->btnFileMix, UI::GUIButton(ui, this->tpFileMix, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnFileMix, UI::GUIButton(ui, this->tpFileMix, CSTR("B&rowse")));
 	this->btnFileMix->SetRect(504, 4, 75, 23, false);
 	this->btnFileMix->HandleButtonClick(OnFileMixClicked, this);
-	NEW_CLASS(this->btnFileMixStart, UI::GUIButton(ui, this->tpFileMix, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnFileMixStart, UI::GUIButton(ui, this->tpFileMix, CSTR("&Start")));
 	this->btnFileMixStart->SetRect(104, 28, 75, 23, false);
 	this->btnFileMixStart->HandleButtonClick(OnFileMixStartClicked, this);
-	NEW_CLASS(this->btnFileMixStop, UI::GUIButton(ui, this->tpFileMix, (const UTF8Char*)"S&top"));
+	NEW_CLASS(this->btnFileMixStop, UI::GUIButton(ui, this->tpFileMix, CSTR("S&top")));
 	this->btnFileMixStop->SetRect(184, 28, 75, 23, false);
 	this->btnFileMixStop->HandleButtonClick(OnFileMixStopClicked, this);
 
 	this->tpCapture = this->tcFilter->AddTabPage(CSTR("Capture"));
-	NEW_CLASS(this->btnCaptureStart, UI::GUIButton(ui, this->tpCapture, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnCaptureStart, UI::GUIButton(ui, this->tpCapture, CSTR("Start")));
 	this->btnCaptureStart->SetRect(4, 4, 75, 23, false);
 	this->btnCaptureStart->HandleButtonClick(OnCaptureStartClicked, this);
-	NEW_CLASS(this->btnCaptureStop, UI::GUIButton(ui, this->tpCapture, (const UTF8Char*)"Stop"));
+	NEW_CLASS(this->btnCaptureStop, UI::GUIButton(ui, this->tpCapture, CSTR("Stop")));
 	this->btnCaptureStop->SetRect(84, 4, 75, 23, false);
 	this->btnCaptureStop->HandleButtonClick(OnCaptureStopClicked, this);
 
 	this->tpSoundGen = this->tcFilter->AddTabPage(CSTR("SoundGen"));
-	NEW_CLASS(this->btnSoundGenBell, UI::GUIButton(ui, this->tpSoundGen, (const UTF8Char*)"Bell"));
+	NEW_CLASS(this->btnSoundGenBell, UI::GUIButton(ui, this->tpSoundGen, CSTR("Bell")));
 	this->btnSoundGenBell->SetRect(4, 4, 75, 23, false);
 	this->btnSoundGenBell->HandleButtonClick(OnSoundGenBellClicked, this);
 
@@ -1215,7 +1216,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->lblSweepDur->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSweepDur, UI::GUITextBox(ui, this->tpSweep, CSTR("20")));
 	this->txtSweepDur->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnSweepStart, UI::GUIButton(ui, this->tpSweep, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnSweepStart, UI::GUIButton(ui, this->tpSweep, CSTR("Start")));
 	this->btnSweepStart->SetRect(104, 100, 75, 23, false);
 	this->btnSweepStart->HandleButtonClick(OnSweepStartClicked, this);
 

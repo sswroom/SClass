@@ -61,11 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLogForm::OnContentDblClicked(void *us
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, {entry->name, entry->nameLen}));
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, 0));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, CSTR_NULL));
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -202,13 +202,13 @@ void SSWR::AVIRead::AVIRBluetoothLogForm::UpdateStatus()
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(this->macList->GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
-	this->lblInfo->SetText(sb.ToString());
+	this->lblInfo->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Bluetooth Log");
+	this->SetText(CSTR("Bluetooth Log"));
 
 	this->core = core;
 	NEW_CLASS(this->btLog, IO::BTDevLog());
@@ -217,13 +217,13 @@ SSWR::AVIRead::AVIRBluetoothLogForm::AVIRBluetoothLogForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Open Log"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, CSTR("Open Log")));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Unknown Only", true));
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
-	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store MACList"));
+	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store MACList")));
 	this->btnStore->SetRect(184, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));

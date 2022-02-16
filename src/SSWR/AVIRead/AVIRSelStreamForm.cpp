@@ -249,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 	}
 	if (ofd->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{
-		me->txtFileName->SetText(ofd->GetFileName()->v);
+		me->txtFileName->SetText(ofd->GetFileName()->ToCString());
 	}
 	DEL_CLASS(ofd);
 }
@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	UOSInt k;
 	UTF8Char *sptr;
 
-	this->SetText((const UTF8Char*)"Select Stream");
+	this->SetText(CSTR("Select Stream"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -331,10 +331,10 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
 	this->pnlButtons->SetRect(0, 0, 100, 31, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
 	this->btnOK->SetRect(49, 4, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(132, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 
@@ -432,7 +432,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 			sb.AppendU32(ver3);
 			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver4);
-			this->txtDLLVer->SetText(sb.ToString());
+			this->txtDLLVer->SetText(sb.ToCString());
 		}
 		if (this->siLabDriver->GetDriverVersion(&ver1, &ver2, &ver3, &ver4))
 		{
@@ -444,7 +444,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 			sb.AppendU32(ver3);
 			sb.AppendC(UTF8STRC("."));
 			sb.AppendU32(ver4);
-			this->txtDriverVer->SetText(sb.ToString());
+			this->txtDriverVer->SetText(sb.ToCString());
 		}
 
 		j = 0;
@@ -514,7 +514,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);
 		this->txtFileName->SetReadOnly(true);
-		NEW_CLASS(this->btnFileBrowse, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"Browse"));
+		NEW_CLASS(this->btnFileBrowse, UI::GUIButton(ui, this->tpFile, CSTR("Browse")));
 		this->btnFileBrowse->SetRect(504, 4, 75, 23, false);
 		this->btnFileBrowse->HandleButtonClick(OnFileBrowseClick, this);
 	}
@@ -592,6 +592,7 @@ void SSWR::AVIRead::AVIRSelStreamForm::SetInitSerialPort(UOSInt port)
 void SSWR::AVIRead::AVIRSelStreamForm::SetInitBaudRate(Int32 baudRate)
 {
 	UTF8Char sbuff[32];
-	Text::StrInt32(sbuff, baudRate);
-	this->txtBaudRate->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrInt32(sbuff, baudRate);
+	this->txtBaudRate->SetText(CSTRP(sbuff, sptr));
 }

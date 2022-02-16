@@ -51,11 +51,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, {entry->name, entry->nameLen}));
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, 0));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, log->mac, CSTR_NULL));
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -88,7 +88,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry *log = (SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry*)me->lvContent->GetSelectedItem();
 	if (log == 0 || log->ieLen <= 0)
 	{
-		me->txtFileIE->SetText((const UTF8Char*)"");
+		me->txtFileIE->SetText(CSTR(""));
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentSelChg(void *userObj)
 		sb.AppendC(UTF8STRC("\r\n"));
 		i += (UOSInt)log->ieBuff[i + 1] + 2;
 	}
-	me->txtFileIE->SetText(sb.ToString());
+	me->txtFileIE->SetText(sb.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
@@ -151,11 +151,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerEntryForm *frm;
 	if (entry)
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], entry->name));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], {entry->name, entry->nameLen}));
 	}
 	else
 	{
-		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], 0));
+		NEW_CLASS(frm, SSWR::AVIRead::AVIRMACManagerEntryForm(0, me->ui, me->core, &buff[2], CSTR_NULL));
 	}
 	if (frm->ShowDialog(me) == UI::GUIForm::DR_OK)
 	{
@@ -407,7 +407,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 			sb.ClearStr();
 		}
 
-		this->txtFile->SetText(fileName.v);
+		this->txtFile->SetText(fileName);
 		DEL_CLASS(reader);
 
 		const Net::MACInfo::MACEntry *entry;
@@ -481,13 +481,13 @@ void SSWR::AVIRead::AVIRMACManagerForm::UpdateStatus()
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(this->macList->GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
-	this->lblInfo->SetText(sb.ToString());
+	this->lblInfo->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MAC Manager");
+	this->SetText(CSTR("MAC Manager"));
 
 	this->core = core;
 	NEW_CLASS(this->logList, Data::ArrayList<SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry*>());
@@ -496,7 +496,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store"));
+	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store")));
 	this->btnStore->SetRect(4, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
@@ -513,7 +513,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Open"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlFile, CSTR("Open")));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->txtFileIE, UI::GUITextBox(ui, this->tpFile, CSTR(""), true));
@@ -545,12 +545,12 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->lblInput->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
 	this->txtInput->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnInput, UI::GUIButton(ui, this->tpInput, (const UTF8Char*)"&Edit"));
+	NEW_CLASS(this->btnInput, UI::GUIButton(ui, this->tpInput, CSTR("&Edit")));
 	this->btnInput->SetRect(104, 28, 75, 23, false);
 	this->btnInput->HandleButtonClick(OnInputClicked, this);
 
 	this->tpWireshark = this->tcMain->AddTabPage(CSTR("Wireshark"));
-	NEW_CLASS(this->btnWireshark, UI::GUIButton(ui, this->tpWireshark, (const UTF8Char*)"Load manuf"));
+	NEW_CLASS(this->btnWireshark, UI::GUIButton(ui, this->tpWireshark, CSTR("Load manuf")));
 	this->btnWireshark->SetRect(4, 4, 75, 23, false);
 	this->btnWireshark->HandleButtonClick(OnWiresharkClicked, this);
 

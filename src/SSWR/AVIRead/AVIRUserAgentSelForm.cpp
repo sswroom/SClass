@@ -98,7 +98,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"User Agent Select");
+	this->SetText(CSTR("User Agent Select"));
 
 	this->core = core;
 	this->currUserAgent = currUserAgent;
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Ok"));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
 	this->btnOk->SetRect(4, 4, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	NEW_CLASS(this->lvUserAgent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));

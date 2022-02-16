@@ -20,6 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnImageChg(void *userObj)
 void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Double x1;
 	Double y1;
 	Double x2;
@@ -29,14 +30,14 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	if (vec)
 	{
 		vec->GetBounds(&x1, &y1, &x2, &y2);
-		Text::StrDouble(sbuff, x1);
-		this->txtLeft->SetText(sbuff);
-		Text::StrDouble(sbuff, y1);
-		this->txtBottom->SetText(sbuff);
-		Text::StrDouble(sbuff, x2);
-		this->txtRight->SetText(sbuff);
-		Text::StrDouble(sbuff, y2);
-		this->txtTop->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, x1);
+		this->txtLeft->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, y1);
+		this->txtBottom->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, x2);
+		this->txtRight->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, y2);
+		this->txtTop->SetText(CSTRP(sbuff, sptr));
 		this->imgMinX = x1;
 		this->imgMinY = y1;
 		this->imgMaxX = x2;
@@ -791,7 +792,7 @@ SSWR::AVIRead::AVIRGISEditImageForm::AVIRGISEditImageForm(UI::GUIClientControl *
 	this->navi = navi;
 	sb.AppendC(UTF8STRC("Edit Image - "));
 	sb.Append(lyr->GetSourceNameObj());
-	this->SetText(sb.ToString());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 	this->currImage = -1;
 	this->downType = 0;

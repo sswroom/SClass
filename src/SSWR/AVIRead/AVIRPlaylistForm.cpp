@@ -103,7 +103,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Playlist Form");
+	this->SetText(CSTR("Playlist Form"));
 
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
@@ -121,13 +121,13 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 56, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Start")));
 	this->btnStart->SetRect(16, 16, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->btnEnd, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&End"));
+	NEW_CLASS(this->btnEnd, UI::GUIButton(ui, this->pnlCtrl, CSTR("&End")));
 	this->btnEnd->SetRect(96, 16, 75, 23, false);
 	this->btnEnd->HandleButtonClick(OnEndClicked, this);
-	NEW_CLASS(this->btnFS, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Full Screen"));
+	NEW_CLASS(this->btnFS, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Full Screen")));
 	this->btnFS->SetRect(176, 16, 75, 23, false);
 	this->btnFS->HandleButtonClick(OnFSClicked, this);
 	NEW_CLASS(this->vbdMain, UI::GUIVideoBoxDD(ui, this, this->colorSess, 5, Sync::Thread::GetThreadCnt()));

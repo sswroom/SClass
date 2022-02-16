@@ -1,5 +1,6 @@
 #ifndef _SM_SSWR_DISCDB_DISCDBENV
 #define _SM_SSWR_DISCDB_DISCDBENV
+#include "Data/FastStringMap.h"
 #include "Data/Int32Map.h"
 #include "DB/DBTool.h"
 #include "IO/IStreamData.h"
@@ -22,8 +23,8 @@ namespace SSWR
 
 			typedef struct
 			{
-				const UTF8Char *discId;
-				const UTF8Char *discTypeId;
+				Text::String *discId;
+				Text::String *discTypeId;
 				Int64 burntDate;
 				Int32 status;
 			} BurntDiscInfo;
@@ -45,14 +46,14 @@ namespace SSWR
 
 			typedef struct
 			{
-				const UTF8Char *discTypeID;
-				const UTF8Char *name;
-				const UTF8Char *description;
+				Text::String *discTypeID;
+				Text::String *name;
+				Text::String *description;
 			} DVDTypeInfo;
 
 			typedef struct
 			{
-				const UTF8Char *discTypeId;
+				Text::String *discTypeId;
 				Text::String *brand;
 				const UTF8Char *name;
 				Double speed;
@@ -71,7 +72,7 @@ namespace SSWR
 				Text::String *anime;
 				Text::String *series;
 				Text::String *volume;
-				const UTF8Char *dvdType;
+				Text::String *dvdType;
 			} DVDVideoInfo;
 		private:
 			ErrorType err;
@@ -79,10 +80,10 @@ namespace SSWR
 			DB::DBTool *db;
 			IO::LogTool *log;
 			Media::MonitorMgr *monMgr;
-			Data::StringUTF8Map<BurntDiscInfo*> *discMap;
-			Data::StringUTF8Map<DVDTypeInfo*> *dvdTypeMap;
+			Data::FastStringMap<BurntDiscInfo*> *discMap;
+			Data::FastStringMap<DVDTypeInfo*> *dvdTypeMap;
 			Data::StringUTF8Map<CategoryInfo*> *cateMap;
-			Data::StringUTF8Map<DiscTypeInfo*> *discTypeMap;
+			Data::FastStringMap<DiscTypeInfo*> *discTypeMap;
 			Data::Int32Map<DVDVideoInfo*> *dvdVideoMap;
 			
 			void LoadDB();
@@ -95,20 +96,20 @@ namespace SSWR
 			Double GetMonitorHDPI(MonitorHandle *hMon);
 			Double GetMonitorDDPI(MonitorHandle *hMon);
 
-			const BurntDiscInfo *NewBurntDisc(const UTF8Char *discId, const UTF8Char *discTypeId, Data::DateTime *dt);
+			const BurntDiscInfo *NewBurntDisc(Text::CString discId, Text::CString discTypeId, Data::DateTime *dt);
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
-			const BurntDiscInfo *GetBurntDisc(const UTF8Char *discId);
-			OSInt GetBurntDiscIndex(const UTF8Char *discId);
+			const BurntDiscInfo *GetBurntDisc(Text::CString discId);
+			OSInt GetBurntDiscIndex(Text::CString discId);
 			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId);
-			UOSInt GetBurntFiles(const UTF8Char *discId, Data::ArrayList<DiscFileInfo*> *fileList);
+			UOSInt GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList);
 			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
 			UOSInt GetDVDTypeCount();
 			const DVDTypeInfo *GetDVDType(UOSInt index);
-			OSInt GetDVDTypeIndex(const UTF8Char *discTypeID);
-			Bool ModifyDVDType(const UTF8Char *discTypeID, const UTF8Char *name, const UTF8Char *desc);
-			const DVDTypeInfo *NewDVDType(const UTF8Char *discTypeID, const UTF8Char *name, const UTF8Char *desc);
+			OSInt GetDVDTypeIndex(Text::CString discTypeID);
+			Bool ModifyDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc);
+			const DVDTypeInfo *NewDVDType(Text::CString discTypeID, Text::CString name, Text::CString desc);
 			UOSInt GetCategories(Data::ArrayList<CategoryInfo*> *cateList);
-			const DiscTypeInfo *GetDiscType(const UTF8Char *discTypeId);
+			const DiscTypeInfo *GetDiscType(Text::CString discTypeId);
 			UOSInt GetDiscTypes(Data::ArrayList<DiscTypeInfo*> *discTypeList);
 			UOSInt GetDiscTypesByBrand(Data::ArrayList<const DiscTypeInfo*> *discTypeList, const UTF8Char *brand, UOSInt brandLen);
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);

@@ -82,7 +82,7 @@ void SSWR::ProcMonForm::SetByProcId(ProgInfo *prog, UOSInt procId)
 			SDEL_STRING(prog->progPath);
 			prog->progPath = Text::String::New(sb.ToString(), sb.GetLength());
 			prog->procId = procId;
-			this->txtProgPath->SetText(sb.ToString());
+			this->txtProgPath->SetText(sb.ToCString());
 			this->SaveProgList();
 		}
 	}
@@ -164,23 +164,24 @@ void __stdcall SSWR::ProcMonForm::OnProgSelChange(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	ProgInfo *prog = (ProgInfo*)me->lbProg->GetSelectedItem();
 	if (prog && prog->progPath)
 	{
-		me->txtProgPath->SetText(prog->progPath->v);
+		me->txtProgPath->SetText(prog->progPath->ToCString());
 	}
 	else
 	{
-		me->txtProgPath->SetText((const UTF8Char*)"");
+		me->txtProgPath->SetText(CSTR(""));
 	}
 	if (prog)
 	{
-		Text::StrUOSInt(sbuff, prog->procId);
-		me->txtProcId->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, prog->procId);
+		me->txtProcId->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		me->txtProcId->SetText((const UTF8Char*)"");
+		me->txtProcId->SetText(CSTR(""));
 	}
 }
 
@@ -220,7 +221,7 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 				{
 					me->AddProg(sb.ToString(), sb2.ToString());
 					me->SaveProgList();
-					me->txtProgAddId->SetText((const UTF8Char*)"");
+					me->txtProgAddId->SetText(CSTR(""));
 				}
 			}
 		}
@@ -231,7 +232,7 @@ void __stdcall SSWR::ProcMonForm::OnLogSelChg(void *userObj)
 {
 	SSWR::ProcMonForm *me = (SSWR::ProcMonForm *)userObj;
 	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -292,7 +293,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 
 SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Process Monitor");
+	this->SetText(CSTR("Process Monitor"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -324,14 +325,14 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	this->lblProgAddId->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtProgAddId, UI::GUITextBox(ui, this->grpProgAdd, CSTR("")));
 	this->txtProgAddId->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->btnProgAdd, UI::GUIButton(ui, this->grpProgAdd, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnProgAdd, UI::GUIButton(ui, this->grpProgAdd, CSTR("&Add")));
 	this->btnProgAdd->SetRect(200, 24, 75, 23, false);
 	this->btnProgAdd->HandleButtonClick(OnProgAddClicked, this);
 	NEW_CLASS(this->lblProcId, UI::GUILabel(ui, this->pnlProg, (const UTF8Char*)"Process Id"));
 	this->lblProcId->SetRect(4, 68, 100, 23, false);
 	NEW_CLASS(this->txtProcId, UI::GUITextBox(ui, this->pnlProg, CSTR("")));
 	this->txtProcId->SetRect(104, 68, 100, 23, false);
-	NEW_CLASS(this->btnProcId, UI::GUIButton(ui, this->pnlProg, (const UTF8Char*)"Set"));
+	NEW_CLASS(this->btnProcId, UI::GUIButton(ui, this->pnlProg, CSTR("Set")));
 	this->btnProcId->SetRect(204, 68, 75, 23, false);
 	this->btnProcId->HandleButtonClick(OnProcIdClicked, this);
 	NEW_CLASS(this->lblProgPath, UI::GUILabel(ui, this->pnlProg, (const UTF8Char*)"Path"));

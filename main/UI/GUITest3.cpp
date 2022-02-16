@@ -11,7 +11,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText((const UTF8Char*)"GUI Test 3");
+		frm->SetText(CSTR("GUI Test 3"));
 		frm->SetNoResize(true);
 		frm->SetExitOnClose(true);
 		frm->Show();

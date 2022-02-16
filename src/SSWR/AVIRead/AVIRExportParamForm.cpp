@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->exporter = exporter;
 	this->param = param;
-	this->SetText((const UTF8Char*)"Export Parameters");
+	this->SetText(CSTR("Export Parameters"));
 	this->SetFont(0, 0, 8.25, false);
 
 	UTF8Char sbuff[256];
@@ -116,10 +116,10 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
 	pnl->SetRect(0, 0, 292, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(btn, UI::GUIButton(ui, pnl, (const UTF8Char*)"OK"));
+	NEW_CLASS(btn, UI::GUIButton(ui, pnl, CSTR("OK")));
 	btn->SetRect(48, 8, 75, 23, false);
 	btn->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(btn, UI::GUIButton(ui, pnl, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(btn, UI::GUIButton(ui, pnl, CSTR("Cancel")));
 	btn->SetRect(168, 8, 75, 23, false);
 	btn->HandleButtonClick(OnCancelClicked, this);
 }

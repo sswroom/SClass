@@ -11,14 +11,13 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 	{
 		if (addr->addrType == Net::AddrType::IPv4)
 		{
-			const UTF8Char *time = 0;
-			UOSInt timeLen = 0;
-			const UTF8Char *location = 0;
-			const UTF8Char *opt = 0;
-			const UTF8Char *server = 0;
-			const UTF8Char *st = 0;
-			const UTF8Char *usn = 0;
-			const UTF8Char *userAgent = 0;
+			Text::CString time = CSTR_NULL;
+			Text::CString location = CSTR_NULL;
+			Text::CString opt = CSTR_NULL;
+			Text::CString server = CSTR_NULL;
+			Text::CString st = CSTR_NULL;
+			Text::CString usn = CSTR_NULL;
+			Text::CString userAgent = CSTR_NULL;
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(buff, dataSize);
 			Text::PString sarr[2];
@@ -30,28 +29,27 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 				lineCnt = Text::StrSplitLineP(sarr, 2, sarr[1]);
 				if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("DATE: ")))
 				{
-					time = &sarr[0].v[6];
-					timeLen = sarr[0].leng - 6;
+					time = sarr[0].ToCString().Substring(6);
 				}
 				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("LOCATION: ")))
 				{
-					location = &sarr[0].v[10];
+					location = sarr[0].ToCString().Substring(10);
 				}
 				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("OPT: ")))
 				{
-					opt = &sarr[0].v[5];
+					opt = sarr[0].ToCString().Substring(5);
 				}
 				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("ST: ")))
 				{
-					st = &sarr[0].v[4];
+					st = sarr[0].ToCString().Substring(4);
 				}
 				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("USN: ")))
 				{
-					usn = &sarr[0].v[5];
+					usn = sarr[0].ToCString().Substring(5);
 				}
 				else if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, UTF8STRC("X-USER-AGENT: ")))
 				{
-					userAgent = &sarr[0].v[14];
+					userAgent = sarr[0].ToCString().Substring(14);
 				}
 
 				if (lineCnt != 2)
@@ -60,7 +58,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 				}
 			}
 			
-			if (usn)
+			if (usn.leng > 0)
 			{
 				Sync::MutexUsage mutUsage(me->mut);
 				UInt32 ip = ReadNUInt32(addr->addr);
@@ -78,7 +76,7 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 				while (i-- > 0)
 				{
 					svc = dev->services->GetItem(i);
-					if (Text::StrEquals(usn, svc->usn))
+					if (usn.Equals(svc->usn))
 					{
 						found = true;
 					}
@@ -86,22 +84,22 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 				if (!found)
 				{
 					svc = MemAlloc(SSDPService, 1);
-					if (time)
+					if (time.leng > 0)
 					{
 						Data::DateTime dt;
-						dt.SetValue(time, timeLen);
+						dt.SetValue(time.v, time.leng);
 						svc->time = dt.ToTicks();
 					}
 					else
 					{
 						svc->time = 0;
 					}
-					svc->location = SCOPY_TEXT(location);
-					svc->opt = SCOPY_TEXT(opt);
-					svc->server = SCOPY_TEXT(server);
-					svc->st = SCOPY_TEXT(st);
-					svc->usn = SCOPY_TEXT(usn);
-					svc->userAgent = SCOPY_TEXT(userAgent);
+					svc->location = Text::String::NewOrNull(location);
+					svc->opt = Text::String::NewOrNull(opt);
+					svc->server = Text::String::NewOrNull(server);
+					svc->st = Text::String::NewOrNull(st);
+					svc->usn = Text::String::NewOrNull(usn);
+					svc->userAgent = Text::String::NewOrNull(userAgent);
 					dev->services->Add(svc);
 				}
 			}
@@ -111,12 +109,12 @@ void __stdcall Net::SSDPClient::OnPacketRecv(const Net::SocketUtil::AddressInfo 
 
 void Net::SSDPClient::SSDPServiceFree(SSDPService *svc)
 {
-	SDEL_TEXT(svc->location);
-	SDEL_TEXT(svc->opt);
-	SDEL_TEXT(svc->server);
-	SDEL_TEXT(svc->st);
-	SDEL_TEXT(svc->usn);
-	SDEL_TEXT(svc->userAgent);
+	SDEL_STRING(svc->location);
+	SDEL_STRING(svc->opt);
+	SDEL_STRING(svc->server);
+	SDEL_STRING(svc->st);
+	SDEL_STRING(svc->usn);
+	SDEL_STRING(svc->userAgent);
 	MemFree(svc);
 }
 
@@ -177,7 +175,7 @@ Data::ArrayList<Net::SSDPClient::SSDPDevice*> *Net::SSDPClient::GetDevices(Sync:
 	return this->devMap->GetValues();
 }
 
-#define SET_VALUE(v) SDEL_TEXT(v); sb.ClearStr(); reader.ReadNodeText(&sb); v = Text::StrCopyNew(sb.ToString());
+#define SET_VALUE(v) SDEL_STRING(v); sb.ClearStr(); reader.ReadNodeText(&sb); v = Text::String::New(sb.ToString(), sb.GetLength());
 Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory *encFact, IO::Stream *stm)
 {
 	SSDPRoot *root = MemAlloc(SSDPRoot, 1);
@@ -244,16 +242,16 @@ Net::SSDPClient::SSDPRoot *Net::SSDPClient::SSDPRootParse(Text::EncodingFactory 
 
 void Net::SSDPClient::SSDPRootFree(SSDPRoot *root)
 {
-	SDEL_TEXT(root->udn);
-	SDEL_TEXT(root->friendlyName);
-	SDEL_TEXT(root->manufacturer);
-	SDEL_TEXT(root->manufacturerURL);
-	SDEL_TEXT(root->modelName);
-	SDEL_TEXT(root->modelNumber);
-	SDEL_TEXT(root->modelURL);
-	SDEL_TEXT(root->serialNumber);
-	SDEL_TEXT(root->presentationURL);
-	SDEL_TEXT(root->deviceType);
-	SDEL_TEXT(root->deviceURL);
+	SDEL_STRING(root->udn);
+	SDEL_STRING(root->friendlyName);
+	SDEL_STRING(root->manufacturer);
+	SDEL_STRING(root->manufacturerURL);
+	SDEL_STRING(root->modelName);
+	SDEL_STRING(root->modelNumber);
+	SDEL_STRING(root->modelURL);
+	SDEL_STRING(root->serialNumber);
+	SDEL_STRING(root->presentationURL);
+	SDEL_STRING(root->deviceType);
+	SDEL_STRING(root->deviceURL);
 	MemFree(root);
 }

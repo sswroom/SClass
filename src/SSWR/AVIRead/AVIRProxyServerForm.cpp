@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnLogSelChg(void *userObj)
 SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Proxy Server");
+	this->SetText(CSTR("Proxy Server"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("8080")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("&Start")));
 	this->btnStart->SetRect(204, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR("")));

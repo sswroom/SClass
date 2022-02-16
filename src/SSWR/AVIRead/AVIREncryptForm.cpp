@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			{
 				sb.ClearStr();
 				destEnc->EncodeBin(&sb, decBuff, buffSize);
-				me->txtDest->SetText(sb.ToString());
+				me->txtDest->SetText(sb.ToCString());
 			}
 			MemFree(decBuff);
 		}
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 
 SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Text Encrypt");
+	this->SetText(CSTR("Text Encrypt"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, (const UTF8Char*)"Dest Encryption"));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->lblDest->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlDestCtrl, (const UTF8Char*)"&Convert"));
+	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlDestCtrl, CSTR("&Convert")));
 	this->btnConvert->SetRect(0, 0, 75, 23, false);
 	this->btnConvert->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);

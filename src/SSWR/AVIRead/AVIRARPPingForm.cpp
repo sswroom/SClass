@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ARP Ping");
+	this->SetText(CSTR("ARP Ping"));
 
 	this->core = core;
 	this->arpHdlr = 0;
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	this->lblRepeat->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"", false));
 	this->chkRepeat->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Ping"));
+	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, CSTR("&Ping")));
 	this->btnPing->SetRect(104, 76, 75, 23, false);
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
 	NEW_CLASS(this->rlcPing, UI::GUIRealtimeLineChart(ui, this, this->core->GetDrawEngine(), 1, 600, 1000));

@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UI::GUIMainMenu *mainMenu;
 		UI::GUIForm *frm;
 		NEW_CLASS(frm, UI::GUIForm(0, 640, 480, core));
-		frm->SetText((const UTF8Char*)"GUI Test 4");
+		frm->SetText(CSTR("GUI Test 4"));
 		NEW_CLASS(mainMenu, UI::GUIMainMenu());
 		UI::GUIMenu *mnu = mainMenu->AddSubMenu(CSTR("&File"));
 		mnu->AddItem(CSTR("E&xit"), MNU_EXIT, UI::GUIMenu::KM_ALT, UI::GUIControl::GK_X);

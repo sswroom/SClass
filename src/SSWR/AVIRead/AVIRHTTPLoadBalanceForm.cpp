@@ -132,7 +132,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPLoadBalanceForm *me = (SSWR::AVIRead::AVIRHTTPLoadBalanceForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -151,38 +151,38 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		if (me->lastStatus.currConn != status.currConn)
 		{
 			me->lastStatus.currConn = status.currConn;
-			Text::StrUInt32(sbuff, status.currConn);
-			me->txtConnCurr->SetText(sbuff);
+			sptr = Text::StrUInt32(sbuff, status.currConn);
+			me->txtConnCurr->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->lastStatus.connCnt != status.connCnt)
 		{
 			me->lastStatus.connCnt = status.connCnt;
-			Text::StrUInt32(sbuff, status.connCnt);
-			me->txtConnTotal->SetText(sbuff);
+			sptr = Text::StrUInt32(sbuff, status.connCnt);
+			me->txtConnTotal->SetText(CSTRP(sbuff, sptr));
 		}
-		Text::StrUInt64(sbuff, status.totalRead - me->lastStatus.totalRead);
-		me->txtDataRateR->SetText(sbuff);
-		Text::StrUInt64(sbuff, status.totalWrite - me->lastStatus.totalWrite);
-		me->txtDataRateW->SetText(sbuff);
+		sptr = Text::StrUInt64(sbuff, status.totalRead - me->lastStatus.totalRead);
+		me->txtDataRateR->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt64(sbuff, status.totalWrite - me->lastStatus.totalWrite);
+		me->txtDataRateW->SetText(CSTRP(sbuff, sptr));
 		if (me->lastStatus.totalRead != status.totalRead)
 		{
 			me->lastStatus.totalRead = status.totalRead;
-			Text::StrUInt64(sbuff, status.totalRead);
-			me->txtDataTotalR->SetText(sbuff);
+			sptr =Text::StrUInt64(sbuff, status.totalRead);
+			me->txtDataTotalR->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->lastStatus.totalWrite != status.totalWrite)
 		{
 			me->lastStatus.totalWrite = status.totalWrite;
-			Text::StrUInt64(sbuff, status.totalWrite);
-			me->txtDataTotalW->SetText(sbuff);
+			sptr =Text::StrUInt64(sbuff, status.totalWrite);
+			me->txtDataTotalW->SetText(CSTRP(sbuff, sptr));
 		}
-		Text::StrUInt32(sbuff, status.reqCnt - me->lastStatus.reqCnt);
-		me->txtReqRate->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, status.reqCnt - me->lastStatus.reqCnt);
+		me->txtReqRate->SetText(CSTRP(sbuff, sptr));
 		if (me->lastStatus.reqCnt != status.reqCnt)
 		{
 			me->lastStatus.reqCnt = status.reqCnt;
-			Text::StrUInt32(sbuff, status.reqCnt);
-			me->txtReqTotal->SetText(sbuff);
+			sptr = Text::StrUInt32(sbuff, status.reqCnt);
+			me->txtReqTotal->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 
@@ -200,7 +200,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnTimerTick(void *userObj
 		me->reqLog->Use(&mutUsage);
 		me->reqLog->GetEntries(&logs, &logIndex);
 		me->lbAccess->ClearItems();
-		me->txtAccess->SetText((const UTF8Char*)"");
+		me->txtAccess->SetText(CSTR(""));
 		i = 0;
 		j = logs.GetCount();
 		while (i < j)
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 		sb.AppendSlow(log->headerVal->GetItem(i));
 		i++;
 	}
-	me->txtAccess->SetText(sb.ToString());
+	me->txtAccess->SetText(sb.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *userObj)
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnSSLCertClicked(void *us
 		me->sslCert->ToShortString(&sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
-		me->lblSSLCert->SetText(sb.ToString());
+		me->lblSSLCert->SetText(sb.ToCString());
 	}
 	DEL_CLASS(frm);
 }
@@ -281,7 +281,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
-	this->SetText((const UTF8Char*)"HTTP Load Balance");
+	this->SetText(CSTR("HTTP Load Balance"));
 	this->SetFont(0, 0, 8.25, false);
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	this->sslCert = 0;
@@ -324,7 +324,7 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->lblSSL->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
 	this->chkSSL->SetRect(108, 56, 100, 23, false);
-	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->grpParam, (const UTF8Char*)"Cert/Key"));
+	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->grpParam, CSTR("Cert/Key")));
 	this->btnSSLCert->SetRect(208, 56, 75,23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
 	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)""));
@@ -352,10 +352,10 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->cboFwdType->AddItem(CSTR("Normal"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Normal);
 	this->cboFwdType->AddItem(CSTR("Transparent"), (void*)(OSInt)Net::WebServer::HTTPForwardHandler::ForwardType::Transparent);
 	this->cboFwdType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(200, 300, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Stop"));
+	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, CSTR("Stop")));
 	this->btnStop->SetRect(300, 300, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 

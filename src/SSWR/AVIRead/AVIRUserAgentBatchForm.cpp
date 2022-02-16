@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	me->txtSource->GetText(&sb);
 	if (sb.GetLength() <= 0)
 	{
-		me->txtOutput->SetText((const UTF8Char*)"");
+		me->txtOutput->SetText(CSTR(""));
 		return;
 	}
 	sarr[1] = sb;
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 			break;
 		}
 	}
-	me->txtOutput->SetText(sb3.ToString());
+	me->txtOutput->SetText(sb3.ToCString());
 	me->txtOutput->SelectAll();
 	me->txtOutput->Focus();
 }
@@ -184,7 +184,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 			UserAgent2Output(uaList.GetItem(i)->ToCString(), &sb);
 			i++;
 		}
-		this->txtOutput->SetText(sb.ToString());
+		this->txtOutput->SetText(sb.ToCString());
 		this->txtOutput->SelectAll();
 		this->txtOutput->Focus();
 	}
@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"User Agent Batch");
+	this->SetText(CSTR("User Agent Batch"));
 
 	this->core = core;
 
@@ -211,13 +211,13 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Parse"));
+	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->btnUpdate, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Update"));
+	NEW_CLASS(this->btnUpdate, UI::GUIButton(ui, this->pnlControl, CSTR("Update")));
 	this->btnUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnUpdate->HandleButtonClick(OnUpdateClicked, this);
-	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Update from Clipboard"));
+	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, CSTR("Update from Clipboard")));
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
 	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, this, 3, false));

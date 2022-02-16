@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	{
 		me->connURLs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		me->lbURL->AddItem(sb.ToCString(), 0);
-		me->txtURL->SetText((const UTF8Char*)"");
+		me->txtURL->SetText(CSTR(""));
 	}
 	else
 	{
@@ -238,16 +238,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(sbuff, me->connLeftCnt);
-	me->txtConnLeftCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->threadCurrCnt);
-	me->txtThreadCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->connCnt);
-	me->txtSuccCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->failCnt);
-	me->txtFailCnt->SetText(sbuff);
-	Text::StrDouble(sbuff, me->t);
-	me->txtTimeUsed->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
+	me->txtConnLeftCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->threadCurrCnt);
+	me->txtThreadCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->connCnt);
+	me->txtSuccCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->failCnt);
+	me->txtFailCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, me->t);
+	me->txtTimeUsed->SetText(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRHTTPTestForm::StopThreads()
@@ -313,7 +314,7 @@ Text::String *SSWR::AVIRead::AVIRHTTPTestForm::GetNextURL()
 SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"HTTP Test");
+	this->SetText(CSTR("HTTP Test"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -387,7 +388,7 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->txtPostSize->SetRect(304, 52, 100, 23, false);
 	NEW_CLASS(this->chkKAConn, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"KA Conn", false));
 	this->chkKAConn->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
@@ -399,13 +400,13 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlURLCtrl, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURLCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlURLCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnURLAdd, UI::GUIButton(ui, this->pnlURL, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnURLAdd, UI::GUIButton(ui, this->pnlURL, CSTR("&Add")));
 	this->btnURLAdd->SetRect(0, 0, 75, 23, false);
 	this->btnURLAdd->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnURLAdd->HandleButtonClick(OnURLAddClicked, this);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, CSTR("")));
 	this->txtURL->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnURLClear, UI::GUIButton(ui, this->pnlURLCtrl, (const UTF8Char*)"&Clear"));
+	NEW_CLASS(this->btnURLClear, UI::GUIButton(ui, this->pnlURLCtrl, CSTR("&Clear")));
 	this->btnURLClear->SetRect(4, 4, 75, 23, false);
 	this->btnURLClear->HandleButtonClick(OnURLClearClicked, this);
 	NEW_CLASS(this->lbURL, UI::GUIListBox(ui, this->grpURL, false));

@@ -16,66 +16,66 @@ void __stdcall SSWR::AVIRead::AVIRSDCardForm::OnDevicesSelChg(void *userObj)
 	sdCard = (IO::SDCardInfo*)me->lbDevices->GetSelectedItem();
 	if (sdCard == 0)
 	{
-		me->txtName->SetText((const UTF8Char*)"");
-		me->txtCID->SetText((const UTF8Char*)"");
-		me->txtCSD->SetText((const UTF8Char*)"");
-		me->txtMID->SetText((const UTF8Char*)"");
-		me->txtOID->SetText((const UTF8Char*)"");
-		me->txtProductName->SetText((const UTF8Char*)"");
-		me->txtProductRevision->SetText((const UTF8Char*)"");
-		me->txtSerialNo->SetText((const UTF8Char*)"");
-		me->txtManuDate->SetText((const UTF8Char*)"");
-		me->txtCSDVersion->SetText((const UTF8Char*)"");
-		me->txtTranRate->SetText((const UTF8Char*)"");
-		me->txtCardCmdClass->SetText((const UTF8Char*)"");
-		me->txtCapacity->SetText((const UTF8Char*)"");
+		me->txtName->SetText(CSTR(""));
+		me->txtCID->SetText(CSTR(""));
+		me->txtCSD->SetText(CSTR(""));
+		me->txtMID->SetText(CSTR(""));
+		me->txtOID->SetText(CSTR(""));
+		me->txtProductName->SetText(CSTR(""));
+		me->txtProductRevision->SetText(CSTR(""));
+		me->txtSerialNo->SetText(CSTR(""));
+		me->txtManuDate->SetText(CSTR(""));
+		me->txtCSDVersion->SetText(CSTR(""));
+		me->txtTranRate->SetText(CSTR(""));
+		me->txtCardCmdClass->SetText(CSTR(""));
+		me->txtCapacity->SetText(CSTR(""));
 	}
 	else
 	{
 		UInt8 buff[32];
 		UTF8Char sbuff[64];
 		UTF8Char *sptr;
-		me->txtName->SetText(sdCard->GetName()->v);
+		me->txtName->SetText(sdCard->GetName()->ToCString());
 		sdCard->GetCID(buff);
-		Text::StrHexBytes(sbuff, buff, 16, 0);
-		me->txtCID->SetText(sbuff);
+		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
+		me->txtCID->SetText(CSTRP(sbuff, sptr));
 		sdCard->GetCSD(buff);
-		Text::StrHexBytes(sbuff, buff, 16, 0);
-		me->txtCSD->SetText(sbuff);
-		Text::StrUInt16(sbuff, sdCard->GetManufacturerID());
-		me->txtMID->SetText(sbuff);
+		sptr = Text::StrHexBytes(sbuff, buff, 16, 0);
+		me->txtCSD->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt16(sbuff, sdCard->GetManufacturerID());
+		me->txtMID->SetText(CSTRP(sbuff, sptr));
 		WriteMInt16(sbuff, sdCard->GetOEMID());
 		if (sbuff[0] >= 'A' && sbuff[0] <= 'z' && sbuff[1] >= 'A' && sbuff[1] <= 'z')
 		{
 			sbuff[2] = 0;
-			me->txtOID->SetText(sbuff);
+			me->txtOID->SetText({sbuff, 2});
 		}
 		else
 		{
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), sdCard->GetOEMID());
-			me->txtOID->SetText(sbuff);
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), sdCard->GetOEMID());
+			me->txtOID->SetText(CSTRP(sbuff, sptr));
 		}
-		sdCard->GetProductName((Char*)sbuff);
-		me->txtProductName->SetText(sbuff);
+		sptr = (UTF8Char*)sdCard->GetProductName((Char*)sbuff);
+		me->txtProductName->SetText(CSTRP(sbuff, sptr));
 		buff[0] = sdCard->GetProductRevision();
 		sptr = Text::StrUInt16(sbuff, (UInt8)(buff[0] >> 4));
 		*sptr++ = '.';
 		sptr = Text::StrUInt16(sptr, buff[0] & 15);
-		me->txtProductRevision->SetText(sbuff);
-		Text::StrHexVal32(sbuff, sdCard->GetSerialNo());
-		me->txtSerialNo->SetText(sbuff);
+		me->txtProductRevision->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrHexVal32(sbuff, sdCard->GetSerialNo());
+		me->txtSerialNo->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt32(sbuff, sdCard->GetManufacturingYear());
 		*sptr++ = '/';
 		sptr = Text::StrUInt16(sptr, sdCard->GetManufacturingMonth());
-		me->txtManuDate->SetText(sbuff);
-		Text::StrUInt16(sbuff, sdCard->GetCSDVersion());
-		me->txtCSDVersion->SetText(sbuff);
-		Text::StrInt64(sbuff, sdCard->GetMaxTranRate());
-		me->txtTranRate->SetText(sbuff);
-		Text::StrUInt16(sbuff, sdCard->GetCardCmdClass());
-		me->txtCardCmdClass->SetText(sbuff);
-		Text::StrInt64(sbuff, sdCard->GetCardCapacity());
-		me->txtCapacity->SetText(sbuff);
+		me->txtManuDate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt16(sbuff, sdCard->GetCSDVersion());
+		me->txtCSDVersion->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt64(sbuff, sdCard->GetMaxTranRate());
+		me->txtTranRate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt16(sbuff, sdCard->GetCardCmdClass());
+		me->txtCardCmdClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt64(sbuff, sdCard->GetCardCapacity());
+		me->txtCapacity->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -89,7 +89,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRSDCardForm::ItemCompare(void *item1, void *it
 SSWR::AVIRead::AVIRSDCardForm::AVIRSDCardForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"SD Cards");
+	this->SetText(CSTR("SD Cards"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));

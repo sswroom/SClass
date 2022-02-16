@@ -116,69 +116,70 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 {
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
 	Net::SNMPManager::AgentInfo *agent = (Net::SNMPManager::AgentInfo*)me->lbAgent->GetSelectedItem();
 	if (agent)
 	{
-		Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
-		me->txtAgentDAddr->SetText(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &agent->addr);
+		me->txtAgentDAddr->SetText(CSTRP(sbuff, sptr));
 		if (agent->descr)
 		{
-			me->txtAgentDescr->SetText(agent->descr->v);
+			me->txtAgentDescr->SetText(agent->descr->ToCString());
 		}
 		else
 		{
-			me->txtAgentDescr->SetText((const UTF8Char*)"");
+			me->txtAgentDescr->SetText(CSTR(""));
 		}
 		if (agent->objIdLen > 0)
 		{
 			Text::StringBuilderUTF8 sb;
 			Net::ASN1Util::OIDToString(agent->objId, agent->objIdLen, &sb);
-			me->txtAgentOID->SetText(sb.ToString());
+			me->txtAgentOID->SetText(sb.ToCString());
 			sb.ClearStr();
 			Net::ASN1OIDDB::OIDToNameString(agent->objId, agent->objIdLen, &sb);
-			me->txtAgentOIDName->SetText(sb.ToString());
+			me->txtAgentOIDName->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtAgentOID->SetText((const UTF8Char*)"");
-			me->txtAgentOIDName->SetText((const UTF8Char*)"");
+			me->txtAgentOID->SetText(CSTR(""));
+			me->txtAgentOIDName->SetText(CSTR(""));
 		}
 		if (agent->name)
 		{
-			me->txtAgentName->SetText(agent->name->v);
+			me->txtAgentName->SetText(agent->name->ToCString());
 		}
 		else
 		{
-			me->txtAgentName->SetText((const UTF8Char*)"");
+			me->txtAgentName->SetText(CSTR(""));
 		}
 		if (agent->contact)
 		{
-			me->txtAgentContact->SetText(agent->contact->v);
+			me->txtAgentContact->SetText(agent->contact->ToCString());
 		}
 		else
 		{
-			me->txtAgentContact->SetText((const UTF8Char*)"");
+			me->txtAgentContact->SetText(CSTR(""));
 		}
 		if (agent->location)
 		{
-			me->txtAgentLocation->SetText(agent->location->v);
+			me->txtAgentLocation->SetText(agent->location->ToCString());
 		}
 		else
 		{
-			me->txtAgentLocation->SetText((const UTF8Char*)"");
+			me->txtAgentLocation->SetText(CSTR(""));
 		}
-		Text::StrHexBytes(sbuff, agent->mac, 6, ':');
-		me->txtAgentPhyAddr->SetText(sbuff);
+		sptr = Text::StrHexBytes(sbuff, agent->mac, 6, ':');
+		me->txtAgentPhyAddr->SetText(CSTRP(sbuff, sptr));
 		const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoBuff(agent->mac);
-		me->txtAgentVendor->SetText(ent->name);
+		me->txtAgentVendor->SetText({ent->name, ent->nameLen});
 		if (agent->model)
 		{
-			me->txtAgentModel->SetText(agent->model->v);	
+			me->txtAgentModel->SetText(agent->model->ToCString());	
 		}
 		else
 		{
-			me->txtAgentModel->SetText((const UTF8Char*)"");	
+			me->txtAgentModel->SetText(CSTR(""));	
 		}
 		me->lvAgentReading->ClearItems();
 		UOSInt i = 0;
@@ -206,16 +207,16 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 	}
 	else
 	{
-		me->txtAgentDAddr->SetText((const UTF8Char*)"");
-		me->txtAgentDescr->SetText((const UTF8Char*)"");
-		me->txtAgentOID->SetText((const UTF8Char*)"");
-		me->txtAgentOIDName->SetText((const UTF8Char*)"");
-		me->txtAgentName->SetText((const UTF8Char*)"");
-		me->txtAgentContact->SetText((const UTF8Char*)"");
-		me->txtAgentLocation->SetText((const UTF8Char*)"");
-		me->txtAgentAddr->SetText((const UTF8Char*)"");
-		me->txtAgentVendor->SetText((const UTF8Char*)"");
-		me->txtAgentModel->SetText((const UTF8Char*)"");
+		me->txtAgentDAddr->SetText(CSTR(""));
+		me->txtAgentDescr->SetText(CSTR(""));
+		me->txtAgentOID->SetText(CSTR(""));
+		me->txtAgentOIDName->SetText(CSTR(""));
+		me->txtAgentName->SetText(CSTR(""));
+		me->txtAgentContact->SetText(CSTR(""));
+		me->txtAgentLocation->SetText(CSTR(""));
+		me->txtAgentAddr->SetText(CSTR(""));
+		me->txtAgentVendor->SetText(CSTR(""));
+		me->txtAgentModel->SetText(CSTR(""));
 		me->lvAgentReading->ClearItems();
 	}	
 }
@@ -288,7 +289,7 @@ void SSWR::AVIRead::AVIRSNMPManagerForm::SendAgentValues(Data::ArrayList<Net::SN
 SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SNMP Manager");
+	this->SetText(CSTR("SNMP Manager"));
 
 	this->core = core;
 	Data::DateTime dt;
@@ -309,7 +310,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlControl, CSTR("public")));
 	this->txtCommunity->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnAgentAdd, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnAgentAdd, UI::GUIButton(ui, this->pnlControl, CSTR("Add")));
 	this->btnAgentAdd->SetRect(104, 52, 75, 23, false);
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
 	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Send to Server", false));
@@ -327,7 +328,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtAgentDAddr, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentDAddr->SetRect(104, 4, 150, 23, false);
 	this->txtAgentDAddr->SetReadOnly(true);
-	NEW_CLASS(this->btnAgentWalk, UI::GUIButton(ui, this->pnlAgent, (const UTF8Char*)"Walk"));
+	NEW_CLASS(this->btnAgentWalk, UI::GUIButton(ui, this->pnlAgent, CSTR("Walk")));
 	this->btnAgentWalk->SetRect(254, 4, 75, 23, false);
 	this->btnAgentWalk->HandleButtonClick(OnAgentWalkClicked, this);
 	NEW_CLASS(this->lblAgentDescr, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Description"));
@@ -397,6 +398,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
@@ -412,8 +414,8 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 		{
 			netmask = Net::SocketUtil::GetDefNetMaskv4(ip);
 			ip |= ~netmask;
-			Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->txtAgentAddr->SetText(sbuff);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			this->txtAgentAddr->SetText(CSTRP(sbuff, sptr));
 		}
 		DEL_CLASS(connInfo);
 		i++;

@@ -12,12 +12,13 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnHOfstChanged(void *userObj, UOS
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, (OSInt)newPos - 100, vOfst, level, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
-		me->txtHOfst->SetText(sbuff);
+		sptr = Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		me->txtHOfst->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -29,12 +30,13 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnVOfstChanged(void *userObj, UOS
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, (OSInt)newPos - 100, level, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
-		me->txtVOfst->SetText(sbuff);
+		sptr = Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		me->txtVOfst->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -46,12 +48,13 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLevelChanged(void *userObj, UOS
 	OSInt level;
 	Int32 status;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (!me->modifying && me->currLayer != INVALID_INDEX && me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 	{
 		me->grFilter->SetParameter(me->currLayer, hOfst, vOfst, (OSInt)newPos - 100, status);
 		me->UpdatePreview();
-		Text::StrOSInt(sbuff, (OSInt)newPos - 100);
-		me->txtLevel->SetText(sbuff);
+		sptr=  Text::StrOSInt(sbuff, (OSInt)newPos - 100);
+		me->txtLevel->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -120,17 +123,18 @@ void __stdcall SSWR::AVIRead::AVIRImageGRForm::OnLayersChanged(void *userObj)
 		OSInt level;
 		Int32 status;
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		if (me->grFilter->GetParameter(me->currLayer, &hOfst, &vOfst, &level, &status))
 		{
 			me->modifying = true;
-			Text::StrOSInt(sbuff, hOfst);
-			me->txtHOfst->SetText(sbuff);
+			sptr = Text::StrOSInt(sbuff, hOfst);
+			me->txtHOfst->SetText(CSTRP(sbuff, sptr));
 			me->hsbHOfst->SetPos((UOSInt)(hOfst + 100));
-			Text::StrOSInt(sbuff, vOfst);
-			me->txtVOfst->SetText(sbuff);
+			sptr = Text::StrOSInt(sbuff, vOfst);
+			me->txtVOfst->SetText(CSTRP(sbuff, sptr));
 			me->hsbVOfst->SetPos((UOSInt)(vOfst + 100));
-			Text::StrOSInt(sbuff, level);
-			me->txtLevel->SetText(sbuff);
+			sptr = Text::StrOSInt(sbuff, level);
+			me->txtLevel->SetText(CSTRP(sbuff, sptr));
 			me->hsbLevel->SetPos((UOSInt)(level + 100));
 			me->cboType->SetSelectedIndex(status & 3);
 			me->chkEnable->SetChecked((status & 4) == 0);
@@ -200,7 +204,7 @@ void SSWR::AVIRead::AVIRImageGRForm::UpdateLayers()
 SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::StaticImage *srcImg, Media::StaticImage *destImg, UI::GUIPictureBoxDD *previewCtrl) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"GR Filter");
+	this->SetText(CSTR("GR Filter"));
 
 	this->core = core;
 	this->currLayer = INVALID_INDEX;
@@ -218,7 +222,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlLayers, UI::GUIPanel(ui, this));
 	this->pnlLayers->SetRect(0, 0, 200, 23, false);
 	this->pnlLayers->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnAddLayer, UI::GUIButton(ui, this->pnlLayers, (const UTF8Char*)"New Layer"));
+	NEW_CLASS(this->btnAddLayer, UI::GUIButton(ui, this->pnlLayers, CSTR("New Layer")));
 	this->btnAddLayer->SetRect(0, 0, 100, 23, false);
 	this->btnAddLayer->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnAddLayer->HandleButtonClick(OnAddLayerClicked, this);
@@ -228,7 +232,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->hspLayers, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlSetting, UI::GUIPanel(ui, this));
 	this->pnlSetting->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlSetting, (const UTF8Char*)"Remove Layer"));
+	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlSetting, CSTR("Remove Layer")));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(OnRemoveLayerClicked, this);
 	NEW_CLASS(this->lblHOfst, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"H Offset"));
@@ -270,10 +274,10 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->chkEnable->SetRect(104, 124, 200, 23, false);
 	this->chkEnable->HandleCheckedChange(OnEnableChanged, this);
 
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlSetting, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlSetting, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 156, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlSetting, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlSetting, CSTR("OK")));
 	this->btnOK->SetRect(184, 156, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);

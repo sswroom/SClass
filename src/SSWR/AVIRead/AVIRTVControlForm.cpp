@@ -86,6 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 	{
 		Text::StringBuilderUTF8 sb;
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Int32 cmdValue;
 		CommandInfo *cmdInfo = (CommandInfo*)me->cboCommand->GetSelectedItem();
 		sb.AppendC(UTF8STRC("Sending "));
@@ -99,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" success"));
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-				me->txtCommand->SetText((const UTF8Char*)"Success");
+				me->txtCommand->SetText(CSTR("Success"));
 			}
 			else
 			{
@@ -107,19 +108,20 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" failed"));
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
-				me->txtCommand->SetText((const UTF8Char*)"Failed");
+				me->txtCommand->SetText(CSTR("Failed"));
 			}
 		}
 		else if (cmdInfo->cmdFmt == IO::TVControl::CF_GETCOMMAND)
 		{
 			if (me->tvCtrl->SendGetCommand(cmdInfo->cmdType, &cmdValue, sbuff))
 			{
+				sptr = &sbuff[Text::StrCharCnt(sbuff)];
 				sb.ClearStr();
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" success, reply = "));
-				sb.AppendSlow(sbuff);
+				sb.AppendP(sbuff, sptr);
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-				me->txtCommand->SetText(sbuff);
+				me->txtCommand->SetText(CSTRP(sbuff, sptr));
 			}
 			else
 			{
@@ -127,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 				sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 				sb.AppendC(UTF8STRC(" failed"));
 				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
-				me->txtCommand->SetText((const UTF8Char*)"Failed");
+				me->txtCommand->SetText(CSTR("Failed"));
 			}
 		}
 		else if (cmdInfo->cmdFmt == IO::TVControl::CF_SETCOMMAND)
@@ -144,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 					sb.AppendC(UTF8STRC(" success, value = "));
 					sb.AppendI32(val);
 					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-					me->txtCommand->SetText(sb.ToString());
+					me->txtCommand->SetText(sb.ToCString());
 				}
 				else
 				{
@@ -152,7 +154,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnSendCommandClicked(void *user
 					sb.Append(IO::TVControl::GetCommandName(cmdInfo->cmdType));
 					sb.AppendC(UTF8STRC(" failed"));
 					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
-					me->txtCommand->SetText((const UTF8Char*)"Failed");
+					me->txtCommand->SetText(CSTR("Failed"));
 				}
 				me->txtCommand->SetReadOnly(true);
 			}
@@ -190,7 +192,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	Data::ArrayList<IO::TVControl::TVType> tvTypes;
 	IO::TVControl::TVInfo tvInfo;
 
-	this->SetText((const UTF8Char*)"TV Control");
+	this->SetText(CSTR("TV Control"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -248,7 +250,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	}
 	DEL_CLASS(ports);
 
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlPort, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlPort, CSTR("&Start")));
 	this->btnStart->SetRect(308, 32, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 
@@ -269,7 +271,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->cboCommand, UI::GUIComboBox(ui, this->tpControl, false));
 	this->cboCommand->SetRect(108, 8, 150, 23, false);
 	this->cboCommand->HandleSelectionChange(OnCmdChanged, this);
-	NEW_CLASS(this->btnCommand, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Send"));
+	NEW_CLASS(this->btnCommand, UI::GUIButton(ui, this->tpControl, CSTR("Send")));
 	this->btnCommand->SetRect(258, 8, 75, 23, false);
 	this->btnCommand->HandleButtonClick(OnSendCommandClicked, this);
 	NEW_CLASS(this->txtCommand, UI::GUITextBox(ui, this->tpControl, CSTR("")));

@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnCancelClicked(void *userObj
 
 SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Image *srcImg) : UI::GUIForm(parent, 480, 240, ui)
 {
-	this->SetText((const UTF8Char*)"Image Resize");
+	this->SetText(CSTR("Image Resize"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -93,25 +93,26 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, this, CSTR("16")));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);
 
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(184, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 	this->txtOutW->Focus();
 	if (this->srcImg)
 	{
-		Text::StrUOSInt(sbuff, this->srcImg->info->dispWidth);
-		this->txtOriW->SetText(sbuff);
-		this->txtOutW->SetText(sbuff);
-		Text::StrUOSInt(sbuff, this->srcImg->info->dispHeight);
-		this->txtOriH->SetText(sbuff);
-		this->txtOutH->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info->dispWidth);
+		this->txtOriW->SetText(CSTRP(sbuff, sptr));
+		this->txtOutW->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info->dispHeight);
+		this->txtOriH->SetText(CSTRP(sbuff, sptr));
+		this->txtOutH->SetText(CSTRP(sbuff, sptr));
 	}
 }
 

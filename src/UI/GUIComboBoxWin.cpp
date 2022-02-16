@@ -80,24 +80,25 @@ void UI::GUIComboBox::EventTextChanged()
 	}
 }
 
-void UI::GUIComboBox::SetText(const UTF8Char *text)
+void UI::GUIComboBox::SetText(Text::CString text)
 {
 	if (this->allowEdit)
 	{
-		const WChar *wptr = Text::StrToWCharNew(text);
+		const WChar *wptr = Text::StrToWCharNew(text.v);
 		SetWindowTextW((HWND)hwnd, wptr);
 		Text::StrDelNew(wptr);
 	}
 	else
 	{
 		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		UOSInt i = 0;
 		UOSInt j = this->GetCount();
 		while (i < j)
 		{
 			sbuff[0] = 0;
-			this->GetItemText(sbuff, i);
-			if (Text::StrEquals(text, sbuff))
+			sptr = this->GetItemText(sbuff, i);
+			if (sptr && text.Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
 				this->SetSelectedIndex(i);
 				break;

@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ASN.1 Parse");
+	this->SetText(CSTR("ASN.1 Parse"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -80,7 +80,7 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Parse"));
+	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 	NEW_CLASS(this->txtData, UI::GUITextBox(ui, this, CSTR(""), true));

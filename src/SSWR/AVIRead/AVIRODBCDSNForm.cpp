@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 140, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ODBC DSN Connection");
+	this->SetText(CSTR("ODBC DSN Connection"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -58,10 +58,10 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 80, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 80, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

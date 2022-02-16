@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 					sb.AppendC(UTF8STRC("\r\n"));
 				}
 				me->DisplayStatus(&sb, status);
-				me->txtMessage->SetText(sb.ToString());
+				me->txtMessage->SetText(sb.ToCString());
 				parser->FreeErrMsgs(&errMsgs);
 				DEL_CLASS(status);
 				DEL_CLASS(parser);
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 						i++;
 					}
 				}
-				me->txtMessage->SetText(sb.ToString());
+				me->txtMessage->SetText(sb.ToCString());
 				parser->FreeErrMsgs(&errMsgs);
 				DEL_CLASS(status);
 				DEL_CLASS(parser);
@@ -93,12 +93,12 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			}
 			else
 			{
-				me->txtMessage->SetText((const UTF8Char*)"");
+				me->txtMessage->SetText(CSTR(""));
 			}
 		}
 		else
 		{
-			me->txtMessage->SetText((const UTF8Char*)"");
+			me->txtMessage->SetText(CSTR(""));
 		}
 	}
 }
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 
 SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::CodeProject *proj) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Code Project");
+	this->SetText(CSTR("Code Project"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;

@@ -124,14 +124,15 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTCPTestForm *me = (SSWR::AVIRead::AVIRTCPTestForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(sbuff, me->connLeftCnt);
-	me->txtConnLeftCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->threadCurrCnt);
-	me->txtThreadCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->connCnt);
-	me->txtSuccCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->failCnt);
-	me->txtFailCnt->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt32(sbuff, me->connLeftCnt);
+	me->txtConnLeftCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->threadCurrCnt);
+	me->txtThreadCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->connCnt);
+	me->txtSuccCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->failCnt);
+	me->txtFailCnt->SetText(CSTRP(sbuff, sptr));
 }
 
 void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
@@ -165,7 +166,7 @@ void SSWR::AVIRead::AVIRTCPTestForm::StopThreads()
 SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"TCP Conn Test");
+	this->SetText(CSTR("TCP Conn Test"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -199,7 +200,7 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, UI
 	this->lblTotalConnCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTotalConnCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("100000")));
 	this->txtTotalConnCnt->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));

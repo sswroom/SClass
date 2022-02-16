@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinHighClicked(void *userObj)
 	if (me->isOutput)
 	{
 		me->pin->SetPinState(true);
-		me->txtPinState->SetText((const UTF8Char*)"High");
+		me->txtPinState->SetText(CSTR("High"));
 	}
 }
 
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnPinLowClicked(void *userObj)
 	if (me->isOutput)
 	{
 		me->pin->SetPinState(false);
-		me->txtPinState->SetText((const UTF8Char*)"Low");
+		me->txtPinState->SetText(CSTR("Low"));
 	}
 }
 
@@ -54,11 +54,11 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(void *userObj)
 	{
 		if (me->pin->IsPinHigh())
 		{
-			me->txtPinState->SetText((const UTF8Char*)"High");
+			me->txtPinState->SetText(CSTR("High"));
 		}
 		else
 		{
-			me->txtPinState->SetText((const UTF8Char*)"Low");
+			me->txtPinState->SetText(CSTR("Low"));
 		}
 	}
 }
@@ -66,30 +66,31 @@ void __stdcall SSWR::AVIRead::AVIRIOPinTestForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;
 	this->isOutput = false;
-	this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("IO Pin Test - ")));
-	this->SetText(sbuff);
+	sptr = this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("IO Pin Test - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->pin->SetPinOutput(false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lblPullType, UI::GUILabel(ui, this, (const UTF8Char*)"Pull Type"));
 	this->lblPullType->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->btnPullUp, UI::GUIButton(ui, this, (const UTF8Char*)"Pull Up"));
+	NEW_CLASS(this->btnPullUp, UI::GUIButton(ui, this, CSTR("Pull Up")));
 	this->btnPullUp->SetRect(104, 4, 75, 23, false);
 	this->btnPullUp->HandleButtonClick(OnPullUpClicked, this);
-	NEW_CLASS(this->btnPullDown, UI::GUIButton(ui, this, (const UTF8Char*)"Pull Down"));
+	NEW_CLASS(this->btnPullDown, UI::GUIButton(ui, this, CSTR("Pull Down")));
 	this->btnPullDown->SetRect(184, 4, 75, 23, false);
 	this->btnPullDown->HandleButtonClick(OnPullDownClicked, this);
 	NEW_CLASS(this->lblPinMode, UI::GUILabel(ui, this, (const UTF8Char*)"Pin Mode"));
 	this->lblPinMode->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->btnPinModeInput, UI::GUIButton(ui, this, (const UTF8Char*)"Input"));
+	NEW_CLASS(this->btnPinModeInput, UI::GUIButton(ui, this, CSTR("Input")));
 	this->btnPinModeInput->SetRect(104, 28, 75, 23, false);
 	this->btnPinModeInput->HandleButtonClick(OnPinModeInputClicked, this);
-	NEW_CLASS(this->btnPinModeOutput, UI::GUIButton(ui, this, (const UTF8Char*)"Output"));
+	NEW_CLASS(this->btnPinModeOutput, UI::GUIButton(ui, this, CSTR("Output")));
 	this->btnPinModeOutput->SetRect(184, 28, 75, 23, false);
 	this->btnPinModeOutput->HandleButtonClick(OnPinModeOutputClicked, this);
 	NEW_CLASS(this->lblPinState, UI::GUILabel(ui, this, (const UTF8Char*)"Pin State"));
@@ -97,10 +98,10 @@ SSWR::AVIRead::AVIRIOPinTestForm::AVIRIOPinTestForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtPinState, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPinState->SetRect(104, 52, 100, 23, false);
 	this->txtPinState->SetReadOnly(true);
-	NEW_CLASS(this->btnPinHigh, UI::GUIButton(ui, this, (const UTF8Char*)"High"));
+	NEW_CLASS(this->btnPinHigh, UI::GUIButton(ui, this, CSTR("High")));
 	this->btnPinHigh->SetRect(204, 52, 75, 23, false);
 	this->btnPinHigh->HandleButtonClick(OnPinHighClicked, this);
-	NEW_CLASS(this->btnPinLow, UI::GUIButton(ui, this, (const UTF8Char*)"Low"));
+	NEW_CLASS(this->btnPinLow, UI::GUIButton(ui, this, CSTR("Low")));
 	this->btnPinLow->SetRect(284, 52, 75, 23, false);
 	this->btnPinLow->HandleButtonClick(OnPinLowClicked, this);
 

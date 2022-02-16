@@ -22,6 +22,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	UOSInt i;
 	Map::GPSTrack::GPSRecord2 *recs;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 	me->threadRunning = true;
 	recs = me->track->GetTrack(me->currTrackId, &recCnt);
@@ -36,9 +37,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISReplayForm::AddressThread(void *userObj)
 	i = 0;
 	while (!me->threadToStop && i < recCnt)
 	{
-		if (me->navi->ResolveAddress(sbuff, latLon[(i << 1) + 0], latLon[(i << 1) + 1]))
+		if ((sptr = me->navi->ResolveAddress(sbuff, latLon[(i << 1) + 0], latLon[(i << 1) + 1])) != 0)
 		{
-			me->names[i] = Text::StrCopyNew(sbuff);
+			me->names[i] = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		i++;
 	}
@@ -62,39 +63,40 @@ void __stdcall SSWR::AVIRead::AVIRGISReplayForm::OnLbRecordChg(void *userObj)
 	if (i != INVALID_INDEX)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		UOSInt recCnt = 0;
 		Map::GPSTrack::GPSRecord2 *recs = me->track->GetTrack(me->currTrackId, &recCnt);
 		Data::DateTime dt;
 		dt.SetTicks(recs[i].utcTimeTicks);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		me->txtGPSTime->SetText(sbuff);
-		Text::StrDouble(sbuff, recs[i].lat);
-		me->txtLatitude->SetText(sbuff);
-		Text::StrDouble(sbuff, recs[i].lon);
-		me->txtLongitude->SetText(sbuff);
-		Text::StrDoubleFmt(sbuff, recs[i].altitude, "0.##########");
-		me->txtAltitude->SetText(sbuff);
-		Text::StrDoubleFmt(sbuff, recs[i].speed, "0.##########");
-		me->txtSpeedKnot->SetText(sbuff);
-		Text::StrDoubleFmt(sbuff, recs[i].speed * 1.852, "0.##########");
-		me->txtSpeedKM->SetText(sbuff);
-		Text::StrDouble(sbuff, recs[i].heading);
-		me->txtHeading->SetText(sbuff);
-		Text::StrInt32(sbuff, recs[i].valid);
-		me->txtValid->SetText(sbuff);
-		Text::StrInt32(sbuff, recs[i].nSateViewGPS);
-		me->txtNSateView->SetText(sbuff);
-		Text::StrInt32(sbuff, recs[i].nSateUsed);
-		me->txtNSateUsed->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, recs[i].lat);
+		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, recs[i].lon);
+		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDoubleFmt(sbuff, recs[i].altitude, "0.##########");
+		me->txtAltitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDoubleFmt(sbuff, recs[i].speed, "0.##########");
+		me->txtSpeedKnot->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDoubleFmt(sbuff, recs[i].speed * 1.852, "0.##########");
+		me->txtSpeedKM->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, recs[i].heading);
+		me->txtHeading->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, recs[i].valid);
+		me->txtValid->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, recs[i].nSateViewGPS);
+		me->txtNSateView->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, recs[i].nSateUsed);
+		me->txtNSateUsed->SetText(CSTRP(sbuff, sptr));
 		if (me->names != 0)
 		{
 			if (me->names[i] == 0)
 			{
-				me->txtAddress->SetText((const UTF8Char*)"Loading...");
+				me->txtAddress->SetText(CSTR("Loading..."));
 			}
 			else
 			{
-				me->txtAddress->SetText(me->names[i]);
+				me->txtAddress->SetText(me->names[i]->ToCString());
 			}
 		}
 		UOSInt j;
@@ -155,7 +157,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::FreeNames()
 		{
 			if (names[i])
 			{
-				Text::StrDelNew(names[i]);
+				names[i]->Release();
 				names[i] = 0;
 			}
 		}
@@ -176,7 +178,7 @@ SSWR::AVIRead::AVIRGISReplayForm::AVIRGISReplayForm(UI::GUIClientControl *parent
 	this->threadRunning = false;
 	this->threadToStop = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"Replay");
+	this->SetText(CSTR("Replay"));
 	this->SetFont(0, 0, 8.25, false);
 
 	UI::GUIPanel *pnl;
@@ -324,20 +326,21 @@ SSWR::AVIRead::AVIRGISReplayForm::~AVIRGISReplayForm()
 void SSWR::AVIRead::AVIRGISReplayForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	switch (cmdId)
 	{
 	case MNU_MARK_START:
 		{
 			this->startMark = (UOSInt)this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, this->startMark);
-			this->txtStartMark->SetText(sbuff);
+			sptr = this->lbRecord->GetItemText(sbuff, this->startMark);
+			this->txtStartMark->SetText(CSTRP(sbuff, sptr));
 		}
 		break;
 	case MNU_MARK_END:
 		{
 			this->endMark = (UOSInt)this->lbRecord->GetSelectedIndex();
-			this->lbRecord->GetItemText(sbuff, this->endMark);
-			this->txtEndMark->SetText(sbuff);
+			sptr = this->lbRecord->GetItemText(sbuff, this->endMark);
+			this->txtEndMark->SetText(CSTRP(sbuff, sptr));
 		}
 		break;
 	case MNU_MARK_COPY:
@@ -409,8 +412,8 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 			dist = coord->CalPLDistance(pl, Math::Unit::Distance::DU_METER);
 		}
 		DEL_CLASS(pl);
-		Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
-		this->lblDist->SetText(sbuff);
+		sptr = Text::StrConcatC(Text::StrDoubleFmt(Text::StrConcatC(sbuff, UTF8STRC("Distance: ")), dist, "0.0"), UTF8STRC(" m"));
+		this->lblDist->SetText(CSTRP(sbuff, sptr));
 
 		i = 0;
 		this->lbRecord->ClearItems();
@@ -427,17 +430,21 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 		{
 			this->lbRecord->SetSelectedIndex(0);
 
-			this->lbRecord->GetItemText(sbuff, this->startMark);
-			this->txtStartMark->SetText(sbuff);
-			this->lbRecord->GetItemText(sbuff, this->endMark);
-			this->txtEndMark->SetText(sbuff);
+			sptr = this->lbRecord->GetItemText(sbuff, this->startMark);
+			this->txtStartMark->SetText(CSTRP(sbuff, sptr));
+			sptr = this->lbRecord->GetItemText(sbuff, this->endMark);
+			this->txtEndMark->SetText(CSTRP(sbuff, sptr));
 
 			if (this->navi->HasKMap())
 			{
 				this->lblAddress->SetVisible(true);
 				this->txtAddress->SetVisible(true);
 				FreeNames();
-				this->names = MemAlloc(const UTF8Char*, this->namesCnt = recCnt);
+				this->names = MemAlloc(Text::String*, this->namesCnt = recCnt);
+				while (recCnt-- > 0)
+				{
+					this->names[recCnt] = 0;
+				}
 				this->threadToStop = false;
 				this->threadRunning = false;
 				Sync::Thread::Create(AddressThread, this);

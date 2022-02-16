@@ -347,7 +347,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->txtDebug->SetText(sb.ToString());
+		me->txtDebug->SetText(sb.ToCString());
 		DEL_CLASS(dbg.color);
 	}
 	if (me->player->IsPlaying())
@@ -435,31 +435,31 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaOpened()
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ64 - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ64 - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ64 - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ64 - ")));
 	}
 	else
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3_64 - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3_64 - ")));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3HQ - ")));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3UQ - ")));
 	}
 	else
 	{
-		this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3 - ")));
+		sptr = this->GetOpenedFile()->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3 - ")));
 	}
 #endif
-	this->SetText(sbuff);
+	this->SetText(CSTRP(sbuff, sptr));
 
 	this->uOfst = 0;
 	this->vOfst = 0;
@@ -517,28 +517,28 @@ void SSWR::AVIRead::AVIRHQMPForm::OnMediaClosed()
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ64");
+		this->SetText(CSTR("HQMP3HQ64"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ64");
+		this->SetText(CSTR("HQMP3UQ64"));
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3_64");
+		this->SetText(CSTR("HQMP3_64"));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ"));
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3");
+		this->SetText(CSTR("HQMP3"));
 	}
 #endif
 	this->mnuChapters->ClearItems();
@@ -559,28 +559,28 @@ SSWR::AVIRead::AVIRHQMPForm::AVIRHQMPForm(UI::GUIClientControl *parent, UI::GUIC
 #if defined(_WIN64)
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ64");
+		this->SetText(CSTR("HQMP3HQ64"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ64");
+		this->SetText(CSTR("HQMP3UQ64"));
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3_64");
+		this->SetText(CSTR("HQMP3_64"));
 	}
 #else
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_HQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPForm::QM_UQ)
 	{
-		this->SetText((const UTF8Char*)"HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ"));
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"HQMP3");
+		this->SetText(CSTR("HQMP3"));
 	}
 #endif
 	this->playlist = 0;
@@ -907,7 +907,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);
-			this->dbgFrm->SetText((const UTF8Char*)"Info");
+			this->dbgFrm->SetText(CSTR("Info"));
 			this->dbgFrm->Show();
 			this->dbgFrm->HandleFormClosed(OnDebugClosed, this);
 		}

@@ -37,11 +37,11 @@ Text::String *Net::WirelessLAN::Network::GetSSID()
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 {
 	OSInt i;
 	WLAN_BSS_ENTRY *bss = (WLAN_BSS_ENTRY*)bssEntry;
-	this->ssid = Text::String::NewNotNull(ssid);
+	this->ssid = Text::String::New(ssid);
 	this->phyId = bss->uPhyId;
 	memcpy(this->mac, bss->dot11Bssid, 6);
 	this->bssType = (BSSType)bss->dot11BssType;
@@ -120,20 +120,20 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 						case 0x1021: //Manu
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_TEXT(this->devManuf);
-							this->devManuf = Text::StrCopyNew(sbTmp.ToString());
+							SDEL_STRING(this->devManuf);
+							this->devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						case 0x1023: //Model
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_TEXT(this->devModel);
-							this->devModel = Text::StrCopyNew(sbTmp.ToString());
+							SDEL_STRING(this->devModel);
+							this->devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						case 0x1042: //Serial
 							sbTmp.ClearStr();
 							sbTmp.AppendC(&currItem[4], itemSize);
-							SDEL_TEXT(this->devSN);
-							this->devSN = Text::StrCopyNew(sbTmp.ToString());
+							SDEL_STRING(this->devSN);
+							this->devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 							break;
 						}
 						currItem += itemSize + 4; 
@@ -178,9 +178,9 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 	}
 	DEL_CLASS(this->ieList);
 	SDEL_STRING(this->ssid);
-	SDEL_TEXT(this->devManuf);
-	SDEL_TEXT(this->devModel);
-	SDEL_TEXT(this->devSN);
+	SDEL_STRING(this->devManuf);
+	SDEL_STRING(this->devModel);
+	SDEL_STRING(this->devSN);
 }
 
 Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
@@ -223,17 +223,17 @@ Double Net::WirelessLAN::BSSInfo::GetFreq()
 	return this->freq;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetManuf()
+Text::String *Net::WirelessLAN::BSSInfo::GetManuf()
 {
 	return this->devManuf;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetModel()
+Text::String *Net::WirelessLAN::BSSInfo::GetModel()
 {
 	return this->devModel;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetSN()
+Text::String *Net::WirelessLAN::BSSInfo::GetSN()
 {
 	return this->devSN;
 }

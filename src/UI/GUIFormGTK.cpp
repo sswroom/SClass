@@ -296,9 +296,9 @@ void UI::GUIForm::Close()
 	this->closeHandlersObj->Clear();
 }
 
-void UI::GUIForm::SetText(const UTF8Char *text)
+void UI::GUIForm::SetText(Text::CString text)
 {
-	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text);
+	gtk_window_set_title((GtkWindow*)this->hwnd, (const Char*)text.v);
 }
 
 void UI::GUIForm::GetSizeP(UOSInt *width, UOSInt *height)

@@ -115,7 +115,7 @@ void UI::GUIControl::Close()
 	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
-void UI::GUIControl::SetText(const UTF8Char *text)
+void UI::GUIControl::SetText(Text::CString text)
 {
 	/////////////////////////////////
 }

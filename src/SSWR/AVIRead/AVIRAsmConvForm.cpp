@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
 	Win32::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), &sb))
 	{
-		me->txtIntelAsm->SetText(sb.ToString());
+		me->txtIntelAsm->SetText(sb.ToCString());
 	}
 	else
 	{
@@ -425,12 +425,12 @@ void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()
 			}
 		}
 	}
-	this->txtGNUAsm->SetText(destSb.ToString());
+	this->txtGNUAsm->SetText(destSb.ToCString());
 }
 
 SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Assembly MASM to GCC");
+	this->SetText(CSTR("Assembly MASM to GCC"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -439,10 +439,10 @@ SSWR::AVIRead::AVIRAsmConvForm::AVIRAsmConvForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Convert"));
+	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
 	this->btnConv->SetRect(4, 4, 75, 23, false);
 	this->btnConv->HandleButtonClick(OnConvClicked, this);
-	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Paste-Conv-Copy"));
+	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	NEW_CLASS(this->txtIntelAsm, UI::GUITextBox(ui, this, CSTR(""), true));

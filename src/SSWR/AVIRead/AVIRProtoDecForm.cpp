@@ -19,12 +19,12 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLogSelChg(void *userObj)
 		sb.AppendHexBuff(buff, item->size, ' ', Text::LineBreakType::CRLF);
 		sb.AppendC(UTF8STRC("\r\n\r\n"));
 		me->currDec->GetProtocolDetail(buff, item->size, &sb);
-		me->txtLogs->SetText(sb.ToString());
+		me->txtLogs->SetText(sb.ToCString());
 		MemFree(buff);
 	}
 	else
 	{
-		me->txtLogs->SetText((const UTF8Char*)"");
+		me->txtLogs->SetText(CSTR(""));
 	}
 }
 
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName()->v);
+		me->txtFile->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -130,7 +130,7 @@ void SSWR::AVIRead::AVIRProtoDecForm::ClearList()
 
 SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Protocol Decoder");
+	this->SetText(CSTR("Protocol Decoder"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -148,14 +148,14 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, CSTR("B&rowse")));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Decoder"));
 	this->lblDecoder->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboDecoder, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboDecoder->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Load"));
+	NEW_CLASS(this->btnLoad, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Load")));
 	this->btnLoad->SetRect(104, 52, 75, 23, false);
 	this->btnLoad->HandleButtonClick(OnLoadClicked, this);
 	NEW_CLASS(this->txtLogs, UI::GUITextBox(ui, this, CSTR(""), true));

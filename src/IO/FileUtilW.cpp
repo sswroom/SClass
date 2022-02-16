@@ -386,7 +386,7 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 
 	if (progHdlr)
 	{
-		progHdlr->ProgressStart(file1.v, fileSize);
+		progHdlr->ProgressStart(file1, fileSize);
 	}
 	if (fileSize < 1048576)
 	{

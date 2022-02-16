@@ -31,7 +31,7 @@ void __stdcall SSWR::AVIRead::AVIRSetAudioForm::OnCancelClick(void *userObj)
 
 SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 272, ui)
 {
-	this->SetText((const UTF8Char*)"Select Audio Device");
+	this->SetText(CSTR("Select Audio Device"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -44,10 +44,10 @@ SSWR::AVIRead::AVIRSetAudioForm::AVIRSetAudioForm(UI::GUIClientControl *parent, 
 	this->lbDevice->SetRect(112, 8, 256, 112, false);
 
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(112, 208, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(192, 208, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

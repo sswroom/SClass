@@ -21,25 +21,25 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 		switch (status)
 		{
 		case SSWR::DownloadMonitor::DownMonCore::CS_IDLE:
-			me->txtStatus->SetText((const UTF8Char*)"Idle");
+			me->txtStatus->SetText(CSTR("Idle"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_DOWNLOADING:
-			me->txtStatus->SetText((const UTF8Char*)"Downloading");
+			me->txtStatus->SetText(CSTR("Downloading"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_CHECKING:
-			me->txtStatus->SetText((const UTF8Char*)"Checking");
+			me->txtStatus->SetText(CSTR("Checking"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_EXTRACTING:
-			me->txtStatus->SetText((const UTF8Char*)"Extracting");
+			me->txtStatus->SetText(CSTR("Extracting"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_VALIDATING:
-			me->txtStatus->SetText((const UTF8Char*)"Validating");
+			me->txtStatus->SetText(CSTR("Validating"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_MOVING:
-			me->txtStatus->SetText((const UTF8Char*)"Moving");
+			me->txtStatus->SetText(CSTR("Moving"));
 			break;
 		case SSWR::DownloadMonitor::DownMonCore::CS_MUXING:
-			me->txtStatus->SetText((const UTF8Char*)"Muxing");
+			me->txtStatus->SetText(CSTR("Muxing"));
 			break;
 		default:
 			break;
@@ -88,7 +88,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnTimerTick(void *userObj
 		if (dt.ToTicks() >= me->alarmTime)
 		{
 			me->alarmSet = false;
-			me->lblAlarm->SetText((const UTF8Char*)"");
+			me->lblAlarm->SetText(CSTR(""));
 			id = (Int32)(OSInt)me->lvFiles->GetItem(0);
 			if (id)
 			{
@@ -424,13 +424,14 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::On30MinutesClicked(void *
 {
 	SSWR::DownloadMonitor::DownMonMainForm *me = (SSWR::DownloadMonitor::DownMonMainForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	dt.AddMinute(30);
 	me->alarmTime = dt.ToTicks();
 	me->alarmSet = true;
-	dt.ToString(sbuff, "HH:mm:ss.fff");
-	me->lblAlarm->SetText(sbuff);
+	sptr = dt.ToString(sbuff, "HH:mm:ss.fff");
+	me->lblAlarm->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, Int32 fileId, Int32 webType)
@@ -599,7 +600,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DownloadMonitor::DownMonCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"Download Monitor");
+	this->SetText(CSTR("Download Monitor"));
 	this->SetFont(0, 0, 8.25, false);
 	this->alarmSet = false;
 	this->alarmTime = 0;
@@ -617,24 +618,24 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	this->txtStatus->SetReadOnly(true);
 	NEW_CLASS(this->chkAutoStart, UI::GUICheckBox(ui, this->pnlButtons, (const UTF8Char*)"AutoStart", false));
 	this->chkAutoStart->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->btnPasteTable, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Paste Table"));
+	NEW_CLASS(this->btnPasteTable, UI::GUIButton(ui, this->pnlButtons, CSTR("Paste Table")));
 	this->btnPasteTable->SetRect(304, 4, 75, 23, false);
 	this->btnPasteTable->HandleButtonClick(OnPasteTableClicked, this);
-	NEW_CLASS(this->btnPasteHTML, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Paste HTML"));
+	NEW_CLASS(this->btnPasteHTML, UI::GUIButton(ui, this->pnlButtons, CSTR("Paste HTML")));
 	this->btnPasteHTML->SetRect(384, 4, 75, 23, false);
 	this->btnPasteHTML->HandleButtonClick(OnPasteHTMLClicked, this);
-	NEW_CLASS(this->btnCopyTable, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Copy Table"));
+	NEW_CLASS(this->btnCopyTable, UI::GUIButton(ui, this->pnlButtons, CSTR("Copy Table")));
 	this->btnCopyTable->SetRect(464, 4, 75, 23, false);
 	this->btnCopyTable->HandleButtonClick(OnCopyTableClicked, this);
-	NEW_CLASS(this->btnFileEnd, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"File End"));
+	NEW_CLASS(this->btnFileEnd, UI::GUIButton(ui, this->pnlButtons, CSTR("File End")));
 	this->btnFileEnd->SetRect(544, 4, 75, 23, false);
 	this->btnFileEnd->HandleButtonClick(OnFileEndClicked, this);
-	NEW_CLASS(this->btnWebUpdate, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Web Update"));
+	NEW_CLASS(this->btnWebUpdate, UI::GUIButton(ui, this->pnlButtons, CSTR("Web Update")));
 	this->btnWebUpdate->SetRect(624, 4, 75, 23, false);
 	this->btnWebUpdate->HandleButtonClick(OnWebUpdateClicked, this);
 	NEW_CLASS(this->lblAlarm, UI::GUILabel(ui, this->pnlButtons, (const UTF8Char*)""));
 	this->lblAlarm->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->btn30Minutes, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"30 Minutes"));
+	NEW_CLASS(this->btn30Minutes, UI::GUIButton(ui, this->pnlButtons, CSTR("30 Minutes")));
 	this->btn30Minutes->SetRect(104, 28, 75, 23, false);
 	this->btn30Minutes->HandleButtonClick(On30MinutesClicked, this);
 

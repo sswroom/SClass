@@ -10,13 +10,13 @@ void __stdcall SSWR::AVIRead::AVIRClipboardViewerForm::OnTypeSelChg(void *userOb
 	{
 		Text::StringBuilderUTF8 sb;
 		me->clipboard->GetDataText(fmtId, &sb);
-		me->txtMain->SetText(sb.ToString());
+		me->txtMain->SetText(sb.ToCString());
 	}
 }
 
 SSWR::AVIRead::AVIRClipboardViewerForm::AVIRClipboardViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Clipboard Viewer");
+	this->SetText(CSTR("Clipboard Viewer"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;

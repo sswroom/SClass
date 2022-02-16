@@ -17,7 +17,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEHTMLViewer::AVIRMIMEHTMLViewer(SSWR::AVIRead:
 	NEW_CLASS(mstm, IO::MemoryStream((UInt8*)buff, size, UTF8STRC("SSWR.AVIRead.MIMEViewer.AVIRMIMEHTMLViewer.mstm")));
 	Text::StringBuilderUTF8 sb;
 	Text::HTMLUtil::HTMLWellFormat(core->GetEncFactory(), mstm, 0, &sb);
-	this->txtHTML->SetText(sb.ToString());
+	this->txtHTML->SetText(sb.ToCString());
 	DEL_CLASS(mstm);
 }
 

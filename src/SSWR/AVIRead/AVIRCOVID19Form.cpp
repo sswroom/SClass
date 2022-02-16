@@ -251,7 +251,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"COVID-19");
+	this->SetText(CSTR("COVID-19"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -262,10 +262,10 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Load File"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlRequest, CSTR("&Load File")));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->btnDownload, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Load Internet"));
+	NEW_CLASS(this->btnDownload, UI::GUIButton(ui, this->pnlRequest, CSTR("&Load Internet")));
 	this->btnDownload->SetRect(84, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
 	NEW_CLASS(this->pbNewCases, UI::GUIPictureBoxSimple(ui, this, this->core->GetDrawEngine(), false));

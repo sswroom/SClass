@@ -20,11 +20,11 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 	SDEL_CLASS(me->currProcObj);
 	if (procInfo == 0)
 	{
-		me->txtDetProcId->SetText((const UTF8Char*)"");
-		me->txtDetParentId->SetText((const UTF8Char*)"");
-		me->txtDetName->SetText((const UTF8Char*)"");
-		me->txtDetPath->SetText((const UTF8Char*)"");
-		me->txtDetPriority->SetText((const UTF8Char*)"");
+		me->txtDetProcId->SetText(CSTR(""));
+		me->txtDetParentId->SetText(CSTR(""));
+		me->txtDetName->SetText(CSTR(""));
+		me->txtDetPath->SetText(CSTR(""));
+		me->txtDetPriority->SetText(CSTR(""));
 		me->currProc = 0;
 		me->rlcDetChartCPU->ClearChart();
 		me->rlcDetChartCount->ClearChart();
@@ -39,15 +39,15 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnProcSelChg(void *userObj)
 		NEW_CLASS(me->currProcRes, Manage::SymbolResolver(me->currProcObj));
 		Manage::Process proc(procInfo->procId, false);
 		sb.AppendU32(procInfo->procId);
-		me->txtDetProcId->SetText(sb.ToString());
+		me->txtDetProcId->SetText(sb.ToCString());
 		sb.ClearStr();
 		sb.AppendU32(procInfo->parentProcId);
-		me->txtDetParentId->SetText(sb.ToString());
-		me->txtDetName->SetText(procInfo->procName);
+		me->txtDetParentId->SetText(sb.ToCString());
+		me->txtDetName->SetText(procInfo->procName->ToCString());
 		sb.ClearStr();
 		proc.GetFilename(&sb);
-		me->txtDetPath->SetText(sb.ToString());
-		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()).v);
+		me->txtDetPath->SetText(sb.ToCString());
+		me->txtDetPriority->SetText(Manage::Process::GetPriorityName(proc.GetPriority()));
 		me->UpdateProcHeaps();
 		me->UpdateProcModules();
 		me->UpdateProcThreads();
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			procInfo->found = false;
 		}
 
-		while (Manage::Process::FindProcessNext(sbuff, sess, &proc))
+		while ((sptr = Manage::Process::FindProcessNext(sbuff, sess, &proc)) != 0)
 		{
 			si = me->procIds->SortedIndexOf(proc.processId);
 			if (si >= 0)
@@ -96,13 +96,13 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				procInfo->found = true;
 				procInfo->procId = proc.processId;
 				procInfo->parentProcId = proc.parentId;
-				procInfo->procName = Text::StrCopyNew(sbuff);
+				procInfo->procName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				me->procIds->Insert(i, procInfo->procId);
 				me->procList->Insert(i, procInfo);
 				sptr = Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, CSTRP(sbuff2, sptr), procInfo);
 				me->lvSummary->SetSubItem(i, 1, sbuff);
-				sptr = Text::StrConcat(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")), procInfo->procName);
+				sptr = procInfo->procName->ConcatTo(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")));
 				me->lbDetail->InsertItem(i, CSTRP(sbuff, sptr), procInfo);
 			}
 
@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			procInfo = me->procList->GetItem(i);
 			if (!procInfo->found)
 			{
-				Text::StrDelNew(procInfo->procName);
+				procInfo->procName->Release();
 				MemFree(procInfo);
 				me->lvSummary->RemoveItem(i);
 				me->lbDetail->RemoveItem(i);
@@ -259,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		sb.ClearStr();
 		size = proc.ReadMemory(addr, buff, size);
 		sb.AppendHexBuff(buff, size, ' ', Text::LineBreakType::CRLF);
-		me->txtDetHeap->SetText(sb.ToString());
+		me->txtDetHeap->SetText(sb.ToCString());
 	}
 	else
 	{
@@ -270,7 +270,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnDetHeapItemSelChg(void *userOb
 		sb.AppendC(UTF8STRC(".."));
 		size2 = proc.ReadMemory(addr + size - 256, buff, 256);
 		sb.AppendHexBuff(buff, size2, ' ', Text::LineBreakType::CRLF);
-		me->txtDetHeap->SetText(sb.ToString());
+		me->txtDetHeap->SetText(sb.ToCString());
 	}
 }
 
@@ -454,7 +454,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Process Info");
+	this->SetText(CSTR("Process Info"));
 
 	this->core = core;
 	NEW_CLASS(this->clk, Manage::HiResClock());
@@ -535,7 +535,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlDetModule, UI::GUIPanel(ui, this->tpDetModule));
 	this->pnlDetModule->SetRect(0, 0, 100, 31, false);
 	this->pnlDetModule->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetModule, UI::GUIButton(ui, this->pnlDetModule, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnDetModule, UI::GUIButton(ui, this->pnlDetModule, CSTR("Refresh")));
 	this->btnDetModule->SetRect(4, 4, 75, 23, false);
 	this->btnDetModule->HandleButtonClick(OnDetModuleRefClicked, this);
 	NEW_CLASS(this->lvDetModule, UI::GUIListView(ui, this->tpDetModule, UI::GUIListView::LVSTYLE_TABLE, 3));
@@ -549,7 +549,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
 	this->pnlDetThread->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetThread, UI::GUIButton(ui, this->pnlDetThread, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnDetThread, UI::GUIButton(ui, this->pnlDetThread, CSTR("Refresh")));
 	this->btnDetThread->SetRect(4, 4, 75, 23, false);
 	this->btnDetThread->HandleButtonClick(OnDetThreadRefClicked, this);
 	NEW_CLASS(this->lvDetThread, UI::GUIListView(ui, this->tpDetThread, UI::GUIListView::LVSTYLE_TABLE, 3));
@@ -564,7 +564,7 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
 	this->pnlDetHeap->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDetHeap, UI::GUIButton(ui, this->pnlDetHeap, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnDetHeap, UI::GUIButton(ui, this->pnlDetHeap, CSTR("Refresh")));
 	this->btnDetHeap->SetRect(4, 4, 75, 23, false);
 	this->btnDetHeap->HandleButtonClick(OnDetHeapRefClicked, this);
 	NEW_CLASS(this->lbDetHeap, UI::GUIListBox(ui, this->tpDetHeap, false));
@@ -623,7 +623,7 @@ SSWR::AVIRead::AVIRProcInfoForm::~AVIRProcInfoForm()
 	while (i-- > 0)
 	{
 		procInfo = this->procList->GetItem(i);
-		Text::StrDelNew(procInfo->procName);
+		procInfo->procName->Release();
 		MemFree(procInfo);
 	}
 	DEL_CLASS(this->procList);

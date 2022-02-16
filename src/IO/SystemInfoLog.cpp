@@ -49,8 +49,8 @@ IO::SystemInfoLog::~SystemInfoLog()
 	DEL_CLASS(this->deviceInfos);
 	LIST_FREE_FUNC(this->driverInfos, FreeDriverInfo);
 	DEL_CLASS(this->driverInfos);
-	SDEL_TEXT(this->osName);
-	SDEL_TEXT(this->osVer);
+	SDEL_STRING(this->osName);
+	SDEL_STRING(this->osVer);
 }
 
 IO::ParserType IO::SystemInfoLog::GetParserType()
@@ -60,22 +60,22 @@ IO::ParserType IO::SystemInfoLog::GetParserType()
 
 void IO::SystemInfoLog::SetOSName(const UTF8Char *osName)
 {
-	SDEL_TEXT(this->osName);
-	this->osName = SCOPY_TEXT(osName);
+	SDEL_STRING(this->osName);
+	this->osName = Text::String::NewOrNull(osName);
 }
 
-const UTF8Char *IO::SystemInfoLog::GetOSName()
+Text::String *IO::SystemInfoLog::GetOSName()
 {
 	return this->osName;
 }
 
 void IO::SystemInfoLog::SetOSVer(const UTF8Char *osVer)
 {
-	SDEL_TEXT(this->osVer);
-	this->osVer = SCOPY_TEXT(osVer);
+	SDEL_STRING(this->osVer);
+	this->osVer = Text::String::NewOrNull(osVer);
 }
 
-const UTF8Char *IO::SystemInfoLog::GetOSVer()
+Text::String *IO::SystemInfoLog::GetOSVer()
 {
 	return this->osVer;
 }

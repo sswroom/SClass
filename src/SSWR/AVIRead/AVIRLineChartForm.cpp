@@ -289,7 +289,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 
 SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, const UTF8Char *tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Line Chart");
+	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->chart = 0;
@@ -306,10 +306,10 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
 	NEW_CLASS(this->lbStrCols, UI::GUIListBox(ui, this->pnlStrCols, false));
 	this->lbStrCols->SetRect(100, 0, 200, 128, false);
-	NEW_CLASS(this->btnStrColsDbl, UI::GUIButton(ui, this->pnlStrCols, (const UTF8Char*)"Force as Double"));
+	NEW_CLASS(this->btnStrColsDbl, UI::GUIButton(ui, this->pnlStrCols, CSTR("Force as Double")));
 	this->btnStrColsDbl->SetRect(304, 4, 120, 23, false);
 	this->btnStrColsDbl->HandleButtonClick(OnStrColsDblClicked, this);
-	NEW_CLASS(this->btnStrColsInt32, UI::GUIButton(ui, this->pnlStrCols, (const UTF8Char*)"Force as Int32"));
+	NEW_CLASS(this->btnStrColsInt32, UI::GUIButton(ui, this->pnlStrCols, CSTR("Force as Int32")));
 	this->btnStrColsInt32->SetRect(304, 32, 120, 23, false);
 	this->btnStrColsInt32->HandleButtonClick(OnStrColsInt32Clicked, this);
 	NEW_CLASS(this->pnlXAxis, UI::GUIPanel(ui, this));
@@ -322,10 +322,10 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnPlot, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Plot"));
+	NEW_CLASS(this->btnPlot, UI::GUIButton(ui, this->pnlControl, CSTR("Plot")));
 	this->btnPlot->SetRect(4, 4, 75, 23, false);
 	this->btnPlot->HandleButtonClick(OnPlotClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	NEW_CLASS(this->grpYAxis, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Y-Axis"));
@@ -337,7 +337,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboYAxis, UI::GUIComboBox(ui, this->pnlYAxis, false));
 	this->cboYAxis->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnYAxis, UI::GUIButton(ui, this->pnlYAxis, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnYAxis, UI::GUIButton(ui, this->pnlYAxis, CSTR("Add")));
 	this->btnYAxis->SetRect(304, 4, 75, 23, false);
 	this->btnYAxis->HandleButtonClick(OnYAxisClicked, this);
 	NEW_CLASS(this->lbYAxis, UI::GUIListBox(ui, this->grpYAxis, false));

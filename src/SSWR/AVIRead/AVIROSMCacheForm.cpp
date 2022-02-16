@@ -5,23 +5,24 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIROSMCacheForm *me = (SSWR::AVIRead::AVIROSMCacheForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Map::OSM::OSMCacheHandler::CacheStatus status;
 	me->hdlr->GetStatus(&status);
-	Text::StrInt32(sbuff, status.reqCnt);
-	me->txtReqCnt->SetText(sbuff);
-	Text::StrInt32(sbuff, status.remoteSuccCnt);
-	me->txtRemoteSuccCnt->SetText(sbuff);
-	Text::StrInt32(sbuff, status.remoteErrCnt);
-	me->txtRemoteErrCnt->SetText(sbuff);
-	Text::StrInt32(sbuff, status.localCnt);
-	me->txtLocalCnt->SetText(sbuff);
-	Text::StrInt32(sbuff, status.cacheCnt);
-	me->txtCacheCnt->SetText(sbuff);
+	sptr = Text::StrInt32(sbuff, status.reqCnt);
+	me->txtReqCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, status.remoteSuccCnt);
+	me->txtRemoteSuccCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, status.remoteErrCnt);
+	me->txtRemoteErrCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, status.localCnt);
+	me->txtLocalCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrInt32(sbuff, status.cacheCnt);
+	me->txtCacheCnt->SetText(CSTRP(sbuff, sptr));
 }
 
 SSWR::AVIRead::AVIROSMCacheForm::AVIROSMCacheForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::WebServer::WebListener *listener, Map::OSM::OSMCacheHandler *hdlr) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"OSM Cache");
+	this->SetText(CSTR("OSM Cache"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;

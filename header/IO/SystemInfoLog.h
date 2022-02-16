@@ -34,8 +34,8 @@ namespace IO
 			UInt32 altitude;
 		};
 	private:
-		const UTF8Char *osName;
-		const UTF8Char *osVer;
+		Text::String *osName;
+		Text::String *osVer;
 		UInt32 osLocale;
 		UInt32 architecture;
 		UInt32 productType;
@@ -53,9 +53,9 @@ namespace IO
 		virtual IO::ParserType GetParserType();
 
 		void SetOSName(const UTF8Char *osName);
-		const UTF8Char *GetOSName();
+		Text::String *GetOSName();
 		void SetOSVer(const UTF8Char *osVer);
-		const UTF8Char *GetOSVer();
+		Text::String *GetOSVer();
 		void SetOSLocale(UInt32 osLocale);
 		UInt32 GetOSLocale();
 		void SetArchitecture(UInt32 architecture);

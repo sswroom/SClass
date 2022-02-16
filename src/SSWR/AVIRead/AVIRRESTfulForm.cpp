@@ -168,7 +168,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRRESTfulForm *me = (SSWR::AVIRead::AVIRRESTfulForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -180,7 +180,7 @@ void SSWR::AVIRead::AVIRRESTfulForm::InitDB()
 	NEW_CLASS(this->dbModel, DB::DBModel());
 	this->dbModel->LoadDatabase(this->db, 0);
 	NEW_CLASS(this->dbCache, DB::DBCache(this->dbModel, this->db));
-	this->txtDatabase->SetText(sb.ToString());
+	this->txtDatabase->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
@@ -189,7 +189,7 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
-	this->SetText((const UTF8Char*)"RESTful Server");
+	this->SetText(CSTR("RESTful Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -236,16 +236,16 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, CSTR("")));
 	this->txtDatabase->SetRect(108, 128, 150, 23, false);
 	this->txtDatabase->SetReadOnly(true);
-	NEW_CLASS(this->btnDatabaseMySQL, UI::GUIButton(ui, this->grpParam, (const UTF8Char*)"MySQL"));
+	NEW_CLASS(this->btnDatabaseMySQL, UI::GUIButton(ui, this->grpParam, CSTR("MySQL")));
 	this->btnDatabaseMySQL->SetRect(258, 128, 75, 23, false);
 	this->btnDatabaseMySQL->HandleButtonClick(OnDatabaseMySQLClicked, this);
-	NEW_CLASS(this->btnDatabaseODBCDSN, UI::GUIButton(ui, this->grpParam, (const UTF8Char*)"ODBC"));
+	NEW_CLASS(this->btnDatabaseODBCDSN, UI::GUIButton(ui, this->grpParam, CSTR("ODBC")));
 	this->btnDatabaseODBCDSN->SetRect(338, 128, 75, 23, false);
 	this->btnDatabaseODBCDSN->HandleButtonClick(OnDatabaseODBCDSNClicked, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(200, 188, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
-	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Stop"));
+	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this->tpControl, CSTR("Stop")));
 	this->btnStop->SetRect(300, 188, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 

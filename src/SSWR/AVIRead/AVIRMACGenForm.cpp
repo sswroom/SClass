@@ -12,6 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACGenForm *me = (SSWR::AVIRead::AVIRMACGenForm*)userObj;
 	Data::ArrayList<Net::MACInfo::MACEntry*> *macArr;
 	UTF8Char sbuff[20];
+	UTF8Char *sptr;
 	UInt64 iMAC;
 	UInt32 irand;
 	UInt8 macBuff[8];
@@ -28,10 +29,10 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnGenerateClicked(void *userObj)
 	Net::MACInfo::MACEntry *ent = macArr->GetItem((irand >> 24) % cnt);
 	iMAC = (ent->rangeStart & 0xffffff000000) | (irand & 0xffffff);
 	WriteMUInt64(macBuff, iMAC);
-	Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
-	me->txtColonFormat->SetText(sbuff);
-	Text::StrHexBytes(sbuff, &macBuff[2], 6, 0);
-	me->txtPlainFormat->SetText(sbuff);
+	sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
+	me->txtColonFormat->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, 0);
+	me->txtPlainFormat->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
@@ -64,7 +65,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRMACGenForm::ListCompare(void *list1, void *li
 SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 136, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MAC Generator");
+	this->SetText(CSTR("MAC Generator"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -75,7 +76,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	this->lblVendor->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboVendor, UI::GUIComboBox(ui, this, false));
 	this->cboVendor->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
 	this->btnGenerate->SetRect(104, 28, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblColonFormat, UI::GUILabel(ui, this, (const UTF8Char*)"Colon Format"));
@@ -92,7 +93,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	this->lblAdapter->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this, false));
 	this->cboAdapter->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->btnAdapterSet, UI::GUIButton(ui, this, (const UTF8Char*)"Set"));
+	NEW_CLASS(this->btnAdapterSet, UI::GUIButton(ui, this, CSTR("Set")));
 	this->btnAdapterSet->SetRect(304, 100, 75, 23, false);
 	this->btnAdapterSet->HandleButtonClick(OnAdapterSetClicked, this);
 

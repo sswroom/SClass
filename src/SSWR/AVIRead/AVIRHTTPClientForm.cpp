@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 	{
 		SDEL_STRING(me->userAgent);
 		me->userAgent = Text::String::NewNotNull(frm->GetUserAgent());
-		me->lblUserAgent->SetText(me->userAgent->v);
+		me->lblUserAgent->SetText(me->userAgent->ToCString());
 	}
 	DEL_CLASS(frm);
 }
@@ -451,7 +451,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 		{
 			sb.AppendC(UTF8STRC(" files selected"));
 		}
-		me->lblFileStatus->SetText(sb.ToString());
+		me->lblFileStatus->SetText(sb.ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -460,7 +460,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileClearClicked(void *userO
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	me->ClearFiles();
-	me->lblFileStatus->SetText((const UTF8Char*)"No files selected");
+	me->lblFileStatus->SetText(CSTR("No files selected"));
 }
 
 UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
@@ -665,13 +665,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respReqURL = currURL->Clone();
 				me->respContType = contType;
 				me->respData = mstm;
-				SDEL_TEXT(me->respCert);
+				SDEL_STRING(me->respCert);
 				Crypto::Cert::Certificate *cert = cli->GetServerCert();
 				if (cert)
 				{
 					Text::StringBuilderUTF8 sb;
 					cert->ToString(&sb);
-					me->respCert = Text::StrCopyNew(sb.ToString());
+					me->respCert = Text::String::New(sb.ToString(), sb.GetLength());
 				}
 				respMutUsage.EndUse();
 			}
@@ -689,7 +689,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				SDEL_CLASS(me->respData);
 				SDEL_STRING(me->respContType);
 				me->respReqURL = currURL->Clone();
-				SDEL_TEXT(me->respCert);
+				SDEL_STRING(me->respCert);
 				mutUsage.EndUse();
 			}
 
@@ -726,62 +726,63 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	Text::String *hdr;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	if (me->respChanged)
 	{
-		me->txtReqURL->SetText(me->respReqURL->v);
-		Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
-		me->txtSvrIP->SetText(sbuff);
+		me->txtReqURL->SetText(me->respReqURL->ToCString());
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{
-			me->txtTimeDNS->SetText((const UTF8Char*)"-1");
+			me->txtTimeDNS->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
-			me->txtTimeDNS->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
+			me->txtTimeDNS->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeConn == -1)
 		{
-			me->txtTimeConn->SetText((const UTF8Char*)"-1");
+			me->txtTimeConn->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
-			me->txtTimeConn->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
+			me->txtTimeConn->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeReq == -1)
 		{
-			me->txtTimeSendHdr->SetText((const UTF8Char*)"-1");
+			me->txtTimeSendHdr->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
-			me->txtTimeSendHdr->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
+			me->txtTimeSendHdr->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeResp == -1)
 		{
-			me->txtTimeResp->SetText((const UTF8Char*)"-1");
+			me->txtTimeResp->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
-			me->txtTimeResp->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
+			me->txtTimeResp->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeTotal == -1)
 		{
-			me->txtTimeTotal->SetText((const UTF8Char*)"-1");
+			me->txtTimeTotal->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
-			me->txtTimeTotal->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
+			me->txtTimeTotal->SetText(CSTRP(sbuff, sptr));
 		}
-		Text::StrUInt64(sbuff, me->respSize);
-		me->txtRespSize->SetText(sbuff);
-		Text::StrInt32(sbuff, me->respStatus);
-		me->txtRespStatus->SetText(sbuff);
+		sptr = Text::StrUInt64(sbuff, me->respSize);
+		me->txtRespSize->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->respStatus);
+		me->txtRespStatus->SetText(CSTRP(sbuff, sptr));
 
 		me->lvHeaders->ClearItems();
 		i = 0;
@@ -808,11 +809,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 		}
 		if (me->respCert)
 		{
-			me->txtCert->SetText(me->respCert);
+			me->txtCert->SetText(me->respCert->ToCString());
 		}
 		else
 		{
-			me->txtCert->SetText((const UTF8Char*)"");
+			me->txtCert->SetText(CSTR(""));
 		}
 		me->respChanged = false;
 		me->tcMain->SetSelectedIndex(1);
@@ -1063,7 +1064,7 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"HTTP Client");
+	this->SetText(CSTR("HTTP Client"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -1118,7 +1119,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboMethod->SetSelectedIndex(0);
 	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"OS Client", false));
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"User Agent"));
+	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, CSTR("User Agent")));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
 	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->v));
@@ -1136,10 +1137,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblFileUpload->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtFileFormName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFileFormName->SetRect(104, 124, 150, 23, false);
-	NEW_CLASS(this->btnFileSelect, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Select"));
+	NEW_CLASS(this->btnFileSelect, UI::GUIButton(ui, this->pnlRequest, CSTR("Select")));
 	this->btnFileSelect->SetRect(254, 124, 75, 23, false);
 	this->btnFileSelect->HandleButtonClick(OnFileSelectClicked, this);
-	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Clear"));
+	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, CSTR("Clear")));
 	this->btnFileClear->SetRect(334, 124, 75, 23, false);
 	this->btnFileClear->HandleButtonClick(OnFileClearClicked, this);
 	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"No files selected"));
@@ -1148,7 +1149,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblDataStr->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDataStr, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtDataStr->SetRect(104, 148, 400, 23, false);
-	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Parse"));
+	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, CSTR("Parse")));
 	this->btnDataStr->SetRect(504, 148, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
 	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Post Format"));
@@ -1163,7 +1164,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lblHeaders->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 196, 300, 71, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 268, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
@@ -1223,10 +1224,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlControl, CSTR("Save")));
 	this->btnSave->SetRect(4, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
-	NEW_CLASS(this->btnView, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnView, UI::GUIButton(ui, this->pnlControl, CSTR("View")));
 	this->btnView->SetRect(84, 4, 75, 23, false);
 	this->btnView->HandleButtonClick(OnViewClicked, this);
 	NEW_CLASS(this->lvHeaders, UI::GUIListView(ui, this->tpResponse, UI::GUIListView::LVSTYLE_TABLE, 1));
@@ -1277,7 +1278,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::~AVIRHTTPClientForm()
 	SDEL_STRING(this->respReqURL);
 	SDEL_STRING(this->respContType);
 	SDEL_CLASS(this->respData);
-	SDEL_TEXT(this->respCert);
+	SDEL_STRING(this->respCert);
 	DEL_CLASS(this->respMut);
 	this->userAgent->Release();
 	SDEL_CLASS(this->ssl);

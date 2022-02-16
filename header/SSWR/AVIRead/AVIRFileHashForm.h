@@ -62,7 +62,7 @@ namespace SSWR
 			Bool fileListChg;
 			Data::DateTime *lastTimerTime;
 			Sync::Mutex *readMut;
-			const UTF8Char *progName;
+			Text::String *progName;
 			Bool progNameChg;
 			UInt64 readSize;
 			UInt64 totalRead;
@@ -83,7 +83,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressStart(Text::CString name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};

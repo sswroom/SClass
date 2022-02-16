@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnDecryptClicked(void *userObj)
 		resSize = enc->DecryptB64(sb2.ToString(), sb2.GetLength(), res);
 		sb.ClearStr();
 		sb.AppendC(res, resSize);
-		me->txtResult->SetText(sb.ToString());
+		me->txtResult->SetText(sb.ToCString());
 		DEL_CLASS(enc);
 		MemFree(res);
 	}
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRJasyptForm::OnEncryptClicked(void *userObj)
 		NEW_CLASS(enc, Crypto::JasyptEncryptor((Crypto::JasyptEncryptor::KeyAlgorithm)(OSInt)me->cboKeyAlg->GetSelectedItem(), (Crypto::JasyptEncryptor::CipherAlgorithm)(OSInt)me->cboEncAlg->GetSelectedItem(), sb.ToString(), sb.GetLength()));
 		sb.ClearStr();
 		enc->EncryptAsB64(&sb, sb2.ToString(), sb2.GetLength());
-		me->txtResult->SetText(sb.ToString());
+		me->txtResult->SetText(sb.ToCString());
 		DEL_CLASS(enc);
 	}
 }
@@ -48,7 +48,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"Jasypt Encryptor");
+	this->SetText(CSTR("Jasypt Encryptor"));
 	
 	UOSInt i;
 	UOSInt j;
@@ -87,10 +87,10 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	this->lblMessage->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMessage->SetRect(104, 76, 400, 23, false);
-	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, this, (const UTF8Char*)"Decrypt"));
+	NEW_CLASS(this->btnDecrypt, UI::GUIButton(ui, this, CSTR("Decrypt")));
 	this->btnDecrypt->SetRect(104, 100, 75, 23, false);
 	this->btnDecrypt->HandleButtonClick(OnDecryptClicked, this);
-	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, this, (const UTF8Char*)"Encrypt"));
+	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, this, CSTR("Encrypt")));
 	this->btnEncrypt->SetRect(184, 100, 75, 23, false);
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, (const UTF8Char*)"Result"));

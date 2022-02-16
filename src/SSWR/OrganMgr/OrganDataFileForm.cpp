@@ -103,7 +103,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 
 SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, OrganEnv *env) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Data File Form");
+	this->SetText(CSTR("Data File Form"));
 	this->SetFont(0, 0, 10.5, false);
 
 	this->env = env;
@@ -111,10 +111,10 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("DataFileDelete")).v));
+	NEW_CLASS(this->btnDelete, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("DataFileDelete"))));
 	this->btnDelete->SetRect(4, 4, 75, 23, false);
 	this->btnDelete->HandleButtonClick(OnDeleteClicked, this);
-	NEW_CLASS(this->btnStartTime, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("DataFileStartTime")).v));
+	NEW_CLASS(this->btnStartTime, UI::GUIButton(ui, this->pnlCtrl, this->env->GetLang(UTF8STRC("DataFileStartTime"))));
 	this->btnStartTime->SetRect(104, 4, 75, 23, false);
 	this->btnStartTime->HandleButtonClick(OnStartTimeClicked, this);
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));

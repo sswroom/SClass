@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 240, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"TFTP Client");
+	this->SetText(CSTR("TFTP Client"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -172,10 +172,10 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("File.dat")));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnRecv, UI::GUIButton(ui, this, (const UTF8Char*)"Receive"));
+	NEW_CLASS(this->btnRecv, UI::GUIButton(ui, this, CSTR("Receive")));
 	this->btnRecv->SetRect(104, 76, 75, 23, false);
 	this->btnRecv->HandleButtonClick(OnRecvClick, this);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this, (const UTF8Char*)"Send"));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this, CSTR("Send")));
 	this->btnSend->SetRect(184, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClick, this);
 }

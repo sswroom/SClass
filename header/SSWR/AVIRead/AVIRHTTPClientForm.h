@@ -136,7 +136,7 @@ namespace SSWR
 			Sync::Mutex *respMut;
 			Text::String *respContType;
 			IO::MemoryStream *respData;
-			const UTF8Char *respCert;
+			Text::String *respCert;
 			Data::ArrayList<ParamValue*> *params;
 			Data::ArrayList<HTTPCookie *> *cookieList;
 			Sync::Mutex *cookieMut;

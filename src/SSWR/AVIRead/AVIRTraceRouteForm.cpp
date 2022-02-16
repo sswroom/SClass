@@ -74,11 +74,11 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 				i++;
 			}
 		}
-		me->txtIPWhois->SetText(sb.ToString());
+		me->txtIPWhois->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtIPWhois->SetText((const UTF8Char*)"");
+		me->txtIPWhois->SetText(CSTR(""));
 	}
 }
 
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnIPSelChg(void *userObj)
 SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Trace Route");
+	this->SetText(CSTR("Trace Route"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -104,7 +104,7 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	

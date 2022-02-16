@@ -53,36 +53,36 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	Text::String *s = me->client->GetTermOfService();
 	if (s)
 	{
-		me->txtTermOfService->SetText(s->v);
+		me->txtTermOfService->SetText(s->ToCString());
 	}
 	else
 	{
-		me->txtTermOfService->SetText((const UTF8Char*)"");
+		me->txtTermOfService->SetText(CSTR(""));
 	}
 	s = me->client->GetWebsite();
 	if (s)
 	{
-		me->txtWebsite->SetText(s->v);
+		me->txtWebsite->SetText(s->ToCString());
 	}
 	else
 	{
-		me->txtWebsite->SetText((const UTF8Char*)"");
+		me->txtWebsite->SetText(CSTR(""));
 	}
 	s = me->client->GetAccountId();
 	if (s)
 	{
-		me->txtAccount->SetText(s->v);
+		me->txtAccount->SetText(s->ToCString());
 	}
 	else
 	{
-		me->txtAccount->SetText((const UTF8Char*)"");
+		me->txtAccount->SetText(CSTR(""));
 	}
 }
 
 SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ACME Client");
+	this->SetText(CSTR("ACME Client"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	this->lblKeyFile->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
 	this->txtKeyFile->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 

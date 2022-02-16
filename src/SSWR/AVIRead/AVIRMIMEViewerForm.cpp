@@ -3,7 +3,7 @@
 
 SSWR::AVIRead::AVIRMIMEViewerForm::AVIRMIMEViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::IMIMEObj *obj) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"MIME Viewer");
+	this->SetText(CSTR("MIME Viewer"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;

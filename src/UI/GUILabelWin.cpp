@@ -24,9 +24,9 @@ UI::GUILabel::~GUILabel()
 {
 }
 
-void UI::GUILabel::SetText(const UTF8Char *text)
+void UI::GUILabel::SetText(Text::CString text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text);
+	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
 	Text::StrDelNew(wptr);
 }

@@ -23,21 +23,21 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnPingPacket(void *userData, 
 		ipInfo->ip = srcIP;
 		ipInfo->count = 0;
 		rec = me->whois->RequestIP(srcIP);
-		if (rec->GetNetworkName(sbuff))
+		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 		{
-			ipInfo->name = Text::StrCopyNew(sbuff);
+			ipInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
-			ipInfo->name = Text::StrCopyNew((const UTF8Char*)"Unknown");
+			ipInfo->name = Text::String::New(UTF8STRC("Unknown"));
 		}
-		if (rec->GetCountryCode(sbuff))
+		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
 		{
-			ipInfo->country = Text::StrCopyNew(sbuff);
+			ipInfo->country = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
-			ipInfo->country = Text::StrCopyNew((const UTF8Char*)"Unk");
+			ipInfo->country = Text::String::New(UTF8STRC("Unk"));
 		}
 		me->ipMap->Put(sortableIP, ipInfo);
 		me->ipListUpdated = true;
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -149,10 +149,11 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 	if (me->currIP)
 	{
 		UTF8Char sbuff[32];
-		Text::StrInt64(sbuff, me->currIP->count);
-		me->txtIPCount->SetText(sbuff);
-		me->txtIPName->SetText(me->currIP->name);
-		me->txtIPCountry->SetText(me->currIP->country);
+		UTF8Char *sptr;
+		sptr = Text::StrInt64(sbuff, me->currIP->count);
+		me->txtIPCount->SetText(CSTRP(sbuff, sptr));
+		me->txtIPName->SetText(me->currIP->name->ToCString());
+		me->txtIPCountry->SetText(me->currIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
 		Net::WhoisRecord *rec = me->whois->RequestIP(me->currIP->ip);
@@ -167,14 +168,14 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnIPSelChg(void *userObj)
 				i++;
 			}
 		}
-		me->txtIPWhois->SetText(sb.ToString());
+		me->txtIPWhois->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtIPCount->SetText((const UTF8Char*)"");
-		me->txtIPName->SetText((const UTF8Char*)"");
-		me->txtIPCountry->SetText((const UTF8Char*)"");
-		me->txtIPWhois->SetText((const UTF8Char*)"");
+		me->txtIPCount->SetText(CSTR(""));
+		me->txtIPName->SetText(CSTR(""));
+		me->txtIPCountry->SetText(CSTR(""));
+		me->txtIPWhois->SetText(CSTR(""));
 	}
 }
 
@@ -186,8 +187,8 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 	if (me->ipContUpdated)
 	{
 		me->ipContUpdated = false;
-		Text::StrInt64(sbuff, me->currIP->count);
-		me->txtIPCount->SetText(sbuff);
+		sptr = Text::StrInt64(sbuff, me->currIP->count);
+		me->txtIPCount->SetText(CSTRP(sbuff, sptr));
 	}
 	if (me->ipListUpdated)
 	{
@@ -219,7 +220,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Ping Monitor");
+	this->SetText(CSTR("Ping Monitor"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -243,14 +244,14 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->pnlControl, CSTR("8089")));
 	this->txtInfo->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnInfo->SetRect(184, 4, 75, 23, false);
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
 	this->lblIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -356,8 +357,8 @@ SSWR::AVIRead::AVIRPingMonitorForm::~AVIRPingMonitorForm()
 	while (i-- > 0)
 	{
 		ipInfo = ipList->GetItem(i);
-		SDEL_TEXT(ipInfo->name);
-		SDEL_TEXT(ipInfo->country);
+		SDEL_STRING(ipInfo->name);
+		SDEL_STRING(ipInfo->country);
 		MemFree(ipInfo);
 	}
 

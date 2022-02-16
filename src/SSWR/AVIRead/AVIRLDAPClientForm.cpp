@@ -11,7 +11,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 		me->cli->Unbind();
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		me->btnConnect->SetText((const UTF8Char*)"Connect");
+		me->btnConnect->SetText(CSTR("Connect"));
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -59,7 +59,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnConnectClicked(void *userObj
 	}
 	if (succ)
 	{
-		me->btnConnect->SetText((const UTF8Char*)"Disconnect");
+		me->btnConnect->SetText(CSTR("Disconnect"));
 	}
 	else
 	{
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPClientForm::OnSearchResultSelChg(void *use
 SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"LDAP Client");
+	this->SetText(CSTR("LDAP Client"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -171,7 +171,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Connect"));
+	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, CSTR("Connect")));
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRLDAPClientForm::AVIRLDAPClientForm(UI::GUIClientControl *pare
 	this->lblSearchFilter->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSearchFilter, UI::GUITextBox(ui, this->pnlSearchRequest, CSTR("(&(objectClass=user)(userPrincipalName=admin@simon.local))")));
 	this->txtSearchFilter->SetRect(104, 76, 400, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearchRequest, (const UTF8Char*)"Search"));
+	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearchRequest, CSTR("Search")));
 	this->btnSearch->SetRect(104, 100, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->cboSearchResult, UI::GUIComboBox(ui, this->grpSearch, false));

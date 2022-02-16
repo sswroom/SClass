@@ -132,19 +132,19 @@ void UI::GUITextBox::SetPasswordChar(WChar c)
 	}
 }
 
-void UI::GUITextBox::SetText(const UTF8Char *lbl)
+void UI::GUITextBox::SetText(Text::CString lbl)
 {
 	TextBoxData *txt = (TextBoxData*)this->clsData;
-	UOSInt lblLeng = Text::StrCharCnt(lbl);
+	UOSInt lblLeng = lbl.leng;
 	if (txt->multiLine)
 	{
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
-		gtk_text_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
+		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
 	}
 	else
 	{
 		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
-		gtk_entry_buffer_set_text(buff, (const Char*)lbl, (gint)lblLeng);
+		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
 	}
 }
 

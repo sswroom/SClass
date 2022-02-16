@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 
 SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"SNS Manager");
+	this->SetText(CSTR("SNS Manager"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
@@ -68,7 +68,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->cboChannel->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlChannel, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->btnChannelAdd, UI::GUIButton(ui, this->pnlChannel, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnChannelAdd, UI::GUIButton(ui, this->pnlChannel, CSTR("Add")));
 	this->btnChannelAdd->SetRect(404, 4, 75, 23, false);
 	this->btnChannelAdd->HandleButtonClick(OnChannelAddClicked, this);
 	NEW_CLASS(this->lbChannels, UI::GUIListBox(ui, this, false));

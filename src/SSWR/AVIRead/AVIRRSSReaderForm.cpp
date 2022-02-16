@@ -93,10 +93,10 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 		}
 		if (rss->GetCount() > 0)
 		{
-			si = me->rssList->SortedIndexOf(sb.ToString());
+			si = me->rssList->SortedIndexOfPtr(sb.ToString(), sb.GetLength());
 			if (si < 0)
 			{
-				j = me->rssList->SortedInsert(Text::StrCopyNew(sb.ToString()));
+				j = me->rssList->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 				me->cboRecent->InsertItem(j, sb.ToCString(), 0);
 				me->RSSListStore();
 			}
@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRecentSelChg(void *userObj)
 	UOSInt i = me->cboRecent->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
-		me->txtURL->SetText(me->rssList->GetItem(i));
+		me->txtURL->SetText(me->rssList->GetItem(i)->ToCString());
 	}
 }
 
@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 4096))
 		{
-			i = this->rssList->SortedInsert(Text::StrCopyNew(sb.ToString()));
+			i = this->rssList->SortedInsert(Text::String::New(sb.ToString(), sb.GetLength()));
 			this->cboRecent->InsertItem(i, sb.ToCString(), 0);
 			sb.ClearStr();
 		}
@@ -194,7 +194,8 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 		j = this->rssList->GetCount();
 		while (i < j)
 		{
-			writer->WriteLine(this->rssList->GetItem(i));
+			Text::String *s = rssList->GetItem(i);
+			writer->WriteLineC(s->v, s->leng);
 			i++;
 		}
 		DEL_CLASS(writer);
@@ -204,12 +205,12 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 
 SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"RSS Reader");
+	this->SetText(CSTR("RSS Reader"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
-	NEW_CLASS(this->rssList, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->rssList, Data::ArrayListString());
 	this->rss = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -225,7 +226,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->lblURL->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, CSTR("")));
 	this->txtURL->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlURL, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlURL, CSTR("Request")));
 	this->btnRequest->SetRect(704, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->tcRSS, UI::GUITabControl(ui, this));
@@ -258,7 +259,7 @@ SSWR::AVIRead::AVIRRSSReaderForm::~AVIRRSSReaderForm()
 	i = this->rssList->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->rssList->GetItem(i));
+		this->rssList->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->rssList);
 	SDEL_CLASS(this->rss);
