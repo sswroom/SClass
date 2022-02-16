@@ -13,6 +13,7 @@ Text::String Text::String::emptyStr(1048576);
 Text::String *Text::String::NewOrNull(const UTF8Char *str)
 {
 	if (str == 0) return 0;
+	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 	s->v = s->vbuff;
@@ -24,6 +25,7 @@ Text::String *Text::String::NewOrNull(const UTF8Char *str)
 
 Text::String *Text::String::NewNotNull(const UTF8Char *str)
 {
+	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
 	s->v = s->vbuff;

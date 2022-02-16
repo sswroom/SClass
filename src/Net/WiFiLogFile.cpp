@@ -328,16 +328,16 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 		}
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendHexBuff(log->ouis[0], 3, 0, Text::LineBreakType::None);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendHexBuff(log->ouis[1], 3, 0, Text::LineBreakType::None);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendHexBuff(log->ouis[2], 3, 0, Text::LineBreakType::None);
 		sb.AppendC(UTF8STRC("\t"));
 		if (log->country)
 		{
 			sb.Append(log->country);
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		k = 0;
 		while (k < 20)
 		{
@@ -347,12 +347,12 @@ Bool Net::WiFiLogFile::StoreFile(Text::CString fileName)
 			}
 			if (k > 0)
 			{
-				sb.AppendChar(',', 1);
+				sb.AppendUTF8Char(',');
 			}
 			sb.AppendHex64(log->neighbour[k]);
 			k++;
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (log->ieLen > 0)
 		{
 			sb.AppendHexBuff(log->ieBuff, log->ieLen, 0, Text::LineBreakType::None);
@@ -491,9 +491,9 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		log->ssid = bss->GetSSID()->Clone();
 		log->phyType = bss->GetPHYType();
 		log->freq = bss->GetFreq();
-		log->manuf = Text::String::NewOrNull(bss->GetManuf());
-		log->model =  Text::String::NewOrNull(bss->GetModel());
-		log->serialNum =  Text::String::NewOrNull(bss->GetSN());
+		log->manuf = SCOPY_STRING(bss->GetManuf());
+		log->model =  SCOPY_STRING(bss->GetModel());
+		log->serialNum =  SCOPY_STRING(bss->GetSN());
 		log->country =  Text::String::NewOrNull(bss->GetCountry());
 		log->lastRSSI = bss->GetRSSI();
 		log->ouis[0][0] = oui1[0];
@@ -536,15 +536,15 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		{
 			if (log->manuf == 0 && bss->GetManuf())
 			{
-				log->manuf = Text::String::NewNotNull(bss->GetManuf());
+				log->manuf = bss->GetManuf()->Clone();
 			}
 			if (log->model == 0 && bss->GetModel())
 			{
-				log->model = Text::String::NewNotNull(bss->GetModel());
+				log->model = bss->GetModel()->Clone();
 			}
 			if (log->serialNum == 0 && bss->GetSN())
 			{
-				log->serialNum = Text::String::NewNotNull(bss->GetSN());
+				log->serialNum = bss->GetSN()->Clone();
 			}
 			if (log->country == 0 && bss->GetCountry())
 			{

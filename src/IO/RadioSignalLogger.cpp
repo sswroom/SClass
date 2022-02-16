@@ -17,11 +17,11 @@ void __stdcall IO::RadioSignalLogger::OnWiFiUpdate(Net::WirelessLAN::BSSInfo *bs
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb.AppendP(sbuff, sptr);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendC(UTF8STRC("wifi"));
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		Text::SBAppendF64(&sb, bss->GetRSSI());
 		sb.AppendC(UTF8STRC("\r\n"));
 		me->fs->Write(sb.ToString(), sb.GetLength());
@@ -43,7 +43,7 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb.AppendP(sbuff, sptr);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (dev->radioType == IO::BTScanLog::RT_HCI)
 		{
 			sb.AppendC(UTF8STRC("hci"));
@@ -63,9 +63,9 @@ void __stdcall IO::RadioSignalLogger::OnBTUpdate(IO::BTScanLog::ScanRecord3 *dev
 		{
 			sb.AppendC(UTF8STRC("bt"));
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendHexBuff(dev->mac, 6, ':', Text::LineBreakType::None);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(dev->rssi);
 		sb.AppendC(UTF8STRC("\r\n"));
 		me->fs->Write(sb.ToString(), sb.GetLength());

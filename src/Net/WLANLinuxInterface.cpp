@@ -21,9 +21,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	const UTF8Char *devManuf;
-	const UTF8Char *devModel;
-	const UTF8Char *devSN;
+	Text::String *devManuf;
+	Text::String *devModel;
+	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayList<Net::WirelessLANIE*> *ieList;
@@ -247,11 +247,13 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	UInt8 *buffEnd = buff + wrq.u.data.length;
 	ret = 1;
 	UTF8Char essid[IW_ESSID_MAX_SIZE + 1];
+	UTF8Char *essidEnd;
 	OSInt i;
 	UInt16 cmd;
 	UInt16 len;
 	OSInt firstOfst = 8;
 	essid[0] = 0;
+	essidEnd = essid;
 	while (buffEnd - buffCurr >= 8)
 	{
 		len = ReadUInt16(&buffCurr[0]);
@@ -268,11 +270,11 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 			{
 				if (retVal > 0)
 				{
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(essid, &bss));
+					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
-					SDEL_TEXT(bss.devManuf);
-					SDEL_TEXT(bss.devModel);
-					SDEL_TEXT(bss.devSN);
+					SDEL_STRING(bss.devManuf);
+					SDEL_STRING(bss.devModel);
+					SDEL_STRING(bss.devSN);
 				}
 				retVal++;
 				bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
@@ -294,17 +296,18 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 					bss.ouis[i][2] = 0;
 				}
 				essid[0] = 0;
+				essidEnd = essid;
 				firstOfst = 8;
 			}
 			else if (len == 20)
 			{
 				if (retVal > 0)
 				{
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(essid, &bss));
+					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 					bssList->Add(bssInfo);
-					SDEL_TEXT(bss.devManuf);
-					SDEL_TEXT(bss.devModel);
-					SDEL_TEXT(bss.devSN);
+					SDEL_STRING(bss.devManuf);
+					SDEL_STRING(bss.devModel);
+					SDEL_STRING(bss.devSN);
 				}
 				retVal++;
 				bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
@@ -326,6 +329,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 					bss.ouis[i][2] = 0;
 				}
 				essid[0] = 0;
+				essidEnd = essid;
 				firstOfst = 4;
 			}
 			break;
@@ -391,7 +395,7 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 		case 0x8B1B: //SIOCGIWESSID:
 			if (len > firstOfst + firstOfst && len < IW_ESSID_MAX_SIZE + firstOfst + firstOfst)
 			{
-				Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], (UOSInt)(len - firstOfst - firstOfst));
+				essidEnd = Text::StrConcatC(essid, &buffCurr[firstOfst + firstOfst], (UOSInt)(len - firstOfst - firstOfst));
 			}
 			break;
 		case 0x8B2B: //SIOCGIWENCODE:
@@ -478,20 +482,20 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 								case 0x1021: //Manu
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_TEXT(bss.devManuf);
-									bss.devManuf = Text::StrCopyNew(sbTmp.ToString());
+									SDEL_STRING(bss.devManuf);
+									bss.devManuf = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								case 0x1023: //Model
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_TEXT(bss.devModel);
-									bss.devModel = Text::StrCopyNew(sbTmp.ToString());
+									SDEL_STRING(bss.devModel);
+									bss.devModel = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								case 0x1042: //Serial
 									sbTmp.ClearStr();
 									sbTmp.AppendC(&currItem[4], itemSize);
-									SDEL_TEXT(bss.devSN);
-									bss.devSN = Text::StrCopyNew(sbTmp.ToString());
+									SDEL_STRING(bss.devSN);
+									bss.devSN = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
 									break;
 								}
 								currItem += itemSize + 4; 
@@ -532,11 +536,11 @@ C0 05 01 2A 00 C0 FF C3 04 02 12 12 12 DD 1E 00
 	}
 	if (retVal > 0)
 	{
-		NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(essid, &bss));
+		NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(CSTRP(essid, essidEnd), &bss));
 		bssList->Add(bssInfo);
-		SDEL_TEXT(bss.devManuf);
-		SDEL_TEXT(bss.devModel);
-		SDEL_TEXT(bss.devSN);
+		SDEL_STRING(bss.devManuf);
+		SDEL_STRING(bss.devModel);
+		SDEL_STRING(bss.devSN);
 		bss.ieList->Clear();
 	}
 	

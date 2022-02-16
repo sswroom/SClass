@@ -113,7 +113,7 @@ void IO::BTCapturer::StoreStatus()
 			IO::Path::DeleteFile(this->lastFileName);
 			Text::StrDelNew(this->lastFileName);
 		}
-		this->lastFileName = Text::StrCopyNew(sbuff);
+		this->lastFileName = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 }
 

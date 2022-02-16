@@ -245,16 +245,16 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 		log = logList.GetItem(i);
 		sb.ClearStr();
 		sb.AppendHexBuff(log->mac, 6, ':', Text::LineBreakType::None);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (log->name)
 		{
 			sb.Append(log->name);
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(log->txPower);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendHex16(log->company);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		switch (log->radioType)
 		{
 		case IO::BTScanLog::RT_HCI:
@@ -268,7 +268,7 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 			sb.AppendC(UTF8STRC("UNK"));
 			break;
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		switch (log->addrType)
 		{
 		case IO::BTScanLog::AT_PUBLIC:
@@ -282,9 +282,9 @@ Bool IO::BTDevLog::StoreFile(Text::CString fileName)
 			sb.AppendC(UTF8STRC("Unknown"));
 			break;
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(log->measurePower);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendU32((UInt32)log->advType);
 		writer->WriteLineC(sb.ToString(), sb.GetLength());
 		i++;

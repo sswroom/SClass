@@ -60,9 +60,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	const UTF8Char *devManuf;
-	const UTF8Char *devModel;
-	const UTF8Char *devSN;
+	Text::String *devManuf;
+	Text::String *devModel;
+	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayList<Net::WirelessLANIE*> *ieList;
@@ -110,10 +110,10 @@ Text::String *Net::WirelessLAN::Network::GetSSID()
 	return this->ssid;
 }
 
-Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
+Net::WirelessLAN::BSSInfo::BSSInfo(Text::CString ssid, const void *bssEntry)
 {
 	BSSEntry *bss = (BSSEntry*)bssEntry;
-	this->ssid = Text::String::NewNotNull(ssid);
+	this->ssid = Text::String::New(ssid);
 	this->phyId = bss->phyId;
 	MemCopyNO(this->mac, bss->mac, 6);
 	this->bssType = bss->bssType;
@@ -121,9 +121,9 @@ Net::WirelessLAN::BSSInfo::BSSInfo(const UTF8Char *ssid, const void *bssEntry)
 	this->rssi = bss->rssi;
 	this->linkQuality = bss->linkQuality;
 	this->freq = bss->freq;
-	this->devManuf = bss->devManuf?Text::StrCopyNew(bss->devManuf):0;
-	this->devModel = bss->devModel?Text::StrCopyNew(bss->devModel):0;
-	this->devSN = bss->devSN?Text::StrCopyNew(bss->devSN):0;
+	this->devManuf = SCOPY_STRING(bss->devManuf);
+	this->devModel = SCOPY_STRING(bss->devModel);
+	this->devSN = SCOPY_STRING(bss->devSN);
 	Text::StrConcat(this->devCountry, bss->country);
 	OSInt i = 0;
 	while (i < WLAN_OUI_CNT)
@@ -149,9 +149,9 @@ Net::WirelessLAN::BSSInfo::~BSSInfo()
 	}
 	DEL_CLASS(this->ieList);
 	SDEL_STRING(this->ssid);
-	SDEL_TEXT(this->devManuf);
-	SDEL_TEXT(this->devModel);
-	SDEL_TEXT(this->devSN);
+	SDEL_STRING(this->devManuf);
+	SDEL_STRING(this->devModel);
+	SDEL_STRING(this->devSN);
 }
 
 Text::String *Net::WirelessLAN::BSSInfo::GetSSID()
@@ -194,17 +194,17 @@ Double Net::WirelessLAN::BSSInfo::GetFreq()
 	return this->freq;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetManuf()
+Text::String *Net::WirelessLAN::BSSInfo::GetManuf()
 {
 	return this->devManuf;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetModel()
+Text::String *Net::WirelessLAN::BSSInfo::GetModel()
 {
 	return this->devModel;
 }
 
-const UTF8Char *Net::WirelessLAN::BSSInfo::GetSN()
+Text::String *Net::WirelessLAN::BSSInfo::GetSN()
 {
 	return this->devSN;
 }
