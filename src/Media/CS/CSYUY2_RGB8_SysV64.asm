@@ -150,7 +150,7 @@ u2rlop2:
 	lea rdi,[rdi+4]
 	lea rsi,[rsi+8]
 
-	add rdi,qword [rsp+64] ;dbpl
+	add rsi,r8 ;dbpl
 	dec r11 ;hleft
 	jnz u2rlop
 

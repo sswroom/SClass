@@ -18,16 +18,19 @@ Media::OpenCV::OCVObjectDetector::OCVObjectDetector(const UTF8Char *path, const 
 	this->detectResultHdlr = 0;
 	this->detectResultObj = 0;
 	sptr = Media::OpenCV::OCVUtil::GetDataPath(sbuff, path);
-	*sptr++ = IO::Path::PATH_SEPERATOR;
-	Text::StrConcat(sptr, dataFile);
-	cv::CascadeClassifier *cascade = new cv::CascadeClassifier((char*)sbuff);
-	if (cascade->empty())
+	if (sptr)
 	{
-		delete cascade;
-	}
-	else
-	{
-		this->cascade = cascade;
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		Text::StrConcat(sptr, dataFile);
+		cv::CascadeClassifier *cascade = new cv::CascadeClassifier((char*)sbuff);
+		if (cascade->empty())
+		{
+			delete cascade;
+		}
+		else
+		{
+			this->cascade = cascade;
+		}
 	}
 }
 

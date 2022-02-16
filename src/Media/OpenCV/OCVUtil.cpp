@@ -8,6 +8,7 @@ const Char *OCVUtil_LinuxPaths[] = {
 	"/usr/local/share/OpenCV",
 	"/usr/share/OpenCV",
 	"/usr/share/opencv",
+	"/usr/share/opencv4",
 	0
 };
 
