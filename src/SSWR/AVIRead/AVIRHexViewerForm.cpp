@@ -181,7 +181,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 				sb.Append(field->name);
 				if (field->value)
 				{
-					sb.AppendChar('=', 1);
+					sb.AppendUTF8Char('=');
 					sb.Append(field->value);
 				}
 				i++;

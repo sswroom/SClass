@@ -312,7 +312,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				{
 					sb2.ClearStr();
 					sb2.Append(prog->compileCfg);
-					sb2.AppendChar(' ', 1);
+					sb2.AppendUTF8Char(' ');
 					sb2.AppendC(ccfg, (UOSInt)(ccfgEnd - ccfg));
 					prog->compileCfg->Release();
 					prog->compileCfg = Text::String::New(sb2.ToString(), sb2.GetLength());
@@ -346,7 +346,7 @@ Bool IO::SMake::LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen)
 				{
 					sb2.ClearStr();
 					sb2.Append(cfg->value);
-					sb2.AppendChar(' ', 1);
+					sb2.AppendUTF8Char(' ');
 					AppendCfgItem(&sb2, sptr2, (UOSInt)(sptr2End - sptr2));
 					cfg->value->Release();
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
@@ -1031,16 +1031,16 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, cppCfg->value->v, cppCfg->value->leng);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (cflagsCfg)
 				{
 					sb.Append(cflagsCfg->value);
-					sb.AppendChar(' ', 1);
+					sb.AppendUTF8Char(' ');
 				}
 				if (subProg->compileCfg)
 				{
 					this->AppendCfg(&sb, subProg->compileCfg->v, subProg->compileCfg->leng);
-					sb.AppendChar(' ', 1);
+					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
 				{
@@ -1055,7 +1055,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (subProg->srcFile->v[0] == '@')
 				{
 					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
@@ -1071,11 +1071,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, ccCfg->value->v, ccCfg->value->leng);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (cflagsCfg)
 				{
 					sb.Append(cflagsCfg->value);
-					sb.AppendChar(' ', 1);
+					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
 				{
@@ -1090,7 +1090,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (subProg->srcFile->v[0] == '@')
 				{
 					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
@@ -1105,11 +1105,11 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			{
 				sb.ClearStr();
 				AppendCfgPath(&sb, asmCfg->value->v, asmCfg->value->leng);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (asmflagsCfg)
 				{
 					sb.Append(asmflagsCfg->value);
-					sb.AppendChar(' ', 1);
+					sb.AppendUTF8Char(' ');
 				}
 				if (asmListing)
 				{
@@ -1124,7 +1124,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				sb.AppendC(UTF8STRC(OBJECTPATH));
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				sb.Append(subProg->name);
-				sb.AppendChar(' ', 1);
+				sb.AppendUTF8Char(' ');
 				if (subProg->srcFile->v[0] == '@')
 				{
 					sb.AppendC(&subProg->srcFile->v[1], subProg->srcFile->leng - 1);
@@ -1183,7 +1183,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	{
 		sb.ClearStr();
 		AppendCfgPath(&sb, cppCfg->value->v, cppCfg->value->leng);
-		sb.AppendChar(' ', 1);
+		sb.AppendUTF8Char(' ');
 		sb.AppendC(UTF8STRC("-o bin/"));
 		sb.Append(prog->name);
 		if (postfixItem)
@@ -1194,7 +1194,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		j = objList.GetCount();
 		while (i < j)
 		{
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 			sb.AppendC(UTF8STRC(OBJECTPATH));
 			sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			sb.Append(objList.GetItem(i));
@@ -1202,7 +1202,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		}
 		if (libsCfg)
 		{
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 			sb.Append(libsCfg->value);
 		}
 		i = 0;
@@ -1210,7 +1210,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		while (i < j)
 		{
 	//		printf("Libs: %s\r\n", libList.GetItem(i));
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 			Text::String *lib = libList.GetItem(i);
 			AppendCfg(&sb, lib->v, lib->leng);
 			i++;

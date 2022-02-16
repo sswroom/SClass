@@ -77,7 +77,7 @@ void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 	UTF8Char c;
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	sb->AppendChar('\"', 1);
+	sb->AppendUTF8Char('\"');
 	sptr = buff;
 	while ((c = *s++) != 0)
 	{
@@ -113,7 +113,7 @@ void Text::JSText::ToJSTextDQuote(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 	{
 		sb->AppendC(buff, (UOSInt)(sptr - buff));
 	}
-	sb->AppendChar('\"', 1);
+	sb->AppendUTF8Char('\"');
 }
 
 WChar *Text::JSText::ToJSText(WChar *buff, const WChar *s)

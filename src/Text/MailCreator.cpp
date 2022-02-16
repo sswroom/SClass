@@ -6,6 +6,7 @@
 #include "Net/MIME.h"
 #include "Text/Encoding.h"
 #include "Text/MailCreator.h"
+#include "Text/MyStringW.h"
 #include "Text/MIMEObj/HTMLMIMEObj.h"
 #include "Text/MIMEObj/MultipartMIMEObj.h"
 #include "Text/MIMEObj/TextMIMEObj.h"
@@ -36,7 +37,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(s, strLen, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->Append((const UTF8Char*)b64Buff);
+		sbc->AppendSlow((const UTF8Char*)b64Buff);
 		MemFree(b64Buff);
 	}
 	else
@@ -44,7 +45,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *
 		sptr = s;
 		while (c = *sptr++)
 		{
-			sbc->AppendChar(c, 1);
+			sbc->AppendUTF8Char(c);
 		}
 	}
 }
@@ -65,29 +66,29 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 	}
 	if (found)
 	{
-		const UTF8Char *u8ptr = Text::StrToUTF8New(s);
+		Text::String *str = Text::String::NewNotNull(s);
 		OSInt buffSize;
 		UInt8 *b64Buff;
 		OSInt b64Size;
 		Crypto::Encrypt::Base64 b64;
-		buffSize = Text::StrCharCnt(u8ptr);
+		buffSize = str->leng;
 		b64Size = (buffSize / 3) * 4 + 4;
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
-		b64Size = b64.Encrypt(u8ptr, buffSize, b64Buff, 0);
+		b64Size = b64.Encrypt(str->v, buffSize, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->Append((const UTF8Char*)b64Buff);
+		sbc->AppendSlow((const UTF8Char*)b64Buff);
 		MemFree(b64Buff);
-		Text::StrDelNew(u8ptr);
+		str->Release();
 	}
 	else
 	{
-		const UTF8Char *u8ptr = Text::StrToUTF8New(s);
-		sbc->Append(u8ptr);
-		Text::StrDelNew(u8ptr);
+		Text::String *str = Text::String::NewNotNull(s);
+		sbc->Append(str);
+		str->Release();
 	}
 }
 
-Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, const UTF8Char *htmlPath)
+Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath)
 {
 	UOSInt j;
 	UOSInt endOfst = buffSize - 6;
@@ -125,7 +126,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 				{
 					UOSInt tmpI;
 					found = false;
-					sptr = Text::StrConcat(sbuff, htmlPath);
+					sptr = htmlPath.ConcatTo(sbuff);
 					l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR );
 					sptr = &sbuff[l + 1];
 					tmpI = i;
@@ -154,7 +155,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 					if (!found)
 					{
 						*sptr = 0;
-						obj = Text::IMIMEObj::ParseFromFile(sbuff);
+						obj = Text::IMIMEObj::ParseFromFile(CSTRP(sbuff, sptr));
 						if (obj)
 						{
 							imgs.Add(obj);
@@ -188,7 +189,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj((UInt8*)sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
 		Text::CString contType = obj->GetContentType();
-		mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.len);
+		mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.leng);
 		mpart->AddPartHeader(i, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("8bit"));
 
 		i = 0;
@@ -198,7 +199,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 			obj = imgs.GetItem(i);
 			k = mpart->AddPart(obj);
 			contType = obj->GetContentType();
-			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), contType.v, contType.len);
+			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), contType.v, contType.leng);
 			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("<image"));
@@ -353,7 +354,7 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 	this->subject = Text::String::New(sb.ToString(), sb.GetLength());
 }
 
-void Text::MailCreator::SetContentHTML(const WChar *content, const UTF8Char *htmlPath)
+void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlPath)
 {
 	Text::IMIMEObj *obj;
 	OSInt strLen = Text::StrCharCnt(content);
@@ -377,7 +378,7 @@ void Text::MailCreator::SetContentText(const WChar *content, UInt32 codePage)
 	this->content = obj;
 }
 
-Bool Text::MailCreator::SetContentFile(const UTF8Char *filePath)
+Bool Text::MailCreator::SetContentFile(Text::CString filePath)
 {
 	Text::IMIMEObj *obj;
 	OSInt buffSize;
@@ -404,12 +405,12 @@ Bool Text::MailCreator::SetContentFile(const UTF8Char *filePath)
 	return false;
 }
 
-void Text::MailCreator::AddAttachment(const UTF8Char *fileName)
+void Text::MailCreator::AddAttachment(Text::CString fileName)
 {
 	Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromFile(fileName);
 
 	this->attachObj->Add(obj);
-	this->attachName->Add(Text::StrCopyNew(fileName));
+	this->attachName->Add(Text::StrCopyNewC(fileName.v, fileName.leng));
 }
 
 Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
@@ -452,7 +453,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		{
 			i = mpart->AddPart(this->content->Clone());
 			contType = this->content->GetContentType();
-			mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.len);
+			mpart->AddPartHeader(i, UTF8STRC("Content-Type"), contType.v, contType.leng);
 		}
 
 		i = 0;
@@ -465,7 +466,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 			l = Text::StrLastIndexOfChar(fname, '\\');
 			sbc.ClearStr();
 			contType = obj->GetContentType();
-			sbc.AppendC(contType.v, contType.len);
+			sbc.AppendC(contType.v, contType.leng);
 			sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
 			this->AppendStr(&sbc, &fname[l + 1]);
 			sbc.AppendC(UTF8STRC("\""));
@@ -481,14 +482,14 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		msg->SetContent(mpart);
 
 		contType = mpart->GetContentType();
-		msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.len);
+		msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.leng);
 	}
 	else
 	{
 		if (this->content)
 		{
 			Text::CString contType = this->content->GetContentType();
-			msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.len);
+			msg->AddHeader(UTF8STRC("Content-Type"), contType.v, contType.leng);
 			msg->SetContent(this->content->Clone());
 		}
 	}

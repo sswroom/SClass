@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 	while (i-- > 0)
 	{
 		sptr = me->lbPath->GetItemText(sbuff, i);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendP(sbuff, sptr);
 	}
 

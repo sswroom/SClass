@@ -103,11 +103,11 @@ Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType)
 	this->isFirst = true;
 	if (rootType == OT_ARRAY)
 	{
-		sb->AppendChar('[', 1);
+		sb->AppendUTF8Char('[');
 	}
 	else
 	{
-		sb->AppendChar('{', 1);
+		sb->AppendUTF8Char('{');
 	}
 }
 
@@ -116,22 +116,22 @@ Text::JSONBuilder::~JSONBuilder()
 	UOSInt i;
 	if (this->currType == OT_ARRAY)
 	{
-		this->sb->AppendChar(']', 1);
+		this->sb->AppendUTF8Char(']');
 	}
 	else
 	{
-		this->sb->AppendChar('}', 1);
+		this->sb->AppendUTF8Char('}');
 	}
 	i = this->objTypes->GetCount();
 	while (i-- > 0)
 	{
 		if (this->objTypes->GetItem(i) == OT_OBJECT)
 		{
-			this->sb->AppendChar('}', 1);
+			this->sb->AppendUTF8Char('}');
 		}
 		else
 		{
-			this->sb->AppendChar(']', 1);
+			this->sb->AppendUTF8Char(']');
 		}
 	}
 	DEL_CLASS(this->objTypes);
@@ -220,7 +220,7 @@ Bool Text::JSONBuilder::ArrayBeginObject()
 	this->objTypes->Add(OT_ARRAY);
 	this->currType = OT_OBJECT;
 	this->isFirst = true;
-	this->sb->AppendChar('{', 1);
+	this->sb->AppendUTF8Char('{');
 	return true;
 }
 
@@ -237,7 +237,7 @@ Bool Text::JSONBuilder::ArrayBeginArray()
 	this->objTypes->Add(OT_ARRAY);
 	this->currType = OT_ARRAY;
 	this->isFirst = true;
-	this->sb->AppendChar('[', 1);
+	this->sb->AppendUTF8Char('[');
 	return true;
 }
 
@@ -250,7 +250,7 @@ Bool Text::JSONBuilder::ArrayEnd()
 		return false;
 	this->currType = this->objTypes->RemoveAt(i - 1);
 	this->isFirst = false;
-	this->sb->AppendChar(']', 1);
+	this->sb->AppendUTF8Char(']');
 	return true;
 }
 
@@ -432,6 +432,6 @@ Bool Text::JSONBuilder::ObjectEnd()
 		return false;
 	this->currType = this->objTypes->RemoveAt(i - 1);
 	this->isFirst = false;
-	this->sb->AppendChar('}', 1);
+	this->sb->AppendUTF8Char('}');
 	return true;
 }

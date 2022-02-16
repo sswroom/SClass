@@ -569,11 +569,11 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ClientReq(SSWR::SDNSProxy::
 
 			sbOut.AppendC(UTF8STRC("<tr><td>"));
 			sbOut.AppendI32(hInfo->year);
-			sbOut.AppendChar('-', 1);
+			sbOut.AppendUTF8Char('-');
 			sbOut.AppendI32(hInfo->month);
-			sbOut.AppendChar('-', 1);
+			sbOut.AppendUTF8Char('-');
 			sbOut.AppendI32(hInfo->day);
-			sbOut.AppendChar(' ', 1);
+			sbOut.AppendUTF8Char(' ');
 			sbOut.AppendI32(hInfo->hour);
 			sbOut.AppendC(UTF8STRC(":00"));
 			sbOut.AppendC(UTF8STRC("</td><td>"));

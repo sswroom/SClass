@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 						{
 							sb.ClearStr();
 							sb.AppendSlow((const UTF8Char*)android->brandName);
-							sb.AppendChar(' ', 1);
+							sb.AppendUTF8Char(' ');
 							sb.AppendSlow((const UTF8Char*)android->modelName);
 							this->lvUserAgent->SetSubItem(k, 3, sb.ToString());
 							this->lvUserAgent->SetSubItem(k, 4, (const UTF8Char*)android->cpuName);

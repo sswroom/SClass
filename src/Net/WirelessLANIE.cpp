@@ -51,9 +51,9 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 		}
 		else
 		{
-			sb->AppendChar('(', 1);
+			sb->AppendUTF8Char('(');
 			sb->AppendHexBuff(&ieBuff[2], size, ' ', Text::LineBreakType::None);
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 		return;
 	case 1:
@@ -64,7 +64,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 			sb->AppendC(UTF8STRC("\r\n\t"));
 			if (ieBuff[2 + i] & 0x80)
 			{
-				sb->AppendChar('*', 1);
+				sb->AppendUTF8Char('*');
 			}
 			switch (ieBuff[2 + i] & 0x7F)
 			{
@@ -541,7 +541,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 			sb->AppendC(UTF8STRC("\r\n\t"));
 			if (ieBuff[2 + i] & 0x80)
 			{
-				sb->AppendChar('*', 1);
+				sb->AppendUTF8Char('*');
 			}
 			switch (ieBuff[2 + i] & 0x7F)
 			{
@@ -1058,13 +1058,13 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 					if (itemSize == 16)
 					{
 						sb->AppendHexBuff(&ieBuff[i + 6], 4, 0, Text::LineBreakType::None);
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendHexBuff(&ieBuff[i + 10], 2, 0, Text::LineBreakType::None);
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendHexBuff(&ieBuff[i + 12], 2, 0, Text::LineBreakType::None);
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendHexBuff(&ieBuff[i + 14], 2, 0, Text::LineBreakType::None);
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendHexBuff(&ieBuff[i + 16], 6, 0, Text::LineBreakType::None);
 					}
 					break;
@@ -1077,7 +1077,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 						sb->AppendC(UTF8STRC(" ("));
 						const Net::MACInfo::MACEntry *ent = Net::MACInfo::GetMACInfoOUI(&ieBuff[i + 6]);
 						sb->AppendC(ent->name, ent->nameLen);
-						sb->AppendChar(')', 1);
+						sb->AppendUTF8Char(')');
 						UOSInt j = 3;
 						while (j < itemSize - 2)
 						{
@@ -1104,7 +1104,7 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 					if (itemSize == 1)
 					{
 						sb->AppendU16((UInt16)(ieBuff[i + 6] >> 4));
-						sb->AppendChar('.', 1);
+						sb->AppendUTF8Char('.');
 						sb->AppendU16(ieBuff[i + 6] & 15);
 					}
 					else
@@ -1117,9 +1117,9 @@ void Net::WirelessLANIE::ToString(const UInt8 *ieBuff, Text::StringBuilderUTF8 *
 					if (itemSize == 8)
 					{
 						sb->AppendU16(ReadMUInt16(&ieBuff[i + 6]));
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendHexBuff(&ieBuff[i + 8], 4, 0, Text::LineBreakType::None);
-						sb->AppendChar('-', 1);
+						sb->AppendUTF8Char('-');
 						sb->AppendU16(ReadMUInt16(&ieBuff[i + 12]));
 					}
 					break;

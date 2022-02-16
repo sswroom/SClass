@@ -139,7 +139,7 @@ void IO::FileAnalyse::FrameDetail::ToString(Text::StringBuilderUTF8 *sb)
 			sb->Append(field->name);
 			if (field->value)
 			{
-				sb->AppendChar('=', 1);
+				sb->AppendUTF8Char('=');
 				sb->Append(field->value);
 			}
 			i++;

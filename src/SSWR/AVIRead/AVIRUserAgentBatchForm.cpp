@@ -15,55 +15,55 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("\t{Net::BrowserInfo::"));
 	sb.Append(Net::BrowserInfo::GetDefName(ent.browser));
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 35) sb.AppendChar(' ', 35 - j);
 
 	if (ent.browserVer)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.browserVer);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 52) sb.AppendChar(' ', 52 - j);
 
 	sb.AppendC(UTF8STRC("Manage::OSInfo::"));
 	sb.Append(Manage::OSInfo::GetDefName(ent.os));
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 85) sb.AppendChar(' ', 85 - j);
 
 	if (ent.osVer)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.osVer);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 98) sb.AppendChar(' ', 98 - j);
 
 	if (ent.devName)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.devName);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 110) sb.AppendChar(' ', 110 - j);
 	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);

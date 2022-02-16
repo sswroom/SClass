@@ -249,7 +249,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 						sbURI.AppendP(sbuff, sptr);
 						if (!sbURI.EndsWith('/'))
 						{
-							sbURI.AppendChar('/', 1);
+							sbURI.AppendUTF8Char('/');
 						}
 						sbURI.AppendI64(ikey);
 						json.ObjectBeginObject((const UTF8Char*)"_links");

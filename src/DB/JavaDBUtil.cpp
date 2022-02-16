@@ -36,7 +36,7 @@ void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col
 {
 	sb->AppendC(UTF8STRC("\tprivate "));
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	sb->AppendC(UTF8STRC(";\r\n"));
 }
@@ -44,7 +44,7 @@ void DB::JavaDBUtil::AppendFieldDef(Text::StringBuilderUTF8 *sb, DB::ColDef *col
 void DB::JavaDBUtil::AppendConstrHdr(Text::StringBuilderUTF8 *sb, DB::ColDef *col, Text::String *colName, Bool isLast)
 {
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	if (!isLast)
 	{
@@ -83,9 +83,9 @@ void DB::JavaDBUtil::AppendGetterSetter(Text::StringBuilderUTF8 *sb, DB::ColDef 
 	sb->AppendC(UTF8STRC("\r\n"));
 	sb->AppendC(UTF8STRC("\tpublic void set"));
 	Text::JavaText::ToJavaName(sb, colName->v, true);
-	sb->AppendChar('(', 1);
+	sb->AppendUTF8Char('(');
 	sb->Append(Text::JavaText::GetJavaTypeName(col->GetColType(), col->IsNotNull()));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	Text::JavaText::ToJavaName(sb, colName->v, false);
 	sb->AppendC(UTF8STRC(") {\r\n"));
 	sb->AppendC(UTF8STRC("\t\tthis."));
@@ -135,16 +135,16 @@ void DB::JavaDBUtil::AppendEqualsItem(Text::StringBuilderUTF8 *sb, DB::ColDef *c
 		Text::JavaText::ToJavaName(sb, colName->v, false);
 		sb->AppendC(UTF8STRC(", "));
 		Text::JavaText::ToJavaName(sb, clsName->v, false);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		Text::JavaText::ToJavaName(sb, colName->v, false);
-		sb->AppendChar(')', 1);
+		sb->AppendUTF8Char(')');
 	}
 	else
 	{
 		Text::JavaText::ToJavaName(sb, colName->v, false);
 		sb->AppendC(UTF8STRC(" == "));
 		Text::JavaText::ToJavaName(sb, clsName->v, false);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		Text::JavaText::ToJavaName(sb, colName->v, false);
 	}
 	if (!isLast)
@@ -269,7 +269,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	sbConstrHdr.AppendC(UTF8STRC("\r\n"));
 	sbConstrHdr.AppendC(UTF8STRC("\tpublic "));
 	Text::JavaText::ToJavaName(&sbConstrHdr, clsName->v, true);
-	sbConstrHdr.AppendChar('(', 1);
+	sbConstrHdr.AppendUTF8Char('(');
 
 	sbEquals.AppendC(UTF8STRC("\r\n"));
 	sbEquals.AppendC(UTF8STRC("\t@Override\r\n"));
@@ -283,7 +283,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	sbEquals.AppendC(UTF8STRC("\t\t}\r\n"));
 	sbEquals.AppendC(UTF8STRC("\t\t"));
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, true);
-	sbEquals.AppendChar(' ', 1);
+	sbEquals.AppendUTF8Char(' ');
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, false);
 	sbEquals.AppendC(UTF8STRC(" = ("));
 	Text::JavaText::ToJavaName(&sbEquals, clsName->v, true);

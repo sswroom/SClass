@@ -22,9 +22,9 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	Text::CString reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
-	sb.AppendChar(' ', 1);
+	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());
-	sb.AppendChar(' ', 1);
+	sb.AppendUTF8Char(' ');
 	sb.Append(Net::WebServer::IWebRequest::RequestProtocolGetName(req->GetProtocol()));
 	this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 	Data::ArrayList<Text::String*> headers;

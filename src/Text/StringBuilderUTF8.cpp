@@ -249,7 +249,7 @@ Text::StringBuilderUTF8 *Text::StringBuilderUTF8::AppendCSV(const UTF8Char **sar
 	{
 		s = Text::String::NewCSVRec(sarr[i]);
 		if (i > 0)
-			this->AppendChar(',', 1);
+			this->AppendUTF8Char(',');
 		this->AppendC(s->v, s->leng);
 		s->Release();
 		i++;

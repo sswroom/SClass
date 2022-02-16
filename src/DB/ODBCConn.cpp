@@ -468,7 +468,7 @@ void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
 		sb->Append(this->dsn);
 		if (this->schema)
 		{
-			sb->AppendChar('/', 1);
+			sb->AppendUTF8Char('/');
 			sb->Append(this->schema);
 		}
 	}
@@ -1013,7 +1013,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 		{
 			sb.AppendC(UTF8STRC("TOP "));
 			sb.AppendUOSInt(maxCnt);
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 		}
 	}
 	if (columnNames == 0 || columnNames->GetCount() == 0)
@@ -1049,7 +1049,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, this->svrType);
 		sb.AppendC(sptr + 1, (UOSInt)(sptr2 - sptr - 1));
-		sb.AppendChar('.', 1);
+		sb.AppendUTF8Char('.');
 		i += j + 1;
 	}
 	if (this->svrType == DB::DBUtil::ServerType::SQLite || this->svrType == DB::DBUtil::ServerType::MySQL)

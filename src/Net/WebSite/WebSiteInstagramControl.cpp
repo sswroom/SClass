@@ -59,7 +59,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 	OSInt retCnt = 0;
 	sb.AppendC(UTF8STRC("https://www.instagram.com/"));
 	sb.Append(channelId);
-	sb.AppendChar('/', 1);
+	sb.AppendUTF8Char('/');
 	Net::WebSite::WebSiteInstagramControl::ItemData *item;
 	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToCString());
 	if (baseData)
@@ -244,7 +244,7 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCo
 	OSInt retCnt = 0;
 	sb.AppendC(UTF8STRC("https://www.instagram.com/p/"));
 	sb.Append(shortCode);
-	sb.AppendChar('/', 1);
+	sb.AppendUTF8Char('/');
 	Text::JSONBase *baseData = this->ParsePageJSON(sb.ToCString());
 	if (baseData)
 	{

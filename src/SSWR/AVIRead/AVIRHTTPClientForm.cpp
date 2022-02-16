@@ -78,11 +78,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		{
 			if (sb.IndexOf('?') != INVALID_INDEX)
 			{
-				sb.AppendChar('&', 1);
+				sb.AppendUTF8Char('&');
 			}
 			else
 			{
-				sb.AppendChar('?', 1);
+				sb.AppendUTF8Char('?');
 			}
 			SSWR::AVIRead::AVIRHTTPClientForm::ParamValue *param;
 			Text::StringBuilderUTF8 sb2;
@@ -91,11 +91,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				param = me->params->GetItem(i);
 				if (sb2.GetCharCnt() > 0)
 				{
-					sb2.AppendChar('&', 1);
+					sb2.AppendUTF8Char('&');
 				}
 				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 				sb2.AppendP(sbuff, sptr);
-				sb2.AppendChar('=', 1);
+				sb2.AppendUTF8Char('=');
 				sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 				sb2.AppendP(sbuff, sptr);
 				i++;
@@ -253,11 +253,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 			param = me->params->GetItem(i);
 			if (sb2.GetCharCnt() > 0)
 			{
-				sb2.AppendChar('&', 1);
+				sb2.AppendUTF8Char('&');
 			}
 			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->name->v);
 			sb2.AppendP(sbuff, sptr);
-			sb2.AppendChar('=', 1);
+			sb2.AppendUTF8Char('=');
 			sptr = Text::TextBinEnc::FormEncoding::FormEncode(sbuff, param->value->v);
 			sb2.AppendP(sbuff, sptr);
 			i++;

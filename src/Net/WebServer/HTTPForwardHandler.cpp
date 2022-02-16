@@ -162,7 +162,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (fwdFor)
 		{
 			sbHeader.Append(fwdFor);
-			sbHeader.AppendChar(',', 1);
+			sbHeader.AppendUTF8Char(',');
 		}
 		sptr = Net::SocketUtil::GetAddrName(buff, req->GetClientAddr());
 		sbHeader.AppendC(buff, (UOSInt)(sptr - buff));

@@ -113,7 +113,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	if ((name = table->GetDatabaseName()) != 0)
 	{
 		this->AppendCol(name);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 	}
 	name = table->GetTableName();
 	UOSInt i = Text::StrIndexOfChar(name, '.');
@@ -121,7 +121,7 @@ void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 	{
 		const UTF8Char *catalog = Text::StrCopyNewC(name, i);
 		this->AppendCol(catalog);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		Text::StrDelNew(catalog);
 		this->AppendCol(name + i + 1);
 	}

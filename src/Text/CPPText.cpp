@@ -8,7 +8,7 @@
 void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
 {
 	UTF32Char c;
-	sb->AppendChar('\"', 1);
+	sb->AppendUTF8Char('\"');
 	while (true)
 	{
 		str = Text::StrReadChar(str, &c);
@@ -18,83 +18,83 @@ void Text::CPPText::ToCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str
 		}
 		if (c == '\r')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('r', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('r');
 		}
 		else if (c == '\n')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('n', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('n');
 		}
 		else if (c == '\f')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('f', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('f');
 		}
 		else if (c == '\t')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('t', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('t');
 		}
 		else if (c == '\'')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('\'', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\'');
 		}
 		else if (c == '\"')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('\"', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\"');
 		}
 		else if (c == '\\')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('\\', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\\');
 		}
 		else if (c == '\?')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('\?', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('\?');
 		}
 		else if (c == '\a')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('a', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('a');
 		}
 		else if (c == '\b')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('b', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('b');
 		}
 		else if (c == '\v')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('v', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('v');
 		}
 		else if (c < ' ')
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('X', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('X');
 			sb->AppendHex8((UInt8)c);
 		}
 		else if (c >= 0x80 && c <= 0xffff)
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('u', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('u');
 			sb->AppendHex16((UInt16)c);
 		}
 		else if (c >= 0x10000)
 		{
-			sb->AppendChar('\\', 1);
-			sb->AppendChar('U', 1);
+			sb->AppendUTF8Char('\\');
+			sb->AppendUTF8Char('U');
 			sb->AppendHex32((UInt32)c);
 		}
 		else
 		{
-			sb->AppendChar(c, 1);
+			sb->AppendUTF8Char((UTF8Char)c);
 		}
 	}
-	sb->AppendChar('\"', 1);
+	sb->AppendUTF8Char('\"');
 }
 
 void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *str)
@@ -123,47 +123,47 @@ void Text::CPPText::FromCPPString(Text::StringBuilderUTF8 *sb, const UTF8Char *s
 				}
 				if (c == '\'')
 				{
-					sb->AppendChar('\'', 1);
+					sb->AppendUTF8Char('\'');
 				}
 				else if (c == '\"')
 				{
-					sb->AppendChar('\"', 1);
+					sb->AppendUTF8Char('\"');
 				}
 				else if (c == '\\')
 				{
-					sb->AppendChar('\\', 1);
+					sb->AppendUTF8Char('\\');
 				}
 				else if (c == '?')
 				{
-					sb->AppendChar('\?', 1);
+					sb->AppendUTF8Char('\?');
 				}
 				else if (c == 'a')
 				{
-					sb->AppendChar('\a', 1);
+					sb->AppendUTF8Char('\a');
 				}
 				else if (c == 'b')
 				{
-					sb->AppendChar('\b', 1);
+					sb->AppendUTF8Char('\b');
 				}
 				else if (c == 'f')
 				{
-					sb->AppendChar('\f', 1);
+					sb->AppendUTF8Char('\f');
 				}
 				else if (c == 'n')
 				{
-					sb->AppendChar('\n', 1);
+					sb->AppendUTF8Char('\n');
 				}
 				else if (c == 'r')
 				{
-					sb->AppendChar('\r', 1);
+					sb->AppendUTF8Char('\r');
 				}
 				else if (c == 't')
 				{
-					sb->AppendChar('\t', 1);
+					sb->AppendUTF8Char('\t');
 				}
 				else if (c == 'v')
 				{
-					sb->AppendChar('\v', 1);
+					sb->AppendUTF8Char('\v');
 				}
 				else if (c == 'X')
 				{
@@ -258,7 +258,7 @@ Bool Text::CPPText::ParseEnum(Data::ArrayList<const UTF8Char*> *enumEntries, con
 		}
 		else if (Text::CharUtil::IsAlphabet(sb.ToString()[0]))
 		{
-			enumEntries->Add(Text::StrCopyNew(sb.ToString()));
+			enumEntries->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 			sb.ClearStr();
 			if (!reader.NextWord(&sb))
 			{

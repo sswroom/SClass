@@ -277,7 +277,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		newFilters.Add(filter);
 		sb2.ClearStr();
 		sb2.AppendSlow(outFilePrefix);
-		sb2.AppendChar('_', 1);
+		sb2.AppendUTF8Char('_');
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		shpType = this->ConvertShp(sourceFile, sb2.ToString(), dbCols, blkScale, &newFilters, progress, dbCols2);
 		newFilters.RemoveAt(newFilters.GetCount() - 1);

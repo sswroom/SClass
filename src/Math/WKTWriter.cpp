@@ -42,9 +42,9 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			Double z;
 			pt->GetCenter3D(&x, &y, &z);
 			sb->AppendDouble(x);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(y);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(z);
 		}
 		else
@@ -54,7 +54,7 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			Double y;
 			pt->GetCenter(&x, &y);
 			sb->AppendDouble(x);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendDouble(y);
 		}
 		sb->AppendC(UTF8STRC(")"));
@@ -75,35 +75,35 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			j = nPtOfst - 1;
 			while (i < j)
 			{
-				sb->AppendChar('(', 1);
+				sb->AppendUTF8Char('(');
 				while (k < ptOfstList[i + 1])
 				{
 					sb->AppendDouble(pointList[k * 2]);
-					sb->AppendChar(' ', 1);
+					sb->AppendUTF8Char(' ');
 					sb->AppendDouble(pointList[k * 2 + 1]);
 					k++;
 					if (k < ptOfstList[i + 1])
 					{
-						sb->AppendChar(',', 1);
+						sb->AppendUTF8Char(',');
 					}
 				}
-				sb->AppendChar(')', 1);
-				sb->AppendChar(',', 1);
+				sb->AppendUTF8Char(')');
+				sb->AppendUTF8Char(',');
 				i++;
 			}
-			sb->AppendChar('(', 1);
+			sb->AppendUTF8Char('(');
 			while (k < nPoint)
 			{
 				sb->AppendDouble(pointList[k * 2]);
-				sb->AppendChar(' ', 1);
+				sb->AppendUTF8Char(' ');
 				sb->AppendDouble(pointList[k * 2 + 1]);
 				k++;
 				if (k < nPoint)
 				{
-					sb->AppendChar(',', 1);
+					sb->AppendUTF8Char(',');
 				}
 			}
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;
@@ -123,35 +123,35 @@ Bool Math::WKTWriter::GenerateWKT(Text::StringBuilderUTF8 *sb, Math::Vector2D *v
 			j = nPtOfst - 1;
 			while (i < j)
 			{
-				sb->AppendChar('(', 1);
+				sb->AppendUTF8Char('(');
 				while (k < ptOfstList[i + 1])
 				{
 					sb->AppendDouble(pointList[k * 2]);
-					sb->AppendChar(' ', 1);
+					sb->AppendUTF8Char(' ');
 					sb->AppendDouble(pointList[k * 2 + 1]);
 					k++;
 					if (k < ptOfstList[i + 1])
 					{
-						sb->AppendChar(',', 1);
+						sb->AppendUTF8Char(',');
 					}
 				}
-				sb->AppendChar(')', 1);
-				sb->AppendChar(',', 1);
+				sb->AppendUTF8Char(')');
+				sb->AppendUTF8Char(',');
 				i++;
 			}
-			sb->AppendChar('(', 1);
+			sb->AppendUTF8Char('(');
 			while (k < nPoint)
 			{
 				sb->AppendDouble(pointList[k * 2]);
-				sb->AppendChar(' ', 1);
+				sb->AppendUTF8Char(' ');
 				sb->AppendDouble(pointList[k * 2 + 1]);
 				k++;
 				if (k < nPoint)
 				{
-					sb->AppendChar(',', 1);
+					sb->AppendUTF8Char(',');
 				}
 			}
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 		sb->AppendC(UTF8STRC(")"));
 		return true;

@@ -268,14 +268,14 @@ Bool Net::ASN1Util::PDUToString(const UInt8 *pdu, const UInt8 *pduEnd, Text::Str
 				{
 					sb->AppendC(UTF8STRC("(0x"));
 					sb->AppendHex8(pdu[ofst]);
-					sb->AppendChar(')', 1);
+					sb->AppendUTF8Char(')');
 				}
 			}
 			else
 			{
-				sb->AppendChar('(', 1);
+				sb->AppendUTF8Char('(');
 				sb->AppendHexBuff(&pdu[ofst], len, ' ', Text::LineBreakType::None);
-				sb->AppendChar(')', 1);
+				sb->AppendUTF8Char(')');
 			}
 			sb->AppendC(UTF8STRC("\r\n"));
 			pdu += ofst + len;
@@ -772,14 +772,14 @@ void Net::ASN1Util::OIDToString(const UInt8 *pdu, UOSInt pduSize, Text::StringBu
 	UInt32 v = 0;
 	UOSInt i = 1;
 	sb->AppendU16(pdu[0] / 40);
-	sb->AppendChar('.', 1);
+	sb->AppendUTF8Char('.');
 	sb->AppendU16(pdu[0] % 40);
 	while (i < pduSize)
 	{
 		v = (v << 7) | (pdu[i] & 0x7f);
 		if ((pdu[i] & 0x80) == 0)
 		{
-			sb->AppendChar('.', 1);
+			sb->AppendUTF8Char('.');
 			sb->AppendU32(v);
 			v = 0;
 		}
@@ -909,7 +909,7 @@ UOSInt Net::ASN1Util::OIDText2PDU(const UTF8Char *oidText, UOSInt oidTextLen, UI
 void Net::ASN1Util::OIDToCPPCode(const UInt8 *oid, UOSInt oidLen, const UTF8Char *objectName, UOSInt nameLen, Text::StringBuilderUTF8 *sb)
 {
 	OSInt k;
-	sb->AppendChar('\t', 1);
+	sb->AppendUTF8Char('\t');
 	sb->AppendC(UTF8STRC("{\""));
 	sb->AppendC(objectName, nameLen);
 	sb->AppendC(UTF8STRC("\","));

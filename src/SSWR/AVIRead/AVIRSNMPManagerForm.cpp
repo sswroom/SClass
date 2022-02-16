@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 					{
 						Text::StringBuilderUTF8 sbPlatform;
 						sbPlatform.Append(agent->vendor);
-						sbPlatform.AppendChar(' ', 1);
+						sbPlatform.AppendUTF8Char(' ');
 						sbPlatform.Append(agent->model);
 						me->redir->SendDevPlatform(cliId, sbPlatform.ToString(), sbPlatform.GetLength());
 					}

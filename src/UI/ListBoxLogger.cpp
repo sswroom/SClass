@@ -143,7 +143,7 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 	{
 		sb.AppendDate(logTime);
 	}
-	sb.AppendChar('\t', 1);
+	sb.AppendUTF8Char('\t');
 	sb.AppendC(logMsg, msgLen);
 	if (this->logCnt < this->maxLog)
 	{

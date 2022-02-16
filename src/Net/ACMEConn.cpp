@@ -75,7 +75,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, Text::String *url
 	{
 		sb.AppendC(UTF8STRC("\",\"kid\":\""));
 		sb.Append(accountId);
-		sb.AppendChar('\"', 1);
+		sb.AppendUTF8Char('\"');
 	}
 	else
 	{
@@ -92,7 +92,7 @@ Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protSt
 	Text::StringBuilderUTF8 sb;
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(&sb, protStr.v, protStr.leng);
-	sb.AppendChar('.', 1);
+	sb.AppendUTF8Char('.');
 	b64.EncodeBin(&sb, data.v, data.leng);
 	Crypto::Token::JWSignature *sign;
 	NEW_CLASS(sign, Crypto::Token::JWSignature(ssl, alg, key->GetASN1Buff(), key->GetASN1BuffSize()));
@@ -273,7 +273,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, U
 	sb.Append(this->serverHost);
 	if (port != 0 && port != 443)
 	{
-		sb.AppendChar(':', 1);
+		sb.AppendUTF8Char(':');
 		sb.AppendU16(port);
 	}
 	sb.AppendC(UTF8STRC("/directory"));
@@ -451,7 +451,7 @@ Bool Net::ACMEConn::AccountNew()
 				{
 					Text::StringBuilderUTF8 sb;
 					sb.AppendC(UTF8STRC("{\"termsOfServiceAgreed\":true"));
-					sb.AppendChar('}', 1);
+					sb.AppendUTF8Char('}');
 					cli = this->ACMEPost(this->urlNewAccount, sb.ToCString());
 					if (cli)
 					{
@@ -528,7 +528,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderNew(const UTF8Char *domainNames, UOSIn
 	{
 		i = Text::StrSplitP(sarr, 2, sarr[1], ',');
 		if (found)
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 		sb.AppendC(UTF8STRC("{\"type\":\""));
 		if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
 		{

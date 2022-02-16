@@ -534,9 +534,9 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
 		return;
 	case ItemType::UUID:
 		{
-			sb->AppendChar('{', 1);
+			sb->AppendUTF8Char('{');
 			this->val.uuid->ToString(sb);
-			sb->AppendChar('}', 1);
+			sb->AppendUTF8Char('}');
 			return;
 		}
 	}
@@ -1070,14 +1070,14 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 		return;
 	case ItemType::Date:
 		sptr = this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 		break;
 	case ItemType::ByteArr:
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 		sb->AppendHexBuff(this->val.byteArr->GetArray(), this->val.byteArr->GetCount(), 0, Text::LineBreakType::None);
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 		return;
 	case ItemType::Vector:
 		{
@@ -1087,9 +1087,9 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 		return;
 	case ItemType::UUID:
 		{
-			sb->AppendChar('{', 1);
+			sb->AppendUTF8Char('{');
 			this->val.uuid->ToString(sb);
-			sb->AppendChar('}', 1);
+			sb->AppendUTF8Char('}');
 			return;
 		}
 	}

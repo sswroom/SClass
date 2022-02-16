@@ -445,7 +445,7 @@ Bool DB::CSVReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 				{
 					if (*ptr == '"')
 					{
-						sb->AppendChar('"', 1);
+						sb->AppendUTF8Char('"');
 						ptr++;
 					}
 					else

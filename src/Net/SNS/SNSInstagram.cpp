@@ -58,7 +58,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 						s = imgList.GetItem(j);
 						if (j > 0)
 						{
-							sb.AppendChar(' ', 1);
+							sb.AppendUTF8Char(' ');
 						}
 						sb.Append(s);
 						s->Release();
@@ -77,7 +77,7 @@ Net::SNS::SNSInstagram::SNSInstagram(Net::SocketFactory *sockf, Net::SSLEngine *
 						s = videoList.GetItem(j);
 						if (j > 0)
 						{
-							sb.AppendChar(' ', 1);
+							sb.AppendUTF8Char(' ');
 						}
 						sb.Append(s);
 						s->Release();
@@ -211,7 +211,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 								s = imgList.GetItem(j);
 								if (j > 0)
 								{
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 								}
 								sb.Append(s);
 								s->Release();
@@ -230,7 +230,7 @@ Bool Net::SNS::SNSInstagram::Reload()
 								s = videoList.GetItem(j);
 								if (j > 0)
 								{
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 								}
 								sb.Append(s);
 								s->Release();

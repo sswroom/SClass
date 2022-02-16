@@ -359,9 +359,9 @@ namespace Text
  			case Text::LineBreakType::CRLF:
 				return AppendC(UTF8STRC("\r\n"));
 			case Text::LineBreakType::CR:
-				return AppendChar('\r', 1);
+				return AppendUTF8Char('\r');
 			case Text::LineBreakType::LF:
-				return AppendChar('\n', 1);
+				return AppendUTF8Char('\n');
 			case Text::LineBreakType::None:
 			default:
 				return this;

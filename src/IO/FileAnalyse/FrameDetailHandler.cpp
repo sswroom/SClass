@@ -83,7 +83,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUIntName(UOSInt frameOfst, UOSInt s
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 	}
 	else
 	{
@@ -100,7 +100,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddUInt64Name(UOSInt frameOfst, UOSInt
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 	}
 	else
 	{
@@ -174,7 +174,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex8Name(UOSInt frameOfst, Text::CS
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 	}
 	else
 	{
@@ -192,7 +192,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddHex16Name(UOSInt frameOfst, Text::C
 	{
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(vName);
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 	}
 	else
 	{
@@ -264,7 +264,7 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CSt
 		{
 			sb.AppendC(UTF8STRC("Unknown"));
 		}
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 	}
 	this->AddField(frameOfst, 6, name, sb.ToCString());
 }

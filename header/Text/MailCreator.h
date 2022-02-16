@@ -19,7 +19,7 @@ namespace Text
 
 		void AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *s);
 		void AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s);
-		static Text::IMIMEObj *ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, const UTF8Char *htmlPath);
+		static Text::IMIMEObj *ParseContentHTML(UInt8 *buff, UOSInt buffSize, UInt32 codePage, Text::CString htmlPath);
 	public:
 		MailCreator();
 		~MailCreator();
@@ -32,10 +32,10 @@ namespace Text
 		void CCClear();
 		void SetSubject(const WChar *subj);
 
-		void SetContentHTML(const WChar *content, const UTF8Char *htmlPath);
+		void SetContentHTML(const WChar *content, Text::CString htmlPath);
 		void SetContentText(const WChar *content, UInt32 codePage);
-		Bool SetContentFile(const UTF8Char *filePath);
-		void AddAttachment(const UTF8Char *fileName);
+		Bool SetContentFile(Text::CString filePath);
+		void AddAttachment(Text::CString fileName);
 
 		Text::MIMEObj::MailMessage *CreateMail();
 	};

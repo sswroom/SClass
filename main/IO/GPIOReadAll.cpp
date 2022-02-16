@@ -30,13 +30,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" = "));
 			if (ctrl->IsPinHigh(i))
 			{
-				sb.AppendChar('1', 1);
+				sb.AppendUTF8Char('1');
 			}
 			else
 			{
-				sb.AppendChar('0', 1);
+				sb.AppendUTF8Char('0');
 			}
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 			sb.Append(IO::GPIOControl::PinModeGetName(i, ctrl->GetPinMode(i)));
 			console.WriteLineC(sb.ToString(), sb.GetLength());
 			

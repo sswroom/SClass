@@ -34,7 +34,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\",\"typ\":\"JWT\"}"));
 	Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
 	b64.EncodeBin(sb, sbuff, (UOSInt)(sptr - sbuff));
-	sb->AppendChar('.', 1);
+	sb->AppendUTF8Char('.');
 	Text::StringBuilderUTF8 sbJson;
 	Text::JSONBuilder *json;
 	Data::ArrayList<const UTF8Char*> *keys = payload->GetKeys();
@@ -88,7 +88,7 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	{
 		return false;
 	}
-	sb->AppendChar('.', 1);
+	sb->AppendUTF8Char('.');
 	sign.GetHashB64(sb);
 	return true;
 }

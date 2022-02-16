@@ -33,7 +33,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sb->AppendChar('{', 1);
+	sb->AppendUTF8Char('{');
 	Bool found = false;
 	UOSInt i = 0;
 	UOSInt j = cls->GetFieldCount();
@@ -41,12 +41,12 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 	{
 		if (found)
 		{
-			sb->AppendChar(',', 1);
+			sb->AppendUTF8Char(',');
 		}
 		found = true;
 		sptr = Text::JSText::ToJSTextDQuote(sbuff, cls->GetFieldName(i));
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		Data::VariItem *item = cls->GetNewValue(i, obj);
 		if (item)
 		{
@@ -59,7 +59,7 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 		}
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char('}');
 }
 
 template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::List<T*> *list, Data::NamedClass<T> *cls, const UTF8Char *clsName, UOSInt nameLen)
@@ -71,19 +71,19 @@ template <class T> void Text::StringTool::BuildString(Text::StringBuilderUTF8 *s
 	}
 	UOSInt i;
 	UOSInt j;
-	sb->AppendChar('[', 1);
+	sb->AppendUTF8Char('[');
 	i = 0;
 	j = list->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
+			sb->AppendUTF8Char(',');
 		}
 		sb->AppendC(clsName, nameLen);
 		BuildString(sb, list->GetItem(i), cls);
 		i++;
 	}
-	sb->AppendChar(']', 1);
+	sb->AppendUTF8Char(']');
 }
 #endif

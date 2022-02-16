@@ -173,7 +173,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		toAppend += 3;
 		toAppendLen -= 3;
 	}
-	sb->AppendChar('/', 1);
+	sb->AppendUTF8Char('/');
 	sb->AppendC(toAppend, toAppendLen);
 	return true;
 }

@@ -287,36 +287,36 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	{
 		entry = entryList->GetItem(i);
 		sb.AppendHexBuff(entry->mac, 6, ':', Text::LineBreakType::None);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (entry->ssid)
 		{
 			sb.Append(entry->ssid);
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(entry->phyType);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		Text::SBAppendF64(&sb, entry->freq);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (entry->manuf)
 			sb.Append(entry->manuf);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (entry->model)
 			sb.Append(entry->model);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (entry->serialNum)
 			sb.Append(entry->serialNum);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendHexBuff(entry->ouis[0], 3, 0, Text::LineBreakType::None);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendHexBuff(entry->ouis[1], 3, 0, Text::LineBreakType::None);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendHexBuff(entry->ouis[2], 3, 0, Text::LineBreakType::None);
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		if (entry->country)
 		{
 			sb.Append(entry->country);
 		}
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		k = 0;
 		while (k < 20)
 		{
@@ -324,7 +324,7 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 				break;
 			if (k > 0)
 			{
-				sb.AppendChar(',', 1);
+				sb.AppendUTF8Char(',');
 			}
 			sb.AppendHex64(entry->neighbour[k]);
 			k++;

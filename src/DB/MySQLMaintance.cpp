@@ -52,7 +52,7 @@ void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuil
 			while (i < j)
 			{
 				if (i > 0)
-					sb->AppendChar('\t', 1);
+					sb->AppendUTF8Char('\t');
 				r->GetStr(i, sb);
 				i++;
 			}

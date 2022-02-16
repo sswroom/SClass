@@ -103,7 +103,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 	{
 		if (i > 0)
 		{
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 		}
 		DB::DBUtil::Field2DBName(sbuff, cls->GetFieldName(i)->v);
 		s = Text::String::NewCSVRec(sbuff);
@@ -127,7 +127,7 @@ template <class T> Bool DB::DBUtil::SaveCSV(IO::Stream *stm, Data::ArrayList<T*>
 		{
 			if (i > 0)
 			{
-				sb.AppendChar(',', 1);
+				sb.AppendUTF8Char(',');
 			}
 			cls->GetValue(&itm, i, o);
 			Data::VariItem::ItemType itmType = itm.GetItemType();

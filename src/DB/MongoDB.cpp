@@ -178,14 +178,14 @@ void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userNam
 		out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		if (password)
 		{
-			out->AppendChar(':', 1);
+			out->AppendUTF8Char(':');
 			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password);
 			out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
-		out->AppendChar('@', 1);
+		out->AppendUTF8Char('@');
 	}
 	out->AppendSlow(host);
-	out->AppendChar(':', 1);
+	out->AppendUTF8Char(':');
 	out->AppendU16(port);
 }
 

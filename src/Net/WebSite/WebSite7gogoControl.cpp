@@ -63,7 +63,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 							{
 								Text::StringBuilderUTF8 sb;
 								sb.Append(item->imgURL);
-								sb.AppendChar(' ', 1);
+								sb.AppendUTF8Char(' ');
 								sb.Append(str1->GetValue());
 								item->imgURL->Release();
 								item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
@@ -83,7 +83,7 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 							{
 								Text::StringBuilderUTF8 sb;
 								sb.Append(item->imgURL);
-								sb.AppendChar(' ', 1);
+								sb.AppendUTF8Char(' ');
 								sb.Append(str1->GetValue());
 								item->imgURL->Release();
 								item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());

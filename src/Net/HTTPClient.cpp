@@ -71,11 +71,11 @@ Bool Net::HTTPClient::FormAdd(const UTF8Char *name, const UTF8Char *value)
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, name);
 	if (this->formSb->GetLength() > 0)
 	{
-		this->formSb->AppendChar('&', 1);
+		this->formSb->AppendUTF8Char('&');
 	}
 	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, value);
-	this->formSb->AppendChar('=', 1);
+	this->formSb->AppendUTF8Char('=');
 	this->formSb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }

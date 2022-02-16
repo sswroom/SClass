@@ -1850,7 +1850,7 @@ Bool SSWR::SMonitor::SMonitorSvrCore::DeviceSetReading(Int64 cliId, UInt32 index
 	{
 		if (i > 0)
 		{
-			sb.AppendChar('|', 1);
+			sb.AppendUTF8Char('|');
 		}
 		if (i == index)
 		{

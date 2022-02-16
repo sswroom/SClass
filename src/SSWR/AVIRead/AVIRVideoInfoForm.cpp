@@ -313,28 +313,28 @@ void SSWR::AVIRead::AVIRVideoInfoForm::AppendTime(Text::StringBuilderUTF8 *sb, U
 {
 	sb->AppendU32(t / 3600000);
 	t = t % 3600000;
-	sb->AppendChar(':', 1);
+	sb->AppendUTF8Char(':');
 	if (t < 600000)
 	{
-		sb->AppendChar('0', 1);
+		sb->AppendUTF8Char('0');
 	}
 	sb->AppendU32(t / 60000);
 	t = t % 60000;
-	sb->AppendChar(':', 1);
+	sb->AppendUTF8Char(':');
 	if (t < 10000)
 	{
-		sb->AppendChar('0', 1);
+		sb->AppendUTF8Char('0');
 	}
 	sb->AppendU32(t / 1000);
 	t = t % 1000;
-	sb->AppendChar('.', 1);
+	sb->AppendUTF8Char('.');
 	if (t < 10)
 	{
 		sb->AppendChar('0', 2);
 	}
 	else if (t < 100)
 	{
-		sb->AppendChar('0', 1);
+		sb->AppendUTF8Char('0');
 	}
 	sb->AppendU32(t);
 }

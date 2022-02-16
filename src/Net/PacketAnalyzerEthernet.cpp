@@ -95,7 +95,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv4GetName(const UInt8 *packet, UOSInt 
 	sb->AppendC(UTF8STRC(" -> "));
 	sptr = Net::SocketUtil::GetIPv4Name(sbuff, destIP);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[9], ipData, ipDataSize, sb);
 }
 
@@ -117,7 +117,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPv6GetName(const UInt8 *packet, UOSInt 
 	sb->AppendC(UTF8STRC(" -> "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, &destAddr);
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	return PacketIPDataGetName(packet[6], &packet[40], packetSize - 40, sb);
 }
 
@@ -155,7 +155,7 @@ Bool Net::PacketAnalyzerEthernet::PacketIPDataGetName(UInt8 protocol, const UInt
 			Text::CString cstr;
 			destPort = ReadMUInt16(&packet[2]);
 			cstr = UDPPortGetName(destPort);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			if (cstr.v)
 			{
 				sb->Append(cstr);

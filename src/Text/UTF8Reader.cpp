@@ -588,10 +588,10 @@ Bool Text::UTF8Reader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 	switch (this->lineBreak)
 	{
 	case 1:
-		sb->AppendChar('\r', 1);
+		sb->AppendUTF8Char('\r');
 		return true;
 	case 2:
-		sb->AppendChar('\n', 1);
+		sb->AppendUTF8Char('\n');
 		return true;
 	case 3:
 		sb->AppendC(UTF8STRC("\r\n"));

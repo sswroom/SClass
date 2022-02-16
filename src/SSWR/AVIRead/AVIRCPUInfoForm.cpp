@@ -76,11 +76,11 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendI32(cpu.GetFamilyId());
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(cpu.GetModelId());
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendI32(cpu.GetStepping());
-		sb.AppendChar('\t', 1);
+		sb.AppendUTF8Char('\t');
 		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
 		Win32::Clipboard::SetString(me->GetHandle(), sb.ToString());
 	}

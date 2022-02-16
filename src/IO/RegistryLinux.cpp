@@ -137,7 +137,7 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 	Text::String *s = Text::String::NewNotNull(compName);
 	sb.Append(s);
 	s->Release();
-	sb.AppendChar('\\', 1);
+	sb.AppendUTF8Char('\\');
 	s = Text::String::NewNotNull(appName);
 	sb.Append(s);
 	s->Release();
@@ -221,7 +221,7 @@ IO::Registry *IO::Registry::OpenSubReg(const WChar *name)
 	param.reg = this->clsData->reg;
 	Text::StringBuilderUTF8 sb;
 	sb.Append(this->clsData->cate);
-	sb.AppendChar('\\', 1);
+	sb.AppendUTF8Char('\\');
 	Text::String *s = Text::String::NewNotNull(name);
 	sb.Append(s);
 	s->Release();

@@ -15,17 +15,17 @@ void Text::JavaText::ToJavaName(Text::StringBuilderUTF8 *sb, const UTF8Char *usN
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar((UTF32Char)(c - 32), 1);
+				sb->AppendUTF8Char((UTF8Char)(c - 32));
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 			}
 			isClass = false;
 		}
 		else
 		{
-			sb->AppendChar(c, 1);
+			sb->AppendUTF8Char(c);
 		}
 	}
 }

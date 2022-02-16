@@ -38,7 +38,7 @@ void Crypto::Cert::X509PubKey::ToShortName(Text::StringBuilderUTF8 *sb)
 	if (keyPDU && itemType == Net::ASN1Util::IT_OCTET_STRING)
 	{
 		sb->Append(KeyTypeGetName(keyType));
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->AppendUOSInt(KeyGetLeng(keyPDU, keyPDU + keyLen, keyType));
 		sb->AppendC(UTF8STRC(" bits"));
 	}

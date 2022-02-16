@@ -848,7 +848,7 @@ void Text::JSONString::ToJSONString(Text::StringBuilderUTF8 *sb)
 	UTF8Char c;
 	if (this->val)
 	{
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 		sptr = this->val->v;
 		dptr = sbuff;
 		while ((c = *sptr++) != 0)
@@ -882,7 +882,7 @@ void Text::JSONString::ToJSONString(Text::StringBuilderUTF8 *sb)
 		{
 			sb->AppendC(sbuff, (UOSInt)(dptr - sbuff));
 		}
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 	}
 	else
 	{

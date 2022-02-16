@@ -510,7 +510,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
 		interf->GetBSSList(&bssList);
-		const UTF8Char *csptr;
+		Text::String *s;
 		this->lvWIFIBSS->ClearItems();
 		i = 0;
 		j = bssList.GetCount();
@@ -530,17 +530,17 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 			this->lvWIFIBSS->SetSubItem(k, 5, sbuff);
 			Text::StrUInt32(sbuff, bss->GetLinkQuality());
 			this->lvWIFIBSS->SetSubItem(k, 6, sbuff);
-			if ((csptr = bss->GetManuf()) != 0)
+			if ((s = bss->GetManuf()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 7, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 7, s);
 			}
-			if ((csptr = bss->GetModel()) != 0)
+			if ((s = bss->GetModel()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 8, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 8, s);
 			}
-			if ((csptr = bss->GetSN()) != 0)
+			if ((s = bss->GetSN()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 9, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 9, s);
 			}
 			DEL_CLASS(bss);
 			i++;

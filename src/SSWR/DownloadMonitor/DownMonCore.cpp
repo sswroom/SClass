@@ -678,7 +678,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 	{
 		Win32::Clipboard::SetString(formHand, file->fileName->v);
 		Text::StringBuilderUTF8 sb;
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.Append(this->firefoxPath);
 		sb.AppendC(UTF8STRC("\" "));
 //		sb.AppendC(UTF8STRC("-private-window "));

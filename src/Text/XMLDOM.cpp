@@ -38,7 +38,7 @@ Bool Text::XMLAttrib::ToString(Text::StringBuilderUTF8 *sb)
 	sb->Append(this->name);
 	if (this->value)
 	{
-		sb->AppendChar('=', 1);
+		sb->AppendUTF8Char('=');
 		if (this->valueOri)
 		{
 			sb->Append(this->valueOri);

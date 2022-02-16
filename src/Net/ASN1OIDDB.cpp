@@ -11870,7 +11870,7 @@ void Net::ASN1OIDDB::OIDToNameString(const UInt8 *pdu, UOSInt pduSize, Text::Str
 				v = (v << 7) | (pdu[checkSize] & 0x7f);
 				if ((pdu[checkSize] & 0x80) == 0)
 				{
-					sb->AppendChar('.', 1);
+					sb->AppendUTF8Char('.');
 					sb->AppendU32(v);
 					v = 0;
 				}

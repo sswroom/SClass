@@ -1923,7 +1923,7 @@ void Net::MySQLTCPClient::GetConnName(Text::StringBuilderUTF8 *sb)
 	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	if (this->database)
 	{
-		sb->AppendChar('/', 1);
+		sb->AppendUTF8Char('/');
 		sb->Append(this->database);
 	}
 }
@@ -2100,10 +2100,10 @@ void Net::MySQLTCPClient::GetErrorMsg(Text::StringBuilderUTF8 *str)
 	{
 		if (this->lastError->v[0] == '#')
 		{
-			str->AppendChar('[', 1);
+			str->AppendUTF8Char('[');
 			str->AppendC(&this->lastError->v[1], 5);
-			str->AppendChar(']', 1);
-			str->AppendChar(' ', 1);
+			str->AppendUTF8Char(']');
+			str->AppendUTF8Char(' ');
 			str->AppendC(&this->lastError->v[6], this->lastError->leng - 6);
 		}
 		else
@@ -2215,7 +2215,7 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 		{
 			if (i > 0)
 			{
-				sb.AppendChar(',', 1);
+				sb.AppendUTF8Char(',');
 			}
 			sptr = DB::DBUtil::SDBColUTF8(sbuff, columnNames->GetItem(i)->v, DB::DBUtil::ServerType::MySQL);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));

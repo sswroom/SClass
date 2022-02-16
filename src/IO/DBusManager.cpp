@@ -1872,31 +1872,31 @@ void IO::DBusManager::ListenerBuildRule(Listener *listener, Text::StringBuilderC
 	{
 		sb->Append(",sender='");
 		sb->Append(sender);
-		sb->AppendChar('\'', 1);
+		sb->AppendUTF8Char('\'');
 	}
 	if (listener->path)
 	{
 		sb->Append(",path='");
 		sb->Append(listener->path);
-		sb->AppendChar('\'', 1);
+		sb->AppendUTF8Char('\'');
 	}
 	if (listener->interface)
 	{
 		sb->Append(",interface='");
 		sb->Append(listener->interface);
-		sb->AppendChar('\'', 1);
+		sb->AppendUTF8Char('\'');
 	}
 	if (listener->member)
 	{
 		sb->Append(",member='");
 		sb->Append(listener->member);
-		sb->AppendChar('\'', 1);
+		sb->AppendUTF8Char('\'');
 	}
 	if (listener->argument)
 	{
 		sb->Append(",arg0='");
 		sb->Append(listener->argument);
-		sb->AppendChar('\'', 1);
+		sb->AppendUTF8Char('\'');
 	}
 }
 

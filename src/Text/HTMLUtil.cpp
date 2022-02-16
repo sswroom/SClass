@@ -164,7 +164,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 		{
 			if (!lastIsWS)
 			{
-				sb->AppendChar(' ', 1);
+				sb->AppendUTF8Char(' ');
 			}
 			lastIsWS = true;
 		}
@@ -172,15 +172,15 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 		{
 			if (!lastIsWS)
 			{
-				sb->AppendChar(' ', 1);
+				sb->AppendUTF8Char(' ');
 			}
 			else if (lineStart)
 			{
 				sb->AppendChar('\t', lev + currLev);
 			}
-			sb->AppendChar('{', 1);
-			sb->AppendChar('\r', 1);
-			sb->AppendChar('\n', 1);
+			sb->AppendUTF8Char('{');
+			sb->AppendUTF8Char('\r');
+			sb->AppendUTF8Char('\n');
 			currLev++;
 			lineStart = true;
 			lastIsWS = true;
@@ -189,14 +189,14 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 		{
 			if (!lineStart)
 			{
-				sb->AppendChar('\r', 1);
-				sb->AppendChar('\n', 1);
+				sb->AppendUTF8Char('\r');
+				sb->AppendUTF8Char('\n');
 			}
 			currLev--;
 			sb->AppendChar('\t', lev + currLev);
-			sb->AppendChar('}', 1);
-			sb->AppendChar('\r', 1);
-			sb->AppendChar('\n', 1);
+			sb->AppendUTF8Char('}');
+			sb->AppendUTF8Char('\r');
+			sb->AppendUTF8Char('\n');
 			lineStart = true;
 			lastIsWS = true;
 		}
@@ -206,9 +206,9 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 			{
 				sb->AppendChar('\t', lev + currLev);
 			}
-			sb->AppendChar(';', 1);
-			sb->AppendChar('\r', 1);
-			sb->AppendChar('\n', 1);
+			sb->AppendUTF8Char(';');
+			sb->AppendUTF8Char('\r');
+			sb->AppendUTF8Char('\n');
 			lineStart = true;
 			lastIsWS = true;
 		}
@@ -219,7 +219,7 @@ Bool Text::HTMLUtil::CSSWellFormat(const UInt8 *buff, UOSInt buffSize, UOSInt le
 				lineStart = false;
 				sb->AppendChar('\t', lev + currLev);
 			}
-			sb->AppendChar(c, 1);
+			sb->AppendUTF8Char(c);
 			lastIsWS = false;
 		}
 		buff++;

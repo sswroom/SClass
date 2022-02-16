@@ -97,10 +97,10 @@ Bool Crypto::Hash::Bcrypt::GenHash(Text::StringBuilderUTF8 *sb, UInt32 cost, con
 	sb->AppendC(UTF8STRC("$2a$"));
 	if (cost < 10)
 	{
-		sb->AppendChar('0', 1);
+		sb->AppendUTF8Char('0');
 	}
 	sb->AppendU32(cost);
-	sb->AppendChar('$', 1);
+	sb->AppendUTF8Char('$');
 	UInt8 hashCTxt[24];
 	this->radix64->EncodeBin(sb, salt, 16);
 	this->CalcHash(cost, salt, password, pwdLen, hashCTxt);

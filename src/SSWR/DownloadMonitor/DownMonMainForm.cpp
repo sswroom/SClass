@@ -308,7 +308,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 				sb.AppendC(UTF8STRC("https://48idol.tv/video/"));
 			}
 			sb.AppendI32(file->id);
-			sb.AppendChar('\t', 1);
+			sb.AppendUTF8Char('\t');
 			sb.Append(file->dbName);
 			sb.AppendC(UTF8STRC("\r\n"));
 		}
@@ -586,7 +586,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::SaveList()
 				sb.AppendC(UTF8STRC("https://48idol.tv/video/"));
 			}
 			sb.AppendI32(file->id);
-			sb.AppendChar('\t', 1);
+			sb.AppendUTF8Char('\t');
 			sb.Append(file->dbName);
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}

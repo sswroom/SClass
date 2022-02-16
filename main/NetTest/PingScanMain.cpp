@@ -36,11 +36,11 @@ void PingScan(UInt32 ip)
 			sb.ClearStr();
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
 			sb.AppendP(sbuff, sptr);
-			sb.AppendChar('\t', 1);
+			sb.AppendUTF8Char('\t');
 			Text::SBAppendF64(&sb, result->respTime);
-			sb.AppendChar('\t', 1);
+			sb.AppendUTF8Char('\t');
 			sb.AppendHexBuff(result->mac, 6, ':', Text::LineBreakType::None);
-			sb.AppendChar('\t', 1);
+			sb.AppendUTF8Char('\t');
 			const Net::MACInfo::MACEntry *macEntry = Net::MACInfo::GetMACInfoBuff(result->mac);
 			sb.AppendC(macEntry->name, macEntry->nameLen);
 			console->WriteLineC(sb.ToString(), sb.GetLength());

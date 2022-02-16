@@ -41,7 +41,7 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
 			if (dbName)
 			{
 				sb.AppendSlow(dbName);
-				sb.AppendChar('.', 1);
+				sb.AppendUTF8Char('.');
 			}
 			sb.AppendSlow(tableName = table->GetTableName());
 			this->tableMap->Put(sb.ToString(), table);

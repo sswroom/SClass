@@ -530,11 +530,11 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		Text::SBAppendF64(&sb, dG);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		Text::SBAppendF64(&sb, dB);
-		sb.AppendChar(')', 1);
+		sb.AppendUTF8Char(')');
 		me->txtImageStatus->SetText(sb.ToString());
 	}
 	else

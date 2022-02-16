@@ -221,7 +221,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 		field = fieldList->GetItem(i);
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append(Text::CPPText::GetCppType(field->itemType));
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(field->name);
 		sb->AppendC(UTF8STRC(";\r\n"));
 		i++;
@@ -233,7 +233,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("();\r\n"));
 	sb->AppendChar('\t', tabLev + 1);
-	sb->AppendChar('~', 1);
+	sb->AppendUTF8Char('~');
 	sb->Append(clsName);
 	sb->AppendC(UTF8STRC("();\r\n"));
 	sb->AppendC(UTF8STRC("\r\n"));
@@ -245,7 +245,7 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
 		sb->AppendChar('\t', tabLev + 1);
 		sb->Append(cppType);
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->AppendC(UTF8STRC("Get"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->AppendC(field->name->v + 1, field->name->leng - 1);
@@ -255,9 +255,9 @@ void Data::Class::ToCppClassHeader(Text::StringBase<UTF8Char> *clsName, UOSInt t
 		sb->AppendC(UTF8STRC("void Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendChar('(', 1);
+		sb->AppendUTF8Char('(');
 		sb->Append(cppType);
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(field->name);
 		sb->AppendC(UTF8STRC(");\r\n"));
 		i++;
@@ -366,7 +366,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		Text::CString cppType = Text::CPPText::GetCppType(field->itemType);
 		sb->AppendChar('\t', tabLev);
 		sb->Append(cppType);
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(clsPrefix);
 		sb->Append(clsName);
 		sb->AppendC(UTF8STRC("::Get"));
@@ -390,9 +390,9 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 		sb->AppendC(UTF8STRC("::Set"));
 		sb->AppendChar(Text::CharUtil::ToUpper(field->name->v[0]), 1);
 		sb->AppendC(field->name->v + 1, field->name->leng - 1);
-		sb->AppendChar('(', 1);
+		sb->AppendUTF8Char('(');
 		sb->Append(cppType);
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(field->name);
 		sb->AppendC(UTF8STRC(")\r\n"));
 		sb->AppendChar('\t', tabLev);
