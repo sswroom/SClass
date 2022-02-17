@@ -99,9 +99,12 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		MemCopyANC(tmpBuff, img->data, img->info->dispHeight * img->info->storeWidth * 4);
 		if (img->info->atype == Media::AT_NO_ALPHA)
 		{
-			ImageUtil_ImageFillAlpha32(tmpBuff, img->info->dispWidth, img->info->dispHeight, img->info->storeWidth * 4, 0xff);
+			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info->dispWidth, img->info->dispHeight, img->info->storeWidth * 4, img->info->storeWidth * 4);
 		}
-		ImageUtil_SwapRGB(tmpBuff, img->info->dispHeight * img->info->storeWidth, 32);
+		else
+		{
+			ImageUtil_SwapRGB(tmpBuff, img->info->dispHeight * img->info->storeWidth, 32);
+		}
 		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info->dispWidth, (int)img->info->dispHeight, (int)img->info->storeWidth << 2, 0, 0);
 		*relBuff = tmpBuff;
 		return pixBuf;
