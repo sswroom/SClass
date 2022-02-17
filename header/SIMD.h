@@ -150,6 +150,7 @@ typedef __m128i Int32x4;
 #define PSARSDW4(v1, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), v1)
 #define PSARSDW8(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))
 #define PSHRADDWB4(v1, v2, cnt) _mm_packus_epi16(_mm_srli_epi16(_mm_adds_epu16(v1, v2), cnt), v2)
+#define PANDW8(v1, v2) _mm_and_si128(v1, v2)
 #define PADDUB4(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB8(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB16(v1, v2) _mm_add_epi8(v1, v2)
@@ -176,7 +177,8 @@ typedef __m128i Int32x4;
 #define SI16ToI8x4(v1) _mm_packs_epi16(v1, v1)
 #define SI16ToI8x8(v1) _mm_packs_epi16(v1, v1)
 #define SI16ToI8x16(v1, v2) _mm_packs_epi16(v1, v2)
-#define SU16ToU8x4(v1) _mm_packs_epi16(v1, v1)
+#define SI16ToU8x4(v1) _mm_packus_epi16(v1, v1)
+#define SI16ToU8x16(v1, v2) _mm_packus_epi16(v1, v2)
 #define SI32ToU8x8(v1, v2) _mm_packus_epi16(_mm_packs_epi32(v1, v2), v1)
 #define SI32ToI16x4(v1) _mm_packs_epi32(v1, v1)
 #define SI32ToI16x8(v1, v2) _mm_packs_epi32(v1, v2)
@@ -1299,6 +1301,19 @@ Int16x8 FORCEINLINE PSARSDW8(Int32x4 v1, Int32x4 v2, UInt8 cnt)
 	return ret;
 }
 
+Int16x8 FORCEINLINE PANDW8(Int16x8 val1, Int16x8 val2)
+{
+	val1.vals[0] &= val2.vals[0];
+	val1.vals[1] &= val2.vals[1];
+	val1.vals[2] &= val2.vals[2];
+	val1.vals[3] &= val2.vals[3];
+	val1.vals[4] &= val2.vals[4];
+	val1.vals[5] &= val2.vals[5];
+	val1.vals[6] &= val2.vals[6];
+	val1.vals[7] &= val2.vals[7];
+	return val1;
+}
+
 UInt8x4 FORCEINLINE PADDUB4(UInt8x4 val1, UInt8x4 val2)
 {
 	val1.vals[0] += val2.vals[0];
@@ -1642,6 +1657,28 @@ Int8x16 FORCEINLINE SI16ToI8x16(Int16x8 val, Int16x8 val2)
 	ret.vals[13] = SI16ToI8(val2.vals[5]);
 	ret.vals[14] = SI16ToI8(val2.vals[6]);
 	ret.vals[15] = SI16ToI8(val2.vals[7]);
+	return ret;
+}
+
+UInt8x16 FORCEINLINE SI16ToU8x16(Int16x8 val, Int16x8 val2)
+{
+	UInt8x16 ret;
+	ret.vals[0] = SI16ToU8(val.vals[0]);
+	ret.vals[1] = SI16ToU8(val.vals[1]);
+	ret.vals[2] = SI16ToU8(val.vals[2]);
+	ret.vals[3] = SI16ToU8(val.vals[3]);
+	ret.vals[4] = SI16ToU8(val.vals[4]);
+	ret.vals[5] = SI16ToU8(val.vals[5]);
+	ret.vals[6] = SI16ToU8(val.vals[6]);
+	ret.vals[7] = SI16ToU8(val.vals[7]);
+	ret.vals[8] = SI16ToU8(val2.vals[0]);
+	ret.vals[9] = SI16ToU8(val2.vals[1]);
+	ret.vals[10] = SI16ToU8(val2.vals[2]);
+	ret.vals[11] = SI16ToU8(val2.vals[3]);
+	ret.vals[12] = SI16ToU8(val2.vals[4]);
+	ret.vals[13] = SI16ToU8(val2.vals[5]);
+	ret.vals[14] = SI16ToU8(val2.vals[6]);
+	ret.vals[15] = SI16ToU8(val2.vals[7]);
 	return ret;
 }
 

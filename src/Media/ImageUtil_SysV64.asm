@@ -2225,12 +2225,45 @@ cargb32r_32lop2:
 ;r9 dbpl
 
 	align 16
+cargb32rn_32_and dd 0xff000000,0xff000000,0xff000000,0xff000000
+cargb32rn_32_shuf dd 0xff000102,0xff040506,0xff08090a,0xff0c0d0e
 ImageUtil_ConvR8G8B8N8_ARGB32:
 _ImageUtil_ConvR8G8B8N8_ARGB32:
 	lea rax,[rdx*4]
 	sub r8,rax ;sbpl
 	sub r9,rax ;dbpl
+	test rdx,7
+	jnz cargb32rn_32lop
+	cmp dword [rel _UseSSE42],0
+	jz cargb32rn_32lop
+
+	shr rdx,3
+	movdqa xmm1,[rel cargb32rn_32_shuf]
+	movdqa xmm2,[rel cargb32rn_32_and]
+	align 16
+cargb32rn_32lop_ssse3:
+	mov r10,rdx
+	align 16
+cargb32rn_32lop2_ssse3:
+	movdqa xmm0,[rdi]
+	pshufb xmm0,xmm1
+	movdqa xmm3,[rdi+16]
+	por xmm0,xmm2
+	pshufb xmm3,xmm1
+	por xmm3,xmm2
+	movntdq [rsi],xmm0
+	movntdq [rsi+16],xmm3
+	add rdi,32
+	add rsi,32
+	dec r10
+	jnz cargb32rn_32lop2_ssse3
 	
+	add rdi,r8 ;sbpl
+	add rsi,r9 ;dbpl
+	dec rcx
+	jnz cargb32rn_32lop_ssse3
+	ret
+
 	align 16
 cargb32rn_32lop:
 	mov r10,rdx
