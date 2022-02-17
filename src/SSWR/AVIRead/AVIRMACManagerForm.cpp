@@ -295,8 +295,8 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		UTF8Char *sarr[12];
-		UTF8Char *sarr2[7];
+		Text::PString sarr[12];
+		Text::PString sarr2[7];
 		UInt8 buff[8];
 		UOSInt i;
 		UOSInt j;
@@ -309,19 +309,19 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 		buff[1] = 0;
 		while (reader->ReadLine(&sb, 4096))
 		{
-			i = Text::StrSplit(sarr, 12, sb.ToString(), '\t');
+			i = Text::StrSplitP(sarr, 12, sb, '\t');
 			if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
 			{
-				if (Text::StrSplit(sarr2, 7, sarr[0], ':') == 6)
+				if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
 				{
 					log = MemAlloc(SSWR::AVIRead::AVIRMACManagerForm::LogFileEntry, 1);
 					MemClear(log->neighbour, sizeof(log->neighbour));
-					log->mac[0] = Text::StrHex2UInt8C(sarr2[0]);
-					log->mac[1] = Text::StrHex2UInt8C(sarr2[1]);
-					log->mac[2] = Text::StrHex2UInt8C(sarr2[2]);
-					log->mac[3] = Text::StrHex2UInt8C(sarr2[3]);
-					log->mac[4] = Text::StrHex2UInt8C(sarr2[4]);
-					log->mac[5] = Text::StrHex2UInt8C(sarr2[5]);
+					log->mac[0] = Text::StrHex2UInt8C(sarr2[0].v);
+					log->mac[1] = Text::StrHex2UInt8C(sarr2[1].v);
+					log->mac[2] = Text::StrHex2UInt8C(sarr2[2].v);
+					log->mac[3] = Text::StrHex2UInt8C(sarr2[3].v);
+					log->mac[4] = Text::StrHex2UInt8C(sarr2[4].v);
+					log->mac[5] = Text::StrHex2UInt8C(sarr2[5].v);
 					buff[2] = log->mac[0];
 					buff[3] = log->mac[1];
 					buff[4] = log->mac[2];
@@ -329,14 +329,14 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 					buff[6] = log->mac[4];
 					buff[7] = log->mac[5];
 					log->macInt = ReadMUInt64(buff);
-					log->ssid = Text::StrCopyNew(sarr[1]);
-					log->phyType = Text::StrToInt32(sarr[2]);
-					log->freq = Text::StrToDouble(sarr[3]);
+					log->ssid = Text::StrCopyNewC(sarr[1].v, sarr[1].leng);
+					log->phyType = Text::StrToInt32(sarr[2].v);
+					log->freq = Text::StrToDouble(sarr[3].v);
 					if (i >= 7)
 					{
-						log->manuf = Text::StrCopyNew(sarr[4]);
-						log->model = Text::StrCopyNew(sarr[5]);
-						log->serialNum = Text::StrCopyNew(sarr[6]);
+						log->manuf = Text::StrCopyNewC(sarr[4].v, sarr[4].leng);
+						log->model = Text::StrCopyNewC(sarr[5].v, sarr[5].leng);
+						log->serialNum = Text::StrCopyNewC(sarr[6].v, sarr[6].leng);
 					}
 					else
 					{
@@ -353,13 +353,13 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 					}
 					if (i >= 9)
 					{
-						log->country = Text::StrCopyNew(sarr[8]);
-						j = Text::StrSplit(sarr2, 3, sarr[7], ',');
+						log->country = Text::StrCopyNewC(sarr[8].v, sarr[8].leng);
+						j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 						while (j-- > 0)
 						{
-							if (Text::StrCharCnt(sarr2[j]) == 6)
+							if (sarr2[j].leng == 6)
 							{
-								Text::StrHex2Bytes(sarr2[j], log->ouis[j]);
+								Text::StrHex2Bytes(sarr2[j].v, log->ouis[j]);
 							}
 						}
 					}
@@ -370,24 +370,24 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 					if (i >= 10)
 					{
 						sarr2[1] = sarr[9];
-						if (sarr2[1][0])
+						if (sarr2[1].v[0])
 						{
 							j = 0;
-							while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
+							while (Text::StrSplitP(sarr2, 2, sarr2[1], ',') == 2)
 							{
-								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
 								j++;
 							}
-							log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
+							log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
 						}
 					}
 					if (i >= 11)
 					{
-						log->ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
+						log->ieLen = (UInt32)(sarr[10].leng >> 1);
 						if (log->ieLen > 0)
 						{
 							log->ieBuff = MemAlloc(UInt8, log->ieLen);
-							Text::StrHex2Bytes(sarr[10], log->ieBuff);
+							Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
 						}
 						else
 						{

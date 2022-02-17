@@ -8,6 +8,9 @@ namespace UI
 	class GUIComboBox : public GUIControl
 	{
 	private:
+		struct ClassData;
+		ClassData *clsData;
+		
 		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
 		Data::ArrayList<void *> *selChgObjs;
 		UOSInt minVisible;
@@ -29,6 +32,8 @@ namespace UI
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 
+		void BeginUpdate();
+		void EndUpdate();
 		UOSInt AddItem(Text::String *itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);

@@ -22,8 +22,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Text::String *fname = 0;
-	const UTF8Char *fileName = 0;
+	Text::CString fileName = CSTR_NULL;
 	ActionType atype = AT_COPY;
 	UOSInt i;
 	UOSInt j;
@@ -70,12 +71,12 @@ UInt32 __stdcall SSWR::AVIRead::AVIRPackageForm::ProcessThread(void *userObj)
 		
 			if (fname->StartsWith(UTF8STRC("file:///")))
 			{
-				Text::URLString::GetURLFilePath(sbuff, fname->v, fname->leng);
-				fileName = sbuff;
+				sptr = Text::URLString::GetURLFilePath(sbuff, fname->v, fname->leng);
+				fileName = CSTRP(sbuff, sptr);
 			}
 			else
 			{
-				fileName = fname->v;
+				fileName = fname->ToCString();
 			}
 			lastFound = true;
 			if (atype == AT_COPY)
@@ -206,7 +207,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		{
 			fname = me->fileNames->GetItem(i);
 			k = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			k = me->lvStatus->AddItem(&fname[k + 1], (void*)fname->v);
+			k = me->lvStatus->AddItem(fname->ToCString().Substring(k + 1), (void*)fname->v);
 			switch (me->fileAction->GetItem(i))
 			{
 			case AT_COPY:

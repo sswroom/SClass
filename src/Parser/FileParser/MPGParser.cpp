@@ -108,7 +108,7 @@ IO::ParsedObject *Parser::FileParser::MPGParser::ParseFile(IO::IStreamData *fd, 
 				while (true)
 				{
 					sptr2 = Text::StrConcatC(Text::StrInt32(sptr, stmId), UTF8STRC(".vob"));
-					ind = pkgFile->GetItemIndex(sbuff, (UOSInt)(sptr2 - sbuff));
+					ind = pkgFile->GetItemIndex(CSTRP(sbuff, sptr2));
 					if (ind == INVALID_INDEX)
 					{
 						break;

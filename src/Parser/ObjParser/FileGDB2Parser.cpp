@@ -35,7 +35,7 @@ IO::ParsedObject *Parser::ObjParser::FileGDB2Parser::ParseObject(IO::ParsedObjec
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 		return 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
-	UOSInt index = pkg->GetItemIndex(UTF8STRC("a00000001.gdbtable"));
+	UOSInt index = pkg->GetItemIndex(CSTR("a00000001.gdbtable"));
 	if (index == INVALID_INDEX)
 	{
 		return 0;

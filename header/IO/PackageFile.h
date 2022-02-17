@@ -103,15 +103,15 @@ namespace IO
 		virtual IO::ParsedObject *GetItemPObj(UOSInt index); // no need release
 		virtual Int64 GetItemModTimeTick(UOSInt index);
 		virtual UInt64 GetItemSize(UOSInt index);
-		virtual UOSInt GetItemIndex(const UTF8Char *name, UOSInt nameLen);
+		virtual UOSInt GetItemIndex(Text::CString name);
 		virtual Bool IsCompressed(UOSInt index);
 		virtual Data::Compress::Decompressor::CompressMethod GetItemComp(UOSInt index);
 		virtual PackageFile *Clone();
 		virtual Bool AllowWrite();
-		virtual Bool CopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool MoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryCopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFileName);
 		virtual IO::IStreamData *OpenStreamData(const UTF8Char *fileName);
 

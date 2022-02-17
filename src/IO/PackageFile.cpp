@@ -450,7 +450,7 @@ IO::IStreamData *IO::PackageFile::GetItemStmData(UOSInt index)
 
 IO::IStreamData *IO::PackageFile::GetItemStmData(const UTF8Char* name, UOSInt nameLen)
 {
-	UOSInt index = GetItemIndex(name, nameLen);
+	UOSInt index = GetItemIndex({name, nameLen});
 	if (index == INVALID_INDEX)
 	{
 		return 0;
@@ -515,7 +515,7 @@ UInt64 IO::PackageFile::GetItemSize(UOSInt index)
 	return 0;
 }
 
-UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
+UOSInt IO::PackageFile::GetItemIndex(Text::CString name)
 {
 	UOSInt i;
 	IO::PackFileItem *item;
@@ -527,18 +527,18 @@ UOSInt IO::PackageFile::GetItemIndex(const UTF8Char *name, UOSInt nameLen)
 		{
 			if (item->name)
 			{
-				if (item->name->EqualsICase(name, nameLen))
+				if (item->name->EqualsICase(name.v, name.leng))
 					return i;
 			}
 			if (item->itemType == IO::PackFileItem::PIT_COMPRESSED || item->itemType == IO::PackFileItem::PIT_UNCOMPRESSED)
 			{
 				Text::CString shName = item->fd->GetShortName();
-				if (shName.EqualsICase(name, nameLen))
+				if (shName.EqualsICase(name.v, name.leng))
 					return i;
 			}
 			else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT)
 			{
-				if (item->pobj->GetSourceNameObj()->EqualsICase(name, nameLen))
+				if (item->pobj->GetSourceNameObj()->EqualsICase(name.v, name.leng))
 					return i;
 			}
 		}
@@ -587,22 +587,22 @@ Bool IO::PackageFile::AllowWrite()
 	return false;
 }
 
-Bool IO::PackageFile::CopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::CopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::MoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return false;
 }
 
-Bool IO::PackageFile::RetryCopyFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return this->CopyFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::PackageFile::RetryMoveFrom(const UTF8Char *fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
+Bool IO::PackageFile::RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }

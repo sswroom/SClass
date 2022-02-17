@@ -19,8 +19,20 @@ void GUIComboBox_TextChanged(void *window, void *userObj)
 	me->EventTextChanged();
 }
 
+void GUIComboBox_OnChild(GtkWidget *widget, gpointer data)
+{
+	printf("Child name = %s\r\n", gtk_widget_get_name(widget));
+}
+
+struct UI::GUIComboBox::ClassData
+{
+	GtkTreeModel *model;
+};
+
 UI::GUIComboBox::GUIComboBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool allowEdit) : UI::GUIControl(ui, parent)
 {
+	this->clsData = MemAlloc(ClassData, 1);
+	this->clsData->model = 0;
 	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
 	NEW_CLASS(this->items, Data::ArrayList<void*>());
@@ -57,6 +69,7 @@ UI::GUIComboBox::~GUIComboBox()
 	DEL_CLASS(this->items);
 	DEL_CLASS(this->selChgHdlrs);
 	DEL_CLASS(this->selChgObjs);
+	MemFree(this->clsData);
 }
 
 void UI::GUIComboBox::EventSelectionChange()
@@ -130,6 +143,25 @@ Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
+void UI::GUIComboBox::BeginUpdate()
+{
+/*	printf("wrap width = %d\r\n", gtk_combo_box_get_wrap_width(GTK_COMBO_BOX((GtkWidget*)this->hwnd)));
+	gtk_combo_box_set_wrap_width(GTK_COMBO_BOX((GtkWidget*)this->hwnd), 0);
+
+	this->clsData->model = gtk_combo_box_get_model(GTK_COMBO_BOX((GtkWidget*)this->hwnd));
+	g_object_ref(this->clsData->model);
+	gtk_combo_box_set_model(GTK_COMBO_BOX((GtkWidget*)this->hwnd), 0);*/
+//	gtk_container_foreach(GTK_CONTAINER((GtkWidget*)this->hwnd), GUIComboBox_OnChild, this);
+}
+
+void UI::GUIComboBox::EndUpdate()
+{
+/*	gtk_combo_box_set_model(GTK_COMBO_BOX((GtkWidget*)this->hwnd), this->clsData->model);
+	g_object_unref(this->clsData->model);
+	gtk_combo_box_set_wrap_width(GTK_COMBO_BOX((GtkWidget*)this->hwnd), 0);
+	this->clsData->model = 0;*/
+}
+
 UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 {
 	UOSInt cnt = this->itemTexts->GetCount();
@@ -147,10 +179,20 @@ UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
 	UOSInt cnt = this->itemTexts->GetCount();
 	this->itemTexts->Add(Text::String::New(itemText.v, itemText.leng));
 	this->items->Add(itemObj);
-	if (!this->autoComplete)
+	if (this->clsData->model)
 	{
-		gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v);
+		GtkTreeIter iter;
+		gtk_list_store_append (GTK_LIST_STORE(this->clsData->model), &iter);
+		gtk_list_store_set (GTK_LIST_STORE(this->clsData->model), &iter, 0, itemText.v, -1);
 	}
+	else
+	{
+		if (!this->autoComplete)
+		{
+			gtk_combo_box_text_insert((GtkComboBoxText*)this->hwnd, -1, 0, (const Char*)itemText.v);
+		}
+	}
+
 	return cnt;
 }
 

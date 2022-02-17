@@ -4,6 +4,8 @@ MyMemory.h: ../../src/MyMemoryL.cpp
 
 Crypto/Cert/OpenSSLCert.h: ../../src/Crypto/Cert/OpenSSLCert.cpp
 @OpenSSLCert.o
+Crypto/Encrypt/RSAEnc.h: ../../src/Crypto/Encrypt/RSAEnc.cpp
+@RSAEnc.o
 
 DB/OLEDBConn.h: ../../src/DB/OLEDBConnNull.cpp
 @OLEDBConn.o
@@ -114,6 +116,8 @@ sqlite3.h:
 
 MyMemory.o: ../../src/MyMemoryL.cpp
 OpenSSLCert.o: ../../src/Crypto/Cert/OpenSSLCert.cpp
+RSAEnc.o: ../../src/Crypto/Encrypt/RSAEnc.cpp
+!-lcrypto
 OLEDBConn.o: ../../src/DB/OLEDBConnNull.cpp
 BuildTime.o: @../../src/IO/BuildTime.cpp
 Console.o: ../../src/IO/ConsoleL.cpp
