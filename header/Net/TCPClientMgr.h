@@ -46,8 +46,8 @@ namespace Net
 			Bool running;
 			Bool toStop;
 			Bool isPrimary;
+			Bool working;
 			Sync::Event *evt;
-			TCPClientStatus *cliStat;
 			TCPClientMgr *me;
 		} WorkerStatus;
 

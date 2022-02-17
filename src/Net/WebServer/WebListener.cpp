@@ -184,7 +184,10 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 	{
 		Text::StringBuilderUTF8 sb;
 		sptr = Net::SocketUtil::GetAddrName(sbuff, req->GetClientAddr(), req->GetClientPort());
-		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
+		if (sptr == 0)
+			sb.AppendC(UTF8STRC("?"));
+		else
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb.AppendC(UTF8STRC(" "));
 		Text::CString reqMeth = req->GetReqMethodStr();
 		sb.AppendC(reqMeth.v, reqMeth.leng);

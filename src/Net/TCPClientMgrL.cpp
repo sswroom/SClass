@@ -22,7 +22,6 @@ http://man7.org/linux/man-pages/man2/pipe.2.html
 http://man7.org/linux/man-pages/man2/poll.2.html
 */
 
-
 struct Net::TCPClientMgr::ClassData
 {
 	int piperdfd;
@@ -34,7 +33,10 @@ void TCPClientMgr_RemoveCliStat(Data::ArrayList<Net::TCPClientMgr::TCPClientStat
 {
 	OSInt ind;
 	UOSInt i;
-	ind = cliIdArr->SortedIndexOf(cliStat->cli->GetCliId());
+	UInt64 cliId = cliStat->cli->GetCliId();
+//	printf("Removing CliId: %lld\r\n", cliId); //////////
+
+	ind = cliIdArr->SortedIndexOf(cliId);
 	if (ind < 0)
 	{
 		printf("CliId not found\r\n");
@@ -271,9 +273,9 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	NEW_CLASS(dt, Data::DateTime());
 	while (!stat->toStop)
 	{
-		while ((stat->cliStat = me->workerTasks->Get()) != 0)
+		while ((cliStat = me->workerTasks->Get()) != 0)
 		{
-			cliStat = stat->cliStat;
+			stat->working = true;
 			dt->SetCurrTimeUTC();
 			cliStat->timeStart = dt->ToTicks();
 			cliStat->timeAlerted = false;
@@ -290,6 +292,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 				printf("TCPClientMgr: Error in writing to pipe\r\n");
 			}
 		}
+		stat->working = false;
 		if (stat->isPrimary)
 		{
 			dt->SetCurrTimeUTC();
@@ -327,7 +330,7 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
-		if (this->workers[i].cliStat == 0)
+		if (!this->workers[i].working)
 		{
 			this->workers[i].evt->Set();
 			return;
@@ -374,7 +377,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 			this->workers[workerCnt].running = false;
 			this->workers[workerCnt].toStop = false;
 			this->workers[workerCnt].isPrimary = (workerCnt == 0);
-			this->workers[workerCnt].cliStat = 0;
+			this->workers[workerCnt].working = false;
 			this->workers[workerCnt].me = this;
 			NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
 
@@ -476,6 +479,7 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 		this->evtHdlr(cli, this->userObj, cliData, Net::TCPClientMgr::TCP_EVENT_DISCONNECT);
 		return;
 	}
+//	printf("Adding Client Id %lld\r\n", cliId);
 	Sync::MutexUsage mutUsage(this->cliMut);
 	Net::TCPClientMgr::TCPClientStatus *cliStat = MemAlloc(Net::TCPClientMgr::TCPClientStatus, 1);
 	Text::StrConcatC(cliStat->debug, UTF8STRC("debug"));
