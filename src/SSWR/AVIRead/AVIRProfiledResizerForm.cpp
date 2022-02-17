@@ -146,7 +146,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	if (me->resizer->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, outType, outParam, sb.ToString(), sizeType))
 	{
 		me->lbProfile->AddItem({sbuff, Text::StrCharCnt(sbuff)}, 0);
-		me->txtProfileName->SetText((const UTF8Char*)"");
+		me->txtProfileName->SetText(CSTR(""));
 		me->resizer->SaveProfile(CSTR_NULL);
 	}
 	else
@@ -168,15 +168,16 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::ChangeProfile()
 void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	const Media::ProfiledResizer::ResizeProfile *profile = this->resizer->GetCurrProfile();
 	if (profile == 0)
 	{
-		this->lblProfile->SetText((const UTF8Char*)"Profile: --");
+		this->lblProfile->SetText(CSTR("Profile: --"));
 	}
 	else
 	{
-		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Profile: ")), profile->profileName);
-		this->lblProfile->SetText(sbuff);
+		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Profile: ")), profile->profileName);
+		this->lblProfile->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -198,7 +199,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 320, ui)
 {
 	UI::GUILabel *lbl;
-	this->SetText((const UTF8Char*)"Profiled Resizer");
+	this->SetText(CSTR("Profiled Resizer"));
 	this->SetNoResize(true);
 	this->SetFont(0, 0, 8.25, false);
 
@@ -215,7 +216,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->tpMain = this->tcMain->AddTabPage(CSTR("Main"));
 	this->tpProfile = this->tcMain->AddTabPage(CSTR("Edit Profiles"));
 
-	NEW_CLASS(this->btnChgProfile, UI::GUIButton(ui, this->tpMain, (const UTF8Char*)"&Change Profile"));
+	NEW_CLASS(this->btnChgProfile, UI::GUIButton(ui, this->tpMain, CSTR("&Change Profile")));
 	this->btnChgProfile->SetRect(60, 200, 180, 22, false);
 	this->btnChgProfile->HandleButtonClick(OnChgClicked, this);
 
@@ -234,7 +235,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	NEW_CLASS(this->pnlProfile1, UI::GUIPanel(ui, this->tpProfile));
 	this->pnlProfile1->SetRect(0, 0, 100, 100, false);
 	this->pnlProfile1->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnProfileDel, UI::GUIButton(ui, this->pnlProfile1, (const UTF8Char*)"&Delete"));
+	NEW_CLASS(this->btnProfileDel, UI::GUIButton(ui, this->pnlProfile1, CSTR("&Delete")));
 	this->btnProfileDel->SetRect(0, 0, 100, 22, false);
 	this->btnProfileDel->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->btnProfileDel->HandleButtonClick(OnClickedDelProfile, this);
@@ -291,7 +292,7 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	NEW_CLASS(this->radPNG, UI::GUIRadioButton(ui, this->pnlProfile2, (const UTF8Char*)"PNG", false));
 	this->radPNG->SetRect(0, 197, 120, 19, false);
 
-	NEW_CLASS(this->btnProfileAdd, UI::GUIButton(ui, this->pnlProfile2, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnProfileAdd, UI::GUIButton(ui, this->pnlProfile2, CSTR("&Add")));
 	this->btnProfileAdd->SetRect(50, 203, 100, 22, false);
 	this->btnProfileAdd->HandleButtonClick(OnClickedAddProfile, this);
 

@@ -8,16 +8,17 @@ void __stdcall SSWR::AVIRead::AVIRPaintCntForm::OnTimerTick(void *userObj)
 	if (me->dispCnt != me->paintCnt)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		me->dispCnt = me->paintCnt;
-		Text::StrInt64(sbuff, me->dispCnt);
-		me->txtCnt->SetText(sbuff);
+		sptr = Text::StrInt64(sbuff, me->dispCnt);
+		me->txtCnt->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
 SSWR::AVIRead::AVIRPaintCntForm::AVIRPaintCntForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Paint Counter");
+	this->SetText(CSTR("Paint Counter"));
 	
 	this->core = core;
 	this->paintCnt = 0;

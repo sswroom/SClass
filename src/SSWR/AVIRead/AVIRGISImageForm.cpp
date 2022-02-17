@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRGISImageForm::UpdateImages()
 
 SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, UOSInt imgIndex) : UI::GUIForm(parent, 456, 405, ui)
 {
-	this->SetText((const UTF8Char*)"Select Image");
+	this->SetText(CSTR("Select Image"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -72,10 +72,10 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
 	this->pnlButtons->SetRect(0, 0, 456, 48, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("&OK")));
 	this->btnOK->SetRect(96, 8, 100, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("&Cancel")));
 	this->btnCancel->SetRect(264, 8, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	NEW_CLASS(this->plIcons, UI::GUIPictureList(ui, this, core->GetDrawEngine(), true, 48, 48));

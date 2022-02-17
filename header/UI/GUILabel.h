@@ -13,7 +13,7 @@ namespace UI
 		GUILabel(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText);
 		virtual ~GUILabel();
 
-		virtual void SetText(const UTF8Char *text);
+		virtual void SetText(Text::CString text);
 		virtual Text::CString GetObjectClass();
 		virtual OSInt OnNotify(UInt32 code, void *lParam);
 		Bool HasTextColor();

@@ -186,7 +186,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Unknown symbol '"));
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 				sb.AppendC(UTF8STRC("'"));
 				this->LogError(status, sb.ToString(), sb.GetLength(), errMsgs);
 				succ = false;

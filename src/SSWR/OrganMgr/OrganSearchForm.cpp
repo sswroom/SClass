@@ -41,16 +41,16 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, U
 	this->foundGroup = 0;
 	this->parentId = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("SearchTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("SearchTitle")));
 
 	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("SearchName")).v));
 	lbl->SetRect(4, 6, 100, 21, false);
 	NEW_CLASS(this->txt, UI::GUITextBox(ui, this, CSTR("")));
 	txt->SetRect(108, 6, 218, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchButton")).v));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchButton"))));
 	this->btnOK->SetRect(76, 36, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchCancel")).v));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("SearchCancel"))));
 	this->btnCancel->SetRect(180, 36, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

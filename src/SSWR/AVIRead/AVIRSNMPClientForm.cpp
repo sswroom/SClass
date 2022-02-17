@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SNMP Client");
+	this->SetText(CSTR("SNMP Client"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -125,7 +125,7 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->cboCommandType->AddItem(CSTR("GetNextRequest"), (void*)2);
 	this->cboCommandType->AddItem(CSTR("Walk"), (void*)3);
 	this->cboCommandType->SetSelectedIndex(2);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 100, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 

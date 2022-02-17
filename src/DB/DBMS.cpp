@@ -905,15 +905,15 @@ const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::Sessi
 		Int32 tz = dt.GetTimeZoneQHR();
 		if (tz > 0)
 		{
-			sb->AppendChar('+', 1);			
+			sb->AppendUTF8Char('+');
 		}
 		else
 		{
 			tz = -tz;
-			sb->AppendChar('-', 1);
+			sb->AppendUTF8Char('-');
 		}
 		sb->AppendI32(tz >> 2);
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		if (tz & 3)
 		{
 			sb->AppendI32((tz & 3) * 15);
@@ -1215,7 +1215,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			}
 			else if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_' || c == '.')
 			{
-				sb2.AppendChar(c, 1);
+				sb2.AppendUTF8Char(c);
 			}
 			else
 			{
@@ -1287,7 +1287,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				if (*val == '\'')
 				{
 					val++;
-					sb.AppendChar('\'', 1);
+					sb.AppendUTF8Char('\'');
 				}
 				else
 				{
@@ -1307,36 +1307,36 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				if (*val == 't')
 				{
 					val++;
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 				}
 				else if (*val == 'r')
 				{
 					val++;
-					sb.AppendChar('\r', 1);
+					sb.AppendUTF8Char('\r');
 				}
 				else if (*val == 'n')
 				{
 					val++;
-					sb.AppendChar('\n', 1);
+					sb.AppendUTF8Char('\n');
 				}
 				else if (*val == '\\')
 				{
 					val++;
-					sb.AppendChar('\\', 1);
+					sb.AppendUTF8Char('\\');
 				}
 				else if (*val == '\'')
 				{
 					val++;
-					sb.AppendChar('\'', 1);
+					sb.AppendUTF8Char('\'');
 				}
 				else if (*val == '\"')
 				{
 					val++;
-					sb.AppendChar('\"', 1);
+					sb.AppendUTF8Char('\"');
 				}
 				else
 				{
-					sb.AppendChar('\\', 1);	
+					sb.AppendUTF8Char('\\');	
 				}
 			}
 			else
@@ -1358,7 +1358,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				if (*val == '\"')
 				{
 					val++;
-					sb.AppendChar('\"', 1);
+					sb.AppendUTF8Char('\"');
 				}
 				else
 				{
@@ -1378,36 +1378,36 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				if (*val == 't')
 				{
 					val++;
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 				}
 				else if (*val == 'r')
 				{
 					val++;
-					sb.AppendChar('\r', 1);
+					sb.AppendUTF8Char('\r');
 				}
 				else if (*val == 'n')
 				{
 					val++;
-					sb.AppendChar('\n', 1);
+					sb.AppendUTF8Char('\n');
 				}
 				else if (*val == '\\')
 				{
 					val++;
-					sb.AppendChar('\\', 1);
+					sb.AppendUTF8Char('\\');
 				}
 				else if (*val == '\'')
 				{
 					val++;
-					sb.AppendChar('\'', 1);
+					sb.AppendUTF8Char('\'');
 				}
 				else if (*val == '\"')
 				{
 					val++;
-					sb.AppendChar('\"', 1);
+					sb.AppendUTF8Char('\"');
 				}
 				else
 				{
-					sb.AppendChar('\\', 1);	
+					sb.AppendUTF8Char('\\');
 				}
 			}
 			else
@@ -1428,12 +1428,12 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			c = *sptr++;
 			if (c >= '0' && c <= '9')
 			{
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 			}
 			else if (c == '.')
 			{
 				isDbl = true;
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 			}
 			else
 			{
@@ -1646,15 +1646,15 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 			c = *sptr++;
 			if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
 			{
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 			}
 			else if (c == '_' || c == '.')
 			{
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 			}
 			else if (c >= '0' && c <= '9')
 			{
-				sb.AppendChar(c, 1);
+				sb.AppendUTF8Char(c);
 			}
 			else if (c == 0)
 			{
@@ -2412,7 +2412,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				Text::StringBuilderUTF8 sb;
 				Bool valid = true;
 				UTF8Char c;
-				sb.AppendChar('@', 1);
+				sb.AppendUTF8Char('@');
 
 				if (sptr1[1] == '\'')
 				{
@@ -2440,7 +2440,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 								sb.AppendSlow(sptr1);
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
 								break;
@@ -2456,26 +2456,26 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 								sb.AppendSlow(sptr1);
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
 								break;
 							}
 							else if (c == 't')
 							{
-								sb.AppendChar('\t', 1);
+								sb.AppendUTF8Char('\t');
 							}
 							else if (c == 'n')
 							{
-								sb.AppendChar('\n', 1);
+								sb.AppendUTF8Char('\n');
 							}
 							else if (c == 'r')
 							{
-								sb.AppendChar('\r', 1);
+								sb.AppendUTF8Char('\r');
 							}
 							else
 							{
-								sb.AppendChar(c, 1);
+								sb.AppendUTF8Char(c);
 							}
 						}
 						else if (c == 0)
@@ -2485,7 +2485,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 							sb.AppendSlow(sptr1);
-							sb.AppendChar('\'', 1);
+							sb.AppendUTF8Char('\'');
 							SDEL_TEXT(sess->lastError);
 							sess->lastError = Text::StrCopyNew(sb.ToString());
 							break;
@@ -2493,7 +2493,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						}
 						else
 						{
-							sb.AppendChar(c, 1);
+							sb.AppendUTF8Char(c);
 						}
 					}
 				}
@@ -2523,7 +2523,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 								sb.AppendSlow(sptr1);
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
 								break;
@@ -2539,26 +2539,26 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 								sb.AppendSlow(sptr1);
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
 								break;
 							}
 							else if (c == 't')
 							{
-								sb.AppendChar('\t', 1);
+								sb.AppendUTF8Char('\t');
 							}
 							else if (c == 'n')
 							{
-								sb.AppendChar('\n', 1);
+								sb.AppendUTF8Char('\n');
 							}
 							else if (c == 'r')
 							{
-								sb.AppendChar('\r', 1);
+								sb.AppendUTF8Char('\r');
 							}
 							else
 							{
-								sb.AppendChar(c, 1);
+								sb.AppendUTF8Char(c);
 							}
 						}
 						else if (c == 0)
@@ -2568,7 +2568,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 							sb.AppendSlow(sptr1);
-							sb.AppendChar('\'', 1);
+							sb.AppendUTF8Char('\'');
 							SDEL_TEXT(sess->lastError);
 							sess->lastError = Text::StrCopyNew(sb.ToString());
 							break;
@@ -2576,7 +2576,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						}
 						else
 						{
-							sb.AppendChar(c, 1);
+							sb.AppendUTF8Char(c);
 						}
 					}
 				}
@@ -2588,7 +2588,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						c = *sptr1++;
 						if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '.' || c == '_' || c == '$')
 						{
-							sb.AppendChar(c, 1);
+							sb.AppendUTF8Char(c);
 						}
 						else
 						{
@@ -2611,7 +2611,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 								sb.ClearStr();
 								sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 								sb.AppendSlow(sptr1);
-								sb.AppendChar('\'', 1);
+								sb.AppendUTF8Char('\'');
 								SDEL_TEXT(sess->lastError);
 								sess->lastError = Text::StrCopyNew(sb.ToString());
 								break;
@@ -2626,7 +2626,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 					sb.AppendSlow(sptr1);
-					sb.AppendChar('\'', 1);
+					sb.AppendUTF8Char('\'');
 					SDEL_TEXT(sess->lastError);
 					sess->lastError = Text::StrCopyNew(sb.ToString());
 				}
@@ -2650,7 +2650,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("#00000Unsupported syntax '"));
 						sb.AppendSlow(sptr1);
-						sb.AppendChar('\'', 1);
+						sb.AppendUTF8Char('\'');
 						SDEL_TEXT(sess->lastError);
 						sess->lastError = Text::StrCopyNew(sb.ToString());
 						return 0;

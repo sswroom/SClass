@@ -51,10 +51,10 @@ IO::Device::MTKGPSNMEA::~MTKGPSNMEA()
 	DEL_CLASS(this->cmdWResults);
 	DEL_CLASS(this->cmdEvt);
 	DEL_CLASS(this->cmdMut);
-	SDEL_TEXT(this->firmwareBuild);
-	SDEL_TEXT(this->firmwareRel);
-	SDEL_TEXT(this->productMode);
-	SDEL_TEXT(this->sdkVer);
+	SDEL_STRING(this->firmwareBuild);
+	SDEL_STRING(this->firmwareRel);
+	SDEL_STRING(this->productMode);
+	SDEL_STRING(this->sdkVer);
 }
 
 Map::ILocationService::ServiceType IO::Device::MTKGPSNMEA::GetServiceType()
@@ -106,8 +106,9 @@ Bool IO::Device::MTKGPSNMEA::IsMTKDevice()
 Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 {
 	UTF8Char sbuff[256];
-	UTF8Char *sarr2[2];
-	UTF8Char *sarr[5];
+	UTF8Char *sptr;
+	Text::PString sarr2[2];
+	Text::PString sarr[5];
 	UOSInt i;
 	UInt8 buff[64];
 	UOSInt cmdSize = GenNMEACommand(UTF8STRC("$PMTK605"), buff);
@@ -115,20 +116,20 @@ Bool IO::Device::MTKGPSNMEA::QueryFirmware()
 	if (result == 0)
 		return false;
 	
-	result->ConcatTo(sbuff);
+	sptr = result->ConcatTo(sbuff);
 	result->Release();
-	Text::StrSplit(sarr2, 2, sbuff, '*');
-	i = Text::StrSplit(sarr, 5, sarr2[0], ',');
+	Text::StrSplitP(sarr2, 2, {sbuff, (UOSInt)(sptr - sbuff)}, '*');
+	i = Text::StrSplitP(sarr, 5, sarr2[0], ',');
 	if (i == 5)
 	{
-		SDEL_TEXT(this->firmwareBuild);
-		SDEL_TEXT(this->firmwareRel);
-		SDEL_TEXT(this->productMode);
-		SDEL_TEXT(this->sdkVer);
-		this->firmwareRel = Text::StrCopyNew(sarr[1]);
-		this->firmwareBuild = Text::StrCopyNew(sarr[2]);
-		this->productMode = Text::StrCopyNew(sarr[3]);
-		this->sdkVer = Text::StrCopyNew(sarr[4]);
+		SDEL_STRING(this->firmwareBuild);
+		SDEL_STRING(this->firmwareRel);
+		SDEL_STRING(this->productMode);
+		SDEL_STRING(this->sdkVer);
+		this->firmwareRel = Text::String::New(sarr[1].v, sarr[1].leng);
+		this->firmwareBuild = Text::String::New(sarr[2].v, sarr[2].leng);
+		this->productMode = Text::String::New(sarr[3].v, sarr[3].leng);
+		this->sdkVer = Text::String::New(sarr[4].v, sarr[4].leng);
 		return true;
 	}
 	else
@@ -562,22 +563,22 @@ Text::String *IO::Device::MTKGPSNMEA::SendMTKCommand(const UInt8 *cmdBuff, UOSIn
 	return resultStr;
 }
 
-const UTF8Char *IO::Device::MTKGPSNMEA::GetFirmwareRel()
+Text::String *IO::Device::MTKGPSNMEA::GetFirmwareRel()
 {
 	return this->firmwareRel;
 }
 
-const UTF8Char *IO::Device::MTKGPSNMEA::GetFirmwareBuild()
+Text::String *IO::Device::MTKGPSNMEA::GetFirmwareBuild()
 {
 	return this->firmwareBuild;
 }
 
-const UTF8Char *IO::Device::MTKGPSNMEA::GetProductMode()
+Text::String *IO::Device::MTKGPSNMEA::GetProductMode()
 {
 	return this->productMode;
 }
 
-const UTF8Char *IO::Device::MTKGPSNMEA::GetSDKVer()
+Text::String *IO::Device::MTKGPSNMEA::GetSDKVer()
 {
 	return this->sdkVer;
 }

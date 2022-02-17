@@ -18,8 +18,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamTermForm::OnStreamClicked(void *userObj)
 		me->stm = me->core->OpenStream(&st, me, 0, false);
 		if (me->stm)
 		{
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream->SetText((const UTF8Char*)"&Close");
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream->SetText(CSTR("&Close"));
 			me->remoteClosed = false;
 			me->threadRunning = false;
 			me->threadToStop = false;
@@ -164,8 +164,8 @@ void SSWR::AVIRead::AVIRStreamTermForm::StopStream()
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText((const UTF8Char*)"-");
-		this->btnStream->SetText((const UTF8Char*)"&Open");
+		this->txtStream->SetText(CSTR("-"));
+		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
 	}
 }
@@ -193,7 +193,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 				j += 16;
 			}
 			sptr = Text::StrHexBytes(sptr, &buff[j], buffSize - j, ' ');
-			this->txtRecvDisp->SetText(sbuff);
+			this->txtRecvDisp->SetText(CSTRP(sbuff, sptr));
 			MemFree(sbuff);
 		}
 		else
@@ -201,13 +201,13 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 			UTF8Char *u8buff = MemAlloc(UTF8Char, buffSize + 1);
 			MemCopyNO(u8buff, buff, buffSize);
 			u8buff[buffSize] = 0;
-			this->txtRecvDisp->SetText(u8buff);
+			this->txtRecvDisp->SetText({u8buff, buffSize});
 			MemFree(u8buff);
 		}
 	}
 	else
 	{
-		this->txtRecvDisp->SetText((const UTF8Char*)"");
+		this->txtRecvDisp->SetText(CSTR(""));
 	}
 	mutUsage.EndUse();
 }
@@ -234,7 +234,7 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 				j += 16;
 			}
 			sptr = Text::StrHexBytes(sptr, &buff[j], buffSize - j, ' ');
-			this->txtSendDisp->SetText(sbuff);
+			this->txtSendDisp->SetText(CSTRP(sbuff, sptr));
 			MemFree(sbuff);
 		}
 		else
@@ -242,19 +242,19 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 			UTF8Char *u8buff = MemAlloc(UTF8Char, buffSize + 1);
 			MemCopyNO(u8buff, buff, buffSize);
 			u8buff[buffSize] = 0;
-			this->txtSendDisp->SetText(u8buff);
+			this->txtSendDisp->SetText({u8buff, buffSize});
 			MemFree(u8buff);
 		}
 	}
 	else
 	{
-		this->txtSendDisp->SetText((const UTF8Char*)"");
+		this->txtSendDisp->SetText(CSTR(""));
 	}
 }
 
 SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Stream Terminal");
+	this->SetText(CSTR("Stream Terminal"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -276,7 +276,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIRStreamTermForm::AVIRStreamTermForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlSend, UI::GUIPanel(ui, this->pnlSendOption));
 	this->pnlSend->SetRect(0, 0, 100, 24, false);
 	this->pnlSend->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlSend, (const UTF8Char*)"&Send"));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->pnlSend, CSTR("&Send")));
 	this->btnSend->SetRect(0, 0, 75, 23, false);
 	this->btnSend->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);

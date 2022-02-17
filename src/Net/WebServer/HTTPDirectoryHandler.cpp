@@ -305,7 +305,7 @@ void Net::WebServer::HTTPDirectoryHandler::StatSave(Net::WebServer::HTTPDirector
 			{
 				sb.ClearStr();
 				sb.AppendU32(stat->cntMap->GetItem(i));
-				sb.AppendChar('\t', 1);
+				sb.AppendUTF8Char('\t');
 				sb.Append(stat->cntMap->GetKey(i));
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 				i++;
@@ -848,12 +848,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							sbOut.AppendNE(UTF8STRC("<tr><td><a href=\""));
 							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, package->fileName->v);
 							sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
-							sbOut.AppendChar('/', 1);
+							sbOut.AppendUTF8Char('/');
 							sbOut.AppendNE(UTF8STRC("\">"));
 							sptr2 = Text::XML::ToXMLText(sbuff2, package->fileName->v);
 							sbOut.AppendNE2(sbuff2, (UOSInt)(sptr2 - sbuff2), UTF8STRC("</a></td><td>"));
 							sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
-							sbOut.AppendChar('-', 1);
+							sbOut.AppendUTF8Char('-');
 							if (this->statMap)
 							{
 								sbOut.AppendNE(UTF8STRC("</td><td>0"));
@@ -926,7 +926,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								sbOut.AppendNE(sbuff2, (UOSInt)(sptr4 - sbuff2));
 								if (pt == IO::Path::PathType::Directory)
 								{
-									sbOut.AppendChar('/', 1);
+									sbOut.AppendUTF8Char('/');
 								}
 								sbOut.AppendNE(UTF8STRC("\">"));
 								if (cnt > 0)
@@ -943,7 +943,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								if (pt == IO::Path::PathType::Directory)
 								{
 									sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
-									sbOut.AppendChar('-', 1);
+									sbOut.AppendUTF8Char('-');
 								}
 								else
 								{
@@ -1043,7 +1043,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							if (ent->pt == IO::Path::PathType::Directory)
 							{
 								sbOut.AppendNE2(UTF8STRC("Directory"), UTF8STRC("</td><td>"));
-								sbOut.AppendChar('-', 1);
+								sbOut.AppendUTF8Char('-');
 							}
 							else
 							{

@@ -173,6 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRHTTPDownloaderForm *me = (SSWR::AVIRead::AVIRHTTPDownloaderForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
@@ -193,52 +194,52 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 
 	if (me->respChanged)
 	{
-		Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
-		me->txtSvrIP->SetText(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &me->respSvrAddr);
+		me->txtSvrIP->SetText(CSTRP(sbuff, sptr));
 		if (me->respTimeDNS == -1)
 		{
-			me->txtTimeDNS->SetText((const UTF8Char*)"-1");
+			me->txtTimeDNS->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
-			me->txtTimeDNS->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeDNS, "0.0000000000");
+			me->txtTimeDNS->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeConn == -1)
 		{
-			me->txtTimeConn->SetText((const UTF8Char*)"-1");
+			me->txtTimeConn->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
-			me->txtTimeConn->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeConn - me->respTimeDNS, "0.0000000000");
+			me->txtTimeConn->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeReq == -1)
 		{
-			me->txtTimeSendHdr->SetText((const UTF8Char*)"-1");
+			me->txtTimeSendHdr->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
-			me->txtTimeSendHdr->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeReq - me->respTimeConn, "0.0000000000");
+			me->txtTimeSendHdr->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeResp == -1)
 		{
-			me->txtTimeResp->SetText((const UTF8Char*)"-1");
+			me->txtTimeResp->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
-			me->txtTimeResp->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeResp - me->respTimeReq, "0.0000000000");
+			me->txtTimeResp->SetText(CSTRP(sbuff, sptr));
 		}
 		if (me->respTimeTotal == -1)
 		{
-			me->txtTimeTotal->SetText((const UTF8Char*)"-1");
+			me->txtTimeTotal->SetText(CSTR("-1"));
 		}
 		else
 		{
-			Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
-			me->txtTimeTotal->SetText(sbuff);
+			sptr = Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
+			me->txtTimeTotal->SetText(CSTRP(sbuff, sptr));
 		}
 
 		me->respChanged = false;
@@ -247,10 +248,10 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 	Data::DateTime t;
 	UInt64 currSize = me->currSize;
 	t.SetCurrTimeUTC();
-	Text::StrUInt64(sbuff, currSize);
-	me->txtTotalSize->SetText(sbuff);
-	Text::StrDouble(sbuff, (Double)(currSize - me->lastSize) / ((Double)(t.ToTicks() - me->lastT) * 0.001));
-	me->txtCurrSpeed->SetText(sbuff);
+	sptr = Text::StrUInt64(sbuff, currSize);
+	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrDouble(sbuff, (Double)(currSize - me->lastSize) / ((Double)(t.ToTicks() - me->lastT) * 0.001));
+	me->txtCurrSpeed->SetText(CSTRP(sbuff, sptr));
 	me->lastT = t.ToTicks();
 	me->lastSize = currSize;
 }
@@ -268,7 +269,7 @@ void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"HTTP Downloader");
+	this->SetText(CSTR("HTTP Downloader"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -305,7 +306,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->lblHeaders->SetRect(4, 52, 100, 47, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 52, 400, 71, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 128, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));
@@ -368,8 +369,11 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
+	{
 		sbuff[i] = 0;
-	this->txtDownloadDir->SetText(sbuff);
+		sptr = &sbuff[i];
+	}
+	this->txtDownloadDir->SetText(CSTRP(sbuff, sptr));
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();

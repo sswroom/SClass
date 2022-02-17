@@ -183,9 +183,9 @@ void UI::GUIControl::Close()
 	DestroyWindow((HWND)hwnd);
 }
 
-void UI::GUIControl::SetText(const UTF8Char *text)
+void UI::GUIControl::SetText(Text::CString text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text);
+	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)hwnd, wptr);
 	Text::StrDelNew(wptr);
 }

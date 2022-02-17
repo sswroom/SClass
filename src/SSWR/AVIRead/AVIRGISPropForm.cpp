@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->colorSess->AddHandler(this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	this->SetText((const UTF8Char*)"Layer Properties");
+	this->SetText(CSTR("Layer Properties"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetSize(512, 320);
@@ -298,17 +298,17 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	lbl->SetRect(8, 48, 100, 23, false);
 	NEW_CLASS(this->pbFontStyle, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, false));
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
-	NEW_CLASS(this->btnFontModify, UI::GUIButton(ui, this, (const UTF8Char*)"Modify"));
+	NEW_CLASS(this->btnFontModify, UI::GUIButton(ui, this, CSTR("Modify")));
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
-	NEW_CLASS(this->btnFontStyle, UI::GUIButton(ui, this, (const UTF8Char*)"Style"));
+	NEW_CLASS(this->btnFontStyle, UI::GUIButton(ui, this, CSTR("Style")));
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
 	NEW_CLASS(this->lblLineStyle, UI::GUILabel(ui, this, (const UTF8Char*)"Line Style"));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
 	NEW_CLASS(this->pbLineStyle, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, false));
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
-	NEW_CLASS(this->btnLineModify, UI::GUIButton(ui, this, (const UTF8Char*)"Modify"));
+	NEW_CLASS(this->btnLineModify, UI::GUIButton(ui, this, CSTR("Modify")));
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
-	NEW_CLASS(this->btnLineStyle, UI::GUIButton(ui, this, (const UTF8Char*)"Style"));
+	NEW_CLASS(this->btnLineStyle, UI::GUIButton(ui, this, CSTR("Style")));
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
 	NEW_CLASS(this->lblFillStyle, UI::GUILabel(ui, this, (const UTF8Char*)"Fill Style"));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
@@ -341,10 +341,10 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->chkTrim->SetRect(4, 76, 104, 24, false);
 	NEW_CLASS(this->chkCapital, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Capital", false));
 	this->chkCapital->SetRect(4, 100, 104, 24, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(336, 244, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(424, 244, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
@@ -384,12 +384,12 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 			i++;
 		}
 
-		Text::StrDouble(sbuff, setting.minScale);
-		this->txtMinScale->SetText(sbuff);
-		Text::StrDouble(sbuff, setting.maxScale);
-		this->txtMaxScale->SetText(sbuff);
-		Text::StrInt32(sbuff, setting.priority);
-		this->txtPriority->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, setting.minScale);
+		this->txtMinScale->SetText(CSTRP(sbuff, sptr));
+		sptr =Text::StrDouble(sbuff, setting.maxScale);
+		this->txtMaxScale->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, setting.priority);
+		this->txtPriority->SetText(CSTRP(sbuff, sptr));
 
 		Media::DrawImage *dimg;
 		UOSInt w;

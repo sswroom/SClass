@@ -178,7 +178,7 @@ void DB::ODBCConn::GetConnName(Text::StringBuilderUTF8 *sb)
 		sb->Append(this->dsn);
 		if (this->schema)
 		{
-			sb->AppendChar('/', 1);
+			sb->AppendUTF8Char('/');
 			sb->Append(this->schema);
 		}
 	}

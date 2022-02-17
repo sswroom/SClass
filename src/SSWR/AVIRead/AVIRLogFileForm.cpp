@@ -55,12 +55,13 @@ void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSIn
 SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->logFile = logFile;
 	this->logLevel = IO::ILogHandler::LOG_LEVEL_RAW;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	logFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LogFile Viewer - ")));
-	this->SetText(sbuff);
+	sptr = logFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LogFile Viewer - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lvLogs, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));

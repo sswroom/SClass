@@ -58,19 +58,20 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	this->viewer = SSWR::AVIRead::MIMEViewer::AVIRMIMEViewer::CreateViewer(this->core, ui, this->pnlContent, sess, this->mail->GetRAWContent());
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	Data::DateTime dt;
-	if (this->mail->GetFromAddr(sbuff))
+	if ((sptr = this->mail->GetFromAddr(sbuff)) != 0)
 	{
-		this->txtFrom->SetText(sbuff);
+		this->txtFrom->SetText(CSTRP(sbuff, sptr));
 	}
-	if (this->mail->GetSubject(sbuff))
+	if ((sptr = this->mail->GetSubject(sbuff)) != 0)
 	{
-		this->txtSubject->SetText(sbuff);
+		this->txtSubject->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->mail->GetDate(&dt))
 	{
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
-		this->txtDate->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzzz");
+		this->txtDate->SetText(CSTRP(sbuff, sptr));
 	}
 	Data::ArrayList<Text::MIMEObj::MailMessage::MailAddress *> addrList;
 	Text::MIMEObj::MailMessage::MailAddress *addr;

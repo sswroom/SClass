@@ -30,7 +30,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UOSInt maxSNLen;
 		UInt8 buff[8];
 		const UInt8 *macPtr;
-		const UTF8Char *csptr;
+		Text::String *s;
 		Data::ArrayList<Net::WirelessLAN::Interface*> interfaces;
 		Data::ArrayList<Net::WirelessLAN::BSSInfo *> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
@@ -69,23 +69,23 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						if (thisLen > maxSSIDLen)
 							maxSSIDLen = thisLen;
 
-						if ((csptr = bss->GetManuf()) != 0)
+						if ((s = bss->GetManuf()) != 0)
 						{
-							thisLen = Text::StrCharCnt(csptr);
+							thisLen = s->leng;
 							if (thisLen > maxManuLen)
 								maxManuLen = thisLen;
 						}
 						 
-						if ((csptr = bss->GetModel()) != 0)
+						if ((s = bss->GetModel()) != 0)
 						{
-							thisLen = Text::StrCharCnt(csptr);
+							thisLen = s->leng;
 							if (thisLen > maxModelLen)
 								maxModelLen = thisLen;
 						}
 
-						if ((csptr = bss->GetSN()) != 0)
+						if ((s = bss->GetSN()) != 0)
 						{
-							thisLen = Text::StrCharCnt(csptr);
+							thisLen = s->leng;
 							if (thisLen > maxSNLen)
 								maxSNLen = thisLen;
 						}
@@ -99,10 +99,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					sb.ClearStr();
 					macPtr = bss->GetMAC();
 					sb.AppendHexBuff(macPtr, 6, ':', Text::LineBreakType::None);
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 					if (bss->GetSSID())
 					{
-						Text::String *s = bss->GetSSID();
+						s = bss->GetSSID();
 						sb.Append(s);
 						thisLen = s->leng;
 					}
@@ -114,15 +114,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.AppendChar(' ', maxSSIDLen - thisLen);
 					}
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 					Text::SBAppendF64(&sb, bss->GetRSSI());
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 					Text::SBAppendF64(&sb, bss->GetFreq());
-					sb.AppendChar('\t', 1);
-					if ((csptr = bss->GetManuf()) != 0)
+					sb.AppendUTF8Char('\t');
+					if ((s = bss->GetManuf()) != 0)
 					{
-						sb.AppendSlow(csptr);
-						thisLen = Text::StrCharCnt(csptr);
+						sb.Append(s);
+						thisLen = s->leng;
 					}
 					else
 					{
@@ -132,11 +132,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.AppendChar(' ', maxManuLen - thisLen);
 					}
-					sb.AppendChar('\t', 1);
-					if ((csptr = bss->GetModel()) != 0)
+					sb.AppendUTF8Char('\t');
+					if ((s = bss->GetModel()) != 0)
 					{
-						sb.AppendSlow(csptr);
-						thisLen = Text::StrCharCnt(csptr);
+						sb.Append(s);
+						thisLen = s->leng;
 					}
 					else
 					{
@@ -146,11 +146,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.AppendChar(' ', maxModelLen - thisLen);
 					}
-					sb.AppendChar('\t', 1);
-					if ((csptr = bss->GetSN()) != 0)
+					sb.AppendUTF8Char('\t');
+					if ((s = bss->GetSN()) != 0)
 					{
-						sb.AppendSlow(csptr);
-						thisLen = Text::StrCharCnt(csptr);
+						sb.Append(s);
+						thisLen = s->leng;
 					}
 					else
 					{
@@ -160,7 +160,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					{
 						sb.AppendChar(' ', maxSNLen - thisLen);
 					}
-					sb.AppendChar('\t', 1);
+					sb.AppendUTF8Char('\t');
 					buff[0] = 0;
 					buff[1] = 0;
 					buff[2] = macPtr[0];

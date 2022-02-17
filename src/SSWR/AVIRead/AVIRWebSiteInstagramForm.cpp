@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteInstagramForm::OnPageClicked(void *user
 
 SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Instagram");
+	this->SetText(CSTR("Instagram"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
@@ -115,7 +115,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnRequestUser, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequestUser, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequestUser->SetRect(254, 4, 75, 23, false);
 	this->btnRequestUser->HandleButtonClick(OnRequestUserClicked, this);
 	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this->tpUser, UI::GUIListView::LVSTYLE_TABLE, 5));
@@ -136,7 +136,7 @@ SSWR::AVIRead::AVIRWebSiteInstagramForm::AVIRWebSiteInstagramForm(UI::GUIClientC
 	this->lblShortCode->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtShortCode, UI::GUITextBox(ui, this->pnlPage, CSTR("")));
 	this->txtShortCode->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnPage, UI::GUIButton(ui, this->pnlPage, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnPage, UI::GUIButton(ui, this->pnlPage, CSTR("Request")));
 	this->btnPage->SetRect(254, 4, 75, 23, false);
 	this->btnPage->HandleButtonClick(OnPageClicked, this);
 	NEW_CLASS(this->lbImageURL, UI::GUIListBox(ui, this->tpPage, false));

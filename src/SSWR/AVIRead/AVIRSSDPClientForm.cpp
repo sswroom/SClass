@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnDeviceSelChg(void *userObj)
 	while (i < j)
 	{
 		svc = dev->services->GetItem(i);
-		me->lbService->AddItem({svc->st, Text::StrCharCnt(svc->st)}, svc);
+		me->lbService->AddItem(svc->st, svc);
 		i++;
 	}
 }
@@ -59,31 +59,32 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 	if (svc)
 	{
 		UTF8Char sbuff[128];
-		me->txtLocation->SetText(Text::StringTool::Null2Empty(svc->location));
+		UTF8Char *sptr;
+		me->txtLocation->SetText(Text::String::OrEmpty(svc->location)->ToCString());
 		if (svc->time)
 		{
 			Data::DateTime dt;
 			dt.SetTicks(svc->time);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
-			me->txtDate->SetText(sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+			me->txtDate->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtDate->SetText((const UTF8Char*)"-");
+			me->txtDate->SetText(CSTR("-"));
 		}
-		me->txtUSN->SetText(Text::StringTool::Null2Empty(svc->usn));
-		me->txtST->SetText(Text::StringTool::Null2Empty(svc->st));
-		me->txtServer->SetText(Text::StringTool::Null2Empty(svc->server));
-		me->txtOpt->SetText(Text::StringTool::Null2Empty(svc->opt));
-		me->txtUserAgent->SetText(Text::StringTool::Null2Empty(svc->userAgent));
+		me->txtUSN->SetText(Text::String::OrEmpty(svc->usn)->ToCString());
+		me->txtST->SetText(Text::String::OrEmpty(svc->st)->ToCString());
+		me->txtServer->SetText(Text::String::OrEmpty(svc->server)->ToCString());
+		me->txtOpt->SetText(Text::String::OrEmpty(svc->opt)->ToCString());
+		me->txtUserAgent->SetText(Text::String::OrEmpty(svc->userAgent)->ToCString());
 
 		if (svc->location)
 		{
 			Net::SSDPClient::SSDPRoot *root = me->rootMap->Get(svc->location);
 			if (root == 0)
 			{
-				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location, Net::WebUtil::RequestMethod::HTTP_GET, true);
+				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli == 0)
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
@@ -97,67 +98,67 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 				me->rootMap->Put(svc->location, root);
 			}
 
-			me->txtUDN->SetText(Text::StringTool::Null2Empty(root->udn));
-			me->txtFriendlyName->SetText(Text::StringTool::Null2Empty(root->friendlyName));
-			me->txtManufacturer->SetText(Text::StringTool::Null2Empty(root->manufacturer));
-			me->txtManufacturerURL->SetText(Text::StringTool::Null2Empty(root->manufacturerURL));
-			me->txtModelName->SetText(Text::StringTool::Null2Empty(root->modelName));
-			me->txtModelNumber->SetText(Text::StringTool::Null2Empty(root->modelNumber));
-			me->txtModelURL->SetText(Text::StringTool::Null2Empty(root->modelURL));
-			me->txtSerialNumber->SetText(Text::StringTool::Null2Empty(root->serialNumber));
-			me->txtPresentationURL->SetText(Text::StringTool::Null2Empty(root->presentationURL));
-			me->txtDeviceType->SetText(Text::StringTool::Null2Empty(root->deviceType));
-			me->txtDeviceURL->SetText(Text::StringTool::Null2Empty(root->deviceURL));
+			me->txtUDN->SetText(Text::String::OrEmpty(root->udn)->ToCString());
+			me->txtFriendlyName->SetText(Text::String::OrEmpty(root->friendlyName)->ToCString());
+			me->txtManufacturer->SetText(Text::String::OrEmpty(root->manufacturer)->ToCString());
+			me->txtManufacturerURL->SetText(Text::String::OrEmpty(root->manufacturerURL)->ToCString());
+			me->txtModelName->SetText(Text::String::OrEmpty(root->modelName)->ToCString());
+			me->txtModelNumber->SetText(Text::String::OrEmpty(root->modelNumber)->ToCString());
+			me->txtModelURL->SetText(Text::String::OrEmpty(root->modelURL)->ToCString());
+			me->txtSerialNumber->SetText(Text::String::OrEmpty(root->serialNumber)->ToCString());
+			me->txtPresentationURL->SetText(Text::String::OrEmpty(root->presentationURL)->ToCString());
+			me->txtDeviceType->SetText(Text::String::OrEmpty(root->deviceType)->ToCString());
+			me->txtDeviceURL->SetText(Text::String::OrEmpty(root->deviceURL)->ToCString());
 		}
 		else
 		{
-			me->txtUDN->SetText((const UTF8Char*)"");
-			me->txtFriendlyName->SetText((const UTF8Char*)"");
-			me->txtManufacturer->SetText((const UTF8Char*)"");
-			me->txtManufacturerURL->SetText((const UTF8Char*)"");
-			me->txtModelName->SetText((const UTF8Char*)"");
-			me->txtModelNumber->SetText((const UTF8Char*)"");
-			me->txtModelURL->SetText((const UTF8Char*)"");
-			me->txtSerialNumber->SetText((const UTF8Char*)"");
-			me->txtPresentationURL->SetText((const UTF8Char*)"");
-			me->txtDeviceType->SetText((const UTF8Char*)"");
-			me->txtDeviceURL->SetText((const UTF8Char*)"");
+			me->txtUDN->SetText(CSTR(""));
+			me->txtFriendlyName->SetText(CSTR(""));
+			me->txtManufacturer->SetText(CSTR(""));
+			me->txtManufacturerURL->SetText(CSTR(""));
+			me->txtModelName->SetText(CSTR(""));
+			me->txtModelNumber->SetText(CSTR(""));
+			me->txtModelURL->SetText(CSTR(""));
+			me->txtSerialNumber->SetText(CSTR(""));
+			me->txtPresentationURL->SetText(CSTR(""));
+			me->txtDeviceType->SetText(CSTR(""));
+			me->txtDeviceURL->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtLocation->SetText((const UTF8Char*)"");
-		me->txtDate->SetText((const UTF8Char*)"");
-		me->txtUSN->SetText((const UTF8Char*)"");
-		me->txtST->SetText((const UTF8Char*)"");
-		me->txtServer->SetText((const UTF8Char*)"");
-		me->txtOpt->SetText((const UTF8Char*)"");
-		me->txtUserAgent->SetText((const UTF8Char*)"");
+		me->txtLocation->SetText(CSTR(""));
+		me->txtDate->SetText(CSTR(""));
+		me->txtUSN->SetText(CSTR(""));
+		me->txtST->SetText(CSTR(""));
+		me->txtServer->SetText(CSTR(""));
+		me->txtOpt->SetText(CSTR(""));
+		me->txtUserAgent->SetText(CSTR(""));
 
-		me->txtUDN->SetText((const UTF8Char*)"");
-		me->txtFriendlyName->SetText((const UTF8Char*)"");
-		me->txtManufacturer->SetText((const UTF8Char*)"");
-		me->txtManufacturerURL->SetText((const UTF8Char*)"");
-		me->txtModelName->SetText((const UTF8Char*)"");
-		me->txtModelNumber->SetText((const UTF8Char*)"");
-		me->txtModelURL->SetText((const UTF8Char*)"");
-		me->txtSerialNumber->SetText((const UTF8Char*)"");
-		me->txtPresentationURL->SetText((const UTF8Char*)"");
-		me->txtDeviceType->SetText((const UTF8Char*)"");
-		me->txtDeviceURL->SetText((const UTF8Char*)"");
+		me->txtUDN->SetText(CSTR(""));
+		me->txtFriendlyName->SetText(CSTR(""));
+		me->txtManufacturer->SetText(CSTR(""));
+		me->txtManufacturerURL->SetText(CSTR(""));
+		me->txtModelName->SetText(CSTR(""));
+		me->txtModelNumber->SetText(CSTR(""));
+		me->txtModelURL->SetText(CSTR(""));
+		me->txtSerialNumber->SetText(CSTR(""));
+		me->txtPresentationURL->SetText(CSTR(""));
+		me->txtDeviceType->SetText(CSTR(""));
+		me->txtDeviceURL->SetText(CSTR(""));
 	}
 }
 
 SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"SSDP Client");
+	this->SetText(CSTR("SSDP Client"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, false);
 	NEW_CLASS(this->ssdp, Net::SSDPClient(this->sockf, 0));
-	NEW_CLASS(this->rootMap, Data::StringUTF8Map<Net::SSDPClient::SSDPRoot*>());
+	NEW_CLASS(this->rootMap, Data::FastStringMap<Net::SSDPClient::SSDPRoot*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
@@ -278,8 +279,7 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRSSDPClientForm::~AVIRSSDPClientForm()
 {
 	DEL_CLASS(this->ssdp);
-	Data::ArrayList<Net::SSDPClient::SSDPRoot*> *rootList = this->rootMap->GetValues();
-	LIST_FREE_FUNC(rootList, Net::SSDPClient::SSDPRootFree);
+	LIST_FREE_FUNC(this->rootMap, Net::SSDPClient::SSDPRootFree);
 	DEL_CLASS(this->rootMap);
 	SDEL_CLASS(this->ssl);
 }

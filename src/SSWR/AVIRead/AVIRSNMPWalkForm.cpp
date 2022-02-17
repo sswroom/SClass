@@ -12,7 +12,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SNMP Walk");
+	this->SetText(CSTR("SNMP Walk"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));

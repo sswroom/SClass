@@ -768,10 +768,10 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
 		sb->AppendDate(&dt);
-		sb->AppendChar(')', 1);
+		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nVersion = "));
 		sb->AppendU16(ReadUInt16(&this->imageBuff[pack->fileOfst + 8]));
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		sb->AppendU16(ReadUInt16(&this->imageBuff[pack->fileOfst + 10]));
 		sb->AppendC(UTF8STRC("\r\nName = "));
 		sb->AppendSlow((const UTF8Char*)&this->imageBuff[ReadUInt32(&this->imageBuff[pack->fileOfst + 12])]);
@@ -814,7 +814,7 @@ Bool IO::FileAnalyse::EXEFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 		dt.SetUnixTimestamp(ReadUInt32(&this->imageBuff[pack->fileOfst + 4]));
 		sb->AppendC(UTF8STRC(" ("));
 		sb->AppendDate(&dt);
-		sb->AppendChar(')', 1);
+		sb->AppendUTF8Char(')');
 		sb->AppendC(UTF8STRC("\r\nForwarder Chain = "));
 		sb->AppendU32(ReadUInt32(&this->imageBuff[pack->fileOfst + 8]));
 		sb->AppendC(UTF8STRC("\r\nName RVA = 0x"));

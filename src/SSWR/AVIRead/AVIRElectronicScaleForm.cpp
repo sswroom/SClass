@@ -19,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnStreamClicked(void *use
 		me->stm = me->core->OpenStream(&st, me, 9600, false);
 		if (me->stm)
 		{
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream->SetText((const UTF8Char*)"&Close");
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream->SetText(CSTR("&Close"));
 			me->remoteClosed = false;
 			me->threadRunning = false;
 			me->threadToStop = false;
@@ -47,9 +47,11 @@ void __stdcall SSWR::AVIRead::AVIRElectronicScaleForm::OnTimerTick(void *userObj
 	{
 		me->currWeightUpd = false;
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		UOSInt strSize;
-		strSize = (UOSInt)(Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight)) - sbuff);
-		me->txtWeight->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, Math::Unit::Mass::Convert(me->currWeightUnit, Math::Unit::Mass::MU_GRAM, me->currWeight));
+		me->txtWeight->SetText(CSTRP(sbuff, sptr));
+		strSize = (UOSInt)(sptr - sbuff);
 
 		UOSInt w;
 		UOSInt h;
@@ -195,15 +197,15 @@ void SSWR::AVIRead::AVIRElectronicScaleForm::StopStream()
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText((const UTF8Char*)"-");
-		this->btnStream->SetText((const UTF8Char*)"&Open");
+		this->txtStream->SetText(CSTR("-"));
+		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
 	}
 }
 
 SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Electronic Scale");
+	this->SetText(CSTR("Electronic Scale"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -228,7 +230,7 @@ SSWR::AVIRead::AVIRElectronicScaleForm::AVIRElectronicScaleForm(UI::GUIClientCon
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->lblWeight, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Weight(g)"));

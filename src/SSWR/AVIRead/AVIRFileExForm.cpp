@@ -19,12 +19,12 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcChanged(void *userObj)
 		fileSize = IO::Path::GetFileSize(sb.ToString());
 		sb.ClearStr();
 		sb.AppendU64(fileSize);
-		me->txtFileSize->SetText(sb.ToString());
-		me->txtEndOfst->SetText(sb.ToString());
+		me->txtFileSize->SetText(sb.ToCString());
+		me->txtEndOfst->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtFileSize->SetText((const UTF8Char*)"Unknown");
+		me->txtFileSize->SetText(CSTR("Unknown"));
 	}
 }
 
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnSrcClicked(void *userObj)
 	ofd->SetFileName(sb.ToString());
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtSrc->SetText(ofd->GetFileName()->v);
+		me->txtSrc->SetText(ofd->GetFileName()->ToCString());
 	}
 }
 
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnDestClicked(void *userObj)
 	ofd->SetFileName(sb.ToString());
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
-		me->txtDest->SetText(ofd->GetFileName()->v);
+		me->txtDest->SetText(ofd->GetFileName()->ToCString());
 	}
 }
 
@@ -137,13 +137,13 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
-	me->txtSrc->SetText(files[0]);
+	me->txtSrc->SetText({files[0], Text::StrCharCnt(files[0])});
 }
 
 SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"File Extractor");
+	this->SetText(CSTR("File Extractor"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -154,14 +154,14 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
 	this->txtSrc->HandleTextChanged(OnSrcChanged, this);
-	NEW_CLASS(this->btnSrc, UI::GUIButton(ui, this, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnSrc, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnSrc->SetRect(704, 4, 75, 23, false);
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
 	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this, (const UTF8Char*)"Dest File"));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
-	NEW_CLASS(this->btnDest, UI::GUIButton(ui, this, (const UTF8Char*)"&Browse"));
+	NEW_CLASS(this->btnDest, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
 	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, this, (const UTF8Char*)"File Size"));
@@ -177,7 +177,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"&Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("&Start")));
 	this->btnStart->SetRect(304, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 

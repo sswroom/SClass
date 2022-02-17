@@ -143,6 +143,7 @@ Text::CString Media::V4LVideoCapture::GetFilterName()
 Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameRateNorm, UInt32 *frameRateDenorm, UOSInt *maxFrameSize)
 {
 	struct v4l2_format fmt;
+	MemClear(&fmt, sizeof(fmt));
 	fmt.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	if (ioctl(this->fd, VIDIOC_G_FMT, &fmt) != 0)
 		return false;
@@ -214,6 +215,7 @@ Bool Media::V4LVideoCapture::GetVideoInfo(Media::FrameInfo *info, UInt32 *frameR
 	*maxFrameSize = fmt.fmt.pix.sizeimage;
 	
 	v4l2_streamparm param;
+	MemClear(&param, sizeof(param));
 	if (ioctl(this->fd, VIDIOC_G_PARM, &param) == 0)
 	{
 		*frameRateNorm = param.parm.capture.timeperframe.denominator;

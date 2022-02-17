@@ -35,7 +35,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	sb->AppendChar('{', 1);
+	sb->AppendUTF8Char('{');
 	Data::ArrayList<Text::String *> *keys = map->GetKeys();
 	Data::ArrayList<Text::String *> *vals = map->GetValues();
 	UOSInt i = 0;
@@ -44,15 +44,15 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringMap<
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(',');
+			sb->AppendUTF8Char(' ');
 		}
 		BuildString(sb, keys->GetItem(i));
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		BuildString(sb, vals->GetItem(i));
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char('}');
 }
 
 void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<Text::String*> *map)
@@ -62,7 +62,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	sb->AppendChar('{', 1);
+	sb->AppendUTF8Char('{');
 	Data::ArrayList<const UTF8Char *> *keys = map->GetKeys();
 	Data::ArrayList<Text::String *> *vals = map->GetValues();
 	UOSInt i = 0;
@@ -71,15 +71,15 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(',');
+			sb->AppendUTF8Char(' ');
 		}
 		BuildString(sb, keys->GetItem(i));
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		BuildString(sb, vals->GetItem(i));
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char('}');
 }
 
 void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *map)
@@ -89,7 +89,7 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	sb->AppendChar('{', 1);
+	sb->AppendUTF8Char('{');
 	Data::ArrayList<const UTF8Char *> *keys = map->GetKeys();
 	Data::ArrayList<const UTF8Char *> *vals = map->GetValues();
 	UOSInt i = 0;
@@ -98,15 +98,15 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::StringUTF8
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(',');
+			sb->AppendUTF8Char(' ');
 		}
 		BuildString(sb, keys->GetItem(i));
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		BuildString(sb, vals->GetItem(i));
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char('}');
 }
 
 void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<const UTF8Char*> *list)
@@ -116,20 +116,20 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingLis
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	sb->AppendChar('[', 1);
+	sb->AppendUTF8Char('[');
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(',');
+			sb->AppendUTF8Char(' ');
 		}
 		BuildString(sb, list->GetItem(i));
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char(']');
 }
 
 void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingList<Text::String*> *list)
@@ -139,20 +139,20 @@ void Text::StringTool::BuildString(Text::StringBuilderUTF8 *sb, Data::ReadingLis
 		sb->AppendC(UTF8STRC("null"));
 		return;
 	}
-	sb->AppendChar('[', 1);
+	sb->AppendUTF8Char('[');
 	UOSInt i = 0;
 	UOSInt j = list->GetCount();
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(',');
+			sb->AppendUTF8Char(' ');
 		}
 		BuildString(sb, list->GetItem(i));
 		i++;
 	}
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char(']');
 }
 
 void Text::StringTool::Int32Join(Text::StringBuilderUTF8 *sb, Data::List<Int32> *list, Text::CString seperator)

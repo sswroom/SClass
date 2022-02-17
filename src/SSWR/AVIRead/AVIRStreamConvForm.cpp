@@ -24,8 +24,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream1Clicked(void *userObj
 			{
 				NEW_CLASS(me->stmLog1, IO::FileStream(CSTR("Stm1Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
-			me->txtStream1->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream1->SetText((const UTF8Char*)"&Close");
+			me->txtStream1->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream1->SetText(CSTR("&Close"));
 			me->remoteClosed1 = false;
 			me->thread1Running = false;
 			me->thread1ToStop = false;
@@ -57,8 +57,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamConvForm::OnStream2Clicked(void *userObj
 			{
 				NEW_CLASS(me->stmLog2, IO::FileStream(CSTR("Stm2Log.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			}
-			me->txtStream2->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream2->SetText((const UTF8Char*)"&Close");
+			me->txtStream2->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream2->SetText(CSTR("&Close"));
 			me->remoteClosed2 = false;
 			me->thread2Running = false;
 			me->thread2ToStop = false;
@@ -175,8 +175,8 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream1()
 		this->stm1 = 0;
 		SDEL_CLASS(this->stmLog1);
 		mutUsage.EndUse();
-		this->txtStream1->SetText((const UTF8Char*)"-");
-		this->btnStream1->SetText((const UTF8Char*)"&Open");
+		this->txtStream1->SetText(CSTR("-"));
+		this->btnStream1->SetText(CSTR("&Open"));
 		this->remoteClosed1 = false;
 	}
 }
@@ -197,15 +197,15 @@ void SSWR::AVIRead::AVIRStreamConvForm::StopStream2()
 		this->stm2 = 0;
 		SDEL_CLASS(this->stmLog2);
 		mutUsage.EndUse();
-		this->txtStream2->SetText((const UTF8Char*)"-");
-		this->btnStream2->SetText((const UTF8Char*)"&Open");
+		this->txtStream2->SetText(CSTR("-"));
+		this->btnStream2->SetText(CSTR("&Open"));
 		this->remoteClosed2 = false;
 	}
 }
 
 SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Stream Converter");
+	this->SetText(CSTR("Stream Converter"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream1->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, (const UTF8Char*)"Log to file", false));
 	this->chkStreamLog1->SetRect(4, 52, 200, 23, false);
-	NEW_CLASS(this->btnStream1, UI::GUIButton(ui, this->pnlStream1, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream1, UI::GUIButton(ui, this->pnlStream1, CSTR("&Open")));
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
 	this->btnStream1->HandleButtonClick(OnStream1Clicked, this);
 	NEW_CLASS(this->rlcStream1, UI::GUIRealtimeLineChart(ui, this->grpStream1, this->core->GetDrawEngine(), 1, 120, 1000));
@@ -254,7 +254,7 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->txtStream2->SetReadOnly(true);
 	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, (const UTF8Char*)"Log to file", false));
 	this->chkStreamLog2->SetRect(4, 52, 200, 23, false);
-	NEW_CLASS(this->btnStream2, UI::GUIButton(ui, this->pnlStream2, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream2, UI::GUIButton(ui, this->pnlStream2, CSTR("&Open")));
 	this->btnStream2->SetRect(4, 76, 75, 23, false);
 	this->btnStream2->HandleButtonClick(OnStream2Clicked, this);
 	NEW_CLASS(this->rlcStream2, UI::GUIRealtimeLineChart(ui, this->grpStream2, this->core->GetDrawEngine(), 1, 120, 1000));

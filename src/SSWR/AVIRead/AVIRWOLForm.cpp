@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 
 SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 400, 120, ui)
 {
-	this->SetText((const UTF8Char*)"Wake-On-LAN");
+	this->SetText(CSTR("Wake-On-LAN"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -58,7 +58,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this, (const UTF8Char*)"&Send"));
+	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this, CSTR("&Send")));
 	this->btnSend->SetRect(104, 52, 100, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
 

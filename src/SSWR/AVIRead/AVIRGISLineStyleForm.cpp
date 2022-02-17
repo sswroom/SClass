@@ -86,7 +86,7 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	this->SetText((const UTF8Char*)"Line Style");
+	this->SetText(CSTR("Line Style"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -104,20 +104,20 @@ SSWR::AVIRead::AVIRGISLineStyleForm::AVIRGISLineStyleForm(UI::GUIClientControl *
 	this->lineSelector->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lineSelector->HandleSelChg(LineSelChanged, this);
 	this->lineSelector->HandleDblClk(LineDblClicked, this);
-	NEW_CLASS(this->btnAddStyle, UI::GUIButton(ui, this->pnlStyle, (const UTF8Char*)"New Style"));
+	NEW_CLASS(this->btnAddStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("New Style")));
 	this->btnAddStyle->SetRect(8, 8, 75, 23, false);
 	this->btnAddStyle->HandleButtonClick(AddStyleClicked, this);
-	NEW_CLASS(this->btnRemoveStyle, UI::GUIButton(ui, this->pnlStyle, (const UTF8Char*)"Remove Style"));
+	NEW_CLASS(this->btnRemoveStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Remove Style")));
 	this->btnRemoveStyle->SetRect(88, 8, 88, 23, false);
 	this->btnRemoveStyle->HandleButtonClick(RemoveStyleClicked, this);
-	NEW_CLASS(this->btnEditStyle, UI::GUIButton(ui, this->pnlStyle, (const UTF8Char*)"Edit Style"));
+	NEW_CLASS(this->btnEditStyle, UI::GUIButton(ui, this->pnlStyle, CSTR("Edit Style")));
 	this->btnEditStyle->SetRect(181, 8, 88, 23, false);
 	this->btnEditStyle->HandleButtonClick(EditStyleClicked, this);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
 	this->btnOK->SetRect(150, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("Cancel")));
 	this->btnCancel->SetRect(231, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

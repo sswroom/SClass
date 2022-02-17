@@ -1158,7 +1158,7 @@ void Net::PacketAnalyzerBluetooth::AddDirection(IO::FileAnalyse::FrameDetailHand
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Unknown (0x"));
 			sb.AppendHex32(dir);
-			sb.AppendChar(')', 1);
+			sb.AppendUTF8Char(')');
 			frame->AddField(frameOfst, 4, CSTR("Direction"), sb.ToCString());
 		}
 		break;
@@ -1323,25 +1323,25 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 			}
 			if (packet[i + 2] & 2)
 			{
-				if (found) sb.AppendChar(',', 1);
+				if (found) sb.AppendUTF8Char(',');
 				sb.AppendC(UTF8STRC(" LE General Discoverable Mode"));
 				found = true;
 			}
 			if (packet[i + 2] & 4)
 			{
-				if (found) sb.AppendChar(',', 1);
+				if (found) sb.AppendUTF8Char(',');
 				sb.AppendC(UTF8STRC(" BR/EDR Not Supported"));
 				found = true;
 			}
 			if (packet[i + 2] & 8)
 			{
-				if (found) sb.AppendChar(',', 1);
+				if (found) sb.AppendUTF8Char(',');
 				sb.AppendC(UTF8STRC(" Simultaneous LE and BR/EDR to Same Device Capable (Controller)"));
 				found = true;
 			}
 			if (packet[i + 2] & 16)
 			{
-				if (found) sb.AppendChar(',', 1);
+				if (found) sb.AppendUTF8Char(',');
 				sb.AppendC(UTF8STRC(" Simultaneous LE and BR/EDR to Same Device Capable (Host)"));
 				found = true;
 			}
@@ -1394,7 +1394,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("Unknown(0x"));
 					sb.AppendHex16(ReadUInt16(&packet[i + j]));
-					sb.AppendChar(')', 1);
+					sb.AppendUTF8Char(')');
 					frame->AddField(frameOfst + i + j, 2, CSTR("16-bit Service Class UUIDs"), sb.ToCString());
 					break;
 				}
@@ -1405,13 +1405,13 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 		{
 			sb.ClearStr();
 			sb.AppendHex32(ReadUInt32(&packet[i + 14]));
-			sb.AppendChar('-', 1);
+			sb.AppendUTF8Char('-');
 			sb.AppendHex16(ReadUInt16(&packet[i + 12]));
-			sb.AppendChar('-', 1);
+			sb.AppendUTF8Char('-');
 			sb.AppendHex16(ReadUInt16(&packet[i + 10]));
-			sb.AppendChar('-', 1);
+			sb.AppendUTF8Char('-');
 			sb.AppendHex16(ReadUInt16(&packet[i + 8]));
-			sb.AppendChar('-', 1);
+			sb.AppendUTF8Char('-');
 			sb.AppendHex32(ReadUInt32(&packet[i + 4]));
 			sb.AppendHex16(ReadUInt16(&packet[i + 2]));
 			frame->AddField(frameOfst + i + 2, 16, CSTR("128-bit Service Class UUIDs (incomplete)"), sb.ToCString());
@@ -1446,7 +1446,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 			{
 				sb.AppendC(UTF8STRC(" ("));
 				sb.Append(cstr);
-				sb.AppendChar(')', 1);
+				sb.AppendUTF8Char(')');
 			}
 			else
 			{
@@ -1517,13 +1517,13 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 						{
 							sb.ClearStr();
 							sb.AppendHex32(ReadUInt32(&packet[i + j + 14]));
-							sb.AppendChar('-', 1);
+							sb.AppendUTF8Char('-');
 							sb.AppendHex16(ReadUInt16(&packet[i + j + 12]));
-							sb.AppendChar('-', 1);
+							sb.AppendUTF8Char('-');
 							sb.AppendHex16(ReadUInt16(&packet[i + j + 10]));
-							sb.AppendChar('-', 1);
+							sb.AppendUTF8Char('-');
 							sb.AppendHex16(ReadUInt16(&packet[i + j + 8]));
-							sb.AppendChar('-', 1);
+							sb.AppendUTF8Char('-');
 							sb.AppendHex32(ReadUInt32(&packet[i + j + 4]));
 							sb.AppendHex16(ReadUInt16(&packet[i + j + 2]));
 							frame->AddField(frameOfst + i + j + 2, 16, CSTR("Proximity UUID"), sb.ToCString());

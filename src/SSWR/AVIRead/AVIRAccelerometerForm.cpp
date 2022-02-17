@@ -7,6 +7,7 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRAccelerometerForm *me = (SSWR::AVIRead::AVIRAccelerometerForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Double x;
 	Double y;
 	Double z;
@@ -14,12 +15,12 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	{
 		me->motion->GetValues(&x, &y, &z);
 
-		Text::StrDouble(sbuff, x);
-		me->txtX->SetText(sbuff);
-		Text::StrDouble(sbuff, y);
-		me->txtY->SetText(sbuff);
-		Text::StrDouble(sbuff, z);
-		me->txtZ->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, x);
+		me->txtX->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, y);
+		me->txtY->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, z);
+		me->txtZ->SetText(CSTRP(sbuff, sptr));
 
 		if (me->currMoving != me->motion->IsMovving())
 		{
@@ -37,15 +38,15 @@ void __stdcall SSWR::AVIRead::AVIRAccelerometerForm::OnTimerTick(void *userObj)
 	}
 	else
 	{
-		me->txtX->SetText((const UTF8Char*)"-");
-		me->txtY->SetText((const UTF8Char*)"-");
-		me->txtZ->SetText((const UTF8Char*)"-");
+		me->txtX->SetText(CSTR("-"));
+		me->txtY->SetText(CSTR("-"));
+		me->txtZ->SetText(CSTR("-"));
 	}
 }
 
 SSWR::AVIRead::AVIRAccelerometerForm::AVIRAccelerometerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SensorAccelerometer *acc) : UI::GUIForm(parent, 240, 160, ui)
 {
-	this->SetText((const UTF8Char*)"Accelerometer");
+	this->SetText(CSTR("Accelerometer"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	

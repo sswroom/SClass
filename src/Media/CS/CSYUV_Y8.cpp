@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Media/CS/CSYUV_Y8.h"
 
 Media::CS::CSYUV_Y8::CSYUV_Y8(UInt32 srcFmt) : Media::CS::CSConverter(0)
@@ -19,15 +20,34 @@ void Media::CS::CSYUV_Y8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispW
 		UOSInt j;
 		UOSInt sAdd = (srcStoreWidth - dispWidth) * 2;
 		UInt8 *sptr = srcPtr[0];
-		while (i-- > 0)
+		if (dispWidth & 15)
 		{
-			j = dispWidth;
-			while (j-- > 0)
+			while (i-- > 0)
 			{
-				*destPtr++ = *sptr;
-				sptr += 2;
+				j = dispWidth;
+				while (j-- > 0)
+				{
+					*destPtr++ = *sptr;
+					sptr += 2;
+				}
+				sptr += sAdd;
 			}
-			sptr += sAdd;
+		}
+		else
+		{
+			Int16x8 andV = PInt16x8SetA(0xff);
+			dispWidth = dispWidth >> 4;
+			while (i-- > 0)
+			{
+				j = dispWidth;
+				while (j-- > 0)
+				{
+					PStoreUInt8x16(destPtr, SI16ToU8x16(PANDW8(PLoadInt16x8A(sptr), andV), PANDW8(PLoadInt16x8A(sptr + 16), andV)));
+					destPtr += 16;
+					sptr += 32;
+				}
+				sptr += sAdd;
+			}
 		}
 	}
 	else if (this->srcFmt == *(UInt32*)"I420" ||

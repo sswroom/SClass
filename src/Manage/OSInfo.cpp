@@ -95,7 +95,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, c
 		{
 			sb->AppendC(UTF8STRC("Mac OS (Darwin "));
 			sb->AppendC(osVer, osVerLen);
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 	}
 	else if (osType == Manage::OSInfo::OT_MACOS)
@@ -274,7 +274,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, c
 		sb->AppendC(UTF8STRC("Chrome OS"));
 		if (osVer)
 		{
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendC(osVer, osVerLen);
 		}
 	}
@@ -283,7 +283,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, c
 		sb->AppendC(UTF8STRC("webOS"));
 		if (osVer)
 		{
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendC(osVer, osVerLen);
 		}
 	}
@@ -292,7 +292,7 @@ void Manage::OSInfo::GetCommonName(Text::StringBuilderUTF8 *sb, OSType osType, c
 		sb->AppendC(UTF8STRC("Unknown OS"));
 		if (osVer)
 		{
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendC(osVer, osVerLen);
 		}
 	}

@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 92, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"OLEDB Connection");
+	this->SetText(CSTR("OLEDB Connection"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -45,10 +45,10 @@ SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(UI::GUIClientControl *parent, UI::GU
 	this->lblConnStr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

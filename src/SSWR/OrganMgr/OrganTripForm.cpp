@@ -42,12 +42,12 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnTripSelChg(void *userObj)
 		Location *loc = me->env->LocationGet(trip->locId);
 		if (loc)
 		{
-			me->txtLocation->SetText(loc->cname->v);
+			me->txtLocation->SetText(loc->cname->ToCString());
 			me->locId = trip->locId;
 		}
 		else
 		{
-			me->txtLocation->SetText((const UTF8Char*)"");
+			me->txtLocation->SetText(CSTR(""));
 			me->locId = 0;
 		}
 	}
@@ -127,7 +127,7 @@ void __stdcall SSWR::OrganMgr::OrganTripForm::OnLocationClicked(void *userObj)
 	{
 		Location *selVal = frm->GetSelVal();
 		me->locId = selVal->id;
-		me->txtLocation->SetText(selVal->cname->v);
+		me->txtLocation->SetText(selVal->cname->ToCString());
 	}
 	DEL_CLASS(frm);
 }
@@ -139,7 +139,7 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	this->locId = 0;
 	this->updating = false;
 
-	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("TripFormTitle")));
 
 	NEW_CLASS(this->lbTrips, UI::GUIListBox(ui, this, false));
 	this->lbTrips->SetRect(0, 0, 320, 268, false);
@@ -160,10 +160,10 @@ SSWR::OrganMgr::OrganTripForm::OrganTripForm(UI::GUIClientControl *parent, UI::G
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlDetail, CSTR("")));
 	this->txtLocation->SetRect(72, 88, 88, 23, false);
 	this->txtLocation->SetReadOnly(true);
-	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect")).v));
+	NEW_CLASS(this->btnLocation, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormSelect"))));
 	this->btnLocation->SetRect(168, 88, 75, 23, false);
 	this->btnLocation->HandleButtonClick(OnLocationClicked, this);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormAdd")).v));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlDetail, this->env->GetLang(UTF8STRC("TripFormAdd"))));
 	this->btnAdd->SetRect(72, 128, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
 

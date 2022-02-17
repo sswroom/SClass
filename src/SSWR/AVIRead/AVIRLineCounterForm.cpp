@@ -83,8 +83,8 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 		totalLine += fi->lineCnt;
 		i++;
 	}
-	Text::StrUOSInt(sbuff, totalLine);
-	me->txtTotalLine->SetText(sbuff);
+	sptr = Text::StrUOSInt(sbuff, totalLine);
+	me->txtTotalLine->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *userObj)
@@ -227,7 +227,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 {
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"Line Counter");
+	this->SetText(CSTR("Line Counter"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->extList, Data::ArrayList<Text::String *>());
@@ -244,18 +244,18 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->lblExtensions->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtExtensions, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtExtensions->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnExtensionsAdd, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnExtensionsAdd, UI::GUIButton(ui, this->pnlConfig, CSTR("Add")));
 	this->btnExtensionsAdd->SetRect(204, 28, 75, 23, false);
 	this->btnExtensionsAdd->HandleButtonClick(OnExtensionsAddClicked, this);
 	NEW_CLASS(this->lbExtensions, UI::GUIListBox(ui, this->pnlConfig, false));
 	this->lbExtensions->SetRect(104, 52, 100, 71, false);
-	NEW_CLASS(this->btnExtensionsRemove, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Remove"));
+	NEW_CLASS(this->btnExtensionsRemove, UI::GUIButton(ui, this->pnlConfig, CSTR("Remove")));
 	this->btnExtensionsRemove->SetRect(104, 124, 75, 23, false);
 	this->btnExtensionsRemove->HandleButtonClick(OnExtensionsRemoveClicked, this);
-	NEW_CLASS(this->btnExtensionsClear, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Clear"));
+	NEW_CLASS(this->btnExtensionsClear, UI::GUIButton(ui, this->pnlConfig, CSTR("Clear")));
 	this->btnExtensionsClear->SetRect(184, 124, 75, 23, false);
 	this->btnExtensionsClear->HandleButtonClick(OnExtensionsClearClicked, this);
-	NEW_CLASS(this->btnCalc, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Calc"));
+	NEW_CLASS(this->btnCalc, UI::GUIButton(ui, this->pnlConfig, CSTR("Calc")));
 	this->btnCalc->SetRect(104, 172, 75, 23, false);
 	this->btnCalc->HandleButtonClick(OnCalcClicked, this);
 	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Result:"));
@@ -265,7 +265,7 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtTotalLine, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtTotalLine->SetReadOnly(true);
 	this->txtTotalLine->SetRect(204, 196, 100, 23, false);
-	NEW_CLASS(this->btnResultSave, UI::GUIButton(ui, this->pnlConfig, (const UTF8Char*)"Save Result"));
+	NEW_CLASS(this->btnResultSave, UI::GUIButton(ui, this->pnlConfig, CSTR("Save Result")));
 	this->btnResultSave->SetRect(304, 196, 100, 23, false);
 	this->btnResultSave->HandleButtonClick(OnResultSaveClicked, this);
 

@@ -28,13 +28,13 @@ void __stdcall SSWR::AVIRead::AVIRPasswordHashForm::OnGenerateClicked(void *user
 	sb.ClearStr();
 	sb.AppendHexBuff(buff, hash->GetResultSize(), 0, Text::LineBreakType::None);
 	DEL_CLASS(hash);
-	me->txtHashValue->SetText(sb.ToString());
+	me->txtHashValue->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 136, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Password Hash");
+	this->SetText(CSTR("Password Hash"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -49,7 +49,7 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this, false));
 	this->cboHashType->SetRect(104, 28, 300, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Value"));

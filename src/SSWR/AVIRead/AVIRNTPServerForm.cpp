@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRNTPServerForm *me = (SSWR::AVIRead::AVIRNTPServerForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"NTP Server");
+	this->SetText(CSTR("NTP Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->lblTimeServer->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtTimeServer, UI::GUITextBox(ui, this->tpControl, CSTR("stdtime.gov.hk")));
 	this->txtTimeServer->SetRect(108, 32, 500, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 

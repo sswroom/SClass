@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 	me->core->GetParserList()->PrepareSelector(dlg, me->t);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtName->SetText(dlg->GetFileName()->v);
+		me->txtName->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnCancelClicked(void *userObj)
 
 SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ParserType t) : UI::GUIForm(parent, 640, 120, ui)
 {
-	this->SetText((const UTF8Char*)"Open File");
+	this->SetText(CSTR("Open File"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->fileName = 0;
@@ -52,13 +52,13 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	this->lblName->SetRect(8, 16, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtName->SetRect(108, 16, 450, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnBrowse->SetRect(550, 16, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&Ok")));
 	this->btnOK->SetRect(240, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(325, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->txtName->Focus();

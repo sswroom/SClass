@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 
 SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::SNBDongle::HandleType handType) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"SnB Handle Type");
+	this->SetText(CSTR("SnB Handle Type"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -64,10 +64,10 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboType->SetRect(0, 24, 180, 23, false);
 	this->cboType->HandleSelectionChange(OnTypeSelChg, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
 	this->btnCancel->SetRect(20, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Ok"));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlControl, CSTR("Ok")));
 	this->btnOk->SetRect(100, 64, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
 	NEW_CLASS(this->pbImage, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), false, true));

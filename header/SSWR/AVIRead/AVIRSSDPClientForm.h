@@ -19,7 +19,7 @@ namespace SSWR
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
 			Net::SSDPClient *ssdp;
-			Data::StringUTF8Map<Net::SSDPClient::SSDPRoot*> *rootMap;
+			Data::FastStringMap<Net::SSDPClient::SSDPRoot*> *rootMap;
 
 			UI::GUIListBox *lbDevice;
 			UI::GUIHSplitter *hspDevice;

@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIREWDTU01Form::DataClear()
 
 SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"EasyWay EW-DTU01");
+	this->SetText(CSTR("EasyWay EW-DTU01"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 	this->lblPort->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlMQTT, CSTR("1883")));
 	this->txtPort->SetRect(354, 4, 50, 23, false);
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlMQTT, (const UTF8Char*)"Connect"));
+	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlMQTT, CSTR("Connect")));
 	this->btnConnect->SetRect(404, 4, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 

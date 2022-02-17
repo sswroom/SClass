@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
 	Win32::Clipboard clipboard(me->GetHandle());
 	if (clipboard.GetString(me->GetHandle(), &sb))
 	{
-		me->txtSource->SetText(sb.ToString());
+		me->txtSource->SetText(sb.ToCString());
 	}
 	else
 	{
@@ -51,18 +51,18 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 			destSb.AppendC(UTF8STRC(":\r\n"));
 			i++;
 		}
-		this->txtDest->SetText(destSb.ToString());
+		this->txtDest->SetText(destSb.ToCString());
 	}
 	else
 	{
-		this->txtDest->SetText((const UTF8Char*)"");
+		this->txtDest->SetText(CSTR(""));
 	}
 	LIST_FREE_FUNC(&enumList, Text::StrDelNew);
 }
 
 SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"C++ Enum to Switch case");
+	this->SetText(CSTR("C++ Enum to Switch case"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -71,10 +71,10 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Convert"));
+	NEW_CLASS(this->btnConv, UI::GUIButton(ui, this->pnlCtrl, CSTR("Convert")));
 	this->btnConv->SetRect(4, 4, 75, 23, false);
 	this->btnConv->HandleButtonClick(OnConvClicked, this);
-	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Paste-Conv-Copy"));
+	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
 	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Prefix"));

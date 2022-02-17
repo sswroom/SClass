@@ -57,14 +57,14 @@ namespace Net
 			Double rssi;
 			UInt32 linkQuality;
 			Double freq; //Hz
-			const UTF8Char *devManuf;
-			const UTF8Char *devModel;
-			const UTF8Char *devSN;
+			Text::String *devManuf;
+			Text::String *devModel;
+			Text::String *devSN;
 			UTF8Char devCountry[3];
 			UInt8 chipsetOUIs[WLAN_OUI_CNT][3];
 			Data::ArrayList<Net::WirelessLANIE*> *ieList;
 		public:
-			BSSInfo(const UTF8Char *ssid, const void *bssEntry);
+			BSSInfo(Text::CString ssid, const void *bssEntry);
 			~BSSInfo();
 			Text::String *GetSSID();
 			UInt32 GetPHYId();
@@ -74,9 +74,9 @@ namespace Net
 			Double GetRSSI();
 			UInt32 GetLinkQuality();
 			Double GetFreq();
-			const UTF8Char *GetManuf();
-			const UTF8Char *GetModel();
-			const UTF8Char *GetSN();
+			Text::String *GetManuf();
+			Text::String *GetModel();
+			Text::String *GetSN();
 			const UTF8Char *GetCountry();
 			const UInt8 *GetChipsetOUI(OSInt index);
 			UOSInt GetIECount();

@@ -116,7 +116,7 @@ void __stdcall SSWR::AVIRead::AVIRIBuddyForm::OnDevChanged(void *userObj)
 
 SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"i-Buddy");
+	this->SetText(CSTR("i-Buddy"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
@@ -151,18 +151,18 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	this->chkHeart->HandleCheckedChange(OnHeartChanged, this);
 	NEW_CLASS(this->lblTurn, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Body Turn"));
 	this->lblTurn->SetRect(4, 148, 100, 23, false);
-	NEW_CLASS(this->btnTurnLeft, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Left"));
+	NEW_CLASS(this->btnTurnLeft, UI::GUIButton(ui, this->pnlMain, CSTR("Left")));
 	this->btnTurnLeft->SetRect(104, 148, 75, 23, false);
 	this->btnTurnLeft->HandleButtonUpDown(OnTurnLeftDown, this);
-	NEW_CLASS(this->btnTurnRight, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Right"));
+	NEW_CLASS(this->btnTurnRight, UI::GUIButton(ui, this->pnlMain, CSTR("Right")));
 	this->btnTurnRight->SetRect(184, 148, 75, 23, false);
 	this->btnTurnRight->HandleButtonUpDown(OnTurnRightDown, this);
 	NEW_CLASS(this->lblWing, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Wing"));
 	this->lblWing->SetRect(4, 172, 100, 23, false);
-	NEW_CLASS(this->btnWingUp, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Up"));
+	NEW_CLASS(this->btnWingUp, UI::GUIButton(ui, this->pnlMain, CSTR("Up")));
 	this->btnWingUp->SetRect(104, 172, 75, 23, false);
 	this->btnWingUp->HandleButtonUpDown(OnWingUpDown, this);
-	NEW_CLASS(this->btnWingDown, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Down"));
+	NEW_CLASS(this->btnWingDown, UI::GUIButton(ui, this->pnlMain, CSTR("Down")));
 	this->btnWingDown->SetRect(184, 172, 75, 23, false);
 	this->btnWingDown->HandleButtonUpDown(OnWingDownDown, this);
 

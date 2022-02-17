@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 
 		Text::StringBuilderUTF8 sb;
 		this->cert->ToShortString(&sb);
-		this->lblFileCert->SetText(sb.ToString());
+		this->lblFileCert->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
 	else if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey || x509->GetFileType() == Crypto::Cert::X509File::FileType::Key)
@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 
 		Text::StringBuilderUTF8 sb;
 		this->key->ToShortString(&sb);
-		this->lblFileKey->SetText(sb.ToString());
+		this->lblFileKey->SetText(sb.ToCString());
 		this->tcMain->SetSelectedPage(this->tpFile);
 	}
 	else
@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 
 SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::SSLEngine *ssl, Crypto::Cert::X509Cert *cert, Crypto::Cert::X509File *key) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"SSL Cert/Key");
+	this->SetText(CSTR("SSL Cert/Key"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
@@ -178,17 +178,17 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpFile = this->tcMain->AddTabPage(CSTR("File"));
-	NEW_CLASS(this->btnFileCert, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"Cert"));
+	NEW_CLASS(this->btnFileCert, UI::GUIButton(ui, this->tpFile, CSTR("Cert")));
 	this->btnFileCert->SetRect(4, 4, 75, 23, false);
 	this->btnFileCert->HandleButtonClick(OnFileCertClicked, this);
 	NEW_CLASS(this->lblFileCert, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)""));
 	this->lblFileCert->SetRect(84, 4, 200, 23, false);
-	NEW_CLASS(this->btnFileKey, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"Key"));
+	NEW_CLASS(this->btnFileKey, UI::GUIButton(ui, this->tpFile, CSTR("Key")));
 	this->btnFileKey->SetRect(4, 28, 75, 23, false);
 	this->btnFileKey->HandleButtonClick(OnFileKeyClicked, this);
 	NEW_CLASS(this->lblFileKey, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)""));
 	this->lblFileKey->SetRect(84, 28, 200, 23, false);
-	NEW_CLASS(this->btnFileConfirm, UI::GUIButton(ui, this->tpFile, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnFileConfirm, UI::GUIButton(ui, this->tpFile, CSTR("OK")));
 	this->btnFileConfirm->SetRect(4, 52, 75, 23, false);
 	this->btnFileConfirm->HandleButtonClick(OnFileConfirmClicked, this);
 
@@ -205,7 +205,7 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	this->lblGenCommonName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGenCommonName, UI::GUITextBox(ui, this->tpGenerate, CSTR("localhost")));
 	this->txtGenCommonName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->tpGenerate, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->tpGenerate, CSTR("Generate")));
 	this->btnGenerate->SetRect(104, 76, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
 
@@ -213,13 +213,13 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	if (this->initCert)
 	{
 		this->initCert->ToShortName(&sb);
-		this->txtCurrCert->SetText(sb.ToString());
+		this->txtCurrCert->SetText(sb.ToCString());
 	}
 	if (this->initKey)
 	{
 		sb.ClearStr();
 		this->initKey->ToShortName(&sb);
-		this->txtCurrKey->SetText(sb.ToString());
+		this->txtCurrKey->SetText(sb.ToCString());
 	}
 	this->HandleDropFiles(OnFileDrop, this);
 }

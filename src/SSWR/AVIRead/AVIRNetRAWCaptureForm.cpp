@@ -19,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnAutoGenClicked(void *user
 	dt.SetCurrTimeUTC();
 	sptr = Text::StrInt64(sptr, dt.ToTicks());
 	*sptr++ = '.';
-	Net::RAWCapture::FileFormatGetExt(format).ConcatTo(sptr);
-	me->txtFileName->SetText(sbuff);
+	sptr = Net::RAWCapture::FileFormatGetExt(format).ConcatTo(sptr);
+	me->txtFileName->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userObj)
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName()->v);
+		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -82,6 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetRAWCaptureForm *me = (SSWR::AVIRead::AVIRNetRAWCaptureForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt64 val;
 	if (me->capture)
 	{
@@ -89,16 +90,16 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
 		if (val != me->currCnt)
 		{
 			me->currCnt = val;
-			Text::StrUInt64(sbuff, val);
-			me->txtPacketCnt->SetText(sbuff);
+			sptr = Text::StrUInt64(sbuff, val);
+			me->txtPacketCnt->SetText(CSTRP(sbuff, sptr));
 		}
 
 		val = me->capture->GetDataSize();
 		if (val != me->currDataSize)
 		{
 			me->currDataSize = val;
-			Text::StrUInt64(sbuff, val);
-			me->txtDataSize->SetText(sbuff);
+			sptr = Text::StrUInt64(sbuff, val);
+			me->txtDataSize->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 }
@@ -106,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 300, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"RAW Capture");
+	this->SetText(CSTR("RAW Capture"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -131,13 +132,13 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 76, 500, 23, false);
-	NEW_CLASS(this->btnAutoGen, UI::GUIButton(ui, this, (const UTF8Char*)"Auto Gen"));
+	NEW_CLASS(this->btnAutoGen, UI::GUIButton(ui, this, CSTR("Auto Gen")));
 	this->btnAutoGen->SetRect(604, 76, 75, 23, false);
 	this->btnAutoGen->HandleButtonClick(OnAutoGenClicked, this);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"&Browse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnBrowse->SetRect(684, 76, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblPacketCnt, UI::GUILabel(ui, this, (const UTF8Char*)"Packet Count"));

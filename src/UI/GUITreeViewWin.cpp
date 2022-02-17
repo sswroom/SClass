@@ -73,14 +73,14 @@ void *UI::GUITreeView::TreeItem::GetHItem()
 	return this->hTreeItem;
 }
 
-void UI::GUITreeView::TreeItem::SetText(const UTF8Char *txt)
+void UI::GUITreeView::TreeItem::SetText(Text::CString txt)
 {
-	if (txt == 0)
+	if (txt.leng == 0)
 	{
 		return;
 	}
 	SDEL_STRING(this->txt);
-	this->txt = Text::String::NewNotNull(txt);
+	this->txt = Text::String::New(txt);
 }
 
 Text::String *UI::GUITreeView::TreeItem::GetText()
@@ -517,14 +517,14 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 		{
 			this->editing = false;
 			info = (NMTVDISPINFOW*)lParam;
-			const UTF8Char *u8ptr = Text::StrToUTF8New(info->item.pszText);
-			retVal = EventEndLabelEdit((UI::GUITreeView::TreeItem*)info->item.lParam, u8ptr);
+			Text::String *s = Text::String::NewNotNull(info->item.pszText);
+			retVal = EventEndLabelEdit((UI::GUITreeView::TreeItem*)info->item.lParam, s->v);
 			if (retVal != 0)
 			{
 				item = (UI::GUITreeView::TreeItem*)info->item.lParam;
-				item->SetText(u8ptr);
+				item->SetText(s->ToCString());
 			}
-			Text::StrDelNew(u8ptr);
+			s->Release();
 		}
 		return retVal;
 	case TVN_BEGINDRAG:

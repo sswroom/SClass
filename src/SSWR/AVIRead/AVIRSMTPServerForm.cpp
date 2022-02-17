@@ -289,7 +289,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnCertKeyClicked(void *userObj
 		me->sslCert->ToShortString(&sb);
 		sb.AppendC(UTF8STRC(", "));
 		me->sslKey->ToShortString(&sb);
-		me->lblCertKey->SetText(sb.ToString());
+		me->lblCertKey->SetText(sb.ToCString());
 	}
 	DEL_CLASS(frm);
 }
@@ -307,7 +307,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPTypeSelChg(void *userObj
 		{
 			sb.ClearStr();
 			sb.AppendU16(Net::Email::SMTPServer::GetDefaultPort(newType));
-			me->txtSMTPPort->SetText(sb.ToString());
+			me->txtSMTPPort->SetText(sb.ToCString());
 		}
 	}
 	me->smtpType = newType;
@@ -325,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3SSLChanged(void *userObj
 		{
 			sb.ClearStr();
 			sb.AppendU16(Net::Email::POP3Server::GetDefaultPort(isChecked));
-			me->txtPOP3Port->SetText(sb.ToString());
+			me->txtPOP3Port->SetText(sb.ToCString());
 		}
 	}
 }
@@ -341,7 +341,7 @@ Int64 SSWR::AVIRead::AVIRSMTPServerForm::NextEmailId()
 SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"SMTP Server");
+	this->SetText(CSTR("SMTP Server"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -373,7 +373,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->tpEmail = this->tcMain->AddTabPage(CSTR("Email"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
-	NEW_CLASS(this->btnCertKey, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Cert/Key"));
+	NEW_CLASS(this->btnCertKey, UI::GUIButton(ui, this->tpControl, CSTR("Cert/Key")));
 	this->btnCertKey->SetRect(0, 0, 75, 23, false);
 	this->btnCertKey->HandleButtonClick(OnCertKeyClicked, this);
 	NEW_CLASS(this->lblCertKey, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"No Cert/Keys"));
@@ -393,7 +393,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->cboSMTPType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
 	this->cboSMTPType->SetSelectedIndex(0);
 	this->cboSMTPType->HandleSelectionChange(OnSMTPTypeSelChg, this);
-	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, CSTR("Start")));
 	this->btnSMTPStart->SetRect(100, 48, 75, 23, false);
 	this->btnSMTPStart->HandleButtonClick(OnSMTPStartClicked, this);
 	NEW_CLASS(this->grpPOP3, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"POP3"));
@@ -405,10 +405,10 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->grpPOP3, (const UTF8Char*)"Enable SSL", false));
 	this->chkPOP3SSL->SetRect(100, 24, 100, 23, false);
 	this->chkPOP3SSL->HandleCheckedChange(OnPOP3SSLChanged, this);
-	NEW_CLASS(this->btnPOP3Start, UI::GUIButton(ui, this->grpPOP3, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnPOP3Start, UI::GUIButton(ui, this->grpPOP3, CSTR("Start")));
 	this->btnPOP3Start->SetRect(100, 48, 75, 23, false);
 	this->btnPOP3Start->HandleButtonClick(OnPOP3StartClicked, this);
-	NEW_CLASS(this->btnLogFile, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Log To File"));
+	NEW_CLASS(this->btnLogFile, UI::GUIButton(ui, this->tpControl, CSTR("Log To File")));
 	this->btnLogFile->SetRect(4, 112, 75, 23, false);
 
 	NEW_CLASS(this->lvEmail, UI::GUIListView(ui, this->tpEmail, UI::GUIListView::LVSTYLE_TABLE, 5));

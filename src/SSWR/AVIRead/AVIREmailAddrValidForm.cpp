@@ -7,12 +7,12 @@ void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(void *us
 	Text::StringBuilderUTF8 sb;
 	me->txtAddr->GetText(&sb);
 	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToString());
-	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status).v);
+	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status));
 }
 
 SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 240, ui)
 {
-	this->SetText((const UTF8Char*)"Email Address Valid");
+	this->SetText(CSTR("Email Address Valid"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -24,7 +24,7 @@ SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientContr
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtAddr->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnValidate, UI::GUIButton(ui, this, (const UTF8Char*)"&Validate"));
+	NEW_CLASS(this->btnValidate, UI::GUIButton(ui, this, CSTR("&Validate")));
 	this->btnValidate->SetRect(104, 28, 75, 23, false);
 	this->btnValidate->HandleButtonClick(OnValidateClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));

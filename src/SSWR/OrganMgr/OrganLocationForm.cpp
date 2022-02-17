@@ -39,8 +39,8 @@ void SSWR::OrganMgr::OrganLocationForm::UpdateSubloc()
 	this->lbSublocations->ClearItems();
 	this->currLoc = 0;
 	this->currLocInd = (UOSInt)-1;
-	this->txtCName->SetText((const UTF8Char*)"");
-	this->txtEName->SetText((const UTF8Char*)"");
+	this->txtCName->SetText(CSTR(""));
+	this->txtEName->SetText(CSTR(""));
 	
 	Data::ArrayList<Location*> *locSubList = this->env->LocationGetSub(parId);
 	if (locSubList)
@@ -138,17 +138,18 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnSubLocSelChg(void *userObj)
 	me->currLoc = (Location*)me->lbSublocations->GetItem(me->currLocInd);
 	if (me->currLoc == 0)
 	{
-		me->txtCName->SetText((const UTF8Char*)"");
-		me->txtEName->SetText((const UTF8Char*)"");
-		me->txtID->SetText((const UTF8Char*)"");
+		me->txtCName->SetText(CSTR(""));
+		me->txtEName->SetText(CSTR(""));
+		me->txtID->SetText(CSTR(""));
 	}
 	else
 	{
 		UTF8Char sbuff[16];
-		Text::StrInt32(sbuff, me->currLoc->id);
-		me->txtCName->SetText(me->currLoc->cname->v);
-		me->txtEName->SetText(me->currLoc->ename->v);
-		me->txtID->SetText(sbuff);
+		UTF8Char *sptr;
+		sptr = Text::StrInt32(sbuff, me->currLoc->id);
+		me->txtCName->SetText(me->currLoc->cname->ToCString());
+		me->txtEName->SetText(me->currLoc->ename->ToCString());
+		me->txtID->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -197,8 +198,8 @@ void __stdcall SSWR::OrganMgr::OrganLocationForm::OnAddClicked(void *userObj)
 	if (me->env->LocationAdd(parId, CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
 	{
 		me->currLoc = 0;
-		me->txtCName->SetText((const UTF8Char*)"");
-		me->txtEName->SetText((const UTF8Char*)"");
+		me->txtCName->SetText(CSTR(""));
+		me->txtEName->SetText(CSTR(""));
 		me->UpdateSubloc();
 	}
 	else
@@ -288,7 +289,7 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->currLocInd = 0;
 	this->selVal = 0;
 
-	this->SetText(this->env->GetLang(UTF8STRC("LocationTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("LocationTitle")));
 
 	NEW_CLASS(this->lbLocation, UI::GUIListBox(ui, this, false));
 	this->lbLocation->SetRect(0, 0, 96, 100, false);
@@ -314,20 +315,20 @@ SSWR::OrganMgr::OrganLocationForm::OrganLocationForm(UI::GUIClientControl *paren
 	this->txtEName->SetRect(99, 48, 96, 23, false);
 	NEW_CLASS(this->txtCName, UI::GUITextBox(ui, this->pnlLocation, CSTR("")));	
 	this->txtCName->SetRect(99, 80, 96, 23, false);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationAdd")).v));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationAdd"))));
 	this->btnAdd->SetRect(99, 120, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationOk")).v));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationOk"))));
 	this->btnOk->SetRect(41, 368, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationCancel")).v));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlLocation, this->env->GetLang(UTF8STRC("LocationCancel"))));
 	this->btnCancel->SetRect(131, 368, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
 	if (selMode == SM_NONE)
 	{
 		this->btnOk->SetVisible(false);
-		this->btnCancel->SetText(this->env->GetLang(UTF8STRC("LocationClose")).v);
+		this->btnCancel->SetText(this->env->GetLang(UTF8STRC("LocationClose")));
 	}
 
 	if (initId > 0)

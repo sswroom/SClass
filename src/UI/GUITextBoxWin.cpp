@@ -66,9 +66,9 @@ void UI::GUITextBox::SetPasswordChar(UTF32Char c)
 	SendMessage((HWND)this->hwnd, EM_SETPASSWORDCHAR, c, 0);
 }
 
-void UI::GUITextBox::SetText(const UTF8Char *txt)
+void UI::GUITextBox::SetText(Text::CString txt)
 {
-	const WChar *wptr = Text::StrToWCharNew(txt);
+	const WChar *wptr = Text::StrToWCharNew(txt.v);
 	SetWindowTextW((HWND)hwnd, wptr);
 	Text::StrDelNew(wptr);
 }

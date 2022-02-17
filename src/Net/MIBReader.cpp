@@ -115,7 +115,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[i] == 0)
 			{
-				this->sbLine->AppendChar(' ', 1);
+				this->sbLine->AppendUTF8Char(' ');
 				if (!ReadLineInner(this->sbLine))
 				{
 					return false;
@@ -198,7 +198,7 @@ Bool Net::MIBReader::ReadWord(Text::StringBuilderUTF8 *sb, Bool move)
 		{
 			if (sptr[i] == 0)
 			{
-				this->sbLine->AppendChar(' ', 1);
+				this->sbLine->AppendUTF8Char(' ');
 				if (!ReadLineInner(this->sbLine))
 				{
 					return false;

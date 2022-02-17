@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRWebSite7gogoForm::OnRequestPageClicked(void *u
 
 SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"755");
+	this->SetText(CSTR("755"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
@@ -71,7 +71,7 @@ SSWR::AVIRead::AVIRWebSite7gogoForm::AVIRWebSite7gogoForm(UI::GUIClientControl *
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequestPage, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequestPage->SetRect(254, 4, 75, 23, false);
 	this->btnRequestPage->HandleButtonClick(OnRequestPageClicked, this);
 	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

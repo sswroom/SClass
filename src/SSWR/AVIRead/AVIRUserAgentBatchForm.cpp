@@ -15,55 +15,55 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	sb.ClearStr();
 	sb.AppendC(UTF8STRC("\t{Net::BrowserInfo::"));
 	sb.Append(Net::BrowserInfo::GetDefName(ent.browser));
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 35) sb.AppendChar(' ', 35 - j);
 
 	if (ent.browserVer)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.browserVer);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 52) sb.AppendChar(' ', 52 - j);
 
 	sb.AppendC(UTF8STRC("Manage::OSInfo::"));
 	sb.Append(Manage::OSInfo::GetDefName(ent.os));
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 85) sb.AppendChar(' ', 85 - j);
 
 	if (ent.osVer)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.osVer);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 98) sb.AppendChar(' ', 98 - j);
 
 	if (ent.devName)
 	{
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 		sb.AppendSlow((const UTF8Char*)ent.devName);
-		sb.AppendChar('"', 1);
+		sb.AppendUTF8Char('"');
 	}
 	else
 	{
-		sb.AppendChar('0', 1);
+		sb.AppendUTF8Char('0');
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
 	if (j < 110) sb.AppendChar(' ', 110 - j);
 	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 	me->txtSource->GetText(&sb);
 	if (sb.GetLength() <= 0)
 	{
-		me->txtOutput->SetText((const UTF8Char*)"");
+		me->txtOutput->SetText(CSTR(""));
 		return;
 	}
 	sarr[1] = sb;
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnParseClicked(void *userO
 			break;
 		}
 	}
-	me->txtOutput->SetText(sb3.ToString());
+	me->txtOutput->SetText(sb3.ToCString());
 	me->txtOutput->SelectAll();
 	me->txtOutput->Focus();
 }
@@ -184,7 +184,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 			UserAgent2Output(uaList.GetItem(i)->ToCString(), &sb);
 			i++;
 		}
-		this->txtOutput->SetText(sb.ToString());
+		this->txtOutput->SetText(sb.ToCString());
 		this->txtOutput->SelectAll();
 		this->txtOutput->Focus();
 	}
@@ -199,7 +199,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"User Agent Batch");
+	this->SetText(CSTR("User Agent Batch"));
 
 	this->core = core;
 
@@ -211,13 +211,13 @@ SSWR::AVIRead::AVIRUserAgentBatchForm::AVIRUserAgentBatchForm(UI::GUIClientContr
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this->pnlSource, CSTR(""), true));
 	this->txtSource->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Parse"));
+	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlControl, CSTR("Parse")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
-	NEW_CLASS(this->btnUpdate, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Update"));
+	NEW_CLASS(this->btnUpdate, UI::GUIButton(ui, this->pnlControl, CSTR("Update")));
 	this->btnUpdate->SetRect(84, 4, 75, 23, false);
 	this->btnUpdate->HandleButtonClick(OnUpdateClicked, this);
-	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Update from Clipboard"));
+	NEW_CLASS(this->btnUpdateCB, UI::GUIButton(ui, this->pnlControl, CSTR("Update from Clipboard")));
 	this->btnUpdateCB->SetRect(164, 4, 150, 23, false);
 	this->btnUpdateCB->HandleButtonClick(OnUpdateCBClicked, this);
 	NEW_CLASS(this->vspControl, UI::GUIVSplitter(ui, this, 3, false));

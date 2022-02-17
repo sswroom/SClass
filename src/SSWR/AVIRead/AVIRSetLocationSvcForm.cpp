@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSetLocationSvcForm::OnGPSClick(void *userObj)
 
 SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 272, ui)
 {
-	this->SetText((const UTF8Char*)"Set Location Service");
+	this->SetText(CSTR("Set Location Service"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 	this->lblGPS->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->chkGPS, UI::GUICheckBox(ui, this, (const UTF8Char*)"Enable", false));
 	this->chkGPS->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this, (const UTF8Char*)"Select"));
+	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this, CSTR("Select")));
 	this->btnGPS->SetRect(204, 4, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClick, this);
 	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, this, CSTR("")));
@@ -46,10 +46,10 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 	this->chkWifi->SetRect(104, 28, 100, 23, false);
 
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(104, 64, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(184, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

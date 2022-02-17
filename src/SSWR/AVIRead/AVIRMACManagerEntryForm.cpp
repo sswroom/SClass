@@ -30,10 +30,10 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnCancelClicked(void *use
 	me->SetDialogResult(UI::GUIForm::DR_CANCEL);
 }
 
-SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, const UTF8Char *name) : UI::GUIForm(parent, 480, 104, ui)
+SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, Text::CString name) : UI::GUIForm(parent, 480, 104, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MAC Entry");
+	this->SetText(CSTR("MAC Entry"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -49,10 +49,10 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 	NEW_CLASS(this->cboName, UI::GUIComboBox(ui, this, true));
 	this->cboName->SetRect(104, 28, 400, 23, false);
 	this->cboName->SetAutoComplete(true);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 52, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"Ok"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("Ok")));
 	this->btnOK->SetRect(204, 52, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 	this->SetDefaultButton(this->btnOK);
@@ -82,9 +82,10 @@ SSWR::AVIRead::AVIRMACManagerEntryForm::AVIRMACManagerEntryForm(UI::GUIClientCon
 		i++;
 	}
 	UTF8Char sbuff[32];
-	Text::StrHexBytes(sbuff, mac, 6, ':');
-	this->txtMAC->SetText(sbuff);
-	if (name && name[0])
+	UTF8Char *sptr;
+	sptr = Text::StrHexBytes(sbuff, mac, 6, ':');
+	this->txtMAC->SetText(CSTRP(sbuff, sptr));
+	if (name.leng > 0)
 	{
 		this->cboName->SetText(name);
 		this->cboName->Focus();

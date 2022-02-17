@@ -27,7 +27,7 @@ namespace SSWR
 			static void __stdcall OnOKClicked(void *userObj);
 			static void __stdcall OnCancelClicked(void *userObj);
 		public:
-			AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, const UTF8Char *name);
+			AVIRMACManagerEntryForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UInt8 *mac, Text::CString name);
 			virtual ~AVIRMACManagerEntryForm();
 
 			virtual void OnMonitorChanged();

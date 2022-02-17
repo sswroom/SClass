@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		me->cli->Unbind();
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		me->btnConnect->SetText((const UTF8Char*)"Connect");
+		me->btnConnect->SetText(CSTR("Connect"));
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"rootDomainNamingContext not found in LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
 		return;
 	}
-	me->btnConnect->SetText((const UTF8Char*)"Disconnect");
+	me->btnConnect->SetText(CSTR("Disconnect"));
 }
 
 void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
@@ -162,7 +162,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnPathSelChg(void *userObj)
 	while (i-- > 0)
 	{
 		sptr = me->lbPath->GetItemText(sbuff, i);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		sb.AppendP(sbuff, sptr);
 	}
 
@@ -285,7 +285,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsDblClk(void *userOb
 SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"LDAP Explorer");
+	this->SetText(CSTR("LDAP Explorer"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -318,7 +318,7 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"Connect"));
+	NEW_CLASS(this->btnConnect, UI::GUIButton(ui, this->pnlRequest, CSTR("Connect")));
 	this->btnConnect->SetRect(104, 124, 75, 23, false);
 	this->btnConnect->HandleButtonClick(OnConnectClicked, this);
 

@@ -64,11 +64,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	}
 	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, username, password, topic, message))
 	{
-		me->txtStatus->SetText((const UTF8Char*)"Success");
+		me->txtStatus->SetText(CSTR("Success"));
 	}
 	else
 	{
-		me->txtStatus->SetText((const UTF8Char*)"Failed");
+		me->txtStatus->SetText(CSTR("Failed"));
 	}
 	SDEL_TEXT(topic);
 	SDEL_TEXT(message);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MQTT Publish");
+	this->SetText(CSTR("MQTT Publish"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -108,7 +108,7 @@ SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(UI::GUIClientControl *pa
 	this->lblMessage->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMessage->SetRect(104, 124, 100, 23, false);
-	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this, (const UTF8Char*)"Publish"));
+	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this, CSTR("Publish")));
 	this->btnPublish->SetRect(104, 148, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
 	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));

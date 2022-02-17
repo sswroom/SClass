@@ -168,7 +168,7 @@ void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Bluetooth LE");
+	this->SetText(CSTR("Bluetooth LE"));
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->btMgr, IO::BTManager());
@@ -185,10 +185,10 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->lblInterface->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboInterface, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboInterface->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Scan/Stop"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Scan/Stop")));
 	this->btnStart->SetRect(254, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->btnStoreList, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store Devices"));
+	NEW_CLASS(this->btnStoreList, UI::GUIButton(ui, this->pnlControl, CSTR("Store Devices")));
 	this->btnStoreList->SetRect(404, 4, 100, 23, false);
 	this->btnStoreList->HandleButtonClick(OnStoreListClicked, this);
 	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

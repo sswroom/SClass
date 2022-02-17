@@ -40,7 +40,7 @@ OSInt UI::GUIProgressBar::OnNotify(UInt32 code, void *lParam)
 	return 0;
 }
 
-void UI::GUIProgressBar::ProgressStart(const UTF8Char *name, UInt64 count)
+void UI::GUIProgressBar::ProgressStart(Text::CString name, UInt64 count)
 {
 	this->totalCnt = count;
 	SendMessage((HWND)this->hwnd, PBM_SETPOS, 0, 0);

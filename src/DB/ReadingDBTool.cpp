@@ -635,7 +635,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					sb.AppendChar('.', 1);
+					sb.AppendUTF8Char('.');
 				}
 				if (r->GetStr(1, &sb))
 				{

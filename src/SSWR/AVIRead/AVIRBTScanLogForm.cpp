@@ -199,13 +199,13 @@ void SSWR::AVIRead::AVIRBTScanLogForm::UpdateStatus()
 	Text::StringBuilderUTF8 sb;
 	sb.AppendUOSInt(this->macList->GetCount());
 	sb.AppendC(UTF8STRC(" Records"));
-	this->lblInfo->SetText(sb.ToString());
+	this->lblInfo->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::BTScanLog *btLog) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Bluetooth Scan Log");
+	this->SetText(CSTR("Bluetooth Scan Log"));
 
 	this->core = core;
 	this->btLog = btLog;
@@ -214,10 +214,10 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Open Log"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, CSTR("Open Log")));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Store MACList"));
+	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store MACList")));
 	this->btnStore->SetRect(184, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
 	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));

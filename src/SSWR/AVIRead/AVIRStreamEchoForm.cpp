@@ -17,8 +17,8 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnStreamClicked(void *userObj)
 		me->stm = me->core->OpenStream(&st, me, 0, false);
 		if (me->stm)
 		{
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream->SetText((const UTF8Char*)"&Close");
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream->SetText(CSTR("&Close"));
 			me->remoteClosed = false;
 			me->threadRunning = false;
 			me->threadToStop = false;
@@ -45,9 +45,10 @@ void __stdcall SSWR::AVIRead::AVIRStreamEchoForm::OnTimerTick(void *userObj)
 	if (me->recvUpdated)
 	{
 		UTF8Char sbuff[22];
+		UTF8Char *sptr;
 		me->recvUpdated = false;
-		Text::StrUInt64(sbuff, me->recvCount);
-		me->txtDataSize->SetText(sbuff);
+		sptr = Text::StrUInt64(sbuff, me->recvCount);
+		me->txtDataSize->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -88,15 +89,15 @@ void SSWR::AVIRead::AVIRStreamEchoForm::StopStream()
 		this->threadToStop = false;
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText((const UTF8Char*)"-");
-		this->btnStream->SetText((const UTF8Char*)"&Open");
+		this->txtStream->SetText(CSTR("-"));
+		this->btnStream->SetText(CSTR("&Open"));
 		this->remoteClosed = false;
 	}
 }
 
 SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Stream Echo");
+	this->SetText(CSTR("Stream Echo"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	
@@ -117,7 +118,7 @@ SSWR::AVIRead::AVIRStreamEchoForm::AVIRStreamEchoForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	

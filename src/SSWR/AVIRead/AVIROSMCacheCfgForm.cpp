@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnCancelClick(void *userObj)
 
 SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 256, 128, ui)
 {
-	this->SetText((const UTF8Char*)"OSM Cache Setting");
+	this->SetText(CSTR("OSM Cache Setting"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -132,10 +132,10 @@ SSWR::AVIRead::AVIROSMCacheCfgForm::AVIROSMCacheCfgForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtHTTPPort, UI::GUITextBox(ui, this, CSTR("80")));
 	this->txtHTTPPort->SetRect(108, 32, 100, 23, false);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(49, 64, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(132, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

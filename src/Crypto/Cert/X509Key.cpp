@@ -27,7 +27,7 @@ Crypto::Cert::X509File::FileType Crypto::Cert::X509Key::GetFileType()
 void Crypto::Cert::X509Key::ToShortName(Text::StringBuilderUTF8 *sb)
 {
 	sb->Append(KeyTypeGetName(this->keyType));
-	sb->AppendChar(' ', 1);
+	sb->AppendUTF8Char(' ');
 	sb->AppendUOSInt(this->GetKeySizeBits());
 	sb->AppendC(UTF8STRC(" bits"));
 }

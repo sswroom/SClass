@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnLogClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNBDongleForm *me = (SSWR::AVIRead::AVIRSNBDongleForm*)userObj;
 	Text::String *s = Text::String::OrEmpty(me->lbLog->GetSelectedItemTextNew());
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -189,12 +189,12 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 		id = me->snb->GetDongleId();
 		if (id == 0)
 		{
-			me->txtDongleId->SetText((const UTF8Char*)"");
+			me->txtDongleId->SetText(CSTR(""));
 		}
 		else
 		{
-			Text::StrUInt64(sbuff, id);
-			me->txtDongleId->SetText(sbuff);
+			sptr = Text::StrUInt64(sbuff, id);
+			me->txtDongleId->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 }
@@ -481,7 +481,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 
 SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::Stream *stm) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"SnB Dongle");
+	this->SetText(CSTR("SnB Dongle"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -502,7 +502,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 103, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDongleInfo, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Get Dongle Info"));
+	NEW_CLASS(this->btnDongleInfo, UI::GUIButton(ui, this->pnlDevice, CSTR("Get Dongle Info")));
 	this->btnDongleInfo->SetRect(4, 4, 95, 23, false);
 	this->btnDongleInfo->HandleButtonClick(OnDongleInfoClicked, this);
 	NEW_CLASS(this->lblDongleId, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Dongle Id"));
@@ -511,16 +511,16 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->txtDongleId->SetRect(184, 4, 200, 23, false);
 	this->txtDongleId->SetReadOnly(true);
 
-	NEW_CLASS(this->btnCheckDongle, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Check Dongle"));
+	NEW_CLASS(this->btnCheckDongle, UI::GUIButton(ui, this->pnlDevice, CSTR("Check Dongle")));
 	this->btnCheckDongle->SetRect(4, 28, 75, 23, false);
 	this->btnCheckDongle->HandleButtonClick(OnCheckDongleClicked, this);
-	NEW_CLASS(this->btnCheckDevices, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Check Device"));
+	NEW_CLASS(this->btnCheckDevices, UI::GUIButton(ui, this->pnlDevice, CSTR("Check Device")));
 	this->btnCheckDevices->SetRect(84, 28, 75, 23, false);
 	this->btnCheckDevices->HandleButtonClick(OnCheckDevicesClicked, this);
-	NEW_CLASS(this->btnResetNetwork, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Reset Network"));
+	NEW_CLASS(this->btnResetNetwork, UI::GUIButton(ui, this->pnlDevice, CSTR("Reset Network")));
 	this->btnResetNetwork->SetRect(164, 28, 75, 23, false);
 	this->btnResetNetwork->HandleButtonClick(OnResetNetworkClicked, this);
-	NEW_CLASS(this->btnAddDevice, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"AddDevice"));
+	NEW_CLASS(this->btnAddDevice, UI::GUIButton(ui, this->pnlDevice, CSTR("AddDevice")));
 	this->btnAddDevice->SetRect(244, 28, 75, 23, false);
 	this->btnAddDevice->HandleButtonClick(OnAddDeviceClicked, this);
 	NEW_CLASS(this->lblRemarks, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Remarks"));
@@ -531,7 +531,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->lblURL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtURL->SetRect(104, 76, 600, 23, false);
-	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Upload"));
+	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, CSTR("Upload")));
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
 	NEW_CLASS(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, (const UTF8Char*)"Device"));
@@ -539,22 +539,22 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlDevCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnCopyDevId, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Copy Device Id"));
+	NEW_CLASS(this->btnCopyDevId, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Copy Device Id")));
 	this->btnCopyDevId->SetRect(4, 4, 95, 23, false);
 	this->btnCopyDevId->HandleButtonClick(OnCopyDevIdClicked, this);
-	NEW_CLASS(this->btnDevReportTime, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Get Report Time"));
+	NEW_CLASS(this->btnDevReportTime, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Get Report Time")));
 	this->btnDevReportTime->SetRect(104, 4, 95, 23, false);
 	this->btnDevReportTime->HandleButtonClick(OnDevReportTimeClicked, this);
-	NEW_CLASS(this->btnDevSetReportTime, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Set Report Time (30s)"));
+	NEW_CLASS(this->btnDevSetReportTime, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Set Report Time (30s)")));
 	this->btnDevSetReportTime->SetRect(204, 4, 115, 23, false);
 	this->btnDevSetReportTime->HandleButtonClick(OnDevSetReportTimeClicked, this);
-	NEW_CLASS(this->btnDevOn, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Turn On"));
+	NEW_CLASS(this->btnDevOn, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Turn On")));
 	this->btnDevOn->SetRect(324, 4, 75, 23, false);
 	this->btnDevOn->HandleButtonClick(OnDevOnClicked, this);
-	NEW_CLASS(this->btnDevOff, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Turn Off"));
+	NEW_CLASS(this->btnDevOff, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Turn Off")));
 	this->btnDevOff->SetRect(404, 4, 75, 23, false);
 	this->btnDevOff->HandleButtonClick(OnDevOffClicked, this);
-	NEW_CLASS(this->btnDevStatus, UI::GUIButton(ui, this->pnlDevCtrl, (const UTF8Char*)"Get Status"));
+	NEW_CLASS(this->btnDevStatus, UI::GUIButton(ui, this->pnlDevCtrl, CSTR("Get Status")));
 	this->btnDevStatus->SetRect(484, 4, 75, 23, false);
 	this->btnDevStatus->HandleButtonClick(OnDevStatusClicked, this);
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->grpDevice, UI::GUIListView::LVSTYLE_TABLE, 5));

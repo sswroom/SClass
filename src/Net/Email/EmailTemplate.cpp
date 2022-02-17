@@ -2,7 +2,7 @@
 #include "Net/Email/EmailTemplate.h"
 #include "Text/XML.h"
 
-Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char *> *vars)
+Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char *> *vars)
 {
 	UOSInt i;
 	const UTF8Char *paramName;
@@ -13,7 +13,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 		i = Text::StrIndexOfChar(tpl, '[');
 		if (i == INVALID_INDEX)
 		{
-			sb->Append(tpl);
+			sb->AppendSlow(tpl);
 			return true;
 		}
 		if (i > 0)
@@ -23,7 +23,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 		tpl += i;
 		if (tpl[1] == '[')
 		{
-			sb->AppendChar('[', 1);
+			sb->AppendUTF8Char('[');
 			tpl += 2;
 		}
 		else
@@ -61,7 +61,7 @@ Bool Net::Email::EmailTemplate::ParseTemplate(const UTF8Char *tpl, Text::StringB
 			}
 			else
 			{
-				sb->Append(param);
+				sb->AppendSlow(param);
 			}
 			tpl += i + 1;
 		}
@@ -81,8 +81,8 @@ Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Ma
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(this->sbSubj, Text::StringBuilderUTF8());
 	Text::PString sarr[2];
-	sb.Append(tpl);
-	UOSInt i = Text::StrSplitLineP(sarr, 2, sb.ToString(), sb.GetLength());
+	sb.AppendSlow(tpl);
+	UOSInt i = Text::StrSplitLineP(sarr, 2, sb);
 	if (i == 1)
 	{
 		this->error = true;
@@ -93,7 +93,7 @@ Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Ma
 		this->error = true;
 		return;
 	}
-	this->itemOfst = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC("[item]"));
+	this->itemOfst = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC("[item]"));
 	if (this->itemOfst == INVALID_INDEX)
 	{
 		NEW_CLASS(this->sbPre, Text::StringBuilderUTF8());
@@ -104,7 +104,7 @@ Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Ma
 	}
 	else
 	{
-		i = Text::StrIndexOfC(sarr[1].v, sarr[1].len, UTF8STRC("[/item]"));
+		i = Text::StrIndexOfC(sarr[1].v, sarr[1].leng, UTF8STRC("[/item]"));
 		if (i == INVALID_INDEX || i < this->itemOfst)
 		{
 			this->error = true;
@@ -116,7 +116,7 @@ Net::Email::EmailTemplate::EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Ma
 		NEW_CLASS(this->sbItem, Text::StringBuilderUTF8());
 		
 		sarr[1].v[this->itemOfst] = 0;
-		sarr[1].len = this->itemOfst;
+		sarr[1].leng = this->itemOfst;
 		if (!this->ParseTemplate(sarr[1].v, this->sbPre, vars))
 		{
 			this->error = true;
@@ -156,16 +156,16 @@ const UTF8Char *Net::Email::EmailTemplate::GetSubject()
 	return this->sbSubj->ToString();
 }
 
-void Net::Email::EmailTemplate::GetContent(Text::StringBuilderUTF *sb)
+void Net::Email::EmailTemplate::GetContent(Text::StringBuilderUTF8 *sb)
 {
 	if (this->itemTemplate == 0)
 	{
-		sb->Append(this->sbPre->ToString());
+		sb->Append(this->sbPre);
 	}
 	else
 	{
-		sb->Append(this->sbPre->ToString());
-		sb->Append(this->sbItem->ToString());
-		sb->Append(this->sbPost->ToString());
+		sb->Append(this->sbPre);
+		sb->Append(this->sbItem);
+		sb->Append(this->sbPost);
 	}
 }

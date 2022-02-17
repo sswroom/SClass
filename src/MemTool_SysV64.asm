@@ -181,7 +181,7 @@ memcopyaclop5g:
 	and rdx,15
 	jz memcopyacexit
 	align 16
-memcopyaclop5h
+memcopyaclop5h:
 	mov al,byte [rsi]
 	mov byte [rdi],al
 	lea rsi,[rsi+1]
@@ -277,7 +277,7 @@ memcopyanclop5g:
 	and rdx,15
 	jz memcopyancexit
 	align 16
-memcopyanclop5h
+memcopyanclop5h:
 	mov al,byte [rsi]
 	mov byte [rdi],al
 	lea rsi,[rsi+1]
@@ -538,7 +538,7 @@ memcopyacavxlop5g:
 	and rdx,15
 	jz memcopyacavxexit
 	align 16
-memcopyacavxlop5h
+memcopyacavxlop5h:
 	mov al,byte [rsi]
 	mov byte [rdi],al
 	lea rsi,[rsi+1]
@@ -627,7 +627,7 @@ memcopyancavxlop5g:
 	and rdx,15
 	jz memcopyancavxexit
 	align 16
-memcopyancavxlop5h
+memcopyancavxlop5h:
 	mov al,byte [rsi]
 	mov byte [rdi],al
 	lea rsi,[rsi+1]

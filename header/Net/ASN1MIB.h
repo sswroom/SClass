@@ -1,7 +1,7 @@
 #ifndef _SM_NET_ASN1MIB
 #define _SM_NET_ASN1MIB
 #include "Data/ArrayListString.h"
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 #include "Net/MIBReader.h"
 #include "Text/StringBuilderUTF8.h"
 
@@ -27,14 +27,14 @@ namespace Net
 
 		struct ModuleInfo
 		{
-			const UTF8Char *moduleName;
-			const UTF8Char *moduleFileName;
+			Text::String *moduleName;
+			Text::String *moduleFileName;
 			Data::ArrayListString *objKeys;
 			Data::ArrayList<ObjectInfo*> *objValues;
 			Data::ArrayList<ObjectInfo *> *oidList;
 		};
 	private:
-		Data::StringUTF8Map<ModuleInfo *> *moduleMap;
+		Data::FastStringMap<ModuleInfo *> *moduleMap;
 		ModuleInfo globalModule;
 
 		static UOSInt CalcLineSpace(const UTF8Char *txt);
@@ -47,7 +47,7 @@ namespace Net
 		Bool ApplyOIDs(Text::StringBuilderUTF8 *errMessage);
 		Bool ApplyModuleImports(ModuleInfo *module, Text::StringBuilderUTF8 *errMessage);
 		Bool ApplyImports(Text::StringBuilderUTF8 *errMessage);
-		Bool LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply);
+		Bool LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply);
 
 		static void RemoveSpace(UTF8Char *s);
 		static Bool IsType(const UTF8Char *s);
@@ -61,10 +61,10 @@ namespace Net
 		~ASN1MIB();
 
 		ModuleInfo *GetGlobalModule();
-		ModuleInfo *GetModuleByFileName(const UTF8Char *fileName);
+		ModuleInfo *GetModuleByFileName(Text::CString fileName);
 
 		void UnloadAll();
-		Bool LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage);
+		Bool LoadFile(Text::CString fileName, Text::StringBuilderUTF8 *errMessage);
 	};
 }
 #endif

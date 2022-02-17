@@ -28,7 +28,7 @@ namespace SSWR
 			Net::WebServer::EGaugeHandler *dirHdlr;
 			UI::ListBoxLogger *logger;
 			Sync::Mutex *reqMut;
-			UTF8Char *reqLast;
+			Text::String *reqLast;
 			Bool reqUpdated;
 
 			UI::GUITabControl *tcMain;

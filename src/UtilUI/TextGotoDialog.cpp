@@ -30,7 +30,7 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, UI::GUICore
 {
 	this->currLine = 0;
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Go To Line");
+	this->SetText(CSTR("Go To Line"));
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
 
@@ -38,10 +38,10 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, UI::GUICore
 	this->lblLine->SetRect(8, 16, 80, 21, false);
 	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtLine->SetRect(88, 14, 100, 23, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, CSTR("&Ok")));
 	this->btnOk->SetRect(8, 56, 100, 23, false);
 	this->btnOk->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(128, 56, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOk);
@@ -66,9 +66,10 @@ void UtilUI::TextGotoDialog::OnMonitorChanged()
 void UtilUI::TextGotoDialog::SetLineNumber(UOSInt currLine)
 {
 	UTF8Char sbuff[22];
+	UTF8Char *sptr;
 	this->currLine = currLine;
-	Text::StrUOSInt(sbuff, currLine);
-	this->txtLine->SetText(sbuff);
+	sptr = Text::StrUOSInt(sbuff, currLine);
+	this->txtLine->SetText(CSTRP(sbuff, sptr));
 }
 
 UOSInt UtilUI::TextGotoDialog::GetLineNumber()

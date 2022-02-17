@@ -314,8 +314,9 @@ SSWR::AVIRead::AVIRMediaForm::AVIRMediaForm(UI::GUIClientControl *parent, UI::GU
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
-	mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Media Form - ")));
-	this->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = mediaFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Media Form - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 
 	this->core = core;
 	this->colorSess = this->core->GetColorMgr()->CreateSess(this->GetHMonitor());

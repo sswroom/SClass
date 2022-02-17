@@ -1043,7 +1043,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC("Product Revision (PRV): "));
 			oemId[0] = sdcard->GetProductRevision();
 			sb.AppendI32(oemId[0] >> 4);
-			sb.AppendChar('.', 1);
+			sb.AppendUTF8Char('.');
 			sb.AppendI32(oemId[0] & 15);
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -1057,7 +1057,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Manufacturing Date (MDT): "));
 			sb.AppendU32(sdcard->GetManufacturingYear());
-			sb.AppendChar('/', 1);
+			sb.AppendUTF8Char('/');
 			sb.AppendU32(sdcard->GetManufacturingMonth());
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());

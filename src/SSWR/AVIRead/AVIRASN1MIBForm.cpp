@@ -9,7 +9,7 @@
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnFileDroped(void *userObj, const UTF8Char **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRASN1MIBForm *me = (SSWR::AVIRead::AVIRASN1MIBForm*)userObj;
-	me->LoadFile(files[0]);
+	me->LoadFile({files[0], Text::StrCharCnt(files[0])});
 }
 
 void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	dlg->AddFilter((const UTF8Char*)"*.mib", (const UTF8Char*)"MIB file");
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->LoadFile(dlg->GetFileName()->v);
+		me->LoadFile(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnObjectsSelChg(void *userObj)
 	}
 }
 
-void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 {
 	Text::StringBuilderUTF8 sb;
 	this->txtFile->SetText(fileName);
@@ -113,13 +113,13 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(const UTF8Char *fileName)
 		Net::ASN1Util::OIDToCPPCode(obj->oid, obj->oidLen, obj->objectName->v, obj->objectName->leng, &sbOIDText);
 		i++;
 	}
-	this->txtOIDText->SetText(sbOIDText.ToString());
+	this->txtOIDText->SetText(sbOIDText.ToCString());
 }
 
 SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ASN.1 MIB");
+	this->SetText(CSTR("ASN.1 MIB"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -133,7 +133,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlRequest, CSTR("B&rowse")));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

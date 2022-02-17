@@ -211,7 +211,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 
 SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 652, 180, ui)
 {
-	this->SetText(this->GetFormName().v);
+	this->SetText(this->GetFormName());
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -232,7 +232,7 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	NEW_CLASS(this->dtpEndTime, UI::GUIDateTimePicker(ui, this, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpEndTime->SetFormat("yyyy-MM-dd");
 	this->dtpEndTime->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 76, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 }

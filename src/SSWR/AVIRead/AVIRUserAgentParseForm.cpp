@@ -12,11 +12,20 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 	{
 		Net::UserAgentDB::UAEntry ent;
 		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToCString());
-		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser).v);
-		me->txtBrowserVer->SetText(ent.browserVer?((const UTF8Char*)ent.browserVer):((const UTF8Char*)"-"));
-		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os).v);
-		me->txtOSVer->SetText(ent.osVer?((const UTF8Char*)ent.osVer):((const UTF8Char*)"-"));
-		me->txtDeviceName->SetText(ent.devName?((const UTF8Char*)ent.devName):((const UTF8Char*)"-"));
+		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser));
+		if (ent.browserVer)
+			me->txtBrowserVer->SetText({(const UTF8Char*)ent.browserVer, Text::StrCharCnt(ent.browserVer)});
+		else
+			me->txtBrowserVer->SetText(CSTR("-"));
+		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os));
+		if (ent.osVer)
+			me->txtOSVer->SetText({(const UTF8Char*)ent.osVer, Text::StrCharCnt(ent.osVer)});
+		else
+			me->txtOSVer->SetText(CSTR("-"));
+		if (ent.devName)
+			me->txtDeviceName->SetText({(const UTF8Char*)ent.devName, Text::StrCharCnt(ent.devName)});
+		else
+			me->txtDeviceName->SetText(CSTR("-"));
 		SDEL_TEXT(ent.browserVer);
 		SDEL_TEXT(ent.osVer);
 		SDEL_TEXT(ent.devName);
@@ -26,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 SSWR::AVIRead::AVIRUserAgentParseForm::AVIRUserAgentParseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 200, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"User Agent Parse");
+	this->SetText(CSTR("User Agent Parse"));
 	this->SetNoResize(true);
 	
 	this->core = core;
@@ -35,7 +44,7 @@ SSWR::AVIRead::AVIRUserAgentParseForm::AVIRUserAgentParseForm(UI::GUIClientContr
 	this->lblUserAgent->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUserAgent, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUserAgent->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this, (const UTF8Char*)"Parse"));
+	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this, CSTR("Parse")));
 	this->btnParse->SetRect(104, 28, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 	NEW_CLASS(this->lblBrowser, UI::GUILabel(ui, this, (const UTF8Char*)"Browser"));

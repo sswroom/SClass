@@ -23,7 +23,7 @@ void IO::FileAnalyse::SBFrameDetail::AddField(UOSInt ofst, UOSInt size, Text::CS
 	sb->Append(name);
 	if (value.v)
 	{
-		sb->AppendChar('=', 1);
+		sb->AppendUTF8Char('=');
 		sb->Append(value);
 	}
 }
@@ -34,7 +34,7 @@ void IO::FileAnalyse::SBFrameDetail::AddSubfield(UOSInt ofst, UOSInt size, Text:
 	sb->Append(name);
 	if (value.v)
 	{
-		sb->AppendChar('=', 1);
+		sb->AppendUTF8Char('=');
 		sb->Append(value);
 	}
 }

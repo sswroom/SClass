@@ -7,25 +7,26 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnTimerTick(void *userObj)
 	SSWR::AVIRead::AVIRPowerForm *me = (SSWR::AVIRead::AVIRPowerForm*)userObj;
 	IO::PowerInfo::PowerStatus power;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	if (IO::PowerInfo::GetPowerStatus(&power))
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
-			me->txtBattery->SetText(sbuff);
-			Text::StrUInt32(sbuff, power.timeLeftSec);
-			me->txtTimeLeft->SetText(sbuff);
+			sptr = Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
+			me->txtBattery->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, power.timeLeftSec);
+			me->txtTimeLeft->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtBattery->SetText((const UTF8Char*)"Battery not found");
-			me->txtTimeLeft->SetText((const UTF8Char*)"-");
+			me->txtBattery->SetText(CSTR("Battery not found"));
+			me->txtTimeLeft->SetText(CSTR("-"));
 		}
 	}
 	else
 	{
-		me->txtBattery->SetText((const UTF8Char*)"Cannot read battery status");
-		me->txtTimeLeft->SetText((const UTF8Char*)"-");
+		me->txtBattery->SetText(CSTR("Cannot read battery status"));
+		me->txtTimeLeft->SetText(CSTR("-"));
 	}
 	Bool noSystemOff = me->chkNoSleep->IsChecked();
 	Bool noDispOff = me->chkNoDispOff->IsChecked();
@@ -49,7 +50,7 @@ void __stdcall SSWR::AVIRead::AVIRPowerForm::OnDisplayOffClicked(void *userObj)
 
 SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 168, ui)
 {
-	this->SetText((const UTF8Char*)"Power Control");
+	this->SetText(CSTR("Power Control"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
@@ -69,10 +70,10 @@ SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, UI::GU
 	this->chkNoSleep->SetRect(104, 52, 200, 23, false);
 	NEW_CLASS(this->chkNoDispOff, UI::GUICheckBox(ui, this, (const UTF8Char*)"No Disp Off", false));
 	this->chkNoDispOff->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->btnSleep, UI::GUIButton(ui, this, (const UTF8Char*)"Sleep"));
+	NEW_CLASS(this->btnSleep, UI::GUIButton(ui, this, CSTR("Sleep")));
 	this->btnSleep->SetRect(104, 100, 75, 23, false);
 	this->btnSleep->HandleButtonClick(OnSleepClicked, this);
-	NEW_CLASS(this->btnDisplayOff, UI::GUIButton(ui, this, (const UTF8Char*)"Display Off"));
+	NEW_CLASS(this->btnDisplayOff, UI::GUIButton(ui, this, CSTR("Display Off")));
 	this->btnDisplayOff->SetRect(184, 100, 75, 23, false);
 	this->btnDisplayOff->HandleButtonClick(OnDisplayOffClicked, this);
 

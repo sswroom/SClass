@@ -110,11 +110,11 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 		me->pbColor->SetBGColor(Media::ColorConv::ConvARGB(&srcProfile, &destProfile, me->colorSess, me->currLayer->color | 0xff000000));
 		me->pbColor->Redraw();
 		me->hsbAlpha->SetPos((me->currLayer->color >> 24) & 255);
-		Text::StrUOSInt(sbuff, me->currLayer->thick);
-		me->txtThick->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, me->currLayer->thick);
+		me->txtThick->SetText(CSTRP(sbuff, sptr));
 		if (me->currLayer->nPattern == 0)
 		{
-			me->txtPattern->SetText((const UTF8Char*)"");
+			me->txtPattern->SetText(CSTR(""));
 		}
 		else
 		{
@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::LayerSelChanged(void *userObj
 				sptr = Text::StrUInt16(Text::StrConcatC(sptr, UTF8STRC(",")), me->currLayer->pattern[i]);
 				i++;
 			}
-			me->txtPattern->SetText(sbuff);
+			me->txtPattern->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 }
@@ -154,11 +154,12 @@ void __stdcall SSWR::AVIRead::AVIRGISLineEditForm::OnThickScrolled(void *userObj
 {
 	SSWR::AVIRead::AVIRGISLineEditForm *me = (SSWR::AVIRead::AVIRGISLineEditForm*)userObj;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	if (me->currLayer && !me->thickChging)
 	{
 		me->thickChging = true;
-		Text::StrUOSInt(sbuff, newPos);
-		me->txtThick->SetText(sbuff);
+		sptr = Text::StrUOSInt(sbuff, newPos);
+		me->txtThick->SetText(CSTRP(sbuff, sptr));
 		me->currLayer->thick = newPos;
 		me->thickChging = false;
 		me->UpdatePreview();
@@ -285,7 +286,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->colorSess->AddHandler(this);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"Edit Line Style");
+	this->SetText(CSTR("Edit Line Style"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -322,10 +323,10 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->lbLayer, UI::GUIListBox(ui, this->pnlLayers, false));
 	this->lbLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lbLayer->HandleSelectionChange(LayerSelChanged, this);
-	NEW_CLASS(this->btnNewLayer, UI::GUIButton(ui, this->pnlLayersButton, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnNewLayer, UI::GUIButton(ui, this->pnlLayersButton, CSTR("&Add")));
 	this->btnNewLayer->SetRect(8, 8, 64, 23, false);
 	this->btnNewLayer->HandleButtonClick(NewLayerClicked, this);
-	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlLayersButton, (const UTF8Char*)"&Remove"));
+	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlLayersButton, CSTR("&Remove")));
 	this->btnRemoveLayer->SetRect(80, 8, 64, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(RemoveLayerClicked, this);
 
@@ -355,10 +356,10 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->txtPattern->SetRect(96, 80, 100, 23, false);
 	this->txtPattern->HandleTextChanged(PatternChanged, this);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlButtons, CSTR("OK")));
 	this->btnOK->SetRect(150, 8, 75, 23, false);
 	this->btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlButtons, CSTR("Cancel")));
 	this->btnCancel->SetRect(231, 8, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(this->btnOK);
@@ -397,9 +398,10 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 		i++;
 	}
 	UTF8Char sbuff[256];
-	if (this->env->GetLineStyleName(this->lineStyle, sbuff))
+	UTF8Char *sptr;
+	if ((sptr = this->env->GetLineStyleName(this->lineStyle, sbuff)) != 0)
 	{
-		this->txtName->SetText(sbuff);
+		this->txtName->SetText(CSTRP(sbuff, sptr));
 	}
 	this->LineStyleUpdated();
 	if (this->lineLayers->GetCount() > 0)

@@ -30,7 +30,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	SSWR::AVIRead::AVIRSNBDongleForm *snbFrm = 0;
 	SSWR::AVIRead::AVIRSelStreamForm *frm;
 	NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, ui, core, false));
-	frm->SetText((const UTF8Char*)"Select SNB Dongle");
+	frm->SetText(CSTR("Select SNB Dongle"));
 	if (frm->ShowDialog(0) == UI::GUIForm::DR_OK)
 	{
 		NEW_CLASS(snbFrm, SSWR::AVIRead::AVIRSNBDongleForm(0, ui, core, frm->stm));

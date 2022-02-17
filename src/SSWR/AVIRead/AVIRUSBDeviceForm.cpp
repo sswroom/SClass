@@ -15,43 +15,44 @@ void __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::OnDevicesSelChg(void *userObj)
 	usb = (IO::USBInfo*)me->lbDevices->GetSelectedItem();
 	if (usb == 0)
 	{
-		me->txtVendorId->SetText((const UTF8Char*)"");
-		me->txtVendorName->SetText((const UTF8Char*)"");
-		me->txtProductId->SetText((const UTF8Char*)"");
-		me->txtDevice->SetText((const UTF8Char*)"");
-		me->txtDispName->SetText((const UTF8Char*)"");
-		me->txtDBName->SetText((const UTF8Char*)"");
+		me->txtVendorId->SetText(CSTR(""));
+		me->txtVendorName->SetText(CSTR(""));
+		me->txtProductId->SetText(CSTR(""));
+		me->txtDevice->SetText(CSTR(""));
+		me->txtDispName->SetText(CSTR(""));
+		me->txtDBName->SetText(CSTR(""));
 	}
 	else
 	{
 		UTF8Char sbuff[32];
-		Text::StrHexVal16(sbuff, usb->GetVendorId());
-		me->txtVendorId->SetText(sbuff);
-		Text::StrHexVal16(sbuff, usb->GetProductId());
-		me->txtProductId->SetText(sbuff);
-		Text::StrHexVal16(sbuff, usb->GetRevision());
-		me->txtDevice->SetText(sbuff);
-		me->txtDispName->SetText(usb->GetDispName().v);
+		UTF8Char *sptr;
+		sptr = Text::StrHexVal16(sbuff, usb->GetVendorId());
+		me->txtVendorId->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrHexVal16(sbuff, usb->GetProductId());
+		me->txtProductId->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrHexVal16(sbuff, usb->GetRevision());
+		me->txtDevice->SetText(CSTRP(sbuff, sptr));
+		me->txtDispName->SetText(usb->GetDispName());
 
 		const IO::DeviceDB::USBDeviceInfo *dev;
 		dev = IO::DeviceDB::GetUSBInfo(usb->GetVendorId(), usb->GetProductId(), usb->GetRevision());
 		if (dev)
 		{
-			me->txtDBName->SetText((const UTF8Char*)dev->productName);
+			me->txtDBName->SetText({(const UTF8Char*)dev->productName, Text::StrCharCnt(dev->productName)});
 			Text::CString vendorName = IO::DeviceDB::GetUSBVendorName(dev->vendorId);
 			if (vendorName.v)
 			{
-				me->txtVendorName->SetText(vendorName.v);
+				me->txtVendorName->SetText(vendorName);
 			}
 			else
 			{
-				me->txtVendorName->SetText((const UTF8Char*)"");
+				me->txtVendorName->SetText(CSTR(""));
 			}
 		}
 		else
 		{
-			me->txtDBName->SetText((const UTF8Char*)"");
-			me->txtVendorName->SetText((const UTF8Char*)"");
+			me->txtDBName->SetText(CSTR(""));
+			me->txtVendorName->SetText(CSTR(""));
 		}
 	}
 }
@@ -94,7 +95,7 @@ OSInt __stdcall SSWR::AVIRead::AVIRUSBDeviceForm::ItemCompare(void *item1, void 
 SSWR::AVIRead::AVIRUSBDeviceForm::AVIRUSBDeviceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText((const UTF8Char*)"USB Devices");
+	this->SetText(CSTR("USB Devices"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lbDevices, UI::GUIListBox(ui, this, false));

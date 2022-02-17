@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnPortUpdated(void *userObj, 
 SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"TCP Port Scan");
+	this->SetText(CSTR("TCP Port Scan"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -119,7 +119,7 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->lblMaxPort->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMaxPort, UI::GUITextBox(ui, this->pnlControl, CSTR("65535")));
 	this->txtMaxPort->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(204, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lvPort, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));

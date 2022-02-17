@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRCodePageForm::CancelClicked(void *userObj)
 
 SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 260, 664, ui)
 {
-	this->SetText((const UTF8Char*)"Select Code Page");
+	this->SetText(CSTR("Select Code Page"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->core = core;
@@ -41,10 +41,10 @@ SSWR::AVIRead::AVIRCodePageForm::AVIRCodePageForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lbCodePages, UI::GUIListBox(ui, this, false));
 	this->lbCodePages->SetRect(8, 32, 240, 560, false);
 
-	NEW_CLASS(btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	btnOK->SetRect(40, 600, 75, 23, false);
 	btnOK->HandleButtonClick(OKClicked, this);
-	NEW_CLASS(btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	btnCancel->SetRect(128, 600, 75, 23, false);
 	btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetDefaultButton(btnOK);

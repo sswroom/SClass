@@ -19,20 +19,20 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnPasteJDBCClicked(void *userOb
 			UOSInt i = Text::StrSplitP(sarr, 2, sb.Substring(17), ';');
 			if (Text::StrSplitP(sarr2, 2, sarr[0], ':') == 2)
 			{
-				me->txtServer->SetText(sarr2[0].v);
-				me->txtPort->SetText(sarr2[1].v);
+				me->txtServer->SetText(sarr2[0].ToCString());
+				me->txtPort->SetText(sarr2[1].ToCString());
 			}
 			else
 			{
-				me->txtServer->SetText(sarr2[0].v);
-				me->txtPort->SetText((const UTF8Char*)"1433");
+				me->txtServer->SetText(sarr2[0].ToCString());
+				me->txtPort->SetText(CSTR("1433"));
 			}
 			while (i == 2)
 			{
 				i = Text::StrSplitP(sarr, 2, sarr[1], ';');
 				if (sarr[0].StartsWithICase(UTF8STRC("DATABASENAME=")))
 				{
-					me->txtDatabase->SetText(sarr[0].v + 13);
+					me->txtDatabase->SetText(sarr[0].ToCString().Substring(13));
 				}
 			}
 		}
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 200, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"MSSQL Connection");
+	this->SetText(CSTR("MSSQL Connection"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->lblServer->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this, CSTR("localhost")));
 	this->txtServer->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, this, (const UTF8Char*)"Paste from JDBC Str"));
+	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, this, CSTR("Paste from JDBC Str")));
 	this->btnPasteJDBC->SetRect(304, 28, 150, 23, false);
 	this->btnPasteJDBC->HandleButtonClick(OnPasteJDBCClicked, this);
 	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
@@ -140,10 +140,10 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 124, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 148, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 148, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
@@ -153,7 +153,7 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	Text::String *driverName = DB::MSSQLConn::GetDriverNameNew();
 	if (driverName)
 	{
-		this->txtDriver->SetText(driverName->v);
+		this->txtDriver->SetText(driverName->ToCString());
 		driverName->Release();
 	}
 	else

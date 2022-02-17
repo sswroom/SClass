@@ -14,11 +14,11 @@ void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj
 		const UTF8Char *msg = me->dropMap->Get(u8buff);
 		if (msg)
 		{
-			me->txtMain->SetText(msg);
+			me->txtMain->SetText({msg, Text::StrCharCnt(msg)});
 		}
 		else
 		{
-			me->txtMain->SetText((const UTF8Char*)"");
+			me->txtMain->SetText(CSTR(""));
 		}
 	}
 }
@@ -39,7 +39,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::ClearDrops()
 
 SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Drag Drop Viewer");
+	this->SetText(CSTR("Drag Drop Viewer"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;

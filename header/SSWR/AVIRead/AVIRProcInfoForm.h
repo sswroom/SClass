@@ -29,7 +29,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 procId;
-				const UTF8Char *procName;
+				Text::String *procName;
 				UInt32 parentProcId;
 				Bool found;
 			} ProcessInfo;

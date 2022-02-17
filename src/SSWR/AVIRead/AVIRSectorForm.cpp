@@ -17,17 +17,18 @@ void __stdcall SSWR::AVIRead::AVIRSectorForm::OnParseClicked(void *userObj)
 SSWR::AVIRead::AVIRSectorForm::AVIRSectorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::ISectorData *data) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->data = data;
 	this->core = core;
-	data->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Sector Viewer - ")));
-	this->SetText(sbuff);
+	sptr = data->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Sector Viewer - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 72, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Parse File"));
+	NEW_CLASS(this->btnParse, UI::GUIButton(ui, this->pnlCtrl, CSTR("Parse File")));
 	this->btnParse->SetRect(4, 4, 75, 23, false);
 	this->btnParse->HandleButtonClick(OnParseClicked, this);
 

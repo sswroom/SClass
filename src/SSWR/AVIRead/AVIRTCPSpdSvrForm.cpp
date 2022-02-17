@@ -99,7 +99,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::RecvThread(void *userObj)
 SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"TCP Speed Server");
+	this->SetText(CSTR("TCP Speed Server"));
 
 	this->core = core;
 	this->svr = 0;
@@ -113,7 +113,7 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	this->txtPort->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, (const UTF8Char*)"Multi-Thread", false));
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 }

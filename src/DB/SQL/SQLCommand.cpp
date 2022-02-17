@@ -41,7 +41,7 @@ const UTF8Char *DB::SQL::SQLCommand::ParseNextWord(const UTF8Char *sql, Text::St
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 				return sql;
 			}
 		}

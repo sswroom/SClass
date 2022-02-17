@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtDir->SetText(dlg->GetFolder()->v);
+		me->txtDir->SetText(dlg->GetFolder()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -145,7 +145,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 184, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Image Batch Convert");
+	this->SetText(CSTR("Image Batch Convert"));
 	this->SetNoResize(true);
 	
 	this->core = core;
@@ -155,7 +155,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->lblDir->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"&Browse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
 	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, this, (const UTF8Char*)"Quality"));
@@ -166,7 +166,7 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->chkSubdir->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, CSTR("JPEG")));
 	this->txtSubdir->SetRect(100, 48, 100, 23, false);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, (const UTF8Char*)"&Convert"));
+	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, CSTR("&Convert")));
 	this->btnConvert->SetRect(100, 72, 75, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 }

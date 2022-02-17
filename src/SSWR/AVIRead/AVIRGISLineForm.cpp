@@ -10,10 +10,11 @@
 void __stdcall SSWR::AVIRead::AVIRGISLineForm::OnThickChanged(void *userObj, UOSInt newPos)
 {
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRGISLineForm *me = (SSWR::AVIRead::AVIRGISLineForm*)userObj;
-	Text::StrUOSInt(sbuff, newPos);
+	sptr = Text::StrUOSInt(sbuff, newPos);
 	me->lineThick = newPos;
-	me->lblThickV->SetText(sbuff);
+	me->lblThickV->SetText(CSTRP(sbuff, sptr));
 	me->UpdatePreview();
 }
 
@@ -81,7 +82,7 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->colorConv, Media::ColorConv(&srcColor, &destColor, this->colorSess));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	this->SetText((const UTF8Char*)"Line Modify");
+	this->SetText(CSTR("Line Modify"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -106,10 +107,10 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI
 	this->pbColor->HandleMouseDown(OnColorDown, this);
 	this->pbColor->SetBGColor(this->colorConv->ConvRGB8(this->lineColor));
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlMain, CSTR("OK")));
 	this->btnOK->SetRect(104, 64, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlMain, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 64, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

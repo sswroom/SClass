@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnLogSel(void *userObj)
 {
 	SSWR::AVIRead::AVIRTFTPServerForm *me = (SSWR::AVIRead::AVIRTFTPServerForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	UTF8Char *sptr;
 	UOSInt i;
 	this->core = core;
-	this->SetText((const UTF8Char*)"TFTP Server");
+	this->SetText(CSTR("TFTP Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -89,7 +89,7 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	}
 	NEW_CLASS(this->txtFilePath, UI::GUITextBox(ui, this->tpControl, CSTRP(sbuff, sptr)));
 	this->txtFilePath->SetRect(108, 32, 500, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(100, 56, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClick, this);
 

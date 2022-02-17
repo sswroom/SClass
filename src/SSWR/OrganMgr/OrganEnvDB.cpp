@@ -609,7 +609,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	UTF8Char *sptr2;
 	UTF8Char *cols[4];
 	Int32 newFlags = 0;
-	const UTF8Char *coverName = sp->GetPhoto();
+	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
 	Int32 coverId = sp->GetPhotoId();
 	Int32 coverWId = sp->GetPhotoWId();
 	IO::Path::FindFileSession *sess;
@@ -717,7 +717,7 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetSpeciesImages(Data::ArrayList<OrganImageIt
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, sp->GetDirName());
+	sptr = sp->GetDirName()->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
@@ -1272,7 +1272,7 @@ UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *
 	{
 		sptr = Text::StrConcatC(sbuff, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		return Text::StrConcat(sptr, sp->GetDirName());
+		return sp->GetDirName()->ConcatTo(sptr);
 	}
 	else
 	{
@@ -1280,7 +1280,7 @@ UTF8Char *SSWR::OrganMgr::OrganEnvDB::GetSpeciesDir(OrganSpecies *sp, UTF8Char *
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		sptr = Text::StrConcat(sptr, sp->GetDirName());
+		sptr = sp->GetDirName()->ConcatTo(sptr);
 		return sptr;
 	}
 }
@@ -1385,11 +1385,11 @@ Bool SSWR::OrganMgr::OrganEnvDB::AddSpecies(OrganSpecies *sp)
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(sp->GetGroupId());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetDesc());
+	sql.AppendStr(sp->GetDesc());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetDirName());
+	sql.AppendStr(sp->GetDirName());
 	sql.AppendCmdC(UTF8STRC(", "));
-	sql.AppendStrUTF8(sp->GetIDKey());
+	sql.AppendStr(sp->GetIDKey());
 	sql.AppendCmdC(UTF8STRC(", "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(UTF8STRC(", "));
@@ -2365,17 +2365,17 @@ Bool SSWR::OrganMgr::OrganEnvDB::SaveSpecies(OrganSpecies *sp)
 	sql.AppendCmdC(UTF8STRC(", sci_name="));
 	sql.AppendStr(sp->GetSName());
 	sql.AppendCmdC(UTF8STRC(", description="));
-	sql.AppendStrUTF8(sp->GetDesc());
+	sql.AppendStr(sp->GetDesc());
 	sql.AppendCmdC(UTF8STRC(",dirName="));
-	sql.AppendStrUTF8(sp->GetDirName());
+	sql.AppendStr(sp->GetDirName());
 	sql.AppendCmdC(UTF8STRC(", photo="));
-	sql.AppendStrUTF8(sp->GetPhoto());
+	sql.AppendStr(sp->GetPhoto());
 	sql.AppendCmdC(UTF8STRC(", photoId="));
 	sql.AppendInt32(sp->GetPhotoId());
 	sql.AppendCmdC(UTF8STRC(", photoWId="));
 	sql.AppendInt32(sp->GetPhotoWId());
 	sql.AppendCmdC(UTF8STRC(", idKey="));
-	sql.AppendStrUTF8(sp->GetIDKey());
+	sql.AppendStr(sp->GetIDKey());
 	sql.AppendCmdC(UTF8STRC(", mapColor="));
 	sql.AppendInt32((Int32)sp->GetMapColor());
 	sql.AppendCmdC(UTF8STRC(" where id="));
@@ -3993,7 +3993,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char *cols[4];
-	const UTF8Char *coverName = sp->GetPhoto();
+	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 	UOSInt i;
@@ -4038,7 +4038,7 @@ Media::ImageList *SSWR::OrganMgr::OrganEnvDB::ParseSpImage(OrganSpecies *sp)
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, sp->GetDirName());
+	sptr = sp->GetDirName()->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(Text::StrConcat(sptr, coverName), UTF8STRC(".*"));
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
@@ -4917,7 +4917,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	const UTF8Char *coverName = sp->GetPhoto();
+	const UTF8Char *coverName = STR_PTR(sp->GetPhoto());
 	IO::Path::FindFileSession *sess;
 	Bool isCoverPhoto;
 	IO::Path::PathType pt;
@@ -4939,7 +4939,7 @@ void SSWR::OrganMgr::OrganEnvDB::UpgradeFileStruct(OrganSpecies *sp)
 	}
 	sptr = Text::StrConcatC(sptr, this->currCate->srcDir->v, this->currCate->srcDir->leng);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrConcat(sptr, sp->GetDirName());
+	sptr = sp->GetDirName()->ConcatTo(sptr);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));

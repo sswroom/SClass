@@ -35,7 +35,7 @@ IO::SystemInfo::SystemInfo()
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(s);
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 			sb.Append(s2);
 			data->platformName = Text::String::New(sb.ToString(), sb.GetLength());
 		}

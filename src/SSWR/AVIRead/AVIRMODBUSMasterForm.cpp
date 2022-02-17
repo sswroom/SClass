@@ -31,8 +31,8 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnStreamClicked(void *userOb
 				NEW_CLASS(me->modbus, IO::MODBUSRTUMaster(me->stm));
 			}
 			NEW_CLASS(me->modbusCtrl, IO::MODBUSController(me->modbus));
-			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
-			me->btnStream->SetText((const UTF8Char*)"&Close");
+			me->txtStream->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
+			me->btnStream->SetText(CSTR("&Close"));
 		}
 	}
 }
@@ -49,23 +49,23 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU8GetClicked(void *userObj
 		me->txtU8DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtU8Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtU8RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtU8Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtU8Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->ReadRegisterU8(devAddr, regAddr, &val))
 		{
 			sb.ClearStr();
 			sb.AppendU16(val);
-			me->txtU8Value->SetText(sb.ToString());
+			me->txtU8Value->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtU8Value->SetText((const UTF8Char*)"-");
+			me->txtU8Value->SetText(CSTR("-"));
 		}
 	}
 }
@@ -82,23 +82,23 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnU16GetClicked(void *userOb
 		me->txtU16DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtU16Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtU16Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtU16RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtU16Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtU16Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->ReadRegisterU16(devAddr, regAddr, &val))
 		{
 			sb.ClearStr();
 			sb.AppendU16(val);
-			me->txtU16Value->SetText(sb.ToString());
+			me->txtU16Value->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtU16Value->SetText((const UTF8Char*)"-");
+			me->txtU16Value->SetText(CSTR("-"));
 		}
 	}
 }
@@ -115,23 +115,23 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnI32GetClicked(void *userOb
 		me->txtI32DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtI32Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtI32Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtI32RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtI32Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtI32Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->ReadRegisterI32(devAddr, regAddr, &val))
 		{
 			sb.ClearStr();
 			sb.AppendI32(val);
-			me->txtI32Value->SetText(sb.ToString());
+			me->txtI32Value->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtI32Value->SetText((const UTF8Char*)"-");
+			me->txtI32Value->SetText(CSTR("-"));
 		}
 	}
 }
@@ -148,23 +148,23 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnF32GetClicked(void *userOb
 		me->txtF32DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtF32Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtF32Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtF32RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtF32Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtF32Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->ReadRegisterF32(devAddr, regAddr, &val))
 		{
 			sb.ClearStr();
 			Text::SBAppendF32(&sb, val);
-			me->txtF32Value->SetText(sb.ToString());
+			me->txtF32Value->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtF32Value->SetText((const UTF8Char*)"-");
+			me->txtF32Value->SetText(CSTR("-"));
 		}
 	}
 }
@@ -180,21 +180,21 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8LowClicked(void *user
 		me->txtSetU8DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtSetU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtSetU8RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtSetU8Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->WriteRegisterBool(devAddr, regAddr, false))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"Success");
+			me->txtSetU8Value->SetText(CSTR("Success"));
 		}
 		else
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"Failed");
+			me->txtSetU8Value->SetText(CSTR("Failed"));
 		}
 	}
 }
@@ -210,21 +210,21 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnSetU8HighClicked(void *use
 		me->txtSetU8DevAddr->GetText(&sb);
 		if (!Text::StrToUInt8(sb.ToString(), &devAddr))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"DevAddr");
+			me->txtSetU8Value->SetText(CSTR("DevAddr"));
 		}
 		sb.ClearStr();
 		me->txtSetU8RegAddr->GetText(&sb);
 		if (!Text::StrToUInt32(sb.ToString(), &regAddr))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"RegAddr");
+			me->txtSetU8Value->SetText(CSTR("RegAddr"));
 		}
 		if (me->modbusCtrl->WriteRegisterBool(devAddr, regAddr, true))
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"Success");
+			me->txtSetU8Value->SetText(CSTR("Success"));
 		}
 		else
 		{
-			me->txtSetU8Value->SetText((const UTF8Char*)"Failed");
+			me->txtSetU8Value->SetText(CSTR("Failed"));
 		}
 	}
 }
@@ -452,14 +452,14 @@ void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream()
 		DEL_CLASS(this->modbus);
 		DEL_CLASS(this->stm);
 		this->stm = 0;
-		this->txtStream->SetText((const UTF8Char*)"-");
-		this->btnStream->SetText((const UTF8Char*)"&Open");
+		this->txtStream->SetText(CSTR("-"));
+		this->btnStream->SetText(CSTR("&Open"));
 	}
 }
 
 SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 576, 480, ui)
 {
-	this->SetText((const UTF8Char*)"MODBUS Master");
+	this->SetText(CSTR("MODBUS Master"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -479,7 +479,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->radMODBUSRTU->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->radMODBUSTCP, UI::GUIRadioButton(ui, this->grpStream, (const UTF8Char*)"MODBUS TCP", false));
 	this->radMODBUSTCP->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, (const UTF8Char*)"&Open"));
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -498,7 +498,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtU8DevAddr->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->txtU8RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("00001")));
 	this->txtU8RegAddr->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnU8Get, UI::GUIButton(ui, this->tpGetValue, (const UTF8Char*)"Get"));
+	NEW_CLASS(this->btnU8Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
 	this->btnU8Get->SetRect(304, 28, 75, 23, false);
 	this->btnU8Get->HandleButtonClick(OnU8GetClicked, this);
 	NEW_CLASS(this->txtU8Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -510,7 +510,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtU16DevAddr->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->txtU16RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtU16RegAddr->SetRect(204, 52, 100, 23, false);
-	NEW_CLASS(this->btnU16Get, UI::GUIButton(ui, this->tpGetValue, (const UTF8Char*)"Get"));
+	NEW_CLASS(this->btnU16Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
 	this->btnU16Get->SetRect(304, 52, 75, 23, false);
 	this->btnU16Get->HandleButtonClick(OnU16GetClicked, this);
 	NEW_CLASS(this->txtU16Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -522,7 +522,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtI32DevAddr->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->txtI32RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtI32RegAddr->SetRect(204, 76, 100, 23, false);
-	NEW_CLASS(this->btnI32Get, UI::GUIButton(ui, this->tpGetValue, (const UTF8Char*)"Get"));
+	NEW_CLASS(this->btnI32Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
 	this->btnI32Get->SetRect(304, 76, 75, 23, false);
 	this->btnI32Get->HandleButtonClick(OnI32GetClicked, this);
 	NEW_CLASS(this->txtI32Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -534,7 +534,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtF32DevAddr->SetRect(104, 100, 100, 23, false);
 	NEW_CLASS(this->txtF32RegAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("30001")));
 	this->txtF32RegAddr->SetRect(204, 100, 100, 23, false);
-	NEW_CLASS(this->btnF32Get, UI::GUIButton(ui, this->tpGetValue, (const UTF8Char*)"Get"));
+	NEW_CLASS(this->btnF32Get, UI::GUIButton(ui, this->tpGetValue, CSTR("Get")));
 	this->btnF32Get->SetRect(304, 100, 75, 23, false);
 	this->btnF32Get->HandleButtonClick(OnF32GetClicked, this);
 	NEW_CLASS(this->txtF32Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
@@ -554,10 +554,10 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtSetU8DevAddr->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->txtSetU8RegAddr, UI::GUITextBox(ui, this->tpSetValue, CSTR("00001")));
 	this->txtSetU8RegAddr->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->btnSetU8Low, UI::GUIButton(ui, this->tpSetValue, (const UTF8Char*)"Set Low"));
+	NEW_CLASS(this->btnSetU8Low, UI::GUIButton(ui, this->tpSetValue, CSTR("Set Low")));
 	this->btnSetU8Low->SetRect(304, 28, 75, 23, false);
 	this->btnSetU8Low->HandleButtonClick(OnSetU8LowClicked, this);
-	NEW_CLASS(this->btnSetU8High, UI::GUIButton(ui, this->tpSetValue, (const UTF8Char*)"Set High"));
+	NEW_CLASS(this->btnSetU8High, UI::GUIButton(ui, this->tpSetValue, CSTR("Set High")));
 	this->btnSetU8High->SetRect(384, 28, 75, 23, false);
 	this->btnSetU8High->HandleButtonClick(OnSetU8HighClicked, this);
 	NEW_CLASS(this->txtSetU8Value, UI::GUITextBox(ui, this->tpSetValue, CSTR("")));
@@ -584,7 +584,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 		dt = (DeviceType)(dt + 1);
 	}
 	this->cboDevice->SetSelectedIndex(0);
-	NEW_CLASS(this->btnDeviceAdd, UI::GUIButton(ui, this->pnlDevice, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnDeviceAdd, UI::GUIButton(ui, this->pnlDevice, CSTR("Add")));
 	this->btnDeviceAdd->SetRect(404, 4, 75, 23, false);
 	this->btnDeviceAdd->HandleButtonClick(OnDeviceAddClicked, this);
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 4));

@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::FontNameClicked(void *userObj
 		me->currFontName = dlg->GetFontName()->Clone();
 		me->currFontSizePt = dlg->GetFontSizePt();
 		me->isBold = dlg->IsBold();
-		me->txtFontName->SetText(me->currFontName->v);
+		me->txtFontName->SetText(me->currFontName->ToCString());
 		me->UpdateFontPreview();
 	}
 	DEL_CLASS(dlg);
@@ -158,26 +158,27 @@ void SSWR::AVIRead::AVIRGISFontEditForm::UpdateFontPreview()
 void SSWR::AVIRead::AVIRGISFontEditForm::UpdateDisplay()
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Text::String *fontName;
-	if (env->GetFontStyleName(this->fontStyle, sbuff))
+	if ((sptr = env->GetFontStyleName(this->fontStyle, sbuff)) != 0)
 	{
-		this->txtStyleName->SetText(sbuff);
+		this->txtStyleName->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtStyleName->SetText((const UTF8Char*)"");
+		this->txtStyleName->SetText(CSTR(""));
 	}
 	env->GetFontStyle(this->fontStyle, &fontName, &this->currFontSizePt, &this->isBold, &this->currColor, &this->currBuffSize, &this->currBuffColor);
 	SDEL_STRING(this->currFontName);
 	if (fontName)
 	{
 		this->currFontName = fontName->Clone();
-		this->txtFontName->SetText(this->currFontName->v);
+		this->txtFontName->SetText(this->currFontName->ToCString());
 	}
 	else
 	{
 		this->currFontName = 0;
-		this->txtFontName->SetText((const UTF8Char*)"");
+		this->txtFontName->SetText(CSTR(""));
 	}
 	this->pbFontColor->SetBGColor(this->colorConv->ConvRGB8(this->currColor));
 	this->hsbBufferSize->SetPos(this->currBuffSize);
@@ -200,7 +201,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->colorConv, Media::ColorConv(&srcProfile, &destProfile, this->colorSess));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	this->SetText((const UTF8Char*)"Edit Font Style");
+	this->SetText(CSTR("Edit Font Style"));
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->pbFontPreview, UI::GUIPictureBox(ui, this, eng, false, false));
@@ -215,7 +216,7 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtFontName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFontName->SetReadOnly(true);
 	this->txtFontName->SetRect(104, 92, 100, 23, false);
-	NEW_CLASS(this->btnFontName, UI::GUIButton(ui, this, (const UTF8Char*)"S&elect"));
+	NEW_CLASS(this->btnFontName, UI::GUIButton(ui, this, CSTR("S&elect")));
 	this->btnFontName->SetRect(208, 92, 75, 23, false);
 	this->btnFontName->HandleButtonClick(FontNameClicked, this);
 	NEW_CLASS(this->lblFontColor, UI::GUILabel(ui, this, (const UTF8Char*)"Color"));
@@ -234,11 +235,11 @@ SSWR::AVIRead::AVIRGISFontEditForm::AVIRGISFontEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pbBufferColor, UI::GUIPictureBox(ui, this, eng, false, false));
 	this->pbBufferColor->SetRect(104, 164, 144, 23, false);
 	this->pbBufferColor->HandleMouseDown(BufferColorClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 196, 75, 23, false);;
 	this->btnOK->HandleButtonClick(OKClicked, this);
 	this->SetDefaultButton(this->btnOK);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 196, 75, 23, false);
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetCancelButton(this->btnCancel);

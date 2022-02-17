@@ -18,7 +18,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateDiscId()
 	while (i < j)
 	{
 		disc = discList.GetItem(i);
-		this->lbDiscId->AddItem({disc->discId, Text::StrCharCnt(disc->discId)}, disc);
+		this->lbDiscId->AddItem(disc->discId->ToCString(), disc);
 		i++;
 	}
 }
@@ -91,7 +91,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateAnimeName()
 		anime->Release();
 		i++;
 	}
-	this->cboDVDName->SetText((const UTF8Char*)"Non-Anime");
+	this->cboDVDName->SetText(CSTR("Non-Anime"));
 }
 
 void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateSeries()
@@ -321,7 +321,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateType()
 				}
 				if (sbVolume.Equals(s))
 				{
-					this->cboDVDType->SetText(dvdVideo->dvdType);
+					this->cboDVDType->SetText(dvdVideo->dvdType->ToCString());
 				}
 			}
 		}
@@ -334,32 +334,32 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::SetVideoField(Int32 videoId)
 	const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo = this->env->GetDVDVideo(videoId);
 	if (dvdVideo)
 	{
-		this->cboDVDName->SetText(dvdVideo->anime->v);
+		this->cboDVDName->SetText(dvdVideo->anime->ToCString());
 		if (dvdVideo->series)
 		{
-			this->cboSeries->SetText(dvdVideo->series->v);
+			this->cboSeries->SetText(dvdVideo->series->ToCString());
 		}
 		else
 		{
-			this->cboSeries->SetText((const UTF8Char*)"");
+			this->cboSeries->SetText(CSTR(""));
 		}
 
 		if (dvdVideo->volume)
 		{
-			this->cboVolume->SetText(dvdVideo->volume->v);
+			this->cboVolume->SetText(dvdVideo->volume->ToCString());
 		}
 		else
 		{
-			this->cboVolume->SetText((const UTF8Char*)"");
+			this->cboVolume->SetText(CSTR(""));
 		}
-		this->cboDVDType->SetText(dvdVideo->dvdType);
+		this->cboDVDType->SetText(dvdVideo->dvdType->ToCString());
 	}
 	else
 	{
-		this->cboDVDName->SetText((const UTF8Char*)"Non-Anime");
-		this->cboSeries->SetText((const UTF8Char*)"");
-		this->cboVolume->SetText((const UTF8Char*)"");
-		this->cboDVDType->SetText((const UTF8Char*)"ROM5");
+		this->cboDVDName->SetText(CSTR("Non-Anime"));
+		this->cboSeries->SetText(CSTR(""));
+		this->cboVolume->SetText(CSTR(""));
+		this->cboDVDType->SetText(CSTR("ROM5"));
 	}
 }
 
@@ -888,7 +888,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnBrowseClicked(void *userObj)
 		me->pnlFile->SetEnabled(false);
 		me->SearchSubDir(sbBasePath.ToString(), (const UTF8Char*)"", 50000000000LL);
 		i = Text::StrLastIndexOfCharC(sbBasePath.ToString(), sbBasePath.GetLength(), IO::Path::PATH_SEPERATOR);
-		me->txtDiscId->SetText(sbBasePath.ToString() + i + 1);
+		me->txtDiscId->SetText(sbBasePath.ToCString().Substring(i + 1));
 	}
 	DEL_CLASS(ofd);
 }
@@ -1003,23 +1003,23 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 			}
 			if (animeLen == 0)
 			{
-				me->cboDVDName->SetText((const UTF8Char*)"Non-Anime");
-				me->cboSeries->SetText((const UTF8Char*)"");
-				me->cboVolume->SetText((const UTF8Char*)"");
-				me->cboDVDType->SetText((const UTF8Char*)"ROM5");
+				me->cboDVDName->SetText(CSTR("Non-Anime"));
+				me->cboSeries->SetText(CSTR(""));
+				me->cboVolume->SetText(CSTR(""));
+				me->cboDVDType->SetText(CSTR("ROM5"));
 			}
 			else
 			{
-				me->cboDVDName->SetText(anime->v);
+				me->cboDVDName->SetText(anime->ToCString());
 				OnCboDVDNameTextChg(me);
 				if (seriesLen == 0)
 				{
-					me->cboSeries->SetText((const UTF8Char*)"TV");
+					me->cboSeries->SetText(CSTR("TV"));
 					series = anime;
 				}
 				else
 				{
-					me->cboSeries->SetText(series->v);
+					me->cboSeries->SetText(series->ToCString());
 				}
 				me->OnSeriesSelChg(me);
 				Bool hasVol = false;
@@ -1047,7 +1047,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 						}
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(&fname->v[i], j - i);
-						me->cboVolume->SetText(sb.ToString());
+						me->cboVolume->SetText(sb.ToCString());
 						hasVol = true;
 						break;
 					}
@@ -1063,9 +1063,9 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 				}
 				if (!hasVol)
 				{
-					me->cboVolume->SetText((const UTF8Char*)"1");
+					me->cboVolume->SetText(CSTR("1"));
 				}
-				me->cboDVDType->SetText((const UTF8Char*)"ROM5");
+				me->cboDVDType->SetText(CSTR("ROM5"));
 				me->UpdateType();
 			}
 		}
@@ -1073,27 +1073,27 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 	else
 	{
 		const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *dvdVideo = me->env->GetDVDVideo(me->selectedFile->videoId);
-		me->cboDVDName->SetText(dvdVideo->anime->v);
+		me->cboDVDName->SetText(dvdVideo->anime->ToCString());
 		OnCboDVDNameTextChg(me);
 		if (dvdVideo->series == 0)
 		{
-			me->cboSeries->SetText((const UTF8Char*)"");
+			me->cboSeries->SetText(CSTR(""));
 		}
 		else
 		{
-			me->cboSeries->SetText(dvdVideo->series->v);
+			me->cboSeries->SetText(dvdVideo->series->ToCString());
 		}
 		me->OnSeriesSelChg(me);
 
 		if (dvdVideo->volume == 0)
 		{
-			me->cboVolume->SetText((const UTF8Char*)"");
+			me->cboVolume->SetText(CSTR(""));
 		}
 		else
 		{
-			me->cboVolume->SetText(dvdVideo->volume->v);
+			me->cboVolume->SetText(dvdVideo->volume->ToCString());
 		}
-		me->cboDVDType->SetText(dvdVideo->dvdType);
+		me->cboDVDType->SetText(dvdVideo->dvdType->ToCString());
 	}
 }
 
@@ -1129,7 +1129,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDVDNameSelChg(void *userObj)
 {
 	SSWR::DiscDB::DiscDBBurntDiscForm *me = (SSWR::DiscDB::DiscDBBurntDiscForm*)userObj;
 	const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *discType = (const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *)me->lbDVDName->GetSelectedItem();
-	me->txtDiscType->SetText(discType->discTypeId);
+	me->txtDiscType->SetText(discType->discTypeId->ToCString());
 }
 
 void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCboDVDNameSelChg(void *userObj)
@@ -1177,7 +1177,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		return;
 	}
 	me->txtDiscType->GetText(&sbDiscId);
-	if (me->env->GetDiscType(sbDiscId.ToString()) == 0)
+	if (me->env->GetDiscType(sbDiscId.ToCString()) == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in the Disc Type", (const UTF8Char*)"Burnt Disc", me);
 		me->txtDiscType->Focus();
@@ -1190,13 +1190,13 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		me->txtDiscId->Focus();
 		return;
 	}
-	if (me->env->GetBurntDisc(sbDVDId.ToString()) != 0)
+	if (me->env->GetBurntDisc(sbDVDId.ToCString()) != 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Disc Id already found in database", (const UTF8Char*)"Burnt Disc", me);
 		me->txtDiscId->Focus();
 		return;
 	}
-	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->NewBurntDisc(sbDVDId.ToString(), sbDiscId.ToString(), &theDate);
+	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->NewBurntDisc(sbDVDId.ToCString(), sbDiscId.ToCString(), &theDate);
 	if (disc)
 	{
 		BurntFile *file;
@@ -1207,10 +1207,10 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 		while (i < j)
 		{
 			file = me->fileList->GetItem(i);
-			me->env->NewBurntFile(disc->discId, i, file->fname->v, file->fSize, file->cate, file->videoId);
+			me->env->NewBurntFile(disc->discId->v, i, file->fname->v, file->fSize, file->cate, file->videoId);
 			if (file->anime)
 			{
-				me->env->NewMovies(disc->discId, i, file->anime->mainTitle, file->anime->type, file->anime->chapter, file->anime->chapterTitle, file->anime->videoFormat, file->anime->width, file->anime->height, file->anime->fps, file->anime->length, file->anime->audioFormat, file->anime->samplingRate, file->anime->bitRate, file->anime->aspectRatio, file->anime->remark);
+				me->env->NewMovies(disc->discId->v, i, file->anime->mainTitle, file->anime->type, file->anime->chapter, file->anime->chapterTitle, file->anime->videoFormat, file->anime->width, file->anime->height, file->anime->fps, file->anime->length, file->anime->audioFormat, file->anime->samplingRate, file->anime->bitRate, file->anime->aspectRatio, file->anime->remark);
 			}
 			i++;
 		}
@@ -1289,7 +1289,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnDiscIdTextChg(void *userObj)
         return;
 	}
 	sb.ToUpper();
-	OSInt i = me->env->GetBurntDiscIndex(sb.ToString());
+	OSInt i = me->env->GetBurntDiscIndex(sb.ToCString());
 	if (i < 0)
 	{
 		i = ~i;
@@ -1362,7 +1362,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(void *userObj
 
 SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 632, 483, ui)
 {
-	this->SetText((const UTF8Char*)"Burnt Disc");
+	this->SetText(CSTR("Burnt Disc"));
 	this->SetFont(0, 0, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
@@ -1375,13 +1375,13 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	NEW_CLASS(this->pnlBurntDisc, UI::GUIPanel(ui, this->pnlTop));
 	this->pnlBurntDisc->SetRect(0, 0, 472, 121, false);
 	this->pnlBurntDisc->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlBurntDisc, (const UTF8Char*)"&Browse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlBurntDisc, CSTR("&Browse")));
 	this->btnBrowse->SetRect(8, 8, 83, 25, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnFinish, UI::GUIButton(ui, this->pnlBurntDisc, (const UTF8Char*)"&Finsih"));
+	NEW_CLASS(this->btnFinish, UI::GUIButton(ui, this->pnlBurntDisc, CSTR("&Finsih")));
 	this->btnFinish->SetRect(8, 43, 83, 25, false);
 	this->btnFinish->HandleButtonClick(OnFinishClicked, this);
-	NEW_CLASS(this->btnNewDisc, UI::GUIButton(ui, this->pnlBurntDisc, (const UTF8Char*)"&New Disc Type"));
+	NEW_CLASS(this->btnNewDisc, UI::GUIButton(ui, this->pnlBurntDisc, CSTR("&New Disc Type")));
 	this->btnNewDisc->SetRect(8, 78, 83, 25, false);
 	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Disc ID"));
 	this->lblDiscId->SetRect(96, 9, 56, 25, false);
@@ -1419,7 +1419,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	NEW_CLASS(this->lblDVDName, UI::GUILabel(ui, this->pnlDVDV, (const UTF8Char*)"Name"));
 	this->lblDVDName->SetRect(8, 17, 48, 25, false);
 	NEW_CLASS(this->cboDVDName, UI::GUIComboBox(ui, this->pnlDVDV, true));
-	this->cboDVDName->SetText((const UTF8Char*)"Non-Anime");
+	this->cboDVDName->SetText(CSTR("Non-Anime"));
 	this->cboDVDName->SetRect(64, 17, 121, 21, false);
 	this->cboDVDName->HandleSelectionChange(OnCboDVDNameSelChg, this);
 //	this->cboDVDName->HandleTextChange(OnCboDVDNameTextChg, this);
@@ -1439,19 +1439,19 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->cboDVDType->SetRect(64, 121, 121, 21, false);
 	this->cboDVDType->AddItem(CSTR("ROM5"), 0);
 	this->cboDVDType->AddItem(CSTR("ROM9"), 0);
-	NEW_CLASS(this->btnAllFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"All File Same Category"));
+	NEW_CLASS(this->btnAllFile, UI::GUIButton(ui, this->pnlFile, CSTR("All File Same Category")));
 	this->btnAllFile->SetRect(24, 217, 136, 25, false);
 	this->btnAllFile->HandleButtonClick(OnAllFileClicked, this);
-	NEW_CLASS(this->btnRemoveFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"&Remove File"));
+	NEW_CLASS(this->btnRemoveFile, UI::GUIButton(ui, this->pnlFile, CSTR("&Remove File")));
 	this->btnRemoveFile->SetRect(24, 251, 88, 25, false);
 	this->btnRemoveFile->HandleButtonClick(OnRemoveFileClicked, this);
-	NEW_CLASS(this->btnBuildMovie, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Build Movie"));
+	NEW_CLASS(this->btnBuildMovie, UI::GUIButton(ui, this->pnlFile, CSTR("Build Movie")));
 	this->btnBuildMovie->SetRect(128, 251, 75, 25, false);
 	NEW_CLASS(this->lblSectorSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Sector Size"));
 	this->lblSectorSize->SetRect(16, 277, 72, 25, false);
 	NEW_CLASS(this->txtSectorSize, UI::GUITextBox(ui, this->pnlFile, CSTR("231000")));
 	this->txtSectorSize->SetRect(96, 277, 100, 20, false);
-	NEW_CLASS(this->btnSectorSize, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Apply"));
+	NEW_CLASS(this->btnSectorSize, UI::GUIButton(ui, this->pnlFile, CSTR("Apply")));
 	this->btnSectorSize->SetRect(120, 303, 75, 25, false);
 	this->btnSectorSize->HandleButtonClick(OnSectorSizeClicked, this);
 	NEW_CLASS(this->lbFileName, UI::GUIListBox(ui, this, false));
@@ -1461,12 +1461,13 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->pnlFile->SetEnabled(false);
 
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	dt.ToString(sbuff, "yyyy-MM-dd");
-    this->txtDate->SetText(sbuff);
+	sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+    this->txtDate->SetText(CSTRP(sbuff, sptr));
 
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::CategoryInfo*> cateList;
 	SSWR::DiscDB::DiscDBEnv::CategoryInfo *cate;
@@ -1492,9 +1493,9 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 		if (reg->GetValueStr(L"DiscType", wbuff))
 		{
 			
-			Text::StrWChar_UTF8(sbuff, wbuff);
-			this->txtDiscType->SetText(sbuff);
-			const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *discType = this->env->GetDiscType(sbuff);
+			sptr = Text::StrWChar_UTF8(sbuff, wbuff);
+			this->txtDiscType->SetText(CSTRP(sbuff, sptr));
+			const SSWR::DiscDB::DiscDBEnv::DiscTypeInfo *discType = this->env->GetDiscType(CSTRP(sbuff, sptr));
 			if (discType)
 			{
 				i = this->lbBrand->GetCount();

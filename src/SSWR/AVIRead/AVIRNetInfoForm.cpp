@@ -15,67 +15,68 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 	Net::ConnectionInfo::ConnectionType connType;
 	if (connInfo)
 	{
-		connInfo->GetName(sbuff);
-		me->txtAdaptorName->SetText(sbuff);
-		connInfo->GetDescription(sbuff);
-		me->txtAdaptorDesc->SetText(sbuff);
-		connInfo->GetDNSSuffix(sbuff);
-		me->txtAdaptorDNSSuffix->SetText(sbuff);
+		sptr = connInfo->GetName(sbuff);
+		me->txtAdaptorName->SetText(CSTRP(sbuff, sptr));
+		sptr = connInfo->GetDescription(sbuff);
+		me->txtAdaptorDesc->SetText(CSTRP(sbuff, sptr));
+		sptr = connInfo->GetDNSSuffix(sbuff);
+		me->txtAdaptorDNSSuffix->SetText(CSTRP(sbuff, sptr));
 		connType = connInfo->GetConnectionType();
 		switch (connType)
 		{
 		case Net::ConnectionInfo::CT_DIALUP:
-			me->txtAdaptorConnType->SetText((const UTF8Char*)"Dial-up");
+			me->txtAdaptorConnType->SetText(CSTR("Dial-up"));
 			break;
 		case Net::ConnectionInfo::CT_ETHERNET:
-			me->txtAdaptorConnType->SetText((const UTF8Char*)"Ethernet");
+			me->txtAdaptorConnType->SetText(CSTR("Ethernet"));
 			break;
 		case Net::ConnectionInfo::CT_LOOPBACK:
-			me->txtAdaptorConnType->SetText((const UTF8Char*)"Loopback");
+			me->txtAdaptorConnType->SetText(CSTR("Loopback"));
 			break;
 		case Net::ConnectionInfo::CT_WIFI:
-			me->txtAdaptorConnType->SetText((const UTF8Char*)"WIFI");
+			me->txtAdaptorConnType->SetText(CSTR("WIFI"));
 			break;
 		case Net::ConnectionInfo::CT_UNKNOWN:
 		default:
-			me->txtAdaptorConnType->SetText((const UTF8Char*)"Unknown");
+			me->txtAdaptorConnType->SetText(CSTR("Unknown"));
 			break;
 		}
-		Text::StrInt32(sbuff, (Int32)connInfo->GetMTU());
-		me->txtAdaptorMTU->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, (Int32)connInfo->GetMTU());
+		me->txtAdaptorMTU->SetText(CSTRP(sbuff, sptr));
 		i = connInfo->GetPhysicalAddress(buff, 16);
 		if (i > 0)
 		{
-			Text::StrHexBytes(sbuff, buff, i, ':');
+			sptr = Text::StrHexBytes(sbuff, buff, i, ':');
 		}
 		else
 		{
 			sbuff[0] = 0;
+			sptr = sbuff;
 		}
-		me->txtAdaptorPhysicalAddr->SetText(sbuff);
+		me->txtAdaptorPhysicalAddr->SetText(CSTRP(sbuff, sptr));
 		switch (connInfo->GetConnectionStatus())
 		{
 		case Net::ConnectionInfo::CS_DORMANT:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Dormant");
+			me->txtAdaptorMediaState->SetText(CSTR("Dormant"));
 			break;
 		case Net::ConnectionInfo::CS_DOWN:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Down");
+			me->txtAdaptorMediaState->SetText(CSTR("Down"));
 			break;
 		case Net::ConnectionInfo::CS_LOWERLAYERDOWN:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Lower Layer Down");
+			me->txtAdaptorMediaState->SetText(CSTR("Lower Layer Down"));
 			break;
 		case Net::ConnectionInfo::CS_NOTPRESENT:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Not Present");
+			me->txtAdaptorMediaState->SetText(CSTR("Not Present"));
 			break;
 		case Net::ConnectionInfo::CS_TESTING:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Testing");
+			me->txtAdaptorMediaState->SetText(CSTR("Testing"));
 			break;
 		case Net::ConnectionInfo::CS_UP:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Up");
+			me->txtAdaptorMediaState->SetText(CSTR("Up"));
 			break;
 		case Net::ConnectionInfo::CS_UNKNOWN:
 		default:
-			me->txtAdaptorMediaState->SetText((const UTF8Char*)"Unknown");
+			me->txtAdaptorMediaState->SetText(CSTR("Unknown"));
 			break;
 		}
 
@@ -89,12 +90,12 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		ipAddr = connInfo->GetDefaultGW();
 		if (ipAddr)
 		{
-			Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
-			me->txtAdaptorGW->SetText(sbuff);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipAddr);
+			me->txtAdaptorGW->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			me->txtAdaptorGW->SetText((const UTF8Char*)"");
+			me->txtAdaptorGW->SetText(CSTR(""));
 		}
 		me->lbAdaptorDNS->ClearItems();
 		i = 0;
@@ -107,36 +108,36 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		if (connInfo->IsDhcpEnabled())
 		{
 			Data::DateTime *dt;
-			me->txtAdaptorDHCPEnable->SetText((const UTF8Char*)"Yes");
-			Net::SocketUtil::GetIPv4Name(sbuff, connInfo->GetDhcpServer());
-			me->txtAdaptorDHCPServer->SetText(sbuff);
+			me->txtAdaptorDHCPEnable->SetText(CSTR("Yes"));
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, connInfo->GetDhcpServer());
+			me->txtAdaptorDHCPServer->SetText(CSTRP(sbuff, sptr));
 			dt = connInfo->GetDhcpLeaseTime();
 			if (dt == 0)
 			{
-				me->txtAdaptorDHCPLeaseTime->SetText((const UTF8Char*)"");
+				me->txtAdaptorDHCPLeaseTime->SetText(CSTR(""));
 			}
 			else 
 			{
-				dt->ToString(sbuff);
-				me->txtAdaptorDHCPLeaseTime->SetText(sbuff);
+				sptr = dt->ToString(sbuff);
+				me->txtAdaptorDHCPLeaseTime->SetText(CSTRP(sbuff, sptr));
 			}
 			dt = connInfo->GetDhcpLeaseExpire();
 			if (dt == 0)
 			{
-				me->txtAdaptorDHCPLeaseExpire->SetText((const UTF8Char*)"");
+				me->txtAdaptorDHCPLeaseExpire->SetText(CSTR(""));
 			}
 			else
 			{
-				dt->ToString(sbuff);
-				me->txtAdaptorDHCPLeaseExpire->SetText(sbuff);
+				sptr = dt->ToString(sbuff);
+				me->txtAdaptorDHCPLeaseExpire->SetText(CSTRP(sbuff, sptr));
 			}
 		}
 		else
 		{
-			me->txtAdaptorDHCPEnable->SetText((const UTF8Char*)"No");
-			me->txtAdaptorDHCPServer->SetText((const UTF8Char*)"");
-			me->txtAdaptorDHCPLeaseTime->SetText((const UTF8Char*)"");
-			me->txtAdaptorDHCPLeaseExpire->SetText((const UTF8Char*)"");
+			me->txtAdaptorDHCPEnable->SetText(CSTR("No"));
+			me->txtAdaptorDHCPServer->SetText(CSTR(""));
+			me->txtAdaptorDHCPLeaseTime->SetText(CSTR(""));
+			me->txtAdaptorDHCPLeaseExpire->SetText(CSTR(""));
 		}
 	}
 }
@@ -179,179 +180,182 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnPortClicked(void *userObj)
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateIPStats()
 {
 	UTF8Char sbuff[12];
+	UTF8Char *sptr;
 	Net::SocketFactory::IPInfo info;
 	if (this->core->GetSocketFactory()->GetIPInfo(&info))
 	{
-		Text::StrUInt32(sbuff, info.dwForwarding);
-		this->txtIPStatForwarding->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwDefaultTTL);
-		this->txtIPStatDefTTL->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInReceives);
-		this->txtIPStatNRecv->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInHdrErrors);
-		this->txtIPStatNHdrError->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInAddrErrors);
-		this->txtIPStatNAddrError->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwForwDatagrams);
-		this->txtIPStatNForwDatag->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInUnknownProtos);
-		this->txtIPStatNUnkProtos->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInDiscards);
-		this->txtIPStatNDiscard->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInDelivers);
-		this->txtIPStatNDeliver->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutRequests);
-		this->txtIPStatNOutRequest->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwRoutingDiscards);
-		this->txtIPStatNRoutingDiscard->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutDiscards);
-		this->txtIPStatNOutDiscard->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutNoRoutes);
-		this->txtIPStatNOutNoRoute->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwReasmTimeout);
-		this->txtIPStatReasmTimeout->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwReasmReqds);
-		this->txtIPStatNReasmReqds->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwReasmOks);
-		this->txtIPStatNReasmOk->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwReasmFails);
-		this->txtIPStatNReasmFail->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwFragOks);
-		this->txtIPStatNFragOksl->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwFragFails);
-		this->txtIPStatNFragFail->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwFragCreates);
-		this->txtIPStatNFragCreate->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNumIf);
-		this->txtIPStatNIf->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNumAddr);
-		this->txtIPStatNAddr->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNumRoutes);
-		this->txtIPStatNRoute->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, info.dwForwarding);
+		this->txtIPStatForwarding->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwDefaultTTL);
+		this->txtIPStatDefTTL->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInReceives);
+		this->txtIPStatNRecv->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInHdrErrors);
+		this->txtIPStatNHdrError->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInAddrErrors);
+		this->txtIPStatNAddrError->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwForwDatagrams);
+		this->txtIPStatNForwDatag->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInUnknownProtos);
+		this->txtIPStatNUnkProtos->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInDiscards);
+		this->txtIPStatNDiscard->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInDelivers);
+		this->txtIPStatNDeliver->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutRequests);
+		this->txtIPStatNOutRequest->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwRoutingDiscards);
+		this->txtIPStatNRoutingDiscard->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutDiscards);
+		this->txtIPStatNOutDiscard->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutNoRoutes);
+		this->txtIPStatNOutNoRoute->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwReasmTimeout);
+		this->txtIPStatReasmTimeout->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwReasmReqds);
+		this->txtIPStatNReasmReqds->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwReasmOks);
+		this->txtIPStatNReasmOk->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwReasmFails);
+		this->txtIPStatNReasmFail->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwFragOks);
+		this->txtIPStatNFragOksl->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwFragFails);
+		this->txtIPStatNFragFail->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwFragCreates);
+		this->txtIPStatNFragCreate->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNumIf);
+		this->txtIPStatNIf->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNumAddr);
+		this->txtIPStatNAddr->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNumRoutes);
+		this->txtIPStatNRoute->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtIPStatForwarding->SetText((const UTF8Char*)"");
-		this->txtIPStatDefTTL->SetText((const UTF8Char*)"");
-		this->txtIPStatNRecv->SetText((const UTF8Char*)"");
-		this->txtIPStatNHdrError->SetText((const UTF8Char*)"");
-		this->txtIPStatNAddrError->SetText((const UTF8Char*)"");
-		this->txtIPStatNForwDatag->SetText((const UTF8Char*)"");
-		this->txtIPStatNUnkProtos->SetText((const UTF8Char*)"");
-		this->txtIPStatNDiscard->SetText((const UTF8Char*)"");
-		this->txtIPStatNDeliver->SetText((const UTF8Char*)"");
-		this->txtIPStatNOutRequest->SetText((const UTF8Char*)"");
-		this->txtIPStatNRoutingDiscard->SetText((const UTF8Char*)"");
-		this->txtIPStatNOutDiscard->SetText((const UTF8Char*)"");
-		this->txtIPStatNOutNoRoute->SetText((const UTF8Char*)"");
-		this->txtIPStatReasmTimeout->SetText((const UTF8Char*)"");
-		this->txtIPStatNReasmReqds->SetText((const UTF8Char*)"");
-		this->txtIPStatNReasmOk->SetText((const UTF8Char*)"");
-		this->txtIPStatNReasmFail->SetText((const UTF8Char*)"");
-		this->txtIPStatNFragOksl->SetText((const UTF8Char*)"");
-		this->txtIPStatNFragFail->SetText((const UTF8Char*)"");
-		this->txtIPStatNFragCreate->SetText((const UTF8Char*)"");
-		this->txtIPStatNIf->SetText((const UTF8Char*)"");
-		this->txtIPStatNAddr->SetText((const UTF8Char*)"");
-		this->txtIPStatNRoute->SetText((const UTF8Char*)"");
+		this->txtIPStatForwarding->SetText(CSTR(""));
+		this->txtIPStatDefTTL->SetText(CSTR(""));
+		this->txtIPStatNRecv->SetText(CSTR(""));
+		this->txtIPStatNHdrError->SetText(CSTR(""));
+		this->txtIPStatNAddrError->SetText(CSTR(""));
+		this->txtIPStatNForwDatag->SetText(CSTR(""));
+		this->txtIPStatNUnkProtos->SetText(CSTR(""));
+		this->txtIPStatNDiscard->SetText(CSTR(""));
+		this->txtIPStatNDeliver->SetText(CSTR(""));
+		this->txtIPStatNOutRequest->SetText(CSTR(""));
+		this->txtIPStatNRoutingDiscard->SetText(CSTR(""));
+		this->txtIPStatNOutDiscard->SetText(CSTR(""));
+		this->txtIPStatNOutNoRoute->SetText(CSTR(""));
+		this->txtIPStatReasmTimeout->SetText(CSTR(""));
+		this->txtIPStatNReasmReqds->SetText(CSTR(""));
+		this->txtIPStatNReasmOk->SetText(CSTR(""));
+		this->txtIPStatNReasmFail->SetText(CSTR(""));
+		this->txtIPStatNFragOksl->SetText(CSTR(""));
+		this->txtIPStatNFragFail->SetText(CSTR(""));
+		this->txtIPStatNFragCreate->SetText(CSTR(""));
+		this->txtIPStatNIf->SetText(CSTR(""));
+		this->txtIPStatNAddr->SetText(CSTR(""));
+		this->txtIPStatNRoute->SetText(CSTR(""));
 	}
 }
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateTCPStats()
 {
 	UTF8Char sbuff[12];
+	UTF8Char *sptr;
 	Net::SocketFactory::TCPInfo info;
 	if (this->core->GetSocketFactory()->GetTCPInfo(&info))
 	{
 		switch (info.dwRtoAlgorithm)
 		{
 		case 2: //MIB_TCP_RTO_CONSTANT
-			this->txtTCPStatRtoAlgorithm->SetText((const UTF8Char*)"Constant Time-out");
+			this->txtTCPStatRtoAlgorithm->SetText(CSTR("Constant Time-out"));
 			break;
 		case 3: //MIB_TCP_RTO_RSRE
-			this->txtTCPStatRtoAlgorithm->SetText((const UTF8Char*)"MIL-STD-1778 Appendix B");
+			this->txtTCPStatRtoAlgorithm->SetText(CSTR("MIL-STD-1778 Appendix B"));
 			break;
 		case 4: //MIB_TCP_RTO_VANJ
-			this->txtTCPStatRtoAlgorithm->SetText((const UTF8Char*)"Van Jacobson's Algorithm");
+			this->txtTCPStatRtoAlgorithm->SetText(CSTR("Van Jacobson's Algorithm"));
 			break;
 		case 1: //MIB_TCP_RTO_OTHER
 		default:
-			this->txtTCPStatRtoAlgorithm->SetText((const UTF8Char*)"Other");
+			this->txtTCPStatRtoAlgorithm->SetText(CSTR("Other"));
 			break;
 		}
-		Text::StrUInt32(sbuff, info.dwRtoMin);
-		this->txtTCPStatRtoMin->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwRtoMax);
-		this->txtTCPStatRtoMax->SetText(sbuff);
-		Text::StrInt32(sbuff, info.dwMaxConn);
-		this->txtTCPStatMaxConn->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwActiveOpens);
-		this->txtTCPStatActiveOpens->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwPassiveOpens);
-		this->txtTCPStatPassiveOpens->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwAttemptFails);
-		this->txtTCPStatAttemptFails->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwEstabResets);
-		this->txtTCPStatEstabResets->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwCurrEstab);
-		this->txtTCPStatCurrEstab->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInSegs);
-		this->txtTCPStatInSegs->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutSegs);
-		this->txtTCPStatOutSegs->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwRetransSegs);
-		this->txtTCPStatRetransSeg->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInErrs);
-		this->txtTCPStatInErrs->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutRsts);
-		this->txtTCPStatOutRsts->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNumConns);
-		this->txtTCPStatNumConns->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, info.dwRtoMin);
+		this->txtTCPStatRtoMin->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwRtoMax);
+		this->txtTCPStatRtoMax->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, info.dwMaxConn);
+		this->txtTCPStatMaxConn->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwActiveOpens);
+		this->txtTCPStatActiveOpens->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwPassiveOpens);
+		this->txtTCPStatPassiveOpens->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwAttemptFails);
+		this->txtTCPStatAttemptFails->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwEstabResets);
+		this->txtTCPStatEstabResets->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwCurrEstab);
+		this->txtTCPStatCurrEstab->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInSegs);
+		this->txtTCPStatInSegs->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutSegs);
+		this->txtTCPStatOutSegs->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwRetransSegs);
+		this->txtTCPStatRetransSeg->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInErrs);
+		this->txtTCPStatInErrs->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutRsts);
+		this->txtTCPStatOutRsts->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNumConns);
+		this->txtTCPStatNumConns->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtTCPStatRtoAlgorithm->SetText((const UTF8Char*)"");
-		this->txtTCPStatRtoMin->SetText((const UTF8Char*)"");
-		this->txtTCPStatRtoMax->SetText((const UTF8Char*)"");
-		this->txtTCPStatMaxConn->SetText((const UTF8Char*)"");
-		this->txtTCPStatActiveOpens->SetText((const UTF8Char*)"");
-		this->txtTCPStatPassiveOpens->SetText((const UTF8Char*)"");
-		this->txtTCPStatAttemptFails->SetText((const UTF8Char*)"");
-		this->txtTCPStatEstabResets->SetText((const UTF8Char*)"");
-		this->txtTCPStatCurrEstab->SetText((const UTF8Char*)"");
-		this->txtTCPStatInSegs->SetText((const UTF8Char*)"");
-		this->txtTCPStatOutSegs->SetText((const UTF8Char*)"");
-		this->txtTCPStatRetransSeg->SetText((const UTF8Char*)"");
-		this->txtTCPStatInErrs->SetText((const UTF8Char*)"");
-		this->txtTCPStatOutRsts->SetText((const UTF8Char*)"");
-		this->txtTCPStatNumConns->SetText((const UTF8Char*)"");
+		this->txtTCPStatRtoAlgorithm->SetText(CSTR(""));
+		this->txtTCPStatRtoMin->SetText(CSTR(""));
+		this->txtTCPStatRtoMax->SetText(CSTR(""));
+		this->txtTCPStatMaxConn->SetText(CSTR(""));
+		this->txtTCPStatActiveOpens->SetText(CSTR(""));
+		this->txtTCPStatPassiveOpens->SetText(CSTR(""));
+		this->txtTCPStatAttemptFails->SetText(CSTR(""));
+		this->txtTCPStatEstabResets->SetText(CSTR(""));
+		this->txtTCPStatCurrEstab->SetText(CSTR(""));
+		this->txtTCPStatInSegs->SetText(CSTR(""));
+		this->txtTCPStatOutSegs->SetText(CSTR(""));
+		this->txtTCPStatRetransSeg->SetText(CSTR(""));
+		this->txtTCPStatInErrs->SetText(CSTR(""));
+		this->txtTCPStatOutRsts->SetText(CSTR(""));
+		this->txtTCPStatNumConns->SetText(CSTR(""));
 	}
 }
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateUDPStats()
 {
 	UTF8Char sbuff[12];
+	UTF8Char *sptr;
 	Net::SocketFactory::UDPInfo info;
 	if (this->core->GetSocketFactory()->GetUDPInfo(&info))
 	{
-		Text::StrUInt32(sbuff, info.dwInDatagrams);
-		this->txtUDPStatInDatagrams->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNoPorts);
-		this->txtUDPStatNoPorts->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwInErrors);
-		this->txtUDPStatInErrors->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwOutDatagrams);
-		this->txtUDPStatOutDatagrams->SetText(sbuff);
-		Text::StrUInt32(sbuff, info.dwNumAddrs);
-		this->txtUDPStatNumAddrs->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, info.dwInDatagrams);
+		this->txtUDPStatInDatagrams->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNoPorts);
+		this->txtUDPStatNoPorts->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwInErrors);
+		this->txtUDPStatInErrors->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwOutDatagrams);
+		this->txtUDPStatOutDatagrams->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, info.dwNumAddrs);
+		this->txtUDPStatNumAddrs->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtUDPStatInDatagrams->SetText((const UTF8Char*)"");
-		this->txtUDPStatNoPorts->SetText((const UTF8Char*)"");
-		this->txtUDPStatInErrors->SetText((const UTF8Char*)"");
-		this->txtUDPStatOutDatagrams->SetText((const UTF8Char*)"");
-		this->txtUDPStatNumAddrs->SetText((const UTF8Char*)"");
+		this->txtUDPStatInDatagrams->SetText(CSTR(""));
+		this->txtUDPStatNoPorts->SetText(CSTR(""));
+		this->txtUDPStatInErrors->SetText(CSTR(""));
+		this->txtUDPStatOutDatagrams->SetText(CSTR(""));
+		this->txtUDPStatNumAddrs->SetText(CSTR(""));
 	}
 }
 
@@ -510,7 +514,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
 		Net::WirelessLAN::BSSInfo *bss;
 		interf->GetBSSList(&bssList);
-		const UTF8Char *csptr;
+		Text::String *s;
 		this->lvWIFIBSS->ClearItems();
 		i = 0;
 		j = bssList.GetCount();
@@ -530,17 +534,17 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 			this->lvWIFIBSS->SetSubItem(k, 5, sbuff);
 			Text::StrUInt32(sbuff, bss->GetLinkQuality());
 			this->lvWIFIBSS->SetSubItem(k, 6, sbuff);
-			if ((csptr = bss->GetManuf()) != 0)
+			if ((s = bss->GetManuf()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 7, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 7, s);
 			}
-			if ((csptr = bss->GetModel()) != 0)
+			if ((s = bss->GetModel()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 8, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 8, s);
 			}
-			if ((csptr = bss->GetSN()) != 0)
+			if ((s = bss->GetSN()) != 0)
 			{
-				this->lvWIFIBSS->SetSubItem(k, 9, csptr);
+				this->lvWIFIBSS->SetSubItem(k, 9, s);
 			}
 			DEL_CLASS(bss);
 			i++;
@@ -666,7 +670,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Network Info");
+	this->SetText(CSTR("Network Info"));
 
 	this->core = core;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
@@ -987,7 +991,7 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
 	this->pnlPortInfo->SetRect(0, 0, 100, 40, false);
 	this->pnlPortInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnPortRefresh, UI::GUIButton(ui, this->pnlPortInfo, (const UTF8Char*)"&Refresh"));
+	NEW_CLASS(this->btnPortRefresh, UI::GUIButton(ui, this->pnlPortInfo, CSTR("&Refresh")));
 	this->btnPortRefresh->SetRect(8, 8, 75, 23, false);
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
 	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, (const UTF8Char*)"Auto Refresh", false));

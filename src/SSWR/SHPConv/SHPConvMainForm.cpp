@@ -21,14 +21,39 @@
 #include "UI/MessageDialog.h"
 #define LATSCALE 200000
 
-const Char *SSWR::SHPConv::SHPConvMainForm::typeName[] = {"Null Shape", "Point", "", "PolyLine",
-	"", "Polygon", "", "",
-	"MultiPoint", "", "", "PointZ",
-	"", "PolyLineZ", "", "PolygonZ",
-	"", "", "MultiPointZ", "",
-	"", "PointM", "", "PolyLineM",
-	"", "PolygonM", "", "",
-	"MultiPointM", "", "", "MultiPatch"};
+Text::CString SSWR::SHPConv::SHPConvMainForm::typeName[] = {
+	CSTR("Null Shape"),
+	CSTR("Point"),
+	CSTR(""),
+	CSTR("PolyLine"),
+	CSTR(""),
+	CSTR("Polygon"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("MultiPoint"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("PointZ"),
+	CSTR(""),
+	CSTR("PolyLineZ"),
+	CSTR(""),
+	CSTR("PolygonZ"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("MultiPointZ"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("PointM"),
+	CSTR(""),
+	CSTR("PolyLineM"),
+	CSTR(""),
+	CSTR("PolygonM"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("MultiPointM"),
+	CSTR(""),
+	CSTR(""),
+	CSTR("MultiPatch")};
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnDirectoryClicked(void *userObj)
 {
@@ -49,8 +74,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
 		UTF8Char sbuff[16];
-		Text::StrInt32(sbuff, me->LoadShape(ofd->GetFileName()->ToCString(), true));
-		me->txtBlkScale->SetText(sbuff);
+		UTF8Char *sptr;
+		sptr = Text::StrInt32(sbuff, me->LoadShape(ofd->GetFileName()->ToCString(), true));
+		me->txtBlkScale->SetText(CSTRP(sbuff, sptr));
 	}
 	DEL_CLASS(ofd);
 }
@@ -59,8 +85,9 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnLangSelChg(void *userObj)
 {
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrOSInt(sbuff, (OSInt)me->lstLang->GetSelectedItem());
-	me->txtCodePage->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrOSInt(sbuff, (OSInt)me->lstLang->GetSelectedItem());
+	me->txtCodePage->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
@@ -74,7 +101,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 	UOSInt j;
 	if (indices.GetCount() <= 0)
 	{
-		me->txtLabel->SetText((const UTF8Char*)"");
+		me->txtLabel->SetText(CSTR(""));
 	}
 	else
 	{
@@ -94,7 +121,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnRecordsSelChg(void *userObj)
 			sptr = Text::StrConcatC(sptr, UTF8STRC("%>"));
 			i++;
 		}
-		me->txtLabel->SetText(sbuff);
+		me->txtLabel->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -277,7 +304,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		newFilters.Add(filter);
 		sb2.ClearStr();
 		sb2.AppendSlow(outFilePrefix);
-		sb2.AppendChar('_', 1);
+		sb2.AppendUTF8Char('_');
 		sb2.AppendC(sb.ToString(), sb.GetLength());
 		shpType = this->ConvertShp(sourceFile, sb2.ToString(), dbCols, blkScale, &newFilters, progress, dbCols2);
 		newFilters.RemoveAt(newFilters.GetCount() - 1);
@@ -404,7 +431,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Reading "));
 			sb.Append(sourceFile);
-			progress->ProgressStart(sb.ToString(), nRecords);
+			progress->ProgressStart(sb.ToCString(), nRecords);
 
 			while (tRec < nRecords)
 			{
@@ -666,7 +693,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Writing "));
 			sb.Append(sourceFile);
-			progress->ProgressStart(sb.ToString(), blks.GetCount());
+			progress->ProgressStart(sb.ToCString(), blks.GetCount());
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
 			WriteInt32(&buff[4], blkScale);
@@ -820,7 +847,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Reading "));
 			sb.Append(sourceFile);
-			progress->ProgressStart(sb.ToString(), nRecords);
+			progress->ProgressStart(sb.ToCString(), nRecords);
 
 			while (tRec < nRecords)
 			{
@@ -995,7 +1022,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Writing "));
 			sb.Append(sourceFile);
-			progress->ProgressStart(sb.ToString(), blks.GetCount());
+			progress->ProgressStart(sb.ToCString(), blks.GetCount());
 
 			WriteInt32(&buff[0], (Int32)blks.GetCount());
 			WriteInt32(&buff[4], blkScale);
@@ -1144,29 +1171,29 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 		shpType = ReadInt32(&buff[32]);
 		if (updateTxt)
 		{
-			Text::StrInt32(sbuff, ReadMInt32(&buff[24]) * 2);
-			this->txtFileLength->SetText(sbuff);
-			Text::StrInt32(sbuff, ReadInt32(&buff[28]));
-			this->txtVersion->SetText(sbuff);
-			this->txtShpType->SetText((const UTF8Char*)this->typeName[ReadInt32(&buff[32])]);
-			Text::StrDouble(sbuff, xMin);
-			this->txtXMin->SetText(sbuff);
-			Text::StrDouble(sbuff, yMin);
-			this->txtYMin->SetText(sbuff);
-			Text::StrDouble(sbuff, xMax);
-			this->txtXMax->SetText(sbuff);
-			Text::StrDouble(sbuff, yMax);
-			this->txtYMax->SetText(sbuff);
+			sptr = Text::StrInt32(sbuff, ReadMInt32(&buff[24]) * 2);
+			this->txtFileLength->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, ReadInt32(&buff[28]));
+			this->txtVersion->SetText(CSTRP(sbuff, sptr));
+			this->txtShpType->SetText(this->typeName[ReadInt32(&buff[32])]);
+			sptr = Text::StrDouble(sbuff, xMin);
+			this->txtXMin->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, yMin);
+			this->txtYMin->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, xMax);
+			this->txtXMax->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, yMax);
+			this->txtYMax->SetText(CSTRP(sbuff, sptr));
 			this->isGrid80 = (xMin >= 180);
-			Text::StrDouble(sbuff, ReadDouble(&buff[68]));
-			this->txtZMin->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadDouble(&buff[76]));
-			this->txtZMax->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadDouble(&buff[84]));
-			this->txtMMin->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadDouble(&buff[92]));
-			this->txtMMax->SetText(sbuff);
-			this->txtSource->SetText(fileName.v);
+			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[68]));
+			this->txtZMin->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[76]));
+			this->txtZMax->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[84]));
+			this->txtMMin->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadDouble(&buff[92]));
+			this->txtMMax->SetText(CSTRP(sbuff, sptr));
+			this->txtSource->SetText(fileName);
 			this->ClearFilter();
 			this->btnConvert->SetEnabled(true);
 		}
@@ -1195,8 +1222,8 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 				dbOfst++;
 			}
 			dbRecCnt = dbf->GetRowCnt();
-			Text::StrUOSInt(sbuff, dbRecCnt);
-			this->txtRecCnt->SetText(sbuff);
+			sptr = Text::StrUOSInt(sbuff, dbRecCnt);
+			this->txtRecCnt->SetText(CSTRP(sbuff, sptr));
 		}
 		DEL_CLASS(dbf);
 		DEL_CLASS(fd);
@@ -1378,7 +1405,7 @@ Text::String *SSWR::SHPConv::SHPConvMainForm::GetNewDBFName(DB::DBFFile *dbf, Da
 
 SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *deng, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 576, 464, ui)
 {
-	this->SetText((const UTF8Char*)"SHPConv");
+	this->SetText(CSTR("SHPConv"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
@@ -1389,7 +1416,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->lblDirectory->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDirectory->SetRect(120, 8, 232, 20, false);
-	NEW_CLASS(this->btnDirectory, UI::GUIButton(ui, this, (const UTF8Char*)"&Search"));
+	NEW_CLASS(this->btnDirectory, UI::GUIButton(ui, this, CSTR("&Search")));
 	this->btnDirectory->SetRect(360, 8, 75, 23, false);
 	this->btnDirectory->HandleButtonClick(OnDirectoryClicked, this);
 	NEW_CLASS(this->lblSource, UI::GUILabel(ui, this, (const UTF8Char*)"Shape File"));
@@ -1397,7 +1424,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSource->SetReadOnly(true);
 	this->txtSource->SetRect(120, 40, 232, 20, false);
-	NEW_CLASS(this->btnSBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnSBrowse, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnSBrowse->SetRect(360, 40, 75, 23, false);
 	this->btnSBrowse->HandleButtonClick(OnSBrowseClicked, this);
 
@@ -1480,21 +1507,21 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->lblSeperator, UI::GUILabel(ui, this, (const UTF8Char*)"Seperator"));
 	this->lblSeperator->SetRect(16, 344, 75, 25, false);
 	NEW_CLASS(this->cboSeperator, UI::GUIComboBox(ui, this, true));
-	this->cboSeperator->SetText((const UTF8Char*)", ");
+	this->cboSeperator->SetText(CSTR(", "));
 	this->cboSeperator->AddItem(CSTR(", "), 0);
 	this->cboSeperator->AddItem(CSTR(""), 0);
 	this->cboSeperator->AddItem(CSTR("-"), 0);
 	this->cboSeperator->SetRect(104, 344, 96, 21, false);
-	NEW_CLASS(this->btnGroup, UI::GUIButton(ui, this, (const UTF8Char*)"Group"));
+	NEW_CLASS(this->btnGroup, UI::GUIButton(ui, this, CSTR("Group")));
 	this->btnGroup->SetRect(240, 344, 104, 23, false);
 	this->btnGroup->HandleButtonClick(OnGroupClicked, this);
-	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, this, (const UTF8Char*)"Filter"));
+	NEW_CLASS(this->btnFilter, UI::GUIButton(ui, this, CSTR("Filter")));
 	this->btnFilter->SetRect(352, 344, 104, 23, false);
 	this->btnFilter->HandleButtonClick(OnFilterClicked, this);
-	NEW_CLASS(this->btnPreview, UI::GUIButton(ui, this, (const UTF8Char*)"Preview"));
+	NEW_CLASS(this->btnPreview, UI::GUIButton(ui, this, CSTR("Preview")));
 	this->btnPreview->SetRect(240, 368, 104, 23, false);
 	this->btnPreview->HandleButtonClick(OnPreviewClicked, this);
-	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, (const UTF8Char*)"Convert"));
+	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this, CSTR("Convert")));
 	this->btnConvert->SetRect(352, 368, 104, 23, false);
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtLabel, UI::GUITextBox(ui, this, CSTR("")));
@@ -1503,7 +1530,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->lblProgress->SetRect(0, 416, 570, 23, false);
 	this->lblProgress->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 
-	this->progressName = 0;
+	this->progressName = CSTR_NULL;
 	this->totalVal = 1;
 	NEW_CLASS(this->globalFilters, Data::ArrayList<MapFilter*>());
 	NEW_CLASS(this->hkscsConv, Text::HKSCSFix());
@@ -1562,7 +1589,7 @@ void SSWR::SHPConv::SHPConvMainForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ProgressStart(const UTF8Char *name, UInt64 count)
+void SSWR::SHPConv::SHPConvMainForm::ProgressStart(Text::CString name, UInt64 count)
 {
 	this->progressName = name;
 	this->totalVal = count;
@@ -1572,9 +1599,9 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 new
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr = sbuff;
-	if (this->progressName)
+	if (this->progressName.leng)
 	{
-		sptr = Text::StrConcat(sptr, this->progressName);
+		sptr = this->progressName.ConcatTo(sptr);
 	}
 	*sptr++ = ' ';
 	sptr = Text::StrUInt64(sptr, currCount);
@@ -1582,13 +1609,13 @@ void SSWR::SHPConv::SHPConvMainForm::ProgressUpdate(UInt64 currCount, UInt64 new
 	sptr = Text::StrUInt64(sptr, this->totalVal);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" ("));
 	sptr = Text::StrUInt32(sptr, (UInt32)(currCount * 100 / totalVal));
-	this->lblProgress->SetText(sbuff);
+	this->lblProgress->SetText(CSTRP(sbuff, sptr));
 	this->ui->ProcessMessages();
 }
 
 void SSWR::SHPConv::SHPConvMainForm::ProgressEnd()
 {
-	this->progressName = 0;
+	this->progressName = CSTR_NULL;
 	this->totalVal = 1;
-	this->lblProgress->SetText((const UTF8Char*)"");
+	this->lblProgress->SetText(CSTR(""));
 }

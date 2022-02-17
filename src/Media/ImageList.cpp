@@ -304,9 +304,9 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 			if (vt == VT_FIRMWARE_VERSION)
 			{
 				sb->AppendI32(v >> 24);
-				sb->AppendChar('.', 1);
+				sb->AppendUTF8Char('.');
 				sb->AppendI32((v >> 16) & 0xff);
-				sb->AppendChar('.', 1);
+				sb->AppendUTF8Char('.');
 				sb->AppendI32(v & 0xffff);
 			}
 			else

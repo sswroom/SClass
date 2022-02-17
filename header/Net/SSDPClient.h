@@ -14,12 +14,12 @@ namespace Net
 		struct SSDPService
 		{
 			Int64 time;
-			const UTF8Char *location;
-			const UTF8Char *opt;
-			const UTF8Char *server;
-			const UTF8Char *st;
-			const UTF8Char *usn;
-			const UTF8Char *userAgent;
+			Text::String *location;
+			Text::String *opt;
+			Text::String *server;
+			Text::String *st;
+			Text::String *usn;
+			Text::String *userAgent;
 		};
 
 		struct SSDPDevice
@@ -30,17 +30,17 @@ namespace Net
 
 		struct SSDPRoot
 		{
-			const UTF8Char *udn;
-			const UTF8Char *friendlyName;
-			const UTF8Char *manufacturer;
-			const UTF8Char *manufacturerURL;
-			const UTF8Char *modelName;
-			const UTF8Char *modelNumber;
-			const UTF8Char *modelURL;
-			const UTF8Char *serialNumber;
-			const UTF8Char *presentationURL;
-			const UTF8Char *deviceType;
-			const UTF8Char *deviceURL;
+			Text::String *udn;
+			Text::String *friendlyName;
+			Text::String *manufacturer;
+			Text::String *manufacturerURL;
+			Text::String *modelName;
+			Text::String *modelNumber;
+			Text::String *modelURL;
+			Text::String *serialNumber;
+			Text::String *presentationURL;
+			Text::String *deviceType;
+			Text::String *deviceURL;
 		};
 	private:
 		Net::UDPServer *udp;

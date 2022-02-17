@@ -467,7 +467,7 @@ Bool Data::QueryConditions::StringInCondition::ToWhereClause(Text::StringBuilder
 		{
 			MemFree(sptrTmp);
 		}
-		sb->AppendChar(')', 1);
+		sb->AppendUTF8Char(')');
 		return true;
 	}
 }
@@ -535,9 +535,9 @@ Bool Data::QueryConditions::StringContainsCondition::ToWhereClause(Text::StringB
 	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" like "));
 	Text::StringBuilderUTF8 sb2;
-	sb2.AppendChar('%', 1);
+	sb2.AppendUTF8Char('%');
 	sb2.Append(this->val);
-	sb2.AppendChar('%', 1);
+	sb2.AppendUTF8Char('%');
 	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(sb2.ToString(), svrType);
 	if (size < 512)
 	{
@@ -807,9 +807,9 @@ Bool Data::QueryConditions::InnerCondition::ToWhereClause(Text::StringBuilderUTF
 	}
 	else
 	{
-		sb->AppendChar('(', 1);
+		sb->AppendUTF8Char('(');
 		sb->AppendC(sbTmp.ToString(), sbTmp.GetLength());
-		sb->AppendChar(')', 1);
+		sb->AppendUTF8Char(')');
 		return true;
 	}
 }
@@ -921,7 +921,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 				}
 				else
 				{
-					sb->AppendChar(')', 1);
+					sb->AppendUTF8Char(')');
 					splitType = 2;
 				}
 			}
@@ -941,7 +941,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 					}
 					else if (splitType != 0)
 					{
-						sb->AppendChar('(', 1);
+						sb->AppendUTF8Char('(');
 						splitType = 0;
 					}
 					else
@@ -955,7 +955,7 @@ Bool Data::QueryConditions::ToWhereClause(Text::StringBuilderUTF8 *sb, DB::DBUti
 		}
 		if (splitType == 0)
 		{
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 	}
 	else

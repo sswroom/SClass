@@ -28,9 +28,9 @@ UI::GUILabel::~GUILabel()
 {
 }
 
-void UI::GUILabel::SetText(const UTF8Char *text)
+void UI::GUILabel::SetText(Text::CString text)
 {
-	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text);
+	gtk_label_set_text((GtkLabel*)this->hwnd, (const Char*)text.v);
 }
 
 Text::CString UI::GUILabel::GetObjectClass()

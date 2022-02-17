@@ -735,7 +735,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 	UOSInt k;
 	UOSInt strLen;
 	this->AppendTableName(sb);
-	sb->AppendChar('[', 1);
+	sb->AppendUTF8Char('[');
 	while (i < j)
 	{
 		col = this->table->GetCol(i);
@@ -747,7 +747,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendC(UTF8STRC(", "));
 			}
 			this->AppendVarNameForm(sb, col->GetColName()->v);
-			sb->AppendChar('=', 1);
+			sb->AppendUTF8Char('=');
 			dtype = this->GetDataType(field);
 			if (this->IsFieldNull(field))
 			{
@@ -759,9 +759,9 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 				{
 				case DT_DATETIME:
 					sptr = this->GetFieldDate(field)->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fffzzzz");
-					sb->AppendChar('\"', 1);
+					sb->AppendUTF8Char('\"');
 					sb->AppendP(sbuff, sptr);
-					sb->AppendChar('\"', 1);
+					sb->AppendUTF8Char('\"');
 					break;
 				case DT_BINARY:
 					k = 0;
@@ -817,7 +817,7 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 
 		i++;
 	}
-	sb->AppendChar(']', 1);
+	sb->AppendUTF8Char(']');
 }
 
 void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
@@ -843,11 +843,11 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar((UTF32Char)(c - 0x20), 1);
+				sb->AppendUTF8Char((UTF8Char)(c - 0x20));
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 			}
 			nextCap = false;
 		}
@@ -855,11 +855,11 @@ void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
 		{
 			if (c >= 'A' && c <= 'Z')
 			{
-				sb->AppendChar((UTF32Char)(c + 0x20), 1);
+				sb->AppendUTF8Char((UTF8Char)(c + 0x20));
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 			}
 		}
 	}
@@ -882,11 +882,11 @@ void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *c
 		{
 			if (c >= 'a' && c <= 'z')
 			{
-				sb->AppendChar((UTF32Char)(c - 0x20), 1);
+				sb->AppendUTF8Char((UTF8Char)(c - 0x20));
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 			}
 			nextCap = false;
 		}
@@ -894,11 +894,11 @@ void DB::DBRow::AppendVarNameForm(Text::StringBuilderUTF8 *sb, const UTF8Char *c
 		{
 			if (c >= 'A' && c <= 'Z')
 			{
-				sb->AppendChar((UTF32Char)(c + 0x20), 1);
+				sb->AppendUTF8Char((UTF8Char)(c + 0x20));
 			}
 			else
 			{
-				sb->AppendChar(c, 1);
+				sb->AppendUTF8Char(c);
 			}
 		}
 	}

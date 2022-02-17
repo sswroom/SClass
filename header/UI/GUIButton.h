@@ -19,10 +19,10 @@ namespace UI
 
 		static OSInt __stdcall BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam, OSInt lParam);
 	public:
-		GUIButton(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *txt);
+		GUIButton(GUICore *ui, UI::GUIClientControl *parent, Text::CString txt);
 		virtual ~GUIButton();
 
-		virtual void SetText(const UTF8Char *text);
+		virtual void SetText(Text::CString text);
 		virtual void SetFont(const UTF8Char *name, UOSInt nameLen, Double fontHeightPt, Bool isBold);
 
 		virtual Text::CString GetObjectClass();

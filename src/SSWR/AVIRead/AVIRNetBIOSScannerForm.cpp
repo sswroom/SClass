@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerUpdated(void *user
 SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"NetBIOS Scanner");
+	this->SetText(CSTR("NetBIOS Scanner"));
 
 	this->core = core;
 	this->tableUpdated = false;
@@ -130,7 +130,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->txtTargetAddr->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->chkTargetScan, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Scan IP", false));
 	this->chkTargetScan->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlControl, CSTR("Request")));
 	this->btnRequest->SetRect(104, 28, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 
@@ -166,6 +166,7 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UInt32 ip;
@@ -181,8 +182,8 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 		{
 			netmask = Net::SocketUtil::GetDefNetMaskv4(ip);
 			ip |= ~netmask;
-			Net::SocketUtil::GetIPv4Name(sbuff, ip);
-			this->txtTargetAddr->SetText(sbuff);
+			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+			this->txtTargetAddr->SetText(CSTRP(sbuff, sptr));
 		}
 		DEL_CLASS(connInfo);
 		i++;

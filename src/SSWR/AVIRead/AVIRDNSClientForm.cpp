@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	}
 	sb.ClearStr();
 	Text::SBAppendF64(&sb, t);
-	me->txtRequestTime->SetText(sb.ToString());
+	me->txtRequestTime->SetText(sb.ToCString());
 	DEL_CLASS(clk);
 	DEL_CLASS(dnsCli);
 }
@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.Append(ans->name);
-		me->txtAnsName->SetText(sb.ToString());
+		me->txtAnsName->SetText(sb.ToCString());
 		sptr = Text::StrInt32(sbuff, ans->recType);
 		cstr = Net::DNSClient::TypeGetID(ans->recType);
 		if (cstr.v)
@@ -101,36 +101,36 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnAnswerSelChg(void *userObj)
 			*sptr++ = ')';
 			*sptr = 0;
 		}
-		me->txtAnsType->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->recClass);
-		me->txtAnsClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtAnsTTL->SetText(sbuff);
+		me->txtAnsType->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, ans->recClass);
+		me->txtAnsClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtAnsTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
 			sb.ClearStr();
 			sb.Append(ans->rd);
-			me->txtAnsRD->SetText(sb.ToString());
+			me->txtAnsRD->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtAnsRD->SetText((const UTF8Char*)"");
+			me->txtAnsRD->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtAnsName->SetText((const UTF8Char*)"");
-		me->txtAnsType->SetText((const UTF8Char*)"");
-		me->txtAnsClass->SetText((const UTF8Char*)"");
-		me->txtAnsTTL->SetText((const UTF8Char*)"");
-		me->txtAnsRD->SetText((const UTF8Char*)"");
+		me->txtAnsName->SetText(CSTR(""));
+		me->txtAnsType->SetText(CSTR(""));
+		me->txtAnsClass->SetText(CSTR(""));
+		me->txtAnsTTL->SetText(CSTR(""));
+		me->txtAnsRD->SetText(CSTR(""));
 	}
 }
 
 SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"DNS Client");
+	this->SetText(CSTR("DNS Client"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -158,7 +158,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->cboRequest->AddItem(CSTR("15 - MX (Mail)"), (void*)15);
 	this->cboRequest->AddItem(CSTR("28 - AAAA (IPv6)"), (void*)28);
 	this->cboRequest->SetSelectedIndex(0);
-	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Request"));
+	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("&Request")));
 	this->btnRequest->SetRect(324, 52, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lblRequestTime, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Response Time(sec.)"));
@@ -203,8 +203,9 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	Net::SocketUtil::AddressInfo addr;
 	this->sockf->GetDefDNS(&addr);
 	UTF8Char sbuff[64];
-	Net::SocketUtil::GetAddrName(sbuff, &addr);
-	this->txtServer->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
+	this->txtServer->SetText(CSTRP(sbuff, sptr));
 }
 
 SSWR::AVIRead::AVIRDNSClientForm::~AVIRDNSClientForm()

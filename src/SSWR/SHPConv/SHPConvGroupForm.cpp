@@ -15,7 +15,7 @@ void __stdcall SSWR::SHPConv::SHPConvGroupForm::OnCancelClicked(void *userObj)
 
 SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, UI::GUICore *ui) : UI::GUIForm(parent, 300, 216, ui)
 {
-	this->SetText((const UTF8Char*)"Group");
+	this->SetText(CSTR("Group"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -25,10 +25,10 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, 
 	this->lblGroup->SetRect(8, 0, 100, 23, false);
 	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, this, false));
 	this->lbGroup->SetRect(8, 24, 264, 121, false);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, CSTR("&Ok")));
 	this->btnOk->SetRect(40, 152, 75, 23, false);
 	this->btnOk->HandleButtonClick(OnOkClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(40, 152, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

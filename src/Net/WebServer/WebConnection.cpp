@@ -351,7 +351,7 @@ void Net::WebServer::WebConnection::ProcessTimeout()
 		if (uri)
 		{
 			sb.Append(uri);
-			sb.AppendChar(' ', 1);
+			sb.AppendUTF8Char(' ');
 		}
 	}
 	sb.AppendC(UTF8STRC("Process Timeout"));

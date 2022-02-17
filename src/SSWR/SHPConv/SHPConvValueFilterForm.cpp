@@ -29,7 +29,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnCancelClicked(void *user
 
 SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf) : UI::GUIForm(parent, 256, 152, ui)
 {
-	this->SetText((const UTF8Char*)"Value Filter");
+	this->SetText(CSTR("Value Filter"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -51,10 +51,10 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->lblValue->SetRect(8, 56, 56, 23, false);
 	NEW_CLASS(this->txtValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtValue->SetRect(72, 56, 136, 20, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(24, 96, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(136, 96, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOK);

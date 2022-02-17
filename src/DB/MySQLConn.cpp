@@ -133,7 +133,7 @@ void DB::MySQLConn::GetConnName(Text::StringBuilderUTF8 *sb)
 	sb->Append(this->server);
 	if (this->database)
 	{
-		sb->AppendChar('/', 1);
+		sb->AppendUTF8Char('/');
 		sb->Append(this->database);
 	}
 }
@@ -330,7 +330,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 		sptr = Text::StrConcatC(sbuff, &tableName[i], (UOSInt)j);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
 		sb.AppendP(sptr + 1, sptr2);
-		sb.AppendChar('.', 1);
+		sb.AppendUTF8Char('.');
 		i += j + 1;
 	}
 	if (maxCnt > 0)

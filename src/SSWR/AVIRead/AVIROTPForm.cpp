@@ -15,7 +15,7 @@ void SSWR::AVIRead::AVIROTPForm::RandBytes(UOSInt len)
 	Text::TextBinEnc::Base32Enc b32;
 	random.NextBytes(buff, len);
 	b32.EncodeBin(&sb, buff, len);
-	this->txtKey->SetText(sb.ToString());
+	this->txtKey->SetText(sb.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnKeyRand80Clicked(void *userObj)
@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(void *userObj)
 
 SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"One-Time Password (OTP)");
+	this->SetText(CSTR("One-Time Password (OTP)"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -133,10 +133,10 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lblKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
-	NEW_CLASS(this->btnKeyRand80, UI::GUIButton(ui, this->grpNew, (const UTF8Char*)"Random 80-bit"));
+	NEW_CLASS(this->btnKeyRand80, UI::GUIButton(ui, this->grpNew, CSTR("Random 80-bit")));
 	this->btnKeyRand80->SetRect(404, 28, 75, 23, false);
 	this->btnKeyRand80->HandleButtonClick(OnKeyRand80Clicked, this);
-	NEW_CLASS(this->btnKeyRand160, UI::GUIButton(ui, this->grpNew, (const UTF8Char*)"Random 160-bit"));
+	NEW_CLASS(this->btnKeyRand160, UI::GUIButton(ui, this->grpNew, CSTR("Random 160-bit")));
 	this->btnKeyRand160->SetRect(484, 28, 75, 23, false);
 	this->btnKeyRand160->HandleButtonClick(OnKeyRand160Clicked, this);
 	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Type"));
@@ -146,7 +146,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	this->cboType->AddItem(CSTR("Counter-Based (HOTP)"), 0);
 	this->cboType->AddItem(CSTR("Time-Based (TOTP)"), 0);
 	this->cboType->SetSelectedIndex(0);
-	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this->grpNew, (const UTF8Char*)"New"));
+	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this->grpNew, CSTR("New")));
 	this->btnNew->SetRect(104, 76, 75, 23, false);
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
 	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));

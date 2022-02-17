@@ -251,11 +251,11 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 		sb.Append(IO::EXEFile::GetResourceTypeName(res->rt));
 		sb.AppendC(UTF8STRC("\r\n"));
 		IO::EXEFile::GetResourceDesc(res, &sb);
-		me->txtResource->SetText(sb.ToString());
+		me->txtResource->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtResource->SetText((const UTF8Char*)"");
+		me->txtResource->SetText(CSTR(""));
 	}
 }
 
@@ -298,14 +298,15 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceDblClk(void *userObj)
 SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::EXEFile *exeFile) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->exeFile = exeFile;
 	this->parts = 0;
 	this->codesList = 0;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));
-	this->SetText(sbuff);
+	sptr = exeFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EXE Form - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 
 	NEW_CLASS(this->tcEXE, UI::GUITabControl(ui, this));
 	this->tcEXE->SetDockType(UI::GUIControl::DOCK_FILL);

@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const U
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, fileSize);
 			if (icc)
 			{
-				me->SetICCProfile(icc, files[i]);
+				me->SetICCProfile(icc, {files[i], fileNameLen});
 				break;
 			}
 		}
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnBLUTClicked(void *userObj)
 
 SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"ICC Info");
+	this->SetText(CSTR("ICC Info"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -95,13 +95,13 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtInfo->SetRect(104, 28, 800, 676, false);
 	this->txtInfo->SetReadOnly(true);
-	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, this, (const UTF8Char*)"View R LUT"));
+	NEW_CLASS(this->btnRLUT, UI::GUIButton(ui, this, CSTR("View R LUT")));
 	this->btnRLUT->SetRect(104, 708, 75, 23, false);
 	this->btnRLUT->HandleButtonClick(OnRLUTClicked, this);
-	NEW_CLASS(this->btnGLUT, UI::GUIButton(ui, this, (const UTF8Char*)"View G LUT"));
+	NEW_CLASS(this->btnGLUT, UI::GUIButton(ui, this, CSTR("View G LUT")));
 	this->btnGLUT->SetRect(184, 708, 75, 23, false);
 	this->btnGLUT->HandleButtonClick(OnGLUTClicked, this);
-	NEW_CLASS(this->btnBLUT, UI::GUIButton(ui, this, (const UTF8Char*)"View B LUT"));
+	NEW_CLASS(this->btnBLUT, UI::GUIButton(ui, this, CSTR("View B LUT")));
 	this->btnBLUT->SetRect(264, 708, 75, 23, false);
 	this->btnBLUT->HandleButtonClick(OnBLUTClicked, this);
 
@@ -118,7 +118,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, Text::CString fileName)
 {
 	if (icc)
 	{
@@ -149,7 +149,7 @@ void SSWR::AVIRead::AVIRICCInfoForm::SetICCProfile(Media::ICCProfile *icc, const
 			Text::SBAppendF64(&sb, color.primaries.wy);
 		}
 		this->icc = icc;
-		this->txtInfo->SetText(sb.ToString());
+		this->txtInfo->SetText(sb.ToCString());
 		this->txtFileName->SetText(fileName);
 	}
 }

@@ -337,8 +337,8 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(cmd, cmdLen);
-		sb.AppendChar('\r', 1);
-//		sb.AppendChar('\n', 1);
+		sb.AppendUTF8Char('\r');
+//		sb.AppendUTF8Char('\n');
 		this->prog->Write((UInt8*)sb.ToString(), sb.GetLength());
 	}
 }

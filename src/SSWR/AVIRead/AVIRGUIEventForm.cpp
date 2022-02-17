@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnLogSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRGUIEventForm *me = (SSWR::AVIRead::AVIRGUIEventForm*)userObj;
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(s->v);
+	me->txtLog->SetText(s->ToCString());
 	s->Release();
 }
 
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRGUIEventForm::OnKeyDown(void *userObj, UOSInt 
 SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"GUI Event");
+	this->SetText(CSTR("GUI Event"));
 	
 	this->core = core;
 	NEW_CLASS(this->log, IO::LogTool());
@@ -38,7 +38,7 @@ SSWR::AVIRead::AVIRGUIEventForm::AVIRGUIEventForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
 	this->pnlMain->SetRect(0, 0, 100, 31, false);
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnDisplayOff, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Display Off"));
+	NEW_CLASS(this->btnDisplayOff, UI::GUIButton(ui, this->pnlMain, CSTR("Display Off")));
 	this->btnDisplayOff->SetRect(4, 4, 75, 23, false);
 	this->btnDisplayOff->HandleButtonClick(OnDisplayOffClicked, this);
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this, CSTR("")));

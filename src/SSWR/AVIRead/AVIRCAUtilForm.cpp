@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 						{
 							SDEL_CLASS(me->caCert);
 							me->caCert = cert;
-							me->txtCACert->SetText(names.commonName->v);
+							me->txtCACert->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(&names);
 							if (me->key)
 							{
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 								{
 									DEL_CLASS(me->key);
 									me->key = 0;
-									me->txtKey->SetText((const UTF8Char*)"-");
+									me->txtKey->SetText(CSTR("-"));
 								}
 							}
 						}
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 							SDEL_CLASS(me->csr);
 							me->csr = csr;
 							me->UpdateNames(&names);
-							me->txtCSR->SetText(names.commonName->v);
+							me->txtCSR->SetText(names.commonName->ToCString());
 							Crypto::Cert::CertNames::FreeNames(&names);
 
 							me->lbSAN->ClearItems();
@@ -226,7 +226,7 @@ void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
 {
 	if (this->key == 0)
 	{
-		this->txtKey->SetText((const UTF8Char*)"-");
+		this->txtKey->SetText(CSTR("-"));
 	}
 	else
 	{
@@ -235,24 +235,24 @@ void SSWR::AVIRead::AVIRCAUtilForm::UpdateKeyDetail()
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendUOSInt(key->GetKeySizeBits());
 		sb.AppendC(UTF8STRC(" bits"));
-		this->txtKey->SetText(sb.ToString());
+		this->txtKey->SetText(sb.ToCString());
 	}
 }
 
 void SSWR::AVIRead::AVIRCAUtilForm::UpdateNames(Crypto::Cert::CertNames *names)
 {
-	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->v);
-	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->v);
-	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->v);
-	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->v);
-	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->v);
-	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->v);
-	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->v);
+	this->txtCountryName->SetText(Text::String::OrEmpty(names->countryName)->ToCString());
+	this->txtStateOrProvinceName->SetText(Text::String::OrEmpty(names->stateOrProvinceName)->ToCString());
+	this->txtLocalityName->SetText(Text::String::OrEmpty(names->localityName)->ToCString());
+	this->txtOrganizationName->SetText(Text::String::OrEmpty(names->organizationName)->ToCString());
+	this->txtOrganizationUnitName->SetText(Text::String::OrEmpty(names->organizationUnitName)->ToCString());
+	this->txtCommonName->SetText(Text::String::OrEmpty(names->commonName)->ToCString());
+	this->txtEmailAddress->SetText(Text::String::OrEmpty(names->emailAddress)->ToCString());
 }
 
 SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"CA Utility");
+	this->SetText(CSTR("CA Utility"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -267,7 +267,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtKey->SetRect(104, 4, 200, 23, false);
 	this->txtKey->SetReadOnly(true);
-	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnKeyView->SetRect(304, 4, 75, 23, false);
 	this->btnKeyView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCACert, UI::GUILabel(ui, this, (const UTF8Char*)"CA Cert"));
@@ -275,7 +275,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtCACert, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtCACert->SetRect(104, 28, 200, 23, false);
 	this->txtCACert->SetReadOnly(true);
-	NEW_CLASS(this->btnCACertView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnCACertView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnCACertView->SetRect(304, 28, 75, 23, false);
 	this->btnCACertView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCSR, UI::GUILabel(ui, this, (const UTF8Char*)"CSR"));
@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtCSR, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtCSR->SetRect(104, 52, 200, 23, false);
 	this->txtCSR->SetReadOnly(true);
-	NEW_CLASS(this->btnCSRView, UI::GUIButton(ui, this, (const UTF8Char*)"View"));
+	NEW_CLASS(this->btnCSRView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnCSRView->SetRect(304, 52, 75, 23, false);
 	this->btnCSRView->HandleButtonClick(OnKeyViewClicked, this);
 	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, this, (const UTF8Char*)"C"));
@@ -329,7 +329,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	this->lblValidDays->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, CSTR("365")));
 	this->txtValidDays->SetRect(104, 340, 200, 23, false);
-	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, this, (const UTF8Char*)"Issue"));
+	NEW_CLASS(this->btnIssue, UI::GUIButton(ui, this, CSTR("Issue")));
 	this->btnIssue->SetRect(104, 364, 150, 23, false);
 	this->btnIssue->HandleButtonClick(OnIssueClicked, this);
 

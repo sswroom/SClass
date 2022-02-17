@@ -169,8 +169,8 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	UOSInt i;
 	UOSInt j;
 	this->lut = lut;
-	lut->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LUT Viewer - ")));
-	this->SetText(sbuff);
+	sptr = lut->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("LUT Viewer - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -215,11 +215,11 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	this->cboChannels->AddItem(CSTR("All Channels"), (void*)-1);
 	this->cboChannels->SetSelectedIndex(0);
 	
-	this->txtFileName->SetText(this->lut->GetSourceNameObj()->v);
+	this->txtFileName->SetText(this->lut->GetSourceNameObj()->ToCString());
 	Text::String *s = this->lut->GetRemark();
 	if (s)
 	{
-		this->txtRemark->SetText(s->v);
+		this->txtRemark->SetText(s->ToCString());
 	}
 	this->UpdateValues();
 }

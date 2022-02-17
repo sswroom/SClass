@@ -112,7 +112,7 @@ UTF8Char *Text::MIMEObj::MIMEHeader::ParseHeaderStr(UTF8Char *sbuff, const UTF8C
 					}
 					else
 					{
-						sb.AppendChar(c, 1);
+						sb.AppendUTF8Char(c);
 					}
 				}
 				if (!err)
@@ -141,7 +141,7 @@ UTF8Char *Text::MIMEObj::MIMEHeader::ParseHeaderStr(UTF8Char *sbuff, const UTF8C
 						}
 						else
 						{
-							sbc.AppendChar(c, 1);
+							sbc.AppendUTF8Char(c);
 						}
 					}
 				}

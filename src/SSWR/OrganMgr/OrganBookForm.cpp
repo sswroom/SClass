@@ -129,10 +129,10 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	me->env->GetBooksAll(me->bookList);
 	me->bookList->Sort();
 	me->UpdateBookList();
-	me->txtBookAuthor->SetText((const UTF8Char*)"");
-	me->txtBookTitle->SetText((const UTF8Char*)"");
-	me->txtBookSource->SetText((const UTF8Char*)"");
-	me->txtBookURL->SetText((const UTF8Char*)"");
+	me->txtBookAuthor->SetText(CSTR(""));
+	me->txtBookTitle->SetText(CSTR(""));
+	me->txtBookSource->SetText(CSTR(""));
+	me->txtBookURL->SetText(CSTR(""));
 }
 
 void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
@@ -167,7 +167,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						sb2.ClearStr();
 						sb2.AppendC(chars, i - 4);
 						sb2.Trim();
-						me->txtBookAuthor->SetText(sb2.ToString());
+						me->txtBookAuthor->SetText(sb2.ToCString());
 						sb2.ClearStr();
 						sb2.AppendChar(chars[i - 3], 4);
 						dt.SetValue((UInt16)sb2.ToInt32(), 1, 1, 0, 0, 0, 0);
@@ -180,7 +180,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						sb2.ClearStr();
 						sb2.AppendC(chars, i - 3);
 						sb2.Trim();
-						me->txtBookAuthor->SetText(sb2.ToString());
+						me->txtBookAuthor->SetText(sb2.ToCString());
 						sb2.ClearStr();
 						sb2.AppendChar(chars[i - 3], 4);
 						dt.SetValue((UInt16)sb2.ToInt32(), 1, 1, 0, 0, 0, 0);
@@ -197,9 +197,9 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						i = sb.IndexOf(UTF8STRC("."), i);
 						if (i == INVALID_INDEX)
 						{
-							me->txtBookTitle->SetText(sb.ToString());
-							me->txtBookSource->SetText((const UTF8Char*)"");
-							me->txtBookURL->SetText((const UTF8Char*)"");
+							me->txtBookTitle->SetText(sb.ToCString());
+							me->txtBookSource->SetText(CSTR(""));
+							me->txtBookURL->SetText(CSTR(""));
 							break;
 						}
 
@@ -225,7 +225,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 						{
 							sb2.ClearStr();
 							sb2.AppendC(chars, i - 1);
-							me->txtBookTitle->SetText(sb2.ToString());
+							me->txtBookTitle->SetText(sb2.ToCString());
 							sb.SetSubstr(k);
 							sb.Trim();
 							k = sb.IndexOf(UTF8STRC("http://"));
@@ -234,14 +234,14 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookPasteClicked(void *userObj)
 								sb2.ClearStr();
 								sb2.AppendC(sb.ToString(), k);
 								sb2.Trim();
-								me->txtBookSource->SetText(sb2.ToString());
+								me->txtBookSource->SetText(sb2.ToCString());
 								sb.SetSubstr(k)->Trim();
-								me->txtBookURL->SetText(sb.ToString());
+								me->txtBookURL->SetText(sb.ToCString());
 							}
 							else
 							{
-								me->txtBookSource->SetText(sb.ToString());
-								me->txtBookURL->SetText((const UTF8Char*)"");
+								me->txtBookSource->SetText(sb.ToCString());
+								me->txtBookURL->SetText(CSTR(""));
 							}
 							break;
 						}
@@ -286,7 +286,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->changed = false;
 	NEW_CLASS(this->bookList, BookArrayList());
 
-	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")).v);
+	this->SetText(this->env->GetLang(UTF8STRC("BookFormTitle")));
 	this->SetFont(0, 0, 10.5, false);
 
 	NEW_CLASS(this->pnlBook, UI::GUIPanel(ui, this));
@@ -304,7 +304,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColAuthor")).v, 120);
 	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColName")).v, 400);
 	this->lvBook->AddColumn(this->env->GetLang(UTF8STRC("BookFormColSource")).v, 60);
-	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPaste")).v));
+	NEW_CLASS(this->btnBookPaste, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPaste"))));
 	this->btnBookPaste->SetRect(88, 0, 75, 23, false);
 	this->btnBookPaste->HandleButtonClick(OnBookPasteClicked, this);
 	NEW_CLASS(this->lblBookPublish, UI::GUILabel(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookPublish")).v));
@@ -333,7 +333,7 @@ SSWR::OrganMgr::OrganBookForm::OrganBookForm(UI::GUIClientControl *parent, UI::G
 	this->lblBookGroup->SetRect(0, 240, 100, 23, false);
 	NEW_CLASS(this->txtBookGroup, UI::GUITextBox(ui, this->pnlBookDet, CSTR("")));
 	this->txtBookGroup->SetRect(0, 264, 168, 19, false);
-	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAdd")).v));
+	NEW_CLASS(this->btnBookAdd, UI::GUIButton(ui, this->pnlBookDet, this->env->GetLang(UTF8STRC("BookFormBookAdd"))));
 	this->btnBookAdd->SetRect(16, 288, 75, 23, false);
 	this->btnBookAdd->HandleButtonClick(OnBookAddClicked, this);
 	NEW_CLASS(this->tcBook, UI::GUITabControl(ui, this->pnlBook));

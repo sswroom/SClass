@@ -209,12 +209,12 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 							sb.AppendC(UTF8STRC("<c r=\""));
 							sptr = Text::StrUOSInt(Text::SpreadSheet::Workbook::ColCode(sbuff, m), k + 1);
 							sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-							sb.AppendChar('"', 1);
+							sb.AppendUTF8Char('"');
 							if (cell->style)
 							{
 								sb.AppendC(UTF8STRC(" s=\""));
 								sb.AppendUOSInt(cell->style->GetIndex());
-								sb.AppendChar('"', 1);
+								sb.AppendUTF8Char('"');
 							}
 							switch (cell->cdt)
 							{
@@ -912,7 +912,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				sb.AppendC(UTF8STRC("\" fontId=\""));
 				if (font == 0)
 				{
-					sb.AppendChar('0', 1);
+					sb.AppendUTF8Char('0');
 				}
 				else
 				{
@@ -1082,10 +1082,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	{
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendChar('T', 1);
+		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendChar('Z', 1);
+		sb.AppendUTF8Char('Z');
 	}
 	sb.AppendC(UTF8STRC("</dcterms:created>"));
 	sb.AppendC(UTF8STRC("<dc:creator>"));
@@ -1131,10 +1131,10 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 	{
 		sptr = t->ToString(sbuff, "yyyy-MM-dd");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendChar('T', 1);
+		sb.AppendUTF8Char('T');
 		sptr = t->ToString(sbuff, "HH:mm:ss");
 		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb.AppendChar('Z', 1);
+		sb.AppendUTF8Char('Z');
 	}
 	sb.AppendC(UTF8STRC("</dcterms:modified>"));
 	sb.AppendC(UTF8STRC("<cp:revision>"));
@@ -1519,7 +1519,7 @@ void Exporter::XLSXExporter::AppendSeries(Text::StringBuilderUTF8 *sb, Text::Spr
 
 void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::SpreadSheet::CellStyle::BorderStyle *border, const UTF8Char *name, UOSInt nameLen)
 {
-	sb->AppendChar('<', 1);
+	sb->AppendUTF8Char('<');
 	sb->AppendC(name, nameLen);
 	if (border->borderType == BorderType::None)
 	{
@@ -1576,7 +1576,7 @@ void Exporter::XLSXExporter::AppendBorder(Text::StringBuilderUTF8 *sb, Text::Spr
 		sb->AppendC(UTF8STRC("\"/>"));
 		sb->AppendC(UTF8STRC("</"));
 		sb->AppendC(name, nameLen);
-		sb->AppendChar('>', 1);
+		sb->AppendUTF8Char('>');
 	}
 }
 

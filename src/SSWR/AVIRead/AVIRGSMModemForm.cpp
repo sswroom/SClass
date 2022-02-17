@@ -18,6 +18,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
 	Data::DateTime *currTime;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Bool init = false;
 	IO::GSMModemController::BER ber;
 
@@ -29,14 +30,14 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 		if (!init)
 		{
 			init = true;
-			if (me->modem->GSMGetManufacturer(sbuff))
-				me->initModemManu = Text::StrCopyNew(sbuff);
-			if (me->modem->GSMGetModelIdent(sbuff))
-				me->initModemModel = Text::StrCopyNew(sbuff);
-			if (me->modem->GSMGetModemVer(sbuff))
-				me->initModemVer = Text::StrCopyNew(sbuff);
-			if (me->modem->GSMGetIMEI(sbuff))
-				me->initIMEI = Text::StrCopyNew(sbuff);
+			if ((sptr = me->modem->GSMGetManufacturer(sbuff)) != 0)
+				me->initModemManu = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			if ((sptr = me->modem->GSMGetModelIdent(sbuff)) != 0)
+				me->initModemModel = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			if ((sptr = me->modem->GSMGetModemVer(sbuff)) != 0)
+				me->initModemVer = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+			if ((sptr = me->modem->GSMGetIMEI(sbuff)) != 0)
+				me->initIMEI = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 			me->initStrs = true;
 		}
 
@@ -44,10 +45,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 		if (currTime->CompareTo(me->operNextTime) >= 0)
 		{
 			me->operNextTime->AddSecond(30);
-			if (me->modem->GSMGetCurrPLMN(sbuff))
+			if ((sptr = me->modem->GSMGetCurrPLMN(sbuff)) != 0)
 			{
-				SDEL_TEXT(me->operName);
-				me->operName = Text::StrCopyNew(sbuff);
+				SDEL_STRING(me->operName);
+				me->operName = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				me->operUpdated = true;
 			}
 		}
@@ -62,6 +63,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGSMModemForm::ModemThread(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRGSMModemForm *me = (SSWR::AVIRead::AVIRGSMModemForm*)userObj;
 
 	if (me->initStrs)
@@ -69,30 +71,30 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnTimerTick(void *userObj)
 		me->initStrs = false;
 		if (me->initModemManu)
 		{
-			me->txtModemManu->SetText(me->initModemManu);
+			me->txtModemManu->SetText(me->initModemManu->ToCString());
 		}
 		if (me->initModemModel)
 		{
-			me->txtModemModel->SetText(me->initModemModel);
+			me->txtModemModel->SetText(me->initModemModel->ToCString());
 		}
 		if (me->initModemVer)
 		{
-			me->txtModemVer->SetText(me->initModemVer);
+			me->txtModemVer->SetText(me->initModemVer->ToCString());
 		}
 		if (me->initIMEI)
 		{
-			me->txtModemIMEI->SetText(me->initIMEI);
+			me->txtModemIMEI->SetText(me->initIMEI->ToCString());
 		}
 	}
 
 	if (me->operUpdated)
 	{
 		me->operUpdated = false;
-		me->txtOperator->SetText(me->operName);
+		me->txtOperator->SetText(me->operName->ToCString());
 	}
 
-	IO::GSMModemController::GetRSSIString(sbuff, me->signalQuality);
-	me->txtSignalQuality->SetText(sbuff);
+	sptr = IO::GSMModemController::GetRSSIString(sbuff, me->signalQuality);
+	me->txtSignalQuality->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnPhoneRClick(void *userObj)
@@ -269,6 +271,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	Text::SMSMessage *smsMsg;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 #if _WCHAR_SIZE == 4
 	WChar wbuff[64];
 #endif
@@ -282,8 +285,8 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 	IO::GSMModemController::SMSStorage store = (IO::GSMModemController::SMSStorage)(OSInt)this->cboSMSStorage->GetItem((UOSInt)this->cboSMSStorage->GetSelectedIndex());
 
 	this->modem->SMSSetStorage(store, IO::GSMModemController::SMSSTORE_SIM, IO::GSMModemController::SMSSTORE_SIM);
-	this->modem->SMSGetSMSC(sbuff);
-	this->txtSMSC->SetText(sbuff);
+	sptr = this->modem->SMSGetSMSC(sbuff);
+	this->txtSMSC->SetText(CSTRP(sbuff, sptr));
 	this->modem->SMSListMessages(this->msgList, IO::GSMModemController::SMSS_ALL);
 	i = 0;
 	j = this->msgList->GetCount();
@@ -317,7 +320,7 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 
 SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::GSMModemController *modem, IO::ATCommandChannel *channel, IO::Stream *port) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"GSM Modem");
+	this->SetText(CSTR("GSM Modem"));
 	this->SetFont(0, 0, 8.25, false);
 	this->core = core;
 	this->modem = modem;
@@ -390,7 +393,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->cboPhoneStorage->AddItem(CSTR("Received Calls"), (void*)(OSInt)IO::GSMModemController::PBSTORE_RECEIVED_CALL);
 	this->cboPhoneStorage->AddItem(CSTR("Service Dial Numbers"), (void*)(OSInt)IO::GSMModemController::PBSTORE_SERVICE_DIALING_NUMBERS);
 	this->cboPhoneStorage->SetSelectedIndex(0);
-	NEW_CLASS(this->btnPhoneRead, UI::GUIButton(ui, this->pnlPhone, (const UTF8Char*)"&Read"));
+	NEW_CLASS(this->btnPhoneRead, UI::GUIButton(ui, this->pnlPhone, CSTR("&Read")));
 	this->btnPhoneRead->SetRect(108, 4, 75, 23, false);
 	this->btnPhoneRead->HandleButtonClick(OnPhoneRClick, this);
 	NEW_CLASS(this->lvPhone, UI::GUIListView(ui, this->tpPhoneBook, UI::GUIListView::LVSTYLE_TABLE, 2));
@@ -410,7 +413,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->cboSMSStorage->AddItem(CSTR("Status Report"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_STATUSREPORT);
 	this->cboSMSStorage->AddItem(CSTR("CBM"), (void*)(OSInt)IO::GSMModemController::SMSSTORE_CBMMESSAGE);
 	this->cboSMSStorage->SetSelectedIndex(0);
-	NEW_CLASS(this->btnSMSRead, UI::GUIButton(ui, this->pnlSMS, (const UTF8Char*)"&Show SMS"));
+	NEW_CLASS(this->btnSMSRead, UI::GUIButton(ui, this->pnlSMS, CSTR("&Show SMS")));
 	this->btnSMSRead->SetRect(108, 4, 75, 23, false);
 	this->btnSMSRead->HandleButtonClick(OnSMSRClick, this);
 	NEW_CLASS(this->lblSMSC, UI::GUILabel(ui, this->pnlSMS, (const UTF8Char*)"SMSC"));
@@ -418,13 +421,13 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtSMSC, UI::GUITextBox(ui, this->pnlSMS, CSTR("")));
 	this->txtSMSC->SetReadOnly(true);
 	this->txtSMSC->SetRect(258, 4, 100, 23, false);
-	NEW_CLASS(this->btnSMSSave, UI::GUIButton(ui, this->pnlSMS, (const UTF8Char*)"S&ave SMS"));
+	NEW_CLASS(this->btnSMSSave, UI::GUIButton(ui, this->pnlSMS, CSTR("S&ave SMS")));
 	this->btnSMSSave->SetRect(368, 4, 75, 23, false);
 	this->btnSMSSave->HandleButtonClick(OnSMSSaveClick, this);
-	NEW_CLASS(this->btnSMSDelete, UI::GUIButton(ui, this->pnlSMS, (const UTF8Char*)"&Delete SMS"));
+	NEW_CLASS(this->btnSMSDelete, UI::GUIButton(ui, this->pnlSMS, CSTR("&Delete SMS")));
 	this->btnSMSDelete->SetRect(448, 4, 75, 23, false);
 	this->btnSMSDelete->HandleButtonClick(OnSMSDeleteClick, this);
-	NEW_CLASS(this->btnSMSSaveAll, UI::GUIButton(ui, this->pnlSMS, (const UTF8Char*)"Save All"));
+	NEW_CLASS(this->btnSMSSaveAll, UI::GUIButton(ui, this->pnlSMS, CSTR("Save All")));
 	this->btnSMSSaveAll->SetRect(528, 4, 75, 23, false);
 	this->btnSMSSaveAll->HandleButtonClick(OnSMSSaveAllClick, this);
 	NEW_CLASS(this->lvSMS, UI::GUIListView(ui, this->tpSMS, UI::GUIListView::LVSTYLE_TABLE, 3));
@@ -467,11 +470,11 @@ SSWR::AVIRead::AVIRGSMModemForm::~AVIRGSMModemForm()
 	DEL_CLASS(this->modemEvt);
 	DEL_CLASS(this->operNextTime);
 
-	SDEL_TEXT(this->operName);
-	SDEL_TEXT(this->initModemManu);
-	SDEL_TEXT(this->initModemModel);
-	SDEL_TEXT(this->initModemVer);
-	SDEL_TEXT(this->initIMEI);
+	SDEL_STRING(this->operName);
+	SDEL_STRING(this->initModemManu);
+	SDEL_STRING(this->initModemModel);
+	SDEL_STRING(this->initModemVer);
+	SDEL_STRING(this->initIMEI);
 }
 
 void SSWR::AVIRead::AVIRGSMModemForm::OnMonitorChanged()

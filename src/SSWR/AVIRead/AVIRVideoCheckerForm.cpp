@@ -159,7 +159,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Video Checker");
+	this->SetText(CSTR("Video Checker"));
 	
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -167,7 +167,7 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, CSTR("Cancel")));
 	this->btnCancel->SetRect(4, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	NEW_CLASS(this->chkAllowTimeSkip, UI::GUICheckBox(ui, this->pnlCtrl, (const UTF8Char*)"Allow Time Skip", false));

@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnDevChg(void *userObj)
 		{
 			me->cboFormat->SetSelectedIndex(bestIndex);
 		}
-		me->txtDeviceInfo->SetText(devInfo.ToString());
+		me->txtDeviceInfo->SetText(devInfo.ToCString());
 	}
 }
 
@@ -221,10 +221,11 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRTimedCaptureForm *me = (SSWR::AVIRead::AVIRTimedCaptureForm *)userObj;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(sbuff, me->frameCnt);
-	me->txtFrameCnt->SetText(sbuff);
-	Text::StrUInt32(sbuff, me->saveCnt);
-	me->txtSaveCnt->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt32(sbuff, me->frameCnt);
+	me->txtFrameCnt->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUInt32(sbuff, me->saveCnt);
+	me->txtSaveCnt->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
@@ -288,7 +289,7 @@ void SSWR::AVIRead::AVIRTimedCaptureForm::ReleaseFormats()
 
 SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 652, 480, ui)
 {
-	this->SetText((const UTF8Char*)"Timed Capture");
+	this->SetText(CSTR("Timed Capture"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -325,7 +326,7 @@ SSWR::AVIRead::AVIRTimedCaptureForm::AVIRTimedCaptureForm(UI::GUIClientControl *
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpControl, CSTR("TimedCapture.til")));
 	this->txtFileName->SetRect(104, 76, 260, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->txtDeviceInfo, UI::GUITextBox(ui, this->tpControl, CSTR(""), true));

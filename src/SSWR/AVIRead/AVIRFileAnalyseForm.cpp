@@ -149,13 +149,13 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnPackItemChanged(void *userO
 	UOSInt i = (UOSInt)me->lbPackItems->GetSelectedIndex();
 	if (i == (UOSInt)-1)
 	{
-		me->txtPack->SetText((const UTF8Char*)"");
+		me->txtPack->SetText(CSTR(""));
 		return;
 	}
 	i = (UOSInt)me->lbPackItems->GetItem(i);
 	sb.ClearStr();
 	me->file->GetFrameDetail(i, &sb);
-	me->txtPack->SetText(sb.ToString());
+	me->txtPack->SetText(sb.ToCString());
 }
 
 Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
@@ -169,7 +169,7 @@ Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
 	{
 		SDEL_CLASS(this->file);
 		this->file = file;
-		this->txtFile->SetText(fileName.v);
+		this->txtFile->SetText(fileName);
 		this->lastPackCount = 0;
 		this->lbPackList->ClearItems();
 		this->lbPackItems->ClearItems();
@@ -181,7 +181,7 @@ Bool SSWR::AVIRead::AVIRFileAnalyseForm::OpenFile(Text::CString fileName)
 
 SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"File Analyse");
+	this->SetText(CSTR("File Analyse"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -199,7 +199,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(108, 8, 500, 23, false);
 	this->txtFile->SetReadOnly(true);
-	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, CSTR("B&rowse")));
 	this->btnFile->SetRect(608, 8, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
 	this->tpContent = this->tcMain->AddTabPage(CSTR("Content"));
@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->txtPack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->txtPack->SetReadOnly(true);
 
-	NEW_CLASS(this->btnTrimPadding, UI::GUIButton(ui, this->tpTool, (const UTF8Char*)"Trim Padding"));
+	NEW_CLASS(this->btnTrimPadding, UI::GUIButton(ui, this->tpTool, CSTR("Trim Padding")));
 	this->btnTrimPadding->SetRect(8, 8, 75, 23, false);
 	this->btnTrimPadding->HandleButtonClick(OnTrimPaddingClicked, this);
 

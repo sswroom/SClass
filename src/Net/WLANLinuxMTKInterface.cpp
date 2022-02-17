@@ -21,9 +21,9 @@ typedef struct
 	Double rssi;
 	UInt32 linkQuality;
 	Double freq; //Hz
-	const UTF8Char *devManuf;
-	const UTF8Char *devModel;
-	const UTF8Char *devSN;
+	Text::String *devManuf;
+	Text::String *devModel;
+	Text::String *devSN;
 	UTF8Char country[3];
 	UInt8 ouis[WLAN_OUI_CNT][3];
 	Data::ArrayList<Net::WirelessLANIE*> *ieList;
@@ -128,8 +128,8 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 	{
 		UOSInt lineCnt = 2;
 		UOSInt colCnt;
-		UTF8Char *lines[2];
-		UTF8Char *cols[11];
+		Text::PString lines[2];
+		Text::PString cols[11];
 		UTF8Char *macs[6];
 		UOSInt ui;
 		UOSInt channelInd = INVALID_INDEX;
@@ -139,49 +139,56 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 
 //		syslog(LOG_DEBUG, (const Char*)buff);
 //			printf("%s\r\n", buff);
-		lineCnt = Text::StrSplitLine(lines, 2, buff);
-		if (lines[0][0] == 0 && lineCnt == 2)
+		lineCnt = Text::StrSplitLineP(lines, 2, {buff, wrq.u.data.length});
+		if (lines[0].v[0] == 0 && lineCnt == 2)
 		{
-			lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
+			lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
 		}
 
 		while (lineCnt == 2)
 		{
-			lineCnt = Text::StrSplitLine(lines, 2, lines[1]);
+			lineCnt = Text::StrSplitLineP(lines, 2, lines[1]);
 			if (channelInd == INVALID_INDEX)
 			{
-				bssidInd = Text::StrIndexOfChar(lines[0], ':');
+				bssidInd = Text::StrIndexOfCharC(lines[0].v, lines[0].leng, ':');
 				if (bssidInd == INVALID_INDEX)
 				{
 					continue;
 				}
 				bssidInd -= 2;
-				lines[0][bssidInd - 1] = 0;
-				colCnt = Text::StrSplitWS(cols, 11, lines[0]);
-				ssidInd = (UOSInt)(cols[colCnt - 1] - lines[0]);
-				channelInd = (UOSInt)(cols[colCnt - 2] - lines[0]);
+				lines[0].v[bssidInd - 1] = 0;
+				colCnt = Text::StrSplitWSP(cols, 11, lines[0]);
+				if (colCnt < 2)
+				{
+					continue;
+				}
+				ssidInd = (UOSInt)(cols[colCnt - 1].v - lines[0].v);
+				channelInd = (UOSInt)(cols[colCnt - 2].v - lines[0].v);
 			}
-			else
+			else if (lines[0].leng < bssidInd)
 			{
+				continue;
 			}
-			colCnt = Text::StrSplitWS(&cols[2], 9, &lines[0][bssidInd]) + 2;
-			lines[0][bssidInd - 1] = 0;
-			cols[1] = &lines[0][ssidInd];
-			Text::StrTrim(cols[1]);
-			lines[0][ssidInd - 1] = 0;
-			cols[0] = &lines[0][channelInd];
-			Text::StrTrim(cols[0]);
+			colCnt = Text::StrSplitWSP(&cols[2], 9, {&lines[0].v[bssidInd], lines[0].leng - bssidInd}) + 2;
+			lines[0].v[bssidInd - 1] = 0;
+			cols[1].v = &lines[0].v[ssidInd];
+			cols[1].leng = (UOSInt)(&lines[0].v[bssidInd - 1] - cols[1].v);
+			cols[1].Trim();
+			lines[0].v[ssidInd - 1] = 0;
+			cols[0].v = &lines[0].v[channelInd];
+			cols[0].leng = (UOSInt)(&lines[0].v[ssidInd - 1] - cols[0].v);
+			cols[0].Trim();
 			if (colCnt >= 8)
 			{
 				ui = colCnt;
 				while (ui-- > 0)
 				{
-					if (cols[ui][0] == ',')
+					if (cols[ui].v[0] == ',')
 					{
-						cols[ui]++;
+						cols[ui] = cols[ui].Substring(1);
 					}
 				}
-				if (Text::StrSplit(macs, 6, cols[2], ':') == 6)
+				if (Text::StrSplit(macs, 6, cols[2].v, ':') == 6)
 				{
 					bss.bssType = Net::WirelessLAN::BST_INFRASTRUCTURE;
 					bss.mac[0] = Text::StrHex2UInt8C(macs[0]);
@@ -191,7 +198,7 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 					bss.mac[4] = Text::StrHex2UInt8C(macs[4]);
 					bss.mac[5] = Text::StrHex2UInt8C(macs[5]);
 					bss.phyId = (UInt32)retVal;
-					bss.linkQuality = Text::StrToUInt32(cols[4]);
+					bss.linkQuality = Text::StrToUInt32(cols[4].v);
 					bss.freq = 0;
 					bss.devManuf = 0;
 					bss.devModel = 0;
@@ -204,10 +211,9 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 						bss.ouis[ui][1] = 0;
 						bss.ouis[ui][2] = 0;
 					}
-					UOSInt colLen = Text::StrCharCnt(cols[5]);
-					if (Text::StrStartsWithC(cols[5], colLen, UTF8STRC("11b")))
+					if (cols[5].StartsWith(UTF8STRC("11b")))
 					{
-						switch (Text::StrToInt32(cols[0]))
+						switch (Text::StrToInt32(cols[0].v))
 						{
 						case 1:
 							bss.freq = 2412000000.0;
@@ -253,9 +259,9 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 							break;
 						}
 					}
-					else if (Text::StrStartsWithC(cols[5], colLen, UTF8STRC("11a")))
+					else if (cols[5].StartsWith(UTF8STRC("11a")))
 					{
-						switch (Text::StrToInt32(cols[0]))
+						switch (Text::StrToInt32(cols[0].v))
 						{
 						case 7:
 							bss.freq = 5035000000.0;
@@ -353,25 +359,25 @@ UOSInt Net::WLANLinuxMTKInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::
 						}
 					}
 					bss.phyType = 0;
-					if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11b/g")))
+					if (cols[5].Equals(UTF8STRC("11b/g")))
 					{
 						bss.phyType = 6;
 					}
-					else if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11b/g/n")))
+					else if (cols[5].Equals(UTF8STRC("11b/g/n")))
 					{
 						bss.phyType = 7;
 					}
-					else if (Text::StrEqualsC(cols[5], colLen, UTF8STRC("11a/n")))
+					else if (cols[5].Equals(UTF8STRC("11a/n")))
 					{
 						bss.phyType = 8;
 					}
-					Int32 quality = Text::StrToInt32(cols[4]);
+					Int32 quality = Text::StrToInt32(cols[4].v);
 					if (quality > 0)
 						bss.rssi = (quality / 2) - 100;
 					else
 						bss.rssi = quality;
 					
-					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo((const UTF8Char*)cols[1], &bss));
+					NEW_CLASS(bssInfo, Net::WirelessLAN::BSSInfo(cols[1].ToCString(), &bss));
 					bssList->Add(bssInfo);
 					retVal++;
 				}

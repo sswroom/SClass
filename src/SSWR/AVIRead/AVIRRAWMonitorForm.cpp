@@ -26,21 +26,21 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 		pingIPInfo->ip = srcIP;
 		pingIPInfo->count = 0;
 		rec = me->whois->RequestIP(srcIP);
-		if (rec->GetNetworkName(sbuff))
+		if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 		{
-			pingIPInfo->name = Text::StrCopyNew(sbuff);
+			pingIPInfo->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
-			pingIPInfo->name = Text::StrCopyNew((const UTF8Char*)"Unknown");
+			pingIPInfo->name = Text::String::New(UTF8STRC("Unknown"));
 		}
-		if (rec->GetCountryCode(sbuff))
+		if ((sptr = rec->GetCountryCode(sbuff)) != 0)
 		{
-			pingIPInfo->country = Text::StrCopyNew(sbuff);
+			pingIPInfo->country = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		else
 		{
-			pingIPInfo->country = Text::StrCopyNew((const UTF8Char*)"Unk");
+			pingIPInfo->country = Text::String::New(UTF8STRC("Unk"));
 		}
 		me->pingIPMap->Put(sortableIP, pingIPInfo);
 		me->pingIPListUpdated = true;
@@ -175,12 +175,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnIPTranSelChg(void *userObj)
 				i++;
 			}
 		}
-		me->txtIPTranWhois->SetText(sb.ToString());
+		me->txtIPTranWhois->SetText(sb.ToCString());
 		me->dataUpdated = true;
 	}
 	else
 	{
-		me->txtIPTranWhois->SetText((const UTF8Char*)"");
+		me->txtIPTranWhois->SetText(CSTR(""));
 	}
 }
 
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnLogSelChg(void *userObj)
 	Text::String *s = me->lbLog->GetSelectedItemTextNew();
 	if (s)
 	{
-		me->txtLog->SetText(s->v);
+		me->txtLog->SetText(s->ToCString());
 		s->Release();
 	}
 }
@@ -203,10 +203,11 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 	if (me->currPingIP)
 	{
 		UTF8Char sbuff[32];
-		Text::StrInt64(sbuff, me->currPingIP->count);
-		me->txtPingIPCount->SetText(sbuff);
-		me->txtPingIPName->SetText(me->currPingIP->name);
-		me->txtPingIPCountry->SetText(me->currPingIP->country);
+		UTF8Char *sptr;
+		sptr = Text::StrInt64(sbuff, me->currPingIP->count);
+		me->txtPingIPCount->SetText(CSTRP(sbuff, sptr));
+		me->txtPingIPName->SetText(me->currPingIP->name->ToCString());
+		me->txtPingIPCountry->SetText(me->currPingIP->country->ToCString());
 
 		Text::StringBuilderUTF8 sb;
 		Net::WhoisRecord *rec = me->whois->RequestIP(me->currPingIP->ip);
@@ -221,14 +222,14 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingIPSelChg(void *userObj)
 				i++;
 			}
 		}
-		me->txtPingIPWhois->SetText(sb.ToString());
+		me->txtPingIPWhois->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtPingIPCount->SetText((const UTF8Char*)"");
-		me->txtPingIPName->SetText((const UTF8Char*)"");
-		me->txtPingIPCountry->SetText((const UTF8Char*)"");
-		me->txtPingIPWhois->SetText((const UTF8Char*)"");
+		me->txtPingIPCount->SetText(CSTR(""));
+		me->txtPingIPName->SetText(CSTR(""));
+		me->txtPingIPCountry->SetText(CSTR(""));
+		me->txtPingIPWhois->SetText(CSTR(""));
 	}
 }
 
@@ -239,6 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 	if (name)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
@@ -247,12 +249,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqv4Name->SetText(name->v);
+			me->txtDNSReqv4Name->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->txtDNSReqv4ReqTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtDNSReqv4TTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->txtDNSReqv4ReqTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtDNSReqv4TTL->SetText(CSTRP(sbuff, sptr));
 			me->lvDNSReqv4->ClearItems();
 			i = 0;
 			j = ansList.GetCount();
@@ -280,6 +282,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 	if (name)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
@@ -288,12 +291,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqv6Name->SetText(name->v);
+			me->txtDNSReqv6Name->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->txtDNSReqv6ReqTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtDNSReqv6TTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->txtDNSReqv6ReqTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtDNSReqv6TTL->SetText(CSTRP(sbuff, sptr));
 			me->lvDNSReqv6->ClearItems();
 			i = 0;
 			j = ansList.GetCount();
@@ -321,6 +324,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 	if (name)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		Data::DateTime reqTime;
 		UInt32 ttl;
 		Data::ArrayList<Net::DNSClient::RequestAnswer*> ansList;
@@ -329,12 +333,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 		{
 			UOSInt i;
 			UOSInt j;
-			me->txtDNSReqOthName->SetText(name->v);
+			me->txtDNSReqOthName->SetText(name->ToCString());
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->txtDNSReqOthReqTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtDNSReqOthTTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->txtDNSReqOthReqTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtDNSReqOthTTL->SetText(CSTRP(sbuff, sptr));
 			me->lvDNSReqOth->ClearItems();
 			i = 0;
 			j = ansList.GetCount();
@@ -385,16 +389,16 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSTargetSelChg(void *userOb
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
-			me->txtDNSTargetWhois->SetText(sb.ToString());
+			me->txtDNSTargetWhois->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtDNSTargetWhois->SetText((const UTF8Char*)"");
+			me->txtDNSTargetWhois->SetText(CSTR(""));
 		}		
 	}
 	else
 	{
-		me->txtDNSTargetWhois->SetText((const UTF8Char*)"");
+		me->txtDNSTargetWhois->SetText(CSTR(""));
 	}
 }
 
@@ -406,7 +410,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 	UTF8Char *sptr;
 	if (ans)
 	{
-		me->txtMDNSName->SetText(ans->name->v);
+		me->txtMDNSName->SetText(ans->name->ToCString());
 		sptr = Text::StrUInt16(sbuff, ans->recType);
 		Text::CString typeId = Net::DNSClient::TypeGetID(ans->recType);
 		if (typeId.v)
@@ -415,31 +419,31 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnMDNSSelChg(void *userObj)
 			sptr = typeId.ConcatTo(sptr);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(")"));
 		}
-		me->txtMDNSType->SetText(sbuff);
+		me->txtMDNSType->SetText(CSTRP(sbuff, sptr));
 		sptr = Text::StrUInt16(sbuff, ans->recClass & 0x7fff);
 		if (ans->recClass & 0x8000)
 		{
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", cache flush"));
 		}
-		me->txtMDNSClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtMDNSTTL->SetText(sbuff);
+		me->txtMDNSClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtMDNSTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
-			me->txtMDNSResult->SetText(ans->rd->v);
+			me->txtMDNSResult->SetText(ans->rd->ToCString());
 		}
 		else
 		{
-			me->txtMDNSResult->SetText((const UTF8Char*)"");
+			me->txtMDNSResult->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtMDNSName->SetText((const UTF8Char*)"");
-		me->txtMDNSType->SetText((const UTF8Char*)"");
-		me->txtMDNSClass->SetText((const UTF8Char*)"");
-		me->txtMDNSTTL->SetText((const UTF8Char*)"");
-		me->txtMDNSResult->SetText((const UTF8Char*)"");
+		me->txtMDNSName->SetText(CSTR(""));
+		me->txtMDNSType->SetText(CSTR(""));
+		me->txtMDNSClass->SetText(CSTR(""));
+		me->txtMDNSTTL->SetText(CSTR(""));
+		me->txtMDNSResult->SetText(CSTR(""));
 	}
 }
 
@@ -507,8 +511,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 	if (me->pingIPContUpdated)
 	{
 		me->pingIPContUpdated = false;
-		Text::StrInt64(sbuff, me->currPingIP->count);
-		me->txtPingIPCount->SetText(sbuff);
+		sptr = Text::StrInt64(sbuff, me->currPingIP->count);
+		me->txtPingIPCount->SetText(CSTRP(sbuff, sptr));
 	}
 	if (me->pingIPListUpdated)
 	{
@@ -1066,13 +1070,13 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDeviceSelChg(void *userObj)
 			}
 		}
 	}
-	me->txtDevice->SetText(sb.ToString());
+	me->txtDevice->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::EthernetAnalyzer *analyzer) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"RAW Monitor");
+	this->SetText(CSTR("RAW Monitor"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -1108,7 +1112,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->pnlControl, CSTR("8089")));
 	this->txtInfo->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnInfo->SetRect(184, 4, 75, 23, false);
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
 	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
@@ -1116,7 +1120,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 28, 150, 23, false);
 	this->cboIP->HandleSelectionChange(OnIPSelChg, this);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -1473,8 +1477,8 @@ SSWR::AVIRead::AVIRRAWMonitorForm::~AVIRRAWMonitorForm()
 	while (i-- > 0)
 	{
 		pingIPInfo = pingIPList->GetItem(i);
-		SDEL_TEXT(pingIPInfo->name);
-		SDEL_TEXT(pingIPInfo->country);
+		SDEL_STRING(pingIPInfo->name);
+		SDEL_STRING(pingIPInfo->country);
 		MemFree(pingIPInfo);
 	}
 	DEL_CLASS(this->pingIPMap);

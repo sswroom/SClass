@@ -491,7 +491,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							Text::StringBuilderUTF8 sbTmp;
 							sbTmp.Append(currObj->typeVal);
-							sbTmp.AppendChar(' ', 1);
+							sbTmp.AppendUTF8Char(' ');
 							sbTmp.AppendC(sb.ToString(), sb.GetLength());
 							currObj->typeVal->Release();
 							currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
@@ -523,7 +523,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 										{
 											sb.ClearStr();
 											sb.Append(currObj->typeVal);
-											sb.AppendChar(' ', 1);
+											sb.AppendUTF8Char(' ');
 											if (!reader->ReadLine(&sb))
 											{
 												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
@@ -545,7 +545,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											{
 												sb.ClearStr();
 												sb.Append(currObj->typeVal);
-												sb.AppendChar(' ', 1);
+												sb.AppendUTF8Char(' ');
 												if (!reader->ReadLine(&sb))
 												{
 													errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
@@ -562,7 +562,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 										{
 											sb.ClearStr();
 											sb.Append(currObj->typeVal);
-											sb.AppendChar(' ', 1);
+											sb.AppendUTF8Char(' ');
 											if (!reader->ReadLine(&sb))
 											{
 												errMessage->AppendC(UTF8STRC("Unexpected end of file: "));
@@ -585,11 +585,11 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 											{
 												sb.ClearStr();
 												reader->NextWord(&sb);
-												sb.AppendChar(' ', 1);
+												sb.AppendUTF8Char(' ');
 												reader->NextWord(&sb);
 												if (sb.Equals(UTF8STRC("WITH SYNTAX")) || sb.Equals(UTF8STRC("WITH COMPONENTS")))
 												{
-													sb.AppendChar(' ', 1);
+													sb.AppendUTF8Char(' ');
 													if (!reader->NextWord(&sb))
 													{
 														errMessage->AppendC(UTF8STRC("WITH SYNTAX error: "));
@@ -598,7 +598,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 													}
 													Text::StringBuilderUTF8 sbTmp;
 													sbTmp.Append(currObj->typeVal);
-													sbTmp.AppendChar(' ', 1);
+													sbTmp.AppendUTF8Char(' ');
 													sbTmp.AppendC(sb.ToString(), sb.GetLength());
 													currObj->typeVal->Release();
 													currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
@@ -621,7 +621,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 												{
 													sb.ClearStr();
 													sb.Append(currObj->typeVal);
-													sb.AppendChar(' ', 1);
+													sb.AppendUTF8Char(' ');
 													reader->NextWord(&sb);
 													currObj->typeVal->Release();
 													currObj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
@@ -654,7 +654,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						}
 						else if (sb.Equals(UTF8STRC("OCTET")) || sb.Equals(UTF8STRC("BIT")))
 						{
-							sb.AppendChar(' ', 1);
+							sb.AppendUTF8Char(' ');
 							reader->NextWord(&sb);
 							if (sb.Equals(UTF8STRC("OCTET STRING")) || sb.Equals(UTF8STRC("BIT STRING")))
 							{
@@ -662,7 +662,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								reader->PeekWord(&sbTmp);
 								if (sbTmp.StartsWith(UTF8STRC("{")) || sbTmp.StartsWith(UTF8STRC("(")))
 								{
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 									reader->NextWord(&sb);
 									sbTmp.ClearStr();
 									reader->PeekWord(&sbTmp);
@@ -698,7 +698,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								sb.ClearStr();
 								sb.Append(currObj->typeVal);
-								sb.AppendChar(' ', 1);
+								sb.AppendUTF8Char(' ');
 								if (!reader->NextWord(&sb))
 								{
 									errMessage->AppendC(UTF8STRC("Unexpected end of file after OF"));
@@ -723,7 +723,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								{
 									Text::StringBuilderUTF8 sbTmp;
 									sbTmp.Append(currObj->typeVal);
-									sbTmp.AppendChar(' ', 1);
+									sbTmp.AppendUTF8Char(' ');
 									reader->NextWord(&sbTmp);
 									currObj->typeVal->Release();
 									currObj->typeVal = Text::String::New(sbTmp.ToString(), sbTmp.GetLength());
@@ -809,7 +809,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							if (sb.StartsWith(UTF8STRC("{")) || sb.StartsWith(UTF8STRC("\"")))
 							{
-								sbObjValCont.AppendChar(' ', 1);
+								sbObjValCont.AppendUTF8Char(' ');
 								sbObjValCont.AppendC(sb.ToString(), sb.GetLength());
 								proc = true;
 							}
@@ -962,7 +962,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								sb.TrimToLength((UOSInt)i);
 							}
 
-							if ((impModule = this->moduleMap->Get(sb.ToString())) != 0)
+							if ((impModule = this->moduleMap->GetC(sb.ToCString())) != 0)
 							{
 								
 							}
@@ -970,15 +970,15 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 							{
 								UTF8Char sbuff[512];
 								UTF8Char *sptr;
-								sptr = Text::StrConcat(sbuff, module->moduleFileName);
+								sptr = module->moduleFileName->ConcatTo(sbuff);
 								j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
-								Text::StrConcatC(&sbuff[j + 1], sb.ToString(), sb.GetLength());
-								succ = LoadFileInner(sbuff, errMessage, false);
+								sptr = Text::StrConcatC(&sbuff[j + 1], sb.ToString(), sb.GetLength());
+								succ = LoadFileInner(CSTRP(sbuff, sptr), errMessage, false);
 								if (!succ)
 								{
 									return false;
 								}
-								impModule = this->moduleMap->Get(sb.ToString());
+								impModule = this->moduleMap->GetC(sb.ToCString());
 							}
 							
 							if (impModule == 0)
@@ -1281,9 +1281,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									reader->PeekWord(&sbObjValCont);
 									if (sbObjValCont.Equals(UTF8STRC("OF")))
 									{
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										reader->NextWord(&sb);
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										reader->NextWord(&sb);
 									}
 									sbObjValCont.ClearStr();
@@ -1323,7 +1323,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								{
 									sb.ClearStr();
 									sb.Append(obj->typeVal);
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 									reader->NextWord(&sb);
 
 									Text::StringBuilderUTF8 sbTmp;
@@ -1343,9 +1343,9 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										sb.ClearStr();
 										sb.Append(obj->typeVal);
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										reader->NextWord(&sb);
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										reader->NextWord(&sb);
 										obj->typeVal->Release();
 										obj->typeVal = Text::String::New(sb.ToString(), sb.GetLength());
@@ -1354,16 +1354,16 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										sb.ClearStr();
 										sb.Append(obj->typeVal);
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										reader->NextWord(&sb);
 
 										sbObjValCont.ClearStr();
 										reader->PeekWord(&sbObjValCont);
 										if (sbObjValCont.Equals(UTF8STRC("OF")))
 										{
-											sb.AppendChar(' ', 1);
+											sb.AppendUTF8Char(' ');
 											reader->NextWord(&sb);
-											sb.AppendChar(' ', 1);
+											sb.AppendUTF8Char(' ');
 											reader->NextWord(&sb);
 										}
 										obj->typeVal->Release();
@@ -1588,11 +1588,10 @@ Bool Net::ASN1MIB::ApplyModuleOIDs(ModuleInfo *module, Text::StringBuilderUTF8 *
 
 Bool Net::ASN1MIB::ApplyOIDs(Text::StringBuilderUTF8 *errMessage)
 {
-	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
-	UOSInt i = moduleList->GetCount();
+	UOSInt i = this->moduleMap->GetCount();
 	while (i-- > 0)
 	{
-		if (!ApplyModuleOIDs(moduleList->GetItem(i), errMessage))
+		if (!ApplyModuleOIDs(this->moduleMap->GetItem(i), errMessage))
 		{
 			return false;
 		}
@@ -1676,39 +1675,38 @@ Bool Net::ASN1MIB::ApplyImports(Text::StringBuilderUTF8 *errMessage)
 	return true;
 }
 
-Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply)
+Bool Net::ASN1MIB::LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8 *errMessage, Bool postApply)
 {
 	Text::StringBuilderUTF8 sbFileName;
 	IO::FileStream *fs;
 	Net::MIBReader *reader;
 	ModuleInfo *module;
 	Bool succ;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	if (IO::Path::GetPathType(fileName, fileNameLen) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(fileName.v, fileName.leng) != IO::Path::PathType::File)
 	{
 		sbFileName.ClearStr();
-		sbFileName.AppendC(fileName, fileNameLen);
+		sbFileName.Append(fileName);
 		sbFileName.AppendC(UTF8STRC(".asn"));
 		if (IO::Path::GetPathType(sbFileName.ToString(), sbFileName.GetLength()) == IO::Path::PathType::File)
 		{
-			fileName = sbFileName.ToString();
-			fileNameLen = sbFileName.GetLength();
+			fileName.v = sbFileName.ToString();
+			fileName.leng = sbFileName.GetLength();
 		}
 		else
 		{
 			sbFileName.ClearStr();
-			sbFileName.AppendC(fileName, fileNameLen);
+			sbFileName.Append(fileName);
 			sbFileName.AppendC(UTF8STRC(".mib"));
-			fileName = sbFileName.ToString();
-			fileNameLen = sbFileName.GetLength();
+			fileName.v = sbFileName.ToString();
+			fileName.leng = sbFileName.GetLength();
 		}
 	}
-	NEW_CLASS(fs, IO::FileStream({fileName, fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);
 		errMessage->AppendC(UTF8STRC("Error in opening file "));
-		errMessage->AppendC(fileName, fileNameLen);
+		errMessage->Append(fileName);
 		return false;
 	}
 	succ = false;
@@ -1807,8 +1805,8 @@ Bool Net::ASN1MIB::LoadFileInner(const UTF8Char *fileName, Text::StringBuilderUT
 	if (succ)
 	{
 		module = MemAlloc(ModuleInfo, 1);
-		module->moduleName = Text::StrCopyNewC(sbModuleName.ToString(), sbModuleName.GetLength());
-		module->moduleFileName = Text::StrCopyNewC(fileName, fileNameLen);
+		module->moduleName = Text::String::New(sbModuleName.ToString(), sbModuleName.GetLength());
+		module->moduleFileName = Text::String::New(fileName.v, fileName.leng);
 		NEW_CLASS(module->objKeys, Data::ArrayListString());
 		NEW_CLASS(module->objValues, Data::ArrayList<ObjectInfo*>());
 		NEW_CLASS(module->oidList, Data::ArrayList<ObjectInfo*>());
@@ -2014,7 +2012,7 @@ UTF8Char Net::ASN1MIB::NextChar(const UTF8Char *s)
 
 Net::ASN1MIB::ASN1MIB()
 {
-	NEW_CLASS(this->moduleMap, Data::StringUTF8Map<ModuleInfo *>());
+	NEW_CLASS(this->moduleMap, Data::FastStringMap<ModuleInfo *>());
 	NEW_CLASS(this->globalModule.objKeys, Data::ArrayListString());
 	NEW_CLASS(this->globalModule.objValues, Data::ArrayList<ObjectInfo*>());
 	NEW_CLASS(this->globalModule.oidList, Data::ArrayList<ObjectInfo*>());
@@ -2034,15 +2032,14 @@ Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetGlobalModule()
 	return &this->globalModule;	
 }
 
-Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(const UTF8Char *fileName)
+Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(Text::CString fileName)
 {
-	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	ModuleInfo *module;
-	UOSInt i = moduleList->GetCount();
+	UOSInt i = this->moduleMap->GetCount();
 	while (i-- > 0)
 	{
-		module = moduleList->GetItem(i);
-		if (module->moduleFileName && Text::StrEquals(module->moduleFileName, fileName))
+		module = this->moduleMap->GetItem(i);
+		if (module->moduleFileName && module->moduleFileName->Equals(fileName.v, fileName.leng))
 			return module;
 	}
 	return 0;
@@ -2050,16 +2047,15 @@ Net::ASN1MIB::ModuleInfo *Net::ASN1MIB::GetModuleByFileName(const UTF8Char *file
 
 void Net::ASN1MIB::UnloadAll()
 {
-	Data::ArrayList<ModuleInfo*> *moduleList = this->moduleMap->GetValues();
 	Data::ArrayList<ObjectInfo*> *objList;
 	ObjectInfo *obj;
 	ModuleInfo *module;
-	UOSInt i = moduleList->GetCount();
+	UOSInt i = this->moduleMap->GetCount();
 	UOSInt j;
 	UOSInt k;
 	while (i-- > 0)
 	{
-		module = moduleList->GetItem(i);
+		module = this->moduleMap->GetItem(i);
 		objList = module->objValues;
 		j = objList->GetCount();
 		while (j-- > 0)
@@ -2081,8 +2077,8 @@ void Net::ASN1MIB::UnloadAll()
 
 		DEL_CLASS(module->objKeys);
 		DEL_CLASS(module->objValues);
-		SDEL_TEXT(module->moduleName);
-		SDEL_TEXT(module->moduleFileName);
+		SDEL_STRING(module->moduleName);
+		SDEL_STRING(module->moduleFileName);
 		DEL_CLASS(module->oidList);
 		MemFree(module);
 	}
@@ -2093,7 +2089,7 @@ void Net::ASN1MIB::UnloadAll()
 	this->globalModule.objValues->Clear();
 }
 
-Bool Net::ASN1MIB::LoadFile(const UTF8Char *fileName, Text::StringBuilderUTF8 *errMessage)
+Bool Net::ASN1MIB::LoadFile(Text::CString fileName, Text::StringBuilderUTF8 *errMessage)
 {
 	return LoadFileInner(fileName, errMessage, true);
 }

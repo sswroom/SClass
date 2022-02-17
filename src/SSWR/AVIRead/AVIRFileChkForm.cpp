@@ -10,12 +10,13 @@ typedef enum
 SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::FileCheck *fileChk) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt8 *hash;
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetFont(0, 0, 8.25, false);
-	fileChk->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("File Check - ")));
-	this->SetText(sbuff);
+	sptr = fileChk->GetSourceName(Text::StrConcatC(sbuff, UTF8STRC("File Check - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	
 	NEW_CLASS(this->mnu, UI::GUIMainMenu());
 	UI::GUIMenu *mnu = this->mnu->AddSubMenu(CSTR("&File"));

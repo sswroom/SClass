@@ -384,7 +384,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 									item = itemList.GetItem(0);
 									if (item->valType == 4 && item->valLen > 0)
 									{
-										sb.AppendChar(' ', 1);
+										sb.AppendUTF8Char(' ');
 										sb.AppendC(item->valBuff, item->valLen);
 									}
 								}
@@ -506,7 +506,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 										item = itemList.GetItem(0);
 										if (item->valType == 4 && item->valLen > 0)
 										{
-											sb.AppendChar(' ', 1);
+											sb.AppendUTF8Char(' ');
 											sb.AppendC(item->valBuff, item->valLen);
 											sb.RTrim();
 										}
@@ -847,7 +847,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							sb.AppendChar(' ', 1);
+							sb.AppendUTF8Char(' ');
 							sb.AppendC(item->valBuff, item->valLen);
 						}
 					}
@@ -859,7 +859,7 @@ Net::SNMPManager::AgentInfo *Net::SNMPManager::AddAgent(const Net::SocketUtil::A
 						item = itemList.GetItem(0);
 						if (item->valType == 4 && item->valLen > 0)
 						{
-							sb.AppendChar('.', 1);
+							sb.AppendUTF8Char('.');
 							sb.AppendC(item->valBuff, item->valLen);
 						}
 					}

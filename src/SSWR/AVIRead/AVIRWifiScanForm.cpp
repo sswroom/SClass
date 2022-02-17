@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(void *userObj)
 	Net::WirelessLAN::BSSInfo *bss = (Net::WirelessLAN::BSSInfo*)me->lvWifi->GetSelectedItem();
 	if (bss == 0)
 	{
-		me->txtWifi->SetText((const UTF8Char*)"");
+		me->txtWifi->SetText(CSTR(""));
 	}
 	else
 	{
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiScanForm::OnWifiSelChg(void *userObj)
 			Net::WirelessLANIE::ToString(ie->GetIEBuff(), &sb);
 			i++;
 		}
-		me->txtWifi->SetText(sb.ToString());
+		me->txtWifi->SetText(sb.ToCString());
 	}
 	
 }
@@ -50,9 +50,11 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 	if (this->wlanInterf)
 	{
 		UTF8Char sbuff[64];
+		UTF8Char *sptr;
 		UInt8 id[8];
 		UInt64 imac;
 		Manage::HiResClock clk;
+		Text::String *s;
 		const UTF8Char *csptr;
 		Text::String *ssid;
 		Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
@@ -69,10 +71,10 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 		this->wlanInterf->GetBSSList(&bssList);
 		t2 = clk.GetTimeDiff();
 
-		Text::StrDouble(sbuff, t1);
-		this->txtScanTime->SetText(sbuff);
-		Text::StrDouble(sbuff, t2);
-		this->txtResultTime->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, t1);
+		this->txtScanTime->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, t2);
+		this->txtResultTime->SetText(CSTRP(sbuff, sptr));
 
 		i = 0;
 		j = bssList.GetCount();
@@ -113,12 +115,12 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiScan()
 			oui = bss->GetChipsetOUI(2);
 			if (oui[0] != 0 || oui[1] != 0 || oui[2] != 0)
 				this->lvWifi->SetSubItem(i, 12, Net::MACInfo::GetMACInfoOUI(oui)->name);
-			if ((csptr = bss->GetManuf()) != 0)
-				this->lvWifi->SetSubItem(i, 13, csptr);
-			if ((csptr = bss->GetModel()) != 0)
-				this->lvWifi->SetSubItem(i, 14, csptr);
-			if ((csptr = bss->GetSN()) != 0)
-				this->lvWifi->SetSubItem(i, 15, csptr);
+			if ((s = bss->GetManuf()) != 0)
+				this->lvWifi->SetSubItem(i, 13, s);
+			if ((s = bss->GetModel()) != 0)
+				this->lvWifi->SetSubItem(i, 14, s);
+			if ((s = bss->GetSN()) != 0)
+				this->lvWifi->SetSubItem(i, 15, s);
 
 			i++;
 		}
@@ -144,7 +146,7 @@ void SSWR::AVIRead::AVIRWifiScanForm::WifiClear()
 SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Wifi Scan");
+	this->SetText(CSTR("Wifi Scan"));
 
 	this->core = core;
 	NEW_CLASS(this->wlan, Net::WirelessLAN());
@@ -162,7 +164,7 @@ SSWR::AVIRead::AVIRWifiScanForm::AVIRWifiScanForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Scan"));
+	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlControl, CSTR("Scan")));
 	this->btnScan->SetRect(4, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
 	NEW_CLASS(this->lblScanTime, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Scan Time"));

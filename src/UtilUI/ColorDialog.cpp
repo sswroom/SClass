@@ -1166,6 +1166,7 @@ void UtilUI::ColorDialog::LoadColor()
 void UtilUI::ColorDialog::UpdateColor()
 {
 	UTF8Char sbuff[10];
+	UTF8Char *sptr;
 	Math::Vector3 rgbv;
 	Math::Vector3 rgbv2;
 	Math::Vector3 rgbv3;
@@ -1335,18 +1336,18 @@ void UtilUI::ColorDialog::UpdateColor()
 		bV = 0;
 	if (this->textUpdating != CT_RED)
 	{
-		Text::StrInt32(sbuff, rV);
-		this->txtR->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, rV);
+		this->txtR->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_GREEN)
 	{
-		Text::StrInt32(sbuff, gV);
-		this->txtG->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, gV);
+		this->txtG->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_BLUE)
 	{
-		Text::StrInt32(sbuff, bV);
-		this->txtB->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, bV);
+		this->txtB->SetText(CSTRP(sbuff, sptr));
 	}
 
 	RGB2YIQ(rgbv.val[0], rgbv.val[1], rgbv.val[2], &rgbv2.val[0], &rgbv2.val[1], &rgbv2.val[2]);
@@ -1367,18 +1368,18 @@ void UtilUI::ColorDialog::UpdateColor()
 		bV = 0;
 	if (this->textUpdating != CT_YIQY)
 	{
-		Text::StrInt32(sbuff, rV);
-		this->txtYIQY->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, rV);
+		this->txtYIQY->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_YIQI)
 	{
-		Text::StrInt32(sbuff, gV);
-		this->txtYIQI->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, gV);
+		this->txtYIQI->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_YIQQ)
 	{
-		Text::StrInt32(sbuff, bV);
-		this->txtYIQQ->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, bV);
+		this->txtYIQQ->SetText(CSTRP(sbuff, sptr));
 	}
 
 	RGB2HSV(rgbv.val[0], rgbv.val[1], rgbv.val[2], &rgbv2.val[0], &rgbv2.val[1], &rgbv2.val[2]);
@@ -1399,18 +1400,18 @@ void UtilUI::ColorDialog::UpdateColor()
 		bV = 0;
 	if (this->textUpdating != CT_HSVH)
 	{
-		Text::StrInt32(sbuff, rV);
-		this->txtHSVH->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, rV);
+		this->txtHSVH->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_HSVS)
 	{
-		Text::StrInt32(sbuff, gV);
-		this->txtHSVS->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, gV);
+		this->txtHSVS->SetText(CSTRP(sbuff, sptr));
 	}
 	if (this->textUpdating != CT_HSVV)
 	{
-		Text::StrInt32(sbuff, bV);
-		this->txtHSVV->SetText(sbuff);
+		sptr = Text::StrInt32(sbuff, bV);
+		this->txtHSVV->SetText(CSTRP(sbuff, sptr));
 	}
 
 	this->autoTextUpdate = false;
@@ -1426,7 +1427,7 @@ void UtilUI::ColorDialog::UpdateColor()
 UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, Media::ColorManager *colorMgr, Media::DrawEngine *eng, ColorCorrType colorCorr, Media::ColorProfile *colorProfile, Media::MonitorMgr *monMgr) : UI::GUIForm(parent, 756, 640, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Color Setting");
+	this->SetText(CSTR("Color Setting"));
 	this->SetNoResize(true);
 	this->aVal = 1.0;
 	this->rVal = 0.0;
@@ -1528,10 +1529,10 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);
 	this->txtPrimaries->SetReadOnly(true);
-	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, (const UTF8Char*)"&Ok"));
+	NEW_CLASS(this->btnOk, UI::GUIButton(ui, this, CSTR("&Ok")));
 	this->btnOk->SetRect(604, 452, 100, 23, false);
 	this->btnOk->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(604, 500, 100, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 	this->SetDefaultButton(this->btnOk);

@@ -311,12 +311,12 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 			{
 				sb->AppendC(UTF8STRC("\r\nEntry "));
 				sb->AppendUOSInt(i);
-				sb->AppendChar(' ', 1);
-				sb->AppendChar('R', 1);
+				sb->AppendUTF8Char(' ');
+				sb->AppendUTF8Char('R');
 				sb->AppendU16(tagData[j + 0]);
-				sb->AppendChar('G', 1);
+				sb->AppendUTF8Char('G');
 				sb->AppendU16(tagData[j + 1]);
-				sb->AppendChar('B', 1);
+				sb->AppendUTF8Char('B');
 				sb->AppendU16(tagData[j + 2]);
 				i++;
 				j += 3;

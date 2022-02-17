@@ -53,30 +53,31 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnSpeedClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRHashTestForm *me = (SSWR::AVIRead::AVIRHashTestForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt i = me->cboAlgorithm->GetSelectedIndex();
 	if (i != INVALID_INDEX)
 	{
 		Crypto::Hash::IHash *hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboAlgorithm->GetItem(i));
 		if (hash)
 		{
-			Text::StrDouble(sbuff, HashTestSpeed(hash));
-			me->txtSpeed->SetText(sbuff);
+			sptr = Text::StrDouble(sbuff, HashTestSpeed(hash));
+			me->txtSpeed->SetText(CSTRP(sbuff, sptr));
 			DEL_CLASS(hash);
 		}
 		else
 		{
-			me->txtSpeed->SetText((const UTF8Char*)"-");
+			me->txtSpeed->SetText(CSTR("-"));
 		}
 	}
 	else
 	{
-		me->txtSpeed->SetText((const UTF8Char*)"-");
+		me->txtSpeed->SetText(CSTR("-"));
 	}
 }
 
 SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"Hash Test");
+	this->SetText(CSTR("Hash Test"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -90,7 +91,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->lblAlgorithm->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAlgorithm, UI::GUIComboBox(ui, this->tpAlgorithm, false));
 	this->cboAlgorithm->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this->tpAlgorithm, (const UTF8Char*)"Test Speed"));
+	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this->tpAlgorithm, CSTR("Test Speed")));
 	this->btnSpeed->SetRect(304, 4, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpAlgorithm, (const UTF8Char*)"Speed"));
@@ -103,7 +104,7 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlCompare, UI::GUIPanel(ui, this->tpCompare));
 	this->pnlCompare->SetRect(0, 0, 100, 31, false);
 	this->pnlCompare->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnCompare, UI::GUIButton(ui, this->pnlCompare, (const UTF8Char*)"Compare"));
+	NEW_CLASS(this->btnCompare, UI::GUIButton(ui, this->pnlCompare, CSTR("Compare")));
 	this->btnCompare->SetRect(4, 4, 75, 23, false);
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	NEW_CLASS(this->lvCompare, UI::GUIListView(ui, this->tpCompare, UI::GUIListView::LVSTYLE_TABLE, 2));

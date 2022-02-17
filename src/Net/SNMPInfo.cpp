@@ -54,7 +54,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 	if (name)
 	{
 		sb->AppendSlow(name);
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 	}
 	UInt8 t = pdu[0];
 	UOSInt len = pdu[1];
@@ -142,7 +142,7 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 		sb->AppendC(UTF8STRC("NULL"));
 		if (len > 0)
 		{
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendHexBuff(&pdu[hdrSize], len, ' ', Text::LineBreakType::None);
 		}
 		return len + hdrSize;
@@ -323,7 +323,7 @@ void Net::SNMPInfo::ValueToString(UInt8 type, const UInt8 *pduBuff, UOSInt valLe
 	case 5:
 		if (valLen > 0)
 		{
-			sb->AppendChar(' ', 1);
+			sb->AppendUTF8Char(' ');
 			sb->AppendHexBuff(pduBuff, valLen, ' ', Text::LineBreakType::None);
 		}
 		break;

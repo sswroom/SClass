@@ -36,10 +36,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnMouseDown(void *userObj, O
 	{
 		me->currX = lon;
 		me->currY = lat;
-		Text::StrDouble(sbuff, lat);
-		me->txtCurrLat->SetText(sbuff);
-		Text::StrDouble(sbuff, lon);
-		me->txtCurrLon->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, lat);
+		me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, lon);
+		me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
 		me->navi->ShowMarker(lat, lon);
 	}
 	else
@@ -59,14 +59,14 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnStreamClicked(void *userOb
 	{
 		DEL_CLASS(me->stm);
 		me->stm = 0;
-		me->txtStreamType->SetText((const UTF8Char*)"-");
+		me->txtStreamType->SetText(CSTR("-"));
 	}
 	SSWR::AVIRead::AVIRCore::StreamType st;
 	IO::Stream *stm = me->core->OpenStream(&st, me, 0, false);
 	if (stm)
 	{
 		me->stm = stm;
-		me->txtStreamType->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st).v);
+		me->txtStreamType->SetText(SSWR::AVIRead::AVIRCore::GetStreamTypeName(st));
 	}
 }
 
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnSpeedClicked(void *userObj
 		if (v > 0 && v < 300)
 		{
 			me->speed = v;
-			me->txtSpeed->SetText(sb.ToString());
+			me->txtSpeed->SetText(sb.ToCString());
 		}
 	}
 }
@@ -90,6 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRGPSSimulatorForm *me = (SSWR::AVIRead::AVIRGPSSimulatorForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->stm)
 	{
 		if (me->points->GetCount() > 0)
@@ -114,10 +115,10 @@ void __stdcall SSWR::AVIRead::AVIRGPSSimulatorForm::OnTimerTick(void *userObj)
 				me->GenRecord(me->currY, me->currX, dir * 180 / Math::PI, maxDist * 3.6 / 1.852, true);
 			}
 			me->navi->ShowMarker(me->currY, me->currX);
-			Text::StrDouble(sbuff, me->currX);
-			me->txtCurrLon->SetText(sbuff);
-			Text::StrDouble(sbuff, me->currY);
-			me->txtCurrLat->SetText(sbuff);
+			sptr = Text::StrDouble(sbuff, me->currX);
+			me->txtCurrLon->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, me->currY);
+			me->txtCurrLat->SetText(CSTRP(sbuff, sptr));
 		}
 		else if (me->currX == 0 && me->currY == 0)
 		{
@@ -282,7 +283,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->core = core;
 	this->navi = navi;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"GPS Simulator");
+	this->SetText(CSTR("GPS Simulator"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->currX = 0;
@@ -297,7 +298,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtStreamType->SetRect(104, 4, 200, 23, false);
 	this->txtStreamType->SetReadOnly(true);
-	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this, (const UTF8Char*)"Open"));
+	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this, CSTR("Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	NEW_CLASS(this->chkAddPoints, UI::GUICheckBox(ui, this, (const UTF8Char*)"Add Points", false));
@@ -309,7 +310,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->txtSpeed->SetReadOnly(true);
 	NEW_CLASS(this->txtSpeedInput, UI::GUITextBox(ui, this, CSTR("50")));
 	this->txtSpeedInput->SetRect(204, 52, 100, 23, false);
-	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this, (const UTF8Char*)"Set"));
+	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this, CSTR("Set")));
 	this->btnSpeed->SetRect(304, 52, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
 	NEW_CLASS(this->lblCurrLat, UI::GUILabel(ui, this, (const UTF8Char*)"Current Lat"));

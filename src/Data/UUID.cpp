@@ -92,13 +92,13 @@ OSInt Data::UUID::CompareTo(UUID *uuid)
 void Data::UUID::ToString(Text::StringBuilderUTF8 *sb)
 {
 	sb->AppendHex32(ReadUInt32(&this->data[0]));
-	sb->AppendChar('-', 1);
+	sb->AppendUTF8Char('-');
 	sb->AppendHex16(ReadUInt16(&this->data[4]));
-	sb->AppendChar('-', 1);
+	sb->AppendUTF8Char('-');
 	sb->AppendHex16(ReadUInt16(&this->data[6]));
-	sb->AppendChar('-', 1);
+	sb->AppendUTF8Char('-');
 	sb->AppendHex16(ReadUInt16(&this->data[8]));
-	sb->AppendChar('-', 1);
+	sb->AppendUTF8Char('-');
 	sb->AppendHexBuff(&this->data[10], 6, 0, Text::LineBreakType::None);
 }
 

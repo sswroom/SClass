@@ -773,11 +773,11 @@ Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 {
 	if (this->lineBreak == 1)
 	{
-		sb->AppendChar('\r', 1);
+		sb->AppendUTF8Char('\r');
 	}
 	else if (this->lineBreak == 2)
 	{
-		sb->AppendChar('\n', 1);
+		sb->AppendUTF8Char('\n');
 	}
 	else if (this->lineBreak == 2)
 	{

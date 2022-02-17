@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnConnClicked(void *userObj)
 			else
 			{
 				me->dispConn = true;
-				me->txtStatusConn->SetText((const UTF8Char*)"Connected");
+				me->txtStatusConn->SetText(CSTR("Connected"));
 				me->txtHost->SetReadOnly(true);
 				me->txtPort->SetReadOnly(true);
 				me->cli = cli;
@@ -163,7 +163,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		me->dispConn = false;
 		me->txtHost->SetReadOnly(false);
 		me->txtPort->SetReadOnly(false);
-		me->txtStatusConn->SetText((const UTF8Char*)"Not Connected");
+		me->txtStatusConn->SetText(CSTR("Not Connected"));
 	}
 	if (me->alertUpd)
 	{
@@ -470,7 +470,7 @@ void SSWR::AVIRead::AVIRGPSDevForm::SendGetUser(Int32 userId)
 SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"GPSDev Viewer");
+	this->SetText(CSTR("GPSDev Viewer"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -514,7 +514,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConn, CSTR("7500")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this->pnlConn, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnConn, UI::GUIButton(ui, this->pnlConn, CSTR("Start")));
 	this->btnConn->SetRect(204, 28, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
@@ -531,7 +531,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlDeviceC, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDeviceC->SetRect(0, 0, 200, 23, false);
 	this->pnlDeviceC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnDeviceR, UI::GUIButton(ui, this->pnlDeviceC, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnDeviceR, UI::GUIButton(ui, this->pnlDeviceC, CSTR("Refresh")));
 	this->btnDeviceR->SetRect(0, 0, 100, 23, false);
 	this->btnDeviceR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnDeviceR->HandleButtonClick(OnDeviceRClicked, this);
@@ -580,7 +580,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUserC->SetRect(0, 0, 200, 23, false);
 	this->pnlUserC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnUserR, UI::GUIButton(ui, this->pnlUserC, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnUserR, UI::GUIButton(ui, this->pnlUserC, CSTR("Refresh")));
 	this->btnUserR->SetRect(0, 0, 100, 23, false);
 	this->btnUserR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnUserR->HandleButtonClick(OnUserRClicked, this);
@@ -604,7 +604,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
 	this->pnlAlertC->SetRect(0, 0, 200, 23, false);
 	this->pnlAlertC->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->btnAlertR, UI::GUIButton(ui, this->pnlAlertC, (const UTF8Char*)"Refresh"));
+	NEW_CLASS(this->btnAlertR, UI::GUIButton(ui, this->pnlAlertC, CSTR("Refresh")));
 	this->btnAlertR->SetRect(0, 0, 100, 23, false);
 	this->btnAlertR->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->btnAlertR->HandleButtonClick(OnAlertRClicked, this);

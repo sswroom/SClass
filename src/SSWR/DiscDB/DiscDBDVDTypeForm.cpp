@@ -10,14 +10,14 @@ void SSWR::DiscDB::DiscDBDVDTypeForm::ShowStatus()
 	sptr = Text::StrUOSInt(sptr, this->currIndex + 1);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" of "));
 	sptr = Text::StrUOSInt(sptr, this->env->GetDVDTypeCount());
-	this->lblDisplay->SetText(sbuff);
+	this->lblDisplay->SetText(CSTRP(sbuff, sptr));
 }
 
 void SSWR::DiscDB::DiscDBDVDTypeForm::UpdateDisplay()
 {
-	this->txtID->SetText(this->currRec->discTypeID);
-	this->txtName->SetText(this->currRec->name);
-	this->txtDescription->SetText(this->currRec->description);
+	this->txtID->SetText(this->currRec->discTypeID->ToCString());
+	this->txtName->SetText(this->currRec->name->ToCString());
+	this->txtDescription->SetText(this->currRec->description->ToCString());
 }
 
 Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
@@ -53,12 +53,12 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 
     if (this->newRec)
 	{
-		const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *newRec = this->env->NewDVDType(sbID.ToString(), sbName.ToString(), sbDesc.ToString());
+		const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *newRec = this->env->NewDVDType(sbID.ToCString(), sbName.ToCString(), sbDesc.ToCString());
 		if (newRec)
 		{
 			this->newRec = false;
 			this->txtID->SetReadOnly(true);
-			this->currIndex = (UOSInt)this->env->GetDVDTypeIndex(sbID.ToString());
+			this->currIndex = (UOSInt)this->env->GetDVDTypeIndex(sbID.ToCString());
 			this->currRec = newRec;
 			this->btnCancel->SetVisible(false);
 			this->ShowStatus();
@@ -72,14 +72,14 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 	}
 	else
 	{
-		this->env->ModifyDVDType(sbID.ToString(), sbName.ToString(), sbDesc.ToString());
+		this->env->ModifyDVDType(sbID.ToCString(), sbName.ToCString(), sbDesc.ToCString());
 		return true;
 	}
 }
 
 SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 358, 223, ui)
 {
-	this->SetText((const UTF8Char*)"Maintain DVD Types");
+	this->SetText(CSTR("Maintain DVD Types"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->env = env;
@@ -90,9 +90,9 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtID->SetRect(96, 9, 100, 20, false);
 	this->txtID->SetReadOnly(true);
-	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this, (const UTF8Char*)"N&ew"));
+	NEW_CLASS(this->btnNew, UI::GUIButton(ui, this, CSTR("N&ew")));
 	this->btnNew->SetRect(224, 9, 80, 25, false);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(224, 43, 80, 25, false);
 	this->btnCancel->SetVisible(false);
 	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, (const UTF8Char*)"Name"));
@@ -105,11 +105,11 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
 	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, this, (const UTF8Char*)""));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);
-	NEW_CLASS(this->btnPrev, UI::GUIButton(ui, this, (const UTF8Char*)"&Prev"));
+	NEW_CLASS(this->btnPrev, UI::GUIButton(ui, this, CSTR("&Prev")));
 	this->btnPrev->SetRect(8, 147, 75, 25, false);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this, (const UTF8Char*)"&Save"));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this, CSTR("&Save")));
 	this->btnSave->SetRect(120, 147, 75, 25, false);
-	NEW_CLASS(this->btnNext, UI::GUIButton(ui, this, (const UTF8Char*)"&Next"));
+	NEW_CLASS(this->btnNext, UI::GUIButton(ui, this, CSTR("&Next")));
 	this->btnNext->SetRect(240, 147, 75, 25, false);
 
     if (this->env->GetDVDTypeCount() <= 0)
@@ -124,9 +124,9 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	{
         this->currIndex = 0;
         this->currRec = this->env->GetDVDType(this->currIndex);
-        this->txtID->SetText(this->currRec->discTypeID);
-        this->txtName->SetText(this->currRec->name);
-        this->txtDescription->SetText(this->currRec->description);
+        this->txtID->SetText(this->currRec->discTypeID->ToCString());
+        this->txtName->SetText(this->currRec->name->ToCString());
+        this->txtDescription->SetText(this->currRec->description->ToCString());
 	}
     this->ShowStatus();
 }

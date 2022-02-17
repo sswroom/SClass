@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 
 SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 456, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Select WMI Namespace");
+	this->SetText(CSTR("Select WMI Namespace"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -73,10 +73,10 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lbNS->SetRect(112, 8, 256, 112, false);
 	this->lbNS->HandleDoubleClicked(OnDblClicked, this);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(112, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(192, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

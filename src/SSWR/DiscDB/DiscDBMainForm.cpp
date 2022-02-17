@@ -63,7 +63,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 
 SSWR::DiscDB::DiscDBMainForm::DiscDBMainForm(UI::GUICore *ui, UI::GUIClientControl *parent, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 430, 344, ui)
 {
-	this->SetText((const UTF8Char*)"Main Menu");
+	this->SetText(CSTR("Main Menu"));
 	this->SetFont(0, 0, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));

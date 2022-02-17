@@ -127,7 +127,7 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"ARP Scan");
+	this->SetText(CSTR("ARP Scan"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboAdapter->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Scan"));
+	NEW_CLASS(this->btnScan, UI::GUIButton(ui, this->pnlCtrl, CSTR("Scan")));
 	this->btnScan->SetRect(254, 4, 75, 23, false);
 	this->btnScan->HandleButtonClick(OnScanClicked, this);
 	NEW_CLASS(this->lvARP, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));

@@ -37,14 +37,14 @@ OSInt __stdcall UI::GUIButton::BTNWndProc(void *hWnd, UInt32 msg, UInt32 wParam,
 	return 0;
 }
 
-UI::GUIButton::GUIButton(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *txt) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(GUICore *ui, UI::GUIClientControl *parent, Text::CString txt) : UI::GUIControl(ui, parent)
 {
 	UInt32 style = WS_CHILD | WS_TABSTOP;
 	if (parent->IsChildVisible())
 	{
 		style |= WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", txt, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
 	NEW_CLASS(this->btnClkHandlers, Data::ArrayList<UIEvent>());
 	NEW_CLASS(this->btnClkHandlersObjs, Data::ArrayList<void *>());
 	NEW_CLASS(this->btnUpDownHandlers, Data::ArrayList<UpDownEvent>());
@@ -75,9 +75,9 @@ UI::GUIButton::~GUIButton()
 	DEL_CLASS(this->btnUpDownHandlersObjs);
 }
 
-void UI::GUIButton::SetText(const UTF8Char *text)
+void UI::GUIButton::SetText(Text::CString text)
 {
-	const WChar *wptr = Text::StrToWCharNew(text);
+	const WChar *wptr = Text::StrToWCharNew(text.v);
 	SetWindowTextW((HWND)this->hwnd, wptr);
 	Text::StrDelNew(wptr);
 }

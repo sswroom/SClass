@@ -210,7 +210,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 							{
 								if (sb.GetLength() > 0)
 								{
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 								}						
 								sb.AppendC((const UTF8Char*)cbuff, readSize);
 							}

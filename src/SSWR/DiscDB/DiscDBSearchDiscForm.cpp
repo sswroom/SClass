@@ -10,7 +10,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 	if (sb.GetLength() <= 0)
 		return;
 
-	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->GetBurntDisc(sb.ToString());
+	const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *disc = me->env->GetBurntDisc(sb.ToCString());
 	SSWR::DiscDB::DiscDBEnv::DiscFileInfo *file;
 	UOSInt i;
 	UOSInt j;
@@ -18,23 +18,24 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 	if (disc)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		if (disc->burntDate == 0)
 		{
-			me->txtBurntDate->SetText((const UTF8Char*)"");
+			me->txtBurntDate->SetText(CSTR(""));
 		}
 		else
 		{
 			Data::DateTime dt;
 			dt.SetTicks(disc->burntDate);
-			dt.ToString(sbuff, "yyyy-MM-dd");
-			me->txtBurntDate->SetText(sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd");
+			me->txtBurntDate->SetText(CSTRP(sbuff, sptr));
 		}
-		me->txtDiscType->SetText(disc->discTypeId);
-		me->txtDiscIdOut->SetText(disc->discId);
+		me->txtDiscType->SetText(disc->discTypeId->ToCString());
+		me->txtDiscIdOut->SetText(disc->discId->ToCString());
 
 		me->lvFiles->ClearItems();
 		Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DiscFileInfo*> fileList;
-		me->env->GetBurntFiles(disc->discId, &fileList);
+		me->env->GetBurntFiles(disc->discId->ToCString(), &fileList);
 		i = 0;
 		j = fileList.GetCount();
 		while (i < j)
@@ -52,7 +53,7 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 
 SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::DiscDB::DiscDBEnv *env) : UI::GUIForm(parent, 300, 322, ui)
 {
-	this->SetText((const UTF8Char*)"DVDType");
+	this->SetText(CSTR("DVDType"));
 	this->SetFont(0, 0, 8.25, false);
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
@@ -64,7 +65,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->lblDiscId->SetRect(8, 9, 56, 25, false);
 	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlDiscId, CSTR("")));
 	this->txtDiscId->SetRect(64, 9, 120, 20, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlDiscId, (const UTF8Char*)"&Search"));
+	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlDiscId, CSTR("&Search")));
 	this->btnSearch->SetRect(208, 9, 75, 25, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->pnlOut, UI::GUIPanel(ui, this));

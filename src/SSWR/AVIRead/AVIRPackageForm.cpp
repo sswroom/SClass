@@ -189,6 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRPackageForm *me = (SSWR::AVIRead::AVIRPackageForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (me->statusChg)
 	{
 		UOSInt i;
@@ -268,7 +269,7 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	if (me->progStarted)
 	{
 		me->progStarted = false;
-		me->prgStatus->ProgressStart(me->progName, me->progStartCnt);
+		me->prgStatus->ProgressStart(me->progName->ToCString(), me->progStartCnt);
 	}
 	UInt64 progUpdateCurr = me->progUpdateCurr;
 	UInt64 progUpdateNew = me->progUpdateNew;
@@ -294,15 +295,15 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 		hasFile = (me->statusFile != 0);
 		if (hasFile)
 		{
-			me->txtStatusFile->SetText(me->statusFile);
-			Text::StrUInt64(sbuff, me->statusFileSize);
-			me->txtStatusFileSize->SetText(sbuff);
+			me->txtStatusFile->SetText(me->statusFile->ToCString());
+			sptr = Text::StrUInt64(sbuff, me->statusFileSize);
+			me->txtStatusFileSize->SetText(CSTRP(sbuff, sptr));
 			fileSize = me->statusFileSize;
 		}
 		else
 		{
-			me->txtStatusFile->SetText((const UTF8Char*)"");
-			me->txtStatusFileSize->SetText((const UTF8Char*)"");
+			me->txtStatusFile->SetText(CSTR(""));
+			me->txtStatusFileSize->SetText(CSTR(""));
 		}
 		mutUsage.EndUse();
 	}
@@ -315,25 +316,25 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 	}
 	if (readPos != me->statusDispSize)
 	{
-		Text::StrUInt64(sbuff, readPos);
-		me->txtStatusCurrSize->SetText(sbuff);
+		sptr = Text::StrUInt64(sbuff, readPos);
+		me->txtStatusCurrSize->SetText(CSTRP(sbuff, sptr));
 		me->statusDispSize = readPos;
 	}
 	if (spd != me->statusDispSpd)
 	{
-		Text::StrDoubleFmt(sbuff, spd, "0.0");
-		me->txtStatusCurrSpeed->SetText(sbuff);
+		sptr = Text::StrDoubleFmt(sbuff, spd, "0.0");
+		me->txtStatusCurrSpeed->SetText(CSTRP(sbuff, sptr));
 		me->statusDispSpd = spd;
 	}
 	if (hasFile && fileSize != 0 && spd != 0)
 	{
 		Double t = (Double)(fileSize - readPos) / spd;
-		Text::StrDoubleFmt(sbuff, t, "0.0");
-		me->txtStatusTimeLeft->SetText(sbuff);
+		sptr = Text::StrDoubleFmt(sbuff, t, "0.0");
+		me->txtStatusTimeLeft->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		me->txtStatusTimeLeft->SetText((const UTF8Char*)"?");
+		me->txtStatusTimeLeft->SetText(CSTR("?"));
 	}
 	if (me->statusDispBNT != me->statusBNT)
 	{
@@ -468,8 +469,9 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 {
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
-	packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
-	this->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = packFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Package Form - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 
 	this->core = core;
 	this->packFile = packFile;
@@ -489,7 +491,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->readTotal = 0;
 	this->readCurr = 0;
 	this->readLast = 0;
-	this->readCurrFile = 0;
+	this->readCurrFile = CSTR_NULL;
 	this->readFileCnt = 0;
 	NEW_CLASS(this->statusFileMut, Sync::Mutex());
 	this->statusFileChg = false;
@@ -601,7 +603,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->txtInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	Text::StringBuilderUTF8 sb;
 	this->packFile->GetInfoText(&sb);
-	this->txtInfo->SetText(sb.ToString());
+	this->txtInfo->SetText(sb.ToCString());
 
 	this->SetMenu(mnuMain);
 }
@@ -624,10 +626,10 @@ SSWR::AVIRead::AVIRPackageForm::~AVIRPackageForm()
 	DEL_CLASS(this->readReadTime);
 	DEL_CLASS(this->threadEvt);
 	DEL_CLASS(this->statusFileMut);
-	SDEL_TEXT(this->statusFile);
+	SDEL_STRING(this->statusFile);
 	DEL_CLASS(this->mnuPopup);
 	DEL_CLASS(this->progMut);
-	SDEL_TEXT(this->progName);
+	SDEL_STRING(this->progName);
 }
 
 void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
@@ -736,7 +738,7 @@ void SSWR::AVIRead::AVIRPackageForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, UInt64 count)
+void SSWR::AVIRead::AVIRPackageForm::ProgressStart(Text::CString name, UInt64 count)
 {
 	{
 		Sync::MutexUsage mutUsage(this->readMut);
@@ -748,8 +750,8 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, UInt64 
 
 	{
 		Sync::MutexUsage mutUsage(this->statusFileMut);
-		SDEL_TEXT(this->statusFile);
-		this->statusFile = Text::StrCopyNew(name);
+		SDEL_STRING(this->statusFile);
+		this->statusFile = Text::String::New(name);
 		this->statusFileSize = count;
 		this->statusFileChg = true;
 		mutUsage.EndUse();
@@ -758,8 +760,8 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressStart(const UTF8Char *name, UInt64 
 	{
 		Sync::MutexUsage mutUsage(this->progMut);
 		this->progStarted = true;
-		SDEL_TEXT(this->progName);
-		this->progName = Text::StrCopyNew(name);
+		SDEL_STRING(this->progName);
+		this->progName = Text::String::New(name);
 		this->progStartCnt = count;
 		this->progEnd = false;
 		mutUsage.EndUse();
@@ -800,7 +802,7 @@ void SSWR::AVIRead::AVIRPackageForm::ProgressEnd()
 
 	{
 		Sync::MutexUsage mutUsage(this->statusFileMut);
-		SDEL_TEXT(this->statusFile);
+		SDEL_STRING(this->statusFile);
 		this->statusFileChg = true;
 		mutUsage.EndUse();
 	}

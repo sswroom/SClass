@@ -234,7 +234,7 @@ Bool SSWR::AVIRead::AVIRImageViewerForm::IsImageFileName(const UTF8Char *fileNam
 SSWR::AVIRead::AVIRImageViewerForm::AVIRImageViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Image Viewer");
+	this->SetText(CSTR("Image Viewer"));
 
 	this->imgTimeoutTick = 0;
 	this->core = core;
@@ -335,7 +335,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::EventMenuClicked(UInt16 cmdId)
 			this->imgList->ToString(&sbImg);
 			sbTitle.AppendC(UTF8STRC("Image info for "));
 			sbTitle.Append(this->imgList->GetSourceNameObj());
-			NEW_CLASS(frm, SSWR::AVIRead::AVIRStringMsgForm(0, this->ui, this->core, sbTitle.ToString(), sbImg.ToCString()));
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRStringMsgForm(0, this->ui, this->core, sbTitle.ToCString(), sbImg.ToCString()));
 			frm->ShowDialog(this);
 			DEL_CLASS(frm);
 		}
@@ -374,8 +374,8 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	{
 		UInt32 imgDurMS;
 		this->imgIndex = 0;
-		this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
-		this->SetText(sbuff);
+		sptr = this->imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Viewer - ")));
+		this->SetText(CSTRP(sbuff, sptr));
 		this->pbImage->SetImage(this->imgList->GetImage(0, &imgDurMS), false);
 		if (imgDurMS != 0 && this->imgList->GetCount() > 1)
 		{
@@ -412,7 +412,7 @@ void SSWR::AVIRead::AVIRImageViewerForm::SetImage(Media::ImageList *imgList, Boo
 	}
 	else
 	{
-		this->SetText((const UTF8Char*)"Image Viewer");
+		this->SetText(CSTR("Image Viewer"));
 	}
 }
 

@@ -42,7 +42,7 @@ gboolean GUIButton_OnFocusLost(void *window, void *userObj)
 	return FALSE;
 }
 
-UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *label) : UI::GUIControl(ui, parent)
+UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
 {
 	NEW_CLASS(this->btnClkHandlers, Data::ArrayList<UIEvent>());
 	NEW_CLASS(this->btnClkHandlersObjs, Data::ArrayList<void*>());
@@ -72,12 +72,12 @@ UI::GUIButton::~GUIButton()
 	DEL_CLASS(this->btnUpDownHandlersObjs);
 }
 
-void UI::GUIButton::SetText(const UTF8Char *text)
+void UI::GUIButton::SetText(Text::CString text)
 {
 	UTF8Char *cptr;
 	UTF8Char c;
 	Bool hasUL = false;
-	const UTF8Char *lbl = Text::StrCopyNew(text);
+	const UTF8Char *lbl = Text::StrCopyNewC(text.v, text.leng);
 	cptr = (UTF8Char*)lbl;
 	while ((c = *cptr++) != 0)
 	{

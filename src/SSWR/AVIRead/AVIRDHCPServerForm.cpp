@@ -207,7 +207,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->sockf = this->core->GetSocketFactory();
 	this->svr = 0;
-	this->SetText((const UTF8Char*)"DHCP Server");
+	this->SetText(CSTR("DHCP Server"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -242,7 +242,7 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	this->lblDNS2->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDNS2, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtDNS2->SetRect(104, 148, 100, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 172, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lvDevices, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));

@@ -45,7 +45,7 @@ namespace SSWR
 			IMapNavigator *navi;
 			UOSInt startMark;
 			UOSInt endMark;
-			const UTF8Char **names;
+			Text::String **names;
 			UOSInt namesCnt;
 			Bool threadRunning;
 			Bool threadToStop;

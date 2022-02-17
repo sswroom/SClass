@@ -24,7 +24,7 @@ void __stdcall UtilUI::TextSearchForm::OnCloseClicked(void *userObj)
 UtilUI::TextSearchForm::TextSearchForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::MonitorMgr *monMgr, UtilUI::TextViewerForm *mainFrm) : UI::GUIForm(parent, 320, 120, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Search");
+	this->SetText(CSTR("Search"));
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
 	this->mainFrm = mainFrm;
@@ -33,10 +33,10 @@ UtilUI::TextSearchForm::TextSearchForm(UI::GUIClientControl *parent, UI::GUICore
 	this->lblSearch->SetRect(8, 16, 80, 21, false);
 	NEW_CLASS(this->txtSearch, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSearch->SetRect(88, 14, 100, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this, (const UTF8Char*)"&Search"));
+	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this, CSTR("&Search")));
 	this->btnSearch->SetRect(8, 56, 100, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
-	NEW_CLASS(this->btnClose, UI::GUIButton(ui, this, (const UTF8Char*)"&Close"));
+	NEW_CLASS(this->btnClose, UI::GUIButton(ui, this, CSTR("&Close")));
 	this->btnClose->SetRect(128, 56, 100, 23, false);
 	this->btnClose->HandleButtonClick(OnCloseClicked, this);
 	this->SetDefaultButton(this->btnSearch);

@@ -40,10 +40,10 @@ namespace SSWR
 				Text::String *ssid;
 				Int32 phyType;
 				Double freq;
-				const UTF8Char *manuf;
-				const UTF8Char *model;
-				const UTF8Char *serialNum;
-				const UTF8Char *country;
+				Text::String *manuf;
+				Text::String *model;
+				Text::String *serialNum;
+				Text::String *country;
 				UInt8 ouis[3][3];
 				UInt64 neighbour[20];
 			} WifiLog;

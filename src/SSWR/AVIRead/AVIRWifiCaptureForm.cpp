@@ -35,8 +35,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		if (power.hasBattery)
 		{
-			Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
-			me->txtBattery->SetText(sbuff);
+			sptr = Text::StrConcatC(Text::StrUInt32(sbuff, power.batteryPercent), UTF8STRC("%"));
+			me->txtBattery->SetText(CSTRP(sbuff, sptr));
 			if (power.batteryPercent <= 15 && me->captureWriter)
 			{
 				Sync::MutexUsage mutUsage(me->captureMut);
@@ -50,19 +50,19 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			me->txtBattery->SetText((const UTF8Char*)"Battery not found");
+			me->txtBattery->SetText(CSTR("Battery not found"));
 		}
 	}
 	else
 	{
-		me->txtBattery->SetText((const UTF8Char*)"Cannot read battery status");
+		me->txtBattery->SetText(CSTR("Cannot read battery status"));
 	}
 	if (me->motion)
 	{
 		me->motion->UpdateStatus();
 		if (me->motion->IsMovving())
 		{
-			me->txtMotion->SetText((const UTF8Char*)"Moving");
+			me->txtMotion->SetText(CSTR("Moving"));
 			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 1)
 			{
@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		}
 		else
 		{
-			me->txtMotion->SetText((const UTF8Char*)"Stopped");
+			me->txtMotion->SetText(CSTR("Stopped"));
 			Sync::MutexUsage mutUsage(me->captureMut);
 			if (me->captureWriter && me->lastMotion != 0)
 			{
@@ -93,22 +93,22 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 	{
 		Data::DateTime dt;
 		me->gpsChg = false;
-		Text::StrDouble(sbuff, me->currLat);
-		me->txtGPSLat->SetText(sbuff);
-		Text::StrDouble(sbuff, me->currLon);
-		me->txtGPSLon->SetText(sbuff);
-		Text::StrDouble(sbuff, me->currAlt);
-		me->txtGPSAlt->SetText(sbuff);
+		sptr = Text::StrDouble(sbuff, me->currLat);
+		me->txtGPSLat->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->currLon);
+		me->txtGPSLon->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->currAlt);
+		me->txtGPSAlt->SetText(CSTRP(sbuff, sptr));
 		dt.SetTicks(me->currGPSTimeTick);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		me->txtGPSTime->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
 		if (me->currActive)
 		{
-			me->txtGPSActive->SetText((const UTF8Char*)"Active");
+			me->txtGPSActive->SetText(CSTR("Active"));
 		}
 		else
 		{
-			me->txtGPSActive->SetText((const UTF8Char*)"Void");
+			me->txtGPSActive->SetText(CSTR("Void"));
 		}
 	}
 	if (me->wlanInterf)
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 		{
 			if (me->wlanScan-- <= 0)
 			{
-				const UTF8Char *csptr;
+				Text::String *s;
 				Text::String *ssid;
 				Bool bssListUpd = false;
 				Data::ArrayList<Net::WirelessLAN::BSSInfo*> bssList;
@@ -140,13 +140,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					{
 						bss = bssList.GetItem(i);
 
-						sb.AppendChar('|', 1);
+						sb.AppendUTF8Char('|');
 						sb.AppendHexBuff(bss->GetMAC(), 6, ':', Text::LineBreakType::None);
-						sb.AppendChar('|', 1);
+						sb.AppendUTF8Char('|');
 						sb.Append(bss->GetSSID());
-						sb.AppendChar('|', 1);
+						sb.AppendUTF8Char('|');
 						Text::SBAppendF64(&sb, bss->GetRSSI());
-						sb.AppendChar('|', 1);
+						sb.AppendUTF8Char('|');
 						Text::SBAppendF64(&sb, bss->GetFreq() / 1000000.0);
 						i++;
 					}
@@ -182,12 +182,12 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					me->lvCurrWifi->SetSubItem(k, 7, sbuff);
 					Text::StrDouble(sbuff, bss->GetFreq());
 					me->lvCurrWifi->SetSubItem(k, 8, sbuff);
-					if ((csptr = bss->GetManuf()) != 0)
-						me->lvCurrWifi->SetSubItem(k, 9, csptr);
-					if ((csptr = bss->GetModel()) != 0)
-						me->lvCurrWifi->SetSubItem(k, 10, csptr);
-					if ((csptr = bss->GetSN()) != 0)
-						me->lvCurrWifi->SetSubItem(k, 11, csptr);
+					if ((s = bss->GetManuf()) != 0)
+						me->lvCurrWifi->SetSubItem(k, 9, s);
+					if ((s = bss->GetModel()) != 0)
+						me->lvCurrWifi->SetSubItem(k, 10, s);
+					if ((s = bss->GetSN()) != 0)
+						me->lvCurrWifi->SetSubItem(k, 11, s);
 					if (maxRSSI < bss->GetRSSI())
 					{
 						maxRSSI = Double2Int32(bss->GetRSSI());
@@ -205,14 +205,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						wifiLog->ssid = ssid->Clone();
 						wifiLog->phyType = bss->GetPHYType();
 						wifiLog->freq = bss->GetFreq();
-						csptr = bss->GetManuf();
-						wifiLog->manuf = csptr?Text::StrCopyNew(csptr):0;
-						csptr = bss->GetModel();
-						wifiLog->model = csptr?Text::StrCopyNew(csptr):0;
-						csptr = bss->GetSN();
-						wifiLog->serialNum = csptr?Text::StrCopyNew(csptr):0;
-						csptr = bss->GetCountry();
-						wifiLog->country = csptr?Text::StrCopyNew(csptr):0;
+						s = bss->GetManuf();
+						wifiLog->manuf = SCOPY_STRING(s);
+						s = bss->GetModel();
+						wifiLog->model = SCOPY_STRING(s);
+						s = bss->GetSN();
+						wifiLog->serialNum = SCOPY_STRING(s);
+						wifiLog->country = Text::String::NewOrNull(bss->GetCountry());
 						wifiLog->ouis[0][0] = oui1[0];
 						wifiLog->ouis[0][1] = oui1[1];
 						wifiLog->ouis[0][2] = oui1[2];
@@ -252,22 +251,22 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						k = (UOSInt)me->wifiLogMap->GetIndex(imac);
 						if (wifiLog->manuf == 0 && bss->GetManuf())
 						{
-							wifiLog->manuf = Text::StrCopyNew(bss->GetManuf());
+							wifiLog->manuf = bss->GetManuf()->Clone();
 							me->lvLogWifi->SetSubItem(k, 5, wifiLog->manuf);
 						}
 						if (wifiLog->model == 0 && bss->GetModel())
 						{
-							wifiLog->model = Text::StrCopyNew(bss->GetModel());
+							wifiLog->model = bss->GetModel()->Clone();
 							me->lvLogWifi->SetSubItem(k, 6, wifiLog->model);
 						}
 						if (wifiLog->serialNum == 0 && bss->GetSN())
 						{
-							wifiLog->serialNum = Text::StrCopyNew(bss->GetSN());
+							wifiLog->serialNum = bss->GetSN()->Clone();
 							me->lvLogWifi->SetSubItem(k, 7, wifiLog->serialNum);
 						}
 						if (wifiLog->country == 0 && bss->GetCountry())
 						{
-							wifiLog->country = Text::StrCopyNew(bss->GetCountry());
+							wifiLog->country = Text::String::NewNotNull(bss->GetCountry());
 							me->lvLogWifi->SetSubItem(k, 8, wifiLog->country);
 						}
 						OSInt l;
@@ -430,16 +429,16 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					DEL_CLASS(bss);
 				}
 
-				Text::StrUOSInt(sbuff, j);
-				me->txtCurrWifiCnt->SetText(sbuff);
+				sptr = Text::StrUOSInt(sbuff, j);
+				me->txtCurrWifiCnt->SetText(CSTRP(sbuff, sptr));
 				me->wlanInterf->Scan();
 
 				me->wlanScan = 10;
 
 				if (bssListUpd)
 				{
-					Text::StrUOSInt(sbuff, me->bssMap->GetCount());
-					me->txtBSSCount->SetText(sbuff);
+					sptr = Text::StrUOSInt(sbuff, me->bssMap->GetCount());
+					me->txtBSSCount->SetText(CSTRP(sbuff, sptr));
 				}
 			}
 			dt.SetCurrTimeUTC();
@@ -460,7 +459,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 		}
 		me->locSvc = 0;
 		me->locSvcRel = false;
-		me->txtGPS->SetText((const UTF8Char*)"Not opened");
+		me->txtGPS->SetText(CSTR("Not opened"));
 	}
 	else
 	{
@@ -470,7 +469,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSClicked(void *userObj)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.Append(stm->GetSourceNameObj());
-			me->txtGPS->SetText(sb.ToString());
+			me->txtGPS->SetText(sb.ToCString());
 			me->locSvcRel = true;
 			NEW_CLASS(me->locSvc, IO::GPSNMEA(stm, true));
 			me->locSvc->RegisterLocationHandler(OnGPSData, me);
@@ -597,28 +596,28 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->manuf)
 			{
-				sb.AppendSlow(wifiLog->manuf);
+				sb.Append(wifiLog->manuf);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->model)
 			{
-				sb.AppendSlow(wifiLog->model);
+				sb.Append(wifiLog->model);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->serialNum)
 			{
-				sb.AppendSlow(wifiLog->serialNum);
+				sb.Append(wifiLog->serialNum);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			sb.AppendHexBuff(wifiLog->ouis[0], 3, 0, Text::LineBreakType::None);
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 			sb.AppendHexBuff(wifiLog->ouis[1], 3, 0, Text::LineBreakType::None);
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 			sb.AppendHexBuff(wifiLog->ouis[2], 3, 0, Text::LineBreakType::None);
 			sb.AppendC(UTF8STRC("\t"));
 			if (wifiLog->country)
 			{
-				sb.AppendSlow(wifiLog->country);
+				sb.Append(wifiLog->country);
 			}
 			sb.AppendC(UTF8STRC("\t"));
 			k = 0;
@@ -628,7 +627,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 					break;
 				if (k > 0)
 				{
-					sb.AppendChar(',', 1);
+					sb.AppendUTF8Char(',');
 				}
 				sb.AppendHex64(wifiLog->neighbour[k]);
 				k++;
@@ -789,7 +788,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnGPSData(void *userObj, Map:
 SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Wifi Capture");
+	this->SetText(CSTR("Wifi Capture"));
 
 	this->core = core;
 	this->motion = 0;
@@ -850,7 +849,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, this->tpStatus, CSTR("Not opened")));
 	this->txtGPS->SetReadOnly(true);
 	this->txtGPS->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Open"));
+	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, CSTR("Open")));
 	this->btnGPS->SetRect(304, 28, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClicked, this);
 	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"GPS Time"));
@@ -893,7 +892,7 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->txtBSSCount, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtBSSCount->SetReadOnly(true);
 	this->txtBSSCount->SetRect(104, 220, 200, 23, false);
-	NEW_CLASS(this->btnCapture, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Start Capture"));
+	NEW_CLASS(this->btnCapture, UI::GUIButton(ui, this->tpStatus, CSTR("Start Capture")));
 	this->btnCapture->SetRect(104, 244, 120, 23, false);
 	this->btnCapture->HandleButtonClick(OnCaptureClicked, this);
 
@@ -919,10 +918,10 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
 	this->pnlLogWifi->SetRect(0, 0, 100, 31, false);
 	this->pnlLogWifi->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnLogWifiSave, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save")));
 	this->btnLogWifiSave->SetRect(4, 4, 75, 23, false);
 	this->btnLogWifiSave->HandleButtonClick(OnLogWifiSaveClicked, this);
-	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, (const UTF8Char*)"Save Unk only"));
+	NEW_CLASS(this->btnLogWifiSaveF, UI::GUIButton(ui, this->pnlLogWifi, CSTR("Save Unk only")));
 	this->btnLogWifiSaveF->SetRect(84, 4, 75, 23, false);
 	this->btnLogWifiSaveF->HandleButtonClick(OnLogWifiSaveFClicked, this);
 	NEW_CLASS(this->lvLogWifi, UI::GUIListView(ui, this->tpLogWifi, UI::GUIListView::LVSTYLE_TABLE, 12));
@@ -989,10 +988,10 @@ SSWR::AVIRead::AVIRWifiCaptureForm::~AVIRWifiCaptureForm()
 	{
 		wifiLog = wifiLogList->GetItem(i);
 		wifiLog->ssid->Release();
-		SDEL_TEXT(wifiLog->manuf);
-		SDEL_TEXT(wifiLog->model);
-		SDEL_TEXT(wifiLog->serialNum);
-		SDEL_TEXT(wifiLog->country);
+		SDEL_STRING(wifiLog->manuf);
+		SDEL_STRING(wifiLog->model);
+		SDEL_STRING(wifiLog->serialNum);
+		SDEL_STRING(wifiLog->country);
 		MemFree(wifiLog);
 	}
 	DEL_CLASS(this->wifiLogMap);

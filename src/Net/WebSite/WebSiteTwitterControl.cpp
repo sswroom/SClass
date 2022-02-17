@@ -201,7 +201,7 @@ UOSInt Net::WebSite::WebSiteTwitterControl::GetChannelItems(Text::String *channe
 								{
 									sb.ClearStr();
 									sb.Append(imgURL);
-									sb.AppendChar(' ', 1);
+									sb.AppendUTF8Char(' ');
 									imgURL->Release();
 									sb.Append(attr->value);
 									imgURL = Text::String::New(sb.ToString(), sb.GetLength());

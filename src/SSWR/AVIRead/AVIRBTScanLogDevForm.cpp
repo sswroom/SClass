@@ -38,15 +38,15 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 			dt.ToLocalTime();
 			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 			sb.ClearStr();
-			sb.AppendChar('\"', 1);
+			sb.AppendUTF8Char('\"');
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
-			sb.AppendChar('\"', 1);
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char('\"');
+			sb.AppendUTF8Char(',');
 			sb.AppendDouble((Double)(log->timeTicks - lastTick) / 1000.0);
 			lastTick = log->timeTicks;
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 			sb.AppendI16(log->rssi);
-			sb.AppendChar(',', 1);
+			sb.AppendUTF8Char(',');
 			sb.AppendI16(log->txPower);
 			sb.AppendC(UTF8STRC("\r\n"));
 			stm->Write(sb.ToString(), sb.GetLength());
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	UTF8Char *sptr;
 	UInt8 mac[8];
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Bluetooth Scan Log Entry");
+	this->SetText(CSTR("Bluetooth Scan Log Entry"));
 
 	this->core = core;
 	this->entry = entry;
@@ -91,7 +91,7 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	}
 	this->txtName->SetRect(104, 28, 200, 23, false);
 	this->txtName->SetReadOnly(true);
-	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, (const UTF8Char*)"Save CSV"));
+	NEW_CLASS(this->btnCSV, UI::GUIButton(ui, this->pnlDevInfo, CSTR("Save CSV")));
 	this->btnCSV->SetRect(304, 28, 75, 23, false);
 	this->btnCSV->HandleButtonClick(OnCSVClicked, this);
 	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 5));

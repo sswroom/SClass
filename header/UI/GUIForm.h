@@ -96,7 +96,7 @@ namespace UI
 		void MakeActive();
 		void MakeForeground();
 		virtual void Close();
-		virtual void SetText(const UTF8Char *text);
+		virtual void SetText(Text::CString text);
 		virtual void GetSizeP(UOSInt *width, UOSInt *height);
 		virtual void SetExitOnClose(Bool exitOnClose);
 		virtual void SetNoResize(Bool noResize);

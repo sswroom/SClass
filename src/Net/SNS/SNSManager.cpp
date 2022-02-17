@@ -108,11 +108,11 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	s = Text::String::NewCSVRec(item->id->v);
 	sb.Append(s);
 	s->Release();
-	sb.AppendChar(',', 1);
-	sb.AppendChar('"', 1);
+	sb.AppendUTF8Char(',');
+	sb.AppendUTF8Char('"');
 	sb.AppendI64(item->msgTime);
-	sb.AppendChar('"', 1);
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char('"');
+	sb.AppendUTF8Char(',');
 	if (item->title)
 	{
 		s = Text::String::NewCSVRec(item->title->v);
@@ -123,11 +123,11 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	{
 		sb.AppendChar('"', 2);
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	s = Text::String::NewCSVRec(item->message->v);
 	sb.Append(s);
 	s->Release();
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	if (item->msgLink)
 	{
 		s = Text::String::NewCSVRec(item->msgLink->v);
@@ -138,7 +138,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 	{
 		sb.AppendChar('"', 2);
 	}
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	if (item->imgURL)
 	{
 		s = Text::String::NewCSVRec(item->imgURL->v);

@@ -69,7 +69,7 @@ namespace SSWR
 
 			Sync::Mutex *statusFileMut;
 			Bool statusFileChg;
-			const UTF8Char *statusFile;
+			Text::String *statusFile;
 			UInt64 statusFileSize;
 			UInt64 statusDispSize;
 			Double statusDispSpd;
@@ -88,13 +88,13 @@ namespace SSWR
 			UInt64 readTotal;
 			UInt64 readCurr;
 			UInt64 readLast;
-			const UTF8Char *readCurrFile;
+			Text::CString readCurrFile;
 			UInt64 readFileCnt;
 			Data::DateTime *readLastTimer;
 			Data::DateTime *readReadTime;
 
 			Sync::Mutex *progMut;
-			const UTF8Char *progName;
+			Text::String *progName;
 			UInt64 progStartCnt;
 			Bool progStarted;
 			UInt64 progUpdateCurr;
@@ -114,7 +114,7 @@ namespace SSWR
 			virtual void EventMenuClicked(UInt16 cmdId);
 			virtual void OnMonitorChanged();
 
-			virtual void ProgressStart(const UTF8Char *name, UInt64 count);
+			virtual void ProgressStart(Text::CString name, UInt64 count);
 			virtual void ProgressUpdate(UInt64 currCount, UInt64 newCount);
 			virtual void ProgressEnd();
 		};

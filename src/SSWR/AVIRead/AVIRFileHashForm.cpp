@@ -26,18 +26,19 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm *)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	me->UpdateUI();
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	Sync::MutexUsage mutUsage(me->readMut);
 	if (me->progNameChg)
 	{
-		me->txtFileName->SetText(me->progName);
+		me->txtFileName->SetText(me->progName->ToCString());
 		me->progNameChg = false;
 	}
 	if (me->progLastCount != me->progCount)
 	{
-		me->prgFile->ProgressStart(me->progName, me->progCount);
+		me->prgFile->ProgressStart(me->progName->ToCString(), me->progCount);
 		me->progLastCount = me->progCount;
 	}
 
@@ -51,18 +52,18 @@ void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnTimerTick(void *userObj)
 	Double spd;
 	if (timeDiff > 0)
 	{
-		Text::StrUInt64(sbuff, currRead * 1000 / (UInt64)timeDiff);
+		sptr = Text::StrUInt64(sbuff, currRead * 1000 / (UInt64)timeDiff);
 		spd = (Double)currRead * 1000.0 / (Double)timeDiff;
 	}
 	else
 	{
-		Text::StrUInt64(sbuff, currRead);
+		sptr = Text::StrUInt64(sbuff, currRead);
 		spd = (Double)currRead;
 	}
-	me->txtSpeed->SetText(sbuff);
+	me->txtSpeed->SetText(CSTRP(sbuff, sptr));
 	me->rlcSpeed->AddSample(&spd);
-	Text::StrUInt64(sbuff, currTotal);
-	me->txtTotalSize->SetText(sbuff);
+	sptr = Text::StrUInt64(sbuff, currTotal);
+	me->txtTotalSize->SetText(CSTRP(sbuff, sptr));
 	me->lastTimerTime->SetValue(&currTime);
 }
 
@@ -242,7 +243,7 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"File Hash");
+	this->SetText(CSTR("File Hash"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -312,7 +313,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlTasks, UI::GUIPanel(ui, this->tpTasks));
 	this->pnlTasks->SetRect(0, 0, 100, 32, false);
 	this->pnlTasks->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnTasksClear, UI::GUIButton(ui, this->pnlTasks, (const UTF8Char*)"Clear Completed"));
+	NEW_CLASS(this->btnTasksClear, UI::GUIButton(ui, this->pnlTasks, CSTR("Clear Completed")));
 	this->btnTasksClear->SetRect(4, 4, 120, 23, false);
 	NEW_CLASS(this->lvTasks, UI::GUIListView(ui, this->tpTasks, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvTasks->AddColumn((const UTF8Char*)"File Name", 500);
@@ -363,14 +364,14 @@ void SSWR::AVIRead::AVIRFileHashForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(const UTF8Char *name, UInt64 count)
+void SSWR::AVIRead::AVIRFileHashForm::ProgressStart(Text::CString name, UInt64 count)
 {
 	Sync::MutexUsage mutUsage(this->readMut);
 	if (this->progName)
 	{
-		Text::StrDelNew(this->progName);
+		this->progName->Release();
 	}
-	this->progName = Text::StrCopyNew(name);
+	this->progName = Text::String::New(name);
 	this->progNameChg = true;
 	this->readSize += this->progCount - this->progCurr;
 	this->totalRead += this->progCount - this->progCurr;

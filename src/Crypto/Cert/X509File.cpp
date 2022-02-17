@@ -480,7 +480,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 	if (algorithm && algorithmType == Net::ASN1Util::IT_OID)
 	{
 		sb->Append(varName);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		sb->AppendC(UTF8STRC("algorithm = "));
 		Net::ASN1Util::OIDToString(algorithm, algorithmLen, sb);
 		const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(algorithm, algorithmLen);
@@ -488,14 +488,14 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 		{
 			sb->AppendC(UTF8STRC(" ("));
 			sb->AppendSlow((const UTF8Char*)oid->name);
-			sb->AppendChar(')', 1);
+			sb->AppendUTF8Char(')');
 		}
 		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	if (parameters)
 	{
 		sb->Append(varName);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		sb->AppendC(UTF8STRC("parameters = "));
 		if (parametersType == Net::ASN1Util::IT_NULL)
 		{
@@ -516,7 +516,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
 		{
 			sb->Append(varName);
-			sb->AppendChar('.', 1);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notBefore = "));
 			sb->AppendDate(&dt);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -527,7 +527,7 @@ void Crypto::Cert::X509File::AppendValidity(const UInt8 *pdu, const UInt8 *pduEn
 		if (itemType == Net::ASN1Util::IT_UTCTIME && Net::ASN1Util::PDUParseUTCTimeCont(itemPDU, itemLen, &dt))
 		{
 			sb->Append(varName);
-			sb->AppendChar('.', 1);
+			sb->AppendUTF8Char('.');
 			sb->AppendC(UTF8STRC("notBefore = "));
 			sb->AppendDate(&dt);
 			sb->AppendC(UTF8STRC("\r\n"));
@@ -621,7 +621,7 @@ void Crypto::Cert::X509File::AppendAttributeTypeAndDistinguishedValue(const UInt
 	if (typePDU && valuePDU && typeType == Net::ASN1Util::IT_OID)
 	{
 		sb->Append(varName);
-		sb->AppendChar('.', 1);
+		sb->AppendUTF8Char('.');
 		if (Net::ASN1Util::OIDEqualsText(typePDU, typeLen, UTF8STRC("2.5.4.3")))
 		{
 			sb->AppendC(UTF8STRC("commonName"));

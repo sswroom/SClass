@@ -50,7 +50,7 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 		currSize = currSize << 1;
 	}
 	this->processing = true;
-	this->pbMain->ProgressStart((const UTF8Char*)"Testing", testCnt);
+	this->pbMain->ProgressStart(CSTR("Testing"), testCnt);
 	testCnt = 0;
 
 	this->ClearResult();
@@ -356,7 +356,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 
 SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 480, ui)
 {
-	this->SetText((const UTF8Char*)"Benchmark");
+	this->SetText(CSTR("Benchmark"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -367,13 +367,13 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 32, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(4, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->btnQuick, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Quick"));
+	NEW_CLASS(this->btnQuick, UI::GUIButton(ui, this->pnlCtrl, CSTR("Quick")));
 	this->btnQuick->SetRect(84, 4, 75, 23, false);
 	this->btnQuick->HandleButtonClick(OnQuickClicked, this);
-	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Save"));
+	NEW_CLASS(this->btnSave, UI::GUIButton(ui, this->pnlCtrl, CSTR("Save")));
 	this->btnSave->SetRect(164, 4, 75, 23, false);
 	this->btnSave->HandleButtonClick(OnSaveClicked, this);
 	NEW_CLASS(this->pbMain, UI::GUIProgressBar(ui, this, 100));
@@ -435,23 +435,24 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvRAM->AddColumn((const UTF8Char*)"Memory Size", 80);
 
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	IO::SystemInfo sysInfo;
-	if (sysInfo.GetPlatformName(sbuff))
+	if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
 	{
-		this->txtPlatform->SetText(sbuff);
+		this->txtPlatform->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtPlatform->SetText((const UTF8Char*)"-");
+		this->txtPlatform->SetText(CSTR("-"));
 	}
 	Manage::CPUInfo cpu;
-	if (cpu.GetCPUName(sbuff))
+	if ((sptr = cpu.GetCPUName(sbuff)) != 0)
 	{
-		this->txtCPU->SetText(sbuff);
+		this->txtCPU->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		this->txtCPU->SetText((const UTF8Char*)"-");
+		this->txtCPU->SetText(CSTR("-"));
 	}
 	Data::ArrayList<IO::SystemInfo::RAMInfo*> ramList;
 	IO::SystemInfo::RAMInfo *ram;

@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 				IO::FileUtil::MoveFile(CSTRP(sbuff2, sptr2End), CSTRP(sbuff, sptrEnd), IO::FileUtil::FileExistAction::Fail, 0, 0);
 			}
 
-			sptr = me->txtDirName->GetText(sbuff);
+			sptrEnd = sptr = me->txtDirName->GetText(sbuff);
 			while (sptr > sbuff)
 			{
 				if (++*--sptr == 0x3A)
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 					break;
 				}
 			}
-			me->txtDirName->SetText(sbuff);
+			me->txtDirName->SetText(CSTRP(sbuff, sptrEnd));
 		}
 	}
 	me->GenList();
@@ -219,7 +219,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		}
 		sb.ClearStr();
 		sb.AppendU64(totalFileSize);
-		this->txtTotalSize->SetText(sb.ToString());
+		this->txtTotalSize->SetText(sb.ToCString());
 		return;
 	}
 
@@ -242,7 +242,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		}
 		sb.ClearStr();
 		sb.AppendU64(dirSize);
-		this->txtTotalSize->SetText(sb.ToString());
+		this->txtTotalSize->SetText(sb.ToCString());
 	}
 	else
 	{
@@ -344,7 +344,7 @@ UInt64 SSWR::AVIRead::AVIRFileSizePackForm::NewCalc(Data::ArrayList<SSWR::AVIRea
 
 SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 432, 344, ui)
 {
-	this->SetText((const UTF8Char*)"File Size Pack");
+	this->SetText(CSTR("File Size Pack"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -360,7 +360,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->lblDir->SetRect(16, 8, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDir->SetRect(120, 8, 192, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlFile, CSTR("Start")));
 	this->btnStart->SetRect(328, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lblMaxSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Maximum Size"));
@@ -369,7 +369,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->cboMaxSize->AddItem(CSTR("4697620480"), 0);
 	this->cboMaxSize->AddItem(CSTR("25000000000"), 0);
 	this->cboMaxSize->AddItem(CSTR("737126400"), 0);
-	this->cboMaxSize->SetText((const UTF8Char*)"25000000000");
+	this->cboMaxSize->SetText(CSTR("25000000000"));
 	this->cboMaxSize->SetRect(120, 42, 104, 23, false);
 	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Total Size"));
 	this->lblTotalSize->SetRect(224, 42, 72, 23, false);
@@ -380,7 +380,7 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->lblDirName->SetRect(16, 76, 100, 23, false);
 	NEW_CLASS(this->txtDirName, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDirName->SetRect(120, 76, 104, 23, false);
-	NEW_CLASS(this->btnMove, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Move"));
+	NEW_CLASS(this->btnMove, UI::GUIButton(ui, this->pnlFile, CSTR("Move")));
 	this->btnMove->SetRect(232, 76, 75, 23, false);
 	this->btnMove->HandleButtonClick(OnMoveClicked, this);
 	NEW_CLASS(this->lbFilePack, UI::GUIListBox(ui, this, false));

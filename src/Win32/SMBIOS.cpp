@@ -4086,7 +4086,7 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Spec Version: "));
 				sb->AppendU16(dataBuff[8]);
-				sb->AppendChar('.', 1);
+				sb->AppendUTF8Char('.');
 				sb->AppendU16(dataBuff[9]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				sb->AppendC(UTF8STRC("Firmware Version 1: 0x"));
@@ -4240,8 +4240,8 @@ Bool Win32::SMBIOS::ToString(Text::StringBuilderUTF8 *sb)
 			{
 				sb->AppendC(UTF8STRC("Strings "));
 				sb->AppendUOSInt(l);
-				sb->AppendChar(':', 1);
-				sb->AppendChar(' ', 1);
+				sb->AppendUTF8Char(':');
+				sb->AppendUTF8Char(' ');
 				sb->Append(carr[l]);
 				sb->AppendC(UTF8STRC("\r\n"));
 				l++;

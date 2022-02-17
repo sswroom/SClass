@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtRoadCenterline->SetText(dlg->GetFileName()->v);
+		me->txtRoadCenterline->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnCancelClicked(void *userOb
 
 SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 120, ui)
 {
-	this->SetText((const UTF8Char*)"Hong Kong Traffic");
+	this->SetText(CSTR("Hong Kong Traffic"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -81,13 +81,13 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *
 	this->lblRoadCenterline->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRoadCenterline, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\CENTRELINE.mdb")));
 	this->txtRoadCenterline->SetRect(104, 4, 800, 23, false);
-	NEW_CLASS(this->btnRoadCenterline, UI::GUIButton(ui, this, (const UTF8Char*)"Browse"));
+	NEW_CLASS(this->btnRoadCenterline, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnRoadCenterline->SetRect(904, 4, 75, 23, false);
 	this->btnRoadCenterline->HandleButtonClick(OnRoadCenterlineClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(104, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(184, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
 }

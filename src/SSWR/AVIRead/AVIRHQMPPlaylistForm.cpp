@@ -174,7 +174,7 @@ void SSWR::AVIRead::AVIRHQMPPlaylistForm::UpdatePlaylist()
 SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::Playlist *playlist) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Create Playlist");
+	this->SetText(CSTR("Create Playlist"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -185,19 +185,19 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *
 	NEW_CLASS(this->lbPlaylist, UI::GUIListBox(ui, this, false));
 	this->lbPlaylist->SetRect(0, 0, 160, 100, false);
 	this->lbPlaylist->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnAdd, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Add")));
 	this->btnAdd->SetRect(16, 16, 75, 23, false);
 	this->btnAdd->HandleButtonClick(OnAddClicked, this);
-	NEW_CLASS(this->btnAddDir, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Add Folder"));
+	NEW_CLASS(this->btnAddDir, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Add Folder")));
 	this->btnAddDir->SetRect(96, 16, 75, 23, false);
 	this->btnAddDir->HandleButtonClick(OnAddDirClicked, this);
-	NEW_CLASS(this->btnClear, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Clea&r"));
+	NEW_CLASS(this->btnClear, UI::GUIButton(ui, this->pnlCtrl, CSTR("Clea&r")));
 	this->btnClear->SetRect(176, 16, 75, 23, false);
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this->pnlCtrl, CSTR("&OK")));
 	this->btnOK->SetRect(256, 16, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, CSTR("&Cancel")));
 	this->btnCancel->SetRect(336, 16, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

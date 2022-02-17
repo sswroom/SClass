@@ -21,21 +21,21 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 			Text::CString name = me->hexView->GetAnalyzerName();
 			if (name.v)
 			{
-				me->txtFileFormat->SetText(name.v);
+				me->txtFileFormat->SetText(name);
 			}
 			else if (dynamicSize)
 			{
-				me->txtFileFormat->SetText((const UTF8Char*)"Unknown (Dynamic Size cannot determine)");
+				me->txtFileFormat->SetText(CSTR("Unknown (Dynamic Size cannot determine)"));
 			}
 			else
 			{
-				me->txtFileFormat->SetText((const UTF8Char*)"Unknown");
+				me->txtFileFormat->SetText(CSTR("Unknown"));
 			}
 
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Hex Viewer - "));
 			sb.AppendC(files[i], nameLen);
-			me->SetText(sb.ToString());
+			me->SetText(sb.ToCString());
 			break;
 		}
 		i++;
@@ -53,118 +53,119 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
 	UInt8 buff[8];
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt readSize = me->hexView->GetFileData(ofst, 8, buff);
 	Bool bigEndian = me->radEndianBig->IsSelected();
 	if (readSize >= 1)
 	{
-		Text::StrInt16(sbuff, (Int8)buff[0]);
-		me->txtInt8->SetText(sbuff);
-		Text::StrUInt16(sbuff, buff[0]);
-		me->txtUInt8->SetText(sbuff);
+		sptr = Text::StrInt16(sbuff, (Int8)buff[0]);
+		me->txtInt8->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt16(sbuff, buff[0]);
+		me->txtUInt8->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		me->txtInt8->SetText((const UTF8Char*)"-");
-		me->txtUInt8->SetText((const UTF8Char*)"-");
+		me->txtInt8->SetText(CSTR("-"));
+		me->txtUInt8->SetText(CSTR("-"));
 	}
 	if (readSize >= 2)
 	{
 		if (bigEndian)
 		{
-			Text::StrInt16(sbuff, ReadMInt16(buff));
-			me->txtInt16->SetText(sbuff);
-			Text::StrUInt16(sbuff, ReadMUInt16(buff));
-			me->txtUInt16->SetText(sbuff);
+			sptr = Text::StrInt16(sbuff, ReadMInt16(buff));
+			me->txtInt16->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, ReadMUInt16(buff));
+			me->txtUInt16->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			Text::StrInt16(sbuff, ReadInt16(buff));
-			me->txtInt16->SetText(sbuff);
-			Text::StrUInt16(sbuff, ReadUInt16(buff));
-			me->txtUInt16->SetText(sbuff);
+			sptr = Text::StrInt16(sbuff, ReadInt16(buff));
+			me->txtInt16->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt16(sbuff, ReadUInt16(buff));
+			me->txtUInt16->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 	else
 	{
-		me->txtInt16->SetText((const UTF8Char*)"-");
-		me->txtUInt16->SetText((const UTF8Char*)"-");
+		me->txtInt16->SetText(CSTR("-"));
+		me->txtUInt16->SetText(CSTR("-"));
 	}
 	if (readSize >= 4)
 	{
 		if (bigEndian)
 		{
-			Text::StrInt32(sbuff, ReadMInt32(buff));
-			me->txtInt32->SetText(sbuff);
-			Text::StrUInt32(sbuff, ReadMUInt32(buff));
-			me->txtUInt32->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadMFloat(buff));
-			me->txtFloat32->SetText(sbuff);
+			sptr = Text::StrInt32(sbuff, ReadMInt32(buff));
+			me->txtInt32->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ReadMUInt32(buff));
+			me->txtUInt32->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadMFloat(buff));
+			me->txtFloat32->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			Text::StrInt32(sbuff, ReadInt32(buff));
-			me->txtInt32->SetText(sbuff);
-			Text::StrUInt32(sbuff, ReadUInt32(buff));
-			me->txtUInt32->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadFloat(buff));
-			me->txtFloat32->SetText(sbuff);
+			sptr = Text::StrInt32(sbuff, ReadInt32(buff));
+			me->txtInt32->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ReadUInt32(buff));
+			me->txtUInt32->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadFloat(buff));
+			me->txtFloat32->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 	else
 	{
-		me->txtInt32->SetText((const UTF8Char*)"-");
-		me->txtUInt32->SetText((const UTF8Char*)"-");
-		me->txtFloat32->SetText((const UTF8Char*)"-");
+		me->txtInt32->SetText(CSTR("-"));
+		me->txtUInt32->SetText(CSTR("-"));
+		me->txtFloat32->SetText(CSTR("-"));
 	}
 	if (readSize >= 8)
 	{
 		if (bigEndian)
 		{
-			Text::StrInt64(sbuff, ReadMInt64(buff));
-			me->txtInt64->SetText(sbuff);
-			Text::StrUInt64(sbuff, ReadMUInt64(buff));
-			me->txtUInt64->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadMDouble(buff));
-			me->txtFloat64->SetText(sbuff);
+			sptr = Text::StrInt64(sbuff, ReadMInt64(buff));
+			me->txtInt64->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, ReadMUInt64(buff));
+			me->txtUInt64->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadMDouble(buff));
+			me->txtFloat64->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			Text::StrInt64(sbuff, ReadInt64(buff));
-			me->txtInt64->SetText(sbuff);
-			Text::StrUInt64(sbuff, ReadUInt64(buff));
-			me->txtUInt64->SetText(sbuff);
-			Text::StrDouble(sbuff, ReadDouble(buff));
-			me->txtFloat64->SetText(sbuff);
+			sptr = Text::StrInt64(sbuff, ReadInt64(buff));
+			me->txtInt64->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, ReadUInt64(buff));
+			me->txtUInt64->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, ReadDouble(buff));
+			me->txtFloat64->SetText(CSTRP(sbuff, sptr));
 		}
 	}
 	else
 	{
-		me->txtInt64->SetText((const UTF8Char*)"-");
-		me->txtUInt64->SetText((const UTF8Char*)"-");
-		me->txtFloat64->SetText((const UTF8Char*)"-");
+		me->txtInt64->SetText(CSTR("-"));
+		me->txtUInt64->SetText(CSTR("-"));
+		me->txtFloat64->SetText(CSTR("-"));
 	}
 	if (Text::CharUtil::UTF8CharValid(buff))
 	{
 		UTF32Char c;
 		Text::StrReadChar(buff, &c);
-		Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)c);
-		me->txtUTF8CharCode->SetText(sbuff);
+		sptr = Text::StrHexVal32V(Text::StrConcatC(sbuff, UTF8STRC("0x")), (UInt32)c);
+		me->txtUTF8CharCode->SetText(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		me->txtUTF8CharCode->SetText((const UTF8Char*)"-");
+		me->txtUTF8CharCode->SetText(CSTR("-"));
 	}
 
 	Text::StringBuilderUTF8 sb;
 	if (me->hexView->GetFrameName(&sb))
 	{
-		me->txtFrameName->SetText(sb.ToString());
+		me->txtFrameName->SetText(sb.ToCString());
 		Data::ArrayList<const IO::FileAnalyse::FrameDetail::FieldInfo*> fieldList;
 		me->hexView->GetFieldInfos(&fieldList);
 		const IO::FileAnalyse::FrameDetail::FieldInfo *field;
 		if (fieldList.GetCount() == 0)
 		{
-			me->txtFieldDetail->SetText((const UTF8Char*)"-");
+			me->txtFieldDetail->SetText(CSTR("-"));
 		}
 		else
 		{
@@ -181,18 +182,18 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnOffsetChg(void *userObj, UInt
 				sb.Append(field->name);
 				if (field->value)
 				{
-					sb.AppendChar('=', 1);
+					sb.AppendUTF8Char('=');
 					sb.Append(field->value);
 				}
 				i++;
 			}
-			me->txtFieldDetail->SetText(sb.ToString());
+			me->txtFieldDetail->SetText(sb.ToCString());
 		}
 	}
 	else
 	{
-		me->txtFrameName->SetText((const UTF8Char*)"-");
-		me->txtFieldDetail->SetText((const UTF8Char*)"-");
+		me->txtFrameName->SetText(CSTR("-"));
+		me->txtFieldDetail->SetText(CSTR("-"));
 	}
 }
 
@@ -221,7 +222,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnNextUnkClicked(void *userObj)
 
 SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 600, ui)
 {
-	this->SetText((const UTF8Char*)"Hex Viewer");
+	this->SetText(CSTR("Hex Viewer"));
 	this->SetFont(0, 0, 8.25, false);
 	
 	this->core = core;
@@ -297,10 +298,10 @@ SSWR::AVIRead::AVIRHexViewerForm::AVIRHexViewerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->txtUTF8CharCode, UI::GUITextBox(ui, this->tpValues, CSTR("")));
 	this->txtUTF8CharCode->SetRect(604, 76, 150, 23, false);
 	this->txtUTF8CharCode->SetReadOnly(true);
-	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, (const UTF8Char*)"Sel Font"));
+	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->tpValues, CSTR("Sel Font")));
 	this->btnFont->SetRect(4, 124, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
-	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->tpValues, (const UTF8Char*)"Next Unknown"));
+	NEW_CLASS(this->btnNextUnk, UI::GUIButton(ui, this->tpValues, CSTR("Next Unknown")));
 	this->btnNextUnk->SetRect(84, 124, 75, 23, false);
 	this->btnNextUnk->HandleButtonClick(OnNextUnkClicked, this);
 	NEW_CLASS(this->chkDynamicSize, UI::GUICheckBox(ui, this->tpValues, (const UTF8Char*)"Dynamic Size", false));

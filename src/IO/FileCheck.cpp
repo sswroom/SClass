@@ -86,7 +86,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			readSess.fileSize = fileSize;
 			if (progress)
 			{
-				progress->ProgressStart(path, fileSize);
+				progress->ProgressStart({path, pathLen}, fileSize);
 			}
 			hash->Clear();
 			NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));
@@ -225,7 +225,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 					readSess.fileSize = fileSize;
 					if (progress)
 					{
-						progress->ProgressStart(hashPath, fileSize);
+						progress->ProgressStart(CSTRP(hashPath, sptr2), fileSize);
 					}
 					hash->Clear();
 					NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));

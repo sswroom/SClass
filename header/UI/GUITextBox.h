@@ -21,7 +21,7 @@ namespace UI
 		virtual void SetReadOnly(Bool isReadOnly);
 		virtual void SetPasswordChar(UTF32Char c);
 
-		virtual void SetText(const UTF8Char *text);
+		virtual void SetText(Text::CString text);
 		virtual UTF8Char *GetText(UTF8Char *buff);
 		virtual Bool GetText(Text::StringBuilderUTF8 *sb);
 		virtual Text::CString GetObjectClass();

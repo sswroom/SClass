@@ -13,10 +13,11 @@ void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char 
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[530];
+	UTF8Char *sptr;
 	if (me->txtView->LoadFile(files[0]))
 	{
-		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), files[0]);
-		me->SetText(sbuff);
+		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), files[0]);
+		me->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -24,8 +25,9 @@ void __stdcall UtilUI::TextViewerForm::OnTextPosUpd(void *userObj, UInt32 textPo
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[32];
-	Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
-	me->txtStatus->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrUInt32(Text::StrConcatC(Text::StrUOSInt(sbuff, (textPosY + 1)), UTF8STRC(" : ")), textPosX + 1);
+	me->txtStatus->SetText(CSTRP(sbuff, sptr));
 }
 
 void __stdcall UtilUI::TextViewerForm::OnSearchClosed(void *userObj, UI::GUIForm *frm)
@@ -38,7 +40,7 @@ UtilUI::TextViewerForm::TextViewerForm(UI::GUIClientControl *parent, UI::GUICore
 {
 	UI::GUIMenu *mnu;
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Text Viewer");
+	this->SetText(CSTR("Text Viewer"));
 
 	this->monMgr = monMgr;
 	this->srchFrm = 0;
@@ -75,6 +77,7 @@ UtilUI::TextViewerForm::~TextViewerForm()
 void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[530];
+	UTF8Char *sptr;
 	UI::FileDialog *dlg;
 	UtilUI::TextGotoDialog *gotoDlg;
 	Text::String *fileName;
@@ -95,8 +98,8 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		{
 			if (this->txtView->LoadFile(dlg->GetFileName()->v))
 			{
-				dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
-				this->SetText(sbuff);
+				sptr = dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
+				this->SetText(CSTRP(sbuff, sptr));
 			}
 		}
 		DEL_CLASS(dlg);

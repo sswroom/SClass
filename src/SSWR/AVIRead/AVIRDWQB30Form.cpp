@@ -13,9 +13,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 	if (me->scanner)
 	{
 		SDEL_CLASS(me->scanner);
-		me->txtPort->SetText((const UTF8Char*)"");
-		me->btnPort->SetText((const UTF8Char*)"Open");
-		me->txtMode->SetText((const UTF8Char*)"");
+		me->txtPort->SetText(CSTR(""));
+		me->btnPort->SetText(CSTR("Open"));
+		me->txtMode->SetText(CSTR(""));
 	}
 	else
 	{
@@ -40,9 +40,9 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnPortClicked(void *userObj)
 
 		if (me->scanner)
 		{
-			me->txtPort->SetText(stm->GetSourceNameObj()->v);
-			me->btnPort->SetText((const UTF8Char*)"Close");
-			me->txtMode->SetText((const UTF8Char*)"Idle");
+			me->txtPort->SetText(stm->GetSourceNameObj()->ToCString());
+			me->btnPort->SetText(CSTR("Close"));
+			me->txtMode->SetText(CSTR("Idle"));
 			me->tpSetting->SetEnabled(false);
 		}
 	}
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeScanClicked(void *userObj)
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_SCAN);
-		me->txtMode->SetText((const UTF8Char*)"Scan");
+		me->txtMode->SetText(CSTR("Scan"));
 		me->tpSetting->SetEnabled(false);
 	}
 }
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeSettingClicked(void *userObj
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_SETTING);
-		me->txtMode->SetText((const UTF8Char*)"Setting");
+		me->txtMode->SetText(CSTR("Setting"));
 		me->tpSetting->SetEnabled(true);
 
 		Data::ArrayList<IO::CodeScanner::DeviceCommand> cmdList;
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnModeIdleClicked(void *userObj)
 	if (me->scanner)
 	{
 		me->scanner->SetCurrMode(IO::CodeScanner::MT_IDLE);
-		me->txtMode->SetText((const UTF8Char*)"Idle");
+		me->txtMode->SetText(CSTR("Idle"));
 		me->tpSetting->SetEnabled(false);
 	}
 }
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnResetClicked(void *userObj)
 	{
 		if (me->scanner->SoftReset())
 		{
-			me->txtMode->SetText((const UTF8Char*)"Idle");
+			me->txtMode->SetText(CSTR("Idle"));
 			me->tpSetting->SetEnabled(false);
 		}
 	}
@@ -118,7 +118,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnDefaultClicked(void *userObj)
 	{
 		if (me->scanner->ResetDefault())
 		{
-			me->txtMode->SetText((const UTF8Char*)"Idle");
+			me->txtMode->SetText(CSTR("Idle"));
 			me->tpSetting->SetEnabled(false);
 		}
 	}
@@ -159,7 +159,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdSelChg(void *userObj)
 			{
 				me->cboSetParam->SetEnabled(true);
 				me->cboSetParam->ClearItems();
-				me->cboSetParam->SetText((const UTF8Char*)"");
+				me->cboSetParam->SetText(CSTR(""));
 			}
 			else
 			{
@@ -179,17 +179,18 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 	if (me->scanner)
 	{
 		UTF8Char sbuff[12];
+		UTF8Char *sptr;
 		if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND)
 		{
 			Int32 val = me->scanner->GetCommand(me->cmdCurr);
 			if (val == -1)
 			{
-				me->txtSetCmd->SetText((const UTF8Char*)"Failed");
+				me->txtSetCmd->SetText(CSTR("Failed"));
 			}
 			else
 			{
-				Text::StrInt32(sbuff, val);
-				me->txtSetCmd->SetText(sbuff);
+				sptr = Text::StrInt32(sbuff, val);
+				me->txtSetCmd->SetText(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_GET_COMMAND_NAME)
@@ -197,11 +198,11 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 			Int32 val = me->scanner->GetCommand(me->cmdCurr);
 			if (val == -1)
 			{
-				me->txtSetCmd->SetText((const UTF8Char*)"Failed");
+				me->txtSetCmd->SetText(CSTR("Failed"));
 			}
 			else
 			{
-				me->txtSetCmd->SetText(me->scanner->GetCommandParamName(me->cmdCurr, val).v);
+				me->txtSetCmd->SetText(me->scanner->GetCommandParamName(me->cmdCurr, val));
 			}
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_SELECT_COMMAND)
@@ -213,16 +214,16 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 				val = (Int32)(OSInt)me->cboSetParam->GetItem(i);
 				if (me->scanner->SetCommand(me->cmdCurr, val))
 				{
-					me->txtSetCmd->SetText((const UTF8Char*)"Success");
+					me->txtSetCmd->SetText(CSTR("Success"));
 				}
 				else
 				{
-					me->txtSetCmd->SetText((const UTF8Char*)"Failed");
+					me->txtSetCmd->SetText(CSTR("Failed"));
 				}
 			}
 			else
 			{
-				me->txtSetCmd->SetText((const UTF8Char*)"No selection");
+				me->txtSetCmd->SetText(CSTR("No selection"));
 			}
 		}
 		else if (me->cmdType == IO::CodeScanner::CT_SET_COMMAND)
@@ -236,21 +237,21 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 				{
 					if (me->scanner->SetCommand(me->cmdCurr, val))
 					{
-						me->txtSetCmd->SetText((const UTF8Char*)"Success");
+						me->txtSetCmd->SetText(CSTR("Success"));
 					}
 					else
 					{
-						me->txtSetCmd->SetText((const UTF8Char*)"Failed");
+						me->txtSetCmd->SetText(CSTR("Failed"));
 					}
 				}
 				else
 				{
-					me->txtSetCmd->SetText((const UTF8Char*)"Out of range");
+					me->txtSetCmd->SetText(CSTR("Out of range"));
 				}
 			}
 			else
 			{
-				me->txtSetCmd->SetText((const UTF8Char*)"Non integer");
+				me->txtSetCmd->SetText(CSTR("Non integer"));
 			}
 		}
 	}
@@ -275,7 +276,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 		Sync::MutexUsage mutUsage(me->codeMut);
 		if (me->newCode)
 		{
-			me->txtScan->SetText(me->newCode->v);
+			me->txtScan->SetText(me->newCode->ToCString());
 			me->lbScan->AddItem(me->newCode, 0);
 			me->newCode->Release();
 			me->newCode = 0;
@@ -286,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnTimerTick(void *userObj)
 
 SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 640, 360, ui)
 {
-	this->SetText((const UTF8Char*)"Denso Wave QB-30");
+	this->SetText(CSTR("Denso Wave QB-30"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -316,7 +317,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpConn, CSTR(""), false));
 	this->txtPort->SetRect(260, 24, 100, 23, false);
 	this->txtPort->SetReadOnly(true);
-	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, (const UTF8Char*)"Open"));
+	NEW_CLASS(this->btnPort, UI::GUIButton(ui, this->grpConn, CSTR("Open")));
 	this->btnPort->SetRect(360, 24, 75, 23, false);
 	this->btnPort->HandleButtonClick(OnPortClicked, this);
 	NEW_CLASS(this->grpCtrl, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Control"));
@@ -327,19 +328,19 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->txtMode, UI::GUITextBox(ui, this->grpCtrl, CSTR("")));
 	this->txtMode->SetRect(260, 0, 100, 23, false);
 	this->txtMode->SetReadOnly(true);
-	NEW_CLASS(this->btnModeScan, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Scan Mode"));
+	NEW_CLASS(this->btnModeScan, UI::GUIButton(ui, this->grpCtrl, CSTR("Scan Mode")));
 	this->btnModeScan->SetRect(360, 0, 75, 23, false);
 	this->btnModeScan->HandleButtonClick(OnModeScanClicked, this);
-	NEW_CLASS(this->btnModeSetting, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Setting Mode"));
+	NEW_CLASS(this->btnModeSetting, UI::GUIButton(ui, this->grpCtrl, CSTR("Setting Mode")));
 	this->btnModeSetting->SetRect(440, 0, 75, 23, false);
 	this->btnModeSetting->HandleButtonClick(OnModeSettingClicked, this);
-	NEW_CLASS(this->btnModeIdle, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Idle Mode"));
+	NEW_CLASS(this->btnModeIdle, UI::GUIButton(ui, this->grpCtrl, CSTR("Idle Mode")));
 	this->btnModeIdle->SetRect(520, 0, 75, 23, false);
 	this->btnModeIdle->HandleButtonClick(OnModeIdleClicked, this);
-	NEW_CLASS(this->btnReset, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Reset"));
+	NEW_CLASS(this->btnReset, UI::GUIButton(ui, this->grpCtrl, CSTR("Reset")));
 	this->btnReset->SetRect(360, 24, 75, 23, false);
 	this->btnReset->HandleButtonClick(OnResetClicked, this);
-	NEW_CLASS(this->btnDefault, UI::GUIButton(ui, this->grpCtrl, (const UTF8Char*)"Factory Default"));
+	NEW_CLASS(this->btnDefault, UI::GUIButton(ui, this->grpCtrl, CSTR("Factory Default")));
 	this->btnDefault->SetRect(440, 24, 75, 23, false);
 	this->btnDefault->HandleButtonClick(OnDefaultClicked, this);	
 
@@ -366,7 +367,7 @@ SSWR::AVIRead::AVIRDWQB30Form::AVIRDWQB30Form(UI::GUIClientControl *parent, UI::
 	this->cboSetCmd->HandleSelectionChange(OnSetCmdSelChg, this);
 	NEW_CLASS(this->cboSetParam, UI::GUIComboBox(ui, this->tpSetting, true));
 	this->cboSetParam->SetRect(264, 4, 150, 23, false);
-	NEW_CLASS(this->btnSetCmd, UI::GUIButton(ui, this->tpSetting, (const UTF8Char*)"Send"));
+	NEW_CLASS(this->btnSetCmd, UI::GUIButton(ui, this->tpSetting, CSTR("Send")));
 	this->btnSetCmd->SetRect(414, 4, 75, 23, false);
 	this->btnSetCmd->HandleButtonClick(OnSetCmdClicked, this);
 	NEW_CLASS(this->txtSetCmd, UI::GUITextBox(ui, this->tpSetting, CSTR(""), false));

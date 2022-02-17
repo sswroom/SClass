@@ -530,16 +530,16 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		Text::SBAppendF64(&sb, dG);
-		sb.AppendChar(',', 1);
+		sb.AppendUTF8Char(',');
 		Text::SBAppendF64(&sb, dB);
-		sb.AppendChar(')', 1);
-		me->txtImageStatus->SetText(sb.ToString());
+		sb.AppendUTF8Char(')');
+		me->txtImageStatus->SetText(sb.ToCString());
 	}
 	else
 	{
-		me->txtImageStatus->SetText((const UTF8Char*)"");
+		me->txtImageStatus->SetText(CSTR(""));
 	}
 	return false;
 }
@@ -557,7 +557,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 			{
 				SSWR::AVIRead::AVIRICCInfoForm *frm;
 				NEW_CLASS(frm, SSWR::AVIRead::AVIRICCInfoForm(0, me->ui, me->core));
-				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->v);
+				frm->SetICCProfile(icc, me->imgList->GetSourceNameObj()->ToCString());
 				me->core->ShowForm(frm);
 			}
 		}
@@ -577,7 +577,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 			sb.AppendC(UTF8STRC("\r\n"));
 			this->imgList->ToValueString(&sb);
 		}
-		this->txtInfo->SetText(sb.ToString());
+		this->txtInfo->SetText(sb.ToCString());
 		if (this->currImg->info->color->GetRAWICC())
 		{
 			this->btnInfoICC->SetEnabled(true);
@@ -589,7 +589,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 	}
 	else
 	{
-		this->txtInfo->SetText((const UTF8Char*)"");
+		this->txtInfo->SetText(CSTR(""));
 		this->btnInfoICC->SetEnabled(false);
 	}
 }
@@ -599,8 +599,8 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	this->SetFont(0, 0, 8.25, false);
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
-	this->SetText(sbuff);
+	sptr = imgList->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Image Form - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;
@@ -631,7 +631,7 @@ SSWR::AVIRead::AVIRImageForm::AVIRImageForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 31, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->btnInfoICC, UI::GUIButton(ui, this->pnlInfo, (const UTF8Char*)"ICC Profile"));
+	NEW_CLASS(this->btnInfoICC, UI::GUIButton(ui, this->pnlInfo, CSTR("ICC Profile")));
 	this->btnInfoICC->SetRect(4, 4, 100, 23, false);
 	this->btnInfoICC->SetEnabled(false);
 	this->btnInfoICC->HandleButtonClick(OnInfoICCClicked, this);

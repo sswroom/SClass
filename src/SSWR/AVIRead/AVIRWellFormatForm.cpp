@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	AddFilters(dlg);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFile->SetText(dlg->GetFileName()->v);
+		me->txtFile->SetText(dlg->GetFileName()->ToCString());
 	}
 	DEL_CLASS(dlg);
 }
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFile)
 {
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
-	me->txtFile->SetText(files[0]);
+	me->txtFile->SetText({files[0], Text::StrCharCnt(files[0])});
 }
 
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *userObj)
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *use
 	}
 	if (me->ParseFile(sbFile.ToString(), sbFile.GetLength(), &sbOutput))
 	{
-		me->txtOutput->SetText(sbOutput.ToString());
+		me->txtOutput->SetText(sbOutput.ToCString());
 	}
 }
 
@@ -130,7 +130,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 
 SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Well Format");
+	this->SetText(CSTR("Well Format"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -143,13 +143,13 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"Browse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this->pnlFile, CSTR("Browse")));
 	this->btnBrowse->SetRect(704, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnParseToText, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"To Text"));
+	NEW_CLASS(this->btnParseToText, UI::GUIButton(ui, this->pnlFile, CSTR("To Text")));
 	this->btnParseToText->SetRect(104, 28, 75, 23, false);
 	this->btnParseToText->HandleButtonClick(OnParseToTextClicked, this);
-	NEW_CLASS(this->btnParseToFile, UI::GUIButton(ui, this->pnlFile, (const UTF8Char*)"To File"));
+	NEW_CLASS(this->btnParseToFile, UI::GUIButton(ui, this->pnlFile, CSTR("To File")));
 	this->btnParseToFile->SetRect(184, 28, 75, 23, false);
 	this->btnParseToFile->HandleButtonClick(OnParseToFileClicked, this);
 	NEW_CLASS(this->txtOutput, UI::GUITextBox(ui, this, CSTR(""), true));

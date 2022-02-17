@@ -156,7 +156,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 		{
 			me->cboFormat->SetSelectedIndex(bestIndex);
 		}
-		me->txtDeviceInfo->SetText(devInfo.ToString());
+		me->txtDeviceInfo->SetText(devInfo.ToCString());
 	}
 }
 
@@ -171,7 +171,7 @@ void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 
 SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 768, 200, ui)
 {
-	this->SetText((const UTF8Char*)"Select Capture Device");
+	this->SetText(CSTR("Select Capture Device"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -190,10 +190,10 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	this->txtDeviceInfo->SetReadOnly(true);
 	this->txtDeviceInfo->SetRect(376, 8, 384, 168, false);
 
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"&OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("&OK")));
 	this->btnOK->SetRect(112, 144, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClick, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"&Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(192, 144, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClick, this);
 	this->SetDefaultButton(this->btnOK);

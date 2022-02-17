@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"IP Scan");
+	this->SetText(CSTR("IP Scan"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -75,7 +75,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(254, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->lvIP, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

@@ -57,8 +57,9 @@ UOSInt Net::WLANWindowsInterface::GetBSSList(Data::ArrayList<Net::WirelessLAN::B
 		{
 			Net::WirelessLAN::BSSInfo *bss;
 			UTF8Char buff[33];
-			Text::StrConcatC(buff, list->wlanBssEntries[i].dot11Ssid.ucSSID, list->wlanBssEntries[i].dot11Ssid.uSSIDLength);
-			NEW_CLASS(bss, Net::WirelessLAN::BSSInfo(buff, &list->wlanBssEntries[i]));
+			UTF8Char *sptr;
+			sptr = Text::StrConcatC(buff, list->wlanBssEntries[i].dot11Ssid.ucSSID, list->wlanBssEntries[i].dot11Ssid.uSSIDLength);
+			NEW_CLASS(bss, Net::WirelessLAN::BSSInfo(CSTRP(buff, sptr), &list->wlanBssEntries[i]));
 			bssList->Add(bss);
 			retVal++;
 			i++;

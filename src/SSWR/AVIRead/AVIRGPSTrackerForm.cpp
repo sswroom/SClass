@@ -9,7 +9,7 @@
 
 #define NMEAMAXSIZE 128
 
-SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
+SSWR::AVIRead::AVIRGPSTrackerForm::DisplayOffButton::DisplayOffButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString txt, AVIRGPSTrackerForm *frm) : UI::GUIButton(ui, parent, txt)
 {
 	this->frm = frm;
 }
@@ -52,6 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnGPSUpdate(void *userObj, Map
 void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRGPSTrackerForm *me = (SSWR::AVIRead::AVIRGPSTrackerForm*)userObj;
 	Data::DateTime dt;
 
@@ -60,11 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		me->lastDown = !me->lastDown;
 		if (me->lastDown)
 		{
-			me->txtStreamStatus->SetText((const UTF8Char*)"Down");
+			me->txtStreamStatus->SetText(CSTR("Down"));
 		}
 		else
 		{
-			me->txtStreamStatus->SetText((const UTF8Char*)"Up");
+			me->txtStreamStatus->SetText(CSTR("Up"));
 		}
 	}
 	if (me->recUpdated)
@@ -72,39 +73,42 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnTimerTick(void *userObj)
 		me->lastUpdateTime->SetCurrTimeUTC();
 		Sync::MutexUsage mutUsage(me->recMut);
 		dt.SetTicks(me->recCurr.utcTimeTicks);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-		me->txtGPSTime->SetText(sbuff);
-		Text::StrDouble(sbuff, me->recCurr.lat);
-		me->txtLatitude->SetText(sbuff);
-		Text::StrDouble(sbuff, me->recCurr.lon);
-		me->txtLongitude->SetText(sbuff);
-		Text::StrDouble(sbuff, me->recCurr.altitude);
-		me->txtAltitude->SetText(sbuff);
-		Text::StrDouble(sbuff, me->recCurr.speed);
-		me->txtSpeed->SetText(sbuff);
-		Text::StrDouble(sbuff, me->recCurr.heading);
-		me->txtHeading->SetText(sbuff);
-		me->txtGPSValid->SetText(me->recCurr.valid?(const UTF8Char*)"Valid":(const UTF8Char*)"Invalid");
-		Text::StrInt32(sbuff, me->recCurr.nSateUsed);
-		me->txtNSateUsed->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateUsedGPS);
-		me->txtNSateUsedGPS->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateUsedSBAS);
-		me->txtNSateUsedSBAS->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateUsedGLO);
-		me->txtNSateUsedGLO->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateViewGPS);
-		me->txtNSateViewGPS->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateViewGLO);
-		me->txtNSateViewGLO->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateViewGA);
-		me->txtNSateViewGA->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateViewQZSS);
-		me->txtNSateViewQZSS->SetText(sbuff);
-		Text::StrInt32(sbuff, me->recCurr.nSateViewBD);
-		me->txtNSateViewBD->SetText(sbuff);
-		Text::StrDouble(sbuff, me->dist);
-		me->txtDistance->SetText(sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+		me->txtGPSTime->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->recCurr.lat);
+		me->txtLatitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->recCurr.lon);
+		me->txtLongitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->recCurr.altitude);
+		me->txtAltitude->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->recCurr.speed);
+		me->txtSpeed->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->recCurr.heading);
+		me->txtHeading->SetText(CSTRP(sbuff, sptr));
+		if (me->recCurr.valid)
+			me->txtGPSValid->SetText(CSTR("Valid"));
+		else
+			me->txtGPSValid->SetText(CSTR("Invalid"));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateUsed);
+		me->txtNSateUsed->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateUsedGPS);
+		me->txtNSateUsedGPS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateUsedSBAS);
+		me->txtNSateUsedSBAS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateUsedGLO);
+		me->txtNSateUsedGLO->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateViewGPS);
+		me->txtNSateViewGPS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateViewGLO);
+		me->txtNSateViewGLO->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateViewGA);
+		me->txtNSateViewGA->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateViewQZSS);
+		me->txtNSateViewQZSS->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, me->recCurr.nSateViewBD);
+		me->txtNSateViewBD->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, me->dist);
+		me->txtDistance->SetText(CSTRP(sbuff, sptr));
 
 		me->lvSate->ClearItems();
 		UOSInt i = 0;
@@ -179,10 +183,10 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnMTKFirmwareClicked(void *use
 	IO::Device::MTKGPSNMEA *mtk = (IO::Device::MTKGPSNMEA*)me->locSvc;
 	if (mtk->QueryFirmware())
 	{
-		me->txtMTKRelease->SetText(mtk->GetFirmwareRel());
-		me->txtMTKBuildID->SetText(mtk->GetFirmwareBuild());
-		me->txtMTKProdMode->SetText(mtk->GetProductMode());
-		me->txtMTKSDKVer->SetText(mtk->GetSDKVer());
+		me->txtMTKRelease->SetText(mtk->GetFirmwareRel()->ToCString());
+		me->txtMTKBuildID->SetText(mtk->GetFirmwareBuild()->ToCString());
+		me->txtMTKProdMode->SetText(mtk->GetProductMode()->ToCString());
+		me->txtMTKSDKVer->SetText(mtk->GetSDKVer()->ToCString());
 	}
 }
 
@@ -269,7 +273,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSTrackerForm::OnNMEALine(void *userObj, cons
 SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::ILocationService *locSvc, Bool toRelease) : UI::GUIForm(parent, 340, 540, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"GPS Tracker");
+	this->SetText(CSTR("GPS Tracker"));
 
 	this->core = core;
 	this->locSvc = locSvc;
@@ -393,7 +397,7 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 	this->chkTopMost->HandleCheckedChange(OnTopMostChg, this);
 	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this->tpLocation, (const UTF8Char*)"Prevent Sleep", true));
 	this->chkNoSleep->SetRect(108, 440, 100, 23, false);
-	NEW_CLASS(this->btnDispOff, DisplayOffButton(ui, this->tpLocation, (const UTF8Char*)"Display Off", this));
+	NEW_CLASS(this->btnDispOff, DisplayOffButton(ui, this->tpLocation, CSTR("Display Off"), this));
 	this->btnDispOff->SetRect(208, 440, 100, 23, false);
 	this->btnDispOff->HandleButtonClick(OnDispOffClicked, this);
 	NEW_CLASS(this->lblDistance, UI::GUILabel(ui, this->tpLocation, (const UTF8Char*)"H-Distance"));
@@ -444,16 +448,16 @@ SSWR::AVIRead::AVIRGPSTrackerForm::AVIRGPSTrackerForm(UI::GUIClientControl *pare
 		NEW_CLASS(this->txtMTKSDKVer, UI::GUITextBox(ui, this->grpMTKFirmware, CSTR("")));
 		this->txtMTKSDKVer->SetRect(100, 72, 100, 23, false);
 		this->txtMTKSDKVer->SetReadOnly(true);
-		NEW_CLASS(this->btnMTKFirmware, UI::GUIButton(ui, this->grpMTKFirmware, (const UTF8Char*)"Query"));
+		NEW_CLASS(this->btnMTKFirmware, UI::GUIButton(ui, this->grpMTKFirmware, CSTR("Query")));
 		this->btnMTKFirmware->SetRect(200, 72, 75, 23, false);
 		this->btnMTKFirmware->HandleButtonClick(OnMTKFirmwareClicked, this);
-		NEW_CLASS(this->btnMTKLogDownload, UI::GUIButton(ui, this->tpMTK, (const UTF8Char*)"Download Log"));
+		NEW_CLASS(this->btnMTKLogDownload, UI::GUIButton(ui, this->tpMTK, CSTR("Download Log")));
 		this->btnMTKLogDownload->SetRect(0, 116, 75, 23, false);
 		this->btnMTKLogDownload->HandleButtonClick(OnMTKLogDownloadClicked, this);
-		NEW_CLASS(this->btnMTKLogDelete, UI::GUIButton(ui, this->tpMTK, (const UTF8Char*)"Delete Log"));
+		NEW_CLASS(this->btnMTKLogDelete, UI::GUIButton(ui, this->tpMTK, CSTR("Delete Log")));
 		this->btnMTKLogDelete->SetRect(80, 116, 75, 23, false);
 		this->btnMTKLogDelete->HandleButtonClick(OnMTKLogDeleteClicked, this);
-		NEW_CLASS(this->btnMTKFactoryReset, UI::GUIButton(ui, this->tpMTK, (const UTF8Char*)"Factory Reset"));
+		NEW_CLASS(this->btnMTKFactoryReset, UI::GUIButton(ui, this->tpMTK, CSTR("Factory Reset")));
 		this->btnMTKFactoryReset->SetRect(0, 140, 75, 23, false);
 		this->btnMTKFactoryReset->HandleButtonClick(OnMTKFactoryResetClicked, this);
 

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
-		me->txtFileName->SetText(dlg->GetFileName()->v);
+		me->txtFileName->SetText(dlg->GetFileName()->ToCString());
 	}
 }
 
@@ -56,7 +56,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnCancelClicked(void *userObj)
 SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 100, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Access Connection");
+	this->SetText(CSTR("Access Connection"));
 	this->SetNoResize(true);
 
 	this->core = core;
@@ -67,13 +67,13 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *pare
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
-	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, (const UTF8Char*)"B&rowse"));
+	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnBrowse->SetRect(604, 4, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, (const UTF8Char*)"OK"));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(104, 28, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, (const UTF8Char*)"Cancel"));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("Cancel")));
 	this->btnCancel->SetRect(184, 28, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 

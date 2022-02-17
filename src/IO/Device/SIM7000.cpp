@@ -314,14 +314,14 @@ Bool IO::Device::SIM7000::NetIPSend(UOSInt index, const UInt8 *buff, UOSInt buff
 		return false;
 	sb.AppendC(UTF8STRC("AT+CIPSEND="));
 	sb.AppendUOSInt(index);
-	sb.AppendChar(',', 1);
+	sb.AppendUTF8Char(',');
 	sb.AppendUOSInt(buffSize);
-	sb.AppendChar('\r', 1);
+	sb.AppendUTF8Char('\r');
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Sync::Thread::Sleep(1000);
 	sb.ClearStr();
 	sb.AppendHexBuff(buff, buffSize, 0, Text::LineBreakType::None);
-	sb.AppendChar('\r', 1);
+	sb.AppendUTF8Char('\r');
 	this->channel->CmdSend(sb.ToString(), sb.GetCharCnt());
 	Bool ret = false;
 	while ((cmdRes = this->channel->CmdGetNextResult(5000)) != 0)

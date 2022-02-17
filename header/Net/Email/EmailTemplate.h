@@ -18,7 +18,7 @@ namespace Net
 			Text::StringBuilderUTF8 *sbPost;
 			Bool error;
 
-			Bool ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF *sb, Data::StringUTF8Map<const UTF8Char *> *vars);
+			Bool ParseTemplate(const UTF8Char *tpl, Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char *> *vars);
 		public:
 			EmailTemplate(const UTF8Char *tpl, Data::StringUTF8Map<const UTF8Char *> *vars);
 			~EmailTemplate();
@@ -27,7 +27,7 @@ namespace Net
 			
 			Bool AddItem(Data::StringUTF8Map<const UTF8Char *> *itemVars);
 			const UTF8Char *GetSubject();
-			void GetContent(Text::StringBuilderUTF *sb);
+			void GetContent(Text::StringBuilderUTF8 *sb);
 		};
 	}
 }

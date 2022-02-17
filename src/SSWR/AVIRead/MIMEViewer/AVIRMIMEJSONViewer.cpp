@@ -15,7 +15,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::AVIRMIMEJSONViewer(SSWR::AVIRead:
 	const UInt8 *buff = obj->GetRAWData(&size);
 	Text::StringBuilderUTF8 sb;
 	Text::JSText::JSONWellFormat(buff, size, 0, &sb);
-	this->txtJSON->SetText(sb.ToString());
+	this->txtJSON->SetText(sb.ToCString());
 }
 
 SSWR::AVIRead::MIMEViewer::AVIRMIMEJSONViewer::~AVIRMIMEJSONViewer()

@@ -126,8 +126,9 @@ Bool __stdcall SSWR::AVIRead::AVIRGISDistanceForm::OnMapMouseMove(void *userObj,
 void SSWR::AVIRead::AVIRGISDistanceForm::UpdateDistDisp()
 {
 	UTF8Char sbuff[64];
-	Text::StrDouble(sbuff, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, (Math::Unit::Distance::DistanceUnit)(OSInt)this->cboDistanceUnit->GetSelectedItem(), this->dispDist));
-	this->txtDistance->SetText(sbuff);
+	UTF8Char *sptr;
+	sptr = Text::StrDouble(sbuff, Math::Unit::Distance::Convert(Math::Unit::Distance::DU_METER, (Math::Unit::Distance::DistanceUnit)(OSInt)this->cboDistanceUnit->GetSelectedItem(), this->dispDist));
+	this->txtDistance->SetText(CSTRP(sbuff, sptr));
 }
 
 SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IMapNavigator *navi) : UI::GUIForm(parent, 320, 360, ui)
@@ -135,7 +136,7 @@ SSWR::AVIRead::AVIRGISDistanceForm::AVIRGISDistanceForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->navi = navi;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	this->SetText((const UTF8Char*)"Distance Tool");
+	this->SetText(CSTR("Distance Tool"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 	this->SetAlwaysOnTop(true);

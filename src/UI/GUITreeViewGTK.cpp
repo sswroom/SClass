@@ -100,14 +100,14 @@ void *UI::GUITreeView::TreeItem::GetHItem()
 	return this->hTreeItem;
 }
 
-void UI::GUITreeView::TreeItem::SetText(const UTF8Char *txt)
+void UI::GUITreeView::TreeItem::SetText(Text::CString txt)
 {
-	if (txt == 0)
+	if (txt.leng == 0)
 	{
 		return;
 	}
 	SDEL_STRING(this->txt);
-	this->txt = Text::String::NewNotNull(txt);
+	this->txt = Text::String::New(txt);
 }
 
 Text::String *UI::GUITreeView::TreeItem::GetText()

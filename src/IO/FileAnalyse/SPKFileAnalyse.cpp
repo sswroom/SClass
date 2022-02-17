@@ -207,7 +207,7 @@ Bool IO::FileAnalyse::SPKFileAnalyse::GetFrameName(UOSInt index, Text::StringBui
 	sb->AppendI32((Int32)pack->packSize);
 	if (pack->fileName)
 	{
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(pack->fileName);
 	}
 	return true;

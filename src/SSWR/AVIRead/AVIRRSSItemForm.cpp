@@ -33,7 +33,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
-	this->SetText((const UTF8Char*)"RSS Item");
+	this->SetText(CSTR("RSS Item"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
 	this->core = core;
@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 		{
 			Text::StringBuilderUTF8 sb;
 			Text::HTMLUtil::HTMLGetText(this->core->GetEncFactory(), rssItem->description->v, rssItem->description->leng, false, &sb, &imgList);
-			this->txtText->SetText(sb.ToString());
+			this->txtText->SetText(sb.ToCString());
 		}
 		else
 		{
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 			{
 				imgList.Add(rssItem->imgURL->Clone());
 			}
-			this->txtText->SetText(rssItem->description->v);
+			this->txtText->SetText(rssItem->description->ToCString());
 		}
 
 		i = 0;

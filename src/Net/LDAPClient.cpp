@@ -808,13 +808,13 @@ void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, 
 	if (type.Equals(UTF8STRC("objectGUID")) || type.EndsWith(UTF8STRC("Guid")))
 	{
 		sb->AppendHex32(ReadUInt32(&value.v[0]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendHex16(ReadUInt16(&value.v[4]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendHex16(ReadUInt16(&value.v[6]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendHex16(ReadMUInt16(&value.v[8]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendHexBuff(&value.v[10], 6, 0, Text::LineBreakType::None);
 	}
 	else if (type.Equals(UTF8STRC("dSASignature")))
@@ -825,15 +825,15 @@ void Net::LDAPClient::SearchResDisplay(Text::CString type, Text::CString value, 
 	{
 		sb->AppendC(UTF8STRC("S-"));
 		sb->AppendU16(value.v[0]);
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendU16(value.v[7]);
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendU32(ReadUInt32(&value.v[8]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendU32(ReadUInt32(&value.v[12]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendU32(ReadUInt32(&value.v[16]));
-		sb->AppendChar('-', 1);
+		sb->AppendUTF8Char('-');
 		sb->AppendU32(ReadUInt32(&value.v[20]));
 	}
 	else

@@ -19,11 +19,11 @@ UOSInt Text::TextBinEnc::UTF8LCaseTextBinEnc::EncodeBin(Text::StringBuilderUTF8 
 		c = *dataBuff++;
 		if (c >= 'A' && c <= 'Z')
 		{
-			sb->AppendChar((UTF32Char)(c + 32), 1);
+			sb->AppendUTF8Char((UTF8Char)(c + 32));
 		}
 		else
 		{
-			sb->AppendChar(c, 1);
+			sb->AppendUTF8Char(c);
 		}
 	}
 	return buffSize;

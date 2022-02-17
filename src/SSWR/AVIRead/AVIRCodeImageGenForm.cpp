@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeTypeChanged(void *user
 		sb.AppendUOSInt(me->codeImgGen->GetMinLength());
 		sb.AppendC(UTF8STRC(" - "));
 		sb.AppendUOSInt(me->codeImgGen->GetMaxLength());
-		me->lblCodeInfo->SetText(sb.ToString());
+		me->lblCodeInfo->SetText(sb.ToCString());
 	}
 }
 
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Code Image Generator");
+	this->SetText(CSTR("Code Image Generator"));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;
@@ -84,7 +84,7 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->lblCode->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtCode->SetRect(104, 52, 400, 23, false);
-	NEW_CLASS(this->btnCodeGen, UI::GUIButton(ui, this->pnlMain, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnCodeGen, UI::GUIButton(ui, this->pnlMain, CSTR("Generate")));
 	this->btnCodeGen->SetRect(504, 52, 75, 23, false);
 	this->btnCodeGen->HandleButtonClick(OnCodeGenClicked, this);
 	NEW_CLASS(this->lblCodeInfo, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)""));

@@ -23,7 +23,7 @@ void __stdcall OnForwardRequest(void *userObj, Net::WebServer::IWebRequest *req,
 	sb.AppendC(UTF8STRC(" Req "));
 	Text::CString reqMeth = req->GetReqMethodStr();
 	sb.AppendC(reqMeth.v, reqMeth.leng);
-	sb.AppendChar(' ', 1);
+	sb.AppendUTF8Char(' ');
 	sb.Append(req->GetRequestURI());
 	logger->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 

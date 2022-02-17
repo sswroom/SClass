@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 	this->navi = navi;
 	sb.AppendC(UTF8STRC("Query - "));
 	sb.Append(lyr->GetSourceNameObj());
-	this->SetText(sb.ToString());
+	this->SetText(sb.ToCString());
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));

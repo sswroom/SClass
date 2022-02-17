@@ -511,7 +511,7 @@ Bool IO::FileAnalyse::EBMLFileAnalyse::GetFrameName(UOSInt index, Text::StringBu
 	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)eleId);
 	if (element)
 	{
-		sb->AppendChar(' ', 1);
+		sb->AppendUTF8Char(' ');
 		sb->Append(element->elementName);
 	}
 	sb->AppendC(UTF8STRC(", size="));

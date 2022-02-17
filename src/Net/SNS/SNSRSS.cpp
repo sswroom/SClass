@@ -67,7 +67,7 @@ Net::SNS::SNSRSS::SNSRSS(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::E
 				s = imgList.GetItem(j);
 				if (sb2.GetLength() > 0)
 				{
-					sb2.AppendChar(' ', 1);
+					sb2.AppendUTF8Char(' ');
 				}
 				sb2.Append(s);
 				s->Release();
@@ -205,7 +205,7 @@ Bool Net::SNS::SNSRSS::Reload()
 						s = imgList.GetItem(j);
 						if (sb2.GetLength() > 0)
 						{
-							sb2.AppendChar(' ', 1);
+							sb2.AppendUTF8Char(' ');
 						}
 						sb2.Append(s);
 						s->Release();

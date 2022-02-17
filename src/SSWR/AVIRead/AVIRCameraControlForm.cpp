@@ -189,7 +189,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnFilesSelChg(void *userObj
 SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::CameraControl *camera) : UI::GUIForm(parent, 640, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Camera Control");
+	this->SetText(CSTR("Camera Control"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -209,7 +209,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxSimple(ui, this->pnlControl, this->core->GetDrawEngine(), false));
 	this->pbPreview->SetRect(0, 0, 160, 160, false);
-	NEW_CLASS(this->btnDownload, UI::GUIButton(ui, this->pnlControl, (const UTF8Char*)"Download"));
+	NEW_CLASS(this->btnDownload, UI::GUIButton(ui, this->pnlControl, CSTR("Download")));
 	this->btnDownload->SetRect(164, 4, 75, 23, false);
 	this->btnDownload->HandleButtonClick(OnDownloadClicked, this);
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));

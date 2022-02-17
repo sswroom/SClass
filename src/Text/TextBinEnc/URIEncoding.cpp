@@ -140,7 +140,7 @@ UOSInt Text::TextBinEnc::URIEncoding::EncodeBin(Text::StringBuilderUTF8 *sb, con
 		}
 		else
 		{
-			sb->AppendChar('%', 1);
+			sb->AppendUTF8Char('%');
 			sb->AppendHex8(b);
 		}
 	}

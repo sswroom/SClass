@@ -40,8 +40,8 @@ namespace SSWR
 			{
 				UInt32 ip;
 				Int64 count;
-				const UTF8Char *name;
-				const UTF8Char *country;
+				Text::String *name;
+				Text::String *country;
 			} PingIPInfo;
 
 		private:

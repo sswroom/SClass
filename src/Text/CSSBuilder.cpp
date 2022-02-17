@@ -27,7 +27,7 @@ Bool Text::CSSBuilder::NewStyle(Text::CString name, Text::CString className)
 		}
 		else
 		{
-			this->sb->AppendChar('.', 1);
+			this->sb->AppendUTF8Char('.');
 			this->sb->Append(className);
 		}
 	}
@@ -36,22 +36,22 @@ Bool Text::CSSBuilder::NewStyle(Text::CString name, Text::CString className)
 		this->sb->Append(name);
 		if (className.v)
 		{
-			this->sb->AppendChar('.', 1);
+			this->sb->AppendUTF8Char('.');
 			this->sb->Append(className);
 		}
 	}
 	if (this->pm != PM_COMPACT)
 	{
-		this->sb->AppendChar(' ', 1);
+		this->sb->AppendUTF8Char(' ');
 	}
-	this->sb->AppendChar('{', 1);
+	this->sb->AppendUTF8Char('{');
 	if (this->pm == PM_LINES)
 	{
 		this->AppendNewLine();
 	}
 	else if (this->pm == PM_SPACE)
 	{
-		this->sb->AppendChar(' ', 1);
+		this->sb->AppendUTF8Char(' ');
 	}
 	this->bstate = BS_ENTRY_FIRST;
 	return true;
@@ -61,7 +61,7 @@ Bool Text::CSSBuilder::EndStyle()
 {
 	if (this->bstate == BS_ENTRY || this->bstate == BS_ENTRY_FIRST)
 	{
-		this->sb->AppendChar('}', 1);
+		this->sb->AppendUTF8Char('}');
 		if (this->pm == PM_LINES)
 		{
 			this->AppendNewLine();
@@ -83,7 +83,7 @@ Bool Text::CSSBuilder::AddColorRGB(UInt32 rgb)
 {
 	if (this->bstate == BS_ROOT) return false;
 	this->AppendStyleName(CSTR("color"));
-	this->sb->AppendChar('#', 1);
+	this->sb->AppendUTF8Char('#');
 	this->sb->AppendHex24(rgb);
 	return true;
 }
@@ -175,12 +175,12 @@ void Text::CSSBuilder::AppendStyleName(Text::CString name)
 	this->NextEntry();
 	if (this->pm == PM_LINES)
 	{
-		this->sb->AppendChar('\t', 1);
+		this->sb->AppendUTF8Char('\t');
 	}
 	this->sb->Append(name);
 	if (this->pm == PM_COMPACT)
 	{
-		this->sb->AppendChar(':', 1);
+		this->sb->AppendUTF8Char(':');
 	}
 	else
 	{
@@ -192,11 +192,11 @@ void Text::CSSBuilder::AppendRGBAColor(UInt32 argb)
 {
 	this->sb->AppendC(UTF8STRC("rgba("));
 	this->sb->AppendU32((argb >> 16) & 0xff);
-	this->sb->AppendChar(',', 1);
+	this->sb->AppendUTF8Char(',');
 	this->sb->AppendU32((argb >> 8) & 0xff);
-	this->sb->AppendChar(',', 1);
+	this->sb->AppendUTF8Char(',');
 	this->sb->AppendU32(argb & 0xff);
-	this->sb->AppendChar(',', 1);
+	this->sb->AppendUTF8Char(',');
 	Text::SBAppendF64(this->sb, (argb >> 24) / 255.0);
 	this->sb->AppendC(UTF8STRC(")"));
 }
@@ -209,7 +209,7 @@ void Text::CSSBuilder::NextEntry()
 	}
 	else if (this->pm == PM_COMPACT)
 	{
-		this->sb->AppendChar(';', 1);
+		this->sb->AppendUTF8Char(';');
 	}
 	else if (this->pm == PM_SPACE)
 	{

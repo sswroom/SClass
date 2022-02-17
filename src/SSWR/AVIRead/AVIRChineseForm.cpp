@@ -23,7 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnCharChg(void *userObj)
 	me->txtChar->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		me->txtChar->SetText((const UTF8Char*)"");
+		me->txtChar->SetText(CSTR(""));
 
 		Text::StrReadChar(sb.ToString(), &v);
 		me->UpdateChar((UInt32)v);
@@ -66,16 +66,18 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRadicalChg(void *userObj)
 	SSWR::AVIRead::AVIRChineseForm *me = (SSWR::AVIRead::AVIRChineseForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[7];
+	UTF8Char *sptr;
 	UTF32Char v;
 	me->txtRadical->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		me->txtRadical->SetText((const UTF8Char*)"");
+		me->txtRadical->SetText(CSTR(""));
 
 		Text::StrReadChar(sb.ToString(), &v);
 		me->currRadical = (UInt32)v;
-		Text::StrWriteChar(sbuff, v)[0] = 0;
-		me->lblRadicalV->SetText(sbuff);
+		sptr = Text::StrWriteChar(sbuff, v);
+		sptr[0] = 0;
+		me->lblRadicalV->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
@@ -91,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRChineseForm::OnRelatedAddChg(void *userObj)
 	me->txtRelatedAdd->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		me->txtRelatedAdd->SetText((const UTF8Char*)"");
+		me->txtRelatedAdd->SetText(CSTR(""));
 
 		Text::StrReadChar(sb.ToString(), &v);
 		if (me->currChar != 0)
@@ -237,65 +239,66 @@ Bool SSWR::AVIRead::AVIRChineseForm::SaveChar()
 void SSWR::AVIRead::AVIRChineseForm::UpdateChar(UInt32 charCode)
 {
 	UTF8Char sbuff[9];
-	UTF8Char cbuff[9];
+	UTF8Char *sptr;
 	if (this->SaveChar())
 	{
-		Text::StrHexVal32(sbuff, charCode);
-		this->txtCharCode->SetText(sbuff);
+		sptr = Text::StrHexVal32(sbuff, charCode);
+		this->txtCharCode->SetText(CSTRP(sbuff, sptr));
 		this->currChar = charCode;
 		this->UpdateImg();
 
 		Text::StringBuilderUTF8 sb;
 		Text::ChineseInfo::CharacterInfo chInfo;
 		this->chinese->GetCharInfo(charCode, &chInfo);
-		Text::StrUInt32(sbuff, chInfo.strokeCount);
-		this->txtStrokeCount->SetText(sbuff);
+		sptr = Text::StrUInt32(sbuff, chInfo.strokeCount);
+		this->txtStrokeCount->SetText(CSTRP(sbuff, sptr));
 		if (chInfo.radical == 0)
 		{
 			this->currRadical = 0;
-			this->lblRadicalV->SetText((const UTF8Char*)"");
+			this->lblRadicalV->SetText(CSTR(""));
 		}
 		else
 		{
-			Text::StrWriteChar(sbuff, (UTF32Char)chInfo.radical)[0] = 0;
+			sptr = Text::StrWriteChar(sbuff, (UTF32Char)chInfo.radical);
+			sptr[0] = 0;
 			this->currRadical = chInfo.radical;
-			this->lblRadicalV->SetText(sbuff);
+			this->lblRadicalV->SetText(CSTRP(sbuff, sptr));
 		}
 		if (chInfo.cantonPronun[0])
 		{
-			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[0]);
-			this->txtPronun1->SetText(cbuff);
+			sptr = this->chinese->Int2Cantonese(sbuff, chInfo.cantonPronun[0]);
+			this->txtPronun1->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			this->txtPronun1->SetText((const UTF8Char*)"");
+			this->txtPronun1->SetText(CSTR(""));
 		}
 		if (chInfo.cantonPronun[1])
 		{
-			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[1]);
-			this->txtPronun2->SetText(cbuff);
+			sptr = this->chinese->Int2Cantonese(sbuff, chInfo.cantonPronun[1]);
+			this->txtPronun2->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			this->txtPronun2->SetText((const UTF8Char*)"");
+			this->txtPronun2->SetText(CSTR(""));
 		}
 		if (chInfo.cantonPronun[2])
 		{
-			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[2]);
-			this->txtPronun3->SetText(cbuff);
+			sptr = this->chinese->Int2Cantonese(sbuff, chInfo.cantonPronun[2]);
+			this->txtPronun3->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			this->txtPronun3->SetText((const UTF8Char*)"");
+			this->txtPronun3->SetText(CSTR(""));
 		}
 		if (chInfo.cantonPronun[3])
 		{
-			this->chinese->Int2Cantonese(cbuff, chInfo.cantonPronun[3]);
-			this->txtPronun4->SetText(cbuff);
+			sptr = this->chinese->Int2Cantonese(sbuff, chInfo.cantonPronun[3]);
+			this->txtPronun4->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			this->txtPronun4->SetText((const UTF8Char*)"");
+			this->txtPronun4->SetText(CSTR(""));
 		}
 		this->chkMainChar->SetChecked(chInfo.mainChar);
 		this->cboCharType->SetSelectedIndex((Text::ChineseInfo::CharType)chInfo.charType);
@@ -353,7 +356,7 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 	sptr = sbuff;
 	if (this->currChar == 0)
 	{
-		this->txtRelatedCurr->SetText((const UTF8Char*)"");
+		this->txtRelatedCurr->SetText(CSTR(""));
 	}
 	else
 	{
@@ -369,13 +372,13 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateRelation()
 			i++;
 		}
 		*sptr = 0;
-		this->txtRelatedCurr->SetText(sbuff);
+		this->txtRelatedCurr->SetText(CSTRP(sbuff, sptr));
 	}
 }
 
 SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
-	this->SetText((const UTF8Char*)"Chinese");
+	this->SetText(CSTR("Chinese"));
 	this->SetFont(0, 0, 8.25, false);
 	this->SetNoResize(true);
 
@@ -399,10 +402,10 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtCharCode, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCharCode->SetRect(104, 4, 100, 23, false);
 	this->txtCharCode->SetReadOnly(true);
-	NEW_CLASS(this->btnCharPrev, UI::GUIButton(ui, this, (const UTF8Char*)"Prev"));
+	NEW_CLASS(this->btnCharPrev, UI::GUIButton(ui, this, CSTR("Prev")));
 	this->btnCharPrev->SetRect(104, 28, 55, 23, false);
 	this->btnCharPrev->HandleButtonClick(OnCharPrevClicked, this);
-	NEW_CLASS(this->btnCharNext, UI::GUIButton(ui, this, (const UTF8Char*)"Next"));
+	NEW_CLASS(this->btnCharNext, UI::GUIButton(ui, this, CSTR("Next")));
 	this->btnCharNext->SetRect(164, 28, 55, 23, false);
 	this->btnCharNext->HandleButtonClick(OnCharNextClicked, this);
 	NEW_CLASS(this->lblChar, UI::GUILabel(ui, this, (const UTF8Char*)"Character"));
@@ -421,7 +424,7 @@ SSWR::AVIRead::AVIRChineseForm::AVIRChineseForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtRelatedAdd, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRelatedAdd->SetRect(104, 124, 23, 23, false);
 	this->txtRelatedAdd->HandleTextChanged(OnRelatedAddChg, this);
-	NEW_CLASS(this->btnRelatedGo, UI::GUIButton(ui, this, (const UTF8Char*)"Show Related"));
+	NEW_CLASS(this->btnRelatedGo, UI::GUIButton(ui, this, CSTR("Show Related")));
 	this->btnRelatedGo->SetRect(128, 124, 95, 23, false);
 	this->btnRelatedGo->HandleButtonClick(OnRelatedGoClicked, this);
 	NEW_CLASS(this->pbChar, UI::GUIPictureBoxSimple(ui, this, this->deng, true));

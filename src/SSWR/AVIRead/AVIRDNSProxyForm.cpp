@@ -15,8 +15,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 	if (ip != me->currServer)
 	{
 		me->currServer = ip;
-		Net::SocketUtil::GetIPv4Name(sbuff, ip);
-		me->txtDNSServer->SetText(sbuff);
+		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip);
+		me->txtDNSServer->SetText(CSTRP(sbuff, sptr));
 	}
 
 	if (me->proxy->IsReqListv4Chg())
@@ -138,6 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 	if (req)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -161,10 +162,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 				me->lbV4Answer->SetSelectedIndex(bestInd);
 			}
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff);
-			me->txtV4RequestTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtV4RequestTTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff);
+			me->txtV4RequestTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtV4RequestTTL->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -180,30 +181,31 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4AnsSelChg(void *userObj)
 	if (ans)
 	{
 		UTF8Char sbuff[16];
+		UTF8Char *sptr;
 		Data::DateTime t;
-		me->txtV4AnsName->SetText(ans->name->v);
-		Text::StrInt32(sbuff, ans->recType);
-		me->txtV4AnsType->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->recClass);
-		me->txtV4AnsClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtV4AnsTTL->SetText(sbuff);
+		me->txtV4AnsName->SetText(ans->name->ToCString());
+		sptr = Text::StrInt32(sbuff, ans->recType);
+		me->txtV4AnsType->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, ans->recClass);
+		me->txtV4AnsClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtV4AnsTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
-			me->txtV4AnsRD->SetText(ans->rd->v);
+			me->txtV4AnsRD->SetText(ans->rd->ToCString());
 		}
 		else
 		{
-			me->txtV4AnsRD->SetText((const UTF8Char*)"");
+			me->txtV4AnsRD->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtV4AnsName->SetText((const UTF8Char*)"");
-		me->txtV4AnsType->SetText((const UTF8Char*)"");
-		me->txtV4AnsClass->SetText((const UTF8Char*)"");
-		me->txtV4AnsTTL->SetText((const UTF8Char*)"");
-		me->txtV4AnsRD->SetText((const UTF8Char*)"");
+		me->txtV4AnsName->SetText(CSTR(""));
+		me->txtV4AnsType->SetText(CSTR(""));
+		me->txtV4AnsClass->SetText(CSTR(""));
+		me->txtV4AnsTTL->SetText(CSTR(""));
+		me->txtV4AnsRD->SetText(CSTR(""));
 	}
 }
 
@@ -219,6 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 	if (req)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -242,10 +245,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 				me->lbV6Answer->SetSelectedIndex(bestInd);
 			}
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff);
-			me->txtV6RequestTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtV6RequestTTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff);
+			me->txtV6RequestTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtV6RequestTTL->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -261,30 +264,31 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6AnsSelChg(void *userObj)
 	if (ans)
 	{
 		UTF8Char sbuff[16];
+		UTF8Char *sptr;
 		Data::DateTime t;
-		me->txtV6AnsName->SetText(ans->name->v);
-		Text::StrInt32(sbuff, ans->recType);
-		me->txtV6AnsType->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->recClass);
-		me->txtV6AnsClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtV6AnsTTL->SetText(sbuff);
+		me->txtV6AnsName->SetText(ans->name->ToCString());
+		sptr = Text::StrInt32(sbuff, ans->recType);
+		me->txtV6AnsType->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, ans->recClass);
+		me->txtV6AnsClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtV6AnsTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
-			me->txtV6AnsRD->SetText(ans->rd->v);
+			me->txtV6AnsRD->SetText(ans->rd->ToCString());
 		}
 		else
 		{
-			me->txtV6AnsRD->SetText((const UTF8Char*)"");
+			me->txtV6AnsRD->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtV6AnsName->SetText((const UTF8Char*)"");
-		me->txtV6AnsType->SetText((const UTF8Char*)"");
-		me->txtV6AnsClass->SetText((const UTF8Char*)"");
-		me->txtV6AnsTTL->SetText((const UTF8Char*)"");
-		me->txtV6AnsRD->SetText((const UTF8Char*)"");
+		me->txtV6AnsName->SetText(CSTR(""));
+		me->txtV6AnsType->SetText(CSTR(""));
+		me->txtV6AnsClass->SetText(CSTR(""));
+		me->txtV6AnsTTL->SetText(CSTR(""));
+		me->txtV6AnsRD->SetText(CSTR(""));
 	}
 }
 
@@ -300,6 +304,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 	if (req)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -323,10 +328,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 				me->lbOthAnswer->SetSelectedIndex(bestInd);
 			}
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff);
-			me->txtOthRequestTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtOthRequestTTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff);
+			me->txtOthRequestTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtOthRequestTTL->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -342,30 +347,31 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthAnsSelChg(void *userObj)
 	if (ans)
 	{
 		UTF8Char sbuff[16];
+		UTF8Char *sptr;
 		Data::DateTime t;
-		me->txtOthAnsName->SetText(ans->name->v);
-		Text::StrInt32(sbuff, ans->recType);
-		me->txtOthAnsType->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->recClass);
-		me->txtOthAnsClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtOthAnsTTL->SetText(sbuff);
+		me->txtOthAnsName->SetText(ans->name->ToCString());
+		sptr = Text::StrInt32(sbuff, ans->recType);
+		me->txtOthAnsType->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, ans->recClass);
+		me->txtOthAnsClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtOthAnsTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
-			me->txtOthAnsRD->SetText(ans->rd->v);
+			me->txtOthAnsRD->SetText(ans->rd->ToCString());
 		}
 		else
 		{
-			me->txtOthAnsRD->SetText((const UTF8Char*)"");
+			me->txtOthAnsRD->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtOthAnsName->SetText((const UTF8Char*)"");
-		me->txtOthAnsType->SetText((const UTF8Char*)"");
-		me->txtOthAnsClass->SetText((const UTF8Char*)"");
-		me->txtOthAnsTTL->SetText((const UTF8Char*)"");
-		me->txtOthAnsRD->SetText((const UTF8Char*)"");
+		me->txtOthAnsName->SetText(CSTR(""));
+		me->txtOthAnsType->SetText(CSTR(""));
+		me->txtOthAnsClass->SetText(CSTR(""));
+		me->txtOthAnsTTL->SetText(CSTR(""));
+		me->txtOthAnsRD->SetText(CSTR(""));
 	}
 }
 
@@ -378,25 +384,26 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 	{
 		Net::WhoisRecord *rec = me->whois->RequestIP(target->ip);
 		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		if (rec)
 		{
-			if (rec->GetNetworkName(sbuff))
+			if ((sptr = rec->GetNetworkName(sbuff)) != 0)
 			{
-				me->txtTargetName->SetText(sbuff);
+				me->txtTargetName->SetText(CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->txtTargetName->SetText((const UTF8Char*)"Unknown");
+				me->txtTargetName->SetText(CSTR("Unknown"));
 			}
-			if (rec->GetCountryCode(sbuff))
+			if ((sptr = rec->GetCountryCode(sbuff)) != 0)
 			{
-				me->txtTargetCountry->SetText(sbuff);
+				me->txtTargetCountry->SetText(CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->txtTargetCountry->SetText((const UTF8Char*)"Unk");
+				me->txtTargetCountry->SetText(CSTR("Unk"));
 			}
 			Text::StringBuilderUTF8 sb;
 			i = 0;
@@ -407,13 +414,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 				sb.AppendC(UTF8STRC("\r\n"));
 				i++;
 			}
-			me->txtTargetWhois->SetText(sb.ToString());
+			me->txtTargetWhois->SetText(sb.ToCString());
 		}
 		else
 		{
-			me->txtTargetWhois->SetText((const UTF8Char*)"");
-			me->txtTargetName->SetText((const UTF8Char*)"");
-			me->txtTargetCountry->SetText((const UTF8Char*)"");
+			me->txtTargetWhois->SetText(CSTR(""));
+			me->txtTargetName->SetText(CSTR(""));
+			me->txtTargetCountry->SetText(CSTR(""));
 		}
 		Sync::MutexUsage mutUsage(target->mut);
 		me->lbTargetDomains->ClearItems();
@@ -428,9 +435,9 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTargetSelChg(void *userObj)
 	}
 	else
 	{
-		me->txtTargetWhois->SetText((const UTF8Char*)"");
-		me->txtTargetName->SetText((const UTF8Char*)"");
-		me->txtTargetCountry->SetText((const UTF8Char*)"");
+		me->txtTargetWhois->SetText(CSTR(""));
+		me->txtTargetName->SetText(CSTR(""));
+		me->txtTargetCountry->SetText(CSTR(""));
 		me->lbTargetDomains->ClearItems();
 	}
 }
@@ -541,6 +548,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 	if (req)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
@@ -564,10 +572,10 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 				me->lbSAnswer->SetSelectedIndex(bestInd);
 			}
 			reqTime.ToLocalTime();
-			reqTime.ToString(sbuff);
-			me->txtSRequestTime->SetText(sbuff);
-			Text::StrUInt32(sbuff, ttl);
-			me->txtSRequestTTL->SetText(sbuff);
+			sptr = reqTime.ToString(sbuff);
+			me->txtSRequestTime->SetText(CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, ttl);
+			me->txtSRequestTTL->SetText(CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -583,30 +591,31 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSAnsSelChg(void *userObj)
 	if (ans)
 	{
 		UTF8Char sbuff[16];
+		UTF8Char *sptr;
 		Data::DateTime t;
-		me->txtSAnsName->SetText(ans->name->v);
-		Text::StrInt32(sbuff, ans->recType);
-		me->txtSAnsType->SetText(sbuff);
-		Text::StrInt32(sbuff, ans->recClass);
-		me->txtSAnsClass->SetText(sbuff);
-		Text::StrUInt32(sbuff, ans->ttl);
-		me->txtSAnsTTL->SetText(sbuff);
+		me->txtSAnsName->SetText(ans->name->ToCString());
+		sptr = Text::StrInt32(sbuff, ans->recType);
+		me->txtSAnsType->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrInt32(sbuff, ans->recClass);
+		me->txtSAnsClass->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ans->ttl);
+		me->txtSAnsTTL->SetText(CSTRP(sbuff, sptr));
 		if (ans->rd)
 		{
-			me->txtSAnsRD->SetText(ans->rd->v);
+			me->txtSAnsRD->SetText(ans->rd->ToCString());
 		}
 		else
 		{
-			me->txtSAnsRD->SetText((const UTF8Char*)"");
+			me->txtSAnsRD->SetText(CSTR(""));
 		}
 	}
 	else
 	{
-		me->txtSAnsName->SetText((const UTF8Char*)"");
-		me->txtSAnsType->SetText((const UTF8Char*)"");
-		me->txtSAnsClass->SetText((const UTF8Char*)"");
-		me->txtSAnsTTL->SetText((const UTF8Char*)"");
-		me->txtSAnsRD->SetText((const UTF8Char*)"");
+		me->txtSAnsName->SetText(CSTR(""));
+		me->txtSAnsType->SetText(CSTR(""));
+		me->txtSAnsClass->SetText(CSTR(""));
+		me->txtSAnsTTL->SetText(CSTR(""));
+		me->txtSAnsRD->SetText(CSTR(""));
 	}
 }
 
@@ -658,7 +667,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 	{
 		if (me->proxy->AddBlackList(sb.ToString()))
 		{
-			me->txtBlackList->SetText((const UTF8Char*)"");
+			me->txtBlackList->SetText(CSTR(""));
 			me->UpdateBlackList();
 		}
 	}
@@ -788,8 +797,9 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"DNS Proxy");
+	this->SetText(CSTR("DNS Proxy"));
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -815,7 +825,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->txtDNSServer, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtDNSServer->SetRect(104, 52, 200, 23, false);
 	this->txtDNSServer->SetReadOnly(true);
-	NEW_CLASS(this->btnDNSSwitch, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Switch"));
+	NEW_CLASS(this->btnDNSSwitch, UI::GUIButton(ui, this->tpStatus, CSTR("Switch")));
 	this->btnDNSSwitch->SetRect(304, 52, 75, 23, false);
 	this->btnDNSSwitch->HandleButtonClick(OnDNSSwitchClicked, this);
 	NEW_CLASS(this->lblDNSList, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"DNS List"));
@@ -824,17 +834,17 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbDNSList->SetRect(104, 76, 100, 240, false);
 	NEW_CLASS(this->txtDNSServer2, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtDNSServer2->SetRect(104, 316, 100, 23, false);
-	NEW_CLASS(this->btnDNSAdd, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"&Add"));
+	NEW_CLASS(this->btnDNSAdd, UI::GUIButton(ui, this->tpStatus, CSTR("&Add")));
 	this->btnDNSAdd->SetRect(204, 316, 75, 23, false);
 	this->btnDNSAdd->HandleButtonClick(OnDNSAddClicked, this);
-	NEW_CLASS(this->btnDNSSet, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"&Set"));
+	NEW_CLASS(this->btnDNSSet, UI::GUIButton(ui, this->tpStatus, CSTR("&Set")));
 	this->btnDNSSet->SetRect(284, 316, 75, 23, false);
 	this->btnDNSSet->HandleButtonClick(OnDNSSetClicked, this);
 	NEW_CLASS(this->lblWPAD, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"WPAD Address"));
 	this->lblWPAD->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtWPAD, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtWPAD->SetRect(104, 340, 100, 23, false);
-	NEW_CLASS(this->btnWPAD, UI::GUIButton(ui, this->tpStatus, (const UTF8Char*)"Set"));
+	NEW_CLASS(this->btnWPAD, UI::GUIButton(ui, this->tpStatus, CSTR("Set")));
 	this->btnWPAD->SetRect(204, 340, 75, 23, false);
 	this->btnWPAD->HandleButtonClick(OnWPADClicked, this);
 
@@ -1034,7 +1044,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lblSearchMask->SetRect(204, 4, 100, 23, false);
 	NEW_CLASS(this->txtSearchMask, UI::GUITextBox(ui, this->pnlSearch, CSTR("19")));
 	this->txtSearchMask->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearch, (const UTF8Char*)"Search"));
+	NEW_CLASS(this->btnSearch, UI::GUIButton(ui, this->pnlSearch, CSTR("Search")));
 	this->btnSearch->SetRect(404, 4, 75, 23, false);
 	this->btnSearch->HandleButtonClick(OnSearchClicked, this);
 	NEW_CLASS(this->lbSearch, UI::GUIListBox(ui, this->tpSearch, false));
@@ -1096,7 +1106,7 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->lbBlackList->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtBlackList, UI::GUITextBox(ui, this->pnlBlackList, CSTR("")));
 	this->txtBlackList->SetRect(4, 4, 200, 23, false);
-	NEW_CLASS(this->btnBlackList, UI::GUIButton(ui, this->pnlBlackList, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnBlackList, UI::GUIButton(ui, this->pnlBlackList, CSTR("Add")));
 	this->btnBlackList->SetRect(204, 4, 75, 23, false);
 	this->btnBlackList->HandleButtonClick(OnBlackListClicked, this);
 
@@ -1136,8 +1146,8 @@ SSWR::AVIRead::AVIRDNSProxyForm::AVIRDNSProxyForm(UI::GUIClientControl *parent, 
 	this->proxy->HandleDNSRequest(OnDNSRequest, this);
 	this->AddTimer(1000, OnTimerTick, this);
 	UInt32 svrIP = this->proxy->GetServerIP();
-	Net::SocketUtil::GetIPv4Name(sbuff, svrIP);
-	this->txtDNSServer2->SetText(sbuff);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, svrIP);
+	this->txtDNSServer2->SetText(CSTRP(sbuff, sptr));
 
 	this->UpdateDNSList();
 }

@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnGenHashClicked(void *userObj)
 	sbCost.ClearStr();
 	Crypto::Hash::Bcrypt bcrypt;
 	bcrypt.GenHash(&sbCost, cost, sbPassword.ToString(), sbPassword.GetLength());
-	me->txtGenHash->SetText(sbCost.ToString());
+	me->txtGenHash->SetText(sbCost.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(void *userObj)
@@ -39,18 +39,18 @@ void __stdcall SSWR::AVIRead::AVIRBCryptForm::OnCheckClicked(void *userObj)
 	Crypto::Hash::Bcrypt bcrypt;
 	if (bcrypt.Matches(sbHash.ToString(), sbHash.GetLength(), sbPassword.ToString(), sbPassword.GetLength()))
 	{
-		me->txtCheckResult->SetText((const UTF8Char*)"Valid");
+		me->txtCheckResult->SetText(CSTR("Valid"));
 	}
 	else
 	{
-		me->txtCheckResult->SetText((const UTF8Char*)"Not Valid");
+		me->txtCheckResult->SetText(CSTR("Not Valid"));
 	}
 }
 
 SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 320, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"BCrypt");
+	this->SetText(CSTR("BCrypt"));
 	this->SetNoResize(true);
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, UI::
 	this->lblGenPassword->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtGenPassword, UI::GUITextBox(ui, this->grpGenerate, CSTR("")));
 	this->txtGenPassword->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->grpGenerate, (const UTF8Char*)"Generate"));
+	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this->grpGenerate, CSTR("Generate")));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenHashClicked, this);
 	NEW_CLASS(this->lblGenHash, UI::GUILabel(ui, this->grpGenerate, (const UTF8Char*)"Hash"));
@@ -85,7 +85,7 @@ SSWR::AVIRead::AVIRBCryptForm::AVIRBCryptForm(UI::GUIClientControl *parent, UI::
 	this->lblCheckPassword->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCheckPassword, UI::GUITextBox(ui, this->grpCheck, CSTR("")));
 	this->txtCheckPassword->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->btnCheck, UI::GUIButton(ui, this->grpCheck, (const UTF8Char*)"Check"));
+	NEW_CLASS(this->btnCheck, UI::GUIButton(ui, this->grpCheck, CSTR("Check")));
 	this->btnCheck->SetRect(104, 52, 75, 23, false);
 	this->btnCheck->HandleButtonClick(OnCheckClicked, this);
 	NEW_CLASS(this->lblCheckResult, UI::GUILabel(ui, this->grpCheck, (const UTF8Char*)"Result"));

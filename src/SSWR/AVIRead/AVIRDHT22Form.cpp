@@ -25,32 +25,34 @@ void SSWR::AVIRead::AVIRDHT22Form::ReadData()
 	Double rh;
 	Double humidity;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (this->dht22->ReadData(&temp, &rh))
 	{
 		humidity = Math::Unit::Pressure::WaterVapourPressure(Math::Unit::Pressure::PU_KPASCAL, Math::Unit::Temperature::TU_CELSIUS, temp, rh);
-		Text::StrDouble(sbuff, temp);
-		this->txtTemp->SetText(sbuff);
-		Text::StrDouble(sbuff, rh);
-		this->txtRH->SetText(sbuff);
-		Text::StrDouble(sbuff, humidity);
-		this->txtHumidity->SetText(sbuff);
-		this->txtStatus->SetText((const UTF8Char*)"Success");
+		sptr = Text::StrDouble(sbuff, temp);
+		this->txtTemp->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, rh);
+		this->txtRH->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, humidity);
+		this->txtHumidity->SetText(CSTRP(sbuff, sptr));
+		this->txtStatus->SetText(CSTR("Success"));
 	}
 	else
 	{
-		this->txtStatus->SetText((const UTF8Char*)"Fail");
+		this->txtStatus->SetText(CSTR("Fail"));
 	}
 }
 
 SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::IOPin *pin) : UI::GUIForm(parent, 480, 160, ui)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	this->SetFont(0, 0, 8.25, false);
 	this->pin = pin;
 	this->core = core;
 	NEW_CLASS(this->dht22, IO::Device::DHT22(this->pin));
-	this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DHT22 - ")));
-	this->SetText(sbuff);
+	sptr = this->pin->GetName(Text::StrConcatC(sbuff, UTF8STRC("DHT22 - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -69,7 +71,7 @@ SSWR::AVIRead::AVIRDHT22Form::AVIRDHT22Form(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->txtHumidity, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHumidity->SetRect(104, 52, 100, 23, false);
 	this->txtHumidity->SetReadOnly(true);
-	NEW_CLASS(this->btnRead, UI::GUIButton(ui, this, (const UTF8Char*)"Read"));
+	NEW_CLASS(this->btnRead, UI::GUIButton(ui, this, CSTR("Read")));
 	this->btnRead->SetRect(104, 76, 75, 23, false);
 	this->btnRead->HandleButtonClick(OnReadClicked, this);
 	NEW_CLASS(this->chkAutoRead, UI::GUICheckBox(ui, this, (const UTF8Char*)"Auto Read", false));

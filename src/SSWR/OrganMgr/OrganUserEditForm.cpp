@@ -75,11 +75,11 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 
 	if (user)
 	{
-		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")).v);
+		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")));
 	}
 	else
 	{
-		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")).v);
+		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")));
 	}
 
 	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditUserName")).v));
@@ -100,17 +100,17 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);
-	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditOk")).v));
+	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditOk"))));
 	this->btnOK->SetRect(164, 108, 75, 23, false);
 	this->btnOK->HandleButtonClick(OnOKClicked, this);
-	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditCancel")).v));
+	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, this->env->GetLang(UTF8STRC("UserEditCancel"))));
 	this->btnCancel->SetRect(244, 108, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
 
 	if (this->user)
 	{
-		this->txtUserName->SetText(this->user->userName->v);
-		this->txtWatermark->SetText(this->user->watermark->v);
+		this->txtUserName->SetText(this->user->userName->ToCString());
+		this->txtWatermark->SetText(this->user->watermark->ToCString());
 	}
 	this->txtUserName->Focus();
 	this->SetDefaultButton(this->btnOK);

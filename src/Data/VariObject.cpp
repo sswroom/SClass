@@ -157,7 +157,7 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sb->AppendChar('{', 1);
+	sb->AppendUTF8Char('{');
 	Data::ArrayList<const UTF8Char*> *keys = this->items->GetKeys();
 	Data::ArrayList<VariItem*> *values = this->items->GetValues();
 	UOSInt i = 0;
@@ -166,11 +166,11 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
+			sb->AppendUTF8Char(',');
 		}
 		sptr = Text::JSText::ToJSTextDQuote(sbuff, keys->GetItem(i));
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		values->GetItem(i)->ToString(sb);
 		i++;
 	}
@@ -182,17 +182,17 @@ void Data::VariObject::ToString(Text::StringBuilderUTF8 *sb)
 	{
 		if (i > 0)
 		{
-			sb->AppendChar(',', 1);
+			sb->AppendUTF8Char(',');
 		}
 		Text::JSText::ToJSTextDQuote(sbuff, keys[i]);
 		sb->Append(sbuff);
-		sb->AppendChar(':', 1);
+		sb->AppendUTF8Char(':');
 		values[i]->ToString(sb);
 		i++;
 	}
 	MemFree(keys);
 	MemFree(values);*/
-	sb->AppendChar('}', 1);
+	sb->AppendUTF8Char('}');
 }
 
 Data::Class *Data::VariObject::CreateClass()

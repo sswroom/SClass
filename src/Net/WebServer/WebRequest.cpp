@@ -596,7 +596,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
 		}
 		if (this->svrPort != defPort)
 		{
-//			sb->AppendChar(':', 1);
+//			sb->AppendUTF8Char(':');
 //			sb->AppendU16(this->svrPort);
 		}
 		break;

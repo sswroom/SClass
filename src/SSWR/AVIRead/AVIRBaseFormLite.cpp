@@ -353,17 +353,17 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 {
 	this->core = core;
 #if defined(CPU_X86_32)
-	this->SetText((const UTF8Char*)"AVIRead (x86 32-bit)");
+	this->SetText(CSTR("AVIRead (x86 32-bit)");
 #elif defined(CPU_X86_64)
-	this->SetText((const UTF8Char*)"AVIRead (x86 64-bit)");
+	this->SetText(CSTR("AVIRead (x86 64-bit)");
 #elif defined(CPU_ARM)
-	this->SetText((const UTF8Char*)"AVIRead (ARM 32-bit)");
+	this->SetText(CSTR("AVIRead (ARM 32-bit)");
 #elif defined(CPU_ARM64)
-	this->SetText((const UTF8Char*)"AVIRead (ARM 64-bit)");
+	this->SetText(CSTR("AVIRead (ARM 64-bit)");
 #elif defined(CPU_MIPS)
-	this->SetText((const UTF8Char*)"AVIRead (MIPS 32-bit)");
+	this->SetText(CSTR("AVIRead (MIPS 32-bit)");
 #else
-	this->SetText((const UTF8Char*)"AVIRead");
+	this->SetText(CSTR("AVIRead");
 #endif
 	this->HandleDropFiles(FileHandler, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -641,7 +641,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText((const UTF8Char*)"Select GSM Modem");
+			frm->SetText(CSTR("Select GSM Modem");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->core->OpenGSMModem(frm->stm);
@@ -653,7 +653,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, true));
-			frm->SetText((const UTF8Char*)"Select GPS Tracker");
+			frm->SetText(CSTR("Select GPS Tracker");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
@@ -1218,7 +1218,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText((const UTF8Char*)"Select SNB Dongle");
+			frm->SetText(CSTR("Select SNB Dongle");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRSNBDongleForm *snbFrm;
@@ -1371,7 +1371,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText((const UTF8Char*)"Select IO Pin");
+			frm->SetText(CSTR("Select IO Pin");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRIOPinTestForm *testFrm;
@@ -1385,7 +1385,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText((const UTF8Char*)"Select DHT22 IO Pin");
+			frm->SetText(CSTR("Select DHT22 IO Pin");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDHT22Form *testFrm;
@@ -1399,7 +1399,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText((const UTF8Char*)"Select DS18B20 IO Pin");
+			frm->SetText(CSTR("Select DS18B20 IO Pin");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDS18B20Form *testFrm;
@@ -1478,7 +1478,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText((const UTF8Char*)"Select Voice Modem");
+			frm->SetText(CSTR("Select Voice Modem");
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRVoiceModemForm *innerFrm;

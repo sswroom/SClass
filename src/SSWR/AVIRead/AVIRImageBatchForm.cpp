@@ -54,9 +54,9 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 			IO::Path::FindFileClose(sess);
 		}
 		me->selCnt = fileCnt;
-		me->prgMain->ProgressStart((const UTF8Char*)"Loading", fileCnt);
+		me->prgMain->ProgressStart(CSTR("Loading"), fileCnt);
 		me->icMain->SetFolder(path->v);
-		me->lblFolder->SetText(path->v);
+		me->lblFolder->SetText(path->ToCString());
 		me->pbMain->SetImage(0, false);
 		SDEL_CLASS(me->dispImage);
 		SDEL_CLASS(me->previewImage);
@@ -109,19 +109,20 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnColorChg(void *userObj, UOSI
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
 	Double bvalue = UOSInt2Double(me->hsbBright->GetPos()) * 0.1;
 	Double cvalue = UOSInt2Double(me->hsbContr->GetPos());
 	Double gvalue = UOSInt2Double(me->hsbGamma->GetPos());
 	UOSInt hdrLev = me->hsbHDRLev->GetPos();
-	Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
-	me->lblBrightV->SetText(sbuff);
-	Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
-	me->lblContrV->SetText(sbuff);
-	Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
-	me->lblGammaV->SetText(sbuff);
-	Text::StrUOSInt(sbuff, hdrLev);
-	me->lblHDRLevV->SetText(sbuff);
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, bvalue), UTF8STRC("%"));
+	me->lblBrightV->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, cvalue), UTF8STRC("%"));
+	me->lblContrV->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrConcatC(Text::StrDouble(sbuff, gvalue), UTF8STRC("%"));
+	me->lblGammaV->SetText(CSTRP(sbuff, sptr));
+	sptr = Text::StrUOSInt(sbuff, hdrLev);
+	me->lblHDRLevV->SetText(CSTRP(sbuff, sptr));
 
 	if (!me->initPos)
 	{
@@ -228,7 +229,7 @@ void SSWR::AVIRead::AVIRImageBatchForm::UpdatePreview()
 SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Image batch tool");
+	this->SetText(CSTR("Image batch tool"));
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	this->core = core;
@@ -246,7 +247,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 24, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->btnFolder, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Folder..."));
+	NEW_CLASS(this->btnFolder, UI::GUIButton(ui, this->pnlCtrl, CSTR("Folder...")));
 	this->btnFolder->SetRect(0, 0, 75, 23, false);
 	this->btnFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnFolder->HandleButtonClick(OnFolderClicked, this);
@@ -278,7 +279,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbBright->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblBrightV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
 	this->lblBrightV->SetRect(500, 0,100, 23, false);
-	NEW_CLASS(this->btnBrightReset, UI::GUIButton(ui, this->pnlImage, (const UTF8Char*)"Reset"));
+	NEW_CLASS(this->btnBrightReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
 	this->btnBrightReset->SetRect(600, 0, 75, 23, false);
 	this->btnBrightReset->HandleButtonClick(OnBrightResetClicked, this);
 	NEW_CLASS(this->lblContr, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"Contrast"));
@@ -299,7 +300,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
 	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
 	this->lblGammaV->SetRect(500, 48, 100, 23, false);
-	NEW_CLASS(this->btnGammaReset, UI::GUIButton(ui, this->pnlImage, (const UTF8Char*)"Reset"));
+	NEW_CLASS(this->btnGammaReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
 	this->btnGammaReset->SetRect(600, 48, 75, 23, false);
 	this->btnGammaReset->HandleButtonClick(OnGammaResetClicked, this);
 	NEW_CLASS(this->lblHDRLev, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"HDR Lev"));
@@ -345,11 +346,11 @@ void SSWR::AVIRead::AVIRImageBatchForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_EXPORT_SEL:
 		this->icMain->SetExportFormat(SSWR::AVIRead::AVIRImageControl::EF_JPG);
-		this->prgMain->ProgressStart((const UTF8Char*)"Test", this->selCnt = this->icMain->ExportSelected());
+		this->prgMain->ProgressStart(CSTR("Test"), this->selCnt = this->icMain->ExportSelected());
 		break;
 	case MNU_EXPORT_TIF:
 		this->icMain->SetExportFormat(SSWR::AVIRead::AVIRImageControl::EF_TIF);
-		this->prgMain->ProgressStart((const UTF8Char*)"Test", this->selCnt = this->icMain->ExportSelected());
+		this->prgMain->ProgressStart(CSTR("Test"), this->selCnt = this->icMain->ExportSelected());
 		break;
 	case MNU_MOVE_UP:
 		this->icMain->MoveUp();

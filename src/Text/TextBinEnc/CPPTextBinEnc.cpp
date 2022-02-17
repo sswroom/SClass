@@ -119,7 +119,7 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::EncodeBin(Text::StringBuilderUTF8 *sb, c
 	}
 	if (!lineStart)
 	{
-		sb->AppendChar('\"', 1);
+		sb->AppendUTF8Char('\"');
 	}
 	return ret;
 }

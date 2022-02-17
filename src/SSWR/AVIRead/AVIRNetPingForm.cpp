@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRNetPingForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
-	this->SetText((const UTF8Char*)"Network Ping");
+	this->SetText(CSTR("Network Ping"));
 
 	this->core = core;
 	this->sockf = core->GetSocketFactory();
@@ -117,7 +117,7 @@ SSWR::AVIRead::AVIRNetPingForm::AVIRNetPingForm(UI::GUIClientControl *parent, UI
 	this->lblRepeat->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"", false));
 	this->chkRepeat->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, (const UTF8Char*)"&Ping"));
+	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, CSTR("&Ping")));
 	this->btnPing->SetRect(104, 52, 75, 23, false);
 	this->btnPing->HandleButtonClick(OnPingClicked, this);
 	NEW_CLASS(this->rlcPing, UI::GUIRealtimeLineChart(ui, this, this->core->GetDrawEngine(), 2, 600, 1000));
