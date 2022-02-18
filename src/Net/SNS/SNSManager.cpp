@@ -436,7 +436,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	return 0;
 }
 
-Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath)
+Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, const UTF8Char *dataPath)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

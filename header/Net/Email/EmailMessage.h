@@ -13,35 +13,35 @@ namespace Net
 		class EmailMessage
 		{
 		private:
-			const UTF8Char *fromAddr;
+			Text::String *fromAddr;
 			Data::ArrayList<const UTF8Char*> *recpList;
 			Data::ArrayList<Text::String*> *headerList;
 			UInt8 *content;
 			UOSInt contentLen;
 
 			UOSInt GetHeaderIndex(const UTF8Char *name, UOSInt nameLen);
-			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val);
-			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val);
+			Bool SetHeader(const UTF8Char *name, UOSInt nameLen, const UTF8Char *val, UOSInt valLen);
+			Bool AppendUTF8Header(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
 		public:
 			EmailMessage();
 			~EmailMessage();
 			
-			Bool SetSubject(const UTF8Char *subject);
-			Bool SetContent(const UTF8Char *content, const Char *contentType);
+			Bool SetSubject(Text::CString subject);
+			Bool SetContent(Text::CString content, Text::CString contentType);
 			Bool SetSentDate(Data::DateTime *dt);
-			Bool SetMessageId(const UTF8Char *msgId);
-			Bool SetFrom(const UTF8Char *name, const UTF8Char *addr);
-			Bool AddTo(const UTF8Char *name, const UTF8Char *addr);
-			Bool AddToList(const UTF8Char *addrs);
-			Bool AddCc(const UTF8Char *name, const UTF8Char *addr);
-			Bool AddBcc(const UTF8Char *addr);
+			Bool SetMessageId(Text::CString msgId);
+			Bool SetFrom(Text::CString name, Text::CString addr);
+			Bool AddTo(Text::CString name, Text::CString addr);
+			Bool AddToList(Text::CString addrs);
+			Bool AddCc(Text::CString name, Text::CString addr);
+			Bool AddBcc(Text::CString addr);
 
 			Bool CompletedMessage();
-			const UTF8Char *GetFromAddr();
+			Text::String *GetFromAddr();
 			Data::ArrayList<const UTF8Char*> *GetRecpList();
 			Bool WriteToStream(IO::Stream *stm);
 
-			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, const UTF8Char *fromAddr);
+			static Bool GenerateMessageID(Text::StringBuilderUTF8 *sb, Text::CString fromAddr);
 		};
 	}
 }

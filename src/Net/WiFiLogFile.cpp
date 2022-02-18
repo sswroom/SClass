@@ -57,8 +57,8 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		UTF8Char *sarr[12];
-		UTF8Char *sarr2[7];
+		Text::PString sarr[12];
+		Text::PString sarr2[7];
 		UInt8 buff[8];
 		UOSInt i;
 		UOSInt j;
@@ -72,52 +72,52 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 		buff[1] = 0;
 		while (reader->ReadLine(&sb, 4096))
 		{
-			i = Text::StrSplit(sarr, 12, sb.ToString(), '\t');
+			i = Text::StrSplitP(sarr, 12, sb, '\t');
 			if (i == 4 || i == 7 || i == 9 || i == 10 || i == 11)
 			{
-				if (Text::StrSplit(sarr2, 7, sarr[0], ':') == 6)
+				if (Text::StrSplitP(sarr2, 7, sarr[0], ':') == 6)
 				{
-					buff[2] = Text::StrHex2UInt8C(sarr2[0]);
-					buff[3] = Text::StrHex2UInt8C(sarr2[1]);
-					buff[4] = Text::StrHex2UInt8C(sarr2[2]);
-					buff[5] = Text::StrHex2UInt8C(sarr2[3]);
-					buff[6] = Text::StrHex2UInt8C(sarr2[4]);
-					buff[7] = Text::StrHex2UInt8C(sarr2[5]);
+					buff[2] = Text::StrHex2UInt8C(sarr2[0].v);
+					buff[3] = Text::StrHex2UInt8C(sarr2[1].v);
+					buff[4] = Text::StrHex2UInt8C(sarr2[2].v);
+					buff[5] = Text::StrHex2UInt8C(sarr2[3].v);
+					buff[6] = Text::StrHex2UInt8C(sarr2[4].v);
+					buff[7] = Text::StrHex2UInt8C(sarr2[5].v);
 					iMAC = ReadMUInt64(buff);
 					log = (Net::WiFiLogFile::LogFileEntry*)this->Get(iMAC);
 					if (log)
 					{
 						if (i >= 7)
 						{
-							if ((log->manuf == 0 || log->manuf->v[0] == 0) && sarr[4][0] != 0)
+							if ((log->manuf == 0 || log->manuf->v[0] == 0) && sarr[4].v[0] != 0)
 							{
 								SDEL_STRING(log->manuf);
-								log->manuf = Text::String::NewNotNull(sarr[4]);
+								log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
 							}
-							if ((log->model == 0 || log->model->v[0] == 0) && sarr[5][0] != 0)
+							if ((log->model == 0 || log->model->v[0] == 0) && sarr[5].v[0] != 0)
 							{
 								SDEL_STRING(log->model);
-								log->model = Text::String::NewNotNull(sarr[5]);
+								log->model = Text::String::New(sarr[5].v, sarr[5].leng);
 							}
-							if ((log->serialNum == 0 || log->serialNum->v[0] == 0) && sarr[6][0] != 0)
+							if ((log->serialNum == 0 || log->serialNum->v[0] == 0) && sarr[6].v[0] != 0)
 							{
 								SDEL_STRING(log->serialNum);
-								log->serialNum = Text::String::NewNotNull(sarr[6]);
+								log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 							}
 						}
 						if (i >= 9)
 						{
-							if ((log->country == 0 || log->country->v[0] == 0) && sarr[8][0] != 0)
+							if ((log->country == 0 || log->country->v[0] == 0) && sarr[8].v[0] != 0)
 							{
 								SDEL_STRING(log->country);
-								log->country = Text::String::NewNotNull(sarr[8]);
+								log->country = Text::String::New(sarr[8].v, sarr[8].leng);
 							}
-							j = Text::StrSplit(sarr2, 3, sarr[7], ',');
+							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
 							{
-								if (Text::StrCharCnt(sarr2[j]) == 6)
+								if (sarr2[j].leng == 6)
 								{
-									Text::StrHex2Bytes(sarr2[j], &buff[2]);
+									Text::StrHex2Bytes(sarr2[j].v, &buff[2]);
 									k = 0;
 									while (k < 3)
 									{
@@ -140,13 +140,13 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 						if (i >= 10)
 						{
 							sarr2[1] = sarr[9];
-							if (sarr2[1][0])
+							if (sarr2[1].v[0])
 							{
 								UInt64 iMAC;
 								while (true)
 								{
-									j = Text::StrSplit(sarr2, 2, sarr2[1], ',');
-									iMAC = Text::StrHex2UInt64C(sarr2[0]);
+									j = Text::StrSplitP(sarr2, 2, sarr2[1], ',');
+									iMAC = Text::StrHex2UInt64C(sarr2[0].v);
 									k = 0;
 									while (k < 20)
 									{
@@ -174,7 +174,7 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 						}
 						if (i >= 11)
 						{
-							UInt32 ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
+							UInt32 ieLen = (UInt32)(sarr[10].leng >> 1);
 							if (ieLen > log->ieLen)
 							{
 								log->ieLen = ieLen;
@@ -183,7 +183,7 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 									MemFree(log->ieBuff);
 								}
 								log->ieBuff = MemAlloc(UInt8, log->ieLen);
-								Text::StrHex2Bytes(sarr[10], log->ieBuff);
+								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
 							}
 						}
 					}
@@ -200,14 +200,14 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 						log->mac[4] = buff[6];
 						log->mac[5] = buff[7];
 						log->macInt = iMAC;
-						log->ssid = Text::String::NewNotNull(sarr[1]);
-						log->phyType = Text::StrToInt32(sarr[2]);
-						log->freq = Text::StrToDouble(sarr[3]);
+						log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
+						log->phyType = Text::StrToInt32(sarr[2].v);
+						log->freq = Text::StrToDouble(sarr[3].v);
 						if (i >= 7)
 						{
-							log->manuf = Text::String::NewNotNull(sarr[4]);
-							log->model = Text::String::NewNotNull(sarr[5]);
-							log->serialNum = Text::String::NewNotNull(sarr[6]);
+							log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
+							log->model = Text::String::New(sarr[5].v, sarr[5].leng);
+							log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 						}
 						else
 						{
@@ -224,13 +224,13 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 						}
 						if (i >= 9)
 						{
-							log->country = Text::String::NewNotNull(sarr[8]);
-							j = Text::StrSplit(sarr2, 3, sarr[7], ',');
+							log->country = Text::String::New(sarr[8].v, sarr[8].leng);
+							j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 							while (j-- > 0)
 							{
-								if (Text::StrCharCnt(sarr2[j]) == 6)
+								if (sarr2[j].leng == 6)
 								{
-									Text::StrHex2Bytes(sarr2[j], log->ouis[j]);
+									Text::StrHex2Bytes(sarr2[j].v, log->ouis[j]);
 								}
 							}
 						}
@@ -241,24 +241,24 @@ void Net::WiFiLogFile::LoadFile(Text::CString fileName)
 						if (i >= 10)
 						{
 							sarr2[1] = sarr[9];
-							if (sarr2[1][0])
+							if (sarr2[1].v[0])
 							{
 								j = 0;
-								while (Text::StrSplit(sarr2, 2, sarr2[1], ',') == 2)
+								while (Text::StrSplitP(sarr2, 2, sarr2[1], ',') == 2)
 								{
-									log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
+									log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
 									j++;
 								}
-								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0]);
+								log->neighbour[j] = Text::StrHex2UInt64C(sarr2[0].v);
 							}
 						}
 						if (i >= 11)
 						{
-							log->ieLen = (UInt32)(Text::StrCharCnt(sarr[10]) >> 1);
+							log->ieLen = (UInt32)(sarr[10].leng >> 1);
 							if (log->ieLen > 0)
 							{
 								log->ieBuff = MemAlloc(UInt8, log->ieLen);
-								Text::StrHex2Bytes(sarr[10], log->ieBuff);
+								Text::StrHex2Bytes(sarr[10].v, log->ieBuff);
 							}
 							else
 							{

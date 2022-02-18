@@ -239,11 +239,11 @@ Bool Net::Email::SMTPConn::IsError()
 	return this->initCode != 220 || this->cli->IsConnectError();
 }
 
-Bool Net::Email::SMTPConn::SendHelo(const UTF8Char *cliName)
+Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("HELO ")), cliName);
+	sptr = cliName.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HELO ")));
 	this->statusChg = false;
 	if (this->logWriter)
 	{
@@ -254,12 +254,12 @@ Bool Net::Email::SMTPConn::SendHelo(const UTF8Char *cliName)
 	return code == 250;
 }
 
-Bool Net::Email::SMTPConn::SendEHlo(const UTF8Char *cliName)
+Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 {
 	UTF8Char returnMsg[2048];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("EHLO ")), cliName), UTF8STRC("\r\n"));
+	sptr = Text::StrConcatC(cliName.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EHLO "))), UTF8STRC("\r\n"));
 	this->statusChg = false;
 	returnMsg[0] = 0;
 	this->msgRet = returnMsg;
@@ -393,11 +393,11 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 	}
 }
 
-Bool Net::Email::SMTPConn::SendMailFrom(const UTF8Char *fromEmail)
+Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("MAIL FROM: <")), fromEmail), UTF8STRC(">"));
+	sptr = Text::StrConcatC(fromEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("MAIL FROM: <"))), UTF8STRC(">"));
 	this->statusChg = false;
 	if (this->logWriter)
 	{

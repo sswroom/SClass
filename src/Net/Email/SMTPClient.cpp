@@ -48,9 +48,9 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 		DEL_CLASS(conn);
 		return false;
 	}
-	if (!conn->SendEHlo((const UTF8Char*)"[127.0.0.1]"))
+	if (!conn->SendEHlo(CSTR("[127.0.0.1]")))
 	{
-		if (!conn->SendHelo((const UTF8Char*)"[127.0.0.1]"))
+		if (!conn->SendHelo(CSTR("[127.0.0.1]")))
 		{
 			DEL_CLASS(conn);
 			return false;
@@ -65,7 +65,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 			return false;
 		}
 	}
-	if (!conn->SendMailFrom(message->GetFromAddr()))
+	if (!conn->SendMailFrom(message->GetFromAddr()->ToCString()))
 	{
 		DEL_CLASS(conn);
 		return false;

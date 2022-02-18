@@ -129,7 +129,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 						}
 						if (readSize > 0)
 						{
-							sb.AppendSlow((const UTF8Char*)cbuff);
+							sb.AppendC((const UTF8Char*)cbuff, readSize);
 						}
 					}
 					DEL_CLASS(fs);
@@ -158,7 +158,7 @@ UOSInt IO::USBInfo::GetUSBList(Data::ArrayList<USBInfo*> *usbList)
 							{
 								sb.AppendUTF8Char(' ');
 							}						
-							sb.AppendSlow((const UTF8Char*)cbuff);
+							sb.AppendC((const UTF8Char*)cbuff, readSize);
 						}
 					}
 					DEL_CLASS(fs);

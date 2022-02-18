@@ -57,7 +57,7 @@ namespace Net
 			UInt64 ipv6DestCnt;
 			UInt64 othSrcCnt;
 			UInt64 othDestCnt;
-			const UTF8Char *name;
+			Text::String *name;
 			Int64 packetTime[16];
 			UInt64 packetDestMAC[16];
 			UInt16 packetEtherType[16];

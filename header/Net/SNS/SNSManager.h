@@ -45,7 +45,7 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:
-			SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, const UTF8Char *userAgent, const UTF8Char *dataPath);
+			SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, const UTF8Char *dataPath);
 			virtual ~SNSManager();
 
 			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);

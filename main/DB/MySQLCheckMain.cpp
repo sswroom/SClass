@@ -161,13 +161,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			}
 			NEW_CLASS(msg, Net::Email::EmailMessage());
 			sb.ClearStr();
-			Net::Email::EmailMessage::GenerateMessageID(&sb, smtpFrom->v);
-			msg->SetMessageId(sb.ToString());
-			msg->SetFrom(0, smtpFrom->v);
-			msg->AddTo(0, smtpTo->v);
+			Net::Email::EmailMessage::GenerateMessageID(&sb, smtpFrom->ToCString());
+			msg->SetMessageId(sb.ToCString());
+			msg->SetFrom(CSTR_NULL, smtpFrom->ToCString());
+			msg->AddTo(CSTR_NULL, smtpTo->ToCString());
 			msg->SetSentDate(&currTime);
-			msg->SetSubject((const UTF8Char*)"MySQL Check Report");
-			msg->SetContent(sbMsg.ToString(), "text/plain");
+			msg->SetSubject(CSTR("MySQL Check Report"));
+			msg->SetContent(sbMsg.ToCString(), CSTR("text/plain"));
 			if (!smtp->Send(msg))
 			{
 				retNum = 8;

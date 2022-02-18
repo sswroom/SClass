@@ -153,7 +153,7 @@ Net::EthernetAnalyzer::~EthernetAnalyzer()
 	while (i-- > 0)
 	{
 		mac = macList->GetItem(i);
-		SDEL_TEXT(mac->name);
+		SDEL_STRING(mac->name);
 		j = 16;
 		while (j-- > 0)
 		{
@@ -1573,8 +1573,8 @@ Bool Net::EthernetAnalyzer::PacketIPv4(const UInt8 *packet, UOSInt packetSize, U
 													{
 														MemCopyNO(sbuff, &ipData[65 + i * 18], 15);
 														sbuff[15] = 0;
-														Text::StrRTrim(sbuff);
-														mac->name = Text::StrCopyNew(sbuff);
+														sptr = Text::StrRTrim(sbuff);
+														mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 													}
 													mutUsage.EndUse();
 													break;
@@ -1648,8 +1648,8 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 									{
 										MemCopyNO(sbuff, &ipData[23], 32);
 										NetBIOSDecName(sbuff, 32);
-										Text::StrRTrim(sbuff);
-										mac->name = Text::StrCopyNew(sbuff);
+										sptr = Text::StrRTrim(sbuff);
+										mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 /*										NetBIOSDecName(&ipData[57], 32);
 										console->Write(&ipData[23]);
 										console->WriteStrC(UTF8STRC(", ");
@@ -1781,8 +1781,8 @@ FF FF FF FF FF FF 00 11 32 0A AB 9C 08 00 45 00
 							mac = this->MACGet(srcMAC);
 							if (mac->name == 0)
 							{
-								Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
-								mac->name = Text::StrCopyNew(sbuff);
+								sptr = Text::StrConcatC(sbuff, &ipData[21], ipData[20]);
+								mac->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 							}
 							mutUsage.EndUse();
 						}

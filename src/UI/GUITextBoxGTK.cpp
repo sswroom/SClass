@@ -219,7 +219,11 @@ void UI::GUITextBox::SelectAll()
 	{
 		GtkTextIter startIter;
 		GtkTextIter endIter;
+		GtkTextMark *mark;
 		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		mark = gtk_text_buffer_get_insert(buff);
+		gtk_text_buffer_get_iter_at_mark(buff, &startIter, mark);
+		gtk_text_buffer_get_iter_at_mark(buff, &endIter, mark);
 		gtk_text_iter_set_offset(&startIter, 0);
 		gtk_text_iter_forward_to_end(&endIter);
 		gtk_text_buffer_select_range(buff, &startIter, &endIter);

@@ -14,8 +14,10 @@ namespace Net
 			const Char *browserVer;
 			Manage::OSInfo::OSType os;
 			const Char *osVer;
-			const Char *devName;
-			const Char *userAgent;
+			const UTF8Char *devName;
+			UOSInt devNameLen;
+			const UTF8Char *userAgent;
+			UOSInt userAgentLen;
 		} UAEntry;
 		
 	private:
@@ -24,7 +26,7 @@ namespace Net
 		static const UAEntry *GetUserAgentInfo(const UTF8Char *userAgent);
 		static UAEntry *GetUAEntryList(UOSInt *cnt);
 		static void ParseUserAgent(UAEntry *ent, Text::CString userAgent);
-		static const UTF8Char *FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
+		static Text::CString FindUserAgent(Manage::OSInfo::OSType os, Net::BrowserInfo::BrowserType browser);
 	};
 }
 #endif

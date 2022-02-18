@@ -46,10 +46,10 @@ namespace Net
 
 			Bool IsError();
 
-			Bool SendHelo(const UTF8Char *cliName);
-			Bool SendEHlo(const UTF8Char *cliName);
+			Bool SendHelo(Text::CString cliName);
+			Bool SendEHlo(Text::CString cliName);
 			Bool SendAuth(const UTF8Char *userName, const UTF8Char *password);
-			Bool SendMailFrom(const UTF8Char *fromEmail);
+			Bool SendMailFrom(Text::CString fromEmail);
 			Bool SendRcptTo(const UTF8Char *toEmail);
 			Bool SendData(const UTF8Char *buff, UOSInt buffSize);
 			Bool SendQuit();

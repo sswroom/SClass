@@ -358,8 +358,8 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnWebUpdateClicked(void *
 	Net::WebSite::WebSite48IdolControl::ItemData *item;
 	Net::WebSite::WebSite48IdolControl *ctrl;
 	Text::EncodingFactory *encFact;
-	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::NewNotNull(userAgent);
+	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	Text::String *ua = Text::String::New(userAgent);
 	NEW_CLASS(encFact, Text::EncodingFactory());
 	NEW_CLASS(ctrl, Net::WebSite::WebSite48IdolControl(me->core->GetSocketFactory(), me->core->GetSSLEngine(), encFact, ua));
 	ua->Release();
@@ -481,8 +481,8 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 
 	Net::WebSite::WebSite48IdolControl *ctrl = 0;
 	Text::EncodingFactory *encFact = 0;
-	const UTF8Char *userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	Text::String *ua = Text::String::NewNotNull(userAgent);
+	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
+	Text::String *ua = Text::String::New(userAgent);
 	Text::StringBuilderUTF8 sb2;
 	Bool updated = false;
 

@@ -232,9 +232,9 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			this->lvContent->SetSubItem(l, 3, sbuff);
 			Text::StrDouble(sbuff, log->freq);
 			this->lvContent->SetSubItem(l, 4, sbuff);
-			const UTF8Char *manuf = 0;
-			const UTF8Char *model = 0;
-			const UTF8Char *serialNum = 0;
+			Text::String *manuf = 0;
+			Text::String *model = 0;
+			Text::String *serialNum = 0;
 			Net::WirelessLANIE::GetWPSInfo(log->ieBuff, log->ieLen, &manuf, &model, &serialNum);
 			if (manuf)
 				this->lvContent->SetSubItem(l, 5, manuf);
@@ -248,9 +248,9 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 				this->lvContent->SetSubItem(l, 7, serialNum);
 			else if (log->serialNum)
 				this->lvContent->SetSubItem(l, 7, log->serialNum);
-			SDEL_TEXT(manuf);
-			SDEL_TEXT(model);
-			SDEL_TEXT(serialNum);
+			SDEL_STRING(manuf);
+			SDEL_STRING(model);
+			SDEL_STRING(serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
 				this->lvContent->SetSubItem(l, 8, Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)

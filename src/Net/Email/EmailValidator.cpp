@@ -67,13 +67,13 @@ Net::Email::EmailValidator::Status Net::Email::EmailValidator::Validate(const UT
 		DEL_CLASS(conn);
 		return S_CONN_ERROR;
 	}
-	if (!conn->SendHelo((const UTF8Char*)"[127.0.0.1]"))
+	if (!conn->SendHelo(CSTR("[127.0.0.1]")))
 	{
 		conn->SendQuit();
 		DEL_CLASS(conn);
 		return S_COMM_ERROR;
 	}
-	if (!conn->SendMailFrom((const UTF8Char*)"sswroom@yahoo.com"))
+	if (!conn->SendMailFrom(CSTR("sswroom@yahoo.com")))
 	{
 		conn->SendQuit();
 		DEL_CLASS(conn);

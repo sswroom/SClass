@@ -102,7 +102,7 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 			sb.AppendC(UTF8STRC("</td><td>"));
 			if (mac->name)
 			{
-				sb.AppendSlow(mac->name);
+				sb.Append(mac->name);
 			}
 			else
 			{

@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	sb2.ClearStr();
 	me->txtFromAddr->GetText(&sb1);
 	me->txtToAddr->GetText(&sb2);
-	if (sb1.GetCharCnt() == 0 || !msg->SetFrom(0, sb1.ToString()))
+	if (sb1.GetCharCnt() == 0 || !msg->SetFrom(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid From Address", (const UTF8Char*)"SMTP Client", me);
 		me->txtFromAddr->Focus();
@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		DEL_CLASS(cli);
 		return;
 	}
-	if (sb2.GetCharCnt() == 0 || !msg->AddTo(0, sb2.ToString()))
+	if (sb2.GetCharCnt() == 0 || !msg->AddTo(CSTR_NULL, sb2.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid To Address", (const UTF8Char*)"SMTP Client", me);
 		me->txtToAddr->Focus();
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	}
 	sb1.ClearStr();
 	me->txtCcAddr->GetText(&sb1);
-	if (sb1.GetCharCnt() > 0 && !msg->AddCc(0, sb1.ToString()))
+	if (sb1.GetCharCnt() > 0 && !msg->AddCc(CSTR_NULL, sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Cc Address", (const UTF8Char*)"SMTP Client", me);
 		me->txtCcAddr->Focus();
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	}
 	sb1.ClearStr();
 	me->txtBccAddr->GetText(&sb1);
-	if (sb1.GetCharCnt() > 0 && !msg->AddBcc(sb1.ToString()))
+	if (sb1.GetCharCnt() > 0 && !msg->AddBcc(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Cc Address", (const UTF8Char*)"SMTP Client", me);
 		me->txtBccAddr->Focus();
@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	}
 	sb1.ClearStr();
 	me->txtSubject->GetText(&sb1);
-	if (sb1.GetCharCnt() == 0 || !msg->SetSubject(sb1.ToString()))
+	if (sb1.GetCharCnt() == 0 || !msg->SetSubject(sb1.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Subject", (const UTF8Char*)"SMTP Client", me);
 		me->txtSubject->Focus();
@@ -100,7 +100,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 		DEL_CLASS(cli);
 		return;
 	}
-	msg->SetContent(sb1.ToString(), "text/plain; charset=UTF-8");
+	msg->SetContent(sb1.ToCString(), CSTR("text/plain; charset=UTF-8"));
 	cli->Send(msg);
 	DEL_CLASS(msg);
 	DEL_CLASS(cli);

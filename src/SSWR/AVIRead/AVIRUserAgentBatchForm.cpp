@@ -55,21 +55,22 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 
 	if (ent.devName)
 	{
-		sb.AppendUTF8Char('"');
-		sb.AppendSlow((const UTF8Char*)ent.devName);
-		sb.AppendUTF8Char('"');
+		sb.AppendC(UTF8STRC("UTF8STRC(\""));
+		sb.AppendC(ent.devName, ent.devNameLen);
+		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
 	{
-		sb.AppendUTF8Char('0');
+		sb.AppendC(UTF8STRC("0, 0"));
 	}
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
-	if (j < 110) sb.AppendChar(' ', 110 - j);
+	if (j < 110) sb.AppendChar(' ', 120 - j);
 	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
+	sb.AppendC(UTF8STRC("UTF8STRC("));
 	sb.Append(s);
 	s->Release();
-	sb.AppendC(UTF8STRC("},\r\n"));
+	sb.AppendC(UTF8STRC(")},\r\n"));
 	outSb->AppendC(sb.ToString(), sb.GetLength());
 
 	SDEL_TEXT(ent.browserVer);

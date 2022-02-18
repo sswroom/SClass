@@ -42,5 +42,5 @@ namespace Text
 #define STR_PTRC(s) (s)?s->v:0, (s)?s->leng:0
 #define STR_REL(s) (s->Release())
 #define SCOPY_STRING(s) ((s)?(s)->Clone():0)
-#define SDEL_STRING(s) if (s) { s->Release(); s = 0; }
+#define SDEL_STRING(s) if (s) { (s)->Release(); s = 0; }
 #endif
