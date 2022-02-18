@@ -81,6 +81,11 @@ Crypto::Cert::X509File *Parser::FileParser::X509Parser::ParseBuff(const UInt8 *b
 	{
 		return 0;
 	}
+	if (buff[0] == 0xEF && buff[1] == 0xBB && buff[2] == 0xBF)
+	{
+		buff += 3;
+		buffSize -= 3;
+	}
 	if (lbSize != 0)
 	{
 		if (Text::StrStartsWithC(buff, buffSize, UTF8STRC("-----BEGIN CERTIFICATE-----")) && Text::StrStartsWithC(&buff[buffSize - 25 - lbSize], 25 + lbSize, UTF8STRC("-----END CERTIFICATE-----")))

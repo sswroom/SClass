@@ -273,18 +273,22 @@ namespace Text
 			if (buffSize == 0)
 				return this;
 			UOSInt lbCnt;
+			UOSInt lineCnt;
 			OSInt i;
 			if (lineBreak == LineBreakType::None)
 			{
 				lbCnt = 0;
+				lineCnt = 0;
 			}
 			else
 			{
-				lbCnt = (buffSize >> 4);
+				lineCnt = (buffSize >> 4);
 				if ((buffSize & 15) == 0)
-					lbCnt -= 1;
+					lineCnt -= 1;
 				if (lineBreak == LineBreakType::CRLF)
-					lbCnt = lbCnt << 2;
+					lbCnt = lineCnt << 1;
+				else
+					lbCnt = lineCnt;
 			}
 			i = 0;
 			if (seperator == 0)
@@ -320,35 +324,53 @@ namespace Text
 			}
 			else
 			{
-				this->AllocLeng(buffSize * 3 + lbCnt - 1);
+				this->AllocLeng(buffSize * 3 + lbCnt - 1 - lineCnt);
 				UTF8Char *buffEnd = &this->v[this->leng];
-				this->leng += buffSize * 3 + lbCnt - 1;
+				this->leng += buffSize * 3 + lbCnt - 1 - lineCnt;
 				while (buffSize-- > 0)
 				{
+					i++;
 					buffEnd[0] = (UTF8Char)MyString_STRHEXARR[*buff >> 4];
 					buffEnd[1] = (UTF8Char)MyString_STRHEXARR[*buff & 15];
-					buffEnd[2] = seperator;
-					buffEnd += 3;
 					buff++;
-					i++;
-					if ((i & 15) == 0 && buffSize > 0)
+					if (buffSize > 0)
 					{
-						if (lineBreak == LineBreakType::CRLF)
+						if ((i & 15) == 0)
 						{
-							WriteNUInt16(buffEnd, ReadNUInt16((const UInt8*)"\r\n"));
-							buffEnd += 2;
+							switch (lineBreak)
+							{
+							case LineBreakType::CRLF:
+								WriteNUInt16(&buffEnd[2], ReadNUInt16((const UInt8*)"\r\n"));
+								buffEnd += 4;
+								break;
+							case LineBreakType::CR:
+								buffEnd[2] = '\r';
+								buffEnd += 3;
+								break;
+							case LineBreakType::LF:
+								buffEnd[2] = '\n';
+								buffEnd += 3;
+								break;
+							case LineBreakType::None:
+							default:
+								buffEnd[2] = seperator;
+								buffEnd += 3;
+								break;
+							}
 						}
-						else if (lineBreak == LineBreakType::CR)
+						else
 						{
-							*buffEnd++ = '\r';
-						}
-						else if (lineBreak == LineBreakType::LF)
-						{
-							*buffEnd++ = '\n';
+							buffEnd[2] = seperator;
+							buffEnd += 3;
 						}
 					}
+					else
+					{
+						buffEnd += 2;
+						*buffEnd = 0;
+						break;
+					}
 				}
-				*--buffEnd = 0;
 			}
 			return this;
 		}

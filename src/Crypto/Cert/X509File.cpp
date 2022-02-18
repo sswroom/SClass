@@ -68,7 +68,7 @@ void Crypto::Cert::X509File::AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("algorithmIdentifier")});
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("algorithmIdentifier")}, false, 0);
 		}
 	}
 	Text::StrConcat(sptr, ".3");
@@ -165,7 +165,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("signature")});
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("signature")}, false, 0);
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -272,6 +272,7 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	const UInt8 *itemPDU;
 	UOSInt len;
 	Net::ASN1Util::ItemType itemType;
+	KeyType keyType = KeyType::Unknown;
 	sptr = Text::StrConcat(sbuff, path);
 	Text::StrConcat(sptr, ".1");
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, sbuff, &len, &itemType)) != 0)
@@ -288,7 +289,7 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, {UTF8STRC("privateKeyAlgorithm")});
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, {UTF8STRC("privateKeyAlgorithm")}, false, &keyType);
 		}
 	}
 	Text::StrConcat(sptr, ".3");
@@ -298,6 +299,11 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 		{
 			sb->AppendC(UTF8STRC("privateKey = "));
 			sb->AppendC(UTF8STRC("\r\n"));
+			if (keyType != KeyType::Unknown)
+			{
+				Crypto::Cert::X509Key privkey(CSTR("PrivKey"), itemPDU, len, keyType);
+				privkey.ToString(sb);
+			}
 		}
 	}
 }
@@ -469,8 +475,9 @@ void Crypto::Cert::X509File::AppendVersion(const UInt8 *pdu, const UInt8 *pduEnd
 	}
 }
 
-void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName)
+void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const UInt8 *pduEnd, Text::StringBuilderUTF8 *sb, Text::CString varName, Bool pubKey, KeyType *keyTypeOut)
 {
+	KeyType keyType = KeyType::Unknown;
 	UOSInt algorithmLen;
 	Net::ASN1Util::ItemType algorithmType;
 	const UInt8 *algorithm = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &algorithmLen, &algorithmType);
@@ -483,6 +490,7 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 		sb->AppendUTF8Char('.');
 		sb->AppendC(UTF8STRC("algorithm = "));
 		Net::ASN1Util::OIDToString(algorithm, algorithmLen, sb);
+		keyType = KeyTypeFromOID(algorithm, algorithmLen, pubKey);
 		const Net::ASN1OIDDB::OIDInfo *oid = Net::ASN1OIDDB::OIDGetEntry(algorithm, algorithmLen);
 		if (oid)
 		{
@@ -502,6 +510,10 @@ void Crypto::Cert::X509File::AppendAlgorithmIdentifier(const UInt8 *pdu, const U
 			sb->AppendC(UTF8STRC("NULL"));
 		}
 		sb->AppendC(UTF8STRC("\r\n"));
+	}
+	if (keyTypeOut)
+	{
+		*keyTypeOut = keyType;
 	}
 }
 
@@ -542,12 +554,13 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 	const UInt8 *itemPDU;
 	UOSInt itemLen;
 	Net::ASN1Util::ItemType itemType;
+	KeyType keyType = KeyType::Unknown;
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "1", &itemLen, &itemType)) != 0)
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
 			sptr = Text::StrConcatC(varName.ConcatTo(sbuff), UTF8STRC(".algorithm"));
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr));
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTRP(sbuff, sptr), true, &keyType);
 		}
 	}
 	if ((itemPDU = Net::ASN1Util::PDUGetItem(pdu, pduEnd, "2", &itemLen, &itemType)) != 0)
@@ -558,6 +571,11 @@ void Crypto::Cert::X509File::AppendSubjectPublicKeyInfo(const UInt8 *pdu, const 
 			sb->AppendC(UTF8STRC(".subjectPublicKey = "));
 			sb->AppendHexBuff(itemPDU, itemLen, ':', Text::LineBreakType::None);
 			sb->AppendC(UTF8STRC("\r\n"));
+			if (keyType != KeyType::Unknown)
+			{
+				Crypto::Cert::X509Key pkey(CSTR("PubKey"), itemPDU, itemLen, keyType);
+				pkey.ToString(sb);
+			}
 		}
 	}
 }

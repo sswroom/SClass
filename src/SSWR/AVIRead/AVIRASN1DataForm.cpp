@@ -1,11 +1,13 @@
 #include "Stdafx.h"
+#include "Crypto/Cert/X509PrivKey.h"
 #include "SSWR/AVIRead/AVIRASN1DataForm.h"
 #include "Text/StringBuilderUTF8.h"
 
 enum MenuItem
 {
 	MNU_SAVE = 100,
-	MNU_CERT_0 = 500
+	MNU_CERT_0 = 500,
+	MNU_KEY_CREATE = 600
 };
 
 SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Net::ASN1Data *asn1) : UI::GUIForm(parent, 1024, 768, ui)
@@ -50,6 +52,11 @@ SSWR::AVIRead::AVIRASN1DataForm::AVIRASN1DataForm(UI::GUIClientControl *parent, 
 				i++;
 			}
 		}
+		if (x509->GetFileType() == Crypto::Cert::X509File::FileType::PrivateKey)
+		{
+			mnu2 = mnu->AddSubMenu(CSTR("Private Key"));
+			mnu2->AddItem(CSTR("Create Key"), MNU_KEY_CREATE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+		}
 	}
 	this->SetMenu(this->mnuMain);
 
@@ -89,6 +96,14 @@ void SSWR::AVIRead::AVIRASN1DataForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_SAVE:
 		this->core->SaveData(this, this->asn1, L"ASN1Data");
 		break;
+	case MNU_KEY_CREATE:
+		{
+			Crypto::Cert::X509Key *key = ((Crypto::Cert::X509PrivKey*)this->asn1)->CreateKey();
+			if (key)
+			{
+				this->core->OpenObject(key);
+			}
+		}
 	default:
 		if (cmdId >= MNU_CERT_0)
 		{
