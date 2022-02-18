@@ -109,7 +109,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		if (succ)
 		{
 			succ = false;
-			if (me->client->SendSubscribe(1, (const UTF8Char*)"#"))
+			if (me->client->SendSubscribe(1, CSTR("#")))
 			{
 				if (me->client->WaitSubAck(1, 30000) <= 2)
 				{
@@ -120,7 +120,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		if (succ)
 		{
 			succ = false;
-			if (me->client->SendSubscribe(2, (const UTF8Char*)"$SYS/#"))
+			if (me->client->SendSubscribe(2, CSTR("$SYS/#")))
 			{
 				if (me->client->WaitSubAck(2, 30000) <= 2)
 				{
@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userO
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter content", (const UTF8Char*)"MQTT Explorer", me);
 		return;
 	}
-	me->client->SendPublish(sbTopic.ToString(), sbContent.ToString());
+	me->client->SendPublish(sbTopic.ToCString(), sbContent.ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTopicSelChg(void *userObj)
@@ -454,7 +454,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 			{
 				UOSInt recvCnt = this->currTopic->recvCnt;
 				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(0));
+				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
@@ -479,7 +479,7 @@ void SSWR::AVIRead::AVIRMQTTExplorerForm::UpdateTopicChart()
 				}
 				
 				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(0));
+				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));

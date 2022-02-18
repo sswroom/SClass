@@ -38,15 +38,15 @@ namespace Net
 		
 		struct SubscribeInfo
 		{
-			const UTF8Char *topic;
+			Text::String *topic;
 			Net::TCPClient *cli;
 			void *cliData;
 		};
 		
 
-		typedef ConnectStatus (__stdcall *ConnectHandler)(void *userObj, const UTF8Char *clientId, const UTF8Char *userName, const UTF8Char *password, const Net::SocketUtil::AddressInfo *addr);
-		typedef void (__stdcall *PublishHandler)(void *userObj, const UTF8Char *topic, UInt16 packetId, const UInt8 *message, UOSInt msgSize);
-		typedef ConnectStatus (__stdcall *SubscribeHandler)(void *userObj, const UTF8Char *clientId, const UTF8Char *topic);
+		typedef ConnectStatus (__stdcall *ConnectHandler)(void *userObj, Text::String *clientId, Text::String *userName, Text::String *password, const Net::SocketUtil::AddressInfo *addr);
+		typedef void (__stdcall *PublishHandler)(void *userObj, Text::CString topic, UInt16 packetId, const UInt8 *message, UOSInt msgSize);
+		typedef ConnectStatus (__stdcall *SubscribeHandler)(void *userObj, Text::String *clientId, Text::CString topic);
 		typedef void (__stdcall *TopicUpdateHandler)(void *userObj, Text::CString topic, const UInt8 *message, UOSInt msgSize);
 	private:
 		Net::SocketFactory *sockf;

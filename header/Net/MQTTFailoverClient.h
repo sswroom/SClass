@@ -34,8 +34,8 @@ namespace Net
 		void AddClient(Text::CString host, UInt16 port, Text::CString username, Text::CString password);
 
 		virtual void HandlePublishMessage(Net::MQTTConn::PublishMessageHdlr hdlr, void *hdlrObj);
-		virtual Bool Subscribe(const UTF8Char *topic);
-		virtual Bool Publish(const UTF8Char *topic, const UTF8Char *message);
+		virtual Bool Subscribe(Text::CString topic);
+		virtual Bool Publish(Text::CString topic, Text::CString message);
 	};
 }
 #endif

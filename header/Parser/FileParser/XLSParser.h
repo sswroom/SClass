@@ -2,6 +2,7 @@
 #define _SM_PARSER_FILEPARSER_XLSPARSER
 #include "Data/Int32Map.h"
 #include "IO/FileParser.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/SpreadSheet/Workbook.h"
 
@@ -28,7 +29,7 @@ namespace Parser
 				Int32 uls;
 				Int32 bFamily;
 				Int32 bCharSet;
-				const UTF8Char *fontName;
+				Text::String *fontName;
 			} FontInfo;
 
 			typedef struct
@@ -36,7 +37,7 @@ namespace Parser
 				Data::ArrayList<const UTF8Char *> *sst;
 				Data::ArrayList<WorksheetStatus*> *wsList;
 				Data::ArrayList<FontInfo *> *fontList;
-				Data::Int32Map<const UTF8Char *> *formatMap;
+				Data::Int32Map<Text::String *> *formatMap;
 				UInt32 palette[56];
 			} WorkbookStatus;
 

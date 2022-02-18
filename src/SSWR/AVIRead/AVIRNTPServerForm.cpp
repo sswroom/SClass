@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Cannot resolve the time server", (const UTF8Char*)"Resolve", me);
 		return;
 	}
-	NEW_CLASS(me->svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToString()));
+	NEW_CLASS(me->svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
 	if (me->svr->IsError())
 	{
 		SDEL_CLASS(me->svr);

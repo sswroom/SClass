@@ -32,7 +32,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::TCPServer *svr;
 		Net::TCPClientMgr *cliMgr;
-		const UTF8Char *logPath;
+		Text::String *logPath;
 		IO::ProtoHdlr::ProtoLogCliHandler *protoHdlr;
 		IO::LogTool *log;
 		Bool redirLog;
@@ -48,7 +48,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
 	public:
-		LogServer(Net::SocketFactory *sockf, UInt16 port, const UTF8Char *logPath, IO::LogTool *svrLog, Bool redirLog);
+		LogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
 		virtual ~LogServer();
 
 		Bool IsError();

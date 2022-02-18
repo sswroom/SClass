@@ -89,13 +89,13 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::ReqV4Req(SSWR::SDNSProxy::S
 		sbOut.AllocLeng(33 + nameLen * 2);
 		if (i > 0)
 		{
-			sbOut.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+			sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 		}
-		sbOut.AppendC((const UTF8Char*)"<a href=\"/reqv4?qry=", 20);
+		sbOut.AppendC(UTF8STRC("<a href=\"/reqv4?qry="));
 		sbOut.AppendC(name, nameLen);
-		sbOut.AppendC((const UTF8Char*)"\">", 2);
+		sbOut.AppendC(UTF8STRC("\">"));
 		sbOut.AppendC(name, nameLen);
-		sbOut.AppendC((const UTF8Char*)"</a>", 4);
+		sbOut.AppendC(UTF8STRC("</a>"));
 
 		i++;
 	}
@@ -428,7 +428,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::TargetReq(SSWR::SDNSProxy::
 		{
 			if (i > 0)
 			{
-				sbOut.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+				sbOut.AppendC(UTF8STRC("<br/>\r\n"));
 			}
 			sbOut.Append(target->addrList->GetItem(i));
 			i++;
@@ -496,7 +496,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::LogReq(SSWR::SDNSProxy::SDN
 	AppendMenu(&sbOut);
 
 	sbOut.AppendC(UTF8STRC("<h2>Log</h2>\r\n"));
-	me->logBuff->GetLogs(&sbOut, (const UTF8Char*)"<br/>\r\n");
+	me->logBuff->GetLogs(&sbOut, CSTR("<br/>\r\n"));
 	AppendFooter(&sbOut);
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);

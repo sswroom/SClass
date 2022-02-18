@@ -40,7 +40,7 @@ Text::SpreadSheet::OfficeChart::OfficeChart(Math::Unit::Distance::DistanceUnit d
 
 Text::SpreadSheet::OfficeChart::~OfficeChart()
 {
-	SDEL_TEXT(this->titleText);
+	SDEL_STRING(this->titleText);
 	SDEL_CLASS(this->shapeProp);
 	UOSInt i = this->axes->GetCount();
 	while (i-- > 0)
@@ -78,13 +78,13 @@ Double Text::SpreadSheet::OfficeChart::GetHInch()
 	return this->hInch;
 }
 
-void Text::SpreadSheet::OfficeChart::SetTitleText(const UTF8Char *titleText)
+void Text::SpreadSheet::OfficeChart::SetTitleText(Text::CString titleText)
 {
-	SDEL_TEXT(this->titleText);
-	this->titleText = Text::StrCopyNew(titleText);
+	SDEL_STRING(this->titleText);
+	this->titleText = Text::String::New(titleText);
 }
 
-const UTF8Char *Text::SpreadSheet::OfficeChart::GetTitleText()
+Text::String *Text::SpreadSheet::OfficeChart::GetTitleText()
 {
 	return this->titleText;
 }

@@ -36,7 +36,7 @@ namespace DB
 		class SQLCmd : public IDBCmd
 		{
 		public:
-			const UTF8Char *str;
+			Text::String *str;
 			DBReadHdlr hdlr;
 
 			Int32 progId;
@@ -44,23 +44,23 @@ namespace DB
 			void *userData;
 			void *userData2;
 
-			SQLCmd(const UTF8Char *str, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+			SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLCmd();			
 			virtual CmdType GetCmdType();
 			virtual Int32 GetProgId();
-			const UTF8Char *GetSQL();
+			Text::String *GetSQL();
 		};
 
 		class SQLGroup : public IDBCmd
 		{
 		public:
-			Data::ArrayList<const UTF8Char*> *strs;
+			Data::ArrayList<Text::String*> *strs;
 			DBReadHdlr hdlr;
 			Int32 progId;
 			void *userData;
 			void *userData2;
 
-			SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+			SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
 			virtual ~SQLGroup();
 			virtual CmdType GetCmdType();
 			virtual Int32 GetProgId();
@@ -117,16 +117,16 @@ namespace DB
 		UOSInt nextDB;
 
 	public:
-		DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize);
+		DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt dbSize);
 		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::String *name, UOSInt dbSize);
-		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize);
+		DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize);
 		~DBQueue();
 
 		void AddDB(DB::DBTool *db);
 
 		void ToStop();
-		void AddSQL(const UTF8Char *str);
-		void AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
+		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
 		void AddTrans(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 		void GetDB(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 		void RemoveSQLs(Int32 progId);
@@ -165,7 +165,7 @@ namespace DB
 		UInt32 GetDataCnt();
 
 	private:
-		void WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd);
+		void WriteError(const UTF8Char *errMsg, Text::String *sqlCmd);
 		static UInt32 __stdcall ProcessSQL(void *userObj);
 
 	public:

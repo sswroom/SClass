@@ -38,7 +38,7 @@ Bool Net::MQTTUtil::TopicValid(const UTF8Char *topic)
 	return true;
 }
 
-Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF8Char *subscribeTopic)
+Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF8Char *subscribeTopic, UOSInt subscribeTopicLen)
 {
 	if (subscribeTopic[0] == '#' && subscribeTopic[1] == 0)
 	{
@@ -49,25 +49,23 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF
 		return false;
 	}
 	UOSInt i;
-	Text::StringBuilderUTF8 sb;
 	while (true)
 	{
-		i = Text::StrIndexOfChar(subscribeTopic, '+');
+		i = Text::StrIndexOfCharC(subscribeTopic, subscribeTopicLen, '+');
 		if (i == INVALID_INDEX)
 			break;
 		if (i > 0)
 		{
-			sb.ClearStr();
-			sb.AppendC(subscribeTopic, (UOSInt)i);
-			if (!Text::StrStartsWithC(topic, topicLen, sb.ToString(), sb.GetLength()))
+			if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UOSInt)i))
 			{
 				return false;
 			}
 			topic += i;
 			topicLen -= i;
 			subscribeTopic += i;
+			subscribeTopicLen -= i;
 		}
-		i = Text::StrIndexOfChar(topic, '/');
+		i = Text::StrIndexOfCharC(topic, topicLen, '/');
 		if (subscribeTopic[1] == 0)
 		{
 			return (i == INVALID_INDEX);
@@ -77,22 +75,21 @@ Bool Net::MQTTUtil::TopicMatch(const UTF8Char *topic, UOSInt topicLen, const UTF
 			return false;
 		}
 		subscribeTopic++;
+		subscribeTopicLen--;
 		topic += i;
 		topicLen -= i;
 	}
-	i = Text::StrIndexOfChar(subscribeTopic, '#');
+	i = Text::StrIndexOfCharC(subscribeTopic, subscribeTopicLen, '#');
 	if (i == INVALID_INDEX)
 	{
-		return Text::StrEquals(topic, subscribeTopic);
+		return Text::StrEqualsC(topic, topicLen, subscribeTopic, subscribeTopicLen);
 	}
 	else if (i == 0)
 	{
 		return true;
 	}
 
-	sb.ClearStr();
-	sb.AppendC(subscribeTopic, (UOSInt)i);
-	if (!Text::StrStartsWithC(topic, topicLen, sb.ToString(), sb.GetLength()))
+	if (!Text::StrStartsWithC(topic, topicLen, subscribeTopic, (UOSInt)i))
 	{
 		return false;
 	}

@@ -1,5 +1,6 @@
 #ifndef _SM_NET_MQTTCLIENT
 #define _SM_NET_MQTTCLIENT
+#include "Text/CString.h"
 
 namespace Net
 {
@@ -8,8 +9,8 @@ namespace Net
 	public:
 		virtual ~MQTTClient() {};
 
-		virtual Bool Subscribe(const UTF8Char *topic) = 0;
-		virtual Bool Publish(const UTF8Char *topic, const UTF8Char *message) = 0;
+		virtual Bool Subscribe(Text::CString topic) = 0;
+		virtual Bool Publish(Text::CString topic, Text::CString message) = 0;
 	};
 }
 #endif

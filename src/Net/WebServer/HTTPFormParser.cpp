@@ -26,6 +26,7 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 		UTF8Char *tmpBuff2 = 0;
 		OSInt tmpBuffSize = 0;
 		OSInt tmpBuffSize2 = 0;
+		UTF8Char *sptr;
 		OSInt size1;
 		UOSInt size2;
 		OSInt i;
@@ -66,8 +67,8 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 					tmpBuffSize2 = size1 + 1025;
 					tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 				}
-				enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
-				l = this->strNames->SortedInsert(Text::StrCopyNew(tmpBuff2));
+				sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
+				l = this->strNames->SortedInsert(Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
 				if (k < i)
 				{
 					if (i - k - 1 > tmpBuffSize)
@@ -85,12 +86,12 @@ Net::WebServer::HTTPFormParser::HTTPFormParser(Net::WebServer::IWebRequest *req,
 						tmpBuffSize2 = size1 + 1025;
 						tmpBuff2 = MemAlloc(UTF8Char, tmpBuffSize2);
 					}
-					enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
-					this->strValues->Insert(l, Text::StrCopyNew(tmpBuff2));
+					sptr = enc.UTF8FromBytes(tmpBuff2, tmpBuff, size1, &size2);
+					this->strValues->Insert(l, Text::StrCopyNewC(tmpBuff2, (UOSInt)(sptr - tmpBuff2)));
 				}
 				else
 				{
-					this->strValues->Insert(l, Text::StrCopyNew((const UTF8Char*)""));
+					this->strValues->Insert(l, Text::StrCopyNewC(UTF8STRC("")));
 				}
 
 				if (i == buffSize)

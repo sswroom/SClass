@@ -80,10 +80,11 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 	Int32 *counts;
 	Int64 *dates;
 	UTF8Char sbuff[256];
-	country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
-	NEW_CLASS(chart, Data::LineChart(sbuff));
+	UTF8Char *sptr;
+	sptr = country->name->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("New Cases in ")));
+	NEW_CLASS(chart, Data::LineChart(CSTRP(sbuff, sptr)));
 	chart->SetFontHeightPt(9.0);
-	chart->SetDateFormat("yyyy-MM-dd");
+	chart->SetDateFormat(CSTR("yyyy-MM-dd"));
 	i = 0;
 	j = recordList->GetCount();
 	counts = MemAlloc(Int32, j);

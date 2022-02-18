@@ -1413,9 +1413,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 				}
 			}
 
-			const UTF8Char *u8ptr = Text::StrCopyNew(sb.ToString());
-			NEW_CLASS(chart, Data::LineChart(u8ptr));
-			Text::StrDelNew(u8ptr);
+			NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
 			if (dateList2.GetCount() >= 2)
 			{
 				chart->AddXDataDate(dateList2.GetArray(&k), dateList2.GetCount());
@@ -1424,10 +1422,10 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 			chart->AddXDataDate(dateList.GetArray(&k), dateList.GetCount());
 			chart->AddYData((const UTF8Char*)"Reading", valList.GetArray(&k), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
 
-			chart->SetDateFormat("");
+			chart->SetDateFormat(CSTR(""));
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
-			chart->SetTimeFormat("HH:mm");
+			chart->SetTimeFormat(CSTR("HH:mm"));
 			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}
@@ -1770,15 +1768,13 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 		if (dateList.GetCount() >= 2)
 		{
-			const UTF8Char *u8ptr = Text::StrCopyNew(sb.ToString());
-			NEW_CLASS(chart, Data::LineChart(u8ptr));
-			Text::StrDelNew(u8ptr);
+			NEW_CLASS(chart, Data::LineChart(sb.ToCString()));
 			chart->AddXDataDate(dateList.GetArray(&k), dateList.GetCount());
 			chart->AddYData((const UTF8Char*)"Reading", valList.GetArray(&k), valList.GetCount(), 0xffff0000, Data::LineChart::LS_LINE);
-			chart->SetDateFormat("");
+			chart->SetDateFormat(CSTR(""));
 			chart->SetFontHeightPt(10);
 			chart->SetTimeZoneQHR(32);
-			chart->SetTimeFormat("HH:mm");
+			chart->SetTimeFormat(CSTR("HH:mm"));
 			chart->Plot(dimg, 0, 0, UOSInt2Double(dimg->GetWidth()), UOSInt2Double(dimg->GetHeight()));
 			DEL_CLASS(chart);
 		}

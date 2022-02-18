@@ -1,5 +1,7 @@
 #ifndef _SM_TEXT_SPREADSHEET_WORKBOOKFONT
 #define _SM_TEXT_SPREADSHEET_WORKBOOKFONT
+#include "Text/String.h"
+
 namespace Text
 {
 	namespace SpreadSheet
@@ -16,7 +18,7 @@ namespace Text
 		class WorkbookFont
 		{
 		private:
-			const UTF8Char *name;
+			Text::String *name;
 			Double size; //point
 			Bool bold;
 			Bool italic;
@@ -27,7 +29,7 @@ namespace Text
 			WorkbookFont();
 			~WorkbookFont();
 
-			WorkbookFont *SetName(const UTF8Char *name);
+			WorkbookFont *SetName(Text::CString name);
 			WorkbookFont *SetSize(Double size);
 			WorkbookFont *SetBold(Bool bold);
 			WorkbookFont *SetItalic(Bool italic);
@@ -35,7 +37,7 @@ namespace Text
 			WorkbookFont *SetColor(UInt32 color);
 			WorkbookFont *SetFamily(FontFamily family);
 
-			const UTF8Char *GetName();
+			Text::String *GetName();
 			Double GetSize();
 			Bool IsBold();
 			Bool IsItalic();

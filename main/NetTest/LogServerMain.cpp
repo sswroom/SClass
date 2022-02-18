@@ -55,7 +55,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(log, IO::LogTool());
 	NEW_CLASS(logHdlr, MyLogHandler());
 	log->AddLogHandler(logHdlr, IO::ILogHandler::LOG_LEVEL_RAW);
-	NEW_CLASS(svr, Net::LogServer(sockf, port, (const UTF8Char*)"logs", log, true));
+	NEW_CLASS(svr, Net::LogServer(sockf, port, CSTR("logs"), log, true));
 	if (!svr->IsError())
 	{
 		progCtrl->WaitForExit(progCtrl);

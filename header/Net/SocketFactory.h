@@ -217,7 +217,7 @@ namespace Net
 
 		Bool ReloadDNS();
 		Bool DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net::SocketUtil::AddressInfo *addr);
-		UInt32 DNSResolveIPv4(const UTF8Char *host);
+		UInt32 DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen);
 //		Bool GetIPByHost(const WChar *host, Net::SocketUtil::AddressInfo *addr);
 //		UInt32 GetIPv4ByHost(const WChar *host);		UInt32 DNSResolveIPv4(const UTF8Char *host);
 //		UInt32 GetIPv4ByHostOS(const WChar *host

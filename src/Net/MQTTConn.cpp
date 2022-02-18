@@ -311,7 +311,7 @@ Bool Net::MQTTConn::SendConnect(UInt8 protoVer, UInt16 keepAliveS, Text::CString
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTConn::SendPublish(const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::SendPublish(Text::CString topic, Text::CString message)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -320,12 +320,12 @@ Bool Net::MQTTConn::SendPublish(const UTF8Char *topic, const UTF8Char *message)
 	UOSInt j;
 	i = 0;
 
-	j = Text::StrCharCnt(topic);
+	j = topic.leng;
 	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], topic, j);
+	MemCopyNO(&packet1[i + 2], topic.v, j);
 	i += j + 2;
-	j = Text::StrCharCnt(message);
-	MemCopyNO(&packet1[i], message, j);
+	j = message.leng;
+	MemCopyNO(&packet1[i], message.v, j);
 	i += j;
 
 	j = this->protoHdlr->BuildPacket(packet2, 0x30, 0, packet1, i, this->cliData);
@@ -354,7 +354,7 @@ Bool Net::MQTTConn::SendPubRec(UInt16 packetId)
 	return this->SendPacket(packet2, j);
 }
 
-Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
+Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, Text::CString topic)
 {
 	UInt8 packet1[512];
 	UInt8 packet2[512];
@@ -364,9 +364,9 @@ Bool Net::MQTTConn::SendSubscribe(UInt16 packetId, const UTF8Char *topic)
 
 	WriteMInt16(&packet1[0], packetId);
 	i = 2;
-	j = Text::StrCharCnt(topic);
+	j = topic.leng;
 	WriteMInt16(&packet1[i], j);
-	MemCopyNO(&packet1[i + 2], topic, j);
+	MemCopyNO(&packet1[i + 2], topic.v, j);
 	i += j + 2;
 	packet1[i] = 0;
 	i++;
@@ -441,7 +441,7 @@ UInt64 Net::MQTTConn::GetTotalDownload()
 	return this->totalDownload;
 }
 
-Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTConn::PublishMessage(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Text::CString username, Text::CString password, Text::CString topic, Text::CString message)
 {
 	Net::MQTTConn *cli;
 	UTF8Char sbuff[64];

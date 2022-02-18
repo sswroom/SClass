@@ -9,7 +9,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	const UTF8Char *username = (const UTF8Char*)"abc";
 	const UTF8Char *password = (const UTF8Char*)"abc";
-	const UTF8Char *serverhost = (const UTF8Char*)"abc.com";
+	Text::CString serverhost = CSTR("abc.com");
 	UInt16 serverport = 3717;
 	const UTF8Char *database = (const UTF8Char*)"abc";
 

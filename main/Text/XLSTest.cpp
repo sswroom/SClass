@@ -17,8 +17,8 @@ void TestEmpty()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/EmptyMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
-	wb->AddWorksheet((const UTF8Char*)"Sheet1");
-	wb->AddWorksheet((const UTF8Char*)"Sheet2");
+	wb->AddWorksheet(CSTR("Sheet1"));
+	wb->AddWorksheet(CSTR("Sheet2"));
 	Exporter::XLSXExporter exporter;
 	if (!exporter.ExportNewFile({fileName, (UOSInt)(sptr - fileName)}, wb, 0))
 	{
@@ -38,12 +38,12 @@ void TestChart()
 
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
-	WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
-	CellStyle *dateStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"yyyy-MM-dd");
-	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"0.###");
+	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
+	CellStyle *dateStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("yyyy-MM-dd"));
+	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("0.###"));
 	Worksheet *graphSheet = wb->AddWorksheet();
 	Worksheet *dataSheet = wb->AddWorksheet();
-	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, (const UTF8Char*)"\nSETTLEMENT VS CHAINAGE");
+	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
 	chart->InitLineChart((const UTF8Char*)"ACCUMULATED SETTLEMENT", (const UTF8Char*)"CHAINAGE", AxisType::Category);
 	chart->SetDisplayBlankAs(BlankAs::Gap);
 	if (testRowCnt > 1)
@@ -106,9 +106,9 @@ void TestCols()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColsMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
-	WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
-	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, (const UTF8Char*)"0.###");
-	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
+	WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
+	CellStyle *numStyle = wb->NewCellStyle(font10, HAlignment::Left, VAlignment::Center, CSTR("0.###"));
+	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
 	UOSInt i = 0;
 	UOSInt j = 2000;
 	while (i < j)
@@ -134,7 +134,7 @@ void TestColWidth()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/ColWidthMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
-	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
+	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
 	sheet->SetColWidth(0, 123.75, Math::Unit::Distance::DU_POINT);	//23.5714285714286 * 5.25
 	sheet->SetColWidth(1, 75.75, Math::Unit::Distance::DU_POINT);	//14.4285714285714
 	sheet->SetColWidth(2, 303.75, Math::Unit::Distance::DU_POINT);	//57.8571428571429
@@ -161,14 +161,14 @@ void TestBorder()
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/BorderMe.xlsx"));
 	Workbook *wb;
 	NEW_CLASS(wb, Workbook());
-	Worksheet *sheet = wb->AddWorksheet((const UTF8Char*)"Sheet1");
-	WorkbookFont *font = wb->NewFont((const UTF8Char*)"Arial", 10.0, false);
-	CellStyle *borderStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, (const UTF8Char*)"0.0");
+	Worksheet *sheet = wb->AddWorksheet(CSTR("Sheet1"));
+	WorkbookFont *font = wb->NewFont(CSTR("Arial"), 10.0, false);
+	CellStyle *borderStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, CSTR("0.0"));
 	CellStyle::BorderStyle border;
 	border.borderType = BorderType::Medium;
 	border.borderColor = 0xFF000000;
 	borderStyle->SetBorderBottom(&border);
-	CellStyle *normalStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, (const UTF8Char*)"0.0");
+	CellStyle *normalStyle = wb->NewCellStyle(font, HAlignment::Center, VAlignment::Bottom, CSTR("0.0"));
 	sheet->SetCellInt32(0, 0, borderStyle, 1);
 	sheet->SetCellInt32(0, 1, borderStyle, 2);
 	sheet->SetCellInt32(0, 2, borderStyle, 3);

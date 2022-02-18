@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 
 	UOSInt colCount;
 	ColInfo *colInfos;
-	DB::DBReader *reader = me->db->GetTableData(me->tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *reader = me->db->GetTableData(me->tableName->v, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting database data", (const UTF8Char*)"Error", me);
@@ -119,39 +119,39 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	if (colInfos[0].colDef->GetColType() == DB::DBUtil::CT_DateTime)
 	{
 		Int64 *i64Data;
-		NEW_CLASS(chart, Data::LineChart(me->tableName));
+		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
 		i64Data = ((Data::ArrayList<Int64>*)colInfos[0].datas)->GetArray(&j);
 		chart->AddXDataDate(i64Data, j);
 	}
 	else if (colInfos[0].colDef->GetColType() == DB::DBUtil::CT_Double)
 	{
 		Double *dblData;
-		NEW_CLASS(chart, Data::LineChart(me->tableName));
+		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
 		dblData = ((Data::ArrayList<Double>*)colInfos[0].datas)->GetArray(&j);
 		chart->AddXData(dblData, j);
 
 		Double dblDiff = dblData[j - 1] - dblData[0];
 		if (dblDiff < 0.0001)
 		{
-			chart->SetDblFormat("0.000000");
+			chart->SetDblFormat(CSTR("0.000000"));
 		}
 		else if (dblDiff < 0.001)
 		{
-			chart->SetDblFormat("0.00000");
+			chart->SetDblFormat(CSTR("0.00000"));
 		}
 		else if (dblDiff < 0.01)
 		{
-			chart->SetDblFormat("0.0000");
+			chart->SetDblFormat(CSTR("0.0000"));
 		}
 		else if (dblDiff < 0.1)
 		{
-			chart->SetDblFormat("0.000");
+			chart->SetDblFormat(CSTR("0.000"));
 		}
 	}
 	else if (colInfos[0].colDef->GetColType() == DB::DBUtil::CT_Int32)
 	{
 		Int32 *i32Data;
-		NEW_CLASS(chart, Data::LineChart(me->tableName));
+		NEW_CLASS(chart, Data::LineChart(me->tableName->ToCString()));
 		i32Data = ((Data::ArrayList<Int32>*)colInfos[0].datas)->GetArray(&j);
 		chart->AddXData(i32Data, j);
 	}
@@ -287,7 +287,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnStrColsInt32Clicked(void *use
 	}
 }
 
-SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, const UTF8Char *tableName) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString tableName) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetText(CSTR("Line Chart"));
 	this->SetFont(0, 0, 8.25, false);
@@ -295,7 +295,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	this->chart = 0;
 	this->db = db;
 	this->strTypes = 0;
-	this->tableName = Text::StrCopyNew(tableName);
+	this->tableName = Text::String::New(tableName);
 	NEW_CLASS(this->yCols, Data::ArrayList<UInt32>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
@@ -343,7 +343,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbYAxis, UI::GUIListBox(ui, this->grpYAxis, false));
 	this->lbYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	DB::DBReader *reader = this->db->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *reader = this->db->GetTableData(tableName.v, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 	}
@@ -392,7 +392,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 SSWR::AVIRead::AVIRLineChartForm::~AVIRLineChartForm()
 {
 	DEL_CLASS(this->yCols);
-	Text::StrDelNew(this->tableName);
+	this->tableName->Release();
 	if (this->strTypes)
 	{
 		MemFree(this->strTypes);

@@ -36,7 +36,7 @@ Text::SpreadSheet::CellStyle::CellStyle(UOSInt index)
 Text::SpreadSheet::CellStyle::~CellStyle()
 {
 	SDEL_TEXT(this->id);
-	SDEL_TEXT(this->dataFormat);
+	SDEL_STRING(this->dataFormat);
 }
 
 Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::Clone()
@@ -54,7 +54,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::Clone()
 	style->font = this->font;
 	style->fillColor = this->fillColor;
 	style->fillPattern = this->fillPattern;
-	style->dataFormat = SCOPY_TEXT(this->dataFormat);
+	style->dataFormat = SCOPY_STRING(this->dataFormat);
 	style->protection = this->protection;
 	return style;
 }
@@ -74,8 +74,8 @@ void Text::SpreadSheet::CellStyle::CopyFrom(CellStyle *style)
 	this->font = style->font;
 	this->fillColor = style->fillColor;
 	this->fillPattern = style->fillPattern;
-	SDEL_TEXT(this->dataFormat);
-	this->dataFormat = SCOPY_TEXT(style->dataFormat);
+	SDEL_STRING(this->dataFormat);
+	this->dataFormat = SCOPY_STRING(style->dataFormat);
 	this->protection = style->protection;
 }
 
@@ -117,8 +117,11 @@ Bool Text::SpreadSheet::CellStyle::Equals(CellStyle *style)
 		return false;
 	if (style->fillPattern != this->fillPattern)
 		return false;
-	if (!Text::StrEqualsN(this->dataFormat, style->dataFormat))
-		return false;
+	if (this->dataFormat != style->dataFormat)
+	{
+		if (this->dataFormat == 0 || style->dataFormat == 0 || !this->dataFormat->Equals(style->dataFormat))
+			return false;
+	}
 	if (style->protection != this->protection)
 		return false;
 	return true;
@@ -194,10 +197,17 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetBorderBottom(Text
 	return this;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(const UTF8Char *dataFormat)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::String *dataFormat)
 {
-	SDEL_TEXT(this->dataFormat);
-	this->dataFormat = SCOPY_TEXT(dataFormat);
+	SDEL_STRING(this->dataFormat);
+	this->dataFormat = SCOPY_STRING(dataFormat);
+	return this;
+}
+
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::CellStyle::SetDataFormat(Text::CString dataFormat)
+{
+	SDEL_STRING(this->dataFormat);
+	this->dataFormat = Text::String::NewOrNull(dataFormat);
 	return this;
 }
 
@@ -261,7 +271,7 @@ Text::SpreadSheet::CellStyle::BorderStyle *Text::SpreadSheet::CellStyle::GetBord
 	return &this->borderBottom;
 }
 
-const UTF8Char *Text::SpreadSheet::CellStyle::GetDataFormat()
+Text::String *Text::SpreadSheet::CellStyle::GetDataFormat()
 {
 	return this->dataFormat;
 }

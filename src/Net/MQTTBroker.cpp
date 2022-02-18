@@ -11,7 +11,7 @@
 typedef struct
 {
 	void *cliData;
-	const UTF8Char *cliId;
+	Text::String *cliId;
 	UOSInt buffSize;
 	UInt8 recvBuff[4096];
 	UInt16 keepAlive;
@@ -34,7 +34,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 			me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
-		SDEL_TEXT(data->cliId);
+		SDEL_STRING(data->cliId);
 		MemFree(data);
 
 		UOSInt i;
@@ -47,7 +47,7 @@ void __stdcall Net::MQTTBroker::OnClientEvent(Net::TCPClient *cli, void *userObj
 			if (subscribe->cli == cli)
 			{
 				me->subscribeList->RemoveAt(i);
-				Text::StrDelNew(subscribe->topic);
+				subscribe->topic->Release();
 				MemFree(subscribe);
 			}
 		}
@@ -208,9 +208,9 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 	{
 	case 1: //CONNECT
 		{
-			const UTF8Char *clientId = 0;
-			const UTF8Char *userName = 0;
-			const UTF8Char *password = 0;
+			Text::String *clientId = 0;
+			Text::String *userName = 0;
+			Text::String *password = 0;
 			if (this->log)
 			{
 				UInt8 connFlags;
@@ -252,7 +252,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					break;
 				}
-				clientId = Text::StrCopyNew(sb.ToString());
+				clientId = Text::String::New(sb.ToCString());
 				sb.AppendC(sb2.ToString(), sb2.GetLength());
 				if (connFlags & 4)
 				{
@@ -262,7 +262,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
 					sb.AppendC(UTF8STRC(", Will Message = "));
@@ -271,7 +271,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
 				}
@@ -284,10 +284,10 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
-					userName = Text::StrCopyNew(sb2.ToString());
+					userName = Text::String::New(sb2.ToCString());
 					sb.AppendC(sb2.ToString(), sb2.GetLength());
 				}
 				if (connFlags & 0x40)
@@ -298,8 +298,8 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-						SDEL_TEXT(clientId);
-						SDEL_TEXT(userName);
+						SDEL_STRING(clientId);
+						SDEL_STRING(userName);
 						break;
 					}
 					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
@@ -308,13 +308,13 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 						sb.AppendC(UTF8STRC(", data = "));
 						sb.AppendHexBuff(&cmd[i], cmdSize - i, ' ', Text::LineBreakType::CRLF);
 						this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
-						SDEL_TEXT(clientId);
-						SDEL_TEXT(userName);
+						SDEL_STRING(clientId);
+						SDEL_STRING(userName);
 						break;
 					}
 					sb2.ClearStr();
 					sb2.AppendC(&cmd[i + 2], pwdSize);
-					password = Text::StrCopyNew(sb2.ToString());
+					password = Text::String::New(sb2.ToCString());
 
 					sb.AppendHexBuff(&cmd[i + 2], pwdSize, ' ', Text::LineBreakType::None);
 					i += pwdSize + 2;
@@ -342,19 +342,19 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				{
 					break;
 				}
-				clientId = Text::StrCopyNew(sb.ToString());
+				clientId = Text::String::New(sb.ToCString());
 				if (connFlags & 4)
 				{
 					sb.ClearStr();
 					if (!this->protoHdlr->ParseUTF8Str(cmd, &i, cmdSize, &sb))
 					{
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
 					sb.ClearStr();
 					if (!this->protoHdlr->ParseUTF8Str(cmd, &i, cmdSize, &sb))
 					{
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
 				}
@@ -363,29 +363,29 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 					sb.ClearStr();
 					if (!this->protoHdlr->ParseUTF8Str(cmd, &i, cmdSize, &sb))
 					{
-						SDEL_TEXT(clientId);
+						SDEL_STRING(clientId);
 						break;
 					}
-					userName = Text::StrCopyNew(sb.ToString());
+					userName = Text::String::New(sb.ToCString());
 				}
 				if (connFlags & 0x40)
 				{
 					if (cmdSize - i < 2)
 					{
-						SDEL_TEXT(clientId);
-						SDEL_TEXT(userName);
+						SDEL_STRING(clientId);
+						SDEL_STRING(userName);
 						break;
 					}
 					UOSInt pwdSize = ReadMUInt16(&cmd[i]);
 					if (cmdSize - i - 2 < pwdSize)
 					{
-						SDEL_TEXT(clientId);
-						SDEL_TEXT(userName);
+						SDEL_STRING(clientId);
+						SDEL_STRING(userName);
 						break;
 					}
 					sb.ClearStr();
 					sb.AppendC(&cmd[i], pwdSize);
-					password = Text::StrCopyNew(sb.ToString());
+					password = Text::String::New(sb.ToCString());
 
 					i += pwdSize + 2;
 				}
@@ -435,15 +435,15 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			if (cs == CS_ACCEPTED)
 			{
 				data->connected = true;
-				SDEL_TEXT(data->cliId);
-				data->cliId = Text::StrCopyNew(clientId);
+				SDEL_STRING(data->cliId);
+				data->cliId = clientId->Clone();
 			}
 
 			i = this->protoHdlr->BuildPacket(packet2, 0x20, 0, packet, 2, data->cliData);
 			sent = stm->Write(packet2, i);
-			SDEL_TEXT(clientId);
-			SDEL_TEXT(userName);
-			SDEL_TEXT(password);
+			SDEL_STRING(clientId);
+			SDEL_STRING(userName);
+			SDEL_STRING(password);
 			Sync::Interlocked::Add(&this->infoTotalSent, sent);
 		}
 		break;
@@ -539,7 +539,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			{
 				if (this->publishHdlr)
 				{
-					this->publishHdlr(this->publishObj, topicSb.ToString(), packetId, message, messageSize);
+					this->publishHdlr(this->publishObj, topicSb.ToCString(), packetId, message, messageSize);
 				}
 				this->UpdateTopic(topicSb.ToCString(), message, messageSize, false);
 				if ((cmdType & 6) == 2)
@@ -675,7 +675,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			}
 			else if (this->subscribeHdlr)
 			{
-				cs = this->subscribeHdlr(this->subscribeObj, data->cliId, sbTopic.ToString());
+				cs = this->subscribeHdlr(this->subscribeObj, data->cliId, sbTopic.ToCString());
 			}
 			else
 			{
@@ -698,7 +698,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 			if (cs == CS_ACCEPTED)
 			{
 				SubscribeInfo *subscribe = MemAlloc(SubscribeInfo, 1);
-				subscribe->topic = Text::StrCopyNew(sbTopic.ToString());
+				subscribe->topic = Text::String::New(sbTopic.ToCString());
 				subscribe->cli = (Net::TCPClient*)stm;
 				subscribe->cliData = data;
 				Sync::MutexUsage subscribeMutUsage(this->subscribeMut);
@@ -712,7 +712,7 @@ void Net::MQTTBroker::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, I
 				while (i < j)
 				{
 					topicInfo = this->topicMap->GetItem(i);
-					if (Net::MQTTUtil::TopicMatch(topicInfo->topic->v, topicInfo->topic->leng, sbTopic.ToString()))
+					if (Net::MQTTUtil::TopicMatch(topicInfo->topic->v, topicInfo->topic->leng, sbTopic.ToString(), sbTopic.GetLength()))
 					{
 						this->TopicSend(stm, data->cliData, topicInfo);
 					}
@@ -873,7 +873,7 @@ void Net::MQTTBroker::UpdateTopic(Text::CString topic, const UInt8 *message, UOS
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
-		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic))
+		if (Net::MQTTUtil::TopicMatch(topic.v, topic.leng, subscribe->topic->v, subscribe->topic->leng))
 		{
 			topicMutUsage.BeginUse();
 			this->TopicSend(subscribe->cli, ((ClientData*)subscribe->cliData)->cliData, topicInfo);
@@ -1011,7 +1011,7 @@ Net::MQTTBroker::~MQTTBroker()
 	while (i-- > 0)
 	{
 		subscribe = this->subscribeList->GetItem(i);
-		Text::StrDelNew(subscribe->topic);
+		subscribe->topic->Release();
 		MemFree(subscribe);
 	}
 	DEL_CLASS(this->subscribeList);

@@ -7,7 +7,7 @@
 
 #define DRAW_UNIT Double
 
-Data::LineChart::LineChart(const UTF8Char *title)
+Data::LineChart::LineChart(Text::CString title)
 {
 	this->titleBuff = 0;
 	this->SetTitle(title);
@@ -390,20 +390,20 @@ void Data::LineChart::SetYRangeDbl(Double yVal)
 	this->style = style;
 }*/
 
-void Data::LineChart::SetTitle(const UTF8Char *title)
+void Data::LineChart::SetTitle(Text::CString title)
 {
-	SDEL_TEXT(this->title);
-	this->title = SCOPY_TEXT(title);
+	SDEL_STRING(this->title);
+	this->title = Text::String::NewOrNull(title);
 
 	SDEL_STRING(this->titleBuff);
-	if (title == 0)
+	if (this->title == 0)
 	{
 		this->titleBuff = 0;
 		this->titleLineCnt = 0;
 	}
 	else
 	{
-		this->titleBuff = Text::String::NewNotNull(title);
+		this->titleBuff = Text::String::New(this->title->v, this->title->leng);
 		this->titleLineCnt = Text::StrSplitLine(this->titleLine, 3, this->titleBuff->v);
 	}
 }
@@ -1018,11 +1018,11 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	else if (xType == Data::IChart::DataType::DOUBLE)
 	{
-		sptr = Text::StrDoubleFmt(sbuff, xMaxDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, xMaxDbl, (const Char*)this->dblFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		xLeng = (Single)rcSize[0];
 		
-		sptr = Text::StrDoubleFmt(sbuff, xMinDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, xMinDbl, (const Char*)this->dblFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		if (rcSize[0] > xLeng)
 			xLeng = (Single)rcSize[0];
@@ -1035,9 +1035,9 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
 		if (dt1.IsSameDay(&dt2))
 		{
-			if (timeFormat)
+			if (this->timeFormat)
 			{
-				sptr = dt1.ToString(sbuff, timeFormat);
+				sptr = dt1.ToString(sbuff, (const Char*)this->timeFormat->v);
 			}
 			else
 			{
@@ -1047,13 +1047,13 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			xLeng = (Single)rcSize[0];
 			if (dt2.GetMSPassedDate() == 0)
 			{
-				sptr = dt2.ToString(sbuff, dateFormat);
+				sptr = dt2.ToString(sbuff, (const Char*)this->dateFormat->v);
 			}
 			else
 			{
 				if (timeFormat)
 				{
-					sptr = dt2.ToString(sbuff, timeFormat);
+					sptr = dt2.ToString(sbuff, (const Char*)this->timeFormat->v);
 				}
 				else
 				{
@@ -1066,12 +1066,12 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		}
 		else
 		{
-			sptr = dt1.ToString(sbuff, dateFormat);
+			sptr = dt1.ToString(sbuff, (const Char*)this->dateFormat->v);
 			img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 			xLeng = (Single)rcSize[0];
 			if (timeFormat)
 			{
-				sptr = dt1.ToString(sbuff, timeFormat);
+				sptr = dt1.ToString(sbuff, (const Char*)this->timeFormat->v);
 			}
 			else
 			{
@@ -1107,13 +1107,13 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	else if (yAxis1Type == Data::IChart::DataType::DOUBLE)
 	{
-		sptr = Text::StrDoubleFmt(sbuff, y1MaxDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, y1MaxDbl, (const Char*)this->dblFormat->v);
 		if (this->yUnit)
 			sptr = this->yUnit->ConcatTo(sptr);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);;
 		y1Leng = rcSize[0];
 
-		sptr = Text::StrDoubleFmt(sbuff, y1MinDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, y1MinDbl, (const Char*)this->dblFormat->v);
 		if (this->yUnit)
 			sptr = this->yUnit->ConcatTo(sptr);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
@@ -1124,13 +1124,13 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	{
 		dt1.SetTicks(y1MaxDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
-		sptr = dt1.ToString(sbuff, dateFormat);
+		sptr = dt1.ToString(sbuff, (const Char*)this->dateFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		y1Leng = rcSize[0];
 
 		dt1.SetTicks(y1MinDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
-		sptr = dt1.ToString(sbuff, dateFormat);
+		sptr = dt1.ToString(sbuff, (const Char*)this->dateFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);;
 		if (rcSize[0] > y1Leng)
 			y1Leng = rcSize[0];
@@ -1164,13 +1164,13 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	else if (yAxis2Type == Data::IChart::DataType::DOUBLE)
 	{
-		sptr = Text::StrDoubleFmt(sbuff, y2MaxDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, y2MaxDbl, (const Char*)this->dblFormat->v);
 		if (this->yUnit)
 			sptr = this->yUnit->ConcatTo(sptr);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		y2Leng = rcSize[0];
 
-		sptr = Text::StrDoubleFmt(sbuff, y2MinDbl, dblFormat);
+		sptr = Text::StrDoubleFmt(sbuff, y2MinDbl, (const Char*)this->dblFormat->v);
 		if (this->yUnit)
 			sptr = this->yUnit->ConcatTo(sptr);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
@@ -1184,13 +1184,13 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	{
 		dt1.SetTicks(y2MaxDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
-		sptr = dt1.ToString(sbuff, dateFormat);
+		sptr = dt1.ToString(sbuff, (const Char*)this->dateFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		y2Leng = rcSize[0];
 
 		dt1.SetTicks(y2MinDate);
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
-		sptr = dt1.ToString(sbuff, dateFormat);
+		sptr = dt1.ToString(sbuff, (const Char*)this->dateFormat->v);
 		img->GetTextSizeC(fnt, sbuff, (UOSInt)(sptr - sbuff), rcSize);
 		if (rcSize[0] > y2Leng)
 			y2Leng = rcSize[0];
@@ -1226,7 +1226,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	else if (xType == Data::IChart::DataType::DOUBLE)
 	{
-		Data::IChart::CalScaleMarkDbl(locations, labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, dblFormat, minDblVal, 0);
+		Data::IChart::CalScaleMarkDbl(locations, labels, xMinDbl, xMaxDbl, width - y1Leng - y2Leng - this->pointSize * 2, fntH, (const Char*)this->dblFormat->v, minDblVal, 0);
 	}
 	else if (xType == Data::IChart::DataType::DateTicks)
 	{
@@ -1234,7 +1234,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(xMaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::IChart::CalScaleMarkDate(locations, labels, &dt1, &dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, dateFormat, timeFormat);
+		Data::IChart::CalScaleMarkDate(locations, labels, &dt1, &dt2, width - y1Leng - y2Leng - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
 	}
 	else
 	{
@@ -1271,7 +1271,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 	}
 	else if (yAxis1Type == Data::IChart::DataType::DOUBLE)
 	{
-		Data::IChart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, dblFormat, minDblVal, STR_PTR(this->yUnit));
+		Data::IChart::CalScaleMarkDbl(locations, labels, y1MinDbl, y1MaxDbl, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, (const Char*)this->dblFormat->v, minDblVal, STR_PTR(this->yUnit));
 	}
 	else if (yAxis1Type == Data::IChart::DataType::DateTicks)
 	{
@@ -1279,7 +1279,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 		dt1.ConvertTimeZoneQHR(this->timeZoneQHR);
 		dt2.SetTicks(y2MaxDate);
 		dt2.ConvertTimeZoneQHR(this->timeZoneQHR);
-		Data::IChart::CalScaleMarkDate(locations, labels, &dt1, &dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, dateFormat, timeFormat);
+		Data::IChart::CalScaleMarkDate(locations, labels, &dt1, &dt2, height - xLeng - fntH / 2 - this->pointSize * 2, fntH, (const Char*)this->dateFormat->v, (const Char*)this->timeFormat->v);
 	}
 	else
 	{
@@ -1570,7 +1570,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				yPos = (Single)(y + height - xLeng - (this->refDbl - dMin) / (dMax - dMin) * xChartLeng);
 				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
 
-				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, dblFormat);
+				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, (const Char*)this->dblFormat->v);
 				if (this->yUnit)
 					sptr = this->yUnit->ConcatTo(sptr);
 				if (this->refType == RT_LEFTALIGN)
@@ -1594,7 +1594,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				yPos = (Single)(y + height - xLeng - (this->refDbl - dMin) / (dMax - dMin) * xChartLeng);
 				img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
 
-				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, dblFormat);
+				sptr = Text::StrDoubleFmt(sbuff, this->refDbl, (const Char*)this->dblFormat->v);
 				if (this->yUnit)
 					sptr = this->yUnit->ConcatTo(sptr);
 				if (this->refType == RT_LEFTALIGN)

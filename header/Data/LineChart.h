@@ -92,7 +92,7 @@ namespace Data
 		Double yRangeDblMax;
 
 	public:
-		LineChart(const UTF8Char *title);
+		LineChart(Text::CString title);
 		virtual ~LineChart();
 
 		Bool AddXData(Data::DateTime **data, UOSInt dataCnt);
@@ -121,7 +121,7 @@ namespace Data
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);
 //		void SetStyle(Data::LineChart::LineStyle style);
-		virtual void SetTitle(const UTF8Char *title);
+		virtual void SetTitle(Text::CString title);
 		virtual DataType GetXAxisType();
 		virtual UOSInt GetXDataCount();
 		virtual Int64 *GetXDateTicks(UOSInt index, UOSInt *cnt);

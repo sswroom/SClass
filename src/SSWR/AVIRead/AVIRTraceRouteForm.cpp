@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	me->txtTargetIP->GetText(&sb);
-	targetIP = me->sockf->DNSResolveIPv4(sb.ToString());
+	targetIP = me->sockf->DNSResolveIPv4(sb.ToString(), sb.GetLength());
 	if (targetIP == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving target host", (const UTF8Char*)"Trace Route", me);

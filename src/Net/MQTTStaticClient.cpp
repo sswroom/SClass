@@ -90,7 +90,7 @@ void Net::MQTTStaticClient::Connect()
 		{
 			this->conn = conn;
 		}
-		Data::ArrayList<const UTF8Char*> topicList;
+		Data::ArrayList<Text::String*> topicList;
 		mutUsage.ReplaceMutex(this->topicMut);
 		topicList.AddAll(this->topicList);
 		mutUsage.EndUse();
@@ -106,7 +106,7 @@ void Net::MQTTStaticClient::Connect()
 				break;
 			}
 			UInt16 packetId = GetNextPacketId();
-			if (this->conn->SendSubscribe(packetId, topicList.GetItem(i)))
+			if (this->conn->SendSubscribe(packetId, topicList.GetItem(i)->ToCString()))
 			{
 				this->conn->WaitSubAck(packetId, 30000);
 			}
@@ -147,7 +147,7 @@ Net::MQTTStaticClient::MQTTStaticClient(Net::MQTTConn::PublishMessageHdlr hdlr, 
 	this->hdlrList->Add(hdlr);
 	this->hdlrObjList->Add(userObj);
 	NEW_CLASS(this->topicMut, Sync::Mutex());
-	NEW_CLASS(this->topicList, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->topicList, Data::ArrayList<Text::String*>());
 
 	this->sockf = 0;
 	this->ssl = 0;
@@ -195,7 +195,7 @@ Net::MQTTStaticClient::~MQTTStaticClient()
 	DEL_CLASS(this->hdlrList);
 	DEL_CLASS(this->hdlrObjList);
 	DEL_CLASS(this->topicMut);
-	LIST_FREE_FUNC(this->topicList, Text::StrDelNew);
+	LIST_FREE_STRING(this->topicList);
 	DEL_CLASS(this->topicList);
 	DEL_CLASS(this->packetIdMut);
 	DEL_CLASS(this->kaEvt);
@@ -222,10 +222,10 @@ void Net::MQTTStaticClient::HandlePublishMessage(Net::MQTTConn::PublishMessageHd
 	this->hdlrObjList->Add(hdlrObj);
 }
 
-Bool Net::MQTTStaticClient::Subscribe(const UTF8Char *topic)
+Bool Net::MQTTStaticClient::Subscribe(Text::CString topic)
 {
 	Sync::MutexUsage mutUsage(this->topicMut);
-	this->topicList->Add(Text::StrCopyNew(topic));
+	this->topicList->Add(Text::String::New(topic));
 	mutUsage.ReplaceMutex(this->connMut);
 	if (this->conn == 0) return false;
 	UInt16 packetId = GetNextPacketId();
@@ -239,7 +239,7 @@ Bool Net::MQTTStaticClient::Subscribe(const UTF8Char *topic)
 	return false;
 }
 
-Bool Net::MQTTStaticClient::Publish(const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTStaticClient::Publish(Text::CString topic, Text::CString message)
 {
 	Sync::MutexUsage mutUsage(this->connMut);
 	if (this->conn == 0) return false;

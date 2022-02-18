@@ -6,7 +6,7 @@
 #include "Net/SocketFactory.h"
 #include "Net/UDPServer.h"
 #include "Sync/Mutex.h"
-#include "Text/MyString.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -23,7 +23,7 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		Net::UDPServer *svr;
-		const UTF8Char *logPath;
+		Text::String *logPath;
 		IO::LogTool *log;
 		Bool redirLog;
 		Sync::Mutex *ipMut;
@@ -35,7 +35,7 @@ namespace Net
 
 		IPStatus *GetIPStatus(const Net::SocketUtil::AddressInfo *addr);
 	public:
-		SyslogServer(Net::SocketFactory *sockf, UInt16 port, const UTF8Char *logPath, IO::LogTool *svrLog, Bool redirLog);
+		SyslogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog);
 		~SyslogServer();
 
 		Bool IsError();

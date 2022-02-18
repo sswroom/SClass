@@ -476,10 +476,10 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 	else
 	{
 		NEW_CLASS(wb, Text::SpreadSheet::Workbook());
-		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont((const UTF8Char*)"Arial", 10, false);
-		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"General");
+		Text::SpreadSheet::WorkbookFont *font10 = wb->NewFont(CSTR("Arial"), 10, false);
+		Text::SpreadSheet::CellStyle *strStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("General"));
 		ws = wb->AddWorksheet(this->name);
-		dataSheet = wb->AddWorksheet((const UTF8Char*)"ChartData");
+		dataSheet = wb->AddWorksheet(CSTR("ChartData"));
 
 		k = 0;
 		i = 0;
@@ -517,7 +517,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			i++;
 		}
 
-		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, chart->GetTitle());
+		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, STR_CSTR(chart->GetTitle()));
 		shChart->InitLineChart(chart->GetYAxisName(), chart->GetXAxisName(), FromChartDataType(chart->GetXAxisType()));
 		shChart->SetDisplayBlankAs(Text::SpreadSheet::BlankAs::Gap);
 		shChart->AddLegend(Text::SpreadSheet::LegendPos::Bottom);
@@ -526,7 +526,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		{
 			Text::SpreadSheet::CellStyle *dateStyle = 0;
 			Text::SpreadSheet::CellStyle *intStyle = 0;
-			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"General");
+			Text::SpreadSheet::CellStyle *dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("General"));
 
 			UOSInt i;
 			UOSInt j;
@@ -539,11 +539,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (chart->GetTimeFormat())
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetTimeFormat());
+						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 					}
 					else
 					{
-						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"YYYY-MM-dd HH:mm");
+						dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
 					}
 				}
 				Data::DateTime dt;
@@ -564,11 +564,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (chart->GetDblFormat())
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetDblFormat());
+						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetDblFormat()->ToCString());
 					}
 					else
 					{
-						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
+						dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0.###"));
 					}
 				}
 				Double *dblValues = chart->GetXDouble(0, &colCount);
@@ -584,7 +584,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			{
 				if (intStyle == 0)
 				{
-					intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0");
+					intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0"));
 				}
 				Int32 *intValues = chart->GetXInt32(0, &colCount);
 				i = 0;
@@ -612,11 +612,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						if (chart->GetTimeFormat())
 						{
-							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetTimeFormat());
+							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetTimeFormat()->ToCString());
 						}
 						else
 						{
-							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"YYYY-MM-dd HH:mm");
+							dateStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("YYYY-MM-dd HH:mm"));
 						}
 					}
 					Data::DateTime dt;
@@ -637,11 +637,11 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 					{
 						if (chart->GetDblFormat())
 						{
-							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)chart->GetDblFormat());
+							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, chart->GetDblFormat()->ToCString());
 						}
 						else
 						{
-							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0.###");
+							dblStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0.###"));
 						}
 					}
 					Double *dblValues = chart->GetYDouble(i, &colCount);
@@ -657,7 +657,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (intStyle == 0)
 					{
-						intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, (const UTF8Char*)"0");
+						intStyle = wb->NewCellStyle(font10, Text::SpreadSheet::HAlignment::Left, Text::SpreadSheet::VAlignment::Center, CSTR("0"));
 					}
 					Int32 *intValues = chart->GetYInt32(i, &colCount);
 					k = 0;

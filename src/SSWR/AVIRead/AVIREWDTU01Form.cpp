@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 		SDEL_CLASS(me->cli);
 		return;
 	}
-	me->cli->Subscribe((const UTF8Char*)"/+/connect_packet/adv_publish");
+	me->cli->Subscribe(CSTR("/+/connect_packet/adv_publish"));
 }
 
 void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)

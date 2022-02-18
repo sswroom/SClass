@@ -372,7 +372,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 					Text::SpreadSheet::WorkbookFont *font = style->GetFont();
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <Font ss:FontName="));
-					s = Text::XML::ToNewAttrText(font->GetName());
+					s = Text::XML::ToNewAttrText(STR_PTR(font->GetName()));
 					sb.Append(s);
 					s->Release();
 					if (font->GetSize() > 0)
@@ -400,7 +400,7 @@ Bool Exporter::ExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8C
 				{
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("   <NumberFormat ss:Format="));
-					s = Text::XML::ToNewAttrText(style->GetDataFormat());
+					s = Text::XML::ToNewAttrText(Text::String::OrEmpty(style->GetDataFormat())->v);
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));

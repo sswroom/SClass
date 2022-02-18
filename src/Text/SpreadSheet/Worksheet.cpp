@@ -188,9 +188,9 @@ Text::SpreadSheet::Worksheet::Worksheet(Text::String *name)
 	NEW_CLASS(drawings, Data::ArrayList<WorksheetDrawing*>());
 }
 
-Text::SpreadSheet::Worksheet::Worksheet(const UTF8Char *name)
+Text::SpreadSheet::Worksheet::Worksheet(Text::CString name)
 {
-	this->name = Text::String::NewNotNull(name);
+	this->name = Text::String::New(name);
 	this->freezeHori = 0;
 	this->freezeVert = 0;
 	this->marginLeft = 2.0;
@@ -750,11 +750,11 @@ Text::SpreadSheet::WorksheetDrawing *Text::SpreadSheet::Worksheet::CreateDrawing
 	return drawing;
 }
 
-Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, const UTF8Char *title)
+Text::SpreadSheet::OfficeChart *Text::SpreadSheet::Worksheet::CreateChart(Math::Unit::Distance::DistanceUnit du, Double x, Double y, Double w, Double h, Text::CString title)
 {
 	WorksheetDrawing *drawing = this->CreateDrawing(du, x, y, w, h);
 	drawing->chart = NEW_CLASS_D(OfficeChart(du, x, y, w, h));
-	if (title)
+	if (title.leng > 0)
 	{
 		drawing->chart->SetTitleText(title);
 	}

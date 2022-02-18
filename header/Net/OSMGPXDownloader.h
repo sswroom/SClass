@@ -2,6 +2,7 @@
 #define _SM_NET_OSMGPXDOWNLOADER
 #include "IO/Writer.h"
 #include "Net/RSSReader.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -10,11 +11,11 @@ namespace Net
 	private:
 		Net::RSSReader *reader;
 		Net::SocketFactory *sockf;
-		const UTF8Char *storeDir;
+		Text::String *storeDir;
 		IO::Writer *writer;
 
 	public:
-		OSMGPXDownloader(Net::SocketFactory *sockf, const UTF8Char *storeDir, IO::Writer *writer);
+		OSMGPXDownloader(Net::SocketFactory *sockf, Text::CString storeDir, IO::Writer *writer);
 		virtual ~OSMGPXDownloader();
 
 		virtual void ItemAdded(Net::RSSItem *item);

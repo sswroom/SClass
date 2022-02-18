@@ -4,6 +4,7 @@
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/LogTool.h"
+#include "Text/CString.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace DB
@@ -31,7 +32,7 @@ namespace DB
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 		void FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 
-		static void BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port);
+		static void BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, Text::CString host, UInt16 port);
 	};
 
 	class MongoDBReader : public DB::DBReader

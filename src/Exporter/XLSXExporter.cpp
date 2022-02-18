@@ -539,7 +539,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 					sb.AppendC(UTF8STRC("<c:chart>"));
 					if (drawing->chart->GetTitleText())
 					{
-						AppendTitle(&sb, drawing->chart->GetTitleText());
+						AppendTitle(&sb, drawing->chart->GetTitleText()->v);
 					}
 					sb.AppendC(UTF8STRC("<c:plotArea>"));
 					sb.AppendC(UTF8STRC("<c:layout/>"));
@@ -710,10 +710,14 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 		while (i < j)
 		{
 			Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
-			csptr = style->GetDataFormat();
-			if (csptr == 0)
+			s = style->GetDataFormat();
+			if (s == 0)
 			{
 				csptr = (const UTF8Char*)"general";
+			}
+			else
+			{
+				csptr = s->v;
 			}
 			if (!numFmtMap.ContainsKey(csptr))
 			{
@@ -786,7 +790,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 				if (font->GetName())
 				{
 					sb.AppendC(UTF8STRC("<name val="));
-					s = Text::XML::ToNewAttrText(font->GetName());
+					s = Text::XML::ToNewAttrText(font->GetName()->v);
 					sb.Append(s);
 					s->Release();
 					sb.AppendC(UTF8STRC("/>"));
@@ -902,10 +906,14 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 			{
 				Text::SpreadSheet::CellStyle *style = workbook->GetStyle(i);
 				Text::SpreadSheet::WorkbookFont *font = style->GetFont();
-				csptr = style->GetDataFormat();
-				if (csptr == 0)
+				s = style->GetDataFormat();
+				if (s == 0)
 				{
 					csptr = (const UTF8Char*)"general";
+				}
+				else
+				{
+					csptr = s->v;
 				}
 				sb.AppendC(UTF8STRC("<xf numFmtId=\""));
 				sb.AppendUOSInt(numFmtMap.Get(csptr) + 164);

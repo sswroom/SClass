@@ -64,12 +64,12 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 	UTF8Char *sptr;
 	UOSInt tsLen;
 	me->threadRunning = true;
-	tsLen = Text::StrCharCnt(me->timeServer);
+	tsLen = me->timeServer->leng;
 	NEW_CLASS(dt, Data::DateTime());
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	while (!me->threadToStop)
 	{
-		if (me->sockf->DNSResolveIP(me->timeServer, tsLen, &addr))
+		if (me->sockf->DNSResolveIP(me->timeServer->v, tsLen, &addr))
 		{
 			if (me->cli->GetServerTime(&addr, Net::NTPClient::GetDefaultPort(), dt))
 			{
@@ -135,12 +135,12 @@ void Net::NTPServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
 	}
 }
 
-Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *timeServer)
+Net::NTPServer::NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer)
 {
 	this->sockf = sockf;
 	this->svr = 0;
 	this->log = log;
-	this->timeServer = Text::StrCopyNew(timeServer);
+	this->timeServer = Text::String::New(timeServer);
 	this->refTime = 0;
 	this->threadRunning = false;
 	this->threadToStop = false;
@@ -172,7 +172,7 @@ Net::NTPServer::~NTPServer()
 	}
 	DEL_CLASS(this->evt);
 	SDEL_CLASS(this->cli);
-	SDEL_TEXT(this->timeServer);
+	SDEL_STRING(this->timeServer);
 }
 
 Bool Net::NTPServer::IsError()

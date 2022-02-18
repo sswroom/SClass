@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_CELLSTYLE
 #define _SM_TEXT_SPREADSHEET_CELLSTYLE
+#include "Text/String.h"
 #include "Text/SpreadSheet/WorkbookFont.h"
 namespace Text
 {
@@ -91,7 +92,7 @@ namespace Text
 			WorkbookFont *font;
 			UInt32 fillColor;
 			FillPattern fillPattern;
-			const UTF8Char *dataFormat;
+			Text::String *dataFormat;
 			Bool protection;
 
 		public:
@@ -113,7 +114,8 @@ namespace Text
 			CellStyle *SetBorderRight(BorderStyle *border);
 			CellStyle *SetBorderTop(BorderStyle *border);
 			CellStyle *SetBorderBottom(BorderStyle *border);
-			CellStyle *SetDataFormat(const UTF8Char *dataFormat);
+			CellStyle *SetDataFormat(Text::String *dataFormat);
+			CellStyle *SetDataFormat(Text::CString dataFormat);
 
 			UOSInt GetIndex();
 			const UTF8Char *GetID();
@@ -127,7 +129,7 @@ namespace Text
 			BorderStyle *GetBorderRight();
 			BorderStyle *GetBorderTop();
 			BorderStyle *GetBorderBottom();
-			const UTF8Char *GetDataFormat();
+			Text::String *GetDataFormat();
 		};
 	}
 }

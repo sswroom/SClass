@@ -74,7 +74,7 @@ namespace DB
 		{
 			Int32 sessId;
 			UserInfo *user;
-			const UTF8Char *lastError;
+			Text::String *lastError;
 
 			Bool autoCommit;
 			Int32 autoIncInc;

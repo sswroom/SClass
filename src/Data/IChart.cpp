@@ -11,77 +11,77 @@ Data::IChart::IChart()
 	this->xAxisName = 0;
 	this->yAxisName = 0;
 
-	this->timeFormat = Text::StrCopyNew("HH:mm");
-	this->dateFormat = Text::StrCopyNew("yyyy/MM/dd");
-	this->dblFormat = Text::StrCopyNew("0.00");
+	this->timeFormat = Text::String::New(UTF8STRC("HH:mm"));
+	this->dateFormat = Text::String::New(UTF8STRC("yyyy/MM/dd"));
+	this->dblFormat = Text::String::New(UTF8STRC("0.00"));
 	this->minDblVal = 0.01;
 }
 
 Data::IChart::~IChart()
 {
-	SDEL_TEXT(this->title);
+	SDEL_STRING(this->title);
 	SDEL_TEXT(this->xAxisName);
 	SDEL_TEXT(this->yAxisName);
 
-	SDEL_TEXT(this->dateFormat);
-	SDEL_TEXT(this->timeFormat);
-	SDEL_TEXT(this->dblFormat);
+	SDEL_STRING(this->dateFormat);
+	SDEL_STRING(this->timeFormat);
+	SDEL_STRING(this->dblFormat);
 }
 
-void Data::IChart::SetTitle(const UTF8Char *title)
+void Data::IChart::SetTitle(Text::CString title)
 {
-	SDEL_TEXT(this->title);
-	this->title = SCOPY_TEXT(title);
+	SDEL_STRING(this->title);
+	this->title = Text::String::NewOrNull(title);
 }
 
-const UTF8Char *Data::IChart::GetTitle()
+Text::String *Data::IChart::GetTitle()
 {
 	return this->title;
 }
 
-void Data::IChart::SetDateFormat(const Char *format)
+void Data::IChart::SetDateFormat(Text::CString format)
 {
 	if (this->dateFormat)
 	{
-		Text::StrDelNew(this->dateFormat);
+		this->dateFormat->Release();
 	}
-	this->dateFormat = Text::StrCopyNew(format);
+	this->dateFormat = Text::String::New(format);
 }
 
-const Char *Data::IChart::GetDateFormat()
+Text::String *Data::IChart::GetDateFormat()
 {
 	return this->dateFormat;
 }
 
-void Data::IChart::SetTimeFormat(const Char *format)
+void Data::IChart::SetTimeFormat(Text::CString format)
 {
-	SDEL_TEXT(this->timeFormat);
-	if (format)
+	SDEL_STRING(this->timeFormat);
+	if (format.leng > 0)
 	{
-		this->timeFormat = Text::StrCopyNew(format);
+		this->timeFormat = Text::String::New(format);
 	}
 }
 
-const Char *Data::IChart::GetTimeFormat()
+Text::String *Data::IChart::GetTimeFormat()
 {
 	return this->timeFormat;
 }
 
-void Data::IChart::SetDblFormat(const Char *format)
+void Data::IChart::SetDblFormat(Text::CString format)
 {
 	if (this->dblFormat)
 	{
-		Text::StrDelNew(this->dblFormat);
+		this->dblFormat->Release();
 	}
-	this->dblFormat = Text::StrCopyNew(format);
-	UOSInt i = Text::StrIndexOfChar(format, '.');
+	this->dblFormat = Text::String::New(format);
+	UOSInt i = format.IndexOf('.');
 	if (i == INVALID_INDEX)
 	{
 		this->minDblVal = 1.0;
 	}
 	else
 	{
-		i = Text::StrCharCnt(format) - i - 1;
+		i = format.leng - i - 1;
 		this->minDblVal = 1.0;
 		while (i-- > 0)
 		{
@@ -90,7 +90,7 @@ void Data::IChart::SetDblFormat(const Char *format)
 	}
 }
 
-const Char *Data::IChart::GetDblFormat()
+Text::String *Data::IChart::GetDblFormat()
 {
 	return this->dblFormat;
 }

@@ -161,53 +161,53 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 	UInt16 recNo;
 	UInt16 recLeng;
 	UInt64 currOfst = ofst;
-	const UTF8Char *fmt;
+	Text::String *fmt;
 	readBuff = MemAlloc(UInt8, 1048576);
 	readBuffSize = 0;
 	NEW_CLASS(status.sst, Data::ArrayList<const UTF8Char*>());
 	NEW_CLASS(status.wsList, Data::ArrayList<WorksheetStatus*>());
 	NEW_CLASS(status.fontList, Data::ArrayList<FontInfo*>());
-	NEW_CLASS(status.formatMap, Data::Int32Map<const UTF8Char *>());
+	NEW_CLASS(status.formatMap, Data::Int32Map<Text::String *>());
 	Text::SpreadSheet::Workbook::GetDefPalette(status.palette);
 
-	status.formatMap->Put(0x1, Text::StrCopyNew((const UTF8Char*)"0"));
-	status.formatMap->Put(0x2, Text::StrCopyNew((const UTF8Char*)"0.00"));
-	status.formatMap->Put(0x3, Text::StrCopyNew((const UTF8Char*)"#,##0"));
-	status.formatMap->Put(0x4, Text::StrCopyNew((const UTF8Char*)"#,##0.00"));
-	status.formatMap->Put(0x5, Text::StrCopyNew((const UTF8Char*)"($#,##0_);($#,##0)"));
-	status.formatMap->Put(0x6, Text::StrCopyNew((const UTF8Char*)"($#,##0_);[Red]($#,##0)"));
-	status.formatMap->Put(0x7, Text::StrCopyNew((const UTF8Char*)"($#,##0.00_);($#,##0.00)"));
-	status.formatMap->Put(0x8, Text::StrCopyNew((const UTF8Char*)"($#,##0.00_);[Red]($#,##0.00)"));
-	status.formatMap->Put(0x9, Text::StrCopyNew((const UTF8Char*)"0%"));
-	status.formatMap->Put(0xa, Text::StrCopyNew((const UTF8Char*)"0.00%"));
-	status.formatMap->Put(0xb, Text::StrCopyNew((const UTF8Char*)"0.00E+00"));
-	status.formatMap->Put(0xc, Text::StrCopyNew((const UTF8Char*)"# ?/?"));
-	status.formatMap->Put(0xd, Text::StrCopyNew((const UTF8Char*)"# \?\?/\?\?"));
-	status.formatMap->Put(0xe, Text::StrCopyNew((const UTF8Char*)"m/d/yy"));
-	status.formatMap->Put(0xf, Text::StrCopyNew((const UTF8Char*)"d-mmm-yy"));
+	status.formatMap->Put(0x1, Text::String::New(UTF8STRC("0")));
+	status.formatMap->Put(0x2, Text::String::New(UTF8STRC("0.00")));
+	status.formatMap->Put(0x3, Text::String::New(UTF8STRC("#,##0")));
+	status.formatMap->Put(0x4, Text::String::New(UTF8STRC("#,##0.00")));
+	status.formatMap->Put(0x5, Text::String::New(UTF8STRC("($#,##0_);($#,##0)")));
+	status.formatMap->Put(0x6, Text::String::New(UTF8STRC("($#,##0_);[Red]($#,##0)")));
+	status.formatMap->Put(0x7, Text::String::New(UTF8STRC("($#,##0.00_);($#,##0.00)")));
+	status.formatMap->Put(0x8, Text::String::New(UTF8STRC("($#,##0.00_);[Red]($#,##0.00)")));
+	status.formatMap->Put(0x9, Text::String::New(UTF8STRC("0%")));
+	status.formatMap->Put(0xa, Text::String::New(UTF8STRC("0.00%")));
+	status.formatMap->Put(0xb, Text::String::New(UTF8STRC("0.00E+00")));
+	status.formatMap->Put(0xc, Text::String::New(UTF8STRC("# ?/?")));
+	status.formatMap->Put(0xd, Text::String::New(UTF8STRC("# \?\?/\?\?")));
+	status.formatMap->Put(0xe, Text::String::New(UTF8STRC("m/d/yy")));
+	status.formatMap->Put(0xf, Text::String::New(UTF8STRC("d-mmm-yy")));
 
-	status.formatMap->Put(0x10, Text::StrCopyNew((const UTF8Char*)"d-mmm"));
-	status.formatMap->Put(0x11, Text::StrCopyNew((const UTF8Char*)"mmm-yy"));
-	status.formatMap->Put(0x12, Text::StrCopyNew((const UTF8Char*)"h:mm AM/PM"));
-	status.formatMap->Put(0x13, Text::StrCopyNew((const UTF8Char*)"h:mm:ss AM/PM"));
-	status.formatMap->Put(0x14, Text::StrCopyNew((const UTF8Char*)"h:mm"));
-	status.formatMap->Put(0x15, Text::StrCopyNew((const UTF8Char*)"h:mm:ss"));
-	status.formatMap->Put(0x16, Text::StrCopyNew((const UTF8Char*)"m/d/yy h:mm"));
+	status.formatMap->Put(0x10, Text::String::New(UTF8STRC("d-mmm")));
+	status.formatMap->Put(0x11, Text::String::New(UTF8STRC("mmm-yy")));
+	status.formatMap->Put(0x12, Text::String::New(UTF8STRC("h:mm AM/PM")));
+	status.formatMap->Put(0x13, Text::String::New(UTF8STRC("h:mm:ss AM/PM")));
+	status.formatMap->Put(0x14, Text::String::New(UTF8STRC("h:mm")));
+	status.formatMap->Put(0x15, Text::String::New(UTF8STRC("h:mm:ss")));
+	status.formatMap->Put(0x16, Text::String::New(UTF8STRC("m/d/yy h:mm")));
 
-	status.formatMap->Put(0x25, Text::StrCopyNew((const UTF8Char*)"(#,##0_);(#,##0)"));
-	status.formatMap->Put(0x26, Text::StrCopyNew((const UTF8Char*)"(#,##0_);[Red](#,##0)"));
-	status.formatMap->Put(0x27, Text::StrCopyNew((const UTF8Char*)"(#,##0.00_);(#,##0.00)"));
-	status.formatMap->Put(0x28, Text::StrCopyNew((const UTF8Char*)"(#,##0.00_);[Red](#,##0.00)"));
-	status.formatMap->Put(0x29, Text::StrCopyNew((const UTF8Char*)"_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)"));
-	status.formatMap->Put(0x2a, Text::StrCopyNew((const UTF8Char*)"_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)"));
-	status.formatMap->Put(0x2b, Text::StrCopyNew((const UTF8Char*)"_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)"));
-	status.formatMap->Put(0x2c, Text::StrCopyNew((const UTF8Char*)"_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)"));
-	status.formatMap->Put(0x2d, Text::StrCopyNew((const UTF8Char*)"mm:ss"));
-	status.formatMap->Put(0x2e, Text::StrCopyNew((const UTF8Char*)"[h]:mm:ss"));
-	status.formatMap->Put(0x2f, Text::StrCopyNew((const UTF8Char*)"mm:ss.0"));
+	status.formatMap->Put(0x25, Text::String::New(UTF8STRC("(#,##0_);(#,##0)")));
+	status.formatMap->Put(0x26, Text::String::New(UTF8STRC("(#,##0_);[Red](#,##0)")));
+	status.formatMap->Put(0x27, Text::String::New(UTF8STRC("(#,##0.00_);(#,##0.00)")));
+	status.formatMap->Put(0x28, Text::String::New(UTF8STRC("(#,##0.00_);[Red](#,##0.00)")));
+	status.formatMap->Put(0x29, Text::String::New(UTF8STRC("_(* #,##0_);_(* (#,##0);_(* \"-\"_);_(@_)")));
+	status.formatMap->Put(0x2a, Text::String::New(UTF8STRC("_($* #,##0_);_($* (#,##0);_($* \"-\"_);_(@_)")));
+	status.formatMap->Put(0x2b, Text::String::New(UTF8STRC("_(* #,##0.00_);_(* (#,##0.00);_(* \"-\"??_);_(@_)")));
+	status.formatMap->Put(0x2c, Text::String::New(UTF8STRC("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")));
+	status.formatMap->Put(0x2d, Text::String::New(UTF8STRC("mm:ss")));
+	status.formatMap->Put(0x2e, Text::String::New(UTF8STRC("[h]:mm:ss")));
+	status.formatMap->Put(0x2f, Text::String::New(UTF8STRC("mm:ss.0")));
 
-	status.formatMap->Put(0x30, Text::StrCopyNew((const UTF8Char*)"##0.0E+0"));
-	status.formatMap->Put(0x31, Text::StrCopyNew((const UTF8Char*)"@"));
+	status.formatMap->Put(0x30, Text::String::New(UTF8STRC("##0.0E+0")));
+	status.formatMap->Put(0x31, Text::String::New(UTF8STRC("@")));
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
 	while (!eofFound)
@@ -263,7 +263,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					font->bCharSet = readBuff[i + 16];
 					sb->ClearStr();
 					ReadUStringB(&readBuff[i + 18], sb);
-					font->fontName = Text::StrCopyNew(sb->ToString());
+					font->fontName = Text::String::New(sb->ToCString());
 					if (status.fontList->GetCount() == 4)
 					{
 						status.fontList->Add(0);
@@ -273,7 +273,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					Bool isBold = false;
 					if (font->bls == 0x2bc)
 						isBold = true;
-					Text::SpreadSheet::WorkbookFont *f = wb->NewFont(font->fontName, font->height * 0.05, isBold);
+					Text::SpreadSheet::WorkbookFont *f = wb->NewFont(font->fontName->ToCString(), font->height * 0.05, isBold);
 					if (font->icv >= 64)
 					{
 					}
@@ -313,7 +313,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 						sb->AppendC((UTF8Char*)&readBuff[i + 12], readBuff[i + 10]);
 					}
 					WorksheetStatus *wsStatus = MemAlloc(WorksheetStatus, 1);
-					wsStatus->ws = wb->AddWorksheet(sb->ToString());
+					wsStatus->ws = wb->AddWorksheet(sb->ToCString());
 					wsStatus->ofst = ofstRef + ReadUInt32(&readBuff[i + 4]);
 					status.wsList->Add(wsStatus);
 				}
@@ -602,10 +602,10 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 					UInt16 ifmt = ReadUInt16(&readBuff[i + 4]);
 					sb->ClearStr();
 					ReadUString(&readBuff[i + 6], sb);
-					fmt = status.formatMap->Put(ifmt, Text::StrCopyNew(sb->ToString()));
+					fmt = status.formatMap->Put(ifmt, Text::String::New(sb->ToCString()));
 					if (fmt)
 					{
-						Text::StrDelNew(fmt);
+						fmt->Release();
 					}
 				}
 				break;
@@ -744,19 +744,19 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 		font = status.fontList->GetItem(i);
 		if (font)
 		{
-			Text::StrDelNew(font->fontName);
+			font->fontName->Release();
 			MemFree(font);
 		}
 	}
 	DEL_CLASS(status.fontList);
-	Data::ArrayList<const UTF8Char *> *formatList = status.formatMap->GetValues();
+	Data::ArrayList<Text::String *> *formatList = status.formatMap->GetValues();
 	i = formatList->GetCount();
 	while (i-- > 0)
 	{
-		const UTF8Char *fmt = formatList->GetItem(i);
+		Text::String *fmt = formatList->GetItem(i);
 		if (fmt)
 		{
-			Text::StrDelNew(fmt);
+			fmt->Release();
 		}
 	}
 	DEL_CLASS(status.formatMap);

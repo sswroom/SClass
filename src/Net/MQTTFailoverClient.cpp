@@ -58,7 +58,7 @@ void Net::MQTTFailoverClient::HandlePublishMessage(Net::MQTTConn::PublishMessage
 	this->hdlrObjList->Add(hdlrObj);
 }
 
-Bool Net::MQTTFailoverClient::Subscribe(const UTF8Char *topic)
+Bool Net::MQTTFailoverClient::Subscribe(Text::CString topic)
 {
 	Data::ArrayList<Net::MQTTStaticClient*> cliList;
 	this->foHdlr->GetAllChannels(&cliList);
@@ -70,7 +70,7 @@ Bool Net::MQTTFailoverClient::Subscribe(const UTF8Char *topic)
 	return true;
 }
 
-Bool Net::MQTTFailoverClient::Publish(const UTF8Char *topic, const UTF8Char *message)
+Bool Net::MQTTFailoverClient::Publish(Text::CString topic, Text::CString message)
 {
 	Net::MQTTStaticClient *cli = this->foHdlr->GetCurrChannel();
 	if (cli == 0)

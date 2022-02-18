@@ -5,6 +5,7 @@
 #include "Net/SDPFile.h"
 #include "Net/TCPClient.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -28,7 +29,7 @@ namespace Net
 			UOSInt reqReplySize;
 			Int32 reqReplyStatus;
 			Bool reqSuccess;
-			const UTF8Char *reqStrs;
+			Text::String *reqStrs;
 
 			Bool threadRunning;
 			Bool threadToStop;

@@ -124,19 +124,19 @@ UInt32 __stdcall Net::RTSPClient::ControlThread(void *userObj)
 						}
 						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Session: ")))
 						{
-							SDEL_TEXT(cliData->reqStrs);
+							SDEL_STRING(cliData->reqStrs);
 							k = Text::StrIndexOfChar(&sbuff[9], ';');
 							if (k != INVALID_INDEX)
 							{
 								sbuff[9 + k] = 0;
 								sptr = &sbuff[9 + k];
 							}
-							cliData->reqStrs = Text::StrCopyNewC(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
+							cliData->reqStrs = Text::String::New(&sbuff[9], (UOSInt)(sptr - &sbuff[9]));
 						}
 						else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Public: ")))
 						{
-							SDEL_TEXT(cliData->reqStrs);
-							cliData->reqStrs = Text::StrCopyNewC(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
+							SDEL_STRING(cliData->reqStrs);
+							cliData->reqStrs = Text::String::New(&sbuff[8], (UOSInt)(sptr - &sbuff[8]));
 						}
 					}
 					if (cliData->reqReplySize == 0)
@@ -205,7 +205,7 @@ Int32 Net::RTSPClient::NextRequest()
 	}
 	this->cliData->reqReplySize = 0;
 	this->cliData->reqSuccess = false;
-	SDEL_TEXT(this->cliData->reqStrs);
+	SDEL_STRING(this->cliData->reqStrs);
 	Int32 reply = this->cliData->nextSeq++;
 	return reply;
 }
@@ -294,7 +294,7 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt8 *buff;
-	UTF8Char *sarr[10];
+	Text::PString sarr[10];
 	UOSInt i;
 	UOSInt buffSize;
 	IO::StreamWriter *writer;
@@ -325,12 +325,12 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	{
 		if (this->cliData->reqStrs)
 		{
-			Text::StrConcat(sbuff, this->cliData->reqStrs);
-			buffSize = Text::StrSplitTrim(sarr, 10, sbuff, ',');
+			sptr = this->cliData->reqStrs->ConcatTo(sbuff);
+			buffSize = Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 			i = 0;
 			while (i < buffSize)
 			{
-				options->Add(Text::StrCopyNew(sarr[i]));
+				options->Add(Text::StrCopyNewC(sarr[i].v, sarr[i].leng));
 				i++;
 			}
 			ret = true;
@@ -412,7 +412,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	UTF8Char *ret = 0;
 	if (succ && this->cliData->reqReplyStatus == 200)
 	{
-		ret = Text::StrConcat(sessIdOut, this->cliData->reqStrs);
+		ret = this->cliData->reqStrs->ConcatTo(sessIdOut);
 	}
 	mutUsage.EndUse();
 	return ret;
@@ -586,9 +586,10 @@ Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
 Bool Net::RTSPClient::Init(Net::RTPCliChannel *rtpChannel)
 {
 	UTF8Char sbuff[64];
-	if (this->SetupRTP(sbuff, rtpChannel->GetControlURL(), rtpChannel))
+	UTF8Char *sptr;
+	if ((sptr = this->SetupRTP(sbuff, rtpChannel->GetControlURL(), rtpChannel)) != 0)
 	{
-		rtpChannel->SetUserData((void*)Text::StrCopyNew(sbuff));
+		rtpChannel->SetUserData((void*)Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
 		return true;
 	}
 	return false;

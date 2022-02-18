@@ -20,27 +20,27 @@ namespace Data
 		};
 
 	protected:
-		const UTF8Char *title;
+		Text::String *title;
 		const UTF8Char *xAxisName;
 		const UTF8Char *yAxisName;
 
-		const Char *dateFormat;
-		const Char *timeFormat;
-		const Char *dblFormat;
+		Text::String *dateFormat;
+		Text::String *timeFormat;
+		Text::String *dblFormat;
 		Double minDblVal;
 
 	public:
 		IChart();
 		virtual ~IChart();
 
-		virtual void SetTitle(const UTF8Char *title);
-		const UTF8Char *GetTitle();
-		void SetDateFormat(const Char *format);
-		const Char *GetDateFormat();
-		void SetTimeFormat(const Char *format);
-		const Char *GetTimeFormat();
-		void SetDblFormat(const Char *format);
-		const Char *GetDblFormat();
+		virtual void SetTitle(Text::CString title);
+		Text::String *GetTitle();
+		void SetDateFormat(Text::CString format);
+		Text::String *GetDateFormat();
+		void SetTimeFormat(Text::CString format);
+		Text::String *GetTimeFormat();
+		void SetDblFormat(Text::CString format);
+		Text::String *GetDblFormat();
 
 		void SetXAxisName(const UTF8Char *xAxisName);
 		const UTF8Char *GetXAxisName();

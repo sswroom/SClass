@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	Net::SocketUtil::AddressInfo addr;
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sbHost;
-	const UTF8Char *topic = 0;
-	const UTF8Char *message = 0;
+	Text::String *topic = 0;
+	Text::String *message = 0;
 	Text::CString username = CSTR_NULL;
 	Text::CString password = CSTR_NULL;
 	UInt16 port;
@@ -37,16 +37,16 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter topic", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
-	topic = Text::StrCopyNew(sb.ToString());
+	topic = Text::String::New(sb.ToCString());
 	sb.ClearStr();
 	me->txtMessage->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		SDEL_TEXT(topic);
+		SDEL_STRING(topic);
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter message", (const UTF8Char*)"MQTT Publish", me);
 		return;
 	}
-	message = Text::StrCopyNew(sb.ToString());
+	message = Text::String::New(sb.ToCString());
 
 	sb.ClearStr();
 	me->txtUsername->GetText(&sb);
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 		password.v = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 		password.leng = sb.GetLength();
 	}
-	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, username, password, topic, message))
+	if (Net::MQTTConn::PublishMessage(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, username, password, topic->ToCString(), message->ToCString()))
 	{
 		me->txtStatus->SetText(CSTR("Success"));
 	}
@@ -70,8 +70,8 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	{
 		me->txtStatus->SetText(CSTR("Failed"));
 	}
-	SDEL_TEXT(topic);
-	SDEL_TEXT(message);
+	SDEL_STRING(topic);
+	SDEL_STRING(message);
 	SDEL_TEXT(username.v);
 	SDEL_TEXT(password.v);
 }

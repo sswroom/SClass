@@ -2,6 +2,7 @@
 #define _SM_NET_LOGGEDSOCKETFACTORY
 #include "IO/LogTool.h"
 #include "Net/SocketFactory.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -10,9 +11,9 @@ namespace Net
 	private:
 		Net::SocketFactory *sockf;
 		IO::LogTool *log;
-		const UTF8Char *logPrefix;
+		Text::String *logPrefix;
 	public:
-		LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, const UTF8Char *logPrefix);
+		LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, Text::CString logPrefix);
 		virtual ~LoggedSocketFactory();
 
 		virtual Socket *CreateTCPSocketv4();

@@ -31,11 +31,11 @@ Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject((const UTF8Char*)"Unt
 	NEW_CLASS(this->fonts, Data::ArrayList<Text::SpreadSheet::WorkbookFont*>());
 	MemCopyNO(this->palette, defPalette, sizeof(defPalette));
 
-	this->NewCellStyle(0, HAlignment::Unknown, VAlignment::Bottom, (const UTF8Char*)"general");
-	this->NewFont((const UTF8Char*)"Arial", 10.0, false)->SetFamily(FontFamily::Swiss);
-	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
-	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
-	this->NewFont((const UTF8Char*)"Arial", 10.0, false);
+	this->NewCellStyle(0, HAlignment::Unknown, VAlignment::Bottom, CSTR("general"));
+	this->NewFont(CSTR("Arial"), 10.0, false)->SetFamily(FontFamily::Swiss);
+	this->NewFont(CSTR("Arial"), 10.0, false);
+	this->NewFont(CSTR("Arial"), 10.0, false);
+	this->NewFont(CSTR("Arial"), 10.0, false);
 }
 
 Text::SpreadSheet::Workbook::~Workbook()
@@ -326,7 +326,7 @@ Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle()
 	return style;
 }
 
-Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, const UTF8Char *dataFormat)
+Text::SpreadSheet::CellStyle *Text::SpreadSheet::Workbook::NewCellStyle(WorkbookFont *font, HAlignment halign, VAlignment valign, Text::CString dataFormat)
 {
 	CellStyle *style;
 	NEW_CLASS(style, CellStyle(this->styles->GetCount()));
@@ -378,9 +378,10 @@ void Text::SpreadSheet::Workbook::SetPalette(UInt32 *palette)
 Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet()
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::SpreadSheet::Worksheet *ws;
-	Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets->GetCount());
-	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(sbuff));
+	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Sheet")), this->sheets->GetCount());
+	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(CSTRP(sbuff, sptr)));
 	this->sheets->Add(ws);
 	return ws;
 }
@@ -393,7 +394,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::St
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(const UTF8Char *name)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(Text::CString name)
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
@@ -401,7 +402,7 @@ Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::AddWorksheet(const UT
 	return ws;
 }
 
-Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, const UTF8Char *name)
+Text::SpreadSheet::Worksheet *Text::SpreadSheet::Workbook::InsertWorksheet(UOSInt index, Text::CString name)
 {
 	Text::SpreadSheet::Worksheet *ws;
 	NEW_CLASS(ws, Text::SpreadSheet::Worksheet(name));
@@ -451,7 +452,7 @@ UOSInt Text::SpreadSheet::Workbook::GetFontIndex(WorkbookFont *font)
 	return INVALID_INDEX;
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(const UTF8Char *name, Double size, Bool bold)
+Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::Workbook::NewFont(Text::CString name, Double size, Bool bold)
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());

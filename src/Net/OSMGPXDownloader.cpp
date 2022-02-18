@@ -5,26 +5,26 @@
 #include "Net/OSMGPXDownloader.h"
 #include "Sync/Thread.h"
 
-Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, const UTF8Char *storeDir, IO::Writer *writer)
+Net::OSMGPXDownloader::OSMGPXDownloader(Net::SocketFactory *sockf, Text::CString storeDir, IO::Writer *writer)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcat(sbuff, storeDir);
-	if (sptr[-1] != '\\')
+	sptr = storeDir.ConcatTo(sbuff);
+	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
-		*sptr++ = '\\';
+		*sptr++ = IO::Path::PATH_SEPERATOR;
 		*sptr = 0;
 	}
 	this->writer = writer;
-	this->storeDir = Text::StrCopyNew(sbuff);
+	this->storeDir = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	this->sockf = sockf;
-	NEW_CLASS(reader, Net::RSSReader((const UTF8Char*)"http://www.openstreetmap.org/traces/rss", sockf, 0, 900, this));
+	NEW_CLASS(reader, Net::RSSReader(CSTR("http://www.openstreetmap.org/traces/rss"), sockf, 0, 900, this));
 }
 
 Net::OSMGPXDownloader::~OSMGPXDownloader()
 {
 	DEL_CLASS(reader);
-	Text::StrDelNew(storeDir);
+	this->storeDir->Release();
 }
 
 void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
@@ -45,7 +45,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 	sptr2 = Text::StrConcat(sptr2, gpxId);
 	sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/data"));
 
-	sptr = Text::StrConcat(sbuff, this->storeDir);
+	sptr = this->storeDir->ConcatTo(sbuff);
 	sptr = item->author->ConcatTo(sptr);
 	pt = IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff));
 	if (pt == IO::Path::PathType::Unknown)
@@ -75,7 +75,7 @@ void Net::OSMGPXDownloader::ItemAdded(Net::RSSItem *item)
 
 		while (retryCnt-- > 0)
 		{
-			NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			cli = Net::HTTPClient::CreateConnect(sockf, 0, sbuff2, Net::WebUtil::RequestMethod::HTTP_GET, true);
 
 			totalSize = 0;

@@ -6,6 +6,7 @@ IO::CyclicLogBuffer::CyclicLogBuffer(UOSInt buffSize)
 {
 	this->buffSize = buffSize;
 	this->logBuff = MemAlloc(UTF8Char*, this->buffSize);
+	this->logLeng = MemAlloc(UOSInt, this->buffSize);
 	this->logInd = 0;
 	NEW_CLASS(this->logMut, Sync::Mutex());
 	MemClear(this->logBuff, sizeof(UTF8Char*) * this->buffSize);
@@ -23,6 +24,7 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 		i++;
 	}
 	MemFree(this->logBuff);
+	MemFree(this->logLeng);
 	DEL_CLASS(this->logMut);
 }
 
@@ -31,13 +33,14 @@ void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, const UTF8Char *logM
 	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + msgLen);
 	UTF8Char *sptr = logTime->ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
 	*sptr++ = '\t';
-	Text::StrConcatC(sptr, logMsg, msgLen);
+	sptr = Text::StrConcatC(sptr, logMsg, msgLen);
 
 	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->logBuff[this->logInd])
 	{
 		MemFree(this->logBuff[this->logInd]);
 	}
+	this->logLeng[this->logInd] = (UOSInt)(sptr - strBuff);
 	this->logBuff[this->logInd++] = strBuff;
 	if (this->logInd >= this->buffSize)
 	{
@@ -50,22 +53,22 @@ void IO::CyclicLogBuffer::LogClosed()
 
 }
 
-void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, const UTF8Char* seperator)
+void IO::CyclicLogBuffer::GetLogs(Text::StringBuilderUTF8 *sb, Text::CString seperator)
 {
 	Sync::MutexUsage mutUsage(this->logMut);
 	UOSInt i = this->logInd;
 	while (i-- > 0)
 	{
-		sb->AppendSlow(this->logBuff[i]);
-		sb->AppendSlow(seperator);
+		sb->AppendC(this->logBuff[i], this->logLeng[i]);
+		sb->Append(seperator);
 	}
 	i = this->buffSize - 1;
 	if (this->logBuff[i])
 	{
 		while (i >= this->logInd)
 		{
-			sb->AppendSlow(this->logBuff[i]);
-			sb->AppendSlow(seperator);
+			sb->AppendC(this->logBuff[i], this->logLeng[i]);
+			sb->Append(seperator);
 
 			i--;
 		}

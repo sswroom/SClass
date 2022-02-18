@@ -25,8 +25,8 @@ void __stdcall SSWR::AVIRead::AVIRSyslogServerForm::OnStartClick(void *userObj)
 		if (sb.ToUInt16(&port))
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);
-			IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("LogSvr"));
-			NEW_CLASS(me->svr, Net::SyslogServer(me->core->GetSocketFactory(), port, sbuff, 0, false));
+			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("LogSvr"));
+			NEW_CLASS(me->svr, Net::SyslogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), 0, false));
 			if (me->svr->IsError())
 			{
 				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening the port", (const UTF8Char*)"Error", me);

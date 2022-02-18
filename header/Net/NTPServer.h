@@ -2,6 +2,7 @@
 #define _SM_NET_NTPSERVER
 #include "Net/UDPServer.h"
 #include "Sync/Event.h"
+#include "Text/String.h"
 
 namespace Net
 {
@@ -12,7 +13,7 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::UDPServer *svr;
 		IO::LogTool *log;
-		const UTF8Char *timeServer;
+		Text::String *timeServer;
 		Int64 refTime;
 		Int64 timeDiff;
 		Bool threadRunning;
@@ -24,7 +25,7 @@ namespace Net
 		static UInt32 __stdcall CheckThread(void *userObj);
 		void InitServer(Net::SocketFactory *sockf, UInt16 port);
 	public:
-		NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *timeServer);
+		NTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString timeServer);
 		~NTPServer();
 
 		Bool IsError();

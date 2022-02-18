@@ -5,13 +5,13 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Reader.h"
 
-Net::WhoisClient::WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, const Char *prefix)
+Net::WhoisClient::WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, Text::CString prefix)
 {
 	this->sockf = sockf;
 	this->whoisIP = whoisIP;
-	if (prefix)
+	if (prefix.leng > 0)
 	{
-		this->prefix = Text::StrCopyNew(prefix);
+		this->prefix = Text::String::New(prefix);
 	}
 	else
 	{
@@ -21,15 +21,15 @@ Net::WhoisClient::WhoisClient(Net::SocketFactory *sockf, UInt32 whoisIP, const C
 
 Net::WhoisClient::~WhoisClient()
 {
-	SDEL_TEXT(this->prefix);
+	SDEL_STRING(this->prefix);
 }
 
 Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip)
 {
-	return RequestIP(ip, this->whoisIP, this->prefix);
+	return RequestIP(ip, this->whoisIP, STR_CSTR(this->prefix));
 }
 
-Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const Char *prefix)
+Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, Text::CString prefix)
 {
 	Net::TCPClient *cli;
 	Text::UTF8Reader *reader;
@@ -38,25 +38,23 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 	UTF8Char *sptr;
 
 	UInt8 *ipAddr = (UInt8*)&ip;
-	Char *cptr;
-	Char cbuff[32];
 	UOSInt i;
-	if (prefix)
+	if (prefix.v)
 	{
-		cptr = Text::StrConcat(cbuff, prefix);
+		sptr = prefix.ConcatTo(sbuff);
 	}
 	else
 	{
-		cptr = cbuff;
+		sptr = sbuff;
 	}
-	cptr = Text::StrConcat(Text::StrInt32(cptr, ipAddr[0]), ".");
-	cptr = Text::StrConcat(Text::StrInt32(cptr, ipAddr[1]), ".");
-	cptr = Text::StrConcat(Text::StrInt32(cptr, ipAddr[2]), ".");
-	cptr = Text::StrConcat(Text::StrInt32(cptr, ipAddr[3]), "\r\n");
+	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[0]), UTF8STRC("."));
+	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[1]), UTF8STRC("."));
+	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[2]), UTF8STRC("."));
+	sptr = Text::StrConcatC(Text::StrUInt32(sptr, ipAddr[3]), UTF8STRC("\r\n"));
 
 	NEW_CLASS(rec, Net::WhoisRecord(ip));
 	NEW_CLASS(cli, Net::TCPClient(sockf, whoisIP, 43));
-	cli->Write((UInt8*)cbuff, (UOSInt)(cptr - cbuff));
+	cli->Write((UInt8*)sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
 	{
@@ -66,7 +64,7 @@ Net::WhoisRecord *Net::WhoisClient::RequestIP(UInt32 ip, UInt32 whoisIP, const C
 		}
 		else
 		{
-			i = Text::StrIndexOfChar(sbuff, '#');
+			i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '#');
 			if (i != INVALID_INDEX)
 			{
 				sbuff[i] = 0;

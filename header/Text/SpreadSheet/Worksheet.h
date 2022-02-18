@@ -94,7 +94,7 @@ namespace Text
 			void FreeDrawing(WorksheetDrawing *drawing);
 		public:
 			Worksheet(Text::String *name);
-			Worksheet(const UTF8Char *name);
+			Worksheet(Text::CString name);
 			~Worksheet();
 
 			Worksheet *Clone(IStyleCtrl *srcCtrl, IStyleCtrl *newCtrl);
@@ -157,7 +157,7 @@ namespace Text
 			UOSInt GetDrawingCount();
 			WorksheetDrawing *GetDrawing(UOSInt index);
 			WorksheetDrawing *CreateDrawing(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h);
-			OfficeChart *CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, const UTF8Char *title);
+			OfficeChart *CreateChart(Math::Unit::Distance::DistanceUnit unit, Double x, Double y, Double w, Double h, Text::CString title);
 		};
 	}
 }

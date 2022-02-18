@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	}
 	sb.ClearStr();
 	me->txtProxySvr->GetText(&sb);
-	ip = me->sockf->DNSResolveIPv4(sb.ToString());
+	ip = me->sockf->DNSResolveIPv4(sb.ToString(), sb.GetLength());
 	if (ip == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid proxy server", (const UTF8Char*)"Request", me);

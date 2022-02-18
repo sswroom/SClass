@@ -8,9 +8,9 @@
 #include "Text/MyString.h"
 #include "Text/UTF8Writer.h"
 
-DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *str, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *sql, UOSInt sqlLen, Int32 progId, DB::DBQueue::DBReadHdlr hdlr, void *userData, void *userData2)
 {
-	this->str = Text::StrCopyNew(str);
+	this->str = Text::String::New(sql, sqlLen);
 	this->hdlr = hdlr;
 	this->userData = userData;
 	this->userData2 = userData2;
@@ -19,7 +19,7 @@ DB::DBQueue::SQLCmd::SQLCmd(const UTF8Char *str, Int32 progId, DB::DBQueue::DBRe
 
 DB::DBQueue::SQLCmd::~SQLCmd()
 {
-	Text::StrDelNew(this->str);
+	this->str->Release();
 }
 
 DB::DBQueue::CmdType DB::DBQueue::SQLCmd::GetCmdType()
@@ -32,19 +32,19 @@ Int32 DB::DBQueue::SQLCmd::GetProgId()
 	return this->progId;
 }
 
-const UTF8Char *DB::DBQueue::SQLCmd::GetSQL()
+Text::String *DB::DBQueue::SQLCmd::GetSQL()
 {
 	return this->str;
 }
 
-DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
+DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<Text::String*> *strs, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
 {
 	UOSInt i = 0;
 	UOSInt j = strs->GetCount();
-	NEW_CLASS(this->strs, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->strs, Data::ArrayList<Text::String*>());
 	while (i < j)
 	{
-		this->strs->Add(Text::StrCopyNew(strs->GetItem(i)));
+		this->strs->Add(strs->GetItem(i)->Clone());
 		i++;
 	}
 	this->hdlr = hdlr;
@@ -55,11 +55,7 @@ DB::DBQueue::SQLGroup::SQLGroup(Data::ArrayList<const UTF8Char*> *strs, Int32 pr
 
 DB::DBQueue::SQLGroup::~SQLGroup()
 {
-	UOSInt i = this->strs->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(this->strs->GetItem(i));
-	}
+	LIST_FREE_STRING(this->strs);
 	DEL_CLASS(this->strs);
 }
 
@@ -117,7 +113,7 @@ Int32 DB::DBQueue::SQLGetDB::GetProgId()
 	return this->progId;
 };
 
-DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize)
+DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = db;
 	this->dbSize = dbSize / 200;
@@ -133,7 +129,7 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, const UTF8Char *name, UOSInt 
 	this->sqlCnt = 0;
 	this->lostCnt = 0;
 	this->log = log;
-	this->name = Text::String::NewNotNull(name);
+	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	this->stopping = false;
 	NEW_CLASS(dbList, Data::ArrayList<DB::DBHandler *>());
@@ -172,7 +168,7 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::Stri
 	}
 }
 
-DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8Char *name, UOSInt dbSize)
+DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CString name, UOSInt dbSize)
 {
 	this->db1 = dbs->GetItem(0);
 	NEW_CLASS(this->mut, Sync::Mutex());
@@ -188,7 +184,7 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, const UTF8
 	sqlCnt = 0;
 	lostCnt = 0;
 	this->log = log;
-	this->name = Text::String::NewNotNull(name);
+	this->name = Text::String::New(name);
 	this->nextDB = 0;
 	stopping = false;
 	NEW_CLASS(dbList, Data::ArrayList<DBHandler*>())
@@ -235,7 +231,8 @@ DB::DBQueue::~DBQueue()
 					NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					NEW_CLASS(writer, Text::UTF8Writer(fs));
 				}
-				writer->WriteStr(((DB::DBQueue::SQLCmd*)c)->GetSQL());
+				Text::String *sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+				writer->WriteStrC(sql->v, sql->leng);
 				writer->WriteLineC(UTF8STRC(";"));
 			}
 			DEL_CLASS(c);
@@ -256,7 +253,8 @@ DB::DBQueue::~DBQueue()
 						NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						NEW_CLASS(writer, Text::UTF8Writer(fs));
 					}
-					writer->WriteStr(((DB::DBQueue::SQLCmd*)c)->GetSQL());
+					Text::String *sql = ((DB::DBQueue::SQLCmd*)c)->GetSQL();
+					writer->WriteStrC(sql->v, sql->leng);
 					writer->WriteLineC(UTF8STRC(";"));
 				}
 				DEL_CLASS(c);
@@ -299,12 +297,12 @@ void DB::DBQueue::ToStop()
 	}
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *str)
+void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen)
 {
-	this->AddSQL(str, 0, 0, 0, 0, 0);
+	this->AddSQL(sql, sqlLen, 0, 0, 0, 0, 0);
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
 {
 	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
 		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
@@ -312,7 +310,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *str, Int32 priority, Int32 progId, DBRe
 		priority = DB_DBQUEUE_PRIORITY_LOWEST;
 	Sync::MutexUsage mutUsage(mut);
 	SQLCmd *cmd;
-	NEW_CLASS(cmd, SQLCmd(str, progId, hdlr, userData, userData2));
+	NEW_CLASS(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
 	sqlList[priority]->Add(cmd);
 	if (sqlList[priority]->GetCount() > 4000)
 	{
@@ -565,7 +563,7 @@ UInt32 DB::DBHandler::GetDataCnt()
 	return db->GetDataCnt();
 }
 
-void DB::DBHandler::WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd)
+void DB::DBHandler::WriteError(const UTF8Char *errMsg, Text::String *sqlCmd)
 {
 	this->dbQ->log->LogMessageC(UTF8STRC("SQL: Failed"), IO::ILogHandler::LOG_LEVEL_ERROR);
 	Text::UTF8Writer *writer;
@@ -574,7 +572,7 @@ void DB::DBHandler::WriteError(const UTF8Char *errMsg, const UTF8Char *sqlCmd)
 	Sync::MutexUsage mutUsage(this->mut);
 	NEW_CLASS(fs, IO::FileStream(CSTR("FailSQL.txt"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
-	writer->WriteStr(sqlCmd);
+	writer->WriteStrC(sqlCmd->v, sqlCmd->leng);
 	writer->WriteLineC(UTF8STRC(";"));
 	DEL_CLASS(writer);
 	DEL_CLASS(fs);
@@ -586,7 +584,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 	DB::DBHandler *me = (DB::DBHandler*)userObj;
 	me->running = true;
 
-	const UTF8Char *s;
+	Text::String *s;
 	UOSInt i = 0;
 	DB::DBQueue::SQLCmd *cmd;
 	DB::DBQueue::SQLGroup *grp;
@@ -623,7 +621,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						if (cmd->hdlr == 0)
 						{
 							i = 3;
-							while ((sqlRet = me->db->ExecuteNonQuery(s)) == -2)
+							while ((sqlRet = me->db->ExecuteNonQueryC(s->v, s->leng)) == -2)
 							{
 								i -= 1;
 								if (i <= 0)
@@ -643,7 +641,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						else
 						{
 							i = 3;
-							DB::DBReader *r = me->db->ExecuteReader(s);
+							DB::DBReader *r = me->db->ExecuteReaderC(s->v, s->leng);
 							while (r == 0)
 							{
 								i -= 1;
@@ -652,7 +650,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 									me->WriteError((const UTF8Char*)"3 Times", s);
 									break;
 								}
-								r = me->db->ExecuteReader(s);
+								r = me->db->ExecuteReaderC(s->v, s->leng);
 							}
 							if (r)
 							{
@@ -706,7 +704,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								while (k < grp->strs->GetCount())
 								{
 									s = grp->strs->GetItem(k);
-									if (me->db->ExecuteNonQuery(s) == -2)
+									if (me->db->ExecuteNonQueryC(s->v, s->leng) == -2)
 									{
 										i -= 1;
 										if (i <= 0)
@@ -731,7 +729,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								while (k < grp->strs->GetCount())
 								{
 									s = grp->strs->GetItem(k);
-									rdr = me->db->ExecuteReader(s);
+									rdr = me->db->ExecuteReaderC(s->v, s->leng);
 									if (rdr == 0)
 									{
 										i -= 1;

@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Net/WhoisGlobalClient.h"
 
-Net::WhoisGlobalClient::WhoisGlobalClient(Net::SocketFactory *sockf) : Net::WhoisClient(sockf, 0, 0)
+Net::WhoisGlobalClient::WhoisGlobalClient(Net::SocketFactory *sockf) : Net::WhoisClient(sockf, 0, CSTR_NULL)
 {
 }
 
@@ -13,8 +13,8 @@ Net::WhoisGlobalClient::~WhoisGlobalClient()
 Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 {
 	UInt32 ipCmp = Net::SocketUtil::IPv4ToSortable(ip);
-	const UTF8Char *whoisHost;
-	const Char *prefix = 0;
+	Text::CString whoisHost;
+	Text::CString prefix = CSTR_NULL;
 	switch (ipCmp >> 24)
 	{
 	case 41:
@@ -22,13 +22,13 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 105:
 	case 196:
 	case 197:
-		whoisHost = (const UTF8Char*)"whois.afrinic.net";
+		whoisHost = CSTR("whois.afrinic.net");
 		break;
 
 	case 202:
 		if ((ipCmp & 0xFFFFE000) == 0xCA7B0000) // 202.123.0.0/19
 		{
-			whoisHost = (const UTF8Char*)"whois.afrinic.net";
+			whoisHost = CSTR("whois.afrinic.net");
 			break;
 		}
 	case 1:
@@ -75,7 +75,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 221:
 	case 222:
 	case 223:
-		whoisHost = (const UTF8Char*)"whois.apnic.net";
+		whoisHost = CSTR("whois.apnic.net");
 		break;
 /* APNIC
 43.224.0.0/13
@@ -198,7 +198,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 212:
 	case 213:
 	case 217:
-		whoisHost = (const UTF8Char*)"whois.ripe.net";
+		whoisHost = CSTR("whois.ripe.net");
 		break;
 
 	case 177:
@@ -211,7 +211,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 191:
 	case 200:
 	case 201:
-		whoisHost = (const UTF8Char*)"whois.lacnic.net";
+		whoisHost = CSTR("whois.lacnic.net");
 		break;
 	
 	case 3:
@@ -234,7 +234,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 45:
 		if (ipCmp >= 0x2DFA1C00 && ipCmp <= 0x2DFFFFFF) //45.250.28.0 - 45.255.255.255
 		{
-			whoisHost = (const UTF8Char*)"whois.apnic.net";
+			whoisHost = CSTR("whois.apnic.net");
 			break;
 		}
 	case 47:
@@ -245,7 +245,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 64:
 		if (ipCmp >= 0x40785800 && ipCmp <= 0x40785FFF) //64.120.88.0 - 64.120.95.255
 		{
-			whoisHost = (const UTF8Char*)"whois.apnic.net";
+			whoisHost = CSTR("whois.apnic.net");
 			break;
 		}
 	case 65:
@@ -273,7 +273,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 130:
 		if (ipCmp >= 0x82580000 && ipCmp <= 0x8259FFFF) //130.88.0.0 - 130.89.255.255
 		{
-			whoisHost = (const UTF8Char*)"whois.ripe.net";
+			whoisHost = CSTR("whois.ripe.net");
 			break;
 		}
 	case 131:
@@ -286,7 +286,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 139:
 		if (ipCmp >= 0x8BA20000 && ipCmp <= 0x8BA2FFFF) //139.162.0.0 - 139.162.255.255
 		{
-			whoisHost = (const UTF8Char*)"whois.ripe.net";
+			whoisHost = CSTR("whois.ripe.net");
 			break;
 		}
 	case 140:
@@ -297,7 +297,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 147:
 		if (ipCmp >= 0x934B0000 && ipCmp <= 0x934BFFFF) //147.75.0.0 - 147.75.255.255
 		{
-			whoisHost = (const UTF8Char*)"whois.ripe.net";
+			whoisHost = CSTR("whois.ripe.net");
 			break;
 		}
 	case 148:
@@ -314,7 +314,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 164:
 		if (ipCmp >= 0xA4340000 && ipCmp <= 0xA4347FFF) //164.52.0.0 - 164.52.127.255
 		{
-			whoisHost = (const UTF8Char*)"whois.apnic.net";
+			whoisHost = CSTR("whois.apnic.net");
 			break;
 		}
 	case 165:
@@ -338,7 +338,7 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 209:
 		if (ipCmp >= 0xD13AB000 && ipCmp <= 0xD13ABFFF) //209.58.176.0 - 209.58.191.255
 		{
-			whoisHost = (const UTF8Char*)"whois.ripe.net";
+			whoisHost = CSTR("whois.ripe.net");
 			break;
 		}
 	case 214:
@@ -346,10 +346,10 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 216:
 
 	default:
-		whoisHost = (const UTF8Char*)"whois.arin.net";
-		prefix = "n + ";
+		whoisHost = CSTR("whois.arin.net");
+		prefix = CSTR("n + ");
 		break;
 	}
 
-	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost), prefix);
+	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost.v, whoisHost.leng), prefix);
 }

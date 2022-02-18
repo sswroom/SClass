@@ -46,7 +46,7 @@ namespace SSWR
 			DB::ReadingDB *db;
 			Data::IChart *chart;
 			Data::ArrayList<UInt32> *yCols;
-			const UTF8Char *tableName;
+			Text::String *tableName;
 			DB::DBUtil::ColType *strTypes;
 
 			static void __stdcall OnPlotClicked(void *userObj);
@@ -55,7 +55,7 @@ namespace SSWR
 			static void __stdcall OnStrColsDblClicked(void *userObj);
 			static void __stdcall OnStrColsInt32Clicked(void *userObj);
 		public:
-			AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, const UTF8Char *tableName);
+			AVIRLineChartForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Text::CString tableName);
 			virtual ~AVIRLineChartForm();
 
 			virtual void OnMonitorChanged();

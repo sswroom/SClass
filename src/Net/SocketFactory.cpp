@@ -69,17 +69,17 @@ Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net:
 	return succ;
 }
 
-UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host)
+UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen)
 {
 	Net::SocketUtil::AddressInfo addr;
 	UTF8Char sbuff[256];
 
-	if (Net::SocketUtil::GetIPAddr(host, Text::StrCharCnt(host), &addr))
+	if (Net::SocketUtil::GetIPAddr(host, hostLen, &addr))
 	{
 		return *(UInt32*)addr.addr;
 	}
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, (const UTF8Char*)host);
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{

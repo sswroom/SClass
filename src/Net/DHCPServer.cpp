@@ -88,11 +88,11 @@ void __stdcall Net::DHCPServer::PacketHdlr(const Net::SocketUtil::AddressInfo *a
 				dev->updated = true;
 				if (sbHostName.GetLength() > 0)
 				{
-					dev->hostName = Text::StrCopyNew(sbHostName.ToString());
+					dev->hostName = Text::String::New(sbHostName.ToCString());
 				}
 				if (sbVendorClass.GetLength() > 0)
 				{
-					dev->vendorClass = Text::StrCopyNew(sbVendorClass.ToString());
+					dev->vendorClass = Text::String::New(sbVendorClass.ToCString());
 				}
 				if (reqIP == 0 || (reqIP & me->subnet) != (me->infIP & me->subnet))
 				{
@@ -341,6 +341,8 @@ Net::DHCPServer::~DHCPServer()
 		while (i-- > 0)
 		{
 			dev = devList->GetItem(i);
+			SDEL_STRING(dev->hostName);
+			SDEL_STRING(dev->vendorClass);
 			MemFree(dev);
 		}
 		DEL_CLASS(this->devMap);

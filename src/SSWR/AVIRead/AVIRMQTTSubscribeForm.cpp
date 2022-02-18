@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnSTopicClicked(void *userO
 		me->txtSTopic->GetText(&sb);
 		if (sb.GetLength() > 0)
 		{
-			if (me->client->SendSubscribe(1, sb.ToString()))
+			if (me->client->SendSubscribe(1, sb.ToCString()))
 			{
 				if (me->client->WaitSubAck(1, 30000) <= 2)
 				{
@@ -155,7 +155,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnPublishClicked(void *user
 		me->txtPublishMessage->GetText(&sbMsg);
 		if (sbTopic.GetLength() > 0 && sbMsg.GetLength() > 0)
 		{
-			if (me->client->SendPublish(sbTopic.ToString(), sbMsg.ToString()))
+			if (me->client->SendPublish(sbTopic.ToCString(), sbMsg.ToCString()))
 			{
 				me->txtPublishMessage->SetText(CSTR(""));
 			}
@@ -341,7 +341,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 			{
 				UOSInt recvCnt = this->currTopic->recvCnt;
 				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(0));
+				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, recvCnt);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, recvCnt, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
@@ -366,7 +366,7 @@ void SSWR::AVIRead::AVIRMQTTSubscribeForm::UpdateTopicChart()
 				}
 				
 				Data::LineChart *chart;
-				NEW_CLASS(chart, Data::LineChart(0));
+				NEW_CLASS(chart, Data::LineChart(CSTR_NULL));
 				chart->AddXDataDate(this->currTopic->dateList, 256);
 				chart->AddYData(this->currTopic->topic, this->currTopic->valueList, 256, 0xFFFF0000, Data::LineChart::LS_LINE);
 				chart->Plot(this->dispImg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));

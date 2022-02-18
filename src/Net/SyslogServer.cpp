@@ -57,7 +57,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 		}
 		status = MemAlloc(IPStatus, 1);
 		status->ip = ReadNUInt32(addr->addr);
-		sptr = Text::StrConcat(sbuff, this->logPath);
+		sptr = this->logPath->ConcatTo(sbuff);
 		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
 			*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -73,10 +73,10 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 	return 0;
 }
 
-Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, const UTF8Char *logPath, IO::LogTool *svrLog, Bool redirLog)
+Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, Text::CString logPath, IO::LogTool *svrLog, Bool redirLog)
 {
 	this->sockf = sockf;
-	this->logPath = Text::StrCopyNew(logPath);
+	this->logPath = Text::String::New(logPath);
 	this->log = svrLog;
 	this->redirLog = redirLog;
 	this->logHdlr = 0;
@@ -89,7 +89,7 @@ Net::SyslogServer::SyslogServer(Net::SocketFactory *sockf, UInt16 port, const UT
 Net::SyslogServer::~SyslogServer()
 {
 	DEL_CLASS(this->svr);
-	Text::StrDelNew(this->logPath);
+	this->logPath->Release();
 	UOSInt i;
 	Data::ArrayList<Net::SyslogServer::IPStatus*> *ipList = this->ipMap->GetValues();
 	IPStatus *status;

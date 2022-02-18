@@ -16,13 +16,13 @@ Text::SpreadSheet::WorkbookFont::WorkbookFont()
 
 Text::SpreadSheet::WorkbookFont::~WorkbookFont()
 {
-	SDEL_TEXT(this->name);
+	SDEL_STRING(this->name);
 }
 
-Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetName(const UTF8Char *name)
+Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetName(Text::CString name)
 {
-	SDEL_TEXT(this->name);
-	this->name = SCOPY_TEXT(name);
+	SDEL_STRING(this->name);
+	this->name = Text::String::NewOrNull(name);
 	return this;
 }
 
@@ -62,7 +62,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::SetFamily(Font
 	return this;
 }
 
-const UTF8Char *Text::SpreadSheet::WorkbookFont::GetName()
+Text::String *Text::SpreadSheet::WorkbookFont::GetName()
 {
 	return this->name;
 }
@@ -101,7 +101,7 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
 {
 	Text::SpreadSheet::WorkbookFont *font;
 	NEW_CLASS(font, Text::SpreadSheet::WorkbookFont());
-	font->name = SCOPY_TEXT(this->name);
+	font->name = SCOPY_STRING(this->name);
 	font->size = this->size;
 	font->bold = this->bold;
 	font->italic = this->italic;
@@ -113,8 +113,12 @@ Text::SpreadSheet::WorkbookFont *Text::SpreadSheet::WorkbookFont::Clone()
 
 Bool Text::SpreadSheet::WorkbookFont::Equals(WorkbookFont *font)
 {
-	return Text::StrEqualsN(this->name, font->name) &&
-		this->size == font->size &&
+	if (this->name != font->name)
+	{
+		if (this->name == 0 || font->name == 0 || !this->name->Equals(font->name))
+			return false;
+	}
+	return this->size == font->size &&
 		this->bold == font->bold &&
 		this->italic == font->italic &&
 		this->underline == font->underline &&

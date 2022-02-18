@@ -10,28 +10,28 @@
 #include <stdio.h>
 #include <sys/sysinfo.h>
 
-typedef struct
+struct IO::SystemInfo::ClassData
 {
-	const UTF8Char *platformName;
-	const UTF8Char *platformSN;
-} SystemData;
+	Text::String *platformName;
+	Text::String *platformSN;
+};
 
 IO::SystemInfo::SystemInfo()
 {
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	OSInt i;
-	SystemData *data = MemAlloc(SystemData, 1);
+	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	data->platformSN = 0;
 	this->clsData = data;
-	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse((const UTF8Char*)"/etc/synoinfo.conf");
+	IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/synoinfo.conf"));
 	if (cfg)
 	{
-		const UTF8Char *csptr = cfg->GetValue((const UTF8Char*)"unique");
-		if (csptr)
+		Text::String *s = cfg->GetValue(UTF8STRC("unique"));
+		if (s)
 		{
-			data->platformName = Text::StrCopyNew(csptr);
+			data->platformName = s->Clone();
 		}
 		DEL_CLASS(cfg);
 	}
@@ -39,28 +39,25 @@ IO::SystemInfo::SystemInfo()
 
 IO::SystemInfo::~SystemInfo()
 {
-	SystemData *data = (SystemData*)this->clsData;
-	SDEL_TEXT(data->platformName);
-	SDEL_TEXT(data->platformSN);
-	MemFree(data);
+	SDEL_STRING(this->clsData->platformName);
+	SDEL_STRING(this->clsData->platformSN);
+	MemFree(this->clsData);
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformName(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformName)
+	if (this->clsData->platformName)
 	{
-		return Text::StrConcat(sbuff, data->platformName);
+		return this->clsData->platformName->ConcatTo(sbuff);
 	}
 	return 0;
 }
 
 UTF8Char *IO::SystemInfo::GetPlatformSN(UTF8Char *sbuff)
 {
-	SystemData *data = (SystemData*)this->clsData;
-	if (data->platformSN)
+	if (this->clsData->platformSN)
 	{
-		return Text::StrConcat(sbuff, data->platformSN);
+		return this->clsData->platformSN->ConcatTo(sbuff);
 	}
 	return 0;
 }

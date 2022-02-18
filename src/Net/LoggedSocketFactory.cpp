@@ -4,23 +4,16 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::LoggedSocketFactory::LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, const UTF8Char *logPrefix) : Net::SocketFactory(false)
+Net::LoggedSocketFactory::LoggedSocketFactory(Net::SocketFactory *sockf, IO::LogTool *log, Text::CString logPrefix) : Net::SocketFactory(false)
 {
 	this->sockf = sockf;
 	this->log = log;
-	if (logPrefix)
-	{
-		this->logPrefix = Text::StrCopyNew(logPrefix);
-	}
-	else
-	{
-		this->logPrefix = 0;
-	}
+	this->logPrefix = Text::String::NewOrNull(logPrefix);
 }
 
 Net::LoggedSocketFactory::~LoggedSocketFactory()
 {
-	SDEL_TEXT(this->logPrefix);
+	SDEL_STRING(this->logPrefix);
 }
 
 Socket *Net::LoggedSocketFactory::CreateTCPSocketv4()
@@ -106,15 +99,16 @@ Bool Net::LoggedSocketFactory::SocketIsInvalid(Socket *socket)
 Bool Net::LoggedSocketFactory::SocketBindv4(Socket *socket, UInt32 ip, UInt16 port)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Bool ret = this->sockf->SocketBindv4(socket, ip, port);
-	Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
+	sptr = Net::SocketUtil::GetIPv4Name(sbuff, ip, port);
 	Text::StringBuilderUTF8 sb;
 	if (this->logPrefix)
 	{
 		sb.Append(this->logPrefix);
 	}
 	sb.AppendC(UTF8STRC("Bind v4: "));
-	sb.Append(sbuff);
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(", "));
 	if (ret)
 	{
@@ -153,6 +147,7 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (this->logPrefix)
 	{
 		sb.Append(this->logPrefix);
@@ -173,8 +168,8 @@ Socket *Net::LoggedSocketFactory::SocketAccept(Socket *socket)
 	else
 	{
 		sb.AppendC(UTF8STRC("Success, remote: "));
-		this->sockf->GetRemoteName(sbuff, ret);
-		sb.Append(sbuff);
+		sptr = this->sockf->GetRemoteName(sbuff, ret);
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -243,6 +238,7 @@ UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt 
 	UOSInt ret = this->sockf->UDPReceive(socket, buff, buffSize, addr, port, et);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (this->logPrefix)
 	{
 		sb.Append(this->logPrefix);
@@ -261,8 +257,8 @@ UOSInt Net::LoggedSocketFactory::UDPReceive(Socket *socket, UInt8 *buff, UOSInt 
 	{
 		sb.AppendOSInt(ret);
 		sb.AppendC(UTF8STRC(" bytes from"));
-		Net::SocketUtil::GetAddrName(sbuff, addr, *port);
-		sb.Append(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, addr, *port);
+		sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
 	return ret;
@@ -273,13 +269,14 @@ UOSInt Net::LoggedSocketFactory::SendTo(Socket *socket, const UInt8 *buff, UOSIn
 	UOSInt ret = this->sockf->SendTo(socket, buff, buffSize, addr, port);
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	if (this->logPrefix)
 	{
 		sb.Append(this->logPrefix);
 	}
 	sb.AppendC(UTF8STRC("Send To "));
-	Net::SocketUtil::GetAddrName(sbuff, addr, port);
-	sb.Append(sbuff);
+	sptr = Net::SocketUtil::GetAddrName(sbuff, addr, port);
+	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	sb.AppendC(UTF8STRC(": "));
 	if (ret == 0)
 	{
