@@ -43,7 +43,7 @@ namespace IO
 			void AddIPv4(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff);
 			void AddIPv6(UOSInt frameOfst, Text::CString name, const UInt8 *vBuff);
 			void AddMACAddr(UOSInt frameOfst, Text::CString name, const UInt8 *macBuff, Bool showVendor);
-			void AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *nbName);
+			void AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CString name, Text::CString nbName);
 
 			void AddTextHexBuff(UOSInt frameOfst, UOSInt size, const UInt8 *vBuff, Bool multiLine);
 		};

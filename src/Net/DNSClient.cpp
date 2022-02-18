@@ -384,7 +384,7 @@ void Net::DNSClient::UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAdd
 	this->serverAddr = *serverAddr;
 }
 
-UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst)
+UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt stringOfst, UOSInt endOfst, UTF8Char **sbuffEndOut)
 {
 	Bool found = false;
 	UOSInt i = stringOfst;
@@ -440,6 +440,10 @@ UOSInt Net::DNSClient::ParseString(UTF8Char *sbuff, const UInt8 *buff, UOSInt st
 		}
 	}
 	*sbuff = 0;
+	if (sbuffEndOut)
+	{
+		*sbuffEndOut = sbuff;
+	}
 	return i;
 }
 
@@ -453,7 +457,7 @@ UOSInt Net::DNSClient::ParseAnswers(const UInt8 *buff, UOSInt dataSize, Data::Ar
 	ansCount += cnt2 + cnt3;
 	UOSInt i;
 	UOSInt j;
-	i = ParseString(sbuff, buff, 12, dataSize);
+	i = ParseString(sbuff, buff, 12, dataSize, 0);
 	i += 4;
 
 	j = 0;
@@ -474,9 +478,9 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	RequestAnswer *ans;
 	UOSInt i = *index;
 	UOSInt k;
-	i = ParseString(sbuff, buff, i, dataSize);
+	i = ParseString(sbuff, buff, i, dataSize, &sptr);
 	ans = MemAlloc(RequestAnswer, 1);
-	ans->name = Text::String::NewNotNull(sbuff);
+	ans->name = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	ans->recType = ReadMUInt16(&buff[i]);
 	ans->recClass = ReadMUInt16(&buff[i + 2]);
 	ans->ttl = ReadMUInt32(&buff[i + 4]);
@@ -486,24 +490,24 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	{
 	case 1: // A - a host address
 		Net::SocketUtil::SetAddrInfoV4(&ans->addr, ReadNUInt32(&buff[i + 10]));
-		Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-		ans->rd = Text::String::NewNotNull(sbuff);
+		sptr = Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case 2: // NS - an authoritative name server
 	case 5: // CNAME - the canonical name for an alias
 	case 12: // PTR - a domain name pointer
-		ParseString(sbuff, buff, i + 10, i + 10 + k);
-		ans->rd = Text::String::NewNotNull(sbuff);
+		ParseString(sbuff, buff, i + 10, i + 10 + k, &sptr);
+		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case 6: // SOA - Start of [a zone of] authority
 		{
 			UOSInt l;
 			Text::StringBuilderUTF8 sb;
-			l = ParseString(sbuff, buff, i + 10, i + 10 + k);
-			sb.AppendSlow(sbuff);
+			l = ParseString(sbuff, buff, i + 10, i + 10 + k, &sptr);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(", MailAddr="));
-			l = ParseString(sbuff, buff, l, i + 10 + k);
-			sb.AppendSlow(sbuff);
+			l = ParseString(sbuff, buff, l, i + 10 + k, &sptr);
+			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			if (l + 20 <= i + 10 + k)
 			{
 				sb.AppendC(UTF8STRC(", SN="));
@@ -522,8 +526,8 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 		break;
 	case 15: // MX - mail exchange
 		ans->priority = ReadMUInt16(&buff[i + 10]);
-		ParseString(sbuff, buff, i + 12, i + 10 + k);
-		ans->rd = Text::String::NewNotNull(sbuff);
+		ParseString(sbuff, buff, i + 12, i + 10 + k, &sptr);
+		ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		break;
 	case 16: // TXT - Text strings
 		{
@@ -546,8 +550,8 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 	case 28: // AAAA
 		{
 			Net::SocketUtil::SetAddrInfoV6(&ans->addr, &buff[i + 10], 0);
-			Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
-			ans->rd = Text::String::NewNotNull(sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &ans->addr);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 33: // SRV - Server Selection
@@ -558,8 +562,8 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Port = "));
 			sptr = Text::StrUInt16(sptr, ReadMUInt16(&buff[i + 14]));
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Target = "));
-			ParseString(sptr, buff, i + 16, i + 10 + k);
-			ans->rd = Text::String::NewNotNull(sbuff);
+			ParseString(sptr, buff, i + 16, i + 10 + k, &sptr);
+			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		break;
 	case 48: // DNSKEY - DNS Key record

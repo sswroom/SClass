@@ -1784,8 +1784,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		j = 0;
 		while (j < qdcount)
 		{
-			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("QUESTION_NAME"), sbuff);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("QUESTION_NAME"), CSTRP(sbuff, sptr));
 			i = k;
 			qType = ReadMUInt16(&packet[i]);
 			vName = CSTR_NULL;
@@ -1814,8 +1814,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		ancount = (UInt16)(ancount + nscount + arcount);
 		while (j < ancount)
 		{
-			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("RR_NAME"), sbuff);
+			k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			frame->AddNetBIOSName(frameOfst + i, k - i, CSTR("RR_NAME"), CSTRP(sbuff, sptr));
 			i = k;
 			rrType = ReadMUInt16(&packet[i]);
 			vName = CSTR_NULL;
@@ -1952,11 +1952,11 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddUInt(frameOfst + 10, 2, CSTR("DGM_LENGTH"), ReadMUInt16(&packet[10]));
 			frame->AddUInt(frameOfst + 12, 2, CSTR("PACKET_OFFSET"), ReadMUInt16(&packet[12]));
 			i = 14;
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("SOURCE_NAME"), sbuff);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("SOURCE_NAME"), CSTRP(sbuff, sptr));
 			i = j;
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), sbuff);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), CSTRP(sbuff, sptr));
 			i = j;
 			break;
 		case 0x13:
@@ -1982,8 +1982,8 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 		case 0x14:
 		case 0x15:
 		case 0x16:
-			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), sbuff);
+			j = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+			frame->AddNetBIOSName(frameOfst + i, (UInt32)(j - i), CSTR("DESTINATION_NAME"), CSTRP(sbuff, sptr));
 			i = j;
 			break;
 		}
@@ -2390,8 +2390,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 	j = 0;
 	while (j < qdcount)
 	{
-		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("QNAME"), Text::CString::FromPtr(sbuff));
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("QNAME"), CSTRP(sbuff, sptr));
 		i = k;
 		t = ReadMUInt16(&packet[i]);
 		frame->AddUIntName(frameOfst + i, 2, CSTR("QTYPE"), t, Net::DNSClient::TypeGetID(t));
@@ -2410,8 +2410,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		UOSInt k;
 		UOSInt l;
 
-		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize);
-		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("NAME"), Text::CString::FromPtr(sbuff));
+		k = Net::DNSClient::ParseString(sbuff, packet, i, packetSize, &sptr);
+		frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("NAME"), CSTRP(sbuff, sptr));
 		i = k;
 		rrType = ReadMUInt16(&packet[i]);
 		rrClass = ReadMUInt16(&packet[i + 2]);
@@ -2429,14 +2429,14 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 		case 2: // NS - an authoritative name server
 		case 5: // CNAME - the canonical name for an alias
 		case 12: // PTR - a domain name pointer
-			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), Text::CString::FromPtr(sbuff));
+			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), CSTRP(sbuff, sptr));
 			break;
 		case 6:
-			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), Text::CString::FromPtr(sbuff));
-			l = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength);
-			frame->AddField(frameOfst + (UInt32)k, (UInt32)(l - k), CSTR("-MailAddr"), Text::CString::FromPtr(sbuff));
+			k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+			frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("RDATA"), CSTRP(sbuff, sptr));
+			l = Net::DNSClient::ParseString(sbuff, packet, k, i + rdLength, &sptr);
+			frame->AddField(frameOfst + (UInt32)k, (UInt32)(l - k), CSTR("-MailAddr"), CSTRP(sbuff, sptr));
 			k = l;
 			if (k + 20 <= i + rdLength)
 			{
@@ -2458,8 +2458,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 15: // MX - mail exchange
 			frame->AddUInt(frameOfst + i, 2, CSTR("Priority"), ReadMUInt16(&packet[i]));
-			k = Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength);
-			frame->AddField(frameOfst + (UInt32)i + 2, (UInt32)(k - i - 2), CSTR("RDATA"), Text::CString::FromPtr(sbuff));
+			k = Net::DNSClient::ParseString(sbuff, packet, i + 2, i + rdLength, &sptr);
+			frame->AddField(frameOfst + (UInt32)i + 2, (UInt32)(k - i - 2), CSTR("RDATA"), CSTRP(sbuff, sptr));
 			break;
 		case 16: // TXT - text strings
 			{
@@ -2487,8 +2487,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 				frame->AddUInt(frameOfst + i, 2, CSTR("Priority"), ReadMUInt16(&packet[i]));
 				frame->AddUInt(frameOfst + i + 2, 2, CSTR("Weight"), ReadMUInt16(&packet[i + 2]));
 				frame->AddUInt(frameOfst + i + 4, 2, CSTR("Port"), ReadMUInt16(&packet[i + 4]));
-				k = Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength);
-				frame->AddField(frameOfst + (UInt32)i + 6, (UInt32)(k - i - 6), CSTR("Target"), Text::CString::FromPtr(sbuff));
+				k = Net::DNSClient::ParseString(sbuff, packet, i + 6, i + rdLength, &sptr);
+				frame->AddField(frameOfst + (UInt32)i + 6, (UInt32)(k - i - 6), CSTR("Target"), CSTRP(sbuff, sptr));
 			}
 			break;
 		case 41: // OPT - 
@@ -2522,8 +2522,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 47: // NSEC - Next Secure record
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Next Domain Name"), Text::CString::FromPtr(sbuff));
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Next Domain Name"), CSTRP(sbuff, sptr));
 				if (k < i + rdLength)
 				{
 					frame->AddHexBuff(frameOfst + k, i + rdLength - k, CSTR("RDATA"), &packet[k], false);
@@ -2540,8 +2540,8 @@ void Net::PacketAnalyzerEthernet::PacketDNSGetDetail(const UInt8 *packet, UOSInt
 			break;
 		case 250: // TSIG
 			{
-				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength);
-				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Algorithm"), Text::CString::FromPtr(sbuff));
+				UOSInt k = Net::DNSClient::ParseString(sbuff, packet, i, i + rdLength, &sptr);
+				frame->AddField(frameOfst + (UInt32)i, (UInt32)(k - i), CSTR("Algorithm"), CSTRP(sbuff, sptr));
 				if (k + 10 < i + rdLength)
 				{
 					Data::DateTime dt;

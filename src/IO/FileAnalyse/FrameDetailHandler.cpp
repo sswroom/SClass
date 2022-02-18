@@ -269,13 +269,13 @@ void IO::FileAnalyse::FrameDetailHandler::AddMACAddr(UOSInt frameOfst, Text::CSt
 	this->AddField(frameOfst, 6, name, sb.ToCString());
 }
 
-void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CString name, const UTF8Char *nbName)
+void IO::FileAnalyse::FrameDetailHandler::AddNetBIOSName(UOSInt frameOfst, UOSInt size, Text::CString name, Text::CString nbName)
 {
 	UTF8Char sbuff2[17];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(nbName);
-	if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, nbName)) != 0)
+	sb.Append(nbName);
+	if ((sptr = Net::NetBIOSUtil::GetName(sbuff2, nbName.v)) != 0)
 	{
 		sptr[-1] = 0;
 		sb.AppendC(UTF8STRC(" ("));
