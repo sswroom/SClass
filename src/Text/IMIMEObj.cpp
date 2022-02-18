@@ -9,7 +9,7 @@
 #include "Text/MIMEObj/MultipartMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::IMIMEObj::IMIMEObj(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
+Text::IMIMEObj::IMIMEObj(Text::CString sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
@@ -22,7 +22,7 @@ IO::ParserType Text::IMIMEObj::GetParserType()
 	return IO::ParserType::MIMEObject;
 }
 
-Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8Char *contentType, UOSInt typeLen)
+Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, Text::CString contentType)
 {
 	Text::IMIMEObj *obj;
 	UOSInt buffSize;
@@ -31,7 +31,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 	{
 		return 0;
 	}
-	if (contentType == 0)
+	if (contentType.leng == 0)
 	{
 		buffSize = (UOSInt)data->GetDataSize();
 		buff = MemAlloc(UInt8, buffSize);
@@ -40,22 +40,22 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		MemFree(buff);
 		return obj;
 	}
-	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("message/rfc822")))
+	else if (contentType.StartsWith(UTF8STRC("message/rfc822")))
 	{
 		obj = Text::MIMEObj::MailMessage::ParseFile(data);
 		if (obj)
 			return obj;
 	}
-	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("text/plain")))
+	else if (contentType.StartsWith(UTF8STRC("text/plain")))
 	{
-		UOSInt i = Text::StrIndexOfC(contentType, typeLen, UTF8STRC("charset="));
+		UOSInt i = contentType.IndexOf(UTF8STRC("charset="));
 		UInt32 codePage = 0;
 		if (i != INVALID_INDEX && i > 0)
 		{
 			Text::StringBuilderUTF8 sb;
 			UOSInt j;
-			sb.AppendC(&contentType[i + 8], typeLen - i - 8);
-			j = Text::StrIndexOfChar(sb.ToString(), ';');
+			sb.AppendC(&contentType.v[i + 8], contentType.leng - i - 8);
+			j = sb.IndexOf(';');
 			if (j != INVALID_INDEX)
 			{
 				sb.TrimToLength(j);
@@ -71,7 +71,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, const UTF8C
 		MemFree(buff);
 		return obj;
 	}
-	else if (Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/mixed;")) || Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/related;")) || Text::StrStartsWithC(contentType, typeLen, UTF8STRC("multipart/alternative;")))
+	else if (contentType.StartsWith(UTF8STRC("multipart/mixed;")) || contentType.StartsWith(UTF8STRC("multipart/related;")) || contentType.StartsWith(UTF8STRC("multipart/alternative;")))
 	{
 		obj = Text::MIMEObj::MultipartMIMEObj::ParseFile(contentType, data);
 		if (obj)
@@ -101,7 +101,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
 	}
 	else
 	{
-		obj = ParseFromData(fd, contentType.v, contentType.leng);
+		obj = ParseFromData(fd, contentType);
 	}
 	DEL_CLASS(fd);
 	return obj;

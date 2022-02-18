@@ -4,13 +4,13 @@
 #include "Text/MIMEObj/MIMEHeader.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType) : Text::IMIMEObj(contentType)
+Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType) : Text::IMIMEObj(contentType)
 {
 	this->buffSize = buffSize;
 	this->dataBuff = MemAlloc(UInt8, buffSize);
-	this->contType = Text::String::NewNotNull(contentType);
+	this->contType = Text::String::New(contentType);
 	MemCopyNO(this->dataBuff, dataBuff, buffSize);
-	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType, this->contType->leng);
+	const UTF8Char *tmpPtr = Text::StrCopyNewC(contentType.v, this->contType->leng);
 	UOSInt i;
 	UOSInt j;
 	Text::PString sarr[2];
@@ -63,7 +63,7 @@ UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)
 Text::IMIMEObj *Text::MIMEObj::UnknownMIMEObj::Clone()
 {
 	Text::MIMEObj::UnknownMIMEObj *newObj;
-	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->v));
+	NEW_CLASS(newObj, Text::MIMEObj::UnknownMIMEObj(this->dataBuff, this->buffSize, this->contType->ToCString()));
 	return newObj;
 }
 

@@ -32,7 +32,7 @@ namespace Text
 
 			void ParsePart(UInt8 *buff, UOSInt buffSize);
 			MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary);
-			MultipartMIMEObj(const UTF8Char *contentType, UOSInt contTypeLen, const UTF8Char *defMsg, const UTF8Char *boundary);
+			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary);
 		public:
 			MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg);
 			virtual ~MultipartMIMEObj();
@@ -49,7 +49,7 @@ namespace Text
 			PartInfo *GetPart(UOSInt partIndex);
 			UOSInt GetPartCount();
 
-			static MultipartMIMEObj *ParseFile(const UTF8Char *contentType, IO::IStreamData *data);
+			static MultipartMIMEObj *ParseFile(Text::CString contentType, IO::IStreamData *data);
 		};
 	}
 }

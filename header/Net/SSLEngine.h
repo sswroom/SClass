@@ -80,7 +80,7 @@ namespace Net
 		virtual UTF8Char *GetErrorDetail(UTF8Char *sbuff) = 0;
 		virtual Net::SSLClient *Connect(Text::CString hostName, UInt16 port, ErrorType *err) = 0;
 		virtual Net::SSLClient *ClientInit(Socket *s, Text::CString hostName, ErrorType *err) = 0;
-		virtual Bool GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
+		virtual Bool GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1) = 0;
 		virtual Crypto::Cert::X509Key *GenerateRSAKey() = 0;
 		virtual Bool Signature(Crypto::Cert::X509Key *key, Crypto::Hash::HashType hashType, const UInt8 *payload, UOSInt payloadLen, UInt8 *signData, UOSInt *signLen) = 0;
 

@@ -32,7 +32,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPServerForm::OnStartClick(void *userObj)
 	{
 		return;
 	}
-	NEW_CLASS(me->svr, Net::TFTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToString()));
+	NEW_CLASS(me->svr, Net::TFTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
 	if (me->svr->IsError())
 	{
 		SDEL_CLASS(me->svr);

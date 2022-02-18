@@ -663,7 +663,7 @@ Net::DNSProxy::DNSProxy(Net::SocketFactory *sockf, Bool analyzeTarget)
 	NEW_CLASS(this->hdlrList, Data::ArrayList<DNSProxyRequest>());
 	NEW_CLASS(this->hdlrObjs, Data::ArrayList<void*>());
 
-	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, 0, ClientPacket, this, 0, 0, 2, false));
+	NEW_CLASS(this->cli, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, ClientPacket, this, 0, CSTR_NULL, 2, false));
 	NEW_CLASS(this->svr, Net::DNSServer(this->sockf));
 	this->svr->HandleRequest(OnDNSRequest, this);
 }

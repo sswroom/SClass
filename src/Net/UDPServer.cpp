@@ -151,7 +151,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 	return 0;
 }
 
-Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, const UTF8Char *logPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, const UTF8Char *msgPrefix, UOSInt threadCnt, Bool reuseAddr)
+Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInfo *bindAddr, UInt16 port, Text::CString logPrefix, UDPPacketHdlr hdlr, void *userData, IO::LogTool *msgLog, Text::CString msgPrefix, UOSInt threadCnt, Bool reuseAddr)
 {
 	this->threadCnt = threadCnt;
 	this->v4threadStats = 0;

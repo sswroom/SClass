@@ -474,11 +474,12 @@ Bool Net::SDPFile::BuildBuff()
 			k++;
 		}
 
-		if (media->GetSDPControlURL(this->reqUserAgent->ToCString()))
+		Text::CString ctrlURL = media->GetSDPControlURL(this->reqUserAgent->ToCString());
+		if (ctrlURL.leng > 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("a=control:"));
-			sb.AppendSlow(media->GetSDPControlURL(this->reqUserAgent->ToCString()));
+			sb.Append(ctrlURL);
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 		}
 

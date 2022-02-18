@@ -14,7 +14,7 @@ namespace Text
 			Text::String *contType;
 
 		public:
-			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, const UTF8Char *contentType);
+			UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, Text::CString contentType);
 			virtual ~UnknownMIMEObj();
 
 			virtual Text::CString GetClassName();

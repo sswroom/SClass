@@ -223,7 +223,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (valid)
 				{
 					Net::UDPServer *udp;
-					NEW_CLASS(udp, Net::UDPServer(sockf, 0, 0, 0, OnUDPData, 0, 0, 0, 1, false));
+					NEW_CLASS(udp, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPData, 0, 0, CSTR_NULL, 1, false));
 					if (udp->IsError())
 					{
 						console->WriteLineC(UTF8STRC("Error in listening to UDP port"));

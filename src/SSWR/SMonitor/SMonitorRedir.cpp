@@ -69,7 +69,7 @@ SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf)
 	this->recReplyObj = 0;
 	NEW_CLASS(this->dataCRC, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 	NEW_CLASS(this->dataCRCMut, Sync::Mutex());
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, 0, OnDataUDPPacket, this, 0, 0, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
 }
 
 SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::String *hostName, UInt16 port)
@@ -81,7 +81,7 @@ SSWR::SMonitor::SMonitorRedir::SMonitorRedir(Net::SocketFactory *sockf, Text::St
 	this->recReplyObj = 0;
 	NEW_CLASS(this->dataCRC, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 	NEW_CLASS(this->dataCRCMut, Sync::Mutex());
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, 0, OnDataUDPPacket, this, 0, 0, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, 0, 0, CSTR_NULL, OnDataUDPPacket, this, 0, CSTR_NULL, 2, false));
 }
 
 SSWR::SMonitor::SMonitorRedir::~SMonitorRedir()

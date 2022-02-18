@@ -69,7 +69,7 @@ void Net::NetBIOSScanner::FreeAnswer(NameAnswer *ans)
 
 Net::NetBIOSScanner::NetBIOSScanner(Net::SocketFactory *sockf)
 {
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, OnUDPPacket, this, 0, 0, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnUDPPacket, this, 0, CSTR_NULL, 2, false));
 	NEW_CLASS(this->ansMut, Sync::Mutex());
 	NEW_CLASS(this->answers, Data::UInt32Map<NameAnswer*>());
 	this->hdlr = 0;

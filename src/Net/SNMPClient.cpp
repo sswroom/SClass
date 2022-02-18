@@ -60,7 +60,7 @@ Net::SNMPClient::SNMPClient(Net::SocketFactory *sockf)
 {
 	NEW_CLASS(this->scanMut, Sync::Mutex());
 	this->scanList = 0;
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, OnSNMPPacket, this, 0, 0, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnSNMPPacket, this, 0, CSTR_NULL, 1, false));
 	this->reqId = 1;
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->respEvt, Sync::Event(true));

@@ -10,7 +10,7 @@ namespace Text
 	class IMIMEObj : public IO::ParsedObject
 	{
 	protected:
-		IMIMEObj(const UTF8Char *sourceName);
+		IMIMEObj(Text::CString sourceName);
 	public:
 		virtual ~IMIMEObj();
 
@@ -21,7 +21,7 @@ namespace Text
 
 		virtual IO::ParserType GetParserType();
 
-		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, const UTF8Char *contentType, UOSInt typeLen);
+		static Text::IMIMEObj *ParseFromData(IO::IStreamData *data, Text::CString contentType);
 		static Text::IMIMEObj *ParseFromFile(Text::CString fileName);
 	};
 }

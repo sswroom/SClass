@@ -360,7 +360,7 @@ void Net::TFTPServer::ReleaseSess(SessionInfo *sess)
 	MemFree(sess);
 }
 
-Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, const UTF8Char *path)
+Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool *log, Text::CString path)
 {
 	this->log = log;
 	this->svr = 0;
@@ -371,19 +371,19 @@ Net::TFTPServer::TFTPServer(Net::SocketFactory *sockf, UInt16 port, IO::LogTool 
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->sessMap, Data::UInt64Map<SessionInfo*>());
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(path);
+	sb.Append(path);
 	if (!sb.EndsWith(IO::Path::PATH_SEPERATOR))
 	{
 		sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	}
 	this->path = Text::String::New(sb.ToString(), sb.GetLength());
-	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, 0, OnDataPacket, this, log, (const UTF8Char*)"TFTP: ", 2, false));
+	NEW_CLASS(this->dataSvr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, OnDataPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (this->dataSvr->IsError())
 	{
 		DEL_CLASS(this->dataSvr);
 		this->dataSvr = 0;
 	}
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, OnCommandPacket, this, log, (const UTF8Char*)"TFTP: ", 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, OnCommandPacket, this, log, CSTR("TFTP: "), 2, false));
 	if (this->svr->IsError())
 	{
 		DEL_CLASS(this->svr);

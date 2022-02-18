@@ -29,7 +29,7 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 		sb.Append(me->domain);
 		sb.AppendC(UTF8STRC(" ESMTP"));
 	//	sb.Append(me->serverName);
-		me->WriteMessage(cli, 220, sb.ToString());
+		me->WriteMessage(cli, 220, sb.ToCString());
 	}
 }
 
@@ -145,19 +145,19 @@ void __stdcall Net::Email::SMTPServer::ClientTimeout(Net::TCPClient *cli, void *
 {
 }
 
-UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, const UTF8Char *msg)
+UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCode, Text::CString msg)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt i = 0;
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOfChar(&msg[i], '\r');
+		j = Text::StrIndexOfCharC(&msg.v[i], msg.leng - i, '\r');
 		if (j != INVALID_INDEX)
 		{
 			sb.AppendI32(statusCode);
 			sb.AppendC(UTF8STRC("-"));
-			sb.AppendC(&msg[i], (UOSInt)j);
+			sb.AppendC(&msg.v[i], (UOSInt)j);
 			sb.AppendC(UTF8STRC("\r\n"));
 			i += j + 2;
 		}
@@ -165,7 +165,7 @@ UOSInt Net::Email::SMTPServer::WriteMessage(Net::TCPClient *cli, Int32 statusCod
 		{
 			sb.AppendI32(statusCode);
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendSlow(&msg[i]);
+			sb.AppendC(&msg.v[i], msg.leng - i);
 			sb.AppendC(UTF8STRC("\r\n"));
 			break;
 		}
@@ -238,14 +238,14 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			cliStatus->loginMode = 0;
 			if (succ)
 			{
-				WriteMessage(cli, 235, (const UTF8Char*)"2.7.0 Authentication successful");
+				WriteMessage(cli, 235, CSTR("2.7.0 Authentication successful"));
 				cliStatus->login = true;
 				SDEL_STRING(cliStatus->userName);
 				cliStatus->userName = Text::String::New(userName);
 			}
 			else
 			{
-				WriteMessage(cli, 535, (const UTF8Char*)"authentication failed (#5.7.1)");
+				WriteMessage(cli, 535, CSTR("authentication failed (#5.7.1)"));
 			}
 		}
 		else if (cliStatus->loginMode == 2)
@@ -258,7 +258,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			cliStatus->userName = Text::String::New(decBuff, cmdLen);
 			MemFree(decBuff);
 			cliStatus->loginMode = 3;
-			WriteMessage(cli, 334, (const UTF8Char*)"UGFzc3dvcmQ6");
+			WriteMessage(cli, 334, CSTR("UGFzc3dvcmQ6"));
 		}
 		else if (cliStatus->loginMode == 3)
 		{
@@ -272,17 +272,17 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			cliStatus->loginMode = 0;
 			if (succ)
 			{
-				WriteMessage(cli, 235, (const UTF8Char*)"2.7.0 Authentication successful");
+				WriteMessage(cli, 235, CSTR("2.7.0 Authentication successful"));
 				cliStatus->login = true;
 			}
 			else
 			{
-				WriteMessage(cli, 535, (const UTF8Char*)"authentication failed (#5.7.1)");
+				WriteMessage(cli, 535, CSTR("authentication failed (#5.7.1)"));
 			}
 		}
 		else
 		{
-			WriteMessage(cli, 535, (const UTF8Char*)"authentication failed (#5.7.1)");
+			WriteMessage(cli, 535, CSTR("authentication failed (#5.7.1)"));
 		}
 	}
 	else if (cliStatus->dataMode)
@@ -297,7 +297,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Ok: queued as "));
 				sb.AppendP(sbuff, sptr);
-				WriteMessage(cli, 250, sb.ToString());
+				WriteMessage(cli, 250, sb.ToCString());
 			}
 			else
 			{
@@ -334,19 +334,19 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		{
 			cliStatus->dataMode = true;
 			cliStatus->lastLBT = Text::LineBreakType::None;
-			WriteMessage(cli, 354, (const UTF8Char*)"End data with <CR><LF>.<CR><LF>");
+			WriteMessage(cli, 354, CSTR("End data with <CR><LF>.<CR><LF>"));
 		}
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("QUIT")))
 	{
-		WriteMessage(cli, 221, (const UTF8Char*)"Bye");
+		WriteMessage(cli, 221, CSTR("Bye"));
 		cli->ShutdownSend();
 	}
 	else if (Text::StrEqualsC(cmd, cmdLen, UTF8STRC("STARTTLS")))
 	{
 		if (!cli->IsSSL() && this->connType == Net::Email::SMTPConn::CT_STARTTLS)
 		{
-			WriteMessage(cli, 220, (const UTF8Char*)"Go ahead");
+			WriteMessage(cli, 220, CSTR("Go ahead"));
 			this->ssl->ServerInit(cli->RemoveSocket(), ClientReady, this);;
 		}
 	}
@@ -358,7 +358,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
 		sb.Append(cliStatus->cliName);
-		WriteMessage(cli, 250, sb.ToString());
+		WriteMessage(cli, 250, sb.ToCString());
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("EHLO ")))
 	{
@@ -379,34 +379,34 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		sb.AppendC(UTF8STRC("\r\nSIZE "));
 		sb.AppendU32(this->maxMailSize);
 		sb.AppendC(UTF8STRC("\r\nOK"));
-		WriteMessage(cli, 250, sb.ToString());
+		WriteMessage(cli, 250, sb.ToCString());
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("MAIL FROM:")))
 	{
 		SDEL_STRING(cliStatus->mailFrom);
 		cliStatus->mailFrom = Text::String::New(cmd, cmdLen);
-		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
+		WriteMessage(cli, 250, CSTR("Ok"));
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("RCPT TO:")))
 	{
 		cliStatus->rcptTo->Add(Text::String::New(cmd, cmdLen));
-		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
+		WriteMessage(cli, 250, CSTR("Ok"));
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("AUTH ")))
 	{
 		if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("PLAIN")))
 		{
 			cliStatus->loginMode = 1;
-			WriteMessage(cli, 334, (const UTF8Char*)"");
+			WriteMessage(cli, 334, CSTR(""));
 		}
 		else if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("LOGIN")))
 		{
 			cliStatus->loginMode = 2;
-			WriteMessage(cli, 334, (const UTF8Char*)"VXNlcm5hbWU6");
+			WriteMessage(cli, 334, CSTR("VXNlcm5hbWU6"));
 		}
 		else if (Text::StrEqualsC(&cmd[5], cmdLen - 5, UTF8STRC("CRAM-MD5")))
 		{
-			WriteMessage(cli, 504, (const UTF8Char*)"Unrecognized authentication type.");
+			WriteMessage(cli, 504, CSTR("Unrecognized authentication type."));
 		}
 		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("PLAIN ")))
 		{
@@ -428,14 +428,14 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			MemFree(decBuff);
 			if (succ)
 			{
-				WriteMessage(cli, 235, (const UTF8Char*)"2.7.0 Authentication successful");
+				WriteMessage(cli, 235, CSTR("2.7.0 Authentication successful"));
 				cliStatus->login = true;
 				SDEL_STRING(cliStatus->userName);
 				cliStatus->userName = Text::String::New(userName);
 			}
 			else
 			{
-				WriteMessage(cli, 535, (const UTF8Char*)"authentication failed (#5.7.1)");
+				WriteMessage(cli, 535, CSTR("authentication failed (#5.7.1)"));
 			}
 		}
 		else if (Text::StrStartsWithICaseC(&cmd[5], cmdLen - 5, UTF8STRC("LOGIN ")))
@@ -448,7 +448,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			cliStatus->userName = Text::String::New((UTF8Char*)&decBuff[1], cmdLen - 1);
 			cliStatus->loginMode = 3;
 			MemFree(decBuff);
-			WriteMessage(cli, 334, (const UTF8Char*)"UGFzc3dvcmQ6");
+			WriteMessage(cli, 334, CSTR("UGFzc3dvcmQ6"));
 		}
 	}
 	else

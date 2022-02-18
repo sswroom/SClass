@@ -383,7 +383,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[36]) - data->userName);
 					bptr = &data->buff[37] + len;
 					sb.AppendC(UTF8STRC("\r\nUsername = "));
-					sb.AppendSlow(data->userName);
+					sb.AppendC(data->userName, len);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH_LENENC_CLIENT_DATA)
 					{
 						bptr = Net::MySQLUtil::ReadLenencInt(bptr, &iVal);
@@ -409,7 +409,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					{
 						len = (UOSInt)(Text::StrConcat(data->database, bptr) - data->database);
 						sb.AppendC(UTF8STRC("\r\nDatabase = "));
-						sb.AppendSlow(data->database);
+						sb.AppendC(data->database, len);
 						bptr += len + 1;
 					}
 					if (data->clientCap & Net::MySQLUtil::CLIENT_PLUGIN_AUTH)
@@ -457,15 +457,15 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[9]) - data->userName);
 					bptr = &data->buff[10] + len;
 					sb.AppendC(UTF8STRC("\r\nUsername = "));
-					sb.AppendSlow(data->userName);
+					sb.AppendC(data->userName, len);
 					if (data->clientCap & Net::MySQLUtil::CLIENT_CONNECT_WITH_DB)
 					{
 						authResp = bptr;
 						authLen = Text::StrCharCnt(authResp);
 						bptr += authLen + 1;
-						Text::StrConcat(data->database, bptr);
+						len = (UOSInt)(Text::StrConcat(data->database, bptr) - data->database);
 						sb.AppendC(UTF8STRC("\r\nDatabase = "));
-						sb.AppendSlow(data->database);
+						sb.AppendC(data->database, len);
 					}
 					else
 					{

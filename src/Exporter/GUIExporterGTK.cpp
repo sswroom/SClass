@@ -99,7 +99,7 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		MemCopyANC(tmpBuff, img->data, img->info->dispHeight * img->info->storeWidth * 4);
 		if (img->info->atype == Media::AT_NO_ALPHA)
 		{
-			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info->dispWidth, img->info->dispHeight, img->info->storeWidth * 4, img->info->storeWidth * 4);
+			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info->dispWidth, img->info->dispHeight, (OSInt)img->info->storeWidth * 4, (OSInt)img->info->storeWidth * 4);
 		}
 		else
 		{

@@ -124,7 +124,7 @@ UInt32 __stdcall Net::NTPServer::CheckThread(void *userObj)
 void Net::NTPServer::InitServer(Net::SocketFactory *sockf, UInt16 port)
 {
 	Net::UDPServer *svr;
-	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, 0, PacketHdlr, this, 0, 0, 2, false));
+	NEW_CLASS(svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, false));
 	if (svr->IsError())
 	{
 		DEL_CLASS(svr);

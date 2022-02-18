@@ -128,7 +128,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = b64.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				NEW_CLASS(mdata, IO::StmData::MemoryData(tmpBuff, j));
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 				DEL_CLASS(mdata);
 
 				MemFree(tmpBuff);
@@ -140,7 +140,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 				j = qpenc.DecodeBin(&buff[lineStart], buffSize - lineStart, tmpBuff);
 
 				NEW_CLASS(mdata, IO::StmData::MemoryData(tmpBuff, j));
-				obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
+				obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 				DEL_CLASS(mdata);
 
 				MemFree(tmpBuff);
@@ -154,7 +154,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 		else
 		{
 			NEW_CLASS(mdata, IO::StmData::MemoryData(&buff[lineStart], buffSize - lineStart));
-			obj = Text::IMIMEObj::ParseFromData(mdata, contType->v, contType->leng);
+			obj = Text::IMIMEObj::ParseFromData(mdata, contType->ToCString());
 			DEL_CLASS(mdata);
 		}
 
@@ -181,7 +181,7 @@ void Text::MIMEObj::MultipartMIMEObj::ParsePart(UInt8 *buff, UOSInt buffSize)
 	}
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	this->contentType = contentType->Clone();
 	if (defMsg)
@@ -196,22 +196,22 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::String *contentType, Tex
 	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, UOSInt contTypeLen, const UTF8Char *defMsg, const UTF8Char *boundary) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
-	this->contentType = Text::String::New(contentType, contTypeLen);
-	if (defMsg)
+	this->contentType = Text::String::New(contentType);
+	if (defMsg.leng > 0)
 	{
-		this->defMsg = Text::String::NewNotNull(defMsg);
+		this->defMsg = Text::String::New(defMsg);
 	}
 	else
 	{
 		this->defMsg = 0;
 	}
-	this->boundary = Text::String::NewNotNull(boundary);
+	this->boundary = Text::String::New(boundary);
 	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg) : Text::IMIMEObj((const UTF8Char*)"multipart/mixed")
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	Text::StringBuilderUTF8 sbc;
 	Data::DateTime dt;
@@ -401,19 +401,18 @@ UOSInt Text::MIMEObj::MultipartMIMEObj::GetPartCount()
 	return this->parts->GetCount();
 }
 
-Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(const UTF8Char *contentType, IO::IStreamData *data)
+Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(Text::CString contentType, IO::IStreamData *data)
 {
 	UOSInt j;
-	UOSInt contTypeLen = Text::StrCharCnt(contentType);
-	if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/mixed;")))
+	if (contentType.StartsWith(UTF8STRC("multipart/mixed;")))
 	{
 		j = 16;
 	}
-	else if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/related;")))
+	else if (contentType.StartsWith(UTF8STRC("multipart/related;")))
 	{
 		j = 18;
 	}
-	else if (Text::StrStartsWithC(contentType, contTypeLen, UTF8STRC("multipart/alternative;")))
+	else if (contentType.StartsWith(UTF8STRC("multipart/alternative;")))
 	{
 		j = 22;
 	}
@@ -422,32 +421,32 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		return 0;
 	}
 
-	UOSInt i = contTypeLen;
+	UOSInt i = contentType.leng;
 	UOSInt k;
-	while (contentType[j] == '\r' || contentType[j] == '\n' || contentType[j] == '\t' || contentType[j] == ' ')
+	while (contentType.v[j] == '\r' || contentType.v[j] == '\n' || contentType.v[j] == '\t' || contentType.v[j] == ' ')
 	{
 		j++;
 	}
-	if (Text::StrStartsWithC(&contentType[j], contTypeLen - j, UTF8STRC("boundary=")))
+	if (Text::StrStartsWithC(&contentType.v[j], contentType.leng - j, UTF8STRC("boundary=")))
 	{
 		Text::StringBuilderUTF8 boundary;
 		Text::MIMEObj::MultipartMIMEObj *obj;
 		UOSInt buffSize;
 		UInt8 *buff;
-		k = Text::StrIndexOfChar(&contentType[j], ';');
+		k = Text::StrIndexOfCharC(&contentType.v[j], contentType.leng - j, ';');
 		if (k != INVALID_INDEX)
 		{
 			i = j + k;
 		}
 
 		boundary.AppendC(UTF8STRC("--"));
-		if (contentType[j + 9] == '"' && contentType[i - 1] == '"')
+		if (contentType.v[j + 9] == '"' && contentType.v[i - 1] == '"')
 		{
-			boundary.AppendC(&contentType[j + 10], i - j - 11);
+			boundary.AppendC(&contentType.v[j + 10], i - j - 11);
 		}
 		else
 		{
-			boundary.AppendC(&contentType[j + 9], i - j - 9);
+			boundary.AppendC(&contentType.v[j + 9], i - j - 9);
 		}
 
 		buffSize = (UOSInt)data->GetDataSize();
@@ -458,13 +457,13 @@ Text::MIMEObj::MultipartMIMEObj *Text::MIMEObj::MultipartMIMEObj::ParseFile(cons
 		k = Text::StrIndexOfC(buff, buffSize, boundary.ToString(), boundary.GetLength());
 		if (k == INVALID_INDEX)
 		{
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, contTypeLen, 0, boundary.ToString()));
+			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, CSTR_NULL, boundary.ToCString()));
 			i = 0;
 		}
 		else
 		{
 			buff[k] = 0;
-			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, contTypeLen, buff, boundary.ToString()));
+			NEW_CLASS(obj, Text::MIMEObj::MultipartMIMEObj(contentType, {buff, k}, boundary.ToCString()));
 			i = k + boundary.GetLength();
 			if (buff[i] == '\r' && buff[i + 1] == '\n')
 			{

@@ -414,7 +414,7 @@ Net::SSLClient *Net::OpenSSLEngine::ClientInit(Socket *s, Text::CString hostName
 	return CreateClientConn(ssl, s, hostName, err);
 }
 
-Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::OpenSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	if (certASN1 == 0 || keyASN1 == 0)
 	{
@@ -438,9 +438,9 @@ Bool Net::OpenSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *c
 		X509_set_pubkey(cert, pkey);
 
 		X509_name_st *name = X509_get_subject_name(cert);
-		X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, country, -1, -1, 0);
-		X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, company, -1, -1, 0);
-		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, commonName, -1, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "C",  MBSTRING_ASC, country.v, (int)country.leng, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "O",  MBSTRING_ASC, company.v, (int)company.leng, -1, 0);
+		X509_NAME_add_entry_by_txt(name, "CN", MBSTRING_ASC, commonName.v, (int)commonName.leng, -1, 0);
 
 		X509_set_issuer_name(cert, name);
 		X509_sign(cert, pkey, EVP_sha256());

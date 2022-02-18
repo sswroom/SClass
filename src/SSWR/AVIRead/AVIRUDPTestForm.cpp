@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnStartClicked(void *userObj)
 		sb.ToUInt16(&port);
 		if (port > 0 && port < 65536)
 		{
-			NEW_CLASS(me->udp, Net::UDPServer(me->sockf, 0, port, 0, OnUDPPacket, me, 0, 0, 5, false));
+			NEW_CLASS(me->udp, Net::UDPServer(me->sockf, 0, port, CSTR_NULL, OnUDPPacket, me, 0, CSTR_NULL, 5, false));
 			if (me->udp->IsError())
 			{
 				DEL_CLASS(me->udp);

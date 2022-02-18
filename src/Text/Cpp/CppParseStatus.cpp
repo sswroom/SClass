@@ -21,7 +21,7 @@ void Text::Cpp::CppParseStatus::FreeFileStatus(FileParseStatus *fileStatus)
 Text::Cpp::CppParseStatus::CppParseStatus(Text::String *rootFile)
 {
 	this->fileName = rootFile->Clone();
-	NEW_CLASS(this->defines, Data::StringUTF8Map<DefineInfo*>());
+	NEW_CLASS(this->defines, Data::FastStringMap<DefineInfo*>());
 	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
 	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
 }
@@ -29,7 +29,7 @@ Text::Cpp::CppParseStatus::CppParseStatus(Text::String *rootFile)
 Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
 {
 	this->fileName = Text::String::NewNotNull(rootFile);
-	NEW_CLASS(this->defines, Data::StringUTF8Map<DefineInfo*>());
+	NEW_CLASS(this->defines, Data::FastStringMap<DefineInfo*>());
 	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
 	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
 }
@@ -50,11 +50,10 @@ Text::Cpp::CppParseStatus::~CppParseStatus()
 		this->fileNames->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->fileNames);
-	Data::ArrayList<DefineInfo*> *defs = this->defines->GetValues();
-	i = defs->GetCount();
+	i = this->defines->GetCount();
 	while (i-- > 0)
 	{
-		FreeDefineInfo(defs->GetItem(i));
+		FreeDefineInfo(this->defines->GetItem(i));
 	}
 	DEL_CLASS(this->defines);
 }
@@ -116,9 +115,9 @@ Bool Text::Cpp::CppParseStatus::EndParseFile(const UTF8Char *fileName, UOSInt fi
 	return valid;
 }
 
-Bool Text::Cpp::CppParseStatus::IsDefined(const UTF8Char *defName)
+Bool Text::Cpp::CppParseStatus::IsDefined(Text::CString defName)
 {
-	DefineInfo *defInfo = this->defines->Get(defName);
+	DefineInfo *defInfo = this->defines->GetC(defName);
 	if (defInfo == 0)
 		return false;
 	if (defInfo->undefined)
@@ -126,10 +125,10 @@ Bool Text::Cpp::CppParseStatus::IsDefined(const UTF8Char *defName)
 	return true;
 }
 
-Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8Char *defVal)
+Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, const UTF8Char *defVal)
 {
 	DefineInfo *defInfo;
-	defInfo = this->defines->Get(defName);
+	defInfo = this->defines->GetC(defName);
 	if (defInfo)
 	{
 		if (defInfo->undefined)
@@ -157,7 +156,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 	else
 	{
 		defInfo = MemAlloc(DefineInfo, 1);
-		defInfo->defineName = Text::String::NewNotNull(defName);
+		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
 		if (defVal)
@@ -170,20 +169,16 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(const UTF8Char *defName, const UTF8
 		}
 		defInfo->defineParam = 0;
 		defInfo->undefined = false;
-		this->defines->Put(defName, defInfo);
+		this->defines->PutC(defName, defInfo);
 		return true;
 	}
 }
 
-Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *defParam, const UTF8Char *defVal, Int32 lineNum)
+Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, const UTF8Char *defParam, const UTF8Char *defVal, Int32 lineNum)
 {
 	FileParseStatus *fStatus = GetFileStatus();
 	DefineInfo *defInfo;
-	if (Text::StrEquals(defName, (const UTF8Char*)"MF_END"))
-	{
-		defName = (const UTF8Char*)"MF_END";
-	}
-	defInfo = this->defines->Get(defName);
+	defInfo = this->defines->GetC(defName);
 	if (defInfo)
 	{
 		if (defInfo->undefined)
@@ -231,7 +226,7 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 	else
 	{
 		defInfo = MemAlloc(DefineInfo, 1);
-		defInfo->defineName = Text::String::NewNotNull(defName);
+		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = fStatus->fileName;
 		defInfo->lineNum = fStatus->lineNum;
 		if (defVal)
@@ -252,14 +247,14 @@ Bool Text::Cpp::CppParseStatus::AddDef(const UTF8Char *defName, const UTF8Char *
 			defInfo->defineParam = 0;
 		}
 		defInfo->undefined = false;
-		this->defines->Put(defName, defInfo);
+		this->defines->PutC(defName, defInfo);
 		return true;
 	}
 }
 
-Bool Text::Cpp::CppParseStatus::Undefine(const UTF8Char *defName)
+Bool Text::Cpp::CppParseStatus::Undefine(Text::CString defName)
 {
-	DefineInfo *defInfo = this->defines->Get(defName);
+	DefineInfo *defInfo = this->defines->GetC(defName);
 	if (defInfo)
 	{
 		if (!defInfo->undefined)
@@ -272,9 +267,9 @@ Bool Text::Cpp::CppParseStatus::Undefine(const UTF8Char *defName)
 	return false;
 }
 
-Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8Char *defParam, Text::StringBuilderUTF8 *sbOut)
+Bool Text::Cpp::CppParseStatus::GetDefineVal(Text::CString defName, Text::CString defParam, Text::StringBuilderUTF8 *sbOut)
 {
-	DefineInfo *defInfo = this->defines->Get(defName);
+	DefineInfo *defInfo = this->defines->GetC(defName);
 	if (defInfo)
 	{
 		if (!defInfo->undefined)
@@ -289,15 +284,15 @@ Bool Text::Cpp::CppParseStatus::GetDefineVal(const UTF8Char *defName, const UTF8
 				Text::StringBuilderUTF8 sb1;
 				Text::StringBuilderUTF8 sb2;
 				Text::StringBuilderUTF8 sb3;
-				if (defParam)
+				if (defParam.leng > 0)
 				{
 					if (this->IsDefined(defParam))
 					{
-						this->GetDefineVal(defParam, 0, &sb3);
+						this->GetDefineVal(defParam, CSTR_NULL, &sb3);
 					}
 					else
 					{
-						sb3.AppendSlow(defParam);
+						sb3.Append(defParam);
 					}
 				}
 
@@ -340,7 +335,7 @@ UOSInt Text::Cpp::CppParseStatus::GetDefineCount()
 
 Bool Text::Cpp::CppParseStatus::GetDefineInfo(UOSInt index, DefineInfo *defInfo)
 {
-	DefineInfo *def = this->defines->GetValues()->GetItem(index);
+	DefineInfo *def = this->defines->GetItem(index);
 	if (def == 0)
 		return false;
 	MemCopyNO(defInfo, def, sizeof(DefineInfo));

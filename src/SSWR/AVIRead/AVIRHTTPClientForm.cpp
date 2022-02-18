@@ -360,7 +360,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 		Text::IMIMEObj *mimeObj;
 		IO::StmData::MemoryData *md;
 		NEW_CLASS(md, IO::StmData::MemoryData(buff, buffSize));
-		mimeObj = Text::IMIMEObj::ParseFromData(md, me->respContType->v, me->respContType->leng);
+		mimeObj = Text::IMIMEObj::ParseFromData(md, me->respContType->ToCString());
 		DEL_CLASS(md);
 		if (mimeObj)
 		{

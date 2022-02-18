@@ -325,7 +325,7 @@ Net::DHCPServer::DHCPServer(Net::SocketFactory *sockf, UInt32 infIP, UInt32 subn
 	MemClear(this->devUsed, this->devCount);
 	Net::SocketUtil::AddressInfo addr;
 	Net::SocketUtil::SetAddrInfoV4(&addr, infIP);
-	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, 0, PacketHdlr, this, 0, 0, 2, false));
+	NEW_CLASS(this->svr, Net::UDPServer(this->sockf, &addr, 67, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 2, false));
 }
 
 Net::DHCPServer::~DHCPServer()

@@ -21,7 +21,7 @@ UTF8Char *Text::Cpp::CppCodeParser::RemoveSpace(UTF8Char *sptr)
 	return sptr - 1;
 }
 
-void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListStrUTF8 *errMsgs)
+void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const UTF8Char *errMsg, UOSInt msgLen, Data::ArrayListString *errMsgs)
 {
 	Text::StringBuilderUTF8 sb;
 	Text::Cpp::CppParseStatus::FileParseStatus *fileStatus = status->GetFileStatus();
@@ -32,16 +32,17 @@ void Text::Cpp::CppCodeParser::LogError(Text::Cpp::CppParseStatus *status, const
 	sb.AppendI32(fileStatus->lineNum);
 	sb.AppendC(UTF8STRC("): "));
 	sb.AppendC(errMsg, msgLen);
-	errMsgs->Add(Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
+	errMsgs->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 }
 
-Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Data::ArrayList<const UTF8Char *> *codePhases, UOSInt cpIndex)
+Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(Text::CString condStr, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, Data::ArrayList<Text::String *> *codePhases, UOSInt cpIndex)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UTF8Char c;
+	const UTF8Char *cond = condStr.v;
 	Bool succ = true;
-	if (Text::StrEquals(cond, (const UTF8Char*)"defined(_WIN32_WCE)"))
+	if (condStr.Equals(UTF8STRC("defined(_WIN32_WCE)")))
 	{
 		sptr = sbuff;
 	}
@@ -70,7 +71,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 			if (sptr != sbuff)
 			{
 				*sptr = 0;
-				codePhases->Insert(cpIndex++, Text::StrCopyNew(sbuff));
+				codePhases->Insert(cpIndex++, Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				sptr = sbuff;
 			}
 
@@ -83,104 +84,104 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 			{
 				if (*cond == '=')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"!="));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("!=")));
 					cond++;
 				}
 				else
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"!"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("!")));
 				}
 			}
 			else if (c == '>')
 			{
 				if (*cond == '=')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)">="));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC(">=")));
 					cond++;
 				}
 				else if (*cond == '>')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)">>"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC(">>")));
 					cond++;
 				}
 				else
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)">"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC(">")));
 				}
 			}
 			else if (c == '<')
 			{
 				if (*cond == '=')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"<="));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("<=")));
 					cond++;
 				}
 				else if (*cond == '<')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"<<"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("<<")));
 					cond++;
 				}
 				else
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"<"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("<")));
 				}
 			}
 			else if (c == '=' && *cond == '=')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"=="));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("==")));
 				cond++;
 			}
 			else if (c == '(')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"("));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("(")));
 			}
 			else if (c == ')')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)")"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC(")")));
 			}
 			else if (c == '&')
 			{
 				if (*cond == '&')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"&&"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("&&")));
 					cond++;
 				}
 				else
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"&"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("&")));
 				}
 			}
 			else if (c == '|')
 			{
 				if (*cond == '|')
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"||"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("||")));
 					cond++;
 				}
 				else
 				{
-					codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"|"));
+					codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("|")));
 				}
 			}
 			else if (c == '*')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"*"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("*")));
 			}
 			else if (c == '/')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"/"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("/")));
 			}
 			else if (c == '%')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"%"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("%")));
 			}
 			else if (c == '+')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"+"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("+")));
 			}
 			else if (c == '-')
 			{
-				codePhases->Insert(cpIndex++, Text::StrCopyNew((const UTF8Char*)"-"));
+				codePhases->Insert(cpIndex++, Text::String::New(UTF8STRC("-")));
 			}
 			else
 			{
@@ -196,7 +197,7 @@ Bool Text::Cpp::CppCodeParser::ParseSharpIfParam(const UTF8Char *cond, Text::Cpp
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
+Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<Text::String *> *codePhases, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, UOSInt cpIndex, Int32 *outVal, OSInt priority)
 {
 /*
 	Priority:
@@ -219,12 +220,12 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	Text::StringBuilderUTF8 debugSB;
 	UOSInt i;
 	UOSInt j;
-	const UTF8Char *phase;
+	Text::String *phase;
 	i = 0;
 	j = codePhases->GetCount();
 	while (i < j)
 	{
-		debugSB.AppendSlow(codePhases->GetItem(i));
+		debugSB.Append(codePhases->GetItem(i));
 		debugSB.AppendC(UTF8STRC(" "));
 		i++;
 	}
@@ -236,17 +237,17 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		return false;
 	}
 
-	if (Text::StrEquals(phase, (const UTF8Char*)"defined"))
+	if (phase->Equals(UTF8STRC("defined")))
 	{
-		Text::StrDelNew(phase);
+		phase->Release();
 		if (cpIndex + 3 <= codePhases->GetCount())
 		{
-			if (Text::StrEquals(codePhases->GetItem(cpIndex), (const UTF8Char*)"(") && Text::StrEquals(codePhases->GetItem(cpIndex + 2), (const UTF8Char*)")"))
+			if (codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")) && codePhases->GetItem(cpIndex + 2)->Equals(UTF8STRC(")")))
 			{
-				Text::StrDelNew(codePhases->RemoveAt(cpIndex + 2));
-				Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+				codePhases->RemoveAt(cpIndex + 2)->Release();
+				codePhases->RemoveAt(cpIndex)->Release();
 				phase = codePhases->RemoveAt(cpIndex);
-				if (status->IsDefined(phase))
+				if (status->IsDefined(phase->ToCString()))
 				{
 					val = 1;
 				}
@@ -254,12 +255,12 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 				{
 					val = 0;
 				}
-				Text::StrDelNew(phase);
+				phase->Release();
 			}
 			else
 			{
 				phase = codePhases->RemoveAt(cpIndex);
-				if (status->IsDefined(phase))
+				if (status->IsDefined(phase->ToCString()))
 				{
 					val = 1;
 				}
@@ -267,13 +268,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 				{
 					val = 0;
 				}
-				Text::StrDelNew(phase);
+				phase->Release();
 			}
 		}
 		else if (cpIndex + 1 == codePhases->GetCount())
 		{
 			phase = codePhases->RemoveAt(cpIndex);
-			if (status->IsDefined(phase))
+			if (status->IsDefined(phase->ToCString()))
 			{
 				val = 1;
 			}
@@ -281,7 +282,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			{
 				val = 0;
 			}
-			Text::StrDelNew(phase);
+			phase->Release();
 		}
 		else
 		{
@@ -290,31 +291,31 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			return false;
 		}
 	}
-	else if (Text::StrEquals(phase, (const UTF8Char*)"__has_feature"))
+	else if (phase->Equals(UTF8STRC("__has_feature")))
 	{
-		Text::StrDelNew(phase);
+		phase->Release();
 		if (cpIndex + 3 <= codePhases->GetCount())
 		{
-			if (Text::StrEquals(codePhases->GetItem(cpIndex), (const UTF8Char*)"(") && Text::StrEquals(codePhases->GetItem(cpIndex + 2), (const UTF8Char*)")"))
+			if (codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")) && codePhases->GetItem(cpIndex + 2)->Equals(UTF8STRC(")")))
 			{
-				Text::StrDelNew(codePhases->RemoveAt(cpIndex + 2));
-				Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+				codePhases->RemoveAt(cpIndex + 2)->Release();
+				codePhases->RemoveAt(cpIndex)->Release();
 				phase = codePhases->RemoveAt(cpIndex);
 				val = 0;
-				Text::StrDelNew(phase);
+				phase->Release();
 			}
 			else
 			{
 				phase = codePhases->RemoveAt(cpIndex);
 				val = 0;
-				Text::StrDelNew(phase);
+				phase->Release();
 			}
 		}
 		else if (cpIndex + 1 == codePhases->GetCount())
 		{
 			phase = codePhases->RemoveAt(cpIndex);
 			val = 0;
-			Text::StrDelNew(phase);
+			phase->Release();
 		}
 		else
 		{
@@ -323,29 +324,29 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			return false;
 		}
 	}
-	else if (Text::StrEquals(phase, (const UTF8Char*)"("))
+	else if (phase->Equals(UTF8STRC("(")))
 	{
-		Text::StrDelNew(phase);
+		phase->Release();
 		if (!EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &val, 0))
 		{
 			return false;
 		}
 		phase = codePhases->GetItem(cpIndex);
-		if (phase == 0 || !Text::StrEquals(phase, (const UTF8Char*)")"))
+		if (phase == 0 || !phase->Equals(UTF8STRC(")")))
 		{
 			debugSB.AppendC(UTF8STRC(": missing )"));
 			if (phase)
 			{
-				debugSB.AppendSlow(phase);
+				debugSB.Append(phase);
 			}
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
-		Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+		codePhases->RemoveAt(cpIndex)->Release();
 	}
-	else if (Text::StrEquals(phase, (const UTF8Char*)"!"))
+	else if (phase->Equals(UTF8STRC("!")))
 	{
-		Text::StrDelNew(phase);
+		phase->Release();
 		Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &val, 14);
 		if (!succ)
 			return false;
@@ -354,78 +355,77 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		else
 			val = 1;
 	}
-	else if (phase[0] >= '0' && phase[0] <= '9')
+	else if (phase->v[0] >= '0' && phase->v[0] <= '9')
 	{
-		UOSInt len = Text::StrCharCnt(phase);
-		if (phase[len - 1] == 'L')
+		if (phase->EndsWith('L'))
 		{
-			((UTF8Char*)phase)[len - 1] = 0;
+			phase->RemoveChars(1);
 		}
-		if (!Text::StrToInt32(phase, &val))
+		if (!phase->ToInt32(&val))
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
-			debugSB.AppendSlow(phase);
+			debugSB.Append(phase);
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
-			Text::StrDelNew(phase);
+			phase->Release();
 			return false;
 		}
-		Text::StrDelNew(phase);
+		phase->Release();
 	}
-	else if (status->IsDefined(phase))
+	else if (status->IsDefined(phase->ToCString()))
 	{
-		if (codePhases->GetCount() <= cpIndex || !Text::StrEquals(codePhases->GetItem(cpIndex), (const UTF8Char*)"("))
+		if (codePhases->GetCount() <= cpIndex || !codePhases->GetItem(cpIndex)->Equals(UTF8STRC("(")))
 		{
 			Text::StringBuilderUTF8 sb;
-			status->GetDefineVal(phase, 0, &sb);
-			Text::StrDelNew(phase);
-			this->ParseSharpIfParam(sb.ToString(), status, errMsgs, codePhases, cpIndex);
+			status->GetDefineVal(phase->ToCString(), CSTR_NULL, &sb);
+			phase->Release();
+			this->ParseSharpIfParam(sb.ToCString(), status, errMsgs, codePhases, cpIndex);
 			return this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, outVal, priority);
 		}
 		else
 		{
-			const UTF8Char *phase2;
+			Text::String *phase2;
 			Int32 lev;
 			Text::StringBuilderUTF8 params;
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			lev = 1;
 			while (cpIndex < codePhases->GetCount())
 			{
 				phase2 = codePhases->GetItem(cpIndex);
-				if (Text::StrEquals(phase2, (const UTF8Char*)")"))
+				if (phase2->Equals(UTF8STRC(")")))
 				{
-					Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+					codePhases->RemoveAt(cpIndex)->Release();
 					if (--lev <= 0)
 					{
 						break;
 					}
 					params.AppendC(UTF8STRC(")"));
 				}
-				else if (Text::StrEquals(phase2, (const UTF8Char*)"("))
+				else if (phase2->Equals(UTF8STRC("(")))
 				{
 					lev++;
 					params.AppendC(UTF8STRC("("));
-					Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+					codePhases->RemoveAt(cpIndex)->Release();
 				}
 				else
 				{
-					params.AppendSlow(phase2);
-					Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+					params.Append(phase2);
+					codePhases->RemoveAt(cpIndex)->Release();
 				}
 			}
 			if (lev != 0)
 			{
 				debugSB.AppendC(UTF8STRC(": macro not supported "));
-				debugSB.AppendSlow(phase);
+				debugSB.Append(phase);
 				this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
-				Text::StrDelNew(phase);
+				phase->Release();
 				return false;
 			}
 			else
 			{
 				Text::StringBuilderUTF8 sb;
-				status->GetDefineVal(phase, params.ToString(), &sb);
-				Text::StrDelNew(phase);
-				this->ParseSharpIfParam(sb.ToString(), status, errMsgs, codePhases, cpIndex);
+				status->GetDefineVal(phase->ToCString(), params.ToCString(), &sb);
+				phase->Release();
+				this->ParseSharpIfParam(sb.ToCString(), status, errMsgs, codePhases, cpIndex);
 				return this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, outVal, priority);
 			}
 		}
@@ -433,9 +433,9 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	else
 	{
 		debugSB.AppendC(UTF8STRC(": unknown syntex "));
-		debugSB.AppendSlow(phase);
+		debugSB.Append(phase);
 		this->LogError(status, debugSB.ToString(),debugSB.GetLength(), errMsgs);
-		Text::StrDelNew(phase);
+		phase->Release();
 //		return false;
 		val = 0;
 	}
@@ -443,108 +443,108 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	while (codePhases->GetCount() > cpIndex)
 	{
 		phase = codePhases->GetItem(cpIndex);
-		if (Text::StrEquals(phase, (const UTF8Char*)")"))
+		if (phase->Equals(UTF8STRC(")")))
 		{
 			break;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"*"))
+		else if (phase->Equals(UTF8STRC("*")))
 		{
 			if (priority > 12)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 12);
 			if (!succ)
 				break;
 			val = val * nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"/"))
+		else if (phase->Equals(UTF8STRC("/")))
 		{
 			if (priority > 12)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 12);
 			if (!succ)
 				break;
 			val = val / nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"%"))
+		else if (phase->Equals(UTF8STRC("%")))
 		{
 			if (priority > 12)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 12);
 			if (!succ)
 				break;
 			val = val % nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"+"))
+		else if (phase->Equals(UTF8STRC("+")))
 		{
 			if (priority > 11)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 11);
 			if (!succ)
 				break;
 			val = val + nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"-"))
+		else if (phase->Equals(UTF8STRC("-")))
 		{
 			if (priority > 11)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 11);
 			if (!succ)
 				break;
 			val = val - nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)">>"))
+		else if (phase->Equals(UTF8STRC(">>")))
 		{
 			if (priority > 10)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 10);
 			if (!succ)
 				break;
 			val = val >> nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"<<"))
+		else if (phase->Equals(UTF8STRC("<<")))
 		{
 			if (priority > 10)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 10);
 			if (!succ)
 				break;
 			val = val << nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)">="))
+		else if (phase->Equals(UTF8STRC(">=")))
 		{
 			if (priority > 9)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 9);
 			if (!succ)
@@ -554,13 +554,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"<="))
+		else if (phase->Equals(UTF8STRC("<=")))
 		{
 			if (priority > 9)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 9);
 			if (!succ)
@@ -570,13 +570,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)">"))
+		else if (phase->Equals(UTF8STRC(">")))
 		{
 			if (priority > 9)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 9);
 			if (!succ)
@@ -586,13 +586,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"<"))
+		else if (phase->Equals(UTF8STRC("<")))
 		{
 			if (priority > 9)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 9);
 			if (!succ)
@@ -602,13 +602,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"=="))
+		else if (phase->Equals(UTF8STRC("==")))
 		{
 			if (priority > 8)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 8);
 			if (!succ)
@@ -618,13 +618,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"!="))
+		else if (phase->Equals(UTF8STRC("!=")))
 		{
 			if (priority > 8)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 8);
 			if (!succ)
@@ -634,47 +634,47 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			else
 				val = 0;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"&"))
+		else if (phase->Equals(UTF8STRC("&")))
 		{
 			if (priority > 7)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			Int32 nextVal;
 			Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 7);
 			if (!succ)
 				break;
 			val = val & nextVal;
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"&&"))
+		else if (phase->Equals(UTF8STRC("&&")))
 		{
 			if (priority > 4)
 			{
 				break;
 			}
-			Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+			codePhases->RemoveAt(cpIndex)->Release();
 			if (val == 0)
 			{
 				i = 0;
 				while (cpIndex < codePhases->GetCount())
 				{
 					phase = codePhases->GetItem(i);
-					if (Text::StrEquals(phase, (const UTF8Char*)"("))
+					if (phase->Equals(UTF8STRC("(")))
 					{
 						i++;
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
-					else if (Text::StrEquals(phase, (const UTF8Char*)")"))
+					else if (phase->Equals(UTF8STRC(")")))
 					{
 						i--;
 						if (i < 0)
 							break;
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
 					else
 					{
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
 				}
 				if (i < 0)
@@ -694,7 +694,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 					val = 0;
 			}
 		}
-		else if (Text::StrEquals(phase, (const UTF8Char*)"||"))
+		else if (phase->Equals(UTF8STRC("||")))
 		{
 			if (priority > 3)
 			{
@@ -706,21 +706,21 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 				while (cpIndex < codePhases->GetCount())
 				{
 					phase = codePhases->GetItem(i);
-					if (Text::StrEquals(phase, (const UTF8Char*)"("))
+					if (phase->Equals(UTF8STRC("(")))
 					{
 						i++;
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
-					else if (Text::StrEquals(phase, (const UTF8Char*)")"))
+					else if (phase->Equals(UTF8STRC(")")))
 					{
 						i--;
 						if (i < 0)
 							break;
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
 					else
 					{
-						Text::StrDelNew(codePhases->RemoveAt(i));
+						codePhases->RemoveAt(i)->Release();
 					}
 				}
 				if (i < 0)
@@ -730,7 +730,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 			}
 			else
 			{
-				Text::StrDelNew(codePhases->RemoveAt(cpIndex));
+				codePhases->RemoveAt(cpIndex)->Release();
 				Int32 nextVal;
 				Bool succ = this->EvalSharpIfVal(codePhases, status, errMsgs, cpIndex, &nextVal, 3);
 				if (!succ)
@@ -744,7 +744,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 		else
 		{
 			debugSB.AppendC(UTF8STRC(": unknown syntex "));
-			debugSB.AppendSlow(phase);
+			debugSB.Append(phase);
 			this->LogError(status, debugSB.ToString(), debugSB.GetLength(), errMsgs);
 			return false;
 		}
@@ -753,13 +753,13 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIfVal(Data::ArrayList<const UTF8Char *> 
 	return true;
 }
 
-Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs, Bool *result)
+Bool Text::Cpp::CppCodeParser::EvalSharpIf(Text::CString cond, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs, Bool *result)
 {
 	Bool succ = true;
 	UOSInt i;
 	UOSInt j;
-	const UTF8Char *phase;
-	Data::ArrayList<const UTF8Char *> codePhase;
+	Text::String *phase;
+	Data::ArrayList<Text::String *> codePhase;
 	if (!ParseSharpIfParam(cond, status, errMsgs, &codePhase, 0))
 	{
 		succ = false;
@@ -772,7 +772,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 		while (i < j)
 		{
 			phase = codePhase.GetItem(i);
-			Text::StrDelNew(phase);
+			phase->Release();
 			i++;
 		}
 	}
@@ -795,12 +795,12 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 			if (succ && j > 0)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendSlow(cond);
+				sb.Append(cond);
 				sb.AppendC(UTF8STRC(": unknown phases found:"));
 				while (i < j)
 				{
 					sb.AppendC(UTF8STRC(" "));
-					sb.AppendSlow(codePhase.GetItem(i));
+					sb.Append(codePhase.GetItem(i));
 					i++;
 				}
 			}
@@ -808,7 +808,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 			while (i < j)
 			{
 				phase = codePhase.GetItem(i);
-				Text::StrDelNew(phase);
+				phase->Release();
 				i++;
 			}
 		}
@@ -821,7 +821,7 @@ Bool Text::Cpp::CppCodeParser::EvalSharpIf(const UTF8Char *cond, Text::Cpp::CppP
 	return succ;
 }
 
-Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParseStatus *status, Data::ArrayListStrUTF8 *errMsgs)
+Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffEnd, Text::Cpp::CppParseStatus *status, Data::ArrayListString *errMsgs)
 {
 	Bool lineStart;
 	Bool nextLine = false;
@@ -849,17 +849,17 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 		if (fileStatus->lineBuffWS)
 		{
 			j = (UOSInt)(fileStatus->lineBuffWS - fileStatus->lineBuffSB->ToString());
-			fileStatus->lineBuffSB->AppendSlow(lineBuff);
+			fileStatus->lineBuffSB->AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
 			wordStart = fileStatus->lineBuffSB->ToString() + j;
 		}
 		else
 		{
-			fileStatus->lineBuffSB->AppendSlow(lineBuff);
+			fileStatus->lineBuffSB->AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
 		}
 	}
 	else
 	{
-		fileStatus->lineBuffSB->AppendSlow(lineBuff);
+		fileStatus->lineBuffSB->AppendC(lineBuff, (UOSInt)(lineBuffEnd - lineBuff));
 	}
 	sptr = fileStatus->lineBuffSB->ToString() + i;
 	if (fileStatus->currMode == Text::Cpp::CppParseStatus::PM_DEFINE)
@@ -1537,7 +1537,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (wordStart)
 					{
 						sptr[-1] = 0;
-						fileStatus->ifValid->Add((!status->IsDefined(wordStart))?1:0);
+						fileStatus->ifValid->Add((!status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						break;
 					}
@@ -1568,7 +1568,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				if (wordStart)
 				{
 					sptr[-1] = 0;
-					fileStatus->ifValid->Add((!status->IsDefined(wordStart))?1:0);
+					fileStatus->ifValid->Add((!status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
 					fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 					nextLine = true;
 					break;
@@ -1591,7 +1591,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					if (wordStart)
 					{
 						sptr[-1] = 0;
-						fileStatus->ifValid->Add((status->IsDefined(wordStart))?1:0);
+						fileStatus->ifValid->Add((status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
 						fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						break;
 					}
@@ -1622,7 +1622,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				if (wordStart)
 				{
 					sptr[-1] = 0;
-					fileStatus->ifValid->Add((status->IsDefined(wordStart))?1:0);
+					fileStatus->ifValid->Add((status->IsDefined(CSTRP(wordStart, sptr - 1)))?1:0);
 					fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 					nextLine = true;
 					break;
@@ -1702,7 +1702,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 								if (lastV == 0)
 								{
 									Bool ifRes;
-									if (!EvalSharpIf(wordStart, status, errMsgs, &ifRes))
+									if (!EvalSharpIf(CSTRP(wordStart, sptr - 1), status, errMsgs, &ifRes))
 									{
 										parseStatus = false;
 										nextLine = true;
@@ -1728,7 +1728,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 							else
 							{
 								Bool ifRes;
-								if (!EvalSharpIf(wordStart, status, errMsgs, &ifRes))
+								if (!EvalSharpIf(CSTRP(wordStart, sptr - 1), status, errMsgs, &ifRes))
 								{
 									parseStatus = false;
 									nextLine = true;
@@ -1865,6 +1865,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						{
 							UTF8Char *paramPtr = 0;
 							UTF8Char *tmpPtr = wordStart;
+							UTF8Char *wordEnd = 0;
 							Int32 mode = 0;
 							/*
 							  Name( Param ) Cont
@@ -1875,7 +1876,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 								c = *tmpPtr++;
 								if (c == 0)
 								{
-									if (status->AddDef(wordStart, paramPtr, 0, fileStatus->lineNum))
+									if (status->AddDef(CSTRP(wordStart, tmpPtr - 1), paramPtr, 0, fileStatus->lineNum))
 									{
 										fileStatus->modeStatus = 1;
 									}
@@ -1894,12 +1895,14 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 									{
 										mode = 7;
 										tmpPtr[-1] = 0;
+										wordEnd = tmpPtr - 1;
 									}
 								}
 								else if (c == '('  && mode == 1)
 								{
 									mode = 3;
 									tmpPtr[-1] = 0;
+									wordEnd = tmpPtr - 1;
 								}
 								else if (c == ')')
 								{
@@ -1946,7 +1949,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 									}
 									else if (mode == 2 || mode == 7)
 									{
-										if (status->AddDef(wordStart, paramPtr, &tmpPtr[-1], fileStatus->lineNum))
+										if (status->AddDef(CSTRP(wordStart, wordEnd), paramPtr, &tmpPtr[-1], fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}
@@ -1992,7 +1995,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						if (wordStart)
 						{
 							sptr[-1] = 0;
-							if (status->Undefine(wordStart))
+							if (status->Undefine(CSTRP(wordStart, sptr - 1)))
 							{
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 								break;
@@ -2012,7 +2015,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 					{
 						sptr[-1] = 0;
 
-						if (status->Undefine(wordStart))
+						if (status->Undefine(CSTRP(wordStart, sptr - 1)))
 						{
 							nextLine = true;
 							break;
@@ -2033,7 +2036,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 						{
 							sptr[-1] = 0;
 
-							if (status->Undefine(wordStart))
+							if (status->Undefine(CSTRP(wordStart, sptr - 1)))
 							{
 								fileStatus->pastModes->Add(Text::Cpp::CppParseStatus::PM_SHARPEND);
 								fileStatus->currMode = Text::Cpp::CppParseStatus::PM_COMMENTPARA;
@@ -2070,7 +2073,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, Text::Cpp::CppParse
 				{
 					if (wordStart)
 					{
-						if (status->Undefine(wordStart))
+						if (status->Undefine(CSTRP(wordStart, sptr - 1)))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;
 							nextLine = true;
@@ -2293,7 +2296,7 @@ Text::Cpp::CppCodeParser::~CppCodeParser()
 {
 }
 
-Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListStrUTF8 *errMsgs, Text::Cpp::CppParseStatus *status)
+Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Data::ArrayListString *errMsgs, Text::Cpp::CppParseStatus *status)
 {
 	UTF8Char *lineBuff;
 	UTF8Char *sptr;
@@ -2321,7 +2324,7 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Cannot open \""));
 		sptr = Text::StrConcatC(sptr, fileName, fileNameLen);
 		sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
-		errMsgs->Add(Text::StrCopyNew(lineBuff));
+		errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
 		MemFree(lineBuff);
 		DEL_CLASS(fs);
 		return false;
@@ -2331,9 +2334,9 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 	Bool succ = true;
 
 	NEW_CLASS(reader, IO::StreamReader(fs, 0));
-	while (reader->ReadLine(lineBuff, 65535))
+	while ((sptr = reader->ReadLine(lineBuff, 65535)) != 0)
 	{
-		if (!ParseLine(lineBuff, status, errMsgs))
+		if (!ParseLine(lineBuff, sptr, status, errMsgs))
 		{
 			succ = false;
 			break;
@@ -2345,18 +2348,18 @@ Bool Text::Cpp::CppCodeParser::ParseFile(const UTF8Char *fileName, UOSInt fileNa
 	{
 		succ = false;
 		sptr = Text::StrConcatC(Text::StrConcatC(lineBuff, fileName, fileNameLen), UTF8STRC(" File End error"));
-		errMsgs->Add(Text::StrCopyNewC(lineBuff, (UOSInt)(sptr - lineBuff)));
+		errMsgs->Add(Text::String::New(lineBuff, (UOSInt)(sptr - lineBuff)));
 	}
 
 	MemFree(lineBuff);
 	return succ;
 }
 
-void Text::Cpp::CppCodeParser::FreeErrMsgs(Data::ArrayListStrUTF8 *errMsgs)
+void Text::Cpp::CppCodeParser::FreeErrMsgs(Data::ArrayListString *errMsgs)
 {
 	UOSInt i = errMsgs->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(errMsgs->RemoveAt(i));
+		errMsgs->RemoveAt(i)->Release();
 	}
 }

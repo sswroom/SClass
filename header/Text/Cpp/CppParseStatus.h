@@ -1,6 +1,7 @@
 #ifndef _SM_TEXT_CPP_CPPPARSESTATUS
 #define _SM_TEXT_CPP_CPPPARSESTATUS
 #include "Data/ArrayListICaseString.h"
+#include "Data/FastStringMap.h"
 #include "Data/StringUTF8Map.h"
 #include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
@@ -59,7 +60,7 @@ namespace Text
 			} FileParseStatus;
 		private:
 			Text::String *fileName;
-			Data::StringUTF8Map<DefineInfo*> *defines;
+			Data::FastStringMap<DefineInfo*> *defines;
 			Data::ArrayList<FileParseStatus*> *statuses;
 			Data::ArrayListICaseString *fileNames;
 
@@ -74,11 +75,11 @@ namespace Text
 			Bool BeginParseFile(Text::CString fileName);
 			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
 
-			Bool IsDefined(const UTF8Char *defName);
-			Bool AddGlobalDef(const UTF8Char *defName, const UTF8Char *defVal);
-			Bool AddDef(const UTF8Char *defName, const UTF8Char *defParams, const UTF8Char *defVal, Int32 lineNum);
-			Bool Undefine(const UTF8Char *defName);
-			Bool GetDefineVal(const UTF8Char *defName, const UTF8Char *defParams, Text::StringBuilderUTF8 *sb);
+			Bool IsDefined(Text::CString defName);
+			Bool AddGlobalDef(Text::CString defName, const UTF8Char *defVal);
+			Bool AddDef(Text::CString defName, const UTF8Char *defParams, const UTF8Char *defVal, Int32 lineNum);
+			Bool Undefine(Text::CString defName);
+			Bool GetDefineVal(Text::CString defName, Text::CString defParams, Text::StringBuilderUTF8 *sb);
 
 			UOSInt GetDefineCount();
 			Bool GetDefineInfo(UOSInt index, DefineInfo *defInfo);

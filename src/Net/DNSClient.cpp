@@ -64,7 +64,7 @@ Net::DNSClient::DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->lastID = random.NextInt15();
 	NEW_CLASS(this->reqMut, Sync::Mutex());
 	NEW_CLASS(this->reqMap, Data::UInt32Map<RequestStatus*>());
-	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, 0, PacketHdlr, this, 0, 0, 1, false));
+	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
 }
 
 Net::DNSClient::~DNSClient()

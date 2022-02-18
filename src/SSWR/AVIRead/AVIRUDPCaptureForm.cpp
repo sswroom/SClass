@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port", (const UTF8Char*)"Error", me);
 			return;
 		}
-		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, 0, OnUDPPacket, me, me->log, (const UTF8Char*)"UDP: ", 4, me->chkReuseAddr->IsChecked()));
+		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
 		if (me->svr->IsError())
 		{
 			DEL_CLASS(me->svr);

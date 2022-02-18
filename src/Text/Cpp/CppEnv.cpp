@@ -240,54 +240,54 @@ void Text::Cpp::CppEnv::InitEnvStatus(Text::Cpp::CppParseStatus *status)
 {
 	if (this->pt == Text::CodeProject::PROJT_VSPROJECT)
 	{
-		status->AddGlobalDef((const UTF8Char*)"_WIN32", 0);
+		status->AddGlobalDef(CSTR("_WIN32"), 0);
 		if (this->vsv == Text::VSProject::VSV_VS8 || this->vsv == Text::VSProject::VSV_VS9 || this->vsv == Text::VSProject::VSV_VS10)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_USE_ATTRIBUTES_FOR_SAL", (const UTF8Char*)"0"); // /analyze
+			status->AddGlobalDef(CSTR("_USE_ATTRIBUTES_FOR_SAL"), (const UTF8Char*)"0"); // /analyze
 
-			status->AddGlobalDef((const UTF8Char*)"_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES", (const UTF8Char*)"1");
-			status->AddGlobalDef((const UTF8Char*)"_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT", (const UTF8Char*)"1");
-			status->AddGlobalDef((const UTF8Char*)"_CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES", (const UTF8Char*)"1");
+			status->AddGlobalDef(CSTR("_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES"), (const UTF8Char*)"1");
+			status->AddGlobalDef(CSTR("_CRT_SECURE_CPP_OVERLOAD_STANDARD_NAMES_COUNT"), (const UTF8Char*)"1");
+			status->AddGlobalDef(CSTR("_CRT_SECURE_CPP_OVERLOAD_SECURE_NAMES"), (const UTF8Char*)"1");
 		}
 
 		if (this->vsv == Text::VSProject::VSV_VS6)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1200");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"12008804");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1200");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"12008804");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS71)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1310");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"13106030");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1310");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"13106030");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS8)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1400");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"140050727");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1400");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"140050727");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS9)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1500");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"150030729");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1500");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"150030729");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS10)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1600");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"160040219");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1600");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"160040219");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS11)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1700");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"170051025");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1700");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"170051025");
 		}
 		else if (this->vsv == Text::VSProject::VSV_VS12)
 		{
-			status->AddGlobalDef((const UTF8Char*)"_MSC_VER", (const UTF8Char*)"1800");
-			status->AddGlobalDef((const UTF8Char*)"_MSC_FULL_VER", (const UTF8Char*)"180031101");
+			status->AddGlobalDef(CSTR("_MSC_VER"), (const UTF8Char*)"1800");
+			status->AddGlobalDef(CSTR("_MSC_FULL_VER"), (const UTF8Char*)"180031101");
 		}
-		status->AddGlobalDef((const UTF8Char*)"__midl", (const UTF8Char*)"600");
-		status->AddGlobalDef((const UTF8Char*)"_INTEGRAL_MAX_BITS", (const UTF8Char*)"64");
-		status->AddGlobalDef((const UTF8Char*)"_DBG_MEMCPY_INLINE_", (const UTF8Char*)"0");
+		status->AddGlobalDef(CSTR("__midl"), (const UTF8Char*)"600");
+		status->AddGlobalDef(CSTR("_INTEGRAL_MAX_BITS"), (const UTF8Char*)"64");
+		status->AddGlobalDef(CSTR("_DBG_MEMCPY_INLINE_"), (const UTF8Char*)"0");
 	}
 }
 

@@ -27,7 +27,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	UOSInt i = 0;
 	while (i < pduSize)
 	{
-		i += this->PDUGetDetail(0, &pdu[i], pduSize - i, level + 1, sb);
+		i += this->PDUGetDetail(CSTR_NULL, &pdu[i], pduSize - i, level + 1, sb);
 		if (i < pduSize)
 		{
 			sb->AppendC(UTF8STRC(",\r\n"));
@@ -41,7 +41,7 @@ void Net::SNMPInfo::PDUSeqGetDetail(const UInt8 *pdu, UOSInt pduSize, UOSInt lev
 	sb->AppendC(UTF8STRC("}"));
 }
 
-UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, Text::StringBuilderUTF8 *sb)
+UOSInt Net::SNMPInfo::PDUGetDetail(Text::CString name, const UInt8 *pdu, UOSInt pduSize, UOSInt level, Text::StringBuilderUTF8 *sb)
 {
 	if (pduSize < 2)
 	{
@@ -51,9 +51,9 @@ UOSInt Net::SNMPInfo::PDUGetDetail(const UTF8Char *name, const UInt8 *pdu, UOSIn
 	{
 		sb->AppendChar('\t', level);
 	}
-	if (name)
+	if (name.leng > 0)
 	{
-		sb->AppendSlow(name);
+		sb->Append(name);
 		sb->AppendUTF8Char(' ');
 	}
 	UInt8 t = pdu[0];

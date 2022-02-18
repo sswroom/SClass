@@ -31,13 +31,13 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;
-				Data::ArrayListStrUTF8 errMsgs;
+				Data::ArrayListString errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
-				status->AddGlobalDef((const UTF8Char*)"__STDC__", (const UTF8Char*)"0");
-				status->AddGlobalDef((const UTF8Char*)"__cplusplus", (const UTF8Char*)"201103");
+				status->AddGlobalDef(CSTR("__STDC__"), (const UTF8Char*)"0");
+				status->AddGlobalDef(CSTR("__cplusplus"), (const UTF8Char*)"201103");
 				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 					sb.AppendC(UTF8STRC("Parse Error:\r\n"));
 					while (i < j)
 					{
-						sb.AppendSlow(errMsgs.GetItem(i));
+						sb.Append(errMsgs.GetItem(i));
 						sb.AppendC(UTF8STRC("\r\n"));
 						i++;
 					}
@@ -63,12 +63,12 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			else if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
-				Data::ArrayListStrUTF8 errMsgs;
+				Data::ArrayListString errMsgs;
 				NEW_CLASS(env, Text::Cpp::CppEnv(me->proj, cfg));
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
-				status->AddGlobalDef((const UTF8Char*)"__STDC__", (const UTF8Char*)"1");
+				status->AddGlobalDef(CSTR("__STDC__"), (const UTF8Char*)"1");
 				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
@@ -80,7 +80,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				{
 					while (i < j)
 					{
-						sb.AppendSlow(errMsgs.GetItem(i));
+						sb.Append(errMsgs.GetItem(i));
 						sb.AppendC(UTF8STRC("\r\n"));
 						i++;
 					}

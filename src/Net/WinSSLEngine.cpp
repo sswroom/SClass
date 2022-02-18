@@ -1082,7 +1082,7 @@ Net::SSLClient *Net::WinSSLEngine::ClientInit(Socket *s, Text::CString hostName,
 	return this->CreateClientConn(0, s, hostName, err);
 }
 
-Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *company, const UTF8Char *commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
+Bool Net::WinSSLEngine::GenerateCert(Text::CString country, Text::CString company, Text::CString commonName, Crypto::Cert::X509Cert **certASN1, Crypto::Cert::X509File **keyASN1)
 {
 	HCRYPTKEY hKey;
 	HCRYPTPROV hProv;
@@ -1101,11 +1101,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 
 	Text::StringBuilderW sb;
 	sb.AppendC(UTF8STRC("C="));
-	sb.Append(country);
+	sb.Append(country.v);
 	sb.AppendC(UTF8STRC(", O="));
-	sb.Append(company);
+	sb.Append(company.v);
 	sb.AppendC(UTF8STRC(", CN="));
-	sb.Append(commonName);
+	sb.Append(commonName.v);
 
 	PCCERT_CONTEXT pCertContext = NULL;
 	BYTE *pbEncoded = NULL;
@@ -1180,11 +1180,11 @@ Bool Net::WinSSLEngine::GenerateCert(const UTF8Char *country, const UTF8Char *co
 	}
 	Text::StringBuilderUTF8 sb2;
 	sb2.ClearStr();
-	sb2.AppendSlow(commonName);
+	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".crt"));
 	NEW_CLASS(*certASN1, Crypto::Cert::X509Cert(sb2.ToCString(), pCertContext->pbCertEncoded, pCertContext->cbCertEncoded));
 	sb2.ClearStr();
-	sb2.AppendSlow(commonName);
+	sb2.Append(commonName);
 	sb2.AppendC(UTF8STRC(".key"));
 	Text::String *s = Text::String::New(sb2.ToString(), sb2.GetLength());
 	*keyASN1 = Crypto::Cert::X509PrivKey::CreateFromKeyBuff(Crypto::Cert::X509File::KeyType::RSA, certBuff, certBuffSize, s);

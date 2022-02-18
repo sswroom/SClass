@@ -1318,7 +1318,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 				Crypto::Hash::CRC16 *crc;
 				NEW_CLASS(crc, Crypto::Hash::CRC16(Crypto::Hash::CRC16::GetPolynomialCCITT()));
 				NEW_CLASS(this->dataCRC, Crypto::Hash::HashCalc(crc));
-				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, 0, OnDataUDPPacket, this, this->log, (const UTF8Char*)"DUDP: ", 4, false));
+				NEW_CLASS(this->dataUDP, Net::UDPServer(this->sockf, 0, port, CSTR_NULL, OnDataUDPPacket, this, this->log, CSTR("DUDP: "), 4, false));
 				if (this->dataUDP->IsError())
 				{
 					DEL_CLASS(this->dataUDP);

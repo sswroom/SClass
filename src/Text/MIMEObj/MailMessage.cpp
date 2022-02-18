@@ -10,7 +10,7 @@
 
 #define BUFFSIZE 4096
 
-Text::MIMEObj::MailMessage::MailMessage() : Text::IMIMEObj((const UTF8Char*)"message/rfc822")
+Text::MIMEObj::MailMessage::MailMessage() : Text::IMIMEObj(CSTR("message/rfc822"))
 {
 	this->content = 0;
 }
@@ -442,7 +442,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 		{
 			IO::IStreamData *data = fd->GetPartialData(contentOfst, Text::StrToUInt64(contentLen->v));
 			Text::String *contType = mail->GetHeader(UTF8STRC("Content-Type"));
-			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_PTRC(contType));
+			Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
 			DEL_CLASS(data);
 			if (obj)
 			{
@@ -454,7 +454,7 @@ Text::MIMEObj::MailMessage *Text::MIMEObj::MailMessage::ParseFile(IO::IStreamDat
 	{
 		IO::IStreamData *data = fd->GetPartialData(contentOfst, fd->GetDataSize() - contentOfst);
 		Text::String *contType = mail->GetHeader(UTF8STRC("Content-Type"));
-		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_PTRC(contType));
+		Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromData(data, STR_CSTR(contType));
 		DEL_CLASS(data);
 		if (obj)
 		{

@@ -2000,7 +2000,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 			frame->AddText(frameOfst, CSTR("SNMP:"));
 			Net::SNMPInfo snmp;
 			Text::StringBuilderUTF8 sb;
-			UOSInt i = snmp.PDUGetDetail((const UTF8Char*)"Message", packet, packetSize, 0, &sb);
+			UOSInt i = snmp.PDUGetDetail(CSTR("Message"), packet, packetSize, 0, &sb);
 			frame->AddField(frameOfst, (UInt32)i, sb.ToCString(), CSTR_NULL);
 			if (packetSize > i)
 			{
