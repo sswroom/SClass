@@ -85,7 +85,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	j = tables.GetCount();
 	while (i < j)
 	{
-		r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0, 0, 0);
+		r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			NEW_CLASS(tabDef, DB::TableDef(tables.GetItem(i)));

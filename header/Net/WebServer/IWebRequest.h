@@ -29,9 +29,9 @@ namespace Net
 		private:
 			Bool uaParsed;
 			Net::BrowserInfo::BrowserType reqBrowser;
-			const UTF8Char *reqBrowserVer;
+			Text::CString reqBrowserVer;
 			Manage::OSInfo::OSType reqOS;
-			const UTF8Char *reqOSVer;
+			Text::CString reqOSVer;
 
 			void ParseUserAgent();
 		public:
@@ -77,9 +77,9 @@ namespace Net
 
 			Text::CString GetReqMethodStr();
 			Net::BrowserInfo::BrowserType GetBrowser();
-			const UTF8Char *GetBrowserVer();
+			Text::CString GetBrowserVer();
 			Manage::OSInfo::OSType GetOS();
-			const UTF8Char *GetOSVer();
+			Text::CString GetOSVer();
 
 			static Text::CString RequestProtocolGetName(RequestProtocol reqProto);
 		};

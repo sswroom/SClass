@@ -126,6 +126,16 @@ Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
+void UI::GUIComboBox::BeginUpdate()
+{
+
+}
+
+void UI::GUIComboBox::EndUpdate()
+{
+	
+}
+
 UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 {
 	const WChar *wptr = Text::StrToWCharNew(itemText->v);

@@ -92,7 +92,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	while (i-- > 0)
 	{
 		const UTF8Char *tableName = tableNames->GetItem(i);
-		DB::DBReader *rdr = mdb->GetTableData(tableName, 0, 0, 0, 0, 0);
+		DB::DBReader *rdr = mdb->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (tableName && Text::StrEqualsICaseC(tableName, Text::StrCharCnt(tableName), UTF8STRC("GDB_SpatialRefs")))
 		{
 			hasSpRef = true;
@@ -137,7 +137,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 
 		if (hasSpRef)
 		{
-			DB::DBReader *rdr = mdb->GetTableData((const UTF8Char*)"GDB_SpatialRefs", 0, 0, 0, 0, 0);
+			DB::DBReader *rdr = mdb->GetTableData((const UTF8Char*)"GDB_SpatialRefs", 0, 0, 0, CSTR_NULL, 0);
 			if (rdr)
 			{
 				if (rdr->ColCount() >= 2)

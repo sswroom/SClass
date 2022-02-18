@@ -3,11 +3,11 @@
 #include "Data/FieldComparator.h"
 #include "Text/StringBuilderUTF8.h"
 
-Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
+Data::FieldComparator::FieldComparator(Text::CString compareConds)
 {
 	NEW_CLASS(this->fieldNames, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->dirs, Data::ArrayList<Int8>());
-	if (compareConds == 0 || compareConds[0] == 0)
+	if (compareConds.leng == 0)
 	{
 		return;
 	}
@@ -15,7 +15,7 @@ Data::FieldComparator::FieldComparator(const UTF8Char *compareConds)
 	Text::PString sarr[2];
 	UOSInt i = 2;
 	Int8 dir;
-	sb.AppendSlow(compareConds);
+	sb.Append(compareConds);
 	sarr[1] = sb;
 	while (i == 2)
 	{

@@ -25,7 +25,7 @@ class ProgressHandler : public IO::IProgressHandler
 private:
 	Sync::Mutex *mut;
 	Text::String *name;
-	const UTF8Char *fileName;
+	Text::CString fileName;
 	UInt64 currCount;
 	UInt64 lastCount;
 
@@ -67,10 +67,10 @@ private:
 			}
 			sb->AppendC(UTF8STRC("Bytes/s"));
 			Sync::MutexUsage mutUsage(me->mut);
-			if (me->fileName)
+			if (me->fileName.leng > 0)
 			{
 				sb->AppendC(UTF8STRC(" ("));
-				sb->AppendSlow(me->fileName);
+				sb->Append(me->fileName);
 				sb->AppendC(UTF8STRC(")"));
 			}
 			mutUsage.EndUse();
@@ -88,7 +88,7 @@ public:
 		this->currCount = 0;
 		this->lastCount = 0;
 		this->name = 0;
-		this->fileName = 0;
+		this->fileName = CSTR_NULL;
 
 		this->threadRunning = false;
 		this->threadToStop = false;
@@ -110,7 +110,7 @@ public:
 		}
 		DEL_CLASS(this->evt);
 		SDEL_STRING(this->name);
-		this->fileName = 0;
+		this->fileName = CSTR_NULL;
 		DEL_CLASS(mut);
 	}
 
@@ -121,7 +121,7 @@ public:
 		SDEL_STRING(this->name);
 		this->name = Text::String::New(name);
 		i = Text::StrLastIndexOfCharC(this->name->v, this->name->leng, IO::Path::PATH_SEPERATOR);
-		this->fileName = &this->name->v[i + 1];
+		this->fileName = this->name->ToCString().Substring(i + 1);
 		this->lastCount = 0;
 	}
 
@@ -135,7 +135,7 @@ public:
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		SDEL_STRING(this->name);
-		this->fileName = 0;
+		this->fileName = CSTR_NULL;
 	}
 };
 

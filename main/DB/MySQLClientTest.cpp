@@ -385,7 +385,7 @@ IO::ConsoleWriter *console;
 void TextReadAll(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
-	DB::DBReader *r = db->GetTableData((const UTF8Char*)"userfile", 0, 0, 0, 0, 0);
+	DB::DBReader *r = db->GetTableData((const UTF8Char*)"userfile", 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();

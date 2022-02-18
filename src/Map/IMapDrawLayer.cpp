@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt32.h"
-#include "Data/ArrayListICaseStrUTF8.h"
+#include "Data/ArrayListICaseString.h"
 #include "Data/Sort/ArtificialQuickSortC.h"
 #include "DB/ColDef.h"
 #include "Math/Math.h"
@@ -136,7 +136,7 @@ UOSInt Map::IMapDrawLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names
 	return 1;
 }
 
-DB::DBReader *Map::IMapDrawLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::IMapDrawLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
 	NEW_CLASS(r, Map::MapLayerReader(this));
@@ -705,17 +705,19 @@ Text::SearchIndexer *Map::IMapDrawLayer::CreateSearchIndexer(Text::TextAnalyzer 
 	return searching;
 }
 
-UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListStrUTF8 *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
+UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex)
 {
 	Data::ArrayListInt64 *objIds;
-	Data::ArrayListICaseStrUTF8 *strList;
+	Data::ArrayListICaseString *strList;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
+	Text::PString s;
 
 	if (maxResult <= 0)
 		return 0;
 
 	NEW_CLASS(objIds, Data::ArrayListInt64());
-	NEW_CLASS(strList, Data::ArrayListICaseStrUTF8());
+	NEW_CLASS(strList, Data::ArrayListICaseString());
 	srchInd->SearchString(objIds, srchStr, maxResult * 10);
 	
 	UOSInt i = 0;
@@ -724,14 +726,19 @@ UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListStrUTF8 *outArr, Text::Se
 	UOSInt resCnt = 0;
 	while (i < j)
 	{
-		this->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), strIndex);
-		Text::StrTrim(sbuff);
-		k = strList->SortedIndexOf(sbuff);
-		if (k < 0)
+		sptr = this->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), strIndex);
+		if (sptr)
 		{
-			strList->Insert((UOSInt)~k, Text::StrCopyNew(sbuff));
-			if (++resCnt >= maxResult)
-				break;
+			s.v = sbuff;
+			s.leng = (UOSInt)(sptr - sbuff);
+			s.Trim();
+			k = strList->SortedIndexOfPtr(s.v, s.leng);
+			if (k < 0)
+			{
+				strList->Insert((UOSInt)~k, Text::String::New(s.v, s.leng));
+				if (++resCnt >= maxResult)
+					break;
+			}
 		}
 		
 		i++;
@@ -743,13 +750,9 @@ UOSInt Map::IMapDrawLayer::SearchString(Data::ArrayListStrUTF8 *outArr, Text::Se
 	return resCnt;
 }
 
-void Map::IMapDrawLayer::ReleaseSearchStr(Data::ArrayListStrUTF8 *strArr)
+void Map::IMapDrawLayer::ReleaseSearchStr(Data::ArrayListString *strArr)
 {
-	UOSInt i = strArr->GetCount();
-	while (i-- > 0)
-	{
-		Text::StrDelNew(strArr->RemoveAt(i));
-	}
+	LIST_FREE_STRING(strArr);
 }
 
 Math::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex)

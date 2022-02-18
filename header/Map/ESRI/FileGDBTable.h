@@ -21,7 +21,7 @@ namespace Map
 
 			Bool IsError();
 			Text::String *GetName();
-			DB::DBReader *OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *conditions);	
+			DB::DBReader *OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions);	
 		};
 	}
 }

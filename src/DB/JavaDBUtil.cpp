@@ -331,7 +331,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	}
 	else
 	{
-		DB::DBReader *r = db->GetTableData(tableName->v, 0, 0, 0, 0, 0);
+		DB::DBReader *r = db->GetTableData(tableName->v, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			DB::ColDef colDef((const UTF8Char*)"");

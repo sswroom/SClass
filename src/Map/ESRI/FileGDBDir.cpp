@@ -49,14 +49,14 @@ UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<const UTF8Char*> *na
 	return j;
 }
 
-DB::DBReader *Map::ESRI::FileGDBDir::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::FileGDBDir::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)
 	{
 		return 0;
 	}
-	if (ordering == 0)
+	if (ordering.leng == 0)
 	{
 		return table->OpenReader(columnNames, ofst, maxCnt, ordering, condition);
 	}
@@ -100,7 +100,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 		DEL_CLASS(table);
 		return 0;
 	}
-	FileGDBReader *reader = (FileGDBReader*)table->OpenReader(0, 0, 0, 0, 0);
+	FileGDBReader *reader = (FileGDBReader*)table->OpenReader(0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		DEL_CLASS(table);

@@ -15,7 +15,7 @@ void __stdcall Net::Email::SMTPServer::ClientReady(Net::TCPClient *cli, void *us
 	cliStatus->buffSize = 0;
 	cliStatus->cliName = 0;
 	cliStatus->mailFrom = 0;
-	NEW_CLASS(cliStatus->rcptTo, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(cliStatus->rcptTo, Data::ArrayList<Text::String *>());
 	cliStatus->dataStm = 0;
 	cliStatus->dataMode = false;
 	cliStatus->loginMode = 0;
@@ -56,18 +56,12 @@ void __stdcall Net::Email::SMTPServer::ClientEvent(Net::TCPClient *cli, void *us
 		UOSInt i;
 		cliStatus = (MailStatus*)cliData;
 		MemFree(cliStatus->buff);
-		if (cliStatus->cliName)
-		{
-			Text::StrDelNew(cliStatus->cliName);
-		}
-		if (cliStatus->mailFrom)
-		{
-			Text::StrDelNew(cliStatus->mailFrom);
-		}
+		SDEL_STRING(cliStatus->cliName);
+		SDEL_STRING(cliStatus->mailFrom);
 		i = cliStatus->rcptTo->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(cliStatus->rcptTo->GetItem(i));
+			cliStatus->rcptTo->GetItem(i)->Release();
 		}
 		DEL_CLASS(cliStatus->rcptTo);
 		if (cliStatus->dataStm)
@@ -227,16 +221,17 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		{
 			Bool succ = false;
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen);
-			const UTF8Char *userName;
-			const UTF8Char *pwd;
+			Text::CString userName;
+			Text::CString pwd;
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
 			decBuff[cmdLen] = 0;
-			userName = (const UTF8Char*)&decBuff[1];
-			pwd = userName;
-			while (*pwd++);
-			if (pwd < (const UTF8Char*)(decBuff + cmdLen))
+			userName.v = (const UTF8Char*)&decBuff[1];
+			userName.leng = Text::StrCharCnt(userName.v);
+			pwd.v = userName.v + userName.leng + 1;
+			if (pwd.v < (const UTF8Char*)(decBuff + cmdLen))
 			{
+				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v);
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);
@@ -245,8 +240,8 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			{
 				WriteMessage(cli, 235, (const UTF8Char*)"2.7.0 Authentication successful");
 				cliStatus->login = true;
-				SDEL_TEXT(cliStatus->userName);
-				cliStatus->userName = Text::StrCopyNew(userName);
+				SDEL_STRING(cliStatus->userName);
+				cliStatus->userName = Text::String::New(userName);
 			}
 			else
 			{
@@ -259,8 +254,8 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
 			decBuff[cmdLen] = 0;
-			SDEL_TEXT(cliStatus->userName);
-			cliStatus->userName = Text::StrCopyNewC(decBuff, cmdLen);
+			SDEL_STRING(cliStatus->userName);
+			cliStatus->userName = Text::String::New(decBuff, cmdLen);
 			MemFree(decBuff);
 			cliStatus->loginMode = 3;
 			WriteMessage(cli, 334, (const UTF8Char*)"UGFzc3dvcmQ6");
@@ -272,7 +267,7 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt(cmd, cmdLen, decBuff, 0);
 			decBuff[cmdLen] = 0;
-			succ = this->loginHdlr(this->mailObj, cliStatus->userName, (UTF8Char*)decBuff);
+			succ = this->loginHdlr(this->mailObj, cliStatus->userName->ToCString(), {decBuff, cmdLen});
 			MemFree(decBuff);
 			cliStatus->loginMode = 0;
 			if (succ)
@@ -357,28 +352,22 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("HELO ")))
 	{
-		if (cliStatus->cliName)
-		{
-			Text::StrDelNew(cliStatus->cliName);
-		}
-		cliStatus->cliName = Text::StrCopyNewC(&cmd[5], cmdLen - 5);
+		SDEL_STRING(cliStatus->cliName);
+		cliStatus->cliName = Text::String::New(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.AppendSlow(cliStatus->cliName);
+		sb.Append(cliStatus->cliName);
 		WriteMessage(cli, 250, sb.ToString());
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("EHLO ")))
 	{
-		if (cliStatus->cliName)
-		{
-			Text::StrDelNew(cliStatus->cliName);
-		}
-		cliStatus->cliName = Text::StrCopyNewC(&cmd[5], cmdLen - 5);
+		SDEL_STRING(cliStatus->cliName);
+		cliStatus->cliName = Text::String::New(&cmd[5], cmdLen - 5);
 		Text::StringBuilderUTF8 sb;
 		sb.Append(this->domain);
 		sb.AppendC(UTF8STRC(" Hello "));
-		sb.AppendSlow(cliStatus->cliName);
+		sb.Append(cliStatus->cliName);
 		sb.AppendC(UTF8STRC("\r\nHELP"));
 		sb.AppendC(UTF8STRC("\r\n8BITMIME"));
 		if (this->connType == Net::Email::SMTPConn::CT_STARTTLS && !cli->IsSSL())
@@ -394,16 +383,13 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("MAIL FROM:")))
 	{
-		if (cliStatus->mailFrom)
-		{
-			Text::StrDelNew(cliStatus->mailFrom);
-		}
-		cliStatus->mailFrom = Text::StrCopyNew((const UTF8Char*)cmd);
+		SDEL_STRING(cliStatus->mailFrom);
+		cliStatus->mailFrom = Text::String::New(cmd, cmdLen);
 		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("RCPT TO:")))
 	{
-		cliStatus->rcptTo->Add(Text::StrCopyNew((const UTF8Char*)cmd));
+		cliStatus->rcptTo->Add(Text::String::New(cmd, cmdLen));
 		WriteMessage(cli, 250, (const UTF8Char*)"Ok");
 	}
 	else if (Text::StrStartsWithC(cmd, cmdLen, UTF8STRC("AUTH ")))
@@ -426,16 +412,17 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 		{
 			Bool succ = false;
 			UInt8 *decBuff = MemAlloc(UInt8, cmdLen - 10);
-			const UTF8Char *userName;
-			const UTF8Char *pwd;
+			Text::CString userName;
+			Text::CString pwd;
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
 			decBuff[cmdLen] = 0;
-			userName = (const UTF8Char*)&decBuff[1];
-			pwd = userName;
-			while (*pwd++);
-			if (pwd < (const UTF8Char*)(decBuff + cmdLen))
+			userName.v = &decBuff[1];
+			userName.leng = Text::StrCharCnt(userName.v);
+			pwd.v = userName.v + userName.leng + 1;
+			if (pwd.v < (const UTF8Char*)(decBuff + cmdLen))
 			{
+				pwd.leng = (UOSInt)(decBuff + cmdLen - pwd.v);
 				succ = this->loginHdlr(this->mailObj, userName, pwd);
 			}
 			MemFree(decBuff);
@@ -443,8 +430,8 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			{
 				WriteMessage(cli, 235, (const UTF8Char*)"2.7.0 Authentication successful");
 				cliStatus->login = true;
-				SDEL_TEXT(cliStatus->userName);
-				cliStatus->userName = Text::StrCopyNew(userName);
+				SDEL_STRING(cliStatus->userName);
+				cliStatus->userName = Text::String::New(userName);
 			}
 			else
 			{
@@ -457,8 +444,8 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 			Crypto::Encrypt::Base64 b64;
 			cmdLen = b64.Decrypt((UInt8*)&cmd[11], cmdLen - 11, decBuff, 0);
 			decBuff[cmdLen] = 0;
-			SDEL_TEXT(cliStatus->userName);
-			cliStatus->userName = Text::StrCopyNew((UTF8Char*)&decBuff[1]);
+			SDEL_STRING(cliStatus->userName);
+			cliStatus->userName = Text::String::New((UTF8Char*)&decBuff[1], cmdLen - 1);
 			cliStatus->loginMode = 3;
 			MemFree(decBuff);
 			WriteMessage(cli, 334, (const UTF8Char*)"UGFzc3dvcmQ6");
@@ -471,14 +458,14 @@ void Net::Email::SMTPServer::ParseCmd(Net::TCPClient *cli, Net::Email::SMTPServe
 	
 }
 
-Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
+Net::Email::SMTPServer::SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->connType = connType;
 	this->log = log;
-	this->domain = Text::String::NewNotNull(domain);
-	this->serverName = Text::StrCopyNew(serverName);
+	this->domain = Text::String::New(domain);
+	this->serverName = Text::String::New(serverName);
 	this->mailHdlr = mailHdlr;
 	this->mailObj = userObj;
 	this->loginHdlr = loginHdlr;
@@ -494,7 +481,7 @@ Net::Email::SMTPServer::~SMTPServer()
 	DEL_CLASS(this->cliMgr);
 	DEL_CLASS(this->rawLog);
 	this->domain->Release();
-	Text::StrDelNew(this->serverName);
+	this->serverName->Release();
 }
 
 Bool Net::Email::SMTPServer::IsError()

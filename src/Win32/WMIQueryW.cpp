@@ -226,7 +226,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tabNames->GetCount();
 }
 
-DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar sbuff[256];
 	if (this->tabNames == 0)

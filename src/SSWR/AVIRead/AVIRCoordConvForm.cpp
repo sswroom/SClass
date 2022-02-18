@@ -149,7 +149,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	UOSInt xCol = (UOSInt)-1;
 	UOSInt yCol = (UOSInt)-1;
 	UOSInt colCnt;
-	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0, 0, 0);
+	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported database format", (const UTF8Char*)"Error", me);
@@ -204,7 +204,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	const UTF8Char **sarr;
 	sarr = MemAlloc(const UTF8Char *, colCnt + 2);
 	i = 0;
-	reader = db->GetTableData(0, 0, 0, 0, 0, 0);
+	reader = db->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
 		MemFree(sarr);

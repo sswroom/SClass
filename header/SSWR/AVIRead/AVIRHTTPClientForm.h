@@ -112,11 +112,11 @@ namespace SSWR
 			Sync::Event *threadEvt;
 			Text::String *reqURL;
 			const UTF8Char *reqBody;
-			Text::String *reqBodyType;
-			const UTF8Char *reqUserName;
-			const UTF8Char *reqPassword;
-			const UTF8Char *reqHeaders;
 			UOSInt reqBodyLen;
+			Text::String *reqBodyType;
+			Text::String *reqUserName;
+			Text::String *reqPassword;
+			Text::String *reqHeaders;
 			Net::WebUtil::RequestMethod reqMeth;
 			Bool reqOSClient;
 			Bool noShutdown;
@@ -155,7 +155,7 @@ namespace SSWR
 			void ClearParams();
 			void ClearCookie();
 			void ClearFiles();
-			HTTPCookie *SetCookie(const UTF8Char *cookieStr, const UTF8Char *reqURL, UOSInt urlLen);
+			HTTPCookie *SetCookie(Text::CString cookieStr, Text::CString reqURL);
 			UTF8Char *AppendCookie(UTF8Char *sbuff, const UTF8Char *reqURL, UOSInt urlLen);
 		public:
 			AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

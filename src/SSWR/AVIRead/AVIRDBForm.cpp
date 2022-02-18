@@ -33,11 +33,11 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	{
 		tabDef = me->dbt->GetTableDef(sbuff);
 
-		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, 0, 0);
+		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
 	else
 	{
-		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, 0, 0);
+		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 		if (r)
 		{
 			tabDef = r->GenTableDef(sbuff);
@@ -203,7 +203,7 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(const UTF8Char *name)
 			return cls;
 		}
 	}
-	DB::DBReader *r = this->db->GetTableData(name, 0, 0, 0, 0, 0);
+	DB::DBReader *r = this->db->GetTableData(name, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::Class *cls = r->CreateClass();

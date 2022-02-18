@@ -23,7 +23,7 @@ SSWR::AVIRead::AVIRHTTPLog::AVIRHTTPLog(UOSInt logCnt)
 	{
 		this->entries[i].reqTime = 0;
 		NEW_CLASS(this->entries[i].headerName, Data::ArrayListString());
-		NEW_CLASS(this->entries[i].headerVal, Data::ArrayList<const UTF8Char *>());
+		NEW_CLASS(this->entries[i].headerVal, Data::ArrayList<Text::String *>());
 		this->entries[i].reqURI = 0;
 		this->entries[i].cliAddr.addrType = Net::AddrType::Unknown;
 		this->entries[i].cliPort = 0;
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIRHTTPLog::~AVIRHTTPLog()
 		while (j-- > 0)
 		{
 			this->entries[i].headerName->GetItem(j)->Release();
-			Text::StrDelNew(this->entries[i].headerVal->GetItem(j));
+			this->entries[i].headerVal->GetItem(j)->Release();
 		}
 		DEL_CLASS(this->entries[i].headerName);
 		DEL_CLASS(this->entries[i].headerVal);
@@ -73,7 +73,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 	while (j-- > 0)
 	{
 		this->entries[i].headerName->GetItem(j)->Release();
-		Text::StrDelNew(this->entries[i].headerVal->GetItem(j));
+		this->entries[i].headerVal->GetItem(j)->Release();
 	}
 	this->entries[i].headerName->Clear();
 	this->entries[i].headerVal->Clear();
@@ -89,7 +89,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 		sb.ClearStr();
 		name = names.GetItem(k);
 		req->GetHeaderC(&sb, name->v, name->leng);
-		this->entries[i].headerVal->Add(Text::StrCopyNew(sb.ToString()));
+		this->entries[i].headerVal->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		k++;
 	}
 	mutUsage.EndUse();
@@ -406,7 +406,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnAccessSelChg(void *userObj)
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.Append(log->headerName->GetItem(i));
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendSlow(log->headerVal->GetItem(i));
+		sb.Append(log->headerVal->GetItem(i));
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToCString());

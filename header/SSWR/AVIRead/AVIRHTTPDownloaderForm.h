@@ -3,6 +3,7 @@
 
 #include "Net/HTTPClient.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUIForm.h"
 #include "UI/GUIGroupBox.h"
@@ -71,7 +72,7 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			Data::ArrayList<const UTF8Char*> *respHeaders;
+			Data::ArrayList<Text::String*> *respHeaders;
 
 			static void __stdcall OnRequestClicked(void *userObj);
 			static UInt32 __stdcall ProcessThread(void *userObj);

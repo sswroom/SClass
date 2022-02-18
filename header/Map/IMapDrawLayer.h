@@ -2,7 +2,7 @@
 #define _SM_MAP_IMAPDRAWLAYER
 #include "Data/ArrayList.h"
 #include "Data/ArrayListInt64.h"
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "DB/DBReader.h"
 #include "DB/ReadingDB.h"
 #include "IO/ParsedObject.h"
@@ -127,7 +127,7 @@ namespace Map
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
+		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
@@ -151,8 +151,8 @@ namespace Map
 		Map::VectorLayer *CreateEditableLayer();
 
 		Text::SearchIndexer *CreateSearchIndexer(Text::TextAnalyzer *ta, UOSInt strIndex);
-		UOSInt SearchString(Data::ArrayListStrUTF8 *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
-		void ReleaseSearchStr(Data::ArrayListStrUTF8 *strArr);
+		UOSInt SearchString(Data::ArrayListString *outArr, Text::SearchIndexer *srchInd, void *nameArr, const UTF8Char *srchStr, UOSInt maxResult, UOSInt strIndex);
+		void ReleaseSearchStr(Data::ArrayListString *strArr);
 		Math::Vector2D *GetVectorByStr(Text::SearchIndexer *srchInd, void *nameArr, void *session, const UTF8Char *srchStr, UOSInt strIndex);
 
 		Bool HasLineStyle();

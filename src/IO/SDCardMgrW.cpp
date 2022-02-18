@@ -209,7 +209,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	UOSInt ret = 0;
 	IO::SDCardInfo *sdcard;
 	Win32::WMIQuery qry(L"ROOT\\CIMV2");
-	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_MediaAccessDevice", 0, 0, 0, 0, 0);
+	DB::DBReader *r = qry.GetTableData((const UTF8Char*)"CIM_MediaAccessDevice", 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Bool valid = true;

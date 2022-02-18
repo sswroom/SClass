@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 			SDEL_CLASS(issuerCert);
 		}
 		Net::Email::SMTPConn::ConnType connType = (Net::Email::SMTPConn::ConnType)(OSInt)me->cboSMTPType->GetSelectedItem();
-		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, (const UTF8Char*)"127.0.0.1", (const UTF8Char*)"SSWRSMTP", OnMailReceived, OnMailLogin, me));
+		NEW_CLASS(me->smtpSvr, Net::Email::SMTPServer(me->sockf, me->ssl, port, connType, me->log, CSTR("127.0.0.1"), CSTR("SSWRSMTP"), OnMailReceived, OnMailLogin, me));
 		if (me->smtpSvr->IsError())
 		{
 			DEL_CLASS(me->smtpSvr);
@@ -172,23 +172,19 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	email->id = id;
 	cli->GetRemoteAddr(&email->remoteAddr);
 	email->remotePort = cli->GetRemotePort();
-	NEW_CLASS(email->rcptList, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(email->rcptList, Data::ArrayList<Text::String*>());
 	email->fileName = Text::String::New(sb.ToString(), sb.GetLength());
-	sb.ClearStr();
-	sb.AppendSlow(mail->mailFrom);
-	email->fromAddr = Text::StrCopyNew(sb.ToString());
+	email->fromAddr = mail->mailFrom->Clone();
 	currTime.SetCurrTimeUTC();
 	email->recvTime = currTime.ToTicks();
 	email->isDeleted = false;
-	Text::StrInt64(sbuff, id);
-	email->uid = Text::StrCopyNew(sbuff);
+	sptr = Text::StrInt64(sbuff, id);
+	email->uid = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 	i = 0;
 	j = mail->rcptTo->GetCount();
 	while (i < j)
 	{
-		sb.ClearStr();
-		sb.AppendSlow(mail->rcptTo->GetItem(i));
-		email->rcptList->Add(Text::StrCopyNew(sb.ToString()));
+		email->rcptList->Add(mail->rcptTo->GetItem(i)->Clone());
 		i++;
 	}
 	NEW_CLASS(fs, IO::FileStream(email->fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -206,14 +202,14 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	return Text::StrInt64(queryId, id);
 }
 
-Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd)
+Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd)
 {
 	Text::StringBuilderUTF8 sb;
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm *)userObj;
 	sb.AppendC(UTF8STRC("User: "));
-	sb.AppendSlow(userName);
+	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
-	sb.AppendSlow(pwd);
+	sb.Append(pwd);
 	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	return true;
 }
@@ -247,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 			dt.SetTicks(email->recvTime);
 			dt.ToString(sbuff);
 			me->lvEmail->SetSubItem(k, 1, sbuff);
-			me->lvEmail->SetSubItem(k, 2, email->fromAddr);
+			me->lvEmail->SetSubItem(k, 2, email->fromAddr->v);
 			Net::SocketUtil::GetAddrName(sbuff, &email->remoteAddr);
 			me->lvEmail->SetSubItem(k, 3, sbuff);
 			sb.ClearStr();
@@ -259,7 +255,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 				{
 					sb.AppendC(UTF8STRC(", "));
 				}
-				sb.AppendSlow(email->rcptList->GetItem(l));
+				sb.Append(email->rcptList->GetItem(l));
 				l++;
 			}
 			me->lvEmail->SetSubItem(k, 4, sb.ToString());
@@ -451,13 +447,13 @@ SSWR::AVIRead::AVIRSMTPServerForm::~AVIRSMTPServerForm()
 	while (i-- > 0)
 	{
 		email = this->mailList->GetItem(i);
-		Text::StrDelNew(email->fromAddr);
+		email->fromAddr->Release();
 		email->fileName->Release();
 		Text::StrDelNew(email->uid);
 		j = email->rcptList->GetCount();
 		while (j-- > 0)
 		{
-			Text::StrDelNew(email->rcptList->GetItem(j));
+			email->rcptList->GetItem(j)->Release();
 		}
 		DEL_CLASS(email->rcptList);
 		MemFree(email);

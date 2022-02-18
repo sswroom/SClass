@@ -147,7 +147,7 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 	UOSInt k;
 	this->ClearRecords();
 	NEW_CLASS(csv, DB::CSVFile(stm, 65001));
-	DB::DBReader *r = csv->GetTableData(0, 0, 0, 0, 0, 0);
+	DB::DBReader *r = csv->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
 		DEL_CLASS(csv);

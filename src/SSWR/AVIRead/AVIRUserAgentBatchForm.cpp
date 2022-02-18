@@ -21,37 +21,37 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 
 	if (ent.browserVer)
 	{
-		sb.AppendUTF8Char('"');
-		sb.AppendSlow((const UTF8Char*)ent.browserVer);
-		sb.AppendUTF8Char('"');
+		sb.AppendC(UTF8STRC("UTF8STRC(\""));
+		sb.AppendC(ent.browserVer, ent.browserVerLen);
+		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
 	{
-		sb.AppendUTF8Char('0');
+		sb.AppendC(UTF8STRC("0, 0"));
 	}
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
-	if (j < 52) sb.AppendChar(' ', 52 - j);
+	if (j < 62) sb.AppendChar(' ', 62 - j);
 
 	sb.AppendC(UTF8STRC("Manage::OSInfo::"));
 	sb.Append(Manage::OSInfo::GetDefName(ent.os));
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
-	if (j < 85) sb.AppendChar(' ', 85 - j);
+	if (j < 95) sb.AppendChar(' ', 95 - j);
 
 	if (ent.osVer)
 	{
-		sb.AppendUTF8Char('"');
-		sb.AppendSlow((const UTF8Char*)ent.osVer);
-		sb.AppendUTF8Char('"');
+		sb.AppendC(UTF8STRC("UTF8STRC(\""));
+		sb.AppendC(ent.osVer, ent.osVerLen);
+		sb.AppendC(UTF8STRC("\")"));
 	}
 	else
 	{
-		sb.AppendUTF8Char('0');
+		sb.AppendC(UTF8STRC("0, 0"));
 	}
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
-	if (j < 98) sb.AppendChar(' ', 98 - j);
+	if (j < 118) sb.AppendChar(' ', 118 - j);
 
 	if (ent.devName)
 	{
@@ -65,7 +65,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UserAgent2Output(Text::CString userA
 	}
 	sb.AppendUTF8Char(',');
 	j = sb.GetLength();
-	if (j < 110) sb.AppendChar(' ', 120 - j);
+	if (j < 140) sb.AppendChar(' ', 140 - j);
 	Text::String *s = Text::JSText::ToNewJSTextDQuote((const UTF8Char*)ent.userAgent);
 	sb.AppendC(UTF8STRC("UTF8STRC("));
 	sb.Append(s);

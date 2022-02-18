@@ -61,7 +61,7 @@ void SSWR::AVIRead::AVIRGISSearchForm::UpdateResults()
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.AppendSlow(this->dispList->GetItem(i));
+		sb.Append(this->dispList->GetItem(i));
 		if (this->flags & Map::MapEnv::SFLG_TRIM)
 		{
 			sb.Trim();
@@ -97,7 +97,7 @@ SSWR::AVIRead::AVIRGISSearchForm::AVIRGISSearchForm(UI::GUIClientControl *parent
 	this->lbResults->HandleSelectionChange(OnResultSelChg, this);
 
 	void *nameArr;
-	NEW_CLASS(this->dispList, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->dispList, Data::ArrayListString());
 	NEW_CLASS(this->objIds, Data::ArrayListInt64());
 	this->layer->GetAllObjectIds(this->objIds, &nameArr);
 	this->nameArr = nameArr;

@@ -147,7 +147,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 	DB::DBReader *r;
 	tabDef = this->currDB->GetTableDef(tableName?tableName->v:0);
 
-	r = this->currDB->GetTableData(tableName?tableName->v:0, 0, 0, MAX_ROW_CNT, 0, 0);
+	r = this->currDB->GetTableData(tableName?tableName->v:0, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	if (r)
 	{
 		this->UpdateResult(r);
@@ -307,7 +307,7 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(const UTF8Char *
 			return cls;
 		}
 
-		DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
+		DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Data::Class *cls = r->CreateClass();

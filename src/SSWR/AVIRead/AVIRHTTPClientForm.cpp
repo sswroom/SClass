@@ -53,17 +53,17 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	sbTmp.ClearStr();
 	if (me->txtUserName->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqUserName = Text::StrCopyNew(sbTmp.ToString());
+		me->reqUserName = Text::String::New(sbTmp.ToCString());
 	}
 	sbTmp.ClearStr();
 	if (me->txtPassword->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqPassword = Text::StrCopyNew(sbTmp.ToString());
+		me->reqPassword = Text::String::New(sbTmp.ToCString());
 	}
 	sbTmp.ClearStr();
 	if (me->txtHeaders->GetText(&sbTmp) && sbTmp.GetCharCnt() > 0)
 	{
-		me->reqHeaders = Text::StrCopyNew(sbTmp.ToString());
+		me->reqHeaders = Text::String::New(sbTmp.ToCString());
 	}
 
 
@@ -470,9 +470,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	const UTF8Char *currBody;
 	UOSInt currBodyLen;
 	Text::String *currBodyType;
-	const UTF8Char *currUserName;
-	const UTF8Char *currPassword;
-	const UTF8Char *currHeaders;
+	Text::String *currUserName;
+	Text::String *currPassword;
+	Text::String *currHeaders;
 	Net::WebUtil::RequestMethod currMeth;
 	Bool currOSClient;
 	UInt8 buff[4096];
@@ -540,7 +540,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (currHeaders)
 				{
 					Text::StringBuilderUTF8 sb;
-					sb.AppendSlow(currHeaders);
+					sb.Append(currHeaders);
 					Text::PString sarr[2];
 					Text::PString sarr2[2];
 					sarr[1] = sb;
@@ -580,7 +580,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						mstm->Clear();
 						cli->AddHeaderC(CSTR("Accept"), CSTR("*/*"));
 						cli->AddHeaderC(CSTR("Accept-Charset"), CSTR("*"));
-						i = (UOSInt)(Text::StrConcat(Text::StrConcatC(Text::StrConcat(buff, currUserName), UTF8STRC(":")), currPassword) - buff);
+						i = (UOSInt)(currPassword->ConcatTo(Text::StrConcatC(currUserName->ConcatTo(buff), UTF8STRC(":"))) - buff);
 						Text::StringBuilderUTF8 sbAuth;
 						sbAuth.AppendC(UTF8STRC("Basic "));
 						Text::TextBinEnc::Base64Enc b64Enc;
@@ -603,7 +603,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						if (currHeaders)
 						{
 							Text::StringBuilderUTF8 sb;
-							sb.AppendSlow(currHeaders);
+							sb.Append(currHeaders);
 							Text::PString sarr[2];
 							Text::PString sarr2[2];
 							sarr[1] = sb;
@@ -703,9 +703,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				currBody = 0;
 			}
 			SDEL_STRING(currBodyType);
-			SDEL_TEXT(currUserName);
-			SDEL_TEXT(currPassword);
-			SDEL_TEXT(currHeaders);
+			SDEL_STRING(currUserName);
+			SDEL_STRING(currPassword);
+			SDEL_STRING(currHeaders);
 		}
 		else
 		{
@@ -792,7 +792,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			hdr = me->respHeaders->GetItem(i);
 			if (hdr->StartsWithICase(UTF8STRC("Set-Cookie: ")))
 			{
-				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(&hdr->v[12], me->respReqURL->v, me->respReqURL->leng);
+				SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *cookie = me->SetCookie(hdr->ToCString().Substring(12), me->respReqURL->ToCString());
 				if (cookie)
 				{
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
@@ -868,7 +868,7 @@ void SSWR::AVIRead::AVIRHTTPClientForm::ClearFiles()
 	this->fileList->Clear();
 }
 
-SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(const UTF8Char *cookieStr, const UTF8Char *reqURL, UOSInt urlLen)
+SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm::SetCookie(Text::CString cookieStr, Text::CString reqURL)
 {
 	UTF8Char domain[512];
 	UTF8Char path[512];
@@ -882,9 +882,9 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	Bool valid = true;
 	path[0] = 0;
 	pathEnd = path;
-	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, urlLen, 0);
+	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL.v, reqURL.leng, 0);
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(cookieStr);
+	sb.Append(cookieStr);
 	cnt = Text::StrSplitTrimP(sarr, 2, sb, ';');
 	cookieValue = sarr[0].v;
 	i = Text::StrIndexOfCharC(cookieValue, sarr[0].leng, '=');

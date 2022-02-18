@@ -178,7 +178,7 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
 	UTF8Char *sptr = Text::StrConcat(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")), tableName);

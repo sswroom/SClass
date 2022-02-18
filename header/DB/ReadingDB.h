@@ -20,7 +20,7 @@ namespace DB
 		virtual ~ReadingDB();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names) = 0; // no need to release
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition) = 0;
+		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition) = 0;
 		virtual void CloseReader(DBReader *r) = 0;
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str) = 0;
 		virtual void Reconnect() = 0;

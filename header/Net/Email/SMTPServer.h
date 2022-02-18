@@ -21,19 +21,19 @@ namespace Net
 			{
 				UInt8 *buff;
 				UOSInt buffSize;
-				const UTF8Char *cliName;
-				const UTF8Char *mailFrom;
-				Data::ArrayList<const UTF8Char *> *rcptTo;
+				Text::String *cliName;
+				Text::String *mailFrom;
+				Data::ArrayList<Text::String *> *rcptTo;
 				Bool dataMode;
 				Int32 loginMode;
 				IO::MemoryStream *dataStm;
 				Text::LineBreakType lastLBT;
 				Bool login;
-				const UTF8Char *userName;
+				Text::String *userName;
 			} MailStatus;
 
 			typedef UTF8Char *(__stdcall *MailHandler)(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, MailStatus *mail);
-			typedef Bool (__stdcall *LoginHandler)(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
+			typedef Bool (__stdcall *LoginHandler)(void *userObj, Text::CString userName, Text::CString pwd);
 		private:
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
@@ -42,7 +42,7 @@ namespace Net
 			Net::TCPClientMgr *cliMgr;
 			IO::LogTool *log;
 			Text::String *domain;
-			const UTF8Char *serverName;
+			Text::String *serverName;
 
 			MailHandler mailHdlr;
 			LoginHandler loginHdlr;
@@ -59,7 +59,7 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen, Text::LineBreakType lbt);
 		public:
-			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, const UTF8Char *domain, const UTF8Char *serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj);
+			SMTPServer(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::LogTool *log, Text::CString domain, Text::CString serverName, MailHandler mailHdlr, LoginHandler loginHdlr, void *userObj);
 			~SMTPServer();
 
 			Bool IsError();

@@ -685,7 +685,7 @@ UOSInt Map::SHPData::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->dbf->GetTableNames(names);
 }
 
-DB::DBReader *Map::SHPData::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::SHPData::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return this->dbf->GetTableData(tableName, columNames, ofst, maxCnt, ordering, condition);
 }

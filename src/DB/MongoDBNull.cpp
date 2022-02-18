@@ -17,7 +17,7 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }

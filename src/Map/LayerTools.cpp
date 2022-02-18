@@ -51,7 +51,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 	while (i < layerCnt)
 	{
 		lyr = layers->GetItem(i);
-		DB::DBReader *r = lyr->GetTableData(0, 0, 0, 0, 0, 0);
+		DB::DBReader *r = lyr->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
 
 		k = r->ColCount();
 		j = 0;

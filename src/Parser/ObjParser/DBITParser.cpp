@@ -40,7 +40,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
 	db = (DB::ReadingDB*)pobj;
-	r = db->GetTableData((const UTF8Char*)"IT_TGVLib", 0, 0, 0, 0, 0);
+	r = db->GetTableData((const UTF8Char*)"IT_TGVLib", 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		valid = true;
@@ -75,7 +75,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 	NEW_CLASS(dt, Data::DateTime());
 	NEW_CLASS(gpsLogMap, Data::Int32Map<Record*>());
 	NEW_CLASS(wpMap, Data::Int32Map<Record*>());
-	r = db->GetTableData((const UTF8Char*)"GPSLog", 0, 0, 0, 0, 0);
+	r = db->GetTableData((const UTF8Char*)"GPSLog", 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Int32 id;
@@ -116,7 +116,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 		valid = false;
 	}
 	
-	r = db->GetTableData((const UTF8Char*)"WP", 0, 0, 0, 0, 0);
+	r = db->GetTableData((const UTF8Char*)"WP", 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Int32 id;
@@ -157,7 +157,7 @@ IO::ParsedObject *Parser::ObjParser::DBITParser::ParseObject(IO::ParsedObject *p
 
 	if (valid)
 	{
-		r = db->GetTableData((const UTF8Char*)"Line", 0, 0, 0, 0, 0);
+		r = db->GetTableData((const UTF8Char*)"Line", 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Map::GPSTrack::GPSRecord2 gpsRec;

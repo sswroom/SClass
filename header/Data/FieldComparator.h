@@ -14,7 +14,7 @@ namespace Data
 		Data::ArrayList<Text::String*> *fieldNames;
 		Data::ArrayList<Int8> *dirs;
 	public:
-		FieldComparator(const UTF8Char *compareConds);
+		FieldComparator(Text::CString compareConds);
 		virtual ~FieldComparator();
 
 		virtual OSInt Compare(VariObject *a, VariObject *b);

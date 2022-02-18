@@ -21,7 +21,8 @@ namespace SSWR
 			typedef struct
 			{
 				Manage::OSInfo::OSType os;
-				const Char *osVer;
+				const UTF8Char *osVer;
+				UOSInt osVerLen;
 			} OSItem;
 			
 		private:
@@ -42,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnFilterChg(void *userObj);
 			static void __stdcall OnUserAgentSelChg(void *userObj);
 			static void __stdcall OnUserAgentDblClk(void *userObj, UOSInt itemIndex);
-			void UpdateUAList(Manage::OSInfo::OSType os, const Char *osVer, Net::BrowserInfo::BrowserType browser);
+			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
 			AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *currUserAgent);
 			virtual ~AVIRUserAgentSelForm();

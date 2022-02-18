@@ -51,7 +51,7 @@ Text::String *Map::ESRI::FileGDBTable::GetName()
 	return this->tableName;
 }
 
-DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *conditions)
+DB::DBReader *Map::ESRI::FileGDBTable::OpenReader(Data::ArrayList<Text::String*> *columnNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *conditions)
 {
 	if (this->tableInfo == 0)
 	{

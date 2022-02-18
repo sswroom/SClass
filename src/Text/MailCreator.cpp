@@ -12,12 +12,12 @@
 #include "Text/MIMEObj/TextMIMEObj.h"
 #include "Text/MIMEObj/UnknownMIMEObj.h"
 
-void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *s)
+void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
 {
 	const UTF8Char *sptr;
 	UTF8Char c;
 	Bool found = false;
-	sptr = s;
+	sptr = s.v;
 	while (c = *sptr++)
 	{
 		if (c >= 0x80)
@@ -32,21 +32,17 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const UTF8Char *
 		UInt8 *b64Buff;
 		OSInt b64Size;
 		Crypto::Encrypt::Base64 b64;
-		strLen = Text::StrCharCnt(s);
+		strLen = s.leng;
 		b64Size = (strLen / 3) * 4 + 4;
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
-		b64Size = b64.Encrypt(s, strLen, b64Buff, 0);
+		b64Size = b64.Encrypt(s.v, strLen, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->AppendSlow((const UTF8Char*)b64Buff);
+		sbc->AppendC(b64Buff, b64Size);
 		MemFree(b64Buff);
 	}
 	else
 	{
-		sptr = s;
-		while (c = *sptr++)
-		{
-			sbc->AppendUTF8Char(c);
-		}
+		sbc->Append(s);
 	}
 }
 
@@ -76,7 +72,7 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 		b64Buff = MemAlloc(UInt8, b64Size + 1);
 		b64Size = b64.Encrypt(str->v, buffSize, b64Buff, 0);
 		b64Buff[b64Size] = 0;
-		sbc->AppendSlow((const UTF8Char*)b64Buff);
+		sbc->AppendC(b64Buff, b64Size);
 		MemFree(b64Buff);
 		str->Release();
 	}
@@ -222,7 +218,7 @@ Text::MailCreator::MailCreator()
 	this->content = 0;
 	NEW_CLASS(this->toVals, Text::StringBuilderUTF8());
 	NEW_CLASS(this->ccVals, Text::StringBuilderUTF8());
-	NEW_CLASS(this->attachName, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(this->attachName, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->attachObj, Data::ArrayList<Text::IMIMEObj*>());
 }
 
@@ -240,7 +236,7 @@ Text::MailCreator::~MailCreator()
 	i = this->attachName->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->attachName->GetItem(i));
+		this->attachName->GetItem(i)->Release();
 		obj = this->attachObj->GetItem(i);
 		DEL_CLASS(obj);
 	}
@@ -410,7 +406,7 @@ void Text::MailCreator::AddAttachment(Text::CString fileName)
 	Text::IMIMEObj *obj = Text::IMIMEObj::ParseFromFile(fileName);
 
 	this->attachObj->Add(obj);
-	this->attachName->Add(Text::StrCopyNewC(fileName.v, fileName.leng));
+	this->attachName->Add(Text::String::New(fileName.v, fileName.leng));
 }
 
 Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
@@ -447,7 +443,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		UOSInt j;
 		UOSInt k;
 		UOSInt l;
-		const UTF8Char *fname;
+		Text::String *fname;
 		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj((const UTF8Char*)"multipart/mixed", (const UTF8Char*)"This is a multi-part message in MIME format."));
 		if (this->content)
 		{
@@ -463,18 +459,18 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 			obj = this->attachObj->GetItem(i);
 			fname = this->attachName->GetItem(i);
 			k = mpart->AddPart(obj->Clone());
-			l = Text::StrLastIndexOfChar(fname, '\\');
+			l = fname->LastIndexOf(IO::Path::PATH_SEPERATOR);
 			sbc.ClearStr();
 			contType = obj->GetContentType();
 			sbc.AppendC(contType.v, contType.leng);
 			sbc.AppendC(UTF8STRC(";\r\n\tname=\""));
-			this->AppendStr(&sbc, &fname[l + 1]);
+			this->AppendStr(&sbc, fname->ToCString().Substring(l + 1));
 			sbc.AppendC(UTF8STRC("\""));
 			mpart->AddPartHeader(k, UTF8STRC("Content-Type"), sbc.ToString(), sbc.GetLength());
 			mpart->AddPartHeader(k, UTF8STRC("Content-Transfer-Encoding"), UTF8STRC("base64"));
 			sbc.ClearStr();
 			sbc.AppendC(UTF8STRC("attachment; \r\n\tfilename=\""));
-			this->AppendStr(&sbc, &fname[l + 1]);
+			this->AppendStr(&sbc, fname->ToCString().Substring(l + 1));
 			sbc.AppendC(UTF8STRC("\""));
 			mpart->AddPartHeader(k, UTF8STRC("Content-Disposition"), sbc.ToString(), sbc.GetLength());
 			i++;

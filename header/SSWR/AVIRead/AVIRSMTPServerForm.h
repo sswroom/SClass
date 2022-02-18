@@ -31,8 +31,8 @@ namespace SSWR
 				Net::SocketUtil::AddressInfo remoteAddr;
 				UInt16 remotePort;
 				Int64 recvTime;
-				const UTF8Char *fromAddr;
-				Data::ArrayList<const UTF8Char *> *rcptList;
+				Text::String *fromAddr;
+				Data::ArrayList<Text::String *> *rcptList;
 				Text::String *fileName;
 				const UTF8Char *uid;
 				UOSInt fileSize;
@@ -91,7 +91,7 @@ namespace SSWR
 			static void __stdcall OnLogFileClicked(void *userObj);
 			static void __stdcall OnEmailDblClicked(void *userObj, UOSInt index);
 			static UTF8Char *__stdcall OnMailReceived(UTF8Char *queryId, void *userObj, Net::TCPClient *cli, Net::Email::SMTPServer::MailStatus *mail);
-			static Bool __stdcall OnMailLogin(void *userObj, const UTF8Char *userName, const UTF8Char *pwd);
+			static Bool __stdcall OnMailLogin(void *userObj, Text::CString userName, Text::CString pwd);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnCertKeyClicked(void *userObj);
 			static void __stdcall OnSMTPTypeSelChg(void *userObj);

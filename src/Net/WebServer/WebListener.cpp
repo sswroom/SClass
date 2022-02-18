@@ -173,7 +173,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 {
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
-	const UTF8Char *csptr;
+	Text::CString cstr;
 	Interlocked_IncrementU32(&this->status.reqCnt);
 	Sync::MutexUsage accLogMutUsage(this->accLogMut);
 	if (this->reqLog)
@@ -205,11 +205,11 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		{
 			sb.Append(Net::BrowserInfo::GetName(req->GetBrowser()));
 		}
-		csptr = req->GetBrowserVer();
-		if (csptr)
+		cstr = req->GetBrowserVer();
+		if (cstr.leng > 0)
 		{
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendSlow(csptr);
+			sb.Append(cstr);
 		}
 		sb.AppendC(UTF8STRC("\""));
 

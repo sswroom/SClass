@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	Text::StringBuilderUTF8 srcSb;
 	Text::StringBuilderUTF8 destSb;
 	Text::StringBuilderUTF8 sbPrefix;
-	Data::ArrayList<const UTF8Char*> enumList;
+	Data::ArrayList<Text::String*> enumList;
 
 	this->txtPrefix->GetText(&sbPrefix);
 	this->txtSource->GetText(&srcSb);
@@ -47,7 +47,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 		{
 			destSb.AppendC(UTF8STRC("case "));
 			destSb.AppendC(sbPrefix.ToString(), sbPrefix.GetLength());
-			destSb.AppendSlow(enumList.GetItem(i));
+			destSb.Append(enumList.GetItem(i));
 			destSb.AppendC(UTF8STRC(":\r\n"));
 			i++;
 		}
@@ -57,7 +57,7 @@ void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()
 	{
 		this->txtDest->SetText(CSTR(""));
 	}
-	LIST_FREE_FUNC(&enumList, Text::StrDelNew);
+	LIST_FREE_STRING(&enumList);
 }
 
 SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)

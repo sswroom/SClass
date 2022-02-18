@@ -249,7 +249,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnAccessSelChg(void *user
 		sb.AppendC(UTF8STRC("\r\n"));
 		sb.Append(log->headerName->GetItem(i));
 		sb.AppendC(UTF8STRC("\t"));
-		sb.AppendSlow(log->headerVal->GetItem(i));
+		sb.Append(log->headerVal->GetItem(i));
 		i++;
 	}
 	me->txtAccess->SetText(sb.ToCString());

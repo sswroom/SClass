@@ -61,7 +61,7 @@ Bool Exporter::DBPListExporter::ExportFile(IO::SeekableStream *stm, const UTF8Ch
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 	DB::DBReader *r;
-	r = db->GetTableData(name, 0, 0, 0, 0, 0);
+	r = db->GetTableData(name, 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
 		return false;

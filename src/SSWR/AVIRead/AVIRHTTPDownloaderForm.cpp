@@ -139,8 +139,8 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::ProcessThread(void *user
 			j = cli->GetRespHeaderCnt();
 			while (i < j)
 			{
-				cli->GetRespHeader(i, (UTF8Char*)buff);
-				me->respHeaders->Add(Text::StrCopyNew((UTF8Char*)buff));
+				sptr = cli->GetRespHeader(i, buff);
+				me->respHeaders->Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
 				i++;
 			}
 			me->respHdrChanged = true;
@@ -185,7 +185,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.AppendSlow(me->respHeaders->GetItem(i));
+			sb.Append(me->respHeaders->GetItem(i));
 			me->lvHeaders->AddItem(sb.ToCString(), 0);
 			i++;
 		}
@@ -262,7 +262,7 @@ void SSWR::AVIRead::AVIRHTTPDownloaderForm::ClearHeaders()
 	i = this->respHeaders->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->respHeaders->RemoveAt(i));
+		this->respHeaders->RemoveAt(i)->Release();
 	}
 }
 
@@ -283,7 +283,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->reqHeader = 0;
 	this->downPath = 0;
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
-	NEW_CLASS(this->respHeaders, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->respHeaders, Data::ArrayList<Text::String *>());
 
 	Data::DateTime t;
 	t.SetCurrTimeUTC();

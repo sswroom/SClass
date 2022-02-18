@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnFilterChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
 	SSWR::AVIRead::AVIRUserAgentSelForm::OSItem *osItem = (SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*)me->cboFilterOS->GetSelectedItem();
-	me->UpdateUAList(osItem->os, osItem->osVer, (Net::BrowserInfo::BrowserType)(OSInt)me->cboFilterBrowser->GetSelectedItem());
+	me->UpdateUAList(osItem->os, {osItem->osVer, osItem->osVerLen}, (Net::BrowserInfo::BrowserType)(OSInt)me->cboFilterBrowser->GetSelectedItem());
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(void *userObj)
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(void *user
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
-void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os, const Char *osVer, Net::BrowserInfo::BrowserType browser)
+void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser)
 {
 	UOSInt i;
 	UOSInt j;
@@ -47,12 +47,12 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	{
 		if (os == Manage::OSInfo::OT_UNKNOWN || os == uaList[i].os)
 		{
-			if (osVer == 0 || (uaList[i].osVer != 0 && Text::StrEquals(uaList[i].osVer, osVer)))
+			if (osVer.leng == 0 || (uaList[i].osVerLen != 0 && osVer.Equals(uaList[i].osVer, uaList[i].osVerLen)))
 			{
 				if (browser == Net::BrowserInfo::BT_UNKNOWN || browser == uaList[i].browser)
 				{
 					sb.ClearStr();
-					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, (const UTF8Char*)uaList[i].osVer);
+					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, {uaList[i].osVer, uaList[i].osVerLen});
 					k = this->lvUserAgent->AddItem(sb.ToCString(), &uaList[i]);
 					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser).v);
 					if (uaList[i].browserVer)
@@ -149,9 +149,10 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
 	osItem->os = Manage::OSInfo::OT_UNKNOWN;
 	osItem->osVer = 0;
+	osItem->osVerLen = 0 ;
 	this->osList->Add(osItem);
 	sb.ClearStr();
-	Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
+	Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 	i = this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 	this->cboFilterOS->SetSelectedIndex(i);
 	i = 0;
@@ -173,9 +174,10 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 			osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
 			osItem->os = uaList[i].os;
 			osItem->osVer = 0;
+			osItem->osVerLen = 0;
 			this->osList->Add(osItem);
 			sb.ClearStr();
-			Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
+			Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 			this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 		}
 
@@ -197,9 +199,10 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 				osItem = MemAlloc(SSWR::AVIRead::AVIRUserAgentSelForm::OSItem, 1);
 				osItem->os = uaList[i].os;
 				osItem->osVer = uaList[i].osVer;
+				osItem->osVerLen = uaList[i].osVerLen;
 				this->osList->Add(osItem);
 				sb.ClearStr();
-				Manage::OSInfo::GetCommonName(&sb, osItem->os, (const UTF8Char*)osItem->osVer);
+				Manage::OSInfo::GetCommonName(&sb, osItem->os, {osItem->osVer, osItem->osVerLen});
 				this->cboFilterOS->AddItem(sb.ToCString(), osItem);
 			}
 		}
@@ -213,7 +216,7 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 		i++;
 	}
 	this->cboFilterBrowser->SetSelectedIndex(0);
-	this->UpdateUAList(Manage::OSInfo::OT_UNKNOWN, 0, Net::BrowserInfo::BT_UNKNOWN);
+	this->UpdateUAList(Manage::OSInfo::OT_UNKNOWN, CSTR_NULL, Net::BrowserInfo::BT_UNKNOWN);
 }
 
 SSWR::AVIRead::AVIRUserAgentSelForm::~AVIRUserAgentSelForm()

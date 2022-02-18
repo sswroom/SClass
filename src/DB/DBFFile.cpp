@@ -104,7 +104,7 @@ UOSInt DB::DBFFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 1;
 }
 
-DB::DBReader *DB::DBFFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::DBFFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{

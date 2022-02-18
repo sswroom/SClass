@@ -11,9 +11,11 @@ namespace Net
 		typedef struct
 		{
 			Net::BrowserInfo::BrowserType browser;
-			const Char *browserVer;
+			const UTF8Char *browserVer;
+			UOSInt browserVerLen;
 			Manage::OSInfo::OSType os;
-			const Char *osVer;
+			const UTF8Char *osVer;
+			UOSInt osVerLen;
 			const UTF8Char *devName;
 			UOSInt devNameLen;
 			const UTF8Char *userAgent;

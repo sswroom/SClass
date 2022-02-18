@@ -30,7 +30,7 @@ namespace SSWR
 				UInt16 cliPort;
 				Text::String *reqURI;
 				Data::ArrayListString *headerName;
-				Data::ArrayList<const UTF8Char *> *headerVal;
+				Data::ArrayList<Text::String *> *headerVal;
 			} LogEntry;
 		private:
 			UOSInt logCnt;

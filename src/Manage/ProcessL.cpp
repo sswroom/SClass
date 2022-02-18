@@ -1147,9 +1147,7 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
-	Text::String *s = Text::String::NewNotNull(path);
-	sb.Append(s);
-	s->Release();
+	sb.AppendW(path);
 	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
 	return ret == 0;
 }

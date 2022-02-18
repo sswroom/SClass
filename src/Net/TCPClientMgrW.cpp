@@ -171,13 +171,14 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Data::DateTime *dt;
 	Net::TCPClientMgr::WorkerStatus *stat = (Net::TCPClientMgr::WorkerStatus*)o;
 	Net::TCPClientMgr *me = stat->me;
+	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	stat->running = true;
 	NEW_CLASS(dt, Data::DateTime());
 	while (!stat->toStop)
 	{
-		while ((stat->cliStat = me->workerTasks->Get()) != 0)
+		while ((cliStat = me->workerTasks->Get()) != 0)
 		{
-			Net::TCPClientMgr::TCPClientStatus *cliStat = stat->cliStat;
+			stat->working = true;
 			dt->SetCurrTimeUTC();
 			cliStat->timeStart = dt->ToTicks();
 			cliStat->timeAlerted = false;
@@ -199,6 +200,7 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 				((Sync::Event*)me->clsData)->Set();
 			}
 		}
+		stat->working = false;
 		stat->evt->Wait(7700);
 	}
 	DEL_CLASS(dt);
@@ -212,7 +214,7 @@ void Net::TCPClientMgr::ProcessClient(Net::TCPClientMgr::TCPClientStatus *cliSta
 	UOSInt i = this->workerCnt;
 	while (i-- > 0)
 	{
-		if (this->workers[i].cliStat == 0)
+		if (!this->workers[i].working)
 		{
 			this->workers[i].evt->Set();
 			return;
@@ -246,7 +248,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 		this->workers[workerCnt].running = false;
 		this->workers[workerCnt].toStop = false;
 		this->workers[workerCnt].isPrimary = (workerCnt == 0);
-		this->workers[workerCnt].cliStat = 0;
+		this->workers[workerCnt].working = false;
 		this->workers[workerCnt].me = this;
 		NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
 		

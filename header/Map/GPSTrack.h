@@ -107,7 +107,7 @@ namespace Map
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition);
+		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual ObjectClass GetObjectClass();
 
 		void NewTrack();

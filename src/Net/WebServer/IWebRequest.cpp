@@ -25,29 +25,31 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 		this->reqBrowser = ent->browser;
 		if (ent->browserVer)
 		{
-			this->reqBrowserVer = Text::StrCopyNew((const UTF8Char*)ent->browserVer);
+			this->reqBrowserVer.v = Text::StrCopyNewC(ent->browserVer, ent->browserVerLen);
+			this->reqBrowserVer.leng = ent->browserVerLen;
 		}
 		else
 		{
-			this->reqBrowserVer = 0;
+			this->reqBrowserVer = CSTR_NULL;
 		}
 		this->reqOS = ent->os;
 		if (ent->osVer)
 		{
-			this->reqOSVer = Text::StrCopyNew((const UTF8Char*)ent->osVer);
+			this->reqOSVer.v = Text::StrCopyNewC(ent->osVer, ent->osVerLen);
+			this->reqOSVer.leng = ent->osVerLen;
 		}
 		else
 		{
-			this->reqOSVer = 0;
+			this->reqOSVer = CSTR_NULL;
 		}
 		return;
 	}
 	Net::UserAgentDB::UAEntry ua;
 	Net::UserAgentDB::ParseUserAgent(&ua, uaHdr->ToCString());
 	this->reqBrowser = ua.browser;
-	this->reqBrowserVer = (const UTF8Char*)ua.browserVer;
+	this->reqBrowserVer = {ua.browserVer, ua.browserVerLen};
 	this->reqOS = ua.os;
-	this->reqOSVer = (const UTF8Char*)ua.osVer;
+	this->reqOSVer = {ua.osVer, ua.osVerLen};
 	SDEL_TEXT(ua.devName);
 }
 
@@ -55,15 +57,15 @@ Net::WebServer::IWebRequest::IWebRequest()
 {
 	this->uaParsed = false;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
-	this->reqBrowserVer = 0;
+	this->reqBrowserVer = CSTR_NULL;
 	this->reqOS = Manage::OSInfo::OT_UNKNOWN;
-	this->reqOSVer = 0;
+	this->reqOSVer = CSTR_NULL;
 }
 
 Net::WebServer::IWebRequest::~IWebRequest()
 {
-	SDEL_TEXT(this->reqBrowserVer);
-	SDEL_TEXT(this->reqOSVer);
+	SDEL_TEXT(this->reqBrowserVer.v);
+	SDEL_TEXT(this->reqOSVer.v);
 }
 
 Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
@@ -271,7 +273,7 @@ Net::BrowserInfo::BrowserType Net::WebServer::IWebRequest::GetBrowser()
 	return this->reqBrowser;
 }
 
-const UTF8Char *Net::WebServer::IWebRequest::GetBrowserVer()
+Text::CString Net::WebServer::IWebRequest::GetBrowserVer()
 {
 	if (!this->uaParsed)
 		this->ParseUserAgent();
@@ -292,7 +294,7 @@ Manage::OSInfo::OSType Net::WebServer::IWebRequest::GetOS()
 	return this->reqOS;
 }
 
-const UTF8Char *Net::WebServer::IWebRequest::GetOSVer()
+Text::CString Net::WebServer::IWebRequest::GetOSVer()
 {
 	if (!this->uaParsed)
 		this->ParseUserAgent();
