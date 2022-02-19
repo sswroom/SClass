@@ -29,6 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 		UOSInt j;
 		Data::DateTime dt;
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		Sync::MutexUsage mutUsage;
 		me->mgr->Use(&mutUsage);
 		ctrl->GetCurrItems(&itemList);
@@ -39,8 +40,8 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelsSelChg(void *userObj
 			j = me->lvCurrItems->AddItem(item->id, 0);
 			dt.SetTicks(item->msgTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			me->lvCurrItems->SetSubItem(j, 1, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			me->lvCurrItems->SetSubItem(j, 1, CSTRP(sbuff, sptr));
 			if (item->title)
 			{
 				me->lvCurrItems->SetSubItem(j, 2, item->title);
@@ -83,10 +84,10 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->lvCurrItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrItems->SetFullRowSelect(true);
 	this->lvCurrItems->SetShowGrid(true);
-	this->lvCurrItems->AddColumn((const UTF8Char*)"Id", 120);
-	this->lvCurrItems->AddColumn((const UTF8Char*)"Date", 120);
-	this->lvCurrItems->AddColumn((const UTF8Char*)"Title", 200);
-	this->lvCurrItems->AddColumn((const UTF8Char*)"Message", 400);
+	this->lvCurrItems->AddColumn(CSTR("Id"), 120);
+	this->lvCurrItems->AddColumn(CSTR("Date"), 120);
+	this->lvCurrItems->AddColumn(CSTR("Title"), 200);
+	this->lvCurrItems->AddColumn(CSTR("Message"), 400);
 
 	UOSInt i = Net::SNS::SNSControl::ST_FIRST;
 	Text::CString cstr;

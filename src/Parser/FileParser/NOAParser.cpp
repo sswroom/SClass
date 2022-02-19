@@ -23,7 +23,7 @@ void Parser::FileParser::NOAParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.noa", (const UTF8Char*)"NOA Package File");
+		selector->AddFilter(CSTR("*.noa"), CSTR("NOA Package File"));
 	}
 }
 

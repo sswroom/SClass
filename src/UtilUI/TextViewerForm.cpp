@@ -85,10 +85,10 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 	{
 	case MNU_FILE_OPEN:
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"TextViewer", L"Open", false));
-		dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Text File");
-		dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
-		dlg->AddFilter((const UTF8Char*)"*.cfg", (const UTF8Char*)"Config File");
-		dlg->AddFilter((const UTF8Char*)"*.ini", (const UTF8Char*)"Ini File");
+		dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
+		dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+		dlg->AddFilter(CSTR("*.cfg"), CSTR("Config File"));
+		dlg->AddFilter(CSTR("*.ini"), CSTR("Ini File"));
 		fileName = this->txtView->GetFileName();
 		if (fileName)
 		{

@@ -293,7 +293,7 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	this->wgs84 = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
 	NEW_CLASS(this->points, Data::ArrayList<Double>());
 
-	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this, CSTR("Stream Type")));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStreamType, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtStreamType->SetRect(104, 4, 200, 23, false);
@@ -301,9 +301,9 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this, CSTR("Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
-	NEW_CLASS(this->chkAddPoints, UI::GUICheckBox(ui, this, (const UTF8Char*)"Add Points", false));
+	NEW_CLASS(this->chkAddPoints, UI::GUICheckBox(ui, this, CSTR("Add Points"), false));
 	this->chkAddPoints->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Speed (km/s)"));
+	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this, CSTR("Speed (km/s)")));
 	this->lblSpeed->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this, CSTR("50")));
 	this->txtSpeed->SetRect(104, 52, 100, 23, false);
@@ -313,17 +313,17 @@ SSWR::AVIRead::AVIRGPSSimulatorForm::AVIRGPSSimulatorForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this, CSTR("Set")));
 	this->btnSpeed->SetRect(304, 52, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
-	NEW_CLASS(this->lblCurrLat, UI::GUILabel(ui, this, (const UTF8Char*)"Current Lat"));
+	NEW_CLASS(this->lblCurrLat, UI::GUILabel(ui, this, CSTR("Current Lat")));
 	this->lblCurrLat->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtCurrLat, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCurrLat->SetRect(104, 76, 150, 23, false);
 	this->txtCurrLat->SetReadOnly(true);
-	NEW_CLASS(this->lblCurrLon, UI::GUILabel(ui, this, (const UTF8Char*)"Current Lon"));
+	NEW_CLASS(this->lblCurrLon, UI::GUILabel(ui, this, CSTR("Current Lon")));
 	this->lblCurrLon->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtCurrLon, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtCurrLon->SetRect(104, 100, 150, 23, false);
 	this->txtCurrLon->SetReadOnly(true);
-	NEW_CLASS(this->lblPoints, UI::GUILabel(ui, this, (const UTF8Char*)"Points"));
+	NEW_CLASS(this->lblPoints, UI::GUILabel(ui, this, CSTR("Points")));
 	this->lblPoints->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->lbPoints, UI::GUIListBox(ui, this, false));
 	this->lbPoints->SetRect(104, 124, 300, 300, false);

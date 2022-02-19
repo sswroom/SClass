@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRPerformanceLogForm::OnStartClicked(void *userO
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting logger", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting logger"), CSTR("Error"), me);
 	}
 }
 
@@ -120,7 +120,7 @@ SSWR::AVIRead::AVIRPerformanceLogForm::AVIRPerformanceLogForm(UI::GUIClientContr
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(104, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblCurrWRate, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"W Rate"));
+	NEW_CLASS(this->lblCurrWRate, UI::GUILabel(ui, this->pnlCtrl, CSTR("W Rate")));
 	this->lblCurrWRate->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCurrWRate, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtCurrWRate->SetRect(104, 28, 150, 23, false);

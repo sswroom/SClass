@@ -36,8 +36,8 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
-				status->AddGlobalDef(CSTR("__STDC__"), (const UTF8Char*)"0");
-				status->AddGlobalDef(CSTR("__cplusplus"), (const UTF8Char*)"201103");
+				status->AddGlobalDef(CSTR("__STDC__"), CSTR("0"));
+				status->AddGlobalDef(CSTR("__cplusplus"), CSTR("201103"));
 				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				NEW_CLASS(parser, Text::Cpp::CppCodeParser(env));
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
-				status->AddGlobalDef(CSTR("__STDC__"), (const UTF8Char*)"1");
+				status->AddGlobalDef(CSTR("__STDC__"), CSTR("1"));
 				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
@@ -192,7 +192,7 @@ SSWR::AVIRead::AVIRCodeProjectForm::AVIRCodeProjectForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblConfig, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Config"));
+	NEW_CLASS(this->lblConfig, UI::GUILabel(ui, this->pnlCtrl, CSTR("Config")));
 	this->lblConfig->SetRect(100, 0, 100, 23, false);
 	NEW_CLASS(this->cboConfig, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboConfig->SetRect(200, 0, 200, 23, false);

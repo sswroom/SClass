@@ -33,7 +33,7 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, voi
 		{
 			if (unkStart >= 0)
 			{
-				hdlr(userObj, fileOfst + (UOSInt)unkStart, i - (UOSInt)unkStart, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + (UOSInt)unkStart, i - (UOSInt)unkStart, CSTR("Unknown Protocol"));
 				unkStart = -1;
 			}
 			if (protoStart < 0)
@@ -136,17 +136,17 @@ UOSInt IO::ProtoDec::JTT808ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, voi
 						sb.AppendC(UTF8STRC("Unknown Protocol"));
 						break;
 					}
-					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart + 1, sb.ToString());
+					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart + 1, sb.ToCString());
 				}
 				else
 				{
-					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, (const UTF8Char*)"Unknown Protocol");
+					hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, CSTR("Unknown Protocol"));
 				}
 				protoStart = -1;
 			}
 			else
 			{
-				hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + (UOSInt)protoStart, i - (UOSInt)protoStart, CSTR("Unknown Protocol"));
 				protoStart = (OSInt)i;
 			}
 		}

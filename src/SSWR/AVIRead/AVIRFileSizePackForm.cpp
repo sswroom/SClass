@@ -137,7 +137,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	maxSize = sb.ToUInt64();
 	if (maxSize <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing the size", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the size"), CSTR("Error"), this);
 		this->cboMaxSize->Focus();
 		return;
 	}
@@ -147,13 +147,13 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	this->txtDir->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input directory", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
 		this->txtDir->Focus();
 		return;
 	}
 	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input directory", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
 		this->txtDir->Focus();
 		return;
 	}
@@ -356,14 +356,14 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(0, 0, 424, 104, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Directory"));
+	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this->pnlFile, CSTR("Directory")));
 	this->lblDir->SetRect(16, 8, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDir->SetRect(120, 8, 192, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlFile, CSTR("Start")));
 	this->btnStart->SetRect(328, 8, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblMaxSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Maximum Size"));
+	NEW_CLASS(this->lblMaxSize, UI::GUILabel(ui, this->pnlFile, CSTR("Maximum Size")));
 	this->lblMaxSize->SetRect(16, 42, 100, 23, false);
 	NEW_CLASS(this->cboMaxSize, UI::GUIComboBox(ui, this->pnlFile, true));
 	this->cboMaxSize->AddItem(CSTR("4697620480"), 0);
@@ -371,12 +371,12 @@ SSWR::AVIRead::AVIRFileSizePackForm::AVIRFileSizePackForm(UI::GUIClientControl *
 	this->cboMaxSize->AddItem(CSTR("737126400"), 0);
 	this->cboMaxSize->SetText(CSTR("25000000000"));
 	this->cboMaxSize->SetRect(120, 42, 104, 23, false);
-	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Total Size"));
+	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlFile, CSTR("Total Size")));
 	this->lblTotalSize->SetRect(224, 42, 72, 23, false);
 	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtTotalSize->SetReadOnly(true);
 	this->txtTotalSize->SetRect(296, 42, 100, 23, false);
-	NEW_CLASS(this->lblDirName, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Dir Name"));
+	NEW_CLASS(this->lblDirName, UI::GUILabel(ui, this->pnlFile, CSTR("Dir Name")));
 	this->lblDirName->SetRect(16, 76, 100, 23, false);
 	NEW_CLASS(this->txtDirName, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtDirName->SetRect(120, 76, 104, 23, false);

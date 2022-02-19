@@ -222,18 +222,18 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->mut2, Sync::Mutex());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream1, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Stream 1"));
+	NEW_CLASS(this->grpStream1, UI::GUIGroupBox(ui, this, CSTR("Stream 1")));
 	this->grpStream1->SetRect(0, 0, 250, 48, false);
 	this->grpStream1->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->pnlStream1, UI::GUIPanel(ui, this->grpStream1));
 	this->pnlStream1->SetRect(0, 0, 100, 104, false);
 	this->pnlStream1->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream1, UI::GUILabel(ui, this->pnlStream1, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStream1, UI::GUILabel(ui, this->pnlStream1, CSTR("Stream Type")));
 	this->lblStream1->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream1, UI::GUITextBox(ui, this->pnlStream1, CSTR("-")));
 	this->txtStream1->SetRect(4, 28, 200, 23, false);
 	this->txtStream1->SetReadOnly(true);
-	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, (const UTF8Char*)"Log to file", false));
+	NEW_CLASS(this->chkStreamLog1, UI::GUICheckBox(ui, this->pnlStream1, CSTR("Log to file"), false));
 	this->chkStreamLog1->SetRect(4, 52, 200, 23, false);
 	NEW_CLASS(this->btnStream1, UI::GUIButton(ui, this->pnlStream1, CSTR("&Open")));
 	this->btnStream1->SetRect(4, 76, 75, 23, false);
@@ -242,17 +242,17 @@ SSWR::AVIRead::AVIRStreamConvForm::AVIRStreamConvForm(UI::GUIClientControl *pare
 	this->rlcStream1->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->hspStream, UI::GUIHSplitter(ui, this, 3, false));
 
-	NEW_CLASS(this->grpStream2, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Stream 2"));
+	NEW_CLASS(this->grpStream2, UI::GUIGroupBox(ui, this, CSTR("Stream 2")));
 	this->grpStream2->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlStream2, UI::GUIPanel(ui, this->grpStream2));
 	this->pnlStream2->SetRect(0, 0, 100, 104, false);
 	this->pnlStream2->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream2, UI::GUILabel(ui, this->pnlStream2, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStream2, UI::GUILabel(ui, this->pnlStream2, CSTR("Stream Type")));
 	this->lblStream2->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream2, UI::GUITextBox(ui, this->pnlStream2, CSTR("-")));
 	this->txtStream2->SetRect(4, 28, 200, 23, false);
 	this->txtStream2->SetReadOnly(true);
-	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, (const UTF8Char*)"Log to file", false));
+	NEW_CLASS(this->chkStreamLog2, UI::GUICheckBox(ui, this->pnlStream2, CSTR("Log to file"), false));
 	this->chkStreamLog2->SetRect(4, 52, 200, 23, false);
 	NEW_CLASS(this->btnStream2, UI::GUIButton(ui, this->pnlStream2, CSTR("&Open")));
 	this->btnStream2->SetRect(4, 76, 75, 23, false);

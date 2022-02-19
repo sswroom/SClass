@@ -22,7 +22,7 @@ void Parser::FileParser::DTSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dts", (const UTF8Char*)"DTS File");
+		selector->AddFilter(CSTR("*.dts"), CSTR("DTS File"));
 	}
 }
 

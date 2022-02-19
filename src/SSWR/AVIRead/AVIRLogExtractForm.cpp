@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogExtractSFile", false));
-	dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtSFile->GetText(&sb);
 	if (sb.GetLength() > 0)
@@ -34,8 +34,8 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogExtractOFile", true));
-	dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Text File");
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Text File"));
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
@@ -62,15 +62,15 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 	me->txtSuffix->GetText(&sbSuffix);
 	if (IO::Path::GetPathType(sb1.ToString(), sb1.GetLength()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Source File not found", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Source File not found"), CSTR("Error"), me);
 	}
 	else if (sb2.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Prefix", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Prefix"), CSTR("Error"), me);
 	}
 	else if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Output", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Output"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -86,7 +86,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 		NEW_CLASS(fs2, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs2->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating Output file", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -128,7 +128,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 				hasData = reader->ReadLine(&sb1, 1024);
 			}
 
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Complete log extract", (const UTF8Char*)"Success", me);
+			UI::MessageDialog::ShowDialog(CSTR("Complete log extract"), CSTR("Success"), me);
 			DEL_CLASS(writer);
 		}
 		DEL_CLASS(fs2);
@@ -145,32 +145,32 @@ SSWR::AVIRead::AVIRLogExtractForm::AVIRLogExtractForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSFile, UI::GUILabel(ui, this, (const UTF8Char*)"Source File"));
+	NEW_CLASS(this->lblSFile, UI::GUILabel(ui, this, CSTR("Source File")));
 	this->lblSFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSFile->SetRect(104, 4, 560, 23, false);
 	NEW_CLASS(this->btnSFile, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnSFile->SetRect(660, 4, 75, 23, false);
 	this->btnSFile->HandleButtonClick(OnSFileClicked, this);
-	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this, (const UTF8Char*)"Prefix"));
+	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this, CSTR("Prefix")));
 	this->lblPrefix->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPrefix->SetRect(104, 28, 560, 23, false);
-	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, (const UTF8Char*)"Output"));
+	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, CSTR("Output")));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);
 	NEW_CLASS(this->btnOFile, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnOFile->SetRect(660, 52, 75, 23, false);
 	this->btnOFile->HandleButtonClick(OnOFileClicked, this);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, (const UTF8Char*)"Prefix"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, CSTR("Prefix")));
 	this->lblType->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this, false));
 	this->cboType->SetRect(104, 76, 200, 23, false);
 	this->cboType->AddItem(CSTR("Preserve line"), 0);
 	this->cboType->AddItem(CSTR("No Date and prefix"), 0);
 	this->cboType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblSuffix, UI::GUILabel(ui, this, (const UTF8Char*)"Suffix to add"));
+	NEW_CLASS(this->lblSuffix, UI::GUILabel(ui, this, CSTR("Suffix to add")));
 	this->lblSuffix->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSuffix->SetRect(104, 100, 560, 23, false);

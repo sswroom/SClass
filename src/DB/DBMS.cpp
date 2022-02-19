@@ -1764,20 +1764,20 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 	}
 }
 
-DB::DBMS::DBMS(const UTF8Char *versionStr, IO::LogTool *log)
+DB::DBMS::DBMS(Text::CString versionStr, IO::LogTool *log)
 {
 	NEW_CLASS(this->loginMap, Data::StringUTF8Map<DB::DBMS::LoginInfo*>());
 	NEW_CLASS(this->loginSHA1, Crypto::Hash::SHA1());
 	NEW_CLASS(this->loginMut, Sync::Mutex());
 	NEW_CLASS(this->sessMut, Sync::Mutex());
 	NEW_CLASS(this->sessMap, Data::Int32Map<DB::DBMS::SessionInfo*>());
-	this->versionStr = Text::StrCopyNew(versionStr);
+	this->versionStr = Text::String::New(versionStr);
 	this->log = log;
 }
 
 DB::DBMS::~DBMS()
 {
-	Text::StrDelNew(this->versionStr);
+	this->versionStr->Release();
 	Data::ArrayList<DB::DBMS::LoginInfo*> *loginList = this->loginMap->GetValues();
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
@@ -1811,7 +1811,7 @@ DB::DBMS::~DBMS()
 	DEL_CLASS(this->sessMut);
 }
 
-const UTF8Char *DB::DBMS::GetVersion()
+Text::String *DB::DBMS::GetVersion()
 {
 	return this->versionStr;
 }

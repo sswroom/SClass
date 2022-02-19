@@ -137,8 +137,8 @@ void Text::MIMEObj::MailMessage::FreeRecpList(Data::ArrayList<MailAddress*> *rec
 	{
 		addr = recpList->RemoveAt(i);
 		if (addr->name)
-			Text::StrDelNew(addr->name);
-		Text::StrDelNew(addr->address);
+			addr->name->Release();
+		addr->address->Release();
 		MemFree(addr);
 	}
 }
@@ -469,6 +469,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 	UTF8Char *sbuff;
 	UTF8Char *sptr;
 	UTF8Char *ptr1;
+	UTF8Char *ptr1End;
 	UTF8Char *ptr2;
 	UOSInt ret = 0;
 	UTF8Char c;
@@ -519,8 +520,8 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 			else if (c == '<' && !quoted)
 			{
 				*ptr2++ = 0;
-				Text::StrTrim(ptr1);
-				addr->name = Text::StrCopyNew(ptr1);
+				ptr1End = Text::StrTrim(ptr1);
+				addr->name = Text::String::New(ptr1, (UOSInt)(ptr1End - ptr1));
 				ptr1 = ptr2;
 				while (true)
 				{
@@ -528,7 +529,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 					if (c == '0' || c == '>')
 					{
 						ptr2[-1] = 0;
-						addr->address = Text::StrCopyNew(ptr1);
+						addr->address = Text::String::New(ptr1, (UOSInt)(ptr2 - ptr1 - 1));
 						break;
 					}
 				}
@@ -536,7 +537,7 @@ UOSInt Text::MIMEObj::MailMessage::ParseAddrList(const UTF8Char *hdr, UOSInt hdr
 			}
 			else if (c == 0)
 			{
-				addr->address = Text::StrCopyNew(ptr1);
+				addr->address = Text::String::New(ptr1, (UOSInt)(ptr2 - ptr1));
 				addr->name = 0;
 				break;
 			}

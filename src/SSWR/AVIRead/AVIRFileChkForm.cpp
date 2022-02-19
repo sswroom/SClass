@@ -26,10 +26,10 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 
 	NEW_CLASS(this->lvFileChk, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvFileChk->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvFileChk->AddColumn((const UTF8Char*)"File Name", 600);
-	this->lvFileChk->AddColumn((const UTF8Char*)"Check Value", 250);
-	this->lvFileChk->AddColumn((const UTF8Char*)"Current Value", 250);
-	this->lvFileChk->AddColumn((const UTF8Char*)"Valid", 50);
+	this->lvFileChk->AddColumn(CSTR("File Name"), 600);
+	this->lvFileChk->AddColumn(CSTR("Check Value"), 250);
+	this->lvFileChk->AddColumn(CSTR("Current Value"), 250);
+	this->lvFileChk->AddColumn(CSTR("Valid"), 50);
 
 	this->fileChk = fileChk;
 
@@ -47,10 +47,10 @@ SSWR::AVIRead::AVIRFileChkForm::AVIRFileChkForm(UI::GUIClientControl *parent, UI
 		sb.AppendSlow(this->fileChk->GetEntryName(i));
 		this->lvFileChk->AddItem(sb.ToCString(), 0);
 		this->fileChk->GetEntryHash(i, hash);
-		Text::StrHexBytes(sbuff, hash, hashSize, 0);
-		this->lvFileChk->SetSubItem(i, 1, sbuff);
-		this->lvFileChk->SetSubItem(i, 2, (const UTF8Char*)"-");
-		this->lvFileChk->SetSubItem(i, 3, (const UTF8Char*)"-");
+		sptr = Text::StrHexBytes(sbuff, hash, hashSize, 0);
+		this->lvFileChk->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+		this->lvFileChk->SetSubItem(i, 2, CSTR("-"));
+		this->lvFileChk->SetSubItem(i, 3, CSTR("-"));
 		i++;
 	}
 	MemFree(hash);
@@ -71,6 +71,7 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_FILE_VALIDATE:
 		{
 			UTF8Char sbuff[128];
+			UTF8Char *sptr;
 			UOSInt hashSize;
 			UInt8 *hash;
 			UInt8 *hash2;
@@ -87,8 +88,8 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 			{
 				if (this->fileChk->CheckEntryHash(i, hash))
 				{
-					Text::StrHexBytes(sbuff, hash, hashSize, 0);
-					this->lvFileChk->SetSubItem(i, 2, sbuff);
+					sptr = Text::StrHexBytes(sbuff, hash, hashSize, 0);
+					this->lvFileChk->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 					this->fileChk->GetEntryHash(i, hash2);
 					eq = true;
 					k = hashSize;
@@ -100,11 +101,11 @@ void SSWR::AVIRead::AVIRFileChkForm::EventMenuClicked(UInt16 cmdId)
 							break;
 						}
 					}
-					this->lvFileChk->SetSubItem(i, 3, eq?(const UTF8Char*)"Y":(const UTF8Char*)"N");
+					this->lvFileChk->SetSubItem(i, 3, eq?CSTR("Y"):CSTR("N"));
 				}
 				else
 				{
-					this->lvFileChk->SetSubItem(i, 3, (const UTF8Char*)"Err");
+					this->lvFileChk->SetSubItem(i, 3, CSTR("Err"));
 				}
 				i++;
 			}

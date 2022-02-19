@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 	Manage::CPUInfo cpu;
 	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting CPU Name", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -38,23 +38,23 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 
 			sbData.AppendSlow(u8buff);
 			Net::HTTPClient *cli;
-			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
+			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
 			cli->Write(sbData.ToString(), sbData.GetLength());
 			respStatus = cli->GetRespStatus();
 			DEL_CLASS(cli);
 			if (respStatus == 200)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Upload success", (const UTF8Char*)"CPUInfo", me);
+				UI::MessageDialog::ShowDialog(CSTR("Upload success"), CSTR("CPUInfo"), me);
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in uploading to server", (const UTF8Char*)"CPUInfo", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in uploading to server"), CSTR("CPUInfo"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"CPU Info already exist", (const UTF8Char*)"CPUInfo", me);
+			UI::MessageDialog::ShowDialog(CSTR("CPU Info already exist"), CSTR("CPUInfo"), me);
 		}
 	}
 
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 	Manage::CPUInfo cpu;
 	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting CPU Name", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -113,8 +113,8 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMain->SetFullRowSelect(true);
 	this->lvMain->SetShowGrid(true);
-	this->lvMain->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvMain->AddColumn((const UTF8Char*)"Value", 550);
+	this->lvMain->AddColumn(CSTR("Name"), 200);
+	this->lvMain->AddColumn(CSTR("Value"), 550);
 
 	this->tpCache = this->tcMain->AddTabPage(CSTR("Cache"));
 	NEW_CLASS(this->lbCache, UI::GUIListBox(ui, this->tpCache, false));
@@ -125,10 +125,10 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	this->lvFeature->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFeature->SetFullRowSelect(true);
 	this->lvFeature->SetShowGrid(true);
-	this->lvFeature->AddColumn((const UTF8Char*)"Short Name", 100);
-	this->lvFeature->AddColumn((const UTF8Char*)"Value", 50);
-	this->lvFeature->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvFeature->AddColumn((const UTF8Char*)"Description", 450);
+	this->lvFeature->AddColumn(CSTR("Short Name"), 100);
+	this->lvFeature->AddColumn(CSTR("Value"), 50);
+	this->lvFeature->AddColumn(CSTR("Name"), 150);
+	this->lvFeature->AddColumn(CSTR("Description"), 450);
 
 	Manage::CPUInfoDetail cpu;
 	Text::StringBuilderUTF8 sb;
@@ -142,7 +142,7 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 		k = this->lvMain->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
 		cpu.GetInfoValue(i, &sb);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 		i++;
 	}
 	Data::ArrayList<const UTF8Char *> infoList;
@@ -165,14 +165,14 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 		k = this->lvFeature->AddItem(Manage::CPUInfo::GetFeatureShortName(i), 0);
 		if (flags1 & (1 << i))
 		{
-			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"1");
+			this->lvFeature->SetSubItem(k, 1, CSTR("1"));
 		}
 		else
 		{
-			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"0");
+			this->lvFeature->SetSubItem(k, 1, CSTR("0"));
 		}
-		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i).v);
-		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i).v);
+		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i));
+		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i));
 		i++;
 	}
 	i = 0;
@@ -181,14 +181,14 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 		k = this->lvFeature->AddItem(Manage::CPUInfo::GetFeatureShortName(i + 32), 0);
 		if (flags2 & (1 << i))
 		{
-			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"1");
+			this->lvFeature->SetSubItem(k, 1, CSTR("1"));
 		}
 		else
 		{
-			this->lvFeature->SetSubItem(k, 1, (const UTF8Char*)"0");
+			this->lvFeature->SetSubItem(k, 1, CSTR("0"));
 		}
-		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i + 32).v);
-		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i + 32).v);
+		this->lvFeature->SetSubItem(k, 2, Manage::CPUInfo::GetFeatureName(i + 32));
+		this->lvFeature->SetSubItem(k, 3, Manage::CPUInfo::GetFeatureDesc(i + 32));
 		i++;
 	}
 
@@ -201,35 +201,35 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 	{
 		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
 		k = this->lvMain->AddItem(CSTR("CPU Name"), 0);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
 	if (cpu.GetCPURatio(&r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
 		k = this->lvMain->AddItem(CSTR("Ratio"), 0);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
 	if (cpu.GetCPUTurboRatio(&r))
 	{
 		sb.ClearStr();
 		sb.AppendI32(r);
 		k = this->lvMain->AddItem(CSTR("Turbo Ratio"), 0);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
 	if (cpu.GetCPUTCC(&t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);
 		k = this->lvMain->AddItem(CSTR("TCC"), 0);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
 	if (cpu.GetCPUTemp(0, &t))
 	{
 		sb.ClearStr();
 		sb.AppendDouble(t);
 		k = this->lvMain->AddItem(CSTR("Temp"), 0);
-		this->lvMain->SetSubItem(k, 1, sb.ToString());
+		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}
 }
 

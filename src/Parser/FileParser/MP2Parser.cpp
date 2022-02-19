@@ -22,7 +22,7 @@ void Parser::FileParser::MP2Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mp2", (const UTF8Char*)"MPEG-1 Audio Layer 2 File");
+		selector->AddFilter(CSTR("*.mp2"), CSTR("MPEG-1 Audio Layer 2 File"));
 	}
 }
 

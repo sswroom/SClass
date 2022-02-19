@@ -191,24 +191,24 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacture"));
+	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, CSTR("Manufacture")));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemManu->SetRect(108, 8, 200, 23, false);
 	this->txtModemManu->SetReadOnly(true);
-	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Model"));
+	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, CSTR("Model")));
 	this->lblModemModel->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemModel->SetRect(108, 32, 200, 23, false);
 	this->txtModemModel->SetReadOnly(true);
-	NEW_CLASS(this->lblModemRev, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Revision"));
+	NEW_CLASS(this->lblModemRev, UI::GUILabel(ui, this->tpInfo, CSTR("Revision")));
 	this->lblModemRev->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->txtModemRev, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemRev->SetRect(108, 56, 200, 23, false);
 	this->txtModemRev->SetReadOnly(true);
 
 	this->tpDial = this->tcMain->AddTabPage(CSTR("Dial"));
-	NEW_CLASS(this->lblDialNum, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Dial Num"));
+	NEW_CLASS(this->lblDialNum, UI::GUILabel(ui, this->tpDial, CSTR("Dial Num")));
 	this->lblDialNum->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDialNum, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialNum->SetRect(104, 4, 200, 23, false);
@@ -218,12 +218,12 @@ SSWR::AVIRead::AVIRVoiceModemForm::AVIRVoiceModemForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnHangUp, UI::GUIButton(ui, this->tpDial, CSTR("Hang Up")));
 	this->btnHangUp->SetRect(184, 28, 75, 23, false);
 	this->btnHangUp->HandleButtonClick(OnHangUpClicked, this);
-	NEW_CLASS(this->lblDialStatus, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblDialStatus, UI::GUILabel(ui, this->tpDial, CSTR("Status")));
 	this->lblDialStatus->SetRect(4, 52, 250, 23, false);
 	NEW_CLASS(this->txtDialStatus, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialStatus->SetReadOnly(true);
 	this->txtDialStatus->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblDialTones, UI::GUILabel(ui, this->tpDial, (const UTF8Char*)"Tones"));
+	NEW_CLASS(this->lblDialTones, UI::GUILabel(ui, this->tpDial, CSTR("Tones")));
 	this->lblDialTones->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDialTones, UI::GUITextBox(ui, this->tpDial, CSTR("")));
 	this->txtDialTones->SetReadOnly(true);

@@ -16,7 +16,7 @@ namespace UI
 	public:
 		void ChangeSelected(Bool selVal);
 	public:
-		GUIRadioButton(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool selected);
+		GUIRadioButton(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected);
 		virtual ~GUIRadioButton();
 
 		virtual Text::CString GetObjectClass();

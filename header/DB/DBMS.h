@@ -101,7 +101,7 @@ namespace DB
 	private:
 		static const Char *sysVarList[];
 
-		const UTF8Char *versionStr;
+		Text::String *versionStr;
 		IO::LogTool *log;
 		Sync::Mutex *loginMut;
 		Crypto::Hash::SHA1 *loginSHA1;
@@ -123,10 +123,10 @@ namespace DB
 
 		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *colName, Bool *valid);
 	public:
-		DBMS(const UTF8Char *versionStr, IO::LogTool *log);
+		DBMS(Text::CString versionStr, IO::LogTool *log);
 		virtual ~DBMS();
 
-		const UTF8Char *GetVersion();
+		Text::String *GetVersion();
 		IO::LogTool *GetLogTool();
 
 		Bool UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host);

@@ -43,7 +43,7 @@ namespace Data
 			Data::LineChart::LineStyle lineStyle;
 
 			ChartData(Text::String *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
-			ChartData(const UTF8Char *name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
+			ChartData(Text::CString name, void *data, UOSInt dataCnt, Data::IChart::DataType dataType, UInt32 lineColor, Data::LineChart::LineStyle lineStyle);
 			~ChartData();
 		};
 
@@ -112,11 +112,11 @@ namespace Data
 		void SetPointType(PointType pointType, Double pointSize);
 		UInt32 GetRndColor();
 		void AddYDataDate(Text::String *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
-		void AddYDataDate(const UTF8Char *name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYDataDate(Text::CString name, Int64 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(Text::String *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
-		void AddYData(const UTF8Char *name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(Text::CString name, Int32 *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void AddYData(Text::String *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
-		void AddYData(const UTF8Char *name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
+		void AddYData(Text::CString name, Double *value, UOSInt valCnt, UInt32 lineColor, Data::LineChart::LineStyle style);
 		void SetXRangeDate(Data::DateTime *xVal);
 		void SetYRangeInt(Int32 yVal);
 		void SetYRangeDbl(Double yVal);

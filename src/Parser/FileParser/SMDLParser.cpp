@@ -213,7 +213,7 @@ void Parser::FileParser::SMDLParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.loc", (const UTF8Char*)"Location File");
+		selector->AddFilter(CSTR("*.loc"), CSTR("Location File"));
 	}
 }
 

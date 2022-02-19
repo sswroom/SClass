@@ -25,7 +25,7 @@ void Parser::FileParser::NS2Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ns2", (const UTF8Char*)"NS2 Package File");
+		selector->AddFilter(CSTR("*.ns2"), CSTR("NS2 Package File"));
 	}
 }
 

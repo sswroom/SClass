@@ -235,7 +235,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnRemoveLayer, UI::GUIButton(ui, this->pnlSetting, CSTR("Remove Layer")));
 	this->btnRemoveLayer->SetRect(4, 4, 75, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(OnRemoveLayerClicked, this);
-	NEW_CLASS(this->lblHOfst, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"H Offset"));
+	NEW_CLASS(this->lblHOfst, UI::GUILabel(ui, this->pnlSetting, CSTR("H Offset")));
 	this->lblHOfst->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->hsbHOfst, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
 	this->hsbHOfst->SetRect(104, 28, 300, 23, false);
@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtHOfst, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtHOfst->SetRect(404, 28, 100, 23, false);
 	this->txtHOfst->SetReadOnly(true);
-	NEW_CLASS(this->lblVOfst, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"V Offset"));
+	NEW_CLASS(this->lblVOfst, UI::GUILabel(ui, this->pnlSetting, CSTR("V Offset")));
 	this->lblVOfst->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->hsbVOfst, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
 	this->hsbVOfst->SetRect(104, 52, 300, 23, false);
@@ -253,7 +253,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtVOfst, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtVOfst->SetRect(404, 52, 100, 23, false);
 	this->txtVOfst->SetReadOnly(true);
-	NEW_CLASS(this->lblLevel, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"Level"));
+	NEW_CLASS(this->lblLevel, UI::GUILabel(ui, this->pnlSetting, CSTR("Level")));
 	this->lblLevel->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->hsbLevel, UI::GUIHScrollBar(ui, this->pnlSetting, 16));
 	this->hsbLevel->SetRect(104, 76, 300, 23, false);
@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtLevel, UI::GUITextBox(ui, this->pnlSetting, CSTR("0")));
 	this->txtLevel->SetRect(404, 76, 100, 23, false);
 	this->txtLevel->SetReadOnly(true);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlSetting, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlSetting, CSTR("Type")));
 	this->lblType->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlSetting, false));
 	this->cboType->SetRect(104, 100, 150, 23, false);
@@ -270,7 +270,7 @@ SSWR::AVIRead::AVIRImageGRForm::AVIRImageGRForm(UI::GUIClientControl *parent, UI
 	this->cboType->AddItem(CSTR("V GR"), 0);
 	this->cboType->AddItem(CSTR("HV GR"), 0);
 	this->cboType->HandleSelectionChange(OnTypeChanged, this);
-	NEW_CLASS(this->chkEnable, UI::GUICheckBox(ui, this->pnlSetting, (const UTF8Char*)"Enabled", true));
+	NEW_CLASS(this->chkEnable, UI::GUICheckBox(ui, this->pnlSetting, CSTR("Enabled"), true));
 	this->chkEnable->SetRect(104, 124, 200, 23, false);
 	this->chkEnable->HandleCheckedChange(OnEnableChanged, this);
 

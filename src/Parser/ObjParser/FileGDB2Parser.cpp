@@ -21,7 +21,7 @@ void Parser::ObjParser::FileGDB2Parser::PrepareSelector(IO::IFileSelector *selec
 {
 	if (t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.gdb", (const UTF8Char*)"File Geodatabase File");
+		selector->AddFilter(CSTR("*.gdb"), CSTR("File Geodatabase File"));
 	}
 }
 

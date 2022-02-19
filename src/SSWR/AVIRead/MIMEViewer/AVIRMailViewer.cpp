@@ -13,15 +13,15 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	NEW_CLASS(this->lvRecp, UI::GUIListView(ui, this->tpHeading, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvRecp->SetRect(0, 0, 300, 23, false);
 	this->lvRecp->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	this->lvRecp->AddColumn((const UTF8Char*)"Type", 40);
-	this->lvRecp->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvRecp->AddColumn((const UTF8Char*)"Email", 150);
+	this->lvRecp->AddColumn(CSTR("Type"), 40);
+	this->lvRecp->AddColumn(CSTR("Name"), 100);
+	this->lvRecp->AddColumn(CSTR("Email"), 150);
 	this->lvRecp->SetShowGrid(true);
 	this->lvRecp->SetFullRowSelect(true);
 	NEW_CLASS(this->pnlFrom, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlFrom->SetRect(0, 0, 100, 24, false);
 	this->pnlFrom->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlFrom, (const UTF8Char*)"From"));
+	NEW_CLASS(this->lblFrom, UI::GUILabel(ui, this->pnlFrom, CSTR("From")));
 	this->lblFrom->SetRect(0, 0, 100, 23, false);
 	this->lblFrom->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->txtFrom, UI::GUITextBox(ui, this->pnlFrom, CSTR("")));
@@ -30,7 +30,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	NEW_CLASS(this->pnlSubject, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlSubject->SetRect(0, 0, 100, 24, false);
 	this->pnlSubject->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSubject, UI::GUILabel(ui, this->pnlSubject, (const UTF8Char*)"Subject"));
+	NEW_CLASS(this->lblSubject, UI::GUILabel(ui, this->pnlSubject, CSTR("Subject")));
 	this->lblSubject->SetRect(0, 0, 100, 23, false);
 	this->lblSubject->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->txtSubject, UI::GUITextBox(ui, this->pnlSubject, CSTR("")));
@@ -38,7 +38,7 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	this->txtSubject->SetReadOnly(true);
 	NEW_CLASS(this->pnlDate, UI::GUIPanel(ui, this->tpHeading));
 	this->pnlDate->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlDate, (const UTF8Char*)"Date"));
+	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlDate, CSTR("Date")));
 	this->lblDate->SetRect(0, 0, 100, 23, false);
 	this->lblDate->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->txtDate, UI::GUITextBox(ui, this->pnlDate, CSTR("")));
@@ -48,8 +48,8 @@ SSWR::AVIRead::MIMEViewer::AVIRMailViewer::AVIRMailViewer(SSWR::AVIRead::AVIRCor
 	this->tpRAW = this->tcHeader->AddTabPage(CSTR("RAW Headers"));
 	NEW_CLASS(this->lvRAW, UI::GUIListView(ui, this->tpRAW, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvRAW->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	this->lvRAW->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvRAW->AddColumn((const UTF8Char*)"Value", 300);
+	this->lvRAW->AddColumn(CSTR("Name"), 100);
+	this->lvRAW->AddColumn(CSTR("Value"), 300);
 	this->lvRAW->SetShowGrid(true);
 	this->lvRAW->SetFullRowSelect(true);
 

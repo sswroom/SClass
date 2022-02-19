@@ -23,7 +23,7 @@ void Parser::FileParser::AFSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.afs", (const UTF8Char*)"AFS ADX ADPCM Package");
+		selector->AddFilter(CSTR("*.afs"), CSTR("AFS ADX ADPCM Package"));
 	}
 }
 

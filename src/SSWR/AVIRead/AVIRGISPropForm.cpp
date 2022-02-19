@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		setting.priority = Text::StrToInt32(sbuff);
 		if (setting.minScale == 0 || setting.maxScale == 0 || (setting.priority == 0 && !Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("0"))))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Input value invalid", (const UTF8Char*)"Properties", me);
+			UI::MessageDialog::ShowDialog(CSTR("Input value invalid"), CSTR("Properties"), me);
 			return;
 		}
 		setting.lineType = me->lineType;
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRGISPropForm::OnOKClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing properties", (const UTF8Char*)"Properties", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in storing properties"), CSTR("Properties"), me);
 		}
 	}	
 }
@@ -284,17 +284,17 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->SetSize(512, 320);
 
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Min Visible Scale"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Min Visible Scale")));
 	lbl->SetRect(8, 0, 100, 23, false);
 	NEW_CLASS(this->txtMinScale, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMinScale->SetRect(112, 0, 100, 21, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Max Visible Scale"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Max Visible Scale")));
 	lbl->SetRect(8, 24, 100, 23, false);
 	NEW_CLASS(this->txtMaxScale, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMaxScale->SetRect(112, 24, 100, 21, false);
-	NEW_CLASS(this->chkHide, UI::GUICheckBox(ui, this, (const UTF8Char*)"Hide", false));
+	NEW_CLASS(this->chkHide, UI::GUICheckBox(ui, this, CSTR("Hide"), false));
 	this->chkHide->SetRect(240, 8, 104, 24, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Font Style"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Font Style")));
 	lbl->SetRect(8, 48, 100, 23, false);
 	NEW_CLASS(this->pbFontStyle, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, false));
 	this->pbFontStyle->SetRect(112, 48, 160, 20, false);
@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->btnFontModify->SetRect(280, 48, 75, 20, false);
 	NEW_CLASS(this->btnFontStyle, UI::GUIButton(ui, this, CSTR("Style")));
 	this->btnFontStyle->SetRect(360, 48, 75, 20, false);
-	NEW_CLASS(this->lblLineStyle, UI::GUILabel(ui, this, (const UTF8Char*)"Line Style"));
+	NEW_CLASS(this->lblLineStyle, UI::GUILabel(ui, this, CSTR("Line Style")));
 	this->lblLineStyle->SetRect(8, 72, 100, 23, false);
 	NEW_CLASS(this->pbLineStyle, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, false));
 	this->pbLineStyle->SetRect(112, 72, 160, 20, false);
@@ -310,36 +310,36 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	this->btnLineModify->SetRect(280, 72, 75, 20, false);
 	NEW_CLASS(this->btnLineStyle, UI::GUIButton(ui, this, CSTR("Style")));
 	this->btnLineStyle->SetRect(360, 72, 75, 20, false);
-	NEW_CLASS(this->lblFillStyle, UI::GUILabel(ui, this, (const UTF8Char*)"Fill Style"));
+	NEW_CLASS(this->lblFillStyle, UI::GUILabel(ui, this, CSTR("Fill Style")));
 	this->lblFillStyle->SetRect(8, 96, 100, 23, false);
 	NEW_CLASS(this->pbFillStyle, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, false));
 	this->pbFillStyle->SetRect(112, 96, 160, 20, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Label Column"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Label Column")));
 	lbl->SetRect(8, 120, 100, 23, false);
 	NEW_CLASS(this->cboColName, UI::GUIComboBox(ui, this, false));
 	this->cboColName->SetRect(112, 120, 121, 20, false);
-	NEW_CLASS(this->chkShowLabel, UI::GUICheckBox(ui, this, (const UTF8Char*)"Show Label", false));
+	NEW_CLASS(this->chkShowLabel, UI::GUICheckBox(ui, this, CSTR("Show Label"), false));
 	this->chkShowLabel->SetRect(240, 120, 104, 24, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Label Priority"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Label Priority")));
 	lbl->SetRect(8, 144, 100, 23, false);
 	NEW_CLASS(this->txtPriority, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPriority->SetRect(112, 144, 100, 21, false);
-	NEW_CLASS(this->lblIcon, UI::GUILabel(ui, this, (const UTF8Char*)"Point Icon"));
+	NEW_CLASS(this->lblIcon, UI::GUILabel(ui, this, CSTR("Point Icon")));
 	this->lblIcon->SetRect(8, 168, 72, 23, false);
 	NEW_CLASS(this->pbIcon, UI::GUIPictureBox(ui, this, this->core->GetDrawEngine(), true, true));
 	this->pbIcon->SetRect(112, 168, 200, 128, false);
 
-	NEW_CLASS(this->grpLabel, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Label"));
+	NEW_CLASS(this->grpLabel, UI::GUIGroupBox(ui, this, CSTR("Label")));
 	this->grpLabel->SetRect(352, 92, 120, 144, false);
-	NEW_CLASS(this->chkSmart, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Smart", false));
+	NEW_CLASS(this->chkSmart, UI::GUICheckBox(ui, this->grpLabel, CSTR("Smart"), false));
 	this->chkSmart->SetRect(4, 4, 104, 24, false);
-	NEW_CLASS(this->chkRotate, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Rotate", false));
+	NEW_CLASS(this->chkRotate, UI::GUICheckBox(ui, this->grpLabel, CSTR("Rotate"), false));
 	this->chkRotate->SetRect(4, 28, 104, 24, false);
-	NEW_CLASS(this->chkAlign, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Align", false));
+	NEW_CLASS(this->chkAlign, UI::GUICheckBox(ui, this->grpLabel, CSTR("Align"), false));
 	this->chkAlign->SetRect(4, 52, 104, 24, false);
-	NEW_CLASS(this->chkTrim, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Trim", false));
+	NEW_CLASS(this->chkTrim, UI::GUICheckBox(ui, this->grpLabel, CSTR("Trim"), false));
 	this->chkTrim->SetRect(4, 76, 104, 24, false);
-	NEW_CLASS(this->chkCapital, UI::GUICheckBox(ui, this->grpLabel, (const UTF8Char*)"Capital", false));
+	NEW_CLASS(this->chkCapital, UI::GUICheckBox(ui, this->grpLabel, CSTR("Capital"), false));
 	this->chkCapital->SetRect(4, 100, 104, 24, false);
 	NEW_CLASS(this->btnOK, UI::GUIButton(ui, this, CSTR("OK")));
 	this->btnOK->SetRect(336, 244, 75, 23, false);
@@ -515,7 +515,7 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting layer properties", (const UTF8Char*)"Properties", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting layer properties"), CSTR("Properties"), this);
 		this->SetDialogResult(UI::GUIForm::DR_CANCEL);
 	}
 }

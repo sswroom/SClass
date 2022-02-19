@@ -143,6 +143,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 	}
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
 	tabDef = this->currDB->GetTableDef(tableName?tableName->v:0);
@@ -164,11 +165,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 			{
 				col = tabDef->GetCol(i);
 				k = this->lvTable->AddItem(col->GetColName(), 0);
-				col->ToColTypeStr(sbuff);
-				this->lvTable->SetSubItem(k, 1, sbuff);
-				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				sptr = col->ToColTypeStr(sbuff);
+				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				this->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
+				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
 					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -188,11 +189,11 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 			{
 				r->GetColDef(i, col);
 				k = this->lvTable->AddItem(col->GetColName(), 0);
-				col->ToColTypeStr(sbuff);
-				this->lvTable->SetSubItem(k, 1, sbuff);
-				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				this->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				sptr = col->ToColTypeStr(sbuff);
+				this->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				this->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				this->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
+				this->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
 					this->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -239,7 +240,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 		}
 		else
 		{
-			this->lvTableResult->AddColumn((const UTF8Char*)"Unnamed", 100);
+			this->lvTableResult->AddColumn(CSTR("Unnamed"), 100);
 		}
 		colSize[i] = 0;
 		i++;
@@ -259,7 +260,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 		{
 			sb->ClearStr();
 			r->GetStr(i, sb);
-			this->lvTableResult->SetSubItem(k, i, sb->ToString());
+			this->lvTableResult->SetSubItem(k, i, sb->ToCString());
 
 			if (sb->GetLength() > colSize[i])
 				colSize[i] = sb->GetLength();
@@ -361,13 +362,13 @@ SSWR::AVIRead::AVIRDBManagerForm::AVIRDBManagerForm(UI::GUIClientControl *parent
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
-	this->lvTable->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvTable->AddColumn((const UTF8Char*)"Type", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Null?", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"PK?", 30);
-	this->lvTable->AddColumn((const UTF8Char*)"Auto_Inc", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Default Val", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Attribute", 100);
+	this->lvTable->AddColumn(CSTR("Name"), 200);
+	this->lvTable->AddColumn(CSTR("Type"), 100);
+	this->lvTable->AddColumn(CSTR("Null?"), 100);
+	this->lvTable->AddColumn(CSTR("PK?"), 30);
+	this->lvTable->AddColumn(CSTR("Auto_Inc"), 100);
+	this->lvTable->AddColumn(CSTR("Default Val"), 100);
+	this->lvTable->AddColumn(CSTR("Attribute"), 100);
 	NEW_CLASS(this->vspTable, UI::GUIVSplitter(ui, this->tpTable, 3, false));
 	NEW_CLASS(this->lvTableResult, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 1));
 	this->lvTableResult->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -518,7 +519,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"This connection is not supported", (const UTF8Char*)"DB Manager", this);
+					UI::MessageDialog::ShowDialog(CSTR("This connection is not supported"), CSTR("DB Manager"), this);
 				}
 			}
 		}

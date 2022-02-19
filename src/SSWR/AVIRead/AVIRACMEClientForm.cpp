@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	me->txtHost->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter host", (const UTF8Char*)"ACME Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter host"), CSTR("ACME Client"), me);
 		return;
 	}
 	i = sb.IndexOf(':');
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	{
 		if (!Text::StrToUInt16(sb.ToString() + i + 1, &port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port number in host name is not valid", (const UTF8Char*)"ACME Client", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port number in host name is not valid"), CSTR("ACME Client"), me);
 			return;
 		}
 		sb.TrimToLength(i);
@@ -37,13 +37,13 @@ void __stdcall SSWR::AVIRead::AVIRACMEClientForm::OnStartClicked(void *userObj)
 	me->txtKeyFile->GetText(&sbKey);
 	if (sbKey.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter key file", (const UTF8Char*)"ACME Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter key file"), CSTR("ACME Client"), me);
 		return;
 	}
 	NEW_CLASS(me->client, Net::ACMEClient(me->sockf, sb.ToString(), port, sbKey.ToCString()));
 	if (me->client->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Server does not have valid response", (const UTF8Char*)"ACME Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Server does not have valid response"), CSTR("ACME Client"), me);
 		DEL_CLASS(me->client);
 		me->client = 0;
 		return;
@@ -93,11 +93,11 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("acme-staging-v02.api.letsencrypt.org")));
 	this->txtHost->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblKeyFile, UI::GUILabel(ui, this, (const UTF8Char*)"KeyFile"));
+	NEW_CLASS(this->lblKeyFile, UI::GUILabel(ui, this, CSTR("KeyFile")));
 	this->lblKeyFile->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKeyFile, UI::GUITextBox(ui, this, CSTRP(sbuff, sptr)));
 	this->txtKeyFile->SetRect(104, 28, 200, 23, false);
@@ -105,17 +105,17 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	this->btnStart->SetRect(104, 52, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
-	NEW_CLASS(this->lblTermOfService, UI::GUILabel(ui, this, (const UTF8Char*)"TermOfService"));
+	NEW_CLASS(this->lblTermOfService, UI::GUILabel(ui, this, CSTR("TermOfService")));
 	this->lblTermOfService->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTermOfService, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtTermOfService->SetRect(104, 76, 300, 23, false);
 	this->txtTermOfService->SetReadOnly(true);
-	NEW_CLASS(this->lblWebsite, UI::GUILabel(ui, this, (const UTF8Char*)"Website"));
+	NEW_CLASS(this->lblWebsite, UI::GUILabel(ui, this, CSTR("Website")));
 	this->lblWebsite->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtWebsite, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWebsite->SetRect(104, 100, 300, 23, false);
 	this->txtWebsite->SetReadOnly(true);
-	NEW_CLASS(this->lblAccount, UI::GUILabel(ui, this, (const UTF8Char*)"Account"));
+	NEW_CLASS(this->lblAccount, UI::GUILabel(ui, this, CSTR("Account")));
 	this->lblAccount->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtAccount, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtAccount->SetRect(104, 124, 300, 23, false);

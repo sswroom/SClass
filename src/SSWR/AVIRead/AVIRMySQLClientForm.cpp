@@ -33,25 +33,25 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	me->txtPort->GetText(&sbPwd);
 	if (sbUser.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the host", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the host"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
 	if (sbPwd.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the port", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the port"), CSTR("MySQL Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbUser.ToString(), sbUser.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving host", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
 	if (!Text::StrToUInt16(sbPwd.ToString(), &port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port invalid", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port invalid"), CSTR("MySQL Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -62,13 +62,13 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 	me->txtDatabase->GetText(&sbDatabase);
 	if (sbUser.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the user name", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the user name"), CSTR("MySQL Client"), me);
 		me->txtUserName->Focus();
 		return;
 	}
 	if (sbPwd.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the password", (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the password"), CSTR("MySQL Client"), me);
 		me->txtPassword->Focus();
 		return;
 	}
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnStartClicked(void *userObj)
 		me->cli->GetErrorMsg(&sbUser);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char*)"MySQL Client", me);
+		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MySQL Client"), me);
 	}
 	else
 	{
@@ -203,7 +203,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 			}
 			else
 			{
-				this->lvQueryResult->AddColumn((const UTF8Char*)"Unnamed", 100);
+				this->lvQueryResult->AddColumn(CSTR("Unnamed"), 100);
 			}
 			colSize[i] = 0;
 			i++;
@@ -223,7 +223,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 			{
 				sb->ClearStr();
 				r->GetStr(i, sb);
-				this->lvQueryResult->SetSubItem(k, i, sb->ToString());
+				this->lvQueryResult->SetSubItem(k, i, sb->ToCString());
 
 				if (sb->GetLength() > colSize[i])
 					colSize[i] = sb->GetLength();
@@ -280,58 +280,58 @@ SSWR::AVIRead::AVIRMySQLClientForm::AVIRMySQLClientForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpControl, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->tpControl, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("3306")));
 	this->txtPort->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->tpControl, CSTR("User Name")));
 	this->lblUserName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->tpControl, CSTR("root")));
 	this->txtUserName->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->tpControl, CSTR("Password")));
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Database"));
+	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this->tpControl, CSTR("Database")));
 	this->lblDatabase->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->tpControl, CSTR("")));
 	this->txtDatabase->SetRect(104, 100, 200, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->tpControl, CSTR("Start")));
 	this->btnStart->SetRect(104, 124, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->tpControl, CSTR("Status")));
 	this->lblStatus->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->tpControl, CSTR("Not connected")));
 	this->txtStatus->SetRect(104, 148, 150, 23, false);
 	this->txtStatus->SetReadOnly(true);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lblServerVer, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Server Ver"));
+	NEW_CLASS(this->lblServerVer, UI::GUILabel(ui, this->tpInfo, CSTR("Server Ver")));
 	this->lblServerVer->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtServerVer, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtServerVer->SetRect(104, 4, 250, 23, false);
 	this->txtServerVer->SetReadOnly(true);
-	NEW_CLASS(this->lblConnId, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Conn Id"));
+	NEW_CLASS(this->lblConnId, UI::GUILabel(ui, this->tpInfo, CSTR("Conn Id")));
 	this->lblConnId->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtConnId, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtConnId->SetRect(104, 28, 150, 23, false);
 	this->txtConnId->SetReadOnly(true);
-	NEW_CLASS(this->lblAuthPluginData, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Auth Data"));
+	NEW_CLASS(this->lblAuthPluginData, UI::GUILabel(ui, this->tpInfo, CSTR("Auth Data")));
 	this->lblAuthPluginData->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtAuthPluginData, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtAuthPluginData->SetRect(104, 52, 400, 23, false);
 	this->txtAuthPluginData->SetReadOnly(true);
-	NEW_CLASS(this->lblServerCap, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Capability"));
+	NEW_CLASS(this->lblServerCap, UI::GUILabel(ui, this->tpInfo, CSTR("Capability")));
 	this->lblServerCap->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtServerCap, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtServerCap->SetRect(104, 76, 120, 23, false);
 	this->txtServerCap->SetReadOnly(true);
-	NEW_CLASS(this->lblServerCS, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"CharacterSet"));
+	NEW_CLASS(this->lblServerCS, UI::GUILabel(ui, this->tpInfo, CSTR("CharacterSet")));
 	this->lblServerCS->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtServerCS, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtServerCS->SetRect(104, 100, 100, 23, false);

@@ -35,12 +35,12 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	filePath = me->txtLogDir->GetText(sbuff);
 	if (filePath == sbuff)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Log Dir", (const UTF8Char*)"Log Backup", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Log Dir"), CSTR("Log Backup"), me);
 		return;
 	}
 	if (IO::Path::GetPathType(sbuff, (UOSInt)(filePath - sbuff)) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Log Dir", (const UTF8Char*)"Log Backup", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid Log Dir"), CSTR("Log Backup"), me);
 		return;
 	}
 	currTime.SetCurrTimeUTC();
@@ -152,11 +152,11 @@ SSWR::AVIRead::AVIRLogBackupForm::AVIRLogBackupForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this, (const UTF8Char*)"Log Dir"));
+	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this, CSTR("Log Dir")));
 	this->lblLogDir->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtLogDir->SetRect(104, 4, 600, 23, false);
-	NEW_CLASS(this->lblLogName, UI::GUILabel(ui, this, (const UTF8Char*)"Log Name"));
+	NEW_CLASS(this->lblLogName, UI::GUILabel(ui, this, CSTR("Log Name")));
 	this->lblLogName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtLogName, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtLogName->SetRect(104, 28, 600, 23, false);

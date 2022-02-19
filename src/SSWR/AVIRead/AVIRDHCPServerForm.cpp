@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		Text::StringBuilderUTF8 sb;
 		if (ifIp == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select an interface", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please select an interface"), CSTR("Error"), me);
 			return;
 		}
 
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		subnet = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
 		if (!Net::SocketUtil::IPv4SubnetValid(subnet))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Subnet is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Subnet is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -51,12 +51,12 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		me->txtFirstIP->GetText(&sb);
 		if (!sb.ToUInt32(&firstIP))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"First IP is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (firstIP == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"First IP is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("First IP is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -64,12 +64,12 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		me->txtDevCount->GetText(&sb);
 		if (!sb.ToUInt32(&devCount))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Device Count is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (devCount == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Device Count is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Device Count is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((gateway = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Gateway is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Gateway is not valid"), CSTR("Error"), me);
 			return;
 		}
 
@@ -93,7 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"DNS1 is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("DNS1 is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		}
 		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"DNS2 is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("DNS2 is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else
@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting server", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -164,7 +164,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDevices->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->hwAddr);
-				me->lvDevices->SetSubItem(i, 1, macInfo->name);
+				me->lvDevices->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
 				if (dhcp == currSel)
 				{
 					me->lvDevices->SetSelectedIndex(i);
@@ -183,15 +183,15 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnTimerTick(void *userObj)
 			{
 				Data::DateTime dt;
 				dhcp->updated = false;
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->assignedIP);
-				me->lvDevices->SetSubItem(i, 2, sbuff);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->assignedIP);
+				me->lvDevices->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				dt.SetTicks(dhcp->assignTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvDevices->SetSubItem(i, 3, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				dt.AddSecond((OSInt)me->svr->GetIPLeaseTime());
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvDevices->SetSubItem(i, 4, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDevices->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 				if (dhcp->hostName)
 					me->lvDevices->SetSubItem(i, 5, dhcp->hostName);
 				if (dhcp->vendorClass)
@@ -214,31 +214,31 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 199, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Interface"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("Interface")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblSubnet, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Subnet Mask"));
+	NEW_CLASS(this->lblSubnet, UI::GUILabel(ui, this->pnlControl, CSTR("Subnet Mask")));
 	this->lblSubnet->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSubnet, UI::GUITextBox(ui, this->pnlControl, CSTR("255.255.255.0")));
 	this->txtSubnet->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblFirstIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"First IP"));
+	NEW_CLASS(this->lblFirstIP, UI::GUILabel(ui, this->pnlControl, CSTR("First IP")));
 	this->lblFirstIP->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFirstIP, UI::GUITextBox(ui, this->pnlControl, CSTR("51")));
 	this->txtFirstIP->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblDevCount, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Dev Count"));
+	NEW_CLASS(this->lblDevCount, UI::GUILabel(ui, this->pnlControl, CSTR("Dev Count")));
 	this->lblDevCount->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDevCount, UI::GUITextBox(ui, this->pnlControl, CSTR("100")));
 	this->txtDevCount->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->lblGateway, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Gateway"));
+	NEW_CLASS(this->lblGateway, UI::GUILabel(ui, this->pnlControl, CSTR("Gateway")));
 	this->lblGateway->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtGateway, UI::GUITextBox(ui, this->pnlControl, CSTR("192.168.0.1")));
 	this->txtGateway->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->lblDNS1, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"DNS1"));
+	NEW_CLASS(this->lblDNS1, UI::GUILabel(ui, this->pnlControl, CSTR("DNS1")));
 	this->lblDNS1->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtDNS1, UI::GUITextBox(ui, this->pnlControl, CSTR("192.168.0.1")));
 	this->txtDNS1->SetRect(104, 124, 100, 23, false);
-	NEW_CLASS(this->lblDNS2, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"DNS2"));
+	NEW_CLASS(this->lblDNS2, UI::GUILabel(ui, this->pnlControl, CSTR("DNS2")));
 	this->lblDNS2->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDNS2, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtDNS2->SetRect(104, 148, 100, 23, false);
@@ -249,13 +249,13 @@ SSWR::AVIRead::AVIRDHCPServerForm::AVIRDHCPServerForm(UI::GUIClientControl *pare
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
-	this->lvDevices->AddColumn((const UTF8Char*)"HW Address", 105);
-	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 200);
-	this->lvDevices->AddColumn((const UTF8Char*)"IP Addr", 100);
-	this->lvDevices->AddColumn((const UTF8Char*)"Obtain Time", 140);
-	this->lvDevices->AddColumn((const UTF8Char*)"Expire Time", 140);
-	this->lvDevices->AddColumn((const UTF8Char*)"Host Name", 100);
-	this->lvDevices->AddColumn((const UTF8Char*)"Vendor Class", 100);
+	this->lvDevices->AddColumn(CSTR("HW Address"), 105);
+	this->lvDevices->AddColumn(CSTR("Vendor"), 200);
+	this->lvDevices->AddColumn(CSTR("IP Addr"), 100);
+	this->lvDevices->AddColumn(CSTR("Obtain Time"), 140);
+	this->lvDevices->AddColumn(CSTR("Expire Time"), 140);
+	this->lvDevices->AddColumn(CSTR("Host Name"), 100);
+	this->lvDevices->AddColumn(CSTR("Vendor Class"), 100);
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

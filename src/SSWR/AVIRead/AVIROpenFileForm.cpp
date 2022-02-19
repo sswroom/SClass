@@ -48,7 +48,7 @@ SSWR::AVIRead::AVIROpenFileForm::AVIROpenFileForm(UI::GUIClientControl *parent, 
 	this->t = t;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, CSTR("File Name")));
 	this->lblName->SetRect(8, 16, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtName->SetRect(108, 16, 450, 23, false);

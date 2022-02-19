@@ -35,7 +35,7 @@ void Parser::FileParser::CSVParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer || t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
+		selector->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	}
 }
 

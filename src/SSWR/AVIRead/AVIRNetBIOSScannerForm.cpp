@@ -16,12 +16,12 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnRequestClicked(void *use
 	Net::AddressRange range(sb.ToString(), sb.GetLength(), me->chkTargetScan->IsChecked());
 	if (range.GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing Target Address", (const UTF8Char*)"NetBIOS Scanner", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Target Address"), CSTR("NetBIOS Scanner"), me);
 		return;
 	}
 	if (range.GetCount() > 1024)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Too many address to send", (const UTF8Char*)"NetBIOS Scanner", me);
+		UI::MessageDialog::ShowDialog(CSTR("Too many address to send"), CSTR("NetBIOS Scanner"), me);
 		return;
 	}
 
@@ -47,16 +47,17 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnAnswerSelChg(void *userO
 	if (ans)
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		UOSInt i = 0;
 		UOSInt j = ans->namesCnt;
 		while (i < j)
 		{
 			me->lvEntries->AddItem({ans->names[i].nameBuff, Text::StrCharCnt(ans->names[i].nameBuff)}, 0);
-			Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].nameType);
-			me->lvEntries->SetSubItem(i, 1, sbuff);
-			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType).v);
-			Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].flags);
-			me->lvEntries->SetSubItem(i, 3, sbuff);
+			sptr = Text::StrHexByte(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].nameType);
+			me->lvEntries->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			me->lvEntries->SetSubItem(i, 2, Net::NetBIOSUtil::NameTypeGetName(ans->names[i].nameType));
+			sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), ans->names[i].flags);
+			me->lvEntries->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -82,12 +83,12 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 			ans = ansList->GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, ReadMUInt32((UInt8*)&ans->sortableIP));
 			me->lvAnswers->AddItem(CSTRP(sbuff, sptr), ans);
-			Text::StrHexBytes(sbuff, ans->unitId, 6, ':');
-			me->lvAnswers->SetSubItem(i, 1, sbuff);
+			sptr = Text::StrHexBytes(sbuff, ans->unitId, 6, ':');
+			me->lvAnswers->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfoBuff(ans->unitId);
-			me->lvAnswers->SetSubItem(i, 2, mac->name);
-			Text::StrUInt32(sbuff, ans->ttl);
-			me->lvAnswers->SetSubItem(i, 4, sbuff);
+			me->lvAnswers->SetSubItem(i, 2, {mac->name, mac->nameLen});
+			sptr = Text::StrUInt32(sbuff, ans->ttl);
+			me->lvAnswers->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 			if (ans->names)
 			{
 				k = 0;
@@ -95,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRNetBIOSScannerForm::OnTimerTick(void *userObj)
 				{
 					if (ans->names[k].nameType == 0 && (ans->names[k].flags & 0x8000) == 0)
 					{
-						me->lvAnswers->SetSubItem(i, 3, ans->names[k].nameBuff);
+						me->lvAnswers->SetSubItem(i, 3, Text::CString::FromPtr(ans->names[k].nameBuff));
 						break;
 					}
 					k++;
@@ -124,11 +125,11 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblTargetAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Target Addr"));
+	NEW_CLASS(this->lblTargetAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Target Addr")));
 	this->lblTargetAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTargetAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetAddr->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->chkTargetScan, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Scan IP", false));
+	NEW_CLASS(this->chkTargetScan, UI::GUICheckBox(ui, this->pnlControl, CSTR("Scan IP"), false));
 	this->chkTargetScan->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlControl, CSTR("Request")));
 	this->btnRequest->SetRect(104, 28, 75, 23, false);
@@ -139,27 +140,27 @@ SSWR::AVIRead::AVIRNetBIOSScannerForm::AVIRNetBIOSScannerForm(UI::GUIClientContr
 	this->lvAnswers->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvAnswers->SetShowGrid(true);
 	this->lvAnswers->SetFullRowSelect(true);
-	this->lvAnswers->AddColumn((const UTF8Char*)"IP", 100);
-	this->lvAnswers->AddColumn((const UTF8Char*)"Unit ID", 120);
-	this->lvAnswers->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvAnswers->AddColumn((const UTF8Char*)"Name", 140);
-	this->lvAnswers->AddColumn((const UTF8Char*)"TTL", 80);
+	this->lvAnswers->AddColumn(CSTR("IP"), 100);
+	this->lvAnswers->AddColumn(CSTR("Unit ID"), 120);
+	this->lvAnswers->AddColumn(CSTR("Vendor"), 120);
+	this->lvAnswers->AddColumn(CSTR("Name"), 140);
+	this->lvAnswers->AddColumn(CSTR("TTL"), 80);
 	this->lvAnswers->HandleSelChg(OnAnswerSelChg, this);
 	NEW_CLASS(this->vspAnswers, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->lvEntries, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvEntries->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEntries->SetShowGrid(true);
 	this->lvEntries->SetFullRowSelect(true);
-	this->lvEntries->AddColumn((const UTF8Char*)"Name", 140);
-	this->lvEntries->AddColumn((const UTF8Char*)"TypeCode", 80);
-	this->lvEntries->AddColumn((const UTF8Char*)"TypeName", 150);
-	this->lvEntries->AddColumn((const UTF8Char*)"Flags", 80);
+	this->lvEntries->AddColumn(CSTR("Name"), 140);
+	this->lvEntries->AddColumn(CSTR("TypeCode"), 80);
+	this->lvEntries->AddColumn(CSTR("TypeName"), 150);
+	this->lvEntries->AddColumn(CSTR("Flags"), 80);
 
 	Net::SocketFactory *sockf = this->core->GetSocketFactory();
 	NEW_CLASS(this->netbios, Net::NetBIOSScanner(sockf));
 	if (this->netbios->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting NetBIOS Scanner", (const UTF8Char*)"NetBIOS Scanner", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting NetBIOS Scanner"), CSTR("NetBIOS Scanner"), this);
 	}
 	this->netbios->SetAnswerHandler(OnAnswerUpdated, this);
 

@@ -20,7 +20,7 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Agent"));
+	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, CSTR("Agent")));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	sptr=  Net::SocketUtil::GetAddrName(sbuff, addr);
 	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTRP(sbuff, sptr)));
@@ -30,10 +30,10 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);
-	this->lvResults->AddColumn((const UTF8Char*)"OID", 150);
-	this->lvResults->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvResults->AddColumn((const UTF8Char*)"ValueType", 100);
-	this->lvResults->AddColumn((const UTF8Char*)"Value", 200);
+	this->lvResults->AddColumn(CSTR("OID"), 150);
+	this->lvResults->AddColumn(CSTR("Name"), 150);
+	this->lvResults->AddColumn(CSTR("ValueType"), 100);
+	this->lvResults->AddColumn(CSTR("Value"), 200);
 
 	Net::SNMPClient *cli;
 	NEW_CLASS(cli, Net::SNMPClient(this->core->GetSocketFactory()));
@@ -62,13 +62,13 @@ SSWR::AVIRead::AVIRSNMPWalkForm::AVIRSNMPWalkForm(UI::GUIClientControl *parent, 
 				this->lvResults->AddItem(sb.ToCString(), 0);
 				sb.ClearStr();
 				Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
-				this->lvResults->SetSubItem(i, 1, sb.ToString());
-				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType).v);
+				this->lvResults->SetSubItem(i, 1, sb.ToCString());
+				this->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 				if (item->valBuff)
 				{
 					sb.ClearStr();
 					Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, &sb);
-					this->lvResults->SetSubItem(i, 3, sb.ToString());
+					this->lvResults->SetSubItem(i, 3, sb.ToCString());
 				}
 				i++;
 			}

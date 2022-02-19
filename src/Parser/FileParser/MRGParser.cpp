@@ -22,7 +22,7 @@ void Parser::FileParser::MRGParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mrg", (const UTF8Char*)"MRG Package File");
+		selector->AddFilter(CSTR("*.mrg"), CSTR("MRG Package File"));
 	}
 }
 

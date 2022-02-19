@@ -21,7 +21,7 @@ void Parser::FileParser::LUTParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LUT)
 	{
-		selector->AddFilter((const UTF8Char*)"*.3dlut", (const UTF8Char*)"3D LUT File");
+		selector->AddFilter(CSTR("*.3dlut"), CSTR("3D LUT File"));
 	}
 }
 

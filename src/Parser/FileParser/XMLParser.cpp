@@ -67,12 +67,12 @@ void Parser::FileParser::XMLParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
-		selector->AddFilter((const UTF8Char*)"*.gpx", (const UTF8Char*)"GPS Track File");
-		selector->AddFilter((const UTF8Char*)"*.kml", (const UTF8Char*)"KML File");
-		selector->AddFilter((const UTF8Char*)"*.osm", (const UTF8Char*)"OpenStreetMap File");
-		selector->AddFilter((const UTF8Char*)"*.vcproj", (const UTF8Char*)"VC Project File");
-		selector->AddFilter((const UTF8Char*)"*.gml", (const UTF8Char*)"GML File");
+		selector->AddFilter(CSTR("*.xml"), CSTR("XML File"));
+		selector->AddFilter(CSTR("*.gpx"), CSTR("GPS Track File"));
+		selector->AddFilter(CSTR("*.kml"), CSTR("KML File"));
+		selector->AddFilter(CSTR("*.osm"), CSTR("OpenStreetMap File"));
+		selector->AddFilter(CSTR("*.vcproj"), CSTR("VC Project File"));
+		selector->AddFilter(CSTR("*.gml"), CSTR("GML File"));
 	}
 }
 

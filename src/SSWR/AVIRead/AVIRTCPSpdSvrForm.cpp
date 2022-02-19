@@ -20,12 +20,12 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
 	if (!me->chkMultiThread->IsChecked())
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdSvrForm::OnStartClick(void *userObj)
 		SDEL_CLASS(me->cliMgr);
 		me->svr = 0;
 		me->cliMgr = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 		return;
 	}
 	me->txtPort->SetReadOnly(true);
@@ -107,11 +107,11 @@ SSWR::AVIRead::AVIRTCPSpdSvrForm::AVIRTCPSpdSvrForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, (const UTF8Char*)"Multi-Thread", false));
+	NEW_CLASS(this->chkMultiThread, UI::GUICheckBox(ui, this, CSTR("Multi-Thread"), false));
 	this->chkMultiThread->SetRect(104, 28, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 52, 75, 23, false);

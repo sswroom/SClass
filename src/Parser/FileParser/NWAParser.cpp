@@ -28,7 +28,7 @@ void Parser::FileParser::NWAParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.nwa", (const UTF8Char*)"NWA Audio File");
+		selector->AddFilter(CSTR("*.nwa"), CSTR("NWA Audio File"));
 	}
 }
 

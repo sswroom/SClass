@@ -22,7 +22,7 @@ void Parser::ObjParser::MPGXAParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"VCD File");
+		selector->AddFilter(CSTR("*.dat"), CSTR("VCD File"));
 	}
 }
 

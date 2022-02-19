@@ -24,7 +24,7 @@ void Parser::FileParser::ANIParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ani", (const UTF8Char*)"ANI File");
+		selector->AddFilter(CSTR("*.ani"), CSTR("ANI File"));
 	}
 }
 

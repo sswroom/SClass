@@ -144,7 +144,7 @@ void __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::OnSaveFileClicked(void *u
 	if (me->selX1 != 0 || me->selY1 != 0 || me->selX2 != 0 || me->selY2 != 0)
 	{
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISTileDownFile", true));
-		dlg->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
+		dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			me->SaveTilesFile(dlg->GetFileName()->ToCString());
@@ -586,17 +586,17 @@ SSWR::AVIRead::AVIRGISTileDownloadForm::AVIRGISTileDownloadForm(UI::GUIClientCon
 	this->btnStop->SetRect(224, 4, 100, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
 
-	NEW_CLASS(this->lblLayer, UI::GUILabel(ui, this, (const UTF8Char*)"Curr Layer"));
+	NEW_CLASS(this->lblLayer, UI::GUILabel(ui, this, CSTR("Curr Layer")));
 	this->lblLayer->SetRect(4, 36, 100, 23, false);
 	NEW_CLASS(this->txtLayer, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLayer->SetReadOnly(true);
 	this->txtLayer->SetRect(104, 36, 60, 23, false);
-	NEW_CLASS(this->lblImages, UI::GUILabel(ui, this, (const UTF8Char*)"Images"));
+	NEW_CLASS(this->lblImages, UI::GUILabel(ui, this, CSTR("Images")));
 	this->lblImages->SetRect(4, 60, 100, 23, false);
 	NEW_CLASS(this->txtImages, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtImages->SetReadOnly(true);
 	this->txtImages->SetRect(104, 60, 100, 23, false);
-	NEW_CLASS(this->lblError, UI::GUILabel(ui, this, (const UTF8Char*)"Error"));
+	NEW_CLASS(this->lblError, UI::GUILabel(ui, this, CSTR("Error")));
 	this->lblError->SetRect(4, 84, 100, 23, false);
 	NEW_CLASS(this->txtError, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtError->SetReadOnly(true);

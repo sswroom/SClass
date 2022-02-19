@@ -807,7 +807,7 @@ IO::Stream *Map::HKTrafficLayer::OpenURLStream()
 	{
 		Int32 status;
 		Net::HTTPClient *cli;
-		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, this->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		while (true)
 		{
 			status = cli->GetRespStatus();

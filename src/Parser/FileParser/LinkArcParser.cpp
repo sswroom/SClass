@@ -24,7 +24,7 @@ void Parser::FileParser::LinkArcParser::PrepareSelector(IO::IFileSelector *selec
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.arc", (const UTF8Char*)"ARC File");
+		selector->AddFilter(CSTR("*.arc"), CSTR("ARC File"));
 	}
 }
 

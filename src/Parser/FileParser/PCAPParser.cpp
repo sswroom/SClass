@@ -23,7 +23,7 @@ void Parser::FileParser::PCAPParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pcap", (const UTF8Char*)"PCAP File");
+		selector->AddFilter(CSTR("*.pcap"), CSTR("PCAP File"));
 	}
 }
 

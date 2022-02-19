@@ -129,7 +129,7 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentBatchForm::OnUpdateCBClicked(void *us
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No text in clipboard", (const UTF8Char*)"User Agent Update", me);
+		UI::MessageDialog::ShowDialog(CSTR("No text in clipboard"), CSTR("User Agent Update"), me);
 	}
 }
 
@@ -191,7 +191,7 @@ void SSWR::AVIRead::AVIRUserAgentBatchForm::UpdateByText(UTF8Char *txt, UOSInt t
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Nothing to update", (const UTF8Char*)"User Agent Update", this);
+		UI::MessageDialog::ShowDialog(CSTR("Nothing to update"), CSTR("User Agent Update"), this);
 	}
 	
 	LIST_FREE_STRING(&uaList);

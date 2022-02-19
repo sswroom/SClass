@@ -589,7 +589,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UI::FileDialog *dlg;
 			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SaveTimecode", true));
-			dlg->AddFilter((const UTF8Char*)"*.tc2", (const UTF8Char*)"Timecode V2");
+			dlg->AddFilter(CSTR("*.tc2"), CSTR("Timecode V2"));
 			if (dlg->ShowDialog(this->hwnd))
 			{
 				Media::IVideoSource *video;
@@ -638,7 +638,7 @@ void SSWR::AVIRead::AVIRMediaForm::EventMenuClicked(UInt16 cmdId)
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("t="));
 				Text::SBAppendF64(&sb, t);
-				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Test", this);
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Test"), this);
 
 				UTF8Char sbuff[512];
 				UTF8Char *sptr;

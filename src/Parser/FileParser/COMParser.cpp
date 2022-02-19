@@ -22,7 +22,7 @@ void Parser::FileParser::COMParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.com", (const UTF8Char*)"COM File");
+		selector->AddFilter(CSTR("*.com"), CSTR("COM File"));
 	}
 }
 

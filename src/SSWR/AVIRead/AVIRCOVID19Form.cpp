@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnFileClicked(void *userObj)
 	SSWR::AVIRead::AVIRCOVID19Form *me = (SSWR::AVIRead::AVIRCOVID19Form*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"COVID19", false));
-	dlg->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
+	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnDownloadClicked(void *userObj)
 	UInt8 buff[2048];
 	UOSInt i;
 	IO::MemoryStream *mstm;
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, (const UTF8Char*)"https://covid.ourworldindata.org/data/owid-covid-data.csv", Net::WebUtil::RequestMethod::HTTP_GET, true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, CSTR("https://covid.ourworldindata.org/data/owid-covid-data.csv"), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(mstm, IO::MemoryStream(1024, UTF8STRC("SSWR.AVIRead.AVIRCOVID19Form.OnDownloadClicked.mstm")));
 	while (true)
 	{
@@ -98,7 +98,7 @@ void __stdcall SSWR::AVIRead::AVIRCOVID19Form::OnNewCasesSizeChanged(void *userO
 		i++;
 	}
 	chart->AddXDataDate(dates, j);
-	chart->AddYData((const UTF8Char*)"New Cases", counts, j, 0xffff0000, Data::LineChart::LS_LINE);
+	chart->AddYData(CSTR("New Cases"), counts, j, 0xffff0000, Data::LineChart::LS_LINE);
 	chart->Plot(dimg, 0, 0, UOSInt2Double(w), UOSInt2Double(h));
 	MemFree(counts);
 	MemFree(dates);
@@ -237,12 +237,12 @@ Bool SSWR::AVIRead::AVIRCOVID19Form::LoadCSV(IO::SeekableStream *stm)
 		k = this->lvCountry->AddItem(country->isoCode->ToCString(), country);
 		this->lvCountry->SetSubItem(k, 1, country->name);
 		record = country->records->GetValues()->GetItem(country->records->GetCount() - 1);
-		Text::StrInt64(sbuff, record->totalCases);
-		this->lvCountry->SetSubItem(k, 2, sbuff);
-		Text::StrInt64(sbuff, record->totalDeaths);
-		this->lvCountry->SetSubItem(k, 3, sbuff);
-		Text::StrDouble(sbuff, country->population / (Double)record->totalCases);
-		this->lvCountry->SetSubItem(k, 4, sbuff);
+		sptr = Text::StrInt64(sbuff, record->totalCases);
+		this->lvCountry->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		sptr = Text::StrInt64(sbuff, record->totalDeaths);
+		this->lvCountry->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, country->population / (Double)record->totalCases);
+		this->lvCountry->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 
 		i++;
 	}
@@ -279,11 +279,11 @@ SSWR::AVIRead::AVIRCOVID19Form::AVIRCOVID19Form(UI::GUIClientControl *parent, UI
 	this->lvCountry->SetShowGrid(true);
 	this->lvCountry->SetFullRowSelect(true);
 	this->lvCountry->HandleSelChg(OnCountrySelChg, this);
-	this->lvCountry->AddColumn((const UTF8Char*)"Code", 50);
-	this->lvCountry->AddColumn((const UTF8Char*)"Name", 120);
-	this->lvCountry->AddColumn((const UTF8Char*)"Total Cases", 100);
-	this->lvCountry->AddColumn((const UTF8Char*)"Total Death", 100);
-	this->lvCountry->AddColumn((const UTF8Char*)"Population per case", 100);
+	this->lvCountry->AddColumn(CSTR("Code"), 50);
+	this->lvCountry->AddColumn(CSTR("Name"), 120);
+	this->lvCountry->AddColumn(CSTR("Total Cases"), 100);
+	this->lvCountry->AddColumn(CSTR("Total Death"), 100);
+	this->lvCountry->AddColumn(CSTR("Population per case"), 100);
 }
 
 SSWR::AVIRead::AVIRCOVID19Form::~AVIRCOVID19Form()

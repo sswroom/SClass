@@ -26,7 +26,7 @@ void Parser::FileParser::PLTParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.plt", (const UTF8Char*)"OziExplorer Track Point File");
+		selector->AddFilter(CSTR("*.plt"), CSTR("OziExplorer Track Point File"));
 	}
 }
 

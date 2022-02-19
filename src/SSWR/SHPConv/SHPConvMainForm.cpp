@@ -70,7 +70,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnSBrowseClicked(void *userObj)
 	SSWR::SHPConv::SHPConvMainForm *me = (SSWR::SHPConv::SHPConvMainForm*)userObj;
 	UI::FileDialog *ofd;
 	NEW_CLASS(ofd, UI::FileDialog(L"SSWR", L"SHPConv", L"Source", false));
-	ofd->AddFilter((const UTF8Char*)"*.shp", (const UTF8Char*)"Shape File");
+	ofd->AddFilter(CSTR("*.shp"), CSTR("Shape File"));
 	if (ofd->ShowDialog(me->GetHandle()))
 	{
 		UTF8Char sbuff[16];
@@ -208,7 +208,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->txtBlkScale->GetText(&sb);
 	if (!sb.ToInt32(&blkScale))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Block scale is not integer", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Block scale is not integer"), CSTR("Error"), me);
 		return;
 	}
 
@@ -371,7 +371,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Failed in converting "));
 		sb.Append(sourceFile);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), this);
 		return 0;
 	}
 	fs->Read(buff, 100);
@@ -797,7 +797,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in writing output files", (const UTF8Char*)"Error", this);
+			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
 		DEL_CLASS(cip);
 		DEL_CLASS(cix);
@@ -1125,7 +1125,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in writing output files", (const UTF8Char*)"Error", this);
+			UI::MessageDialog::ShowDialog(CSTR("Error in writing output files"), CSTR("Error"), this);
 		}
 		DEL_CLASS(cip);
 		DEL_CLASS(cix);
@@ -1135,7 +1135,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported shape type", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Unsupported shape type"), CSTR("Error"), this);
 	}
 	DEL_CLASS(fs);
 	return shpType;
@@ -1160,7 +1160,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 		fs->Read(buff, 100);
 		if (ReadMInt32(buff) != 9994)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"File is not valid shape file", (const UTF8Char*)"Error", this);
+			UI::MessageDialog::ShowDialog(CSTR("File is not valid shape file"), CSTR("Error"), this);
 			DEL_CLASS(fs);
 			return 0;
 		}
@@ -1247,7 +1247,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::LoadShape(Text::CString fileName, Bool upd
 	else
 	{
 		DEL_CLASS(fs);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Failed opening the file", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Failed opening the file"), CSTR("Error"), this);
 	}
 	return retV;
 }
@@ -1412,14 +1412,14 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->deng = deng;
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblDirectory, UI::GUILabel(ui, this, (const UTF8Char*)"Search Dir"));
+	NEW_CLASS(this->lblDirectory, UI::GUILabel(ui, this, CSTR("Search Dir")));
 	this->lblDirectory->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtDirectory, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDirectory->SetRect(120, 8, 232, 20, false);
 	NEW_CLASS(this->btnDirectory, UI::GUIButton(ui, this, CSTR("&Search")));
 	this->btnDirectory->SetRect(360, 8, 75, 23, false);
 	this->btnDirectory->HandleButtonClick(OnDirectoryClicked, this);
-	NEW_CLASS(this->lblSource, UI::GUILabel(ui, this, (const UTF8Char*)"Shape File"));
+	NEW_CLASS(this->lblSource, UI::GUILabel(ui, this, CSTR("Shape File")));
 	this->lblSource->SetRect(8, 40, 100, 23, false);
 	NEW_CLASS(this->txtSource, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSource->SetReadOnly(true);
@@ -1428,27 +1428,27 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->btnSBrowse->SetRect(360, 40, 75, 23, false);
 	this->btnSBrowse->HandleButtonClick(OnSBrowseClicked, this);
 
-	NEW_CLASS(this->lblFileLength, UI::GUILabel(ui, this, (const UTF8Char*)"File Length"));
+	NEW_CLASS(this->lblFileLength, UI::GUILabel(ui, this, CSTR("File Length")));
 	this->lblFileLength->SetRect(8, 80, 100, 23, false);
 	NEW_CLASS(this->txtFileLength, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileLength->SetReadOnly(true);
 	this->txtFileLength->SetRect(120, 80, 112, 20, false);
-	NEW_CLASS(this->lblVersion, UI::GUILabel(ui, this, (const UTF8Char*)"Version"));
+	NEW_CLASS(this->lblVersion, UI::GUILabel(ui, this, CSTR("Version")));
 	this->lblVersion->SetRect(8, 112, 100, 23, false);
 	NEW_CLASS(this->txtVersion, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtVersion->SetReadOnly(true);
 	this->txtVersion->SetRect(120, 112, 112, 20, false);
-	NEW_CLASS(this->lblShpType, UI::GUILabel(ui, this, (const UTF8Char*)"Shape Type"));
+	NEW_CLASS(this->lblShpType, UI::GUILabel(ui, this, CSTR("Shape Type")));
 	this->lblShpType->SetRect(8, 144, 100, 23, false);
 	NEW_CLASS(this->txtShpType, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtShpType->SetReadOnly(true);
 	this->txtShpType->SetRect(120, 144, 112, 20, false);
-	NEW_CLASS(this->lblMMin, UI::GUILabel(ui, this, (const UTF8Char*)"MMin"));
+	NEW_CLASS(this->lblMMin, UI::GUILabel(ui, this, CSTR("MMin")));
 	this->lblMMin->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->txtMMin, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMMin->SetReadOnly(true);
 	this->txtMMin->SetRect(120, 176, 112, 20, false);
-	NEW_CLASS(this->lblMMax, UI::GUILabel(ui, this, (const UTF8Char*)"MMax"));
+	NEW_CLASS(this->lblMMax, UI::GUILabel(ui, this, CSTR("MMax")));
 	this->lblMMax->SetRect(8, 200, 100, 23, false);
 	NEW_CLASS(this->txtMMax, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMMax->SetReadOnly(true);
@@ -1457,42 +1457,42 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->lstRecords->SetRect(16, 241, 216, 95, false);
 	this->lstRecords->HandleSelectionChange(OnRecordsSelChg, this);
 
-	NEW_CLASS(this->lblXMin, UI::GUILabel(ui, this, (const UTF8Char*)"XMin"));
+	NEW_CLASS(this->lblXMin, UI::GUILabel(ui, this, CSTR("XMin")));
 	this->lblXMin->SetRect(240, 80, 72, 23, false);
 	NEW_CLASS(this->txtXMin, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtXMin->SetReadOnly(true);
 	this->txtXMin->SetRect(320, 80, 112, 20, false);
-	NEW_CLASS(this->lblXMax, UI::GUILabel(ui, this, (const UTF8Char*)"XMax"));
+	NEW_CLASS(this->lblXMax, UI::GUILabel(ui, this, CSTR("XMax")));
 	this->lblXMax->SetRect(240, 112, 72, 23, false);
 	NEW_CLASS(this->txtXMax, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtXMax->SetReadOnly(true);
 	this->txtXMax->SetRect(320, 112, 112, 20, false);
-	NEW_CLASS(this->lblYMin, UI::GUILabel(ui, this, (const UTF8Char*)"YMin"));
+	NEW_CLASS(this->lblYMin, UI::GUILabel(ui, this, CSTR("YMin")));
 	this->lblYMin->SetRect(240, 152, 72, 23, false);
 	NEW_CLASS(this->txtYMin, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtYMin->SetReadOnly(true);
 	this->txtYMin->SetRect(320, 152, 112, 20, false);
-	NEW_CLASS(this->lblYMax, UI::GUILabel(ui, this, (const UTF8Char*)"YMax"));
+	NEW_CLASS(this->lblYMax, UI::GUILabel(ui, this, CSTR("YMax")));
 	this->lblYMax->SetRect(240, 184, 72, 23, false);
 	NEW_CLASS(this->txtYMax, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtYMax->SetReadOnly(true);
 	this->txtYMax->SetRect(320, 184, 112, 20, false);
-	NEW_CLASS(this->lblZMin, UI::GUILabel(ui, this, (const UTF8Char*)"ZMin"));
+	NEW_CLASS(this->lblZMin, UI::GUILabel(ui, this, CSTR("ZMin")));
 	this->lblZMin->SetRect(240, 224, 72, 23, false);
 	NEW_CLASS(this->txtZMin, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtZMin->SetReadOnly(true);
 	this->txtZMin->SetRect(320, 224, 112, 20, false);
-	NEW_CLASS(this->lblZMax, UI::GUILabel(ui, this, (const UTF8Char*)"ZMax"));
+	NEW_CLASS(this->lblZMax, UI::GUILabel(ui, this, CSTR("ZMax")));
 	this->lblZMax->SetRect(240, 256, 72, 23, false);
 	NEW_CLASS(this->txtZMax, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtZMax->SetReadOnly(true);
 	this->txtZMax->SetRect(320, 256, 112, 20, false);
-	NEW_CLASS(this->lblRecCnt, UI::GUILabel(ui, this, (const UTF8Char*)"Rec Count"));
+	NEW_CLASS(this->lblRecCnt, UI::GUILabel(ui, this, CSTR("Rec Count")));
 	this->lblRecCnt->SetRect(240, 288, 72, 23, false);
 	NEW_CLASS(this->txtRecCnt, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRecCnt->SetReadOnly(true);
 	this->txtRecCnt->SetRect(320, 288, 112, 20, false);
-	NEW_CLASS(this->lblBlkScale, UI::GUILabel(ui, this, (const UTF8Char*)"Block Scale"));
+	NEW_CLASS(this->lblBlkScale, UI::GUILabel(ui, this, CSTR("Block Scale")));
 	this->lblBlkScale->SetRect(240, 320, 72, 23, false);
 	NEW_CLASS(this->txtBlkScale, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtBlkScale->SetRect(320, 320, 112, 20, false);
@@ -1504,7 +1504,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->txtCodePage->SetReadOnly(true);
 	this->txtCodePage->SetRect(440, 312, 120, 20, false);
 
-	NEW_CLASS(this->lblSeperator, UI::GUILabel(ui, this, (const UTF8Char*)"Seperator"));
+	NEW_CLASS(this->lblSeperator, UI::GUILabel(ui, this, CSTR("Seperator")));
 	this->lblSeperator->SetRect(16, 344, 75, 25, false);
 	NEW_CLASS(this->cboSeperator, UI::GUIComboBox(ui, this, true));
 	this->cboSeperator->SetText(CSTR(", "));
@@ -1526,7 +1526,7 @@ SSWR::SHPConv::SHPConvMainForm::SHPConvMainForm(UI::GUIClientControl *parent, UI
 	this->btnConvert->HandleButtonClick(OnConvertClicked, this);
 	NEW_CLASS(this->txtLabel, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLabel->SetRect(16, 392, 520, 20, false);
-	NEW_CLASS(this->lblProgress, UI::GUILabel(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->lblProgress, UI::GUILabel(ui, this, CSTR("")));
 	this->lblProgress->SetRect(0, 416, 570, 23, false);
 	this->lblProgress->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 

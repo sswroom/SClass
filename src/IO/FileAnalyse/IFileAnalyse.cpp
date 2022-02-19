@@ -119,18 +119,18 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 
 void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::IFileSelector *selector)
 {
-	selector->AddFilter((const UTF8Char*)"*.mpg", (const UTF8Char*)"MPEG System Stream");
-	selector->AddFilter((const UTF8Char*)"*.avi", (const UTF8Char*)"RIFF AVI");
-	selector->AddFilter((const UTF8Char*)"*.wav", (const UTF8Char*)"RIFF WAVE");
-	selector->AddFilter((const UTF8Char*)"*.mov", (const UTF8Char*)"Quicktime File");
-	selector->AddFilter((const UTF8Char*)"*.mp4", (const UTF8Char*)"MPEG-4 File");
-	selector->AddFilter((const UTF8Char*)"*.flv", (const UTF8Char*)"FLV file");
-	selector->AddFilter((const UTF8Char*)"*.ts", (const UTF8Char*)"TS file");
-	selector->AddFilter((const UTF8Char*)"*.mts", (const UTF8Char*)"MTS file");
-	selector->AddFilter((const UTF8Char*)"*.m2ts", (const UTF8Char*)"M2TS file");
-	selector->AddFilter((const UTF8Char*)"*.pcap", (const UTF8Char*)"PCAP file");
-	selector->AddFilter((const UTF8Char*)"*.pcapng", (const UTF8Char*)"PCAPNG file");
-	selector->AddFilter((const UTF8Char*)"*.exe", (const UTF8Char*)"Executable file");
-	selector->AddFilter((const UTF8Char*)"*.rar", (const UTF8Char*)"RAR file");
-	selector->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage file");
+	selector->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
+	selector->AddFilter(CSTR("*.avi"), CSTR("RIFF AVI"));
+	selector->AddFilter(CSTR("*.wav"), CSTR("RIFF WAVE"));
+	selector->AddFilter(CSTR("*.mov"), CSTR("Quicktime File"));
+	selector->AddFilter(CSTR("*.mp4"), CSTR("MPEG-4 File"));
+	selector->AddFilter(CSTR("*.flv"), CSTR("FLV file"));
+	selector->AddFilter(CSTR("*.ts"), CSTR("TS file"));
+	selector->AddFilter(CSTR("*.mts"), CSTR("MTS file"));
+	selector->AddFilter(CSTR("*.m2ts"), CSTR("M2TS file"));
+	selector->AddFilter(CSTR("*.pcap"), CSTR("PCAP file"));
+	selector->AddFilter(CSTR("*.pcapng"), CSTR("PCAPNG file"));
+	selector->AddFilter(CSTR("*.exe"), CSTR("Executable file"));
+	selector->AddFilter(CSTR("*.rar"), CSTR("RAR file"));
+	selector->AddFilter(CSTR("*.spk"), CSTR("SPackage file"));
 }

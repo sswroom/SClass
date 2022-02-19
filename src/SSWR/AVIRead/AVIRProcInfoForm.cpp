@@ -101,7 +101,7 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 				me->procList->Insert(i, procInfo);
 				sptr = Text::StrUInt32(sbuff2, procInfo->procId);
 				me->lvSummary->InsertItem(i, CSTRP(sbuff2, sptr), procInfo);
-				me->lvSummary->SetSubItem(i, 1, sbuff);
+				me->lvSummary->SetSubItem(i, 1, procInfo->procName);
 				sptr = procInfo->procName->ConcatTo(Text::StrConcatC(Text::StrUInt32(sbuff, procInfo->procId), UTF8STRC(" ")));
 				me->lbDetail->InsertItem(i, CSTRP(sbuff, sptr), procInfo);
 			}
@@ -114,34 +114,34 @@ void __stdcall SSWR::AVIRead::AVIRProcInfoForm::OnTimerTick(void *userObj)
 			UOSInt pageFile;
 			if (proc.GetMemoryInfo(&pageFault, &ws, &pagedPool, &nonPagedPool, &pageFile))
 			{
-				Text::StrUOSIntS(sbuff, ws, ',', 3);
-				me->lvSummary->SetSubItem(i, 2, sbuff);
-				Text::StrUOSIntS(sbuff, pageFault, ',', 3);
-				me->lvSummary->SetSubItem(i, 3, sbuff);
-				Text::StrUOSIntS(sbuff, pagedPool, ',', 3);
-				me->lvSummary->SetSubItem(i, 4, sbuff);
-				Text::StrUOSIntS(sbuff, nonPagedPool, ',', 3);
-				me->lvSummary->SetSubItem(i, 5, sbuff);
-				Text::StrUOSIntS(sbuff, pageFile, ',', 3);
-				me->lvSummary->SetSubItem(i, 6, sbuff);
+				sptr = Text::StrUOSIntS(sbuff, ws, ',', 3);
+				me->lvSummary->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSIntS(sbuff, pageFault, ',', 3);
+				me->lvSummary->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSIntS(sbuff, pagedPool, ',', 3);
+				me->lvSummary->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSIntS(sbuff, nonPagedPool, ',', 3);
+				me->lvSummary->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+				sptr = Text::StrUOSIntS(sbuff, pageFile, ',', 3);
+				me->lvSummary->SetSubItem(i, 6, CSTRP(sbuff, sptr));
 
-				Text::StrUInt32(sbuff, proc.GetGDIObjCount());
-				me->lvSummary->SetSubItem(i, 7, sbuff);
-				Text::StrUInt32(sbuff, proc.GetUserObjCount());
-				me->lvSummary->SetSubItem(i, 8, sbuff);
-				Text::StrUInt32(sbuff, proc.GetHandleCount());
-				me->lvSummary->SetSubItem(i, 9, sbuff);
+				sptr = Text::StrUInt32(sbuff, proc.GetGDIObjCount());
+				me->lvSummary->SetSubItem(i, 7, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, proc.GetUserObjCount());
+				me->lvSummary->SetSubItem(i, 8, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, proc.GetHandleCount());
+				me->lvSummary->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->lvSummary->SetSubItem(i, 2, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 3, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 4, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 5, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 6, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 7, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 8, (const UTF8Char*)"-");
-				me->lvSummary->SetSubItem(i, 9, (const UTF8Char*)"-");
+				me->lvSummary->SetSubItem(i, 2, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 3, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 4, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 5, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 6, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 7, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 8, CSTR("-"));
+				me->lvSummary->SetSubItem(i, 9, CSTR("-"));
 			}
 		}
 		Manage::Process::FindProcessClose(sess);
@@ -305,10 +305,10 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcModules()
 			k = this->lvDetModule->AddItem(CSTRP(sbuff, sptr), 0);
 			if (module->GetModuleAddress(&addr, &size))
 			{
-				Text::StrHexValOS(sbuff, addr);
-				this->lvDetModule->SetSubItem(k, 1, sbuff);
-				Text::StrHexValOS(sbuff, size);
-				this->lvDetModule->SetSubItem(k, 2, sbuff);
+				sptr = Text::StrHexValOS(sbuff, addr);
+				this->lvDetModule->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrHexValOS(sbuff, size);
+				this->lvDetModule->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			}
 			DEL_CLASS(module);
 			i++;
@@ -345,14 +345,14 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcThreads()
 			sptr = Text::StrUOSInt(sbuff, t->GetThreadId());
 			k = this->lvDetThread->AddItem(CSTRP(sbuff, sptr), (void*)(OSInt)t->GetThreadId(), 0);
 			addr = t->GetStartAddress();
-			Text::StrHexVal64(sbuff, addr);
-			this->lvDetThread->SetSubItem(k, 1, sbuff);
+			sptr = Text::StrHexVal64(sbuff, addr);
+			this->lvDetThread->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 
 			if (this->currProcRes)
 			{
 				sptr = this->currProcRes->ResolveName(sbuff, addr);
 				l = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-				this->lvDetThread->SetSubItem(k, 2, &sbuff[l + 1]);
+				this->lvDetThread->SetSubItem(k, 2, CSTRP(&sbuff[l + 1], sptr));
 			}
 			DEL_CLASS(t);
 			i++;
@@ -411,7 +411,7 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
-		const UTF8Char *tStr;
+		Text::CString tStr;
 
 		proc.GetHeaps(&heapList, heapId, 257);
 
@@ -423,22 +423,22 @@ void SSWR::AVIRead::AVIRProcInfoForm::UpdateProcHeapDetail(UInt32 heapId)
 			heap = heapList.GetItem(i);
 			sptr = Text::StrHexValOS(Text::StrConcatC(sbuff, UTF8STRC("0x")), heap->startAddr);
 			k = this->lvDetHeap->AddItem(CSTRP(sbuff, sptr), (void*)heap->startAddr, 0);
-			Text::StrUOSInt(sbuff, heap->size);
-			this->lvDetHeap->SetSubItem(k, 1, sbuff);
+			sptr = Text::StrUOSInt(sbuff, heap->size);
+			this->lvDetHeap->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			switch (heap->heapType)
 			{
 			case Manage::Process::HT_FIXED:
-				tStr = (const UTF8Char*)"Fixed";
+				tStr = CSTR("Fixed");
 				break;
 			case Manage::Process::HT_MOVABLE:
-				tStr = (const UTF8Char*)"Movable";
+				tStr = CSTR("Movable");
 				break;
 			case Manage::Process::HT_FREE:
-				tStr = (const UTF8Char*)"Free";
+				tStr = CSTR("Free");
 				break;
 			case Manage::Process::HT_UNKNOWN:
 			default:
-				tStr = (const UTF8Char*)"Unknown";
+				tStr = CSTR("Unknown");
 				break;
 			}
 			this->lvDetHeap->SetSubItem(k, 2, tStr);
@@ -482,16 +482,16 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvSummary->SetFullRowSelect(true);
 	this->lvSummary->SetShowGrid(true);
 	this->lvSummary->HandleDblClk(OnSumDblClicked, this);
-	this->lvSummary->AddColumn((const UTF8Char*)"Id", 60);
-	this->lvSummary->AddColumn((const UTF8Char*)"Process Name", 120);
-	this->lvSummary->AddColumn((const UTF8Char*)"WS Size", 80);
-	this->lvSummary->AddColumn((const UTF8Char*)"Page Fault", 80);
-	this->lvSummary->AddColumn((const UTF8Char*)"Paged Pool", 60);
-	this->lvSummary->AddColumn((const UTF8Char*)"Non-Paged Pool", 60);
-	this->lvSummary->AddColumn((const UTF8Char*)"Page File", 80);
-	this->lvSummary->AddColumn((const UTF8Char*)"GDI Objects", 50);
-	this->lvSummary->AddColumn((const UTF8Char*)"User Objects", 50);
-	this->lvSummary->AddColumn((const UTF8Char*)"Handles", 50);
+	this->lvSummary->AddColumn(CSTR("Id"), 60);
+	this->lvSummary->AddColumn(CSTR("Process Name"), 120);
+	this->lvSummary->AddColumn(CSTR("WS Size"), 80);
+	this->lvSummary->AddColumn(CSTR("Page Fault"), 80);
+	this->lvSummary->AddColumn(CSTR("Paged Pool"), 60);
+	this->lvSummary->AddColumn(CSTR("Non-Paged Pool"), 60);
+	this->lvSummary->AddColumn(CSTR("Page File"), 80);
+	this->lvSummary->AddColumn(CSTR("GDI Objects"), 50);
+	this->lvSummary->AddColumn(CSTR("User Objects"), 50);
+	this->lvSummary->AddColumn(CSTR("Handles"), 50);
 
 	NEW_CLASS(this->lbDetail, UI::GUIListBox(ui, this->tpDetail, false));
 	this->lbDetail->SetRect(0, 0, 200, 100, false);
@@ -506,27 +506,27 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->tpDetHeap = this->tcDetail->AddTabPage(CSTR("Heap"));
 	this->tpDetChart = this->tcDetail->AddTabPage(CSTR("Chart"));
 
-	NEW_CLASS(this->lblDetProcId, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Id"));
+	NEW_CLASS(this->lblDetProcId, UI::GUILabel(ui, this->tpDetInfo, CSTR("Process Id")));
 	this->lblDetProcId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDetProcId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetProcId->SetRect(100, 0, 50, 23, false);
 	this->txtDetProcId->SetReadOnly(true);
-	NEW_CLASS(this->lblDetParentId, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Parent Id"));
+	NEW_CLASS(this->lblDetParentId, UI::GUILabel(ui, this->tpDetInfo, CSTR("Parent Id")));
 	this->lblDetParentId->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtDetParentId, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetParentId->SetRect(100, 24, 50, 23, false);
 	this->txtDetParentId->SetReadOnly(true);
-	NEW_CLASS(this->lblDetName, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Name"));
+	NEW_CLASS(this->lblDetName, UI::GUILabel(ui, this->tpDetInfo, CSTR("Process Name")));
 	this->lblDetName->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtDetName, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetName->SetRect(100, 48, 200, 23, false);
 	this->txtDetName->SetReadOnly(true);
-	NEW_CLASS(this->lblDetPath, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Process Path"));
+	NEW_CLASS(this->lblDetPath, UI::GUILabel(ui, this->tpDetInfo, CSTR("Process Path")));
 	this->lblDetPath->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtDetPath, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPath->SetRect(100, 72, 700, 23, false);
 	this->txtDetPath->SetReadOnly(true);
-	NEW_CLASS(this->lblDetPriority, UI::GUILabel(ui, this->tpDetInfo, (const UTF8Char*)"Priority"));
+	NEW_CLASS(this->lblDetPriority, UI::GUILabel(ui, this->tpDetInfo, CSTR("Priority")));
 	this->lblDetPriority->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtDetPriority, UI::GUITextBox(ui, this->tpDetInfo, CSTR(""), false));
 	this->txtDetPriority->SetRect(100, 96, 100, 23, false);
@@ -542,9 +542,9 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetModule->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetModule->SetFullRowSelect(true);
 	this->lvDetModule->SetShowGrid(true);
-	this->lvDetModule->AddColumn((const UTF8Char*)"Name", 600);
-	this->lvDetModule->AddColumn((const UTF8Char*)"Address", 80);
-	this->lvDetModule->AddColumn((const UTF8Char*)"Size", 80);
+	this->lvDetModule->AddColumn(CSTR("Name"), 600);
+	this->lvDetModule->AddColumn(CSTR("Address"), 80);
+	this->lvDetModule->AddColumn(CSTR("Size"), 80);
 
 	NEW_CLASS(this->pnlDetThread, UI::GUIPanel(ui, this->tpDetThread));
 	this->pnlDetThread->SetRect(0, 0, 100, 31, false);
@@ -557,9 +557,9 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetThread->HandleDblClk(OnDetThreadDblClicked, this);
 	this->lvDetThread->SetFullRowSelect(true);
 	this->lvDetThread->SetShowGrid(true);
-	this->lvDetThread->AddColumn((const UTF8Char*)"Id", 60);
-	this->lvDetThread->AddColumn((const UTF8Char*)"Start Address", 120);
-	this->lvDetThread->AddColumn((const UTF8Char*)"Start Address(Name)", 600);
+	this->lvDetThread->AddColumn(CSTR("Id"), 60);
+	this->lvDetThread->AddColumn(CSTR("Start Address"), 120);
+	this->lvDetThread->AddColumn(CSTR("Start Address(Name)"), 600);
 
 	NEW_CLASS(this->pnlDetHeap, UI::GUIPanel(ui, this->tpDetHeap));
 	this->pnlDetHeap->SetRect(0, 0, 100, 31, false);
@@ -580,31 +580,31 @@ SSWR::AVIRead::AVIRProcInfoForm::AVIRProcInfoForm(UI::GUIClientControl *parent, 
 	this->lvDetHeap->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDetHeap->SetFullRowSelect(true);
 	this->lvDetHeap->SetShowGrid(true);
-	this->lvDetHeap->AddColumn((const UTF8Char*)"Start Address", 160);
-	this->lvDetHeap->AddColumn((const UTF8Char*)"Size", 60);
-	this->lvDetHeap->AddColumn((const UTF8Char*)"Type", 80);
+	this->lvDetHeap->AddColumn(CSTR("Start Address"), 160);
+	this->lvDetHeap->AddColumn(CSTR("Size"), 60);
+	this->lvDetHeap->AddColumn(CSTR("Type"), 80);
 	this->lvDetHeap->HandleSelChg(OnDetHeapItemSelChg, this);
 
-	NEW_CLASS(this->grpDetChartCPU, UI::GUIGroupBox(ui, this->tpDetChart, (const UTF8Char*)"CPU"));
+	NEW_CLASS(this->grpDetChartCPU, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("CPU")));
 	this->grpDetChartCPU->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCPU->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartCPU, UI::GUIRealtimeLineChart(ui, this->grpDetChartCPU, this->core->GetDrawEngine(), 1, 600, 300));
 	this->rlcDetChartCPU->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->rlcDetChartCPU->SetUnit((const UTF8Char*)"%");
+	this->rlcDetChartCPU->SetUnit(CSTR("%"));
 	NEW_CLASS(this->vspDetChartCPU, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartPage, UI::GUIGroupBox(ui, this->tpDetChart, (const UTF8Char*)"Paged(R)/Non-Paged(B) Pool"));
+	NEW_CLASS(this->grpDetChartPage, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("Paged(R)/Non-Paged(B) Pool")));
 	this->grpDetChartPage->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartPage->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartPage, UI::GUIRealtimeLineChart(ui, this->grpDetChartPage, this->core->GetDrawEngine(), 2, 600, 300));
 	this->rlcDetChartPage->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->vspDetChartPage, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartCount, UI::GUIGroupBox(ui, this->tpDetChart, (const UTF8Char*)"GDI(R)/User(B)/Handle(G) Count"));
+	NEW_CLASS(this->grpDetChartCount, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("GDI(R)/User(B)/Handle(G) Count")));
 	this->grpDetChartCount->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartCount->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->rlcDetChartCount, UI::GUIRealtimeLineChart(ui, this->grpDetChartCount, this->core->GetDrawEngine(), 3, 600, 300));
 	this->rlcDetChartCount->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->vspDetChartCount, UI::GUIVSplitter(ui, this->tpDetChart, 3, false));
-	NEW_CLASS(this->grpDetChartWS, UI::GUIGroupBox(ui, this->tpDetChart, (const UTF8Char*)"WS(R)/Page File(B)"));
+	NEW_CLASS(this->grpDetChartWS, UI::GUIGroupBox(ui, this->tpDetChart, CSTR("WS(R)/Page File(B)")));
 	this->grpDetChartWS->SetRect(0, 0, 100, 200, false);
 	this->grpDetChartWS->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->rlcDetChartWS, UI::GUIRealtimeLineChart(ui, this->grpDetChartWS, this->core->GetDrawEngine(), 2, 600, 300));

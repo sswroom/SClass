@@ -23,7 +23,7 @@ void Parser::FileParser::GamedatPac2Parser::PrepareSelector(IO::IFileSelector *s
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"DAT Package File");
+		selector->AddFilter(CSTR("*.dat"), CSTR("DAT Package File"));
 	}
 }
 

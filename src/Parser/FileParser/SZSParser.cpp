@@ -25,7 +25,7 @@ void Parser::FileParser::SZSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.szs", (const UTF8Char*)"SZS Package File");
+		selector->AddFilter(CSTR("*.szs"), CSTR("SZS Package File"));
 	}
 }
 

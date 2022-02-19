@@ -35,7 +35,7 @@ void SSWR::AVIRead::AVIRLogFileForm::UpdateLogMessages()
 			dt->ToLocalTime();
 			sptr = dt->ToString(sbuff);
 			k = this->lvLogs->AddItem(CSTRP(sbuff, sptr), 0);
-			this->lvLogs->SetSubItem(k, 1, sb->ToString());
+			this->lvLogs->SetSubItem(k, 1, sb->ToCString());
 
 			i++;
 		}
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRLogFileForm::OnLogsDblClk(void *userObj, UOSIn
 	SSWR::AVIRead::AVIRLogFileForm *me = (SSWR::AVIRead::AVIRLogFileForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->logFile->GetLogDescription(me->logLevel, itemIndex, &sb);
-	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Log Detail", me);
+	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Log Detail"), me);
 }
 
 SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, IO::LogFile *logFile) : UI::GUIForm(parent, 1024, 768, ui)
@@ -68,8 +68,8 @@ SSWR::AVIRead::AVIRLogFileForm::AVIRLogFileForm(UI::GUIClientControl *parent, UI
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);
-	this->lvLogs->AddColumn((const UTF8Char*)"Time", 200);
-	this->lvLogs->AddColumn((const UTF8Char*)"Message", 812);
+	this->lvLogs->AddColumn(CSTR("Time"), 200);
+	this->lvLogs->AddColumn(CSTR("Message"), 812);
 	this->lvLogs->HandleDblClk(OnLogsDblClk, this);
 
 	UI::GUIMenu *mnu;
@@ -96,7 +96,7 @@ void SSWR::AVIRead::AVIRLogFileForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UI::FileDialog *dlg;
 			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogFileSave", true));
-			dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log Text file");
+			dlg->AddFilter(CSTR("*.txt"), CSTR("Log Text file"));
 			if (dlg->ShowDialog(this->hwnd))
 			{
 				Data::DateTime dt;

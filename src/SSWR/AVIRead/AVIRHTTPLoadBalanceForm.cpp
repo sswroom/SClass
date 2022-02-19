@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	Net::SSLEngine *ssl = 0;
 	if (!sb->StartsWith(UTF8STRC("http://")) && !sb->StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Forward URL", (const UTF8Char*)"HTTP Load Balance", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid Forward URL"), CSTR("HTTP Load Balance"), me);
 		DEL_CLASS(sb);
 		return;
 	}
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	{
 		if (me->sslCert == 0 || me->sslKey == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key First", (const UTF8Char*)"HTTP Load Balance", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key First"), CSTR("HTTP Load Balance"), me);
 			DEL_CLASS(sb);
 			return;
 		}
@@ -306,46 +306,46 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->tpAccess = this->tcMain->AddTabPage(CSTR("Access"));
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 
-	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"Parameters"));
+	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
 	this->grpParam->SetRect(0, 0, 620, 256, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
+	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, CSTR("Log Path")));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcatC(&sbuff[i + 1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, CSTRP(sbuff, sptr)));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
-	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"SSL"));
+	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->grpParam, CSTR("SSL")));
 	this->lblSSL->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
 	this->chkSSL->SetRect(108, 56, 100, 23, false);
 	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->grpParam, CSTR("Cert/Key")));
 	this->btnSSLCert->SetRect(208, 56, 75,23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
-	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)""));
+	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->grpParam, CSTR("")));
 	this->lblSSLCert->SetRect(288, 56, 200, 23, false);
-	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));
+	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, CSTR("Proxy Connection")));
 	this->lblAllowProxy->SetRect(8, 80, 100, 23, false);
-	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", false));
+	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), false));
 	this->chkAllowProxy->SetRect(108, 80, 100, 23, false);
-	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Skip Logging"));
+	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, CSTR("Skip Logging")));
 	this->lblSkipLog->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
+	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
 	this->chkSkipLog->SetRect(108, 104, 100, 23, false);
-	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Allow KA"));
+	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, CSTR("Allow KA")));
 	this->lblAllowKA->SetRect(8, 128, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
 	this->chkAllowKA->SetRect(108, 128, 100, 23, false);
-	NEW_CLASS(this->lblFwdURL, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Forward URL"));
+	NEW_CLASS(this->lblFwdURL, UI::GUILabel(ui, this->grpParam, CSTR("Forward URL")));
 	this->lblFwdURL->SetRect(8, 152, 100, 23, false);
 	NEW_CLASS(this->txtFwdURL, UI::GUITextBox(ui, this->grpParam, CSTR("http://sswroom.no-ip.org:5080/")));
 	this->txtFwdURL->SetRect(108, 152, 500, 23, false);
-	NEW_CLASS(this->lblFwdType, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Forward Type"));
+	NEW_CLASS(this->lblFwdType, UI::GUILabel(ui, this->grpParam, CSTR("Forward Type")));
 	this->lblFwdType->SetRect(8, 176, 100, 23, false);
 	NEW_CLASS(this->cboFwdType, UI::GUIComboBox(ui, this->grpParam,false));
 	this->cboFwdType->SetRect(108, 176, 100, 23, false);
@@ -359,42 +359,42 @@ SSWR::AVIRead::AVIRHTTPLoadBalanceForm::AVIRHTTPLoadBalanceForm(UI::GUIClientCon
 	this->btnStop->SetRect(300, 300, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClick, this);
 
-	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Curr"));
+	NEW_CLASS(this->lblConnCurr, UI::GUILabel(ui, this->tpStatus, CSTR("Conn Curr")));
 	this->lblConnCurr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnCurr, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtConnCurr->SetRect(104, 4, 100, 23, false);
 	this->txtConnCurr->SetReadOnly(true);
-	NEW_CLASS(this->lblConnTotal, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Total"));
+	NEW_CLASS(this->lblConnTotal, UI::GUILabel(ui, this->tpStatus, CSTR("Conn Total")));
 	this->lblConnTotal->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtConnTotal, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtConnTotal->SetRect(104, 28, 100, 23, false);
 	this->txtConnTotal->SetReadOnly(true);
-	NEW_CLASS(this->lblDataRateR, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Data Rate(R)"));
+	NEW_CLASS(this->lblDataRateR, UI::GUILabel(ui, this->tpStatus, CSTR("Data Rate(R)")));
 	this->lblDataRateR->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtDataRateR, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataRateR->SetRect(104, 52, 100, 23, false);
 	this->txtDataRateR->SetReadOnly(true);
-	NEW_CLASS(this->lblDataRateW, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Data Rate(W)"));
+	NEW_CLASS(this->lblDataRateW, UI::GUILabel(ui, this->tpStatus, CSTR("Data Rate(W)")));
 	this->lblDataRateW->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDataRateW, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataRateW->SetRect(104, 76, 100, 23, false);
 	this->txtDataRateW->SetReadOnly(true);
-	NEW_CLASS(this->lblDataTotalR, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Total Data(R)"));
+	NEW_CLASS(this->lblDataTotalR, UI::GUILabel(ui, this->tpStatus, CSTR("Total Data(R)")));
 	this->lblDataTotalR->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDataTotalR, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataTotalR->SetRect(104, 100, 100, 23, false);
 	this->txtDataTotalR->SetReadOnly(true);
-	NEW_CLASS(this->lblDataTotalW, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Total Data(W)"));
+	NEW_CLASS(this->lblDataTotalW, UI::GUILabel(ui, this->tpStatus, CSTR("Total Data(W)")));
 	this->lblDataTotalW->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtDataTotalW, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtDataTotalW->SetRect(104, 124, 100, 23, false);
 	this->txtDataTotalW->SetReadOnly(true);
-	NEW_CLASS(this->lblReqRate, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Request Rate"));
+	NEW_CLASS(this->lblReqRate, UI::GUILabel(ui, this->tpStatus, CSTR("Request Rate")));
 	this->lblReqRate->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtReqRate, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtReqRate->SetRect(104, 148, 100, 23, false);
 	this->txtReqRate->SetReadOnly(true);
-	NEW_CLASS(this->lblReqTotal, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Request Total"));
+	NEW_CLASS(this->lblReqTotal, UI::GUILabel(ui, this->tpStatus, CSTR("Request Total")));
 	this->lblReqTotal->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtReqTotal, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtReqTotal->SetRect(104, 172, 100, 23, false);

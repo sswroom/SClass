@@ -29,9 +29,9 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblGPS, UI::GUILabel(ui, this, (const UTF8Char*)"GPS Device"));
+	NEW_CLASS(this->lblGPS, UI::GUILabel(ui, this, CSTR("GPS Device")));
 	this->lblGPS->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->chkGPS, UI::GUICheckBox(ui, this, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkGPS, UI::GUICheckBox(ui, this, CSTR("Enable"), false));
 	this->chkGPS->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this, CSTR("Select")));
 	this->btnGPS->SetRect(204, 4, 75, 23, false);
@@ -40,9 +40,9 @@ SSWR::AVIRead::AVIRSetLocationSvcForm::AVIRSetLocationSvcForm(UI::GUIClientContr
 	this->txtGPS->SetReadOnly(true);
 	this->txtGPS->SetRect(284, 4, 120, 23, false);
 
-	NEW_CLASS(this->lblWifi, UI::GUILabel(ui, this, (const UTF8Char*)"WIFI"));
+	NEW_CLASS(this->lblWifi, UI::GUILabel(ui, this, CSTR("WIFI")));
 	this->lblWifi->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->chkWifi, UI::GUICheckBox(ui, this, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkWifi, UI::GUICheckBox(ui, this, CSTR("Enable"), false));
 	this->chkWifi->SetRect(104, 28, 100, 23, false);
 
 

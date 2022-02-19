@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRGISCombineForm::OnCombineClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in combining layers", (const UTF8Char*)"Combine Layer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in combining layers"), CSTR("Combine Layer"), me);
 	}
 }
 
@@ -74,7 +74,7 @@ SSWR::AVIRead::AVIRGISCombineForm::AVIRGISCombineForm(UI::GUIClientControl *pare
 	NEW_CLASS(pnl, UI::GUIPanel(ui, this));
 	pnl->SetRect(0, 0, 448, 48, false);
 	pnl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, (const UTF8Char*)"Select layers to combine"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, pnl, CSTR("Select layers to combine")));
 	lbl->SetRect(0, 0, 280, 23, false);
 	NEW_CLASS(this->btnCheckAll, UI::GUIButton(ui, pnl, CSTR("Check All")));
 	this->btnCheckAll->SetRect(0, 24, 80, 23, false);

@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userO
 		}
 		i++;
 	}
-	UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading files", (const UTF8Char*)"Console Media Player", me);
+	UI::MessageDialog::ShowDialog(CSTR("Error in loading files"), CSTR("Console Media Player"), me);
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnRotateChg(void *userObj)
@@ -39,7 +39,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	this->webIface = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Control Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Control Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
@@ -47,7 +47,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop")));
 	this->btnStop->SetRect(4, 28, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
-	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, this, (const UTF8Char*)"Rotate"));
+	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, this, CSTR("Rotate")));
 	this->lblRotate->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboRotate, UI::GUIComboBox(ui, this, false));
 	this->cboRotate->SetRect(104, 52, 100, 23, false);
@@ -61,7 +61,7 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->player, Media::ConsoleMediaPlayer(this->core->GetMonitorMgr(), this->core->GetColorMgr(), this->core->GetParserList(), this->core->GetAudioDevice()));
 	if (this->player->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initialize player", (const UTF8Char*)"Console Media Player", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in initialize player"), CSTR("Console Media Player"), this);
 	}
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;

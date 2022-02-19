@@ -29,19 +29,19 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	me->txtHost->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 		return;
 	}
 	if (port <= 0 || port > 65535)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 		return;
 	}
 	Net::TCPClient *cli;
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPSpdCliForm::OnConnClick(void *userObj)
 	if (cli->IsConnectError())
 	{
 		DEL_CLASS(cli);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connect to server", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in connect to server"), CSTR("Error"), me);
 		return;
 	}
 	else
@@ -203,11 +203,11 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->procEvt, Sync::Event(true));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1234")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
@@ -215,12 +215,12 @@ SSWR::AVIRead::AVIRTCPSpdCliForm::AVIRTCPSpdCliForm(UI::GUIClientControl *parent
 	this->btnConn->SetRect(104, 52, 75, 23, false);
 	this->btnConn->HandleButtonClick(OnConnClick, this);
 
-	NEW_CLASS(this->lblSendSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Send Speed"));
+	NEW_CLASS(this->lblSendSpeed, UI::GUILabel(ui, this, CSTR("Send Speed")));
 	this->lblSendSpeed->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtSendSpeed, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSendSpeed->SetRect(104, 100, 150, 23, false);
 	this->txtSendSpeed->SetReadOnly(true);
-	NEW_CLASS(this->lblRecvSpeed, UI::GUILabel(ui, this, (const UTF8Char*)"Recv Speed"));
+	NEW_CLASS(this->lblRecvSpeed, UI::GUILabel(ui, this, CSTR("Recv Speed")));
 	this->lblRecvSpeed->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtRecvSpeed, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRecvSpeed->SetRect(104, 124, 150, 23, false);

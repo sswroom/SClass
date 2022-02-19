@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnOKClick(void *userObj)
 		if (db->IsError())
 		{
 			DEL_CLASS(db);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the namespace", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRWMIForm::OnDblClicked(void *userObj)
 		if (db->IsError())
 		{
 			DEL_CLASS(db);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the namespace", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening the namespace"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -67,7 +67,7 @@ SSWR::AVIRead::AVIRWMIForm::AVIRWMIForm(UI::GUIClientControl *parent, UI::GUICor
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lblNS, UI::GUILabel(ui, this, (const UTF8Char*)"WMI Namespace"));
+	NEW_CLASS(this->lblNS, UI::GUILabel(ui, this, CSTR("WMI Namespace")));
 	this->lblNS->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->lbNS, UI::GUIListBox(ui, this, false));
 	this->lbNS->SetRect(112, 8, 256, 112, false);

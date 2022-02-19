@@ -23,7 +23,7 @@ void Parser::FileParser::GZIPParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.gz", (const UTF8Char*)"GZIP File");
+		selector->AddFilter(CSTR("*.gz"), CSTR("GZIP File"));
 	}
 }
 

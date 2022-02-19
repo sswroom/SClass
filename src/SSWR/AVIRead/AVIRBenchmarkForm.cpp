@@ -81,8 +81,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 
 				sptr = ByteDisp(sbuff, currSize);
 				i = this->lvCopy->AddItem(CSTRP(sbuff, sptr), 0);
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				this->lvCopy->SetSubItem(i, 1, sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				this->lvCopy->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
 				result->tt = TT_COPY;
@@ -121,8 +121,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 
 				sptr = ByteDisp(sbuff, currSize);
 				i = this->lvWrite->AddItem(CSTRP(sbuff, sptr), 0);
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				this->lvWrite->SetSubItem(i, 1, sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				this->lvWrite->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
 				result->tt = TT_WRITE;
@@ -161,8 +161,8 @@ void SSWR::AVIRead::AVIRBenchmarkForm::StartTest(UOSInt startSize, UOSInt buffSi
 
 				sptr = ByteDisp(sbuff, currSize);
 				i = this->lvRead->AddItem(CSTRP(sbuff, sptr), 0);
-				Text::StrDoubleFmt(sbuff, rate, "0.0");
-				this->lvRead->SetSubItem(i, 1, sbuff);
+				sptr = Text::StrDoubleFmt(sbuff, rate, "0.0");
+				this->lvRead->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 				result = MemAlloc(SSWR::AVIRead::AVIRBenchmarkForm::TestResult, 1);
 				result->tt = TT_READ;
@@ -230,11 +230,11 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 
 	if (me->resultList->GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No result", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("No result"), CSTR("Error"), me);
 		return;
 	}
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BenchmarkSave", true));
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Result File");
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Result File"));
 	{
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Benchmark_"));
@@ -387,35 +387,35 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvCopy->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCopy->SetShowGrid(true);
 	this->lvCopy->SetFullRowSelect(true);
-	this->lvCopy->AddColumn((const UTF8Char*)"Buffer Size", 200);
-	this->lvCopy->AddColumn((const UTF8Char*)"Data Rate", 150);
+	this->lvCopy->AddColumn(CSTR("Buffer Size"), 200);
+	this->lvCopy->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpRead = this->tcMain->AddTabPage(CSTR("Read"));
 	NEW_CLASS(this->lvRead, UI::GUIListView(ui, this->tpRead, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvRead->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRead->SetShowGrid(true);
 	this->lvRead->SetFullRowSelect(true);
-	this->lvRead->AddColumn((const UTF8Char*)"Buffer Size", 200);
-	this->lvRead->AddColumn((const UTF8Char*)"Data Rate", 150);
+	this->lvRead->AddColumn(CSTR("Buffer Size"), 200);
+	this->lvRead->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpWrite = this->tcMain->AddTabPage(CSTR("Write"));
 	NEW_CLASS(this->lvWrite, UI::GUIListView(ui, this->tpWrite, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvWrite->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvWrite->SetShowGrid(true);
 	this->lvWrite->SetFullRowSelect(true);
-	this->lvWrite->AddColumn((const UTF8Char*)"Buffer Size", 200);
-	this->lvWrite->AddColumn((const UTF8Char*)"Data Rate", 150);
+	this->lvWrite->AddColumn(CSTR("Buffer Size"), 200);
+	this->lvWrite->AddColumn(CSTR("Data Rate"), 150);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 52, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPlatform, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"Platform"));
+	NEW_CLASS(this->lblPlatform, UI::GUILabel(ui, this->pnlInfo, CSTR("Platform")));
 	this->lblPlatform->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPlatform, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtPlatform->SetRect(104, 4, 300, 23, false);
 	this->txtPlatform->SetReadOnly(true);
-	NEW_CLASS(this->lblCPU, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"CPU"));
+	NEW_CLASS(this->lblCPU, UI::GUILabel(ui, this->pnlInfo, CSTR("CPU")));
 	this->lblCPU->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCPU, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtCPU->SetRect(104, 28, 300, 23, false);
@@ -424,15 +424,15 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 	this->lvRAM->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRAM->SetFullRowSelect(true);
 	this->lvRAM->SetShowGrid(true);
-	this->lvRAM->AddColumn((const UTF8Char*)"Locator", 100);
-	this->lvRAM->AddColumn((const UTF8Char*)"Manufacturer", 60);
-	this->lvRAM->AddColumn((const UTF8Char*)"PartNo", 140);
-	this->lvRAM->AddColumn((const UTF8Char*)"SN", 80);
-	this->lvRAM->AddColumn((const UTF8Char*)"Def Speed", 40);
-	this->lvRAM->AddColumn((const UTF8Char*)"Conf Speed", 40);
-	this->lvRAM->AddColumn((const UTF8Char*)"Data Width", 40);
-	this->lvRAM->AddColumn((const UTF8Char*)"Total Width", 40);
-	this->lvRAM->AddColumn((const UTF8Char*)"Memory Size", 80);
+	this->lvRAM->AddColumn(CSTR("Locator"), 100);
+	this->lvRAM->AddColumn(CSTR("Manufacturer"), 60);
+	this->lvRAM->AddColumn(CSTR("PartNo"), 140);
+	this->lvRAM->AddColumn(CSTR("SN"), 80);
+	this->lvRAM->AddColumn(CSTR("Def Speed"), 40);
+	this->lvRAM->AddColumn(CSTR("Conf Speed"), 40);
+	this->lvRAM->AddColumn(CSTR("Data Width"), 40);
+	this->lvRAM->AddColumn(CSTR("Total Width"), 40);
+	this->lvRAM->AddColumn(CSTR("Memory Size"), 80);
 
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -469,31 +469,31 @@ SSWR::AVIRead::AVIRBenchmarkForm::AVIRBenchmarkForm(UI::GUIClientControl *parent
 		this->lvRAM->SetSubItem(k, 1, ram->manufacturer);
 		this->lvRAM->SetSubItem(k, 2, ram->partNo);
 		this->lvRAM->SetSubItem(k, 3, ram->sn);
-		Text::StrUOSInt(sbuff, ram->defSpdMHz);
-		this->lvRAM->SetSubItem(k, 4, sbuff);
-		Text::StrUOSInt(sbuff, ram->confSpdMHz);
-		this->lvRAM->SetSubItem(k, 5, sbuff);
-		Text::StrUInt32(sbuff, ram->dataWidth);
-		this->lvRAM->SetSubItem(k, 6, sbuff);
-		Text::StrUInt32(sbuff, ram->totalWidth);
-		this->lvRAM->SetSubItem(k, 7, sbuff);
+		sptr = Text::StrUOSInt(sbuff, ram->defSpdMHz);
+		this->lvRAM->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+		sptr = Text::StrUOSInt(sbuff, ram->confSpdMHz);
+		this->lvRAM->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ram->dataWidth);
+		this->lvRAM->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, ram->totalWidth);
+		this->lvRAM->SetSubItem(k, 7, CSTRP(sbuff, sptr));
 		if (ram->memorySize == 0)
 		{
-			Text::StrUInt64(sbuff, ram->memorySize);
+			sptr = Text::StrUInt64(sbuff, ram->memorySize);
 		}
 		else if (ram->memorySize >= 1073741824)
 		{
-			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("GB"));
+			sptr = Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("GB"));
 		}
 		else if (ram->memorySize >= 1048576)
 		{
-			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("MB"));
+			sptr = Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("MB"));
 		}
 		else if (ram->memorySize >= 1024)
 		{
-			Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("KB"));
+			sptr = Text::StrConcatC(Text::StrUInt64(sbuff, ram->memorySize / 1073741824), UTF8STRC("KB"));
 		}
-		this->lvRAM->SetSubItem(k, 8, sbuff);
+		this->lvRAM->SetSubItem(k, 8, CSTRP(sbuff, sptr));
 		i++;
 	}
 	sysInfo.FreeRAMInfo(&ramList);

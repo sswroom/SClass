@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	me->txtData->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input data", (const UTF8Char*)"ASN.1 Parse", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please input data"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	Text::TextBinEnc::Base64Enc b64;
@@ -21,13 +21,13 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 	if (b64.DecodeBin(sb.ToString(), sb.GetLength(), buff) != len)
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in decoding Base64 data", (const UTF8Char*)"ASN.1 Parse", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in decoding Base64 data"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	if (buff[0] != 0x30)
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Data is not valid ASN.1 format", (const UTF8Char*)"ASN.1 Parse", me);
+		UI::MessageDialog::ShowDialog(CSTR("Data is not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 		return;
 	}
 	UInt32 baseLen;
@@ -48,13 +48,13 @@ void __stdcall SSWR::AVIRead::AVIRASN1ParseForm::OnParseClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown Type", (const UTF8Char*)"ASN.1 Parse", me);
+			UI::MessageDialog::ShowDialog(CSTR("Unknown Type"), CSTR("ASN.1 Parse"), me);
 		}
 	}
 	else
 	{
 		MemFree(buff);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Data seems not valid ASN.1 format", (const UTF8Char*)"ASN.1 Parse", me);
+		UI::MessageDialog::ShowDialog(CSTR("Data seems not valid ASN.1 format"), CSTR("ASN.1 Parse"), me);
 	}
 }
 
@@ -69,13 +69,13 @@ SSWR::AVIRead::AVIRASN1ParseForm::AVIRASN1ParseForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlOptions, UI::GUIPanel(ui, this));
 	this->pnlOptions->SetRect(0, 0, 100, 51, false);
 	this->pnlOptions->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlOptions, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlOptions, CSTR("Type")));
 	this->lblType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlOptions, false));
 	this->cboType->SetRect(104, 4, 200, 23, false);
 	this->cboType->AddItem(CSTR("X.509 Certificate"), 0);
 	this->cboType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblData, UI::GUILabel(ui, this->pnlOptions, (const UTF8Char*)"Base64 encoded data"));
+	NEW_CLASS(this->lblData, UI::GUILabel(ui, this->pnlOptions, CSTR("Base64 encoded data")));
 	this->lblData->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);

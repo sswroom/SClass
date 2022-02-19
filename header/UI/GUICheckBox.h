@@ -14,7 +14,7 @@ namespace UI
 		Data::ArrayList<CheckedChangeHandler> *checkedChangeHdlrs;
 		Data::ArrayList<void*> *checkedChangeObjs;
 	public:
-		GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool checked);
+		GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked);
 		virtual ~GUICheckBox();
 
 		virtual Text::CString GetObjectClass();

@@ -77,8 +77,8 @@ void Parser::FileParser::BMPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.bmp", (const UTF8Char*)"Bitmap File");
-		selector->AddFilter((const UTF8Char*)"*.dib", (const UTF8Char*)"DIB File");
+		selector->AddFilter(CSTR("*.bmp"), CSTR("Bitmap File"));
+		selector->AddFilter(CSTR("*.dib"), CSTR("DIB File"));
 	}
 }
 

@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting LE Scan", (const UTF8Char*)"Bluetooth LE", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting LE Scan"), CSTR("Bluetooth LE"), me);
 	}
 	
 }
@@ -88,9 +88,10 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 			{
 				me->lvDevices->SetSubItem(i, 1, dev->name);
 			}
-			me->lvDevices->SetSubItem(i, 2, Net::MACInfo::GetMACInfo(dev->mac)->name);
-			Text::StrInt32(sbuff, dev->rssi);
-			me->lvDevices->SetSubItem(i, 3, sbuff);
+			const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(dev->mac);
+			me->lvDevices->SetSubItem(i, 2, {mac->name, mac->nameLen});
+			sptr = Text::StrInt32(sbuff, dev->rssi);
+			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 		}
 		else if (dev->updated)
 		{
@@ -99,8 +100,8 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 			{
 				me->lvDevices->SetSubItem(i, 1, dev->name);
 			}
-			Text::StrInt32(sbuff, dev->rssi);
-			me->lvDevices->SetSubItem(i, 3, sbuff);
+			sptr = Text::StrInt32(sbuff, dev->rssi);
+			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 		}
 		i++;
 	}
@@ -120,12 +121,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		{
 			if (dev->name == 0)
 			{
-				dev->name = Text::StrCopyNew((const UTF8Char*)name);
+				dev->name = Text::String::NewNotNull((const UTF8Char*)name);
 			}
-			else if (Text::StrCharCnt(name) > Text::StrCharCnt(dev->name))
+			else if (Text::StrCharCnt(name) > dev->name->leng)
 			{
-				Text::StrDelNew(dev->name);
-				dev->name = Text::StrCopyNew((const UTF8Char*)name);
+				dev->name->Release();
+				dev->name = Text::String::NewNotNull((const UTF8Char*)name);
 			}
 		}
 		dev->updated = true;
@@ -137,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		dev->rssi = rssi;
 		if (name)
 		{
-			dev->name = Text::StrCopyNew((const UTF8Char*)name);
+			dev->name = Text::String::NewNotNull((const UTF8Char*)name);
 		}
 		else
 		{
@@ -159,7 +160,7 @@ void SSWR::AVIRead::AVIRBluetoothLEForm::ClearDevices()
 	while (i-- > 0)
 	{
 		dev = devList->GetItem(i);
-		SDEL_TEXT(dev->name);
+		SDEL_STRING(dev->name);
 		MemFree(dev);
 	}
 	this->devMap->Clear();
@@ -181,7 +182,7 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblInterface, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Interface"));
+	NEW_CLASS(this->lblInterface, UI::GUILabel(ui, this->pnlControl, CSTR("Interface")));
 	this->lblInterface->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboInterface, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboInterface->SetRect(104, 4, 150, 23, false);
@@ -196,10 +197,10 @@ SSWR::AVIRead::AVIRBluetoothLEForm::AVIRBluetoothLEForm(UI::GUIClientControl *pa
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->HandleDblClk(OnDevicesDblClick, this);
-	this->lvDevices->AddColumn((const UTF8Char*)"MAC", 80);
-	this->lvDevices->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 150);
-	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 60);
+	this->lvDevices->AddColumn(CSTR("MAC"), 80);
+	this->lvDevices->AddColumn(CSTR("Name"), 150);
+	this->lvDevices->AddColumn(CSTR("Vendor"), 150);
+	this->lvDevices->AddColumn(CSTR("RSSI"), 60);
 
 	UOSInt i = 0;
 	UOSInt j = this->btList->GetCount();

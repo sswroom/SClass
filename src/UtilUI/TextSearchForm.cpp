@@ -29,7 +29,7 @@ UtilUI::TextSearchForm::TextSearchForm(UI::GUIClientControl *parent, UI::GUICore
 	this->monMgr = monMgr;
 	this->mainFrm = mainFrm;
 
-	NEW_CLASS(this->lblSearch, UI::GUILabel(ui, this, (const UTF8Char*)"Search Text:"));
+	NEW_CLASS(this->lblSearch, UI::GUILabel(ui, this, CSTR("Search Text:")));
 	this->lblSearch->SetRect(8, 16, 80, 21, false);
 	NEW_CLASS(this->txtSearch, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSearch->SetRect(88, 14, 100, 23, false);

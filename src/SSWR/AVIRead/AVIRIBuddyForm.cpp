@@ -131,7 +131,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	this->lbDevice->HandleSelectionChange(OnDevChanged, this);
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblHead, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Head"));
+	NEW_CLASS(this->lblHead, UI::GUILabel(ui, this->pnlMain, CSTR("Head")));
 	this->lblHead->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->lbHead, UI::GUIListBox(ui, this->pnlMain, false));
 	this->lbHead->SetRect(104, 4, 200, 120, false);
@@ -144,12 +144,12 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	this->lbHead->AddItem(CSTR("Magenta"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_MAGENTA);
 	this->lbHead->AddItem(CSTR("Cyan"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_CYAN);
 	this->lbHead->AddItem(CSTR("White"), (void*)IO::Device::IBuddy::IBHDE_LIGHT_WHITE);
-	NEW_CLASS(this->lblHeart, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Heart"));
+	NEW_CLASS(this->lblHeart, UI::GUILabel(ui, this->pnlMain, CSTR("Heart")));
 	this->lblHeart->SetRect(4, 124, 100, 23, false);
-	NEW_CLASS(this->chkHeart, UI::GUICheckBox(ui, this->pnlMain, (const UTF8Char*)"Turn On", false));
+	NEW_CLASS(this->chkHeart, UI::GUICheckBox(ui, this->pnlMain, CSTR("Turn On"), false));
 	this->chkHeart->SetRect(104, 124, 200, 23, false);
 	this->chkHeart->HandleCheckedChange(OnHeartChanged, this);
-	NEW_CLASS(this->lblTurn, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Body Turn"));
+	NEW_CLASS(this->lblTurn, UI::GUILabel(ui, this->pnlMain, CSTR("Body Turn")));
 	this->lblTurn->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->btnTurnLeft, UI::GUIButton(ui, this->pnlMain, CSTR("Left")));
 	this->btnTurnLeft->SetRect(104, 148, 75, 23, false);
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRIBuddyForm::AVIRIBuddyForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnTurnRight, UI::GUIButton(ui, this->pnlMain, CSTR("Right")));
 	this->btnTurnRight->SetRect(184, 148, 75, 23, false);
 	this->btnTurnRight->HandleButtonUpDown(OnTurnRightDown, this);
-	NEW_CLASS(this->lblWing, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Wing"));
+	NEW_CLASS(this->lblWing, UI::GUILabel(ui, this->pnlMain, CSTR("Wing")));
 	this->lblWing->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->btnWingUp, UI::GUIButton(ui, this->pnlMain, CSTR("Up")));
 	this->btnWingUp->SetRect(104, 172, 75, 23, false);

@@ -22,7 +22,7 @@ void Parser::FileParser::SPDParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.spd", (const UTF8Char*)"SPD File");
+		selector->AddFilter(CSTR("*.spd"), CSTR("SPD File"));
 	}
 }
 

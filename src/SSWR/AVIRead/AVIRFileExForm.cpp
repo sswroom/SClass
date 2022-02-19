@@ -72,19 +72,19 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	me->txtStartOfst->GetText(&sb);
 	if (!sb.ToUInt64(&startOfst))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Start Offset is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Start Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtEndOfst->GetText(&sb);
 	if (!sb.ToUInt64(&endOfst))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"End Offset is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("End Offset is not valid"), CSTR("Error"), me);
 		return;
 	}
 	if (startOfst >= endOfst)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Start Offset is out of range", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Start Offset is out of range"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -93,14 +93,14 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	if (srcFS->IsError())
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening source file", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in opening source file"), CSTR("Error"), me);
 		return;
 	}
 	fileSize = srcFS->GetLength();
 	if (endOfst > fileSize)
 	{
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"End Offset is out of range", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("End Offset is out of range"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -110,7 +110,7 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	{
 		DEL_CLASS(destFS);
 		DEL_CLASS(srcFS);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening dest file", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in opening dest file"), CSTR("Error"), me);
 		return;
 	}
 	srcFS->SeekFromBeginning(startOfst);
@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this, (const UTF8Char*)"Source File"));
+	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this, CSTR("Source File")));
 	this->lblSrc->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtSrc->SetRect(104, 4, 600, 23, false);
@@ -157,23 +157,23 @@ SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnSrc, UI::GUIButton(ui, this, CSTR("B&rowse")));
 	this->btnSrc->SetRect(704, 4, 75, 23, false);
 	this->btnSrc->HandleButtonClick(OnSrcClicked, this);
-	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this, (const UTF8Char*)"Dest File"));
+	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this, CSTR("Dest File")));
 	this->lblDest->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDest, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDest->SetRect(104, 28, 600, 23, false);
 	NEW_CLASS(this->btnDest, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnDest->SetRect(704, 28, 75, 23, false);
 	this->btnDest->HandleButtonClick(OnDestClicked, this);
-	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, this, (const UTF8Char*)"File Size"));
+	NEW_CLASS(this->lblFileSize, UI::GUILabel(ui, this, CSTR("File Size")));
 	this->lblFileSize->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileSize, UI::GUITextBox(ui, this, CSTR("Unknown")));
 	this->txtFileSize->SetRect(104, 52, 160, 23, false);
 	this->txtFileSize->SetReadOnly(true);
-	NEW_CLASS(this->lblStartOfst, UI::GUILabel(ui, this, (const UTF8Char*)"Start Offset"));
+	NEW_CLASS(this->lblStartOfst, UI::GUILabel(ui, this, CSTR("Start Offset")));
 	this->lblStartOfst->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtStartOfst, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtStartOfst->SetRect(104, 76, 160, 23, false);
-	NEW_CLASS(this->lblEndOfst, UI::GUILabel(ui, this, (const UTF8Char*)"End Offset"));
+	NEW_CLASS(this->lblEndOfst, UI::GUILabel(ui, this, CSTR("End Offset")));
 	this->lblEndOfst->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtEndOfst, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtEndOfst->SetRect(104, 100, 160, 23, false);

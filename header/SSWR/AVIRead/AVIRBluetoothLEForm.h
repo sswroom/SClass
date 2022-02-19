@@ -22,7 +22,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt64 mac;
-				const UTF8Char *name;
+				Text::String *name;
 				Int32 rssi;
 				Bool updated;
 				Bool shown;

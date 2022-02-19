@@ -56,27 +56,27 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 
 	if (sbServer.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter server", (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter server"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (!sbPort.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbDatabase.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter database", (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter database"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbUser.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter user", (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter user"), CSTR("MSSQL Conn"), me);
 		return;
 	}	
 	if (sbPassword.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter password", (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter password"), CSTR("MSSQL Conn"), me);
 		return;
 	}
 	sbPort.ClearStr();
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRMSSQLConnForm::OnOKClicked(void *userObj)
 		sbUser.ClearStr();
 		sbUser.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		sbUser.AppendC(sbPort.ToString(), sbPort.GetLength());
-		UI::MessageDialog::ShowDialog(sbUser.ToString(), (const UTF8Char*)"MSSQL Conn", me);
+		UI::MessageDialog::ShowDialog(sbUser.ToCString(), CSTR("MSSQL Conn"), me);
 	}
 }
 
@@ -111,31 +111,31 @@ SSWR::AVIRead::AVIRMSSQLConnForm::AVIRMSSQLConnForm(UI::GUIClientControl *parent
 	this->isError = false;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, this, (const UTF8Char*)"Driver"));
+	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, this, CSTR("Driver")));
 	this->lblDriver->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDriver, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDriver->SetRect(104, 4, 300, 23, false);
 	this->txtDriver->SetReadOnly(true);
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, (const UTF8Char*)"Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, CSTR("Server")));
 	this->lblServer->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this, CSTR("localhost")));
 	this->txtServer->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->btnPasteJDBC, UI::GUIButton(ui, this, CSTR("Paste from JDBC Str")));
 	this->btnPasteJDBC->SetRect(304, 28, 150, 23, false);
 	this->btnPasteJDBC->HandleButtonClick(OnPasteJDBCClicked, this);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1433")));
 	this->txtPort->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, (const UTF8Char*)"Database"));
+	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, CSTR("Database")));
 	this->lblDatabase->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDatabase->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->lblUser, UI::GUILabel(ui, this, (const UTF8Char*)"User"));
+	NEW_CLASS(this->lblUser, UI::GUILabel(ui, this, CSTR("User")));
 	this->lblUser->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtUser, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUser->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPassword->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 124, 200, 23, false);

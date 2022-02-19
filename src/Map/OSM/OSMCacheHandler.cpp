@@ -133,14 +133,14 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	}
 }
 
-Map::OSM::OSMCacheHandler::OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
+Map::OSM::OSMCacheHandler::OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	NEW_CLASS(this->urls, Data::ArrayListString());
-	this->urls->Add(Text::String::NewNotNull(url));
+	this->urls->Add(Text::String::New(url));
 	NEW_CLASS(this->urlMut, Sync::Mutex());
 	this->urlNext = 0;
 	this->ioMut = 0;
-	this->cacheDir = Text::String::NewNotNull(cacheDir);
+	this->cacheDir = Text::String::New(cacheDir);
 	this->maxLevel = maxLevel;
 	this->sockf = sockf;
 	this->ssl = ssl;

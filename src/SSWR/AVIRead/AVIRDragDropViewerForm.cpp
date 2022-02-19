@@ -61,19 +61,19 @@ SSWR::AVIRead::AVIRDragDropViewerForm::AVIRDragDropViewerForm(UI::GUIClientContr
 	}
 	else if (errType == UI::GUIControl::DET_INVALIDCONTROL)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in registering Drag Drop, Invalid HWND", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Invalid HWND"), CSTR("Error"), this);
 	}
 	else if (errType == UI::GUIControl::DET_ALREADYREGISTER)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in registering Drag Drop, Already Registered", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Already Registered"), CSTR("Error"), this);
 	}
 	else if (errType == UI::GUIControl::DET_OUTOFMEMORY)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in registering Drag Drop, Out of Memory", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop, Out of Memory"), CSTR("Error"), this);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in registering Drag Drop", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in registering Drag Drop"), CSTR("Error"), this);
 	}
 }
 
@@ -110,11 +110,11 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 		sb.ClearStr();
 		if (data->GetDataText(csptr, &sb))
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNew(sb.ToString()));
+			this->dropMap->Put(csptr, Text::StrCopyNewC(sb.ToString(), sb.GetLength()));
 		}
 		else
 		{
-			this->dropMap->Put(csptr, Text::StrCopyNew((const UTF8Char*)"Cannot get data"));
+			this->dropMap->Put(csptr, Text::StrCopyNewC(UTF8STRC("Cannot get data")));
 		}
 		this->lbType->AddItem({csptr, Text::StrCharCnt(csptr)}, 0);
 		i++;

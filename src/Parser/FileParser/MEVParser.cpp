@@ -40,7 +40,7 @@ void Parser::FileParser::MEVParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mev", (const UTF8Char*)"MEV File");
+		selector->AddFilter(CSTR("*.mev"), CSTR("MEV File"));
 	}
 }
 

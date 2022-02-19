@@ -25,7 +25,7 @@ void Parser::FileParser::CDXAParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"DAT (CDXA/VCD) File");
+		selector->AddFilter(CSTR("*.dat"), CSTR("DAT (CDXA/VCD) File"));
 	}
 }
 

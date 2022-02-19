@@ -799,7 +799,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	me->cliMgr->AddClient(cli, data);
 
 	buff[4] = 10;
-	bptr = Text::StrConcat(Text::StrConcatC(&buff[5], UTF8STRC(MYSQLVERSION)), me->dbms->GetVersion()) + 1;
+	bptr = me->dbms->GetVersion()->ConcatTo(Text::StrConcatC(&buff[5], UTF8STRC(MYSQLVERSION))) + 1;
 	WriteInt32(bptr, data->connId);
 	MemCopyNO(&bptr[4], data->authPluginData, 8);
 	bptr += 12;

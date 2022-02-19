@@ -23,7 +23,7 @@ void Parser::FileParser::MIMEFileParser::PrepareSelector(IO::IFileSelector *sele
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MIMEObject)
 	{
-		selector->AddFilter((const UTF8Char*)"*.eml", (const UTF8Char*)"Email File");
+		selector->AddFilter(CSTR("*.eml"), CSTR("Email File"));
 	}
 }
 

@@ -97,15 +97,15 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			
 			sptr = Text::StrUInt64(sbuff, dev->devId);
 			k = me->lvDevice->AddItem(CSTRP(sbuff, sptr), dev);
-			Text::StrUInt16(sbuff, (UInt16)dev->shortAddr);
-			me->lvDevice->SetSubItem(k, 1, sbuff);
-			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType).v);
+			sptr = Text::StrUInt16(sbuff, (UInt16)dev->shortAddr);
+			me->lvDevice->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			me->lvDevice->SetSubItem(k, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			if (dev->readingTime)
 			{
 				dt.SetTicks(dev->readingTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				me->lvDevice->SetSubItem(k, 3, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+				me->lvDevice->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sensor Type = "));
@@ -122,12 +122,12 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 					Text::SBAppendF64(&sb, dev->readings[l]);
 					l++;
 				}
-				me->lvDevice->SetSubItem(k, 4, sb.ToString());
+				me->lvDevice->SetSubItem(k, 4, sb.ToCString());
 			}
 			else
 			{
-				me->lvDevice->SetSubItem(k, 3, (const UTF8Char*)"-");
-				me->lvDevice->SetSubItem(k, 4, (const UTF8Char*)"-");
+				me->lvDevice->SetSubItem(k, 3, CSTR("-"));
+				me->lvDevice->SetSubItem(k, 4, CSTR("-"));
 			}
 			dev->mut->UnlockRead();
 			i++;
@@ -148,8 +148,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 			if (dev->shortAddrChg)
 			{
 				dev->shortAddrChg = false;
-				Text::StrInt32(sbuff, (UInt16)dev->shortAddr);
-				me->lvDevice->SetSubItem(i, 1, sbuff);
+				sptr = Text::StrInt32(sbuff, (UInt16)dev->shortAddr);
+				me->lvDevice->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			if (dev->readingChg)
 			{
@@ -157,8 +157,8 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 
 				dt.SetTicks(dev->readingTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-				me->lvDevice->SetSubItem(i, 3, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+				me->lvDevice->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("Sensor Type = "));
@@ -175,7 +175,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnTimerTick(void *userObj)
 					Text::SBAppendF64(&sb, dev->readings[l]);
 					l++;
 				}
-				me->lvDevice->SetSubItem(i, 4, sb.ToString());
+				me->lvDevice->SetSubItem(i, 4, sb.ToCString());
 			}
 			dev->mut->UnlockRead();
 			i++;
@@ -295,7 +295,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDeviceDblClk(void *userObj, U
 				me->devHandlerMap->Put(devId, (Int32)dev->handType);
 				me->devMut->UnlockWrite();
 				me->snb->SetDevHandleType(dev->devId, dev->handType);
-				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType).v);
+				me->lvDevice->SetSubItem(index, 2, IO::SNBDongle::GetHandleName(dev->handType));
 			}
 			DEL_CLASS(frm);
 	//		me->snb->SendSetReportTime(devId, 3, true);
@@ -310,14 +310,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	UInt32 baudRate = me->snb->GetBaudRate();
 	if (dongleId == 0 || baudRate == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Dongle info missing", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Dongle info missing"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 url;
 	me->txtURL->GetText(&url);
 	if (!url.StartsWith(UTF8STRC("http://")))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"URL is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("URL is not valid"), CSTR("Error"), me);
 		return;
 	}
 
@@ -325,7 +325,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	me->txtRemarks->GetText(&remarks);
 	if (remarks.IndexOf('\r') != INVALID_INDEX || remarks.IndexOf('\n') != INVALID_INDEX || remarks.IndexOf('\'') != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Remarks contain invalid characters", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Remarks contain invalid characters"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -347,7 +347,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	if (sensors->GetCount() == 0)
 	{
 		me->devMut->UnlockRead();
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No devices found", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("No devices found"), CSTR("Error"), me);
 		return;
 	}
 	i = 0;
@@ -358,7 +358,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 		if (dev->readingTime == 0 || dev->nReading == 0)
 		{
 			me->devMut->UnlockRead();
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Some devices do not have reading yet", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
 			return;
 		}
 		if (i > 0)
@@ -385,7 +385,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	cli->AddHeaderC(CSTR("Iot-Program"), CSTR("margorpnomis"));
 	if (cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Some devices do not have reading yet", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Some devices do not have reading yet"), CSTR("Error"), me);
 		status = -1;
 	}
 	else
@@ -402,14 +402,14 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnUploadClicked(void *userObj)
 	}
 	else if (status == 200)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Uploaded successfully", (const UTF8Char*)"Upload", me);
+		UI::MessageDialog::ShowDialog(CSTR("Uploaded successfully"), CSTR("Upload"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error, server response "));
 		sb.AppendI32(status);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Upload", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Upload"), me);
 	}
 }
 
@@ -505,7 +505,7 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnDongleInfo, UI::GUIButton(ui, this->pnlDevice, CSTR("Get Dongle Info")));
 	this->btnDongleInfo->SetRect(4, 4, 95, 23, false);
 	this->btnDongleInfo->HandleButtonClick(OnDongleInfoClicked, this);
-	NEW_CLASS(this->lblDongleId, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Dongle Id"));
+	NEW_CLASS(this->lblDongleId, UI::GUILabel(ui, this->pnlDevice, CSTR("Dongle Id")));
 	this->lblDongleId->SetRect(104, 4, 80, 23, false);
 	NEW_CLASS(this->txtDongleId, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtDongleId->SetRect(184, 4, 200, 23, false);
@@ -523,18 +523,18 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnAddDevice, UI::GUIButton(ui, this->pnlDevice, CSTR("AddDevice")));
 	this->btnAddDevice->SetRect(244, 28, 75, 23, false);
 	this->btnAddDevice->HandleButtonClick(OnAddDeviceClicked, this);
-	NEW_CLASS(this->lblRemarks, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Remarks"));
+	NEW_CLASS(this->lblRemarks, UI::GUILabel(ui, this->pnlDevice, CSTR("Remarks")));
 	this->lblRemarks->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtRemarks, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtRemarks->SetRect(104, 52, 600, 23, false);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlDevice, CSTR("URL")));
 	this->lblURL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlDevice, CSTR("")));
 	this->txtURL->SetRect(104, 76, 600, 23, false);
 	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlDevice, CSTR("Upload")));
 	this->btnUpload->SetRect(704, 76, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
-	NEW_CLASS(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, (const UTF8Char*)"Device"));
+	NEW_CLASS(this->grpDevice, UI::GUIGroupBox(ui, this->tpDevice, CSTR("Device")));
 	this->grpDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlDevCtrl, UI::GUIPanel(ui, this->grpDevice));
 	this->pnlDevCtrl->SetRect(0, 0, 100, 31, false);
@@ -559,11 +559,11 @@ SSWR::AVIRead::AVIRSNBDongleForm::AVIRSNBDongleForm(UI::GUIClientControl *parent
 	this->btnDevStatus->HandleButtonClick(OnDevStatusClicked, this);
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->grpDevice, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvDevice->AddColumn((const UTF8Char*)"Device Id", 120);
-	this->lvDevice->AddColumn((const UTF8Char*)"Short Addr", 60);
-	this->lvDevice->AddColumn((const UTF8Char*)"Handle Type", 120);
-	this->lvDevice->AddColumn((const UTF8Char*)"Reading Time", 120);
-	this->lvDevice->AddColumn((const UTF8Char*)"Values", 400);
+	this->lvDevice->AddColumn(CSTR("Device Id"), 120);
+	this->lvDevice->AddColumn(CSTR("Short Addr"), 60);
+	this->lvDevice->AddColumn(CSTR("Handle Type"), 120);
+	this->lvDevice->AddColumn(CSTR("Reading Time"), 120);
+	this->lvDevice->AddColumn(CSTR("Values"), 400);
 	this->lvDevice->HandleDblClk(OnDeviceDblClk, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

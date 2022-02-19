@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MACManagerFile", false));
 	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->LogFileLoad(dlg->GetFileName()->ToCString());
@@ -33,11 +33,11 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnStoreClicked(void *userObj)
 	SSWR::AVIRead::AVIRMACManagerForm *me = (SSWR::AVIRead::AVIRMACManagerForm*)userObj;
 	if (me->macList->Store())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Data Stored", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing data", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnContentDblClicked(void *user
 			log = me->logList->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
-				me->lvContent->SetSubItem(i, 1, entry->name);
+				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 			}
 			i++;
 		}
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	me->txtInput->GetText(&sb);
 	if (sb.GetLength() < 6 || sb.GetLength() > 28)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("MAC Manager"), me);
 		return;
 	}
 	sbuff[0] = sb.ToString()[2];
@@ -138,7 +138,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 	i = sb.Hex2Bytes(&buff[2]);
 	if (i < 3)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("MAC Manager"), me);
 		return;
 	}
 	while (i < 6)
@@ -174,7 +174,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnInputClicked(void *userObj)
 			log = me->logList->GetItem(i);
 			if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 			{
-				me->lvContent->SetSubItem(i, 1, entry->name);
+				me->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 			}
 			i++;
 		}
@@ -188,7 +188,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerForm::OnWiresharkClicked(void *userO
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MACManagerWiresharkFile", false));
 	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter((const UTF8Char*)"manuf", (const UTF8Char*)"Wireshark manuf File");
+	dlg->AddFilter(CSTR("manuf"), CSTR("Wireshark manuf File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::FileStream *fs;
@@ -329,14 +329,14 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 					buff[6] = log->mac[4];
 					buff[7] = log->mac[5];
 					log->macInt = ReadMUInt64(buff);
-					log->ssid = Text::StrCopyNewC(sarr[1].v, sarr[1].leng);
+					log->ssid = Text::String::New(sarr[1].v, sarr[1].leng);
 					log->phyType = Text::StrToInt32(sarr[2].v);
 					log->freq = Text::StrToDouble(sarr[3].v);
 					if (i >= 7)
 					{
-						log->manuf = Text::StrCopyNewC(sarr[4].v, sarr[4].leng);
-						log->model = Text::StrCopyNewC(sarr[5].v, sarr[5].leng);
-						log->serialNum = Text::StrCopyNewC(sarr[6].v, sarr[6].leng);
+						log->manuf = Text::String::New(sarr[4].v, sarr[4].leng);
+						log->model = Text::String::New(sarr[5].v, sarr[5].leng);
+						log->serialNum = Text::String::New(sarr[6].v, sarr[6].leng);
 					}
 					else
 					{
@@ -353,7 +353,7 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 					}
 					if (i >= 9)
 					{
-						log->country = Text::StrCopyNewC(sarr[8].v, sarr[8].leng);
+						log->country = Text::String::New(sarr[8].v, sarr[8].leng);
 						j = Text::StrSplitP(sarr2, 3, sarr[7], ',');
 						while (j-- > 0)
 						{
@@ -423,17 +423,17 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(i, 1, entry->name);
+				this->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 			}
 			else
 			{
-				this->lvContent->SetSubItem(i, 1, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(i, 1, CSTR("?"));
 			}
 			this->lvContent->SetSubItem(i, 2, log->ssid);
-			Text::StrInt32(sbuff, log->phyType);
-			this->lvContent->SetSubItem(i, 3, sbuff);
-			Text::StrDouble(sbuff, log->freq);
-			this->lvContent->SetSubItem(i, 4, sbuff);
+			sptr = Text::StrInt32(sbuff, log->phyType);
+			this->lvContent->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, log->freq);
+			this->lvContent->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 			if (log->manuf)
 				this->lvContent->SetSubItem(i, 5, log->manuf);
 			if (log->model)
@@ -441,11 +441,20 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileLoad(Text::CString fileName)
 			if (log->serialNum)
 				this->lvContent->SetSubItem(i, 7, log->serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
-				this->lvContent->SetSubItem(i, 8, Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
+			{
+				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
+				this->lvContent->SetSubItem(i, 8, {entry->name, entry->nameLen});
+			}
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
-				this->lvContent->SetSubItem(i, 9, Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
+			{
+				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
+				this->lvContent->SetSubItem(i, 9, {entry->name, entry->nameLen});
+			}
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
-				this->lvContent->SetSubItem(i, 10, Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
+			{
+				entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
+				this->lvContent->SetSubItem(i, 10, {entry->name, entry->nameLen});
+			}
 			if (log->country)
 				this->lvContent->SetSubItem(i, 11, log->country);
 			i++;
@@ -462,11 +471,11 @@ void SSWR::AVIRead::AVIRMACManagerForm::LogFileClear()
 	while (i-- > 0)
 	{
 		log = this->logList->GetItem(i);
-		SDEL_TEXT(log->ssid);
-		SDEL_TEXT(log->manuf);
-		SDEL_TEXT(log->model);
-		SDEL_TEXT(log->serialNum);
-		SDEL_TEXT(log->country);
+		SDEL_STRING(log->ssid);
+		SDEL_STRING(log->manuf);
+		SDEL_STRING(log->model);
+		SDEL_STRING(log->serialNum);
+		SDEL_STRING(log->country);
 		if (log->ieBuff)
 		{
 			MemFree(log->ieBuff);
@@ -499,7 +508,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store")));
 	this->btnStore->SetRect(4, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
 	this->lblInfo->SetRect(84, 4, 200, 23, false);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -508,7 +517,7 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this->tpFile));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Log File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("Log File")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
@@ -527,21 +536,21 @@ SSWR::AVIRead::AVIRMACManagerForm::AVIRMACManagerForm(UI::GUIClientControl *pare
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);
 	this->lvContent->HandleSelChg(OnContentSelChg, this);
-	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvContent->AddColumn((const UTF8Char*)"PHYType", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"Frequency", 80);
-	this->lvContent->AddColumn((const UTF8Char*)"Manufacturer", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"Model", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"S/N", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor1", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor2", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor3", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Country", 50);
+	this->lvContent->AddColumn(CSTR("MAC"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor"), 120);
+	this->lvContent->AddColumn(CSTR("SSID"), 200);
+	this->lvContent->AddColumn(CSTR("PHYType"), 60);
+	this->lvContent->AddColumn(CSTR("Frequency"), 80);
+	this->lvContent->AddColumn(CSTR("Manufacturer"), 100);
+	this->lvContent->AddColumn(CSTR("Model"), 100);
+	this->lvContent->AddColumn(CSTR("S/N"), 100);
+	this->lvContent->AddColumn(CSTR("Vendor1"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor2"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor3"), 120);
+	this->lvContent->AddColumn(CSTR("Country"), 50);
 
 	this->tpInput = this->tcMain->AddTabPage(CSTR("Input"));
-	NEW_CLASS(this->lblInput, UI::GUILabel(ui, this->tpInput, (const UTF8Char*)"MAC Input"));
+	NEW_CLASS(this->lblInput, UI::GUILabel(ui, this->tpInput, CSTR("MAC Input")));
 	this->lblInput->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInput, UI::GUITextBox(ui, this->tpInput, CSTR("")));
 	this->txtInput->SetRect(104, 4, 150, 23, false);

@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			UInt32 portNum = (UInt32)(UOSInt)me->cboSerialPort->GetItem(i);
 			if (portNum == 0)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a port", (const UTF8Char*)"Select Serial Port", me);
+				UI::MessageDialog::ShowDialog(CSTR("Please select a port"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			me->txtBaudRate->GetText(sbuff);
 			UInt32 baudRate = Text::StrToUInt32(sbuff);
 			if (baudRate == 0)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input a valid baud rate", (const UTF8Char*)"Select Serial Port", me);
+				UI::MessageDialog::ShowDialog(CSTR("Please input a valid baud rate"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			IO::SerialPort::ParityType parity = (IO::SerialPort::ParityType)(OSInt)me->cboParity->GetSelectedItem();
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (port->IsError())
 			{
 				DEL_CLASS(port);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"Select Serial Port", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("Select Serial Port"), me);
 				return;
 			}
 			me->stm = port;
@@ -53,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtSLBaudRate->GetText(&sb);
 			if (!sb.ToUInt32(&baudRate) || baudRate == 0)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input baud rate", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Please input baud rate"), CSTR("Error"), me);
 				return;
 			}
 			me->stm = me->siLabDriver->OpenPort((UInt32)(OSInt)me->lvSLPort->GetSelectedItem(), baudRate);
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("Error"), me);
 			}
 		}
 		break;
@@ -75,12 +75,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtTCPSvrPort->GetText(&sb);
 			if (!sb.ToUInt16(&port))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port >= 65535)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 			if (me->chkBoardcast->IsChecked())
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
+					UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
 				else
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (stm->IsError())
 				{
 					DEL_CLASS(stm);
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
+					UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 					return;
 				}
 				else
@@ -127,19 +127,19 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtTCPCliHost->GetText(&sb);
 			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;
 			}
 			sb.ClearStr();
 			me->txtTCPCliPort->GetText(&sb);
 			if (!sb.ToUInt16(&port))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port > 65535)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 			Net::TCPClient *cli;
@@ -147,7 +147,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (cli->IsConnectError())
 			{
 				DEL_CLASS(cli);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connect to server", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in connect to server"), CSTR("Error"), me);
 				return;
 			}
 			else
@@ -169,7 +169,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the file", (const UTF8Char*)"Open Stream", me);
+					UI::MessageDialog::ShowDialog(CSTR("Error in opening the file"), CSTR("Open Stream"), me);
 				}
 				else
 				{
@@ -201,12 +201,12 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			me->txtUDPSvrPort->GetText(&sb);
 			if (!sb.ToUInt16(&port))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not a number", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is not a number"), CSTR("Error"), me);
 				return;
 			}
 			if (port <= 0 || port >= 65535)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 				return;
 			}
 
@@ -215,7 +215,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			if (stm->IsError())
 			{
 				DEL_CLASS(stm);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 				return;
 			}
 			else
@@ -309,7 +309,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlStreamType, UI::GUIPanel(ui, this));
 	this->pnlStreamType->SetRect(0, 0, 100, 31, false);
 	this->pnlStreamType->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this->pnlStreamType, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStreamType, UI::GUILabel(ui, this->pnlStreamType, CSTR("Stream Type")));
 	this->lblStreamType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboStreamType, UI::GUIComboBox(ui, this->pnlStreamType, false));
 	this->cboStreamType->SetRect(104, 4, 200, 23, false);
@@ -342,7 +342,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSerialPort = this->tcConfig->AddTabPage(CSTR("Serial Port"));
-	NEW_CLASS(this->lblSerialPort, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblSerialPort, UI::GUILabel(ui, this->tpSerialPort, CSTR("Port")));
 	this->lblSerialPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboSerialPort, UI::GUIComboBox(ui, this->tpSerialPort, false));
 	this->cboSerialPort->SetRect(108, 8, 100, 23, false);
@@ -369,11 +369,11 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		this->cboSerialPort->SetSelectedIndex(0);
 	}
 	DEL_CLASS(ports);
-	NEW_CLASS(this->lblBaudRate, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Baud Rate"));
+	NEW_CLASS(this->lblBaudRate, UI::GUILabel(ui, this->tpSerialPort, CSTR("Baud Rate")));
 	this->lblBaudRate->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtBaudRate, UI::GUITextBox(ui, this->tpSerialPort, CSTR("115200")));
 	this->txtBaudRate->SetRect(108, 32, 100, 23, false);
-	NEW_CLASS(this->lblParity, UI::GUILabel(ui, this->tpSerialPort, (const UTF8Char*)"Parity"));
+	NEW_CLASS(this->lblParity, UI::GUILabel(ui, this->tpSerialPort, CSTR("Parity")));
 	this->lblParity->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->cboParity, UI::GUIComboBox(ui, this->tpSerialPort, false));
 	this->cboParity->SetRect(108, 56, 100, 23, false);
@@ -388,12 +388,12 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASS(this->pnlSLInfo, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLInfo->SetRect(0, 0, 100, 55, false);
 		this->pnlSLInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-		NEW_CLASS(this->lblDLLVer, UI::GUILabel(ui, this->pnlSLInfo, (const UTF8Char*)"DLL Version"));
+		NEW_CLASS(this->lblDLLVer, UI::GUILabel(ui, this->pnlSLInfo, CSTR("DLL Version")));
 		this->lblDLLVer->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtDLLVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDLLVer->SetRect(104, 4, 100, 23, false);
 		this->txtDLLVer->SetReadOnly(true);
-		NEW_CLASS(this->lblDriverVer, UI::GUILabel(ui, this->pnlSLInfo, (const UTF8Char*)"Driver Version"));
+		NEW_CLASS(this->lblDriverVer, UI::GUILabel(ui, this->pnlSLInfo, CSTR("Driver Version")));
 		this->lblDriverVer->SetRect(4, 28, 100, 23, false);
 		NEW_CLASS(this->txtDriverVer, UI::GUITextBox(ui, this->pnlSLInfo, CSTR("")));
 		this->txtDriverVer->SetRect(104, 28, 100, 23, false);
@@ -402,18 +402,18 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 		NEW_CLASS(this->pnlSLControl, UI::GUIPanel(ui, this->tpSiLabPort));
 		this->pnlSLControl->SetRect(0, 0, 100, 67, false);
 		this->pnlSLControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-		NEW_CLASS(this->lblSLBaudRate, UI::GUILabel(ui, this->pnlSLControl, (const UTF8Char*)"Baud Rate"));
+		NEW_CLASS(this->lblSLBaudRate, UI::GUILabel(ui, this->pnlSLControl, CSTR("Baud Rate")));
 		this->lblSLBaudRate->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtSLBaudRate, UI::GUITextBox(ui, this->pnlSLControl, CSTR("115200")));
 		this->txtSLBaudRate->SetRect(104, 4, 100, 23, false);
 
 		NEW_CLASS(this->lvSLPort, UI::GUIListView(ui, this->tpSiLabPort, UI::GUIListView::LVSTYLE_TABLE, 5));
 		this->lvSLPort->SetDockType(UI::GUIControl::DOCK_FILL);
-		this->lvSLPort->AddColumn((const UTF8Char*)"Num", 40);
-		this->lvSLPort->AddColumn((const UTF8Char*)"VID", 60);
-		this->lvSLPort->AddColumn((const UTF8Char*)"PID", 60);
-		this->lvSLPort->AddColumn((const UTF8Char*)"SN", 100);
-		this->lvSLPort->AddColumn((const UTF8Char*)"Description", 400);
+		this->lvSLPort->AddColumn(CSTR("Num"), 40);
+		this->lvSLPort->AddColumn(CSTR("VID"), 60);
+		this->lvSLPort->AddColumn(CSTR("PID"), 60);
+		this->lvSLPort->AddColumn(CSTR("SN"), 100);
+		this->lvSLPort->AddColumn(CSTR("Description"), 400);
 		this->lvSLPort->SetFullRowSelect(true);
 
 		Text::StringBuilderUTF8 sb;
@@ -458,21 +458,21 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 			v = 0;
 			if (this->siLabDriver->GetDeviceVID((UInt32)i, &v))
 			{
-				Text::StrHexVal16(sbuff, (UInt16)v);
-				this->lvSLPort->SetSubItem(k, 1, sbuff);
+				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
+				this->lvSLPort->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			}
 			if (this->siLabDriver->GetDevicePID((UInt32)i, &v))
 			{
-				Text::StrHexVal16(sbuff, (UInt16)v);
-				this->lvSLPort->SetSubItem(k, 2, sbuff);
+				sptr = Text::StrHexVal16(sbuff, (UInt16)v);
+				this->lvSLPort->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			}
-			if (this->siLabDriver->GetDeviceSN((UInt32)i, sbuff))
+			if ((sptr = this->siLabDriver->GetDeviceSN((UInt32)i, sbuff)) != 0)
 			{
-				this->lvSLPort->SetSubItem(k, 3, sbuff);
+				this->lvSLPort->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			}
-			if (this->siLabDriver->GetDeviceDesc((UInt32)i, sbuff))
+			if ((sptr = this->siLabDriver->GetDeviceDesc((UInt32)i, sbuff)) != 0)
 			{
-				this->lvSLPort->SetSubItem(k, 4, sbuff);
+				this->lvSLPort->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			}
 			i++;
 		}
@@ -483,25 +483,25 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	}
 
 	this->tpTCPSvr = this->tcConfig->AddTabPage(CSTR("TCP Server"));
-	NEW_CLASS(this->lblTCPSvrPort, UI::GUILabel(ui, this->tpTCPSvr, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblTCPSvrPort, UI::GUILabel(ui, this->tpTCPSvr, CSTR("Port")));
 	this->lblTCPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPSvrPort, UI::GUITextBox(ui, this->tpTCPSvr, CSTR("")));
 	this->txtTCPSvrPort->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, (const UTF8Char*)"Boardcast", true));
+	NEW_CLASS(this->chkBoardcast, UI::GUICheckBox(ui, this->tpTCPSvr, CSTR("Boardcast"), true));
 	this->chkBoardcast->SetRect(104, 28, 100, 23, false);
 
 	this->tpTCPCli = this->tcConfig->AddTabPage(CSTR("TCP Client"));
-	NEW_CLASS(this->lblTCPCliHost, UI::GUILabel(ui, this->tpTCPCli, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblTCPCliHost, UI::GUILabel(ui, this->tpTCPCli, CSTR("Host")));
 	this->lblTCPCliHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtTCPCliHost, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblTCPCliPort, UI::GUILabel(ui, this->tpTCPCli, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblTCPCliPort, UI::GUILabel(ui, this->tpTCPCli, CSTR("Port")));
 	this->lblTCPCliPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTCPCliPort, UI::GUITextBox(ui, this->tpTCPCli, CSTR("")));
 	this->txtTCPCliPort->SetRect(104, 28, 100, 23, false);
 
 	this->tpUDPSvr = this->tcConfig->AddTabPage(CSTR("UDP Server"));
-	NEW_CLASS(this->lblUDPSvrPort, UI::GUILabel(ui, this->tpUDPSvr, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblUDPSvrPort, UI::GUILabel(ui, this->tpUDPSvr, CSTR("Port")));
 	this->lblUDPSvrPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtUDPSvrPort, UI::GUITextBox(ui, this->tpUDPSvr, CSTR("")));
 	this->txtUDPSvrPort->SetRect(104, 4, 100, 23, false);
@@ -509,7 +509,7 @@ SSWR::AVIRead::AVIRSelStreamForm::AVIRSelStreamForm(UI::GUIClientControl *parent
 	if (allowReadOnly)
 	{
 		this->tpFile = this->tcConfig->AddTabPage(CSTR("File"));
-		NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)"File Name"));
+		NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->tpFile, CSTR("File Name")));
 		this->lblFileName->SetRect(4, 4, 100, 23, false);
 		NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->tpFile, CSTR("")));
 		this->txtFileName->SetRect(104, 4, 400, 23, false);

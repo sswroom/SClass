@@ -13,6 +13,7 @@
 Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDir, Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt8 buff[2048];
 	UOSInt readSize;
 	UInt32 codePage;
@@ -32,8 +33,8 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 	NEW_CLASS(this->levels, Data::ArrayListDbl());
 
 	IO::MemoryStream *mstm;
-	Text::StrConcatC(Text::StrConcat(sbuff, url), UTF8STRC("?f=json"));
-	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, sbuff, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	sptr = Text::StrConcatC(Text::StrConcat(sbuff, url), UTF8STRC("?f=json"));
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.ESRI.ESRITileMap.ESRITileMap")));
 	while ((readSize = cli->Read(buff, 2048)) > 0)
 	{
@@ -500,7 +501,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrInt32(sptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(filePathEnd - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{
@@ -624,7 +625,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("/"));
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, u8ptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(fs, IO::FileStream({filePath, (UOSInt)(u8ptr - filePath)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	while ((readSize = cli->Read(dataBuff, 2048)) > 0)
 	{

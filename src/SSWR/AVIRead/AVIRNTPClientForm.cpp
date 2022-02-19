@@ -94,7 +94,7 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, (const UTF8Char*)"Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, CSTR("Server")));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboServer, UI::GUIComboBox(ui, this, true));
 	this->cboServer->SetRect(104, 4, 300, 23, false);
@@ -111,12 +111,12 @@ SSWR::AVIRead::AVIRNTPClientForm::AVIRNTPClientForm(UI::GUIClientControl *parent
 	this->cboServer->AddItem(CSTR("1.pool.ntp.org"), 0);
 	this->cboServer->AddItem(CSTR("2.pool.ntp.org"), 0);
 	this->cboServer->AddItem(CSTR("3.pool.ntp.org"), 0);
-	NEW_CLASS(this->lblServerTime, UI::GUILabel(ui, this, (const UTF8Char*)"Server Time"));
+	NEW_CLASS(this->lblServerTime, UI::GUILabel(ui, this, CSTR("Server Time")));
 	this->lblServerTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtServerTime, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtServerTime->SetRect(104, 28, 200, 23, false);
 	this->txtServerTime->SetReadOnly(true);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtStatus->SetRect(104, 52, 200, 23, false);

@@ -12,20 +12,20 @@ void IO::SystemInfoLog::FreeServerRole(ServerRole *serverRole)
 void IO::SystemInfoLog::FreeDeviceInfo(DeviceInfo *deviceInfo)
 {
 	SDEL_STRING(deviceInfo->desc);
-	SDEL_TEXT(deviceInfo->hwId);
-	SDEL_TEXT(deviceInfo->service);
-	SDEL_TEXT(deviceInfo->driver);
+	SDEL_STRING(deviceInfo->hwId);
+	SDEL_STRING(deviceInfo->service);
+	SDEL_STRING(deviceInfo->driver);
 	MemFree(deviceInfo);
 }
 
 void IO::SystemInfoLog::FreeDriverInfo(DriverInfo *driverInfo)
 {
 	SDEL_STRING(driverInfo->fileName);
-	SDEL_TEXT(driverInfo->creationDate);
-	SDEL_TEXT(driverInfo->version);
-	SDEL_TEXT(driverInfo->manufacturer);
-	SDEL_TEXT(driverInfo->productName);
-	SDEL_TEXT(driverInfo->group);
+	SDEL_STRING(driverInfo->creationDate);
+	SDEL_STRING(driverInfo->version);
+	SDEL_STRING(driverInfo->manufacturer);
+	SDEL_STRING(driverInfo->productName);
+	SDEL_STRING(driverInfo->group);
 	MemFree(driverInfo);
 }
 
@@ -127,9 +127,9 @@ void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId
 {
 	DeviceInfo *dev = MemAlloc(DeviceInfo, 1);
 	dev->desc = Text::String::NewOrNull(desc);
-	dev->hwId = SCOPY_TEXT(hwId);
-	dev->service = SCOPY_TEXT(service);
-	dev->driver = SCOPY_TEXT(driver);
+	dev->hwId = Text::String::NewOrNull(hwId);
+	dev->service = Text::String::NewOrNull(service);
+	dev->driver = Text::String::NewOrNull(driver);
 	this->deviceInfos->Add(dev);
 }
 
@@ -143,11 +143,11 @@ void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize,
 	DriverInfo *driver = MemAlloc(DriverInfo, 1);
 	driver->fileName = Text::String::NewOrNull(fileName);
 	driver->fileSize = fileSize;
-	driver->creationDate = SCOPY_TEXT(creationDate);
-	driver->version = SCOPY_TEXT(version);
-	driver->manufacturer = SCOPY_TEXT(manufacturer);
-	driver->productName = SCOPY_TEXT(productName);
-	driver->group = SCOPY_TEXT(group);
+	driver->creationDate = Text::String::NewOrNull(creationDate);
+	driver->version = Text::String::NewOrNull(version);
+	driver->manufacturer = Text::String::NewOrNull(manufacturer);
+	driver->productName = Text::String::NewOrNull(productName);
+	driver->group = Text::String::NewOrNull(group);
 	driver->altitude = altitude;
 	this->driverInfos->Add(driver);
 }

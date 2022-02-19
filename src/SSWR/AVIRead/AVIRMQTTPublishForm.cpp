@@ -19,14 +19,14 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtHost->GetText(&sbHost);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), sbHost.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MQTT Publish"), me);
 		return;
 	}
 
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	me->txtTopic->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter topic", (const UTF8Char*)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter topic"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	topic = Text::String::New(sb.ToCString());
@@ -43,7 +43,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTPublishForm::OnPublishClicked(void *userOb
 	if (sb.GetLength() == 0)
 	{
 		SDEL_STRING(topic);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter message", (const UTF8Char*)"MQTT Publish", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter message"), CSTR("MQTT Publish"), me);
 		return;
 	}
 	message = Text::String::New(sb.ToCString());
@@ -84,34 +84,34 @@ SSWR::AVIRead::AVIRMQTTPublishForm::AVIRMQTTPublishForm(UI::GUIClientControl *pa
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this, (const UTF8Char*)"Username"));
+	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this, CSTR("Username")));
 	this->lblUsername->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUsername->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->lblTopic, UI::GUILabel(ui, this, (const UTF8Char*)"Topic"));
+	NEW_CLASS(this->lblTopic, UI::GUILabel(ui, this, CSTR("Topic")));
 	this->lblTopic->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTopic, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtTopic->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, (const UTF8Char*)"Message"));
+	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, CSTR("Message")));
 	this->lblMessage->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMessage->SetRect(104, 124, 100, 23, false);
 	NEW_CLASS(this->btnPublish, UI::GUIButton(ui, this, CSTR("Publish")));
 	this->btnPublish->SetRect(104, 148, 75, 23, false);
 	this->btnPublish->HandleButtonClick(OnPublishClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 172, 100, 23, false);

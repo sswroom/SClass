@@ -296,7 +296,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlStyle, UI::GUIPanel(ui, this));
 	this->pnlStyle->SetRect(0, 0, 456, 56, false);
 	this->pnlStyle->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->grpLayer, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Layers"));
+	NEW_CLASS(this->grpLayer, UI::GUIGroupBox(ui, this, CSTR("Layers")));
 	this->grpLayer->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlLayers, UI::GUIPanel(ui, this->grpLayer));
 	this->pnlLayers->SetRect(0, 0, 152, 157, false);
@@ -315,7 +315,7 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->pbPreview->GetSizeP(&w, &h);
 	this->prevImage = this->eng->CreateImage32(w, h, Media::AT_NO_ALPHA);
 	this->prevImage->SetHDPI(this->GetHDPI() / this->GetDDPI() * 96.0);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, (const UTF8Char*)"Name:"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlStyle, CSTR("Name:")));
 	this->lblName->SetRect(0, 32, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlStyle, CSTR("")));
 	this->txtName->SetRect(100, 32, 112, 23, false);
@@ -330,13 +330,13 @@ SSWR::AVIRead::AVIRGISLineEditForm::AVIRGISLineEditForm(UI::GUIClientControl *pa
 	this->btnRemoveLayer->SetRect(80, 8, 64, 23, false);
 	this->btnRemoveLayer->HandleButtonClick(RemoveLayerClicked, this);
 
-	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlLayer, (const UTF8Char*)"Color"));
+	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlLayer, CSTR("Color")));
 	this->lblColor->SetRect(0, 8, 88, 23, false);
-	NEW_CLASS(this->lblAlpha, UI::GUILabel(ui, this->pnlLayer, (const UTF8Char*)"Alpha"));
+	NEW_CLASS(this->lblAlpha, UI::GUILabel(ui, this->pnlLayer, CSTR("Alpha")));
 	this->lblAlpha->SetRect(0, 32, 88, 23, false);
-	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlLayer, (const UTF8Char*)"Thick"));
+	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlLayer, CSTR("Thick")));
 	this->lblThick->SetRect(0, 56, 88, 23, false);
-	NEW_CLASS(this->lblPattern, UI::GUILabel(ui, this->pnlLayer, (const UTF8Char*)"Pattern"));
+	NEW_CLASS(this->lblPattern, UI::GUILabel(ui, this->pnlLayer, CSTR("Pattern")));
 	this->lblPattern->SetRect(0, 80, 88, 23, false);
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlLayer, this->eng, true, false));
 	this->pbColor->SetRect(96, 8, 72, 24, false);

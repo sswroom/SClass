@@ -413,9 +413,9 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnTimerTick(void *userObj)
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("-"));
 				break;
 			}
-			Math::Unit::UnitBase::GetUnitShortName(entry->vt, entry->unit).ConcatTo(sptr);
+			sptr = Math::Unit::UnitBase::GetUnitShortName(entry->vt, entry->unit).ConcatTo(sptr);
 
-			me->lvDevice->SetSubItem(entry->lvIndex, 3, sbuff);
+			me->lvDevice->SetSubItem(entry->lvIndex, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -438,10 +438,10 @@ void __stdcall SSWR::AVIRead::AVIRMODBUSMasterForm::OnMODBUSEntry(void *userObj,
 	entry->lvIndex = me->lvDevice->AddItem(CSTRP(sbuff, sptr), entry);
 	entry->val = 0;
 	me->entryList->Add(entry);
-	Text::StrUInt16(sbuff, (UInt16)regAddr);
-	me->lvDevice->SetSubItem(entry->lvIndex, 1, sbuff);
-	me->lvDevice->SetSubItem(entry->lvIndex, 2, name.v);
-	me->lvDevice->SetSubItem(entry->lvIndex, 3, (const UTF8Char*)"-");
+	sptr = Text::StrUInt16(sbuff, (UInt16)regAddr);
+	me->lvDevice->SetSubItem(entry->lvIndex, 1, CSTRP(sbuff, sptr));
+	me->lvDevice->SetSubItem(entry->lvIndex, 2, name);
+	me->lvDevice->SetSubItem(entry->lvIndex, 3, CSTR("-"));
 }
 
 void SSWR::AVIRead::AVIRMODBUSMasterForm::StopStream()
@@ -467,17 +467,17 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->entryList, Data::ArrayList<MODBUSEntry*>());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Stream"));
+	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 72, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
 	this->txtStream->SetReadOnly(true);
-	NEW_CLASS(this->radMODBUSRTU, UI::GUIRadioButton(ui, this->grpStream, (const UTF8Char*)"MODBUS RTU", true));
+	NEW_CLASS(this->radMODBUSRTU, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS RTU"), true));
 	this->radMODBUSRTU->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->radMODBUSTCP, UI::GUIRadioButton(ui, this->grpStream, (const UTF8Char*)"MODBUS TCP", false));
+	NEW_CLASS(this->radMODBUSTCP, UI::GUIRadioButton(ui, this->grpStream, CSTR("MODBUS TCP"), false));
 	this->radMODBUSTCP->SetRect(204, 28, 100, 23, false);
 	NEW_CLASS(this->btnStream, UI::GUIButton(ui, this->grpStream, CSTR("&Open")));
 	this->btnStream->SetRect(304, 4, 75, 23, false);
@@ -486,13 +486,13 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpGetValue = this->tcMain->AddTabPage(CSTR("GetValue"));
-	NEW_CLASS(this->lblDevAddr, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"Dev Addr"));
+	NEW_CLASS(this->lblDevAddr, UI::GUILabel(ui, this->tpGetValue, CSTR("Dev Addr")));
 	this->lblDevAddr->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblRegAddr, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"Reg Addr"));
+	NEW_CLASS(this->lblRegAddr, UI::GUILabel(ui, this->tpGetValue, CSTR("Reg Addr")));
 	this->lblRegAddr->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->lblValue, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"Value"));
+	NEW_CLASS(this->lblValue, UI::GUILabel(ui, this->tpGetValue, CSTR("Value")));
 	this->lblValue->SetRect(384, 4, 100, 23, false);
-	NEW_CLASS(this->lblU8Name, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"U8"));
+	NEW_CLASS(this->lblU8Name, UI::GUILabel(ui, this->tpGetValue, CSTR("U8")));
 	this->lblU8Name->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtU8DevAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("1")));
 	this->txtU8DevAddr->SetRect(104, 28, 100, 23, false);
@@ -504,7 +504,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtU8Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
 	this->txtU8Value->SetRect(384, 28, 200, 23, false);
 	this->txtU8Value->SetReadOnly(true);
-	NEW_CLASS(this->lblU16Name, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"U16"));
+	NEW_CLASS(this->lblU16Name, UI::GUILabel(ui, this->tpGetValue, CSTR("U16")));
 	this->lblU16Name->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtU16DevAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("1")));
 	this->txtU16DevAddr->SetRect(104, 52, 100, 23, false);
@@ -516,7 +516,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtU16Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
 	this->txtU16Value->SetRect(384, 52, 200, 23, false);
 	this->txtU16Value->SetReadOnly(true);
-	NEW_CLASS(this->lblI32Name, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"I32"));
+	NEW_CLASS(this->lblI32Name, UI::GUILabel(ui, this->tpGetValue, CSTR("I32")));
 	this->lblI32Name->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtI32DevAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("1")));
 	this->txtI32DevAddr->SetRect(104, 76, 100, 23, false);
@@ -528,7 +528,7 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->txtI32Value, UI::GUITextBox(ui, this->tpGetValue, CSTR("")));
 	this->txtI32Value->SetRect(384, 76, 200, 23, false);
 	this->txtI32Value->SetReadOnly(true);
-	NEW_CLASS(this->lblF32Name, UI::GUILabel(ui, this->tpGetValue, (const UTF8Char*)"F32"));
+	NEW_CLASS(this->lblF32Name, UI::GUILabel(ui, this->tpGetValue, CSTR("F32")));
 	this->lblF32Name->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtF32DevAddr, UI::GUITextBox(ui, this->tpGetValue, CSTR("1")));
 	this->txtF32DevAddr->SetRect(104, 100, 100, 23, false);
@@ -542,13 +542,13 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->txtF32Value->SetReadOnly(true);
 
 	this->tpSetValue = this->tcMain->AddTabPage(CSTR("SetValue"));
-	NEW_CLASS(this->lblSetDevAddr, UI::GUILabel(ui, this->tpSetValue, (const UTF8Char*)"Dev Addr"));
+	NEW_CLASS(this->lblSetDevAddr, UI::GUILabel(ui, this->tpSetValue, CSTR("Dev Addr")));
 	this->lblSetDevAddr->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblSetRegAddr, UI::GUILabel(ui, this->tpSetValue, (const UTF8Char*)"Reg Addr"));
+	NEW_CLASS(this->lblSetRegAddr, UI::GUILabel(ui, this->tpSetValue, CSTR("Reg Addr")));
 	this->lblSetRegAddr->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->lblSetValue, UI::GUILabel(ui, this->tpSetValue, (const UTF8Char*)"Value"));
+	NEW_CLASS(this->lblSetValue, UI::GUILabel(ui, this->tpSetValue, CSTR("Value")));
 	this->lblSetValue->SetRect(384, 4, 100, 23, false);
-	NEW_CLASS(this->lblSetU8Name, UI::GUILabel(ui, this->tpSetValue, (const UTF8Char*)"Bool"));
+	NEW_CLASS(this->lblSetU8Name, UI::GUILabel(ui, this->tpSetValue, CSTR("Bool")));
 	this->lblSetU8Name->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSetU8DevAddr, UI::GUITextBox(ui, this->tpSetValue, CSTR("1")));
 	this->txtSetU8DevAddr->SetRect(104, 28, 100, 23, false);
@@ -569,11 +569,11 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlDevice, UI::GUIPanel(ui, this->tpDevice));
 	this->pnlDevice->SetRect(0, 0, 100, 31, false);
 	this->pnlDevice->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDeviceAddr, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Addr"));
+	NEW_CLASS(this->lblDeviceAddr, UI::GUILabel(ui, this->pnlDevice, CSTR("Addr")));
 	this->lblDeviceAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDeviceAddr, UI::GUITextBox(ui, this->pnlDevice, CSTR("1")));
 	this->txtDeviceAddr->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this->pnlDevice, (const UTF8Char*)"Device"));
+	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this->pnlDevice, CSTR("Device")));
 	this->lblDevice->SetRect(204, 4, 100, 23, false);
 	NEW_CLASS(this->cboDevice, UI::GUIComboBox(ui, this->pnlDevice, false));
 	this->cboDevice->SetRect(304, 4, 100, 23, false);
@@ -591,10 +591,10 @@ SSWR::AVIRead::AVIRMODBUSMasterForm::AVIRMODBUSMasterForm(UI::GUIClientControl *
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
-	this->lvDevice->AddColumn((const UTF8Char*)"DevAddr", 60);
-	this->lvDevice->AddColumn((const UTF8Char*)"RegAddr", 60);
-	this->lvDevice->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvDevice->AddColumn((const UTF8Char*)"Value", 150);
+	this->lvDevice->AddColumn(CSTR("DevAddr"), 60);
+	this->lvDevice->AddColumn(CSTR("RegAddr"), 60);
+	this->lvDevice->AddColumn(CSTR("Name"), 150);
+	this->lvDevice->AddColumn(CSTR("Value"), 150);
 
 	this->AddTimer(10000, OnTimerTick, this);
 }

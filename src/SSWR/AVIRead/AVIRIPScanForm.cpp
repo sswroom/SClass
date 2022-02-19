@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"To many ip address", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("To many ip address"), CSTR("Error"), me);
 			return;
 		}
 
@@ -43,11 +43,12 @@ void __stdcall SSWR::AVIRead::AVIRIPScanForm::OnStartClicked(void *userObj)
 			result = resultList->GetItem(i);
 			sptr = Net::SocketUtil::GetIPv4Name(sbuff, result->ip);
 			me->lvIP->AddItem(CSTRP(sbuff, sptr), result);
-			Text::StrHexBytes(sbuff, result->mac, 6, ':');
-			me->lvIP->SetSubItem(i, 1, sbuff);
-			me->lvIP->SetSubItem(i, 2, Net::MACInfo::GetMACInfoBuff(result->mac)->name);
-			Text::StrDouble(sbuff, result->respTime);
-			me->lvIP->SetSubItem(i, 3, sbuff);
+			sptr = Text::StrHexBytes(sbuff, result->mac, 6, ':');
+			me->lvIP->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoBuff(result->mac);
+			me->lvIP->SetSubItem(i, 2, {entry->name, entry->nameLen});
+			sptr = Text::StrDouble(sbuff, result->respTime);
+			me->lvIP->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -71,7 +72,7 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 4, 150, 23, false);
@@ -82,10 +83,10 @@ SSWR::AVIRead::AVIRIPScanForm::AVIRIPScanForm(UI::GUIClientControl *parent, UI::
 	this->lvIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvIP->SetFullRowSelect(true);
 	this->lvIP->SetShowGrid(true);
-	this->lvIP->AddColumn((const UTF8Char*)"IP", 80);
-	this->lvIP->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvIP->AddColumn((const UTF8Char*)"Vendor", 250);
-	this->lvIP->AddColumn((const UTF8Char*)"Resp", 80);
+	this->lvIP->AddColumn(CSTR("IP"), 80);
+	this->lvIP->AddColumn(CSTR("MAC"), 120);
+	this->lvIP->AddColumn(CSTR("Vendor"), 250);
+	this->lvIP->AddColumn(CSTR("Resp"), 80);
 	
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 	Net::ConnectionInfo *connInfo;

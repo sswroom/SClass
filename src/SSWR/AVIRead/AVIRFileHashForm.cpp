@@ -216,23 +216,23 @@ void SSWR::AVIRead::AVIRFileHashForm::UpdateUI()
 			k = this->lvTasks->AddItem(status->fileName, status);
 			if (status->status == 0)
 			{
-				this->lvTasks->SetSubItem(k, 1, (const UTF8Char*)"Queued");
+				this->lvTasks->SetSubItem(k, 1, CSTR("Queued"));
 			}
 			else if (status->status == 1)
 			{
-				this->lvTasks->SetSubItem(k, 1, (const UTF8Char*)"Processing");
+				this->lvTasks->SetSubItem(k, 1, CSTR("Processing"));
 			}
 			else if (status->status == 2)
 			{
-				this->lvTasks->SetSubItem(k, 1, (const UTF8Char*)"Finished");
+				this->lvTasks->SetSubItem(k, 1, CSTR("Finished"));
 			}
 			else if (status->status == 3)
 			{
-				this->lvTasks->SetSubItem(k, 1, (const UTF8Char*)"Error");
+				this->lvTasks->SetSubItem(k, 1, CSTR("Error"));
 			}
 			else
 			{
-				this->lvTasks->SetSubItem(k, 1, (const UTF8Char*)"Unknown");
+				this->lvTasks->SetSubItem(k, 1, CSTR("Unknown"));
 			}
 			i++;
 		}
@@ -266,7 +266,7 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlCheckType, UI::GUIPanel(ui, this));
 	this->pnlCheckType->SetRect(0, 0, 100, 31, false);
 	this->pnlCheckType->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblCheckType, UI::GUILabel(ui, this->pnlCheckType, (const UTF8Char*)"Hash Type"));
+	NEW_CLASS(this->lblCheckType, UI::GUILabel(ui, this->pnlCheckType, CSTR("Hash Type")));
 	this->lblCheckType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboCheckType, UI::GUIComboBox(ui, this->pnlCheckType, false));
 	this->cboCheckType->SetRect(104, 4, 100, 23, false);
@@ -288,18 +288,18 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlStatusFile, UI::GUIPanel(ui, this->pnlStatus));
 	this->pnlStatusFile->SetRect(0, 0, 100, 24, false);
 	this->pnlStatusFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlStatusFile, (const UTF8Char*)"File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlStatusFile, CSTR("File")));
 	this->lblFile->SetRect(0, 0, 56, 24, false);
 	this->lblFile->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->pnlStatusFile, CSTR("")));
 	this->txtFileName->SetReadOnly(true);
 	this->txtFileName->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Speed"));
+	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->pnlStatus, CSTR("Speed")));
 	this->lblSpeed->SetRect(0, 24, 48, 23, false);
 	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 	this->txtSpeed->SetReadOnly(true);
 	this->txtSpeed->SetRect(56, 24, 100, 23, false);
-	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Total Size"));
+	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->pnlStatus, CSTR("Total Size")));
 	this->lblTotalSize->SetRect(184, 24, 80, 23, false);
 	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 	this->txtTotalSize->SetRect(272, 24, 100, 23, false);
@@ -316,15 +316,15 @@ SSWR::AVIRead::AVIRFileHashForm::AVIRFileHashForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnTasksClear, UI::GUIButton(ui, this->pnlTasks, CSTR("Clear Completed")));
 	this->btnTasksClear->SetRect(4, 4, 120, 23, false);
 	NEW_CLASS(this->lvTasks, UI::GUIListView(ui, this->tpTasks, UI::GUIListView::LVSTYLE_TABLE, 2));
-	this->lvTasks->AddColumn((const UTF8Char*)"File Name", 500);
-	this->lvTasks->AddColumn((const UTF8Char*)"Status", 100);
+	this->lvTasks->AddColumn(CSTR("File Name"), 500);
+	this->lvTasks->AddColumn(CSTR("Status"), 100);
 	this->lvTasks->SetShowGrid(true);
 	this->lvTasks->SetFullRowSelect(true);
 	this->lvTasks->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 2));
-	this->lvFiles->AddColumn((const UTF8Char*)"File Name", 500);
-	this->lvFiles->AddColumn((const UTF8Char*)"Hash", 200);
+	this->lvFiles->AddColumn(CSTR("File Name"), 500);
+	this->lvFiles->AddColumn(CSTR("Hash"), 200);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);

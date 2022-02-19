@@ -29,7 +29,7 @@ void Parser::FileParser::TARParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tar", (const UTF8Char*)"Tar File");
+		selector->AddFilter(CSTR("*.tar"), CSTR("Tar File"));
 	}
 }
 

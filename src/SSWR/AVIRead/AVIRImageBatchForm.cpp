@@ -141,7 +141,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFormClosing(void *userObj, C
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
 	if (me->icMain->IsLoadingDir())
 	{
-		return !UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Still loading directory, setting will be lost. Continue?", (const UTF8Char*)"Question", me);
+		return !UI::MessageDialog::ShowYesNoDialog(CSTR("Still loading directory, setting will be lost. Continue?"), CSTR("Question"), me);
 	}
 	return false;
 }
@@ -251,7 +251,7 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	this->btnFolder->SetRect(0, 0, 75, 23, false);
 	this->btnFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
 	this->btnFolder->HandleButtonClick(OnFolderClicked, this);
-	NEW_CLASS(this->lblFolder, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)""));
+	NEW_CLASS(this->lblFolder, UI::GUILabel(ui, this->pnlCtrl, CSTR("")));
 	this->lblFolder->SetRect(0, 0, 480, 23, false);
 	this->lblFolder->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->prgMain, UI::GUIProgressBar(ui, this->pnlCtrl, 1));
@@ -270,47 +270,47 @@ SSWR::AVIRead::AVIRImageBatchForm::AVIRImageBatchForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->lblBright, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"Brightness"));
+	NEW_CLASS(this->lblBright, UI::GUILabel(ui, this->pnlImage, CSTR("Brightness")));
 	this->lblBright->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->hsbBright, UI::GUIHScrollBar(ui, this->pnlImage, 16));
 	this->hsbBright->SetRect(100, 0, 400, 23, false);
 	this->hsbBright->InitScrollBar(0, 10009, 1, 10);
 	this->hsbBright->SetPos(1000);
 	this->hsbBright->HandlePosChanged(OnColorChg, this);
-	NEW_CLASS(this->lblBrightV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
+	NEW_CLASS(this->lblBrightV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblBrightV->SetRect(500, 0,100, 23, false);
 	NEW_CLASS(this->btnBrightReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
 	this->btnBrightReset->SetRect(600, 0, 75, 23, false);
 	this->btnBrightReset->HandleButtonClick(OnBrightResetClicked, this);
-	NEW_CLASS(this->lblContr, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"Contrast"));
+	NEW_CLASS(this->lblContr, UI::GUILabel(ui, this->pnlImage, CSTR("Contrast")));
 	this->lblContr->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->hsbContr, UI::GUIHScrollBar(ui, this->pnlImage, 16));
 	this->hsbContr->SetRect(100, 24, 400, 23, false);
 	this->hsbContr->InitScrollBar(0, 1609, 1, 10);
 	this->hsbContr->SetPos(100);
 	this->hsbContr->HandlePosChanged(OnColorChg, this);
-	NEW_CLASS(this->lblContrV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
+	NEW_CLASS(this->lblContrV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblContrV->SetRect(500, 24,100, 23, false);
-	NEW_CLASS(this->lblGamma, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"Gamma"));
+	NEW_CLASS(this->lblGamma, UI::GUILabel(ui, this->pnlImage, CSTR("Gamma")));
 	this->lblGamma->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->hsbGamma, UI::GUIHScrollBar(ui, this->pnlImage, 16));
 	this->hsbGamma->SetRect(100, 48, 400, 23, false);
 	this->hsbGamma->InitScrollBar(0, 1009, 1, 10);
 	this->hsbGamma->SetPos(100);
 	this->hsbGamma->HandlePosChanged(OnColorChg, this);
-	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
+	NEW_CLASS(this->lblGammaV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblGammaV->SetRect(500, 48, 100, 23, false);
 	NEW_CLASS(this->btnGammaReset, UI::GUIButton(ui, this->pnlImage, CSTR("Reset")));
 	this->btnGammaReset->SetRect(600, 48, 75, 23, false);
 	this->btnGammaReset->HandleButtonClick(OnGammaResetClicked, this);
-	NEW_CLASS(this->lblHDRLev, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)"HDR Lev"));
+	NEW_CLASS(this->lblHDRLev, UI::GUILabel(ui, this->pnlImage, CSTR("HDR Lev")));
 	this->lblHDRLev->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->hsbHDRLev, UI::GUIHScrollBar(ui, this->pnlImage, 16));
 	this->hsbHDRLev->SetRect(100, 72, 400, 23, false);
 	this->hsbHDRLev->InitScrollBar(0, 15, 1, 1);
 	this->hsbHDRLev->SetPos(0);
 	this->hsbHDRLev->HandlePosChanged(OnColorChg, this);
-	NEW_CLASS(this->lblHDRLevV, UI::GUILabel(ui, this->pnlImage, (const UTF8Char*)""));
+	NEW_CLASS(this->lblHDRLevV, UI::GUILabel(ui, this->pnlImage, CSTR("")));
 	this->lblHDRLevV->SetRect(500, 72, 100, 23, false);
 /*	NEW_CLASS(this->btnCrop, UI::GUIButton(ui, this->pnlImage, L"Crop"));
 	this->btnCrop->SetRect(632, 72, 75, 23, false);*/

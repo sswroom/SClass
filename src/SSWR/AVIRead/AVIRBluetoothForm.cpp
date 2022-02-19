@@ -158,12 +158,12 @@ void SSWR::AVIRead::AVIRBluetoothForm::UpdateDevList(BTStatus *btStatus)
 		k = this->lvDevice->AddItem(dev->GetName(), dev);
 		sb.ClearStr();
 		IO::BTUtil::GetAddrText(&sb, dev->GetAddress());
-		this->lvDevice->SetSubItem(k, 1, sb.ToString());
+		this->lvDevice->SetSubItem(k, 1, sb.ToCString());
 		const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(IO::BTUtil::GetAddrMAC(dev->GetAddress()));
-		this->lvDevice->SetSubItem(k, 2, mac->name);
-		this->lvDevice->SetSubItem(k, 3, dev->IsConnected()?(const UTF8Char*)"Y":(const UTF8Char*)"N");
-		this->lvDevice->SetSubItem(k, 4, dev->IsAuthenticated()?(const UTF8Char*)"Y":(const UTF8Char*)"N");
-		this->lvDevice->SetSubItem(k, 5, dev->IsRemembered()?(const UTF8Char*)"Y":(const UTF8Char*)"N");
+		this->lvDevice->SetSubItem(k, 2, {mac->name, mac->nameLen});
+		this->lvDevice->SetSubItem(k, 3, dev->IsConnected()?CSTR("Y"):CSTR("N"));
+		this->lvDevice->SetSubItem(k, 4, dev->IsAuthenticated()?CSTR("Y"):CSTR("N"));
+		this->lvDevice->SetSubItem(k, 5, dev->IsRemembered()?CSTR("Y"):CSTR("N"));
 		i++;
 	}
 }
@@ -184,27 +184,27 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lblRadioName, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Radio Name"));
+	NEW_CLASS(this->lblRadioName, UI::GUILabel(ui, this->tpInfo, CSTR("Radio Name")));
 	this->lblRadioName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRadioName, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtRadioName->SetRect(104, 4, 200, 23, false);
 	this->txtRadioName->SetReadOnly(true);
-	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Address"));
+	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this->tpInfo, CSTR("Address")));
 	this->lblAddr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtAddr->SetRect(104, 28, 200, 23, false);
 	this->txtAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacturer"));
+	NEW_CLASS(this->lblManu, UI::GUILabel(ui, this->tpInfo, CSTR("Manufacturer")));
 	this->lblManu->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtManu->SetRect(104, 52, 200, 23, false);
 	this->txtManu->SetReadOnly(true);
-	NEW_CLASS(this->lblSubver, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Subversion"));
+	NEW_CLASS(this->lblSubver, UI::GUILabel(ui, this->tpInfo, CSTR("Subversion")));
 	this->lblSubver->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSubver, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtSubver->SetRect(104, 76, 100, 23, false);
 	this->txtSubver->SetReadOnly(true);
-	NEW_CLASS(this->lblClass, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Class"));
+	NEW_CLASS(this->lblClass, UI::GUILabel(ui, this->tpInfo, CSTR("Class")));
 	this->lblClass->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtClass, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtClass->SetRect(104, 100, 100, 23, false);
@@ -238,12 +238,12 @@ SSWR::AVIRead::AVIRBluetoothForm::AVIRBluetoothForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lvDevice, UI::GUIListView(ui, this->tpDevice, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
-	this->lvDevice->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvDevice->AddColumn((const UTF8Char*)"Address", 150);
-	this->lvDevice->AddColumn((const UTF8Char*)"Vendor", 150);
-	this->lvDevice->AddColumn((const UTF8Char*)"Connected", 80);
-	this->lvDevice->AddColumn((const UTF8Char*)"Authen", 60);
-	this->lvDevice->AddColumn((const UTF8Char*)"Remember", 80);
+	this->lvDevice->AddColumn(CSTR("Name"), 150);
+	this->lvDevice->AddColumn(CSTR("Address"), 150);
+	this->lvDevice->AddColumn(CSTR("Vendor"), 150);
+	this->lvDevice->AddColumn(CSTR("Connected"), 80);
+	this->lvDevice->AddColumn(CSTR("Authen"), 60);
+	this->lvDevice->AddColumn(CSTR("Remember"), 80);
 
 	UOSInt i;
 	UOSInt j;

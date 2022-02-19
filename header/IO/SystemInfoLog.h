@@ -17,20 +17,20 @@ namespace IO
 		struct DeviceInfo
 		{
 			Text::String *desc;
-			const UTF8Char *hwId;
-			const UTF8Char *service;
-			const UTF8Char *driver;
+			Text::String *hwId;
+			Text::String *service;
+			Text::String *driver;
 		};
 
 		struct DriverInfo
 		{
 			Text::String *fileName;
 			UInt64 fileSize;
-			const UTF8Char *creationDate;
-			const UTF8Char *version;
-			const UTF8Char *manufacturer;
-			const UTF8Char *productName;
-			const UTF8Char *group;
+			Text::String *creationDate;
+			Text::String *version;
+			Text::String *manufacturer;
+			Text::String *productName;
+			Text::String *group;
 			UInt32 altitude;
 		};
 	private:

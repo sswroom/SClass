@@ -71,27 +71,27 @@ void __stdcall SSWR::AVIRead::AVIRUDPTestForm::OnSendClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->udp == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You should start server first", (const UTF8Char*)"UDP Test", me);
+		UI::MessageDialog::ShowDialog(CSTR("You should start server first"), CSTR("UDP Test"), me);
 		return;
 	}
 	me->txtDestHost->GetText(&sb);
 	if (!me->sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Host is not valid", (const UTF8Char*)"UDP Test", me);
+		UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestPort->GetText(&sb);
 	if (!sb.ToUInt16(&port) || port <= 0 || port >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"UDP Test", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDestCount->GetText(&sb);
 	if (!sb.ToUInt32(&cnt) || cnt <= 0 || cnt > 10000000)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Count is not valid", (const UTF8Char*)"UDP Test", me);
+		UI::MessageDialog::ShowDialog(CSTR("Count is not valid"), CSTR("UDP Test"), me);
 		return;
 	}
 	UOSInt i = me->threadCnt;
@@ -232,40 +232,40 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpServer, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Server"));
+	NEW_CLASS(this->grpServer, UI::GUIGroupBox(ui, this, CSTR("Server")));
 	this->grpServer->SetRect(0, 0, 200, 23, false);
 	this->grpServer->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblServerPort, UI::GUILabel(ui, this->grpServer, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblServerPort, UI::GUILabel(ui, this->grpServer, CSTR("Port")));
 	this->lblServerPort->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtServerPort, UI::GUITextBox(ui, this->grpServer, CSTR("")));
 	this->txtServerPort->SetRect(54, 4, 75, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->grpServer, CSTR("Start")));
 	this->btnStart->SetRect(54, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, (const UTF8Char*)"Auto Reply", false));
+	NEW_CLASS(this->chkAutoReply, UI::GUICheckBox(ui, this->grpServer, CSTR("Auto Reply"), false));
 	this->chkAutoReply->SetRect(54, 52, 100, 23, false);
 	this->chkAutoReply->HandleCheckedChange(OnAutoReplyChanged, this);
-	NEW_CLASS(this->grpDest, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Dest"));
+	NEW_CLASS(this->grpDest, UI::GUIGroupBox(ui, this, CSTR("Dest")));
 	this->grpDest->SetRect(0, 0, 250, 23, false);
 	this->grpDest->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblDestHost, UI::GUILabel(ui, this->grpDest, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblDestHost, UI::GUILabel(ui, this->grpDest, CSTR("Host")));
 	this->lblDestHost->SetRect(4, 4, 50, 23, false);
 	NEW_CLASS(this->txtDestHost, UI::GUITextBox(ui, this->grpDest, CSTR("127.0.0.1")));
 	this->txtDestHost->SetRect(54, 4, 100, 23, false);
-	NEW_CLASS(this->lblDestPort, UI::GUILabel(ui, this->grpDest, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblDestPort, UI::GUILabel(ui, this->grpDest, CSTR("Port")));
 	this->lblDestPort->SetRect(4, 28, 50, 23, false);
 	NEW_CLASS(this->txtDestPort, UI::GUITextBox(ui, this->grpDest, CSTR("")));
 	this->txtDestPort->SetRect(54, 28, 50, 23, false);
-	NEW_CLASS(this->lblDestCount, UI::GUILabel(ui, this->grpDest, (const UTF8Char*)"Count"));
+	NEW_CLASS(this->lblDestCount, UI::GUILabel(ui, this->grpDest, CSTR("Count")));
 	this->lblDestCount->SetRect(4, 52, 50, 23, false);
 	NEW_CLASS(this->txtDestCount, UI::GUITextBox(ui, this->grpDest, CSTR("10000")));
 	this->txtDestCount->SetRect(54, 52, 75, 23, false);
 	NEW_CLASS(this->btnSend, UI::GUIButton(ui, this->grpDest, CSTR("Send")));
 	this->btnSend->SetRect(54, 76, 75, 23, false);
 	this->btnSend->HandleButtonClick(OnSendClicked, this);
-	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, CSTR("Status")));
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Recv Count"));
+	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Recv Count")));
 	this->lblRecvCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvCnt->SetReadOnly(true);
@@ -273,7 +273,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtRecvCntRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvCntRate->SetReadOnly(true);
 	this->txtRecvCntRate->SetRect(254, 4, 150, 23, false);
-	NEW_CLASS(this->lblRecvSize, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Recv Size"));
+	NEW_CLASS(this->lblRecvSize, UI::GUILabel(ui, this->grpStatus, CSTR("Recv Size")));
 	this->lblRecvSize->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtRecvSize, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvSize->SetReadOnly(true);
@@ -281,7 +281,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtRecvSizeRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtRecvSizeRate->SetReadOnly(true);
 	this->txtRecvSizeRate->SetRect(254, 28, 150, 23, false);
-	NEW_CLASS(this->lblSentSuccCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Sent Succ Cnt"));
+	NEW_CLASS(this->lblSentSuccCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Sent Succ Cnt")));
 	this->lblSentSuccCnt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSentSuccCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentSuccCnt->SetReadOnly(true);
@@ -289,7 +289,7 @@ SSWR::AVIRead::AVIRUDPTestForm::AVIRUDPTestForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtSentSuccCntRate, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentSuccCntRate->SetReadOnly(true);
 	this->txtSentSuccCntRate->SetRect(254, 52, 150, 23, false);
-	NEW_CLASS(this->lblSentFailCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Sent Fail Cnt"));
+	NEW_CLASS(this->lblSentFailCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Sent Fail Cnt")));
 	this->lblSentFailCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSentFailCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSentFailCnt->SetReadOnly(true);

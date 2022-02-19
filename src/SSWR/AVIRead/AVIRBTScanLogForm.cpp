@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BTScanLogFile", false));
 	dlg->SetAllowMultiSel(true);
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
@@ -41,11 +41,11 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogForm::OnStoreClicked(void *userObj)
 	SSWR::AVIRead::AVIRBTScanLogForm *me = (SSWR::AVIRead::AVIRBTScanLogForm*)userObj;
 	if (me->macList->Store())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Data Stored", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing data", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 
@@ -133,23 +133,23 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 		WriteMUInt64(mac, log->macInt);
 		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 		l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType).v);
-		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType).v);
+		this->lvContent->SetSubItem(l, 1, IO::BTScanLog::RadioTypeGetName(log->radioType));
+		this->lvContent->SetSubItem(l, 2, IO::BTScanLog::AddressTypeGetName(log->addrType));
 		if (log->company == 0)
 		{
-			this->lvContent->SetSubItem(l, 3, (const UTF8Char*)"-");
+			this->lvContent->SetSubItem(l, 3, CSTR("-"));
 		}
 		else
 		{
 			cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(log->company);
 			if (cstr.v)
 			{
-				this->lvContent->SetSubItem(l, 3, cstr.v);
+				this->lvContent->SetSubItem(l, 3, cstr);
 			}
 			else
 			{
-				Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), log->company);
-				this->lvContent->SetSubItem(l, 3, sbuff);
+				sptr = Text::StrHexVal16(Text::StrConcatC(sbuff, UTF8STRC("0x")), log->company);
+				this->lvContent->SetSubItem(l, 3, CSTRP(sbuff, sptr));
 			}
 		}
 		if (log->addrType == IO::BTScanLog::AT_RANDOM)
@@ -157,16 +157,16 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			switch ((log->macInt >> 40) & 0xc0)
 			{
 			case 0x00:
-				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Non-resolvable Random");
+				this->lvContent->SetSubItem(i, 4, CSTR("Non-resolvable Random"));
 				break;
 			case 0x40:
-				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Resolvable Random");
+				this->lvContent->SetSubItem(i, 4, CSTR("Resolvable Random"));
 				break;
 			case 0xC0:
-				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"Static Random");
+				this->lvContent->SetSubItem(i, 4, CSTR("Static Random"));
 				break;
 			default:
-				this->lvContent->SetSubItem(i, 4, (const UTF8Char*)"-");
+				this->lvContent->SetSubItem(i, 4, CSTR("-"));
 				break;
 			}
 		}
@@ -175,20 +175,20 @@ void SSWR::AVIRead::AVIRBTScanLogForm::LogUIUpdate()
 			entry = this->macList->GetEntry(log->macInt);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 4, entry->name);
+				this->lvContent->SetSubItem(l, 4, {entry->name, entry->nameLen});
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 4, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(l, 4, CSTR("?"));
 			}
 		}
 		if (log->name)
 			this->lvContent->SetSubItem(l, 5, log->name);
-		Text::StrUOSInt(sbuff, log->logs->GetCount());
-		this->lvContent->SetSubItem(l, 6, sbuff);
-		Text::StrInt16(sbuff, log->measurePower);
-		this->lvContent->SetSubItem(l, 7, sbuff);
-		this->lvContent->SetSubItem(l, 8, IO::BTScanLog::AdvTypeGetName(log->lastAdvType).v);
+		sptr = Text::StrUOSInt(sbuff, log->logs->GetCount());
+		this->lvContent->SetSubItem(l, 6, CSTRP(sbuff, sptr));
+		sptr = Text::StrInt16(sbuff, log->measurePower);
+		this->lvContent->SetSubItem(l, 7, CSTRP(sbuff, sptr));
+		this->lvContent->SetSubItem(l, 8, IO::BTScanLog::AdvTypeGetName(log->lastAdvType));
 
 		i++;
 	}
@@ -220,7 +220,7 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store MACList")));
 	this->btnStore->SetRect(184, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
 	this->lblInfo->SetRect(264, 4, 200, 23, false);
 	NEW_CLASS(this->lvContent, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 9));
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -228,15 +228,15 @@ SSWR::AVIRead::AVIRBTScanLogForm::AVIRBTScanLogForm(UI::GUIClientControl *parent
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);
 	this->lvContent->HandleSelChg(OnContentSelChg, this);
-	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Type", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"AddrType", 80);
-	this->lvContent->AddColumn((const UTF8Char*)"Company", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 160);
-	this->lvContent->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvContent->AddColumn((const UTF8Char*)"Count", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"Measure Power", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"AdvType", 80);
+	this->lvContent->AddColumn(CSTR("MAC"), 120);
+	this->lvContent->AddColumn(CSTR("Type"), 60);
+	this->lvContent->AddColumn(CSTR("AddrType"), 80);
+	this->lvContent->AddColumn(CSTR("Company"), 100);
+	this->lvContent->AddColumn(CSTR("Vendor"), 160);
+	this->lvContent->AddColumn(CSTR("Name"), 200);
+	this->lvContent->AddColumn(CSTR("Count"), 60);
+	this->lvContent->AddColumn(CSTR("Measure Power"), 60);
+	this->lvContent->AddColumn(CSTR("AdvType"), 80);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();

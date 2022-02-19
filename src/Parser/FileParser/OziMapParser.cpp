@@ -39,7 +39,7 @@ void Parser::FileParser::OziMapParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.map", (const UTF8Char*)"OziExplorer Map File");
+		selector->AddFilter(CSTR("*.map"), CSTR("OziExplorer Map File"));
 	}
 }
 

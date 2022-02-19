@@ -27,7 +27,7 @@ void Parser::FileParser::OZF2Parser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ozf2", (const UTF8Char*)"OziExplorer File v2");
+		selector->AddFilter(CSTR("*.ozf2"), CSTR("OziExplorer File v2"));
 	}
 }
 

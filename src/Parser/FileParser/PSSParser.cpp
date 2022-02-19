@@ -32,7 +32,7 @@ void Parser::FileParser::PSSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pss", (const UTF8Char*)"PSS File");
+		selector->AddFilter(CSTR("*.pss"), CSTR("PSS File"));
 	}
 }
 

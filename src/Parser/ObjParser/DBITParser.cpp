@@ -21,7 +21,7 @@ void Parser::ObjParser::DBITParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.itm", (const UTF8Char*)"Taiwan GPS Project File");
+		selector->AddFilter(CSTR("*.itm"), CSTR("Taiwan GPS Project File"));
 	}
 }
 

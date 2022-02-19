@@ -25,7 +25,7 @@ void Parser::FileParser::PCAPNGParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EthernetAnalyzer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pcapng", (const UTF8Char*)"PCAPNG File");
+		selector->AddFilter(CSTR("*.pcapng"), CSTR("PCAPNG File"));
 	}
 }
 

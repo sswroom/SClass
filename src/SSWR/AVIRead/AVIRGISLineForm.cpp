@@ -70,6 +70,7 @@ void SSWR::AVIRead::AVIRGISLineForm::UpdatePreview()
 SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Media::DrawEngine *eng, UOSInt lineThick, UInt32 lineColor) : UI::GUIForm(parent, 462, 334, ui)
 {
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	this->core = core;
 	this->eng = eng;
 	this->lineThick = lineThick;
@@ -91,16 +92,16 @@ SSWR::AVIRead::AVIRGISLineForm::AVIRGISLineForm(UI::GUIClientControl *parent, UI
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Thick"));
+	NEW_CLASS(this->lblThick, UI::GUILabel(ui, this->pnlMain, CSTR("Thick")));
 	this->lblThick->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->hsbThick, UI::GUIHScrollBar(ui, this->pnlMain, 16));
 	this->hsbThick->InitScrollBar(0, 60, this->lineThick, 10);
 	this->hsbThick->SetRect(104, 4, 150, 20, false);
 	this->hsbThick->HandlePosChanged(OnThickChanged, this);
-	Text::StrUOSInt(sbuff, this->lineThick);
-	NEW_CLASS(this->lblThickV, UI::GUILabel(ui, this->pnlMain, sbuff));
+	sptr = Text::StrUOSInt(sbuff, this->lineThick);
+	NEW_CLASS(this->lblThickV, UI::GUILabel(ui, this->pnlMain, CSTRP(sbuff, sptr)));
 	this->lblThickV->SetRect(254, 4, 100, 23, false);
-	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Color"));
+	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, CSTR("Color")));
 	this->lblColor->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlMain, this->eng, true, false));
 	this->pbColor->SetRect(104, 28, 100, 20, false);

@@ -549,25 +549,29 @@ void SSWR::AVIRead::AVIRGISForm::OpenURL(const UTF8Char *url, UOSInt urlLen, con
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8Char *filePath)
+void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString filePath)
 {
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
 	UTF8Char *sarr[3];
 	UTF8Char *dateStr;
+	UTF8Char *dateStrEnd;
 	UTF8Char *timeStr;
+	UTF8Char *timeStrEnd;
 	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli;
 	Text::UTF8Reader *reader;
 	dt.SetCurrTimeUTC();
 	sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/dirList/"));
-	sb.AppendSlow(listFile);
+	sb.Append(listFile);
 	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
-	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
+	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	dateStr = 0;
+	dateStrEnd = 0;
 	timeStr = 0;
+	timeStrEnd = 0;
 	while (true)
 	{
 		sb.ClearStr();
@@ -576,8 +580,9 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 		if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.ToString(), ',') == 2)
 		{
 			dateStr = sbuff;
-			timeStr = Text::StrConcat(dateStr, sarr[0]) + 1;
-			Text::StrConcat(timeStr, sarr[1]);
+			dateStrEnd = Text::StrConcat(dateStr, sarr[0]);
+			timeStr = dateStrEnd + 1;
+			timeStrEnd = Text::StrConcat(timeStr, sarr[1]);
 		}
 	}
 	DEL_CLASS(reader);
@@ -586,9 +591,9 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(const UTF8Char *listFile, const UTF8C
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/"));
-		sb.AppendSlow(dateStr);
-		sb.AppendSlow(filePath);
-		sb.AppendSlow(timeStr);
+		sb.AppendP(dateStr, dateStrEnd);
+		sb.Append(filePath);
+		sb.AppendP(timeStr, timeStrEnd);
 		sb.AppendC(UTF8STRC("/index.kml?t="));
 		sb.AppendI64(dt.ToTicks());
 		this->OpenURL(sb.ToString(), sb.GetLength(), (const UTF8Char*)"https://maps.weather.gov.hk/gis-portal/web/index.kml");
@@ -657,7 +662,7 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->tbTimeRange, UI::GUITrackBar(ui, this->pnlControl, 0, 0, 0));
 	this->tbTimeRange->SetRect(150, 0, 100, 24, false);
 	this->tbTimeRange->HandleScrolled(OnTimeScrolled, this);
-	NEW_CLASS(this->chkTime, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Unavailable", false));
+	NEW_CLASS(this->chkTime, UI::GUICheckBox(ui, this->pnlControl, CSTR("Unavailable"), false));
 	this->chkTime->SetEnabled(false);
 	this->chkTime->SetRect(0, 0, 150, 24, false);
 	this->chkTime->HandleCheckedChange(OnTimeChecked, this);
@@ -815,7 +820,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 				if (doc == 0)
 				{
 					DEL_CLASS(printer);
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in printing the map", (const UTF8Char*)"GISForm", this);
+					UI::MessageDialog::ShowDialog(CSTR("Error in printing the map"), CSTR("GISForm"), this);
 				}
 				doc->WaitForEnd();
 				printer->EndPrint(doc);
@@ -959,7 +964,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UI::GUIMapTreeView::ItemIndex *ind = (UI::GUIMapTreeView::ItemIndex *)this->popNode->GetItemObj();
 			Text::StringBuilderUTF8 sb;
 			sb.Append(((Map::MapEnv::LayerItem*)ind->item)->layer->GetName());
-			UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Layer Path", this);
+			UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Layer Path"), this);
 		}
 		break;
 	case MNU_LAYER_SEARCH:
@@ -1036,7 +1041,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"This layer does not support Replay", (const UTF8Char*)"GIS Form", this);
+				UI::MessageDialog::ShowDialog(CSTR("This layer does not support Replay"), CSTR("GIS Form"), this);
 			}
 		}
 		break;
@@ -1146,7 +1151,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					{
 						UI::FileDialog *dlg;
 						NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISOptimizeFile", true));
-						dlg->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
+						dlg->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 						if (dlg->ShowDialog(this->GetHandle()))
 						{
 							osm->OptimizeToFile(dlg->GetFileName()->ToCString());
@@ -1200,20 +1205,20 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing log", (const UTF8Char*)"MTK Tracker", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
 						DEL_CLASS(trk);
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK Tracker not found", (const UTF8Char*)"MTK Tracker", this);
+					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 				DEL_CLASS(mtk);
 			}
 			else
 			{
 				DEL_CLASS(port);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK GPS Tracker not found", (const UTF8Char*)"MTK Tracker", this);
+				UI::MessageDialog::ShowDialog(CSTR("MTK GPS Tracker not found"), CSTR("MTK Tracker"), this);
 			}
 		}
 		break;
@@ -1221,7 +1226,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			UI::FileDialog *dlg;
 			NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"GISMTKFile", false));
-			dlg->AddFilter((const UTF8Char*)"*.bin", (const UTF8Char*)"MTK Binary File");
+			dlg->AddFilter(CSTR("*.bin"), CSTR("MTK Binary File"));
 			if (dlg->ShowDialog(this->GetHandle()))
 			{
 				IO::FileStream *fs;
@@ -1323,7 +1328,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 					NEW_CLASS(fd, IO::StmData::FileData(fname, false));
 					if (fd->GetDataSize() == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{
@@ -1357,7 +1362,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			UTF8Char sbuff[10];
 			UOSInt i;
 			Data::DateTime dt;
-			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, (const UTF8Char*)"https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml", Net::WebUtil::RequestMethod::HTTP_GET, false);
+			cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, CSTR("https://www.weather.gov.hk/wxinfo/currwx/tc_gis_list.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 			NEW_CLASS(reader, Text::UTF8Reader(cli));
 			reader->ReadLine(&sb, 4096);
 			while (true)
@@ -1397,28 +1402,28 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 
 	case MNU_HKO_CURR_RADAR_64:
-		this->HKOPortal((const UTF8Char*)"radar_merge_064.txt", (const UTF8Char*)"/radar2/064/");
+		this->HKOPortal(CSTR("radar_merge_064.txt"), CSTR("/radar2/064/"));
 		break;
 	case MNU_HKO_CURR_RADAR_128:
-		this->HKOPortal((const UTF8Char*)"radar_merge_128.txt", (const UTF8Char*)"/radar2/128/");
+		this->HKOPortal(CSTR("radar_merge_128.txt"), CSTR("/radar2/128/"));
 		break;
 	case MNU_HKO_CURR_RADAR_256:
-		this->HKOPortal((const UTF8Char*)"radar_merge_256.txt", (const UTF8Char*)"/radar2/256/");
+		this->HKOPortal(CSTR("radar_merge_256.txt"), CSTR("/radar2/256/"));
 		break;
 	case MNU_HKO_CURR_SATELLITE:
-		this->HKOPortal((const UTF8Char*)"satellite_TC.txt", (const UTF8Char*)"/satellite/TC/");
+		this->HKOPortal(CSTR("satellite_TC.txt"), CSTR("/satellite/TC/"));
 		break;
 	case MNU_HKO_CURR_SATELLITE_IR1_L1B_10:
-		this->HKOPortal((const UTF8Char*)"satellite_IR1-L1B-10.txt", (const UTF8Char*)"/satellite/IR1-L1B-10/");
+		this->HKOPortal(CSTR("satellite_IR1-L1B-10.txt"), CSTR("/satellite/IR1-L1B-10/"));
 		break;
 	case MNU_HKO_CURR_SATELLITE_DC_10:
-		this->HKOPortal((const UTF8Char*)"satellite_DC-10.txt", (const UTF8Char*)"/satellite/DC-10/");
+		this->HKOPortal(CSTR("satellite_DC-10.txt"), CSTR("/satellite/DC-10/"));
 		break;
 	case MNU_HKO_CURR_SAND:
-		this->HKOPortal((const UTF8Char*)"sand.txt", (const UTF8Char*)"/sand/");
+		this->HKOPortal(CSTR("sand.txt"), CSTR("/sand/"));
 		break;
 	case MNU_HKO_CURR_WEATHER_CHART:
-		this->HKOPortal((const UTF8Char*)"weather_chart.txt", (const UTF8Char*)"/weather_chart/");
+		this->HKOPortal(CSTR("weather_chart.txt"), CSTR("/weather_chart/"));
 		break;
 	case MNU_GPS_SIMULATOR:
 		this->SetCtrlForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGPSSimulatorForm(0, this->ui, this->core, this)), 0);

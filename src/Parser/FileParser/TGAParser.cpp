@@ -29,7 +29,7 @@ void Parser::FileParser::TGAParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tga", (const UTF8Char*)"Targa File");
+		selector->AddFilter(CSTR("*.tga"), CSTR("Targa File"));
 	}
 }
 

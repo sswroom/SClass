@@ -23,7 +23,7 @@ void Parser::FileParser::PFS2Parser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pfs", (const UTF8Char*)"PFS Package File");
+		selector->AddFilter(CSTR("*.pfs"), CSTR("PFS Package File"));
 	}
 }
 

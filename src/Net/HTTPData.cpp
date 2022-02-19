@@ -21,7 +21,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	}
 	else
 	{
-		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	}
 	fdh->evtTmp->Set();
 	if (IO::Path::GetPathType(fdh->localFile->v, fdh->localFile->leng) == IO::Path::PathType::File)
@@ -52,7 +52,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			else
 			{
 				DEL_CLASS(fdh->cli);
-				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 			}
 		}
 		else

@@ -59,13 +59,13 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen,
 		{
 			if (status->req1 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
 				status->req1 = cli;
 				found = true;
 			}
 			else if (status->req2 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
 				status->req2 = cli;
 				found = true;
 			}
@@ -75,7 +75,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen,
 			status = MemAlloc(DomainStatus, 1);
 			status->req1 = 0;
 			status->req2 = 0;
-			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
+			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
 			status->req1 = cli;
 			this->statusMap->Put(sbuff, status);
 			found = true;

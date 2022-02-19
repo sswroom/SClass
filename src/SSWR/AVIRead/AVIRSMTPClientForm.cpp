@@ -16,13 +16,13 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtPort->GetText(&sb2);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb1.ToString(), sb1.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolve host name", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolve host name"), CSTR("SMTP Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
 	if (!sb2.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in port number", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in port number"), CSTR("SMTP Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtToAddr->GetText(&sb2);
 	if (sb1.GetCharCnt() == 0 || !msg->SetFrom(CSTR_NULL, sb1.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid From Address", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid From Address"), CSTR("SMTP Client"), me);
 		me->txtFromAddr->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	}
 	if (sb2.GetCharCnt() == 0 || !msg->AddTo(CSTR_NULL, sb2.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid To Address", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid To Address"), CSTR("SMTP Client"), me);
 		me->txtToAddr->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -64,7 +64,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtCcAddr->GetText(&sb1);
 	if (sb1.GetCharCnt() > 0 && !msg->AddCc(CSTR_NULL, sb1.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Cc Address", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
 		me->txtCcAddr->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -74,7 +74,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtBccAddr->GetText(&sb1);
 	if (sb1.GetCharCnt() > 0 && !msg->AddBcc(sb1.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Cc Address", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Cc Address"), CSTR("SMTP Client"), me);
 		me->txtBccAddr->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtSubject->GetText(&sb1);
 	if (sb1.GetCharCnt() == 0 || !msg->SetSubject(sb1.ToCString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Subject", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Subject"), CSTR("SMTP Client"), me);
 		me->txtSubject->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPClientForm::OnSendClicked(void *userObj)
 	me->txtContent->GetText(&sb1);
 	if (sb1.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter content", (const UTF8Char*)"SMTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter content"), CSTR("SMTP Client"), me);
 		me->txtSubject->Focus();
 		DEL_CLASS(msg);
 		DEL_CLASS(cli);
@@ -119,15 +119,15 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 300, 23, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlControl, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlControl, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("25")));
 	this->txtPort->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblSSLType, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"SSL Type"));
+	NEW_CLASS(this->lblSSLType, UI::GUILabel(ui, this->pnlControl, CSTR("SSL Type")));
 	this->lblSSLType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboSSLType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboSSLType->SetRect(104, 52, 200, 23, false);
@@ -135,36 +135,36 @@ SSWR::AVIRead::AVIRSMTPClientForm::AVIRSMTPClientForm(UI::GUIClientControl *pare
 	this->cboSSLType->AddItem(CSTR("STARTTLS"), (void*)(OSInt)Net::Email::SMTPConn::CT_STARTTLS);
 	this->cboSSLType->AddItem(CSTR("SSL"), (void*)(OSInt)Net::Email::SMTPConn::CT_SSL);
 	this->cboSSLType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Username"));
+	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlControl, CSTR("Username")));
 	this->lblUsername->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtUsername->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlControl, CSTR("Password")));
 	this->lblPassword->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->lblFromAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"From"));
+	NEW_CLASS(this->lblFromAddr, UI::GUILabel(ui, this->pnlControl, CSTR("From")));
 	this->lblFromAddr->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtFromAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("sswroom@yahoo.com")));
 	this->txtFromAddr->SetRect(104, 124, 200, 23, false);
-	NEW_CLASS(this->lblToAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"To"));
+	NEW_CLASS(this->lblToAddr, UI::GUILabel(ui, this->pnlControl, CSTR("To")));
 	this->lblToAddr->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtToAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtToAddr->SetRect(104, 148, 200, 23, false);
-	NEW_CLASS(this->lblCcAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Cc"));
+	NEW_CLASS(this->lblCcAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Cc")));
 	this->lblCcAddr->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtCcAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtCcAddr->SetRect(104, 172, 200, 23, false);
-	NEW_CLASS(this->lblBccAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Bcc"));
+	NEW_CLASS(this->lblBccAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Bcc")));
 	this->lblBccAddr->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtBccAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtBccAddr->SetRect(104, 196, 200, 23, false);
-	NEW_CLASS(this->lblSubject, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Subject"));
+	NEW_CLASS(this->lblSubject, UI::GUILabel(ui, this->pnlControl, CSTR("Subject")));
 	this->lblSubject->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtSubject, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtSubject->SetRect(4, 244, 300, 23, false);
-	NEW_CLASS(this->lblContent, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Content"));
+	NEW_CLASS(this->lblContent, UI::GUILabel(ui, this->pnlControl, CSTR("Content")));
 	this->lblContent->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtContent, UI::GUITextBox(ui, this->pnlControl, CSTR(""), true));
 	this->txtContent->SetRect(4, 292, 300, 71, false);

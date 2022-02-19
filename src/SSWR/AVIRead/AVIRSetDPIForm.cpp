@@ -13,18 +13,18 @@ void __stdcall SSWR::AVIRead::AVIRSetDPIForm::OnOKClicked(void *userObj)
 	me->txtDesktopDPI->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &ddpi))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Desktop DPI is not number", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Desktop DPI is not number"), CSTR("Error"), me);
 		return;
 	}
 	if (ddpi <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Desktop DPI is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Desktop DPI is not valid"), CSTR("Error"), me);
 		return;
 	}
 	hdpi = UOSInt2Double(me->hsbDPI->GetPos()) * 0.1;
 	if (ddpi > hdpi)
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to set larger desktop DPI (reducing object size)?", (const UTF8Char*)"Confirm", me))
+		if (!UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to set larger desktop DPI (reducing object size)?"), CSTR("Confirm"), me))
 		{
 			return;
 		}
@@ -160,22 +160,22 @@ SSWR::AVIRead::AVIRSetDPIForm::AVIRSetDPIForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pbPreview, UI::GUIPictureBoxSimple(ui, this, core->GetDrawEngine(), false));
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->pbPreview->HandleSizeChanged(OnPreviewChanged, this);
-	NEW_CLASS(this->lblDPI, UI::GUILabel(ui, this->pnlDPI, (const UTF8Char*)"Monitor DPI"));
+	NEW_CLASS(this->lblDPI, UI::GUILabel(ui, this->pnlDPI, CSTR("Monitor DPI")));
 	this->lblDPI->SetRect(0, 0, 100, 23, false);
 	this->lblDPI->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblDPIV, UI::GUILabel(ui, this->pnlDPI, (const UTF8Char*)""));
+	NEW_CLASS(this->lblDPIV, UI::GUILabel(ui, this->pnlDPI, CSTR("")));
 	this->lblDPIV->SetRect(0, 0, 60, 23, false);
 	this->lblDPIV->SetDockType(UI::GUIControl::DOCK_RIGHT);
 	NEW_CLASS(this->hsbDPI, UI::GUIHScrollBar(ui, this->pnlDPI, UI::GUIHScrollBar::GetSystemSize()));
 	this->hsbDPI->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->hsbDPI->InitScrollBar(100, 3010, (UOSInt)Double2OSInt(this->core->GetMonitorHDPI(this->GetHMonitor()) * 10), 10);
 	this->hsbDPI->HandlePosChanged(OnDPIChanged, this);
-	NEW_CLASS(this->lblMagnifyRatio, UI::GUILabel(ui, this->pnlBtn, (const UTF8Char*)"OS Magnify Ratio"));
+	NEW_CLASS(this->lblMagnifyRatio, UI::GUILabel(ui, this->pnlBtn, CSTR("OS Magnify Ratio")));
 	this->lblMagnifyRatio->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtMagnifyRatio, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtMagnifyRatio->SetRect(154, 4, 100, 23, false);
 	this->txtMagnifyRatio->SetReadOnly(true);
-	NEW_CLASS(this->lblDesktopDPI, UI::GUILabel(ui, this->pnlBtn, (const UTF8Char*)"Desktop DPI"));
+	NEW_CLASS(this->lblDesktopDPI, UI::GUILabel(ui, this->pnlBtn, CSTR("Desktop DPI")));
 	this->lblDesktopDPI->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->txtDesktopDPI, UI::GUITextBox(ui, this->pnlBtn, CSTR("")));
 	this->txtDesktopDPI->SetRect(404, 4, 100, 23, false);

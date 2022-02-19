@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	UInt32 portNum = (UInt32)(UOSInt)me->cboPort->GetItem(i);
 	if (portNum == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a port", (const UTF8Char*)"TV Control", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a port"), CSTR("TV Control"), me);
 		return;
 	}
 
@@ -34,14 +34,14 @@ void __stdcall SSWR::AVIRead::AVIRTVControlForm::OnStartClick(void *userObj)
 	IO::TVControl::TVInfo info;
 	if (!IO::TVControl::GetTVInfo(tvType, &info))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a valid TV Type", (const UTF8Char*)"TV Control", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a valid TV Type"), CSTR("TV Control"), me);
 		return;
 	}
 	NEW_CLASS(port, IO::SerialPort(portNum, info.defBaudRate, IO::SerialPort::PARITY_NONE, false));
 	if (port->IsError())
 	{
 		DEL_CLASS(port);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the port", (const UTF8Char*)"TV Control", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in opening the port"), CSTR("TV Control"), me);
 		return;
 	}
 	if (me->chkLogFile->IsChecked())
@@ -206,15 +206,15 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlPort, UI::GUIPanel(ui, this));
 	this->pnlPort->SetRect(0, 0, 100, 64, false);
 	this->pnlPort->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblTVType, UI::GUILabel(ui, this->pnlPort, (const UTF8Char*)"TV Type"));
+	NEW_CLASS(this->lblTVType, UI::GUILabel(ui, this->pnlPort, CSTR("TV Type")));
 	this->lblTVType->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboTVType, UI::GUIComboBox(ui, this->pnlPort, false));
 	this->cboTVType->SetRect(108, 8,  300, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlPort, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlPort, CSTR("Port")));
 	this->lblPort->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->cboPort, UI::GUIComboBox(ui, this->pnlPort, false));
 	this->cboPort->SetRect(108, 32, 100, 23, false);
-	NEW_CLASS(this->chkLogFile, UI::GUICheckBox(ui, this->pnlPort, (const UTF8Char*)"Log To File", false));
+	NEW_CLASS(this->chkLogFile, UI::GUICheckBox(ui, this->pnlPort, CSTR("Log To File"), false));
 	this->chkLogFile->SetRect(208, 32, 100, 23, false);
 
 	IO::TVControl::GetTVList(&tvTypes);
@@ -266,7 +266,7 @@ SSWR::AVIRead::AVIRTVControlForm::AVIRTVControlForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this->tpLog, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->lblCommand, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Command"));
+	NEW_CLASS(this->lblCommand, UI::GUILabel(ui, this->tpControl, CSTR("Command")));
 	this->lblCommand->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboCommand, UI::GUIComboBox(ui, this->tpControl, false));
 	this->cboCommand->SetRect(108, 8, 150, 23, false);

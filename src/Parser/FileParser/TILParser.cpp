@@ -23,7 +23,7 @@ void Parser::FileParser::TILParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.til", (const UTF8Char*)"TimedImageList File");
+		selector->AddFilter(CSTR("*.til"), CSTR("TimedImageList File"));
 	}
 }
 

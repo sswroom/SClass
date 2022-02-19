@@ -9,10 +9,10 @@
 
 void SSWR::AVIRead::AVIRWellFormatForm::AddFilters(IO::IFileSelector *selector)
 {
-	selector->AddFilter((const UTF8Char*)"*.json", (const UTF8Char*)"JSON File");
-	selector->AddFilter((const UTF8Char*)"*.html", (const UTF8Char*)"HTML File");
-	selector->AddFilter((const UTF8Char*)"*.htm", (const UTF8Char*)"HTML File");
-	selector->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
+	selector->AddFilter(CSTR("*.json"), CSTR("JSON File"));
+	selector->AddFilter(CSTR("*.html"), CSTR("HTML File"));
+	selector->AddFilter(CSTR("*.htm"), CSTR("HTML File"));
+	selector->AddFilter(CSTR("*.xml"), CSTR("XML File"));
 }
 
 Bool SSWR::AVIRead::AVIRWellFormatForm::ParseFile(const UTF8Char *fileName, UOSInt fileNameLen, Text::StringBuilderUTF8 *output)
@@ -139,7 +139,7 @@ SSWR::AVIRead::AVIRWellFormatForm::AVIRWellFormatForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"JS Text"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("JS Text")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 600, 23, false);

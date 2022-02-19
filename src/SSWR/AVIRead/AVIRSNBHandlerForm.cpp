@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRSNBHandlerForm::AVIRSNBHandlerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 200, 100, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->pnlControl, CSTR("Type")));
 	this->lblType->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboType->SetRect(0, 24, 180, 23, false);

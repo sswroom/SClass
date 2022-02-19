@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRSSDPClientForm::OnServiceSelChg(void *userObj)
 			Net::SSDPClient::SSDPRoot *root = me->rootMap->Get(svc->location);
 			if (root == 0)
 			{
-				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->v, Net::WebUtil::RequestMethod::HTTP_GET, true);
+				Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(me->sockf, me->ssl, svc->location->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				if (cli == 0)
 				{
 					root = MemAlloc(Net::SSDPClient::SSDPRoot, 1);
@@ -173,93 +173,93 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->hspService, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlService, UI::GUIPanel(ui, this));
 	this->pnlService->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Location"));
+	NEW_CLASS(this->lblLocation, UI::GUILabel(ui, this->pnlService, CSTR("Location")));
 	this->lblLocation->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtLocation, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtLocation->SetRect(104, 4, 300, 23, false);
 	this->txtLocation->SetReadOnly(true);
-	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Date"));
+	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlService, CSTR("Date")));
 	this->lblDate->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDate, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtDate->SetRect(104, 28, 300, 23, false);
 	this->txtDate->SetReadOnly(true);
-	NEW_CLASS(this->lblUSN, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"USN"));
+	NEW_CLASS(this->lblUSN, UI::GUILabel(ui, this->pnlService, CSTR("USN")));
 	this->lblUSN->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUSN, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtUSN->SetRect(104, 52, 300, 23, false);
 	this->txtUSN->SetReadOnly(true);
-	NEW_CLASS(this->lblST, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"ST"));
+	NEW_CLASS(this->lblST, UI::GUILabel(ui, this->pnlService, CSTR("ST")));
 	this->lblST->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtST, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtST->SetRect(104, 76, 300, 23, false);
 	this->txtST->SetReadOnly(true);
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlService, CSTR("Server")));
 	this->lblServer->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtServer->SetRect(104, 100, 300, 23, false);
 	this->txtServer->SetReadOnly(true);
-	NEW_CLASS(this->lblOpt, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Opt"));
+	NEW_CLASS(this->lblOpt, UI::GUILabel(ui, this->pnlService, CSTR("Opt")));
 	this->lblOpt->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtOpt, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtOpt->SetRect(104, 124, 300, 23, false);
 	this->txtOpt->SetReadOnly(true);
-	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"UserAgent"));
+	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlService, CSTR("UserAgent")));
 	this->lblUserAgent->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtUserAgent, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtUserAgent->SetRect(104, 148, 300, 23, false);
 	this->txtUserAgent->SetReadOnly(true);
 
-	NEW_CLASS(this->lblUDN, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"UDN"));
+	NEW_CLASS(this->lblUDN, UI::GUILabel(ui, this->pnlService, CSTR("UDN")));
 	this->lblUDN->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtUDN, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtUDN->SetRect(104, 196, 300, 23, false);
 	this->txtUDN->SetReadOnly(true);
-	NEW_CLASS(this->lblFriendlyName, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Friendly Name"));
+	NEW_CLASS(this->lblFriendlyName, UI::GUILabel(ui, this->pnlService, CSTR("Friendly Name")));
 	this->lblFriendlyName->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtFriendlyName, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtFriendlyName->SetRect(104, 220, 300, 23, false);
 	this->txtFriendlyName->SetReadOnly(true);
-	NEW_CLASS(this->lblManufacturer, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Manufacturer"));
+	NEW_CLASS(this->lblManufacturer, UI::GUILabel(ui, this->pnlService, CSTR("Manufacturer")));
 	this->lblManufacturer->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->txtManufacturer, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtManufacturer->SetRect(104, 244, 300, 23, false);
 	this->txtManufacturer->SetReadOnly(true);
-	NEW_CLASS(this->lblManufacturerURL, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Manfacturer URL"));
+	NEW_CLASS(this->lblManufacturerURL, UI::GUILabel(ui, this->pnlService, CSTR("Manfacturer URL")));
 	this->lblManufacturerURL->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtManufacturerURL, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtManufacturerURL->SetRect(104, 268, 300, 23, false);
 	this->txtManufacturerURL->SetReadOnly(true);
-	NEW_CLASS(this->lblModelName, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Model Name"));
+	NEW_CLASS(this->lblModelName, UI::GUILabel(ui, this->pnlService, CSTR("Model Name")));
 	this->lblModelName->SetRect(4, 292, 100, 23, false);
 	NEW_CLASS(this->txtModelName, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtModelName->SetRect(104, 292, 300, 23, false);
 	this->txtModelName->SetReadOnly(true);
-	NEW_CLASS(this->lblModelNumber, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Moden Number"));
+	NEW_CLASS(this->lblModelNumber, UI::GUILabel(ui, this->pnlService, CSTR("Moden Number")));
 	this->lblModelNumber->SetRect(4, 316, 100, 23, false);
 	NEW_CLASS(this->txtModelNumber, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtModelNumber->SetRect(104, 316, 300, 23, false);
 	this->txtModelNumber->SetReadOnly(true);
-	NEW_CLASS(this->lblModelURL, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Model URL"));
+	NEW_CLASS(this->lblModelURL, UI::GUILabel(ui, this->pnlService, CSTR("Model URL")));
 	this->lblModelURL->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtModelURL, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtModelURL->SetRect(104, 340, 300, 23, false);
 	this->txtModelURL->SetReadOnly(true);
-	NEW_CLASS(this->lblSerialNumber, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Serial Number"));
+	NEW_CLASS(this->lblSerialNumber, UI::GUILabel(ui, this->pnlService, CSTR("Serial Number")));
 	this->lblSerialNumber->SetRect(4, 364, 100, 23, false);
 	NEW_CLASS(this->txtSerialNumber, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtSerialNumber->SetRect(104, 364, 300, 23, false);
 	this->txtSerialNumber->SetReadOnly(true);
-	NEW_CLASS(this->lblPresentationURL, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Presentation URL"));
+	NEW_CLASS(this->lblPresentationURL, UI::GUILabel(ui, this->pnlService, CSTR("Presentation URL")));
 	this->lblPresentationURL->SetRect(4, 388, 100, 23, false);
 	NEW_CLASS(this->txtPresentationURL, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtPresentationURL->SetRect(104, 388, 300, 23, false);
 	this->txtPresentationURL->SetReadOnly(true);
-	NEW_CLASS(this->lblDeviceType, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Device Type"));
+	NEW_CLASS(this->lblDeviceType, UI::GUILabel(ui, this->pnlService, CSTR("Device Type")));
 	this->lblDeviceType->SetRect(4, 412, 100, 23, false);
 	NEW_CLASS(this->txtDeviceType, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtDeviceType->SetRect(104, 412, 300, 23, false);
 	this->txtDeviceType->SetReadOnly(true);
-	NEW_CLASS(this->lblDeviceURL, UI::GUILabel(ui, this->pnlService, (const UTF8Char*)"Device URL"));
+	NEW_CLASS(this->lblDeviceURL, UI::GUILabel(ui, this->pnlService, CSTR("Device URL")));
 	this->lblDeviceURL->SetRect(4, 436, 100, 23, false);
 	NEW_CLASS(this->txtDeviceURL, UI::GUITextBox(ui, this->pnlService, CSTR("")));
 	this->txtDeviceURL->SetRect(104, 436, 300, 23, false);
@@ -267,11 +267,11 @@ SSWR::AVIRead::AVIRSSDPClientForm::AVIRSSDPClientForm(UI::GUIClientControl *pare
 
 	if (this->ssdp->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing SSDP Client", (const UTF8Char*)"SSDP Client", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in initializing SSDP Client"), CSTR("SSDP Client"), this);
 	}
 	else if (!this->ssdp->Scan())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in scanning SSDP Client", (const UTF8Char*)"SSDP Client", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in scanning SSDP Client"), CSTR("SSDP Client"), this);
 	}
 	this->AddTimer(1000, OnTimerTick, this);
 }

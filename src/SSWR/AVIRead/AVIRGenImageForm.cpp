@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 	height = Text::StrToUInt32(sbuff);
 	if (width <= 0 || height <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing output size", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing output size"), CSTR("Error"), me);
 		return;
 	}
 
@@ -37,12 +37,12 @@ void __stdcall SSWR::AVIRead::AVIRGenImageForm::GenerateClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"This parameters are not supported", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("This parameters are not supported"), CSTR("Error"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a generator", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a generator"), CSTR("Error"), me);
 	}
 }
 
@@ -62,20 +62,20 @@ SSWR::AVIRead::AVIRGenImageForm::AVIRGenImageForm(UI::GUIClientControl *parent, 
 	
 	UI::GUILabel *lbl;
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Generator"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Generator")));
 	lbl->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboGenerator, UI::GUIComboBox(ui, this, false));
 	this->cboGenerator->SetRect(112, 8, 224, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Color Profile"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Color Profile")));
 	lbl->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->cboColorProfile, UI::GUIComboBox(ui, this, false));
 	this->cboColorProfile->SetRect(112, 32, 224, 23, false);
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Output Size"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("Output Size")));
 	lbl->SetRect(8, 200, 100, 23, false);
 	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, this, CSTR("640")));
 	this->txtWidth->SetRect(112, 200, 56, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, (const UTF8Char*)"x"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTR("x")));
 	lbl->SetRect(168, 200, 24, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this, CSTR("480")));
 	this->txtHeight->SetRect(192, 200, 56, 23, false);

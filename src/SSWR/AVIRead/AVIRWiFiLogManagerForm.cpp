@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnFileClicked(void *userOb
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WiFiLoganagerFile", false));
 	dlg->SetAllowMultiSel(true);
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Log File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		UOSInt i = 0;
@@ -44,11 +44,11 @@ void __stdcall SSWR::AVIRead::AVIRWiFiLogManagerForm::OnStoreClicked(void *userO
 	SSWR::AVIRead::AVIRWiFiLogManagerForm *me = (SSWR::AVIRead::AVIRWiFiLogManagerForm*)userObj;
 	if (me->macList->Store())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Data Stored", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Data Stored"), CSTR("MAC Manager"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing data", (const UTF8Char*)"MAC Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in storing data"), CSTR("MAC Manager"), me);
 	}
 }
 
@@ -221,17 +221,17 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			l = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
 			if (entry)
 			{
-				this->lvContent->SetSubItem(l, 1, entry->name);
+				this->lvContent->SetSubItem(l, 1, {entry->name, entry->nameLen});
 			}
 			else
 			{
-				this->lvContent->SetSubItem(l, 1, (const UTF8Char*)"?");
+				this->lvContent->SetSubItem(l, 1, CSTR("?"));
 			}
 			this->lvContent->SetSubItem(l, 2, log->ssid);
-			Text::StrInt32(sbuff, log->phyType);
-			this->lvContent->SetSubItem(l, 3, sbuff);
-			Text::StrDouble(sbuff, log->freq);
-			this->lvContent->SetSubItem(l, 4, sbuff);
+			sptr = Text::StrInt32(sbuff, log->phyType);
+			this->lvContent->SetSubItem(l, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, log->freq);
+			this->lvContent->SetSubItem(l, 4, CSTRP(sbuff, sptr));
 			Text::String *manuf = 0;
 			Text::String *model = 0;
 			Text::String *serialNum = 0;
@@ -252,11 +252,20 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 			SDEL_STRING(model);
 			SDEL_STRING(serialNum);
 			if (log->ouis[0][0] != 0 || log->ouis[0][1] != 0 || log->ouis[0][2] != 0)
-				this->lvContent->SetSubItem(l, 8, Net::MACInfo::GetMACInfoOUI(log->ouis[0])->name);
+			{
+				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[0]);
+				this->lvContent->SetSubItem(l, 8, {entry->name, entry->nameLen});
+			}
 			if (log->ouis[1][0] != 0 || log->ouis[1][1] != 0 || log->ouis[1][2] != 0)
-				this->lvContent->SetSubItem(l, 9, Net::MACInfo::GetMACInfoOUI(log->ouis[1])->name);
+			{
+				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[1]);
+				this->lvContent->SetSubItem(l, 9, {entry->name, entry->nameLen});
+			}
 			if (log->ouis[2][0] != 0 || log->ouis[2][1] != 0 || log->ouis[2][2] != 0)
-				this->lvContent->SetSubItem(l, 10, Net::MACInfo::GetMACInfoOUI(log->ouis[2])->name);
+			{
+				const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(log->ouis[2]);
+				this->lvContent->SetSubItem(l, 10, {entry->name, entry->nameLen});
+			}
 			if (log->country)
 				this->lvContent->SetSubItem(l, 11, log->country);
 			cnt = 0;
@@ -267,8 +276,8 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::LogUIUpdate()
 					cnt++;
 				k++;
 			}
-			Text::StrUOSInt(sbuff, cnt);
-			this->lvContent->SetSubItem(l, 12, sbuff);
+			sptr = Text::StrUOSInt(sbuff, cnt);
+			this->lvContent->SetSubItem(l, 12, CSTRP(sbuff, sptr));
 
 			recCnt++;
 			if (recCnt >= MAX_ROW)
@@ -293,7 +302,7 @@ void SSWR::AVIRead::AVIRWiFiLogManagerForm::EntryUpdated(const Net::MACInfo::MAC
 		log = (const Net::WiFiLogFile::LogFileEntry*)this->lvContent->GetItem(i);
 		if (log->macInt >= entry->rangeStart && log->macInt <= entry->rangeEnd)
 		{
-			this->lvContent->SetSubItem(i, 1, entry->name);
+			this->lvContent->SetSubItem(i, 1, {entry->name, entry->nameLen});
 		}
 		i++;
 	}
@@ -323,7 +332,7 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlControl, CSTR("Open Log")));
 	this->btnFile->SetRect(4, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Unknown Only", true));
+	NEW_CLASS(this->chkUnkOnly, UI::GUICheckBox(ui, this->pnlControl, CSTR("Unknown Only"), true));
 	this->chkUnkOnly->SetRect(84, 4, 100, 23, false);
 	this->chkUnkOnly->HandleCheckedChange(OnUnkOnlyChkChg, this);
 	NEW_CLASS(this->txtFilter, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
@@ -334,9 +343,9 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	NEW_CLASS(this->btnStore, UI::GUIButton(ui, this->pnlControl, CSTR("Store MACList")));
 	this->btnStore->SetRect(414, 4, 75, 23, false);
 	this->btnStore->HandleButtonClick(OnStoreClicked, this);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)""));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("")));
 	this->lblInfo->SetRect(494, 4, 200, 23, false);
-	NEW_CLASS(this->lblDblClk, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Dbl-Clk Action"));
+	NEW_CLASS(this->lblDblClk, UI::GUILabel(ui, this->pnlControl, CSTR("Dbl-Clk Action")));
 	this->lblDblClk->SetRect(694, 4, 100, 23, false);
 	NEW_CLASS(this->cboDblClk, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboDblClk->SetRect(794, 4, 100, 23, false);
@@ -354,19 +363,19 @@ SSWR::AVIRead::AVIRWiFiLogManagerForm::AVIRWiFiLogManagerForm(UI::GUIClientContr
 	this->lvContent->SetFullRowSelect(true);
 	this->lvContent->HandleDblClk(OnContentDblClicked, this);
 	this->lvContent->HandleSelChg(OnContentSelChg, this);
-	this->lvContent->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvContent->AddColumn((const UTF8Char*)"PHYType", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"Frequency", 80);
-	this->lvContent->AddColumn((const UTF8Char*)"Manufacturer", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"Model", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"S/N", 100);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor1", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor2", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Vendor3", 120);
-	this->lvContent->AddColumn((const UTF8Char*)"Country", 50);
-	this->lvContent->AddColumn((const UTF8Char*)"Neigbour Cnt", 50);
+	this->lvContent->AddColumn(CSTR("MAC"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor"), 120);
+	this->lvContent->AddColumn(CSTR("SSID"), 200);
+	this->lvContent->AddColumn(CSTR("PHYType"), 60);
+	this->lvContent->AddColumn(CSTR("Frequency"), 80);
+	this->lvContent->AddColumn(CSTR("Manufacturer"), 100);
+	this->lvContent->AddColumn(CSTR("Model"), 100);
+	this->lvContent->AddColumn(CSTR("S/N"), 100);
+	this->lvContent->AddColumn(CSTR("Vendor1"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor2"), 120);
+	this->lvContent->AddColumn(CSTR("Vendor3"), 120);
+	this->lvContent->AddColumn(CSTR("Country"), 50);
+	this->lvContent->AddColumn(CSTR("Neigbour Cnt"), 50);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->UpdateStatus();

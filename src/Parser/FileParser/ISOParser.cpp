@@ -27,8 +27,8 @@ void Parser::FileParser::ISOParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
-		selector->AddFilter((const UTF8Char*)"*.iso", (const UTF8Char*)"ISO9660 Image File");
-		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"Disk Image File");
+		selector->AddFilter(CSTR("*.iso"), CSTR("ISO9660 Image File"));
+		selector->AddFilter(CSTR("*.img"), CSTR("Disk Image File"));
 	}
 }
 

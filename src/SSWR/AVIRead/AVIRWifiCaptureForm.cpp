@@ -167,21 +167,22 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 					imac = ReadMUInt64(id);
 
 					k = me->lvCurrWifi->AddItem(ssid, 0);
-					Text::StrUInt32(sbuff, bss->GetPHYId());
-					me->lvCurrWifi->SetSubItem(k, 1, sbuff);
-					Text::StrHexBytes(sbuff, &id[2], 6, ':');
-					me->lvCurrWifi->SetSubItem(k, 2, sbuff);
-					Text::StrInt32(sbuff, bss->GetBSSType());
-					me->lvCurrWifi->SetSubItem(k, 3, Net::MACInfo::GetMACInfo(imac)->name);
-					me->lvCurrWifi->SetSubItem(k, 4, sbuff);
-					Text::StrInt32(sbuff, bss->GetPHYType());
-					me->lvCurrWifi->SetSubItem(k, 5, sbuff);
-					Text::StrDouble(sbuff, bss->GetRSSI());
-					me->lvCurrWifi->SetSubItem(k, 6, sbuff);
-					Text::StrUInt32(sbuff, bss->GetLinkQuality());
-					me->lvCurrWifi->SetSubItem(k, 7, sbuff);
-					Text::StrDouble(sbuff, bss->GetFreq());
-					me->lvCurrWifi->SetSubItem(k, 8, sbuff);
+					sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
+					me->lvCurrWifi->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+					sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
+					me->lvCurrWifi->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, bss->GetBSSType());
+					const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+					me->lvCurrWifi->SetSubItem(k, 3, {entry->name, entry->nameLen});
+					me->lvCurrWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, bss->GetPHYType());
+					me->lvCurrWifi->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+					sptr = Text::StrDouble(sbuff, bss->GetRSSI());
+					me->lvCurrWifi->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+					sptr = Text::StrUInt32(sbuff, bss->GetLinkQuality());
+					me->lvCurrWifi->SetSubItem(k, 7, CSTRP(sbuff, sptr));
+					sptr = Text::StrDouble(sbuff, bss->GetFreq());
+					me->lvCurrWifi->SetSubItem(k, 8, CSTRP(sbuff, sptr));
 					if ((s = bss->GetManuf()) != 0)
 						me->lvCurrWifi->SetSubItem(k, 9, s);
 					if ((s = bss->GetModel()) != 0)
@@ -225,12 +226,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 
 						sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
 						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
-						me->lvLogWifi->SetSubItem(k, 1, Net::MACInfo::GetMACInfo(imac)->name);
+						const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
-						Text::StrInt32(sbuff, wifiLog->phyType);
-						me->lvLogWifi->SetSubItem(k, 3, sbuff);
-						Text::StrDouble(sbuff, wifiLog->freq);
-						me->lvLogWifi->SetSubItem(k, 4, sbuff);
+						sptr = Text::StrInt32(sbuff, wifiLog->phyType);
+						me->lvLogWifi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+						sptr = Text::StrDouble(sbuff, wifiLog->freq);
+						me->lvLogWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 						if (wifiLog->manuf)
 							me->lvLogWifi->SetSubItem(k, 5, wifiLog->manuf);
 						if (wifiLog->model)
@@ -240,11 +242,20 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 						if (wifiLog->country)
 							me->lvLogWifi->SetSubItem(k, 8, wifiLog->country);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0]);
+							me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
+						}
 						if (wifiLog->ouis[1][0] != 0 || wifiLog->ouis[1][1] != 0 || wifiLog->ouis[1][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1]);
+							me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
+						}
 						if (wifiLog->ouis[2][0] != 0 || wifiLog->ouis[2][1] != 0 || wifiLog->ouis[2][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2]);
+							me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
+						}
 					}
 					else
 					{
@@ -286,7 +297,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -307,7 +319,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -328,7 +341,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnTimerTick(void *userObj)
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -494,17 +508,17 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 	{
 		if (me->motion == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Accelerator not found", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Accelerator not found"), CSTR("Error"), me);
 			return;
 		}
 		else if (me->locSvc == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"GPS not connected", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("GPS not connected"), CSTR("Error"), me);
 			return;
 		}
 		else if (me->wlanInterf == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Wifi adapter not found", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Wifi adapter not found"), CSTR("Error"), me);
 			return;
 		}
 
@@ -647,14 +661,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveClicked(void *us
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
 	}
 }
 
@@ -720,14 +734,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnLogWifiSaveFClicked(void *u
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 }
 
@@ -735,7 +749,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnFormClosing(void *userObj, 
 {
 	SSWR::AVIRead::AVIRWifiCaptureForm *me = (SSWR::AVIRead::AVIRWifiCaptureForm*)userObj;
 	Manage::HiResClock clk;
-	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to close?", (const UTF8Char*)"Question", me))
+	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
 		if (clk.GetTimeDiff() < 30)
 		{
@@ -839,12 +853,12 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblMotion, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Motion"));
+	NEW_CLASS(this->lblMotion, UI::GUILabel(ui, this->tpStatus, CSTR("Motion")));
 	this->lblMotion->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtMotion, UI::GUITextBox(ui, this->tpStatus, CSTR("No Accelerator found")));
 	this->txtMotion->SetReadOnly(true);
 	this->txtMotion->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblGPS, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"GPS"));
+	NEW_CLASS(this->lblGPS, UI::GUILabel(ui, this->tpStatus, CSTR("GPS")));
 	this->lblGPS->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtGPS, UI::GUITextBox(ui, this->tpStatus, CSTR("Not opened")));
 	this->txtGPS->SetReadOnly(true);
@@ -852,42 +866,42 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnGPS, UI::GUIButton(ui, this->tpStatus, CSTR("Open")));
 	this->btnGPS->SetRect(304, 28, 75, 23, false);
 	this->btnGPS->HandleButtonClick(OnGPSClicked, this);
-	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"GPS Time"));
+	NEW_CLASS(this->lblGPSTime, UI::GUILabel(ui, this->tpStatus, CSTR("GPS Time")));
 	this->lblGPSTime->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGPSTime, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtGPSTime->SetReadOnly(true);
 	this->txtGPSTime->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblGPSLat, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Latitude"));
+	NEW_CLASS(this->lblGPSLat, UI::GUILabel(ui, this->tpStatus, CSTR("Latitude")));
 	this->lblGPSLat->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtGPSLat, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtGPSLat->SetReadOnly(true);
 	this->txtGPSLat->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->lblGPSLon, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Longitude"));
+	NEW_CLASS(this->lblGPSLon, UI::GUILabel(ui, this->tpStatus, CSTR("Longitude")));
 	this->lblGPSLon->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtGPSLon, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtGPSLon->SetReadOnly(true);
 	this->txtGPSLon->SetRect(104, 100, 200, 23, false);
-	NEW_CLASS(this->lblGPSAlt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Altitude"));
+	NEW_CLASS(this->lblGPSAlt, UI::GUILabel(ui, this->tpStatus, CSTR("Altitude")));
 	this->lblGPSAlt->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtGPSAlt, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtGPSAlt->SetReadOnly(true);
 	this->txtGPSAlt->SetRect(104, 124, 200, 23, false);
-	NEW_CLASS(this->lblGPSActive, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"GPS Active"));
+	NEW_CLASS(this->lblGPSActive, UI::GUILabel(ui, this->tpStatus, CSTR("GPS Active")));
 	this->lblGPSActive->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtGPSActive, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtGPSActive->SetReadOnly(true);
 	this->txtGPSActive->SetRect(104, 148, 200, 23, false);
-	NEW_CLASS(this->lblBattery, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Battery"));
+	NEW_CLASS(this->lblBattery, UI::GUILabel(ui, this->tpStatus, CSTR("Battery")));
 	this->lblBattery->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtBattery, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtBattery->SetReadOnly(true);
 	this->txtBattery->SetRect(104, 172, 200, 23, false);
-	NEW_CLASS(this->lblCurrWifiCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Wifi Count"));
+	NEW_CLASS(this->lblCurrWifiCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Wifi Count")));
 	this->lblCurrWifiCnt->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtCurrWifiCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtCurrWifiCnt->SetReadOnly(true);
 	this->txtCurrWifiCnt->SetRect(104, 196, 200, 23, false);
-	NEW_CLASS(this->lblBSSCount, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"BSS Count"));
+	NEW_CLASS(this->lblBSSCount, UI::GUILabel(ui, this->tpStatus, CSTR("BSS Count")));
 	this->lblBSSCount->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtBSSCount, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtBSSCount->SetReadOnly(true);
@@ -901,18 +915,18 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrWifi->SetShowGrid(true);
 	this->lvCurrWifi->SetFullRowSelect(true);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"PhyId", 40);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"BSSType", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"PHYType", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"RSSI", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Link Quality", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Frequency", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Manufacturer", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Model", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"S/N", 100);
+	this->lvCurrWifi->AddColumn(CSTR("SSID"), 200);
+	this->lvCurrWifi->AddColumn(CSTR("PhyId"), 40);
+	this->lvCurrWifi->AddColumn(CSTR("MAC"), 120);
+	this->lvCurrWifi->AddColumn(CSTR("Vendor"), 120);
+	this->lvCurrWifi->AddColumn(CSTR("BSSType"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("PHYType"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("RSSI"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Link Quality"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Frequency"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Manufacturer"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Model"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("S/N"), 100);
 
 	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
@@ -929,18 +943,18 @@ SSWR::AVIRead::AVIRWifiCaptureForm::AVIRWifiCaptureForm(UI::GUIClientControl *pa
 	this->lvLogWifi->SetShowGrid(true);
 	this->lvLogWifi->SetFullRowSelect(true);
 	this->lvLogWifi->HandleDblClk(OnLogWifiDblClicked, this);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"PHYType", 60);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Frequency", 80);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Manufactorer", 150);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Model", 150);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"S/N", 100);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Country", 50);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor1", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor2", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor3", 120);
+	this->lvLogWifi->AddColumn(CSTR("MAC"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor"), 120);
+	this->lvLogWifi->AddColumn(CSTR("SSID"), 200);
+	this->lvLogWifi->AddColumn(CSTR("PHYType"), 60);
+	this->lvLogWifi->AddColumn(CSTR("Frequency"), 80);
+	this->lvLogWifi->AddColumn(CSTR("Manufactorer"), 150);
+	this->lvLogWifi->AddColumn(CSTR("Model"), 150);
+	this->lvLogWifi->AddColumn(CSTR("S/N"), 100);
+	this->lvLogWifi->AddColumn(CSTR("Country"), 50);
+	this->lvLogWifi->AddColumn(CSTR("Vendor1"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor2"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor3"), 120);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetClosingHandler(OnFormClosing, this);

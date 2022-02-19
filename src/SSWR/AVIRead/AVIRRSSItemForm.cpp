@@ -33,6 +33,7 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	UOSInt i;
 	UOSInt j;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	this->SetText(CSTR("RSS Item"));
 	this->SetFont(UTF8STRC("MingLiu"), 8.25, false);
 
@@ -49,8 +50,8 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
-	this->lvInfo->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvInfo->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvInfo->AddColumn(CSTR("Name"), 150);
+	this->lvInfo->AddColumn(CSTR("Value"), 400);
 
 #if defined(_WIN32) || defined(WIN64)
 	this->tpImage = this->tcMain->AddTabPage(CSTR("Image"));
@@ -104,8 +105,8 @@ SSWR::AVIRead::AVIRRSSItemForm::AVIRRSSItemForm(UI::GUIClientControl *parent, UI
 	i = this->lvInfo->AddItem(CSTR("PubDate"), 0);
 	if (rssItem->pubDate)
 	{
-		rssItem->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-		this->lvInfo->SetSubItem(i, 1, sbuff);
+		sptr = rssItem->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+		this->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	}
 	i = this->lvInfo->AddItem(CSTR("Source"), 0);
 	if (rssItem->source)

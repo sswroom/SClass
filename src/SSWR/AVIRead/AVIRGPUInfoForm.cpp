@@ -63,8 +63,8 @@ SSWR::AVIRead::AVIRGPUInfoForm::AVIRGPUInfoForm(UI::GUIClientControl *parent, UI
 	this->lvMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvMain->SetShowGrid(true);
 	this->lvMain->SetFullRowSelect(true);
-	this->lvMain->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvMain->AddColumn((const UTF8Char*)"Value", 300);
+	this->lvMain->AddColumn(CSTR("Name"), 150);
+	this->lvMain->AddColumn(CSTR("Value"), 300);
 
 	UOSInt i;
 	UOSInt j;

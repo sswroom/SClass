@@ -12,7 +12,7 @@ void __stdcall SSWR::AVIRead::AVIRBTScanLogDevForm::OnCSVClicked(void *userObj)
 	SSWR::AVIRead::AVIRBTScanLogDevForm *me = (SSWR::AVIRead::AVIRBTScanLogDevForm*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"BTScanLogDev", true));
-	dlg->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
+	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -72,14 +72,14 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlDevInfo, UI::GUIPanel(ui, this));
 	this->pnlDevInfo->SetRect(0, 0, 100, 56, false);
 	this->pnlDevInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"MAC"));
+	NEW_CLASS(this->lblMAC, UI::GUILabel(ui, this->pnlDevInfo, CSTR("MAC")));
 	this->lblMAC->SetRect(4, 4, 100, 23, false);
 	WriteMUInt64(mac, entry->macInt);
 	sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 	NEW_CLASS(this->txtMAC, UI::GUITextBox(ui, this->pnlDevInfo, CSTRP(sbuff, sptr)));
 	this->txtMAC->SetRect(104, 4, 200, 23, false);
 	this->txtMAC->SetReadOnly(true);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevInfo, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlDevInfo, CSTR("Name")));
 	this->lblName->SetRect(4, 28, 100, 23, false);
 	if (entry->name)
 	{
@@ -98,10 +98,10 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 	this->lvContent->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContent->SetShowGrid(true);
 	this->lvContent->SetFullRowSelect(true);
-	this->lvContent->AddColumn((const UTF8Char*)"Time", 180);
-	this->lvContent->AddColumn((const UTF8Char*)"Diff", 60);
-	this->lvContent->AddColumn((const UTF8Char*)"RSSI", 80);
-	this->lvContent->AddColumn((const UTF8Char*)"TXPower", 120);
+	this->lvContent->AddColumn(CSTR("Time"), 180);
+	this->lvContent->AddColumn(CSTR("Diff"), 60);
+	this->lvContent->AddColumn(CSTR("RSSI"), 80);
+	this->lvContent->AddColumn(CSTR("TXPower"), 120);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	Data::DateTime dt;
@@ -121,13 +121,13 @@ SSWR::AVIRead::AVIRBTScanLogDevForm::AVIRBTScanLogDevForm(UI::GUIClientControl *
 		dt.ToLocalTime();
 		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		k = this->lvContent->AddItem(CSTRP(sbuff, sptr), log);
-		Text::StrDouble(sbuff, (Double)(log->timeTicks - lastTick) / 1000.0);
-		this->lvContent->SetSubItem(k, 1, sbuff);
+		sptr = Text::StrDouble(sbuff, (Double)(log->timeTicks - lastTick) / 1000.0);
+		this->lvContent->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		lastTick = log->timeTicks;
-		Text::StrInt16(sbuff, log->rssi);
-		this->lvContent->SetSubItem(k, 2, sbuff);
-		Text::StrInt16(sbuff, log->txPower);
-		this->lvContent->SetSubItem(k, 3, sbuff);
+		sptr = Text::StrInt16(sbuff, log->rssi);
+		this->lvContent->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		sptr = Text::StrInt16(sbuff, log->txPower);
+		this->lvContent->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		i++;
 	}
 }

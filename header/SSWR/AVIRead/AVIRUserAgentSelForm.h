@@ -28,6 +28,7 @@ namespace SSWR
 		private:
 			SSWR::AVIRead::AVIRCore *core;
 			const UTF8Char *currUserAgent;
+			UOSInt currUserAgentLen;
 			Data::ArrayList<OSItem*> *osList;
 
 			UI::GUIPanel *pnlFilter;
@@ -45,12 +46,12 @@ namespace SSWR
 			static void __stdcall OnUserAgentDblClk(void *userObj, UOSInt itemIndex);
 			void UpdateUAList(Manage::OSInfo::OSType os, Text::CString osVer, Net::BrowserInfo::BrowserType browser);
 		public:
-			AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *currUserAgent);
+			AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::CString currUserAgent);
 			virtual ~AVIRUserAgentSelForm();
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetUserAgent();
+			Text::CString GetUserAgent();
 		};
 	}
 }

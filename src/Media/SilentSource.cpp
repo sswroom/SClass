@@ -5,7 +5,7 @@
 #include "Media/SilentSource.h"
 #include "Text/MyString.h"
 
-Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bitCount, const UTF8Char *name, UInt64 sampleCnt)
+Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bitCount, Text::CString name, UInt64 sampleCnt)
 {
 	this->format.frequency = sampleRate;
 	this->format.bitpersample = bitCount;
@@ -18,16 +18,7 @@ Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bi
 	this->format.other = 0;
 	this->format.bitRate = sampleRate * bitCount * nChannels;
 	this->sampleCnt = sampleCnt;
-
-	if (name)
-	{
-		this->name = Text::StrCopyNew(name);
-	}
-	else
-	{
-		this->name = 0;
-	}
-
+	this->name = Text::String::NewOrNull(name);
 	this->readEvt = 0;
 	this->readOfst = 0;
 	this->currSample = 0;
@@ -35,17 +26,14 @@ Media::SilentSource::SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bi
 
 Media::SilentSource::~SilentSource()
 {
-	if (this->name)
-	{
-		Text::StrDelNew(this->name);
-	}
+	SDEL_STRING(this->name);
 }
 
 UTF8Char *Media::SilentSource::GetSourceName(UTF8Char *buff)
 {
 	if (this->name == 0)
 		return 0;
-	return Text::StrConcat(buff, this->name);
+	return this->name->ConcatTo(buff);
 }
 
 Bool Media::SilentSource::CanSeek()

@@ -35,7 +35,7 @@ void Parser::FileParser::WAVParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.wav", (const UTF8Char*)"RIFF Wave File");
+		selector->AddFilter(CSTR("*.wav"), CSTR("RIFF Wave File"));
 	}
 }
 

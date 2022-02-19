@@ -76,7 +76,7 @@ namespace Text
 			Bool EndParseFile(const UTF8Char *fileName, UOSInt fileNameLen);
 
 			Bool IsDefined(Text::CString defName);
-			Bool AddGlobalDef(Text::CString defName, const UTF8Char *defVal);
+			Bool AddGlobalDef(Text::CString defName, Text::CString defVal);
 			Bool AddDef(Text::CString defName, const UTF8Char *defParams, const UTF8Char *defVal, Int32 lineNum);
 			Bool Undefine(Text::CString defName);
 			Bool GetDefineVal(Text::CString defName, Text::CString defParams, Text::StringBuilderUTF8 *sb);

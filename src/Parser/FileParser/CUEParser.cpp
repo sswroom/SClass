@@ -31,7 +31,7 @@ void Parser::FileParser::CUEParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.cue", (const UTF8Char*)"Cuesheet File");
+		selector->AddFilter(CSTR("*.cue"), CSTR("Cuesheet File"));
 	}
 }
 

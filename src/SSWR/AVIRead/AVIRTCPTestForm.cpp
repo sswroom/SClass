@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	me->svrIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
 	if (me->svrIP == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid IP", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid IP"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&me->svrPort) || me->svrPort <= 0 || me->svrPort >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Port", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Concurrent Count", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPTestForm::OnStartClicked(void *userObj)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Total Connection Count", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Total Connection Count"), CSTR("Start"), me);
 		return;
 	}
 	
@@ -184,43 +184,43 @@ SSWR::AVIRead::AVIRTCPTestForm::AVIRTCPTestForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlRequest, CSTR("IP")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIP, UI::GUITextBox(ui, this->pnlRequest, CSTR("127.0.0.1")));
 	this->txtIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("80")));
 	this->txtPort->SetRect(104, 28, 70, 23, false);
-	NEW_CLASS(this->lblConcurrCnt, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Concurrent Count"));
+	NEW_CLASS(this->lblConcurrCnt, UI::GUILabel(ui, this->pnlRequest, CSTR("Concurrent Count")));
 	this->lblConcurrCnt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtConcurrCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("10")));
 	this->txtConcurrCnt->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblTotalConnCnt, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Total Conn Count"));
+	NEW_CLASS(this->lblTotalConnCnt, UI::GUILabel(ui, this->pnlRequest, CSTR("Total Conn Count")));
 	this->lblTotalConnCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTotalConnCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("100000")));
 	this->txtTotalConnCnt->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, CSTR("Status")));
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Conn Left"));
+	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Conn Left")));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnLeftCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtConnLeftCnt->SetRect(104, 4, 150, 23, false);
 	this->txtConnLeftCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Thread Count"));
+	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Thread Count")));
 	this->lblThreadCnt->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtThreadCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtThreadCnt->SetRect(104, 28, 150, 23, false);
 	this->txtThreadCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblSuccCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Success Count"));
+	NEW_CLASS(this->lblSuccCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Success Count")));
 	this->lblSuccCnt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSuccCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSuccCnt->SetRect(104, 52, 150, 23, false);
 	this->txtSuccCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblFailCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Fail Count"));
+	NEW_CLASS(this->lblFailCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Fail Count")));
 	this->lblFailCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFailCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtFailCnt->SetRect(104, 76, 150, 23, false);

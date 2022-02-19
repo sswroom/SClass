@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 	if (me->dbConn == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No database is connected", (const UTF8Char*)"RESTful Server", me);
+		UI::MessageDialog::ShowDialog(CSTR("No database is connected"), CSTR("RESTful Server"), me);
 		return;
 	}
 	UInt16 port = 0;
@@ -68,7 +68,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 		{
 			valid = false;
 			SDEL_CLASS(me->svr);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting server", (const UTF8Char*)"RESTful Server", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("RESTful Server"), me);
 		}
 		else
 		{
@@ -93,6 +93,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			Data::ArrayList<const UTF8Char*> tableNames;
 			const UTF8Char *tableName;
 			UTF8Char sbuff[32];
+			UTF8Char *sptr;
 			UOSInt i;
 			UOSInt j;
 			UOSInt k;
@@ -103,8 +104,8 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			{
 				tableName = tableNames.GetItem(i);
 				k = me->lvTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
-				Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
-				me->lvTable->SetSubItem(k, 1, sbuff);
+				sptr = Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
+				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
 
@@ -134,7 +135,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"RESTful Server", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("RESTful Server"), me);
 	}
 
 	DEL_CLASS(sb);
@@ -204,14 +205,14 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"Parameters"));
+	NEW_CLASS(this->grpParam, UI::GUIGroupBox(ui, this->tpControl, CSTR("Parameters")));
 	this->grpParam->SetRect(0, 0, 620, 176, false);
 	this->grpParam->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->grpParam, CSTR("Port")));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->grpParam, CSTR("12345")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Log Path"));
+	NEW_CLASS(this->lblLogDir, UI::GUILabel(ui, this->grpParam, CSTR("Log Path")));
 	this->lblLogDir->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
@@ -219,19 +220,19 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	sptr = Text::StrConcatC(&sbuff[i+1], UTF8STRC("log"));
 	NEW_CLASS(this->txtLogDir, UI::GUITextBox(ui, this->grpParam, CSTRP(sbuff, sptr)));
 	this->txtLogDir->SetRect(108, 32, 500, 23, false);
-	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Proxy Connection"));
+	NEW_CLASS(this->lblAllowProxy, UI::GUILabel(ui, this->grpParam, CSTR("Proxy Connection")));
 	this->lblAllowProxy->SetRect(8, 56, 100, 23, false);
-	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Allow", true));
+	NEW_CLASS(this->chkAllowProxy, UI::GUICheckBox(ui, this->grpParam, CSTR("Allow"), true));
 	this->chkAllowProxy->SetRect(108, 56, 100, 23, false);
-	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Skip Logging"));
+	NEW_CLASS(this->lblSkipLog, UI::GUILabel(ui, this->grpParam, CSTR("Skip Logging")));
 	this->lblSkipLog->SetRect(8, 80, 100, 23, false);
-	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkSkipLog, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), false));
 	this->chkSkipLog->SetRect(108, 80, 100, 23, false);
-	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Allow KA"));
+	NEW_CLASS(this->lblAllowKA, UI::GUILabel(ui, this->grpParam, CSTR("Allow KA")));
 	this->lblAllowKA->SetRect(8, 104, 100, 23, false);
-	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, (const UTF8Char*)"Enable", true));
+	NEW_CLASS(this->chkAllowKA, UI::GUICheckBox(ui, this->grpParam, CSTR("Enable"), true));
 	this->chkAllowKA->SetRect(108, 104, 100, 23, false);
-	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this->grpParam, (const UTF8Char*)"Database"));
+	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this->grpParam, CSTR("Database")));
 	this->lblDatabase->SetRect(8, 128, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this->grpParam, CSTR("")));
 	this->txtDatabase->SetRect(108, 128, 150, 23, false);
@@ -254,8 +255,8 @@ SSWR::AVIRead::AVIRRESTfulForm::AVIRRESTfulForm(UI::GUIClientControl *parent, UI
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
 	this->lvTable->SetShowGrid(true);
-	this->lvTable->AddColumn((const UTF8Char*)"TableName", 150);
-	this->lvTable->AddColumn((const UTF8Char*)"Row Count", 100);
+	this->lvTable->AddColumn(CSTR("TableName"), 150);
+	this->lvTable->AddColumn(CSTR("Row Count"), 100);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

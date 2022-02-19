@@ -32,8 +32,8 @@ void Parser::FileParser::QTParser::PrepareSelector(IO::IFileSelector *selector, 
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mov", (const UTF8Char*)"Quicktime Movie File");
-		selector->AddFilter((const UTF8Char*)"*.mp4", (const UTF8Char*)"MP4 File");
+		selector->AddFilter(CSTR("*.mov"), CSTR("Quicktime Movie File"));
+		selector->AddFilter(CSTR("*.mp4"), CSTR("MP4 File"));
 	}
 }
 

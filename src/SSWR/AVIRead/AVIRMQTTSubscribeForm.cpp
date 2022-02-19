@@ -31,26 +31,26 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		me->txtPort->GetText(&sb);
 		if (!sb.ToInt32(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(&sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
 
 		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), 0, sb.ToCString(), (UInt16)port, 0, 0));
 		if (me->client->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to server"), CSTR("Error"), me);
 			DEL_CLASS(me->client);
 			me->client = 0;
 			return;
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnStartClicked(void *userOb
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in communicating with server", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -190,6 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 	Data::ArrayList<TopicStatus*> *topicList;
 	Data::DateTime dt;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	TopicStatus *topicSt;
 	UOSInt i;
 	UOSInt j;
@@ -213,13 +214,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 				}
 			}
 			me->lvTopic->AddItem(topicSt->topic, topicSt);
-			me->lvTopic->SetSubItem(i, 1, topicSt->currValue);
-			Text::StrUOSInt(sbuff, topicSt->recvCnt);
-			me->lvTopic->SetSubItem(i, 2, sbuff);
+			me->lvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
+			sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+			me->lvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			dt.SetTicks(topicSt->lastRecvTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvTopic->SetSubItem(i, 3, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -231,13 +232,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTSubscribeForm::OnTimerTick(void *userObj)
 			if (topicSt->updated)
 			{
 				topicSt->updated = false;
-				me->lvTopic->SetSubItem(i, 1, topicSt->currValue);
-				Text::StrUOSInt(sbuff, topicSt->recvCnt);
-				me->lvTopic->SetSubItem(i, 2, sbuff);
+				me->lvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
+				sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+				me->lvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				dt.SetTicks(topicSt->lastRecvTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvTopic->SetSubItem(i, 3, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 
 				if (topicSt == me->currTopic)
 				{
@@ -406,19 +407,19 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->tpStatus, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->tpStatus, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->tpStatus, CSTR("User Name")));
 	this->lblUsername->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtUsername->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->tpStatus, CSTR("Password")));
 	this->lblPassword->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->tpStatus, CSTR("")));
 	this->txtPassword->SetRect(104, 76, 100, 23, false);
@@ -427,7 +428,7 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 
 	this->tpSTopic = this->tcMain->AddTabPage(CSTR("Subscribe Topic"));
-	NEW_CLASS(this->lblSTopic, UI::GUILabel(ui, this->tpSTopic, (const UTF8Char*)"Topic"));
+	NEW_CLASS(this->lblSTopic, UI::GUILabel(ui, this->tpSTopic, CSTR("Topic")));
 	this->lblSTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSTopic, UI::GUITextBox(ui, this->tpSTopic, CSTR("")));
 	this->txtSTopic->SetRect(104, 4, 150, 23, false);
@@ -438,11 +439,11 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lbSTopic->SetRect(104, 28, 150, 119, false);
 
 	this->tpPublish = this->tcMain->AddTabPage(CSTR("Publish"));
-	NEW_CLASS(this->lblPublishTopic, UI::GUILabel(ui, this->tpPublish, (const UTF8Char*)"Topic"));
+	NEW_CLASS(this->lblPublishTopic, UI::GUILabel(ui, this->tpPublish, CSTR("Topic")));
 	this->lblPublishTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPublishTopic, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishTopic->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblPublishMessage, UI::GUILabel(ui, this->tpPublish, (const UTF8Char*)"Message"));
+	NEW_CLASS(this->lblPublishMessage, UI::GUILabel(ui, this->tpPublish, CSTR("Message")));
 	this->lblPublishMessage->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPublishMessage, UI::GUITextBox(ui, this->tpPublish, CSTR("")));
 	this->txtPublishMessage->SetRect(104, 28, 200, 23, false);
@@ -459,10 +460,10 @@ SSWR::AVIRead::AVIRMQTTSubscribeForm::AVIRMQTTSubscribeForm(UI::GUIClientControl
 	this->lvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTopic->SetShowGrid(true);
 	this->lvTopic->SetFullRowSelect(true);
-	this->lvTopic->AddColumn((const UTF8Char*)"Topic", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Message", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Count", 60);
-	this->lvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
+	this->lvTopic->AddColumn(CSTR("Topic"), 200);
+	this->lvTopic->AddColumn(CSTR("Message"), 200);
+	this->lvTopic->AddColumn(CSTR("Count"), 60);
+	this->lvTopic->AddColumn(CSTR("Update Time"), 150);
 	this->lvTopic->HandleSelChg(OnTopicSelChg, this);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));

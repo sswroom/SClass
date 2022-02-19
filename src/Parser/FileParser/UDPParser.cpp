@@ -20,7 +20,7 @@ void Parser::FileParser::UDPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.udp", (const UTF8Char*)"UDP Log File");
+		selector->AddFilter(CSTR("*.udp"), CSTR("UDP Log File"));
 	}
 }
 

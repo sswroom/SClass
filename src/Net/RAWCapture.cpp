@@ -74,11 +74,11 @@ void __stdcall Net::RAWCapture::DataHandler(void *userData, const UInt8 *packetD
 	mutUsage.EndUse();
 }
 
-Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CString fileName, const UTF8Char *appName)
+Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, CaptureType type, FileFormat format, Text::CString fileName, Text::CString appName)
 {
-	if (appName == 0)
+	if (appName.leng == 0)
 	{
-		appName = (const UTF8Char*)"RAWCapture";
+		appName = CSTR("RAWCapture");
 	}
 	this->sockf = sockf;
 	this->socMon = 0;
@@ -159,7 +159,7 @@ Net::RAWCapture::RAWCapture(Net::SocketFactory *sockf, UInt32 adapterIP, Capture
 				}
 			}
 
-			sptr2 = Text::StrConcat(sptr + 4, appName);
+			sptr2 = appName.ConcatTo(sptr + 4);
 			i = sptr2 - sptr - 4;
 			WriteInt16(sptr, 3);
 			WriteInt16(&sptr[2], i);
@@ -320,6 +320,6 @@ Text::CString Net::RAWCapture::FileFormatGetExt(FileFormat format)
 
 void Net::RAWCapture::AddFilters(IO::IFileSelector *selector)
 {
-	selector->AddFilter((const UTF8Char*)"*.pcap", (const UTF8Char*)"pcap");
-	selector->AddFilter((const UTF8Char*)"*.pcapng", (const UTF8Char*)"pcapng");
+	selector->AddFilter(CSTR("*.pcap"), CSTR("pcap"));
+	selector->AddFilter(CSTR("*.pcapng"), CSTR("pcapng"));
 }

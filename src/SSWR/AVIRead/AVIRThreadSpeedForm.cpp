@@ -23,6 +23,7 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRThreadSpeedForm *me = (SSWR::AVIRead::AVIRThreadSpeedForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Double t;
 	UOSInt i;
 	me->lvResult->ClearItems();
@@ -34,14 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->t = 0;
 
 	i = me->lvResult->AddItem(CSTR("Thread Count"), 0);
-	Text::StrUOSInt(sbuff, Sync::Thread::GetThreadCnt());
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrUOSInt(sbuff, Sync::Thread::GetThreadCnt());
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk->Start();
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Check Time"), 0);
-	Text::StrDouble(sbuff, t);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk->Start();
 	i = 1000;
@@ -51,8 +52,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	}
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("GetThreadId"), 0);
-	Text::StrDouble(sbuff, t / 1000.0);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t / 1000.0);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk->Start();
 	i = 1000;
@@ -63,8 +64,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	}
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Mutex Lock Unlock"), 0);
-	Text::StrDouble(sbuff, t / 1000.0);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t / 1000.0);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk->Start();
 	i = 1000;
@@ -74,8 +75,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	}
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Interlocked Increment"), 0);
-	Text::StrDouble(sbuff, t / 1000.0);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t / 1000.0);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->clk->Start();
 	i = 1000;
@@ -85,8 +86,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	}
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Event.Set"), 0);
-	Text::StrDouble(sbuff, t / 1000.0);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t / 1000.0);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	me->mainEvt->Clear();
 	me->t = 0;
@@ -95,11 +96,11 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 	me->mainEvt->Wait(1000);
 	t = me->clk->GetTimeDiff();
 	i = me->lvResult->AddItem(CSTR("Thread Create"), 0);
-	Text::StrDouble(sbuff, me->t);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, me->t);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	i = me->lvResult->AddItem(CSTR("Event Wake"), 0);
-	Text::StrDouble(sbuff, t);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	Sync::Thread::Sleep(100);
 	{
@@ -108,8 +109,8 @@ void __stdcall SSWR::AVIRead::AVIRThreadSpeedForm::OnTestClicked(void *userObj)
 		mutUsage.EndUse();
 	}
 	i = me->lvResult->AddItem(CSTR("Mutex Lock Relase"), 0);
-	Text::StrDouble(sbuff, t);
-	me->lvResult->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrDouble(sbuff, t);
+	me->lvResult->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 
 	DEL_CLASS(me->mainEvt);
 	DEL_CLASS(me->threadEvt);
@@ -133,8 +134,8 @@ SSWR::AVIRead::AVIRThreadSpeedForm::AVIRThreadSpeedForm(UI::GUIClientControl *pa
 	this->btnTest->HandleButtonClick(OnTestClicked, this);
 	NEW_CLASS(this->lvResult, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvResult->AddColumn((const UTF8Char*)"Thread Function", 200);
-	this->lvResult->AddColumn((const UTF8Char*)"Time (sec)", 200);
+	this->lvResult->AddColumn(CSTR("Thread Function"), 200);
+	this->lvResult->AddColumn(CSTR("Time (sec)"), 200);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);
 

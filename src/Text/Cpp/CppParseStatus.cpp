@@ -125,7 +125,7 @@ Bool Text::Cpp::CppParseStatus::IsDefined(Text::CString defName)
 	return true;
 }
 
-Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, const UTF8Char *defVal)
+Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, Text::CString defVal)
 {
 	DefineInfo *defInfo;
 	defInfo = this->defines->GetC(defName);
@@ -137,9 +137,9 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, const UTF8Ch
 			defInfo->lineNum = 0;
 			SDEL_STRING(defInfo->defineVal);
 			SDEL_STRING(defInfo->defineParam);
-			if (defVal)
+			if (defVal.leng > 0)
 			{
-				defInfo->defineVal = Text::String::NewNotNull(defVal);
+				defInfo->defineVal = Text::String::New(defVal);
 			}
 			else
 			{
@@ -159,9 +159,9 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, const UTF8Ch
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = 0;
 		defInfo->lineNum = 0;
-		if (defVal)
+		if (defVal.leng > 0)
 		{
-			defInfo->defineVal = Text::String::NewNotNull(defVal);
+			defInfo->defineVal = Text::String::New(defVal);
 		}
 		else
 		{

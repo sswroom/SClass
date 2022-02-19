@@ -37,17 +37,17 @@ SSWR::SHPConv::SHPConvValueFilterForm::SHPConvValueFilterForm(UI::GUIClientContr
 	this->dbf = dbf;
 	this->filter = 0;
 	
-	NEW_CLASS(this->lblCol, UI::GUILabel(ui, this, (const UTF8Char*)"Column"));
+	NEW_CLASS(this->lblCol, UI::GUILabel(ui, this, CSTR("Column")));
 	this->lblCol->SetRect(8, 8, 56, 23, false);
 	NEW_CLASS(this->cboCol, UI::GUIComboBox(ui, this, false));
 	this->cboCol->SetRect(72, 8, 121, 21, false);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, CSTR("Type")));
 	this->lblType->SetRect(8, 32, 56, 23, false);
-	NEW_CLASS(this->radEqual, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Equal", true));
+	NEW_CLASS(this->radEqual, UI::GUIRadioButton(ui, this, CSTR("Equal"), true));
 	this->radEqual->SetRect(72, 32, 64, 24, false);
-	NEW_CLASS(this->radNotEq, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Not Equal", false));
+	NEW_CLASS(this->radNotEq, UI::GUIRadioButton(ui, this, CSTR("Not Equal"), false));
 	this->radNotEq->SetRect(136, 32, 96, 24, false);
-	NEW_CLASS(this->lblValue, UI::GUILabel(ui, this, (const UTF8Char*)"Value"));
+	NEW_CLASS(this->lblValue, UI::GUILabel(ui, this, CSTR("Value")));
 	this->lblValue->SetRect(8, 56, 56, 23, false);
 	NEW_CLASS(this->txtValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtValue->SetRect(72, 56, 136, 20, false);

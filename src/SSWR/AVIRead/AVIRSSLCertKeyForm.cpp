@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileCertClicked(void *userOb
 	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRSSLCert", false));
-	dlg->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"Cert file");
+	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileKeyClicked(void *userObj
 	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRSSLKey", false));
-	dlg->AddFilter((const UTF8Char*)"*.kye", (const UTF8Char*)"Key file");
+	dlg->AddFilter(CSTR("*.kye"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -62,17 +62,17 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	me->txtGenCommonName->GetText(&sbCommonName);
 	if (sbCountry.GetLength() != 2)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Country must be 2 characters", (const UTF8Char*)"SSL Cert/Key", me);
+		UI::MessageDialog::ShowDialog(CSTR("Country must be 2 characters"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	if (sbCompany.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter company", (const UTF8Char*)"SSL Cert/Key", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter company"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	if (sbCommonName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter common name", (const UTF8Char*)"SSL Cert/Key", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter common name"), CSTR("SSL Cert/Key"), me);
 		return;
 	}
 	Crypto::Cert::X509Cert *certASN1;
@@ -87,7 +87,7 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating certs", (const UTF8Char*)"SSL Cert/Key", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in generating certs"), CSTR("SSL Cert/Key"), me);
 		return;
 	}	
 }
@@ -110,13 +110,13 @@ void SSWR::AVIRead::AVIRSSLCertKeyForm::LoadFile(Text::CString fileName)
 	DEL_CLASS(fd);
 	if (asn1 == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 		return;
 	}
 	if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 	{
 		DEL_CLASS(asn1);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"SSL Cert/Key", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("SSL Cert/Key"), this);
 		return;
 	}
 	Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
@@ -164,12 +164,12 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlCurr, UI::GUIPanel(ui, this));
 	this->pnlCurr->SetRect(0, 0, 100, 55, false);
 	this->pnlCurr->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblCurrCert, UI::GUILabel(ui, this->pnlCurr, (const UTF8Char*)"Curr Cert"));
+	NEW_CLASS(this->lblCurrCert, UI::GUILabel(ui, this->pnlCurr, CSTR("Curr Cert")));
 	this->lblCurrCert->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtCurrCert, UI::GUITextBox(ui, this->pnlCurr, CSTR("")));
 	this->txtCurrCert->SetRect(104, 4, 200, 23, false);
 	this->txtCurrCert->SetReadOnly(true);
-	NEW_CLASS(this->lblCurrKey, UI::GUILabel(ui, this->pnlCurr, (const UTF8Char*)"Curr Key"));
+	NEW_CLASS(this->lblCurrKey, UI::GUILabel(ui, this->pnlCurr, CSTR("Curr Key")));
 	this->lblCurrKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCurrKey, UI::GUITextBox(ui, this->pnlCurr, CSTR("")));
 	this->txtCurrKey->SetRect(104, 28, 200, 23, false);
@@ -181,27 +181,27 @@ SSWR::AVIRead::AVIRSSLCertKeyForm::AVIRSSLCertKeyForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnFileCert, UI::GUIButton(ui, this->tpFile, CSTR("Cert")));
 	this->btnFileCert->SetRect(4, 4, 75, 23, false);
 	this->btnFileCert->HandleButtonClick(OnFileCertClicked, this);
-	NEW_CLASS(this->lblFileCert, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)""));
+	NEW_CLASS(this->lblFileCert, UI::GUILabel(ui, this->tpFile, CSTR("")));
 	this->lblFileCert->SetRect(84, 4, 200, 23, false);
 	NEW_CLASS(this->btnFileKey, UI::GUIButton(ui, this->tpFile, CSTR("Key")));
 	this->btnFileKey->SetRect(4, 28, 75, 23, false);
 	this->btnFileKey->HandleButtonClick(OnFileKeyClicked, this);
-	NEW_CLASS(this->lblFileKey, UI::GUILabel(ui, this->tpFile, (const UTF8Char*)""));
+	NEW_CLASS(this->lblFileKey, UI::GUILabel(ui, this->tpFile, CSTR("")));
 	this->lblFileKey->SetRect(84, 28, 200, 23, false);
 	NEW_CLASS(this->btnFileConfirm, UI::GUIButton(ui, this->tpFile, CSTR("OK")));
 	this->btnFileConfirm->SetRect(4, 52, 75, 23, false);
 	this->btnFileConfirm->HandleButtonClick(OnFileConfirmClicked, this);
 
 	this->tpGenerate = this->tcMain->AddTabPage(CSTR("Generate"));
-	NEW_CLASS(this->lblGenCountry, UI::GUILabel(ui, this->tpGenerate, (const UTF8Char*)"Country"));
+	NEW_CLASS(this->lblGenCountry, UI::GUILabel(ui, this->tpGenerate, CSTR("Country")));
 	this->lblGenCountry->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtGenCountry, UI::GUITextBox(ui, this->tpGenerate, CSTR("HK")));
 	this->txtGenCountry->SetRect(104, 4, 60, 23, false);
-	NEW_CLASS(this->lblGenCompany, UI::GUILabel(ui, this->tpGenerate, (const UTF8Char*)"Company"));
+	NEW_CLASS(this->lblGenCompany, UI::GUILabel(ui, this->tpGenerate, CSTR("Company")));
 	this->lblGenCompany->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtGenCompany, UI::GUITextBox(ui, this->tpGenerate, CSTR("SSWR")));
 	this->txtGenCompany->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblGenCommonName, UI::GUILabel(ui, this->tpGenerate, (const UTF8Char*)"CommonName"));
+	NEW_CLASS(this->lblGenCommonName, UI::GUILabel(ui, this->tpGenerate, CSTR("CommonName")));
 	this->lblGenCommonName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGenCommonName, UI::GUITextBox(ui, this->tpGenerate, CSTR("localhost")));
 	this->txtGenCommonName->SetRect(104, 52, 200, 23, false);

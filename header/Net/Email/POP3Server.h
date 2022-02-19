@@ -49,7 +49,7 @@ namespace Net
 			//static OSInt WriteMessage(Net::TCPClient *cli, Int32 statusCode, const Char *msg);
 			void ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus, const UTF8Char *cmd, UOSInt cmdLen);
 		public:
-			POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl);
+			POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl);
 			~POP3Server();
 
 			Bool IsError();

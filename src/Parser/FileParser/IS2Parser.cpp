@@ -23,7 +23,7 @@ void Parser::FileParser::IS2Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.is2", (const UTF8Char*)"IS2 Infra-red Image File");
+		selector->AddFilter(CSTR("*.is2"), CSTR("IS2 Infra-red Image File"));
 	}
 }
 

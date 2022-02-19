@@ -30,7 +30,7 @@ void Parser::FileParser::MD5Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FileCheck)
 	{
-		selector->AddFilter((const UTF8Char*)"*.md5", (const UTF8Char*)"MD5 File");
+		selector->AddFilter(CSTR("*.md5"), CSTR("MD5 File"));
 	}
 }
 

@@ -21,7 +21,7 @@ void Parser::FileParser::ClassParser::PrepareSelector(IO::IFileSelector *selecto
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::JavaClass)
 	{
-		selector->AddFilter((const UTF8Char*)"*.class", (const UTF8Char*)"Class File");
+		selector->AddFilter(CSTR("*.class"), CSTR("Class File"));
 	}
 }
 

@@ -12,8 +12,8 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnBrowseClicked(void *userObj)
 	UI::FileDialog *dlg;
 	me->txtFileName->GetText(&sb);
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AccessConn", false));
-	dlg->AddFilter((const UTF8Char*)"*.mdb", (const UTF8Char*)"MDB File");
-	dlg->AddFilter((const UTF8Char*)"*.accdb", (const UTF8Char*)"Access DB File");
+	dlg->AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
+	dlg->AddFilter(CSTR("*.accdb"), CSTR("Access DB File"));
 	dlg->SetFileName(sb.ToString());
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 	me->txtFileName->GetText(&sbFileName);
 	if (sbFileName.GetCharCnt() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char*)"Access Conn", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("Access Conn"), me);
 		return;
 	}
 	NEW_CLASS(me->conn, DB::MDBFileConn(sbFileName.ToCString(), me->core->GetLog(), 0, 0, 0));
@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRAccessConnForm::OnOKClicked(void *userObj)
 		sbFileName.ClearStr();
 		sbFileName.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		me->conn->GetErrorMsg(&sbFileName);
-		UI::MessageDialog::ShowDialog(sbFileName.ToString(), (const UTF8Char*)"Access Conn", me);
+		UI::MessageDialog::ShowDialog(sbFileName.ToCString(), CSTR("Access Conn"), me);
 		DEL_CLASS(me->conn);
 	}
 }
@@ -63,7 +63,7 @@ SSWR::AVIRead::AVIRAccessConnForm::AVIRAccessConnForm(UI::GUIClientControl *pare
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);

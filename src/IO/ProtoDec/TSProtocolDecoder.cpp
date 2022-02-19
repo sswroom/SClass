@@ -38,7 +38,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *u
 		{
 			if (j != i)
 			{
-				hdlr(userObj, fileOfst + j, i - j, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + j, i - j, CSTR("Unknown Protocol"));
 			}
 			j = i;
 			cmdSize = ReadUInt16(&buff[i + 2]);
@@ -166,7 +166,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *u
 				sb.AppendC(UTF8STRC("Unknown Protocol"));
 				break;
 			}
-			hdlr(userObj, fileOfst + j, cmdSize, sb.ToString());
+			hdlr(userObj, fileOfst + j, cmdSize, sb.ToCString());
 			j += cmdSize;
 			i = j;
 		}
@@ -178,7 +178,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *u
 
 			if (j != i)
 			{
-				hdlr(userObj, fileOfst + j, i - j, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + j, i - j, CSTR("Unknown Protocol"));
 			}
 			j = i;
 			b64.Decrypt(&buff[i + 2], 8, this->protoBuff, 0);
@@ -317,7 +317,7 @@ UOSInt IO::ProtoDec::TSProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void *u
 				sb.AppendC(UTF8STRC("Unknown Protocol"));
 				break;
 			}
-			hdlr(userObj, fileOfst + j, tmpVal2 + 12, sb.ToString());
+			hdlr(userObj, fileOfst + j, tmpVal2 + 12, sb.ToCString());
 			j += tmpVal2 + 12;
 			i = j;
 		}

@@ -461,12 +461,12 @@ void Net::Email::POP3Server::ParseCmd(Net::TCPClient *cli, MailStatus *cliStatus
 	}
 }
 
-Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, const UTF8Char *greeting, Net::Email::MailController *mailCtrl)
+Net::Email::POP3Server::POP3Server(Net::SocketFactory *sockf, Net::SSLEngine *ssl, UInt16 port, IO::LogTool *log, Text::CString greeting, Net::Email::MailController *mailCtrl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->log = log;
-	this->greeting = Text::String::NewNotNull(greeting);
+	this->greeting = Text::String::New(greeting);
 	this->mailCtrl = mailCtrl;
 	NEW_CLASS(this->cliMgr, Net::TCPClientMgr(60, ClientEvent, ClientData, this, 4, ClientTimeout));
 	NEW_CLASS(this->svr, Net::TCPServer(this->sockf, port, log, ConnHdlr, this, CSTR_NULL));

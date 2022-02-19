@@ -8,9 +8,9 @@
 
 #define GDK_VERSION_AFTER(major, minor) (GDK_MAJOR_VERSION > major || (GDK_MAJOR_VERSION == major && GDK_MINOR_VERSION >= minor))
 
-UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *label) : UI::GUIControl(ui, parent)
+UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
 {
-	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label);
+	this->hwnd = (ControlHandle*)gtk_label_new((const Char*)label.v);
 	parent->AddChild(this);
 #if GDK_VERSION_AFTER(3, 16)
 	gtk_label_set_xalign(GTK_LABEL((GtkWidget*)this->hwnd), 0.0);

@@ -24,7 +24,7 @@ void Parser::FileParser::SFVParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FileCheck)
 	{
-		selector->AddFilter((const UTF8Char*)"*.sfv", (const UTF8Char*)"SFV File");
+		selector->AddFilter(CSTR("*.sfv"), CSTR("SFV File"));
 	}
 }
 

@@ -27,7 +27,7 @@ void Parser::FileParser::SHPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.shp", (const UTF8Char*)"ESRI Shapefile");
+		selector->AddFilter(CSTR("*.shp"), CSTR("ESRI Shapefile"));
 	}
 }
 

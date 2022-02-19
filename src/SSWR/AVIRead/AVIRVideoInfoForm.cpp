@@ -365,7 +365,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(0, 0, 100, 55, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("File Name")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 800, 23, false);
@@ -373,7 +373,7 @@ SSWR::AVIRead::AVIRVideoInfoForm::AVIRVideoInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnDecode, UI::GUIButton(ui, this->pnlFile, CSTR("Test Decode")));
 	this->btnDecode->SetRect(104, 28, 150, 23, false);
 	this->btnDecode->HandleButtonClick(OnDecodeClicked, this);
-	NEW_CLASS(this->lblDecode, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)""));
+	NEW_CLASS(this->lblDecode, UI::GUILabel(ui, this->pnlFile, CSTR("")));
 	this->lblDecode->SetRect(254, 28, 100, 23, false);
 	NEW_CLASS(this->lbStream, UI::GUIListBox(ui, this, false));
 	this->lbStream->SetRect(0, 0, 150, 23, false);

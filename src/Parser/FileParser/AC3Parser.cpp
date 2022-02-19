@@ -22,7 +22,7 @@ void Parser::FileParser::AC3Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ac3", (const UTF8Char*)"Dolby AC-3 File");
+		selector->AddFilter(CSTR("*.ac3"), CSTR("Dolby AC-3 File"));
 	}
 }
 

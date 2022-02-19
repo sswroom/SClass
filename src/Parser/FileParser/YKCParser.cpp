@@ -23,7 +23,7 @@ void Parser::FileParser::YKCParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ykc", (const UTF8Char*)"YKC Package File");
+		selector->AddFilter(CSTR("*.ykc"), CSTR("YKC Package File"));
 	}
 }
 

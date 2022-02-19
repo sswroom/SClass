@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRASN1OIDForm::OnConvertClicked(void *userObj)
 	}
 	if (oidCol == 10)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"OID Column not found", (const UTF8Char*)"ASN.1 OID", me);
+		UI::MessageDialog::ShowDialog(CSTR("OID Column not found"), CSTR("ASN.1 OID"), me);
 		return;
 	}
 	if (oidCol == 0)

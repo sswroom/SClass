@@ -9,13 +9,13 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnOKClick(void *userObj)
 	SSWR::AVIRead::AVIRCaptureDevForm *me = (SSWR::AVIRead::AVIRCaptureDevForm*)userObj;
 	if (me->currCapture == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a device", (const UTF8Char*)"Select Capture Device", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a device"), CSTR("Select Capture Device"), me);
 		return;
 	}
 	CaptureFormat *fmt = (CaptureFormat*)me->cboFormat->GetItem((UOSInt)me->cboFormat->GetSelectedIndex());
 	if (fmt == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a format", (const UTF8Char*)"Select Capture Device", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a format"), CSTR("Select Capture Device"), me);
 		return;
 	}
 
@@ -177,12 +177,12 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this, (const UTF8Char*)"Capture Device"));
+	NEW_CLASS(this->lblDevice, UI::GUILabel(ui, this, CSTR("Capture Device")));
 	this->lblDevice->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->lbDevice, UI::GUIListBox(ui, this, false));
 	this->lbDevice->SetRect(112, 8, 256, 88, false);
 	this->lbDevice->HandleSelectionChange(OnDevChg, this);
-	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this, (const UTF8Char*)"Capture Format"));
+	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this, CSTR("Capture Format")));
 	this->lblFormat->SetRect(8, 96, 100, 23, false);
 	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, this, false));
 	this->cboFormat->SetRect(112, 96, 264, 23, false);

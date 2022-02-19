@@ -23,8 +23,8 @@ void Parser::FileParser::SM2MPXParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.sm2", (const UTF8Char*)"SM2 Package File");
-		selector->AddFilter((const UTF8Char*)"*.mpx", (const UTF8Char*)"MPX Package File");
+		selector->AddFilter(CSTR("*.sm2"), CSTR("SM2 Package File"));
+		selector->AddFilter(CSTR("*.mpx"), CSTR("MPX Package File"));
 	}
 }
 

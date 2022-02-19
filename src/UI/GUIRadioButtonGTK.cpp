@@ -31,7 +31,7 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	}
 }
 
-UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected) : UI::GUIControl(ui, parent)
 {
 	this->selected = selected;
 	NEW_CLASS(this->selectedChangeHdlrs, Data::ArrayList<SelectedChangeHandler>());
@@ -55,11 +55,11 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 	
 	if (radioBtn)
 	{
-		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label_from_widget((GtkRadioButton*)radioBtn->GetHandle(), (const Char*)initText.v);
 	}
 	else
 	{
-		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText);
+		this->hwnd = (ControlHandle*)gtk_radio_button_new_with_label(0, (const Char*)initText.v);
 	}
 	parent->AddChild(this);
 	this->Show();

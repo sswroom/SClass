@@ -27,8 +27,8 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 	this->lvMyStack->HandleDblClk(OnMyStackDblClk, this);
 	this->lvMyStack->SetFullRowSelect(true);
 	this->lvMyStack->SetShowGrid(true);
-	this->lvMyStack->AddColumn((const UTF8Char*)"Address", 100);
-	this->lvMyStack->AddColumn((const UTF8Char*)"Code", 900);
+	this->lvMyStack->AddColumn(CSTR("Address"), 100);
+	this->lvMyStack->AddColumn(CSTR("Code"), 900);
 
 #if defined(CPU_X86_32)
 	if (proc->GetContextType() == Manage::ThreadContext::CT_X86_32)
@@ -88,7 +88,7 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 			if (Text::StrSplitP(sarr, 2, sline[0], ' ') == 2)
 			{
 				i = this->lvMyStack->AddItem(sarr[0].ToCString(), 0);
-				this->lvMyStack->SetSubItem(i, 1, sarr[1].v);
+				this->lvMyStack->SetSubItem(i, 1, sarr[1].ToCString());
 			}
 			if (!hasNext)
 				break;

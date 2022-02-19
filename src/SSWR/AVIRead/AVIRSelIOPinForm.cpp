@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboGPIO->GetItem((UOSInt)i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a GPIO", (const UTF8Char*)"Select GPIO", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please select a GPIO"), CSTR("Select GPIO"), me);
 			return;
 		}
 		IO::GPIOPin *pin;
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		if (pin->IsError())
 		{
 			DEL_CLASS(pin);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the pin", (const UTF8Char*)"Select GPIO", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening the pin"), CSTR("Select GPIO"), me);
 			return;
 		}
 		me->ioPin = pin;
@@ -35,14 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRSelIOPinForm::OnOKClick(void *userObj)
 		UInt16 pinNum = (UInt16)(UOSInt)me->cboVirtualPin->GetItem(i);
 		if (i == INVALID_INDEX)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a VirtualPin", (const UTF8Char*)"Select VirtualPin", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please select a VirtualPin"), CSTR("Select VirtualPin"), me);
 			return;
 		}
 		IO::IOPin *pin;
 		pin = me->vioPinMgr->CreatePin(pinNum);
 		if (pin == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the pin", (const UTF8Char*)"Select VirtualPin", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening the pin"), CSTR("Select VirtualPin"), me);
 			return;
 		}
 		me->ioPin = pin;
@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlPinType, UI::GUIPanel(ui, this));
 	this->pnlPinType->SetRect(0, 0, 100, 31, false);
 	this->pnlPinType->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPinType, UI::GUILabel(ui, this->pnlPinType, (const UTF8Char*)"Pin Type"));
+	NEW_CLASS(this->lblPinType, UI::GUILabel(ui, this->pnlPinType, CSTR("Pin Type")));
 	this->lblPinType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboPinType, UI::GUIComboBox(ui, this->pnlPinType, false));
 	this->cboPinType->SetRect(104, 4, 200, 23, false);
@@ -117,13 +117,13 @@ SSWR::AVIRead::AVIRSelIOPinForm::AVIRSelIOPinForm(UI::GUIClientControl *parent, 
 	this->tcConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpGPIO = this->tcConfig->AddTabPage(CSTR("GPIO"));
-	NEW_CLASS(this->lblGPIO, UI::GUILabel(ui, this->tpGPIO, (const UTF8Char*)"GPIO Pin"));
+	NEW_CLASS(this->lblGPIO, UI::GUILabel(ui, this->tpGPIO, CSTR("GPIO Pin")));
 	this->lblGPIO->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboGPIO, UI::GUIComboBox(ui, this->tpGPIO, false));
 	this->cboGPIO->SetRect(108, 8, 100, 23, false);
 
 	this->tpVirtualPin = this->tcConfig->AddTabPage(CSTR("VirtualPin"));
-	NEW_CLASS(this->lblVirtualPin, UI::GUILabel(ui, this->tpVirtualPin, (const UTF8Char*)"VirtualPin"));
+	NEW_CLASS(this->lblVirtualPin, UI::GUILabel(ui, this->tpVirtualPin, CSTR("VirtualPin")));
 	this->lblVirtualPin->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboVirtualPin, UI::GUIComboBox(ui, this->tpVirtualPin, false));
 	this->cboVirtualPin->SetRect(108, 8, 100, 23, false);

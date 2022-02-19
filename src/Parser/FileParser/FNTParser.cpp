@@ -25,7 +25,7 @@ void Parser::FileParser::FNTParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::FontRenderer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.fnt", (const UTF8Char*)"Font File");
+		selector->AddFilter(CSTR("*.fnt"), CSTR("Font File"));
 	}
 }
 

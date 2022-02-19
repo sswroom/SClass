@@ -486,7 +486,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
@@ -879,13 +879,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing log", (const UTF8Char*)"MTK Tracker", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
 						DEL_CLASS(trk);
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK Tracker not found", (const UTF8Char*)"MTK Tracker", this);
+					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 				DEL_CLASS(mtk);
 				DEL_CLASS(port);
@@ -1025,7 +1025,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						NEW_CLASS(fd, IO::StmData::FileData(fname, false));
 						if (fd->GetDataSize() == 0)
 						{
-							UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
+							UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 						}
 						else
 						{
@@ -1039,7 +1039,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{
@@ -1135,7 +1135,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRDNSProxyForm(0, this->ui, this->core));
 			if (frm->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting DNS proxy. Port is in use?", (const UTF8Char*)"Error", this);
+				UI::MessageDialog::ShowDialog(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
 				DEL_CLASS(frm);
 			}
 			else
@@ -1543,12 +1543,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in accessing accelerometer", (const UTF8Char*)"Accelerometer", this);
+					UI::MessageDialog::ShowDialog(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
 				}
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"No accelerometers found", (const UTF8Char*)"Accelerometer", this);
+				UI::MessageDialog::ShowDialog(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
 			}
 		}
 		break;
@@ -2017,7 +2017,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Olympus Camera not found", (const UTF8Char*)"Olympus Camera", this);
+				UI::MessageDialog::ShowDialog(CSTR("Olympus Camera not found"), CSTR("Olympus Camera"), this);
 			}
 		}
 		break;
@@ -2048,7 +2048,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Camera not found", (const UTF8Char*)"Camera Control", this);
+				UI::MessageDialog::ShowDialog(CSTR("Camera not found"), CSTR("Camera Control"), this);
 			}
 		}
 		break;
@@ -2063,7 +2063,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"GoPro Camera not found", (const UTF8Char*)"GoPro Camera", this);
+				UI::MessageDialog::ShowDialog(CSTR("GoPro Camera not found"), CSTR("GoPro Camera"), this);
 			}
 		}
 		break;
@@ -2248,7 +2248,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			NEW_CLASS(dlg, SSWR::AVIRead::AVIRMSSQLConnForm(0, this->ui, this->core));
 			if (dlg->IsDriverNotFound())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"No known driver found", (const UTF8Char*)"MSSQL Conn", this);
+				UI::MessageDialog::ShowDialog(CSTR("No known driver found"), CSTR("MSSQL Conn"), this);
 			}
 			else if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{

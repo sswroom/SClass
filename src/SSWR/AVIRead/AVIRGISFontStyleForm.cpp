@@ -105,7 +105,7 @@ SSWR::AVIRead::AVIRGISFontStyleForm::AVIRGISFontStyleForm(UI::GUIClientControl *
 	this->btnCancel->HandleButtonClick(CancelClicked, this);
 	this->SetCancelButton(this->btnCancel);
 
-	NEW_CLASS(this->grpStyle, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Style"));
+	NEW_CLASS(this->grpStyle, UI::GUIGroupBox(ui, this, CSTR("Style")));
 	this->grpStyle->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlStyle, UI::GUIPanel(ui, this->grpStyle));
 	this->pnlStyle->SetRect(0, 0, 100, 32, false);

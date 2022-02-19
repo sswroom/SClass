@@ -24,6 +24,7 @@ typedef enum
 void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
 	me->lbTable->GetSelectedItemText(sbuff);
 
@@ -60,11 +61,11 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 			{
 				col = tabDef->GetCol(i);
 				k = me->lvTable->AddItem(col->GetColName(), 0);
-				col->ToColTypeStr(sbuff);
-				me->lvTable->SetSubItem(k, 1, sbuff);
-				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				me->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				sptr = col->ToColTypeStr(sbuff);
+				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				me->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
+				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
 					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -84,11 +85,11 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 			{
 				r->GetColDef(i, col);
 				k = me->lvTable->AddItem(col->GetColName(), 0);
-				col->ToColTypeStr(sbuff);
-				me->lvTable->SetSubItem(k, 1, sbuff);
-				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?(const UTF8Char*)"NOT NULL":(const UTF8Char*)"NULL");
-				me->lvTable->SetSubItem(k, 3, col->IsPK()?(const UTF8Char*)"PK":(const UTF8Char*)"");
-				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?(const UTF8Char*)"AUTO_INCREMENT":(const UTF8Char*)"");
+				sptr = col->ToColTypeStr(sbuff);
+				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+				me->lvTable->SetSubItem(k, 2, col->IsNotNull()?CSTR("NOT NULL"):CSTR("NULL"));
+				me->lvTable->SetSubItem(k, 3, col->IsPK()?CSTR("PK"):CSTR(""));
+				me->lvTable->SetSubItem(k, 4, col->IsAutoInc()?CSTR("AUTO_INCREMENT"):CSTR(""));
 				if (col->GetDefVal())
 					me->lvTable->SetSubItem(k, 5, col->GetDefVal());
 				if (col->GetAttr())
@@ -155,7 +156,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 		{
 			sb->ClearStr();
 			r->GetStr(i, sb);
-			this->lvResult->SetSubItem(k, i, sb->ToString());
+			this->lvResult->SetSubItem(k, i, sb->ToCString());
 
 			if (sb->GetLength() > colSize[i])
 				colSize[i] = sb->GetLength();
@@ -250,13 +251,13 @@ SSWR::AVIRead::AVIRDBForm::AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore 
 	NEW_CLASS(this->lvTable, UI::GUIListView(ui, this->tpTable, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvTable->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvTable->SetFullRowSelect(true);
-	this->lvTable->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvTable->AddColumn((const UTF8Char*)"Type", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Null?", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"PK?", 30);
-	this->lvTable->AddColumn((const UTF8Char*)"Auto_Inc", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Default Val", 100);
-	this->lvTable->AddColumn((const UTF8Char*)"Attribute", 100);
+	this->lvTable->AddColumn(CSTR("Name"), 200);
+	this->lvTable->AddColumn(CSTR("Type"), 100);
+	this->lvTable->AddColumn(CSTR("Null?"), 100);
+	this->lvTable->AddColumn(CSTR("PK?"), 30);
+	this->lvTable->AddColumn(CSTR("Auto_Inc"), 100);
+	this->lvTable->AddColumn(CSTR("Default Val"), 100);
+	this->lvTable->AddColumn(CSTR("Attribute"), 100);
 
 	UI::GUIMenu *mnu;
 	NEW_CLASS(this->mnuMain, UI::GUIMainMenu());

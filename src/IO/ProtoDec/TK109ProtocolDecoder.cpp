@@ -32,7 +32,7 @@ UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void
 		{
 			if (j != i)
 			{
-				hdlr(userObj, fileOfst + j, i - j, (const UTF8Char*)"Unknown Protocol");
+				hdlr(userObj, fileOfst + j, i - j, CSTR("Unknown Protocol"));
 			}
 			j = i;
 			protoSize = ReadMUInt16(&buff[i + 3]);
@@ -90,7 +90,7 @@ UOSInt IO::ProtoDec::TK109ProtocolDecoder::ParseProtocol(ProtocolInfo hdlr, void
 				sb.AppendC(UTF8STRC("Unknown Protocol"));
 				break;
 			}
-			hdlr(userObj, fileOfst + j, protoSize + 5, sb.ToString());
+			hdlr(userObj, fileOfst + j, protoSize + 5, sb.ToCString());
 			j += protoSize + 5;
 			i = j;
 		}

@@ -28,10 +28,10 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, UI::GU
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UI::GUILabel *lbl;
 	Data::DateTime t;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
-	UTF8Char *sptr;
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
 	if (CPUBrand == 1)
 	{
@@ -46,18 +46,18 @@ SSWR::AVIRead::AVIRAboutForm::AVIRAboutForm(UI::GUIClientControl *parent, UI::GU
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" (AVX Optimized)"));
 	}
 #else
-	Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
+	sptr = Text::StrConcatC(sbuff, UTF8STRC("AVIRead v4 by sswroom"));
 #endif
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 8, 400, 23, false);
 
-	IO::Path::GetProcessFileName(Text::StrConcatC(sbuff, UTF8STRC("Path: ")));
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
+	sptr = IO::Path::GetProcessFileName(Text::StrConcatC(sbuff, UTF8STRC("Path: ")));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 32, 400, 23, false);
 
 	IO::BuildTime::GetBuildTime(&t);
-	t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
-	NEW_CLASS(lbl, UI::GUILabel(ui, this, sbuff));
+	sptr = t.ToString(Text::StrConcatC(sbuff, UTF8STRC("Build date: ")), "yyyy-MM-dd HH:mm:ss");
+	NEW_CLASS(lbl, UI::GUILabel(ui, this, CSTRP(sbuff, sptr)));
 	lbl->SetRect(8, 56, 400, 23, false);
 
 	NEW_CLASS(btn, UI::GUIButton(ui, this, CSTR("OK")));

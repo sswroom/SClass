@@ -56,19 +56,19 @@ SSWR::AVIRead::AVIRPowerForm::AVIRPowerForm(UI::GUIClientControl *parent, UI::GU
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblBattery, UI::GUILabel(ui, this, (const UTF8Char*)"Battery"));
+	NEW_CLASS(this->lblBattery, UI::GUILabel(ui, this, CSTR("Battery")));
 	this->lblBattery->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtBattery, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtBattery->SetRect(104, 4, 200, 23, false);
 	this->txtBattery->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeLeft, UI::GUILabel(ui, this, (const UTF8Char*)"Time Left"));
+	NEW_CLASS(this->lblTimeLeft, UI::GUILabel(ui, this, CSTR("Time Left")));
 	this->lblTimeLeft->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTimeLeft, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtTimeLeft->SetRect(104, 28, 200, 23, false);
 	this->txtTimeLeft->SetReadOnly(true);
-	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this, (const UTF8Char*)"No Sleep", false));
+	NEW_CLASS(this->chkNoSleep, UI::GUICheckBox(ui, this, CSTR("No Sleep"), false));
 	this->chkNoSleep->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->chkNoDispOff, UI::GUICheckBox(ui, this, (const UTF8Char*)"No Disp Off", false));
+	NEW_CLASS(this->chkNoDispOff, UI::GUICheckBox(ui, this, CSTR("No Disp Off"), false));
 	this->chkNoDispOff->SetRect(104, 76, 200, 23, false);
 	NEW_CLASS(this->btnSleep, UI::GUIButton(ui, this, CSTR("Sleep")));
 	this->btnSleep->SetRect(104, 100, 75, 23, false);

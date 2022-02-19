@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCDSNForm::OnOKClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetErrorMsg(&sb);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"ODBC DSN Connection", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC DSN Connection"), me);
 		DEL_CLASS(conn);
 		return;
 	}
@@ -45,15 +45,15 @@ SSWR::AVIRead::AVIRODBCDSNForm::AVIRODBCDSNForm(UI::GUIClientControl *parent, UI
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDSN, UI::GUILabel(ui, this, (const UTF8Char*)"DSN"));
+	NEW_CLASS(this->lblDSN, UI::GUILabel(ui, this, CSTR("DSN")));
 	this->lblDSN->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDSN, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDSN->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, CSTR("User Name")));
 	this->lblUID->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUID->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPWD->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPWD->SetRect(104, 52, 200, 23, false);

@@ -15,15 +15,15 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 	me->txtSrc->GetText(&sb);
 	if (srcEnc == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select source encryption", (const UTF8Char*)"Encrypt", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select source encryption"), CSTR("Encrypt"), me);
 	}
 	else if (destEnc == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select dest encryption", (const UTF8Char*)"Encrypt", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select dest encryption"), CSTR("Encrypt"), me);
 	}
 	else if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter source text", (const UTF8Char*)"Encrypt", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter source text"), CSTR("Encrypt"), me);
 	}
 	else
 	{
@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 			decBuff = MemAlloc(UInt8, buffSize);
 			if (srcEnc->DecodeBin(sb.ToString(), sb.GetLength(), decBuff) != buffSize)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in decrypting the text", (const UTF8Char*)"Encrypt", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in decrypting the text"), CSTR("Encrypt"), me);
 			}
 			else
 			{
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIREncryptForm::OnConvertClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported decryption", (const UTF8Char*)"Encrypt", me);
+			UI::MessageDialog::ShowDialog(CSTR("Unsupported decryption"), CSTR("Encrypt"), me);
 		}
 	}
 }
@@ -70,14 +70,14 @@ SSWR::AVIRead::AVIREncryptForm::AVIREncryptForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlDestCtrl, UI::GUIPanel(ui, this->pnlDest));
 	this->pnlDestCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlDestCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrcCtrl, (const UTF8Char*)"Source Encryption"));
+	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrcCtrl, CSTR("Source Encryption")));
 	this->lblSrc->SetRect(0, 0, 100, 23, false);
 	this->lblSrc->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->cboSrc, UI::GUIComboBox(ui, this->pnlSrcCtrl, false));
 	this->cboSrc->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->txtSrc, UI::GUITextBox(ui, this->pnlSrc, CSTR(""), true));
 	this->txtSrc->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, (const UTF8Char*)"Dest Encryption"));
+	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDestCtrl, CSTR("Dest Encryption")));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
 	this->lblDest->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->btnConvert, UI::GUIButton(ui, this->pnlDestCtrl, CSTR("&Convert")));

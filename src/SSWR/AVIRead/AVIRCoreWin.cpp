@@ -261,7 +261,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 	this->exporters->GetSupportedExporters(exp, pobj);
 	if (exp->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No supported exporter found", (const UTF8Char*)"Save", ownerForm);
+		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
@@ -285,7 +285,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			k = 0;
 			while (fileExp->GetOutputName(k, sbuff1, sbuff2))
 			{
-				sfd->AddFilter(sbuff2, sbuff1);
+				sfd->AddFilter(Text::CString::FromPtr(sbuff2), Text::CString::FromPtr(sbuff1));
 				exp2->Add(fileExp);
 				k++;
 			}
@@ -312,7 +312,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				param = fileExp->CreateParam(pobj);
 				if (param == 0)
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing parameters", (const UTF8Char*)"Save Data", ownerForm);
+					UI::MessageDialog::ShowDialog(CSTR("Error in initializing parameters"), CSTR("Save Data"), ownerForm);
 				}
 				else
 				{
@@ -323,7 +323,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 						{
 							if (!fileExp->ExportFile(0, sfd->GetFileName()->v, pobj, param))
 							{
-								UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
 						}
 						else
@@ -331,7 +331,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							if (!fileExp->ExportFile(fs, sfd->GetFileName()->v, pobj, param))
 							{
-								UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
 							DEL_CLASS(fs);
 						}
@@ -346,7 +346,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				{
 					if (!fileExp->ExportFile(0, sfd->GetFileName()->v, pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 				else
@@ -354,7 +354,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (!fileExp->ExportFile(fs, sfd->GetFileName()->v, pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 					DEL_CLASS(fs);
 				}

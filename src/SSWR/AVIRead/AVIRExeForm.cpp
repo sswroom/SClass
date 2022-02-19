@@ -316,8 +316,8 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lvProp->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvProp->SetShowGrid(true);
 	this->lvProp->SetFullRowSelect(true);
-	this->lvProp->AddColumn((const UTF8Char*)"Name", 250);
-	this->lvProp->AddColumn((const UTF8Char*)"Value", 250);
+	this->lvProp->AddColumn(CSTR("Name"), 250);
+	this->lvProp->AddColumn(CSTR("Value"), 250);
 
 	UOSInt i;
 	UOSInt j;
@@ -344,7 +344,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lvImport->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvImport->SetShowGrid(true);
 	this->lvImport->SetFullRowSelect(true);
-	this->lvImport->AddColumn((const UTF8Char*)"Func Name", 200);
+	this->lvImport->AddColumn(CSTR("Func Name"), 200);
 	i = 0;
 	j = this->exeFile->GetImportCount();
 	while (i < j)

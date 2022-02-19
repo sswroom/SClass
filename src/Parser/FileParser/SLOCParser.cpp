@@ -205,7 +205,7 @@ void Parser::FileParser::SLOCParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"SP Location File");
+		selector->AddFilter(CSTR("*.dat"), CSTR("SP Location File"));
 	}
 }
 

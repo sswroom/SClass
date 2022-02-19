@@ -95,7 +95,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnResultSaveClicked(void *use
 
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LineCounterSave", true));
-	dlg->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Result file");
+	dlg->AddFilter(CSTR("*.txt"), CSTR("Result file"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		Text::StringBuilderUTF8 sb;
@@ -236,11 +236,11 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlConfig, UI::GUIPanel(ui, this));
 	this->pnlConfig->SetRect(0, 0, 100, 220, false);
 	this->pnlConfig->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPath, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Path"));
+	NEW_CLASS(this->lblPath, UI::GUILabel(ui, this->pnlConfig, CSTR("Path")));
 	this->lblPath->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPath, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtPath->SetRect(104, 4, 700, 23, false);
-	NEW_CLASS(this->lblExtensions, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Extensions"));
+	NEW_CLASS(this->lblExtensions, UI::GUILabel(ui, this->pnlConfig, CSTR("Extensions")));
 	this->lblExtensions->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtExtensions, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtExtensions->SetRect(104, 28, 100, 23, false);
@@ -258,9 +258,9 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnCalc, UI::GUIButton(ui, this->pnlConfig, CSTR("Calc")));
 	this->btnCalc->SetRect(104, 172, 75, 23, false);
 	this->btnCalc->HandleButtonClick(OnCalcClicked, this);
-	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Result:"));
+	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this->pnlConfig, CSTR("Result:")));
 	this->lblResult->SetRect(4, 196, 100, 23, false);
-	NEW_CLASS(this->lblTotalLine, UI::GUILabel(ui, this->pnlConfig, (const UTF8Char*)"Total Lines"));
+	NEW_CLASS(this->lblTotalLine, UI::GUILabel(ui, this->pnlConfig, CSTR("Total Lines")));
 	this->lblTotalLine->SetRect(104, 196, 100, 23, false);
 	NEW_CLASS(this->txtTotalLine, UI::GUITextBox(ui, this->pnlConfig, CSTR("")));
 	this->txtTotalLine->SetReadOnly(true);
@@ -273,8 +273,8 @@ SSWR::AVIRead::AVIRLineCounterForm::AVIRLineCounterForm(UI::GUIClientControl *pa
 	this->lvResult->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResult->SetShowGrid(true);
 	this->lvResult->SetFullRowSelect(true);
-	this->lvResult->AddColumn((const UTF8Char*)"Count", 60);
-	this->lvResult->AddColumn((const UTF8Char*)"File Path", 812);
+	this->lvResult->AddColumn(CSTR("Count"), 60);
+	this->lvResult->AddColumn(CSTR("File Path"), 812);
 }
 
 SSWR::AVIRead::AVIRLineCounterForm::~AVIRLineCounterForm()

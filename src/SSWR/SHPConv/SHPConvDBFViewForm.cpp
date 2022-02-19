@@ -13,6 +13,7 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 	this->lvDBF->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	WChar wbuff[256];
 	UOSInt i;
 	UOSInt j;
@@ -23,13 +24,13 @@ SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *pare
 	Data::ArrayList<UInt32> dbCols2;
 
 	eng->ParseLabelStr(lbl, &dbCols, &dbCols2);
-	this->lvDBF->AddColumn((const UTF8Char*)"Output", 120);
+	this->lvDBF->AddColumn(CSTR("Output"), 120);
 	i = 0;
 	j = dbf->GetColCount();
 	while (i < j)
 	{
-		dbf->GetColumnName(i, sbuff);
-		this->lvDBF->AddColumn(sbuff, 60);
+		sptr = dbf->GetColumnName(i, sbuff);
+		this->lvDBF->AddColumn(CSTRP(sbuff, sptr), 60);
 		i += 1;
 	}
 

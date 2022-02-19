@@ -22,7 +22,7 @@ void Parser::FileParser::ASN1Parser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
-		selector->AddFilter((const UTF8Char*)"*.jks", (const UTF8Char*)"Java Keystore");
+		selector->AddFilter(CSTR("*.jks"), CSTR("Java Keystore"));
 	}
 }
 

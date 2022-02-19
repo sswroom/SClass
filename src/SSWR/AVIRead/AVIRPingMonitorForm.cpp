@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 	me->txtInfo->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Info port is not valid", (const UTF8Char*)"Ping Monitor", me);
+		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("Ping Monitor"), me);
 		return;
 	}
 	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(me->analyzer));
@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnInfoClicked(void *userObj)
 		DEL_CLASS(me->webHdlr);
 		me->listener = 0;
 		me->webHdlr = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to info port", (const UTF8Char*)"Ping Monitor", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in listening to info port"), CSTR("Ping Monitor"), me);
 		return;
 	}
 	me->txtInfo->SetReadOnly(true);
@@ -124,7 +124,7 @@ void __stdcall SSWR::AVIRead::AVIRPingMonitorForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to ping", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ping"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -231,7 +231,7 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->ipMut, Sync::Mutex());
 	NEW_CLASS(this->ipMap, Data::UInt32Map<IPInfo*>());
 	NEW_CLASS(this->whois, Net::WhoisHandler(this->sockf));
-	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ICMP, (const UTF8Char*)"PingMonitor"));
+	NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ICMP, CSTR("PingMonitor")));
 	this->ipListUpdated = false;
 	this->ipContUpdated = false;
 	this->currIP = 0;
@@ -240,14 +240,14 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Info Port"));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("Info Port")));
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->pnlControl, CSTR("8089")));
 	this->txtInfo->SetRect(104, 4, 80, 23, false);
 	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnInfo->SetRect(184, 4, 75, 23, false);
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
 	this->lblIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 28, 150, 23, false);
@@ -266,17 +266,17 @@ SSWR::AVIRead::AVIRPingMonitorForm::AVIRPingMonitorForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->tcIP, UI::GUITabControl(ui, this->tpIP));
 	this->tcIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpIPInfo = this->tcIP->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lblIPCount, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Count"));
+	NEW_CLASS(this->lblIPCount, UI::GUILabel(ui, this->tpIPInfo, CSTR("Count")));
 	this->lblIPCount->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIPCount, UI::GUITextBox(ui, this->tpIPInfo, CSTR("0")));
 	this->txtIPCount->SetRect(104, 4, 100, 23, false);
 	this->txtIPCount->SetReadOnly(true);
-	NEW_CLASS(this->lblIPName, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblIPName, UI::GUILabel(ui, this->tpIPInfo, CSTR("Name")));
 	this->lblIPName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtIPName, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPName->SetRect(104, 28, 200, 23, false);
 	this->txtIPName->SetReadOnly(true);
-	NEW_CLASS(this->lblIPCountry, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Country"));
+	NEW_CLASS(this->lblIPCountry, UI::GUILabel(ui, this->tpIPInfo, CSTR("Country")));
 	this->lblIPCountry->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtIPCountry, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPCountry->SetRect(104, 52, 100, 23, false);

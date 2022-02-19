@@ -22,12 +22,12 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
 		if (port <= 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port"), CSTR("Error"), me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::UDPServer(me->core->GetSocketFactory(), 0, port, CSTR_NULL, OnUDPPacket, me, me->log, CSTR("UDP: "), 4, me->chkReuseAddr->IsChecked()));
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRUDPCaptureForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("Error"), me);
 			return;
 		}
 		me->svr->AddMulticastIP(Net::SocketUtil::GetIPAddr(UTF8STRC("239.255.255.250")));
@@ -212,11 +212,11 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 32, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"UDP Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, CSTR("UDP Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtPort->SetRect(104, 4, 60, 23, false);
-	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Reuse Addr", true));
+	NEW_CLASS(this->chkReuseAddr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Reuse Addr"), true));
 	this->chkReuseAddr->SetRect(164, 4, 80, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnStart->SetRect(244, 4, 75, 23, false);
@@ -249,38 +249,38 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->lvPorts->SetFullRowSelect(true);
 	this->lvPorts->SetShowGrid(true);
 	this->lvPorts->HandleDblClk(OnPortsDblClk, this);
-	this->lvPorts->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvPorts->AddColumn((const UTF8Char*)"Port", 100);
+	this->lvPorts->AddColumn(CSTR("Name"), 150);
+	this->lvPorts->AddColumn(CSTR("Port"), 100);
 	i = this->lvPorts->AddItem(CSTR("DNS"), (void*)53);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"53");
+	this->lvPorts->SetSubItem(i, 1, CSTR("53"));
 	i = this->lvPorts->AddItem(CSTR("DHCP Server"), (void*)67);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"67");
+	this->lvPorts->SetSubItem(i, 1, CSTR("67"));
 	i = this->lvPorts->AddItem(CSTR("DHCP Client"), (void*)68);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"68");
+	this->lvPorts->SetSubItem(i, 1, CSTR("68"));
 	i = this->lvPorts->AddItem(CSTR("NTP"), (void*)123);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"123");
+	this->lvPorts->SetSubItem(i, 1, CSTR("123"));
 	i = this->lvPorts->AddItem(CSTR("NetBIOS Name Service"), (void*)137);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"137");
+	this->lvPorts->SetSubItem(i, 1, CSTR("137"));
 	i = this->lvPorts->AddItem(CSTR("NetBIOS Datagram Service"), (void*)138);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"138");
+	this->lvPorts->SetSubItem(i, 1, CSTR("138"));
 	i = this->lvPorts->AddItem(CSTR("NetBIOS Session Service"), (void*)139);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"139");
+	this->lvPorts->SetSubItem(i, 1, CSTR("139"));
 	i = this->lvPorts->AddItem(CSTR("ISAKMP"), (void*)500);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"500");
+	this->lvPorts->SetSubItem(i, 1, CSTR("500"));
 	i = this->lvPorts->AddItem(CSTR("DHCPv6 Server"), (void*)546);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"546");
+	this->lvPorts->SetSubItem(i, 1, CSTR("546"));
 	i = this->lvPorts->AddItem(CSTR("DHCPv6 Client"), (void*)547);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"547");
+	this->lvPorts->SetSubItem(i, 1, CSTR("547"));
 	i = this->lvPorts->AddItem(CSTR("SSDP"), (void*)1900);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"1900");
+	this->lvPorts->SetSubItem(i, 1, CSTR("1900"));
 	i = this->lvPorts->AddItem(CSTR("WS-Discovery"), (void*)3702);
-	this->lvPorts->SetSubItem(i, 1, (const UTF8Char*)"3702");
+	this->lvPorts->SetSubItem(i, 1, CSTR("3702"));
 
 	this->tpMulticast = this->tcMain->AddTabPage(CSTR("Multicast"));
 	NEW_CLASS(this->pnlMulticastCommon, UI::GUIPanel(ui, this->tpMulticast));
 	this->pnlMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCommon->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblMulticastCommon, UI::GUILabel(ui, this->pnlMulticastCommon, (const UTF8Char*)"Common IP"));
+	NEW_CLASS(this->lblMulticastCommon, UI::GUILabel(ui, this->pnlMulticastCommon, CSTR("Common IP")));
 	this->lblMulticastCommon->SetRect(0, 0, 100, 23, false);
 	this->lblMulticastCommon->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lbMulticastCommon, UI::GUIListBox(ui, this->pnlMulticastCommon, false));
@@ -292,7 +292,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlMulticastCtrl, UI::GUIPanel(ui, this->pnlMulticast));
 	this->pnlMulticastCtrl->SetRect(0, 0, 100, 23, false);
 	this->pnlMulticastCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblMulticastCurr, UI::GUILabel(ui, this->pnlMulticastCtrl, (const UTF8Char*)"Multicast IP"));
+	NEW_CLASS(this->lblMulticastCurr, UI::GUILabel(ui, this->pnlMulticastCtrl, CSTR("Multicast IP")));
 	this->lblMulticastCurr->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtMulticastCurr, UI::GUITextBox(ui, this->pnlMulticastCtrl, CSTR("")));
 	this->txtMulticastCurr->SetRect(100, 0, 100, 23, false);
@@ -301,7 +301,7 @@ SSWR::AVIRead::AVIRUDPCaptureForm::AVIRUDPCaptureForm(UI::GUIClientControl *pare
 	this->btnMulticastAdd->HandleButtonClick(OnMulticastClicked, this);
 	NEW_CLASS(this->lbMulticastCurr, UI::GUIListBox(ui, this->pnlMulticast, false));
 	this->lbMulticastCurr->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)(const UTF8Char*)"239.255.255.250");
+	this->lbMulticastCommon->AddItem(CSTR("239.255.255.250"), (void*)"239.255.255.250");
 
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 500, true));
 	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);

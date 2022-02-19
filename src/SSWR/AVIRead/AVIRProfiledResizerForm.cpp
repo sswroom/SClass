@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter profile name", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter profile name"), CSTR("Error"), me);
 		return;
 	}
 	if (me->radSize->IsSelected())
@@ -64,14 +64,14 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter max width", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter max width"), CSTR("Error"), me);
 			return;
 		}
 		me->txtHeight->GetText(sbuff2);
 		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter max height", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter max height"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -82,20 +82,20 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		targetSizeX = Text::StrToUInt32(sbuff2);
 		if (targetSizeX <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter H-DPI", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter H-DPI"), CSTR("Error"), me);
 			return;
 		}
 		me->txtVDPI->GetText(sbuff2);
 		targetSizeY = Text::StrToUInt32(sbuff2);
 		if (targetSizeY <= 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter V-DPI", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter V-DPI"), CSTR("Error"), me);
 			return;
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select Size Type", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select Size Type"), CSTR("Error"), me);
 		return;
 	}
 	
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 100)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter quality", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter quality"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -122,7 +122,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		outParam = Text::StrToUInt32(sbuff2);
 		if (outParam <= 0 || outParam > 300)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter size ratio", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter size ratio"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -133,13 +133,13 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select output type", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select output type"), CSTR("Error"), me);
 		return;
 	}
 	me->txtSuffix->GetText(sbuff2);
 	if (sbuff2[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter suffix", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter suffix"), CSTR("Error"), me);
 		return;
 	}
 	me->txtWatermark->GetText(&sb);
@@ -151,7 +151,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in adding profile", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in adding profile"), CSTR("Error"), me);
 		return;
 	}
 }
@@ -220,15 +220,15 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 	this->btnChgProfile->SetRect(60, 200, 180, 22, false);
 	this->btnChgProfile->HandleButtonClick(OnChgClicked, this);
 
-	NEW_CLASS(this->lblProfile, UI::GUILabel(ui, this->tpMain, (const UTF8Char*)"Profile: "));
+	NEW_CLASS(this->lblProfile, UI::GUILabel(ui, this->tpMain, CSTR("Profile: ")));
 	this->lblProfile->SetRect(60, 150, 180, 22, false);
 
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, (const UTF8Char*)"sswroom presents"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("sswroom presents")));
 	lbl->SetRect(105, 0, 150, 22, false);
 	
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, (const UTF8Char*)"Add resize profile first"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("Add resize profile first")));
 	lbl->SetRect(95, 30, 200, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, (const UTF8Char*)"And then Drag and Drop file to resize"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpMain, CSTR("And then Drag and Drop file to resize")));
 	lbl->SetRect(60, 50, 200, 19, false);
 
 	
@@ -244,52 +244,52 @@ SSWR::AVIRead::AVIRProfiledResizerForm::AVIRProfiledResizerForm(UI::GUIClientCon
 
 	NEW_CLASS(this->pnlProfile2, UI::GUIPanel(ui, this->tpProfile));
 	this->pnlProfile2->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, (const UTF8Char*)"Name"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Name")));
 	lbl->SetRect(0, 0, 60, 19, false);
 	NEW_CLASS(this->txtProfileName, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtProfileName->SetRect(60, 0, 140, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, (const UTF8Char*)"Suffix"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Suffix")));
 	lbl->SetRect(0, 19, 60, 19, false);
 	NEW_CLASS(this->txtSuffix, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtSuffix->SetRect(60, 19, 50, 19, false);
-	NEW_CLASS(this->grpSize, UI::GUIGroupBox(ui, this->pnlProfile2, (const UTF8Char*)"Size"));
+	NEW_CLASS(this->grpSize, UI::GUIGroupBox(ui, this->pnlProfile2, CSTR("Size")));
 	this->grpSize->SetRect(0, 38, 200, 83, false);
-	NEW_CLASS(this->radSize, UI::GUIRadioButton(ui, this->grpSize, (const UTF8Char*)"Size", true));
+	NEW_CLASS(this->radSize, UI::GUIRadioButton(ui, this->grpSize, CSTR("Size"), true));
 	this->radSize->SetRect(0, 0, 60, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, (const UTF8Char*)"Max W"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("Max W")));
 	lbl->SetRect(0, 19, 40, 19, false);
 	NEW_CLASS(this->txtWidth, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
 	this->txtWidth->SetRect(40, 19, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, (const UTF8Char*)"Max H"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("Max H")));
 	lbl->SetRect(0, 38, 40, 19, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->grpSize, CSTR("800")));
 	this->txtHeight->SetRect(40, 38, 50, 19, false);
-	NEW_CLASS(this->radDPI, UI::GUIRadioButton(ui, this->grpSize, (const UTF8Char*)"DPI", false));
+	NEW_CLASS(this->radDPI, UI::GUIRadioButton(ui, this->grpSize, CSTR("DPI"), false));
 	this->radDPI->SetRect(100, 0, 60, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, (const UTF8Char*)"H-DPI"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("H-DPI")));
 	lbl->SetRect(100, 19, 40, 19, false);
 	NEW_CLASS(this->txtHDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
 	this->txtHDPI->SetRect(140, 19, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, (const UTF8Char*)"V-DPI"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->grpSize, CSTR("V-DPI")));
 	lbl->SetRect(100, 38, 40, 19, false);
 	NEW_CLASS(this->txtVDPI, UI::GUITextBox(ui, this->grpSize, CSTR("300")));
 	this->txtVDPI->SetRect(140, 38, 50, 19, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, (const UTF8Char*)"Watermark"));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlProfile2, CSTR("Watermark")));
 	lbl->SetRect(0, 121, 60, 19, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this->pnlProfile2, CSTR("")));
 	this->txtWatermark->SetRect(60, 121, 140, 19, false);
-	NEW_CLASS(this->radTIFF, UI::GUIRadioButton(ui, this->pnlProfile2, (const UTF8Char*)"TIFF", false));
+	NEW_CLASS(this->radTIFF, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("TIFF"), false));
 	this->radTIFF->SetRect(0, 140, 120, 19, false);
-	NEW_CLASS(this->radJPEGQ, UI::GUIRadioButton(ui, this->pnlProfile2, (const UTF8Char*)"JPEG (% Quality)", false))
+	NEW_CLASS(this->radJPEGQ, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("JPEG (% Quality)"), false))
 	this->radJPEGQ->SetRect(0, 159, 120, 19, false);
 	NEW_CLASS(this->txtJPEGQuality, UI::GUITextBox(ui, this->pnlProfile2, CSTR("100")));
 	this->txtJPEGQuality->SetRect(120, 159, 60, 19, false);
-	NEW_CLASS(this->radJPEGSize, UI::GUIRadioButton(ui, this->pnlProfile2, (const UTF8Char*)"JPEG (1 / Size)", false))
+	NEW_CLASS(this->radJPEGSize, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("JPEG (1 / Size)"), false))
 	this->radJPEGSize->SetRect(0, 178, 120, 19, false);
 	NEW_CLASS(this->txtJPEGSize, UI::GUITextBox(ui, this->pnlProfile2, CSTR("20")));
 	this->txtJPEGSize->SetRect(120, 178, 60, 19, false);
 	this->radJPEGSize->Select();
-	NEW_CLASS(this->radPNG, UI::GUIRadioButton(ui, this->pnlProfile2, (const UTF8Char*)"PNG", false));
+	NEW_CLASS(this->radPNG, UI::GUIRadioButton(ui, this->pnlProfile2, CSTR("PNG"), false));
 	this->radPNG->SetRect(0, 197, 120, 19, false);
 
 	NEW_CLASS(this->btnProfileAdd, UI::GUIButton(ui, this->pnlProfile2, CSTR("&Add")));

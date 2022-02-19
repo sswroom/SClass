@@ -53,7 +53,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	UOSInt i;
 	UOSInt j;
 
-	NEW_CLASS(this->lblKeyAlg, UI::GUILabel(ui, this, (const UTF8Char*)"Key Algorithm"));
+	NEW_CLASS(this->lblKeyAlg, UI::GUILabel(ui, this, CSTR("Key Algorithm")));
 	this->lblKeyAlg->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboKeyAlg, UI::GUIComboBox(ui, this, false));
 	this->cboKeyAlg->SetRect(104, 4, 150, 23, false);
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	}
 	this->cboKeyAlg->SetSelectedIndex(0);
 
-	NEW_CLASS(this->lblEncAlg, UI::GUILabel(ui, this, (const UTF8Char*)"Encrypt Algorithm"));
+	NEW_CLASS(this->lblEncAlg, UI::GUILabel(ui, this, CSTR("Encrypt Algorithm")));
 	this->lblEncAlg->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboEncAlg, UI::GUIComboBox(ui, this, false));
 	this->cboEncAlg->SetRect(104, 28, 150, 23, false);
@@ -79,11 +79,11 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	}
 	this->cboEncAlg->SetSelectedIndex(0);
 
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPassword->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 52, 150, 23, false);
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, (const UTF8Char*)"Message"));
+	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, this, CSTR("Message")));
 	this->lblMessage->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMessage, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtMessage->SetRect(104, 76, 400, 23, false);
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRJasyptForm::AVIRJasyptForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnEncrypt, UI::GUIButton(ui, this, CSTR("Encrypt")));
 	this->btnEncrypt->SetRect(184, 100, 75, 23, false);
 	this->btnEncrypt->HandleButtonClick(OnEncryptClicked, this);
-	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, (const UTF8Char*)"Result"));
+	NEW_CLASS(this->lblResult, UI::GUILabel(ui, this, CSTR("Result")));
 	this->lblResult->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtResult, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtResult->SetRect(104, 124, 400, 23, false);

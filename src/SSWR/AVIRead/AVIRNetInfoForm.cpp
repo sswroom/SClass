@@ -386,29 +386,30 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateARPStats()
 		v = arp->GetPhysicalAddr(buff);
 		if (v > 0)
 		{
-			Text::StrHexBytes(sbuff, buff, v, ':');
+			sptr = Text::StrHexBytes(sbuff, buff, v, ':');
 		}
 		else
 		{
 			sbuff[0] = 0;
+			sptr = sbuff;
 		}
-		this->lvARPInfo->SetSubItem(k, 1, sbuff);
-		Text::StrUInt32(sbuff, arp->GetAdaptorIndex());
-		this->lvARPInfo->SetSubItem(k, 2, sbuff);
+		this->lvARPInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt32(sbuff, arp->GetAdaptorIndex());
+		this->lvARPInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		switch (arp->GetARPType())
 		{
 		case Net::ARPInfo::ARPT_STATIC:
-			this->lvARPInfo->SetSubItem(k, 3, (const UTF8Char*)"Static");
+			this->lvARPInfo->SetSubItem(k, 3, CSTR("Static"));
 			break;
 		case Net::ARPInfo::ARPT_DYNAMIC:
-			this->lvARPInfo->SetSubItem(k, 3, (const UTF8Char*)"Dynamic");
+			this->lvARPInfo->SetSubItem(k, 3, CSTR("Dynamic"));
 			break;
 		case Net::ARPInfo::ARPT_INVALID:
-			this->lvARPInfo->SetSubItem(k, 3, (const UTF8Char*)"Invalid");
+			this->lvARPInfo->SetSubItem(k, 3, CSTR("Invalid"));
 			break;
 		case Net::ARPInfo::ARPT_OTHER:
 		default:
-			this->lvARPInfo->SetSubItem(k, 3, (const UTF8Char*)"Other");
+			this->lvARPInfo->SetSubItem(k, 3, CSTR("Other"));
 			break;
 		}
 		
@@ -492,6 +493,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 	else
 	{
 		UTF8Char sbuff[32];
+		UTF8Char *sptr;
 		UOSInt i;
 		UOSInt j;
 		UOSInt k;
@@ -505,8 +507,8 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		{
 			network = networks.GetItem(i);
 			k = this->lvWIFINetwork->AddItem(network->GetSSID(), 0);
-			Text::StrDouble(sbuff, network->GetRSSI());
-			this->lvWIFINetwork->SetSubItem(k, 1, sbuff);
+			sptr = Text::StrDouble(sbuff, network->GetRSSI());
+			this->lvWIFINetwork->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 			DEL_CLASS(network);
 			i++;
 		}
@@ -522,18 +524,18 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdateWIFINetworks()
 		{
 			bss = bssList.GetItem(i);
 			k = this->lvWIFIBSS->AddItem(bss->GetSSID(), 0);
-			Text::StrUInt32(sbuff, bss->GetPHYId());
-			this->lvWIFIBSS->SetSubItem(k, 1, sbuff);
-			Text::StrHexBytes(sbuff, bss->GetMAC(), 6, 0);
-			this->lvWIFIBSS->SetSubItem(k, 2, sbuff);
-			Text::StrInt32(sbuff, bss->GetBSSType());
-			this->lvWIFIBSS->SetSubItem(k, 3, sbuff);
-			Text::StrInt32(sbuff, bss->GetPHYType());
-			this->lvWIFIBSS->SetSubItem(k, 4, sbuff);
-			Text::StrDouble(sbuff, bss->GetRSSI());
-			this->lvWIFIBSS->SetSubItem(k, 5, sbuff);
-			Text::StrUInt32(sbuff, bss->GetLinkQuality());
-			this->lvWIFIBSS->SetSubItem(k, 6, sbuff);
+			sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
+			this->lvWIFIBSS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			sptr = Text::StrHexBytes(sbuff, bss->GetMAC(), 6, 0);
+			this->lvWIFIBSS->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, bss->GetBSSType());
+			this->lvWIFIBSS->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, bss->GetPHYType());
+			this->lvWIFIBSS->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, bss->GetRSSI());
+			this->lvWIFIBSS->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt32(sbuff, bss->GetLinkQuality());
+			this->lvWIFIBSS->SetSubItem(k, 6, CSTRP(sbuff, sptr));
 			if ((s = bss->GetManuf()) != 0)
 			{
 				this->lvWIFIBSS->SetSubItem(k, 7, s);
@@ -561,6 +563,7 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 {
 	Data::ArrayList<Net::SocketFactory::PortInfo2 *> portInfoList;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Net::SocketFactory::PortInfo2 *portInfo;
 	UOSInt i;
 	UOSInt j;
@@ -582,55 +585,55 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("TCP6"), 0);
 			}			
-			Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
-			this->lvPortInfo->SetSubItem(k, 1, sbuff);
-			Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
-			this->lvPortInfo->SetSubItem(k, 2, sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
+			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			switch (portInfo->portState)
 			{
 			case Net::SocketFactory::PS_CLOSED:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"CLOSED");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("CLOSED"));
 				break;
 			case Net::SocketFactory::PS_LISTEN:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"LISTEN");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("LISTEN"));
 				break;
 			case Net::SocketFactory::PS_SYN_SENT:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"SYN-SENT");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("SYN-SENT"));
 				break;
 			case Net::SocketFactory::PS_SYN_RCVD:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"SYN-RECEIVED");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("SYN-RECEIVED"));
 				break;
 			case Net::SocketFactory::PS_ESTAB:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"ESTABLISHED");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("ESTABLISHED"));
 				break;
 			case Net::SocketFactory::PS_FIN_WAIT1:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"FIN-WAIT-1");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("FIN-WAIT-1"));
 				break;
 			case Net::SocketFactory::PS_FIN_WAIT2:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"FIN-WAIT-2");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("FIN-WAIT-2"));
 				break;
 			case Net::SocketFactory::PS_CLOSE_WAIT:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"CLOSE-WAIT");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("CLOSE-WAIT"));
 				break;
 			case Net::SocketFactory::PS_CLOSING:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"CLOSING");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("CLOSING"));
 				break;
 			case Net::SocketFactory::PS_LAST_ACK:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"LAST-ACK");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("LAST-ACK"));
 				break;
 			case Net::SocketFactory::PS_TIME_WAIT:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"TIME-WAIT");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("TIME-WAIT"));
 				break;
 			case Net::SocketFactory::PS_DELETE_TCB:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"DELETE-TCB");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("DELETE-TCB"));
 				break;
 			case Net::SocketFactory::PS_UNKNOWN:
 			default:
-				this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"Unknown");
+				this->lvPortInfo->SetSubItem(k, 3, CSTR("Unknown"));
 				break;
 			}
-			Text::StrInt32(sbuff, portInfo->processId);
-			this->lvPortInfo->SetSubItem(k, 4, sbuff);
+			sptr = Text::StrInt32(sbuff, portInfo->processId);
+			this->lvPortInfo->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 		}
 		else
 		{
@@ -654,13 +657,13 @@ void SSWR::AVIRead::AVIRNetInfoForm::UpdatePortStats()
 			{
 				k = this->lvPortInfo->AddItem(CSTR("?"), 0);
 			}
-			Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
-			this->lvPortInfo->SetSubItem(k, 1, sbuff);
-			Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
-			this->lvPortInfo->SetSubItem(k, 2, sbuff);
-			this->lvPortInfo->SetSubItem(k, 3, (const UTF8Char*)"");
-			Text::StrInt32(sbuff, portInfo->processId);
-			this->lvPortInfo->SetSubItem(k, 4, sbuff);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->localAddr, (UInt16)portInfo->localPort);
+			this->lvPortInfo->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &portInfo->foreignAddr, (UInt16)portInfo->foreignPort);
+			this->lvPortInfo->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			this->lvPortInfo->SetSubItem(k, 3, CSTR(""));
+			sptr = Text::StrInt32(sbuff, portInfo->processId);
+			this->lvPortInfo->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 		}
 		i++;
 	}
@@ -689,291 +692,291 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlAdaptor, UI::GUIPanel(ui, this->tpAdaptor));
 	this->pnlAdaptor->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	NEW_CLASS(this->lblAdaptorName, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblAdaptorName, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Name")));
 	this->lblAdaptorName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorName, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorName->SetRect(104, 4, 300, 23, false);
 	this->txtAdaptorName->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDesc, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Description"));
+	NEW_CLASS(this->lblAdaptorDesc, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Description")));
 	this->lblAdaptorDesc->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDesc, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDesc->SetRect(104, 28, 500, 23, false);
 	this->txtAdaptorDesc->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDNSSuffix, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"DNS Suffix"));
+	NEW_CLASS(this->lblAdaptorDNSSuffix, UI::GUILabel(ui, this->pnlAdaptor, CSTR("DNS Suffix")));
 	this->lblAdaptorDNSSuffix->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDNSSuffix, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDNSSuffix->SetRect(104, 52, 300, 23, false);
 	this->txtAdaptorDNSSuffix->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorConnType, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Connection Type"));
+	NEW_CLASS(this->lblAdaptorConnType, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Connection Type")));
 	this->lblAdaptorConnType->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorConnType, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorConnType->SetRect(104, 76, 150, 23, false);
 	this->txtAdaptorConnType->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorMTU, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"MTU"));
+	NEW_CLASS(this->lblAdaptorMTU, UI::GUILabel(ui, this->pnlAdaptor, CSTR("MTU")));
 	this->lblAdaptorMTU->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorMTU, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorMTU->SetRect(104, 100, 100, 23, false);
 	this->txtAdaptorMTU->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorPhysicalAddr, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Physical Address"));
+	NEW_CLASS(this->lblAdaptorPhysicalAddr, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Physical Address")));
 	this->lblAdaptorPhysicalAddr->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorPhysicalAddr, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorPhysicalAddr->SetRect(104, 124, 200, 23, false);
 	this->txtAdaptorPhysicalAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorMediaState, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Media State"));
+	NEW_CLASS(this->lblAdaptorMediaState, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Media State")));
 	this->lblAdaptorMediaState->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorMediaState, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorMediaState->SetRect(104, 148, 150, 23, false);
 	this->txtAdaptorMediaState->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorIP, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"IP Addresses"));
+	NEW_CLASS(this->lblAdaptorIP, UI::GUILabel(ui, this->pnlAdaptor, CSTR("IP Addresses")));
 	this->lblAdaptorIP->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->lbAdaptorIP, UI::GUIListBox(ui, this->pnlAdaptor, false));
 	this->lbAdaptorIP->SetRect(104, 172, 150, 95, false);
-	NEW_CLASS(this->lblAdaptorGW, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Default Gateway"));
+	NEW_CLASS(this->lblAdaptorGW, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Default Gateway")));
 	this->lblAdaptorGW->SetRect(4, 268, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorGW, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorGW->SetRect(104, 268, 150, 23, false);
 	this->txtAdaptorGW->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDNS, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"DNS Addresses"));
+	NEW_CLASS(this->lblAdaptorDNS, UI::GUILabel(ui, this->pnlAdaptor, CSTR("DNS Addresses")));
 	this->lblAdaptorDNS->SetRect(4, 292, 100, 23, false);
 	NEW_CLASS(this->lbAdaptorDNS, UI::GUIListBox(ui, this->pnlAdaptor, false));
 	this->lbAdaptorDNS->SetRect(104, 292, 150, 95, false);
-	NEW_CLASS(this->lblAdaptorDHCPEnable, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"DHCP Enabled"));
+	NEW_CLASS(this->lblAdaptorDHCPEnable, UI::GUILabel(ui, this->pnlAdaptor, CSTR("DHCP Enabled")));
 	this->lblAdaptorDHCPEnable->SetRect(4, 388, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDHCPEnable, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDHCPEnable->SetRect(104, 388, 100, 23, false);
 	this->txtAdaptorDHCPEnable->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDHCPServer, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"DHCP Server"));
+	NEW_CLASS(this->lblAdaptorDHCPServer, UI::GUILabel(ui, this->pnlAdaptor, CSTR("DHCP Server")));
 	this->lblAdaptorDHCPServer->SetRect(4, 412, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDHCPServer, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDHCPServer->SetRect(104, 412, 150, 23, false);
 	this->txtAdaptorDHCPServer->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDHCPLeaseTime, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Lease Time"));
+	NEW_CLASS(this->lblAdaptorDHCPLeaseTime, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Lease Time")));
 	this->lblAdaptorDHCPLeaseTime->SetRect(4, 436, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDHCPLeaseTime, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDHCPLeaseTime->SetRect(104, 436, 200, 23, false);
 	this->txtAdaptorDHCPLeaseTime->SetReadOnly(true);
-	NEW_CLASS(this->lblAdaptorDHCPLeaseExpire, UI::GUILabel(ui, this->pnlAdaptor, (const UTF8Char*)"Lease Expire"));
+	NEW_CLASS(this->lblAdaptorDHCPLeaseExpire, UI::GUILabel(ui, this->pnlAdaptor, CSTR("Lease Expire")));
 	this->lblAdaptorDHCPLeaseExpire->SetRect(4, 460, 100, 23, false);
 	NEW_CLASS(this->txtAdaptorDHCPLeaseExpire, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorDHCPLeaseExpire->SetRect(104, 460, 200, 23, false);
 	this->txtAdaptorDHCPLeaseExpire->SetReadOnly(true);
 
 	this->tpIPInfo = this->tcMain->AddTabPage(CSTR("IP Info"));
-	NEW_CLASS(this->lblIPStatForwarding, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"IP Forwarding"));
+	NEW_CLASS(this->lblIPStatForwarding, UI::GUILabel(ui, this->tpIPInfo, CSTR("IP Forwarding")));
 	this->lblIPStatForwarding->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtIPStatForwarding, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatForwarding->SetRect(154, 4, 100, 23, false);
 	this->txtIPStatForwarding->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatDefTTL, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Default TTL"));
+	NEW_CLASS(this->lblIPStatDefTTL, UI::GUILabel(ui, this->tpIPInfo, CSTR("Default TTL")));
 	this->lblIPStatDefTTL->SetRect(4, 28, 150, 23, false);
 	NEW_CLASS(this->txtIPStatDefTTL, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatDefTTL->SetRect(154, 28, 100, 23, false);
 	this->txtIPStatDefTTL->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNRecv, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Datagram Received"));
+	NEW_CLASS(this->lblIPStatNRecv, UI::GUILabel(ui, this->tpIPInfo, CSTR("Datagram Received")));
 	this->lblIPStatNRecv->SetRect(4, 52, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNRecv, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNRecv->SetRect(154, 52, 100, 23, false);
 	this->txtIPStatNRecv->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNHdrError, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Header Errors"));
+	NEW_CLASS(this->lblIPStatNHdrError, UI::GUILabel(ui, this->tpIPInfo, CSTR("Header Errors")));
 	this->lblIPStatNHdrError->SetRect(4, 76, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNHdrError, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNHdrError->SetRect(154, 76, 100, 23, false);
 	this->txtIPStatNHdrError->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNAddrError, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Address Errors"));
+	NEW_CLASS(this->lblIPStatNAddrError, UI::GUILabel(ui, this->tpIPInfo, CSTR("Address Errors")));
 	this->lblIPStatNAddrError->SetRect(4, 100, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNAddrError, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNAddrError->SetRect(154, 100, 100, 23, false);
 	this->txtIPStatNAddrError->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNForwDatag, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Datagram Forwarded"));
+	NEW_CLASS(this->lblIPStatNForwDatag, UI::GUILabel(ui, this->tpIPInfo, CSTR("Datagram Forwarded")));
 	this->lblIPStatNForwDatag->SetRect(4, 124, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNForwDatag, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNForwDatag->SetRect(154, 124, 100, 23, false);
 	this->txtIPStatNForwDatag->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNUnkProtos, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Unknown Protocol"));
+	NEW_CLASS(this->lblIPStatNUnkProtos, UI::GUILabel(ui, this->tpIPInfo, CSTR("Unknown Protocol")));
 	this->lblIPStatNUnkProtos->SetRect(4, 148, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNUnkProtos, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNUnkProtos->SetRect(154, 148, 100, 23, false);
 	this->txtIPStatNUnkProtos->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNDiscard, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Receive Discarded"));
+	NEW_CLASS(this->lblIPStatNDiscard, UI::GUILabel(ui, this->tpIPInfo, CSTR("Receive Discarded")));
 	this->lblIPStatNDiscard->SetRect(4, 172, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNDiscard, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNDiscard->SetRect(154, 172, 100, 23, false);
 	this->txtIPStatNDiscard->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNDeliver, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Datagram Delivered"));
+	NEW_CLASS(this->lblIPStatNDeliver, UI::GUILabel(ui, this->tpIPInfo, CSTR("Datagram Delivered")));
 	this->lblIPStatNDeliver->SetRect(4, 196, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNDeliver, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNDeliver->SetRect(154, 196, 100, 23, false);
 	this->txtIPStatNDeliver->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNOutRequest, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Outgoing Requested"));
+	NEW_CLASS(this->lblIPStatNOutRequest, UI::GUILabel(ui, this->tpIPInfo, CSTR("Outgoing Requested")));
 	this->lblIPStatNOutRequest->SetRect(4, 220, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNOutRequest, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNOutRequest->SetRect(154, 220, 100, 23, false);
 	this->txtIPStatNOutRequest->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNRoutingDiscard, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Outgoing Discarded"));
+	NEW_CLASS(this->lblIPStatNRoutingDiscard, UI::GUILabel(ui, this->tpIPInfo, CSTR("Outgoing Discarded")));
 	this->lblIPStatNRoutingDiscard->SetRect(4, 244, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNRoutingDiscard, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNRoutingDiscard->SetRect(154, 244, 100, 23, false);
 	this->txtIPStatNRoutingDiscard->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNOutDiscard, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Transmitted Discarded"));
+	NEW_CLASS(this->lblIPStatNOutDiscard, UI::GUILabel(ui, this->tpIPInfo, CSTR("Transmitted Discarded")));
 	this->lblIPStatNOutDiscard->SetRect(4, 268, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNOutDiscard, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNOutDiscard->SetRect(154, 268, 100, 23, false);
 	this->txtIPStatNOutDiscard->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNOutNoRoute, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Datagram No Route"));
+	NEW_CLASS(this->lblIPStatNOutNoRoute, UI::GUILabel(ui, this->tpIPInfo, CSTR("Datagram No Route")));
 	this->lblIPStatNOutNoRoute->SetRect(4, 292, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNOutNoRoute, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNOutNoRoute->SetRect(154, 292, 100, 23, false);
 	this->txtIPStatNOutNoRoute->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatReasmTimeout, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Reassembly Timeout"));
+	NEW_CLASS(this->lblIPStatReasmTimeout, UI::GUILabel(ui, this->tpIPInfo, CSTR("Reassembly Timeout")));
 	this->lblIPStatReasmTimeout->SetRect(4, 316, 150, 23, false);
 	NEW_CLASS(this->txtIPStatReasmTimeout, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatReasmTimeout->SetRect(154, 316, 100, 23, false);
 	this->txtIPStatReasmTimeout->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNReasmReqds, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Reassembly Count"));
+	NEW_CLASS(this->lblIPStatNReasmReqds, UI::GUILabel(ui, this->tpIPInfo, CSTR("Reassembly Count")));
 	this->lblIPStatNReasmReqds->SetRect(4, 340, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNReasmReqds, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNReasmReqds->SetRect(154, 340, 100, 23, false);
 	this->txtIPStatNReasmReqds->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNReasmOk, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Reassembly Ok"));
+	NEW_CLASS(this->lblIPStatNReasmOk, UI::GUILabel(ui, this->tpIPInfo, CSTR("Reassembly Ok")));
 	this->lblIPStatNReasmOk->SetRect(4, 364, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNReasmOk, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNReasmOk->SetRect(154, 364, 100, 23, false);
 	this->txtIPStatNReasmOk->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNReasmFail, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Reassembly Failed"));
+	NEW_CLASS(this->lblIPStatNReasmFail, UI::GUILabel(ui, this->tpIPInfo, CSTR("Reassembly Failed")));
 	this->lblIPStatNReasmFail->SetRect(4, 388, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNReasmFail, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNReasmFail->SetRect(154, 388, 100, 23, false);
 	this->txtIPStatNReasmFail->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNFragOk, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Fragment Ok"));
+	NEW_CLASS(this->lblIPStatNFragOk, UI::GUILabel(ui, this->tpIPInfo, CSTR("Fragment Ok")));
 	this->lblIPStatNFragOk->SetRect(4, 412, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNFragOksl, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNFragOksl->SetRect(154, 412, 100, 23, false);
 	this->txtIPStatNFragOksl->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNFragFail, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Fragment Failed"));
+	NEW_CLASS(this->lblIPStatNFragFail, UI::GUILabel(ui, this->tpIPInfo, CSTR("Fragment Failed")));
 	this->lblIPStatNFragFail->SetRect(4, 436, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNFragFail, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNFragFail->SetRect(154, 436, 100, 23, false);
 	this->txtIPStatNFragFail->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNFragCreate, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Fragment Created"));
+	NEW_CLASS(this->lblIPStatNFragCreate, UI::GUILabel(ui, this->tpIPInfo, CSTR("Fragment Created")));
 	this->lblIPStatNFragCreate->SetRect(4, 460, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNFragCreate, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNFragCreate->SetRect(154, 460, 100, 23, false);
 	this->txtIPStatNFragCreate->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNIf, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Number of Interfaces"));
+	NEW_CLASS(this->lblIPStatNIf, UI::GUILabel(ui, this->tpIPInfo, CSTR("Number of Interfaces")));
 	this->lblIPStatNIf->SetRect(4, 484, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNIf, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNIf->SetRect(154, 484, 100, 23, false);
 	this->txtIPStatNIf->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNAddr, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Number of IP Addresses"));
+	NEW_CLASS(this->lblIPStatNAddr, UI::GUILabel(ui, this->tpIPInfo, CSTR("Number of IP Addresses")));
 	this->lblIPStatNAddr->SetRect(4, 508, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNAddr, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNAddr->SetRect(154, 508, 100, 23, false);
 	this->txtIPStatNAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblIPStatNRoute, UI::GUILabel(ui, this->tpIPInfo, (const UTF8Char*)"Number of IP Routes"));
+	NEW_CLASS(this->lblIPStatNRoute, UI::GUILabel(ui, this->tpIPInfo, CSTR("Number of IP Routes")));
 	this->lblIPStatNRoute->SetRect(4, 532, 150, 23, false);
 	NEW_CLASS(this->txtIPStatNRoute, UI::GUITextBox(ui, this->tpIPInfo, CSTR("")));
 	this->txtIPStatNRoute->SetRect(154, 532, 100, 23, false);
 	this->txtIPStatNRoute->SetReadOnly(true);
 
 	this->tpTCPInfo = this->tcMain->AddTabPage(CSTR("TCP Info"));
-	NEW_CLASS(this->lblTCPStatRtoAlgorithm, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"RTO Algorithm"));
+	NEW_CLASS(this->lblTCPStatRtoAlgorithm, UI::GUILabel(ui, this->tpTCPInfo, CSTR("RTO Algorithm")));
 	this->lblTCPStatRtoAlgorithm->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatRtoAlgorithm, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatRtoAlgorithm->SetRect(154, 4, 300, 23, false);
 	this->txtTCPStatRtoAlgorithm->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatRtoMin, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"RTO Minimum"));
+	NEW_CLASS(this->lblTCPStatRtoMin, UI::GUILabel(ui, this->tpTCPInfo, CSTR("RTO Minimum")));
 	this->lblTCPStatRtoMin->SetRect(4, 28, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatRtoMin, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatRtoMin->SetRect(154, 28, 100, 23, false);
 	this->txtTCPStatRtoMin->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatRtoMax, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"RTO Maximum"));
+	NEW_CLASS(this->lblTCPStatRtoMax, UI::GUILabel(ui, this->tpTCPInfo, CSTR("RTO Maximum")));
 	this->lblTCPStatRtoMax->SetRect(4, 52, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatRtoMax, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatRtoMax->SetRect(154, 52, 100, 23, false);
 	this->txtTCPStatRtoMax->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatMaxConn, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Max Connections"));
+	NEW_CLASS(this->lblTCPStatMaxConn, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Max Connections")));
 	this->lblTCPStatMaxConn->SetRect(4, 76, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatMaxConn, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatMaxConn->SetRect(154, 76, 100, 23, false);
 	this->txtTCPStatMaxConn->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatActiveOpens, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Active Opens"));
+	NEW_CLASS(this->lblTCPStatActiveOpens, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Active Opens")));
 	this->lblTCPStatActiveOpens->SetRect(4, 100, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatActiveOpens, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatActiveOpens->SetRect(154, 100, 100, 23, false);
 	this->txtTCPStatActiveOpens->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatPassiveOpens, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Passive Opens"));
+	NEW_CLASS(this->lblTCPStatPassiveOpens, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Passive Opens")));
 	this->lblTCPStatPassiveOpens->SetRect(4, 124, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatPassiveOpens, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatPassiveOpens->SetRect(154, 124, 100, 23, false);
 	this->txtTCPStatPassiveOpens->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatAttemptFails, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Attempt Fails"));
+	NEW_CLASS(this->lblTCPStatAttemptFails, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Attempt Fails")));
 	this->lblTCPStatAttemptFails->SetRect(4, 148, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatAttemptFails, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatAttemptFails->SetRect(154, 148, 100, 23, false);
 	this->txtTCPStatAttemptFails->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatEstabResets, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Connection Resets"));
+	NEW_CLASS(this->lblTCPStatEstabResets, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Connection Resets")));
 	this->lblTCPStatEstabResets->SetRect(4, 172, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatEstabResets, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatEstabResets->SetRect(154, 172, 100, 23, false);
 	this->txtTCPStatEstabResets->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatCurrEstab, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Currently Establish Conn"));
+	NEW_CLASS(this->lblTCPStatCurrEstab, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Currently Establish Conn")));
 	this->lblTCPStatCurrEstab->SetRect(4, 196, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatCurrEstab, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatCurrEstab->SetRect(154, 196, 100, 23, false);
 	this->txtTCPStatCurrEstab->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatInSegs, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Recv Segments"));
+	NEW_CLASS(this->lblTCPStatInSegs, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Recv Segments")));
 	this->lblTCPStatInSegs->SetRect(4, 220, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatInSegs, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatInSegs->SetRect(154, 220, 100, 23, false);
 	this->txtTCPStatInSegs->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatOutSegs, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Transmit Segments"));
+	NEW_CLASS(this->lblTCPStatOutSegs, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Transmit Segments")));
 	this->lblTCPStatOutSegs->SetRect(4, 244, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatOutSegs, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatOutSegs->SetRect(154, 244, 100, 23, false);
 	this->txtTCPStatOutSegs->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatRetransSegs, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Retransmit Segment"));
+	NEW_CLASS(this->lblTCPStatRetransSegs, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Retransmit Segment")));
 	this->lblTCPStatRetransSegs->SetRect(4, 268, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatRetransSeg, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatRetransSeg->SetRect(154, 268, 100, 23, false);
 	this->txtTCPStatRetransSeg->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatInErrs, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Recv Errors"));
+	NEW_CLASS(this->lblTCPStatInErrs, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Recv Errors")));
 	this->lblTCPStatInErrs->SetRect(4, 292, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatInErrs, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatInErrs->SetRect(154, 292, 100, 23, false);
 	this->txtTCPStatInErrs->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatOutRsts, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Transmit with Errors"));
+	NEW_CLASS(this->lblTCPStatOutRsts, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Transmit with Errors")));
 	this->lblTCPStatOutRsts->SetRect(4, 316, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatOutRsts, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatOutRsts->SetRect(154, 316, 100, 23, false);
 	this->txtTCPStatOutRsts->SetReadOnly(true);
-	NEW_CLASS(this->lblTCPStatNumConns, UI::GUILabel(ui, this->tpTCPInfo, (const UTF8Char*)"Number of Conns"));
+	NEW_CLASS(this->lblTCPStatNumConns, UI::GUILabel(ui, this->tpTCPInfo, CSTR("Number of Conns")));
 	this->lblTCPStatNumConns->SetRect(4, 340, 150, 23, false);
 	NEW_CLASS(this->txtTCPStatNumConns, UI::GUITextBox(ui, this->tpTCPInfo, CSTR("")));
 	this->txtTCPStatNumConns->SetRect(154, 340, 100, 23, false);
 	this->txtTCPStatNumConns->SetReadOnly(true);
 
 	this->tpUDPInfo = this->tcMain->AddTabPage(CSTR("UDP Info"));
-	NEW_CLASS(this->lblUDPStatInDatagrams, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"Recv Datagrams"));
+	NEW_CLASS(this->lblUDPStatInDatagrams, UI::GUILabel(ui, this->tpUDPInfo, CSTR("Recv Datagrams")));
 	this->lblUDPStatInDatagrams->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatInDatagrams, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
 	this->txtUDPStatInDatagrams->SetRect(154, 4, 100, 23, false);
 	this->txtUDPStatInDatagrams->SetReadOnly(true);
-	NEW_CLASS(this->lblUDPStatNoPorts, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"Recv Error (No Port)"));
+	NEW_CLASS(this->lblUDPStatNoPorts, UI::GUILabel(ui, this->tpUDPInfo, CSTR("Recv Error (No Port)")));
 	this->lblUDPStatNoPorts->SetRect(4, 28, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatNoPorts, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
 	this->txtUDPStatNoPorts->SetRect(154, 28, 100, 23, false);
 	this->txtUDPStatNoPorts->SetReadOnly(true);
-	NEW_CLASS(this->lblUDPStatInErrors, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"Recv Error (Other)"));
+	NEW_CLASS(this->lblUDPStatInErrors, UI::GUILabel(ui, this->tpUDPInfo, CSTR("Recv Error (Other)")));
 	this->lblUDPStatInErrors->SetRect(4, 52, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatInErrors, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
 	this->txtUDPStatInErrors->SetRect(154, 52, 100, 23, false);
 	this->txtUDPStatInErrors->SetReadOnly(true);
-	NEW_CLASS(this->lblUDPStatOutDatagrams, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"Send Datagrams"));
+	NEW_CLASS(this->lblUDPStatOutDatagrams, UI::GUILabel(ui, this->tpUDPInfo, CSTR("Send Datagrams")));
 	this->lblUDPStatOutDatagrams->SetRect(4, 76, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatOutDatagrams, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
 	this->txtUDPStatOutDatagrams->SetRect(154, 76, 100, 23, false);
 	this->txtUDPStatOutDatagrams->SetReadOnly(true);
-	NEW_CLASS(this->lblUDPStatNumAddrs, UI::GUILabel(ui, this->tpUDPInfo, (const UTF8Char*)"UDP Listens"));
+	NEW_CLASS(this->lblUDPStatNumAddrs, UI::GUILabel(ui, this->tpUDPInfo, CSTR("UDP Listens")));
 	this->lblUDPStatNumAddrs->SetRect(4, 100, 150, 23, false);
 	NEW_CLASS(this->txtUDPStatNumAddrs, UI::GUITextBox(ui, this->tpUDPInfo, CSTR("")));
 	this->txtUDPStatNumAddrs->SetRect(154, 100, 100, 23, false);
@@ -982,10 +985,10 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	this->tpARPInfo = this->tcMain->AddTabPage(CSTR("ARP Info"));
 	NEW_CLASS(this->lvARPInfo, UI::GUIListView(ui, this->tpARPInfo, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvARPInfo->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvARPInfo->AddColumn((const UTF8Char*)"IP Address", 150);
-	this->lvARPInfo->AddColumn((const UTF8Char*)"Physical Address", 250);
-	this->lvARPInfo->AddColumn((const UTF8Char*)"Adaptor", 100);
-	this->lvARPInfo->AddColumn((const UTF8Char*)"Type", 150);
+	this->lvARPInfo->AddColumn(CSTR("IP Address"), 150);
+	this->lvARPInfo->AddColumn(CSTR("Physical Address"), 250);
+	this->lvARPInfo->AddColumn(CSTR("Adaptor"), 100);
+	this->lvARPInfo->AddColumn(CSTR("Type"), 150);
 
 	this->tpPortInfo = this->tcMain->AddTabPage(CSTR("Port Info"));
 	NEW_CLASS(this->pnlPortInfo, UI::GUIPanel(ui, this->tpPortInfo));
@@ -994,15 +997,15 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnPortRefresh, UI::GUIButton(ui, this->pnlPortInfo, CSTR("&Refresh")));
 	this->btnPortRefresh->SetRect(8, 8, 75, 23, false);
 	this->btnPortRefresh->HandleButtonClick(OnPortClicked, this);
-	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, (const UTF8Char*)"Auto Refresh", false));
+	NEW_CLASS(this->chkPortAuto, UI::GUICheckBox(ui, this->pnlPortInfo, CSTR("Auto Refresh"), false));
 	this->chkPortAuto->SetRect(100, 8, 100, 23, false);
 	NEW_CLASS(this->lvPortInfo, UI::GUIListView(ui, this->tpPortInfo, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvPortInfo->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvPortInfo->AddColumn((const UTF8Char*)"Proto", 50);
-	this->lvPortInfo->AddColumn((const UTF8Char*)"Local Addr", 150);
-	this->lvPortInfo->AddColumn((const UTF8Char*)"Foreign Addr", 150);
-	this->lvPortInfo->AddColumn((const UTF8Char*)"State", 200);
-	this->lvPortInfo->AddColumn((const UTF8Char*)"PID", 100);
+	this->lvPortInfo->AddColumn(CSTR("Proto"), 50);
+	this->lvPortInfo->AddColumn(CSTR("Local Addr"), 150);
+	this->lvPortInfo->AddColumn(CSTR("Foreign Addr"), 150);
+	this->lvPortInfo->AddColumn(CSTR("State"), 200);
+	this->lvPortInfo->AddColumn(CSTR("PID"), 100);
 	this->lvPortInfo->SetFullRowSelect(true);
 
 	if (!this->wlan->IsError())
@@ -1019,23 +1022,23 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 		this->lvWIFINetwork->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFINetwork->SetShowGrid(true);
 		this->lvWIFINetwork->SetFullRowSelect(true);
-		this->lvWIFINetwork->AddColumn((const UTF8Char*)"SSID", 200);
-		this->lvWIFINetwork->AddColumn((const UTF8Char*)"RSSI", 100);
+		this->lvWIFINetwork->AddColumn(CSTR("SSID"), 200);
+		this->lvWIFINetwork->AddColumn(CSTR("RSSI"), 100);
 		this->tpWIFIBSS = this->tcWIFI->AddTabPage(CSTR("BSS"));
 		NEW_CLASS(this->lvWIFIBSS, UI::GUIListView(ui, this->tpWIFIBSS, UI::GUIListView::LVSTYLE_TABLE, 10));
 		this->lvWIFIBSS->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvWIFIBSS->SetShowGrid(true);
 		this->lvWIFIBSS->SetFullRowSelect(true);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"SSID", 200);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"PhyId", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"MAC", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"BSSType", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"PHYType", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"RSSI", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"Link Quality", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"Manufacturer", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"Model", 100);
-		this->lvWIFIBSS->AddColumn((const UTF8Char*)"S/N", 100);
+		this->lvWIFIBSS->AddColumn(CSTR("SSID"), 200);
+		this->lvWIFIBSS->AddColumn(CSTR("PhyId"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("MAC"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("BSSType"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("PHYType"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("RSSI"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("Link Quality"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("Manufacturer"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("Model"), 100);
+		this->lvWIFIBSS->AddColumn(CSTR("S/N"), 100);
 	}
 
 	NEW_CLASS(this->conns, Data::ArrayList<Net::ConnectionInfo*>());

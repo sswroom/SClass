@@ -22,6 +22,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x
 		Int64 id;
 		UOSInt i;
 		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		me->navi->ScnXY2MapXY(x, y, &mapX, &mapY);
 		sess = me->lyr->BeginGetObject();
 		id = me->lyr->GetNearestObjectId(sess, mapX, mapY, &mapX, &mapY);
@@ -30,7 +31,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x
 			i = me->lyr->GetColumnCnt();
 			while (i-- > 0)
 			{
-				me->lvInfo->SetSubItem(i, 1, (const UTF8Char*)"");
+				me->lvInfo->SetSubItem(i, 1, CSTR(""));
 			}
 			me->navi->SetSelectedVector(0);
 		}
@@ -43,8 +44,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x
 			while (i-- > 0)
 			{
 				sbuff[0] = 0;
-				me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
-				me->lvInfo->SetSubItem(i, 1, sbuff);
+				sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
+				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			me->navi->SetSelectedVector(me->lyr->GetVectorById(sess, id));
 			me->lyr->ReleaseNameArr(nameArr);
@@ -68,8 +69,8 @@ SSWR::AVIRead::AVIRGISQueryForm::AVIRGISQueryForm(UI::GUIClientControl *parent, 
 
 	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvInfo->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvInfo->AddColumn((const UTF8Char*)"Value", 300);
+	this->lvInfo->AddColumn(CSTR("Name"), 100);
+	this->lvInfo->AddColumn(CSTR("Value"), 300);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->SetFullRowSelect(true);
 

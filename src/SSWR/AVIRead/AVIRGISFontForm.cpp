@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI
 	this->pbPreview->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pnlMain, UI::GUIPanel(ui, this));
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblFont, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Font"));
+	NEW_CLASS(this->lblFont, UI::GUILabel(ui, this->pnlMain, CSTR("Font")));
 	this->lblFont->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFont, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtFont->SetRect(104, 4, 200, 23, false);
@@ -118,7 +118,7 @@ SSWR::AVIRead::AVIRGISFontForm::AVIRGISFontForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnFont, UI::GUIButton(ui, this->pnlMain, CSTR("Change")));
 	this->btnFont->SetRect(304, 4, 75, 23, false);
 	this->btnFont->HandleButtonClick(OnFontClicked, this);
-	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Color"));
+	NEW_CLASS(this->lblColor, UI::GUILabel(ui, this->pnlMain, CSTR("Color")));
 	this->lblColor->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this->pnlMain, eng, true, false));
 	this->pbColor->SetRect(104, 28, 200, 23, false);

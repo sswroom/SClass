@@ -44,11 +44,11 @@ void Parser::FileParser::ZIPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.zip", (const UTF8Char*)"ZIP File");
+		selector->AddFilter(CSTR("*.zip"), CSTR("ZIP File"));
 	}
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.kmz", (const UTF8Char*)"KMZ File");
+		selector->AddFilter(CSTR("*.kmz"), CSTR("KMZ File"));
 	}
 }
 

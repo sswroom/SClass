@@ -28,12 +28,12 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnSMTPStartClicked(void *userO
 		me->txtSMTPPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (me->sslCert && me->sslKey)
@@ -68,12 +68,12 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 		me->txtPOP3Port->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		if (port == 0 || port > 65535)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Error"), me);
 			return;
 		}
 		Net::SSLEngine *ssl = 0;
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 		{
 			if (me->sslCert == 0 || me->sslKey == 0)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key", (const UTF8Char*)"SMTP Server", me);
+				UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key"), CSTR("SMTP Server"), me);
 				return;
 			}
 			ssl = me->ssl;
@@ -89,7 +89,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnPOP3StartClicked(void *userO
 			ssl->SetServerCertsASN1(me->sslCert, me->sslKey, issuerCert);
 			SDEL_CLASS(issuerCert);
 		}
-		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, (const UTF8Char*)"Welcome to SSWR POP3 Server", me));
+		NEW_CLASS(me->pop3Svr, Net::Email::POP3Server(me->core->GetSocketFactory(), ssl, port, me->log, CSTR("Welcome to SSWR POP3 Server"), me));
 		if (me->pop3Svr->IsError())
 		{
 			DEL_CLASS(me->pop3Svr);
@@ -136,7 +136,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnEmailDblClicked(void *userOb
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("Error"), me);
 		}
 	}
 }
@@ -224,6 +224,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 	UOSInt l;
 	UOSInt m;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	dt.ToLocalTime();
@@ -241,11 +242,11 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 			sb.AppendI64(email->id);
 			k = me->lvEmail->AddItem(sb.ToCString(), email);
 			dt.SetTicks(email->recvTime);
-			dt.ToString(sbuff);
-			me->lvEmail->SetSubItem(k, 1, sbuff);
-			me->lvEmail->SetSubItem(k, 2, email->fromAddr->v);
-			Net::SocketUtil::GetAddrName(sbuff, &email->remoteAddr);
-			me->lvEmail->SetSubItem(k, 3, sbuff);
+			sptr = dt.ToString(sbuff);
+			me->lvEmail->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			me->lvEmail->SetSubItem(k, 2, email->fromAddr);
+			sptr = Net::SocketUtil::GetAddrName(sbuff, &email->remoteAddr);
+			me->lvEmail->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 			sb.ClearStr();
 			l = 0;
 			m = email->rcptList->GetCount();
@@ -258,7 +259,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnTimerTick(void *userObj)
 				sb.Append(email->rcptList->GetItem(l));
 				l++;
 			}
-			me->lvEmail->SetSubItem(k, 4, sb.ToString());
+			me->lvEmail->SetSubItem(k, 4, sb.ToCString());
 			i++;
 		}
 		mutUsage.EndUse();
@@ -270,7 +271,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnCertKeyClicked(void *userObj
 	SSWR::AVIRead::AVIRSMTPServerForm *me = (SSWR::AVIRead::AVIRSMTPServerForm*)userObj;
 	if (me->smtpSvr || me->pop3Svr)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Cannot change Cert/Key when server is started", (const UTF8Char*)"SMTP Server", me);
+		UI::MessageDialog::ShowDialog(CSTR("Cannot change Cert/Key when server is started"), CSTR("SMTP Server"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
@@ -372,15 +373,15 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnCertKey, UI::GUIButton(ui, this->tpControl, CSTR("Cert/Key")));
 	this->btnCertKey->SetRect(0, 0, 75, 23, false);
 	this->btnCertKey->HandleButtonClick(OnCertKeyClicked, this);
-	NEW_CLASS(this->lblCertKey, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"No Cert/Keys"));
+	NEW_CLASS(this->lblCertKey, UI::GUILabel(ui, this->tpControl, CSTR("No Cert/Keys")));
 	this->lblCertKey->SetRect(80, 0, 200, 23, false);
-	NEW_CLASS(this->grpSMTP, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"SMTP"));
+	NEW_CLASS(this->grpSMTP, UI::GUIGroupBox(ui, this->tpControl, CSTR("SMTP")));
 	this->grpSMTP->SetRect(0, 24, 250, 88, false);
-	NEW_CLASS(this->lblSMTPPort, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblSMTPPort, UI::GUILabel(ui, this->grpSMTP, CSTR("Port")));
 	this->lblSMTPPort->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtSMTPPort, UI::GUITextBox(ui, this->grpSMTP, CSTR("25")));
 	this->txtSMTPPort->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->lblSMTPType, UI::GUILabel(ui, this->grpSMTP, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblSMTPType, UI::GUILabel(ui, this->grpSMTP, CSTR("Type")));
 	this->lblSMTPType->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->cboSMTPType, UI::GUIComboBox(ui, this->grpSMTP, false));
 	this->cboSMTPType->SetRect(100, 24, 100, 23, false);
@@ -392,13 +393,13 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnSMTPStart, UI::GUIButton(ui, this->grpSMTP, CSTR("Start")));
 	this->btnSMTPStart->SetRect(100, 48, 75, 23, false);
 	this->btnSMTPStart->HandleButtonClick(OnSMTPStartClicked, this);
-	NEW_CLASS(this->grpPOP3, UI::GUIGroupBox(ui, this->tpControl, (const UTF8Char*)"POP3"));
+	NEW_CLASS(this->grpPOP3, UI::GUIGroupBox(ui, this->tpControl, CSTR("POP3")));
 	this->grpPOP3->SetRect(250, 24, 250, 88, false);
-	NEW_CLASS(this->lblPOP3Port, UI::GUILabel(ui, this->grpPOP3, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPOP3Port, UI::GUILabel(ui, this->grpPOP3, CSTR("Port")));
 	this->lblPOP3Port->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtPOP3Port, UI::GUITextBox(ui, this->grpPOP3, CSTR("110")));
 	this->txtPOP3Port->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->grpPOP3, (const UTF8Char*)"Enable SSL", false));
+	NEW_CLASS(this->chkPOP3SSL, UI::GUICheckBox(ui, this->grpPOP3, CSTR("Enable SSL"), false));
 	this->chkPOP3SSL->SetRect(100, 24, 100, 23, false);
 	this->chkPOP3SSL->HandleCheckedChange(OnPOP3SSLChanged, this);
 	NEW_CLASS(this->btnPOP3Start, UI::GUIButton(ui, this->grpPOP3, CSTR("Start")));
@@ -411,11 +412,11 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	this->lvEmail->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvEmail->SetShowGrid(true);
 	this->lvEmail->SetFullRowSelect(true);
-	this->lvEmail->AddColumn((const UTF8Char*)"Id", 100);
-	this->lvEmail->AddColumn((const UTF8Char*)"Time", 150);
-	this->lvEmail->AddColumn((const UTF8Char*)"From", 150);
-	this->lvEmail->AddColumn((const UTF8Char*)"Remote IP", 100);
-	this->lvEmail->AddColumn((const UTF8Char*)"Rcpt", 200);
+	this->lvEmail->AddColumn(CSTR("Id"), 100);
+	this->lvEmail->AddColumn(CSTR("Time"), 150);
+	this->lvEmail->AddColumn(CSTR("From"), 150);
+	this->lvEmail->AddColumn(CSTR("Remote IP"), 100);
+	this->lvEmail->AddColumn(CSTR("Rcpt"), 200);
 	this->lvEmail->HandleDblClk(OnEmailDblClicked, this);
 
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

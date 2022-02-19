@@ -10,7 +10,7 @@ namespace IO
 		class IProtocolDecoder
 		{
 		public:
-			typedef void (__stdcall *ProtocolInfo)(void *userObj, UInt64 fileOfst, UOSInt size, const UTF8Char *typeName);
+			typedef void (__stdcall *ProtocolInfo)(void *userObj, UInt64 fileOfst, UOSInt size, Text::CString typeName);
 		public:
 			virtual ~IProtocolDecoder(){};
 

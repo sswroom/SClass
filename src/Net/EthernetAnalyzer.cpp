@@ -112,7 +112,7 @@ Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType
 	NEW_CLASS(this->mdnsList, Data::ArrayList<Net::DNSClient::RequestAnswer*>());
 }
 
-Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, const UTF8Char *name) : IO::ParsedObject(name)
+Net::EthernetAnalyzer::EthernetAnalyzer(IO::Writer *errWriter, AnalyzeType aType, Text::CString name) : IO::ParsedObject(name)
 {
 	this->atype = aType;
 	this->packetCnt = 0;

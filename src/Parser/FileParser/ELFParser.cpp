@@ -548,7 +548,7 @@ void Parser::FileParser::ELFParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.so", (const UTF8Char*)"Shared Object File");
+		selector->AddFilter(CSTR("*.so"), CSTR("Shared Object File"));
 	}
 }
 

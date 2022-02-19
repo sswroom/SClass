@@ -95,7 +95,7 @@ SSWR::AVIRead::AVIRCoordInfoForm::AVIRCoordInfoForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlCoord, UI::GUIPanel(ui, this));
 	this->pnlCoord->SetRect(0, 0, 100, 31, false);
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"SRID"));
+	NEW_CLASS(this->lblSRID, UI::GUILabel(ui, this->pnlCoord, CSTR("SRID")));
 	this->lblSRID->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSRID, UI::GUITextBox(ui, this->pnlCoord, CSTR("4326")));
 	this->txtSRID->SetRect(104, 4, 100, 23, false);

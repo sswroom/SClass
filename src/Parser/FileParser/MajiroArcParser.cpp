@@ -23,7 +23,7 @@ void Parser::FileParser::MajiroArcParser::PrepareSelector(IO::IFileSelector *sel
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.arc", (const UTF8Char*)"ARC Package File");
+		selector->AddFilter(CSTR("*.arc"), CSTR("ARC Package File"));
 	}
 }
 

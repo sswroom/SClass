@@ -247,7 +247,7 @@ void Parser::FileParser::GLOCParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"GPS Location File");
+		selector->AddFilter(CSTR("*.dat"), CSTR("GPS Location File"));
 	}
 }
 

@@ -188,10 +188,10 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	NEW_CLASS(this->log, IO::LogTool());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Stream"));
+	NEW_CLASS(this->grpStream, UI::GUIGroupBox(ui, this, CSTR("Stream")));
 	this->grpStream->SetRect(0, 0, 100, 48, false);
 	this->grpStream->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, (const UTF8Char*)"Stream Type"));
+	NEW_CLASS(this->lblStream, UI::GUILabel(ui, this->grpStream, CSTR("Stream Type")));
 	this->lblStream->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStream, UI::GUITextBox(ui, this->grpStream, CSTR("-")));
 	this->txtStream->SetRect(104, 4, 200, 23, false);
@@ -200,10 +200,10 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->btnStream->SetRect(304, 4, 75, 23, false);
 	this->btnStream->HandleButtonClick(OnStreamClicked, this);
 	
-	NEW_CLASS(this->grpControl, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Control"));
+	NEW_CLASS(this->grpControl, UI::GUIGroupBox(ui, this, CSTR("Control")));
 	this->grpControl->SetRect(0, 0, 100, 48, false);
 	this->grpControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblReqInterval, UI::GUILabel(ui, this->grpControl, (const UTF8Char*)"Req Interval"));
+	NEW_CLASS(this->lblReqInterval, UI::GUILabel(ui, this->grpControl, CSTR("Req Interval")));
 	this->lblReqInterval->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboReqInterval, UI::GUIComboBox(ui, this->grpControl, false));
 	this->cboReqInterval->SetRect(104, 4, 100, 23, false);
@@ -237,12 +237,12 @@ SSWR::AVIRead::AVIRStreamLatencyForm::AVIRStreamLatencyForm(UI::GUIClientControl
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblSentCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Sent Cnt"));
+	NEW_CLASS(this->lblSentCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Sent Cnt")));
 	this->lblSentCnt->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtSentCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtSentCnt->SetRect(100, 0, 150, 23, false);
 	this->txtSentCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Recv Cnt"));
+	NEW_CLASS(this->lblRecvCnt, UI::GUILabel(ui, this->tpStatus, CSTR("Recv Cnt")));
 	this->lblRecvCnt->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtRecvCnt, UI::GUITextBox(ui, this->tpStatus, CSTR("0")));
 	this->txtRecvCnt->SetRect(100, 24, 150, 23, false);

@@ -11,13 +11,13 @@ void GUICheckBox_CheckedChange(GtkToggleButton *btn, gpointer data)
 	me->EventCheckedChange(me->IsChecked());
 }
 
-UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool checked) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
 	NEW_CLASS(this->checkedChangeHdlrs, Data::ArrayList<CheckedChangeHandler>());
 	NEW_CLASS(this->checkedChangeObjs, Data::ArrayList<void *>());
 
-	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText);
+	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v);
 	parent->AddChild(this);
 	if (checked)
 	{

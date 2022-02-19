@@ -87,11 +87,11 @@ SSWR::AVIRead::AVIRESRIMapForm::AVIRESRIMapForm(UI::GUIClientControl *parent, UI
 	this->url = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Predefine", true));
+	NEW_CLASS(this->radPredefine, UI::GUIRadioButton(ui, this, CSTR("Predefine"), true));
 	this->radPredefine->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboPredefine, UI::GUIComboBox(ui, this, false));
 	this->cboPredefine->SetRect(108, 8, 150, 23, false);
-	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Other", false));
+	NEW_CLASS(this->radOther, UI::GUIRadioButton(ui, this, CSTR("Other"), false));
 	this->radOther->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtOther, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOther->SetRect(108, 32, 500, 23, false);

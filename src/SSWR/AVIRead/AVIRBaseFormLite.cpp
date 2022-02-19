@@ -345,7 +345,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
@@ -353,17 +353,17 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 {
 	this->core = core;
 #if defined(CPU_X86_32)
-	this->SetText(CSTR("AVIRead (x86 32-bit)");
+	this->SetText(CSTR("AVIRead (x86 32-bit)"));
 #elif defined(CPU_X86_64)
-	this->SetText(CSTR("AVIRead (x86 64-bit)");
+	this->SetText(CSTR("AVIRead (x86 64-bit)"));
 #elif defined(CPU_ARM)
-	this->SetText(CSTR("AVIRead (ARM 32-bit)");
+	this->SetText(CSTR("AVIRead (ARM 32-bit)"));
 #elif defined(CPU_ARM64)
-	this->SetText(CSTR("AVIRead (ARM 64-bit)");
+	this->SetText(CSTR("AVIRead (ARM 64-bit)"));
 #elif defined(CPU_MIPS)
-	this->SetText(CSTR("AVIRead (MIPS 32-bit)");
+	this->SetText(CSTR("AVIRead (MIPS 32-bit)"));
 #else
-	this->SetText(CSTR("AVIRead");
+	this->SetText(CSTR("AVIRead"));
 #endif
 	this->HandleDropFiles(FileHandler, this);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -545,6 +545,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	UTF8Char u8buff[512];
 	UTF8Char u8buff2[16];
 	UTF8Char *u8ptr;
+	UTF8Char *u8ptr2;
 	Map::TileMap *tileMap;
 	Map::IMapDrawLayer *mapLyr;
 
@@ -617,20 +618,20 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				NEW_CLASS(mtk, IO::Device::MTKGPSNMEA(port, false));
 				if (mtk->IsMTKDevice())
 				{
-					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, 0));
+					NEW_CLASS(trk, Map::GPSTrack(CSTR("MTK_Tracker"), true, 0, CSTR_NULL));
 					if (mtk->ParseLog(trk))
 					{
 						core->OpenObject(trk);
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing log", (const UTF8Char*)"MTK Tracker", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in parsing log"), CSTR("MTK Tracker"), this);
 						DEL_CLASS(trk);
 					}
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"MTK Tracker not found", (const UTF8Char*)"MTK Tracker", this);
+					UI::MessageDialog::ShowDialog(CSTR("MTK Tracker not found"), CSTR("MTK Tracker"), this);
 				}
 				DEL_CLASS(mtk);
 				DEL_CLASS(port);
@@ -641,7 +642,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select GSM Modem");
+			frm->SetText(CSTR("Select GSM Modem"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->core->OpenGSMModem(frm->stm);
@@ -653,7 +654,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, true));
-			frm->SetText(CSTR("Select GPS Tracker");
+			frm->SetText(CSTR("Select GPS Tracker"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRGPSTrackerForm *gpsFrm;
@@ -677,75 +678,75 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTile");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.openstreetmap.org/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.openstreetmap.org/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.openstreetmap.org/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTile"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMOpenCycleMap");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/cycle/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/cycle/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/cycle/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMOpenCycleMap"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/cycle/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTransport");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/transport/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/transport/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/transport/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTransport"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_LANDSCAPE:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMLandscape");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/landscape/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/landscape/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/landscape/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMLandscape"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/landscape/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_OUTDOORS:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMOutdoors");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/outdoors/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/outdoors/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/outdoors/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMOutdoors"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/outdoors/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMTransportDark");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/transport-dark/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/transport-dark/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/transport-dark/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTransportDark"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport-dark/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_SPINAL:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMSpinalMap");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://a.tile.thunderforest.com/spinal-map/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://b.tile.thunderforest.com/spinal-map/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://c.tile.thunderforest.com/spinal-map/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMSpinalMap"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMMapQuest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://otile1.mqcdn.com/tiles/1.0.0/osm/", u8buff, 18, this->core->GetSocketFactory(), 0));
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile2.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile3.mqcdn.com/tiles/1.0.0/osm/");
-		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL((const UTF8Char*)"http://otile4.mqcdn.com/tiles/1.0.0/osm/");
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMMapQuest"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
+		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
@@ -761,9 +762,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				const UTF8Char *url = frm->GetSelectedURL();
 				crc.Calc((UInt8*)url, Text::StrCharCnt(url) * sizeof(UTF8Char));
 				crc.GetValue(crcVal);
-				IO::Path::GetProcessFileName(u8buff);
-				Text::StrInt32(u8buff2, ReadMInt32(crcVal));
-				u8ptr = IO::Path::AppendPath(u8buff, u8buff2);
+				u8ptr = IO::Path::GetProcessFileName(u8buff);
+				u8ptr2 = Text::StrInt32(u8buff2, ReadMInt32(crcVal));
+				u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, u8buff2, (UOSInt)(u8ptr2 - u8buff2));
 				*u8ptr++ = IO::Path::PATH_SEPERATOR;
 				*u8ptr = 0;
 				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory(), 0));
@@ -819,7 +820,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 						NEW_CLASS(fd, IO::StmData::FileData(fname, false));
 						if (fd->GetDataSize() == 0)
 						{
-							UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
+							UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 						}
 						else
 						{
@@ -830,10 +831,10 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, CSTR_NULL, this->core->GetSocketFactory(), 0);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), 0);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"AVIRead", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("AVIRead"), this);
 					}
 					else
 					{
@@ -930,7 +931,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->IsError())
 			{
 				DEL_CLASS(frm);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting DNS proxy. Port is in use?", (const UTF8Char*)"Error", this);
+				UI::MessageDialog::ShowDialog(CSTR("Error in starting DNS proxy. Port is in use?"), CSTR("Error"), this);
 			}
 			else
 			{
@@ -1218,7 +1219,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select SNB Dongle");
+			frm->SetText(CSTR("Select SNB Dongle"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRSNBDongleForm *snbFrm;
@@ -1250,9 +1251,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TEST:
-		IO::Path::GetProcessFileName(u8buff);
-		IO::Path::AppendPath(u8buff, (const UTF8Char*)"OSMCacheTest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap((const UTF8Char*)"http://127.0.0.1/", u8buff, 18, this->core->GetSocketFactory(), 0));
+		u8ptr = IO::Path::GetProcessFileName(u8buff);
+		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMCacheTest"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
@@ -1337,12 +1338,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in accessing accelerometer", (const UTF8Char*)"Accelerometer", this);
+					UI::MessageDialog::ShowDialog(CSTR("Error in accessing accelerometer"), CSTR("Accelerometer"), this);
 				}
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"No accelerometers found", (const UTF8Char*)"Accelerometer", this);
+				UI::MessageDialog::ShowDialog(CSTR("No accelerometers found"), CSTR("Accelerometer"), this);
 			}
 		}
 		break;
@@ -1371,7 +1372,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select IO Pin");
+			frm->SetText(CSTR("Select IO Pin"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRIOPinTestForm *testFrm;
@@ -1385,7 +1386,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select DHT22 IO Pin");
+			frm->SetText(CSTR("Select DHT22 IO Pin"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDHT22Form *testFrm;
@@ -1399,7 +1400,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelIOPinForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelIOPinForm(0, this->ui, this->core));
-			frm->SetText(CSTR("Select DS18B20 IO Pin");
+			frm->SetText(CSTR("Select DS18B20 IO Pin"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRDS18B20Form *testFrm;
@@ -1478,7 +1479,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRSelStreamForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRSelStreamForm(0, this->ui, this->core, false));
-			frm->SetText(CSTR("Select Voice Modem");
+			frm->SetText(CSTR("Select Voice Modem"));
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SSWR::AVIRead::AVIRVoiceModemForm *innerFrm;

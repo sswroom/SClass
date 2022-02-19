@@ -44,7 +44,7 @@ void Parser::FileParser::SPKParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.spk", (const UTF8Char*)"SPackage File");
+		selector->AddFilter(CSTR("*.spk"), CSTR("SPackage File"));
 	}
 }
 

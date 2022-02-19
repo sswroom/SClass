@@ -14,27 +14,27 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpSystem = this->tcMain->AddTabPage(CSTR("System"));
-	NEW_CLASS(this->lblOSName, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"OS Name"));
+	NEW_CLASS(this->lblOSName, UI::GUILabel(ui, this->tpSystem, CSTR("OS Name")));
 	this->lblOSName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtOSName, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
 	this->txtOSName->SetRect(104, 4, 400, 23, false);
 	this->txtOSName->SetReadOnly(true);
-	NEW_CLASS(this->lblOSVer, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"OS Version"));
+	NEW_CLASS(this->lblOSVer, UI::GUILabel(ui, this->tpSystem, CSTR("OS Version")));
 	this->lblOSVer->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtOSVer, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
 	this->txtOSVer->SetRect(104, 28, 400, 23, false);
 	this->txtOSVer->SetReadOnly(true);
-	NEW_CLASS(this->lblOSLocale, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"OS Locale"));
+	NEW_CLASS(this->lblOSLocale, UI::GUILabel(ui, this->tpSystem, CSTR("OS Locale")));
 	this->lblOSLocale->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOSLocale, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
 	this->txtOSLocale->SetRect(104, 52, 400, 23, false);
 	this->txtOSLocale->SetReadOnly(true);
-	NEW_CLASS(this->lblArchitecture, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"Architecture"));
+	NEW_CLASS(this->lblArchitecture, UI::GUILabel(ui, this->tpSystem, CSTR("Architecture")));
 	this->lblArchitecture->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtArchitecture, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
 	this->txtArchitecture->SetRect(104, 76, 400, 23, false);
 	this->txtArchitecture->SetReadOnly(true);
-	NEW_CLASS(this->lblProductType, UI::GUILabel(ui, this->tpSystem, (const UTF8Char*)"Product Type"));
+	NEW_CLASS(this->lblProductType, UI::GUILabel(ui, this->tpSystem, CSTR("Product Type")));
 	this->lblProductType->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtProductType, UI::GUITextBox(ui, this->tpSystem, CSTR("")));
 	this->txtProductType->SetRect(104, 100, 400, 23, false);
@@ -45,24 +45,24 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
-	this->lvDevices->AddColumn((const UTF8Char*)"Description", 300);
-	this->lvDevices->AddColumn((const UTF8Char*)"Hardware ID", 200);
-	this->lvDevices->AddColumn((const UTF8Char*)"Service", 100);
-	this->lvDevices->AddColumn((const UTF8Char*)"Driver", 100);
+	this->lvDevices->AddColumn(CSTR("Description"), 300);
+	this->lvDevices->AddColumn(CSTR("Hardware ID"), 200);
+	this->lvDevices->AddColumn(CSTR("Service"), 100);
+	this->lvDevices->AddColumn(CSTR("Driver"), 100);
 
 	this->tpDrivers = this->tcMain->AddTabPage(CSTR("Devices"));
 	NEW_CLASS(this->lvDrivers, UI::GUIListView(ui, this->tpDrivers, UI::GUIListView::LVSTYLE_TABLE, 8));
 	this->lvDrivers->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDrivers->SetShowGrid(true);
 	this->lvDrivers->SetFullRowSelect(true);
-	this->lvDrivers->AddColumn((const UTF8Char*)"File Name", 120);
-	this->lvDrivers->AddColumn((const UTF8Char*)"File Size", 80);
-	this->lvDrivers->AddColumn((const UTF8Char*)"Creation Date", 140);
-	this->lvDrivers->AddColumn((const UTF8Char*)"Version", 100);
-	this->lvDrivers->AddColumn((const UTF8Char*)"Manufacturer", 200);
-	this->lvDrivers->AddColumn((const UTF8Char*)"ProductName", 300);
-	this->lvDrivers->AddColumn((const UTF8Char*)"Group", 130);
-	this->lvDrivers->AddColumn((const UTF8Char*)"Altitude", 100);
+	this->lvDrivers->AddColumn(CSTR("File Name"), 120);
+	this->lvDrivers->AddColumn(CSTR("File Size"), 80);
+	this->lvDrivers->AddColumn(CSTR("Creation Date"), 140);
+	this->lvDrivers->AddColumn(CSTR("Version"), 100);
+	this->lvDrivers->AddColumn(CSTR("Manufacturer"), 200);
+	this->lvDrivers->AddColumn(CSTR("ProductName"), 300);
+	this->lvDrivers->AddColumn(CSTR("Group"), 130);
+	this->lvDrivers->AddColumn(CSTR("Altitude"), 100);
 
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
@@ -118,8 +118,8 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 	{
 		driver = driverList->GetItem(i);
 		this->lvDrivers->AddItem(driver->fileName, driver);
-		Text::StrUInt64(sbuff, driver->fileSize);
-		this->lvDrivers->SetSubItem(i, 1, sbuff);
+		sptr = Text::StrUInt64(sbuff, driver->fileSize);
+		this->lvDrivers->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		if (driver->creationDate)
 		{
 			this->lvDrivers->SetSubItem(i, 2, driver->creationDate);
@@ -142,8 +142,8 @@ SSWR::AVIRead::AVIRSystemInfoLogForm::AVIRSystemInfoLogForm(UI::GUIClientControl
 		}
 		if (driver->altitude)
 		{
-			Text::StrUInt32(sbuff, driver->altitude);
-			this->lvDrivers->SetSubItem(i, 7, sbuff);
+			sptr = Text::StrUInt32(sbuff, driver->altitude);
+			this->lvDrivers->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 		}
 		i++;
 	}

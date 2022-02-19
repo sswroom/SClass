@@ -20,14 +20,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	me->txtServer->GetText(&sb);
 	if (!Net::SocketUtil::GetIPAddr((Char*)sb.ToString(), &dnsAddr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid server input", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtRequest->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter request", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter request"), CSTR("Error"), me);
 		return;
 	}
 	reqIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
@@ -140,11 +140,11 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"DNS Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlRequest, CSTR("DNS Server")));
 	this->lblServer->SetRect(4, 4, 120, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtServer->SetRect(124, 4, 120, 23, false);
-	NEW_CLASS(this->lblRequest, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Request"));
+	NEW_CLASS(this->lblRequest, UI::GUILabel(ui, this->pnlRequest, CSTR("Request")));
 	this->lblRequest->SetRect(4, 28, 120, 23, false);
 	NEW_CLASS(this->txtRequest, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtRequest->SetRect(124, 28, 160, 23, false);
@@ -161,7 +161,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("&Request")));
 	this->btnRequest->SetRect(324, 52, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->lblRequestTime, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Response Time(sec.)"));
+	NEW_CLASS(this->lblRequestTime, UI::GUILabel(ui, this->pnlRequest, CSTR("Response Time(sec.)")));
 	this->lblRequestTime->SetRect(4, 76, 120, 23, false);
 	NEW_CLASS(this->txtRequestTime, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtRequestTime->SetRect(124, 76, 150, 23, false);
@@ -173,27 +173,27 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->hspAnswer, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlAnswer, UI::GUIPanel(ui, this));
 	this->pnlAnswer->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblAnsName, UI::GUILabel(ui, this->pnlAnswer, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblAnsName, UI::GUILabel(ui, this->pnlAnswer, CSTR("Name")));
 	this->lblAnsName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAnsName, UI::GUITextBox(ui, this->pnlAnswer, CSTR("")));
 	this->txtAnsName->SetRect(104, 4, 200, 23, false);
 	this->txtAnsName->SetReadOnly(true);
-	NEW_CLASS(this->lblAnsType, UI::GUILabel(ui, this->pnlAnswer, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblAnsType, UI::GUILabel(ui, this->pnlAnswer, CSTR("Type")));
 	this->lblAnsType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtAnsType, UI::GUITextBox(ui, this->pnlAnswer, CSTR("")));
 	this->txtAnsType->SetRect(104, 28, 100, 23, false);
 	this->txtAnsType->SetReadOnly(true);
-	NEW_CLASS(this->lblAnsClass, UI::GUILabel(ui, this->pnlAnswer, (const UTF8Char*)"Class"));
+	NEW_CLASS(this->lblAnsClass, UI::GUILabel(ui, this->pnlAnswer, CSTR("Class")));
 	this->lblAnsClass->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtAnsClass, UI::GUITextBox(ui, this->pnlAnswer, CSTR("")));
 	this->txtAnsClass->SetRect(104, 52, 100, 23, false);
 	this->txtAnsClass->SetReadOnly(true);
-	NEW_CLASS(this->lblAnsTTL, UI::GUILabel(ui, this->pnlAnswer, (const UTF8Char*)"TTL"));
+	NEW_CLASS(this->lblAnsTTL, UI::GUILabel(ui, this->pnlAnswer, CSTR("TTL")));
 	this->lblAnsTTL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtAnsTTL, UI::GUITextBox(ui, this->pnlAnswer, CSTR("")));
 	this->txtAnsTTL->SetRect(104, 76, 100, 23, false);
 	this->txtAnsTTL->SetReadOnly(true);
-	NEW_CLASS(this->lblAnsRD, UI::GUILabel(ui, this->pnlAnswer, (const UTF8Char*)"RD"));
+	NEW_CLASS(this->lblAnsRD, UI::GUILabel(ui, this->pnlAnswer, CSTR("RD")));
 	this->lblAnsRD->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtAnsRD, UI::GUITextBox(ui, this->pnlAnswer, CSTR("")));
 	this->txtAnsRD->SetRect(104, 100, 300, 23, false);

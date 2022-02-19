@@ -26,7 +26,7 @@ void Parser::FileParser::PCXParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pcx", (const UTF8Char*)"PCX Image File");
+		selector->AddFilter(CSTR("*.pcx"), CSTR("PCX Image File"));
 	}
 }
 

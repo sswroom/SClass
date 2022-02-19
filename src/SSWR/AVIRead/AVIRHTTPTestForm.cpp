@@ -22,14 +22,14 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->connURLs->GetCount() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter at least 1 URL", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter at least 1 URL"), CSTR("Start"), me);
 		return;
 	}
 	me->txtConcurrCnt->GetText(&sb);
 	if (!sb.ToUInt32(&me->threadCnt) || me->threadCnt <= 0 || me->threadCnt >= 1000)
 	{
 		me->threadCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Concurrent Count", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Concurrent Count"), CSTR("Start"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 	{
 		me->threadCnt = 0;
 		me->connLeftCnt = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Total Connection Count", (const UTF8Char*)"Start", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Total Connection Count"), CSTR("Start"), me);
 		return;
 	}
 	me->kaConn = me->chkKAConn->IsChecked();
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnStartClicked(void *userObj)
 		{
 			me->threadCnt = 0;
 			me->connLeftCnt = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"POST Size must be > 0", (const UTF8Char*)"Start", me);
+			UI::MessageDialog::ShowDialog(CSTR("POST Size must be > 0"), CSTR("Start"), me);
 			return;
 		}
 	}
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	Text::StringBuilderUTF8 sb;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot add URL while running", (const UTF8Char*)"Add", me);
+		UI::MessageDialog::ShowDialog(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
 	me->txtURL->GetText(&sb);
@@ -97,7 +97,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLAddClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid HTTP url", (const UTF8Char*)"Add", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid HTTP url"), CSTR("Add"), me);
 		return;
 	}
 }
@@ -107,7 +107,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPTestForm::OnURLClearClicked(void *userObj)
 	SSWR::AVIRead::AVIRHTTPTestForm *me = (SSWR::AVIRead::AVIRHTTPTestForm*)userObj;
 	if (me->threadCurrCnt > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot add URL while running", (const UTF8Char*)"Add", me);
+		UI::MessageDialog::ShowDialog(CSTR("You cannot add URL while running"), CSTR("Add"), me);
 		return;
 	}
 	me->ClearURLs();
@@ -335,30 +335,30 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	this->postSize = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, CSTR("Status")));
 	this->grpStatus->SetRect(0, 0, 100, 136, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Conn Left"));
+	NEW_CLASS(this->lblConnLeftCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Conn Left")));
 	this->lblConnLeftCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnLeftCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtConnLeftCnt->SetRect(104, 4, 150, 23, false);
 	this->txtConnLeftCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Thread Count"));
+	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Thread Count")));
 	this->lblThreadCnt->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtThreadCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtThreadCnt->SetRect(104, 28, 150, 23, false);
 	this->txtThreadCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblSuccCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Success Count"));
+	NEW_CLASS(this->lblSuccCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Success Count")));
 	this->lblSuccCnt->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSuccCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtSuccCnt->SetRect(104, 52, 150, 23, false);
 	this->txtSuccCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblFailCnt, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Fail Count"));
+	NEW_CLASS(this->lblFailCnt, UI::GUILabel(ui, this->grpStatus, CSTR("Fail Count")));
 	this->lblFailCnt->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFailCnt, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtFailCnt->SetRect(104, 76, 150, 23, false);
 	this->txtFailCnt->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeUsed, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Time Used"));
+	NEW_CLASS(this->lblTimeUsed, UI::GUILabel(ui, this->grpStatus, CSTR("Time Used")));
 	this->lblTimeUsed->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTimeUsed, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtTimeUsed->SetRect(104, 100, 150, 23, false);
@@ -367,32 +367,32 @@ SSWR::AVIRead::AVIRHTTPTestForm::AVIRHTTPTestForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblConcurrCnt, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Concurrent Count"));
+	NEW_CLASS(this->lblConcurrCnt, UI::GUILabel(ui, this->pnlRequest, CSTR("Concurrent Count")));
 	this->lblConcurrCnt->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConcurrCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("10")));
 	this->txtConcurrCnt->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblTotalConnCnt, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Total Conn Count"));
+	NEW_CLASS(this->lblTotalConnCnt, UI::GUILabel(ui, this->pnlRequest, CSTR("Total Conn Count")));
 	this->lblTotalConnCnt->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTotalConnCnt, UI::GUITextBox(ui, this->pnlRequest, CSTR("100000")));
 	this->txtTotalConnCnt->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Method"));
+	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, CSTR("Method")));
 	this->lblMethod->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboMethod, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboMethod->SetRect(104, 52, 100, 23, false);
 	this->cboMethod->AddItem(CSTR("GET"), (void*)0);
 	this->cboMethod->AddItem(CSTR("POST"), (void*)1);
 	this->cboMethod->SetSelectedIndex(0);
-	NEW_CLASS(this->lblPostSize, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"POST Size"));
+	NEW_CLASS(this->lblPostSize, UI::GUILabel(ui, this->pnlRequest, CSTR("POST Size")));
 	this->lblPostSize->SetRect(204, 52, 100, 23, false);
 	NEW_CLASS(this->txtPostSize, UI::GUITextBox(ui, this->pnlRequest, CSTR("1048576")));
 	this->txtPostSize->SetRect(304, 52, 100, 23, false);
-	NEW_CLASS(this->chkKAConn, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"KA Conn", false));
+	NEW_CLASS(this->chkKAConn, UI::GUICheckBox(ui, this->pnlRequest, CSTR("KA Conn"), false));
 	this->chkKAConn->SetRect(104, 76, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlRequest, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	
-	NEW_CLASS(this->grpURL, UI::GUIGroupBox(ui, this, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->grpURL, UI::GUIGroupBox(ui, this, CSTR("URL")));
 	this->grpURL->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlURL, UI::GUIPanel(ui, this->grpURL));
 	this->pnlURL->SetRect(0, 0, 100, 23, false);

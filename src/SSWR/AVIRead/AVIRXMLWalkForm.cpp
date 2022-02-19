@@ -11,8 +11,8 @@ void __stdcall SSWR::AVIRead::AVIRXMLWalkForm::OnBrowseClick(void *userObj)
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"XMLWalk", false));
 	dlg->SetAllowMultiSel(false);
-	dlg->AddFilter((const UTF8Char*)"*.xml", (const UTF8Char*)"XML File");
-	dlg->AddFilter((const UTF8Char*)"*.html", (const UTF8Char*)"HTML File");
+	dlg->AddFilter(CSTR("*.xml"), CSTR("XML File"));
+	dlg->AddFilter(CSTR("*.html"), CSTR("HTML File"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->LoadFile(dlg->GetFileName()->ToCString());
@@ -58,7 +58,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 		sb.ClearStr();
 		reader->GetCurrPath(&sb);
 		i = this->lvXML->AddItem(sb.ToCString(), 0);
-		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader->GetNodeType()).v);
+		this->lvXML->SetSubItem(i, 1, Text::XMLNode::NodeTypeGetName(reader->GetNodeType()));
 		this->lvXML->SetSubItem(i, 2, reader->GetNodeText());
 	}
 	if (!reader->IsComplete())
@@ -66,7 +66,7 @@ void SSWR::AVIRead::AVIRXMLWalkForm::LoadFile(Text::CString fileName)
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in parsing the file, code = "));
 		sb.AppendOSInt(reader->GetErrorCode());
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"XML Walk", this);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("XML Walk"), this);
 	}
 	DEL_CLASS(reader);
 	DEL_CLASS(fs);
@@ -83,7 +83,7 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"XML File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("XML File")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
@@ -95,9 +95,9 @@ SSWR::AVIRead::AVIRXMLWalkForm::AVIRXMLWalkForm(UI::GUIClientControl *parent, UI
 	this->lvXML->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvXML->SetShowGrid(true);
 	this->lvXML->SetFullRowSelect(true);
-	this->lvXML->AddColumn((const UTF8Char*)"Path", 300);
-	this->lvXML->AddColumn((const UTF8Char*)"Type", 100);
-	this->lvXML->AddColumn((const UTF8Char*)"Value", 200);
+	this->lvXML->AddColumn(CSTR("Path"), 300);
+	this->lvXML->AddColumn(CSTR("Type"), 100);
+	this->lvXML->AddColumn(CSTR("Value"), 200);
 
 	this->HandleDropFiles(OnFileDrop, this);
 }

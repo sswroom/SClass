@@ -24,7 +24,7 @@ void Parser::FileParser::SPREDParser::PrepareSelector(IO::IFileSelector *selecto
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"RED*.dat", (const UTF8Char*)"Skypower Redirect Data");
+		selector->AddFilter(CSTR("RED*.dat"), CSTR("Skypower Redirect Data"));
 	}
 }
 

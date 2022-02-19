@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ProtoDec", false));
-	dlg->AddFilter((const UTF8Char*)"*.dat", (const UTF8Char*)"RAW data file");
+	dlg->AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
 	{
 		dlg->SetFileName(sb.ToString());
@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 		if (me->currFile->IsError())
 		{
 			DEL_CLASS(me->currFile);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening the file", (const UTF8Char*)"Protocol Decoder", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening the file"), CSTR("Protocol Decoder"), me);
 			return;
 		}
 		me->currDec = protoDec;
@@ -99,7 +99,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnLoadClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, const UTF8Char *typeName)
+void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, UInt64 fileOfst, UOSInt size, Text::CString typeName)
 {
 	SSWR::AVIRead::AVIRProtoDecForm *me = (SSWR::AVIRead::AVIRProtoDecForm *)userObj;
 	ProtocolItem *item;
@@ -111,8 +111,8 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnProtocolEntry(void *userObj, U
 	item->size = size;
 	sptr = Text::StrUInt64(sbuff, fileOfst);
 	i = me->lvLogs->AddItem(CSTRP(sbuff, sptr), item);
-	Text::StrInt32(sbuff, (Int32)size);
-	me->lvLogs->SetSubItem(i, 1, sbuff);
+	sptr = Text::StrInt32(sbuff, (Int32)size);
+	me->lvLogs->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 	me->lvLogs->SetSubItem(i, 2, typeName);
 	me->itemList->Add(item);
 }
@@ -143,7 +143,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 80, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, CSTR("File")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(104, 4, 400, 23, false);
@@ -151,7 +151,7 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnFile, UI::GUIButton(ui, this->pnlCtrl, CSTR("B&rowse")));
 	this->btnFile->SetRect(504, 4, 75, 23, false);
 	this->btnFile->HandleButtonClick(OnFileClicked, this);
-	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Decoder"));
+	NEW_CLASS(this->lblDecoder, UI::GUILabel(ui, this->pnlCtrl, CSTR("Decoder")));
 	this->lblDecoder->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboDecoder, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboDecoder->SetRect(104, 28, 200, 23, false);
@@ -167,9 +167,9 @@ SSWR::AVIRead::AVIRProtoDecForm::AVIRProtoDecForm(UI::GUIClientControl *parent, 
 	this->lvLogs->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvLogs->SetShowGrid(true);
 	this->lvLogs->SetFullRowSelect(true);
-	this->lvLogs->AddColumn((const UTF8Char*)"Offset", 80);
-	this->lvLogs->AddColumn((const UTF8Char*)"Size", 80);
-	this->lvLogs->AddColumn((const UTF8Char*)"Type", 200);
+	this->lvLogs->AddColumn(CSTR("Offset"), 80);
+	this->lvLogs->AddColumn(CSTR("Size"), 80);
+	this->lvLogs->AddColumn(CSTR("Type"), 200);
 	this->lvLogs->HandleSelChg(OnLogSelChg, this);
 
 	UOSInt i;

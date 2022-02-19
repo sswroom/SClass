@@ -23,7 +23,7 @@ void Parser::FileParser::NFPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.nfp", (const UTF8Char*)"NFP Package File");
+		selector->AddFilter(CSTR("*.nfp"), CSTR("NFP Package File"));
 	}
 }
 

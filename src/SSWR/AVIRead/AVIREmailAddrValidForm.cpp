@@ -20,14 +20,14 @@ SSWR::AVIRead::AVIREmailAddrValidForm::AVIREmailAddrValidForm(UI::GUIClientContr
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	NEW_CLASS(this->validator, Net::Email::EmailValidator(this->core->GetSocketFactory()));
 
-	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this, (const UTF8Char*)"Email Address"));
+	NEW_CLASS(this->lblAddr, UI::GUILabel(ui, this, CSTR("Email Address")));
 	this->lblAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAddr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtAddr->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->btnValidate, UI::GUIButton(ui, this, CSTR("&Validate")));
 	this->btnValidate->SetRect(104, 28, 75, 23, false);
 	this->btnValidate->HandleButtonClick(OnValidateClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetReadOnly(true);

@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	sb.ToUInt16(&port);
 	if (port <= 0 || port >= 65536)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid proxy port", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid proxy port"), CSTR("Request"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	ip = me->sockf->DNSResolveIPv4(sb.ToString(), sb.GetLength());
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid proxy server", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid proxy server"), CSTR("Request"), me);
 		return;
 	}
 
@@ -35,7 +35,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPProxyClientForm::OnRequestClicked(void *us
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith(UTF8STRC("http://")))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 
@@ -198,52 +198,52 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 79, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, CSTR("URL")));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlRequest, CSTR("http://")));
 	this->txtURL->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->lblProxySvr, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Proxy Server"));
+	NEW_CLASS(this->lblProxySvr, UI::GUILabel(ui, this->pnlRequest, CSTR("Proxy Server")));
 	this->lblProxySvr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtProxySvr, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtProxySvr->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblProxyPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblProxyPort, UI::GUILabel(ui, this->pnlRequest, CSTR("Port")));
 	this->lblProxyPort->SetRect(304, 28, 50, 23, false);
 	NEW_CLASS(this->txtProxyPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("80")));
 	this->txtProxyPort->SetRect(354, 28, 60, 23, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 56, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->grpResponse, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Response"));
+	NEW_CLASS(this->grpResponse, UI::GUIGroupBox(ui, this, CSTR("Response")));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Server IP"));
+	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, CSTR("Server IP")));
 	this->lblSvrIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSvrIP, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtSvrIP->SetRect(104, 4, 150, 23, false);
 	this->txtSvrIP->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"DNS Time"));
+	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, CSTR("DNS Time")));
 	this->lblTimeDNS->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTimeDNS, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeDNS->SetRect(104, 28, 150, 23, false);
 	this->txtTimeDNS->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Conn Time"));
+	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, CSTR("Conn Time")));
 	this->lblTimeConn->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtTimeConn, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeConn->SetRect(104, 52, 150, 23, false);
 	this->txtTimeConn->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Request Time"));
+	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, CSTR("Request Time")));
 	this->lblTimeSendHdr->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTimeSendHdr, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeSendHdr->SetRect(104, 76, 150, 23, false);
 	this->txtTimeSendHdr->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Response Time"));
+	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, CSTR("Response Time")));
 	this->lblTimeResp->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTimeResp, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeResp->SetRect(104, 100, 150, 23, false);
 	this->txtTimeResp->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Download Time"));
+	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Time")));
 	this->lblTimeTotal->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtTimeTotal, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeTotal->SetRect(104, 124, 150, 23, false);
@@ -252,7 +252,7 @@ SSWR::AVIRead::AVIRHTTPProxyClientForm::AVIRHTTPProxyClientForm(UI::GUIClientCon
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
-	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
+	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();

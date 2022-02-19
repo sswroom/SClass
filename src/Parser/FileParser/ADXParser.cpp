@@ -27,7 +27,7 @@ void Parser::FileParser::ADXParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.adx", (const UTF8Char*)"ADX ADPCM File");
+		selector->AddFilter(CSTR("*.adx"), CSTR("ADX ADPCM File"));
 	}
 }
 

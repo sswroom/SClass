@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnFileDrop(void *userObj, const UT
 						{
 							if (me->caCert && !me->caCert->IsSignatureKey(me->ssl, key))
 							{
-								UI::MessageDialog::ShowDialog((const UTF8Char*)"Key is not match with CA cert", (const UTF8Char*)"CA Util", me);
+								UI::MessageDialog::ShowDialog(CSTR("Key is not match with CA cert"), CSTR("CA Util"), me);
 								DEL_CLASS(key);
 							}
 							else
@@ -190,17 +190,17 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	SSWR::AVIRead::AVIRCAUtilForm *me = (SSWR::AVIRead::AVIRCAUtilForm*)userObj;
 	if (me->key == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Key not exist", (const UTF8Char*)"CA Util", me);
+		UI::MessageDialog::ShowDialog(CSTR("Key not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	if (me->caCert == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"CA Cert not exist", (const UTF8Char*)"CA Util", me);
+		UI::MessageDialog::ShowDialog(CSTR("CA Cert not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	if (me->csr == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"CSR not exist", (const UTF8Char*)"CA Util", me);
+		UI::MessageDialog::ShowDialog(CSTR("CSR not exist"), CSTR("CA Util"), me);
 		return;
 	}
 	UOSInt validDays;
@@ -208,7 +208,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	me->txtValidDays->GetText(&sb);
 	if (!sb.ToUOSInt(&validDays))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Valid Days not valid", (const UTF8Char*)"CA Util", me);
+		UI::MessageDialog::ShowDialog(CSTR("Valid Days not valid"), CSTR("CA Util"), me);
 		return;
 	}
 	Crypto::Cert::X509Cert *cert = Crypto::Cert::CertUtil::IssueCert(me->ssl, me->caCert, me->key, validDays, me->csr);
@@ -218,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRCAUtilForm::OnIssueClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in issuing certificate", (const UTF8Char*)"CA Util", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in issuing certificate"), CSTR("CA Util"), me);
 	}
 }
 
@@ -262,7 +262,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	this->key = 0;
 	this->csr = 0;
 
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, (const UTF8Char*)"Key"));
+	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this, CSTR("Key")));
 	this->lblKey->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtKey->SetRect(104, 4, 200, 23, false);
@@ -270,7 +270,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnKeyView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnKeyView->SetRect(304, 4, 75, 23, false);
 	this->btnKeyView->HandleButtonClick(OnKeyViewClicked, this);
-	NEW_CLASS(this->lblCACert, UI::GUILabel(ui, this, (const UTF8Char*)"CA Cert"));
+	NEW_CLASS(this->lblCACert, UI::GUILabel(ui, this, CSTR("CA Cert")));
 	this->lblCACert->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCACert, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtCACert->SetRect(104, 28, 200, 23, false);
@@ -278,7 +278,7 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnCACertView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnCACertView->SetRect(304, 28, 75, 23, false);
 	this->btnCACertView->HandleButtonClick(OnKeyViewClicked, this);
-	NEW_CLASS(this->lblCSR, UI::GUILabel(ui, this, (const UTF8Char*)"CSR"));
+	NEW_CLASS(this->lblCSR, UI::GUILabel(ui, this, CSTR("CSR")));
 	this->lblCSR->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCSR, UI::GUITextBox(ui, this, CSTR("-")));
 	this->txtCSR->SetRect(104, 52, 200, 23, false);
@@ -286,46 +286,46 @@ SSWR::AVIRead::AVIRCAUtilForm::AVIRCAUtilForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->btnCSRView, UI::GUIButton(ui, this, CSTR("View")));
 	this->btnCSRView->SetRect(304, 52, 75, 23, false);
 	this->btnCSRView->HandleButtonClick(OnKeyViewClicked, this);
-	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, this, (const UTF8Char*)"C"));
+	NEW_CLASS(this->lblCountryName, UI::GUILabel(ui, this, CSTR("C")));
 	this->lblCountryName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtCountryName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtCountryName->SetRect(104, 76, 200, 23, false);
 	this->txtCountryName->SetReadOnly(true);
-	NEW_CLASS(this->lblStateOrProvinceName, UI::GUILabel(ui, this, (const UTF8Char*)"ST"));
+	NEW_CLASS(this->lblStateOrProvinceName, UI::GUILabel(ui, this, CSTR("ST")));
 	this->lblStateOrProvinceName->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtStateOrProvinceName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStateOrProvinceName->SetRect(104, 100, 200, 23, false);
 	this->txtStateOrProvinceName->SetReadOnly(true);
-	NEW_CLASS(this->lblLocalityName, UI::GUILabel(ui, this, (const UTF8Char*)"L"));
+	NEW_CLASS(this->lblLocalityName, UI::GUILabel(ui, this, CSTR("L")));
 	this->lblLocalityName->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtLocalityName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtLocalityName->SetRect(104, 124, 200, 23, false);
 	this->txtLocalityName->SetReadOnly(true);
-	NEW_CLASS(this->lblOrganizationName, UI::GUILabel(ui, this, (const UTF8Char*)"O"));
+	NEW_CLASS(this->lblOrganizationName, UI::GUILabel(ui, this, CSTR("O")));
 	this->lblOrganizationName->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtOrganizationName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOrganizationName->SetRect(104, 148, 200, 23, false);
 	this->txtOrganizationName->SetReadOnly(true);
-	NEW_CLASS(this->lblOrganizationUnitName, UI::GUILabel(ui, this, (const UTF8Char*)"OU"));
+	NEW_CLASS(this->lblOrganizationUnitName, UI::GUILabel(ui, this, CSTR("OU")));
 	this->lblOrganizationUnitName->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtOrganizationUnitName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOrganizationUnitName->SetRect(104, 172, 200, 23, false);
 	this->txtOrganizationUnitName->SetReadOnly(true);
-	NEW_CLASS(this->lblCommonName, UI::GUILabel(ui, this, (const UTF8Char*)"CN"));
+	NEW_CLASS(this->lblCommonName, UI::GUILabel(ui, this, CSTR("CN")));
 	this->lblCommonName->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtCommonName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtCommonName->SetRect(104, 196, 200, 23, false);
 	this->txtCommonName->SetReadOnly(true);
-	NEW_CLASS(this->lblEmailAddress, UI::GUILabel(ui, this, (const UTF8Char*)"Email"));
+	NEW_CLASS(this->lblEmailAddress, UI::GUILabel(ui, this, CSTR("Email")));
 	this->lblEmailAddress->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtEmailAddress, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtEmailAddress->SetRect(104, 220, 200, 23, false);
 	this->txtEmailAddress->SetReadOnly(true);
-	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, (const UTF8Char*)"SubjAltName"));
+	NEW_CLASS(this->lblSAN, UI::GUILabel(ui, this, CSTR("SubjAltName")));
 	this->lblSAN->SetRect(4, 244, 100, 23, false);
 	NEW_CLASS(this->lbSAN, UI::GUIListBox(ui, this, false));
 	this->lbSAN->SetRect(104, 244, 200, 95, false);
-	NEW_CLASS(this->lblValidDays, UI::GUILabel(ui, this, (const UTF8Char*)"Valid Days"));
+	NEW_CLASS(this->lblValidDays, UI::GUILabel(ui, this, CSTR("Valid Days")));
 	this->lblValidDays->SetRect(4, 340, 100, 23, false);
 	NEW_CLASS(this->txtValidDays, UI::GUITextBox(ui, this, CSTR("365")));
 	this->txtValidDays->SetRect(104, 340, 200, 23, false);

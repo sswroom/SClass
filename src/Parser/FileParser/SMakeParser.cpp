@@ -21,7 +21,7 @@ void Parser::FileParser::SMakeParser::PrepareSelector(IO::IFileSelector *selecto
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Smake)
 	{
-		selector->AddFilter((const UTF8Char*)"SMake.cfg", (const UTF8Char*)"SMake config File");
+		selector->AddFilter(CSTR("SMake.cfg"), CSTR("SMake config File"));
 	}
 }
 

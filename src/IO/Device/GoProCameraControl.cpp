@@ -22,7 +22,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 		sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(":8080/gp/gpMediaList"));
-		cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		NEW_CLASS(reader, Text::UTF8Reader(cli));
 		reader->ReadToEnd(&sb);
 		DEL_CLASS(reader);
@@ -161,7 +161,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("http://"));
 	sptr = Net::SocketUtil::GetAddrName(sptr, &this->addr);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/gp/gpControl/info"));
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	NEW_CLASS(reader, Text::UTF8Reader(cli));
 	reader->ReadToEnd(&sb);
 	DEL_CLASS(reader);
@@ -290,7 +290,7 @@ Bool IO::Device::GoProCameraControl::GetFile(IO::CameraControl::FileInfo *file, 
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcat(sptr, file->fileName);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;
@@ -318,7 +318,7 @@ Bool IO::Device::GoProCameraControl::GetThumbnailFile(IO::CameraControl::FileInf
 	sptr = Text::StrConcat(sptr, file->filePath);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("/"));
 	sptr = Text::StrConcatC(sptr, file->fileName, nameLen);
-	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, sbuff, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, 0, CSTRP(sbuff, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	while ((readSize = cli->Read(sbuff, 2048)) > 0)
 	{
 		totalSize += readSize;

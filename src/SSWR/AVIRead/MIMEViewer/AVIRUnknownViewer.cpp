@@ -9,7 +9,7 @@ SSWR::AVIRead::MIMEViewer::AVIRUnknownViewer::AVIRUnknownViewer(SSWR::AVIRead::A
 	Text::CString contType = obj->GetContentType();
 	sb.AppendC(contType.v, contType.leng);
 
-	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, ctrl, sb.ToString()));
+	NEW_CLASS(this->lblMessage, UI::GUILabel(ui, ctrl, sb.ToCString()));
 	this->lblMessage->SetRect(4, 4, 500, 23, false);
 	this->lblMessage->SetDockType(UI::GUIControl::DOCK_FILL);
 }

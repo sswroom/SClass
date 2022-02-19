@@ -74,11 +74,11 @@ SSWR::AVIRead::AVIRTFTPServerForm::AVIRTFTPServerForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, CSTR("Port")));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("69")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->lblFilePath, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"File Path"));
+	NEW_CLASS(this->lblFilePath, UI::GUILabel(ui, this->tpControl, CSTR("File Path")));
 	this->lblFilePath->SetRect(8, 32, 100, 23, false);
 	sptr = IO::Path::GetProcessFileName(sbuff);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);

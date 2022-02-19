@@ -41,18 +41,18 @@ SSWR::AVIRead::AVIRPasswordHashForm::AVIRPasswordHashForm(UI::GUIClientControl *
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPassword->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Type"));
+	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, CSTR("Hash Type")));
 	this->lblHashType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this, false));
 	this->cboHashType->SetRect(104, 28, 300, 23, false);
 	NEW_CLASS(this->btnGenerate, UI::GUIButton(ui, this, CSTR("Generate")));
 	this->btnGenerate->SetRect(104, 52, 75, 23, false);
 	this->btnGenerate->HandleButtonClick(OnGenerateClicked, this);
-	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Value"));
+	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, CSTR("Hash Value")));
 	this->lblHashValue->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHashValue->SetRect(104, 76, 400, 23, false);

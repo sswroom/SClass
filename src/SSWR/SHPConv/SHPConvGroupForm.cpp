@@ -21,7 +21,7 @@ SSWR::SHPConv::SHPConvGroupForm::SHPConvGroupForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblGroup, UI::GUILabel(ui, this, (const UTF8Char*)"Groups"));
+	NEW_CLASS(this->lblGroup, UI::GUILabel(ui, this, CSTR("Groups")));
 	this->lblGroup->SetRect(8, 0, 100, 23, false);
 	NEW_CLASS(this->lbGroup, UI::GUIListBox(ui, this, false));
 	this->lbGroup->SetRect(8, 24, 264, 121, false);

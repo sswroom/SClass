@@ -15,13 +15,13 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	Data::DateTime dt;
 	if (me->yCols->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please add a data column first", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please add a data column first"), CSTR("Error"), me);
 		return;
 	}
 	xCol = (OSInt)me->cboXAxis->GetSelectedItem();
 	if (xCol < 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Current Version does not support integer X-Axis", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Current Version does not support integer X-Axis"), CSTR("Error"), me);
 		return;
 	}
 
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 	DB::DBReader *reader = me->db->GetTableData(me->tableName->v, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in getting database data", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in getting database data"), CSTR("Error"), me);
 		return;
 	}
 	colCount = me->yCols->GetCount() + 1;
@@ -246,7 +246,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnYAxisClicked(void *userObj)
 	UOSInt col;
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a column first", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a column first"), CSTR("Error"), me);
 		return;
 	}
 	col = (UOSInt)me->cboYAxis->GetItem(i);
@@ -302,7 +302,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlStrCols, UI::GUIPanel(ui, this));
 	this->pnlStrCols->SetRect(0, 0, 100, 128, false);
 	this->pnlStrCols->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStrCols, UI::GUILabel(ui, this->pnlStrCols, (const UTF8Char*)"String Columns"));
+	NEW_CLASS(this->lblStrCols, UI::GUILabel(ui, this->pnlStrCols, CSTR("String Columns")));
 	this->lblStrCols->SetRect(0, 4, 100, 23, false);
 	NEW_CLASS(this->lbStrCols, UI::GUIListBox(ui, this->pnlStrCols, false));
 	this->lbStrCols->SetRect(100, 0, 200, 128, false);
@@ -315,7 +315,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlXAxis, UI::GUIPanel(ui, this));
 	this->pnlXAxis->SetRect(0, 0 , 100, 32, false);
 	this->pnlXAxis->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblXAxis, UI::GUILabel(ui, this->pnlXAxis, (const UTF8Char*)"X-Axis"));
+	NEW_CLASS(this->lblXAxis, UI::GUILabel(ui, this->pnlXAxis, CSTR("X-Axis")));
 	this->lblXAxis->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboXAxis, UI::GUIComboBox(ui, this->pnlXAxis, false));
 	this->cboXAxis->SetRect(104, 4, 200, 23, false);
@@ -328,12 +328,12 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlControl, CSTR("Cancel")));
 	this->btnCancel->SetRect(84, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->grpYAxis, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Y-Axis"));
+	NEW_CLASS(this->grpYAxis, UI::GUIGroupBox(ui, this, CSTR("Y-Axis")));
 	this->grpYAxis->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlYAxis, UI::GUIPanel(ui, this->grpYAxis));
 	this->pnlYAxis->SetRect(0, 0, 100, 32, false);
 	this->pnlYAxis->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblYAxis, UI::GUILabel(ui, this->pnlYAxis, (const UTF8Char*)"Column"));
+	NEW_CLASS(this->lblYAxis, UI::GUILabel(ui, this->pnlYAxis, CSTR("Column")));
 	this->lblYAxis->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboYAxis, UI::GUIComboBox(ui, this->pnlYAxis, false));
 	this->cboYAxis->SetRect(104, 4, 200, 23, false);

@@ -127,8 +127,8 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 				sbuff[0] = 0;
 				sptr = lyr->GetColumnName(sbuff, i);
 				me->lvInfo->AddItem(CSTRP(sbuff, sptr), 0);
-				lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
-				me->lvInfo->SetSubItem(i, 1, sbuff);
+				sptr = lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
+				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
 			me->navi->SetSelectedVector(lyr->GetVectorById(sess, id));
@@ -173,8 +173,8 @@ SSWR::AVIRead::AVIRGISGroupQueryForm::AVIRGISGroupQueryForm(UI::GUIClientControl
 	this->txtLayer->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lvInfo, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvInfo->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvInfo->AddColumn((const UTF8Char*)"Value", 300);
+	this->lvInfo->AddColumn(CSTR("Name"), 100);
+	this->lvInfo->AddColumn(CSTR("Value"), 300);
 	this->lvInfo->SetShowGrid(true);
 	this->lvInfo->SetFullRowSelect(true);
 

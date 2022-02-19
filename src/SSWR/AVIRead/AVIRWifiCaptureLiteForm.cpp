@@ -61,21 +61,22 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 					imac = ReadMUInt64(id);
 
 					k = me->lvCurrWifi->AddItem(ssid, 0);
-					Text::StrUInt32(sbuff, bss->GetPHYId());
-					me->lvCurrWifi->SetSubItem(k, 1, sbuff);
-					Text::StrHexBytes(sbuff, &id[2], 6, ':');
-					me->lvCurrWifi->SetSubItem(k, 2, sbuff);
-					Text::StrInt32(sbuff, bss->GetBSSType());
-					me->lvCurrWifi->SetSubItem(k, 3, Net::MACInfo::GetMACInfo(imac)->name);
-					me->lvCurrWifi->SetSubItem(k, 4, sbuff);
-					Text::StrInt32(sbuff, bss->GetPHYType());
-					me->lvCurrWifi->SetSubItem(k, 5, sbuff);
-					Text::StrDouble(sbuff, bss->GetRSSI());
-					me->lvCurrWifi->SetSubItem(k, 6, sbuff);
-					Text::StrUInt32(sbuff, bss->GetLinkQuality());
-					me->lvCurrWifi->SetSubItem(k, 7, sbuff);
-					Text::StrDouble(sbuff, bss->GetFreq());
-					me->lvCurrWifi->SetSubItem(k, 8, sbuff);
+					sptr = Text::StrUInt32(sbuff, bss->GetPHYId());
+					me->lvCurrWifi->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+					sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
+					me->lvCurrWifi->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, bss->GetBSSType());
+					const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+					me->lvCurrWifi->SetSubItem(k, 3, {entry->name, entry->nameLen});
+					me->lvCurrWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+					sptr = Text::StrInt32(sbuff, bss->GetPHYType());
+					me->lvCurrWifi->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+					sptr = Text::StrDouble(sbuff, bss->GetRSSI());
+					me->lvCurrWifi->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+					sptr = Text::StrUInt32(sbuff, bss->GetLinkQuality());
+					me->lvCurrWifi->SetSubItem(k, 7, CSTRP(sbuff, sptr));
+					sptr = Text::StrDouble(sbuff, bss->GetFreq());
+					me->lvCurrWifi->SetSubItem(k, 8, CSTRP(sbuff, sptr));
 					if ((s = bss->GetManuf()) != 0)
 						me->lvCurrWifi->SetSubItem(k, 9, s);
 					if ((s = bss->GetModel()) != 0)
@@ -147,12 +148,13 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 
 						sptr = Text::StrHexBytes(sbuff, &id[2], 6, ':');
 						k = me->lvLogWifi->InsertItem((UOSInt)me->wifiLogMap->GetIndex(imac), CSTRP(sbuff, sptr), wifiLog);
-						me->lvLogWifi->SetSubItem(k, 1, Net::MACInfo::GetMACInfo(imac)->name);
+						const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfo(imac);
+						me->lvLogWifi->SetSubItem(k, 1, {entry->name, entry->nameLen});
 						me->lvLogWifi->SetSubItem(k, 2, wifiLog->ssid);
-						Text::StrInt32(sbuff, wifiLog->phyType);
-						me->lvLogWifi->SetSubItem(k, 3, sbuff);
-						Text::StrDouble(sbuff, wifiLog->freq);
-						me->lvLogWifi->SetSubItem(k, 4, sbuff);
+						sptr = Text::StrInt32(sbuff, wifiLog->phyType);
+						me->lvLogWifi->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+						sptr = Text::StrDouble(sbuff, wifiLog->freq);
+						me->lvLogWifi->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 						if (wifiLog->manuf)
 							me->lvLogWifi->SetSubItem(k, 5, wifiLog->manuf);
 						if (wifiLog->model)
@@ -162,11 +164,20 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						if (wifiLog->country)
 							me->lvLogWifi->SetSubItem(k, 8, wifiLog->country);
 						if (wifiLog->ouis[0][0] != 0 || wifiLog->ouis[0][1] != 0 || wifiLog->ouis[0][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[0]);
+							me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
+						}
 						if (wifiLog->ouis[1][0] != 0 || wifiLog->ouis[1][1] != 0 || wifiLog->ouis[1][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[1]);
+							me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
+						}
 						if (wifiLog->ouis[2][0] != 0 || wifiLog->ouis[2][1] != 0 || wifiLog->ouis[2][2] != 0)
-							me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2])->name);
+						{
+							const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[2]);
+							me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
+						}
 					}
 					else
 					{
@@ -211,7 +222,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 9, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 9, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -232,7 +244,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 10, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 10, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -253,7 +266,8 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 									wifiLog->ouis[l][0] = oui[0];
 									wifiLog->ouis[l][1] = oui[1];
 									wifiLog->ouis[l][2] = oui[2];
-									me->lvLogWifi->SetSubItem(k, 11, Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l])->name);
+									const Net::MACInfo::MACEntry *entry = Net::MACInfo::GetMACInfoOUI(wifiLog->ouis[l]);
+									me->lvLogWifi->SetSubItem(k, 11, {entry->name, entry->nameLen});
 								}
 								l++;
 							}
@@ -492,14 +506,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveClicked(void
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save"), me);
 	}
 }
 
@@ -565,14 +579,14 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiSaveFClicked(voi
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("File saved to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 	else
 	{
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in saving to "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Save Unk", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Save Unk"), me);
 	}
 }
 
@@ -580,7 +594,7 @@ Bool __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnFormClosing(void *userO
 {
 	SSWR::AVIRead::AVIRWifiCaptureLiteForm *me = (SSWR::AVIRead::AVIRWifiCaptureLiteForm*)userObj;
 	Manage::HiResClock clk;
-	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to close?", (const UTF8Char*)"Question", me))
+	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to close?"), CSTR("Question"), me))
 	{
 		if (clk.GetTimeDiff() < 30)
 		{
@@ -620,18 +634,18 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->lvCurrWifi->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCurrWifi->SetShowGrid(true);
 	this->lvCurrWifi->SetFullRowSelect(true);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"PhyId", 40);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"BSSType", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"PHYType", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"RSSI", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Link Quality", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Frequency", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Manufacturer", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"Model", 100);
-	this->lvCurrWifi->AddColumn((const UTF8Char*)"S/N", 100);
+	this->lvCurrWifi->AddColumn(CSTR("SSID"), 200);
+	this->lvCurrWifi->AddColumn(CSTR("PhyId"), 40);
+	this->lvCurrWifi->AddColumn(CSTR("MAC"), 120);
+	this->lvCurrWifi->AddColumn(CSTR("Vendor"), 120);
+	this->lvCurrWifi->AddColumn(CSTR("BSSType"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("PHYType"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("RSSI"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Link Quality"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Frequency"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Manufacturer"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("Model"), 100);
+	this->lvCurrWifi->AddColumn(CSTR("S/N"), 100);
 
 	this->tpLogWifi = this->tcMain->AddTabPage(CSTR("Wifi Log"));
 	NEW_CLASS(this->pnlLogWifi, UI::GUIPanel(ui, this->tpLogWifi));
@@ -648,18 +662,18 @@ SSWR::AVIRead::AVIRWifiCaptureLiteForm::AVIRWifiCaptureLiteForm(UI::GUIClientCon
 	this->lvLogWifi->SetShowGrid(true);
 	this->lvLogWifi->SetFullRowSelect(true);
 	this->lvLogWifi->HandleDblClk(OnLogWifiDblClicked, this);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"SSID", 200);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"PHYType", 60);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Frequency", 80);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Manufactorer", 150);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Model", 150);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"S/N", 100);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Country", 50);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor1", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor2", 120);
-	this->lvLogWifi->AddColumn((const UTF8Char*)"Vendor3", 120);
+	this->lvLogWifi->AddColumn(CSTR("MAC"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor"), 120);
+	this->lvLogWifi->AddColumn(CSTR("SSID"), 200);
+	this->lvLogWifi->AddColumn(CSTR("PHYType"), 60);
+	this->lvLogWifi->AddColumn(CSTR("Frequency"), 80);
+	this->lvLogWifi->AddColumn(CSTR("Manufactorer"), 150);
+	this->lvLogWifi->AddColumn(CSTR("Model"), 150);
+	this->lvLogWifi->AddColumn(CSTR("S/N"), 100);
+	this->lvLogWifi->AddColumn(CSTR("Country"), 50);
+	this->lvLogWifi->AddColumn(CSTR("Vendor1"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor2"), 120);
+	this->lvLogWifi->AddColumn(CSTR("Vendor3"), 120);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetClosingHandler(OnFormClosing, this);

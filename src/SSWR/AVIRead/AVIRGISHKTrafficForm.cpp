@@ -51,12 +51,12 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnOKClicked(void *userObj)
 		else
 		{
 			DEL_CLASS(lyr);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"The file is not a polyline layer", (const UTF8Char*)"HK Traffic", me);
+			UI::MessageDialog::ShowDialog(CSTR("The file is not a polyline layer"), CSTR("HK Traffic"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing the file", (const UTF8Char*)"HK Traffic", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the file"), CSTR("HK Traffic"), me);
 	}
 }
 
@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRGISHKTrafficForm::AVIRGISHKTrafficForm(UI::GUIClientControl *
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 
-	NEW_CLASS(this->lblRoadCenterline, UI::GUILabel(ui, this, (const UTF8Char*)"Centerline"));
+	NEW_CLASS(this->lblRoadCenterline, UI::GUILabel(ui, this, CSTR("Centerline")));
 	this->lblRoadCenterline->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRoadCenterline, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\CENTRELINE.mdb")));
 	this->txtRoadCenterline->SetRect(104, 4, 800, 23, false);

@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRNTPServerForm::OnStartClick(void *userObj)
 	Net::SocketFactory *sockf = me->core->GetSocketFactory();
 	if (!sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Cannot resolve the time server", (const UTF8Char*)"Resolve", me);
+		UI::MessageDialog::ShowDialog(CSTR("Cannot resolve the time server"), CSTR("Resolve"), me);
 		return;
 	}
 	NEW_CLASS(me->svr, Net::NTPServer(me->core->GetSocketFactory(), port, me->log, sb.ToCString()));
@@ -75,11 +75,11 @@ SSWR::AVIRead::AVIRNTPServerForm::AVIRNTPServerForm(UI::GUIClientControl *parent
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpControl = this->tcMain->AddTabPage(CSTR("Control"));
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpControl, CSTR("Port")));
 	this->lblPort->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpControl, CSTR("123")));
 	this->txtPort->SetRect(108, 8, 50, 23, false);
-	NEW_CLASS(this->lblTimeServer, UI::GUILabel(ui, this->tpControl, (const UTF8Char*)"Time Server"));
+	NEW_CLASS(this->lblTimeServer, UI::GUILabel(ui, this->tpControl, CSTR("Time Server")));
 	this->lblTimeServer->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtTimeServer, UI::GUITextBox(ui, this->tpControl, CSTR("stdtime.gov.hk")));
 	this->txtTimeServer->SetRect(108, 32, 500, 23, false);

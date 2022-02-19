@@ -45,7 +45,7 @@ namespace UI
 		void ChangeColumnCnt(UOSInt newColCnt);
 		UOSInt GetColumnCnt();
 		Bool AddColumn(Text::String *columnName, Double colWidth);
-		Bool AddColumn(const UTF8Char *columnName, Double colWidth);
+		Bool AddColumn(Text::CString columnName, Double colWidth);
 		Bool AddColumn(const WChar *columnName, Double colWidth);
 		Bool SetColumnWidth(UOSInt index, Double colWidth);
 		Bool ClearAll();
@@ -55,7 +55,7 @@ namespace UI
 		UOSInt AddItem(const WChar *itemText, void *itemObj);
 		UOSInt AddItem(Text::CString itemText, void *itemObj, UOSInt imageIndex);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::String *text);
-		Bool SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text);
+		Bool SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text);
 		Bool SetSubItem(UOSInt index, UOSInt subIndex, const WChar *text);
 		Bool GetSubItem(UOSInt index, UOSInt subIndex, Text::StringBuilderUTF8 *sb);
 		UOSInt InsertItem(UOSInt index, Text::String *itemText, void *itemObj);

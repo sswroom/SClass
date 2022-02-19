@@ -53,7 +53,7 @@ namespace Map
 
 			IO::SeekableStream *GetTileData(Int32 lev, Int32 xTile, Int32 yTile, Sync::MutexUsage *mutUsage);
 		public:
-			OSMCacheHandler(const UTF8Char *url, const UTF8Char *cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
+			OSMCacheHandler(Text::CString url, Text::CString cacheDir, Int32 maxLevel, Net::SocketFactory *sockf, Net::SSLEngine *ssl);
 			virtual ~OSMCacheHandler();
 
 			void AddAlternateURL(const UTF8Char *url, UOSInt len);

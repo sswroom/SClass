@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	sb.ToUOSInt(&nTap);
 	if (outW == 0 || outH == 0 || nTap < 3 || nTap > 32)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
 	}
 	if (me->srcImg->info->pf == Media::PF_B8G8R8A8)
@@ -47,7 +47,7 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported image", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unsupported image"), CSTR("Error"), me);
 		return;
 	}
 	me->SetDialogResult(UI::GUIForm::DR_OK);
@@ -70,25 +70,25 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->outImg = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	
-	NEW_CLASS(this->lblOriW, UI::GUILabel(ui, this, (const UTF8Char*)"Ori Width"));
+	NEW_CLASS(this->lblOriW, UI::GUILabel(ui, this, CSTR("Ori Width")));
 	this->lblOriW->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtOriW, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOriW->SetRect(104, 4, 100, 23, false);
 	this->txtOriW->SetReadOnly(true);
-	NEW_CLASS(this->lblOriH, UI::GUILabel(ui, this, (const UTF8Char*)"Ori Height"));
+	NEW_CLASS(this->lblOriH, UI::GUILabel(ui, this, CSTR("Ori Height")));
 	this->lblOriH->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtOriH, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOriH->SetRect(104, 28, 100, 23, false);
 	this->txtOriH->SetReadOnly(true);
-	NEW_CLASS(this->lblOutW, UI::GUILabel(ui, this, (const UTF8Char*)"Out Width"));
+	NEW_CLASS(this->lblOutW, UI::GUILabel(ui, this, CSTR("Out Width")));
 	this->lblOutW->SetRect(4, 64, 100, 23, false);
 	NEW_CLASS(this->txtOutW, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOutW->SetRect(104, 64, 100, 23, false);
-	NEW_CLASS(this->lblOutH, UI::GUILabel(ui, this, (const UTF8Char*)"Out Height"));
+	NEW_CLASS(this->lblOutH, UI::GUILabel(ui, this, CSTR("Out Height")));
 	this->lblOutH->SetRect(4, 88, 100, 23, false);
 	NEW_CLASS(this->txtOutH, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOutH->SetRect(104, 88, 100, 23, false);
-	NEW_CLASS(this->lblNTap, UI::GUILabel(ui, this, (const UTF8Char*)"N-Tap"));
+	NEW_CLASS(this->lblNTap, UI::GUILabel(ui, this, CSTR("N-Tap")));
 	this->lblNTap->SetRect(4, 112, 100, 23, false);
 	NEW_CLASS(this->txtNTap, UI::GUITextBox(ui, this, CSTR("16")));
 	this->txtNTap->SetRect(104, 112, 100, 23, false);

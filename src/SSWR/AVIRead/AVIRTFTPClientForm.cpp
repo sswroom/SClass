@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtHost->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown Host", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
@@ -33,13 +33,13 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	me->txtFileName->GetText(&sb);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter file name", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter file name"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
 	if (sb.IndexOf(IO::Path::PATH_SEPERATOR) != INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"File Name is not valid", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("File Name is not valid"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	sptr = IO::Path::AppendPathC(sbuff, sptr, sb.ToString(), sb.GetLength());
 	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Unknown)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"File is already exist", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("File is already exist"), CSTR("TFTP Client"), me);
 		me->txtFileName->Focus();
 		return;
 	}
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 	NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
 	if (cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting client", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 	}
 	else
 	{
@@ -72,23 +72,23 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnRecvClick(void *userObj)
 			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating file", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in creating file"), CSTR("TFTP Client"), me);
 			}
 			else if (fs->Write(buff, buffSize) == buffSize)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"File received successfully", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("File received successfully"), CSTR("TFTP Client"), me);
 			}
 			else
 			{
 				fs->Close();
 				IO::Path::DeleteFile(sbuff);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("TFTP Client"), me);
 			}
 			DEL_CLASS(fs);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"File receive failed", (const UTF8Char*)"TFTP Client", me);
+			UI::MessageDialog::ShowDialog(CSTR("File receive failed"), CSTR("TFTP Client"), me);
 		}
 		DEL_CLASS(mstm);
 	}
@@ -104,7 +104,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	me->txtHost->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown Host", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unknown Host"), CSTR("TFTP Client"), me);
 		me->txtHost->Focus();
 		return;
 	}
@@ -112,7 +112,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"TFTP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("TFTP Client"), me);
 		me->txtPort->Focus();
 		return;
 	}
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 		NEW_CLASS(cli, Net::TFTPClient(me->core->GetSocketFactory(), &addr, port));
 		if (cli->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting client", (const UTF8Char*)"TFTP Client", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in starting client"), CSTR("TFTP Client"), me);
 		}
 		else
 		{
@@ -135,15 +135,15 @@ void __stdcall SSWR::AVIRead::AVIRTFTPClientForm::OnSendClick(void *userObj)
 			NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			if (fs->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening file", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("TFTP Client"), me);
 			}
 			else if (cli->SendFile(&fileName->v[i + 1], fs))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"File sent successfully", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("File sent successfully"), CSTR("TFTP Client"), me);
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"File sent failed", (const UTF8Char*)"TFTP Client", me);
+				UI::MessageDialog::ShowDialog(CSTR("File sent failed"), CSTR("TFTP Client"), me);
 			}
 			DEL_CLASS(fs);
 		}
@@ -160,15 +160,15 @@ SSWR::AVIRead::AVIRTFTPClientForm::AVIRTFTPClientForm(UI::GUIClientControl *pare
 	this->SetNoResize(true);
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("69")));
 	this->txtPort->SetRect(104, 28, 50, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, (const UTF8Char*)"FileName"));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("FileName")));
 	this->lblFileName->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("File.dat")));
 	this->txtFileName->SetRect(104, 52, 200, 23, false);

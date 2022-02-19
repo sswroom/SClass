@@ -34,7 +34,7 @@ UtilUI::TextGotoDialog::TextGotoDialog(UI::GUIClientControl *parent, UI::GUICore
 	this->SetNoResize(true);
 	this->monMgr = monMgr;
 
-	NEW_CLASS(this->lblLine, UI::GUILabel(ui, this, (const UTF8Char*)"Line Number:"));
+	NEW_CLASS(this->lblLine, UI::GUILabel(ui, this, CSTR("Line Number:")));
 	this->lblLine->SetRect(8, 16, 80, 21, false);
 	NEW_CLASS(this->txtLine, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtLine->SetRect(88, 14, 100, 23, false);

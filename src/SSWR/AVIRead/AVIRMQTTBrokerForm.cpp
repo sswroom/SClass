@@ -25,11 +25,11 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 		me->txtPort->GetText(&sb);
 		if (!sb.ToUInt16(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 		}
 		else if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -38,12 +38,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			{
 				if (me->ssl == 0)
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing SSL engine", (const UTF8Char*)"MQTT Broker", me);
+					UI::MessageDialog::ShowDialog(CSTR("Error in initializing SSL engine"), CSTR("MQTT Broker"), me);
 					return;
 				}
 				if (me->sslCert == 0 || me->sslKey == 0)
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select SSL Cert/Key to enable SSL", (const UTF8Char*)"MQTT Broker", me);
+					UI::MessageDialog::ShowDialog(CSTR("Please select SSL Cert/Key to enable SSL"), CSTR("MQTT Broker"), me);
 					return;
 				}
 				ssl = me->ssl;
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnStartClicked(void *userObj)
 			NEW_CLASS(me->broker, Net::MQTTBroker(me->core->GetSocketFactory(), ssl, port, me->log, true));
 			if (me->broker->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting server", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), me);
 				DEL_CLASS(me->broker);
 				me->broker = 0;
 			}
@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnSSLCertClicked(void *userObj
 	SSWR::AVIRead::AVIRMQTTBrokerForm *me = (SSWR::AVIRead::AVIRMQTTBrokerForm*)userObj;
 	if (me->broker)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You cannot change cert when server is started", (const UTF8Char*)"MQTT Broker", me);
+		UI::MessageDialog::ShowDialog(CSTR("You cannot change cert when server is started"), CSTR("MQTT Broker"), me);
 		return;
 	}
 	SSWR::AVIRead::AVIRSSLCertKeyForm *frm;
@@ -128,12 +128,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 			me->lvTopic->AddItem(topicSt->topic, topicSt);
 			sb.ClearStr();
 			sb.AppendC(topicSt->message, topicSt->msgSize);
-			me->lvTopic->SetSubItem(i, 1, sb.ToString());
+			me->lvTopic->SetSubItem(i, 1, sb.ToCString());
 			dt.SetTicks(topicSt->updateTime);
 			dt.ToLocalTime();
 			sb.ClearStr();
 			sb.AppendDate(&dt);
-			me->lvTopic->SetSubItem(i, 2, sb.ToString());
+			me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
 	}
@@ -147,12 +147,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTBrokerForm::OnTimerTick(void *userObj)
 				topicSt->updated = false;
 				sb.ClearStr();
 				sb.AppendC(topicSt->message, topicSt->msgSize);
-				me->lvTopic->SetSubItem(i, 1, sb.ToString());
+				me->lvTopic->SetSubItem(i, 1, sb.ToCString());
 				dt.SetTicks(topicSt->updateTime);
 				dt.ToLocalTime();
 				sb.ClearStr();
 				sb.AppendDate(&dt);
-				me->lvTopic->SetSubItem(i, 2, sb.ToString());
+				me->lvTopic->SetSubItem(i, 2, sb.ToCString());
 			}
 			i++;
 		}
@@ -222,16 +222,16 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"SSL"));
+	NEW_CLASS(this->lblSSL, UI::GUILabel(ui, this->tpStatus, CSTR("SSL")));
 	this->lblSSL->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, (const UTF8Char*)"Enable", false));
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->tpStatus, CSTR("Enable"), false));
 	this->chkSSL->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnSSLCert, UI::GUIButton(ui, this->tpStatus, CSTR("Cert/Key")));
 	this->btnSSLCert->SetRect(204, 4, 75, 23, false);
 	this->btnSSLCert->HandleButtonClick(OnSSLCertClicked, this);
-	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)""));
+	NEW_CLASS(this->lblSSLCert, UI::GUILabel(ui, this->tpStatus, CSTR("")));
 	this->lblSSLCert->SetRect(284, 4, 200, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->tpStatus, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->tpStatus, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
@@ -244,9 +244,9 @@ SSWR::AVIRead::AVIRMQTTBrokerForm::AVIRMQTTBrokerForm(UI::GUIClientControl *pare
 	this->lvTopic->SetDockType(UI::GUIClientControl::DOCK_FILL);
 	this->lvTopic->SetFullRowSelect(true);
 	this->lvTopic->SetShowGrid(true);
-	this->lvTopic->AddColumn((const UTF8Char*)"Topic", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Message", 200);
-	this->lvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
+	this->lvTopic->AddColumn(CSTR("Topic"), 200);
+	this->lvTopic->AddColumn(CSTR("Message"), 200);
+	this->lvTopic->AddColumn(CSTR("Update Time"), 150);
 
 	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
 	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));

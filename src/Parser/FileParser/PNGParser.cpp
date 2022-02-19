@@ -2444,7 +2444,7 @@ void Parser::FileParser::PNGParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.png", (const UTF8Char*)"Portable Network Graphic File");
+		selector->AddFilter(CSTR("*.png"), CSTR("Portable Network Graphic File"));
 	}
 }
 

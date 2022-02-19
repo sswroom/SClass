@@ -24,8 +24,8 @@ void Parser::FileParser::ICOParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ico", (const UTF8Char*)"Icon File");
-		selector->AddFilter((const UTF8Char*)"*.cur", (const UTF8Char*)"Cursor File");
+		selector->AddFilter(CSTR("*.ico"), CSTR("Icon File"));
+		selector->AddFilter(CSTR("*.cur"), CSTR("Cursor File"));
 	}
 }
 

@@ -24,19 +24,19 @@ void __stdcall SSWR::AVIRead::AVIRMySQLConnForm::OnOKClicked(void *userObj)
 	Net::SocketUtil::AddressInfo addr;
 	if (!sbPort.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	else if (!sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving server host", (const UTF8Char*)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving server host"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, port, sb2.ToCString(), sb3.ToCString(), sb4.ToCString()));
 	if (conn->IsError())
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening MySQL connection", (const UTF8Char*)"MySQL Connection", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in opening MySQL connection"), CSTR("MySQL Connection"), me);
 		return;
 	}
 	me->conn = conn;
@@ -59,24 +59,24 @@ SSWR::AVIRead::AVIRMySQLConnForm::AVIRMySQLConnForm(UI::GUIClientControl *parent
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->SetNoResize(true);
 
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, (const UTF8Char*)"Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this, CSTR("Server")));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this, CSTR("127.0.0.1")));
 	this->txtServer->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this, CSTR("3306")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUID, UI::GUILabel(ui, this, CSTR("User Name")));
 	this->lblUID->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtUID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUID->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPWD, UI::GUILabel(ui, this, CSTR("Password")));
 	this->lblPWD->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtPWD, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPWD->SetRect(104, 76, 200, 23, false);
 	this->txtPWD->SetPasswordChar('*');
-	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, (const UTF8Char*)"Database"));
+	NEW_CLASS(this->lblDatabase, UI::GUILabel(ui, this, CSTR("Database")));
 	this->lblDatabase->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtDatabase, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDatabase->SetRect(104, 100, 200, 23, false);

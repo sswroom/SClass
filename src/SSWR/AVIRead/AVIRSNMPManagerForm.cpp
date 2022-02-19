@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	me->txtAgentAddr->GetText(&sb);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing Agent Address", (const UTF8Char*)"SNMP Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
 		return;
 	}
 
@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	me->txtCommunity->GetText(&sb);
 	if (sb.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter community", (const UTF8Char*)"SNMP Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Manager"), me);
 		return;
 	}
 	UOSInt i;
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	community->Release();
 	if (j <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in Adding Agent", (const UTF8Char*)"SNMP Manager", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in Adding Agent"), CSTR("SNMP Manager"), me);
 	}
 	else
 	{
@@ -189,17 +189,17 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentSelChg(void *userObj)
 		{
 			reading = agent->readingList->GetItem(i);
 			me->lvAgentReading->AddItem(reading->name, reading);
-			Text::StrUOSInt(sbuff, reading->index);
-			me->lvAgentReading->SetSubItem(i, 1, sbuff);
-			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType).v);
+			sptr = Text::StrUOSInt(sbuff, reading->index);
+			me->lvAgentReading->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+			me->lvAgentReading->SetSubItem(i, 2, SSWR::SMonitor::SAnalogSensor::GetReadingTypeName(reading->readingType));
 			if (reading->valValid)
 			{
-				Text::StrDouble(sbuff, reading->currVal);
-				me->lvAgentReading->SetSubItem(i, 3, sbuff);
+				sptr = Text::StrDouble(sbuff, reading->currVal);
+				me->lvAgentReading->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->lvAgentReading->SetSubItem(i, 3, (const UTF8Char*)"-");
+				me->lvAgentReading->SetSubItem(i, 3, CSTR("-"));
 			}
 			
 			i++;
@@ -225,6 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIRSNMPManagerForm *me = (SSWR::AVIRead::AVIRSNMPManagerForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
 	if (dt.ToTicks() - me->lastUpdateTime >= 30000)
@@ -237,12 +238,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnTimerTick(void *userObj)
 			reading = (Net::SNMPManager::ReadingInfo*)me->lvAgentReading->GetItem(i);
 			if (reading->valValid)
 			{
-				Text::StrDouble(sbuff, reading->currVal);
-				me->lvAgentReading->SetSubItem(i, 3, sbuff);
+				sptr = Text::StrDouble(sbuff, reading->currVal);
+				me->lvAgentReading->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->lvAgentReading->SetSubItem(i, 3, (const UTF8Char*)"-");
+				me->lvAgentReading->SetSubItem(i, 3, CSTR("-"));
 			}
 		}
 		if (me->chkSendToSvr->IsChecked())
@@ -300,20 +301,20 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 104, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAgentAddr, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Agent Addr"));
+	NEW_CLASS(this->lblAgentAddr, UI::GUILabel(ui, this->pnlControl, CSTR("Agent Addr")));
 	this->lblAgentAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAgentAddr, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtAgentAddr->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->chkAgentScan, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Scan IP", false));
+	NEW_CLASS(this->chkAgentScan, UI::GUICheckBox(ui, this->pnlControl, CSTR("Scan IP"), false));
 	this->chkAgentScan->SetRect(304, 4, 100, 23, false);
-	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Community"));
+	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlControl, CSTR("Community")));
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlControl, CSTR("public")));
 	this->txtCommunity->SetRect(104, 28, 200, 23, false);
 	NEW_CLASS(this->btnAgentAdd, UI::GUIButton(ui, this->pnlControl, CSTR("Add")));
 	this->btnAgentAdd->SetRect(104, 52, 75, 23, false);
 	this->btnAgentAdd->HandleButtonClick(OnAgentAddClicked, this);
-	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, (const UTF8Char*)"Send to Server", false));
+	NEW_CLASS(this->chkSendToSvr, UI::GUICheckBox(ui, this->pnlControl, CSTR("Send to Server"), false));
 	this->chkSendToSvr->SetRect(104, 76, 150, 23, false);
 	NEW_CLASS(this->lbAgent, UI::GUIListBox(ui, this, false));
 	this->lbAgent->SetRect(0, 0, 150, 23, false);
@@ -323,7 +324,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlAgent, UI::GUIPanel(ui, this));
 	this->pnlAgent->SetRect(0, 0, 100, 248, false);
 	this->pnlAgent->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAgentDAddr, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Agent Address"));
+	NEW_CLASS(this->lblAgentDAddr, UI::GUILabel(ui, this->pnlAgent, CSTR("Agent Address")));
 	this->lblAgentDAddr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAgentDAddr, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentDAddr->SetRect(104, 4, 150, 23, false);
@@ -331,47 +332,47 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnAgentWalk, UI::GUIButton(ui, this->pnlAgent, CSTR("Walk")));
 	this->btnAgentWalk->SetRect(254, 4, 75, 23, false);
 	this->btnAgentWalk->HandleButtonClick(OnAgentWalkClicked, this);
-	NEW_CLASS(this->lblAgentDescr, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Description"));
+	NEW_CLASS(this->lblAgentDescr, UI::GUILabel(ui, this->pnlAgent, CSTR("Description")));
 	this->lblAgentDescr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtAgentDescr, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentDescr->SetRect(104, 28, 500, 23, false);
 	this->txtAgentDescr->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentOID, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"OID"));
+	NEW_CLASS(this->lblAgentOID, UI::GUILabel(ui, this->pnlAgent, CSTR("OID")));
 	this->lblAgentOID->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtAgentOID, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentOID->SetRect(104, 52, 150, 23, false);
 	this->txtAgentOID->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentOIDName, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"OID Name"));
+	NEW_CLASS(this->lblAgentOIDName, UI::GUILabel(ui, this->pnlAgent, CSTR("OID Name")));
 	this->lblAgentOIDName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtAgentOIDName, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentOIDName->SetRect(104, 76, 150, 23, false);
 	this->txtAgentOIDName->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentName, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblAgentName, UI::GUILabel(ui, this->pnlAgent, CSTR("Name")));
 	this->lblAgentName->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtAgentName, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentName->SetRect(104, 100, 150, 23, false);
 	this->txtAgentName->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentContact, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Contact"));
+	NEW_CLASS(this->lblAgentContact, UI::GUILabel(ui, this->pnlAgent, CSTR("Contact")));
 	this->lblAgentContact->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtAgentContact, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentContact->SetRect(104, 124, 150, 23, false);
 	this->txtAgentContact->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentLocation, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Location"));
+	NEW_CLASS(this->lblAgentLocation, UI::GUILabel(ui, this->pnlAgent, CSTR("Location")));
 	this->lblAgentLocation->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtAgentLocation, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentLocation->SetRect(104, 148, 150, 23, false);
 	this->txtAgentLocation->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentPhyAddr, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Phy Addr"));
+	NEW_CLASS(this->lblAgentPhyAddr, UI::GUILabel(ui, this->pnlAgent, CSTR("Phy Addr")));
 	this->lblAgentPhyAddr->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtAgentPhyAddr, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentPhyAddr->SetRect(104, 172, 150, 23, false);
 	this->txtAgentPhyAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentVendor, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Vendor"));
+	NEW_CLASS(this->lblAgentVendor, UI::GUILabel(ui, this->pnlAgent, CSTR("Vendor")));
 	this->lblAgentVendor->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtAgentVendor, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentVendor->SetRect(104, 196, 150, 23, false);
 	this->txtAgentVendor->SetReadOnly(true);
-	NEW_CLASS(this->lblAgentModel, UI::GUILabel(ui, this->pnlAgent, (const UTF8Char*)"Model"));
+	NEW_CLASS(this->lblAgentModel, UI::GUILabel(ui, this->pnlAgent, CSTR("Model")));
 	this->lblAgentModel->SetRect(4, 220, 100, 23, false);
 	NEW_CLASS(this->txtAgentModel, UI::GUITextBox(ui, this->pnlAgent, CSTR("")));
 	this->txtAgentModel->SetRect(104, 220, 150, 23, false);
@@ -380,10 +381,10 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	this->lvAgentReading->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvAgentReading->SetShowGrid(true);
 	this->lvAgentReading->SetFullRowSelect(true);
-	this->lvAgentReading->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvAgentReading->AddColumn((const UTF8Char*)"Index", 60);
-	this->lvAgentReading->AddColumn((const UTF8Char*)"Type", 100);
-	this->lvAgentReading->AddColumn((const UTF8Char*)"Value", 150);
+	this->lvAgentReading->AddColumn(CSTR("Name"), 150);
+	this->lvAgentReading->AddColumn(CSTR("Index"), 60);
+	this->lvAgentReading->AddColumn(CSTR("Type"), 100);
+	this->lvAgentReading->AddColumn(CSTR("Value"), 150);
 
 	this->AddTimer(1000, OnTimerTick, this);
 
@@ -392,7 +393,7 @@ SSWR::AVIRead::AVIRSNMPManagerForm::AVIRSNMPManagerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->mgr, Net::SNMPManager(sockf));
 	if (this->mgr->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting SNMP Manager", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Manager"), CSTR("Error"), this);
 	}
 
 	Data::ArrayList<Net::ConnectionInfo*> connInfoList;

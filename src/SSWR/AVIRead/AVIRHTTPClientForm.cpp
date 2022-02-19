@@ -25,11 +25,11 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnUserAgentClicked(void *userO
 {
 	SSWR::AVIRead::AVIRHTTPClientForm *me = (SSWR::AVIRead::AVIRHTTPClientForm*)userObj;
 	SSWR::AVIRead::AVIRUserAgentSelForm *frm;
-	NEW_CLASS(frm, SSWR::AVIRead::AVIRUserAgentSelForm(0, me->ui, me->core, me->userAgent->v));
+	NEW_CLASS(frm, SSWR::AVIRead::AVIRUserAgentSelForm(0, me->ui, me->core, me->userAgent->ToCString()));
 	if (frm->ShowDialog(me))
 	{
 		SDEL_STRING(me->userAgent);
-		me->userAgent = Text::String::NewNotNull(frm->GetUserAgent());
+		me->userAgent = Text::String::New(frm->GetUserAgent());
 		me->lblUserAgent->SetText(me->userAgent->ToCString());
 	}
 	DEL_CLASS(frm);
@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 
@@ -343,7 +343,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 		DEL_CLASS(fs);
 		if (!succ)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing to file", (const UTF8Char*)"HTTP Client", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in storing to file"), CSTR("HTTP Client"), me);
 		}
 	}
 	DEL_CLASS(dlg);
@@ -410,7 +410,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnDataStrClicked(void *userObj
 			}
 			me->params->Add(param);
 			i = me->lvReqData->AddItem(param->name, param);
-			me->lvReqData->SetSubItem(i, 1, param->value->v);
+			me->lvReqData->SetSubItem(i, 1, param->value);
 
 			if (spInd == INVALID_INDEX)
 			{
@@ -798,7 +798,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 					UOSInt k = me->lvCookie->AddItem(cookie->domain, cookie);
 					if (cookie->path)
 					{
-						me->lvCookie->SetSubItem(k, 1, cookie->path->v);
+						me->lvCookie->SetSubItem(k, 1, cookie->path);
 					}
 					me->lvCookie->SetSubItem(k, 2, cookie->name);
 					me->lvCookie->SetSubItem(k, 3, cookie->value);
@@ -1101,13 +1101,13 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpRequest));
 	this->pnlRequest->SetRect(0, 0, 100, 292, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, CSTR("URL")));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlRequest, CSTR("http://")));
 	this->txtURL->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->chkNoShutdown, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"No Shutdown", true));
+	NEW_CLASS(this->chkNoShutdown, UI::GUICheckBox(ui, this->pnlRequest, CSTR("No Shutdown"), true));
 	this->chkNoShutdown->SetRect(504, 4, 100, 23, false);
-	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Method"));
+	NEW_CLASS(this->lblMethod, UI::GUILabel(ui, this->pnlRequest, CSTR("Method")));
 	this->lblMethod->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(cboMethod, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboMethod->SetRect(104, 28, 100, 23, false);
@@ -1117,23 +1117,23 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboMethod->AddItem(CSTR("PATCH"), (void*)Net::WebUtil::RequestMethod::HTTP_PATCH);
 	this->cboMethod->AddItem(CSTR("DELETE"), (void*)Net::WebUtil::RequestMethod::HTTP_DELETE);
 	this->cboMethod->SetSelectedIndex(0);
-	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"OS Client", false));
+	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, CSTR("OS Client"), false));
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);
 	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, CSTR("User Agent")));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
-	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->v));
+	NEW_CLASS(this->lblUserAgent, UI::GUILabel(ui, this->pnlRequest, this->userAgent->ToCString()));
 	this->lblUserAgent->SetRect(104, 52, 400, 23, false);
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"UserName"));
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlRequest, CSTR("UserName")));
 	this->lblUserName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtUserName->SetRect(104, 76, 150, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, CSTR("Password")));
 	this->lblPassword->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetPasswordChar('*');
 	this->txtPassword->SetRect(104, 100, 150, 23, false);
-	NEW_CLASS(this->lblFileUpload, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"File Upload"));
+	NEW_CLASS(this->lblFileUpload, UI::GUILabel(ui, this->pnlRequest, CSTR("File Upload")));
 	this->lblFileUpload->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtFileFormName, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFileFormName->SetRect(104, 124, 150, 23, false);
@@ -1143,16 +1143,16 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnFileClear, UI::GUIButton(ui, this->pnlRequest, CSTR("Clear")));
 	this->btnFileClear->SetRect(334, 124, 75, 23, false);
 	this->btnFileClear->HandleButtonClick(OnFileClearClicked, this);
-	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"No files selected"));
+	NEW_CLASS(this->lblFileStatus, UI::GUILabel(ui, this->pnlRequest, CSTR("No files selected")));
 	this->lblFileStatus->SetRect(414, 124, 200, 23, false);
-	NEW_CLASS(this->lblDataStr, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Data String"));
+	NEW_CLASS(this->lblDataStr, UI::GUILabel(ui, this->pnlRequest, CSTR("Data String")));
 	this->lblDataStr->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDataStr, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtDataStr->SetRect(104, 148, 400, 23, false);
 	NEW_CLASS(this->btnDataStr, UI::GUIButton(ui, this->pnlRequest, CSTR("Parse")));
 	this->btnDataStr->SetRect(504, 148, 75, 23, false);
 	this->btnDataStr->HandleButtonClick(OnDataStrClicked, this);
-	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Post Format"));
+	NEW_CLASS(this->lblPostFormat, UI::GUILabel(ui, this->pnlRequest, CSTR("Post Format")));
 	this->lblPostFormat->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->cboPostFormat, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboPostFormat->SetRect(104, 172, 150, 23, false);
@@ -1160,7 +1160,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboPostFormat->AddItem(CSTR("application/json"), 0);
 	this->cboPostFormat->AddItem(CSTR("RAW"), 0);
 	this->cboPostFormat->SetSelectedIndex(0);
-	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Headers"));
+	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, CSTR("Headers")));
 	this->lblHeaders->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 196, 300, 71, false);
@@ -1169,54 +1169,54 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
 	NEW_CLASS(this->lvReqData, UI::GUIListView(ui, this->tpRequest, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvReqData->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvReqData->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvReqData->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvReqData->AddColumn(CSTR("Name"), 150);
+	this->lvReqData->AddColumn(CSTR("Value"), 400);
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 223, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblReqURL, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Req URL"));
+	NEW_CLASS(this->lblReqURL, UI::GUILabel(ui, this->pnlResponse, CSTR("Req URL")));
 	this->lblReqURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtReqURL, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtReqURL->SetRect(104, 4, 400, 23, false);
 	this->txtReqURL->SetReadOnly(true);
-	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Server IP"));
+	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, CSTR("Server IP")));
 	this->lblSvrIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSvrIP, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtSvrIP->SetRect(104, 28, 150, 23, false);
 	this->txtSvrIP->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"DNS Time"));
+	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, CSTR("DNS Time")));
 	this->lblTimeDNS->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtTimeDNS, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeDNS->SetRect(104, 52, 150, 23, false);
 	this->txtTimeDNS->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Conn Time"));
+	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, CSTR("Conn Time")));
 	this->lblTimeConn->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTimeConn, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeConn->SetRect(104, 76, 150, 23, false);
 	this->txtTimeConn->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Request Time"));
+	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, CSTR("Request Time")));
 	this->lblTimeSendHdr->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTimeSendHdr, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeSendHdr->SetRect(104, 100, 150, 23, false);
 	this->txtTimeSendHdr->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Response Time"));
+	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, CSTR("Response Time")));
 	this->lblTimeResp->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtTimeResp, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeResp->SetRect(104, 124, 150, 23, false);
 	this->txtTimeResp->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Download Time"));
+	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Time")));
 	this->lblTimeTotal->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtTimeTotal, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeTotal->SetRect(104, 148, 150, 23, false);
 	this->txtTimeTotal->SetReadOnly(true);
-	NEW_CLASS(this->lblRespStatus, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Status Code"));
+	NEW_CLASS(this->lblRespStatus, UI::GUILabel(ui, this->pnlResponse, CSTR("Status Code")));
 	this->lblRespStatus->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtRespStatus, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtRespStatus->SetRect(104, 172, 150, 23, false);
 	this->txtRespStatus->SetReadOnly(true);
-	NEW_CLASS(this->lblRespSize, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Download Size"));
+	NEW_CLASS(this->lblRespSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Size")));
 	this->lblRespSize->SetRect(4, 196, 100, 23, false);
 	NEW_CLASS(this->txtRespSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtRespSize->SetRect(104, 196, 150, 23, false);
@@ -1234,7 +1234,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
-	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
+	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 
 	this->tpCert = this->tcMain->AddTabPage(CSTR("Cert"));
 	NEW_CLASS(this->txtCert, UI::GUITextBox(ui, this->tpCert, CSTR(""), true));
@@ -1246,10 +1246,10 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->lvCookie->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvCookie->SetShowGrid(true);
 	this->lvCookie->SetFullRowSelect(true);
-	this->lvCookie->AddColumn((const UTF8Char*)"Domain", 150);
-	this->lvCookie->AddColumn((const UTF8Char*)"Path", 150);
-	this->lvCookie->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvCookie->AddColumn((const UTF8Char*)"Value", 350);
+	this->lvCookie->AddColumn(CSTR("Domain"), 150);
+	this->lvCookie->AddColumn(CSTR("Path"), 150);
+	this->lvCookie->AddColumn(CSTR("Name"), 150);
+	this->lvCookie->AddColumn(CSTR("Value"), 350);
 
 	this->SetDefaultButton(this->btnRequest);
 	this->txtURL->Focus();

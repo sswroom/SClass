@@ -104,18 +104,18 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnConnectClicked(void *userObj)
 	UInt16 port;
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbHost.ToString(), sbHost.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving host name", (const UTF8Char*)"EqasyWay EW-DTU01", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host name"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
 	if (!sbPort.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid port number", (const UTF8Char*)"EqasyWay EW-DTU01", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid port number"), CSTR("EqasyWay EW-DTU01"), me);
 		return;
 	}
 	NEW_CLASS(me->cli, Net::MQTTStaticClient(me->core->GetSocketFactory(), 0, sbHost.ToCString(), port, CSTR_NULL, CSTR_NULL, OnMQTTMessage, me, 30, 0));
 	if (me->cli->ChannelFailure())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to MQTT server", (const UTF8Char*)"EasyWay EW-DTU01", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in connecting to MQTT server"), CSTR("EasyWay EW-DTU01"), me);
 		SDEL_CLASS(me->cli);
 		return;
 	}
@@ -148,14 +148,14 @@ void __stdcall SSWR::AVIRead::AVIREWDTU01Form::OnTimerTick(void *userObj)
 			macEntry = Net::MACInfo::GetMACInfo(entry->macInt);
 			if (macEntry)
 			{
-				me->lvDevices->SetSubItem(i, 2, macEntry->name);
+				me->lvDevices->SetSubItem(i, 2, {macEntry->name, macEntry->nameLen});
 			}
 			else
 			{
-				me->lvDevices->SetSubItem(i, 2, (const UTF8Char*)"Unknown");
+				me->lvDevices->SetSubItem(i, 2, CSTR("Unknown"));
 			}
-			Text::StrInt32(sbuff, entry->rssi);
-			me->lvDevices->SetSubItem(i, 3, sbuff);
+			sptr = Text::StrInt32(sbuff, entry->rssi);
+			me->lvDevices->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			if (entry->remark)
 			{
 				me->lvDevices->SetSubItem(i, 4, entry->remark);
@@ -195,11 +195,11 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlMQTT, UI::GUIPanel(ui, this));
 	this->pnlMQTT->SetRect(0, 0, 100, 31, false);
 	this->pnlMQTT->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlMQTT, (const UTF8Char*)"MQTT Server"));
+	NEW_CLASS(this->lblServer, UI::GUILabel(ui, this->pnlMQTT, CSTR("MQTT Server")));
 	this->lblServer->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtServer, UI::GUITextBox(ui, this->pnlMQTT, CSTR("127.0.0.1")));
 	this->txtServer->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlMQTT, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlMQTT, CSTR("Port")));
 	this->lblPort->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlMQTT, CSTR("1883")));
 	this->txtPort->SetRect(354, 4, 50, 23, false);
@@ -211,11 +211,11 @@ SSWR::AVIRead::AVIREWDTU01Form::AVIREWDTU01Form(UI::GUIClientControl *parent, UI
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvDevices->AddColumn((const UTF8Char*)"MAC", 100);
-	this->lvDevices->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 200);
-	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 50);
-	this->lvDevices->AddColumn((const UTF8Char*)"Remarks", 200);
+	this->lvDevices->AddColumn(CSTR("MAC"), 100);
+	this->lvDevices->AddColumn(CSTR("Name"), 100);
+	this->lvDevices->AddColumn(CSTR("Vendor"), 200);
+	this->lvDevices->AddColumn(CSTR("RSSI"), 50);
+	this->lvDevices->AddColumn(CSTR("Remarks"), 200);
 
 	this->AddTimer(1000, OnTimerTick, this);
 }

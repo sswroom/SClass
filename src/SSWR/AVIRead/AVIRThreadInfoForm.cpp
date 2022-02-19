@@ -51,15 +51,15 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 				if (Text::StrSplitP(sarr, 10, sline[0], ' ') == 10)
 				{
 					i = me->lvMyStack->AddItem(sarr[0].ToCString(), 0);
-					me->lvMyStack->SetSubItem(i, 1, sarr[1].v);
-					me->lvMyStack->SetSubItem(i, 2, sarr[2].v);
-					me->lvMyStack->SetSubItem(i, 3, sarr[9].v);
-					me->lvMyStack->SetSubItem(i, 4, sarr[3].v);
-					me->lvMyStack->SetSubItem(i, 5, sarr[4].v);
-					me->lvMyStack->SetSubItem(i, 6, sarr[5].v);
-					me->lvMyStack->SetSubItem(i, 7, sarr[6].v);
-					me->lvMyStack->SetSubItem(i, 8, sarr[7].v);
-					me->lvMyStack->SetSubItem(i, 9, sarr[8].v);
+					me->lvMyStack->SetSubItem(i, 1, sarr[1].ToCString());
+					me->lvMyStack->SetSubItem(i, 2, sarr[2].ToCString());
+					me->lvMyStack->SetSubItem(i, 3, sarr[9].ToCString());
+					me->lvMyStack->SetSubItem(i, 4, sarr[3].ToCString());
+					me->lvMyStack->SetSubItem(i, 5, sarr[4].ToCString());
+					me->lvMyStack->SetSubItem(i, 6, sarr[5].ToCString());
+					me->lvMyStack->SetSubItem(i, 7, sarr[6].ToCString());
+					me->lvMyStack->SetSubItem(i, 8, sarr[7].ToCString());
+					me->lvMyStack->SetSubItem(i, 9, sarr[8].ToCString());
 				}
 				if (!hasNext)
 					break;
@@ -73,23 +73,23 @@ void __stdcall SSWR::AVIRead::AVIRThreadInfoForm::OnMyStackChg(void *userObj)
 				if (Text::StrSplitP(sarr, 18, sline[0], ' ') == 18)
 				{
 					i = me->lvMyStack->AddItem(sarr[0].ToCString(), 0);
-					me->lvMyStack->SetSubItem(i, 1, sarr[1].v);
-					me->lvMyStack->SetSubItem(i, 2, sarr[2].v);
-					me->lvMyStack->SetSubItem(i, 3, sarr[17].v);
-					me->lvMyStack->SetSubItem(i, 4, sarr[3].v);
-					me->lvMyStack->SetSubItem(i, 5, sarr[4].v);
-					me->lvMyStack->SetSubItem(i, 6, sarr[5].v);
-					me->lvMyStack->SetSubItem(i, 7, sarr[6].v);
-					me->lvMyStack->SetSubItem(i, 8, sarr[7].v);
-					me->lvMyStack->SetSubItem(i, 9, sarr[8].v);
-					me->lvMyStack->SetSubItem(i, 10, sarr[9].v);
-					me->lvMyStack->SetSubItem(i, 11, sarr[10].v);
-					me->lvMyStack->SetSubItem(i, 12, sarr[11].v);
-					me->lvMyStack->SetSubItem(i, 13, sarr[12].v);
-					me->lvMyStack->SetSubItem(i, 14, sarr[13].v);
-					me->lvMyStack->SetSubItem(i, 15, sarr[14].v);
-					me->lvMyStack->SetSubItem(i, 16, sarr[15].v);
-					me->lvMyStack->SetSubItem(i, 17, sarr[16].v);
+					me->lvMyStack->SetSubItem(i, 1, sarr[1].ToCString());
+					me->lvMyStack->SetSubItem(i, 2, sarr[2].ToCString());
+					me->lvMyStack->SetSubItem(i, 3, sarr[17].ToCString());
+					me->lvMyStack->SetSubItem(i, 4, sarr[3].ToCString());
+					me->lvMyStack->SetSubItem(i, 5, sarr[4].ToCString());
+					me->lvMyStack->SetSubItem(i, 6, sarr[5].ToCString());
+					me->lvMyStack->SetSubItem(i, 7, sarr[6].ToCString());
+					me->lvMyStack->SetSubItem(i, 8, sarr[7].ToCString());
+					me->lvMyStack->SetSubItem(i, 9, sarr[8].ToCString());
+					me->lvMyStack->SetSubItem(i, 10, sarr[9].ToCString());
+					me->lvMyStack->SetSubItem(i, 11, sarr[10].ToCString());
+					me->lvMyStack->SetSubItem(i, 12, sarr[11].ToCString());
+					me->lvMyStack->SetSubItem(i, 13, sarr[12].ToCString());
+					me->lvMyStack->SetSubItem(i, 14, sarr[13].ToCString());
+					me->lvMyStack->SetSubItem(i, 15, sarr[14].ToCString());
+					me->lvMyStack->SetSubItem(i, 16, sarr[15].ToCString());
+					me->lvMyStack->SetSubItem(i, 17, sarr[16].ToCString());
 				}
 				if (!hasNext)
 					break;
@@ -143,17 +143,17 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->tpStack = this->tcMain->AddTabPage(CSTR("Stack"));
 	this->tpMyStack = this->tcMain->AddTabPage(CSTR("My Stack"));
 
-	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Thread Id"));
+	NEW_CLASS(this->lblThreadId, UI::GUILabel(ui, this->tpInfo, CSTR("Thread Id")));
 	this->lblThreadId->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtThreadId, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtThreadId->SetRect(100, 0, 100, 23, false);
 	this->txtThreadId->SetReadOnly(true);
-	NEW_CLASS(this->lblStartAddr, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Start Address"));
+	NEW_CLASS(this->lblStartAddr, UI::GUILabel(ui, this->tpInfo, CSTR("Start Address")));
 	this->lblStartAddr->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtStartAddr, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartAddr->SetRect(100, 24, 120, 23, false);
 	this->txtStartAddr->SetReadOnly(true);
-	NEW_CLASS(this->lblStartName, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Start Name"));
+	NEW_CLASS(this->lblStartName, UI::GUILabel(ui, this->tpInfo, CSTR("Start Name")));
 	this->lblStartName->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtStartName, UI::GUITextBox(ui, this->tpInfo, CSTR(""), false));
 	this->txtStartName->SetRect(100, 48, 500, 23, false);
@@ -163,15 +163,15 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 	this->lvContext->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvContext->SetFullRowSelect(true);
 	this->lvContext->SetShowGrid(true);
-	this->lvContext->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvContext->AddColumn((const UTF8Char*)"Value", 300);
+	this->lvContext->AddColumn(CSTR("Name"), 100);
+	this->lvContext->AddColumn(CSTR("Value"), 300);
 
 	NEW_CLASS(this->lvStack, UI::GUIListView(ui, this->tpStack, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvStack->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStack->SetFullRowSelect(true);
 	this->lvStack->SetShowGrid(true);
-	this->lvStack->AddColumn((const UTF8Char*)"Address", 120);
-	this->lvStack->AddColumn((const UTF8Char*)"Name", 500);
+	this->lvStack->AddColumn(CSTR("Address"), 120);
+	this->lvStack->AddColumn(CSTR("Name"), 500);
 
 	NEW_CLASS(this->lbMyStack, UI::GUIListBox(ui, this->tpMyStack, false));
 	this->lbMyStack->SetRect(0, 0, 300, 23, false);
@@ -228,7 +228,7 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			i = this->lvStack->AddItem(CSTRP(sbuff, sptr), 0, 0);
 			sptr = symbol->ResolveName(sbuff, currAddr);
 			j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\');
-			this->lvStack->SetSubItem(i, 1, &sbuff[j + 1]);
+			this->lvStack->SetSubItem(i, 1, CSTRP(&sbuff[j + 1], sptr));
 			if (!tracer->GoToNextLevel())
 				break;
 			if (++callLev > 50)
@@ -253,16 +253,16 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			Text::StringBuilderUTF8 sb;
 
 			this->lvMyStack->ChangeColumnCnt(10);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Esp", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Ebp", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Eip", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Code", 500);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Eax", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Edx", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Ecx", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Ebx", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Esi", 70);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Edi", 70);
+			this->lvMyStack->AddColumn(CSTR("Esp"), 70);
+			this->lvMyStack->AddColumn(CSTR("Ebp"), 70);
+			this->lvMyStack->AddColumn(CSTR("Eip"), 70);
+			this->lvMyStack->AddColumn(CSTR("Code"), 500);
+			this->lvMyStack->AddColumn(CSTR("Eax"), 70);
+			this->lvMyStack->AddColumn(CSTR("Edx"), 70);
+			this->lvMyStack->AddColumn(CSTR("Ecx"), 70);
+			this->lvMyStack->AddColumn(CSTR("Ebx"), 70);
+			this->lvMyStack->AddColumn(CSTR("Esi"), 70);
+			this->lvMyStack->AddColumn(CSTR("Edi"), 70);
 			this->contextType = Manage::ThreadContext::CT_X86_32;
 
 			NEW_CLASS(callAddrs, Data::ArrayListUInt32());
@@ -341,24 +341,24 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 			Text::StringBuilderUTF8 sb;
 
 			this->lvMyStack->ChangeColumnCnt(18);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rsp", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rbp", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rip", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Code", 500);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rax", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rdx", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rcx", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rbx", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rsi", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"Rdi", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R8", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R9", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R10", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R11", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R12", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R13", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R14", 140);
-			this->lvMyStack->AddColumn((const UTF8Char*)"R15", 140);
+			this->lvMyStack->AddColumn(CSTR("Rsp"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rbp"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rip"), 140);
+			this->lvMyStack->AddColumn(CSTR("Code"), 500);
+			this->lvMyStack->AddColumn(CSTR("Rax"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rdx"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rcx"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rbx"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rsi"), 140);
+			this->lvMyStack->AddColumn(CSTR("Rdi"), 140);
+			this->lvMyStack->AddColumn(CSTR("R8"), 140);
+			this->lvMyStack->AddColumn(CSTR("R9"), 140);
+			this->lvMyStack->AddColumn(CSTR("R10"), 140);
+			this->lvMyStack->AddColumn(CSTR("R11"), 140);
+			this->lvMyStack->AddColumn(CSTR("R12"), 140);
+			this->lvMyStack->AddColumn(CSTR("R13"), 140);
+			this->lvMyStack->AddColumn(CSTR("R14"), 140);
+			this->lvMyStack->AddColumn(CSTR("R15"), 140);
 			this->contextType = Manage::ThreadContext::CT_X86_64;
 
 			NEW_CLASS(callAddrs, Data::ArrayListUInt64());
@@ -439,33 +439,33 @@ SSWR::AVIRead::AVIRThreadInfoForm::AVIRThreadInfoForm(UI::GUIClientControl *pare
 				k = this->lvContext->AddItem(CSTRP(sbuff, sptr), 0);
 				if (bitCnt == 8)
 				{
-					Text::StrHexByte(sbuff, buff[0]);
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrHexByte(sbuff, buff[0]);
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 16)
 				{
-					Text::StrHexVal16(sbuff, ReadUInt16(buff));
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrHexVal16(sbuff, ReadUInt16(buff));
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 32)
 				{
-					Text::StrHexVal32(sbuff, ReadUInt32(buff));
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrHexVal32(sbuff, ReadUInt32(buff));
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 64)
 				{
-					Text::StrHexVal64(sbuff, ReadUInt64(buff));
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrHexVal64(sbuff, ReadUInt64(buff));
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 128)
 				{
-					Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadUInt64(buff)), ReadUInt64(&buff[8]));
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrHexVal64(Text::StrHexVal64(sbuff, ReadUInt64(buff)), ReadUInt64(&buff[8]));
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else if (bitCnt == 80)
 				{
-					Text::StrDouble(sbuff, (Double)*(LDouble*)&buff[0]);
-					this->lvContext->SetSubItem(k, 1, sbuff);
+					sptr = Text::StrDouble(sbuff, (Double)*(LDouble*)&buff[0]);
+					this->lvContext->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				}
 				else
 				{

@@ -41,12 +41,12 @@ void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tif", (const UTF8Char*)"TIFF(GDK) File");
-		selector->AddFilter((const UTF8Char*)"*.tiff", (const UTF8Char*)"TIFF(GDK) File");
-		selector->AddFilter((const UTF8Char*)"*.gif", (const UTF8Char*)"GIF(GDK) File");
-		selector->AddFilter((const UTF8Char*)"*.png", (const UTF8Char*)"PNG(GDK) File");
-		selector->AddFilter((const UTF8Char*)"*.jpg", (const UTF8Char*)"JPG(GDK) File");
-		selector->AddFilter((const UTF8Char*)"*.jpeg", (const UTF8Char*)"JPG(GDK) File");
+		selector->AddFilter(CSTR("*.tif"), CSTR("TIFF(GDK) File"));
+		selector->AddFilter(CSTR("*.tiff"), CSTR("TIFF(GDK) File"));
+		selector->AddFilter(CSTR("*.gif"), CSTR("GIF(GDK) File"));
+		selector->AddFilter(CSTR("*.png"), CSTR("PNG(GDK) File"));
+		selector->AddFilter(CSTR("*.jpg"), CSTR("JPG(GDK) File"));
+		selector->AddFilter(CSTR("*.jpeg"), CSTR("JPG(GDK) File"));
 	}
 }
 

@@ -27,7 +27,7 @@ void Parser::ObjParser::ITMParser::PrepareSelector(IO::IFileSelector *selector, 
 {
 	if (t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.itm", (const UTF8Char*)"Taiwan GPS Project File");
+		selector->AddFilter(CSTR("*.itm"), CSTR("Taiwan GPS Project File"));
 	}
 }
 

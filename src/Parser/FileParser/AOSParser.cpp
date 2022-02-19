@@ -24,7 +24,7 @@ void Parser::FileParser::AOSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.aos", (const UTF8Char*)"AOS (HUNTING BLUE) Package File");
+		selector->AddFilter(CSTR("*.aos"), CSTR("AOS (HUNTING BLUE) Package File"));
 	}
 }
 

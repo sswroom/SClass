@@ -44,12 +44,12 @@ void __stdcall SSWR::AVIRead::AVIRCodeImageGenForm::OnCodeGenClicked(void *userO
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating the code", (const UTF8Char*)"Code Image Generator", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in generating the code"), CSTR("Code Image Generator"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Code size is not valid", (const UTF8Char*)"Code Image Generator", me);
+			UI::MessageDialog::ShowDialog(CSTR("Code size is not valid"), CSTR("Code Image Generator"), me);
 		}
 	}
 }
@@ -71,23 +71,23 @@ SSWR::AVIRead::AVIRCodeImageGenForm::AVIRCodeImageGenForm(UI::GUIClientControl *
 	this->pnlMain->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	NEW_CLASS(this->pbMain, UI::GUIPictureBoxDD(ui, this, this->colorSess, true, false));
 	this->pbMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblCodeType, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Code Type"));
+	NEW_CLASS(this->lblCodeType, UI::GUILabel(ui, this->pnlMain, CSTR("Code Type")));
 	this->lblCodeType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboCodeType, UI::GUIComboBox(ui, this->pnlMain, false));
 	this->cboCodeType->SetRect(104, 4, 100, 23, false);
 	this->cboCodeType->HandleSelectionChange(OnCodeTypeChanged, this);
-	NEW_CLASS(this->lblCodeSize, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Code Width"));
+	NEW_CLASS(this->lblCodeSize, UI::GUILabel(ui, this->pnlMain, CSTR("Code Width")));
 	this->lblCodeSize->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCodeSize, UI::GUITextBox(ui, this->pnlMain, CSTR("1")));
 	this->txtCodeSize->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblCode, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)"Code"));
+	NEW_CLASS(this->lblCode, UI::GUILabel(ui, this->pnlMain, CSTR("Code")));
 	this->lblCode->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtCode, UI::GUITextBox(ui, this->pnlMain, CSTR("")));
 	this->txtCode->SetRect(104, 52, 400, 23, false);
 	NEW_CLASS(this->btnCodeGen, UI::GUIButton(ui, this->pnlMain, CSTR("Generate")));
 	this->btnCodeGen->SetRect(504, 52, 75, 23, false);
 	this->btnCodeGen->HandleButtonClick(OnCodeGenClicked, this);
-	NEW_CLASS(this->lblCodeInfo, UI::GUILabel(ui, this->pnlMain, (const UTF8Char*)""));
+	NEW_CLASS(this->lblCodeInfo, UI::GUILabel(ui, this->pnlMain, CSTR("")));
 	this->lblCodeInfo->SetRect(584, 52, 100, 23, false);
 
 	OSInt i;

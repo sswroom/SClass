@@ -24,9 +24,9 @@ void Parser::FileParser::MPGParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mpg", (const UTF8Char*)"MPEG-1 System Stream File");
-		selector->AddFilter((const UTF8Char*)"*.m2p", (const UTF8Char*)"MPEG-2 Program Stream");
-		selector->AddFilter((const UTF8Char*)"*.pss", (const UTF8Char*)"PS System Stream");
+		selector->AddFilter(CSTR("*.mpg"), CSTR("MPEG-1 System Stream File"));
+		selector->AddFilter(CSTR("*.m2p"), CSTR("MPEG-2 Program Stream"));
+		selector->AddFilter(CSTR("*.pss"), CSTR("PS System Stream"));
 	}
 }
 

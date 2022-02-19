@@ -20,7 +20,7 @@ void Parser::FileParser::IMGParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::SectorData)
 	{
-		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"IMG (Floppy) File");
+		selector->AddFilter(CSTR("*.img"), CSTR("IMG (Floppy) File"));
 	}
 }
 

@@ -15,7 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	me->txtAgent->GetText(&sbComm);
 	if (!me->core->GetSocketFactory()->DNSResolveIP(sbComm.ToString(), sbComm.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving Agent Address", (const UTF8Char*)"SNMP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving Agent Address"), CSTR("SNMP Client"), me);
 		return;
 	}
 	sbComm.ClearStr();
@@ -23,12 +23,12 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 	me->txtOID->GetText(&sbOID);
 	if (sbComm.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter community", (const UTF8Char*)"SNMP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter community"), CSTR("SNMP Client"), me);
 		return;
 	}
 	if (sbOID.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter OID", (const UTF8Char*)"SNMP Client", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter OID"), CSTR("SNMP Client"), me);
 		return;
 	}
 	UOSInt i = me->cboCommandType->GetSelectedIndex();
@@ -57,7 +57,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in requesting to the server, error code = "));
 		sb.Append(Net::SNMPUtil::ErrorStatusToString(err));
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"SNMP Client", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SNMP Client"), me);
 	}
 	else
 	{
@@ -71,13 +71,13 @@ void __stdcall SSWR::AVIRead::AVIRSNMPClientForm::OnRequestClicked(void *userObj
 			me->lvResults->AddItem(sb.ToCString(), 0);
 			sb.ClearStr();
 			Net::ASN1OIDDB::OIDToNameString(item->oid, item->oidLen, &sb);
-			me->lvResults->SetSubItem(i, 1, sb.ToString());
-			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType).v);
+			me->lvResults->SetSubItem(i, 1, sb.ToCString());
+			me->lvResults->SetSubItem(i, 2, Net::SNMPUtil::TypeGetName(item->valType));
 			if (item->valBuff)
 			{
 				sb.ClearStr();
 				Net::SNMPInfo::ValueToString(item->valType, item->valBuff, item->valLen, &sb);
-				me->lvResults->SetSubItem(i, 3, sb.ToString());
+				me->lvResults->SetSubItem(i, 3, sb.ToCString());
 			}
 			i++;
 		}
@@ -105,19 +105,19 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 127, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Agent"));
+	NEW_CLASS(this->lblAgent, UI::GUILabel(ui, this->pnlRequest, CSTR("Agent")));
 	this->lblAgent->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtAgent, UI::GUITextBox(ui, this->pnlRequest, CSTR("127.0.0.1")));
 	this->txtAgent->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Community"));
+	NEW_CLASS(this->lblCommunity, UI::GUILabel(ui, this->pnlRequest, CSTR("Community")));
 	this->lblCommunity->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtCommunity, UI::GUITextBox(ui, this->pnlRequest, CSTR("public")));
 	this->txtCommunity->SetRect(104, 28, 120, 23, false);
-	NEW_CLASS(this->lblOID, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"OID"));
+	NEW_CLASS(this->lblOID, UI::GUILabel(ui, this->pnlRequest, CSTR("OID")));
 	this->lblOID->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOID, UI::GUITextBox(ui, this->pnlRequest, CSTR("1.3.6.1.2.1")));
 	this->txtOID->SetRect(104, 52, 200, 23, false);
-	NEW_CLASS(this->lblCommandType, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Command Type"));
+	NEW_CLASS(this->lblCommandType, UI::GUILabel(ui, this->pnlRequest, CSTR("Command Type")));
 	this->lblCommandType->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboCommandType, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboCommandType->SetRect(104, 76, 120, 23, false);
@@ -133,17 +133,17 @@ SSWR::AVIRead::AVIRSNMPClientForm::AVIRSNMPClientForm(UI::GUIClientControl *pare
 	this->lvResults->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvResults->SetFullRowSelect(true);
 	this->lvResults->SetShowGrid(true);
-	this->lvResults->AddColumn((const UTF8Char*)"OID", 150);
-	this->lvResults->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvResults->AddColumn((const UTF8Char*)"ValueType", 100);
-	this->lvResults->AddColumn((const UTF8Char*)"Value", 200);
+	this->lvResults->AddColumn(CSTR("OID"), 150);
+	this->lvResults->AddColumn(CSTR("Name"), 150);
+	this->lvResults->AddColumn(CSTR("ValueType"), 100);
+	this->lvResults->AddColumn(CSTR("Value"), 200);
 
 	this->AddTimer(1000, OnTimerTick, this);
 
 	NEW_CLASS(this->cli, Net::SNMPClient(this->core->GetSocketFactory()));
 	if (this->cli->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting SNMP Client", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting SNMP Client"), CSTR("Error"), this);
 	}
 }
 

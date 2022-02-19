@@ -41,8 +41,8 @@ void __stdcall SSWR::AVIRead::AVIRHashTestForm::OnCompareClicked(void *userObj)
 			speed = HashTestSpeed(hash);
 			sptr = hash->GetName(sbuff);
 			j = me->lvCompare->AddItem(CSTRP(sbuff, sptr), 0);
-			Text::StrDouble(sbuff, speed);
-			me->lvCompare->SetSubItem(j, 1, sbuff);
+			sptr = Text::StrDouble(sbuff, speed);
+			me->lvCompare->SetSubItem(j, 1, CSTRP(sbuff, sptr));
 			DEL_CLASS(hash);
 		}
 		i++;
@@ -87,14 +87,14 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
 	this->tpAlgorithm = this->tcMain->AddTabPage(CSTR("Algorithm"));
-	NEW_CLASS(this->lblAlgorithm, UI::GUILabel(ui, this->tpAlgorithm, (const UTF8Char*)"Function"));
+	NEW_CLASS(this->lblAlgorithm, UI::GUILabel(ui, this->tpAlgorithm, CSTR("Function")));
 	this->lblAlgorithm->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAlgorithm, UI::GUIComboBox(ui, this->tpAlgorithm, false));
 	this->cboAlgorithm->SetRect(104, 4, 200, 23, false);
 	NEW_CLASS(this->btnSpeed, UI::GUIButton(ui, this->tpAlgorithm, CSTR("Test Speed")));
 	this->btnSpeed->SetRect(304, 4, 75, 23, false);
 	this->btnSpeed->HandleButtonClick(OnSpeedClicked, this);
-	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpAlgorithm, (const UTF8Char*)"Speed"));
+	NEW_CLASS(this->lblSpeed, UI::GUILabel(ui, this->tpAlgorithm, CSTR("Speed")));
 	this->lblSpeed->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSpeed, UI::GUITextBox(ui, this->tpAlgorithm, CSTR("")));
 	this->txtSpeed->SetRect(104, 28, 200, 23, false);
@@ -109,8 +109,8 @@ SSWR::AVIRead::AVIRHashTestForm::AVIRHashTestForm(UI::GUIClientControl *parent, 
 	this->btnCompare->HandleButtonClick(OnCompareClicked, this);
 	NEW_CLASS(this->lvCompare, UI::GUIListView(ui, this->tpCompare, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvCompare->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvCompare->AddColumn((const UTF8Char*)"Hash Function", 200);
-	this->lvCompare->AddColumn((const UTF8Char*)"Speed (Byte/s)", 200);
+	this->lvCompare->AddColumn(CSTR("Hash Function"), 200);
+	this->lvCompare->AddColumn(CSTR("Speed (Byte/s)"), 200);
 	this->lvCompare->SetShowGrid(true);
 	this->lvCompare->SetFullRowSelect(true);
 

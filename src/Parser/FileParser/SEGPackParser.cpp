@@ -23,7 +23,7 @@ void Parser::FileParser::SEGPackParser::PrepareSelector(IO::IFileSelector *selec
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.seg", (const UTF8Char*)"SEG Package File");
+		selector->AddFilter(CSTR("*.seg"), CSTR("SEG Package File"));
 	}
 }
 

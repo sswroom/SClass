@@ -85,12 +85,12 @@ SSWR::AVIRead::AVIRICCInfoForm::AVIRICCInfoForm(UI::GUIClientControl *parent, UI
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 800, 23, false);
 	this->txtFileName->SetReadOnly(true);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this, (const UTF8Char*)"Info"));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this, CSTR("Info")));
 	this->lblInfo->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this, CSTR(""), true));
 	this->txtInfo->SetRect(104, 28, 800, 676, false);

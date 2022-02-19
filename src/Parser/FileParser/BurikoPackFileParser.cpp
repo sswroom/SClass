@@ -23,7 +23,7 @@ void Parser::FileParser::BurikoPackFileParser::PrepareSelector(IO::IFileSelector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.pac", (const UTF8Char*)"PAC Package File");
+		selector->AddFilter(CSTR("*.pac"), CSTR("PAC Package File"));
 	}
 }
 

@@ -77,7 +77,7 @@ SSWR::AVIRead::AVIRCppEnumForm::AVIRCppEnumForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnConv2, UI::GUIButton(ui, this->pnlCtrl, CSTR("Paste-Conv-Copy")));
 	this->btnConv2->SetRect(84, 4, 150, 23, false);
 	this->btnConv2->HandleButtonClick(OnConv2Clicked, this);
-	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Prefix"));
+	NEW_CLASS(this->lblPrefix, UI::GUILabel(ui, this->pnlCtrl, CSTR("Prefix")));
 	this->lblPrefix->SetRect(234, 4, 100, 23, false);
 	NEW_CLASS(this->txtPrefix, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtPrefix->SetRect(334, 4, 100, 23, false);

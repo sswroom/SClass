@@ -30,14 +30,14 @@ void Parser::FileParser::X509Parser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ASN1Data)
 	{
-		selector->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"X.509 Certification File");
-		selector->AddFilter((const UTF8Char*)"*.csr", (const UTF8Char*)"X.509 Certification Request");
-		selector->AddFilter((const UTF8Char*)"*.p7b", (const UTF8Char*)"PKCS 7 Certification File");
-		selector->AddFilter((const UTF8Char*)"*.p12", (const UTF8Char*)"PKCS 12 KeyStore File");
-		selector->AddFilter((const UTF8Char*)"*.pfx", (const UTF8Char*)"PKCS 12 KeyStore File");
-		selector->AddFilter((const UTF8Char*)"*.pem", (const UTF8Char*)"PEM File");
-		selector->AddFilter((const UTF8Char*)"*.der", (const UTF8Char*)"DER File");
-		selector->AddFilter((const UTF8Char*)"*.cer", (const UTF8Char*)"CER File");
+		selector->AddFilter(CSTR("*.crt"), CSTR("X.509 Certification File"));
+		selector->AddFilter(CSTR("*.csr"), CSTR("X.509 Certification Request"));
+		selector->AddFilter(CSTR("*.p7b"), CSTR("PKCS 7 Certification File"));
+		selector->AddFilter(CSTR("*.p12"), CSTR("PKCS 12 KeyStore File"));
+		selector->AddFilter(CSTR("*.pfx"), CSTR("PKCS 12 KeyStore File"));
+		selector->AddFilter(CSTR("*.pem"), CSTR("PEM File"));
+		selector->AddFilter(CSTR("*.der"), CSTR("DER File"));
+		selector->AddFilter(CSTR("*.cer"), CSTR("CER File"));
 	}
 }
 

@@ -13,6 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRRSSReaderForm *me = (SSWR::AVIRead::AVIRRSSReaderForm*)userObj;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
 	me->txtURL->GetText(&sb);
 	me->lvInfo->ClearItems();
@@ -71,14 +72,14 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 			i = me->lvInfo->AddItem(CSTR("PubDate"), 0);
 			if ((dt = rss->GetPubDate()) != 0)
 			{
-				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				me->lvInfo->SetSubItem(i, 1, sbuff);
+				sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			i = me->lvInfo->AddItem(CSTR("LastBuildDate"), 0);
 			if ((dt = rss->GetLastBuildDate()) != 0)
 			{
-				dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-				me->lvInfo->SetSubItem(i, 1, sbuff);
+				sptr = dt->ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
 			i = me->lvInfo->AddItem(CSTR("Generator"), 0);
 			if ((s = rss->GetGenerator()) != 0)
@@ -109,14 +110,14 @@ void __stdcall SSWR::AVIRead::AVIRRSSReaderForm::OnRequestClicked(void *userObj)
 				me->lvItems->AddItem(item->title, item);
 				if (item->pubDate)
 				{
-					item->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-					me->lvItems->SetSubItem(i, 1, sbuff);
+					sptr = item->pubDate->ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+					me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 				}
 				if (item->description)
 				{
 					sb.ClearStr();
 					Text::HTMLUtil::HTMLGetText(me->core->GetEncFactory(), item->description->v, item->description->leng, true, &sb, 0);
-					me->lvItems->SetSubItem(i, 2, sb.ToString());
+					me->lvItems->SetSubItem(i, 2, sb.ToCString());
 				}
 				i++;
 			}
@@ -217,12 +218,12 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlURL, UI::GUIPanel(ui, this));
 	this->pnlURL->SetRect(0, 0, 100, 55, false);
 	this->pnlURL->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblRecent, UI::GUILabel(ui, this->pnlURL, (const UTF8Char*)"Recent"));
+	NEW_CLASS(this->lblRecent, UI::GUILabel(ui, this->pnlURL, CSTR("Recent")));
 	this->lblRecent->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboRecent, UI::GUIComboBox(ui, this->pnlURL, false));
 	this->cboRecent->SetRect(104, 4, 600, 23, false);
 	this->cboRecent->HandleSelectionChange(OnRecentSelChg, this);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlURL, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlURL, CSTR("URL")));
 	this->lblURL->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlURL, CSTR("")));
 	this->txtURL->SetRect(104, 28, 600, 23, false);
@@ -237,17 +238,17 @@ SSWR::AVIRead::AVIRRSSReaderForm::AVIRRSSReaderForm(UI::GUIClientControl *parent
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
-	this->lvInfo->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvInfo->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvInfo->AddColumn(CSTR("Name"), 150);
+	this->lvInfo->AddColumn(CSTR("Value"), 400);
 
 	this->tpItems = this->tcRSS->AddTabPage(CSTR("Items"));
 	NEW_CLASS(this->lvItems, UI::GUIListView(ui, this->tpItems, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
-	this->lvItems->AddColumn((const UTF8Char*)"Title", 150);
-	this->lvItems->AddColumn((const UTF8Char*)"Date", 120);
-	this->lvItems->AddColumn((const UTF8Char*)"Description", 400);
+	this->lvItems->AddColumn(CSTR("Title"), 150);
+	this->lvItems->AddColumn(CSTR("Date"), 120);
+	this->lvItems->AddColumn(CSTR("Description"), 400);
 	this->lvItems->HandleDblClk(OnItemsDblClick, this);
 
 	this->RSSListLoad();

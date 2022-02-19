@@ -51,7 +51,7 @@ void Parser::FileParser::TXTParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapEnv)
 	{
-		selector->AddFilter((const UTF8Char*)"*.txt", (const UTF8Char*)"Maplayer Defination File");
+		selector->AddFilter(CSTR("*.txt"), CSTR("Maplayer Defination File"));
 	}
 }
 

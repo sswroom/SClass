@@ -44,19 +44,19 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		me->txtPort->GetText(&sb);
 		if (!sb.ToInt32(&port))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is not valid"), CSTR("Error"), me);
 			return;
 		}
 		else if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Port is out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Port is out of range"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtHost->GetText(&sb);
 		if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing host", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing host"), CSTR("Error"), me);
 			return;
 		}
 		Net::SSLEngine *ssl = me->ssl;
@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		NEW_CLASS(me->client, Net::MQTTConn(me->core->GetSocketFactory(), useSSL?ssl:0, sb.ToCString(), (UInt16)port, 0, 0));
 		if (me->client->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to server", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in connecting to server"), CSTR("Error"), me);
 			DEL_CLASS(me->client);
 			me->client = 0;
 			return;
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnStartClicked(void *userObj
 		{
 			DEL_CLASS(me->client);
 			me->client = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in communicating with server", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in communicating with server"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -153,7 +153,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliCert", false));
-	dlg->AddFilter((const UTF8Char*)"*.crt", (const UTF8Char*)"Cert file");
+	dlg->AddFilter(CSTR("*.crt"), CSTR("Cert file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -163,20 +163,20 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliCertClicked(void *userO
 		DEL_CLASS(fd);
 		if (asn1 == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
 		Crypto::Cert::X509File *x509 = (Crypto::Cert::X509File*)asn1;
 		if (x509->GetFileType() != Crypto::Cert::X509File::FileType::Cert)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"It is not a cert file", (const UTF8Char*)"MQTT Explorer", me);
+			UI::MessageDialog::ShowDialog(CSTR("It is not a cert file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
 		SDEL_CLASS(me->cliCert);
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 	SSWR::AVIRead::AVIRMQTTExplorerForm *me = (SSWR::AVIRead::AVIRMQTTExplorerForm*)userObj;
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AVIRMQTTExplorerCliKey", false));
-	dlg->AddFilter((const UTF8Char*)"*.key", (const UTF8Char*)"Key file");
+	dlg->AddFilter(CSTR("*.key"), CSTR("Key file"));
 	dlg->SetAllowMultiSel(false);
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -203,13 +203,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnCliKeyClicked(void *userOb
 		DEL_CLASS(fd);
 		if (asn1 == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
 		if (asn1->GetASN1Type() != Net::ASN1Data::ASN1Type::X509)
 		{
 			DEL_CLASS(asn1);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing file", (const UTF8Char*)"MQTT Explorer", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing file"), CSTR("MQTT Explorer"), me);
 			return;
 		}
 		SDEL_CLASS(me->cliKey);
@@ -235,12 +235,12 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnPublishClicked(void *userO
 	me->txtPubContent->GetText(&sbContent);
 	if (sbTopic.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter topic", (const UTF8Char*)"MQTT Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter topic"), CSTR("MQTT Explorer"), me);
 		return;
 	}
 	if (sbContent.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter content", (const UTF8Char*)"MQTT Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter content"), CSTR("MQTT Explorer"), me);
 		return;
 	}
 	me->client->SendPublish(sbTopic.ToCString(), sbContent.ToCString());
@@ -306,13 +306,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 				}
 			}
 			me->lvRecvTopic->AddItem(topicSt->topic, topicSt);
-			me->lvRecvTopic->SetSubItem(i, 1, topicSt->currValue);
-			Text::StrUOSInt(sbuff, topicSt->recvCnt);
-			me->lvRecvTopic->SetSubItem(i, 2, sbuff);
+			me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
+			sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+			me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 			dt.SetTicks(topicSt->lastRecvTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvRecvTopic->SetSubItem(i, 3, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 			i++;
 		}
 	}
@@ -324,13 +324,13 @@ void __stdcall SSWR::AVIRead::AVIRMQTTExplorerForm::OnTimerTick(void *userObj)
 			if (topicSt->updated)
 			{
 				topicSt->updated = false;
-				me->lvRecvTopic->SetSubItem(i, 1, topicSt->currValue);
-				Text::StrUOSInt(sbuff, topicSt->recvCnt);
-				me->lvRecvTopic->SetSubItem(i, 2, sbuff);
+				me->lvRecvTopic->SetSubItem(i, 1, {topicSt->currValue, topicSt->currValueLen});
+				sptr = Text::StrUOSInt(sbuff, topicSt->recvCnt);
+				me->lvRecvTopic->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 				dt.SetTicks(topicSt->lastRecvTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvRecvTopic->SetSubItem(i, 3, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvRecvTopic->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 
 				if (topicSt == me->currTopic)
 				{
@@ -538,38 +538,38 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlConnect, UI::GUIPanel(ui, this));
 	this->pnlConnect->SetRect(0, 0, 100, 79, false);
 	this->pnlConnect->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConnect, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlConnect, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlConnect, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConnect, CSTR("1883")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlConnect, CSTR("User Name")));
 	this->lblUsername->SetRect(254, 4, 100, 23, false);
 	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlConnect, CSTR("")));
 	this->txtUsername->SetRect(354, 4, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlConnect, CSTR("Password")));
 	this->lblPassword->SetRect(254, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlConnect, CSTR("")));
 	this->txtPassword->SetRect(354, 28, 100, 23, false);
-	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, (const UTF8Char*)"Use SSL", false));
+	NEW_CLASS(this->chkSSL, UI::GUICheckBox(ui, this->pnlConnect, CSTR("Use SSL"), false));
 	this->chkSSL->SetRect(504, 4, 100, 23, false);
 	NEW_CLASS(this->btnCliCert, UI::GUIButton(ui, this->pnlConnect, CSTR("Client Cert")));
 	this->btnCliCert->SetRect(604, 4, 75, 23, false);
 	this->btnCliCert->HandleButtonClick(OnCliCertClicked, this);
-	NEW_CLASS(this->lblCliCert, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)""));
+	NEW_CLASS(this->lblCliCert, UI::GUILabel(ui, this->pnlConnect, CSTR("")));
 	this->lblCliCert->SetRect(684, 4, 100, 23, false);
 	NEW_CLASS(this->btnCliKey, UI::GUIButton(ui, this->pnlConnect, CSTR("Client Key")));
 	this->btnCliKey->SetRect(604, 28, 75, 23, false);
 	this->btnCliKey->HandleButtonClick(OnCliKeyClicked, this);
-	NEW_CLASS(this->lblCliKey, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)""));
+	NEW_CLASS(this->lblCliKey, UI::GUILabel(ui, this->pnlConnect, CSTR("")));
 	this->lblCliKey->SetRect(684, 28, 100, 23, false);
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlConnect, CSTR("Start")));
 	this->btnStart->SetRect(504, 28, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, (const UTF8Char*)"Not Connected"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlConnect, CSTR("Not Connected")));
 	this->lblStatus->SetRect(4, 56, 150, 23, false);
 	NEW_CLASS(this->tcDetail, UI::GUITabControl(ui, this));
 	this->tcDetail->SetDockType(UI::GUIControl::DOCK_FILL);
@@ -583,17 +583,17 @@ SSWR::AVIRead::AVIRMQTTExplorerForm::AVIRMQTTExplorerForm(UI::GUIClientControl *
 	this->lvRecvTopic->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvRecvTopic->SetShowGrid(true);
 	this->lvRecvTopic->SetFullRowSelect(true);
-	this->lvRecvTopic->AddColumn((const UTF8Char*)"Topic", 200);
-	this->lvRecvTopic->AddColumn((const UTF8Char*)"Message", 200);
-	this->lvRecvTopic->AddColumn((const UTF8Char*)"Count", 60);
-	this->lvRecvTopic->AddColumn((const UTF8Char*)"Update Time", 150);
+	this->lvRecvTopic->AddColumn(CSTR("Topic"), 200);
+	this->lvRecvTopic->AddColumn(CSTR("Message"), 200);
+	this->lvRecvTopic->AddColumn(CSTR("Count"), 60);
+	this->lvRecvTopic->AddColumn(CSTR("Update Time"), 150);
 	this->lvRecvTopic->HandleSelChg(OnTopicSelChg, this);
 
 	this->tpPublish = this->tcDetail->AddTabPage(CSTR("Publish"));
 	NEW_CLASS(this->pnlPubTopic, UI::GUIPanel(ui, this->tpPublish));
 	this->pnlPubTopic->SetRect(0, 0, 100, 31, false);
 	this->pnlPubTopic->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPubTopic, UI::GUILabel(ui, this->pnlPubTopic, (const UTF8Char*)"Topic"));
+	NEW_CLASS(this->lblPubTopic, UI::GUILabel(ui, this->pnlPubTopic, CSTR("Topic")));
 	this->lblPubTopic->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPubTopic, UI::GUITextBox(ui, this->pnlPubTopic, CSTR("")));
 	this->txtPubTopic->SetRect(104, 4, 300, 23, false);

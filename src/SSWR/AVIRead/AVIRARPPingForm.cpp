@@ -51,14 +51,14 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		me->txtTarget->GetText(&sb);
 		if (!me->sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, target name is not valid", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error, target name is not valid"), CSTR("Error"), me);
 			return;
 		}
 		SSWR::AVIRead::AVIRARPPingForm::AdapterInfo *adapter;
 		adapter = (SSWR::AVIRead::AVIRARPPingForm::AdapterInfo*)me->cboAdapter->GetSelectedItem();
 		if (adapter == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error, no adapter is selected", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error, no adapter is selected"), CSTR("Error"), me);
 			return;
 		}
 		NEW_CLASS(me->arpHdlr, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName->v, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
@@ -66,7 +66,7 @@ void __stdcall SSWR::AVIRead::AVIRARPPingForm::OnPingClicked(void *userObj)
 		{
 			DEL_CLASS(me->arpHdlr);
 			me->arpHdlr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to ARP data", (const UTF8Char*)"ARP Ping", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ARP data"), CSTR("ARP Ping"), me);
 			return;
 		}
 
@@ -139,17 +139,17 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	this->pnlRequest->SetRect(0, 0, 100, 104, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->vspRequest, UI::GUIVSplitter(ui, this, 3, false));
-	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Adapter"));
+	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlRequest, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboAdapter->SetRect(104, 4, 200, 23, false);
-	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Target"));
+	NEW_CLASS(this->lblTarget, UI::GUILabel(ui, this->pnlRequest, CSTR("Target")));
 	this->lblTarget->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTarget, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtTarget->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->lblRepeat, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Repeat"));
+	NEW_CLASS(this->lblRepeat, UI::GUILabel(ui, this->pnlRequest, CSTR("Repeat")));
 	this->lblRepeat->SetRect(4, 52, 100, 23, false);
-	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, (const UTF8Char*)"", false));
+	NEW_CLASS(this->chkRepeat, UI::GUICheckBox(ui, this->pnlRequest, CSTR(""), false));
 	this->chkRepeat->SetRect(104, 52, 100, 23, false);
 	NEW_CLASS(this->btnPing, UI::GUIButton(ui, this->pnlRequest, CSTR("&Ping")));
 	this->btnPing->SetRect(104, 76, 75, 23, false);
@@ -157,7 +157,7 @@ SSWR::AVIRead::AVIRARPPingForm::AVIRARPPingForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->rlcPing, UI::GUIRealtimeLineChart(ui, this, this->core->GetDrawEngine(), 1, 600, 1000));
 	this->rlcPing->SetRect(0, 0, 100, 100, false);
 	this->rlcPing->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	this->rlcPing->SetUnit((const UTF8Char*)"ms");
+	this->rlcPing->SetUnit(CSTR("ms"));
 	NEW_CLASS(this->vspPing, UI::GUIVSplitter(ui, this, 3, true));
 	NEW_CLASS(this->lbLog, UI::GUIListBox(ui, this, false));
 	this->lbLog->SetDockType(UI::GUIControl::DOCK_FILL);

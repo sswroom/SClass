@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtDownloadDir->GetText(&sb);
 	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid download path", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid download path"), CSTR("Request"), me);
 		return;
 	}
 	SDEL_STRING(me->downPath);
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPDownloaderForm::OnRequestClicked(void *use
 	me->txtURL->GetText(&sb);
 	if (!sb.StartsWith(UTF8STRC("http://")) && !sb.StartsWith(UTF8STRC("https://")))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid http URL", (const UTF8Char*)"Request", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid http URL"), CSTR("Request"), me);
 		return;
 	}
 
@@ -294,65 +294,65 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"URL"));
+	NEW_CLASS(this->lblURL, UI::GUILabel(ui, this->pnlRequest, CSTR("URL")));
 	this->lblURL->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtURL, UI::GUITextBox(ui, this->pnlRequest, CSTR("http://")));
 	this->txtURL->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->lblDownloadDir, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Down Path"));
+	NEW_CLASS(this->lblDownloadDir, UI::GUILabel(ui, this->pnlRequest, CSTR("Down Path")));
 	this->lblDownloadDir->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDownloadDir, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtDownloadDir->SetRect(104, 28, 400, 23, false);
-	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Headers\r\n(Except Host)"));
+	NEW_CLASS(this->lblHeaders, UI::GUILabel(ui, this->pnlRequest, CSTR("Headers\r\n(Except Host)")));
 	this->lblHeaders->SetRect(4, 52, 100, 47, false);
 	NEW_CLASS(this->txtHeaders, UI::GUITextBox(ui, this->pnlRequest, CSTR(""), true));
 	this->txtHeaders->SetRect(104, 52, 400, 71, false);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("Request")));
 	this->btnRequest->SetRect(104, 128, 75, 23, false);
 	this->btnRequest->HandleButtonClick(OnRequestClicked, this);
-	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->grpStatus, UI::GUIGroupBox(ui, this, CSTR("Status")));
 	this->grpStatus->SetRect(0, 0, 100, 67, false);
 	this->grpStatus->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblCurrSpeed, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Curr Speed"));
+	NEW_CLASS(this->lblCurrSpeed, UI::GUILabel(ui, this->grpStatus, CSTR("Curr Speed")));
 	this->lblCurrSpeed->SetRect(4, 0, 100, 23, false);
 	NEW_CLASS(this->txtCurrSpeed, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtCurrSpeed->SetRect(104, 0, 200, 23, false);
 	this->txtCurrSpeed->SetReadOnly(true);
-	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->grpStatus, (const UTF8Char*)"Total Size"));
+	NEW_CLASS(this->lblTotalSize, UI::GUILabel(ui, this->grpStatus, CSTR("Total Size")));
 	this->lblTotalSize->SetRect(4, 24, 100, 23, false);
 	NEW_CLASS(this->txtTotalSize, UI::GUITextBox(ui, this->grpStatus, CSTR("")));
 	this->txtTotalSize->SetRect(104, 24, 200, 23, false);
 	this->txtTotalSize->SetReadOnly(true);
-	NEW_CLASS(this->grpResponse, UI::GUIGroupBox(ui, this, (const UTF8Char*)"Response"));
+	NEW_CLASS(this->grpResponse, UI::GUIGroupBox(ui, this, CSTR("Response")));
 	this->grpResponse->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->grpResponse));
 	this->pnlResponse->SetRect(0, 0, 100, 151, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Server IP"));
+	NEW_CLASS(this->lblSvrIP, UI::GUILabel(ui, this->pnlResponse, CSTR("Server IP")));
 	this->lblSvrIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtSvrIP, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtSvrIP->SetRect(104, 4, 150, 23, false);
 	this->txtSvrIP->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"DNS Time"));
+	NEW_CLASS(this->lblTimeDNS, UI::GUILabel(ui, this->pnlResponse, CSTR("DNS Time")));
 	this->lblTimeDNS->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTimeDNS, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeDNS->SetRect(104, 28, 150, 23, false);
 	this->txtTimeDNS->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Conn Time"));
+	NEW_CLASS(this->lblTimeConn, UI::GUILabel(ui, this->pnlResponse, CSTR("Conn Time")));
 	this->lblTimeConn->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtTimeConn, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeConn->SetRect(104, 52, 150, 23, false);
 	this->txtTimeConn->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Request Time"));
+	NEW_CLASS(this->lblTimeSendHdr, UI::GUILabel(ui, this->pnlResponse, CSTR("Request Time")));
 	this->lblTimeSendHdr->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtTimeSendHdr, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeSendHdr->SetRect(104, 76, 150, 23, false);
 	this->txtTimeSendHdr->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Response Time"));
+	NEW_CLASS(this->lblTimeResp, UI::GUILabel(ui, this->pnlResponse, CSTR("Response Time")));
 	this->lblTimeResp->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtTimeResp, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeResp->SetRect(104, 100, 150, 23, false);
 	this->txtTimeResp->SetReadOnly(true);
-	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, (const UTF8Char*)"Download Time"));
+	NEW_CLASS(this->lblTimeTotal, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Time")));
 	this->lblTimeTotal->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtTimeTotal, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtTimeTotal->SetRect(104, 124, 150, 23, false);
@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRHTTPDownloaderForm::AVIRHTTPDownloaderForm(UI::GUIClientContr
 	this->lvHeaders->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvHeaders->SetShowGrid(true);
 	this->lvHeaders->SetFullRowSelect(true);
-	this->lvHeaders->AddColumn((const UTF8Char*)"Header", 1000);
+	this->lvHeaders->AddColumn(CSTR("Header"), 1000);
 	
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;

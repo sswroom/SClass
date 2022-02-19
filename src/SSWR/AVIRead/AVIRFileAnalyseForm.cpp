@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true));
-	dlg->AddFilter((const UTF8Char*)"*.mpg", (const UTF8Char*)"MPEG System Stream");
+	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(&sb);
 	dlg->SetFileName(sb.ToString());
 	if (dlg->ShowDialog(me->GetHandle()))
@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving the file", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in saving the file"), CSTR("Error"), me);
 		}
 	}
 	DEL_CLASS(dlg);
@@ -194,7 +194,7 @@ SSWR::AVIRead::AVIRFileAnalyseForm::AVIRFileAnalyseForm(UI::GUIClientControl *pa
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"MPEG File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlCtrl, CSTR("MPEG File")));
 	this->lblFile->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtFile->SetRect(108, 8, 500, 23, false);

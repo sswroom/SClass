@@ -60,7 +60,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	this->printer = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblPrinter, UI::GUILabel(ui, this, (const UTF8Char*)"Printer"));
+	NEW_CLASS(this->lblPrinter, UI::GUILabel(ui, this, CSTR("Printer")));
 	this->lblPrinter->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->cboPrinter, UI::GUIComboBox(ui, this, false));
 	this->cboPrinter->SetRect(108, 8, 300, 23, false);

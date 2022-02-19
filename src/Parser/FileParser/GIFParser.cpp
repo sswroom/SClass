@@ -29,7 +29,7 @@ void Parser::FileParser::GIFParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.gif", (const UTF8Char*)"GIF File");
+		selector->AddFilter(CSTR("*.gif"), CSTR("GIF File"));
 	}
 }
 

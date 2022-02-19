@@ -34,7 +34,7 @@ void Parser::FileParser::MDBParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mdb", (const UTF8Char*)"MDB File");
+		selector->AddFilter(CSTR("*.mdb"), CSTR("MDB File"));
 	}
 }
 

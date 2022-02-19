@@ -23,7 +23,7 @@ void Parser::FileParser::MAIPackParser::PrepareSelector(IO::IFileSelector *selec
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mai", (const UTF8Char*)"MAI Package File");
+		selector->AddFilter(CSTR("*.mai"), CSTR("MAI Package File"));
 	}
 }
 

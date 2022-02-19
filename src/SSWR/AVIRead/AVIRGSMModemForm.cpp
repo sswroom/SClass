@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		smsMsg->GetMessageTime(&dt);
 
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"SMSSave", true));
-		dlg->AddFilter((const UTF8Char*)"*.sms", (const UTF8Char*)"SMS File");
+		dlg->AddFilter(CSTR("*.sms"), CSTR("SMS File"));
 		
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("SMS"));
 		sptr = Text::StrInt64(sptr, dt.ToDotNetTicks());
@@ -301,8 +301,8 @@ void SSWR::AVIRead::AVIRGSMModemForm::LoadSMS()
 		k = this->lvSMS->AddItem(wbuff, sms);
 #endif
 		smsMsg->GetMessageTime(&dt);
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
-		this->lvSMS->SetSubItem(k, 1, sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss zzzz");
+		this->lvSMS->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		const UTF16Char *cont = smsMsg->GetContent();
 		if (cont)
 		{
@@ -346,32 +346,32 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->tpInfo = this->tcMain->AddTabPage(CSTR("Info"));
 	this->tpPhoneBook = this->tcMain->AddTabPage(CSTR("PhoneBook"));
 	this->tpSMS = this->tcMain->AddTabPage(CSTR("SMS"));
-	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Manufacture"));
+	NEW_CLASS(this->lblModemManu, UI::GUILabel(ui, this->tpInfo, CSTR("Manufacture")));
 	this->lblModemManu->SetRect(8, 8, 100, 23, false);
 	NEW_CLASS(this->txtModemManu, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemManu->SetRect(108, 8, 100, 23, false);
 	this->txtModemManu->SetReadOnly(true);
-	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Model"));
+	NEW_CLASS(this->lblModemModel, UI::GUILabel(ui, this->tpInfo, CSTR("Model")));
 	this->lblModemModel->SetRect(8, 32, 100, 23, false);
 	NEW_CLASS(this->txtModemModel, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemModel->SetRect(108, 32, 100, 23, false);
 	this->txtModemModel->SetReadOnly(true);
-	NEW_CLASS(this->lblModemVer, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Modem Ver"));
+	NEW_CLASS(this->lblModemVer, UI::GUILabel(ui, this->tpInfo, CSTR("Modem Ver")));
 	this->lblModemVer->SetRect(8, 56, 100, 23, false);
 	NEW_CLASS(this->txtModemVer, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemVer->SetRect(108, 56, 100, 23, false);
 	this->txtModemVer->SetReadOnly(true);
-	NEW_CLASS(this->lblModemIMEI, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"IMEI"));
+	NEW_CLASS(this->lblModemIMEI, UI::GUILabel(ui, this->tpInfo, CSTR("IMEI")));
 	this->lblModemIMEI->SetRect(8, 80, 100, 23, false);
 	NEW_CLASS(this->txtModemIMEI, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtModemIMEI->SetRect(108, 80, 100, 23, false);
 	this->txtModemIMEI->SetReadOnly(true);
-	NEW_CLASS(this->lblOperator, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Operator"));
+	NEW_CLASS(this->lblOperator, UI::GUILabel(ui, this->tpInfo, CSTR("Operator")));
 	this->lblOperator->SetRect(8, 104, 100, 23, false);
 	NEW_CLASS(this->txtOperator, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtOperator->SetRect(108, 104, 100, 23, false);
 	this->txtOperator->SetReadOnly(true);
-	NEW_CLASS(this->lblSignalQuality, UI::GUILabel(ui, this->tpInfo, (const UTF8Char*)"Signal Quality"));
+	NEW_CLASS(this->lblSignalQuality, UI::GUILabel(ui, this->tpInfo, CSTR("Signal Quality")));
 	this->lblSignalQuality->SetRect(8, 128, 100, 23, false);
 	NEW_CLASS(this->txtSignalQuality, UI::GUITextBox(ui, this->tpInfo, CSTR("")));
 	this->txtSignalQuality->SetRect(108, 128, 100, 23, false);
@@ -398,8 +398,8 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnPhoneRead->HandleButtonClick(OnPhoneRClick, this);
 	NEW_CLASS(this->lvPhone, UI::GUIListView(ui, this->tpPhoneBook, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvPhone->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvPhone->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvPhone->AddColumn((const UTF8Char*)"Phone", 200);
+	this->lvPhone->AddColumn(CSTR("Name"), 200);
+	this->lvPhone->AddColumn(CSTR("Phone"), 200);
 	this->lvPhone->SetFullRowSelect(true);
 	this->lvPhone->SetShowGrid(true);
 
@@ -416,7 +416,7 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->btnSMSRead, UI::GUIButton(ui, this->pnlSMS, CSTR("&Show SMS")));
 	this->btnSMSRead->SetRect(108, 4, 75, 23, false);
 	this->btnSMSRead->HandleButtonClick(OnSMSRClick, this);
-	NEW_CLASS(this->lblSMSC, UI::GUILabel(ui, this->pnlSMS, (const UTF8Char*)"SMSC"));
+	NEW_CLASS(this->lblSMSC, UI::GUILabel(ui, this->pnlSMS, CSTR("SMSC")));
 	this->lblSMSC->SetRect(208, 4, 50, 23, false);
 	NEW_CLASS(this->txtSMSC, UI::GUITextBox(ui, this->pnlSMS, CSTR("")));
 	this->txtSMSC->SetReadOnly(true);
@@ -432,9 +432,9 @@ SSWR::AVIRead::AVIRGSMModemForm::AVIRGSMModemForm(UI::GUIClientControl *parent, 
 	this->btnSMSSaveAll->HandleButtonClick(OnSMSSaveAllClick, this);
 	NEW_CLASS(this->lvSMS, UI::GUIListView(ui, this->tpSMS, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvSMS->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvSMS->AddColumn((const UTF8Char*)"From", 100);
-	this->lvSMS->AddColumn((const UTF8Char*)"Time", 180);
-	this->lvSMS->AddColumn((const UTF8Char*)"Content", 300);
+	this->lvSMS->AddColumn(CSTR("From"), 100);
+	this->lvSMS->AddColumn(CSTR("Time"), 180);
+	this->lvSMS->AddColumn(CSTR("Content"), 300);
 	this->lvSMS->SetFullRowSelect(true);
 
 	this->AddTimer(1000, OnTimerTick, this);

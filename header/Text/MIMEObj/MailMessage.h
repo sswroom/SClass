@@ -5,6 +5,7 @@
 #include "IO/IStreamData.h"
 #include "Text/EncodingFactory.h"
 #include "Text/IMIMEObj.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/MIMEObj/MIMEHeader.h"
 #include "Text/MIMEObj/TextMIMEObj.h"
@@ -25,8 +26,8 @@ namespace Text
 			typedef struct
 			{
 				AddressType type;
-				const UTF8Char *name;
-				const UTF8Char *address;
+				Text::String *name;
+				Text::String *address;
 			} MailAddress;
 
 		private:

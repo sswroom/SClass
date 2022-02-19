@@ -62,12 +62,12 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnStartClicked(void *userOb
 	me->txtFileName->GetText(&sb);
 	if (ip && sb.GetLength() > 0)
 	{
-		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), (const UTF8Char*)"AVIRead"));
+		NEW_CLASS(me->capture, Net::RAWCapture(me->sockf, ip, type, format, sb.ToCString(), CSTR("AVIRead")));
 		if (me->capture->IsError())
 		{
 			DEL_CLASS(me->capture);
 			me->capture = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating socket", (const UTF8Char*)"RAW Capture", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in creating socket"), CSTR("RAW Capture"), me);
 		}
 		else
 		{
@@ -116,19 +116,19 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	this->currDataSize = (UInt64)-1;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this, CSTR("IP")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this, false));
 	this->cboIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this, CSTR("Type")));
 	this->lblType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this, false));
 	this->cboType->SetRect(104, 28, 150, 23, false);
-	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this, (const UTF8Char*)"Format"));
+	NEW_CLASS(this->lblFormat, UI::GUILabel(ui, this, CSTR("Format")));
 	this->lblFormat->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboFormat, UI::GUIComboBox(ui, this, false));
 	this->cboFormat->SetRect(104, 52, 150, 23, false);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileName->SetRect(104, 76, 500, 23, false);
@@ -141,12 +141,12 @@ SSWR::AVIRead::AVIRNetRAWCaptureForm::AVIRNetRAWCaptureForm(UI::GUIClientControl
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 100, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblPacketCnt, UI::GUILabel(ui, this, (const UTF8Char*)"Packet Count"));
+	NEW_CLASS(this->lblPacketCnt, UI::GUILabel(ui, this, CSTR("Packet Count")));
 	this->lblPacketCnt->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtPacketCnt, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPacketCnt->SetReadOnly(true);
 	this->txtPacketCnt->SetRect(104, 124, 150, 23, false);
-	NEW_CLASS(this->lblDataSize, UI::GUILabel(ui, this, (const UTF8Char*)"Data Size"));
+	NEW_CLASS(this->lblDataSize, UI::GUILabel(ui, this, CSTR("Data Size")));
 	this->lblDataSize->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtDataSize, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDataSize->SetReadOnly(true);

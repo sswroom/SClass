@@ -108,14 +108,14 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	i = me->cboSrc->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select source coordinate system", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select source coordinate system"), CSTR("Error"), me);
 		return;
 	}
 
 	i = me->cboDest->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select dest coordinate system", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select dest coordinate system"), CSTR("Error"), me);
 		return;
 	}
 
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(fd);
 		if (db == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"File is not a database file", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("File is not a database file"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -152,7 +152,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	DB::DBReader *reader = db->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (reader == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported database format", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unsupported database format"), CSTR("Error"), me);
 		DEL_CLASS(db);
 		return;
 	}
@@ -176,13 +176,13 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	if (xCol == (UOSInt)-1 || yCol == (UOSInt)-1)
 	{
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"XY Database column not found", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("XY Database column not found"), CSTR("Error"), me);
 		return;
 	}
 	
 
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CoordConvSave", true));
-	dlg->AddFilter((const UTF8Char*)"*.csv", (const UTF8Char*)"CSV File");
+	dlg->AddFilter(CSTR("*.csv"), CSTR("CSV File"));
 	if (!dlg->ShowDialog(me->GetHandle()))
 	{
 		DEL_CLASS(dlg);
@@ -197,7 +197,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(fs);
 		DEL_CLASS(dlg);
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating output file", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in creating output file"), CSTR("Error"), me);
 		return;
 	}
 	Text::StringBuilderUTF8 sb;
@@ -211,7 +211,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		DEL_CLASS(dlg);
 		DEL_CLASS(fs);
 		DEL_CLASS(db);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in reading source file", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in reading source file"), CSTR("Error"), me);
 		return;
 	}
 
@@ -453,12 +453,12 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlSrc, UI::GUIPanel(ui, this));
 	this->pnlSrc->SetRect(0, 0, 100, 24, false);
 	this->pnlSrc->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrc, (const UTF8Char*)"Source Type"));
+	NEW_CLASS(this->lblSrc, UI::GUILabel(ui, this->pnlSrc, CSTR("Source Type")));
 	this->lblSrc->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radSrcGeo, UI::GUIRadioButton(ui, this->pnlSrc, (const UTF8Char*)"Geographic", false));
+	NEW_CLASS(this->radSrcGeo, UI::GUIRadioButton(ui, this->pnlSrc, CSTR("Geographic"), false));
 	this->radSrcGeo->SetRect(100, 0, 100, 23, false);
 	this->radSrcGeo->HandleSelectedChange(OnSrcRadChanged, this);
-	NEW_CLASS(this->radSrcProj, UI::GUIRadioButton(ui, this->pnlSrc, (const UTF8Char*)"Projected", true));
+	NEW_CLASS(this->radSrcProj, UI::GUIRadioButton(ui, this->pnlSrc, CSTR("Projected"), true));
 	this->radSrcProj->SetRect(200, 0, 100, 23, false);
 	NEW_CLASS(this->cboSrc, UI::GUIComboBox(ui, this->pnlSrc, false));
 	this->cboSrc->SetRect(300, 0, 200, 23, false);
@@ -466,12 +466,12 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlDest, UI::GUIPanel(ui, this));
 	this->pnlDest->SetRect(0, 0, 100, 24, false);
 	this->pnlDest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDest, (const UTF8Char*)"Dest Type"));
+	NEW_CLASS(this->lblDest, UI::GUILabel(ui, this->pnlDest, CSTR("Dest Type")));
 	this->lblDest->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radDestGeo, UI::GUIRadioButton(ui, this->pnlDest, (const UTF8Char*)"Geographic", true));
+	NEW_CLASS(this->radDestGeo, UI::GUIRadioButton(ui, this->pnlDest, CSTR("Geographic"), true));
 	this->radDestGeo->SetRect(100, 0, 100, 23, false);
 	this->radDestGeo->HandleSelectedChange(OnDestRadChanged, this);
-	NEW_CLASS(this->radDestProj, UI::GUIRadioButton(ui, this->pnlDest, (const UTF8Char*)"Projected", false));
+	NEW_CLASS(this->radDestProj, UI::GUIRadioButton(ui, this->pnlDest, CSTR("Projected"), false));
 	this->radDestProj->SetRect(200, 0, 100, 23, false);
 	NEW_CLASS(this->cboDest, UI::GUIComboBox(ui, this->pnlDest, false));
 	this->cboDest->SetRect(300, 0, 200, 23, false);
@@ -482,19 +482,19 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlCoord, UI::GUIPanel(ui, this));
 	this->pnlCoord->SetRect(0, 0, 100, 24, false);
 	this->pnlCoord->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->pnlCoord, CSTR("Name")));
 	this->lblName->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtName->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->lblEasting, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"Easting"));
+	NEW_CLASS(this->lblEasting, UI::GUILabel(ui, this->pnlCoord, CSTR("Easting")));
 	this->lblEasting->SetRect(200, 0, 75, 23, false);
 	NEW_CLASS(this->txtEasting, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtEasting->SetRect(275, 0, 100, 23, false);
-	NEW_CLASS(this->lblNorthing, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"Northing"));
+	NEW_CLASS(this->lblNorthing, UI::GUILabel(ui, this->pnlCoord, CSTR("Northing")));
 	this->lblNorthing->SetRect(375, 0, 75, 23, false);
 	NEW_CLASS(this->txtNorthing, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtNorthing->SetRect(450, 0, 100, 23, false);
-	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this->pnlCoord, (const UTF8Char*)"Northing"));
+	NEW_CLASS(this->lblHeight, UI::GUILabel(ui, this->pnlCoord, CSTR("Northing")));
 	this->lblHeight->SetRect(550, 0, 75, 23, false);
 	NEW_CLASS(this->txtHeight, UI::GUITextBox(ui, this->pnlCoord, CSTR("")));
 	this->txtHeight->SetRect(625, 0, 75, 23, false);
@@ -506,13 +506,13 @@ SSWR::AVIRead::AVIRCoordConvForm::AVIRCoordConvForm(UI::GUIClientControl *parent
 	this->btnClear->HandleButtonClick(OnClearClicked, this);
 	NEW_CLASS(this->lvCoord, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 7));
 	this->lvCoord->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvCoord->AddColumn((const UTF8Char*)"Name", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"Easting", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"Northing", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"Height", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"DestX", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"DestY", 100);
-	this->lvCoord->AddColumn((const UTF8Char*)"DestZ", 100);
+	this->lvCoord->AddColumn(CSTR("Name"), 100);
+	this->lvCoord->AddColumn(CSTR("Easting"), 100);
+	this->lvCoord->AddColumn(CSTR("Northing"), 100);
+	this->lvCoord->AddColumn(CSTR("Height"), 100);
+	this->lvCoord->AddColumn(CSTR("DestX"), 100);
+	this->lvCoord->AddColumn(CSTR("DestY"), 100);
+	this->lvCoord->AddColumn(CSTR("DestZ"), 100);
 	this->lvCoord->SetShowGrid(true);
 	this->lvCoord->SetFullRowSelect(true);
 

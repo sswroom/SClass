@@ -23,7 +23,7 @@ void Parser::FileParser::MKVParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mkv", (const UTF8Char*)"MKV File");
+		selector->AddFilter(CSTR("*.mkv"), CSTR("MKV File"));
 	}
 }
 

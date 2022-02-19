@@ -221,7 +221,7 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			k = me->lvDevInfo->AddItem(me->devConts->GetItem(i), 0);
-			me->lvDevInfo->SetSubItem(k, 1, me->devConts->GetItem(i + 1)->v);
+			me->lvDevInfo->SetSubItem(k, 1, me->devConts->GetItem(i + 1));
 			i += 2;
 		}
 		me->lvDevAlert->ClearItems();
@@ -232,15 +232,15 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		{
 			sptr = Text::StrInt32(sbuff, me->devContAlerts[i].alertId);
 			k = me->lvDevAlert->AddItem(CSTRP(sbuff, sptr), 0);
-			me->lvDevAlert->SetSubItem(k, 1, me->devContAlerts[i].isAlerting?(const UTF8Char*)"1":(const UTF8Char*)"0");
-			me->lvDevAlert->SetSubItem(k, 2, me->devContAlerts[i].isAlerted?(const UTF8Char*)"1":(const UTF8Char*)"0");
-			me->lvDevAlert->SetSubItem(k, 3, me->devContAlerts[i].isFirst?(const UTF8Char*)"1":(const UTF8Char*)"0");
+			me->lvDevAlert->SetSubItem(k, 1, me->devContAlerts[i].isAlerting?CSTR("1"):CSTR("0"));
+			me->lvDevAlert->SetSubItem(k, 2, me->devContAlerts[i].isAlerted?CSTR("1"):CSTR("0"));
+			me->lvDevAlert->SetSubItem(k, 3, me->devContAlerts[i].isFirst?CSTR("1"):CSTR("0"));
 			dt.SetTicks(me->devContAlerts[i].beginTimeTick);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevAlert->SetSubItem(k, 4, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lvDevAlert->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			dt.SetTicks(me->devContAlerts[i].lastTimeTick);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevAlert->SetSubItem(k, 5, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lvDevAlert->SetSubItem(k, 5, CSTRP(sbuff, sptr));
 			i++;
 		}
 		me->lvDevGuard->ClearItems();
@@ -250,26 +250,26 @@ void __stdcall SSWR::AVIRead::AVIRGPSDevForm::OnTimerTick(void *userObj)
 		{
 			sptr = Text::StrInt32(sbuff, me->devContGuards[i].userId);
 			k = me->lvDevGuard->AddItem(CSTRP(sbuff, sptr), 0);
-			me->lvDevGuard->SetSubItem(k, 1, me->devContGuards[i].found?L"1":L"0");
-			Text::StrDouble(sbuff, me->devContGuards[i].alarmLat);
-			me->lvDevGuard->SetSubItem(k, 2, sbuff);
-			Text::StrDouble(sbuff, me->devContGuards[i].alarmLon);
-			me->lvDevGuard->SetSubItem(k, 3, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmType);
-			me->lvDevGuard->SetSubItem(k, 4, sbuff);
+			me->lvDevGuard->SetSubItem(k, 1, me->devContGuards[i].found?CSTR("1"):CSTR("0"));
+			sptr = Text::StrDouble(sbuff, me->devContGuards[i].alarmLat);
+			me->lvDevGuard->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, me->devContGuards[i].alarmLon);
+			me->lvDevGuard->SetSubItem(k, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmType);
+			me->lvDevGuard->SetSubItem(k, 4, CSTRP(sbuff, sptr));
 			dt.SetTicks(me->devContGuards[i].alarmStartTicks);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			me->lvDevGuard->SetSubItem(k, 5, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus);
-			me->lvDevGuard->SetSubItem(k, 6, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus2);
-			me->lvDevGuard->SetSubItem(k, 7, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus3);
-			me->lvDevGuard->SetSubItem(k, 8, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus4);
-			me->lvDevGuard->SetSubItem(k, 9, sbuff);
-			Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus5);
-			me->lvDevGuard->SetSubItem(k, 10, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			me->lvDevGuard->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus);
+			me->lvDevGuard->SetSubItem(k, 6, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus2);
+			me->lvDevGuard->SetSubItem(k, 7, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus3);
+			me->lvDevGuard->SetSubItem(k, 8, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus4);
+			me->lvDevGuard->SetSubItem(k, 9, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, me->devContGuards[i].alarmStatus5);
+			me->lvDevGuard->SetSubItem(k, 10, CSTRP(sbuff, sptr));
 			i++;
 		}
 		mutUsage.EndUse();
@@ -506,11 +506,11 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlConn, UI::GUIPanel(ui, this));
 	this->pnlConn->SetRect(0, 0, 100, 56, false);
 	this->pnlConn->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConn, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlConn, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlConn, CSTR("127.0.0.1")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlConn, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlConn, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlConn, CSTR("7500")));
 	this->txtPort->SetRect(104, 28, 100, 23, false);
@@ -521,7 +521,7 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 	
 	this->tpStatus = this->tcMain->AddTabPage(CSTR("Status"));
-	NEW_CLASS(this->lblStatusConn, UI::GUILabel(ui, this->tpStatus, (const UTF8Char*)"Conn Status"));
+	NEW_CLASS(this->lblStatusConn, UI::GUILabel(ui, this->tpStatus, CSTR("Conn Status")));
 	this->lblStatusConn->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStatusConn, UI::GUITextBox(ui, this->tpStatus, CSTR("Not Connected")));
 	this->txtStatusConn->SetRect(104, 4, 100, 23, false);
@@ -546,35 +546,35 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvDevInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevInfo->SetFullRowSelect(true);
 	this->lvDevInfo->SetShowGrid(true);
-	this->lvDevInfo->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvDevInfo->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvDevInfo->AddColumn(CSTR("Name"), 200);
+	this->lvDevInfo->AddColumn(CSTR("Value"), 400);
 	this->tpDevAlert = this->tcDevice->AddTabPage(CSTR("Alert"));
 	NEW_CLASS(this->lvDevAlert, UI::GUIListView(ui, this->tpDevAlert, UI::GUIListView::LVSTYLE_TABLE, 6));
 	this->lvDevAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevAlert->SetFullRowSelect(true);
 	this->lvDevAlert->SetShowGrid(true);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"AlertId", 60);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"isAlerting", 60);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"isAlerted", 60);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"isFirst", 60);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"Begin Time (UTC)", 200);
-	this->lvDevAlert->AddColumn((const UTF8Char*)"Last Time (UTC)", 200);
+	this->lvDevAlert->AddColumn(CSTR("AlertId"), 60);
+	this->lvDevAlert->AddColumn(CSTR("isAlerting"), 60);
+	this->lvDevAlert->AddColumn(CSTR("isAlerted"), 60);
+	this->lvDevAlert->AddColumn(CSTR("isFirst"), 60);
+	this->lvDevAlert->AddColumn(CSTR("Begin Time (UTC)"), 200);
+	this->lvDevAlert->AddColumn(CSTR("Last Time (UTC)"), 200);
 	this->tpDevGuard = this->tcDevice->AddTabPage(CSTR("Guard"));
 	NEW_CLASS(this->lvDevGuard, UI::GUIListView(ui, this->tpDevGuard, UI::GUIListView::LVSTYLE_TABLE, 11));
 	this->lvDevGuard->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevGuard->SetFullRowSelect(true);
 	this->lvDevGuard->SetShowGrid(true);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"User Id", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"Found", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmLat", 100);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmLon", 100);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmType", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStart",200);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus2", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus3", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus4", 60);
-	this->lvDevGuard->AddColumn((const UTF8Char*)"AlarmStatus5", 60);
+	this->lvDevGuard->AddColumn(CSTR("User Id"), 60);
+	this->lvDevGuard->AddColumn(CSTR("Found"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmLat"), 100);
+	this->lvDevGuard->AddColumn(CSTR("AlarmLon"), 100);
+	this->lvDevGuard->AddColumn(CSTR("AlarmType"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStart"),200);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStatus"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStatus2"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStatus3"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStatus4"), 60);
+	this->lvDevGuard->AddColumn(CSTR("AlarmStatus5"), 60);
 
 	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	NEW_CLASS(this->pnlUserC, UI::GUIPanel(ui, this->tpUser));
@@ -597,8 +597,8 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);
-	this->lvUser->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvUser->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvUser->AddColumn(CSTR("Name"), 200);
+	this->lvUser->AddColumn(CSTR("Value"), 400);
 
 	this->tpAlert = this->tcMain->AddTabPage(CSTR("Alert"));
 	NEW_CLASS(this->pnlAlertC, UI::GUIPanel(ui, this->tpAlert));
@@ -621,8 +621,8 @@ SSWR::AVIRead::AVIRGPSDevForm::AVIRGPSDevForm(UI::GUIClientControl *parent, UI::
 	this->lvAlert->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvAlert->SetShowGrid(true);
 	this->lvAlert->SetFullRowSelect(true);
-	this->lvAlert->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvAlert->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvAlert->AddColumn(CSTR("Name"), 200);
+	this->lvAlert->AddColumn(CSTR("Value"), 400);
 
 	this->dispConn = false;
 	this->threadRunning = false;

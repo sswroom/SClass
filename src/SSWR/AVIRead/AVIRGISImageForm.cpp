@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRGISImageForm::OnOKClick(void *userObj)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Select an image first", (const UTF8Char*)"Select Image", me);
+		UI::MessageDialog::ShowDialog(CSTR("Select an image first"), CSTR("Select Image"), me);
 	}
 }
 
@@ -66,7 +66,7 @@ SSWR::AVIRead::AVIRGISImageForm::AVIRGISImageForm(UI::GUIClientControl *parent, 
 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
-	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, (const UTF8Char*)"Drag and drop to add icons"));
+	NEW_CLASS(this->lbl, UI::GUILabel(ui, this, CSTR("Drag and drop to add icons")));
 	this->lbl->SetRect(0, 0, 100, 23, false);
 	this->lbl->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));

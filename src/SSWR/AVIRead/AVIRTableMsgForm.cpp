@@ -17,7 +17,7 @@ SSWR::AVIRead::AVIRTableMsgForm::AVIRTableMsgForm(UI::GUIClientControl *parent, 
 	UOSInt i = 0;
 	while (i < this->colCnt)
 	{
-		this->lvTable->AddColumn(colNames[i], 200);
+		this->lvTable->AddColumn(Text::CString::FromPtr(colNames[i]), 200);
 		i++;
 	}
 }
@@ -36,10 +36,10 @@ void SSWR::AVIRead::AVIRTableMsgForm::AddRow(const UTF8Char **row)
 	UOSInt k;
 	UOSInt i = 1;
 	UOSInt j = this->colCnt;
-	k = this->lvTable->AddItem({row[0], Text::StrCharCnt(row[0])}, 0);
+	k = this->lvTable->AddItem(Text::CString::FromPtr(row[0]), 0);
 	while (i < j)
 	{
-		this->lvTable->SetSubItem(k, i, row[i]);
+		this->lvTable->SetSubItem(k, i, Text::CString::FromPtr(row[i]));
 		i++;
 	}
 }

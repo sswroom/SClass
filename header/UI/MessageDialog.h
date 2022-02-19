@@ -7,8 +7,8 @@ namespace UI
 	class MessageDialog
 	{
 	public:
-		static void ShowDialog(const UTF8Char *message, const UTF8Char *title, UI::GUIControl *frm);
-		static Bool ShowYesNoDialog(const UTF8Char *message, const UTF8Char *title, UI::GUIControl *frm);
+		static void ShowDialog(Text::CString message, Text::CString title, UI::GUIControl *frm);
+		static Bool ShowYesNoDialog(Text::CString message, Text::CString title, UI::GUIControl *frm);
 	};
 };
 #endif

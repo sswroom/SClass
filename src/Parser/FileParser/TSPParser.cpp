@@ -20,7 +20,7 @@ void Parser::FileParser::TSPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tsp", (const UTF8Char*)"Total Station Point File");
+		selector->AddFilter(CSTR("*.tsp"), CSTR("Total Station Point File"));
 	}
 }
 

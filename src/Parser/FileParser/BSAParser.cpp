@@ -23,7 +23,7 @@ void Parser::FileParser::BSAParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.bsa", (const UTF8Char*)"BSA Package File");
+		selector->AddFilter(CSTR("*.bsa"), CSTR("BSA Package File"));
 	}
 }
 

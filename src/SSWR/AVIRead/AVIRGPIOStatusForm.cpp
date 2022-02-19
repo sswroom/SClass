@@ -16,12 +16,12 @@ void __stdcall SSWR::AVIRead::AVIRGPIOStatusForm::OnTimerTick(void *userObj)
 			isHigh = me->ctrl->IsPinHigh(i);
 			if (me->states[i].pinMode != pinMode)
 			{
-				me->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, pinMode).v);
+				me->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, pinMode));
 				me->states[i].pinMode = pinMode;
 			}
 			if (me->states[i].isHigh != isHigh)
 			{
-				me->lvStatus->SetSubItem(i, 2, (const UTF8Char*)(isHigh?"1":"0"));
+				me->lvStatus->SetSubItem(i, 2, (isHigh?CSTR("1"):CSTR("0")));
 				me->states[i].isHigh = isHigh;
 			}
 			i++;
@@ -43,9 +43,9 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(UI::GUIClientControl *pare
 	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvStatus->SetFullRowSelect(true);
 	this->lvStatus->SetShowGrid(true);
-	this->lvStatus->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvStatus->AddColumn((const UTF8Char*)"Pin Mode", 100);
-	this->lvStatus->AddColumn((const UTF8Char*)"State", 80);
+	this->lvStatus->AddColumn(CSTR("Name"), 200);
+	this->lvStatus->AddColumn(CSTR("Pin Mode"), 100);
+	this->lvStatus->AddColumn(CSTR("State"), 80);
 
 	if (!this->ctrl->IsError())
 	{
@@ -62,8 +62,8 @@ SSWR::AVIRead::AVIRGPIOStatusForm::AVIRGPIOStatusForm(UI::GUIClientControl *pare
 			this->lvStatus->AddItem(CSTRP(sbuff, sptr2), 0);
 			this->states[i].pinMode = this->ctrl->GetPinMode(i);
 			this->states[i].isHigh = this->ctrl->IsPinHigh(i);
-			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode).v);
-			this->lvStatus->SetSubItem(i, 2, (const UTF8Char*)(this->states[i].isHigh?"1":"0"));
+			this->lvStatus->SetSubItem(i, 1, IO::GPIOControl::PinModeGetName(i, this->states[i].pinMode));
+			this->lvStatus->SetSubItem(i, 2, (this->states[i].isHigh?CSTR("1"):CSTR("0")));
 			i++;
 		}
 	}

@@ -19,26 +19,26 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	me->txtFileDir->GetText(&sb);
 	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The file dir is not a directory", me->GetFormName().v, me);
+		UI::MessageDialog::ShowDialog(CSTR("The file dir is not a directory"), me->GetFormName(), me);
 		return;
 	}
 	dt1.ClearTime();
 	dt2.ClearTime();
 	if (dt1.CompareTo(&dt2) > 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The start time is after end time", me->GetFormName().v, me);
+		UI::MessageDialog::ShowDialog(CSTR("The start time is after end time"), me->GetFormName(), me);
 		return;
 	}
 	Double days = Data::DateTime::MS2Days(dt2.DiffMS(&dt1));
 	if (days > 90)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"The time range is longer than 90 days", me->GetFormName().v, me);
+		UI::MessageDialog::ShowDialog(CSTR("The time range is longer than 90 days"), me->GetFormName(), me);
 		return;
 	}
 
 	UI::FileDialog *dlg;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"TimedFileCopy", true));
-	dlg->AddFilter((const UTF8Char*)"*.zip", (const UTF8Char*)"Zip file");
+	dlg->AddFilter(CSTR("*.zip"), CSTR("Zip file"));
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
@@ -73,7 +73,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating zip file", me->GetFormName().v, me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in creating zip file"), me->GetFormName(), me);
 		}
 		NEW_CLASS(zip, IO::ZIPBuilder(fs));
 		sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
@@ -168,7 +168,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 							Text::StringBuilderUTF8 sb;
 							sb.AppendC(UTF8STRC("Error in copying "));
 							sb.AppendP(buffStart, sptr);
-							UI::MessageDialog::ShowDialog(sb.ToString(), this->GetFormName().v, this);
+							UI::MessageDialog::ShowDialog(sb.ToCString(), this->GetFormName(), this);
 							return false;
 						}
 					}
@@ -218,16 +218,16 @@ SSWR::AVIRead::AVIRTimedFileCopyForm::AVIRTimedFileCopyForm(UI::GUIClientControl
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFileDir, UI::GUILabel(ui, this, (const UTF8Char*)"File Dir"));
+	NEW_CLASS(this->lblFileDir, UI::GUILabel(ui, this, CSTR("File Dir")));
 	this->lblFileDir->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileDir, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFileDir->SetRect(104, 4, 400, 23, false);
-	NEW_CLASS(this->lblStartTime, UI::GUILabel(ui, this, (const UTF8Char*)"Start Time"));
+	NEW_CLASS(this->lblStartTime, UI::GUILabel(ui, this, CSTR("Start Time")));
 	this->lblStartTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->dtpStartTime, UI::GUIDateTimePicker(ui, this, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpStartTime->SetFormat("yyyy-MM-dd");
 	this->dtpStartTime->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblEndTime, UI::GUILabel(ui, this, (const UTF8Char*)"End Time"));
+	NEW_CLASS(this->lblEndTime, UI::GUILabel(ui, this, CSTR("End Time")));
 	this->lblEndTime->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->dtpEndTime, UI::GUIDateTimePicker(ui, this, UI::GUIDateTimePicker::ST_UPDOWN));
 	this->dtpEndTime->SetFormat("yyyy-MM-dd");

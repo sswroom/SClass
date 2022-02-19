@@ -25,7 +25,7 @@ void Parser::FileParser::XLSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::Workbook)
 	{
-		selector->AddFilter((const UTF8Char*)"*.xls", (const UTF8Char*)"Excel Workbook File");
+		selector->AddFilter(CSTR("*.xls"), CSTR("Excel Workbook File"));
 	}
 }
 

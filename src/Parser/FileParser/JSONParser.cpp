@@ -26,7 +26,7 @@ void Parser::FileParser::JSONParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.GeoJSON", (const UTF8Char*)"GeoJSON File");
+		selector->AddFilter(CSTR("*.GeoJSON"), CSTR("GeoJSON File"));
 	}
 }
 

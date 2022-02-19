@@ -4,9 +4,9 @@
 #include "UI/GUIGroupBox.h"
 #include <gtk/gtk.h>
 
-UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *text) : UI::GUIClientControl(ui, parent)
+UI::GUIGroupBox::GUIGroupBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString text) : UI::GUIClientControl(ui, parent)
 {
-	this->hwnd = (ControlHandle*)gtk_frame_new((const Char*)text);
+	this->hwnd = (ControlHandle*)gtk_frame_new((const Char*)text.v);
 	parent->AddChild(this);
 	this->Show();
 }

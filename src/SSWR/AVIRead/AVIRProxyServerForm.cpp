@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		Int32 port = sb.ToInt32();
 		if (port <= 0 || port >= 65536)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid port number", (const UTF8Char*)"Start", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter valid port number"), CSTR("Start"), me);
 			return;
 		}
 		NEW_CLASS(me->svr, Net::ProxyServer(me->sockf, (UInt16)port, me->log));
@@ -22,7 +22,7 @@ void __stdcall SSWR::AVIRead::AVIRProxyServerForm::OnStartClicked(void *userObj)
 		{
 			DEL_CLASS(me->svr);
 			me->svr = 0;
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting proxy server. Maybe port is in use.", (const UTF8Char*)"Start", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in starting proxy server. Maybe port is in use."), CSTR("Start"), me);
 		}
 		else
 		{
@@ -62,7 +62,7 @@ SSWR::AVIRead::AVIRProxyServerForm::AVIRProxyServerForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 55, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("8080")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);

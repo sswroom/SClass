@@ -46,11 +46,11 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnStoreListClicked(void *use
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Stored as "));
 		sb.AppendP(sbuff, sptr);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Bluetooth Ctrl", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Bluetooth Ctrl"), me);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in storing file", (const UTF8Char*)"Bluetooth Ctrl", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in storing file"), CSTR("Bluetooth Ctrl"), me);
 	}
 }
 
@@ -117,29 +117,30 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 		{
 			sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
 			this->lvDevices->InsertItem(i, CSTRP(sbuff, sptr), dev);
-			this->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType).v);
-			this->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType).v);
+			this->lvDevices->SetSubItem(i, 1, IO::BTScanLog::RadioTypeGetName(dev->radioType));
+			this->lvDevices->SetSubItem(i, 2, IO::BTScanLog::AddressTypeGetName(dev->addrType));
 			if (dev->addrType == IO::BTScanLog::AT_RANDOM)
 			{
 				switch (dev->mac[0] & 0xC0)
 				{
 				case 0x00:
-					this->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Non-resolvable Random");
+					this->lvDevices->SetSubItem(i, 4, CSTR("Non-resolvable Random"));
 					break;
 				case 0x40:
-					this->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Resolvable Random");
+					this->lvDevices->SetSubItem(i, 4, CSTR("Resolvable Random"));
 					break;
 				case 0xC0:
-					this->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"Static Random");
+					this->lvDevices->SetSubItem(i, 4, CSTR("Static Random"));
 					break;
 				default:
-					this->lvDevices->SetSubItem(i, 4, (const UTF8Char*)"-");
+					this->lvDevices->SetSubItem(i, 4, CSTR("-"));
 					break;
 				}
 			}
 			else
 			{
-				this->lvDevices->SetSubItem(i, 4, Net::MACInfo::GetMACInfo(dev->macInt)->name);
+				const Net::MACInfo::MACEntry *mac = Net::MACInfo::GetMACInfo(dev->macInt);
+				this->lvDevices->SetSubItem(i, 4, {mac->name, mac->nameLen});
 			}
 			statusMap->Put(dev->macInt, 1);
 		}
@@ -149,33 +150,33 @@ UOSInt SSWR::AVIRead::AVIRBluetoothCtlForm::UpdateList(Data::UInt64Map<IO::BTSca
 			{
 				this->lvDevices->SetSubItem(i, 3, dev->name);
 			}
-			Text::StrInt32(sbuff, dev->rssi);
-			this->lvDevices->SetSubItem(i, 5, sbuff);
+			sptr = Text::StrInt32(sbuff, dev->rssi);
+			this->lvDevices->SetSubItem(i, 5, CSTRP(sbuff, sptr));
 			dt.SetTicks(dev->lastSeenTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			this->lvDevices->SetSubItem(i, 6, sbuff);
-			Text::StrInt32(sbuff, dev->txPower);
-			this->lvDevices->SetSubItem(i, 7, sbuff);
-			this->lvDevices->SetSubItem(i, 8, (const UTF8Char*)(dev->inRange?"Y":"N"));
-			this->lvDevices->SetSubItem(i, 9, (const UTF8Char*)(dev->connected?"Y":"N"));
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			this->lvDevices->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+			sptr = Text::StrInt32(sbuff, dev->txPower);
+			this->lvDevices->SetSubItem(i, 7, CSTRP(sbuff, sptr));
+			this->lvDevices->SetSubItem(i, 8, (dev->inRange?CSTR("Y"):CSTR("N")));
+			this->lvDevices->SetSubItem(i, 9, (dev->connected?CSTR("Y"):CSTR("N")));
 			if (dev->company == 0)
 			{
-				this->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"-");
+				this->lvDevices->SetSubItem(i, 10, CSTR("-"));
 			}
 			else
 			{
 				Text::CString cstr = Net::PacketAnalyzerBluetooth::CompanyGetName(dev->company);
 				if (cstr.v)
 				{
-					this->lvDevices->SetSubItem(i, 10, cstr.v);
+					this->lvDevices->SetSubItem(i, 10, cstr);
 				}
 				else
 				{
-					this->lvDevices->SetSubItem(i, 10, (const UTF8Char*)"?");
+					this->lvDevices->SetSubItem(i, 10, CSTR("?"));
 				}
 			}
-			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType).v);
+			this->lvDevices->SetSubItem(i, 11, IO::BTScanLog::AdvTypeGetName(dev->advType));
 			statusMap->Put(dev->macInt, 0);
 		}
 		j++;
@@ -209,18 +210,18 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	this->lvDevices->SetShowGrid(true);
 	this->lvDevices->SetFullRowSelect(true);
 	this->lvDevices->HandleDblClk(OnDevicesDblClick, this);
-	this->lvDevices->AddColumn((const UTF8Char*)"MAC", 120);
-	this->lvDevices->AddColumn((const UTF8Char*)"Type", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"AddrType", 80);
-	this->lvDevices->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvDevices->AddColumn((const UTF8Char*)"Vendor", 150);
-	this->lvDevices->AddColumn((const UTF8Char*)"RSSI", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"RecvTime", 150);
-	this->lvDevices->AddColumn((const UTF8Char*)"TX Power", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"Range", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"Connect", 60);
-	this->lvDevices->AddColumn((const UTF8Char*)"Company", 200);
-	this->lvDevices->AddColumn((const UTF8Char*)"AdvType", 80);
+	this->lvDevices->AddColumn(CSTR("MAC"), 120);
+	this->lvDevices->AddColumn(CSTR("Type"), 60);
+	this->lvDevices->AddColumn(CSTR("AddrType"), 80);
+	this->lvDevices->AddColumn(CSTR("Name"), 150);
+	this->lvDevices->AddColumn(CSTR("Vendor"), 150);
+	this->lvDevices->AddColumn(CSTR("RSSI"), 60);
+	this->lvDevices->AddColumn(CSTR("RecvTime"), 150);
+	this->lvDevices->AddColumn(CSTR("TX Power"), 60);
+	this->lvDevices->AddColumn(CSTR("Range"), 60);
+	this->lvDevices->AddColumn(CSTR("Connect"), 60);
+	this->lvDevices->AddColumn(CSTR("Company"), 200);
+	this->lvDevices->AddColumn(CSTR("AdvType"), 80);
 
 	if (this->bt)
 	{
@@ -229,7 +230,7 @@ SSWR::AVIRead::AVIRBluetoothCtlForm::AVIRBluetoothCtlForm(UI::GUIClientControl *
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting bluetoothctl", (const UTF8Char*)"Bluetooth Ctrl", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting bluetoothctl"), CSTR("Bluetooth Ctrl"), this);
 	}
 	this->AddTimer(500, OnTimerTick, this);
 }

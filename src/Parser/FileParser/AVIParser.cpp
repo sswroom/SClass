@@ -105,7 +105,7 @@ void Parser::FileParser::AVIParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.avi", (const UTF8Char*)"AVI File");
+		selector->AddFilter(CSTR("*.avi"), CSTR("AVI File"));
 	}
 }
 

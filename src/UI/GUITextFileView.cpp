@@ -754,7 +754,7 @@ void UI::GUITextFileView::CopySelected()
 		{
 			mutUsage.EndUse();
 			DEL_CLASS(enc);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Failed to copy because selected area is too long", (const UTF8Char*)"TextViewer", this);
+			UI::MessageDialog::ShowDialog(CSTR("Failed to copy because selected area is too long"), CSTR("TextViewer"), this);
 			return;
 		}
 		rbuff = MemAlloc(UInt8, (UOSInt)(endOfst - startOfst));

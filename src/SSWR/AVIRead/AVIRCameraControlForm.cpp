@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			if (!succ)
 			{
 				IO::Path::DeleteFile(dlg->GetFileName()->v);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in downloading the file", (const UTF8Char*)"Camera Control", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in downloading the file"), CSTR("Camera Control"), me);
 			}
 		}
 		DEL_CLASS(dlg);
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 					sb.AppendC(UTF8STRC("Error in downloading "));
 					sb.AppendSlow(file->fileName);
 					sb.AppendC(UTF8STRC(", continue?"));
-					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Camera Control", me))
+					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Camera Control"), me))
 					{
 						break;
 					}
@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 			}
 			if (succ)
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Finish downloading selected files", (const UTF8Char*)"Camera Control", me);
+				UI::MessageDialog::ShowDialog(CSTR("Finish downloading selected files"), CSTR("Camera Control"), me);
 			}
 		}
 		DEL_CLASS(dlg);
@@ -201,8 +201,8 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->lvInfo->SetDockType(UI::GUIControl::DOCK_TOP);
 	this->lvInfo->SetFullRowSelect(true);
 	this->lvInfo->SetShowGrid(true);
-	this->lvInfo->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvInfo->AddColumn((const UTF8Char*)"Value", 400);
+	this->lvInfo->AddColumn(CSTR("Name"), 200);
+	this->lvInfo->AddColumn(CSTR("Value"), 400);
 	NEW_CLASS(this->vspInfo, UI::GUIVSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 160, false);
@@ -216,10 +216,10 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Name", 200);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Path", 200);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Size", 120);
-	this->lvFiles->AddColumn((const UTF8Char*)"Modify Date", 150);
+	this->lvFiles->AddColumn(CSTR("File Name"), 200);
+	this->lvFiles->AddColumn(CSTR("File Path"), 200);
+	this->lvFiles->AddColumn(CSTR("File Size"), 120);
+	this->lvFiles->AddColumn(CSTR("Modify Date"), 150);
 	this->lvFiles->HandleDblClk(OnFilesDblClick, this);
 	this->lvFiles->HandleSelChg(OnFilesSelChg, this);
 
@@ -241,6 +241,7 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	Data::ArrayList<IO::CameraControl::FileInfo *> fileList;
 	IO::CameraControl::FileInfo *file;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	i = 0;
 	j = this->camera->GetFileList(&fileList);
@@ -248,19 +249,19 @@ SSWR::AVIRead::AVIRCameraControlForm::AVIRCameraControlForm(UI::GUIClientControl
 	{
 		file = fileList.GetItem(i);
 		this->lvFiles->AddItem({file->fileName, Text::StrCharCnt(file->fileName)}, file);
-		this->lvFiles->SetSubItem(i, 1, file->filePath);
-		Text::StrUInt64(sbuff, file->fileSize);
-		this->lvFiles->SetSubItem(i, 2, sbuff);
+		this->lvFiles->SetSubItem(i, 1, Text::CString::FromPtr(file->filePath));
+		sptr = Text::StrUInt64(sbuff, file->fileSize);
+		this->lvFiles->SetSubItem(i, 2, CSTRP(sbuff, sptr));
 		if (file->fileTimeTicks)
 		{
 			dt.SetTicks(file->fileTimeTicks);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			this->lvFiles->SetSubItem(i, 3, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			this->lvFiles->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 		}
 		else
 		{
-			this->lvFiles->SetSubItem(i, 3, (const UTF8Char*)"-");
+			this->lvFiles->SetSubItem(i, 3, CSTR("-"));
 		}
 		
 		i++;

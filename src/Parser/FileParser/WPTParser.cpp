@@ -28,7 +28,7 @@ void Parser::FileParser::WPTParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.wpt", (const UTF8Char*)"OziExplorer Waypoint File");
+		selector->AddFilter(CSTR("*.wpt"), CSTR("OziExplorer Waypoint File"));
 	}
 }
 

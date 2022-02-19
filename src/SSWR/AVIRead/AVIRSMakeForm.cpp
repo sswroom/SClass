@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(0, 0, 100, 31, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlFile, CSTR("File")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlFile, this->smake->GetSourceNameObj()->ToCString()));
 	this->txtFile->SetReadOnly(true);
@@ -147,8 +147,8 @@ SSWR::AVIRead::AVIRSMakeForm::AVIRSMakeForm(UI::GUIClientControl *parent, UI::GU
 	this->lvConfig->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvConfig->SetShowGrid(true);
 	this->lvConfig->SetFullRowSelect(true);
-	this->lvConfig->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvConfig->AddColumn((const UTF8Char*)"Value", 450);
+	this->lvConfig->AddColumn(CSTR("Name"), 150);
+	this->lvConfig->AddColumn(CSTR("Value"), 450);
 
 	Data::ArrayList<Text::String*> progList;
 	Text::String *progName;

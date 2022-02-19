@@ -833,7 +833,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR_NULL, this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
 					else
 					{
@@ -925,7 +925,7 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			{
 				DEL_CLASS(this->listener);
 				this->listener = 0;
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port 8080", (const UTF8Char*)"HQMP Error", this);
+				UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port 8080"), CSTR("HQMP Error"), this);
 			}
 		}
 		break;

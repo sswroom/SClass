@@ -30,20 +30,20 @@ void __stdcall SSWR::AVIRead::AVIRWebSiteTwitterForm::OnRequestPageClicked(void 
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
 			dt.ToLocalTime();
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			me->lvItems->SetSubItem(i, 1, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			if (item->imgURL)
 			{
 				sb.ClearStr();
 				sb.Append(item->imgURL);
 				sb.Replace(' ', '\n');
-				me->lvItems->SetSubItem(i, 2, sb.ToString());
+				me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			}
 			sb.ClearStr();
 			sb.Append(item->message);
 			sb.Replace('\r', ' ');
 			sb.Replace('\n', ' ');
-			me->lvItems->SetSubItem(i, 3, sb.ToString());
+			me->lvItems->SetSubItem(i, 3, sb.ToCString());
 			i++;
 		}
 		me->ctrl->FreeItems(&itemList);
@@ -64,7 +64,7 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblChannelId, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"ChannelId"));
+	NEW_CLASS(this->lblChannelId, UI::GUILabel(ui, this->pnlRequest, CSTR("ChannelId")));
 	this->lblChannelId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtChannelId, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtChannelId->SetRect(104, 4, 150, 23, false);
@@ -75,10 +75,10 @@ SSWR::AVIRead::AVIRWebSiteTwitterForm::AVIRWebSiteTwitterForm(UI::GUIClientContr
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
-	this->lvItems->AddColumn((const UTF8Char*)"Id", 100);
-	this->lvItems->AddColumn((const UTF8Char*)"Date", 120);
-	this->lvItems->AddColumn((const UTF8Char*)"ImageURL", 200);
-	this->lvItems->AddColumn((const UTF8Char*)"Message", 400);
+	this->lvItems->AddColumn(CSTR("Id"), 100);
+	this->lvItems->AddColumn(CSTR("Date"), 120);
+	this->lvItems->AddColumn(CSTR("ImageURL"), 200);
+	this->lvItems->AddColumn(CSTR("Message"), 400);
 }
 
 SSWR::AVIRead::AVIRWebSiteTwitterForm::~AVIRWebSiteTwitterForm()

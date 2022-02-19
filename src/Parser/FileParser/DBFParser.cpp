@@ -28,7 +28,7 @@ void Parser::FileParser::DBFParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.dbf", (const UTF8Char*)"DBase File");
+		selector->AddFilter(CSTR("*.dbf"), CSTR("DBase File"));
 	}
 }
 

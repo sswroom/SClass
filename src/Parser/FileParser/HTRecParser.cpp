@@ -21,7 +21,7 @@ void Parser::FileParser::HTRecParser::PrepareSelector(IO::IFileSelector *selecto
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.HTRec", (const UTF8Char*)"HTRec File");
+		selector->AddFilter(CSTR("*.HTRec"), CSTR("HTRec File"));
 	}
 }
 

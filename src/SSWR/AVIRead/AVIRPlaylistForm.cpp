@@ -94,7 +94,7 @@ void SSWR::AVIRead::AVIRPlaylistForm::UpdatePlaylist()
 		s = this->playlist->GetArtist(i);
 		if (s)
 		{
-			this->lvPlaylist->SetSubItem(k, 1, s->v);
+			this->lvPlaylist->SetSubItem(k, 1, s);
 		}
 		i++;
 	}
@@ -114,8 +114,8 @@ SSWR::AVIRead::AVIRPlaylistForm::AVIRPlaylistForm(UI::GUIClientControl *parent, 
 	NEW_CLASS(this->lvPlaylist, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvPlaylist->SetRect(0, 0, 160, 100, false);
 	this->lvPlaylist->SetDockType(UI::GUIControl::DOCK_LEFT);
-	this->lvPlaylist->AddColumn((const UTF8Char*)"Title", 100);
-	this->lvPlaylist->AddColumn((const UTF8Char*)"Artist", 60);
+	this->lvPlaylist->AddColumn(CSTR("Title"), 100);
+	this->lvPlaylist->AddColumn(CSTR("Artist"), 60);
 	this->lvPlaylist->HandleDblClk(OnPlaylistDblClk, this);
 	NEW_CLASS(this->hsplit, UI::GUIHSplitter(ui, this, 3, false));
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));

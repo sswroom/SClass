@@ -24,9 +24,9 @@ void Parser::FileParser::EXEParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::EXEFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.exe", (const UTF8Char*)"EXE File");
-		selector->AddFilter((const UTF8Char*)"*.dll", (const UTF8Char*)"DLL File");
-		selector->AddFilter((const UTF8Char*)"*.fon", (const UTF8Char*)"Font File");
+		selector->AddFilter(CSTR("*.exe"), CSTR("EXE File"));
+		selector->AddFilter(CSTR("*.dll"), CSTR("DLL File"));
+		selector->AddFilter(CSTR("*.fon"), CSTR("Font File"));
 	}
 }
 

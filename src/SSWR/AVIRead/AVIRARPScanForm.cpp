@@ -63,14 +63,14 @@ void __stdcall SSWR::AVIRead::AVIRARPScanForm::OnScanClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"To many ip address", (const UTF8Char*)"ARP Scan", me);
+			UI::MessageDialog::ShowDialog(CSTR("To many ip address"), CSTR("ARP Scan"), me);
 			return;
 		}
 		Net::ARPHandler *arp;
 		NEW_CLASS(arp, Net::ARPHandler(me->core->GetSocketFactory(), adapter->ifName, adapter->hwAddr, adapter->ipAddr, OnARPHandler, me, 1));
 		if (arp->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to ARP data", (const UTF8Char*)"ARP Scan", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to ARP data"), CSTR("ARP Scan"), me);
 		}
 		else
 		{
@@ -112,12 +112,12 @@ void SSWR::AVIRead::AVIRARPScanForm::UpdateARPList()
 		ipInfo = arpList->GetItem(i);
 		sptr = Net::SocketUtil::GetIPv4Name(sbuff, ipInfo->ipAddr);
 		k = this->lvARP->AddItem(CSTRP(sbuff, sptr), ipInfo);
-		Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
-		this->lvARP->SetSubItem(k, 1, sbuff);
+		sptr = Text::StrHexBytes(sbuff, ipInfo->hwAddr, 6, ':');
+		this->lvARP->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		macEntry = Net::MACInfo::GetMACInfoBuff(ipInfo->hwAddr);
 		if (macEntry)
 		{
-			this->lvARP->SetSubItem(k, 2, macEntry->name);
+			this->lvARP->SetSubItem(k, 2, {macEntry->name, macEntry->nameLen});
 		}
 		i++;
 	}
@@ -135,7 +135,7 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Adapter"));
+	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this->pnlCtrl, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this->pnlCtrl, false));
 	this->cboAdapter->SetRect(104, 4, 150, 23, false);
@@ -146,9 +146,9 @@ SSWR::AVIRead::AVIRARPScanForm::AVIRARPScanForm(UI::GUIClientControl *parent, UI
 	this->lvARP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvARP->SetFullRowSelect(true);
 	this->lvARP->SetShowGrid(true);
-	this->lvARP->AddColumn((const UTF8Char*)"IP", 100);
-	this->lvARP->AddColumn((const UTF8Char*)"HW Addr", 150);
-	this->lvARP->AddColumn((const UTF8Char*)"Vendor", 300);
+	this->lvARP->AddColumn(CSTR("IP"), 100);
+	this->lvARP->AddColumn(CSTR("HW Addr"), 150);
+	this->lvARP->AddColumn(CSTR("Vendor"), 300);
 
 	NEW_CLASS(this->arpMut, Sync::Mutex());
 	NEW_CLASS(this->arpMap, Data::UInt32Map<SSWR::AVIRead::AVIRARPScanForm::IPMapInfo*>());

@@ -28,7 +28,7 @@ void Parser::ObjParser::KMZParser::PrepareSelector(IO::IFileSelector *selector, 
 {
 	if (t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.kmz", (const UTF8Char*)"Zipped KML File");
+		selector->AddFilter(CSTR("*.kmz"), CSTR("Zipped KML File"));
 	}
 }
 

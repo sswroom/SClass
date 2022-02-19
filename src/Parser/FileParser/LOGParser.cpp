@@ -30,7 +30,7 @@ void Parser::FileParser::LOGParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::LogFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
+		selector->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	}
 }
 

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 	targetIP = me->sockf->DNSResolveIPv4(sb.ToString(), sb.GetLength());
 	if (targetIP == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving target host", (const UTF8Char*)"Trace Route", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving target host"), CSTR("Trace Route"), me);
 		return;
 	}
 	UInt32 ip = (UInt32)(OSInt)me->cboSelfIP->GetSelectedItem();
@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 		NEW_CLASS(tracert, Net::TraceRoute(me->sockf, ip));
 		if (tracert->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating ICMP socket", (const UTF8Char*)"Trace Route", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in creating ICMP socket"), CSTR("Trace Route"), me);
 		}
 		else
 		{
@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRTraceRouteForm::OnStartClicked(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in tracing to target", (const UTF8Char*)"Trace Route", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in tracing to target"), CSTR("Trace Route"), me);
 			}
 		}
 		DEL_CLASS(tracert);
@@ -96,11 +96,11 @@ SSWR::AVIRead::AVIRTraceRouteForm::AVIRTraceRouteForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblSelfIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Self IP"));
+	NEW_CLASS(this->lblSelfIP, UI::GUILabel(ui, this->pnlControl, CSTR("Self IP")));
 	this->lblSelfIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboSelfIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboSelfIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblTargetIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Target IP"));
+	NEW_CLASS(this->lblTargetIP, UI::GUILabel(ui, this->pnlControl, CSTR("Target IP")));
 	this->lblTargetIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtTargetIP, UI::GUITextBox(ui, this->pnlControl, CSTR("")));
 	this->txtTargetIP->SetRect(104, 28, 150, 23, false);

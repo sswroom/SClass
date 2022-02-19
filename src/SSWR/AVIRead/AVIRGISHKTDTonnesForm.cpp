@@ -58,11 +58,11 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 	IO::StmData::FileData *fd;
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input Road Route", (const UTF8Char*)"HK Tonnes Sign", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please input Road Route"), CSTR("HK Tonnes Sign"), me);
 	}
 	else if (sb2.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please input Vehicle Restriction", (const UTF8Char*)"HK Tonnes Sign", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please input Vehicle Restriction"), CSTR("HK Tonnes Sign"), me);
 	}
 	else
 	{
@@ -84,7 +84,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 				}
 				else
 				{
-					UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating layer", (const UTF8Char*)"HK Tonnes Sign", me);
+					UI::MessageDialog::ShowDialog(CSTR("Error in creating layer"), CSTR("HK Tonnes Sign"), me);
 				}
 				DEL_CLASS(vehRestrict);
 			}
@@ -92,13 +92,13 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 			{
 				DEL_CLASS(db);
 				DEL_CLASS(lyr);
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"The file is not a polyline layer", (const UTF8Char*)"HK Tonnes Sign", me);
+				UI::MessageDialog::ShowDialog(CSTR("The file is not a polyline layer"), CSTR("HK Tonnes Sign"), me);
 			}
 		}
 		else if (lyr)
 		{
 			DEL_CLASS(lyr);
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening file", (const UTF8Char*)"HK Tonnes Sign", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in opening file"), CSTR("HK Tonnes Sign"), me);
 		}
 		else
 		{
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnOKClicked(void *userObj)
 			{
 				DEL_CLASS(db);
 			}
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing the file", (const UTF8Char*)"HK Tonnes Sign", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in parsing the file"), CSTR("HK Tonnes Sign"), me);
 		}
 	}
 }
@@ -127,14 +127,14 @@ SSWR::AVIRead::AVIRGISHKTDTonnesForm::AVIRGISHKTDTonnesForm(UI::GUIClientControl
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 	this->lyr = 0;
 
-	NEW_CLASS(this->lblRoadRoute, UI::GUILabel(ui, this, (const UTF8Char*)"Road Route"));
+	NEW_CLASS(this->lblRoadRoute, UI::GUILabel(ui, this, CSTR("Road Route")));
 	this->lblRoadRoute->SetRect(4, 4, 150, 23, false);
 	NEW_CLASS(this->txtRoadRoute, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\ROADROUTE.mdb")));
 	this->txtRoadRoute->SetRect(154, 4, 750, 23, false);
 	NEW_CLASS(this->btnRoadRoute, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnRoadRoute->SetRect(904, 4, 75, 23, false);
 	this->btnRoadRoute->HandleButtonClick(OnRoadRouteClicked, this);
-	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, this, (const UTF8Char*)"Vehicle Restriction"));
+	NEW_CLASS(this->lblVehicleRes, UI::GUILabel(ui, this, CSTR("Vehicle Restriction")));
 	this->lblVehicleRes->SetRect(4, 28, 150, 23, false);
 	NEW_CLASS(this->txtVehicleRes, UI::GUITextBox(ui, this, CSTR("20180628 Road Traffic\\VEHICLE_RESTRICTION.mdb")));
 	this->txtVehicleRes->SetRect(154, 28, 750, 23, false);

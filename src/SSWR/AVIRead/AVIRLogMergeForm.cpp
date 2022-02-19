@@ -14,7 +14,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeFile1", false));
-	dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtFile1->GetText(&sb);
 	if (sb.GetLength() > 0)
@@ -34,7 +34,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeFile2", false));
-	dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	dlg->SetAllowMultiSel(false);
 	me->txtFile2->GetText(&sb);
 	if (sb.GetLength() > 0)
@@ -54,7 +54,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 	UI::FileDialog *dlg;
 	Text::StringBuilderUTF8 sb;
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"LogMergeOFile", true));
-	dlg->AddFilter((const UTF8Char*)"*.log", (const UTF8Char*)"Log File");
+	dlg->AddFilter(CSTR("*.log"), CSTR("Log File"));
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
@@ -79,15 +79,15 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 	me->txtOFile->GetText(&sb3);
 	if (IO::Path::GetPathType(sb1.ToString(), sb1.GetLength()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"File1 not found", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("File1 not found"), CSTR("Error"), me);
 	}
 	else if (IO::Path::GetPathType(sb2.ToString(), sb2.GetLength()) != IO::Path::PathType::File)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"File2 not found", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("File2 not found"), CSTR("Error"), me);
 	}
 	else if (sb3.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Output", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Output"), CSTR("Error"), me);
 	}
 	else
 	{
@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 		NEW_CLASS(fs3, IO::FileStream(sb3.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		if (fs3->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in creating Output file", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in creating Output file"), CSTR("Error"), me);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnConvertClicked(void *userObj)
 					succ2 = reader2->ReadLine(&sb2, 1024);
 				}
 			}
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Complete log merge", (const UTF8Char*)"Success", me);
+			UI::MessageDialog::ShowDialog(CSTR("Complete log merge"), CSTR("Success"), me);
 			DEL_CLASS(writer);
 		}
 		DEL_CLASS(fs3);
@@ -229,21 +229,21 @@ SSWR::AVIRead::AVIRLogMergeForm::AVIRLogMergeForm(UI::GUIClientControl *parent, 
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblFile1, UI::GUILabel(ui, this, (const UTF8Char*)"File1"));
+	NEW_CLASS(this->lblFile1, UI::GUILabel(ui, this, CSTR("File1")));
 	this->lblFile1->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile1, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFile1->SetRect(104, 4, 560, 23, false);
 	NEW_CLASS(this->btnFile1, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnFile1->SetRect(660, 4, 75, 23, false);
 	this->btnFile1->HandleButtonClick(OnFile1Clicked, this);
-	NEW_CLASS(this->lblFile2, UI::GUILabel(ui, this, (const UTF8Char*)"File2"));
+	NEW_CLASS(this->lblFile2, UI::GUILabel(ui, this, CSTR("File2")));
 	this->lblFile2->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtFile2, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtFile2->SetRect(104, 28, 560, 23, false);
 	NEW_CLASS(this->btnFile2, UI::GUIButton(ui, this, CSTR("Browse")));
 	this->btnFile2->SetRect(660, 28, 75, 23, false);
 	this->btnFile2->HandleButtonClick(OnFile2Clicked, this);
-	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, (const UTF8Char*)"Output"));
+	NEW_CLASS(this->lblOFile, UI::GUILabel(ui, this, CSTR("Output")));
 	this->lblOFile->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtOFile, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtOFile->SetRect(104, 52, 560, 23, false);

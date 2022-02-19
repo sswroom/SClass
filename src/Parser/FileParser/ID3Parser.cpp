@@ -29,7 +29,7 @@ void Parser::FileParser::ID3Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mp3", (const UTF8Char*)"MP3(with ID3 Tag) File");
+		selector->AddFilter(CSTR("*.mp3"), CSTR("MP3(with ID3 Tag) File"));
 	}
 }
 

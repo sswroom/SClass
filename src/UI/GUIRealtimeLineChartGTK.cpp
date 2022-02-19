@@ -249,11 +249,11 @@ void UI::GUIRealtimeLineChart::SetLineColor(UOSInt lineId, UInt32 lineColor)
 	}
 }
 
-void UI::GUIRealtimeLineChart::SetUnit(const UTF8Char *unit)
+void UI::GUIRealtimeLineChart::SetUnit(Text::CString unit)
 {
 	SDEL_TEXT(this->unit);
-	if (unit)
-		this->unit = Text::StrCopyNew(unit);
+	if (unit.leng > 0)
+		this->unit = Text::StrCopyNewC(unit.v, unit.leng);
 	this->valueChanged = true;
 }
 

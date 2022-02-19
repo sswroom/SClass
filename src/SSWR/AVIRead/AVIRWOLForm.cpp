@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 	UInt32 ip = (UInt32)(OSInt)me->cboAdapter->GetSelectedItem();
 	if (ip == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select an adapter", (const UTF8Char*)"WOL", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select an adapter"), CSTR("WOL"), me);
 		return;
 	}
 	me->txtDeviceMac->GetText(&sb);
@@ -22,21 +22,21 @@ void __stdcall SSWR::AVIRead::AVIRWOLForm::OnSendClicked(void *userObj)
 		NEW_CLASS(cli, Net::WOLClient(me->core->GetSocketFactory(), ip));
 		if (cli->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to the port", (const UTF8Char*)"WOL", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to the port"), CSTR("WOL"), me);
 		}
 		else if (!cli->WakeDevice(macBuff))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error sending the packet", (const UTF8Char*)"WOL", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error sending the packet"), CSTR("WOL"), me);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Packet sent", (const UTF8Char*)"WOL", me);
+			UI::MessageDialog::ShowDialog(CSTR("Packet sent"), CSTR("WOL"), me);
 		}
 		DEL_CLASS(cli);
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select valid device MAC", (const UTF8Char*)"WOL", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select valid device MAC"), CSTR("WOL"), me);
 		return;
 	}
 }
@@ -50,11 +50,11 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this, (const UTF8Char*)"Adapter"));
+	NEW_CLASS(this->lblAdapter, UI::GUILabel(ui, this, CSTR("Adapter")));
 	this->lblAdapter->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboAdapter, UI::GUIComboBox(ui, this, false));
 	this->cboAdapter->SetRect(104, 4, 300, 23, false);
-	NEW_CLASS(this->lblDeviceMac, UI::GUILabel(ui, this, (const UTF8Char*)"Server Time"));
+	NEW_CLASS(this->lblDeviceMac, UI::GUILabel(ui, this, CSTR("Server Time")));
 	this->lblDeviceMac->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDeviceMac, UI::GUITextBox(ui, this, CSTR(""), false));
 	this->txtDeviceMac->SetRect(104, 28, 200, 23, false);

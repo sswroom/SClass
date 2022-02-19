@@ -233,7 +233,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	this->monColor = monColor;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblRX, UI::GUILabel(ui, this, (const UTF8Char*)"Red x"));
+	NEW_CLASS(this->lblRX, UI::GUILabel(ui, this, CSTR("Red x")));
 	this->lblRX->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtRX, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRX->SetRect(104, 4, 150, 23, false);
@@ -244,7 +244,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnRXUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnRXUp->SetRect(278, 4, 24, 23, false);
 	this->btnRXUp->HandleButtonClick(OnRXUpClicked, this);
-	NEW_CLASS(this->lblRY, UI::GUILabel(ui, this, (const UTF8Char*)"Red y"));
+	NEW_CLASS(this->lblRY, UI::GUILabel(ui, this, CSTR("Red y")));
 	this->lblRY->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtRY, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRY->SetRect(104, 28, 150, 23, false);
@@ -255,7 +255,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnRYUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnRYUp->SetRect(278, 28, 24, 23, false);
 	this->btnRYUp->HandleButtonClick(OnRYUpClicked, this);
-	NEW_CLASS(this->lblGX, UI::GUILabel(ui, this, (const UTF8Char*)"Green x"));
+	NEW_CLASS(this->lblGX, UI::GUILabel(ui, this, CSTR("Green x")));
 	this->lblGX->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtGX, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtGX->SetRect(104, 52, 150, 23, false);
@@ -266,7 +266,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnGXUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnGXUp->SetRect(278, 52, 24, 23, false);
 	this->btnGXUp->HandleButtonClick(OnGXUpClicked, this);
-	NEW_CLASS(this->lblGY, UI::GUILabel(ui, this, (const UTF8Char*)"Green y"));
+	NEW_CLASS(this->lblGY, UI::GUILabel(ui, this, CSTR("Green y")));
 	this->lblGY->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtGY, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtGY->SetRect(104, 76, 150, 23, false);
@@ -277,7 +277,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnGYUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnGYUp->SetRect(278, 76, 24, 23, false);
 	this->btnGYUp->HandleButtonClick(OnGYUpClicked, this);
-	NEW_CLASS(this->lblBX, UI::GUILabel(ui, this, (const UTF8Char*)"Blue x"));
+	NEW_CLASS(this->lblBX, UI::GUILabel(ui, this, CSTR("Blue x")));
 	this->lblBX->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtBX, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtBX->SetRect(104, 100, 150, 23, false);
@@ -288,7 +288,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnBXUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnBXUp->SetRect(278, 100, 24, 23, false);
 	this->btnBXUp->HandleButtonClick(OnBXUpClicked, this);
-	NEW_CLASS(this->lblBY, UI::GUILabel(ui, this, (const UTF8Char*)"Blue y"));
+	NEW_CLASS(this->lblBY, UI::GUILabel(ui, this, CSTR("Blue y")));
 	this->lblBY->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->txtBY, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtBY->SetRect(104, 124, 150, 23, false);
@@ -299,7 +299,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnBYUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnBYUp->SetRect(278, 124, 24, 23, false);
 	this->btnBYUp->HandleButtonClick(OnBYUpClicked, this);
-	NEW_CLASS(this->lblWX, UI::GUILabel(ui, this, (const UTF8Char*)"White x"));
+	NEW_CLASS(this->lblWX, UI::GUILabel(ui, this, CSTR("White x")));
 	this->lblWX->SetRect(4, 148, 100, 23, false);
 	NEW_CLASS(this->txtWX, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWX->SetRect(104, 148, 150, 23, false);
@@ -310,7 +310,7 @@ SSWR::AVIRead::AVIRColorCustomForm::AVIRColorCustomForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnWXUp, UI::GUIButton(ui, this, CSTR("+")));
 	this->btnWXUp->SetRect(278, 148, 24, 23, false);
 	this->btnWXUp->HandleButtonClick(OnWXUpClicked, this);
-	NEW_CLASS(this->lblWY, UI::GUILabel(ui, this, (const UTF8Char*)"White y"));
+	NEW_CLASS(this->lblWY, UI::GUILabel(ui, this, CSTR("White y")));
 	this->lblWY->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtWY, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWY->SetRect(104, 172, 150, 23, false);

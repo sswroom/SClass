@@ -25,19 +25,19 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	me->txtHost->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter Host", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter Host"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	if (!sockf->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in resolving host", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in resolving host"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtPort->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter valid Port number", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter valid Port number"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	NEW_CLASS(me->cli, Net::LDAPClient(sockf, &addr, port));
@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in connecting to LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in connecting to LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	Bool succ = false;
@@ -65,7 +65,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in binding to LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in binding to LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 
@@ -75,7 +75,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 	{
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in searching for <ROOT> in LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in searching for <ROOT> in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	Net::LDAPClient::SearchResObject *obj;
@@ -85,7 +85,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		Net::LDAPClient::SearchResultsFree(&results);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported <ROOT> information in LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unsupported <ROOT> information in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	succ = false;
@@ -117,7 +117,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnConnectClicked(void *userO
 		Net::LDAPClient::SearchResultsFree(&results);
 		DEL_CLASS(me->cli);
 		me->cli = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"rootDomainNamingContext not found in LDAP Server", (const UTF8Char*)"LDAP Explorer", me);
+		UI::MessageDialog::ShowDialog(CSTR("rootDomainNamingContext not found in LDAP Server"), CSTR("LDAP Explorer"), me);
 		return;
 	}
 	me->btnConnect->SetText(CSTR("Disconnect"));
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRLDAPExplorerForm::OnObjectsSelChg(void *userOb
 			k = me->lvValues->AddItem(item->type, 0);
 			sb.ClearStr();
 			Net::LDAPClient::SearchResDisplay(item->type->ToCString(), item->value->ToCString(), &sb);
-			me->lvValues->SetSubItem(k, 1, sb.ToString());
+			me->lvValues->SetSubItem(k, 1, sb.ToCString());
 			i++;
 		}
 	}
@@ -294,26 +294,26 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 151, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Host"));
+	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this->pnlRequest, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtHost->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlRequest, CSTR("Port")));
 	this->lblPort->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlRequest, CSTR("389")));
 	this->txtPort->SetRect(104, 28, 120, 23, false);
-	NEW_CLASS(this->lblAuthType, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Auth Type"));
+	NEW_CLASS(this->lblAuthType, UI::GUILabel(ui, this->pnlRequest, CSTR("Auth Type")));
 	this->lblAuthType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboAuthType, UI::GUIComboBox(ui, this->pnlRequest, false));
 	this->cboAuthType->SetRect(104, 52, 120, 23, false);
 	this->cboAuthType->AddItem(CSTR("Anonymous"), (void*)1);
 	this->cboAuthType->AddItem(CSTR("Simple Password"), (void*)2);
 	this->cboAuthType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblUserDN, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"User DN"));
+	NEW_CLASS(this->lblUserDN, UI::GUILabel(ui, this->pnlRequest, CSTR("User DN")));
 	this->lblUserDN->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtUserDN, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtUserDN->SetRect(104, 76, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlRequest, CSTR("Password")));
 	this->lblPassword->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPassword->SetRect(104, 100, 200, 23, false);
@@ -337,8 +337,8 @@ SSWR::AVIRead::AVIRLDAPExplorerForm::AVIRLDAPExplorerForm(UI::GUIClientControl *
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
 	this->lvValues->SetShowGrid(true);
-	this->lvValues->AddColumn((const UTF8Char*)"Type", 200);
-	this->lvValues->AddColumn((const UTF8Char*)"Value", 500);
+	this->lvValues->AddColumn(CSTR("Type"), 200);
+	this->lvValues->AddColumn(CSTR("Value"), 500);
 
 	this->cli = 0;
 	NEW_CLASS(this->dispResults, Data::ArrayList<Net::LDAPClient::SearchResObject*>());

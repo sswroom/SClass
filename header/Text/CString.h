@@ -2,7 +2,7 @@
 #define _SM_TEXT_CSTRING
 #include "Text/StringBase.h"
 
-#define CSTR(str) {UTF8STRC(str)}
+#define CSTR(str) Text::CString(UTF8STRC(str))
 #define CSTRP(str, strEnd) {str, (UOSInt)(strEnd - str)}
 #define CSTR_NULL {0, 0}
 namespace Text

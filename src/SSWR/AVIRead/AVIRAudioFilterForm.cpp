@@ -37,65 +37,65 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnStartClicked(void *userObj)
 		me->txtBuffSize->GetText(&sb);
 		if (!sb.ToUInt32(&buffSize))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in buffer size", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error found in buffer size"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtFrequency->GetText(&sb);
 		if (!sb.ToUInt32(&frequency))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in sampling rate", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error found in sampling rate"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtChannel->GetText(&sb);
 		if (!sb.ToUInt16(&nChannel))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in no. of channels", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error found in no. of channels"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtBitCount->GetText(&sb);
 		if (!sb.ToUInt16(&bitCount))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in bit per sample", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error found in bit per sample"), CSTR("Error"), me);
 			return;
 		}
 		sb.ClearStr();
 		me->txtDTMFInterval->GetText(&sb);
 		if (!sb.ToUInt32(&dtmfMS))
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in DTMF decode interval", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error found in DTMF decode interval"), CSTR("Error"), me);
 			return;
 		}
 		if (buffSize < 10 || buffSize > 1000)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Buffer size out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Buffer size out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (frequency < 8000 || frequency > 192000)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Sampling rate out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Sampling rate out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (nChannel <= 0 || nChannel > 10)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"No. of channels out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("No. of channels out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (bitCount != 8 && bitCount != 16 && bitCount != 24 && bitCount != 32)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Bit per sample out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Bit per sample out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (dtmfMS < 1 || dtmfMS > 1000)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"DTMF decode interval out of range", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("DTMF decode interval out of range"), CSTR("Error"), me);
 			return;
 		}
 		if (me->radInputSilent->IsSelected())
 		{
-			NEW_CLASS(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, (const UTF8Char*)"Silent", (UInt64)-1));
+			NEW_CLASS(me->audSrc, Media::SilentSource(frequency, nChannel, bitCount, CSTR("Silent"), (UInt64)-1));
 		}
 		else if (me->radInputWaveIn->IsSelected())
 		{
@@ -521,36 +521,36 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnDTMFTonesClicked(void *user
 	me->txtDTMFSignalTime->GetText(&sb);
 	if (!sb.ToUInt32(&signalTime))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Signal Time is not valid", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Signal Time is not valid"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (signalTime <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Signal Time is out of range", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Signal Time is out of range"), CSTR("Generate Tones"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDTMFBreakTime->GetText(&sb);
 	if (!sb.ToUInt32(&breakTime))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Break Time is not valid", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Break Time is not valid"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (breakTime <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Break Time is out of range", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Break Time is out of range"), CSTR("Generate Tones"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtDTMFTones->GetText(&sb);
 	if (sb.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter tones", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter tones"), CSTR("Generate Tones"), me);
 		return;
 	}
 	if (!me->dtmfGen->GenTones(signalTime, breakTime, vol, sb.ToString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in generating tones", (const UTF8Char*)"Generate Tones", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in generating tones"), CSTR("Generate Tones"), me);
 		return;
 	}
 }
@@ -806,7 +806,7 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnFileMixClicked(void *userOb
 	{
 		UI::FileDialog *dlg;
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"AudioFilterFileMix", false));
-		dlg->AddFilter((const UTF8Char*)"*.wav", (const UTF8Char*)"Wave file");
+		dlg->AddFilter(CSTR("*.wav"), CSTR("Wave file"));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			if (me->fileMix->LoadFile(dlg->GetFileName()))
@@ -895,21 +895,21 @@ void __stdcall SSWR::AVIRead::AVIRAudioFilterForm::OnSweepStartClicked(void *use
 	me->txtSweepStartFreq->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &startFreq))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in start frequency", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in start frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepEndFreq->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &endFreq))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in end frequency", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in end frequency"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtSweepDur->GetText(&sb);
 	if (!sb.ToUInt32(&timeSeconds))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in duration", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in duration"), CSTR("Error"), me);
 		return;
 	}
 	me->sweepFilter->StartSweep(startFreq, endFreq, timeSeconds);
@@ -1005,33 +1005,33 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 
 	NEW_CLASS(this->pnlAudioSource, UI::GUIPanel(ui, this->pnlInput));
 	this->pnlAudioSource->SetRect(0, 0, 400, 23, false);
-	NEW_CLASS(this->lblAudioSource, UI::GUILabel(ui, this->pnlAudioSource, (const UTF8Char*)"Audio Source"));
+	NEW_CLASS(this->lblAudioSource, UI::GUILabel(ui, this->pnlAudioSource, CSTR("Audio Source")));
 	this->lblAudioSource->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radInputWaveIn, UI::GUIRadioButton(ui, this->pnlAudioSource, (const UTF8Char*)"WaveIn", true));
+	NEW_CLASS(this->radInputWaveIn, UI::GUIRadioButton(ui, this->pnlAudioSource, CSTR("WaveIn"), true));
 	this->radInputWaveIn->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->radInputSilent, UI::GUIRadioButton(ui, this->pnlAudioSource, (const UTF8Char*)"Silent", false));
+	NEW_CLASS(this->radInputSilent, UI::GUIRadioButton(ui, this->pnlAudioSource, CSTR("Silent"), false));
 	this->radInputSilent->SetRect(200, 0, 100, 23, false);
 	NEW_CLASS(this->pnlAudioOutput, UI::GUIPanel(ui, this->pnlInput));
 	this->pnlAudioOutput->SetRect(0, 24, 400, 23, false);
-	NEW_CLASS(this->lblAudioOutput, UI::GUILabel(ui, this->pnlAudioOutput, (const UTF8Char*)"Audio Output"));
+	NEW_CLASS(this->lblAudioOutput, UI::GUILabel(ui, this->pnlAudioOutput, CSTR("Audio Output")));
 	this->lblAudioOutput->SetRect(0, 0, 100, 23, false);
-	NEW_CLASS(this->radOutputDevice, UI::GUIRadioButton(ui, this->pnlAudioOutput, (const UTF8Char*)"Device", true));
+	NEW_CLASS(this->radOutputDevice, UI::GUIRadioButton(ui, this->pnlAudioOutput, CSTR("Device"), true));
 	this->radOutputDevice->SetRect(100, 0, 100, 23, false);
-	NEW_CLASS(this->radOutputSilent, UI::GUIRadioButton(ui, this->pnlAudioOutput, (const UTF8Char*)"Silent", false));
+	NEW_CLASS(this->radOutputSilent, UI::GUIRadioButton(ui, this->pnlAudioOutput, CSTR("Silent"), false));
 	this->radOutputSilent->SetRect(200, 0, 100, 23, false);
-	NEW_CLASS(this->lblBuffSize, UI::GUILabel(ui, this->pnlInput, (const UTF8Char*)"Buffer Size(ms)"));
+	NEW_CLASS(this->lblBuffSize, UI::GUILabel(ui, this->pnlInput, CSTR("Buffer Size(ms)")));
 	this->lblBuffSize->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtBuffSize, UI::GUITextBox(ui, this->pnlInput, CSTR("30")));
 	this->txtBuffSize->SetRect(100, 48, 100, 23, false);
-	NEW_CLASS(this->lblFrequency, UI::GUILabel(ui, this->pnlInput, (const UTF8Char*)"Sampling Rate"));
+	NEW_CLASS(this->lblFrequency, UI::GUILabel(ui, this->pnlInput, CSTR("Sampling Rate")));
 	this->lblFrequency->SetRect(0, 72, 100, 23, false);
 	NEW_CLASS(this->txtFrequency, UI::GUITextBox(ui, this->pnlInput, CSTR("48000")));
 	this->txtFrequency->SetRect(100, 72, 100, 23, false);
-	NEW_CLASS(this->lblChannel, UI::GUILabel(ui, this->pnlInput, (const UTF8Char*)"No. of Channels"));
+	NEW_CLASS(this->lblChannel, UI::GUILabel(ui, this->pnlInput, CSTR("No. of Channels")));
 	this->lblChannel->SetRect(0, 96, 100, 23, false);
 	NEW_CLASS(this->txtChannel, UI::GUITextBox(ui, this->pnlInput, CSTR("2")));
 	this->txtChannel->SetRect(100, 96, 50, 23, false);
-	NEW_CLASS(this->lblBitCount, UI::GUILabel(ui, this->pnlInput, (const UTF8Char*)"Bit per Sample"));
+	NEW_CLASS(this->lblBitCount, UI::GUILabel(ui, this->pnlInput, CSTR("Bit per Sample")));
 	this->lblBitCount->SetRect(0, 120, 100, 23, false);
 	NEW_CLASS(this->txtBitCount, UI::GUITextBox(ui, this->pnlInput, CSTR("16")));
 	this->txtBitCount->SetRect(100, 120, 50, 23, false);
@@ -1043,7 +1043,7 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->rlcVolLevel, UI::GUIRealtimeLineChart(ui, this->tpVolLevel, this->core->GetDrawEngine(), 2, 600, 100));
 	this->rlcVolLevel->SetRect(0, 0, 100, 200, false);
 	this->rlcVolLevel->SetDockType(UI::GUIControl::DOCK_TOP);
-	this->rlcVolLevel->SetUnit((const UTF8Char*)"dB");
+	this->rlcVolLevel->SetUnit(CSTR("dB"));
 	NEW_CLASS(this->vspVolLevel, UI::GUIVSplitter(ui, this->tpVolLevel, 3, false));
 	NEW_CLASS(this->pbsSample, UI::GUIPictureBoxSimple(ui, this->tpVolLevel, this->eng, false));
 	this->pbsSample->SetRect(0, 0, 100, 200, false);
@@ -1058,13 +1058,13 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlDTMF, UI::GUIPanel(ui, this->tpDTMF));
 	this->pnlDTMF->SetRect(0, 0, 100, 56, false);
 	this->pnlDTMF->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDTMFInterval, UI::GUILabel(ui, this->pnlDTMF, (const UTF8Char*)"Decode Interval"));
+	NEW_CLASS(this->lblDTMFInterval, UI::GUILabel(ui, this->pnlDTMF, CSTR("Decode Interval")));
 	this->lblDTMFInterval->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDTMFInterval, UI::GUITextBox(ui, this->pnlDTMF, CSTR("20")));
 	this->txtDTMFInterval->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblDTMFIntervalMS, UI::GUILabel(ui, this->pnlDTMF, (const UTF8Char*)"ms"));
+	NEW_CLASS(this->lblDTMFIntervalMS, UI::GUILabel(ui, this->pnlDTMF, CSTR("ms")));
 	this->lblDTMFIntervalMS->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->lblDTMFDecode, UI::GUILabel(ui, this->pnlDTMF, (const UTF8Char*)"DTMF Decoded"));
+	NEW_CLASS(this->lblDTMFDecode, UI::GUILabel(ui, this->pnlDTMF, CSTR("DTMF Decoded")));
 	this->lblDTMFDecode->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDTMFDecode, UI::GUITextBox(ui, this->pnlDTMF, CSTR("")));
 	this->txtDTMFDecode->SetRect(104, 28, 500, 23, false);
@@ -1123,31 +1123,31 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnDTMFD, UI::GUIButton(ui, this->tpDTMFGen, CSTR("D")));
 	this->btnDTMFD->SetRect(484, 172, 150, 47, false);
 	this->btnDTMFD->HandleButtonUpDown(OnDTMFDUpDown, this);
-	NEW_CLASS(this->lblDTMFVol, UI::GUILabel(ui, this->tpDTMFGen, (const UTF8Char*)"Volume"));
+	NEW_CLASS(this->lblDTMFVol, UI::GUILabel(ui, this->tpDTMFGen, CSTR("Volume")));
 	this->lblDTMFVol->SetRect(4, 228, 100, 23, false);
 	NEW_CLASS(this->tbDTMFVol, UI::GUITrackBar(ui, this->tpDTMFGen, 0, 960, 960));
 	this->tbDTMFVol->SetRect(104, 228, 400, 23, false);
 	this->tbDTMFVol->HandleScrolled(OnDTMFVolChg, this);
-	NEW_CLASS(this->lblDTMFVolV, UI::GUILabel(ui, this->tpDTMFGen, (const UTF8Char*)"0dB"));
+	NEW_CLASS(this->lblDTMFVolV, UI::GUILabel(ui, this->tpDTMFGen, CSTR("0dB")));
 	this->lblDTMFVolV->SetRect(504, 228, 100, 23, false);
 	this->tpDTMFGen2 = this->tcDTMF->AddTabPage(CSTR("Tones"));
-	NEW_CLASS(this->lblDTMFSignalTime, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"Signal Time"));
+	NEW_CLASS(this->lblDTMFSignalTime, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("Signal Time")));
 	this->lblDTMFSignalTime->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDTMFSignalTime, UI::GUITextBox(ui, this->tpDTMFGen2, CSTR("120")));
 	this->txtDTMFSignalTime->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblDTMFSignalTimeMS, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"ms"));
+	NEW_CLASS(this->lblDTMFSignalTimeMS, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("ms")));
 	this->lblDTMFSignalTimeMS->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->lblDTMFBreakTime, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"Break Time"));
+	NEW_CLASS(this->lblDTMFBreakTime, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("Break Time")));
 	this->lblDTMFBreakTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDTMFBreakTime, UI::GUITextBox(ui, this->tpDTMFGen2, CSTR("20")));
 	this->txtDTMFBreakTime->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblDTMFBreakTimeMS, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"ms"));
+	NEW_CLASS(this->lblDTMFBreakTimeMS, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("ms")));
 	this->lblDTMFBreakTimeMS->SetRect(204, 28, 100, 23, false);
-	NEW_CLASS(this->lblDTMFTonesVol, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"Volume"));
+	NEW_CLASS(this->lblDTMFTonesVol, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("Volume")));
 	this->lblDTMFTonesVol->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->tbDTMFTonesVol, UI::GUITrackBar(ui, this->tpDTMFGen2, 0, 960, 960));
 	this->tbDTMFTonesVol->SetRect(104, 52, 400, 23, false);
-	NEW_CLASS(this->lblDTMFTones, UI::GUILabel(ui, this->tpDTMFGen2, (const UTF8Char*)"Tones"));
+	NEW_CLASS(this->lblDTMFTones, UI::GUILabel(ui, this->tpDTMFGen2, CSTR("Tones")));
 	this->lblDTMFTones->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtDTMFTones, UI::GUITextBox(ui, this->tpDTMFGen2, CSTR("")));
 	this->txtDTMFTones->SetRect(104, 76, 300, 23, false);
@@ -1156,19 +1156,19 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnDTMFTones->HandleButtonClick(OnDTMFTonesClicked, this);
 
 	this->tpVolBoost = this->tcFilter->AddTabPage(CSTR("VolBoost"));
-	NEW_CLASS(this->chkVolBoost, UI::GUICheckBox(ui, this->tpVolBoost, (const UTF8Char*)"Enabled", false));
+	NEW_CLASS(this->chkVolBoost, UI::GUICheckBox(ui, this->tpVolBoost, CSTR("Enabled"), false));
 	this->chkVolBoost->SetRect(4, 4, 100, 23, false);
 	this->chkVolBoost->HandleCheckedChange(OnVolBoostChg, this);
-	NEW_CLASS(this->lblVolBoostBG, UI::GUILabel(ui, this->tpVolBoost, (const UTF8Char*)"BG Volume"));
+	NEW_CLASS(this->lblVolBoostBG, UI::GUILabel(ui, this->tpVolBoost, CSTR("BG Volume")));
 	this->lblVolBoostBG->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->tbVolBoostBG, UI::GUITrackBar(ui, this->tpVolBoost, 0, 192, 132));
 	this->tbVolBoostBG->SetRect(104, 28, 300, 23, false);
 	this->tbVolBoostBG->HandleScrolled(OnVolBoostBGChg, this);
-	NEW_CLASS(this->lblVolBoostBGVol, UI::GUILabel(ui, this->tpVolBoost, (const UTF8Char*)"-60dB"));
+	NEW_CLASS(this->lblVolBoostBGVol, UI::GUILabel(ui, this->tpVolBoost, CSTR("-60dB")));
 	this->lblVolBoostBGVol->SetRect(404, 28, 100, 23, false);
 
 	this->tpFileMix = this->tcFilter->AddTabPage(CSTR("File Mix"));
-	NEW_CLASS(this->lblFileMix, UI::GUILabel(ui, this->tpFileMix, (const UTF8Char*)"Audio File"));
+	NEW_CLASS(this->lblFileMix, UI::GUILabel(ui, this->tpFileMix, CSTR("Audio File")));
 	this->lblFileMix->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileMix, UI::GUITextBox(ui, this->tpFileMix, CSTR("")));
 	this->txtFileMix->SetRect(104, 4, 400, 23, false);
@@ -1197,22 +1197,22 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnSoundGenBell->HandleButtonClick(OnSoundGenBellClicked, this);
 
 	this->tpSweep = this->tcFilter->AddTabPage(CSTR("Sweep"));
-	NEW_CLASS(this->lblSweepVol, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"Volume"));
+	NEW_CLASS(this->lblSweepVol, UI::GUILabel(ui, this->tpSweep, CSTR("Volume")));
 	this->lblSweepVol->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->tbSweepVol, UI::GUITrackBar(ui, this->tpSweep, 0, 960, 960));
 	this->tbSweepVol->SetRect(104, 4, 400, 23, false);
 	this->tbSweepVol->HandleScrolled(OnSweepVolChg, this);
-	NEW_CLASS(this->lblSweepVolV, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"0dB"));
+	NEW_CLASS(this->lblSweepVolV, UI::GUILabel(ui, this->tpSweep, CSTR("0dB")));
 	this->lblSweepVolV->SetRect(504, 4, 100, 23, false);
-	NEW_CLASS(this->lblSweepStartFreq, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"Start Freq"));
+	NEW_CLASS(this->lblSweepStartFreq, UI::GUILabel(ui, this->tpSweep, CSTR("Start Freq")));
 	this->lblSweepStartFreq->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtSweepStartFreq, UI::GUITextBox(ui, this->tpSweep, CSTR("10")));
 	this->txtSweepStartFreq->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblSweepEndFreq, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"End Freq"));
+	NEW_CLASS(this->lblSweepEndFreq, UI::GUILabel(ui, this->tpSweep, CSTR("End Freq")));
 	this->lblSweepEndFreq->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtSweepEndFreq, UI::GUITextBox(ui, this->tpSweep, CSTR("24000")));
 	this->txtSweepEndFreq->SetRect(104, 52, 100, 23, false);
-	NEW_CLASS(this->lblSweepDur, UI::GUILabel(ui, this->tpSweep, (const UTF8Char*)"Duration"));
+	NEW_CLASS(this->lblSweepDur, UI::GUILabel(ui, this->tpSweep, CSTR("Duration")));
 	this->lblSweepDur->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtSweepDur, UI::GUITextBox(ui, this->tpSweep, CSTR("20")));
 	this->txtSweepDur->SetRect(104, 76, 100, 23, false);
@@ -1221,12 +1221,12 @@ SSWR::AVIRead::AVIRAudioFilterForm::AVIRAudioFilterForm(UI::GUIClientControl *pa
 	this->btnSweepStart->HandleButtonClick(OnSweepStartClicked, this);
 
 	this->tpAmplifier = this->tcFilter->AddTabPage(CSTR("Amplifier"));
-	NEW_CLASS(this->lblAmplifierVol, UI::GUILabel(ui, this->tpAmplifier, (const UTF8Char*)"Volume"));
+	NEW_CLASS(this->lblAmplifierVol, UI::GUILabel(ui, this->tpAmplifier, CSTR("Volume")));
 	this->lblAmplifierVol->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->tbAmplifierVol, UI::GUITrackBar(ui, this->tpAmplifier, 0, 800, 100));
 	this->tbAmplifierVol->SetRect(104, 4, 400, 23, false);
 	this->tbAmplifierVol->HandleScrolled(OnAmplifierVolChg, this);
-	NEW_CLASS(this->lblAmplifierVolV, UI::GUILabel(ui, this->tpAmplifier, (const UTF8Char*)"100%"));
+	NEW_CLASS(this->lblAmplifierVolV, UI::GUILabel(ui, this->tpAmplifier, CSTR("100%")));
 	this->lblAmplifierVolV->SetRect(504, 4, 100, 23, false);
 
 	if (showMenu)

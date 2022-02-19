@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), 0, false));
 			if (me->svr->IsError())
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening the port", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in listening the port"), CSTR("Error"), me);
 				DEL_CLASS(me->svr);
 				me->svr = 0;
 			}
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid port number", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Invalid port number"), CSTR("Error"), me);
 		}
 	}
 }
@@ -149,7 +149,7 @@ SSWR::AVIRead::AVIRLogServerForm::AVIRLogServerForm(UI::GUIClientControl *parent
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlControl, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlControl, CSTR("1234")));
 	this->txtPort->SetRect(104, 4, 100, 23, false);

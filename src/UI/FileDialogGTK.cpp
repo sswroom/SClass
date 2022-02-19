@@ -64,10 +64,10 @@ UI::FileDialog::~FileDialog()
 	DEL_CLASS(this->names);
 }
 
-void UI::FileDialog::AddFilter(const UTF8Char *pattern, const UTF8Char *name)
+void UI::FileDialog::AddFilter(Text::CString pattern, Text::CString name)
 {
-	this->patterns->Add(Text::String::NewNotNull(pattern));
-	this->names->Add(Text::String::NewNotNull(name));
+	this->patterns->Add(Text::String::New(pattern));
+	this->names->Add(Text::String::New(name));
 }
 
 UOSInt UI::FileDialog::GetFilterIndex()

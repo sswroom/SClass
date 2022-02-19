@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	sb.ToUInt32(&maxLeng);
 	if (minLeng <= 0 || maxLeng < minLeng)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"MinLeng or MaxLeng is not valid", (const UTF8Char*)"Brute Force", me);
+		UI::MessageDialog::ShowDialog(CSTR("MinLeng or MaxLeng is not valid"), CSTR("Brute Force"), me);
 		return;
 	}
 	sb.ClearStr();
@@ -46,13 +46,13 @@ void __stdcall SSWR::AVIRead::AVIRBruteForceForm::OnStartClicked(void *userObj)
 	hash = Crypto::Hash::HashCreator::CreateHash((Crypto::Hash::HashType)(OSInt)me->cboHashType->GetSelectedItem());
 	if (hash == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Unsupported Hash Type", (const UTF8Char*)"Brute Force", me);
+		UI::MessageDialog::ShowDialog(CSTR("Unsupported Hash Type"), CSTR("Brute Force"), me);
 		return;
 	}
 	if (hash->GetResultSize() != hashSize)
 	{
 		DEL_CLASS(hash);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Hash value length does not match with Hash Type", (const UTF8Char*)"Brute Force", me);
+		UI::MessageDialog::ShowDialog(CSTR("Hash value length does not match with Hash Type"), CSTR("Brute Force"), me);
 		return;
 	}
 	Crypto::Hash::BruteForceAttack *bforce;
@@ -110,7 +110,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	OSInt j;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Type"));
+	NEW_CLASS(this->lblHashType, UI::GUILabel(ui, this, CSTR("Hash Type")));
 	this->lblHashType->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboHashType, UI::GUIComboBox(ui, this, false));
 	this->cboHashType->SetRect(104, 4, 150, 23, false);
@@ -127,11 +127,11 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 		i++;
 	}
 	this->cboHashType->SetSelectedIndex(0);
-	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, (const UTF8Char*)"Hash Value"));
+	NEW_CLASS(this->lblHashValue, UI::GUILabel(ui, this, CSTR("Hash Value")));
 	this->lblHashValue->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtHashValue, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtHashValue->SetRect(104, 28, 200, 23, false);
-	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this, (const UTF8Char*)"Encoding"));
+	NEW_CLASS(this->lblEncoding, UI::GUILabel(ui, this, CSTR("Encoding")));
 	this->lblEncoding->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboEncoding, UI::GUIComboBox(ui, this, false));
 	this->cboEncoding->SetRect(104, 52, 150, 23, false);
@@ -139,15 +139,15 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	this->cboEncoding->AddItem(CSTR("UTF-16LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF16LE);
 	this->cboEncoding->AddItem(CSTR("UTF-32LE"), (void*)Crypto::Hash::BruteForceAttack::CE_UTF32LE);
 	this->cboEncoding->SetSelectedIndex(0);
-	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, (const UTF8Char*)"Min Length"));
+	NEW_CLASS(this->lblMinLen, UI::GUILabel(ui, this, CSTR("Min Length")));
 	this->lblMinLen->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMinLen, UI::GUITextBox(ui, this, CSTR("4")));
 	this->txtMinLen->SetRect(104, 76, 100, 23, false);
-	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, this, (const UTF8Char*)"Max Length"));
+	NEW_CLASS(this->lblMaxLen, UI::GUILabel(ui, this, CSTR("Max Length")));
 	this->lblMaxLen->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtMaxLen, UI::GUITextBox(ui, this, CSTR("16")));
 	this->txtMaxLen->SetRect(104, 100, 100, 23, false);
-	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this, (const UTF8Char*)"Char Type"));
+	NEW_CLASS(this->lblCharType, UI::GUILabel(ui, this, CSTR("Char Type")));
 	this->lblCharType->SetRect(4, 124, 100, 23, false);
 	NEW_CLASS(this->cboCharType, UI::GUIComboBox(ui, this, false));
 	this->cboCharType->SetRect(104, 124, 200, 23, false);
@@ -162,7 +162,7 @@ SSWR::AVIRead::AVIRBruteForceForm::AVIRBruteForceForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this, CSTR("Start")));
 	this->btnStart->SetRect(104, 148, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this, CSTR("Status")));
 	this->lblStatus->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtStatus->SetRect(104, 172, 250, 23, false);

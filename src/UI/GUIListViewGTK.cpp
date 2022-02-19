@@ -167,17 +167,17 @@ UOSInt UI::GUIListView::GetColumnCnt()
 
 Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
 {
-	return this->AddColumn(columnName->v, colWidth);
+	return this->AddColumn(columnName, colWidth);
 }
 
-Bool UI::GUIListView::AddColumn(const UTF8Char *columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(Text::CString columnName, Double colWidth)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	if (data->colCnt <= this->colCnt)
 		return false;
 
 	GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)columnName, renderer, "text", this->colCnt, (void*)0);
+	GtkTreeViewColumn *col = gtk_tree_view_column_new_with_attributes((const Char*)columnName.v, renderer, "text", this->colCnt, (void*)0);
 	gtk_tree_view_column_set_fixed_width(col, Double2Int32(colWidth * this->hdpi / this->ddpi));
 	gtk_tree_view_column_set_resizable(col, true);
 	gtk_tree_view_append_column((GtkTreeView*)data->treeView, col);
@@ -289,13 +289,13 @@ Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::String *text)
 	return true;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, const UTF8Char *text)
+Bool UI::GUIListView::SetSubItem(UOSInt row, UOSInt col, Text::CString text)
 {
 	GUIListViewData *data = (GUIListViewData*)this->clsData;
 	MyRow *r = data->rows->GetItem(row);
 	if (r == 0 || col < 0 || col >= data->colCnt)
 		return false;
-	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text, -1);
+	gtk_list_store_set(data->listStore, &r->iter, col, (const Char*)text.v, -1);
 	return true;
 }
 

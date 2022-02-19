@@ -60,19 +60,19 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnTimerTick(void *userObj)
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Decode Ok, time used = "));
 			Text::SBAppendF64(&sb, update->t);
-			me->lvFiles->SetSubItem(update->index, 1, sb.ToString());
+			me->lvFiles->SetSubItem(update->index, 1, sb.ToCString());
 		}
 		else if (update->status == 1)
 		{
-			me->lvFiles->SetSubItem(update->index, 1, (const UTF8Char*)"Not valid");
+			me->lvFiles->SetSubItem(update->index, 1, CSTR("Not valid"));
 		}
 		else if (update->status == 2)
 		{
-			me->lvFiles->SetSubItem(update->index, 1, (const UTF8Char*)"Not video file");
+			me->lvFiles->SetSubItem(update->index, 1, CSTR("Not video file"));
 		}
 		else
 		{
-			me->lvFiles->SetSubItem(update->index, 1, (const UTF8Char*)"Unknown");
+			me->lvFiles->SetSubItem(update->index, 1, CSTR("Unknown"));
 		}
 		MemFree(update);
 	}
@@ -148,7 +148,7 @@ void SSWR::AVIRead::AVIRVideoCheckerForm::CancelQueues()
 	while (i-- > 0)
 	{
 		file = this->fileList->RemoveAt(i);
-		this->lvFiles->SetSubItem(file->index, 1, (const UTF8Char*)"Cancelled");
+		this->lvFiles->SetSubItem(file->index, 1, CSTR("Cancelled"));
 
 		file->fileName->Release();
 		MemFree(file);
@@ -170,13 +170,13 @@ SSWR::AVIRead::AVIRVideoCheckerForm::AVIRVideoCheckerForm(UI::GUIClientControl *
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this->pnlCtrl, CSTR("Cancel")));
 	this->btnCancel->SetRect(4, 4, 75, 23, false);
 	this->btnCancel->HandleButtonClick(OnCancelClicked, this);
-	NEW_CLASS(this->chkAllowTimeSkip, UI::GUICheckBox(ui, this->pnlCtrl, (const UTF8Char*)"Allow Time Skip", false));
+	NEW_CLASS(this->chkAllowTimeSkip, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Allow Time Skip"), false));
 	this->chkAllowTimeSkip->SetRect(84, 4, 120, 23, false);
 	this->chkAllowTimeSkip->HandleCheckedChange(OnAllowTimeSkipChange, this);
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Name", 400);
-	this->lvFiles->AddColumn((const UTF8Char*)"Status", 300);
+	this->lvFiles->AddColumn(CSTR("File Name"), 400);
+	this->lvFiles->AddColumn(CSTR("Status"), 300);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
 

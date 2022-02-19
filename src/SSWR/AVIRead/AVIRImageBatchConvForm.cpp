@@ -44,13 +44,13 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	quality = Text::StrToInt32(sbuff);
 	if (quality <= 0 || quality > 100)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Quality", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid Quality"), CSTR("Error"), me);
 		return;
 	}
 	sptr = me->txtDir->GetText(sbuff);
 	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Directory)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Not a directory", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Not a directory"), CSTR("Error"), me);
 		return;
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 						sb.AppendC(UTF8STRC("Error in converting to "));
 						sb.AppendP(sptr2, sptr2End);
 						sb.AppendC(UTF8STRC(", do you want to continue?"));
-						if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
+						if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
 						{
 							succ = false;
 						}
@@ -127,7 +127,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					sb.AppendC(UTF8STRC("Error in loading "));
 					sb.AppendP(sptr, sptrEnd);
 					sb.AppendC(UTF8STRC(", do you want to continue?"));
-					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Image Batch Convert", me))
+					if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Image Batch Convert"), me))
 					{
 						succ = false;
 					}
@@ -151,18 +151,18 @@ SSWR::AVIRead::AVIRImageBatchConvForm::AVIRImageBatchConvForm(UI::GUIClientContr
 	this->core = core;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this, (const UTF8Char*)"Folder"));
+	NEW_CLASS(this->lblDir, UI::GUILabel(ui, this, CSTR("Folder")));
 	this->lblDir->SetRect(0, 0, 100, 23, false);
 	NEW_CLASS(this->txtDir, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDir->SetRect(100, 0, 450, 23, false);
 	NEW_CLASS(this->btnBrowse, UI::GUIButton(ui, this, CSTR("&Browse")));
 	this->btnBrowse->SetRect(550, 0, 75, 23, false);
 	this->btnBrowse->HandleButtonClick(OnBrowseClicked, this);
-	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, this, (const UTF8Char*)"Quality"));
+	NEW_CLASS(this->lblQuality, UI::GUILabel(ui, this, CSTR("Quality")));
 	this->lblQuality->SetRect(0, 24, 100, 23, false);
 	NEW_CLASS(this->txtQuality, UI::GUITextBox(ui, this, CSTR("100")));
 	this->txtQuality->SetRect(100, 24, 100, 23, false);
-	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, (const UTF8Char*)"Subdir", true));
+	NEW_CLASS(this->chkSubdir, UI::GUICheckBox(ui, this, CSTR("Subdir"), true));
 	this->chkSubdir->SetRect(0, 48, 100, 23, false);
 	NEW_CLASS(this->txtSubdir, UI::GUITextBox(ui, this, CSTR("JPEG")));
 	this->txtSubdir->SetRect(100, 48, 100, 23, false);

@@ -22,7 +22,7 @@ void Parser::FileParser::CIPParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.cip", (const UTF8Char*)"CIP File");
+		selector->AddFilter(CSTR("*.cip"), CSTR("CIP File"));
 	}
 }
 

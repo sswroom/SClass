@@ -94,7 +94,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 	me->txtInfo->GetText(&sb);
 	if (!sb.ToUInt16(&port))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Info port is not valid", (const UTF8Char*)"RAW Monitor", me);
+		UI::MessageDialog::ShowDialog(CSTR("Info port is not valid"), CSTR("RAW Monitor"), me);
 		return;
 	}
 	NEW_CLASS(me->webHdlr, Net::EthernetWebHandler(me->analyzer));
@@ -105,7 +105,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnInfoClicked(void *userObj)
 		DEL_CLASS(me->webHdlr);
 		me->listener = 0;
 		me->webHdlr = 0;
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to info port", (const UTF8Char*)"RAW Monitor", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in listening to info port"), CSTR("RAW Monitor"), me);
 		return;
 	}
 	me->txtInfo->SetReadOnly(true);
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnStartClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in listening to socket", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Error in listening to socket"), CSTR("Error"), me);
 			return;
 		}
 	}
@@ -262,12 +262,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv4SelChg(void *userObj
 			{
 				ans = ansList.GetItem(i);
 				me->lvDNSReqv4->AddItem(ans->name, ans);
-				Text::StrInt32(sbuff, ans->recType);
-				me->lvDNSReqv4->SetSubItem(i, 1, sbuff);
-				Text::StrInt32(sbuff, ans->recClass);
-				me->lvDNSReqv4->SetSubItem(i, 2, sbuff);
-				Text::StrUInt32(sbuff, ans->ttl);
-				me->lvDNSReqv4->SetSubItem(i, 3, sbuff);
+				sptr = Text::StrInt32(sbuff, ans->recType);
+				me->lvDNSReqv4->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, ans->recClass);
+				me->lvDNSReqv4->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, ans->ttl);
+				me->lvDNSReqv4->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				me->lvDNSReqv4->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
@@ -304,12 +304,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqv6SelChg(void *userObj
 			{
 				ans = ansList.GetItem(i);
 				me->lvDNSReqv6->AddItem(ans->name, ans);
-				Text::StrInt32(sbuff, ans->recType);
-				me->lvDNSReqv6->SetSubItem(i, 1, sbuff);
-				Text::StrInt32(sbuff, ans->recClass);
-				me->lvDNSReqv6->SetSubItem(i, 2, sbuff);
-				Text::StrUInt32(sbuff, ans->ttl);
-				me->lvDNSReqv6->SetSubItem(i, 3, sbuff);
+				sptr = Text::StrInt32(sbuff, ans->recType);
+				me->lvDNSReqv6->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, ans->recClass);
+				me->lvDNSReqv6->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, ans->ttl);
+				me->lvDNSReqv6->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				me->lvDNSReqv6->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
@@ -346,12 +346,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSReqOthSelChg(void *userOb
 			{
 				ans = ansList.GetItem(i);
 				me->lvDNSReqOth->AddItem(ans->name, ans);
-				Text::StrInt32(sbuff, ans->recType);
-				me->lvDNSReqOth->SetSubItem(i, 1, sbuff);
-				Text::StrInt32(sbuff, ans->recClass);
-				me->lvDNSReqOth->SetSubItem(i, 2, sbuff);
-				Text::StrUInt32(sbuff, ans->ttl);
-				me->lvDNSReqOth->SetSubItem(i, 3, sbuff);
+				sptr = Text::StrInt32(sbuff, ans->recType);
+				me->lvDNSReqOth->SetSubItem(i, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrInt32(sbuff, ans->recClass);
+				me->lvDNSReqOth->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, ans->ttl);
+				me->lvDNSReqOth->SetSubItem(i, 3, CSTRP(sbuff, sptr));
 				me->lvDNSReqOth->SetSubItem(i, 4, ans->rd);
 				i++;
 			}
@@ -474,8 +474,8 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnDNSClientSelChg(void *userOb
 			sptr = Text::StrInt32(sptr, hourInfo->hour);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(":00"));
 			me->lvDNSClient->AddItem(CSTRP(sbuff, sptr), 0);
-			Text::StrUInt64(sbuff, hourInfo->reqCount);
-			me->lvDNSClient->SetSubItem(i, 1, sbuff);
+			sptr = Text::StrUInt64(sbuff, hourInfo->reqCount);
+			me->lvDNSClient->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			i++;
 		}
 		mutUsage.EndUse();
@@ -789,69 +789,70 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		{
 			if (currSel->recvStatus)
 			{
-				Text::StrUInt64(sbuff, currSel->recvStatus->tcpCnt);
-				me->lvIPTranInfo->SetSubItem(0, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->tcpSize);
-				me->lvIPTranInfo->SetSubItem(2, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->udpCnt);
-				me->lvIPTranInfo->SetSubItem(4, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->udpSize);
-				me->lvIPTranInfo->SetSubItem(6, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->icmpCnt);
-				me->lvIPTranInfo->SetSubItem(8, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->icmpSize);
-				me->lvIPTranInfo->SetSubItem(10, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->otherCnt);
-				me->lvIPTranInfo->SetSubItem(12, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->recvStatus->otherSize);
-				me->lvIPTranInfo->SetSubItem(14, 1, sbuff);
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->tcpCnt);
+				me->lvIPTranInfo->SetSubItem(0, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->tcpSize);
+				me->lvIPTranInfo->SetSubItem(2, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->udpCnt);
+				me->lvIPTranInfo->SetSubItem(4, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->udpSize);
+				me->lvIPTranInfo->SetSubItem(6, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->icmpCnt);
+				me->lvIPTranInfo->SetSubItem(8, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->icmpSize);
+				me->lvIPTranInfo->SetSubItem(10, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->otherCnt);
+				me->lvIPTranInfo->SetSubItem(12, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->recvStatus->otherSize);
+				me->lvIPTranInfo->SetSubItem(14, 1, CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->lvIPTranInfo->SetSubItem(0, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(2, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(4, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(6, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(8, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(10, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(12, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(14, 1, (const UTF8Char*)"0");
+				me->lvIPTranInfo->SetSubItem(0, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(2, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(4, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(6, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(8, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(10, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(12, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(14, 1, CSTR("0"));
 			}
 			
 			if (currSel->sendStatus)
 			{
-				Text::StrUInt64(sbuff, currSel->sendStatus->tcpCnt);
-				me->lvIPTranInfo->SetSubItem(1, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->tcpSize);
-				me->lvIPTranInfo->SetSubItem(3, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->udpCnt);
-				me->lvIPTranInfo->SetSubItem(5, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->udpSize);
-				me->lvIPTranInfo->SetSubItem(7, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->icmpCnt);
-				me->lvIPTranInfo->SetSubItem(9, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->icmpSize);
-				me->lvIPTranInfo->SetSubItem(11, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->otherCnt);
-				me->lvIPTranInfo->SetSubItem(13, 1, sbuff);
-				Text::StrUInt64(sbuff, currSel->sendStatus->otherSize);
-				me->lvIPTranInfo->SetSubItem(15, 1, sbuff);
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->tcpCnt);
+				me->lvIPTranInfo->SetSubItem(1, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->tcpSize);
+				me->lvIPTranInfo->SetSubItem(3, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->udpCnt);
+				me->lvIPTranInfo->SetSubItem(5, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->udpSize);
+				me->lvIPTranInfo->SetSubItem(7, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->icmpCnt);
+				me->lvIPTranInfo->SetSubItem(9, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->icmpSize);
+				me->lvIPTranInfo->SetSubItem(11, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->otherCnt);
+				me->lvIPTranInfo->SetSubItem(13, 1, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt64(sbuff, currSel->sendStatus->otherSize);
+				me->lvIPTranInfo->SetSubItem(15, 1, CSTRP(sbuff, sptr));
 			}
 			else
 			{
-				me->lvIPTranInfo->SetSubItem(1, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(3, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(5, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(7, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(9, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(11, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(13, 1, (const UTF8Char*)"0");
-				me->lvIPTranInfo->SetSubItem(15, 1, (const UTF8Char*)"0");
+				me->lvIPTranInfo->SetSubItem(1, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(3, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(5, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(7, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(9, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(11, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(13, 1, CSTR("0"));
+				me->lvIPTranInfo->SetSubItem(15, 1, CSTR("0"));
 			}
 		}
 
 		Data::ArrayList<Net::EthernetAnalyzer::MACStatus *> *macList;
 		Net::EthernetAnalyzer::MACStatus *mac;
+		const Net::MACInfo::MACEntry *entry;
 		UInt8 macBuff[8];
 		Sync::MutexUsage mutUsage;
 		me->analyzer->UseMAC(&mutUsage);
@@ -867,14 +868,15 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				WriteMUInt64(macBuff, mac->macAddr);
 				sptr = Text::StrHexBytes(sbuff, &macBuff[2], 6, ':');
 				me->lvDevice->AddItem(CSTRP(sbuff, sptr), mac);
-				me->lvDevice->SetSubItem(i, 1, Net::MACInfo::GetMACInfo(mac->macAddr)->name);
+				entry = Net::MACInfo::GetMACInfo(mac->macAddr);
+				me->lvDevice->SetSubItem(i, 1, {entry->name, entry->nameLen});
 				if (mac->name)
 				{
 					me->lvDevice->SetSubItem(i, 8, mac->name);
 				}
 				else
 				{
-					me->lvDevice->SetSubItem(i, 8, (const UTF8Char*)"Unknown");
+					me->lvDevice->SetSubItem(i, 8, CSTR("Unknown"));
 				}
 				i++;
 			}
@@ -883,42 +885,42 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			mac = macList->GetItem(i);
-			Text::StrUInt64(sbuff, mac->ipv4SrcCnt);
-			me->lvDevice->SetSubItem(i, 2, sbuff);
-			Text::StrUInt64(sbuff, mac->ipv4DestCnt);
-			me->lvDevice->SetSubItem(i, 3, sbuff);
-			Text::StrUInt64(sbuff, mac->ipv6SrcCnt);
-			me->lvDevice->SetSubItem(i, 4, sbuff);
-			Text::StrUInt64(sbuff, mac->ipv6DestCnt);
-			me->lvDevice->SetSubItem(i, 5, sbuff);
-			Text::StrUInt64(sbuff, mac->othSrcCnt);
-			me->lvDevice->SetSubItem(i, 6, sbuff);
-			Text::StrUInt64(sbuff, mac->othDestCnt);
-			me->lvDevice->SetSubItem(i, 7, sbuff);
+			sptr = Text::StrUInt64(sbuff, mac->ipv4SrcCnt);
+			me->lvDevice->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, mac->ipv4DestCnt);
+			me->lvDevice->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, mac->ipv6SrcCnt);
+			me->lvDevice->SetSubItem(i, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, mac->ipv6DestCnt);
+			me->lvDevice->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, mac->othSrcCnt);
+			me->lvDevice->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+			sptr = Text::StrUInt64(sbuff, mac->othDestCnt);
+			me->lvDevice->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 
 			if (mac->ipv4Addr[0])
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), &mac->ipv6Addr);
-					me->lvDevice->SetSubItem(i, 9, sbuff);
+					sptr = Net::SocketUtil::GetAddrName(Text::StrConcatC(Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]), UTF8STRC(", ")), &mac->ipv6Addr);
+					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else
 				{
-					Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]);
-					me->lvDevice->SetSubItem(i, 9, sbuff);
+					sptr = Net::SocketUtil::GetIPv4Name(sbuff, mac->ipv4Addr[0]);
+					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 			}
 			else
 			{
 				if (mac->ipv6Addr.addrType == Net::AddrType::IPv6)
 				{
-					Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
-					me->lvDevice->SetSubItem(i, 9, sbuff);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, &mac->ipv6Addr);
+					me->lvDevice->SetSubItem(i, 9, CSTRP(sbuff, sptr));
 				}
 				else
 				{
-					me->lvDevice->SetSubItem(i, 9, (const UTF8Char*)"");
+					me->lvDevice->SetSubItem(i, 9, CSTR(""));
 				}
 			}
 			i++;
@@ -950,7 +952,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
 				me->lvDHCP->AddItem(CSTRP(sbuff, sptr), dhcp);
 				macInfo = Net::MACInfo::GetMACInfo(dhcp->iMAC);
-				me->lvDHCP->SetSubItem(i, 1, macInfo->name);
+				me->lvDHCP->SetSubItem(i, 1, {macInfo->name, macInfo->nameLen});
 				if (dhcp == currSel)
 				{
 					me->lvDHCP->SetSelectedIndex(i);
@@ -970,12 +972,12 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 				Data::DateTime dt;
 				Sync::MutexUsage mutUsage(dhcp->mut);
 				dhcp->updated = false;
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);
-				me->lvDHCP->SetSubItem(i, 2, sbuff);
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->subnetMask);
-				me->lvDHCP->SetSubItem(i, 3, sbuff);
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->gwAddr);
-				me->lvDHCP->SetSubItem(i, 4, sbuff);
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->ipAddr);
+				me->lvDHCP->SetSubItem(i, 2, CSTRP(sbuff, sptr));
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->subnetMask);
+				me->lvDHCP->SetSubItem(i, 3, CSTRP(sbuff, sptr));
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->gwAddr);
+				me->lvDHCP->SetSubItem(i, 4, CSTRP(sbuff, sptr));
 				sbuff[0] = 0;
 				sptr = sbuff;
 				k = 0;
@@ -990,21 +992,21 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnTimerTick(void *userObj)
 					sptr = Net::SocketUtil::GetIPv4Name(sptr, dhcp->dns[k]);
 					k++;
 				}
-				me->lvDHCP->SetSubItem(i, 5, sbuff);
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->dhcpServer);
-				me->lvDHCP->SetSubItem(i, 6, sbuff);
-				Net::SocketUtil::GetIPv4Name(sbuff, dhcp->router);
-				me->lvDHCP->SetSubItem(i, 7, sbuff);
+				me->lvDHCP->SetSubItem(i, 5, CSTRP(sbuff, sptr));
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->dhcpServer);
+				me->lvDHCP->SetSubItem(i, 6, CSTRP(sbuff, sptr));
+				sptr = Net::SocketUtil::GetIPv4Name(sbuff, dhcp->router);
+				me->lvDHCP->SetSubItem(i, 7, CSTRP(sbuff, sptr));
 				dt.SetTicks(dhcp->ipAddrTime);
 				dt.ToLocalTime();
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				me->lvDHCP->SetSubItem(i, 8, sbuff);
-				Text::StrUInt32(sbuff, dhcp->ipAddrLease);
-				me->lvDHCP->SetSubItem(i, 9, sbuff);
-				Text::StrUInt32(sbuff, dhcp->renewTime);
-				me->lvDHCP->SetSubItem(i, 10, sbuff);
-				Text::StrUInt32(sbuff, dhcp->rebindTime);
-				me->lvDHCP->SetSubItem(i, 11, sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				me->lvDHCP->SetSubItem(i, 8, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, dhcp->ipAddrLease);
+				me->lvDHCP->SetSubItem(i, 9, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, dhcp->renewTime);
+				me->lvDHCP->SetSubItem(i, 10, CSTRP(sbuff, sptr));
+				sptr = Text::StrUInt32(sbuff, dhcp->rebindTime);
+				me->lvDHCP->SetSubItem(i, 11, CSTRP(sbuff, sptr));
 				if (dhcp->hostName)
 					me->lvDHCP->SetSubItem(i, 12, dhcp->hostName);
 				if (dhcp->vendorClass)
@@ -1096,7 +1098,7 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	}
 	else
 	{
-		NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, (const UTF8Char*)"RAWMonitor"));
+		NEW_CLASS(this->analyzer, Net::EthernetAnalyzer(0, Net::EthernetAnalyzer::AT_ALL, CSTR("RAWMonitor")));
 	}
 	NEW_CLASS(this->ipTranMap, Data::UInt32Map<IPTranInfo*>());
 	this->ipTranCnt = 0;
@@ -1108,14 +1110,14 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 55, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Info Port"));
+	NEW_CLASS(this->lblInfo, UI::GUILabel(ui, this->pnlControl, CSTR("Info Port")));
 	this->lblInfo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtInfo, UI::GUITextBox(ui, this->pnlControl, CSTR("8089")));
 	this->txtInfo->SetRect(104, 4, 80, 23, false);
 	NEW_CLASS(this->btnInfo, UI::GUIButton(ui, this->pnlControl, CSTR("Start")));
 	this->btnInfo->SetRect(184, 4, 75, 23, false);
 	this->btnInfo->HandleButtonClick(OnInfoClicked, this);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
 	this->lblIP->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->cboIP, UI::GUIComboBox(ui, this->pnlControl, false));
 	this->cboIP->SetRect(104, 28, 150, 23, false);
@@ -1136,16 +1138,16 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDevice->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDevice->SetFullRowSelect(true);
 	this->lvDevice->SetShowGrid(true);
-	this->lvDevice->AddColumn((const UTF8Char*)"MAC", 115);
-	this->lvDevice->AddColumn((const UTF8Char*)"Vendor", 200);
-	this->lvDevice->AddColumn((const UTF8Char*)"IPv4 Src", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"IPv4 Dest", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"IPv6 Src", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"IPv6 Dest", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"Other Src", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"Other Dest", 50);
-	this->lvDevice->AddColumn((const UTF8Char*)"Name", 120);
-	this->lvDevice->AddColumn((const UTF8Char*)"IP List", 280);
+	this->lvDevice->AddColumn(CSTR("MAC"), 115);
+	this->lvDevice->AddColumn(CSTR("Vendor"), 200);
+	this->lvDevice->AddColumn(CSTR("IPv4 Src"), 50);
+	this->lvDevice->AddColumn(CSTR("IPv4 Dest"), 50);
+	this->lvDevice->AddColumn(CSTR("IPv6 Src"), 50);
+	this->lvDevice->AddColumn(CSTR("IPv6 Dest"), 50);
+	this->lvDevice->AddColumn(CSTR("Other Src"), 50);
+	this->lvDevice->AddColumn(CSTR("Other Dest"), 50);
+	this->lvDevice->AddColumn(CSTR("Name"), 120);
+	this->lvDevice->AddColumn(CSTR("IP List"), 280);
 	this->lvDevice->HandleSelChg(OnDeviceSelChg, this);
 
 	this->tpIPTran = this->tcMain->AddTabPage(CSTR("IP Tran"));
@@ -1161,8 +1163,8 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvIPTranInfo->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvIPTranInfo->SetFullRowSelect(true);
 	this->lvIPTranInfo->SetShowGrid(true);
-	this->lvIPTranInfo->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvIPTranInfo->AddColumn((const UTF8Char*)"Value", 100);
+	this->lvIPTranInfo->AddColumn(CSTR("Name"), 200);
+	this->lvIPTranInfo->AddColumn(CSTR("Value"), 100);
 	this->lvIPTranInfo->AddItem(CSTR("Recv TCP Cnt"), 0);
 	this->lvIPTranInfo->AddItem(CSTR("Send TCP Cnt"), 0);
 	this->lvIPTranInfo->AddItem(CSTR("Recv TCP Size"), 0);
@@ -1193,17 +1195,17 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlDNSReqv4, UI::GUIPanel(ui, this->tpDNSReqv4));
 	this->pnlDNSReqv4->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv4->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDNSReqv4Name, UI::GUILabel(ui, this->pnlDNSReqv4, (const UTF8Char*)"Req Name"));
+	NEW_CLASS(this->lblDNSReqv4Name, UI::GUILabel(ui, this->pnlDNSReqv4, CSTR("Req Name")));
 	this->lblDNSReqv4Name->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv4Name, UI::GUITextBox(ui, this->pnlDNSReqv4, CSTR("")));
 	this->txtDNSReqv4Name->SetRect(104, 4, 250, 23, false);
 	this->txtDNSReqv4Name->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqv4ReqTime, UI::GUILabel(ui, this->pnlDNSReqv4, (const UTF8Char*)"Req Time"));
+	NEW_CLASS(this->lblDNSReqv4ReqTime, UI::GUILabel(ui, this->pnlDNSReqv4, CSTR("Req Time")));
 	this->lblDNSReqv4ReqTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv4ReqTime, UI::GUITextBox(ui, this->pnlDNSReqv4, CSTR("")));
 	this->txtDNSReqv4ReqTime->SetRect(104, 28, 150, 23, false);
 	this->txtDNSReqv4ReqTime->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqv4TTL, UI::GUILabel(ui, this->pnlDNSReqv4, (const UTF8Char*)"TTL"));
+	NEW_CLASS(this->lblDNSReqv4TTL, UI::GUILabel(ui, this->pnlDNSReqv4, CSTR("TTL")));
 	this->lblDNSReqv4TTL->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv4TTL, UI::GUITextBox(ui, this->pnlDNSReqv4, CSTR("")));
 	this->txtDNSReqv4TTL->SetRect(104, 52, 80, 23, false);
@@ -1212,11 +1214,11 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqv4->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqv4->SetFullRowSelect(true);
 	this->lvDNSReqv4->SetShowGrid(true);
-	this->lvDNSReqv4->AddColumn((const UTF8Char*)"Name", 250);
-	this->lvDNSReqv4->AddColumn((const UTF8Char*)"Type", 40);
-	this->lvDNSReqv4->AddColumn((const UTF8Char*)"Class", 40);
-	this->lvDNSReqv4->AddColumn((const UTF8Char*)"TTL", 60);
-	this->lvDNSReqv4->AddColumn((const UTF8Char*)"RD", 250);
+	this->lvDNSReqv4->AddColumn(CSTR("Name"), 250);
+	this->lvDNSReqv4->AddColumn(CSTR("Type"), 40);
+	this->lvDNSReqv4->AddColumn(CSTR("Class"), 40);
+	this->lvDNSReqv4->AddColumn(CSTR("TTL"), 60);
+	this->lvDNSReqv4->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSReqv6 = this->tcMain->AddTabPage(CSTR("DNS Req v6"));
 	NEW_CLASS(this->lbDNSReqv6, UI::GUIListBox(ui, this->tpDNSReqv6, false));
@@ -1227,17 +1229,17 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlDNSReqv6, UI::GUIPanel(ui, this->tpDNSReqv6));
 	this->pnlDNSReqv6->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqv6->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDNSReqv6Name, UI::GUILabel(ui, this->pnlDNSReqv6, (const UTF8Char*)"Req Name"));
+	NEW_CLASS(this->lblDNSReqv6Name, UI::GUILabel(ui, this->pnlDNSReqv6, CSTR("Req Name")));
 	this->lblDNSReqv6Name->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv6Name, UI::GUITextBox(ui, this->pnlDNSReqv6, CSTR("")));
 	this->txtDNSReqv6Name->SetRect(104, 4, 250, 23, false);
 	this->txtDNSReqv6Name->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqv6ReqTime, UI::GUILabel(ui, this->pnlDNSReqv6, (const UTF8Char*)"Req Time"));
+	NEW_CLASS(this->lblDNSReqv6ReqTime, UI::GUILabel(ui, this->pnlDNSReqv6, CSTR("Req Time")));
 	this->lblDNSReqv6ReqTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv6ReqTime, UI::GUITextBox(ui, this->pnlDNSReqv6, CSTR("")));
 	this->txtDNSReqv6ReqTime->SetRect(104, 28, 150, 23, false);
 	this->txtDNSReqv6ReqTime->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqv6TTL, UI::GUILabel(ui, this->pnlDNSReqv6, (const UTF8Char*)"TTL"));
+	NEW_CLASS(this->lblDNSReqv6TTL, UI::GUILabel(ui, this->pnlDNSReqv6, CSTR("TTL")));
 	this->lblDNSReqv6TTL->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqv6TTL, UI::GUITextBox(ui, this->pnlDNSReqv6, CSTR("")));
 	this->txtDNSReqv6TTL->SetRect(104, 52, 80, 23, false);
@@ -1246,11 +1248,11 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqv6->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqv6->SetFullRowSelect(true);
 	this->lvDNSReqv6->SetShowGrid(true);
-	this->lvDNSReqv6->AddColumn((const UTF8Char*)"Name", 250);
-	this->lvDNSReqv6->AddColumn((const UTF8Char*)"Type", 40);
-	this->lvDNSReqv6->AddColumn((const UTF8Char*)"Class", 40);
-	this->lvDNSReqv6->AddColumn((const UTF8Char*)"TTL", 60);
-	this->lvDNSReqv6->AddColumn((const UTF8Char*)"RD", 250);
+	this->lvDNSReqv6->AddColumn(CSTR("Name"), 250);
+	this->lvDNSReqv6->AddColumn(CSTR("Type"), 40);
+	this->lvDNSReqv6->AddColumn(CSTR("Class"), 40);
+	this->lvDNSReqv6->AddColumn(CSTR("TTL"), 60);
+	this->lvDNSReqv6->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSReqOth = this->tcMain->AddTabPage(CSTR("DNS Req Other"));
 	NEW_CLASS(this->lbDNSReqOth, UI::GUIListBox(ui, this->tpDNSReqOth, false));
@@ -1261,17 +1263,17 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->pnlDNSReqOth, UI::GUIPanel(ui, this->tpDNSReqOth));
 	this->pnlDNSReqOth->SetRect(0, 0, 100, 79, false);
 	this->pnlDNSReqOth->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDNSReqOthName, UI::GUILabel(ui, this->pnlDNSReqOth, (const UTF8Char*)"Req Name"));
+	NEW_CLASS(this->lblDNSReqOthName, UI::GUILabel(ui, this->pnlDNSReqOth, CSTR("Req Name")));
 	this->lblDNSReqOthName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqOthName, UI::GUITextBox(ui, this->pnlDNSReqOth, CSTR("")));
 	this->txtDNSReqOthName->SetRect(104, 4, 250, 23, false);
 	this->txtDNSReqOthName->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqOthReqTime, UI::GUILabel(ui, this->pnlDNSReqOth, (const UTF8Char*)"Req Time"));
+	NEW_CLASS(this->lblDNSReqOthReqTime, UI::GUILabel(ui, this->pnlDNSReqOth, CSTR("Req Time")));
 	this->lblDNSReqOthReqTime->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqOthReqTime, UI::GUITextBox(ui, this->pnlDNSReqOth, CSTR("")));
 	this->txtDNSReqOthReqTime->SetRect(104, 28, 150, 23, false);
 	this->txtDNSReqOthReqTime->SetReadOnly(true);
-	NEW_CLASS(this->lblDNSReqOthTTL, UI::GUILabel(ui, this->pnlDNSReqOth, (const UTF8Char*)"TTL"));
+	NEW_CLASS(this->lblDNSReqOthTTL, UI::GUILabel(ui, this->pnlDNSReqOth, CSTR("TTL")));
 	this->lblDNSReqOthTTL->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtDNSReqOthTTL, UI::GUITextBox(ui, this->pnlDNSReqOth, CSTR("")));
 	this->txtDNSReqOthTTL->SetRect(104, 52, 80, 23, false);
@@ -1280,11 +1282,11 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSReqOth->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSReqOth->SetFullRowSelect(true);
 	this->lvDNSReqOth->SetShowGrid(true);
-	this->lvDNSReqOth->AddColumn((const UTF8Char*)"Name", 250);
-	this->lvDNSReqOth->AddColumn((const UTF8Char*)"Type", 40);
-	this->lvDNSReqOth->AddColumn((const UTF8Char*)"Class", 40);
-	this->lvDNSReqOth->AddColumn((const UTF8Char*)"TTL", 60);
-	this->lvDNSReqOth->AddColumn((const UTF8Char*)"RD", 250);
+	this->lvDNSReqOth->AddColumn(CSTR("Name"), 250);
+	this->lvDNSReqOth->AddColumn(CSTR("Type"), 40);
+	this->lvDNSReqOth->AddColumn(CSTR("Class"), 40);
+	this->lvDNSReqOth->AddColumn(CSTR("TTL"), 60);
+	this->lvDNSReqOth->AddColumn(CSTR("RD"), 250);
 
 	this->tpDNSTarget = this->tcMain->AddTabPage(CSTR("DNS Target"));
 	NEW_CLASS(this->lbDNSTarget, UI::GUIListBox(ui, this->tpDNSTarget, false));
@@ -1310,27 +1312,27 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->hspMDNS, UI::GUIHSplitter(ui, this->tpMDNS, 3, false));
 	NEW_CLASS(this->pnlMDNS, UI::GUIPanel(ui, this->tpMDNS));
 	this->pnlMDNS->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblMDNSName, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblMDNSName, UI::GUILabel(ui, this->pnlMDNS, CSTR("Name")));
 	this->lblMDNSName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtMDNSName, UI::GUITextBox(ui, this->pnlMDNS, CSTR("")));
 	this->txtMDNSName->SetRect(104, 4, 400, 23, false);
 	this->txtMDNSName->SetReadOnly(true);
-	NEW_CLASS(this->lblMDNSType, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblMDNSType, UI::GUILabel(ui, this->pnlMDNS, CSTR("Type")));
 	this->lblMDNSType->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtMDNSType, UI::GUITextBox(ui, this->pnlMDNS, CSTR("")));
 	this->txtMDNSType->SetRect(104, 28, 200, 23, false);
 	this->txtMDNSType->SetReadOnly(true);
-	NEW_CLASS(this->lblMDNSClass, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Class"));
+	NEW_CLASS(this->lblMDNSClass, UI::GUILabel(ui, this->pnlMDNS, CSTR("Class")));
 	this->lblMDNSClass->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMDNSClass, UI::GUITextBox(ui, this->pnlMDNS, CSTR("")));
 	this->txtMDNSClass->SetRect(104, 52, 200, 23, false);
 	this->txtMDNSClass->SetReadOnly(true);
-	NEW_CLASS(this->lblMDNSTTL, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"TTL"));
+	NEW_CLASS(this->lblMDNSTTL, UI::GUILabel(ui, this->pnlMDNS, CSTR("TTL")));
 	this->lblMDNSTTL->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->txtMDNSTTL, UI::GUITextBox(ui, this->pnlMDNS, CSTR("")));
 	this->txtMDNSTTL->SetRect(104, 76, 100, 23, false);
 	this->txtMDNSTTL->SetReadOnly(true);
-	NEW_CLASS(this->lblMDNSResult, UI::GUILabel(ui, this->pnlMDNS, (const UTF8Char*)"Result"));
+	NEW_CLASS(this->lblMDNSResult, UI::GUILabel(ui, this->pnlMDNS, CSTR("Result")));
 	this->lblMDNSResult->SetRect(4, 100, 100, 23, false);
 	NEW_CLASS(this->txtMDNSResult, UI::GUITextBox(ui, this->pnlMDNS, CSTR("")));
 	this->txtMDNSResult->SetRect(104, 100, 400, 23, false);
@@ -1346,28 +1348,28 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	this->lvDNSClient->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDNSClient->SetFullRowSelect(true);
 	this->lvDNSClient->SetShowGrid(true);
-	this->lvDNSClient->AddColumn((const UTF8Char*)"Time", 120);
-	this->lvDNSClient->AddColumn((const UTF8Char*)"Count", 100);
+	this->lvDNSClient->AddColumn(CSTR("Time"), 120);
+	this->lvDNSClient->AddColumn(CSTR("Count"), 100);
 
 	this->tpDHCP = this->tcMain->AddTabPage(CSTR("DHCP"));
 	NEW_CLASS(this->lvDHCP, UI::GUIListView(ui, this->tpDHCP, UI::GUIListView::LVSTYLE_TABLE, 14));
 	this->lvDHCP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvDHCP->SetFullRowSelect(true);
 	this->lvDHCP->SetShowGrid(true);
-	this->lvDHCP->AddColumn((const UTF8Char*)"MAC", 105);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Vendor", 200);
-	this->lvDHCP->AddColumn((const UTF8Char*)"IP Addr", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Subnet", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Gateway", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"DNS", 200);
-	this->lvDHCP->AddColumn((const UTF8Char*)"DHCP Server", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Router", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"IP Time", 140);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Lease Time", 50);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Renew Time", 50);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Rebind Time", 50);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Host Name", 100);
-	this->lvDHCP->AddColumn((const UTF8Char*)"Vendor Class", 100);
+	this->lvDHCP->AddColumn(CSTR("MAC"), 105);
+	this->lvDHCP->AddColumn(CSTR("Vendor"), 200);
+	this->lvDHCP->AddColumn(CSTR("IP Addr"), 100);
+	this->lvDHCP->AddColumn(CSTR("Subnet"), 100);
+	this->lvDHCP->AddColumn(CSTR("Gateway"), 100);
+	this->lvDHCP->AddColumn(CSTR("DNS"), 200);
+	this->lvDHCP->AddColumn(CSTR("DHCP Server"), 100);
+	this->lvDHCP->AddColumn(CSTR("Router"), 100);
+	this->lvDHCP->AddColumn(CSTR("IP Time"), 140);
+	this->lvDHCP->AddColumn(CSTR("Lease Time"), 50);
+	this->lvDHCP->AddColumn(CSTR("Renew Time"), 50);
+	this->lvDHCP->AddColumn(CSTR("Rebind Time"), 50);
+	this->lvDHCP->AddColumn(CSTR("Host Name"), 100);
+	this->lvDHCP->AddColumn(CSTR("Vendor Class"), 100);
 
 	this->tpIPLog = this->tcMain->AddTabPage(CSTR("IP Log"));
 	NEW_CLASS(this->lbIPLog, UI::GUIListBox(ui, this->tpIPLog, false));
@@ -1387,17 +1389,17 @@ SSWR::AVIRead::AVIRRAWMonitorForm::AVIRRAWMonitorForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->tcPingIP, UI::GUITabControl(ui, this->tpPingIP));
 	this->tcPingIP->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->tpPingIPInfo = this->tcPingIP->AddTabPage(CSTR("Info"));
-	NEW_CLASS(this->lblPingIPCount, UI::GUILabel(ui, this->tpPingIPInfo, (const UTF8Char*)"Count"));
+	NEW_CLASS(this->lblPingIPCount, UI::GUILabel(ui, this->tpPingIPInfo, CSTR("Count")));
 	this->lblPingIPCount->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPingIPCount, UI::GUITextBox(ui, this->tpPingIPInfo, CSTR("0")));
 	this->txtPingIPCount->SetRect(104, 4, 100, 23, false);
 	this->txtPingIPCount->SetReadOnly(true);
-	NEW_CLASS(this->lblPingIPName, UI::GUILabel(ui, this->tpPingIPInfo, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblPingIPName, UI::GUILabel(ui, this->tpPingIPInfo, CSTR("Name")));
 	this->lblPingIPName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtPingIPName, UI::GUITextBox(ui, this->tpPingIPInfo, CSTR("")));
 	this->txtPingIPName->SetRect(104, 28, 200, 23, false);
 	this->txtPingIPName->SetReadOnly(true);
-	NEW_CLASS(this->lblPingIPCountry, UI::GUILabel(ui, this->tpPingIPInfo, (const UTF8Char*)"Country"));
+	NEW_CLASS(this->lblPingIPCountry, UI::GUILabel(ui, this->tpPingIPInfo, CSTR("Country")));
 	this->lblPingIPCountry->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtPingIPCountry, UI::GUITextBox(ui, this->tpPingIPInfo, CSTR("")));
 	this->txtPingIPCountry->SetRect(104, 52, 100, 23, false);

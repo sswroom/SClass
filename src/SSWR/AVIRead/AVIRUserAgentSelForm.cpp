@@ -23,14 +23,16 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentSelChg(void *user
 {
 	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
 	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetSelectedItem();
-	me->currUserAgent = (const UTF8Char*)uaList->userAgent;
+	me->currUserAgent = uaList->userAgent;
+	me->currUserAgentLen = uaList->userAgentLen;
 }
 
 void __stdcall SSWR::AVIRead::AVIRUserAgentSelForm::OnUserAgentDblClk(void *userObj, UOSInt itemIndex)
 {
 	SSWR::AVIRead::AVIRUserAgentSelForm *me = (SSWR::AVIRead::AVIRUserAgentSelForm*)userObj;
 	Net::UserAgentDB::UAEntry *uaList = (Net::UserAgentDB::UAEntry*)me->lvUserAgent->GetItem(itemIndex);
-	me->currUserAgent = (const UTF8Char*)uaList->userAgent;
+	me->currUserAgent = uaList->userAgent;
+	me->currUserAgentLen = uaList->userAgentLen;
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 
@@ -54,10 +56,10 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 					sb.ClearStr();
 					Manage::OSInfo::GetCommonName(&sb, uaList[i].os, {uaList[i].osVer, uaList[i].osVerLen});
 					k = this->lvUserAgent->AddItem(sb.ToCString(), &uaList[i]);
-					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser).v);
+					this->lvUserAgent->SetSubItem(k, 1, Net::BrowserInfo::GetName(uaList[i].browser));
 					if (uaList[i].browserVer)
 					{
-						this->lvUserAgent->SetSubItem(k, 2, (const UTF8Char*)uaList[i].browserVer);
+						this->lvUserAgent->SetSubItem(k, 2, {uaList[i].browserVer, uaList[i].browserVerLen});
 					}
 					if (uaList[i].devName)
 					{
@@ -68,23 +70,23 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 							sb.AppendSlow((const UTF8Char*)android->brandName);
 							sb.AppendUTF8Char(' ');
 							sb.AppendSlow((const UTF8Char*)android->modelName);
-							this->lvUserAgent->SetSubItem(k, 3, sb.ToString());
-							this->lvUserAgent->SetSubItem(k, 4, (const UTF8Char*)android->cpuName);
+							this->lvUserAgent->SetSubItem(k, 3, sb.ToCString());
+							this->lvUserAgent->SetSubItem(k, 4, {android->cpuName, android->cpuNameLen});
 							const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec({android->cpuName, android->cpuNameLen});
 							if (cpu)
 							{
 								sb.ClearStr();
 								sb.AppendI32(cpu->nm);
-								this->lvUserAgent->SetSubItem(k, 5, sb.ToString());
+								this->lvUserAgent->SetSubItem(k, 5, sb.ToCString());
 							}
 						}
 						else
 						{
-							this->lvUserAgent->SetSubItem(k, 3, (const UTF8Char*)uaList[i].devName);
+							this->lvUserAgent->SetSubItem(k, 3, {uaList[i].devName, uaList[i].devNameLen});
 						}						
 					}
-					this->lvUserAgent->SetSubItem(k, 6, (const UTF8Char*)uaList[i].userAgent);
-					if (Text::StrEquals(this->currUserAgent, (const UTF8Char*)uaList[i].userAgent))
+					this->lvUserAgent->SetSubItem(k, 6, {uaList[i].userAgent, uaList[i].userAgentLen});
+					if (Text::StrEqualsC(this->currUserAgent, this->currUserAgentLen, uaList[i].userAgent, uaList[i].userAgentLen))
 					{
 						this->lvUserAgent->SetSelectedIndex(k);
 					}
@@ -95,24 +97,25 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::UpdateUAList(Manage::OSInfo::OSType os
 	}
 }
 
-SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, const UTF8Char *currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
+SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Text::CString currUserAgent) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->SetFont(0, 0, 8.25, false);
 	this->SetText(CSTR("User Agent Select"));
 
 	this->core = core;
-	this->currUserAgent = currUserAgent;
+	this->currUserAgent = currUserAgent.v;
+	this->currUserAgentLen = currUserAgent.leng;
 	NEW_CLASS(this->osList, Data::ArrayList<SSWR::AVIRead::AVIRUserAgentSelForm::OSItem*>());
 
 	NEW_CLASS(this->pnlFilter, UI::GUIPanel(ui, this));
 	this->pnlFilter->SetRect(0, 0, 100, 31, false);
 	this->pnlFilter->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFilterOS, UI::GUILabel(ui, this->pnlFilter, (const UTF8Char*)"OS"));
+	NEW_CLASS(this->lblFilterOS, UI::GUILabel(ui, this->pnlFilter, CSTR("OS")));
 	this->lblFilterOS->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboFilterOS, UI::GUIComboBox(ui, this->pnlFilter, false));
 	this->cboFilterOS->SetRect(104, 4, 150, 23, false);
 	this->cboFilterOS->HandleSelectionChange(OnFilterChg, this);
-	NEW_CLASS(this->lblFilterBrowser, UI::GUILabel(ui, this->pnlFilter, (const UTF8Char*)"Browser"));
+	NEW_CLASS(this->lblFilterBrowser, UI::GUILabel(ui, this->pnlFilter, CSTR("Browser")));
 	this->lblFilterBrowser->SetRect(304, 4, 100, 23, false);
 	NEW_CLASS(this->cboFilterBrowser, UI::GUIComboBox(ui, this->pnlFilter, false));
 	this->cboFilterBrowser->SetRect(404, 4, 150, 23, false);
@@ -128,13 +131,13 @@ SSWR::AVIRead::AVIRUserAgentSelForm::AVIRUserAgentSelForm(UI::GUIClientControl *
 	this->lvUserAgent->HandleSelChg(OnUserAgentSelChg, this);
 	this->lvUserAgent->SetFullRowSelect(true);
 	this->lvUserAgent->SetShowGrid(true);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"OS", 150);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"Browser", 150);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"Browser Ver", 150);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"Device Name", 150);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"CPU", 100);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"nm", 40);
-	this->lvUserAgent->AddColumn((const UTF8Char*)"User Agent", 400);
+	this->lvUserAgent->AddColumn(CSTR("OS"), 150);
+	this->lvUserAgent->AddColumn(CSTR("Browser"), 150);
+	this->lvUserAgent->AddColumn(CSTR("Browser Ver"), 150);
+	this->lvUserAgent->AddColumn(CSTR("Device Name"), 150);
+	this->lvUserAgent->AddColumn(CSTR("CPU"), 100);
+	this->lvUserAgent->AddColumn(CSTR("nm"), 40);
+	this->lvUserAgent->AddColumn(CSTR("User Agent"), 400);
 	this->lvUserAgent->HandleDblClk(OnUserAgentDblClk, this);
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
@@ -235,7 +238,7 @@ void SSWR::AVIRead::AVIRUserAgentSelForm::OnMonitorChanged()
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::AVIRead::AVIRUserAgentSelForm::GetUserAgent()
+Text::CString SSWR::AVIRead::AVIRUserAgentSelForm::GetUserAgent()
 {
-	return this->currUserAgent;
+	return {this->currUserAgent, this->currUserAgentLen};
 }

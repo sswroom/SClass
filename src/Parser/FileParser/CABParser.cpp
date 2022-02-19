@@ -23,7 +23,7 @@ void Parser::FileParser::CABParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.cab", (const UTF8Char*)"CAB File");
+		selector->AddFilter(CSTR("*.cab"), CSTR("CAB File"));
 	}
 }
 

@@ -301,11 +301,10 @@ Net::HTTPClient *Net::HTTPClient::CreateClient(Net::SocketFactory *sockf, Net::S
 	return cli;
 }
 
-Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url, Net::WebUtil::RequestMethod method, Bool kaConn)
+Net::HTTPClient *Net::HTTPClient::CreateConnect(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url, Net::WebUtil::RequestMethod method, Bool kaConn)
 {
-	UOSInt urlLen = Text::StrCharCnt(url);
-	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, Text::StrStartsWithICaseC(url, urlLen, UTF8STRC("HTTPS://")));
-	cli->Connect({url, urlLen}, method, 0, 0, true);
+	Net::HTTPClient *cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, kaConn, url.StartsWithICase(UTF8STRC("HTTPS://")));
+	cli->Connect(url, method, 0, 0, true);
 	return cli;
 }
 

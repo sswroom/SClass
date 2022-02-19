@@ -211,31 +211,31 @@ void __stdcall SSWR::AVIRead::AVIRPackageForm::OnTimerTick(void *userObj)
 			switch (me->fileAction->GetItem(i))
 			{
 			case AT_COPY:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Copy");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Copy"));
 				break;
 			case AT_MOVE:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Move");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Move"));
 				break;
 			case AT_DELETE:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Delete");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Delete"));
 				break;
 			case AT_COPYFAIL:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Copy Failed");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Copy Failed"));
 				break;
 			case AT_MOVEFAIL:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Move Failed");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Move Failed"));
 				break;
 			case AT_DELETEFAIL:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Delete Failed");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Delete Failed"));
 				break;
 			case AT_SUCCEED:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Succeed");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Succeed"));
 				break;
 			case AT_RETRYCOPY:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Retry Copy");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Retry Copy"));
 				break;
 			case AT_RETRYMOVE:
-				me->lvStatus->SetSubItem(k, 1, (const UTF8Char*)"Retry Move");
+				me->lvStatus->SetSubItem(k, 1, CSTR("Retry Move"));
 				break;
 			}
 			i++;
@@ -429,33 +429,33 @@ void SSWR::AVIRead::AVIRPackageForm::DisplayPackFile(IO::PackageFile *packFile)
 			maxWidth = w;
 
 		dt.SetTicks(packFile->GetItemModTimeTick(i));
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		this->lvFiles->SetSubItem(k, 3, sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		this->lvFiles->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		if (pot == IO::PackageFile::POT_STREAMDATA)
 		{
-			this->lvFiles->SetSubItem(k, 1, (const UTF8Char*)"File");
-			Text::StrUInt64(sbuff, packFile->GetItemSize(i));
-			this->lvFiles->SetSubItem(k, 2, sbuff);
+			this->lvFiles->SetSubItem(k, 1, CSTR("File"));
+			sptr = Text::StrUInt64(sbuff, packFile->GetItemSize(i));
+			this->lvFiles->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 			if (packFile->IsCompressed(i))
 			{
-				this->lvFiles->SetSubItem(k, 4, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)).v);
+				this->lvFiles->SetSubItem(k, 4, Data::Compress::Decompressor::GetCompMethName(packFile->GetItemComp(i)));
 			}
 			else
 			{
-				this->lvFiles->SetSubItem(k, 4, (const UTF8Char*)"Uncompressed");
+				this->lvFiles->SetSubItem(k, 4, CSTR("Uncompressed"));
 			}
 		}
 		else if (pot == IO::PackageFile::POT_PACKAGEFILE)
 		{
-			this->lvFiles->SetSubItem(k, 1, (const UTF8Char*)"Folder");
+			this->lvFiles->SetSubItem(k, 1, CSTR("Folder"));
 		}
 		else if (pot == IO::PackageFile::POT_PARSEDOBJECT)
 		{
-			this->lvFiles->SetSubItem(k, 1, (const UTF8Char*)"Object");
+			this->lvFiles->SetSubItem(k, 1, CSTR("Object"));
 		}
 		else
 		{
-			this->lvFiles->SetSubItem(k, 1, (const UTF8Char*)"Unknown");
+			this->lvFiles->SetSubItem(k, 1, CSTR("Unknown"));
 		}
 
 		i++;
@@ -521,11 +521,11 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 	this->tpFiles = this->tcMain->AddTabPage(CSTR("Files"));
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this->tpFiles, UI::GUIListView::LVSTYLE_TABLE, 5));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvFiles->AddColumn((const UTF8Char*)"Item Name", 150);
-	this->lvFiles->AddColumn((const UTF8Char*)"Type", 80);
-	this->lvFiles->AddColumn((const UTF8Char*)"Size", 100);
-	this->lvFiles->AddColumn((const UTF8Char*)"Modify Time", 150);
-	this->lvFiles->AddColumn((const UTF8Char*)"Compression", 100);
+	this->lvFiles->AddColumn(CSTR("Item Name"), 150);
+	this->lvFiles->AddColumn(CSTR("Type"), 80);
+	this->lvFiles->AddColumn(CSTR("Size"), 100);
+	this->lvFiles->AddColumn(CSTR("Modify Time"), 150);
+	this->lvFiles->AddColumn(CSTR("Compression"), 100);
 
 	this->lvFiles->HandleDblClk(LVDblClick, this);
 	DisplayPackFile(this->packFile);
@@ -555,7 +555,7 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		NEW_CLASS(this->pnlStatus, UI::GUIPanel(ui, this->tpStatus));
 		this->pnlStatus->SetRect(0, 0, 100, 48, false);
 		this->pnlStatus->SetDockType(UI::GUIControl::DOCK_TOP);
-		NEW_CLASS(this->lblStatusFile, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Copy From"));
+		NEW_CLASS(this->lblStatusFile, UI::GUILabel(ui, this->pnlStatus, CSTR("Copy From")));
 		this->lblStatusFile->SetRect(0, 0, 100, 23, false);
 		NEW_CLASS(this->txtStatusFile, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusFile->SetRect(100, 0, 800, 23, false);
@@ -563,22 +563,22 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		NEW_CLASS(this->pnlStatusBNT, UI::GUIPanel(ui, this->pnlStatus));
 		this->pnlStatusBNT->SetBGColor(0xffc0c0c0);
 		this->pnlStatusBNT->SetRect(900, 0, 23, 23, false);
-		NEW_CLASS(this->lblStatusFileSize, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"File Size"));
+		NEW_CLASS(this->lblStatusFileSize, UI::GUILabel(ui, this->pnlStatus, CSTR("File Size")));
 		this->lblStatusFileSize->SetRect(0, 24, 100, 23, false);
 		NEW_CLASS(this->txtStatusFileSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusFileSize->SetRect(100, 24, 100, 23, false);
 		this->txtStatusFileSize->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusCurrSize, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Curr Size"));
+		NEW_CLASS(this->lblStatusCurrSize, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Size")));
 		this->lblStatusCurrSize->SetRect(220, 24, 100, 23, false);
 		NEW_CLASS(this->txtStatusCurrSize, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusCurrSize->SetRect(320, 24, 100, 23, false);
 		this->txtStatusCurrSize->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusCurrSpeed, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Curr Speed"));
+		NEW_CLASS(this->lblStatusCurrSpeed, UI::GUILabel(ui, this->pnlStatus, CSTR("Curr Speed")));
 		this->lblStatusCurrSpeed->SetRect(440, 24, 100, 23, false);
 		NEW_CLASS(this->txtStatusCurrSpeed, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusCurrSpeed->SetRect(540, 24, 100, 23, false);
 		this->txtStatusCurrSpeed->SetReadOnly(true);
-		NEW_CLASS(this->lblStatusTimeLeft, UI::GUILabel(ui, this->pnlStatus, (const UTF8Char*)"Time Left"));
+		NEW_CLASS(this->lblStatusTimeLeft, UI::GUILabel(ui, this->pnlStatus, CSTR("Time Left")));
 		this->lblStatusTimeLeft->SetRect(660, 24, 100, 23, false);
 		NEW_CLASS(this->txtStatusTimeLeft, UI::GUITextBox(ui, this->pnlStatus, CSTR("")));
 		this->txtStatusTimeLeft->SetRect(760, 24, 100, 23, false);
@@ -590,8 +590,8 @@ SSWR::AVIRead::AVIRPackageForm::AVIRPackageForm(UI::GUIClientControl *parent, UI
 		NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this->tpStatus, UI::GUIListView::LVSTYLE_TABLE, 2));
 		this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
 		this->lvStatus->SetFullRowSelect(true);
-		this->lvStatus->AddColumn((const UTF8Char*)"Source File", 200);
-		this->lvStatus->AddColumn((const UTF8Char*)"Status", 200);
+		this->lvStatus->AddColumn(CSTR("Source File"), 200);
+		this->lvStatus->AddColumn(CSTR("Status"), 200);
 		this->lvStatus->HandleDblClk(OnStatusDblClick, this);
 
 		this->AddTimer(500, OnTimerTick, this);
@@ -694,7 +694,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					{
 						if (!packFile->CopyTo(selIndices.GetItem(j), dlg->GetFolder()->v, false))
 						{
-							UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in copying", (const UTF8Char*)"Copy To", this);
+							UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
 						}
 						j++;
@@ -717,7 +717,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				{
 					if (!packFile->CopyTo(i, dlg->GetFolder()->v, false))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in copying", (const UTF8Char*)"Copy To", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 						break;
 					}
 					i++;

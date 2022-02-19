@@ -22,7 +22,7 @@ void Parser::FileParser::M2VStmParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.m2v", (const UTF8Char*)"MPEG-2 Video Elemental File");
+		selector->AddFilter(CSTR("*.m2v"), CSTR("MPEG-2 Video Elemental File"));
 	}
 }
 

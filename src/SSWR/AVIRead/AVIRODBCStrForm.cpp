@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnOKClicked(void *userObj)
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Error in opening ODBC connection\r\n"));
 		conn->GetErrorMsg(&sb);
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"ODBC String Connection", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("ODBC String Connection"), me);
 		DEL_CLASS(conn);
 		return;
 	}
@@ -93,7 +93,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, this, (const UTF8Char*)"Driver"));
+	NEW_CLASS(this->lblDriver, UI::GUILabel(ui, this, CSTR("Driver")));
 	this->lblDriver->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->cboDriver, UI::GUIComboBox(ui, this, false));
 	this->cboDriver->SetRect(104, 4, 200, 23, false);
@@ -101,7 +101,7 @@ SSWR::AVIRead::AVIRODBCStrForm::AVIRODBCStrForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->btnDriverInfo, UI::GUIButton(ui, this, CSTR("Info")));
 	this->btnDriverInfo->SetRect(304, 4, 75, 23, false);
 	this->btnDriverInfo->HandleButtonClick(OnDriverInfoClicked, this);
-	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, (const UTF8Char*)"Conn Str"));
+	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, CSTR("Conn Str")));
 	this->lblConnStr->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 28, 800, 23, false);

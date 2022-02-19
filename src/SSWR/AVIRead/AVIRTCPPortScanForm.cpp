@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRTCPPortScanForm::OnTimerTick(void *userObj)
 				cstr = Net::PacketAnalyzerEthernet::TCPPortGetName(port);
 				if (cstr.v)
 				{
-					me->lvPort->SetSubItem(i, 1, cstr.v);
+					me->lvPort->SetSubItem(i, 1, cstr);
 				}
 				i++;
 			}
@@ -107,15 +107,15 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
 	this->pnlControl->SetRect(0, 0, 100, 79, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"IP"));
+	NEW_CLASS(this->lblIP, UI::GUILabel(ui, this->pnlControl, CSTR("IP")));
 	this->lblIP->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtIP, UI::GUITextBox(ui, this->pnlControl, CSTR("127.0.0.1")));
 	this->txtIP->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Thread Cnt"));
+	NEW_CLASS(this->lblThreadCnt, UI::GUILabel(ui, this->pnlControl, CSTR("Thread Cnt")));
 	this->lblThreadCnt->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtThreadCnt, UI::GUITextBox(ui, this->pnlControl, CSTR("20")));
 	this->txtThreadCnt->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->lblMaxPort, UI::GUILabel(ui, this->pnlControl, (const UTF8Char*)"Max Port"));
+	NEW_CLASS(this->lblMaxPort, UI::GUILabel(ui, this->pnlControl, CSTR("Max Port")));
 	this->lblMaxPort->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->txtMaxPort, UI::GUITextBox(ui, this->pnlControl, CSTR("65535")));
 	this->txtMaxPort->SetRect(104, 52, 100, 23, false);
@@ -126,8 +126,8 @@ SSWR::AVIRead::AVIRTCPPortScanForm::AVIRTCPPortScanForm(UI::GUIClientControl *pa
 	this->lvPort->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvPort->SetFullRowSelect(true);
 	this->lvPort->SetShowGrid(true);
-	this->lvPort->AddColumn((const UTF8Char*)"Port", 80);
-	this->lvPort->AddColumn((const UTF8Char*)"Name", 200);
+	this->lvPort->AddColumn(CSTR("Port"), 80);
+	this->lvPort->AddColumn(CSTR("Name"), 200);
 	
 	this->AddTimer(1000, OnTimerTick, this);
 }

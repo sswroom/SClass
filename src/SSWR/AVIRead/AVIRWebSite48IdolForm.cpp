@@ -29,11 +29,11 @@ void __stdcall SSWR::AVIRead::AVIRWebSite48IdolForm::OnRequestPageClicked(void *
 			sptr = Text::StrInt32(sbuff, item->id);
 			me->lvItems->AddItem(CSTRP(sbuff, sptr), 0);
 			dt.SetTicks(item->recTime);
-			dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-			me->lvItems->SetSubItem(i, 1, sbuff);
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+			me->lvItems->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			sb.ClearStr();
 			Net::WebSite::WebSite48IdolControl::Title2DisplayName(item->title, &sb);
-			me->lvItems->SetSubItem(i, 2, sb.ToString());
+			me->lvItems->SetSubItem(i, 2, sb.ToCString());
 			i++;
 		}
 		me->ctrl->FreeItems(&itemList);
@@ -102,7 +102,7 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this->tpItems));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPageNo, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"PageNo"));
+	NEW_CLASS(this->lblPageNo, UI::GUILabel(ui, this->pnlRequest, CSTR("PageNo")));
 	this->lblPageNo->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtPageNo, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtPageNo->SetRect(104, 4, 60, 23, false);
@@ -113,33 +113,33 @@ SSWR::AVIRead::AVIRWebSite48IdolForm::AVIRWebSite48IdolForm(UI::GUIClientControl
 	this->lvItems->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvItems->SetFullRowSelect(true);
 	this->lvItems->SetShowGrid(true);
-	this->lvItems->AddColumn((const UTF8Char*)"Id", 60);
-	this->lvItems->AddColumn((const UTF8Char*)"Date", 120);
-	this->lvItems->AddColumn((const UTF8Char*)"Title", 600);
+	this->lvItems->AddColumn(CSTR("Id"), 60);
+	this->lvItems->AddColumn(CSTR("Date"), 120);
+	this->lvItems->AddColumn(CSTR("Title"), 600);
 
 	this->tpDownloadLink = this->tcMain->AddTabPage(CSTR("Download Link"));
-	NEW_CLASS(this->lblVideoId, UI::GUILabel(ui, this->tpDownloadLink, (const UTF8Char*)"VideoId"));
+	NEW_CLASS(this->lblVideoId, UI::GUILabel(ui, this->tpDownloadLink, CSTR("VideoId")));
 	this->lblVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtVideoId, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
 	this->txtVideoId->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnDownloadLink, UI::GUIButton(ui, this->tpDownloadLink, CSTR("Get Link")));
 	this->btnDownloadLink->SetRect(204, 4, 75, 23, false);
 	this->btnDownloadLink->HandleButtonClick(OnDownloadLinkClicked, this);
-	NEW_CLASS(this->lblDownloadLink, UI::GUILabel(ui, this->tpDownloadLink, (const UTF8Char*)"Link"));
+	NEW_CLASS(this->lblDownloadLink, UI::GUILabel(ui, this->tpDownloadLink, CSTR("Link")));
 	this->lblDownloadLink->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtDownloadLink, UI::GUITextBox(ui, this->tpDownloadLink, CSTR("")));
 	this->txtDownloadLink->SetRect(104, 28, 500, 23, false);
 	this->txtDownloadLink->SetReadOnly(true);
 
 	this->tpVideoName = this->tcMain->AddTabPage(CSTR("Video Name"));
-	NEW_CLASS(this->lblNameVideoId, UI::GUILabel(ui, this->tpVideoName, (const UTF8Char*)"VideoId"));
+	NEW_CLASS(this->lblNameVideoId, UI::GUILabel(ui, this->tpVideoName, CSTR("VideoId")));
 	this->lblNameVideoId->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtNameVideoId, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));
 	this->txtNameVideoId->SetRect(104, 4, 100, 23, false);
 	NEW_CLASS(this->btnVideoName, UI::GUIButton(ui, this->tpVideoName, CSTR("Get Name")));
 	this->btnVideoName->SetRect(204, 4, 75, 23, false);
 	this->btnVideoName->HandleButtonClick(OnVideoNameClicked, this);
-	NEW_CLASS(this->lblVideoName, UI::GUILabel(ui, this->tpVideoName, (const UTF8Char*)"Video Name"));
+	NEW_CLASS(this->lblVideoName, UI::GUILabel(ui, this->tpVideoName, CSTR("Video Name")));
 	this->lblVideoName->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtVideoName, UI::GUITextBox(ui, this->tpVideoName, CSTR("")));
 	this->txtVideoName->SetRect(104, 28, 500, 23, false);

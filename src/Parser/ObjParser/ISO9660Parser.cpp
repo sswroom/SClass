@@ -25,8 +25,8 @@ void Parser::ObjParser::ISO9660Parser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.iso", (const UTF8Char*)"CD/DVD Image File");
-		selector->AddFilter((const UTF8Char*)"*.img", (const UTF8Char*)"CD/DVD Image File");
+		selector->AddFilter(CSTR("*.iso"), CSTR("CD/DVD Image File"));
+		selector->AddFilter(CSTR("*.img"), CSTR("CD/DVD Image File"));
 	}
 }
 

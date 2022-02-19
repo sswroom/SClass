@@ -1463,31 +1463,31 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	NEW_CLASS(this->pbColor, UI::GUIPictureBox(ui, this, eng, true, false));
 	this->pbColor->SetRect(604, 16, 112, 112, false);
 
-	NEW_CLASS(this->radR, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Red", true));
+	NEW_CLASS(this->radR, UI::GUIRadioButton(ui, this, CSTR("Red"), true));
 	this->radR->SetRect(604, 164, 64, 23, false);
 	this->radR->HandleSelectedChange(OnRedChange, this);
-	NEW_CLASS(this->radG, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Green", false));
+	NEW_CLASS(this->radG, UI::GUIRadioButton(ui, this, CSTR("Green"), false));
 	this->radG->SetRect(604, 188, 64, 23, false);
 	this->radG->HandleSelectedChange(OnGreenChange, this);
-	NEW_CLASS(this->radB, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Blue", false));
+	NEW_CLASS(this->radB, UI::GUIRadioButton(ui, this, CSTR("Blue"), false));
 	this->radB->SetRect(604, 212, 64, 23, false);
 	this->radB->HandleSelectedChange(OnBlueChange, this);
-	NEW_CLASS(this->radYIQY, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Y", false));
+	NEW_CLASS(this->radYIQY, UI::GUIRadioButton(ui, this, CSTR("Y"), false));
 	this->radYIQY->SetRect(604, 260, 64, 23, false);
 	this->radYIQY->HandleSelectedChange(OnYIQYChange, this);
-	NEW_CLASS(this->radYIQI, UI::GUIRadioButton(ui, this, (const UTF8Char*)"I", false));
+	NEW_CLASS(this->radYIQI, UI::GUIRadioButton(ui, this, CSTR("I"), false));
 	this->radYIQI->SetRect(604, 284, 64, 23, false);
 	this->radYIQI->HandleSelectedChange(OnYIQIChange, this);
-	NEW_CLASS(this->radYIQQ, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Q", false));
+	NEW_CLASS(this->radYIQQ, UI::GUIRadioButton(ui, this, CSTR("Q"), false));
 	this->radYIQQ->SetRect(604, 308, 64, 23, false);
 	this->radYIQQ->HandleSelectedChange(OnYIQQChange, this);
-	NEW_CLASS(this->radHSVH, UI::GUIRadioButton(ui, this, (const UTF8Char*)"H", false));
+	NEW_CLASS(this->radHSVH, UI::GUIRadioButton(ui, this, CSTR("H"), false));
 	this->radHSVH->SetRect(604, 356, 64, 23, false);
 	this->radHSVH->HandleSelectedChange(OnHSVHChange, this);
-	NEW_CLASS(this->radHSVS, UI::GUIRadioButton(ui, this, (const UTF8Char*)"S", false));
+	NEW_CLASS(this->radHSVS, UI::GUIRadioButton(ui, this, CSTR("S"), false));
 	this->radHSVS->SetRect(604, 380, 64, 23, false);
 	this->radHSVS->HandleSelectedChange(OnHSVSChange, this);
-	NEW_CLASS(this->radHSVV, UI::GUIRadioButton(ui, this, (const UTF8Char*)"V", false));
+	NEW_CLASS(this->radHSVV, UI::GUIRadioButton(ui, this, CSTR("V"), false));
 	this->radHSVV->SetRect(604, 404, 64, 23, false);
 	this->radHSVV->HandleSelectedChange(OnHSVVChange, this);
 
@@ -1519,12 +1519,12 @@ UtilUI::ColorDialog::ColorDialog(UI::GUIClientControl *parent, UI::GUICore *ui, 
 	this->txtHSVV->SetRect(668, 404, 48, 23, false);
 	this->txtHSVV->HandleTextChanged(OnHSVVTChange, this);
 
-	NEW_CLASS(this->lblTrans, UI::GUILabel(ui, this, (const UTF8Char*)"RGB Transfer Func"));
+	NEW_CLASS(this->lblTrans, UI::GUILabel(ui, this, CSTR("RGB Transfer Func")));
 	this->lblTrans->SetRect(16, 546, 150, 23, false);
 	NEW_CLASS(this->txtTrans, UI::GUITextBox(ui, this, Media::CS::TransferFunc::GetTransferFuncName(this->colorProfile->GetRTranParam()->GetTranType())));
 	this->txtTrans->SetRect(166, 546, 100, 23, false);
 	this->txtTrans->SetReadOnly(true);
-	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, this, (const UTF8Char*)"RGB Primaries"));
+	NEW_CLASS(this->lblPrimaries, UI::GUILabel(ui, this, CSTR("RGB Primaries")));
 	this->lblPrimaries->SetRect(16, 570, 150, 23, false);
 	NEW_CLASS(this->txtPrimaries, UI::GUITextBox(ui, this, Media::ColorProfile::ColorTypeGetName(this->colorProfile->GetPrimaries()->colorType)));
 	this->txtPrimaries->SetRect(166, 570, 100, 23, false);

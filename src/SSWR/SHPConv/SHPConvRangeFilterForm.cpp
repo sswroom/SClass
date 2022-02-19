@@ -18,39 +18,39 @@ void __stdcall SSWR::SHPConv::SHPConvRangeFilterForm::OnOKClicked(void *userObj)
 	me->txtX1->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &x1))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input values", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtY1->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &y1))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input values", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtX2->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &x2))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input values", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 	sb.ClearStr();
 	me->txtY2->GetText(&sb);
 	if (!Text::StrToDouble(sb.ToString(), &y2))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid input values", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid input values"), CSTR("Error"), me);
 		return;
 	}
 
 	if (x1 >= x2)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"X value is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("X value is not valid"), CSTR("Error"), me);
 		return;
 	}
 	if (y1 >= y2)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Y value is not valid", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Y value is not valid"), CSTR("Error"), me);
 		return;
 	}
 	Int32 typ;
@@ -82,25 +82,25 @@ SSWR::SHPConv::SHPConvRangeFilterForm::SHPConvRangeFilterForm(UI::GUIClientContr
 	this->deng = deng;
 	this->filter = 0;
 	
-	NEW_CLASS(this->radInRange, UI::GUIRadioButton(ui, this, (const UTF8Char*)"In Range", true));
+	NEW_CLASS(this->radInRange, UI::GUIRadioButton(ui, this, CSTR("In Range"), true));
 	this->radInRange->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->radOutRange, UI::GUIRadioButton(ui, this, (const UTF8Char*)"Out Range", false));
+	NEW_CLASS(this->radOutRange, UI::GUIRadioButton(ui, this, CSTR("Out Range"), false));
 	this->radOutRange->SetRect(112, 8, 100, 23, false);
-	NEW_CLASS(this->lblX1, UI::GUILabel(ui, this, (const UTF8Char*)"X"));
+	NEW_CLASS(this->lblX1, UI::GUILabel(ui, this, CSTR("X")));
 	this->lblX1->SetRect(8, 32, 16, 23, false);
 	NEW_CLASS(this->txtX1, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtX1->SetRect(24, 32, 80, 20, false);
-	NEW_CLASS(this->lblY1, UI::GUILabel(ui, this, (const UTF8Char*)"Y"));
+	NEW_CLASS(this->lblY1, UI::GUILabel(ui, this, CSTR("Y")));
 	this->lblY1->SetRect(112, 32, 16, 23, false);
 	NEW_CLASS(this->txtY1, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtY1->SetRect(128, 32, 80, 20, false);
 	NEW_CLASS(this->pbBox, UI::GUIPictureBoxSimple(ui, this, this->deng, true));
 	this->pbBox->SetRect(56, 64, 216, 96, false);
-	NEW_CLASS(this->lblX2, UI::GUILabel(ui, this, (const UTF8Char*)"X"));
+	NEW_CLASS(this->lblX2, UI::GUILabel(ui, this, CSTR("X")));
 	this->lblX2->SetRect(144, 176, 16, 23, false);
 	NEW_CLASS(this->txtX2, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtX2->SetRect(160, 176, 80, 20, false);
-	NEW_CLASS(this->lblY2, UI::GUILabel(ui, this, (const UTF8Char*)"Y"));
+	NEW_CLASS(this->lblY2, UI::GUILabel(ui, this, CSTR("Y")));
 	this->lblY2->SetRect(248, 176, 16, 23, false);
 	NEW_CLASS(this->txtY2, UI::GUITextBox(ui, this, CSTR("0")));
 	this->txtY2->SetRect(264, 176, 80, 20, false);

@@ -11,13 +11,13 @@ namespace Media
 		AudioFormat format;
 		UInt64 sampleCnt;
 
-		const UTF8Char *name;
+		Text::String *name;
 		UInt64 readOfst;
 		UInt64 currSample;
 		Sync::Event *readEvt;
 
 	public:
-		SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bitCount, const UTF8Char *name, UInt64 sampleCnt);
+		SilentSource(UInt32 sampleRate, UInt16 nChannels, UInt16 bitCount, Text::CString name, UInt64 sampleCnt);
 		virtual ~SilentSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

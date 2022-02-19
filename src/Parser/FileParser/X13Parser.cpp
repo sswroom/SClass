@@ -23,7 +23,7 @@ void Parser::FileParser::X13Parser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.x13", (const UTF8Char*)"X13 (Hooligans) Package File");
+		selector->AddFilter(CSTR("*.x13"), CSTR("X13 (Hooligans) Package File"));
 	}
 }
 

@@ -43,7 +43,7 @@ namespace UI
 
 		void AddSample(Double *samples);
 		void SetLineColor(UOSInt lineId, UInt32 lineColor);
-		void SetUnit(const UTF8Char *unit);
+		void SetUnit(Text::CString unit);
 		void SetBGColor(UInt32 lineColor);
 		void SetFontColor(UInt32 fontColor);
 		void ClearChart();

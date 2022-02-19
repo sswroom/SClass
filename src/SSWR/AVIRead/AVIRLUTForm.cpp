@@ -39,8 +39,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 0;
 				while (i < outputCh)
 				{
-					Text::StrUInt32(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, 1, sbuff);
+					sptr = Text::StrUInt32(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, 1, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -61,8 +61,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 1;
 				while (i < outputCh)
 				{
-					Text::StrUInt32(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, i, sbuff);
+					sptr = Text::StrUInt32(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, i, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -84,8 +84,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 0;
 				while (i < outputCh)
 				{
-					Text::StrUInt32(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, i + 1, sbuff);
+					sptr = Text::StrUInt32(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, i + 1, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -106,8 +106,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 0;
 				while (i < outputCh)
 				{
-					Text::StrUInt32(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, i + 1, sbuff);
+					sptr = Text::StrUInt32(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, i + 1, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -129,8 +129,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 0;
 				while (i < outputCh)
 				{
-					Text::StrDouble(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, i + 1, sbuff);
+					sptr = Text::StrDouble(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, i + 1, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -151,8 +151,8 @@ void SSWR::AVIRead::AVIRLUTForm::UpdateValues()
 				i = 0;
 				while (i < outputCh)
 				{
-					Text::StrDouble(sbuff, values[i]);
-					this->lvValues->SetSubItem(j, i + 1, sbuff);
+					sptr = Text::StrDouble(sbuff, values[i]);
+					this->lvValues->SetSubItem(j, i + 1, CSTRP(sbuff, sptr));
 					i++;
 				}
 				
@@ -182,7 +182,7 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->pnlInfo, UI::GUIPanel(ui, this->tpInfo));
 	this->pnlInfo->SetRect(0, 0, 100, 36, false);
 	this->pnlInfo->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->pnlInfo, (const UTF8Char*)"File Name"));
+	NEW_CLASS(this->lblFileName, UI::GUILabel(ui, this->pnlInfo, CSTR("File Name")));
 	this->lblFileName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFileName, UI::GUITextBox(ui, this->pnlInfo, CSTR("")));
 	this->txtFileName->SetRect(104, 4, 500, 23, false);
@@ -202,14 +202,14 @@ SSWR::AVIRead::AVIRLUTForm::AVIRLUTForm(UI::GUIClientControl *parent, UI::GUICor
 	this->lvValues->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvValues->SetFullRowSelect(true);
 
-	this->lvValues->AddColumn((const UTF8Char*)"Input", 60);
+	this->lvValues->AddColumn(CSTR("Input"), 60);
 	i = 0;
 	j = this->lut->GetInputCh();
 	while (i < j)
 	{
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Channel ")), i);
 		this->cboChannels->AddItem(CSTRP(sbuff, sptr), (void*)i);
-		this->lvValues->AddColumn(sbuff, 60);
+		this->lvValues->AddColumn(CSTRP(sbuff, sptr), 60);
 		i++;
 	}
 	this->cboChannels->AddItem(CSTR("All Channels"), (void*)-1);

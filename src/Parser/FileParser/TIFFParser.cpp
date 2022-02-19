@@ -47,8 +47,8 @@ void Parser::FileParser::TIFFParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tif", (const UTF8Char*)"TIFF File");
-		selector->AddFilter((const UTF8Char*)"*.tiff", (const UTF8Char*)"TIFF File");
+		selector->AddFilter(CSTR("*.tif"), CSTR("TIFF File"));
+		selector->AddFilter(CSTR("*.tiff"), CSTR("TIFF File"));
 	}
 }
 

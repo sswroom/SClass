@@ -23,7 +23,7 @@ void Parser::FileParser::SQLiteParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ReadingDB)
 	{
-		selector->AddFilter((const UTF8Char*)"*.sqlite", (const UTF8Char*)"SQLite File");
+		selector->AddFilter(CSTR("*.sqlite"), CSTR("SQLite File"));
 	}
 }
 

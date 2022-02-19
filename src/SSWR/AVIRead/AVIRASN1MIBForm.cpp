@@ -19,8 +19,8 @@ void __stdcall SSWR::AVIRead::AVIRASN1MIBForm::OnBrowseClicked(void *userObj)
 	UI::FileDialog *dlg;
 	me->txtFile->GetText(&sb);
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"ASN1MIB", false));
-	dlg->AddFilter((const UTF8Char*)"*.asn", (const UTF8Char*)"ASN.1 MIB File");
-	dlg->AddFilter((const UTF8Char*)"*.mib", (const UTF8Char*)"MIB file");
+	dlg->AddFilter(CSTR("*.asn"), CSTR("ASN.1 MIB File"));
+	dlg->AddFilter(CSTR("*.mib"), CSTR("MIB file"));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		me->LoadFile(dlg->GetFileName()->ToCString());
@@ -59,7 +59,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"SNMP MIB", this);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("SNMP MIB"), this);
 	}
 	this->lvObjects->ClearItems();
 	this->lvOID->ClearItems();
@@ -82,7 +82,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		{
 			sb.ClearStr();
 			Net::ASN1Util::OIDToString(obj->oid, obj->oidLen, &sb);
-			this->lvObjects->SetSubItem(i, 1, sb.ToString());
+			this->lvObjects->SetSubItem(i, 1, sb.ToCString());
 		}
 		if (obj->typeName)
 		{
@@ -106,7 +106,7 @@ void SSWR::AVIRead::AVIRASN1MIBForm::LoadFile(Text::CString fileName)
 		Net::ASN1OIDDB::OIDInfo *entry = Net::ASN1OIDDB::OIDGetEntry(obj->oid, obj->oidLen);
 		if (entry)
 		{
-			this->lvOID->SetSubItem(i, 1, (const UTF8Char*)entry->name);
+			this->lvOID->SetSubItem(i, 1, Text::CString::FromPtr((const UTF8Char*)entry->name));
 		}
 		this->lvOID->SetSubItem(i, 2, obj->objectName);
 
@@ -128,7 +128,7 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->pnlRequest, UI::GUIPanel(ui, this));
 	this->pnlRequest->SetRect(0, 0, 100, 31, false);
 	this->pnlRequest->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlRequest, (const UTF8Char*)"MIB File"));
+	NEW_CLASS(this->lblFile, UI::GUILabel(ui, this->pnlRequest, CSTR("MIB File")));
 	this->lblFile->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtFile, UI::GUITextBox(ui, this->pnlRequest, CSTR("")));
 	this->txtFile->SetRect(104, 4, 500, 23, false);
@@ -145,17 +145,17 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvObjectsVal->SetDockType(UI::GUIControl::DOCK_BOTTOM);
 	this->lvObjectsVal->SetShowGrid(true);
 	this->lvObjectsVal->SetFullRowSelect(true);
-	this->lvObjectsVal->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvObjectsVal->AddColumn((const UTF8Char*)"Value", 600);
+	this->lvObjectsVal->AddColumn(CSTR("Name"), 200);
+	this->lvObjectsVal->AddColumn(CSTR("Value"), 600);
 	NEW_CLASS(this->vspObjects, UI::GUIVSplitter(ui, this->tpObjects, 3, true));
 	NEW_CLASS(this->lvObjects, UI::GUIListView(ui, this->tpObjects, UI::GUIListView::LVSTYLE_TABLE, 4));
 	this->lvObjects->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvObjects->SetShowGrid(true);
 	this->lvObjects->SetFullRowSelect(true);
-	this->lvObjects->AddColumn((const UTF8Char*)"Name", 200);
-	this->lvObjects->AddColumn((const UTF8Char*)"OID", 200);
-	this->lvObjects->AddColumn((const UTF8Char*)"Type", 200);
-	this->lvObjects->AddColumn((const UTF8Char*)"Value", 200);
+	this->lvObjects->AddColumn(CSTR("Name"), 200);
+	this->lvObjects->AddColumn(CSTR("OID"), 200);
+	this->lvObjects->AddColumn(CSTR("Type"), 200);
+	this->lvObjects->AddColumn(CSTR("Value"), 200);
 	this->lvObjects->HandleSelChg(OnObjectsSelChg, this);
 
 	this->tpOID = this->tcMain->AddTabPage(CSTR("OID"));
@@ -163,9 +163,9 @@ SSWR::AVIRead::AVIRASN1MIBForm::AVIRASN1MIBForm(UI::GUIClientControl *parent, UI
 	this->lvOID->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvOID->SetShowGrid(true);
 	this->lvOID->SetFullRowSelect(true);
-	this->lvOID->AddColumn((const UTF8Char*)"OID", 200);
-	this->lvOID->AddColumn((const UTF8Char*)"DB Name", 200);
-	this->lvOID->AddColumn((const UTF8Char*)"Name", 200);
+	this->lvOID->AddColumn(CSTR("OID"), 200);
+	this->lvOID->AddColumn(CSTR("DB Name"), 200);
+	this->lvOID->AddColumn(CSTR("Name"), 200);
 
 	this->tpOIDText = this->tcMain->AddTabPage(CSTR("OIDText"));
 	NEW_CLASS(this->txtOIDText, UI::GUITextBox(ui, this->tpOIDText, CSTR(""), true));

@@ -39,22 +39,22 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	me->txtKey->GetText(&sbKey);
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter name", (const UTF8Char*)"One-Time Password (OTP)", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter name"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (sbKey.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter key", (const UTF8Char*)"One-Time Password (OTP)", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter key"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (sbKey.GetLength() > 32)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Key is too long", (const UTF8Char*)"One-Time Password (OTP)", me);
+		UI::MessageDialog::ShowDialog(CSTR("Key is too long"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 	if (!Text::TextBinEnc::Base32Enc::IsValid(sbKey.ToString()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Key is not valid", (const UTF8Char*)"One-Time Password (OTP)", me);
+		UI::MessageDialog::ShowDialog(CSTR("Key is not valid"), CSTR("One-Time Password (OTP)"), me);
 		return;
 	}
 
@@ -78,19 +78,20 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnNewClicked(void *userObj)
 	}
 	me->entryList->Add(entry);
 	UOSInt i = me->lvEntry->AddItem(entry->name, entry);
-	me->lvEntry->SetSubItem(i, 1, (const UTF8Char*)"-");
+	me->lvEntry->SetSubItem(i, 1, CSTR("-"));
 }
 
 void __stdcall SSWR::AVIRead::AVIROTPForm::OnEntryDblClicked(void *userObj, UOSInt index)
 {
 	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	EntryInfo *entry = me->entryList->GetItem(index);
 	if (entry->otp->GetType() == Crypto::OTP::OTPType::HOTP)
 	{
-		entry->otp->CodeString(sbuff, entry->otp->NextCode());
+		sptr = entry->otp->CodeString(sbuff, entry->otp->NextCode());
 		entry->lastCounter = entry->otp->GetCounter();
-		me->lvEntry->SetSubItem(index, 1, sbuff);
+		me->lvEntry->SetSubItem(index, 1, CSTRP(sbuff, sptr));
 	}
 }
 
@@ -98,6 +99,7 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(void *userObj)
 {
 	SSWR::AVIRead::AVIROTPForm *me = (SSWR::AVIRead::AVIROTPForm*)userObj;
 	UTF8Char sbuff[16];
+	UTF8Char *sptr;
 	EntryInfo *entry;
 	UOSInt i = me->entryList->GetCount();
 	while (i-- > 0)
@@ -105,9 +107,9 @@ void __stdcall SSWR::AVIRead::AVIROTPForm::OnTimerTick(void *userObj)
 		entry = me->entryList->GetItem(i);
 		if (entry->lastCounter != entry->otp->GetCounter())
 		{
-			entry->otp->CodeString(sbuff, entry->otp->NextCode());
+			sptr = entry->otp->CodeString(sbuff, entry->otp->NextCode());
 			entry->lastCounter = entry->otp->GetCounter();
-			me->lvEntry->SetSubItem(i, 1, sbuff);
+			me->lvEntry->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 		}
 	}
 }
@@ -122,14 +124,14 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->grpNew, UI::GUIGroupBox(ui, this, (const UTF8Char*)"New Entry"));
+	NEW_CLASS(this->grpNew, UI::GUIGroupBox(ui, this, CSTR("New Entry")));
 	this->grpNew->SetRect(0, 0, 100, 112, false);
 	this->grpNew->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this->grpNew, CSTR("Name")));
 	this->lblName->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtName->SetRect(104, 4, 150, 23, false);
-	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Key"));
+	NEW_CLASS(this->lblKey, UI::GUILabel(ui, this->grpNew, CSTR("Key")));
 	this->lblKey->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->txtKey, UI::GUITextBox(ui, this->grpNew, CSTR("")));
 	this->txtKey->SetRect(104, 28, 300, 23, false);
@@ -139,7 +141,7 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	NEW_CLASS(this->btnKeyRand160, UI::GUIButton(ui, this->grpNew, CSTR("Random 160-bit")));
 	this->btnKeyRand160->SetRect(484, 28, 75, 23, false);
 	this->btnKeyRand160->HandleButtonClick(OnKeyRand160Clicked, this);
-	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblType, UI::GUILabel(ui, this->grpNew, CSTR("Type")));
 	this->lblType->SetRect(4, 52, 100, 23, false);
 	NEW_CLASS(this->cboType, UI::GUIComboBox(ui, this->grpNew, false));
 	this->cboType->SetRect(104, 52, 150, 23, false);
@@ -151,8 +153,8 @@ SSWR::AVIRead::AVIROTPForm::AVIROTPForm(UI::GUIClientControl *parent, UI::GUICor
 	this->btnNew->HandleButtonClick(OnNewClicked, this);
 	NEW_CLASS(this->lvEntry, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvEntry->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvEntry->AddColumn((const UTF8Char*)"Name", 150);
-	this->lvEntry->AddColumn((const UTF8Char*)"Code", 100);
+	this->lvEntry->AddColumn(CSTR("Name"), 150);
+	this->lvEntry->AddColumn(CSTR("Code"), 100);
 	this->lvEntry->HandleDblClk(OnEntryDblClicked, this);
 
 	this->AddTimer(1000, OnTimerTick, this);

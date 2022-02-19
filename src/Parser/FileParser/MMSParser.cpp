@@ -22,7 +22,7 @@ void Parser::FileParser::MMSParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mms", (const UTF8Char*)"MMS File");
+		selector->AddFilter(CSTR("*.mms"), CSTR("MMS File"));
 	}
 }
 
