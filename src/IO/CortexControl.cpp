@@ -11,8 +11,8 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 {
 	IO::CortexControl *me = (IO::CortexControl *)userObj;
 	UInt8 buff[260];
-	OSInt buffSize = 0;
-	OSInt recvSize;
+	UOSInt buffSize = 0;
+	UOSInt recvSize;
 	if (me->errWriter) me->errWriter->WriteLineC(UTF8STRC("Thread started"));
 	me->recvRunning = true;
 	while (!me->recvToStop)
@@ -57,7 +57,7 @@ UInt32 __stdcall IO::CortexControl::RecvThread(void *userObj)
 	return 0;
 }
 
-IO::CortexControl::CortexControl(Int32 portNum, IO::Writer *errWriter)
+IO::CortexControl::CortexControl(UOSInt portNum, IO::Writer *errWriter)
 {
 	this->stm = 0;
 	this->protoHdlr = 0;
@@ -76,7 +76,7 @@ IO::CortexControl::CortexControl(Int32 portNum, IO::Writer *errWriter)
 	}
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoCortexHandler(this));
 	NEW_CLASS(this->sendMut, Sync::Mutex());
-	NEW_CLASS(this->sendEvt, Sync::Event(true, (const UTF8Char*)"IO.CortexControl.sendEvt"));
+	NEW_CLASS(this->sendEvt, Sync::Event(true));
 
 	Sync::Thread::Create(RecvThread, this);
 }
@@ -225,7 +225,7 @@ void IO::CortexControl::DataSkipped(IO::Stream *stm, void *stmObj, const UInt8 *
 Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -262,7 +262,7 @@ Bool IO::CortexControl::GetFWVersion(Int32 *majorVer, Int32 *minorVer)
 Bool IO::CortexControl::ReadDIO(Int32 *dioValues)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -299,7 +299,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 {
 	UInt8 buff[16];
 	UInt8 cmd[2];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -323,7 +323,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -336,7 +336,7 @@ Bool IO::CortexControl::WriteDIO(Int32 outVal, Int32 outMask)
 Bool IO::CortexControl::ReadVin(Int32 *voltage)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -358,7 +358,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -372,7 +372,7 @@ Bool IO::CortexControl::ReadVin(Int32 *voltage)
 Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -394,7 +394,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -408,7 +408,7 @@ Bool IO::CortexControl::ReadVBatt(Int32 *voltage)
 Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -430,7 +430,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -444,7 +444,7 @@ Bool IO::CortexControl::ReadOdometerCounter(Int32 *odoCount)
 Bool IO::CortexControl::ResetOdometerCounter()
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -466,7 +466,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -479,7 +479,7 @@ Bool IO::CortexControl::ResetOdometerCounter()
 Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -501,7 +501,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -515,7 +515,7 @@ Bool IO::CortexControl::ReadEnvBrightness(Int32 *brightness)
 Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -537,7 +537,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -551,7 +551,7 @@ Bool IO::CortexControl::ReadTemperature(Int32 *temperature)
 Bool IO::CortexControl::PowerOff()
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -573,7 +573,7 @@ Bool IO::CortexControl::PowerOff()
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -587,7 +587,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 {
 	UInt8 buff[16];
 	UInt8 cmd;
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -610,7 +610,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{
@@ -623,7 +623,7 @@ Bool IO::CortexControl::HDACodecPower(Bool turnOn)
 Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 {
 	UInt8 buff[16];
-	OSInt packetSize;
+	UOSInt packetSize;
 	Manage::HiResClock clk;
 	Double t;
 	Bool succ = false;
@@ -645,7 +645,7 @@ Bool IO::CortexControl::SetWatchdogTimeout(UInt8 timeout)
 		t = clk.GetTimeDiff();
 		if (t > 2)
 			break;
-		this->sendEvt->Wait(Double2Int32((2 - t) * 1000));
+		this->sendEvt->Wait((UInt32)Double2Int32((2 - t) * 1000));
 	}
 	if (this->sendHasResult)
 	{

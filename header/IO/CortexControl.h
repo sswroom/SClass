@@ -27,7 +27,7 @@ namespace IO
 
 		static UInt32 __stdcall RecvThread(void *userObj);
 	public:
-		CortexControl(Int32 portNum, IO::Writer *errWriter);
+		CortexControl(UOSInt portNum, IO::Writer *errWriter);
 		virtual ~CortexControl();
 
 		Bool IsError();

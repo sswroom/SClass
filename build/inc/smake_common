@@ -1505,6 +1505,8 @@ IO/ConfigFile.h: ../../src/IO/ConfigFile.cpp
 @ConfigFile.o
 IO/ConsoleInput.h: ../../src/IO/ConsoleInput.cpp
 @ConsoleInput.o
+IO/CortexControl.h: ../../src/IO/CortexControl.cpp
+@CortexControl.o
 IO/CyclicLogBuffer.h: ../../src/IO/CyclicLogBuffer.cpp
 @CyclicLogBuffer.o
 IO/DeviceDB.h: ../../src/IO/DeviceDB.cpp
@@ -1747,6 +1749,8 @@ IO/ProtoDec/TK109ProtocolDecoder.h: ../../src/IO/ProtoDec/TK109ProtocolDecoder.c
 @TK109ProtocolDecoder.o
 IO/ProtoDec/TSProtocolDecoder.h: ../../src/IO/ProtoDec/TSProtocolDecoder.cpp
 @TSProtocolDecoder.o
+IO/ProtoHdlr/ProtoCortexHandler.h: ../../src/IO/ProtoHdlr/ProtoCortexHandler.cpp
+@ProtoCortexHandler.o
 IO/ProtoHdlr/ProtoDUploadHandler.h: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
 @ProtoDUploadHandler.o
 IO/ProtoHdlr/ProtoGPSDevInfoHandler.h: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
@@ -4167,7 +4171,6 @@ NullWriter.o: ../../src/IO/NullWriter.cpp
 OneWireGPIO.o: ../../src/IO/OneWireGPIO.cpp
 PackageFile.o: ../../src/IO/PackageFile.cpp
 ParsedObject.o: ../../src/IO/ParsedObject.cpp
-ProtoCortexHandler.o: ../../src/IO/ProtoCortexHandler.cpp
 RadioSignalLogger.o: ../../src/IO/RadioSignalLogger.cpp
 RAWMonitor.o: ../../src/IO/RAWMonitor.cpp
 RS232GPIO.o: ../../src/IO/RS232GPIO.cpp
@@ -4243,6 +4246,7 @@ JTT808ProtocolDecoder.o: ../../src/IO/ProtoDec/JTT808ProtocolDecoder.cpp
 ProtoDecList.o: ../../src/IO/ProtoDec/ProtoDecList.cpp
 TK109ProtocolDecoder.o: ../../src/IO/ProtoDec/TK109ProtocolDecoder.cpp
 TSProtocolDecoder.o: ../../src/IO/ProtoDec/TSProtocolDecoder.cpp
+ProtoCortexHandler.o: ../../src/IO/ProtoHdlr/ProtoCortexHandler.cpp
 ProtoDUploadHandler.o: ../../src/IO/ProtoHdlr/ProtoDUploadHandler.cpp
 ProtoGPSDevInfoHandler.o: ../../src/IO/ProtoHdlr/ProtoGPSDevInfoHandler.cpp
 ProtoJTT808Handler.o: ../../src/IO/ProtoHdlr/ProtoJTT808Handler.cpp
