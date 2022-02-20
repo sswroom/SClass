@@ -176,7 +176,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 						else
 						{
 							UOSInt colSize;
-							NEW_CLASS(col, DB::ColDef(sb.ToString()));
+							NEW_CLASS(col, DB::ColDef(sb.ToCString()));
 							sql = ParseNextWord(sql, &sb, svrType);
 							if (svrType == DB::DBUtil::ServerType::SQLite && (sb.Equals(UTF8STRC(",")) || sb.Equals(UTF8STRC(")"))))
 							{

@@ -20,7 +20,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 	this->cols = 0;
 	UOSInt i;
 	UOSInt j;
-	DB::ColDef colDef((const UTF8Char*)0);
+	DB::ColDef colDef(CSTR_NULL);
 	Data::VariObject *obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{

@@ -334,7 +334,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 		DB::DBReader *r = db->GetTableData(tableName->v, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
-			DB::ColDef colDef((const UTF8Char*)"");
+			DB::ColDef colDef(CSTR(""));
 			UOSInt j = 0;
 			UOSInt k = r->ColCount();
 			while (j < k)

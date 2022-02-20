@@ -804,8 +804,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		{
 			while (r->ReadNext())
 			{
-				r->GetStr(0, buff, sizeof(buff));
-				NEW_CLASS(col, DB::ColDef(buff));
+				ptr = r->GetStr(0, buff, sizeof(buff));
+				NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
 				ptr = r->GetStr(2, buff, sizeof(buff));
 				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
 				ptr = r->GetStr(3, buff, sizeof(buff));
@@ -892,8 +892,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		DB::ColDef *col;
 		while (r->ReadNext())
 		{
-			r->GetStr(3, buff, sizeof(buff));
-			NEW_CLASS(col, DB::ColDef(buff));
+			ptr = r->GetStr(3, buff, sizeof(buff));
+			NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
 			col->SetNotNull(!r->GetBool(10));
 			col->SetPK(false);
 			if ((u8ptr = r->GetStr(12, buff, sizeof(buff))) != 0)

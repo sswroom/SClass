@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRLineChartForm::OnPlotClicked(void *userObj)
 		{
 			colInfos[i].colIndex = me->yCols->GetItem(i - 1);
 		}
-		NEW_CLASS(colInfos[i].colDef, DB::ColDef((const UTF8Char*)""));
+		NEW_CLASS(colInfos[i].colDef, DB::ColDef(CSTR("")));
 
 		if (me->strTypes[colInfos[i].colIndex] == DB::DBUtil::CT_Unknown)
 		{
@@ -353,7 +353,7 @@ SSWR::AVIRead::AVIRLineChartForm::AVIRLineChartForm(UI::GUIClientControl *parent
 		this->cboXAxis->SetSelectedIndex(0);
 		UOSInt i;
 		UOSInt j = reader->ColCount();
-		DB::ColDef colDef((const UTF8Char*)"");
+		DB::ColDef colDef(CSTR(""));
 		this->strTypes = MemAlloc(DB::DBUtil::ColType, j);
 		i = 0;
 		while (i < j)

@@ -106,7 +106,7 @@ DB::TableDef *DB::DBReader::GenTableDef(const UTF8Char *tableName)
 	j = this->ColCount();
 	while (i < j)
 	{
-		NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
+		NEW_CLASS(colDef, DB::ColDef(CSTR("")));
 		this->GetColDef(i, colDef);
 		table->AddCol(colDef);
 		i++;

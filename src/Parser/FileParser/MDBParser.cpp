@@ -82,7 +82,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	DB::ColDef *colDef;
 	NEW_CLASS(tableNames, Data::ArrayListStrUTF8());
 	NEW_CLASS(shpTables, Data::ArrayListStrUTF8());
-	NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
+	NEW_CLASS(colDef, DB::ColDef(CSTR("")));
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	mdb->GetTableNames(tableNames);

@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 		}
 		else
 		{
-			NEW_CLASS(col, DB::ColDef((const UTF8Char*)""));
+			NEW_CLASS(col, DB::ColDef(CSTR("")));
 			j = r->ColCount();
 			i = 0;
 			while (i < j)
@@ -227,7 +227,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	this->lvTableResult->ClearAll();
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(col, DB::ColDef((const UTF8Char*)""));
+	NEW_CLASS(col, DB::ColDef(CSTR("")));
 	j = r->ColCount();
 	this->lvTableResult->ChangeColumnCnt(j);
 	i = 0;

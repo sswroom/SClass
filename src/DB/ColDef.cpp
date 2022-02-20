@@ -3,7 +3,7 @@
 #include "Text/MyString.h"
 #include "DB/ColDef.h"
 
-DB::ColDef::ColDef(const UTF8Char *colName)
+DB::ColDef::ColDef(Text::CString colName)
 {
 	this->colName = Text::String::NewOrNull(colName);
 	this->colType = DB::DBUtil::CT_Unknown;

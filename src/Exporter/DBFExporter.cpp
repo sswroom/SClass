@@ -96,7 +96,7 @@ Bool Exporter::DBFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	colDP = MemAlloc(UOSInt, nCol);
 	colTypes = MemAlloc(DB::DBUtil::ColType, nCol);
 
-	NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
+	NEW_CLASS(colDef, DB::ColDef(CSTR("")));
 	i = nCol;
 	while (i-- > 0)
 	{

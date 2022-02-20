@@ -78,7 +78,7 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 		}
 		else
 		{
-			NEW_CLASS(col, DB::ColDef((const UTF8Char*)""));
+			NEW_CLASS(col, DB::ColDef(CSTR("")));
 			j = r->ColCount();
 			i = 0;
 			while (i < j)
@@ -123,7 +123,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	this->lvResult->ClearAll();
 
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(col, DB::ColDef((const UTF8Char*)""));
+	NEW_CLASS(col, DB::ColDef(CSTR("")));
 	j = r->ColCount();
 	this->lvResult->ChangeColumnCnt(j);
 	i = 0;

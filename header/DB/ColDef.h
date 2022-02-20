@@ -21,7 +21,7 @@ namespace DB
 		Text::String *attr;
 
 	public:
-		ColDef(const UTF8Char *colName);
+		ColDef(Text::CString colName);
 		ColDef(Text::String *colName);
 		~ColDef();
 

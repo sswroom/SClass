@@ -580,7 +580,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 								UInt8 seqId = 1;
 								UOSInt j;
 								UOSInt k;
-								DB::ColDef col((const UTF8Char*)"a");
+								DB::ColDef col(CSTR("a"));
 /*
 01 00 00 01 01
 */

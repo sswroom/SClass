@@ -190,7 +190,7 @@ void SSWR::AVIRead::AVIRMySQLClientForm::UpdateResult(DB::DBReader *r)
 		this->lvQueryResult->ClearAll();
 
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
-		NEW_CLASS(col, DB::ColDef((const UTF8Char*)""));
+		NEW_CLASS(col, DB::ColDef(CSTR("")));
 		j = r->ColCount();
 		this->lvQueryResult->ChangeColumnCnt(j);
 		i = 0;
