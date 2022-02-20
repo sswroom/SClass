@@ -668,10 +668,10 @@ Media::Deinterlace8::Deinterlace8(UOSInt fieldCnt, UOSInt fieldSep)
 	this->stats = MemAlloc(DI8THREADSTAT, nCore);
 	UOSInt i = nCore;
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.Deinterlace8.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	while (i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.Deinterlace8.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].evtMain = this->evtMain;
 	}

@@ -89,11 +89,11 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	IO::FileStream *cib;
 	IO::FileStream *blk;
 	Text::StrConcat(u8buff, fileName);
-	sptr = IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"cix");
+	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("cix"));
 	NEW_CLASS(cix, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	sptr = IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"ciu");
+	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("ciu"));
 	NEW_CLASS(cib, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	sptr = IO::Path::ReplaceExt(u8buff, (const UTF8Char*)"blk");
+	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("blk"));
 	NEW_CLASS(blk, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 
@@ -405,14 +405,14 @@ Bool Exporter::CIPExporter::GetParamInfo(UOSInt index, IO::FileExporter::ParamIn
 {
 	if (index == 0)
 	{
-		info->name = (const UTF8Char*)"Scale";
+		info->name = CSTR("Scale");
 		info->paramType = IO::FileExporter::ParamType::INT32;
 		info->allowNull = false;
 		return true;
 	}
 	else if (index == 1)
 	{
-		info->name = (const UTF8Char*)"Display Column";
+		info->name = CSTR("Display Column");
 		info->paramType = IO::FileExporter::ParamType::SELECTION;
 		info->allowNull = false;
 		return true;

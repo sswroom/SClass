@@ -48,12 +48,12 @@ Media::CS::CSP010_RGB8::CSP010_RGB8(const Media::ColorProfile *srcColor, const M
 	UOSInt i;
 	this->nThread = Sync::Thread::GetThreadCnt();
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.CS.CSYV12_RGB8.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.CS.CSYV12_RGB8.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;

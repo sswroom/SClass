@@ -226,7 +226,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	if (fileName.leng == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
+		sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	}
 	else
@@ -290,7 +290,7 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 	if (fileName == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prof");
+		IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
 		NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
 	}
 	else

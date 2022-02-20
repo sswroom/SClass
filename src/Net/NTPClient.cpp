@@ -45,10 +45,10 @@ Net::NTPClient::~NTPClient()
 	DEL_CLASS(this->mut);
 }
 
-Bool Net::NTPClient::GetServerTime(const UTF8Char *host, UInt16 port, Data::DateTime *svrTime)
+Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(host, Text::StrCharCnt(host), &addr))
+	if (!sockf->DNSResolveIP(host.v, host.leng, &addr))
 		return false;
 	return GetServerTime(&addr, port, svrTime);
 }

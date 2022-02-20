@@ -98,7 +98,7 @@ void SSWR::ProcMonForm::LoadProgList()
 	Text::StringBuilderUTF8 sb;
 
 	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyAll, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
@@ -138,7 +138,7 @@ void SSWR::ProcMonForm::SaveProgList()
 	ProgInfo *prog;
 
 	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"prg");
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prg"));
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyAll, IO::FileStream::BufferType::NoWriteBuffer));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	i = 0;

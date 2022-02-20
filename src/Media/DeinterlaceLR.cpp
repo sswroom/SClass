@@ -152,10 +152,10 @@ Media::DeinterlaceLR::DeinterlaceLR(UOSInt fieldCnt, UOSInt fieldSep)
 	this->stats = MemAlloc(DITHREADSTAT, this->nCore);
 	UOSInt i = this->nCore;
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.DeinterlaceLR.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	while (i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.DeinterlaceLR.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].evtMain = this->evtMain;
 	}

@@ -27,7 +27,7 @@ namespace IO
 
 		struct ParamInfo
 		{
-			const UTF8Char *name;
+			Text::CString name;
 			ParamType paramType;
 			Bool allowNull;
 		};

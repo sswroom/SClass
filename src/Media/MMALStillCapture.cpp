@@ -90,7 +90,7 @@ Media::MMALStillCapture::MMALStillCapture()
 {
 	MMALInfo *info = MemAlloc(MMALInfo, 1);
 	this->classData = info;
-	NEW_CLASS(info->readEvt, Sync::Event(true, (const UTF8Char*)"Media.MMALStillCapture.readEvt"));
+	NEW_CLASS(info->readEvt, Sync::Event(true));
 	info->camera = 0;
 	info->port = 0;
 	info->buffPool = 0;

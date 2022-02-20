@@ -178,8 +178,8 @@ Map::MapScheduler::MapScheduler()
 	NEW_CLASS(taskMut, Sync::Mutex());
 	NEW_CLASS(tasks, Data::ArrayList<Map::DrawObjectL *>());
 	this->toStop = false;
-	NEW_CLASS(taskEvt, Sync::Event((const UTF8Char*)"Map.MapScheduler.TaskEvt"));
-	NEW_CLASS(finishEvt, Sync::Event((const UTF8Char*)"Map.MapScheduler.FinishEvt"));
+	NEW_CLASS(taskEvt, Sync::Event());
+	NEW_CLASS(finishEvt, Sync::Event());
 	this->threadRunning = false;
 	this->taskFinish = true;
 	this->isLayerEmpty = 0;

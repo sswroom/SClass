@@ -14,38 +14,38 @@ Manage::ThreadContextAVR::~ThreadContextAVR()
 {
 }
 
-OSInt Manage::ThreadContextAVR::GetRegisterCnt()
+UOSInt Manage::ThreadContextAVR::GetRegisterCnt()
 {
 	return 0;
 }
 
-UTF8Char *Manage::ThreadContextAVR::GetRegister(OSInt index, UTF8Char *buff, UInt8 *regVal, Int32 *regBitCount)
+UTF8Char *Manage::ThreadContextAVR::GetRegister(UOSInt index, UTF8Char *buff, UInt8 *regVal, UInt32 *regBitCount)
 {
 	return 0;
 }
 
-void Manage::ThreadContextAVR::ToString(Text::StringBuilderUTF *sb)
+void Manage::ThreadContextAVR::ToString(Text::StringBuilderUTF8 *sb)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UInt8 regBuff[16];
-	Int32 bitCnt;
-	OSInt i = 0;
-	OSInt j = this->GetRegisterCnt();
-	OSInt k;
+	UInt32 bitCnt;
+	UOSInt i = 0;
+	UOSInt j = this->GetRegisterCnt();
+	UOSInt k;
 
 	while (i < j)
 	{
 		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
 			while (k-- > 0)
 			{
 				sptr = Text::StrHexByte(sptr, regBuff[k]);
 			}
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
-			sb->Append(sbuff);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;
@@ -72,30 +72,30 @@ void *Manage::ThreadContextAVR::GetContext()
 	return this->context;
 }
 
-OSInt Manage::ThreadContextAVR::GetInstAddr()
+UOSInt Manage::ThreadContextAVR::GetInstAddr()
 {
 	return 0;
 }
 
-OSInt Manage::ThreadContextAVR::GetStackAddr()
+UOSInt Manage::ThreadContextAVR::GetStackAddr()
 {
 	return 0;
 }
 
-OSInt Manage::ThreadContextAVR::GetFrameAddr()
+UOSInt Manage::ThreadContextAVR::GetFrameAddr()
 {
 	return 0;
 }
 
-void Manage::ThreadContextAVR::SetInstAddr(OSInt instAddr)
+void Manage::ThreadContextAVR::SetInstAddr(UOSInt instAddr)
 {
 }
 
-void Manage::ThreadContextAVR::SetStackAddr(OSInt stackAddr)
+void Manage::ThreadContextAVR::SetStackAddr(UOSInt stackAddr)
 {
 }
 
-void Manage::ThreadContextAVR::SetFrameAddr(OSInt frameAddr)
+void Manage::ThreadContextAVR::SetFrameAddr(UOSInt frameAddr)
 {
 }
 

@@ -222,12 +222,12 @@ Media::CS::CSNV12_RGB32C::CSNV12_RGB32C(const Media::ColorProfile *srcProfile, c
 	this->uvBuff = 0;
 	this->uvBuffSize = 0;
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.CS.CSNV12_RGB32C.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.CS.CSNV12_RGB32C.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 		stats[i].csLineSize = 0;
 		stats[i].csLineBuff = 0;

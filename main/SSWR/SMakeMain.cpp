@@ -33,7 +33,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i++;
 	}
 
-	NEW_CLASS(smake, IO::SMake((const UTF8Char*)"SMake.cfg", 0, verbose?console:0));
+	NEW_CLASS(smake, IO::SMake(CSTR("SMake.cfg"), 0, verbose?console:0));
 	if (smake->IsLoadFailed())
 	{
 		console->WriteLineC(UTF8STRC("Error in loading SMake.cfg"));

@@ -79,7 +79,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	UInt32 thisT;
 	UInt32 lastT;
 
-	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.ALSARenderer.PlayThread.evt"));
+	NEW_CLASS(evt, Sync::Event());
 
 	me->threadInit = true;
 	me->audsrc->GetFormat(&af);
@@ -712,7 +712,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 
 	this->hand = hand;
 	this->audsrc = audsrc;
-	NEW_CLASS(this->playEvt, Sync::Event((const UTF8Char*)"Media.ALSARenderer.playEvt"));
+	NEW_CLASS(this->playEvt, Sync::Event());
 	return true;
 }
 

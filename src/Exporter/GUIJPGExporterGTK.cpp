@@ -99,7 +99,7 @@ Bool Exporter::GUIJPGExporter::GetParamInfo(UOSInt index, ParamInfo *info)
 {
 	if (index == 0)
 	{
-		info->name = (const UTF8Char*)"Quality";
+		info->name = CSTR("Quality");
 		info->paramType = IO::FileExporter::ParamType::INT32;
 		info->allowNull = false;
 		return true;

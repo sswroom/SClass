@@ -40,12 +40,12 @@ Media::CS::CSUYVY_LRGBC::CSUYVY_LRGBC(const Media::ColorProfile *srcProfile, con
 	UOSInt i;
 	this->nThread = Sync::Thread::GetThreadCnt();
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.CS.CSYUY2_LRGB.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.CS.CSYUY2_LRGB.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;

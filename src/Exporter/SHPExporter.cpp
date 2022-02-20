@@ -88,7 +88,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		return false;
 	}
 	Text::StrConcat(fileName2, fileName);
-	sptr = IO::Path::ReplaceExt(fileName2, (const UTF8Char*)"shx");
+	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("shx"));
 	NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (shx->IsError())
 	{
@@ -476,7 +476,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	shx->Write(buff, 100);
 	DEL_CLASS(shx);
 
-	sptr = IO::Path::ReplaceExt(fileName2, (const UTF8Char*)"dbf");
+	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
 	NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(exporter, Exporter::DBFExporter());
 	exporter->SetCodePage(this->codePage);
@@ -484,7 +484,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DEL_CLASS(exporter);
 	DEL_CLASS(shx);
 
-	sptr = IO::Path::ReplaceExt(fileName2, (const UTF8Char*)"prj");
+	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("prj"));
 	Math::CoordinateSystem *csys = layer->GetCoordinateSystem();
 	if (csys)
 	{

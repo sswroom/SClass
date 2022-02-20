@@ -41,7 +41,7 @@ IO::ParsedObject *Parser::FileParser::SMakeParser::ParseFile(IO::IStreamData *fd
 		return 0;
 	}
 	IO::SMake *smake;
-	NEW_CLASS(smake, IO::SMake(fd->GetFullFileName()->v, 0, 0));
+	NEW_CLASS(smake, IO::SMake(fd->GetFullFileName()->ToCString(), 0, 0));
 	if (smake->IsLoadFailed())
 	{
 		DEL_CLASS(smake);

@@ -136,7 +136,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(console, IO::ConsoleWriter());
 
 	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"txt");
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("txt"));
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(writer, Text::UTF8Writer(fs));
 

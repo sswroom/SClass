@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			val = Text::StrToInt32(sbuff);
 			if (!me->exporter->SetParamInt32(me->param, i, val))
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Parameter \"")), pi.name), UTF8STRC("\" out of range"));
+				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" out of range"));
 				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
 				return;
 			}
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRExportParamForm::OnOKClicked(void *userObj)
 			j = ((UI::GUIComboBox *)me->ctrls[i])->GetSelectedIndex();
 			if (!me->exporter->SetParamSel(me->param, i, j))
 			{
-				sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Parameter \"")), pi.name), UTF8STRC("\" out of range"));
+				sptr = Text::StrConcatC(pi.name.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Parameter \""))), UTF8STRC("\" out of range"));
 				UI::MessageDialog::ShowDialog(CSTRP(sbuff, sptr), CSTR("Export Parameter"), me);
 				return;
 			}
@@ -78,7 +78,7 @@ SSWR::AVIRead::AVIRExportParamForm::AVIRExportParamForm(UI::GUIClientControl *pa
 	while (i < cnt)
 	{
 		this->exporter->GetParamInfo(i, &pi);
-		NEW_CLASS(lbl, UI::GUILabel(ui, this, Text::CString::FromPtr(pi.name)));
+		NEW_CLASS(lbl, UI::GUILabel(ui, this, pi.name));
 		lbl->SetRect(20, (Int32)i * 24, 120, 23, false);
 		//lbl->TextAlign = System::Drawing::ContentAlignment::MiddleLeft;
 

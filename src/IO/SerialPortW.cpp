@@ -317,7 +317,7 @@ IO::SerialPort::SerialPort(UOSInt portNum, UInt32 baudRate, ParityType parity, B
 	this->flowCtrl = flowCtrl;
 	this->InitStream();
 
-	NEW_CLASS(this->rdEvt, Sync::Event((const UTF8Char*)"IO.SerialPort.rdEvt"));
+	NEW_CLASS(this->rdEvt, Sync::Event());
 	NEW_CLASS(this->rdMut, Sync::Mutex());
 }
 

@@ -40,12 +40,12 @@ Media::CS::CSP216_LRGBC::CSP216_LRGBC(const Media::ColorProfile *srcProfile, con
 	UOSInt i;
 	this->nThread = Sync::Thread::GetThreadCnt();
 
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.CS.CSP216_LRGBC.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.CS.CSP216_LRGBC.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;

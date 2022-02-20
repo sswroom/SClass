@@ -55,7 +55,7 @@ namespace IO
 		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg, UOSInt cfgLen);
 
 		Bool ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen);
-		Bool LoadConfigFile(const UTF8Char *cfgFile, UOSInt cfgFileLen);
+		Bool LoadConfigFile(Text::CString cfgFile);
 
 		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen);
 		Bool ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile, UOSInt sourceFileLen);
@@ -67,7 +67,7 @@ namespace IO
 
 		void SetErrorMsg(const UTF8Char *msg, UOSInt msgLen);
 	public:
-		SMake(const UTF8Char *cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
+		SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
 
 		virtual IO::ParserType GetParserType();

@@ -39,8 +39,8 @@ IO::ActiveStreamReader::ActiveStreamReader(DataHdlr hdlr, void *userData, IO::St
 	this->buffSize = buffSize;
 	this->currIndex = 0;
 	this->userData = userData;
-	NEW_CLASS(emptyEvt, Sync::Event((const UTF8Char*)"IO.ActiveStreamReader.emptyEvt"));
-	NEW_CLASS(fullEvt, Sync::Event((const UTF8Char*)"IO.ActiveStreamReader.fullEvt"));
+	NEW_CLASS(emptyEvt, Sync::Event());
+	NEW_CLASS(fullEvt, Sync::Event());
 	this->running = false;
 	this->toStop = false;
 	this->reading = false;

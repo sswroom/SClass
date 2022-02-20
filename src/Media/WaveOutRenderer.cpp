@@ -114,7 +114,7 @@ UInt32 __stdcall Media::WaveOutRenderer::PlayThread(void *obj)
 	Bool needNotify = false;
 
 	Sync::Thread::SetPriority(Sync::Thread::TP_REALTIME);
-	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.WaveOutRenderer.PlayThread.evt"));
+	NEW_CLASS(evt, Sync::Event());
 
 	me->playing = true;
 	me->threadInit = true;
@@ -412,7 +412,7 @@ Bool Media::WaveOutRenderer::BindAudio(Media::IAudioSource *audsrc)
 	{
 		this->hwo = hwo;
 		this->audsrc = audsrc;
-		NEW_CLASS(this->playEvt, Sync::Event((const UTF8Char*)"Media.WaveOutRenderer.playEvt"));
+		NEW_CLASS(this->playEvt, Sync::Event());
 		return true;
 	}
 	else

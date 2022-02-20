@@ -20,7 +20,7 @@ namespace Net
 		NTPClient(Net::SocketFactory *sockf, UInt16 port);
 		~NTPClient();
 
-		Bool GetServerTime(const UTF8Char *host, UInt16 port, Data::DateTime *svrTime); //def = 123
+		Bool GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime); //def = 123
 		Bool GetServerTime(const Net::SocketUtil::AddressInfo *addr, UInt16 port, Data::DateTime *svrTime); //def = 123
 
 		static UInt16 GetDefaultPort();

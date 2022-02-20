@@ -96,7 +96,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					((Media::StaticImage*)imgList->GetImage(0, 0))->To32bpp();
 					param = exporter.CreateParam(imgList);
 					Text::StrConcatC(sptr2, sptr, (UOSInt)(sptrEnd - sptr));
-					sptr2End = IO::Path::ReplaceExt(sptr2, (const UTF8Char*)"jpg");
+					sptr2End = IO::Path::ReplaceExt(sptr2, UTF8STRC("jpg"));
 					if (param)
 					{
 						exporter.SetParamInt32(param, 0, quality);

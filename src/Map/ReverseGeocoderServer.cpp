@@ -56,7 +56,7 @@ Net::TCPClient *Map::ReverseGeocoderServer::GetLatestClient(UOSInt retryCnt)
 Map::ReverseGeocoderServer::ReverseGeocoderServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port)
 {
 	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->reqEvt, Sync::Event((const UTF8Char*)"Map.ReverseGeocoderServer.reqEvt"));
+	NEW_CLASS(this->reqEvt, Sync::Event());
 	NEW_CLASS(this->protocol, IO::ProtoHdlr::ProtoRevGeoHandler(this));
 	NEW_CLASS(this->ctrl, Net::TCPServerController(sockf, log, port, CSTR("RGS: "), 4096, this, 8, 240));
 }

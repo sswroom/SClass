@@ -321,8 +321,8 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 	DEL_CLASS(file);
 	if (this->port)
 	{
-		NEW_CLASS(this->connREvt, Sync::Event((const UTF8Char*)"Manage.MonConn.ConnREvt"));
-		NEW_CLASS(this->connTEvt, Sync::Event((const UTF8Char*)"Manage.MonConn.ConnTEvt"));
+		NEW_CLASS(this->connREvt, Sync::Event());
+		NEW_CLASS(this->connTEvt, Sync::Event());
 		Sync::Thread::Create(ConnRThread, this);
 		Sync::Thread::Create(ConnTThread, this);
 		while (!this->ConnTRunning || !this->ConnRRunning)

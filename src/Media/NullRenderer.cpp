@@ -115,7 +115,7 @@ Bool Media::NullRenderer::BindAudio(Media::IAudioSource *audsrc)
 	}
 
 	this->audsrc = audsrc;
-	NEW_CLASS(this->playEvt, Sync::Event((const UTF8Char*)"Media.WaveOutRenderer.playEvt"));
+	NEW_CLASS(this->playEvt, Sync::Event());
 	return true;
 }
 

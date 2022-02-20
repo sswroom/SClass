@@ -57,7 +57,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #endif
 
 	IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::ReplaceExt(sbuff, (const UTF8Char*)"log");
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("log"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
 	ui = Core::IProgControl::CreateGUICore(progCtrl);
 	NEW_CLASS(core, SSWR::AVIRead::AVIRCoreWin(ui));

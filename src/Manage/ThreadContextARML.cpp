@@ -31,71 +31,71 @@ UTF8Char *Manage::ThreadContextARM::GetRegister(UOSInt index, UTF8Char *buff, UI
 	case 0:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r0;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R0");
+		return Text::StrConcatC(buff, UTF8STRC("R0"));
 	case 1:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r1;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R1");
+		return Text::StrConcatC(buff, UTF8STRC("R1"));
 	case 2:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r2;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R2");
+		return Text::StrConcatC(buff, UTF8STRC("R2"));
 	case 3:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r3;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R3");
+		return Text::StrConcatC(buff, UTF8STRC("R3"));
 	case 4:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r4;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R4");
+		return Text::StrConcatC(buff, UTF8STRC("R4"));
 	case 5:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r5;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R5");
+		return Text::StrConcatC(buff, UTF8STRC("R5"));
 	case 6:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r6;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R6");
+		return Text::StrConcatC(buff, UTF8STRC("R6"));
 	case 7:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r7;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R7");
+		return Text::StrConcatC(buff, UTF8STRC("R7"));
 	case 8:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r8;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R8");
+		return Text::StrConcatC(buff, UTF8STRC("R8"));
 	case 9:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r9;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R9");
+		return Text::StrConcatC(buff, UTF8STRC("R9"));
 	case 10:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_r10;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"R10");
+		return Text::StrConcatC(buff, UTF8STRC("R10"));
 	case 11:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_fp;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"FP (R11)");
+		return Text::StrConcatC(buff, UTF8STRC("FP (R11)"));
 	case 12:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_ip;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"IP (R12)");
+		return Text::StrConcatC(buff, UTF8STRC("IP (R12)"));
 	case 13:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_sp;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"Sp");
+		return Text::StrConcatC(buff, UTF8STRC("Sp"));
 	case 14:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_lr;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"Lr");
+		return Text::StrConcatC(buff, UTF8STRC("Lr"));
 	case 15:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_pc;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"Pc");
+		return Text::StrConcatC(buff, UTF8STRC("Pc"));
 	case 16:
 		*(UInt32*)regVal = ((ucontext_t*)this->context)->uc_mcontext.arm_cpsr;
 		*regBitCount = 32;
-		return Text::StrConcat(buff, (const UTF8Char*)"Cpsr");
+		return Text::StrConcatC(buff, UTF8STRC("Cpsr"));
 	default:
 		return 0;
 	}
@@ -115,14 +115,14 @@ void Manage::ThreadContextARM::ToString(Text::StringBuilderUTF *sb)
 	{
 		if ((sptr = this->GetRegister(i, sbuff, regBuff, &bitCnt)) != 0)
 		{
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)" = ");
+			sptr = Text::StrConcatC(sptr, UTF8STRC(" = "));
 			k = bitCnt >> 3;
 			while (k-- > 0)
 			{
 				sptr = Text::StrHexByte(sptr, regBuff[k]);
 			}
-			sptr = Text::StrConcat(sptr, (const UTF8Char*)"\r\n");
-			sb->Append(sbuff);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("\r\n"));
+			sb->AppendP(sbuff, sptr);
 		}
 
 		i++;

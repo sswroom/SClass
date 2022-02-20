@@ -35,7 +35,7 @@
 
 #include "Text/MyString.h"
 
-#define NTPHOST (const UTF8Char*)"stdtime.gov.hk"
+#define NTPHOST CSTR("stdtime.gov.hk")
 
 Media::IAudioRenderer *audOut;
 Bool ToStop;

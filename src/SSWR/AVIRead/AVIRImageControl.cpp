@@ -304,7 +304,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			if (this->exportFmt == EF_JPG)
 			{
 				img->To32bpp();
-				sptr2 = IO::Path::ReplaceExt(sptr, (const UTF8Char*)"jpg");
+				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("jpg"));
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				void *param = jpgExporter.CreateParam(imgList);
 				if (param)
@@ -320,7 +320,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			}
 			else if (this->exportFmt == EF_TIF)
 			{
-				sptr2 = IO::Path::ReplaceExt(sptr, (const UTF8Char*)"tif");
+				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 				tifExporter.ExportFile(fs, sbuff, imgList, 0);
 				DEL_CLASS(fs);

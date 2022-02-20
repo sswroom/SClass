@@ -421,7 +421,7 @@ UInt32 __stdcall Media::ASIOOutRenderer::PlayThread(void *obj)
 		return 0;
 	}
 	nSamples = me->bufferSize;
-	NEW_CLASS(evt, Sync::Event((const UTF8Char*)"Media.ASIOOutRenderer.PlayThread.evt"));
+	NEW_CLASS(evt, Sync::Event());
 	blkAlign = fmt.nChannels * (UInt32)fmt.bitpersample >> 3;
 	sampleBuff = MemAlloc(UInt8, nSamples * blkAlign);
 	audStartTime = me->audSrc->GetCurrTime();
@@ -648,7 +648,7 @@ void Media::ASIOOutRenderer::InitDevice(UInt32 devId)
 	DWORD nameLen = MAXDRVNAMELEN;
 	bufferCreated = false;
 	playing = false;
-	NEW_CLASS(bufferEvt, Sync::Event((const UTF8Char*)"Media.ASIORenderer.bufferEvt"));
+	NEW_CLASS(bufferEvt, Sync::Event());
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	if (cr == ERROR_SUCCESS)
 	{

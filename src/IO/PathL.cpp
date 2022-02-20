@@ -188,7 +188,7 @@ Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
+UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen)
 {
 	UTF8Char *oldExt = 0;
 	UTF8Char c;
@@ -208,7 +208,7 @@ UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
 		oldExt = fileName;
 		oldExt[-1] = '.';
 	}
-	return Text::StrConcat(oldExt, ext);
+	return Text::StrConcatC(oldExt, ext, extLen);
 }
 
 WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)

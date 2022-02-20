@@ -1469,7 +1469,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			UTF8Char fileNameBuff[1024];
 			UTF8Char *sptr;
 			fd->GetFullFileName()->ConcatTo(fileNameBuff);
-			sptr = IO::Path::ReplaceExt(fileNameBuff, (const UTF8Char*)"tfw");
+			sptr = IO::Path::ReplaceExt(fileNameBuff, UTF8STRC("tfw"));
 			if (IO::Path::GetPathType(fileNameBuff, (UOSInt)(sptr - fileNameBuff)) == IO::Path::PathType::File)
 			{
 				IO::FileStream *fs;

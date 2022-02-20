@@ -21,7 +21,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 		if (me->cli == 0)
 		{
 			me->cliMut->Lock();
-			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, me->host, me->port));
+			NEW_CLASS(me->cli, Net::TCPClient(me->sockf, me->host->ToCString(), me->port));
 			if (me->cli->IsConnectError())
 			{
 				DEL_CLASS(me->cli);
@@ -31,7 +31,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 			{
 				me->lastKASent->SetCurrTimeUTC();
 				me->lastKARecv->SetCurrTimeUTC();
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder connected");
+				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder connected"));
 			}
 			me->cliMut->Unlock();
 		}
@@ -44,7 +44,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::ClientThread(void *userObj)
 				DEL_CLASS(me->cli);
 				me->cli = 0;
 				me->cliMut->Unlock();
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder disconnected");
+				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder disconnected"));
 			}
 			else
 			{
@@ -92,7 +92,7 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 			me->cliMut->Lock();
 			if (me->cli)
 			{
-				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder timed out");
+				me->errWriter->WriteLineC(UTF8STRC("ReverseGeocoder timed out"));
 				me->cli->Close();
 			}
 			me->cliMut->Unlock();
@@ -114,10 +114,10 @@ UInt32 __stdcall Map::ReverseGeocoderClient::MonThread(void *userObj)
 	return 0;
 }
 
-Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, const UTF8Char *host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter)
+Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, Text::CString host, UInt16 port, Map::IReverseGeocoder *revGeo, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
-	this->host = Text::StrCopyNew(host);
+	this->host = Text::String::New(host);
 	this->port = port;
 	this->revGeo = revGeo;
 	this->cli = 0;
@@ -127,7 +127,7 @@ Map::ReverseGeocoderClient::ReverseGeocoderClient(Net::SocketFactory *sockf, con
 	this->monToStop = false;
 	this->errWriter = errWriter;
 	NEW_CLASS(this->cliMut, Sync::Mutex());
-	NEW_CLASS(this->monEvt, Sync::Event(true, (const UTF8Char*)"Map.ReverseGeocoderClient.monEvt"));
+	NEW_CLASS(this->monEvt, Sync::Event(true));
 	NEW_CLASS(this->lastKASent, Data::DateTime());
 	NEW_CLASS(this->lastKARecv, Data::DateTime());
 	NEW_CLASS(this->protocol, IO::ProtoHdlr::ProtoRevGeoHandler(this));
@@ -155,7 +155,7 @@ Map::ReverseGeocoderClient::~ReverseGeocoderClient()
 	{
 		Sync::Thread::Sleep(10);
 	}
-	Text::StrDelNew(this->host);
+	this->host->Release();
 	DEL_CLASS(this->monEvt);
 	DEL_CLASS(this->cliMut);
 	DEL_CLASS(this->lastKASent);

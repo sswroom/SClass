@@ -193,7 +193,7 @@ Bool Exporter::DBPListExporter::GetParamInfo(UOSInt index, IO::FileExporter::Par
 {
 	if (index == 0)
 	{
-		info->name = (const UTF8Char*)"Table";
+		info->name = CSTR("Table");
 		info->paramType = IO::FileExporter::ParamType::SELECTION;
 		info->allowNull = true;
 		return true;

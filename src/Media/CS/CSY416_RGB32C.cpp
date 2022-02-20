@@ -67,12 +67,12 @@ Media::CS::CSY416_RGB32C::CSY416_RGB32C(const Media::ColorProfile *srcProfile, c
 	{
 		this->nThread = 2;
 	}
-	NEW_CLASS(evtMain, Sync::Event((const UTF8Char*)"Media.CS.CSP016_RGB32C.evtMain"));
+	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event((const UTF8Char*)"Media.CS.CSP016_RGB32C.stats.evt"));
+		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;
