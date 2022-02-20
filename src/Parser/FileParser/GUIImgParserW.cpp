@@ -66,12 +66,12 @@ void Parser::FileParser::GUIImgParser::PrepareSelector(IO::IFileSelector *select
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::ImageList)
 	{
-		selector->AddFilter((const UTF8Char*)"*.tif", (const UTF8Char*)"TIFF(GDI+) File");
-		selector->AddFilter((const UTF8Char*)"*.tiff", (const UTF8Char*)"TIFF(GDI+) File");
-		selector->AddFilter((const UTF8Char*)"*.gif", (const UTF8Char*)"GIF(GDI+) File");
-		selector->AddFilter((const UTF8Char*)"*.png", (const UTF8Char*)"PNG(GDI+) File");
-		selector->AddFilter((const UTF8Char*)"*.jpg", (const UTF8Char*)"JPG(GDI+) File");
-		selector->AddFilter((const UTF8Char*)"*.jpeg", (const UTF8Char*)"JPG(GDI+) File");
+		selector->AddFilter(CSTR("*.tif"), CSTR("TIFF(GDI+) File"));
+		selector->AddFilter(CSTR("*.tiff"), CSTR("TIFF(GDI+) File"));
+		selector->AddFilter(CSTR("*.gif"), CSTR("GIF(GDI+) File"));
+		selector->AddFilter(CSTR("*.png"), CSTR("PNG(GDI+) File"));
+		selector->AddFilter(CSTR("*.jpg"), CSTR("JPG(GDI+) File"));
+		selector->AddFilter(CSTR("*.jpeg"), CSTR("JPG(GDI+) File"));
 	}
 }
 

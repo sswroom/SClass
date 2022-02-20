@@ -75,7 +75,7 @@ Bool Media::AudioConcatSource::AppendSilent(UInt32 time)
 		return false;
 	UInt64 sampleCnt = time * (UInt64)this->format.frequency / 1000;
 	Media::SilentSource *src;
-	NEW_CLASS(src, Media::SilentSource(this->format.frequency, this->format.nChannels, this->format.bitpersample, (const UTF8Char*)"Silent", sampleCnt));
+	NEW_CLASS(src, Media::SilentSource(this->format.frequency, this->format.nChannels, this->format.bitpersample, CSTR("Silent"), sampleCnt));
 	this->stmList->Add(src);
 	this->stmTime += time;
 	return true;

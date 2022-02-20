@@ -147,7 +147,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 		sptr = this->gooAPIKey->ConcatTo(sptr);
 	}
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
 		if (lang)

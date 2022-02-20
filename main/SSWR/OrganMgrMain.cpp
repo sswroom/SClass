@@ -44,15 +44,15 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		else if (env->GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_CONFIG)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please prepare the config file", (const UTF8Char*)"Error", 0);
+			UI::MessageDialog::ShowDialog(CSTR("Please prepare the config file"), CSTR("Error"), 0);
 		}
 		else if (env->GetErrorType() == SSWR::OrganMgr::OrganEnv::ERR_DB)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Cannot connect to the database", (const UTF8Char*)"Error", 0);
+			UI::MessageDialog::ShowDialog(CSTR("Cannot connect to the database"), CSTR("Error"), 0);
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Unknown error occurs", (const UTF8Char*)"Error", 0);
+			UI::MessageDialog::ShowDialog(CSTR("Unknown error occurs"), CSTR("Error"), 0);
 		}
 		DEL_CLASS(env);
 		DEL_CLASS(ui);

@@ -44,7 +44,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 {
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host, UInt16 port)
+void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, Text::CString host, UInt16 port)
 {
 }
 

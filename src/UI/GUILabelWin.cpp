@@ -8,7 +8,7 @@
 
 #include <windows.h>
 
-UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText) : UI::GUIControl(ui, parent)
+UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText) : UI::GUIControl(ui, parent)
 {
 	this->hasTextColor = false;
 	this->textColor = 0;
@@ -17,7 +17,7 @@ UI::GUILabel::GUILabel(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"STATIC", initText, style, 0, 0, 0, 200, 24);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"STATIC", initText.v, style, 0, 0, 0, 200, 24);
 }
 
 UI::GUILabel::~GUILabel()

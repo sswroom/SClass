@@ -47,8 +47,8 @@ void SSWR::OrganMgr::OrganUserForm::UpdateUserList()
 		user = this->userList->GetItem(i);
 		sptr = Text::StrInt32(sbuff, user->id);
 		k = this->lvUser->AddItem(CSTRP(sbuff, sptr), user);
-		this->lvUser->SetSubItem(k, 1, user->userName->v);
-		this->lvUser->SetSubItem(k, 2, user->watermark->v);
+		this->lvUser->SetSubItem(k, 1, user->userName);
+		this->lvUser->SetSubItem(k, 2, user->watermark);
 		i++;
 	}
 }
@@ -75,9 +75,9 @@ SSWR::OrganMgr::OrganUserForm::OrganUserForm(UI::GUIClientControl *parent, UI::G
 	this->lvUser->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvUser->SetShowGrid(true);
 	this->lvUser->SetFullRowSelect(true);
-	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColId")).v, 60);
-	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColUserName")).v, 200);
-	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColWatermark")).v, 200);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColId")), 60);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColUserName")), 200);
+	this->lvUser->AddColumn(this->env->GetLang(UTF8STRC("UserFormColWatermark")), 200);
 	this->UpdateUserList();
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }

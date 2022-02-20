@@ -74,7 +74,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	Net::HKOWeather::WeatherSignal signal;
 	UOSInt i;
 
-	cli = Net::HTTPClient::CreateConnect(sockf, ssl, (const UTF8Char*)"http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml", Net::WebUtil::RequestMethod::HTTP_GET, false);
+	cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTR("http://rss.weather.gov.hk/rss/WeatherWarningSummary.xml"), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	if (cli->IsError())
 	{
 		DEL_CLASS(cli);

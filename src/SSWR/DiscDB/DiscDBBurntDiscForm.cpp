@@ -196,7 +196,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	this->cboVolume->GetText(&sbVolume);
 	if (sbName.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in DVD Name", (const UTF8Char*)"Burnt Disc", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error found in DVD Name"), CSTR("Burnt Disc"), this);
 		return false;
 	}
 	if (sbVolume.GetLength() == 0)
@@ -205,7 +205,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 	}
 	else if (!sbVolume.ToInt32(&volume))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error found in volume number", (const UTF8Char*)"Burnt Disc", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error found in volume number"), CSTR("Burnt Disc"), this);
 		return false;
 	}
 	Data::ArrayList<SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *> dvdVideoList;
@@ -256,7 +256,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 		i++;
 	}
 
-	if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Do you want to add new anime", (const UTF8Char*)"Question", this))
+	if (UI::MessageDialog::ShowYesNoDialog(CSTR("Do you want to add new anime"), CSTR("Question"), this))
 	{
 		Text::StringBuilderUTF8 sbDVDType;
 		this->cboDVDType->GetText(&sbDVDType);
@@ -265,7 +265,7 @@ Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 		{
 			this->selectedFile->videoId = maxId;
 			this->UpdateAnimeName();
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in adding new anime", (const UTF8Char*)"Burnt Disc", this);
+			UI::MessageDialog::ShowDialog(CSTR("Error in adding new anime"), CSTR("Burnt Disc"), this);
 			return true;
 		}
 		else
@@ -1162,7 +1162,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 	}
 	if (me->fileList->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please browse file first", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please browse file first"), CSTR("Burnt Disc"), me);
 		return;
 	}
 	Data::DateTime theDate;
@@ -1172,27 +1172,27 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFinishClicked(void *userObj)
 	me->txtDate->GetText(&sbDate);
 	if (!theDate.SetValue(sbDate.ToString(), sbDate.GetLength()))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in parsing the date", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in parsing the date"), CSTR("Burnt Disc"), me);
 		me->txtDate->Focus();
 		return;
 	}
 	me->txtDiscType->GetText(&sbDiscId);
 	if (me->env->GetDiscType(sbDiscId.ToCString()) == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in the Disc Type", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in the Disc Type"), CSTR("Burnt Disc"), me);
 		me->txtDiscType->Focus();
 		return;
 	}
 	me->txtDiscId->GetText(&sbDVDId);
 	if (sbDVDId.GetLength() < 3)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Invalid Disc Id", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Invalid Disc Id"), CSTR("Burnt Disc"), me);
 		me->txtDiscId->Focus();
 		return;
 	}
 	if (me->env->GetBurntDisc(sbDVDId.ToCString()) != 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Disc Id already found in database", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Disc Id already found in database"), CSTR("Burnt Disc"), me);
 		me->txtDiscId->Focus();
 		return;
 	}
@@ -1308,7 +1308,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnSectorSizeClicked(void *user
 	me->txtSectorSize->GetText(&sb);
 	if (sb.GetLength() > 6)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Sector Size too long", (const UTF8Char*)"Burnt Disc", me);
+		UI::MessageDialog::ShowDialog(CSTR("Sector Size too long"), CSTR("Burnt Disc"), me);
 		return;
 	}
 	i = Text::StrHex2UInt32C(sb.ToString());
@@ -1383,16 +1383,16 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->btnFinish->HandleButtonClick(OnFinishClicked, this);
 	NEW_CLASS(this->btnNewDisc, UI::GUIButton(ui, this->pnlBurntDisc, CSTR("&New Disc Type")));
 	this->btnNewDisc->SetRect(8, 78, 83, 25, false);
-	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Disc ID"));
+	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlBurntDisc, CSTR("Disc ID")));
 	this->lblDiscId->SetRect(96, 9, 56, 25, false);
 	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDiscId->SetRect(160, 9, 96, 20, false);
 	this->txtDiscId->HandleTextChanged(OnDiscIdTextChg, this);
-	NEW_CLASS(this->lblDiscType, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Disc Type"));
+	NEW_CLASS(this->lblDiscType, UI::GUILabel(ui, this->pnlBurntDisc, CSTR("Disc Type")));
 	this->lblDiscType->SetRect(96, 43, 64, 25, false);
 	NEW_CLASS(this->txtDiscType, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDiscType->SetRect(160, 43, 96, 20, false);
-	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlBurntDisc, (const UTF8Char*)"Date"));
+	NEW_CLASS(this->lblDate, UI::GUILabel(ui, this->pnlBurntDisc, CSTR("Date")));
 	this->lblDate->SetRect(96, 78, 56, 25, false);
 	NEW_CLASS(this->txtDate, UI::GUITextBox(ui, this->pnlBurntDisc, CSTR("")));
 	this->txtDate->SetRect(160, 78, 96, 20, false);
@@ -1409,31 +1409,31 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	NEW_CLASS(this->pnlFile, UI::GUIPanel(ui, this));
 	this->pnlFile->SetRect(416, 121, 208, 335, false);
 	this->pnlFile->SetDockType(UI::GUIControl::DOCK_RIGHT);
-	NEW_CLASS(this->lblCategory, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Category"));
+	NEW_CLASS(this->lblCategory, UI::GUILabel(ui, this->pnlFile, CSTR("Category")));
 	this->lblCategory->SetRect(8, 17, 72, 25, false);
 	NEW_CLASS(this->cboCategory, UI::GUIComboBox(ui, this->pnlFile, false));
 	this->cboCategory->SetRect(80, 17, 121, 21, false);
 	this->cboCategory->HandleSelectionChange(OnCategorySelChg, this);
 	NEW_CLASS(this->pnlDVDV, UI::GUIPanel(ui, this->pnlFile));
 	this->pnlDVDV->SetRect(0, 43, 208, 165, false);
-	NEW_CLASS(this->lblDVDName, UI::GUILabel(ui, this->pnlDVDV, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblDVDName, UI::GUILabel(ui, this->pnlDVDV, CSTR("Name")));
 	this->lblDVDName->SetRect(8, 17, 48, 25, false);
 	NEW_CLASS(this->cboDVDName, UI::GUIComboBox(ui, this->pnlDVDV, true));
 	this->cboDVDName->SetText(CSTR("Non-Anime"));
 	this->cboDVDName->SetRect(64, 17, 121, 21, false);
 	this->cboDVDName->HandleSelectionChange(OnCboDVDNameSelChg, this);
 //	this->cboDVDName->HandleTextChange(OnCboDVDNameTextChg, this);
-	NEW_CLASS(this->lblSeries, UI::GUILabel(ui, this->pnlDVDV, (const UTF8Char*)"Series"));
+	NEW_CLASS(this->lblSeries, UI::GUILabel(ui, this->pnlDVDV, CSTR("Series")));
 	this->lblSeries->SetRect(8, 52, 48, 25, false);
 	NEW_CLASS(this->cboSeries, UI::GUIComboBox(ui, this->pnlDVDV, true));
 	this->cboSeries->SetRect(64, 52, 121, 21, false);
 	this->cboSeries->HandleSelectionChange(OnSeriesSelChg, this);
-	NEW_CLASS(this->lblVolume, UI::GUILabel(ui, this->pnlDVDV, (const UTF8Char*)"Volume"));
+	NEW_CLASS(this->lblVolume, UI::GUILabel(ui, this->pnlDVDV, CSTR("Volume")));
 	this->lblVolume->SetRect(8, 87, 48, 25, false);
 	NEW_CLASS(this->cboVolume, UI::GUIComboBox(ui, this->pnlDVDV, true));
 	this->cboVolume->SetRect(64, 87, 121, 21, false);
 	this->cboVolume->HandleSelectionChange(OnVolumeSelChg, this);
-	NEW_CLASS(this->lblDVDType, UI::GUILabel(ui, this->pnlDVDV, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblDVDType, UI::GUILabel(ui, this->pnlDVDV, CSTR("Type")));
 	this->lblDVDType->SetRect(8, 121, 48, 25, false);
 	NEW_CLASS(this->cboDVDType, UI::GUIComboBox(ui, this->pnlDVDV, false));
 	this->cboDVDType->SetRect(64, 121, 121, 21, false);
@@ -1447,7 +1447,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::DiscDBBurntDiscForm(UI::GUIClientControl *par
 	this->btnRemoveFile->HandleButtonClick(OnRemoveFileClicked, this);
 	NEW_CLASS(this->btnBuildMovie, UI::GUIButton(ui, this->pnlFile, CSTR("Build Movie")));
 	this->btnBuildMovie->SetRect(128, 251, 75, 25, false);
-	NEW_CLASS(this->lblSectorSize, UI::GUILabel(ui, this->pnlFile, (const UTF8Char*)"Sector Size"));
+	NEW_CLASS(this->lblSectorSize, UI::GUILabel(ui, this->pnlFile, CSTR("Sector Size")));
 	this->lblSectorSize->SetRect(16, 277, 72, 25, false);
 	NEW_CLASS(this->txtSectorSize, UI::GUITextBox(ui, this->pnlFile, CSTR("231000")));
 	this->txtSectorSize->SetRect(96, 277, 100, 20, false);

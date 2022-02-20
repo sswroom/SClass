@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Media::AudioFilter::AudioSweepFilter *sweepFilter;
 	Media::IAudioRenderer *renderer;
 	NEW_CLASS(dev, Media::AudioDevice());
-	NEW_CLASS(audSrc, Media::SilentSource(48000, 2, 16, (const UTF8Char*)"Silent", 0));
+	NEW_CLASS(audSrc, Media::SilentSource(48000, 2, 16, CSTR("Silent"), 0));
 	NEW_CLASS(sweepFilter, Media::AudioFilter::AudioSweepFilter(audSrc));
 	sweepFilter->SetVolume(0.3);
 	sweepFilter->StartSweep(10, 24000, 10);

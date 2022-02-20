@@ -12,7 +12,7 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	me->txtRetype->GetText(&sb2);
 	if (!sb1.Equals(&sb2))
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Password and retype password do not match", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Password and retype password do not match"), CSTR("Error"), me);
 		return;
 	}
 	sb1.ClearStr();
@@ -20,19 +20,19 @@ void __stdcall SSWR::OrganMgr::OrganUserEditForm::OnOKClicked(void *userObj)
 	me->txtWatermark->GetText(&sb3);
 	if (sb1.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter user name", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter user name"), CSTR("Error"), me);
 		return;
 	}
 	if (sb3.GetLength() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter watermark", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter watermark"), CSTR("Error"), me);
 		return;
 	}
 	if (me->user == 0)
 	{
 		if (sb2.GetLength() == 0)
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter password", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("Please enter password"), CSTR("Error"), me);
 			return;
 		}
 		if (me->env->AddWebUser(sb1.ToString(), sb2.ToString(), sb3.ToString(), SSWR::OrganMgr::UT_USER))
@@ -82,21 +82,21 @@ SSWR::OrganMgr::OrganUserEditForm::OrganUserEditForm(UI::GUIClientControl *paren
 		this->SetText(this->env->GetLang(UTF8STRC("UserEditTitleModify")));
 	}
 
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditUserName")).v));
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditUserName"))));
 	this->lblUserName->SetRect(64, 4, 100, 23, false);
 	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtUserName->SetRect(164, 4, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditPassword")).v));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditPassword"))));
 	this->lblPassword->SetRect(64, 28, 100, 23, false);
 	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtPassword->SetRect(164, 28, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditRetype")).v));
+	NEW_CLASS(this->lblRetype, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditRetype"))));
 	this->lblRetype->SetRect(64, 52, 100, 23, false);
 	NEW_CLASS(this->txtRetype, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtRetype->SetRect(164, 52, 200, 23, false);
 	this->txtRetype->SetPasswordChar('*');
-	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditWatermark")).v));
+	NEW_CLASS(this->lblWatermark, UI::GUILabel(ui, this, this->env->GetLang(UTF8STRC("UserEditWatermark"))));
 	this->lblWatermark->SetRect(64, 76, 100, 23, false);
 	NEW_CLASS(this->txtWatermark, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtWatermark->SetRect(164, 76, 200, 23, false);

@@ -158,7 +158,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 
 			if (i == 0)
 			{
-				if (UI::MessageDialog::ShowYesNoDialog(me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuestMsg")).v, me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuest")).v, me))
+				if (UI::MessageDialog::ShowYesNoDialog(me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuestMsg")), me->env->GetLang(UTF8STRC("MainFormGroupRemoveQuest")), me))
 				{
 					me->env->DelGroup(obj->GetGroupId());
 					me->lastGroupObj = 0;
@@ -170,7 +170,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 				sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg1")));
 				sb.AppendUOSInt(i);
 				sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg2")));
-				UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")).v, me);
+				UI::MessageDialog::ShowDialog(sb.ToCString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")), me);
 			}
 		}
         else
@@ -178,7 +178,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupRemoveClicked(void *userObj
 			sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg1")));
 			sb.AppendUOSInt(i);
 			sb.Append(me->env->GetLang(UTF8STRC("MainFormGroupRemoveMsg2")));
-			UI::MessageDialog::ShowDialog(sb.ToString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")).v, me);
+			UI::MessageDialog::ShowDialog(sb.ToCString(), me->env->GetLang(UTF8STRC("MainFormGroupRemoveTitle")), me);
 		}
 	}
 }
@@ -752,7 +752,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 			{
 				UI::FileDialog *dlg;
 				NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OrganMgrSave", true));
-				dlg->AddFilter((const UTF8Char*)"*.jpg", (const UTF8Char*)"JPEG File");
+				dlg->AddFilter(CSTR("*.jpg"), CSTR("JPEG File"));
 				dlg->SetFileName(userFile->oriFileName->v);
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
@@ -928,7 +928,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 								sb.Append(s);
 								s->Release();
 								s = Text::String::NewNotNull(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, me))
+								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), me))
 								{
 									s->Release();
 									break;
@@ -967,14 +967,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			me->txtSpeciesSName->GetText(&sb);
 			if (me->env->IsSpeciesExist(sb.ToString()))
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Species already exist", (const UTF8Char*)"Add Species", me);
+				UI::MessageDialog::ShowDialog(CSTR("Species already exist"), CSTR("Add Species"), me);
 				return;
 			}
 			sb2.AppendC(UTF8STRC("Species already exist in book:\r\n"));
 			if (me->env->IsBookSpeciesExist(sb.ToString(), &sb2))
 			{
 				sb2.AppendC(UTF8STRC("\r\n, continue?"));
-				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToString(), (const UTF8Char*)"Add Species", me))
+				if (!UI::MessageDialog::ShowYesNoDialog(sb2.ToCString(), CSTR("Add Species"), me))
 				{
 					return;
 				}
@@ -1043,7 +1043,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpRemoveClicked(void *userObj)
 		i = me->lbObj->GetSelectedIndex();
 		if (i != INVALID_INDEX)
 		{
-			if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to remove the species?", (const UTF8Char*)"Remove Species", me))
+			if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove the species?"), CSTR("Remove Species"), me))
 			{
 				OrganSpecies *o = (OrganSpecies*)me->lbObj->GetItem(i);;
 				if (me->env->DelSpecies(o))
@@ -1173,7 +1173,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	UOSInt i = me->cboSpBook->GetSelectedIndex();
 	if (i == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please select a book to add", (const UTF8Char*)"Add Book", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please select a book to add"), CSTR("Add Book"), me);
 		return;
 	}
 	OrganBook *bk = (OrganBook*)me->cboSpBook->GetItem(i);
@@ -1181,13 +1181,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 	me->txtSpBook->GetText(&sb);
 	if (sb.ToString()[0] == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter display name to add", (const UTF8Char*)"Add Book", me);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter display name to add"), CSTR("Add Book"), me);
 		return;
 	}
 
 	if (me->env->IsSpeciesBookExist(me->lastSpeciesObj->GetSpeciesId(), bk->GetBookId()))
 	{
-		if (!UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"The book is already exist. Are you sure to add this book?", (const UTF8Char*)"Question", me))
+		if (!UI::MessageDialog::ShowYesNoDialog(CSTR("The book is already exist. Are you sure to add this book?"), CSTR("Question"), me))
 		{
 			return;
 		}
@@ -1199,7 +1199,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpBookAddClicked(void *userObj)
 		i = me->lvSpBook->AddItem(sb.ToCString(), 0);
 		sb.ClearStr();
 		bk->GetString(&sb);
-		me->lvSpBook->SetSubItem(i, 1, sb.ToString());
+		me->lvSpBook->SetSubItem(i, 1, sb.ToCString());
 	}
 }
 
@@ -1436,13 +1436,13 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		me->lbObj->GetSelectedIndices(&sels);
 		if (sels.GetCount() != 1 && me->inputMode != IM_GROUP)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNonSp")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNonSp")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 		gi = (OrganGroupItem*)me->lbObj->GetSelectedItem();
 		if (gi->GetItemType() != OrganGroupItem::IT_SPECIES)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorGroupNonSp")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorGroupNonSp")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 		SDEL_STRING(me->initSelImg);
@@ -1474,7 +1474,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 	{
 		if (me->inputMode != IM_SPECIES && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotSpAvail")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotSpAvail")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 
@@ -1497,14 +1497,14 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 		}
 	}
 	else if (gi->GetItemType() == OrganGroupItem::IT_GROUP)
 	{
 		if (me->inputMode != IM_GROUP && me->inputMode != IM_EMPTY)
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotGrpAvail")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorNotGrpAvail")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 			return;
 		}
 
@@ -1527,7 +1527,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")).v, me);
+			UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me->env->GetLang(UTF8STRC("MainFormObjPlaceErrorTitle")), me);
 		}
 	}
 }
@@ -1539,7 +1539,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
 		return;
 	if (me->lastSpeciesObj == 0 || me->pickObjs->GetCount() != 1)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You can only combine single species", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("You can only combine single species"), CSTR("Error"), me);
 		return;
 	}
 	if (me->inputMode == IM_SPECIES)
@@ -1555,17 +1555,17 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjCombineClicked(void *userObj)
 			}
 			else
 			{
-				UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in combining books", (const UTF8Char*)"Error", me);
+				UI::MessageDialog::ShowDialog(CSTR("Error in combining books"), CSTR("Error"), me);
 			}
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"You can only combine single species", (const UTF8Char*)"Error", me);
+			UI::MessageDialog::ShowDialog(CSTR("You can only combine single species"), CSTR("Error"), me);
 		}
 	}
 	else
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"You can only combine species", (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(CSTR("You can only combine species"), CSTR("Error"), me);
 		return;
 	}
 }
@@ -2159,7 +2159,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateSpBook()
 		this->lvSpBook->AddItem(spBook->dispName, 0);
 		sb.ClearStr();
 		spBook->book->GetString(&sb);
-		this->lvSpBook->SetSubItem(i, 1, sb.ToString());
+		this->lvSpBook->SetSubItem(i, 1, sb.ToCString());
 
 		i++;
 	}
@@ -2239,7 +2239,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 			this->lastGroupObj->SetAdminOnly(this->chkGroupAdmin->IsChecked());
 			if (!this->env->SaveGroup(this->lastGroupObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveGroupError")).v, this->env->GetLang(UTF8STRC("MainFormSaveGroupTitle")).v, this);
+				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveGroupError")), this->env->GetLang(UTF8STRC("MainFormSaveGroupTitle")), this);
 				return true;
 			}
 		}
@@ -2283,7 +2283,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 					}
 					else
 					{
-						UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpExist")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
+						UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpExist")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
 						return true;
 					}
 				}
@@ -2310,7 +2310,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 			this->lastSpeciesObj->SetIDKey(sb.ToString());
 			if (!this->env->SaveSpecies(this->lastSpeciesObj))
 			{
-				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpError")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
+				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpError")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
 				return true;
 			}
 		}
@@ -2327,25 +2327,25 @@ Bool SSWR::OrganMgr::OrganMainForm::GroupFormValid()
 	UTF8Char sbuff[512];
 	if (this->lbDir->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorLoc")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorLoc")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
 		return false;
 	}
 
     if (this->cboGroupType->GetSelectedIndex() == INVALID_INDEX)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorGrpType")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorGrpType")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
 		return false;
 	}
 
 	if (this->txtGroupCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorCName")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorCName")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
         return false;
 	}
 
 	if (this->txtGroupEName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorEName")).v, this->env->GetLang(UTF8STRC("MainFormTitleGroup")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormGroupErrorEName")), this->env->GetLang(UTF8STRC("MainFormTitleGroup")), this);
         return false;
 	}
     return true;
@@ -2356,19 +2356,19 @@ Bool SSWR::OrganMgr::OrganMainForm::SpeciesFormValid()
 	UTF8Char sbuff[512];
 	if (this->txtSpeciesCName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorCName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorCName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
 		return false;
 	}
 
 	if (this->txtSpeciesSName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorSName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorSName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
 		return false;
 	}
 
 	if (this->txtSpeciesDName->GetText(sbuff) == sbuff)
 	{
-		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorDName")).v, this->env->GetLang(UTF8STRC("MainFormTitleSp")).v, this);
+		UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSpeciesErrorDName")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
         return false;
 	}
 	return true;
@@ -2563,7 +2563,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlLeft, UI::GUIPanel(ui, this));
 	this->pnlLeft->SetArea(0, 0, 100, 100, false);
 	this->pnlLeft->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlLeft, this->env->GetLang(UTF8STRC("MainFormLeft")).v));
+	NEW_CLASS(this->lblLeft, UI::GUILabel(ui, this->pnlLeft, this->env->GetLang(UTF8STRC("MainFormLeft"))));
 	this->lblLeft->SetArea(0, 0, 88, 20, false);
 	this->lblLeft->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lbDir, UI::GUIListBox(ui, this->pnlLeft, false));
@@ -2574,13 +2574,13 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlMid, UI::GUIPanel(ui, this));
 	this->pnlMid->SetArea(0, 0, 238, 50, false);
 	this->pnlMid->SetDockType(UI::GUIControl::DOCK_LEFT);
-	NEW_CLASS(this->lblMid, UI::GUILabel(ui, this->pnlMid, this->env->GetLang(UTF8STRC("MainFormMid")).v));
+	NEW_CLASS(this->lblMid, UI::GUILabel(ui, this->pnlMid, this->env->GetLang(UTF8STRC("MainFormMid"))));
 	this->lblMid->SetArea(0,0, 138, 20, false);
 	this->lblMid->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->pnlMidBottom, UI::GUIPanel(ui, this->pnlMid));
 	this->pnlMidBottom->SetArea(0, 0, 138, 80, false);
 	this->pnlMidBottom->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblPickMsg, UI::GUILabel(ui, this->pnlMidBottom, (const UTF8Char*)""));
+	NEW_CLASS(this->lblPickMsg, UI::GUILabel(ui, this->pnlMidBottom, CSTR("")));
 	this->lblPickMsg->SetArea(0, 0, 138, 23, false);
 	this->lblPickMsg->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->btnObjPick, UI::GUIButton(ui, this->pnlMidBottom, this->env->GetLang(UTF8STRC("MainFormMidPick"))));
@@ -2604,30 +2604,30 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	UI::GUILabel *lbl;
 	this->tpGroup = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabGroup")));
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupId")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupId"))));
 	lbl->SetRect(8, 4, 56, 29, false);
 	NEW_CLASS(this->txtGroupId, UI::GUITextBox(ui, this->tpGroup, CSTR("")));
 	this->txtGroupId->SetRect(64, 4, 80, 23, false);
 	this->txtGroupId->SetReadOnly(true);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupType")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupType"))));
 	lbl->SetRect(8, 28, 56, 23, false);
 	NEW_CLASS(this->cboGroupType, UI::GUIComboBox(ui, this->tpGroup, false));
 	this->cboGroupType->SetRect(64, 28, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupEName"))));
 	lbl->SetRect(8, 52, 56, 23, false);
 	NEW_CLASS(this->txtGroupEName, UI::GUITextBox(ui, this->tpGroup, CSTR("")));
 	this->txtGroupEName->SetRect(64, 52, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupCName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupCName"))));
 	lbl->SetRect(8, 76, 56, 23, false);
 	NEW_CLASS(this->txtGroupCName, UI::GUITextBox(ui, this->tpGroup, CSTR("")));
 	this->txtGroupCName->SetRect(64, 76, 144, 23, false);
-	NEW_CLASS(this->chkGroupAdmin, UI::GUICheckBox(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdmin")).v, false));
+	NEW_CLASS(this->chkGroupAdmin, UI::GUICheckBox(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupAdmin")), false));
 	this->chkGroupAdmin->SetRect(64, 100, 144, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupDesc")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupDesc"))));
 	lbl->SetRect(8, 124, 56, 23, false);
 	NEW_CLASS(this->txtGroupDesc, UI::GUITextBox(ui, this->tpGroup, CSTR(""), true));
 	this->txtGroupDesc->SetRect(8, 148, 200, 83, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupKey")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpGroup, this->env->GetLang(UTF8STRC("MainFormTabGroupKey"))));
 	lbl->SetRect(8, 232, 80, 23, false);
 	NEW_CLASS(this->txtGroupKey, UI::GUITextBox(ui, this->tpGroup, CSTR("")));
 	this->txtGroupKey->SetRect(8, 254, 280, 23, false);
@@ -2646,34 +2646,34 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->pnlSpecies, UI::GUIPanel(ui, this->tpSpecies));
 	this->pnlSpecies->SetRect(0, 0, 480, 288, false);
 	this->pnlSpecies->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesId")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesId"))));
 	lbl->SetRect(8, 4, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesId, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesId->SetRect(64, 4, 64, 23, false);
 	this->txtSpeciesId->SetReadOnly(true);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesCName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesCName"))));
 	lbl->SetRect(8, 28, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesCName, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesCName->SetRect(64, 28, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesSName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesSName"))));
 	lbl->SetRect(8, 52, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesSName, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesSName->SetRect(64, 52, 236, 23, false);
 	this->txtSpeciesSName->HandleTextChanged(OnSpeciesSNameChg, this);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesEName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesEName"))));
 	lbl->SetRect(8, 76, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesEName, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesEName->SetRect(64, 76, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDName"))));
 	lbl->SetRect(8, 100, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesDName, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesDName->SetReadOnly(true);
 	this->txtSpeciesDName->SetRect(64, 100, 236, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDesc")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesDesc"))));
 	lbl->SetRect(8, 124, 56, 23, false);
 	NEW_CLASS(this->txtSpeciesDesc, UI::GUITextBox(ui, this->pnlSpecies, CSTR(""), true));
 	this->txtSpeciesDesc->SetRect(8, 148, 500, 91, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, (const UTF8Char*)""));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpecies, CSTR("")));
 	lbl->SetRect(8, 240, 80, 23, false);
 	NEW_CLASS(this->txtSpeciesKey, UI::GUITextBox(ui, this->pnlSpecies, CSTR("")));
 	this->txtSpeciesKey->SetRect(8, 264, 480, 23, false);
@@ -2689,16 +2689,16 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->btnSpeciesColor, UI::GUIButton(ui, this->pnlSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesColor"))));
 	this->btnSpeciesColor->SetRect(360, 124, 75, 23, false);
 	this->btnSpeciesColor->HandleButtonClick(OnSpeciesColorClicked, this);
-	NEW_CLASS(this->grpSpBook, UI::GUIGroupBox(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBook")).v));
+	NEW_CLASS(this->grpSpBook, UI::GUIGroupBox(ui, this->tpSpecies, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBook"))));
 	this->grpSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	NEW_CLASS(this->pnlSpBook, UI::GUIPanel(ui, this->grpSpBook));
 	this->pnlSpBook->SetRect(0, 0, 474, 49, false);
 	this->pnlSpBook->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDisp")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookDisp"))));
 	lbl->SetRect(64, 0, 100, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookYear")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookYear"))));
 	lbl->SetRect(184, 0, 64, 23, false);
-	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookName")).v));
+	NEW_CLASS(lbl, UI::GUILabel(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookName"))));
 	lbl->SetRect(248, 0, 100, 23, false);
 	NEW_CLASS(this->btnSpBookAdd, UI::GUIButton(ui, this->pnlSpBook, this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookAdd"))));
 	this->btnSpBookAdd->SetRect(0, 24, 64, 23, false);
@@ -2718,8 +2718,8 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	NEW_CLASS(this->lvSpBook, UI::GUIListView(ui, this->grpSpBook, UI::GUIListView::LVSTYLE_TABLE, 2));
 	this->lvSpBook->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvSpBook->SetFullRowSelect(true);
-	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColDisp")).v, 200);
-	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColName")).v, 800);
+	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColDisp")), 200);
+	this->lvSpBook->AddColumn(this->env->GetLang(UTF8STRC("MainFormTabSpeciesBookColName")), 800);
 	this->lvSpBook->HandleSelChg(OnSpBookSelChg, this);
 	
 	this->tpImage = this->tcMain->AddTabPage(this->env->GetLang(UTF8STRC("MainFormTabImage")));
@@ -3533,7 +3533,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 								sb.Append(s);
 								s->Release();
 								s = Text::String::NewNotNull(L"錯誤");
-								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, this))
+								if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), this))
 								{
 									s->Release();
 									break;

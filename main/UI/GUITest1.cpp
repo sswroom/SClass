@@ -6,6 +6,6 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	UI::MessageDialog::ShowDialog((const UTF8Char*)"Message Dialog Test", (const UTF8Char*)"Message Dialog", 0);
+	UI::MessageDialog::ShowDialog(CSTR("Message Dialog Test"), CSTR("Message Dialog"), 0);
 	return 0;
 }

@@ -17,7 +17,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		NEW_CLASS(core, SSWR::DownloadMonitor::DownMonCore());
 		if (core->IsError())
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in initializing the core", (const UTF8Char*)"Download Monitor", 0);
+			UI::MessageDialog::ShowDialog(CSTR("Error in initializing the core"), CSTR("Download Monitor"), 0);
 		}
 		else
 		{

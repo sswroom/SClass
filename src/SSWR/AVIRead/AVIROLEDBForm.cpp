@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIROLEDBForm::OnOKClicked(void *userObj)
 	if (conn->GetConnError() != DB::OLEDBConn::CE_NONE)
 	{
 		DEL_CLASS(conn);
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in opening OLEDB connection", (const UTF8Char*)"OLEDB Connection", me);
+		UI::MessageDialog::ShowDialog(CSTR("Error in opening OLEDB connection"), CSTR("OLEDB Connection"), me);
 		return;
 	}
 	me->conn = conn;
@@ -41,7 +41,7 @@ SSWR::AVIRead::AVIROLEDBForm::AVIROLEDBForm(UI::GUIClientControl *parent, UI::GU
 	this->conn = 0;
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, (const UTF8Char*)"Conn String"));
+	NEW_CLASS(this->lblConnStr, UI::GUILabel(ui, this, CSTR("Conn String")));
 	this->lblConnStr->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtConnStr, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtConnStr->SetRect(104, 4, 800, 23, false);

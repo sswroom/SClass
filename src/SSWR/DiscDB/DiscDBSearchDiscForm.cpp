@@ -42,9 +42,9 @@ void __stdcall SSWR::DiscDB::DiscDBSearchDiscForm::OnSearchClicked(void *userObj
 		{
 			file = fileList.GetItem(i);
 			k = me->lvFiles->AddItem(file->fileName, 0);
-			Text::StrUInt64(sbuff, file->fileSize);
-			me->lvFiles->SetSubItem(k, 1, sbuff);
-			me->lvFiles->SetSubItem(k, 2, file->category);
+			sptr = Text::StrUInt64(sbuff, file->fileSize);
+			me->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+			me->lvFiles->SetSubItem(k, 2, Text::CString::FromPtr(file->category));
 			i++;
 		}
 		me->env->FreeBurntFiles(&fileList);
@@ -61,7 +61,7 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	NEW_CLASS(this->pnlDiscId, UI::GUIPanel(ui, this));
 	this->pnlDiscId->SetRect(0, 0, 292, 43, false);
 	this->pnlDiscId->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlDiscId, (const UTF8Char*)"Disc ID"));
+	NEW_CLASS(this->lblDiscId, UI::GUILabel(ui, this->pnlDiscId, CSTR("Disc ID")));
 	this->lblDiscId->SetRect(8, 9, 56, 25, false);
 	NEW_CLASS(this->txtDiscId, UI::GUITextBox(ui, this->pnlDiscId, CSTR("")));
 	this->txtDiscId->SetRect(64, 9, 120, 20, false);
@@ -71,17 +71,17 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	NEW_CLASS(this->pnlOut, UI::GUIPanel(ui, this));
 	this->pnlOut->SetRect(0, 0, 292, 108, false);
 	this->pnlOut->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblDiscIdOut, UI::GUILabel(ui, this->pnlOut, (const UTF8Char*)"Disc ID"));
+	NEW_CLASS(this->lblDiscIdOut, UI::GUILabel(ui, this->pnlOut, CSTR("Disc ID")));
 	this->lblDiscIdOut->SetRect(8, 9, 64, 25, false);
 	NEW_CLASS(this->txtDiscIdOut, UI::GUITextBox(ui, this->pnlOut, CSTR("")));
 	this->txtDiscIdOut->SetRect(72, 9, 100, 20, false);
 	this->txtDiscIdOut->SetReadOnly(true);
-	NEW_CLASS(this->lblDiscType, UI::GUILabel(ui, this->pnlOut, (const UTF8Char*)"Type"));
+	NEW_CLASS(this->lblDiscType, UI::GUILabel(ui, this->pnlOut, CSTR("Type")));
 	this->lblDiscType->SetRect(8, 35, 64, 25, false);
 	NEW_CLASS(this->txtDiscType, UI::GUITextBox(ui, this->pnlOut, CSTR("")));
 	this->txtDiscType->SetRect(72, 35, 100, 20, false);
 	this->txtDiscType->SetReadOnly(true);
-	NEW_CLASS(this->lblBurntDate, UI::GUILabel(ui, this->pnlOut, (const UTF8Char*)"Date"));
+	NEW_CLASS(this->lblBurntDate, UI::GUILabel(ui, this->pnlOut, CSTR("Date")));
 	this->lblBurntDate->SetRect(8, 61, 64, 25, false);
 	NEW_CLASS(this->txtBurntDate, UI::GUITextBox(ui, this->pnlOut, CSTR("")));
 	this->txtBurntDate->SetRect(72, 61, 100, 20, false);
@@ -90,9 +90,9 @@ SSWR::DiscDB::DiscDBSearchDiscForm::DiscDBSearchDiscForm(UI::GUIClientControl *p
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Name", 150);
-	this->lvFiles->AddColumn((const UTF8Char*)"Size", 80);
-	this->lvFiles->AddColumn((const UTF8Char*)"Category", 80);
+	this->lvFiles->AddColumn(CSTR("File Name"), 150);
+	this->lvFiles->AddColumn(CSTR("Size"), 80);
+	this->lvFiles->AddColumn(CSTR("Category"), 80);
 
 	this->txtDiscId->Focus();
 	this->SetDefaultButton(this->btnSearch);

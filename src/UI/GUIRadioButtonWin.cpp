@@ -26,7 +26,7 @@ void UI::GUIRadioButton::ChangeSelected(Bool selVal)
 	}
 }
 
-UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool selected) : UI::GUIControl(ui, parent)
+UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool selected) : UI::GUIControl(ui, parent)
 {
 	this->selected = false;
 	NEW_CLASS(this->selectedChangeHdlrs, Data::ArrayList<SelectedChangeHandler>());
@@ -37,7 +37,7 @@ UI::GUIRadioButton::GUIRadioButton(UI::GUICore *ui, UI::GUIClientControl *parent
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", initText, style, 0, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
 	if (selected)
 		Select();
 }

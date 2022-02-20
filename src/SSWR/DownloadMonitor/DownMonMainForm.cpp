@@ -334,7 +334,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEndClicked(void *us
 	Int32 id = (Int32)(OSInt)me->lvFiles->GetSelectedItem();
 	if (id > 0)
 	{
-		if (UI::MessageDialog::ShowYesNoDialog((const UTF8Char*)"Are you sure to remove selected file?", (const UTF8Char*)"Question", me))
+		if (UI::MessageDialog::ShowYesNoDialog(CSTR("Are you sure to remove selected file?"), CSTR("Question"), me))
 		{
 			me->core->FileEnd(id & 0xffffff, id >> 24);
 			Sync::MutexUsage mutUsage(me->endedMut);
@@ -611,12 +611,12 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->pnlButtons, UI::GUIPanel(ui, this));
 	this->pnlButtons->SetRect(0, 0, 100, 55, false);
 	this->pnlButtons->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlButtons, (const UTF8Char*)"Status"));
+	NEW_CLASS(this->lblStatus, UI::GUILabel(ui, this->pnlButtons, CSTR("Status")));
 	this->lblStatus->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtStatus, UI::GUITextBox(ui, this->pnlButtons, CSTR("Idle")));
 	this->txtStatus->SetRect(104, 4, 100, 23, false);
 	this->txtStatus->SetReadOnly(true);
-	NEW_CLASS(this->chkAutoStart, UI::GUICheckBox(ui, this->pnlButtons, (const UTF8Char*)"AutoStart", false));
+	NEW_CLASS(this->chkAutoStart, UI::GUICheckBox(ui, this->pnlButtons, CSTR("AutoStart"), false));
 	this->chkAutoStart->SetRect(204, 4, 100, 23, false);
 	NEW_CLASS(this->btnPasteTable, UI::GUIButton(ui, this->pnlButtons, CSTR("Paste Table")));
 	this->btnPasteTable->SetRect(304, 4, 75, 23, false);
@@ -633,7 +633,7 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 	NEW_CLASS(this->btnWebUpdate, UI::GUIButton(ui, this->pnlButtons, CSTR("Web Update")));
 	this->btnWebUpdate->SetRect(624, 4, 75, 23, false);
 	this->btnWebUpdate->HandleButtonClick(OnWebUpdateClicked, this);
-	NEW_CLASS(this->lblAlarm, UI::GUILabel(ui, this->pnlButtons, (const UTF8Char*)""));
+	NEW_CLASS(this->lblAlarm, UI::GUILabel(ui, this->pnlButtons, CSTR("")));
 	this->lblAlarm->SetRect(4, 28, 100, 23, false);
 	NEW_CLASS(this->btn30Minutes, UI::GUIButton(ui, this->pnlButtons, CSTR("30 Minutes")));
 	this->btn30Minutes->SetRect(104, 28, 75, 23, false);
@@ -641,8 +641,8 @@ SSWR::DownloadMonitor::DownMonMainForm::DownMonMainForm(UI::GUIClientControl *pa
 
 	NEW_CLASS(this->lvFiles, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvFiles->AddColumn((const UTF8Char*)"Id", 60);
-	this->lvFiles->AddColumn((const UTF8Char*)"File Name", 240);
+	this->lvFiles->AddColumn(CSTR("Id"), 60);
+	this->lvFiles->AddColumn(CSTR("File Name"), 240);
 	this->lvFiles->SetFullRowSelect(true);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->HandleDblClk(OnFilesDblClick, this);

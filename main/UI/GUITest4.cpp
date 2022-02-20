@@ -24,13 +24,13 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 		me->Close();
 		break;
 	case MNU_ITEM1:
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Item 1 Clicked", (const UTF8Char*)"GUITest4", me);
+		UI::MessageDialog::ShowDialog(CSTR("Item 1 Clicked"), CSTR("GUITest4"), me);
 		break;
 	case MNU_ITEM2:
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Item 2 Clicked", (const UTF8Char*)"GUITest4", me);
+		UI::MessageDialog::ShowDialog(CSTR("Item 2 Clicked"), CSTR("GUITest4"), me);
 		break;
 	case MNU_ITEM3:
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Item 3 Clicked", (const UTF8Char*)"GUITest4", me);
+		UI::MessageDialog::ShowDialog(CSTR("Item 3 Clicked"), CSTR("GUITest4"), me);
 		break;
 	}
 }
@@ -48,7 +48,7 @@ void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 		sb.AppendSlow(files[i]);
 		i++;
 	}
-	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Drop Files", me);
+	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Drop Files"), me);
 }
 
 Int32 MyMain(Core::IProgControl *progCtrl)

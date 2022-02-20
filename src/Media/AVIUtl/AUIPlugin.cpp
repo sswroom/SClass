@@ -308,11 +308,11 @@ void Media::AVIUtl::AUIPlugin::PrepareSelector(IO::IFileSelector *selector)
 		j = Text::StrSplit(sarr, 3, sarr[2], '|');
 		if (j == 1)
 			break;
-		const UTF8Char *u8ptr1 = Text::StrToUTF8New(sarr[1]);
-		const UTF8Char *u8ptr0 = Text::StrToUTF8New(sarr[0]);
-		selector->AddFilter(u8ptr1, u8ptr0);
-		Text::StrDelNew(u8ptr1);
-		Text::StrDelNew(u8ptr0);
+		Text::String *u8ptr1 = Text::String::NewNotNull(sarr[1]);
+		Text::String *u8ptr0 = Text::String::NewNotNull(sarr[0]);
+		selector->AddFilter(u8ptr1->ToCString(), u8ptr0->ToCString());
+		u8ptr1->Release();
+		u8ptr0->Release();
 		if (j == 2)
 			break;
 	}

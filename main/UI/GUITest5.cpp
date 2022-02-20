@@ -12,7 +12,7 @@ void __stdcall OnLBDblClick(void *userObj)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
 	Text::String *s = lb->GetSelectedItemTextNew();
-	UI::MessageDialog::ShowDialog(s->v, (const UTF8Char*)"GUI Test 5 LB DblClick", me);
+	UI::MessageDialog::ShowDialog(s->ToCString(), CSTR("GUI Test 5 LB DblClick"), me);
 	s->Release();
 }
 

@@ -131,9 +131,9 @@ Bool UI::GUIListView::AddColumn(Text::String *columnName, Double colWidth)
 	return ret;
 }
 
-Bool UI::GUIListView::AddColumn(const UTF8Char *columnName, Double colWidth)
+Bool UI::GUIListView::AddColumn(Text::CString columnName, Double colWidth)
 {
-	const WChar *wptr = Text::StrToWCharNew(columnName);
+	const WChar *wptr = Text::StrToWCharNew(columnName.v);
 	Bool ret = this->AddColumn(wptr, colWidth);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -264,16 +264,16 @@ Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::String *te
 	return ret;
 }
 
-Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, const UTF8Char *text)
+Bool UI::GUIListView::SetSubItem(UOSInt index, UOSInt subIndex, Text::CString text)
 {
 	const WChar *ws = 0;
 	LVITEMW item;
 	item.iItem = (int)index;
 	item.iSubItem = (int)subIndex;
 	item.mask = LVIF_TEXT;
-	if (text != 0)
+	if (text.leng != 0)
 	{
-		ws = Text::StrToWCharNew(text);
+		ws = Text::StrToWCharNew(text.v);
 		item.pszText = (LPWSTR)ws;
 		item.cchTextMax = (int)Text::StrCharCnt(ws);
 	}

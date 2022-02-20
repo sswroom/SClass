@@ -210,7 +210,7 @@ void __stdcall SSWR::OrganMgr::OrganTimeAdjForm::OnTimeApplyClicked(void *userOb
 	sb.AppendC(UTF8STRC(" succeed, "));
 	sb.AppendI32(failCnt);
 	sb.AppendC(UTF8STRC(" failed"));
-	UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Time Adjust", me);
+	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Time Adjust"), me);
 }
 
 void SSWR::OrganMgr::OrganTimeAdjForm::UpdateSelTime(const UTF8Char *camera, UOSInt cameraLen, Int32 timeAdj)

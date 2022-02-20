@@ -39,14 +39,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 				sb.AppendC(UTF8STRC("Error in parsing "));
 				sb.AppendC(files[i], nameLen);
 				failed = true;
-				UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me);
+				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DiscDB"), me);
 			}
 			else
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
 				sb.AppendC(files[i], nameLen);
 				sb.AppendC(UTF8STRC(", do you want to continue?"));
-				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"DiscDB", me))
+				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DiscDB"), me))
 				{
 					failed = true;
 					break;
@@ -57,7 +57,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 	}
 	if (!failed)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Finished inputting to database", (const UTF8Char*)"DiscDB", me);
+		UI::MessageDialog::ShowDialog(CSTR("Finished inputting to database"), CSTR("DiscDB"), me);
 	}
 }
 

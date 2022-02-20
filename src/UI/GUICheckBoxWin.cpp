@@ -6,7 +6,7 @@
 
 #include <windows.h>
 
-UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UTF8Char *initText, Bool checked) : UI::GUIControl(ui, parent)
+UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
 	NEW_CLASS(this->checkedChangeHdlrs, Data::ArrayList<CheckedChangeHandler>());
@@ -17,7 +17,7 @@ UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, const UT
 	{
 		style = style | WS_VISIBLE;
 	}
-	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", initText, style, 0, 0, 0, 200, 28);
+	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", initText.v, style, 0, 0, 0, 200, 28);
 	SetChecked(checked);
 }
 

@@ -25,6 +25,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	else
 	{
 		const UTF8Char *url = argv[1];
+		UOSInt urlLen = Text::StrCharCnt(url);
 		const UTF8Char *file = argv[2];
 
 		UOSInt i;
@@ -51,7 +52,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		DEL_CLASS(fs);
 
-		if (Text::StrStartsWith(url, (const UTF8Char*)"http://") && fileBuff && fileSize > 0)
+		if (Text::StrStartsWithC(url, urlLen, UTF8STRC("http://")) && fileBuff && fileSize > 0)
 		{
 			Text::CString mime = CSTR_NULL;
 			UOSInt fileLen = Text::StrCharCnt(file);
@@ -69,7 +70,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Net::HTTPClient *cli;
 			NEW_CLASS(sockf, Net::OSSocketFactory(true));
 			ssl = Net::SSLEngineFactory::Create(sockf, true);
-			cli = Net::HTTPClient::CreateConnect(sockf, ssl, url, Net::WebUtil::RequestMethod::HTTP_POST, false);
+			cli = Net::HTTPClient::CreateConnect(sockf, ssl, {url, urlLen}, Net::WebUtil::RequestMethod::HTTP_POST, false);
 			if (mime.v)
 			{
 				cli->AddContentType(mime);
@@ -118,7 +119,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				{
 					Text::String *fileName = 0;
 					sb.ClearStr();
-					sb.AppendSlow(url);
+					sb.AppendC(url, urlLen);
 					j = sb.IndexOf('?');
 					if (j != INVALID_INDEX)
 					{

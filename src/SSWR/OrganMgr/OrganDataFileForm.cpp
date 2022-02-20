@@ -48,7 +48,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnDeleteClicked(void *userObj)
 	sb.AppendC(UTF8STRC("Are you sure to delete "));
 	sb.AppendC(dataFile->fileName->v, dataFile->fileName->leng);
 	sb.AppendC(UTF8STRC("?"));
-	if (UI::MessageDialog::ShowYesNoDialog(sb.ToString(), (const UTF8Char*)"Question", me))
+	if (UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("Question"), me))
 	{
 		if (me->env->DelDataFile(dataFile))
 		{
@@ -82,6 +82,7 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 	UOSInt j;
 	UOSInt k;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime dt;
 	i = 0;
 	j = dataFiles->GetCount();
@@ -91,12 +92,12 @@ void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()
 		k = this->lvFiles->AddItem(dataFile->oriFileName, dataFile);
 		dt.SetTicks(dataFile->startTimeTicks);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		this->lvFiles->SetSubItem(k, 1, sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		this->lvFiles->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 		dt.SetTicks(dataFile->endTimeTicks);
 		dt.ToLocalTime();
-		dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
-		this->lvFiles->SetSubItem(k, 2, sbuff);
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss");
+		this->lvFiles->SetSubItem(k, 2, CSTRP(sbuff, sptr));
 		i++;
 	}
 }
@@ -121,9 +122,9 @@ SSWR::OrganMgr::OrganDataFileForm::OrganDataFileForm(UI::GUIClientControl *paren
 	this->lvFiles->SetDockType(UI::GUIControl::DOCK_FILL);
 	this->lvFiles->SetShowGrid(true);
 	this->lvFiles->SetFullRowSelect(true);
-	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColFileName")).v, 200);
-	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColStartTime")).v, 120);
-	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColEndTime")).v, 120);
+	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColFileName")), 200);
+	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColStartTime")), 120);
+	this->lvFiles->AddColumn(this->env->GetLang(UTF8STRC("DataFileColEndTime")), 120);
 	this->lvFiles->HandleDblClk(OnFilesDblClk, this);
 
 	this->UpdateFileList();

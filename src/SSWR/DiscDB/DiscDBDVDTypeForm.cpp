@@ -32,21 +32,21 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 	this->txtID->GetText(&sbID);
 	if (sbID.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the id", (const UTF8Char*)"DVDType", this);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the id"), CSTR("DVDType"), this);
 		this->txtID->Focus();
 		return false;
 	}
 	this->txtName->GetText(&sbName);
 	if (sbName.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the name", (const UTF8Char*)"DVDType", this);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the name"), CSTR("DVDType"), this);
 		this->txtName->Focus();
 		return false;
 	}
 	this->txtDescription->GetText(&sbDesc);
 	if (sbDesc.GetLength() <= 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Please enter the description", (const UTF8Char*)"DVDType", this);
+		UI::MessageDialog::ShowDialog(CSTR("Please enter the description"), CSTR("DVDType"), this);
 		this->txtDescription->Focus();
 		return false;
 	}
@@ -66,7 +66,7 @@ Bool SSWR::DiscDB::DiscDBDVDTypeForm::UpdateRow()
 		}
 		else
 		{
-			UI::MessageDialog::ShowDialog((const UTF8Char*)"ID Already exist", (const UTF8Char*)"DVDType", this);
+			UI::MessageDialog::ShowDialog(CSTR("ID Already exist"), CSTR("DVDType"), this);
 			return false;
 		}
 	}
@@ -85,7 +85,7 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	this->env = env;
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 
-	NEW_CLASS(this->lblID, UI::GUILabel(ui, this, (const UTF8Char*)"ID"));
+	NEW_CLASS(this->lblID, UI::GUILabel(ui, this, CSTR("ID")));
 	this->lblID->SetRect(8, 9, 80, 25, false);
 	NEW_CLASS(this->txtID, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtID->SetRect(96, 9, 100, 20, false);
@@ -95,15 +95,15 @@ SSWR::DiscDB::DiscDBDVDTypeForm::DiscDBDVDTypeForm(UI::GUIClientControl *parent,
 	NEW_CLASS(this->btnCancel, UI::GUIButton(ui, this, CSTR("&Cancel")));
 	this->btnCancel->SetRect(224, 43, 80, 25, false);
 	this->btnCancel->SetVisible(false);
-	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, (const UTF8Char*)"Name"));
+	NEW_CLASS(this->lblName, UI::GUILabel(ui, this, CSTR("Name")));
 	this->lblName->SetRect(8, 43, 80, 25, false);
 	NEW_CLASS(this->txtName, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtName->SetRect(96, 43, 100, 20, false);
-	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, this, (const UTF8Char*)"Description"));
+	NEW_CLASS(this->lblDescription, UI::GUILabel(ui, this, CSTR("Description")));
 	this->lblDescription->SetRect(8, 78, 80, 25, false);
 	NEW_CLASS(this->txtDescription, UI::GUITextBox(ui, this, CSTR("")));
 	this->txtDescription->SetRect(96, 78, 216, 20, false);
-	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, this, (const UTF8Char*)""));
+	NEW_CLASS(this->lblDisplay, UI::GUILabel(ui, this, CSTR("")));
 	this->lblDisplay->SetRect(8, 113, 304, 26, false);
 	NEW_CLASS(this->btnPrev, UI::GUIButton(ui, this, CSTR("&Prev")));
 	this->btnPrev->SetRect(8, 147, 75, 25, false);

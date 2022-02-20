@@ -2695,7 +2695,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				sb.Append(s);
 				s->Release();
 				s = Text::String::NewNotNull(L"錯誤");
-				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToString(), s->v, frm))
+				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), s->ToCString(), frm))
 				{
 					s->Release();
 					break;
