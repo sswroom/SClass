@@ -30,6 +30,7 @@ typedef struct
 	DB::DBMS::SessionParam param;
 	UInt8 authPluginData[20];
 	UTF8Char userName[64];
+	UOSInt userNameLen;
 	UTF8Char database[64];
 	Data::StringUTF8Map<const UTF8Char*> *attrMap;
 } ClientData;
@@ -381,6 +382,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					sb.AppendC(UTF8STRC("\r\nCharacter Set = "));
 					sb.AppendU16(data->clientCS);
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[36]) - data->userName);
+					data->userNameLen = len;
 					bptr = &data->buff[37] + len;
 					sb.AppendC(UTF8STRC("\r\nUsername = "));
 					sb.AppendC(data->userName, len);
@@ -455,6 +457,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 					sb.AppendC(UTF8STRC("\r\nMax Packet Size = "));
 					sb.AppendU32(data->param.clientMaxPacketSize);
 					len = (UOSInt)(Text::StrConcat(data->userName, &data->buff[9]) - data->userName);
+					data->userNameLen = len;
 					bptr = &data->buff[10] + len;
 					sb.AppendC(UTF8STRC("\r\nUsername = "));
 					sb.AppendC(data->userName, len);
@@ -484,7 +487,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				cli->GetRemoteAddr(&addr);
 				if (authLen == 20)
 				{
-					valid = me->dbms->UserLoginMySQL(data->connId, data->userName, data->authPluginData, authResp, &addr, &data->param, data->database);
+					valid = me->dbms->UserLoginMySQL(data->connId, {data->userName, data->userNameLen}, data->authPluginData, authResp, &addr, &data->param, data->database);
 				}
 
 				if (valid)
@@ -510,7 +513,7 @@ void __stdcall Net::MySQLServer::OnClientData(Net::TCPClient *cli, void *userObj
 				{
 					UTF8Char *sptr;
 					sptr = Text::StrConcatC(&sbuff[7], UTF8STRC("#28000Access denied for user '"));
-					sptr = Text::StrConcat(sptr, data->userName);
+					sptr = Text::StrConcatC(sptr, data->userName, data->userNameLen);
 					sptr = Text::StrConcatC(sptr, UTF8STRC("'@'"));
 					sptr = Net::SocketUtil::GetAddrName(sptr, &addr);
 					*sptr++ = '\'';
@@ -786,6 +789,7 @@ void __stdcall Net::MySQLServer::OnClientConn(Socket *s, void *userObj)
 	data->clientCS = 0;
 	data->param.clientMaxPacketSize = DEFAULT_BUFF_SIZE;
 	data->userName[0] = 0;
+	data->userNameLen = 0;
 	data->database[0] = 0;
 	NEW_CLASS(data->attrMap, Data::StringUTF8Map<const UTF8Char*>());
 	Sync::MutexUsage mutUsage(me->randMut);

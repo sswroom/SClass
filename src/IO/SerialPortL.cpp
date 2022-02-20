@@ -177,25 +177,26 @@ Bool IO::SerialPort::InitStream()
 Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
 	sess = IO::Path::FindFile(UTF8STRC("/dev/tty*"));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sbuff, sess, 0, 0, 0))
+		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, 0, 0)) != 0)
 		{
-			if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyS"))
+			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyS")))
 			{
 				ports->Add(1 + Text::StrToUOSInt(&sbuff[4]));
 				if (portTypes)
 					portTypes->Add(SPT_SERIALPORT);
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyUSB"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyUSB")))
 			{
 				ports->Add(33 + Text::StrToUOSInt(&sbuff[6]));
 				if (portTypes)
 					portTypes->Add(SPT_USBSERIAL);
 			}
-			else if (Text::StrStartsWith(sbuff, (const UTF8Char*)"ttyACM"))
+			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("ttyACM")))
 			{
 				ports->Add(65 + Text::StrToUOSInt(&sbuff[6]));
 				if (portTypes)

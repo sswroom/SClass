@@ -372,9 +372,9 @@ Text::String *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name, UOSIn
 	return this->headers->GetC({name, nameLen});
 }
 
-UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, const UTF8Char *name, UOSInt buffLen)
+UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen)
 {
-	Text::String *s = this->headers->GetC({name, Text::StrCharCnt(name)});
+	Text::String *s = this->headers->GetC(name);
 	if (s)
 	{
 		return s->ConcatToS(sbuff, buffLen);
@@ -539,17 +539,16 @@ Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name, U
 	return this->formMap->GetC({name, nameLen});
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(const UTF8Char *formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize)
+const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;
-	UOSInt formNameLen = Text::StrCharCnt(formName);
 	UOSInt i = 0;
 	UOSInt j = this->formFileList->GetCount();
 	while (i < j)
 	{
 		FormFileInfo *info = this->formFileList->GetItem(i);
-		if (info->formName->Equals(formName, formNameLen))
+		if (info->formName->Equals(formName.v, formName.leng))
 		{
 			if (index == 0)
 			{

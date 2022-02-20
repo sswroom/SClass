@@ -82,19 +82,20 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	OSInt i = 0;
 	while (i < nFiles)
 	{
-		pt = IO::Path::GetPathType(files[i]);
+		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
+		pt = IO::Path::GetPathType(files[i], fileNameLen);
 		if (pt == IO::Path::PathType::Directory)
 		{
-			NEW_CLASS(pkg, IO::DirectoryPackage(files[i]));
+			NEW_CLASS(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
 			me->core->OpenObject(pkg);
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
+			NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
 			if (!me->core->LoadData(fd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
-				sb.Append(files[i]);
+				sb.AppendSlow(files[i]);
 				found = true;
 			}
 			DEL_CLASS(fd);
@@ -104,7 +105,7 @@ void __stdcall SSWR::AVIReadCE::AVIRCEBaseForm::FileHandler(void *userObj, const
 	me->core->EndLoad();
 	if (found)
 	{
-		UI::MessageDialog::ShowDialog(sb.ToString(), (const UTF8Char*)"Error", me);
+		UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Error"), me);
 	}
 }
 
@@ -152,8 +153,8 @@ SSWR::AVIReadCE::AVIRCEBaseForm::MenuInfo *__stdcall SSWR::AVIReadCE::AVIRCEBase
 SSWR::AVIReadCE::AVIRCEBaseForm::AVIRCEBaseForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 480, ui)
 {
 	this->core = core;
-	this->SetText(CSTR("AVIRead");
-	this->SetFont(0, 8.75, false);
+	this->SetText(CSTR("AVIRead"));
+	this->SetFont(0, 0, 8.75, false);
 	this->SetFormState(UI::GUIForm::FS_MAXIMIZED);
 
 	Data::ArrayList<MenuInfo*> *menu;

@@ -375,13 +375,13 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 			sb.AllocLeng(33 + nameLen * 2);
 			if (i > 0)
 			{
-				sb.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+				sb.AppendC(UTF8STRC("<br/>\r\n"));
 			}
-			sb.AppendC((const UTF8Char*)"<a href=\"/dnsreqv6?qry=", 23);
+			sb.AppendC(UTF8STRC("<a href=\"/dnsreqv6?qry="));
 			sb.Append(name);
-			sb.AppendC((const UTF8Char*)"\">", 2);
+			sb.AppendC(UTF8STRC("\">"));
 			sb.Append(name);
-			sb.AppendC((const UTF8Char*)"</a>", 4);
+			sb.AppendC(UTF8STRC("</a>"));
 
 			i++;
 		}
@@ -635,7 +635,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 			{
 				if (i > 0)
 				{
-					sb.AppendC((const UTF8Char*)"<br/>\r\n", 7);
+					sb.AppendC(UTF8STRC("<br/>\r\n"));
 				}
 				sb.Append(target->addrList->GetItem(i));
 				i++;

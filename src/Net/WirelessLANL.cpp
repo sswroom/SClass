@@ -282,7 +282,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 	IO::FileStream *fs;
 	UOSInt ret = 0;
 	Net::WirelessLAN::Interface *interf;
-/*	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/proc/net/wireless", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+/*	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/wireless"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		Text::StringBuilderUTF8 sb;

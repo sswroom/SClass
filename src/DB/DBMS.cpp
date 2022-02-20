@@ -138,12 +138,12 @@ namespace DB
 			this->rows->Add(newRow);
 		}
 
-		void SetColumn(UOSInt colIndex, const UTF8Char *colName, DB::DBUtil::ColType colType)
+		void SetColumn(UOSInt colIndex, Text::CString colName, DB::DBUtil::ColType colType)
 		{
 			if (this->rows && colIndex < this->colCount)
 			{
 				SDEL_TEXT(this->colNames[colIndex]);
-				this->colNames[colIndex] = Text::StrCopyNew(colName);
+				this->colNames[colIndex] = Text::StrCopyNewC(colName.v, colName.leng);
 				this->colTypes[colIndex] = colType;
 			}
 		}
@@ -927,13 +927,14 @@ const UTF8Char *DB::DBMS::SysVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::Sessi
 	return 0;
 }
 
-void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName)
+void DB::DBMS::SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
-	if (colName == 0)
+	UTF8Char *sptr;
+	if (colName.leng == 0)
 	{
-		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@@")), varName);
-		colName = sbuff;
+		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@@")), varName);
+		colName = CSTRP(sbuff, sptr);
 	}
 	UOSInt varNameLen = Text::StrCharCnt(varName);
 	
@@ -1164,13 +1165,14 @@ const UTF8Char *DB::DBMS::UserVarGet(Text::StringBuilderUTF8 *sb, DB::DBMS::Sess
 	return varName + i;
 }
 
-void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName)
+void DB::DBMS::UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName)
 {
 	UTF8Char sbuff[128];
-	if (colName == 0)
+	UTF8Char *sptr;
+	if (colName.leng == 0)
 	{
-		Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@")), varName);
-		colName = sbuff;
+		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("@")), varName);
+		colName = CSTRP(sbuff, sptr);
 	}
 
 	reader->SetColumn(colIndex, colName, DB::DBUtil::CT_VarChar);
@@ -1196,7 +1198,7 @@ Bool DB::DBMS::UserVarSet(DB::DBMS::SessionInfo *sess, const UTF8Char *varName, 
 	return true;
 }
 
-Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *colName, Bool *valid)
+Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid)
 {
 	const UTF8Char *val = *valPtr;
 	if (Text::StrStartsWith(val, (const UTF8Char*)"@@"))
@@ -1293,7 +1295,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				{
 					*valPtr = val;
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:sb.ToString(), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarChar);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -1364,7 +1366,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				{
 					*valPtr = val;
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:sb.ToString(), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:sb.ToCString(), DB::DBUtil::CT_VarChar);
 					return Text::String::New(sb.ToString(), sb.GetLength());
 				}
 			}
@@ -1446,7 +1448,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		if (*sptr == 0 || *sptr == ',')
 		{
 			if (reader)
-				reader->SetColumn(colIndex, colName?colName:val, isDbl?DB::DBUtil::CT_Double:DB::DBUtil::CT_Int32);
+				reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), isDbl?DB::DBUtil::CT_Double:DB::DBUtil::CT_Int32);
 			*valPtr = sptr;
 			return Text::String::New(sb.ToString(), sb.GetLength());
 		}
@@ -1454,7 +1456,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(&sptr));
-			val2 = this->Evals(&sptr, sess, 0, 0, 0, valid);
+			val2 = this->Evals(&sptr, sess, 0, 0, CSTR_NULL, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1469,7 +1471,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Int32);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1482,7 +1484,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				sb.ClearStr();
 				Text::SBAppendF64(&sb, dVal);
 				if (reader)
-					reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Double);
+					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1499,7 +1501,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(&sptr));
-			val2 = this->Evals(&sptr, sess, 0, 0, 0, valid);
+			val2 = this->Evals(&sptr, sess, 0, 0, CSTR_NULL, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1514,7 +1516,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Int32);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1527,7 +1529,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				sb.ClearStr();
 				Text::SBAppendF64(&sb, dVal);
 				if (reader)
-					reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Double);
+					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1544,7 +1546,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(&sptr));
-			val2 = this->Evals(&sptr, sess, 0, 0, 0, valid);
+			val2 = this->Evals(&sptr, sess, 0, 0, CSTR_NULL, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1559,7 +1561,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Int32);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1572,7 +1574,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				sb.ClearStr();
 				Text::SBAppendF64(&sb, dVal);
 				if (reader)
-					reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Double);
+					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1589,7 +1591,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 		{
 			sptr++;			
 			while (Text::CharUtil::PtrIsWS(&sptr));
-			val2 = this->Evals(&sptr, sess, 0, 0, 0, valid);
+			val2 = this->Evals(&sptr, sess, 0, 0, CSTR_NULL, valid);
 			if (val2 == 0)
 			{
 				*valid = false;
@@ -1604,7 +1606,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 					sb.ClearStr();
 					sb.AppendI32(iVal);
 					if (reader)
-						reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Int32);
+						reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Int32);
 					*valPtr = sptr;
 					val2->Release();
 					return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1617,7 +1619,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 				sb.ClearStr();
 				Text::SBAppendF64(&sb, dVal);
 				if (reader)
-					reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Double);
+					reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 				*valPtr = sptr;
 				val2->Release();
 				return Text::String::New(sb.ToString(), sb.GetLength());
@@ -1675,7 +1677,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 						while (true)
 						{
 							while (Text::CharUtil::PtrIsWS(&sptr));
-							sVal = this->Evals(&sptr, sess, 0, 0, 0, &v);
+							sVal = this->Evals(&sptr, sess, 0, 0, CSTR_NULL, &v);
 							if (!v)
 							{
 								*valid = false;
@@ -1687,7 +1689,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 							if (sptr[0] == ')')
 							{
 								if (reader)
-									reader->SetColumn(colIndex, colName?colName:val, DB::DBUtil::CT_Double);
+									reader->SetColumn(colIndex, (colName.leng > 0)?colName:Text::CString::FromPtr(val), DB::DBUtil::CT_Double);
 								*valPtr = sptr + 1;
 								return Text::String::New(sb.ToString(), sb.GetLength());
 							}
@@ -1766,7 +1768,7 @@ Text::String *DB::DBMS::Evals(const UTF8Char **valPtr, DB::DBMS::SessionInfo *se
 
 DB::DBMS::DBMS(Text::CString versionStr, IO::LogTool *log)
 {
-	NEW_CLASS(this->loginMap, Data::StringUTF8Map<DB::DBMS::LoginInfo*>());
+	NEW_CLASS(this->loginMap, Data::FastStringMap<DB::DBMS::LoginInfo*>());
 	NEW_CLASS(this->loginSHA1, Crypto::Hash::SHA1());
 	NEW_CLASS(this->loginMut, Sync::Mutex());
 	NEW_CLASS(this->sessMut, Sync::Mutex());
@@ -1778,14 +1780,13 @@ DB::DBMS::DBMS(Text::CString versionStr, IO::LogTool *log)
 DB::DBMS::~DBMS()
 {
 	this->versionStr->Release();
-	Data::ArrayList<DB::DBMS::LoginInfo*> *loginList = this->loginMap->GetValues();
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
-	UOSInt i = loginList->GetCount();
+	UOSInt i = this->loginMap->GetCount();
 	UOSInt j;
 	while (i-- > 0)
 	{
-		login = loginList->GetItem(i);
+		login = this->loginMap->GetItem(i);
 		j = login->userList->GetCount();
 		while (j-- > 0)
 		{
@@ -1793,7 +1794,7 @@ DB::DBMS::~DBMS()
 			MemFree(user);
 		}
 		DEL_CLASS(login->userList);
-		Text::StrDelNew(login->login);
+		login->login->Release();
 		MemFree(login);
 	}
 	DEL_CLASS(this->loginMap);
@@ -1821,28 +1822,28 @@ IO::LogTool *DB::DBMS::GetLogTool()
 	return this->log;
 }
 
-Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host)
+Bool DB::DBMS::UserAdd(Int32 userId, Text::CString userName, Text::CString password, Text::CString host)
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
 	UOSInt i;
 	Bool succ;
 	#if defined(VERBOSE)
-	printf("UserAdd %s/%s@%s\r\n", userName, password, host);
+	printf("UserAdd %s/%s@%s\r\n", userName.v, password.v, host.v);
 	#endif
 	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap->Get(userName);
+	login = this->loginMap->GetC(userName);
 	if (login == 0)
 	{
 		login = MemAlloc(DB::DBMS::LoginInfo, 1);
-		login->login = Text::StrCopyNew(userName);
+		login->login = Text::String::New(userName);
 		NEW_CLASS(login->userList, Data::ArrayList<DB::DBMS::UserInfo*>());
-		this->loginMap->Put(userName, login);
+		this->loginMap->PutC(userName, login);
 
 		user = MemAlloc(DB::DBMS::UserInfo, 1);
-		Text::StrConcat(user->host, host);
+		user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
 		this->loginSHA1->Clear();
-		this->loginSHA1->Calc(password, Text::StrCharCnt(password));
+		this->loginSHA1->Calc(password.v, password.leng);
 		this->loginSHA1->GetValue(user->pwdSha1);
 		user->userId = userId;
 		login->userList->Add(user);
@@ -1855,7 +1856,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 		while (i-- > 0)
 		{
 			user = login->userList->GetItem(i);
-			if (Text::StrEquals(user->host, host))
+			if (host.Equals(user->host, user->hostLen))
 			{
 				succ = false;
 				break;
@@ -1864,9 +1865,9 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 		if (succ)
 		{
 			user = MemAlloc(DB::DBMS::UserInfo, 1);
-			Text::StrConcat(user->host, host);
+			user->hostLen = (UOSInt)(host.ConcatTo(user->host) - user->host);
 			this->loginSHA1->Clear();
-			this->loginSHA1->Calc(password, Text::StrCharCnt(password));
+			this->loginSHA1->Calc(password.v, password.leng);
 			this->loginSHA1->GetValue(user->pwdSha1);
 			user->userId = userId;
 			login->userList->Add(user);
@@ -1876,7 +1877,7 @@ Bool DB::DBMS::UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *p
 	return succ;
 }
 
-Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
+Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const DB::DBMS::SessionParam *param, const UTF8Char *database)
 {
 	DB::DBMS::LoginInfo *login;
 	DB::DBMS::UserInfo *user;
@@ -1887,7 +1888,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UIn
 	printf("mysql_native_password auth\r\n");
 	#endif
 	Sync::MutexUsage mutUsage(this->loginMut);
-	login = this->loginMap->Get(userName);
+	login = this->loginMap->GetC(userName);
 	if (login)
 	{
 		UOSInt i = login->userList->GetCount();
@@ -2207,7 +2208,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				#if defined(VERBOSE)
 				printf("Column %d is %s\r\n", (int)i, val);
 				#endif
-				colVals[i] = this->Evals(&val, sess, reader, i, col->asName->v, &valid);
+				colVals[i] = this->Evals(&val, sess, reader, i, col->asName->ToCString(), &valid);
 
 				SDEL_TEXT(col->name);
 				SDEL_STRING(col->asName);
@@ -2344,7 +2345,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					while (Text::CharUtil::PtrIsWS(&sptr1));
 					Bool valid = true;
-					Text::String *val = this->Evals(&sptr1, sess, 0, 0, 0, &valid);
+					Text::String *val = this->Evals(&sptr1, sess, 0, 0, CSTR_NULL, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2633,7 +2634,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				if (valid)
 				{
 					while (Text::CharUtil::PtrIsWS(&sptr1));
-					Text::String *val = this->Evals(&sptr1, sess, 0, 0, 0, &valid);
+					Text::String *val = this->Evals(&sptr1, sess, 0, 0, CSTR_NULL, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2759,7 +2760,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					while (Text::CharUtil::PtrIsWS(&sptr1));
 					Bool valid = true;
-					Text::String *val = this->Evals(&sptr1, sess, 0, 0, 0, &valid);
+					Text::String *val = this->Evals(&sptr1, sess, 0, 0, CSTR_NULL, &valid);
 					if (!valid)
 					{
 						i = cols.GetCount();
@@ -2896,8 +2897,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				Text::String *row[2];
 				Text::StringBuilderUTF8 sb;
 				NEW_CLASS(reader, DB::DBMSReader(2, -1));
-				reader->SetColumn(0, (const UTF8Char*)"Variablename", DB::DBUtil::CT_VarChar);
-				reader->SetColumn(1, (const UTF8Char*)"Value", DB::DBUtil::CT_VarChar);
+				reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarChar);
+				reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarChar);
 				i = 0;
 				j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 				while (i < j)
@@ -2919,7 +2920,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				if (sptr1[0] == '\'')
 				{
 					Bool valid = true;
- 					Text::String *val = this->Evals(&sptr1, sess, 0, 0, 0, &valid);
+ 					Text::String *val = this->Evals(&sptr1, sess, 0, 0, CSTR_NULL, &valid);
 					if (!valid)
 					{
 						SDEL_STRING(val);
@@ -2935,8 +2936,8 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 						Text::String *row[2];
 						Text::StringBuilderUTF8 sb;
 						NEW_CLASS(reader, DB::DBMSReader(2, -1));
-						reader->SetColumn(0, (const UTF8Char*)"Variablename", DB::DBUtil::CT_VarChar);
-						reader->SetColumn(1, (const UTF8Char*)"Value", DB::DBUtil::CT_VarChar);
+						reader->SetColumn(0, CSTR("Variablename"), DB::DBUtil::CT_VarChar);
+						reader->SetColumn(1, CSTR("Value"), DB::DBUtil::CT_VarChar);
 						i = 0;
 						j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 						while (i < j)

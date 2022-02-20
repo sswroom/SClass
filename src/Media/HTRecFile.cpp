@@ -176,41 +176,41 @@ UTF8Char *Media::HTRecFile::HTRecReader::GetStr(UOSInt colIndex, UTF8Char *buff,
 			switch (this->nextRow - 1)
 			{
 			case 0:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Download Time", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Download Time"), buffSize);
 			case 1:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Address", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Address"), buffSize);
 			case 2:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Serial Number", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Serial Number"), buffSize);
 			case 3:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Test Name", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Test Name"), buffSize);
 			case 4:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Setting Time", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Setting Time"), buffSize);
 			case 5:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Total Records", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Total Records"), buffSize);
 			case 6:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Record Interval", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Record Interval"), buffSize);
 			case 7:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Work LED", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Work LED"), buffSize);
 			case 8:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Immediately/Manual", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Immediately/Manual"), buffSize);
 			case 9:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Temperature Alarm L", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Temperature Alarm L"), buffSize);
 			case 10:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Temperature Alarm H", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Temperature Alarm H"), buffSize);
 			case 11:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Humidity Alarm L", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Humidity Alarm L"), buffSize);
 			case 12:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Humidity Alarm H", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Humidity Alarm H"), buffSize);
 			case 13:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Alarm Mode", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Alarm Mode"), buffSize);
 			case 14:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Start Time", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Start Time"), buffSize);
 			case 15:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Test Records", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Test Records"), buffSize);
 			case 16:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Is TEMP Alarm", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Is TEMP Alarm"), buffSize);
 			case 17:
-				return Text::StrConcatS(buff, (const UTF8Char*)"Is HUMI Alarm", buffSize);
+				return Text::StrConcatCS(buff, UTF8STRC("Is HUMI Alarm"), buffSize);
 			}
 		}
 		else if (colIndex == 1)

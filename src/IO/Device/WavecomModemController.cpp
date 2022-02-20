@@ -39,9 +39,9 @@ UTF8Char *IO::Device::WavecomModemController::GetCapabilityList(UTF8Char *capLis
 	UTF8Char *sptr = this->SendStringCommand(sbuff, UTF8STRC("AT+GCAP"), 3000);
 	if (sptr == 0)
 		return 0;
-	if (Text::StrStartsWith(sbuff, (const UTF8Char*)"+GCAP: "))
+	if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("+GCAP: ")))
 	{
-		return Text::StrConcat(capList, &sbuff[7]);
+		return Text::StrConcatC(capList, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
 	}
 	else
 	{

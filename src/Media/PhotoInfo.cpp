@@ -10,24 +10,24 @@
 void Media::PhotoInfo::ParseXMF(Text::XMLDocument *xmf)
 {
 	Text::XMLNode *node;
-	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@exif:ExposureTime")) != 0)
+	if ((node = xmf->SearchFirstNode(CSTR("//@exif:ExposureTime"))) != 0)
 	{
 		this->expTime = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@exif:FNumber")) != 0)
+	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FNumber"))) != 0)
 	{
 		this->fNumber = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@aux:Lens")) != 0)
+	if ((node = xmf->SearchFirstNode(CSTR("//@aux:Lens"))) != 0)
 	{
 		SDEL_STRING(this->lens);
 		this->lens = node->value->Clone();
 	}
-	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//@exif:FocalLength")) != 0)
+	if ((node = xmf->SearchFirstNode(CSTR("//@exif:FocalLength"))) != 0)
 	{
 		this->focalLength = ParseFraction(node->value);
 	}
-	if ((node = xmf->SearchFirstNode((const UTF8Char*)"//exif:ISOSpeedRatings")) != 0)
+	if ((node = xmf->SearchFirstNode(CSTR("//exif:ISOSpeedRatings"))) != 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		node->GetInnerText(&sb);

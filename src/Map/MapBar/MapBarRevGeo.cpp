@@ -42,7 +42,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 {
 	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli;
-	IO::MemoryStream mstm((const UTF8Char*)"Map.MapBar.MapBarRevGeo");
+	IO::MemoryStream mstm(UTF8STRC("Map.MapBar.MapBarRevGeo"));
 	OSInt readSize;
 	UInt8 *dataBbuff;
 	UInt8 *xmlBuff;
@@ -69,24 +69,24 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 		sb.AppendC(UTF8STRC("&cn=1"));
 	}
 
-	cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToString(), "GET", false);
+	cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 	while ((readSize = cli->Read(dataBbuff, 2048)) > 0)
 	{
 		mstm.Write(dataBbuff, readSize);
 	}
 	DEL_CLASS(cli);
 	xmlBuff = mstm.GetBuff(&buffSize);
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"MapBarRevGeo.xml", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("MapBarRevGeo.xml"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(xmlBuff, buffSize);
 	DEL_CLASS(fs);
 
 	*buff = 0;
 	NEW_CLASS(xmlDoc, Text::XMLDocument());
 	xmlDoc->ParseBuff(&encFact, xmlBuff, buffSize);
-	resultNode = xmlDoc->SearchFirstNode((const UTF8Char*)"/result");
+	resultNode = xmlDoc->SearchFirstNode(CSTR("/result"));
 	if (resultNode)
 	{
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/nation");
+		node = resultNode->SearchFirstNode(CSTR("/nation"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -94,7 +94,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/province");
+		node = resultNode->SearchFirstNode(CSTR("/province"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -109,7 +109,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			}
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/city");
+		node = resultNode->SearchFirstNode(CSTR("/city"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -117,7 +117,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/dist");
+		node = resultNode->SearchFirstNode(CSTR("/dist"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -125,7 +125,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/area");
+		node = resultNode->SearchFirstNode(CSTR("/area"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -133,7 +133,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/town");
+		node = resultNode->SearchFirstNode(CSTR("/town"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -141,7 +141,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/village");
+		node = resultNode->SearchFirstNode(CSTR("/village"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -149,7 +149,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/road/roadname");
+		node = resultNode->SearchFirstNode(CSTR("/road/roadname"));
 		if (node)
 		{
 			sb.ClearStr();
@@ -157,7 +157,7 @@ UTF8Char *Map::MapBar::MapBarRevGeo::SearchNameAdjusted(UTF8Char *buff, UOSInt b
 			buff = Text::StrConcatC(buff, sb.ToString(), sb.GetLength());
 		}
 
-		node = resultNode->SearchFirstNode((const UTF8Char*)"/poi");
+		node = resultNode->SearchFirstNode(CSTR("/poi"));
 		if (node)
 		{
 			sb.ClearStr();

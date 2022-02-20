@@ -50,14 +50,14 @@ namespace Text
 		UOSInt GetChildCnt();
 		XMLNode *GetChild(UOSInt index);
 
-		XMLNode **SearchNode(const UTF8Char *path, UOSInt *cnt);
-		XMLNode *SearchFirstNode(const UTF8Char *path);
+		XMLNode **SearchNode(Text::CString path, UOSInt *cnt);
+		XMLNode *SearchFirstNode(Text::CString path);
 		void ReleaseSearch(XMLNode** searchResult);
 
 		void GetInnerXML(Text::StringBuilderUTF8 *sb);
 		void GetInnerText(Text::StringBuilderUTF8 *sb);
 	private:
-		void SearchNodeBegin(const UTF8Char *path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
+		void SearchNodeBegin(Text::CString path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult);
 		Bool SearchNodeSub(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchNodeSubElement(XMLNode *node, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr, Data::ArrayList<XMLNode*> *outArr, Int32 searchType, Bool singleResult);
 		Bool SearchEqual(UOSInt level, Data::ArrayList<UTF8Char*> *reqArr, Data::ArrayList<XMLNode*> *currPathArr);

@@ -4,7 +4,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
-#define MYSQLVERSION ((const UTF8Char*)"AVIRead-1.0")
+#define MYSQLVERSION CSTR("AVIRead-1.0")
 
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnStartClicked(void *userObj)
 {
@@ -46,11 +46,11 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnUserAddClicked(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnLogSel(void *userObj)
 {
-	const UTF8Char *t;
+	Text::String *t;
 	SSWR::AVIRead::AVIRMyDBMSForm *me = (SSWR::AVIRead::AVIRMyDBMSForm*)userObj;
 	t = me->lbLog->GetSelectedItemTextNew();
-	me->txtLog->SetText(t);
-	me->lbLog->DelTextNew(t);
+	me->txtLog->SetText(t->ToCString());
+	t->Release();
 }
 
 void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnTimerTick(void *userObj)
@@ -61,7 +61,7 @@ void __stdcall SSWR::AVIRead::AVIRMyDBMSForm::OnTimerTick(void *userObj)
 SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
-	this->SetText(CSTR("My DBMS");
+	this->SetText(CSTR("My DBMS"));
 	this->SetFont(0, 0, 8.25, false);
 	this->svr = 0;
 	this->log = 0;
@@ -71,38 +71,38 @@ SSWR::AVIRead::AVIRMyDBMSForm::AVIRMyDBMSForm(UI::GUIClientControl *parent, UI::
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 31, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_TOP);
-	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Port"));
+	NEW_CLASS(this->lblPort, UI::GUILabel(ui, this->pnlCtrl, CSTR("Port")));
 	this->lblPort->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, (const UTF8Char*)"3306"));
+	NEW_CLASS(this->txtPort, UI::GUITextBox(ui, this->pnlCtrl, CSTR("3306")));
 	this->txtPort->SetRect(104, 4, 80, 23, false);
-	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Start"));
+	NEW_CLASS(this->btnStart, UI::GUIButton(ui, this->pnlCtrl, CSTR("Start")));
 	this->btnStart->SetRect(184, 4, 75, 23, false);
 	this->btnStart->HandleButtonClick(OnStartClicked, this);
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));
 	this->tcMain->SetDockType(UI::GUIControl::DOCK_FILL);
 
-	this->tpUser = this->tcMain->AddTabPage(CSTR("User");
+	this->tpUser = this->tcMain->AddTabPage(CSTR("User"));
 	NEW_CLASS(this->lbUser, UI::GUIListBox(ui, this->tpUser, false));
 	this->lbUser->SetRect(0, 0, 100, 23, false);
 	this->lbUser->SetDockType(UI::GUIControl::DOCK_LEFT);
 	NEW_CLASS(this->hspUser, UI::GUIHSplitter(ui, this->tpUser, 3, false));
 	NEW_CLASS(this->pnlUser, UI::GUIPanel(ui, this->tpUser));
 	this->pnlUser->SetDockType(UI::GUIControl::DOCK_FILL);
-	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlUser, (const UTF8Char*)"User Name"));
+	NEW_CLASS(this->lblUserName, UI::GUILabel(ui, this->pnlUser, CSTR("User Name")));
 	this->lblUserName->SetRect(8, 8, 100, 23, false);
-	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlUser, (const UTF8Char*)"root"));
+	NEW_CLASS(this->txtUserName, UI::GUITextBox(ui, this->pnlUser, CSTR("root")));
 	this->txtUserName->SetRect(108, 8, 200, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlUser, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlUser, CSTR("Password")));
 	this->lblPassword->SetRect(8, 32, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlUser, CSTR("")));
 	this->txtPassword->SetRect(108, 32, 200, 23, false);
 	this->txtPassword->SetPasswordChar('*');
-	NEW_CLASS(this->btnUserAdd, UI::GUIButton(ui, this->pnlUser, (const UTF8Char*)"Add"));
+	NEW_CLASS(this->btnUserAdd, UI::GUIButton(ui, this->pnlUser, CSTR("Add")));
 	this->btnUserAdd->SetRect(100, 56, 75, 23, false);
 	this->btnUserAdd->HandleButtonClick(OnUserAddClicked, this);
 
-	this->tpLog = this->tcMain->AddTabPage(CSTR("Log");
-	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, (const UTF8Char*)""));
+	this->tpLog = this->tcMain->AddTabPage(CSTR("Log"));
+	NEW_CLASS(this->txtLog, UI::GUITextBox(ui, this->tpLog, CSTR("")));
 	this->txtLog->SetRect(0, 0, 100, 23, false);
 	this->txtLog->SetReadOnly(true);
 	this->txtLog->SetDockType(UI::GUIControl::DOCK_BOTTOM);

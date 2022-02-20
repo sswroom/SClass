@@ -26,7 +26,7 @@ Map::GoogleMap::GoogleWSSearcherXML::~GoogleWSSearcherXML()
 	DEL_CLASS(this->mut);
 }
 
-UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang)
+UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
 {
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -50,16 +50,16 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	sptr = Text::StrDouble(sptr, lon);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("&sensor=false"));
 
-	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, 0, true);
+	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli && !cli->IsError())
 	{
-		if (lang)
+		if (lang.leng > 0)
 		{
-			cli->AddHeader((const UTF8Char*)"Accept-Language", lang);
+			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 		Int32 status = cli->GetRespStatus();
 		UOSInt readSize;
-		NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.GoogleMap.GoogleWSSearcherXML.SearchName.mstm"));
+		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.GoogleMap.GoogleWSSearcherXML.SearchName.mstm")));
 		while ((readSize = cli->Read(databuff, 2048)) > 0)
 		{
 			mstm->Write(databuff, readSize);
@@ -76,7 +76,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 				Bool succ = false;
 				Text::XMLNode **result;
 				UOSInt resultCnt;
-				result = doc->SearchNode((const UTF8Char*)"/GeocodeResponse/status", &resultCnt);
+				result = doc->SearchNode(CSTR("/GeocodeResponse/status"), &resultCnt);
 				if (resultCnt == 1)
 				{
 					result[0]->GetInnerXML(sb);
@@ -102,7 +102,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 				}
 				if (succ)
 				{
-					result = doc->SearchNode((const UTF8Char*)"/GeocodeResponse/result[type='street_address']/formatted_address", &resultCnt);
+					result = doc->SearchNode(CSTR("/GeocodeResponse/result[type='street_address']/formatted_address"), &resultCnt);
 					if (resultCnt > 0)
 					{
 						sb->ClearStr();
@@ -149,7 +149,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::SearchName(UTF8Char *buff, UOSInt
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }
 
 UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid)
@@ -164,5 +164,5 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherXML::CacheName(UTF8Char *buff, UOSInt 
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }

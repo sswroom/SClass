@@ -13,29 +13,31 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 	*sptr++ = '\"';
 	while ((c = *val++) != 0)
 	{
-		if (c == '\\')
+		switch (c)
 		{
-			*sptr++ = '\\';
-			*sptr++ = '\\';
-		}
-		else if (c == '\"')
-		{
-			*sptr++ = '\\';
-			*sptr++ = '\"';
-		}
-		else if (c == '\r')
-		{
-			*sptr++ = '\\';
-			*sptr++ = 'r';
-		}
-		else if (c == '\n')
-		{
-			*sptr++ = '\\';
-			*sptr++ = 'n';
-		}
-		else
-		{
+		case '\\':
+			sptr[0] = '\\';
+			sptr[1] = '\\';
+			sptr += 2;
+			break;
+		case '\"':
+			sptr[0] = '\\';
+			sptr[1] = '\"';
+			sptr += 2;
+			break;
+		case '\r':
+			sptr[0] = '\\';
+			sptr[1] = 'r';
+			sptr += 2;
+			break;
+		case '\n':
+			sptr[0] = '\\';
+			sptr[1] = 'n';
+			sptr += 2;
+			break;
+		default:
 			*sptr++ = c;
+			break;
 		}
 		if (sptr - sbuff >= 254)
 		{

@@ -311,9 +311,9 @@ Manage::MonConn::MonConn(EventHandler hdlr, void *userObj, Net::SocketFactory *s
 	SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOALIGNMENTFAULTEXCEPT | SEM_NOGPFAULTERRORBOX);
 #endif
 
-	sptr = IO::Path::GetTempFile(buff, (const UTF8Char*)"SvrMonitor.dat");
+	sptr = IO::Path::GetTempFile(buff, UTF8STRC("SvrMonitor.dat"));
 	IO::FileStream *file;
-	NEW_CLASS(file, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(file, IO::FileStream(CSTRP(buff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!file->IsError())
 	{
 		file->Read((UInt8*)&this->port, 2);

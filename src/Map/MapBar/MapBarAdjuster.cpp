@@ -41,7 +41,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 	Bool valid;
 
 	buff = MemAlloc(UInt8, 2048);
-	NEW_CLASS(mstm, IO::MemoryStream((const UTF8Char*)"Map.MapBar.MapBarAdjuster.AdjustPoints.mstm"));
+	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.MapBar.MapBarAdjuster.AdjustPoints.mstm")));
 	currPoint = 0;
 	while (currPoint < nPoints)
 	{
@@ -74,7 +74,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 		sb.AppendC(UTF8STRC("&customer=2"));
 
 		mstm->Clear();
-		cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToString(), "GET", false);
+		cli = Net::HTTPClient::CreateConnect(sockf, 0, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
 		if (cli)
 		{
 			while ((readSize = cli->Read(buff, 2048)) > 0)
@@ -89,7 +89,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 		NEW_CLASS(xmlDoc, Text::XMLDocument());
 		if (xmlDoc->ParseBuff(&encFact, xmlBuff, readSize))
 		{
-			xmlNodes = xmlDoc->SearchNode((const UTF8Char*)"/result/pois/item", &objCnt);
+			xmlNodes = xmlDoc->SearchNode(CSTR("/result/pois/item"), &objCnt);
 			if (xmlNodes)
 			{
 				if (objCnt == cnt)
@@ -98,7 +98,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 					i = objCnt;
 					while (i-- > 0)
 					{
-						node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/@id");
+						node = xmlNodes[i]->SearchFirstNode(CSTR("/@id"));
 						if (node == 0)
 						{
 							valid = false;
@@ -108,7 +108,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 							j = node->value->ToInt32();
 							if (j >= 0 && j < cnt)
 							{
-								node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/lat");
+								node = xmlNodes[i]->SearchFirstNode(CSTR("/lat"));
 								if (node)
 								{
 									sb2.ClearStr();
@@ -119,7 +119,7 @@ Bool Map::MapBar::MapBarAdjuster::AdjustPoints(Double *srcLatLons, Double *destL
 								{
 									valid = false;
 								}
-								node = xmlNodes[i]->SearchFirstNode((const UTF8Char*)"/lon");
+								node = xmlNodes[i]->SearchFirstNode(CSTR("/lon"));
 								if (node)
 								{
 									sb2.ClearStr();

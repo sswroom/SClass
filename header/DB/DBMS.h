@@ -1,6 +1,7 @@
 #ifndef _SM_DB_DBMS
 #define _SM_DB_DBMS
 #include "Crypto/Hash/SHA1.h"
+#include "Data/FastStringMap.h"
 #include "Data/Int32Map.h"
 #include "Data/StringUTF8Map.h"
 #include "DB/DBReader.h"
@@ -61,12 +62,13 @@ namespace DB
 		{
 			Int32 userId;
 			UTF8Char host[32];
+			UOSInt hostLen;
 			UInt8 pwdSha1[20];
 		} UserInfo;
 		
 		typedef struct
 		{
-			const UTF8Char *login;
+			Text::String *login;
 			Data::ArrayList<UserInfo*> *userList;
 		} LoginInfo;
 		
@@ -105,7 +107,7 @@ namespace DB
 		IO::LogTool *log;
 		Sync::Mutex *loginMut;
 		Crypto::Hash::SHA1 *loginSHA1;
-		Data::StringUTF8Map<LoginInfo*> *loginMap;
+		Data::FastStringMap<LoginInfo*> *loginMap;
 		Sync::Mutex *sessMut;
 		Data::Int32Map<SessionInfo*> *sessMap;
 
@@ -114,14 +116,14 @@ namespace DB
 
 		Bool SysVarExist(SessionInfo *sess, const UTF8Char *varName, AccessType atype);
 		const UTF8Char *SysVarGet(Text::StringBuilderUTF8 *sb, SessionInfo *sess, const UTF8Char *varName, UOSInt nameLen);
-		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName);
+		void SysVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool SysVarSet(SessionInfo *sess, Bool isGlobal, const UTF8Char *varName, Text::String *val);
 
 		const UTF8Char *UserVarGet(Text::StringBuilderUTF8 *sb, SessionInfo *sess, const UTF8Char *varName);
-		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, const UTF8Char *colName);
+		void UserVarColumn(DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *varName, Text::CString colName);
 		Bool UserVarSet(SessionInfo *sess, const UTF8Char *varName, Text::String *val);
 
-		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, const UTF8Char *colName, Bool *valid);
+		Text::String *Evals(const UTF8Char **valPtr, SessionInfo *sess, DB::DBMSReader *reader, UOSInt colIndex, Text::CString colName, Bool *valid);
 	public:
 		DBMS(Text::CString versionStr, IO::LogTool *log);
 		virtual ~DBMS();
@@ -129,8 +131,8 @@ namespace DB
 		Text::String *GetVersion();
 		IO::LogTool *GetLogTool();
 
-		Bool UserAdd(Int32 userId, const UTF8Char *userName, const UTF8Char *password, const UTF8Char *host);
-		Int32 UserLoginMySQL(Int32 sessId, const UTF8Char *userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const SessionParam *param, const UTF8Char *database);
+		Bool UserAdd(Int32 userId, Text::CString userName, Text::CString password, Text::CString host);
+		Int32 UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8 *randomData, const UInt8 *passHash, const Net::SocketUtil::AddressInfo *addr, const SessionParam *param, const UTF8Char *database);
 
 		DB::DBReader *ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt sqlLen);
 		void CloseReader(DB::DBReader *r);

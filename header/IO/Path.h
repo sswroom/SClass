@@ -20,7 +20,7 @@ namespace IO
 		static const UTF8Char *ALL_FILES;
 		static UOSInt ALL_FILES_LEN;
 
-		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName);
+		static UTF8Char *GetTempFile(UTF8Char *buff, const UTF8Char *fileName, UOSInt fileNameLen);
 		static WChar *GetTempFileW(WChar *buff, const WChar *fileName);
 		static Bool IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen);
 		static Bool IsDirectoryExistW(const WChar *dir);

@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLServerForm::OnStartClicked(void *userObj)
 	}
 	else
 	{
-		me->dbms->UserAdd(1, (const UTF8Char*)"root", (const UTF8Char*)"12345678", (const UTF8Char*)"*");
+		me->dbms->UserAdd(1, CSTR("root"), CSTR("12345678"), CSTR("*"));
 		me->txtPort->SetReadOnly(true);
 	}
 }

@@ -26,9 +26,9 @@ namespace SSWR
 
 			struct FileItem
 			{
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UInt64 fileSize;
-			FIleStatus status;
+			FileStatus status;
 			};
 		private:
 			SSWR::AVIRead::AVIRCore *core;

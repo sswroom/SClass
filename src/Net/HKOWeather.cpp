@@ -91,7 +91,7 @@ Net::HKOWeather::WeatherSignal Net::HKOWeather::GetSignalSummary(Net::SocketFact
 	mbuff = mstm->GetBuff(&i);
 	NEW_CLASS(doc, Text::XMLDocument());
 	doc->ParseBuff(encFact, mbuff, i);
-	Text::XMLNode **nodes = doc->SearchNode((const UTF8Char*)"/rss/channel/item/description", &i);
+	Text::XMLNode **nodes = doc->SearchNode(CSTR("/rss/channel/item/description"), &i);
 	Text::XMLNode *n;
 	Text::XMLNode *n2;
 

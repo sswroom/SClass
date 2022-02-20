@@ -228,7 +228,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		req->GetQueryValueI32(UTF8STRC("stepping"), &cpuStepping);
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
-			req->GetHeader(fileName, (const UTF8Char*)"Content-Length", 512);
+			req->GetHeader(fileName, CSTR("Content-Length"), 512);
 			UOSInt reqSize;
 			const UInt8 *reqData = req->GetReqData(&reqSize);
 			if (reqSize > 0 && reqSize <= 128)
@@ -268,7 +268,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			else
 			{
 				req->ParseHTTPForm();
-				fileBuff = req->GetHTTPFormFile((const UTF8Char*)"uploadfile", 0, fileName, sizeof(fileName), &fileSize);
+				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileSize);
 			}
 			if (fileBuff == 0)
 			{

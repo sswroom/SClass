@@ -93,7 +93,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
-		if ((sptr = req->GetHeader(sbuff, (const UTF8Char*)"CSeq", 512)) != 0)
+		if ((sptr = req->GetHeader(sbuff, CSTR("CSeq"), 512)) != 0)
 		{
 			resp->AddHeaderC(UTF8STRC("CSeq"), sbuff, (UOSInt)(sptr - sbuff));
 		}

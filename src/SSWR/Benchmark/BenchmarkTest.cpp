@@ -19,7 +19,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 	Text::StringBuilderUTF8 sb;
 	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
 	{
-		if (!sb.EqualsC(UTF8STRC("text/plain")))
+		if (!sb.Equals(UTF8STRC("text/plain")))
 		{
 			printf("Content-Type invalid\r\n");
 			valid = false;
@@ -56,7 +56,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 			sb.ClearStr();
 			if (reader->ReadLine(&sb, 512))
 			{
-				if (!sb.Equals((const UTF8Char*)"SBench Result:"))
+				if (!sb.Equals(UTF8STRC("SBench Result:")))
 				{
 					printf("SBench not found\r\n");
 					valid = false;
@@ -73,7 +73,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (!sb.Equals((const UTF8Char*)"Computer Info:"))
+					if (!sb.Equals(UTF8STRC("Computer Info:")))
 					{
 						printf("Computer Info not found\r\n");
 						valid = false;
@@ -91,7 +91,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"Platform: "))
+					if (sb.StartsWith(UTF8STRC("Platform: ")))
 					{
 						platform = Text::StrCopyNew(sb.ToString() + 10);
 					}
@@ -113,9 +113,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 512))
 				{
-					if (sb.StartsWith((const UTF8Char*)"CPU: "))
+					if (sb.StartsWith(UTF8STRC("CPU: ")))
 					{
-						cpu = Text::StrCopyNew(sb.ToString() + 5);
+						cpu = Text::StrCopyNewC(sb.ToString() + 5, sb.GetLength() - 5);
 					}
 					else
 					{
@@ -140,8 +140,8 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				UTF8Char *sptrTmp;
 				dt.SetCurrTimeUTC();
 				Int64 t = dt.ToTicks();
-				IO::Path::GetProcessFileName(sbuff);
-				sptr = IO::Path::AppendPath(sbuff, (const UTF8Char*)"Benchmark");
+				sptr = IO::Path::GetProcessFileName(sbuff);
+				sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Benchmark"));
 				IO::Path::CreateDirectory(sbuff);
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("SBench_"));
@@ -153,7 +153,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				sptr = Text::StrInt64(sptr, t);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".txt"));
 
-				NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
 				{
 					printf("Error in creating file\r\n");
@@ -192,11 +192,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	if (req->GetQueryValueStr(UTF8STRC("model"), fileName, 512))
 	{
 		UOSInt fileSize;
-		IO::Path::GetProcessFileName(path);
-		u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"CPUInfo");
+		u8ptr = IO::Path::GetProcessFileName(path);
+		u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
 		u8ptr = Text::StrConcat(u8ptr, fileName);
-		NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(path, u8ptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
 		{
@@ -233,7 +233,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			if (reqSize > 0 && reqSize <= 128)
 			{
 				IO::Path::GetProcessFileName(path);
-				u8ptr = IO::Path::AppendPath(path, (const UTF8Char*)"X86CPUInfo.txt");
+				u8ptr = IO::Path::AppendPath(path, UTF8STRC("X86CPUInfo.txt");
 				NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 				u8ptr = Text::StrInt32(fileName, cpuFamily);

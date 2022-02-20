@@ -79,6 +79,18 @@ namespace Text
 		return oriStr;
 	}
 
+	FORCEINLINE UTF8Char *StrConcatCS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt charCnt, UOSInt buffSize)
+	{
+		if (buffSize > charCnt)
+		{
+			return StrConcatC(oriStr, strToJoin, charCnt);
+		}
+		else
+		{
+			return StrConcatC(oriStr, strToJoin, buffSize - 1);
+		}
+	}
+
 	UTF8Char *StrConcat(UTF8Char *oriStr, const UTF8Char *strToJoin);
 	UTF8Char *StrConcatS(UTF8Char *oriStr, const UTF8Char *strToJoin, UOSInt buffSize);
 	UTF8Char *StrConcatASCII(UTF8Char *oriStr, const Char *strToJoin);

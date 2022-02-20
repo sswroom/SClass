@@ -11,7 +11,9 @@ namespace Text
 		{
 			UInt32 lcid;
 			const UTF8Char *shortName;
+			UOSInt shortNameLen;
 			const UTF8Char *desc;
+			UOSInt descLen;
 			UInt32 defCodePage;
 		} LocaleEntry;
 

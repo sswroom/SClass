@@ -6249,7 +6249,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	writer->WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile((const UTF8Char*)"file", i, fileName, sizeof(fileName), &fileSize);
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileSize);
 		if (fileCont == 0)
 		{
 			break;

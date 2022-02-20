@@ -6,6 +6,7 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(void *userObj, c
 {
 	SSWR::AVIRead::AVIRImageUploaderForm *me = (SSWR::AVIRead::AVIRImageUploaderForm*)userObj;
 	UTF8Char sbuff[128];
+	UTF8Char *sptr;
 	UOSInt i = 0;
 	UOSInt j;
 	while (i < fileCnt)
@@ -14,14 +15,14 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnFileDrop(void *userObj, c
 		if (fileSize > 0)
 		{
 			FileItem *file = MemAlloc(FileItem, 1);
-			file->fileName = Text::StrCopyNew(files[i]);
+			file->fileName = Text::String::NewNotNull(files[i]);
 			file->fileSize = fileSize;
 			file->status = FileStatus::Pending;
 			me->items->Add(file);
 			j = me->lvStatus->AddItem(file->fileName, file);
-			Text::StrUInt64(sbuff, file->fileSize);
-			me->lvStatus->SetSubItem(j, 1, sbuff);
-			me->lvStatus->SetSubItem(j, 2, (const UTF8Char*)"-");
+			sptr = Text::StrUInt64(sbuff, file->fileSize);
+			me->lvStatus->SetSubItem(j, 1, CSTRP(sbuff, sptr));
+			me->lvStatus->SetSubItem(j, 2, CSTR("-"));
 		}
 		i++;
 	}
@@ -48,13 +49,13 @@ void __stdcall SSWR::AVIRead::AVIRImageUploaderForm::OnUploadClicked(void *userO
 
 void SSWR::AVIRead::AVIRImageUploaderForm::FreeItem(FileItem *item)
 {
-	Text::StrDelNew(item->fileName);
+	item->fileName->Release();
 	MemFree(item);
 }
 
 SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 480, 240, ui)
 {
-	this->SetText(CSTR("Image Uploader");
+	this->SetText(CSTR("Image Uploader"));
 	this->SetFont(0, 0, 8.25, false);
 
 	this->core = core;
@@ -64,25 +65,25 @@ SSWR::AVIRead::AVIRImageUploaderForm::AVIRImageUploaderForm(UI::GUIClientControl
 	NEW_CLASS(this->pnlCtrl, UI::GUIPanel(ui, this));
 	this->pnlCtrl->SetRect(0, 0, 100, 55, false);
 	this->pnlCtrl->SetDockType(UI::GUIControl::DOCK_BOTTOM);
-	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Username"));
+	NEW_CLASS(this->lblUsername, UI::GUILabel(ui, this->pnlCtrl, CSTR("Username")));
 	this->lblUsername->SetRect(4, 4, 100, 23, false);
-	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlCtrl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtUsername, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtUsername->SetRect(104, 4, 100, 23, false);
-	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlCtrl, (const UTF8Char*)"Password"));
+	NEW_CLASS(this->lblPassword, UI::GUILabel(ui, this->pnlCtrl, CSTR("Password")));
 	this->lblPassword->SetRect(4, 28, 100, 23, false);
-	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlCtrl, (const UTF8Char*)""));
+	NEW_CLASS(this->txtPassword, UI::GUITextBox(ui, this->pnlCtrl, CSTR("")));
 	this->txtPassword->SetPasswordChar('*');
 	this->txtPassword->SetRect(104, 28, 100, 23, false);
-	NEW_CLASS(this->chkErrorCont, UI::GUICheckBox(ui, this->pnlCtrl, (const UTF8Char*)"Continue on error", false));
+	NEW_CLASS(this->chkErrorCont, UI::GUICheckBox(ui, this->pnlCtrl, CSTR("Continue on error"), false));
 	this->chkErrorCont->SetRect(204, 4, 100, 23, false);
-	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlCtrl, (const UTF8Char*)"Upload"));
+	NEW_CLASS(this->btnUpload, UI::GUIButton(ui, this->pnlCtrl, CSTR("Upload")));
 	this->btnUpload->SetRect(204, 28, 75, 23, false);
 	this->btnUpload->HandleButtonClick(OnUploadClicked, this);
 	NEW_CLASS(this->lvStatus, UI::GUIListView(ui, this, UI::GUIListView::LVSTYLE_TABLE, 3));
 	this->lvStatus->SetDockType(UI::GUIControl::DOCK_FILL);
-	this->lvStatus->AddColumn((const UTF8Char*)"File Name", 300);
-	this->lvStatus->AddColumn((const UTF8Char*)"File Size", 100);
-	this->lvStatus->AddColumn((const UTF8Char*)"Status", 100);
+	this->lvStatus->AddColumn(CSTR("File Name"), 300);
+	this->lvStatus->AddColumn(CSTR("File Size"), 100);
+	this->lvStatus->AddColumn(CSTR("Status"), 100);
 }
 
 SSWR::AVIRead::AVIRImageUploaderForm::~AVIRImageUploaderForm()

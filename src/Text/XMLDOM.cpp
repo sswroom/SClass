@@ -271,7 +271,7 @@ void Text::XMLNode::GetInnerText(Text::StringBuilderUTF8 *sb)
 	}
 }
 
-Text::XMLNode **Text::XMLNode::SearchNode(const UTF8Char *path, UOSInt *cnt)
+Text::XMLNode **Text::XMLNode::SearchNode(Text::CString path, UOSInt *cnt)
 {
 	Data::ArrayList<XMLNode*> *outArr;
 	Text::XMLNode **outs;
@@ -289,7 +289,7 @@ Text::XMLNode **Text::XMLNode::SearchNode(const UTF8Char *path, UOSInt *cnt)
 	return outs;
 }
 
-Text::XMLNode *Text::XMLNode::SearchFirstNode(const UTF8Char *path)
+Text::XMLNode *Text::XMLNode::SearchFirstNode(Text::CString path)
 {
 	Data::ArrayList<XMLNode*> *outArr;
 	NEW_CLASS(outArr, Data::ArrayList<XMLNode*>());
@@ -304,7 +304,7 @@ void Text::XMLNode::ReleaseSearch(XMLNode **searchResult)
 	MemFree(searchResult);
 }					
 
-void Text::XMLNode::SearchNodeBegin(const UTF8Char *path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult)
+void Text::XMLNode::SearchNodeBegin(Text::CString path, Data::ArrayList<XMLNode*> *outArr, Bool singleResult)
 {
 	UTF8Char myPath[256];
 	UOSInt i;
@@ -312,7 +312,7 @@ void Text::XMLNode::SearchNodeBegin(const UTF8Char *path, Data::ArrayList<XMLNod
 	Data::ArrayList<UTF8Char*> *reqArr;
 	Data::ArrayList<XMLNode*> *currPathArr;
 	UTF8Char *src;
-	Text::StrConcat(myPath, path);
+	path.ConcatTo(myPath);
 
 	NEW_CLASS(reqArr, Data::ArrayList<UTF8Char*>());
 	NEW_CLASS(currPathArr, Data::ArrayList<XMLNode*>());

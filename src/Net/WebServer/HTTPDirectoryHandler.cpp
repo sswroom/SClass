@@ -748,7 +748,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					UOSInt fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
-					while ((uplfile = req->GetHTTPFormFile((const UTF8Char*)"uploadfile", fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
+					while ((uplfile = req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
 					{
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());
