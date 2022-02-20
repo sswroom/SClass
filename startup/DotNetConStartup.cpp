@@ -80,7 +80,7 @@ void ConsoleControl_Create(Core::ConsoleControl *ctrl)
 	ctrl->exited = false;
 	ctrl->ending = false;
 	ctrl->ended = false;
-	NEW_CLASS(ctrl->evt, Sync::Event(true, (const UTF8Char*)"Core.ConsoleControl.evt"));
+	NEW_CLASS(ctrl->evt, Sync::Event(true));
 	ctrl->WaitForExit = ConsoleControl_WaitForExit;
 	ctrl->GetCommandLines = ConsoleControl_GetCommandLines;
 

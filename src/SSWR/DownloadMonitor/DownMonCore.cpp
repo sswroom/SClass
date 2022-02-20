@@ -501,19 +501,19 @@ SSWR::DownloadMonitor::DownMonCore::DownMonCore()
 	if (cfg)
 	{
 		Text::String *s;
-		s = cfg->GetValue(UTF8STRC("DownPath"));
+		s = cfg->GetValue(CSTR("DownPath"));
 		this->downPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("SuccPath"));
+		s = cfg->GetValue(CSTR("SuccPath"));
 		this->succPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("ErrPath"));
+		s = cfg->GetValue(CSTR("ErrPath"));
 		this->errPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("YTPath"));
+		s = cfg->GetValue(CSTR("YTPath"));
 		this->ytPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("FFMPEGPath"));
+		s = cfg->GetValue(CSTR("FFMPEGPath"));
 		this->ffmpegPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("FirefoxPath"));
+		s = cfg->GetValue(CSTR("FirefoxPath"));
 		this->firefoxPath = SCOPY_STRING(s);
-		s = cfg->GetValue(UTF8STRC("ListFile"));
+		s = cfg->GetValue(CSTR("ListFile"));
 		this->listFile = SCOPY_STRING(s);
 	}
 	if (this->downPath == 0) this->downPath = Text::String::New(UTF8STRC("D:\\DownTemp"));

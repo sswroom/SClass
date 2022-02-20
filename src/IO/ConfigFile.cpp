@@ -32,9 +32,9 @@ Text::String *IO::ConfigFile::GetValue(Text::String *name)
 	return GetValue(Text::String::NewEmpty(), name);
 }
 
-Text::String *IO::ConfigFile::GetValue(const UTF8Char *name, UOSInt nameLen)
+Text::String *IO::ConfigFile::GetValue(Text::CString name)
 {
-	return GetValue((const UTF8Char*)"", 0, name, nameLen);
+	return GetValue(CSTR(""), name);
 }
 
 Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *name)
@@ -47,18 +47,18 @@ Text::String *IO::ConfigFile::GetValue(Text::String *category, Text::String *nam
 	return cate->Get(name);
 }
 
-Text::String *IO::ConfigFile::GetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen)
+Text::String *IO::ConfigFile::GetValue(Text::CString category, Text::CString name)
 {
-	if (category == 0)
+	if (category.leng == 0)
 	{
-		category = (const UTF8Char*)"";
+		category = CSTR("");
 	}
-	Data::FastStringMap<Text::String *> *cate = this->cfgVals->GetC({category, categoryLen});
+	Data::FastStringMap<Text::String *> *cate = this->cfgVals->GetC(category);
 	if (cate == 0)
 	{
 		return 0;
 	}
-	return cate->GetC({name, nameLen});
+	return cate->GetC(name);
 }
 
 Bool IO::ConfigFile::SetValue(Text::String *category, Text::String *name, Text::String *value)

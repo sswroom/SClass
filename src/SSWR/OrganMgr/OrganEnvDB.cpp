@@ -57,15 +57,15 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	Text::String *cfgUID;
 	Text::String *cfgPassword;
 
-	cfgMySQLHost = cfg->GetValue(UTF8STRC("MySQLHost"));
-	cfgMySQLDB = cfg->GetValue(UTF8STRC("MySQLDB"));
-	cfgDSN = cfg->GetValue(UTF8STRC("DBDSN"));
-	cfgUID = cfg->GetValue(UTF8STRC("DBUID"));
-	cfgPassword = cfg->GetValue(UTF8STRC("DBPwd"));
-	this->cfgImgDirBase = cfg->GetValue(UTF8STRC("ImageDir"));
-	this->cfgDataPath = cfg->GetValue(UTF8STRC("DataDir"));
-	this->cfgCacheDir = cfg->GetValue(UTF8STRC("CacheDir"));
-	Text::String *userId = cfg->GetValue(UTF8STRC("WebUser"));
+	cfgMySQLHost = cfg->GetValue(CSTR("MySQLHost"));
+	cfgMySQLDB = cfg->GetValue(CSTR("MySQLDB"));
+	cfgDSN = cfg->GetValue(CSTR("DBDSN"));
+	cfgUID = cfg->GetValue(CSTR("DBUID"));
+	cfgPassword = cfg->GetValue(CSTR("DBPwd"));
+	this->cfgImgDirBase = cfg->GetValue(CSTR("ImageDir"));
+	this->cfgDataPath = cfg->GetValue(CSTR("DataDir"));
+	this->cfgCacheDir = cfg->GetValue(CSTR("CacheDir"));
+	Text::String *userId = cfg->GetValue(CSTR("WebUser"));
 
 	if (this->cfgImgDirBase == 0 || this->cfgImgDirBase->leng == 0 || this->cfgDataPath == 0 || this->cfgDataPath->leng == 0 || this->cfgCacheDir == 0 || this->cfgCacheDir->leng == 0)
 	{

@@ -9504,7 +9504,7 @@ Text::CString SSWR::OrganMgr::OrganWebHandler::LangGetValue(IO::ConfigFile *lang
 {
 	if (lang == 0)
 		return {name, nameLen};
-	Text::String *s = lang->GetValue(name, nameLen);
+	Text::String *s = lang->GetValue({name, nameLen});
 	if (s)
 		return s->ToCString();
 	return {name, nameLen};

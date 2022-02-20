@@ -16,7 +16,7 @@ UI::GUICoreJava::GUICoreJava()
 {
 	this->monMgr = 0;
 	this->toExit = false;
-	NEW_CLASS(this->waitEvt, Sync::Event(true, (const UTF8Char*)"UI.GUICoreJava.waitEvt"));
+	NEW_CLASS(this->waitEvt, Sync::Event(true));
 }
 
 UI::GUICoreJava::~GUICoreJava()
@@ -82,7 +82,7 @@ Media::DrawEngine *UI::GUICoreJava::CreateDrawEngine()
 	return deng;
 }
 
-Double UI::GUICoreJava::GetMagnifyRatio(void *hMonitor)
+Double UI::GUICoreJava::GetMagnifyRatio(MonitorHandle *hMonitor)
 {
 /*	Double v = gdk_screen_get_resolution(gdk_screen_get_default());
 	if (v <= 0)
@@ -107,7 +107,7 @@ void UI::GUICoreJava::Suspend()
 {
 }
 
-void UI::GUICoreJava::GetDesktopSize(OSInt *w, OSInt *h)
+void UI::GUICoreJava::GetDesktopSize(UOSInt *w, UOSInt *h)
 {
 	JNIEnv *env = (JNIEnv*)jniEnv;
 	jclass cls;
@@ -121,12 +121,12 @@ void UI::GUICoreJava::GetDesktopSize(OSInt *w, OSInt *h)
 	if (w)
 	{
 		mid = env->GetMethodID(cls, "getWidth", "()D");
-		*w = Double2Int32(env->CallDoubleMethod(size, mid));
+		*w = (UInt32)Double2Int32(env->CallDoubleMethod(size, mid));
 	}
 	if (h)
 	{
 		mid = env->GetMethodID(cls, "getHeight", "()D");
-		*h = Double2Int32(env->CallDoubleMethod(size, mid));
+		*h = (UInt32)Double2Int32(env->CallDoubleMethod(size, mid));
 	}
 }
 
@@ -154,11 +154,11 @@ void UI::GUICoreJava::GetCursorPos(OSInt *x, OSInt *y)
 	}
 }
 
-void UI::GUICoreJava::SetDisplayRotate(void *hMonitor, DisplayRotation rot)
+void UI::GUICoreJava::SetDisplayRotate(MonitorHandle *hMonitor, DisplayRotation rot)
 {
 }
 
-void UI::GUICoreJava::GetMonitorDPIs(void *hMonitor, Double *hdpi, Double *ddpi)
+void UI::GUICoreJava::GetMonitorDPIs(MonitorHandle *hMonitor, Double *hdpi, Double *ddpi)
 {
 	if (this->monMgr)
 	{

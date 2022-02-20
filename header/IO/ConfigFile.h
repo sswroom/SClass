@@ -15,9 +15,9 @@ namespace IO
 		virtual ~ConfigFile();
 
 		virtual Text::String *GetValue(Text::String *name);
-		virtual Text::String *GetValue(const UTF8Char *name, UOSInt nameLen);
+		virtual Text::String *GetValue(Text::CString name);
 		virtual Text::String *GetValue(Text::String *category, Text::String *name);
-		virtual Text::String *GetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen);
+		virtual Text::String *GetValue(Text::CString category, Text::CString name);
 		Bool SetValue(Text::String *category, Text::String *name, Text::String *value);
 		Bool SetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
 		Bool RemoveValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen);

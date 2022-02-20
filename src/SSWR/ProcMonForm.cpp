@@ -356,7 +356,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg)
 	{
-		Text::String *s = cfg->GetValue(UTF8STRC("NotifyCmd"));
+		Text::String *s = cfg->GetValue(CSTR("NotifyCmd"));
 		if (s)
 		{
 			this->notifyCmd = s->Clone();

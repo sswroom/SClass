@@ -53,7 +53,7 @@ UInt32 __stdcall Net::RTPAudioSession::SendThread(void *userObj)
 	Net::RTPAudioSession *me = (Net::RTPAudioSession*)userObj;
 	me->outRunning = true;
 	NEW_CLASS(random, Data::RandomOS());
-	NEW_CLASS(evt, Sync::Event(true, (const UTF8Char*)"Net.RTPAudioSession.SendThread.evt"));
+	NEW_CLASS(evt, Sync::Event(true));
 	seqId = random->NextInt30() & 0xffff;
 	ts = 0;
 	me->outAudio->Start(evt, 160);
@@ -94,7 +94,7 @@ Net::RTPAudioSession::RTPAudioSession(Net::SocketFactory *sockf, const Char *ip,
 	this->readBuff = 0;
 	this->outRunning = false;
 	NEW_CLASS(this->readMut, Sync::Mutex());
-	NEW_CLASS(this->readBuffEvt, Sync::Event(true, (const UTF8Char*)"Net.RTPAudioSession.readBuffEvt"));
+	NEW_CLASS(this->readBuffEvt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, 0, UDPData, this, log, 0, Sync::Thread::GetThreadCnt(), false));
 	if (this->svr->IsError())
 	{

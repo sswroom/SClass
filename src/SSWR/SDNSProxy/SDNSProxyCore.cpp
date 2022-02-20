@@ -112,7 +112,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		UInt32 ip;
 		Int32 v;
 		Text::PString sarr[2];
-		s = cfg->GetValue(UTF8STRC("DNS"));
+		s = cfg->GetValue(CSTR("DNS"));
 		if (s)
 		{
 			Data::ArrayList<UInt32> dnsList;
@@ -144,19 +144,19 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 			}
 		}
 
-		s = cfg->GetValue(UTF8STRC("LogPath"));
+		s = cfg->GetValue(CSTR("LogPath"));
 		if (s)
 		{
 			this->log->AddFileLog(s, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		}
 
-		s = cfg->GetValue(UTF8STRC("DisableV6"));
+		s = cfg->GetValue(CSTR("DisableV6"));
 		if (s && s->ToInt32(&v))
 		{
 			this->proxy->SetDisableV6(v != 0);
 		}
 
-		s = cfg->GetValue(UTF8STRC("Blacklist"));
+		s = cfg->GetValue(CSTR("Blacklist"));
 		if (s && s->v[0] != 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -176,7 +176,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 		}
 
 		UInt16 managePort;
-		s = cfg->GetValue(UTF8STRC("ManagePort"));
+		s = cfg->GetValue(CSTR("ManagePort"));
 		if (s && s->v[0] != 0 && s->ToUInt16(&managePort))
 		{
 			NEW_CLASS(this->hdlr, SSWR::SDNSProxy::SDNSProxyWebHandler(this->proxy, this->log, this));

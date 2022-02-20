@@ -294,7 +294,7 @@ Text::CString SSWR::OrganMgr::OrganEnv::GetLang(const UTF8Char *name, UOSInt nam
 {
 	if (this->langFile == 0)
 		return {name, nameLen};
-	Text::String *ret = this->langFile->GetValue(name, nameLen);
+	Text::String *ret = this->langFile->GetValue({name, nameLen});
 	if (ret == 0)
 		return {name, nameLen};
 	return ret->ToCString();

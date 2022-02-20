@@ -13,12 +13,12 @@ UInt32 __stdcall UI::GUIDObjArea::DisplayThread(void *userObj)
 		{
 			if (me->colorSess->Get10BitColor() && me->currScnMode == UI::GUIDDrawControl::SM_VFS)
 			{
-				OSInt dbpl;
+				UOSInt dbpl;
 				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 				if (destBuff)
 				{
 					UInt8 *tmpBuff = MemAlloc(UInt8, me->surfaceW * me->surfaceH << 2);
-					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceW << 2, me->surfaceW, me->surfaceH);
+					me->currDrawImg->CopyBits(0, 0, tmpBuff, me->surfaceW << 2, me->surfaceW, me->surfaceH, false);
 					OSInt w = me->surfaceW;
 					OSInt h = me->surfaceH;
 #if defined(HAS_ASM32)
@@ -114,11 +114,11 @@ dtlop2:
 			}
 			else
 			{
-				OSInt dbpl;
+				UOSInt dbpl;
 				UInt8 *destBuff = me->LockSurfaceBegin(me->currDrawImg->GetWidth(), me->currDrawImg->GetHeight(), &dbpl);
 				if (destBuff)
 				{
-					me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceW, me->surfaceH);
+					me->currDrawImg->CopyBits(0, 0, destBuff, dbpl, me->surfaceW, me->surfaceH, false);
 					me->LockSurfaceEnd();
 				}
 			}
@@ -170,7 +170,7 @@ UInt32 __stdcall UI::GUIDObjArea::ProcessThread(void *userObj)
 	return 0;
 }
 
-UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false)
+UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::DrawEngine *deng, Media::ColorManagerSess *colorSess) : UI::GUIDDrawControl(ui, parent, false, colorSess)
 {
 	this->deng = deng;
 	this->colorSess = colorSess;
@@ -179,11 +179,11 @@ UI::GUIDObjArea::GUIDObjArea(GUICore *ui, UI::GUIClientControl *parent, Media::D
 	this->drawUpdated = false;
 	this->displayToStop = false;
 	this->displayRunning = false;
-	NEW_CLASS(this->displayEvt, Sync::Event(true, (const UTF8Char*)"UI.MSWindowDObjArea.displayEvt"));
+	NEW_CLASS(this->displayEvt, Sync::Event(true));
 	this->processToStop = false;
 	this->processRunning = false;
-	NEW_CLASS(this->processEvt, Sync::Event(true, (const UTF8Char*)"UI.MSWindowDObjArea.processEvt"));
-	NEW_CLASS(this->mainEvt, Sync::Event(true, (const UTF8Char*)"UI.MSWindowDObjArea.mainEvt"));
+	NEW_CLASS(this->processEvt, Sync::Event(true));
+	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->currDrawImg = 0;
 	Sync::Thread::Create(DisplayThread, this);
 	Sync::Thread::Create(ProcessThread, this);

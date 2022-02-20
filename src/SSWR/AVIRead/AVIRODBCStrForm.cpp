@@ -45,7 +45,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 			{
 				Text::String *s = keys.GetItem(i);
 				sarr[0] = s->v;
-				sarr[1] = driver->GetValue(s->v, s->leng)->v;
+				sarr[1] = driver->GetValue(s->ToCString())->v;
 				frm->AddRow(sarr);
 				i++;
 			}

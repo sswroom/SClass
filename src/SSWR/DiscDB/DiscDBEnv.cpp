@@ -149,24 +149,24 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	if (cfg)
 	{
 		Text::String *s;
-		if ((s = cfg->GetValue(UTF8STRC("DSN"))) != 0)
+		if ((s = cfg->GetValue(CSTR("DSN"))) != 0)
 		{
 			this->db = DB::ODBCConn::CreateDBTool(s,
-				cfg->GetValue(UTF8STRC("UID")),
-				cfg->GetValue(UTF8STRC("PWD")),
-				cfg->GetValue(UTF8STRC("Schema")),
+				cfg->GetValue(CSTR("UID")),
+				cfg->GetValue(CSTR("PWD")),
+				cfg->GetValue(CSTR("Schema")),
 				this->log, CSTR("DB: "));
 		}
-		else if ((s = cfg->GetValue(UTF8STRC("MySQLServer"))) != 0)
+		else if ((s = cfg->GetValue(CSTR("MySQLServer"))) != 0)
 		{
 			this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf,
 				s,
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("MySQLDB"))),
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("UID"))),
-				Text::String::OrEmpty(cfg->GetValue(UTF8STRC("PWD"))),
+				Text::String::OrEmpty(cfg->GetValue(CSTR("MySQLDB"))),
+				Text::String::OrEmpty(cfg->GetValue(CSTR("UID"))),
+				Text::String::OrEmpty(cfg->GetValue(CSTR("PWD"))),
 				this->log, CSTR("DB: "));
 		}
-		else if ((s = cfg->GetValue(UTF8STRC("MDBFile"))) != 0)
+		else if ((s = cfg->GetValue(CSTR("MDBFile"))) != 0)
 		{
 			this->db = DB::MDBFileConn::CreateDBTool(s->ToCString(), this->log, CSTR("DB: "));
 		}

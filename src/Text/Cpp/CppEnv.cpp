@@ -70,7 +70,7 @@ Bool Text::Cpp::CppEnv::InitVSEnv(Text::VSProject::VisualStudioVersion vsv)
 	 
 	if (cfg == 0)
 		return false;
-	Text::String *paths = cfg->GetValue(UTF8STRC("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), UTF8STRC("Include Dirs"));
+	Text::String *paths = cfg->GetValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
 	if (paths)
 	{
 		csptr = paths->v;
@@ -155,7 +155,7 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 		this->vsv = ((Text::VSProject*)proj)->GetVSVersion();
 		if (cfg)
 		{
-			Text::String *inclDir = cfg->GetValue(UTF8STRC("AdditionalIncludeDirectories"));
+			Text::String *inclDir = cfg->GetValue(CSTR("AdditionalIncludeDirectories"));
 			if (inclDir)
 			{
 				UTF8Char *sarr[2];
@@ -355,7 +355,7 @@ Text::Cpp::CppEnv *Text::Cpp::CppEnv::LoadVSEnv(Text::VSProject::VisualStudioVer
 	if (cfg == 0)
 		return 0;
 	Text::Cpp::CppEnv *env = 0;
-	Text::String *paths = cfg->GetValue(UTF8STRC("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), UTF8STRC("Include Dirs"));
+	Text::String *paths = cfg->GetValue(CSTR("VC\\VC_OBJECTS_PLATFORM_INFO\\Win32\\Directories"), CSTR("Include Dirs"));
 	if (paths)
 	{
 		NEW_CLASS(env, Text::Cpp::CppEnv(vsv));

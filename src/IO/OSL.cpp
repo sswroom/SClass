@@ -27,7 +27,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(UTF8STRC("NAME"));
+			Text::String *s = cfg->GetValue(CSTR("NAME"));
 			if (s)
 			{
 				sbuff = s->ConcatTo(sbuff);
@@ -171,12 +171,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(UTF8STRC("VERSION"));
+			Text::String *s = cfg->GetValue(CSTR("VERSION"));
 			if (s)
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
-			s = cfg->GetValue(UTF8STRC("BUILD_ID"));
+			s = cfg->GetValue(CSTR("BUILD_ID"));
 			if (s)
 			{
 				*sbuff++ = ' ';
@@ -220,12 +220,12 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		Text::String *s;
 		if (cfg)
 		{
-			s = cfg->GetValue(UTF8STRC("productversion"));
+			s = cfg->GetValue(CSTR("productversion"));
 			if (s)
 			{
 				sbuff = s->ConcatTo(sbuff);
 			}
-			s = cfg->GetValue(UTF8STRC("buildnumber"));
+			s = cfg->GetValue(CSTR("buildnumber"));
 			if (s)
 			{
 				sbuff = s->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("-")));

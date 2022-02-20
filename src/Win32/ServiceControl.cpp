@@ -22,7 +22,7 @@ UTF8Char **__stdcall ServiceControl_GetCommandLines(Core::IProgControl *progCtrl
 void Win32::ServiceControl_Create(Core::IProgControl *progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
-	NEW_CLASS(me->evt, Sync::Event(true, (const UTF8Char*)"Win32.ServiceControl.evt"));
+	NEW_CLASS(me->evt, Sync::Event(true));
 	me->exited = false;
 	me->argv = (UTF8Char*)Text::StrCopyNew((const UTF8Char*)"svchost");
 

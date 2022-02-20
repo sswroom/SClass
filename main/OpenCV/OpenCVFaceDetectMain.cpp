@@ -201,36 +201,36 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (cfg)
 	{
 		Text::String *s;
-		if ((s = cfg->GetValue(UTF8STRC("FrameSkip"))) != 0)
+		if ((s = cfg->GetValue(CSTR("FrameSkip"))) != 0)
 		{
 			frameSkip = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("RangeLeft"))) != 0)
+		if ((s = cfg->GetValue(CSTR("RangeLeft"))) != 0)
 		{
 			rangeLeft = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("RangeTop"))) != 0)
+		if ((s = cfg->GetValue(CSTR("RangeTop"))) != 0)
 		{
 			rangeTop = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("RangeRight"))) != 0)
+		if ((s = cfg->GetValue(CSTR("RangeRight"))) != 0)
 		{
 			rangeRight = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("RangeBottom"))) != 0)
+		if ((s = cfg->GetValue(CSTR("RangeBottom"))) != 0)
 		{
 			rangeBottom = s->ToOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("PreferedFormat"))) != 0)
+		if ((s = cfg->GetValue(CSTR("PreferedFormat"))) != 0)
 		{
 			if (s->leng == 4)
 			preferedFormat = *(UInt32*)s->v;
 		}
-		if ((s = cfg->GetValue(UTF8STRC("PreferedWidth"))) != 0)
+		if ((s = cfg->GetValue(CSTR("PreferedWidth"))) != 0)
 		{
 			preferedWidth = s->ToUOSInt();
 		}
-		if ((s = cfg->GetValue(UTF8STRC("PreferedHeight"))) != 0)
+		if ((s = cfg->GetValue(CSTR("PreferedHeight"))) != 0)
 		{
 			preferedHeight = s->ToUOSInt();
 		}

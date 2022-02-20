@@ -148,7 +148,7 @@ Media::DDrawScreenSource::DDrawScreenSource()
 {
 	this->captureToStop = false;
 	this->captureRunning = false;
-	NEW_CLASS(this->captureEvt, Sync::Event(true, (const UTF8Char*)"Media.DDrawScreenSource.captureEvt"));
+	NEW_CLASS(this->captureEvt, Sync::Event(true));
 
 	this->ddObj = 0;
 	this->primarySurface = 0;

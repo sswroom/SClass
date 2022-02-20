@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		cptr = cfgList[i];
 		UOSInt len = Text::StrCharCnt(cptr);
-		if (cfg->GetValue((const UTF8Char*)cptr, len) == 0)
+		if (cfg->GetValue({(const UTF8Char*)cptr, len}) == 0)
 		{
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Config "));
@@ -54,18 +54,18 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i++;
 	}
 
-	Text::String *mysqlServer = cfg->GetValue(UTF8STRC("MySQLServer"));
-	Text::String *mysqlPort = cfg->GetValue(UTF8STRC("MySQLPort"));
-	Text::String *mysqlUser = cfg->GetValue(UTF8STRC("MySQLUser"));
-	Text::String *mysqlPassword = cfg->GetValue(UTF8STRC("MySQLPassword"));
-	Text::String *mysqlSchemas = cfg->GetValue(UTF8STRC("MySQLSchemas"));
-	Text::String *smtpHost = cfg->GetValue(UTF8STRC("SMTPHost"));
-	Text::String *smtpPort = cfg->GetValue(UTF8STRC("SMTPPort"));
-	Text::String *smtpType = cfg->GetValue(UTF8STRC("SMTPType"));
-	Text::String *smtpFrom = cfg->GetValue(UTF8STRC("SMTPFrom"));
-	Text::String *smtpTo = cfg->GetValue(UTF8STRC("SMTPTo"));
-	Text::String *smtpUser = cfg->GetValue(UTF8STRC("SMTPUser"));
-	Text::String *smtpPassword = cfg->GetValue(UTF8STRC("SMTPPassword"));
+	Text::String *mysqlServer = cfg->GetValue(CSTR("MySQLServer"));
+	Text::String *mysqlPort = cfg->GetValue(CSTR("MySQLPort"));
+	Text::String *mysqlUser = cfg->GetValue(CSTR("MySQLUser"));
+	Text::String *mysqlPassword = cfg->GetValue(CSTR("MySQLPassword"));
+	Text::String *mysqlSchemas = cfg->GetValue(CSTR("MySQLSchemas"));
+	Text::String *smtpHost = cfg->GetValue(CSTR("SMTPHost"));
+	Text::String *smtpPort = cfg->GetValue(CSTR("SMTPPort"));
+	Text::String *smtpType = cfg->GetValue(CSTR("SMTPType"));
+	Text::String *smtpFrom = cfg->GetValue(CSTR("SMTPFrom"));
+	Text::String *smtpTo = cfg->GetValue(CSTR("SMTPTo"));
+	Text::String *smtpUser = cfg->GetValue(CSTR("SMTPUser"));
+	Text::String *smtpPassword = cfg->GetValue(CSTR("SMTPPassword"));
 	Net::SocketFactory *sockf;
 	Net::MySQLTCPClient *cli;
 	DB::MySQLMaintance *mysql;
@@ -123,7 +123,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		{
 			Text::StringBuilderUTF8 sbMsg;
 			sbMsg.AppendC(UTF8STRC("ServerName = "));
-			sbMsg.Append(cfg->GetValue(UTF8STRC("ServerName")));
+			sbMsg.Append(cfg->GetValue(CSTR("ServerName")));
 			sbMsg.AppendC(UTF8STRC("\r\n"));
 			sbMsg.AppendC(UTF8STRC("MySQL Check detail:\r\n"));
 			NEW_CLASS(mysql, DB::MySQLMaintance(cli, true));

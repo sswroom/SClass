@@ -33,7 +33,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UInt32 ip;
 		Int32 v;
 		Text::PString sarr[2];
-		s = cfg->GetValue(UTF8STRC("DNS"));
+		s = cfg->GetValue(CSTR("DNS"));
 		if (s)
 		{
 			Data::ArrayList<UInt32> dnsList;
@@ -55,13 +55,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			frm->SetDNSList(&dnsList);
 		}
 
-		s = cfg->GetValue(UTF8STRC("DisableV6"));
+		s = cfg->GetValue(CSTR("DisableV6"));
 		if (s && s->ToInt32(&v))
 		{
 			frm->SetDisableV6(v != 0);
 		}
 
-		s = cfg->GetValue(UTF8STRC("Blacklist"));
+		s = cfg->GetValue(CSTR("Blacklist"));
 		if (s && s->leng != 0)
 		{
 			Text::StringBuilderUTF8 sb;

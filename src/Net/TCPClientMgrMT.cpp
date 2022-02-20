@@ -108,7 +108,7 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 	this->clsData = 0;
 	this->workers = 0;
 	Sync::Event *cliEvt;
-	NEW_CLASS(cliEvt, Sync::Event(true, (const UTF8Char*)"Net.TCPClientMgr.cliEvt"));
+	NEW_CLASS(cliEvt, Sync::Event(true));
 	this->clsData = cliEvt;
 	Sync::Thread::Create(ClientThread, this);
 }

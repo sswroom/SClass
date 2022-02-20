@@ -535,7 +535,7 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 		IO::ConfigFile *cfg = IO::WSConfigFile::Parse(CSTR("/etc/asound.conf"));
 		if (cfg)
 		{
-			Text::String *s = cfg->GetValue(UTF8STRC("defaults.pcm.card"));
+			Text::String *s = cfg->GetValue(CSTR("defaults.pcm.card"));
 			if (s)
 			{
 				UTF8Char sbuff[32];

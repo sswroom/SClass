@@ -73,12 +73,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Net::SocketFactory *sockf;
 		Bool succ = true;
 		NEW_CLASS(sockf, Net::OSSocketFactory(false));
-		if ((s = cfg->GetValue(UTF8STRC("ListenPort"))) == 0 || !s->ToUInt16(&listenPort))
+		if ((s = cfg->GetValue(CSTR("ListenPort"))) == 0 || !s->ToUInt16(&listenPort))
 		{
 			console->WriteLineC(UTF8STRC("Config ListenPort is not valid"));
 			succ = false;
 		}
-		if ((s = cfg->GetValue(UTF8STRC("ForwardPort"))) == 0 || !s->ToUInt16(&forwardPort))
+		if ((s = cfg->GetValue(CSTR("ForwardPort"))) == 0 || !s->ToUInt16(&forwardPort))
 		{
 			console->WriteLineC(UTF8STRC("Config ForwardPort is not valid"));
 			succ = false;
