@@ -8,15 +8,14 @@
 #include "UI/FontDialog.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHexViewerForm *me = (SSWR::AVIRead::AVIRHexViewerForm*)userObj;
 	Bool dynamicSize = me->chkDynamicSize->IsChecked();
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		UOSInt nameLen = Text::StrCharCnt(files[i]);
-		if (me->hexView->LoadFile({files[i], nameLen}, dynamicSize))
+		if (me->hexView->LoadFile(files[i]->ToCString(), dynamicSize))
 		{
 			Text::CString name = me->hexView->GetAnalyzerName();
 			if (name.v)
@@ -34,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRHexViewerForm::OnFilesDrop(void *userObj, cons
 
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Hex Viewer - "));
-			sb.AppendC(files[i], nameLen);
+			sb.Append(files[i]);
 			me->SetText(sb.ToCString());
 			break;
 		}

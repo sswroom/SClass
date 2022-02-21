@@ -123,7 +123,7 @@ void DB::SQLiteFile::Close()
 	}
 }
 
-OSInt DB::SQLiteFile::ExecuteNonQuery(const UTF8Char *sql)
+OSInt DB::SQLiteFile::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	if (this->db)
 	{
@@ -173,7 +173,7 @@ OSInt DB::SQLiteFile::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 	}
 }
 
-DB::DBReader *DB::SQLiteFile::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::SQLiteFile::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	if (this->db)
 	{

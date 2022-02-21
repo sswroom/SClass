@@ -152,7 +152,7 @@ void DB::MySQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::MySQLConn::ExecuteNonQuery(const UTF8Char *sql)
+OSInt DB::MySQLConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	if (this->mysql == 0)
 	{
@@ -214,7 +214,7 @@ OSInt DB::MySQLConn::ExecuteNonQuery(const UTF8Char *sql)
 	}
 }*/
 
-DB::DBReader *DB::MySQLConn::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::MySQLConn::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	if (this->mysql == 0)
 	{

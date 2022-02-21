@@ -71,11 +71,11 @@ namespace SSWR
 			UInt64 progLastCount;
 			IO::FileCheck::CheckType currHashType;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnCheckTypeChg(void *userObj);
 			static UInt32 __stdcall HashThread(void *userObj);
-			void AddFile(const UTF8Char *fileName);
+			void AddFile(Text::CString fileName);
 			void UpdateUI();
 		public:
 			AVIRFileHashForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

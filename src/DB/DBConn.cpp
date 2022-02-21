@@ -19,12 +19,12 @@ DB::DBConn::~DBConn()
 
 OSInt DB::DBConn::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 {
-	return ExecuteNonQuery(sql);
+	return ExecuteNonQuerySlow(sql);
 }
 
 DB::DBReader *DB::DBConn::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
-	return ExecuteReader(sql);
+	return ExecuteReaderSlow(sql);
 }
 
 DB::DBConn::DataError DB::DBConn::GetLastDataError()

@@ -19,7 +19,7 @@ namespace Media
 
 	public:
 		MediaFile(Text::String *name);
-		MediaFile(const UTF8Char *name);
+		MediaFile(Text::CString name);
 		virtual ~MediaFile();
 
 		virtual IO::ParserType GetParserType();

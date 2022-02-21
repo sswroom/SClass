@@ -52,7 +52,7 @@ namespace SSWR
 			UI::GUITextBox *txtValidDays;
 			UI::GUIButton *btnIssue;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnKeyViewClicked(void *userObj);
 			static void __stdcall OnCACertViewClicked(void *userObj);
 			static void __stdcall OnCSRViewClicked(void *userObj);

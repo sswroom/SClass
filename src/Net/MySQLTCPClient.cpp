@@ -1938,7 +1938,7 @@ void Net::MySQLTCPClient::Dispose()
 	this->Close();
 }
 
-OSInt Net::MySQLTCPClient::ExecuteNonQuery(const UTF8Char *sql)
+OSInt Net::MySQLTCPClient::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	return ExecuteNonQueryC(sql, Text::StrCharCnt(sql));
 }
@@ -1958,7 +1958,7 @@ OSInt Net::MySQLTCPClient::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	return ExecuteReaderC(sql, Text::StrCharCnt(sql));
 }

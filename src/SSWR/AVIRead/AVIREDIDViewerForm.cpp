@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnSaveClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, Text::String **fileNames, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIREDIDViewerForm *me = (SSWR::AVIRead::AVIREDIDViewerForm*)userObj;
 	IO::FileStream *fs;
@@ -130,8 +130,7 @@ void __stdcall SSWR::AVIRead::AVIREDIDViewerForm::OnFileDrop(void *userObj, cons
 	i = 0;
 	while (i < fileCnt)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(fileNames[i]);
-		NEW_CLASS(fs, IO::FileStream({fileNames[i], fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(fileNames[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize >= 128 && fileSize <= 1024 && (fileSize & 127) == 0)
 		{

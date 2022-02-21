@@ -40,7 +40,7 @@ namespace SSWR
 			IO::FileAnalyse::IFileAnalyse *file;
 			UOSInt lastPackCount;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnFileClicked(void *userObj);
 			static void __stdcall OnTrimPaddingClicked(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

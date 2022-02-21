@@ -35,7 +35,7 @@ UTF8Char IO::Path::PATH_SEPERATOR = (UTF8Char)'\\';
 const UTF8Char *IO::Path::ALL_FILES = (const UTF8Char*)"*.*";
 UOSInt IO::Path::ALL_FILES_LEN = 3;
 
-UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
+UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName, UOSInt fileNameLen)
 {
 	WChar tmpBuff[MAX_PATH];
 	::GetTempPathW(MAX_PATH, tmpBuff);
@@ -44,7 +44,7 @@ UTF8Char *IO::Path::GetTempFile(UTF8Char *buff, const UTF8Char *fileName)
 		Text::StrConcat(tmpBuff, L".\\");
 	}
 	Path::CreateDirectoryW(tmpBuff);
-	return Text::StrConcat(Text::StrWChar_UTF8(buff, tmpBuff), fileName);
+	return Text::StrConcatC(Text::StrWChar_UTF8(buff, tmpBuff), fileName, fileNameLen);
 }
 
 WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
@@ -270,7 +270,7 @@ Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 	return true;
 }
 
-UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
+UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext, UOSInt extLen)
 {
 	UTF8Char *oldExt = 0;
 	UTF8Char c;
@@ -290,7 +290,7 @@ UTF8Char *IO::Path::ReplaceExt(UTF8Char *fileName, const UTF8Char *ext)
 		oldExt = fileName;
 		oldExt[-1] = '.';
 	}
-	return Text::StrConcat(oldExt, ext);
+	return Text::StrConcatC(oldExt, ext, extLen);
 }
 
 WChar *IO::Path::ReplaceExtW(WChar *fileName, const WChar *ext)

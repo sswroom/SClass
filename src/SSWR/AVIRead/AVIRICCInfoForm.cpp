@@ -5,7 +5,7 @@
 #include "SSWR/AVIRead/AVIRICCInfoForm.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRICCInfoForm *me = (SSWR::AVIRead::AVIRICCInfoForm*)userObj;
 	UOSInt i;
@@ -15,8 +15,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const U
 	i = 0;
 	while (i < fileCnt)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		NEW_CLASS(fs, IO::FileStream({files[i], fileNameLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(files[i], IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoBuffer));
 		fileSize = fs->Read(buff, 1048576);
 		DEL_CLASS(fs);
 		if (fileSize == 0 || fileSize >= 1048576)
@@ -27,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRICCInfoForm::OnFileDrop(void *userObj, const U
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(buff, fileSize);
 			if (icc)
 			{
-				me->SetICCProfile(icc, {files[i], fileNameLen});
+				me->SetICCProfile(icc, files[i]->ToCString());
 				break;
 			}
 		}

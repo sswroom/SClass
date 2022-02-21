@@ -14,7 +14,7 @@ typedef enum
 	MNU_SEARCH_DISC
 } MenuItems;
 
-void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::DiscDB::DiscDBMainForm *me = (SSWR::DiscDB::DiscDBMainForm *)userObj;
 	IO::StmData::FileData *fd;
@@ -24,8 +24,7 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 	while (i < nFiles)
 	{
 		succ = false;
-		UOSInt nameLen = Text::StrCharCnt(files[i]);
-		NEW_CLASS(fd, IO::StmData::FileData({files[i], nameLen}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 		if (fd->GetDataSize() > 0)
 		{
 			succ = me->env->AddMD5(fd);
@@ -37,14 +36,14 @@ void __stdcall SSWR::DiscDB::DiscDBMainForm::OnFileDrop(void *userObj, const UTF
 			if ((i + 1) >= nFiles)
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.AppendC(files[i], nameLen);
+				sb.Append(files[i]);
 				failed = true;
 				UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("DiscDB"), me);
 			}
 			else
 			{
 				sb.AppendC(UTF8STRC("Error in parsing "));
-				sb.AppendC(files[i], nameLen);
+				sb.Append(files[i]);
 				sb.AppendC(UTF8STRC(", do you want to continue?"));
 				if (!UI::MessageDialog::ShowYesNoDialog(sb.ToCString(), CSTR("DiscDB"), me))
 				{

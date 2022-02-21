@@ -499,7 +499,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
+OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	if (this->connHand == 0)
 	{
@@ -610,7 +610,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
 	return rowCnt;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::ODBCConn::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	if (this->connHand == 0)
 	{

@@ -35,14 +35,14 @@ void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnAudioEnd(void *userData)
 	status->evt->Set();
 }
 
-void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRVideoInfoForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRVideoInfoForm *me = (SSWR::AVIRead::AVIRVideoInfoForm*)userObj;
 	UOSInt i = 0;
 	Bool succ;
 	while (i < nFiles)
 	{
-		succ = me->OpenFile({files[i], Text::StrCharCnt(files[i])});
+		succ = me->OpenFile(files[i]->ToCString());
 		if (succ)
 			break;
 		i++;

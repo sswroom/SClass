@@ -232,10 +232,10 @@ Media::Batch::BatchLoader::~BatchLoader()
 	DEL_CLASS(this->mainEvt);
 }
 
-void Media::Batch::BatchLoader::AddFileName(const UTF8Char *fileName)
+void Media::Batch::BatchLoader::AddFileName(Text::CString fileName)
 {
 	Sync::MutexUsage mutUsage(this->reqMut);
-	this->fileNames->Put(Text::String::NewNotNull(fileName));
+	this->fileNames->Put(Text::String::New(fileName));
 	this->threadStates[this->nextThread].evt->Set();
 	this->nextThread = (this->nextThread + 1) % this->threadCnt;
 	mutUsage.EndUse();

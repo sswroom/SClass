@@ -56,9 +56,7 @@ namespace IO
 		virtual ~ConsoleWriter();
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteStr(const UTF8Char *str);
 		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar);
-		virtual Bool WriteLine(const UTF8Char *str);
 		virtual Bool WriteLine();
 
 		WChar *ReadLine(WChar *sbuff, UOSInt nChar);

@@ -35,7 +35,7 @@ void __stdcall OnMenuEvent(void *userObj, UInt16 cmdId)
 	}
 }
 
-void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	UI::GUIForm *me = (UI::GUIForm*)userObj;
 	UOSInt i;
@@ -45,7 +45,7 @@ void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
 	{
 		if (i > 0)
 			sb.AppendC(UTF8STRC("\r\n"));
-		sb.AppendSlow(files[i]);
+		sb.Append(files[i]);
 		i++;
 	}
 	UI::MessageDialog::ShowDialog(sb.ToCString(), CSTR("Drop Files"), me);

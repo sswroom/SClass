@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "DB/CSVFile.h"
 #include "IO/FileStream.h"
-#include "IO/StreamWriter.h"
 #include "IO/StmData/FileData.h"
 #include "Math/CoordinateSystemManager.h"
 #include "Math/ProjectedCoordinateSystem.h"
@@ -9,6 +8,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Text/UTF8Writer.h"
 #include "UI/FileDialog.h"
 #include "UI/MessageDialog.h"
 
@@ -190,7 +190,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 		return;
 	}
 	IO::FileStream *fs;
-	IO::StreamWriter *writer;
+	Text::UTF8Writer *writer;
 	NEW_CLASS(fs, IO::FileStream(dlg->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (fs->IsError())
 	{
@@ -238,7 +238,7 @@ void __stdcall SSWR::AVIRead::AVIRCoordConvForm::OnConvFileClicked(void *userObj
 	}
 
 	strBuff = MemAlloc(UTF8Char, 16384);
-	NEW_CLASS(writer, IO::StreamWriter(fs, 65001));
+	NEW_CLASS(writer, Text::UTF8Writer(fs));
 	sptr = strBuff;
 	i = 0;
 	while (i < colCnt)

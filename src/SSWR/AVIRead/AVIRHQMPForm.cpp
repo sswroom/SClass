@@ -164,7 +164,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPForm *me = (SSWR::AVIRead::AVIRHQMPForm*)userObj;
 	UOSInt i;
@@ -173,7 +173,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnFileDrop(void *userObj, const UTF8
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile({files[i], Text::StrCharCnt(files[i])}))
+		if (me->OpenFile(files[i]->ToCString()))
 			return;
 		i++;
 	}
@@ -858,9 +858,10 @@ void SSWR::AVIRead::AVIRHQMPForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				UTF8Char sbuff[256];
+				UTF8Char *sptr;
 				Media::MediaFile *mf;
-				dlg->capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(sbuff));
+				sptr = dlg->capture->GetSourceName(sbuff);
+				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(dlg->capture, 0);
 				this->OpenVideo(mf);
 			}

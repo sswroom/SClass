@@ -103,7 +103,7 @@ typedef enum
 #define MAX_SCALE 200000000
 #define MIN_SCALE 400
 
-void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -135,19 +135,18 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		IO::Path::PathType pathType = IO::Path::GetPathType(files[i], fileNameLen);
+		IO::Path::PathType pathType = IO::Path::GetPathType(files[i]->v, files[i]->leng);
 		pobj = 0;
 		if (pathType == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
+			NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 			pobj = parsers->ParseFile(fd, &pt);
 			DEL_CLASS(fd);
 		}
 		else if (pathType == IO::Path::PathType::Directory)
 		{
 			IO::DirectoryPackage *dpkg;
-			NEW_CLASS(dpkg, IO::DirectoryPackage({files[i], fileNameLen}));
+			NEW_CLASS(dpkg, IO::DirectoryPackage(files[i]));
 			pobj = parsers->ParseObject(dpkg, &pt);
 			DEL_CLASS(dpkg);
 		}
@@ -172,7 +171,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 				Media::SharedImage *simg;
 				Math::VectorImage *vimg;
 				Media::Image *stimg;
-				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, {files[i], fileNameLen}, 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
+				NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, files[i]->ToCString(), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, CSTR_NULL));
 				stimg = ((Media::ImageList*)pobj)->GetImage(0, 0);
 				Double calcImgW;
 				Double calcImgH;
@@ -213,7 +212,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, const UTF8
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW * 0.5, OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);
 				}
 				NEW_CLASS(simg, Media::SharedImage((Media::ImageList*)pobj, true));
-				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, {files[i], fileNameLen}, 0, 0));
+				NEW_CLASS(vimg, Math::VectorImage(me->env->GetSRID(), simg, x1, y1, x2, y2, x2 - x1, y1 - y2, false, files[i], 0, 0));
 				DEL_CLASS(simg);
 				lyr->AddVector(vimg, (const UTF8Char**)0);
 				layers->Add(lyr);

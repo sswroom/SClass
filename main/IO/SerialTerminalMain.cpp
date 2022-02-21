@@ -44,7 +44,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		console->WriteStrC(UTF8STRC("Usage: "));
 		if (argc >= 1)
 		{
-			console->WriteStr(argv[0]);
+			console->WriteStr(Text::CString::FromPtr(argv[0]));
 		}
 		else
 		{

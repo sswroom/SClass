@@ -78,10 +78,10 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnBrowseClicked(void *userObj)
 	DEL_CLASS(dlg);
 }
 
-void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFile)
+void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFile)
 {
 	SSWR::AVIRead::AVIRWellFormatForm *me = (SSWR::AVIRead::AVIRWellFormatForm*)userObj;
-	me->txtFile->SetText({files[0], Text::StrCharCnt(files[0])});
+	me->txtFile->SetText(files[0]->ToCString());
 }
 
 void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToTextClicked(void *userObj)

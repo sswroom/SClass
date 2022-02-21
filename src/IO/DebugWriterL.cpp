@@ -48,27 +48,10 @@ Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteStr(const UTF8Char *str)
-{
-	this->clsData->buffSize = (UOSInt)(Text::StrConcat(&this->clsData->buff[this->clsData->buffSize], str) - this->clsData->buff);
-	this->Flush();
-	return true;
-}
-
 Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	Text::StrConcatC(&this->clsData->buff[this->clsData->buffSize], str, nChar);
 	this->clsData->buffSize += nChar;
-	this->Flush();
-	syslog(LOG_DEBUG, (const Char*)this->clsData->buff);
-	this->clsData->buff[0] = 0;
-	this->clsData->buffSize = 0;
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
-{
-	this->clsData->buffSize = (UOSInt)(Text::StrConcat(&this->clsData->buff[this->clsData->buffSize], str) - this->clsData->buff);
 	this->Flush();
 	syslog(LOG_DEBUG, (const Char*)this->clsData->buff);
 	this->clsData->buff[0] = 0;

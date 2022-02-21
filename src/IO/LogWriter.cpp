@@ -31,33 +31,10 @@ Bool IO::LogWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::LogWriter::WriteStr(const UTF8Char *str)
-{
-	this->mut->Lock();
-	sb->AppendSlow(str);
-	this->mut->Unlock();
-	this->CheckLines();
-	return true;
-}
-
 Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	this->mut->Lock();
 	sb->AppendC(str, nChar);
-	this->CheckLines();
-	if (sb->GetLength() > 0)
-	{
-		this->log->LogMessageC(sb->ToString(), sb->GetLength(), this->logLev);
-		sb->ClearStr();
-	}
-	this->mut->Unlock();
-	return true;
-}
-
-Bool IO::LogWriter::WriteLine(const UTF8Char *str)
-{
-	this->mut->Lock();
-	sb->AppendSlow(str);
 	this->CheckLines();
 	if (sb->GetLength() > 0)
 	{

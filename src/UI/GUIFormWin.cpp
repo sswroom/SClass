@@ -829,12 +829,12 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 	{
 		UInt32 i;
 		WChar sbuff[256];
-		const UTF8Char **files = MemAlloc(const UTF8Char *, fileCnt);
+		Text::String **files = MemAlloc(Text::String *, fileCnt);
 		i = 0;
 		while (i < fileCnt)
 		{
 			DragQueryFileW((HDROP)hDrop, i, sbuff, 256);
-			files[i] = Text::StrToUTF8New(sbuff);
+			files[i] = Text::String::NewNotNull(sbuff);
 			i++;
 		}
 		UOSInt j = this->dropFileHandlers->GetCount();
@@ -844,7 +844,7 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 		}
 		while (fileCnt-- > 0)
 		{
-			Text::StrDelNew(files[fileCnt]);
+			files[fileCnt]->Release();
 		}
 		MemFree(files);
 	}

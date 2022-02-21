@@ -9,14 +9,14 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileHashForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileHashForm *me = (SSWR::AVIRead::AVIRFileHashForm *)userObj;
 	UOSInt i;
 	i = 0;
 	while (i < nFiles)
 	{
-		me->AddFile(files[i]);
+		me->AddFile(files[i]->ToCString());
 		i++;
 	}
 	me->fileListChg = true;
@@ -185,13 +185,13 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 	return 0;
 }
 
-void SSWR::AVIRead::AVIRFileHashForm::AddFile(const UTF8Char *fileName)
+void SSWR::AVIRead::AVIRFileHashForm::AddFile(Text::CString fileName)
 {
 	FileStatus *status;
 	Sync::MutexUsage mutUsage(this->fileMut);
 	status = MemAlloc(FileStatus, 1);
 	status->status = 0;
-	status->fileName = Text::String::NewNotNull(fileName);
+	status->fileName = Text::String::New(fileName);
 	this->fileList->Add(status);
 	mutUsage.EndUse();
 	this->fileEvt->Set();

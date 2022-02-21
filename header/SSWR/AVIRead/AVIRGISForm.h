@@ -74,7 +74,7 @@ namespace SSWR
 			CursorType currCursor;
 
 		private:
-			static void __stdcall FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles);
+			static void __stdcall FileHandler(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnMapMouseMove(void *userObj, OSInt x, OSInt y);
 			static Bool __stdcall OnMapMouseDown(void *userObj, OSInt x, OSInt y, MouseButton button);
 			static Bool __stdcall OnMapMouseUp(void *userObj, OSInt x, OSInt y, MouseButton button);

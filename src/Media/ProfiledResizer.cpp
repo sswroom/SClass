@@ -207,7 +207,7 @@ Bool Media::ProfiledResizer::RemoveProfile(UOSInt index)
 	return true;
 }
 
-void Media::ProfiledResizer::ProcessFile(const UTF8Char *fileName)
+void Media::ProfiledResizer::ProcessFile(Text::CString fileName)
 {
 	this->loader->AddFileName(fileName);
 }

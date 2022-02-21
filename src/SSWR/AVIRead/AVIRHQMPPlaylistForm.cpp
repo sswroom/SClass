@@ -10,7 +10,7 @@
 #include "UI/FileDialog.h"
 #include "UI/FolderDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPPlaylistForm *me = (SSWR::AVIRead::AVIRHQMPPlaylistForm*)userObj;
 	Bool changed = false;
@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPPlaylistForm::OnFileDrop(void *userObj, co
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->playlist->AddFile({files[i], Text::StrCharCnt(files[i])}))
+		if (me->playlist->AddFile(files[i]->ToCString()))
 		{
 			changed = true;
 		}

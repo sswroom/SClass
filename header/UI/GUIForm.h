@@ -1,5 +1,6 @@
 #ifndef _SM_UI_GUIFORM
 #define _SM_UI_GUIFORM
+#include "Text/String.h"
 #include "UI/GUICore.h"
 #include "UI/GUIClientControl.h"
 #include "UI/GUIMainMenu.h"
@@ -10,7 +11,7 @@ namespace UI
 	class GUIButton;
 	class GUIIcon;
 
-	typedef void (__stdcall *FileEvent)(void *userObj, const UTF8Char **files, UOSInt nFiles);
+	typedef void (__stdcall *FileEvent)(void *userObj, Text::String **files, UOSInt nFiles);
 	typedef void (__stdcall *MenuEvent)(void *userObj, UInt16 cmdId);
 
 	class GUIForm : public GUIClientControl
@@ -134,7 +135,7 @@ namespace UI
 		virtual void OnFocus();
 		virtual void OnFocusLost();
 		virtual void OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight);
-		void OnFileDrop(const UTF8Char **files, UOSInt nFiles);
+		void OnFileDrop(Text::String **files, UOSInt nFiles);
 
 		void ToFullScn();
 		void FromFullScn();

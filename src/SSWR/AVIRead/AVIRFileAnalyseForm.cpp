@@ -9,15 +9,14 @@
 
 #define PER_PAGE 10000
 
-void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRFileAnalyseForm *me = (SSWR::AVIRead::AVIRFileAnalyseForm *)userObj;
 	UOSInt i;
 	i = 0;
 	while (i < nFiles)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		if (me->OpenFile({files[i], fileNameLen}))
+		if (me->OpenFile(files[i]->ToCString()))
 			break;
 		i++;
 	}

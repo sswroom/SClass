@@ -17,7 +17,7 @@ Media::MediaFile::MediaFile(Text::String *name) : IO::ParsedObject(name)
 	this->releaseChapter = false;
 }
 
-Media::MediaFile::MediaFile(const UTF8Char *name) : IO::ParsedObject(name)
+Media::MediaFile::MediaFile(Text::CString name) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->sources, Data::ArrayList<Media::IMediaSource*>());
 	NEW_CLASS(this->syncTime, Data::ArrayListInt32());

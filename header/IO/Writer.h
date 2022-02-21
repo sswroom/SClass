@@ -10,9 +10,7 @@ namespace IO
 		virtual ~Writer() {};
 
 		virtual Bool WriteStrC(const UTF8Char *str, UOSInt nChar) = 0;
-		virtual Bool WriteStr(const UTF8Char *str) = 0;
 		virtual Bool WriteLineC(const UTF8Char *str, UOSInt nChar) = 0;
-		virtual Bool WriteLine(const UTF8Char *str) = 0;
 		virtual Bool WriteLine() = 0;
 
 		Bool WriteStr(Text::CString str)
@@ -20,7 +18,7 @@ namespace IO
 			return WriteStrC(str.v, str.leng);
 		}
 
-		Bool WriteLine(Text::CString str)
+		Bool WriteLineCStr(Text::CString str)
 		{
 			return WriteLineC(str.v, str.leng);
 		}

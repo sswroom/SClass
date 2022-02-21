@@ -307,7 +307,7 @@ IO::ParsedObject *Parser::FileParser::GUIImgParser::ParseFile(IO::IStreamData *f
 			Text::StringBuilderUTF8 sb;
 			sb.Append(fd->GetFullFileName());
 			sb.AllocLeng(5);
-			sb.SetEndPtr(IO::Path::ReplaceExt(sb.ToString(), (const UTF8Char*)"tfw"));
+			sb.SetEndPtr(IO::Path::ReplaceExt(sb.ToString(), UTF8STRC("tfw")));
 			if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) == IO::Path::PathType::File)
 			{
 				IO::FileStream *fs;

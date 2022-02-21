@@ -90,22 +90,15 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *str)
 
 Bool IO::ConsoleWriter::WriteStrC(const UTF8Char *s, UOSInt nUTF8Char)
 {
-	Bool ret;
-	const UTF8Char *csptr = Text::StrCopyNewC(s, nUTF8Char);
-	ret = this->WriteStr(csptr);
-	Text::StrDelNew(csptr);
-	return ret;
-}
-
-Bool IO::ConsoleWriter::WriteStr(const UTF8Char *s)
-{
 	UInt32 outChars = 0;
 	UInt32 nChar;
 	if (this->enc == 0)
 	{
-		const WChar *str = Text::StrToWCharNew(s);
-		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)Text::StrCharCnt(str), (LPDWORD)&outChars, 0);
-		Text::StrDelNew(str);
+		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
+		WChar *str = MemAlloc(WChar, strLen + 1);
+		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
+		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)strLen, (LPDWORD)&outChars, 0);
+		MemFree(str);
 		if (outChars == nChar)
 		{
 			if (this->autoFlush)
@@ -147,27 +140,17 @@ Bool IO::ConsoleWriter::WriteStr(const UTF8Char *s)
 
 Bool IO::ConsoleWriter::WriteLineC(const UTF8Char *s, UOSInt nUTF8Char)
 {
-	Bool ret;
-	const UTF8Char *csptr = Text::StrCopyNewC(s, nUTF8Char);
-	ret = this->WriteLine(csptr);
-	Text::StrDelNew(csptr);
-	return ret;
-}
-
-Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s)
-{
 	UInt32 outChars = 0;
-	UInt32 outChars2 = 0;
 	UInt32 nChar;
 	if (this->enc == 0)
 	{
-		const WChar *str = Text::StrToWCharNew(s);
-		Sync::MutexUsage mutUsage(this->mut);
-		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)Text::StrCharCnt(str), (LPDWORD)&outChars, 0);
-		WriteConsoleW((HANDLE)this->hand, L"\n", 1, (LPDWORD)&outChars2, 0);
-		mutUsage.EndUse();
-		Text::StrDelNew(str);
-		if (outChars == nChar && outChars2 == 1)
+		UOSInt strLen = Text::StrUTF8_WCharCntC(s, nUTF8Char);
+		WChar *str = MemAlloc(WChar, strLen + 2);
+		Text::StrUTF8_WCharC(str, s, nUTF8Char, 0);
+		str[strLen] = '\n';
+		WriteConsoleW((HANDLE)this->hand, str, nChar = (UInt32)(strLen + 1), (LPDWORD)&outChars, 0);
+		MemFree(str);
+		if (outChars == nChar)
 		{
 			if (this->autoFlush)
 			{
@@ -182,10 +165,10 @@ Bool IO::ConsoleWriter::WriteLine(const UTF8Char *s)
 		UOSInt nBytes;
 		UInt8 *tmpBuff;
 		nChar = (UInt32)Text::StrCharCnt(s);
-		nBytes = this->enc->UTF8CountBytesC(s, nChar);
-		tmpBuff = MemAlloc(UInt8, nBytes + 2);
+		nBytes = this->enc->UTF8CountBytesC(s, nChar) + 1;
+		tmpBuff = MemAlloc(UInt8, nBytes + 1);
 		this->enc->UTF8ToBytesC(tmpBuff, s, nChar);
-		tmpBuff[nBytes++] = '\n';
+		tmpBuff[nBytes - 1] = '\n';
 		if (fileOutput)
 		{
 			WriteFile((HANDLE)this->hand, tmpBuff, (UInt32)nBytes, (LPDWORD)&outChars, 0);
@@ -362,9 +345,9 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 	UOSInt width = GetDisplayWidth(str);
 	if (width <= displayWidth)
 	{
-		const UTF8Char *csptr = Text::StrToUTF8New(str);
-		this->WriteStr(csptr);
-		Text::StrDelNew(csptr);
+		Text::String *s = Text::String::NewNotNull(str);
+		this->WriteStr(s->ToCString());
+		s->Release();
 		while (width < displayWidth)
 		{
 			width++;
@@ -389,9 +372,9 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			}
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New(wbuff);
-			this->WriteStr(csptr);
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::NewNotNull(wbuff);
+			this->WriteStr(s->ToCString());
+			s->Release();
 			str++;
 		}
 	}
@@ -404,9 +387,9 @@ void IO::ConsoleWriter::FixWrite(const WChar *str, UOSInt displayWidth)
 			width += GetDisplayCharWidth(*str);
 			wbuff[0] = str[0];
 			wbuff[1] = 0;
-			const UTF8Char *csptr = Text::StrToUTF8New(wbuff);
-			this->WriteStr(csptr);
-			Text::StrDelNew(csptr);
+			Text::String *s = Text::String::NewNotNull(wbuff);
+			this->WriteStr(s->ToCString());
+			s->Release();
 			str++;
 		}
 		while (width < displayWidth)

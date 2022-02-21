@@ -8,13 +8,13 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(void *us
 	me->player->PBStop();
 }
 
-void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->player->OpenFile({files[i], Text::StrCharCnt(files[i])}))
+		if (me->player->OpenFile(files[i]->ToCString()))
 		{
 			return;
 		}

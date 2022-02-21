@@ -289,7 +289,7 @@ Net::RTSPClient::~RTSPClient()
 	}
 }
 
-Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8Char *> *options)
+Bool Net::RTSPClient::GetOptions(Text::CString url, Data::ArrayList<const UTF8Char *> *options)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -340,7 +340,7 @@ Bool Net::RTSPClient::GetOptions(const UTF8Char *url, Data::ArrayList<const UTF8
 	return ret;
 }
 
-Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
+Net::SDPFile *Net::RTSPClient::GetMediaInfo(Text::CString url)
 {
 	UTF8Char sbuff[16];
 	UTF8Char *sptr;
@@ -378,7 +378,7 @@ Net::SDPFile *Net::RTSPClient::GetMediaInfo(const UTF8Char *url)
 	return sdp;
 }
 
-UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Net::RTPCliChannel *rtpChannel)
+UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, Text::CString url, Net::RTPCliChannel *rtpChannel)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -418,7 +418,7 @@ UTF8Char *Net::RTSPClient::SetupRTP(UTF8Char *sessIdOut, const UTF8Char *url, Ne
 	return ret;
 }
 
-IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF8Char *url, UOSInt urlLen)
+IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CString url)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -428,7 +428,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF
 	UOSInt k;
 
 	UInt16 port = 554;
-	sptr = Text::URLString::GetURLDomain(sbuff, url, urlLen, &port);
+	sptr = Text::URLString::GetURLDomain(sbuff, url.v, url.leng, &port);
 	if (port == 0)
 	{
 		port = 554;
@@ -505,7 +505,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, const UTF
 	}
 }
 
-Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
+Bool Net::RTSPClient::Play(Text::CString url, Text::CString sessId)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -544,7 +544,7 @@ Bool Net::RTSPClient::Play(const UTF8Char *url, const UTF8Char *sessId)
 	return ret;
 }
 
-Bool Net::RTSPClient::Close(const UTF8Char *url, const UTF8Char *sessId)
+Bool Net::RTSPClient::Close(Text::CString url, Text::CString sessId)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -587,9 +587,9 @@ Bool Net::RTSPClient::Init(Net::RTPCliChannel *rtpChannel)
 {
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
-	if ((sptr = this->SetupRTP(sbuff, rtpChannel->GetControlURL(), rtpChannel)) != 0)
+	if ((sptr = this->SetupRTP(sbuff, rtpChannel->GetControlURL()->ToCString(), rtpChannel)) != 0)
 	{
-		rtpChannel->SetUserData((void*)Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+		rtpChannel->SetUserData((void*)Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		return true;
 	}
 	return false;
@@ -597,26 +597,26 @@ Bool Net::RTSPClient::Init(Net::RTPCliChannel *rtpChannel)
 
 Bool Net::RTSPClient::Play(Net::RTPCliChannel *rtpChannel)
 {
-	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
+	return this->Play(rtpChannel->GetControlURL()->ToCString(), ((Text::String*)rtpChannel->GetUserData())->ToCString());
 }
 
 Bool Net::RTSPClient::KeepAlive(Net::RTPCliChannel *rtpChannel)
 {
-//	return this->Play(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
+//	return this->Play(rtpChannel->GetControlURL(), (Text::String*)rtpChannel->GetUserData());
 	return true;
 }
 
 Bool Net::RTSPClient::StopPlay(Net::RTPCliChannel *rtpChannel)
 {
-	return this->Close(rtpChannel->GetControlURL(), (const UTF8Char*)rtpChannel->GetUserData());
+	return this->Close(rtpChannel->GetControlURL()->ToCString(), ((Text::String*)rtpChannel->GetUserData())->ToCString());
 }
 
 Bool Net::RTSPClient::Deinit(Net::RTPCliChannel *rtpChannel)
 {
-	const UTF8Char *sessId = (const UTF8Char*)rtpChannel->GetUserData();
+	Text::String *sessId = (Text::String*)rtpChannel->GetUserData();
 	if (sessId)
 	{
-		Text::StrDelNew(sessId);
+		sessId->Release();
 		rtpChannel->SetUserData(0);
 	}
 	return true;

@@ -1043,7 +1043,7 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 	PROCESS_INFORMATION procInfo;
 	STARTUPINFOW startInfo;
 	BOOL createRet;
-	sptr = IO::Path::GetTempFile(tmpFile, (const UTF8Char*)"ProcessTmp");
+	sptr = IO::Path::GetTempFile(tmpFile, UTF8STRC("ProcessTmp"));
 	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_ExecFileId));

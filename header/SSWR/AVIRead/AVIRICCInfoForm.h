@@ -25,7 +25,7 @@ namespace SSWR
 			SSWR::AVIRead::AVIRCore *core;
 			Media::ICCProfile *icc;
 
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt);
 			static void __stdcall OnRLUTClicked(void *userObj);
 			static void __stdcall OnGLUTClicked(void *userObj);
 			static void __stdcall OnBLUTClicked(void *userObj);

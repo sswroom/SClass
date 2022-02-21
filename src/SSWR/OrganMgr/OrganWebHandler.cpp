@@ -2787,7 +2787,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		}
 		if (!found)
 		{
-			writer->WriteLine(LangGetValue(lang, UTF8STRC("NoItems")));
+			writer->WriteLineCStr(LangGetValue(lang, UTF8STRC("NoItems")));
 			writer->WriteLineC(UTF8STRC("<hr/>"));
 		}
 		if (!notAdmin)

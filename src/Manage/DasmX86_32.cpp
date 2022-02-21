@@ -19354,8 +19354,9 @@ Bool Manage::DasmX86_32::Disasm32In(Text::StringBuilderUTF8 *outStr, Manage::Add
 		outStr->AppendC(UTF8STRC(" "));
 		sess.sbuff = sbuff;
 		Bool ret = this->codes[sess.memReader->ReadMemUInt8(sess.regs.EIP)](&sess);
-		console.WriteStr(sbuff);
-		outStr->AppendSlow(sbuff);
+		UOSInt sbuffLen = Text::StrCharCnt(sbuff);
+		console.WriteStrC(sbuff, sbuffLen);
+		outStr->AppendC(sbuff, sbuffLen);
 		if (!ret)
 		{
 			UInt8 buff[256];

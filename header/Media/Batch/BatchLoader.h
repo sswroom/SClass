@@ -44,7 +44,7 @@ namespace Media
 			BatchLoader(Parser::ParserList *parsers, Media::Batch::BatchHandler *hdlr);
 			~BatchLoader();
 			
-			void AddFileName(const UTF8Char *fileName);
+			void AddFileName(Text::CString fileName);
 			void AddImageData(IO::IStreamData *data, const UTF8Char *fileId);
 			Bool IsProcessing();
 		};

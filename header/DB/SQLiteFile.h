@@ -30,9 +30,9 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);
+		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
 		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
-		virtual DBReader *ExecuteReader(const UTF8Char *sql);
+		virtual DBReader *ExecuteReaderSlow(const UTF8Char *sql);
 		virtual DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);

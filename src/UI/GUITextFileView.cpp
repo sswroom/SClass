@@ -1522,7 +1522,7 @@ void UI::GUITextFileView::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool UI::GUITextFileView::LoadFile(const UTF8Char *fileName)
+Bool UI::GUITextFileView::LoadFile(Text::String *fileName)
 {
 	while (this->isSearching)
 	{
@@ -1534,7 +1534,7 @@ Bool UI::GUITextFileView::LoadFile(const UTF8Char *fileName)
 	{
 		this->fileName->Release();
 	}
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = fileName->Clone();
 	this->loadNewFile = true;
 	this->fileSize = 0;
 

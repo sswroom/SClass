@@ -4,14 +4,14 @@
 #include "UI/MessageDialog.h"
 #include "Win32/Clipboard.h"
 
-void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
 	Bool chg = false;
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		if (me->env->AddDataFile({files[i], Text::StrCharCnt(files[i])}))
+		if (me->env->AddDataFile(files[i]->ToCString()))
 		{
 			chg = true;
 		}

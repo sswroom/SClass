@@ -63,7 +63,7 @@ void Win32::WMIQuery::Close()
 {
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(const UTF8Char *sql)
+OSInt Win32::WMIQuery::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -75,7 +75,7 @@ OSInt Win32::WMIQuery::ExecuteNonQuery(const WChar *sql)
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(const UTF8Char *sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReaderSlow(const UTF8Char *sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;

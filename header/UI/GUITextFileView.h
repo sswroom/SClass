@@ -84,7 +84,7 @@ namespace UI
 		Bool IsLoading();
 		UOSInt GetLineCount();
 		void SetCodePage(UInt32 codePage);
-		Bool LoadFile(const UTF8Char *fileName);
+		Bool LoadFile(Text::String *fileName);
 		Text::String *GetFileName();
 		void GetTextPos(OSInt scnPosX, OSInt scnPosY, UInt32 *textPosX, UOSInt *textPosY);
 		UOSInt GetTextPosY();

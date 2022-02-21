@@ -31,7 +31,7 @@ namespace Net
 			Net::UDPServer *rtpUDP;
 			Net::UDPServer *rtcpUDP;
 			void *userData;
-			const UTF8Char *controlURL;
+			Text::String *controlURL;
 			UInt32 lastSSRC;
 			UInt32 lastSeqNumHi;
 			UInt32 lastSeqNumLo;
@@ -62,7 +62,7 @@ namespace Net
 		static UInt32 __stdcall PlayThread(void *userObj);
 
 	private:
-		void SetControlURL(const UTF8Char *url);
+		void SetControlURL(Text::CString url);
 		void SetPlayControl(Net::IRTPController *playCtrl);
 
 		RTPCliChannel(Net::SocketFactory *sockf, UInt16 port);
@@ -72,7 +72,7 @@ namespace Net
 
 		UInt16 GetPort();
 		UTF8Char *GetTransportDesc(UTF8Char *sbuff);
-		const UTF8Char *GetControlURL();
+		Text::String *GetControlURL();
 		Media::MediaType GetMediaType();
 		void SetMediaType(Media::MediaType mediaType);
 		Media::IVideoSource *GetVideo(UOSInt index);
@@ -90,7 +90,7 @@ namespace Net
 		Bool MapPayloadType(Int32 payloadType, const UTF8Char *typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
-		static RTPCliChannel *CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, const UTF8Char *ctrlURL, Net::IRTPController *playCtrl);
+		static RTPCliChannel *CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl);
 	};
 }
 #endif

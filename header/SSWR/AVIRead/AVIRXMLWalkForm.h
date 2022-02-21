@@ -24,7 +24,7 @@ namespace SSWR
 			UI::GUIListView *lvXML;
 
 			static void __stdcall OnBrowseClick(void *userObj);
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **fileNames, UOSInt nFiles);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **fileNames, UOSInt nFiles);
 
 			void LoadFile(Text::CString fileName);
 		public:

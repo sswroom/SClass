@@ -50,14 +50,6 @@ Bool IO::SimpleFileWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return writeCnt == nChar;
 }
 
-Bool IO::SimpleFileWriter::WriteStr(const UTF8Char *str)
-{
-	UOSInt writeCnt;
-	UOSInt charCnt = Text::StrCharCnt(str);
-	writeCnt = WriteBuff(str, charCnt);
-	return charCnt == writeCnt;
-}
-
 Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	UOSInt writeCnt;
@@ -67,18 +59,6 @@ Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 	writeCnt = WriteBuff(str, nChar);
 	writeCnt += WriteBuff(buff, 2);
 	return writeCnt == nChar + 2;
-}
-
-Bool IO::SimpleFileWriter::WriteLine(const UTF8Char *str)
-{
-	UOSInt writeCnt = 0;
-	UOSInt charCnt = Text::StrCharCnt(str);
-	UInt8 buff[2];
-	buff[0] = 13;
-	buff[1] = 10;
-	writeCnt = WriteBuff(str, charCnt);
-	writeCnt += WriteBuff(buff, 2);
-	return writeCnt == charCnt + 2;
 }
 
 Bool IO::SimpleFileWriter::WriteW(const WChar *str, UOSInt nChar)

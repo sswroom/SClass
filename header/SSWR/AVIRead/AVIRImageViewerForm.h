@@ -26,7 +26,7 @@ namespace SSWR
 			Bool hideCursor;
 			UOSInt noMoveCount;
 			
-			static void __stdcall OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt);
+			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt);
 			static void __stdcall OnMoveToNext(void *userObj);
 			static void __stdcall OnMoveToPrev(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);

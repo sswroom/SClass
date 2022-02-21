@@ -66,7 +66,7 @@ namespace Media
 		Bool AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 
-		void ProcessFile(const UTF8Char *fileName);
+		void ProcessFile(Text::CString fileName);
 		Bool SaveProfile(Text::CString fileName);
 		Bool LoadProfile(const UTF8Char *fileName);
 	};

@@ -9,14 +9,14 @@
 #define MNU_EDIT_GOTO 102
 #define MNU_EDIT_SEARCH 103
 
-void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall UtilUI::TextViewerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	UtilUI::TextViewerForm *me = (UtilUI::TextViewerForm*)userObj;
 	UTF8Char sbuff[530];
 	UTF8Char *sptr;
 	if (me->txtView->LoadFile(files[0]))
 	{
-		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")), files[0]);
+		sptr = files[0]->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
 		me->SetText(CSTRP(sbuff, sptr));
 	}
 }
@@ -96,7 +96,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		}
 		if (dlg->ShowDialog(this->GetHandle()))
 		{
-			if (this->txtView->LoadFile(dlg->GetFileName()->v))
+			if (this->txtView->LoadFile(dlg->GetFileName()))
 			{
 				sptr = dlg->GetFileName()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Text Viewer - ")));
 				this->SetText(CSTRP(sbuff, sptr));

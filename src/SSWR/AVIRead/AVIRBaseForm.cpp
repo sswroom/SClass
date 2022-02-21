@@ -412,7 +412,7 @@ typedef enum
 	MNU_ASN1_PARSE
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
@@ -425,18 +425,17 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		pt = IO::Path::GetPathType(files[i], fileNameLen);
+		pt = IO::Path::GetPathType(files[i]->v, files[i]->leng);
 		if (pt == IO::Path::PathType::Directory)
 		{
 			Bool valid = false;
 #if defined(WIN32) || defined(_WIN64) || (defined(_MSC_VER) && defined(_WIN32))
-			if (Text::StrEndsWithICaseC(files[i], fileNameLen, UTF8STRC(".GDB")))
+			if (files[i]->EndsWithICase(UTF8STRC(".GDB")))
 			{
 				DB::OLEDBConn *conn;
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Provider=ESRI.GeoDB.OleDB.1;Data Source="));
-				sb.AppendC(files[i], fileNameLen);
+				sb.Append(files[i]);
 				sb.AppendC(UTF8STRC(";Extended Properties=workspacetype=esriDataSourcesGDB.FileGDBWorkspaceFactory.1"));
 				sb.AppendC(UTF8STRC(";Geometry=OBJECT"));
 				const WChar *wptr = Text::StrToWCharNew(sb.ToString());
@@ -455,7 +454,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 #endif
 			if (!valid)
 			{
-				NEW_CLASS(pkg, IO::DirectoryPackage({files[i], fileNameLen}));
+				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]->ToCString()));
 				Parser::ParserList *parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
 				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
@@ -472,11 +471,11 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
+			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
 			if (!me->core->LoadData(fd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
-				sb.AppendC(files[i], fileNameLen);
+				sb.Append(files[i]);
 				found = true;
 			}
 			DEL_CLASS(fd);
@@ -852,8 +851,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Media::MediaFile *mf;
-				dlg->capture->GetSourceName(u8buff);
-				NEW_CLASS(mf, Media::MediaFile(u8buff));
+				u8ptr = dlg->capture->GetSourceName(u8buff);
+				NEW_CLASS(mf, Media::MediaFile(CSTRP(u8buff, u8ptr)));
 				mf->AddSource(dlg->capture, 0);
 				this->core->OpenObject(mf);
 			}

@@ -134,10 +134,10 @@ void __stdcall SSWR::AVIRead::AVIRFileExForm::OnStartClicked(void *userObj)
 	DEL_CLASS(srcFS);
 }
 
-void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt fileCnt)
+void __stdcall SSWR::AVIRead::AVIRFileExForm::OnFileDrop(void *userObj, Text::String **files, UOSInt fileCnt)
 {
 	SSWR::AVIRead::AVIRFileExForm *me = (SSWR::AVIRead::AVIRFileExForm*)userObj;
-	me->txtSrc->SetText({files[0], Text::StrCharCnt(files[0])});
+	me->txtSrc->SetText(files[0]->ToCString());
 }
 
 SSWR::AVIRead::AVIRFileExForm::AVIRFileExForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 800, 156, ui)

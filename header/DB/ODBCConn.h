@@ -65,9 +65,9 @@ namespace DB
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		void Dispose();
-		virtual OSInt ExecuteNonQuery(const UTF8Char *sql);
+		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
 //		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual DB::DBReader *ExecuteReader(const UTF8Char *sql);
+		virtual DB::DBReader *ExecuteReaderSlow(const UTF8Char *sql);
 //		virtual DB::DBReader *ExecuteReader(const WChar *sql);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);

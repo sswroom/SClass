@@ -92,13 +92,13 @@ void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnGenerateClicked(void *userOb
 	}	
 }
 
-void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRSSLCertKeyForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRSSLCertKeyForm *me = (SSWR::AVIRead::AVIRSSLCertKeyForm*)userObj;
 	UOSInt i = nFiles;
 	while (i-- > 0)
 	{
-		me->LoadFile({files[i], Text::StrCharCnt(files[i])});
+		me->LoadFile(files[i]->ToCString());
 	}
 }
 

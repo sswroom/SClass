@@ -20,12 +20,6 @@ Bool Text::UTF8Writer::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return this->stm->Write(str, nChar) == nChar;
 }
 
-Bool Text::UTF8Writer::WriteStr(const UTF8Char *str)
-{
-	UOSInt len = Text::StrCharCnt(str);
-	return this->stm->Write(str, len) == len;
-}
-
 Bool Text::UTF8Writer::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	const UTF8Char crlf[2] = {13, 10};
@@ -35,19 +29,6 @@ Bool Text::UTF8Writer::WriteLineC(const UTF8Char *str, UOSInt nChar)
 		ret += this->stm->Write(crlf, 2);
 	}
 	return ret == nChar + 2;
-}
-
-Bool Text::UTF8Writer::WriteLine(const UTF8Char *str)
-{
-	const UTF8Char crlf[2] = {13, 10};
-	UOSInt len = Text::StrCharCnt(str);
-	UOSInt ret = this->stm->Write(str, len);
-	if (ret == len)
-	{
-		ret += this->stm->Write(crlf, 2);
-	}
-	return ret == len + 2;
-	
 }
 
 Bool Text::UTF8Writer::WriteW(const UTF16Char *str, UOSInt nChar)

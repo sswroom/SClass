@@ -2747,7 +2747,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 			sptr = Text::StrConcat(sbuff, srcDir);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
-			Data::ArrayList<const UTF8Char *> webLines;
+			Data::ArrayList<Text::String *> webLines;
 			Text::PString sarr[4];
 			Bool found;
 			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
@@ -2774,7 +2774,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 					}
 					if (!found)
 					{
-						webLines.Add(Text::StrCopyNew(sb.ToString()));
+						webLines.Add(Text::String::New(sb.ToCString()));
 					}
 				}
 				sb.ClearStr();
@@ -2794,8 +2794,8 @@ Bool SSWR::OrganMgr::OrganEnvDB::MoveImages(Data::ArrayList<OrganImages*> *imgLi
 				j = webLines.GetCount();
 				while (i < j)
 				{
-					writer->WriteLine(webLines.GetItem(i));
-					Text::StrDelNew(webLines.GetItem(i));
+					writer->WriteLine(webLines.GetItem(i)->ToCString());
+					webLines.GetItem(i)->Release();
 					i++;
 				}
 				DEL_CLASS(writer);

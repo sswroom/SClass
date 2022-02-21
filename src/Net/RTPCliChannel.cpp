@@ -308,10 +308,10 @@ UInt32 __stdcall Net::RTPCliChannel::PlayThread(void *userObj)
 	return 0;
 }
 
-void Net::RTPCliChannel::SetControlURL(const UTF8Char *url)
+void Net::RTPCliChannel::SetControlURL(Text::CString url)
 {
-	SDEL_TEXT(this->chData->controlURL);
-	this->chData->controlURL = Text::StrCopyNew(url);
+	SDEL_STRING(this->chData->controlURL);
+	this->chData->controlURL = Text::String::New(url);
 }
 
 void Net::RTPCliChannel::SetPlayControl(Net::IRTPController *playCtrl)
@@ -385,7 +385,7 @@ Net::RTPCliChannel::~RTPCliChannel()
 
 		DEL_CLASS(this->chData->rtpUDP);
 		SDEL_CLASS(this->chData->rtcpUDP);
-		SDEL_TEXT(this->chData->controlURL);
+		SDEL_STRING(this->chData->controlURL);
 
 		plHdlrs = this->chData->payloadMap->GetValues();
 		i = plHdlrs->GetCount();
@@ -423,7 +423,7 @@ UTF8Char *Net::RTPCliChannel::GetTransportDesc(UTF8Char *sbuff)
 	return sbuff;
 }
 
-const UTF8Char *Net::RTPCliChannel::GetControlURL()
+Text::String *Net::RTPCliChannel::GetControlURL()
 {
 	return this->chData->controlURL;
 }
@@ -578,9 +578,10 @@ Bool Net::RTPCliChannel::SetPayloadFormat(Int32 payloadType, const UTF8Char *for
 	return false;
 }
 
-Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, const UTF8Char *ctrlURL, Net::IRTPController *playCtrl)
+Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UTF8Char *sarr[5];
 	Net::RTPCliChannel *ch;
 	const UTF8Char *desc;
@@ -613,13 +614,13 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 			ctrlFound = true;
 			if (Text::StrIndexOfC(&desc[10], descLen - 10, UTF8STRC("://")) != INVALID_INDEX)
 			{
-				ch->SetControlURL(&desc[10]);
+				ch->SetControlURL({&desc[10], descLen - 10});
 			}
 			else
 			{
-				Text::StrConcatC(Text::StrConcat(sbuff, ctrlURL), UTF8STRC("/"));
-				Text::URLString::AppendURLPath(sbuff, &desc[10], descLen - 10);
-				ch->SetControlURL(sbuff);
+				Text::StrConcatC(ctrlURL.ConcatTo(sbuff), UTF8STRC("/"));
+				sptr = Text::URLString::AppendURLPath(sbuff, &desc[10], descLen - 10);
+				ch->SetControlURL(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=rtpmap:")))

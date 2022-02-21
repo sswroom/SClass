@@ -8,7 +8,7 @@
 #include "Text/StringTool.h"
 #include "UI/MessageDialog.h"
 
-void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRCertUtilForm *me = (SSWR::AVIRead::AVIRCertUtilForm*)userObj;
 	Parser::ParserList *parsers = me->core->GetParserList();
@@ -19,8 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRCertUtilForm::OnFileDrop(void *userObj, const 
 	IO::ParsedObject *pobj;
 	while (i < nFiles)
 	{
-		UOSInt fileNameLen = Text::StrCharCnt(files[i]);
-		NEW_CLASS(fd, IO::StmData::FileData({files[i], fileNameLen}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(files[i], false));
 		pobj = parsers->ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)

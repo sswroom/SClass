@@ -77,7 +77,7 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuery(const UTF8Char *sql)
+OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -185,7 +185,7 @@ DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::Array
 	return ExecuteReaderC(tmpBuff, (UOSInt)(sptr - tmpBuff));
 }
 
-DB::DBReader *DB::OLEDBConn::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;

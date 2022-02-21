@@ -154,7 +154,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
-				writer->WriteLine(dasm32->GetHeader(true));
+				writer->WriteLineCStr(dasm32->GetHeader(true));
 				retVal = dasm32->Disasm32(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{
@@ -276,7 +276,7 @@ void Manage::ExceptionLogger::WriteContext(IO::Writer *writer, IO::Stream *stm, 
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
-				writer->WriteLine(dasm64->GetHeader(true));
+				writer->WriteLineCStr(dasm64->GetHeader(true));
 				retVal = dasm64->Disasm64(writer, addrResol, &currInst, &currStack, &currFrame, callAddrs, jmpAddrs, &blockStart, &blockEnd, regs, &proc, true);
 				if (!retVal)
 				{

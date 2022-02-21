@@ -25,32 +25,11 @@ Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteStr(const UTF8Char *str)
-{
-	const WChar *wstr = Text::StrToWCharNew(str);
-	OutputDebugStringW(wstr);
-	Text::StrDelNew(wstr);
-	return true;
-}
-
 Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	UOSInt strLen = Text::StrUTF8_WCharCntC(str, nChar);
 	WChar *wstr = MemAlloc(WChar, strLen + 3);
 	Text::StrUTF8_WCharC(wstr, str, nChar, 0);
-	wstr[strLen] = 13;
-	wstr[strLen + 1] = 10;
-	wstr[strLen + 2] = 0;
-	OutputDebugStringW(wstr);
-	MemFree(wstr);
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
-{
-	UOSInt strLen = Text::StrUTF8_WCharCnt(str);
-	WChar *wstr = MemAlloc(WChar, strLen + 3);
-	Text::StrUTF8_WChar(wstr, str, 0);
 	wstr[strLen] = 13;
 	wstr[strLen + 1] = 10;
 	wstr[strLen + 2] = 0;

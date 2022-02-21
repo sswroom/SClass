@@ -53,11 +53,6 @@ Bool IO::StreamWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	}
 }
 
-Bool IO::StreamWriter::WriteStr(const UTF8Char *str)
-{
-	return WriteStrC(str, Text::StrCharCnt(str));
-}
-
 Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	if (this->enc->GetEncCodePage() == 65001)
@@ -93,13 +88,6 @@ Bool IO::StreamWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 		MemFree(ws);
 		return this->stm->Write(this->buff, nChar) == nChar;
 	}
-}
-
-Bool IO::StreamWriter::WriteLine(const UTF8Char *str)
-{
-	UOSInt cnt;
-	UOSInt ret = WriteLineC(str, cnt = Text::StrCharCnt(str));
-	return ret == cnt;
 }
 
 Bool IO::StreamWriter::WriteW(const WChar *str, UOSInt nChar)

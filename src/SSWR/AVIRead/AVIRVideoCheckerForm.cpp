@@ -12,7 +12,7 @@
 #include "Text/MyString.h"
 #include "Text/MyStringFloat.h"
 
-void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRVideoCheckerForm *me = (SSWR::AVIRead::AVIRVideoCheckerForm*)userObj;
 	UOSInt i = 0;
@@ -20,12 +20,12 @@ void __stdcall SSWR::AVIRead::AVIRVideoCheckerForm::OnFileHandler(void *userObj,
 	FileQueue *file;
 	while (i < nFiles)
 	{
-		j = Text::StrLastIndexOfChar(files[i], IO::Path::PATH_SEPERATOR);
-		const UTF8Char *name = &files[i][j + 1];
-		j = me->lvFiles->AddItem({name, Text::StrCharCnt(name)}, 0);
+		j = files[i]->LastIndexOf(IO::Path::PATH_SEPERATOR);
+		Text::CString name = files[i]->ToCString().Substring(j + 1);
+		j = me->lvFiles->AddItem(name, 0);
 
 		file = MemAlloc(FileQueue, 1);
-		file->fileName = Text::String::NewNotNull(files[i]);
+		file->fileName = files[i]->Clone();
 		file->index = j;
 		Sync::MutexUsage mutUsage(me->fileMut);
 		me->fileList->Add(file);

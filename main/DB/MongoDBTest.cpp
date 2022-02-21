@@ -41,7 +41,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		j = nameList.GetCount();
 		while (i < j)
 		{
-			console->WriteLine(nameList.GetItem(i));
+			console->WriteLineCStr(Text::CString::FromPtr(nameList.GetItem(i)));
 			i++;
 		}
 		mongoDB->FreeDatabaseNames(&nameList);
@@ -54,7 +54,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	j = nameList.GetCount();
 	while (i < j)
 	{
-		console->WriteLine(nameList.GetItem(i));
+		console->WriteLineCStr(Text::CString::FromPtr(nameList.GetItem(i)));
 		i++;
 	}
 

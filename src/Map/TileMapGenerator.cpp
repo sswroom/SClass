@@ -74,8 +74,8 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 
 		while ((sptr = reader->ReadLine(sbuff2, 509)) != 0)
 		{
-			reader->GetLastLineBreak(sptr);
-			writer->WriteStr(sbuff2);
+			sptr = reader->GetLastLineBreak(sptr);
+			writer->WriteStr(CSTRP(sbuff2, sptr));
 		}
 		DEL_CLASS(reader);
 	}

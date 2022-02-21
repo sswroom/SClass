@@ -85,25 +85,9 @@ Bool IO::SimpleFileWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return writeCnt > 0;
 }
 
-Bool IO::SimpleFileWriter::WriteStr(const UTF8Char *str)
-{
-	UOSInt writeCnt = WriteBuff(str, Text::StrCharCnt(str));
-	return writeCnt > 0;
-}
-
 Bool IO::SimpleFileWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 {
 	UOSInt writeCnt = WriteBuff(str, nChar);
-	UInt8 buff[2];
-	buff[0] = 13;
-	buff[1] = 10;
-	writeCnt += WriteBuff(buff, 2);
-	return writeCnt > 0;
-}
-
-Bool IO::SimpleFileWriter::WriteLine(const UTF8Char *str)
-{
-	UOSInt writeCnt = WriteBuff(str, Text::StrCharCnt(str));
 	UInt8 buff[2];
 	buff[0] = 13;
 	buff[1] = 10;

@@ -119,7 +119,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnExtractClicked(void *userObj
 					{
 						if (Text::StrStartsWith(sb1.ToString() + i + 1, sb2.ToString()))
 						{
-							writer->WriteLine(sb1.ToString() + i + 1 + sb2.GetLength());
+							writer->WriteLine(sb1.ToCString().Substring(i + 1 + sb2.GetLength()));
 						}
 					}
 				}

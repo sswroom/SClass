@@ -32,7 +32,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 {
 	UI::GUIForm *me = (UI::GUIForm *)userData;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<const UTF8Char *> files;
+	Data::ArrayList<Text::String *> files;
 	sb.AppendSlow((const UTF8Char*)gtk_selection_data_get_data(data));
 	Text::PString sarr[2];
 	UTF8Char sbuff[512];
@@ -50,7 +50,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 			if (sarr[0].v[j - 1] == '\r')
 				sarr[0].v[j - 1] = 0;
 			sptr = Text::TextBinEnc::URIEncoding::URIDecode(sbuff, &sarr[0].v[7]);
-			files.Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+			files.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		if (i <= 1)
 			break;
@@ -61,7 +61,7 @@ void GUIForm_OnFileDrop(GtkWidget *widget, GdkDragContext *context, gint x, gint
 		me->OnFileDrop(files.GetArray(&j), i);
 		while (i-- > 0)
 		{
-			Text::StrDelNew(files.GetItem(i));
+			files.GetItem(i)->Release();
 		}
 	}
 }
@@ -645,7 +645,7 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 {
 }
 
-void UI::GUIForm::OnFileDrop(const UTF8Char **files, UOSInt nFiles)
+void UI::GUIForm::OnFileDrop(Text::String **files, UOSInt nFiles)
 {
 	UOSInt i;
 	i = this->dropFileHandlers->GetCount();
