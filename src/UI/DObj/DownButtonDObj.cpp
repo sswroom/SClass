@@ -1,27 +1,27 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "Media/GDIEngine.h"
+#include "Media/DrawEngine.h"
 #include "UI/DObj/DownButtonDObj.h"
 
-UI::DObj::DownButtonDObj::DownButtonDObj(Media::DrawEngine *deng, const WChar *fileNameUnclick, const WChar *fileNameClicked, OSInt left, OSInt top, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
+UI::DObj::DownButtonDObj::DownButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, OSInt left, OSInt top, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
 {
 	this->deng = deng;
-	if (fileNameUnclick == 0)
+	if (fileNameUnclick.leng == 0)
 	{
 		this->bmpUnclick = 0;
 	}
 	else
 	{
-		this->bmpUnclick = this->deng->LoadImageW(fileNameUnclick);
+		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick);
 	}
 
-	if (fileNameClicked == 0)
+	if (fileNameClicked.leng == 0)
 	{
 		this->bmpClicked = 0;
 	}
 	else
 	{
-		this->bmpClicked = this->deng->LoadImageW(fileNameClicked);
+		this->bmpClicked = this->deng->LoadImage(fileNameClicked);
 	}
 	this->clkHdlr = clkHdlr;
 	this->clkUserObj = clkUserObj;
@@ -102,7 +102,7 @@ Bool UI::DObj::DownButtonDObj::IsObject(OSInt x, OSInt y)
 	}
 	if (this->dispLeft + (OSInt)bmpChk->GetWidth() <= x || this->dispTop + (OSInt)bmpChk->GetHeight() <= y)
 		return false;
-	return (((Media::GDIImage*)bmpChk)->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
+	return (bmpChk->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::DownButtonDObj::GetCursor()

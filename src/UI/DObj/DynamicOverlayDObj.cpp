@@ -1,28 +1,28 @@
 #include "Stdafx.h"
 #include "Data/RandomOS.h"
 #include "Math/Math.h"
-#include "Media/GDIEngine.h"
+#include "Media/DrawEngine.h"
 #include "UI/DObj/DynamicOverlayDObj.h"
 
-UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(Media::DrawEngine *deng, const WChar *fileName1, const WChar *fileName2, Int32 left, Int32 top) : DirectObject(left, top)
+UI::DObj::DynamicOverlayDObj::DynamicOverlayDObj(Media::DrawEngine *deng, Text::CString fileName1, Text::CString fileName2, Int32 left, Int32 top) : DirectObject(left, top)
 {
 	this->deng = deng;
-	if (fileName1 == 0)
+	if (fileName1.leng == 0)
 	{
 		this->bmp1 = 0;
 	}
 	else
 	{
-		this->bmp1 = this->deng->LoadImageW(fileName1);
+		this->bmp1 = this->deng->LoadImage(fileName1);
 	}
 
-	if (fileName2 == 0)
+	if (fileName2.leng == 0)
 	{
 		this->bmp2 = 0;
 	}
 	else
 	{
-		this->bmp2 = this->deng->LoadImageW(fileName2);
+		this->bmp2 = this->deng->LoadImage(fileName2);
 	}
 	NEW_CLASS(this->rnd, Data::RandomOS());
 	this->alpha = this->rnd->NextDouble();
@@ -81,16 +81,17 @@ void UI::DObj::DynamicOverlayDObj::DrawObject(Media::DrawImage *dimg)
 				this->alpha = 0;
 				this->a = 0;
 			}
-			Media::GDIImage *bmpS1 = (Media::GDIImage*)this->bmp1;
-			Media::GDIImage *bmpS2 = (Media::GDIImage*)this->bmp2;
-			Media::GDIImage *bmpTmp = (Media::GDIImage*)this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
-			bmpTmp->info->atype = bmpS1->info->atype;
-			UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
-			UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
-			UInt8 *ptrD = (UInt8*)bmpTmp->bmpBits;
-			OSInt lineBytes = bmpS1->GetWidth() * 4;
-			OSInt i;
-			OSInt j = bmpS1->GetHeight();
+			Media::DrawImage *bmpS1 = this->bmp1;
+			Media::DrawImage *bmpS2 = this->bmp2;
+			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
+			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
+			Bool revOrder;
+			UInt8 *ptrS1 = bmpS1->GetImgBits(&revOrder);
+			UInt8 *ptrS2 = bmpS2->GetImgBits(&revOrder);
+			UInt8 *ptrD = bmpTmp->GetImgBits(&revOrder);
+			UOSInt lineBytes = bmpS1->GetWidth() * 4;
+			UOSInt i;
+			UOSInt j = bmpS1->GetHeight();
 			Double a1 = this->alpha;
 			Double a2 = 1 - this->alpha; 
 			while (j-- > 0)

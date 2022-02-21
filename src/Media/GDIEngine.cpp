@@ -2834,26 +2834,6 @@ void Media::GDIImage::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSIn
 	CopyBits(left, top, destBuff, destBpl, width, height, upsideDown);
 }
 
-UInt32 Media::GDIImage::GetPixel32(OSInt x, OSInt y)
-{
-	if (x < 0 || x >= (OSInt)this->width)
-		return 0;
-	if (y < 0 || y >= (OSInt)this->height)
-		return 0;
-	if (this->bitCount == 32)
-	{
-		return *(UInt32*)(((y * this->width + x) * 4) + (UInt8*)this->bmpBits);
-	}
-	else if (this->bitCount == 24)
-	{
-		return 0xff000000 | *(UInt32*)(((y * this->width + x) * 3) + (UInt8*)this->bmpBits);
-	}
-	else
-	{
-		return 0;
-	}
-}
-
 void Media::GDIImage::PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height)
 {
 	Bool thisInScn;
@@ -3063,29 +3043,6 @@ Bool Media::GDIImage::DrawRectN(OSInt oriX, OSInt oriY, OSInt oriW, OSInt oriH, 
 void *Media::GDIImage::GetHDC()
 {
 	return this->hdcBmp;
-}
-
-void Media::GDIImage::SetImageAlpha(UInt8 alpha)
-{
-	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
-	{
-		ImageUtil_ImageFillAlpha32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, alpha);
-	}
-}
-
-void Media::GDIImage::MulImageAlpha(Double val)
-{
-	if (val >= 1.0)
-		return;
-	if (val <= 0.0)
-	{
-		this->SetImageAlpha(0);
-		return;
-	}
-	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
-	{
-		ImageUtil_ImageAlphaMul32((UInt8*)this->bmpBits, this->width, this->height, this->width << 2, (UInt32)Double2Int32(val * 65536.0));
-	}
 }
 
 void Media::GDIImage::FillAlphaRect(OSInt left, OSInt top, OSInt width, OSInt height, UInt8 alpha)

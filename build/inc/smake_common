@@ -2067,7 +2067,8 @@ Media/Deinterlace8.h: ../../src/Media/Deinterlace8.cpp
 Media/DeinterlaceLR.h: ../../src/Media/DeinterlaceLR.cpp
 @DeinterlaceLR.o
 @DeinterlaceLR_CPP.o
-Media/DrawEngine.h:
+Media/DrawEngine.h: ../../src/Media/DrawEngine.cpp
+@DrawEngine.o
 Media/DrawImageTool.h: ../../src/Media/DrawImageTool.cpp
 @DrawImageTool.o
 Media/EDID.h: ../../src/Media/EDID.cpp
@@ -3896,6 +3897,8 @@ adl_structures.h:
 miniz.h: ../../ThirdParty/miniz/miniz.c
 @miniz.o
 
+UI/GUIDObjArea.h: ../../src/UI/GUIDObjArea.cpp
+@GUIDObjArea.o
 UI/GUIHexFileView.h: ../../src/UI/GUIHexFileView.cpp
 @GUIHexFileView.o
 UI/GUIMapControl.h: ../../src/UI/GUIMapControl.cpp
@@ -3916,6 +3919,28 @@ UI/GUIVideoBoxDDLQ.h: ../../src/UI/GUIVideoBoxDDLQ.cpp
 @GUIVideoBoxDDLQ.o
 UI/ListBoxLogger.h: ../../src/UI/ListBoxLogger.cpp
 @ListBoxLogger.o
+UI/DObj/ButtonDObj.h: ../../src/UI/DObj/ButtonDObj.cpp
+@ButtonDObj.o
+UI/DObj/ClickAreaDObj.h: ../../src/UI/DObj/ClickAreaDObj.cpp
+@ClickAreaDObj.o
+UI/DObj/DirectObject.h: ../../src/UI/DObj/DirectObject.cpp
+@DirectObject.o
+UI/DObj/DObjHandler.h: ../../src/UI/DObj/DObjHandler.cpp
+@DObjHandler.o
+UI/DObj/DownButtonDObj.h: ../../src/UI/DObj/DownButtonDObj.cpp
+@DownButtonDObj.o
+UI/DObj/DShowVideoDObjHandler.h: ../../src/UI/DObj/DShowVideoDObjHandler.cpp
+@DShowVideoDObjHandler.o
+UI/DObj/DynamicOverlayDObj.h: ../../src/UI/DObj/DynamicOverlayDObj.cpp
+@DynamicOverlayDObj.o
+UI/DObj/ImageDObjHandler.h: ../../src/UI/DObj/ImageDObjHandler.cpp
+@ImageDObjHandler.o
+UI/DObj/OverlayDObj.h: ../../src/UI/DObj/OverlayDObj.cpp
+@OverlayDObj.o
+UI/DObj/RollingTextDObj.h: ../../src/UI/DObj/RollingTextDObj.cpp
+@RollingTextDObj.o
+UI/DObj/TextDObj.h: ../../src/UI/DObj/TextDObj.cpp
+@TextDObj.o
 
 UtilUI/ColorDialog.h: ../../src/UtilUI/ColorDialog.cpp
 @ColorDialog.o
@@ -4393,6 +4418,7 @@ ConsoleMediaPlayer.o: ../../src/Media/ConsoleMediaPlayer.cpp
 ConsoleVideoRenderer.o: ../../src/Media/ConsoleVideoRenderer.cpp
 Deinterlace8.o: ../../src/Media/Deinterlace8.cpp
 DeinterlaceLR.o: ../../src/Media/DeinterlaceLR.cpp
+DrawEngine.o: ../../src/Media/DrawEngine.cpp
 DrawImageTool.o: ../../src/Media/DrawImageTool.cpp
 EDID.o: ../../src/Media/EDID.cpp
 EXIFData.o: ../../src/Media/EXIFData.cpp
@@ -5258,6 +5284,7 @@ UTF8LCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8LCaseTextBinEnc.cpp
 UTF8TextBinEnc.o: ../../src/Text/TextBinEnc/UTF8TextBinEnc.cpp
 UTF8UCaseTextBinEnc.o: ../../src/Text/TextBinEnc/UTF8UCaseTextBinEnc.cpp
 ListBoxLogger.o: ../../src/UI/ListBoxLogger.cpp
+GUIDObjArea.o: ../../src/UI/GUIDObjArea.cpp
 GUIHexFileView.o: ../../src/UI/GUIHexFileView.cpp
 GUIMapControl.o: ../../src/UI/GUIMapControl.cpp
 GUIMapTreeView.o: ../../src/UI/GUIMapTreeView.cpp
@@ -5267,6 +5294,17 @@ GUISudokuViewer.o: ../../src/UI/GUISudokuViewer.cpp
 GUITextFileView.o: ../../src/UI/GUITextFileView.cpp
 GUIVideoBoxDD.o: ../../src/UI/GUIVideoBoxDD.cpp
 GUIVideoBoxDDLQ.o: ../../src/UI/GUIVideoBoxDDLQ.cpp
+ButtonDObj.o: ../../src/UI/DObj/ButtonDObj.cpp
+ClickAreaDObj.o: ../../src/UI/DObj/ClickAreaDObj.cpp
+DirectObject.o: ../../src/UI/DObj/DirectObject.cpp
+DObjHandler.o: ../../src/UI/DObj/DObjHandler.cpp
+DownButtonDObj.o: ../../src/UI/DObj/DownButtonDObj.cpp
+DShowVideoDObjHandler.o: ../../src/UI/DObj/DShowVideoDObjHandler.cpp
+DynamicOverlayDObj.o: ../../src/UI/DObj/DynamicOverlayDObj.cpp
+ImageDObjHandler.o: ../../src/UI/DObj/ImageDObjHandler.cpp
+OverlayDObj.o: ../../src/UI/DObj/OverlayDObj.cpp
+RollingTextDObj.o: ../../src/UI/DObj/RollingTextDObj.cpp
+TextDObj.o: ../../src/UI/DObj/TextDObj.cpp
 ColorDialog.o: ../../src/UtilUI/ColorDialog.cpp
 TextGotoDialog.o: ../../src/UtilUI/TextGotoDialog.cpp
 TextSearchForm.o: ../../src/UtilUI/TextSearchForm.cpp

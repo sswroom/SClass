@@ -16,20 +16,20 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 	if (this->txt)
 	{
 		Media::DrawImage *dimg = this->deng->CreateImage32(this->width, this->height, Media::AT_NO_ALPHA);
-		Media::DrawFont *f = dimg->NewFontH(this->fontName, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+		Media::DrawFont *f = dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 		Media::DrawBrush *b;
-		Data::ArrayList<const WChar *> lines;
-		const WChar *s;
-		OSInt i;
-		OSInt j;
+		Data::ArrayList<const UTF8Char *> lines;
+		const UTF8Char *s;
+		UOSInt i;
+		UOSInt j;
 		Double currY;
 
-		Media::DrawImageTool::SplitString(dimg, this->txt, &lines, f, OSInt2Double(this->width));
+		Media::DrawImageTool::SplitString(dimg, this->txt->v, &lines, f, OSInt2Double(this->width));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 
-		this->dimg = this->deng->CreateImage32(this->width, Double2Int32(this->lineHeight * lines.GetCount()), Media::AT_NO_ALPHA);
-		f = this->dimg->NewFontH(this->fontName, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+		this->dimg = this->deng->CreateImage32(this->width, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount())), Media::AT_NO_ALPHA);
+		f = this->dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 		b = this->dimg->NewBrushARGB(0xffffffff);
 		currY = 0;
 		i = 0;
@@ -193,24 +193,24 @@ ubgilop2b:
 	}
 }
 
-UI::DObj::RollingTextDObj::RollingTextDObj(Media::DrawEngine *deng, const WChar *txt, const WChar *fontName, Double fontSize, Int32 fontColor, OSInt left, OSInt top, OSInt width, OSInt height, Int32 codePage, Double rollSpeed) : DirectObject(left, top)
+UI::DObj::RollingTextDObj::RollingTextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, UInt32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage, Double rollSpeed) : DirectObject(left, top)
 {
 	this->deng = deng;
-	if (txt)
+	if (txt.leng > 0)
 	{
-		this->txt = Text::StrCopyNew(txt);
+		this->txt = Text::String::New(txt);
 	}
 	else
 	{
 		this->txt = 0;
 	}
-	if (fontName)
+	if (fontName.leng > 0)
 	{
-		this->fontName = Text::StrCopyNew(fontName);
+		this->fontName = Text::String::New(fontName);
 	}
 	else
 	{
-		this->fontName = Text::StrCopyNew(L"Arial");
+		this->fontName = Text::String::New(UTF8STRC("Arial"));
 	}
 	this->fontSize = fontSize;
 	this->fontColor = fontColor;
@@ -229,8 +229,8 @@ UI::DObj::RollingTextDObj::RollingTextDObj(Media::DrawEngine *deng, const WChar 
 
 UI::DObj::RollingTextDObj::~RollingTextDObj()
 {
-	SDEL_TEXT(this->txt);
-	Text::StrDelNew(this->fontName);
+	SDEL_STRING(this->txt);
+	this->fontName->Release();
 	DEL_CLASS(this->startTime);
 
 	if (this->dimg)
@@ -249,12 +249,12 @@ Bool UI::DObj::RollingTextDObj::IsChanged()
 	Data::DateTime currTime;
 	currTime.SetCurrTimeUTC();
 	Int64 t = currTime.DiffMS(this->startTime);
-	OSInt h = this->dimg->GetHeight();
-	OSInt currPos = Double2Int32(t * this->rollSpeed * 0.001);
-	while (currPos >= h)
+	UOSInt h = this->dimg->GetHeight();
+	OSInt currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
+	while (currPos >= (OSInt)h)
 	{
-		currPos -= h;
-		this->startTime->AddMS(Double2Int32(h / this->rollSpeed * 1000.0));
+		currPos -= (OSInt)h;
+		this->startTime->AddMS(Double2Int32(UOSInt2Double(h) / this->rollSpeed * 1000.0));
 	}
 	if (currPos != this->lastRollPos)
 	{
@@ -287,22 +287,22 @@ void UI::DObj::RollingTextDObj::DrawObject(Media::DrawImage *dimg)
 		Data::DateTime currTime;
 		currTime.SetCurrTimeUTC();
 		Int64 t = currTime.DiffMS(this->startTime);
-		OSInt currPos = Double2Int32(t * this->rollSpeed * 0.001);
+		OSInt currPos = Double2Int32(Int64_Double(t) * this->rollSpeed * 0.001);
 		while (currPos >= (OSInt)h)
 		{
-			currPos -= h;
-			this->startTime->AddMS(Double2Int32(h / this->rollSpeed * 1000.0));
+			currPos -= (OSInt)h;
+			this->startTime->AddMS(Double2Int32(UOSInt2Double(h) / this->rollSpeed * 1000.0));
 		}
 		this->lastRollPos = currPos;
 
-		if ((h - currPos) >= this->height)
+		if ((h - (UOSInt)currPos) >= this->height)
 		{
 			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(this->height));
 		}
 		else
 		{
-			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double(h - currPos));
-			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top + h - currPos), 0, 0, OSInt2Double(this->width), OSInt2Double(this->height - h + currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top), 0, OSInt2Double(currPos), OSInt2Double(this->width), OSInt2Double((OSInt)h - currPos));
+			dimg->DrawImagePt3(this->dimg, OSInt2Double(left), OSInt2Double(top + (OSInt)h - currPos), 0, 0, UOSInt2Double(this->width), OSInt2Double(this->height - h + (UOSInt)currPos));
 		}
 	}
 }

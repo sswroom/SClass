@@ -10,9 +10,9 @@ void UI::DObj::ImageDObjHandler::DrawBkg(Media::DrawImage *dimg)
 	}
 }
 
-UI::DObj::ImageDObjHandler::ImageDObjHandler(Media::DrawEngine *deng, const WChar *fileName) : UI::DObj::DObjHandler(deng)
+UI::DObj::ImageDObjHandler::ImageDObjHandler(Media::DrawEngine *deng, Text::CString fileName) : UI::DObj::DObjHandler(deng)
 {
-	this->bmpBkg = this->deng->LoadImageW(fileName);
+	this->bmpBkg = this->deng->LoadImage(fileName);
 }
 
 UI::DObj::ImageDObjHandler::~ImageDObjHandler()

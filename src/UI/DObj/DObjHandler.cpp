@@ -20,7 +20,7 @@ UI::DObj::DObjHandler::DObjHandler(Media::DrawEngine *deng)
 
 UI::DObj::DObjHandler::~DObjHandler()
 {
-	OSInt i;
+	UOSInt i;
 	DirectObject *obj;
 	i = this->objList->GetCount();
 	while (i-- > 0)
@@ -107,8 +107,8 @@ void UI::DObj::DObjHandler::DrawAll(Media::DrawImage *dimg)
 	this->updMut->Lock();
 	this->DrawBkg(dimg);
 
-	OSInt i;
-	OSInt j;
+	UOSInt i;
+	UOSInt j;
 	DirectObject *obj;
 	this->objMut->Lock();
 	i = 0;
@@ -137,7 +137,7 @@ void UI::DObj::DObjHandler::OnMouseDown(OSInt x, OSInt y, UI::GUIControl::MouseB
 {
 	if (button == UI::GUIControl::MBTN_LEFT)
 	{
-		OSInt i;
+		UOSInt i;
 		DirectObject *obj;
 		this->objMut->Lock();
 		i = this->objList->GetCount();
@@ -177,7 +177,7 @@ void UI::DObj::DObjHandler::OnMouseMove(OSInt x, OSInt y)
 {
 	DirectObject *mouseObj = 0;
 	
-	OSInt i;
+	UOSInt i;
 	DirectObject *obj;
 	this->objMut->Lock();
 	i = this->objList->GetCount();

@@ -127,6 +127,10 @@ namespace Media
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY) = 0;
 		virtual void CopyBits(OSInt x, OSInt y, void *imgPtr, UOSInt bpl, UOSInt width, UOSInt height, Bool upsideDown) = 0;
+		
+		UInt32 GetPixel32(OSInt x, OSInt y);
+		void SetImageAlpha(UInt8 alpha);
+		void MulImageAlpha(Double val);
 
 		virtual Media::StaticImage *ToStaticImage() = 0;
 		virtual UOSInt SavePng(IO::SeekableStream *stm) = 0;

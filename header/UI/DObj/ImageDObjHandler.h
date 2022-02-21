@@ -14,7 +14,7 @@ namespace UI
 		protected:
 			virtual void DrawBkg(Media::DrawImage *dimg);
 		public:
-			ImageDObjHandler(Media::DrawEngine *deng, const WChar *fileName);
+			ImageDObjHandler(Media::DrawEngine *deng, Text::CString fileName);
 			virtual ~ImageDObjHandler();
 		};
 	}

@@ -31,7 +31,7 @@ namespace UI
 
 			static UInt32 __stdcall ClickThread(void *userObj);
 		public:
-			ButtonDObj(Media::DrawEngine *deng, const WChar *fileNameUnclick, const WChar *fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
+			ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~ButtonDObj();
 
 			void SetRectMode(Bool rectMode);

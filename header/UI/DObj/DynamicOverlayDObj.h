@@ -17,7 +17,7 @@ namespace UI
 			Double a;
 			Data::Random *rnd;
 		public:
-			DynamicOverlayDObj(Media::DrawEngine *deng, const WChar *fileName1, const WChar *fileName2, Int32 left, Int32 top);
+			DynamicOverlayDObj(Media::DrawEngine *deng, Text::CString fileName1, Text::CString fileName2, Int32 left, Int32 top);
 			virtual ~DynamicOverlayDObj();
 
 			virtual Bool IsChanged();

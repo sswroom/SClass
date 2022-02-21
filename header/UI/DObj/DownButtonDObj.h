@@ -21,7 +21,7 @@ namespace UI
 			Bool updated;
 
 		public:
-			DownButtonDObj(Media::DrawEngine *deng, const WChar *fileNameUnclick, const WChar *fileNameClicked, OSInt left, OSInt top, UI::UIEvent clkHdlr, void *clkUserObj);
+			DownButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, OSInt left, OSInt top, UI::UIEvent clkHdlr, void *clkUserObj);
 			virtual ~DownButtonDObj();
 
 			virtual Bool IsChanged();

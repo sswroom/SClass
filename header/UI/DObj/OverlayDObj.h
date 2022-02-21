@@ -1,7 +1,7 @@
 #ifndef _SM_UI_DOBJ_OVERLAYDOBJ
 #define _SM_UI_DOBJ_OVERLAYDOBJ
 #include "Manage/HiResClock.h"
-#include "Media/ImageLIst.h"
+#include "Media/ImageList.h"
 #include "Parser/ParserList.h"
 #include "UI/DObj/DirectObject.h"
 
@@ -23,7 +23,7 @@ namespace UI
 
 		public:
 			OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bmp, OSInt left, OSInt top);
-			OverlayDObj(Media::DrawEngine *deng, const UTF8Char *fileName, OSInt left, OSInt top, Parser::ParserList *parsers);
+			OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, OSInt left, OSInt top, Parser::ParserList *parsers);
 			virtual ~OverlayDObj();
 
 			virtual Bool IsChanged();

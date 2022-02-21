@@ -13,13 +13,13 @@ UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, Media::DrawImage *bm
 	this->clk = 0;
 }
 
-UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, const UTF8Char *fileName, OSInt left, OSInt top, Parser::ParserList *parsers) : DirectObject(left, top)
+UI::DObj::OverlayDObj::OverlayDObj(Media::DrawEngine *deng, Text::CString fileName, OSInt left, OSInt top, Parser::ParserList *parsers) : DirectObject(left, top)
 {
 	this->deng = deng;
 	this->noRelease = false;
 	this->bmp = 0;
 	this->clk = 0;
-	if (fileName == 0)
+	if (fileName.leng == 0)
 	{
 		this->imgList = 0;
 	}
@@ -65,10 +65,10 @@ Bool UI::DObj::OverlayDObj::IsChanged()
 		if (this->imgList->GetCount() <= 1)
 			return false;
 		Double t = clk->GetTimeDiff();
-		OSInt i = Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
+		OSInt i = Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
 		while (i >= (OSInt)this->imgList->GetCount())
 		{
-			i -= this->imgList->GetCount();
+			i -= (OSInt)this->imgList->GetCount();
 			this->startTime += (this->frameDelay * this->imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
@@ -92,7 +92,7 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 	}
 	else if (this->imgList)
 	{
-		OSInt frameNum;
+		UOSInt frameNum;
 		if (this->imgList->GetCount() <= 1)
 		{
 			frameNum = 0;
@@ -100,11 +100,11 @@ void UI::DObj::OverlayDObj::DrawObject(Media::DrawImage *dimg)
 		else
 		{
 			Double t = clk->GetTimeDiff();
-			frameNum = Double2Int32((t - this->startTime) * 1000 / this->frameDelay);
-			while (frameNum >= (OSInt)this->imgList->GetCount())
+			frameNum = (UInt32)Double2Int32((t - this->startTime) * 1000 / OSInt2Double(this->frameDelay));
+			while (frameNum >= this->imgList->GetCount())
 			{
 				frameNum -= this->imgList->GetCount();
-				this->startTime += (this->frameDelay * this->imgList->GetCount()) * 0.001;
+				this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
 			}
 		}
 		this->imgList->ToStaticImage(frameNum);

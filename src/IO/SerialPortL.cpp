@@ -228,6 +228,11 @@ Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
+UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
+{
+	return 0;
+}
+
 UOSInt IO::SerialPort::GetUSBPort()
 {
 	if (IO::Path::GetPathType(UTF8STRC("/dev/ttyUSB0")) == IO::Path::PathType::File)

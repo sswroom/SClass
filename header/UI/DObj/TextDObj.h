@@ -17,8 +17,8 @@ namespace UI
 			} TextAlign;
 		private:
 			Media::DrawEngine *deng;
-			const WChar *txt;
-			const WChar *fontName;
+			Text::String *txt;
+			Text::String *fontName;
 			Double fontSize;
 			Media::DrawEngine::DrawFontStyle fontStyle;
 			TextAlign talign;
@@ -29,10 +29,10 @@ namespace UI
 			Double lineHeight;
 			UInt32 currPage;
 			Bool pageChg;
-			Data::ArrayList<const WChar *> *lines;
+			Data::ArrayList<const UTF8Char *> *lines;
 
 		public:
-			TextDObj(Media::DrawEngine *deng, const WChar *txt, const WChar *fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, Int32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage);
+			TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::CString fontName, Double fontSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 fontColor, OSInt left, OSInt top, UOSInt width, UOSInt height, UInt32 codePage);
 			virtual ~TextDObj();
 
 			virtual Bool IsChanged();

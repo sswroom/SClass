@@ -1,6 +1,6 @@
 #include "Stdafx.h"
 #include "Math/Math.h"
-#include "Media/GDIEngine.h"
+#include "Media/DrawEngine.h"
 #include "Sync/Thread.h"
 #include "UI/DObj/ButtonDObj.h"
 
@@ -11,25 +11,25 @@ UInt32 __stdcall UI::DObj::ButtonDObj::ClickThread(void *userObj)
 	return 0;
 }
 
-UI::DObj::ButtonDObj::ButtonDObj(Media::DrawEngine *deng, const WChar *fileNameUnclick, const WChar *fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
+UI::DObj::ButtonDObj::ButtonDObj(Media::DrawEngine *deng, Text::CString fileNameUnclick, Text::CString fileNameClicked, Int32 left, Int32 top, Bool rectMode, UI::UIEvent clkHdlr, void *clkUserObj) : DirectObject(left, top)
 {
 	this->deng = deng;
-	if (fileNameUnclick == 0)
+	if (fileNameUnclick.leng == 0)
 	{
 		this->bmpUnclick = 0;
 	}
 	else
 	{
-		this->bmpUnclick = this->deng->LoadImageW(fileNameUnclick);
+		this->bmpUnclick = this->deng->LoadImage(fileNameUnclick);
 	}
 
-	if (fileNameClicked == 0)
+	if (fileNameClicked.leng == 0)
 	{
 		this->bmpClicked = 0;
 	}
 	else
 	{
-		this->bmpClicked = this->deng->LoadImageW(fileNameClicked);
+		this->bmpClicked = this->deng->LoadImage(fileNameClicked);
 	}
 	this->isVisible = true;
 	NEW_CLASS(this->rnd, Data::RandomOS());
@@ -124,7 +124,7 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 			{
 				Data::DateTime currTime;
 				currTime.SetCurrTime();
-				Double t = currTime.DiffMS(this->downTime) * 0.001;
+				Double t = Int64_Double(currTime.DiffMS(this->downTime)) * 0.001;
 				if (t > 0.5)
 				{
 					this->alpha = 0;
@@ -149,10 +149,10 @@ void UI::DObj::ButtonDObj::DrawObject(Media::DrawImage *dimg)
 					this->a = 0;
 				}
 			}
-			Media::GDIImage *bmpS1 = (Media::GDIImage*)this->bmpUnclick;
-			Media::GDIImage *bmpS2 = (Media::GDIImage*)this->bmpClicked;
-			Media::GDIImage *bmpTmp = (Media::GDIImage*)this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
-			bmpTmp->info->atype = bmpS1->info->atype;
+			Media::DrawImage *bmpS1 = this->bmpUnclick;
+			Media::DrawImage *bmpS2 = this->bmpClicked;
+			Media::DrawImage *bmpTmp = this->deng->CreateImage32(bmpS1->GetWidth(), bmpS1->GetHeight(), Media::AT_NO_ALPHA);
+			bmpTmp->SetAlphaType(bmpS1->GetAlphaType());
 #if defined(HAS_ASM32)
 			UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
 			UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
@@ -247,12 +247,13 @@ bdolop2:
 				}
 			}
 #else
-			UInt8 *ptrS1 = (UInt8*)bmpS1->bmpBits;
-			UInt8 *ptrS2 = (UInt8*)bmpS2->bmpBits;
-			UInt8 *ptrD = (UInt8*)bmpTmp->bmpBits;
-			OSInt lineBytes = bmpS1->GetWidth() * 4;
-			OSInt i;
-			OSInt j = bmpS1->GetHeight();
+			Bool revOrder;
+			UInt8 *ptrS1 = (UInt8*)bmpS1->GetImgBits(&revOrder);
+			UInt8 *ptrS2 = (UInt8*)bmpS2->GetImgBits(&revOrder);
+			UInt8 *ptrD = (UInt8*)bmpTmp->GetImgBits(&revOrder);
+			UOSInt lineBytes = bmpS1->GetWidth() * 4;
+			UOSInt i;
+			UOSInt j = bmpS1->GetHeight();
 			Double a1 = this->alpha;
 			Double a2 = 1 - this->alpha; 
 			while (j-- > 0)
@@ -297,7 +298,7 @@ Bool UI::DObj::ButtonDObj::IsObject(OSInt x, OSInt y)
 		return false;
 	if (this->rectMode)
 		return true;
-	return (((Media::GDIImage*)bmpChk)->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
+	return (bmpChk->GetPixel32(x - this->dispLeft, y - this->dispTop) & 0xff000000) != 0;
 }
 
 /*System::Windows::Forms::Cursor ^UI::DObj::ButtonDObj::GetCursor()

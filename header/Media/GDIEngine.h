@@ -187,7 +187,6 @@ namespace Media
 		virtual Media::Image *Clone();
 		virtual Media::Image::ImageType GetImageType();
 		virtual void GetImageData(UInt8 *destBuff, OSInt left, OSInt top, UOSInt width, UOSInt height, UOSInt destBpl, Bool upsideDown);
-		virtual UInt32 GetPixel32(OSInt x, OSInt y);
 
 		static void PolylineAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height);
 		static void PolygonAccel(void *hdc, Int32 *points, UOSInt nPoints, OSInt ofstX, OSInt ofstY, OSInt width, OSInt height, Int32 penWidth);
@@ -197,8 +196,6 @@ namespace Media
 		Bool DrawRectN(OSInt x, OSInt y, OSInt w, OSInt h, DrawPen *p, DrawBrush *b);
 
 		void *GetHDC();
-		void SetImageAlpha(UInt8 alpha);
-		void MulImageAlpha(Double val);
 		void FillAlphaRect(OSInt left, OSInt top, OSInt width, OSInt height, UInt8 alpha);
 	private:
 		void *CreateGDIImage();
