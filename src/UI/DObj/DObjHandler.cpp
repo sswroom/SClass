@@ -41,7 +41,7 @@ void UI::DObj::DObjHandler::SetColorSess(Media::ColorManagerSess *colorSess)
 
 void UI::DObj::DObjHandler::ClearObjects()
 {
-	OSInt i;
+	UOSInt i;
 	DirectObject *obj;
 	this->objMut->Lock();
 	i = this->objList->GetCount();
@@ -69,7 +69,7 @@ void UI::DObj::DObjHandler::AddObject(DirectObject *obj)
 Bool UI::DObj::DObjHandler::Check(Media::DrawImage *dimg)
 {
 	Bool isChanged = !this->shown;
-	OSInt i;
+	UOSInt i;
 	DirectObject *obj;
 	this->objMut->Lock();
 	i = this->objList->GetCount();

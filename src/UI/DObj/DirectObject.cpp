@@ -59,8 +59,8 @@ void UI::DObj::DirectObject::GetCurrPos(OSInt *left, OSInt *top)
 			}
 			else if (this->currMoveType == MT_ACCDEACC)
 			{
-				Double aX = (this->destX - this->left) / this->moveDur / this->moveDur * 2;
-				Double aY = (this->destY - this->top) / this->moveDur / this->moveDur * 2;
+				Double aX = OSInt2Double(this->destX - this->left) / this->moveDur / this->moveDur * 2;
+				Double aY = OSInt2Double(this->destY - this->top) / this->moveDur / this->moveDur * 2;
 				Double currDur = dur;
 				if (currDur > this->moveDur * 0.5)
 				{
