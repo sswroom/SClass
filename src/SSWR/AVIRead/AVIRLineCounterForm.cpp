@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRLineCounterForm::OnCalcClicked(void *userObj)
 	{
 		sb.RemoveChars(1);
 	}
-	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		return;
 	}

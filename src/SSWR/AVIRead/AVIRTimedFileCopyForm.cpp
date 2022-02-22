@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	me->dtpStartTime->GetSelectedTime(&dt1);
 	me->dtpEndTime->GetSelectedTime(&dt2);
 	me->txtFileDir->GetText(&sb);
-	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("The file dir is not a directory"), me->GetFormName(), me);
 		return;

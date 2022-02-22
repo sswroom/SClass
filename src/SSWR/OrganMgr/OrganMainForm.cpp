@@ -2275,7 +2275,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(sptr2 - u8buff2), IO::Path::PATH_SEPERATOR);
 				sptr2 = this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
 				
-				if (IO::Path::GetPathType(u8buff, (UOSInt)(sptr - u8buff)) == IO::Path::PathType::Directory)
+				if (IO::Path::GetPathType(CSTRP(u8buff, sptr)) == IO::Path::PathType::Directory)
 				{
 					if (IO::FileUtil::MoveFile(CSTRP(u8buff, sptr), CSTRP(u8buff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{

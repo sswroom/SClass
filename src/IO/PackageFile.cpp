@@ -317,7 +317,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			Bool diff = false;
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("temp"));
-			IO::Path::CreateDirectory(sbuff);
+			IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrHexVal64(sptr, (UInt64)t->ToTicks());
 			*sptr++ = '_';
@@ -629,7 +629,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		}
 		if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
 		{
-			if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Unknown)
+			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Unknown)
 				return false;
 
 			Data::Compress::Decompressor *decomp = Data::Compress::Decompressor::CreateDecompressor(item->compInfo->compMethod);
@@ -684,7 +684,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		{
 			UInt64 fileSize = item->fd->GetDataSize();
 			UOSInt readSize;
-			if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Unknown)
+			if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Unknown)
 				return false;
 
 			if (fileSize < 1048576)
@@ -741,7 +741,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 		else if (item->itemType == IO::PackFileItem::PIT_PARSEDOBJECT && item->pobj->GetParserType() == IO::ParserType::PackageFile)
 		{
 			IO::PackageFile *pf = (IO::PackageFile*)item->pobj;
-			IO::Path::CreateDirectory(sb.ToString());
+			IO::Path::CreateDirectory(sb.ToCString());
 			UOSInt i = 0;
 			UOSInt j = pf->GetCount();
 			while (i < j)

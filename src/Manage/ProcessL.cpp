@@ -220,7 +220,7 @@ Bool Manage::Process::IsRunning()
 	Int32 exitCode;
 	waitpid((__pid_t)this->procId, &exitCode, WNOHANG);
 	sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/proc/")), this->procId);
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Directory)
 	{
 		return true;
 	}
@@ -966,7 +966,7 @@ Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
 	UTF8Char *sptr;
-	if (IO::Path::GetPathType(UTF8STRC("/tmp")) == IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(CSTR("/tmp")) == IO::Path::PathType::Directory)
 	{
 		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
 	}
@@ -1069,7 +1069,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::
 	static Int32 Process_Id = 0;
 	UTF8Char tmpFile[512];
 	UTF8Char *sptr;
-	if (IO::Path::GetPathType(UTF8STRC("/tmp")) == IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(CSTR("/tmp")) == IO::Path::PathType::Directory)
 	{
 		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
 	}

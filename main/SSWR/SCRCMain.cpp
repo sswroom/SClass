@@ -149,7 +149,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (cmdCnt == 2)
 	{
 		UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
-		IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1], cmdLen);
+		IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
 		if (pt == IO::Path::PathType::Unknown)
 		{
 			console->WriteLineC(UTF8STRC("File not found"));
@@ -187,7 +187,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				ProgressHandler *progress;
 				NEW_CLASS(progress, ProgressHandler());
-				IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(cmdLines[1], IO::FileCheck::CheckType::CRC32, progress, false);
+				IO::FileCheck *fileChk = IO::FileCheck::CreateCheck({cmdLines[1], cmdLen}, IO::FileCheck::CheckType::CRC32, progress, false);
 				DEL_CLASS(progress);
 				console->WriteLine();
 				if (fileChk)
@@ -195,7 +195,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					Text::StringBuilderUTF8 sb;
 					IO::FileStream *fs;
 					Exporter::SFVExporter exporter;
-					sb.AppendSlow(cmdLines[1]);
+					sb.AppendC(cmdLines[1], cmdLen);
 					sb.AppendC(UTF8STRC(".sfv"));
 					NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					exporter.ExportFile(fs, sb.ToString(), fileChk, 0);

@@ -128,9 +128,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRFileHashForm::HashThread(void *userObj)
 				*sbuff = 0;
 				sptr = sbuff;
 			}
-			if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::Unknown)
+			if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Unknown)
 			{
-				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->v, chkType, me, false);
+				IO::FileCheck *fchk = IO::FileCheck::CreateCheck(status->fileName->ToCString(), chkType, me, false);
 				IO::FileStream *fs;
 				if (fchk)
 				{

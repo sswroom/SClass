@@ -9,7 +9,7 @@ Net::ACMEClient::ACMEClient(Net::SocketFactory *sockf, const UTF8Char *serverHos
 	this->accReady = false;
 	if (!this->acme->IsError())
 	{
-		if (IO::Path::GetPathType(keyFile.v, keyFile.leng) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(keyFile) == IO::Path::PathType::File)
 		{
 			this->keyReady = this->acme->LoadKey(keyFile);
 			if (this->keyReady)

@@ -68,7 +68,7 @@ IO::ParsedObject *Parser::FileParser::SFVParser::ParseFile(IO::IStreamData *fd, 
 				sptr[-(OSInt)(chkSize << 1) - 1] = 0;
 				if (Text::StrHex2Bytes(&sptr[-(OSInt)(chkSize << 1)], chk) == chkSize)
 				{
-					fchk->AddEntry(sbuff, chk);
+					fchk->AddEntry(CSTRP(sbuff, &sptr[-(OSInt)(chkSize << 1) - 1]), chk);
 				}
 			}
 		}

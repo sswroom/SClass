@@ -44,7 +44,7 @@ Crypto::Hash::IHash *IO::FileCheck::CreateHash(CheckType chkType)
 	return hash;
 }
 
-IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::CheckType chkType, IO::IProgressHandler *progress, Bool skipError)
+IO::FileCheck *IO::FileCheck::CreateCheck(Text::CString path, IO::FileCheck::CheckType chkType, IO::IProgressHandler *progress, Bool skipError)
 {
 	UTF8Char sbuff[1024];
 	UInt8 hashBuff[32];
@@ -63,13 +63,12 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 		return 0;
 	}
 
-	UOSInt pathLen = Text::StrCharCnt(path);
-	pt = IO::Path::GetPathType(path, pathLen);
+	pt = IO::Path::GetPathType(path);
 	if (pt == IO::Path::PathType::File)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
 
-		NEW_CLASS(fs, IO::FileStream({path, pathLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+		NEW_CLASS(fs, IO::FileStream(path, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fchk);
@@ -86,16 +85,16 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 			readSess.fileSize = fileSize;
 			if (progress)
 			{
-				progress->ProgressStart({path, pathLen}, fileSize);
+				progress->ProgressStart(path, fileSize);
 			}
 			hash->Clear();
 			NEW_CLASS(reader, IO::ActiveStreamReader(CheckData, &readSess, fs, 1048576));
 			reader->ReadStream(&bnt);
 			if (fileSize == readSess.readSize)
 			{
-				UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, IO::Path::PATH_SEPERATOR);
+				UOSInt i = path.LastIndexOf(IO::Path::PATH_SEPERATOR);
 				hash->GetValue(hashBuff);
-				fchk->AddEntry(&path[i + 1], hashBuff);
+				fchk->AddEntry(path.Substring(i + 1), hashBuff);
 			}
 			else if (!skipError)
 			{
@@ -120,7 +119,7 @@ IO::FileCheck *IO::FileCheck::CreateCheck(const UTF8Char *path, IO::FileCheck::C
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		NEW_CLASS(fchk, IO::FileCheck(path, chkType));
-		UOSInt i = (UOSInt)(Text::StrConcatC(&sbuff[2], path, pathLen) - sbuff);
+		UOSInt i = (UOSInt)(path.ConcatTo(&sbuff[2]) - sbuff);
 		sbuff[0] = '.';
 		sbuff[1] = IO::Path::PATH_SEPERATOR;
 		if (sbuff[i - 1] == IO::Path::PATH_SEPERATOR)
@@ -233,7 +232,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 					if (fileSize == readSess.readSize)
 					{
 						hash->GetValue(hashBuff);
-						fchk->AddEntry(hashPath, hashBuff);
+						fchk->AddEntry(CSTRP(hashPath, sptr2), hashBuff);
 					}
 					else if (!skipError)
 					{
@@ -289,7 +288,7 @@ IO::FileCheck::FileCheck(Text::String *name, CheckType chkType) : IO::ParsedObje
 	this->chkValues = MemAlloc(UInt8, this->hashSize * this->chkCapacity);
 }
 
-IO::FileCheck::FileCheck(const UTF8Char *name, CheckType chkType) : IO::ParsedObject(name)
+IO::FileCheck::FileCheck(Text::CString name, CheckType chkType) : IO::ParsedObject(name)
 {
 	this->chkType = chkType;
 
@@ -371,9 +370,9 @@ Bool IO::FileCheck::GetEntryHash(UOSInt index, UInt8 *hashVal)
 	return true;
 }
 
-void IO::FileCheck::AddEntry(const UTF8Char *fileName, UInt8 *hashVal)
+void IO::FileCheck::AddEntry(Text::CString fileName, UInt8 *hashVal)
 {
-	UOSInt index = this->fileNames->Add(Text::StrCopyNew(fileName));
+	UOSInt index = this->fileNames->Add(Text::StrCopyNewC(fileName.v, fileName.leng));
 	if (index >= this->chkCapacity)
 	{
 		this->chkCapacity = this->chkCapacity << 1;

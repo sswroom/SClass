@@ -54,11 +54,11 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 	Text::StringBuilderUTF8 sb2;
 	me->txtOriFile->GetText(&sb);
 	me->txtLossyFile->GetText(&sb2);
-	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::File)
 	{
 		return;
 	}
-	if (IO::Path::GetPathType(sb2.ToString(), sb2.GetLength()) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(sb2.ToCString()) != IO::Path::PathType::File)
 	{
 		return;
 	}

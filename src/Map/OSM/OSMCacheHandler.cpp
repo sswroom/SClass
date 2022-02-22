@@ -19,7 +19,7 @@ IO::SeekableStream *Map::OSM::OSMCacheHandler::GetTileData(Int32 lev, Int32 xTil
 	sptr = Text::StrInt32(sptr, lev);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, xTile);
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, yTile);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));

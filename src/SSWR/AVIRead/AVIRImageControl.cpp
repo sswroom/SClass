@@ -108,7 +108,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	if (sptr2[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr2++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr2, UTF8STRC("Cache"));
-	IO::Path::CreateDirectory(sbuff2);
+	IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 
 	UOSInt i;
@@ -276,7 +276,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Output"));
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 
 	ImageStatus *status;

@@ -235,9 +235,9 @@ UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
 
 UOSInt IO::SerialPort::GetUSBPort()
 {
-	if (IO::Path::GetPathType(UTF8STRC("/dev/ttyUSB0")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/dev/ttyUSB0")) == IO::Path::PathType::File)
 		return 33;
-	else if (IO::Path::GetPathType(UTF8STRC("/dev/ttyACM0")) == IO::Path::PathType::File)
+	else if (IO::Path::GetPathType(CSTR("/dev/ttyACM0")) == IO::Path::PathType::File)
 		return 65;
 	else
 		return 0;

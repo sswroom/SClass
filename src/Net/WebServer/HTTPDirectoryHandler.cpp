@@ -634,7 +634,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
 	}
 
-	IO::Path::PathType pt = IO::Path::GetPathType(sptr, sptrLen);
+	IO::Path::PathType pt = IO::Path::GetPathType({sptr, sptrLen});
 	if (pt == IO::Path::PathType::Unknown)
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
@@ -653,7 +653,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sb2.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 			sb2.AppendC(UTF8STRC("index.html"));
 		}
-		pt = IO::Path::GetPathType(sb2.ToString(), sb2.GetLength());
+		pt = IO::Path::GetPathType(sb2.ToCString());
 		if (pt == IO::Path::PathType::File)
 		{
 			sb.ClearStr();
@@ -753,7 +753,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());
 						sbTmp.AppendSlow((UTF8Char*)buff);
-						if (IO::Path::GetPathType(sbTmp.ToString(), sbTmp.GetLength()) == IO::Path::PathType::Unknown)
+						if (IO::Path::GetPathType(sbTmp.ToCString()) == IO::Path::PathType::Unknown)
 						{
 							IO::FileStream *uplFS;
 							NEW_CLASS(uplFS, IO::FileStream(sbTmp.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));

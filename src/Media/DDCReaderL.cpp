@@ -35,7 +35,7 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 			{
 
 			}
-			else if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr2 - sbuff + 4)) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTRP(sbuff, sptr2 + 4)) == IO::Path::PathType::Directory)
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));
@@ -228,7 +228,7 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 			{
 
 			}
-			else if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr2 - sbuff + 4)) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTRP(sbuff, sptr2 + 4)) == IO::Path::PathType::Directory)
 			{
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC("/drm/card0/"));
 				sptr3 = Text::StrConcatC(sptr2, UTF8STRC("card0-*"));

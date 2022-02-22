@@ -224,7 +224,7 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, 
 			Text::StrReplace(sbuff, '/', '\\');
 			return sptr;
 		}
-		IO::Path::PathType pt = IO::Path::GetPathType(sbuff, (UOSInt)(sbuffEnd - sbuff));
+		IO::Path::PathType pt = IO::Path::GetPathType(CSTRP(sbuff, sbuffEnd));
 		if (pt != IO::Path::PathType::Unknown)
 		{
 			return IO::Path::AppendPathC(sbuff, sbuffEnd, path, pathLen);

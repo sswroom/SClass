@@ -24,7 +24,7 @@ namespace Net
 		WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir);
 		~WebBrowser();
 
-		IO::IStreamData *GetData(const UTF8Char *url, UOSInt urlLen, Bool forceReload, UTF8Char *contentType);
+		IO::IStreamData *GetData(Text::CString url, Bool forceReload, UTF8Char *contentType);
 	};
 }
 #endif

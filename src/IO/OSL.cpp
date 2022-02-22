@@ -9,7 +9,7 @@
 
 UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 {
-	if (IO::Path::GetPathType(UTF8STRC("/bin/nvram")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
 		Manage::Process::ExecuteProcess(UTF8STRC("nvram get productid"), &sb);
@@ -22,7 +22,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/os-release")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/os-release")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
@@ -36,27 +36,27 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 			return sbuff;
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/sbin/getcfg")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/sbin/getcfg")) == IO::Path::PathType::File)
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("DSM"));
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/VERSION")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/VERSION")) == IO::Path::PathType::File)
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("DSM"));
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/openwrt_release")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/openwrt_release")) == IO::Path::PathType::File)
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("OpenWRT"));
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/br-version")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/br-version")) == IO::Path::PathType::File)
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("Bovine"));
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/mlinux-version")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/mlinux-version")) == IO::Path::PathType::File)
 	{
 		return Text::StrConcatC(sbuff, UTF8STRC("mLinux"));
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/release")) == IO::Path::PathType::File) //Eurotech
+	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
 		Text::UTF8Reader *reader;
@@ -88,7 +88,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 			}
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/usr/sbin/ENG/stringlist_ENG.txt")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/usr/sbin/ENG/stringlist_ENG.txt")) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
 		Text::UTF8Reader *reader;
@@ -128,7 +128,7 @@ UTF8Char *IO::OS::GetDistro(UTF8Char *sbuff)
 
 UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 {
-	if (IO::Path::GetPathType(UTF8STRC("/bin/nvram")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/bin/nvram")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
 		Manage::Process::ExecuteProcess(UTF8STRC("nvram get firmver"), &sb);
@@ -151,7 +151,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/debian_version")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/debian_version")) == IO::Path::PathType::File)
 	{
 		UTF8Char *ret = 0;
 		Text::UTF8Reader *reader;
@@ -166,7 +166,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		DEL_CLASS(fs);
 		return ret;
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/os-release")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/os-release")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/os-release"));
 		if (cfg)
@@ -186,7 +186,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return sbuff;
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/openwrt_version")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/openwrt_version")) == IO::Path::PathType::File)
 	{
 		UTF8Char *ret = 0;
 		Text::UTF8Reader *reader;
@@ -201,7 +201,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		DEL_CLASS(fs);
 		return ret;
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/sbin/getcfg")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/sbin/getcfg")) == IO::Path::PathType::File)
 	{
 		Text::StringBuilderUTF8 sb;
 		Manage::Process::ExecuteProcess(UTF8STRC("getcfg system version"), &sb);
@@ -214,7 +214,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/VERSION")) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTR("/etc/VERSION")) == IO::Path::PathType::File)
 	{
 		IO::ConfigFile *cfg = IO::UnixConfigFile::Parse(CSTR("/etc/VERSION"));
 		Text::String *s;
@@ -234,7 +234,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return sbuff;
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/release")) == IO::Path::PathType::File) //Eurotech
+	if (IO::Path::GetPathType(CSTR("/etc/release")) == IO::Path::PathType::File) //Eurotech
 	{
 		UTF8Char line[512];
 		Text::UTF8Reader *reader;
@@ -270,7 +270,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			}
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/version.txt")) == IO::Path::PathType::File) //Bovine
+	if (IO::Path::GetPathType(CSTR("/etc/version.txt")) == IO::Path::PathType::File) //Bovine
 	{
 		Text::UTF8Reader *reader;
 		UTF8Char *sptr;
@@ -286,7 +286,7 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 			return sptr;
 		}
 	}
-	if (IO::Path::GetPathType(UTF8STRC("/etc/mlinux-version")) == IO::Path::PathType::File) //mLinux
+	if (IO::Path::GetPathType(CSTR("/etc/mlinux-version")) == IO::Path::PathType::File) //mLinux
 	{
 		Text::UTF8Reader *reader;
 		UTF8Char *sptr;

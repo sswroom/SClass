@@ -98,7 +98,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 				sbuff[chkSize << 1] = 0;
 				if (Text::StrHex2Bytes(sbuff, chk) == chkSize)
 				{
-					fchk->AddEntry(&sbuff[(chkSize << 1) + 2], chk);
+					fchk->AddEntry(CSTRP(&sbuff[(chkSize << 1) + 2], sptr), chk);
 				}
 			}
 			else if (sbuff[(chkSize << 1)] == ' ' && sbuff[(chkSize << 1) + 1] == ' ') //text mode
@@ -106,7 +106,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 				sbuff[chkSize << 1] = 0;
 				if (Text::StrHex2Bytes(sbuff, chk) == chkSize)
 				{
-					fchk->AddEntry(&sbuff[(chkSize << 1) + 2], chk);
+					fchk->AddEntry(CSTRP(&sbuff[(chkSize << 1) + 2], sptr), chk);
 				}
 			}
 		}

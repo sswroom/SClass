@@ -528,7 +528,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureForm::OnCaptureClicked(void *userOb
 		Data::DateTime dt;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Wifi"));
-		IO::Path::CreateDirectory(sbuff);
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		dt.SetCurrTimeUTC();
 		sptr = dt.ToString(sptr, "yyyyMMddHHmmss");

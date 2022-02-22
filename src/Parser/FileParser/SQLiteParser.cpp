@@ -53,7 +53,7 @@ IO::ParsedObject *Parser::FileParser::SQLiteParser::ParseFile(IO::IStreamData *f
 		IO::FileStream *fs;
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("temp"));
-		IO::Path::CreateDirectory(sbuff);
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		t.SetCurrTimeUTC();
 		sptr = Text::StrHexVal64(sptr, (UInt64)t.ToTicks());

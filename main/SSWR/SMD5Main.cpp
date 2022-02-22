@@ -180,7 +180,7 @@ Bool ParseFile(const UTF8Char *fileName, UOSInt fileNameLen)
 	{
 		ProgressHandler *progress;
 		NEW_CLASS(progress, ProgressHandler());
-		IO::FileCheck *fileChk = IO::FileCheck::CreateCheck(fileName, IO::FileCheck::CheckType::MD5, progress, false);
+		IO::FileCheck *fileChk = IO::FileCheck::CreateCheck({fileName, fileNameLen}, IO::FileCheck::CheckType::MD5, progress, false);
 		DEL_CLASS(progress);
 		console->WriteLine();
 		if (fileChk)
@@ -220,7 +220,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		if (i == INVALID_INDEX && j == INVALID_INDEX)
 		{
 			UOSInt cmdLen = Text::StrCharCnt(cmdLines[1]);
-			IO::Path::PathType pt = IO::Path::GetPathType(cmdLines[1], cmdLen);
+			IO::Path::PathType pt = IO::Path::GetPathType({cmdLines[1], cmdLen});
 			if (pt == IO::Path::PathType::Unknown)
 			{
 				console->WriteLineC(UTF8STRC("File not found"));

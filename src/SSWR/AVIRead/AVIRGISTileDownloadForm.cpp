@@ -512,7 +512,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRGISTileDownloadForm::ProcThread(void *userOb
 						sb->AppendUOSInt(stat->lyrId);
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb->AppendI32(blockX);
-						IO::Path::CreateDirectory(sb->ToString());
+						IO::Path::CreateDirectory(sb->ToCString());
 						sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 						sb->AppendI32(blockY);
 						if (it == Map::TileMap::IT_PNG)

@@ -3,9 +3,9 @@
 #include "IO/CodeScanner.h"
 #include "Text/MyString.h"
 
-IO::CodeScanner::CodeScanner(const UTF8Char *devName)
+IO::CodeScanner::CodeScanner(Text::CString devName)
 {
-	this->devName = Text::String::NewNotNull(devName);
+	this->devName = Text::String::New(devName);
 }
 
 IO::CodeScanner::~CodeScanner()

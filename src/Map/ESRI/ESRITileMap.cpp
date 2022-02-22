@@ -469,7 +469,7 @@ Media::ImageList *Map::ESRI::ESRITileMap::LoadTileImage(UOSInt level, Int64 imgI
 	sptr = Text::StrInt32(sptr, (Int32)level);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
 	sptr = Text::StrInt32(sptr, imgY);
-	IO::Path::CreateDirectory(filePath);
+	IO::Path::CreateDirectory(CSTRP(filePath, sptr));
 	sptr = Text::StrConcatC(sptr, UTF8STRC("\\"));
 	sptr = Text::StrInt32(sptr, imgX);
 	filePathEnd = Text::StrConcatC(sptr, UTF8STRC(".dat"));
@@ -597,7 +597,7 @@ IO::IStreamData *Map::ESRI::ESRITileMap::LoadTileImageData(UOSInt level, Int64 i
 	u8ptr = Text::StrUOSInt(u8ptr, level);
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr = Text::StrInt32(u8ptr, imgY);
-	IO::Path::CreateDirectory(filePath);
+	IO::Path::CreateDirectory(CSTRP(filePath, u8ptr));
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr = Text::StrInt32(u8ptr, imgX);
 	u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".dat"));

@@ -369,7 +369,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		fileName = fd->GetFullName()->ConcatTo(u8buff);
 		fileName = Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
-		if (IO::Path::GetPathType(u8buff, (UOSInt)(fileName - u8buff)) != IO::Path::PathType::File)
+		if (IO::Path::GetPathType(CSTRP(u8buff, fileName)) != IO::Path::PathType::File)
 		{
 			DEL_CLASS(reader);
 			DEL_CLASS(stm);

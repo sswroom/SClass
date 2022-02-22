@@ -546,7 +546,6 @@ Bool SSWR::AVIRead::AVIRCore::GenFontPreview(Media::DrawImage *img, Media::DrawE
 		fontName = CSTR("Arial");
 	}
 	Double sz[2];
-	UOSInt strLeng;
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
 	b = img->NewBrushARGB(colorConv->ConvRGB8(0xffffffff));

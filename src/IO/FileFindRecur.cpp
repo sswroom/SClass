@@ -152,7 +152,7 @@ Text::CString IO::FileFindRecur::NextFile(IO::Path::PathType *pt)
 			i++;
 		}
 		UOSInt buffLen = Text::StrCharCnt(this->currBuff);
-		thisPt = IO::Path::GetPathType(this->currBuff, buffLen);
+		thisPt = IO::Path::GetPathType({this->currBuff, buffLen});
 		if (thisPt != IO::Path::PathType::Unknown)
 		{
 			if (pt)

@@ -19,9 +19,9 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyy");
-		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
+		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
-			IO::Path::CreateDirectory(buff);
+			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
@@ -29,9 +29,9 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMM");
-		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
+		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
-			IO::Path::CreateDirectory(buff);
+			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
@@ -39,9 +39,9 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY)
 	{
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMMdd");
-		if (!IO::Path::IsDirectoryExist(buff, (UOSInt)(currName - buff)))
+		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
-			IO::Path::CreateDirectory(buff);
+			IO::Path::CreateDirectory(CSTRP(buff, currName));
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
@@ -239,9 +239,9 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 		if (i != INVALID_INDEX)
 		{
 			this->fileName->v[i] = 0;
-			if (!IO::Path::IsDirectoryExist(this->fileName->v, this->fileName->leng))
+			if (!IO::Path::IsDirectoryExist(this->fileName->ToCString()))
 			{
-				IO::Path::CreateDirectory(this->fileName->v);
+				IO::Path::CreateDirectory(this->fileName->ToCString());
 			}
 			this->fileName->v[i] = IO::Path::PATH_SEPERATOR;
 		}

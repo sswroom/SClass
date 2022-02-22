@@ -126,7 +126,7 @@ IO::PackageFile::PackObjectType IO::DirectoryPackage::GetItemType(UOSInt index)
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
 		return IO::PackageFile::POT_UNKNOWN;
-	IO::Path::PathType pt = IO::Path::GetPathType(fileName->v, fileName->leng);
+	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
 		return IO::PackageFile::POT_STREAMDATA;
@@ -156,7 +156,7 @@ IO::IStreamData *IO::DirectoryPackage::GetItemStmData(UOSInt index)
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
 		return 0;
-	IO::Path::PathType pt = IO::Path::GetPathType(fileName->v, fileName->leng);
+	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
@@ -174,7 +174,7 @@ IO::PackageFile *IO::DirectoryPackage::GetItemPack(UOSInt index)
 	Text::String *fileName = this->files->GetItem(index);
 	if (fileName == 0)
 		return 0;
-	IO::Path::PathType pt = IO::Path::GetPathType(fileName->v, fileName->leng);
+	IO::Path::PathType pt = IO::Path::GetPathType(fileName->ToCString());
 	if (pt == IO::Path::PathType::Directory)
 	{
 		IO::DirectoryPackage *pkg;
@@ -247,7 +247,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
+	pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -277,7 +277,7 @@ Bool IO::DirectoryPackage::CopyFrom(Text::CString fileName, IO::IProgressHandler
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		ret = IO::FileUtil::CopyDir(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
 			this->AddFile(CSTRP(sbuff, sptr));
@@ -291,7 +291,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
+	pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -321,7 +321,7 @@ Bool IO::DirectoryPackage::MoveFrom(Text::CString fileName, IO::IProgressHandler
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
+		ret = IO::FileUtil::MoveDir(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Fail, progHdlr, bnt);
 		if (ret)
 		{
 			this->AddFile(CSTRP(sbuff, sptr));
@@ -335,7 +335,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHa
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
+	pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -365,7 +365,7 @@ Bool IO::DirectoryPackage::RetryCopyFrom(Text::CString fileName, IO::IProgressHa
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::CopyDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		ret = IO::FileUtil::CopyDir(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
 			this->AddFile(CSTRP(sbuff, sptr));
@@ -379,7 +379,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHa
 {
 	IO::Path::PathType pt;
 	Bool ret;
-	pt = IO::Path::GetPathType(fileName.v, fileName.leng);
+	pt = IO::Path::GetPathType(fileName);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
@@ -409,7 +409,7 @@ Bool IO::DirectoryPackage::RetryMoveFrom(Text::CString fileName, IO::IProgressHa
 		}
 		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		sptr = Text::StrConcatC(sptr, &fileName.v[i + 1], fileName.leng - i - 1);
-		ret = IO::FileUtil::MoveDir(fileName.v, sbuff, IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
+		ret = IO::FileUtil::MoveDir(fileName, CSTRP(sbuff, sptr), IO::FileUtil::FileExistAction::Continue, progHdlr, bnt);
 		if (ret)
 		{
 			this->AddFile(CSTRP(sbuff, sptr));

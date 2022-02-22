@@ -44,22 +44,22 @@ IO::ParsedObject *Parser::FileParser::SPDParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".sps"));
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".spi"));
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}
 	sptr = Text::StrConcatC(&sbuff[i], UTF8STRC(".spb"));
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::File)
 	{
 		return 0;
 	}

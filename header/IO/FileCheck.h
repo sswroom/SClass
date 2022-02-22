@@ -32,14 +32,14 @@ namespace IO
 
 	public:
 		static Crypto::Hash::IHash *CreateHash(CheckType chkType);
-		static FileCheck *CreateCheck(const UTF8Char *path, CheckType chkType, IO::IProgressHandler *progress, Bool skipError);
+		static FileCheck *CreateCheck(Text::CString path, CheckType chkType, IO::IProgressHandler *progress, Bool skipError);
 	private:
 		static void __stdcall CheckData(const UInt8 *buff, UOSInt buffSize, void *userData);
 		static Bool CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Hash::IHash *hash, IO::FileCheck *fchk, IO::IProgressHandler *progress, Bool skipError); //true = error
 
 	public:
 		FileCheck(Text::String *name, CheckType chkType);
-		FileCheck(const UTF8Char *name, CheckType chkType);
+		FileCheck(Text::CString name, CheckType chkType);
 		virtual ~FileCheck();
 
 		HashType GetHashType();
@@ -48,7 +48,7 @@ namespace IO
 		UOSInt GetCount();
 		const UTF8Char *GetEntryName(UOSInt index);
 		Bool GetEntryHash(UOSInt index, UInt8 *hashVal);
-		void AddEntry(const UTF8Char *fileName, UInt8 *hashVal);
+		void AddEntry(Text::CString fileName, UInt8 *hashVal);
 		Bool CheckEntryHash(UOSInt index, UInt8 *hashVal);
 
 		virtual IO::ParserType GetParserType();

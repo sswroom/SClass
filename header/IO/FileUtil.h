@@ -16,7 +16,7 @@ namespace IO
 			Continue
 		};
 	public:
-		static Bool DeleteFile(const UTF8Char *file, Bool deleteRdonlyFile);
+		static Bool DeleteFile(Text::CString file, Bool deleteRdonlyFile);
 //		static Bool DeleteFile(const WChar *file, Bool deleteRdonlyFile);
 		static Bool RenameFile(const UTF8Char *srcFile, const UTF8Char *destFile);
 //		static Bool RenameFile(const WChar *srcFile, const WChar *destFile);
@@ -26,15 +26,15 @@ namespace IO
 //		static Bool IsSamePartition(const WChar *file1, const WChar *file2);
 		static Bool CopyFile(Text::CString file1, Text::CString file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool CopyFile(const WChar *file1, const WChar *file2, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		static Bool CopyDir(const UTF8Char *srcDir, const UTF8Char *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		static Bool CopyDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		static Bool MoveFile(Text::CString srcFile, Text::CString destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool MoveFile(const WChar *srcFile, const WChar *destFile, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		static Bool MoveDir(const UTF8Char *srcDir, const UTF8Char *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
+		static Bool MoveDir(Text::CString srcDir, Text::CString destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 //		static Bool MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 	private:
 		static void __stdcall CopyHdlr(const UInt8 *buff, UOSInt buffSize, void *userData);
-		static Bool DeleteDir(UTF8Char *dir, Bool deleteRdonlyFile);
+		static Bool DeleteDir(UTF8Char *dir, UTF8Char *dirEnd, Bool deleteRdonlyFile);
 	};
 }
 #endif

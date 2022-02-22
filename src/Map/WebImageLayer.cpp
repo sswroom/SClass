@@ -84,7 +84,7 @@ Map::WebImageLayer::ImageStat *Map::WebImageLayer::GetImageStat(Int32 id)
 
 void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 {
-	stat->data = this->browser->GetData(stat->url->v, stat->url->leng, false, 0);
+	stat->data = this->browser->GetData(stat->url->ToCString(), false, 0);
 	if (stat->data == 0)
 	{
 		if (stat->name)

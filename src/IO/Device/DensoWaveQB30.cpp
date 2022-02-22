@@ -57,7 +57,7 @@ UInt32 __stdcall IO::Device::DensoWaveQB30::RecvThread(void *userObj)
 							Text::StrConcatC(sbuff, me->recvBuff, i);
 							if (me->scanHdlr)
 							{
-								me->scanHdlr(me->scanHdlrObj, sbuff);
+								me->scanHdlr(me->scanHdlrObj, {sbuff, i});
 							}
 							me->stm->Write((UInt8*)"READOFF\r", 8);
 							Sync::Thread::Sleep(me->scanDelay);
@@ -253,7 +253,7 @@ Bool IO::Device::DensoWaveQB30::WriteCommand(const Char *cmdStr, UOSInt cmdLen)
 	return succ;
 }
 
-IO::Device::DensoWaveQB30::DensoWaveQB30(IO::Stream *stm) : IO::CodeScanner((const UTF8Char*)"Denso Wave QB30")
+IO::Device::DensoWaveQB30::DensoWaveQB30(IO::Stream *stm) : IO::CodeScanner(CSTR("Denso Wave QB30"))
 {
 	this->stm = stm;
 	this->scanDelay = 1000;

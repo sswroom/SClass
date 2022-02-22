@@ -361,7 +361,7 @@ SSWR::AVIRead::AVIRSMTPServerForm::AVIRSMTPServerForm(UI::GUIClientControl *pare
 	Text::StringBuilderUTF8 sb;
 	IO::Path::GetProcessFileName(&sb);
 	IO::Path::AppendPath(&sb, UTF8STRC("SMTP"));
-	IO::Path::CreateDirectory(sb.ToString());
+	IO::Path::CreateDirectory(sb.ToCString());
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->tcMain, UI::GUITabControl(ui, this));

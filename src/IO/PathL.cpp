@@ -44,9 +44,9 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, L"/tmp/"), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen)
+Bool IO::Path::IsDirectoryExist(Text::CString dir)
 {
-	return GetPathType(dir, dirLen) == PathType::Directory;
+	return GetPathType(dir) == PathType::Directory;
 }
 
 Bool IO::Path::IsDirectoryExistW(const WChar *dir)
@@ -54,19 +54,19 @@ Bool IO::Path::IsDirectoryExistW(const WChar *dir)
 	return GetPathTypeW(dir) == PathType::Directory;
 }
 
-Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
+Bool IO::Path::CreateDirectory(Text::CString dirInput)
 {
-	UOSInt i = Text::StrLastIndexOfChar(dirInput, '/');
+	UOSInt i = dirInput.LastIndexOf('/');
 	if (i != INVALID_INDEX && i > 0)
 	{
 		Text::StringBuilderUTF8 sb;
-		sb.AppendC(dirInput, (UOSInt)i);
-		if (GetPathType(sb.ToString(), sb.GetLength()) == PathType::Unknown)
+		sb.AppendC(dirInput.v, (UOSInt)i);
+		if (GetPathType(sb.ToCString()) == PathType::Unknown)
 		{
-			CreateDirectory(sb.ToString());
+			CreateDirectory(sb.ToCString());
 		}
 	}
-	int status = mkdir((const Char*)dirInput, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+	int status = mkdir((const Char*)dirInput.v, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
 	return status == 0;
 }
 
@@ -77,9 +77,9 @@ Bool IO::Path::CreateDirectoryW(const WChar *dirInput)
 	{
 		const WChar *wptr = Text::StrCopyNewC(dirInput, (UOSInt)i);
 		Text::String *s = Text::String::NewNotNull(wptr);
-		if (GetPathType(s->v, s->leng) == PathType::Unknown)
+		if (GetPathType(s->ToCString()) == PathType::Unknown)
 		{
-			CreateDirectory(s->v);
+			CreateDirectory(s->ToCString());
 		}
 		s->Release();
 		Text::StrDelNew(wptr);
@@ -281,7 +281,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		return Text::StrConcatC(path, toAppend, toAppendLen);
 	UOSInt pathLen = (UOSInt)(pathEnd - path);
 	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
-	IO::Path::PathType pt = GetPathType(path, pathLen);
+	IO::Path::PathType pt = GetPathType({path, pathLen});
 	if (pt == PathType::File && i != INVALID_INDEX)
 	{
 		path[i] = 0;
@@ -343,7 +343,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	}
 	UTF8Char *sptr = sb->ToString();
 	UOSInt i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
-	if (GetPathType(sptr, sb->GetLength()) == PathType::File && i != INVALID_INDEX)
+	if (GetPathType({sptr, sb->GetLength()}) == PathType::File && i != INVALID_INDEX)
 	{
 		sb->RemoveChars(sb->GetLength() - i);
 		i = Text::StrLastIndexOfCharC(sptr, sb->GetLength(), '/');
@@ -541,11 +541,11 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
+IO::Path::PathType IO::Path::GetPathType(Text::CString path)
 {
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
-	int status = lstat64((const Char*)path, &s);
+	int status = lstat64((const Char*)path.v, &s);
 #else
 	struct stat s;
 	int status = lstat((const Char*)path, &s);
@@ -575,16 +575,16 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 		UTF8Char pathBuff[512];
 		UTF8Char *pathBuffEnd;
 		Char cbuff[512];
-		ssize_t size = readlink((const Char*)path, cbuff, 511);
+		ssize_t size = readlink((const Char*)path.v, cbuff, 511);
 		cbuff[size] = 0;
-		pathBuffEnd = Text::StrConcatC(pathBuff, path, pathLen);
+		pathBuffEnd = path.ConcatTo(pathBuff);
 		UOSInt i = Text::StrLastIndexOfCharC(pathBuff, (UOSInt)(pathBuffEnd - pathBuff), '/');
 		if (i != INVALID_INDEX)
 		{
 			pathBuff[i + 1] = 0;
 			pathBuffEnd = IO::Path::AppendPathC(pathBuff, &pathBuff[i + 1], (const UTF8Char*)cbuff, (UOSInt)size);
 		}
-		return GetPathType(pathBuff, (UOSInt)(pathBuffEnd - pathBuff));
+		return GetPathType(CSTRP(pathBuff, pathBuffEnd));
 	}
 	return PathType::Unknown;
 }
@@ -592,7 +592,7 @@ IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
 IO::Path::PathType IO::Path::GetPathTypeW(const WChar *path)
 {
 	Text::String *utfPath = Text::String::NewNotNull(path);
-	IO::Path::PathType pt = IO::Path::GetPathType(utfPath->v, utfPath->leng);
+	IO::Path::PathType pt = IO::Path::GetPathType(utfPath->ToCString());
 	utfPath->Release();
 	return pt;
 }

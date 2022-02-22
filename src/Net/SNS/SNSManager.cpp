@@ -59,7 +59,7 @@ Net::SNS::SNSManager::ChannelData *Net::SNS::SNSManager::ChannelInit(Net::SNS::S
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = ctrl->GetDirName(sptr);
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
@@ -93,7 +93,7 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = channel->ctrl->GetDirName(sptr);
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = dt.ToString(sptr, "yyyyMM");
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".csv"));
@@ -170,10 +170,10 @@ void Net::SNS::SNSManager::ChannelAddMessage(Net::SNS::SNSManager::ChannelData *
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr = channel->ctrl->GetDirName(sptr);
-		IO::Path::CreateDirectory(sbuff);
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = dt.ToString(sptr, "yyyyMM");
-		IO::Path::CreateDirectory(sbuff);
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = channel->ctrl->GetItemShortId(sptr, item);
 		*sptr++ = '_';
@@ -317,7 +317,7 @@ void Net::SNS::SNSManager::ChannelStoreCurr(Net::SNS::SNSManager::ChannelData *c
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr = channel->ctrl->GetDirName(sptr);
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("curritem.txt"));
 	IO::FileStream *fs;
@@ -575,7 +575,7 @@ Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNS
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr = ctrl->GetDirName(sptr);
-		IO::Path::CreateDirectory(sbuff);
+		IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("channel.txt"));
 		IO::FileStream *fs;

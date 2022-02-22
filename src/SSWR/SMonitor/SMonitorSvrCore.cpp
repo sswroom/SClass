@@ -744,7 +744,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SaveDatas()
 				sptr = dt.ToString(sptr, "yyyyMM");
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrInt64(sptr, dev->cliId);
-				IO::Path::CreateDirectory(sbuff);
+				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = dt.ToString(sptr, "yyyyMMdd");
 				sptr = Text::StrConcatC(sptr, UTF8STRC(".rec"));
@@ -811,7 +811,7 @@ void SSWR::SMonitor::SMonitorSvrCore::SavePhoto(Int64 cliId, Int64 photoTime, In
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Photo"));
 	sptr = dt.ToString(sptr, "yyyyMMdd");
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt64(sptr, photoTime);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
@@ -1236,7 +1236,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		s2 = cfg->GetValue(CSTR("HTTPFiles"));
 		if (s)
 		{
-			if (s2 && IO::Path::GetPathType(s2->v, s2->leng) == IO::Path::PathType::Directory)
+			if (s2 && IO::Path::GetPathType(s2->ToCString()) == IO::Path::PathType::Directory)
 			{
 				if (s->ToUInt16(&port) && port > 0)
 				{

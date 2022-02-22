@@ -91,27 +91,27 @@ IO::MinizZIP::~MinizZIP()
 	}
 }
 
-Bool IO::MinizZIP::AddFile(const UTF8Char *sourceFile, UOSInt fileLen)
+Bool IO::MinizZIP::AddFile(Text::CString sourceFile)
 {
 	mz_zip_archive *zip = (mz_zip_archive *)this->hand;
 	IO::Path::PathType pt;
 	if (zip == 0)
 		return false;
 
-	pt = IO::Path::GetPathType(sourceFile, fileLen);
+	pt = IO::Path::GetPathType(sourceFile);
 	if (pt == IO::Path::PathType::File)
 	{
 		UTF8Char sbuff[512];
 		UOSInt len;
 		UOSInt i;
-		len = this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile);
+		len = this->enc->UTF8ToBytes((UInt8*)sbuff, sourceFile.v);
 		i = Text::StrLastIndexOfCharC(sbuff, len, IO::Path::PATH_SEPERATOR);
 		return mz_zip_writer_add_file(zip, (const Char*)&sbuff[i + 1], (const Char*)sbuff, 0, 0, MZ_BEST_COMPRESSION) != MZ_FALSE;
 	}
 	else if (pt == IO::Path::PathType::Directory)
 	{
 		UTF8Char sbuff[512];
-		UTF8Char *sptr = Text::StrConcatC(sbuff, sourceFile, fileLen);
+		UTF8Char *sptr = sourceFile.ConcatTo(sbuff);
 		UOSInt i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		return this->AddDir(&sbuff[i + 1], sbuff);
 	}
@@ -128,7 +128,7 @@ Bool IO::MinizZIP::AddFiles(Data::ArrayList<Text::String *> *files)
 	while (succ && i < j)
 	{
 		Text::String *s = files->GetItem(i);
-		succ = succ & AddFile(s->v, s->leng);
+		succ = succ & AddFile(s->ToCString());
 		i++;
 	}
 	return succ;

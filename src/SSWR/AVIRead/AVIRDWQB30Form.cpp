@@ -257,12 +257,12 @@ void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnSetCmdClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, const UTF8Char *code)
+void __stdcall SSWR::AVIRead::AVIRDWQB30Form::OnCodeScanned(void *userObj, Text::CString code)
 {
 	SSWR::AVIRead::AVIRDWQB30Form *me = (SSWR::AVIRead::AVIRDWQB30Form*)userObj;
 	Sync::MutexUsage mutUsage(me->codeMut);
 	SDEL_STRING(me->newCode);
-	me->newCode = Text::String::NewNotNull(code);
+	me->newCode = Text::String::New(code);
 	me->codeUpdate = true;
 	mutUsage.EndUse();
 }

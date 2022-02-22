@@ -70,7 +70,7 @@ void __stdcall SSWR::AVIRead::AVIRFileSizePackForm::OnMoveClicked(void *userObj)
 		{
 			SSWR::AVIRead::AVIRFileSizePackForm::MyFile *file;
 			UOSInt i;
-			IO::Path::CreateDirectory(sbuff);
+			IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 			sptr = sptr2;
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
@@ -151,7 +151,7 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 		this->txtDir->Focus();
 		return;
 	}
-	if (IO::Path::GetPathType(sb.ToString(), sb.GetLength()) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(sb.ToCString()) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please input directory"), CSTR("Error"), this);
 		this->txtDir->Focus();

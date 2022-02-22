@@ -3110,7 +3110,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 					}
 					if (fd == 0 && browser)
 					{
-						fd = browser->GetData(style->iconURL->v, style->iconURL->leng, false, 0);
+						fd = browser->GetData(style->iconURL->ToCString(), false, 0);
 					}
 					if (fd)
 					{

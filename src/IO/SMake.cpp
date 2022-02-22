@@ -682,7 +682,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 		sb2.Append(headerFile);
 		sptr = IO::Path::GetRealPath(sbuff, sb2.ToString(), sb2.GetLength());
 
-		if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 		{
 			if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 			{
@@ -715,7 +715,7 @@ Bool IO::SMake::ParseHeader(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(currHeader, (UOSInt)(currHeaderEnd - currHeader));
 	sptr = IO::Path::GetRealPath(sbuff, sb.ToString(), sb.GetLength());
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
 		if (headerList && headerList->SortedIndexOf(headerFile) < 0)
 		{
@@ -929,7 +929,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		return false;
 	}
 	
-	IO::Path::CreateDirectory((const UTF8Char*)OBJECTPATH);
+	IO::Path::CreateDirectory(CSTR(OBJECTPATH));
 	i = 0;
 	j = objList.GetCount();
 	while (i < j)
@@ -1162,7 +1162,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	sb.ClearStr();
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));
-	IO::Path::CreateDirectory(sb.ToString());
+	IO::Path::CreateDirectory(sb.ToCString());
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.Append(prog->name);
 	if (postfixItem)

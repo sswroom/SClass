@@ -32,7 +32,7 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::URLString::GetURLHost(sptr, url, urlLen);
 		Text::StrReplace(sptr, ':', '+');
-		IO::Path::CreateDirectory(buff);
+		IO::Path::CreateDirectory(CSTRP(buff, sptr2));
 		sptr = sptr2;
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		url = &url[Text::StrIndexOfCharC(url, urlLen, ':') + 3];
@@ -65,33 +65,33 @@ Net::WebBrowser::~WebBrowser()
 	DEL_CLASS(this->hash);
 }
 
-IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bool forceReload, UTF8Char *contentType)
+IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, UTF8Char *contentType)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	IO::Path::PathType pt = IO::Path::GetPathType(url, urlLen);
+	IO::Path::PathType pt = IO::Path::GetPathType(url);
 	/////////////////////////////////////////////
 	if (pt == IO::Path::PathType::File)
 	{
 		IO::StmData::FileData *fd;
-		NEW_CLASS(fd, IO::StmData::FileData({url, urlLen}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(url, false));
 		if (contentType)
 		{
-			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
+			Text::CString mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
 			Text::StrConcatC(contentType, mime.v, mime.leng);
 		}
 		return fd;
 	}
-	if ((sptr = Text::URLString::GetURIScheme(sbuff, url, urlLen)) == 0)
+	if ((sptr = Text::URLString::GetURIScheme(sbuff, url.v, url.leng)) == 0)
 		return 0;
 	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
-		sptr = Text::URLString::GetURLFilePath(sbuff, url, urlLen);
+		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng);
 		IO::StmData::FileData *fd;
 		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		if (contentType)
 		{
-			Text::CString mime = Net::MIME::GetMIMEFromFileName(url, urlLen);
+			Text::CString mime = Net::MIME::GetMIMEFromFileName(url.v, url.leng);
 			Text::StrConcatC(contentType, mime.v, mime.leng);
 		}
 		return fd;
@@ -99,15 +99,15 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTP")))
 	{
 		Net::HTTPData *data;
-		GetLocalFileName(sbuff, url, urlLen);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
+		sptr = GetLocalFileName(sbuff, url.v, url.leng);
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		Net::HTTPData *data;
-		GetLocalFileName(sbuff, url, urlLen);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, sbuff, forceReload));
+		sptr = GetLocalFileName(sbuff, url.v, url.leng);
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP")))
@@ -122,14 +122,15 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("DATA")))
 	{
 		IO::StmData::MemoryData2 *fd;
+		const UTF8Char *urlPtr;
 		WChar c;
-		const UTF8Char *urlEnd = &url[urlLen];
-		url = &url[5];
+		const UTF8Char *urlEnd = url.v + url.leng;
+		urlPtr = &url.v[5];
 		if (contentType)
 		{
 			while (true)
 			{
-				c = *url++;
+				c = *urlPtr++;
 				if (c == 0)
 				{
 					*contentType = 0;
@@ -149,7 +150,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 		{
 			while (true)
 			{
-				c = *url++;
+				c = *urlPtr++;
 				if (c == 0)
 				{
 					return 0;
@@ -160,7 +161,7 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 				}
 			}
 		}
-		if (Text::StrStartsWithC(url, (UOSInt)(urlEnd - url), UTF8STRC("base64,")))
+		if (Text::StrStartsWithC(urlPtr, (UOSInt)(urlEnd - urlPtr), UTF8STRC("base64,")))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			UOSInt textSize;
@@ -168,9 +169,9 @@ IO::IStreamData *Net::WebBrowser::GetData(const UTF8Char *url, UOSInt urlLen, Bo
 			UTF8Char *strTemp;
 			UTF8Char *sptr;
 			UInt8 *binTemp;
-			textSize = (UOSInt)(urlEnd - url + 7);
+			textSize = (UOSInt)(urlEnd - urlPtr + 7);
 			strTemp = MemAlloc(UTF8Char, textSize + 1);
-			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, url + 7);
+			sptr = Text::TextBinEnc::URIEncoding::URIDecode(strTemp, urlPtr + 7);
 			binSize = b64.CalcBinSize(strTemp, (UOSInt)(sptr - strTemp));
 			binTemp = MemAlloc(UInt8, binSize);
 			b64.DecodeBin(strTemp, (UOSInt)(sptr - strTemp), binTemp);

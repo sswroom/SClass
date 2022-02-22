@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 		return;
 	}
 	sptr = me->txtDir->GetText(sbuff);
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) != IO::Path::PathType::Directory)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) != IO::Path::PathType::Directory)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Not a directory"), CSTR("Error"), me);
 		return;
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 			if (sb.GetLength() > 0)
 			{
 				sptr2 = Text::StrConcatC(sptr2, sb.ToString(), sb.GetLength());
-				IO::Path::CreateDirectory(sbuff2);
+				IO::Path::CreateDirectory(CSTRP(sbuff2, sptr2));
 				*sptr2++ = IO::Path::PATH_SEPERATOR;
 			}
 		}

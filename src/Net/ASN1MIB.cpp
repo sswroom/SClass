@@ -1682,12 +1682,12 @@ Bool Net::ASN1MIB::LoadFileInner(Text::CString fileName, Text::StringBuilderUTF8
 	Net::MIBReader *reader;
 	ModuleInfo *module;
 	Bool succ;
-	if (IO::Path::GetPathType(fileName.v, fileName.leng) != IO::Path::PathType::File)
+	if (IO::Path::GetPathType(fileName) != IO::Path::PathType::File)
 	{
 		sbFileName.ClearStr();
 		sbFileName.Append(fileName);
 		sbFileName.AppendC(UTF8STRC(".asn"));
-		if (IO::Path::GetPathType(sbFileName.ToString(), sbFileName.GetLength()) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(sbFileName.ToCString()) == IO::Path::PathType::File)
 		{
 			fileName.v = sbFileName.ToString();
 			fileName.leng = sbFileName.GetLength();

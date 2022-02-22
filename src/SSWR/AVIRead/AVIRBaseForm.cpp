@@ -425,7 +425,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 	UOSInt i = 0;
 	while (i < nFiles)
 	{
-		pt = IO::Path::GetPathType(files[i]->v, files[i]->leng);
+		pt = IO::Path::GetPathType(files[i]->ToCString());
 		if (pt == IO::Path::PathType::Directory)
 		{
 			Bool valid = false;
@@ -1012,7 +1012,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
-					if (IO::Path::GetPathType(fname->v, fname->leng) == IO::Path::PathType::Directory)
+					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
 					{
 						IO::DirectoryPackage *dp;
 						NEW_CLASS(dp, IO::DirectoryPackage(fname));

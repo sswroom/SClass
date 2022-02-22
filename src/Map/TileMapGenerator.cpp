@@ -33,7 +33,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	sptr = Text::StrInt32(sptr, x >> 5);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, y >> 5);
-	IO::Path::CreateDirectory(sbuff);
+	IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrInt32(sptr, x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
@@ -100,7 +100,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 		mutUsage.EndUse();
 		return true;
 	}
-	if (IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
 		mutUsage.EndUse();
 		return true;
@@ -177,7 +177,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	GenerateDBFile(x, y + 1, scale, mapSch);
 
 	sptr = GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".png");
-	if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr - sbuff2)) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(CSTRP(sbuff2, sptr)) == IO::Path::PathType::File)
 		return true;
 
 	NEW_CLASS(mstm, IO::MemoryStream(1048576, UTF8STRC("Map.TileMapGenerator.GenerateTile")));

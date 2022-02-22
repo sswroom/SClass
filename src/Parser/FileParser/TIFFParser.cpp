@@ -1470,7 +1470,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			UTF8Char *sptr;
 			fd->GetFullFileName()->ConcatTo(fileNameBuff);
 			sptr = IO::Path::ReplaceExt(fileNameBuff, UTF8STRC("tfw"));
-			if (IO::Path::GetPathType(fileNameBuff, (UOSInt)(sptr - fileNameBuff)) == IO::Path::PathType::File)
+			if (IO::Path::GetPathType(CSTRP(fileNameBuff, sptr)) == IO::Path::PathType::File)
 			{
 				IO::FileStream *fs;
 				IO::StreamReader *reader;
@@ -1482,7 +1482,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				Double yPxSize;
 				Double xCoord;
 				Double yCoord;
-				NEW_CLASS(fs, IO::FileStream({fileNameBuff, (UOSInt)(sptr - fileNameBuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				NEW_CLASS(fs, IO::FileStream(CSTRP(fileNameBuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, IO::StreamReader(fs, 0));
 				sb.ClearStr();
 				if (!reader->ReadLine(&sb, 1024) || !Text::StrToDouble(sb.ToString(), &xPxSize))

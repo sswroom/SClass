@@ -166,14 +166,14 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				sptrEnd = sptr2;
 				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+				if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
 					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".aac"));
-					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+					if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 					{
 						fileSize = IO::Path::GetFileSize(sbuff);
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
@@ -222,14 +222,14 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				sptrEnd = sptr2;
 				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+				if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 				{
 				}
 				else
 				{
 					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 5;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".opus"));
-					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+					if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 					{
 						fileSize = IO::Path::GetFileSize(sbuff);
 						fileSize2 = IO::Path::GetFileSize(sbuff2);
@@ -288,7 +288,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 //				printf("MP4 found: %s\r\n", sptr);
 				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+				if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 				{
 					downFound = true;
 				}
@@ -328,7 +328,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 				sptrEnd = sptr2;
 				sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 				sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
-				if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+				if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 				{
 				}
 				else
@@ -393,7 +393,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					sptrEnd = sptr2;
 					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff));
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".part"));
-					if (IO::Path::GetPathType(sbuff2, (UOSInt)(sptr2 - sbuff2)) == IO::Path::PathType::File)
+					if (IO::Path::GetPathType(CSTRP(sbuff2, sptr2)) == IO::Path::PathType::File)
 					{
 					}
 					else

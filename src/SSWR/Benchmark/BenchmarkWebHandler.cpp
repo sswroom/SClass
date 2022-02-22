@@ -143,7 +143,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				Int64 t = dt.ToTicks();
 				sptr = IO::Path::GetProcessFileName(sbuff);
 				sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Benchmark"));
-				IO::Path::CreateDirectory(sbuff);
+				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("SBench_"));
 				sptrTmp = sptr;
@@ -298,11 +298,11 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 					u8ptr = IO::Path::GetProcessFileName(path);
 					u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-					IO::Path::CreateDirectory(path);
+					IO::Path::CreateDirectory(CSTRP(path, u8ptr));
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
 					u8ptr = cpuModel.ConcatTo(u8ptr);
 
-					if (IO::Path::GetPathType(path, (UOSInt)(u8ptr - path)) == IO::Path::PathType::Unknown)
+					if (IO::Path::GetPathType(CSTRP(path, u8ptr)) == IO::Path::PathType::Unknown)
 					{
 						NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fileSize == fs->Write(fileBuff, fileSize))
@@ -317,7 +317,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					dt.SetCurrTimeUTC();
 					u8ptr = IO::Path::GetProcessFileName(path);
 					u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-					IO::Path::CreateDirectory(path);
+					IO::Path::CreateDirectory(CSTRP(path, u8ptr));
 					*u8ptr++ = IO::Path::PATH_SEPERATOR;
 					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("Unknown_"));
 					u8ptr = Text::StrInt64(u8ptr, dt.ToTicks());
@@ -355,7 +355,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	sbOut.AppendC(UTF8STRC("<tr><td>Model</td><td>Brand</td><td>Name</td><td>Archtecture</td></tr>\r\n"));
 	u8ptr = IO::Path::GetProcessFileName(path);
 	u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-	IO::Path::CreateDirectory(path);
+	IO::Path::CreateDirectory(CSTRP(path, u8ptr));
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	IO::Path::FindFileSession *sess = IO::Path::FindFile(path, (UOSInt)(u8ptr2 - path));

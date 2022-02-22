@@ -24,7 +24,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 		fdh->cli = Net::HTTPClient::CreateConnect(fdh->sockf, fdh->ssl, fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	}
 	fdh->evtTmp->Set();
-	if (IO::Path::GetPathType(fdh->localFile->v, fdh->localFile->leng) == IO::Path::PathType::File)
+	if (IO::Path::GetPathType(fdh->localFile->ToCString()) == IO::Path::PathType::File)
 	{
 		IO::FileStream *fs;
 		NEW_CLASS(fs, IO::FileStream(fdh->localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -187,12 +187,11 @@ Net::HTTPData::HTTPData(const Net::HTTPData *fd, UInt64 offset, UInt64 length)
 	fdh->objectCnt++;
 }
 
-Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, const UTF8Char *url, const UTF8Char *localFile, Bool forceReload)
+Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTTPQueue *queue, Text::CString url, Text::CString localFile, Bool forceReload)
 {
 	UOSInt i;
 	Bool needReload = forceReload;
-	UOSInt localFileLen = Text::StrCharCnt(localFile);
-	IO::Path::PathType pt = IO::Path::GetPathType(localFile, localFileLen);
+	IO::Path::PathType pt = IO::Path::GetPathType(localFile);
 	fdh = 0;
 	if (pt == IO::Path::PathType::Directory)
 	{
@@ -207,7 +206,7 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 	if (!needReload)
 	{
 		IO::FileStream *fs;
-		NEW_CLASS(fs, IO::FileStream({localFile, localFileLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(localFile, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
 		if (fs->IsError())
 		{
 			DEL_CLASS(fs);
@@ -224,8 +223,8 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 			fdh->objectCnt = 1;
 			fdh->seekCnt = 0;
 			NEW_CLASS(fdh->mut, Sync::Mutex());
-			fdh->url = Text::String::NewNotNull(url);
-			fdh->localFile = Text::String::New(localFile, localFileLen);
+			fdh->url = Text::String::New(url);
+			fdh->localFile = Text::String::New(localFile);
 			fdh->isLoading = false;
 			fdh->loadSize = 0;
 			fdh->cli = 0;
@@ -252,8 +251,8 @@ Net::HTTPData::HTTPData(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Net::HTT
 		fdh->objectCnt = 1;
 		fdh->seekCnt = 0;
 		NEW_CLASS(fdh->mut, Sync::Mutex());
-		fdh->url = Text::String::NewNotNull(url);
-		fdh->localFile = Text::String::New(localFile, localFileLen);
+		fdh->url = Text::String::New(url);
+		fdh->localFile = Text::String::New(localFile);
 		fdh->isLoading = true;
 		fdh->loadSize = 0;
 		fdh->sockf = sockf;

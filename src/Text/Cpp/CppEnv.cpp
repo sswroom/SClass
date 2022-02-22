@@ -207,7 +207,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 		sptr = sourceFile->ConcatTo(buff);
 		i = Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr - buff), IO::Path::PATH_SEPERATOR);
 		sptr2 = Text::StrConcatC(&buff[i + 1], includeFile, includeFileLen);
-		if (IO::Path::GetPathType(buff, (UOSInt)(sptr2 - buff)) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
 	}
 	i = 0;
@@ -229,7 +229,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 		sptr2 = Text::StrConcatC(sptr, includeFile, includeFileLen);
 		if (IO::Path::PATH_SEPERATOR != '/')
 			Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
-		if (IO::Path::GetPathType(buff, (UOSInt)(sptr2 - buff)) == IO::Path::PathType::File)
+		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
 		i++;
 	}
@@ -544,7 +544,7 @@ Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv
 	if (sptr == 0)
 		return false;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("bin\\ml.exe"));
-	return IO::Path::GetPathType(sbuff, (UOSInt)(sptr - sbuff)) == IO::Path::PathType::File;
+	return IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File;
 }
 
 /*

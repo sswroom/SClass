@@ -681,7 +681,7 @@ void Map::ReloadableMapLayer::Reload()
 		innerLayer = this->innerLayers->GetItem(i);
 		if (innerLayer->innerLayer == 0 || innerLayer->reloadInterval != 0)
 		{
-			data = this->browser->GetData(innerLayer->url->v, innerLayer->url->leng, innerLayer->reloadInterval != 0, 0);
+			data = this->browser->GetData(innerLayer->url->ToCString(), innerLayer->reloadInterval != 0, 0);
 		}
 		this->innerLayerMut->UnlockRead();
 		if (data)
