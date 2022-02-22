@@ -108,7 +108,7 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnTimerTick(void *userObj)
 	mutUsage.EndUse();
 }
 
-void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, const Char *name)
+void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name)
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	BTDevice *dev;
@@ -117,16 +117,16 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 	if (dev)
 	{
 		dev->rssi = rssi;
-		if (name)
+		if (name.leng > 0)
 		{
 			if (dev->name == 0)
 			{
-				dev->name = Text::String::NewNotNull((const UTF8Char*)name);
+				dev->name = Text::String::New(name);
 			}
-			else if (Text::StrCharCnt(name) > dev->name->leng)
+			else if (name.leng > dev->name->leng)
 			{
 				dev->name->Release();
-				dev->name = Text::String::NewNotNull((const UTF8Char*)name);
+				dev->name = Text::String::New(name);
 			}
 		}
 		dev->updated = true;
@@ -136,9 +136,9 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnLEScanItem(void *userObj, U
 		dev = MemAlloc(BTDevice, 1);
 		dev->mac = mac;
 		dev->rssi = rssi;
-		if (name)
+		if (name.leng)
 		{
-			dev->name = Text::String::NewNotNull((const UTF8Char*)name);
+			dev->name = Text::String::New(name);
 		}
 		else
 		{

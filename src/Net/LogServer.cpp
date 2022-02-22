@@ -34,7 +34,7 @@ void __stdcall Net::LogServer::ClientEvent(Net::TCPClient *cli, void *userObj, v
 		ClientStatus *cliStatus;
 		if (me->log)
 		{
-			me->log->LogMessageC(UTF8STRC("Client Disconnected"), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessage(CSTR("Client Disconnected"), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 		cliStatus = (ClientStatus*)cliData;
 		MemFree(cliStatus->buff);
@@ -111,7 +111,7 @@ Net::LogServer::IPStatus *Net::LogServer::GetIPStatus(const Net::SocketUtil::Add
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
-		status->log->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap->Put(ip, status);
 		mutUsage.EndUse();
 		return status;
@@ -191,18 +191,18 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 				sb.AppendP(sbuff, sptr);
 				sb.AppendC(UTF8STRC("> "));
 				sb.AppendC(&cmd[8], cmdSize - 8);
-				this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 			}
 
 			if (cliStatus->status)
 			{
 				sb.ClearStr();
 				sb.AppendC(&cmd[8], cmdSize - 8);
-				cliStatus->status->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, sb.ToString());
+					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, sb.ToCString());
 				}
 			}
 		}
@@ -212,11 +212,11 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 			{
 				MemCopyNO(sbuff, &cmd[8], cmdSize - 8);
 				sbuff[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessageC(sbuff, cmdSize - 8, IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessage({sbuff, cmdSize - 8}, IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, sbuff);
+					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, {sbuff, cmdSize - 8});
 				}
 			}
 		}
@@ -227,11 +227,11 @@ void Net::LogServer::DataParsed(IO::Stream *stm, void *stmObj, Int32 cmdType, In
 				UInt8 *tmpPtr = MemAlloc(UInt8, cmdSize - 8 + 1);
 				MemCopyNO(tmpPtr, &cmd[8], cmdSize - 8);
 				tmpPtr[cmdSize - 8] = 0;
-				cliStatus->status->log->LogMessageC(tmpPtr, cmdSize - 8, IO::ILogHandler::LOG_LEVEL_COMMAND);
+				cliStatus->status->log->LogMessage({tmpPtr, cmdSize - 8}, IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 				if (this->logHdlr)
 				{
-					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, tmpPtr);
+					this->logHdlr(this->logHdlrObj, cliStatus->status->ip, {tmpPtr, cmdSize - 8});
 				}
 				MemFree(tmpPtr);
 			}

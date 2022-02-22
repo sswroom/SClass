@@ -18,7 +18,7 @@ namespace Media
 
 	public:
 		NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::String *name);
-		NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, const UTF8Char *name);
+		NWASource(IO::IStreamData *fd, UInt32 sampleCount, UInt32 blockSize, UInt32 compLevel, UInt32 nBlocks, Media::AudioFormat *format, Text::CString name);
 		virtual ~NWASource();
 
 		virtual Int32 GetStreamTime(); //ms

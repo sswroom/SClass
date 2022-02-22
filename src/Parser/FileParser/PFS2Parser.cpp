@@ -50,6 +50,7 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFile(IO::IStreamData *fd,
 	UInt32 hdrSize;
 	UInt8 *records;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	OSInt fileCnt = 0;
 	UOSInt i;
 	Text::Encoding enc(932);
@@ -72,8 +73,8 @@ IO::ParsedObject *Parser::FileParser::PFS2Parser::ParseFile(IO::IStreamData *fd,
 		UInt32 fileNameSize = ReadUInt32(&records[i]);
 		UInt32 fileOfst = ReadUInt32(&records[i + fileNameSize + 16]);
 		UInt32 fileSize = ReadUInt32(&records[i + fileNameSize + 20]);
-		enc.UTF8FromBytes(sbuff, &records[i + 4], fileNameSize, 0);
-		pf->AddData(fd, fileOfst, fileSize, sbuff, 0);
+		sptr = enc.UTF8FromBytes(sbuff, &records[i + 4], fileNameSize, 0);
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), 0);
 		fileCnt++;
 		i += fileNameSize + 24;
 	}

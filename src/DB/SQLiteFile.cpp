@@ -154,7 +154,7 @@ OSInt DB::SQLiteFile::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 			{
 				this->lastDataError = DE_EXEC_SQL_ERROR;
 				SDEL_STRING(this->lastErrMsg);
-				this->lastErrMsg = Text::String::NewNotNull((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
+				this->lastErrMsg = Text::String::NewNotNullSlow((const UTF8Char*)sqlite3_errmsg((sqlite3*)this->db));
 				chg = 0;
 			}
 			sqlite3_finalize(stmt);

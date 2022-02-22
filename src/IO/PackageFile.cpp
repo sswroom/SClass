@@ -104,13 +104,13 @@ IO::ParserType IO::PackageFile::GetParserType()
 	return IO::ParserType::PackageFile;
 }
 
-void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Text::CString name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_UNCOMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = Text::String::NewNotNull(name);
+	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
@@ -119,15 +119,15 @@ void IO::PackageFile::AddData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, c
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddObject(IO::ParsedObject *pobj, Text::CString name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
 	item->fd = 0;
-	if (name)
+	if (name.leng > 0)
 	{
-		item->name = Text::String::NewNotNull(name);
+		item->name = Text::String::New(name);
 	}
 	else
 	{
@@ -141,13 +141,13 @@ void IO::PackageFile::AddObject(IO::ParsedObject *pobj, const UTF8Char *name, In
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, IO::PackFileItem::CompressInfo *compInfo, Text::CString name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_COMPRESSED;
 	item->fd = fd->GetPartialData(ofst, length);
-	item->name = Text::String::NewNotNull(name);
+	item->name = Text::String::New(name);
 	item->pobj = 0;
 	item->compInfo = MemAlloc(PackFileItem::CompressInfo, 1);
 	MemCopyNO(item->compInfo, compInfo, sizeof(PackFileItem::CompressInfo));
@@ -162,13 +162,13 @@ void IO::PackageFile::AddCompData(IO::IStreamData *fd, UInt64 ofst, UInt64 lengt
 	this->namedItems->Put(item->name, item);
 }
 
-void IO::PackageFile::AddPack(IO::PackageFile *pkg, const UTF8Char *name, Int64 modTimeTick)
+void IO::PackageFile::AddPack(IO::PackageFile *pkg, Text::CString name, Int64 modTimeTick)
 {
 	PackFileItem *item;
 	item = MemAlloc(PackFileItem, 1);
 	item->itemType = IO::PackFileItem::PIT_PARSEDOBJECT;
 	item->fd = 0;
-	item->name = Text::String::NewNotNull(name);
+	item->name = Text::String::New(name);
 	item->pobj = pkg;
 	item->compInfo = 0;
 	item->modTimeTick = modTimeTick;
@@ -288,7 +288,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 			sb.Append(this->sourceName);
 			sb.AppendC(UTF8STRC("\\"));
 			sb.Append(item->name);
-			data->SetFullName(sb.ToString());
+			data->SetFullName(sb.ToCString());
 			return data;
 		}
 		else if (item->itemType == IO::PackFileItem::PIT_COMPRESSED)
@@ -373,7 +373,7 @@ IO::IStreamData *IO::PackageFile::GetPItemStmData(const PackFileItem *item)
 				{
 					sb.Append(item->fd->GetShortName());
 				}
-				fd->SetFullName(sb.ToString());
+				fd->SetFullName(sb.ToCString());
 				return fd;
 			}
 		}

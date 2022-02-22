@@ -40,6 +40,7 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 hdrOfst;
 	UInt8 rec[76];
 	UTF8Char name[65];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 16, (UInt8*)hdr);
 	if (hdr[0] != 0x3067726D || hdr[1] != 0x31)
@@ -62,9 +63,9 @@ IO::ParsedObject *Parser::FileParser::MRGParser::ParseFile(IO::IStreamData *fd, 
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(name, rec, 64, 0);
+		sptr = enc.UTF8FromBytes(name, rec, 64, 0);
 		currSize = *(UInt32*)&rec[64];
-		pf->AddData(fd, currOfst, currSize, name, 0);
+		pf->AddData(fd, currOfst, currSize, CSTRP(name, sptr), 0);
 		currOfst += currSize;
 		hdrOfst += 76;
 	}

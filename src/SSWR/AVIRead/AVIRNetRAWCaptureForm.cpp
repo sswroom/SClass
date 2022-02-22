@@ -33,7 +33,7 @@ void __stdcall SSWR::AVIRead::AVIRNetRAWCaptureForm::OnBrowseClicked(void *userO
 	Net::RAWCapture::AddFilters(dlg);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

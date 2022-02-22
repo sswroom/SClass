@@ -52,7 +52,7 @@ void IO::LogTool::Close()
 	dt.SetCurrTime();
 	while (i-- > 0)
 	{
-		hdlrArr->GetItem(i)->LogAdded(&dt, (const UTF8Char*)"End logging normally", 20,  (IO::ILogHandler::LogLevel)0);
+		hdlrArr->GetItem(i)->LogAdded(&dt, UTF8STRC("End logging normally"),  (IO::ILogHandler::LogLevel)0);
 		hdlrArr->GetItem(i)->LogClosed();
 	}
 	mutUsage.EndUse();
@@ -78,7 +78,7 @@ void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style,
 	}
 }
 
-void IO::LogTool::AddFileLog(const UTF8Char *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
+void IO::LogTool::AddFileLog(Text::CString fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite)
 {
 	if (closed)
 		return;
@@ -144,22 +144,7 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 	mutUsage.EndUse();
 }
 
-void IO::LogTool::LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level)
-{
-	UOSInt msgLen = Text::StrCharCnt(logMsg);
-	Data::DateTime dt;
-	dt.SetCurrTime();
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = hdlrArr->GetCount();
-	while (i-- > 0)
-	{
-		if (levArr->GetItem(i) >= level)
-			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg, msgLen, level);
-	}
-	mutUsage.EndUse();
-}
-
-void IO::LogTool::LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler::LogLevel level)
+void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();
@@ -168,7 +153,7 @@ void IO::LogTool::LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler
 	while (i-- > 0)
 	{
 		if (levArr->GetItem(i) >= level)
-			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg, msgLen, level);
+			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg.v, logMsg.leng, level);
 	}
 	mutUsage.EndUse();
 }

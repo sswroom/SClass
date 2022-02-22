@@ -133,9 +133,9 @@ IO::FileLog::FileLog(Text::String *fileName, LogType style, LogGroup groupStyle,
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::FileLog::FileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::FileLog::FileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);
 }
 

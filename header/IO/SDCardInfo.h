@@ -14,7 +14,7 @@ namespace IO
 		Text::String *name;
 
 	public:
-		SDCardInfo(const UTF8Char *name, const UInt8 *cid, const UInt8 *csd);
+		SDCardInfo(Text::CString name, const UInt8 *cid, const UInt8 *csd);
 		~SDCardInfo();
 
 		OSInt GetCID(UInt8 *cid);

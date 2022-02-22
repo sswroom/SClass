@@ -27,7 +27,7 @@ namespace Text
 			} PrintStatus;
 
 		private:
-			const UTF8Char *docName;
+			Text::String *docName;
 			PropertiesFlags pflags;
 			UInt32 textColor;
 			UInt32 bgColor;
@@ -39,12 +39,12 @@ namespace Text
 			Data::ArrayList<DocSection*> *items;
 		public:
 			TextDocument();
-			TextDocument(const UTF8Char *name);
+			TextDocument(Text::CString name);
 			virtual ~TextDocument();
 
 			virtual IO::ParserType GetParserType();
 
-			void SetDocumentName(const UTF8Char *docName);
+			void SetDocumentName(Text::CString docName);
 			UTF8Char *GetDocumentName(UTF8Char *docName);
 			void SetTextColor(UInt32 textColor);
 			Bool GetTextColor(UInt32 *textColor);

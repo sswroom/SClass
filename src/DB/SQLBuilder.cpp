@@ -145,7 +145,7 @@ void DB::SQLBuilder::AppendCol(const WChar *val)
 	Text::StrDelNew(v);
 }
 
-void DB::SQLBuilder::AppendTrim(const UTF8Char *val)
+void DB::SQLBuilder::AppendTrim(Text::CString val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBTrimLeng(val, this->svrType));
 	sb->SetEndPtr(DB::DBUtil::SDBTrim(sb->GetEndPtr(), val, this->svrType));

@@ -258,9 +258,9 @@ void Media::ImageList::SetValueInt64(Media::ImageList::ValueType valType, Int64 
 	this->valTypeI64->Add(valType);
 }
 
-void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, const UTF8Char *val)
+void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CString val)
 {
-	this->valStr->Add(Text::String::NewNotNull(val));
+	this->valStr->Add(Text::String::New(val));
 	this->valTypeStr->Add(valType);
 }
 

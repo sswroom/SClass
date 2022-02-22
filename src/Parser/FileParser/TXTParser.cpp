@@ -168,12 +168,12 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					DEL_CLASS(stm);
 					return 0;
 				}
-				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].v);
+				env->SetLineStyleName(Text::StrToUInt32(sarr[1].v), sarr[2].ToCString());
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("5,")))
 			{
 				Text::String *fontName;
-				const UTF8Char *pfontName;
+				Text::CString pfontName;
 				Double fontSize;
 				Bool bold;
 				UInt32 fontColor;
@@ -197,7 +197,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				else
 				{
 					addFont = 2;
-					pfontName = sarr[3].v;
+					pfontName = sarr[3].ToCString();
 					fontSize = Text::StrToDouble(sarr[4].v);
 					bold = false;
 					fontColor = 0;
@@ -225,7 +225,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				}
 				else if (addFont == 2)
 				{
-					env->AddFontStyle(0, pfontName, fontSize, bold, fontColor, buffSize, buffColor);
+					env->AddFontStyle(CSTR_NULL, pfontName, fontSize, bold, fontColor, buffSize, buffColor);
 				}
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("6,")))
@@ -356,7 +356,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("15,")))
 			{
-				currGroup = env->AddGroup(0, &sbuff[3]);
+				currGroup = env->AddGroup(0, CSTRP(&sbuff[3], sptr));
 			}
 		}
 

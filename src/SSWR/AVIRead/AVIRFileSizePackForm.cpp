@@ -5,9 +5,9 @@
 #include "SSWR/AVIRead/AVIRFileSizePackForm.h"
 #include "UI/MessageDialog.h"
 
-SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(const UTF8Char *fileName, UInt64 fileSize)
+SSWR::AVIRead::AVIRFileSizePackForm::MyFile::MyFile(Text::CString fileName, UInt64 fileSize)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->fileSize = fileSize;
 }
 
@@ -174,11 +174,11 @@ void SSWR::AVIRead::AVIRFileSizePackForm::GenList()
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &fileSize)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				NEW_CLASS(file, MyFile(sptr, fileSize));
+				NEW_CLASS(file, MyFile(CSTRP(sptr, sptr2), fileSize));
 				this->fileList->Add(file);
 				totalFileSize += fileSize;
 			}

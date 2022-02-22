@@ -3,15 +3,15 @@
 #include "Text/MyString.h"
 #include "Text/Doc/TextDocument.h"
 
-Text::Doc::TextDocument::TextDocument() : IO::ParsedObject((const UTF8Char*)"Untitled")
+Text::Doc::TextDocument::TextDocument() : IO::ParsedObject(CSTR("Untitled"))
 {
 	this->docName = 0;
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
 	NEW_CLASS(items, Data::ArrayList<DocSection*>());
-	SetDocumentName((const UTF8Char*)"Untitled");
+	SetDocumentName(CSTR("Untitled"));
 }
 
-Text::Doc::TextDocument::TextDocument(const UTF8Char *name) : IO::ParsedObject(name)
+Text::Doc::TextDocument::TextDocument(Text::CString name) : IO::ParsedObject(name)
 {
 	this->docName = 0;
 	this->pflags = (Text::Doc::TextDocument::PropertiesFlags)0;
@@ -29,11 +29,7 @@ Text::Doc::TextDocument::~TextDocument()
 		DEL_CLASS(item);
 	}
 	DEL_CLASS(this->items);
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-		this->docName = 0;
-	}
+	SDEL_STRING(this->docName);
 }
 
 IO::ParserType Text::Doc::TextDocument::GetParserType()
@@ -41,20 +37,17 @@ IO::ParserType Text::Doc::TextDocument::GetParserType()
 	return IO::ParserType::TextDocument;
 }
 
-void Text::Doc::TextDocument::SetDocumentName(const UTF8Char *docName)
+void Text::Doc::TextDocument::SetDocumentName(Text::CString docName)
 {
-	if (this->docName)
-	{
-		Text::StrDelNew(this->docName);
-	}
-	this->docName = Text::StrCopyNew(docName);
+	SDEL_STRING(this->docName);
+	this->docName = Text::String::New(docName);
 }
 
 UTF8Char *Text::Doc::TextDocument::GetDocumentName(UTF8Char *docName)
 {
 	if (this->docName == 0)
 		return 0;
-	return Text::StrConcat(docName, this->docName);
+	return this->docName->ConcatTo(docName);
 }
 
 void Text::Doc::TextDocument::SetTextColor(UInt32 textColor)

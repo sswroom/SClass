@@ -53,8 +53,7 @@ namespace Net
 		CmdResultType cmdResultType;
 
 		static UInt32 __stdcall RecvThread(void *userObj);
-		void SetLastError(const UTF8Char *errMsg, UOSInt msgLen);
-		void SetLastError(const UTF8Char *errMsg);
+		void SetLastError(Text::CString errMsg);
 	public:
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::String *userName, Text::String *password, Text::String *database);
 		MySQLTCPClient(Net::SocketFactory *sockf, const Net::SocketUtil::AddressInfo *addr, UInt16 port, Text::CString userName, Text::CString password, Text::CString database);

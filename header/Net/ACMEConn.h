@@ -76,7 +76,7 @@ namespace Net
 		Challenge *ChallengeJSON(Text::JSONBase *json);
 		Challenge *ChallengeParse(const UInt8 *buff, UOSInt buffSize);
 	public:
-		ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port);
+		ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UInt16 port);
 		~ACMEConn();
 
 		Bool IsError();

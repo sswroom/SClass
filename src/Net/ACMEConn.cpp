@@ -45,7 +45,7 @@ Text::String *Net::ACMEConn::JWK(Crypto::Cert::X509Key *key, Crypto::Token::JWSi
 			b64.EncodeBin(&sb, m, mSize);
 			sb.AppendC(UTF8STRC("\"}"));
 			*alg = Crypto::Token::JWSignature::Algorithm::RS256;
-			return Text::String::NewNotNull(sb.ToString());
+			return Text::String::New(sb.ToCString());
 		}
 	case Crypto::Cert::X509Key::KeyType::ECDSA:
 		return 0;
@@ -84,7 +84,7 @@ Text::String *Net::ACMEConn::ProtectedJWK(Text::String *nonce, Text::String *url
 	}
 	jwk->Release();
 	sb.AppendC(UTF8STRC("}"));
-	return Text::String::NewNotNull(sb.ToString());
+	return Text::String::New(sb.ToCString());
 }
 
 Text::String *Net::ACMEConn::EncodeJWS(Net::SSLEngine *ssl, Text::CString protStr, Text::CString data, Crypto::Cert::X509Key *key, Crypto::Token::JWSignature::Algorithm alg)
@@ -249,14 +249,14 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSIn
 	return chall;
 }
 
-Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, const UTF8Char *serverHost, UInt16 port)
+Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UInt16 port)
 {
 	UInt8 buff[2048];
 	UOSInt recvSize;
 	this->sockf = sockf;
 	this->key = 0;
 	this->ssl = Net::SSLEngineFactory::Create(sockf, false);
-	this->serverHost = Text::String::NewNotNull(serverHost);
+	this->serverHost = Text::String::New(serverHost);
 	this->port = port;
 	this->urlNewNonce = 0;
 	this->urlNewAccount = 0;

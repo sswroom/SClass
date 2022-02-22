@@ -43,6 +43,7 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *
 	UInt32 thisSize;
 
 	UTF8Char name[17];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	fd->GetRealData(0, 16, hdrbuff);
@@ -67,8 +68,8 @@ IO::ParsedObject *Parser::FileParser::MAIPackParser::ParseFile(IO::IStreamData *
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(name, recbuff, 16, 0);
-		pf->AddData(fd, thisOfst, thisSize, name, 0);
+		sptr = enc.UTF8FromBytes(name, recbuff, 16, 0);
+		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), 0);
 
 		fileOfst += thisSize;
 		hdrOfst += 24;

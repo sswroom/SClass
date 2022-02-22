@@ -63,7 +63,7 @@ Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 	return GetDataTextH(0, fmtId, sb, 0);
 }
 
-Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
+Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	if (!this->succ)
 		return Win32::Clipboard::FPT_NONE;
@@ -76,6 +76,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 	Win32::Clipboard::FilePasteType ret = Win32::Clipboard::FPT_NONE;
 	GdkAtom *targets;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	gint nTargets;
 	UOSInt i;
 	UOSInt j;
@@ -116,12 +117,12 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 								i += j + 1;
 								if (sb.StartsWith(UTF8STRC("file:///")))
 								{
-									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
-									fileNames->Add(Text::StrCopyNew(sbuff));
+									sptr = Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
+									fileNames->Add(Text::String::NewP(sbuff, sptr));
 								}
 								else
 								{
-									fileNames->Add(Text::StrCopyNew(sb.ToString()));
+									fileNames->Add(Text::String::New(sb.ToCString()));
 								}
 							}
 							else
@@ -130,12 +131,12 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 								sb.AppendC((const UTF8Char*)&rawdata[i], (UInt32)leng - i);
 								if (sb.StartsWith(UTF8STRC("file:///")))
 								{
-									Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
-									fileNames->Add(Text::StrCopyNew(sbuff));
+									sptr = Text::URLString::GetURLFilePath(sbuff, sb.ToString(), sb.GetLength());
+									fileNames->Add(Text::String::NewP(sbuff, sptr));
 								}
 								else
 								{
-									fileNames->Add(Text::StrCopyNew(sb.ToString()));
+									fileNames->Add(Text::String::New(sb.ToCString()));
 								}
 								break;
 							}
@@ -152,12 +153,12 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 	return ret;
 }
 
-void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
+void Win32::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(fileNames->GetItem(i));
+		fileNames->GetItem(i)->Release();
 	}
 }
 

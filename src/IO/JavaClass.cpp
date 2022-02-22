@@ -5746,208 +5746,208 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			codePtr += 3;
 			break;
 		case 0x15: //iload
-			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
 			codePtr += 2;
 			break;
 		case 0x16: //lload
-			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
 			codePtr += 2;
 			break;
 		case 0x17: //fload
-			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
 			codePtr += 2;
 			break;
 		case 0x18: //dload
-			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
 			codePtr += 2;
 			break;
 		case 0x19: //aload
-			this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, codePtr[1], env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			env->stackTypes->Add(env->localTypes[codePtr[1]]->Clone());
 			codePtr += 2;
 			break;
 		case 0x1A: //iload_0
 			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
-				env->stacks->Add(Text::String::NewNotNull(sbuff));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1B: //iload_1
-			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1C: //iload_2
-			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1D: //iload_3
-			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1E: //lload_0
 			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
-				env->stacks->Add(Text::String::NewNotNull(sbuff));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x1F: //lload_1
-			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x20: //lload_2
-			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x21: //lload_3
-			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x22: //fload_0
 			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
-				env->stacks->Add(Text::String::NewNotNull(sbuff));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x23: //fload_1
-			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x24: //fload_2
-			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x25: //fload_3
-			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x26: //dload_0
 			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
-				env->stacks->Add(Text::String::NewNotNull(sbuff));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x27: //dload_1
-			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x28: //dload_2
-			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x29: //dload_3
-			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2A: //aload_0
 			if (env->method && (env->method->accessFlags & 8) != 0)
 			{
-				this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
-				env->stacks->Add(Text::String::NewNotNull(sbuff));
+				sptr = this->GetLVName(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart));
+				env->stacks->Add(Text::String::NewP(sbuff, sptr));
 			}
 			else
 			{
 				env->stacks->Add(Text::String::New(UTF8STRC("this")));
 			}
-			this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVType(sbuff, 0, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2B: //aload_1
-			this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 1, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2C: //aload_2
-			this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 2, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2D: //aload_3
-			this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
-			env->stacks->Add(Text::String::NewNotNull(sbuff));
-			this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
-			env->stackTypes->Add(Text::String::NewNotNull(sbuff));
+			sptr = this->GetLVName(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart));
+			env->stacks->Add(Text::String::NewP(sbuff, sptr));
+			sptr = this->GetLVType(sbuff, 3, env->method, (UOSInt)(codePtr - env->codeStart), env->importList, env->packageName);
+			env->stackTypes->Add(Text::String::NewP(sbuff, sptr));
 			codePtr++;
 			break;
 		case 0x2E: //iaload
@@ -7928,7 +7928,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
-					env->stackTypes->Add(Text::String::NewNotNull(typeBuff));
+					env->stackTypes->Add(Text::String::NewNotNullSlow(typeBuff));
 				}
 				else
 				{
@@ -8008,7 +8008,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
-					env->stackTypes->Add(Text::String::NewNotNull(typeBuff));
+					env->stackTypes->Add(Text::String::NewNotNullSlow(typeBuff));
 				}
 				else if (isInit && env->stacks->GetCount() > 0 && sbTmp2.StartsWith(env->stacks->GetItem(env->stacks->GetCount() - 1)))
 				{
@@ -8046,7 +8046,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 			if (typeBuff[0])
 			{
 				env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
-				env->stackTypes->Add(Text::String::NewNotNull(typeBuff));
+				env->stackTypes->Add(Text::String::NewNotNullSlow(typeBuff));
 			}
 			else
 			{
@@ -8088,7 +8088,7 @@ IO::JavaClass::EndType IO::JavaClass::DecompileCode(const UInt8 *codePtr, const 
 				if (typeBuff[0])
 				{
 					env->stacks->Add(Text::String::New(sbTmp2.ToString(), sbTmp2.GetLength()));
-					env->stackTypes->Add(Text::String::NewNotNull(typeBuff));
+					env->stackTypes->Add(Text::String::NewNotNullSlow(typeBuff));
 				}
 				else
 				{
@@ -8437,8 +8437,8 @@ void IO::JavaClass::DecompileStore(UInt16 index, IO::JavaClass::DecompileEnv *en
 	}
 	if (env->localTypes[index] == 0)
 	{
-		this->GetLVType(sbuff, index, env->method, codeOfst, env->importList, env->packageName);
-		env->localTypes[index] = Text::String::NewNotNull(sbuff);
+		sptr = this->GetLVType(sbuff, index, env->method, codeOfst, env->importList, env->packageName);
+		env->localTypes[index] = Text::String::NewP(sbuff, sptr);
 		this->AppendCodeClassName(sb, env->localTypes[index]->v, env->importList, env->packageName);
 		sb->AppendUTF8Char(' ');
 	}

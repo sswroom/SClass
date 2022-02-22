@@ -26,9 +26,9 @@ Text::Cpp::CppParseStatus::CppParseStatus(Text::String *rootFile)
 	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
 }
 
-Text::Cpp::CppParseStatus::CppParseStatus(const UTF8Char *rootFile)
+Text::Cpp::CppParseStatus::CppParseStatus(Text::CString rootFile)
 {
-	this->fileName = Text::String::NewNotNull(rootFile);
+	this->fileName = Text::String::New(rootFile);
 	NEW_CLASS(this->defines, Data::FastStringMap<DefineInfo*>());
 	NEW_CLASS(this->statuses, Data::ArrayList<FileParseStatus*>());
 	NEW_CLASS(this->fileNames, Data::ArrayListICaseString());
@@ -174,7 +174,7 @@ Bool Text::Cpp::CppParseStatus::AddGlobalDef(Text::CString defName, Text::CStrin
 	}
 }
 
-Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, const UTF8Char *defParam, const UTF8Char *defVal, Int32 lineNum)
+Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, Text::CString defParam, Text::CString defVal, Int32 lineNum)
 {
 	FileParseStatus *fStatus = GetFileStatus();
 	DefineInfo *defInfo;
@@ -187,18 +187,18 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, const UTF8Char *de
 			defInfo->lineNum = fStatus->lineNum;
 			SDEL_STRING(defInfo->defineVal);
 			SDEL_STRING(defInfo->defineParam);
-			if (defVal)
+			if (defVal.leng > 0)
 			{
-				defInfo->defineVal = Text::String::NewNotNull(defVal);
+				defInfo->defineVal = Text::String::New(defVal);
 				defInfo->defineVal->Trim();
 			}
 			else
 			{
 				defInfo->defineVal = 0;
 			}
-			if (defParam)
+			if (defParam.leng > 0)
 			{
-				defInfo->defineParam = Text::String::NewNotNull(defParam);
+				defInfo->defineParam = Text::String::New(defParam);
 			}
 			else
 			{
@@ -209,16 +209,16 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, const UTF8Char *de
 		}
 		else
 		{
-			if (defVal == 0 && defInfo->defineVal == 0)
+			if (defVal.leng == 0 && defInfo->defineVal == 0)
 			{
 				return true;
 			}
-			else if (defVal == 0 || defInfo->defineVal == 0)
+			else if (defVal.leng == 0 || defInfo->defineVal == 0)
 			{
 				return false;
 			}
 			Text::StringBuilderUTF8 sb;
-			sb.AppendSlow(defVal);
+			sb.Append(defVal);
 			sb.Trim();
 			return sb.Equals(defInfo->defineVal);
 		}
@@ -229,18 +229,18 @@ Bool Text::Cpp::CppParseStatus::AddDef(Text::CString defName, const UTF8Char *de
 		defInfo->defineName = Text::String::New(defName);
 		defInfo->fileName = fStatus->fileName;
 		defInfo->lineNum = fStatus->lineNum;
-		if (defVal)
+		if (defVal.leng > 0)
 		{
-			defInfo->defineVal = Text::String::NewNotNull(defVal);
+			defInfo->defineVal = Text::String::New(defVal);
 			defInfo->defineVal->Trim();
 		}
 		else
 		{
 			defInfo->defineVal = 0;
 		}
-		if (defParam)
+		if (defParam.leng > 0)
 		{
-			defInfo->defineParam = Text::String::NewNotNull(defParam);
+			defInfo->defineParam = Text::String::New(defParam);
 		}
 		else
 		{

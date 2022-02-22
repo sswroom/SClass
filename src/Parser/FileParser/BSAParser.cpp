@@ -47,6 +47,7 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 fileOfst;
 //	UInt32 nextOfst;
 	UTF8Char fileName[512];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".BSA")))
@@ -87,8 +88,8 @@ IO::ParsedObject *Parser::FileParser::BSAParser::ParseFile(IO::IStreamData *fd, 
 		else
 		{
 			UInt8 *buff = &recBuff[recCnt * 12 + ReadUInt32(&recBuff[j])];
-			enc.UTF8FromBytes(fileName, buff, Text::StrCharCnt(buff), 0);
-			pf->AddData(fd, fileOfst, fileSize, fileName, 0);
+			sptr = enc.UTF8FromBytes(fileName, buff, Text::StrCharCnt(buff), 0);
+			pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0);
 		}
 		i++;
 		j += 12;

@@ -72,7 +72,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientEvent(Net::TCPClient
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Client "));
 		sptr = cli->GetRemoteName(sptr);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(" disconnect"));
-		me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		me->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 		me->protoHdlr->DeleteStreamData(cli, data->cliData);
 		MemFree(data);
@@ -90,7 +90,7 @@ void __stdcall SSWR::AVIRead::AVIRJTT808ServerForm::OnClientData(Net::TCPClient 
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Received "));
 	sptr = Text::StrUOSInt(sptr, size);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
-	me->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	me->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 	MemCopyNO(&data->recvBuff[data->buffSize], buff, size);
 	data->buffSize += size;
@@ -201,7 +201,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 	sptr = Text::StrUOSInt(sptr, cmdSize);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(", devId = "));
 	sptr = Text::StrHexBytes(sptr, &cmd[5], 6, 0);
-	this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 	UOSInt contSize;
 	UOSInt i;
@@ -212,10 +212,10 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 	switch (cmdType)
 	{
 	case 2: //Keep Alive
-		this->log->LogMessageC(UTF8STRC("Cmd: Keep Alive"), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTR("Cmd: Keep Alive"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	case 3: //Logout
-		this->log->LogMessageC(UTF8STRC("Cmd: Device Logout"), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTR("Cmd: Device Logout"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	case 0x100: //Login
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Login County = "));
@@ -265,7 +265,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 			*sptr++ = c;
 		}
 		*sptr = 0;
-		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 
 
 		WriteMInt16(&tmpPacket[0], seqId);
@@ -280,7 +280,7 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		stm->Write(packet, i);
 		break;
 	case 0x102: //Authentication
-		this->log->LogMessageC(UTF8STRC("Cmd: Authentication"), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTR("Cmd: Authentication"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		WriteMInt16(&tmpPacket[0], seqId);
 		WriteMInt16(&tmpPacket[2], 0x102);
 		tmpPacket[4] = 0;
@@ -385,14 +385,14 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 			}
 			i += (UOSInt)packetContent[i + 1] + 2;
 		}
-		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	case 0x704:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Cmd: Batch Upload, Count = "));
 		sptr = Text::StrUInt32(sptr, ReadMUInt16(&packetContent[0]));
 		sptr = Text::StrConcatC(sptr, UTF8STRC(", Buffer Data = "));
 		sptr = Text::StrUInt16(sptr, packetContent[2]);
-		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 		j = 3;
 		//////////////////////////////////////
 		break;
@@ -402,11 +402,11 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataParsed(IO::Stream *stm, void *stmO
 		sptr = Text::StrHexByte(sptr, packetContent[0]);
 		sptr = Text::StrConcatC(sptr, UTF8STRC(", data = "));
 		sptr = Text::StrHexBytes(sptr, &packetContent[1], contSize - 1, ' ');
-		this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 
 	default:
-		this->log->LogMessageC(UTF8STRC("Cmd: Unknown"), IO::ILogHandler::LOG_LEVEL_ACTION);
+		this->log->LogMessage(CSTR("Cmd: Unknown"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		break;
 	}
 }
@@ -418,5 +418,5 @@ void SSWR::AVIRead::AVIRJTT808ServerForm::DataSkipped(IO::Stream *stm, void *stm
 	sptr = Text::StrConcatC(sbuff, UTF8STRC("Data skipped "));
 	sptr = Text::StrUOSInt(sptr, buffSize);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(" bytes"));
-	this->log->LogMessageC(sbuff, (UOSInt)(sptr - sbuff), IO::ILogHandler::LOG_LEVEL_ACTION);
+	this->log->LogMessage(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_LEVEL_ACTION);
 }

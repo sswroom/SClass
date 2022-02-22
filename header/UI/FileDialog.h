@@ -30,7 +30,7 @@ namespace UI
 		virtual void AddFilter(Text::CString pattern, Text::CString name);
 		UOSInt GetFilterIndex();
 
-		void SetFileName(const UTF8Char *fileName);
+		void SetFileName(Text::CString fileName);
 		Text::String *GetFileName();
 
 		UOSInt GetFileNameCount();

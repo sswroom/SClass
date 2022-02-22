@@ -131,7 +131,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Source: "));
 							sb.AppendW(bstr);
-							data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+							data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 							SysFreeString(bstr);
 						}
 
@@ -141,7 +141,7 @@ void DB::OLEDBConn::Init(const WChar *connStr)
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("Description: "));
 							sb.AppendW(bstr);
-							data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+							data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 							SysFreeString(bstr);
 						}
 						pIErrorInfoAll->Release();
@@ -353,7 +353,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteNonQuery: "));
 						sb.AppendW(bstr);
-						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();
@@ -431,7 +431,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteNonQuery: ");
 						sb.AppendW(bstr);
-						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();
@@ -613,7 +613,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteReader: "));
 						sb.AppendW(bstr);
-						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();
@@ -694,7 +694,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("ExecuteReader: ");
 						sb.AppendW(bstr);
-						data->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+						data->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 						SysFreeString(bstr);
 					}
 					pIErrorInfoAll->Release();

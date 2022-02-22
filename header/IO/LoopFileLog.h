@@ -3,6 +3,7 @@
 #include "IO/FileStream.h"
 #include "IO/LogTool.h"
 #include "Sync/Mutex.h"
+#include "Text/String.h"
 #include "Text/UTF8Writer.h"
 
 namespace IO
@@ -16,13 +17,13 @@ namespace IO
 		Int32 lastVal;
 		Text::UTF8Writer *log;
 		IO::FileStream *fileStm;
-		const UTF8Char *fileName;
+		Text::String *fileName;
 		const UTF8Char *extName;
 		Bool closed;
 
 		void SwapFiles();
 	public:
-		LoopFileLog(const UTF8Char *fileName, Int32 nFiles, LogType style);
+		LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style);
 		virtual ~LoopFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);

@@ -111,7 +111,7 @@ void __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnLogFileClicked(void *userObj
 	{
 		IO::Path::AppendPath(&sb, UTF8STRC("log/SMTP"));
 	}
-	me->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
+	me->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_COMMAND, "yyyy-MM-dd HH:mm:ss.fff", false);
 	me->btnLogFile->SetEnabled(false);
 }
 
@@ -153,7 +153,7 @@ UTF8Char *__stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailReceived(UTF8Char *
 	Int64 id = me->NextEmailId();
 	sb.AppendC(UTF8STRC(", id = "));
 	sb.AppendI64(id);
-	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 	Data::DateTime currTime;
 	EmailInfo *email;
@@ -210,7 +210,7 @@ Bool __stdcall SSWR::AVIRead::AVIRSMTPServerForm::OnMailLogin(void *userObj, Tex
 	sb.Append(userName);
 	sb.AppendC(UTF8STRC(", Pwd: "));
 	sb.Append(pwd);
-	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 	return true;
 }
 

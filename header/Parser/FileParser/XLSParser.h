@@ -34,7 +34,7 @@ namespace Parser
 
 			typedef struct
 			{
-				Data::ArrayList<const UTF8Char *> *sst;
+				Data::ArrayList<Text::String *> *sst;
 				Data::ArrayList<WorksheetStatus*> *wsList;
 				Data::ArrayList<FontInfo *> *fontList;
 				Data::Int32Map<Text::String *> *formatMap;

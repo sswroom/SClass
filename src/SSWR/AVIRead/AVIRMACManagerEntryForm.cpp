@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRMACManagerEntryForm::OnOKClicked(void *userObj
 			return;
 		}
 	}
-	me->name = Text::String::NewNotNull(sb.ToString());
+	me->name = Text::String::New(sb.ToCString());
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

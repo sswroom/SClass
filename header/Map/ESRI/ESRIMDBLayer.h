@@ -32,7 +32,7 @@ namespace Map
 
 			void Init(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *tableName);
 		public:
-			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, const UTF8Char *tableName);
+			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName);
 			ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName);
 			virtual ~ESRIMDBLayer();
 

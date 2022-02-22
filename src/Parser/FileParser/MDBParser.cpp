@@ -166,7 +166,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		i = shpTables->GetCount();
 		while (i-- > 0)
 		{
-			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables->GetItem(i)));
+			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), Text::CString::FromPtr(shpTables->GetItem(i))));
 			
 			if (csys)
 			{

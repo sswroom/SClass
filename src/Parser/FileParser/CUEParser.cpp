@@ -45,14 +45,15 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Media::MediaFile *mf = 0;
 	IO::StreamDataStream *stm;
 	IO::StreamReader *reader;
 	UOSInt currTrack;
 	UOSInt maxTrack = 0;
 	Text::String *fileName = 0;
-	const UTF8Char *artists[100];
-	const UTF8Char *titles[100];
+	Text::String *artists[100];
+	Text::String *titles[100];
 	UInt32 stmTime[100];
 	UInt32 lastTime;
 	UOSInt i;
@@ -76,23 +77,23 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		sptr = Text::StrTrimC(sbuff, (UOSInt)(sptr - sbuff));
 		if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PERFORMER ")))
 		{
-			ReadString(sbuff2, &sbuff[10]);
+			sptr2 = ReadString(sbuff2, &sbuff[10]);
 			if (artists[currTrack] != 0)
 			{
 				errorFound = true;
 				break;
 			}
-			artists[currTrack] = Text::StrCopyNew(sbuff2);
+			artists[currTrack] = Text::String::NewP(sbuff2, sptr2);
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("TITLE ")))
 		{
-			ReadString(sbuff2, &sbuff[6]);
+			sptr2 = ReadString(sbuff2, &sbuff[6]);
 			if (titles[currTrack] != 0)
 			{
 				errorFound = true;
 				break;
 			}
-			titles[currTrack] = Text::StrCopyNew(sbuff2);
+			titles[currTrack] = Text::String::NewP(sbuff2, sptr2);
 		}
 		else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE ")))
 		{
@@ -168,13 +169,13 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 					sptr = sbuff;
 					if (titles[i])
 					{
-						sptr = Text::StrConcat(sptr, titles[i]);
+						sptr = titles[i]->ConcatTo(sptr);
 					}
 					else
 					{
 						sptr = Text::StrInt32(Text::StrConcatC(sptr, UTF8STRC("Track ")), (Int32)i);
 					}
-					chapters->AddChapter(stmTime[i], sbuff, artists[i]?artists[i]:artists[0]);
+					chapters->AddChapter(stmTime[i], CSTRP(sbuff, sptr), artists[i]?artists[i]->ToCString():artists[0]->ToCString());
 
 					lastTime = stmTime[i];
 					i++;
@@ -191,8 +192,8 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 	i = 100;
 	while (i-- > 0)
 	{
-		SDEL_TEXT(artists[i]);
-		SDEL_TEXT(titles[i]);
+		SDEL_STRING(artists[i]);
+		SDEL_STRING(titles[i]);
 	}
 
 

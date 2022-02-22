@@ -30,7 +30,7 @@ namespace Media
 
 	public:
 		MonitorColorManager(Text::String *profileName);
-		MonitorColorManager(const UTF8Char *profileName);
+		MonitorColorManager(Text::CString profileName);
 		~MonitorColorManager();
 
 		Text::String *GetProfileName();

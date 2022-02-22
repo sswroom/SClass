@@ -47,14 +47,14 @@ namespace IO
 		void FreeDeviceInfo(DeviceInfo *deviceInfo);
 		void FreeDriverInfo(DriverInfo *driverInfo);
 	public:
-		SystemInfoLog(const UTF8Char *sourceName);
+		SystemInfoLog(Text::CString sourceName);
 		virtual ~SystemInfoLog();
 
 		virtual IO::ParserType GetParserType();
 
-		void SetOSName(const UTF8Char *osName);
+		void SetOSName(Text::CString osName);
 		Text::String *GetOSName();
-		void SetOSVer(const UTF8Char *osVer);
+		void SetOSVer(Text::CString osVer);
 		Text::String *GetOSVer();
 		void SetOSLocale(UInt32 osLocale);
 		UInt32 GetOSLocale();

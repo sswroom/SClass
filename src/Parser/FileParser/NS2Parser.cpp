@@ -43,6 +43,7 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, 
 	UInt64 fileOfst;
 	UInt32 fileSize;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 
@@ -84,9 +85,9 @@ IO::ParsedObject *Parser::FileParser::NS2Parser::ParseFile(IO::IStreamData *fd, 
 		}
 		if ((UInt32)i >= hdrSize - 4)
 			break;
-		enc.UTF8FromBytes(sbuff, &hdrBuff[j], i - j, 0);
+		sptr = enc.UTF8FromBytes(sbuff, &hdrBuff[j], i - j, 0);
 		fileSize = ReadUInt32(&hdrBuff[i + 1]);
-		pf->AddData(fd, fileOfst, fileSize, sbuff, 0);
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), 0);
 		fileOfst += fileSize;
 		i += 5;
 	}

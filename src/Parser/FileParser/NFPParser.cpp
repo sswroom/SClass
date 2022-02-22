@@ -49,6 +49,7 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	NFPFileInfo *fileInfo;
 	UTF8Char sbuff[13];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 64, hdr);
 	if (!Text::StrStartsWithC(hdr, 64, UTF8STRC("NFP2.0 (c)NOBORI 1997-2002")))
@@ -66,8 +67,8 @@ IO::ParsedObject *Parser::FileParser::NFPParser::ParseFile(IO::IStreamData *fd, 
 	i = 0;
 	while (i < fileCnt)
 	{
-		enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 12, 0);
-		pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].fileSize, sbuff, 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 12, 0);
+		pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].fileSize, CSTRP(sbuff, sptr), 0);
 		i++;
 	}
 	MemFree(fileInfo);

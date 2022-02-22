@@ -47,7 +47,7 @@ namespace SSWR
 			static void __stdcall OnStoreListClicked(void *userObj);
 			static void __stdcall OnDevicesDblClick(void *userObj, UOSInt index);
 			static void __stdcall OnTimerTick(void *userObj);
-			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, const Char *name);
+			static void __stdcall OnLEScanItem(void *userObj, UInt64 mac, Int32 rssi, Text::CString name);
 			void ClearDevices();
 		public:
 			AVIRBluetoothLEForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

@@ -127,15 +127,15 @@ namespace Text
 
 			Text::String *GetName();
 			Bool SetCellString(UOSInt row, UOSInt col, Text::String *val);
-			Bool SetCellString(UOSInt row, UOSInt col, const UTF8Char *val);
+			Bool SetCellString(UOSInt row, UOSInt col, Text::CString val);
 			Bool SetCellDate(UOSInt row, UOSInt col, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, Int32 val);
 			Bool SetCellStyle(UOSInt row, UOSInt col, CellStyle *style);
 			Bool SetCellURL(UOSInt row, UOSInt col, Text::String *url);
-			Bool SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url);
+			Bool SetCellURL(UOSInt row, UOSInt col, Text::CString url);
 			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::String *val);
-			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, const UTF8Char *val);
+			Bool SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CString val);
 			Bool SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val);
 			Bool SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val);
 			Bool SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val);

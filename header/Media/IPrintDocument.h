@@ -16,7 +16,7 @@ namespace Media
 		virtual ~IPrintDocument() {};
 
 		virtual void SetDocName(Text::String *docName) = 0;
-		virtual void SetDocName(const UTF8Char *docName) = 0;
+		virtual void SetDocName(Text::CString docName) = 0;
 		virtual void SetNextPagePaperSizeMM(Double width, Double height) = 0;
 		virtual void SetNextPageOrientation(PageOrientation po) = 0;
 		virtual void WaitForEnd() = 0;

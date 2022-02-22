@@ -17,7 +17,7 @@ void __stdcall SSWR::SHPConv::SHPConvValueFilterForm::OnOKClicked(void *userObj)
 	{
 		typ = 0;
 	}
-	NEW_CLASS(me->filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToString(), typ));
+	NEW_CLASS(me->filter, ValueFilter((UOSInt)me->cboCol->GetSelectedIndex(), sb.ToCString(), typ));
 	me->SetDialogResult(UI::GUIForm::DR_OK);
 }
 

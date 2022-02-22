@@ -5,13 +5,13 @@
 #include "IO/SDCardInfo.h"
 #include "Text/MyString.h"
 
-IO::SDCardInfo::SDCardInfo(const UTF8Char *name, const UInt8 *cid, const UInt8 *csd)
+IO::SDCardInfo::SDCardInfo(Text::CString name, const UInt8 *cid, const UInt8 *csd)
 {
 	UInt8 csdType = (UInt8)(csd[0] >> 6);
 	this->isEMMC = (csdType >= 2);
 	MemCopyNO(this->cid, cid, 16);
 	MemCopyNO(this->csd, csd, 16);
-	this->name = Text::String::NewNotNull(name);
+	this->name = Text::String::New(name);
 }
 
 IO::SDCardInfo::~SDCardInfo()

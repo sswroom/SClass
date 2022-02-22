@@ -230,7 +230,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
 	{
 		i = this->fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-		this->extName = Text::String::NewNotNull(&this->fileName->v[i + 1]);
+		this->extName = Text::String::New(this->fileName->ToCString().Substring(i + 1));
 	}
 	else
 	{
@@ -264,9 +264,9 @@ IO::MTFileLog::MTFileLog(Text::String *fileName, LogType style, LogGroup groupSt
 	this->Init(style, groupStyle, dateFormat);
 }
 
-IO::MTFileLog::MTFileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
+IO::MTFileLog::MTFileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->Init(style, groupStyle, dateFormat);
 }
 

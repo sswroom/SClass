@@ -510,10 +510,10 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	{
 		DVDVideoInfo *dvdVideo = MemAlloc(DVDVideoInfo, 1);
 		dvdVideo->videoId = this->db->GetLastIdentity32();
-		dvdVideo->anime = Text::String::NewNotNull(anime);
+		dvdVideo->anime = Text::String::NewNotNullSlow(anime);
 		if (series)
 		{
-			dvdVideo->series = Text::String::NewNotNull(series);
+			dvdVideo->series = Text::String::NewNotNullSlow(series);
 		}
 		else
 		{
@@ -521,13 +521,13 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 		}
 		if (volume)
 		{
-			dvdVideo->volume = Text::String::NewNotNull(volume);
+			dvdVideo->volume = Text::String::NewNotNullSlow(volume);
 		}
 		else
 		{
 			dvdVideo->volume = 0;
 		}
-		dvdVideo->dvdType = Text::String::NewNotNull(dvdType);
+		dvdVideo->dvdType = Text::String::NewNotNullSlow(dvdType);
 		this->dvdVideoMap->Put(dvdVideo->videoId, dvdVideo);
 		return dvdVideo->videoId;
 	}

@@ -134,7 +134,7 @@ void __stdcall SSWR::AVIRead::AVIRGSMModemForm::OnSMSSaveClick(void *userObj)
 		sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 		sptr = Text::StrUTF16_UTF8(sptr, smsMsg->GetAddress());
 		sptr = Text::StrConcatC(sptr, UTF8STRC(".sms"));
-		dlg->SetFileName(sbuff);
+		dlg->SetFileName(CSTRP(sbuff, sptr));
 
 		if (dlg->ShowDialog(me->GetHandle()))
 		{

@@ -167,6 +167,8 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 	UTF8Char sbuff[256];
 	UTF8Char lbuff[256];
 	UTF8Char tmpBuff[256];
+	UOSInt sbuffLen = 0;
+	UOSInt lbuffLen = 0;
 	const UTF8Char *sptr;
 	UTF8Char c;
 	Sync::MutexUsage mutUsage(this->cmdMut);
@@ -237,8 +239,8 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 										newOper = MemAlloc(Operator, 1);
 										newOper->status = (OperStatus)status;
 										newOper->plmn = plmn;
-										newOper->longName = Text::String::NewNotNull(lbuff);
-										newOper->shortName = Text::String::NewNotNull(sbuff);
+										newOper->longName = Text::String::New(lbuff, lbuffLen);
+										newOper->shortName = Text::String::New(sbuff, sbuffLen);
 										if (k == 4)
 										{
 											newOper->netact = Text::StrToInt32(tmpBuff);
@@ -273,12 +275,14 @@ Bool IO::GSMModemController::GSMGetAllowedOperators(Data::ArrayList<Operator*> *
 									else if (k == 1)
 									{
 										lbuff[l] = 0;
+										lbuffLen = 0;
 										k = 2;
 										l = 0;
 									}
 									else if (k == 2)
 									{
 										sbuff[l] = 0;
+										sbuffLen = l;
 										k = 3;
 										l = 0;
 									}
@@ -1066,7 +1070,7 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UTF8Char *sbuffs[5];
+	Text::PString sbuffs[5];
 	if (startEntry == endEntry)
 	{
 		sptr = Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("AT+CPBR=")), startEntry);
@@ -1093,13 +1097,13 @@ Bool IO::GSMModemController::PBReadEntries(Data::ArrayList<PBEntry*> *phoneList,
 				val = this->cmdResults->GetItem(i);
 				if (val->Equals(UTF8STRC("+CPBR: ")))
 				{
-					Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
-					if (Text::StrCSVSplit(sbuffs, 5, sbuff) >= 4)
+					sptr = Text::StrConcatC(sbuff, &val->v[7], val->leng - 7);
+					if (Text::StrCSVSplitP(sbuffs, 5, sbuff) >= 4)
 					{
 						ent = MemAlloc(PBEntry, 1);
-						ent->number = Text::String::NewNotNull((const UTF8Char*)sbuffs[1]);
-						ent->name = Text::String::NewNotNull((const UTF8Char*)sbuffs[3]);
-						ent->index = Text::StrToInt32(sbuffs[0]);
+						ent->number = Text::String::New(sbuffs[1].ToCString());
+						ent->name = Text::String::New(sbuffs[3].ToCString());
+						ent->index = Text::StrToInt32(sbuffs[0].v);
 						phoneList->Add(ent);
 					}
 				}

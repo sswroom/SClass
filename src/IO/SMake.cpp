@@ -197,6 +197,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			sb.Trim(1);
 			Bool valid = true;
 			sptr1 = sb.ToString() + 1;
+			sptr1End = sb.GetEndPtr();
 			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("?(")))
 			{
 				i = Text::StrIndexOfChar(sptr1, ')');
@@ -207,6 +208,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
 					sb2.Trim();
 					sptr1 = sb2.ToString();
+					sptr1End = sb2.GetEndPtr();
 					if ((i = Text::StrIndexOfC(sptr1, sb2.GetLength(), UTF8STRC(">="))) != INVALID_INDEX)
 					{
 						Text::StrTrimC(&sptr1[i + 2], sb2.GetLength() - i - 2);
@@ -270,7 +272,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			}
 			if (valid && prog)
 			{
-				prog->libs->Add(Text::String::NewNotNull(sptr1));
+				prog->libs->Add(Text::String::NewP(sptr1, sptr1End));
 			}
 		}
 		else if (sb.ToString()[0] == '$')
@@ -319,7 +321,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				}
 				else
 				{
-					prog->compileCfg = Text::String::NewNotNull(ccfg);
+					prog->compileCfg = Text::String::NewP(ccfg, ccfgEnd);
 				}
 			}
 		}
@@ -362,7 +364,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			else
 			{
 				cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-				cfg->name = Text::String::NewNotNull(sptr1);
+				cfg->name = Text::String::NewP(sptr1, sptr1End);
 				sb2.ClearStr();
 				AppendCfgItem(&sb2, sptr2, (UOSInt)(sptr2End - sptr2));
 				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
@@ -389,7 +391,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				else
 				{
 					cfg = MemAlloc(IO::SMake::ConfigItem, 1);
-					cfg->name = Text::String::NewNotNull(sptr1);
+					cfg->name = Text::String::NewP(sptr1, sptr1End);
 					sb2.ClearStr();
 					AppendCfgItem(&sb2, sptr2, (UOSInt)(sptr2End - sptr2));
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());

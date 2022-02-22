@@ -254,10 +254,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 	IO::StmData::FileData *fd;
 	DB::DBFFile *dbf;
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayListStrUTF8 names;
+	Data::ArrayListString names;
 	Int32 shpType = 0;
 	DB::DBReader *r;
-	const UTF8Char *s;
+	Text::String *s;
 
 	sb.Append(sourceFile);
 	i = sb.LastIndexOf('.');
@@ -272,10 +272,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		{
 			sb.ClearStr();
 			r->GetStr(groupCol, &sb);
-			si = names.SortedIndexOf(sb.ToString());
+			si = names.SortedIndexOfPtr(sb.ToString(), sb.GetLength());
 			if (si < 0)
 			{
-				names.Insert((UOSInt)~si, Text::StrCopyNew(sb.ToString()));
+				names.Insert((UOSInt)~si, Text::String::New(sb.ToCString()));
 			}
 		}
 		dbf->CloseReader(r);
@@ -293,14 +293,14 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		s = names.GetItem(i);
 
 		sb.ClearStr();
-		sb.AppendSlow(s);
+		sb.Append(s);
 		sb.Replace('/', ' ');
 		sb.Replace('&', ' ');
 		sb.Replace('-', ' ');
 		sb.ReplaceStr(UTF8STRC("  "), UTF8STRC(" "));
 		sb.Replace(' ', '_');
 
-		NEW_CLASS(filter, SSWR::SHPConv::ValueFilter(groupCol, s, 3));
+		NEW_CLASS(filter, SSWR::SHPConv::ValueFilter(groupCol, s->ToCString(), 3));
 		newFilters.Add(filter);
 		sb2.ClearStr();
 		sb2.AppendSlow(outFilePrefix);
@@ -313,6 +313,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		{
 			outNames->Add(Text::StrCopyNew(sb2.ToString()));
 		}
+		s->Release();
 	}
 	return shpType;
 }

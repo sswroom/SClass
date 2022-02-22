@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnLogSelChg(void *userObj)
 	txt->Release();
 }
 
-void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt32 ip, const UTF8Char *message)
+void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt32 ip, Text::CString message)
 {
 	SSWR::AVIRead::AVIRLogServerForm *me = (SSWR::AVIRead::AVIRLogServerForm*)userObj;
 	IPLog *ipLog;
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnClientLog(void *userObj, UInt
 	{
 		ipLog->logMessage->RemoveAt(0)->Release();
 	}
-	ipLog->logMessage->Add(Text::String::NewNotNull(message));
+	ipLog->logMessage->Add(Text::String::New(message));
 	if (me->currIP == ip)
 	{
 		me->msgListUpd = true;

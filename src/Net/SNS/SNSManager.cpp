@@ -15,7 +15,7 @@
 #include "Text/UTF8Writer.h"
 #include <stdio.h>
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId)
+Net::SNS::SNSControl *Net::SNS::SNSManager::CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
 {
 	Net::SNS::SNSControl *ctrl = 0;
 	if (type == Net::SNS::SNSControl::ST_TWITTER)
@@ -436,7 +436,7 @@ UInt32 __stdcall Net::SNS::SNSManager::ThreadProc(void *userObj)
 	return 0;
 }
 
-Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, const UTF8Char *dataPath)
+Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -452,9 +452,9 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	this->threadToStop = false;
 	NEW_CLASS(this->threadEvt, Sync::Event(true));
 
-	if (dataPath)
+	if (dataPath.leng > 0)
 	{
-		this->dataPath = Text::String::NewNotNull(dataPath);
+		this->dataPath = Text::String::New(dataPath);
 		sptr = this->dataPath->ConcatTo(sbuff);
 	}
 	else
@@ -494,7 +494,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 				{
 					if (sb.GetLength() > 0)
 					{
-						Net::SNS::SNSControl *ctrl = this->CreateControl(type, sb.ToString());
+						Net::SNS::SNSControl *ctrl = this->CreateControl(type, sb.ToCString());
 						if (ctrl)
 						{
 							Net::SNS::SNSManager::ChannelData *channel = this->ChannelInit(ctrl);
@@ -548,18 +548,17 @@ Net::SNS::SNSManager::~SNSManager()
 	DEL_CLASS(this->mut);
 }
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId)
+Net::SNS::SNSControl *Net::SNS::SNSManager::AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Net::SNS::SNSControl *ctrl;
-	UOSInt channelIdLen = Text::StrCharCnt(channelId);
 	UOSInt i = 0;
 	UOSInt j = this->channelList->GetCount();
 	while (i < j)
 	{
 		ctrl = this->channelList->GetItem(i)->ctrl;
-		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId, channelIdLen))
+		if (ctrl->GetSNSType() == type && ctrl->GetChannelId()->Equals(channelId.v, channelId.leng))
 		{
 			return 0;
 		}

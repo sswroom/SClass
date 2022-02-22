@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnSFileClicked(void *userObj)
 	me->txtSFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRLogExtractForm::OnOFileClicked(void *userObj)
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

@@ -35,7 +35,7 @@ IO::BTController::BTDevice::BTDevice(void *internalData, void *hRadio, void *dev
 	dev->name = 0;
 	if (hci_read_remote_name(dev->ctrlInfo->dd, (bdaddr_t *)dev->addr, 256, name, 2000) >= 0)
 	{
-		dev->name = Text::String::NewNotNull((const UTF8Char*)name);
+		dev->name = Text::String::NewNotNullSlow((const UTF8Char*)name);
 	}
 	else
 	{
@@ -182,9 +182,9 @@ UInt32 __stdcall IO::BTController::LEScanThread(void *userObj)
 					ainfo = (le_advertising_info *) (meta->data + 1);
 					if (me->leHdlr)
 					{
-						Char sbuff[64];
+						UTF8Char sbuff[64];
 						Int32 rssi = 0;
-						const Char *name = 0;
+						Text::CString name = CSTR_NULL;
 						UInt8 len = ainfo->length;
 						UInt8 eirSize;
 						OSInt ofst = 0;
@@ -198,15 +198,13 @@ UInt32 __stdcall IO::BTController::LEScanThread(void *userObj)
 							switch (ainfo->data[ofst + 1])
 							{
 							case 8: //EIR_NAME_SHORT
-								if (name == 0)
+								if (name.leng == 0)
 								{
-									name = sbuff;
-									Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1);
+									name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1));
 								}
 								break;
 							case 9: //EIR_NAME_COMPLETE
-								name = sbuff;
-								Text::StrConcatC(sbuff, (const Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1);
+								name = CSTRP(sbuff, Text::StrConcatC(sbuff, (const UTF8Char*)&ainfo->data[ofst + 2], (UOSInt)eirSize - 1));
 								break;
 							case 10: //EIR_TX_POWER
 								break;
@@ -262,7 +260,7 @@ IO::BTController::BTController(void *internalData, void *hand)
 	{
 		if (hci_read_local_name(info->dd, 256, name, 1000) >= 0)
 		{
-			this->name = Text::String::NewNotNull((const UTF8Char*)name);
+			this->name = Text::String::NewNotNullSlow((const UTF8Char*)name);
 		}
 		else
 		{

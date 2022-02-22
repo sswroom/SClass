@@ -43,19 +43,19 @@ namespace Net
 
 		void SetDefaults();
 		void SetVersion(Int32 version);
-		void SetUserName(const UTF8Char *userName);
-		void SetSessName(const UTF8Char *sessName);
-		void SetSessId(const UTF8Char *sessId);
-		void SetSessVer(const UTF8Char *sessVer);
-		void SetUserAddrType(const UTF8Char *userAddrType);
-		void SetUserAddrHost(const UTF8Char *userAddrHost);
+		void SetUserName(Text::CString userName);
+		void SetSessName(Text::CString sessName);
+		void SetSessId(Text::CString sessId);
+		void SetSessVer(Text::CString sessVer);
+		void SetUserAddrType(Text::CString userAddrType);
+		void SetUserAddrHost(Text::CString userAddrHost);
 		void SetStartTime(Int64 startTime);
 		void SetEndTime(Int64 endTime);
-		void SetSessTool(const UTF8Char *sessTool);
-		void SetSessType(const UTF8Char *sessType);
-		void SetSessCharset(const UTF8Char *sessCharset);
-		void SetSessControl(const UTF8Char *sessControl);
-		void SetReqUserAgent(const UTF8Char *userAgent);
+		void SetSessTool(Text::CString sessTool);
+		void SetSessType(Text::CString sessType);
+		void SetSessCharset(Text::CString sessCharset);
+		void SetSessControl(Text::CString sessControl);
+		void SetReqUserAgent(Text::CString userAgent);
 
 		void AddBuildMedia(Net::ISDPMedia *media);
 		Bool BuildBuff();

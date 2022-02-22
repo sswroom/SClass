@@ -41,7 +41,7 @@ namespace IO
 	public:
 		static Bool GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::ArrayList<SerialPortType> *portTypes);
 		static Text::CString GetPortTypeName(SerialPortType portType);
-		static UOSInt GetPortWithType(const UTF8Char *portName);
+		static UOSInt GetPortWithType(Text::CString portName);
 		static UOSInt GetUSBPort();
 		static UOSInt GetBTPort();
 		static UTF8Char *GetPortName(UTF8Char *buff, UOSInt portNum);

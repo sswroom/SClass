@@ -42,7 +42,7 @@ void __stdcall SSWR::AVIRead::AVIRFileAnalyseForm::OnTrimPaddingClicked(void *us
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"MPEGTrimPadding", true));
 	dlg->AddFilter(CSTR("*.mpg"), CSTR("MPEG System Stream"));
 	me->txtFile->GetText(&sb);
-	dlg->SetFileName(sb.ToString());
+	dlg->SetFileName(sb.ToCString());
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		if (me->file->TrimPadding(dlg->GetFileName()->ToCString()))

@@ -61,7 +61,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(": Updated procId as "));
 					sb.AppendUOSInt(prog->procId);
-					this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+					this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 					break;
 				}
 			}
@@ -257,7 +257,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 					sb.AppendC(UTF8STRC("Prog "));
 					sb.Append(prog->progName);
 					sb.AppendC(UTF8STRC(" stopped"));
-					me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+					me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 				}
 			}
 			if (prog->procId == 0)
@@ -273,7 +273,7 @@ void __stdcall SSWR::ProcMonForm::OnTimerTick(void *userObj)
 						sb.Append(prog->progName);
 						sb.AppendC(UTF8STRC(" restarted, procId = "));
 						sb.AppendUOSInt(prog->procId);
-						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 						
 						if (me->notifyCmd)
 						{
@@ -347,7 +347,7 @@ SSWR::ProcMonForm::ProcMonForm(UI::GUIClientControl *parent, UI::GUICore *ui) : 
 	sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb.AppendC(UTF8STRC("ProgLog"));
 	NEW_CLASS(this->log, IO::LogTool());
-	this->log->AddFileLog(sb.ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+	this->log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 	NEW_CLASS(this->logger, UI::ListBoxLogger(this, this->lbLog, 512, false));
 	this->log->AddLogHandler(this->logger, IO::ILogHandler::LOG_LEVEL_RAW);
 	NEW_CLASS(this->progList, Data::ArrayList<ProgInfo*>());

@@ -83,7 +83,7 @@ SSWR::OrganMgr::OrganEnvDB::OrganEnvDB() : OrganEnv()
 	{
 		this->cfgImgDirBase->v[i - 1] = 0;
 	}
-	log->AddFileLog((const UTF8Char*)"OrganMgr.log", IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, 0, false);
+	log->AddFileLog(CSTR("OrganMgr.log"), IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, 0, false);
 	if (cfgMySQLDB && cfgMySQLHost)
 	{
 		this->db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfgMySQLHost, cfgMySQLDB, Text::String::OrEmpty(cfgUID), Text::String::OrEmpty(cfgPassword), log, CSTR_NULL);
@@ -1537,7 +1537,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							if (Text::StrStartsWithICase(csptr2, csptr))
 							{
-								camera = Text::String::NewNotNull(csptr2);
+								camera = Text::String::NewNotNullSlow(csptr2);
 							}
 							else
 							{
@@ -1545,7 +1545,7 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 								sb.AppendSlow(csptr);
 								sb.AppendC(UTF8STRC(" "));
 								sb.AppendSlow(csptr2);
-								camera = Text::String::NewNotNull(sb.ToString());
+								camera = Text::String::New(sb.ToCString());
 							}
 						}
 						else if (csptr)

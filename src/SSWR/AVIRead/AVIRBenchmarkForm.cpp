@@ -240,7 +240,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		sb.AppendC(UTF8STRC("Benchmark_"));
 		me->txtPlatform->GetText(&sb);
 		sb.AppendC(UTF8STRC(".txt"));
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

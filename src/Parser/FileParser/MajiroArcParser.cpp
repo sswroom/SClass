@@ -55,6 +55,7 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData
 	UInt8 *fileNamePtr;
 	UInt8 *fileNamePtr2;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt32 i;
 	Text::Encoding enc(932);
 
@@ -77,8 +78,8 @@ IO::ParsedObject *Parser::FileParser::MajiroArcParser::ParseFile(IO::IStreamData
 	{
 		fileNamePtr2 = fileNamePtr;
 		while (*fileNamePtr2++);
-		enc.UTF8FromBytes(sbuff, fileNamePtr, (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
-		pf->AddData(fd, recBuff[i].recOfst, recBuff[i].recSize, sbuff, 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileNamePtr, (UOSInt)(fileNamePtr2 - fileNamePtr - 1), 0);
+		pf->AddData(fd, recBuff[i].recOfst, recBuff[i].recSize, CSTRP(sbuff, sptr), 0);
 
 		fileNamePtr = fileNamePtr2;
 		i++;

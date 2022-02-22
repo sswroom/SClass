@@ -145,7 +145,7 @@ namespace Map
 		void SetDefFontStyle(UOSInt fontStyle);
 
 		UOSInt AddLineStyle();
-		Bool SetLineStyleName(UOSInt index, const UTF8Char *name);
+		Bool SetLineStyleName(UOSInt index, Text::CString name);
 		UTF8Char *GetLineStyleName(UOSInt index, UTF8Char *buff);
 		Bool AddLineStyleLayer(UOSInt index, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
 		Bool ChgLineStyleLayer(UOSInt index, UOSInt layerId, UInt32 color, UOSInt thick, const UInt8 *pattern, UOSInt npattern);
@@ -156,8 +156,8 @@ namespace Map
 		UOSInt GetLineStyleLayerCnt(UOSInt index);
 
 		//-1 = error
-		UOSInt AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
-		Bool SetFontStyleName(UOSInt index, const UTF8Char *name);
+		UOSInt AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor); //-1 = fail
+		Bool SetFontStyleName(UOSInt index, Text::CString name);
 		UTF8Char *GetFontStyleName(UOSInt index, UTF8Char *buff);
 		Bool RemoveFontStyle(UOSInt index);
 		UOSInt GetFontStyleCount();
@@ -167,14 +167,14 @@ namespace Map
 		UOSInt AddLayer(GroupItem *group, Map::IMapDrawLayer *layer, Bool needRelease);
 		Bool ReplaceLayer(GroupItem *group, UOSInt index, Map::IMapDrawLayer *layer, Bool needRelease);
 		GroupItem *AddGroup(GroupItem *group, Text::String *subgroupName);
-		GroupItem *AddGroup(GroupItem *group, const UTF8Char *subgroupName);
+		GroupItem *AddGroup(GroupItem *group, Text::CString subgroupName);
 		void RemoveItem(GroupItem *group, UOSInt index);
 		void MoveItem(GroupItem *group, UOSInt fromIndex, UOSInt toIndex);
 		void MoveItem(GroupItem *fromGroup, UOSInt fromIndex, GroupItem *toGroup, UOSInt toIndex);
 		UOSInt GetItemCount(GroupItem *group);
 		MapItem *GetItem(GroupItem *group, UOSInt index);
 		Text::String *GetGroupName(GroupItem *group);
-		void SetGroupName(GroupItem *group, const UTF8Char *name);
+		void SetGroupName(GroupItem *group, Text::CString name);
 		void SetGroupHide(GroupItem *group, Bool isHide);
 		Bool GetGroupHide(GroupItem *group);
 		Bool GetLayerProp(LayerItem *setting, GroupItem *group, UOSInt index);

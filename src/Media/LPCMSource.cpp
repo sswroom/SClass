@@ -16,7 +16,7 @@ Media::LPCMSource::LPCMSource(Text::String *name)
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(const UTF8Char *name)
+Media::LPCMSource::LPCMSource(Text::CString name)
 {
 	this->format.Clear();
 	this->data = 0;
@@ -45,7 +45,7 @@ Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, M
 	this->readOfst = 0;
 }
 
-Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, const UTF8Char *name)
+Media::LPCMSource::LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name)
 {
 	this->format.FromAudioFormat(format);
 	this->data = fd->GetPartialData(ofst, length);

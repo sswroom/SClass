@@ -89,11 +89,12 @@ void __stdcall SSWR::AVIRead::AVIRGISFontEditForm::OKClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRGISFontEditForm *me = (SSWR::AVIRead::AVIRGISFontEditForm *)userObj;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (me->fontStyle < 0)
 		return;
-	if (me->txtStyleName->GetText(sbuff) && sbuff[0] != 0)
+	if ((sptr = me->txtStyleName->GetText(sbuff)) != 0 && sbuff[0] != 0)
 	{
-		me->env->SetFontStyleName(me->fontStyle, sbuff);
+		me->env->SetFontStyleName(me->fontStyle, CSTRP(sbuff, sptr));
 	}
 
 	me->env->ChgFontStyle(me->fontStyle, me->currFontName, me->currFontSizePt, me->isBold, me->currColor, me->currBuffSize, me->currBuffColor);

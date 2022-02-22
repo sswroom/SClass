@@ -120,7 +120,7 @@ namespace SSWR
 			virtual void OnMouseDown(OSInt scrollY, Int32 xPos, Int32 yPos, UI::GUIClientControl::MouseButton btn, KeyButton keys);
 			virtual void OnKeyDown(UInt32 keyCode);
 
-			void SetFolder(const UTF8Char *folderPath);
+			void SetFolder(Text::CString folderPath);
 			Text::String *GetFolder();
 			Bool SaveSetting();
 			void SetDispImageHandler(DispImageChanged hdlr, void *userObj);

@@ -22,7 +22,7 @@ namespace Net
 			Data::Int64Map<SNSItem *> *itemMap;
 
 		public:
-			SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, const UTF8Char *channelId);
+			SNS7gogo(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId);
 			virtual ~SNS7gogo();
 
 			virtual Bool IsError();

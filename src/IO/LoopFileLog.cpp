@@ -13,34 +13,35 @@ void IO::LoopFileLog::SwapFiles()
 	UTF8Char buff2[256];
 	Int32 i;
 	i = this->nFiles - 1;
-	Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
-	Text::StrConcatC(Text::StrConcat(buff2, this->fileName), UTF8STRC("0.tmp"));
+	Text::StrConcatC(Text::StrInt32(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
+	Text::StrConcatC(this->fileName->ConcatTo(buff2), UTF8STRC("0.tmp"));
 	IO::FileUtil::RenameFile(buff1, buff2);
 	while (i-- > 0)
 	{
-		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff1, this->fileName), i), UTF8STRC(".log"));
-		Text::StrConcatC(Text::StrInt32(Text::StrConcat(buff2, this->fileName), i + 1), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrInt32(this->fileName->ConcatTo(buff1), i), UTF8STRC(".log"));
+		Text::StrConcatC(Text::StrInt32(this->fileName->ConcatTo(buff2), i + 1), UTF8STRC(".log"));
 		IO::FileUtil::RenameFile(buff1, buff2);
 	}
-	Text::StrConcatC(Text::StrConcat(buff1, this->fileName), UTF8STRC("0.tmp"));
-	Text::StrConcatC(Text::StrConcat(buff2, this->fileName), UTF8STRC("0.log"));
+	Text::StrConcatC(this->fileName->ConcatTo(buff1), UTF8STRC("0.tmp"));
+	Text::StrConcatC(this->fileName->ConcatTo(buff2), UTF8STRC("0.log"));
 	IO::FileUtil::RenameFile(buff1, buff2);
 }
 
-IO::LoopFileLog::LoopFileLog(const UTF8Char *fileName, Int32 nFiles, LogType style)
+IO::LoopFileLog::LoopFileLog(Text::CString fileName, Int32 nFiles, LogType style)
 {
 	NEW_CLASS(mut, Sync::Mutex());
 	this->logStyle = style;
 	this->nFiles = nFiles;
 	this->closed = false;
+	this->extName = 0;
 
 	UTF8Char buff[256];
 	UTF8Char *sptr;
 
-	this->fileName = Text::StrCopyNew(fileName);
+	this->fileName = Text::String::New(fileName);
 	SwapFiles();
 
-	sptr = Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
+	sptr = Text::StrConcatC(fileName.ConcatTo(buff), UTF8STRC("0.log"));
 	NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(log, Text::UTF8Writer(fileStm));
 	log->WriteSignature();
@@ -71,8 +72,7 @@ IO::LoopFileLog::LoopFileLog(const UTF8Char *fileName, Int32 nFiles, LogType sty
 
 IO::LoopFileLog::~LoopFileLog()
 {
-	Text::StrDelNew(fileName);
-	fileName = 0;
+	SDEL_STRING(this->fileName);
 	if (this->extName)
 	{
 		Text::StrDelNew(this->extName);
@@ -147,7 +147,7 @@ void IO::LoopFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOS
 		DEL_CLASS(fileStm);
 
 		SwapFiles();
-		sptr = Text::StrConcatC(Text::StrConcat(buff, fileName), UTF8STRC("0.log"));
+		sptr = Text::StrConcatC(this->fileName->ConcatTo(buff), UTF8STRC("0.log"));
 
 		NEW_CLASS(fileStm, IO::FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(log, Text::UTF8Writer(fileStm));

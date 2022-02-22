@@ -24,7 +24,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnProtocolReceived(void *userOb
 	{
 		sb.AppendHexBuff(cmd, cmdSize, ' ', Text::LineBreakType::None);
 	}
-	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
 
 void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnDongleInfoClicked(void *userObj)

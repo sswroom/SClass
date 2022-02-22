@@ -25,7 +25,7 @@ void __stdcall Net::TCPBoardcastStream::ConnHandler(Socket *s, void *userObj)
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
-			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}
 		cli->Write(me->writeBuff, size);
 	}
@@ -59,7 +59,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.AppendP(sbuff, sptr);
 		sb.AppendC(UTF8STRC(" with "));
 		sb.AppendUOSInt(size);
-		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	Sync::MutexUsage mutUsage(me->readMut);
 	UOSInt readBuffSize = me->readBuffPtr2 - me->readBuffPtr1;
@@ -96,7 +96,7 @@ void __stdcall Net::TCPBoardcastStream::ClientData(Net::TCPClient *cli, void *us
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Recv readBuffPtr2 = "));
 		sb.AppendUOSInt(me->readBuffPtr2);
-		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 }
 
@@ -111,7 +111,7 @@ void __stdcall Net::TCPBoardcastStream::ClientTimeout(Net::TCPClient *cli, void 
 		sb.AppendC(UTF8STRC("Timeout processing "));
 		sptr = cli->GetRemoteName(sbuff);
 		sb.AppendP(sbuff, sptr);
-		me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 }
 
@@ -210,7 +210,7 @@ UOSInt Net::TCPBoardcastStream::Read(UInt8 *buff, UOSInt size)
 		sb.AppendC(UTF8STRC("TBS "));
 		sb.AppendUOSInt(size);
 		sb.AppendC(UTF8STRC(" bytes returned"));
-		this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+		this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	return size;
 }
@@ -241,7 +241,7 @@ UOSInt Net::TCPBoardcastStream::Write(const UInt8 *buff, UOSInt size)
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC(" with "));
 			sb.AppendUOSInt(size);
-			this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+			this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 		}
 
 		cliFound = true;

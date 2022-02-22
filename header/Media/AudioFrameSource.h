@@ -34,7 +34,7 @@ namespace Media
 		UInt64 totalSize;
 	public:
 		AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name);
-		AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name);
+		AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AudioFrameSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

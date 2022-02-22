@@ -38,6 +38,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt currOfst;
 	UInt8 buff[256];
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt8 *ptr;
 
 	fd->GetRealData(0, 256, buff);
@@ -98,6 +99,7 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currOfst, hdrSize, buff);
 		sbuff[0] = (UTF8Char)(0x41 + fileCnt);
 		sbuff[1] = 0;
+		sptr = &sbuff[1];
 		ptr = buff;
 		if (*ptr < hdrSize)
 		{
@@ -117,11 +119,11 @@ IO::ParsedObject *Parser::FileParser::MMSParser::ParseFile(IO::IStreamData *fd, 
 			if (*ptr == 0x85)
 			{
 				ptr++;
-				Text::StrConcat(sbuff, ptr);
+				sptr = Text::StrConcat(sbuff, ptr);
 			}
 		}
 		currOfst += hdrSize;
-		pf->AddData(fd, currOfst, dataSize, sbuff, 0);
+		pf->AddData(fd, currOfst, dataSize, CSTRP(sbuff, sptr), 0);
 		currOfst += dataSize;
 	}
 	return pf;

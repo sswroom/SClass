@@ -635,7 +635,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		}
 		Text::JSONString *s;
 		*jsonStrEndOut = endPtr;
-		NEW_CLASS(s, Text::JSONString(sb.ToString(), sb.GetLength()));
+		NEW_CLASS(s, Text::JSONString(sb.ToCString()));
 		return s;
 	}
 	else if (c == '-' || (c >= '0' && c <= '9'))
@@ -820,12 +820,7 @@ Text::JSONString::JSONString(Text::String *val)
 	this->val = SCOPY_STRING(val);
 }
 
-Text::JSONString::JSONString(const UTF8Char *val, UOSInt leng)
-{
-	this->val = Text::String::New(val, leng);
-}
-
-Text::JSONString::JSONString(const UTF8Char *val)
+Text::JSONString::JSONString(Text::CString val)
 {
 	this->val = Text::String::NewOrNull(val);
 }

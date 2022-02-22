@@ -9,7 +9,7 @@ namespace IO
 	class BTController
 	{
 	public:
-		typedef void (__stdcall *LEScanHandler)(void *userObj, UInt64 mac, Int32 rssi, const Char *name);
+		typedef void (__stdcall *LEScanHandler)(void *userObj, UInt64 mac, Int32 rssi, Text::CString name);
 
 		class BTDevice
 		{

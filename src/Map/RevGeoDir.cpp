@@ -4,7 +4,7 @@
 #include "IO/Path.h"
 #include "Map/RevGeoDir.h"
 
-Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *errWriter)
+Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errWriter)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -18,7 +18,7 @@ Map::RevGeoDir::RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *er
 	NEW_CLASS(mapSrchMgr, Map::MapSearchManager());
 	this->defLCID = defLCID;
 
-	sptr = Text::StrConcat(sbuff, cfgDir);
+	sptr = cfgDir.ConcatTo(sbuff);
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
 		*sptr++ = IO::Path::PATH_SEPERATOR;

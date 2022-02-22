@@ -31,15 +31,15 @@ namespace Net
 
 			virtual Text::String *GetNextURL(Net::WebServer::IWebRequest *req);
 		public:
-			HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *forwardURL, ForwardType fwdType);
+			HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType);
 		protected:
 			virtual ~HTTPForwardHandler();
 		public:
 			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
 
-			void AddForwardURL(const UTF8Char *url);
+			void AddForwardURL(Text::CString url);
 			void AddInjectHeader(Text::String *header);
-			void AddInjectHeader(const UTF8Char *header);
+			void AddInjectHeader(Text::CString header);
 
 			void HandleForwardRequest(ReqHandler reqHdlr, void *userObj);
 		};

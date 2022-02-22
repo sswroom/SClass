@@ -53,7 +53,7 @@ namespace Net
 		void SSDPServiceFree(SSDPService *svc);
 		void SSDPDeviceFree(SSDPDevice *dev);
 	public:
-		SSDPClient(Net::SocketFactory *sockf, const UTF8Char *userAgent);
+		SSDPClient(Net::SocketFactory *sockf, Text::CString userAgent);
 		~SSDPClient();
 
 		Bool IsError();

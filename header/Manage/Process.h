@@ -92,7 +92,7 @@ namespace Manage
 			UInt32 parentId;
 		} ProcessInfo;
 
-		static FindProcSess *FindProcess(const UTF8Char *processName);
+		static FindProcSess *FindProcess(Text::CString processName);
 		static FindProcSess *FindProcessW(const WChar *processName);
 		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);

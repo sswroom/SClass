@@ -41,7 +41,7 @@ namespace DB
 		void AppendTableName(DB::TableDef *table);
 		void AppendCol(const UTF8Char *val);
 		void AppendCol(const WChar *val);
-		void AppendTrim(const UTF8Char *val);
+		void AppendTrim(Text::CString val);
 
 		void Clear();
 		const UTF8Char *ToString();

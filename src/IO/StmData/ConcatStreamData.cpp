@@ -27,13 +27,13 @@ IO::StmData::ConcatStreamData::ConcatStreamData(Text::String *fileName)
 	this->dataLength = (UOSInt)-1;
 }
 
-IO::StmData::ConcatStreamData::ConcatStreamData(const UTF8Char *fileName)
+IO::StmData::ConcatStreamData::ConcatStreamData(Text::CString fileName)
 {
 	this->cdb = MemAlloc(CONCATDATABASE, 1);
 	NEW_CLASS(this->cdb->mut, Sync::Mutex());
 	NEW_CLASS(this->cdb->dataList, Data::ArrayList<IO::IStreamData*>());
 	NEW_CLASS(this->cdb->ofstList, Data::ArrayListUInt64());
-	this->cdb->fileName = Text::String::NewNotNull(fileName);
+	this->cdb->fileName = Text::String::New(fileName);
 	this->cdb->objectCnt = 1;
 	this->cdb->totalSize = 0;
 	this->dataOffset = 0;

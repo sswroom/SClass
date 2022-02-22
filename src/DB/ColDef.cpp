@@ -98,7 +98,7 @@ Bool DB::ColDef::GetDefVal(DB::SQLBuilder *sql)
 void DB::ColDef::SetColName(const UTF8Char *colName)
 {
 	SDEL_STRING(this->colName);
-	if (colName) this->colName = Text::String::NewOrNull(colName);
+	if (colName) this->colName = Text::String::NewOrNullSlow(colName);
 }
 
 void DB::ColDef::SetColName(Text::CString colName)
@@ -146,7 +146,7 @@ void DB::ColDef::SetAutoInc(Bool autoInc)
 void DB::ColDef::SetDefVal(const UTF8Char *defVal)
 {
 	SDEL_STRING(this->defVal);
-	if (defVal) this->defVal = Text::String::NewOrNull(defVal);
+	if (defVal) this->defVal = Text::String::NewOrNullSlow(defVal);
 }
 
 void DB::ColDef::SetDefVal(Text::String *defVal)
@@ -158,7 +158,7 @@ void DB::ColDef::SetDefVal(Text::String *defVal)
 void DB::ColDef::SetAttr(const UTF8Char *attr)
 {
 	SDEL_STRING(this->attr);
-	if (attr) this->attr = Text::String::NewOrNull(attr);
+	if (attr) this->attr = Text::String::NewOrNullSlow(attr);
 }
 
 void DB::ColDef::SetAttr(Text::String *attr)

@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRCameraControlForm::OnDownloadClicked(void *use
 		UI::FileDialog *dlg;
 		IO::CameraControl::FileInfo *file = (IO::CameraControl::FileInfo*)me->lvFiles->GetItem(selIndices.GetItem(0));
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"CameraControlFile", true));
-		dlg->SetFileName(file->fileName);
+		dlg->SetFileName(Text::CString::FromPtr(file->fileName));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Data::DateTime dt;

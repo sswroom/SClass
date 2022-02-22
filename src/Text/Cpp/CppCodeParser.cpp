@@ -1424,7 +1424,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				{
 					sptr[-1] = 0;
 					u8buff[0] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, (UOSInt)(sptr - wordStart - 1), status->GetCurrCodeFile());
+					sptr2 = this->env->GetIncludeFilePath(u8buff, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile());
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
@@ -1467,7 +1467,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				if (c == '>')
 				{
 					sptr[-1] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, wordStart, (UOSInt)(sptr - wordStart - 1), 0);
+					sptr2 = this->env->GetIncludeFilePath(u8buff, CSTRP(wordStart, sptr - 1), 0);
 					sptr[-1] = c;
 
 					if (u8buff[0] == 0)
@@ -1864,6 +1864,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 						else
 						{
 							UTF8Char *paramPtr = 0;
+							UTF8Char *paramPtrEnd = 0;
 							UTF8Char *tmpPtr = wordStart;
 							UTF8Char *wordEnd = 0;
 							Int32 mode = 0;
@@ -1876,16 +1877,33 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 								c = *tmpPtr++;
 								if (c == 0)
 								{
-									if (status->AddDef(CSTRP(wordStart, tmpPtr - 1), paramPtr, 0, fileStatus->lineNum))
+									if (paramPtr == 0)
 									{
-										fileStatus->modeStatus = 1;
+										if (status->AddDef(CSTRP(wordStart, tmpPtr - 1), CSTR_NULL, CSTR_NULL, fileStatus->lineNum))
+										{
+											fileStatus->modeStatus = 1;
+										}
+										else
+										{
+											parseStatus = false;
+											this->LogError(status, UTF8STRC("Define already exist"), errMsgs);
+											nextLine = true;
+											break;
+										}
 									}
 									else
 									{
-										parseStatus = false;
-										this->LogError(status, UTF8STRC("Define already exist"), errMsgs);
-										nextLine = true;
-										break;
+										if (status->AddDef(CSTRP(wordStart, wordEnd), CSTRP(paramPtr, tmpPtr - 1), CSTR_NULL, fileStatus->lineNum))
+										{
+											fileStatus->modeStatus = 1;
+										}
+										else
+										{
+											parseStatus = false;
+											this->LogError(status, UTF8STRC("Define already exist"), errMsgs);
+											nextLine = true;
+											break;
+										}
 									}
 									break;
 								}
@@ -1919,6 +1937,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 											else
 											{
 												tmpPtr[tmpI + 1] = 0;
+												paramPtrEnd = &tmpPtr[tmpI + 1];
 												break;
 											}
 										}
@@ -1949,7 +1968,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 									}
 									else if (mode == 2 || mode == 7)
 									{
-										if (status->AddDef(CSTRP(wordStart, wordEnd), paramPtr, &tmpPtr[-1], fileStatus->lineNum))
+										if (status->AddDef(CSTRP(wordStart, wordEnd), CSTRP(paramPtr, paramPtrEnd), Text::CString::FromPtr(&tmpPtr[-1]), fileStatus->lineNum))
 										{
 											fileStatus->modeStatus = 1;
 										}

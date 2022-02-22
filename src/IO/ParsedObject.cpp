@@ -9,7 +9,7 @@ IO::ParsedObject::ParsedObject(Text::String *sourceName)
 
 IO::ParsedObject::ParsedObject(const UTF8Char *sourceName)
 {
-	this->sourceName = Text::String::NewOrNull(sourceName);
+	this->sourceName = Text::String::NewOrNullSlow(sourceName);
 }
 
 IO::ParsedObject::ParsedObject(Text::CString sourceName)

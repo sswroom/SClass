@@ -163,10 +163,10 @@ Bool IO::BTDevLog::LoadFile(Text::CString fileName)
 			macBuff[6] = Text::StrHex2UInt8C(&sarr[0].v[12]);
 			macBuff[7] = Text::StrHex2UInt8C(&sarr[0].v[15]);
 			macInt = ReadMUInt64(macBuff);
-			const UTF8Char *name = sarr[1].v;
-			if (name[0] == 0)
+			Text::CString name = sarr[1].ToCString();
+			if (name.leng == 0)
 			{
-				name = 0;
+				name = CSTR_NULL;
 			}
 			IO::BTScanLog::RadioType radioType = IO::BTScanLog::RT_UNKNOWN;
 			IO::BTScanLog::AddressType addrType = IO::BTScanLog::AT_UNKNOWN;

@@ -76,7 +76,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 							NEW_CLASS(logGrp->fileNames, Data::ArrayList<Text::String*>());
 							logGrps.Put(sbuff2, logGrp);
 						}
-						logGrp->fileNames->Add(Text::String::NewNotNull(sbuff));
+						logGrp->fileNames->Add(Text::String::NewP(sbuff, filePathEnd));
 					}
 				}
 			}

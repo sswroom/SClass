@@ -47,6 +47,7 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 nextOfst;
 	UInt8 fnameBuff[256];
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".YKC")))
@@ -88,8 +89,8 @@ IO::ParsedObject *Parser::FileParser::YKCParser::ParseFile(IO::IStreamData *fd, 
 			return 0;
 		}
 		fd->GetRealData(fnameOfst, fnameSize, fnameBuff);
-		enc.UTF8FromBytes(fileName, fnameBuff, fnameSize, 0);
-		pf->AddData(fd, fileOfst, fileSize, fileName, 0);
+		sptr = enc.UTF8FromBytes(fileName, fnameBuff, fnameSize, 0);
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0);
 
 		nextOfst = fileOfst + fileSize;
 		i += 20;

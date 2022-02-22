@@ -164,7 +164,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 	Text::String *fmt;
 	readBuff = MemAlloc(UInt8, 1048576);
 	readBuffSize = 0;
-	NEW_CLASS(status.sst, Data::ArrayList<const UTF8Char*>());
+	NEW_CLASS(status.sst, Data::ArrayList<Text::String*>());
 	NEW_CLASS(status.wsList, Data::ArrayList<WorksheetStatus*>());
 	NEW_CLASS(status.fontList, Data::ArrayList<FontInfo*>());
 	NEW_CLASS(status.formatMap, Data::Int32Map<Text::String *>());
@@ -559,12 +559,12 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 									break;
 							}
 							j += k;
-							status.sst->Add(Text::StrCopyNew(sb->ToString()));
+							status.sst->Add(Text::String::New(sb->ToCString()));
 						}
 						else
 						{
 							j += k;
-							status.sst->Add(Text::StrCopyNew(sb->ToString()));
+							status.sst->Add(Text::String::New(sb->ToCString()));
 						}
 					}
 					j = 0;
@@ -735,7 +735,7 @@ Bool Parser::FileParser::XLSParser::ParseWorkbook(IO::IStreamData *fd, UInt64 of
 	i = status.sst->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(status.sst->GetItem(i));
+		status.sst->GetItem(i)->Release();
 	}
 	DEL_CLASS(status.sst);
 	i = status.fontList->GetCount();

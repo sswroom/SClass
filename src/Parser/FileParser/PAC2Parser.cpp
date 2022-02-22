@@ -38,6 +38,7 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 	UInt32 recCnt;
 	UInt32 dataOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	Int64 ofst;
@@ -92,8 +93,8 @@ IO::ParsedObject *Parser::FileParser::PAC2Parser::ParseFile(IO::IStreamData *fd,
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(fileName, &recBuff[j], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, fileName, 0);
+		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], fnameSize, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), 0);
 
 		nextOfst = fileOfst + fileSize;
 		if (nextOfst & 15)

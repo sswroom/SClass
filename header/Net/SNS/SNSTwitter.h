@@ -22,7 +22,7 @@ namespace Net
 			Data::Int64Map<SNSItem *> *itemMap;
 
 		public:
-			SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, const UTF8Char *channelId);
+			SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId);
 			virtual ~SNSTwitter();
 
 			virtual Bool IsError();

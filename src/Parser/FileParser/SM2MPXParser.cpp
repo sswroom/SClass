@@ -40,6 +40,7 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFile(IO::IStreamData *f
 
 	Text::Encoding enc(932);
 	UTF8Char name[13];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 32, hdr);
 	if (ReadUInt32(&hdr[0]) != 0x4D324D53 || ReadUInt32(&hdr[4]) != 0x30315850)
@@ -72,8 +73,8 @@ IO::ParsedObject *Parser::FileParser::SM2MPXParser::ParseFile(IO::IStreamData *f
 			return 0;
 		}
 
-		enc.UTF8FromBytes(name, rec, 12, 0);
-		pf->AddData(fd, thisOfst, thisSize, name, 0);
+		sptr = enc.UTF8FromBytes(name, rec, 12, 0);
+		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), 0);
 
 		lastOfst = thisOfst + thisSize;
 		hdrOfst += 20;

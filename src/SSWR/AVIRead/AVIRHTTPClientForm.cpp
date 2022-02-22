@@ -308,12 +308,13 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnSaveClicked(void *userObj)
 							if (j != INVALID_INDEX)
 							{
 								sarr[0].v[10 + j] = 0;
+								sarr[0].leng = j + 10;
 							}
-							dlg->SetFileName(&sarr[0].v[10]);
+							dlg->SetFileName(sarr[0].ToCString().Substring(10));
 						}
 						else
 						{
-							dlg->SetFileName(&sarr[0].v[9]);
+							dlg->SetFileName(sarr[0].ToCString().Substring(9));
 						}
 						break;
 					}
@@ -438,7 +439,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnFileSelectClicked(void *user
 		while (i < j)
 		{
 			fileName = dlg->GetFileNames(i);
-			me->fileList->Add(Text::String::NewNotNull(fileName));
+			me->fileList->Add(Text::String::NewNotNullSlow(fileName));
 			i++;
 		}
 		Text::StringBuilderUTF8 sb;
@@ -875,6 +876,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	UTF8Char *pathEnd;
 	Text::PString sarr[2];
 	UTF8Char *cookieValue;
+	UTF8Char *cookieValueEnd;
 	UOSInt cnt;
 	UOSInt i;
 	Bool secure = false;
@@ -887,6 +889,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	sb.Append(cookieStr);
 	cnt = Text::StrSplitTrimP(sarr, 2, sb, ';');
 	cookieValue = sarr[0].v;
+	cookieValueEnd = cookieValue + sarr[0].leng;
 	i = Text::StrIndexOfCharC(cookieValue, sarr[0].leng, '=');
 	if (i == INVALID_INDEX)
 	{
@@ -932,11 +935,11 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 				UOSInt len2 = sarr[0].leng - 7;
 				if (len1 > len2 && len2 > 0 && domain[len1 - len2 - 1] == '.' && Text::StrEquals(&domain[len1 - len2], &sarr[0].v[7]))
 				{
-					Text::StrConcatC(domain, &sarr[0].v[7], len2);
+					domainEnd = Text::StrConcatC(domain, &sarr[0].v[7], len2);
 				}
 				else if (len1 + 1 == len2 && sarr[0].v[7] == '.' && Text::StrEqualsC(domain, len1, &sarr[0].v[8], len2 - 1))
 				{
-					Text::StrConcatC(domain, &sarr[0].v[7], len2);
+					domainEnd = Text::StrConcatC(domain, &sarr[0].v[7], len2);
 				}
 				else
 				{
@@ -958,7 +961,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		while (j-- > 0)
 		{
 			cookie = this->cookieList->GetItem(j);
-			eq = Text::StrEquals(cookie->domain->v, domain) && cookie->secure == secure && cookie->name->Equals(cookieName);
+			eq = cookie->domain->Equals(domain, (UOSInt)(domainEnd - domain)) && cookie->secure == secure && cookie->name->Equals(cookieName);
 			if (cookie->path == 0)
 			{
 				eq = eq && (path[0] == 0);
@@ -971,14 +974,14 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 			{
 				Sync::MutexUsage mutUsage(this->cookieMut);
 				SDEL_STRING(cookie->value);
-				cookie->value  = Text::String::NewNotNull(&cookieValue[i + 1]);
+				cookie->value  = Text::String::NewP(&cookieValue[i + 1], cookieValueEnd);
 				mutUsage.EndUse();
 				cookieName->Release();
 				return cookie;
 			}
 		}
 		cookie = MemAlloc(SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie, 1);
-		cookie->domain = Text::String::NewNotNull(domain);
+		cookie->domain = Text::String::NewP(domain, domainEnd);
 		if (path[0])
 		{
 			cookie->path = Text::String::New(path, (UOSInt)(pathEnd - path));
@@ -990,7 +993,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		cookie->secure = secure;
 		cookie->expireTime = expiryTime;
 		cookie->name = cookieName;
-		cookie->value = Text::String::NewNotNull(&cookieValue[i + 1]);
+		cookie->value = Text::String::NewP(&cookieValue[i + 1], cookieValueEnd);
 		Sync::MutexUsage mutUsage(this->cookieMut);
 		this->cookieList->Add(cookie);
 		mutUsage.EndUse();

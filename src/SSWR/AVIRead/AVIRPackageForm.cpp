@@ -640,7 +640,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PASTE:
 		{
 			Win32::Clipboard clipboard(this->hwnd);
-			Data::ArrayList<const UTF8Char *> fileNames;
+			Data::ArrayList<Text::String *> fileNames;
 			Win32::Clipboard::FilePasteType fpt;
 			UOSInt i;
 			UOSInt j;
@@ -652,7 +652,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				j = fileNames.GetCount();
 				while (i < j)
 				{
-					this->fileNames->Add(Text::String::NewNotNull(fileNames.GetItem(i)));
+					this->fileNames->Add(fileNames.GetItem(i)->Clone());
 					this->fileAction->Add(AT_MOVE);
 					i++;
 				}
@@ -667,7 +667,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				j = fileNames.GetCount();
 				while (i < j)
 				{
-					this->fileNames->Add(Text::String::NewNotNull(fileNames.GetItem(i)));
+					this->fileNames->Add(fileNames.GetItem(i)->Clone());
 					this->fileAction->Add(AT_COPY);
 					i++;
 				}

@@ -1396,8 +1396,9 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 					if (i != INVALID_INDEX)
 					{
 						sptr[i] = 0;
+						sptr2 = &sptr[i];
 					}
-					package->fileName = Text::String::NewNotNull(sptr);
+					package->fileName = Text::String::NewP(sptr, sptr2);
 					this->packageMap->Put(package->fileName, package);
 				}
 			}

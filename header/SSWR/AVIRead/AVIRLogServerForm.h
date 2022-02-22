@@ -46,7 +46,7 @@ namespace SSWR
 			static void __stdcall OnStartClick(void *userObj);
 			static void __stdcall OnClientSelChg(void *userObj);
 			static void __stdcall OnLogSelChg(void *userObj);
-			static void __stdcall OnClientLog(void *userObj, UInt32 ip, const UTF8Char *message);
+			static void __stdcall OnClientLog(void *userObj, UInt32 ip, Text::CString message);
 			static void __stdcall OnTimerTick(void *userObj);
 		public:
 			AVIRLogServerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);

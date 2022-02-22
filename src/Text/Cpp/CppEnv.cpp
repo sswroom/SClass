@@ -158,15 +158,15 @@ Text::Cpp::CppEnv::CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg)
 			Text::String *inclDir = cfg->GetValue(CSTR("AdditionalIncludeDirectories"));
 			if (inclDir)
 			{
-				UTF8Char *sarr[2];
+				Text::PString sarr[2];
 				UOSInt cnt;
 				Text::StringBuilderUTF8 sb;
 				sb.Append(inclDir);
-				sarr[1] = sb.ToString();
+				sarr[1] = sb;
 				while (true)
 				{
-					cnt = Text::StrSplit(sarr, 2, sarr[1], ';');
-					AddIncludePath(sarr[0]);
+					cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
+					AddIncludePath(sarr[0].ToCString());
 					if (cnt <= 1)
 						break;
 				}
@@ -187,26 +187,26 @@ Text::Cpp::CppEnv::~CppEnv()
 	SDEL_STRING(this->baseFile);
 }
 
-void Text::Cpp::CppEnv::AddIncludePath(const UTF8Char *includePath)
+void Text::Cpp::CppEnv::AddIncludePath(Text::CString includePath)
 {
-	this->includePaths->Add(Text::String::NewNotNull(includePath));
+	this->includePaths->Add(Text::String::New(includePath));
 }
 
-UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, UOSInt includeFileLen, Text::String *sourceFile)
+UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile)
 {
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
 	UOSInt j;
-	if (Text::StrIndexOfC(includeFile, includeFileLen, UTF8STRC("opengl.hpp")) != INVALID_INDEX)
+/*	if (includeFile.IndexOf(UTF8STRC("opengl.hpp")) != INVALID_INDEX)
 	{
 		i = 0;
-	}
+	}*/
 	if (sourceFile)
 	{
 		sptr = sourceFile->ConcatTo(buff);
 		i = Text::StrLastIndexOfCharC(buff, (UOSInt)(sptr - buff), IO::Path::PATH_SEPERATOR);
-		sptr2 = Text::StrConcatC(&buff[i + 1], includeFile, includeFileLen);
+		sptr2 = includeFile.ConcatTo(&buff[i + 1]);
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)
 			return sptr2;
 	}
@@ -226,7 +226,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, const UTF8Char *
 			sptr = this->includePaths->GetItem(i)->ConcatTo(buff);
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr2 = Text::StrConcatC(sptr, includeFile, includeFileLen);
+		sptr2 = includeFile.ConcatTo(sptr);
 		if (IO::Path::PATH_SEPERATOR != '/')
 			Text::StrReplace(sptr, '/', IO::Path::PATH_SEPERATOR);
 		if (IO::Path::GetPathType(CSTRP(buff, sptr2)) == IO::Path::PathType::File)

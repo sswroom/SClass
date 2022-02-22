@@ -92,7 +92,7 @@ void UtilUI::TextViewerForm::EventMenuClicked(UInt16 cmdId)
 		fileName = this->txtView->GetFileName();
 		if (fileName)
 		{
-			dlg->SetFileName(fileName->v);
+			dlg->SetFileName(fileName->ToCString());
 		}
 		if (dlg->ShowDialog(this->GetHandle()))
 		{

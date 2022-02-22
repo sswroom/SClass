@@ -29,7 +29,7 @@ void IO::SystemInfoLog::FreeDriverInfo(DriverInfo *driverInfo)
 	MemFree(driverInfo);
 }
 
-IO::SystemInfoLog::SystemInfoLog(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
+IO::SystemInfoLog::SystemInfoLog(Text::CString sourceName) : IO::ParsedObject(sourceName)
 {
 	this->osName = 0;
 	this->osVer = 0;
@@ -58,7 +58,7 @@ IO::ParserType IO::SystemInfoLog::GetParserType()
 	return ParserType::SystemInfoLog;
 }
 
-void IO::SystemInfoLog::SetOSName(const UTF8Char *osName)
+void IO::SystemInfoLog::SetOSName(Text::CString osName)
 {
 	SDEL_STRING(this->osName);
 	this->osName = Text::String::NewOrNull(osName);
@@ -69,7 +69,7 @@ Text::String *IO::SystemInfoLog::GetOSName()
 	return this->osName;
 }
 
-void IO::SystemInfoLog::SetOSVer(const UTF8Char *osVer)
+void IO::SystemInfoLog::SetOSVer(Text::CString osVer)
 {
 	SDEL_STRING(this->osVer);
 	this->osVer = Text::String::NewOrNull(osVer);
@@ -126,10 +126,10 @@ Data::ArrayList<IO::SystemInfoLog::ServerRole*> *IO::SystemInfoLog::GetServerRol
 void IO::SystemInfoLog::AddDeviceInfo(const UTF8Char *desc, const UTF8Char *hwId, const UTF8Char *service, const UTF8Char *driver)
 {
 	DeviceInfo *dev = MemAlloc(DeviceInfo, 1);
-	dev->desc = Text::String::NewOrNull(desc);
-	dev->hwId = Text::String::NewOrNull(hwId);
-	dev->service = Text::String::NewOrNull(service);
-	dev->driver = Text::String::NewOrNull(driver);
+	dev->desc = Text::String::NewOrNullSlow(desc);
+	dev->hwId = Text::String::NewOrNullSlow(hwId);
+	dev->service = Text::String::NewOrNullSlow(service);
+	dev->driver = Text::String::NewOrNullSlow(driver);
 	this->deviceInfos->Add(dev);
 }
 
@@ -141,13 +141,13 @@ Data::ArrayList<IO::SystemInfoLog::DeviceInfo*> *IO::SystemInfoLog::GetDeviceInf
 void IO::SystemInfoLog::AddDriverInfo(const UTF8Char *fileName, UInt64 fileSize, const UTF8Char *creationDate, const UTF8Char *version, const UTF8Char *manufacturer, const UTF8Char *productName, const UTF8Char *group, UInt32 altitude)
 {
 	DriverInfo *driver = MemAlloc(DriverInfo, 1);
-	driver->fileName = Text::String::NewOrNull(fileName);
+	driver->fileName = Text::String::NewOrNullSlow(fileName);
 	driver->fileSize = fileSize;
-	driver->creationDate = Text::String::NewOrNull(creationDate);
-	driver->version = Text::String::NewOrNull(version);
-	driver->manufacturer = Text::String::NewOrNull(manufacturer);
-	driver->productName = Text::String::NewOrNull(productName);
-	driver->group = Text::String::NewOrNull(group);
+	driver->creationDate = Text::String::NewOrNullSlow(creationDate);
+	driver->version = Text::String::NewOrNullSlow(version);
+	driver->manufacturer = Text::String::NewOrNullSlow(manufacturer);
+	driver->productName = Text::String::NewOrNullSlow(productName);
+	driver->group = Text::String::NewOrNullSlow(group);
 	driver->altitude = altitude;
 	this->driverInfos->Add(driver);
 }

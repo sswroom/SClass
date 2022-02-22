@@ -250,7 +250,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 
 					if (id != 0)
 					{
-						Text::String *s = Text::String::NewNotNull(desc);
+						Text::String *s = Text::String::NewNotNullSlow(desc);
 						if (me->core->FileAdd(id, webType, s))
 						{
 							Sync::MutexUsage mutUsage;

@@ -46,6 +46,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 	Int32 j;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
@@ -93,10 +94,10 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 			*filePtr = (UInt8)(*filePtr - b);
 			b++;
 		}
-		enc.UTF8FromBytes(fileName, &recBuff[j], Text::StrCharCnt(&recBuff[j]), 0);
+		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], Text::StrCharCnt(&recBuff[j]), 0);
 		if (recSize == decSize)
 		{
-			pf->AddData(fd, recOfst, recSize, fileName, 0);
+			pf->AddData(fd, recOfst, recSize, CSTRP(fileName, sptr), 0);
 		}
 		else
 		{
@@ -106,7 +107,7 @@ IO::ParsedObject *Parser::FileParser::TsuyoshiArcParser::ParseFile(IO::IStreamDa
 			compInfo.compFlags = 0;
 			compInfo.compMethod = Data::Compress::Decompressor::CM_DEFLATE;
 			compInfo.decSize = decSize;
-			pf->AddCompData(fd, recOfst, recSize, &compInfo, fileName, 0);
+			pf->AddCompData(fd, recOfst, recSize, &compInfo, CSTRP(fileName, sptr), 0);
 		}
 
 		nextOfst = recOfst + recSize;

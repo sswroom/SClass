@@ -1025,10 +1025,11 @@ Bool Map::MapLayerReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 Text::String *Map::MapLayerReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	if (colIndex <= 0)
 		return 0;
-	this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	return Text::String::NewNotNull(sbuff);
+	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
+	return Text::String::NewP(sbuff, sptr);
 }
 
 UTF8Char *Map::MapLayerReader::GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize)

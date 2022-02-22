@@ -279,9 +279,10 @@ Bool Math::TSPReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 Text::String *Math::TSPReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
+	UTF8Char *sptr;
+	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewNotNull(sbuff);
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }
@@ -638,9 +639,10 @@ Bool Math::TSPHReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 Text::String *Math::TSPHReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
-	if (GetStr(colIndex, sbuff, sizeof(sbuff)))
+	UTF8Char *sptr;
+	if ((sptr = GetStr(colIndex, sbuff, sizeof(sbuff))) != 0)
 	{
-		return Text::String::NewNotNull(sbuff);
+		return Text::String::NewP(sbuff, sptr);
 	}
 	return 0;
 }

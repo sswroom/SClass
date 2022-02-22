@@ -350,14 +350,14 @@ Text::CString Net::HTTPData::GetShortName()
 	return fdh->fileName;
 }
 
-void Net::HTTPData::SetFullName(const UTF8Char *fullName)
+void Net::HTTPData::SetFullName(Text::CString fullName)
 {
-	if (fdh == 0 || fullName == 0)
+	if (fdh == 0 || fullName.leng == 0)
 		return;
 	UOSInt i;
 	Sync::MutexUsage mutUsage(fdh->mut);
 	SDEL_STRING(fdh->url);
-	fdh->url = Text::String::NewNotNull(fullName);
+	fdh->url = Text::String::New(fullName);
 	i = fdh->url->LastIndexOf('/');
 	if (i != INVALID_INDEX)
 	{

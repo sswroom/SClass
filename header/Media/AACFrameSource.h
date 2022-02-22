@@ -10,7 +10,7 @@ namespace Media
 	{
 	public:
 		AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::String *name);
-		AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name);
+		AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::CString name);
 		virtual ~AACFrameSource();
 
 		virtual UOSInt ReadBlock(UInt8 *buff, UOSInt blkSize); //ret actual block size

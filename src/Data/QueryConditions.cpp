@@ -514,7 +514,7 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 
 Data::QueryConditions::StringContainsCondition::StringContainsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val) : FieldCondition(fieldName, nameLen)
 {
-	this->val = Text::String::NewNotNull(val);
+	this->val = Text::String::NewNotNullSlow(val);
 }
 
 Data::QueryConditions::StringContainsCondition::~StringContainsCondition()

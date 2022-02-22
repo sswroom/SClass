@@ -38,6 +38,7 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, 
 	UInt32 hdr[3];
 	OSInt buffOfst;
 	UTF8Char name[49];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 12, (UInt8*)hdr);
 	if (hdr[0] != 0x4B434150 || (hdr[1] + hdr[2]) != fd->GetDataSize() || (hdr[2] & 63) != 0)
@@ -52,8 +53,8 @@ IO::ParsedObject *Parser::FileParser::X13Parser::ParseFile(IO::IStreamData *fd, 
 	buffOfst = 0;
 	while (buffOfst < (OSInt)hdr[2])
 	{
-		enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
-		pf->AddData(fd, *(UInt32*)&recHdrs[buffOfst + 56], *(UInt32*)&recHdrs[buffOfst + 60], name, 0);
+		sptr = enc.UTF8FromBytes(name, &recHdrs[buffOfst], 48, 0);
+		pf->AddData(fd, *(UInt32*)&recHdrs[buffOfst + 56], *(UInt32*)&recHdrs[buffOfst + 60], CSTRP(name, sptr), 0);
 		buffOfst += 64;
 	}
 	MemFree(recHdrs);

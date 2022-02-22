@@ -68,7 +68,7 @@ namespace Media
 
 		void ProcessFile(Text::CString fileName);
 		Bool SaveProfile(Text::CString fileName);
-		Bool LoadProfile(const UTF8Char *fileName);
+		Bool LoadProfile(Text::CString fileName);
 	};
 }
 #endif

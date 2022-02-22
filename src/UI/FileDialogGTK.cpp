@@ -75,10 +75,10 @@ UOSInt UI::FileDialog::GetFilterIndex()
 	return this->filterIndex;
 }
 
-void UI::FileDialog::SetFileName(const UTF8Char *fileName)
+void UI::FileDialog::SetFileName(Text::CString fileName)
 {
 	SDEL_STRING(this->fileName);
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 }
 
 Text::String *UI::FileDialog::GetFileName()
@@ -452,7 +452,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		{
 			char *csptr = gtk_file_chooser_get_filename(chooser);
 			Text::StrUTF8_WChar(fnameBuff, (const UTF8Char*)csptr, 0);
-			this->fileName = Text::String::NewNotNull((const UTF8Char*)csptr);
+			this->fileName = Text::String::NewNotNullSlow((const UTF8Char*)csptr);
 			g_free(csptr);
 		}
 

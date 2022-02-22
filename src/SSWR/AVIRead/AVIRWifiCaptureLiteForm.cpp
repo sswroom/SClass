@@ -114,7 +114,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 						wifiLog->model = SCOPY_STRING(s);
 						s = bss->GetSN();
 						wifiLog->serialNum = SCOPY_STRING(s);
-						wifiLog->country = Text::String::NewOrNull(bss->GetCountry());
+						wifiLog->country = Text::String::NewOrNullSlow(bss->GetCountry());
 						wifiLog->ouis[0][0] = oui1[0];
 						wifiLog->ouis[0][1] = oui1[1];
 						wifiLog->ouis[0][2] = oui1[2];
@@ -201,7 +201,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnTimerTick(void *userObj
 							}
 							if (wifiLog->country == 0 && bss->GetCountry())
 							{
-								wifiLog->country = Text::String::NewNotNull(bss->GetCountry());
+								wifiLog->country = Text::String::NewNotNullSlow(bss->GetCountry());
 								me->lvLogWifi->SetSubItem((UOSInt)sk, 8, wifiLog->country);
 							}
 						}

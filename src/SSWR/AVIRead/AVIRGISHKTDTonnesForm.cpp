@@ -17,7 +17,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnRoadRouteClicked(void *us
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesRoadRoute", false));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);
@@ -37,7 +37,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTDTonnesForm::OnVehicleResClicked(void *u
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTDTonnesVehicleRes", false));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);

@@ -2,16 +2,17 @@
 #include "Net/SNS/SNSTwitter.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, const UTF8Char *channelId)
+Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::String *userAgent, Text::CString channelId)
 {
 	NEW_CLASS(this->ctrl, Net::WebSite::WebSiteTwitterControl(sockf, ssl, encFact, userAgent));
-	this->channelId = Text::String::NewNotNull(channelId);
+	this->channelId = Text::String::New(channelId);
 	this->chName = 0;
 	this->chDesc = 0;
 	this->chError = false;
 	NEW_CLASS(this->itemMap, Data::Int64Map<SNSItem*>());
 
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SNSItem *snsItem;
 	Net::WebSite::WebSiteTwitterControl::ItemData *item;
 	Net::WebSite::WebSiteTwitterControl::ChannelInfo chInfo;
@@ -36,13 +37,13 @@ Net::SNS::SNSTwitter::SNSTwitter(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	while (i-- > 0)
 	{
 		item = itemList.GetItem(i);
-		Text::StrInt64(sbuff, item->id);
+		sptr = Text::StrInt64(sbuff, item->id);
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("https://twitter.com/"));
 		sb.Append(this->channelId);
 		sb.AppendC(UTF8STRC("/status/"));
 		sb.AppendI64(item->id);
-		Text::String *s = Text::String::NewNotNull(sbuff);
+		Text::String *s = Text::String::NewP(sbuff, sptr);
 		Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
 		snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 		s->Release();
@@ -114,6 +115,7 @@ Int32 Net::SNS::SNSTwitter::GetMinIntevalMS()
 Bool Net::SNS::SNSTwitter::Reload()
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	SNSItem *snsItem;
 	OSInt si;
 	Net::WebSite::WebSiteTwitterControl::ItemData *item;
@@ -137,13 +139,13 @@ Bool Net::SNS::SNSTwitter::Reload()
 			}
 			else
 			{
-				Text::StrInt64(sbuff, item->id);
+				sptr = Text::StrInt64(sbuff, item->id);
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("https://twitter.com/"));
 				sb.Append(this->channelId);
 				sb.AppendC(UTF8STRC("/status/"));
 				sb.AppendI64(item->id);
-				Text::String *s = Text::String::NewNotNull(sbuff);
+				Text::String *s = Text::String::NewP(sbuff, sptr);
 				Text::String *s2 = Text::String::New(sb.ToString(), sb.GetLength());
 				snsItem = CreateItem(s, item->recTime, 0, item->message, s2, item->imgURL, 0);
 				s->Release();

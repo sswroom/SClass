@@ -20,9 +20,9 @@ DB::CSVFile::CSVFile(Text::String *fileName, UInt32 codePage) : DB::ReadingDB(fi
 	this->nullIfEmpty = false;
 }
 
-DB::CSVFile::CSVFile(const UTF8Char *fileName, UInt32 codePage) : DB::ReadingDB(fileName)
+DB::CSVFile::CSVFile(Text::CString fileName, UInt32 codePage) : DB::ReadingDB(fileName)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 	this->stm = 0;
 	this->codePage = codePage;
 	this->noHeader = false;
@@ -788,7 +788,7 @@ Bool DB::CSVReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	}
 	else
 	{
-		item->SetStr(ptr);
+		item->SetStrSlow(ptr);
 		return true;
 	}	
 }

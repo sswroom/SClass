@@ -67,7 +67,7 @@ namespace DB
 		
 		UTF8Char *DBColUTF8(UTF8Char *sqlstr, const UTF8Char *colName);
 		UTF8Char *DBColW(UTF8Char *sqlstr, const WChar *colName);
-		UTF8Char *DBTrim(UTF8Char *sqlstr, const UTF8Char *val);
+		UTF8Char *DBTrim(UTF8Char *sqlstr, Text::CString val);
 		UTF8Char *DBStrUTF8(UTF8Char *sqlstr, const UTF8Char *str);
 		UTF8Char *DBStrW(UTF8Char *sqlstr, const WChar *str);
 		UTF8Char *DBInt32(UTF8Char *sqlstr, Int32 val);

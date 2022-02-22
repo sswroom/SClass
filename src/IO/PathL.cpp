@@ -414,34 +414,34 @@ IO::Path::FindFileSession *IO::Path::FindFileW(const WChar *path)
 {
 	FindFileSession *sess = 0;
 	Text::String *utfPath = Text::String::NewNotNull(path);
-	const UTF8Char *searchPattern;
+	Text::CString searchPattern;
 	Text::CString searchDir;
 	UOSInt i = Text::StrLastIndexOfCharC(utfPath->v, utfPath->leng, '/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
 	{
 		dirObj = opendir(".");
-		searchPattern = utfPath->v;
+		searchPattern = utfPath->ToCString();
 		searchDir = CSTR("./");
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
-		searchPattern = utfPath->v + 1;
+		searchPattern = utfPath->ToCString().Substring(1);
 		searchDir = CSTR("/");
 	}
 	else
 	{
 		utfPath->v[i] = 0;
 		dirObj = opendir((const Char*)utfPath->v);
-		searchPattern = utfPath->v + i + 1;
+		searchPattern = utfPath->ToCString().Substring(i + 1);
 		utfPath->v[i] = '/';
 		searchDir = {utfPath->v, i + 1};
 	}
 	if (dirObj)
 	{
 		sess = MemAlloc(FindFileSession, 1);
-		sess->searchPattern = Text::String::NewNotNull(searchPattern);
+		sess->searchPattern = Text::String::New(searchPattern);
 		sess->dirObj = dirObj;
 		sess->pathEnd = searchDir.ConcatTo(sess->pathBuff);
 	}

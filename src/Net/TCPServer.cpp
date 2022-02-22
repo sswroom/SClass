@@ -25,11 +25,11 @@ void Net::TCPServer::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogHand
 			UTF8Char buff[1024];
 			UTF8Char *str = this->logPrefix->ConcatTo(buff);
 			str = Text::StrConcatC(str, msg, msgLen);
-			log->LogMessageC(buff, (UOSInt)(str - buff), logLev);
+			log->LogMessage(CSTRP(buff, str), logLev);
 		}
 		else
 		{
-			log->LogMessageC(msg, msgLen, logLev);
+			log->LogMessage({msg, msgLen}, logLev);
 		}
 	}
 }

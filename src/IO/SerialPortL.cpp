@@ -228,7 +228,7 @@ Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
+UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
 {
 	return 0;
 }

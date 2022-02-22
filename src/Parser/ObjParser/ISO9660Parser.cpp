@@ -240,21 +240,22 @@ void Parser::ObjParser::ISO9660Parser::ParseDir(IO::PackageFile *pkgFile, IO::IS
 					*sptr++ = IO::Path::PATH_SEPERATOR;
 					sptr = enc.UTF8FromBytes(sptr, &recBuff[33], recBuff[32], 0);
 					NEW_CLASS(pf2, IO::PackageFile({fileName, (UOSInt)(sptr - fileName)}));
-					pkgFile->AddPack(pf2, &fileNameEnd[1], dt.ToTicks());
+					pkgFile->AddPack(pf2, CSTRP(&fileNameEnd[1], sptr), dt.ToTicks());
 					ParseDir(pf2, sectorData, sectorNum, fileSize, fileName, sptr, codePage);
 				}
 			}
 			else
 			{
 				UOSInt i;
-				enc.UTF8FromBytes(fileNameEnd, &recBuff[33], recBuff[32], 0);
+				sptr = enc.UTF8FromBytes(fileNameEnd, &recBuff[33], recBuff[32], 0);
 				i = Text::StrIndexOfChar(fileNameEnd, ';');
 				if (i != INVALID_INDEX)
 				{
 					fileNameEnd[i] = 0;
+					sptr = &fileNameEnd[i];
 				}
 				fd = sectorData->GetStreamData(sectorNum, fileSize);
-				pkgFile->AddData(fd, 0, fileSize, fileNameEnd, dt.ToTicks());
+				pkgFile->AddData(fd, 0, fileSize, CSTRP(fileNameEnd, sptr), dt.ToTicks());
 				DEL_CLASS(fd);
 			}
 

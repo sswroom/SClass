@@ -49,7 +49,7 @@ void UI::GUIMapTreeView::AddTreeNode(UI::GUITreeView::TreeItem *treeItem, Map::M
 			ind->index = index;
 			ind->itemType = Map::MapEnv::IT_LAYER;
 			ind->item = item;
-			treeItem = this->InsertItem(treeItem, 0, &name->v[i + 1], ind);
+			treeItem = this->InsertItem(treeItem, 0, name->ToCString().Substring(i + 1), ind);
 		}
 		else if (item->itemType == Map::MapEnv::IT_GROUP)
 		{
@@ -130,7 +130,7 @@ OSInt UI::GUIMapTreeView::EventEndLabelEdit(TreeItem *item, const UTF8Char *newL
 		return 0;
 	if (ind->item != 0 && ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		this->env->SetGroupName((Map::MapEnv::GroupItem*)ind->item, newLabel);
+		this->env->SetGroupName((Map::MapEnv::GroupItem*)ind->item, Text::CString::FromPtr(newLabel));
 		return 1;
 	}
 	else
@@ -178,7 +178,7 @@ void UI::GUIMapTreeView::UpdateTree()
 	ind->index = (UOSInt)-1;
 	ind->itemType = Map::MapEnv::IT_GROUP;
 	ind->item = 0;
-	UI::GUIMapTreeView::TreeItem *item = this->InsertItem(0, 0, (const UTF8Char*)"ROOT", ind);
+	UI::GUIMapTreeView::TreeItem *item = this->InsertItem(0, 0, CSTR("ROOT"), ind);
 
 	j = this->env->GetItemCount(0);
 	i = 0;
@@ -197,19 +197,19 @@ void UI::GUIMapTreeView::AddSubGroup(UI::GUITreeView::TreeItem *item)
 	ind = (UI::GUIMapTreeView::ItemIndex*)item->GetItemObj();
 	if (ind->itemType == Map::MapEnv::IT_GROUP)
 	{
-		Map::MapEnv::GroupItem *grp = this->env->AddGroup((Map::MapEnv::GroupItem*)ind->item, (const UTF8Char*)"Group");
+		Map::MapEnv::GroupItem *grp = this->env->AddGroup((Map::MapEnv::GroupItem*)ind->item, CSTR("Group"));
 		ind = MemAlloc(ItemIndex, 1);
 		ind->itemType = Map::MapEnv::IT_GROUP;
 		ind->group = (Map::MapEnv::GroupItem*)(((ItemIndex*)item->GetItemObj())->item);
 		ind->item = grp;
 		ind->index = this->env->GetItemCount((Map::MapEnv::GroupItem*) ((UI::GUIMapTreeView::ItemIndex*)item->GetItemObj())->item) - 1;
-		n = this->InsertItem(item, 0, (const UTF8Char*)"Group", ind);
+		n = this->InsertItem(item, 0, CSTR("Group"), ind);
 		this->ExpandItem(n);
 		this->BeginEdit(n);
 	}
 	else if (ind->itemType == Map::MapEnv::IT_LAYER)
 	{
-		Map::MapEnv::GroupItem *grp = this->env->AddGroup(((UI::GUIMapTreeView::ItemIndex*)item->GetItemObj())->group, (const UTF8Char*)"Group");
+		Map::MapEnv::GroupItem *grp = this->env->AddGroup(((UI::GUIMapTreeView::ItemIndex*)item->GetItemObj())->group, CSTR("Group"));
 		ind = MemAlloc(ItemIndex, 1);
 		ind->itemType = Map::MapEnv::IT_GROUP;
 		ind->group = ((ItemIndex*)item->GetItemObj())->group;
@@ -217,14 +217,14 @@ void UI::GUIMapTreeView::AddSubGroup(UI::GUITreeView::TreeItem *item)
 		if (ind->group == 0)
 		{
 			ind->index = this->env->GetItemCount(0) - 1;
-			n = this->InsertItem(0, 0, (const UTF8Char*)"Group", ind);
+			n = this->InsertItem(0, 0, CSTR("Group"), ind);
 			this->ExpandItem(n);
 			this->BeginEdit(n);
 		}
 		else
 		{
 			ind->index = this->env->GetItemCount(((ItemIndex*)item->GetItemObj())->group) - 1;
-			n = this->InsertItem(item->GetParent(), 0, (const UTF8Char*)"Group", ind);
+			n = this->InsertItem(item->GetParent(), 0, CSTR("Group"), ind);
 			this->ExpandItem(n);
 			this->BeginEdit(n);
 		}

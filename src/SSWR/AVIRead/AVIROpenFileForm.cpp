@@ -13,7 +13,7 @@ void __stdcall SSWR::AVIRead::AVIROpenFileForm::OnBrowseClicked(void *userObj)
 	me->txtName->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	me->core->GetParserList()->PrepareSelector(dlg, me->t);
 	if (dlg->ShowDialog(me->GetHandle()))

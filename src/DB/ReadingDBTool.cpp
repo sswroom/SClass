@@ -31,11 +31,11 @@ void DB::ReadingDBTool::AddLogMsgC(const UTF8Char *msg, UOSInt msgLen, IO::ILogH
 			Text::StringBuilderUTF8 str;
 			str.Append(logPrefix);
 			str.AppendC(msg, msgLen);
-			log->LogMessageC(str.ToString(), str.GetLength(), logLev);
+			log->LogMessage(str.ToCString(), logLev);
 		}
 		else
 		{
-			log->LogMessageC(msg, msgLen, logLev);
+			log->LogMessage({msg, msgLen}, logLev);
 		}
 	}
 }
@@ -495,7 +495,7 @@ UTF8Char *DB::ReadingDBTool::DBColW(UTF8Char *sqlstr, const WChar *colName)
 	return DB::DBUtil::SDBColW(sqlstr, colName, this->svrType);
 }
 
-UTF8Char *DB::ReadingDBTool::DBTrim(UTF8Char *sqlstr, const UTF8Char *val)
+UTF8Char *DB::ReadingDBTool::DBTrim(UTF8Char *sqlstr, Text::CString val)
 {
 	return DB::DBUtil::SDBTrim(sqlstr, val, this->svrType);
 }

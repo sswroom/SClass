@@ -76,7 +76,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			{
 				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
-			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), fileName, timeTicks);
+			pf->AddData(fd, ReadUInt64(&indexBuff[i + 16]), ReadUInt64(&indexBuff[i + 24]), CSTRP(fileName, srcPtr), timeTicks);
 			i += 32;
 		}
 		MemFree(indexBuff);
@@ -104,7 +104,7 @@ IO::ParsedObject *Parser::FileParser::TILParser::ParseFile(IO::IStreamData *fd, 
 			{
 				srcPtr = Text::StrConcatC(srcPtr, UTF8STRC(".jpg"));
 			}
-			pf->AddData(fd, fileOfst, ReadUInt64(&indexBuff[24]), fileName, timeTicks);
+			pf->AddData(fd, fileOfst, ReadUInt64(&indexBuff[24]), CSTRP(fileName, srcPtr), timeTicks);
 		}
 	}
 	else

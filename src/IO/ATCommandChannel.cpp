@@ -14,7 +14,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 	IO::ATCommandChannel *me = (IO::ATCommandChannel*)userObj;
 #if defined(DEBUG)
 	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"Received.dat", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("Received.dat"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 #endif
 	UInt8 readBuff[2048];
 	UOSInt readSize;
@@ -54,7 +54,7 @@ UInt32 __stdcall IO::ATCommandChannel::CmdThread(void *userObj)
 						cmdResult->v[i - cmdStart] = 0;
 						if (me->log)
 						{
-							me->log->LogMessageC(cmdResult->v, (i - cmdStart), IO::ILogHandler::LOG_LEVEL_RAW);
+							me->log->LogMessage({cmdResult->v, (i - cmdStart)}, IO::ILogHandler::LOG_LEVEL_RAW);
 						}
 
 						if (me->cmdHdlr && me->cmdHdlr(me->cmdHdlrObj, cmdResult->v, i - cmdStart))

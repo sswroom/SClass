@@ -112,7 +112,7 @@ IO::StmData::FileData::FileData(Text::CString fname, Bool deleteOnClose)
 IO::StmData::FileData::~FileData()
 {
 	this->Close();
-	this->SetFullName(0);
+	this->SetFullName(CSTR_NULL);
 }
 
 UOSInt IO::StmData::FileData::GetRealData(UInt64 offset, UOSInt length, UInt8* buffer)
@@ -171,7 +171,7 @@ Text::String *IO::StmData::FileData::GetFullName()
 	return 0;
 }
 
-void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
+void IO::StmData::FileData::SetFullName(Text::CString fullName)
 {
 	if (this->fdn)
 	{
@@ -182,12 +182,12 @@ void IO::StmData::FileData::SetFullName(const UTF8Char *fullName)
 		}
 		this->fdn = 0;
 	}
-	if (fullName)
+	if (fullName.leng > 0)
 	{
 		UOSInt i;
 		this->fdn = MemAlloc(FILEDATANAME, 1);
 		this->fdn->objectCnt = 1;
-		this->fdn->fullName = Text::String::NewNotNull(fullName);
+		this->fdn->fullName = Text::String::New(fullName);
 		i = this->fdn->fullName->LastIndexOf(IO::Path::PATH_SEPERATOR);
 		this->fdn->fileName.v = &this->fdn->fullName->v[i + 1];
 		this->fdn->fileName.leng = (UOSInt)(this->fdn->fullName->GetEndPtr() - this->fdn->fileName.v);

@@ -42,30 +42,30 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 	if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth() && dt1.GetDay() == dt2.GetDay())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
-		Text::StrConcatC(sptr, UTF8STRC(".zip"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else if (dt1.GetYear() == dt2.GetYear() && dt1.GetMonth() == dt2.GetMonth())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "dd");
-		Text::StrConcatC(sptr, UTF8STRC(".zip"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else if (dt1.GetYear() == dt2.GetYear())
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "MMdd");
-		Text::StrConcatC(sptr, UTF8STRC(".zip"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
 	else
 	{
 		sptr = dt1.ToString(sbuff, "yyyyMMdd");
 		*sptr++ = '-';
 		sptr = dt2.ToString(sptr, "yyyyMMdd");
-		Text::StrConcatC(sptr, UTF8STRC(".zip"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".zip"));
 	}
-	dlg->SetFileName(sbuff);
+	dlg->SetFileName(CSTRP(sbuff, sptr));
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
 		IO::ZIPBuilder *zip;

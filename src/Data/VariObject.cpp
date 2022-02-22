@@ -55,7 +55,7 @@ void Data::VariObject::SetItemNull(const UTF8Char *name)
 
 void Data::VariObject::SetItemStr(const UTF8Char *name, const UTF8Char *str)
 {
-	this->SetItem(name, Data::VariItem::NewStr(str));
+	this->SetItem(name, Data::VariItem::NewStrSlow(str));
 }
 
 void Data::VariObject::SetItemStr(const UTF8Char *name, Text::String *str)
@@ -206,7 +206,7 @@ Data::Class *Data::VariObject::CreateClass()
 	UOSInt j = keys->GetCount();
 	while (i < j)
 	{
-		currPos += (OSInt)cls->AddField(keys->GetItem(i), currPos, values->GetItem(i)->GetItemType());
+		currPos += (OSInt)cls->AddField(Text::CString::FromPtr(keys->GetItem(i)), currPos, values->GetItem(i)->GetItemType());
 		i++;
 	}
 /*	UOSInt i = 0;

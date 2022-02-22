@@ -26,13 +26,13 @@ Media::ChapterInfo::~ChapterInfo()
 	DEL_CLASS(this->chapterTimes);
 }
 
-void Media::ChapterInfo::AddChapter(UInt32 chapterTime, const UTF8Char *chapterName, const UTF8Char *chapterArtist)
+void Media::ChapterInfo::AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist)
 {
 	UOSInt i = this->chapterTimes->SortedInsert(chapterTime);
-	this->chapterNames->Insert(i, Text::String::NewNotNull(chapterName));
-	if (chapterArtist)
+	this->chapterNames->Insert(i, Text::String::New(chapterName));
+	if (chapterArtist.leng > 0)
 	{
-		this->chapterArtists->Insert(i, Text::String::NewNotNull(chapterArtist));
+		this->chapterArtists->Insert(i, Text::String::New(chapterArtist));
 	}
 	else
 	{

@@ -23,8 +23,8 @@ namespace Text
 			CppEnv(Text::CodeProject *proj, IO::ConfigFile *cfg);
 			~CppEnv();
 
-			void AddIncludePath(const UTF8Char *includePath);
-			UTF8Char *GetIncludeFilePath(UTF8Char *buff, const UTF8Char *includeFile, UOSInt includeFileLen, Text::String *sourceFile);
+			void AddIncludePath(Text::CString includePath);
+			UTF8Char *GetIncludeFilePath(UTF8Char *buff, Text::CString includeFile, Text::String *sourceFile);
 
 			void InitEnvStatus(Text::Cpp::CppParseStatus *status);
 

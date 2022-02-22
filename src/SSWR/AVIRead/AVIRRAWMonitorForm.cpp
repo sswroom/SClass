@@ -62,7 +62,7 @@ void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnPingPacket(void *userData, U
 	sb.AppendUOSInt(packetSize);
 	sb.AppendC(UTF8STRC(", ttl = "));
 	sb.AppendU16(ttl);
-	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 }
 
 void __stdcall SSWR::AVIRead::AVIRRAWMonitorForm::OnRAWData(void *userData, const UInt8 *rawData, UOSInt packetSize)

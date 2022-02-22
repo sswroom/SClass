@@ -66,7 +66,7 @@ void Media::LUT::SetRemark(Text::String *remark)
 	this->remark = SCOPY_STRING(remark);
 }
 
-void Media::LUT::SetRemark(const UTF8Char *remark)
+void Media::LUT::SetRemark(Text::CString remark)
 {
 	SDEL_STRING(this->remark);
 	this->remark = Text::String::NewOrNull(remark);

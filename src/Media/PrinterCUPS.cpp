@@ -41,7 +41,7 @@ namespace Media
 		Bool IsError();
 
 		virtual void SetDocName(Text::String *docName);
-		virtual void SetDocName(const UTF8Char *docName);
+		virtual void SetDocName(Text::CString docName);
 		virtual void SetNextPagePaperSizeMM(Double width, Double height);
 		virtual void SetNextPageOrientation(PageOrientation po);
 		void Start();
@@ -166,7 +166,7 @@ void Media::CUPSPrintDocument::SetDocName(Text::String *docName)
 	this->docName = SCOPY_STRING(docName);
 }
 
-void Media::CUPSPrintDocument::SetDocName(const UTF8Char *docName)
+void Media::CUPSPrintDocument::SetDocName(Text::CString docName)
 {
 	SDEL_STRING(this->docName);
 	this->docName = Text::String::NewOrNull(docName);
@@ -238,9 +238,9 @@ Media::Printer::Printer(Text::String *printerName)
 	this->printerName = printerName->Clone();
 }
 
-Media::Printer::Printer(const UTF8Char *printerName)
+Media::Printer::Printer(Text::CString printerName)
 {
-	this->printerName = Text::String::NewNotNull(printerName);
+	this->printerName = Text::String::New(printerName);
 }
 
 Media::Printer::~Printer()

@@ -48,6 +48,7 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 fileOfst;
 	Data::DateTime dt;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".NOA")))
@@ -90,8 +91,8 @@ IO::ParsedObject *Parser::FileParser::NOAParser::ParseFile(IO::IStreamData *fd, 
 		fileOfst = ReadUInt32(&recBuff[j + 16]);
 		fnameSize = ReadUInt32(&recBuff[j + 36]);
 		dt.SetValue(ReadUInt16(&recBuff[j + 30]), recBuff[j + 29], recBuff[j + 28], recBuff[j + 26], recBuff[j + 25], recBuff[j + 24], 0, 36);
-		enc.UTF8FromBytes(fileName, &recBuff[j + 40], fnameSize, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, fileName, dt.ToTicks());
+		sptr = enc.UTF8FromBytes(fileName, &recBuff[j + 40], fnameSize, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), dt.ToTicks());
 
 		i++;
 		j += 40 + fnameSize;

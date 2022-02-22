@@ -218,7 +218,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, sptr, dt.ToTicks());
+							pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
 						}
 						pf2 = pf3;
 						sptr = &sptr[i + 1];
@@ -231,7 +231,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, sptr, dt.ToTicks());
+							pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), dt.ToTicks());
 						}
 						break;
 					}
@@ -241,7 +241,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 			else
 			{
 				IO::PackFileItem::CompressInfo compInfo;
-				enc.UTF8FromBytes(sbuff, &buff[30], fnameSize, 0);
+				sptrEnd = enc.UTF8FromBytes(sbuff, &buff[30], fnameSize, 0);
 				ofsts.Put(sbuff, currOfst + 30 + fnameSize + extraSize);
 				zipInfo = zipInfos.Get(sbuff);
 				if (zipInfo && (zipInfo->compSize != 0xffffffff))
@@ -264,7 +264,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, sptr, dt.ToTicks());
+							pf2->AddPack(pf3, {sptr, i}, dt.ToTicks());
 						}
 						pf2 = pf3;
 						sptr = &sptr[i + 1];
@@ -277,7 +277,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 
 				if (compMeth == 0)
 				{
-					pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, sptr, dt.ToTicks());
+					pf2->AddData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, CSTRP(sptr, sptrEnd), dt.ToTicks());
 				}
 				else
 				{
@@ -314,7 +314,7 @@ IO::ParsedObject *Parser::FileParser::ZIPParser::ParseFile(IO::IStreamData *fd, 
 						}
 						compInfo.decSize = ReadUInt32(&buff[22]);
 					}
-					pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, sptr, dt.ToTicks());
+					pf2->AddCompData(fd, currOfst + 30 + fnameSize + extraSize, dataSize, &compInfo, CSTRP(sptr, sptrEnd), dt.ToTicks());
 				}
 				currOfst += 30 + fnameSize + extraSize + dataSize;
 			}

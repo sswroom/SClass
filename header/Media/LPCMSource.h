@@ -17,11 +17,11 @@ namespace Media
 
 	protected:
 		LPCMSource(Text::String *name);
-		LPCMSource(const UTF8Char *name);
+		LPCMSource(Text::CString name);
 		void SetData(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format);
 	public:
 		LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::String *name);
-		LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, const UTF8Char *name);
+		LPCMSource(IO::IStreamData *fd, UInt64 ofst, UInt64 length, Media::AudioFormat *format, Text::CString name);
 		virtual ~LPCMSource();
 
 		virtual UTF8Char *GetSourceName(UTF8Char *buff);

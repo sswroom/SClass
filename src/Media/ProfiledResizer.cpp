@@ -276,7 +276,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	return true;
 }
 
-Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
+Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[32];
@@ -289,11 +289,11 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 	Int32 sizeType;
 	Text::StringBuilderUTF8 sb;
 	DB::CSVFile *csv;
-	if (fileName == 0)
+	if (fileName.leng == 0)
 	{
 		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
-		NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
+		sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("prof"));
+		NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 	}
 	else
 	{

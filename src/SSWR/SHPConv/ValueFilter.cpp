@@ -1,10 +1,10 @@
 #include "Stdafx.h"
 #include "SSWR/SHPConv/ValueFilter.h"
 
-SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, const UTF8Char *val, Int32 compareType)
+SSWR::SHPConv::ValueFilter::ValueFilter(UOSInt colIndex, Text::CString val, Int32 compareType)
 {
 	this->colIndex = colIndex;
-	this->value = Text::String::NewNotNull(val);
+	this->value = Text::String::New(val);
 	this->compareType = compareType;
 }
 
@@ -61,6 +61,6 @@ UTF8Char *SSWR::SHPConv::ValueFilter::ToString(UTF8Char *buff)
 SSWR::SHPConv::MapFilter *SSWR::SHPConv::ValueFilter::Clone()
 {
 	MapFilter *filter;
-	NEW_CLASS(filter, ValueFilter(this->colIndex, this->value->v, this->compareType));
+	NEW_CLASS(filter, ValueFilter(this->colIndex, this->value->ToCString(), this->compareType));
 	return filter;
 }

@@ -30,7 +30,7 @@ namespace Media
 		virtual IO::ParserType GetParserType();
 
 		void SetRemark(Text::String *remark);
-		void SetRemark(const UTF8Char *remark);
+		void SetRemark(Text::CString remark);
 		Text::String *GetRemark();
 		UOSInt GetInputCh();
 		DataFormat GetFormat();

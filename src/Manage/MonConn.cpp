@@ -412,16 +412,15 @@ void Manage::MonConn::StartUDPPort(UInt16 portNum)
 	AddCommand(buff, 6, 3);
 }
 
-void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, const UTF8Char *msg)
+void Manage::MonConn::AddLogMessage(Int32 name, Int32 name2, UInt16 logLevel, Text::CString msg)
 {
 	UOSInt procId = Manage::Process::GetCurrProcId();
-	UOSInt strSize = Text::StrCharCnt(msg);
-	UInt8 *buff = MemAlloc(UInt8, 14 + strSize + 1);
+	UInt8 *buff = MemAlloc(UInt8, 14 + msg.leng + 1);
 	WriteUInt32(&buff[0], (UInt32)procId);
 	WriteInt32(&buff[4], name);
 	WriteInt32(&buff[8], name2);
 	WriteUInt16(&buff[12], logLevel);
-	Text::StrConcat((UTF8Char*)&buff[14], msg);
-	AddCommand(buff, 14 + strSize, 4);
+	msg.ConcatTo((UTF8Char*)&buff[14]);
+	AddCommand(buff, 14 + msg.leng, 4);
 	MemFree(buff);
 }

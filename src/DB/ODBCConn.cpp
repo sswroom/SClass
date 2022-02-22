@@ -47,7 +47,7 @@ void DB::ODBCConn::UpdateConnInfo()
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(UTF8STRC("Driver is "));
 			sb.AppendC((const UTF8Char*)buff, (UOSInt)buffSize);
-			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
+			log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 		}
 //		Text::StrToLowerC(buff, buff);
 		if (Text::StrStartsWithC(buff, (UOSInt)buffSize, UTF8STRC("myodbc")))
@@ -1074,7 +1074,7 @@ void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)
 	s = Text::String::NewNotNull(errMsg);
 	sb.Append(s);
 	s->Release();
-	this->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
+	this->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 }
 
 void DB::ODBCConn::LogSQLError(void *hStmt)

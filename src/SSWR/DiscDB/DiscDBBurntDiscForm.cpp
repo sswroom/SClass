@@ -381,13 +381,13 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, &size))
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, &size)) != 0)
 		{
 			if (size + currSize > maxSize)
 				break;
 			if (pt == IO::Path::PathType::File)
 			{
-				file = this->BurntFileNew(sptr, &relPath[1], size);
+				file = this->BurntFileNew(sptr, CSTRP(&relPath[1], sptr2), size);
 				this->lbFileName->AddItem({&relPath[1], Text::StrCharCnt(&relPath[1])}, file);
 				this->fileList->Add(file);
 				currSize += size;
@@ -419,11 +419,11 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileUpdateVideo(BurntFile *file)
 	}
 }
 
-SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(const UTF8Char *fileName, const UTF8Char *relPath, UInt64 fileSize)
+SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(const UTF8Char *fileName, Text::CString relPath, UInt64 fileSize)
 {
 	BurntFile *file;
 	file = MemAlloc(BurntFile, 1);
-	file->fname = Text::String::NewNotNull(relPath);
+	file->fname = Text::String::New(relPath);
 	file->fSize = fileSize;
 	file->videoId = 0;
 	file->cate = (const UTF8Char*)"ISO";

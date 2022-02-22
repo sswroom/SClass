@@ -14,7 +14,7 @@ namespace SSWR
 			Int32 compareType;
 
 		public:
-			ValueFilter(UOSInt colIndex, const UTF8Char *val, Int32 compareType);
+			ValueFilter(UOSInt colIndex, Text::CString val, Int32 compareType);
 			virtual ~ValueFilter();
 
 			virtual Bool IsValid(Double left, Double top, Double right, Double bottom, DB::DBReader *dbf);

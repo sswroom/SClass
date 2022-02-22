@@ -89,7 +89,7 @@ namespace Data
 		void *GetAsUnk();
 
 		void SetNull();
-		void SetStr(const UTF8Char *str);
+		void SetStrSlow(const UTF8Char *str);
 		void SetStr(const UTF8Char *str, UOSInt strLen);
 		void SetStr(Text::String *str);
 		void SetDate(Data::DateTime *dt);
@@ -117,7 +117,8 @@ namespace Data
 		void ToString(Text::StringBuilderUTF8 *sb);
 
 		static VariItem *NewNull();
-		static VariItem *NewStr(const UTF8Char *str);
+		static VariItem *NewStrSlow(const UTF8Char *str);
+		static VariItem *NewStr(Text::CString str);
 		static VariItem *NewStr(Text::String *str);
 		static VariItem *NewDate(Data::DateTime *dt);
 		static VariItem *NewF32(Single val);

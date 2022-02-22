@@ -244,6 +244,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
 	sptr = Text::StrConcat(sbuff, &s->v[i + 1]);
 	sptr[-4] = 0;
+	sptr -= 4;
 	t = Text::StrToInt32(sbuff);
 	fileSize = fd->GetDataSize();
 	if (fd->GetRealData(0, 252, buff) != 252)
@@ -257,7 +258,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 	}
 
 	Map::GPSTrack *track;
-	s = Text::String::NewNotNull(sbuff);
+	s = Text::String::NewP(sbuff, sptr);
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
 	track->SetTrackName(s->ToCString());
 	s->Release();

@@ -13,8 +13,8 @@ namespace Text
 		UOSInt useCnt;
 		UTF8Char vbuff[1];
 
-		static String *NewOrNull(const UTF8Char *str);
-		static String *NewNotNull(const UTF8Char *str);
+		static String *NewOrNullSlow(const UTF8Char *str);
+		static String *NewNotNullSlow(const UTF8Char *str);
 		static String *NewOrNull(Text::CString str);
 		static String *New(Text::CString str);
 		static String *New(const UTF8Char *str, UOSInt len);

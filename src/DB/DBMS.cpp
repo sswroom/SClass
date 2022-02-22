@@ -1943,7 +1943,7 @@ Int32 DB::DBMS::UserLoginMySQL(Int32 sessId, Text::CString userName, const UInt8
 					sess->database = 0;
 					if (database && database[0])
 					{
-						sess->database = Text::String::NewNotNull(database);
+						sess->database = Text::String::NewNotNullSlow(database);
 					}
 					MemCopyNO(&sess->params, param, sizeof(DB::DBMS::SessionParam));
 					NEW_CLASS(sess->userVars, Data::StringUTF8Map<Text::String*>());
@@ -2059,7 +2059,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
 					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::NewNotNull(nameBuff2);
+					col->asName = Text::String::NewNotNullSlow(nameBuff2);
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2130,7 +2130,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				{
 					col = MemAlloc(DB::DBMS::SQLColumn, 1);
 					col->name = Text::StrCopyNew(nameBuff);
-					col->asName = Text::String::NewNotNull(nameBuff2);
+					col->asName = Text::String::NewNotNullSlow(nameBuff2);
 					col->sqlPtr = sptr2;
 					cols.Add(col);
 					if (*sptr1 == 0)
@@ -2903,7 +2903,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 				j = sizeof(sysVarList) / sizeof(sysVarList[0]);
 				while (i < j)
 				{
-					row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
+					row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]);
 					sb.ClearStr();
 					SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
 					row[1] = Text::String::New(sb.ToString(), sb.GetLength());
@@ -2945,7 +2945,7 @@ DB::DBReader *DB::DBMS::ExecuteReader(Int32 sessId, const UTF8Char *sql, UOSInt 
 							if (StrLike((const UTF8Char*)sysVarList[i], val->v))
 							{
 								sb.ClearStr();
-								row[0] = Text::String::NewNotNull((const UTF8Char*)sysVarList[i]);
+								row[0] = Text::String::NewNotNullSlow((const UTF8Char*)sysVarList[i]);
 								SysVarGet(&sb, sess, row[0]->v, row[0]->leng);
 								row[1] = Text::String::New(sb.ToString(), sb.GetLength());
 								reader->AddRow(row);

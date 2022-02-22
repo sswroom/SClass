@@ -27,7 +27,7 @@ namespace Net
 			IPStatus *status;
 		} ClientStatus;
 
-		typedef void (__stdcall *ClientLogHandler)(void *userObj, UInt32 ip, const UTF8Char* logMessage);
+		typedef void (__stdcall *ClientLogHandler)(void *userObj, UInt32 ip, Text::CString logMessage);
 	private:
 		Net::SocketFactory *sockf;
 		Net::TCPServer *svr;

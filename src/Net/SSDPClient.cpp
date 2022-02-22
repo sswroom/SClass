@@ -125,7 +125,7 @@ void Net::SSDPClient::SSDPDeviceFree(SSDPDevice *dev)
 	MemFree(dev);
 }
 
-Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, const UTF8Char *userAgent)
+Net::SSDPClient::SSDPClient(Net::SocketFactory *sockf, Text::CString userAgent)
 {
 	NEW_CLASS(this->mut, Sync::Mutex());
 	NEW_CLASS(this->devMap, Data::UInt32Map<SSDPDevice*>());

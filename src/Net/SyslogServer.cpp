@@ -23,18 +23,18 @@ void __stdcall Net::SyslogServer::OnUDPPacket(const Net::SocketUtil::AddressInfo
 			sb.AppendP(sbuff, sptr);
 			sb.AppendC(UTF8STRC("> "));
 			sb.AppendC(buff, dataSize);
-			me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 		}
 
 		if (status)
 		{
 			sb.ClearStr();
 			sb.AppendC(buff, dataSize);
-			status->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+			status->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 
 			if (me->logHdlr)
 			{
-				me->logHdlr(me->logHdlrObj, status->ip, sb.ToString());
+				me->logHdlr(me->logHdlrObj, status->ip, sb.ToCString());
 			}
 		}
 	}
@@ -66,7 +66,7 @@ Net::SyslogServer::IPStatus *Net::SyslogServer::GetIPStatus(const Net::SocketUti
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
 		NEW_CLASS(status->log, IO::LogTool());
-		status->log->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+		status->log->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		this->ipMap->Put(ip, status);
 		return status;
 	}

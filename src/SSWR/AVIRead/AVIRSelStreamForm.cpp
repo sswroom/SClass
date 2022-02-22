@@ -245,7 +245,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnFileBrowseClick(void *userObj
 	ofd->SetAllowMultiSel(false);
 	if (sb.GetLength() > 0)
 	{
-		ofd->SetFileName(sb.ToString());
+		ofd->SetFileName(sb.ToCString());
 	}
 	if (ofd->ShowDialog(me->GetHandle()) == UI::GUIForm::DR_OK)
 	{

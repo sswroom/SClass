@@ -46,6 +46,7 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".ARC")))
@@ -86,8 +87,8 @@ IO::ParsedObject *Parser::FileParser::BurikoArcParser::ParseFile(IO::IStreamData
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(fileName, &recBuff[j], 96, 0);
-		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, fileName, 0);
+		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 96, 0);
+		pf->AddData(fd, fileOfst + (UInt64)dataOfst, fileSize, CSTRP(fileName, sptr), 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

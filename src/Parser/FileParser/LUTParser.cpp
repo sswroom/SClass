@@ -75,8 +75,8 @@ IO::ParsedObject *Parser::FileParser::LUTParser::ParseFile(IO::IStreamData *fd, 
 	paramBuff = MemAlloc(UInt8, paramSize + 1);
 	paramBuff[paramSize] = 0;
 	fd->GetRealData(paramOfst, paramSize, paramBuff);
+	lut->SetRemark({paramBuff, paramSize});
 	MemFree(paramBuff);
-	lut->SetRemark((UTF8Char*)paramBuff);
 
 	lutTable = lut->GetTablePtr();
 	fd->GetRealData(lutOfst, lutSize, lutTable);

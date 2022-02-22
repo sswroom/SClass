@@ -36,7 +36,7 @@ namespace Net
 			Bool threadRunning;
 			Sync::Event *threadEvt;
 
-			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);
+			Net::SNS::SNSControl *CreateControl(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 			ChannelData *ChannelInit(Net::SNS::SNSControl *ctrl);
 			void ChannelAddMessage(ChannelData *channel, Net::SNS::SNSControl::SNSItem *item);
 			void ChannelStoreCurr(ChannelData *channel);
@@ -45,10 +45,10 @@ namespace Net
 
 			static UInt32 __stdcall ThreadProc(void *userObj);
 		public:
-			SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, const UTF8Char *dataPath);
+			SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::EncodingFactory *encFact, Text::CString userAgent, Text::CString dataPath);
 			virtual ~SNSManager();
 
-			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, const UTF8Char *channelId);
+			Net::SNS::SNSControl *AddChannel(Net::SNS::SNSControl::SNSType type, Text::CString channelId);
 
 			void Use(Sync::MutexUsage *mutUsage);
 			virtual UOSInt GetCount();

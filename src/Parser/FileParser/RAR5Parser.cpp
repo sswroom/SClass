@@ -54,6 +54,7 @@ IO::ParserType Parser::FileParser::RAR5Parser::GetParserType()
 IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt8 buff[512];
 	const UInt8 *buffPtr;
 	const UInt8 *nextPtr;
@@ -134,7 +135,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			buffPtr = ReadVInt(buffPtr, &compInfo);
 			buffPtr = ReadVInt(buffPtr, &iVal); //host OS
 			buffPtr = ReadVInt(buffPtr, &iVal); //name length
-			Text::StrConcatC(sbuff, buffPtr, (UOSInt)iVal); //name
+			sptr = Text::StrConcatC(sbuff, buffPtr, (UOSInt)iVal); //name
 			buffPtr += iVal; //name
 
 			extraEnd = buffPtr + (OSInt)extraSize;
@@ -198,7 +199,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 			sb->AppendU32((iVal & 0x3c00) >> 10);*/
 			if (((compInfo & 0x380) >> 7) == 0)
 			{
-				pf->AddData(fd, currOfst + headerSize, dataSize, sbuff, dt.ToTicks());
+				pf->AddData(fd, currOfst + headerSize, dataSize, CSTRP(sbuff, sptr), dt.ToTicks());
 			}
 			else
 			{
@@ -210,7 +211,7 @@ IO::ParsedObject *Parser::FileParser::RAR5Parser::ParseFile(IO::IStreamData *fd,
 				cinfo.compFlags = (Int32)compInfo;
 				cinfo.compMethod = Data::Compress::Decompressor::CM_UNKNOWN;
 				cinfo.decSize = unpackedSize;
-				pf->AddCompData(fd, currOfst + headerSize, dataSize, &cinfo, sbuff, dt.ToTicks());
+				pf->AddCompData(fd, currOfst + headerSize, dataSize, &cinfo, CSTRP(sbuff, sptr), dt.ToTicks());
 			}
 		}
 		currOfst += headerSize + dataSize;

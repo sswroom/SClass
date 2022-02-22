@@ -20,7 +20,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnBrowseClicked(void *user
 	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatchConv"));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFolder(sb.ToString());
+		dlg->SetFolder(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

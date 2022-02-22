@@ -63,12 +63,13 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	Parser::FileParser::MEVParser::MEVImageInfo *imgFileArr;
 	const WChar **dirArr;
 	WChar *sptr;
-	UTF8Char *u8ptr;
 	WChar *sptr2;
 	WChar sbuff[256];
 	WChar sbuff2[256];
 	UTF8Char u8buff[256];
 	UTF8Char u8buff2[256];
+	UTF8Char *u8ptr;
+	UTF8Char *u8ptr2;
 
 	UOSInt i;
 	UOSInt j;
@@ -167,18 +168,19 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currPos, 36, buff);
 
 		fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[36]);
-		Text::StrConcatC(u8buff, &buff[36], ReadUInt32(&buff[12]));
+		u8ptr = Text::StrConcatC(u8buff, &buff[36], ReadUInt32(&buff[12]));
 		if (ReadUInt32(&buff[4]) > 0)
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[36]);
-			Text::StrConcatC(u8ptr = u8buff2, &buff[36], ReadUInt32(&buff[4]));
+			u8ptr2 = Text::StrConcatC(u8buff2, &buff[36], ReadUInt32(&buff[4]));
 		}
 		else
 		{
-			u8ptr = 0;
+			u8ptr2 = u8buff2;
+			*u8ptr2 = 0;
 		}
 		fontSize = *(Int32*)&buff[16] * 0.75;
-		env->AddFontStyle(u8ptr, u8buff, fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
+		env->AddFontStyle(CSTRP(u8buff2, u8ptr2), CSTRP(u8buff, u8ptr), fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
 		
 		i++;
 		currPos += 36;
@@ -193,8 +195,8 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		if (ReadUInt32(&buff[4]) > 0)
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12]);
-			Text::StrConcatC(u8buff2, &buff[12], ReadUInt32(&buff[4]));
-			env->SetLineStyleName(i, u8buff2);
+			u8ptr2 = Text::StrConcatC(u8buff2, &buff[12], ReadUInt32(&buff[4]));
+			env->SetLineStyleName(i, CSTRP(u8buff2, u8ptr2));
 		}
 
 		j = ReadUInt32(&buff[8]);
@@ -247,9 +249,9 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 			Text::StrUTF8_WCharC(sbuff, &buff[12], ReadUInt32(&buff[4]), 0);
 			*currPos = 12 + *currPos;
 			
-			const UTF8Char *u8ptr = Text::StrToUTF8New(sbuff);
-			Map::MapEnv::GroupItem *item = env->AddGroup(group, u8ptr);
-			Text::StrDelNew(u8ptr);
+			Text::String *s = Text::String::NewNotNull(sbuff);
+			Map::MapEnv::GroupItem *item = env->AddGroup(group, s->ToCString());
+			s->Release();
 			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
 		}
 		else if (*(Int32*)&buff[0] == Map::MapEnv::IT_LAYER)

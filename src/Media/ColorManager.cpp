@@ -69,7 +69,7 @@ Media::MonitorColorManager::MonitorColorManager(Text::String *profileName)
 	this->Load();
 }
 
-Media::MonitorColorManager::MonitorColorManager(const UTF8Char *profileName)
+Media::MonitorColorManager::MonitorColorManager(Text::CString profileName)
 {
 	this->profileName = Text::String::NewOrNull(profileName);
 	this->monProfileFile = 0;

@@ -43,13 +43,13 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 	this->txt = txt->Clone();
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CString txt)
 {
 	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = 0;
-	this->txt = Text::String::NewNotNull(txt);
+	this->txt = Text::String::New(txt);
 }
 
 UI::GUITreeView::TreeItem::~TreeItem()
@@ -253,7 +253,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeIte
 	return item;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj)
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, TreeItem *insertAfter, Text::CString itemText, void *itemObj)
 {
 	ClassData *data = this->clsData;
 	TreeItem *item;
@@ -272,7 +272,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	{
 		gtk_tree_store_append(data->treeStore, iter, parentIter);
 	}
-	gtk_tree_store_set(data->treeStore, iter, 0, itemText, -1);
+	gtk_tree_store_set(data->treeStore, iter, 0, itemText.v, -1);
 	NEW_CLASS(item, TreeItem(itemObj, itemText));
 	item->SetHItem(iter);
 

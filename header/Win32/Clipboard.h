@@ -2,6 +2,7 @@
 #define _SM_WIN32_CLIPBOARD
 #include "Handles.h"
 #include "Data/ArrayList.h"
+#include "Text/String.h"
 #include "Text/StringBuilderUTF8.h"
 
 namespace Win32
@@ -26,8 +27,8 @@ namespace Win32
 
 		UOSInt GetDataFormats(Data::ArrayList<UInt32> *dataTypes);
 		Bool GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb);
-		FilePasteType GetDataFiles(Data::ArrayList<const UTF8Char *> *fileNames);
-		void FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileNames);
+		FilePasteType GetDataFiles(Data::ArrayList<Text::String *> *fileNames);
+		void FreeDataFiles(Data::ArrayList<Text::String *> *fileNames);
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed);

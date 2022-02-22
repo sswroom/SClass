@@ -708,7 +708,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, cons
 	sb.AppendI32(reqClass);
 	sb.AppendC(UTF8STRC(", t="));
 	sb.AppendDouble(timeUsed);
-	me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
+	me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_RAW);
 
 	ClientInfo *cli;
 	UInt32 cliId = Net::SocketUtil::CalcCliId(reqAddr);

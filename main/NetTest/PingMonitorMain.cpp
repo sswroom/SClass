@@ -82,7 +82,7 @@ UInt32 __stdcall RecvThread(void *userObj)
 							sb->AppendP(sbuff, sptr);
 							sb->AppendC(UTF8STRC(", Size = "));
 							sb->AppendUOSInt(ipDataSize);
-							logTool->LogMessageC(sb->ToString(), sb->GetLength(), IO::ILogHandler::LOG_LEVEL_COMMAND);
+							logTool->LogMessage(sb->ToCString(), IO::ILogHandler::LOG_LEVEL_COMMAND);
 //							console->WriteLineC(sb->ToString(), sb->GetLength());
 						}
 						break;
@@ -139,8 +139,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sptr = IO::Path::GetProcessFileName(sbuff);
 		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("PingLog"));
 		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcatC(sptr, UTF8STRC("Log"));
-		logTool->AddFileLog(sbuff, IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+		sptr = Text::StrConcatC(sptr, UTF8STRC("Log"));
+		logTool->AddFileLog(CSTRP(sbuff, sptr), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 		i = 3;
 		while (i-- > 0)
 		{

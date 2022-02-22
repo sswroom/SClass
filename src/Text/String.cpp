@@ -10,7 +10,7 @@
 
 Text::String Text::String::emptyStr(1048576);
 
-Text::String *Text::String::NewOrNull(const UTF8Char *str)
+Text::String *Text::String::NewOrNullSlow(const UTF8Char *str)
 {
 	if (str == 0) return 0;
 	if (str[0] == 0) return NewEmpty();
@@ -23,7 +23,7 @@ Text::String *Text::String::NewOrNull(const UTF8Char *str)
 	return s;
 }
 
-Text::String *Text::String::NewNotNull(const UTF8Char *str)
+Text::String *Text::String::NewNotNullSlow(const UTF8Char *str)
 {
 	if (str[0] == 0) return NewEmpty();
 	UOSInt len = Text::StrCharCnt(str);

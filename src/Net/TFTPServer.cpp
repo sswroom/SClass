@@ -121,7 +121,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				sb.AppendC(UTF8STRC(" to "));
 				sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
 				sb.AppendP(repBuff, sptr);
-				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 		}
 		else
@@ -190,7 +190,7 @@ void __stdcall Net::TFTPServer::OnCommandPacket(const Net::SocketUtil::AddressIn
 				sb.AppendC(UTF8STRC(" to "));
 				sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
 				sb.AppendP(repBuff, sptr);
-				me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
+				me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 			}
 		}
 	}
@@ -255,7 +255,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						sb.AppendC(UTF8STRC(" to "));
 						sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.AppendP(repBuff, sptr);
-						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
 					me->sessMap->Remove(sess->sessId);
 					me->ReleaseSess(sess);
@@ -286,7 +286,7 @@ void __stdcall Net::TFTPServer::OnDataPacket(const Net::SocketUtil::AddressInfo 
 						sb.AppendC(UTF8STRC(" to "));
 						sptr = Net::SocketUtil::GetAddrName(repBuff, addr, port);
 						sb.AppendP(repBuff, sptr);
-						me->log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ACTION);
+						me->log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ACTION);
 					}
 					me->sessMap->Remove(sess->sessId);
 					me->ReleaseSess(sess);

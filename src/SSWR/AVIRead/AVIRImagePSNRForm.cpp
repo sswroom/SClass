@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnOriFileClicked(void *userObj)
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnLossyFileClicked(void *userOb
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::ImageList);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

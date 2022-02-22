@@ -41,6 +41,7 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd,
 	UInt32 hdrOfst;
 	UInt8 rec[44];
 	UTF8Char name[33];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 8, (UInt8*)hdr);
 	if (hdr[0] != 0x43415049)
@@ -66,10 +67,10 @@ IO::ParsedObject *Parser::FileParser::IPACParser::ParseFile(IO::IStreamData *fd,
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(name, rec, 32, 0);
+		sptr = enc.UTF8FromBytes(name, rec, 32, 0);
 		currSize = ReadUInt32(&rec[40]);
 
-		pf->AddData(fd, currOfst, currSize, name, 0);
+		pf->AddData(fd, currOfst, currSize, CSTRP(name, sptr), 0);
 		currOfst += currSize;
 		hdrOfst += 44;
 		i++;

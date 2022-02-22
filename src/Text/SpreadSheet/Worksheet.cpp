@@ -410,7 +410,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::S
 	return this->SetCellString(row, col, 0, val);
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, const UTF8Char *val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, Text::CString val)
 {
 	return this->SetCellString(row, col, 0, val);
 }
@@ -454,16 +454,16 @@ Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::Stri
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, const UTF8Char *url)
+Bool Text::SpreadSheet::Worksheet::SetCellURL(UOSInt row, UOSInt col, Text::CString url)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
 	SDEL_STRING(cell->cellURL);
-	if (url)
+	if (url.leng > 0)
 	{
-		cell->cellURL = Text::String::NewNotNull(url);
+		cell->cellURL = Text::String::New(url);
 	}
 	return true;
 }
@@ -484,7 +484,7 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 	return true;
 }
 
-Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, const UTF8Char *val)
+Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellStyle *style, Text::CString val)
 {
 	CellData *cell;
 	cell = GetCellData(row, col, false);
@@ -492,9 +492,9 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 		return false;
 	cell->cdt = CellDataType::String;
 	SDEL_STRING(cell->cellValue);
-	if (val)
+	if (val.leng > 0)
 	{
-		cell->cellValue = Text::String::NewNotNull(val);
+		cell->cellValue = Text::String::New(val);
 	}
 	if (style) cell->style = style;
 	return true;
@@ -503,14 +503,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellString(UOSInt row, UOSInt col, CellSty
 Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle *style, Data::DateTime *val)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::DateTime;
 	SDEL_STRING(cell->cellValue);
-	val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
-	cell->cellValue = Text::String::NewNotNull(sbuff);
+	sptr = val->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fff");
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
 	if (style) cell->style = style;
 	return true;
 }
@@ -518,14 +519,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellDate(UOSInt row, UOSInt col, CellStyle
 Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellStyle *style, Double val)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
-	Text::StrDouble(sbuff, val);
-	cell->cellValue = Text::String::NewNotNull(sbuff);
+	sptr = Text::StrDouble(sbuff, val);
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
 	if (style) cell->style = style;
 	return true;
 }
@@ -533,14 +535,15 @@ Bool Text::SpreadSheet::Worksheet::SetCellDouble(UOSInt row, UOSInt col, CellSty
 Bool Text::SpreadSheet::Worksheet::SetCellInt32(UOSInt row, UOSInt col, CellStyle *style, Int32 val)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	CellData *cell;
 	cell = GetCellData(row, col, false);
 	if (cell == 0)
 		return false;
 	cell->cdt = CellDataType::Number;
 	SDEL_STRING(cell->cellValue);
-	Text::StrInt32(sbuff, val);
-	cell->cellValue = Text::String::NewNotNull(sbuff);
+	sptr = Text::StrInt32(sbuff, val);
+	cell->cellValue = Text::String::NewP(sbuff, sptr);
 	if (style) cell->style = style;
 	return true;
 }

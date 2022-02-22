@@ -296,8 +296,9 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			if ((i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), '.')) != INVALID_INDEX)
 			{
 				u8buff[i] = 0;
+				u8ptr = &u8buff[i];
 			}
-			sfd->SetFileName(u8buff);
+			sfd->SetFileName(CSTRP(u8buff, u8ptr));
 		}
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{

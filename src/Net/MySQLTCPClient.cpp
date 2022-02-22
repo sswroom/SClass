@@ -1278,7 +1278,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							}
 							else
 							{
-								me->svrVer = Text::String::NewNotNull(&buff[5]);
+								me->svrVer = Text::String::NewNotNullSlow(&buff[5]);
 								me->connId = ReadUInt32(&buff[packetSize - 9]);
 								MemCopyNO(me->authPluginData, &buff[packetSize - 5], 8);
 								me->authPluginDataSize = 8;
@@ -1476,12 +1476,12 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 				{
 					if (buff[4] == 0xff)
 					{
-						me->SetLastError(&buff[7], readSize - 3);
+						me->SetLastError({&buff[7], readSize - 3});
 						me->cli->Close();
 					}
 					else if (buff[3] != 2)
 					{
-						me->SetLastError(UTF8STRC("Invalid login reply"));
+						me->SetLastError(CSTR("Invalid login reply"));
 						me->cli->Close();
 					}
 					else if (buff[4] == 0)
@@ -1496,12 +1496,12 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						Text::StringBuilderUTF8 sb;
 						sb.AppendC(UTF8STRC("AuthSwitchRequest received: plugin name = "));
 						sb.AppendSlow(&buff[5]);
-						me->SetLastError(sb.ToString());
+						me->SetLastError(sb.ToCString());
 						me->cli->Close();
 					}
 					else
 					{
-						me->SetLastError(UTF8STRC("Invalid reply on login"));
+						me->SetLastError(CSTR("Invalid reply on login"));
 						me->cli->Close();
 					}
 					readSize = 0;
@@ -1542,7 +1542,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							}
 							else if (buff[readSize + 4] == 0xFF) //ERR
 							{
-								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								me->SetLastError({&buff[readSize + 7], packetSize - 3});
 								if (me->cmdReader)
 								{
 									me->cmdResultType = CmdResultType::Error;
@@ -1575,7 +1575,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						{
 							if (buff[readSize + 4] == 0xFF) //ERR
 							{
-								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								me->SetLastError({&buff[readSize + 7], packetSize - 3});
 								if (me->cmdReader)
 								{
 									me->cmdResultType = CmdResultType::Error;
@@ -1613,7 +1613,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							}
 							else if (buff[readSize + 4] == 0xFF) //ERR
 							{
-								me->SetLastError(&buff[readSize + 7], packetSize - 3);
+								me->SetLastError({&buff[readSize + 7], packetSize - 3});
 								if (me->cmdReader)
 								{
 									if (me->cmdResultType == CmdResultType::Processing)
@@ -1784,21 +1784,10 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 	return 0;
 }
 
-void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg, UOSInt msgLen)
+void Net::MySQLTCPClient::SetLastError(Text::CString errMsg)
 {
 	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::New(errMsg, msgLen);
-#if defined(VERBOSE)
-	Text::StringBuilderUTF8 sb;
-	this->GetErrorMsg(&sb);
-	printf("MySQLTCP Error: %s\r\n", sb.ToString());
-#endif
-}
-
-void Net::MySQLTCPClient::SetLastError(const UTF8Char *errMsg)
-{
-	SDEL_STRING(this->lastError);
-	this->lastError = Text::String::NewOrNull(errMsg);
+	this->lastError = Text::String::New(errMsg);
 #if defined(VERBOSE)
 	Text::StringBuilderUTF8 sb;
 	this->GetErrorMsg(&sb);
@@ -2138,7 +2127,7 @@ void Net::MySQLTCPClient::Reconnect()
 	{
 		DEL_CLASS(this->cli);
 		this->cli = 0;
-		this->SetLastError(UTF8STRC("Cannot connect to server"));
+		this->SetLastError(CSTR("Cannot connect to server"));
 	}
 	else
 	{

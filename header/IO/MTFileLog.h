@@ -38,7 +38,7 @@ namespace IO
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
 	public:
 		MTFileLog(Text::String *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
-		MTFileLog(const UTF8Char *fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
+		MTFileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~MTFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);

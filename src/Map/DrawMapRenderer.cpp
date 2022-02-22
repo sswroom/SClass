@@ -2711,7 +2711,6 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	UOSInt lblSize = str1.leng;
 	str1.ConcatTo(sbuff);
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;

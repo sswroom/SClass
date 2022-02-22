@@ -853,7 +853,7 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 			family = "Arial";
 		}
 		Media::DrawFont *font;
-		Text::String *fntName = Text::String::NewNotNull((const UTF8Char*)family);
+		Text::String *fntName = Text::String::NewNotNullSlow((const UTF8Char*)family);
 		NEW_CLASS(font, Media::GTKDrawFont(fntName, height, (OSInt)((style & PANGO_STYLE_ITALIC)?CAIRO_FONT_SLANT_ITALIC:CAIRO_FONT_SLANT_NORMAL), (weight < PANGO_WEIGHT_BOLD)?0:1));
 		fntName->Release();
 		return font;

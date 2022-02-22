@@ -21,7 +21,7 @@ namespace Map
 		UInt32 defLCID;
 
 	public:
-		RevGeoDir(const UTF8Char *cfgDir, UInt32 defLCID, IO::Writer *errWriter);
+		RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errWriter);
 		virtual ~RevGeoDir();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);

@@ -19,7 +19,7 @@ namespace DB
 
 	public:
 		CSVFile(Text::String *fileName, UInt32 codePage);
-		CSVFile(const UTF8Char *fileName, UInt32 codePage);
+		CSVFile(Text::CString fileName, UInt32 codePage);
 		CSVFile(IO::SeekableStream *stm, UInt32 codePage);
 		virtual ~CSVFile();
 

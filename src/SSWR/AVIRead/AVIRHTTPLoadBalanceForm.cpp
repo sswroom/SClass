@@ -49,7 +49,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 	}
 	if (port > 0 && port < 65535)
 	{
-		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb->ToString(), (Net::WebServer::HTTPForwardHandler::ForwardType)(OSInt)me->cboFwdType->GetSelectedItem()));
+		NEW_CLASS(me->fwdHdlr, Net::WebServer::HTTPForwardHandler(me->core->GetSocketFactory(), me->ssl, sb->ToCString(), (Net::WebServer::HTTPForwardHandler::ForwardType)(OSInt)me->cboFwdType->GetSelectedItem()));
 		NEW_CLASS(me->svr, Net::WebServer::WebListener(me->core->GetSocketFactory(), ssl, me->fwdHdlr, port, 120, Sync::Thread::GetThreadCnt(), CSTR("sswr"), me->chkAllowProxy->IsChecked(), me->chkAllowKA->IsChecked()));
 		if (me->svr->IsError())
 		{
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPLoadBalanceForm::OnStartClick(void *userOb
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb->ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->log->AddFileLog(sb->ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
 				me->svr->SetRequestLog(me->reqLog);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));

@@ -38,7 +38,7 @@ Bool IO::LogWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 	this->CheckLines();
 	if (sb->GetLength() > 0)
 	{
-		this->log->LogMessageC(sb->ToString(), sb->GetLength(), this->logLev);
+		this->log->LogMessage(sb->ToCString(), this->logLev);
 		sb->ClearStr();
 	}
 	this->mut->Unlock();
@@ -50,7 +50,7 @@ Bool IO::LogWriter::WriteLine()
 	this->mut->Lock();
 	if (sb->GetLength() > 0)
 	{
-		this->log->LogMessageC(sb->ToString(), sb->GetLength(), this->logLev);
+		this->log->LogMessage(sb->ToCString(), this->logLev);
 		sb->ClearStr();
 	}
 	this->mut->Unlock();

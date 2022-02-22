@@ -673,17 +673,17 @@ void Map::WebImageLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	mutUsage.EndUse();
 }
 
-void Map::WebImageLayer::AddImage(const UTF8Char *name, const UTF8Char *url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
+void Map::WebImageLayer::AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude)
 {
 	ImageStat *stat;
 	NEW_CLASS(stat, ImageStat());
 	stat->id = this->nextId++;
-	stat->url = Text::String::NewNotNull(url);
+	stat->url = Text::String::New(url);
 	stat->simg = 0;
 	stat->data = 0;
-	if (name)
+	if (name.leng > 0)
 	{
-		stat->name = Text::StrCopyNew(name);
+		stat->name = Text::StrCopyNewC(name.v, name.leng);
 	}
 	else
 	{

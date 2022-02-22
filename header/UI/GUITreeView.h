@@ -18,7 +18,7 @@ namespace UI
 
 		public:
 			TreeItem(void *itemObj, Text::String *txt);
-			TreeItem(void *itemObj, const UTF8Char *txt);
+			TreeItem(void *itemObj, Text::CString txt);
 			~TreeItem();
 
 			void AddChild(TreeItem *child);
@@ -63,7 +63,7 @@ namespace UI
 		virtual void EventDragItem(TreeItem *dragItem, TreeItem *dropItem);
 
 		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::String *itemText, void *itemObj);
-		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj);
+		TreeItem *InsertItem(TreeItem *parent, TreeItem *insertAfter, Text::CString itemText, void *itemObj);
 		void *RemoveItem(TreeItem *item);
 		void ClearItems();
 		UOSInt GetRootCount();

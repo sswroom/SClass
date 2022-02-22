@@ -103,7 +103,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		void AddImage(const UTF8Char *name, const UTF8Char *url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude);
+		void AddImage(Text::CString name, Text::CString url, Int32 zIndex, Double x1, Double y1, Double x2, Double y2, Double sizeX, Double sizeY, Bool isScreen, Int64 timeStart, Int64 timeEnd, Double alpha, Bool hasAltitude, Double altitude);
 	};
 }
 #endif

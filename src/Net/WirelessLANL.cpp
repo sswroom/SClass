@@ -346,7 +346,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 //				printf("SIOCGIWSCAN return %d, errno = %d\r\n", ioret, errno);
 				if (ioret >= 0 || errno == E2BIG)
 				{
-					NEW_CLASS(interf, Net::WLANLinuxInterface(sb.ToString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED));
+					NEW_CLASS(interf, Net::WLANLinuxInterface(sb.ToCString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_CONNECTED));
 					outArr->Add(interf);
 					ret++;
 				}
@@ -380,7 +380,7 @@ UOSInt Net::WirelessLAN::GetInterfaces(Data::ArrayList<Net::WirelessLAN::Interfa
 								printf("Priv: %s %04x %d %d:\r\n", args[j].name, args[j].cmd, args[j].get_args, args[j].set_args);
 								if (siteSurveyCmd != 0 && setCmd != 0)
 								{
-									NEW_CLASS(interf, Net::WLANLinuxMTKInterface(sb.ToString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_NOT_READY, setCmd, siteSurveyCmd));
+									NEW_CLASS(interf, Net::WLANLinuxMTKInterface(sb.ToCString(), (void*)(OSInt)thisData->fd, Net::WirelessLAN::INTERFACE_STATE_NOT_READY, setCmd, siteSurveyCmd));
 									outArr->Add(interf);
 									ret++;
 									break;

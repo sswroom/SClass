@@ -8,9 +8,9 @@ Text::VSFile::VSFile(Text::String *fileName)
 	this->fileName = fileName->Clone();
 }
 
-Text::VSFile::VSFile(const UTF8Char *fileName)
+Text::VSFile::VSFile(Text::CString fileName)
 {
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 }
 
 Text::VSFile::~VSFile()
@@ -29,9 +29,9 @@ Text::VSContainer::VSContainer(Text::String *contName)
 	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
-Text::VSContainer::VSContainer(const UTF8Char *contName)
+Text::VSContainer::VSContainer(Text::CString contName)
 {
-	this->contName = Text::String::NewNotNull(contName);
+	this->contName = Text::String::New(contName);
 	NEW_CLASS(this->childList, Data::ArrayList<Text::CodeObject*>());
 }
 
@@ -49,12 +49,12 @@ Text::VSContainer::~VSContainer()
 	DEL_CLASS(this->childList);
 }
 
-void Text::VSContainer::SetContainerName(const UTF8Char *contName)
+void Text::VSContainer::SetContainerName(Text::CString contName)
 {
-	if (contName)
+	if (contName.leng > 0)
 	{
 		this->contName->Release();
-		this->contName = Text::String::NewNotNull(contName);
+		this->contName = Text::String::New(contName);
 	}
 }
 
@@ -124,12 +124,12 @@ void Text::VSProject::SetProjectName(Text::String *projName)
 	}
 }
 
-void Text::VSProject::SetProjectName(const UTF8Char *projName)
+void Text::VSProject::SetProjectName(Text::CString projName)
 {
-	if (projName)
+	if (projName.leng > 0)
 	{
 		SDEL_STRING(this->projName);
-		this->projName = Text::String::String::NewNotNull(projName);
+		this->projName = Text::String::New(projName);
 	}
 }
 

@@ -908,7 +908,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 					Text::StringBuilderUTF8 impObjNames;
 					Net::ASN1MIB::ModuleInfo *impModule;
 					Net::ASN1MIB::ObjectInfo *impObj;
-					UTF8Char *impSarr[2];
+					Text::PString impSarr[2];
 					UOSInt impCnt;
 					sb.SetSubstr(7);
 					sb.Trim();
@@ -988,23 +988,23 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 								errMessage->AppendC(UTF8STRC(" not found"));
 								return false;
 							}
-							impSarr[1] = impObjNames.ToString();
+							impSarr[1] = impObjNames;
 							while (true)
 							{
 								UOSInt ui;
-								impCnt = Text::StrSplitTrim(impSarr, 2, impSarr[1], ',');
+								impCnt = Text::StrSplitTrimP(impSarr, 2, impSarr[1], ',');
 
-								i = Text::StrIndexOfChar(impSarr[0], '{');
-								if (i != INVALID_INDEX && Text::StrEndsWith(impSarr[0], (const UTF8Char*)"}"))
+								i = impSarr[0].IndexOf('{');
+								if (i != INVALID_INDEX && impSarr[0].EndsWith('}'))
 								{
-									impSarr[0][i] = 0;
-									while (i > 0 && Text::CharUtil::IsWS(&impSarr[0][i - 1]))
+									impSarr[0].TrimToLength(i);
+									while (i > 0 && Text::CharUtil::IsWS(&impSarr[0].v[i - 1]))
 									{
-										impSarr[0][--i] = 0;
+										impSarr[0].TrimToLength(--i);
 									}
 								}
 								impObj = MemAlloc(ObjectInfo, 1);
-								impObj->objectName = Text::String::NewNotNull(impSarr[0]);
+								impObj->objectName = Text::String::New(impSarr[0].v, impSarr[0].leng);
 								impObj->typeName = Text::String::New(sb.ToString(), sb.GetLength());
 								impObj->typeVal = Text::String::New(UTF8STRC("Imported Value"));
 								impObj->oidLen = 0;
@@ -1030,7 +1030,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										impObj2->typeName = 0;
 									}
-									impObj2->typeVal = Text::StrCopyNew((const UTF8Char*)"Imported Value");
+									impObj2->typeVal = Text::StrCopyNewC(UTF8STRC("Imported Value"));
 									impObj2->oidLen = impObj->oidLen;
 									if (impObj->oidLen > 0)
 									{
@@ -1296,7 +1296,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 									{
 										sbObjValName.ClearStr();
 										reader->PeekWord(&sbObjValName);
-										if (IsUnknownType(sbObjValName.ToString()))
+										if (IsUnknownType(sbObjValName.ToCString()))
 										{
 											sbObjValName.ClearStr();
 											reader->NextWord(&sbObjValName);
@@ -1432,7 +1432,7 @@ Bool Net::ASN1MIB::ParseModule(Net::MIBReader *reader, ModuleInfo *module, Text:
 						{
 							sbObjValName.ClearStr();
 							reader->PeekWord(&sbObjValName);
-							if (IsUnknownType(sbObjValName.ToString()))
+							if (IsUnknownType(sbObjValName.ToCString()))
 							{
 								sbObjValName.ClearStr();
 								reader->NextWord(&sbObjValName);
@@ -1920,21 +1920,21 @@ Bool Net::ASN1MIB::IsType(const UTF8Char *s)
 	return true;
 }
 
-Bool Net::ASN1MIB::IsKnownType(const UTF8Char *s)
+Bool Net::ASN1MIB::IsKnownType(Text::CString s)
 {
-	if (Text::StrEquals(s, (const UTF8Char*)"OCTET STRING") ||
-		Text::StrEquals(s, (const UTF8Char*)"END") ||
-		Text::StrEquals(s, (const UTF8Char*)"INTEGER") ||
-		Text::StrEquals(s, (const UTF8Char*)"OBJECT IDENTIFIER"))
+	if (s.Equals(UTF8STRC("OCTET STRING")) ||
+		s.Equals(UTF8STRC("END")) ||
+		s.Equals(UTF8STRC("INTEGER")) ||
+		s.Equals(UTF8STRC("OBJECT IDENTIFIER")))
 	{
 		return true;
 	}
 	return false;
 }
 
-Bool Net::ASN1MIB::IsUnknownType(const UTF8Char *s)
+Bool Net::ASN1MIB::IsUnknownType(Text::CString s)
 {
-	return IsType(s) && !IsKnownType(s);
+	return IsType(s.v) && !IsKnownType(s);
 }
 
 OSInt Net::ASN1MIB::BranketEnd(const UTF8Char *s, UTF8Char *brkType)

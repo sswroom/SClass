@@ -28,7 +28,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	NEW_CLASS(dlg, UI::FolderDialog(L"SSWR", L"AVIRead", L"ImageBatch"));
 	if (path)
 	{
-		dlg->SetFolder(path->v);
+		dlg->SetFolder(path->ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -55,7 +55,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 		}
 		me->selCnt = fileCnt;
 		me->prgMain->ProgressStart(CSTR("Loading"), fileCnt);
-		me->icMain->SetFolder(path->v);
+		me->icMain->SetFolder(path->ToCString());
 		me->lblFolder->SetText(path->ToCString());
 		me->pbMain->SetImage(0, false);
 		SDEL_CLASS(me->dispImage);

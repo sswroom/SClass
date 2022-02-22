@@ -1579,27 +1579,27 @@ UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::ServerType svrT
 	return ret;
 }
 
-UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, const UTF8Char *val, DB::DBUtil::ServerType svrType)
+UTF8Char *DB::DBUtil::SDBTrim(UTF8Char *sqlstr, Text::CString val, DB::DBUtil::ServerType svrType)
 {
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		return Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sqlstr, UTF8STRC("LTRIM(RTRIM(")), val), UTF8STRC("))"));
+		return Text::StrConcatC(val.ConcatTo(Text::StrConcatC(sqlstr, UTF8STRC("LTRIM(RTRIM("))), UTF8STRC("))"));
 	}
 	else
 	{
-		return Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sqlstr, UTF8STRC("TRIM(")), val), UTF8STRC(")"));
+		return Text::StrConcatC(val.ConcatTo(Text::StrConcatC(sqlstr, UTF8STRC("TRIM("))), UTF8STRC(")"));
 	}
 }
 
-UOSInt DB::DBUtil::SDBTrimLeng(const UTF8Char *val, DB::DBUtil::ServerType svrType)
+UOSInt DB::DBUtil::SDBTrimLeng(Text::CString val, DB::DBUtil::ServerType svrType)
 {
 	if (svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		return Text::StrCharCnt(val) + 14;
+		return val.leng + 14;
 	}
 	else
 	{
-		return Text::StrCharCnt(val) + 6;
+		return val.leng + 6;
 	}
 }
 

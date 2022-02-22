@@ -126,6 +126,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt k;
 	UOSInt l;
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UInt8 *dirBuff;
 	if (flags & 2)
 	{
@@ -146,6 +147,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 				MemCopyNO(fileName, &dirBuff[i + 26], fnameLen);
 				fileName[fnameLen] = 0;
 				sptr = fileName;
+				sptrEnd = sptr + fnameLen;
 				srcPtr2 = srcPtr;
 				pf2 = pf;
 				while (true)
@@ -159,7 +161,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
-							pf2->AddPack(pf3, sptr, 0);
+							pf2->AddPack(pf3, {sptr, k}, 0);
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -173,14 +175,14 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
-							pf2->AddPack(pf3, sptr, 0);
+							pf2->AddPack(pf3, {sptr, l}, 0);
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), ReadInt64(&dirBuff[i + 16]));
 						break;
 					}
 				}
@@ -211,6 +213,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 				MemCopyNO(fileName, &dirBuff[i + 26], fnameLen);
 				fileName[fnameLen] = 0;
 				sptr = fileName;
+				sptrEnd = sptr + fnameLen;
 				srcPtr2 = srcPtr;
 				pf2 = pf;
 				while (true)
@@ -224,7 +227,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
-							pf2->AddPack(pf3, sptr, 0);
+							pf2->AddPack(pf3, {sptr, k}, 0);
 						}
 						pf2 = pf3;
 						sptr = &sptr[k + 1];
@@ -238,14 +241,14 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
-							pf2->AddPack(pf3, sptr, 0);
+							pf2->AddPack(pf3, {sptr, l}, 0);
 						}
 						pf2 = pf3;
 						sptr = &sptr[l + 1];
 					}
 					else
 					{
-						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), sptr, ReadInt64(&dirBuff[i + 16]));
+						pf2->AddData(fd, ReadUInt64(&dirBuff[i]), ReadUInt64(&dirBuff[i + 8]), CSTRP(sptr, sptrEnd), ReadInt64(&dirBuff[i + 16]));
 						break;
 					}
 				}

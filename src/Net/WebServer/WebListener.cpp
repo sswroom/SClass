@@ -224,7 +224,7 @@ void Net::WebServer::WebListener::LogAccess(Net::WebServer::IWebRequest *req, Ne
 		sb.AppendC(UTF8STRC(" "));
 		Text::SBAppendF64(&sb, time);
 
-		this->accLog->LogMessageC(sb.ToString(), sb.GetLength(), this->accLogLev);
+		this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
 	}
 	accLogMutUsage.EndUse();
 }
@@ -242,11 +242,11 @@ void Net::WebServer::WebListener::LogMessageC(Net::WebServer::IWebRequest *req, 
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sb.AppendC(UTF8STRC(" "));
 			sb.AppendC(msg, msgLen);
-			this->accLog->LogMessageC(sb.ToString(), sb.GetLength(), this->accLogLev);
+			this->accLog->LogMessage(sb.ToCString(), this->accLogLev);
 		}
 		else
 		{
-			this->accLog->LogMessageC(msg, msgLen, this->accLogLev);
+			this->accLog->LogMessage({msg, msgLen}, this->accLogLev);
 		}
 	}
 }

@@ -7,7 +7,7 @@ Media::AACFrameSource::AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *f
 {
 }
 
-Media::AACFrameSource::AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name) : Media::AudioFrameSource(fd, format, name)
+Media::AACFrameSource::AACFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::CString name) : Media::AudioFrameSource(fd, format, name)
 {
 }
 

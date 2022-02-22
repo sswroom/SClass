@@ -43,6 +43,7 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 fileOfst;
 	UInt32 nextOfst;
 	UTF8Char fileName[256];
+	UTF8Char *sptr;
 	Text::Encoding enc(932);
 
 	if (!fd->GetFullName()->EndsWithICase(UTF8STRC(".PAC")))
@@ -84,8 +85,8 @@ IO::ParsedObject *Parser::FileParser::PACParser::ParseFile(IO::IStreamData *fd, 
 			DEL_CLASS(pf);
 			return 0;
 		}
-		enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
-		pf->AddData(fd, fileOfst, fileSize, fileName, 0);
+		sptr = enc.UTF8FromBytes(fileName, &recBuff[j], 32, 0);
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(fileName, sptr), 0);
 
 		nextOfst = fileOfst + fileSize;
 		i++;

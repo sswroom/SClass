@@ -16,7 +16,7 @@ void __stdcall SSWR::AVIRead::AVIRGISHKTrafficForm::OnRoadCenterlineClicked(void
 	NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"HKTraffic", false));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	dlg->SetAllowMultiSel(false);
 	me->core->GetParserList()->PrepareSelector(dlg, IO::ParserType::MapLayer);

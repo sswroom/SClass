@@ -80,7 +80,7 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		Media::EDID::EDIDInfo info;
 		if (Media::EDID::Parse(edid, &info))
 		{
-			this->name = Text::String::NewNotNull(info.monitorName);
+			this->name = Text::String::NewNotNullSlow(info.monitorName);
 			sptr = Text::StrHexVal16(Text::StrConcat(sbuff, info.vendorName), info.productCode);
 			this->monId = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 		}

@@ -494,7 +494,7 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 		log->manuf = SCOPY_STRING(bss->GetManuf());
 		log->model =  SCOPY_STRING(bss->GetModel());
 		log->serialNum =  SCOPY_STRING(bss->GetSN());
-		log->country =  Text::String::NewOrNull(bss->GetCountry());
+		log->country =  Text::String::NewOrNullSlow(bss->GetCountry());
 		log->lastRSSI = bss->GetRSSI();
 		log->ouis[0][0] = oui1[0];
 		log->ouis[0][1] = oui1[1];
@@ -548,7 +548,7 @@ Net::WiFiLogFile::LogFileEntry *Net::WiFiLogFile::AddBSSInfo(Net::WirelessLAN::B
 			}
 			if (log->country == 0 && bss->GetCountry())
 			{
-				log->country = Text::String::NewNotNull(bss->GetCountry());
+				log->country = Text::String::NewNotNullSlow(bss->GetCountry());
 			}
 		}
 		UOSInt l;

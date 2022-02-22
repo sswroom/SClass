@@ -36,6 +36,7 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFile(IO::IStreamData *
 {
 	UInt32 hdr[1];
 	UTF8Char name[64];
+	UTF8Char *sptr;
 	UInt32 buffOfst;
 	UInt32 fileOfst;
 	Text::Encoding enc(932);
@@ -82,8 +83,8 @@ IO::ParsedObject *Parser::FileParser::SEGPackParser::ParseFile(IO::IStreamData *
 			return 0;
 		}
 		
-		enc.UTF8FromBytes(name, &buff[buffOfst + 16], packSize - 17, 0);
-		pf->AddData(fd, thisOfst, thisSize, name, 0);
+		sptr = enc.UTF8FromBytes(name, &buff[buffOfst + 16], packSize - 17, 0);
+		pf->AddData(fd, thisOfst, thisSize, CSTRP(name, sptr), 0);
 
 		fileOfst += thisSize;
 		buffOfst += packSize;

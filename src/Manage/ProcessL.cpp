@@ -725,7 +725,7 @@ struct Manage::Process::FindProcSess
 	Text::String *procName;
 };
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
 {
 	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(UTF8STRC("/proc/*"));
 	FindProcSess *sess;
@@ -735,9 +735,9 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *proc
 	}
 	sess = MemAlloc(FindProcSess, 1);
 	sess->findFileSess = ffsess;
-	if (processName)
+	if (processName.v)
 	{
-		sess->procName = Text::String::NewNotNull(processName);
+		sess->procName = Text::String::New(processName);
 	}
 	else
 	{

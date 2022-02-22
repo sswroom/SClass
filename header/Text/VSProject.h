@@ -11,7 +11,7 @@ namespace Text
 		Text::String *fileName;
 	public:
 		VSFile(Text::String *fileName);
-		VSFile(const UTF8Char *fileName);
+		VSFile(Text::CString fileName);
 		virtual ~VSFile();
 
 		virtual Text::String *GetFileName();
@@ -30,10 +30,10 @@ namespace Text
 		Data::ArrayList<CodeObject*> *childList;
 	public:
 		VSContainer(Text::String *contName);
-		VSContainer(const UTF8Char *contName);
+		VSContainer(Text::CString contName);
 		virtual ~VSContainer();
 
-		virtual void SetContainerName(const UTF8Char *contName);
+		virtual void SetContainerName(Text::CString contName);
 		virtual Text::String *GetContainerName();
 
 		virtual UOSInt GetChildCount();
@@ -66,7 +66,7 @@ namespace Text
 
 		virtual ProjectType GetProjectType();
 		virtual void SetProjectName(Text::String *projName);
-		virtual void SetProjectName(const UTF8Char *projName);
+		virtual void SetProjectName(Text::CString projName);
 		virtual Text::String *GetContainerName();
 
 		virtual UOSInt GetChildCount();

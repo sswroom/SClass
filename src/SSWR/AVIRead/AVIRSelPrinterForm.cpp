@@ -14,11 +14,12 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnSettingClick(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnPrinterChg(void *userObj)
 {
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRSelPrinterForm *me = (SSWR::AVIRead::AVIRSelPrinterForm*)userObj;
-	if (me->cboPrinter->GetSelectedItemText(sbuff))
+	if ((sptr = me->cboPrinter->GetSelectedItemText(sbuff)) != 0)
 	{
 		SDEL_CLASS(me->currPrinter);
-		NEW_CLASS(me->currPrinter, Media::Printer(sbuff));
+		NEW_CLASS(me->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
 		if (me->currPrinter->IsError())
 		{
 			DEL_CLASS(me->currPrinter);
@@ -80,7 +81,7 @@ SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *pare
 	if (j > 0)
 	{
 		this->cboPrinter->SetSelectedIndex(0);
-		NEW_CLASS(this->currPrinter, Media::Printer(sbuff));
+		NEW_CLASS(this->currPrinter, Media::Printer(CSTRP(sbuff, sptr)));
 		if (this->currPrinter->IsError())
 		{
 			DEL_CLASS(this->currPrinter);

@@ -211,7 +211,7 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(Text::CString contentType, Tex
 	NEW_CLASS(parts, Data::ArrayList<PartInfo*>());
 }
 
-Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, const UTF8Char *defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
+Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, Text::CString defMsg) : Text::IMIMEObj(CSTR("multipart/mixed"))
 {
 	Text::StringBuilderUTF8 sbc;
 	Data::DateTime dt;
@@ -226,9 +226,9 @@ Text::MIMEObj::MultipartMIMEObj::MultipartMIMEObj(const UTF8Char *contentType, c
 	sbc.Append(this->boundary);
 	sbc.AppendC(UTF8STRC("\""));
 	this->contentType = Text::String::New(sbc.ToString(), sbc.GetLength());
-	if (defMsg)
+	if (defMsg.leng > 0)
 	{
-		this->defMsg = Text::String::NewNotNull(defMsg);
+		this->defMsg = Text::String::New(defMsg);
 	}
 	else
 	{

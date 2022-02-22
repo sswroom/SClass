@@ -203,7 +203,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPSvrForm::OnStartClick(void *userObj)
 			if (!me->chkSkipLog->IsChecked())
 			{
 				NEW_CLASS(me->log, IO::LogTool());
-				me->log->AddFileLog(sb->ToString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
+				me->log->AddFileLog(sb->ToCString(), IO::ILogHandler::LOG_TYPE_PER_DAY, IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", false);
 				me->svr->SetAccessLog(me->log, IO::ILogHandler::LOG_LEVEL_RAW);
 				me->svr->SetRequestLog(me->reqLog);
 				NEW_CLASS(me->logger, UI::ListBoxLogger(me, me->lbLog, 500, true));

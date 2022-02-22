@@ -25,7 +25,7 @@ Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioForma
 	this->blocks = MemAlloc(Media::AudioFrameSource::AudioFrame, this->maxBlockCnt);
 }
 
-Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, const UTF8Char *name)
+Media::AudioFrameSource::AudioFrameSource(IO::IStreamData *fd, Media::AudioFormat *format, Text::CString name)
 {
 	this->format.FromAudioFormat(format);
 	if (this->format.frequency == 0)

@@ -12,7 +12,7 @@ Text::String *Net::WebServer::HTTPForwardHandler::GetNextURL(Net::WebServer::IWe
 	return this->forwardAddrs->GetItem(i);
 }
 
-Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *forwardURL, ForwardType fwdType)
+Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString forwardURL, ForwardType fwdType)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
@@ -21,7 +21,7 @@ Net::WebServer::HTTPForwardHandler::HTTPForwardHandler(Net::SocketFactory *sockf
 	this->reqHdlrObj = 0;
 	NEW_CLASS(this->forwardAddrs, Data::ArrayList<Text::String*>());
 	NEW_CLASS(this->injHeaders, Data::ArrayList<Text::String*>());
-	this->forwardAddrs->Add(Text::String::NewNotNull(forwardURL));
+	this->forwardAddrs->Add(Text::String::New(forwardURL));
 	this->nextURL = 0;
 	NEW_CLASS(this->mut, Sync::Mutex());
 }
@@ -286,10 +286,10 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	return true;
 }
 
-void Net::WebServer::HTTPForwardHandler::AddForwardURL(const UTF8Char *url)
+void Net::WebServer::HTTPForwardHandler::AddForwardURL(Text::CString url)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->forwardAddrs->Add(Text::String::NewNotNull(url));
+	this->forwardAddrs->Add(Text::String::New(url));
 }
 
 void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
@@ -297,9 +297,9 @@ void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::String *header)
 	this->injHeaders->Add(header->Clone());
 }
 
-void Net::WebServer::HTTPForwardHandler::AddInjectHeader(const UTF8Char *header)
+void Net::WebServer::HTTPForwardHandler::AddInjectHeader(Text::CString header)
 {
-	this->injHeaders->Add(Text::String::NewNotNull(header));
+	this->injHeaders->Add(Text::String::New(header));
 }
 
 void Net::WebServer::HTTPForwardHandler::HandleForwardRequest(ReqHandler reqHdlr, void *userObj)

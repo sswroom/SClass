@@ -17,7 +17,7 @@ namespace UI
 		FolderDialog(const WChar *compName, const WChar *appName, const WChar *dialogName);
 		~FolderDialog();
 
-		void SetFolder(const UTF8Char *dirName);
+		void SetFolder(Text::CString dirName);
 		Text::String *GetFolder();
 		void SetMessage(const UTF8Char *message);
 

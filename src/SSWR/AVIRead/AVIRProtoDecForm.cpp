@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRProtoDecForm::OnFileClicked(void *userObj)
 	dlg->AddFilter(CSTR("*.dat"), CSTR("RAW data file"));
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

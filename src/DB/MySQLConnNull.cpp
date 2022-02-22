@@ -46,7 +46,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::String 
 				sb.Append(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
-			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 		return 0;
 	}
@@ -67,7 +67,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::String 
 			}
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
 			conn->GetErrorMsg(&sb);
-			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 		DEL_CLASS(conn);
 		return 0;
@@ -89,7 +89,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::CString
 				sb.Append(logPrefix);
 			}
 			sb.AppendC(UTF8STRC("Error in resolving MySQL Server IP"));
-			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 		return 0;
 	}
@@ -110,7 +110,7 @@ DB::DBTool *DB::MySQLConn::CreateDBTool(Net::SocketFactory *sockf, Text::CString
 			}
 			sb.AppendC(UTF8STRC("Error in connecting to MySQL Server: "));
 			conn->GetErrorMsg(&sb);
-			log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+			log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 		DEL_CLASS(conn);
 		return 0;

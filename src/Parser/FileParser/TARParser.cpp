@@ -102,7 +102,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 						if (pf3 == 0)
 						{
 							NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-							pf2->AddPack(pf3, sptr, t * 1000LL);
+							pf2->AddPack(pf3, {sptr, i}, t * 1000LL);
 						}
 						pf2 = pf3;
 						sptr = &sptr[i + 1];
@@ -117,7 +117,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 							if (pf3 == 0)
 							{
 								NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-								pf2->AddPack(pf3, sptr, t * 1000LL);
+								pf2->AddPack(pf3, CSTRP(sptr, sptrEnd), t * 1000LL);
 							}
 						}
 						break;
@@ -144,7 +144,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 				if (pf3 == 0)
 				{
 					NEW_CLASS(pf3, IO::PackageFile(sb.ToCString()));
-					pf2->AddPack(pf3, sptr, t * 1000LL);
+					pf2->AddPack(pf3, {sptr, i}, t * 1000LL);
 				}
 				pf2 = pf3;
 				sptr = &sptr[i + 1];
@@ -154,7 +154,7 @@ IO::ParsedObject *Parser::FileParser::TARParser::ParseFile(IO::IStreamData *fd, 
 				break;
 			}
 		}
-		pf2->AddData(fd, currOfst, itemSize, sptr, t * 1000LL);
+		pf2->AddData(fd, currOfst, itemSize, CSTRP(sptr, sptrEnd), t * 1000LL);
 		if (itemSize & 511)
 		{
 			currOfst += itemSize + 512 - (itemSize & 511);

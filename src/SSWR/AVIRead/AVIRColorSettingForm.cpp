@@ -52,7 +52,7 @@ void __stdcall SSWR::AVIRead::AVIRColorSettingForm::OnMonProfileClicked(void *us
 		sptr = Media::ICCProfile::GetProfilePath(sbuff);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		*sptr = 0;
-		dlg->SetFileName(sbuff);
+		dlg->SetFileName(CSTRP(sbuff, sptr));
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			Text::String *s = dlg->GetFileName();

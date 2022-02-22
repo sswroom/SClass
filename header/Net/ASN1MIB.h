@@ -51,8 +51,8 @@ namespace Net
 
 		static void RemoveSpace(UTF8Char *s);
 		static Bool IsType(const UTF8Char *s);
-		static Bool IsKnownType(const UTF8Char *s);
-		static Bool IsUnknownType(const UTF8Char *s);
+		static Bool IsKnownType(Text::CString s);
+		static Bool IsUnknownType(Text::CString s);
 		static OSInt BranketEnd(const UTF8Char *s, UTF8Char *brkType);
 		static const UTF8Char *SkipWS(const UTF8Char *s);
 		static UTF8Char NextChar(const UTF8Char *s);

@@ -113,8 +113,7 @@ namespace Text
 
 	public:
 		JSONString(Text::String *val);
-		JSONString(const UTF8Char *val, UOSInt leng);
-		JSONString(const UTF8Char *val);
+		JSONString(Text::CString val);
 	private:
 		virtual ~JSONString();
 

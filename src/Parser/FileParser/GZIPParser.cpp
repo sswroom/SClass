@@ -57,7 +57,8 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 	if (hdr[3] & 8)
 	{
-		byteConv = (UOSInt)(Text::StrConcat(sbuff, &hdr[10]) - sbuff);
+		sptr = Text::StrConcat(sbuff, &hdr[10]);
+		byteConv = (UOSInt)(sptr - sbuff);
 		if (byteConv >= 247)
 			return 0;
 		
@@ -65,9 +66,10 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 	else
 	{
 		sptr = fd->GetShortName().ConcatTo(sbuff);
-		if ((sptr - sbuff) > 3 && Text::StrEquals(&sptr[-3], (const UTF8Char*)".gz"))
+		if ((sptr - sbuff) > 3 && Text::StrEqualsC(&sptr[-3], 3, UTF8STRC(".gz")))
 		{
 			sptr[-3] = 0;
+			sptr -= 3;
 		}
 		else
 		{
@@ -88,7 +90,7 @@ IO::ParsedObject *Parser::FileParser::GZIPParser::ParseFile(IO::IStreamData *fd,
 	cinfo.compExtras = 0;
 	*(Int32*)cinfo.checkBytes = *(Int32*)footer;
 	NEW_CLASS(pf, IO::PackageFile(fd->GetFullName()));
-	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, sbuff[0]?sbuff:0, ReadUInt32(&hdr[4]) * 1000LL);
+	pf->AddCompData(fd, 10 + byteConv, fileLeng - 18 - byteConv, &cinfo, CSTRP(sbuff, sptr), ReadUInt32(&hdr[4]) * 1000LL);
 
 	return pf;
 }

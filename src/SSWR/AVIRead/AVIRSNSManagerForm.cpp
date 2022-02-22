@@ -9,7 +9,7 @@ void __stdcall SSWR::AVIRead::AVIRSNSManagerForm::OnChannelAddClicked(void *user
 	Net::SNS::SNSControl::SNSType typ = (Net::SNS::SNSControl::SNSType)(OSInt)me->cboChannel->GetSelectedItem();
 	Text::StringBuilderUTF8 sb;
 	me->txtChannelId->GetText(&sb);
-	Net::SNS::SNSControl *ctrl = me->mgr->AddChannel(typ, sb.ToString());
+	Net::SNS::SNSControl *ctrl = me->mgr->AddChannel(typ, sb.ToCString());
 	if (ctrl)
 	{
 		me->lbChannels->AddItem(ctrl->GetName(), ctrl);
@@ -59,7 +59,7 @@ SSWR::AVIRead::AVIRSNSManagerForm::AVIRSNSManagerForm(UI::GUIClientControl *pare
 	this->core = core;
 	this->ssl = Net::SSLEngineFactory::Create(this->core->GetSocketFactory(), true);
 	Text::CString userAgent = Net::UserAgentDB::FindUserAgent(Manage::OSInfo::OT_WINDOWS_NT64, Net::BrowserInfo::BT_FIREFOX);
-	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent, 0));
+	NEW_CLASS(this->mgr, Net::SNS::SNSManager(core->GetSocketFactory(), this->ssl, core->GetEncFactory(), userAgent, CSTR_NULL));
 	this->SetDPI(this->core->GetMonitorHDPI(this->GetHMonitor()), this->core->GetMonitorDDPI(this->GetHMonitor()));
 
 	NEW_CLASS(this->pnlChannel, UI::GUIPanel(ui, this));

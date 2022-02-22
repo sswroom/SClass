@@ -41,7 +41,7 @@ void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess
 				codes->Add(Text::String::New(buff, (UOSInt)(sptr - buff)));
 				break;
 			}
-			codes->Add(Text::String::NewNotNull(buff));
+			codes->Add(Text::String::NewNotNullSlow(buff));
 			if (sess->endStatus != 0)
 			{
 				UInt32 nextAddr = sess->regs.CS;

@@ -118,6 +118,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 {
 	Text::Encoding enc(this->codePage);
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 	UInt8 headBuffer[12];
 	UInt8 chunkBuffer[12];
 	UInt64 offset;
@@ -130,7 +131,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 	UInt16 wLongsPerEntry;
 	Int32 cmpTmp;
 	Media::MediaFile *mf;
-	const UTF8Char *audsName;
+	Text::String *audsName;
 
 	UInt32 rate = 30000;
 	UInt32 scale = 1001;
@@ -306,8 +307,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
-					enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
-					audsName = Text::StrCopyNew(sbuff);
+					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
+					audsName = Text::String::NewP(sbuff, sptr);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"indx")
@@ -522,8 +523,8 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (*(Int32*)&strl[i].others[j] == *(Int32*)"strn")
 				{
-					enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
-					audsName = Text::StrCopyNew(sbuff);
+					sptr = enc.UTF8FromBytes(sbuff, &strl[i].others[j + 8], ReadUInt32(&strl[i].others[j + 4]), 0);
+					audsName = Text::String::NewP(sbuff, sptr);
 					j += *(UInt32*)&strl[i].others[j + 4] + 8;
 				}
 				else if (*(Int32*)&strl[i].others[j] == *(Int32*)"indx")
@@ -678,11 +679,7 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			dsList->Add(audsData);
 			audioList->Add(new AudioStream((WAVEFORMATEX*)strl[i].strf, dsList, audsName, audDelay));*/
 			/////////////////////////////////
-			if (audsName)
-			{
-				Text::StrDelNew(audsName);
-				audsName = 0;
-			}
+			SDEL_STRING(audsName);
 			if (audsData)
 			{
 				mf->AddSource(audsData, audDelay);
@@ -723,13 +720,13 @@ IO::ParsedObject *Parser::FileParser::AVIParser::ParseFile(IO::IStreamData *fd, 
 			chapTime = MulDivU32(frameNum, scale * 1000, rate);
 			if (chap[chapOfst] == 0xff && chap[chapOfst + 1] == 0xfe)
 			{
-				Text::StrUTF16_UTF8(sbuff, (UTF16Char*)&chap[chapOfst + 2]);
-				chapters->AddChapter(chapTime, sbuff, 0);
+				sptr = Text::StrUTF16_UTF8(sbuff, (UTF16Char*)&chap[chapOfst + 2]);
+				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), CSTR_NULL);
 			}
 			else
 			{
-				enc.UTF8FromBytes(sbuff, &chap[chapOfst], Text::StrCharCnt(&chap[chapOfst]), 0);
-				chapters->AddChapter(chapTime, sbuff, 0);
+				sptr = enc.UTF8FromBytes(sbuff, &chap[chapOfst], Text::StrCharCnt(&chap[chapOfst]), 0);
+				chapters->AddChapter(chapTime, CSTRP(sbuff, sptr), CSTR_NULL);
 			}
 			i++;
 		}

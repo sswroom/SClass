@@ -241,7 +241,7 @@ UOSInt Map::MapEnv::AddLineStyle()
 	}
 }
 
-Bool Map::MapEnv::SetLineStyleName(UOSInt index, const UTF8Char *name)
+Bool Map::MapEnv::SetLineStyleName(UOSInt index, Text::CString name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	UOSInt cnt = this->lineStyles->GetCount();
@@ -430,15 +430,15 @@ UOSInt Map::MapEnv::GetLineStyleLayerCnt(UOSInt index)
 	return style->layers->GetCount();
 }
 
-UOSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
+UOSInt Map::MapEnv::AddFontStyle(Text::CString styleName, Text::CString fontName, Double fontSizePt, Bool bold, UInt32 fontColor, UOSInt buffSize, UInt32 buffColor)
 {
 	Map::MapEnv::FontStyle *style;
-	if (fontName == 0)
+	if (fontName.leng == 0)
 		return (UOSInt)-1;
 	Sync::MutexUsage mutUsage(this->mut);
 	style = MemAlloc(Map::MapEnv::FontStyle, 1);
 	style->styleName = Text::String::NewOrNull(styleName);
-	style->fontName = Text::String::NewNotNull(fontName);
+	style->fontName = Text::String::New(fontName);
 	style->fontSizePt = fontSizePt;
 	style->bold = bold;
 	style->fontColor = fontColor;
@@ -447,7 +447,7 @@ UOSInt Map::MapEnv::AddFontStyle(const UTF8Char *styleName, const UTF8Char *font
 	return this->fontStyles->Add(style);
 }
 
-Bool Map::MapEnv::SetFontStyleName(UOSInt index, const UTF8Char *name)
+Bool Map::MapEnv::SetFontStyleName(UOSInt index, Text::CString name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::FontStyle *style = this->fontStyles->GetItem(index);
@@ -535,10 +535,11 @@ UOSInt Map::MapEnv::AddLayer(Map::MapEnv::GroupItem *group, Map::IMapDrawLayer *
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
+		UTF8Char *sptr2;
 		Map::MapLayerCollection *layerColl = (Map::MapLayerCollection*)layer;
 		sptr = layerColl->GetName()->ConcatTo(sbuff);
-		sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\') + 1];
-		Map::MapEnv::GroupItem *grp = this->AddGroup(group, sptr);
+		sptr2 = &sbuff[Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '\\') + 1];
+		Map::MapEnv::GroupItem *grp = this->AddGroup(group, CSTRP(sptr2, sptr));
 
 		Map::IMapDrawLayer *layer;
 		UOSInt i;
@@ -687,13 +688,13 @@ Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Tex
 	return newG;
 }
 
-Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, const UTF8Char *subgroupName)
+Map::MapEnv::GroupItem *Map::MapEnv::AddGroup(Map::MapEnv::GroupItem *group, Text::CString subgroupName)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	Map::MapEnv::GroupItem *newG;
 	newG = MemAlloc(Map::MapEnv::GroupItem, 1);
 	newG->itemType = Map::MapEnv::IT_GROUP;
-	newG->groupName = Text::String::NewNotNull(subgroupName);
+	newG->groupName = Text::String::New(subgroupName);
 	newG->groupHide = false;
 	NEW_CLASS(newG->subitems, Data::ArrayList<Map::MapEnv::MapItem*>());
 
@@ -845,11 +846,11 @@ Text::String *Map::MapEnv::GetGroupName(Map::MapEnv::GroupItem *group)
 	return group->groupName;
 }
 
-void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, const UTF8Char *name)
+void Map::MapEnv::SetGroupName(Map::MapEnv::GroupItem *group, Text::CString name)
 {
 	Sync::MutexUsage mutUsage(this->mut);
 	group->groupName->Release();
-	group->groupName = Text::String::NewNotNull(name);
+	group->groupName = Text::String::New(name);
 }
 
 void Map::MapEnv::SetGroupHide(Map::MapEnv::GroupItem *group, Bool isHide)

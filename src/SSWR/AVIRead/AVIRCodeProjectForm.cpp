@@ -167,7 +167,7 @@ void SSWR::AVIRead::AVIRCodeProjectForm::AddTreeObj(UI::GUITreeView::TreeItem *p
 			Text::CodeFile *file = (Text::CodeFile*)obj;
 			Text::String *fileName = file->GetFileName();
 			k = fileName->LastIndexOf(IO::Path::PATH_SEPERATOR);
-			tviLast = this->tvMain->InsertItem(parent, tviLast, &fileName->v[k + 1], obj);
+			tviLast = this->tvMain->InsertItem(parent, tviLast, fileName->ToCString().Substring(k + 1), obj);
 		}
 		else if (obj->GetObjectType() == Text::CodeObject::OT_CONTAINER)
 		{

@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRWellFormatForm::OnParseToFileClicked(void *use
 		UI::FileDialog *dlg;
 		NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"WellFormatParse", true));
 		AddFilters(dlg);
-		dlg->SetFileName(sbFile.ToString());
+		dlg->SetFileName(sbFile.ToCString());
 		if (dlg->ShowDialog(me->GetHandle()))
 		{
 			IO::FileStream *fs;

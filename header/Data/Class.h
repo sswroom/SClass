@@ -24,23 +24,23 @@ namespace Data
 		Class(void *refObj);
 		virtual ~Class();
 
-		UOSInt AddField(const UTF8Char *name, OSInt ofst, Data::VariItem::ItemType itemType); //return field size
-		Bool AddField(const UTF8Char *name, UInt8 *val);
-		Bool AddField(const UTF8Char *name, Int8 *val);
-		Bool AddField(const UTF8Char *name, UInt16 *val);
-		Bool AddField(const UTF8Char *name, Int16 *val);
-		Bool AddField(const UTF8Char *name, UInt32 *val);
-		Bool AddField(const UTF8Char *name, Int32 *val);
-		Bool AddField(const UTF8Char *name, UInt64 *val);
-		Bool AddField(const UTF8Char *name, Int64 *val);
-		Bool AddField(const UTF8Char *name, Single *val);
-		Bool AddField(const UTF8Char *name, Double *val);
-		Bool AddField(const UTF8Char *name, Text::String **val);
-		Bool AddField(const UTF8Char *name, Data::DateTime **val);
-		Bool AddField(const UTF8Char *name, Bool *val);
-		Bool AddField(const UTF8Char *name, Data::ReadonlyArray<UInt8> **val);
-		Bool AddField(const UTF8Char *name, Math::Vector2D **val);
-		Bool AddField(const UTF8Char *name, Data::UUID **val);
+		UOSInt AddField(Text::CString name, OSInt ofst, Data::VariItem::ItemType itemType); //return field size
+		Bool AddField(Text::CString name, UInt8 *val);
+		Bool AddField(Text::CString name, Int8 *val);
+		Bool AddField(Text::CString name, UInt16 *val);
+		Bool AddField(Text::CString name, Int16 *val);
+		Bool AddField(Text::CString name, UInt32 *val);
+		Bool AddField(Text::CString name, Int32 *val);
+		Bool AddField(Text::CString name, UInt64 *val);
+		Bool AddField(Text::CString name, Int64 *val);
+		Bool AddField(Text::CString name, Single *val);
+		Bool AddField(Text::CString name, Double *val);
+		Bool AddField(Text::CString name, Text::String **val);
+		Bool AddField(Text::CString name, Data::DateTime **val);
+		Bool AddField(Text::CString name, Bool *val);
+		Bool AddField(Text::CString name, Data::ReadonlyArray<UInt8> **val);
+		Bool AddField(Text::CString name, Math::Vector2D **val);
+		Bool AddField(Text::CString name, Data::UUID **val);
 
 		UOSInt GetFieldCount();
 		Text::String *GetFieldName(UOSInt index);
@@ -56,5 +56,5 @@ namespace Data
 	};
 }
 
-#define CLASS_ADD(cls, val) (cls->AddField((const UTF8Char*)#val, &this->val))
+#define CLASS_ADD(cls, val) (cls->AddField(CSTR(#val), &this->val))
 #endif

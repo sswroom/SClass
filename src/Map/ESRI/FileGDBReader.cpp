@@ -384,6 +384,7 @@ Bool Map::ESRI::FileGDBReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *
 Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 {
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	UOSInt fieldIndex = this->GetFieldIndex(colIndex);
 	if (this->rowData == 0)
 	{
@@ -399,17 +400,17 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 	switch (field->fieldType)
 	{
 	case 0:
-		Text::StrInt16(sbuff, ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrInt16(sbuff, ReadInt16(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::String::NewP(sbuff, sptr);
 	case 1:
-		Text::StrInt32(sbuff, ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrInt32(sbuff, ReadInt32(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::String::NewP(sbuff, sptr);
 	case 2:
-		Text::StrDouble(sbuff, ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrDouble(sbuff, ReadFloat(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::String::NewP(sbuff, sptr);
 	case 3:
-		Text::StrDouble(sbuff, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrDouble(sbuff, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
+		return Text::String::NewP(sbuff, sptr);
 	case 12:
 	case 4:
 		ofst = Map::ESRI::FileGDBUtil::ReadVarUInt(this->rowData, this->fieldOfst[fieldIndex], &v);
@@ -418,12 +419,12 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 		{
 			Data::DateTime dt;
 			Text::XLSUtil::Number2Date(&dt, ReadDouble(&this->rowData[this->fieldOfst[fieldIndex]]));
-			dt.ToString(sbuff);
-			return Text::String::NewNotNull(sbuff);
+			sptr = dt.ToString(sbuff);
+			return Text::String::NewP(sbuff, sptr);
 		}
 	case 6:
-		Text::StrInt32(sbuff, this->objectId);
-		return Text::String::NewNotNull(sbuff);
+		sptr = Text::StrInt32(sbuff, this->objectId);
+		return Text::String::NewP(sbuff, sptr);
 	case 7:
 		{
 			Math::Vector2D *vec = this->GetVector(colIndex);
@@ -433,7 +434,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 				Math::WKTWriter writer;
 				writer.GenerateWKT(&sb, vec);
 				DEL_CLASS(vec);
-				return Text::String::NewNotNull(sb.ToString());
+				return Text::String::New(sb.ToCString());
 			}
 		}
 		return 0;
@@ -445,7 +446,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 			this->GetBinary(colIndex, binBuff);
 			sb.AppendHexBuff(binBuff, size, 0, Text::LineBreakType::None);
 			MemFree(binBuff);
-			return Text::String::NewNotNull(sb.ToString());
+			return Text::String::New(sb.ToCString());
 		}
 	case 10:
 	case 11:
@@ -453,7 +454,7 @@ Text::String *Map::ESRI::FileGDBReader::GetNewStr(UOSInt colIndex)
 			Text::StringBuilderUTF8 sb;
 			Data::UUID uuid(&this->rowData[this->fieldOfst[fieldIndex]]);
 			uuid.ToString(&sb);
-			return Text::String::NewNotNull(sb.ToString());
+			return Text::String::New(sb.ToCString());
 		}
 	}
 	return 0;
@@ -1160,7 +1161,7 @@ Data::VariItem *Map::ESRI::FileGDBReader::GetNewItem(const UTF8Char *name)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(&this->rowData[ofst], (UOSInt)v);
-			return Data::VariItem::NewStr(sb.ToString());
+			return Data::VariItem::NewStr(sb.ToCString());
 		}
 	case 5:
 		{

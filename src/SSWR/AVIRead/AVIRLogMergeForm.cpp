@@ -19,7 +19,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile1Clicked(void *userObj)
 	me->txtFile1->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -39,7 +39,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnFile2Clicked(void *userObj)
 	me->txtFile2->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{
@@ -58,7 +58,7 @@ void __stdcall SSWR::AVIRead::AVIRLogMergeForm::OnOFileClicked(void *userObj)
 	me->txtOFile->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		dlg->SetFileName(sb.ToString());
+		dlg->SetFileName(sb.ToCString());
 	}
 	if (dlg->ShowDialog(me->GetHandle()))
 	{

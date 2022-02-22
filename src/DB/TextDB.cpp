@@ -366,7 +366,7 @@ Bool DB::TextDB::AddTableData(Data::ArrayList<const UTF8Char*> *valList)
 	while (i < j)
 	{
 		csptr = valList->GetItem(i);
-		vals[i] = Text::String::NewOrNull(csptr);		
+		vals[i] = Text::String::NewOrNullSlow(csptr);
 		i++;
 	}
 	this->currDB->valList->Add(vals);

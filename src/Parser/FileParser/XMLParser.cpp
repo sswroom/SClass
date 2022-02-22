@@ -1269,7 +1269,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
-		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
+		NEW_CLASS(sysInfo, IO::SystemInfoLog({fileName, fileNameLen}));
 		while (reader->ReadNext())
 		{
 			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -1293,7 +1293,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								sb.ClearStr();
 								if (reader->ReadNodeText(&sb))
 								{
-									sysInfo->SetOSName(sb.ToString());
+									sysInfo->SetOSName(sb.ToCString());
 								}
 							}
 							else if (reader->GetNodeText()->Equals(UTF8STRC("OSVER")))
@@ -1301,7 +1301,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 								sb.ClearStr();
 								if (reader->ReadNodeText(&sb))
 								{
-									sysInfo->SetOSVer(sb.ToString());
+									sysInfo->SetOSVer(sb.ToCString());
 								}
 							}
 							else if (reader->GetNodeText()->Equals(UTF8STRC("OSLANGUAGE")))
@@ -1616,6 +1616,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[512];
+	UTF8Char *sbuffEnd;
 	Data::ArrayList<Map::IMapDrawLayer *> layers;
 
 	Map::WebImageLayer *imgLyr = 0;
@@ -1998,7 +1999,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 				}
 
-				const UTF8Char *name = 0;
+				Text::String *name = 0;
 				Int32 zIndex = 0;
 				Double minX = 0;
 				Double minY = 0;
@@ -2012,6 +2013,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				Int64 timeStart = 0;
 				Int64 timeEnd = 0;
 				sbuff[0] = 0;
+				sbuffEnd = sbuff;
 
 				while (reader->ReadNext())
 				{
@@ -2025,11 +2027,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							if (name)
-							{
-								Text::StrDelNew(name);
-							}
-							name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+							SDEL_STRING(name);
+							name = Text::String::New(sb.ToCString());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
@@ -2056,7 +2055,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									imgLyr->GetSourceName(sbuff);
-									Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
+									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{
@@ -2161,12 +2160,9 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				}
 				if (sbuff[0] != 0)
 				{
-					imgLyr->AddImage(name, sbuff, zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
+					imgLyr->AddImage(STR_CSTR(name), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, oX, oY, sizeX, sizeY, true, timeStart, timeEnd, ((color >> 24) & 0xff) / 255.0, hasAltitude, altitude);
 				}
-				if (name)
-				{
-					Text::StrDelNew(name);
-				}
+				SDEL_STRING(name);
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("GROUNDOVERLAY")))
 			{
@@ -2175,7 +2171,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 					NEW_CLASS(imgLyr, Map::WebImageLayer(browser, parsers, sourceName, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), containerNameSb.ToCString()));
 				}
 
-				const UTF8Char *name = 0;
+				Text::String *name = 0;
 				Int32 zIndex = 0;
 				Double minX = 0;
 				Double minY = 0;
@@ -2187,6 +2183,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				Bool hasAltitude = false;
 				Double altitude = 0;
 				sbuff[0] = 0;
+				sbuffEnd = sbuff;
 				while (reader->ReadNext())
 				{
 					if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -2199,11 +2196,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 						{
 							sb.ClearStr();
 							reader->ReadNodeText(&sb);
-							if (name)
-							{
-								Text::StrDelNew(name);
-							}
-							name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+							SDEL_STRING(name);
+							name = Text::String::New(sb.ToCString());
 						}
 						else if (reader->GetNodeText()->EqualsICase(UTF8STRC("COLOR")))
 						{
@@ -2230,7 +2224,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
 									imgLyr->GetSourceName(sbuff);
-									Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
+									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{
@@ -2335,9 +2329,9 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				}
 				if (sbuff[0] != 0)
 				{
-					imgLyr->AddImage(name, sbuff, zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
+					imgLyr->AddImage(STR_CSTR(name), CSTRP(sbuff, sbuffEnd), zIndex, minX, minY, maxX, maxY, 0, 0, false, timeStart, timeEnd, alpha, hasAltitude, altitude);
 				}
-				SDEL_TEXT(name);
+				SDEL_STRING(name);
 			}
 			else if (reader->GetNodeText()->EqualsICase(UTF8STRC("FOLDER")))
 			{

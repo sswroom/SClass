@@ -699,12 +699,12 @@ void Data::VariItem::SetNull()
 	this->itemType = ItemType::Null;
 }
 
-void Data::VariItem::SetStr(const UTF8Char *str)
+void Data::VariItem::SetStrSlow(const UTF8Char *str)
 {
 	this->FreeItem();
 	if (str)
 	{
-		this->val.str = Text::String::NewNotNull(str);
+		this->val.str = Text::String::NewNotNullSlow(str);
 		this->itemType = ItemType::Str;
 	}
 	else
@@ -1104,11 +1104,21 @@ Data::VariItem *Data::VariItem::NewNull()
 	return item;
 }
 
-Data::VariItem *Data::VariItem::NewStr(const UTF8Char *str)
+Data::VariItem *Data::VariItem::NewStrSlow(const UTF8Char *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
-	ival.str = Text::String::NewNotNull(str);
+	ival.str = Text::String::NewNotNullSlow(str);
+	Data::VariItem *item;
+	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	return item;
+}
+
+Data::VariItem *Data::VariItem::NewStr(Text::CString str)
+{
+	if (str.v == 0) return NewNull();
+	ItemValue ival;
+	ival.str = Text::String::New(str);
 	Data::VariItem *item;
 	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
 	return item;
@@ -1460,7 +1470,7 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 		{
 			Text::StringBuilderUTF8 sb;
 			item->GetAsString(&sb);
-			*(Text::String**)ptr = Text::String::NewNotNull(sb.ToString());
+			*(Text::String**)ptr = Text::String::New(sb.ToCString());
 		}
 		break;
 	case ItemType::Date:
@@ -1535,7 +1545,7 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 		{
 			Text::StringBuilderUTF8 sb;
 			item->GetAsString(&sb);
-			*(Text::String**)ptr = Text::String::NewNotNull(sb.ToString());
+			*(Text::String**)ptr = Text::String::New(sb.ToCString());
 		}
 		break;
 	case ItemType::Date:

@@ -552,7 +552,7 @@ SSWR::AVIRead::AVIRImageControl::AVIRImageControl(UI::GUICore *ui, UI::GUIClient
 
 SSWR::AVIRead::AVIRImageControl::~AVIRImageControl()
 {
-	SetFolder(0);
+	SetFolder(CSTR_NULL);
 	this->threadCtrlCode = 2;
 	this->folderThreadEvt->Set();
 	while (this->threadState != 0)
@@ -885,7 +885,7 @@ void SSWR::AVIRead::AVIRImageControl::OnKeyDown(UInt32 keyCode)
 	}
 }
 
-void SSWR::AVIRead::AVIRImageControl::SetFolder(const UTF8Char *folderPath)
+void SSWR::AVIRead::AVIRImageControl::SetFolder(Text::CString folderPath)
 {
 	Bool loading = this->IsLoadingDir();
 	ThreadCancelTasks();
@@ -901,10 +901,10 @@ void SSWR::AVIRead::AVIRImageControl::SetFolder(const UTF8Char *folderPath)
 		this->folderPath = 0;
 		mutUsage.EndUse();
 	}
-	if (folderPath)
+	if (folderPath.leng > 0)
 	{
 		Sync::MutexUsage mutUsage(this->folderMut);
-		this->folderPath = Text::String::NewNotNull(folderPath);
+		this->folderPath = Text::String::New(folderPath);
 		this->folderChanged = true;
 		mutUsage.EndUse();
 

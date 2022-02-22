@@ -27,13 +27,13 @@ void DB::MySQLConn::Connect()
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in connecting to database: "));
 		this->GetErrorMsg(&sb);
-		log->LogMessageC(sb.ToString(), sb.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
+		log->LogMessage(sb.ToCString(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		mysql_close(mysql);
 		this->mysql = 0;
 	}
 	else
 	{
-		log->LogMessageC(UTF8STRC("Driver is libmysql"), IO::ILogHandler::LOG_LEVEL_ACTION);
+		log->LogMessage(CSTR("Driver is libmysql"), IO::ILogHandler::LOG_LEVEL_ACTION);
 		mysql_set_character_set((MYSQL*)this->mysql, "utf8");
 	}
 }
@@ -556,7 +556,7 @@ Text::String *DB::MySQLReader::GetNewStr(UOSInt colIndex)
 		return 0;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		return Text::String::NewOrNull((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
+		return Text::String::NewOrNullSlow((const UTF8Char*)((MYSQL_ROW)this->row)[colIndex]);
 	}
 	else
 	{

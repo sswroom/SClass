@@ -51,6 +51,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i;
 	MLHFileInfo *fileInfo;
 	UTF8Char sbuff[17];
+	UTF8Char *sptr;
 
 	fd->GetRealData(0, 64, hdr);
 	if (!Text::StrEquals((const Char*)hdr, "MLH ENCODE 1.04  (C) MAEHASHI"))
@@ -70,10 +71,10 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 	i = 0;
 	while (i < fileCnt)
 	{
-		enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 16, 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileInfo[i].fileName, 16, 0);
 		if (fileInfo[i].storeSize == fileInfo[i].decompSize)
 		{
-			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, sbuff, 0);
+			pf->AddData(fd, fileInfo[i].startOfst, fileInfo[i].decompSize, CSTRP(sbuff, sptr), 0);
 		}
 		else
 		{
@@ -84,7 +85,7 @@ IO::ParsedObject *Parser::FileParser::MLHParser::ParseFile(IO::IStreamData *fd, 
 			compInfo.compExtraSize = 0;
 			compInfo.compExtras = 0;
 			compInfo.checkMethod = Crypto::Hash::HT_UNKNOWN;
-			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, &compInfo, sbuff, 0);
+			pf->AddCompData(fd, fileInfo[i].startOfst, fileInfo[i].storeSize, &compInfo, CSTRP(sbuff, sptr), 0);
 		}
 		i++;
 	}

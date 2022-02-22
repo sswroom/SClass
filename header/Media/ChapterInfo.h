@@ -16,7 +16,7 @@ namespace Media
 		ChapterInfo();
 		~ChapterInfo();
 
-		void AddChapter(UInt32 chapterTime, const UTF8Char *chapterName, const UTF8Char *chapterArtist);
+		void AddChapter(UInt32 chapterTime, Text::CString chapterName, Text::CString chapterArtist);
 		UOSInt GetChapterIndex(UInt32 currTime);
 		UInt32 GetChapterTime(UOSInt index);
 		UOSInt GetChapterCnt();

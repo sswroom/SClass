@@ -47,8 +47,7 @@ namespace IO
 	{
 	public:
 		virtual ~ILogger() {};
-		virtual void LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level) = 0;
-		virtual void LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler::LogLevel level) = 0;
+		virtual void LogMessage(Text::CString logMsg, ILogHandler::LogLevel level) = 0;
 	};
 
 	class LogTool : public ILogger
@@ -65,11 +64,10 @@ namespace IO
 		virtual ~LogTool();
 		void Close();
 		void AddFileLog(Text::String *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
-		void AddFileLog(const UTF8Char *fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
+		void AddFileLog(Text::CString fileName, ILogHandler::LogType style, ILogHandler::LogGroup groupStyle, ILogHandler::LogLevel logLev, const Char *dateFormat, Bool directWrite);
 		void AddLogHandler(ILogHandler *hdlr, ILogHandler::LogLevel logLev);
 		void RemoveLogHandler(ILogHandler *hdlr);
-		virtual void LogMessage(const UTF8Char *logMsg, ILogHandler::LogLevel level);
-		virtual void LogMessageC(const UTF8Char *logMsg, UOSInt msgLen, ILogHandler::LogLevel level);
+		virtual void LogMessage(Text::CString logMsg, ILogHandler::LogLevel level);
 	};
 }
 #endif
