@@ -32,14 +32,14 @@ UI::DObj::TextDObj::TextDObj(Media::DrawEngine *deng, Text::CString txt, Text::C
 	this->pageChg = false;
 	this->codePage = codePage;
 	this->talign = TA_LEFT;
-	NEW_CLASS(this->lines, Data::ArrayList<const UTF8Char *>());
+	NEW_CLASS(this->lines, Data::ArrayList<Text::String *>());
 	this->lineHeight = fontSize * 1.5;
 
 	if (this->txt)
 	{
 		Media::DrawImage *dimg = this->deng->CreateImage32(width, height, Media::AT_NO_ALPHA);
-		Media::DrawFont *f = dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
-		Media::DrawImageTool::SplitString(dimg, this->txt->v, this->lines, f, OSInt2Double(width));
+		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(fontStyle | Media::DrawEngine::DFS_ANTIALIAS), codePage);
+		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), this->lines, f, OSInt2Double(width));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 	}
@@ -53,7 +53,7 @@ UI::DObj::TextDObj::~TextDObj()
 	i = this->lines->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->lines->GetItem(i));
+		this->lines->GetItem(i)->Release();
 	}
 	DEL_CLASS(this->lines);
 }
@@ -76,7 +76,7 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 	Double sz[2];
 	Media::DrawFont *f;
 	Media::DrawBrush *b;
-	f = dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
+	f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, (Media::DrawEngine::DrawFontStyle)(this->fontStyle | Media::DrawEngine::DFS_ANTIALIAS), this->codePage);
 	b = dimg->NewBrushARGB(this->fontColor);
 	this->GetCurrPos(&left, &top);
 	UInt32 linePerPage = (UInt32)Double2Int32(UOSInt2Double(this->height) / this->lineHeight);
@@ -92,12 +92,12 @@ void UI::DObj::TextDObj::DrawObject(Media::DrawImage *dimg)
 		}
 		else if (this->talign == TA_CENTER)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine), sz);
-			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz[0]) * 0.5, currPos, this->lines->GetItem(currLine), f, b);
+			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), sz);
+			dimg->DrawString(OSInt2Double(left) + (UOSInt2Double(this->width) - sz[0]) * 0.5, currPos, this->lines->GetItem(currLine)->ToCString(), f, b);
 		}
 		else if (this->talign == TA_RIGHT)
 		{
-			dimg->GetTextSize(f, this->lines->GetItem(currLine), sz);
+			dimg->GetTextSize(f, this->lines->GetItem(currLine)->ToCString(), sz);
 			dimg->DrawString(OSInt2Double(left + (OSInt)width) - sz[0], currPos, this->lines->GetItem(currLine), f, b);
 		}
 		currLine++;

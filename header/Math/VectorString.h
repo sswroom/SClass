@@ -17,7 +17,7 @@ namespace Math
 		
 	public:
 		VectorString(UInt32 srid, Text::String *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
-		VectorString(UInt32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
+		VectorString(UInt32 srid, Text::CString s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align);
 		virtual ~VectorString();
 
 		virtual VectorType GetVectorType();

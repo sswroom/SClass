@@ -44,6 +44,8 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 {
 	UTF8Char sbuff[256];
 	UTF8Char sbuff2[16];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Media::ProfiledResizer::SizeType sizeType;
 	UInt32 targetSizeX;
 	UInt32 targetSizeY;
@@ -51,7 +53,7 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 	Text::StringBuilderUTF8 sb;
 	Media::ProfiledResizer::OutputType outType;
 	SSWR::AVIRead::AVIRProfiledResizerForm *me = (SSWR::AVIRead::AVIRProfiledResizerForm*)userObj;
-	me->txtProfileName->GetText(sbuff);
+	sptr = me->txtProfileName->GetText(sbuff);
 	if (sbuff[0] == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter profile name"), CSTR("Error"), me);
@@ -136,16 +138,16 @@ void __stdcall SSWR::AVIRead::AVIRProfiledResizerForm::OnClickedAddProfile(void 
 		UI::MessageDialog::ShowDialog(CSTR("Please select output type"), CSTR("Error"), me);
 		return;
 	}
-	me->txtSuffix->GetText(sbuff2);
+	sptr2 = me->txtSuffix->GetText(sbuff2);
 	if (sbuff2[0] == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Please enter suffix"), CSTR("Error"), me);
 		return;
 	}
 	me->txtWatermark->GetText(&sb);
-	if (me->resizer->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, outType, outParam, sb.ToString(), sizeType))
+	if (me->resizer->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, outType, outParam, sb.ToCString(), sizeType))
 	{
-		me->lbProfile->AddItem({sbuff, Text::StrCharCnt(sbuff)}, 0);
+		me->lbProfile->AddItem(CSTRP(sbuff, sptr), 0);
 		me->txtProfileName->SetText(CSTR(""));
 		me->resizer->SaveProfile(CSTR_NULL);
 	}
@@ -176,7 +178,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileDisp()
 	}
 	else
 	{
-		sptr = Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("Profile: ")), profile->profileName);
+		sptr = profile->profileName->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("Profile: ")));
 		this->lblProfile->SetText(CSTRP(sbuff, sptr));
 	}
 }
@@ -190,7 +192,7 @@ void SSWR::AVIRead::AVIRProfiledResizerForm::UpdateProfileList()
 	while (i < j)
 	{
 		profile = this->resizer->GetProfile(i);
-		this->lbProfile->AddItem({profile->profileName, Text::StrCharCnt(profile->profileName)}, (void*)profile);
+		this->lbProfile->AddItem(profile->profileName->ToCString(), (void*)profile);
 		i++;
 	}
 

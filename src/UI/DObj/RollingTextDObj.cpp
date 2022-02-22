@@ -16,20 +16,20 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 	if (this->txt)
 	{
 		Media::DrawImage *dimg = this->deng->CreateImage32(this->width, this->height, Media::AT_NO_ALPHA);
-		Media::DrawFont *f = dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+		Media::DrawFont *f = dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 		Media::DrawBrush *b;
-		Data::ArrayList<const UTF8Char *> lines;
-		const UTF8Char *s;
+		Data::ArrayList<Text::String *> lines;
+		Text::String *s;
 		UOSInt i;
 		UOSInt j;
 		Double currY;
 
-		Media::DrawImageTool::SplitString(dimg, this->txt->v, &lines, f, OSInt2Double(this->width));
+		Media::DrawImageTool::SplitString(dimg, this->txt->ToCString(), &lines, f, OSInt2Double(this->width));
 		dimg->DelFont(f);
 		this->deng->DeleteImage(dimg);
 
 		this->dimg = this->deng->CreateImage32(this->width, (UInt32)Double2Int32(this->lineHeight * UOSInt2Double(lines.GetCount())), Media::AT_NO_ALPHA);
-		f = this->dimg->NewFontPx(this->fontName->v, this->fontName->leng, this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
+		f = this->dimg->NewFontPx(this->fontName->ToCString(), this->fontSize, Media::DrawEngine::DFS_ANTIALIAS, this->codePage);
 		b = this->dimg->NewBrushARGB(0xffffffff);
 		currY = 0;
 		i = 0;
@@ -38,7 +38,7 @@ void UI::DObj::RollingTextDObj::UpdateBGImg()
 		{
 			s = lines.GetItem(i);
 			this->dimg->DrawString(0, currY, s, f, b);
-			Text::StrDelNew(s);
+			s->Release();
 			currY += this->lineHeight;
 			i++;
 		}

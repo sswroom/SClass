@@ -337,12 +337,12 @@ void SSWR::AVIRead::AVIRChineseForm::UpdateImg()
 		UOSInt len;
 		Double sz[2];
 		b = this->charImg->NewBrushARGB(0xff000000);
-		f = this->charImg->NewFontPx(this->currFont->v, this->currFont->leng, UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
+		f = this->charImg->NewFontPx(this->currFont->ToCString(), UOSInt2Double(newH), Media::DrawEngine::DFS_NORMAL, 950);
 		len = (UOSInt)(Text::StrWriteChar(sbuff, (UTF32Char)this->currChar) - sbuff);
 		sbuff[len] = 0;
 		
-		this->charImg->GetTextSizeC(f, sbuff, len, sz);
-		this->charImg->DrawString((UOSInt2Double(newW) - sz[0]) * 0.5, (UOSInt2Double(newH) - sz[1]) * 0.5, sbuff, f, b);
+		this->charImg->GetTextSize(f, {sbuff, len}, sz);
+		this->charImg->DrawString((UOSInt2Double(newW) - sz[0]) * 0.5, (UOSInt2Double(newH) - sz[1]) * 0.5, {sbuff, len}, f, b);
 		this->charImg->DelFont(f);
 		this->charImg->DelBrush(b);
 	}

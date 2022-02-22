@@ -314,13 +314,13 @@ Media::DrawImage *Media::CodeImageGen::EAN2CodeImageGen::GenCode(const UTF8Char 
 	}
 	dimg->DelPen(p);
 
-	f = dimg->NewFontPx(UTF8STRC("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
+	f = dimg->NewFontPx(CSTR("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[0] = *code++;
 	sbuff[1] = 0;
-	dimg->DrawString((Double)(2 + 5) * UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5) * UOSInt2Double(codeWidth), (Double)codeWidth, {sbuff, 1}, f, b);
 	sbuff[0] = *code++;
-	dimg->DrawString((Double)(2 + 5 + 7 + 2) * UOSInt2Double(codeWidth), (Double)codeWidth, sbuff, f, b);
+	dimg->DrawString((Double)(2 + 5 + 7 + 2) * UOSInt2Double(codeWidth), (Double)codeWidth, {sbuff, 1}, f, b);
 
 	dimg->DelBrush(b);
 	dimg->DelFont(f);

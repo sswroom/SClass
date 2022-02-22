@@ -73,7 +73,7 @@ namespace Text
 			BlankAs GetDisplayBlankAs();
 
 			void InitChart(ChartType chartType, OfficeChartAxis *categoryAxis, OfficeChartAxis *valueAxis);
-			void InitLineChart(const UTF8Char *leftAxisName, const UTF8Char *bottomAxisName, AxisType bottomAxisType);
+			void InitLineChart(Text::CString leftAxisName, Text::CString bottomAxisName, AxisType bottomAxisType);
 			ChartType GetChartType();
 			OfficeChartAxis *CreateAxis(AxisType axisType, AxisPosition axisPos);
 			UOSInt GetAxisCount();
@@ -83,7 +83,7 @@ namespace Text
 			OfficeChartAxis *GetValueAxis();
 
 			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::String *name, Bool showMarker);
-			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker);
+			void AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker);
 			UOSInt GetSeriesCount();
 			OfficeChartSeries *GetSeries(UOSInt index);
 		};

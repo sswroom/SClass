@@ -248,7 +248,7 @@ void UI::GUITextView::UpdateScrollBar()
 		}
 		else
 		{
-			this->drawBuff->GetTextSize(fnt, (const UTF8Char*)"Test", sz);
+			this->drawBuff->GetTextSize(fnt, CSTR("Test"), sz);
 			this->drawBuff->DelFont(fnt);
 		}
 	}
@@ -416,10 +416,10 @@ void UI::GUITextView::GetDrawSize(WChar *str, UOSInt strLen, UOSInt *width, UOSI
 		Media::DrawFont *fnt = this->CreateDrawFont(this->drawBuff);
 		c = str[strLen];
 		str[strLen] = 0;
-		const UTF8Char *csptr = Text::StrToUTF8New(str);
+		Text::String *s = Text::String::NewNotNull(str);
 		str[strLen] = c;
-		this->drawBuff->GetTextSize(fnt, csptr, sz);
-		Text::StrDelNew(csptr);
+		this->drawBuff->GetTextSize(fnt, s->ToCString(), sz);
+		s->Release();
 		*width = (UOSInt)Double2OSInt(sz[0]);
 		*height = (UOSInt)Double2OSInt(sz[1]);
 		this->drawBuff->DelFont(fnt);

@@ -65,10 +65,10 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnFolderClicked(void *userObj)
 	DEL_CLASS(dlg);
 }
 
-void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, const UTF8Char *fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
+void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, Text::CString fileName, const SSWR::AVIRead::AVIRImageControl::ImageSetting *setting)
 {
 	SSWR::AVIRead::AVIRImageBatchForm *me = (SSWR::AVIRead::AVIRImageBatchForm*)userObj;
-	if (fileName == 0)
+	if (fileName.leng == 0)
 	{
 		SDEL_CLASS(me->dispImage);
 		SDEL_CLASS(me->previewImage);
@@ -77,7 +77,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 	}
 	else
 	{
-		Media::StaticImage *img = me->icMain->LoadImage(fileName);
+		Media::StaticImage *img = me->icMain->LoadImage(fileName.v);
 		me->pbMain->SetImage(0, false);
 		SDEL_CLASS(me->dispImage);
 		SDEL_CLASS(me->previewImage);

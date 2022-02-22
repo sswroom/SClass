@@ -38,7 +38,7 @@ namespace SSWR
 		private:
 			typedef struct
 			{
-				const UTF8Char *fileName;
+				Text::CString fileName;
 				Text::String *filePath;
 				Text::String *cacheFile;
 				ImageSetting setting;
@@ -53,7 +53,7 @@ namespace SSWR
 			} CameraCorr;
 
 		public:
-			typedef void (__stdcall *DispImageChanged)(void *userObj, const UTF8Char *fileName, const ImageSetting *setting);
+			typedef void (__stdcall *DispImageChanged)(void *userObj, Text::CString fileName, const ImageSetting *setting);
 			typedef void (__stdcall *ProgressUpdated)(void *userObj, UOSInt finCnt);
 			typedef void (__stdcall *KeyDownHandler)(void *userObj, UI::GUIControl::GUIKey key);
 		private:

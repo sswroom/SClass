@@ -40,8 +40,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateImages()
 		gimg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt(UTF8STRC("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(0, 0, (const UTF8Char*)"Format not supported", f, b);
+		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		gimg->DrawString(0, 0, CSTR("Format not supported"), f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
 		this->pbsSample->SetImageDImg(gimg);
@@ -140,8 +140,8 @@ void SSWR::AVIRead::AVIRAudioViewerForm::UpdateFreqImage()
 		gimg->DrawRect(0, 0, UOSInt2Double(w), UOSInt2Double(h), 0, b);
 		gimg->DelBrush(b);
 		b = gimg->NewBrushARGB(0xffffffff);
-		f = gimg->NewFontPt(UTF8STRC("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
-		gimg->DrawString(0, 0, (const UTF8Char*)"Format not supported", f, b);
+		f = gimg->NewFontPt(CSTR("Arial"), 10, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		gimg->DrawString(0, 0, CSTR("Format not supported"), f, b);
 		gimg->DelFont(f);
 		gimg->DelBrush(b);
 		this->pbsSample->SetImageDImg(gimg);

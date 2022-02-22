@@ -17,7 +17,7 @@ namespace Media
 				UInt32 width;
 				UInt32 height;
 				Int32 sizeType;
-				const UTF8Char *targetId;
+				Text::String *targetId;
 			} TargetParam;
 		private:
 			Media::IImgResizer *resizer;
@@ -29,8 +29,8 @@ namespace Media
 			BatchResizer(Media::IImgResizer *resizer, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchResizer();
 			
-			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, const UTF8Char *targetId);
-			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, const UTF8Char *targetId);
+			void AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, Text::String *targetId);
+			void AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, Text::String *targetId);
 			void ClearTargetSizes();
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:

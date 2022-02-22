@@ -13,9 +13,9 @@
 
 void Media::ProfiledResizer::ReleaseProfile(Media::ProfiledResizer::ResizeProfile *profile)
 {
-	Text::StrDelNew(profile->profileName);
-	Text::StrDelNew(profile->suffix);
-	SDEL_TEXT(profile->watermark);
+	profile->profileName->Release();
+	profile->suffix->Release();
+	SDEL_STRING(profile->watermark);
 	MemFree(profile);
 }
 
@@ -95,7 +95,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 	{
 		bresizer->AddTargetDPI(profile->targetSizeX, profile->targetSizeY, profile->suffix);
 	}
-	this->watermarker->SetWatermark(profile->watermark);
+	this->watermarker->SetWatermark(profile->watermark->ToCString());
 	if (this->saver)
 	{
 		DEL_CLASS(this->saver);
@@ -125,7 +125,7 @@ const Media::ProfiledResizer::ResizeProfile *Media::ProfiledResizer::GetProfile(
 	return this->profiles->GetItem(index);
 }
 
-Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType)
+Bool Media::ProfiledResizer::AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetSizeX, UInt32 targetSizeY, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType)
 {
 	ResizeProfile *profile;
 	if (outType == OT_TIFF)
@@ -152,16 +152,16 @@ Bool Media::ProfiledResizer::AddProfile(const UTF8Char *profileName, const UTF8C
 	}
 
 	profile = MemAlloc(ResizeProfile, 1);
-	profile->profileName = Text::StrCopyNew(profileName);
-	profile->suffix = Text::StrCopyNew(suffix);
+	profile->profileName = Text::String::New(profileName);
+	profile->suffix = Text::String::New(suffix);
 	profile->targetSizeX = targetSizeX;
 	profile->targetSizeY = targetSizeY;
 	profile->sizeType = sizeType;
 	profile->outType = outType;
 	profile->outParam = outParam;
-	if (watermark)
+	if (watermark.leng > 0)
 	{
-		profile->watermark = Text::StrCopyNew(watermark);
+		profile->watermark = Text::String::New(watermark);
 	}
 	else
 	{
@@ -245,8 +245,8 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 	while (i < j)
 	{
 		profile = this->profiles->GetItem(i);
-		cols[0] = profile->profileName;
-		cols[1] = profile->suffix;
+		cols[0] = profile->profileName->v;
+		cols[1] = profile->suffix->v;
 		cols[2] = sbuff2;
 		sptr = Text::StrUInt32(sbuff2, profile->targetSizeX) + 1;
 		cols[3] = sptr;
@@ -257,7 +257,7 @@ Bool Media::ProfiledResizer::SaveProfile(Text::CString fileName)
 		sptr = Text::StrUInt32(sptr, profile->outParam) + 1;
 		if (profile->watermark)
 		{
-			cols[6] = profile->watermark;
+			cols[6] = profile->watermark->v;
 		}
 		else
 		{
@@ -280,6 +280,8 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 {
 	UTF8Char sbuff[512];
 	UTF8Char sbuff2[32];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	UInt32 targetSizeX;
 	UInt32 targetSizeY;
 	Int32 outType;
@@ -323,9 +325,9 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				r->GetStr(0, sbuff, sizeof(sbuff));
-				r->GetStr(1, sbuff2, sizeof(sbuff2));
-				this->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, (OutputType)outType, outParam, 0, ST_MAXSIZE);
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
+				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, CSTR_NULL, ST_MAXSIZE);
 			}
 			else if (r->ColCount() == 7)
 			{
@@ -333,11 +335,11 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				r->GetStr(0, sbuff, sizeof(sbuff));
-				r->GetStr(1, sbuff2, sizeof(sbuff2));
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();
 				r->GetStr(6, &sb);
-				this->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToString(), ST_MAXSIZE);
+				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToCString(), ST_MAXSIZE);
 			}
 			else if (r->ColCount() == 8)
 			{
@@ -345,12 +347,12 @@ Bool Media::ProfiledResizer::LoadProfile(const UTF8Char *fileName)
 				targetSizeY = (UInt32)r->GetInt32(3);
 				outType = r->GetInt32(4);
 				outParam = (UInt32)r->GetInt32(5);
-				r->GetStr(0, sbuff, sizeof(sbuff));
-				r->GetStr(1, sbuff2, sizeof(sbuff2));
+				sptr = r->GetStr(0, sbuff, sizeof(sbuff));
+				sptr2 = r->GetStr(1, sbuff2, sizeof(sbuff2));
 				sb.ClearStr();
 				r->GetStr(6, &sb);
 				sizeType = r->GetInt32(7);
-				this->AddProfile(sbuff, sbuff2, targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToString(), (SizeType)sizeType);
+				this->AddProfile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), targetSizeX, targetSizeY, (OutputType)outType, outParam, sb.ToCString(), (SizeType)sizeType);
 			}
 		}
 		csv->CloseReader(r);

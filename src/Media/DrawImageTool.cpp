@@ -4,16 +4,16 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
-void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *txt, Data::ArrayList<const UTF8Char *> *outStr, Media::DrawFont *f, Double width)
+void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, Text::CString txt, Data::ArrayList<Text::String *> *outStr, Media::DrawFont *f, Double width)
 {
 	UOSInt i;
-	UOSInt j;
 	UOSInt k;
 	Double sz[2];
-	const UTF8Char *currTxt = txt;
+	const UTF8Char *currTxt = txt.v;
+	const UTF8Char *currTxtEnd = txt.v + txt.leng;
 	UTF8Char *tmpBuff;
-	UOSInt txtLen;
-	txtLen = Text::StrCharCnt(currTxt);
+	UTF8Char *sptr;
+	UOSInt txtLen = txt.leng;
 	tmpBuff = MemAlloc(UTF8Char, txtLen + 1);
 	UTF8Char c;
 	UTF8Char c2;
@@ -21,55 +21,54 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *t
 	{
 		if (currTxt[0] == 0)
 			break;
-		txtLen = Text::StrCharCnt(currTxt);
+		txtLen = (UOSInt)(currTxtEnd - currTxt);
 		k = 0;
 		i = 0;
-		j = txtLen;
 		while (true)
 		{
-			if (i >= j)
+			if (i >= txtLen)
 			{
 				if (k == 0)
 				{
-					outStr->Add(Text::StrCopyNew(currTxt));
+					outStr->Add(Text::String::NewP(currTxt, currTxtEnd));
 				}
 				else
 				{
-					dimg->GetTextSize(f, currTxt, sz);
+					dimg->GetTextSize(f, CSTRP(currTxt, currTxtEnd), sz);
 					if (sz[0] <= width)
 					{
-						outStr->Add(Text::StrCopyNew(currTxt));
+						outStr->Add(Text::String::NewP(currTxt, currTxtEnd));
 					}
 					else
 					{
 						Text::StrConcatC(tmpBuff, currTxt, k);
-						Text::StrTrim(tmpBuff);
-						outStr->Add(Text::StrCopyNew(tmpBuff));
-						Text::StrConcat(tmpBuff, &currTxt[k]);
-						Text::StrTrim(tmpBuff);
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						sptr = Text::StrTrim(tmpBuff);
+						outStr->Add(Text::String::NewP(tmpBuff, sptr));
+						Text::StrConcatC(tmpBuff, &currTxt[k], (UOSInt)(currTxtEnd - &currTxt[k]));
+						sptr = Text::StrTrim(tmpBuff);
+						outStr->Add(Text::String::NewP(tmpBuff, sptr));
 					}
 				}
-				currTxt = &currTxt[j];
+				currTxt = &currTxt[txtLen];
 				break;
 			}
 			c = currTxt[i];
 			if (c == ' ')
 			{
 				Text::StrConcatC(tmpBuff, currTxt, i);
-				dimg->GetTextSizeC(f, tmpBuff, i, sz);
+				dimg->GetTextSize(f, {tmpBuff, i}, sz);
 				if (sz[0] > width)
 				{
 					if (k == 0)
 					{
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						outStr->Add(Text::String::New(tmpBuff, i));
 						currTxt = &currTxt[i + 1];
 					}
 					else
 					{
 						Text::StrConcatC(tmpBuff, currTxt, k);
-						Text::StrTrim(tmpBuff);
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						sptr = Text::StrTrim(tmpBuff);
+						outStr->Add(Text::String::New(tmpBuff, (UOSInt)(sptr - tmpBuff)));
 						currTxt = &currTxt[k];
 					}
 					break;
@@ -82,19 +81,19 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *t
 			else if (c == '-')
 			{
 				Text::StrConcatC(tmpBuff, currTxt, i + 1);
-				dimg->GetTextSizeC(f, tmpBuff, i + 1, sz);
+				dimg->GetTextSize(f, {tmpBuff, i + 1}, sz);
 				if (sz[0] > width)
 				{
 					if (k == 0)
 					{
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						outStr->Add(Text::String::New(tmpBuff, i + 1));
 						currTxt = &currTxt[i + 1];
 					}
 					else
 					{
 						Text::StrConcatC(tmpBuff, currTxt, k);
-						Text::StrTrim(tmpBuff);
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						sptr = Text::StrTrim(tmpBuff);
+						outStr->Add(Text::String::NewP(tmpBuff, sptr));
 						currTxt = &currTxt[k];
 					}
 					break;
@@ -108,42 +107,42 @@ void Media::DrawImageTool::SplitString(Media::DrawImage *dimg, const UTF8Char *t
 			{
 				if (i == 0)
 				{
-					outStr->Add(Text::StrCopyNew((const UTF8Char*)""));
+					outStr->Add(Text::String::NewEmpty());
 				}
 				else if (i == k)
 				{
 					Text::StrConcatC(tmpBuff, currTxt, i);
-					outStr->Add(Text::StrCopyNew(tmpBuff));
+					outStr->Add(Text::String::New(tmpBuff, i));
 				}
 				else
 				{
 					Text::StrConcatC(tmpBuff, currTxt, i);
-					dimg->GetTextSizeC(f, tmpBuff, i, sz);
+					dimg->GetTextSize(f, {tmpBuff, i}, sz);
 					if (sz[0] > width)
 					{
 						if (k == 0)
 						{
-							outStr->Add(Text::StrCopyNew(tmpBuff));
+							outStr->Add(Text::String::New(tmpBuff, i));
 						}
 						else
 						{
 							Text::StrConcatC(tmpBuff, currTxt, k);
-							Text::StrTrim(tmpBuff);
-							outStr->Add(Text::StrCopyNew(tmpBuff));
+							sptr = Text::StrTrim(tmpBuff);
+							outStr->Add(Text::String::NewP(tmpBuff, sptr));
 							Text::StrConcatC(tmpBuff, &currTxt[k], i - k);
-							Text::StrTrim(tmpBuff);
-							outStr->Add(Text::StrCopyNew(tmpBuff));
+							sptr = Text::StrTrim(tmpBuff);
+							outStr->Add(Text::String::NewP(tmpBuff, sptr));
 						}
 					}
 					else
 					{
-						outStr->Add(Text::StrCopyNew(tmpBuff));
+						outStr->Add(Text::String::New(tmpBuff, i));
 					}
 				}
 				i++;
-				if (i >= j)
+				if (i >= txtLen)
 				{
-					currTxt = &currTxt[j];
+					currTxt = &currTxt[txtLen];
 				}
 				else
 				{

@@ -18,15 +18,15 @@ Media::Batch::BatchWatermarker::~BatchWatermarker()
 {
 	DEL_CLASS(this->rnd);
 	DEL_CLASS(this->ablend);
-	SDEL_TEXT(this->watermark);
+	SDEL_STRING(this->watermark);
 }
 			
-void Media::Batch::BatchWatermarker::SetWatermark(const UTF8Char *watermark)
+void Media::Batch::BatchWatermarker::SetWatermark(Text::CString watermark)
 {
-	SDEL_TEXT(this->watermark);
-	if (watermark)
+	SDEL_STRING(this->watermark);
+	if (watermark.leng > 0)
 	{
-		this->watermark = Text::StrCopyNew(watermark);
+		this->watermark = Text::String::New(watermark);
 	}
 }
 
@@ -39,7 +39,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 {
 	if (this->hdlr == 0)
 		return;
-	if (this->watermark == 0 || this->watermark[0] == 0)
+	if (this->watermark->leng == 0)
 	{
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;
@@ -55,7 +55,6 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 		Int32 xRand;
 		Int32 yRand;
 		Double fontSizePx;
-		UOSInt leng = Text::StrCharCnt(this->watermark);
 		Double sz[2];
 		UInt32 iWidth;
 		UInt32 iHeight;
@@ -68,8 +67,8 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 
 		while (true)
 		{
-			f = tmpImg->NewFontPx(UTF8STRC("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
-			if (!tmpImg->GetTextSizeC(f, this->watermark, leng, sz))
+			f = tmpImg->NewFontPx(CSTR("Arial"), fontSizePx, Media::DrawEngine::DFS_NORMAL, 0);
+			if (!tmpImg->GetTextSize(f, this->watermark->ToCString(), sz))
 			{
 				tmpImg->DelFont(f);
 				break;

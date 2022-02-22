@@ -43,7 +43,7 @@ void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::String *title, Text::S
 	this->title = SCOPY_STRING(title);
 }
 
-void Text::SpreadSheet::OfficeChartSeries::SetTitle(const UTF8Char *title, const UTF8Char *dataSource)
+void Text::SpreadSheet::OfficeChartSeries::SetTitle(Text::CString title, const UTF8Char *dataSource)
 {
 	SDEL_STRING(this->title);
 	this->title = Text::String::NewOrNull(title);

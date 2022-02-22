@@ -17,7 +17,7 @@ namespace Map
 	typedef struct
 	{
 		Int32 fontType;
-		UTF8Char *fontName;
+		Text::String *fontName;
 		UInt32 fontSizePt;
 		Double thick;
 		UInt32 color;

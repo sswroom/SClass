@@ -72,6 +72,19 @@ Text::String *Text::String::New(const UTF8Char *str, UOSInt len)
 	return s;
 }
 
+Text::String *Text::String::NewP(const UTF8Char *str, const UTF8Char *strEnd)
+{
+	if (strEnd == 0 || strEnd == str) return NewEmpty();
+	UOSInt len = (UOSInt)(strEnd - str);
+	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));
+	s->v = s->vbuff;
+	s->leng = len;
+	s->useCnt = 1;
+	MemCopyNO(s->v, str, len);
+	s->v[len] = 0;
+	return s;
+}
+
 Text::String *Text::String::New(UOSInt len)
 {
 	Text::String *s = (Text::String*)MAlloc(len + sizeof(String));

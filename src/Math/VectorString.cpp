@@ -14,9 +14,9 @@ Math::VectorString::VectorString(UInt32 srid, Text::String *s, Double x, Double 
 	this->align = align;
 }
 
-Math::VectorString::VectorString(UInt32 srid, const UTF8Char *s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
+Math::VectorString::VectorString(UInt32 srid, Text::CString s, Double x, Double y, Double angleDegree, Double buffSize, Media::DrawEngine::DrawPos align) : Vector2D(srid)
 {
-	this->s = Text::String::NewNotNull(s);
+	this->s = Text::String::New(s);
 	this->x = x;
 	this->y = y;
 	this->angleDegree = angleDegree;

@@ -320,7 +320,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	}
 	dimg->DelPen(p);
 
-	f = dimg->NewFontPx(UTF8STRC("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
+	f = dimg->NewFontPx(CSTR("Arial"), fh, Media::DrawEngine::DFS_NORMAL, 0);
 	b = dimg->NewBrushARGB(0xff000000);
 	sbuff[1] = 0;
 	i = codeWidth * 5;
@@ -328,7 +328,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	i += 5 * codeWidth;
@@ -336,7 +336,7 @@ Media::DrawImage *Media::CodeImageGen::EAN8CodeImageGen::GenCode(const UTF8Char 
 	while (j-- > 0)
 	{
 		sbuff[0] = *code++;
-		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, sbuff, f, b);
+		dimg->DrawString((Double)i, UOSInt2Double(y) - fh, {sbuff, 1}, f, b);
 		i += 7 * codeWidth;
 	}
 	dimg->DelBrush(b);

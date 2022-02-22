@@ -34,6 +34,7 @@ void TestChart()
 	UTF8Char fileName[512];
 	UTF8Char *sptr;
 	UTF8Char sbuff2[32];
+	UTF8Char *sptr2;
 	sptr = IO::Path::GetRealPath(fileName, UTF8STRC("~/Progs/Temp/XLSXTest.xlsx"));
 
 	Workbook *wb;
@@ -44,7 +45,7 @@ void TestChart()
 	Worksheet *graphSheet = wb->AddWorksheet();
 	Worksheet *dataSheet = wb->AddWorksheet();
 	OfficeChart *chart = graphSheet->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, CSTR("\nSETTLEMENT VS CHAINAGE"));
-	chart->InitLineChart((const UTF8Char*)"ACCUMULATED SETTLEMENT", (const UTF8Char*)"CHAINAGE", AxisType::Category);
+	chart->InitLineChart(CSTR("ACCUMULATED SETTLEMENT"), CSTR("CHAINAGE"), AxisType::Category);
 	chart->SetDisplayBlankAs(BlankAs::Gap);
 	if (testRowCnt > 1)
 	{
@@ -85,8 +86,8 @@ void TestChart()
 			}
 			WorkbookDataSource *chainageSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, 0, 0, 1, j));
 			WorkbookDataSource *valSource = NEW_CLASS_D(WorkbookDataSource(dataSheet, rowNum, rowNum, 1, j));
-			dt.ToString(sbuff2, "yyyy-MM-dd");
-			chart->AddSeries(chainageSource, valSource, sbuff2, testRowCnt > 1);
+			sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd");
+			chart->AddSeries(chainageSource, valSource, CSTRP(sbuff2, sptr2), testRowCnt > 1);
 		}
 	}
 

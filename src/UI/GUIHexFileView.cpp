@@ -181,6 +181,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 	{
 		UTF8Char sbuff[17];
 		UTF8Char sbuff2[2];
+		UTF8Char *sptr;
 		UInt64 currOfst = ((UInt64)(UOSInt)vPos) * 16;
 		Media::DrawFont *f = this->CreateDrawFont(dimg);
 		Media::DrawBrush *lineNumBrush = dimg->NewBrushARGB(this->lineNumColor);
@@ -243,7 +244,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				}
 				sbuff2[0] = c;
 				sbuff2[1] = 0;
-				dimg->DrawString(currX, currY, sbuff2, f, lineNumBrush);
+				dimg->DrawString(currX, currY, {sbuff2, 1}, f, lineNumBrush);
 				currX += hHeight;
 				i++;
 			}
@@ -294,11 +295,11 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				Text::StrHexByte(sbuff, *currPtr++);
 				sbuff2[0] = sbuff[0];
 				sbuff2[1] = 0;
-				dimg->DrawString(currX, currY, sbuff2, f, tBrush);
+				dimg->DrawString(currX, currY, {sbuff2, 1}, f, tBrush);
 				currX += hHeight;
 				sbuff2[0] = sbuff[1];
 				sbuff2[1] = 0;
-				dimg->DrawString(currX, currY, sbuff2, f, tBrush);
+				dimg->DrawString(currX, currY, {sbuff2, 1}, f, tBrush);
 				currX += hHeight * 2;
 				j++;
 			}
@@ -321,12 +322,13 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 					textPtr2 = Text::StrReadChar(textPtr, &wc);
 					if (wc < 32)
 					{
-						dimg->DrawString(currX, currY, (const UTF8Char*)".", f, textBrush);
+						dimg->DrawString(currX, currY, CSTR("."), f, textBrush);
 					}
 					else
 					{
-						Text::StrWriteChar(sbuff, wc)[0] = 0;
-						dimg->DrawString(currX, currY, sbuff, f, textBrush);
+						sptr = Text::StrWriteChar(sbuff, wc);
+						*sptr = 0;
+						dimg->DrawString(currX, currY, CSTRP(sbuff, sptr), f, textBrush);
 					}
 					currX += hHeight * OSInt2Double(textPtr2 - textPtr);
 					j += (UOSInt)(textPtr2 - textPtr);
@@ -334,7 +336,7 @@ void UI::GUIHexFileView::DrawImage(Media::DrawImage *dimg)
 				}
 				else
 				{
-					dimg->DrawString(currX, currY, (const UTF8Char*)".", f, textBrush);
+					dimg->DrawString(currX, currY, CSTR("."), f, textBrush);
 					textPtr++;
 					currX += hHeight;
 					j++;

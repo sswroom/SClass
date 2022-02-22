@@ -56,7 +56,7 @@ namespace Data
 		Data::ArrayList<ChartData*> *yCharts;
 //		Data::ArrayList *dataPos;
 		Text::String *titleBuff;
-		UTF8Char *titleLine[3];
+		Text::PString titleLine[3];
 		UOSInt titleLineCnt;
 		Text::String *yUnit;
 		Int8 timeZoneQHR;
@@ -100,12 +100,12 @@ namespace Data
 		Bool AddXData(Int32 *data, UOSInt dataCnt);
 		Bool AddXDataDate(Int64 *data, UOSInt dataCnt);
 		void SetFontHeightPt(Double ptSize);
-		void SetFontName(const UTF8Char *name);
+		void SetFontName(Text::CString name);
 		void SetYRefVal(Int32 refVal, UInt32 col);
 		void SetYRefVal(Double refVal, UInt32 col);
 		void SetYRefVal(Data::DateTime *refVal, UInt32 col);
 		void SetYRefType(Data::LineChart::RefType refType);
-		void SetYUnit(const UTF8Char *yUnit);
+		void SetYUnit(Text::CString yUnit);
 		void SetLineThick(Double lineThick);
 		void SetTimeZoneQHR(Int8 timeZone);
 		void SetBarLength(Double barLength);

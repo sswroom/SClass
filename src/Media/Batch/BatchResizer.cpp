@@ -20,25 +20,25 @@ Media::Batch::BatchResizer::~BatchResizer()
 	DEL_CLASS(this->resizeMut);
 }
 
-void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, const UTF8Char *targetId)
+void Media::Batch::BatchResizer::AddTargetSize(UInt32 targetWidth, UInt32 targetHeight, Text::String *targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
 	param->width = targetWidth;
 	param->height = targetHeight;
 	param->sizeType = 0;
-	param->targetId = Text::StrCopyNew(targetId);
+	param->targetId = targetId->Clone();
 	this->targetParam->Add(param);
 }
 
-void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, const UTF8Char *targetId)
+void Media::Batch::BatchResizer::AddTargetDPI(UInt32 targetHDPI, UInt32 targetVDPI, Text::String *targetId)
 {
 	TargetParam *param;
 	param = MemAlloc(TargetParam, 1);
 	param->width = targetHDPI;
 	param->height = targetVDPI;
 	param->sizeType = 1;
-	param->targetId = Text::StrCopyNew(targetId);
+	param->targetId = targetId->Clone();
 	this->targetParam->Add(param);
 }
 
@@ -49,7 +49,7 @@ void Media::Batch::BatchResizer::ClearTargetSizes()
 	while (i-- > 0)
 	{
 		param = this->targetParam->RemoveAt(i);
-		Text::StrDelNew(param->targetId);
+		param->targetId->Release();
 		MemFree(param);
 	}
 }
@@ -118,7 +118,7 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 		if (succ)
 		{
 			if (this->hdlr)
-				this->hdlr->ImageOutput(newImgList, fileId, param->targetId);
+				this->hdlr->ImageOutput(newImgList, fileId, param->targetId->v);
 		}
 		else
 		{

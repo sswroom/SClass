@@ -18,6 +18,7 @@ namespace Text
 		static String *NewOrNull(Text::CString str);
 		static String *New(Text::CString str);
 		static String *New(const UTF8Char *str, UOSInt len);
+		static String *NewP(const UTF8Char *str, const UTF8Char *strEnd);
 		static String *New(UOSInt len);
 		static String *NewOrNull(const UTF16Char *str);
 		static String *NewNotNull(const UTF16Char *str);

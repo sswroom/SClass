@@ -21,8 +21,8 @@ namespace Data
 
 	protected:
 		Text::String *title;
-		const UTF8Char *xAxisName;
-		const UTF8Char *yAxisName;
+		Text::String *xAxisName;
+		Text::String *yAxisName;
 
 		Text::String *dateFormat;
 		Text::String *timeFormat;
@@ -42,10 +42,10 @@ namespace Data
 		void SetDblFormat(Text::CString format);
 		Text::String *GetDblFormat();
 
-		void SetXAxisName(const UTF8Char *xAxisName);
-		const UTF8Char *GetXAxisName();
-		void SetYAxisName(const UTF8Char *yAxisName);
-		const UTF8Char *GetYAxisName();
+		void SetXAxisName(Text::CString xAxisName);
+		Text::String *GetXAxisName();
+		void SetYAxisName(Text::CString yAxisName);
+		Text::String *GetYAxisName();
 
 		virtual DataType GetXAxisType() = 0;
 		virtual UOSInt GetXDataCount() = 0;

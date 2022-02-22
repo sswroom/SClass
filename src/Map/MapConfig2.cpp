@@ -63,10 +63,10 @@ Bool Map::MapConfig2::IsDoorNum(const UTF8Char *txt)
 	return true;
 }
 
-void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
+void Map::MapConfig2::DrawChars(Media::DrawImage *img, Text::CString str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
 {
 	UTF8Char sbuff[256];
-	Text::StrConcat(sbuff, str1);
+	str1.ConcatTo(sbuff);
 	Double size[2];
 	UInt16 absH;
 	UOSInt fntCount;
@@ -109,13 +109,13 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 		return;
 	}
 
-	lblSize = Text::StrCharCnt(str1);
+	lblSize = str1.leng;
 	font = (Map::MapFontStyle*)fontStyle->GetItem(maxIndex);
 	if (scaleH == 0)
 	{
 		scaleH = 0;
 	}
-	img->GetTextSizeC(font->font, str1, lblSize, size);
+	img->GetTextSize(font->font, str1, size);
 
 	if (scaleH == 0)
 	{
@@ -285,7 +285,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 				Double tmp;
 				Int32 type;
 				Double szThis[2];
-				img->GetTextSizeC(font->font, str1, lblSize, szThis);
+				img->GetTextSize(font->font, str1, szThis);
 
 				if ((szThis[0] * absH) < (szThis[1] * UOSInt2Double(lblSize) * scaleW))
 				{
@@ -335,7 +335,7 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 
 				while (cnt--)
 				{
-					img->GetTextSizeC(font->font, lbl, 1, szThis);
+					img->GetTextSize(font->font, {lbl, 1}, szThis);
 
 					if (type)
 					{
@@ -344,14 +344,14 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+							img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
 						currY += szThis[1];
@@ -366,14 +366,14 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawString(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other);
+							img->DrawString(startX + currX, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other);
 						}
 						else
 						{
 							UTF8Char l[2];
 							l[0] = lbl[0];
 							l[1] = 0;
-							img->DrawStringB(startX + currX, startY + currY, l, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+							img->DrawStringB(startX + currX, startY + currY, {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 						}
 
 						currX += szThis[0];
@@ -402,11 +402,11 @@ void Map::MapConfig2::DrawChars(Media::DrawImage *img, const UTF8Char *str1, Dou
 	}
 }
 
-void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
+void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	Text::StrConcat(sbuff, str1);
-	UOSInt lblSize = Text::StrCharCnt(str1);
+	str1.ConcatTo(sbuff);
+	UOSInt lblSize = str1.leng;
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -499,7 +499,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 
 	while (i-- > 0)
 	{
-		img->GetTextSizeC(font->font, &str1[i], 1, szThis);
+		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -785,7 +785,7 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 			nextChar = *nextPos;
 			*nextPos = 0;
 
-			img->GetTextSizeC(font->font, lbl, (UOSInt)(nextPos - lbl), szThis);
+			img->GetTextSize(font->font, CSTRP(lbl, nextPos), szThis);
 			while (true)
 			{
 				if (angleDegree <= 90)
@@ -975,22 +975,22 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawString(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+					img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 				}
 			}
 			else
 			{
 				if (font->fontType == 0)
 				{
-					img->DrawString(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other);
+					img->DrawString(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other);
 				}
 				else
 				{
-					img->DrawStringB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+					img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 				}
 			}
 			szLast[0] = szThis[0];
@@ -1004,11 +1004,11 @@ void Map::MapConfig2::DrawCharsLA(Media::DrawImage *img, const UTF8Char *str1, D
 	realBounds[3] = maxY;
 }
 
-void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
+void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle)
 {
 	UTF8Char sbuff[256];
-	Text::StrConcat(sbuff, str1);
-	UOSInt lblSize = Text::StrCharCnt(str1);
+	str1.ConcatTo(sbuff);
+	UOSInt lblSize = str1.leng;
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -1088,7 +1088,7 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, 
 
 	while (i-- > 0)
 	{
-		img->GetTextSizeC(font->font, &str1[i], 1, szThis);
+		img->GetTextSize(font->font, {&str1.v[i], 1}, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -1385,16 +1385,16 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, 
 				}
 			}
 
-			img->GetTextSizeC(font->font, lbl, 1, szThis);
+			img->GetTextSize(font->font, {lbl, 1}, szThis);
 			l[0] = lbl[0];
 			l[1] = 0;
 			if (font->fontType == 0)
 			{
-				img->DrawString(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other);
+				img->DrawString(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other);
 			}
 			else
 			{
-				img->DrawStringB(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), l, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
+				img->DrawStringB(currX - (szThis[0] * 0.5), currY - (szThis[1] * 0.5), {l, 1}, font->font, (Media::DrawBrush*)font->other, (UInt32)Double2Int32(font->thick));
 			}
 
 			found = false;
@@ -1658,11 +1658,11 @@ void Map::MapConfig2::DrawCharsLAo(Media::DrawImage *img, const UTF8Char *str1, 
 	}
 }
 
-void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
+void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UInt32 thisPt, Double scaleN, Double scaleD, Data::ArrayList<MapFontStyle*> *fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	Text::StrConcat(sbuff, str1);
-	UOSInt lblSize = Text::StrCharCnt(str1);
+	str1.ConcatTo(sbuff);
+	UOSInt lblSize = str1.leng;
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -1696,7 +1696,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 
 	fntCount = fontStyle->GetCount();
 	font = (Map::MapFontStyle*)fontStyle->GetItem(0);
-	if (Text::StrEquals(str1, (const UTF8Char*)"King Cho Road"))
+	if (str1.Equals(UTF8STRC("King Cho Road")))
 	{
 		i = 0;
 	}
@@ -1762,7 +1762,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 	xDiff = 0;
 	yDiff = 0;
 
-	img->GetTextSizeC(font->font, str1, lblSize, szThis);
+	img->GetTextSize(font->font, str1, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -1923,7 +1923,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 				}
 			}
 
-			img->GetTextSizeC(font->font, lbl, (UOSInt)(nextPos - lbl), szThis);
+			img->GetTextSize(font->font, CSTRP(lbl, nextPos), szThis);
 			dist = (szLast[0] + szThis[0]) * 0.5;
 			nextX = currX + (dist * cosAngle);
 			nextY = currY - (dist * sinAngle);
@@ -2149,22 +2149,22 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle);
+						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, lastAngle, (UInt32)Double2Int32(font->thick));
 					}
 				}
 			}
@@ -2198,22 +2198,22 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
 					}
 				}
 				else
 				{
 					if (font->fontType == 0)
 					{
-						img->DrawStringRot(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree);
+						img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree);
 					}
 					else
 					{
-						img->DrawStringRotB(currX, currY, lbl, font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
+						img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), font->font, (Media::DrawBrush*)font->other, angleDegree, (UInt32)Double2Int32(font->thick));
 					}
 				}
 
@@ -2230,7 +2230,7 @@ void Map::MapConfig2::DrawCharsL(Media::DrawImage *img, const UTF8Char *str1, Do
 	realBounds[3] = maxY;
 }
 
-void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Double *size, const UTF8Char *label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
+void Map::MapConfig2::GetCharsSize(Media::DrawImage *img, Double *size, Text::CString label, Data::ArrayList<MapFontStyle*> *fontStyle, Double scaleW, Double scaleH)
 {
 	Double xSizeAdd = 0;
 	Double ySizeAdd = 0;
@@ -2352,7 +2352,7 @@ UInt32 Map::MapConfig2::ToColor(const UTF8Char *str)
 	return 0xff000000 | ((v & 0xff) << 16) | (v & 0xff00) | ((v >> 16) & 0xff);
 }
 
-Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(const UTF8Char *name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
+Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(Text::CString name, Data::ArrayList<Map::IMapDrawLayer*> *layerList, IO::Writer *errWriter)
 {
 	Map::CIPLayer2 *cip;
 	UOSInt i = layerList->GetCount();
@@ -2360,17 +2360,16 @@ Map::IMapDrawLayer *Map::MapConfig2::GetDrawLayer(const UTF8Char *name, Data::Ar
 	{
 		Map::IMapDrawLayer *lyr;
 		lyr = layerList->GetItem(i);
-		if (IO::Path::FileNameCompare(name, lyr->GetName()->v) == 0)
+		if (IO::Path::FileNameCompare(name.v, lyr->GetName()->v) == 0)
 		{
 			return lyr;
 		}
 	}
-	UOSInt nameLen = Text::StrCharCnt(name);
-	NEW_CLASS(cip, Map::CIPLayer2({name, nameLen}));
+	NEW_CLASS(cip, Map::CIPLayer2(name));
 	if (cip->IsError())
 	{
 		errWriter->WriteStrC(UTF8STRC("Error in loading "));
-		errWriter->WriteLineC(name, nameLen);
+		errWriter->WriteLineC(name.v, name.leng);
 		DEL_CLASS(cip);
 		return 0;
 	}
@@ -2476,6 +2475,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	Double scaleH;
 	Double pts[2];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UTF8Char lblStr[128];
 	void *session;
 	UOSInt imgWidth;
@@ -2512,8 +2512,8 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 					if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
 						maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
 				}
-				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
-				if (AddLabel(labels, maxLabels, labelCnt, sptr, maxSize, &dobj->pointArr[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				if (AddLabel(labels, maxLabels, labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view, (UOSInt2Double(imgWidth) * view->GetHDPI() / view->GetDDPI()), (UOSInt2Double(imgHeight) * view->GetHDPI() / view->GetDDPI())))
 				{
 					lyrs->lyr->ReleaseObject(session, dobj);
 				}
@@ -2524,7 +2524,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 			}
 			else if (lyrs->lyr->GetLayerType() == 3)
 			{
-				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 				if (dobj->nPoint & 1)
 				{
 					pts[0] = dobj->pointArr[dobj->nPoint - 1];
@@ -2548,7 +2548,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 
 					if ((lyrs->bkColor & SFLG_ROTATE) == 0)
 						scaleW = scaleH = 0;
-					DrawChars(img, sptr, pts[0], pts[1], scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					DrawChars(img, CSTRP(sptr, sptrEnd), pts[0], pts[1], scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -2557,7 +2557,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 				Double lastPtX = 0;
 				Double lastPtY = 0;
 				Double *pointPos = dobj->pointArr;
-				lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
+				sptrEnd = lyrs->lyr->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), 0);
 
 				j = dobj->nPoint;
 				while (j--)
@@ -2571,7 +2571,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 				if (view->InViewXY(pts[0], pts[1]))
 				{
 					view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(img, sptr, pts[0], pts[1], 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+					DrawChars(img, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -2615,7 +2615,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 		if (j == (UInt32)-1)
 			return j;
 		if (labels[j].label)
-			Text::StrDelNew(labels[j].label);
+			labels[j].label->Release();
 		if (labels[j].points)
 			MemFree(labels[j].points);
 		labels[j].label = 0;
@@ -2634,7 +2634,7 @@ UInt32 Map::MapConfig2::NewLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *la
 }
 
 
-Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, const UTF8Char *labelt, UInt32 nPoint, Double *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, Map::MapView *view, Double xOfst, Double yOfst)
+Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labelCnt, Text::CString labelt, UInt32 nPoint, Double *points, Int32 priority, Int32 recType, UInt32 fontStyle, UInt32 flags, Map::MapView *view, Double xOfst, Double yOfst)
 {
 	Double size;
 	Double visibleSize;
@@ -2667,7 +2667,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrEquals(labels[i].label, labelt))
+				if (labelt.Equals(labels[i].label))
 				{
 					found = 1;
 
@@ -2716,7 +2716,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 						return false;
 					}
 
-					labels[i].label = Text::StrCopyNew(labelt);
+					labels[i].label = Text::String::New(labelt);
 					labels[i].xPos = ptPtr[0];
 					labels[i].yPos = ptPtr[1];
 					labels[i].fontStyle = fontStyle;
@@ -2852,7 +2852,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 		{
 			if (recType == labels[i].shapeType)
 			{
-				if (Text::StrEquals(labels[i].label, labelt))
+				if (labelt.Equals(labels[i].label))
 				{
 					found++;
 					if (totalSize == 0)
@@ -2999,7 +2999,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			labels[i].currSize = visibleSize;
 			labels[i].flags = flags;
 
-			labels[i].label = Text::StrCopyNew(labelt);
+			labels[i].label = Text::String::New(labelt);
 			labels[i].points = 0;
 
 			toUpdate = 1;
@@ -3028,7 +3028,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 
 		found = 0;
 
-		if (IsDoorNum(labelt))
+		if (IsDoorNum(labelt.v))
 		{
 		}
 		else
@@ -3038,7 +3038,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 			{
 				if (recType == labels[i].shapeType)
 				{
-					if (Text::StrEquals(labels[i].label, labelt))
+					if (labelt.Equals(labels[i].label))
 					{
 						found = 1;
 						break;
@@ -3187,7 +3187,7 @@ Bool Map::MapConfig2::AddLabel(MapLabels2 *labels, UInt32 maxLabel, UInt32 *labe
 					return false;
 				}
 
-				labels[i].label = Text::StrCopyNew(labelt);
+				labels[i].label = Text::String::New(labelt);
 				labels[i].xPos = thisX;
 				labels[i].yPos = thisY;
 				labels[i].fontStyle = fontStyle;
@@ -3284,7 +3284,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 {
 	UInt32 i;
 	UOSInt j;
-	const UTF8Char *lastLbl = 0;
+	Text::String *lastLbl = 0;
 	UOSInt scnWidth = img->GetWidth();
 	UOSInt scnHeight = img->GetHeight();
 
@@ -3340,7 +3340,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		//	labels[i].shapeType = 0;
 			if (labels[i].shapeType == 1)
 			{
-				GetCharsSize(img, szThis, labels[i].label, fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				Double scnXD;
 				Double scnYD;
 				view->MapXYToScnXY(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate, &scnXD, &scnYD);
@@ -3396,7 +3396,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 
 				if (!valid)
 				{
-					DrawChars(img, labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
+					DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
 
 					objBounds[(currPt << 2)] = tlx;
 					objBounds[(currPt << 2) + 1] = tly;
@@ -3411,7 +3411,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 
 				if (lastLbl)
 				{
-					if (!Text::StrEquals(lastLbl, labels[i].label))
+					if (!lastLbl->Equals(labels[i].label))
 					{
 						thisCnt = 0;
 					}
@@ -3424,8 +3424,8 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 				if (thisCnt == 0)
 				{
 					if (lastLbl)
-						Text::StrDelNew(lastLbl);
-					lastLbl = Text::StrCopyNew(labels[i].label);
+						lastLbl->Release();
+					lastLbl = labels[i].label->Clone();
 				}
 				else
 				{
@@ -3656,7 +3656,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 					labels[i].scaleW = 0;
 					labels[i].scaleH = 0;
 				}
-				GetCharsSize(img, szThis, labels[i].label, fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 				if (OSInt2Double(xDiff) < szThis[0] && OSInt2Double(yDiff) < szThis[1])
 				{
 					tlx = scnPtX - (szThis[0] * 0.5);
@@ -3667,7 +3667,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 					j = LabelOverlapped(objBounds, currPt, tlx, tly, brx, bry);
 					if (j == 0)
 					{
-						DrawChars(img, labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
+						DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
 
 						objBounds[(currPt << 2)] = tlx;
 						objBounds[(currPt << 2) + 1] = tly;
@@ -3793,7 +3793,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 								labels[i].scaleW = 0;
 								labels[i].scaleH = 0;
 							}
-							GetCharsSize(img, szThis, labels[i].label, fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
+							GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], labels[i].scaleW, labels[i].scaleH);
 						}
 					}
 
@@ -3824,7 +3824,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 							if ((labels[i].flags & SFLG_ALIGN) != 0)
 							{
 								Double realBounds[4];
-								DrawCharsLA(img, labels[i].label, labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
+								DrawCharsLA(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
 
 								objBounds[(currPt << 2)] = realBounds[0];
 								objBounds[(currPt << 2) + 1] = realBounds[1];
@@ -3835,7 +3835,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 							else if ((labels[i].flags & SFLG_ROTATE) != 0)
 							{
 								Double realBounds[4];
-								DrawCharsL(img, labels[i].label, labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
+								DrawCharsL(img, labels[i].label->ToCString(), labels[i].points, points, labels[i].nPoints, k, scaleN, scaleD, fonts[labels[i].fontStyle], realBounds);
 
 								objBounds[(currPt << 2)] = realBounds[0];
 								objBounds[(currPt << 2) + 1] = realBounds[1];
@@ -3845,7 +3845,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 							}
 							else
 							{
-								DrawChars(img, labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
+								DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, labels[i].scaleW, labels[i].scaleH, fonts[labels[i].fontStyle], (labels[i].flags & SFLG_ALIGN) != 0);
 
 								objBounds[(currPt << 2)] = tlx;
 								objBounds[(currPt << 2) + 1] = tly;
@@ -3866,7 +3866,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 			{
 				Double scnXD;
 				Double scnYD;
-				GetCharsSize(img, szThis, labels[i].label, fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(img, szThis, labels[i].label->ToCString(), fonts[labels[i].fontStyle], 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				view->MapXYToScnXY(labels[i].xPos / labels[i].mapRate, labels[i].yPos / labels[i].mapRate, &scnXD, &scnYD);
 				scnPtX = (scnXD);
 				scnPtY = (scnYD);
@@ -3920,7 +3920,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 
 				if (!valid)
 				{
-					DrawChars(img, labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
+					DrawChars(img, labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, fonts[labels[i].fontStyle], 0);
 
 					objBounds[(currPt << 2)] = tlx;
 					objBounds[(currPt << 2) + 1] = tly;
@@ -3943,18 +3943,19 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 	i = *labelCnt;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(labels[i].label);
+		labels[i].label->Release();
 		if (labels[i].points)
 			MemFree(labels[i].points);
 	}
 	if (lastLbl)
-		Text::StrDelNew(lastLbl);
+		lastLbl->Release();
 }
 
 Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
+	UTF8Char *layerNameEnd;
 	UTF8Char *baseDir = layerName;
 	Text::PString strs[10];
 	UTF8Char *sptr;
@@ -4085,8 +4086,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 
 				currFont = MemAlloc(MapFontStyle, 1);
 				currFont->fontType = Text::StrToInt32(strs[2].v);
-				currFont->fontName = MemAlloc(UTF8Char, strs[3].leng + 1);
-				strs[3].ConcatTo(currFont->fontName);
+				currFont->fontName = Text::String::New(strs[3].v, strs[3].leng);
 				currFont->fontSizePt = (Text::StrToUInt32(strs[4].v) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5].v);
 				currFont->color = ToColor(strs[6].v);
@@ -4104,8 +4104,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
 
-					strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
+					layerNameEnd = strs[1].ConcatTo(baseDir);
+					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
 						MemFree(currLayer);
@@ -4128,8 +4128,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					currLayer->minScale = Text::StrToInt32(strs[2].v);
 					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
-					strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
+					layerNameEnd = strs[1].ConcatTo(baseDir);
+					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
 						MemFree(currLayer);
@@ -4156,8 +4156,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					currLayer->minScale = Text::StrToInt32(strs[2].v);
 					currLayer->maxScale = Text::StrToInt32(strs[3].v);
 					currLayer->img = 0;
-					strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
+					layerNameEnd = strs[1].ConcatTo(baseDir);
+					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
 						MemFree(currLayer);
@@ -4226,8 +4226,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				}
 				else
 				{
-					strs[1].ConcatTo(baseDir);
-					currLayer->lyr = GetDrawLayer(layerName, layerList, errWriter);
+					layerNameEnd = strs[1].ConcatTo(baseDir);
+					currLayer->lyr = GetDrawLayer(CSTRP(layerName, layerNameEnd), layerList, errWriter);
 					if (currLayer->lyr == 0)
 					{
 						this->drawEng->DeleteImage(currLayer->img);
@@ -4257,8 +4257,8 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 					area->mcc = Text::StrToInt32(strs[1].v);
 					if (strCnt > 2)
 					{
-						UTF8Char *baseDirEnd = strs[2].ConcatTo(baseDir);
-						NEW_CLASS(area->data, Map::MapLayerData(CSTRP(layerName, baseDirEnd)));
+						layerNameEnd = strs[2].ConcatTo(baseDir);
+						NEW_CLASS(area->data, Map::MapLayerData(CSTRP(layerName, layerNameEnd)));
 					}
 					else
 					{
@@ -4520,7 +4520,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 					Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 					if (fnt->thick > 0)
 						s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-					fnt2->font = img->NewFontPt(fnt->fontName, Text::StrCharCnt(fnt->fontName), fnt->fontSizePt, s, 0);
+					fnt2->font = img->NewFontPt(fnt->fontName->ToCString(), fnt->fontSizePt, s, 0);
 					fnt2->other = img->NewBrushARGB(fnt->color);
 				}
 				else if (fnt->fontType == 1)
@@ -4549,11 +4549,11 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 						Media::DrawEngine::DrawFontStyle s = Media::DrawEngine::DFS_NORMAL;
 						if (f->thick > 0)
 							s = (Media::DrawEngine::DrawFontStyle)(s | Media::DrawEngine::DFS_BOLD);
-						fnt2->font = img->NewFontPt(f->fontName, Text::StrCharCnt(f->fontName), f->fontSizePt, s, 0);
+						fnt2->font = img->NewFontPt(f->fontName->ToCString(), f->fontSizePt, s, 0);
 					}
 					else
 					{
-						fnt2->font = img->NewFontPt(fnt->fontName, Text::StrCharCnt(fnt->fontName), fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+						fnt2->font = img->NewFontPt(fnt->fontName->ToCString(), fnt->fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 					}
 					fnt2->other = img->NewBrushARGB(fnt->color);
 					fnt2->thick = fnt2->thick * img->GetHDPI() / 96.0;

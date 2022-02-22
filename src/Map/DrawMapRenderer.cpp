@@ -8,7 +8,7 @@
 #include "Media/Resizer/LanczosResizer8_C8.h"
 #include "Text/MyString.h"
 
-#define IsDoorNum(a) Text::StrIsInt32(a)
+#define IsDoorNum(a) Text::StrIsInt32(a.v)
 #define LBLMINDIST 150
 
 UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Int32 priority)
@@ -44,7 +44,7 @@ UOSInt Map::DrawMapRenderer::NewLabel(Map::DrawMapRenderer::MapLabels *labels, U
 		if (j == (UOSInt)-1)
 			return j;
 		if (labels[j].label)
-			Text::StrDelNew(labels[j].label);
+			labels[j].label->Release();
 		if (labels[j].points)
 			MemFree(labels[j].points);
 		labels[j].label = 0;
@@ -81,7 +81,7 @@ Bool Map::DrawMapRenderer::LabelOverlapped(Double *points, UOSInt nPoints, Doubl
 	return false;
 }
 
-Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, const UTF8Char *label, UOSInt nPoints, Double *points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
+Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *labelCnt, Text::CString label, UOSInt nPoints, Double *points, Int32 priority, Map::DrawLayerType recType, UOSInt fontStyle, Int32 flags, Map::MapView *view, OSInt xOfst, OSInt yOfst, Map::MapEnv::FontType fontType)
 {
 	Double size;
 	Double visibleSize;
@@ -94,7 +94,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 	Double scnX;
 	Double scnY;
 	Int32 found;
-	if (label == 0 || label[0] == 0)
+	if (label.leng == 0)
 		return false;
 
 	Double left = view->GetLeftX();
@@ -112,7 +112,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (Text::StrEquals(labels[i].label, label))
+				if (label.Equals(labels[i].label))
 				{
 					found = 1;
 
@@ -162,7 +162,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 						return false;
 					}
 
-					labels[i].label = Text::StrCopyNew(label);
+					labels[i].label = Text::String::New(label);
 					labels[i].lon = ptPtr[0];
 					labels[i].lat = ptPtr[1];
 					labels[i].fontStyle = fontStyle;
@@ -300,7 +300,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 		{
 			if (recType == labels[i].layerType)
 			{
-				if (Text::StrEquals(labels[i].label, label))
+				if (label.Equals(labels[i].label))
 				{
 					found++;
 					if (totalSize == 0)
@@ -450,7 +450,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			labels[i].currSize = visibleSize;
 			labels[i].flags = flags;
 
-			labels[i].label = Text::StrCopyNew(label);
+			labels[i].label = Text::String::New(label);
 			labels[i].points = 0;
 
 			toUpdate = 1;
@@ -489,7 +489,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 			{
 				if (recType == labels[i].layerType)
 				{
-					if (Text::StrEquals(labels[i].label, label))
+					if (label.Equals(labels[i].label))
 					{
 						found = 1;
 						break;
@@ -638,7 +638,7 @@ Bool Map::DrawMapRenderer::AddLabel(MapLabels *labels, UOSInt maxLabel, UOSInt *
 					return false;
 				}
 
-				labels[i].label = Text::StrCopyNew(label);
+				labels[i].label = Text::String::New(label);
 				labels[i].lon = thisX;
 				labels[i].lat = thisY;
 				labels[i].fontStyle = fontStyle;
@@ -672,7 +672,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 	UOSInt i;
 	UOSInt j;
 	Bool overlapped;
-	const UTF8Char *lastLbl = 0;
+	Text::String *lastLbl = 0;
 //	Double leftLon = denv->view->GetLeftX();
 //	Double topLat = denv->view->GetTopY();
 //	Double rightLon = denv->view->GetRightX();
@@ -736,7 +736,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 		//	labels[i].shapeType = 0;
 			if (denv->labels[i].layerType == Map::DRAW_LAYER_POINT || denv->labels[i].layerType == Map::DRAW_LAYER_POINT3D)
 			{
-				GetCharsSize(denv, szThis, denv->labels[i].label, denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				denv->view->MapXYToScnXY(denv->labels[i].lon, denv->labels[i].lat, &dscnX, &dscnY);
 				scnPtX = dscnX;
 				scnPtY = dscnY;
@@ -790,7 +790,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 				if (!overlapped)
 				{
-					DrawChars(denv, denv->labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
+					DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
 
 					denv->objBounds[(currPt << 2)] = tlx;
 					denv->objBounds[(currPt << 2) + 1] = tly;
@@ -804,7 +804,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 				if (lastLbl)
 				{
-					if (!Text::StrEquals(lastLbl, denv->labels[i].label))
+					if (!lastLbl->Equals(denv->labels[i].label))
 					{
 						thisCnt = 0;
 					}
@@ -817,8 +817,8 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 				if (thisCnt == 0)
 				{
 					if (lastLbl)
-						Text::StrDelNew(lastLbl);
-					lastLbl = Text::StrCopyNew(denv->labels[i].label);
+						lastLbl->Release();
+					lastLbl = denv->labels[i].label->Clone();
 				}
 				else
 				{
@@ -1045,7 +1045,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 					denv->labels[i].scaleW = 0;
 					denv->labels[i].scaleH = 0;
 				}
-				GetCharsSize(denv, szThis, denv->labels[i].label, denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 				if (OSInt2Double(xDiff) < szThis[0] && OSInt2Double(yDiff) < szThis[1])
 				{
 					tlx = scnPtX - (szThis[0] * 0.5);
@@ -1056,7 +1056,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 					overlapped = LabelOverlapped(denv->objBounds, currPt, tlx, tly, brx, bry);
 					if (!overlapped)
 					{
-						DrawChars(denv, denv->labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
+						DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
 
 						denv->objBounds[(currPt << 2)] = tlx;
 						denv->objBounds[(currPt << 2) + 1] = tly;
@@ -1182,7 +1182,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 								denv->labels[i].scaleW = 0;
 								denv->labels[i].scaleH = 0;
 							}
-							GetCharsSize(denv, szThis, denv->labels[i].label, denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
+							GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, denv->labels[i].scaleW, denv->labels[i].scaleH);
 						}
 					}
 
@@ -1213,7 +1213,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							if ((denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0)
 							{
 								Double realBounds[4];
-								DrawCharsLA(denv, denv->labels[i].label, denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
+								DrawCharsLA(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
 
 								denv->objBounds[(currPt << 2)] = realBounds[0];
 								denv->objBounds[(currPt << 2) + 1] = realBounds[1];
@@ -1224,7 +1224,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							else if ((denv->labels[i].flags & Map::MapEnv::SFLG_ROTATE) != 0)
 							{
 								Double realBounds[4];
-								DrawCharsL(denv, denv->labels[i].label, denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
+								DrawCharsL(denv, denv->labels[i].label->ToCString(), denv->labels[i].points, points, denv->labels[i].nPoints, k, scaleN, scaleD, denv->labels[i].fontType, denv->labels[i].fontStyle, realBounds);
 
 								denv->objBounds[(currPt << 2)] = realBounds[0];
 								denv->objBounds[(currPt << 2) + 1] = realBounds[1];
@@ -1234,7 +1234,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 							}
 							else
 							{
-								DrawChars(denv, denv->labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
+								DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, denv->labels[i].scaleW, denv->labels[i].scaleH, denv->labels[i].fontType, denv->labels[i].fontStyle, (denv->labels[i].flags & Map::MapEnv::SFLG_ALIGN) != 0);
 
 								denv->objBounds[(currPt << 2)] = tlx;
 								denv->objBounds[(currPt << 2) + 1] = tly;
@@ -1253,7 +1253,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 			}
 			else if (denv->labels[i].layerType == Map::DRAW_LAYER_POLYGON)
 			{
-				GetCharsSize(denv, szThis, denv->labels[i].label, denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
+				GetCharsSize(denv, szThis, denv->labels[i].label->ToCString(), denv->labels[i].fontType, denv->labels[i].fontStyle, 0, 0);//labels[i].scaleW, labels[i].scaleH);
 				denv->view->MapXYToScnXY(denv->labels[i].lon, denv->labels[i].lat, &dscnX, &dscnY);
 				scnPtX = dscnX;
 				scnPtY = dscnY;
@@ -1307,7 +1307,7 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 
 				if (!overlapped)
 				{
-					DrawChars(denv, denv->labels[i].label, (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
+					DrawChars(denv, denv->labels[i].label->ToCString(), (tlx + brx) * 0.5, (tly + bry) * 0.5, 0, 0, denv->labels[i].fontType, denv->labels[i].fontStyle, 0);
 
 					denv->objBounds[(currPt << 2)] = tlx;
 					denv->objBounds[(currPt << 2) + 1] = tly;
@@ -1330,12 +1330,12 @@ void Map::DrawMapRenderer::DrawLabels(Map::DrawMapRenderer::DrawEnv *denv)
 	i = denv->labelCnt;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(denv->labels[i].label);
+		denv->labels[i].label->Release();
 		if (denv->labels[i].points)
 			MemFree(denv->labels[i].points);
 	}
 	if (lastLbl)
-		Text::StrDelNew(lastLbl);
+		lastLbl->Release();
 }
 
 OSInt Map::DrawMapRenderer::VImgCompare(void *obj1, void *obj2)
@@ -1439,7 +1439,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->v, layer.fontName->leng, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1472,7 +1472,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->v, layer.fontName->leng, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1533,7 +1533,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->v, layer.fontName->leng, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -1585,7 +1585,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
 								UOSInt fs = denv->layerFont->GetCount();
-								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->v, layer.fontName->leng, layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
+								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
 								denv->layerFont->Add(f);
 								denv->layerFontColor->Add(b);
@@ -2049,6 +2049,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	Double scaleH;
 	Double pts[2];
 	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	UTF8Char lblStr[256];
 	void *session;
 	UOSInt maxLabel = denv->env->GetNString();
@@ -2078,7 +2079,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	{
 		if ((dobj = layer->GetObjectByIdD(session, arri->GetItem(i))) != 0)
 		{
-			layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), labelCol);
+			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), labelCol);
 
 			if (csysConv)
 			{
@@ -2090,7 +2091,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 			}
 			if (flags & Map::MapEnv::SFLG_TRIM)
 			{
-				Text::StrTrim(lblStr);
+				sptrEnd = Text::StrTrim(lblStr);
 			}
 			if (flags & Map::MapEnv::SFLG_CAPITAL)
 			{
@@ -2117,7 +2118,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 							maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
 					}
 				}
-				if (AddLabel(denv->labels, maxLabel, &denv->labelCnt, sptr, maxSize, &dobj->pointArr[maxPos << 1], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType))
+				if (AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos << 1], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType))
 				{
 					layer->ReleaseObject(session, dobj);
 				}
@@ -2151,7 +2152,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 					if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
 						scaleW = scaleH = 0;
-					DrawChars(denv, sptr, pts[0], pts[1], scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 				}
 				layer->ReleaseObject(session, dobj);
 			}
@@ -2161,7 +2162,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 				if (denv->view->InViewXY(pts[0], pts[1]))
 				{
 					denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(denv, sptr, pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 				}
 				layer->ReleaseObject(session, dobj);
 			}
@@ -2183,7 +2184,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 				if (denv->view->InViewXY(pts[0], pts[1]))
 				{
 					denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(denv, sptr, pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
 				}
 				layer->ReleaseObject(session, dobj);
 			}
@@ -2424,7 +2425,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 	}
 }
 
-void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8Char *label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
+void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, Text::CString label, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double scaleW, Double scaleH)
 {
 	Double szTmp[2];
 	UOSInt buffSize;
@@ -2498,11 +2499,10 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, const UTF8C
 	size[1] = maxY - minY;
 }
 
-void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
+void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double scnPosX, Double scnPosY, Double scaleW, Double scaleH, Map::MapEnv::FontType fontType, UOSInt fontStyle, Bool isAlign)
 {
 	Double size[2];
 	UInt16 absH;
-	UOSInt lblSize;
 	Map::DrawMapRenderer::DrawFontStyle *font;
 	Media::DrawFont *df;
 	Media::DrawBrush *db;
@@ -2534,13 +2534,11 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		scaleH = -scaleH;
 	}
 
-	lblSize = Text::StrCharCnt(str1);
-
 	if (scaleH == 0)
 	{
 		scaleH = 0;
 	}
-	denv->img->GetTextSizeC(df, str1, lblSize, size);
+	denv->img->GetTextSize(df, str1, size);
 
 	if (scaleH == 0)
 	{
@@ -2586,8 +2584,8 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		Double tmp;
 		Int32 type;
 		Double szThis[2];
-		Double dlblSize = UOSInt2Double(lblSize);
-		denv->img->GetTextSizeC(df, str1, lblSize, szThis);
+		Double dlblSize = UOSInt2Double(str1.leng);
+		denv->img->GetTextSize(df, str1, szThis);
 
 		if ((szThis[0] * absH) < (szThis[1] * dlblSize * scaleW))
 		{
@@ -2623,25 +2621,25 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		}
 
 		UOSInt cnt;
-		const UTF8Char *lbl = str1;
+		const UTF8Char *lbl = str1.v;
 
 		if (font && font->buffSize > 0)
 		{
 			currX = 0;
 			currY = 0;
 
-			cnt = lblSize;
+			cnt = str1.leng;
 
 			while (cnt--)
 			{
-				denv->img->GetTextSizeC(font->font, lbl, 1, szThis);
+				denv->img->GetTextSize(font->font, {lbl, 1}, szThis);
 
 				if (type)
 				{
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, l, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currY += szThis[1];
 
@@ -2653,7 +2651,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 					UTF8Char l[2];
 					l[0] = lbl[0];
 					l[1] = 0;
-					denv->img->DrawStringB(startX + currX, startY + currY, l, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+					denv->img->DrawStringB(startX + currX, startY + currY, {l, 1}, font->font, font->buffBrush, (UOSInt)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 
 					currX += szThis[0];
 					if (scaleW)
@@ -2664,20 +2662,20 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 		}
 		currX = 0;
 		currY = 0;
-		lbl = str1;
+		lbl = str1.v;
 
-		cnt = lblSize;
+		cnt = str1.leng;
 
 		while (cnt--)
 		{
-			denv->img->GetTextSizeC(df, lbl, 1, szThis);
+			denv->img->GetTextSize(df, {lbl, 1}, szThis);
 
 			if (type)
 			{
 				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
-				denv->img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, l, df, db);
+				denv->img->DrawString(startX + currX - (szThis[0] * 0.5), startY + currY, {l, 1}, df, db);
 
 				currY += szThis[1];
 
@@ -2689,7 +2687,7 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 				UTF8Char l[2];
 				l[0] = lbl[0];
 				l[1] = 0;
-				denv->img->DrawString(startX + currX, startY + currY, l, df, db);
+				denv->img->DrawString(startX + currX, startY + currY, {l, 1}, df, db);
 
 				currX += szThis[0];
 				if (scaleW)
@@ -2710,10 +2708,11 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, const UTF8Char *str1, Double
 	}
 }
 
-void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
+void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	UOSInt lblSize = (UOSInt)(Text::StrConcat(sbuff, str1) - sbuff);
+	UOSInt lblSize = str1.leng;
+	str1.ConcatTo(sbuff);
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -2801,7 +2800,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 	xDiff = 0;
 	yDiff = 0;
 
-	denv->img->GetTextSizeC(df, str1, lblSize, szThis);
+	denv->img->GetTextSize(df, str1, szThis);
 	xDiff = szThis[0] * 0.5;
 	yDiff = xDiff * xDiff;
 
@@ -3000,7 +2999,7 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			
 		}
 
-		denv->img->GetTextSizeC(df, lbl, (UOSInt)(nextPos - lbl), szThis);
+		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), szThis);
 		dist = (szLast[0] + szThis[0]) * 0.5;
 		nextX = currX + (dist * cosAngle);
 		nextY = currY - (dist * sinAngle);
@@ -3226,17 +3225,17 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, lbl, df, db, lastAngle);
+				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, lastAngle, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, lastAngle, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, lbl, df, db, lastAngle);
+				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, lastAngle);
 			}
 		}
 		else
@@ -3269,17 +3268,17 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, lbl, df, db, angleDegree);
+				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
 			else
 			{
 				if (font && font->buffSize > 0)
 				{
-					denv->img->DrawStringRotB(currX, currY, lbl, df, font->buffBrush, angleDegree, font->buffSize);
+					denv->img->DrawStringRotB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, angleDegree, font->buffSize);
 				}
-				denv->img->DrawStringRot(currX, currY, lbl, df, db, angleDegree);
+				denv->img->DrawStringRot(currX, currY, CSTRP(lbl, nextPos), df, db, angleDegree);
 			}
 
 		}
@@ -3294,10 +3293,11 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, const
 	realBounds[3] = maxY;
 }
 
-void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
+void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Double *mapPts, Int32 *scnPts, UOSInt nPoints, UOSInt thisPt, Double scaleN, Double scaleD, Map::MapEnv::FontType fontType, UOSInt fontStyle, Double *realBounds)
 {
 	UTF8Char sbuff[256];
-	UOSInt lblSize = (UOSInt)(Text::StrConcat(sbuff, str1) - sbuff);
+	UOSInt lblSize = str1.leng;
+	str1.ConcatTo(sbuff);
 	Double centX = scnPts[thisPt << 1] + (scnPts[(thisPt << 1) + 2] - scnPts[(thisPt << 1)]) * scaleN / scaleD;
 	Double centY = scnPts[(thisPt << 1) + 1] + (scnPts[(thisPt << 1) + 3] - scnPts[(thisPt << 1) + 1]) * scaleN / scaleD;
 	Double currX;
@@ -3406,7 +3406,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 
 	while (i-- > 0)
 	{
-		denv->img->GetTextSizeC(df, &str1[i], 1, szThis);
+		denv->img->GetTextSize(df, {&str1.v[i], 1}, szThis);
 		xDiff += szThis[0];
 		yDiff += szThis[1];
 	}
@@ -3688,7 +3688,7 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		nextChar = *nextPos;
 		*nextPos = 0;
 
-		denv->img->GetTextSizeC(df, lbl, (UOSInt)(nextPos - lbl), szThis);
+		denv->img->GetTextSize(df, CSTRP(lbl, nextPos), szThis);
 		while (true)
 		{
 			if (angleDegree <= 90)
@@ -3878,17 +3878,17 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, const UTF8Char *str1, Doub
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawString(currX, currY, lbl, df, db);
+			denv->img->DrawString(currX, currY, CSTRP(lbl, nextPos), df, db);
 		}
 		else
 		{
 			if (font && font->buffSize > 0)
 			{
-				denv->img->DrawStringB(currX, currY, lbl, df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
+				denv->img->DrawStringB(currX, currY, CSTRP(lbl, nextPos), df, font->buffBrush, (UInt32)Double2Int32(UOSInt2Double(font->buffSize) * denv->img->GetHDPI() / 96.0));
 			}
-			denv->img->DrawString(currX, currY, lbl, df, db);
+			denv->img->DrawString(currX, currY, CSTRP(lbl, nextPos), df, db);
 		}
 		szLast[0] = szThis[0];
 		szLast[1] = szThis[1];
@@ -3958,7 +3958,7 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 
 		font = &denv.fontStyles[i];
 		env->GetFontStyle(i, &fontName, &fontSizePt, &bold, &fontColor, &buffSize, &buffColor);
-		font->font = img->NewFontPt(fontName->v, fontName->leng, fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		font->font = img->NewFontPt(fontName->ToCString(), fontSizePt, bold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 		font->fontBrush = img->NewBrushARGB(this->colorConv->ConvRGB8(fontColor));
 		font->buffSize = buffSize;
 		if (buffSize > 0)

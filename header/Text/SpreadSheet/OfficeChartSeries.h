@@ -42,7 +42,7 @@ namespace Text
 			WorkbookDataSource *GetValueData();
 			Text::String *GetTitle();
 			void SetTitle(Text::String *title, Text::String *dataSource);
-			void SetTitle(const UTF8Char *title, const UTF8Char *dataSource);
+			void SetTitle(Text::CString title, const UTF8Char *dataSource);
 			Bool IsSmooth();
 			void SetSmooth(Bool smooth);
 			OfficeShapeProp *GetShapeProp();

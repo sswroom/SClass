@@ -1316,7 +1316,7 @@ void Exporter::XLSXExporter::AppendAxis(Text::StringBuilderUTF8 *sb, Text::Sprea
 	}
 	if (axis->GetTitle())
 	{
-		AppendTitle(sb, axis->GetTitle());
+		AppendTitle(sb, axis->GetTitle()->v);
 	}
 	sb->AppendC(UTF8STRC("<c:majorTickMark val=\"cross\"/>"));
 	sb->AppendC(UTF8STRC("<c:minorTickMark val=\"none\"/>"));

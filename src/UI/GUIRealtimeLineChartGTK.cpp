@@ -100,22 +100,22 @@ void UI::GUIRealtimeLineChart::OnPaint(Media::DrawImage *dimg)
 	Double pw = 1 * this->hdpi / this->ddpi;
 	if (pw < 1)
 		pw = 1;
-	f = img->NewFontPt(UTF8STRC("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
+	f = img->NewFontPt(CSTR("Arial"), 9.0, Media::DrawEngine::DFS_ANTIALIAS, 0);
 	p = img->NewPenARGB(this->fontColor, Double2Int32(pw), 0, 0);
 	b = img->NewBrushARGB(this->fontColor);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMax, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
+	img->GetTextSize(f, CSTRP(sbuff, sptr), sz);
 	strWidth = sz[0];
-	img->DrawString(0, 1, sbuff, f, b);
+	img->DrawString(0, 1, CSTRP(sbuff, sptr), f, b);
 	sptr = Text::StrDoubleFmt(sbuff, this->chartMin, "0.##");
 	if (this->unit)
 		sptr =Text::StrConcat(sptr, this->unit);
-	img->GetTextSizeC(f, sbuff, (UOSInt)(sptr - sbuff), sz);
+	img->GetTextSize(f, CSTRP(sbuff, sptr), sz);
 	if (sz[0] > strWidth)
 		strWidth = sz[0];
-	img->DrawString(0, UOSInt2Double(dimg->GetHeight()) - sz[1], sbuff, f, b);
+	img->DrawString(0, UOSInt2Double(dimg->GetHeight()) - sz[1], CSTRP(sbuff, sptr), f, b);
 	img->DrawLine(strWidth, 0, strWidth, UOSInt2Double(dimg->GetHeight()), p);
 	img->DelBrush(b);
 	img->DelPen(p);

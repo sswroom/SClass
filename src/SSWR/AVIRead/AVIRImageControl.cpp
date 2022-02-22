@@ -216,9 +216,9 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						DEL_CLASS(simg);
 
 						status = MemAlloc(SSWR::AVIRead::AVIRImageControl::ImageStatus, 1);
-						status->filePath = Text::String::NewNotNull(sbuff);
-						status->cacheFile = Text::String::NewNotNull(sbuff2);
-						status->fileName = status->filePath->v + (sptr - sbuff);
+						status->filePath = Text::String::NewP(sbuff, sptr3);
+						status->cacheFile = Text::String::NewP(sbuff2, sptr2End);
+						status->fileName = status->filePath->ToCString().Substring((UOSInt)(sptr - sbuff));
 						imgSett = imgSettMap->Get(sptr);
 						if (imgSett)
 						{
@@ -239,7 +239,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						status->previewImg = 0;
 						status->previewImg2 = 0;
 						Sync::MutexUsage imgMutUsage(this->imgMut);
-						this->imgMap->Put(status->fileName, status);
+						this->imgMap->Put(status->fileName.v, status);
 						this->imgMapUpdated = true;
 						imgMutUsage.EndUse();
 					}
@@ -293,11 +293,11 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 		if (status == 0)
 			break;
 
-		img = this->LoadImage(status->fileName);
+		img = this->LoadImage(status->fileName.v);
 		if (img)
 		{
 			this->ApplySetting(img, img, &status->setting);
-			sptr2 = Text::StrConcat(sptr, status->fileName);
+			sptr2 = status->fileName.ConcatTo(sptr);
 			NEW_CLASS(imgList, Media::ImageList(CSTRP(sbuff, sptr2)));
 			imgList->AddImage(img, 0);
 			Sync::MutexUsage ioMutUsage(this->ioMut);
@@ -700,9 +700,8 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 		{
 			j = imgList->GetCount() - 1;
 		}
-		f = dimg->NewFontPt(UTF8STRC("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
+		f = dimg->NewFontPt(CSTR("Arial"), 9, Media::DrawEngine::DFS_ANTIALIAS, 0);
 		b = dimg->NewBrushARGB(0xff000000);
-		UOSInt strLen;
 		Double strSz[2];
 		while (i <= j)
 		{
@@ -730,14 +729,13 @@ void SSWR::AVIRead::AVIRImageControl::OnDraw(Media::DrawImage *dimg)
 				status->previewImg2->SetVDPI(dimg->GetVDPI());
 				dimg->DrawImagePt(status->previewImg2, UOSInt2Double((scnW - status->previewImg2->GetWidth()) >> 1), OSInt2Double((OSInt)(i * itemTH - scrPos + ((itemH - status->previewImg2->GetHeight()) >> 1))));
 			}
-			if (status->fileName)
+			if (status->fileName.leng > 0)
 			{
 				Text::StringBuilderUTF8 sb;
-				sb.AppendSlow(status->fileName);
-				strLen = sb.GetLength();
-				if (f && dimg->GetTextSizeC(f, sb.ToString(), strLen, strSz))
+				sb.Append(status->fileName);
+				if (f && dimg->GetTextSize(f, sb.ToCString(), strSz))
 				{
-					dimg->DrawString((UOSInt2Double(scnW) - strSz[0]) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToString(), f, b);
+					dimg->DrawString((UOSInt2Double(scnW) - strSz[0]) * 0.5, UOSInt2Double(i * itemTH - scrPos + itemH), sb.ToCString(), f, b);
 				}
 			}
 			i++;
@@ -862,7 +860,7 @@ void SSWR::AVIRead::AVIRImageControl::OnMouseDown(OSInt scrollY, Int32 xPos, Int
 					}
 					else
 					{
-						this->dispHdlr(this->dispHdlrObj, 0, 0);
+						this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
 					}
 				}
 			}
@@ -963,7 +961,7 @@ Bool SSWR::AVIRead::AVIRImageControl::SaveSetting()
 	{
 		status = imgList->GetItem(i);
 		sb.ClearStr();
-		sb.AppendSlow(status->fileName);
+		sb.Append(status->fileName);
 		sb.AppendC(UTF8STRC("\t"));
 		sb.AppendI32(status->setting.flags);
 		sb.AppendC(UTF8STRC("\t"));
@@ -1213,7 +1211,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 	imgList = this->imgMap->GetValues();
 	if (this->dispImg)
 	{
-		i = nameList->SortedIndexOf(this->dispImg->fileName);
+		i = nameList->SortedIndexOf(this->dispImg->fileName.v);
 		if (i == -1)
 		{
 			i = (OSInt)nameList->GetCount() - 1;
@@ -1243,7 +1241,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveUp()
 		this->dispImg = 0;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, 0, 0);
+			this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
 		}
 	}
 	else
@@ -1278,7 +1276,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 	imgList = this->imgMap->GetValues();
 	if (this->dispImg)
 	{
-		i = nameList->SortedIndexOf(this->dispImg->fileName);
+		i = nameList->SortedIndexOf(this->dispImg->fileName.v);
 		if (i == -1)
 		{
 			i = 0;
@@ -1308,7 +1306,7 @@ void SSWR::AVIRead::AVIRImageControl::MoveDown()
 		this->dispImg = 0;
 		if (this->dispHdlr)
 		{
-			this->dispHdlr(this->dispHdlrObj, 0, 0);
+			this->dispHdlr(this->dispHdlrObj, CSTR_NULL, 0);
 		}
 	}
 	else

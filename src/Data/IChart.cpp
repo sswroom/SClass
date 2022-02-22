@@ -20,8 +20,8 @@ Data::IChart::IChart()
 Data::IChart::~IChart()
 {
 	SDEL_STRING(this->title);
-	SDEL_TEXT(this->xAxisName);
-	SDEL_TEXT(this->yAxisName);
+	SDEL_STRING(this->xAxisName);
+	SDEL_STRING(this->yAxisName);
 
 	SDEL_STRING(this->dateFormat);
 	SDEL_STRING(this->timeFormat);
@@ -95,24 +95,24 @@ Text::String *Data::IChart::GetDblFormat()
 	return this->dblFormat;
 }
 
-void Data::IChart::SetXAxisName(const UTF8Char *xAxisName)
+void Data::IChart::SetXAxisName(Text::CString xAxisName)
 {
-	SDEL_TEXT(this->xAxisName);
-	this->xAxisName = SCOPY_TEXT(xAxisName);
+	SDEL_STRING(this->xAxisName);
+	this->xAxisName = Text::String::NewOrNull(xAxisName);
 }
 
-const UTF8Char *Data::IChart::GetXAxisName()
+Text::String *Data::IChart::GetXAxisName()
 {
 	return this->xAxisName;
 }
 
-void Data::IChart::SetYAxisName(const UTF8Char *yAxisName)
+void Data::IChart::SetYAxisName(Text::CString yAxisName)
 {
-	SDEL_TEXT(this->yAxisName);
-	this->yAxisName = SCOPY_TEXT(yAxisName);
+	SDEL_STRING(this->yAxisName);
+	this->yAxisName = Text::String::NewOrNull(yAxisName);
 }
 
-const UTF8Char *Data::IChart::GetYAxisName()
+Text::String *Data::IChart::GetYAxisName()
 {
 	return this->yAxisName;
 }

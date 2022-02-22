@@ -33,7 +33,7 @@ namespace Media
 		OSInt fontSlant;
 		OSInt fontWeight;
 	public:
-		GTKDrawFont(const UTF8Char *fontName, UOSInt nameLen, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
+		GTKDrawFont(Text::CString fontName, Double pxHeight, Media::DrawEngine::DrawFontStyle drawFontStyle);
 		GTKDrawFont(Text::String *fontName, Double pxHeight, OSInt fontSlant, OSInt fontWeight);
 		~GTKDrawFont();
 
@@ -120,28 +120,27 @@ namespace Media
 		virtual Bool DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b); ////////////////////////////////////
 		virtual Bool DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *p);
-		virtual Bool DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p);
+		virtual Bool DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *p);
 		virtual Bool DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		virtual Bool DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree);
 		virtual Bool DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize); ////////////////////////////////////
-		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize); ////////////////////////////////////
+		virtual Bool DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize); ////////////////////////////////////
 		virtual Bool DrawImagePt(DrawImage *img, Double tlx, Double tly); ////////////////////////////////////
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly); ////////////////////////////////////
 		virtual Bool DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH); ////////////////////////////////////
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);
-		virtual DrawFont *NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual DrawFont *NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual DrawFont *CloneFont(DrawFont *f);
 		virtual void DelPen(DrawPen *p);
 		virtual void DelBrush(DrawBrush *b);
 		virtual void DelFont(DrawFont *f);
 
-		virtual Bool GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz); ////////////////////////////////////
-		virtual Bool GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz); ////////////////////////////////////
+		virtual Bool GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz); ////////////////////////////////////
 		virtual void SetTextAlign(DrawEngine::DrawPos pos); ////////////////////////////////////
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY); ////////////////////////////////////
 		virtual void GetStringBoundRot(Int32 *pos, Double centX, Double centY, const UTF8Char *str, DrawFont *f, Double angleDegree, OSInt *drawX, OSInt *drawY); ////////////////////////////////////

@@ -15,6 +15,7 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 	UOSInt i = 0;
 	UOSInt j = this->env->GetLineStyleCount();
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 
 	UOSInt w = img->GetWidth();;
 	UOSInt h = img->GetHeight();
@@ -75,11 +76,11 @@ void SSWR::AVIRead::AVIRLineSelector::OnDraw(Media::DrawImage *img)
 			img->DrawImagePt(tmpBmp, 0, UOSInt2Double(i + 1));
 		}
 		sbuff[0] = 0;
-		this->env->GetLineStyleName(currPos, sbuff);
+		sptr = this->env->GetLineStyleName(currPos, sbuff);
 		if (sbuff[0])
 		{
 			Media::DrawFont *fnt = this->CreateDrawFont(img);
-			img->DrawString(itemW, UOSInt2Double(i + 1), sbuff, fnt, bBlack);
+			img->DrawString(itemW, UOSInt2Double(i + 1), CSTRP(sbuff, sptr), fnt, bBlack);
 			img->DelFont(fnt);
 		}
 

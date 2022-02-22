@@ -170,15 +170,15 @@ Bool Media::GTKDrawEngine::DeleteImage(DrawImage *img)
 	return true;
 }
 
-Media::GTKDrawFont::GTKDrawFont(const UTF8Char *fontName, UOSInt nameLen, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
+Media::GTKDrawFont::GTKDrawFont(Text::CString fontName, Double fontHeight, Media::DrawEngine::DrawFontStyle drawFontStyle)
 {
-	if (fontName == 0)
+	if (fontName.leng == 0)
 	{
 		this->fontName = Text::String::New(UTF8STRC("sans-serif"));
 	}
 	else
 	{
-		this->fontName = Text::String::New(fontName, nameLen);
+		this->fontName = Text::String::New(fontName.v, fontName.leng);
 	}
 	this->fontHeight = fontHeight;
 	if (drawFontStyle & Media::DrawEngine::DFS_BOLD)
@@ -603,26 +603,26 @@ Bool Media::GTKDrawImage::DrawEllipse(Double tlx, Double tly, Double w, Double h
 
 Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b)
 {
-	return DrawString(tlx, tly, str->v, f, b);
+	return DrawString(tlx, tly, str->ToCString(), f, b);
 }
 
-Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b)
+Bool Media::GTKDrawImage::DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
 	font->Init(this->cr);
 	brush->Init(this->cr);
 	cairo_move_to((cairo_t *)this->cr, tlx + OSInt2Double(this->left), tly + font->GetHeight() * 0.8 + 1 + OSInt2Double(this->top));
-	cairo_show_text((cairo_t *)this->cr, (const Char*)str);
+	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
 	return true;
 }
 
 Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
-	return DrawStringRot(centX, centY, str->v, f, b, angleDegree);
+	return DrawStringRot(centX, centY, str->ToCString(), f, b, angleDegree);
 }
 
-Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree)
+Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree)
 {
 	GTKDrawFont *font = (GTKDrawFont*)f;
 	GTKDrawBrush *brush = (GTKDrawBrush*)b;
@@ -633,20 +633,20 @@ Bool Media::GTKDrawImage::DrawStringRot(Double centX, Double centY, const UTF8Ch
 	Double cVal = Math_Cos(angleR);
 	Double sVal = Math_Sin(angleR);
 	Double dist = font->GetHeight() * 0.8 + 1;
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)str, &extents);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
 	cairo_move_to((cairo_t *)this->cr, centX - dist * sVal + OSInt2Double(this->left), centY + dist * cVal + OSInt2Double(this->top));
 	cairo_rotate((cairo_t *)this->cr, angleR);
-	cairo_show_text((cairo_t *)this->cr, (const Char*)str);
+	cairo_show_text((cairo_t *)this->cr, (const Char*)str.v);
 	cairo_rotate((cairo_t *)this->cr, -angleR);
 	return true;
 }
 
 Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
-	return DrawStringB(tlx, tly, str->v, f, b, buffSize);
+	return DrawStringB(tlx, tly, str->ToCString(), f, b, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b, UOSInt buffSize)
 {
 	OSInt px = Double2Int32(tlx);
 	OSInt py = Double2Int32(tly);
@@ -664,7 +664,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)str, &extents);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)str.v, &extents);
 	sz[0] = (UInt32)Double2Int32(extents.width + 2);
 	sz[1] = (UInt32)Double2Int32(extents.height + 2);
 	dwidth = (OSInt)this->info->dispWidth - px;
@@ -784,10 +784,10 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, const UTF8Char *st
 
 Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
-	return DrawStringRotB(centX, centY, str->v, f, b, angleDegree, buffSize);
+	return DrawStringRotB(centX, centY, str->ToCString(), f, b, angleDegree, buffSize);
 }
 
-Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
+Bool Media::GTKDrawImage::DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *b, Double angleDegree, UOSInt buffSize)
 {
 	printf("GTK: Draw StringRotBUTF8 (Not support)\r\n");
 	return false;
@@ -965,17 +965,17 @@ Media::DrawBrush *Media::GTKDrawImage::NewBrushARGB(UInt32 color)
 	return b;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
-	NEW_CLASS(f, Media::GTKDrawFont(name, nameLen, ptSize * this->info->hdpi / 72.0, fontStyle));
+	NEW_CLASS(f, Media::GTKDrawFont(name, ptSize * this->info->hdpi / 72.0, fontStyle));
 	return f;
 }
 
-Media::DrawFont *Media::GTKDrawImage::NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
+Media::DrawFont *Media::GTKDrawImage::NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	Media::GTKDrawFont *f;
-	NEW_CLASS(f, Media::GTKDrawFont(name, nameLen, pxSize, fontStyle));
+	NEW_CLASS(f, Media::GTKDrawFont(name, pxSize, fontStyle));
 	return f;
 }
 
@@ -1008,25 +1008,12 @@ void Media::GTKDrawImage::DelFont(DrawFont *f)
 	DEL_CLASS(font);
 }
 
-Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz)
+Bool Media::GTKDrawImage::GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz)
 {
 	GTKDrawFont *font = (GTKDrawFont*)fnt;
 	cairo_text_extents_t extents;
 	font->Init(this->cr);
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt, &extents);
-	sz[0] = extents.width + 2;
-	sz[1] = font->GetHeight() + 2;
-	return true;
-}
-
-Bool Media::GTKDrawImage::GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz)
-{
-	GTKDrawFont *font = (GTKDrawFont*)fnt;
-	cairo_text_extents_t extents;
-	font->Init(this->cr);
-	const UTF8Char *utf8 = Text::StrCopyNewC(txt, txtLen);;
-	cairo_text_extents((cairo_t *)this->cr, (const Char*)utf8, &extents);
-	Text::StrDelNew(utf8);
+	cairo_text_extents((cairo_t *)this->cr, (const Char*)txt.v, &extents);
 	sz[0] = extents.width + 2;
 	sz[1] = font->GetHeight() + 2;
 	return true;

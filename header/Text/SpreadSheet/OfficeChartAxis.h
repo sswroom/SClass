@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_SPREADSHEET_OFFICECHARTAXIS
 #define _SM_TEXT_SPREADSHEET_OFFICECHARTAXIS
+#include "Text/String.h"
 #include "Text/SpreadSheet/OfficeShapeProp.h"
 
 namespace Text
@@ -42,7 +43,7 @@ namespace Text
 		private:
 			AxisType axisType;
 			AxisPosition axisPos;
-			const UTF8Char *title;
+			Text::String *title;
 			OfficeShapeProp *shapeProp;
 			OfficeShapeProp *majorGridProp;
 			TickLabelPosition tickLblPos;
@@ -54,8 +55,8 @@ namespace Text
 
 			AxisType GetAxisType();
 			AxisPosition GetAxisPos();
-			const UTF8Char *GetTitle();
-			void SetTitle(const UTF8Char *title);
+			Text::String *GetTitle();
+			void SetTitle(Text::CString title);
 			OfficeShapeProp *GetShapeProp();
 			void SetShapeProp(OfficeShapeProp *shapeProp);
 			OfficeShapeProp *GetMajorGridProp();

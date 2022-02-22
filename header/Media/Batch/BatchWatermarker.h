@@ -15,14 +15,14 @@ namespace Media
 			Data::RandomOS *rnd;
 			Media::DrawEngine *deng;
 			Media::ABlend::AlphaBlend8_8 *ablend;
-			const UTF8Char *watermark;
+			Text::String *watermark;
 			Media::Batch::BatchHandler *hdlr;
 
 		public:
 			BatchWatermarker(Media::DrawEngine *deng, Media::Batch::BatchHandler *hdlr);
 			virtual ~BatchWatermarker();
 			
-			void SetWatermark(const UTF8Char *watermark);
+			void SetWatermark(Text::CString watermark);
 			void SetHandler(Media::Batch::BatchHandler *hdlr);
 		private:
 			virtual void ImageOutput(Media::ImageList *imgList, const UTF8Char *fileId, const UTF8Char *subId);

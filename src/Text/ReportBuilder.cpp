@@ -518,7 +518,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 		}
 
 		Text::SpreadSheet::OfficeChart *shChart = ws->CreateChart(Math::Unit::Distance::DU_INCH, 0.64, 1.61, 13.10, 5.53, STR_CSTR(chart->GetTitle()));
-		shChart->InitLineChart(chart->GetYAxisName(), chart->GetXAxisName(), FromChartDataType(chart->GetXAxisType()));
+		shChart->InitLineChart(chart->GetYAxisName()->ToCString(), chart->GetXAxisName()->ToCString(), FromChartDataType(chart->GetXAxisType()));
 		shChart->SetDisplayBlankAs(Text::SpreadSheet::BlankAs::Gap);
 		shChart->AddLegend(Text::SpreadSheet::LegendPos::Bottom);
 
@@ -692,6 +692,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Media::VectorDocument *doc;
 	Media::VectorGraph *g;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UTF8Char u8buff[32];
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double border = 10.0;
@@ -740,17 +741,17 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	{
 		g = doc->AddGraph(paperSize.GetWidthMM(), paperSize.GetHeightMM(), Math::Unit::Distance::DU_MILLIMETER);
 	}
-	f = g->NewFontPt(this->fontName->v, this->fontName->leng, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+	f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 	headerW1 = 0;
 	headerW2 = 0;
 	i = this->headers->GetCount();
 	while (i-- > 0)
 	{
 		strs = this->headers->GetItem(i);
-		g->GetTextSize(f, strs[0]->v, sz);
+		g->GetTextSize(f, strs[0]->ToCString(), sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1]->v, sz);
+		g->GetTextSize(f, strs[1]->ToCString(), sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -758,10 +759,10 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	while (i-- > 0)
 	{
 		strs = this->preheaders->GetItem(i);
-		g->GetTextSize(f, strs[0]->v, sz);
+		g->GetTextSize(f, strs[0]->ToCString(), sz);
 		if (sz[0] > headerW1)
 			headerW1 = sz[0];
-		g->GetTextSize(f, strs[1]->v, sz);
+		g->GetTextSize(f, strs[1]->ToCString(), sz);
 		if (sz[0] > headerW2)
 			headerW2 = sz[0];
 	}
@@ -786,7 +787,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 			colCurrX[j] = 0;
 			if (strs[j])
 			{
-				g->GetTextSize(f, strs[j]->v, sz);
+				g->GetTextSize(f, strs[j]->ToCString(), sz);
 				colCurrX[j] = sz[0];
 			}
 		}
@@ -864,7 +865,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	l = this->tableContent->GetCount();
 	while (true)
 	{
-		f = g->NewFontPt(this->fontName->v, this->fontName->leng, fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
+		f = g->NewFontPt(this->fontName->ToCString(), fontHeightPt, Media::DrawEngine::DFS_NORMAL, 0);
 		b = g->NewBrushARGB(0xff000000);
 		p = g->NewPenARGB(0xff000000, 0.2, 0, 0);
 
@@ -945,7 +946,7 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 					{
 						if (strs[i])
 						{
-							g->GetTextSize(f, strs[i]->v, sz);
+							g->GetTextSize(f, strs[i]->ToCString(), sz);
 							colCurrX[i] = colPos[i] + sz[0];
 						}
 						else
@@ -987,9 +988,9 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 				}
 			}
 			pageId++;
-			Text::StrInt32(sbuff, pageId);
-			g->GetTextSize(f, sbuff, sz);
-			g->DrawString(border + (drawWidth - sz[0]) * 0.5, paperSize.GetHeightMM() - border, sbuff, f, b);
+			sptr = Text::StrInt32(sbuff, pageId);
+			g->GetTextSize(f, CSTRP(sbuff, sptr), sz);
+			g->DrawString(border + (drawWidth - sz[0]) * 0.5, paperSize.GetHeightMM() - border, CSTRP(sbuff, sptr), f, b);
 		}
 
 		g->DelFont(f);

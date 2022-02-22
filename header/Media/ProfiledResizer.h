@@ -29,14 +29,14 @@ namespace Media
 
 		typedef struct
 		{
-			const UTF8Char *profileName;
-			const UTF8Char *suffix;
+			Text::String *profileName;
+			Text::String *suffix;
 			UInt32 targetSizeX;
 			UInt32 targetSizeY;
 			SizeType sizeType;
 			OutputType outType;
 			UInt32 outParam;
-			const UTF8Char *watermark;
+			Text::String *watermark;
 		} ResizeProfile;
 
 	private:
@@ -63,7 +63,7 @@ namespace Media
 		const ResizeProfile *GetCurrProfile();
 		void SetCurrentProfile(UOSInt index);
 		const ResizeProfile *GetProfile(UOSInt index);
-		Bool AddProfile(const UTF8Char *profileName, const UTF8Char *suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, const UTF8Char *watermark, SizeType sizeType);
+		Bool AddProfile(Text::CString profileName, Text::CString suffix, UInt32 targetWidth, UInt32 targetHeight, OutputType outType, UInt32 outParam, Text::CString watermark, SizeType sizeType);
 		Bool RemoveProfile(UOSInt index);
 
 		void ProcessFile(Text::CString fileName);

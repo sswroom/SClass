@@ -139,15 +139,15 @@ void Text::SpreadSheet::OfficeChart::InitChart(ChartType chartType, OfficeChartA
 	this->valueAxis = valueAxis;
 }
 
-void Text::SpreadSheet::OfficeChart::InitLineChart(const UTF8Char *leftAxisName, const UTF8Char *bottomAxisName, AxisType bottomType)
+void Text::SpreadSheet::OfficeChart::InitLineChart(Text::CString leftAxisName, Text::CString bottomAxisName, AxisType bottomType)
 {
 	OfficeChartAxis *leftAxis = this->CreateAxis(AxisType::Numeric, AxisPosition::Left);
-	if (leftAxisName) leftAxis->SetTitle(leftAxisName);
+	if (leftAxisName.leng > 0) leftAxis->SetTitle(leftAxisName);
 	leftAxis->SetCrosses(AxisCrosses::AutoZero);
 	leftAxis->SetMajorGridProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::LightGray)))))));
 	leftAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
 	OfficeChartAxis *bottomAxis = this->CreateAxis(bottomType, AxisPosition::Bottom);
-	if (bottomAxisName) bottomAxis->SetTitle(bottomAxisName);
+	if (bottomAxisName.leng > 0) bottomAxis->SetTitle(bottomAxisName);
 	bottomAxis->SetShapeProp(NEW_CLASS_D(OfficeShapeProp(NEW_CLASS_D(OfficeLineStyle(OfficeFill::NewSolidFill(OfficeColor::NewPreset(PresetColor::Black)))))));
 	bottomAxis->SetTickLblPos(TickLabelPosition::Low);
 
@@ -211,11 +211,11 @@ void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData,
 	this->series->Add(series);
 }
 
-void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, const UTF8Char *name, Bool showMarker)
+void Text::SpreadSheet::OfficeChart::AddSeries(WorkbookDataSource *categoryData, WorkbookDataSource *valueData, Text::CString name, Bool showMarker)
 {
 	UOSInt i = this->series->GetCount();
 	OfficeChartSeries *series = NEW_CLASS_D(OfficeChartSeries(categoryData, valueData));
-	if (name)
+	if (name.leng > 0)
 		series->SetTitle(name, 0);
 	series->SetSmooth(false);
 	if (showMarker)
