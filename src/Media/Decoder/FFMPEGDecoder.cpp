@@ -501,7 +501,7 @@ Media::Decoder::FFMPEGDecoder::FFMPEGDecoder(IVideoSource *sourceVideo) : Media:
 	data->colorTrc = AVCOL_TRC_UNSPECIFIED;
 	data->yuvColor = AVCOL_SPC_UNSPECIFIED;
 #ifdef _DEBUG
-	NEW_CLASS(data->dbgStm, IO::FileStream((const UTF8Char*)"FFMPEGDebug.txt", IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(data->dbgStm, IO::FileStream(CSTR("FFMPEGDebug.txt"), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(data->dbgWriter, IO::StreamWriter(data->dbgStm, 65001));
 #endif
 

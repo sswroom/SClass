@@ -103,9 +103,9 @@ UI::GUIVideoBoxDD::GUIVideoBoxDD(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->maDownTime = 0;
 
 #ifdef _DEBUG
-	NEW_CLASS(this->debugFS, IO::FileStream((const UTF8Char*)"videoProc.log", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->debugFS, IO::FileStream(CSTR("videoProc.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(this->debugLog, IO::StreamWriter(this->debugFS, 65001));
-	NEW_CLASS(this->debugFS2, IO::FileStream((const UTF8Char*)"videoDisp.log", IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(this->debugFS2, IO::FileStream(CSTR("videoDisp.log"), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(this->debugLog2, IO::StreamWriter(this->debugFS2, 65001));
 #endif
 	this->OnMonitorChanged();

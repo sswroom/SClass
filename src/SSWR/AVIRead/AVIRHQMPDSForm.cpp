@@ -130,7 +130,7 @@ typedef enum
 	MNU_PB_CHAPTERS = 1000
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRHQMPDSForm *me = (SSWR::AVIRead::AVIRHQMPDSForm*)userObj;
 	UOSInt i;
@@ -139,7 +139,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnFileDrop(void *userObj, const UT
 	i = 0;
 	while (i < nFiles)
 	{
-		if (me->OpenFile({files[i], Text::StrCharCnt(files[i])}))
+		if (me->OpenFile(files[i]->ToCString()))
 			return;
 		i++;
 	}
@@ -252,7 +252,7 @@ void __stdcall SSWR::AVIRead::AVIRHQMPDSForm::OnTimerTick(void *userObj)
 		sb.AppendC(UTF8STRC(", "));
 		Text::SBAppendF64(&sb, primaries->wy);
 		sb.AppendC(UTF8STRC("\r\n"));
-		me->txtDebug->SetText(sb.ToString());
+		me->txtDebug->SetText(sb.ToCString());
 		DEL_CLASS(dbg.color);
 	}
 }
@@ -290,8 +290,8 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 	SDEL_CLASS(this->currFile);
 	SDEL_CLASS(this->playlist);
 	this->currFile = mf;
-	this->currFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
-	this->SetText(sbuff);
+	sptr = this->currFile->GetSourceNameObj()->ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("HQMP3DS - ")));
+	this->SetText(CSTRP(sbuff, sptr));
 	this->player->LoadMedia(mf);
 	this->currPBC = this->player;
 
@@ -317,7 +317,7 @@ Bool SSWR::AVIRead::AVIRHQMPDSForm::OpenVideo(Media::MediaFile *mf)
 				}
 				sptr = Text::StrInt32(sptr, (Int32)j + 1);
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" "));
-				sptr = Text::StrConcat(sptr, this->currChapInfo->GetChapterName(j));
+				sptr = this->currChapInfo->GetChapterName(j)->ConcatTo(sptr);
 				this->mnuChapters->AddItem(CSTRP(sbuff, sptr), (UInt16)(MNU_PB_CHAPTERS + j), UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 				j++;
 			}
@@ -348,15 +348,15 @@ void SSWR::AVIRead::AVIRHQMPDSForm::CloseFile()
 	this->currPBC = this->player;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		this->SetText(CSTR("HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		this->SetText(CSTR("HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ"));
 	}
 	else
 	{
-		this->SetText(CSTR("HQMP3");
+		this->SetText(CSTR("HQMP3"));
 	}
 
 	this->mnuChapters->ClearItems();
@@ -374,15 +374,15 @@ SSWR::AVIRead::AVIRHQMPDSForm::AVIRHQMPDSForm(UI::GUIClientControl *parent, UI::
 	this->qMode = qMode;
 	if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_HQ)
 	{
-		this->SetText(CSTR("HQMP3HQ");
+		this->SetText(CSTR("HQMP3HQ"));
 	}
 	else if (this->qMode == SSWR::AVIRead::AVIRHQMPDSForm::QM_UQ)
 	{
-		this->SetText(CSTR("HQMP3UQ");
+		this->SetText(CSTR("HQMP3UQ"));
 	}
 	else
 	{
-		this->SetText(CSTR("HQMP3");
+		this->SetText(CSTR("HQMP3"));
 	}
 	this->playlist = 0;
 	this->storeTime = -1;
@@ -591,10 +591,10 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 				}
 				else
 				{
-					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->v, CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl);
+					IO::ParsedObject *pobj = Net::URL::OpenObject(fname->ToCString(), CSTR("HQMP/1.0"), this->core->GetSocketFactory(), this->ssl);
 					if (pobj == 0)
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading file", (const UTF8Char*)"HQMP", this);
+						UI::MessageDialog::ShowDialog(CSTR("Error in loading file"), CSTR("HQMP"), this);
 					}
 					else
 					{
@@ -619,9 +619,10 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				UTF8Char sbuff[256];
+				UTF8Char* sptr;
 				Media::MediaFile *mf;
-				dlg->capture->GetSourceName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(sbuff));
+				sptr = dlg->capture->GetSourceName(sbuff);
+				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(dlg->capture, 0);
 				this->OpenVideo(mf);
 			}
@@ -664,11 +665,11 @@ void SSWR::AVIRead::AVIRHQMPDSForm::EventMenuClicked(UInt16 cmdId)
 		if (this->dbgFrm == 0)
 		{
 			NEW_CLASS(this->dbgFrm, UI::GUIForm(0, 320, 360, ui));
-			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, this->dbgFrm, (const UTF8Char*)"", true));
+			NEW_CLASS(this->txtDebug, UI::GUITextBox(ui, this->dbgFrm, CSTR(""), true));
 			this->txtDebug->SetReadOnly(true);
 			this->txtDebug->SetDockType(UI::GUIControl::DOCK_FILL);
 			this->dbgFrm->SetFont(0, 0, 8.25, false);
-			this->dbgFrm->SetText(CSTR("Info");
+			this->dbgFrm->SetText(CSTR("Info"));
 			this->dbgFrm->Show();
 			this->dbgFrm->HandleFormClosed(OnDebugClosed, this);
 		}

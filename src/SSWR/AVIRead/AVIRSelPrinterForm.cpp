@@ -48,7 +48,7 @@ void __stdcall SSWR::AVIRead::AVIRSelPrinterForm::OnCancelClick(void *userObj)
 SSWR::AVIRead::AVIRSelPrinterForm::AVIRSelPrinterForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core) : UI::GUIForm(parent, 512, 104, ui)
 {
 	UTF8Char sbuff[512];
-	UTF8Char *sptr;
+	UTF8Char *sptr = 0;
 	UOSInt i;
 	UOSInt j;
 

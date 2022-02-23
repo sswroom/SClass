@@ -336,9 +336,9 @@ void Net::TCPClientMgr::AddClient(TCPClient *cli, void *cliData)
 	cliStat->timeAlerted = false;
 	cliStat->timeStart = 0;
 	Sync::MutexUsage readMutUsage(cliStat->readMut);
-	cliStat->readReq = cliStat->cli->BeginRead(cliStat->buff, TCP_BUFF_SIZE, ((Sync::Event*)this->clsData));
 	cliStat->reading = true;
 	this->cliArr->Insert(this->cliIdArr->SortedInsert(cli->GetCliId()), cliStat);
+	cliStat->readReq = cliStat->cli->BeginRead(cliStat->buff, TCP_BUFF_SIZE, ((Sync::Event*)this->clsData));
 	readMutUsage.EndUse();
 	mutUsage.EndUse();
 }
