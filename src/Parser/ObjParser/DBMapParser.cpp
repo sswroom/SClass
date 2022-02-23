@@ -22,7 +22,7 @@ void Parser::ObjParser::DBMapParser::PrepareSelector(IO::IFileSelector *selector
 {
 	if (t == IO::ParserType::MapLayer)
 	{
-		selector->AddFilter((const UTF8Char*)"*.mdb", (const UTF8Char*)"MDB map layer");
+		selector->AddFilter(CSTR("*.mdb"), CSTR("MDB map layer"));
 	}
 }
 

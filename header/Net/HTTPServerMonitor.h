@@ -21,7 +21,7 @@ namespace Net
 		Bool CheckOnline();
 	public:
 		HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *url);
-		HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url);
+		HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url);
 		~HTTPServerMonitor();
 
 		Bool IsOnline();

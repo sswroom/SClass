@@ -23,11 +23,11 @@ Text::SpreadSheet::AxisType Text::ReportBuilder::FromChartDataType(Data::IChart:
 	}
 }
 
-Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns)
+Text::ReportBuilder::ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns)
 {
 	Text::String **cols;
 	UOSInt i;
-	this->name = Text::String::NewNotNull(name);
+	this->name = Text::String::New(name);
 	this->fontName = Text::String::New(UTF8STRC("Arial"));
 	this->colCount = colCount;
 	this->colWidthPts = MemAlloc(Double, this->colCount);
@@ -41,7 +41,7 @@ Text::ReportBuilder::ReportBuilder(const UTF8Char *name, UOSInt colCount, const 
 		colWidthPts[i] = 0;
 		if (columns[i])
 		{
-			cols[i] = Text::String::NewNotNull(columns[i]);
+			cols[i] = Text::String::NewNotNullSlow(columns[i]);
 		}
 		else
 		{
@@ -140,12 +140,12 @@ void Text::ReportBuilder::SetFontName(Text::String *fontName)
 	}
 }
 
-void Text::ReportBuilder::SetFontName(const UTF8Char *fontName)
+void Text::ReportBuilder::SetFontName(Text::CString fontName)
 {
-	if (fontName)
+	if (fontName.leng > 0)
 	{
 		this->fontName->Release();
-		this->fontName = Text::String::NewNotNull(fontName);
+		this->fontName = Text::String::New(fontName);
 	}
 }
 
@@ -188,7 +188,7 @@ void Text::ReportBuilder::AddTableContent(const UTF8Char **content)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::String::NewNotNull(content[i]);
+			cols[i] = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
@@ -210,7 +210,7 @@ void Text::ReportBuilder::AddTableSummary(const UTF8Char **content)
 	{
 		if (content[i])
 		{
-			cols[i] = Text::String::NewNotNull(content[i]);
+			cols[i] = Text::String::NewNotNullSlow(content[i]);
 		}
 		else
 		{
@@ -407,7 +407,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 				{
 					if (sbList[l]->GetLength() > 0)
 					{
-						ws->SetCellString(k, l, sbList[l]->ToString());
+						ws->SetCellString(k, l, sbList[l]->ToCString());
 					}
 					DEL_CLASS(sbList[l]);
 					l++;
@@ -468,7 +468,7 @@ Text::SpreadSheet::Workbook *Text::ReportBuilder::CreateWorkbook()
 			sb.AppendC(UTF8STRC(","));
 			Text::SBAppendF64(&sb, url->lon);
 			sb.AppendC(UTF8STRC(",19z"));
-			ws->SetCellURL(url->row + urlAdd, url->col, sb.ToString());
+			ws->SetCellURL(url->row + urlAdd, url->col, sb.ToCString());
 			i++;
 		}
 		return wb;
@@ -731,8 +731,8 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Text::ReportBuilder::ColIcon *icon;
 
 	lastRowType = RT_UNKNOWN;
-	Text::StrInt32(u8buff, id);
-	NEW_CLASS(doc, Media::VectorDocument(0, u8buff, deng));
+	sptr = Text::StrInt32(sbuff, id);
+	NEW_CLASS(doc, Media::VectorDocument(0, CSTRP(sbuff, sptr), deng));
 	if (this->paperHori)
 	{
 		g = doc->AddGraph(paperSize.GetHeightMM(), paperSize.GetWidthMM(), Math::Unit::Distance::DU_MILLIMETER);

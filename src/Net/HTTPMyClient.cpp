@@ -584,7 +584,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 	}
 
 #ifdef SHOWDEBUG
-	printf("Request URL: %s %s\r\n", method, url);
+	printf("Request URL: %s %s\r\n", Net::WebUtil::RequestMethodGetName(method).v, url.v);
 #endif
 	i = ptr1.IndexOf('/');
 	if (i != INVALID_INDEX)
@@ -695,7 +695,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 #ifdef SHOWDEBUG				
 				if (this->cli == 0)
 				{
-					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err));
+					printf("Connect error: %s\r\n", Net::SSLEngine::ErrorTypeGetName(err).v);
 				}
 #endif
 			}
@@ -915,7 +915,7 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 			this->reqMstm->Write(value.v, value.leng);
 			this->reqMstm->Write(UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
-			printf("Add Header: %s: %s\r\n", name, value);
+			printf("Add Header: %s: %s\r\n", name.v, value.v);
 #endif
 		}
 		else

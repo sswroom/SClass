@@ -27,7 +27,7 @@ namespace Net
 			static UInt32 __stdcall CheckThread(void *userObj);
 			Int64 GetSessId(Net::WebServer::IWebRequest *req);
 		public:
-			MemoryWebSessionManager(const UTF8Char *path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj);
+			MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj);
 			virtual ~MemoryWebSessionManager();
 
 			virtual IWebSession *GetSession(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);

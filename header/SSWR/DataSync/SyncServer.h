@@ -43,7 +43,7 @@ namespace SSWR
 			static void __stdcall OnClientData(Net::TCPClient *cli, void *userObj, void *cliData, const UInt8 *buff, UOSInt size);
 			static void __stdcall OnClientTimeout(Net::TCPClient *cli, void *userObj, void *cliData);
 		public:
-			SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, const UTF8Char *serverName, const UTF8Char *syncClients, DataHandler dataHdlr, void *dataObj);
+			SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, const UTF8Char *syncClients, DataHandler dataHdlr, void *dataObj);
 			virtual ~SyncServer();
 
 			Bool IsError();

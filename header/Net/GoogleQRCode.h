@@ -12,7 +12,7 @@ namespace Net
 		UOSInt width;
 		UOSInt height;		
 	public:
-		GoogleQRCode(UOSInt width, UOSInt height, const UTF8Char *dataStr);
+		GoogleQRCode(UOSInt width, UOSInt height, Text::CString dataStr);
 		~GoogleQRCode();
 
 		void GetImageURL(Text::StringBuilderUTF8 *sb);

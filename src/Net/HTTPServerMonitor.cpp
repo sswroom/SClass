@@ -41,11 +41,11 @@ Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEng
 	}
 }
 
-Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *url)
+Net::HTTPServerMonitor::HTTPServerMonitor(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString url)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	this->url = Text::String::NewNotNull(url);
+	this->url = Text::String::New(url);
 	this->currOnline = false;
 	this->threadRunning = false;
 	this->threadToStop = false;

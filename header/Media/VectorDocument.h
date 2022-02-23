@@ -17,7 +17,7 @@ namespace Media
 		Media::DrawEngine *refEng;
 		UInt32 srid;
 
-		const UTF8Char *docName;
+		Text::String *docName;
 		const UTF8Char *author;
 		const UTF8Char *subject;
 		const UTF8Char *keywords;
@@ -28,11 +28,11 @@ namespace Media
 
 	public:
 		VectorDocument(UInt32 srid, Media::DrawEngine *refEng);
-		VectorDocument(UInt32 srid, const UTF8Char *name, Media::DrawEngine *refEng);
+		VectorDocument(UInt32 srid, Text::CString name, Media::DrawEngine *refEng);
 		virtual ~VectorDocument();
 
 		Media::VectorGraph *AddGraph(Double width, Double height, Math::Unit::Distance::DistanceUnit unit);
-		const UTF8Char *GetDocName();
+		Text::String *GetDocName();
 		void SetCreateTime(Int64 createTimeTicks);
 		Int64 GetCreateTime();
 		void SetModifyTime(Int64 modTimeTicks);

@@ -152,7 +152,7 @@ Bool Exporter::PDFExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	if (vdoc->GetDocName())
 	{
 		sb.AppendC(UTF8STRC("/Title ("));
-		sb.AppendSlow(vdoc->GetDocName());
+		sb.Append(vdoc->GetDocName());
 		sb.AppendC(UTF8STRC(")\r"));
 	}
 	if (vdoc->GetAuthor())

@@ -20,7 +20,7 @@ void Parser::FileParser::LNKParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::PackageFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.lnk", (const UTF8Char*)"Link File");
+		selector->AddFilter(CSTR("*.lnk"), CSTR("Link File"));
 	}
 }
 

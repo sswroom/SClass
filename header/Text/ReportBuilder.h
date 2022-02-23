@@ -62,11 +62,11 @@ namespace Text
 
 		static Text::SpreadSheet::AxisType FromChartDataType(Data::IChart::DataType dataType);
 	public:
-		ReportBuilder(const UTF8Char *name, UOSInt colCount, const UTF8Char **columns);
+		ReportBuilder(Text::CString name, UOSInt colCount, const UTF8Char **columns);
 		~ReportBuilder();
 
 		void SetFontName(Text::String *fontName);
-		void SetFontName(const UTF8Char *fontName);
+		void SetFontName(Text::CString fontName);
 		void SetPaperHori(Bool paperHori);
 		void AddChart(Data::IChart *chart);
 		void AddPreHeader(Text::CString name, Text::CString val);

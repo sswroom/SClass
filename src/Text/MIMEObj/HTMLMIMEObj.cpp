@@ -17,7 +17,7 @@ void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 
-Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage) : Text::IMIMEObj((const UTF8Char*)"text/html")
+Text::MIMEObj::HTMLMIMEObj::HTMLMIMEObj(UInt8 *textBuff, OSInt buffSize, Int32 codePage) : Text::IMIMEObj(CSTR("text/html"))
 {
 	this->contType = 0;
 	this->codePage = codePage;

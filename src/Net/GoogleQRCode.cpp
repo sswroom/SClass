@@ -5,11 +5,11 @@
 #include "Text/String.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, const UTF8Char *dataStr)
+Net::GoogleQRCode::GoogleQRCode(UOSInt width, UOSInt height, Text::CString dataStr)
 {
 	this->width = width;
 	this->height = height;
-	this->dataStr = Text::String::NewNotNull(dataStr);
+	this->dataStr = Text::String::New(dataStr);
 }
 
 Net::GoogleQRCode::~GoogleQRCode()

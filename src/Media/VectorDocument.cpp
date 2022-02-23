@@ -19,13 +19,13 @@ Media::VectorDocument::VectorDocument(UInt32 srid, Media::DrawEngine *refEng) : 
 	this->modTimeTicks = 0;
 }
 
-Media::VectorDocument::VectorDocument(UInt32 srid, const UTF8Char *name, Media::DrawEngine *refEng) : IO::ParsedObject(name)
+Media::VectorDocument::VectorDocument(UInt32 srid, Text::CString name, Media::DrawEngine *refEng) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;
 	this->srid = srid;
 	this->refEng = refEng;
-	this->docName = Text::StrCopyNew(name);
+	this->docName = Text::String::New(name);
 	this->author = 0;
 	this->subject = 0;
 	this->keywords = 0;
@@ -46,7 +46,7 @@ Media::VectorDocument::~VectorDocument()
 		DEL_CLASS(graph);
 	}
 	DEL_CLASS(this->items);
-	SDEL_TEXT(this->docName);
+	SDEL_STRING(this->docName);
 	SDEL_TEXT(this->author);
 	SDEL_TEXT(this->subject);
 	SDEL_TEXT(this->keywords);
@@ -63,7 +63,7 @@ Media::VectorGraph *Media::VectorDocument::AddGraph(Double width, Double height,
 	return graph;
 }
 
-const UTF8Char *Media::VectorDocument::GetDocName()
+Text::String *Media::VectorDocument::GetDocName()
 {
 	return this->docName;
 }
@@ -179,7 +179,7 @@ Bool Media::VectorDocument::BeginPrint(IPrintDocument *doc)
 	if (graph == 0)
 		return false;
 	if (this->docName)
-		doc->SetDocName(this->docName);
+		doc->SetDocName(this->docName->ToCString());
 	width = graph->GetVisibleWidthMM();
 	height = graph->GetVisibleHeightMM();
 	if (width > height)

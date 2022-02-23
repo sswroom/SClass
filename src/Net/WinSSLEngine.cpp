@@ -15,7 +15,7 @@
 #include <schnlsp.h>
 
 //#define VERBOSE_SVR
-//#define VERBOSE_CLI
+#define VERBOSE_CLI
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 #include <stdio.h>
 #endif
@@ -253,7 +253,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateClientConn(void *sslObj, Socket *s, Tex
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
 #if defined(VERBOSE_CLI)
-		printf("SSL: Cli %s, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+		printf("SSL: Cli %x, Error in InitializeSecurityContext, ret = %x\r\n", (Int32)(OSInt)s, (UInt32)status);
 #endif
 		Text::StrDelNew(wptr);
 		return 0;

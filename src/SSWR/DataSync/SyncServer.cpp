@@ -75,7 +75,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(Net::TCPClient *cli, 
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, const UTF8Char *serverName, const UTF8Char *syncClients, DataHandler dataHdlr, void *dataObj)
+SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, const UTF8Char *syncClients, DataHandler dataHdlr, void *dataObj)
 {
 	this->sockf = sockf;
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoSyncHandler(this));
@@ -88,7 +88,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	svrInfo = MemAlloc(ServerInfo, 1);
 	NEW_CLASS(svrInfo->mut, Sync::Mutex());
 	svrInfo->serverId = serverId;
-	svrInfo->serverName = Text::StrCopyNew(serverName);
+	svrInfo->serverName = Text::StrCopyNew(serverName.v);
 	svrInfo->isLocal = true;
 	svrInfo->cli = 0;
 	this->svrMap->Put(svrInfo->serverId, svrInfo);
@@ -97,24 +97,24 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	{
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *sarr[2];
-		UTF8Char *sarr2[2];
+		Text::PString sarr[2];
+		Text::PString sarr2[2];
 		SyncClient *syncCli;
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
 		sb.AppendSlow(syncClients);
-		sarr[1] = sb.ToString();
+		sarr[1] = sb;
 		while (true)
 		{
-			i = Text::StrSplit(sarr, 2, sarr[1], ',');
-			j = Text::StrSplit(sarr2, 2, sarr[0], ':');
+			i = Text::StrSplitP(sarr, 2, sarr[1], ',');
+			j = Text::StrSplitP(sarr2, 2, sarr[0], ':');
 			if (j == 2)
 			{
-				if (Text::StrToUInt16(sarr2[1], &port))
+				if (Text::StrToUInt16(sarr2[1].v, &port))
 				{
 					if (port > 0 && port < 65536)
 					{
-						NEW_CLASS(syncCli, SyncClient(this->sockf, serverId, serverName, sarr2[0], port));
+						NEW_CLASS(syncCli, SyncClient(this->sockf, serverId, serverName, sarr2[0].ToCString(), port));
 						this->syncCliList->Add(syncCli);
 					}
 				}

@@ -199,16 +199,16 @@ Bool SSWR::DataSync::SyncClient::SendUserData(const UInt8 *data, UOSInt dataSize
 	return succ;
 }
 
-SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId, const UTF8Char *serverName, const UTF8Char *clientHost, UInt16 cliPort)
+SSWR::DataSync::SyncClient::SyncClient(Net::SocketFactory *sockf, Int32 serverId, Text::CString serverName, Text::CString clientHost, UInt16 cliPort)
 {
 	this->sockf = sockf;
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoSyncHandler(this));
 	this->serverId = serverId;
-	this->serverName = Text::String::NewNotNull(serverName);
+	this->serverName = Text::String::New(serverName);
 	NEW_CLASS(this->cliMut, Sync::Mutex());
 	NEW_CLASS(this->cliKATime, Data::DateTime());
 	this->cli = 0;
-	this->cliHost = Text::String::NewNotNull(clientHost);
+	this->cliHost = Text::String::New(clientHost);
 	this->cliPort = cliPort;
 	NEW_CLASS(this->dataMgr, SSWR::DataSync::SyncClientDataMgr());
 

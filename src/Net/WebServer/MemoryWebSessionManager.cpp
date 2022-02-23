@@ -97,9 +97,9 @@ Int64 Net::WebServer::MemoryWebSessionManager::GetSessId(Net::WebServer::IWebReq
 	return sessId;
 }
 
-Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(const UTF8Char *path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
+Net::WebServer::MemoryWebSessionManager::MemoryWebSessionManager(Text::CString path, SessionHandler delHdlr, void *delHdlrObj, Int32 chkInterval, SessionHandler chkHdlr, void *chkHdlrObj) : Net::WebServer::IWebSessionManager(delHdlr, delHdlrObj)
 {
-	this->path = Text::String::NewNotNull(path);
+	this->path = Text::String::New(path);
 	this->chkInterval = chkInterval;
 	this->chkHdlr = chkHdlr;
 	this->chkHdlrObj = chkHdlrObj;

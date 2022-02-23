@@ -22,7 +22,7 @@ void Parser::FileParser::APEParser::PrepareSelector(IO::IFileSelector *selector,
 {
 	if (t == IO::ParserType::Unknown || t == IO::ParserType::MediaFile)
 	{
-		selector->AddFilter((const UTF8Char*)"*.ape", (const UTF8Char*)"Monkey's Audio File");
+		selector->AddFilter(CSTR("*.ape"), CSTR("Monkey's Audio File"));
 	}
 }
 
