@@ -55,7 +55,7 @@ Bool Win32::Clipboard::GetDataText(UInt32 fmtId, Text::StringBuilderUTF8 *sb)
 	return GetDataTextH(hand, fmtId, sb, 1);
 }
 
-Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
+Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	if (!this->succ)
 		return Win32::Clipboard::FPT_NONE;
@@ -109,7 +109,7 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 			while (i < fileCnt)
 			{
 				DragQueryFileW(hDrop, i, sbuff, 512);
-				fileNames->Add(Text::StrToUTF8New(sbuff));
+				fileNames->Add(Text::String::NewNotNull(sbuff));
 				i++;
 			}
 		}
@@ -118,12 +118,12 @@ Win32::Clipboard::FilePasteType Win32::Clipboard::GetDataFiles(Data::ArrayList<c
 	return ret;
 }
 
-void Win32::Clipboard::FreeDataFiles(Data::ArrayList<const UTF8Char *> *fileNames)
+void Win32::Clipboard::FreeDataFiles(Data::ArrayList<Text::String *> *fileNames)
 {
 	UOSInt i = fileNames->GetCount();;
 	while (i-- > 0)
 	{
-		Text::StrDelNew(fileNames->GetItem(i));
+		fileNames->GetItem(i)->Release();
 	}
 }
 

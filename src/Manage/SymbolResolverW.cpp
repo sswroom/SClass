@@ -16,6 +16,7 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 	UOSInt baseAddr;
 	UOSInt size;
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	NEW_CLASS(this->modNames, Data::ArrayListString());
 	NEW_CLASS(this->modBaseAddrs, Data::ArrayListUInt64());
 	NEW_CLASS(this->modSizes, Data::ArrayListUInt64());
@@ -32,8 +33,8 @@ Manage::SymbolResolver::SymbolResolver(Manage::Process *proc)
 		Manage::ModuleInfo *mod;
 		mod = modList->GetItem(i);
 
-		mod->GetModuleFileName(sbuff);
-		this->modNames->Add(Text::String::NewNotNull(sbuff));
+		sptr = mod->GetModuleFileName(sbuff);
+		this->modNames->Add(Text::String::NewP(sbuff, sptr));
 		mod->GetModuleAddress(&baseAddr, &size);
 		this->modBaseAddrs->Add(baseAddr);
 		this->modSizes->Add(size);

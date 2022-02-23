@@ -59,18 +59,18 @@ WChar *IO::Path::GetTempFileW(WChar *buff, const WChar *fileName)
 	return Text::StrConcat(Text::StrConcat(buff, tmpBuff), fileName);
 }
 
-Bool IO::Path::IsDirectoryExist(const UTF8Char *dir, UOSInt dirLen)
+Bool IO::Path::IsDirectoryExist(Text::CString dir)
 {
 	WChar wbuff[256];
 	UInt32 ret;
-	if (dirLen < 256)
+	if (dir.leng < 256)
 	{
-		Text::StrUTF8_WCharC(wbuff, dir, dirLen, 0);
+		Text::StrUTF8_WCharC(wbuff, dir.v, dir.leng, 0);
 		ret = GetFileAttributesW(wbuff);
 	}
 	else
 	{
-		const WChar *wdir = Text::StrToWCharNew(dir);
+		const WChar *wdir = Text::StrToWCharNew(dir.v);
 		ret = GetFileAttributesW(wdir);
 		Text::StrDelNew(wdir);
 	}
@@ -89,10 +89,10 @@ Bool IO::Path::IsDirectoryExistW(const WChar *dir)
 		return (ret & FILE_ATTRIBUTE_DIRECTORY) != 0;
 }
 
-Bool IO::Path::CreateDirectory(const UTF8Char *dirInput)
+Bool IO::Path::CreateDirectory(Text::CString dirInput)
 {
 	WChar dir[MAX_PATH];
-	Text::StrUTF8_WChar(dir, dirInput, 0);
+	Text::StrUTF8_WChar(dir, dirInput.v, 0);
 	if (IsDirectoryExistW(dir))
 		return true;
 	UOSInt i = Text::StrLastIndexOfChar(dir, '\\');
@@ -411,7 +411,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		if (Text::StrIndexOfChar(lastSep, '*') != INVALID_INDEX)
 		{
 		}
-		else if (IO::Path::GetPathType(path, (UOSInt)(pathEnd - path)) == PathType::Directory)
+		else if (IO::Path::GetPathType(CSTRP(path, pathEnd)) == PathType::Directory)
 		{
 			lastSep = pathEnd;
 			*lastSep = '\\';
@@ -696,7 +696,7 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 		if (Text::StrIndexOfChar(lastSep, '*') != INVALID_INDEX)
 		{
 		}
-		else if (IO::Path::GetPathType(path, (UOSInt)(pathEnd - path)) == PathType::Directory)
+		else if (IO::Path::GetPathType(CSTRP(path, pathEnd)) == PathType::Directory)
 		{
 			lastSep = pathEnd;
 			*lastSep = '\\';
@@ -916,18 +916,18 @@ void IO::Path::FindFileClose(IO::Path::FindFileSession *sess)
 	MemFree(sess);
 }
 
-IO::Path::PathType IO::Path::GetPathType(const UTF8Char *path, UOSInt pathLen)
+IO::Path::PathType IO::Path::GetPathType(Text::CString path)
 {
 	WChar wbuff[256];
 	
-	if (pathLen < 256)
+	if (path.leng < 256)
 	{
-		Text::StrUTF8_WChar(wbuff, path, 0);
+		Text::StrUTF8_WChar(wbuff, path.v, 0);
 		return GetPathTypeW(wbuff);
 	}
 	else
 	{
-		const WChar* wpath = Text::StrToWCharNew(path);
+		const WChar* wpath = Text::StrToWCharNew(path.v);
 		PathType ret = GetPathTypeW(wpath);
 		Text::StrDelNew(wpath);
 		return ret;

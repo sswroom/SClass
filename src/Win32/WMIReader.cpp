@@ -525,7 +525,7 @@ Text::String *Win32::WMIReader::GetNewStr(UOSInt colIndex)
 				ret = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 				break;
 			case CIM_BOOLEAN:
-				ret = Text::String::NewNotNull((V_BOOL(&v))?(const UTF8Char*)"True":(const UTF8Char*)"False");
+				ret = Text::String::New((V_BOOL(&v))?CSTR("True"):CSTR("False"));
 				break;
 			case CIM_STRING:
 				{

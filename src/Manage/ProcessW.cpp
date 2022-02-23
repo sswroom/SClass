@@ -788,7 +788,7 @@ struct Manage::Process::FindProcSess
 	Bool isFirst;
 };
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
 {
 	Manage::Process::FindProcSess *sess;
 	HANDLE hand;
@@ -797,13 +797,13 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *proc
 		return 0;
 	sess = MemAlloc(Manage::Process::FindProcSess, 1);
 	sess->hand = hand;
-	if (processName == 0)
+	if (processName.leng == 0)
 	{
 		sess->fileName = 0;
 	}
 	else
 	{
-		sess->fileName = Text::StrToWCharNew(processName);
+		sess->fileName = Text::StrToWCharNew(processName.v);
 	}
 	sess->isFirst = true;
 	return sess;
@@ -1108,14 +1108,14 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 			DEL_CLASS(reader);
 			DEL_CLASS(fs);
 		}
-		IO::FileUtil::DeleteFile(tmpFile, false);
+		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		MemFree(cmdLine);
 		return (Int32)exitCode;
 	}
 	else
 	{
 		CloseHandle(startInfo.hStdOutput);
-		IO::FileUtil::DeleteFile(tmpFile, false);
+		IO::FileUtil::DeleteFile(CSTRP(tmpFile, sptr), false);
 		//UInt32 ret = GetLastError();
 		MemFree(cmdLine);
 		return -1;

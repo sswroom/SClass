@@ -68,10 +68,10 @@ UI::FolderDialog::~FolderDialog()
 	CoUninitialize();
 }
 
-void UI::FolderDialog::SetFolder(const UTF8Char *dirName)
+void UI::FolderDialog::SetFolder(Text::CString dirName)
 {
 	SDEL_STRING(this->dirName);
-	this->dirName = Text::String::NewNotNull(dirName);
+	this->dirName = Text::String::New(dirName);
 }
 
 Text::String *UI::FolderDialog::GetFolder()

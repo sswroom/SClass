@@ -170,9 +170,9 @@ IO::SDCardInfo *SDCardMgr_ReadInfo(const WChar *path)
 	
 	if (valid)
 	{
-		const UTF8Char *u8ptr = Text::StrToUTF8New(path);
-		NEW_CLASS(sdcard, IO::SDCardInfo(u8ptr, cid, csd));
-		Text::StrDelNew(u8ptr);
+		Text::String *s = Text::String::NewNotNull(path);
+		NEW_CLASS(sdcard, IO::SDCardInfo(s->ToCString(), cid, csd));
+		s->Release();
 	}
 
 	MemFree(commandData);
@@ -250,6 +250,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 	else //wine
 	{
 		UTF8Char nameBuff[16];
+		UTF8Char *namePtr;
 		UTF8Char *sptr;
 		UTF8Char *sptr2;
 		UTF8Char *sptr3;
@@ -277,7 +278,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 							if (sptr2[0] != '.' && pt != IO::Path::PathType::File && (sptr3 - sptr2) <= 15 && Text::StrIndexOfChar(sptr2, ':') != INVALID_INDEX)
 							{
 								Bool valid = true;
-								Text::StrConcat(nameBuff, sptr2);
+								namePtr = Text::StrConcat(nameBuff, sptr2);
 
 								sptr3End = Text::StrConcatC(sptr3, UTF8STRC("\\cid"));
 								if (!SDCardMgr_ReadId(CSTRP(sbuff, sptr3End), cid))
@@ -287,7 +288,7 @@ UOSInt IO::SDCardMgr::GetCardList(Data::ArrayList<IO::SDCardInfo*> *cardList)
 									valid = false;
 								if (valid)
 								{
-									NEW_CLASS(sdcard, IO::SDCardInfo(nameBuff, cid, csd));
+									NEW_CLASS(sdcard, IO::SDCardInfo(CSTRP(nameBuff, namePtr), cid, csd));
 									cardList->Add(sdcard);
 									ret++;
 								}

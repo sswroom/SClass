@@ -91,14 +91,14 @@ UOSInt UI::FileDialog::GetFilterIndex()
 	return this->filterIndex;
 }
 
-void UI::FileDialog::SetFileName(const UTF8Char *fileName)
+void UI::FileDialog::SetFileName(Text::CString fileName)
 {
 	if (this->fileName)
 	{
 		this->fileName->Release();
 		this->fileName = 0;
 	}
-	this->fileName = Text::String::NewNotNull(fileName);
+	this->fileName = Text::String::New(fileName);
 }
 
 Text::String *UI::FileDialog::GetFileName()
@@ -360,7 +360,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		else if (!isSave && this->allowMulti)
 		{
 			Text::String *s = Text::String::NewNotNull(fnameBuff);
-			IO::Path::PathType pt = IO::Path::GetPathType(s->v, s->leng);
+			IO::Path::PathType pt = IO::Path::GetPathType(s->ToCString());
 			s->Release();
 			if (pt == IO::Path::PathType::Directory)
 			{
@@ -378,7 +378,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				}
 				if (i == 1)
 				{
-					this->fileName = Text::String::NewNotNull(this->fileNames->GetItem(0));
+					this->fileName = Text::String::NewNotNullSlow(this->fileNames->GetItem(0));
 				}
 				else
 				{

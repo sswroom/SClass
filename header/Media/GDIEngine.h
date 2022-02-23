@@ -142,16 +142,16 @@ namespace Media
 		virtual Bool DrawRect(Double x, Double y, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b);
 		virtual Bool DrawString(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *b);
-		virtual Bool DrawString(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *b);
+		virtual Bool DrawString(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *b);
 		Bool DrawStringW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p);
 		virtual Bool DrawStringRot(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree);
-		virtual Bool DrawStringRot(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree);
+		virtual Bool DrawStringRot(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree);
 		Bool DrawStringRotW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree);
 		virtual Bool DrawStringB(Double tlx, Double tly, Text::String *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
-		virtual Bool DrawStringB(Double tlx, Double tly, const UTF8Char *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
+		virtual Bool DrawStringB(Double tlx, Double tly, Text::CString str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		Bool DrawStringBW(Double tlx, Double tly, const WChar *str, DrawFont *f, DrawBrush *p, UOSInt buffSize);
 		virtual Bool DrawStringRotB(Double centX, Double centY, Text::String *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
-		virtual Bool DrawStringRotB(Double centX, Double centY, const UTF8Char *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
+		virtual Bool DrawStringRotB(Double centX, Double centY, Text::CString str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		Bool DrawStringRotBW(Double centX, Double centY, const WChar *str, DrawFont *f, DrawBrush *p, Double angleDegree, UOSInt buffSize);
 		virtual Bool DrawImagePt(DrawImage *img, Double tlx, Double tly);
 		virtual Bool DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly);
@@ -160,17 +160,16 @@ namespace Media
 
 		virtual DrawPen *NewPenARGB(UInt32 color, Double thick, UInt8 *pattern, UOSInt nPattern);
 		virtual DrawBrush *NewBrushARGB(UInt32 color);
-		virtual DrawFont *NewFontPt(const UTF8Char *name, UOSInt nameLen, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPt(Text::CString name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		DrawFont *NewFontPtW(const WChar *name, Double ptSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
-		virtual DrawFont *NewFontPx(const UTF8Char *name, UOSInt nameLen, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
+		virtual DrawFont *NewFontPx(Text::CString name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		DrawFont *NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage);
 		virtual DrawFont *CloneFont(Media::DrawFont *f);
 		virtual void DelPen(DrawPen *p);
 		virtual void DelBrush(DrawBrush *b);
 		virtual void DelFont(DrawFont *f);
 
-		virtual Bool GetTextSize(DrawFont *fnt, const UTF8Char *txt, Double *sz);
-		virtual Bool GetTextSizeC(DrawFont *fnt, const UTF8Char *txt, UOSInt txtLen, Double *sz);
+		virtual Bool GetTextSize(DrawFont *fnt, Text::CString txt, Double *sz);
 		Bool GetTextSize(DrawFont *fnt, const WChar *txt, OSInt txtLen, Double *sz);
 		virtual void SetTextAlign(DrawEngine::DrawPos pos);
 		virtual void GetStringBound(Int32 *pos, OSInt centX, OSInt centY, const UTF8Char *str, DrawFont *f, OSInt *drawX, OSInt *drawY);

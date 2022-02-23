@@ -237,14 +237,14 @@ Text::CString IO::SerialPort::GetPortTypeName(SerialPortType portType)
 	}
 }
 
-UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
+UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
 {
 	UOSInt port = 0;
 	IO::Registry *reg;
 	IO::Registry *comreg;
 	WChar sbuff[512];
 	WChar sbuff2[32];
-	const WChar *wportName = Text::StrToWCharNew(portName);
+	const WChar *wportName = Text::StrToWCharNew(portName.v);
 	reg = IO::Registry::OpenLocalHardware();
 	if (reg)
 	{
@@ -282,22 +282,22 @@ UOSInt IO::SerialPort::GetPortWithType(const UTF8Char *portName)
 
 UOSInt IO::SerialPort::GetUSBPort()
 {
-	return GetPortWithType((const UTF8Char*)"USBSER");
+	return GetPortWithType(CSTR("USBSER"));
 }
 
 UOSInt IO::SerialPort::GetBTPort()
 {
 	UOSInt port = 0;
 	if (port == 0)
-		port = GetPortWithType((const UTF8Char*)"BthModem");
+		port = GetPortWithType(CSTR("BthModem"));
 	if (port == 0)
-		port = GetPortWithType((const UTF8Char*)"CsrBtSerial");
+		port = GetPortWithType(CSTR("CsrBtSerial"));
 	return port;
 }
 
 UTF8Char *IO::SerialPort::GetPortName(UTF8Char *buff, UOSInt portNum)
 {
-	return Text::StrUOSInt(Text::StrConcat(buff, (const UTF8Char*)"COM"), portNum);
+	return Text::StrUOSInt(Text::StrConcatC(buff, UTF8STRC("COM")), portNum);
 }
 
 Bool IO::SerialPort::ResetPort(UOSInt portNum)

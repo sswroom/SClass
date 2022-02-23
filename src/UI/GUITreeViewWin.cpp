@@ -20,13 +20,13 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 	this->txt = txt->Clone();
 }
 
-UI::GUITreeView::TreeItem::TreeItem(void *itemObj, const UTF8Char *txt)
+UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CString txt)
 {
 	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
 	this->parent = 0;
-	this->txt = Text::String::NewNotNull(txt);
+	this->txt = Text::String::New(txt);
 }
 
 UI::GUITreeView::TreeItem::~TreeItem()
@@ -284,7 +284,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	return item;
 }
 
-UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, const UTF8Char *itemText, void *itemObj)
+UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem *parent, UI::GUITreeView::TreeItem *insertAfter, Text::CString itemText, void *itemObj)
 {
 	TreeItem *item;
 	TVINSERTSTRUCTW is;
@@ -304,7 +304,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	{
 		is.hInsertAfter = TVI_LAST;
 	}
-	const WChar *wptr = Text::StrToWCharNew(itemText);
+	const WChar *wptr = Text::StrToWCharNew(itemText.v);
 	NEW_CLASS(item, TreeItem(itemObj, itemText));
 	is.item.mask = TVIF_TEXT | TVIF_PARAM;
 	is.item.lParam = (LPARAM)item;
