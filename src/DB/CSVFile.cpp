@@ -132,7 +132,7 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 	this->row = MemAlloc(UTF8Char, 16384);
 	this->cols = MemAlloc(UTF8Char*, 128);
 	this->colSize = MemAlloc(UOSInt, 128);
-	this->hdrs = MemAlloc(UTF8Char*, 128);
+	this->hdrs = MemAlloc(Text::PString, 128);
 
 	UTF8Char *sptr;
 	UTF8Char *currPtr;
@@ -194,13 +194,12 @@ DB::CSVReader::CSVReader(IO::Stream *stm, IO::Reader *rdr, Bool noHeader, Bool n
 
 	this->hdr = MemAlloc(UTF8Char, (UOSInt)(currPtr - this->row + 1));
 	MemCopyNO(this->hdr, this->row, sizeof(UTF8Char) * (UOSInt)(currPtr - this->row + 1));
-	this->nHdr = Text::StrCSVSplit(this->hdrs, 128, this->hdr);
+	this->nHdr = Text::StrCSVSplitP(this->hdrs, 128, this->hdr);
 	this->nCol = this->nHdr;
 	UOSInt i = this->nCol;
-	this->colSize[i - 1] = (UOSInt)(currPtr - this->hdrs[i - 1]);
-	while (i-- > 1)
+	while (i-- > 0)
 	{
-		this->colSize[i - 1] = (UOSInt)(this->hdrs[i] - this->hdrs[i - 1] - 1);
+		this->colSize[i] = this->hdrs[i].leng;
 	}
 }
 
@@ -236,7 +235,7 @@ Bool DB::CSVReader::ReadNext()
 		this->nCol = nCol;
 		while (nCol-- > 0)
 		{
-			this->cols[nCol] = this->hdrs[nCol];
+			this->cols[nCol] = this->hdrs[nCol].v;
 		}
 		return true;
 	}
@@ -262,12 +261,11 @@ Bool DB::CSVReader::ReadNext()
 	colStart = true;
 	while (true)
 	{
-		c = *currPtr++;
+		c = *currPtr;
 		if (c == 0)
 		{
 			if (quote)
 			{
-				currPtr--;
 				sptr = this->rdr->GetLastLineBreak(currPtr);
 				sptr = this->rdr->ReadLine(sptr, 16384);
 				if (sptr == 0)
@@ -275,42 +273,46 @@ Bool DB::CSVReader::ReadNext()
 			}
 			else
 			{
-				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1] - 1);
+				this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
 				break;
 			}
 		}
 		else if (c == '"')
 		{
-			if (colStart && !quote)
+			if (quote)
 			{
-				quote = true;
-				colStart = false;
-			}
-			else if (quote)
-			{
-				if (*currPtr == '"')
+				if (currPtr[1] == '"')
 				{
-					currPtr++;
+					currPtr += 2;
 				}
 				else
 				{
 					quote = false;
+					currPtr++;
 				}
+			}
+			else if (colStart)
+			{
+				quote = true;
+				colStart = false;
+				currPtr++;
 			}
 			else
 			{
+				currPtr++;
 			}
 		}
 		else if ((c == ',') && (quote == 0))
 		{
-			this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1] - 1);
+			this->colSize[nCol - 1] = (UOSInt)(currPtr - cols[nCol - 1]);
+			*currPtr++ = 0;
 			cols[nCol++] = currPtr;
 			colStart = true;
-			currPtr[-1] = 0;
 		}
 		else
 		{
 			colStart = false;
+			currPtr++;
 		}
 	}
 	this->nCol = nCol;
@@ -797,7 +799,7 @@ UTF8Char *DB::CSVReader::GetName(UOSInt colIndex, UTF8Char *buff)
 {
 	if (colIndex >= this->nHdr)
 		return 0;
-	return Text::StrConcat(buff, this->hdrs[colIndex]);
+	return this->hdrs[colIndex].ConcatTo(buff);
 }
 
 Bool DB::CSVReader::IsNull(UOSInt colIndex)
@@ -818,7 +820,7 @@ Bool DB::CSVReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 {
 	if (colIndex >= nHdr)
 		return false;
-	colDef->SetColName(this->hdrs[colIndex]);
+	colDef->SetColName(this->hdrs[colIndex].ToCString());
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
 	colDef->SetColSize(256);
 	colDef->SetColDP(0);

@@ -172,6 +172,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 	UTF8Char *sptr1End;
 	UTF8Char *sptr2;
 	UTF8Char *sptr2End;
+	Text::PString line;
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
@@ -188,17 +189,16 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		{
 			if (prog)
 			{
-				sb.Trim(1);
-				prog->subItems->Add(Text::String::New(sb.ToString() + 1, sb.GetLength() - 1));
+				prog->subItems->Add(Text::String::New(sb.SubstrTrim(1).ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
 		{
-			sb.Trim(1);
+			line = sb.SubstrTrim(1);
 			Bool valid = true;
-			sptr1 = sb.ToString() + 1;
-			sptr1End = sb.GetEndPtr();
-			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("?(")))
+			sptr1 = line.v;
+			sptr1End = line.GetEndPtr();
+			if (Text::StrStartsWithC(sptr1, line.leng, UTF8STRC("?(")))
 			{
 				i = Text::StrIndexOfChar(sptr1, ')');
 				if (i != INVALID_INDEX)
@@ -206,12 +206,12 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					sptr2 = &sptr1[i + 1];
 					sb2.ClearStr();
 					sb2.AppendC(&sptr1[2], (UOSInt)i - 2);
-					sb2.Trim();
-					sptr1 = sb2.ToString();
-					sptr1End = sb2.GetEndPtr();
-					if ((i = Text::StrIndexOfC(sptr1, sb2.GetLength(), UTF8STRC(">="))) != INVALID_INDEX)
+					Text::PString phase = sb2.TrimAsNew();
+					sptr1 = phase.v;
+					sptr1End = phase.GetEndPtr();
+					if ((i = Text::StrIndexOfC(sptr1, phase.leng, UTF8STRC(">="))) != INVALID_INDEX)
 					{
-						Text::StrTrimC(&sptr1[i + 2], sb2.GetLength() - i - 2);
+						Text::StrTrimC(&sptr1[i + 2], phase.leng - i - 2);
 						sptr1[i] = 0;
 						sptr1End = Text::StrTrimC(sptr1, i);
 						Int32 val1 = 0;
@@ -278,10 +278,10 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		else if (sb.ToString()[0] == '$')
 		{
 			Bool valid = true;
-			sb.Trim(1);
-			sptr1 = sb.ToString() + 1;
-			sptr1End = sb.GetEndPtr();
-			if (Text::StrStartsWithC(sptr1, sb.GetLength() - 1, UTF8STRC("@(")))
+			line = sb.SubstrTrim(1);
+			sptr1 = line.v;
+			sptr1End = line.GetEndPtr();
+			if (Text::StrStartsWithC(sptr1, line.leng, UTF8STRC("@(")))
 			{
 				i = Text::StrIndexOfCharC(sptr1, (UOSInt)(sptr1End - sptr1), ')');
 				if (i != INVALID_INDEX && i > 1)
@@ -467,8 +467,8 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			{
 				sb.Replace('/', IO::Path::PATH_SEPERATOR);
 			}
-			sb.Trim(8);
-			sptr1 = sb.ToString() + 8;
+			line = sb.SubstrTrim(8);
+			sptr1 = line.v;
 			if (IO::Path::IsSearchPattern(sptr1))
 			{
 				IO::FileFindRecur srch(sptr1);
@@ -492,7 +492,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			}
 			else
 			{
-				if (!LoadConfigFile({sptr1, sb.GetLength() - 8}))
+				if (!LoadConfigFile(line.ToCString()))
 				{
 					ret = false;
 					break;
@@ -539,6 +539,7 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	fs->GetFileTimes(0, 0, &dt);
 	lastTime = dt.ToTicks();
 	Text::UTF8Reader *reader;
+	Text::PString line;
 	UTF8Char *sptr1;
 	UTF8Char *sptr1End;
 	UOSInt i;
@@ -547,12 +548,12 @@ Bool IO::SMake::ParseSource(Data::ArrayListString *objList, Data::ArrayListStrin
 	sb.ClearStr();
 	while (reader->ReadLine(&sb, 1024))
 	{
-		sb.Trim();
-		if (sb.StartsWith(UTF8STRC("#include")))
+		line = sb.TrimAsNew();
+		if (line.StartsWith(UTF8STRC("#include")))
 		{
-			sb.Trim(8);
-			sptr1 = sb.ToString() + 8;
-			sptr1End = sb.GetEndPtr();
+			line = line.SubstrTrim(8);
+			sptr1 = line.v;
+			sptr1End = line.GetEndPtr();
 			if (sptr1[0] == '"')
 			{
 				sptr1++;

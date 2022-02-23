@@ -43,7 +43,7 @@ namespace DB
 		UTF8Char **cols;
 		UOSInt *colSize;
 		UTF8Char *hdr;
-		UTF8Char **hdrs;
+		Text::PString *hdrs;
 		Bool noHeader;
 		Bool nullIfEmpty;
 

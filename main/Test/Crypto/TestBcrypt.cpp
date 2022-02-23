@@ -35,7 +35,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	if (!BCryptTest(&bcrypt, UTF8STRC("$2a$12$kQtGrSy5/39p96XsfTnpmuG1RiTw0KPKTSTsLuaooVr476.Ti9zcW"), UTF8STRC("admin"))) return 1;
 
 	sb.ClearStr();
-	bcrypt.GenHash(&sb, 12, UTF8STRC("admin"));
+	bcrypt.GenHash(&sb, 10, UTF8STRC("admin"));
 	if (!bcrypt.Matches(sb.ToString(), sb.GetLength(), UTF8STRC("admin")))
 	{
 		return 1;

@@ -36,6 +36,42 @@ namespace Text
 		{
 			return {this->v + index, this->leng - index};
 		}
+
+		Text::PString TrimAsNew()
+		{
+			UTF8Char *sptr = this->v;
+			UTF8Char *endPtr = this->v + this->leng;
+			while (sptr < endPtr && (*sptr == ' ' || *sptr == '\t'))
+			{
+				sptr++;
+			}
+			while (sptr < endPtr && (endPtr[-1] == ' ' || endPtr[-1] == '\t'))
+			{
+				endPtr--;
+			}
+			*endPtr = 0;
+			return {sptr, (UOSInt)(endPtr - sptr)};
+		}
+
+		Text::PString SubstrTrim(UOSInt index)
+		{
+			if (index >= this->leng)
+			{
+				return {this->v, 0};
+			}
+			UTF8Char *sptr = this->v + index;
+			UTF8Char *endPtr = this->v + this->leng;
+			while (sptr < endPtr && (*sptr == ' ' || *sptr == '\t'))
+			{
+				sptr++;
+			}
+			while (sptr < endPtr && (endPtr[-1] == ' ' || endPtr[-1] == '\t'))
+			{
+				endPtr--;
+			}
+			*endPtr = 0;
+			return {sptr, (UOSInt)(endPtr - sptr)};
+		}
 	};
 
 	UOSInt StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar); //Optimized

@@ -272,33 +272,35 @@ const UInt32 Crypto::Encrypt::Blowfish::origS[1024] = {
 	0xB74E6132L, 0xCE77E25BL, 0x578FDFE3L, 0x3AC372E6L
 };
 
+#define ENCINTSTEP(i) \
+	temp =  this->s[0][ Xl >> 24]; \
+	temp += this->s[1][(Xl >> 16) & 0xff]; \
+	temp ^= this->s[2][(Xl >> 8)  & 0xff]; \
+	temp += this->s[3][ Xl        & 0xff]; \
+	Xr = Xr ^ temp ^ this->p[i]; \
+\
+	temp =  this->s[0][ Xr >> 24]; \
+	temp += this->s[1][(Xr >> 16) & 0xff]; \
+	temp ^= this->s[2][(Xr >> 8)  & 0xff]; \
+	temp += this->s[3][ Xr        & 0xff]; \
+	Xl = Xl ^ temp ^ this->p[i + 1];
 void Crypto::Encrypt::Blowfish::EncryptInt()
 {
 	UInt32 Xl;
 	UInt32 Xr;
 	UInt32 temp;
-	UOSInt i;
 
 	Xl = this->xl;
 	Xr = this->xr;
-
-	i = 0;
-	Xl = Xl ^ this->p[i];
-	while (i < 16)
-	{
-		temp =  this->s[0][ Xl >> 24];
-		temp += this->s[1][(Xl >> 16) & 0xff];
-		temp ^= this->s[2][(Xl >> 8)  & 0xff];
-		temp += this->s[3][ Xl        & 0xff];
-		Xr = Xr ^ temp ^ this->p[++i];
-
-		temp =  this->s[0][ Xr >> 24];
-		temp += this->s[1][(Xr >> 16) & 0xff];
-		temp ^= this->s[2][(Xr >> 8)  & 0xff];
-		temp += this->s[3][ Xr        & 0xff];
-		Xl = Xl ^ temp ^ this->p[++i];
-	}
-
+	Xl = Xl ^ this->p[0];
+	ENCINTSTEP(1);
+	ENCINTSTEP(3);
+	ENCINTSTEP(5);
+	ENCINTSTEP(7);
+	ENCINTSTEP(9);
+	ENCINTSTEP(11);
+	ENCINTSTEP(13);
+	ENCINTSTEP(15);
 	this->xl = Xr ^ this->p[N + 1];
 	this->xr = Xl;
 }
