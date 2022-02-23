@@ -6,7 +6,7 @@
 #define SECURITY_WIN32
 #include <sspi.h>
 
-//#define DEBUG_PRINT
+#define DEBUG_PRINT
 #if defined(DEBUG_PRINT)
 #ifdef _MSC_VER
 #include <windows.h>
@@ -88,6 +88,10 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 	{
 		return 0;
 	}
+#if defined(DEBUG_PRINT)
+	UTF8Char debugBuff[64];
+	Data::DateTime debugDt;
+#endif
 	UOSInt ret = 0;
 	if (this->clsData->decSize > 0)
 	{
@@ -104,7 +108,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				this->clsData->decSize = 0;
 			}
 #if defined(DEBUG_PRINT)
-			printf("Return size1 = %d, \r\n", (UInt32)size);
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+			printf("%s Return size1 = %d, \r\n", debugBuff, (UInt32)size);
 #endif
 			return size;
 		}
@@ -136,7 +142,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				return ret;
 			}
 #if defined(DEBUG_PRINT)
-			printf("Recv size = %d\r\n", (UInt32)recvSize);
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+			printf("%s Recv size = %d\r\n", debugBuff, (UInt32)recvSize);
 #endif
 			this->clsData->recvOfst += recvSize;
 			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
@@ -152,7 +160,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			this->flags |= 6;
 			this->sockf->DestroySocket(this->s);
 #if defined(DEBUG_PRINT)
-			printf("Return size2 = %d\r\n", (UInt32)ret);
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+			printf("%s Return size2 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
 			return ret;
 		}
@@ -166,7 +176,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 				if (buffs[i].cbBuffer <= size)
 				{
 #if defined(DEBUG_PRINT)
-					printf("Dec size1 = %d, size = %d\r\n", (UInt32)buffs[i].cbBuffer, (UInt32)size);
+					debugDt.SetCurrTime();
+					debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+					printf("%s Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
 					MemCopyNO(buff, buffs[i].pvBuffer, buffs[i].cbBuffer);
 					size -= buffs[i].cbBuffer;
@@ -178,7 +190,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 					if (size > 0)
 					{
 #if defined(DEBUG_PRINT)
-						printf("Dec size2 = %d, size = %d\r\n", (UInt32)buffs[i].cbBuffer, (UInt32)size);
+						debugDt.SetCurrTime();
+						debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+						printf("%s Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)size);
 #endif
 						MemCopyNO(buff, buffs[i].pvBuffer, size);
 						ret += size;
@@ -189,7 +203,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 					else
 					{
 #if defined(DEBUG_PRINT)
-						printf("Dec size3 = %d\r\n", (UInt32)buffs[i].cbBuffer);
+						debugDt.SetCurrTime();
+						debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+						printf("%s Dec size3 = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
 #endif
 						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buffs[i].pvBuffer, buffs[i].cbBuffer);
 						this->clsData->decSize += buffs[i].cbBuffer;
@@ -199,7 +215,9 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			else if (buffs[i].BufferType == SECBUFFER_EXTRA)
 			{
 #if defined(DEBUG_PRINT)
-				printf("Ext size = %d\r\n", (UInt32)buffs[i].cbBuffer);
+				debugDt.SetCurrTime();
+				debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+				printf("%s Ext size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
 #endif
 				MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
 				this->clsData->recvOfst += buffs[i].cbBuffer;
@@ -207,14 +225,18 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 			i++;
 		}
 #if defined(DEBUG_PRINT)
-		printf("Return size3 = %d\r\n", (UInt32)ret);
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s Return size3 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
 		return ret;
 	}
 	else
 	{
 #if defined(DEBUG_PRINT)
-		printf("Return size4 = %d\r\n", (UInt32)ret);
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s Return size4 = %d\r\n", debugBuff, (UInt32)ret);
 #endif
 		return ret;
 	}
@@ -228,6 +250,10 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 	}
 	if (s && (this->flags & 5) == 0)
 	{
+#if defined(DEBUG_PRINT)
+		UTF8Char debugBuff[64];
+		Data::DateTime debugDt;
+#endif
 		UOSInt writeSize = 0;
 		while (size > this->clsData->stmSizes.cbMaximumMessage)
 		{
@@ -235,6 +261,11 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 			buff += this->clsData->stmSizes.cbMaximumMessage;
 			size -= this->clsData->stmSizes.cbMaximumMessage;
 		}
+#if defined(DEBUG_PRINT)
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s Writing %d bytes, enc size = %d\r\n", debugBuff, (UInt32)size, (UInt32)(this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer));
+#endif
 		UInt8 *encBuff = MemAlloc(UInt8, this->clsData->stmSizes.cbHeader + size + this->clsData->stmSizes.cbTrailer);
 		MemCopyNO(&encBuff[this->clsData->stmSizes.cbHeader], buff, size);
 		SecBuffer outputBuff[4];
@@ -247,19 +278,30 @@ UOSInt Net::WinSSLClient::Write(const UInt8 *buff, UOSInt size)
 
 		if (FAILED(EncryptMessage(&this->clsData->ctxt, 0, &outputDesc, 0)))
 		{
+#if defined(DEBUG_PRINT)
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+			printf("%s Encrypt Failed\r\n", debugBuff);
+#endif
 			this->flags |= 1;
 			return 0;
 		}
 		Net::SocketFactory::ErrorType et;
 		UOSInt ret = this->sockf->SendData(this->s, encBuff, outputBuff[0].cbBuffer + outputBuff[1].cbBuffer + outputBuff[2].cbBuffer, &et);// SSL_write(this->clsData->ssl, buff, (int)size);
+#if defined(DEBUG_PRINT)
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s Sent %d bytes\r\n", debugBuff, (UInt32)ret);
+#endif
+		MemFree(encBuff);
 		if (ret > outputBuff[0].cbBuffer + outputBuff[2].cbBuffer)
 		{
 			ret -= outputBuff[0].cbBuffer + outputBuff[2].cbBuffer;
 			this->currCnt += ret;
-			return ret;
+			return ret + writeSize;
 		}
 		this->flags |= 1;
-		return 0;
+		return writeSize;
 	}
 	else
 	{

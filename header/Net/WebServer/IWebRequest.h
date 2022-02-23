@@ -44,6 +44,8 @@ namespace Net
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
 			Bool GetRefererDomain(Text::StringBuilderUTF8 *sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
+			Bool GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb);
+			Text::String *GetCookieAsNew(Text::CString name);
 
 			virtual Text::String *GetRequestURI() = 0;
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);

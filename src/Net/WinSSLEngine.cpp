@@ -14,8 +14,8 @@
 #include <sspi.h>
 #include <schnlsp.h>
 
-//#define VERBOSE_SVR
-#define VERBOSE_CLI
+#define VERBOSE_SVR
+//#define VERBOSE_CLI
 #if defined(VERBOSE_SVR) || defined(VERBOSE_CLI)
 #include <stdio.h>
 #endif
@@ -397,7 +397,11 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	}
 
 #if defined(VERBOSE_SVR)
-	printf("SSL: Svr %x, Init begin, Tid = %d\r\n", (Int32)(OSInt)s, GetCurrentThreadId());
+	UTF8Char debugBuff[64];;
+	Data::DateTime dtDebug;
+	dtDebug.SetCurrTime();
+	dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+	printf("%s SSL: Svr %x, Init begin, Tid = %d\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)GetCurrentThreadId());
 #endif
 
 	this->sockf->SetRecvTimeout(s, 3000);
@@ -416,7 +420,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	if (recvSize == 0)
 	{
 #if defined(VERBOSE_SVR)
-		printf("SSL: Svr %x, Recv size 0\r\n", (Int32)(OSInt)s);
+		dtDebug.SetCurrTime();
+		dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s SSL: Svr %x, Recv size 0\r\n", debugBuff, (Int32)(OSInt)s);
 #endif
 		this->sockf->DestroySocket(s);
 		return 0;
@@ -460,7 +466,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	if (status != SEC_I_CONTINUE_NEEDED)
 	{
 #if defined(VERBOSE_SVR)
-		printf("SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+		dtDebug.SetCurrTime();
+		dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+		printf("%s SSL: Svr %x, AcceptSecurityContext error, status %x\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)status);
 #endif
 		this->sockf->DestroySocket(s);
 		return 0;
@@ -474,7 +482,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
 			{
 #if defined(VERBOSE_SVR)
-				printf("SSL: Svr %x, Send data error\r\n", (Int32)(OSInt)s);
+				dtDebug.SetCurrTime();
+				dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+				printf("%s SSL: Svr %x, Send data error\r\n", debugBuff, (Int32)(OSInt)s);
 #endif
 				succ = false;
 			}
@@ -482,7 +492,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 
 		if (inputBuff[1].BufferType == SECBUFFER_EXTRA)
 		{
-			MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
+			MemCopyO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
 			recvOfst = inputBuff[1].cbBuffer;
 		}
 		if (outputBuff[i].pvBuffer)
@@ -506,7 +516,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 			if (recvSize <= 0)
 			{
 #if defined(VERBOSE_SVR)
-				printf("SSL: Svr %x, Recv size2 0\r\n", (Int32)(OSInt)s);
+				dtDebug.SetCurrTime();
+				dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+				printf("%s SSL: Svr %x, Recv size2 0\r\n", debugBuff, (Int32)(OSInt)s);
 #endif
 				DeleteSecurityContext(&ctxt);
 				this->sockf->DestroySocket(s);
@@ -561,7 +573,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 					if (this->sockf->SendData(s, (const UInt8*)outputBuff[i].pvBuffer, outputBuff[i].cbBuffer, &et) != outputBuff[i].cbBuffer)
 					{
 #if defined(VERBOSE_SVR)
-						printf("SSL: Svr %x, Send data error2\r\n", (Int32)(OSInt)s);
+						dtDebug.SetCurrTime();
+						dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+						printf("%s SSL: Svr %x, Send data error2\r\n", debugBuff, (Int32)(OSInt)s);
 #endif
 						succ = false;
 					}
@@ -569,7 +583,7 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 
 				if (inputBuff[1].BufferType == SECBUFFER_EXTRA && inputBuff[1].pvBuffer)
 				{
-					MemCopyNO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
+					MemCopyO(recvBuff, inputBuff[1].pvBuffer, inputBuff[1].cbBuffer);
 					recvOfst = inputBuff[1].cbBuffer;
 				}
 				if (outputBuff[i].pvBuffer)
@@ -596,7 +610,9 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 
 			}
 #if defined(VERBOSE_SVR)
-			printf("SSL: Svr %x, AcceptSecurityContext error2, status %x\r\n", (Int32)(OSInt)s, (UInt32)status);
+			dtDebug.SetCurrTime();
+			dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+			printf("%s SSL: Svr %x, AcceptSecurityContext error2, status %x\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)status);
 #endif
 			DeleteSecurityContext(&ctxt);
 			this->sockf->DestroySocket(s);
@@ -605,8 +621,11 @@ Net::SSLClient *Net::WinSSLEngine::CreateServerConn(Socket *s)
 	}
 
 #if defined(VERBOSE_SVR)
-		printf("SSL: Svr %x, Success\r\n", (Int32)(OSInt)s);
+	dtDebug.SetCurrTime();
+	dtDebug.ToString(debugBuff, "yyyy-MM-dd HH:mm:ss.fff");
+	printf("%s SSL: Svr %x, Success, extra size = %d\r\n", debugBuff, (Int32)(OSInt)s, (UInt32)recvOfst);
 #endif
+
 	Net::SSLClient *cli;
 	NEW_CLASS(cli, Net::WinSSLClient(sockf, s, &ctxt));
 	return cli;

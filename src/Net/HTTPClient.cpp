@@ -265,7 +265,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 	else
 	{
 		sptr = dateStr.ConcatTo(sbuff);
-		i = Text::StrSplitP(ptrs, 6, CSTRP(sbuff, sptr), ' ');
+		i = Text::StrSplitP(ptrs, 6, {sbuff, (UOSInt)(sptr - sbuff)}, ' ');
 		if (i > 3)
 		{
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');

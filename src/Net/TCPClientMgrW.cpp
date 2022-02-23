@@ -13,7 +13,6 @@
 #include "Sync/MutexUsage.h"
 #include "Sync/Thread.h"
 
-#define TCP_BUFF_SIZE 2048
 #define PROCESS_TIMEOUT_DURATION 30000
 
 UInt32 __stdcall Net::TCPClientMgr::ClientThread(void *o)

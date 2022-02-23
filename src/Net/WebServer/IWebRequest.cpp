@@ -103,6 +103,69 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 	return false;
 }
 
+Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb)
+{
+	Text::String *cookie = this->GetSHeader(UTF8STRC("Cookie"));
+	if (cookie == 0)
+	{
+		return 0;
+	}
+
+	UTF8Char *sbuff;
+	Text::PString strs[2];
+	UOSInt strCnt = 2;
+	Bool found = false;
+
+	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	cookie->ConcatTo(sbuff);
+
+	strs[1].v = sbuff;
+	strs[1].leng = cookie->leng;
+	while (strCnt >= 2)
+	{
+		strCnt = Text::StrSplitTrimP(strs, 2, strs[1], ';');
+		if (strs[0].StartsWith(name.v, name.leng) && strs[0].v[name.leng] == '=')
+		{
+			found = true;
+			sb->AppendC(&strs[0].v[name.leng + 1], strs[0].leng - name.leng - 1);
+			break;
+		}
+	}
+	MemFree(sbuff);
+	return found;
+}
+
+Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString name)
+{
+	Text::String *cookie = this->GetSHeader(UTF8STRC("Cookie"));
+	if (cookie == 0)
+	{
+		return 0;
+	}
+
+	UTF8Char *sbuff;
+	Text::PString strs[2];
+	UOSInt strCnt = 2;
+	Text::String *ret = 0;
+
+	sbuff = MemAlloc(UTF8Char, cookie->leng + 1);
+	cookie->ConcatTo(sbuff);
+
+	strs[1].v = sbuff;
+	strs[1].leng = cookie->leng;
+	while (strCnt >= 2)
+	{
+		strCnt = Text::StrSplitTrimP(strs, 2, strs[1], ';');
+		if (strs[0].StartsWith(name.v, name.leng) && strs[0].v[name.leng] == '=')
+		{
+			ret = Text::String::New(&strs[0].v[name.leng + 1], strs[0].leng - name.leng - 1);
+			break;
+		}
+	}
+	MemFree(sbuff);
+	return ret;
+}
+
 UTF8Char *Net::WebServer::IWebRequest::GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng)
 {
 	const UTF8Char *uri = this->GetRequestURI()->v;

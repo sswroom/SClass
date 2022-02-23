@@ -910,6 +910,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 	ent->devName = 0;
 	ent->devNameLen = 0;
 	ent->osVer = 0;
+	ent->osVerLen = 0;
 	ent->os = Manage::OSInfo::OT_UNKNOWN;
 	ent->userAgent = userAgent.v;
 	ent->userAgentLen = userAgent.leng;

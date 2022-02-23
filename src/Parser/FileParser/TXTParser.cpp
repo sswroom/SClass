@@ -95,7 +95,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	{
 		Map::MapEnv *env;
 		Map::MapEnv::GroupItem *currGroup = 0;
-		if (Text::StrSplitTrimP(sarr, 8, CSTRP(sbuff, sptr), ',') != 5)
+		if (Text::StrSplitTrimP(sarr, 8, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 		{
 			DEL_CLASS(reader);
 			DEL_CLASS(stm);
@@ -111,7 +111,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		{
 			if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("2,")))
 			{
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 2)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 2)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -125,7 +125,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3,")))
 			{
 				UInt8 *pattern;
-				if ((i = Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',')) < 5)
+				if ((i = Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',')) < 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -160,7 +160,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("13,")))
 			{
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 3)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 3)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -181,7 +181,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				UInt32 buffColor;
 				Int32 addFont;
 
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 7)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -231,7 +231,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("6,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 5)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -257,7 +257,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("7,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 6)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 6)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -286,7 +286,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("9,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 7)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 7)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -327,7 +327,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("10,")))
 			{
 				Map::MapEnv::LayerItem setting;
-				if (Text::StrSplitTrimP(sarr, 10, CSTRP(sbuff, sptr), ',') != 5)
+				if (Text::StrSplitTrimP(sarr, 10, {sbuff, (UOSInt)(sptr - sbuff)}, ',') != 5)
 				{
 					this->mapMgr->ClearMap(env);
 					DEL_CLASS(env);
@@ -399,7 +399,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
 		while ((sptr2 = reader2->ReadLine(sbuff2, 512)) != 0)
 		{
-			i = Text::StrSplitP(sarr, 4, CSTRP(sbuff2, sptr2), ',');
+			i = Text::StrSplitP(sarr, 4, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, ',');
 			if (i == 1)
 			{
 				if (currId != 0)
@@ -535,11 +535,11 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		{
 			lyrType = Map::DRAW_LAYER_MIXED;
 		}
-		j = Text::StrSplitP(sarr, 20, CSTRP(sbuff, sptr), ',');
+		j = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 		NEW_CLASS(lyr, Map::VectorLayer(lyrType, fd->GetFullFileName(), j, (const UTF8Char **)sarr, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 2, 0));
 		while ((sptr = reader->ReadLine(sbuff, 512)) != 0)
 		{
-			i = Text::StrSplitP(sarr, 20, CSTRP(sbuff, sptr), ',');
+			i = Text::StrSplitP(sarr, 20, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
 			if (i == j)
 			{
 				currId = Text::StrToInt32(sarr[1].v);
