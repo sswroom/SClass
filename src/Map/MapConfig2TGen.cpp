@@ -4366,7 +4366,7 @@ void Map::MapConfig2TGen::LoadLabels(Media::DrawImage *img, Map::MapConfig2TGen:
 					}
 					if (err)
 						break;
-					if (Text::StrSplitP(strs, 5, CSTRP(&sbuff[1], sptr2), ',') != 4)
+					if (Text::StrSplitP(strs, 5, {&sbuff[1], (UOSInt)(sptr2 - &sbuff[1])}, ',') != 4)
 					{
 						err = true;
 						break;
