@@ -11,7 +11,7 @@
 #if defined(DEBUGNULL)
 #define CSTRP(str, strEnd) Text::CString::FromPtrD(str, strEnd, __FILE__, __LINE__)
 #else
-#define CSTRP(str, strEnd) Text::CString(str, (UOSInt)(strEnd - str)
+#define CSTRP(str, strEnd) Text::CString(str, (UOSInt)(strEnd - str))
 #endif
 
 namespace Text
