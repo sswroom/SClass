@@ -21,8 +21,8 @@ DB::TableDef::~TableDef()
 	UOSInt i;
 	SDEL_TEXT(this->databaseName);
 	SDEL_TEXT(this->tableName);
-	SDEL_TEXT(this->engine);
-	SDEL_TEXT(this->charset);
+	SDEL_STRING(this->engine);
+	SDEL_STRING(this->charset);
 	SDEL_TEXT(this->attr);
 	SDEL_TEXT(this->comments);
 	i = this->cols->GetCount();
@@ -44,12 +44,12 @@ const UTF8Char *DB::TableDef::GetTableName()
 	return this->tableName;
 }
 
-const UTF8Char *DB::TableDef::GetEngine()
+Text::String *DB::TableDef::GetEngine()
 {
 	return this->engine;
 }
 
-const UTF8Char *DB::TableDef::GetCharset()
+Text::String *DB::TableDef::GetCharset()
 {
 	return this->charset;
 }
@@ -121,17 +121,17 @@ DB::TableDef *DB::TableDef::SetTableName(const UTF8Char *tableName)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetEngine(const UTF8Char *engine)
+DB::TableDef *DB::TableDef::SetEngine(Text::CString engine)
 {
-	SDEL_TEXT(this->engine);
-	this->engine = SCOPY_TEXT(engine);
+	SDEL_STRING(this->engine);
+	this->engine = Text::String::NewOrNull(engine);
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetCharset(const UTF8Char *charset)
+DB::TableDef *DB::TableDef::SetCharset(Text::CString charset)
 {
-	SDEL_TEXT(this->charset);
-	this->charset = SCOPY_TEXT(charset);
+	SDEL_STRING(this->charset);
+	this->charset = Text::String::NewOrNull(charset);
 	return this;
 }
 
@@ -160,8 +160,8 @@ DB::TableDef *DB::TableDef::Clone()
 	DB::TableDef *newObj;
 	NEW_CLASS(newObj, DB::TableDef(this->tableName));
 	newObj->SetDatabaseName(this->databaseName);
-	newObj->SetEngine(this->engine);
-	newObj->SetCharset(this->charset);
+	newObj->SetEngine(STR_CSTR(this->engine));
+	newObj->SetCharset(STR_CSTR(this->charset));
 	newObj->SetAttr(this->attr);
 	newObj->SetComments(this->comments);
 	newObj->SetSvrType(this->svrType);

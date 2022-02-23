@@ -38,10 +38,10 @@ Text::String *SSWR::OrganMgr::OrganBook::GetTitle()
 	return this->title;
 }
 
-void SSWR::OrganMgr::OrganBook::SetTitle(const UTF8Char *title)
+void SSWR::OrganMgr::OrganBook::SetTitle(Text::CString title)
 {
 	SDEL_STRING(this->title);
-	this->title = Text::String::NewNotNull(title);
+	this->title = Text::String::New(title);
 }
 
 void SSWR::OrganMgr::OrganBook::SetTitle(Text::StringBase<UTF8Char> *title)
@@ -55,10 +55,10 @@ Text::String *SSWR::OrganMgr::OrganBook::GetDispAuthor()
 	return this->dispAuthor;
 }
 
-void SSWR::OrganMgr::OrganBook::SetDispAuthor(const UTF8Char *dispAuthor)
+void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::CString dispAuthor)
 {
 	SDEL_STRING(this->dispAuthor);
-	this->dispAuthor = Text::String::NewNotNull(dispAuthor);
+	this->dispAuthor = Text::String::New(dispAuthor);
 }
 
 void SSWR::OrganMgr::OrganBook::SetDispAuthor(Text::StringBase<UTF8Char> *dispAuthor)
@@ -72,10 +72,10 @@ Text::String *SSWR::OrganMgr::OrganBook::GetPress()
 	return this->press;
 }
 
-void SSWR::OrganMgr::OrganBook::SetPress(const UTF8Char *press)
+void SSWR::OrganMgr::OrganBook::SetPress(Text::CString press)
 {
 	SDEL_STRING(this->press);
-	this->press = Text::String::NewNotNull(press);
+	this->press = Text::String::New(press);
 }
 
 void SSWR::OrganMgr::OrganBook::SetPress(Text::StringBase<UTF8Char> *press)
@@ -109,10 +109,10 @@ Text::String *SSWR::OrganMgr::OrganBook::GetURL()
 	return this->url;
 }
 
-void SSWR::OrganMgr::OrganBook::SetURL(const UTF8Char *url)
+void SSWR::OrganMgr::OrganBook::SetURL(Text::CString url)
 {
 	SDEL_STRING(this->url);
-	this->url = Text::String::NewNotNull(url);
+	this->url = Text::String::New(url);
 }
 
 void SSWR::OrganMgr::OrganBook::SetURL(Text::StringBase<UTF8Char> *url)

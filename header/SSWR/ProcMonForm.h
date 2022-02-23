@@ -51,7 +51,7 @@ namespace SSWR
 		UI::ListBoxLogger *logger;
 		Text::String *notifyCmd;
 
-		void AddProg(const UTF8Char *progName, const UTF8Char *progPath);
+		void AddProg(Text::CString progName, Text::CString progPath);
 		Bool SearchProcId(ProgInfo *prog);
 		void SetByProcId(ProgInfo *prog, UOSInt procId);
 		void LoadProgList();

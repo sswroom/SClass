@@ -592,7 +592,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 			}
 			if (devName)
 			{
-				if (me->core->DeviceModify(cliId, devName->v, flags))
+				if (me->core->DeviceModify(cliId, devName->ToCString(), flags))
 				{
 					sess->EndUse();
 					return resp->RedirectURL(req, UTF8STRC("device"), 0);
@@ -2288,7 +2288,7 @@ SSWR::SMonitor::SMonitorWebHandler::SMonitorWebHandler(SSWR::SMonitor::ISMonitor
 {
 	this->core = core;
 	NEW_CLASS(this->reqMap, Data::FastStringMap<RequestHandler>());
-	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager((const UTF8Char*)"/monitor", OnSessDeleted, this, 60000, OnSessCheck, this));
+	NEW_CLASS(this->sessMgr, Net::WebServer::MemoryWebSessionManager(CSTR("/monitor"), OnSessDeleted, this, 60000, OnSessCheck, this));
 	this->reqMap->PutC(CSTR(""), DefaultReq);
 	this->reqMap->PutC(CSTR("/index"), IndexReq);
 	this->reqMap->PutC(CSTR("/login"), LoginReq);

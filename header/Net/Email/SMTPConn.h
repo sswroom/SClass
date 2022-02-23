@@ -48,7 +48,7 @@ namespace Net
 
 			Bool SendHelo(Text::CString cliName);
 			Bool SendEHlo(Text::CString cliName);
-			Bool SendAuth(const UTF8Char *userName, const UTF8Char *password);
+			Bool SendAuth(Text::CString userName, Text::CString password);
 			Bool SendMailFrom(Text::CString fromEmail);
 			Bool SendRcptTo(const UTF8Char *toEmail);
 			Bool SendData(const UTF8Char *buff, UOSInt buffSize);

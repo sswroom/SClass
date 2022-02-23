@@ -33,7 +33,7 @@ Bool SearchProcId(ProgInfo *prog)
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
 	i = Text::StrLastIndexOfCharC(prog->progPath->v, prog->progPath->leng, IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath->v[i + 1]);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;

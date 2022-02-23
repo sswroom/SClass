@@ -58,7 +58,7 @@ public:
 		Media::PaperSize psize(Media::PaperSize::PT_A4);
 		this->pageId = 0;
 		this->doc = doc;
-		doc->SetDocName((const UTF8Char*)"PrintTest");
+		doc->SetDocName(CSTR("PrintTest"));
 		doc->SetNextPageOrientation(Media::IPrintDocument::PageOrientation::Portrait);
 		doc->SetNextPagePaperSizeMM(psize.GetWidthMM(), psize.GetHeightMM());
 		return true;
@@ -548,7 +548,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-				if (Text::StrEquals(sbuff, (const UTF8Char*)"Bullzip PDF Printer") || Text::StrEquals(sbuff, (const UTF8Char*)"Adobe PDF") || Text::StrEquals(sbuff, (const UTF8Char*)"PDF"))
+				if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Bullzip PDF Printer")) ||
+					Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("Adobe PDF")) ||
+					Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("PDF")))
 				{
 					printerList.Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 				}
@@ -574,7 +576,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					console->WriteLineC(sb.ToString(), sb.GetLength());
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-					NEW_CLASS(printer, Media::Printer(s->v));
+					NEW_CLASS(printer, Media::Printer(s->ToCString()));
 					if (printer->IsError())
 					{
 						console->WriteLineC(UTF8STRC("Error in opening printer"));

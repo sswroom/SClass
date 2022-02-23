@@ -92,18 +92,18 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnGroupAddClicked(void *userObj)
 			sb.ClearStr();
 			me->txtGroupEName->GetText(&sb);
 			sb.Trim();
-			newGrp->SetEName(sb.ToString());
+			newGrp->SetEName(sb.ToCString());
 			sb.ClearStr();
 			me->txtGroupCName->GetText(&sb);
 			sb.Trim();
-			newGrp->SetCName(sb.ToString());
+			newGrp->SetCName(sb.ToCString());
 			sb.ClearStr();
 			me->txtGroupDesc->GetText(&sb);
 			sb.Trim();
-			newGrp->SetDesc(sb.ToString());
+			newGrp->SetDesc(sb.ToCString());
 			sb.ClearStr();
 			me->txtGroupKey->GetText(&sb);
-			newGrp->SetIDKey(sb.ToString());
+			newGrp->SetIDKey(sb.ToCString());
 			newGrp->SetAdminOnly(me->chkGroupAdmin->IsChecked());
 			
 			me->env->AddGroup(newGrp, parDir);
@@ -753,7 +753,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageSaveClicked(void *userObj)
 				UI::FileDialog *dlg;
 				NEW_CLASS(dlg, UI::FileDialog(L"SSWR", L"AVIRead", L"OrganMgrSave", true));
 				dlg->AddFilter(CSTR("*.jpg"), CSTR("JPEG File"));
-				dlg->SetFileName(userFile->oriFileName->v);
+				dlg->SetFileName(userFile->oriFileName->ToCString());
 				if (dlg->ShowDialog(me->GetHandle()))
 				{
 					IO::FileUtil::CopyFile(sb.ToCString(), dlg->GetFileName()->ToCString(), IO::FileUtil::FileExistAction::Fail, 0, 0);
@@ -871,7 +871,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImageClipboardClicked(void *user
 						if (succ)
 						{
 							SDEL_STRING(me->initSelImg);
-							me->initSelImg = Text::String::NewNotNull(sbuff);
+							me->initSelImg = Text::String::NewNotNullSlow(sbuff);
 							me->UpdateImgDir();
 						}
 					}
@@ -984,23 +984,23 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnSpAddClicked(void *userObj)
 			NEW_CLASS(sp, OrganSpecies());
 			sb3.ClearStr();
 			me->txtSpeciesEName->GetText(&sb3);
-			sp->SetEName(sb3.ToString());
+			sp->SetEName(sb3.ToCString());
 			sb3.ClearStr();
 			me->txtSpeciesCName->GetText(&sb3);
-			sp->SetCName(sb3.ToString());
+			sp->SetCName(sb3.ToCString());
 			sb3.ClearStr();
 			me->txtSpeciesSName->GetText(&sb3);
-			sp->SetSName(sb3.ToString());
+			sp->SetSName(sb3.ToCString());
 			sp->SetGroupId(id);
 			sb3.ClearStr();
 			me->txtSpeciesDesc->GetText(&sb3);
-			sp->SetDesc(sb3.ToString());
+			sp->SetDesc(sb3.ToCString());
 			sb3.ClearStr();
 			me->txtSpeciesDName->GetText(&sb3);
-			sp->SetDirName(sb3.ToString());
+			sp->SetDirName(sb3.ToCString());
 			sb3.ClearStr();
 			me->txtSpeciesKey->GetText(&sb3);
-			sp->SetIDKey(sb3.ToString());
+			sp->SetIDKey(sb3.ToCString());
 			if (me->env->AddSpecies(sp))
 			{
 				me->lastSpeciesObj = 0;
@@ -1453,9 +1453,10 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjPlaceClicked(void *userObj)
 		if (j > 0)
 		{
 			UTF8Char sbuff[512];
+			UTF8Char *sptr;
 			sbuff[0] = 0;
-			((OrganImages*)me->pickObjs->GetItem(0))->GetItemName(sbuff);
-			me->initSelImg = Text::String::NewNotNull(sbuff);
+			sptr = ((OrganImages*)me->pickObjs->GetItem(0))->GetItemName(sbuff);
+			me->initSelImg = Text::String::NewP(sbuff, sptr);
 		}
 		while (i < j)
 		{
@@ -2226,16 +2227,16 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 			this->lastGroupObj->SetGroupType(grpType->GetSeq());
 			sb.ClearStr();
 			this->txtGroupEName->GetText(&sb);
-			this->lastGroupObj->SetEName(sb.ToString());
+			this->lastGroupObj->SetEName(sb.ToCString());
 			sb.ClearStr();
 			this->txtGroupCName->GetText(&sb);
-			this->lastGroupObj->SetCName(sb.ToString());
+			this->lastGroupObj->SetCName(sb.ToCString());
 			sb.ClearStr();
 			this->txtGroupDesc->GetText(&sb);
-			this->lastGroupObj->SetDesc(sb.ToString());
+			this->lastGroupObj->SetDesc(sb.ToCString());
 			sb.ClearStr();
 			this->txtGroupKey->GetText(&sb);
-			this->lastGroupObj->SetIDKey(sb.ToString());
+			this->lastGroupObj->SetIDKey(sb.ToCString());
 			this->lastGroupObj->SetAdminOnly(this->chkGroupAdmin->IsChecked());
 			if (!this->env->SaveGroup(this->lastGroupObj))
 			{
@@ -2279,7 +2280,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				{
 					if (IO::FileUtil::MoveFile(CSTRP(u8buff, sptr), CSTRP(u8buff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{
-						this->lastSpeciesObj->SetDirName(&u8buff2[i + 1]);
+						this->lastSpeciesObj->SetDirName(CSTRP(&u8buff2[i + 1], sptr2));
 					}
 					else
 					{
@@ -2289,25 +2290,25 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				}
 				else
 				{
-					this->lastSpeciesObj->SetDirName(&u8buff2[i + 1]);
+					this->lastSpeciesObj->SetDirName(CSTRP(&u8buff2[i + 1], sptr2));
 				}
 			}
 			Text::StringBuilderUTF8 sb;
 			sb.ClearStr();
 			this->txtSpeciesEName->GetText(&sb);
-			this->lastSpeciesObj->SetEName(sb.ToString());
+			this->lastSpeciesObj->SetEName(sb.ToCString());
 			sb.ClearStr();
 			this->txtSpeciesCName->GetText(&sb);
-			this->lastSpeciesObj->SetCName(sb.ToString());
+			this->lastSpeciesObj->SetCName(sb.ToCString());
 			sb.ClearStr();
 			this->txtSpeciesSName->GetText(&sb);
-			this->lastSpeciesObj->SetSName(sb.ToString());
+			this->lastSpeciesObj->SetSName(sb.ToCString());
 			sb.ClearStr();
 			this->txtSpeciesDesc->GetText(&sb);
-			this->lastSpeciesObj->SetDesc(sb.ToString());
+			this->lastSpeciesObj->SetDesc(sb.ToCString());
 			sb.ClearStr();
 			this->txtSpeciesKey->GetText(&sb);
-			this->lastSpeciesObj->SetIDKey(sb.ToString());
+			this->lastSpeciesObj->SetIDKey(sb.ToCString());
 			if (!this->env->SaveSpecies(this->lastSpeciesObj))
 			{
 				UI::MessageDialog::ShowDialog(this->env->GetLang(UTF8STRC("MainFormSaveSpError")), this->env->GetLang(UTF8STRC("MainFormTitleSp")), this);
@@ -2798,7 +2799,7 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 	this->mapTileLyr->AddUpdatedHandler(OnTileUpdated, this);
 	NEW_CLASS(this->mapEnv, Map::MapEnv(CSTR("File"), 0, this->mapTileLyr->GetCoordinateSystem()->Clone()));
 	this->mapEnv->AddLayer(0, this->mapTileLyr, true);
-	this->imgFontStyle = this->mapEnv->AddFontStyle((const UTF8Char*)"Temp", (const UTF8Char*)"Arial", 12, false, 0xff000000, 2, 0x80ffffff);
+	this->imgFontStyle = this->mapEnv->AddFontStyle(CSTR("Temp"), CSTR("Arial"), 12, false, 0xff000000, 2, 0x80ffffff);
 
 	Media::ColorProfile dispColor(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->mapRenderer, Map::DrawMapRenderer(this->env->GetDrawEngine(), this->mapEnv, &dispColor, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
@@ -2835,13 +2836,13 @@ SSWR::OrganMgr::OrganMainForm::OrganMainForm(UI::GUICore *ui, UI::GUIClientContr
 
 	NEW_CLASS(this->rootGroup, OrganGroup());
 	this->rootGroup->SetGroupId(0);
-	this->rootGroup->SetCName((const UTF8Char*)"<ROOT>");
-	this->rootGroup->SetEName((const UTF8Char*)"<ROOT>");
+	this->rootGroup->SetCName(CSTR("<ROOT>"));
+	this->rootGroup->SetEName(CSTR("<ROOT>"));
 	this->rootGroup->SetGroupType(0);
-	this->rootGroup->SetDesc((const UTF8Char*)"Base Root");
+	this->rootGroup->SetDesc(CSTR("Base Root"));
 	this->rootGroup->SetPhotoSpecies(-1);
 	this->rootGroup->SetPhotoGroup(-1);
-	this->rootGroup->SetIDKey((const UTF8Char*)"");
+	this->rootGroup->SetIDKey(CSTR(""));
 	sptr = this->rootGroup->GetItemName(sbuff);
 	this->lbDir->AddItem(CSTRP(sbuff, sptr), this->rootGroup);
 	this->groupList->Add(this->rootGroup);
@@ -2923,7 +2924,7 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				SDEL_STRING(this->initSelObj);
-				this->initSelObj = Text::String::NewNotNull(frm->GetFoundStr());
+				this->initSelObj = frm->GetFoundStr()->Clone();
 				this->GoToDir(frm->GetFoundGroup(), frm->GetParentId());
 			}
 			DEL_CLASS(frm);
@@ -2944,14 +2945,14 @@ void SSWR::OrganMgr::OrganMainForm::EventMenuClicked(UInt16 cmdId)
 
 			NEW_CLASS(g, OrganGroup());
 			g->SetGroupId(-1);
-			Text::StrWChar_UTF8(sbuff, L"所有品種");
-			g->SetCName(sbuff);
-			g->SetEName((const UTF8Char*)"All species");
+			sptr = Text::StrWChar_UTF8(sbuff, L"所有品種");
+			g->SetCName(CSTRP(sbuff, sptr));
+			g->SetEName(CSTR("All species"));
 			g->SetGroupType(0);
-			g->SetDesc((const UTF8Char*)"");
+			g->SetDesc(CSTR(""));
 			g->SetPhotoGroup(-1);
 			g->SetPhotoSpecies(-1);
-			g->SetIDKey((const UTF8Char*)"");
+			g->SetIDKey(CSTR(""));
 			this->groupList->Add(g);
 			sptr = g->GetItemName(sbuff);
 			this->lbDir->SetSelectedIndex(this->lbDir->AddItem(CSTRP(sbuff, sptr), g));
@@ -3470,7 +3471,7 @@ void SSWR::OrganMgr::OrganMainForm::DropData(UI::GUIDropData *data, OSInt x, OSI
 							if (succ)
 							{
 								SDEL_STRING(this->initSelImg);
-								this->initSelImg = Text::String::NewNotNull(sbuff);
+								this->initSelImg = Text::String::NewNotNullSlow(sbuff);
 								this->UpdateImgDir();
 							}
 						}

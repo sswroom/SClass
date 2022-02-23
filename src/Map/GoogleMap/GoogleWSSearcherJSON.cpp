@@ -62,7 +62,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::String *gooCl
 	}
 }
 
-void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(Text::CString gooCliId, Text::CString gooPrivKey)
 {
 	SDEL_STRING(this->gooCliId);
 	if (this->gooPrivKey)
@@ -71,13 +71,12 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleClientId(const UTF8Char *goo
 		this->gooPrivKey = 0;
 	}
 	this->gooPrivKeyLeng = 0;
-	if (gooCliId)
+	if (gooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		UOSInt len = Text::StrCharCnt(gooPrivKey);
-		this->gooCliId = Text::String::NewNotNull(gooCliId);
-		this->gooPrivKey = MemAlloc(UInt8, len + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey, len, this->gooPrivKey);
+		this->gooCliId = Text::String::New(gooCliId);
+		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
 	}
 }
 
@@ -87,7 +86,7 @@ void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::String *gooAPIK
 	this->gooAPIKey = SCOPY_STRING(gooAPIKey);
 }
 
-void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(const UTF8Char *gooAPIKey)
+void Map::GoogleMap::GoogleWSSearcherJSON::SetGoogleAPIKey(Text::CString gooAPIKey)
 {
 	SDEL_STRING(this->gooAPIKey);
 	this->gooAPIKey = Text::String::NewOrNull(gooAPIKey);
@@ -179,7 +178,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 				if (obj->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *jobj = (Text::JSONObject*)obj;
-					if (jobj->GetObjectValue(UTF8STRC("status"))->Equals((const UTF8Char*)"OK"))
+					if (jobj->GetObjectValue(UTF8STRC("status"))->Equals(CSTR("OK")))
 					{
 						UOSInt i;
 						UOSInt j;
@@ -199,7 +198,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 									resultType = (Text::JSONArray*)result->GetObjectValue(UTF8STRC("types"));
 									if (resultType && resultType->GetArrayLength() > 0)
 									{
-										if (resultType->GetArrayValue(0)->Equals((const UTF8Char*)"street_address"))
+										if (resultType->GetArrayValue(0)->Equals(CSTR("street_address")))
 										{
 											bestResult = i;
 											break;

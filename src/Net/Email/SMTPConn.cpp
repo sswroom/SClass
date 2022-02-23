@@ -62,7 +62,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 				if (me->msgRet)
 				{
 					me->msgRet = Text::StrConcat(me->msgRet, &sbuff[4]);
-					me->msgRet = 0;
+					me->msgRet[0] = 0;
 				}
 				me->lastStatus = msgCode;
 				me->statusChg = true;
@@ -134,7 +134,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 		{
 			this->logWriter->WriteStrC(buff, buffSize);
 		}
-		if (buffSize > 2 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
+		if (buffSize > 2 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 		{
 			if (this->logWriter)
 			{
@@ -146,7 +146,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 			{
 				this->logWriter->WriteStrC(buff, buffSize);
 			}
-			if (buffSize > 0 && Text::StrStartsWith(buff, (const UTF8Char*)"220 ") && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
+			if (buffSize > 0 && Text::StrStartsWithC(buff, buffSize, UTF8STRC("220 ")) && buff[buffSize - 2] == '\r' && buff[buffSize - 1] == '\n')
 			{
 				if (this->logWriter)
 				{
@@ -278,29 +278,30 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 	}
 	if (code == 250)
 	{
-		UTF8Char *sarr[2];
-		UTF8Char *sarr2[2];
-		sarr[1] = returnMsg;
+		Text::PString sarr[2];
+		Text::PString sarr2[2];
+		sarr[1].v = returnMsg;
+		sarr[1].leng = (UOSInt)(this->msgRet - returnMsg);
 		UOSInt i;
 		UOSInt j;
 		while (true)
 		{
-			i = Text::StrSplitLine(sarr, 2, sarr[1]);
-			if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"SIZE "))
+			i = Text::StrSplitLineP(sarr, 2, sarr[1]);
+			if (sarr[0].StartsWith(UTF8STRC("SIZE ")))
 			{
-				this->maxSize = Text::StrToUOSInt(sarr[0] + 5);
+				this->maxSize = Text::StrToUOSInt(sarr[0].v + 5);
 			}
-			else if (Text::StrStartsWith(sarr[0], (const UTF8Char*)"AUTH "))
+			else if (sarr[0].StartsWith(UTF8STRC("AUTH ")))
 			{
-				sarr2[1] = sarr[0] + 5;
+				sarr2[1] = sarr[0].Substring(5);
 				while (true)
 				{
-					j = Text::StrSplit(sarr2, 2, sarr2[1], ' ');
-					if (Text::StrEquals(sarr2[0], (const UTF8Char*)"LOGIN"))
+					j = Text::StrSplitP(sarr2, 2, sarr2[1], ' ');
+					if (sarr2[0].Equals(UTF8STRC("LOGIN")))
 					{
 						this->authLogin = true;
 					}
-					else if (Text::StrEquals(sarr2[0], (const UTF8Char*)"PLAIN"))
+					else if (sarr2[0].Equals(UTF8STRC("PLAIN")))
 					{
 						this->authPlain = true;
 					}
@@ -319,15 +320,15 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 	return code == 250;
 }
 
-Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *password)
+Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString password)
 {
 	if (this->authPlain)
 	{
 		UTF8Char pwdBuff[128];
 		UTF8Char *sptr2 = pwdBuff;
 		*sptr2++ = 0;
-		sptr2 = Text::StrConcat(sptr2, userName) + 1;
-		sptr2 = Text::StrConcat(sptr2, password);
+		sptr2 = userName.ConcatTo(sptr2) + 1;
+		sptr2 = password.ConcatTo(sptr2);
 		Text::TextBinEnc::Base64Enc b64;
 		Text::StringBuilderUTF8 sbCmd;
 		sbCmd.AppendC(UTF8STRC("AUTH PLAIN "));
@@ -357,12 +358,12 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 		}
 		writer->WriteLineC(UTF8STRC("AUTH LOGIN"));
 		code = WaitForResult();
-		if (code != 334 || !Text::StrEquals(retBuff, (const UTF8Char*)"VXNlcm5hbWU6"))
+		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(this->msgRet - retBuff), UTF8STRC("VXNlcm5hbWU6")))
 		{
 			return false;
 		}
 		sbCmd.ClearStr();
-		b64.EncodeBin(&sbCmd, userName, Text::StrCharCnt(userName));
+		b64.EncodeBin(&sbCmd, userName.v, userName.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
 		if (this->logWriter)
@@ -371,12 +372,12 @@ Bool Net::Email::SMTPConn::SendAuth(const UTF8Char *userName, const UTF8Char *pa
 		}
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		code = WaitForResult();
-		if (code != 334 || !Text::StrEquals(retBuff, (const UTF8Char*)"UGFzc3dvcmQ6"))
+		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(this->msgRet - retBuff), UTF8STRC("UGFzc3dvcmQ6")))
 		{
 			return false;
 		}
 		sbCmd.ClearStr();
-		b64.EncodeBin(&sbCmd, password, Text::StrCharCnt(password));
+		b64.EncodeBin(&sbCmd, password.v, password.leng);
 		this->statusChg = false;
 		this->msgRet = retBuff;
 		if (this->logWriter)

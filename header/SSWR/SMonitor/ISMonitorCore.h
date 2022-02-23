@@ -102,7 +102,7 @@ namespace SSWR
 			virtual Media::DrawEngine *GetDrawEngine() = 0;
 
 			virtual DeviceInfo *DeviceGet(Int64 cliId) = 0;
-			virtual Bool DeviceModify(Int64 cliId, const UTF8Char *devName, Int32 flags) = 0;
+			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags) = 0;
 			virtual Bool DeviceSetReadings(DeviceInfo *dev, const UTF8Char *readings) = 0;
 			virtual Bool DeviceSetDigitals(DeviceInfo *dev, const UTF8Char *digitals) = 0;
 			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList) = 0;

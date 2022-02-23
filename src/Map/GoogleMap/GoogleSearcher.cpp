@@ -46,20 +46,19 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 	this->lastSrchDate->SetCurrTimeUTC();
 }
 
-Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey, IO::Writer *errWriter)
+Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->errWriter = errWriter;
 	this->lastIsError = 0;
 	this->srchCnt = 0;
-	if (gooCliId)
+	if (gooCliId.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, true);
-		UOSInt len = Text::StrCharCnt(gooPrivKey);
-		this->gooCliId = Text::String::NewNotNull(gooCliId);
-		this->gooPrivKey = MemAlloc(UInt8, len + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey, len, this->gooPrivKey);
+		this->gooCliId = Text::String::New(gooCliId);
+		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
 		this->gooKey = 0;
 	}
 	else
@@ -94,7 +93,7 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 	}
 }
 
-UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang)
+UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
 {
 	UTF8Char url[1024];
 	UTF8Char *sptr;
@@ -151,9 +150,9 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
-		if (lang)
+		if (lang.leng)
 		{
-			cli->AddHeaderC(CSTR("Accept-Language"), {lang, Text::StrCharCnt(lang)});
+			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 		Int32 status = cli->GetRespStatus();
 		UOSInt readSize;
@@ -239,7 +238,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }
 
 UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
@@ -254,7 +253,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffS
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
 	if (ent == 0)
 		return 0;
-	return SearchName(buff, buffSize, lat, lon, ent->shortName);
+	return SearchName(buff, buffSize, lat, lon, {ent->shortName, ent->shortNameLen});
 }
 
 UInt32 Map::GoogleMap::GoogleSearcher::GetSrchCnt()

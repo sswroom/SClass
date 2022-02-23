@@ -54,7 +54,7 @@ void TestChart()
 
 	UOSInt rowNum;
 	Data::DateTime dt;
-	dataSheet->SetCellString(0, 0, dateStyle, (const UTF8Char*)"Date");
+	dataSheet->SetCellString(0, 0, dateStyle, CSTR("Date"));
 	UOSInt i = 0;
 	UOSInt j = 20;
 	while (i < j)
@@ -63,7 +63,7 @@ void TestChart()
 		
 		sbuff2[0] = (UTF8Char)('A' + i);
 		sbuff2[1] = 0;
-		graphSheet->SetCellString(0, i, wb->GetStyle(0), sbuff2);
+		graphSheet->SetCellString(0, i, wb->GetStyle(0), {sbuff2, 1});
 		i++;
 	}
 	if (testRowCnt > 0)

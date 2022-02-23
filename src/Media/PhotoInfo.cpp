@@ -87,12 +87,12 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 			ctxt = exif->GetPhotoMake();
 			if (ctxt)
 			{
-				this->make = Text::String::NewNotNull((const UTF8Char*)ctxt);
+				this->make = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
 			}
 			ctxt = exif->GetPhotoModel();
 			if (ctxt)
 			{
-				this->model = Text::String::NewNotNull((const UTF8Char*)ctxt);
+				this->model = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
 			}
 			this->fNumber = exif->GetPhotoFNumber();
 			this->expTime = exif->GetPhotoExpTime();
@@ -131,7 +131,7 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 							ctxt = innerExif->GetPhotoLens();
 							if (ctxt)
 							{
-								this->lens = Text::String::NewNotNull((const UTF8Char*)ctxt);
+								this->lens = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
 							}
 							if (innerExif->GetPhotoFocalLength())
 								this->focalLength = innerExif->GetPhotoFocalLength();

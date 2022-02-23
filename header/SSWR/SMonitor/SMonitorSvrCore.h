@@ -103,7 +103,7 @@ namespace SSWR
 			virtual Media::DrawEngine *GetDrawEngine();
 
 			DeviceInfo *DevGet(Int64 cliId, Bool toAdd);
-			DeviceInfo *DevAdd(Int64 cliId, const UTF8Char *cpuName, const UTF8Char *platformName);
+			DeviceInfo *DevAdd(Int64 cliId, Text::CString cpuName, Text::CString platformName);
 			Bool DeviceRecvReading(DeviceInfo *dev, Int64 cliTime, UOSInt nDigitals, UOSInt nReading, UOSInt nOutput, UInt32 digitalVals, ReadingInfo *readings, Int32 profileId, UInt32 cliIP, UInt16 port);
 			Bool DeviceKARecv(DeviceInfo *dev, Int64 kaTime);
 			Bool DeviceSetName(Int64 cliId, Text::String *devName);
@@ -112,7 +112,7 @@ namespace SSWR
 			Bool DeviceSetReading(Int64 cliId, UInt32 index, UInt16 sensorId, UInt16 readingId, const UTF8Char *readingName);
 			Bool DeviceSetVersion(Int64 cliId, Int64 version);
 			virtual DeviceInfo *DeviceGet(Int64 cliId);
-			virtual Bool DeviceModify(Int64 cliId, const UTF8Char *devName, Int32 flags);
+			virtual Bool DeviceModify(Int64 cliId, Text::CString devName, Int32 flags);
 			virtual Bool DeviceSetReadings(DeviceInfo *dev, const UTF8Char *readings);
 			virtual Bool DeviceSetDigitals(DeviceInfo *dev, const UTF8Char *digitals);
 			virtual UOSInt DeviceQueryRec(Int64 cliId, Int64 startTime, Int64 endTime, Data::ArrayList<DevRecord2*> *recList);

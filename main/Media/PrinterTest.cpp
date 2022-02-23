@@ -5,7 +5,7 @@
 #include "Media/DrawEngineFactory.h"
 #include "Media/Printer.h"
 
-#define PRINTERNAME (const UTF8Char*)"PDFCreator"
+#define PRINTERNAME CSTR("PDFCreator")
 
 class PrintObj : public Media::IPrintHandler
 {

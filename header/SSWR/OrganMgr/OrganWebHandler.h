@@ -292,18 +292,18 @@ namespace SSWR
 			Bool UserGPSGetPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon);
 
 			//LockWrite dataMut before calling
-			Int32 SpeciesAdd(const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *sciName, Int32 groupId, const UTF8Char *description, const UTF8Char *dirName, const UTF8Char *idKey, Int32 cateId);
+			Int32 SpeciesAdd(Text::CString engName, Text::CString chiName, Text::CString sciName, Int32 groupId, Text::CString description, Text::CString dirName, Text::CString idKey, Int32 cateId);
 			Bool SpeciesSetPhotoId(Int32 speciesId, Int32 photoId);
 			Bool SpeciesSetFlags(Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Int32 speciesId, Int32 groupId, Int32 cateId);
-			Bool SpeciesModify(Int32 speciesId, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *sciName, const UTF8Char *description, const UTF8Char *dirName);
+			Bool SpeciesModify(Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
 			Int32 UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize);
 			Bool UserfileMove(Int32 userfileId, Int32 speciesId, Int32 cateId);
-			Bool UserfileUpdateDesc(Int32 userfileId, const UTF8Char *descr);
+			Bool UserfileUpdateDesc(Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(Int32 userfileId, Int32 rotType);
 			Bool SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF8 *bookNameOut);
-			Int32 GroupAdd(const UTF8Char* engName, const UTF8Char *chiName, Int32 parentId, const UTF8Char *descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
-			Bool GroupModify(Int32 id, const UTF8Char *engName, const UTF8Char *chiName, const UTF8Char *descr, Int32 groupTypeId, GroupFlags flags);
+			Int32 GroupAdd(Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
+			Bool GroupModify(Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
 			Bool GroupDelete(Int32 id);
 			Bool GroupMove(Int32 groupId, Int32 destGroupId, Int32 cateId);
 			Bool GroupAddCounts(Int32 groupId, UOSInt totalCount, UOSInt photoCount, UOSInt myPhotoCount);

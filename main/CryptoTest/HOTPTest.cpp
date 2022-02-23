@@ -47,7 +47,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	sb.ClearStr();
 	hotp.GenURI(&sb, (const UTF8Char*)"Test By Counter");
-	Net::GoogleQRCode qrCode(200, 200, sb.ToString());
+	Net::GoogleQRCode qrCode(200, 200, sb.ToCString());
 	sb.ClearStr();
 	qrCode.GetImageURL(&sb);
 	console.WriteLineC(sb.ToString(), sb.GetLength());

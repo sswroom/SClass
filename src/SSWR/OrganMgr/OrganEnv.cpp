@@ -333,8 +333,9 @@ Bool SSWR::OrganMgr::OrganEnv::SetSpeciesImg(OrganSpecies *sp, OrganImageItem *i
 		if (i != INVALID_INDEX)
 		{
 			sbuff[i] = 0;
+			sptr = &sbuff[i];
 		}
-		sp->SetPhoto(sbuff);
+		sp->SetPhoto(CSTRP(sbuff, sptr));
 		sp->SetPhotoId(0);
 		sp->SetPhotoWId(0);
 	}

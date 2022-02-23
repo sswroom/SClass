@@ -90,11 +90,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			if (forwardPort != 80)
 			{
 				*sptr++ = ':';
-				Text::StrUInt16(sptr, forwardPort);
+				sptr = Text::StrUInt16(sptr, forwardPort);
 			}
 			Net::WebServer::HTTPForwardHandler *hdlr;
 			Net::WebServer::WebListener *svr;
-			NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, sbuff, Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
+			NEW_CLASS(hdlr, Net::WebServer::HTTPForwardHandler(sockf, 0, CSTRP(sbuff, sptr), Net::WebServer::HTTPForwardHandler::ForwardType::Normal));
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("FwdLog"));
 			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("fwdLog"));

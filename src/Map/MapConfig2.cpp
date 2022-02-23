@@ -3951,7 +3951,7 @@ void Map::MapConfig2::DrawLabels(Media::DrawImage *img, MapLabels2 *labels, UInt
 		lastLbl->Release();
 }
 
-Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, const UTF8Char *forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
+Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data::ArrayList<Map::IMapDrawLayer*> *layerList, Parser::ParserList *parserList, Text::CString forceBase, IO::Writer *errWriter, Int32 maxScale, Int32 minScale)
 {
 	UTF8Char lineBuff[1024];
 	UTF8Char layerName[512];
@@ -3991,9 +3991,9 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 	else
 	{
 		NEW_CLASS(rdr, IO::StreamReader(fstm));
-		if (forceBase)
+		if (forceBase.leng > 0)
 		{
-			baseDir = Text::StrConcat(layerName, forceBase);
+			baseDir = forceBase.ConcatTo(layerName);
 		}
 		while ((sptr = rdr->ReadLine(lineBuff, 1023)) != 0)
 		{
@@ -4026,7 +4026,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				this->inited = true;
 				break;
 			case 2:
-				if (forceBase == 0)
+				if (forceBase.leng == 0)
 				{
 					baseDir = fileName.ConcatTo(layerName);
 					baseDir = IO::Path::AppendPathC(layerName, baseDir, strs[1].v, strs[1].leng);

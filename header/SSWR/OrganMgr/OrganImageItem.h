@@ -46,7 +46,7 @@ namespace SSWR
 
 			Int32 GetUserId();
 			void SetDispName(Text::String *dispName);
-			void SetDispName(const UTF8Char *dispName);
+			void SetDispName(Text::CString dispName);
 			Text::String *GetDispName();
 			void SetIsCoverPhoto(Bool isCoverPhoto);
 			Bool GetIsCoverPhoto();
@@ -57,15 +57,15 @@ namespace SSWR
 			void SetRotateType(RotateType rotateType);
 			RotateType GetRotateType();
 			void SetFullName(Text::String *fullName);
-			void SetFullName(const UTF8Char *fullName);
+			void SetFullName(Text::CString fullName);
 			Text::String *GetFullName();
 			void SetFileType(FileType fileType);
 			FileType GetFileType();
 			void SetSrcURL(Text::String *srcURL);
-			void SetSrcURL(const UTF8Char *srcURL);
+			void SetSrcURL(Text::CString srcURL);
 			Text::String *GetSrcURL();
 			void SetImgURL(Text::String *imgURL);
-			void SetImgURL(const UTF8Char *imgURL);
+			void SetImgURL(Text::CString imgURL);
 			Text::String *GetImgURL();
 			void SetUserFile(UserFileInfo *userFile);
 			UserFileInfo *GetUserFile();

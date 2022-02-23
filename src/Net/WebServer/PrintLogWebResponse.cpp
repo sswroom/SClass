@@ -2,7 +2,7 @@
 #include "Net/WebServer/PrintLogWebResponse.h"
 #include "Text/StringBuilderUTF8.h"
 
-Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, const UTF8Char *prefix) : Net::WebServer::IWebResponse(resp->GetSourceNameObj())
+Net::WebServer::PrintLogWebResponse::PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, Text::CString prefix) : Net::WebServer::IWebResponse(resp->GetSourceNameObj())
 {
 	this->resp = resp;
 	this->writer = writer;

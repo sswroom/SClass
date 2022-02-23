@@ -35,7 +35,7 @@ Int32 SSWR::OrganMgr::OrganGroup::GetGroupId()
 	return this->groupId;
 }
 
-void SSWR::OrganMgr::OrganGroup::SetCName(const UTF8Char *cName)
+void SSWR::OrganMgr::OrganGroup::SetCName(Text::CString cName)
 {
 	SDEL_STRING(this->cName);
 	this->cName = Text::String::NewOrNull(cName);
@@ -46,7 +46,7 @@ Text::String *SSWR::OrganMgr::OrganGroup::GetCName()
 	return this->cName;
 }
 
-void SSWR::OrganMgr::OrganGroup::SetEName(const UTF8Char *eName)
+void SSWR::OrganMgr::OrganGroup::SetEName(Text::CString eName)
 {
 	SDEL_STRING(this->eName);
 	this->eName = Text::String::NewOrNull(eName);
@@ -67,7 +67,7 @@ Int32 SSWR::OrganMgr::OrganGroup::GetGroupType()
 	return this->groupType;
 }
 
-void SSWR::OrganMgr::OrganGroup::SetDesc(const UTF8Char *desc)
+void SSWR::OrganMgr::OrganGroup::SetDesc(Text::CString desc)
 {
 	SDEL_STRING(this->desc);
 	this->desc = Text::String::NewOrNull(desc);
@@ -98,7 +98,7 @@ Int32 SSWR::OrganMgr::OrganGroup::GetPhotoSpecies()
 	return this->photoSpecies;
 }
 
-void SSWR::OrganMgr::OrganGroup::SetIDKey(const UTF8Char *idKey)
+void SSWR::OrganMgr::OrganGroup::SetIDKey(Text::CString idKey)
 {
 	SDEL_STRING(this->idKey);
 	this->idKey = Text::String::NewOrNull(idKey);
@@ -169,13 +169,13 @@ SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganGroup::Clone()
 	OrganGroup *newItem;
 	NEW_CLASS(newItem, OrganGroup());
 	newItem->SetGroupId(this->groupId);
-	newItem->SetCName(STR_PTR(this->cName));
-	newItem->SetEName(STR_PTR(this->eName));
+	newItem->SetCName(STR_CSTR(this->cName));
+	newItem->SetEName(STR_CSTR(this->eName));
 	newItem->SetGroupType(this->groupType);
-	newItem->SetDesc(STR_PTR(this->desc));
+	newItem->SetDesc(STR_CSTR(this->desc));
 	newItem->SetPhotoGroup(this->photoGroup);
 	newItem->SetPhotoSpecies(this->photoSpecies);
-	newItem->SetIDKey(STR_PTR(this->idKey));
+	newItem->SetIDKey(STR_CSTR(this->idKey));
 	newItem->SetIsDefault(this->isDefault);
 	newItem->SetAdminOnly(this->adminOnly);
 	return newItem;

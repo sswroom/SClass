@@ -1011,7 +1011,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			Data::ArrayList<Lamppost*> lamppostListCSV;
 			DB::CSVFile *csv;
-			NEW_CLASS(csv, DB::CSVFile(sbuff, 65001));
+			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
 			r = csv->GetTableData((const UTF8Char*)"Lamppost", 0, 0, 0, CSTR_NULL, 0);
 			clk.Start();

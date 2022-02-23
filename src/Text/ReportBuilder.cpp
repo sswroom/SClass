@@ -693,7 +693,6 @@ Media::VectorDocument *Text::ReportBuilder::CreateVDoc(Int32 id, Media::DrawEngi
 	Media::VectorGraph *g;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
-	UTF8Char u8buff[32];
 	Media::PaperSize paperSize(Media::PaperSize::PT_A4);
 	Double border = 10.0;
 	Double fontHeightMM = 3.0;

@@ -70,7 +70,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	{
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
 		Text::JSONBase *jbase = jobj->GetObjectValue(UTF8STRC("type"));
-		if (jbase && jbase->Equals((const UTF8Char*)"FeatureCollection"))
+		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
 		{
 			Math::CoordinateSystem *csys = 0;
 			Text::JSONBase *crs = jobj->GetObjectValue(UTF8STRC("crs"));

@@ -23,12 +23,12 @@ namespace Map
 			
 		public:
 			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);
-			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);
+			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey);
 			~GoogleStaticMap();
 
 			static UInt32 Level2Scale(UInt32 level);
 			static UInt32 Scale2Level(UInt32 scale);
-			UOSInt GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, const UTF8Char *lang, Int32 format, Double marker_lat, Double marker_lon); //lang = en-us, zh-cn, zh-tw, format = 0:png, 1:gif, 2:jpg
+			UOSInt GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon); //lang = en-us, zh-cn, zh-tw, format = 0:png, 1:gif, 2:jpg
 		};
 	}
 }

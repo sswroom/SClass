@@ -26,7 +26,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
 	NEW_CLASS(doc, Text::Doc::TextDocument());
-	doc->SetDocumentName((const UTF8Char*)"sswroom's test");
+	doc->SetDocumentName(CSTR("sswroom's test"));
 	doc->SetTextColor(0xffc0e0ff);
 	doc->SetLinkColor(0xff6080ff);
 	doc->SetVisitedLinkColor(0xff4060ff);

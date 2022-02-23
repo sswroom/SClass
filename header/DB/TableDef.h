@@ -3,6 +3,7 @@
 #include "DB/ColDef.h"
 #include "DB/DBUtil.h"
 #include "Data/ArrayList.h"
+#include "Text/String.h"
 
 namespace DB
 {
@@ -11,8 +12,8 @@ namespace DB
 	private:
 		const UTF8Char *databaseName;
 		const UTF8Char *tableName;
-		const UTF8Char *engine;
-		const UTF8Char *charset;
+		Text::String *engine;
+		Text::String *charset;
 		const UTF8Char *attr;
 		const UTF8Char *comments;
 		DB::DBUtil::ServerType svrType;
@@ -25,8 +26,8 @@ namespace DB
 
 		const UTF8Char *GetDatabaseName();
 		const UTF8Char *GetTableName();
-		const UTF8Char *GetEngine();
-		const UTF8Char *GetCharset();
+		Text::String *GetEngine();
+		Text::String *GetCharset();
 		const UTF8Char *GetAttr();
 		const UTF8Char *GetComments();
 		DB::DBUtil::ServerType GetSvrType();
@@ -37,8 +38,8 @@ namespace DB
 		TableDef *AddCol(DB::ColDef *col);
 		TableDef *SetDatabaseName(const UTF8Char *databaseName);
 		TableDef *SetTableName(const UTF8Char *tableName);
-		TableDef *SetEngine(const UTF8Char *engine);
-		TableDef *SetCharset(const UTF8Char *charset);
+		TableDef *SetEngine(Text::CString engine);
+		TableDef *SetCharset(Text::CString charset);
 		TableDef *SetAttr(const UTF8Char *attr);
 		TableDef *SetComments(const UTF8Char *comments);
 		TableDef *SetSvrType(DB::DBUtil::ServerType svrType);

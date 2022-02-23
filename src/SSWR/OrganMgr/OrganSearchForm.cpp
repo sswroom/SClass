@@ -16,7 +16,7 @@ void __stdcall SSWR::OrganMgr::OrganSearchForm::OnOKClicked(void *userObj)
 	me->foundGroup = me->env->SearchObject(sbuff, sbuff2, sizeof(sbuff2), &me->parentId);
 	if (me->foundGroup)
 	{
-		me->foundStr = Text::StrCopyNew(sbuff2);
+		me->foundStr = Text::String::NewNotNullSlow(sbuff2);
 		me->SetDialogResult(DR_OK);
 	}
 	else
@@ -61,7 +61,7 @@ SSWR::OrganMgr::OrganSearchForm::OrganSearchForm(UI::GUIClientControl *parent, U
 
 SSWR::OrganMgr::OrganSearchForm::~OrganSearchForm()
 {
-	SDEL_TEXT(this->foundStr);
+	SDEL_STRING(this->foundStr);
 }
 
 void SSWR::OrganMgr::OrganSearchForm::OnMonitorChanged()
@@ -69,7 +69,7 @@ void SSWR::OrganMgr::OrganSearchForm::OnMonitorChanged()
 	this->SetDPI(this->env->GetMonitorHDPI(this->GetHMonitor()), this->env->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-const UTF8Char *SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
+Text::String *SSWR::OrganMgr::OrganSearchForm::GetFoundStr()
 {
 	return this->foundStr;
 }

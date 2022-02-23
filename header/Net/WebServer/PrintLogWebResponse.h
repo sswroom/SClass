@@ -15,7 +15,7 @@ namespace Net
 			Text::String *prefix;
 
 		public:
-			PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, const UTF8Char *prefix);
+			PrintLogWebResponse(Net::WebServer::IWebResponse *resp, IO::Writer *writer, Text::CString prefix);
 			virtual ~PrintLogWebResponse();
 
 			virtual void EnableWriteBuffer();

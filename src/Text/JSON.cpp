@@ -726,7 +726,7 @@ void Text::JSONNumber::ToJSONString(Text::StringBuilderUTF8 *sb)
 	Text::SBAppendF64(sb, this->val);
 }
 
-Bool Text::JSONNumber::Equals(const UTF8Char *s)
+Bool Text::JSONNumber::Equals(Text::CString s)
 {
 	return false;
 }
@@ -762,7 +762,7 @@ void Text::JSONInt32::ToJSONString(Text::StringBuilderUTF8 *sb)
 	sb->AppendI32(this->val);
 }
 
-Bool Text::JSONInt32::Equals(const UTF8Char *s)
+Bool Text::JSONInt32::Equals(Text::CString s)
 {
 	return false;
 }
@@ -798,7 +798,7 @@ void Text::JSONInt64::ToJSONString(Text::StringBuilderUTF8 *sb)
 	sb->AppendI64(this->val);
 }
 
-Bool Text::JSONInt64::Equals(const UTF8Char *s)
+Bool Text::JSONInt64::Equals(Text::CString s)
 {
 	return false;
 }
@@ -881,19 +881,19 @@ void Text::JSONString::ToJSONString(Text::StringBuilderUTF8 *sb)
 	}
 	else
 	{
-		sb->AppendC((const UTF8Char*)"null", 4);
+		sb->AppendC(UTF8STRC("null"));
 	}
 }
 
-Bool Text::JSONString::Equals(const UTF8Char *s)
+Bool Text::JSONString::Equals(Text::CString s)
 {
-	if (this->val == 0)
+	if (this->val->v == 0)
 	{
-		return s == 0;
+		return s.v == 0;
 	}
 	else
 	{
-		return this->val->Equals(s, Text::StrCharCnt(s));
+		return this->val->Equals(s.v, s.leng);
 	}
 }
 
@@ -939,21 +939,20 @@ void Text::JSONBool::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	if (this->val)
 	{
-		sb->AppendC((const UTF8Char*)"true", 4);
+		sb->AppendC(UTF8STRC("true"));
 	}
 	else
 	{
-		sb->AppendC((const UTF8Char*)"false", 5);
+		sb->AppendC(UTF8STRC("false"));
 	}
 }
 
-Bool Text::JSONBool::Equals(const UTF8Char *s)
+Bool Text::JSONBool::Equals(Text::CString s)
 {
-	UOSInt len = Text::StrCharCnt(s);
 	if  (this->val)
-		return Text::StrEqualsICaseC(s, len, UTF8STRC("true"));
+		return s.EqualsICase(UTF8STRC("true"));
 	else
-		return Text::StrEqualsICaseC(s, len, UTF8STRC("false"));
+		return s.EqualsICase(UTF8STRC("false"));
 }
 
 Bool Text::JSONBool::Identical(Text::JSONBase *obj)
@@ -996,16 +995,16 @@ void Text::JSONObject::ToJSONString(Text::StringBuilderUTF8 *sb)
 	Text::JSONBase *obj;
 	UOSInt i = 0;
 	UOSInt j = this->objVals->GetCount();
-	sb->AppendC((const UTF8Char*)"{", 1);
+	sb->AppendUTF8Char('{');
 	i = 0;
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sb->AppendC((const UTF8Char*)", ", 2);
+			sb->AppendC(UTF8STRC(", "));
 		}
 		Text::JSText::ToJSTextDQuote(sb, this->objVals->GetKey(i)->v);
-		sb->AppendC((const UTF8Char*)" : ", 3);
+		sb->AppendC(UTF8STRC(" : "));
 		obj = this->objVals->GetItem(i);
 		if (obj)
 		{
@@ -1013,14 +1012,14 @@ void Text::JSONObject::ToJSONString(Text::StringBuilderUTF8 *sb)
 		}
 		else
 		{
-			sb->AppendC((const UTF8Char*)"null", 4);
+			sb->AppendC(UTF8STRC("null"));
 		}
 		i++;
 	}
-	sb->AppendC((const UTF8Char*)"}", 1);
+	sb->AppendUTF8Char('}');
 }
 
-Bool Text::JSONObject::Equals(const UTF8Char *s)
+Bool Text::JSONObject::Equals(Text::CString s)
 {
 	///////////////////////////////
 	return false;
@@ -1096,12 +1095,12 @@ void Text::JSONArray::ToJSONString(Text::StringBuilderUTF8 *sb)
 	Text::JSONBase *obj;
 	UOSInt i = 0;
 	UOSInt j = this->arrVals->GetCount();
-	sb->AppendC((const UTF8Char*)"[", 1);
+	sb->AppendUTF8Char('[');
 	while (i < j)
 	{
 		if (i > 0)
 		{
-			sb->AppendC((const UTF8Char*)", ", 2);
+			sb->AppendC(UTF8STRC(", "));
 		}
 		obj = this->arrVals->GetItem(i);
 		if (obj)
@@ -1110,14 +1109,14 @@ void Text::JSONArray::ToJSONString(Text::StringBuilderUTF8 *sb)
 		}
 		else
 		{
-			sb->AppendC((const UTF8Char*)"null", 4);
+			sb->AppendC(UTF8STRC("null"));
 		}
 		i++;
 	}
-	sb->AppendC((const UTF8Char*)"]", 1);
+	sb->AppendUTF8Char(']');
 }
 
-Bool Text::JSONArray::Equals(const UTF8Char *s)
+Bool Text::JSONArray::Equals(Text::CString s)
 {
 	///////////////////////////////
 	return false;
@@ -1178,12 +1177,12 @@ Text::JSONType Text::JSONNull::GetType()
 
 void Text::JSONNull::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
-	sb->AppendC((const UTF8Char*)"null", 4);
+	sb->AppendC(UTF8STRC("null"));
 }
 
-Bool Text::JSONNull::Equals(const UTF8Char *s)
+Bool Text::JSONNull::Equals(Text::CString s)
 {
-	return Text::StrEquals(s, (const UTF8Char*)"null");
+	return s.Equals(UTF8STRC("null"));
 }
 
 Bool Text::JSONNull::Identical(Text::JSONBase *obj)

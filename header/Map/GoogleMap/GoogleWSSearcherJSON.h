@@ -33,9 +33,9 @@ namespace Map
 			virtual ~GoogleWSSearcherJSON();
 
 			void SetGoogleClientId(Text::String *gooCliId, Text::String *gooPrivKey);
-			void SetGoogleClientId(const UTF8Char *gooCliId, const UTF8Char *gooPrivKey);
+			void SetGoogleClientId(Text::CString gooCliId, Text::CString gooPrivKey);
 			void SetGoogleAPIKey(Text::String *gooAPIKey);
-			void SetGoogleAPIKey(const UTF8Char *gooAPIKey);
+			void SetGoogleAPIKey(Text::CString gooAPIKey);
 
 			UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, const UTF8Char *lang); //lang = en-us, zh-cn, zh-tw
 			virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid);

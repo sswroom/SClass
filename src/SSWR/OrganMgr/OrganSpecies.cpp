@@ -42,7 +42,7 @@ Int32 SSWR::OrganMgr::OrganSpecies::GetSpeciesId()
 	return this->speciesId;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetCName(const UTF8Char *cName)
+void SSWR::OrganMgr::OrganSpecies::SetCName(Text::CString cName)
 {
 	SDEL_STRING(this->cName);
 	this->cName = Text::String::NewOrNull(cName);
@@ -53,7 +53,7 @@ Text::String *SSWR::OrganMgr::OrganSpecies::GetCName()
 	return this->cName;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetEName(const UTF8Char *eName)
+void SSWR::OrganMgr::OrganSpecies::SetEName(Text::CString eName)
 {
 	SDEL_STRING(this->eName);
 	this->eName = Text::String::NewOrNull(eName);
@@ -64,7 +64,7 @@ Text::String *SSWR::OrganMgr::OrganSpecies::GetEName()
 	return this->eName;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetSName(const UTF8Char *sName)
+void SSWR::OrganMgr::OrganSpecies::SetSName(Text::CString sName)
 {
 	SDEL_STRING(this->sName);
 	this->sName = Text::String::NewOrNull(sName);
@@ -85,15 +85,15 @@ Int32 SSWR::OrganMgr::OrganSpecies::GetGroupId()
 	return this->groupId;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetDesc(const UTF8Char *desc)
+void SSWR::OrganMgr::OrganSpecies::SetDesc(Text::CString desc)
 {
 	if (this->desc)
 	{
 		this->desc->Release();
 	}
-	if (desc)
+	if (desc.v)
 	{
-		this->desc = Text::String::NewNotNull(desc);
+		this->desc = Text::String::New(desc);
 	}
 	else
 	{
@@ -106,15 +106,15 @@ Text::String *SSWR::OrganMgr::OrganSpecies::GetDesc()
 	return this->desc;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetDirName(const UTF8Char *dirName)
+void SSWR::OrganMgr::OrganSpecies::SetDirName(Text::CString dirName)
 {
 	if (this->dirName)
 	{
 		this->dirName->Release();
 	}
-	if (dirName)
+	if (dirName.v)
 	{
-		this->dirName = Text::String::NewNotNull(dirName);
+		this->dirName = Text::String::New(dirName);
 	}
 	else
 	{
@@ -127,15 +127,15 @@ Text::String *SSWR::OrganMgr::OrganSpecies::GetDirName()
 	return this->dirName;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetPhoto(const UTF8Char *photo)
+void SSWR::OrganMgr::OrganSpecies::SetPhoto(Text::CString photo)
 {
 	if (this->photo)
 	{
 		this->photo->Release();
 	}
-	if (photo)
+	if (photo.v)
 	{
-		this->photo = Text::String::NewNotNull(photo);
+		this->photo = Text::String::New(photo);
 	}
 	else
 	{
@@ -148,15 +148,15 @@ Text::String *SSWR::OrganMgr::OrganSpecies::GetPhoto()
 	return this->photo;
 }
 
-void SSWR::OrganMgr::OrganSpecies::SetIDKey(const UTF8Char *idKey)
+void SSWR::OrganMgr::OrganSpecies::SetIDKey(Text::CString idKey)
 {
 	if (this->idKey)
 	{
 		this->idKey->Release();
 	}
-	if (idKey)
+	if (idKey.v)
 	{
-		this->idKey = Text::String::NewNotNull(idKey);
+		this->idKey = Text::String::New(idKey);
 	}
 	else
 	{
@@ -257,14 +257,14 @@ SSWR::OrganMgr::OrganGroupItem *SSWR::OrganMgr::OrganSpecies::Clone()
 	OrganSpecies *newItem;
 	NEW_CLASS(newItem, OrganSpecies());
 	newItem->SetSpeciesId(this->speciesId);
-	newItem->SetCName(STR_PTR(this->cName));
-	newItem->SetEName(STR_PTR(this->eName));
-	newItem->SetSName(STR_PTR(this->sName));
+	newItem->SetCName(STR_CSTR(this->cName));
+	newItem->SetEName(STR_CSTR(this->eName));
+	newItem->SetSName(STR_CSTR(this->sName));
 	newItem->SetGroupId(this->groupId);
-	newItem->SetDesc(STR_PTR(this->desc));
-	newItem->SetDirName(STR_PTR(this->dirName));
-	newItem->SetPhoto(STR_PTR(this->photo));
-	newItem->SetIDKey(STR_PTR(this->idKey));
+	newItem->SetDesc(STR_CSTR(this->desc));
+	newItem->SetDirName(STR_CSTR(this->dirName));
+	newItem->SetPhoto(STR_CSTR(this->photo));
+	newItem->SetIDKey(STR_CSTR(this->idKey));
 	newItem->SetFlags(this->flags);
 	newItem->SetIsDefault(this->isDefault);
 	newItem->SetPhotoId(this->photoId);

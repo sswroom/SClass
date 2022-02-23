@@ -23,13 +23,14 @@ namespace DB
 		SQLBuilder(DB::ReadingDBTool *db);
 		~SQLBuilder();
 
-		void AppendCmd(const UTF8Char *val);
-		void AppendCmdC(const UTF8Char *val, UOSInt len);
+		void AppendCmdSlow(const UTF8Char *val);
+		void AppendCmdC(Text::CString val);
 		void AppendInt32(Int32 val);
 		void AppendInt64(Int64 val);
 		void AppendUInt32(UInt32 val);
 		void AppendUInt64(UInt64 val);
 		void AppendStr(Text::String *val);
+		void AppendStrC(Text::CString val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 		void AppendDate(Data::DateTime *val);

@@ -83,8 +83,8 @@ Bool SSWR::OrganMgr::OrganLocationForm::ToSave()
 	{
 		SDEL_STRING(this->currLoc->ename);
 		SDEL_STRING(this->currLoc->cname);
-		this->currLoc->ename = Text::String::NewNotNull(sbuff);
-		this->currLoc->cname = Text::String::NewNotNull(sbuff2);
+		this->currLoc->ename = Text::String::NewP(sbuff, sbuffEnd);
+		this->currLoc->cname = Text::String::NewP(sbuff2, sbuff2End);
 		return false;
 	}
 	else

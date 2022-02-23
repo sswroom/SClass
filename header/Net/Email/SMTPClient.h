@@ -19,14 +19,14 @@ namespace Net
 			Text::String *host;
 			UInt16 port;
 			IO::Writer *logWriter;
-			const UTF8Char *authUser;
-			const UTF8Char *authPassword;
+			Text::String *authUser;
+			Text::String *authPassword;
 
 		public:
 			SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString host, UInt16 port, Net::Email::SMTPConn::ConnType connType, IO::Writer *logWriter);
 			~SMTPClient();
 
-			void SetPlainAuth(const UTF8Char *userName, const UTF8Char *password);
+			void SetPlainAuth(Text::CString userName, Text::CString password);
 			Bool Send(Net::Email::EmailMessage *message);
 		};
 	}

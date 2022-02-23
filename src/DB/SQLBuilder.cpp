@@ -24,14 +24,14 @@ DB::SQLBuilder::~SQLBuilder()
 	DEL_CLASS(sb);
 }
 
-void DB::SQLBuilder::AppendCmd(const UTF8Char *val)
+void DB::SQLBuilder::AppendCmdSlow(const UTF8Char *val)
 {
 	sb->AppendSlow(val);
 }
 
-void DB::SQLBuilder::AppendCmdC(const UTF8Char *val, UOSInt len)
+void DB::SQLBuilder::AppendCmdC(Text::CString val)
 {
-	sb->AppendC(val, len);
+	sb->Append(val);
 }
 
 void DB::SQLBuilder::AppendInt32(Int32 val)
@@ -61,6 +61,12 @@ void DB::SQLBuilder::AppendStr(Text::String *val)
 {
 	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(STR_PTR(val), this->svrType));
 	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), STR_PTR(val), this->svrType));
+}
+
+void DB::SQLBuilder::AppendStrC(Text::CString val)
+{
+	sb->AllocLeng(DB::DBUtil::SDBStrUTF8Leng(val.v, this->svrType));
+	sb->SetEndPtr(DB::DBUtil::SDBStrUTF8(sb->GetEndPtr(), val.v, this->svrType));
 }
 
 void DB::SQLBuilder::AppendStrUTF8(const UTF8Char *val)

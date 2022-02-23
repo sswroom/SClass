@@ -9,15 +9,15 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Writer.h"
 
-void SSWR::ProcMonForm::AddProg(const UTF8Char *progName, const UTF8Char *progPath)
+void SSWR::ProcMonForm::AddProg(Text::CString progName, Text::CString progPath)
 {
 	SSWR::ProcMonForm::ProgInfo *prog;
 	prog = MemAlloc(ProgInfo, 1);
-	prog->progName = Text::String::NewNotNull(progName);
+	prog->progName = Text::String::New(progName);
 	prog->procId = 0;
-	if (progPath)
+	if (progPath.leng > 0)
 	{
-		prog->progPath = Text::String::NewNotNull(progPath);
+		prog->progPath = Text::String::New(progPath);
 	}
 	else
 	{
@@ -26,7 +26,7 @@ void SSWR::ProcMonForm::AddProg(const UTF8Char *progName, const UTF8Char *progPa
 	this->progList->Add(prog);
 	this->lbProg->AddItem(prog->progName, prog);
 
-	if (progPath)
+	if (progPath.leng > 0)
 	{
 		this->SearchProcId(prog);
 	}
@@ -42,7 +42,7 @@ Bool SSWR::ProcMonForm::SearchProcId(SSWR::ProcMonForm::ProgInfo *prog)
 	Bool ret = false;
 	Manage::Process::ProcessInfo info;
 	i = prog->progPath->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(&prog->progPath->v[i + 1]);
+	Manage::Process::FindProcSess *sess = Manage::Process::FindProcess(prog->progPath->ToCString().Substring(i + 1));
 	if (sess)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -92,7 +92,7 @@ void SSWR::ProcMonForm::LoadProgList()
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *sarr[2];
+	Text::PString sarr[2];
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
@@ -109,15 +109,15 @@ void SSWR::ProcMonForm::LoadProgList()
 			sb.ClearStr();
 			if (!reader->ReadLine(&sb, 4096))
 				break;
-			if (Text::StrSplit(sarr, 2, sb.ToString(), ',') == 2)
+			if (Text::StrSplitP(sarr, 2, sb, ',') == 2)
 			{
-				if (sarr[1][0])
+				if (sarr[1].v[0])
 				{
-					this->AddProg(sarr[0], sarr[1]);
+					this->AddProg(sarr[0].ToCString(), sarr[1].ToCString());
 				}
 				else
 				{
-					this->AddProg(sarr[0], sarr[1]);
+					this->AddProg(sarr[0].ToCString(), sarr[1].ToCString());
 				}
 			}
 		}
@@ -219,7 +219,7 @@ void __stdcall SSWR::ProcMonForm::OnProgAddClicked(void *userObj)
 				Text::StringBuilderUTF8 sb2;
 				if (proc.GetFilename(&sb2))
 				{
-					me->AddProg(sb.ToString(), sb2.ToString());
+					me->AddProg(sb.ToCString(), sb2.ToCString());
 					me->SaveProgList();
 					me->txtProgAddId->SetText(CSTR(""));
 				}

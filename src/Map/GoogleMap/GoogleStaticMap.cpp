@@ -40,18 +40,17 @@ Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net:
 	this->lastSrchDate->SetCurrTimeUTC();
 }
 
-Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, const UTF8Char *gooKey, const UTF8Char *gooCliId, const UTF8Char *gooPrivKey)
+Map::GoogleMap::GoogleStaticMap::GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	if (gooCliId && gooPrivKey)
+	if (gooCliId.leng > 0 && gooPrivKey.leng > 0)
 	{
 		Text::TextBinEnc::Base64Enc b64(Text::TextBinEnc::Base64Enc::Charset::URL, false);
-		UOSInt leng = Text::StrCharCnt(gooPrivKey);
 
-		this->gooCliId = Text::String::NewNotNull(gooCliId);
-		this->gooPrivKey = MemAlloc(UInt8, leng + 1);
-		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey, leng, this->gooPrivKey);
+		this->gooCliId = Text::String::New(gooCliId);
+		this->gooPrivKey = MemAlloc(UInt8, gooPrivKey.leng + 1);
+		this->gooPrivKeyLeng = b64.DecodeBin(gooPrivKey.v, gooPrivKey.leng, this->gooPrivKey);
 		this->gooKey = 0;
 	}
 	else
@@ -156,7 +155,7 @@ UInt32 Map::GoogleMap::GoogleStaticMap::Scale2Level(UInt32 scale)
 	}
 }
 
-UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, const UTF8Char *lang, Int32 format, Double marker_lat, Double marker_lon)
+UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double lon, UInt32 scale, UInt32 width, UInt32 height, Text::CString lang, Int32 format, Double marker_lat, Double marker_lon)
 {
 	Net::HTTPClient *cli;
 	UTF8Char url[512];
@@ -221,9 +220,9 @@ UOSInt Map::GoogleMap::GoogleStaticMap::GetMap(UInt8 *buff, Double lat, Double l
 	cli = Net::HTTPClient::CreateConnect(sockf, ssl, CSTRP(url, sptr), Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (!cli->IsError())
 	{
-		if (lang)
+		if (lang.leng > 0)
 		{
-			cli->AddHeaderC(CSTR("Accept-Language"), {lang, Text::StrCharCnt(lang)});
+			cli->AddHeaderC(CSTR("Accept-Language"), lang);
 		}
 
 		while ((thisSize = cli->Read(buff, 2048)) > 0)

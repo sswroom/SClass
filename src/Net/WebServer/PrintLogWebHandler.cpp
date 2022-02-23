@@ -44,7 +44,7 @@ void Net::WebServer::PrintLogWebHandler::WebRequest(IWebRequest *req, IWebRespon
 		i++;
 	}
 	this->writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, sbuff);
+	Net::WebServer::PrintLogWebResponse plResp(resp, this->writer, CSTRP(sbuff, sptr));
 	this->hdlr->WebRequest(req, &plResp);
 }
 

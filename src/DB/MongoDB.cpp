@@ -77,7 +77,7 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		SDEL_STRING(this->errorMsg);
 		if (strv == 0)
 		{
-			this->errorMsg = Text::String::NewNotNull((const UTF8Char*)error.message);
+			this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 		}
 		else
 		{
@@ -141,7 +141,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 	char **strv = mongoc_client_get_database_names_with_opts((mongoc_client_t*)this->client, 0, &error);
 	if (strv == 0)
 	{
-		this->errorMsg = Text::String::NewNotNull((const UTF8Char*)error.message);
+		this->errorMsg = Text::String::NewNotNullSlow((const UTF8Char*)error.message);
 		return 0;
 	}
 	else
@@ -278,7 +278,7 @@ Text::String *DB::MongoDBReader::GetNewStr(UOSInt colIndex)
 	if (this->doc)
 	{
 		char *str = bson_as_canonical_extended_json((const bson_t*)this->doc, 0);
-		Text::String *ret = Text::String::NewNotNull((const UTF8Char*)str);
+		Text::String *ret = Text::String::NewNotNullSlow((const UTF8Char*)str);
 		bson_free(str);
 		return ret;
 	}

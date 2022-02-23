@@ -22,7 +22,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	table->def = def;
 	table->dataCnt = 0;
 	DB::SQLBuilder sql(this->db);
-	sql.AppendCmdC(UTF8STRC("select count(*) from "));
+	sql.AppendCmdC(CSTR("select count(*) from "));
 	sql.AppendTableName(def);
 	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)
@@ -182,9 +182,9 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	DB::DBRow *row = 0;
 	DB::SQLBuilder sql(this->db);
 	this->db->GenSelectCmdPage(&sql, tableInfo->def, 0);
-	sql.AppendCmdC(UTF8STRC(" where "));
+	sql.AppendCmdC(CSTR(" where "));
 	sql.AppendCol(col->GetColName()->v);
-	sql.AppendCmdC(UTF8STRC(" = "));
+	sql.AppendCmdC(CSTR(" = "));
 	sql.AppendInt64(pk);
 	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
 	if (r)

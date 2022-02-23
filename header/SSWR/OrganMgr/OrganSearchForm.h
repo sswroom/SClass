@@ -19,7 +19,7 @@ namespace SSWR
 			UI::GUIButton *btnOK;
 			UI::GUIButton *btnCancel;
 			OrganEnv *env;
-			const UTF8Char *foundStr;
+			Text::String *foundStr;
 			OrganGroup *foundGroup;
 			Int32 parentId;
 			
@@ -31,7 +31,7 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 
-			const UTF8Char *GetFoundStr();
+			Text::String *GetFoundStr();
 			OrganGroup *GetFoundGroup();
 			Int32 GetParentId();
 		};

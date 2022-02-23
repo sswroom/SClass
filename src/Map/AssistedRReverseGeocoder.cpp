@@ -84,11 +84,11 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 
 	mut->Lock();
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmdC(UTF8STRC("select name from mapaddr where lang = "));
+	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
-	sql->AppendCmdC(UTF8STRC(" and xind = "));
+	sql->AppendCmdC(CSTR(" and xind = "));
 	sql->AppendInt32(xind);
-	sql->AppendCmdC(UTF8STRC(" and yind = "));
+	sql->AppendCmdC(CSTR(" and yind = "));
 	sql->AppendInt32(yind);
 	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
@@ -123,17 +123,17 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sql->Clear();
-		sql->AppendCmdC(UTF8STRC("insert into mapaddr (lang, xind, yind, name, createTime) values ("));
+		sql->AppendCmdC(CSTR("insert into mapaddr (lang, xind, yind, name, createTime) values ("));
 		sql->AppendInt32(lang);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendInt32(xind);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendInt32(yind);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendStrUTF8(buff);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
-		sql->AppendCmdC(UTF8STRC(")"));
+		sql->AppendCmdC(CSTR(")"));
 		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);
@@ -167,11 +167,11 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 
 	mut->Lock();
 	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmdC(UTF8STRC("select name from mapaddr where lang = "));
+	sql->AppendCmdC(CSTR("select name from mapaddr where lang = "));
 	sql->AppendInt32(lang);
-	sql->AppendCmdC(UTF8STRC(" and xind = "));
+	sql->AppendCmdC(CSTR(" and xind = "));
 	sql->AppendInt32(xind);
-	sql->AppendCmdC(UTF8STRC(" and yind = "));
+	sql->AppendCmdC(CSTR(" and yind = "));
 	sql->AppendInt32(yind);
 	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
 	if (r)
@@ -206,17 +206,17 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		sql->Clear();
-		sql->AppendCmdC(UTF8STRC("insert into mapaddr (lang, xind, yind, name, createTime) values ("));
+		sql->AppendCmdC(CSTR("insert into mapaddr (lang, xind, yind, name, createTime) values ("));
 		sql->AppendInt32(lang);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendInt32(xind);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendInt32(yind);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendStrUTF8(buff);
-		sql->AppendCmdC(UTF8STRC(", "));
+		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
-		sql->AppendCmdC(UTF8STRC(")"));
+		sql->AppendCmdC(CSTR(")"));
 		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
 
 		DEL_CLASS(sql);

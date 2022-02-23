@@ -32,21 +32,21 @@ namespace SSWR
 
 			void SetSpeciesId(Int32 speciesId);
 			Int32 GetSpeciesId();
-			void SetCName(const UTF8Char *cName);
+			void SetCName(Text::CString cName);
 			Text::String *GetCName();
-			void SetEName(const UTF8Char *eName);
+			void SetEName(Text::CString eName);
 			Text::String *GetEName();
-			void SetSName(const UTF8Char *sName);
+			void SetSName(Text::CString sName);
 			Text::String *GetSName();
 			void SetGroupId(Int32 groupId);
 			Int32 GetGroupId();
-			void SetDesc(const UTF8Char *desc);
+			void SetDesc(Text::CString desc);
 			Text::String *GetDesc();
-			void SetDirName(const UTF8Char *dirName);
+			void SetDirName(Text::CString dirName);
 			Text::String *GetDirName();
-			void SetPhoto(const UTF8Char *photo);
+			void SetPhoto(Text::CString photo);
 			Text::String *GetPhoto();
-			void SetIDKey(const UTF8Char *idKey);
+			void SetIDKey(Text::CString idKey);
 			Text::String *GetIDKey();
 			void SetFlags(Int32 flags);
 			Int32 GetFlags();

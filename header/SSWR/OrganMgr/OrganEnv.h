@@ -259,7 +259,7 @@ namespace SSWR
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName) = 0;
 			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId) = 0;
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items) = 0;
-			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url) = 0;
+			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, Data::DateTime *publishDate, Text::CString url) = 0;
 
 			WebUserInfo *GetWebUser(Int32 userId);
 			virtual Bool AddDataFile(Text::CString fileName) = 0;

@@ -75,7 +75,7 @@ namespace SSWR
 			virtual Bool NewSpeciesBook(Int32 speciesId, Int32 bookId, const UTF8Char *dispName);
 			virtual UOSInt GetSpeciesBooks(Data::ArrayList<SpeciesBook*> *items, Int32 speciesId);
 			virtual void ReleaseSpeciesBooks(Data::ArrayList<SpeciesBook*> *items);
-			virtual Int32 NewBook(const UTF8Char *title, const UTF8Char *author, const UTF8Char *press, Data::DateTime *publishDate, const UTF8Char *url);
+			virtual Int32 NewBook(Text::CString title, Text::CString author, Text::CString press, Data::DateTime *publishDate, Text::CString url);
 
 			virtual Bool AddDataFile(Text::CString fileName);
 			virtual Bool DelDataFile(DataFileInfo *dataFile);

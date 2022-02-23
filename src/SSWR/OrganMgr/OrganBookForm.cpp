@@ -118,7 +118,7 @@ void __stdcall SSWR::OrganMgr::OrganBookForm::OnBookAddClicked(void *userObj)
 	}
 	Data::DateTime publishDate;
 	me->dtpBookPublish->GetSelectedTime(&publishDate);
-	if (!me->env->NewBook(sb2.ToString(), sb.ToString(), sb3.ToString(), &publishDate, sb4.ToString()))
+	if (!me->env->NewBook(sb2.ToCString(), sb.ToCString(), sb3.ToCString(), &publishDate, sb4.ToCString()))
 	{
 		UI::MessageDialog::ShowDialog(me->env->GetLang(UTF8STRC("BookFormDBError")), CSTR("Error"), me);
 		return;

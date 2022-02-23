@@ -75,7 +75,7 @@ void __stdcall SSWR::DataSync::SyncServer::OnClientTimeout(Net::TCPClient *cli, 
 
 }
 
-SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, const UTF8Char *syncClients, DataHandler dataHdlr, void *dataObj)
+SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *log, UInt16 port, Int32 serverId, Text::CString serverName, Text::CString syncClients, DataHandler dataHdlr, void *dataObj)
 {
 	this->sockf = sockf;
 	NEW_CLASS(this->protoHdlr, IO::ProtoHdlr::ProtoSyncHandler(this));
@@ -93,7 +93,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	svrInfo->cli = 0;
 	this->svrMap->Put(svrInfo->serverId, svrInfo);
 
-	if (syncClients && syncClients[0])
+	if (syncClients.leng > 0)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -102,7 +102,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 		SyncClient *syncCli;
 		Text::StringBuilderUTF8 sb;
 		UInt16 port;
-		sb.AppendSlow(syncClients);
+		sb.Append(syncClients);
 		sarr[1] = sb;
 		while (true)
 		{

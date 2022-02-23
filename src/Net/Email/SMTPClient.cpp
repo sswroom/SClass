@@ -18,16 +18,16 @@ Net::Email::SMTPClient::SMTPClient(Net::SocketFactory *sockf, Net::SSLEngine *ss
 Net::Email::SMTPClient::~SMTPClient()
 {
 	this->host->Release();
-	SDEL_TEXT(this->authUser);
-	SDEL_TEXT(this->authPassword);
+	SDEL_STRING(this->authUser);
+	SDEL_STRING(this->authPassword);
 }
 
-void Net::Email::SMTPClient::SetPlainAuth(const UTF8Char *userName, const UTF8Char *password)
+void Net::Email::SMTPClient::SetPlainAuth(Text::CString userName, Text::CString password)
 {
-	SDEL_TEXT(this->authUser);
-	SDEL_TEXT(this->authPassword);
-	this->authUser = SCOPY_TEXT(userName);
-	this->authPassword = SCOPY_TEXT(password);
+	SDEL_STRING(this->authUser);
+	SDEL_STRING(this->authPassword);
+	this->authUser = Text::String::NewOrNull(userName);
+	this->authPassword = Text::String::NewOrNull(password);
 }
 
 Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
@@ -59,7 +59,7 @@ Bool Net::Email::SMTPClient::Send(Net::Email::EmailMessage *message)
 	Sync::Thread::Sleep(10);
 	if (this->authUser && this->authPassword)
 	{
-		if (!conn->SendAuth(this->authUser, this->authPassword))
+		if (!conn->SendAuth(this->authUser->ToCString(), this->authPassword->ToCString()))
 		{
 			DEL_CLASS(conn);
 			return false;

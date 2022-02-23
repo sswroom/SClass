@@ -37,10 +37,10 @@ void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::String *dispName)
 	if (dispName) this->dispName = dispName->Clone();
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetDispName(const UTF8Char *dispName)
+void SSWR::OrganMgr::OrganImageItem::SetDispName(Text::CString dispName)
 {
 	SDEL_STRING(this->dispName);
-	if (dispName) this->dispName = Text::String::NewNotNull(dispName);
+	if (dispName.v) this->dispName = Text::String::New(dispName);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetDispName()
@@ -84,10 +84,10 @@ void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::String *fullName)
 	if (fullName) this->fullName = fullName->Clone();
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetFullName(const UTF8Char *fullName)
+void SSWR::OrganMgr::OrganImageItem::SetFullName(Text::CString fullName)
 {
 	SDEL_STRING(this->fullName);
-	if (fullName) this->fullName = Text::String::NewNotNull(fullName);
+	if (fullName.v) this->fullName = Text::String::New(fullName);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetFullName()
@@ -111,10 +111,10 @@ void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::String *srcURL)
 	if (srcURL) this->srcURL = srcURL->Clone();
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetSrcURL(const UTF8Char *srcURL)
+void SSWR::OrganMgr::OrganImageItem::SetSrcURL(Text::CString srcURL)
 {
 	SDEL_STRING(this->srcURL);
-	if (srcURL) this->srcURL = Text::String::NewNotNull(srcURL);
+	if (srcURL.v) this->srcURL = Text::String::New(srcURL);
 }
 
 Text::String *SSWR::OrganMgr::OrganImageItem::GetSrcURL()
@@ -128,10 +128,10 @@ void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::String *imgURL)
 	if (imgURL) this->imgURL = imgURL->Clone();
 }
 
-void SSWR::OrganMgr::OrganImageItem::SetImgURL(const UTF8Char *imgURL)
+void SSWR::OrganMgr::OrganImageItem::SetImgURL(Text::CString imgURL)
 {
 	SDEL_STRING(this->imgURL);
-	if (imgURL) this->imgURL = Text::String::NewNotNull(imgURL);
+	if (imgURL.v) this->imgURL = Text::String::New(imgURL);
 }
 
 void SSWR::OrganMgr::OrganImageItem::SetUserFile(UserFileInfo *userFile)

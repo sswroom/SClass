@@ -28,19 +28,19 @@ namespace SSWR
 
 			void SetGroupId(Int32 groupId);
 			Int32 GetGroupId();
-			void SetCName(const UTF8Char *cName);
+			void SetCName(Text::CString cName);
 			Text::String *GetCName();
-			void SetEName(const UTF8Char *eName);
+			void SetEName(Text::CString eName);
 			Text::String *GetEName();
 			void SetGroupType(Int32 groupType);
 			Int32 GetGroupType();
-			void SetDesc(const UTF8Char *desc);
+			void SetDesc(Text::CString desc);
 			Text::String *GetDesc();
 			void SetPhotoGroup(Int32 photoGroup);
 			Int32 GetPhotoGroup();
 			void SetPhotoSpecies(Int32 photoSpecies);
 			Int32 GetPhotoSpecies();
-			void SetIDKey(const UTF8Char *idKey);
+			void SetIDKey(Text::CString idKey);
 			Text::String *GetIDKey();
 			void SetIsDefault(Bool isDefault);
 			Bool GetIsDefault();

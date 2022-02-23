@@ -157,7 +157,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(smtp, Net::Email::SMTPClient(sockf, ssl, smtpHost->ToCString(), smtpIPort, connType, writer));
 			if (smtpUser->v[0] && smtpPassword->v[0])
 			{
-				smtp->SetPlainAuth(smtpUser->v, smtpPassword->v);
+				smtp->SetPlainAuth(smtpUser->ToCString(), smtpPassword->ToCString());
 			}
 			NEW_CLASS(msg, Net::Email::EmailMessage());
 			sb.ClearStr();
