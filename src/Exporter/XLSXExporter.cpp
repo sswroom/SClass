@@ -236,7 +236,7 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char 
 							case Text::SpreadSheet::CellDataType::String:
 								{
 									UOSInt sIndex = stringMap.Get(cell->cellValue);
-									if (sIndex == 0 && stringMap.IndexOf(cell->cellValue) >= 0)
+									if (sIndex == 0 && stringMap.IndexOf(cell->cellValue) < 0)
 									{
 										sIndex = sharedStrings.Add(cell->cellValue);
 										stringMap.Put(cell->cellValue, sIndex);
