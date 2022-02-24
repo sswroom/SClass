@@ -1238,7 +1238,7 @@ Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *b
 						while (src < attValEnd)
 							*dest++ = *src++;
 						*dest = 0;
-						Text::Encoding enc(encFact->GetCodePage(sbuff));
+						Text::Encoding enc(encFact->GetCodePage(CSTRP(sbuff, dest)));
 						docLeng = enc.CountUTF8Chars(buff, size);
 						newDoc = MemAlloc(UTF8Char, docLeng + 1);
 						enc.UTF8FromBytes(newDoc, buff, size, 0);
@@ -1283,7 +1283,7 @@ Bool Text::XMLDocument::ParseBuff(Text::EncodingFactory *encFact, const UInt8 *b
 						while (src < attValEnd)
 							*dest++ = *src++;
 						*dest = 0;
-						Text::Encoding enc(encFact->GetCodePage(sbuff));
+						Text::Encoding enc(encFact->GetCodePage(CSTRP(sbuff, dest)));
 						this->docLeng = enc.CountUTF8Chars(buff, size);
 						newDoc = MemAlloc(UTF8Char, docLeng + 1);
 						enc.UTF8FromBytes(newDoc, buff, size, 0);

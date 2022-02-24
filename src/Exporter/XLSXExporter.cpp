@@ -1,6 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Data/FastStringMap.h"
+#include "Data/StringUTF8Map.h"
 #include "Exporter/XLSXExporter.h"
 #include "IO/BuildTime.h"
 #include "IO/ZIPBuilder.h"

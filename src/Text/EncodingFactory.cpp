@@ -2,9 +2,11 @@
 #include "Data/ICaseStringUTF8Map.h"
 #include "Text/EncodingFactory.h"
 #include "Text/MyStringW.h"
-#ifdef _MSC_VER
+#if defined(_MSC_VER)
 #include <windows.h>
 #endif
+
+#define MAX_SHORT_LEN 45
 
 // http://www.iana.org/assignments/character-sets
 Text::EncodingFactory::EncodingInfo Text::EncodingFactory::encInfo[] = {
@@ -195,9 +197,11 @@ latin-greek
 
 Text::EncodingFactory::EncodingFactory()
 {
-	NEW_CLASS(encMap, Data::ICaseStringUTF8Map<Text::EncodingFactory::EncodingInfo*>());
+	NEW_CLASS(encMap, Data::FastStringMap<Text::EncodingFactory::EncodingInfo*>());
 	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
 	UOSInt j;
+	Text::String *s;
+	UOSInt len;
 	while (i-- > 0)
 	{
 		j = 0;
@@ -205,7 +209,11 @@ Text::EncodingFactory::EncodingFactory()
 		{
 			if (encInfo[i].internetNames[j])
 			{
-				encMap->Put((const UTF8Char*)encInfo[i].internetNames[j], &encInfo[i]);
+				len = Text::StrCharCnt(encInfo[i].internetNames[j]);
+				s = Text::String::New(len);
+				Text::StrToLowerC(s->v, (const UTF8Char*)encInfo[i].internetNames[j], len);
+				encMap->Put(s, &encInfo[i]);
+				s->Release();
 			}
 			else
 			{
@@ -221,9 +229,15 @@ Text::EncodingFactory::~EncodingFactory()
 	DEL_CLASS(encMap);
 }
 
-UInt32 Text::EncodingFactory::GetCodePage(const UTF8Char *shortName)
+UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
 {
-	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap->Get(shortName);
+	if (shortName.leng > MAX_SHORT_LEN)
+	{
+		return 0;
+	}
+	UTF8Char sbuff[MAX_SHORT_LEN + 1];
+	Text::StrToLowerC(sbuff, shortName.v, shortName.leng);
+	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap->GetC({sbuff, shortName.leng});
 	if (encInfo)
 	{
 		return encInfo->codePage;
@@ -240,7 +254,6 @@ UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
-	const UTF8Char *tmpStr = (const UTF8Char*)"Unknown";
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -255,11 +268,10 @@ UTF8Char *Text::EncodingFactory::GetName(UTF8Char *buff, UInt32 codePage)
 		}
 		else
 		{
-			tmpStr = (const UTF8Char*)encInfo[k].desc;
-			break;
+			return Text::StrConcat(buff, (const UTF8Char*)encInfo[k].desc);
 		}
 	}
-	return Text::StrConcat(buff, tmpStr);
+	return Text::StrConcatC(buff, UTF8STRC("Unknown"));
 }
 
 UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage)
@@ -268,7 +280,6 @@ UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
-	const UTF8Char *tmpStr = (const UTF8Char*)"UTF-8";
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -284,11 +295,11 @@ UTF8Char *Text::EncodingFactory::GetInternetName(UTF8Char *buff, UInt32 codePage
 		else
 		{
 			if (encInfo[k].internetNames[0])
-				tmpStr = (const UTF8Char*)encInfo[k].internetNames[0];
+				return Text::StrConcat(buff, (const UTF8Char*)encInfo[k].internetNames[0]);
 			break;
 		}
 	}
-	return Text::StrConcat(buff, tmpStr);
+	return Text::StrConcatC(buff, UTF8STRC("UTF-8"));
 }
 
 UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
@@ -297,7 +308,6 @@ UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
 	OSInt j = (sizeof(encInfo) / sizeof(encInfo[0])) - 1;
 	OSInt k;
 	UInt32 l;
-	const UTF8Char *tmpStr = (const UTF8Char*)"UTF-8";
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
@@ -313,11 +323,11 @@ UTF8Char *Text::EncodingFactory::GetDotNetName(UTF8Char *buff, UInt32 codePage)
 		else
 		{
 			if (encInfo[k].dotNetName)
-				tmpStr = (const UTF8Char*)encInfo[k].dotNetName;
+				return Text::StrConcat(buff, (const UTF8Char*)encInfo[k].dotNetName);
 			break;
 		}
 	}
-	return Text::StrConcat(buff, tmpStr);
+	return Text::StrConcatC(buff, UTF8STRC("UTF-8"));
 }
 
 #ifdef _MSC_VER

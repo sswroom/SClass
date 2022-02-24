@@ -680,26 +680,48 @@ public:
 
 	virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal)
 	{
-		if (this->IsNull(colIndex))
+		if (this->currRow == 0)
 		{
 			return DET_NULL;
 		}
-		Data::VariItem item;
-		if (!this->GetVariItem(colIndex, &item))
+		if (colIndex >= this->colCount)
 		{
-			return DET_ERROR;
+			return DET_NULL;
+		}
+		RowColumn *col = &this->currRow->cols[colIndex];
+		if (col->isNull)
+		{
+			return DET_NULL;
+		}
+		if (this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATE ||
+			this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_DATETIME ||
+			this->colTypes[colIndex] == Net::MySQLUtil::MYSQL_TYPE_TIMESTAMP)
+		{
+			switch (col->len)
+			{
+			case 0:
+				outVal->SetTicks(0);
+				return DET_OK;
+			case 4:
+				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3], 0, 0, 0, 0, 0);
+				return DET_OK;
+			case 7:
+				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], 0, 0);
+				return DET_OK;
+			case 11:
+				outVal->SetValueNoFix(ReadUInt16(&this->currRow->rowBuff[col->ofst]), this->currRow->rowBuff[col->ofst + 2], this->currRow->rowBuff[col->ofst + 3],
+					this->currRow->rowBuff[col->ofst + 4], this->currRow->rowBuff[col->ofst + 5], this->currRow->rowBuff[col->ofst + 6], (UInt16)(ReadUInt32(&this->currRow->rowBuff[col->ofst + 7]) / 1000), 0);
+				return DET_OK;
+			default:
+				//////////////////////////////////////
+				printf("Unknown binary date format\r\n");
+				return DET_ERROR;
+			}
 		}
 		else
 		{
-			if (item.GetItemType() == Data::VariItem::ItemType::Date)
-			{
-				outVal->SetValue(item.GetItemValue().date);
-				return DET_OK;
-			}
-			else
-			{
-				return DET_ERROR;
-			}
+			return DET_ERROR;
 		}
 	}
 

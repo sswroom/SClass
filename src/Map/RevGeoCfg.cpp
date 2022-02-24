@@ -11,7 +11,8 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 	UTF8Char *filePathName;
 	UTF8Char *filePathNameEnd;
 	UTF8Char sbuff[512];
-	UTF8Char *sptrs[2];
+	Text::PString sptrs[2];
+	UTF8Char *sptr;
 	OSInt i = REVGEO_MAXID;
 	Int32 srchType;
 	Int32 srchLyr;
@@ -31,29 +32,29 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(fs));
-		while (reader->ReadLine(sbuff, 511))
+		while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
 		{
-			if (Text::StrSplit(sptrs, 2, sbuff, ',') == 2)
+			if (Text::StrSplitP(sptrs, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ',') == 2)
 			{
-				srchType = Text::StrToInt32(sptrs[0]);
+				srchType = Text::StrToInt32(sptrs[0].v);
 				if (srchType == 0)
 				{
-					filePathName = Text::StrConcat(filePath, sptrs[1]);
+					filePathName = sptrs[1].ConcatTo(filePath);
 				}
 				else if (srchType == 1 || srchType == 2)
 				{
-					if (Text::StrSplit(sptrs, 2, sptrs[1], ',') == 2)
+					if (Text::StrSplitP(sptrs, 2, sptrs[1], ',') == 2)
 					{
-						srchLyr = Text::StrToInt32(sptrs[0]);
+						srchLyr = Text::StrToInt32(sptrs[0].v);
 						if (srchLyr < 0 || srchLyr >= REVGEO_MAXID)
 							continue;
 
-						filePathNameEnd = Text::StrConcat(filePathName, sptrs[1]);
+						filePathNameEnd = sptrs[1].ConcatTo(filePathName);
 						mdata = mapSrchMgr->LoadLayer(CSTRP(filePath, filePathNameEnd));
 						if (!mdata->IsError())
 						{
 							layer = MemAlloc(Map::RevGeoCfg::SearchLayer, 1);
-							layer->layerName = Text::StrCopyNew(filePath);
+							layer->layerName = Text::String::NewP(filePath, filePathNameEnd);
 							layer->searchType = srchType;
 							layer->usedCnt = 1;
 							layer->data = mdata;
@@ -81,7 +82,7 @@ Map::RevGeoCfg::~RevGeoCfg()
 			layer = (Map::RevGeoCfg::SearchLayer *)layers[i]->GetItem(j);
 			if (--layer->usedCnt <= 0)
 			{
-				Text::StrDelNew(layer->layerName);
+				layer->layerName->Release();
 				MemFree(layer);
 			}
 		}

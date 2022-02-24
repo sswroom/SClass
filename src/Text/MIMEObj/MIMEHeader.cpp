@@ -148,7 +148,7 @@ UTF8Char *Text::MIMEObj::MIMEHeader::ParseHeaderStr(UTF8Char *sbuff, const UTF8C
 				if (!err)
 				{
 					Text::EncodingFactory encFact;
-					UInt32 cp = encFact.GetCodePage(sb.ToString());
+					UInt32 cp = encFact.GetCodePage(sb.ToCString());
 					if (cp == 0)
 					{
 						err = true;

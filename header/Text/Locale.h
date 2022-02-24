@@ -1,6 +1,6 @@
 #ifndef _SM_TEXT_LOCALE
 #define _SM_TEXT_LOCALE
-#include "Data/StringUTF8Map.h"
+#include "Data/FastStringMap.h"
 
 namespace Text
 {
@@ -24,12 +24,12 @@ namespace Text
 		static LocaleEntry *GetLocaleEntryByCodePage(UInt32 codePage);
 
 	private:
-		Data::StringUTF8Map<LocaleEntry*> *names;
+		Data::FastStringMap<LocaleEntry*> *names;
 	public:
 		Locale();
 		~Locale();
 
-		LocaleEntry *GetLocaleEntryByName(const UTF8Char *name);
+		LocaleEntry *GetLocaleEntryByName(Text::CString name);
 	};
-};
+}
 #endif

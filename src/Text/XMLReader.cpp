@@ -738,7 +738,7 @@ Bool Text::XMLReader::ReadNext()
 									attr = this->attrList->GetItem(i);
 									if (attr->name->EqualsICase(UTF8STRC("ENCODING")))
 									{
-										UInt32 cp = this->encFact->GetCodePage(attr->value->v);
+										UInt32 cp = this->encFact->GetCodePage(attr->value->ToCString());
 										if (cp && !this->stmEnc)
 										{
 											SDEL_CLASS(this->enc);

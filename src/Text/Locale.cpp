@@ -188,13 +188,13 @@ Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByCodePage(UInt32 codePag
 
 Text::Locale::Locale()
 {
-	NEW_CLASS(this->names, Data::ICaseStringUTF8Map<Text::Locale::LocaleEntry*>());
+	NEW_CLASS(this->names, Data::FastStringMap<Text::Locale::LocaleEntry*>());
 	UOSInt i = sizeof(locales) / sizeof(locales[0]);
 	while (i-- > 0)
 	{
 		if (this->locales[i].shortName[0] != 0)
 		{
-			this->names->Put(this->locales[i].shortName, &this->locales[i]);
+			this->names->PutC({this->locales[i].shortName, this->locales[i].shortNameLen}, &this->locales[i]);
 		}
 	}
 }
@@ -204,7 +204,13 @@ Text::Locale::~Locale()
 	DEL_CLASS(this->names);
 }
 
-Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByName(const UTF8Char *name)
+Text::Locale::LocaleEntry *Text::Locale::GetLocaleEntryByName(Text::CString name)
 {
-	return this->names->Get(name);
+	UTF8Char sbuff[6];
+	if (name.leng > 5)
+	{
+		return 0;
+	}
+	Text::StrToLowerC(sbuff, name.v, name.leng);
+	return this->names->GetC({sbuff, name.leng});
 }

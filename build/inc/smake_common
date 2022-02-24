@@ -161,6 +161,7 @@ nodeps:
 @ThreadSleepusTest
 @ConcatStringSB
 @DocTest
+@EncodingFactoryTest
 @JSConcatString
 @JSConcatString2
 @JSONTest
@@ -756,6 +757,9 @@ ConcatStringSB:
 DocTest:
 @DocTest.o
 @ConsoleStartup.o
+EncodingFactoryTest:
+@EncodingFactoryTest.o
+@ConsoleStartup.o
 JSConcatString:
 @JSConcatString.o
 @ConsoleStartup.o
@@ -1021,6 +1025,7 @@ TestStrInt64W.o: ../../main/Test/Text/TestStrInt64W.cpp
 TestStrToUpper.o: ../../main/Test/Text/TestStrToUpper.cpp
 ConcatStringSB.o: ../../main/Text/ConcatStringSB.cpp
 DocTest.o: ../../main/Text/DocTest.cpp
+EncodingFactoryTest.o: ../../main/Text/EncodingFactoryTest.cpp
 JSConcatString.o: ../../main/Text/JSConcatString.cpp
 JSConcatString2.o: ../../main/Text/JSConcatString2.cpp
 JSONTestMain.o: ../../main/Text/JSONTestMain.cpp

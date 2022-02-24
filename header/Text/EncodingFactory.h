@@ -1,7 +1,7 @@
 #ifndef _SM_TEXT_ENCODINGFACTORY
 #define _SM_TEXT_ENCODINGFACTORY
-#include "Data/StringUTF8Map.h"
 #include "Data/ArrayListInt32.h"
+#include "Data/FastStringMap.h"
 
 namespace Text
 {
@@ -17,13 +17,13 @@ namespace Text
 		} EncodingInfo;
 
 	private:
-		Data::StringUTF8Map<EncodingInfo*> *encMap;
+		Data::FastStringMap<EncodingInfo*> *encMap;
 		static EncodingInfo encInfo[];
 	public:
 		EncodingFactory();
 		~EncodingFactory();
 		
-		UInt32 GetCodePage(const UTF8Char *shortName);
+		UInt32 GetCodePage(Text::CString shortName);
 
 		static UTF8Char *GetName(UTF8Char *buff, UInt32 codePage);
 		static UTF8Char *GetInternetName(UTF8Char *buff, UInt32 codePage);

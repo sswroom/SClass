@@ -61,7 +61,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromData(IO::IStreamData *data, Text::CStri
 				sb.TrimToLength(j);
 			}
 			Text::EncodingFactory encFact;
-			codePage = encFact.GetCodePage(sb.ToString());
+			codePage = encFact.GetCodePage(sb.ToCString());
 		}
 
 		buffSize = (UOSInt)data->GetDataSize();

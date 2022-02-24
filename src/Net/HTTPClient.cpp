@@ -179,7 +179,7 @@ UInt32 Net::HTTPClient::GetContentCodePage()
 			if (sarr[0].StartsWith(UTF8STRC("charset=")))
 			{
 				Text::EncodingFactory encFact;
-				return encFact.GetCodePage(&sarr[0].v[8]);
+				return encFact.GetCodePage(sarr[0].ToCString().Substring(8));
 			}
 		}
 	}

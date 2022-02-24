@@ -9472,19 +9472,19 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 {
 	Text::StringBuilderUTF8 sb;
 	IO::ConfigFile *lang;
-	UTF8Char *sarr[2];
-	UTF8Char *sarr2[2];
+	Text::PString sarr[2];
+	Text::PString sarr2[2];
 	UOSInt i;
 	Text::Locale::LocaleEntry *ent;
 	if (req->GetHeaderC(&sb, UTF8STRC("Accept-Language")))
 	{
-		sarr[1] = sb.ToString();
+		sarr[1] = sb;
 		i = 2;
 		while (i == 2)
 		{
-			i = Text::StrSplit(sarr, 2, sarr[1], ',');
-			Text::StrSplit(sarr2, 2, sarr[0], ';');
-			ent = this->locale->GetLocaleEntryByName(sarr2[0]);
+			i = Text::StrSplitP(sarr, 2, sarr[1], ',');
+			Text::StrSplitP(sarr2, 2, sarr[0], ';');
+			ent = this->locale->GetLocaleEntryByName(sarr2[0].ToCString());
 			if (ent)
 			{
 				lang = this->langMap->Get(ent->lcid);

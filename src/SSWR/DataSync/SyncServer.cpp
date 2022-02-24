@@ -88,7 +88,7 @@ SSWR::DataSync::SyncServer::SyncServer(Net::SocketFactory *sockf, IO::LogTool *l
 	svrInfo = MemAlloc(ServerInfo, 1);
 	NEW_CLASS(svrInfo->mut, Sync::Mutex());
 	svrInfo->serverId = serverId;
-	svrInfo->serverName = Text::StrCopyNew(serverName.v);
+	svrInfo->serverName = Text::StrCopyNewC(serverName.v, serverName.leng);
 	svrInfo->isLocal = true;
 	svrInfo->cli = 0;
 	this->svrMap->Put(svrInfo->serverId, svrInfo);
