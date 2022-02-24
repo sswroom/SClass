@@ -1269,7 +1269,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
-		NEW_CLASS(sysInfo, IO::SystemInfoLog({fileName, fileNameLen}));
+		NEW_CLASS(sysInfo, IO::SystemInfoLog(Text::CString(fileName, fileNameLen)));
 		while (reader->ReadNext())
 		{
 			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)

@@ -788,9 +788,16 @@ public:
 		Data::VariItem item;
 		if (!this->GetVariItem(colIndex, &item))
 		{
-			return 0;
+			return false;
 		}
-		return item.GetAndRemoveUUID();
+		Data::UUID *itemUUID = item.GetAndRemoveUUID();
+		if (itemUUID == 0)
+		{
+			return false;
+		}
+		uuid->SetValue(itemUUID);
+		DEL_CLASS(itemUUID);
+		return true;
 	}
 
 	virtual Bool GetVariItem(UOSInt colIndex, Data::VariItem *item)

@@ -152,7 +152,7 @@ IO::ParsedObject *Parser::FileParser::SPREDParser::ParseFile(IO::IStreamData *fd
 				rec->heading = *(UInt16*)&buff[i + 20] * 0.01;
 				rec->utcTimeTicks = 1000LL * *(UInt32*)&buff[i + 22];
 				rec->altitude = *(Int32*)&buff[i + 26] * 0.01;
-				rec->valid = (buff[i + 43] & 0x80) >> 7;
+				rec->valid = ((buff[i + 43] & 0x80) >> 7) != 0;
 				UInt16 nSateUsed = (*(UInt16*)&buff[i + 42]) & 0x7fff;
 				if (nSateUsed & 0x4000)
 				{

@@ -30,6 +30,7 @@
 #ifndef _WIN32_WCE
 #include <dbghelp.h>
 #endif
+#include <stdio.h>
 
 #define STACKDUMPSIZE 4096
 
@@ -122,6 +123,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 {
 	Manage::ThreadContext *tCont = 0;
 	EXCEPTION_POINTERS *info = (EXCEPTION_POINTERS*)exInfo;
+	printf("exception occured: %s\r\n", GetExceptionCodeName(info->ExceptionRecord->ExceptionCode).v);
 #if defined(CPU_X86_64)
 	NEW_CLASS(tCont, Manage::ThreadContextX86_64(GetCurrentProcessId(), 0, info->ContextRecord));
 #elif defined(CPU_X86_32)

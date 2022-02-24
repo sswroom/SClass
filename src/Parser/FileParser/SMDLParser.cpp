@@ -287,7 +287,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		rec.speed = ReadDouble(&buff[40]);
 		rec.heading = ReadDouble(&buff[48]);
 		rec.nSateUsedGPS = (UInt8)ReadInt32(&buff[56]);
-		rec.nSateUsed = rec.nSateUsedGLO;
+		rec.nSateUsed = rec.nSateUsedGPS;
 		rec.nSateUsedGLO = 0;
 		rec.nSateUsedSBAS = 0;
 		rec.nSateViewGPS = 0;
@@ -304,7 +304,7 @@ IO::ParsedObject *Parser::FileParser::SMDLParser::ParseFile(IO::IStreamData *fd,
 		remotePort = ReadUInt16(&buff[84]);
 		procTime = ReadInt32(&buff[88]);
 		extraSize = ReadUInt32(&buff[92]);
-		rec.valid = status1 & 2;
+		rec.valid = (status1 & 2) != 0;
 		ui = track->AddRecord(&rec);
 		currPos += 96;
 		WriteInt64(&buff[0], recvTimeTick);

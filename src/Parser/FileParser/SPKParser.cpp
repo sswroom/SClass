@@ -160,7 +160,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, k});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
+							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0);
 						}
 						pf2 = pf3;
@@ -174,7 +174,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, l});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
+							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0);
 						}
 						pf2 = pf3;
@@ -226,7 +226,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, k});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
+							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, k}, 0);
 						}
 						pf2 = pf3;
@@ -240,7 +240,7 @@ IO::ParsedObject *Parser::FileParser::SPKParser::ParseFile(IO::IStreamData *fd, 
 						pf3 = pf2->GetPackFile({sptr, l});
 						if (pf3 == 0)
 						{
-							NEW_CLASS(pf3, IO::PackageFile({srcPath, (UOSInt)(srcPtr2 - srcPath)}));
+							NEW_CLASS(pf3, IO::PackageFile(CSTRP(srcPath, srcPtr2)));
 							pf2->AddPack(pf3, {sptr, l}, 0);
 						}
 						pf2 = pf3;

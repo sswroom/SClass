@@ -436,179 +436,161 @@ UOSInt Net::WinSSLClient::EndRead(void *reqData, Bool toWait, Bool *incomplete)
 		this->clsData->decSize = 0;
 		return ret;
 	}
-	if (s && (this->flags & 6) == 0)
-	{
-		Net::SocketFactory::ErrorType et;
-		SecBufferDesc buffDesc;
-		SecBuffer buffs[4];
-		SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
-		UOSInt recvSize;
-		Bool incomp;
+	Net::SocketFactory::ErrorType et;
+	SecBufferDesc buffDesc;
+	SecBuffer buffs[4];
+	SECURITY_STATUS status = SEC_E_INCOMPLETE_MESSAGE;
+	UOSInt recvSize;
+	Bool incomp;
 
-		status = SEC_E_INCOMPLETE_MESSAGE;
-		recvSize = sockf->EndReceiveData(reqData, toWait, &incomp);
-		if (recvSize <= 0)
+	status = SEC_E_INCOMPLETE_MESSAGE;
+	recvSize = sockf->EndReceiveData(reqData, toWait, &incomp);
+	if (recvSize <= 0)
+	{
+		if (incomplete)
+		{
+			*incomplete = incomp;
+		}
+		if (incomp)
+		{
+			return 0;
+		}
+		this->flags |= 2;
+		return ret;
+	}
+
+#if defined(DEBUG_PRINT)
+	debugDt.SetCurrTime();
+	debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+	printf("%s EndRead Recv size = %d\r\n", debugBuff, (UInt32)recvSize);
+#endif
+	this->clsData->recvOfst += recvSize;
+	SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+	SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
+	SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
+	SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
+	SecBufferDesc_Set(&buffDesc, buffs, 4);
+	status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
+	if (status == SEC_E_INCOMPLETE_MESSAGE)
+	{
+		if (!toWait)
 		{
 			if (incomplete)
 			{
-				*incomplete = incomp;
+				*incomplete = true;
 			}
-			if (incomp)
-			{
-				return 0;
-			}
-			this->flags |= 2;
-			return ret;
+			return 0;
 		}
-
-#if defined(DEBUG_PRINT)
-		debugDt.SetCurrTime();
-		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s EndRead Recv size = %d\r\n", debugBuff, (UInt32)recvSize);
-#endif
-		this->clsData->recvOfst += recvSize;
-		SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
-		SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
-		SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
-		SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
-		SecBufferDesc_Set(&buffDesc, buffs, 4);
-		status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
-		if (status == SEC_E_INCOMPLETE_MESSAGE)
+		while (status == SEC_E_INCOMPLETE_MESSAGE)
 		{
-			if (!toWait)
+			UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, &et);
+			if (recvSize <= 0)
 			{
 				if (incomplete)
 				{
-					*incomplete = true;
+					*incomplete = false;
 				}
-				return 0;
+				this->flags |= 2;
+				return ret;
 			}
-			while (status == SEC_E_INCOMPLETE_MESSAGE)
-			{
-				UOSInt recvSize = this->sockf->ReceiveData(this->s, &this->clsData->recvBuff[this->clsData->recvOfst], this->clsData->recvBuffSize - this->clsData->recvOfst, &et);
-				if (recvSize <= 0)
-				{
-					if (incomplete)
-					{
-						*incomplete = false;
-					}
-					this->flags |= 2;
-					return ret;
-				}
-#if defined(DEBUG_PRINT)
-				debugDt.SetCurrTime();
-				debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s EndRead Recv size2 = %d\r\n", debugBuff, (UInt32)recvSize);
-#endif
-				this->clsData->recvOfst += recvSize;
-				SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
-				SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
-				SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
-				SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
-				SecBufferDesc_Set(&buffDesc, buffs, 4);
-				status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
-			}
-		}
-
-		if (status != SEC_E_OK && status != SEC_I_RENEGOTIATE)
-		{
-			this->flags |= 6;
-			this->sockf->DestroySocket(this->s);
 #if defined(DEBUG_PRINT)
 			debugDt.SetCurrTime();
 			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-			printf("%s EndRead Return size2 = %d\r\n", debugBuff, (UInt32)ret);
+			printf("%s EndRead Recv size2 = %d\r\n", debugBuff, (UInt32)recvSize);
 #endif
-			if (incomplete)
-			{
-				*incomplete = false;
-			}
-			return ret;
+			this->clsData->recvOfst += recvSize;
+			SecBuffer_Set(&buffs[0], SECBUFFER_DATA, this->clsData->recvBuff, (UInt32)this->clsData->recvOfst);
+			SecBuffer_Set(&buffs[1], SECBUFFER_EMPTY, 0, 0);
+			SecBuffer_Set(&buffs[2], SECBUFFER_EMPTY, 0, 0);
+			SecBuffer_Set(&buffs[3], SECBUFFER_EMPTY, 0, 0);
+			SecBufferDesc_Set(&buffDesc, buffs, 4);
+			status = DecryptMessage(&this->clsData->ctxt, &buffDesc, 0, 0);
 		}
+	}
 
-		this->clsData->recvOfst = 0;
-		UOSInt i = 0;
-		while (i < 4)
+	if (status != SEC_E_OK && status != SEC_I_RENEGOTIATE)
+	{
+		this->flags |= 6;
+		this->sockf->DestroySocket(this->s);
+#if defined(DEBUG_PRINT)
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+		printf("%s EndRead Return size2 = %d\r\n", debugBuff, (UInt32)ret);
+#endif
+		if (incomplete)
 		{
-			if (buffs[i].BufferType == SECBUFFER_DATA)
+			*incomplete = false;
+		}
+		return ret;
+	}
+
+	this->clsData->recvOfst = 0;
+	UOSInt i = 0;
+	while (i < 4)
+	{
+		if (buffs[i].BufferType == SECBUFFER_DATA)
+		{
+			if (buffs[i].cbBuffer <= this->clsData->readSize)
 			{
-				if (buffs[i].cbBuffer <= this->clsData->readSize)
+#if defined(DEBUG_PRINT)
+				debugDt.SetCurrTime();
+				debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+				printf("%s EndRead Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)this->clsData->readSize);
+#endif
+				MemCopyNO(this->clsData->readBuff, buffs[i].pvBuffer, buffs[i].cbBuffer);
+				this->clsData->readSize -= buffs[i].cbBuffer;
+				this->clsData->readBuff += buffs[i].cbBuffer;
+				ret += buffs[i].cbBuffer;
+			}
+			else
+			{
+				if (this->clsData->readSize > 0)
 				{
 #if defined(DEBUG_PRINT)
 					debugDt.SetCurrTime();
 					debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-					printf("%s EndRead Dec size1 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)this->clsData->readSize);
+					printf("%s EndRead Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)this->clsData->readSize);
 #endif
-					MemCopyNO(this->clsData->readBuff, buffs[i].pvBuffer, buffs[i].cbBuffer);
-					this->clsData->readSize -= buffs[i].cbBuffer;
-					this->clsData->readBuff += buffs[i].cbBuffer;
-					ret += buffs[i].cbBuffer;
+					MemCopyNO(this->clsData->readBuff, buffs[i].pvBuffer, this->clsData->readSize);
+					ret += this->clsData->readSize;
+					MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], this->clsData->readSize + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - this->clsData->readSize);
+					this->clsData->decSize += buffs[i].cbBuffer - this->clsData->readSize;
+					this->clsData->readSize = 0;
 				}
 				else
 				{
-					if (this->clsData->readSize > 0)
-					{
 #if defined(DEBUG_PRINT)
-						debugDt.SetCurrTime();
-						debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-						printf("%s EndRead Dec size2 = %d, size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer, (UInt32)this->clsData->readSize);
+					debugDt.SetCurrTime();
+					debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+					printf("%s EndRead Dec size3 = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
 #endif
-						MemCopyNO(this->clsData->readBuff, buffs[i].pvBuffer, this->clsData->readSize);
-						ret += this->clsData->readSize;
-						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], this->clsData->readSize + (UInt8*)buffs[i].pvBuffer, buffs[i].cbBuffer - this->clsData->readSize);
-						this->clsData->decSize += buffs[i].cbBuffer - this->clsData->readSize;
-						this->clsData->readSize = 0;
-					}
-					else
-					{
-#if defined(DEBUG_PRINT)
-						debugDt.SetCurrTime();
-						debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-						printf("%s EndRead Dec size3 = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
-#endif
-						MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buffs[i].pvBuffer, buffs[i].cbBuffer);
-						this->clsData->decSize += buffs[i].cbBuffer;
-					}
+					MemCopyNO(&this->clsData->decBuff[this->clsData->decSize], buffs[i].pvBuffer, buffs[i].cbBuffer);
+					this->clsData->decSize += buffs[i].cbBuffer;
 				}
 			}
-			else if (buffs[i].BufferType == SECBUFFER_EXTRA)
-			{
-#if defined(DEBUG_PRINT)
-				debugDt.SetCurrTime();
-				debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-				printf("%s EndRead Ext size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
-#endif
-				MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
-				this->clsData->recvOfst += buffs[i].cbBuffer;
-			}
-			i++;
 		}
-#if defined(DEBUG_PRINT)
-		debugDt.SetCurrTime();
-		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s EndRead Return size3 = %d\r\n", debugBuff, (UInt32)ret);
-#endif
-		if (incomplete)
+		else if (buffs[i].BufferType == SECBUFFER_EXTRA)
 		{
-			*incomplete = false;
+#if defined(DEBUG_PRINT)
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+			printf("%s EndRead Ext size = %d\r\n", debugBuff, (UInt32)buffs[i].cbBuffer);
+#endif
+			MemCopyO(&this->clsData->recvBuff[this->clsData->recvOfst], buffs[i].pvBuffer, buffs[i].cbBuffer);
+			this->clsData->recvOfst += buffs[i].cbBuffer;
 		}
-		return ret;
+		i++;
 	}
-	else
+#if defined(DEBUG_PRINT)
+	debugDt.SetCurrTime();
+	debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+	printf("%s EndRead Return size3 = %d\r\n", debugBuff, (UInt32)ret);
+#endif
+	if (incomplete)
 	{
-#if defined(DEBUG_PRINT)
-		debugDt.SetCurrTime();
-		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
-		printf("%s EndRead Return size4 = %d\r\n", debugBuff, (UInt32)ret);
-#endif
-		if (incomplete)
-		{
-			*incomplete = false;
-		}
-		return ret;
+		*incomplete = false;
 	}
-
-	return sockf->EndReceiveData(reqData, toWait, incomplete);
+	return ret;
 }
 
 void Net::WinSSLClient::CancelRead(void *reqData)

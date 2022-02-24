@@ -907,6 +907,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 {
 	ent->browser = Net::BrowserInfo::BT_UNKNOWN;
 	ent->browserVer = 0;
+	ent->browserVerLen = 0;
 	ent->devName = 0;
 	ent->devNameLen = 0;
 	ent->osVer = 0;

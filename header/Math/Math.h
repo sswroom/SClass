@@ -17,7 +17,7 @@ Double Math_MyPow(Double x, Double y);
 #define Math_Exp(val) Math_MyExp(val)
 #define Math_Pow(x, y) Math_MyPow(x, y)
 #else
-#define Math_Log10(val) log10(val)
+#define Math_Log10(val) log10((Double)(val))
 #define Math_Ln(val) log(val)
 #define Math_Exp(val) exp(val)
 #define Math_Pow(x, y) pow(x, y)
@@ -31,7 +31,7 @@ Double Math_MyPow(Double x, Double y);
 #define Math_ArcTan(val) atan(val)
 #define Math_ArcTan2(valY, valX) atan2(valY, valX)
 #define Math_Abs(val) (((val) < 0)?(-val):(val))
-#define Math_Sqrt(val) sqrt(val)
+#define Math_Sqrt(val) sqrt((Double)(val))
 
 #define Math_Sinh(val) (0.5 * (Math_Exp(val) - Math_Exp(-val)))
 #define Math_Cosh(val) (0.5 * (Math_Exp(val) + Math_Exp(-val)))

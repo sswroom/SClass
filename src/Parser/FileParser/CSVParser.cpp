@@ -207,20 +207,20 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 				{
 					if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].leng, UTF8STRC("DGPS")))
 					{
-						rec.valid = 2;
+						rec.valid = true;
 					}
 					else if (Text::StrEqualsICaseC(tmpArr2[validCol].v, tmpArr2[validCol].leng, UTF8STRC("SPS")))
 					{
-						rec.valid = 1;
+						rec.valid = true;
 					}
 					else
 					{
-						rec.valid = 0;
+						rec.valid = false;
 					}
 				}
 				else
 				{
-					rec.valid = 0;
+					rec.valid = false;
 				}
 				if (altCol != INVALID_INDEX)
 				{
