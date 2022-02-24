@@ -1103,7 +1103,7 @@ void Net::UserAgentDB::ParseUserAgent(Net::UserAgentDB::UAEntry *ent, Text::CStr
 					ent->os = Manage::OSInfo::OT_ANDROID;
 					SDEL_TEXT(ent->osVer);
 					ent->osVer = Text::StrCopyNewC(&strs2[j].v[8], strs2[j].leng - 8);
-					ent->osVerLen = strs2[j].leng - 81;
+					ent->osVerLen = strs2[j].leng - 8;
 					lastIsAndroid = true;
 				}
 				else if (Text::StrStartsWithC(strs2[j].v, strs2[j].leng, UTF8STRC("CrOS ")))

@@ -50,6 +50,10 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->reqBrowserVer = {ua.browserVer, ua.browserVerLen};
 	this->reqOS = ua.os;
 	this->reqOSVer = {ua.osVer, ua.osVerLen};
+/*	if (ua.osVerLen > 100)
+	{
+		printf("UA parse error: %s\r\n", uaHdr->v);
+	}*/
 	SDEL_TEXT(ua.devName);
 }
 
