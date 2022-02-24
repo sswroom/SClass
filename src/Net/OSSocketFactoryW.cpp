@@ -23,7 +23,10 @@
 #include <icmpapi.h>
 #endif
 
+//#define VERBOSE
+#if defined(VERBOSE)
 #include <stdio.h>
+#endif
 
 struct Net::OSSocketFactory::ClassData
 {
@@ -218,21 +221,38 @@ Socket *Net::OSSocketFactory::SocketAccept(Socket *socket)
 //	sockaddr_in saddr;
 //	Int32 addrlen = sizeof(saddr);
 	SOCKET s;
+#if defined(VERBOSE)
+	UTF8Char debugBuff[64];
+	Data::DateTime debugDt;
+#endif
 	while (true)
 	{
 		s = accept((SOCKET)socket, (sockaddr*)&saddr, &addrlen);
 		if (s == INVALID_SOCKET)
 		{
-			printf("Accept invalid\r\n");
+#if defined(VERBOSE)
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+			printf("%s Accept invalid\r\n", debugBuff);
+#endif
 			return (Socket*)s;
 		}
 		Sync::MutexUsage mutUsage(this->clsData->socMut);
 		if (this->clsData->acceptedSoc->Get((Int32)s) == 0)
 		{
 			this->clsData->acceptedSoc->Put((Int32)s, 2);
+#if defined(VERBOSE)
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+			printf("%s Socket Accepted\r\n", debugBuff);
+#endif
 			return (Socket*)s;
 		}
-		printf("Accept duplicated\r\n");
+#if defined(VERBOSE)
+			debugDt.SetCurrTime();
+			debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+			printf("%s Accept duplicated\r\n", debugBuff);
+#endif
 		mutUsage.EndUse();
 	}
 }

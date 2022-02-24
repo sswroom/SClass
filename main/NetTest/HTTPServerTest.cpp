@@ -11,6 +11,8 @@
 #include "Text/StringBuilderUTF8.h"
 #include "Text/XML.h"
 
+#define USESSL
+
 IO::ConsoleWriter *console;
 
 class MyHandler : public Net::WebServer::WebServiceHandler
@@ -61,7 +63,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	Bool useSSL = false;
 	Net::WebServer::WebListener *svr;
 	Net::SocketFactory *sockf;
 	Net::SSLEngine *ssl;
@@ -84,32 +85,26 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	if (port == 0)
 	{
-		if (useSSL)
-		{
-			port = 443;
-		}
-		else
-		{
-			port = 80;
-		}
+#if defined(USESSL)
+		port = 443;
+#else
+		port = 80;
+#endif
 	}
 
 	NEW_CLASS(sockf, Net::OSSocketFactory(true));
-	if (useSSL)
+#if defined(USESSL)
+	ssl = Net::SSLEngineFactory::Create(sockf, true);
+	if (ssl == 0 || !ssl->SetServerCerts(CSTR("test.crt"), CSTR("test.key")))
 	{
-		ssl = Net::SSLEngineFactory::Create(sockf, true);
-		if (ssl == 0 || !ssl->SetServerCerts(CSTR("test.crt"), CSTR("test.key")))
-		{
-			console->WriteLineC(UTF8STRC("Error in initializing SSL"));
-			sptr = ssl->GetErrorDetail(sbuff);
-			console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-			succ = false;
-		}
+		console->WriteLineC(UTF8STRC("Error in initializing SSL"));
+		sptr = ssl->GetErrorDetail(sbuff);
+		console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
+		succ = false;
 	}
-	else
-	{
-		ssl = 0;
-	}
+#else
+	ssl = 0;
+#endif
 
 	if (succ)
 	{
@@ -118,7 +113,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		sb.AppendU16(port);
 		console->WriteLineC(sb.ToString(), sb.GetLength());
 		MyHandler *myHdlr;
-		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("."), true, 0, true));
+		NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(CSTR("wwwroot"), true, 0, true));
 		NEW_CLASS(myHdlr, MyHandler());
 		hdlr->HandlePath(UTF8STRC("/api"), myHdlr, true);
 		NEW_CLASS(svr, Net::WebServer::WebListener(sockf, ssl, hdlr, port, 120, 4, CSTR("sswr/1.0"), false, true));
