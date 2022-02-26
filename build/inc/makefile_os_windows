@@ -72,6 +72,9 @@ Console.o: $(CLASSDIR)src/IO/ConsoleW.cpp
 ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriterW.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoW.cpp LIBS_setupapi
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

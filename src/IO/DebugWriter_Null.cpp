@@ -20,17 +20,7 @@ Bool IO::DebugWriter::WriteStrC(const UTF8Char *str, UOSInt nChar)
 	return true;
 }
 
-Bool IO::DebugWriter::WriteStr(const UTF8Char *str)
-{
-	return true;
-}
-
 Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
-{
-	return true;
-}
-
-Bool IO::DebugWriter::WriteLine(const UTF8Char *str)
 {
 	return true;
 }

@@ -2797,6 +2797,9 @@ MyStringFloat.o: $(CLASSDIR)src/Text/MyStringFloat.cpp
 MyStringW.o: $(CLASSDIR)src/Text/MyStringW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+PString.o: $(CLASSDIR)src/Text/PString.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 ReportBuilder.o: $(CLASSDIR)src/Text/ReportBuilder.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

@@ -51,6 +51,9 @@ Console.o: $(CLASSDIR)src/IO/ConsoleL.cpp
 ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriterL.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

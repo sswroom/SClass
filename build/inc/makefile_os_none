@@ -27,6 +27,9 @@ BuildTime.o: $(CLASSDIR)src/IO/BuildTime.cpp LIBS_BuildTime
 Console.o: $(CLASSDIR)src/IO/ConsoleL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 DeviceInfo.o: $(CLASSDIR)src/IO/DeviceInfoL.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

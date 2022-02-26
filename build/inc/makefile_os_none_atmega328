@@ -7,6 +7,9 @@ SerialPortBase.o: $(CLASSDIR)src/IO/SerialPortBase_ATmega328.cpp
 ConsoleWriter.o: $(CLASSDIR)src/IO/ConsoleWriterSerial.cpp LIB_SerialPortBase
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
+
 SerialPort.o: $(CLASSDIR)src/IO/SerialPort_ATmega328.cpp LIB_SerialPortBase
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

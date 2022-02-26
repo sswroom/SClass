@@ -5,9 +5,6 @@ LIBS_VideoCaptureMgr:
 DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-DebugWriter.o: $(CLASSDIR)src/IO/DebugWriterW.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
 GPUManager.o: $(CLASSDIR)src/IO/GPUManagerW.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 

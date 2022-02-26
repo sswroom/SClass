@@ -2,9 +2,6 @@
 DeviceBase.o: $(CLASSDIR)src/DeviceBase_Null.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_R3000.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
 GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 

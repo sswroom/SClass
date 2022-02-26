@@ -2,9 +2,6 @@
 GPUManager.o: $(CLASSDIR)src/IO/GPUManagerNull.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
-DebugWriter.o: $(CLASSDIR)src/IO/DebugWriter_Null.cpp
-	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
-
 SystemInfo.o: $(CLASSDIR)src/IO/SystemInfoArduino.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $<
 
