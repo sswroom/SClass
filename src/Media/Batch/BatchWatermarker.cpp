@@ -39,7 +39,7 @@ void Media::Batch::BatchWatermarker::ImageOutput(Media::ImageList *imgList, cons
 {
 	if (this->hdlr == 0)
 		return;
-	if (this->watermark->leng == 0)
+	if (this->watermark == 0 || this->watermark->leng == 0)
 	{
 		this->hdlr->ImageOutput(imgList, fileId, subId);
 		return;

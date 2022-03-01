@@ -95,7 +95,7 @@ void Media::ProfiledResizer::SetCurrentProfile(UOSInt index)
 	{
 		bresizer->AddTargetDPI(profile->targetSizeX, profile->targetSizeY, profile->suffix);
 	}
-	this->watermarker->SetWatermark(profile->watermark->ToCString());
+	this->watermarker->SetWatermark(STR_CSTR(profile->watermark));
 	if (this->saver)
 	{
 		DEL_CLASS(this->saver);
