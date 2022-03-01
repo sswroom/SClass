@@ -4610,7 +4610,15 @@ Bool __stdcall DasmX86_64_b8(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
@@ -4636,7 +4644,15 @@ Bool __stdcall DasmX86_64_b9(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
@@ -4662,7 +4678,15 @@ Bool __stdcall DasmX86_64_ba(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt16(sess->sbuff, (Int16)memVal);
@@ -4688,7 +4712,15 @@ Bool __stdcall DasmX86_64_bb(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt16(sess->sbuff, (Int16)memVal);
@@ -4714,7 +4746,15 @@ Bool __stdcall DasmX86_64_bc(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
@@ -4740,7 +4780,15 @@ Bool __stdcall DasmX86_64_bd(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
@@ -4766,7 +4814,15 @@ Bool __stdcall DasmX86_64_be(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
@@ -4792,7 +4848,15 @@ Bool __stdcall DasmX86_64_bf(Manage::DasmX86_64::DasmX86_64_Sess* sess)
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 	sess->sbuff = Text::StrConcat(sess->sbuff, reg);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
-	if (sess->thisStatus & 1)
+	if (sess->thisStatus & 0x800)
+	{
+		UInt64 memVal = sess->memReader->ReadMemUInt64(sess->regs.rip + 1);
+		sess->sbuff = Text::StrInt64(sess->sbuff, (Int64)memVal);
+		sess->regs.rip += 9;
+		*regPtr = memVal;
+
+	}
+	else if (sess->thisStatus & 1)
 	{
 		UInt16 memVal = sess->memReader->ReadMemUInt16(sess->regs.rip + 1);
 		sess->sbuff = Text::StrInt32(sess->sbuff, (Int16)memVal);
