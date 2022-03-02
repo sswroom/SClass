@@ -12,6 +12,7 @@ namespace Media
 
 		ClassData *clsData;
 
+		Bool UpdateToScreen();
 	public:
 		FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType);
 		virtual ~FBSurface();

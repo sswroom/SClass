@@ -8,6 +8,9 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 
+#include <stdio.h>
+#include <errno.h>
+
 #ifndef FBIO_WAITFORVSYNC
   #define FBIO_WAITFORVSYNC _IOW('F', 0x20, __u32)
 #endif
@@ -16,23 +19,39 @@ struct Media::FBSurface::ClassData
 {
 	MonitorHandle *hMon;
 	Int32 fd;
+	Int32 ttyfd;
 	struct fb_fix_screeninfo finfo;
 	struct fb_var_screeninfo vinfo;
 	UInt8 *dataPtr;
 	MonitorSurface *buffSurface;
 };
 
+Bool Media::FBSurface::UpdateToScreen()
+{
+	if (this->clsData->ttyfd < 0)
+	{
+		return true;
+	}
+	return write(this->clsData->ttyfd, " \r", 2) == 2;
+}
+
 Media::FBSurface::FBSurface(MonitorHandle *hMon, Media::ColorProfile *color, Double dpi, Media::RotateType rotateType)
 {
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->hMon = hMon;
 	this->clsData->buffSurface = 0;
+	this->clsData->ttyfd = -1;
 	Char sbuff[64];
 	Text::StrUOSInt(Text::StrConcat(sbuff, "/dev/fb"), ((UOSInt)hMon) - 1);
 	this->clsData->fd = open(sbuff, O_RDWR);
 	if (this->clsData->fd < 0)
 	{
 		return;
+	}
+	this->clsData->ttyfd = open("/dev/tty1", O_WRONLY);
+	if (this->clsData->ttyfd < 0)
+	{
+		printf("error in opening tty %d\r\n", errno);
 	}
 	ioctl(this->clsData->fd, FBIOGET_VSCREENINFO, &this->clsData->vinfo);
 	ioctl(this->clsData->fd, FBIOGET_FSCREENINFO, &this->clsData->finfo);
@@ -76,6 +95,10 @@ Media::FBSurface::~FBSurface()
 	{
 		munmap(this->clsData->dataPtr, this->clsData->vinfo.yres * this->clsData->finfo.line_length);
 		close(this->clsData->fd);
+	}
+	if (this->clsData->fd >= 0)
+	{
+		close(this->clsData->ttyfd);
 	}
 	MemFree(this->clsData);
 }
@@ -194,6 +217,7 @@ Bool Media::FBSurface::DrawFromBuff()
 				}
 			}
 		}
+		this->UpdateToScreen();
 		return true;
 	}
 	return false;
@@ -205,6 +229,7 @@ Bool Media::FBSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool wait
 	{
 		if (waitForVBlank) this->WaitForVBlank();
 		surface->GetImageData(this->clsData->dataPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->clsData->finfo.line_length, false);
+		this->UpdateToScreen();
 		return true;
 	}
 	return false;
@@ -358,6 +383,7 @@ Bool Media::FBSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSIn
 			ImageUtil_ImageColorFill32((UInt8*)this->clsData->dataPtr, (UOSInt)destWidth, (UOSInt)destHeight, (UInt32)this->clsData->finfo.line_length, 0xff000000);
 		}
 	}
+	this->UpdateToScreen();
 	succ = true;
 	return succ;
 }

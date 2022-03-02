@@ -20,6 +20,7 @@ namespace Media
 		void *endHdlrObj;
 		Bool dataConv;
 		UInt16 dataBits;
+		UInt16 dataNChannel;
 		Bool nonBlock;
 
 		UInt32 buffTime;

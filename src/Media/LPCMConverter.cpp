@@ -4,6 +4,53 @@
 #include "Math/Math.h"
 #include "Media/LPCMConverter.h"
 
+UOSInt Media::LPCMConverter::ChannelReduce(UInt16 bitPerSample, UInt16 srcNChannels, const UInt8 *srcBuff, UOSInt srcSize, UInt16 destNChannels, UInt8 *destBuff)
+{
+	if (srcNChannels < destNChannels)
+	{
+		return 0;
+	}
+	else if (srcNChannels == destNChannels)
+	{
+		if (srcBuff != destBuff)
+		{
+			MemCopyNO(destBuff, srcBuff, srcSize);			
+		}
+		return srcSize;
+	}
+	UOSInt copySize = (bitPerSample >> 3) * destNChannels;
+	UOSInt blockSize = (bitPerSample >> 3) * srcNChannels;
+	const UInt8 *srcEnd = srcBuff + srcSize;
+	switch (blockSize)
+	{
+	case 4:
+		while (srcBuff < srcEnd)
+		{
+			WriteNInt32(destBuff, ReadNInt32(srcBuff));
+			destBuff += copySize;
+			srcBuff += blockSize;
+		}
+		break;
+	case 8:
+		while (srcBuff < srcEnd)
+		{
+			WriteNInt64(destBuff, ReadNInt64(srcBuff));
+			destBuff += copySize;
+			srcBuff += blockSize;
+		}
+		break;
+	default:
+		while (srcBuff < srcEnd)
+		{
+			MemCopyNO(destBuff, srcBuff, copySize);
+			destBuff += copySize;
+			srcBuff += blockSize;
+		}
+		break;
+	}
+	return srcSize / blockSize * copySize;
+}
+
 UOSInt Media::LPCMConverter::Convert(UInt32 srcFormat, UInt16 srcBitPerSample, const UInt8 *srcBuff, UOSInt srcSize, UInt32 destFormat, UInt16 destBitPerSample, UInt8 *destBuff)
 {
     if (destFormat == 1 && destBitPerSample == 16)
@@ -209,7 +256,7 @@ UOSInt Media::LPCMConverter::ConvertU8_I24(UInt8 *destBuff, const UInt8 *srcBuff
 UOSInt Media::LPCMConverter::ConvertF32_I32(UInt8 *destBuff, const UInt8 *srcBuff, UOSInt srcSize)
 {
     UOSInt i = srcSize / 4;
-    while (i-- > 0)
+	while (i-- > 0)
     {
 		Double v = ReadFloat(srcBuff) * 2147483647.0;
 		Int32 v32 = Math::SDouble2Int32(v);

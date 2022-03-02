@@ -75,6 +75,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	UOSInt readBuffLeng = BUFFLENG;
 	UOSInt outBuffLeng;
 	UOSInt outBitPerSample;
+	UOSInt outNChannels;
 	UOSInt minLeng;
 	UInt32 thisT;
 	UInt32 lastT;
@@ -101,11 +102,13 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 	{
 		outBuffLeng = readBuffLeng * me->dataBits / af.bitpersample;
 		outBitPerSample = me->dataBits;
+		outNChannels = me->dataNChannel;
 	}
 	else
 	{
 		outBuffLeng = readBuffLeng;
 		outBitPerSample = af.bitpersample;
+		outNChannels = af.nChannels;
 	}
 
 	int err;
@@ -154,7 +157,18 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 		if (me->dataConv)
 		{
 			readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-			buffSize[i] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[i]);
+			if (af.bitpersample == me->dataBits && af.formatId == 1)
+			{
+				buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[i]);
+			}
+			else
+			{
+				buffSize[i] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[i]);
+				if (af.nChannels != me->dataNChannel)
+				{
+					buffSize[i] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[i], buffSize[i], me->dataNChannel, outBuff[i]);
+				}
+			}
 		}
 		else
 		{
@@ -199,7 +213,7 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 					
 				}
 			}
-			i = (Int32)(i * (OSInt)(outBitPerSample >> 3) * af.nChannels);
+			i = (Int32)(i * (OSInt)(outBitPerSample >> 3) * (OSInt)outNChannels);
 			while (i > 0)
 			{
 				if (buffSize[nextBlock] == 0)
@@ -210,17 +224,28 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 				if ((UOSInt)i >= buffSize[nextBlock] - outSize[nextBlock])
 				{
-					err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
+					err = (int)snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
 					if (err < 0)
 					{
-						printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), err);
+						printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels), err);
 					}
 					i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
 
 					if (me->dataConv)
 					{
 						readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-						buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
+						if (af.bitpersample == me->dataBits && af.formatId == 1)
+						{
+							buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
+						}
+						else
+						{
+							buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
+							if (af.nChannels != me->dataNChannel)
+							{
+								buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[nextBlock], buffSize[nextBlock], me->dataNChannel, outBuff[nextBlock]);
+							}
+						}
 					}
 					else
 					{
@@ -233,8 +258,8 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				}
 				else
 				{
-					snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / af.nChannels);
-	//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+					snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (UInt32)i / (outBitPerSample >> 3) / outNChannels);
+	//				printf("snd_pcm_writei(%d) return %d\r\n", (Int32)(i / (outBitPerSample >> 3) / outNChannels), (Int32)ret);
 					outSize[nextBlock] += (UInt32)i;
 					i = 0;
 					break;
@@ -275,14 +300,25 @@ UInt32 __stdcall Media::ALSARenderer::PlayThread(void *obj)
 				me->audsrc->Stop();
 				break;
 			}
-			snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels);
-//			printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / af.nChannels), (Int32)ret);
+			snd_pcm_writei((snd_pcm_t *)me->hand, &outBuff[nextBlock][outSize[nextBlock]], (buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels);
+//			printf("snd_pcm_writei(%d) return %d\r\n", (Int32)((buffSize[nextBlock] - outSize[nextBlock]) / (outBitPerSample >> 3) / outNChannels), (Int32)ret);
 			i -= (Int32)(buffSize[nextBlock] - outSize[nextBlock]);
 
 			if (me->dataConv)
 			{
 				readSize = me->audsrc->ReadBlockLPCM(readBuff, readBuffLeng, &af);
-				buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
+				if (af.bitpersample == me->dataBits && af.formatId == 1)
+				{
+					buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, readBuff, readSize, me->dataNChannel, outBuff[nextBlock]);
+				}
+				else
+				{
+					buffSize[nextBlock] = Media::LPCMConverter::Convert(af.formatId, af.bitpersample, readBuff, readSize, 1, me->dataBits, outBuff[nextBlock]);
+					if (af.nChannels != me->dataNChannel)
+					{
+						buffSize[nextBlock] = Media::LPCMConverter::ChannelReduce(me->dataBits, af.nChannels, outBuff[nextBlock], buffSize[nextBlock], me->dataNChannel, outBuff[nextBlock]);
+					}
+				}
 			}
 			else
 			{
@@ -375,6 +411,7 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 			return false;
 		}
 	}
+	this->dataNChannel = fmt.nChannels;
 	
 	int err;
 	err = snd_pcm_hw_params_malloc(&params);
@@ -406,6 +443,7 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 		return false;
 	}
 //	printf("ALSA: Actual sample rate:%d\r\n", rrate);
+	this->dataBits = fmt.bitpersample;
 	err = snd_pcm_hw_params_set_format(hand, params, sndFmt);
 	if (err < 0)
 	{
@@ -430,14 +468,33 @@ Bool Media::ALSARenderer::SetHWParams(Media::IAudioSource *audsrc, void *h)
 			snd_pcm_hw_params_free(params);
 			return false;
 		}
-		printf("Data Convert required, bit count = %d\r\n", this->dataBits);
+		printf("Data Convert required, bit count = %d > %d\r\n", fmt.bitpersample, this->dataBits);
 	}
 	err = snd_pcm_hw_params_set_channels(hand, params, fmt.nChannels);
 	if (err < 0)
 	{
-		printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
-		snd_pcm_hw_params_free(params);
-		return false;
+		if (fmt.nChannels > 2)
+		{
+			err = snd_pcm_hw_params_set_channels(hand, params, 2);
+			if (err < 0)
+			{
+				printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
+				snd_pcm_hw_params_free(params);
+				return false;
+			}
+			else
+			{
+				printf("Data Convert required, NChannel = %d > %d\r\n", fmt.nChannels, 2);
+				this->dataConv = true;
+				this->dataNChannel = 2;
+			}
+		}
+		else
+		{
+			printf("Error: snd_pcm_hw_params_set_channels (%d), err = %d %s\r\n", fmt.nChannels, err, snd_strerror(err));
+			snd_pcm_hw_params_free(params);
+			return false;
+		}
 	}
 	if (this->buffTime)
 	{
@@ -560,6 +617,9 @@ Media::ALSARenderer::ALSARenderer(const UTF8Char *devName)
 	this->buffTime = 500;
 	this->hand = 0;
 	this->nonBlock = false;
+	this->dataConv = false;
+	this->dataBits = 0;
+	this->dataNChannel = 0;
 }
 
 Media::ALSARenderer::~ALSARenderer()
@@ -601,6 +661,7 @@ Bool Media::ALSARenderer::BindAudio(Media::IAudioSource *audsrc)
 
 	this->dataConv = false;
 	this->dataBits = 16;
+	this->dataNChannel = 2;
 	
 	snd_pcm_t *hand;
 	snd_pcm_sw_params_t *swparams;
