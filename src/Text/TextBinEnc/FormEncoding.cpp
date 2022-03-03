@@ -4,7 +4,7 @@
 #include "Text/MyString.h"
 #include "Text/TextBinEnc/FormEncoding.h"
 
-static UInt8 URIAllow[] = {
+UInt8 Text::TextBinEnc::FormEncoding::URIAllow[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0,

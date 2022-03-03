@@ -37,6 +37,9 @@ Int16 __stdcall Parser::FileParser::ELFParser::TReadMInt16(UInt8 *pVal)
 }
 
 /*
+Name mangling
+https://itanium-cxx-abi.github.io/cxx-abi/abi.html#mangle.local-name
+
 CPP Syntax:
 v = void
 w = wchar_t
@@ -61,14 +64,18 @@ CnE = Constructor
 DnE = Destructor
 */
 
-Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
+Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env, Bool firstPart)
 {
 	UOSInt ptrCnt = 0;
 	Bool constVal = false;
+	Bool refVal = false;
 	UOSInt i;
 	UTF8Char c;
 	Bool foundName;
 	UTF8Char *clsName = 0;
+	UTF8Char *nStart;
+	UTF8Char *nStart2;
+	UTF8Char *nStart3;
 	while (true)
 	{
 		c = env->funcName[0];
@@ -82,11 +89,17 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 			constVal = true;
 			env->funcName++;
 		}
+		else if (c == 'R')
+		{
+			refVal = true;
+			env->funcName++;
+		}
 		else
 		{
 			break;
 		}
 	}
+	nStart = env->sbuff;
 	switch (env->funcName[0])
 	{
 	case '1':
@@ -100,54 +113,154 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 	case '9':
 		if (constVal)
 		{
+			nStart2 = env->sbuff;
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart = env->sbuff;
 		}
-		while (env->funcName[0] >= '1' && env->funcName[0] <= '9')
+		else
+		{
+			nStart = env->sbuff;
+		}
+		c = *env->funcName++;
+		i = (UOSInt)(c - '0');
+		c = *env->funcName++;
+		if (c >= '0' && c <= '9')
+		{
+			i = i * 10 + c - '0';
+		}
+		else
+		{
+			*env->sbuff++ = c;
+			i--;
+		}
+		while (i-- > 0)
 		{
 			c = *env->funcName++;
-			i = (UOSInt)(c - '0');
-			c = *env->funcName++;
-			if (c >= '0' && c <= '9')
+			if (c == 0)
 			{
-				i = i * 10 + c - '0';
+				env->valid = false;
+				return false;
 			}
-			else
+			*env->sbuff++ = c;
+		}
+		if (env->funcName[0] == 'I')
+		{
+			*env->sbuff++ = '<';
+			env->funcName++;
+			nStart3 = env->sbuff;
+			if (!ParseType(env, false))
 			{
-				*env->sbuff++ = c;
-				i--;
+				return false;
 			}
-			while (i-- > 0)
+			if (firstPart)
 			{
-				c = *env->funcName++;
-				if (c == 0)
+				env->tplstr[env->tplId].v = nStart3;
+				env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - nStart3);
+				env->tplId++;
+				env->substr[env->seqId].v = nStart3;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart3);
+				env->seqId++;
+			}
+
+			while (true)
+			{
+				c = env->funcName[0];
+				if (c == 'E')
+				{
+					env->funcName++;
+					*env->sbuff++ = '>';
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
+					break;
+				}
+				else if (c == 0)
 				{
 					env->valid = false;
 					return false;
 				}
-				*env->sbuff++ = c;
+				else
+				{
+					*env->sbuff++ = ',';
+					*env->sbuff++ = ' ';
+					nStart3 = env->sbuff;
+					if (!ParseType(env, false))
+					{
+						return false;
+					}
+					if (firstPart)
+					{
+						env->tplstr[env->tplId].v = nStart3;
+						env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - nStart3);
+						env->tplId++;
+						env->substr[env->seqId].v = nStart3;
+						env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart3);
+						env->seqId++;
+					}
+				}
 			}
+		}
+		else
+		{
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
 		}
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'N':
 		env->funcName++;
+		if (env->funcName[0] == 'K')
+		{
+			env->constFunc = true;
+			env->funcName++;
+		}
 		if (constVal)
 		{
+			nStart2 = env->sbuff;
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart = env->sbuff;
+		}
+		else
+		{
+			nStart = env->sbuff;
 		}
 		foundName = false;
 		while (true)
 		{
 			c = *env->funcName++;
-			if (c >= '1' && c <= '9')
+			switch (c)
 			{
+			case '1':
+			case '2':
+			case '3':
+			case '4':
+			case '5':
+			case '6':
+			case '7':
+			case '8':
+			case '9':
 				i = (UOSInt)(c - '0');
 				if (foundName)
 				{
-					*env->sbuff++ = '.';
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
+					env->sbuff += 2;
 				}
 				else
 				{
@@ -174,48 +287,19 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					}
 					*env->sbuff++ = c;
 				}
-			}
-			else if (c == 'C')
-			{
+				break;
+			case 'C':
 				c = *env->funcName++;
 				if (c == '0' || c == '1' || c == '2')
 				{
 					*env->sbuff = 0;
-					clsName = Text::StrConcat(env->sbuff + 1, clsName);
-					*env->sbuff = '.';
-					i = Text::StrIndexOfChar(env->sbuff, '<');
-					if (i != INVALID_INDEX)
-					{
-						env->sbuff[i] = 0;
-						env->sbuff += i;
-					}
-					else
-					{
-						env->sbuff = clsName;
-					}
-					c = *env->funcName++;
-					if (c != 'E')
-					{
-						env->valid = false;
-						return false;
-					}
-					return true;
-				}
-				else
-				{
-					env->valid = false;
-					return false;
-				}
-			}
-			else if (c == 'D')
-			{
-				c = *env->funcName++;
-				if (c == '0' || c == '1' || c == '2')
-				{
-					*env->sbuff = 0;
+
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
 					clsName = Text::StrConcat(env->sbuff + 2, clsName);
-					env->sbuff[0] = '.';
-					env->sbuff[1] = '~';
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
 					i = Text::StrIndexOfChar(env->sbuff, '<');
 					if (i != INVALID_INDEX)
 					{
@@ -232,6 +316,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 						env->valid = false;
 						return false;
 					}
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
 					return true;
 				}
 				else
@@ -239,21 +326,83 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					env->valid = false;
 					return false;
 				}
-			}
-			else if (c == 'E')
-			{
+				break;
+			case 'D':
+				c = *env->funcName++;
+				if (c == '0' || c == '1' || c == '2')
+				{
+					*env->sbuff = 0;
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
+
+					clsName = Text::StrConcat(env->sbuff + 3, clsName);
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
+					env->sbuff[2] = '~';
+					i = Text::StrIndexOfChar(env->sbuff, '<');
+					if (i != INVALID_INDEX)
+					{
+						env->sbuff[i] = 0;
+						env->sbuff += i;
+					}
+					else
+					{
+						env->sbuff = clsName;
+					}
+					c = *env->funcName++;
+					if (c != 'E')
+					{
+						env->valid = false;
+						return false;
+					}
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
+					return true;
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				break;
+			case 'E':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
 				while (ptrCnt-- > 0)
 				{
 					*env->sbuff++ = '*';
+					env->substr[env->seqId].v = nStart;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+					env->seqId++;
+				}
+				if (constVal)
+				{
+					env->substr[env->seqId].v = nStart2;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+					env->seqId++;
 				}
 				return true;
-			}
-			else if (c == 'I')
-			{
+			case 'I':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
 				*env->sbuff++ = '<';
-				if (!ParseType(env))
+				nStart3 = env->sbuff;
+				if (!ParseType(env, false))
 				{
 					return false;
+				}
+				if (firstPart)
+				{
+					env->tplstr[env->tplId].v = nStart3;
+					env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - nStart3);
+					env->tplId++;
+					env->substr[env->seqId].v = nStart3;
+					env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart3);
+					env->seqId++;
 				}
 				while (true)
 				{
@@ -262,6 +411,9 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					{
 						env->funcName++;
 						*env->sbuff++ = '>';
+						env->substr[env->seqId].v = nStart;
+						env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+						env->seqId++;
 						break;
 					}
 					else if (c == 0)
@@ -273,15 +425,284 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 					{
 						*env->sbuff++ = ',';
 						*env->sbuff++ = ' ';
-						if (!ParseType(env))
+						nStart3 = env->sbuff;
+						if (!ParseType(env, false))
 						{
 							return false;
 						}
+						if (firstPart)
+						{
+							env->tplstr[env->tplId].v = nStart3;
+							env->tplstr[env->tplId].leng = (UOSInt)(env->sbuff - nStart3);
+							env->tplId++;
+							env->substr[env->seqId].v = nStart3;
+							env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart3);
+							env->seqId++;
+						}
 					}
 				}
-			}
-			else
-			{
+				break;
+			case 'a':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 'n')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator&"));
+				}
+				else if (c == 'S')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator="));
+				}
+				else if (c == 'N')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator&="));
+				}
+				else if (c == 'a')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator&&"));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'e':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 'q')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator=="));
+				}
+				else if (c == 'o')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator^"));
+				}
+				else if (c == 'O')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator^="));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'g':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 't')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator>"));
+				}
+				else if (c == 'e')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator>="));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'l':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 't')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator<"));
+				}
+				else if (c == 'e')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator<="));
+				}
+				else if (c == 's')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator<<"));
+				}
+				else if (c == 'S')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator<<="));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'm':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 'i')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator-"));
+				}
+				else if (c == 'l')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator*"));
+				}
+				else if (c == 'm')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator--"));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'p':
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				c = *env->funcName++;
+				if (c == 'l')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator+"));
+				}
+				else if (c == 'L')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator+="));
+				}
+				else if (c == 'p')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator++"));
+				}
+				else if (c == 't')
+				{
+					env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("::operator->"));
+				}
+				else
+				{
+					env->valid = false;
+					return false;
+				}
+				c = *env->funcName++;
+				if (c != 'E')
+				{
+					env->valid = false;
+					return false;
+				}
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				return true;
+			case 'S':
+				switch (env->funcName[0])
+				{
+				case '_':
+					if (env->seqId <= 0)
+					{
+						env->valid = false;
+						return false;
+					}
+					env->sbuff = env->substr[0].ConcatTo(env->sbuff);
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
+					env->sbuff += 2;
+					env->funcName++;
+					break;
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					i = (UOSInt)env->funcName[0] - '0' + 1;
+					if (env->funcName[1] != '_' || env->seqId <= i)
+					{
+						env->valid = false;
+						return false;
+					}
+					env->sbuff = env->substr[i].ConcatTo(env->sbuff);
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
+					env->sbuff += 2;
+					env->funcName += 2;
+					break;
+				case 'A':
+				case 'B':
+				case 'C':
+				case 'D':
+				case 'E':
+				case 'F':
+					i = (UOSInt)env->funcName[0] - '7' + 1;
+					if (env->funcName[1] != '_' || env->seqId <= i)
+					{
+						env->valid = false;
+						return false;
+					}
+					env->sbuff = env->substr[i].ConcatTo(env->sbuff);
+					env->sbuff[0] = ':';
+					env->sbuff[1] = ':';
+					env->sbuff += 2;
+					env->funcName += 2;
+					break;
+				default:
+					env->valid = false;
+					return false;
+				}
+				break;
+			default:
 				env->valid = false;
 				return false;
 			}
@@ -289,7 +710,13 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		return false;
 	case 'F':
 		env->funcName++;
-		if (!ParseType(env))
+		nStart = env->sbuff;
+		if (ptrCnt != 1)
+		{
+			env->valid = false;
+			return false;
+		}
+		if (!ParseType(env, false))
 		{
 			return false;
 		}
@@ -301,7 +728,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		}
 		*env->sbuff++ = ')';
 		*env->sbuff++ = '(';
-		if (!ParseType(env))
+		if (!ParseType(env, false))
 		{
 			return false;
 		}
@@ -312,6 +739,12 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 			{
 				env->funcName++;
 				*env->sbuff++ = ')';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
 				return true;
 			}
 			else if (c == 0)
@@ -323,7 +756,7 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 			{
 				*env->sbuff++ = ',';
 				*env->sbuff++ = ' ';
-				if (!ParseType(env))
+				if (!ParseType(env, false))
 				{
 					return false;
 				}
@@ -334,11 +767,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("void"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'w':
@@ -346,11 +790,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("wchar_t"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'b':
@@ -358,11 +813,45 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("bool"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
+		}
+		return true;
+	case 'a':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
+		}
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("signed char"));
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'c':
@@ -370,11 +859,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("char"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 's':
@@ -382,11 +882,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("short"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'i':
@@ -394,11 +905,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("int"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'x':
@@ -406,11 +928,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("__int64"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'h':
@@ -418,11 +951,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned char"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 't':
@@ -430,11 +974,22 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned short"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'j':
@@ -442,11 +997,45 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned int"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
+		}
+		return true;
+	case 'm':
+		env->funcName++;
+		if (constVal)
+		{
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
+		}
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned long"));
+		while (ptrCnt-- > 0)
+		{
+			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'y':
@@ -454,80 +1043,313 @@ Bool Parser::FileParser::ELFParser::ParseType(ParseEnv *env)
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
 		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("unsigned __int64"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
 	case 'd':
+		if (firstPart)
+		{
+			if (env->funcName[1] == 'l')
+			{
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("operator delete"));
+				env->funcName += 2;
+				return true;
+			}
+			else
+			{
+				env->valid = false;
+				return false;
+			}
+		}
+		else
+		{
+			env->funcName++;
+			if (constVal)
+			{
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart2 = nStart;
+				nStart = env->sbuff;
+			}
+			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("double"));
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		}
+	case 'f':
 		env->funcName++;
 		if (constVal)
 		{
 			env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+			nStart2 = nStart;
+			nStart = env->sbuff;
 		}
-		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("double"));
+		env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("float"));
 		while (ptrCnt-- > 0)
 		{
 			*env->sbuff++ = '*';
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+		}
+		if (constVal)
+		{
+			env->substr[env->seqId].v = nStart2;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+			env->seqId++;
 		}
 		return true;
+	case 'n':
+		if (firstPart)
+		{
+			if (env->funcName[1] == 'w')
+			{
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("operator new"));
+				env->funcName += 2;
+				return true;
+			}
+			else
+			{
+				env->valid = false;
+				return false;
+			}
+		}
+		else
+		{
+			env->valid = false;
+			return false;
+		}
+	case 'T':
+		switch (env->funcName[1])
+		{
+		case '_':
+			if (env->tplId <= 0)
+			{
+				env->valid = false;
+				return false;
+			}
+			if (constVal)
+			{
+				nStart2 = env->sbuff;
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart = env->sbuff;
+			}
+			env->sbuff = env->tplstr[0].ConcatTo(env->sbuff);
+			env->funcName += 2;
+			if (refVal)
+			{
+				*env->sbuff++ = '&';
+			}
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			i = (UOSInt)env->funcName[1] - '0' + 1;
+			if (env->funcName[2] != '_' || env->tplId <= i)
+			{
+				env->valid = false;
+				return false;
+			}
+			if (constVal)
+			{
+				nStart2 = env->sbuff;
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart = env->sbuff;
+			}
+			env->sbuff = env->tplstr[i].ConcatTo(env->sbuff);
+			env->funcName += 3;
+			env->substr[env->seqId].v = nStart;
+			env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+			env->seqId++;
+			if (refVal)
+			{
+				*env->sbuff++ = '&';
+			}
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		default:
+			env->valid = false;
+			return false;
+		}
 	case 'S':
-		env->valid = false;
-		return false;
+		switch (env->funcName[1])
+		{
+		case '_':
+			if (env->seqId <= 0)
+			{
+				env->valid = false;
+				return false;
+			}
+			if (constVal)
+			{
+				nStart2 = env->sbuff;
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart = env->sbuff;
+			}
+			env->sbuff = env->substr[0].ConcatTo(env->sbuff);
+			env->funcName += 2;
+			if (refVal)
+			{
+				*env->sbuff++ = '&';
+			}
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			i = (UOSInt)env->funcName[1] - '0' + 1;
+			if (env->funcName[2] != '_' || env->seqId <= i)
+			{
+				env->valid = false;
+				return false;
+			}
+			if (constVal)
+			{
+				nStart2 = env->sbuff;
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart = env->sbuff;
+			}
+			env->sbuff = env->substr[i].ConcatTo(env->sbuff);
+			env->funcName += 3;
+			if (refVal)
+			{
+				*env->sbuff++ = '&';
+			}
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		case 'A':
+		case 'B':
+		case 'C':
+		case 'D':
+		case 'E':
+		case 'F':
+			i = (UOSInt)env->funcName[1] - '7' + 1;
+			if (env->funcName[2] != '_' || env->seqId <= i)
+			{
+				env->valid = false;
+				return false;
+			}
+			if (constVal)
+			{
+				nStart2 = env->sbuff;
+				env->sbuff = Text::StrConcatC(env->sbuff, UTF8STRC("const "));
+				nStart = env->sbuff;
+			}
+			env->sbuff = env->substr[i].ConcatTo(env->sbuff);
+			env->funcName += 3;
+			if (refVal)
+			{
+				*env->sbuff++ = '&';
+			}
+			while (ptrCnt-- > 0)
+			{
+				*env->sbuff++ = '*';
+				env->substr[env->seqId].v = nStart;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart);
+				env->seqId++;
+			}
+			if (constVal)
+			{
+				env->substr[env->seqId].v = nStart2;
+				env->substr[env->seqId].leng = (UOSInt)(env->sbuff - nStart2);
+				env->seqId++;
+			}
+			return true;
+		default:
+			env->valid = false;
+			return false;
+		}
 	default:
 		env->valid = false;
 		return false;
-	}
-}
-
-UTF8Char *Parser::FileParser::ELFParser::ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName)
-{
-	if (funcName[0] == '_' && funcName[1] == 'Z')
-	{
-		ParseEnv env;
-		env.funcName = funcName + 2;
-		env.sbuff = sbuff;
-		env.valid = true;
-		if (env.funcName[0] >= '1' && env.funcName[0] <= '9')
-		{
-			ParseType(&env);
-			*env.sbuff++ = '(';
-		}
-		else if (env.funcName[0] == 'N')
-		{
-			ParseType(&env);
-			*env.sbuff++ = '(';
-		}
-		else
-		{
-			env.valid = false;
-		}
-		if (env.valid && ParseType(&env))
-		{
-			while (*env.funcName && env.valid)
-			{
-				*env.sbuff++ = ',';
-				*env.sbuff++ = ' ';
-				ParseType(&env);
-			}
-		}
-
-		if (env.valid)
-		{
-			*env.sbuff++ = ')';
-			*env.sbuff = 0;
-			return env.sbuff;
-		}
-		else
-		{
-			return Text::StrConcat(sbuff, funcName);
-		}
-	}
-	else
-	{
-		return Text::StrConcat(sbuff, funcName);
 	}
 }
 
@@ -573,7 +1395,7 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 	RInt32Func readInt32;
 	RInt16Func readInt16;
 	UTF8Char sbuff[256];
-	UTF8Char sbuff2[256];
+	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	IO::EXEFile *exef;
@@ -750,6 +1572,8 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 	exef->AddProp(CSTR("Version"), CSTRP(sbuff, sptr));
 	UInt8 *progHdr = 0;
 	UInt8 *secHdr = 0;
+	UInt8 *funcBuff = 0;
+	UOSInt funcBuffSize = 0;
 	UInt32 phSize;
 	UInt32 phCnt;
 	UInt32 shSize;
@@ -1256,8 +2080,17 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 
 		if (shSize >= 64)
 		{
+			progHdr = 0;
 			secHdr = MemAlloc(UInt8, shSize * shCnt);
 			fd->GetRealData(sht, shSize * shCnt, secHdr);
+
+			if (readInt32(&secHdr[shSize * secNameInd + 4]) == 3)
+			{
+				UOSInt sz = (UOSInt)(UInt64)readInt64(&secHdr[shSize * secNameInd + 32]);
+				progHdr = MemAlloc(UInt8, sz + 1);
+				fd->GetRealData((UInt32)readInt64(&secHdr[shSize * secNameInd + 24]), sz, progHdr);
+				progHdr[sz] = 0;
+			}
 
 			i = 0;
 			j = 0;
@@ -1268,6 +2101,15 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 				sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
 				sptr2 = Text::StrHexVal32(Text::StrConcatC(sbuff2, UTF8STRC("0x")), (UInt32)readInt32(&secHdr[j + 0]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
+
+				if (progHdr)
+				{
+					sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
+					sptr = Text::StrUOSInt(sptr, i);
+					sptr = Text::StrConcatC(sptr, UTF8STRC(" Name Offset"));
+					sptr2 = &progHdr[readInt32(&secHdr[j + 0])];
+					exef->AddProp(CSTRP(sbuff, sptr), {sptr2, Text::StrCharCnt(sptr2)});
+				}
 
 				sptr = Text::StrConcatC(sbuff, UTF8STRC("Section Header "));
 				sptr = Text::StrUOSInt(sptr, i);
@@ -1382,13 +2224,267 @@ IO::ParsedObject *Parser::FileParser::ELFParser::ParseFile(IO::IStreamData *fd, 
 				sptr2 = Text::StrUInt64(sbuff2, (UInt64)readInt64(&secHdr[j + 56]));
 				exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
 
+				if (progHdr)
+				{
+					const UTF8Char *name = (const UTF8Char*)&progHdr[readInt32(&secHdr[j + 0])];
+					UInt32 assSec = (UInt32)readInt32(&secHdr[j + 40]);
+					Bool exportFunc = false;
+					Bool symbolSec = false;
+					if (Text::StrEquals(name, (const UTF8Char*)".dynsym"))
+					{
+						symbolSec = true;
+					}
+					else if (Text::StrEquals(name, (const UTF8Char*)".symtab"))
+					{
+						symbolSec = true;
+						exportFunc = true;
+					}
+					if (symbolSec)
+					{
+						UOSInt k;
+						UOSInt l;
+						UInt32 tmpVal;
+						UInt64 thisAddr;
+						UInt64 thisSize;
+						UInt64 symSize = (UInt64)readInt64(&secHdr[j + 32]);
+						UInt64 strSize = (UInt64)readInt64(&secHdr[assSec * shSize + 32]);
+						UInt8 *symTab = MemAlloc(UInt8, (UOSInt)symSize);
+						UInt8 *strTab = MemAlloc(UInt8, (UOSInt)strSize);
+						fd->GetRealData((UInt64)readInt32(&secHdr[j + 24]), symSize, symTab);
+						fd->GetRealData((UInt64)readInt32(&secHdr[assSec * shSize + 24]), strSize, strTab);
+						k = 0;
+						l = 0;
+						while (l < symSize)
+						{
+							if (exportFunc && (symTab[l + 4] & 15) == 2)
+							{
+								tmpVal = (UInt32)readInt32(&symTab[l]);
+								sptr2 = ToFuncName(sbuff2, &strTab[tmpVal]);
+								exef->AddExportFunc(CSTRP(sbuff2, sptr2));
+							}
+							thisAddr = (UInt64)readInt64(&symTab[l + 8]);
+							thisSize = (UInt64)readInt64(&symTab[l + 16]);
+							if (thisSize > 0 && (symTab[l + 4] & 15) == 2)
+							{
+								tmpVal = (UInt32)readInt32(&symTab[l]);
+								sptr2 = ToFuncName(sbuff2, &strTab[tmpVal]);
+								if (sbuff2[0] != '_' || sbuff2[1] != 'Z')
+								{
+									if (funcBuffSize < thisSize)
+									{
+										if (funcBuff)
+										{
+											MemFree(funcBuff);
+										}
+										funcBuffSize = (UOSInt)thisSize;
+										funcBuff = MemAlloc(UInt8, funcBuffSize);
+									}
+									fd->GetRealData(thisAddr, (UOSInt)thisSize, funcBuff);
+									//exef->AddFunc(CSTRP(sbuff2, sptr2), thisAddr, thisSize, funcBuff);
+								}
+							}
+
+							sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Symbol ")), k);
+							tmpVal = (UInt32)readInt32(&symTab[l]);
+							if (tmpVal == 0)
+							{
+								sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("(null)"));
+							}
+							else
+							{
+								sptr2 = Text::StrConcat(sbuff2, &strTab[tmpVal]);
+							}
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(", addr = 0x"));
+							sptr2 = Text::StrHexVal64(sptr2, thisAddr);
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(", size = "));
+							sptr2 = Text::StrUInt64(sptr2, thisSize);
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(", bind = "));
+							sptr2 = Text::StrInt32(sptr2, symTab[l + 4] >> 4);
+							switch (symTab[l + 4] >> 4)
+							{
+							case 0:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Local)"));
+								break;
+							case 1:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Global)"));
+								break;
+							case 2:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Weak)"));
+								break;
+							case 10:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Lo OS)"));
+								break;
+							case 12:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Hi OS)"));
+								break;
+							case 13:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Lo Proc)"));
+								break;
+							case 15:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Hi Proc)"));
+								break;
+							}
+							sptr2 = Text::StrConcatC(sptr2, UTF8STRC(", type = "));
+							sptr2 = Text::StrInt32(sptr2, symTab[l + 4] & 15);
+							switch (symTab[l + 4] & 15)
+							{
+							case 0:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (No Type)"));
+								break;
+							case 1:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Object)"));
+								break;
+							case 2:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Function)"));
+								break;
+							case 3:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Section)"));
+								break;
+							case 4:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (File)"));
+								break;
+							case 5:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (Common)"));
+								break;
+							case 6:
+								sptr2 = Text::StrConcatC(sptr2, UTF8STRC(" (TLS)"));
+								break;
+							}
+							exef->AddProp(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2));
+
+							k++;
+							l += 24;
+						}
+						MemFree(symTab);
+						MemFree(strTab);
+					}
+				}
+
 				i++;
 				j += shSize;
 			}
 
 			MemFree(secHdr);
+
+			if (progHdr)
+			{
+				MemFree(progHdr);
+			}
+
+			if (funcBuff)
+			{
+				MemFree(funcBuff);
+				//exef->EndAddFunc();
+			}
 		}
 	}
 
 	return exef;
+}
+
+UTF8Char *Parser::FileParser::ELFParser::ToFuncName(UTF8Char *sbuff, const UTF8Char *funcName)
+{
+	if (funcName[0] == '_' && funcName[1] == 'Z')
+	{
+		ParseEnv env;
+		env.funcName = funcName + 2;
+		env.sbuff = sbuff;
+		env.valid = true;
+		env.constFunc = false;
+		env.seqId = 0;
+		env.tplId = 0;
+		if (env.funcName[0] == 'L')
+		{
+			env.sbuff = Text::StrConcatC(env.sbuff, UTF8STRC("static "));
+			env.funcName++;
+		}
+		if (env.funcName[0] == 'T' && env.funcName[1] == 'h' && env.funcName[2] == 'n')
+		{
+			UTF8Char c;
+			env.sbuff = Text::StrConcatC(env.sbuff, UTF8STRC("non-virtual thunk to "));
+			env.funcName += 3;
+			while (true)
+			{
+				c = env.funcName[0];
+				if (c >= '0' && c <= '9')
+				{
+					env.funcName++;
+				}
+				else if (c == '_')
+				{
+					env.funcName++;
+					break;
+				}
+				else
+				{
+					env.valid = false;
+					break;
+				}
+			}
+		}
+		if (env.valid)
+		{
+			if (ParseType(&env, true))
+			{
+				if (env.seqId > 0)
+				{
+					env.seqId--;
+				}
+				if (env.sbuff[-1] == '>' && env.funcName[0] == 'v')
+				{
+					MemCopyO(sbuff + 5, sbuff, (UOSInt)(env.sbuff - sbuff));
+					env.sbuff += 5;
+					MemCopyNO(sbuff, "void ", 5);
+					env.funcName++;
+					UOSInt i = env.tplId;
+					while (i-- > 0)
+					{
+						env.tplstr[i].v += 5;
+					}
+					i = env.seqId;
+					while (i-- > 0)
+					{
+						env.substr[i].v += 5;
+					}
+				}
+				*env.sbuff++ = '(';
+			}
+			else
+			{
+				env.valid = false;
+			}
+		}
+
+		if (env.valid && ParseType(&env, false))
+		{
+			while (*env.funcName && *env.funcName != '@' && env.valid)
+			{
+				*env.sbuff++ = ',';
+				*env.sbuff++ = ' ';
+				ParseType(&env, false);
+			}
+		}
+
+		if (env.valid)
+		{
+			*env.sbuff++ = ')';
+			if (env.constFunc)
+			{
+				env.sbuff = Text::StrConcatC(env.sbuff, UTF8STRC(" const"));
+			}
+			else
+			{
+				*env.sbuff = 0;
+			}
+			return env.sbuff;
+		}
+		else
+		{
+			return Text::StrConcat(sbuff, funcName);
+		}
+	}
+	else
+	{
+		return Text::StrConcat(sbuff, funcName);
+	}
 }

@@ -8,6 +8,7 @@
 #include "Sync/Thread.h"
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
+#include "Win32/Clipboard.h"
 
 void SSWR::AVIRead::AVIRExeForm::ParseSess16(Manage::DasmX86_16::DasmX86_16_Sess *sess, Data::ArrayListString *codes, Data::ArrayList<ExeB16Addr*> *parts, Data::ArrayListInt32 *partInd, ExeB16Addr *startAddr, Manage::DasmX86_16 *dasm, UOSInt codeSize)
 {
@@ -236,6 +237,17 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnImportSelChg(void *userObj)
 	}
 }
 
+void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
+{
+	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
+	Text::String *s = me->lbExport->GetSelectedItemTextNew();
+	if (s)
+	{
+		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		s->Release();
+	}
+}
+
 void __stdcall SSWR::AVIRead::AVIRExeForm::OnResourceSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRExeForm *me = (SSWR::AVIRead::AVIRExeForm*)userObj;
@@ -356,6 +368,7 @@ SSWR::AVIRead::AVIRExeForm::AVIRExeForm(UI::GUIClientControl *parent, UI::GUICor
 	this->tpExport = this->tcEXE->AddTabPage(CSTR("Export"));
 	NEW_CLASS(this->lbExport, UI::GUIListBox(ui, this->tpExport, false));
 	this->lbExport->SetDockType(UI::GUIControl::DOCK_FILL);
+	this->lbExport->HandleDoubleClicked(OnExportDblClk, this);
 	i = 0;
 	j = this->exeFile->GetExportCount();
 	while (i < j)

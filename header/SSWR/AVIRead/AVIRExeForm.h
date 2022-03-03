@@ -61,6 +61,7 @@ namespace SSWR
 			void InitSess16();
 			static void __stdcall On16BitFuncsChg(void *userObj);
 			static void __stdcall OnImportSelChg(void *userObj);
+			static void __stdcall OnExportDblClk(void *userObj);
 			static void __stdcall OnResourceSelChg(void *userObj);
 			static void __stdcall OnResourceDblClk(void *userObj);
 		public:
@@ -69,6 +70,6 @@ namespace SSWR
 
 			virtual void OnMonitorChanged();
 		};
-	};
-};
+	}
+}
 #endif

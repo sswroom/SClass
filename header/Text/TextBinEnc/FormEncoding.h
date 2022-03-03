@@ -10,6 +10,8 @@ namespace Text
 	{
 		class FormEncoding : public Text::TextBinEnc::ITextBinEnc
 		{
+		private:
+			static UInt8 URIAllow[];
 		public:
 			static void FormEncode(Text::StringBuilderUTF8 *sb, const UTF8Char *uri, UOSInt uriLen);
 			static UTF8Char *FormEncode(UTF8Char *buff, const UTF8Char *uri);

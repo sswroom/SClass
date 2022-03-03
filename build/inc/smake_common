@@ -135,6 +135,7 @@ nodeps:
 @SMTPTest
 @WiFiCapture
 @WiFiScan
+@ELFFuncTest
 @KMLParserTest
 @ArgsTest
 @GPIOSigGen
@@ -509,6 +510,9 @@ OpenCVFaceDetect:
 @ConsoleStartup.o
 
 #Parser
+ELFFuncTest:
+@ELFFuncTest.o
+@ConsoleStartup.o
 KMLParserTest:
 @KMLParserTest.o
 @ConsoleStartup.o
@@ -944,6 +948,7 @@ SMTPTest.o: ../../main/NetTest/SMTPTest.cpp
 WiFiCaptureMain.o: ../../main/NetTest/WiFiCaptureMain.cpp
 WiFiScanMain.o: ../../main/NetTest/WiFiScanMain.cpp
 OpenCVFaceDetectMain.o: ../../main/OpenCV/OpenCVFaceDetectMain.cpp
+ELFFuncTest.o: ../../main/Parser/ELFFuncTest.cpp
 KMLParserTest.o: ../../main/Parser/KMLParserTest.cpp
 ArgsTestMain.o: ../../main/SSWR/ArgsTestMain.cpp
 AVIRMain.o: ../../main/SSWR/AVIRMain.cpp

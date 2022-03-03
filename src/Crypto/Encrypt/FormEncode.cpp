@@ -29,7 +29,7 @@ Crypto::Encrypt::FormEncode::~FormEncode()
 {
 }
 
-Int32 Crypto::Encrypt::FormEncode::Encrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *encParam)
+UOSInt Crypto::Encrypt::FormEncode::Encrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *encParam)
 {
 	UInt8 c;
 	UInt8 *dest = outBuff;
@@ -54,10 +54,10 @@ Int32 Crypto::Encrypt::FormEncode::Encrypt(const UInt8 *inBuff, OSInt inSize, UI
 			}
 		}
 	}
-	return (Int32)(dest - outBuff);
+	return (UOSInt)(dest - outBuff);
 }
 
-Int32 Crypto::Encrypt::FormEncode::Decrypt(const UInt8 *inBuff, OSInt inSize, UInt8 *outBuff, void *decParam)
+UOSInt Crypto::Encrypt::FormEncode::Decrypt(const UInt8 *inBuff, UOSInt inSize, UInt8 *outBuff, void *decParam)
 {
 	UInt8 *dest = outBuff;
 	UInt8 c;
@@ -122,15 +122,15 @@ Int32 Crypto::Encrypt::FormEncode::Decrypt(const UInt8 *inBuff, OSInt inSize, UI
 			inSize--;
 		}
 	}
-	return (Int32)(dest - outBuff);
+	return (UOSInt)(dest - outBuff);
 }
 
-OSInt Crypto::Encrypt::FormEncode::GetEncBlockSize()
+UOSInt Crypto::Encrypt::FormEncode::GetEncBlockSize()
 {
 	return 1;
 }
 
-OSInt Crypto::Encrypt::FormEncode::GetDecBlockSize()
+UOSInt Crypto::Encrypt::FormEncode::GetDecBlockSize()
 {
 	return 1;
 }
