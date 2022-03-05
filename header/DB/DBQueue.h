@@ -4,9 +4,6 @@
 #include "DB/DBTool.h"
 #include "Sync/Event.h"
 
-#define DB_DBQUEUE_PRIORITY_HIGHEST 9
-#define DB_DBQUEUE_PRIORITY_LOWEST 0
-
 namespace DB
 {
 	class DBHandler;
@@ -15,6 +12,23 @@ namespace DB
 	public:
 		typedef void (__stdcall *DBReadHdlr)(void *userData, void *userData2, DB::DBTool *db, DB::DBReader *r);
 		typedef Bool (__stdcall *DBToolHdlr)(void *userData, void *userData2, DB::DBTool *db);
+
+		enum class Priority
+		{
+			Priority_0,
+			Priority_1,
+			Priority_2,
+			Priority_3,
+			Priority_4,
+			Priority_5,
+			Priority_6,
+			Priority_7,
+			Priority_8,
+			Priority_9,
+
+			Lowest = Priority_0,
+			Highest = Priority_9
+		};
 
 		enum class CmdType
 		{
@@ -126,9 +140,9 @@ namespace DB
 
 		void ToStop();
 		void AddSQL(const UTF8Char *sql, UOSInt sqlLen);
-		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
-		void AddTrans(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
-		void GetDB(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
+		void AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2);
+		void AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
+		void GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2);
 		void RemoveSQLs(Int32 progId);
 		UOSInt GetDataCnt();
 		UOSInt GetQueueCnt();

@@ -118,9 +118,9 @@ DB::DBQueue::DBQueue(DBTool *db, IO::LogTool *log, Text::CString name, UOSInt db
 	this->db1 = db;
 	this->dbSize = dbSize / 200;
 	NEW_CLASS(this->mut, Sync::Mutex());
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	OSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
 		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
@@ -143,9 +143,9 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::Stri
 	this->db1 = dbs->GetItem(0);
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
 		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
@@ -173,9 +173,9 @@ DB::DBQueue::DBQueue(Data::ArrayList<DBTool*> *dbs, IO::LogTool *log, Text::CStr
 	this->db1 = dbs->GetItem(0);
 	NEW_CLASS(this->mut, Sync::Mutex());
 	this->dbSize = dbSize / 200;
-	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, DB_DBQUEUE_PRIORITY_HIGHEST + 1);
-	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	sqlList = MemAlloc(Data::ArrayList<IDBCmd*>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	sqlList2 = MemAlloc(Data::ArrayList<IDBCmd**>*, (UOSInt)DB::DBQueue::Priority::Highest + 1);
+	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
 		NEW_CLASS(sqlList[i], Data::ArrayList<IDBCmd*>());
@@ -217,7 +217,7 @@ DB::DBQueue::~DBQueue()
 	}
 
 	Sync::MutexUsage mutUsage(this->mut);
-	i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
 		j = sqlList[i]->GetCount();
@@ -299,31 +299,32 @@ void DB::DBQueue::ToStop()
 
 void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen)
 {
-	this->AddSQL(sql, sqlLen, 0, 0, 0, 0, 0);
+	this->AddSQL(sql, sqlLen, Priority::Lowest, 0, 0, 0, 0);
 }
 
-void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Priority priority, Int32 progId, DBReadHdlr hdlr, void *userData, void *userData2)
 {
-	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
-		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
-	if (priority < DB_DBQUEUE_PRIORITY_LOWEST)
-		priority = DB_DBQUEUE_PRIORITY_LOWEST;
+	if (priority > DB::DBQueue::Priority::Highest)
+		priority = DB::DBQueue::Priority::Highest;
+	if (priority < DB::DBQueue::Priority::Lowest)
+		priority = DB::DBQueue::Priority::Lowest;
+	UOSInt ipriority = (UOSInt)priority;
 	Sync::MutexUsage mutUsage(mut);
 	SQLCmd *cmd;
 	NEW_CLASS(cmd, SQLCmd(sql, sqlLen, progId, hdlr, userData, userData2));
-	sqlList[priority]->Add(cmd);
-	if (sqlList[priority]->GetCount() > 4000)
+	sqlList[ipriority]->Add(cmd);
+	if (sqlList[ipriority]->GetCount() > 4000)
 	{
 		IDBCmd *arr[200];
-		sqlList[priority]->GetRange(arr, 0, 200);
-		sqlList[priority]->RemoveRange(0, 200);
-		if (sqlList2[priority]->GetCount() > this->dbSize)
+		sqlList[ipriority]->GetRange(arr, 0, 200);
+		sqlList[ipriority]->RemoveRange(0, 200);
+		if (sqlList2[ipriority]->GetCount() > this->dbSize)
 		{
 			OSInt i = 10;
 			Bool lost = true;
 			while (i-- > 0)
 			{
-				if (sqlList2[priority]->GetCount() > this->dbSize)
+				if (sqlList2[ipriority]->GetCount() > this->dbSize)
 				{
 					Sync::Thread::Sleep(200);
 				}
@@ -331,7 +332,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int
 				{
 					IDBCmd **sqlArr = MemAlloc(IDBCmd*, 200);
 					MemCopyNO(sqlArr, arr, 200 * sizeof(IDBCmd*));
-					sqlList2[priority]->Add(sqlArr);
+					sqlList2[ipriority]->Add(sqlArr);
 					lost = false;
 					break;
 				}
@@ -343,7 +344,7 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int
 		{
 			IDBCmd **sqlArr = MemAlloc(IDBCmd*, 200);
 			MemCopyNO(sqlArr, arr, 200 * sizeof(IDBCmd*));
-			sqlList2[priority]->Add(sqlArr);
+			sqlList2[ipriority]->Add(sqlArr);
 		}
 	}
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
@@ -351,31 +352,33 @@ void DB::DBQueue::AddSQL(const UTF8Char *sql, UOSInt sqlLen, Int32 priority, Int
 	mutUsage.EndUse();
 }
 
-void DB::DBQueue::AddTrans(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::AddTrans(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
 {
-	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
-		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
-	if (priority < DB_DBQUEUE_PRIORITY_LOWEST)
-		priority = DB_DBQUEUE_PRIORITY_LOWEST;
+	if (priority > DB::DBQueue::Priority::Highest)
+		priority = DB::DBQueue::Priority::Highest;
+	if (priority < DB::DBQueue::Priority::Lowest)
+		priority = DB::DBQueue::Priority::Lowest;
+	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLTrans *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLTrans(progId, hdlr, userData, userData2));
 	Sync::MutexUsage mutUsage(mut);
-	sqlList[priority]->Add(trans);
+	sqlList[ipriority]->Add(trans);
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
 	mutUsage.EndUse();
 }
 
-void DB::DBQueue::GetDB(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
+void DB::DBQueue::GetDB(Priority priority, Int32 progId, DBToolHdlr hdlr, void *userData, void *userData2)
 {
-	if (priority > DB_DBQUEUE_PRIORITY_HIGHEST)
-		priority = DB_DBQUEUE_PRIORITY_HIGHEST;
-	if (priority < DB_DBQUEUE_PRIORITY_LOWEST)
-		priority = DB_DBQUEUE_PRIORITY_LOWEST;
+	if (priority > DB::DBQueue::Priority::Highest)
+		priority = DB::DBQueue::Priority::Highest;
+	if (priority < DB::DBQueue::Priority::Lowest)
+		priority = DB::DBQueue::Priority::Lowest;
+	UOSInt ipriority = (UOSInt)priority;
 	DB::DBQueue::SQLGetDB *trans;
 	NEW_CLASS(trans, DB::DBQueue::SQLGetDB(progId, hdlr, userData, userData2));
 	Sync::MutexUsage mutUsage(mut);
-	sqlList[priority]->Add(trans);
+	sqlList[ipriority]->Add(trans);
 	((DB::DBHandler*)this->dbList->GetItem(this->nextDB))->Wake();
 	this->nextDB = (this->nextDB + 1) % this->dbList->GetCount();
 	mutUsage.EndUse();
@@ -383,7 +386,7 @@ void DB::DBQueue::GetDB(Int32 priority, Int32 progId, DBToolHdlr hdlr, void *use
 
 void DB::DBQueue::RemoveSQLs(Int32 progId)
 {
-	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	UOSInt j;
 	DB::DBQueue::IDBCmd *cmd;
 	Sync::MutexUsage mutUsage(mut);
@@ -417,7 +420,7 @@ UOSInt DB::DBQueue::GetDataCnt()
 UOSInt DB::DBQueue::GetQueueCnt()
 {
 	UOSInt cnt = 0;
-	UOSInt i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	UOSInt i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	Sync::MutexUsage mutUsage(mut);
 	while (i-- > 0)
 	{
@@ -456,7 +459,7 @@ UOSInt DB::DBQueue::GetNextCmds(IDBCmd **cmds)
 	UOSInt j;
 	UOSInt cnt = 0;
 
-	i = DB_DBQUEUE_PRIORITY_HIGHEST + 1;
+	i = (UOSInt)DB::DBQueue::Priority::Highest + 1;
 	while (i-- > 0)
 	{
 		if (sqlList2[i]->GetCount() > 0)

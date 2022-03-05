@@ -29,11 +29,6 @@ DB::DBTool::~DBTool()
 {
 }
 
-OSInt DB::DBTool::ExecuteNonQuery(const UTF8Char *sqlCmd)
-{
-	return ExecuteNonQueryC(sqlCmd, Text::StrCharCnt(sqlCmd));
-}
-
 OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 {
 	{

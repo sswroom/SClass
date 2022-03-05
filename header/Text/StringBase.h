@@ -39,6 +39,7 @@ namespace Text
 		UOSInt IndexOfICase(StringBase<UTF8Char> *s) const;
 		UOSInt LastIndexOf(UTF8Char c) const;
 		OSInt CompareTo(StringBase<UTF8Char> *s) const;
+		OSInt CompareTo(StringBase<const UTF8Char> s) const;
 		OSInt CompareTo(const UTF8Char *s) const;
 		OSInt CompareToICase(StringBase<UTF8Char> *s) const;
 		OSInt CompareToICase(const UTF8Char *s) const;
@@ -270,6 +271,11 @@ template <typename T> UOSInt Text::StringBase<T>::LastIndexOf(UTF8Char c) const
 template <typename T> OSInt Text::StringBase<T>::CompareTo(StringBase<UTF8Char> *s) const
 {
 	return MyString_StrCompare(this->v, s->v);
+}
+
+template <typename T> OSInt Text::StringBase<T>::CompareTo(StringBase<const UTF8Char> s) const
+{
+	return MyString_StrCompare(this->v, s.v);
 }
 
 template <typename T> OSInt Text::StringBase<T>::CompareTo(const UTF8Char *s) const
