@@ -174,7 +174,7 @@ Net::HTTPClient *Net::ACMEConn::ACMEPost(Text::String *url, Text::CString data)
 
 Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSize)
 {
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	if (json)
 	{
 		Text::String *s;
@@ -239,7 +239,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeJSON(Text::JSONBase *json)
 
 Net::ACMEConn::Challenge *Net::ACMEConn::ChallengeParse(const UInt8 *buff, UOSInt buffSize)
 {
-	Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+	Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 	Challenge *chall = 0;
 	if (json)
 	{
@@ -297,7 +297,7 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 			{
 				UInt8 *jsonBuff = mstm->GetBuff(&recvSize);
 				Text::String *s;
-				Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(jsonBuff, recvSize);
+				Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(jsonBuff, recvSize);
 				if (json)
 				{
 					if (json->GetType() == Text::JSONType::Object)
@@ -440,7 +440,7 @@ Bool Net::ACMEConn::AccountNew()
 		DEL_CLASS(cli);
 		UOSInt buffSize;
 		UInt8 *buff = mstm.GetBuff(&buffSize);
-		Text::JSONBase *base = Text::JSONBase::ParseJSONStrLen(buff, buffSize);
+		Text::JSONBase *base = Text::JSONBase::ParseJSONBytes(buff, buffSize);
 		if (base != 0)
 		{
 			if (base->GetType() == Text::JSONType::Object)
@@ -587,7 +587,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 		UOSInt j;
 		Text::String *s;
 		const UInt8 *authBuff = mstm.GetBuff(&i);
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(authBuff, i);
+		Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(authBuff, i);
 		if (json == 0)
 		{
 			return 0;

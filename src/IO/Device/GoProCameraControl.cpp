@@ -27,7 +27,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 		reader->ReadToEnd(&sb);
 		DEL_CLASS(reader);
 		DEL_CLASS(cli);
-		Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStrLen(sb.ToString(), sb.GetLength());
+		Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
 		Text::JSONObject *jsObj;
 		Text::JSONBase *jsBase2;
 		Text::JSONArray *jsArrDir;
@@ -166,7 +166,7 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 	reader->ReadToEnd(&sb);
 	DEL_CLASS(reader);
 	DEL_CLASS(cli);
-	Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStrLen(sb.ToString(), sb.GetLength());
+	Text::JSONBase *jsBase = Text::JSONBase::ParseJSONStr(sb.ToCString());
 	Text::JSONObject *jsObj;
 	Text::JSONBase *jsBase2;
 	Text::JSONObject *jsInfo;

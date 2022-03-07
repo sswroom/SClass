@@ -19,7 +19,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		buff = MemAlloc(UInt8, (UOSInt)flen + 1);
 		fs->Read(buff, (UOSInt)flen);
 		buff[flen] = 0;
-		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(buff);
+		Text::JSONBase *obj = Text::JSONBase::ParseJSONStr(Text::CString(buff, flen));
 		if (obj)
 		{
 			IO::ConsoleWriter console;

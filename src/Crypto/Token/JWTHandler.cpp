@@ -114,7 +114,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 	UOSInt payloadSize;
 	headerSize = b64url.DecodeBin(token, i1, headerBuff);
 	payloadSize = b64url.DecodeBin(&token[i1 + 1], i2 - i1 - 1, payloadBuff);
-	Text::JSONBase *hdrJson = Text::JSONBase::ParseJSONStrLen(headerBuff, headerSize);
+	Text::JSONBase *hdrJson = Text::JSONBase::ParseJSONBytes(headerBuff, headerSize);
 	JWSignature::Algorithm tokenAlg = JWSignature::Algorithm::Unknown;
 	if (hdrJson != 0)
 	{
@@ -152,7 +152,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 	}
 
 	param->Clear();
-	Text::JSONBase *payloadJson = Text::JSONBase::ParseJSONStrLen(payloadBuff, payloadSize);
+	Text::JSONBase *payloadJson = Text::JSONBase::ParseJSONBytes(payloadBuff, payloadSize);
 	MemFree(headerBuff);
 	MemFree(payloadBuff);
 	if (payloadJson == 0)

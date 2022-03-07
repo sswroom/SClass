@@ -54,7 +54,7 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 		jsonStr = MemAlloc(UTF8Char, charsCnt + 1);
 		enc.UTF8FromBytes(jsonStr, jsonBuff, readSize, 0);
 		
-		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(jsonStr);
+		Text::JSONBase *json = Text::JSONBase::ParseJSONStr(Text::CString(jsonStr, charsCnt));
 		if (json)
 		{
 			if (json->GetType() == Text::JSONType::Object)

@@ -2154,7 +2154,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 					Text::StringBuilderUTF8 sb;
 					Text::JSText::JSONWellFormat(&packet[12], packetSize - 12, 0, &sb);
 					frame->AddField(frameOfst + 12, (UInt32)packetSize - 12, sb.ToCString(), CSTR_NULL);
-					Text::JSONBase *json = Text::JSONBase::ParseJSONStrLen(&packet[12], packetSize - 12);
+					Text::JSONBase *json = Text::JSONBase::ParseJSONBytes(&packet[12], packetSize - 12);
 					if (json)
 					{
 						if (json->GetType() == Text::JSONType::Object)

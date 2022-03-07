@@ -42,8 +42,8 @@ namespace Text
 		JSONBase *GetValue(const UTF8Char *path, UOSInt pathLen);
 		Text::String *GetString(const UTF8Char *path, UOSInt pathLen);
 
-		static JSONBase *ParseJSONStr(const UTF8Char *jsonStr);
-		static JSONBase *ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen);
+		static JSONBase *ParseJSONStr(Text::CString jsonStr);
+		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
 
 	private:
 		static const UTF8Char *ClearWS(const UTF8Char *jsonStr);

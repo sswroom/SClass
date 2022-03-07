@@ -56,7 +56,7 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	UOSInt buffSize = (UOSInt)fd->GetDataSize();
 	UInt8 *fileBuff = MemAlloc(UInt8, buffSize + 1);
 	fileBuff[fd->GetRealData(0, (UOSInt)fd->GetDataSize(), fileBuff)] = 0;
-	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(fileBuff);
+	Text::JSONBase *fileJSON = Text::JSONBase::ParseJSONStr(Text::CString(fileBuff, buffSize));
 	MemFree(fileBuff);
 
 	UInt32 srid = 0;

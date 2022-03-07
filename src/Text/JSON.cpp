@@ -162,17 +162,17 @@ Text::String *Text::JSONBase::GetString(const UTF8Char *path, UOSInt pathLen)
 	return 0;
 }
 
-Text::JSONBase *Text::JSONBase::ParseJSONStr(const UTF8Char *jsonStr)
+Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CString jsonStr)
 {
 	const UTF8Char *endPtr;
-	return ParseJSONStr2(jsonStr, &jsonStr[Text::StrCharCnt(jsonStr)], &endPtr);
+	return ParseJSONStr2(jsonStr.v, jsonStr.GetEndPtr(), &endPtr);
 }
 
-Text::JSONBase *Text::JSONBase::ParseJSONStrLen(const UTF8Char *jsonStr, UOSInt strLen)
+Text::JSONBase *Text::JSONBase::ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len)
 {
-	UTF8Char *s = MemAlloc(UTF8Char, strLen + 1);
+	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
 	const UTF8Char *endPtr;
-	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonStr, strLen), &endPtr);
+	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes, len), &endPtr);
 	MemFree(s);
 	return ret;
 }

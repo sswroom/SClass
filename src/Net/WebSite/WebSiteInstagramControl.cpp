@@ -26,12 +26,9 @@ Text::JSONBase *Net::WebSite::WebSiteInstagramControl::ParsePageJSON(Text::CStri
 			{
 				if (sb.EndsWith(';'))
 				{
-					baseData = Text::JSONBase::ParseJSONStrLen(sb.ToString() + 21, sb.GetLength() - 22);
+					sb.RemoveChars(1);
 				}
-				else
-				{
-					baseData = Text::JSONBase::ParseJSONStr(sb.ToString() + 21);
-				}
+				baseData = Text::JSONBase::ParseJSONStr(sb.ToCString().Substring(21));
 			}
 		}
 	}
