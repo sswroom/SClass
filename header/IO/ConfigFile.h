@@ -19,14 +19,14 @@ namespace IO
 		virtual Text::String *GetValue(Text::String *category, Text::String *name);
 		virtual Text::String *GetValue(Text::CString category, Text::CString name);
 		Bool SetValue(Text::String *category, Text::String *name, Text::String *value);
-		Bool SetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
-		Bool RemoveValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen);
+		Bool SetValue(Text::CString category, Text::CString name, Text::CString value);
+		Bool RemoveValue(Text::CString category, Text::CString name);
 		UOSInt GetCateCount();
 		UOSInt GetCateList(Data::ArrayList<Text::String *> *cateList, Bool withEmpty);
 		UOSInt GetKeys(Text::String *category, Data::ArrayList<Text::String *> *keyList);
-		UOSInt GetKeys(const UTF8Char *category, UOSInt categoryLen, Data::ArrayList<Text::String *> *keyList);
-		Bool HasCategory(const UTF8Char *category, UOSInt categoryLen);
-		IO::ConfigFile *CloneCate(const UTF8Char *category, UOSInt categoryLen);
+		UOSInt GetKeys(Text::CString category, Data::ArrayList<Text::String *> *keyList);
+		Bool HasCategory(Text::CString category);
+		IO::ConfigFile *CloneCate(Text::CString category);
 	};
 }
 #endif

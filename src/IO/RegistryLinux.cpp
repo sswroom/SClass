@@ -295,7 +295,7 @@ void IO::Registry::SetValue(const WChar *name, Int32 value)
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
 	Text::String *s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng, sb.ToString(), sb.GetLength());
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
 	this->clsData->reg->modified = true;
 	s->Release();
 }
@@ -314,7 +314,7 @@ void IO::Registry::SetValue(const WChar *name, const WChar *value)
 		NEW_CLASS(this->clsData->reg->cfg, IO::ConfigFile());
 	}
 	s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->SetValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng, sb.ToString(), sb.GetLength());
+	this->clsData->reg->cfg->SetValue(this->clsData->cate->ToCString(), s->ToCString(), sb.ToCString());
 	this->clsData->reg->modified = true;
 	s->Release();
 }
@@ -327,7 +327,7 @@ void IO::Registry::DelValue(const WChar *name)
 		return;
 	}
 	Text::String *s = Text::String::NewNotNull(name);
-	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->v, this->clsData->cate->leng, s->v, s->leng);
+	this->clsData->reg->cfg->RemoveValue(this->clsData->cate->ToCString(), s->ToCString());
 	s->Release();
 }
 

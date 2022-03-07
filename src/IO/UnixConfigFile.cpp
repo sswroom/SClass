@@ -93,14 +93,14 @@ IO::ConfigFile *IO::UnixConfigFile::ParseReader(Text::UTF8Reader *reader)
 						{
 							src[-1] = 0;
 							valueEnd = &src[-1];
-							cfg->SetValue(0, 0, name, (UOSInt)(nameEnd - name), value, (UOSInt)(valueEnd - value));
+							cfg->SetValue(CSTR_NULL, CSTRP(name, nameEnd), CSTRP(value, valueEnd));
 							break;
 						}
 					}
 				}
 				else
 				{
-					cfg->SetValue(0, 0, name, (UOSInt)(nameEnd - name), src, (UOSInt)(valueEnd - src));
+					cfg->SetValue(CSTR_NULL, CSTRP(name, nameEnd), CSTRP(src, valueEnd));
 				}
 			}
 		}

@@ -84,48 +84,48 @@ Bool IO::ConfigFile::SetValue(Text::String *category, Text::String *name, Text::
 	return true;
 }
 
-Bool IO::ConfigFile::SetValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+Bool IO::ConfigFile::SetValue(Text::CString category, Text::CString name, Text::CString value)
 {
 	Data::FastStringMap<Text::String *> *cate;
 	Text::String *s;
 
-	if (name == 0)
+	if (name.v == 0)
 		return false;
-	if (category == 0)
+	if (category.v == 0)
 	{
-		category = (const UTF8Char*)"";
+		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC({category, categoryLen});
+	cate = this->cfgVals->GetC(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals->PutC({category, categoryLen}, cate);
+		this->cfgVals->PutC(category, cate);
 	}
-	s = cate->GetC({name, nameLen});
+	s = cate->GetC(name);
 	SDEL_STRING(s);
-	cate->PutC({name, nameLen}, Text::String::New(value, valueLen));
+	cate->PutC(name, Text::String::New(value));
 	return true;
 }
 
 
-Bool IO::ConfigFile::RemoveValue(const UTF8Char *category, UOSInt categoryLen, const UTF8Char *name, UOSInt nameLen)
+Bool IO::ConfigFile::RemoveValue(Text::CString category, Text::CString name)
 {
 	Data::FastStringMap<Text::String *> *cate;
 	Text::String *s;
 
-	if (name == 0)
+	if (name.v == 0)
 		return false;
-	if (category == 0)
+	if (category.v == 0)
 	{
-		category = (const UTF8Char*)"";
+		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC({category, categoryLen});
+	cate = this->cfgVals->GetC(category);
 	if (cate == 0)
 	{
 		NEW_CLASS(cate, Data::FastStringMap<Text::String *>());
-		this->cfgVals->PutC({category, categoryLen}, cate);
+		this->cfgVals->PutC(category, cate);
 	}
-	s = cate->RemoveC({name, nameLen});
+	s = cate->RemoveC(name);
 	SDEL_STRING(s);
 	return true;
 }
@@ -171,14 +171,14 @@ UOSInt IO::ConfigFile::GetKeys(Text::String *category, Data::ArrayList<Text::Str
 	return j;
 }
 
-UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, UOSInt categoryLen, Data::ArrayList<Text::String *> *keyList)
+UOSInt IO::ConfigFile::GetKeys(Text::CString category, Data::ArrayList<Text::String *> *keyList)
 {
 	Data::FastStringMap<Text::String *> *cate;
-	if (category == 0)
+	if (category.v == 0)
 	{
-		category = (const UTF8Char*)"";
+		category = CSTR("");
 	}
-	cate = this->cfgVals->GetC({category, categoryLen});
+	cate = this->cfgVals->GetC(category);
 	if (cate == 0)
 		return 0;
 	UOSInt i = 0;
@@ -192,18 +192,18 @@ UOSInt IO::ConfigFile::GetKeys(const UTF8Char *category, UOSInt categoryLen, Dat
 	return j;
 }
 
-Bool IO::ConfigFile::HasCategory(const UTF8Char *category, UOSInt categoryLen)
+Bool IO::ConfigFile::HasCategory(Text::CString category)
 {
-	if (category == 0)
+	if (category.v == 0)
 	{
-		category = (const UTF8Char*)"";
+		category = CSTR("");
 	}
-	return this->cfgVals->GetC({category, categoryLen}) != 0;
+	return this->cfgVals->GetC(category) != 0;
 }
 
-IO::ConfigFile *IO::ConfigFile::CloneCate(const UTF8Char *category, UOSInt categoryLen)
+IO::ConfigFile *IO::ConfigFile::CloneCate(Text::CString category)
 {
-	Data::FastStringMap<Text::String*> *cate = this->cfgVals->GetC({category, categoryLen});
+	Data::FastStringMap<Text::String*> *cate = this->cfgVals->GetC(category);
 	if (cate == 0)
 	{
 		return 0;

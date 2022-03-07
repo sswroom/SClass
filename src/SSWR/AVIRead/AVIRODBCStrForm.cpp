@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRODBCStrForm::OnDriverInfoClicked(void *userObj
 	me->cboDriver->GetText(&sb);
 	if (sb.GetCharCnt() > 0)
 	{
-		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToString(), sb.GetLength());
+		IO::ConfigFile *driver = DB::ODBCConn::GetDriverInfo(sb.ToCString());
 		if (driver)
 		{
 			SSWR::AVIRead::AVIRTableMsgForm *frm;

@@ -31,7 +31,7 @@ IO::ConfigFile *IO::WSConfigFile::Parse(Text::CString fileName)
 		sb.TrimWSCRLF();
 		if (Text::StrSplitWSP(sarr, 2, sb) == 2)
 		{
-			cfg->SetValue(0, 0, sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+			cfg->SetValue(CSTR_NULL, sarr[0].ToCString(), sarr[1].ToCString());
 		}
 	}
 	DEL_CLASS(reader);

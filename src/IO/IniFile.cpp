@@ -93,12 +93,12 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 							break;
 					}
 					sb.Trim();
-					cfg->SetValue(cate, (UOSInt)(cateEnd - cate), name, (UOSInt)(nameEnd - name), sb.ToString(), sb.GetLength());
+					cfg->SetValue(CSTRP(cate, cateEnd), CSTRP(name, nameEnd), sb.ToCString());
 				}
 				else
 				{
 					Text::StrTrim(value);
-					cfg->SetValue(cate, (UOSInt)(cateEnd - cate), name, (UOSInt)(nameEnd - name), value, (UOSInt)(valueEnd - value));
+					cfg->SetValue(CSTRP(cate, cateEnd), CSTRP(name, nameEnd), CSTRP(value, valueEnd));
 				}
 			}
 		}
