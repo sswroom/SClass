@@ -228,6 +228,7 @@ Double Text::JSONBase::GetAsDouble()
 	case Text::JSONType::Null:
 		return 0;
 	}
+	return 0;
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CString jsonStr)
@@ -1215,7 +1216,7 @@ Double Text::JSONObject::GetObjectDouble(Text::CString name)
 	{
 		return 0;
 	}
-	return this->GetAsDouble();
+	return baseObj->GetAsDouble();
 }
 
 Int32 Text::JSONObject::GetObjectInt32(Text::CString name)
