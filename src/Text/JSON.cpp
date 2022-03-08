@@ -55,7 +55,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 		{
 			if (json->GetType() == JSONType::Object)
 			{
-				return ((Text::JSONObject*)json)->GetObjectValue(sptr, (UOSInt)(sptrEnd - sptr));
+				return ((Text::JSONObject*)json)->GetObjectValue(CSTRP(sptr, sptrEnd));
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
@@ -90,7 +90,7 @@ Text::JSONBase *Text::JSONBase::GetValue(const UTF8Char *path, UOSInt pathLen)
 			sptr[dotIndex] = 0;
 			if (json->GetType() == JSONType::Object)
 			{
-				json = ((Text::JSONObject*)json)->GetObjectValue(sptr, dotIndex);
+				json = ((Text::JSONObject*)json)->GetObjectValue(Text::CString(sptr, dotIndex));
 			}
 			else if (json->GetType() == JSONType::Array)
 			{
@@ -160,6 +160,74 @@ Text::String *Text::JSONBase::GetString(const UTF8Char *path, UOSInt pathLen)
 		return ((Text::JSONString*)json)->GetValue();
 	}
 	return 0;
+}
+
+Int32 Text::JSONBase::GetAsInt32()
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		return ((Text::JSONBool*)this)->GetValue()?1:0;
+	case Text::JSONType::INT32:
+		return ((Text::JSONInt32*)this)->GetValue();
+	case Text::JSONType::INT64:
+		return (Int32)(((Text::JSONInt64*)this)->GetValue());
+	case Text::JSONType::Number:
+		return Double2Int32(((Text::JSONNumber*)this)->GetValue());
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToInt32();
+	case Text::JSONType::StringWO:
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return 0;
+	}
+	return 0;
+}
+
+Int64 Text::JSONBase::GetAsInt64()
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		return ((Text::JSONBool*)this)->GetValue()?1:0;
+	case Text::JSONType::INT32:
+		return ((Text::JSONInt32*)this)->GetValue();
+	case Text::JSONType::INT64:
+		return ((Text::JSONInt64*)this)->GetValue();
+	case Text::JSONType::Number:
+		return Double2Int64(((Text::JSONNumber*)this)->GetValue());
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToInt64();
+	case Text::JSONType::StringWO:
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return 0;
+	}
+	return 0;
+}
+
+Double Text::JSONBase::GetAsDouble()
+{
+	switch (this->GetType())
+	{
+	case Text::JSONType::BOOL:
+		return ((Text::JSONBool*)this)->GetValue()?1:0;
+	case Text::JSONType::INT32:
+		return ((Text::JSONInt32*)this)->GetValue();
+	case Text::JSONType::INT64:
+		return (Double)(((Text::JSONInt64*)this)->GetValue());
+	case Text::JSONType::Number:
+		return ((Text::JSONNumber*)this)->GetValue();
+	case Text::JSONType::String:
+		return ((Text::JSONString*)this)->GetValue()->ToDouble();
+	case Text::JSONType::StringWO:
+	case Text::JSONType::Array:
+	case Text::JSONType::Object:
+	case Text::JSONType::Null:
+		return 0;
+	}
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CString jsonStr)
@@ -532,7 +600,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 					*jsonStrEndOut = 0;
 					return 0;
 				}
-				jobj->SetObjectValue(sb.ToString(), sb.GetLength(), obj);
+				jobj->SetObjectValue(sb.ToCString(), obj);
 				if (obj)
 				{
 					obj->EndUse();
@@ -1030,23 +1098,83 @@ Bool Text::JSONObject::Identical(Text::JSONBase *obj)
 	return this == obj;
 }
 
-void Text::JSONObject::SetObjectValue(const UTF8Char *name, UOSInt nameLen, Text::JSONBase *val)
+void Text::JSONObject::SetObjectValue(Text::CString name, Text::JSONBase *val)
 {
 	if (val)
 	{
 		val->BeginUse();
 	}
-	Text::JSONBase *obj = this->objVals->GetC({name, nameLen});
+	Text::JSONBase *obj = this->objVals->GetC(name);
 	if (obj)
 	{
 		obj->EndUse();
 	}
-	this->objVals->PutC({name, nameLen}, val);
+	this->objVals->PutC(name, val);
 }
 
-Text::JSONBase *Text::JSONObject::GetObjectValue(const UTF8Char *name, UOSInt nameLen)
+void Text::JSONObject::SetObjectInt32(Text::CString name, Int32 val)
 {
-	return this->objVals->GetC({name, nameLen});
+	Text::JSONBase *obj = this->objVals->GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONInt32 *ival;
+	NEW_CLASS(ival, Text::JSONInt32(val));
+	this->objVals->PutC(name, ival);
+}
+
+void Text::JSONObject::SetObjectInt64(Text::CString name, Int64 val)
+{
+	Text::JSONBase *obj = this->objVals->GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONInt64 *ival;
+	NEW_CLASS(ival, Text::JSONInt64(val));
+	this->objVals->PutC(name, ival);
+}
+
+void Text::JSONObject::SetObjectDouble(Text::CString name, Double val)
+{
+	Text::JSONBase *obj = this->objVals->GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONNumber *ival;
+	NEW_CLASS(ival, Text::JSONNumber(val));
+	this->objVals->PutC(name, ival);
+}
+
+void Text::JSONObject::SetObjectString(Text::CString name, Text::CString val)
+{
+	Text::JSONBase *obj = this->objVals->GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONString *ival;
+	NEW_CLASS(ival, Text::JSONString(val));
+	this->objVals->PutC(name, ival);
+}
+
+void Text::JSONObject::SetObjectString(Text::CString name, Text::String *val)
+{
+	Text::JSONBase *obj = this->objVals->GetC(name);
+	if (obj)
+	{
+		obj->EndUse();
+	}
+	Text::JSONString *ival;
+	NEW_CLASS(ival, Text::JSONString(val));
+	this->objVals->PutC(name, ival);
+}
+
+Text::JSONBase *Text::JSONObject::GetObjectValue(Text::CString name)
+{
+	return this->objVals->GetC(name);
 }
 
 void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
@@ -1060,14 +1188,54 @@ void Text::JSONObject::GetObjectNames(Data::ArrayList<Text::String *> *names)
 	}
 }
 
-Text::String *Text::JSONObject::GetObjectString(const UTF8Char *name, UOSInt nameLen)
+Text::String *Text::JSONObject::GetObjectString(Text::CString name)
 {
-	Text::JSONBase *baseObj = this->objVals->GetC({name, nameLen});
+	Text::JSONBase *baseObj = this->objVals->GetC(name);
 	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
 	{
 		return 0;
 	}
 	return ((Text::JSONString*)baseObj)->GetValue();
+}
+
+Text::String *Text::JSONObject::GetObjectNewString(Text::CString name)
+{
+	Text::JSONBase *baseObj = this->objVals->GetC(name);
+	if (baseObj == 0 || baseObj->GetType() != Text::JSONType::String)
+	{
+		return 0;
+	}
+	return ((Text::JSONString*)baseObj)->GetValue()->Clone();
+}
+
+Double Text::JSONObject::GetObjectDouble(Text::CString name)
+{
+	Text::JSONBase *baseObj = this->objVals->GetC(name);
+	if (baseObj == 0)
+	{
+		return 0;
+	}
+	return this->GetAsDouble();
+}
+
+Int32 Text::JSONObject::GetObjectInt32(Text::CString name)
+{
+	Text::JSONBase *baseObj = this->objVals->GetC(name);
+	if (baseObj == 0)
+	{
+		return 0;
+	}
+	return baseObj->GetAsInt32();
+}
+
+Int64 Text::JSONObject::GetObjectInt64(Text::CString name)
+{
+	Text::JSONBase *baseObj = this->objVals->GetC(name);
+	if (baseObj == 0)
+	{
+		return 0;
+	}
+	return baseObj->GetAsInt64();
 }
 
 Text::JSONArray::JSONArray()
@@ -1155,6 +1323,16 @@ void Text::JSONArray::AddArrayValue(Text::JSONBase *val)
 Text::JSONBase *Text::JSONArray::GetArrayValue(UOSInt index)
 {
 	return this->arrVals->GetItem(index);
+}
+
+Double Text::JSONArray::GetArrayDouble(UOSInt index)
+{
+	Text::JSONBase *baseObj = this->arrVals->GetItem(index);
+	if (baseObj == 0)
+	{
+		return 0;
+	}
+	return baseObj->GetAsDouble();
 }
 
 UOSInt Text::JSONArray::GetArrayLength()

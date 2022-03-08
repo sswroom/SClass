@@ -41,6 +41,9 @@ namespace Text
 
 		JSONBase *GetValue(const UTF8Char *path, UOSInt pathLen);
 		Text::String *GetString(const UTF8Char *path, UOSInt pathLen);
+		Int32 GetAsInt32();
+		Int64 GetAsInt64();
+		Double GetAsDouble();
 
 		static JSONBase *ParseJSONStr(Text::CString jsonStr);
 		static JSONBase *ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len);
@@ -175,10 +178,19 @@ namespace Text
 		virtual void ToJSONString(Text::StringBuilderUTF8 *sb);
 		virtual Bool Equals(Text::CString s);
 		virtual Bool Identical(JSONBase *obj);
-		void SetObjectValue(const UTF8Char *name, UOSInt nameLen, JSONBase *val);
-		JSONBase *GetObjectValue(const UTF8Char *name, UOSInt nameLen);
+		void SetObjectValue(Text::CString name, JSONBase *val);
+		void SetObjectInt32(Text::CString name, Int32 val);
+		void SetObjectInt64(Text::CString name, Int64 val);
+		void SetObjectDouble(Text::CString name, Double val);
+		void SetObjectString(Text::CString name, Text::CString val);
+		void SetObjectString(Text::CString name, Text::String *val);
+		JSONBase *GetObjectValue(Text::CString name);
 		void GetObjectNames(Data::ArrayList<Text::String *> *names);
-		Text::String *GetObjectString(const UTF8Char *name, UOSInt nameLen);
+		Text::String *GetObjectString(Text::CString name);
+		Text::String *GetObjectNewString(Text::CString name);
+		Double GetObjectDouble(Text::CString name);
+		Int32 GetObjectInt32(Text::CString name);
+		Int64 GetObjectInt64(Text::CString name);
 	};
 
 	class JSONArray : public JSONBase
@@ -198,6 +210,7 @@ namespace Text
 		void SetArrayValue(UOSInt index, Text::JSONBase *val);
 		void AddArrayValue(Text::JSONBase *val);
 		JSONBase *GetArrayValue(UOSInt index);
+		Double GetArrayDouble(UOSInt index);
 		UOSInt GetArrayLength();
 	};
 

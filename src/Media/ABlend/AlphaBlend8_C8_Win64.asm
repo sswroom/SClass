@@ -185,6 +185,9 @@ iadbldpalop2:
 	movzx rax,byte [rsi+0]
 	movq xmm2,[rdx+rax*8+266240]
 	paddsw xmm1,xmm2
+	movzx rax,byte [rsi+3]
+	movq xmm2,[rdx+rax*8+268288]
+	paddsw xmm1,xmm2
 
 	movzx rax,byte [rdi+2]
 	movq xmm0,[rdx+rax*8+270336]
@@ -194,10 +197,13 @@ iadbldpalop2:
 	movzx rax,byte [rdi+0]
 	movq xmm2,[rdx+rax*8+274432]
 	paddsw xmm0,xmm2
+	movzx rax,byte [rdi+3]
+	movq xmm2,[rdx+rax*8+276480]
+	paddsw xmm0,xmm2
 
 	punpcklbw xmm3, xmm3
 	pmulhuw xmm0,xmm3
-	paddsw xmm0,xmm1
+	paddusw xmm0,xmm1
 
 	pextrw rax,xmm0,3
 	mov bh,byte [rdx+rax+196608]

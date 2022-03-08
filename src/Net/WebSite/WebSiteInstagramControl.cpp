@@ -70,53 +70,53 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
 			obj1 = (Text::JSONObject*)baseData;
-			if ((jsBase = obj1->GetObjectValue(UTF8STRC("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+			if ((jsBase = obj1->GetObjectValue(CSTR("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 			{
 				obj1 = (Text::JSONObject*)jsBase;
-				if ((jsBase = obj1->GetObjectValue(UTF8STRC("ProfilePage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+				if ((jsBase = obj1->GetObjectValue(CSTR("ProfilePage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 				{
 					arr1 = (Text::JSONArray*)jsBase;
 					jsBase = arr1->GetArrayValue(0);
 					if (jsBase && jsBase->GetType() == Text::JSONType::Object)
 					{
 						obj1 = (Text::JSONObject*)jsBase;
-						if ((jsBase = obj1->GetObjectValue(UTF8STRC("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+						if ((jsBase = obj1->GetObjectValue(CSTR("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 						{
 							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(UTF8STRC("user"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+							if ((jsBase = obj1->GetObjectValue(CSTR("user"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 							{
 								obj1 = (Text::JSONObject*)jsBase;
 								if (chInfo)
 								{
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("full_name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if ((jsBase = obj1->GetObjectValue(CSTR("full_name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->full_name);
 										chInfo->full_name = str1->GetValue()->Clone();
 									}
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("biography"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if ((jsBase = obj1->GetObjectValue(CSTR("biography"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->biography);
 										chInfo->biography = str1->GetValue()->Clone();
 									}
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("profile_pic_url_hd"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if ((jsBase = obj1->GetObjectValue(CSTR("profile_pic_url_hd"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->profile_pic_url_hd);
 										chInfo->profile_pic_url_hd = str1->GetValue()->Clone();
 									}
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("username"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+									if ((jsBase = obj1->GetObjectValue(CSTR("username"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 									{
 										str1 = (Text::JSONString*)jsBase;
 										SDEL_STRING(chInfo->username);
 										chInfo->username = str1->GetValue()->Clone();
 									}
 								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("edge_owner_to_timeline_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+								if ((jsBase = obj1->GetObjectValue(CSTR("edge_owner_to_timeline_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 								{
 									obj1 = (Text::JSONObject*)jsBase;
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+									if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 									{
 										arr1 = (Text::JSONArray*)jsBase;
 										i = 0;
@@ -127,49 +127,46 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetChannelItems(Text::String *chann
 											if (jsBase->GetType() == Text::JSONType::Object)
 											{
 												obj1 = (Text::JSONObject*)jsBase;
-												if ((jsBase = obj1->GetObjectValue(UTF8STRC("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+												if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 												{
 													obj1 = (Text::JSONObject*)jsBase;
 													item = MemAlloc(Net::WebSite::WebSiteInstagramControl::ItemData, 1);
 													MemClear(item, sizeof(Net::WebSite::WebSiteInstagramControl::ItemData));
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("id"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if ((jsBase = obj1->GetObjectValue(CSTR("id"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														item->id = ((Text::JSONString*)jsBase)->GetValue()->ToInt64();
 													}
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("shortcode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if ((jsBase = obj1->GetObjectValue(CSTR("shortcode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														item->shortCode = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 													}
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("taken_at_timestamp"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
-													{
-														item->recTime = Double2Int64(((Text::JSONNumber*)jsBase)->GetValue()) * 1000;
-													}
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													item->recTime = obj1->GetObjectInt64(CSTR("taken_at_timestamp")) * 1000;
+													if ((jsBase = obj1->GetObjectValue(CSTR("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														item->imgURL = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 													}
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if ((jsBase = obj1->GetObjectValue(CSTR("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														item->videoURL = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 													}
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("__typename"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if ((jsBase = obj1->GetObjectValue(CSTR("__typename"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														item->moreImages = ((Text::JSONString*)jsBase)->GetValue()->Equals(UTF8STRC("GraphSidecar"));
 													}
 
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("edge_media_to_caption"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+													if ((jsBase = obj1->GetObjectValue(CSTR("edge_media_to_caption"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 													{
 														obj1 = (Text::JSONObject*)jsBase;
-														if ((jsBase = obj1->GetObjectValue(UTF8STRC("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+														if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 														{
 															jsBase = ((Text::JSONArray*)jsBase)->GetArrayValue(0);
 															if (jsBase != 0 && jsBase->GetType() == Text::JSONType::Object)
 															{
 																obj1 = (Text::JSONObject*)jsBase;
-																if ((jsBase = obj1->GetObjectValue(UTF8STRC("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+																if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 																{
 																	obj1 = (Text::JSONObject*)jsBase;
-																	if ((jsBase = obj1->GetObjectValue(UTF8STRC("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+																	if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 																	{
 																		item->message = ((Text::JSONString*)jsBase)->GetValue()->Clone();
 																	}
@@ -253,26 +250,26 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCo
 		if (baseData->GetType() == Text::JSONType::Object)
 		{
 			obj1 = (Text::JSONObject*)baseData;
-			if ((jsBase = obj1->GetObjectValue(UTF8STRC("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+			if ((jsBase = obj1->GetObjectValue(CSTR("entry_data"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 			{
 				obj1 = (Text::JSONObject*)jsBase;
-				if ((jsBase = obj1->GetObjectValue(UTF8STRC("PostPage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+				if ((jsBase = obj1->GetObjectValue(CSTR("PostPage"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 				{
 					arr1 = (Text::JSONArray*)jsBase;
 					jsBase = arr1->GetArrayValue(0);
 					if (jsBase && jsBase->GetType() == Text::JSONType::Object)
 					{
 						obj1 = (Text::JSONObject*)jsBase;
-						if ((jsBase = obj1->GetObjectValue(UTF8STRC("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+						if ((jsBase = obj1->GetObjectValue(CSTR("graphql"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 						{
 							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(UTF8STRC("shortcode_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+							if ((jsBase = obj1->GetObjectValue(CSTR("shortcode_media"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 							{
 								obj1 = (Text::JSONObject*)jsBase;
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("edge_sidecar_to_children"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+								if ((jsBase = obj1->GetObjectValue(CSTR("edge_sidecar_to_children"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 								{
 									obj1 = (Text::JSONObject*)jsBase;
-									if ((jsBase = obj1->GetObjectValue(UTF8STRC("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+									if ((jsBase = obj1->GetObjectValue(CSTR("edges"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 									{
 										arr1 = (Text::JSONArray*)jsBase;
 										i = 0;
@@ -283,15 +280,15 @@ OSInt Net::WebSite::WebSiteInstagramControl::GetPageImages(Text::String *shortCo
 											if (jsBase->GetType() == Text::JSONType::Object)
 											{
 												obj1 = (Text::JSONObject*)jsBase;
-												if ((jsBase = obj1->GetObjectValue(UTF8STRC("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+												if ((jsBase = obj1->GetObjectValue(CSTR("node"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 												{
 													obj1 = (Text::JSONObject*)jsBase;
-													if ((jsBase = obj1->GetObjectValue(UTF8STRC("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													if ((jsBase = obj1->GetObjectValue(CSTR("video_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														videoList->Add(((Text::JSONString*)jsBase)->GetValue()->Clone());
 														retCnt++;
 													}
-													else if ((jsBase = obj1->GetObjectValue(UTF8STRC("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+													else if ((jsBase = obj1->GetObjectValue(CSTR("display_url"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 													{
 														imageList->Add(((Text::JSONString*)jsBase)->GetValue()->Clone());
 														retCnt++;

@@ -69,32 +69,29 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 	if (fileJSON->GetType() == Text::JSONType::Object)
 	{
 		Text::JSONObject *jobj = (Text::JSONObject*)fileJSON;
-		Text::JSONBase *jbase = jobj->GetObjectValue(UTF8STRC("type"));
+		Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("type"));
 		if (jbase && jbase->Equals(CSTR("FeatureCollection")))
 		{
 			Math::CoordinateSystem *csys = 0;
-			Text::JSONBase *crs = jobj->GetObjectValue(UTF8STRC("crs"));
+			Text::JSONBase *crs = jobj->GetObjectValue(CSTR("crs"));
 			if (crs && crs->GetType() == Text::JSONType::Object)
 			{
-				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue(UTF8STRC("properties"));
+				Text::JSONBase *crsProp = ((Text::JSONObject*)crs)->GetObjectValue(CSTR("properties"));
 				if (crsProp && crsProp->GetType() == Text::JSONType::Object)
 				{
-					Text::JSONBase *crsName = ((Text::JSONObject*)crsProp)->GetObjectValue(UTF8STRC("name"));
+					Text::String *crsName = ((Text::JSONObject*)crsProp)->GetObjectString(CSTR("name"));
 					if (crsName)
 					{
-						if (crsName->GetType() == Text::JSONType::String)
+						csys = Math::CoordinateSystemManager::CreateFromName(crsName->ToCString());
+						if (csys)
 						{
-							csys = Math::CoordinateSystemManager::CreateFromName(((Text::JSONString*)crsName)->GetValue()->ToCString());
-							if (csys)
-							{
-								srid = csys->GetSRID();
-							}
+							srid = csys->GetSRID();
 						}
 					}
 				}
 			}
 
-			jbase = jobj->GetObjectValue(UTF8STRC("features"));
+			jbase = jobj->GetObjectValue(CSTR("features"));
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Map::VectorLayer *lyr = 0;
@@ -112,9 +109,9 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 				Math::Vector2D *vec;
 				if (feature && feature->GetType() == Text::JSONType::Object)
 				{
-					featType = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("type"));
-					featProp = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("properties"));
-					featGeom = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("geometry"));
+					featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
+					featProp = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("properties"));
+					featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
 					if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 					{
 						Data::ArrayList<Text::String *> colNames;
@@ -146,15 +143,15 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 						feature = features->GetArrayValue(i);
 						if (feature && feature->GetType() == Text::JSONType::Object)
 						{
-							featType = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("type"));
-							featProp = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("properties"));
-							featGeom = ((Text::JSONObject*)feature)->GetObjectValue(UTF8STRC("geometry"));
+							featType = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("type"));
+							featProp = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("properties"));
+							featGeom = ((Text::JSONObject*)feature)->GetObjectValue(CSTR("geometry"));
 							if (featType && featType->GetType() == Text::JSONType::String && featProp && featProp->GetType() == Text::JSONType::Object && featGeom && featGeom->GetType() == Text::JSONType::Object)
 							{
 								k = 0;
 								while (k < colCnt)
 								{
-									jbase = ((Text::JSONObject*)featProp)->GetObjectValue(tabCols[k]->v, tabCols[k]->leng);
+									jbase = ((Text::JSONObject*)featProp)->GetObjectValue(tabCols[k]->ToCString());
 									if (jbase && jbase->GetType() == Text::JSONType::String)
 									{
 										tabCols[k] = ((Text::JSONString*)jbase)->GetValue();
@@ -194,13 +191,13 @@ IO::ParsedObject *Parser::FileParser::JSONParser::ParseFile(IO::IStreamData *fd,
 
 Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *obj, UInt32 srid)
 {
-	Text::JSONBase *jbase = obj->GetObjectValue(UTF8STRC("type"));
-	if (jbase && jbase->GetType() == Text::JSONType::String)
+	Text::String *sType = obj->GetObjectString(CSTR("type"));
+	if (sType)
 	{
-		Text::String *sType = ((Text::JSONString*)jbase)->GetValue();
-		if (sType && sType->Equals(UTF8STRC("LineString")))
+		Text::JSONBase *jbase;
+		if (sType->Equals(UTF8STRC("LineString")))
 		{
-			jbase = obj->GetObjectValue(UTF8STRC("coordinates"));
+			jbase = obj->GetObjectValue(CSTR("coordinates"));
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;
@@ -309,9 +306,9 @@ Math::Vector2D *Parser::FileParser::JSONParser::ParseGeomJSON(Text::JSONObject *
 				}
 			}
 		}
-		else if (sType && sType->Equals(UTF8STRC("Polygon")))
+		else if (sType->Equals(UTF8STRC("Polygon")))
 		{
-			jbase = obj->GetObjectValue(UTF8STRC("coordinates"));
+			jbase = obj->GetObjectValue(CSTR("coordinates"));
 			if (jbase && jbase->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *coord = (Text::JSONArray*)jbase;

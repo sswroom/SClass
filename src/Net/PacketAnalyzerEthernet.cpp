@@ -2160,7 +2160,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 						if (json->GetType() == Text::JSONType::Object)
 						{
 							Text::JSONObject *jobj = (Text::JSONObject*)json;
-							Text::JSONBase *jbase = jobj->GetObjectValue(UTF8STRC("rxpk"));
+							Text::JSONBase *jbase = jobj->GetObjectValue(CSTR("rxpk"));
 							if (jbase && jbase->GetType() == Text::JSONType::Array)
 							{
 								Text::TextBinEnc::Base64Enc b64;
@@ -2175,7 +2175,7 @@ void Net::PacketAnalyzerEthernet::PacketUDPGetDetail(UInt16 srcPort, UInt16 dest
 									if (jbase && jbase->GetType() == Text::JSONType::Object)
 									{
 										jobj = (Text::JSONObject*)jbase;
-										jbase = jobj->GetObjectValue(UTF8STRC("data"));
+										jbase = jobj->GetObjectValue(CSTR("data"));
 										if (jbase && jbase->GetType() == Text::JSONType::String)
 										{
 											Text::JSONString *jstr = (Text::JSONString*)jbase;

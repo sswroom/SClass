@@ -184,17 +184,16 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 			Text::JSONObject *o = (Text::JSONObject*)json;
 			order = MemAlloc(Order, 1);
 			MemClear(order, sizeof(Order));
-			order->status = ACMEStatusFromString(o->GetObjectString(UTF8STRC("status")));
-			s = o->GetObjectString(UTF8STRC("expires"));
+			order->status = ACMEStatusFromString(o->GetObjectString(CSTR("status")));
+			s = o->GetObjectString(CSTR("expires"));
 			if (s)
 			{
 				Data::DateTime dt;
 				dt.SetValue(s->v, s->leng);
 				order->expires = dt.ToTicks();
 			}
-			s = o->GetObjectString(UTF8STRC("finalize"));
-			order->finalizeURL = SCOPY_STRING(s);
-			Text::JSONBase *auth = o->GetObjectValue(UTF8STRC("authorizations"));
+			order->finalizeURL = o->GetObjectNewString(CSTR("finalize"));
+			Text::JSONBase *auth = o->GetObjectValue(CSTR("authorizations"));
 			if (auth && auth->GetType() == Text::JSONType::Array)
 			{
 				Text::JSONArray *authArr = (Text::JSONArray*)auth;
@@ -303,39 +302,39 @@ Net::ACMEConn::ACMEConn(Net::SocketFactory *sockf, Text::CString serverHost, UIn
 					if (json->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *o = (Text::JSONObject*)json;
-						if ((s = o->GetObjectString(UTF8STRC("newNonce"))) != 0)
+						if ((s = o->GetObjectString(CSTR("newNonce"))) != 0)
 						{
 							this->urlNewNonce = s->Clone();
 						}
-						if ((s = o->GetObjectString(UTF8STRC("newAccount"))) != 0)
+						if ((s = o->GetObjectString(CSTR("newAccount"))) != 0)
 						{
 							this->urlNewAccount = s->Clone();
 						}
-						if ((s = o->GetObjectString(UTF8STRC("newOrder"))) != 0)
+						if ((s = o->GetObjectString(CSTR("newOrder"))) != 0)
 						{
 							this->urlNewOrder = s->Clone();
 						}
-						if ((s = o->GetObjectString(UTF8STRC("newAuthz"))) != 0)
+						if ((s = o->GetObjectString(CSTR("newAuthz"))) != 0)
 						{
 							this->urlNewAuthz = s->Clone();
 						}
-						if ((s = o->GetObjectString(UTF8STRC("revokeCert"))) != 0)
+						if ((s = o->GetObjectString(CSTR("revokeCert"))) != 0)
 						{
 							this->urlRevokeCert = s->Clone();
 						}
-						if ((s = o->GetObjectString(UTF8STRC("keyChange"))) != 0)
+						if ((s = o->GetObjectString(CSTR("keyChange"))) != 0)
 						{
 							this->urlKeyChange = s->Clone();
 						}
-						Text::JSONBase *metaBase = o->GetObjectValue(UTF8STRC("meta"));
+						Text::JSONBase *metaBase = o->GetObjectValue(CSTR("meta"));
 						if (metaBase && metaBase->GetType() == Text::JSONType::Object)
 						{
 							Text::JSONObject *metaObj = (Text::JSONObject*)metaBase;
-							if ((s = metaObj->GetObjectString(UTF8STRC("termsOfService"))) != 0)
+							if ((s = metaObj->GetObjectString(CSTR("termsOfService"))) != 0)
 							{
 								this->urlTermOfService = s->Clone();
 							}
-							if ((s = metaObj->GetObjectString(UTF8STRC("website"))) != 0)
+							if ((s = metaObj->GetObjectString(CSTR("website"))) != 0)
 							{
 								this->urlWebsite = s->Clone();
 							}
@@ -446,7 +445,7 @@ Bool Net::ACMEConn::AccountNew()
 			if (base->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONObject *o = (Text::JSONObject*)base;
-				Text::String *s = o->GetObjectString(UTF8STRC("type"));
+				Text::String *s = o->GetObjectString(CSTR("type"));
 				if (s && s->Equals(UTF8STRC("urn:ietf:params:acme:error:accountDoesNotExist")))
 				{
 					Text::StringBuilderUTF8 sb;
@@ -599,7 +598,7 @@ Net::ACMEConn::Challenge *Net::ACMEConn::OrderAuthorize(Text::String *authorizeU
 		}
 		Challenge *ret = 0;
 		Text::JSONObject *authObj = (Text::JSONObject*)json;
-		json = authObj->GetObjectValue(UTF8STRC("challenges"));
+		json = authObj->GetObjectValue(CSTR("challenges"));
 		if (json && json->GetType() == Text::JSONType::Array)
 		{
 			Text::JSONArray *challArr = (Text::JSONArray*)json;

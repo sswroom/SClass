@@ -178,14 +178,14 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 				if (obj->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *jobj = (Text::JSONObject*)obj;
-					if (jobj->GetObjectValue(UTF8STRC("status"))->Equals(CSTR("OK")))
+					if (jobj->GetObjectValue(CSTR("status"))->Equals(CSTR("OK")))
 					{
 						UOSInt i;
 						UOSInt j;
 						UOSInt bestResult = 0;
 						Text::JSONObject *result;
 						Text::JSONArray *resultType;
-						Text::JSONArray *arr = (Text::JSONArray*)jobj->GetObjectValue(UTF8STRC("results"));
+						Text::JSONArray *arr = (Text::JSONArray*)jobj->GetObjectValue(CSTR("results"));
 						if (arr)
 						{
 							j = arr->GetArrayLength();
@@ -195,7 +195,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 								result = (Text::JSONObject*)arr->GetArrayValue(i);
 								if (result)
 								{
-									resultType = (Text::JSONArray*)result->GetObjectValue(UTF8STRC("types"));
+									resultType = (Text::JSONArray*)result->GetObjectValue(CSTR("types"));
 									if (resultType && resultType->GetArrayLength() > 0)
 									{
 										if (resultType->GetArrayValue(0)->Equals(CSTR("street_address")))
@@ -210,7 +210,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 							if (j > 0)
 							{
 								result = (Text::JSONObject*)arr->GetArrayValue(bestResult);
-								buff = Text::StrConcatS(buff, ((Text::JSONString*)result->GetObjectValue(UTF8STRC("formatted_address")))->GetValue()->v, buffSize);
+								buff = Text::StrConcatS(buff, ((Text::JSONString*)result->GetObjectValue(CSTR("formatted_address")))->GetValue()->v, buffSize);
 							}
 							else
 							{
@@ -224,7 +224,7 @@ UTF8Char *Map::GoogleMap::GoogleWSSearcherJSON::SearchName(UTF8Char *buff, UOSIn
 					}
 					else
 					{
-						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue(UTF8STRC("status"));
+						Text::JSONString *jstr = (Text::JSONString*)jobj->GetObjectValue(CSTR("status"));
 						if (jstr->GetValue()->Equals(UTF8STRC("ZERO_RESULTS")))
 						{
 							buff = Text::StrConcatS(buff, (const UTF8Char*)"-", buffSize);

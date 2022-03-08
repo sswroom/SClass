@@ -120,7 +120,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 	{
 		if (hdrJson->GetType() == Text::JSONType::Object)
 		{
-			Text::JSONBase *algJson = ((Text::JSONObject*)hdrJson)->GetObjectValue(UTF8STRC("alg"));
+			Text::JSONBase *algJson = ((Text::JSONObject*)hdrJson)->GetObjectValue(CSTR("alg"));
 			if (algJson != 0 && algJson->GetType() == Text::JSONType::String)
 			{
 				tokenAlg = JWSignature::AlgorithmGetByName(((Text::JSONString*)algJson)->GetValue()->v);
@@ -176,7 +176,7 @@ Data::StringMap<Text::String*> *Crypto::Token::JWTHandler::Parse(const UTF8Char 
 	while (i < j)
 	{
 		name = objNames.GetItem(i);
-		json = payloadObj->GetObjectValue(name->v, name->leng);
+		json = payloadObj->GetObjectValue(name->ToCString());
 		if (name->Equals(UTF8STRC("iss")))
 		{
 			if (json != 0 && json->GetType() == Text::JSONType::String)

@@ -51,7 +51,7 @@ void IO::Device::GoProCameraControl::GetMediaList()
 			if (jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsObj = (Text::JSONObject*)jsBase;
-				jsBase2 = jsObj->GetObjectValue(UTF8STRC("media"));
+				jsBase2 = jsObj->GetObjectValue(CSTR("media"));
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 				{
 					jsArrDir = (Text::JSONArray*)jsBase2;
@@ -63,17 +63,9 @@ void IO::Device::GoProCameraControl::GetMediaList()
 						if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 						{
 							jsObjDir = (Text::JSONObject *)jsBase2;
-							jsBase2 = jsObjDir->GetObjectValue(UTF8STRC("d"));
-							if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
-							{
-								dirName = ((Text::JSONString*)jsBase2)->GetValue();
-							}
-							else
-							{
-								dirName = 0;
-							}
+							dirName = jsObjDir->GetObjectString(CSTR("d"));
 
-							jsBase2 = jsObjDir->GetObjectValue(UTF8STRC("fs"));
+							jsBase2 = jsObjDir->GetObjectValue(CSTR("fs"));
 							if (dirName && jsBase2 && jsBase2->GetType() == Text::JSONType::Array)
 							{
 								jsArrFS = (Text::JSONArray*)jsBase2;
@@ -85,33 +77,9 @@ void IO::Device::GoProCameraControl::GetMediaList()
 									if (jsBase2 && jsBase2->GetType() == Text::JSONType::Object)
 									{
 										jsObjFS = (Text::JSONObject*)jsBase2;
-										jsBase2 = jsObjFS->GetObjectValue(UTF8STRC("n"));
-										if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
-										{
-											fileName = ((Text::JSONString*)jsBase2)->GetValue();
-										}
-										else
-										{
-											fileName = 0;
-										}
-										jsBase2 = jsObjFS->GetObjectValue(UTF8STRC("mod"));
-										if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
-										{
-											modTime = ((Text::JSONString*)jsBase2)->GetValue();
-										}
-										else
-										{
-											modTime = 0;
-										}
-										jsBase2 = jsObjFS->GetObjectValue(UTF8STRC("s"));
-										if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
-										{
-											fileSize = ((Text::JSONString*)jsBase2)->GetValue();
-										}
-										else
-										{
-											fileSize = 0;
-										}
+										fileName = jsObjFS->GetObjectString(CSTR("n"));
+										modTime = jsObjFS->GetObjectString(CSTR("mod"));
+										fileSize = jsObjFS->GetObjectString(CSTR("s"));
 										
 										if (fileName && fileSize)
 										{
@@ -175,37 +143,37 @@ Bool IO::Device::GoProCameraControl::GetInfo(Data::ArrayList<Text::String*> *nam
 		if (jsBase->GetType() == Text::JSONType::Object)
 		{
 			jsObj = (Text::JSONObject*)jsBase;
-			jsBase2 = jsObj->GetObjectValue(UTF8STRC("info"));
+			jsBase2 = jsObj->GetObjectValue(CSTR("info"));
 			if (jsBase2 && jsBase->GetType() == Text::JSONType::Object)
 			{
 				jsInfo = (Text::JSONObject*)jsBase2;
-				jsBase2 = jsInfo->GetObjectValue(UTF8STRC("model_name"));
+				jsBase2 = jsInfo->GetObjectValue(CSTR("model_name"));
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Model")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
-				jsBase2 = jsInfo->GetObjectValue(UTF8STRC("model_number"));
-				if (jsBase2 && jsBase2->GetType() == Text::JSONType::Number)
+				Double modelNo = jsInfo->GetObjectDouble(CSTR("model_number"));
+				if (modelNo != 0)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Model Number")));
 					sb.ClearStr();
-					Text::SBAppendF64(&sb, ((Text::JSONNumber*)jsBase2)->GetValue());
-					valueList->Add(Text::String::New(sb.ToString(), sb.GetLength()));
+					Text::SBAppendF64(&sb, modelNo);
+					valueList->Add(Text::String::New(sb.ToCString()));
 				}
-				jsBase2 = jsInfo->GetObjectValue(UTF8STRC("firmware_version"));
+				jsBase2 = jsInfo->GetObjectValue(CSTR("firmware_version"));
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Firmware Version")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
-				jsBase2 = jsInfo->GetObjectValue(UTF8STRC("serial_number"));
+				jsBase2 = jsInfo->GetObjectValue(CSTR("serial_number"));
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Serial Number")));
 					valueList->Add(((Text::JSONString*)jsBase2)->GetValue()->Clone());
 				}
-				jsBase2 = jsInfo->GetObjectValue(UTF8STRC("board_type"));
+				jsBase2 = jsInfo->GetObjectValue(CSTR("board_type"));
 				if (jsBase2 && jsBase2->GetType() == Text::JSONType::String)
 				{
 					nameList->Add(Text::String::New(UTF8STRC("Board Type")));

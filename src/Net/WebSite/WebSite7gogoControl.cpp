@@ -11,7 +11,6 @@
 Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::ParsePost(Text::JSONObject *postObj)
 {
 	Text::JSONBase *jsBase;
-	Text::JSONNumber *num1;
 	Text::JSONString *str1;
 	Text::JSONArray *arr1;
 	Text::JSONObject *obj1;
@@ -20,17 +19,9 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 	UOSInt j;
 	Net::WebSite::WebSite7gogoControl::ItemData *item = MemAlloc(Net::WebSite::WebSite7gogoControl::ItemData, 1);
 	MemClear(item, sizeof(Net::WebSite::WebSite7gogoControl::ItemData));
-	if ((jsBase = postObj->GetObjectValue(UTF8STRC("postId"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
-	{
-		num1 = (Text::JSONNumber*)jsBase;
-		item->id = Double2Int64(num1->GetValue());
-	}
-	if ((jsBase = postObj->GetObjectValue(UTF8STRC("time"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
-	{
-		num1 = (Text::JSONNumber*)jsBase;
-		item->recTime = Double2Int64(num1->GetValue()) * 1000;
-	}
-	if ((jsBase = postObj->GetObjectValue(UTF8STRC("body"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+	item->id = postObj->GetObjectInt64(CSTR("postId"));
+	item->recTime = postObj->GetObjectInt64(CSTR("time")) * 1000;
+	if ((jsBase = postObj->GetObjectValue(CSTR("body"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 	{
 		arr1 = (Text::JSONArray*)jsBase;
 		i = 0;
@@ -41,57 +32,53 @@ Net::WebSite::WebSite7gogoControl::ItemData *Net::WebSite::WebSite7gogoControl::
 			if (jsBase->GetType() == Text::JSONType::Object)
 			{
 				obj1 = (Text::JSONObject*)jsBase;
-				if ((jsBase = obj1->GetObjectValue(UTF8STRC("bodyType"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
+				bodyType = obj1->GetObjectInt32(CSTR("bodyType"));
+				if (bodyType == 1)
 				{
-					num1 = (Text::JSONNumber*)jsBase;
-					bodyType = Double2Int32(num1->GetValue());
-					if (bodyType == 1)
+					if ((jsBase = obj1->GetObjectValue(CSTR("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 					{
-						if ((jsBase = obj1->GetObjectValue(UTF8STRC("text"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+						str1 = (Text::JSONString*)jsBase;
+						SDEL_STRING(item->message);
+						item->message = str1->GetValue()->Clone();
+					}
+				}
+				else if (bodyType == 3)
+				{
+					if ((jsBase = obj1->GetObjectValue(CSTR("image"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+					{
+						str1 = (Text::JSONString*)jsBase;
+						if (item->imgURL)
 						{
-							str1 = (Text::JSONString*)jsBase;
-							SDEL_STRING(item->message);
-							item->message = str1->GetValue()->Clone();
+							Text::StringBuilderUTF8 sb;
+							sb.Append(item->imgURL);
+							sb.AppendUTF8Char(' ');
+							sb.Append(str1->GetValue());
+							item->imgURL->Release();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
+						}
+						else
+						{
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
-					else if (bodyType == 3)
+				}
+				else if (bodyType == 8)
+				{
+					if ((jsBase = obj1->GetObjectValue(CSTR("movieUrlHq"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 					{
-						if ((jsBase = obj1->GetObjectValue(UTF8STRC("image"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+						str1 = (Text::JSONString*)jsBase;
+						if (item->imgURL)
 						{
-							str1 = (Text::JSONString*)jsBase;
-							if (item->imgURL)
-							{
-								Text::StringBuilderUTF8 sb;
-								sb.Append(item->imgURL);
-								sb.AppendUTF8Char(' ');
-								sb.Append(str1->GetValue());
-								item->imgURL->Release();
-								item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
-							}
-							else
-							{
-								item->imgURL = str1->GetValue()->Clone();
-							}
+							Text::StringBuilderUTF8 sb;
+							sb.Append(item->imgURL);
+							sb.AppendUTF8Char(' ');
+							sb.Append(str1->GetValue());
+							item->imgURL->Release();
+							item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
 						}
-					}
-					else if (bodyType == 8)
-					{
-						if ((jsBase = obj1->GetObjectValue(UTF8STRC("movieUrlHq"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+						else
 						{
-							str1 = (Text::JSONString*)jsBase;
-							if (item->imgURL)
-							{
-								Text::StringBuilderUTF8 sb;
-								sb.Append(item->imgURL);
-								sb.AppendUTF8Char(' ');
-								sb.Append(str1->GetValue());
-								item->imgURL->Release();
-								item->imgURL = Text::String::New(sb.ToString(), sb.GetLength());
-							}
-							else
-							{
-								item->imgURL = str1->GetValue()->Clone();
-							}
+							item->imgURL = str1->GetValue()->Clone();
 						}
 					}
 				}
@@ -156,47 +143,42 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 						Text::JSONObject *obj1;
 						Text::JSONArray *arr1;
 						Text::JSONString *str1;
-						Text::JSONNumber *num1;
 						UOSInt i;
 						UOSInt j;
 						UOSInt k;
 						OSInt si;
 						if (chInfo)
 						{
-							jsBase = baseObj->GetObjectValue(UTF8STRC("page:talk:service:entity:talk"));
+							jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:talk"));
 							if (jsBase && jsBase->GetType() == Text::JSONType::Object)
 							{
 								obj1 = (Text::JSONObject*)jsBase;
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("talkCode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if ((jsBase = obj1->GetObjectValue(CSTR("talkCode"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->talkCode);
 									chInfo->talkCode = str1->GetValue()->Clone();
 								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if ((jsBase = obj1->GetObjectValue(CSTR("name"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->name);
 									chInfo->name = str1->GetValue()->Clone();
 								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("detail"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if ((jsBase = obj1->GetObjectValue(CSTR("detail"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->detail);
 									chInfo->detail = str1->GetValue()->Clone();
 								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("imagePath"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								if ((jsBase = obj1->GetObjectValue(CSTR("imagePath"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->imagePath);
 									chInfo->imagePath = str1->GetValue()->Clone();
 								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("editDate"))) != 0 && jsBase->GetType() == Text::JSONType::Number)
-								{
-									num1 = (Text::JSONNumber*)jsBase;
-									chInfo->editDate = Double2Int64(num1->GetValue()) * 1000;
-								}
-								if ((jsBase = obj1->GetObjectValue(UTF8STRC("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
+								chInfo->editDate = obj1->GetObjectInt64(CSTR("editDate")) * 1000;
+								if ((jsBase = obj1->GetObjectValue(CSTR("screenName"))) != 0 && jsBase->GetType() == Text::JSONType::String)
 								{
 									str1 = (Text::JSONString*)jsBase;
 									SDEL_STRING(chInfo->screenName);
@@ -204,11 +186,11 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 								}
 							}
 						}
-						jsBase = baseObj->GetObjectValue(UTF8STRC("page:talk:service:entity:talkImages"));
+						jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:talkImages"));
 						if (jsBase && jsBase->GetType() == Text::JSONType::Object)
 						{
 							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(UTF8STRC("images"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+							if ((jsBase = obj1->GetObjectValue(CSTR("images"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 							{
 								arr1 = (Text::JSONArray*)jsBase;
 								i = arr1->GetArrayLength();
@@ -218,7 +200,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 									if (jsBase->GetType() == Text::JSONType::Object)
 									{
 										obj1 = (Text::JSONObject*)jsBase;
-										if ((jsBase = obj1->GetObjectValue(UTF8STRC("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 										{
 											item = ParsePost((Text::JSONObject*)jsBase);
 											if (item)
@@ -242,11 +224,11 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 								}
 							}
 						}
-						jsBase = baseObj->GetObjectValue(UTF8STRC("page:talk:service:entity:posts"));
+						jsBase = baseObj->GetObjectValue(CSTR("page:talk:service:entity:posts"));
 						if (jsBase && jsBase->GetType() == Text::JSONType::Object)
 						{
 							obj1 = (Text::JSONObject*)jsBase;
-							if ((jsBase = obj1->GetObjectValue(UTF8STRC("posts"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
+							if ((jsBase = obj1->GetObjectValue(CSTR("posts"))) != 0 && jsBase->GetType() == Text::JSONType::Array)
 							{
 								arr1 = (Text::JSONArray*)jsBase;
 								i = 0;
@@ -257,7 +239,7 @@ OSInt Net::WebSite::WebSite7gogoControl::GetChannelItems(Text::String *channelId
 									if (jsBase->GetType() == Text::JSONType::Object)
 									{
 										obj1 = (Text::JSONObject*)jsBase;
-										if ((jsBase = obj1->GetObjectValue(UTF8STRC("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
+										if ((jsBase = obj1->GetObjectValue(CSTR("post"))) != 0 && jsBase->GetType() == Text::JSONType::Object)
 										{
 											item = ParsePost((Text::JSONObject*)jsBase);
 											if (item)

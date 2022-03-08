@@ -60,78 +60,51 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 			if (json->GetType() == Text::JSONType::Object)
 			{
 				Text::JSONObject *jobj = (Text::JSONObject*)json;
-				Text::JSONBase *o = jobj->GetObjectValue(UTF8STRC("initialExtent"));
+				Text::JSONBase *o = jobj->GetObjectValue(CSTR("initialExtent"));
 				Text::JSONBase *v;
 				Text::JSONObject *vobj;
-				Text::JSONBase *v2;
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *ext = (Text::JSONObject*)o;
-					v = ext->GetObjectValue(UTF8STRC("xmin"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->minX = ((Text::JSONNumber*)v)->GetValue();
-					v = ext->GetObjectValue(UTF8STRC("ymin"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->minY = ((Text::JSONNumber*)v)->GetValue();
-					v = ext->GetObjectValue(UTF8STRC("xmax"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->maxX = ((Text::JSONNumber*)v)->GetValue();
-					v = ext->GetObjectValue(UTF8STRC("ymax"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->maxY = ((Text::JSONNumber*)v)->GetValue();
+					this->minX = ext->GetObjectDouble(CSTR("xmin"));
+					this->minY = ext->GetObjectDouble(CSTR("ymin"));
+					this->maxX = ext->GetObjectDouble(CSTR("xmax"));
+					this->maxY = ext->GetObjectDouble(CSTR("ymax"));
 				}
 				else
 				{
-					o = jobj->GetObjectValue(UTF8STRC("fullExtent"));
+					o = jobj->GetObjectValue(CSTR("fullExtent"));
 					if (o != 0 && o->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *ext = (Text::JSONObject*)o;
-						v = ext->GetObjectValue(UTF8STRC("xmin"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->minX = ((Text::JSONNumber*)v)->GetValue();
-						v = ext->GetObjectValue(UTF8STRC("ymin"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->minY = ((Text::JSONNumber*)v)->GetValue();
-						v = ext->GetObjectValue(UTF8STRC("xmax"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->maxX = ((Text::JSONNumber*)v)->GetValue();
-						v = ext->GetObjectValue(UTF8STRC("ymax"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->maxY = ((Text::JSONNumber*)v)->GetValue();
+						this->minX = ext->GetObjectDouble(CSTR("xmin"));
+						this->minY = ext->GetObjectDouble(CSTR("ymin"));
+						this->maxX = ext->GetObjectDouble(CSTR("xmax"));
+						this->maxY = ext->GetObjectDouble(CSTR("ymax"));
 					}
 				}
 
-				o = jobj->GetObjectValue(UTF8STRC("spatialReference"));
+				o = jobj->GetObjectValue(CSTR("spatialReference"));
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *spRef = (Text::JSONObject*)o;
-					v = spRef->GetObjectValue(UTF8STRC("wkid"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->isMercatorProj = ((Text::JSONNumber*)v)->GetValue() == 102100;
+					this->isMercatorProj = spRef->GetObjectInt32(CSTR("wkid")) == 102100;
 				}
 
-				o = jobj->GetObjectValue(UTF8STRC("tileInfo"));
+				o = jobj->GetObjectValue(CSTR("tileInfo"));
 				if (o != 0 && o->GetType() == Text::JSONType::Object)
 				{
 					Text::JSONObject *tinfo = (Text::JSONObject*)o;
-					v = tinfo->GetObjectValue(UTF8STRC("rows"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->tileHeight = (UOSInt)Double2Int32(((Text::JSONNumber*)v)->GetValue());
-					v = tinfo->GetObjectValue(UTF8STRC("cols"));
-					if (v != 0 && v->GetType() == Text::JSONType::Number)
-						this->tileWidth = (UOSInt)Double2Int32(((Text::JSONNumber*)v)->GetValue());
-					v = tinfo->GetObjectValue(UTF8STRC("origin"));
+					this->tileHeight = (UOSInt)tinfo->GetObjectInt32(CSTR("rows"));
+					this->tileWidth = (UOSInt)tinfo->GetObjectInt32(CSTR("cols"));
+					v = tinfo->GetObjectValue(CSTR("origin"));
 					if (v != 0 && v->GetType() == Text::JSONType::Object)
 					{
 						Text::JSONObject *origin = (Text::JSONObject*)v;
-						v = origin->GetObjectValue(UTF8STRC("x"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->oriX = ((Text::JSONNumber*)v)->GetValue();
-						v = origin->GetObjectValue(UTF8STRC("y"));
-						if (v != 0 && v->GetType() == Text::JSONType::Number)
-							this->oriY = ((Text::JSONNumber*)v)->GetValue();
+						this->oriX = origin->GetObjectDouble(CSTR("x"));
+						this->oriY = origin->GetObjectDouble(CSTR("y"));
 					}
-					v = tinfo->GetObjectValue(UTF8STRC("lods"));
+					v = tinfo->GetObjectValue(CSTR("lods"));
 					if (v != 0 && v->GetType() == Text::JSONType::Array)
 					{
 						Text::JSONArray *levs = (Text::JSONArray*)v;
@@ -145,9 +118,9 @@ Map::ESRI::ESRITileMap::ESRITileMap(const UTF8Char *url, const UTF8Char *cacheDi
 							if (v != 0 && v->GetType() == Text::JSONType::Object)
 							{
 								vobj = (Text::JSONObject*)v;
-								v2 = vobj->GetObjectValue(UTF8STRC("resolution"));
-								if (v2 != 0 && v2->GetType() == Text::JSONType::Number)
-									this->levels->Add(((Text::JSONNumber*)v2)->GetValue());
+								Double lev = vobj->GetObjectDouble(CSTR("resolution"));
+								if (lev != 0)
+									this->levels->Add(lev);
 							}
 							i++;
 						}
