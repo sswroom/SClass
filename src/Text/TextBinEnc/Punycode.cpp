@@ -28,9 +28,9 @@ UOSInt Text::TextBinEnc::Punycode::Adapt(UOSInt delta, UOSInt numPoints, Bool fi
 	return k + (BASE - TMIN + 1) * delta / (delta + SKEW);
 }
 
-UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, const UTF8Char *strToEnc)
+UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, Text::CString strToEnc)
 {
-	return Text::StrConcat(buff, strToEnc);
+	return strToEnc.ConcatTo(buff);
 }
 
 UTF8Char *Text::TextBinEnc::Punycode::Encode(UTF8Char *buff, const WChar *strToEnc)

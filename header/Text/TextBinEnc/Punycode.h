@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_TEXTENC_PUNYCODE
 #define _SM_TEXT_TEXTENC_PUNYCODE
+#include "Text/CString.h"
 #include "Text/TextBinEnc/ITextBinEnc.h"
 
 namespace Text
@@ -11,7 +12,7 @@ namespace Text
 		private:
 			static UOSInt Adapt(UOSInt delta, UOSInt numPoints, Bool firstTime);
 		public:
-			static UTF8Char *Encode(UTF8Char *buff, const UTF8Char *strToEnc);
+			static UTF8Char *Encode(UTF8Char *buff, Text::CString strToEnc);
 			static UTF8Char *Encode(UTF8Char *buff, const WChar *strToEnc);
 			static WChar *Encode(WChar *buff, const WChar *strToEnc);
 			static UTF8Char *Decode(UTF8Char *buff, const UTF8Char *strToDec, UOSInt strLen);

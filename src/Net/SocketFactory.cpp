@@ -44,7 +44,7 @@ Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net:
 	if (Net::SocketUtil::GetIPAddr(host, hostLen, addr))
 		return true;
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
@@ -79,7 +79,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen)
 		return *(UInt32*)addr.addr;
 	}
 
-	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, host);
+	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
 	Sync::MutexUsage mutUsage(this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
