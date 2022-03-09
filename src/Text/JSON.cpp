@@ -234,14 +234,16 @@ Double Text::JSONBase::GetAsDouble()
 Text::JSONBase *Text::JSONBase::ParseJSONStr(Text::CString jsonStr)
 {
 	const UTF8Char *endPtr;
-	return ParseJSONStr2(jsonStr.v, jsonStr.GetEndPtr(), &endPtr);
+	Text::StringBuilderUTF8 sbEnv;
+	return ParseJSONStr2(jsonStr.v, jsonStr.GetEndPtr(), &endPtr, &sbEnv);
 }
 
 Text::JSONBase *Text::JSONBase::ParseJSONBytes(const UInt8 *jsonBytes, UOSInt len)
 {
 	UTF8Char *s = MemAlloc(UTF8Char, len + 1);
 	const UTF8Char *endPtr;
-	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes, len), &endPtr);
+	Text::StringBuilderUTF8 sbEnv;
+	Text::JSONBase *ret = ParseJSONStr2(s, Text::StrConcatC(s, jsonBytes, len), &endPtr, &sbEnv);
 	MemFree(s);
 	return ret;
 }
@@ -543,7 +545,7 @@ const UTF8Char *Text::JSONBase::ParseJSNumber(const UTF8Char *jsonStr, Double *v
 }
 
 
-Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut)
+Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF8Char *jsonStrEnd, const UTF8Char **jsonStrEndOut, Text::StringBuilderUTF8 *sbEnv)
 {
 	UTF8Char c;
 	jsonStr = ClearWS(jsonStr);
@@ -568,14 +570,15 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 			*jsonStrEndOut = jsonStr;
 			return jobj;
 		}
+		Text::StringBuilderUTF8 sb;
 		while (true)
 		{
 			jsonStr = ClearWS(jsonStr);
 			c = *jsonStr;
 			if (c == '\"')
 			{
-				Text::StringBuilderUTF8 sb;
 				Text::JSONBase *obj;
+				sb.ClearStr();
 				jsonStr = ParseJSString(jsonStr, &sb);
 				if (jsonStr == 0)
 				{
@@ -594,7 +597,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 				jsonStr++;
 				jsonStr = ClearWS(jsonStr);
 
-				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr);
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr, sbEnv);
 				if (jsonStr == 0)
 				{
 					jobj->EndUse();
@@ -658,7 +661,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 			}
 			else
 			{
-				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr);
+				obj = ParseJSONStr2(jsonStr, jsonStrEnd, &jsonStr, sbEnv);
 				if (jsonStr == 0)
 				{
 					arr->EndUse();
@@ -695,8 +698,8 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 	else if (c == '\"')
 	{
 		const UTF8Char *endPtr;
-		Text::StringBuilderUTF8 sb;
-		endPtr = ParseJSString(jsonStr, &sb);
+		sbEnv->ClearStr();
+		endPtr = ParseJSString(jsonStr, sbEnv);
 		if (endPtr == 0)
 		{
 			*jsonStrEndOut = 0;
@@ -704,7 +707,7 @@ Text::JSONBase *Text::JSONBase::ParseJSONStr2(const UTF8Char *jsonStr, const UTF
 		}
 		Text::JSONString *s;
 		*jsonStrEndOut = endPtr;
-		NEW_CLASS(s, Text::JSONString(sb.ToCString()));
+		NEW_CLASS(s, Text::JSONString(sbEnv->ToCString()));
 		return s;
 	}
 	else if (c == '-' || (c >= '0' && c <= '9'))

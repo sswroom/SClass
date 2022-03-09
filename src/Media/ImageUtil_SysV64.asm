@@ -223,15 +223,54 @@ ImageUtil_ColorReplace32:
 _ImageUtil_ColorReplace32:
 	mov rax,rsi ;w
 	mul rdx ;h
+	mov rdx,rax
+	shr rdx,4
+	jz cr32lop1
+	movd xmm1,ecx
+	punpckldq xmm1,xmm1
+	punpckldq xmm1,xmm1
+	pcmpeqd xmm2,xmm2
+	pxor xmm3,xmm3
+	align 16
+cr32lop2:
+	movups xmm0,[rdi]
+	pcmpeqd xmm0,xmm3
+	pxor xmm0,xmm2
+	pand xmm0,xmm1
+	movups [rdi],xmm0
+	movups xmm0,[rdi+16]
+	pcmpeqd xmm0,xmm3
+	pxor xmm0,xmm2
+	pand xmm0,xmm1
+	movups [rdi+16],xmm0
+	movups xmm0,[rdi+32]
+	pcmpeqd xmm0,xmm3
+	pxor xmm0,xmm2
+	pand xmm0,xmm1
+	movups [rdi+32],xmm0
+	movups xmm0,[rdi+48]
+	pcmpeqd xmm0,xmm3
+	pxor xmm0,xmm2
+	pand xmm0,xmm1
+	movups [rdi+48],xmm0
+	add rdi,64
+	dec rdx
+	jnz cr32lop2
+	and rax,15
+	jnz cr32lop1
+	ret
+
+	align 16
+cr32lop1:
+	mov rdx,-1
 	align 16
 clop:
-	mov edx,dword [rdi]
-	test edx,edx
+	test dword [rdi], edx
 	jz clop2
 	mov dword [rdi],ecx
 	align 16
 clop2:
-	lea rdi,[rdi+4]
+	add rdi,4
 	dec rax
 	jnz clop
 	ret
@@ -322,9 +361,30 @@ cr32a2lop2b:
 	align 16
 ImageUtil_ColorFill32:
 _ImageUtil_ColorFill32:
+	mov rcx,rsi
+	shr rcx,6
+	jz cf32lop2
+	movd xmm0,edx
+	punpckldq xmm0,xmm0
+	punpckldq xmm0,xmm0
+	align 16
+cf32lop:
+	movups [rdi],xmm0
+	movups [rdi+16],xmm0
+	movups [rdi+32],xmm0
+	movups [rdi+48],xmm0
+	dec rcx
+	jnz cf32lop
+	and rsi,63
+	jnz cf32lop2
+	ret
+
+	align 16
+cf32lop2:
 	mov rax,rdx ;color
-	cld
+	cld	
 	mov rcx,rsi ;pixelCnt
+	and rcx,63
 	rep stosd
 	ret
 

@@ -507,8 +507,8 @@ Int64 Map::CIPLayer2::GetObjectIdMax()
 
 void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 {
-	Data::Int32Map<WChar*> *tmpMap = (Data::Int32Map<WChar*>*)nameArr;
-	Data::ArrayList<WChar*> *tmpArr = tmpMap->GetValues();
+	Data::Int32Map<UTF16Char*> *tmpMap = (Data::Int32Map<UTF16Char*>*)nameArr;
+	Data::ArrayList<UTF16Char*> *tmpArr = tmpMap->GetValues();
 	UOSInt i = tmpArr->GetCount();
 	while (i-- > 0)
 	{
@@ -519,16 +519,16 @@ void Map::CIPLayer2::ReleaseNameArr(void *nameArr)
 
 UTF8Char *Map::CIPLayer2::GetString(UTF8Char *buff, UOSInt buffSize, void *nameArr, Int64 id, UOSInt strIndex)
 {
-	Data::Int32Map<WChar*> *tmpMap = (Data::Int32Map<WChar*>*)nameArr;
+	Data::Int32Map<UTF16Char*> *tmpMap = (Data::Int32Map<UTF16Char*>*)nameArr;
 	if (strIndex != 0)
 	{
 		*buff = 0;
 		return 0;
 	}
-	WChar *s = tmpMap->Get((Int32)id);
+	UTF16Char *s = tmpMap->Get((Int32)id);
 	if (s)
 	{
-		return Text::StrWChar_UTF8(buff, s);
+		return Text::StrUTF16_UTF8(buff, s);
 	}
 	else
 	{
