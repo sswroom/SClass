@@ -106,14 +106,14 @@ void MemTool_Init()
 	CPUBrand = (Int32)cpuInfo.GetBrand();
 	if (CPUBrand == 2)
 	{
-		if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
+		if (Manage::CPUInst::HasInstruction(Manage::CPUInst::IT_AVX2))
 		{
 			UseAVX = 1;
 		}
 	}
 	else
 	{
-		if (cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX) && cpuInfo.HasInstruction(Manage::CPUInfo::IT_AVX2))
+		if (Manage::CPUInst::HasInstruction(Manage::CPUInst::IT_AVX) && Manage::CPUInst::HasInstruction(Manage::CPUInst::IT_AVX2))
 		{
 			UseAVX = 1;
 		}

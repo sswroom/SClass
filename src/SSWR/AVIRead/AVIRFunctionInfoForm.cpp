@@ -35,9 +35,8 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 	{
 		Manage::DasmX86_32 *dasm;
 		Text::StringBuilderUTF8 sb;
-		UTF8Char *sbuff;
-		UTF8Char *sline[2];
-		UTF8Char *sarr[2];
+		Text::PString sline[2];
+		Text::PString  sarr[2];
 		Bool hasNext;
 		UInt32 addr = (UInt32)funcAddr;
 		UInt32 blockStart;
@@ -49,15 +48,14 @@ SSWR::AVIRead::AVIRFunctionInfoForm::AVIRFunctionInfoForm(UI::GUIClientControl *
 		dasm->Disasm32In(&sb, symbol, &addr, &callAddrs, &jmpAddrs, &blockStart, &blockEnd, proc);
 		DEL_CLASS(dasm);
 
-		sbuff = sb.ToString();
-		sline[1] = sbuff;
+		sline[1] = sb;
 		while (true)
 		{
-			hasNext = Text::StrSplit(sline, 2, sline[1], '\r') == 2;
-			if (Text::StrSplit(sarr, 2, sline[0], ' ') == 2)
+			hasNext = Text::StrSplitP(sline, 2, sline[1], '\r') == 2;
+			if (Text::StrSplitP(sarr, 2, sline[0], ' ') == 2)
 			{
-				i = this->lvMyStack->AddItem(sarr[0], 0);
-				this->lvMyStack->SetSubItem(i, 1, sarr[1]);
+				i = this->lvMyStack->AddItem(sarr[0].ToCString(), 0);
+				this->lvMyStack->SetSubItem(i, 1, sarr[1].ToCString());
 			}
 			if (!hasNext)
 				break;

@@ -42,7 +42,7 @@ namespace Sync
 #define Interlocked_AddU32(val, aval) (InterlockedExchangeAdd((ULONG*)val, (ULONG)aval) + aval)
 #define Interlocked_SubtractI32(val, sval) (InterlockedExchangeAdd((LONG*)val, -sval) - sval)
 
-#if defined(_WIN64)
+#if 1 || defined(_WIN64)
 #define Interlocked_IncrementI64(val) InterlockedIncrement64(val)
 #define Interlocked_IncrementU64(val) ((UInt64)InterlockedIncrement64((Int64*)val))
 #define Interlocked_DecrementI64(val) InterlockedDecrement64(val)
@@ -57,7 +57,7 @@ namespace Sync
 #define Interlocked_DecrementU64(val) (--*(val))
 #define Interlocked_AddI64(val, aval) (*val = *val + aval)
 #define Interlocked_AddU64(val, aval) (*val = *val + aval)
-#define Interlocked_Subtract(val, sval) (*val = *val - sval)
+#define Interlocked_SubtractI64(val, sval) (*val = *val - sval)
 #endif
 
 #elif defined(__GNUC__) && !(defined(_MIPSEL) && defined(__ANDROID_API__)) && !defined(_R3000) && !defined(AVR) && !defined(__ARM_ARCH_5T__) && !(defined(__ARM_ARCH_5TEJ__) && (__STDC_VERSION__ == 201112L))
