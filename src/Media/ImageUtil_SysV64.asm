@@ -362,7 +362,7 @@ cr32a2lop2b:
 ImageUtil_ColorFill32:
 _ImageUtil_ColorFill32:
 	mov rcx,rsi
-	shr rcx,6
+	shr rcx,4
 	jz cf32lop2
 	movd xmm0,edx
 	punpckldq xmm0,xmm0
@@ -375,7 +375,7 @@ cf32lop:
 	movups [rdi+48],xmm0
 	dec rcx
 	jnz cf32lop
-	and rsi,63
+	and rsi,15
 	jnz cf32lop2
 	ret
 

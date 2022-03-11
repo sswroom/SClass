@@ -65,6 +65,7 @@ typedef __m128i UInt16x4;
 typedef __m128i Int16x8;
 typedef __m128i UInt16x8;
 typedef __m128i Int32x4;
+typedef __m128i UInt32x4;
 
 #define PUInt8x4Clear() _mm_setzero_si128()
 #define PUInt8x8Clear() _mm_setzero_si128()
@@ -108,6 +109,7 @@ typedef __m128i Int32x4;
 #define PStoreInt32x4(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
 #define PStoreInt32x4A(ptr, v) _mm_store_si128((__m128i*)(ptr), v)
 #define PStoreInt32x4NC(ptr, v) _mm_stream_si128((__m128i*)(ptr), v)
+#define PStoreUInt32x4(ptr, v) _mm_storeu_si128((__m128i*)(ptr), v)
 #define PCONVU16x4_I(v) (v)
 #define PCONVU16x8_I(v) (v)
 #define PCONVI8x4_U(v) (v)
@@ -244,6 +246,7 @@ typedef uint16x4_t UInt16x4;
 typedef int16x8_t Int16x8;
 typedef uint16x8_t UInt16x8;
 typedef int32x4_t Int32x4;
+typedef uint32x4_t UInt32x4;
 //typedef __m256i Int32x8;
 
 #define PUInt8x4Clear() vdup_n_u8(0)
@@ -275,6 +278,7 @@ typedef int32x4_t Int32x4;
 #define PLoadUInt16x8A(ptr) (*(uint16x8_t*)(ptr))
 #define PLoadInt32x4(ptr) (*(int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(int32x4_t*)(ptr))
+#define PLoadUInt32x4(ptr) (*(uint32x4_t*)(ptr))
 #define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr2), *(int16x4_t*)(ptr1))
 #define PStoreUInt8x4(ptr, v) *(UInt32*)(ptr) = vget_lane_u32(vreinterpret_u8_u32(v), 0)
 #define PStoreUInt8x8(ptr, v) *(uint8x8_t*)(ptr) = v
@@ -289,6 +293,7 @@ typedef int32x4_t Int32x4;
 #define PStoreUInt16x8A(ptr, v) *(uint16x8_t*)(ptr) = v
 #define PStoreUInt16x8NC(ptr, v) *(uint16x8_t*)(ptr) = v
 #define PStoreInt32x4(ptr, v) *(int32x4_t*)(ptr) = v
+#define PStoreUInt32x4(ptr, v) *(uint32x4_t*)(ptr) = v
 #define PStoreInt32x4NC(ptr, v) *(int32x4_t*)(ptr) = v
 #else
 #define PLoadUInt8x4(ptr) vreinterpret_u32_u8(vld1_u32((const UInt32*)ptr))
@@ -302,6 +307,7 @@ typedef int32x4_t Int32x4;
 #define PLoadUInt16x8A(ptr) (*(volatile uint16x8_t*)(ptr))
 #define PLoadInt32x4(ptr) (*(volatile int32x4_t*)(ptr))
 #define PLoadInt32x4A(ptr) (*(volatile int32x4_t*)(ptr))
+#define PLoadUInt32x4(ptr) (*(volatile uint32x4_t*)(ptr))
 #define PMLoadInt16x4(ptr1, ptr2) vcombine_s16(*(int16x4_t*)(ptr2), *(int16x4_t*)(ptr1))
 #define PStoreUInt8x4(ptr, v) *(UInt32*)(ptr) = vget_lane_u32(vreinterpret_u8_u32(v), 0)
 #define PStoreUInt8x8(ptr, v) *(uint8x8_t*)(ptr) = v
@@ -317,6 +323,7 @@ typedef int32x4_t Int32x4;
 #define PStoreUInt16x8NC(ptr, v) *(uint16x8_t*)(ptr) = v
 #define PStoreInt32x4(ptr, v) *(int32x4_t*)(ptr) = v
 #define PStoreInt32x4NC(ptr, v) *(int32x4_t*)(ptr) = v
+#define PStoreUInt32x4(ptr, v) *(uint32x4_t*)(ptr) = v
 #endif
 #define PCONVI8x4_U(v) vreinterpret_s8_u8(v)
 #define PCONVI8x8_U(v) vreinterpret_s8_u8(v)
@@ -403,6 +410,7 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PMergeLW4(v1, v2) vcombine_s16(vget_low_s16(v1), vget_low_s16(v2))
 #define PMergeHW4(v1, v2) vcombine_s16(vget_high_s16(v1), vget_high_s16(v2))
 #define PMergeSARDW4(v1, v2, cnt) vcombine_s16(vqshrn_n_s32(v1, cnt), vqshrn_n_s32(v2, cnt))
+#define PCMPEQUD4(v1, v2) vceqq_u32(v1, v2)
 #define PSALW4(v1, cnt) vshl_n_s16(v1, cnt)
 #define PSHRW4(v1, cnt) vshr_n_u16(v1, cnt)
 #define PSHRW8(v1, cnt) vshrq_n_u16(v1, cnt)
@@ -412,6 +420,8 @@ Int32x4 FORCEINLINE PUNPCKWD4(Int16x4 v1, Int16x4 v2)
 #define PSARSDW4(v1, cnt) vqshrn_n_s32(v1, cnt)
 #define PSARSDW8(v1, v2, cnt) vcombine_s16(vqshrn_n_s32(v1, cnt), vqshrn_n_s32(v2, cnt))
 #define PANDW8(v1, v2) vandq_s16(v1, v2)
+#define PANDUD4(v1, v2) vandq_u32(v1, v2)
+#define PXORUD4(v1, v2) veorq_u32(v1, v2)
 UInt8x4 FORCEINLINE PSHRADDWB4(UInt16x4 v1, UInt16x4 v2, const Int32 cnt)
 {
 	switch (cnt)

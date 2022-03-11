@@ -33,7 +33,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[0] * 8 + 266240]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[1] * 8 + 264192]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[2] * 8 + 262144]));
-				cvals = PMULM2HW4(cvals, PInt16x4SetA((currIn[3] << 7) | (currIn[3] >> 1)));
+				cvals = PMULM2HW4(cvals, PInt16x4SetA((Int16)((currIn[3] << 7) | (currIn[3] >> 1))));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[3] * 8 + 268288]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 4;
@@ -77,7 +77,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[0] * 8 + 266240]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[1] * 8 + 264192]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[2] * 8 + 262144]));
-				cvals = PMULM2HW4(cvals, PInt16x4SetA((currIn[3] << 7) | (currIn[3] >> 1)));
+				cvals = PMULM2HW4(cvals, PInt16x4SetA((Int16)((currIn[3] << 7) | (currIn[3] >> 1))));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[3] * 8 + 268288]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 4;
@@ -123,7 +123,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[0] * 8 + 266240]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[1] * 8 + 264192]));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[2] * 8 + 262144]));
-				cvals = PMULM2HW4(cvals, PInt16x4SetA((currIn[3] << 7) | (currIn[3] >> 1)));
+				cvals = PMULM2HW4(cvals, PInt16x4SetA((Int16)((currIn[3] << 7) | (currIn[3] >> 1))));
 				cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[currIn[3] * 8 + 268288]));
 				PStoreInt16x4(tmpPtr, cvals);
 				currIn += 4;
@@ -170,7 +170,7 @@ extern "C" void LanczosResizer8_C8_horizontal_filter_pa(UInt8 *inPt, UInt8 *outP
 				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[0] * 8 + 266240], &rgbTable[currIn[4] * 8 + 266240]));
 				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[1] * 8 + 264192], &rgbTable[currIn[5] * 8 + 264192]));
 				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[2] * 8 + 262144], &rgbTable[currIn[6] * 8 + 262144]));
-				cvals = PMULM2HW8(cvals, PMergeW4(PInt16x4SetA((currIn[3] << 7) | (currIn[3] >> 1)), PInt16x4SetA((currIn[7] << 7) | (currIn[7] >> 1))));
+				cvals = PMULM2HW8(cvals, PMergeW4(PInt16x4SetA((Int16)((currIn[3] << 7) | (currIn[3] >> 1))), PInt16x4SetA((Int16)((currIn[7] << 7) | (currIn[7] >> 1)))));
 				cvals = PSADDW8(cvals, PMLoadInt16x4(&rgbTable[currIn[3] * 8 + 268288], &rgbTable[currIn[7] * 8 + 268288]));
 				PStoreInt16x8A(tmpPtr, cvals);
 				currIn += 8;
@@ -394,7 +394,7 @@ extern "C" void LanczosResizer8_C8_expand_pa(UInt8 *inPt, UInt8 *outPt, OSInt wi
 			cvals = PLoadInt16x4(&rgbTable[266240 + inPt[0] * 8]);
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[264192 + inPt[1] * 8]));
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[262144 + inPt[2] * 8]));
-			cvals = PMULM2HW4(cvals, PInt16x4SetA((inPt[3] << 7) | (inPt[3] >> 1)));
+			cvals = PMULM2HW4(cvals, PInt16x4SetA((Int16)((inPt[3] << 7) | (inPt[3] >> 1))));
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[268288 + inPt[3] * 8]));
 			PStoreInt16x4(outPt, cvals);
 
@@ -447,8 +447,8 @@ extern "C" void LanczosResizer8_C8_imgcopy(UInt8 *inPt, UInt8 *outPt, OSInt widt
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[262144 + inPt[2] * 8]));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = rgbTable[PEXTUW4(cvals2, 0) + 0];
-			outPt[1] = rgbTable[PEXTUW4(cvals2, 0) + 65536];
-			outPt[2] = rgbTable[PEXTUW4(cvals2, 0) + 131072];
+			outPt[1] = rgbTable[PEXTUW4(cvals2, 1) + 65536];
+			outPt[2] = rgbTable[PEXTUW4(cvals2, 2) + 131072];
 			outPt[3] = inPt[3];
 			inPt += 4;
 			outPt += 4;
@@ -474,11 +474,11 @@ extern "C" void LanczosResizer8_C8_imgcopy_pa(UInt8 *inPt, UInt8 *outPt, OSInt w
 			cvals = PLoadInt16x4(&rgbTable[266240 + inPt[0] * 8]);
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[264192 + inPt[1] * 8]));
 			cvals = PSADDW4(cvals, PLoadInt16x4(&rgbTable[262144 + inPt[2] * 8]));
-			cvals = PMULM2HW4(cvals, PInt16x4SetA((inPt[3] << 7) | (inPt[3] >> 1)));
+			cvals = PMULM2HW4(cvals, PInt16x4SetA((Int16)((inPt[3] << 7) | (inPt[3] >> 1))));
 			cvals2 = PCONVI16x4_U(cvals);
 			outPt[0] = rgbTable[PEXTUW4(cvals2, 0) + 0];
-			outPt[1] = rgbTable[PEXTUW4(cvals2, 0) + 65536];
-			outPt[2] = rgbTable[PEXTUW4(cvals2, 0) + 131072];
+			outPt[1] = rgbTable[PEXTUW4(cvals2, 1) + 65536];
+			outPt[2] = rgbTable[PEXTUW4(cvals2, 2) + 131072];
 			outPt[3] = inPt[3];
 			inPt += 4;
 			outPt += 4;

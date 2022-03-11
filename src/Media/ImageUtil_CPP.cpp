@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Data/ByteTool.h"
 #include "Math/Math.h"
 
@@ -51,9 +52,49 @@ extern "C" void ImageUtil_SwapRGB(UInt8 *imgPtr, OSInt pixelCnt, OSInt bpp)
 	}
 }
 
-extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col)
+extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
 {
-	OSInt pxCnt = w * h;
+	UOSInt pxCnt = w * h;
+	UOSInt i = pxCnt >> 4;
+	if (i)
+	{
+		UInt32x4 cVals = PUInt32x4SetA(col);
+		UInt32x4 zVals = PUInt32x4SetA(0);
+		UInt32x4 oneVals = PUInt32x4SetA((UInt32)-1);
+		UInt32x4 val;
+		while (i-- > 0)
+		{
+			val = PCMPEQUD4(PLoadUInt32x4(&pixelPtr[0]), zVals);
+			val = PANDUD4(PXORUD4(val, oneVals), cVals);
+			PStoreUInt32x4(&pixelPtr[0], val);
+			val = PCMPEQUD4(PLoadUInt32x4(&pixelPtr[16]), zVals);
+			val = PANDUD4(PXORUD4(val, oneVals), cVals);
+			PStoreUInt32x4(&pixelPtr[16], val);
+			val = PCMPEQUD4(PLoadUInt32x4(&pixelPtr[32]), zVals);
+			val = PANDUD4(PXORUD4(val, oneVals), cVals);
+			PStoreUInt32x4(&pixelPtr[32], val);
+			val = PCMPEQUD4(PLoadUInt32x4(&pixelPtr[48]), zVals);
+			val = PANDUD4(PXORUD4(val, oneVals), cVals);
+			PStoreUInt32x4(&pixelPtr[48], val);
+			pixelPtr += 64;
+		}
+		pxCnt &= 15;
+		if (pxCnt == 0)
+		{
+			return;
+		}
+	}
+	while (pxCnt-- > 0)
+	{
+		if (ReadNUInt32(&pixelPtr[0]) != 0)
+		{
+			WriteNUInt32(pixelPtr, col);
+		}
+		pixelPtr += 4;
+	}
+}
+/*{
+	UOSInt pxCnt = w * h;
 	while (pxCnt-- > 0)
 	{
 		if (pixelPtr[0] != 0)
@@ -62,7 +103,7 @@ extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, OSInt w, OSInt h, Int3
 		}
 		pixelPtr += 4;
 	}
-}
+}*/
 
 
 extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col)
@@ -78,14 +119,39 @@ extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, OSInt w, OSInt h, Int
 	}
 }
 
-extern "C" void ImageUtil_ColorFill32(UInt8 *pixelPtr, OSInt pixelCnt, Int32 color)
+extern "C" void ImageUtil_ColorFill32(UInt8 *pixelPtr, UOSInt pixelCnt, UInt32 color)
 {
+	UOSInt i = pixelCnt >> 4;
+	if (i)
+	{
+		UInt32x4 cVals = PUInt32x4SetA(color);
+		while (i-- > 0)
+		{
+			PStoreUInt32x4(&pixelPtr[0], cVals);
+			PStoreUInt32x4(&pixelPtr[16], cVals);
+			PStoreUInt32x4(&pixelPtr[32], cVals);
+			PStoreUInt32x4(&pixelPtr[48], cVals);
+			pixelPtr += 64;
+		}
+		pixelCnt &= 15;
+		if (pixelCnt == 0)
+		{
+			return;
+		}
+	}
+	while (pixelCnt-- > 0)
+	{
+		*(UInt32*)pixelPtr = color;
+		pixelPtr += 4;
+	}
+}
+/*{
 	while (pixelCnt-- > 0)
 	{
 		*(Int32*)pixelPtr = color;
 		pixelPtr += 4;
 	}
-}
+}*/
 
 extern "C" void ImageUtil_ImageColorReplace32(const UInt8 *srcPtr, UInt8 *destPtr, OSInt w, OSInt h, OSInt sbpl, OSInt dbpl, Int32 col)
 {
