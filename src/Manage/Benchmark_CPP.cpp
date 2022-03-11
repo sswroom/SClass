@@ -2,7 +2,7 @@
 #include "MyMemory.h"
 #include "SIMD.h"
 
-extern "C" void Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+extern "C" void Benchmark_MemCopyTest(const UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
 {
 	while (loopCnt-- > 0)
 	{
@@ -10,10 +10,10 @@ extern "C" void Benchmark_MemCopyTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize
 	}
 }
 
-extern "C" void Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+extern "C" void Benchmark_MemWriteTest(const UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
 {
 	UInt8 *destBuff;
-	OSInt cnt;
+	UOSInt cnt;
 	Int32x4 zval = PInt32x4Clear();
 	while (loopCnt-- > 0)
 	{
@@ -34,7 +34,7 @@ extern "C" void Benchmark_MemWriteTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSiz
 	}
 }
 
-extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize, OSInt loopCnt)
+extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, UOSInt buffSize, UOSInt loopCnt)
 {
 /*	volatile OSInt *srcBuff;
 	OSInt cnt;
@@ -58,7 +58,7 @@ extern "C" void Benchmark_MemReadTest(UInt8 *buff1, UInt8 *buff2, OSInt buffSize
 #else
 	volatile UInt8 *srcBuff;
 #endif
-	OSInt cnt;
+	UOSInt cnt;
 	Int32x4 val;
 	while (loopCnt-- > 0)
 	{

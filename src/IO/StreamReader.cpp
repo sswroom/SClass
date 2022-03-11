@@ -171,14 +171,14 @@ Int32 IO::StreamReader::Peek()
 {
 	if (wcPos < wcSize)
 	{
-		return wcbuff[wcPos];
+		return (Int32)wcbuff[wcPos];
 	}
 	else
 	{
 		FillBuffer();
 		if (wcPos < wcSize)
 		{
-			return wcbuff[wcPos];
+			return (Int32)wcbuff[wcPos];
 		}
 		else
 		{

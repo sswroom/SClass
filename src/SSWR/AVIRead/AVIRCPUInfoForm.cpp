@@ -11,8 +11,8 @@
 
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 {
-	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
+	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 	UTF8Char u8buff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
@@ -63,8 +63,8 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 
 void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 {
-	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
+	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
 	UTF8Char u8buff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;

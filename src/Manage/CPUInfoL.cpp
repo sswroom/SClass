@@ -24,7 +24,7 @@ Manage::CPUInfo::CPUInfo()
 	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		Int32 cpuPart = 0;
+//		Int32 cpuPart = 0;
 		Text::StringBuilderUTF8 sb;
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		while (reader->ReadLine(&sb, 512))
@@ -120,7 +120,7 @@ Manage::CPUInfo::CPUInfo()
 			}
 			else if (sb.StartsWith(UTF8STRC("CPU part	:")))
 			{
-				cpuPart = Text::StrToInt32(sb.ToString() + 11);
+//				cpuPart = Text::StrToInt32(sb.ToString() + 11);
 			}
 			sb.ClearStr();
 		}

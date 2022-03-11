@@ -83,7 +83,7 @@ Int32 __stdcall Manage::ExceptionRecorder::ExceptionHandler(void *exInfo)
 #elif defined(CPU_ARM)
 	NEW_CLASS(context, Manage::ThreadContextARM(einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_ARM64)
-	NEW_CLASS(context, Manage::ThreadContextARM64(einfo->info->si_pid, 0, einfo->ucontext));
+	NEW_CLASS(context, Manage::ThreadContextARM64((UOSInt)einfo->info->si_pid, 0, einfo->ucontext));
 #elif defined(CPU_MIPS)
 	NEW_CLASS(context, Manage::ThreadContextMIPS(einfo->info->si_pid, 0, einfo->ucontext));
 #else

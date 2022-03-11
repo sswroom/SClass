@@ -43,15 +43,15 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			{
 				this->cpuModel = CSTR("APQ8064");
 			}
-			else if (IO::Path::GetPathType(UTF8STRC("/sys/rk3368_thermal")) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTR("/sys/rk3368_thermal")) == IO::Path::PathType::Directory)
 			{
 				this->cpuModel = CSTR("RK3368");
 			}
-			else if (IO::Path::GetPathType(UTF8STRC("/sys/devices/platform/rk3026-codec")) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTR("/sys/devices/platform/rk3026-codec")) == IO::Path::PathType::Directory)
 			{
 				this->cpuModel = CSTR("RK3026");
 			}
-			else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/bcm2835_thermal")) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/bcm2835_thermal")) == IO::Path::PathType::Directory)
 			{
 				if (cpuPart == 0xd03)
 				{
@@ -62,20 +62,20 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 					this->cpuModel = CSTR("BCM2835");
 				}
 			}
-			else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/rtk129x-cpufreq")) == IO::Path::PathType::Directory)
+			else if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/rtk129x-cpufreq")) == IO::Path::PathType::Directory)
 			{
-				OSInt threadCnt = Sync::Thread::GetThreadCnt();
+				UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 				if (threadCnt == 2)
 				{
 					this->cpuModel = CSTR("RTD1293");
 				}
 				else
 				{
-					if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/[RTD129x PCIE Slot2]")) == IO::Path::PathType::Unknown)
+					if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/[RTD129x PCIE Slot2]")) == IO::Path::PathType::Unknown)
 					{
 						this->cpuModel = CSTR("RTD1294");
 					}
-					else if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/devices/9803f000.sata:sata-port@2")) == IO::Path::PathType::Unknown)
+					else if (IO::Path::GetPathType(CSTR("/sys/bus/platform/devices/9803f000.sata:sata-port@2")) == IO::Path::PathType::Unknown)
 					{
 						this->cpuModel = CSTR("RTD1295");
 					}
@@ -107,7 +107,7 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 					}
 					if (Text::StrEqualsC(fileBuff, i, UTF8STRC("AM335X")))
 					{
-						Bool hasCAN = (IO::Path::GetPathType(UTF8STRC("/proc/net/can")) == IO::Path::PathType::Directory);
+						Bool hasCAN = (IO::Path::GetPathType(CSTR("/proc/net/can")) == IO::Path::PathType::Directory);
 						Bool hasGraphics = false;
 						Bool hasPRUICSS = false;
 //						Bool hasEtherCAT = false;
@@ -157,18 +157,18 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_AMLOGIC)
 			{
-				OSInt threadCnt = Sync::Thread::GetThreadCnt();
+				UOSInt threadCnt = Sync::Thread::GetThreadCnt();
 				if (threadCnt == 8)
 				{
 					this->cpuModel = CSTR("Amlogic S912");
 				}
 				else if (threadCnt == 4)
 				{
-					if (IO::Path::GetPathType(UTF8STRC("/sys/class/amaudio")) != IO::Path::PathType::Directory)
+					if (IO::Path::GetPathType(CSTR("/sys/class/amaudio")) != IO::Path::PathType::Directory)
 					{
 						this->cpuModel = CSTR("Amlogic S905");
 					}
-					else if (IO::Path::GetPathType(UTF8STRC("/sys/class/tsdemux")) != IO::Path::PathType::Directory)
+					else if (IO::Path::GetPathType(CSTR("/sys/class/tsdemux")) != IO::Path::PathType::Directory)
 					{
 						this->cpuModel = CSTR("Amlogic S905D");
 					}
@@ -180,9 +180,9 @@ Manage::CPUInfoDetail::CPUInfoDetail()
 			}
 			else if (this->brand == Manage::CPUVendor::CB_QUALCOMM)
 			{
-				if (IO::Path::GetPathType(UTF8STRC("/sys/bus/platform/drivers/cpufreq-ipq40xx")) == IO::Path::PathType::Directory)
+				if (IO::Path::GetPathType(CSTR("/sys/bus/platform/drivers/cpufreq-ipq40xx")) == IO::Path::PathType::Directory)
 				{
-					Bool hasSDCard = (IO::Path::GetPathType(UTF8STRC("/sys/class/mmc_host")) == IO::Path::PathType::Directory);
+					Bool hasSDCard = (IO::Path::GetPathType(CSTR("/sys/class/mmc_host")) == IO::Path::PathType::Directory);
 					Bool has4_9GHz = false;
 					if (!has4_9GHz)
 					{
@@ -238,7 +238,7 @@ Bool Manage::CPUInfoDetail::GetCPUTemp(UOSInt index, Double *temp)
 	Bool ret = false;
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	sptr = Text::StrConcatC(Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
+	sptr = Text::StrConcatC(Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("/sys/class/thermal/thermal_zone")), index), UTF8STRC("/temp"));
 	Text::StringBuilderUTF8 sb;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;

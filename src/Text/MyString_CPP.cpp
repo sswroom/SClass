@@ -333,13 +333,13 @@ extern "C" UOSInt MyString_StrCharCnt(const UTF8Char *s)
 	while (true)
 	{
 		if (src[0] == 0)
-			return src - s;
+			return (UOSInt)(src - s);
 		if (src[1] == 0)
-			return src - s + 1;
+			return (UOSInt)(src - s + 1);
 		if (src[2] == 0)
-			return src - s + 2;
+			return (UOSInt)(src - s + 2);
 		if (src[3] == 0)
-			return src - s + 3;
+			return (UOSInt)(src - s + 3);
 		src += 4;
 	}
 }
@@ -348,14 +348,14 @@ extern "C" UOSInt MyString_StrCharCntUTF16(const UTF16Char *s)
 {
 	const UTF16Char *src = s;
 	while (*src++) ;
-	return (src - s - 1);
+	return (UOSInt)(src - s - 1);
 }
 
 extern "C" UOSInt MyString_StrCharCntUTF32(const UTF32Char *s)
 {
 	const UTF32Char *src = s;
 	while (*src++) ;
-	return (src - s - 1);
+	return (UOSInt)(src - s - 1);
 }
 
 #ifdef HAS_INT64
@@ -581,7 +581,7 @@ extern "C" Int32 MyString_StrToInt32UTF32(const UTF32Char *intStr)
 	{
 		if (*intStr < '0' || *intStr > '9')
 			return 0;
-		retVal = retVal * 10 + *intStr - 48;
+		retVal = retVal * 10 + (Int32)*intStr - 48;
 		intStr++;
 	}
 	if (sign)

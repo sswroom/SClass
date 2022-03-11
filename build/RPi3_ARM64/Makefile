@@ -6,6 +6,14 @@ STRIP:=strip
 CLASSDIR:=../../
 
 CFLAGS += -I ../../header
+CFLAGS += -Wall
+CFLAGS += -g
+CFLAGS += -Wsign-conversion
+CFLAGS += -Wconversion
+CFLAGS += -Wswitch-enum
+CFLAGS += -finline-functions 
+CFLAGS += -finline-small-functions 
+CFLAGS += -findirect-inlining -Wno-strict-aliasing
 CFLAGS += -O
 CFLAGS += -ffunction-sections -fdata-sections
 CFLAGS += -flax-vector-conversions

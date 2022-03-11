@@ -29,7 +29,7 @@ void CSRGB8_LRGBC_ConvertPixel(UInt8 *destPtr, UInt8 *rgbTable, UInt8 b, UInt8 g
 	}
 	else
 	{
-		*(Int16*)&destPtr[0] = outColor[0];
+		*(Int16*)&destPtr[0] = (Int16)outColor[0];
 	}
 	if (outColor[1] < -32768)
 	{
@@ -41,7 +41,7 @@ void CSRGB8_LRGBC_ConvertPixel(UInt8 *destPtr, UInt8 *rgbTable, UInt8 b, UInt8 g
 	}
 	else
 	{
-		*(Int16*)&destPtr[2] = outColor[1];
+		*(Int16*)&destPtr[2] = (Int16)outColor[1];
 	}
 	if (outColor[2] < -32768)
 	{
@@ -53,7 +53,7 @@ void CSRGB8_LRGBC_ConvertPixel(UInt8 *destPtr, UInt8 *rgbTable, UInt8 b, UInt8 g
 	}
 	else
 	{
-		*(Int16*)&destPtr[4] = outColor[2];
+		*(Int16*)&destPtr[4] = (Int16)outColor[2];
 	}
 	if (outColor[3] < -32768)
 	{
@@ -65,7 +65,7 @@ void CSRGB8_LRGBC_ConvertPixel(UInt8 *destPtr, UInt8 *rgbTable, UInt8 b, UInt8 g
 	}
 	else
 	{
-		*(Int16*)&destPtr[6] = outColor[3];
+		*(Int16*)&destPtr[6] = (Int16)outColor[3];
 	}
 }
 
@@ -129,7 +129,7 @@ extern "C" void CSRGB8_LRGBC_Convert(UInt8 *srcPtr, UInt8 *destPtr, OSInt width,
 			while (i-- > 0)
 			{
 				UInt16 c = ReadUInt16(&srcPtr[0]) & 0x7fff;
-				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, ((c << 3) & 0xf8) | ((c >> 2) & 7), ((c >> 2) & 0xf8) | ((c >> 7) & 7), ((c >> 7) & 0xf8) | (c >> 12));
+				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, (UInt8)(((c << 3) & 0xf8) | ((c >> 2) & 7)), (UInt8)(((c >> 2) & 0xf8) | ((c >> 7) & 7)), (UInt8)(((c >> 7) & 0xf8) | (c >> 12)));
 
 				srcPtr += 2;
 				destPtr += 8;
@@ -259,7 +259,7 @@ extern "C" void CSRGB8_LRGBC_ConvertB5G5R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 			while (i-- > 0)
 			{
 				UInt16 c = ReadUInt16(&srcPtr[0]) & 0x7fff;
-				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, ((c << 3) & 0xf8) | ((c >> 2) & 7), ((c >> 2) & 0xf8) | ((c >> 7) & 7), ((c >> 7) & 0xf8) | (c >> 12));
+				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, (UInt8)(((c << 3) & 0xf8) | ((c >> 2) & 7)), (UInt8)(((c >> 2) & 0xf8) | ((c >> 7) & 7)), (UInt8)(((c >> 7) & 0xf8) | (c >> 12)));
 
 				srcPtr += 2;
 				destPtr += 8;
@@ -283,7 +283,7 @@ extern "C" void CSRGB8_LRGBC_ConvertB5G6R5(UInt8 *srcPtr, UInt8 *destPtr, OSInt 
 			while (i-- > 0)
 			{
 				UInt16 c = ReadUInt16(&srcPtr[0]);
-				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, ((c << 3) & 0xf8) | ((c >> 2) & 7), ((c >> 3) & 0xfc) | ((c >> 9) & 3), ((c >> 7) & 0xf8) | (c >> 13));
+				CSRGB8_LRGBC_ConvertPixel(destPtr, rgbTable, (UInt8)(((c << 3) & 0xf8) | ((c >> 2) & 7)), (UInt8)(((c >> 3) & 0xfc) | ((c >> 9) & 3)), (UInt8)(((c >> 7) & 0xf8) | (c >> 13)));
 
 				srcPtr += 2;
 				destPtr += 8;

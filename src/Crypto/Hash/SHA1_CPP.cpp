@@ -19,7 +19,7 @@ extern "C" void SHA1_CalcBlock(UInt32 *Intermediate_Hash, const UInt8 *Message_B
 
 	for(t = 0; t < 16; t++)
 	{
-		W[t] = ReadMInt32(&Message_Block[t * 4]);
+		W[t] = ReadMUInt32(&Message_Block[t * 4]);
 	}
 
 	for(t = 16; t < 80; t++)

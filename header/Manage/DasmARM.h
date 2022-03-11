@@ -52,7 +52,7 @@ namespace Manage
 			Data::ArrayListUInt32 *callAddrs;
 			Data::ArrayListUInt32 *jmpAddrs;
 			UTF8Char *sbuff;
-			Int32 retAddr;
+			UInt32 retAddr;
 			Int32 thisStatus;
 			Int32 endStatus; //0 = not end, 1 = jmp out, 2 = exit program, 3 = func return
 			UInt16 endIP;

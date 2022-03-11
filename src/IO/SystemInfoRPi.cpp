@@ -20,11 +20,10 @@ IO::SystemInfo::SystemInfo()
 	IO::FileStream *fs;
 	IO::StreamReader *reader;
 	Text::StringBuilderUTF8 sb;
-	OSInt i;
 	ClassData *data = MemAlloc(ClassData, 1);
 	data->platformName = 0;
 	this->clsData = data;
-	NEW_CLASS(fs, IO::FileStream((const UTF8Char*)"/sys/firmware/devicetree/base/model", IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/firmware/devicetree/base/model"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
 		NEW_CLASS(reader, IO::StreamReader(fs, 65001));

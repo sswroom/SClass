@@ -148,7 +148,7 @@ UInt32 DasmARM_ParseImmShift(Manage::DasmARM::DasmARM_Sess *sess, UInt32 oriVal)
 		{
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", ASR #32"));
 			if (((Int32)oriVal) < 0)
-				return -1;
+				return (UInt32)-1;
 			else
 				return 0;
 		}
@@ -156,7 +156,7 @@ UInt32 DasmARM_ParseImmShift(Manage::DasmARM::DasmARM_Sess *sess, UInt32 oriVal)
 		{
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", ASR #"));
 			sess->sbuff = Text::StrInt32(sess->sbuff, v);
-			return ((Int32)oriVal) >> v;
+			return (UInt32)((Int32)oriVal) >> v;
 		}
 	}
 	else if (t == 3)
@@ -232,7 +232,7 @@ Bool DasmARM_0A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("beq 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -243,10 +243,10 @@ Bool DasmARM_0A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -256,7 +256,7 @@ Bool DasmARM_0B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bleq 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -267,10 +267,10 @@ Bool DasmARM_0B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -350,7 +350,7 @@ Bool DasmARM_1A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bne 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -361,10 +361,10 @@ Bool DasmARM_1A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -374,7 +374,7 @@ Bool DasmARM_1B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blne 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -385,10 +385,10 @@ Bool DasmARM_1B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -468,7 +468,7 @@ Bool DasmARM_2A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcs 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -479,10 +479,10 @@ Bool DasmARM_2A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -492,7 +492,7 @@ Bool DasmARM_2B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcs 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -503,10 +503,10 @@ Bool DasmARM_2B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -586,7 +586,7 @@ Bool DasmARM_3A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bcc 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -597,10 +597,10 @@ Bool DasmARM_3A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -610,7 +610,7 @@ Bool DasmARM_3B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blcc 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -621,10 +621,10 @@ Bool DasmARM_3B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -704,7 +704,7 @@ Bool DasmARM_4A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bmi 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -715,10 +715,10 @@ Bool DasmARM_4A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -728,7 +728,7 @@ Bool DasmARM_4B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blmi 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -739,10 +739,10 @@ Bool DasmARM_4B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -822,7 +822,7 @@ Bool DasmARM_5A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bpl 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -833,10 +833,10 @@ Bool DasmARM_5A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -846,7 +846,7 @@ Bool DasmARM_5B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blpl 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -857,10 +857,10 @@ Bool DasmARM_5B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -940,7 +940,7 @@ Bool DasmARM_6A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvs 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -951,10 +951,10 @@ Bool DasmARM_6A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -964,7 +964,7 @@ Bool DasmARM_6B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvs 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -975,10 +975,10 @@ Bool DasmARM_6B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1058,7 +1058,7 @@ Bool DasmARM_7A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bvc 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1069,10 +1069,10 @@ Bool DasmARM_7A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1082,7 +1082,7 @@ Bool DasmARM_7B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blvc 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1093,10 +1093,10 @@ Bool DasmARM_7B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1159,7 +1159,7 @@ Bool DasmARM_82(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x70:
@@ -1199,7 +1199,7 @@ Bool DasmARM_83(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mvnhi "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		val = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		val = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrInt32(sess->sbuff, val);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 /*		*regPtrd = val;
@@ -1259,7 +1259,7 @@ Bool DasmARM_87(Manage::DasmARM::DasmARM_Sess *sess)
 	UInt32 *regPtrs;
 	UInt32 *regPtrs2;
 	UInt32 *regPtrd;
-	Int32 addr;
+	UInt32 addr;
 	sess->regs.PC += 4;
 	switch (sess->codeBuff[2] & 0xf0)
 	{
@@ -1317,7 +1317,7 @@ Bool DasmARM_8A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bhi 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1328,10 +1328,10 @@ Bool DasmARM_8A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1341,7 +1341,7 @@ Bool DasmARM_8B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blhi 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1352,10 +1352,10 @@ Bool DasmARM_8B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1435,7 +1435,7 @@ Bool DasmARM_9A(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bls 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1446,10 +1446,10 @@ Bool DasmARM_9A(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1459,7 +1459,7 @@ Bool DasmARM_9B(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blls 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1470,10 +1470,10 @@ Bool DasmARM_9B(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1553,7 +1553,7 @@ Bool DasmARM_AA(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bge 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1564,10 +1564,10 @@ Bool DasmARM_AA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1577,7 +1577,7 @@ Bool DasmARM_AB(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blge 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1588,10 +1588,10 @@ Bool DasmARM_AB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1671,7 +1671,7 @@ Bool DasmARM_BA(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blt 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1682,10 +1682,10 @@ Bool DasmARM_BA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1695,7 +1695,7 @@ Bool DasmARM_BB(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bllt 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1706,10 +1706,10 @@ Bool DasmARM_BB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1789,7 +1789,7 @@ Bool DasmARM_CA(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bgt 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1800,10 +1800,10 @@ Bool DasmARM_CA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1813,7 +1813,7 @@ Bool DasmARM_CB(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blgt 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1824,10 +1824,10 @@ Bool DasmARM_CB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1907,7 +1907,7 @@ Bool DasmARM_DA(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("ble 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1918,10 +1918,10 @@ Bool DasmARM_DA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1931,7 +1931,7 @@ Bool DasmARM_DB(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("blle 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -1942,10 +1942,10 @@ Bool DasmARM_DB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -1990,9 +1990,9 @@ Bool DasmARM_E0(Manage::DasmARM::DasmARM_Sess *sess)
 			sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs1);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
 			sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[0] & 0xf, &regPtrs2);
-			imm = DasmARM_ParseImmShift(sess, *regPtrs2);
+			imm = (Int32)DasmARM_ParseImmShift(sess, *regPtrs2);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-			*regPtrd = *regPtrs1 + imm;
+			*regPtrd = *regPtrs1 + (UInt32)imm;
 			if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 			{
 				sess->endType = Manage::DasmARM::ET_JMP;
@@ -2010,9 +2010,9 @@ Bool DasmARM_E0(Manage::DasmARM::DasmARM_Sess *sess)
 			sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtrs1);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("], #"));
 			imm = ((sess->codeBuff[0] & 0xf) | ((sess->codeBuff[1] & 0xf) << 4));
-			sess->sbuff = Text::StrUInt16(sess->sbuff, imm);
+			sess->sbuff = Text::StrUInt16(sess->sbuff, (UInt16)imm);
 			sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-			*regPtrs1 += imm;
+			*regPtrs1 += (UInt32)imm;
 			if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 			{
 				sess->endType = Manage::DasmARM::ET_JMP;
@@ -2270,7 +2270,7 @@ Bool DasmARM_E1(Manage::DasmARM::DasmARM_Sess *sess)
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 				sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 				sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-				*regPtrd = ((Int32)*regPtrs) >> imm;
+				*regPtrd = (UInt32)(((Int32)*regPtrs) >> imm);
 				if ((sess->codeBuff[2] & 0xf) == 15)
 				{
 					sess->endType = Manage::DasmARM::ET_FUNC_RET;
@@ -2328,7 +2328,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 	switch (sess->codeBuff[2] & 0xf0)
 	{
 	case 0x40:
-		imm = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("sub "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2336,7 +2336,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs - imm;
+		*regPtrd = *regPtrs - (UInt32)imm;
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2351,7 +2351,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		}
 		return true;
 	case 0x50:
-		imm = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("subs "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2359,7 +2359,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs - imm;
+		*regPtrd = *regPtrs - (UInt32)imm;
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2374,7 +2374,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		}
 		return true;
 	case 0x80:
-		imm = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("add "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2382,7 +2382,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs + imm;
+		*regPtrd = *regPtrs + (UInt32)imm;
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2519,7 +2519,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		}
 		break;*/
 	case 0xb0:
-		imm = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		imm = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("adcs "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, (sess->codeBuff[1] & 0xf0) >> 4, &regPtrd);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", "));
@@ -2527,7 +2527,7 @@ Bool DasmARM_E2(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtrd = *regPtrs + imm;
+		*regPtrd = *regPtrs + (UInt32)imm;
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14)
@@ -2609,7 +2609,7 @@ Bool DasmARM_E3(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmp "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x60:
@@ -2619,7 +2619,7 @@ Bool DasmARM_E3(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("cmn "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		sess->sbuff = Text::StrInt32(sess->sbuff, DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
+		sess->sbuff = Text::StrInt32(sess->sbuff, (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]));
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		return true;
 	case 0x80:
@@ -2632,10 +2632,10 @@ Bool DasmARM_E3(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("mov "));
 		sess->sbuff = DasmARM_ParseReg32(sess, sess->sbuff, sess->codeBuff[2] & 0xf, &regPtr);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(", #"));
-		val = DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
+		val = (Int32)DasmARM_ParseImmA32(sess->codeBuff[1] & 0xf, sess->codeBuff[0]);
 		sess->sbuff = Text::StrInt32(sess->sbuff, val);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-		*regPtr = val;
+		*regPtr = (UInt32)val;
 		if ((sess->codeBuff[2] & 0xf) == 15)
 		{
 			sess->endType = Manage::DasmARM::ET_JMP;
@@ -2679,7 +2679,7 @@ Bool DasmARM_E4(Manage::DasmARM::DasmARM_Sess *sess)
 		sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 		sess->memReader->ReadMemory(*regPtrs, (UInt8*)regPtrd, 4);
-		*regPtrs += imm;
+		*regPtrs += (UInt32)imm;
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14 || (sess->codeBuff[2] & 0xf) == 13)
@@ -2717,7 +2717,7 @@ Bool DasmARM_E5(Manage::DasmARM::DasmARM_Sess *sess)
 			sess->sbuff = Text::StrInt32(sess->sbuff, imm);
 		}
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("]\r\n"));
-		sess->memReader->ReadMemory(imm + *regPtrs, (UInt8*)regPtrd, 4);
+		sess->memReader->ReadMemory((UInt32)imm + *regPtrs, (UInt8*)regPtrd, 4);
 		if ((sess->codeBuff[1] & 0xf0) == 0xf0)
 		{
 			if ((sess->codeBuff[2] & 0xf) == 14 || (sess->codeBuff[2] & 0xf) == 13)
@@ -2893,7 +2893,7 @@ Bool DasmARM_EA(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("b 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -2904,11 +2904,11 @@ Bool DasmARM_EA(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
 
-	sess->regs.PC += addr + 4;
+	sess->regs.PC += (UInt32)addr + 4;
 	sess->jmpAddrs->Add(sess->regs.PC);
 	sess->endType = Manage::DasmARM::ET_JMP;
 	sess->retAddr = sess->regs.PC;
@@ -2922,7 +2922,7 @@ Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
 	sess->regs.PC += 4;
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("bl 0x"));
 	addr = ReadInt24(sess->codeBuff) << 2;
-	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + addr + 4);
+	sess->sbuff = Text::StrHexVal32(sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" ("));
 	if (addr > 0)
 	{
@@ -2933,7 +2933,7 @@ Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
 	if (sess->addrResol)
 	{
 		sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC(" "));
-		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + addr + 4);
+		sess->sbuff = sess->addrResol->ResolveName(sptr = sess->sbuff, sess->regs.PC + (UInt32)addr + 4);
 		if (sess->sbuff == 0)
 		{
 			sess->sbuff = sptr;
@@ -2941,11 +2941,11 @@ Bool DasmARM_EB(Manage::DasmARM::DasmARM_Sess *sess)
 		if (DasmARM_IsEndFunc(sptr, (UOSInt)(sess->sbuff - sptr)))
 		{
 			sess->endType = Manage::DasmARM::ET_EXIT;
-			sess->retAddr = sess->regs.PC + addr + 4;
+			sess->retAddr = sess->regs.PC + (UInt32)addr + 4;
 		}
 	}
 	sess->sbuff = Text::StrConcatC(sess->sbuff, UTF8STRC("\r\n"));
-	sess->jmpAddrs->Add(sess->regs.PC + addr + 4);
+	sess->jmpAddrs->Add(sess->regs.PC + (UInt32)addr + 4);
 	return true;
 }
 
@@ -4874,7 +4874,7 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 	UInt32 oriPC;
 	DasmARM_Sess sess;
 	Text::StringBuilderUTF8 *outStr;
-	OSInt initJmpCnt = jmpAddrs->GetCount();
+	UOSInt initJmpCnt = jmpAddrs->GetCount();
 	NEW_CLASS(outStr, Text::StringBuilderUTF8());
 	sess.callAddrs = callAddrs;
 	sess.jmpAddrs = jmpAddrs;
@@ -4891,48 +4891,48 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 	sess.addrResol = addrResol;
 	sess.memReader = memReader;
 	sess.codeBuff = buff;
-	*blockStart = (Int32)sess.regs.PC;
+	*blockStart = sess.regs.PC;
 
 	while (true)
 	{
 		Bool ret;
 
 		outStr->ClearStr();
-		outStr->AppendHex32((UInt32)sess.regs.SP);
+		outStr->AppendHex32(sess.regs.SP);
 		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32((UInt32)sess.regs.LR);
+		outStr->AppendHex32(sess.regs.LR);
 		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32((UInt32)sess.regs.PC);
+		outStr->AppendHex32(sess.regs.PC);
 		outStr->AppendC(UTF8STRC(" "));
-		outStr->AppendHex32((UInt32)sess.regs.CPSR);
+		outStr->AppendHex32(sess.regs.CPSR);
 		outStr->AppendC(UTF8STRC(" "));
 		if (fullRegs)
 		{
-			outStr->AppendHex32((UInt32)sess.regs.R0);
+			outStr->AppendHex32(sess.regs.R0);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R1);
+			outStr->AppendHex32(sess.regs.R1);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R2);
+			outStr->AppendHex32(sess.regs.R2);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R3);
+			outStr->AppendHex32(sess.regs.R3);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R4);
+			outStr->AppendHex32(sess.regs.R4);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R5);
+			outStr->AppendHex32(sess.regs.R5);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R6);
+			outStr->AppendHex32(sess.regs.R6);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R7);
+			outStr->AppendHex32(sess.regs.R7);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R8);
+			outStr->AppendHex32(sess.regs.R8);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R9);
+			outStr->AppendHex32(sess.regs.R9);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.R10);
+			outStr->AppendHex32(sess.regs.R10);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.FP);
+			outStr->AppendHex32(sess.regs.FP);
 			outStr->AppendC(UTF8STRC(" "));
-			outStr->AppendHex32((UInt32)sess.regs.IP);
+			outStr->AppendHex32(sess.regs.IP);
 			outStr->AppendC(UTF8STRC(" "));
 		}
 		sess.sbuff = sbuff;
@@ -4961,7 +4961,7 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 		}
 		if (!ret)
 		{
-			OSInt buffSize;
+			UOSInt buffSize;
 			outStr->AppendC(UTF8STRC("Unknown opcode "));
 			buffSize = sess.memReader->ReadMemory(oriPC, buff, 16);
 			if (buffSize > 0)
@@ -4977,7 +4977,7 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 		writer->WriteStrC(outStr->ToString(), outStr->GetLength());
 		if (sess.endType == Manage::DasmARM::ET_JMP && (UInt32)sess.retAddr >= *blockStart && (UInt32)sess.retAddr <= sess.regs.PC)
 		{
-			OSInt i;
+			UOSInt i;
 			UInt32 minAddr = 0xffffffff;
 			UInt32 jmpAddr;
 			i = jmpAddrs->GetCount();
@@ -4992,9 +4992,9 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 			if (minAddr - sess.regs.PC > 0x1000)
 			{
 				*currInst = sess.retAddr;
-				*currStack = (Int32)sess.regs.SP;
-				*currFrame = (Int32)sess.regs.LR;
-				*blockEnd = (Int32)sess.regs.PC;
+				*currStack = sess.regs.SP;
+				*currFrame = sess.regs.LR;
+				*blockEnd = sess.regs.PC;
 				DEL_CLASS(outStr);
 				MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
 				return false;
@@ -5005,9 +5005,9 @@ Bool Manage::DasmARM::Disasm32(IO::Writer *writer, Manage::AddressResolver *addr
 		else if (sess.endType != Manage::DasmARM::ET_NOT_END)
 		{
 			*currInst = sess.retAddr;
-			*currStack = (Int32)sess.regs.SP;
-			*currFrame = (Int32)sess.regs.LR;
-			*blockEnd = (Int32)sess.regs.PC;
+			*currStack = sess.regs.SP;
+			*currFrame = sess.regs.LR;
+			*blockEnd = sess.regs.PC;
 			DEL_CLASS(outStr);
 			MemCopyNO(regs, &sess.regs, sizeof(Manage::DasmARM::DasmARM_Regs));
 			return sess.endType != Manage::DasmARM::ET_EXIT;
