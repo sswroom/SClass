@@ -84,6 +84,7 @@ typedef __m128i UInt32x4;
 #define PInt16x8SetA(v) _mm_set1_epi16(v)
 #define PUInt16x8SetA(v) _mm_set1_epi16((Int16)v)
 #define PInt32x4SetA(v) _mm_set1_epi32(v)
+#define PUInt32x4SetA(v) _mm_set1_epi32((Int32)v)
 #define PLoadUInt8x4(ptr) _mm_cvtsi32_si128(*(Int32*)(ptr))
 #define PLoadUInt8x8(ptr) _mm_loadl_epi64((__m128i*)(ptr))
 #define PLoadUInt8x16(ptr) _mm_loadu_si128((__m128i*)(ptr))
@@ -95,6 +96,7 @@ typedef __m128i UInt32x4;
 #define PLoadUInt16x8A(ptr) _mm_load_si128((__m128i*)(ptr))
 #define PLoadInt32x4(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PLoadInt32x4A(ptr) _mm_load_si128((__m128i*)(ptr))
+#define PLoadUInt32x4(ptr) _mm_loadu_si128((__m128i*)(ptr))
 #define PMLoadInt16x4(ptr1, ptr2) _mm_set_epi64x(*(Int64*)ptr1, *(Int64*)ptr2)
 #define PStoreUInt8x4(ptr, v) *(Int32*)ptr = _mm_cvtsi128_si32(v)
 #define PStoreUInt8x8(ptr, v) _mm_storel_epi64((__m128i*)(ptr), v)
@@ -143,6 +145,7 @@ typedef __m128i UInt32x4;
 #define PMergeLW4(v1, v2) _mm_unpacklo_epi64(v1, v2)
 #define PMergeHW4(v1, v2) _mm_unpackhi_epi64(v1, v2)
 #define PMergeSARDW4(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))
+#define PCMPEQUD4(v1, v2) _mm_cmpeq_epi32(v1, v2)
 #define PSALW4(v1, v2) _mm_slli_epi16(v1, v2)
 #define PSHRW4(v1, v2) _mm_srli_epi16(v1, v2)
 #define PSHRW8(v1, v2) _mm_srli_epi16(v1, v2)
@@ -153,6 +156,8 @@ typedef __m128i UInt32x4;
 #define PSARSDW8(v1, v2, cnt) _mm_packs_epi32(_mm_srai_epi32(v1, cnt), _mm_srai_epi32(v2, cnt))
 #define PSHRADDWB4(v1, v2, cnt) _mm_packus_epi16(_mm_srli_epi16(_mm_adds_epu16(v1, v2), cnt), v2)
 #define PANDW8(v1, v2) _mm_and_si128(v1, v2)
+#define PANDUD4(v1, v2) _mm_and_si128(v1, v2)
+#define PXORUD4(v1, v2) _mm_xor_si128(v1, v2)
 #define PADDUB4(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB8(v1, v2) _mm_add_epi8(v1, v2)
 #define PADDUB16(v1, v2) _mm_add_epi8(v1, v2)
@@ -167,6 +172,7 @@ typedef __m128i UInt32x4;
 #define PHSADDW8_4(v1, v2) _mm_adds_epi16(_mm_unpacklo_epi64(v1, v2), _mm_unpackhi_epi64(v1, v2))
 #define PMADDWD(v1, v2) _mm_madd_epi16(v1, v2)
 #define PSUBW4(v1, v2) _mm_sub_epi16(v1, v2)
+#define PSUBUW4(v1, v2) _mm_sub_epi16(v1, v2)
 #define PSUBD4(v1, v2) _mm_sub_epi32(v1, v2)
 #define PMULHW4(v1, v2) _mm_mulhi_epi16(v1, v2)
 #define PMULHW8(v1, v2) _mm_mulhi_epi16(v1, v2)
@@ -861,6 +867,11 @@ Int32x4 FORCEINLINE PLoadInt32x4A(const void *ptr)
 	return *(Int32x4*)ptr;
 }
 
+UInt32x4 FORCEINLINE PLoadUInt32x4(const void *ptr)
+{
+	return *(UInt32x4*)ptr;
+}
+
 Int32x8 FORCEINLINE PLoadInt32x8(const void *ptr)
 {
 	return *(Int32x8*)ptr;
@@ -935,6 +946,11 @@ void FORCEINLINE PStoreInt32x4NC(void *ptr, Int32x4 v)
 	*(Int32x4*)ptr = v;
 }
 
+void FORCEINLINE PStoreUInt32x4(void *ptr, UInt32x4 v)
+{
+	*(UInt32x4*)ptr = v;
+}
+
 void FORCEINLINE PStoreInt32x8(void *ptr, Int32x8 v)
 {
 	*(Int32x8*)ptr = v;
@@ -944,6 +960,7 @@ void FORCEINLINE PStoreInt32x8NC(void *ptr, Int32x8 v)
 {
 	*(Int32x8*)ptr = v;
 }
+
 
 Int16x4 FORCEINLINE PCONVU16x4_I(UInt16x4 val)
 {
@@ -1227,6 +1244,16 @@ Int16x8 FORCEINLINE PMergeSARDW4(Int32x4 val1, Int32x4 val2, UInt8 cnt)
 	return ret;
 }
 
+UInt32x4 FORCEINLINE PCMPEQUD4(UInt32x4 val1, UInt32x4 val2)
+{
+	UInt32x4 ret;
+	ret.vals[0] = (val1.vals[0] == val2.vals[0])?0xffffffff:0;
+	ret.vals[1] = (val1.vals[1] == val2.vals[1])?0xffffffff:0;
+	ret.vals[2] = (val1.vals[2] == val2.vals[2])?0xffffffff:0;
+	ret.vals[3] = (val1.vals[3] == val2.vals[3])?0xffffffff:0;
+	return ret;
+}
+
 Int16x4 FORCEINLINE PSALW4(Int16x4 oriVal, UInt8 cnt)
 {
 	oriVal.vals[0] <<= cnt;
@@ -1323,6 +1350,24 @@ Int16x8 FORCEINLINE PANDW8(Int16x8 val1, Int16x8 val2)
 	val1.vals[5] &= val2.vals[5];
 	val1.vals[6] &= val2.vals[6];
 	val1.vals[7] &= val2.vals[7];
+	return val1;
+}
+
+UInt32x4 FORCEINLINE PANDUD4(UInt32x4 val1, UInt32x4 val2)
+{
+	val1.vals[0] &= val2.vals[0];
+	val1.vals[1] &= val2.vals[1];
+	val1.vals[2] &= val2.vals[2];
+	val1.vals[3] &= val2.vals[3];
+	return val1;
+}
+
+UInt32x4 FORCEINLINE PXORUD4(UInt32x4 val1, UInt32x4 val2)
+{
+	val1.vals[0] ^= val2.vals[0];
+	val1.vals[1] ^= val2.vals[1];
+	val1.vals[2] ^= val2.vals[2];
+	val1.vals[3] ^= val2.vals[3];
 	return val1;
 }
 
@@ -1492,6 +1537,15 @@ Int16x8 FORCEINLINE PHSADDW8_4(Int16x8 val1, Int16x8 val2)
 }
 
 Int16x4 FORCEINLINE PSUBW4(Int16x4 val1, Int16x4 val2)
+{
+	val1.vals[0] -= val2.vals[0];
+	val1.vals[1] -= val2.vals[1];
+	val1.vals[2] -= val2.vals[2];
+	val1.vals[3] -= val2.vals[3];
+	return val1;
+}
+
+UInt16x4 FORCEINLINE PSUBUW4(UInt16x4 val1, UInt16x4 val2)
 {
 	val1.vals[0] -= val2.vals[0];
 	val1.vals[1] -= val2.vals[1];

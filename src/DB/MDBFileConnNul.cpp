@@ -6,21 +6,21 @@
 #include "Text/Locale.h"
 
 
-DB::MDBFileConn::MDBFileConn(const UTF8Char *fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
+DB::MDBFileConn::MDBFileConn(Text::CString fileName, IO::LogTool *log, UInt32 codePage, const WChar *uid, const WChar *pwd) : DB::ODBCConn(fileName, log)
 {
 }
 
-Bool DB::MDBFileConn::CreateMDBFile(const UTF8Char *fileName)
+Bool DB::MDBFileConn::CreateMDBFile(Text::CString fileName)
 {
 	return false;
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::String *fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }
 
-DB::DBTool *DB::MDBFileConn::CreateDBTool(const UTF8Char *fileName, IO::LogTool *log, const UTF8Char *logPrefix)
+DB::DBTool *DB::MDBFileConn::CreateDBTool(Text::CString fileName, IO::LogTool *log, Text::CString logPrefix)
 {
 	return 0;
 }

@@ -12,7 +12,7 @@ extern "C" void AlphaBlend8_C8_DoBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src
 		while (i-- > 0)
 		{
 			UInt16x4 aVal = PUInt16x4SetA((UInt16)((src[3] << 8) | src[3]));
-			UInt16x4 aiVal = PSUBW4(PUInt16x4SetA(0xFFFF), aVal);
+			UInt16x4 aiVal = PSUBUW4(PUInt16x4SetA(0xFFFF), aVal);
 			UInt16x4 sVal = PLoadUInt16x4(&rgbTable[262144 + src[2] * 8]);
 			sVal = PSADDUW4(sVal, PLoadUInt16x4(&rgbTable[264192 + src[1] * 8]));
 			sVal = PSADDUW4(sVal, PLoadUInt16x4(&rgbTable[266240 + src[0] * 8]));
@@ -98,7 +98,7 @@ extern "C" void AlphaBlend8_C8_DoBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *s
 		while (i-- > 0)
 		{
 			UInt16x4 aVal = PUInt16x4SetA((UInt16)((src[3] << 8) | src[3]));
-			UInt16x4 aiVal = PSUBW4(PUInt16x4SetA(0xFFFF), aVal);
+			UInt16x4 aiVal = PSUBUW4(PUInt16x4SetA(0xFFFF), aVal);
 			UInt16x4 sVal = PLoadUInt16x4(&rgbTable[262144 + src[2] * 8]);
 			sVal = PSADDUW4(sVal, PLoadUInt16x4(&rgbTable[264192 + src[1] * 8]));
 			sVal = PSADDUW4(sVal, PLoadUInt16x4(&rgbTable[266240 + src[0] * 8]));

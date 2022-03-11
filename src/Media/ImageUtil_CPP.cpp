@@ -106,9 +106,23 @@ extern "C" void ImageUtil_ColorReplace32(UInt8 *pixelPtr, UOSInt w, UOSInt h, UI
 }*/
 
 
-extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, OSInt w, OSInt h, Int32 col)
+extern "C" void ImageUtil_ColorReplace32A(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
 {
-	OSInt pxCnt = w * h;
+	UOSInt pxCnt = w * h;
+	while (pxCnt-- > 0)
+	{
+		if (pixelPtr[0] != 0)
+		{
+			*(Int32*)pixelPtr = col;
+		}
+		pixelPtr += 4;
+	}
+}
+
+extern "C" void ImageUtil_ColorReplace32A2(UInt8 *pixelPtr, UOSInt w, UOSInt h, UInt32 col)
+{
+	////////////////////////////////////
+	UOSInt pxCnt = w * h;
 	while (pxCnt-- > 0)
 	{
 		if (pixelPtr[0] != 0)

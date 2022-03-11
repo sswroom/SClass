@@ -193,7 +193,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
+OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return -2;
@@ -205,7 +205,7 @@ OSInt DB::ODBCConn::ExecuteNonQuery(const UTF8Char *sql)
 	return -2;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReader(const UTF8Char *sql)
+DB::DBReader *DB::ODBCConn::ExecuteReaderSlow(const UTF8Char *sql)
 {
 	this->lastDataError = DB::DBConn::DE_CONN_ERROR;
 	return 0;
@@ -277,7 +277,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -330,7 +330,7 @@ UOSInt DB::ODBCConn::GetDriverList(Data::ArrayList<Text::String*> *driverList)
 	return 0;
 }
 
-IO::ConfigFile *DB::ODBCConn::GetDriverInfo(const UTF8Char *driverName, UOSInt nameLen)
+IO::ConfigFile *DB::ODBCConn::GetDriverInfo(Text::CString driverName)
 {
 	return 0;
 }

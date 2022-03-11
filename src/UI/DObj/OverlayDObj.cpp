@@ -69,7 +69,7 @@ Bool UI::DObj::OverlayDObj::IsChanged()
 		while (i >= (OSInt)this->imgList->GetCount())
 		{
 			i -= (OSInt)this->imgList->GetCount();
-			this->startTime += (this->frameDelay * this->imgList->GetCount()) * 0.001;
+			this->startTime += OSInt2Double(this->frameDelay * (OSInt)this->imgList->GetCount()) * 0.001;
 		}
 		return i != this->lastFrameNum;
 	}

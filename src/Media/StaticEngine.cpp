@@ -32,7 +32,7 @@ Media::DrawImage *Media::StaticEngine::CreateImage32(UOSInt width, UOSInt height
 	return 0;
 }
 
-Media::DrawImage *Media::StaticEngine::LoadImage(const UTF8Char *fileName)
+Media::DrawImage *Media::StaticEngine::LoadImage(Text::CString fileName)
 {
 	IO::StmData::FileData *fd;
 	Media::ImageList *imgList = 0;
@@ -56,9 +56,9 @@ Media::DrawImage *Media::StaticEngine::LoadImageW(const WChar *fileName)
 {
 	IO::StmData::FileData *fd;
 	Media::ImageList *imgList = 0;
-	const UTF8Char *csptr = Text::StrToUTF8New(fileName);
-	NEW_CLASS(fd, IO::StmData::FileData(csptr, false));
-	Text::StrDelNew(csptr);
+	Text::String *s = Text::String::NewNotNull(fileName);
+	NEW_CLASS(fd, IO::StmData::FileData(s, false));
+	s->Release();
 	if (this->parsers)
 	{
 		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
@@ -430,7 +430,7 @@ UOSInt Media::StaticDrawImage::SaveGIF(IO::SeekableStream *stm)
 	}
 	Exporter::GIFExporter exporter;
 	Media::ImageList *imgList;
-	NEW_CLASS(imgList, Media::ImageList((const UTF8Char*)"GIFTemp"));
+	NEW_CLASS(imgList, Media::ImageList(CSTR("GIFTemp")));
 	imgList->AddImage(simg, 0);
 	Bool succ = exporter.ExportFile(stm, (const UTF8Char*)"Temp", imgList, 0);
 	DEL_CLASS(imgList);

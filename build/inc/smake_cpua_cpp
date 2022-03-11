@@ -59,6 +59,7 @@ ImageCopy_CPP.o: ../../src/Media/ImageCopy_CPP.cpp
 ImageTo8Bit_CPP.o: ../../src/Media/ImageTo8Bit_CPP.cpp
 ImageUtil_CPP.o: ../../src/Media/ImageUtil_CPP.cpp
 LRGBLimiter_CPP.o: ../../src/Media/LRGBLimiter_CPP.cpp
+MediaPlayer_CPP.o: ../../src/Media/MediaPlayer_CPP.cpp
 RGBColorFilter_CPP.o: ../../src/Media/RGBColorFilter_CPP.cpp
 AlphaBlend8_8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_8_CPP.cpp
 AlphaBlend8_C8_CPP.o: ../../src/Media/ABlend/AlphaBlend8_C8_CPP.cpp

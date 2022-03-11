@@ -18,7 +18,7 @@ namespace Media
 		virtual ~StaticEngine();
 
 		virtual DrawImage *CreateImage32(UOSInt width, UOSInt height, Media::AlphaType atype);
-		virtual DrawImage *LoadImage(const UTF8Char *fileName);
+		virtual DrawImage *LoadImage(Text::CString fileName);
 		virtual DrawImage *LoadImageW(const WChar *fileName);
 		virtual DrawImage *LoadImageStream(IO::SeekableStream *stm); /////////////////////////
 		virtual DrawImage *ConvImage(Media::Image *img);
