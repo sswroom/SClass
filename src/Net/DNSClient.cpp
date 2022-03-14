@@ -379,6 +379,11 @@ UOSInt Net::DNSClient::GetServerName(Data::ArrayList<RequestAnswer*> *answers)
 	return GetByAddrName(answers, &this->serverAddr);
 }
 
+UOSInt Net::DNSClient::GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
+{
+	return GetByType(answers, domain, domainLen, 257);
+}
+
 void Net::DNSClient::UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr)
 {
 	this->serverAddr = *serverAddr;
@@ -615,6 +620,19 @@ Net::DNSClient::RequestAnswer *Net::DNSClient::ParseAnswer(const UInt8 *buff, UO
 			sptr = Text::StrConcatC(sptr, UTF8STRC(", Digest = "));
 			sptr = Text::StrHexBytes(sptr, &buff[i + 14], k - 4, ' ');
 			ans->rd = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
+		}
+		break;
+	case 257: // CAA - Certification Authority Authorization
+		{
+			Text::StringBuilderUTF8 sb;
+			sb.AppendC(UTF8STRC("CAA "));
+			sb.AppendU16(buff[i + 10]);
+			sb.AppendUTF8Char(' ');
+			sb.AppendC(&buff[i + 12], buff[i + 11]);
+			sb.AppendUTF8Char(' ');
+			UOSInt l = i + 12 + buff[i + 11];
+			sb.AppendC(&buff[l], i + 10 + k - l);
+			ans->rd = Text::String::New(sb.ToString(), sb.GetLength());
 		}
 		break;
 	case 47: // NSEC - Next Secure record

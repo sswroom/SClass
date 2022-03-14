@@ -2080,113 +2080,115 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 		if ((dobj = layer->GetObjectByIdD(session, arri->GetItem(i))) != 0)
 		{
 			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), labelCol);
-
-			if (csysConv)
+			if (sptrEnd)
 			{
-				k = dobj->nPoint;
-				while (k-- > 0)
+				if (csysConv)
 				{
-					Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[(k << 1)], dobj->pointArr[(k << 1) + 1], 0, &dobj->pointArr[(k << 1)], &dobj->pointArr[(k << 1) + 1], 0);
-				}
-			}
-			if (flags & Map::MapEnv::SFLG_TRIM)
-			{
-				sptrEnd = Text::StrTrim(lblStr);
-			}
-			if (flags & Map::MapEnv::SFLG_CAPITAL)
-			{
-				Text::StrToCapital(lblStr, lblStr);
-			}
-
-			if (flags & Map::MapEnv::SFLG_SMART)
-			{
-				UInt32 k;
-				UInt32 maxSize;
-				UInt32 maxPos;
-				if (dobj->nPtOfst == 0)
-				{
-					maxSize = dobj->nPoint;
-					maxPos = 0;
-				}
-				else
-				{
-					maxSize = dobj->nPoint - (maxPos = dobj->ptOfstArr[dobj->nPtOfst - 1]);
-					k = dobj->nPtOfst;
-					while (k-- > 1)
+					k = dobj->nPoint;
+					while (k-- > 0)
 					{
-						if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
-							maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
+						Math::CoordinateSystem::ConvertXYZ(lyrCSys, envCSys, dobj->pointArr[(k << 1)], dobj->pointArr[(k << 1) + 1], 0, &dobj->pointArr[(k << 1)], &dobj->pointArr[(k << 1) + 1], 0);
 					}
 				}
-				if (AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos << 1], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType))
+				if (flags & Map::MapEnv::SFLG_TRIM)
 				{
+					sptrEnd = Text::StrTrim(lblStr);
+				}
+				if (flags & Map::MapEnv::SFLG_CAPITAL)
+				{
+					Text::StrToCapital(lblStr, lblStr);
+				}
+
+				if (flags & Map::MapEnv::SFLG_SMART)
+				{
+					UInt32 k;
+					UInt32 maxSize;
+					UInt32 maxPos;
+					if (dobj->nPtOfst == 0)
+					{
+						maxSize = dobj->nPoint;
+						maxPos = 0;
+					}
+					else
+					{
+						maxSize = dobj->nPoint - (maxPos = dobj->ptOfstArr[dobj->nPtOfst - 1]);
+						k = dobj->nPtOfst;
+						while (k-- > 1)
+						{
+							if ((dobj->ptOfstArr[k] - dobj->ptOfstArr[k - 1]) > maxSize)
+								maxSize = (dobj->ptOfstArr[k] - (maxPos = dobj->ptOfstArr[k - 1]));
+						}
+					}
+					if (AddLabel(denv->labels, maxLabel, &denv->labelCnt, CSTRP(sptr, sptrEnd), maxSize, &dobj->pointArr[maxPos << 1], priority, layerType, fontStyle, flags, denv->view, (OSInt)imgWidth, (OSInt)imgHeight, fontType))
+					{
+						layer->ReleaseObject(session, dobj);
+					}
+					else
+					{
+						layer->ReleaseObject(session, dobj);
+					}
+				}
+				else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
+				{
+					if (dobj->nPoint & 1)
+					{
+						pts[0] = dobj->pointArr[dobj->nPoint - 1];
+						pts[1] = dobj->pointArr[dobj->nPoint];
+
+						scaleW = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 3];
+						scaleH = dobj->pointArr[dobj->nPoint + 2] - dobj->pointArr[dobj->nPoint - 2];
+					}
+					else
+					{
+						pts[0] = (dobj->pointArr[dobj->nPoint - 2] + dobj->pointArr[dobj->nPoint]) * 0.5;
+						pts[1] = (dobj->pointArr[dobj->nPoint - 1] + dobj->pointArr[dobj->nPoint + 1]) * 0.5;
+
+						scaleW = dobj->pointArr[dobj->nPoint] - dobj->pointArr[dobj->nPoint - 2];
+						scaleH = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 1];
+					}
+
+					if (denv->view->InViewXY(pts[0], pts[1]))
+					{
+						denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
+
+						if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
+							scaleW = scaleH = 0;
+						DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					}
+					layer->ReleaseObject(session, dobj);
+				}
+				else if (layerType == Map::DRAW_LAYER_POLYGON)
+				{
+					Math::Geometry::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr, &pts[0], &pts[1]);
+					if (denv->view->InViewXY(pts[0], pts[1]))
+					{
+						denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
+						DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					}
 					layer->ReleaseObject(session, dobj);
 				}
 				else
 				{
+					Double lastPtX = 0;
+					Double lastPtY = 0;
+					Double *pointPos = dobj->pointArr;
+
+					j = dobj->nPoint;
+					while (j--)
+					{
+						lastPtX += *pointPos++;
+						lastPtY += *pointPos++;
+					}
+
+					pts[0] = (lastPtX / dobj->nPoint);
+					pts[1] = (lastPtY / dobj->nPoint);
+					if (denv->view->InViewXY(pts[0], pts[1]))
+					{
+						denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
+						DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
+					}
 					layer->ReleaseObject(session, dobj);
 				}
-			}
-			else if (layerType == Map::DRAW_LAYER_POLYLINE || layerType == Map::DRAW_LAYER_POLYLINE3D)
-			{
-				if (dobj->nPoint & 1)
-				{
-					pts[0] = dobj->pointArr[dobj->nPoint - 1];
-					pts[1] = dobj->pointArr[dobj->nPoint];
-
-					scaleW = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 3];
-					scaleH = dobj->pointArr[dobj->nPoint + 2] - dobj->pointArr[dobj->nPoint - 2];
-				}
-				else
-				{
-					pts[0] = (dobj->pointArr[dobj->nPoint - 2] + dobj->pointArr[dobj->nPoint]) * 0.5;
-					pts[1] = (dobj->pointArr[dobj->nPoint - 1] + dobj->pointArr[dobj->nPoint + 1]) * 0.5;
-
-					scaleW = dobj->pointArr[dobj->nPoint] - dobj->pointArr[dobj->nPoint - 2];
-					scaleH = dobj->pointArr[dobj->nPoint + 1] - dobj->pointArr[dobj->nPoint - 1];
-				}
-
-				if (denv->view->InViewXY(pts[0], pts[1]))
-				{
-					denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-
-					if ((flags & Map::MapEnv::SFLG_ROTATE) == 0)
-						scaleW = scaleH = 0;
-					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], scaleW, scaleH, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
-				}
-				layer->ReleaseObject(session, dobj);
-			}
-			else if (layerType == Map::DRAW_LAYER_POLYGON)
-			{
-				Math::Geometry::GetPolygonCenter(dobj->nPtOfst, dobj->nPoint, dobj->ptOfstArr, dobj->pointArr, &pts[0], &pts[1]);
-				if (denv->view->InViewXY(pts[0], pts[1]))
-				{
-					denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
-				}
-				layer->ReleaseObject(session, dobj);
-			}
-			else
-			{
-				Double lastPtX = 0;
-				Double lastPtY = 0;
-				Double *pointPos = dobj->pointArr;
-
-				j = dobj->nPoint;
-				while (j--)
-				{
-					lastPtX += *pointPos++;
-					lastPtY += *pointPos++;
-				}
-
-				pts[0] = (lastPtX / dobj->nPoint);
-				pts[1] = (lastPtY / dobj->nPoint);
-				if (denv->view->InViewXY(pts[0], pts[1]))
-				{
-					denv->view->MapXYToScnXY(pts[0], pts[1], &pts[0], &pts[1]);
-					DrawChars(denv, CSTRP(sptr, sptrEnd), pts[0], pts[1], 0, 0, fontType, fontStyle, (flags & Map::MapEnv::SFLG_ALIGN) != 0);
-				}
-				layer->ReleaseObject(session, dobj);
 			}
 		}
 	}

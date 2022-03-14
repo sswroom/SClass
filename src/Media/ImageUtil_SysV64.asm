@@ -373,6 +373,7 @@ cf32lop:
 	movups [rdi+16],xmm0
 	movups [rdi+32],xmm0
 	movups [rdi+48],xmm0
+	add rdi,64
 	dec rcx
 	jnz cf32lop
 	and rsi,15

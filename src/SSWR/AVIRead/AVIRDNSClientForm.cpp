@@ -157,6 +157,7 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->cboRequest->AddItem(CSTR("12 - PTR (Domain from IP)"), (void*)12);
 	this->cboRequest->AddItem(CSTR("15 - MX (Mail)"), (void*)15);
 	this->cboRequest->AddItem(CSTR("28 - AAAA (IPv6)"), (void*)28);
+	this->cboRequest->AddItem(CSTR("257 - CAA"), (void*)257);
 	this->cboRequest->SetSelectedIndex(0);
 	NEW_CLASS(this->btnRequest, UI::GUIButton(ui, this->pnlRequest, CSTR("&Request")));
 	this->btnRequest->SetRect(324, 52, 75, 23, false);

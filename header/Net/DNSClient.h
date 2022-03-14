@@ -51,6 +51,7 @@ namespace Net
 		UOSInt GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, UInt32 ip);
 		UOSInt GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, const Net::SocketUtil::AddressInfo *addr);
 		UOSInt GetServerName(Data::ArrayList<RequestAnswer*> *answers);
+		UOSInt GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen);
 
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);
 
