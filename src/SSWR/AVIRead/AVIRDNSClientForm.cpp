@@ -153,9 +153,11 @@ SSWR::AVIRead::AVIRDNSClientForm::AVIRDNSClientForm(UI::GUIClientControl *parent
 	this->cboRequest->SetRect(124, 52, 200, 23, false);
 	this->cboRequest->AddItem(CSTR("1 - A (IPv4)"), (void*)1);
 	this->cboRequest->AddItem(CSTR("2 - NS (Name Server)"), (void*)2);
+	this->cboRequest->AddItem(CSTR("5 - CNAME (the canonical name for an alias)"), (void*)5);
 	this->cboRequest->AddItem(CSTR("6 - SOA (Start of authority)"), (void*)6);
 	this->cboRequest->AddItem(CSTR("12 - PTR (Domain from IP)"), (void*)12);
 	this->cboRequest->AddItem(CSTR("15 - MX (Mail)"), (void*)15);
+	this->cboRequest->AddItem(CSTR("16 - TXT (Text)"), (void*)16);
 	this->cboRequest->AddItem(CSTR("28 - AAAA (IPv6)"), (void*)28);
 	this->cboRequest->AddItem(CSTR("257 - CAA"), (void*)257);
 	this->cboRequest->SetSelectedIndex(0);
