@@ -686,9 +686,6 @@ Bool Net::OSSocketFactory::SocketGetReadBuff(Socket *socket, UInt32 *size)
 
 Bool Net::OSSocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)
 {
-	if (Net::SocketUtil::GetIPAddr(host, addr))
-		return true;
-
 	Bool succ = false;
 	addrinfo *result = 0;
 	Int32 iResult = getaddrinfo(host, 0, 0, &result);
@@ -867,7 +864,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 					while (true)
 					{
 						i = Text::StrSplitWSP(sarr, 2, sarr[1]);
-						dnsHdlr->AddHost(&addr, sarr[0].v);
+						dnsHdlr->AddHost(&addr, sarr[0].v, sarr[0].leng);
 						if (i != 2)
 							break;
 					}

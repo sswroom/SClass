@@ -13,7 +13,7 @@ UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(Core::IProgControl *pro
 	return 0;
 }
 
-UTF8Char **__stdcall BootControl_GetCommandLines(Core::IProgControl *progCtrl, OSInt *cmdCnt)
+UTF8Char **__stdcall BootControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	*cmdCnt = 1;
 	return (UTF8Char**)&"Boot";

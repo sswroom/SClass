@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::WebServer::WebListener *listener;
 	UInt16 webPort = 8081;
 	IO::BTCapturer *capturer;
-	NEW_CLASS(capturer, IO::BTCapturer());
+	NEW_CLASS(capturer, IO::BTCapturer(true));
 	if (capturer->IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in initializing Bluetooth"));

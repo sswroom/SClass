@@ -5,6 +5,7 @@
 #include "IO/Path.h"
 #include "Media/GDIEngineC.h"
 #include "Text/MyString.h"
+#include "Text/MyStringW.h"
 #include "Win32/ServiceControl.h"
 #include "Win32/ServiceManager.h"
 #include "Win32/WindowsEvent.h"

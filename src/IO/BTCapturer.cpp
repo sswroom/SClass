@@ -19,7 +19,10 @@ UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 		if ((dt->ToTicks() - lastTime) >= 300000)
 		{
 			lastTime = dt->ToTicks();
-			me->StoreStatus();
+			if (me->autoStore)
+			{
+				me->StoreStatus();
+			}
 		}
 		me->threadEvt->Wait(10000);
 	}
@@ -28,9 +31,10 @@ UInt32 __stdcall IO::BTCapturer::CheckThread(void *userObj)
 	return 0;
 }
 
-IO::BTCapturer::BTCapturer()
+IO::BTCapturer::BTCapturer(Bool autoStore)
 {
 	this->lastFileName = 0;
+	this->autoStore = autoStore;
 	this->bt = IO::BTScanner::CreateScanner();
 	if (this->bt)
 	{

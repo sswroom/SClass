@@ -7,6 +7,8 @@
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 
+#include <stdio.h>
+
 Net::ConnectionInfo::ConnectionInfo(void *info)
 {
 	IP_ADAPTER_ADDRESSES *addr = (IP_ADAPTER_ADDRESSES*)info;
@@ -61,25 +63,24 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	MemCopyNO(this->ent.physicalAddr, addr->PhysicalAddress, addr->PhysicalAddressLength);
 	this->ent.dhcpEnabled = (addr->Flags & IP_ADAPTER_DHCP_ENABLED) != 0;
 	this->ent.mtu = addr->Mtu;
-	if (addr->IfType == IF_TYPE_ETHERNET_CSMACD)
+	switch (addr->IfType)
 	{
-		this->ent.connType = Net::ConnectionInfo::CT_ETHERNET;
-	}
-	else if (addr->IfType == IF_TYPE_IEEE80211)
-	{
-		this->ent.connType = Net::ConnectionInfo::CT_WIFI;
-	}
-	else if (addr->IfType == IF_TYPE_SOFTWARE_LOOPBACK)
-	{
-		this->ent.connType = Net::ConnectionInfo::CT_LOOPBACK;
-	}
-	else if (addr->IfType == IF_TYPE_PPP)
-	{
-		this->ent.connType = Net::ConnectionInfo::CT_DIALUP;
-	}
-	else
-	{
-		this->ent.connType = Net::ConnectionInfo::CT_UNKNOWN;
+	case IF_TYPE_ETHERNET_CSMACD:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Ethernet;
+		break;
+	case IF_TYPE_IEEE80211:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::WiFi;
+		break;
+	case IF_TYPE_SOFTWARE_LOOPBACK:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Loopback;
+		break;
+	case IF_TYPE_PPP:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
+		break;
+	default:
+		printf("IfType = %d\r\n", addr->IfType);
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Unknown;
+		break;
 	}
 	this->ent.connStatus = (Net::ConnectionInfo::ConnectionStatus)addr->OperStatus;
 }
@@ -94,11 +95,11 @@ Bool Net::ConnectionInfo::SetInfo(void *info)
 	this->ent.index = inf->Index;
 	if (inf->GatewayList.IpAddress.String[0])
 	{
-		this->ent.defGW = Net::SocketUtil::GetIPAddr(inf->GatewayList.IpAddress.String);
+		this->ent.defGW = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->GatewayList.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
 	}
 	if (inf->DhcpEnabled != 0)
 	{
-		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr(inf->DhcpServer.IpAddress.String);
+		this->ent.dhcpSvr = Net::SocketUtil::GetIPAddr((const UTF8Char*)inf->DhcpServer.IpAddress.String, Text::StrCharCnt(inf->GatewayList.IpAddress.String));
 		if (this->ent.dhcpLeaseTime == 0)
 		{
 			NEW_CLASS(this->ent.dhcpLeaseTime, Data::DateTime());

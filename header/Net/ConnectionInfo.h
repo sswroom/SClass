@@ -11,14 +11,15 @@ namespace Net
 	class ConnectionInfo
 	{
 	public:
-		typedef enum
+		enum class ConnectionType
 		{
-			CT_UNKNOWN,
-			CT_ETHERNET,
-			CT_WIFI,
-			CT_LOOPBACK,
-			CT_DIALUP
-		} ConnectionType;
+			Unknown,
+			Ethernet,
+			WiFi,
+			Loopback,
+			DialUp,
+			Cellular
+		};
 
 		typedef enum //RFC 2863
 		{

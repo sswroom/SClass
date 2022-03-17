@@ -34,7 +34,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Error.txt"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(wifiCapturer, Net::WiFiCapturer());
-	NEW_CLASS(btCapturer, IO::BTCapturer());
+	NEW_CLASS(btCapturer, IO::BTCapturer(true));
 	if (wifiCapturer->IsError())
 	{
 		console.WriteLineC(UTF8STRC("Error in initializing WiFi"));

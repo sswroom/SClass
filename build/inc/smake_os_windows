@@ -133,7 +133,7 @@ Win32/WindowsBTScanner.h: ../../src/Win32/WindowsBTScanner.cpp
 Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
 
-ConsoleStartup.o: ../../startup/ConStartup.cpp
+ConsoleStartup.o: ../../startup/WinConStartup.cpp
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp

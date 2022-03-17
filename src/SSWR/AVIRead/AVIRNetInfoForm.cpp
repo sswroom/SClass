@@ -24,19 +24,22 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		connType = connInfo->GetConnectionType();
 		switch (connType)
 		{
-		case Net::ConnectionInfo::CT_DIALUP:
+		case Net::ConnectionInfo::ConnectionType::DialUp:
 			me->txtAdaptorConnType->SetText(CSTR("Dial-up"));
 			break;
-		case Net::ConnectionInfo::CT_ETHERNET:
+		case Net::ConnectionInfo::ConnectionType::Ethernet:
 			me->txtAdaptorConnType->SetText(CSTR("Ethernet"));
 			break;
-		case Net::ConnectionInfo::CT_LOOPBACK:
+		case Net::ConnectionInfo::ConnectionType::Loopback:
 			me->txtAdaptorConnType->SetText(CSTR("Loopback"));
 			break;
-		case Net::ConnectionInfo::CT_WIFI:
+		case Net::ConnectionInfo::ConnectionType::WiFi:
 			me->txtAdaptorConnType->SetText(CSTR("WIFI"));
 			break;
-		case Net::ConnectionInfo::CT_UNKNOWN:
+		case Net::ConnectionInfo::ConnectionType::Cellular:
+			me->txtAdaptorConnType->SetText(CSTR("Cellular"));
+			break;
+		case Net::ConnectionInfo::ConnectionType::Unknown:
 		default:
 			me->txtAdaptorConnType->SetText(CSTR("Unknown"));
 			break;

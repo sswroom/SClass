@@ -4,6 +4,7 @@
 #include "Core/Core.h"
 #include "Media/GDIEngineC.h"
 #include "Sync/Thread.h"
+#include "Text/MyStringW.h"
 #include <windows.h>
 
 Int32 MyMain(Core::IProgControl *progCtrl);

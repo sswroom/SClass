@@ -48,7 +48,7 @@ LIBS_winspool:
 LIBS_ws2_32:
 	$(eval LIBS += -lws2_32)
 
-ConsoleStartup.o: $(CLASSDIR)startup/ConStartup.cpp
+ConsoleStartup.o: $(CLASSDIR)startup/WinConStartup.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
 MyMemory.o: $(CLASSDIR)src/MyMemoryW.cpp LIBS_dbghelp

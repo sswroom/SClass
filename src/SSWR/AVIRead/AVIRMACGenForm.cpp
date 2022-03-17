@@ -148,7 +148,7 @@ SSWR::AVIRead::AVIRMACGenForm::AVIRMACGenForm(UI::GUIClientControl *parent, UI::
 	while (i < j)
 	{
 		connInfo = connInfoList.GetItem(i);
-		if (connInfo->GetConnectionType() != Net::ConnectionInfo::CT_LOOPBACK)
+		if (connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
 			sptr = connInfo->GetName(sbuff);
 			this->cboAdapter->AddItem(CSTRP(sbuff, sptr), 0);

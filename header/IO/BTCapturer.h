@@ -14,10 +14,11 @@ namespace IO
 		Bool threadRunning;
 		Bool threadToStop;
 		Sync::Event *threadEvt;
+		Bool autoStore;
 
 		static UInt32 __stdcall CheckThread(void *userObj);
 	public:
-		BTCapturer();
+		BTCapturer(Bool autoStore);
 		~BTCapturer();
 
 		Bool IsError();

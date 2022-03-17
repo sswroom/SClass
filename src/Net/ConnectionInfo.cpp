@@ -195,15 +195,17 @@ Text::CString Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connType
 {
 	switch (connType)
 	{
-	case CT_ETHERNET:
+	case ConnectionType::Ethernet:
 		return CSTR("Ethernet");
-	case CT_WIFI:
+	case ConnectionType::WiFi:
 		return CSTR("WiFi");
-	case CT_LOOPBACK:
+	case ConnectionType::Loopback:
 		return CSTR("Loopback");
-	case CT_DIALUP:
+	case ConnectionType::DialUp:
 		return CSTR("Dial-up");
-	case CT_UNKNOWN:
+	case ConnectionType::Cellular:
+		return CSTR("Cellular");
+	case ConnectionType::Unknown:
 	default:
 		return CSTR("Unknown");
 	}

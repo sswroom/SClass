@@ -600,7 +600,7 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.physicalAddrLeng = 0;
 		ent.mtu = 256;
 		ent.dhcpEnabled = false;
-		ent.connType = Net::ConnectionInfo::CT_DIALUP;
+		ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
 		ent.connStatus = Net::ConnectionInfo::CS_UP;
 		///////////////////////////////////////
 		NEW_CLASS(connInfo, Net::ConnectionInfo(&ent));

@@ -76,7 +76,7 @@ SSWR::AVIRead::AVIRWOLForm::AVIRWOLForm(UI::GUIClientControl *parent, UI::GUICor
 	while (i < j)
 	{
 		connInfo = connInfoList.GetItem(i);
-		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP && connInfo->GetConnectionType() != Net::ConnectionInfo::CT_LOOPBACK)
+		if (connInfo->GetConnectionStatus() == Net::ConnectionInfo::CS_UP && connInfo->GetConnectionType() != Net::ConnectionInfo::ConnectionType::Loopback)
 		{
 			k = 0;
 			while (true)
