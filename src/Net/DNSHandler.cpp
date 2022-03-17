@@ -233,10 +233,9 @@ Bool Net::DNSHandler::GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, cons
 	return succ;
 }
 
-Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain)
+Bool Net::DNSHandler::AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen)
 {
 	DomainStatus *dnsStat;
-	UOSInt domainLen = Text::StrCharCnt(domain);
 	if (addr->addrType == Net::AddrType::IPv4)
 	{
 		Sync::MutexUsage mutUsage(this->reqv4Mut);

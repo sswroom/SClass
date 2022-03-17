@@ -13,7 +13,7 @@ namespace Map
 	private:
 		typedef struct
 		{
-			const UTF8Char *layerName;
+			Text::String *layerName;
 			Text::String *url;
 			Map::IMapDrawLayer *innerLayer;
 			Map::DrawLayerType innerLayerType;
@@ -71,7 +71,7 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		void AddInnerLayer(const UTF8Char *name, const UTF8Char *url, Int32 seconds);
+		void AddInnerLayer(Text::CString name, Text::CString url, Int32 seconds);
 //		void SetLayerName(const WChar *name);
 //		void SetReloadURL(const WChar *url);
 //		void SetReloadInterval(Int32 seconds);

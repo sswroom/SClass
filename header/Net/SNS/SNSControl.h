@@ -48,7 +48,7 @@ namespace Net
 			virtual Bool Reload() = 0;
 
 			static Text::CString SNSTypeGetName(SNSType snsType);
-			static SNSType SNSTypeFromName(const UTF8Char *name);
+			static SNSType SNSTypeFromName(Text::CString name);
 
 			static SNSItem *CreateItem(Text::String *id, Int64 msgTime, Text::String *title, Text::String *message, Text::String *msgLink, Text::String *imgURL, Text::String *videoURL);
 			static void FreeItem(SNSItem *item);

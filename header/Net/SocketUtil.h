@@ -39,10 +39,8 @@ namespace Net
 		static UTF8Char *GetIPv4Name(UTF8Char *buff, UInt32 ip, UInt16 port);
 		static WChar *GetIPv4Name(WChar *buff, UInt32 ip, UInt16 port);
 		static Bool GetIPAddr(const WChar *ipName, AddressInfo *addr);
-		static Bool GetIPAddr(const Char *ipName, AddressInfo *addr);
 		static Bool GetIPAddr(const UTF8Char *ipName, UOSInt ipLen, AddressInfo *addr);
 		static UInt32 GetIPAddr(const WChar *ipName);
-		static UInt32 GetIPAddr(const Char *ipName);
 		static UInt32 GetIPAddr(const UTF8Char *ipName, UOSInt ipLen);
 		static UInt32 GetDefNetMaskv4(UInt32 ip);
 		static void SetAddrInfoV4(AddressInfo *addr, UInt32 ipv4);

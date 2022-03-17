@@ -323,6 +323,11 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 168:
 	case 169:
 	case 170:
+		if (ipCmp >= 0xAA210000 && ipCmp <= 0xAA21FFFF) //170.33.0.0 - 170.33.255.255
+		{
+			whoisHost = CSTR("whois.apnic.net");
+			break;
+		}
 	case 172:
 	case 173:
 	case 174:

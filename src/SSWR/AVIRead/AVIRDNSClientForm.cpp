@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	UOSInt j;
 	UOSInt bestInd;
 	me->txtServer->GetText(&sb);
-	if (!Net::SocketUtil::GetIPAddr((Char*)sb.ToString(), &dnsAddr))
+	if (!Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength(), &dnsAddr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;

@@ -31,7 +31,7 @@ namespace UtilUI
 		virtual void EventMenuClicked(UInt16 cmdId);
 		virtual void OnMonitorChanged();
 
-		Bool SearchText(const UTF8Char *txt);
+		Bool SearchText(Text::CString txt);
 	};
 }
 #endif

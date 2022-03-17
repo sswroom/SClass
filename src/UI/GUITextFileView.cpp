@@ -27,7 +27,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 		{
 			if (me->isSearching)
 			{
-				SDEL_TEXT(me->srchText);
+				SDEL_STRING(me->srchText);
 				me->isSearching = false;
 			}
 			Sync::MutexUsage mutUsage(me->mut);
@@ -410,10 +410,10 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 			if (me->fs)
 			{
 				Text::Encoding enc(me->fileCodePage);
-				strLen = Text::StrCharCnt(me->srchText);
-				srchTxtLen = enc.UTF8CountBytesC(me->srchText, strLen);
+				strLen = me->srchText->leng;
+				srchTxtLen = enc.UTF8CountBytesC(me->srchText->v, strLen);
 				srchTxt = MemAlloc(UInt8, srchTxtLen + 1);
-				enc.UTF8ToBytesC(srchTxt, me->srchText, strLen);
+				enc.UTF8ToBytesC(srchTxt, me->srchText->v, strLen);
 				srchTxt[srchTxtLen] = 0;
 
 				srchBuff = MemAlloc(UInt8, READBUFFSIZE + 1);
@@ -537,7 +537,7 @@ UInt32 __stdcall UI::GUITextFileView::ProcThread(void *userObj)
 				MemFree(srchBuff);
 				MemFree(srchTxt);
 			}
-			SDEL_TEXT(me->srchText);
+			SDEL_STRING(me->srchText);
 			me->isSearching = false;
 		}
 		me->evtThread->Wait(1000);
@@ -917,7 +917,7 @@ UI::GUITextFileView::~GUITextFileView()
 	DEL_CLASS(this->lineOfsts);
 	DEL_CLASS(this->textPosUpdHdlr);
 	DEL_CLASS(this->textPosUpdObj);
-	SDEL_TEXT(this->srchText);
+	SDEL_STRING(this->srchText);
 }
 
 void UI::GUITextFileView::EventLineUp()
@@ -1656,12 +1656,12 @@ void UI::GUITextFileView::GoToText(UOSInt newPosY, UInt32 newPosX)
 	this->EventTextPosUpdated();
 }
 
-void UI::GUITextFileView::SearchText(const UTF8Char *txt)
+void UI::GUITextFileView::SearchText(Text::CString txt)
 {
 	if (this->fs && !this->isSearching)
 	{
-		SDEL_TEXT(this->srchText);
-		this->srchText = Text::StrCopyNew(txt);
+		SDEL_STRING(this->srchText);
+		this->srchText = Text::String::New(txt);
 		this->isSearching = true;
 		this->evtThread->Set();
 	}

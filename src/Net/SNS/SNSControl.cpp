@@ -20,22 +20,21 @@ Text::CString Net::SNS::SNSControl::SNSTypeGetName(Net::SNS::SNSControl::SNSType
 	}
 }
 
-Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(const UTF8Char *name)
+Net::SNS::SNSControl::SNSType Net::SNS::SNSControl::SNSTypeFromName(Text::CString name)
 {
-	UOSInt nameLen = Text::StrCharCnt(name);
-	if (Text::StrEqualsC(name, nameLen, UTF8STRC("RSS")))
+	if (name.Equals(UTF8STRC("RSS")))
 	{
 		return ST_RSS;
 	}
-	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("Twitter")))
+	else if (name.Equals(UTF8STRC("Twitter")))
 	{
 		return ST_TWITTER;
 	}
-	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("7gogo")))
+	else if (name.Equals(UTF8STRC("7gogo")))
 	{
 		return ST_7GOGO;
 	}
-	else if (Text::StrEqualsC(name, nameLen, UTF8STRC("Instagram")))
+	else if (name.Equals(UTF8STRC("Instagram")))
 	{
 		return ST_INSTAGRAM;
 	}

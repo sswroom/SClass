@@ -12,7 +12,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt32 respTime;
 	UInt32 ttl;
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::GetIPAddr("127.0.0.1", &addr);
+	Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1"), &addr);
 	while (true)
 	{
 		if (sockf->IcmpSendEcho2(&addr, &respTime, &ttl))

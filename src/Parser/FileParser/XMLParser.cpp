@@ -1647,8 +1647,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				if (parsers && browser)
 				{
 					Map::ReloadableMapLayer *lyr;
-					const UTF8Char *layerName = 0;
-					const UTF8Char *url = 0;
+					Text::String *layerName = 0;
+					Text::String *url = 0;
 					Int32 interval = 0;
 					NEW_CLASS(lyr, Map::ReloadableMapLayer(sourceName, parsers, browser, CSTR_NULL));
 				
@@ -1664,8 +1664,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 							{
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
-								SDEL_TEXT(layerName);
-								layerName = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+								SDEL_STRING(layerName);
+								layerName = Text::String::New(sb.ToCString());
 							}
 							else if (reader->GetNodeText()->EqualsICase(UTF8STRC("LINK")))
 							{
@@ -1681,8 +1681,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 										{
 											sb.ClearStr();
 											reader->ReadNodeText(&sb);
-											SDEL_TEXT(url);
-											url = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+											SDEL_STRING(url);
+											url = Text::String::New(sb.ToCString());
 										}
 										else if (reader->GetNodeText()->EqualsICase(UTF8STRC("REFRESHINTERVAL")))
 										{
@@ -1707,11 +1707,11 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 
 					if (url)
 					{
-						lyr->AddInnerLayer(layerName, url, interval);
+						lyr->AddInnerLayer(STR_CSTR(layerName), STR_CSTR(url), interval);
 					}
 
-					SDEL_TEXT(layerName);
-					SDEL_TEXT(url);
+					SDEL_STRING(layerName);
+					SDEL_STRING(url);
 					layers.Add(lyr);
 				}
 				else

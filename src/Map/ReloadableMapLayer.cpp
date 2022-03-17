@@ -42,7 +42,7 @@ Map::ReloadableMapLayer::~ReloadableMapLayer()
 		innerLayer = this->innerLayers->GetItem(i);
 		SDEL_CLASS(innerLayer->innerLayer);
 		SDEL_STRING(innerLayer->url);
-		SDEL_TEXT(innerLayer->layerName);
+		SDEL_STRING(innerLayer->layerName);
 		MemFree(innerLayer);
 	}
 	DEL_CLASS(this->innerLayers);
@@ -608,22 +608,22 @@ void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 	this->innerLayerMut->UnlockWrite();
 }
 
-void Map::ReloadableMapLayer::AddInnerLayer(const UTF8Char *name, const UTF8Char *url, Int32 seconds)
+void Map::ReloadableMapLayer::AddInnerLayer(Text::CString name, Text::CString url, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
 	UOSInt urlLen;
 	sb.Append(this->GetSourceNameObj());
-	urlLen = Text::StrCharCnt(url);
+	urlLen = url.leng;
 	sb.AllocLeng(urlLen);
-	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), url, urlLen));
+	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), url.v, urlLen));
 	InnerLayerInfo *innerLayer;
 	innerLayer = MemAlloc(InnerLayerInfo, 1);
 	innerLayer->innerLayer = 0;
 	innerLayer->innerLayerType = Map::DRAW_LAYER_UNKNOWN;
-	innerLayer->url = Text::String::New(sb.ToString(), sb.GetLength());
-	if (name)
+	innerLayer->url = Text::String::New(sb.ToCString());
+	if (name.v)
 	{
-		innerLayer->layerName = Text::StrCopyNew(name);
+		innerLayer->layerName = Text::String::New(name);
 	}
 	else
 	{

@@ -87,7 +87,7 @@ namespace Net
 		Bool StopPlay();
 		Bool IsRunning();
 
-		Bool MapPayloadType(Int32 payloadType, const UTF8Char *typ, UInt32 freq, UInt32 nChannel);
+		Bool MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel);
 		Bool SetPayloadFormat(Int32 paylodType, const UTF8Char *format);
 
 		static RTPCliChannel *CreateChannel(Net::SocketFactory *sockf, Data::ArrayList<const UTF8Char *> *sdpDesc, Text::CString ctrlURL, Net::IRTPController *playCtrl);

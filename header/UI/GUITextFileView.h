@@ -43,7 +43,7 @@ namespace UI
 		UOSInt selLastY;
 		Bool mouseDown;
 		Bool isSearching;
-		const UTF8Char *srchText;
+		Text::String *srchText;
 
 		UInt32 caretX;
 		UOSInt caretY;
@@ -90,7 +90,7 @@ namespace UI
 		UOSInt GetTextPosY();
 		UInt32 GetTextPosX();
 		void GoToText(UOSInt newPosY, UInt32 newPosX);
-		void SearchText(const UTF8Char *txt);
+		void SearchText(Text::CString txt);
 
 		void HandleTextPosUpdate(TextPosEvent hdlr, void *obj);
 	};

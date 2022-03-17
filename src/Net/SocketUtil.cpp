@@ -397,11 +397,6 @@ Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 	return true;
 }
 
-Bool Net::SocketUtil::GetIPAddr(const Char *ipName, AddressInfo *addr)
-{
-	return GetIPAddr((const UTF8Char*)ipName, Text::StrCharCnt(ipName), addr);
-}
-
 Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen, AddressInfo *addr)
 {
 	UTF8Char sbuff[51];
@@ -562,11 +557,6 @@ UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 	if (!Text::StrToUInt8(sarr[0], &ip[0]) || !Text::StrToUInt8(sarr[1], &ip[1]) || !Text::StrToUInt8(sarr[2], &ip[2]) || !Text::StrToUInt8(sarr[3], &ip[3]))
 		return 0;
 	return *(UInt32*)ip;
-}
-
-UInt32 Net::SocketUtil::GetIPAddr(const Char *ipName)
-{
-	return GetIPAddr((const UTF8Char*)ipName, Text::StrCharCnt(ipName));
 }
 
 UInt32 Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen)

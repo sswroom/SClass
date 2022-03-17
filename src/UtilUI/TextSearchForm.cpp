@@ -11,7 +11,7 @@ void __stdcall UtilUI::TextSearchForm::OnSearchClicked(void *userObj)
 	me->txtSearch->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		me->mainFrm->SearchText(sb.ToString());
+		me->mainFrm->SearchText(sb.ToCString());
 	}
 }
 

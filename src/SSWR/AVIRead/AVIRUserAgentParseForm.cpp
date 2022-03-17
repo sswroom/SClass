@@ -14,16 +14,16 @@ void __stdcall SSWR::AVIRead::AVIRUserAgentParseForm::OnParseClicked(void *userO
 		Net::UserAgentDB::ParseUserAgent(&ent, sb.ToCString());
 		me->txtBrowser->SetText(Net::BrowserInfo::GetName(ent.browser));
 		if (ent.browserVer)
-			me->txtBrowserVer->SetText({(const UTF8Char*)ent.browserVer, Text::StrCharCnt(ent.browserVer)});
+			me->txtBrowserVer->SetText({(const UTF8Char*)ent.browserVer, ent.browserVerLen});
 		else
 			me->txtBrowserVer->SetText(CSTR("-"));
 		me->txtOS->SetText(Manage::OSInfo::GetName(ent.os));
 		if (ent.osVer)
-			me->txtOSVer->SetText({(const UTF8Char*)ent.osVer, Text::StrCharCnt(ent.osVer)});
+			me->txtOSVer->SetText({(const UTF8Char*)ent.osVer, ent.osVerLen});
 		else
 			me->txtOSVer->SetText(CSTR("-"));
 		if (ent.devName)
-			me->txtDeviceName->SetText({(const UTF8Char*)ent.devName, Text::StrCharCnt(ent.devName)});
+			me->txtDeviceName->SetText({(const UTF8Char*)ent.devName, ent.devNameLen});
 		else
 			me->txtDeviceName->SetText(CSTR("-"));
 		SDEL_TEXT(ent.browserVer);

@@ -134,7 +134,7 @@ void UtilUI::TextViewerForm::OnMonitorChanged()
 	this->SetDPI(this->monMgr->GetMonitorHDPI(this->GetHMonitor()), this->monMgr->GetMonitorDDPI(this->GetHMonitor()));
 }
 
-Bool UtilUI::TextViewerForm::SearchText(const UTF8Char *txt)
+Bool UtilUI::TextViewerForm::SearchText(Text::CString txt)
 {
 	this->txtView->SearchText(txt);
 	return true;

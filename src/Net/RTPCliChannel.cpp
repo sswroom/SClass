@@ -528,7 +528,7 @@ Bool Net::RTPCliChannel::IsRunning()
 	return this->chData->playing;
 }
 
-Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, UInt32 freq, UInt32 nChannel)
+Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, Text::CString typ, UInt32 freq, UInt32 nChannel)
 {
 	Net::IRTPPLHandler *hdlr;
 	if (this->chData->payloadMap->Get(payloadType))
@@ -537,18 +537,17 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, 
 	}
 	if (this->chData->mediaType == Media::MEDIA_TYPE_AUDIO)
 	{
-		UOSInt typLen = Text::StrCharCnt(typ);
-		if (Text::StrEqualsC(typ, typLen, UTF8STRC("PCMU")))
+		if (typ.Equals(UTF8STRC("PCMU")))
 		{
 			//////////////////////////
 			return false;
 		}
-		else if (Text::StrEqualsC(typ, typLen, UTF8STRC("telephone-event")))
+		else if (typ.Equals(UTF8STRC("telephone-event")))
 		{
 			//////////////////////////
 			return false;
 		}
-		else if (Text::StrEqualsC(typ, typLen, UTF8STRC("mpeg4-generic")))
+		else if (typ.Equals(UTF8STRC("mpeg4-generic")))
 		{
 			NEW_CLASS(hdlr, Net::RTPAACHandler(payloadType, freq, nChannel));
 			this->chData->payloadMap->Put(payloadType, hdlr);
@@ -557,7 +556,7 @@ Bool Net::RTPCliChannel::MapPayloadType(Int32 payloadType, const UTF8Char *typ, 
 	}
 	else if (this->chData->mediaType == Media::MEDIA_TYPE_VIDEO)
 	{
-		if (Text::StrEquals(typ, (const UTF8Char*)"H264"))
+		if (typ.Equals(UTF8STRC("H264")))
 		{
 			NEW_CLASS(hdlr, Net::RTPH264Handler(payloadType));
 			this->chData->payloadMap->Put(payloadType, hdlr);
@@ -582,7 +581,7 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	UTF8Char *sarr[5];
+	Text::PString sarr[5];
 	Net::RTPCliChannel *ch;
 	const UTF8Char *desc;
 	UOSInt descLen;
@@ -625,32 +624,32 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 		}
 		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=rtpmap:")))
 		{
-			Text::StrConcatC(sbuff, &desc[9], descLen - 9);
-			if (Text::StrSplit(sarr, 3, sbuff, ' ') == 2)
+			sptr = Text::StrConcatC(sbuff, &desc[9], descLen - 9);
+			if (Text::StrSplitP(sarr, 3, {sbuff, (UOSInt)(sptr - sbuff)}, ' ') == 2)
 			{
-				payloadType = Text::StrToInt32(sarr[0]);
-				k = Text::StrSplit(sarr, 4, sarr[1], '/');
+				payloadType = Text::StrToInt32(sarr[0].v);
+				k = Text::StrSplitP(sarr, 4, sarr[1], '/');
 				if (k == 2 && ch->GetMediaType() == Media::MEDIA_TYPE_VIDEO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), 0);
+					ch->MapPayloadType(payloadType, sarr[0].ToCString(), Text::StrToUInt32(sarr[1].v), 0);
 				}
 				else if (k == 3 && ch->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), Text::StrToUInt32(sarr[2]));
+					ch->MapPayloadType(payloadType, sarr[0].ToCString(), Text::StrToUInt32(sarr[1].v), Text::StrToUInt32(sarr[2].v));
 				}
 				else if (k == 2 && ch->GetMediaType() == Media::MEDIA_TYPE_AUDIO)
 				{
-					ch->MapPayloadType(payloadType, sarr[0], Text::StrToUInt32(sarr[1]), 1);
+					ch->MapPayloadType(payloadType, sarr[0].ToCString(), Text::StrToUInt32(sarr[1].v), 1);
 				}
 			}
 		}
 		else if (Text::StrStartsWithC(desc, descLen, UTF8STRC("a=fmtp:")))
 		{
-			Text::StrConcatC(sbuff, &desc[7], descLen - 7);
-			if (Text::StrSplit(sarr, 2, sbuff, ' ') == 2)
+			sptr = Text::StrConcatC(sbuff, &desc[7], descLen - 7);
+			if (Text::StrSplitP(sarr, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ' ') == 2)
 			{
-				payloadType = Text::StrToInt32(sarr[0]);
-				ch->SetPayloadFormat(payloadType, sarr[1]);
+				payloadType = Text::StrToInt32(sarr[0].v);
+				ch->SetPayloadFormat(payloadType, sarr[1].v);
 			}
 		}
 		i++;

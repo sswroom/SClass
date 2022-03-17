@@ -191,7 +191,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	NEW_CLASS(fs, IO::FileStream(CSTR("/etc/resolv.conf"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
 	{
-		UTF8Char *sarr[3];
+		Text::PString sarr[3];
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		sb.ClearStr();
 		while (reader->ReadLine(&sb, 512))
@@ -202,9 +202,9 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 			}
 			else if (sb.StartsWith(UTF8STRC("nameserver")))
 			{
-				if (Text::StrSplitWS(sarr, 3, sb.ToString()) >= 2)
+				if (Text::StrSplitWSP(sarr, 3, sb) >= 2)
 				{
-					this->ent.dnsaddr->Add(Net::SocketUtil::GetIPAddr(sarr[1], Text::StrCharCnt(sarr[1])));
+					this->ent.dnsaddr->Add(Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng));
 				}
 			}
 			sb.ClearStr();

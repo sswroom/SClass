@@ -32,7 +32,7 @@ namespace Net
 		Bool GetByDomainNamev4(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
 		Bool GetByDomainNamev6(Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
 
-		Bool AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain);
+		Bool AddHost(const Net::SocketUtil::AddressInfo *addr, const UTF8Char *domain, UOSInt domainLen);
 		void UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr);
 	};
 }

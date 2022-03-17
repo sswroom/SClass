@@ -487,7 +487,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 1024))
 				{
-					type = Net::SNS::SNSControl::SNSTypeFromName(sb.ToString());
+					type = Net::SNS::SNSControl::SNSTypeFromName(sb.ToCString());
 				}
 				sb.ClearStr();
 				if (reader->ReadLine(&sb, 1024))
