@@ -8,7 +8,10 @@
 #include "Text/UTF8Reader.h"
 #include "Text/TextBinEnc/Base64Enc.h"
 
+//#define VERBOSE
+#ifdef VERBOSE
 #include <stdio.h>
+#endif
 
 UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 {
@@ -38,11 +41,14 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 		{
 			me->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 		}
+#ifdef VERBOSE
+		printf("SMTP Read: %s\r\n", sbuff);
+#endif
 		if (sbuff[0] == ' ')
 		{
 			if (me->msgRet)
 			{
-				me->msgRet = Text::StrConcat(me->msgRet, sbuff);
+				me->msgRet = Text::StrConcatC(me->msgRet, sbuff, (UOSInt)(sptr - sbuff));
 				me->msgRet = reader->GetLastLineBreak(me->msgRet);
 			}
 		}
@@ -61,7 +67,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 			{
 				if (me->msgRet)
 				{
-					me->msgRet = Text::StrConcat(me->msgRet, &sbuff[4]);
+					me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
 					me->msgRet[0] = 0;
 				}
 				me->lastStatus = msgCode;
@@ -72,7 +78,7 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 			{
 				if (me->msgRet)
 				{
-					me->msgRet = Text::StrConcat(me->msgRet, &sbuff[4]);
+					me->msgRet = Text::StrConcatC(me->msgRet, &sbuff[4], (UOSInt)(sptr - &sbuff[4]));
 					me->msgRet = reader->GetLastLineBreak(me->msgRet);
 				}
 			}
@@ -86,12 +92,16 @@ UInt32 __stdcall Net::Email::SMTPConn::SMTPThread(void *userObj)
 	return 0;
 }
 
-UInt32 Net::Email::SMTPConn::WaitForResult()
+UInt32 Net::Email::SMTPConn::WaitForResult(UTF8Char **msgRetEnd)
 {
 	Manage::HiResClock clk;
 	while (this->threadRunning && !this->statusChg && clk.GetTimeDiff() < 30.0)
 	{
 		this->evt->Wait(1000);
+	}
+	if (msgRetEnd)
+	{
+		*msgRetEnd = this->msgRet;
 	}
 	this->msgRet = 0;
 	if (this->statusChg)
@@ -210,10 +220,11 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	if (connType == CT_STARTTLS)
 	{
 		this->initCode = 220;
+		this->logWriter->WriteLineC(UTF8STRC("Connected"));
 	}
 	else
 	{
-		this->initCode = WaitForResult();
+		this->initCode = WaitForResult(0);
 	}
 }
 
@@ -250,13 +261,14 @@ Bool Net::Email::SMTPConn::SendHelo(Text::CString cliName)
 		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
 
 Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 {
 	UTF8Char returnMsg[2048];
+	UTF8Char *returnMsgEnd;
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = Text::StrConcatC(cliName.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("EHLO "))), UTF8STRC("\r\n"));
@@ -268,20 +280,26 @@ Bool Net::Email::SMTPConn::SendEHlo(Text::CString cliName)
 		this->logWriter->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(&returnMsgEnd);
 	if (code == 0)
 	{
+#ifdef VERBOSE
+		printf("Retry sending EHlo\r\n");
+#endif
 		this->statusChg = false;
 		this->msgRet = returnMsg;
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
-		code = WaitForResult();
+		code = WaitForResult(&returnMsgEnd);
 	}
+#ifdef VERBOSE
+	printf("EHlo reply = %d\r\n", code);
+#endif
 	if (code == 250)
 	{
 		Text::PString sarr[2];
 		Text::PString sarr2[2];
 		sarr[1].v = returnMsg;
-		sarr[1].leng = (UOSInt)(this->msgRet - returnMsg);
+		sarr[1].leng = (UOSInt)(returnMsgEnd - returnMsg);
 		UOSInt i;
 		UOSInt j;
 		while (true)
@@ -340,12 +358,13 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			this->logWriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		}
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
-		UInt32 code = WaitForResult();
+		UInt32 code = WaitForResult(0);
 		return code == 235;
 	}
 	else if (this->authLogin)
 	{
 		UTF8Char retBuff[256];
+		UTF8Char *retBuffEnd;
 		Text::TextBinEnc::Base64Enc b64;
 		Text::StringBuilderUTF8 sbCmd;
 		UInt32 code;
@@ -357,9 +376,12 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			this->logWriter->WriteLineC(UTF8STRC("AUTH LOGIN"));
 		}
 		writer->WriteLineC(UTF8STRC("AUTH LOGIN"));
-		code = WaitForResult();
-		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(this->msgRet - retBuff), UTF8STRC("VXNlcm5hbWU6")))
+		code = WaitForResult(&retBuffEnd);
+		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(retBuffEnd - retBuff), UTF8STRC("VXNlcm5hbWU6")))
 		{
+#ifdef VERBOSE
+			printf("Error in login1: code = %d, msgLen = %d, msg = %s\r\n", code, (UInt32)(retBuffEnd - retBuff), retBuff);
+#endif
 			return false;
 		}
 		sbCmd.ClearStr();
@@ -371,9 +393,12 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			this->logWriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		}
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
-		code = WaitForResult();
-		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(this->msgRet - retBuff), UTF8STRC("UGFzc3dvcmQ6")))
+		code = WaitForResult(&retBuffEnd);
+		if (code != 334 || !Text::StrEqualsC(retBuff, (UOSInt)(retBuffEnd - retBuff), UTF8STRC("UGFzc3dvcmQ6")))
 		{
+#ifdef VERBOSE
+			printf("Error in login2: code = %d, msgLen = %d, msg = %s\r\n", code, (UInt32)(retBuffEnd - retBuff), retBuff);
+#endif
 			return false;
 		}
 		sbCmd.ClearStr();
@@ -385,7 +410,7 @@ Bool Net::Email::SMTPConn::SendAuth(Text::CString userName, Text::CString passwo
 			this->logWriter->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
 		}
 		writer->WriteLineC(sbCmd.ToString(), sbCmd.GetLength());
-		code = WaitForResult();
+		code = WaitForResult(0);
 		return code == 235;
 	}
 	else
@@ -405,7 +430,7 @@ Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
 
@@ -420,7 +445,7 @@ Bool Net::Email::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
 		this->logWriter->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	writer->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(0);
 	return code == 250;
 }
 
@@ -432,7 +457,7 @@ Bool Net::Email::SMTPConn::SendQuit()
 		this->logWriter->WriteLineC(UTF8STRC("QUIT"));
 	}
 	writer->WriteLineC(UTF8STRC("QUIT"));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(0);
 	return code == 221;
 }
 
@@ -444,7 +469,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 		this->logWriter->WriteLineC(UTF8STRC("DATA"));
 	}
 	writer->WriteLineC(UTF8STRC("DATA"));
-	UInt32 code = WaitForResult();
+	UInt32 code = WaitForResult(0);
 	if (code != 354)
 	{
 		return false;
@@ -452,7 +477,7 @@ Bool Net::Email::SMTPConn::SendData(const UTF8Char *buff, UOSInt buffSize)
 	this->statusChg = false;
 	this->cli->Write(buff, buffSize);
 	this->cli->Write((const UInt8*)"\r\n.\r\n", 5);
-	code = WaitForResult();
+	code = WaitForResult(0);
 	return code == 250;
 	
 }

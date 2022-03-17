@@ -5,10 +5,15 @@
 #include "Sync/Event.h"
 #include "Text/UTF8Reader.h"
 
+//#define VERBOSE
+#ifdef VERBOSE
+#include <stdio.h>
+#endif
 #define BUFFSIZE 16384
 
 void Text::UTF8Reader::FillBuffer()
 {
+	UOSInt readSize;
 	if (this->stm->CanSeek())
 	{
 		UInt64 currPos = ((IO::SeekableStream*)this->stm)->GetPosition();
@@ -30,7 +35,11 @@ void Text::UTF8Reader::FillBuffer()
 		this->buffSize -= this->currOfst;
 		this->currOfst = 0;
 	}
-	this->buffSize += this->stm->Read(&this->buff[this->buffSize], BUFFSIZE - this->buffSize);
+	readSize = this->stm->Read(&this->buff[this->buffSize], BUFFSIZE - this->buffSize);;
+#ifdef VERBOSE
+	printf("UTF8Reader.FB read %d bytes\r\n", (UInt32)readSize);
+#endif
+	this->buffSize += readSize;
 	if (stm->CanSeek())
 	{
 		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
@@ -41,7 +50,12 @@ void Text::UTF8Reader::CheckHeader()
 {
 	if (this->buffSize != 0)
 		return;
-	this->buffSize += this->stm->Read(&this->buff[this->buffSize], 4 - this->buffSize);
+	UOSInt readSize;
+	readSize = this->stm->Read(&this->buff[this->buffSize], 4 - this->buffSize);
+#ifdef VERBOSE
+	printf("UTF8Reader.CH read %d bytes\r\n", (UInt32)readSize);
+#endif
+	this->buffSize += readSize;
 	if (this->buffSize >= 3 && this->buff[0] == 0xef && this->buff[1] == 0xbb && this->buff[2] == 0xbf)
 	{
 		this->buff[0] = this->buff[3];

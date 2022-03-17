@@ -97,7 +97,7 @@ Bool Net::Email::EmailMessage::SetContent(Text::CString content, Text::CString c
 		MemFree(this->content);
 	this->content = MemAlloc(UInt8, content.leng);
 	MemCopyNO(this->content, content.v, content.leng);
-	this->contentLen = contentLen;
+	this->contentLen = content.leng;
 	return true;
 }
 

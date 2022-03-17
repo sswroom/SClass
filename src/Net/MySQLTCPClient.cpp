@@ -1983,7 +1983,14 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderSlow(const UTF8Char *sql)
 
 DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
 {
-	return ExecuteReaderBinaryC(sql, sqlLen);
+	if (Text::StrStartsWithC(sql, sqlLen, UTF8STRC("check table ")))
+	{
+		return ExecuteReaderTextC(sql, sqlLen);
+	}
+	else
+	{
+		return ExecuteReaderBinaryC(sql, sqlLen);
+	}
 }
 
 DB::DBReader *Net::MySQLTCPClient::ExecuteReaderTextC(const UTF8Char *sql, UOSInt sqlLen)

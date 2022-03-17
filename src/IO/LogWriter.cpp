@@ -5,7 +5,16 @@
 
 void IO::LogWriter::CheckLines()
 {
-
+	if (sb->EndsWith('\r') || sb->EndsWith('\n'))
+	{
+		sb->RemoveChars(1);
+		if (sb->EndsWith('\r') || sb->EndsWith('\n'))
+		{
+			sb->RemoveChars(1);
+		}
+		this->log->LogMessage(sb->ToCString(), this->logLev);
+		sb->ClearStr();
+	}
 }
 
 IO::LogWriter::LogWriter(IO::LogTool *log, IO::ILogHandler::LogLevel logLev)

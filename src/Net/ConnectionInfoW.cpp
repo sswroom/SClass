@@ -78,7 +78,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 		this->ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
 		break;
 	default:
-		printf("IfType = %d\r\n", addr->IfType);
+		printf("IfType = %d\r\n", (Int32)addr->IfType);
 		this->ent.connType = Net::ConnectionInfo::ConnectionType::Unknown;
 		break;
 	}

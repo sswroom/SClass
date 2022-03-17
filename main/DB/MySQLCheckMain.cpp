@@ -4,6 +4,7 @@
 #include "IO/ConsoleWriter.h"
 #include "IO/FileStream.h"
 #include "IO/IniFile.h"
+#include "IO/LogWriter.h"
 #include "IO/Path.h"
 #include "Net/OSSocketFactory.h"
 #include "Net/SSLEngineFactory.h"
@@ -144,10 +145,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.ClearStr();
 			IO::Path::GetProcessFileName(&sb);
 			sb.AppendC(UTF8STRC(".log"));
-			IO::FileStream *fs;
-			Text::UTF8Writer *writer;
-			NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::Append, IO::FileShare::DenyWrite, IO::FileStream::BufferType::Normal));
-			NEW_CLASS(writer, Text::UTF8Writer(fs));
+			IO::LogTool *log;
+			NEW_CLASS(log, IO::LogTool());
+			log->AddFileLog(sb.ToCString(), IO::ILogHandler::LOG_TYPE_SINGLE_FILE, IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP, IO::ILogHandler::LOG_LEVEL_RAW, "yyyy-MM-dd HH:mm:ss.fff", true);
+			IO::LogWriter *writer;
+			NEW_CLASS(writer, IO::LogWriter(log, IO::ILogHandler::LOG_LEVEL_COMMAND));
 
 			Net::SSLEngine *ssl = Net::SSLEngineFactory::Create(sockf, true);
 			Net::Email::SMTPClient *smtp;
@@ -176,7 +178,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DEL_CLASS(smtp);
 			SDEL_CLASS(ssl);
 			DEL_CLASS(writer);
-			DEL_CLASS(fs);
+			DEL_CLASS(log);
 		}
 	}
 	DEL_CLASS(cfg);

@@ -121,9 +121,13 @@ UOSInt Net::WinSSLClient::Read(UInt8 *buff, UOSInt size)
 		}
 		MemCopyNO(buff, this->clsData->decBuff, this->clsData->decSize);
 		ret = this->clsData->decSize;
-		buff += ret;
-		size -= ret;
 		this->clsData->decSize = 0;
+#if defined(DEBUG_PRINT)
+		debugDt.SetCurrTime();
+		debugDt.ToString(debugBuff, "HH:mm:ss.fff");
+		printf("%s Return size0 = %d, \r\n", debugBuff, (UInt32)ret);
+#endif
+		return ret;
 	}
 	if (s && (this->flags & 6) == 0)
 	{
