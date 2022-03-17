@@ -251,7 +251,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedCaptureForm::OnVideoFrame(UInt32 frameTim
 		param = me->exporter->CreateParam(imgList);
 		me->exporter->SetParamInt32(param, 0, me->jpgQuality);
 		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.AVIRead.AVIRTimedCaptureForm.OnVidoeFrame.mstm")));
-		me->exporter->ExportFile(mstm, (const UTF8Char*)"Temp", imgList, param);
+		me->exporter->ExportFile(mstm, CSTR("Temp"), imgList, param);
 		imgBuff = mstm->GetBuff(&imgSize);
 		me->timedImageList->AddImage(dt.ToTicks(), imgBuff, imgSize, Media::TimedImageList::IF_JPG);
 		DEL_CLASS(mstm);

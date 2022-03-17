@@ -51,7 +51,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 
 	mstm->Clear();
 	exporter->SetParamInt32(param, 0, 0);
-	exporter->ExportFile(mstm, sbuff, imgList, param);
+	exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 	minIndex = 0;
 	minSize = mstm->GetLength();
 	if (minSize > targetSize)
@@ -62,7 +62,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	{
 		mstm->Clear();
 		exporter->SetParamInt32(param, 0, 100);
-		exporter->ExportFile(mstm, sbuff, imgList, param);
+		exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 		maxIndex = 100;
 		maxSize = mstm->GetLength();
 		if (maxSize < targetSize)
@@ -88,7 +88,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 				}
 				mstm->Clear();
 				exporter->SetParamInt32(param, 0, currIndex);
-				exporter->ExportFile(mstm, sbuff, imgList, param);
+				exporter->ExportFile(mstm, CSTRP(sbuff, sptr), imgList, param);
 				currSize = mstm->GetLength();
 				if (currSize > targetSize)
 				{
@@ -110,7 +110,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	exporter->SetParamInt32(param, 0, currIndex);
-	exporter->ExportFile(fs, sbuff, imgList, param);
+	exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	DEL_CLASS(fs);
 	exporter->DeleteParam(param);
 	DEL_CLASS(mstm);

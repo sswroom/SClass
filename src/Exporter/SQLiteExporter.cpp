@@ -44,13 +44,13 @@ Bool Exporter::SQLiteExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, U
 	return false;
 }
 
-Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 	{
 		return false;
 	}
-	IO::Path::DeleteFile(fileName);
+	IO::Path::DeleteFile(fileName.v);
 	DB::DBTool *destDB;
 	IO::LogTool log;
 	DB::ReadingDB *sDB;
@@ -61,8 +61,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, const UTF8Cha
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	destDB = DB::SQLiteFile::CreateDBTool({fileName, fileNameLen}, &log, CSTR("DB: "));
+	destDB = DB::SQLiteFile::CreateDBTool(fileName, &log, CSTR("DB: "));
 	if (destDB == 0)
 		return false;
 	Bool succ = true;

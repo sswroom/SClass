@@ -35,7 +35,7 @@ Bool Exporter::ZIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::ZIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::ZIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::PackageFile)
 	{
@@ -74,7 +74,7 @@ Bool Exporter::ZIPExporter::ExportPackage(IO::ZIPBuilder *zip, UTF8Char *buffSta
 				MemFree(fileBuff);
 				return false;
 			}
-			zip->AddFile(buffStart, fileBuff, (UOSInt)fileLeng, pkg->GetItemModTimeTick(i), false);
+			zip->AddFile(CSTRP(buffStart, sptr), fileBuff, (UOSInt)fileLeng, pkg->GetItemModTimeTick(i), false);
 			MemFree(fileBuff);
 		}
 		else if (itemType == IO::PackageFile::POT_PACKAGEFILE)

@@ -74,7 +74,7 @@ void Exporter::BMPExporter::SetCodePage(UInt32 codePage)
 {
 }
 
-Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (IsObjectSupported(pobj) == SupportType::NotSupported)
 		return false;

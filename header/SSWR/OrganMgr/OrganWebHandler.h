@@ -287,7 +287,7 @@ namespace SSWR
 			void GetGroupSpecies(GroupInfo *group, Data::IMap<Text::String*, SpeciesInfo*> *spMap, WebUserInfo *user);
 			void SearchInGroup(GroupInfo *group, const UTF8Char *searchStr, UOSInt searchStrLen, Data::ArrayListDbl *speciesIndice, Data::ArrayList<SpeciesInfo*> *speciesObjs, Data::ArrayListDbl *groupIndice, Data::ArrayList<GroupInfo*> *groupObjs, WebUserInfo *user);
 			Bool GroupIsAdmin(GroupInfo *group);
-			UTF8Char *PasswordEnc(UTF8Char *buff, const UTF8Char *pwd);
+			UTF8Char *PasswordEnc(UTF8Char *buff, Text::CString pwd);
 			Bool BookFileExist(BookInfo *book);
 			Bool UserGPSGetPos(Int32 userId, Data::DateTime *t, Double *lat, Double *lon);
 
@@ -297,11 +297,11 @@ namespace SSWR
 			Bool SpeciesSetFlags(Int32 speciesId, SpeciesFlags flags);
 			Bool SpeciesMove(Int32 speciesId, Int32 groupId, Int32 cateId);
 			Bool SpeciesModify(Int32 speciesId, Text::CString engName, Text::CString chiName, Text::CString sciName, Text::CString description, Text::CString dirName);
-			Int32 UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize);
+			Int32 UserfileAdd(Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize);
 			Bool UserfileMove(Int32 userfileId, Int32 speciesId, Int32 cateId);
 			Bool UserfileUpdateDesc(Int32 userfileId, Text::CString descr);
 			Bool UserfileUpdateRotType(Int32 userfileId, Int32 rotType);
-			Bool SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF8 *bookNameOut);
+			Bool SpeciesBookIsExist(Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut);
 			Int32 GroupAdd(Text::CString engName, Text::CString chiName, Int32 parentId, Text::CString descr, Int32 groupTypeId, Int32 cateId, GroupFlags flags);
 			Bool GroupModify(Int32 id, Text::CString engName, Text::CString chiName, Text::CString descr, Int32 groupTypeId, GroupFlags flags);
 			Bool GroupDelete(Int32 id);

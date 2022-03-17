@@ -298,14 +298,13 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 {
 /*	GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
 	if (clipboard == 0)
 		return false;
 
-	OSInt len = Text::StrCharCnt(s);
-	gtk_clipboard_set_text(clipboard, (const Char*)s, len);
+	gtk_clipboard_set_text(clipboard, (const Char*)s.v, s.leng);
 	return true;*/
 	return false;
 }

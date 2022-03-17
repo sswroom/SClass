@@ -676,7 +676,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FileStart(Int32 id, Int32 webType, Cont
 	file = this->fileTypeMap->Get((webType << 24) | id);
 	if (file)
 	{
-		Win32::Clipboard::SetString(formHand, file->fileName->v);
+		Win32::Clipboard::SetString(formHand, file->fileName->ToCString());
 		Text::StringBuilderUTF8 sb;
 		sb.AppendUTF8Char('"');
 		sb.Append(this->firefoxPath);

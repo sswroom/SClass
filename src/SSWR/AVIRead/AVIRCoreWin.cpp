@@ -322,7 +322,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 					{
 						if (suppType == IO::FileExporter::SupportType::PathOnly)
 						{
-							if (!fileExp->ExportFile(0, sfd->GetFileName()->v, pobj, param))
+							if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
@@ -330,7 +330,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 						else
 						{
 							NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-							if (!fileExp->ExportFile(fs, sfd->GetFileName()->v, pobj, param))
+							if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, param))
 							{
 								UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 							}
@@ -345,7 +345,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd->GetFileName()->v, pobj, 0))
+					if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
@@ -353,7 +353,7 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 				else
 				{
 					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fileExp->ExportFile(fs, sfd->GetFileName()->v, pobj, 0))
+					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}

@@ -515,11 +515,11 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, const UTF8Char *s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Tett::CString s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;
-	const WChar *wptr = Text::StrToWCharNew(s);
+	const WChar *wptr = Text::StrToWCharNew(s.v);
 	UOSInt len = Text::StrCharCnt(wptr);
 	HGLOBAL hglbCopy;
 	hglbCopy = GlobalAlloc(GMEM_MOVEABLE, (len + 1) * sizeof(WChar));

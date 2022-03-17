@@ -53,7 +53,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	section->Add(validator);
 
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-	exporter->ExportFile(fs, sbuff, doc, 0);
+	exporter->ExportFile(fs, CSTRP(sbuff, sptr), doc, 0);
 	DEL_CLASS(fs);
 
 	DEL_CLASS(doc);

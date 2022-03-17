@@ -53,7 +53,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sptr2 = Text::StrConcatC(Text::StrConcat(Text::StrConcat(sbuff2, destPath), sptr), UTF8STRC(".shp"));
 
 			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff2, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			shpExp->ExportFile(fs, sbuff2, lyr, 0);
+			shpExp->ExportFile(fs, CSTRP(sbuff2, sptr2), lyr, 0);
 			DEL_CLASS(fs);
 			i++;
 		}

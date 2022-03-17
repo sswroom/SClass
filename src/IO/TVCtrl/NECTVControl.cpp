@@ -47,7 +47,7 @@ UInt32 __stdcall IO::TVCtrl::NECTVControl::RecvThread(void *userObj)
 	return 0;
 }
 
-Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int32 cmdTimeout)
+Bool IO::TVCtrl::NECTVControl::SendCommand(Text::CString cmd, UTF8Char *cmdReply, Int32 cmdTimeout)
 {
 	Data::DateTime dt;
 	UInt8 buff[64];
@@ -61,7 +61,7 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 		Sync::Thread::Sleep((UInt32)timeDiff);
 	}
 	
-	cmdLen = Text::StrCharCnt(cmd);
+	cmdLen = cmd.leng;
 	if (cmdLen <= 0 || cmdLen > 53)
 		return false;
 	buff[0] = 1; //SOH
@@ -76,9 +76,9 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 	}
 	buff[3] = '0';
 	buff[4] = 'A'; //Command
-	Text::StrHexByte((Char*)&buff[5], (UInt8)(cmdLen + 2));
+	Text::StrHexByte(&buff[5], (UInt8)(cmdLen + 2));
 	buff[7] = 2; //STX
-	Text::StrConcat((Char*)&buff[8], cmd);
+	cmd.ConcatTo(&buff[8]);
 	buff[8 + cmdLen] = 3; //ETX
 
 	bcc = 0;
@@ -128,11 +128,11 @@ Bool IO::TVCtrl::NECTVControl::SendCommand(const Char *cmd, Char *cmdReply, Int3
 		if (this->recvBuff[0] == 1 && this->recvBuff[7] == 2)
 		{
 			this->recvBuff[7] = 0;
-			cmdLen = Text::StrHex2UInt32C((Char*)&this->recvBuff[5]);
+			cmdLen = Text::StrHex2UInt32C(&this->recvBuff[5]);
 			if (this->recvBuff[6 + cmdLen] == 3)
 			{
 				this->recvBuff[6 + cmdLen] = 0;
-				Text::StrConcat(cmdReply, (Char*)&this->recvBuff[8]);
+				Text::StrConcatC(cmdReply, &this->recvBuff[8], cmdLen - 2);
 				return true;
 			}
 		}
@@ -358,15 +358,16 @@ IO::TVCtrl::NECTVControl::~NECTVControl()
 
 Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 {
-	Char buff[64];
+	UTF8Char buff[64];
+	UTF8Char *sptr;
 	switch (ct)
 	{
 	case CT_POWERON:
-		if (SendCommand("C203D60001", buff, 2000) && buff[0] == '0' && buff[1] == '0')
+		if (SendCommand(CSTR("C203D60001"), buff, 2000) && buff[0] == '0' && buff[1] == '0')
 			return true;
 		return false;
 	case CT_POWEROFF:
-		if (SendCommand("C203D60004", buff, 2000) && buff[0] == '0' && buff[1] == '0')
+		if (SendCommand(CSTR("C203D60004"), buff, 2000) && buff[0] == '0' && buff[1] == '0')
 			return true;
 		return false;
 	case CT_SETCURRDATETIME:
@@ -383,8 +384,8 @@ Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 			byteBuff[6] = dt.GetHour();
 			byteBuff[7] = dt.GetMinute();
 			byteBuff[8] = 0;
-			Text::StrHexBytes(buff, byteBuff, 9, 0);
-			if (SendCommand(buff, buff, 2000) && buff[0] == 'C' && buff[1] == '3' && buff[2] == '1' && buff[3] == '2')
+			sptr = Text::StrHexBytes(buff, byteBuff, 9, 0);
+			if (SendCommand(CSTRP(buff, sptr), buff, 2000) && buff[0] == 'C' && buff[1] == '3' && buff[2] == '1' && buff[3] == '2')
 				return true;
 		}
 		return false;
@@ -461,13 +462,13 @@ Bool IO::TVCtrl::NECTVControl::SendInstruction(CommandType ct)
 
 Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Char *sbuff)
 {
-	Char buff[64];
+	UTF8Char buff[64];
 	UInt16 maxVal;
 	UInt16 currVal;
 	switch (ct)
 	{
 	case CT_GETPOWERSTATUS:
-		if (!SendCommand("01D6", buff, 2000) || buff[2] != '0' || buff[3] != '0')
+		if (!SendCommand(CSTR("01D6"), buff, 2000) || buff[2] != '0' || buff[3] != '0')
 			return false;
 		if (buff[12] == '0' && buff[13] == '0' && buff[14] == '0' && buff[15] == '1')
 		{
@@ -495,7 +496,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return false;
 	case CT_GETDATETIME:
-		if (!SendCommand("C211", buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '1')
+		if (!SendCommand(CSTR("C211"), buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '1')
 			return false;
 		{
 			UInt8 byteBuff[32];
@@ -507,7 +508,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_SELFDIAGNOSIS:
-		if (!SendCommand("B1", buff, 2000) || buff[0] != 'A' || buff[1] != '1')
+		if (!SendCommand(CSTR("B1"), buff, 2000) || buff[0] != 'A' || buff[1] != '1')
 			return false;
 		if (buff[2] == '0' && buff[3] == '0')
 		{
@@ -601,7 +602,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return false;
 	case CT_GETSERIALNO:
-		if (!SendCommand("C216", buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '6')
+		if (!SendCommand(CSTR("C216"), buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '6')
 			return false;
 		{
 			UInt8 serialNo[16];
@@ -616,7 +617,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETMODEL:
-		if (!SendCommand("C217", buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '7')
+		if (!SendCommand(CSTR("C217"), buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '1' || buff[3] != '7')
 			return false;
 		{
 			UInt8 model[16];
@@ -631,7 +632,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETFIRMWARE:
-		if (!SendCommand("CA0200", buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != '2' || buff[4] != '0' || buff[5] != '0')
+		if (!SendCommand(CSTR("CA0200"), buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != '2' || buff[4] != '0' || buff[5] != '0')
 			return false;
 		{
 			*val = 0;
@@ -646,7 +647,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETFIRMWARE2:
-		if (!SendCommand("CA0201", buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != '2' || buff[4] != '0' || buff[5] != '0')
+		if (!SendCommand(CSTR("CA0201"), buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != '2' || buff[4] != '0' || buff[5] != '0')
 			return false;
 		{
 			*val = 0;
@@ -661,7 +662,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETPOWERSAVEMODE:
-		if (!SendCommand("CA0B00", buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '0')
+		if (!SendCommand(CSTR("CA0B00"), buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '0')
 			return false;
 		{
 			UInt8 byteBuff[16];
@@ -686,7 +687,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETPOWERSAVETIME:
-		if (!SendCommand("CA0B02", buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '2')
+		if (!SendCommand(CSTR("CA0B02"), buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '2')
 			return false;
 		{
 			UInt8 byteBuff[16];
@@ -696,7 +697,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETAUTOSTANDBYTIME:
-		if (!SendCommand("CA0B04", buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '4')
+		if (!SendCommand(CSTR("CA0B04"), buff, 2000) || buff[0] != 'C' || buff[1] != 'B' || buff[2] != '0' || buff[3] != 'B' || buff[4] != '0' || buff[5] != '4')
 			return false;
 		{
 			UInt8 byteBuff[16];
@@ -706,7 +707,7 @@ Bool IO::TVCtrl::NECTVControl::SendGetCommand(CommandType ct, Int32 *val, UTF8Ch
 		}
 		return true;
 	case CT_GETLANMAC:
-		if (!SendCommand("C22A02", buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '2' || buff[3] != 'A' || buff[4] != '0' || buff[5] != '0' || buff[6] != '0' || buff[7] != '2')
+		if (!SendCommand(CSTR("C22A02"), buff, 2000) || buff[0] != 'C' || buff[1] != '3' || buff[2] != '2' || buff[3] != 'A' || buff[4] != '0' || buff[5] != '0' || buff[6] != '0' || buff[7] != '2')
 			return false;
 		{
 			UInt8 byteBuff[16];

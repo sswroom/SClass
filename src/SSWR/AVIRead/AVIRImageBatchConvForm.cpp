@@ -101,8 +101,8 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 					{
 						exporter.SetParamInt32(param, 0, quality);
 					}
-					NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2End - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!exporter.ExportFile(fs, sbuff2, imgList, param))
+					NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					if (!exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, param))
 					{
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("Error in converting to "));

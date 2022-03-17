@@ -748,11 +748,11 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 					UOSInt fileId;
 					req->ParseHTTPForm();
 					fileId = 0;
-					while ((uplfile = req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), &uplSize)) != 0)
+					while ((uplfile = req->GetHTTPFormFile(CSTR("uploadfile"), fileId, (UTF8Char*)buff, sizeof(buff), &sptr2, &uplSize)) != 0)
 					{
 						Text::StringBuilderUTF8 sbTmp;
 						sbTmp.AppendC(sb.ToString(), sb.GetLength());
-						sbTmp.AppendSlow((UTF8Char*)buff);
+						sbTmp.AppendP((UTF8Char*)buff, sptr2);
 						if (IO::Path::GetPathType(sbTmp.ToCString()) == IO::Path::PathType::Unknown)
 						{
 							IO::FileStream *uplFS;

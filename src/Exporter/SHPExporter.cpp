@@ -57,7 +57,7 @@ void Exporter::SHPExporter::SetCodePage(UInt32 codePage)
 	this->codePage = codePage;
 }
 
-Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char fileName2[256];
@@ -87,9 +87,9 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		return false;
 	}
-	Text::StrConcat(fileName2, fileName);
+	fileName.ConcatTo(fileName2);
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("shx"));
-	NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (shx->IsError())
 	{
 		DEL_CLASS(shx);
@@ -477,10 +477,10 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	DEL_CLASS(shx);
 
 	sptr = IO::Path::ReplaceExt(fileName2, UTF8STRC("dbf"));
-	NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(exporter, Exporter::DBFExporter());
 	exporter->SetCodePage(this->codePage);
-	exporter->ExportFile(shx, fileName2, layer, 0);
+	exporter->ExportFile(shx, CSTRP(fileName2, sptr), layer, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(shx);
 
@@ -491,7 +491,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 		UTF8Char projArr[1024];
 		Math::SRESRIWKTWriter wkt;
 		UTF8Char *cptr = wkt.WriteCSys(csys, projArr, 0, Text::LineBreakType::None);
-		NEW_CLASS(shx, IO::FileStream({fileName2, (UOSInt)(sptr - fileName2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(shx, IO::FileStream(CSTRP(fileName2, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		shx->Write((UInt8*)projArr, (UOSInt)(cptr - projArr));
 		DEL_CLASS(shx);
 	}

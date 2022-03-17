@@ -539,7 +539,7 @@ Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name, U
 	return this->formMap->GetC({name, nameLen});
 }
 
-const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize)
+const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize)
 {
 	if (this->formFileList == 0)
 		return 0;
@@ -558,7 +558,14 @@ const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName,
 				}
 				if (fileName && info->fileName)
 				{
-					Text::StrConcatS(fileName, info->fileName->v, fileNameBuffSize);
+					if (fileNameEnd)
+					{
+						*fileNameEnd = Text::StrConcatCS(fileName, info->fileName->v, info->fileName->leng, fileNameBuffSize);
+					}
+					else
+					{
+						Text::StrConcatCS(fileName, info->fileName->v, info->fileName->leng, fileNameBuffSize);
+					}
 				}
 				return &this->reqData[info->ofst];
 			}

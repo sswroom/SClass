@@ -733,7 +733,7 @@ void UI::GUITextFileView::CopySelected()
 		line = MemAlloc(UTF8Char, j + 1);
 		enc->UTF8FromBytes(line, rbuff, (UOSInt)(endOfst - startOfst), 0);
 		line[selBottomX] = 0;
-		Win32::Clipboard::SetString(this->hwnd, &line[selTopX]);
+		Win32::Clipboard::SetString(this->hwnd, {&line[selTopX], selBottomX - selTopX});
 		MemFree(line);
 		MemFree(rbuff);
 	}
@@ -788,7 +788,7 @@ void UI::GUITextFileView::CopySelected()
 		MemFree(line);
 		MemFree(rbuff);
 
-		Win32::Clipboard::SetString(this->hwnd, sb.ToString());
+		Win32::Clipboard::SetString(this->hwnd, sb.ToCString());
 	}
 	DEL_CLASS(enc);
 }

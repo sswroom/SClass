@@ -187,16 +187,17 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	Text::CString msg = CSTR_NULL;
 	IO::FileStream *fs;
 	UTF8Char fileName[512];
+	UTF8Char *fileNameEnd;
 	UTF8Char path[512];
 	UTF8Char *u8ptr;
 	UTF8Char *u8ptr2;
-	if (req->GetQueryValueStr(UTF8STRC("model"), fileName, 512))
+	if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("model"), fileName, 512)) != 0)
 	{
 		UOSInt fileSize;
 		u8ptr = IO::Path::GetProcessFileName(path);
 		u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
 		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = Text::StrConcat(u8ptr, fileName);
+		u8ptr = Text::StrConcatC(u8ptr, fileName, (UOSInt)(fileNameEnd - fileName));
 		NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
@@ -260,7 +261,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		{
 			UOSInt fileSize;
 			const UInt8 *fileBuff;
-			if (req->GetQueryValueStr(UTF8STRC("file"), fileName, 512))
+			if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("file"), fileName, 512)) != 0)
 			{
 				fileBuff = req->GetReqData(&fileSize);
 				Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
@@ -268,7 +269,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			else
 			{
 				req->ParseHTTPForm();
-				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileSize);
+				fileBuff = req->GetHTTPFormFile(CSTR("uploadfile"), 0, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
 			}
 			if (fileBuff == 0)
 			{
@@ -278,7 +279,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			{
 				msg = CSTR("File size invalid");
 			}
-			else if (!Text::StrEquals(fileName, (const UTF8Char*)"cpuinfo"))
+			else if (!Text::StrEqualsC(fileName, (UOSInt)(fileNameEnd - fileName), UTF8STRC("cpuinfo")))
 			{
 				msg = CSTR("File name invalid");
 			}

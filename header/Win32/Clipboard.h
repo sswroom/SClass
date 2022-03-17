@@ -32,7 +32,7 @@ namespace Win32
 
 	public:
 		static Bool GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilderUTF8 *sb, UInt32 tymed);
-		static Bool SetString(ControlHandle *hWndOwner, const UTF8Char *s);
+		static Bool SetString(ControlHandle *hWndOwner, Text::CString s);
 		static Bool GetString(ControlHandle *hWndOwner, Text::StringBuilderUTF8 *sb);
 		static UTF8Char *GetFormatName(UInt32 fmtId, UTF8Char *sbuff, UOSInt buffSize);
 	};

@@ -315,7 +315,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnCopyTableClicked(void *
 		i++;
 	}
 
-	Win32::Clipboard::SetString(me->GetHandle(), sb.ToString());
+	Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 }
 
 void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFilesDblClick(void *userObj, UOSInt itemIndex)

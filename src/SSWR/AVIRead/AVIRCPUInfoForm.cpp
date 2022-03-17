@@ -82,7 +82,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 		sb.AppendI32(cpu.GetStepping());
 		sb.AppendUTF8Char('\t');
 		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
-		Win32::Clipboard::SetString(me->GetHandle(), sb.ToString());
+		Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 	}
 #endif
 }

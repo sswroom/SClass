@@ -24,7 +24,7 @@ namespace IO
 			Sync::Event *recvEvt;
 
 			static UInt32 __stdcall RecvThread(void *userObj);
-			Bool SendCommand(const Char *cmd, Char *cmdReply, Int32 cmdTimeout);
+			Bool SendCommand(Text::CString cmd, UTF8Char *cmdReply, Int32 cmdTimeout);
 			Bool GetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 *maxVal, UInt16 *currVal, Int32 cmdTimeout);
 			Bool SetParameter(UInt8 opCodePage, UInt8 opCode, UInt16 val, Int32 cmdTimeout);
 		public:

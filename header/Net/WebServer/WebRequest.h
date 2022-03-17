@@ -64,7 +64,7 @@ namespace Net
 			virtual Net::WebUtil::RequestMethod GetReqMethod();
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen);
-			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UOSInt *fileSize);
+			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb);
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr();

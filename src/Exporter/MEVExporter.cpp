@@ -41,13 +41,12 @@ Bool Exporter::MEVExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (pobj->GetParserType() != IO::ParserType::MapEnv)
 	{
 		return false;
 	}
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
 	Map::MapEnv *env = (Map::MapEnv*)pobj;
 	UOSInt i;
 	UOSInt j;
@@ -99,7 +98,7 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	WriteUInt32(&buff[12], env->GetBGColor());
 	WriteUInt32(&buff[16], (UInt32)env->GetNString());
 	*(Int32*)&buff[20] = 0;
-	*(UInt32*)&buff[24] = AddString(strArr, fileName, fileNameLen, 20);
+	*(UInt32*)&buff[24] = AddString(strArr, fileName.v, fileName.leng, 20);
 	*(Int32*)&buff[28] = (Int32)dirArr->GetCount();
 	*(Int32*)&buff[32] = (Int32)env->GetImageFileCnt();
 	*(Int32*)&buff[36] = (Int32)env->GetFontStyleCount();

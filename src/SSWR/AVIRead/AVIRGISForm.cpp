@@ -799,14 +799,15 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 {
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	switch (cmdId)
 	{
 	case MNU_SAVE:
 		this->core->SaveData(this, this->env, L"SaveMapEnv");
 		break;
 	case MNU_COPY_LATLON:
-		this->txtUTMGrid->GetText(sbuff);
-		Win32::Clipboard::SetString(this->hwnd, sbuff);
+		sptr = this->txtUTMGrid->GetText(sbuff);
+		Win32::Clipboard::SetString(this->hwnd, CSTRP(sbuff, sptr));
 		break;
 	case MNU_PRINT:
 		{

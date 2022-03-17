@@ -5020,8 +5020,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
 	Exporter::MDBExporter exporter;
-	Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
-	exporter.ExportFile(0, sbuff, this->db->GetConn(), 0);
+	sptr2 = Text::StrConcatC(sptr, UTF8STRC("OrganWeb.mdb"));
+	exporter.ExportFile(0, CSTRP(sbuff, sptr2), this->db->GetConn(), 0);
 
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("Image"));
 	IO::Path::CreateDirectory(CSTRP(sbuff, sptr2));
@@ -5124,8 +5124,8 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 						}
 						param = exporter->CreateParam(imgList);
 						exporter->SetParamInt32(param, 0, 95);
-						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptr2End - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						exporter->ExportFile(fs, sbuff, imgList, param);
+						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						exporter->ExportFile(fs, CSTRP(sbuff, sptr2End), imgList, param);
 						DEL_CLASS(fs);
 						DEL_CLASS(imgList);
 					}

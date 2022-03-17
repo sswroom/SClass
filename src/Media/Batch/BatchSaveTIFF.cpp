@@ -29,7 +29,7 @@ void Media::Batch::BatchSaveTIFF::ImageOutput(Media::ImageList *imgList, const U
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	param = exporter->CreateParam(imgList);
 	exporter->SetParamBool(param, 0, this->isCompressed);
-	exporter->ExportFile(fs, sbuff, imgList, param);
+	exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	exporter->DeleteParam(param);
 	DEL_CLASS(fs);
 }

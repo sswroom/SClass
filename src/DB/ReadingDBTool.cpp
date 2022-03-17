@@ -350,11 +350,6 @@ void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
 	this->trig = trig;
 }
 
-DB::DBReader *DB::ReadingDBTool::ExecuteReader(const UTF8Char *sqlCmd)
-{
-	return ExecuteReaderC(sqlCmd, Text::StrCharCnt(sqlCmd));
-}
-
 DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt len)
 {
 	{

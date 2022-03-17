@@ -27,7 +27,7 @@ void __stdcall SSWR::AVIRead::AVIRCppEnumForm::OnConv2Clicked(void *userObj)
 	me->ConvEnum();
 	sb.ClearStr();
 	me->txtDest->GetText(&sb);
-	clipboard.SetString(me->GetHandle(), sb.ToString());
+	clipboard.SetString(me->GetHandle(), sb.ToCString());
 }
 
 void SSWR::AVIRead::AVIRCppEnumForm::ConvEnum()

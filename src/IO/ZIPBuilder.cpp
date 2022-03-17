@@ -21,7 +21,6 @@ IO::ZIPBuilder::~ZIPBuilder()
 	IO::ZIPBuilder::FileInfo *file;
 	UInt8 hdrBuff[512];
 	Data::DateTime dt;
-	UOSInt fnameLen;
 	UOSInt hdrLen;
 	UOSInt cdLen = 0;
 	UOSInt i = 0;
@@ -31,7 +30,6 @@ IO::ZIPBuilder::~ZIPBuilder()
 		file = this->files->GetItem(i);
 
 		dt.SetTicks(file->fileTimeTicks);
-		fnameLen = Text::StrCharCnt(file->fileName);
 		WriteInt32(&hdrBuff[0], 0x02014b50);
 		WriteInt16(&hdrBuff[4], 20);
 		WriteInt16(&hdrBuff[6], 20);
@@ -42,15 +40,15 @@ IO::ZIPBuilder::~ZIPBuilder()
 		WriteUInt32(&hdrBuff[16], file->crcVal);
 		WriteInt32(&hdrBuff[20], (Int32)file->compSize);
 		WriteInt32(&hdrBuff[24], (Int32)file->uncompSize);
-		WriteInt16(&hdrBuff[28], fnameLen);
+		WriteInt16(&hdrBuff[28], file->fileName->leng);
 		WriteInt16(&hdrBuff[30], 0); //extra field length
 		WriteInt16(&hdrBuff[32], 0); //File comment length
 		WriteInt16(&hdrBuff[34], 0); //Disk number where file starts
 		WriteInt16(&hdrBuff[36], 0); //Internal file attributes
 		WriteInt32(&hdrBuff[38], 0); //External file attributes
 		WriteInt32(&hdrBuff[42], (Int32)file->fileOfst);
-		MemCopyNO(&hdrBuff[46], file->fileName, fnameLen);
-		hdrLen = 46 + fnameLen;
+		MemCopyNO(&hdrBuff[46], file->fileName->v, file->fileName->leng);
+		hdrLen = 46 + file->fileName->leng;
 		#if _OSINT_SIZE > 32
 		if (file->compSize >= 0x100000000LL || file->uncompSize >= 0x100000000LL)
 		{
@@ -70,7 +68,7 @@ IO::ZIPBuilder::~ZIPBuilder()
 		this->stm->Write(hdrBuff, hdrLen);
 		cdLen += hdrLen;
 
-		Text::StrDelNew(file->fileName);
+		file->fileName->Release();
 		MemFree(file);
 		i++;
 	}
@@ -89,10 +87,9 @@ IO::ZIPBuilder::~ZIPBuilder()
 	DEL_CLASS(this->crc);
 }
 
-Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly)
+Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly)
 {
 	UInt8 hdrBuff[512];
-	UOSInt fnameLen;
 	UOSInt hdrLen;
 	UInt8 *outBuff = MemAlloc(UInt8, fileSize + 32);
 	UOSInt compSize;
@@ -105,7 +102,6 @@ Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent,
 		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false);
 	}
 	UInt8 crcBuff[4];
-	fnameLen = Text::StrCharCnt(fileName);
 	this->crc->Clear();
 	this->crc->Calc(fileContent, fileSize);
 	this->crc->GetValue(crcBuff);
@@ -121,10 +117,10 @@ Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent,
 	WriteInt32(&hdrBuff[14], ReadMInt32(crcBuff));
 	WriteInt32(&hdrBuff[18], (Int32)compSize);
 	WriteInt32(&hdrBuff[22], (Int32)fileSize);
-	WriteInt16(&hdrBuff[26], (Int32)fnameLen);
+	WriteInt16(&hdrBuff[26], (Int32)fileName.leng);
 	WriteInt16(&hdrBuff[28], 0);
-	MemCopyNO(&hdrBuff[30], fileName, fnameLen);
-	hdrLen = 30 + fnameLen;
+	MemCopyNO(&hdrBuff[30], fileName.v, fileName.leng);
+	hdrLen = 30 + fileName.leng;
 	#if _OSINT_SIZE > 32
 	if (compSize >= 0x100000000LL || fileSize >= 0x100000000LL)
 	{
@@ -144,7 +140,7 @@ Bool IO::ZIPBuilder::AddFile(const UTF8Char *fileName, const UInt8 *fileContent,
 	IO::ZIPBuilder::FileInfo *file;
 	Bool succ = false;
 	file = MemAlloc(IO::ZIPBuilder::FileInfo, 1);
-	file->fileName = Text::StrCopyNew(fileName);
+	file->fileName = Text::String::New(fileName);
 	file->fileOfst = this->currOfst;
 	file->fileTimeTicks = fileTimeTicks;
 	file->crcVal = ReadMUInt32(crcBuff);

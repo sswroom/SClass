@@ -20,7 +20,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(imgList, Media::ImageList(CSTR("Temp")));
 	imgList->AddImage(simg, 0);
 	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	exporter.ExportFile(fs, fileName.v, imgList, 0);
+	exporter.ExportFile(fs, fileName, imgList, 0);
 	DEL_CLASS(fs);
 	DEL_CLASS(imgList);
 	return 0;

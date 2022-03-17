@@ -47,7 +47,7 @@ Bool Exporter::MDBExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 #if defined(_WIN32_WCE)
 	return false;
@@ -56,9 +56,8 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	{
 		return false;
 	}
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	IO::Path::DeleteFile(fileName);
-	if (!DB::MDBFileConn::CreateMDBFile({fileName, fileNameLen}))
+	IO::Path::DeleteFile(fileName.v);
+	if (!DB::MDBFileConn::CreateMDBFile(fileName))
 	{
 		return false;
 	}
@@ -73,7 +72,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	UOSInt j;
 	UOSInt k;
 	UOSInt l;
-	mdb = DB::MDBFileConn::CreateDBTool({fileName, fileNameLen}, &log, CSTR("DB: "));
+	mdb = DB::MDBFileConn::CreateDBTool(fileName, &log, CSTR("DB: "));
 	if (mdb == 0)
 		return false;
 	Bool succ = true;

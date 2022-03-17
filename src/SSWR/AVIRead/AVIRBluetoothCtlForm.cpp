@@ -58,11 +58,12 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothCtlForm::OnDevicesDblClick(void *user
 {
 	SSWR::AVIRead::AVIRBluetoothCtlForm *me = (SSWR::AVIRead::AVIRBluetoothCtlForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	IO::BTScanLog::ScanRecord3 *dev = (IO::BTScanLog::ScanRecord3*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
-		Text::StrHexBytes(sbuff, dev->mac, 6, ':');
-		Win32::Clipboard::SetString(me->GetHandle(), sbuff);
+		sptr = Text::StrHexBytes(sbuff, dev->mac, 6, ':');
+		Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 	}
 }
 

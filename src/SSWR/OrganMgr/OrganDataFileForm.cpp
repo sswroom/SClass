@@ -61,6 +61,7 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userO
 {
 	OrganDataFileForm *me = (OrganDataFileForm*)userObj;
 	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	DataFileInfo *dataFile = (DataFileInfo*)me->lvFiles->GetSelectedItem();
 	if (dataFile == 0)
 		return;
@@ -68,8 +69,8 @@ void __stdcall SSWR::OrganMgr::OrganDataFileForm::OnStartTimeClicked(void *userO
 	Data::DateTime dt;
 	dt.SetTicks(dataFile->startTimeTicks);
 	dt.ToLocalTime();
-	dt.ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
-	Win32::Clipboard::SetString(me->GetHandle(), sbuff);
+	sptr = dt.ToString(sbuff, "dd/MM/yyyy HH:mm:ss");
+	Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 }
 
 void SSWR::OrganMgr::OrganDataFileForm::UpdateFileList()

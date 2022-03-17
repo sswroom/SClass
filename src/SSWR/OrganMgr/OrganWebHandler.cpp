@@ -1046,12 +1046,11 @@ Bool SSWR::OrganMgr::OrganWebHandler::GroupIsAdmin(SSWR::OrganMgr::OrganWebHandl
 	return false;
 }
 
-UTF8Char *SSWR::OrganMgr::OrganWebHandler::PasswordEnc(UTF8Char *buff, const UTF8Char *pwd)
+UTF8Char *SSWR::OrganMgr::OrganWebHandler::PasswordEnc(UTF8Char *buff, Text::CString pwd)
 {
-	UOSInt strLen = Text::StrCharCnt(pwd);
 	UInt8 md5Val[16];
 	Crypto::Hash::MD5 md5;
-	md5.Calc(pwd, strLen);
+	md5.Calc(pwd.v, pwd.leng);
 	md5.GetValue(md5Val);
 	return Text::StrHexBytes(buff, md5Val, 16, 0);
 }
@@ -1341,46 +1340,46 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesModify(Int32 speciesId, Text::CStri
 	}
 }
 
-Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, const UTF8Char *fileName, const UInt8 *fileCont, UOSInt fileSize)
+Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, Text::CString fileName, const UInt8 *fileCont, UOSInt fileSize)
 {
 	UOSInt j;
 	UOSInt i;
 	Int32 fileType = 0;
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-	i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
+	UOSInt fileNameLen = fileName.leng;
+	i = fileName.LastIndexOf('.');
 	if (i == INVALID_INDEX)
 	{
 		return 0;
 	}
-	if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("JPG")))
+	if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("JPG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("TIF")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("TIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("PCX")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("PCX")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("GIF")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("GIF")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("PNG")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("PNG")))
 	{
 		fileType = 1;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("AVI")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("AVI")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("MOV")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("MOV")))
 	{
 		fileType = 2;
 	}
-	else if (Text::StrEqualsICaseC(&fileName[i + 1], fileNameLen - i - 1, UTF8STRC("WAV")))
+	else if (Text::StrEqualsICaseC(&fileName.v[i + 1], fileNameLen - i - 1, UTF8STRC("WAV")))
 	{
 		fileType = 3;
 	}
@@ -1520,10 +1519,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
+				i = Text::StrLastIndexOfCharC(fileName.v, fileNameLen, '.');
 				if (i != INVALID_INDEX)
 				{
-					sptr = Text::StrConcatC(sptr, &fileName[i], fileNameLen - i);
+					sptr = Text::StrConcatC(sptr, &fileName.v[i], fileNameLen - i);
 				}
 
 				IO::FileStream *fs;
@@ -1536,7 +1535,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera, cropLeft, cropTop, cropRight, cropBottom) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendStrUTF8(fileName);
+					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDate(&fileTime);
 					sql.AppendCmdC(CSTR(", "));
@@ -1569,7 +1568,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(fileName, fileNameLen);
+						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = lat;
 						userFile->lon = lon;
@@ -1647,7 +1646,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 		crc.GetValue(crcBuff);
 		crcVal = ReadMUInt32(crcBuff);
 
-		NEW_CLASS(fd, IO::StmData::FileData({fileName, fileNameLen}, false));
+		NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 		pobj = this->parsers->ParseFile(fd, &t);
 		DEL_CLASS(fd);
 		if (pobj)
@@ -1725,10 +1724,10 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 				sptr = Text::StrInt64(sptr, ticks);
 				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 				sptr = Text::StrHexVal32(sptr, crcVal);
-				i = Text::StrLastIndexOfCharC(fileName, fileNameLen, '.');
+				i = Text::StrLastIndexOfCharC(fileName.v, fileNameLen, '.');
 				if (i != INVALID_INDEX)
 				{
-					sptr = Text::StrConcatC(sptr, &fileName[i], fileNameLen - i);
+					sptr = Text::StrConcatC(sptr, &fileName.v[i], fileNameLen - i);
 				}
 				IO::FileStream *fs;
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
@@ -1740,7 +1739,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 					sql.AppendCmdC(CSTR("insert into userfile (fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, camera) values ("));
 					sql.AppendInt32(fileType);
 					sql.AppendCmdC(CSTR(", "));
-					sql.AppendStrUTF8(fileName);
+					sql.AppendStrC(fileName);
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDate(&fileTime);
 					sql.AppendCmdC(CSTR(", "));
@@ -1765,7 +1764,7 @@ Int32 SSWR::OrganMgr::OrganWebHandler::UserfileAdd(Int32 userId, Int32 spId, con
 						userFile = MemAlloc(SSWR::OrganMgr::OrganWebHandler::UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
 						userFile->fileType = fileType;
-						userFile->oriFileName = Text::String::New(fileName, fileNameLen);
+						userFile->oriFileName = Text::String::New(fileName);
 						userFile->fileTimeTicks = fileTime.ToTicks();
 						userFile->lat = 0;
 						userFile->lon = 0;
@@ -1996,12 +1995,12 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserfileUpdateRotType(Int32 userfileId, In
 	return false;
 }
 
-Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *speciesName, Text::StringBuilderUTF8 *bookNameOut)
+Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(Text::CString speciesName, Text::StringBuilderUTF8 *bookNameOut)
 {
 	Data::ArrayList<SSWR::OrganMgr::OrganWebHandler::BookInfo*> *bookList = this->bookMap->GetValues();
 	SSWR::OrganMgr::OrganWebHandler::BookInfo *book;
 	SSWR::OrganMgr::OrganWebHandler::BookSpInfo *bookSp;
-	UOSInt nameLen = Text::StrCharCnt(speciesName);
+	UOSInt nameLen = speciesName.leng;
 	UOSInt i = 0;
 	UOSInt j = bookList->GetCount();
 	UOSInt k;
@@ -2012,7 +2011,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::SpeciesBookIsExist(const UTF8Char *species
 		while (k-- > 0)
 		{
 			bookSp = book->species->GetItem(k);
-			if (bookSp->dispName && bookSp->dispName->Equals(speciesName, nameLen))
+			if (bookSp->dispName && bookSp->dispName->Equals(speciesName.v, nameLen))
 			{
 				bookNameOut->Append(book->title);
 				return true;
@@ -3969,7 +3968,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname->v, &sb))
+					else if ((bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(sname->ToCString(), &sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -4014,7 +4013,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 					{
 						msg.AppendC(UTF8STRC("Species already exist"));
 					}
-					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(STR_PTR(sname), &sb))
+					else if (nameChg && (bookIgn == 0 || bookIgn[0] != '1') && me->SpeciesBookIsExist(STR_CSTR(sname), &sb))
 					{
 						msg.AppendC(UTF8STRC("Species already exist in book: "));
 						msg.AppendC(sb.ToString(), sb.GetLength());
@@ -6233,6 +6232,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	UOSInt i = 0;
 	UOSInt fileSize;
 	UTF8Char fileName[512];
+	UTF8Char *fileNameEnd;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	const UInt8 *fileCont;
@@ -6249,7 +6249,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 	writer->WriteLineC(UTF8STRC("<tr><td>File Name</td><td>File Size</td><td>Image Size</td></tr>"));
 	while (true)
 	{
-		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileSize);
+		fileCont = req->GetHTTPFormFile(CSTR("file"), i, fileName, sizeof(fileName), &fileNameEnd, &fileSize);
 		if (fileCont == 0)
 		{
 			break;
@@ -6263,7 +6263,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 		writer->WriteStrC(sbuff, (UOSInt)(sptr - sbuff));
 		writer->WriteStrC(UTF8STRC("</td><td>"));
 		me->dataMut->LockWrite();
-		Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, fileName, fileCont, fileSize);
+		Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, CSTRP(fileName, fileNameEnd), fileCont, fileSize);
 		me->dataMut->UnlockWrite();
 		if (ret == 0)
 		{
@@ -6341,7 +6341,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	}
 
 	me->dataMut->LockWrite();
-	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToString(), imgData, dataSize);
+	Int32 ret = me->UserfileAdd(env.user->id, env.user->unorganSpId, sb.ToCString(), imgData, dataSize);
 	me->dataMut->UnlockWrite();
 
 	if (ret == 0)
@@ -7359,7 +7359,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 		Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
 		if (userName && pwd)
 		{
-			sptr = me->PasswordEnc(sbuff, pwd->v);
+			sptr = me->PasswordEnc(sbuff, pwd->ToCString());
 			me->dataMut->LockRead();
 			env.user = me->userNameMap->Get(userName);
 			if (env.user && env.user->pwd->Equals(sbuff, (UOSInt)(sptr - sbuff)))
@@ -7984,7 +7984,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 /*						Int32 xRand;
 						Int32 yRand;
 						Int16 fontSize = imgWidth / 12;
-						OSInt leng = Text::StrCharCnt(this->watermark);
+						OSInt leng = this->watermark->leng;
 						Double sz[2];
 						Int32 iWidth;
 						Int32 iHeight;
@@ -8056,7 +8056,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						Exporter::GUIJPGExporter exporter;
 						param = exporter.CreateParam(&nimgList);
 						exporter.SetParamInt32(param, 0, 95);
-						exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
+						exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 						exporter.DeleteParam(param);
 						ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
@@ -8382,7 +8382,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 
@@ -8600,7 +8600,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					Exporter::GUIJPGExporter exporter;
 					param = exporter.CreateParam(&nimgList);
 					exporter.SetParamInt32(param, 0, 95);
-					exporter.ExportFile(mstm, (const UTF8Char*)"", &nimgList, param);
+					exporter.ExportFile(mstm, CSTR(""), &nimgList, param);
 					exporter.DeleteParam(param);
 					ResponseMstm(req, resp, mstm, UTF8STRC("image/jpeg"));
 

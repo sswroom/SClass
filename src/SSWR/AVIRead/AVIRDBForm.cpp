@@ -383,7 +383,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassHeader(&hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}
@@ -400,7 +400,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 				sbuff2[0] = Text::CharUtil::ToUpper(sbuff2[0]);
 				Text::StringBuilderUTF8 sb;
 				cls->ToCppClassSource(0, &hdr, 0, &sb);
-				Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+				Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 				DEL_CLASS(cls);
 			}
 		}
@@ -411,7 +411,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 			Text::StringBuilderUTF8 sb;
 			DB::JavaDBUtil::ToJavaEntity(&sb, tableName, this->dbt);
 			tableName->Release();
-			Win32::Clipboard::SetString(this->GetHandle(), sb.ToString());
+			Win32::Clipboard::SetString(this->GetHandle(), sb.ToCString());
 		}
 		break;
 	}

@@ -402,7 +402,7 @@ void __stdcall SSWR::AVIRead::AVIRWifiCaptureLiteForm::OnLogWifiDblClicked(void 
 	Text::String *s = me->lvLogWifi->GetItemTextNew(index);
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

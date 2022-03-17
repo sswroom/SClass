@@ -153,7 +153,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 								}
 								if (totalRead == fileLeng)
 								{
-									succ = zip->AddFile(pathBase, fileBuff, totalRead, modTime.ToTicks(), false);
+									succ = zip->AddFile(CSTRP(pathBase, sptr), fileBuff, totalRead, modTime.ToTicks(), false);
 								}
 								else
 								{

@@ -54,7 +54,7 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 	return false;
 }
 
-Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	UInt8 buff[256];
 	UTF8Char u8buff[256];
@@ -88,7 +88,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *
 	IO::FileStream *cix;
 	IO::FileStream *cib;
 	IO::FileStream *blk;
-	Text::StrConcat(u8buff, fileName);
+	fileName.ConcatTo(u8buff);
 	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("cix"));
 	NEW_CLASS(cix, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("ciu"));

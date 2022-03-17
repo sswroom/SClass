@@ -11,7 +11,7 @@ namespace IO
 	private:
 		typedef struct
 		{
-			const UTF8Char *fileName;
+			Text::String *fileName;
 			UInt64 fileOfst;
 			Int64 fileTimeTicks;
 			UInt32 crcVal;
@@ -31,7 +31,7 @@ namespace IO
 		ZIPBuilder(IO::SeekableStream *stm);
 		~ZIPBuilder();
 
-		Bool AddFile(const UTF8Char *fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly);
+		Bool AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly);
 	};
 }
 #endif

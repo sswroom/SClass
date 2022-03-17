@@ -26,7 +26,7 @@ void __stdcall SSWR::AVIRead::AVIRAsmConvForm::OnConv2Clicked(void *userObj)
 	me->ConvAsm();
 	sb.ClearStr();
 	me->txtGNUAsm->GetText(&sb);
-	clipboard.SetString(me->GetHandle(), sb.ToString());
+	clipboard.SetString(me->GetHandle(), sb.ToCString());
 }
 
 void SSWR::AVIRead::AVIRAsmConvForm::ConvAsm()

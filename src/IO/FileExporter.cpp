@@ -11,7 +11,7 @@ Bool IO::FileExporter::ExportNewFile(Text::CString fileName, IO::ParsedObject *p
 		DEL_CLASS(fs);
 		return false;
 	}
-	Bool succ = this->ExportFile(fs, fileName.v, pobj, param);
+	Bool succ = this->ExportFile(fs, fileName, pobj, param);
 	DEL_CLASS(fs);
 	return succ;
 }

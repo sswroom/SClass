@@ -1453,7 +1453,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingImgReq")));
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(mstm, (const UTF8Char*)"temp.png", imgList, 0);
+	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(imgList);
 
@@ -1801,7 +1801,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DevicePastDataImgReq")));
 	NEW_CLASS(exporter, Exporter::GUIPNGExporter());
-	exporter->ExportFile(mstm, (const UTF8Char*)"temp.png", imgList, 0);
+	exporter->ExportFile(mstm, CSTR("temp.png"), imgList, 0);
 	DEL_CLASS(exporter);
 	DEL_CLASS(imgList);
 

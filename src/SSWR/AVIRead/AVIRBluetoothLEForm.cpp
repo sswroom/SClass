@@ -49,13 +49,14 @@ void __stdcall SSWR::AVIRead::AVIRBluetoothLEForm::OnDevicesDblClick(void *userO
 {
 	SSWR::AVIRead::AVIRBluetoothLEForm *me = (SSWR::AVIRead::AVIRBluetoothLEForm*)userObj;
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UInt8 mac[8];
 	BTDevice *dev = (BTDevice*)me->lvDevices->GetItem(index);
 	if (dev)
 	{
 		WriteMUInt64(mac, dev->mac);
-		Text::StrHexBytes(sbuff, &mac[2], 6, ':');
-		Win32::Clipboard::SetString(me->GetHandle(), sbuff);
+		sptr = Text::StrHexBytes(sbuff, &mac[2], 6, ':');
+		Win32::Clipboard::SetString(me->GetHandle(), CSTRP(sbuff, sptr));
 	}
 }
 

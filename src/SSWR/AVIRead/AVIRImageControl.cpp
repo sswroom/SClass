@@ -209,7 +209,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 						imgList->AddImage(simg2, 0);
 						mutUsage.BeginUse();
 						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff2, sptr2End), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-						exporter.ExportFile(fs, sbuff2, imgList, 0);
+						exporter.ExportFile(fs, CSTRP(sbuff2, sptr2End), imgList, 0);
 						DEL_CLASS(fs);
 						mutUsage.EndUse();
 						DEL_CLASS(imgList);
@@ -311,7 +311,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 				{
 					jpgExporter.SetParamInt32(param, 0, 100);
 				}
-				jpgExporter.ExportFile(fs, sbuff, imgList, param);
+				jpgExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, param);
 				if (param)
 				{
 					jpgExporter.DeleteParam(param);
@@ -322,7 +322,7 @@ void SSWR::AVIRead::AVIRImageControl::ExportQueued()
 			{
 				sptr2 = IO::Path::ReplaceExt(sptr, UTF8STRC("tif"));
 				NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr2), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-				tifExporter.ExportFile(fs, sbuff, imgList, 0);
+				tifExporter.ExportFile(fs, CSTRP(sbuff, sptr2), imgList, 0);
 				DEL_CLASS(fs);
 			}
 			ioMutUsage.EndUse();

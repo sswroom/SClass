@@ -243,7 +243,7 @@ void __stdcall SSWR::AVIRead::AVIRExeForm::OnExportDblClk(void *userObj)
 	Text::String *s = me->lbExport->GetSelectedItemTextNew();
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

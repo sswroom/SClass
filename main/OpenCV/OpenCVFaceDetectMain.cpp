@@ -86,7 +86,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 			NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			exporter->ExportFile(fs, sbuff, imgList, 0);
+			exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, 0);
 			DEL_CLASS(fs);
 
 			DEL_CLASS(imgList);

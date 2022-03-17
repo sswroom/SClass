@@ -32,7 +32,7 @@ void Media::Batch::BatchSaveJPEG::ImageOutput(Media::ImageList *imgList, const U
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 	param = exporter->CreateParam(imgList);
 	exporter->SetParamInt32(param, 0, (Int32)this->quality);
-	exporter->ExportFile(fs, sbuff, imgList, param);
+	exporter->ExportFile(fs, CSTRP(sbuff, sptr), imgList, param);
 	exporter->DeleteParam(param);
 	DEL_CLASS(fs);
 }

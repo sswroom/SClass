@@ -81,7 +81,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			NEW_CLASS(imgList, Media::ImageList(destFile));
 			imgList->AddImage(newImg, 0);
 			NEW_CLASS(fs, IO::FileStream(destFile, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-			if (exporter.ExportFile(fs, destFile.v, imgList, 0))
+			if (exporter.ExportFile(fs, destFile, imgList, 0))
 			{
 				ret = 0;
 			}

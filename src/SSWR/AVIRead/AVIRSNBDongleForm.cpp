@@ -205,7 +205,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBDongleForm::OnCopyDevIdClicked(void *userOb
 	Text::String *s = me->lvDevice->GetSelectedItemTextNew();
 	if (s)
 	{
-		Win32::Clipboard::SetString(me->GetHandle(), s->v);
+		Win32::Clipboard::SetString(me->GetHandle(), s->ToCString());
 		s->Release();
 	}
 }

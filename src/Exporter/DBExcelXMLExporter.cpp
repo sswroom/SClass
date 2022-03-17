@@ -48,7 +48,7 @@ void Exporter::DBExcelXMLExporter::SetCodePage(UInt32 codePage)
 //	this->codePage = codePage;
 }
 
-Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, const UTF8Char *fileName, IO::ParsedObject *pobj, void *param)
+Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	if (!DB::ReadingDB::IsDBObj(pobj))
 	{
