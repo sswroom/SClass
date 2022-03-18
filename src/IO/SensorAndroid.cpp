@@ -26,14 +26,14 @@ IO::SensorAndroid::~SensorAndroid()
 	}
 }
 
-const UTF8Char *IO::SensorAndroid::GetVendor()
+Text::CString IO::SensorAndroid::GetVendor()
 {
-	return (const UTF8Char*)ASensor_getVendor((const ASensor*)this->sensor);
+	return Text::CString::FromPtr((const UTF8Char*)ASensor_getVendor((const ASensor*)this->sensor));
 }
 
-const UTF8Char *IO::SensorAndroid::GetName()
+Text::CString IO::SensorAndroid::GetName()
 {
-	return (const UTF8Char*)ASensor_getName((const ASensor*)this->sensor);
+	return Text::CString::FromPtr((const UTF8Char*)ASensor_getName((const ASensor*)this->sensor));
 }
 
 Bool IO::SensorAndroid::EnableSensor()

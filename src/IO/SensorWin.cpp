@@ -16,7 +16,7 @@ IO::SensorWin::SensorWin(void *sensor)
 	pSensor->SetEventSink(0);
 	if (SUCCEEDED(pSensor->GetFriendlyName(&sname)))
 	{
-		this->name = Text::StrToUTF8New(sname);
+		this->name = Text::String::NewNotNull(sname);
 	}
 }
 
@@ -24,17 +24,17 @@ IO::SensorWin::~SensorWin()
 {
 	ISensor *pSensor = (ISensor*)this->sensor;
 	pSensor->Release();
-	SDEL_TEXT(this->name);
+	SDEL_STRING(this->name);
 }
 
-const UTF8Char *IO::SensorWin::GetVendor()
+Text::CString IO::SensorWin::GetVendor()
 {
-	return 0;
+	return CSTR_NULL;
 }
 
-const UTF8Char *IO::SensorWin::GetName()
+Text::CString IO::SensorWin::GetName()
 {
-	return this->name;
+	return STR_CSTR(this->name);
 }
 
 Bool IO::SensorWin::EnableSensor()

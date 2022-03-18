@@ -16,13 +16,13 @@ namespace IO
 		SensorAndroid(void *sensor, void *sensorMgr, Int32 id);
 		virtual ~SensorAndroid();
 
-		virtual const UTF8Char *GetVendor();
-		virtual const UTF8Char *GetName();
+		virtual Text::CString GetVendor();
+		virtual Text::CString GetName();
 		virtual Bool EnableSensor();
 		virtual Bool DisableSensor();
 
 		Bool GetSensorEvent(void *sensorEvt);
 	};
-};
+}
 
 #endif

@@ -1,6 +1,8 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/SensorAccelerometerW.h"
+#include "IO/SensorLightWin.h"
+#include "IO/SensorLocationWin.h"
 #include "IO/SensorOrientationWin.h"
 #include "IO/SensorUnknownWin.h"
 #include "IO/SensorManager.h"
@@ -129,6 +131,14 @@ IO::Sensor::SensorType IO::SensorManager::GetSensorType(UOSInt index)
 						{
 							sensorType = IO::Sensor::SensorType::Orientation;
 						}
+						else if (sType == SENSOR_TYPE_LOCATION_OTHER)
+						{
+							sensorType = IO::Sensor::SensorType::Location;
+						}
+						else if (sType == SENSOR_TYPE_AMBIENT_LIGHT)
+						{
+							sensorType = IO::Sensor::SensorType::Light;
+						}
 					}
 					pSensor->Release();
 				}
@@ -182,6 +192,14 @@ IO::Sensor *IO::SensorManager::CreateSensor(UOSInt index)
 						else if (sType == SENSOR_TYPE_INCLINOMETER_3D)
 						{
 							NEW_CLASS(ret, IO::SensorOrientationWin(pSensor));
+						}
+						else if (sType == SENSOR_TYPE_LOCATION_OTHER)
+						{
+							NEW_CLASS(ret, IO::SensorLocationWin(pSensor));
+						}
+						else if (sType == SENSOR_TYPE_AMBIENT_LIGHT)
+						{
+							NEW_CLASS(ret, IO::SensorLightWin(pSensor));
 						}
 						else
 						{

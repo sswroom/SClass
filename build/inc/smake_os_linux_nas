@@ -28,12 +28,8 @@ IO/RAWBTScanner.h: ../../src/IO/RAWBTScanner.cpp
 @RAWBTScanner.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
-IO/SensorAccelerometer.h:
-IO/SensorMagnetometer.h:
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
-IO/SensorOrientation.h:
-IO/SensorPressure.h:
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 

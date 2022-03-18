@@ -1,6 +1,7 @@
 #ifndef _SM_IO_SENSORWIN
 #define _SM_IO_SENSORWIN
 #include "IO/Sensor.h"
+#include "Text/String.h"
 
 namespace IO
 {
@@ -8,14 +9,14 @@ namespace IO
 	{
 	protected:
 		void *sensor;
-		const UTF8Char *name;
+		Text::String *name;
 
 	public:
 		SensorWin(void *sensor);
 		virtual ~SensorWin();
 
-		virtual const UTF8Char *GetVendor();
-		virtual const UTF8Char *GetName();
+		virtual Text::CString GetVendor();
+		virtual Text::CString GetName();
 		virtual Bool EnableSensor();
 		virtual Bool DisableSensor();
 	};

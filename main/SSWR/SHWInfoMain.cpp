@@ -1087,7 +1087,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 //-------------------------------------------------------------------------------
 	{
 		IO::SensorManager sensorMgr;
-		const UTF8Char *csptr;
+		Text::CString cstr;
 		IO::Sensor *sensor;
 		console->WriteLine();
 		writer->WriteLine();
@@ -1108,16 +1108,16 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				sb.AppendC(UTF8STRC("Sensor "));
 				sb.AppendUOSInt(i);
 				sb.AppendC(UTF8STRC(", Name = "));
-				csptr = sensor->GetName();
-				if (csptr)
+				cstr = sensor->GetName();
+				if (cstr.leng)
 				{
-					sb.AppendSlow(csptr);
+					sb.Append(cstr);
 				}
 				sb.AppendC(UTF8STRC(", Vendor = "));
-				csptr = sensor->GetVendor();
-				if (csptr)
+				cstr = sensor->GetVendor();
+				if (cstr.leng)
 				{
-					sb.AppendSlow(csptr);
+					sb.Append(cstr);
 				}
 				sb.AppendC(UTF8STRC(", Type = "));
 				sb.Append(IO::Sensor::GetSensorTypeName(sensor->GetSensorType()));

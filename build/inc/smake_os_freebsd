@@ -27,12 +27,8 @@ IO/OS.h: ../../src/IO/OSL.cpp
 @OS.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrNull.cpp
 @SDCardMgr.o
-IO/SensorAccelerometer.h:
-IO/SensorMagnetometer.h:
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
-IO/SensorOrientation.h:
-IO/SensorPressure.h:
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 

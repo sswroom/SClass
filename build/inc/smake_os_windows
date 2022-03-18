@@ -33,16 +33,16 @@ IO/OS.h: ../../src/IO/OSW.cpp
 @OS.o
 IO/SDCardMgr.h: ../../src/IO/SDCardMgrW.cpp
 @SDCardMgr.o
-IO/SensorAccelerometer.h:
 IO/SensorAccelerometerW.h: ../../src/IO/SensorAccelerometerW.cpp
 @SensorAccelerometerW.o
-IO/SensorMagnetometer.h:
+IO/SensorLightWin.h: ../../src/IO/SensorLightWin.cpp
+@SensorLightWin.o
+IO/SensorLocationWin.h: ../../src/IO/SensorLocationWin.cpp
+@SensorLocationWin.o
 IO/SensorManager.h: ../../src/IO/SensorManagerW.cpp
 @SensorManager.o
-IO/SensorOrientation.h:
 IO/SensorOrientationWin.h: ../../src/IO/SensorOrientationWin.cpp
 @SensorOrientationWin.o
-IO/SensorPressure.h:
 IO/SensorUnknownWin.h: ../../src/IO/SensorUnknownWin.cpp
 @SensorUnknownWin.o
 IO/SensorWin.h: ../../src/IO/SensorWin.cpp
@@ -157,6 +157,8 @@ OS.o: ../../src/IO/OSW.cpp
 !-lversion
 SDCardMgr.o: ../../src/IO/SDCardMgrW.cpp
 SensorAccelerometerW.o: ../../src/IO/SensorAccelerometerW.cpp
+SensorLightWin.o: ../../src/IO/SensorLightWin.cpp
+SensorLocationWin.o: ../../src/IO/SensorLocationWin.cpp
 SensorManager.o: ../../src/IO/SensorManagerW.cpp
 SensorOrientationWin.o: ../../src/IO/SensorOrientationWin.cpp
 SensorUnknownWin.o: ../../src/IO/SensorUnknownWin.cpp

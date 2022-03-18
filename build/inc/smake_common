@@ -1619,6 +1619,12 @@ IO/SDCardInfo.h: ../../src/IO/SDCardInfo.cpp
 IO/SeekableStream.h:
 IO/Sensor.h: ../../src/IO/Sensor.cpp
 @Sensor.o
+IO/SensorAccelerometer.h:
+IO/SensorLight.h:
+IO/SensorLocation.h:
+IO/SensorMagnetometer.h:
+IO/SensorOrientation.h:
+IO/SensorPressure.h:
 IO/SiLabDriver.h: ../../src/IO/SiLabDriver.cpp
 @SiLabDriver.o
 IO/SiLabSerialPort.h: ../../src/IO/SiLabSerialPort.cpp
