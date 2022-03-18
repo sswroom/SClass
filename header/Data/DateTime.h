@@ -73,7 +73,7 @@ namespace Data
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms, Int8 tzQhr);
 		void SetValue(UInt16 year, OSInt month, OSInt day, OSInt hour, OSInt minute, OSInt second, OSInt ms);
 		void SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 minute, UInt8 second, UInt16 ms, Int8 tzQhr);
-		Bool SetValue(const Char *dateStr);
+		Bool SetValueSlow(const Char *dateStr);
 		Bool SetValue(const UTF8Char *dateStr, UOSInt strLen);
 		void SetValueSYSTEMTIME(void *sysTime);
 		void SetValueFILETIME(void *fileTime);

@@ -236,7 +236,7 @@ public:
 	}
 };
 
-DB::TextDB::TextDB(const UTF8Char *sourceName) : DB::ReadingDB(sourceName)
+DB::TextDB::TextDB(Text::CString sourceName) : DB::ReadingDB(sourceName)
 {
 	NEW_CLASS(this->dbMap, Data::StringUTF8Map<DBData*>());
 	this->currDB = 0;

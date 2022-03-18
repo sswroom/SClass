@@ -1529,32 +1529,32 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesFil
 						{
 							this->GetGPSPos(this->userId, &fileTime, &lat, &lon);
 						}
-						const UTF8Char *csptr;
-						const UTF8Char *csptr2;
-						csptr = (const UTF8Char*)exif->GetPhotoMake();
-						csptr2 = (const UTF8Char*)exif->GetPhotoModel();
-						if (csptr && csptr2)
+						Text::CString cstr;
+						Text::CString cstr2;
+						cstr = exif->GetPhotoMake();
+						cstr2 = exif->GetPhotoModel();
+						if (cstr.v && cstr2.v)
 						{
-							if (Text::StrStartsWithICase(csptr2, csptr))
+							if (cstr2.StartsWithICase(cstr.v, cstr.leng))
 							{
-								camera = Text::String::NewNotNullSlow(csptr2);
+								camera = Text::String::New(cstr2);
 							}
 							else
 							{
 								Text::StringBuilderUTF8 sb;
-								sb.AppendSlow(csptr);
+								sb.Append(cstr);
 								sb.AppendC(UTF8STRC(" "));
-								sb.AppendSlow(csptr2);
+								sb.Append(cstr2);
 								camera = Text::String::New(sb.ToCString());
 							}
 						}
-						else if (csptr)
+						else if (cstr.v)
 						{
-							camera = Text::String::NewNotNullSlow(csptr);
+							camera = Text::String::New(cstr);
 						}
-						else if (csptr2)
+						else if (cstr2.v)
 						{
-							camera = Text::String::NewNotNullSlow(csptr2);
+							camera = Text::String::New(cstr2);
 						}
 					}
 				}

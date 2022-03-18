@@ -2,6 +2,7 @@
 #define _SM_CRYPTO_HASH_HASHCALC
 #include "Crypto/Hash/IHash.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 namespace Crypto
 {
@@ -18,7 +19,7 @@ namespace Crypto
 			~HashCalc();
 
 			void Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal);
-			void CalcStr(const UTF8Char *s, UInt8 *hashVal);
+			void CalcStr(Text::CString s, UInt8 *hashVal);
 		};
 	}
 }

@@ -17,11 +17,13 @@ Crypto::Cert::CurlCert::~CurlCert()
 Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt)
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
+	UOSInt slen;
 	while (slist)
 	{
-		if (Text::StrStartsWith(slist->data, "Start date:"))
+		slen = Text::StrCharCnt(slist->data);
+		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Start date:")))
 		{
-			dt->SetValue(slist->data + 11);
+			dt->SetValue((const UTF8Char*)slist->data + 11, slen - 11);
 			return true;
 		}
 	}
@@ -32,11 +34,13 @@ Bool Crypto::Cert::CurlCert::GetNotBefore(Data::DateTime *dt)
 Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt)
 {
 	curl_slist *slist = (curl_slist*)this->certinfo;
+	UOSInt slen;
 	while (slist)
 	{
-		if (Text::StrStartsWith(slist->data, "Expire date:"))
+		slen = Text::StrCharCnt(slist->data);
+		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Expire date:")))
 		{
-			dt->SetValue(slist->data + 12);
+			dt->SetValue((const UTF8Char *)slist->data + 12, slen - 12);
 			return true;
 		}
 	}

@@ -422,28 +422,28 @@ Bool SSWR::AVIRead::AVIRImageControl::GetCameraName(Text::StringBuilderUTF8 *sb,
 	{
 		return false;
 	}
-	const Char *make = exif->GetPhotoMake();
-	const Char *model = exif->GetPhotoModel();
-	if (make && model)
+	Text::CString make = exif->GetPhotoMake();
+	Text::CString model = exif->GetPhotoModel();
+	if (make.v && model.v)
 	{
-		if (Text::StrStartsWith(model, make))
+		if (model.StartsWith(make.v, make.leng))
 		{
-			sb->AppendSlow((const UTF8Char*)model);
+			sb->Append(model);
 		}
 		else
 		{
-			sb->AppendSlow((const UTF8Char*)make);
+			sb->Append(make);
 			sb->AppendC(UTF8STRC(" "));
-			sb->AppendSlow((const UTF8Char*)model);
+			sb->Append(model);
 		}
 	}
-	else if (make)
+	else if (make.v)
 	{
-		sb->AppendSlow((const UTF8Char*)make);
+		sb->Append(make);
 	}
-	else if (model)
+	else if (model.v)
 	{
-		sb->AppendSlow((const UTF8Char*)model);
+		sb->Append(model);
 	}
 	else
 	{

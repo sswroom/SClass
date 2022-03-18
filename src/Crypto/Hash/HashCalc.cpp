@@ -24,7 +24,7 @@ void Crypto::Hash::HashCalc::Calc(const UInt8 *buff, UOSInt size, UInt8 *hashVal
 	this->hash->GetValue(hashVal);
 }
 
-void Crypto::Hash::HashCalc::CalcStr(const UTF8Char *s, UInt8 *hashVal)
+void Crypto::Hash::HashCalc::CalcStr(Text::CString s, UInt8 *hashVal)
 {
-	this->Calc(s, Text::StrCharCnt(s), hashVal);
+	this->Calc(s.v, s.leng, hashVal);
 }

@@ -21,7 +21,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 
 	if (me->proxy->IsReqListv4Chg())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
+		Data::ArrayList<Text::String *> nameList;
 		Text::StringBuilderUTF8 sb;
 		UOSInt i;
 		UOSInt j;
@@ -33,14 +33,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.AppendSlow(nameList.GetItem(i));
+			sb.Append(nameList.GetItem(i));
 			me->lbV4Request->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 	}
 	if (me->proxy->IsReqListv6Chg())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
+		Data::ArrayList<Text::String *> nameList;
 		Text::StringBuilderUTF8 sb;
 		UOSInt i;
 		UOSInt j;
@@ -52,14 +52,14 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.AppendSlow(nameList.GetItem(i));
+			sb.Append(nameList.GetItem(i));
 			me->lbV6Request->AddItem(sb.ToCString(), 0);
 			i++;
 		}
 	}
 	if (me->proxy->IsReqListOthChg())
 	{
-		Data::ArrayList<const UTF8Char *> nameList;
+		Data::ArrayList<Text::String *> nameList;
 		Text::StringBuilderUTF8 sb;
 		UOSInt i;
 		UOSInt j;
@@ -71,7 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			sb.ClearStr();
-			sb.AppendSlow(nameList.GetItem(i));
+			sb.Append(nameList.GetItem(i));
 			me->lbOthRequest->AddItem(sb.ToCString(), 0);
 			i++;
 		}
@@ -142,7 +142,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV4ReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov4(req->v, me->v4ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->ToCString(), me->v4ansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -225,7 +225,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnV6ReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov6(req->v, me->v6ansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov6(req->ToCString(), me->v6ansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -308,7 +308,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnOthReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfoOth(req->v, me->othansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfoOth(req->ToCString(), me->othansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -487,7 +487,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSAddClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
-	Data::ArrayList<const UTF8Char *> nameList;
+	Data::ArrayList<Text::String *> nameList;
 	Text::StringBuilderUTF8 sb;
 	UInt32 ip;
 	UInt32 mask;
@@ -530,7 +530,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSearchClicked(void *userObj)
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.AppendSlow(nameList.GetItem(i));
+		sb.Append(nameList.GetItem(i));
 		me->lbSearch->AddItem(sb.ToCString(), 0);
 		i++;
 	}
@@ -552,7 +552,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnSReqSelChg(void *userObj)
 		Net::DNSClient::RequestAnswer *ans;
 		Data::DateTime reqTime;
 		UInt32 ttl;
-		if (me->proxy->GetRequestInfov4(req->v, me->v4sansList, &reqTime, &ttl))
+		if (me->proxy->GetRequestInfov4(req->ToCString(), me->v4sansList, &reqTime, &ttl))
 		{
 			UOSInt bestInd = (UOSInt)-1;
 			i = 0;
@@ -665,7 +665,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnBlackListClicked(void *userObj
 	me->txtBlackList->GetText(&sb);
 	if (sb.GetLength() > 0)
 	{
-		if (me->proxy->AddBlackList(sb.ToString()))
+		if (me->proxy->AddBlackList(sb.ToCString()))
 		{
 			me->txtBlackList->SetText(CSTR(""));
 			me->UpdateBlackList();
@@ -692,13 +692,13 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnWPADClicked(void *userObj)
 	}
 }
 
-void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::AVIRead::AVIRDNSProxyForm *me = (SSWR::AVIRead::AVIRDNSProxyForm*)userObj;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(reqName);
+	sb.Append(reqName);
 	sb.AppendC(UTF8STRC(" from "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
 	sb.AppendP(sbuff, sptr);
@@ -776,7 +776,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 
 void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 {
-	Data::ArrayList<const UTF8Char *> blackList;
+	Data::ArrayList<Text::String *> blackList;
 	UOSInt i;
 	UOSInt j;
 	Text::StringBuilderUTF8 sb;
@@ -787,7 +787,7 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateBlackList()
 	while (i < j)
 	{
 		sb.ClearStr();
-		sb.AppendSlow(blackList.GetItem(i));
+		sb.Append(blackList.GetItem(i));
 		this->lbBlackList->AddItem(sb.ToCString(), 0);
 		i++;
 	}
@@ -1222,12 +1222,10 @@ void SSWR::AVIRead::AVIRDNSProxyForm::SetDisableV6(Bool disableV6)
 	this->chkDisableV6->SetChecked(disableV6);
 }
 
-void SSWR::AVIRead::AVIRDNSProxyForm::AddBlacklist(const UTF8Char *blackList)
+void SSWR::AVIRead::AVIRDNSProxyForm::AddBlacklist(Text::CString blackList)
 {
-	if (blackList == 0 || blackList[0] == 0)
+	if (blackList.leng == 0)
 		return;
-	const UTF8Char *bl = Text::StrCopyNew(blackList);
-	this->proxy->AddBlackList(bl);
-	Text::StrDelNew(bl);
+	this->proxy->AddBlackList(blackList);
 	this->UpdateBlackList();
 }

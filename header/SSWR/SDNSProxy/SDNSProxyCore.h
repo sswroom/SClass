@@ -51,7 +51,7 @@ namespace SSWR
 			UOSInt lastCnt;
 			UOSInt currCnt;
 
-			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 		public:
 			SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *console);

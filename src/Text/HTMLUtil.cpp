@@ -90,7 +90,7 @@ Bool Text::HTMLUtil::HTMLWellFormat(Text::EncodingFactory *encFact, IO::Stream *
 						break;
 					}
 				}
-				strLen = Text::StrCharCnt(csptr);
+				strLen = (UOSInt)(s->v + s->leng - csptr);
 				if (strLen > 0)
 				{
 					while (true)

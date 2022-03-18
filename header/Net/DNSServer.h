@@ -8,7 +8,7 @@ namespace Net
 	class DNSServer
 	{
 	public:
-		typedef void (__stdcall *DNSRequest)(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
+		typedef void (__stdcall *DNSRequest)(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId);
 	private:
 		Net::UDPServer *svr;
 		Net::SocketFactory *sockf;

@@ -5,13 +5,13 @@
 #include "Text/MyStringFloat.h"
 #include "Text/StringBuilderUTF8.h"
 
-void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
+void __stdcall SSWR::SDNSProxy::SDNSProxyCore::OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed)
 {
 	SSWR::SDNSProxy::SDNSProxyCore *me = (SSWR::SDNSProxy::SDNSProxyCore*)userObj;
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(reqName);
+	sb.Append(reqName);
 	sb.AppendC(UTF8STRC(" from "));
 	sptr = Net::SocketUtil::GetAddrName(sbuff, reqAddr, reqPort);
 	sb.AppendP(sbuff, sptr);
@@ -168,7 +168,7 @@ SSWR::SDNSProxy::SDNSProxyCore::SDNSProxyCore(IO::ConfigFile *cfg, IO::Writer *c
 				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
 				if (sarr[0].v[0])
 				{
-					this->proxy->AddBlackList(sarr[0].v);
+					this->proxy->AddBlackList(sarr[0].ToCString());
 				}
 				if (i <= 1)
 					break;

@@ -129,9 +129,9 @@ namespace Media
 		UInt8 *GetExifOther(Int32 id);
 
 		Bool GetPhotoDate(Data::DateTime *dt);
-		const Char *GetPhotoMake();
-		const Char *GetPhotoModel();
-		const Char *GetPhotoLens();
+		Text::CString GetPhotoMake();
+		Text::CString GetPhotoModel();
+		Text::CString GetPhotoLens();
 		Double GetPhotoFNumber();
 		Double GetPhotoExpTime();
 		UInt32 GetPhotoISO();

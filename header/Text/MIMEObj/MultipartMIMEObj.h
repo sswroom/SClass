@@ -34,7 +34,7 @@ namespace Text
 			MultipartMIMEObj(Text::String *contentType, Text::String *defMsg, Text::String *boundary);
 			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg, Text::CString boundary);
 		public:
-			MultipartMIMEObj(const UTF8Char *contentType, Text::CString defMsg);
+			MultipartMIMEObj(Text::CString contentType, Text::CString defMsg);
 			virtual ~MultipartMIMEObj();
 
 			virtual Text::CString GetClassName();

@@ -2,7 +2,7 @@
 #include "SSWR/SHPConv/SHPConvDBFViewForm.h"
 #include "Text/HKSCSFix.h"
 
-SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, const UTF8Char *lbl) : UI::GUIForm(parent, 424, 300, ui)
+SSWR::SHPConv::SHPConvDBFViewForm::SHPConvDBFViewForm(UI::GUIClientControl *parent, UI::GUICore *ui, DB::DBFFile *dbf, SSWR::SHPConv::IMapEng *eng, Text::CString lbl) : UI::GUIForm(parent, 424, 300, ui)
 {
 	this->SetText(CSTR("DBFView"));
 	this->SetFont(0, 0, 8.25, false);

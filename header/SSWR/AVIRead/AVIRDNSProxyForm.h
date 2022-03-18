@@ -217,7 +217,7 @@ namespace SSWR
 			static void __stdcall OnDisableV6Chg(void *userObj, Bool isChecked);
 			static void __stdcall OnBlackListClicked(void *userObj);
 			static void __stdcall OnWPADClicked(void *userObj);
-			static void __stdcall OnDNSRequest(void *userObj, const UTF8Char *reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
+			static void __stdcall OnDNSRequest(void *userObj, Text::CString reqName, Int32 reqType, Int32 reqClass, const Net::SocketUtil::AddressInfo *reqAddr, UInt16 reqPort, UInt32 reqId, Double timeUsed);
 
 			void UpdateDNSList();
 			void UpdateBlackList();
@@ -230,7 +230,7 @@ namespace SSWR
 			Bool IsError();
 			void SetDNSList(Data::ArrayList<UInt32> *dnsList);
 			void SetDisableV6(Bool disableV6);
-			void AddBlacklist(const UTF8Char *blackList);
+			void AddBlacklist(Text::CString blackList);
 		};
 	}
 }

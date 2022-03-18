@@ -78,13 +78,13 @@ void Text::VSContainer::AddChild(Text::CodeObject *obj)
 	this->childList->Add(obj);
 }
 
-Text::VSProject::VSProject(const UTF8Char *name, VisualStudioVersion ver) : Text::CodeProject(name)
+Text::VSProject::VSProject(Text::CString name, VisualStudioVersion ver) : Text::CodeProject(name)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt i;
-	i = Text::StrLastIndexOfChar(name, IO::Path::PATH_SEPERATOR);
-	sptr = Text::StrConcat(sbuff, &name[i + 1]);
+	i = name.LastIndexOf(IO::Path::PATH_SEPERATOR);
+	sptr = Text::StrConcatC(sbuff, &name.v[i + 1], name.leng - i - 1);
 	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{

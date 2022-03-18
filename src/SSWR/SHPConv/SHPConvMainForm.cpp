@@ -191,7 +191,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnPreviewClicked(void *userObj)
 
 			sb.ClearStr();
 			me->txtLabel->GetText(&sb);
-			NEW_CLASS(frm, SSWR::SHPConv::SHPConvDBFViewForm(0, me->ui, dbf, me, sb.ToString()));
+			NEW_CLASS(frm, SSWR::SHPConv::SHPConvDBFViewForm(0, me->ui, dbf, me, sb.ToCString()));
 			frm->ShowDialog(me);
 			DEL_CLASS(frm);
 		}
@@ -223,18 +223,18 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	Data::ArrayList<UInt32> dbCols2;
 	sb.ClearStr();
 	me->txtLabel->GetText(&sb);
-	me->ParseLabelStr(sb.ToString(), &dbCols, &dbCols2);
+	me->ParseLabelStr(sb.ToCString(), &dbCols, &dbCols2);
 	sb.ClearStr();
 	me->txtSource->GetText(&sb);
 	Text::String *srcFile = Text::String::New(sb.ToString(), sb.GetLength());
 	sb.RemoveChars(4);
 	if (me->currGroup == (UOSInt)-1)
 	{
-		me->ConvertShp(srcFile->ToCString(), sb.ToString(), &dbCols, blkScale, me->globalFilters, me, &dbCols2);
+		me->ConvertShp(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, &dbCols2);
 	}
 	else
 	{
-		me->GroupConvert(srcFile->ToCString(), sb.ToString(), &dbCols, blkScale, me->globalFilters, me, me->currGroup, 0, &dbCols2);
+		me->GroupConvert(srcFile->ToCString(), sb.ToCString(), &dbCols, blkScale, me->globalFilters, me, me->currGroup, 0, &dbCols2);
 	}
 	srcFile->Release();
 	me->FreeLabelStr(&dbCols, &dbCols2);
@@ -247,7 +247,7 @@ void __stdcall SSWR::SHPConv::SHPConvMainForm::OnConvertClicked(void *userObj)
 	me->btnSBrowse->SetEnabled(true);
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, UOSInt groupCol, Data::ArrayList<const UTF8Char*> *outNames, Data::ArrayList<UInt32> *dbCols2)
 {
 	UOSInt i;
 	OSInt si;
@@ -303,10 +303,10 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 		NEW_CLASS(filter, SSWR::SHPConv::ValueFilter(groupCol, s->ToCString(), 3));
 		newFilters.Add(filter);
 		sb2.ClearStr();
-		sb2.AppendSlow(outFilePrefix);
+		sb2.Append(outFilePrefix);
 		sb2.AppendUTF8Char('_');
 		sb2.AppendC(sb.ToString(), sb.GetLength());
-		shpType = this->ConvertShp(sourceFile, sb2.ToString(), dbCols, blkScale, &newFilters, progress, dbCols2);
+		shpType = this->ConvertShp(sourceFile, sb2.ToCString(), dbCols, blkScale, &newFilters, progress, dbCols2);
 		newFilters.RemoveAt(newFilters.GetCount() - 1);
 		DEL_CLASS(filter);
 		if (outNames)
@@ -318,7 +318,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::GroupConvert(Text::CString sourceFile, con
 	return shpType;
 }
 
-Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const UTF8Char *outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2)
+Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, Text::CString outFilePrefix, Data::ArrayList<const UTF8Char*> *dbCols, Int32 blkScale, Data::ArrayList<MapFilter*> *filters, IO::IProgressHandler *progress, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
 	UInt8 buff[259];
@@ -393,7 +393,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 	if (shpType == 3 || shpType == 5)
 	{
 		sb.ClearStr();
-		sb.AppendSlow(outFilePrefix);
+		sb.Append(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
@@ -809,7 +809,7 @@ Int32 SSWR::SHPConv::SHPConvMainForm::ConvertShp(Text::CString sourceFile, const
 	else if (shpType == 1 || shpType == 11)
 	{
 		sb.ClearStr();
-		sb.AppendSlow(outFilePrefix);
+		sb.Append(outFilePrefix);
 		sb.AppendC(UTF8STRC(".cip"));
 		NEW_CLASS(cip, IO::FileStream(sb.ToCString(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		sb.RemoveChars(4);
@@ -1265,10 +1265,10 @@ void SSWR::SHPConv::SHPConvMainForm::ClearFilter()
 	this->globalFilters->Clear();
 }
 
-void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(const UTF8Char *labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
+void SSWR::SHPConv::SHPConvMainForm::ParseLabelStr(Text::CString labelStr, Data::ArrayList<const UTF8Char*> *dbCols, Data::ArrayList<UInt32> *dbCols2)
 {
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow(labelStr);
+	sb.Append(labelStr);
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;

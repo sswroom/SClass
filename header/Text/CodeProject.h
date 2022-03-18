@@ -61,7 +61,7 @@ namespace Text
 	private:
 		Data::ArrayList<CodeProjectCfg*> *cfgList;
 	public:
-		CodeProject(const UTF8Char *name);
+		CodeProject(Text::CString name);
 		virtual ~CodeProject();
 
 		void AddConfig(Text::CodeProjectCfg *cfg);

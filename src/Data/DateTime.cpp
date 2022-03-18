@@ -414,7 +414,7 @@ void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 ho
 	this->tzQhr = tzQhr;	
 }
 
-Bool Data::DateTime::SetValue(const Char *dateStr)
+Bool Data::DateTime::SetValueSlow(const Char *dateStr)
 {
 	return this->SetValue((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr));
 }

@@ -34,8 +34,8 @@ namespace Net
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
 			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, UOSInt urlLen, OSInt cacheAge);
 			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
-			Bool ResponseText(const UTF8Char *txt);
-			Bool ResponseText(const UTF8Char *txt, const UTF8Char *contentType);
+			Bool ResponseText(Text::CString txt);
+			Bool ResponseText(Text::CString txt, Text::CString contentType);
 
 			Bool AddHeaderS(const UTF8Char *name, UOSInt nameLen, Text::String *value)
 			{

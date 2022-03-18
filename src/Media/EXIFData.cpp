@@ -1633,7 +1633,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((Char*)item->dataBuff);
+				dt->SetValue((const UTF8Char*)item->dataBuff, item->size - 1);
 				return true;
 			}
 		}
@@ -1641,7 +1641,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((Char*)item->dataBuff);
+				dt->SetValue((const UTF8Char*)item->dataBuff, item->size - 1);
 				return true;
 			}
 		}
@@ -1658,7 +1658,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((Char*)item->dataBuff);
+				dt->SetValue((const UTF8Char*)item->dataBuff, item->size - 1);
 				return true;
 			}
 		}
@@ -1666,7 +1666,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 	return false;
 }
 
-const Char *Media::EXIFData::GetPhotoMake()
+Text::CString Media::EXIFData::GetPhotoMake()
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1675,14 +1675,14 @@ const Char *Media::EXIFData::GetPhotoMake()
 		{
 			if (item->type == ET_STRING)
 			{
-				return (const Char*)item->dataBuff;
+				return Text::CString((const UTF8Char*)item->dataBuff, item->size - 1);
 			}
 		}
 	}
-	return 0;
+	return CSTR_NULL;
 }
 
-const Char *Media::EXIFData::GetPhotoModel()
+Text::CString Media::EXIFData::GetPhotoModel()
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_STANDARD)
@@ -1691,7 +1691,7 @@ const Char *Media::EXIFData::GetPhotoModel()
 		{
 			if (item->type == ET_STRING)
 			{
-				return (const Char*)item->dataBuff;
+				return Text::CString((const UTF8Char*)item->dataBuff, item->size - 1);
 			}
 		}
 	}
@@ -1701,14 +1701,14 @@ const Char *Media::EXIFData::GetPhotoModel()
 		{
 			if (item->type == ET_STRING)
 			{
-				return (const Char*)item->dataBuff;
+				return Text::CString((const UTF8Char*)item->dataBuff, item->size - 1);
 			}
 		}
 	}
-	return 0;
+	return CSTR_NULL;
 }
 
-const Char *Media::EXIFData::GetPhotoLens()
+Text::CString Media::EXIFData::GetPhotoLens()
 {
 	Media::EXIFData::EXIFItem *item;
 	if (this->exifMaker == EM_CANON)
@@ -1717,7 +1717,7 @@ const Char *Media::EXIFData::GetPhotoLens()
 		{
 			if (item->type == ET_STRING)
 			{
-				return (const Char*)item->dataBuff;
+				return Text::CString((const UTF8Char*)item->dataBuff, item->size - 1);
 			}
 		}
 	}
@@ -1727,11 +1727,11 @@ const Char *Media::EXIFData::GetPhotoLens()
 		{
 			if (item->type == ET_STRING)
 			{
-				return (const Char*)item->dataBuff;
+				return Text::CString((const UTF8Char*)item->dataBuff, item->size - 1);
 			}
 		}
 	}
-	return 0;
+	return CSTR_NULL;
 }
 
 Double Media::EXIFData::GetPhotoFNumber()
@@ -4008,20 +4008,20 @@ Media::EXIFData *Media::EXIFData::ParseMakerNote(const UInt8 *buff, UOSInt buffS
 	}
 	else
 	{
-		const Char *maker = this->GetPhotoMake();
-		if (maker)
+		Text::CString maker = this->GetPhotoMake();
+		if (maker.v)
 		{
-			if (Text::StrEquals(maker, "Canon"))
+			if (maker.Equals(UTF8STRC("Canon")))
 			{
 				ret = ParseIFD(buff, buffSize, Media::EXIFData::TReadInt32, Media::EXIFData::TReadInt16, 0, Media::EXIFData::EM_CANON, 0);
 				return ret;
 			}
-			else if (Text::StrEquals(maker, "CASIO"))
+			else if (maker.Equals(UTF8STRC("CASIO")))
 			{
 				ret = ParseIFD(buff, buffSize, Media::EXIFData::TReadMInt32, Media::EXIFData::TReadMInt16, 0, Media::EXIFData::EM_CASIO1, 0);
 				return ret;
 			}
-			else if (Text::StrEquals(maker, "FLIR Systems AB"))
+			else if (maker.Equals(UTF8STRC("FLIR Systems AB")))
 			{
 				ret = ParseIFD(buff, buffSize, Media::EXIFData::TReadInt32, Media::EXIFData::TReadInt16, 0, Media::EXIFData::EM_FLIR, 0);
 				return ret;

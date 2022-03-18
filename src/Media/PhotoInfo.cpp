@@ -78,21 +78,21 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 
 	if (Media::JPEGFile::ParseJPEGHeaders(fd, &exif, &xmf, &icc, &width, &height))
 	{	
-		const Char *ctxt;
+		Text::CString ctxt;
 		Data::DateTime dt;
 		this->succ = true;
 
 		if (exif)
 		{
 			ctxt = exif->GetPhotoMake();
-			if (ctxt)
+			if (ctxt.v)
 			{
-				this->make = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
+				this->make = Text::String::New(ctxt);
 			}
 			ctxt = exif->GetPhotoModel();
-			if (ctxt)
+			if (ctxt.v)
 			{
-				this->model = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
+				this->model = Text::String::New(ctxt);
 			}
 			this->fNumber = exif->GetPhotoFNumber();
 			this->expTime = exif->GetPhotoExpTime();
@@ -129,9 +129,9 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 							if (innerExif->GetPhotoFNumber())
 								this->fNumber = innerExif->GetPhotoFNumber();
 							ctxt = innerExif->GetPhotoLens();
-							if (ctxt)
+							if (ctxt.v)
 							{
-								this->lens = Text::String::NewNotNullSlow((const UTF8Char*)ctxt);
+								this->lens = Text::String::New(ctxt);
 							}
 							if (innerExif->GetPhotoFocalLength())
 								this->focalLength = innerExif->GetPhotoFocalLength();

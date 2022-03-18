@@ -181,7 +181,7 @@ Text::IMIMEObj *Text::MailCreator::ParseContentHTML(UInt8 *buff, UOSInt buffSize
 	else
 	{
 		Text::MIMEObj::MultipartMIMEObj *mpart;
-		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj((const UTF8Char*)"multipart/related", 0));
+		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/related"), CSTR_NULL));
 		NEW_CLASS(obj, Text::MIMEObj::HTMLMIMEObj((UInt8*)sbc.ToString(), sbc.GetLength(), 65001));
 		i = mpart->AddPart(obj);
 		Text::CString contType = obj->GetContentType();
@@ -353,8 +353,8 @@ void Text::MailCreator::SetSubject(const WChar *subj)
 void Text::MailCreator::SetContentHTML(const WChar *content, Text::CString htmlPath)
 {
 	Text::IMIMEObj *obj;
-	OSInt strLen = Text::StrCharCnt(content);
-	OSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
+	UOSInt strLen = Text::StrCharCnt(content);
+	UOSInt buffSize = Text::StrWChar_UTF8CntC(content, strLen);
 	UInt8 *buff = MemAlloc(UInt8, buffSize + 1);
 	Text::StrWChar_UTF8C(buff, content, strLen);
 	obj = ParseContentHTML(buff, buffSize, 65001, htmlPath);
@@ -444,7 +444,7 @@ Text::MIMEObj::MailMessage *Text::MailCreator::CreateMail()
 		UOSInt k;
 		UOSInt l;
 		Text::String *fname;
-		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj((const UTF8Char*)"multipart/mixed", (const UTF8Char*)"This is a multi-part message in MIME format."));
+		NEW_CLASS(mpart, Text::MIMEObj::MultipartMIMEObj(CSTR("multipart/mixed"), CSTR("This is a multi-part message in MIME format.")));
 		if (this->content)
 		{
 			i = mpart->AddPart(this->content->Clone());

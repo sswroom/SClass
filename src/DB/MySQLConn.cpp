@@ -588,7 +588,8 @@ DB::DBReader::DateErrType DB::MySQLReader::GetDate(UOSInt colIndex, Data::DateTi
 		return DB::DBReader::DET_ERROR;
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
-		outVal->SetValue(((MYSQL_ROW)this->row)[colIndex]);
+		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
+		outVal->SetValue(s, Text::StrCharCnt(s));
 		return DB::DBReader::DET_OK;
 	}
 	else

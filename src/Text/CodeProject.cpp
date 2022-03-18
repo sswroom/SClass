@@ -39,7 +39,7 @@ Text::String *Text::CodeProjectCfg::GetCfgName()
 	return this->cfgName;
 }
 
-Text::CodeProject::CodeProject(const UTF8Char *name) : IO::ParsedObject(name)
+Text::CodeProject::CodeProject(Text::CString name) : IO::ParsedObject(name)
 {
 	NEW_CLASS(this->cfgList, Data::ArrayList<CodeProjectCfg*>());
 }

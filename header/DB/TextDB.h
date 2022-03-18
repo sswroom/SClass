@@ -20,7 +20,7 @@ namespace DB
 		Data::StringUTF8Map<DBData*> *dbMap;
 		DBData *currDB;
 	public:
-		TextDB(const UTF8Char *sourceName);
+		TextDB(Text::CString sourceName);
 		virtual ~TextDB();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release

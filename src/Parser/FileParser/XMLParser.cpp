@@ -133,12 +133,12 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamDataStream *stm;
 	IO::ParsedObject *pobj;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
-	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->v, this->parsers, this->browser, pkgFile);
+	pobj = ParseStream(this->encFact, stm, fd->GetFullName()->ToCString(), this->parsers, this->browser, pkgFile);
 	DEL_CLASS(stm);
 	return pobj;
 }
 
-IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, const UTF8Char *fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
+IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	Text::XMLReader *reader;
 	NEW_CLASS(reader, Text::XMLReader(encFact, stm, Text::XMLReader::PM_XML));
@@ -155,8 +155,6 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			break;
 		}
 	}
-	UOSInt fileNameLen = Text::StrCharCnt(fileName);
-
 	if (reader->GetNodeText()->Equals(UTF8STRC("kml")))
 	{
 		Data::ICaseStringMap<KMLStyle*> styles;
@@ -185,7 +183,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				}
 			}
 		}*/
-		Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, {fileName, fileNameLen}, parsers, browser, pkgFile);
+		Map::IMapDrawLayer *lyr = ParseKMLContainer(reader, &styles, fileName, parsers, browser, pkgFile);
 
 		Data::ArrayList<KMLStyle*> *styleList = styles.GetValues();
 		KMLStyle *style;
@@ -239,16 +237,16 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOfCharC(fileName, fileNameLen, '/');
+			j = fileName.LastIndexOf('/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
 			}
 		}
-		shortName = &fileName[i + 1];
+		shortName = &fileName.v[i + 1];
 		while (reader->ReadNext())
 		{
 			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -260,8 +258,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				if (reader->GetNodeText()->Equals(UTF8STRC("trk"))) // /gpx/trk/trkseg
 				{
 					Map::GPSTrack *track;
-					NEW_CLASS(track, Map::GPSTrack({fileName, fileNameLen}, true, 0, CSTR_NULL));
-					track->SetTrackName({shortName, (UOSInt)(fileName + fileNameLen - shortName)});
+					NEW_CLASS(track, Map::GPSTrack(fileName, true, 0, CSTR_NULL));
+					track->SetTrackName({shortName, (UOSInt)(fileName.v + fileName.leng - shortName)});
 					while (reader->ReadNext())
 					{
 						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -379,7 +377,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	}
 	else if (reader->GetNodeText()->Equals(UTF8STRC("osm")))
 	{
-		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, {fileName, fileNameLen});
+		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
 		if (lyr == 0)
 		{
 			DEL_CLASS(reader);
@@ -547,7 +545,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 							{
 								Text::StringBuilderUTF8 sb;
 								reader->ReadNodeText(&sb);
-								NEW_CLASS(lyr, Map::OruxDBLayer({fileName, fileNameLen}, sb.ToCString(), parsers));
+								NEW_CLASS(lyr, Map::OruxDBLayer(fileName, sb.ToCString(), parsers));
 								if (lyr->IsError())
 								{
 									DEL_CLASS(lyr);
@@ -738,7 +736,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -840,7 +838,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -998,7 +996,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 														{
 															colCnt = nameList.GetCount();
 															ccols = nameList.GetArray(&i);
-															NEW_CLASS(lyr, Map::VectorLayer(layerType, {fileName, fileNameLen}, colCnt, ccols, csys, 0, CSTR_NULL));
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
 														}
 														if (colCnt == valList.GetCount())
 														{
@@ -1108,16 +1106,16 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		UOSInt j;
 		const UTF8Char *shortName;
-		i = Text::StrLastIndexOfCharC(fileName, fileNameLen, IO::Path::PATH_SEPERATOR);
+		i = fileName.LastIndexOf(IO::Path::PATH_SEPERATOR);
 		if (IO::Path::PATH_SEPERATOR == '\\')
 		{
-			j = Text::StrLastIndexOfCharC(fileName, fileNameLen, '/');
+			j = fileName.LastIndexOf('/');
 			if (i == INVALID_INDEX || (j != INVALID_INDEX && j > i))
 			{
 				i = j;
 			}
 		}
-		shortName = &fileName[i + 1];
+		shortName = &fileName.v[i + 1];
 		Text::StringBuilderUTF8 sbTableName;
 		i = Text::StrIndexOfChar(shortName, '.');
 		if (i != INVALID_INDEX && i > 0)
@@ -1269,7 +1267,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
-		NEW_CLASS(sysInfo, IO::SystemInfoLog(Text::CString(fileName, fileNameLen)));
+		NEW_CLASS(sysInfo, IO::SystemInfoLog(fileName));
 		while (reader->ReadNext())
 		{
 			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)

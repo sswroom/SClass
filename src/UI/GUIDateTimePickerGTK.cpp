@@ -64,7 +64,8 @@ void UI::GUIDateTimePicker::GetSelectedTime(Data::DateTime *dt)
 {
 	DateTimePickerData *data = (DateTimePickerData*)this->clsData;
 	GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)data->widget);
-	dt->SetValue(gtk_entry_buffer_get_text(buff));
+	const UTF8Char *s = (const UTF8Char*)gtk_entry_buffer_get_text(buff);
+	dt->SetValue(s, Text::StrCharCnt(s));
 }
 
 void UI::GUIDateTimePicker::SetFormat(const Char *format)

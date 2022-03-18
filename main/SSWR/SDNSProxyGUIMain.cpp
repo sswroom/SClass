@@ -71,7 +71,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			while (true)
 			{
 				i = Text::StrSplitTrimP(sarr, 2, sarr[1], ',');
-				frm->AddBlacklist(sarr[0].v);
+				frm->AddBlacklist(sarr[0].ToCString());
 				if (i <= 1)
 					break;
 			}

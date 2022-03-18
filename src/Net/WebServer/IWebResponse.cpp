@@ -63,24 +63,23 @@ Bool Net::WebServer::IWebResponse::ResponseNotModified(Net::WebServer::IWebReque
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::ResponseText(const UTF8Char *txt)
+Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt)
 {
-	return ResponseText(txt, 0);
+	return ResponseText(txt, CSTR_NULL);
 }
 
-Bool Net::WebServer::IWebResponse::ResponseText(const UTF8Char *txt, const UTF8Char *contentType)
+Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt, Text::CString contentType)
 {
-	UOSInt len = Text::StrCharCnt(txt);
-	this->AddContentLength(len);
-	if (contentType == 0)
+	this->AddContentLength(txt.leng);
+	if (contentType.v == 0)
 	{
 		this->AddContentType(UTF8STRC("text/plain"));
 	}
 	else
 	{
-		this->AddContentType(contentType, Text::StrCharCnt(contentType));
+		this->AddContentType(contentType.v, contentType.leng);
 	}
-	this->Write(txt, len);
+	this->Write(txt.v, txt.leng);
 	return true;
 }
 

@@ -35,7 +35,7 @@ void __stdcall Net::DNSServer::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 	i++;
 	if (me->reqHdlr)
 	{
-		me->reqHdlr(me->reqObj, sbuff, ReadMUInt16(&buff[i]), ReadMUInt16(&buff[i + 2]), addr, port, ReadMUInt16(buff));
+		me->reqHdlr(me->reqObj, CSTRP(sbuff, sptr), ReadMUInt16(&buff[i]), ReadMUInt16(&buff[i + 2]), addr, port, ReadMUInt16(buff));
 	}
 }
 
