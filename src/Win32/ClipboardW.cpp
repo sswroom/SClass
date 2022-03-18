@@ -515,7 +515,7 @@ Bool Win32::Clipboard::GetDataTextH(void *hand, UInt32 fmtId, Text::StringBuilde
 	return false;
 }
 
-Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Tett::CString s)
+Bool Win32::Clipboard::SetString(ControlHandle *hWndOwner, Text::CString s)
 {
 	if (OpenClipboard((HWND)hWndOwner) == 0)
 		return false;

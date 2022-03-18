@@ -77,8 +77,11 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	case IF_TYPE_PPP:
 		this->ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
 		break;
+	case IF_TYPE_WWANPP:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Cellular;
+		break;
 	default:
-		printf("IfType = %d\r\n", (Int32)addr->IfType);
+//		printf("IfType = %d\r\n", (Int32)addr->IfType);
 		this->ent.connType = Net::ConnectionInfo::ConnectionType::Unknown;
 		break;
 	}
