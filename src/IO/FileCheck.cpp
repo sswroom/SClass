@@ -184,7 +184,7 @@ Bool IO::FileCheck::CheckDir(UTF8Char *fullPath, UTF8Char *hashPath, Crypto::Has
 
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(fullPath, (UOSInt)(sptr2 - fullPath));
+	sess = IO::Path::FindFile(CSTRP(fullPath, sptr2));
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)

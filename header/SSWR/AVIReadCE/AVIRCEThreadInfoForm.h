@@ -2,6 +2,7 @@
 #define _SM_SSWR_AVIREADCE_AVIRCETHREADINFOFORM
 
 #include "Manage/SymbolResolver.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
@@ -46,13 +47,13 @@ namespace SSWR
 			UI::GUIVSplitter *vspMyStack;
 			UI::GUIListView *lvMyStack;
 
-			Data::ArrayList<const UTF8Char *> *stacks;
-			Data::ArrayList<const UTF8Char *> *stacksMem;
+			Data::ArrayList<Text::String *> *stacks;
+			Data::ArrayList<Text::String *> *stacksMem;
 			Manage::Process *proc;
 			Manage::SymbolResolver *symbol;
 
 			static void __stdcall OnMyStackChg(void *userObj);
-			static void __stdcall OnMyStackDblClk(void *userObj, OSInt index);
+			static void __stdcall OnMyStackDblClk(void *userObj, UOSInt index);
 		public:
 			AVIRCEThreadInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, Manage::Process *proc, Manage::SymbolResolver *symbol, Int32 threadId);
 			virtual ~AVIRCEThreadInfoForm();

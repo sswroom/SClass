@@ -237,7 +237,7 @@ UOSInt Text::StrSplitWSP(Text::PString *strs, UOSInt maxStrs, PString strToSplit
 		if (c != 32 && c != '\t')
 		{
 			strs[0].leng = strLen - (UOSInt)(sptr - strs[0].v - 1);
-			strs[0].v = sptr;
+			strs[0].v = sptr - 1;
 			i = 1;
 			break;
 		}

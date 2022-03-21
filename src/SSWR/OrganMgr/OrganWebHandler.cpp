@@ -106,7 +106,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Langs"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -3465,7 +3465,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
@@ -4525,7 +4525,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
 					u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(u8buff, (UOSInt)(u8ptr2 - u8buff));
+					sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
 					if (sess)
 					{
 
@@ -4888,7 +4888,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
 					u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(u8buff, (UOSInt)(u8ptr2 - u8buff));
+					sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
 					if (sess)
 					{
 
@@ -5225,7 +5225,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
 				u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess = IO::Path::FindFile(u8buff, (UOSInt)(u8ptr2 - u8buff));
+				sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
 				if (sess)
 				{
 					while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)

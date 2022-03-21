@@ -55,9 +55,9 @@ namespace SSWR
 			virtual Bool AddSpecies(OrganSpecies *sp);
 			virtual Bool DelSpecies(OrganSpecies *sp);
 			virtual FileStatus AddSpeciesFile(OrganSpecies *sp, const UTF8Char *fileName, Bool firstPhoto, Bool moveFile, Int32 *fileId);
-			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, const UTF8Char *srcURL, const UTF8Char *imgURL, IO::Stream *stm, UTF8Char *webFileName);
+			virtual FileStatus AddSpeciesWebFile(OrganSpecies *sp, Text::String *srcURL, Text::String *imgURL, IO::Stream *stm, UTF8Char *webFileName);
 			FileStatus AddSpeciesWebFileOld(OrganSpecies *sp, const UTF8Char *srcURL, const UTF8Char *imgURL, IO::Stream *stm, UTF8Char *webFileName);
-			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, const UTF8Char *srcURL, const UTF8Char *location);
+			virtual Bool UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location);
 			Bool UpdateSpeciesWebFileOld(OrganSpecies *sp, const UTF8Char *webFileName, const UTF8Char *srcURL);
 			virtual Bool SaveSpecies(OrganSpecies *sp);
 			virtual Bool SaveGroup(OrganGroup *grp);

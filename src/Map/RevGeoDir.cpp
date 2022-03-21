@@ -24,7 +24,7 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("RevGeo_*.*"));
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess == 0)
 	{
 		return;

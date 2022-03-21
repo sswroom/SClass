@@ -83,7 +83,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 	writer->WriteLineC(UTF8STRC("<tr><td>Name</td><td>Size</td><td>MIME Type</td></tr>"));
 
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		Data::ArrayList<VideoFileInfo *> fileList;

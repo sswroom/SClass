@@ -683,6 +683,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
 	UTF8Char sbuff[512];
+	UTF8Char *sptr;
 
 	if (me->inputMode == IM_SPECIES)
 	{
@@ -702,8 +703,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDirClicked(void *userObj)
 		}
 
 		o = (OrganSpecies*)gi;
-		me->env->GetSpeciesDir(o, sbuff);
-		Manage::Process::OpenPath(sbuff);
+		sptr = me->env->GetSpeciesDir(o, sbuff);
+		Manage::Process::OpenPath(CSTRP(sbuff, sptr));
 	}
 }
 

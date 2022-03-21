@@ -47,9 +47,10 @@ IO::ParserType Parser::FileParser::CSVParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
+	UTF8Char *sptr;
 	UTF8Char sbuff2[64];
 	UTF8Char *sptr2;
-	UTF8Char *tmpArr[2];
+	Text::PString tmpArr[2];
 	const UTF8Char **tmpcArr2;
 	Text::PString *tmpArr2;
 	UOSInt colCnt;
@@ -79,93 +80,93 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt nSateCol = INVALID_INDEX;
 
 	NEW_CLASS(colNames, Data::ArrayListStrUTF8());
-	reader->ReadLine(sbuff, 1024);
-	colCnt = Text::StrCSVSplit(tmpArr, 2, sbuff);
+	sptr = reader->ReadLine(sbuff, 1024);
+	colCnt = Text::StrCSVSplitP(tmpArr, 2, sbuff);
 	currCol = 0;
 	while (true)
 	{
-		colNames->Add(tmpArr[0]);
+		colNames->Add(tmpArr[0].v);
 		
-		if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"UTC DATE") == 0)
+		if (tmpArr[0].EqualsICase(UTF8STRC("UTC DATE")))
 		{
 			dateCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"UTC TIME") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("UTC TIME")))
 		{
 			timeCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"TS") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("TS")))
 		{
 			dtCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"VALID") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("VALID")))
 		{
 			validCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"LATITUDE") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("LATITUDE")))
 		{
 			latCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"LONGITUDE") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("LONGITUDE")))
 		{
 			lonCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"MAPX") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("MAPX")))
 		{
 			lonCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"MAPY") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("MAPY")))
 		{
 			latCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"RESULTX") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("RESULTX")))
 		{
 			lonCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"RESULTY") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("RESULTY")))
 		{
 			latCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"LAT") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("LAT")))
 		{
 			latCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"LON") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("LON")))
 		{
 			lonCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"LNG") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("LNG")))
 		{
 			lonCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"N/S") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("N/S")))
 		{
 			latDirCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"E/W") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("E/W")))
 		{
 			lonDirCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"HEIGHT") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("HEIGHT")))
 		{
 			altCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"SPEED") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("SPEED")))
 		{
 			speedCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"HEADING") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("HEADING")))
 		{
 			headingCol = currCol;
 		}
-		else if (Text::StrCompareICase(tmpArr[0], (const UTF8Char*)"NSAT(USED/VIEW)") == 0)
+		else if (tmpArr[0].EqualsICase(UTF8STRC("NSAT(USED/VIEW)")))
 		{
 			nSateCol = currCol;
 		}
 		currCol += 1;
 		if (colCnt < 2)
 			break;
-		colCnt = Text::StrCSVSplit(tmpArr, 2, tmpArr[1]);
+		colCnt = Text::StrCSVSplitP(tmpArr, 2, tmpArr[1].v);
 	}
 
 	if (((dateCol != INVALID_INDEX && timeCol != INVALID_INDEX) || (dtCol != INVALID_INDEX)) && latCol != INVALID_INDEX && lonCol != INVALID_INDEX)

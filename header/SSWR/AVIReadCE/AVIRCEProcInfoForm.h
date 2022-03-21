@@ -4,6 +4,7 @@
 #include "Manage/HiResClock.h"
 #include "Manage/SymbolResolver.h"
 #include "SSWR/AVIRead/AVIRCore.h"
+#include "Text/String.h"
 #include "UI/GUIButton.h"
 #include "UI/GUICheckBox.h"
 #include "UI/GUIForm.h"
@@ -29,7 +30,7 @@ namespace SSWR
 			typedef struct
 			{
 				UInt32 procId;
-				const UTF8Char *procName;
+				Text::String *procName;
 				UInt32 parentProcId;
 				Bool found;
 			} ProcessInfo;
@@ -100,13 +101,13 @@ namespace SSWR
 			Data::DateTime *lastKernelTime;
 			Int32 threadCnt;
 
-			static void __stdcall OnSumDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnSumDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnProcSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnTimerCPUTick(void *userObj);
 			static void __stdcall OnDetModuleRefClicked(void *userObj);
 			static void __stdcall OnDetThreadRefClicked(void *userObj);
-			static void __stdcall OnDetThreadDblClicked(void *userObj, OSInt index);
+			static void __stdcall OnDetThreadDblClicked(void *userObj, UOSInt index);
 			static void __stdcall OnDetHeapRefClicked(void *userObj);
 			static void __stdcall OnDetHeapSelChg(void *userObj);
 
@@ -118,6 +119,6 @@ namespace SSWR
 			AVIRCEProcInfoForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRCEProcInfoForm();
 		};
-	};
-};
+	}
+}
 #endif

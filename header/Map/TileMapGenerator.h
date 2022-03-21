@@ -21,7 +21,7 @@ namespace Map
 
 	private:
 		void InitMapView(Map::MapView *view, Int32 x, Int32 y, UInt32 scale);
-		UTF8Char *GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, const UTF8Char *ext);
+		UTF8Char *GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, Text::CString ext);
 		void AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, UInt32 scale, Int32 xOfst, Int32 yOfst);
 		Bool GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::MapScheduler *mapSch);
 	public:

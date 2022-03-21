@@ -97,11 +97,10 @@ namespace Manage
 		static UTF8Char *FindProcessNext(UTF8Char *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static WChar *FindProcessNextW(WChar *processNameBuff, FindProcSess *sess, ProcessInfo *info);
 		static void FindProcessClose(FindProcSess *sess);
-		static Int32 ExecuteProcess(Text::PString *cmdLine, Text::StringBuilderUTF8 *result);
-		static Int32 ExecuteProcess(const UTF8Char *cmdLine, UOSInt cmdLen, Text::StringBuilderUTF8 *result);
+		static Int32 ExecuteProcess(Text::CString cmdLine, Text::StringBuilderUTF8 *result);
 		static Int32 ExecuteProcessW(const WChar *cmdLine, Text::StringBuilderUTF8 *result);
 		static Bool IsAlreadyStarted();
-		static Bool OpenPath(const UTF8Char *path);
+		static Bool OpenPath(Text::CString path);
 		static Bool OpenPathW(const WChar *path);
 		static Text::CString GetPriorityName(ProcessPriority priority);
 	};

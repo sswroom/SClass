@@ -170,7 +170,7 @@ void SSWR::AVIRead::AVIRImageControl::InitDir()
 	DEL_CLASS(fs);
 
 	sptr3 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 	if (sess)
 	{
 		Media::ColorProfile srcProfile(Media::ColorProfile::CPT_SRGB);
@@ -370,7 +370,7 @@ void SSWR::AVIRead::AVIRImageControl::EndFolder()
 	sptr = Text::StrConcatC(sptr, UTF8STRC("Cache"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.png"));
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

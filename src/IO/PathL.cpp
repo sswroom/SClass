@@ -368,36 +368,36 @@ Bool IO::Path::AppendPath(Text::StringBuilderUTF8 *sb, const UTF8Char *toAppend,
 	return true;
 }
 
-IO::Path::FindFileSession *IO::Path::FindFile(const UTF8Char *utfPath, UOSInt pathLen)
+IO::Path::FindFileSession *IO::Path::FindFile(Text::CString path)
 {
 	FindFileSession *sess = 0;
 	const UTF8Char *searchPattern;
 	UOSInt searchPatternLen;
 	Text::CString searchDir;
-	UOSInt i = Text::StrLastIndexOfCharC(utfPath, pathLen, '/');
+	UOSInt i = path.LastIndexOf('/');
 	DIR *dirObj;
 	if (i == INVALID_INDEX)
 	{
 		dirObj = opendir(".");
-		searchPattern = utfPath;
-		searchPatternLen = pathLen;
+		searchPattern = path.v;
+		searchPatternLen = path.leng;
 		searchDir = CSTR("./");
 	}
 	else if (i == 0)
 	{
 		dirObj = opendir("/");
-		searchPattern = utfPath + 1;
-		searchPatternLen = pathLen - 1;
+		searchPattern = path.v + 1;
+		searchPatternLen = path.leng - 1;
 		searchDir = CSTR("/");
 	}
 	else
 	{
 		UTF8Char *tmpBuff = MemAlloc(UTF8Char, i + 2);
-		Text::StrConcatC(tmpBuff, utfPath, i);
+		Text::StrConcatC(tmpBuff, path.v, i);
 		dirObj = opendir((const Char*)tmpBuff);
-		searchPattern = utfPath + i + 1;
-		searchPatternLen = pathLen - i - 1;
-		searchDir = {utfPath, i + 1};
+		searchPattern = path.v + i + 1;
+		searchPatternLen = path.leng - i - 1;
+		searchDir = {path.v, i + 1};
 		MemFree(tmpBuff);
 	}
 	if (dirObj)

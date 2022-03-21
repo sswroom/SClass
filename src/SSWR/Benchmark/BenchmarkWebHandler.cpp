@@ -359,7 +359,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	IO::Path::CreateDirectory(CSTRP(path, u8ptr));
 	*u8ptr++ = IO::Path::PATH_SEPERATOR;
 	u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(path, (UOSInt)(u8ptr2 - path));
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(path, u8ptr2));
 	if (sess)
 	{
 		IO::Path::PathType pt;

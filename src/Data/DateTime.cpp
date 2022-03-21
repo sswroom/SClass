@@ -674,31 +674,32 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 							SetDate(tval, strs);
 						}
 					}
+					else if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+					{
+						SetDate(tval, strs);
+					}
+					else if (strs2[j].Equals(UTF8STRC("HKT")))
+					{
+						this->tzQhr = 32;
+					}
 					else
 					{
-						if (Text::StrSplitP(strs, 3, strs2[0], '-') == 3)
+						i = Text::StrToUInt32(strs2[j].v);
+						if (i <= 0)
 						{
-							SetDate(tval, strs);
+							i = ParseMonthStr(strs2[j].v, strs2[j].leng);
+							if (i > 0)
+							{
+								tval->month = (UInt8)i;
+							}
+						}
+						else if (i > 100)
+						{
+							tval->year = (UInt16)i;
 						}
 						else
 						{
-							i = Text::StrToUInt32(strs2[j].v);
-							if (i <= 0)
-							{
-								i = ParseMonthStr(strs2[j].v, strs2[j].leng);
-								if (i > 0)
-								{
-									tval->month = (UInt8)i;
-								}
-							}
-							else if (i > 100)
-							{
-								tval->year = (UInt16)i;
-							}
-							else
-							{
-								tval->day = (UInt8)i;
-							}
+							tval->day = (UInt8)i;
 						}
 					}
 				}

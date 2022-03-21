@@ -19,9 +19,6 @@ namespace Win32
 		ServiceManager();
 		~ServiceManager();
 
-		Bool CreateService(const WChar *svcName, StartType stype);
-		Bool DeleteService(const WChar *svcName);
-		Bool SetServiceDesc(const WChar *svcName, const WChar *svcDesc);
 	};
 };
 #endif

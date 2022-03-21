@@ -51,7 +51,7 @@ void __stdcall SSWR::AVIRead::AVIRLogBackupForm::OnStartClicked(void *userObj)
 	sptr = me->txtLogName->GetText(filePath);
 	logNameSize = (UOSInt)(sptr - filePath);
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		while ((filePathEnd = IO::Path::FindNextFile(filePath, sess, 0, 0, 0)) != 0)

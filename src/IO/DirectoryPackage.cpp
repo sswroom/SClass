@@ -11,7 +11,7 @@
 void IO::DirectoryPackage::AddFile(Text::CString fileName)
 {
 	UTF8Char sbuff[512];
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName.v, fileName.leng);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(fileName);
 	if (sess)
 	{
 		Data::DateTime dt;
@@ -47,7 +47,7 @@ void IO::DirectoryPackage::Init()
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-		sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+		sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 		if (sess)
 		{
 			while ((sptr2 = IO::Path::FindNextFile(sptr, sess, &dt, &pt, &fileSize)) != 0)

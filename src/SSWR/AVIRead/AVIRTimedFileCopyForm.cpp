@@ -100,7 +100,7 @@ Bool SSWR::AVIRead::AVIRTimedFileCopyForm::CopyToZip(IO::ZIPBuilder *zip, const 
 	Data::DateTime dt(startTime);
 	Data::DateTime modTime;
 	sptr = Text::StrConcatC(pathEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(buffStart, (UOSInt)(sptr - buffStart));
+	sess = IO::Path::FindFile(CSTRP(buffStart, sptr));
 	if (sess)
 	{
 		while ((sptr = IO::Path::FindNextFile(pathEnd, sess, &modTime, &pt, 0)) != 0)

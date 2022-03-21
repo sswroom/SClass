@@ -1194,6 +1194,25 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sensor->DisableSensor();
 					}
 					break;
+				case IO::Sensor::SensorType::Light:
+					if (sensor->EnableSensor())
+					{
+						Double lux;
+						Double colorTemp;
+						if (sensor->GetSensorLight()->ReadLights(&lux, &colorTemp))
+						{
+							sb.ClearStr();
+							sb.AppendC(UTF8STRC("Light: lux = "));
+							sb.AppendDouble(lux);
+							sb.AppendC(UTF8STRC(", colorTemp = "));
+							sb.AppendDouble(colorTemp);
+							console->WriteLineC(sb.ToString(), sb.GetLength());
+							writer->WriteLineC(sb.ToString(), sb.GetLength());
+						}
+						sensor->DisableSensor();
+					}
+					break;
+				case IO::Sensor::SensorType::Location:
 				case IO::Sensor::SensorType::Orientation:
 				case IO::Sensor::SensorType::Unknown:
 				default:

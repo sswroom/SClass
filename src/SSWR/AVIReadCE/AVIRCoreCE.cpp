@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "Stdafx.h"
 #include "MyMemory.h"
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
@@ -191,7 +191,7 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 	this->exporters->GetSupportedExporters(exp, pobj);
 	if (exp->GetCount() == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"No supported exporter found", (const UTF8Char*)"Save", ownerForm);
+		UI::MessageDialog::ShowDialog(CSTR("No supported exporter found"), CSTR("Save"), ownerForm);
 	}
 	else
 	{
@@ -225,8 +225,9 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 			if ((i = Text::StrLastIndexOfCharC(sbuff1, (UOSInt)(sptr - sbuff1), '.')) != INVALID_INDEX)
 			{
 				sbuff1[i] = 0;
+				sptr = &sbuff1[i];
 			}
-			sfd->SetFileName(sbuff1);
+			sfd->SetFileName(CSTRP(sbuff1, sptr));
 		}
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{
@@ -273,17 +274,17 @@ void SSWR::AVIReadCE::AVIRCoreCE::SaveData(UI::GUIForm *ownerForm, IO::ParsedObj
 			{
 				if (suppType == IO::FileExporter::SupportType::PathOnly)
 				{
-					if (!fileExp->ExportFile(0, sfd->GetFileName(), pobj, 0))
+					if (!fileExp->ExportFile(0, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 				}
 				else
 				{
 					NEW_CLASS(fs, IO::FileStream(sfd->GetFileName(), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-					if (!fileExp->ExportFile(fs, sfd->GetFileName(), pobj, 0))
+					if (!fileExp->ExportFile(fs, sfd->GetFileName()->ToCString(), pobj, 0))
 					{
-						UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in saving file", (const UTF8Char*)"Save Data", ownerForm);
+						UI::MessageDialog::ShowDialog(CSTR("Error in saving file"), CSTR("Save Data"), ownerForm);
 					}
 					DEL_CLASS(fs);
 				}

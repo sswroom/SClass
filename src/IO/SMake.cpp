@@ -34,7 +34,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, 
 			Text::StringBuilderUTF8 sbCmd;
 			sbCmd.AppendC(&val[i + 8], (UOSInt)j - 8);
 			i += j + 1;
-			Manage::Process::ExecuteProcess(sbCmd.ToString(), sbCmd.GetLength(), sb);
+			Manage::Process::ExecuteProcess(sbCmd.ToCString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
@@ -100,7 +100,7 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCf
 			}
 			sb2.ClearStr();
 			sb2.AppendC(compileCfg, (UOSInt)i);
-			Manage::Process::ExecuteProcess(sb2.ToString(), sb2.GetLength(), sb);
+			Manage::Process::ExecuteProcess(sb2.ToCString(), sb);
 			while (sb->EndsWith('\r') || sb->EndsWith('\n'))
 			{
 				sb->RemoveChars(1);
@@ -121,14 +121,14 @@ void IO::SMake::AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCf
 	}
 }
 
-Bool IO::SMake::ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen)
+Bool IO::SMake::ExecuteCmd(Text::CString cmd)
 {
 	if (this->cmdWriter)
 	{
-		this->cmdWriter->WriteLineC(cmd, cmdLen);
+		this->cmdWriter->WriteLineC(cmd.v, cmd.leng);
 	}
 	Text::StringBuilderUTF8 sbRet;
-	Int32 ret = Manage::Process::ExecuteProcess(cmd, cmdLen, &sbRet);
+	Int32 ret = Manage::Process::ExecuteProcess(cmd, &sbRet);
 	if (ret != 0)
 	{
 		this->SetErrorMsg(sbRet.ToString(), sbRet.GetLength());
@@ -259,7 +259,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					Text::StringBuilderUTF8 result;
 					Text::String *cmd = Text::String::New(sptr1 + 2, i - 2);
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
 					{
 						valid = false;
 					}
@@ -289,7 +289,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					Text::StringBuilderUTF8 result;
 					Text::String *cmd = Text::String::New(sptr1 + 2, (UOSInt)i - 2);
 					Int32 ret;
-					if ((ret = Manage::Process::ExecuteProcess(cmd, &result)) != 0)
+					if ((ret = Manage::Process::ExecuteProcess(cmd->ToCString(), &result)) != 0)
 					{
 						valid = false;
 					}
@@ -829,7 +829,7 @@ Bool IO::SMake::ParseProgInternal(Data::ArrayListString *objList, Data::ArrayLis
 void IO::SMake::CompileTask(void *userObj)
 {
 	CompileReq *req = (CompileReq *)userObj;
-	if (!req->me->ExecuteCmd(req->cmd->v, req->cmd->leng))
+	if (!req->me->ExecuteCmd(req->cmd->ToCString()))
 	{
 		req->errorState[0] = true;
 	}
@@ -1218,7 +1218,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			AppendCfg(&sb, lib->v, lib->leng);
 			i++;
 		}
-		if (!this->ExecuteCmd(sb.ToString(), sb.GetLength()))
+		if (!this->ExecuteCmd(sb.ToCString()))
 		{
 			return false;
 		}
@@ -1240,7 +1240,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		sb.Append(prog->name);
 
 		Text::StringBuilderUTF8 sbRet;
-		Int32 ret = Manage::Process::ExecuteProcess(sb.ToString(), sb.GetLength(), &sbRet);
+		Int32 ret = Manage::Process::ExecuteProcess(sb.ToCString(), &sbRet);
 		if (ret != 0)
 		{
 			sb.ClearStr();
@@ -1450,7 +1450,7 @@ void IO::SMake::CleanFiles()
 	sptr = Text::StrConcatC(this->basePath->ConcatTo(sbuff), UTF8STRC(OBJECTPATH));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.o"));
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		while (IO::Path::FindNextFile(sptr, sess, 0, &pt, 0))

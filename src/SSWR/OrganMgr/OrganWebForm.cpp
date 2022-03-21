@@ -1,5 +1,5 @@
 #include "Stdafx.h"
-#include "DB/MDBFile.h"
+#include "DB/MDBFileConn.h"
 #include "DB/ODBCConn.h"
 #include "IO/IniFile.h"
 #include "Net/MySQLTCPClient.h"
@@ -15,8 +15,8 @@ void __stdcall SSWR::OrganMgr::OrganWebForm::OnReloadClicked(void *userObj)
 
 SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUICore *ui, Media::DrawEngine *eng) : UI::GUIForm(parent, 160, 100, ui)
 {
-	this->SetFont(0, 10.5, false);
-	this->SetText(CSTR("OrganWeb");
+	this->SetFont(0, 0, 10.5, false);
+	this->SetText(CSTR("OrganWeb"));
 	this->SetNoResize(true);
 
 	this->dataHdlr = 0;
@@ -26,43 +26,48 @@ SSWR::OrganMgr::OrganWebForm::OrganWebForm(UI::GUIClientControl *parent, UI::GUI
 	IO::ConfigFile *cfg = IO::IniFile::ParseProgConfig(0);
 	if (cfg == 0)
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in loading config file", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in loading config file"), CSTR("Error"), this);
 		return;
 	}
 
 	DB::DBTool *db;
 	Int32 scnSize = 0;
-	if (cfg->GetValue((const UTF8Char*)"ScreenSize"))
+	Text::String *s;
+	if ((s = cfg->GetValue(CSTR("ScreenSize"))) != 0)
 	{
-		scnSize = Text::StrToInt32(cfg->GetValue((const UTF8Char*)"ScreenSize"));
+		scnSize = s->ToInt32();
 	}
 	if (scnSize <= 0)
 	{
 		scnSize = 1800;
 	}
-	if (cfg->GetValue((const UTF8Char*)"MDBFile"))
+	if ((s = cfg->GetValue(CSTR("MDBFile"))) != 0)
 	{
-		db = DB::MDBFile::CreateDBTool(cfg->GetValue((const UTF8Char*)"MDBFile"), this->log, (const UTF8Char*)"DB: ");
+		db = DB::MDBFileConn::CreateDBTool(s, this->log, CSTR("DB: "));
 	}
-	else if (cfg->GetValue((const UTF8Char*)"MySQLServer"))
+	else if ((s = cfg->GetValue(CSTR("MySQLServer"))) != 0)
 	{
-		db = Net::MySQLTCPClient::CreateDBTool(this->sockf, cfg->GetValue((const UTF8Char*)"MySQLServer"), cfg->GetValue((const UTF8Char*)"MySQLDB"), cfg->GetValue((const UTF8Char*)"MySQLUID"), cfg->GetValue((const UTF8Char*)"MySQLPwd"), this->log, (const UTF8Char*)"DB: ");
+		db = Net::MySQLTCPClient::CreateDBTool(this->sockf, s, cfg->GetValue(CSTR("MySQLDB")), cfg->GetValue(CSTR("MySQLUID")), cfg->GetValue(CSTR("MySQLPwd")), this->log, CSTR("DB: "));
 	}
 	else
 	{
-		db = DB::ODBCConn::CreateDBTool(cfg->GetValue((const UTF8Char*)"DBDSN"), cfg->GetValue((const UTF8Char*)"DBUID"), cfg->GetValue((const UTF8Char*)"DBPwd"), cfg->GetValue((const UTF8Char*)"DBSchema"), this->log, (const UTF8Char*)"DB: ");
+		db = DB::ODBCConn::CreateDBTool(cfg->GetValue(CSTR("DBDSN")), cfg->GetValue(CSTR("DBUID")), cfg->GetValue(CSTR("DBPwd")), cfg->GetValue(CSTR("DBSchema")), this->log, CSTR("DB: "));
 	}
 	UInt16 port = 0;
-	Text::StrToUInt16(cfg->GetValue((const UTF8Char*)"SvrPort"), &port);
-	NEW_CLASS(this->dataHdlr, OrganWebHandler(this->sockf, this->log, db, cfg->GetValue((const UTF8Char*)"ImageDir"), port, cfg->GetValue((const UTF8Char*)"CacheDir"), cfg->GetValue((const UTF8Char*)"DataDir"), scnSize, cfg->GetValue((const UTF8Char*)"ReloadPwd"), 0, eng));
+	s = cfg->GetValue(CSTR("SvrPort"));
+	if (s)
+	{
+		s->ToUInt16(&port);
+	}
+	NEW_CLASS(this->dataHdlr, OrganWebHandler(this->sockf, 0, this->log, db, cfg->GetValue(CSTR("ImageDir")), port, cfg->GetValue(CSTR("CacheDir")), cfg->GetValue(CSTR("DataDir")), scnSize, cfg->GetValue(CSTR("ReloadPwd")), 0, eng));
 	DEL_CLASS(cfg);
 
-	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this, (const UTF8Char*)"&Reload"));
+	NEW_CLASS(this->btnReload, UI::GUIButton(ui, this, CSTR("&Reload")));
 	this->btnReload->SetRect(40, 16, 75, 23, false);
 	this->btnReload->HandleButtonClick(OnReloadClicked, this);
 	if (this->dataHdlr->IsError())
 	{
-		UI::MessageDialog::ShowDialog((const UTF8Char*)"Error in starting server", (const UTF8Char*)"Error", this);
+		UI::MessageDialog::ShowDialog(CSTR("Error in starting server"), CSTR("Error"), this);
 	}
 }
 

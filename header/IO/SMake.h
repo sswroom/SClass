@@ -54,7 +54,7 @@ namespace IO
 		void AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path, UOSInt pathLen);
 		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg, UOSInt cfgLen);
 
-		Bool ExecuteCmd(const UTF8Char *cmd, UOSInt cmdLen);
+		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CString cfgFile);
 
 		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen);

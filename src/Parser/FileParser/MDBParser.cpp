@@ -56,11 +56,11 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	{
 		return 0;
 	}
-	if (Text::StrEquals(&buff[4], (const UTF8Char*)"Standard Jet DB"))
+	if (Text::StrEqualsC(&buff[4], 15, UTF8STRC("Standard Jet DB")))
 	{
 
 	}
-	else if (Text::StrEquals(&buff[4], (const UTF8Char*)"Standard ACE DB"))
+	else if (Text::StrEqualsC(&buff[4], 15, UTF8STRC("Standard ACE DB")))
 	{
 
 	}

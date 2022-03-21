@@ -39,6 +39,8 @@ IO/SDCardMgr.h: ../../src/IO/SDCardMgrL.cpp
 @SDCardMgr.o
 IO/SensorManager.h: ../../src/IO/SensorManagerNull.cpp
 @SensorManager.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerL.cpp
+@ServiceManager.o
 IO/Watchdog.h: ../../src/IO/WatchdogL.cpp
 @Watchdog.o
 
@@ -130,6 +132,7 @@ RAWBTMonitor.o: ../../src/IO/RAWBTMonitor.cpp
 RAWBTScanner.o: ../../src/IO/RAWBTScanner.cpp
 SDCardMgr.o: ../../src/IO/SDCardMgrL.cpp
 SensorManager.o: ../../src/IO/SensorManagerNull.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerL.cpp
 Watchdog.o: ../../src/IO/WatchdogL.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverL.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoL.cpp

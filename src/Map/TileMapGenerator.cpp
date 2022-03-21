@@ -20,7 +20,7 @@ void Map::TileMapGenerator::InitMapView(Map::MapView *view, Int32 x, Int32 y, UI
 	view->SetCenterXY((x + 0.5) * this->imgSize * scale / 2000 / 283464, (y + 0.5) * this->imgSize * scale / 2000 / 283464);
 }
 
-UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, const UTF8Char *ext)
+UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, UInt32 scale, Text::CString ext)
 {
 	UTF8Char *sptr;
 	sptr = Text::StrConcat(sbuff, this->tileDir);
@@ -38,7 +38,7 @@ UTF8Char *Map::TileMapGenerator::GenFileName(UTF8Char *sbuff, Int32 x, Int32 y, 
 	sptr = Text::StrInt32(sptr, x);
 	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
 	sptr = Text::StrInt32(sptr, y);
-	sptr = Text::StrConcat(sptr, ext);
+	sptr = ext.ConcatTo(sptr);
 	return sptr;
 }
 
@@ -61,7 +61,7 @@ void Map::TileMapGenerator::AppendDBFile(IO::Writer *writer, Int32 x, Int32 y, U
 		dbEvt->Wait(10);
 	}
 
-	sptr = GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".db");
+	sptr = GenFileName(sbuff2, x, y, scale, CSTR(".db"));
 	NEW_CLASS(sfs, IO::FileStream(CSTRP(sbuff2, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!sfs->IsError())
 	{
@@ -89,7 +89,7 @@ Bool Map::TileMapGenerator::GenerateDBFile(Int32 x, Int32 y, UInt32 scale, Map::
 	Map::MapConfig2TGen::DrawParam params;
 	Media::DrawImage *dimg2;
 	Bool isLayerEmpty;
-	sptr = GenFileName(sbuff, x, y, scale, (const UTF8Char*)".db");
+	sptr = GenFileName(sbuff, x, y, scale, CSTR(".db"));
 
 	Int64 id = ((Int64)x) << 32 | (UInt32)y;
 	Bool generating;
@@ -176,7 +176,7 @@ Bool Map::TileMapGenerator::GenerateTile(Int64 tileId, UInt32 scale, Map::MapSch
 	GenerateDBFile(x, y - 1, scale, mapSch);
 	GenerateDBFile(x, y + 1, scale, mapSch);
 
-	sptr = GenFileName(sbuff2, x, y, scale, (const UTF8Char*)".png");
+	sptr = GenFileName(sbuff2, x, y, scale, CSTR(".png"));
 	if (IO::Path::GetPathType(CSTRP(sbuff2, sptr)) == IO::Path::PathType::File)
 		return true;
 

@@ -994,17 +994,9 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *pfsess)
 	MemFree(pfsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8 *result)
 {
-	const WChar *wptr = Text::StrToWCharNew(cmd->v);
-	Int32 ret = ExecuteProcessW(wptr, result);
-	Text::StrDelNew(wptr);
-	return ret;
-}
-
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF8 *result)
-{
-	const WChar *wptr = Text::StrToWCharNew(cmd);
+	const WChar *wptr = Text::StrToWCharNew(cmd.v);
 	Int32 ret = ExecuteProcessW(wptr, result);
 	Text::StrDelNew(wptr);
 	return ret;
@@ -1157,14 +1149,14 @@ Bool Manage::Process::IsAlreadyStarted()
 	return found;
 }
 
-Bool Manage::Process::OpenPath(const UTF8Char *path)
+Bool Manage::Process::OpenPath(Text::CString path)
 {
 #ifdef _WIN32_WCE
 	return false;
 #else
-	UOSInt strLen = Text::StrUTF8_WCharCnt(path);
+	UOSInt strLen = Text::StrUTF8_WCharCnt(path.v);
 	WChar *s = MemAlloc(WChar, strLen + 1);
-	Text::StrUTF8_WChar(s, path, 0);
+	Text::StrUTF8_WChar(s, path.v, 0);
 	Bool succ = 32 < (OSInt)ShellExecuteW(0, L"open", s, 0, 0, SW_SHOW);
 	MemFree(s);
 	return succ;

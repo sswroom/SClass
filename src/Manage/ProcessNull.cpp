@@ -202,7 +202,7 @@ UOSInt Manage::Process::ReadMemory(UInt64 addr, UInt8 *buff, UOSInt reqSize)
 	return reqSize;
 }
 
-Manage::Process::FindProcSess *Manage::Process::FindProcess(const UTF8Char *processName)
+Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
 {
 	return 0;
 }
@@ -226,12 +226,7 @@ void Manage::Process::FindProcessClose(FindProcSess *sess)
 {
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF8 *result)
-{
-	return -1;
-}
-
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8 *result)
 {
 	return -1;
 }
@@ -246,7 +241,7 @@ Bool Manage::Process::IsAlreadyStarted()
 	return false;
 }
 
-Bool Manage::Process::OpenPath(const UTF8Char *path)
+Bool Manage::Process::OpenPath(Text::CString path)
 {
 	return false;
 }

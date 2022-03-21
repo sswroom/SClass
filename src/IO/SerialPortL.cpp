@@ -179,7 +179,7 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 	UTF8Char sbuff[32];
 	UTF8Char *sptr;
 	IO::Path::FindFileSession *sess;
-	sess = IO::Path::FindFile(UTF8STRC("/dev/tty*"));
+	sess = IO::Path::FindFile(CSTR("/dev/tty*"));
 	if (sess)
 	{
 		while ((sptr = IO::Path::FindNextFile(sbuff, sess, 0, 0, 0)) != 0)

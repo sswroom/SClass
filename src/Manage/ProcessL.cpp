@@ -727,7 +727,7 @@ struct Manage::Process::FindProcSess
 
 Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(UTF8STRC("/proc/*"));
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(CSTR("/proc/*"));
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{
@@ -748,7 +748,7 @@ Manage::Process::FindProcSess *Manage::Process::FindProcess(Text::CString proces
 
 Manage::Process::FindProcSess *Manage::Process::FindProcessW(const WChar *processName)
 {
-	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(UTF8STRC("/proc/*"));
+	IO::Path::FindFileSession *ffsess = IO::Path::FindFile(CSTR("/proc/*"));
 	FindProcSess *sess;
 	if (ffsess == 0)
 	{
@@ -914,118 +914,15 @@ void Manage::Process::FindProcessClose(Manage::Process::FindProcSess *fpsess)
 	MemFree(fpsess);
 }
 
-Int32 Manage::Process::ExecuteProcess(Text::PString *cmd, Text::StringBuilderUTF8 *result)
+Int32 Manage::Process::ExecuteProcess(Text::CString cmd, Text::StringBuilderUTF8 *result)
 {
 	UTF8Char progName[64];
 	UTF8Char *progBuff = 0;
-	const UTF8Char *cptr = cmd->v;
+	const UTF8Char *cptr = cmd.v;
 	Data::ArrayList<UTF8Char *> args;
 	Bool argStart = false;
 
-	UOSInt cmdLen = cmd->leng;
-	UTF8Char *pptr;
-	if (cmdLen >= 64)
-	{
-		progBuff = MemAlloc(UTF8Char, cmdLen + 1);
-		pptr = progBuff;
-	}
-	else
-	{
-		pptr = progName;
-	}
-	Bool isQuote = false;
-	UTF8Char c;
-	args.Add(pptr);
-	while ((c = *cptr++) != 0)
-	{
-		if (c == '"')
-			isQuote = !isQuote;
-		else if (!isQuote && c == ' ')
-		{
-			if (!argStart)
-			{
-				*pptr++ = 0;
-				argStart = true;
-			}
-		}
-		else
-		{
-			if (argStart)
-			{
-				args.Add(pptr);
-				argStart = false;
-			}
-			*pptr++ = c;
-		}
-	}
-	*pptr = 0;
-	args.Add(0);
-	UOSInt argc;
-	UTF8Char **arr = args.GetArray(&argc);
-
-	static Int32 Process_Id = 0;
-	UTF8Char tmpFile[512];
-	UTF8Char *sptr;
-	if (IO::Path::GetPathType(CSTR("/tmp")) == IO::Path::PathType::Directory)
-	{
-		sptr = Text::StrConcatC(tmpFile, UTF8STRC("/tmp/ExecuteProcess"));
-	}
-	else
-	{
-		sptr = Text::StrConcatC(tmpFile, UTF8STRC("ExecuteProcess"));
-	}
-	sptr = Text::StrUInt32(sptr, (UInt32)GetCurrProcId());
-	sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
-	sptr = Text::StrInt32(sptr, Sync::Interlocked::Increment(&Process_Id));
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".tmp"));
-	int fd = open((Char*)tmpFile, O_RDWR | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
-	pid_t pid = fork();
-	int ret = -1;
-	if (pid == 0)
-	{
-		dup2(fd, 1);
-		ret = execvp((Char*)arr[0], (Char**)arr);
-		exit(ret);
-	}
-	int status = -1;
-	if (waitpid(pid, &status, 0) == -1)
-	{
-		//printf("execvp: waitpid failed, pid = %d, errno = %d\r\n", pid, errno);
-	}
-	else
-	{
-		if (WIFEXITED(status))
-		{
-			ret = WEXITSTATUS(status);
-		}
-	}
-
-	UInt8 buff[129];
-	OSInt readSize;
-	lseek(fd, 0, SEEK_SET);
-	while ((readSize = read(fd, buff, 128)) > 0)
-	{
-//		printf("Read %d bytes\r\n", readSize);
-		result->AppendC((const UTF8Char*)buff, (UOSInt)readSize);
-	}
-//	printf("Process exited\r\n");
-	close(fd);
-	unlink((Char*)tmpFile);
-	if (progBuff)
-	{
-		MemFree(progBuff);
-	}
-	return ret;
-}
-
-Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::StringBuilderUTF8 *result)
-{
-	UTF8Char progName[64];
-	UTF8Char *progBuff = 0;
-	const UTF8Char *cptr = cmd;
-	Data::ArrayList<UTF8Char *> args;
-	Bool argStart = false;
-
+	UOSInt cmdLen = cmd.leng;
 	UTF8Char *pptr;
 	if (cmdLen >= 64)
 	{
@@ -1124,7 +1021,7 @@ Int32 Manage::Process::ExecuteProcess(const UTF8Char *cmd, UOSInt cmdLen, Text::
 Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8 *result)
 {
 	Text::String *s = Text::String::NewNotNull(cmd);
-	Int32 ret = ExecuteProcess(s->v, s->leng, result);
+	Int32 ret = ExecuteProcess(s->ToCString(), result);
 	s->Release();
 	return ret;
 }
@@ -1134,12 +1031,12 @@ Bool Manage::Process::IsAlreadyStarted()
 	return false;
 }
 
-Bool Manage::Process::OpenPath(const UTF8Char *path)
+Bool Manage::Process::OpenPath(Text::CString path)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
-	sb.AppendSlow(path);
-	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
+	sb.Append(path);
+	Int32 ret = ExecuteProcess(sb.ToCString(), &sb);
 	return ret == 0;
 }
 
@@ -1148,7 +1045,7 @@ Bool Manage::Process::OpenPathW(const WChar *path)
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("xdg-open "));
 	sb.AppendW(path);
-	Int32 ret = ExecuteProcess(sb.ToString(), sb.GetLength(), &sb);
+	Int32 ret = ExecuteProcess(sb.ToCString(), &sb);
 	return ret == 0;
 }
 

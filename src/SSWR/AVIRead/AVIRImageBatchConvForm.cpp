@@ -67,7 +67,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchConvForm::OnConvertClicked(void *use
 	IO::FileStream *fs;
 	IO::Path::PathType pt;
 	Media::ImageList *imgList;
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		*sptr = 0;

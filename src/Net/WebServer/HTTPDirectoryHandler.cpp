@@ -871,7 +871,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				sptr2 = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 				sptr3 = Text::StrConcatC(sptr2, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				IO::Path::FindFileSession *sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr3 - sbuff));
+				IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(sbuff, sptr3));
 				if (sess)
 				{
 					Sync::MutexUsage mutUsage(this->statMut);
@@ -1370,7 +1370,7 @@ void Net::WebServer::HTTPDirectoryHandler::ExpandPackageFiles(Parser::ParserList
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, UTF8STRC("*.spk"));
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		Data::DateTime dt;
