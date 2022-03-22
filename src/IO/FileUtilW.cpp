@@ -565,7 +565,7 @@ Bool IO::FileUtil::CopyDir(Text::CString srcDir, Text::CString destDir, FileExis
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	if (sess)
 	{
 		IO::Path::PathType pt;
@@ -792,7 +792,7 @@ Bool IO::FileUtil::MoveDir(Text::CString srcDir, Text::CString destDir, FileExis
 		*dptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff, (UOSInt)(sptr2 - sbuff));
+	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 	succ = true;
 	if (sess)
 	{
@@ -862,7 +862,7 @@ Bool IO::FileUtil::DeleteDir(UTF8Char *dir, UTF8Char *dirEnd, Bool deleteRdonlyF
 	sptr2 = Text::StrConcatC(dirEnd, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	Bool succ = true;
 	IO::Path::PathType pt;
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(dir, (UOSInt)(sptr2 - dir));
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(dir, sptr2));
 	if (sess == 0)
 		return false;
 	while (succ && (sptr2 = IO::Path::FindNextFile(dirEnd, sess, 0, &pt, 0)) != 0)

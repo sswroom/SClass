@@ -47,7 +47,6 @@ IO::ParserType Parser::FileParser::CSVParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 	UTF8Char sbuff[1024];
-	UTF8Char *sptr;
 	UTF8Char sbuff2[64];
 	UTF8Char *sptr2;
 	Text::PString tmpArr[2];
@@ -80,7 +79,7 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt nSateCol = INVALID_INDEX;
 
 	NEW_CLASS(colNames, Data::ArrayListStrUTF8());
-	sptr = reader->ReadLine(sbuff, 1024);
+	reader->ReadLine(sbuff, 1024);
 	colCnt = Text::StrCSVSplitP(tmpArr, 2, sbuff);
 	currCol = 0;
 	while (true)
