@@ -31,6 +31,8 @@ void GtkProgControl_Create(GtkProgControl *ctrl, UOSInt argc, Char **argv)
 	ctrl->argc = argc;
 	ctrl->WaitForExit = GtkProgControl_WaitForExit;
 	ctrl->GetCommandLines = GtkProgControl_GetCommandLines;
+	ctrl->SignalExit = GtkProgControl_WaitForExit;
+	ctrl->SignalRestart = GtkProgControl_WaitForExit;
 }
 
 void GtkProgControl_Destroy(GtkProgControl *ctrl)

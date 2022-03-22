@@ -23,6 +23,8 @@ void BootControl_Create(Core::IProgControl *ctrl)
 {
 	ctrl->WaitForExit = BootControl_WaitForExit;
 	ctrl->GetCommandLines = BootControl_GetCommandLines;
+	ctrl->SignalExit = BootControl_WaitForExit;
+	ctrl->SignalRestart = BootControl_WaitForExit;
 }
 
 void BootControl_Destroy(Core::IProgControl *ctrl)

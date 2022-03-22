@@ -25,6 +25,11 @@ void __stdcall LinuxProgControl_WaitForExit(Core::IProgControl *progCtrl)
 //	getchar();
 }
 
+void __stdcall LinuxProgControl_SignalExit(Core::IProgControl *progCtrl)
+{
+	raise(SIGINT);
+}
+
 UI::GUICore *__stdcall Core::IProgControl::CreateGUICore(Core::IProgControl *progCtrl)
 {
 	return 0;
@@ -46,6 +51,8 @@ void LinuxProgControl_Create(LinuxProgControl *ctrl, OSInt argc, Char **argv)
 
 	ctrl->WaitForExit = LinuxProgControl_WaitForExit;
 	ctrl->GetCommandLines = LinuxProgControl_GetCommandLines;
+	ctrl->SignalExit = LinuxProgControl_SignalExit;
+	ctrl->SignalRestart = LinuxProgControl_SignalExit;
 }
 
 void LinuxProgControl_Destroy(LinuxProgControl *ctrl)

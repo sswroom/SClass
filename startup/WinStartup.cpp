@@ -126,12 +126,25 @@ UTF8Char **__stdcall WinProgControl_GetCommandLines(Core::IProgControl *progCtrl
 	return ctrl->argv;
 }
 
+void __stdcall WinProgControl_SignalExit(Core::IProgControl* progCtrl)
+{
+
+}
+
+void __stdcall WinProgControl_SignalRestart(Core::IProgControl* progCtrl)
+{
+
+}
+
+
 void WinProgControl_Create(WinProgControl *ctrl, void *hInst)
 {
 	ctrl->argc = 0;
 	ctrl->argv = 0;
 	ctrl->hInst = hInst;
 	ctrl->WaitForExit = WinProgControl_WaitForExit;
+	ctrl->SignalExit = WinProgControl_SignalExit;
+	ctrl->SignalRestart = WinProgControl_SignalRestart;
 	ctrl->GetCommandLines = WinProgControl_GetCommandLines;
 }
 

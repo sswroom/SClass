@@ -3,6 +3,7 @@
 #include "Data/ByteTool.h"
 #include "Data/Int32Map.h"
 #include "IO/Path.h"
+#include "Manage/Process.h"
 #include "Net/ConnectionInfo.h"
 #include "Net/DNSHandler.h"
 #include "Net/OSSocketFactory.h"
@@ -1281,6 +1282,24 @@ UInt32 Net::SocketFactory::GetLocalIPByDest(UInt32 ip)
 Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr)
 {
 	return false;
+}
+
+Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
+{
+	Text::StringBuilderUTF8 sbCmd;
+	Text::StringBuilderUTF8 sb;
+	sbCmd.AppendC(UTF8STRC("netsh interface set interface \""));
+	sbCmd.Append(adapterName);
+	if (enable)
+	{
+		sbCmd.AppendC(UTF8STRC("\" ENABLED"));
+	}
+	else
+	{
+		sbCmd.AppendC(UTF8STRC("\" DISABLED"));
+	}
+	Int32 ret = Manage::Process::ExecuteProcess(sbCmd.ToCString(), &sb);
+	return ret == 0;
 }
 
 UOSInt Net::OSSocketFactory::GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs)

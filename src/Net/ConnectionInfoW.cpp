@@ -81,6 +81,10 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	case IF_TYPE_WWANPP:
 		this->ent.connType = Net::ConnectionInfo::ConnectionType::Cellular;
 		break;
+#else
+	case 243:
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Cellular;
+		break;
 #endif
 	default:
 //		printf("IfType = %d\r\n", (Int32)addr->IfType);

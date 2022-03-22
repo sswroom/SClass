@@ -50,6 +50,8 @@ void LinuxProgControl_Create(LinuxProgControl *ctrl)
 {
 	ctrl->WaitForExit = LinuxProgControl_WaitForExit;
 	ctrl->GetCommandLines = LinuxProgControl_GetCommandLines;
+	ctrl->SignalExit = LinuxProgControl_WaitForExit;
+	ctrl->SignalRestart = LinuxProgControl_WaitForExit;
 }
 
 void LinuxProgControl_Destroy(LinuxProgControl *ctrl)

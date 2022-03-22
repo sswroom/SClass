@@ -3,11 +3,11 @@
 #include "Core/Core.h"
 #include "IO/FileVersion.h"
 #include "IO/Path.h"
+#include "IO/ServiceManager.h"
 #include "Media/GDIEngineC.h"
 #include "Text/MyString.h"
 #include "Text/MyStringW.h"
 #include "Win32/ServiceControl.h"
-#include "Win32/ServiceManager.h"
 #include "Win32/WindowsEvent.h"
 #include <windows.h>
 #include <stdio.h>
@@ -53,8 +53,9 @@ VOID ReportSvcStatus( DWORD dwCurrentState,
 
 void SvcUninstall(const WChar *svcName)
 {
-	Win32::ServiceManager svcMgr;
-	if (svcMgr.DeleteService(svcName))
+	IO::ServiceManager svcMgr;
+	Text::String *s = Text::String::NewNotNull(svcName);
+	if (svcMgr.ServiceDelete(s->ToCString()))
 	{
 		printf("Service deleted successfully\n");
 	}
@@ -62,20 +63,25 @@ void SvcUninstall(const WChar *svcName)
 	{
 		printf("DeleteService failed (%d)\n", GetLastError()); 
 	}
+	s->Release();
 }
 
 void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 {
-	Win32::ServiceManager svcMgr;
-	if (svcMgr.CreateService(svcName, Win32::ServiceManager::ST_AUTO))
+	IO::ServiceManager svcMgr;
+	Text::String* s = Text::String::NewNotNull(svcName);
+	if (svcMgr.ServiceCreate(s->ToCString(), IO::ServiceInfo::ServiceState::Active))
 	{
-		svcMgr.SetServiceDesc(svcName, svcDesc);
+		Text::String* sDesc = Text::String::NewNotNull(svcDesc);
+		svcMgr.ServiceSetDesc(s->ToCString(), sDesc->ToCString());
+		sDesc->Release();
 		printf("Service installed successfully\n");
 	}
 	else
 	{
 		printf("CreateService failed (%d)\n", GetLastError()); 
 	}
+	s->Release();
 }
 
 
@@ -114,8 +120,15 @@ VOID SvcInit( DWORD dwArgc, LPWSTR *lpszArgv)
 		sbuff[i] = 0;
 	}
 	IO::Path::SetCurrDirectory(sbuff);
-	MyMain(progCtrl);
-	ReportSvcStatus( SERVICE_STOPPED, NO_ERROR, 0);
+	Int32 ret = MyMain(progCtrl);
+	if (progCtrl->toRestart)
+	{
+		exit(ret);
+	}
+	else
+	{
+		ReportSvcStatus(SERVICE_STOPPED, NO_ERROR, 0);
+	}
 }
 
 VOID WINAPI SvcMain( DWORD dwArgc, LPWSTR *lpszArgv )

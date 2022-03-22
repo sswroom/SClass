@@ -9,6 +9,7 @@ namespace Win32
 	{
 		Sync::Event *evt;
 		Bool exited;
+		Bool toRestart;
 		UTF8Char *argv;
 	};
 
@@ -16,5 +17,6 @@ namespace Win32
 	void ServiceControl_Destroy(Core::IProgControl *progCtrl);
 		
 	void ServiceControl_SignalExit(Core::IProgControl *progCtrl);
+	void ServiceControl_SignalRestart(Core::IProgControl* progCtrl);
 };
 #endif

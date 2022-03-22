@@ -20,6 +20,8 @@ namespace Core
 		typedef UTF8Char **(__stdcall *GetCommandLinesFunc)(IProgControl *progCtrl, UOSInt *cmdCnt);
 
 		WaitForExitFunc WaitForExit;
+		WaitForExitFunc SignalExit;
+		WaitForExitFunc SignalRestart;
 		GetCommandLinesFunc GetCommandLines;
 
 		static UI::GUICore *CreateGUICore(IProgControl *progCtrl);

@@ -52,6 +52,13 @@ void __stdcall ConsoleControl_WaitForExit(Core::IProgControl *progCtrl)
 	}
 }
 
+void __stdcall ConsoleControl_SignalExit(Core::IProgControl *progCtrl)
+{
+	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
+	ctrl->exited = true;
+	ctrl->evt->Set();
+}
+
 UTF8Char **__stdcall ConsoleControl_GetCommandLines(Core::IProgControl *progCtrl, UOSInt *cmdCnt)
 {
 	Core::ConsoleControl *ctrl = (Core::ConsoleControl *)progCtrl;
@@ -84,6 +91,8 @@ void ConsoleControl_Create(Core::ConsoleControl *ctrl)
 	NEW_CLASS(ctrl->evt, Sync::Event(true));
 	ctrl->WaitForExit = ConsoleControl_WaitForExit;
 	ctrl->GetCommandLines = ConsoleControl_GetCommandLines;
+	ctrl->SignalExit = ConsoleControl_SignalExit;
+	ctrl->SignalRestart = ConsoleControl_SignalExit;
 
 	SetConsoleCtrlHandler((PHANDLER_ROUTINE)ConsoleControl_ExitHdlr, TRUE);
 }

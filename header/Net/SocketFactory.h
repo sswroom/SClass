@@ -5,6 +5,7 @@
 #include "Net/SocketUtil.h"
 #include "Sync/Event.h"
 #include "Sync/Mutex.h"
+#include "Text/CString.h"
 
 struct Socket;
 
@@ -214,6 +215,7 @@ namespace Net
 		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList) = 0;
 
 		virtual Bool AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr);
+		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable) = 0;
 
 		Bool ReloadDNS();
 		Bool DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net::SocketUtil::AddressInfo *addr);

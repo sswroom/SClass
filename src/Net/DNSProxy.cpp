@@ -27,7 +27,6 @@ void __stdcall Net::DNSProxy::OnDNSRequest(void *userObj, Text::CString reqName,
 {
 	Net::DNSProxy *me = (Net::DNSProxy*)userObj;
 	RequestResult *req;
-	UTF8Char sbuff[256];
 	UInt8 buff[512];
 	UOSInt buffSize;
 	UOSInt i;

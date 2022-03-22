@@ -24,10 +24,13 @@ void Win32::ServiceControl_Create(Core::IProgControl *progCtrl)
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	NEW_CLASS(me->evt, Sync::Event(true));
 	me->exited = false;
+	me->toRestart = false;
 	me->argv = (UTF8Char*)Text::StrCopyNew((const UTF8Char*)"svchost");
 
 	me->WaitForExit = ServiceControl_WaitForExit;
 	me->GetCommandLines = ServiceControl_GetCommandLines;
+	me->SignalExit = ServiceControl_SignalExit;
+	me->SignalRestart = ServiceControl_SignalRestart;
 }
 
 void Win32::ServiceControl_Destroy(Core::IProgControl *progCtrl)
@@ -42,6 +45,14 @@ void Win32::ServiceControl_SignalExit(Core::IProgControl *progCtrl)
 {
 	Win32::ServiceControl *me = (Win32::ServiceControl*)progCtrl;
 	me->exited = true;
+	me->evt->Set();
+}
+
+void Win32::ServiceControl_SignalRestart(Core::IProgControl* progCtrl)
+{
+	Win32::ServiceControl* me = (Win32::ServiceControl*)progCtrl;
+	me->exited = true;
+	me->toRestart = true;
 	me->evt->Set();
 }
 

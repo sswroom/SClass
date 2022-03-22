@@ -86,6 +86,7 @@ namespace Net
 		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList);
 
 		virtual Bool AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr);
+		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
 		UOSInt GetBroadcastAddrs(Data::ArrayList<UInt32> *addrs);
 
