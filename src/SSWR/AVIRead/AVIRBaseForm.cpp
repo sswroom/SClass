@@ -151,6 +151,7 @@
 #include "SSWR/AVIRead/AVIRSDCardForm.h"
 #include "SSWR/AVIRead/AVIRSelIOPinForm.h"
 #include "SSWR/AVIRead/AVIRSelStreamForm.h"
+#include "SSWR/AVIRead/AVIRServiceForm.h"
 #include "SSWR/AVIRead/AVIRSetAudioForm.h"
 #include "SSWR/AVIRead/AVIRSetDPIForm.h"
 #include "SSWR/AVIRead/AVIRSetLocationSvcForm.h"
@@ -409,7 +410,8 @@ typedef enum
 	MNU_CA_UTIL,
 	MNU_SSDP_CLIENT,
 	MNU_MYSQL_CONN,
-	MNU_ASN1_PARSE
+	MNU_ASN1_PARSE,
+	MNU_SERVICE
 } MenuItems;
 
 void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
@@ -520,6 +522,7 @@ SSWR::AVIRead::AVIRBaseForm::AVIRBaseForm(UI::GUIClientControl *parent, UI::GUIC
 	mnu->AddSeperator();
 	mnu->AddItem(CSTR("Sudoku Solver"), MNU_SUDOKU_SOLVER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Process Info"), MNU_PROC_INFO, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu->AddItem(CSTR("Service Info"), MNU_SERVICE, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Clipboard Viewer"), MNU_CLIPBOARD_VIEWER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Drag Drop Viewer"), MNU_DRAG_DROP, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("Paint Counter"), MNU_PAINT_CNT, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -2418,6 +2421,13 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRASN1ParseForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRASN1ParseForm(0, this->ui, this->core));
+			this->core->ShowForm(frm);
+		}
+		break;
+	case MNU_SERVICE:
+		{
+			SSWR::AVIRead::AVIRServiceForm *frm;
+			NEW_CLASS(frm, SSWR::AVIRead::AVIRServiceForm(0, this->ui, this->core));
 			this->core->ShowForm(frm);
 		}
 		break;

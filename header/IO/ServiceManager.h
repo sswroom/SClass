@@ -30,13 +30,15 @@ namespace IO
 		ServiceManager();
 		~ServiceManager();
 
-		Bool CreateService(Text::CString svcName, IO::ServiceInfo::ServiceState stype);
-		Bool DeleteService(Text::CString svcName);
-		Bool SetServiceDesc(Text::CString svcName, Text::CString svcDesc);
+		Bool ServiceCreate(Text::CString svcName, IO::ServiceInfo::ServiceState stype);
+		Bool ServiceDelete(Text::CString svcName);
+		Bool ServiceSetDesc(Text::CString svcName, Text::CString svcDesc);
+		Bool ServiceStart(Text::CString svcName);
+		Bool ServiceStop(Text::CString svcName);
+		Bool ServiceGetDetail(Text::CString svcName, ServiceDetail *svcDetail);
 
 		UOSInt QueryServiceList(Data::ArrayList<ServiceItem*> *svcList);
 		void FreeServiceList(Data::ArrayList<ServiceItem*> *svcList);
-		Bool GetServiceDetail(Text::CString svcName, ServiceDetail *svcDetail);
 	};
 }
 #endif
