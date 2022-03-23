@@ -47,6 +47,8 @@ IO/SensorUnknownWin.h: ../../src/IO/SensorUnknownWin.cpp
 @SensorUnknownWin.o
 IO/SensorWin.h: ../../src/IO/SensorWin.cpp
 @SensorWin.o
+IO/ServiceManager.h: ../../src/IO/ServiceManagerW.cpp
+@ServiceManager.o
 IO/Watchdog.h: ../../src/IO/WatchdogNull.cpp
 @Watchdog.o
 
@@ -163,6 +165,7 @@ SensorManager.o: ../../src/IO/SensorManagerW.cpp
 SensorOrientationWin.o: ../../src/IO/SensorOrientationWin.cpp
 SensorUnknownWin.o: ../../src/IO/SensorUnknownWin.cpp
 SensorWin.o: ../../src/IO/SensorWin.cpp
+ServiceManager.o: ../../src/IO/ServiceManagerW.cpp
 Watchdog.o: ../../src/IO/WatchdogNull.cpp
 SymbolResolver.o: ../../src/Manage/SymbolResolverW.cpp
 ThreadInfo.o: ../../src/Manage/ThreadInfoW.cpp

@@ -1520,6 +1520,8 @@ IO/ConfigFile.h: ../../src/IO/ConfigFile.cpp
 @ConfigFile.o
 IO/ConsoleInput.h: ../../src/IO/ConsoleInput.cpp
 @ConsoleInput.o
+IO/ConsoleLogHandler.h: ../../src/IO/ConsoleLogHandler.cpp
+@ConsoleLogHandler.o
 IO/CortexControl.h: ../../src/IO/CortexControl.cpp
 @CortexControl.o
 IO/CyclicLogBuffer.h: ../../src/IO/CyclicLogBuffer.cpp
@@ -4181,6 +4183,7 @@ CDXAData.o: ../../src/IO/CDXAData.cpp
 CodeScanner.o: ../../src/IO/CodeScanner.cpp
 ConfigFile.o: ../../src/IO/ConfigFile.cpp
 ConsoleInput.o: ../../src/IO/ConsoleInput.cpp
+ConsoleLogHandler.o: ../../src/IO/ConsoleLogHandler.cpp
 CortexControl.o: ../../src/IO/CortexControl.cpp
 CyclicLogBuffer.o: ../../src/IO/CyclicLogBuffer.cpp
 DeviceDB.o: ../../src/IO/DeviceDB.cpp
