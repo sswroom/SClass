@@ -9,7 +9,7 @@
 #include "Map/MapView.h"
 #include "Math/Vector2D.h"
 #include "Math/GeographicCoordinateSystem.h"
-#include "Media/ImageList.h"
+#include "Media/SharedImage.h"
 #include "Text/SearchIndexer.h"
 
 namespace Map
@@ -67,7 +67,7 @@ namespace Map
 		UInt32 pgColor;
 		UInt32 lineColor;
 		UInt32 lineWidth;
-		Media::ImageList *iconImg;
+		Media::SharedImage *iconImg;
 		OSInt iconSpotX;
 		OSInt iconSpotY;
 		Int32 flags;
@@ -160,11 +160,11 @@ namespace Map
 		Bool HasIconStyle();
 		void SetLineStyle(UInt32 lineColor, UInt32 lineWidth);
 		void SetPGStyle(UInt32 pgColor);
-		void SetIconStyle(Media::ImageList *iconImg, OSInt iconSpotX, OSInt iconSpotY);
+		void SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY);
 		UInt32 GetLineStyleColor();
 		UInt32 GetLineStyleWidth();
 		UInt32 GetPGStyleColor();
-		Media::ImageList *GetIconStyleImg();
+		Media::SharedImage *GetIconStyleImg();
 		OSInt GetIconStyleSpotX();
 		OSInt GetIconStyleSpotY();
 		Bool IsLabelVisible();

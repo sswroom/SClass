@@ -838,13 +838,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection Type: "));
-			sb.Append(Net::ConnectionInfo::GetConnectionTypeName(connInfo->GetConnectionType()));
+			sb.Append(Net::ConnectionInfo::ConnectionTypeGetName(connInfo->GetConnectionType()));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("Connection Status: "));
-			sb.Append(Net::ConnectionInfo::GetConnectionStatusName(connInfo->GetConnectionStatus()));
+			sb.Append(Net::ConnectionInfo::ConnectionStatusGetName(connInfo->GetConnectionStatus()));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
 			console->WriteLine();

@@ -25,7 +25,7 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 	}
 	sptr2 = Text::URLString::GetURIScheme(sptr, url, urlLen);
-	if (Text::StrEqualsICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTPS")))
+	if (Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTP")) || Text::StrEqualsC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("HTTPS")))
 	{
 		const UTF8Char *urlEnd = &url[urlLen];
 		sptr = sptr2;
@@ -84,7 +84,7 @@ IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, U
 	}
 	if ((sptr = Text::URLString::GetURIScheme(sbuff, url.v, url.leng)) == 0)
 		return 0;
-	if (Text::StrEqualsICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
+	if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FILE")))
 	{
 		sptr = Text::URLString::GetURLFilePath(sbuff, url.v, url.leng);
 		IO::StmData::FileData *fd;

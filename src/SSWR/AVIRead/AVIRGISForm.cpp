@@ -412,6 +412,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeScrolled(void *userObj, UOSInt 
 	{
 		me->currTime = (OSInt)newVal + me->timeRangeStart;
 		me->env->SetCurrTimeTS(0, me->currTime);
+		OnMapLayerUpdated(me);
 	}
 }
 
@@ -429,6 +430,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnTimeChecked(void *userObj, Bool new
 		{
 			me->env->SetCurrTimeTS(0, 0);
 		}
+		OnMapLayerUpdated(me);
 	}
 }
 
@@ -1435,7 +1437,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRGISHKTrafficForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISHKTrafficForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this))
+			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				if (frm->GetMapLayer())
 				{
@@ -1449,7 +1451,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		{
 			SSWR::AVIRead::AVIRGISHKTDTonnesForm *frm;
 			NEW_CLASS(frm, SSWR::AVIRead::AVIRGISHKTDTonnesForm(0, this->ui, this->core));
-			if (frm->ShowDialog(this))
+			if (frm->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				this->AddLayer(frm->GetMapLayer());
 			}

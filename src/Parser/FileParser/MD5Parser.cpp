@@ -49,33 +49,28 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	UInt8 chk[20];
 	IO::FileCheck::CheckType ctype;
 	UOSInt chkSize;
+	Text::String *fullName = fd->GetFullName();
 
-	if (fd->GetFullName() == 0)
+	if (fullName == 0)
 	{
 		return 0;
 	}
-	sptr = fd->GetFullName()->ConcatTo(u8buff);
-	i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(sptr - u8buff), '.');
-	if (i == INVALID_INDEX)
-	{
-		return 0;
-	}
-	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5") == 0)
+	if (fullName->EndsWithICase(UTF8STRC(".MD5")))
 	{
 		ctype = IO::FileCheck::CheckType::MD5;
 		chkSize = 16;
 	}
-	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD4") == 0)
+	else if (fullName->EndsWithICase(UTF8STRC(".MD4")))
 	{
 		ctype = IO::FileCheck::CheckType::MD4;
 		chkSize = 16;
 	}
-	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".SHA1") == 0)
+	else if (fullName->EndsWithICase(UTF8STRC(".SHA1")))
 	{
 		ctype = IO::FileCheck::CheckType::SHA1;
 		chkSize = 20;
 	}
-	else if (Text::StrCompareICase(&u8buff[i], (const UTF8Char*)".MD5SUM") == 0)
+	else if (fullName->EndsWithICase(UTF8STRC(".MD5SUM")))
 	{
 		ctype = IO::FileCheck::CheckType::MD5;
 		chkSize = 16;
@@ -88,7 +83,7 @@ IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, 
 	IO::StreamReader *reader;
 	NEW_CLASS(stm, IO::StreamDataStream(fd));
 	NEW_CLASS(reader, IO::StreamReader(stm, this->codePage));
-	NEW_CLASS(fchk, IO::FileCheck(fd->GetFullName(), ctype));
+	NEW_CLASS(fchk, IO::FileCheck(fullName, ctype));
 	while ((sptr = reader->ReadLine(sbuff, 512)) != 0)
 	{
 		if (sptr - sbuff > (OSInt)(chkSize << 1) + 2)

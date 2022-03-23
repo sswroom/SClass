@@ -206,6 +206,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		{
 			style = styleList->GetItem(ui);
 			SDEL_STRING(style->iconURL);
+			SDEL_CLASS(style->img);
 			MemFree(style);
 		}
 
@@ -1729,6 +1730,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
+				style->img = 0;
 				i = reader->GetAttribCount();
 				while (i-- > 0)
 				{
@@ -1884,6 +1886,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				if (style)
 				{
 					SDEL_STRING(style->iconURL);
+					SDEL_CLASS(style->img);
 					MemFree(style);
 					style = 0;
 				}
@@ -1900,6 +1903,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				style->lineWidth = 0;
 				style->fillColor = 0;
 				style->flags = 0;
+				style->img = 0;
 				i = reader->GetAttribCount();
 				while (i-- > 0)
 				{
@@ -1954,6 +1958,15 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 											style->iconURL = SCOPY_STRING(style2->iconURL);
 											style->fillColor = style2->fillColor;
 											style->flags = style2->flags;
+											SDEL_CLASS(style->img);
+											if (style2->img == 0)
+											{
+												style->img = 0;
+											}
+											else
+											{
+												style->img = style2->img->Clone();
+											}
 										}
 									}
 								}
@@ -1978,6 +1991,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 				if (style)
 				{
 					SDEL_STRING(style->iconURL);
+					SDEL_CLASS(style->img);
 					MemFree(style);
 					style = 0;
 				}
@@ -3016,7 +3030,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							i = altList->GetCount();
 							MemCopyNO(ptArr, coord->GetArray(&j), sizeof(Double) * 2 * i);
 							MemCopyNO(altArr, altList->GetArray(&j), sizeof(Double) * i);
-							lyr->AddVector(pl, &sb);
+							lyr->AddVector(pl, &lyrNameSb);
 						}
 						DEL_CLASS(coord);
 						DEL_CLASS(altList);
@@ -3076,7 +3090,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							y = Text::StrToDouble(sarr[1]);
 							z = Text::StrToDouble(sarr[2]);
 							NEW_CLASS(pt, Math::Point3D(4326, x, y, z));
-							lyr->AddVector(pt, &sb);
+							lyr->AddVector(pt, &lyrNameSb);
 						}
 						else if (i == 2)
 						{
@@ -3084,7 +3098,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 							x = Text::StrToDouble(sarr[0]);
 							y = Text::StrToDouble(sarr[1]);
 							NEW_CLASS(pt, Math::Point3D(4326, x, y, 0));
-							lyr->AddVector(pt, &sb);
+							lyr->AddVector(pt, &lyrNameSb);
 						}
 					}
 					else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
@@ -3095,41 +3109,48 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 
 				if (style && style->iconURL && parsers)
 				{
-					IO::IStreamData *fd = 0;
-					if (basePF)
+					if (style->img == 0)
 					{
-						fd = basePF->OpenStreamData(style->iconURL->v);
-					}
-					if (fd == 0 && browser)
-					{
-						fd = browser->GetData(style->iconURL->ToCString(), false, 0);
-					}
-					if (fd)
-					{
-						Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
-						if (imgList)
+						IO::IStreamData *fd = 0;
+						if (basePF)
 						{
-							if (style->iconColor != 0)
-							{
-								UOSInt j = imgList->GetCount();
-								while (j-- > 0)
-								{
-									imgList->ToStaticImage(j);
-									Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
-									img->MultiplyColor(style->iconColor);
-								}
-							}
-							Media::Image *img = imgList->GetImage(0, 0);
-							if (style->iconSpotX == -1 || style->iconSpotY == -1)
-							{
-								lyr->SetIconStyle(imgList, (OSInt)(img->info->dispWidth >> 1), (OSInt)(img->info->dispHeight >> 1));
-							}
-							else
-							{
-								lyr->SetIconStyle(imgList, style->iconSpotX, (OSInt)img->info->dispHeight - style->iconSpotY);
-							}
+							fd = basePF->OpenStreamData(style->iconURL->ToCString());
 						}
-						DEL_CLASS(fd);
+						if (fd == 0 && browser)
+						{
+							fd = browser->GetData(style->iconURL->ToCString(), false, 0);
+						}
+						if (fd)
+						{
+							Media::ImageList *imgList = (Media::ImageList*)parsers->ParseFileType(fd, IO::ParserType::ImageList);
+							if (imgList)
+							{
+								if (style->iconColor != 0)
+								{
+									UOSInt j = imgList->GetCount();
+									while (j-- > 0)
+									{
+										imgList->ToStaticImage(j);
+										Media::StaticImage *img = (Media::StaticImage *)imgList->GetImage(j, 0);
+										img->MultiplyColor(style->iconColor);
+									}
+								}
+								NEW_CLASS(style->img, Media::SharedImage(imgList, false));
+							}
+							DEL_CLASS(fd);
+						}
+					}
+					if (style->img)
+					{
+						Media::Image *img = style->img->GetImage(0);
+						if (style->iconSpotX == -1 || style->iconSpotY == -1)
+						{
+							lyr->SetIconStyle(style->img, (OSInt)(img->info->dispWidth >> 1), (OSInt)(img->info->dispHeight >> 1));
+						}
+						else
+						{
+							lyr->SetIconStyle(style->img, style->iconSpotX, (OSInt)img->info->dispHeight - style->iconSpotY);
+						}
 					}
 				}
 				layers.Add(lyr);
@@ -3186,7 +3207,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
 						MemCopyNO(&ptArr[coord->GetCount()], altList->GetArray(&i), sizeof(Double) * altList->GetCount());
-						lyr->AddVector(pg, &sb);
+						lyr->AddVector(pg, &lyrNameSb);
 					}
 					else
 					{
@@ -3195,7 +3216,7 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLPlacemarkLyr(Text::XM
 						ptList[0] = 0;
 						ptArr = pg->GetPointList(&nPoints);
 						MemCopyNO(ptArr, coord->GetArray(&i), sizeof(Double) * coord->GetCount());
-						lyr->AddVector(pg, &sb);
+						lyr->AddVector(pg, &lyrNameSb);
 					}
 				}
 				DEL_CLASS(coord);

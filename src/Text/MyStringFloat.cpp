@@ -581,7 +581,7 @@ UTF16Char *Text::StrDoubleDP(UTF16Char *oriStr, Double val, UOSInt minDP, UOSInt
 	{
 		return StrDoubleFmt(oriStr, val, "0");
 	}
-	Char *sptr = Text::StrConcat(fmt, "0.");
+	Char *sptr = Text::StrConcatC(fmt, "0.", 2);
 	while (minDP > 0)
 	{
 		*sptr++ = '0';
@@ -604,7 +604,7 @@ UTF32Char *Text::StrDoubleDP(UTF32Char *oriStr, Double val, UOSInt minDP, UOSInt
 	{
 		return StrDoubleFmt(oriStr, val, "0");
 	}
-	Char *sptr = Text::StrConcat(fmt, "0.");
+	Char *sptr = Text::StrConcatC(fmt, "0.", 2);
 	while (minDP > 0)
 	{
 		*sptr++ = '0';

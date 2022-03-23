@@ -816,10 +816,13 @@ void Map::IMapDrawLayer::SetPGStyle(UInt32 pgColor)
 	this->pgColor = pgColor;
 }
 
-void Map::IMapDrawLayer::SetIconStyle(Media::ImageList *iconImg, OSInt iconSpotX, OSInt iconSpotY)
+void Map::IMapDrawLayer::SetIconStyle(Media::SharedImage *iconImg, OSInt iconSpotX, OSInt iconSpotY)
 {
 	SDEL_CLASS(this->iconImg);
-	this->iconImg = iconImg;
+	if (iconImg)
+	{
+		this->iconImg = iconImg->Clone();
+	}
 	this->iconSpotX = iconSpotX;
 	this->iconSpotY = iconSpotY;
 }
@@ -839,7 +842,7 @@ UInt32 Map::IMapDrawLayer::GetPGStyleColor()
 	return this->pgColor;
 }
 
-Media::ImageList *Map::IMapDrawLayer::GetIconStyleImg()
+Media::SharedImage *Map::IMapDrawLayer::GetIconStyleImg()
 {
 	return this->iconImg;
 }

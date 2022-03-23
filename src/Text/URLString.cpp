@@ -100,9 +100,7 @@ UTF8Char *Text::URLString::GetURIScheme(UTF8Char *sbuff, const UTF8Char *url, UO
 	{
 		return 0;
 	}
-	MemCopyNO(sbuff, url, (UOSInt)i * sizeof(UTF8Char));
-	sbuff[i] = 0;
-	return &sbuff[i];
+	return Text::StrToUpperC(sbuff, url, i);
 }
 
 UTF8Char *Text::URLString::GetURLHost(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen)

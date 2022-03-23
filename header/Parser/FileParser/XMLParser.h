@@ -4,6 +4,7 @@
 #include "IO/FileParser.h"
 #include "Map/VectorLayer.h"
 #include "Map/GPSTrack.h"
+#include "Media/SharedImage.h"
 #include "Text/VSProject.h"
 #include "Text/XMLReader.h"
 
@@ -24,6 +25,7 @@ namespace Parser
 				UInt32 iconColor;
 				UInt32 fillColor;
 				Int32 flags;
+				Media::SharedImage *img;
 			} KMLStyle;
 
 		private:

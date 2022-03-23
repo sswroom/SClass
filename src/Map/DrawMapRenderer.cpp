@@ -1492,7 +1492,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							UInt32 imgDurMS = 0;
 							if (layer.layer->HasIconStyle())
 							{
-								pimg = layer.layer->GetIconStyleImg()->GetImage(0, &imgDurMS);
+								pimg = layer.layer->GetIconStyleImg()->GetImage(&imgDurMS);
 								spotX = OSInt2Double(layer.layer->GetIconStyleSpotX());
 								spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
 								if (pimg != 0 && (spotX == -1 || spotY == -1))
@@ -1881,7 +1881,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	UInt32 imgTimeMS = 0;
 	if (layer->HasIconStyle())
 	{
-		img = layer->GetIconStyleImg()->GetImage(0, &imgTimeMS);
+		img = layer->GetIconStyleImg()->GetImage(&imgTimeMS);
 		spotX = OSInt2Double(layer->GetIconStyleSpotX());
 		spotY = OSInt2Double(layer->GetIconStyleSpotY());
 		if (img != 0 && (spotX == -1 || spotY == -1))
@@ -1990,7 +1990,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		{
 			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
 			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
-			if (newW > img->info->dispWidth || newH > img->info->dispHeight)
+			if (newW != img->info->dispWidth || newH != img->info->dispHeight)
 			{
 				this->resizer->SetTargetWidth(newW);
 				this->resizer->SetTargetHeight(newH);
