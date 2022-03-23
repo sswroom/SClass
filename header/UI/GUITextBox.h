@@ -6,10 +6,12 @@ namespace UI
 {
 	class GUITextBox : public GUIControl
 	{
+	public:
+		struct ClassData;
 	private:
+		ClassData *clsData;
 		Data::ArrayList<UI::UIEvent> *txtChgHdlrs;
 		Data::ArrayList<void *> *txtChgObjs;
-		void *clsData;
 
 	public:
 		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText);

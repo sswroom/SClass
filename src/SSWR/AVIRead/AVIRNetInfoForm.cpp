@@ -2,6 +2,7 @@
 #include "Net/ARPInfo.h"
 #include "SSWR/AVIRead/AVIRNetInfoForm.h"
 #include "Text/MyStringFloat.h"
+#include "UI/MessageDialog.h"
 
 void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 {
@@ -20,30 +21,9 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorSelChg(void *userObj)
 		sptr = connInfo->GetDescription(sbuff);
 		me->txtAdaptorDesc->SetText(CSTRP(sbuff, sptr));
 		sptr = connInfo->GetDNSSuffix(sbuff);
-		me->txtAdaptorDNSSuffix->SetText(CSTRP(sbuff, sptr));
+		me->txtAdaptorDNSSuffix->SetText(CSTRPZ(sbuff, sptr));
 		connType = connInfo->GetConnectionType();
-		switch (connType)
-		{
-		case Net::ConnectionInfo::ConnectionType::DialUp:
-			me->txtAdaptorConnType->SetText(CSTR("Dial-up"));
-			break;
-		case Net::ConnectionInfo::ConnectionType::Ethernet:
-			me->txtAdaptorConnType->SetText(CSTR("Ethernet"));
-			break;
-		case Net::ConnectionInfo::ConnectionType::Loopback:
-			me->txtAdaptorConnType->SetText(CSTR("Loopback"));
-			break;
-		case Net::ConnectionInfo::ConnectionType::WiFi:
-			me->txtAdaptorConnType->SetText(CSTR("WIFI"));
-			break;
-		case Net::ConnectionInfo::ConnectionType::Cellular:
-			me->txtAdaptorConnType->SetText(CSTR("Cellular"));
-			break;
-		case Net::ConnectionInfo::ConnectionType::Unknown:
-		default:
-			me->txtAdaptorConnType->SetText(CSTR("Unknown"));
-			break;
-		}
+		me->txtAdaptorConnType->SetText(Net::ConnectionInfo::ConnectionTypeGetName(connType));
 		sptr = Text::StrInt32(sbuff, (Int32)connInfo->GetMTU());
 		me->txtAdaptorMTU->SetText(CSTRP(sbuff, sptr));
 		i = connInfo->GetPhysicalAddress(buff, 16);
@@ -178,6 +158,50 @@ void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnPortClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm *)userObj;
 	me->UpdatePortStats();
+}
+
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorEnableClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
+	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	if (connInfo)
+	{
+		sptr = connInfo->GetName(sbuff);
+		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), true))
+		{
+			UOSInt i = me->lbAdaptors->GetSelectedIndex();
+			me->UpdateConns();
+			me->lbAdaptors->SetSelectedIndex(i);
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in enabling adaptor"), CSTR("Network Info"), me);
+		}
+	}
+}
+
+void __stdcall SSWR::AVIRead::AVIRNetInfoForm::OnAdaptorDisableClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRNetInfoForm *me = (SSWR::AVIRead::AVIRNetInfoForm*)userObj;
+	Net::ConnectionInfo *connInfo = (Net::ConnectionInfo*)me->lbAdaptors->GetSelectedItem();
+	UTF8Char sbuff[128];
+	UTF8Char *sptr;
+	if (connInfo)
+	{
+		sptr = connInfo->GetName(sbuff);
+		if (me->core->GetSocketFactory()->AdapterEnable(CSTRP(sbuff, sptr), false))
+		{
+			UOSInt i = me->lbAdaptors->GetSelectedIndex();
+			me->UpdateConns();
+			me->lbAdaptors->SetSelectedIndex(i);
+		}
+		else
+		{
+			UI::MessageDialog::ShowDialog(CSTR("Error in disable adaptor"), CSTR("Network Info"), me);
+		}
+	}
 }
 
 void SSWR::AVIRead::AVIRNetInfoForm::UpdateIPStats()
@@ -730,6 +754,12 @@ SSWR::AVIRead::AVIRNetInfoForm::AVIRNetInfoForm(UI::GUIClientControl *parent, UI
 	NEW_CLASS(this->txtAdaptorMediaState, UI::GUITextBox(ui, this->pnlAdaptor, CSTR("")));
 	this->txtAdaptorMediaState->SetRect(104, 148, 150, 23, false);
 	this->txtAdaptorMediaState->SetReadOnly(true);
+	NEW_CLASS(this->btnAdaptorEnable, UI::GUIButton(ui, this->pnlAdaptor, CSTR("Enable")));
+	this->btnAdaptorEnable->SetRect(254, 148, 75, 23, false);
+	this->btnAdaptorEnable->HandleButtonClick(OnAdaptorEnableClicked, this);
+	NEW_CLASS(this->btnAdaptorDisable, UI::GUIButton(ui, this->pnlAdaptor, CSTR("Disable")));
+	this->btnAdaptorDisable->SetRect(334, 148, 75, 23, false);
+	this->btnAdaptorDisable->HandleButtonClick(OnAdaptorDisableClicked, this);
 	NEW_CLASS(this->lblAdaptorIP, UI::GUILabel(ui, this->pnlAdaptor, CSTR("IP Addresses")));
 	this->lblAdaptorIP->SetRect(4, 172, 100, 23, false);
 	NEW_CLASS(this->lbAdaptorIP, UI::GUIListBox(ui, this->pnlAdaptor, false));

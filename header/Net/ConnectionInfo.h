@@ -18,7 +18,8 @@ namespace Net
 			WiFi,
 			Loopback,
 			DialUp,
-			Cellular
+			Cellular,
+			Bridge
 		};
 
 		typedef enum //RFC 2863
@@ -79,8 +80,8 @@ namespace Net
 		ConnectionType GetConnectionType();
 		ConnectionStatus GetConnectionStatus();
 
-		static Text::CString GetConnectionTypeName(ConnectionType connType);
-		static Text::CString GetConnectionStatusName(ConnectionStatus connStatus);
+		static Text::CString ConnectionTypeGetName(ConnectionType connType);
+		static Text::CString ConnectionStatusGetName(ConnectionStatus connStatus);
 	};
 }
 #endif

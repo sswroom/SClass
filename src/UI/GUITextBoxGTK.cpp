@@ -5,11 +5,11 @@
 #include "UI/GUIClientControl.h"
 #include <gtk/gtk.h>
 
-typedef struct
+struct UI::GUITextBox::ClassData
 {
 	Bool multiLine;
 	GtkWidget *widget;
-} TextBoxData;
+};
 
 void GUITextBox_Changed(GtkTextBuffer *textbuffer, gpointer user_data)
 {
@@ -29,7 +29,7 @@ void GUITextBox_InsText(GtkEntryBuffer *buffer, guint position, char *chars, gui
 	me->EventTextChange();
 }
 
-void GUITextBox_InitTextBox(TextBoxData *txt, Text::CString lbl, Bool multiLine, UI::GUITextBox *me)
+void GUITextBox_InitTextBox(UI::GUITextBox::ClassData *txt, Text::CString lbl, Bool multiLine, UI::GUITextBox *me)
 {
 	if (multiLine)
 	{
@@ -57,10 +57,9 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
 
-	TextBoxData *txt = MemAlloc(TextBoxData, 1);
-	GUITextBox_InitTextBox(txt, initText, false, this);
-	this->clsData = txt;
-	this->hwnd = (ControlHandle*)txt->widget;
+	this->clsData = MemAlloc(ClassData, 1);
+	GUITextBox_InitTextBox(this->clsData, initText, false, this);
+	this->hwnd = (ControlHandle*)this->clsData->widget;
 	parent->AddChild(this);
 	this->Show();
 }
@@ -70,19 +69,18 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 	NEW_CLASS(this->txtChgHdlrs, Data::ArrayList<UI::UIEvent>());
 	NEW_CLASS(this->txtChgObjs, Data::ArrayList<void*>());
 
-	TextBoxData *txt = MemAlloc(TextBoxData, 1);
-	GUITextBox_InitTextBox(txt, initText, isMultiline, this);
-	this->clsData = txt;
+	this->clsData = MemAlloc(ClassData, 1);
+	GUITextBox_InitTextBox(this->clsData, initText, isMultiline, this);
 	if (isMultiline)
 	{
 		this->hwnd = (ControlHandle*)gtk_scrolled_window_new(0, 0);
-		gtk_container_add(GTK_CONTAINER(this->hwnd), txt->widget);
+		gtk_container_add(GTK_CONTAINER(this->hwnd), this->clsData->widget);
 		parent->AddChild(this);
-		gtk_widget_show(txt->widget);
+		gtk_widget_show(this->clsData->widget);
 	}
 	else
 	{
-		this->hwnd = (ControlHandle*)txt->widget;
+		this->hwnd = (ControlHandle*)this->clsData->widget;
 		parent->AddChild(this);
 	}
 	this->Show();
@@ -90,8 +88,7 @@ UI::GUITextBox::GUITextBox(UI::GUICore *ui, UI::GUIClientControl *parent, Text::
 
 UI::GUITextBox::~GUITextBox()
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
-	MemFree(txt);
+	MemFree(this->clsData);
 	DEL_CLASS(this->txtChgObjs);
 	DEL_CLASS(this->txtChgHdlrs);
 //	gtk_widget_destroy((GtkWidget*)this->hwnd);
@@ -108,55 +105,51 @@ void UI::GUITextBox::EventTextChange()
 
 void UI::GUITextBox::SetReadOnly(Bool isReadOnly)
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
-		gtk_text_view_set_editable((GtkTextView*)txt->widget, !isReadOnly);
+		gtk_text_view_set_editable((GtkTextView*)this->clsData->widget, !isReadOnly);
 	}
 	else
 	{
-		gtk_editable_set_editable((GtkEditable*)txt->widget, !isReadOnly);
+		gtk_editable_set_editable((GtkEditable*)this->clsData->widget, !isReadOnly);
 	}
 }
 
 void UI::GUITextBox::SetPasswordChar(WChar c)
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
 	}
 	else
 	{
-		gtk_entry_set_visibility((GtkEntry*)txt->widget, false);
-		gtk_entry_set_invisible_char((GtkEntry*)txt->widget, (gunichar)c);
+		gtk_entry_set_visibility((GtkEntry*)this->clsData->widget, false);
+		gtk_entry_set_invisible_char((GtkEntry*)this->clsData->widget, (gunichar)c);
 	}
 }
 
 void UI::GUITextBox::SetText(Text::CString lbl)
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
 	UOSInt lblLeng = lbl.leng;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
-		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->clsData->widget);
 		gtk_text_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
 	}
 	else
 	{
-		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
+		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->clsData->widget);
 		gtk_entry_buffer_set_text(buff, (const Char*)lbl.v, (gint)lblLeng);
 	}
 }
 
 UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
 	const gchar *lbl;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
 		GtkTextIter startIter;
 		GtkTextIter endIter;
-		GtkTextBuffer *txtBuff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		GtkTextBuffer *txtBuff = gtk_text_view_get_buffer((GtkTextView*)this->clsData->widget);
 		gtk_text_buffer_get_start_iter(txtBuff, &startIter);
 		gtk_text_buffer_get_end_iter(txtBuff, &endIter);
 		lbl = gtk_text_buffer_get_text(txtBuff, &startIter, &endIter, TRUE);
@@ -166,7 +159,7 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 	}
 	else
 	{
-		GtkEntryBuffer *entBuff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
+		GtkEntryBuffer *entBuff = gtk_entry_get_buffer((GtkEntry*)this->clsData->widget);
 		lbl = gtk_entry_buffer_get_text(entBuff);
 		return Text::StrConcat(buff, (const UTF8Char*)lbl);
 	}
@@ -174,13 +167,12 @@ UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 
 Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
 	const gchar *lbl;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
 		GtkTextIter startIter;
 		GtkTextIter endIter;
-		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->clsData->widget);
 		gtk_text_buffer_get_start_iter(buff, &startIter);
 		gtk_text_buffer_get_end_iter(buff, &endIter);
 		lbl = gtk_text_buffer_get_text(buff, &startIter, &endIter, TRUE);
@@ -189,7 +181,7 @@ Bool UI::GUITextBox::GetText(Text::StringBuilderUTF8 *sb)
 	}
 	else
 	{
-		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)txt->widget);
+		GtkEntryBuffer *buff = gtk_entry_get_buffer((GtkEntry*)this->clsData->widget);
 		lbl = gtk_entry_buffer_get_text(buff);
 		sb->AppendSlow((const UTF8Char*)lbl);
 	}
@@ -214,13 +206,12 @@ void UI::GUITextBox::HandleTextChanged(UI::UIEvent hdlr, void *userObj)
 
 void UI::GUITextBox::SelectAll()
 {
-	TextBoxData *txt = (TextBoxData*)this->clsData;
-	if (txt->multiLine)
+	if (this->clsData->multiLine)
 	{
 		GtkTextIter startIter;
 		GtkTextIter endIter;
 		GtkTextMark *mark;
-		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)txt->widget);
+		GtkTextBuffer *buff = gtk_text_view_get_buffer((GtkTextView*)this->clsData->widget);
 		mark = gtk_text_buffer_get_insert(buff);
 		gtk_text_buffer_get_iter_at_mark(buff, &startIter, mark);
 		gtk_text_buffer_get_iter_at_mark(buff, &endIter, mark);
@@ -230,6 +221,6 @@ void UI::GUITextBox::SelectAll()
 	}
 	else
 	{
-		gtk_editable_select_region((GtkEditable*)txt->widget, 0, -1);
+		gtk_editable_select_region((GtkEditable*)this->clsData->widget, 0, -1);
 	}
 }

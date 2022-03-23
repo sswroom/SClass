@@ -1581,7 +1581,7 @@ void Net::OSSocketFactory::FreePortInfos2(Data::ArrayList<Net::SocketFactory::Po
 	}
 }
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
 {
 #if !defined(__APPLE__) && !defined(__FreeBSD__)
 	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
@@ -1590,7 +1590,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const U
 		Bool succ = false;
 		struct ifreq ifr;
 		struct ifreq ifrAddr;
-		Text::StrConcat(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName);
+		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
 		if (ioctl(sock, SIOCGIFFLAGS, &ifr) < 0)
 		{
 //			printf("Sockf: Error in getting flags\r\n");
@@ -1605,7 +1605,7 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const U
 			return false;
 		}
 
-		Text::StrConcat(ifrAddr.ifr_ifrn.ifrn_name, (const Char*)adapterName);
+		Text::StrConcatC(ifrAddr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
 		MemClear(&ifrAddr.ifr_ifru.ifru_hwaddr, sizeof(sockaddr));
 		ifrAddr.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
 		MemCopyNO(ifrAddr.ifr_ifru.ifru_hwaddr.sa_data, hwAddr, 6);
@@ -1625,6 +1625,49 @@ Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const U
 //			printf("Sockf: Error in setting flags (up)\r\n");
 			close(sock);
 			return succ;
+		}
+		close(sock);
+		return succ;
+	}
+	else
+	{
+		return false;
+	}
+#else
+	return false;
+#endif
+}
+
+Bool Net::OSSocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
+{
+#if !defined(__APPLE__) && !defined(__FreeBSD__)
+	int sock = socket(PF_INET, SOCK_DGRAM, IPPROTO_IP);
+	if (sock != -1)
+	{
+		Bool succ = false;
+		struct ifreq ifr;
+		Text::StrConcatC(ifr.ifr_ifrn.ifrn_name, (const Char*)adapterName.v, adapterName.leng);
+		if (ioctl(sock, SIOCGIFFLAGS, &ifr) < 0)
+		{
+//			printf("Sockf: Error in getting flags\r\n");
+			close(sock);
+			return false;
+		}
+		if (enable)
+		{
+			ifr.ifr_ifru.ifru_flags |= IFF_UP | IFF_RUNNING;
+		}
+		else
+		{
+			ifr.ifr_ifru.ifru_flags &= ~IFF_UP;
+		}
+		if (ioctl(sock, SIOCSIFFLAGS, &ifr) < 0)
+		{
+			succ = false;
+		}
+		else
+		{
+			succ = true;
 		}
 		close(sock);
 		return succ;

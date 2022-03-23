@@ -191,7 +191,7 @@ Net::ConnectionInfo::ConnectionStatus Net::ConnectionInfo::GetConnectionStatus()
 	return this->ent.connStatus;
 }
 
-Text::CString Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connType)
+Text::CString Net::ConnectionInfo::ConnectionTypeGetName(ConnectionType connType)
 {
 	switch (connType)
 	{
@@ -205,13 +205,15 @@ Text::CString Net::ConnectionInfo::GetConnectionTypeName(ConnectionType connType
 		return CSTR("Dial-up");
 	case ConnectionType::Cellular:
 		return CSTR("Cellular");
+	case ConnectionType::Bridge:
+		return CSTR("Bridge");
 	case ConnectionType::Unknown:
 	default:
 		return CSTR("Unknown");
 	}
 }
 
-Text::CString Net::ConnectionInfo::GetConnectionStatusName(ConnectionStatus connStatus)
+Text::CString Net::ConnectionInfo::ConnectionStatusGetName(ConnectionStatus connStatus)
 {
 	switch (connStatus)
 	{

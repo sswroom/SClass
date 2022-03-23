@@ -46,7 +46,7 @@ void __stdcall SSWR::AVIRead::AVIRMACGenForm::OnAdapterSetClicked(void *userObj)
 	if (sb1.GetLength() > 0 && sb2.GetLength() > 0)
 	{
 		Text::StrHex2Bytes(sb1.ToString(), buff);
-		if (me->core->GetSocketFactory()->AdapterSetHWAddr(sb2.ToString(), buff))
+		if (me->core->GetSocketFactory()->AdapterSetHWAddr(sb2.ToCString(), buff))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Address set"), CSTR("MAC Generator"), me);
 		}

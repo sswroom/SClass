@@ -25,7 +25,12 @@ Net::SocketFactory::~SocketFactory()
 	DEL_CLASS(this->dnsMut);
 }
 
-Bool Net::SocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr)
+Bool Net::SocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
+{
+	return false;
+}
+
+Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 {
 	return false;
 }

@@ -13,6 +13,7 @@
 #else
 #define CSTRP(str, strEnd) Text::CString(str, (UOSInt)(strEnd - str))
 #endif
+#define CSTRPZ(str, strEnd) ((strEnd == 0)?CSTR(""):Text::CString(str, (UOSInt)(strEnd - str)))
 
 namespace Text
 {

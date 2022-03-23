@@ -49,6 +49,8 @@ namespace SSWR
 			UI::GUITextBox *txtAdaptorPhysicalAddr;
 			UI::GUILabel *lblAdaptorMediaState;
 			UI::GUITextBox *txtAdaptorMediaState;
+			UI::GUIButton *btnAdaptorEnable;
+			UI::GUIButton *btnAdaptorDisable;
 			UI::GUILabel *lblAdaptorIP;
 			UI::GUIListBox *lbAdaptorIP;
 			UI::GUILabel *lblAdaptorGW;
@@ -178,6 +180,8 @@ namespace SSWR
 			static void __stdcall OnAdaptorSelChg(void *userObj);
 			static void __stdcall OnTimerTick(void *userObj);
 			static void __stdcall OnPortClicked(void *userObj);
+			static void __stdcall OnAdaptorEnableClicked(void *userObj);
+			static void __stdcall OnAdaptorDisableClicked(void *userObj);
 
 			void UpdateIPStats();
 			void UpdateTCPStats();

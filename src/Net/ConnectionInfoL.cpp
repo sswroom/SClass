@@ -28,15 +28,16 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 {
 	ConnectionData *data = (ConnectionData*)info;
 	ifreq ifr;
-	Text::StrConcat(ifr.ifr_name, data->name);
+	UOSInt nameLen = Text::StrCharCnt(data->name);
+	Text::StrConcatC(ifr.ifr_name, data->name, nameLen);
 	UInt8 buff[64];
 	IO::FileStream *fs;
 
 	Text::StringBuilderUTF8 sb;
-	sb.AppendSlow((const UTF8Char*)data->name);
-	this->ent.internalName = Text::StrCopyNew(data->name);
-	this->ent.name = Text::StrCopyNew(sb.ToString());
-	this->ent.description = Text::StrCopyNew(sb.ToString());
+	sb.AppendC((const UTF8Char*)data->name, nameLen);
+	this->ent.internalName = Text::StrCopyNewC(data->name, nameLen);
+	this->ent.name = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
+	this->ent.description = Text::StrCopyNewC(sb.ToString(), sb.GetLength());
 
 	if (ioctl(data->sock, SIOCGIFFLAGS, &ifr) == 0)
 	{
@@ -47,31 +48,35 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 #endif
 		if (ifr.ifr_flags & IFF_LOOPBACK)
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_LOOPBACK;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::Loopback;
 		}
 		else if (ifr.ifr_flags & IFF_POINTOPOINT)
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_DIALUP;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
 		}
-		else if (Text::StrStartsWith(data->name, "eth"))
+		else if (sb.StartsWith(UTF8STRC("eth")))
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_ETHERNET;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::Ethernet;
 		}
-		else if (Text::StrStartsWith(data->name, "wlan"))
+		else if (sb.StartsWith(UTF8STRC("wlan")))
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_WIFI;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::WiFi;
 		}
-		else if (Text::StrStartsWith(data->name, "wlo"))
+		else if (sb.StartsWith(UTF8STRC("wlo")))
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_WIFI;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::WiFi;
 		}
-		else if (Text::StrStartsWith(data->name, "rmnet_data"))
+		else if (sb.StartsWith(UTF8STRC("rmnet_data")))
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_DIALUP;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::DialUp;
+		}
+		else if (sb.StartsWith(UTF8STRC("lxcbr")))
+		{
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::Bridge;
 		}
 		else
 		{
-			this->ent.connType = Net::ConnectionInfo::CT_UNKNOWN;
+			this->ent.connType = Net::ConnectionInfo::ConnectionType::Unknown;
 		}
 		if (ifr.ifr_flags & IFF_DEBUG)
 		{
@@ -89,7 +94,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 	else
 	{
 		this->ent.dhcpEnabled = false;
-		this->ent.connType = Net::ConnectionInfo::CT_UNKNOWN;
+		this->ent.connType = Net::ConnectionInfo::ConnectionType::Unknown;
 		this->ent.connStatus = Net::ConnectionInfo::CS_UNKNOWN;
 	}
 	if (ioctl(data->sock, SIOCGIFMTU, &ifr) == 0)

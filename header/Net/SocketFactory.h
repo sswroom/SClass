@@ -214,8 +214,8 @@ namespace Net
 		virtual UOSInt QueryPortInfos2(Data::ArrayList<PortInfo2*> *portInfoList, ProtocolType protoType, UInt16 procId) = 0;
 		virtual void FreePortInfos2(Data::ArrayList<PortInfo2*> *portInfoList) = 0;
 
-		virtual Bool AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr);
-		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable) = 0;
+		virtual Bool AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr);
+		virtual Bool AdapterEnable(Text::CString adapterName, Bool enable);
 
 		Bool ReloadDNS();
 		Bool DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net::SocketUtil::AddressInfo *addr);
