@@ -186,12 +186,16 @@ int main(int argc, char *argv[])
 
 	if(argc == 2 && Text::StrEquals(argv[1], "install"))
 	{
+		Core::CoreStart();
 		SvcInstall(svcName, svcDesc);
+		Core::CoreEnd();
 		return 0;
 	}
 	else if (argc == 2 && Text::StrEquals(argv[1], "uninstall"))
 	{
+		Core::CoreStart();
 		SvcUninstall(svcName);
+		Core::CoreEnd();
 		return 0;
 	}
 

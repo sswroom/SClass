@@ -1279,7 +1279,7 @@ UInt32 Net::SocketFactory::GetLocalIPByDest(UInt32 ip)
 	}
 }*/
 
-Bool Net::OSSocketFactory::AdapterSetHWAddr(const UTF8Char *adapterName, const UInt8 *hwAddr)
+Bool Net::OSSocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
 {
 	return false;
 }
