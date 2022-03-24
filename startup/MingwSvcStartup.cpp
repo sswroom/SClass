@@ -1,7 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "Core/Core.h"
-#include "IO/FileVersion.h"
 #include "IO/Path.h"
 #include "IO/ServiceManager.h"
 #include "Media/GDIEngineC.h"
@@ -79,7 +78,7 @@ void SvcInstall(const WChar *svcName, const WChar *svcDesc)
 	}
 	else
 	{
-		printf("CreateService failed (%d)\n", GetLastError()); 
+		printf("CreateService failed (%d)\n", (UInt32)GetLastError()); 
 	}
 	s->Release();
 }
@@ -162,20 +161,22 @@ int main(int argc, char *argv[])
 { 
 	WChar svcDesc[512];
 	UTF8Char tmpStr[512];
+	UTF8Char *fileNameStart;
+	UTF8Char *sptr;
 	Bool found = false;
 	Core::CoreStart();
 	{
-		IO::FileVersion *ver = IO::FileVersion::Open(0);
-		if (ver)
+		sptr = IO::Path::GetProcessFileName(tmpStr);
+		UOSInt i = Text::StrLastIndexOfCharC(tmpStr, (UOSInt)(sptr - tmpStr), IO::Path::PATH_SEPERATOR);
+		fileNameStart = &tmpStr[i + 1];
+		i = Text::StrIndexOfCharC(fileNameStart, (UOSInt)(sptr - fileNameStart), '.');
+		if (i != INVALID_INDEX)
 		{
-			Int32 lang = ver->GetFirstLang();
-			ver->GetInternalName(lang, tmpStr);
-			Text::StrUTF8_WChar(svcName, tmpStr, 0);
-			ver->GetFileDescription(lang, tmpStr);
-			Text::StrUTF8_WChar(svcDesc, tmpStr, 0);
-			DEL_CLASS(ver);
-			found = true;
+			fileNameStart[i] = 0;
 		}
+		Text::StrUTF8_WChar(svcName, fileNameStart, 0);
+		Text::StrUTF8_WChar(svcDesc, fileNameStart, 0);
+		found = true;
 	}
 	Core::CoreEnd();
 	if (!found)

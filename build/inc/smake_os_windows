@@ -25,6 +25,8 @@ IO/BTScanner.h: ../../src/IO/BTScannerNull.cpp
 @BTScanner.o
 IO/DebugWriter.h: ../../src/IO/DebugWriterW.cpp
 @DebugWriter.o
+IO/FileVersion.h: ../../src/IO/FileVersionW.cpp
+@FileVersion.o
 IO/HIDInfo.h: ../../src/IO/HIDInfoW.cpp
 @HIDInfo.o
 IO/I2CChannelOS.h: ../../src/IO/I2CChannelOSNull.cpp
@@ -130,12 +132,15 @@ Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
 @Thread_CPP.o
 
+Win32/ServiceControl.h: ../../src/Win32/ServiceControl.cpp
+@ServiceControl.o
 Win32/WindowsBTScanner.h: ../../src/Win32/WindowsBTScanner.cpp
 @WindowsBTScanner.o
+Win32/WindowsEvent.h: ../../src/Win32/WindowsEvent.cpp
+@WindowsEvent.o
 Win32/WinRTCore.h: ../../src/Win32/WinRTCore.cpp
 @WinRTCore.o
 
-ConsoleStartup.o: ../../startup/WinConStartup.cpp
 WinHttpCert.o: ../../src/Crypto/Cert/WinHttpCert.cpp
 !-lwinhttp
 MDBFileConn.o: ../../src/DB/MDBFileConn.cpp
@@ -153,6 +158,8 @@ BTController.o: ../../src/IO/BTControllerW.cpp
 BTManager.o: ../../src/IO/BTManagerW.cpp
 BTScanner.o: ../../src/IO/BTScannerNull.cpp
 DebugWriter.o: ../../src/IO/DebugWriterW.cpp
+FileVersion.o: ../../src/IO/FileVersionW.cpp
+!-lversion
 HIDInfo.o: ../../src/IO/HIDInfoW.cpp
 I2CChannelOS.o: ../../src/IO/I2CChannelOSNull.cpp
 OS.o: ../../src/IO/OSW.cpp
@@ -207,7 +214,9 @@ WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
+ServiceControl.o: ../../src/Win32/ServiceControl.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp
+WindowsEvent.o: ../../src/Win32/WindowsEvent.cpp
 WinRTCore.o: ../../src/Win32/WinRTCore.cpp
 !-lWindowsApp
 
