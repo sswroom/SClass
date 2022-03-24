@@ -24,6 +24,9 @@ void Text::UTF8Reader::FillBuffer()
 		}
 	}
 
+#ifdef VERBOSE
+	printf("UTF8Reader.FB ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
+#endif
 	if (this->currOfst == this->buffSize)
 	{
 		this->buffSize = 0;
@@ -37,7 +40,7 @@ void Text::UTF8Reader::FillBuffer()
 	}
 	readSize = this->stm->Read(&this->buff[this->buffSize], BUFFSIZE - this->buffSize);;
 #ifdef VERBOSE
-	printf("UTF8Reader.FB read %d bytes\r\n", (UInt32)readSize);
+	printf("UTF8Reader.FB read %d bytes, ofst = %d, size = %d\r\n", (UInt32)readSize, (UInt32)this->currOfst, (UInt32)this->buffSize);
 #endif
 	this->buffSize += readSize;
 	if (stm->CanSeek())
@@ -456,6 +459,11 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 				currOfst = this->currOfst;
 				buffSize = this->buffSize;
 			}
+			nextCheckSize = buffSize - currOfst;
+			if (maxCharCnt < nextCheckSize)
+			{
+				nextCheckSize = maxCharCnt;
+			}
 			currSize += charSize;
 		}
 	}
@@ -464,6 +472,9 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 
 UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 {
+#if defined(VERBOSE)
+	printf("UTF8Reader.RL: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
+#endif
 	if (this->currOfst >= this->buffSize)
 	{
 		this->FillBuffer();
@@ -598,6 +609,11 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 				}
 				buffSize = this->buffSize;
 				currOfst = this->currOfst;
+			}
+			nextCheckSize = buffSize - currOfst;
+			if (maxCharCnt < nextCheckSize)
+			{
+				nextCheckSize = maxCharCnt;
 			}
 			currSize += charSize;
 		}

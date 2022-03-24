@@ -1842,6 +1842,8 @@ Map/BaseMapLayer.h: ../../src/Map/BaseMapLayer.cpp
 @BaseMapLayer.o
 Map/CIPLayer2.h: ../../src/Map/CIPLayer2.cpp
 @CIPLayer2.o
+Map/CSVMapParser.h: ../../src/Map/CSVMapParser.cpp
+@CSVMapParser.o
 Map/DrawMapRenderer.h: ../../src/Map/DrawMapRenderer.cpp
 @DrawMapRenderer.o
 Map/FileGDBLayer.h: ../../src/Map/FileGDBLayer.cpp
@@ -4331,6 +4333,7 @@ AssistedReverseGeocoder.o: ../../src/Map/AssistedReverseGeocoder.cpp
 AssistedReverseGeocoderPL.o: ../../src/Map/AssistedReverseGeocoderPL.cpp
 BaseMapLayer.o: ../../src/Map/BaseMapLayer.cpp
 CIPLayer2.o: ../../src/Map/CIPLayer2.cpp
+CSVMapParser.o: ../../src/Map/CSVMapParser.cpp
 DrawMapRenderer.o: ../../src/Map/DrawMapRenderer.cpp
 FileGDBLayer.o: ../../src/Map/FileGDBLayer.cpp
 GPSTrack.o: ../../src/Map/GPSTrack.cpp

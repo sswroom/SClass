@@ -95,6 +95,7 @@ namespace SSWR
 			Bool ParseObject(IO::ParsedObject *pobj);
 			void OpenURL(Text::CString url, Text::CString customName);
 			void HKOPortal(Text::CString listFile, Text::CString filePath);
+			void OpenCSV(Text::CString url, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol);
 		public:
 			AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view);
 			virtual ~AVIRGISForm();

@@ -5,6 +5,7 @@
 #include "IO/StreamReader.h"
 #include "IO/Device/MTKGPSNMEA.h"
 #include "IO/StmData/FileData.h"
+#include "Map/CSVMapParser.h"
 #include "Map/DrawMapRenderer.h"
 #include "Map/VectorLayer.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -97,7 +98,9 @@ typedef enum
 	MNU_DISTANCE,
 	MNU_HKTD_TRAFFIC,
 	MNU_HKTD_TONNES_SIGN,
-	MNU_RANDOMLOC
+	MNU_RANDOMLOC,
+	MNU_HK_WASTELESS,
+	MNU_HK_HKE_EV_CHARGING_EN
 } MenuItems;
 
 #define MAX_SCALE 200000000
@@ -601,6 +604,23 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	}
 }
 
+void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CString url, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
+{
+	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
+	if (cli)
+	{
+		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
+		{
+			Map::IMapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
+			if (lyr)
+			{
+				this->AddLayer(lyr);
+			}
+		}
+		DEL_CLASS(cli);
+	}
+}
+
 SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICore *ui, AVIRead::AVIRCore *core, Map::MapEnv *env, Map::MapView *view) : UI::GUIForm(parent, 1024, 768, ui)
 {
 	this->core = core;
@@ -713,6 +733,9 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	mnu2 = mnu->AddSubMenu(CSTR("HKTD"));
 	mnu2->AddItem(CSTR("Traffic"), MNU_HKTD_TRAFFIC, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu2->AddItem(CSTR("Tonnes Sign"), MNU_HKTD_TONNES_SIGN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2 = mnu->AddSubMenu(CSTR("HK Data"));
+	mnu2->AddItem(CSTR("Recyclable Collection Points"), MNU_HK_WASTELESS, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
+	mnu2->AddItem(CSTR("HKE EV Charging Station (EN)"), MNU_HK_HKE_EV_CHARGING_EN, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu = this->mnuMain->AddSubMenu(CSTR("&Device"));
 	mnu->AddItem(CSTR("GPS Tracker"), MNU_GPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
 	mnu->AddItem(CSTR("MTK GPS Tracker"), MNU_MTKGPS_TRACKER, UI::GUIMenu::KM_NONE, UI::GUIControl::GK_NONE);
@@ -1460,6 +1483,14 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_RANDOMLOC:
 		this->AddSubForm(NEW_CLASS_D(SSWR::AVIRead::AVIRGISRandomLocForm(0, this->ui, this->core, this)));
+		break;
+	case MNU_HK_WASTELESS:
+		this->OpenCSV(CSTR("https://www.wastereduction.gov.hk/sites/default/files/wasteless.csv"),
+			CSTR("Waste Less"), CSTR("address_en"), CSTR("lat"), CSTR("lgt"));
+		break;
+	case MNU_HK_HKE_EV_CHARGING_EN:
+		this->OpenCSV(CSTR("https://www.hkelectric.com/en/ElectricLiving/ElectricVehicles/Documents/Locations%20of%20HK%20Electric%20EV%20charging%20stations_eng.csv"),
+			CSTR("HK Electric EV Charging Station"), CSTR("HK Electric EV Charging Station_Car Park"), CSTR("Latitude"), CSTR("Longitude"));
 		break;
 	}
 }

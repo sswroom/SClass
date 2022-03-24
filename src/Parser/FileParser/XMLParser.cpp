@@ -141,6 +141,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseFile(IO::IStreamData *fd, 
 IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFactory *encFact, IO::Stream *stm, Text::CString fileName, Parser::ParserList *parsers, Net::WebBrowser *browser, IO::PackageFile *pkgFile)
 {
 	Text::XMLReader *reader;
+	Text::String *nodeText;
+	Text::XMLNode::NodeType nodeType;
 	NEW_CLASS(reader, Text::XMLReader(encFact, stm, Text::XMLReader::PM_XML));
 
 	while (true)
@@ -155,7 +157,8 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			break;
 		}
 	}
-	if (reader->GetNodeText()->Equals(UTF8STRC("kml")))
+	nodeText = reader->GetNodeText();
+	if (nodeText->Equals(UTF8STRC("kml")))
 	{
 		Data::ICaseStringMap<KMLStyle*> styles;
 /*		Data::ArrayList<Map::IMapDrawLayer *> layers;
@@ -233,7 +236,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			return lyr;
 		}
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("gpx")))
+	else if (nodeText->Equals(UTF8STRC("gpx")))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -376,7 +379,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		DEL_CLASS(reader);
 		return 0;
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("osm")))
+	else if (nodeText->Equals(UTF8STRC("osm")))
 	{
 		Map::IMapDrawLayer *lyr = Map::OSM::OSMParser::ParseLayerNode(reader, fileName);
 		if (lyr == 0)
@@ -400,7 +403,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		DEL_CLASS(reader);
 		return lyr;
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("OruxTracker")))
+	else if (nodeText->Equals(UTF8STRC("OruxTracker")))
 	{
 		Map::OruxDBLayer *lyr = 0;
 		while (reader->ReadNext())
@@ -575,7 +578,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		DEL_CLASS(reader);
 		return lyr;
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("VisualStudioProject")))
+	else if (nodeText->Equals(UTF8STRC("VisualStudioProject")))
 	{
 		Text::XMLAttrib *attr;
 		Text::VSProject *proj = 0;
@@ -646,7 +649,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		DEL_CLASS(reader);
 		return proj;
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("gml:FeatureCollection")))
+	else if (nodeText->EndsWith(UTF8STRC(":FeatureCollection")))
 	{
 		Math::CoordinateSystem *csys = 0;
 		UInt32 srid = 0;
@@ -661,6 +664,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		UOSInt i;
 		Text::XMLAttrib *attr;
 		UTF8Char *sarr[4];
+		UTF8Char *sarr2[3];
 		while (reader->ReadNext())
 		{
 			if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
@@ -673,21 +677,24 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 				{
 					while (reader->ReadNext())
 					{
-						if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+						nodeType = reader->GetNodeType();
+						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 						{
 							break;
 						}
-						else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+						else if (nodeType == Text::XMLNode::NT_ELEMENT)
 						{
 							while (reader->ReadNext())
 							{
-								if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+								nodeType = reader->GetNodeType();
+								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
 								{
 									break;
 								}
-								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+								else if (nodeType == Text::XMLNode::NT_ELEMENT)
 								{
-									if (reader->GetNodeText()->StartsWith(UTF8STRC("fme:")))
+									nodeText = reader->GetNodeText();
+									if (nodeText->StartsWith(UTF8STRC("fme:")))
 									{
 										nameList.Add(Text::StrCopyNew(reader->GetNodeText()->v + 4));
 										sb.ClearStr();
@@ -701,7 +708,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											valList.Add(0);
 										}
 									}
-									else if (reader->GetNodeText()->Equals(UTF8STRC("gml:pointProperty")))
+									else if (nodeText->Equals(UTF8STRC("gml:pointProperty")))
 									{
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POINT3D)
 										{
@@ -803,7 +810,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											reader->SkipElement();
 										}
 									}
-									else if (reader->GetNodeText()->Equals(UTF8STRC("gml:surfaceProperty")))
+									else if (nodeText->Equals(UTF8STRC("gml:surfaceProperty")))
 									{
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
 										{
@@ -961,7 +968,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											}
 										}
 									}
-									else if (reader->GetNodeText()->Equals(UTF8STRC("gml:curveProperty")))
+									else if (nodeText->Equals(UTF8STRC("gml:curveProperty")))
 									{
 										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYLINE3D)
 										{
@@ -1069,6 +1076,167 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 											}
 										}
 									}
+									else if (nodeText->EndsWith(UTF8STRC(":geometryProperty")))
+									{
+										if (layerType == Map::DRAW_LAYER_UNKNOWN || layerType == Map::DRAW_LAYER_POLYGON)
+										{
+											layerType = Map::DRAW_LAYER_POLYGON;
+											while (reader->ReadNext())
+											{
+												if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENTEND)
+												{
+													break;
+												}
+												else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
+												{
+													if (reader->GetNodeText()->Equals(UTF8STRC("gml:MultiPolygon")))
+													{
+														if (csys == 0)
+														{
+															i = reader->GetAttribCount();
+															while (i-- > 0)
+															{
+																attr = reader->GetAttrib(i);
+																if (attr->name->Equals(UTF8STRC("srsName")))
+																{
+																	csys = Math::CoordinateSystemManager::CreateFromName(attr->value->ToCString());
+																	if (csys)
+																	{
+																		srid = csys->GetSRID();
+																	}
+																	break;
+																}
+															}
+														}
+														if (lyr == 0)
+														{
+															colCnt = nameList.GetCount();
+															ccols = nameList.GetArray(&i);
+															NEW_CLASS(lyr, Map::VectorLayer(layerType, fileName, colCnt, ccols, csys, 0, CSTR_NULL));
+														}
+														if (colCnt == valList.GetCount())
+														{
+															Data::ArrayListDbl xPts;
+															Data::ArrayListDbl yPts;
+															Data::ArrayListDbl zPts;
+															Math::Polygon *pg;
+															Double *ptList;
+															scols = valList.GetArray(&i);
+															while (reader->ReadNext())
+															{
+																nodeType = reader->GetNodeType();
+																if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																{
+																	break;
+																}
+																else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:polygonMember")))
+																{
+																	while (reader->ReadNext())
+																	{
+																		nodeType = reader->GetNodeType();
+																		if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																		{
+																			break;
+																		}
+																		else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:Polygon")))
+																		{
+																			while (reader->ReadNext())
+																			{
+																				nodeType = reader->GetNodeType();
+																				if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																				{
+																					break;
+																				}
+																				else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:outerBoundaryIs")))
+																				{
+																					while (reader->ReadNext())
+																					{
+																						nodeType = reader->GetNodeType();
+																						if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																						{
+																							break;
+																						}
+																						else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:LinearRing")))
+																						{
+																							while (reader->ReadNext())
+																							{
+																								nodeType = reader->GetNodeType();
+																								if (nodeType == Text::XMLNode::NT_ELEMENTEND)
+																								{
+																									break;
+																								}
+																								else if (nodeType == Text::XMLNode::NT_ELEMENT && reader->GetNodeText()->Equals(UTF8STRC("gml:coordinates")))
+																								{
+																									sb.ClearStr();
+																									reader->ReadNodeText(&sb);
+																									sarr[1] = sb.ToString();
+																									while (true)
+																									{
+																										i = Text::StrSplit(sarr, 2, sarr[1], ' ');
+																										if (Text::StrSplit(sarr2, 3, sarr[0], ',') == 2)
+																										{
+																											xPts.Add(Text::StrToDouble(sarr2[0]));
+																											yPts.Add(Text::StrToDouble(sarr2[1]));
+																										}
+																										if (i != 2)
+																											break;
+																									}
+
+																									if (xPts.GetCount() > 0)
+																									{
+																										NEW_CLASS(pg, Math::Polygon(srid, 1, xPts.GetCount()));
+																										ptList = pg->GetPointList(&i);
+																										while (i-- > 0)
+																										{
+																											ptList[(i << 1)] = xPts.GetItem(i);
+																											ptList[(i << 1) + 1] = yPts.GetItem(i);
+																										}
+																										lyr->AddVector(pg, scols);
+																									}
+																								}
+																								else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																								{
+																									reader->SkipElement();
+																								}
+																							}
+																						}
+																						else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																						{
+																							reader->SkipElement();
+																						}
+																					}
+																				}
+																				else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																				{
+																					reader->SkipElement();
+																				}
+																			}
+																		}
+																		else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																		{
+																			reader->SkipElement();
+																		}
+																	}
+																}
+																else if (nodeType == Text::XMLNode::NT_ELEMENT)
+																{
+																	reader->SkipElement();
+																}
+															}
+														}
+														else
+														{
+															reader->SkipElement();
+														}
+													}
+													else
+													{
+														reader->SkipElement();
+													}
+												}
+											}
+										}
+									}
 									else
 									{
 										reader->SkipElement();
@@ -1102,7 +1270,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 		DEL_CLASS(reader);
 		return lyr;
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("fme:xml-tables")))
+	else if (nodeText->Equals(UTF8STRC("fme:xml-tables")))
 	{
 		UOSInt i;
 		UOSInt j;
@@ -1264,7 +1432,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 			}
 		}
 	}
-	else if (reader->GetNodeText()->Equals(UTF8STRC("SYSTEMINFO")))
+	else if (nodeText->Equals(UTF8STRC("SYSTEMINFO")))
 	{
 		Text::StringBuilderUTF8 sb;
 		IO::SystemInfoLog *sysInfo;
