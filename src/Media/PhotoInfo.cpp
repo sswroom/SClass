@@ -113,7 +113,7 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 					if ((item = exif2->GetExifItem(37500)) != 0)
 					{
 						UInt8 *valBuff;
-						if (item->size <= 4)
+						if (item->cnt <= 4)
 						{
 							valBuff = (UInt8*)&item->value;
 						}
@@ -121,7 +121,7 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 						{
 							valBuff = (UInt8*)item->dataBuff;
 						}
-						Media::EXIFData *innerExif = exif->ParseMakerNote(valBuff, item->size);
+						Media::EXIFData *innerExif = exif->ParseMakerNote(valBuff, item->cnt);
 						if (innerExif)
 						{
 							if (innerExif->GetPhotoExpTime())
@@ -147,7 +147,7 @@ Media::PhotoInfo::PhotoInfo(IO::IStreamData *fd)
 				Text::XMLDocument *doc;
 				Text::EncodingFactory encFact;
 				NEW_CLASS(doc, Text::XMLDocument());
-				if (doc->ParseBuff(&encFact, (const UInt8*)item->dataBuff, item->size))
+				if (doc->ParseBuff(&encFact, (const UInt8*)item->dataBuff, item->cnt))
 				{
 					ParseXMF(doc);
 				}

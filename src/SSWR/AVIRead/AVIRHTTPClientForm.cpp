@@ -361,7 +361,16 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnViewClicked(void *userObj)
 		Text::IMIMEObj *mimeObj;
 		IO::StmData::MemoryData *md;
 		NEW_CLASS(md, IO::StmData::MemoryData(buff, buffSize));
-		mimeObj = Text::IMIMEObj::ParseFromData(md, me->respContType->ToCString());
+		Text::CString contType;
+		if (me->respContType)
+		{
+			contType = me->respContType->ToCString();
+		}
+		else
+		{
+			contType = CSTR("application/octet-stream");
+		}
+		mimeObj = Text::IMIMEObj::ParseFromData(md, contType);
 		DEL_CLASS(md);
 		if (mimeObj)
 		{

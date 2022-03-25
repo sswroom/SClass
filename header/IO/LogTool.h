@@ -68,6 +68,7 @@ namespace IO
 		void AddLogHandler(ILogHandler *hdlr, ILogHandler::LogLevel logLev);
 		void RemoveLogHandler(ILogHandler *hdlr);
 		virtual void LogMessage(Text::CString logMsg, ILogHandler::LogLevel level);
+		ILogHandler *GetLastFileLog();
 	};
 }
 #endif

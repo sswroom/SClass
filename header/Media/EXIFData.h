@@ -37,7 +37,7 @@ namespace Media
 		{
 			Int32 id;
 			EXIFType type;
-			UInt32 size;
+			UInt32 cnt;
 			Int32 value;
 			void *dataBuff;
 		} EXIFItem;

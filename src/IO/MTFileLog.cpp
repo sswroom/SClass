@@ -8,16 +8,12 @@
 #include "Text/MyString.h"
 #include "Text/StringBuilderUTF8.h"
 
-UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
+UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time, Int32 *lastVal)
 {
 	UTF8Char *currName;
-
-	if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
+	switch (this->groupStyle)
 	{
-		currName = this->fileName->ConcatTo(buff);
-	}
-	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR)
-	{
+	case IO::ILogHandler::LOG_GROUP_TYPE_PER_YEAR:
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyy");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
@@ -25,9 +21,8 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
-	}
-	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH)
-	{
+		break;
+	case IO::ILogHandler::LOG_GROUP_TYPE_PER_MONTH:
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMM");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
@@ -35,9 +30,8 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
-	}
-	else if (this->groupStyle == IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY)
-	{
+		break;
+	case IO::ILogHandler::LOG_GROUP_TYPE_PER_DAY:
 		currName = time->ToString(this->fileName->ConcatTo(buff), "yyyyMMdd");
 		if (!IO::Path::IsDirectoryExist(CSTRP(buff, currName)))
 		{
@@ -45,34 +39,34 @@ UTF8Char *IO::MTFileLog::GetNewName(UTF8Char *buff, Data::DateTime *time)
 		}
 		*currName++ = IO::Path::PATH_SEPERATOR;
 		currName = this->extName->ConcatTo(currName);
-	}
-	else
-	{
+		break;
+	case IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP:
+	default:
 		currName = this->fileName->ConcatTo(buff);
+		break;
 	}
 
-	if (this->logStyle == IO::ILogHandler::LOG_TYPE_SINGLE_FILE)
+	switch (this->logStyle)
 	{
-	}
-	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_HOUR)
-	{
-		lastVal = time->GetDay() * 24 + time->GetHour();
+	case IO::ILogHandler::LOG_TYPE_PER_HOUR:
+		if (lastVal) *lastVal = time->GetDay() * 24 + time->GetHour();
 		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMddHH"), UTF8STRC(".log"));
-	}
-	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_DAY)
-	{
-		lastVal = time->GetDay();
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_DAY:
+		if (lastVal) *lastVal = time->GetDay();
 		currName = Text::StrConcatC(time->ToString(currName, "yyyyMMdd"), UTF8STRC(".log"));
-	}
-	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_MONTH)
-	{
-		lastVal = time->GetMonth();
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_MONTH:
+		if (lastVal) *lastVal = time->GetMonth();
 		currName = Text::StrConcatC(time->ToString(currName, "yyyyMM"), UTF8STRC(".log"));
-	}
-	else if (this->logStyle == IO::ILogHandler::LOG_TYPE_PER_YEAR)
-	{
-		lastVal = time->GetYear();
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_YEAR:
+		if (lastVal) *lastVal = time->GetYear();
 		currName = Text::StrConcatC(time->ToString(currName, "yyyy"), UTF8STRC(".log"));
+		break;
+	case IO::ILogHandler::LOG_TYPE_SINGLE_FILE:
+	default:
+		break;
 	}
 	return currName;
 }
@@ -91,37 +85,39 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 	{
 		time.SetTicks(dateArr[i]);
 		time.ToLocalTime();
-		if (logStyle == ILogHandler::LOG_TYPE_PER_DAY)
+		switch (logStyle)
 		{
+		case ILogHandler::LOG_TYPE_PER_DAY:
 			if (time.GetDay() != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time, &lastVal);
 			}
-		}
-		else if (logStyle == ILogHandler::LOG_TYPE_PER_MONTH)
-		{
+			break;
+		case ILogHandler::LOG_TYPE_PER_MONTH:
 			if (time.GetMonth() != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time, &lastVal);
 			}
-		}
-		else if (logStyle == ILogHandler::LOG_TYPE_PER_YEAR)
-		{
+			break;
+		case ILogHandler::LOG_TYPE_PER_YEAR:
 			if (time.GetYear() != lastVal)
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time, &lastVal);
 			}
-		}
-		else if (logStyle == ILogHandler::LOG_TYPE_PER_HOUR)
-		{
+			break;
+		case ILogHandler::LOG_TYPE_PER_HOUR:
 			if (lastVal != (time.GetDay() * 24 + time.GetHour()))
 			{
 				newFile = true;
-				sptr = GetNewName(buff, &time);
+				sptr = GetNewName(buff, &time, &lastVal);
 			}
+			break;
+		case ILogHandler::LOG_TYPE_SINGLE_FILE:
+		default:
+			break;
 		}
 
 		if (newFile)
@@ -139,6 +135,7 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));
 			log->WriteLineC(buff, (UOSInt)(sptr - buff));
 			newFile = false;
+			this->hasNewFile = true;
 		}
 
 		sptr = time.ToString(buff, this->dateFormat);
@@ -225,6 +222,7 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
 	this->closed = false;
+	this->hasNewFile = false;
 
 
 	if (this->groupStyle != IO::ILogHandler::LOG_GROUP_TYPE_NO_GROUP)
@@ -249,11 +247,15 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	sptr = GetNewName(buff, &dt);
+	sptr = GetNewName(buff, &dt, &this->lastVal);
 
 	NEW_CLASS(fileStm, FileStream({buff, (UOSInt)(sptr - buff)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	NEW_CLASS(cstm, IO::BufferedOutputStream(fileStm, 4096));
 	NEW_CLASS(log, Text::UTF8Writer(cstm));
+	if (fileStm->GetPosition() == 0)
+	{
+		this->hasNewFile = true;
+	}
 	log->WriteSignature();
 	Sync::Thread::Create(FileThread, this, 0x20000);
 }
@@ -321,4 +323,35 @@ void IO::MTFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSIn
 	this->dateList->Add(time->ToTicks());
 	mutUsage.EndUse();
 	evt->Set();
+}
+
+Bool IO::MTFileLog::HasNewFile()
+{
+	return this->hasNewFile;
+}
+UTF8Char *IO::MTFileLog::GetLastFileName(UTF8Char *sbuff)
+{
+	this->hasNewFile = false;
+	Data::DateTime dt;
+	dt.SetCurrTime();
+	switch (this->logStyle)
+	{
+	case IO::ILogHandler::LOG_TYPE_PER_HOUR:
+		dt.AddHour(-1);
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_DAY:
+		dt.AddDay(-1);
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_MONTH:
+		dt.AddMonth(-1);
+		break;
+	case IO::ILogHandler::LOG_TYPE_PER_YEAR:
+		dt.AddMonth(-12);
+		break;
+	case IO::ILogHandler::LOG_TYPE_SINGLE_FILE:
+	default:
+		break;
+	}
+
+	return GetNewName(sbuff, &dt, 0);
 }

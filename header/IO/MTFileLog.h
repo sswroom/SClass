@@ -31,8 +31,9 @@ namespace IO
 		Text::String *extName;
 		Bool closed;
 		Bool running;
+		Bool hasNewFile;
 
-		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime);
+		UTF8Char *GetNewName(UTF8Char *buff, Data::DateTime *logTime, Int32 *lastVal);
 		void WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCnt);
 		static UInt32 __stdcall FileThread(void *userObj);
 		void Init(LogType style, LogGroup groupStyle, const Char *dateFormat);
@@ -42,6 +43,9 @@ namespace IO
 		virtual ~MTFileLog();
 		virtual void LogClosed();
 		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);
+
+		Bool HasNewFile();
+		UTF8Char *GetLastFileName(UTF8Char *sbuff);
 	};
 }
 #endif

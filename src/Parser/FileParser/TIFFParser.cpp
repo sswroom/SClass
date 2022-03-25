@@ -163,7 +163,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		{
 			valid = false;
 		}
-		else if (item->size == 1)
+		else if (item->cnt == 1)
 		{
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
@@ -183,8 +183,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
 				UInt16 *val = exif->GetExifUInt16(0x111);
-				stripOfsts = MemAlloc(UInt32, item->size);
-				j = item->size;
+				stripOfsts = MemAlloc(UInt32, item->cnt);
+				j = item->cnt;
 				while (j-- > 0)
 				{
 					stripOfsts[j] = val[j];
@@ -192,8 +192,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripOfsts = MemAlloc(UInt32, item->size);
-				MemCopyNO(stripOfsts, exif->GetExifUInt32(0x111), item->size * sizeof(UInt32));
+				stripOfsts = MemAlloc(UInt32, item->cnt);
+				MemCopyNO(stripOfsts, exif->GetExifUInt32(0x111), item->cnt * sizeof(UInt32));
 			}
 			else
 			{
@@ -205,7 +205,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		{
 			valid = false;
 		}
-		else if (item->size == 1)
+		else if (item->cnt == 1)
 		{
 			nStrip = 1;
 			if (item->type == Media::EXIFData::ET_UINT16)
@@ -223,12 +223,12 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		}
 		else
 		{
-			nStrip = item->size;
+			nStrip = item->cnt;
 			if (item->type == Media::EXIFData::ET_UINT16)
 			{
 				UInt16 *val = exif->GetExifUInt16(0x111);
-				stripLengs = MemAlloc(UInt32, item->size);
-				j = item->size;
+				stripLengs = MemAlloc(UInt32, item->cnt);
+				j = item->cnt;
 				while (j-- > 0)
 				{
 					stripLengs[j] = val[j];
@@ -236,8 +236,8 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			}
 			else if (item->type == Media::EXIFData::ET_UINT32)
 			{
-				stripLengs = MemAlloc(UInt32, item->size);
-				MemCopyNO(stripLengs, exif->GetExifUInt32(0x117), item->size * sizeof(UInt32));
+				stripLengs = MemAlloc(UInt32, item->cnt);
+				MemCopyNO(stripLengs, exif->GetExifUInt32(0x117), item->cnt * sizeof(UInt32));
 			}
 			else
 			{
@@ -412,7 +412,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (item)
 			{
 				Media::ICCProfile *icc;
-				icc = Media::ICCProfile::Parse((UInt8*)item->dataBuff, item->size);
+				icc = Media::ICCProfile::Parse((UInt8*)item->dataBuff, item->cnt);
 				if (icc)
 				{
 					icc->GetRedTransferParam(color.GetRTranParam());
@@ -1454,7 +1454,16 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			Math::VectorImage *vimg;
 			Media::SharedImage *simg;
 			
-			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84), 0, 0, 0, 0, 0));
+			Math::CoordinateSystem *csys;
+			if (srid == 0)
+			{
+				csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
+			}
+			else
+			{
+				csys = Math::CoordinateSystemManager::SRCreateCSys(srid);
+			}
+			NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 			img->To32bpp();
 			NEW_CLASS(simg, Media::SharedImage(imgList, true));
 			NEW_CLASS(vimg, Math::VectorImage(srid, simg, minX, minY, maxX, maxY, false, fd->GetFullName(), 0, 0));
@@ -1544,7 +1553,7 @@ UInt32 Parser::FileParser::TIFFParser::GetUInt(Media::EXIFData *exif, Int32 id)
 	Media::EXIFData::EXIFItem *item = exif->GetExifItem(id);
 	if (item == 0)
 		return 0;
-	if (item->size != 1)
+	if (item->cnt != 1)
 		return 0;
 	if (item->type == Media::EXIFData::ET_UINT16)
 		return *exif->GetExifUInt16(id);
@@ -1571,7 +1580,7 @@ UInt32 Parser::FileParser::TIFFParser::GetUIntSum(Media::EXIFData *exif, Int32 i
 	if (item == 0)
 		return 0;
 	UInt32 sum = 0;
-	UOSInt i = item->size;
+	UOSInt i = item->cnt;
 	if (nChannels)
 	{
 		*nChannels = i;

@@ -28,77 +28,77 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 		exifId = ids.GetItem(i);
 		exifItem = exif->GetExifItem(exifId);
 		WriteInt16(&ifd[2 + i * 12], exifItem->id);
-		WriteUInt32(&ifd[6 + i * 12], exifItem->size);
+		WriteUInt32(&ifd[6 + i * 12], exifItem->cnt);
 		switch (exifItem->type)
 		{
 		case Media::EXIFData::ET_BYTES:
 			WriteInt16(&ifd[4 + i * 12], 1);
-			if (exifItem->size <= 4)
+			if (exifItem->cnt <= 4)
 			{
 				WriteInt32(&ifd[10 + i * 12], exifItem->value);
 			}
 			else
 			{
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-				currOfst += exifItem->size;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+				currOfst += exifItem->cnt;
 			}
 			break;
 		case Media::EXIFData::ET_STRING:
 			WriteInt16(&ifd[4 + i * 12], 2);
 			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-			stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-			currOfst += exifItem->size;
+			stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+			currOfst += exifItem->cnt;
 			break;
 		case Media::EXIFData::ET_UINT16:
 			WriteInt16(&ifd[4 + i * 12], 3);
-			if (exifItem->size <= 2)
+			if (exifItem->cnt <= 2)
 			{
 				WriteInt32(&ifd[10 + i * 12], exifItem->value);
 			}
 			else
 			{
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 2);
-				currOfst += exifItem->size * 2;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 2);
+				currOfst += exifItem->cnt * 2;
 			}
 			break;
 		case Media::EXIFData::ET_UINT32:
 			WriteInt16(&ifd[4 + i * 12], 4);
-			if (exifItem->size == 1)
+			if (exifItem->cnt == 1)
 			{
 				WriteInt32(&ifd[10 + i * 12], exifItem->value);
 			}
 			else
 			{
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 4);
-				currOfst += exifItem->size * 4;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 4);
+				currOfst += exifItem->cnt * 4;
 			}
 			break;
 		case Media::EXIFData::ET_RATIONAL:
 			WriteInt16(&ifd[4 + i * 12], 5);
 			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-			stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 8);
-			currOfst += exifItem->size * 8;
+			stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+			currOfst += exifItem->cnt * 8;
 			break;
 		case Media::EXIFData::ET_OTHER:
 			WriteInt16(&ifd[4 + i * 12], 7);
 			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-			stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-			currOfst += exifItem->size;
+			stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+			currOfst += exifItem->cnt;
 			break;
 		case Media::EXIFData::ET_INT16:
 			WriteInt16(&ifd[4 + i * 12], 8);
-			if (exifItem->size <= 2)
+			if (exifItem->cnt <= 2)
 			{
 				WriteInt32(&ifd[10 + i * 12], exifItem->value);
 			}
 			else
 			{
 				WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 2);
-				currOfst += exifItem->size * 2;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 2);
+				currOfst += exifItem->cnt * 2;
 			}
 			break;
 		case Media::EXIFData::ET_SUBEXIF:
@@ -119,8 +119,8 @@ void Exporter::TIFFExporter::GenSubExifBuff(IO::SeekableStream *stm, UInt64 buff
 		case Media::EXIFData::ET_DOUBLE:
 			WriteInt16(&ifd[4 + i * 12], 12);
 			WriteUInt32(&ifd[10 + i * 12], (UInt32)currOfst);
-			stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 8);
-			currOfst += exifItem->size * 8;
+			stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+			currOfst += exifItem->cnt * 8;
 			break;
 		case Media::EXIFData::ET_UNKNOWN:
 			break;
@@ -707,35 +707,35 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				exifId = exifItem->id;
 			}
 			WriteInt16(&ifd[2 + k * 12], exifItem->id);
-			WriteUInt32(&ifd[6 + k * 12], exifItem->size);
+			WriteUInt32(&ifd[6 + k * 12], exifItem->cnt);
 			switch (exifItem->type)
 			{
 			case Media::EXIFData::ET_BYTES:
 				WriteInt16(&ifd[4 + k * 12], 1);
-				if (exifItem->size <= 4)
+				if (exifItem->cnt <= 4)
 				{
 					WriteInt32(&ifd[10 + k * 12], exifItem->value);
 				}
 				else
 				{
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-					currOfst += exifItem->size;
+					stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+					currOfst += exifItem->cnt;
 				}
 				break;
 			case Media::EXIFData::ET_STRING:
 				WriteInt16(&ifd[4 + k * 12], 2);
 				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-				currOfst += exifItem->size;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+				currOfst += exifItem->cnt;
 				break;
 			case Media::EXIFData::ET_UINT16:
 				WriteInt16(&ifd[4 + k * 12], 3);
-				if (exifItem->size == 2)
+				if (exifItem->cnt == 2)
 				{
 					WriteInt32(&ifd[10 + k * 12], exifItem->value);
 				}
-				else if (exifItem->size == 1)
+				else if (exifItem->cnt == 1)
 				{
 					WriteInt16(&ifd[10 + k * 12], ReadInt16((UInt8*)&exifItem->value));
 					WriteInt16(&ifd[12 + k * 12], 0);
@@ -743,46 +743,46 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 				else
 				{
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 2);
-					currOfst += exifItem->size * 2;
+					stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 2);
+					currOfst += exifItem->cnt * 2;
 				}
 				break;
 			case Media::EXIFData::ET_UINT32:
 				WriteInt16(&ifd[4 + k * 12], 4);
-				if (exifItem->size == 1)
+				if (exifItem->cnt == 1)
 				{
 					WriteInt32(&ifd[10 + k * 12], exifItem->value);
 				}
 				else
 				{
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 4);
-					currOfst += exifItem->size * 4;
+					stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 4);
+					currOfst += exifItem->cnt * 4;
 				}
 				break;
 			case Media::EXIFData::ET_RATIONAL:
 				WriteInt16(&ifd[4 + k * 12], 5);
 				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 8);
-				currOfst += exifItem->size * 8;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_OTHER:
 				WriteInt16(&ifd[4 + k * 12], 7);
 				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size);
-				currOfst += exifItem->size;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt);
+				currOfst += exifItem->cnt;
 				break;
 			case Media::EXIFData::ET_INT16:
 				WriteInt16(&ifd[4 + k * 12], 8);
-				if (exifItem->size <= 2)
+				if (exifItem->cnt <= 2)
 				{
 					WriteInt32(&ifd[10 + k * 12], exifItem->value);
 				}
 				else
 				{
 					WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-					stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 2);
-					currOfst += exifItem->size * 2;
+					stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 2);
+					currOfst += exifItem->cnt * 2;
 				}
 				break;
 			case Media::EXIFData::ET_SUBEXIF:
@@ -803,8 +803,8 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			case Media::EXIFData::ET_DOUBLE:
 				WriteInt16(&ifd[4 + k * 12], 12);
 				WriteUInt32(&ifd[10 + k * 12], (UInt32)currOfst);
-				stm->Write((UInt8*)exifItem->dataBuff, exifItem->size * 8);
-				currOfst += exifItem->size * 8;
+				stm->Write((UInt8*)exifItem->dataBuff, exifItem->cnt * 8);
+				currOfst += exifItem->cnt * 8;
 				break;
 			case Media::EXIFData::ET_UNKNOWN:
 				break;

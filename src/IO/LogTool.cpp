@@ -157,3 +157,8 @@ void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 	}
 	mutUsage.EndUse();
 }
+
+IO::ILogHandler *IO::LogTool::GetLastFileLog()
+{
+	return this->fileLogArr->GetItem(this->fileLogArr->GetCount() - 1);
+}
