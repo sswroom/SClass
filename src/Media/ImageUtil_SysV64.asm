@@ -1097,7 +1097,7 @@ cargb1_32lop5:
 	adc rcx,0
 	mov ecx,dword [rdx+rcx*4]
 	movnti dword [rsi],ecx
-	xor rdi,rdi
+	xor rcx,rcx
 	shl al,1
 	adc rcx,0
 	mov ecx,dword [rdx+rcx*4]
@@ -1132,8 +1132,8 @@ cargb1_32lop5:
 	adc rcx,0
 	mov ecx,dword [rdx+rcx*4]
 	movnti dword [rsi+28],ecx
-	lea rdi,[rdi+1]
-	lea rsi,[rsi+32]
+	add rdi,1
+	add rsi,32
 	dec r11
 	jnz cargb1_32lop5
 
@@ -1147,7 +1147,7 @@ cargb1_32lop6:
 	adc rcx,0
 	mov ecx,dword [rdx+rcx*4]
 	movnti dword [rsi],ecx
-	lea rsi,[rsi+4]
+	add rsi,4
 	dec r11
 	jnz cargb1_32lop6
 	

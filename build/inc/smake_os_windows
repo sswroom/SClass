@@ -128,6 +128,9 @@ Net/WLANWindowsCore.h: ../../src/Net/WLANWindowsCore.cpp
 Net/WLANWindowsInterface.h: ../../src/Net/WLANWindowsInterface.cpp
 @WLANWindowsInterface.o
 
+Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser_Null.cpp
+@JP2Parser.o
+
 Sync/Thread.h: ../../src/Sync/ThreadW.cpp
 @Thread.o
 @Thread_CPP.o
@@ -213,6 +216,7 @@ WinSSLEngine.o: ../../src/Net/WinSSLEngine.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANW.cpp
 WLANWindowsCore.o: ../../src/Net/WLANWindowsCore.cpp
 WLANWindowsInterface.o: ../../src/Net/WLANWindowsInterface.cpp
+JP2Parser.o: ../../src/Parser/FileParser/JP2Parser_Null.cpp
 Thread.o: ../../src/Sync/ThreadW.cpp
 ServiceControl.o: ../../src/Win32/ServiceControl.cpp
 WindowsBTScanner.o: ../../src/Win32/WindowsBTScanner.cpp

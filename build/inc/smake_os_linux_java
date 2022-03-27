@@ -76,6 +76,9 @@ Net/WLANLinuxInterface.h: ../../src/Net/WLANLinuxInterface.cpp
 Net/WLANLinuxMTKInterface.h: ../../src/Net/WLANLinuxMTKInterface.cpp
 @WLANLinuxMTKInterface.o
 
+Parser/FileParser/JP2Parser.h: ../../src/Parser/FileParser/JP2Parser.cpp
+@JP2Parser.o
+
 Sync/Thread.h: ../../src/Sync/ThreadU.cpp
 @Thread.o
 
@@ -145,5 +148,7 @@ SSLEngineFactory.o: ../../src/Net/SSLEngineFactoryOpenSSL.cpp
 WirelessLAN.o: ../../src/Net/WirelessLANL.cpp
 WLANLinuxInterface.o: ../../src/Net/WLANLinuxInterface.cpp
 WLANLinuxMTKInterface.o: ../../src/Net/WLANLinuxMTKInterface.cpp
+JP2Parser.o: ../../src/Parser/FileParser/JP2Parser.cpp
+!-lopenjp2
 Thread.o: ../../src/Sync/ThreadU.cpp
 !-lpthread

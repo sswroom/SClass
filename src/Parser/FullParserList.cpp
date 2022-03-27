@@ -38,6 +38,7 @@
 #include "Parser/FileParser/IPACParser.h"
 #include "Parser/FileParser/IS2Parser.h"
 #include "Parser/FileParser/ISOParser.h"
+#include "Parser/FileParser/JP2Parser.h"
 #include "Parser/FileParser/JSONParser.h"
 #include "Parser/FileParser/LinkArcParser.h"
 #include "Parser/FileParser/LOGParser.h"
@@ -240,6 +241,8 @@ Parser::FullParserList::FullParserList() : Parser::ParserList()
 	NEW_CLASS(parser, Parser::FileParser::ClassParser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::X509Parser());
+	this->AddFileParser(parser);
+	NEW_CLASS(parser, Parser::FileParser::JP2Parser());
 	this->AddFileParser(parser);
 	NEW_CLASS(parser, Parser::FileParser::RAR5Parser()); ///////////////////////////////
 	this->AddFileParser(parser);

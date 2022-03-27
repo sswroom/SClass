@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Data/Sort/ArtificialQuickSort.h"
 #include "DB/ColDef.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "Map/WebImageLayer.h"
 #include "Math/VectorImage.h"
 #include "Media/ImageList.h"
@@ -103,8 +104,10 @@ void Map::WebImageLayer::LoadImage(Map::WebImageLayer::ImageStat *stat)
 	{
 		IO::ParsedObject *pobj;
 		IO::ParserType pt;
-		pobj = this->parsers->ParseFile(stat->data, &pt);
-		DEL_CLASS(stat->data);
+		IO::StmData::BufferedStreamData *buffFd;
+		NEW_CLASS(buffFd, IO::StmData::BufferedStreamData(stat->data));
+		pobj = this->parsers->ParseFile(buffFd, &pt);
+		DEL_CLASS(buffFd);
 		if (pobj == 0 || pt != IO::ParserType::ImageList)
 		{
 			if (stat->name)

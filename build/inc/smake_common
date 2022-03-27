@@ -1798,6 +1798,8 @@ IO/ProtoHdlr/ProtoSyncHandler.h: ../../src/IO/ProtoHdlr/ProtoSyncHandler.cpp
 @ProtoSyncHandler.o
 IO/StmData/BlockStreamData.h: ../../src/IO/StmData/BlockStreamData.cpp
 @BlockStreamData.o
+IO/StmData/BufferedStreamData.h: ../../src/IO/StmData/BufferedStreamData.cpp
+@BufferedStreamData.o
 IO/StmData/ConcatStreamData.h: ../../src/IO/StmData/ConcatStreamData.cpp
 @ConcatStreamData.o
 IO/StmData/FileData.h: ../../src/IO/StmData/FileData.cpp
@@ -4314,6 +4316,7 @@ ProtoRevGeoHandler.o: ../../src/IO/ProtoHdlr/ProtoRevGeoHandler.cpp
 ProtoSMonHandler.o: ../../src/IO/ProtoHdlr/ProtoSMonHandler.cpp
 ProtoSyncHandler.o: ../../src/IO/ProtoHdlr/ProtoSyncHandler.cpp
 BlockStreamData.o: ../../src/IO/StmData/BlockStreamData.cpp
+BufferedStreamData.o: ../../src/IO/StmData/BufferedStreamData.cpp
 ConcatStreamData.o: ../../src/IO/StmData/ConcatStreamData.cpp
 FileData.o: ../../src/IO/StmData/FileData.cpp
 MemoryData.o: ../../src/IO/StmData/MemoryData.cpp

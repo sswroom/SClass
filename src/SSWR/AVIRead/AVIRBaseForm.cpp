@@ -12,6 +12,7 @@
 #include "IO/Device/MTKGPSNMEA.h"
 #include "IO/Device/OlympusCameraControl.h"
 #include "IO/Device/RockwellModemController.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Map/BaseMapLayer.h"
 #include "Map/TileMapLayer.h"
@@ -419,6 +420,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
 	IO::StmData::FileData *fd;
+	IO::StmData::BufferedStreamData *buffFd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
@@ -474,13 +476,14 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 		else if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
-			if (!me->core->LoadData(fd, 0))
+			NEW_CLASS(buffFd, IO::StmData::BufferedStreamData(fd));
+			if (!me->core->LoadData(buffFd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}
-			DEL_CLASS(fd);
+			DEL_CLASS(buffFd);
 		}
 		i++;
 	}

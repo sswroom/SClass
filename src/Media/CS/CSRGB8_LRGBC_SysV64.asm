@@ -666,6 +666,17 @@ crgb2lop3:
 	pop rbp
 	jmp crgbexit
 
+;0 retAddr
+;rdi srcPtr
+;rsi destPtr
+;rdx width
+;rcx height
+;r8 srcRGBBpl
+;r9 destRGBBpl
+;8 srcNBits
+;16 srcPal
+;24 destPal
+;32 rgbTable
 	align 16
 crgb1start:	
 	mov rax,rdx
@@ -675,6 +686,7 @@ crgb1start:
 	sub r9,rbx ;destRGBBpl
 	mov rbx,qword [rsp+24] ;destPal
 	push rbp
+	mov rbp,rcx
 	align 16
 crgb1lop2:
 	mov r11,rdx ;width

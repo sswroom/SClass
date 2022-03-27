@@ -507,7 +507,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						}
 						compImgData = MemAlloc(UInt8, maxLeng);
 
-						UOSInt dbpl = imgWidth * bpp >> 3;
+						UOSInt dbpl = ((imgWidth * bpp) + 7) >> 3;
 //						OSInt decBpl = (((imgWidth * bpp) & ~7) + 7)/ 8;
 						UOSInt decSize = dbpl * rowsPerStrip;
 						i = 0;

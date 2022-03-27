@@ -604,14 +604,14 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	}
 }
 
-void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CString url, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
+void SSWR::AVIRead::AVIRGISForm::OpenCSV(Text::CString url, UInt32 codePage, Text::CString name, Text::CString nameCol, Text::CString latCol, Text::CString lonCol)
 {
 	Net::HTTPClient *cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, url, Net::WebUtil::RequestMethod::HTTP_GET, true);
 	if (cli)
 	{
 		if (cli->GetRespStatus() == Net::WebStatus::SC_OK)
 		{
-			Map::IMapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
+			Map::IMapDrawLayer *lyr = Map::CSVMapParser::ParseAsPoint(cli, codePage, name, nameCol, latCol, lonCol, Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84));
 			if (lyr)
 			{
 				this->AddLayer(lyr);
@@ -1486,11 +1486,11 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 		break;
 	case MNU_HK_WASTELESS:
 		this->OpenCSV(CSTR("https://www.wastereduction.gov.hk/sites/default/files/wasteless.csv"),
-			CSTR("Waste Less"), CSTR("address_en"), CSTR("lat"), CSTR("lgt"));
+			65001, CSTR("Waste Less"), CSTR("address_en"), CSTR("lat"), CSTR("lgt"));
 		break;
 	case MNU_HK_HKE_EV_CHARGING_EN:
 		this->OpenCSV(CSTR("https://www.hkelectric.com/en/ElectricLiving/ElectricVehicles/Documents/Locations%20of%20HK%20Electric%20EV%20charging%20stations_eng.csv"),
-			CSTR("HK Electric EV Charging Station"), CSTR("HK Electric EV Charging Station_Car Park"), CSTR("Latitude"), CSTR("Longitude"));
+			65001, CSTR("HK Electric EV Charging Station"), CSTR("HK Electric EV Charging Station_Car Park"), CSTR("Latitude"), CSTR("Longitude"));
 		break;
 	}
 }
