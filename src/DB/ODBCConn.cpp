@@ -2286,9 +2286,9 @@ DB::DBUtil::ColType DB::ODBCReader::ODBCType2DBType(Int16 odbcType, UOSInt colSi
 	case SQL_SMALLINT:
 		return DB::DBUtil::CT_Int16;
 	case SQL_INTEGER:
-		if (this->conn->GetSvrType() == DB::DBUtil::ServerType::MySQL && colSize == 10)
+		if (this->conn->GetSvrType() == DB::DBUtil::ServerType::MySQL)// && colSize == 10)
 		{
-			return DB::DBUtil::CT_UInt32;
+			return DB::DBUtil::CT_Int32;
 		}
 		else
 		{
