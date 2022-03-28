@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "Data/ByteTool.h"
+#include "IO/FileAnalyse/DWGFileAnalyse.h"
 #include "IO/FileAnalyse/EBMLFileAnalyse.h"
 #include "IO/FileAnalyse/EXEFileAnalyse.h"
 #include "IO/FileAnalyse/FGDBFileAnalyse.h"
@@ -108,6 +109,10 @@ IO::FileAnalyse::IFileAnalyse *IO::FileAnalyse::IFileAnalyse::AnalyseFile(IO::IS
 	{
 		NEW_CLASS(analyse, IO::FileAnalyse::MDBFileAnalyse(fd));
 	}
+	else if (buff[0] == 'A' && buff[1] == 'C' && buff[2] == '1' && buff[3] == '0')
+	{
+		NEW_CLASS(analyse, IO::FileAnalyse::DWGFileAnalyse(fd));
+	}
 
 	if (analyse && analyse->IsError())
 	{
@@ -133,4 +138,5 @@ void IO::FileAnalyse::IFileAnalyse::AddFilters(IO::IFileSelector *selector)
 	selector->AddFilter(CSTR("*.exe"), CSTR("Executable file"));
 	selector->AddFilter(CSTR("*.rar"), CSTR("RAR file"));
 	selector->AddFilter(CSTR("*.spk"), CSTR("SPackage file"));
+	selector->AddFilter(CSTR("*.dwg"), CSTR("AutoCAD Drawing file"));
 }

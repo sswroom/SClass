@@ -1723,6 +1723,8 @@ IO/Device/SIM7000SocketFactory.h: ../../src/IO/Device/SIM7000SocketFactory.cpp
 @SIM7000SocketFactory.o
 IO/Device/TH10SB.h: ../../src/IO/Device/TH10SB.cpp
 @TH10SB.o
+IO/FileAnalyse/DWGFileAnalyse.h: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
+@DWGFileAnalyse.o
 IO/FileAnalyse/EBMLFileAnalyse.h: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 @EBMLFileAnalyse.o
 IO/FileAnalyse/EXEFileAnalyse.h: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
@@ -4279,6 +4281,7 @@ SHT20.o: ../../src/IO/Device/SHT20.cpp
 SIM7000.o: ../../src/IO/Device/SIM7000.cpp
 SIM7000SocketFactory.o: ../../src/IO/Device/SIM7000SocketFactory.cpp
 TH10SB.o: ../../src/IO/Device/TH10SB.cpp
+DWGFileAnalyse.o: ../../src/IO/FileAnalyse/DWGFileAnalyse.cpp
 EBMLFileAnalyse.o: ../../src/IO/FileAnalyse/EBMLFileAnalyse.cpp
 EXEFileAnalyse.o: ../../src/IO/FileAnalyse/EXEFileAnalyse.cpp
 FGDBFileAnalyse.o: ../../src/IO/FileAnalyse/FGDBFileAnalyse.cpp

@@ -32,6 +32,7 @@ namespace Data
 
 		virtual T GetItem(UOSInt index);
 		virtual void SetItem(UOSInt index, T val);
+		Data::ArrayList<T> *GetArrayList(Sync::MutexUsage *mutUsage);
 	};
 
 
@@ -135,6 +136,12 @@ namespace Data
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		this->arr->SetItem(index, val);
+	}
+
+	template <class T> Data::ArrayList<T> *Data::SyncArrayList<T>::GetArrayList(Sync::MutexUsage *mutUsage)
+	{
+		mutUsage->ReplaceMutex(this->mut);
+		return this->arr;
 	}
 }
 #endif
