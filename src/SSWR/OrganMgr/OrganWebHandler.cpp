@@ -2479,7 +2479,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
-			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+			Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 			Text::String *s;
 			Int32 itemId;
 			if (action && action->Equals(UTF8STRC("pickall")))
@@ -2526,7 +2526,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group"));
 						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+						s = req->GetHTTPFormStr(sb.ToCString());
 						if (s && s->v[0] == '1')
 						{
 							env.pickObjs->SortedInsert(itemId);
@@ -2547,7 +2547,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("species"));
 						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+						s = req->GetHTTPFormStr(sb.ToCString());
 						if (s && s->v[0] == '1')
 						{
 							env.pickObjs->SortedInsert(itemId);
@@ -2568,7 +2568,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("group"));
 						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+						s = req->GetHTTPFormStr(sb.ToCString());
 						if (s && s->v[0] == '1')
 						{
 							if (me->GroupMove(itemId, id, cateId))
@@ -2595,7 +2595,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("species"));
 						sb.AppendI32(itemId);
-						s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+						s = req->GetHTTPFormStr(sb.ToCString());
 						if (s && s->v[0] == '1')
 						{
 							if (me->SpeciesMove(itemId, id, cateId))
@@ -2943,16 +2943,16 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *task = req->GetHTTPFormStr(UTF8STRC("task"));
-			cname = req->GetHTTPFormStr(UTF8STRC("cname"));
-			ename = req->GetHTTPFormStr(UTF8STRC("ename"));
-			descr = req->GetHTTPFormStr(UTF8STRC("descr"));
-			txt = req->GetHTTPFormStr(UTF8STRC("adminOnly"));
+			Text::String *task = req->GetHTTPFormStr(CSTR("task"));
+			cname = req->GetHTTPFormStr(CSTR("cname"));
+			ename = req->GetHTTPFormStr(CSTR("ename"));
+			descr = req->GetHTTPFormStr(CSTR("descr"));
+			txt = req->GetHTTPFormStr(CSTR("adminOnly"));
 			if (txt && txt->v[0] == '1')
 			{
 				groupFlags = (GroupFlags)(groupFlags | GF_ADMIN_ONLY);
 			}
-			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(UTF8STRC("groupType"), &groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
+			if (task != 0 && cname != 0 && req->GetHTTPFormInt32(CSTR("groupType"), &groupTypeId) && ename != 0 && descr != 0 && ename->v[0] != 0 && cname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
 				{
@@ -3248,7 +3248,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user != 0 && env.user->userType == 0)
 		{
 			req->ParseHTTPForm();
-			Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+			Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 			Text::String *s;
 			Int32 userfileId;
 			if (action && action->Equals(UTF8STRC("pickall")))
@@ -3277,7 +3277,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("userfile"));
 					sb.AppendI32(userfileId);
-					s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+					s = req->GetHTTPFormStr(sb.ToCString());
 					if (s && s->v[0] == '1')
 					{
 						env.pickObjs->SortedInsert(userfileId);
@@ -3297,7 +3297,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 						sb.ClearStr();
 						sb.AppendC(UTF8STRC("userfile"));
 						sb.AppendI32(userfileId);
-						s = req->GetHTTPFormStr(sb.ToString(), sb.GetLength());
+						s = req->GetHTTPFormStr(sb.ToCString());
 						if (s && s->v[0] == '1')
 						{
 							if (me->UserfileMove(userfileId, id, cateId))
@@ -3953,12 +3953,12 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *task = req->GetHTTPFormStr(UTF8STRC("task"));
-			cname = req->GetHTTPFormStr(UTF8STRC("cname"));
-			sname = req->GetHTTPFormStr(UTF8STRC("sname"));
-			ename = req->GetHTTPFormStr(UTF8STRC("ename"));
-			descr = req->GetHTTPFormStr(UTF8STRC("descr"));
-			bookIgn = STR_PTR(req->GetHTTPFormStr(UTF8STRC("bookIgn")));
+			Text::String *task = req->GetHTTPFormStr(CSTR("task"));
+			cname = req->GetHTTPFormStr(CSTR("cname"));
+			sname = req->GetHTTPFormStr(CSTR("sname"));
+			ename = req->GetHTTPFormStr(CSTR("ename"));
+			descr = req->GetHTTPFormStr(CSTR("descr"));
+			bookIgn = STR_PTR(req->GetHTTPFormStr(CSTR("bookIgn")));
 			if (task != 0 && cname != 0 && sname != 0 && ename != 0 && descr != 0 && cname->v[0] != 0 && sname->v[0] != 0)
 			{
 				if (task->Equals(UTF8STRC("new")))
@@ -4458,14 +4458,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST && env.user && (env.user->userType == 0 || env.user->id == userFile->webuserId))
 				{
 					req->ParseHTTPForm();
-					Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+					Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 					if (action && action->Equals(UTF8STRC("setdefault")) && env.user->userType == 0)
 					{
 						me->SpeciesSetPhotoId(id, fileId);
 					}
 					else if (action && action->Equals(UTF8STRC("setname")))
 					{
-						Text::String *desc = req->GetHTTPFormStr(UTF8STRC("descr"));
+						Text::String *desc = req->GetHTTPFormStr(CSTR("descr"));
 						if (desc)
 						{
 							me->UserfileUpdateDesc(fileId, desc->ToCString());
@@ -6372,7 +6372,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 	req->ParseHTTPForm();
 	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
 		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
-		(searchStr = req->GetHTTPFormStr(UTF8STRC("searchStr"))) != 0)
+		(searchStr = req->GetHTTPFormStr(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -7355,8 +7355,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *userName = req->GetHTTPFormStr(UTF8STRC("userName"));
-		Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
+		Text::String *userName = req->GetHTTPFormStr(CSTR("userName"));
+		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
 		if (userName && pwd)
 		{
 			sptr = me->PasswordEnc(sbuff, pwd->ToCString());
@@ -7459,7 +7459,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcReload(Net::WebServer::IWebRe
 		{
 			Text::String *pwd;
 			req->ParseHTTPForm();
-			pwd = req->GetHTTPFormStr(UTF8STRC("pwd"));
+			pwd = req->GetHTTPFormStr(CSTR("pwd"));
 			if (pwd)
 			{
 				if (me->reloadPwd->Equals(pwd))
@@ -7521,7 +7521,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcRestart(Net::WebServer::IWebR
 		{
 			Text::String *pwd;
 			req->ParseHTTPForm();
-			pwd = req->GetHTTPFormStr(UTF8STRC("pwd"));
+			pwd = req->GetHTTPFormStr(CSTR("pwd"));
 			if (pwd)
 			{
 				if (me->reloadPwd->Equals(pwd))
@@ -9566,42 +9566,42 @@ SSWR::OrganMgr::OrganWebHandler::OrganWebHandler(Net::SocketFactory *sockf, Net:
 	}
 	else
 	{
-		this->AddService(UTF8STRC("/photo.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
-		this->AddService(UTF8STRC("/photodown.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
-		this->AddService(UTF8STRC("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
-		this->AddService(UTF8STRC("/group.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroup);
-		this->AddService(UTF8STRC("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupMod);
-		this->AddService(UTF8STRC("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupMod);
-		this->AddService(UTF8STRC("/species.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpecies);
-		this->AddService(UTF8STRC("/species.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpecies);
-		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesMod);
-		this->AddService(UTF8STRC("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesMod);
-		this->AddService(UTF8STRC("/list.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
-		this->AddService(UTF8STRC("/listimage.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
-		this->AddService(UTF8STRC("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
-		this->AddService(UTF8STRC("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
-		this->AddService(UTF8STRC("/photodetaild.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetailD);
-		this->AddService(UTF8STRC("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
-		this->AddService(UTF8STRC("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
-		this->AddService(UTF8STRC("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
-		this->AddService(UTF8STRC("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
-		this->AddService(UTF8STRC("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
-		this->AddService(UTF8STRC("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
-		this->AddService(UTF8STRC("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
-		this->AddService(UTF8STRC("/booklist.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
-		this->AddService(UTF8STRC("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
-		this->AddService(UTF8STRC("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
-		this->AddService(UTF8STRC("/login.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogin);
-		this->AddService(UTF8STRC("/login.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
-		this->AddService(UTF8STRC("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
-		this->AddService(UTF8STRC("/reload"), Net::WebUtil::RequestMethod::HTTP_GET, SvcReload);
-		this->AddService(UTF8STRC("/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
-		this->AddService(UTF8STRC("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
-		this->AddService(UTF8STRC("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
-		this->AddService(UTF8STRC("/"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
-		this->AddService(UTF8STRC("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
-		this->AddService(UTF8STRC("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
-		this->AddService(UTF8STRC("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
+		this->AddService(CSTR("/photo.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhoto);
+		this->AddService(CSTR("/photodown.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDown);
+		this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroup);
+		this->AddService(CSTR("/group.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroup);
+		this->AddService(CSTR("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcGroupMod);
+		this->AddService(CSTR("/groupmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcGroupMod);
+		this->AddService(CSTR("/species.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpecies);
+		this->AddService(CSTR("/species.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpecies);
+		this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSpeciesMod);
+		this->AddService(CSTR("/speciesmod.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSpeciesMod);
+		this->AddService(CSTR("/list.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
+		this->AddService(CSTR("/listimage.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcList);
+		this->AddService(CSTR("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetail);
+		this->AddService(CSTR("/photodetail.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoDetail);
+		this->AddService(CSTR("/photodetaild.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDetailD);
+		this->AddService(CSTR("/photoyear.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoYear);
+		this->AddService(CSTR("/photoday.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcPhotoDay);
+		this->AddService(CSTR("/photoupload.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUpload);
+		this->AddService(CSTR("/photouploadd.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcPhotoUploadD);
+		this->AddService(CSTR("/searchinside.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcSearchInside);
+		this->AddService(CSTR("/searchinsidemores.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreS);
+		this->AddService(CSTR("/searchinsidemoreg.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcSearchInsideMoreG);
+		this->AddService(CSTR("/booklist.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookList);
+		this->AddService(CSTR("/book.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBook);
+		this->AddService(CSTR("/bookview.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcBookView);
+		this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogin);
+		this->AddService(CSTR("/login.html"), Net::WebUtil::RequestMethod::HTTP_POST, SvcLogin);
+		this->AddService(CSTR("/logout"), Net::WebUtil::RequestMethod::HTTP_GET, SvcLogout);
+		this->AddService(CSTR("/reload"), Net::WebUtil::RequestMethod::HTTP_GET, SvcReload);
+		this->AddService(CSTR("/reload"), Net::WebUtil::RequestMethod::HTTP_POST, SvcReload);
+		this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_GET, SvcRestart);
+		this->AddService(CSTR("/restart"), Net::WebUtil::RequestMethod::HTTP_POST, SvcRestart);
+		this->AddService(CSTR("/"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
+		this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcIndex);
+		this->AddService(CSTR("/cate.html"), Net::WebUtil::RequestMethod::HTTP_GET, SvcCate);
+		this->AddService(CSTR("/favicon.ico"), Net::WebUtil::RequestMethod::HTTP_GET, SvcFavicon);
 
 		NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, this->ssl, this, port, 30, 10, CSTR("OrganWeb/1.0"), false, true));
 		this->Reload();

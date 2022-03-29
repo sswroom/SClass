@@ -632,13 +632,13 @@ Net::WebServer::CapturerWebHandler::CapturerWebHandler(Net::WiFiCapturer *wifiCa
 	this->btCapture = btCapture;
 	this->radioLogger = radioLogger;
 
-	this->AddService(UTF8STRC("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, IndexFunc);
-	this->AddService(UTF8STRC("/btcurr.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTCurrentFunc);
-	this->AddService(UTF8STRC("/btdet.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTDetailFunc);
-	this->AddService(UTF8STRC("/btdetpub.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTDetailPubFunc);
-	this->AddService(UTF8STRC("/wificurr.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiCurrentFunc);
-	this->AddService(UTF8STRC("/wifidet.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDetailFunc);
-	this->AddService(UTF8STRC("/wifidown.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDownloadFunc);
+	this->AddService(CSTR("/index.html"), Net::WebUtil::RequestMethod::HTTP_GET, IndexFunc);
+	this->AddService(CSTR("/btcurr.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTCurrentFunc);
+	this->AddService(CSTR("/btdet.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTDetailFunc);
+	this->AddService(CSTR("/btdetpub.html"), Net::WebUtil::RequestMethod::HTTP_GET, BTDetailPubFunc);
+	this->AddService(CSTR("/wificurr.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiCurrentFunc);
+	this->AddService(CSTR("/wifidet.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDetailFunc);
+	this->AddService(CSTR("/wifidown.html"), Net::WebUtil::RequestMethod::HTTP_GET, WiFiDownloadFunc);
 }
 
 Net::WebServer::CapturerWebHandler::~CapturerWebHandler()

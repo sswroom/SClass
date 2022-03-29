@@ -450,7 +450,7 @@ Bool __stdcall SSWR::SDNSProxy::SDNSProxyWebHandler::BlacklistReq(SSWR::SDNSProx
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *blackList = req->GetHTTPFormStr(UTF8STRC("blacklist"));
+		Text::String *blackList = req->GetHTTPFormStr(CSTR("blacklist"));
 		if (blackList && blackList->v[0] != 0)
 		{
 			me->proxy->AddBlackList(blackList);

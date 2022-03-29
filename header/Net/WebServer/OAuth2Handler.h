@@ -13,7 +13,7 @@ namespace Net
 			static Bool __stdcall TokenHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
 			static Bool __stdcall UserInfoHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
 		public:
-			OAuth2Handler(const UTF8Char *authPath, const UTF8Char *tokenPath, const UTF8Char *userinfoPath);
+			OAuth2Handler(Text::CString authPath, Text::CString tokenPath, Text::CString userinfoPath);
 			virtual ~OAuth2Handler();
 		};
 	}

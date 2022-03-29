@@ -104,7 +104,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 			{
 				req->ParseHTTPForm();
-				Text::String *s = req->GetHTTPFormStr(UTF8STRC("SAMLResponse"));
+				Text::String *s = req->GetHTTPFormStr(CSTR("SAMLResponse"));
 				if (s)
 				{
 					Text::TextBinEnc::Base64Enc b64;

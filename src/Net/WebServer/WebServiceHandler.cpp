@@ -67,16 +67,16 @@ Net::WebServer::WebServiceHandler::WebServiceHandler()
 	NEW_CLASS(this->services, Data::FastStringMap<Net::WebServer::WebServiceHandler::ServiceInfo*>());
 }
 
-void Net::WebServer::WebServiceHandler::AddService(const UTF8Char *svcPath, UOSInt svcPathLen, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
+void Net::WebServer::WebServiceHandler::AddService(Text::CString svcPath, Net::WebUtil::RequestMethod reqMeth, ServiceFunc func)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	if (svcPath[0] != '/')
+	if (svcPath.leng == 0 || svcPath.v[0] != '/')
 		return;
-	service = this->services->GetC({svcPath, svcPathLen});
+	service = this->services->GetC(svcPath);
 	if (service == 0)
 	{
 		service = MemAlloc(Net::WebServer::WebServiceHandler::ServiceInfo, 1);
-		service->svcPath = Text::String::New(svcPath, svcPathLen);
+		service->svcPath = Text::String::New(svcPath);
 		NEW_CLASS(service->funcs, Data::Int32Map<ServiceFunc>());
 		this->services->Put(service->svcPath, service);
 	}

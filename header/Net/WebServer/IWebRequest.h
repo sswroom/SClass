@@ -62,14 +62,14 @@ namespace Net
 			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen) = 0;
 			virtual Net::WebUtil::RequestMethod GetReqMethod() = 0;
 			virtual void ParseHTTPForm() = 0;
-			virtual Text::String *GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual Text::String *GetHTTPFormStr(Text::CString name) = 0;
 			virtual const UInt8 *GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize) = 0;
-			Bool GetHTTPFormInt16(const UTF8Char *name, UOSInt nameLen, Int16 *valOut);
-			Bool GetHTTPFormUInt16(const UTF8Char *name, UOSInt nameLen, UInt16 *valOut);
-			Bool GetHTTPFormInt32(const UTF8Char *name, UOSInt nameLen, Int32 *valOut);
-			Bool GetHTTPFormUInt32(const UTF8Char *name, UOSInt nameLen, UInt32 *valOut);
-			Bool GetHTTPFormInt64(const UTF8Char *name, UOSInt nameLen, Int64 *valOut);
-			Bool GetHTTPFormUInt64(const UTF8Char *name, UOSInt nameLen, UInt64 *valOut);
+			Bool GetHTTPFormInt16(Text::CString name, Int16 *valOut);
+			Bool GetHTTPFormUInt16(Text::CString name, UInt16 *valOut);
+			Bool GetHTTPFormInt32(Text::CString name, Int32 *valOut);
+			Bool GetHTTPFormUInt32(Text::CString name, UInt32 *valOut);
+			Bool GetHTTPFormInt64(Text::CString name, Int64 *valOut);
+			Bool GetHTTPFormUInt64(Text::CString name, UInt64 *valOut);
 			virtual void GetRequestURLBase(Text::StringBuilderUTF8 *sb) = 0;
 
 			virtual const Net::SocketUtil::AddressInfo *GetClientAddr() = 0;

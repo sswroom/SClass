@@ -83,6 +83,13 @@ Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt, Text::CString
 	return true;
 }
 
+Bool Net::WebServer::IWebResponse::ResponseJSONStr(Net::WebServer::IWebRequest *req, OSInt cacheAge, Text::CString json)
+{
+	this->AddDefHeaders(req);
+	this->AddCacheControl(cacheAge);
+	return this->ResponseText(json, CSTR("application/json"));
+}
+
 UTF8Char *Net::WebServer::IWebResponse::ToTimeString(UTF8Char *buff, Data::DateTime *dt)
 {
 	static const Char *wdays[] = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};

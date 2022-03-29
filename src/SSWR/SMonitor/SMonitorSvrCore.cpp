@@ -17,6 +17,7 @@
 #include "SSWR/Benchmark/BenchmarkWebHandler.h"
 #include "SSWR/SMonitor/SMonitorSvrCore.h"
 #include "SSWR/SMonitor/SMonitorWebHandler.h"
+#include "SSWR/VAMS/VAMSBTWebHandler.h"
 #include "Sync/Thread.h"
 #include "Text/StringBuilderUTF8.h"
 #include "Text/UTF8Reader.h"
@@ -1246,9 +1247,12 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					SSWR::SMonitor::SMonitorWebHandler *shdlr;
 					Net::WebServer::HTTPDirectoryHandler *fileshdlr;
 					SSWR::Benchmark::BenchmarkWebHandler *benchhdlr;
+					SSWR::VAMS::VAMSBTWebHandler *vamsHdlr;
+					SSWR::VAMS::VAMSBTList *btList;
 					NEW_CLASS(hdlr, Net::WebServer::HTTPDirectoryHandler(s2, false, 0, false));
 					NEW_CLASS(shdlr, SSWR::SMonitor::SMonitorWebHandler(this));
 					NEW_CLASS(benchhdlr, SSWR::Benchmark::BenchmarkWebHandler());
+
 					sb.ClearStr();
 					IO::Path::GetProcessFileName(&sb);
 					IO::Path::AppendPath(&sb, UTF8STRC("files"));
@@ -1256,6 +1260,13 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 					shdlr->HandlePath(UTF8STRC("/files"), fileshdlr, true);
 					hdlr->HandlePath(UTF8STRC("/monitor"), shdlr, true);
 					hdlr->HandlePath(UTF8STRC("/benchmark"), benchhdlr, true);
+					if ((s = cfg->GetValue(CSTR("VAMSLogPath"))) != 0)
+					{
+						NEW_CLASS(btList, SSWR::VAMS::VAMSBTList());
+						NEW_CLASS(vamsHdlr, SSWR::VAMS::VAMSBTWebHandler(s, btList));
+						hdlr->HandlePath(UTF8STRC("/vams"), vamsHdlr, true);
+					}
+
 					hdlr->ExpandPackageFiles(this->parsers);
 					this->webHdlr = hdlr;
 					NEW_CLASS(this->listener, Net::WebServer::WebListener(this->sockf, 0, hdlr, port, 60, 4, CSTR("SSWRServer/1.0"), false, true));

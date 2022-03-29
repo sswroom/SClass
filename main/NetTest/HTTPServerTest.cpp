@@ -49,7 +49,7 @@ public:
 	{
 		NEW_CLASS(this->sseConns, Data::ArrayList<Net::WebServer::IWebResponse*>());
 		NEW_CLASS(this->sseMut, Sync::Mutex());
-		this->AddService(UTF8STRC("/sse"), Net::WebUtil::RequestMethod::HTTP_GET, SSEHandler);
+		this->AddService(CSTR("/sse"), Net::WebUtil::RequestMethod::HTTP_GET, SSEHandler);
 	}
 
 	virtual ~MyHandler()

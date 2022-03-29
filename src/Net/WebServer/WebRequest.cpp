@@ -532,11 +532,11 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 	DEL_CLASS(sb);
 }
 
-Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(const UTF8Char *name, UOSInt nameLen)
+Text::String *Net::WebServer::WebRequest::GetHTTPFormStr(Text::CString name)
 {
 	if (this->formMap == 0)
 		return 0;
-	return this->formMap->GetC({name, nameLen});
+	return this->formMap->GetC(name);
 }
 
 const UInt8 *Net::WebServer::WebRequest::GetHTTPFormFile(Text::CString formName, UOSInt index, UTF8Char *fileName, UOSInt fileNameBuffSize, UTF8Char **fileNameEnd, UOSInt *fileSize)

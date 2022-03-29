@@ -14,7 +14,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	Net::WebServer::PrintLogWebHandler *hdlr;
 	Net::WebServer::WebListener *listener;
 	NEW_CLASS(sockf, Net::OSSocketFactory(false));
-	NEW_CLASS(oauth2Hdlr, Net::WebServer::OAuth2Handler((const UTF8Char*)"/auth", (const UTF8Char*)"/token", (const UTF8Char*)"/userinfo"));
+	NEW_CLASS(oauth2Hdlr, Net::WebServer::OAuth2Handler(CSTR("/auth"), CSTR("/token"), CSTR("/userinfo")));
 	NEW_CLASS(hdlr, Net::WebServer::PrintLogWebHandler(oauth2Hdlr, &console));
 	NEW_CLASS(listener, Net::WebServer::WebListener(sockf, 0, hdlr, 8889, 30, 4, CSTR("OAuthTest/1.0"), false, true));
 	if (!listener->IsError())

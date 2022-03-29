@@ -268,9 +268,9 @@ Bool Net::WebServer::IWebRequest::GetQueryValueF64(const UTF8Char *name, UOSInt 
 	return s->ToDouble(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(const UTF8Char *name, UOSInt nameLen, Int16 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(Text::CString name, Int16 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;
@@ -278,9 +278,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt16(const UTF8Char *name, UOSInt 
 	return s->ToInt16(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(const UTF8Char *name, UOSInt nameLen, UInt16 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(Text::CString name, UInt16 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;
@@ -288,9 +288,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt16(const UTF8Char *name, UOSInt
 	return s->ToUInt16(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(const UTF8Char *name, UOSInt nameLen, Int32 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(Text::CString name, Int32 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;
@@ -298,9 +298,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt32(const UTF8Char *name, UOSInt 
 	return s->ToInt32(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(const UTF8Char *name, UOSInt nameLen, UInt32 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(Text::CString name, UInt32 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;
@@ -308,9 +308,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormUInt32(const UTF8Char *name, UOSInt
 	return s->ToUInt32(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(const UTF8Char *name, UOSInt nameLen, Int64 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(Text::CString name, Int64 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;
@@ -318,9 +318,9 @@ Bool Net::WebServer::IWebRequest::GetHTTPFormInt64(const UTF8Char *name, UOSInt 
 	return s->ToInt64(valOut);
 }
 
-Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(const UTF8Char *name, UOSInt nameLen, UInt64 *valOut)
+Bool Net::WebServer::IWebRequest::GetHTTPFormUInt64(Text::CString name, UInt64 *valOut)
 {
-	Text::String *s = this->GetHTTPFormStr(name, nameLen);
+	Text::String *s = this->GetHTTPFormStr(name);
 	if (s == 0)
 	{
 		return false;

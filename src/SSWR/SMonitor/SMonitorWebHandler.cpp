@@ -54,8 +54,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 		if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			req->ParseHTTPForm();
-			Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
-			Text::String *retype = req->GetHTTPFormStr(UTF8STRC("password"));
+			Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
+			Text::String *retype = req->GetHTTPFormStr(CSTR("password"));
 			if (pwd && retype)
 			{
 				if (pwd->leng >= 3 && pwd->Equals(retype))
@@ -299,9 +299,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *s = req->GetHTTPFormStr(UTF8STRC("action"));
-		Text::String *s2 = req->GetHTTPFormStr(UTF8STRC("user"));
-		Text::String *s3 = req->GetHTTPFormStr(UTF8STRC("pwd"));
+		Text::String *s = req->GetHTTPFormStr(CSTR("action"));
+		Text::String *s2 = req->GetHTTPFormStr(CSTR("user"));
+		Text::String *s3 = req->GetHTTPFormStr(CSTR("pwd"));
 		if (s && s2 && s3 && s->Equals(UTF8STRC("login")))
 		{
 			if (s2->v[0])
@@ -574,18 +574,18 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 		if (action && action->Equals(UTF8STRC("modify")))
 		{
-			Text::String *devName = req->GetHTTPFormStr(UTF8STRC("devName"));
+			Text::String *devName = req->GetHTTPFormStr(CSTR("devName"));
 			Int32 flags = 0;
 			Text::String *s;
-			s = req->GetHTTPFormStr(UTF8STRC("anonymous"));
+			s = req->GetHTTPFormStr(CSTR("anonymous"));
 			if (s && s->v[0] == '1')
 			{
 				flags |= 1;
 			}
-			s = req->GetHTTPFormStr(UTF8STRC("removed"));
+			s = req->GetHTTPFormStr(CSTR("removed"));
 			if (s && s->v[0] == '1')
 			{
 				flags |= 2;
@@ -700,7 +700,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 		if (action && action->Equals(UTF8STRC("reading")))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -714,7 +714,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 					sb.AppendC(UTF8STRC("|"));
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("readingName")), i);
-				s = req->GetHTTPFormStr(sbuff, (UOSInt)(sptr - sbuff));
+				s = req->GetHTTPFormStr(CSTRP(sbuff, sptr));
 				if (s)
 				{
 					sb.Append(s);
@@ -844,7 +844,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *action = req->GetHTTPFormStr(UTF8STRC("action"));
+		Text::String *action = req->GetHTTPFormStr(CSTR("action"));
 		if (action && action->Equals(UTF8STRC("digitals")))
 		{
 			Text::StringBuilderUTF8 sb;
@@ -858,7 +858,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 					sb.AppendC(UTF8STRC("|"));
 				}
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("digitalName")), i);
-				s = req->GetHTTPFormStr(sbuff, (UOSInt)(sptr - sbuff));
+				s = req->GetHTTPFormStr(CSTRP(sbuff, sptr));
 				if (s)
 				{
 					sb.Append(s);
@@ -1831,8 +1831,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
 		req->ParseHTTPForm();
-		Text::String *pwd = req->GetHTTPFormStr(UTF8STRC("password"));
-		Text::String *retype = req->GetHTTPFormStr(UTF8STRC("retype"));
+		Text::String *pwd = req->GetHTTPFormStr(CSTR("password"));
+		Text::String *retype = req->GetHTTPFormStr(CSTR("retype"));
 		if (pwd == 0 || pwd->v[0] == 0)
 		{
 			msg = (const UTF8Char*)"Password is empty";
@@ -1994,8 +1994,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 		req->ParseHTTPForm();
 		Text::String *action;
 		Text::String *userName;
-		action = req->GetHTTPFormStr(UTF8STRC("action"));
-		userName = req->GetHTTPFormStr(UTF8STRC("username"));
+		action = req->GetHTTPFormStr(CSTR("action"));
+		userName = req->GetHTTPFormStr(CSTR("username"));
 		if (action && userName && action->Equals(UTF8STRC("adduser")))
 		{
 			UOSInt len = userName->leng;
@@ -2077,8 +2077,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 		req->ParseHTTPForm();
 		Text::String *action;
 		Text::String *devicestr;
-		action = req->GetHTTPFormStr(UTF8STRC("action"));
-		devicestr = req->GetHTTPFormStr(UTF8STRC("device"));
+		action = req->GetHTTPFormStr(CSTR("action"));
+		devicestr = req->GetHTTPFormStr(CSTR("device"));
 		if (action && devicestr && action->Equals(UTF8STRC("userassign")))
 		{
 			Data::ArrayListInt64 devIds;

@@ -3715,6 +3715,10 @@ SSWR/SMonitor/SMonitorSvrCore.h: ../../src/SSWR/SMonitor/SMonitorSvrCore.cpp
 @SMonitorSvrCore.o
 SSWR/SMonitor/SMonitorWebHandler.h: ../../src/SSWR/SMonitor/SMonitorWebHandler.cpp
 @SMonitorWebHandler.o
+SSWR/VAMS/VAMSBTList.h: ../../src/SSWR/VAMS/VAMSBTList.cpp
+@VAMSBTList.o
+SSWR/VAMS/VAMSBTWebHandler.h: ../../src/SSWR/VAMS/VAMSBTWebHandler.cpp
+@VAMSBTWebHandler.o
 
 Sync/Event.h: ../../src/Sync/Event.cpp
 @Event.o
@@ -5225,6 +5229,8 @@ SAnalogSensor.o: ../../src/SSWR/SMonitor/SAnalogSensor.cpp
 SMonitorRedir.o: ../../src/SSWR/SMonitor/SMonitorRedir.cpp
 SMonitorSvrCore.o: ../../src/SSWR/SMonitor/SMonitorSvrCore.cpp
 SMonitorWebHandler.o: ../../src/SSWR/SMonitor/SMonitorWebHandler.cpp
+VAMSBTList.o: ../../src/SSWR/VAMS/VAMSBTList.cpp
+VAMSBTWebHandler.o: ../../src/SSWR/VAMS/VAMSBTWebHandler.cpp
 Event.o: ../../src/Sync/Event.cpp
 Interlocked.o: ../../src/Sync/Interlocked.cpp
 Mutex.o: ../../src/Sync/Mutex.cpp
