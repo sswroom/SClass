@@ -41,11 +41,9 @@ IO::ParserType Parser::FileParser::MD5Parser::GetParserType()
 
 IO::ParsedObject *Parser::FileParser::MD5Parser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
-	UTF8Char u8buff[512];
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::FileCheck *fchk;
-	UOSInt i;
 	UInt8 chk[20];
 	IO::FileCheck::CheckType ctype;
 	UOSInt chkSize;

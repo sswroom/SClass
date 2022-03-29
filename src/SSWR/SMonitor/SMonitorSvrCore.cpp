@@ -104,7 +104,7 @@ void __stdcall SSWR::SMonitor::SMonitorSvrCore::OnServerConn(Socket *s, void *us
 	NEW_CLASS(cli, Net::TCPClient(me->sockf, s));
 	status = MemAlloc(ClientStatus, 1);
 	status->cliId = 0;
-	status->dataBuff = MemAlloc(UInt8, 4096);
+	status->dataBuff = MemAlloc(UInt8, TCP_BUFF_SIZE + 2048);
 	status->dataSize = 0;
 	status->me = me;
 	status->dev = 0;
