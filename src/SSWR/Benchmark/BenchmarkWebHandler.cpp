@@ -142,7 +142,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 				dt.SetCurrTimeUTC();
 				Int64 t = dt.ToTicks();
 				sptr = IO::Path::GetProcessFileName(sbuff);
-				sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Benchmark"));
+				sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Benchmark"));
 				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
 				*sptr++ = IO::Path::PATH_SEPERATOR;
 				sptr = Text::StrConcatC(sptr, UTF8STRC("SBench_"));
@@ -189,16 +189,16 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char fileName[512];
 	UTF8Char *fileNameEnd;
 	UTF8Char path[512];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("model"), fileName, 512)) != 0)
 	{
 		UOSInt fileSize;
-		u8ptr = IO::Path::GetProcessFileName(path);
-		u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = Text::StrConcatC(u8ptr, fileName, (UOSInt)(fileNameEnd - fileName));
-		NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		sptr = IO::Path::GetProcessFileName(path);
+		sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrConcatC(sptr, fileName, (UOSInt)(fileNameEnd - fileName));
+		NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		fileSize = (UOSInt)fs->GetLength();
 		if (fileSize > 0)
 		{
@@ -234,17 +234,17 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 			const UInt8 *reqData = req->GetReqData(&reqSize);
 			if (reqSize > 0 && reqSize <= 128)
 			{
-				u8ptr = IO::Path::GetProcessFileName(path);
-				u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("X86CPUInfo.txt"));
-				NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				sptr = IO::Path::GetProcessFileName(path);
+				sptr = IO::Path::AppendPath(path, sptr, CSTR("X86CPUInfo.txt"));
+				NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
-				u8ptr = Text::StrInt32(fileName, cpuFamily);
-				*u8ptr++ = '\t';
-				u8ptr = Text::StrInt32(u8ptr, cpuModel);
-				*u8ptr++ = '\t';
-				u8ptr = Text::StrInt32(u8ptr, cpuStepping);
-				*u8ptr++ = '\t';
-				fs->Write(fileName, (UOSInt)(u8ptr - fileName));
+				sptr = Text::StrInt32(fileName, cpuFamily);
+				*sptr++ = '\t';
+				sptr = Text::StrInt32(sptr, cpuModel);
+				*sptr++ = '\t';
+				sptr = Text::StrInt32(sptr, cpuStepping);
+				*sptr++ = '\t';
+				fs->Write(fileName, (UOSInt)(sptr - fileName));
 				fs->Write(reqData, reqSize);
 				fs->Write((const UInt8*)"\r\n", 2);
 				DEL_CLASS(fs);
@@ -297,15 +297,15 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					msg.v = fileName;
 					msg.leng = (UOSInt)(cpuModel.ConcatTo(Text::StrConcatC(fileName, UTF8STRC("Identified as "))) - fileName);
 
-					u8ptr = IO::Path::GetProcessFileName(path);
-					u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-					IO::Path::CreateDirectory(CSTRP(path, u8ptr));
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = cpuModel.ConcatTo(u8ptr);
+					sptr = IO::Path::GetProcessFileName(path);
+					sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
+					IO::Path::CreateDirectory(CSTRP(path, sptr));
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = cpuModel.ConcatTo(sptr);
 
-					if (IO::Path::GetPathType(CSTRP(path, u8ptr)) == IO::Path::PathType::Unknown)
+					if (IO::Path::GetPathType(CSTRP(path, sptr)) == IO::Path::PathType::Unknown)
 					{
-						NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						if (fileSize == fs->Write(fileBuff, fileSize))
 						{
 						}
@@ -316,14 +316,14 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 				{
 					Data::DateTime dt;
 					dt.SetCurrTimeUTC();
-					u8ptr = IO::Path::GetProcessFileName(path);
-					u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-					IO::Path::CreateDirectory(CSTRP(path, u8ptr));
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("Unknown_"));
-					u8ptr = Text::StrInt64(u8ptr, dt.ToTicks());
+					sptr = IO::Path::GetProcessFileName(path);
+					sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
+					IO::Path::CreateDirectory(CSTRP(path, sptr));
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = Text::StrConcatC(sptr, UTF8STRC("Unknown_"));
+					sptr = Text::StrInt64(sptr, dt.ToTicks());
 
-					NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(u8ptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+					NEW_CLASS(fs, IO::FileStream({path, (UOSInt)(sptr - path)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 					if (fileSize == fs->Write(fileBuff, fileSize))
 					{
 						msg = CSTR("File uploaded successfully");
@@ -354,36 +354,36 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	sbOut.AppendC(UTF8STRC("<h3>Uploaded list</h3>\r\n"));
 	sbOut.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
 	sbOut.AppendC(UTF8STRC("<tr><td>Model</td><td>Brand</td><td>Name</td><td>Archtecture</td></tr>\r\n"));
-	u8ptr = IO::Path::GetProcessFileName(path);
-	u8ptr = IO::Path::AppendPathC(path, u8ptr, UTF8STRC("CPUInfo"));
-	IO::Path::CreateDirectory(CSTRP(path, u8ptr));
-	*u8ptr++ = IO::Path::PATH_SEPERATOR;
-	u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(path, u8ptr2));
+	sptr = IO::Path::GetProcessFileName(path);
+	sptr = IO::Path::AppendPath(path, sptr, CSTR("CPUInfo"));
+	IO::Path::CreateDirectory(CSTRP(path, sptr));
+	*sptr++ = IO::Path::PATH_SEPERATOR;
+	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+	IO::Path::FindFileSession *sess = IO::Path::FindFile(CSTRP(path, sptr2));
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
+		while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				if (Text::StrStartsWithC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC("Unknown")))
+				if (Text::StrStartsWithC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC("Unknown")))
 				{
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
-					sbOut.AppendP(u8ptr, u8ptr2);
+					sbOut.AppendP(sptr, sptr2);
 					sbOut.AppendC(UTF8STRC("\">Unknown</a></td><td>"));
 					sbOut.AppendC(UTF8STRC("?</td><td>?</td><td>?"));
 					sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));
 				}
 				else
 				{
-					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec({u8ptr, (UOSInt)(u8ptr2 - u8ptr)});
+					const Manage::CPUDB::CPUSpec *cpu = Manage::CPUDB::GetCPUSpec({sptr, (UOSInt)(sptr2 - sptr)});
 					sbOut.AppendC(UTF8STRC("<tr><td>"));
 					sbOut.AppendC(UTF8STRC("<a href=\"cpuinfo?model="));
-					sbOut.AppendP(u8ptr, u8ptr2);
+					sbOut.AppendP(sptr, sptr2);
 					sbOut.AppendC(UTF8STRC("\">"));
-					sbOut.AppendP(u8ptr, u8ptr2);
+					sbOut.AppendP(sptr, sptr2);
 					sbOut.AppendC(UTF8STRC("</a></td><td>"));
 					if (cpu)
 					{
@@ -424,7 +424,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 					}
 					else
 					{
-						printf("CPU not found: \"%s\"\r\n", u8ptr);
+						printf("CPU not found: \"%s\"\r\n", sptr);
 						sbOut.AppendC(UTF8STRC("?</td><td>?</td><td>?"));
 					}
 					sbOut.AppendC(UTF8STRC("</td></tr>\r\n"));

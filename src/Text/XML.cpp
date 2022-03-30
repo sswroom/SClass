@@ -42,9 +42,9 @@ UOSInt Text::XML::GetXMLTextLen(const UTF8Char *text)
 UOSInt Text::XML::GetXMLTextLen(const WChar *text)
 {
 	UOSInt cnt = 0;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		switch (c)
 		{
@@ -103,9 +103,9 @@ UOSInt Text::XML::GetXMLTextLiteLen(const UTF8Char *text)
 UOSInt Text::XML::GetXMLTextLiteLen(const WChar *text)
 {
 	UOSInt cnt = 0;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		switch (c)
 		{
@@ -167,9 +167,9 @@ UOSInt Text::XML::GetHTMLTextLen(const UTF8Char *text)
 UOSInt Text::XML::GetHTMLTextLen(const WChar *text)
 {
 	UOSInt cnt = 0;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		switch (c)
 		{
@@ -301,9 +301,9 @@ UTF8Char *Text::XML::ToXMLText(UTF8Char *buff, const UTF8Char *text)
 WChar *Text::XML::ToXMLText(WChar *buff, const WChar *text)
 {
 	WChar *dptr = buff;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		if (c == '&')
 		{
@@ -412,9 +412,9 @@ UTF8Char *Text::XML::ToXMLTextLite(UTF8Char *buff, const UTF8Char *text)
 WChar *Text::XML::ToXMLTextLite(WChar *buff, const WChar *text)
 {
 	WChar *dptr = buff;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		if (c == '&')
 		{
@@ -521,9 +521,9 @@ UTF8Char *Text::XML::ToHTMLText(UTF8Char *buff, const UTF8Char *text)
 WChar *Text::XML::ToHTMLText(WChar *buff, const WChar *text)
 {
 	WChar *dptr = buff;
-	const WChar *sptr = text;
+	const WChar *wptr = text;
 	WChar c;
-	while ((c = *sptr++) != 0)
+	while ((c = *wptr++) != 0)
 	{
 		if (c == '&')
 		{

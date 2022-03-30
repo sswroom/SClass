@@ -4,5 +4,5 @@
 void IO::BuildTime::GetBuildTime(Data::DateTime *dt)
 {
 	dt->SetTimeZoneQHR(0);
-	dt->SetValue(UTF8STRC(__DATE__ " " __TIME__));
+	dt->SetValue(CSTR(__DATE__ " " __TIME__));
 }

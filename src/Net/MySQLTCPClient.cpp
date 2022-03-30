@@ -246,7 +246,7 @@ public:
 		{
 			return DET_NULL;
 		}
-		if (outVal->SetValue(this->currRow[colIndex]->v, this->currRow[colIndex]->leng))
+		if (outVal->SetValue(this->currRow[colIndex]->ToCString()))
 		{
 			return DET_OK;
 		}

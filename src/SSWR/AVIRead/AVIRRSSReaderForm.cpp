@@ -157,7 +157,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListLoad()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("RSSList.txt"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	UOSInt i;
@@ -182,7 +182,7 @@ void SSWR::AVIRead::AVIRRSSReaderForm::RSSListStore()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("RSSList.txt"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("RSSList.txt"));
 	IO::FileStream *fs;
 	Text::UTF8Writer *writer;
 	UOSInt i;

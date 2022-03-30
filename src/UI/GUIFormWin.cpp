@@ -828,13 +828,13 @@ void UI::GUIForm::OnDropFiles(void *hDrop)
 	if (fileCnt > 0)
 	{
 		UInt32 i;
-		WChar sbuff[256];
+		WChar wbuff[256];
 		Text::String **files = MemAlloc(Text::String *, fileCnt);
 		i = 0;
 		while (i < fileCnt)
 		{
-			DragQueryFileW((HDROP)hDrop, i, sbuff, 256);
-			files[i] = Text::String::NewNotNull(sbuff);
+			DragQueryFileW((HDROP)hDrop, i, wbuff, 256);
+			files[i] = Text::String::NewNotNull(wbuff);
 			i++;
 		}
 		UOSInt j = this->dropFileHandlers->GetCount();

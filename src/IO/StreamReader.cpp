@@ -829,17 +829,17 @@ Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
 	WChar *wptr = MemAlloc(WChar, 4096);
-	WChar *sptr;
+	WChar *wptr2;
 	Text::String *s;
 	while (true)
 	{
-		sptr = ReadLine(wptr, 4093);
-		if (sptr == 0)
+		wptr2 = ReadLine(wptr, 4093);
+		if (wptr2 == 0)
 		{
 			break;
 		}
 		succ = true;
-		sptr = this->GetLastLineBreak(sptr);
+		wptr2 = this->GetLastLineBreak(wptr2);
 		s = Text::String::NewNotNull(wptr);
 		sb->Append(s);
 		s->Release();

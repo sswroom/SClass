@@ -20,14 +20,14 @@ Manage::ModuleInfo::~ModuleInfo()
 
 UTF8Char *Manage::ModuleInfo::GetModuleFileName(UTF8Char *buff)
 {
-	WChar sbuff[512];
-	*sbuff = 0;
+	WChar wbuff[512];
+	*wbuff = 0;
 #ifdef _WIN32_WCE
-	GetModuleFileNameW((HMODULE)this->hMod, sbuff, 512 * sizeof(WChar));
+	GetModuleFileNameW((HMODULE)this->hMod, wbuff, 512 * sizeof(WChar));
 #else
-	GetModuleFileNameExW((HANDLE)this->hProc, (HMODULE)this->hMod, sbuff, 512 * sizeof(WChar));
+	GetModuleFileNameExW((HANDLE)this->hProc, (HMODULE)this->hMod, wbuff, 512 * sizeof(WChar));
 #endif
-	return Text::StrWChar_UTF8(buff, sbuff);
+	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Bool Manage::ModuleInfo::GetModuleAddress(UOSInt *baseAddr, UOSInt *size)

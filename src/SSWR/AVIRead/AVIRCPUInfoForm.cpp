@@ -13,16 +13,16 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
-	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
+	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
 	else
 	{
-		Text::CString cpuModel = Manage::CPUDB::X86CPUNameToModel({u8buff, (UOSInt)(sptr - u8buff)});
+		Text::CString cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));
 		if (cpuModel.v == 0)
 		{
 			Int32 respStatus;
@@ -36,7 +36,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnUploadClick(void *userObj)
 			sbURL.AppendC(UTF8STRC("&stepping="));
 			sbURL.AppendI32(cpu.GetStepping());
 
-			sbData.AppendSlow(u8buff);
+			sbData.AppendP(sbuff, sptr);
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateConnect(sockf, me->ssl, sbURL.ToCString(), Net::WebUtil::RequestMethod::HTTP_POST, false);
 			cli->AddContentLength(sbData.GetLength());
@@ -65,10 +65,10 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 {
 #if defined(CPU_X86_32) || defined(CPU_X86_64)
 	SSWR::AVIRead::AVIRCPUInfoForm *me = (SSWR::AVIRead::AVIRCPUInfoForm*)userObj;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	Manage::CPUInfo cpu;
-	if ((sptr = cpu.GetCPUName(u8buff)) == 0)
+	if ((sptr = cpu.GetCPUName(sbuff)) == 0)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in getting CPU Name"), CSTR("Error"), me);
 	}
@@ -81,7 +81,7 @@ void __stdcall SSWR::AVIRead::AVIRCPUInfoForm::OnCopyInfoClick(void *userObj)
 		sb.AppendUTF8Char('\t');
 		sb.AppendI32(cpu.GetStepping());
 		sb.AppendUTF8Char('\t');
-		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
+		sb.AppendP(sbuff, sptr);
 		Win32::Clipboard::SetString(me->GetHandle(), sb.ToCString());
 	}
 #endif
@@ -194,12 +194,12 @@ SSWR::AVIRead::AVIRCPUInfoForm::AVIRCPUInfoForm(UI::GUIClientControl *parent, UI
 
 	Double t;
 	Int32 r;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	sb.ClearStr();
-	if ((sptr = cpu.GetCPUName(u8buff)) != 0)
+	if ((sptr = cpu.GetCPUName(sbuff)) != 0)
 	{
-		sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
+		sb.AppendP(sbuff, sptr);
 		k = this->lvMain->AddItem(CSTR("CPU Name"), 0);
 		this->lvMain->SetSubItem(k, 1, sb.ToCString());
 	}

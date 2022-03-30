@@ -361,9 +361,9 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 
 	if (progHdlr)
 	{
-		const UTF8Char *u8ptr = Text::StrToUTF8New(file1);
-		progHdlr->ProgressStart(u8ptr, fileSize);
-		Text::StrDelNew(u8ptr);
+		const UTF8Char *sptr = Text::StrToUTF8New(file1);
+		progHdlr->ProgressStart(sptr, fileSize);
+		Text::StrDelNew(sptr);
 	}
 	if (fileSize < 1048576)
 	{

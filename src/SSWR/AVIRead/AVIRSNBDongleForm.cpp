@@ -418,7 +418,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::LoadFile()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("snb.dat"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("snb.dat"));
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	if (!fs->IsError())
@@ -471,7 +471,7 @@ void SSWR::AVIRead::AVIRSNBDongleForm::SaveFile()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("snb.dat"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("snb.dat"));
 	IO::FileStream *fs;
 	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 	fs->Write(dataBuff, k);

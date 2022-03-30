@@ -218,7 +218,7 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnQuickClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 {
 	SSWR::AVIRead::AVIRBenchmarkForm *me = (SSWR::AVIRead::AVIRBenchmarkForm*)userObj;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UI::FileDialog *dlg;
 	UOSInt i;
@@ -252,9 +252,9 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("Platform: "));
-		if ((sptr = sysInfo.GetPlatformName(u8buff)) != 0)
+		if ((sptr = sysInfo.GetPlatformName(sbuff)) != 0)
 		{
-			sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
+			sb.AppendP(sbuff, sptr);
 		}
 		else
 		{
@@ -265,9 +265,9 @@ void __stdcall SSWR::AVIRead::AVIRBenchmarkForm::OnSaveClicked(void *userObj)
 		Manage::CPUInfo cpu;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU: "));
-		if (cpu.GetCPUName(u8buff))
+		if (cpu.GetCPUName(sbuff))
 		{
-			sb.AppendC(u8buff, (UOSInt)(sptr - u8buff));
+			sb.AppendP(sbuff, sptr);
 		}
 		else
 		{

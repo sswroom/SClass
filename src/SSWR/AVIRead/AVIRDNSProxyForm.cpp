@@ -102,7 +102,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 
 	if (me->cliChg)
 	{
-		WChar sbuff[32];
+		WChar wbuff[32];
 		ClientInfo *cli;
 		UOSInt i;
 		UOSInt j;
@@ -118,8 +118,8 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnTimerTick(void *userObj)
 		while (i < j)
 		{
 			cli = cliList->GetItem(i);
-			Net::SocketUtil::GetAddrName(sbuff, &cli->addr);
-			me->lbClientIP->AddItem(sbuff, cli);
+			Net::SocketUtil::GetAddrName(wbuff, &cli->addr);
+			me->lbClientIP->AddItem(wbuff, cli);
 			i++;
 		}
 		mutUsage.EndUse();
@@ -756,7 +756,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSProxyForm::OnDNSRequest(void *userObj, Text
 
 void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 {
-	WChar sbuff[32];
+	WChar wbuff[32];
 	Data::ArrayList<UInt32> ipList;
 	UOSInt i;
 	UOSInt j;
@@ -768,8 +768,8 @@ void SSWR::AVIRead::AVIRDNSProxyForm::UpdateDNSList()
 	while (i < j)
 	{
 		ip = ipList.GetItem(i);
-		Net::SocketUtil::GetIPv4Name(sbuff, ip);
-		this->lbDNSList->AddItem(sbuff, (void*)(OSInt)ip);
+		Net::SocketUtil::GetIPv4Name(wbuff, ip);
+		this->lbDNSList->AddItem(wbuff, (void*)(OSInt)ip);
 		i++;
 	}
 }

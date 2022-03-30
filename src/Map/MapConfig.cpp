@@ -43,8 +43,8 @@
 
 void Map::MapConfig::DrawChars(Media::DrawImage *img, const WChar *str1, Int32 scnPosX, Int32 scnPosY, Int32 scaleW, Int32 scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign)
 {
-	WChar sbuff[256];
-	Text::StrConcat(sbuff, str1);
+	WChar wbuff[256];
+	Text::StrConcat(wbuff, str1);
 	Int32 size[2];
 	UInt16 absH;
 	OSInt fntCount;
@@ -336,7 +336,7 @@ void Map::MapConfig::DrawChars(Media::DrawImage *img, const WChar *str1, Int32 s
 				currY = 0;
 
 				OSInt cnt;
-				WChar *lbl = sbuff;
+				WChar *lbl = wbuff;
 				cnt = lblSize;
 
 				while (cnt--)
@@ -676,7 +676,7 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 	Int32 scaleW;
 	Int32 scaleH;
 	Int32 pts[2];
-	WChar *sptr;
+	WChar *wptr;
 	WChar lblStr[128];
 	void *session;
 
@@ -701,9 +701,9 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 				if ((dobj->parts[k] - dobj->parts[k - 1]) > maxSize)
 					maxSize = (dobj->parts[k] - (maxPos = dobj->parts[k - 1]));
 			}
-			lyrs->lyr->GetString(sptr = lblStr, arr, i, 0);
-//			sptr = (WChar*)arr->GetItem(i);
-			if (AddLabel(labels, maxLabels, labelCnt, sptr, maxSize, &dobj->points[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view))
+			lyrs->lyr->GetString(wptr = lblStr, arr, i, 0);
+//			wptr = (WChar*)arr->GetItem(i);
+			if (AddLabel(labels, maxLabels, labelCnt, wptr, maxSize, &dobj->points[maxPos << 1], lyrs->priority, lyrs->lyr->GetLayerType(), lyrs->style, lyrs->bkColor, view))
 			{
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -714,8 +714,8 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 		}
 		else if (lyrs->lyr->GetLayerType() == 3)
 		{
-			lyrs->lyr->GetString(sptr = lblStr, arr, i, 0);
-//			sptr = (WChar*)arr->GetItem(i);
+			lyrs->lyr->GetString(wptr = lblStr, arr, i, 0);
+//			wptr = (WChar*)arr->GetItem(i);
 			if (dobj->nPoints & 1)
 			{
 				pts[0] = dobj->points[dobj->nPoints - 1];
@@ -739,7 +739,7 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 
 				if ((lyrs->bkColor & SFLG_ROTATE) == 0)
 					scaleW = scaleH = 0;
-				DrawChars(img, sptr, pts[0], pts[1], scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+				DrawChars(img, wptr, pts[0], pts[1], scaleW, scaleH, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 			}
 			lyrs->lyr->ReleaseObject(session, dobj);
 		}
@@ -748,8 +748,8 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 			Int64 lastPtX = 0;
 			Int64 lastPtY = 0;
 			Int32 *pointPos = dobj->points;
-			lyrs->lyr->GetString(sptr = lblStr, arr, i, 0);
-//			sptr = (WChar*)arr->GetItem(i);
+			lyrs->lyr->GetString(wptr = lblStr, arr, i, 0);
+//			wptr = (WChar*)arr->GetItem(i);
 
 			j = dobj->nPoints;
 			while (j--)
@@ -763,7 +763,7 @@ void Map::MapConfig::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map:
 			if (view->InView(pts[0], pts[1]))
 			{
 				view->MapToScnXY(pts, pts, 1, 0, 0);
-				DrawChars(img, sptr, pts[0], pts[1], 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
+				DrawChars(img, wptr, pts[0], pts[1], 0, 0, fonts[lyrs->style], (lyrs->bkColor & SFLG_ALIGN) != 0);
 			}
 			lyrs->lyr->ReleaseObject(session, dobj);
 		}
@@ -2371,7 +2371,7 @@ Map::MapConfig::MapConfig(const WChar *fileName, Media::DrawEngine *eng, Data::A
 	WChar layerName[512];
 	WChar *baseDir = layerName;
 	WChar *strs[10];
-	WChar *sptr;
+	WChar *wptr;
 	IO::FileStream *fstm;
 	IO::StreamReader *rdr;
 	Int32 i;
@@ -2466,13 +2466,13 @@ Map::MapConfig::MapConfig(const WChar *fileName, Media::DrawEngine *eng, Data::A
 					{
 						strs[j++][-1] = ',';
 					}
-					sptr = strs[strCnt-1];
-					while (*sptr++);
+					wptr = strs[strCnt-1];
+					while (*wptr++);
 					currLine = (MapLineStyle*)MemAlloc(MapLineStyle, 1);
 					currLine->lineType = Text::StrToInt32(strs[2]);
 					currLine->lineWidth = Text::StrToInt32(strs[3]);
 					currLine->color = ToColor(strs[4]);
-					currLine->styles = MemAlloc(WChar, sptr - strs[5]);
+					currLine->styles = MemAlloc(WChar, wptr - strs[5]);
 					Text::StrConcat(currLine->styles, strs[5]);
 					this->lines[i]->Add(currLine);
 				}
@@ -2491,9 +2491,9 @@ Map::MapConfig::MapConfig(const WChar *fileName, Media::DrawEngine *eng, Data::A
 
 				currFont = MemAlloc(MapFontStyle, 1);
 				currFont->fontType = Text::StrToInt32(strs[2]);
-				sptr = strs[3];
-				while (*sptr++);
-				currFont->fontName = MemAlloc(WChar, sptr - strs[3]);
+				wptr = strs[3];
+				while (*wptr++);
+				currFont->fontName = MemAlloc(WChar, wptr - strs[3]);
 				Text::StrConcat(currFont->fontName, strs[3]);
 				currFont->fontSize = (Text::StrToInt32(strs[4]) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5]);

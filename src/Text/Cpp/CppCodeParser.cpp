@@ -831,7 +831,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UTF8Char sbuff[512];
-	UTF8Char u8buff[512];
+	UTF8Char sbuff2[512];
 	Bool valid;
 	UOSInt i;
 	UOSInt j;
@@ -1423,11 +1423,11 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				if (c == '\"')
 				{
 					sptr[-1] = 0;
-					u8buff[0] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile());
+					sbuff2[0] = 0;
+					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), status->GetCurrCodeFile());
 					sptr[-1] = c;
 
-					if (u8buff[0] == 0)
+					if (sbuff2[0] == 0)
 					{
 						parseStatus = false;
 						sptr[-1] = 0;
@@ -1439,7 +1439,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					}
 					else
 					{
-						if (ParseFile(u8buff, (UOSInt)(sptr2 - u8buff), errMsgs, status))
+						if (ParseFile(sbuff2, (UOSInt)(sptr2 - sbuff2), errMsgs, status))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 							break;
@@ -1467,10 +1467,10 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 				if (c == '>')
 				{
 					sptr[-1] = 0;
-					sptr2 = this->env->GetIncludeFilePath(u8buff, CSTRP(wordStart, sptr - 1), 0);
+					sptr2 = this->env->GetIncludeFilePath(sbuff2, CSTRP(wordStart, sptr - 1), 0);
 					sptr[-1] = c;
 
-					if (u8buff[0] == 0)
+					if (sbuff2[0] == 0)
 					{
 						parseStatus = false;
 						sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff, UTF8STRC("Include file ")), wordStart, (UOSInt)(sptr - wordStart - 1)), UTF8STRC(" not found"));
@@ -1478,7 +1478,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 					}
 					else
 					{
-						if (ParseFile(u8buff, (UOSInt)(sptr2 - u8buff), errMsgs, status))
+						if (ParseFile(sbuff2, (UOSInt)(sptr2 - sbuff2), errMsgs, status))
 						{
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_SHARPEND;
 						}

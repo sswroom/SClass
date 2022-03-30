@@ -1576,11 +1576,11 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 
 /*void SSWR::AVIRead::AVIRGISForm::AddLayerColl(Map::MapLayerCollection *lyrColl)
 {
-	WChar sbuff[512];
-	WChar *sptr;
-	lyrColl->GetSourceName(sbuff);
-	sptr = &sbuff[Text::StrLastIndexOfCharC(sbuff, '\\') + 1];
-	void *grp = this->env->AddGroup(0, sptr);
+	WChar wbuff[512];
+	WChar *wptr;
+	lyrColl->GetSourceName(wbuff);
+	wptr = &wbuff[Text::StrLastIndexOfCharC(wbuff, '\\') + 1];
+	void *grp = this->env->AddGroup(0, wptr);
 
 	Map::IMapDrawLayer *layer;
 	Bool needPan = this->env->GetItemCount(0) == 0;

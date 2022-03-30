@@ -45,7 +45,7 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 		return 0;
 	IO::PackageFile *pkg = (IO::PackageFile*)pobj;
 	IO::ParserType pt;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	Data::ArrayList<IO::ParsedObject*> *pobjList;
 	IO::IStreamData *fd;
@@ -57,8 +57,8 @@ IO::ParsedObject *Parser::ObjParser::KMZParser::ParseObject(IO::ParsedObject *po
 	j = pkg->GetCount();
 	while (i < j)
 	{
-		sptr = pkg->GetItemName(u8buff, i);
-		if (Text::StrEndsWithC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".kml")))
+		sptr = pkg->GetItemName(sbuff, i);
+		if (Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".kml")))
 		{
 			fd = pkg->GetItemStmData(i);
 			if (fd)

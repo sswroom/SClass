@@ -977,7 +977,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 		else if (sarr[0].StartsWith(UTF8STRC("Expires=")))
 		{
 			Data::DateTime dt;
-			dt.SetValue(&sarr[0].v[8], sarr[0].leng - 8);
+			dt.SetValue(sarr[0].ToCString().Substring(8));
 			expiryTime = dt.ToTicks();
 		}
 		else if (sarr[0].StartsWith(UTF8STRC("Max-Age=")))

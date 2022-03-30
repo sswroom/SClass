@@ -31,20 +31,20 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 {
 	UOSInt i;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
 	this->filterIndex = (UOSInt)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAlloc(WChar, i + 7);
-	sptr = Text::StrConcat(this->dialogName, dialogName);
-	sptr = Text::StrConcat(sptr, L"Dialog");
+	wptr = Text::StrConcat(this->dialogName, dialogName);
+	wptr = Text::StrConcat(wptr, L"Dialog");
 
 	this->fileName = 0;
 	this->lastName = 0;
-	sptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (sptr)
+	wptr = this->reg->GetValueStr(this->dialogName, buff);
+	if (wptr)
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
@@ -133,7 +133,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	WChar fname1[512];
 	WChar fname2[512];
 	WChar fname[MAXFILENAMESIZE];
-	WChar *sptr;
+	WChar *wptr;
 	WChar *dptr;
 	const WChar *initDir;
 	WChar *initFileName;
@@ -232,7 +232,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	if (this->lastName)
 	{
 		Text::StrConcat(fname1, this->lastName);
-		WChar *sptr = fnameBuff;
+		WChar *wptr = fnameBuff;
 		WChar *currPtr = fname1;
 		WChar *ptrStart = 0;
 		WChar c;
@@ -243,17 +243,17 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				if (ptrStart)
 				{
 					*currPtr = 0;
-					sptr = Text::StrConcat(sptr, ptrStart);
+					wptr = Text::StrConcat(wptr, ptrStart);
 					ptrStart = 0;
 				}
 				c = *++currPtr;
 				if (c == 'd')
 				{
-					sptr = Text::StrConcat(sptr, initDir);
+					wptr = Text::StrConcat(wptr, initDir);
 				}
 				else if (c == 'n')
 				{
-					sptr = Text::StrConcat(sptr, initFileName);
+					wptr = Text::StrConcat(wptr, initFileName);
 				}
 			}
 			else if (ptrStart == 0)
@@ -264,7 +264,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		}
 		if (ptrStart)
 		{
-			Text::StrConcat(sptr, ptrStart);
+			Text::StrConcat(wptr, ptrStart);
 		}
 	}
 
@@ -365,15 +365,15 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			if (pt == IO::Path::PathType::Directory)
 			{
 				dptr = Text::StrConcat(fname, fnameBuff);
-				sptr = &fnameBuff[Text::StrCharCnt(fnameBuff) + 1];
+				wptr = &fnameBuff[Text::StrCharCnt(fnameBuff) + 1];
 				*dptr++ = IO::Path::PATH_SEPERATOR;
 				
 				i = 0;
-				while (*sptr)
+				while (*wptr)
 				{
-					Text::StrConcat(dptr, sptr);
+					Text::StrConcat(dptr, wptr);
 					this->fileNames->Add(Text::StrToUTF8New(fname));
-					sptr = &sptr[Text::StrCharCnt(sptr) + 1];
+					wptr = &wptr[Text::StrCharCnt(wptr) + 1];
 					i++;
 				}
 				if (i == 1)
@@ -401,12 +401,12 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			WChar *currPtr;
 			if (Text::StrStartsWith(fnameBuff, initDir))
 			{
-				sptr = Text::StrConcat(fname1, L"|d");
+				wptr = Text::StrConcat(fname1, L"|d");
 				currPtr = &fnameBuff[Text::StrCharCnt(initDir)];
 			}
 			else
 			{
-				sptr = fname1;
+				wptr = fname1;
 				currPtr = fnameBuff;
 			}
 			if (initFileName[0])
@@ -415,18 +415,18 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				if (i >= 0)
 				{
 					currPtr[i] = 0;
-					sptr = Text::StrConcat(sptr, currPtr);
-					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
+					wptr = Text::StrConcat(wptr, currPtr);
+					wptr = Text::StrConcat(wptr, L"|n");
+					Text::StrConcat(wptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{
-					Text::StrConcat(sptr, currPtr);
+					Text::StrConcat(wptr, currPtr);
 				}
 			}
 			else
 			{
-				Text::StrConcat(sptr, currPtr);
+				Text::StrConcat(wptr, currPtr);
 			}
 			this->reg->SetValue(this->dialogName, fname1);
 		}

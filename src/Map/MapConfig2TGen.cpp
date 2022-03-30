@@ -4516,7 +4516,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 				if (forceBase == 0)
 				{
 					baseDir = fileName.ConcatTo(layerName);
-					baseDir = IO::Path::AppendPathC(layerName, baseDir, strs[1].v, strs[1].leng);
+					baseDir = IO::Path::AppendPath(layerName, baseDir, strs[1].ToCString());
 				}
 				break;
 			case 3:
@@ -4685,7 +4685,7 @@ Map::MapConfig2TGen::MapConfig2TGen(Text::CString fileName, Media::DrawEngine *e
 					IO::StmData::FileData *fd;
 					IO::ParserType pt;
 					sptr = fileName.ConcatTo(sbuff);
-					sptr = IO::Path::AppendPathC(sbuff, sptr, strs[4].v, strs[4].leng);
+					sptr = IO::Path::AppendPath(sbuff, sptr, strs[4].ToCString());
 					NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 					IO::ParsedObject *obj = parserList->ParseFile(fd, &pt);
 					DEL_CLASS(fd);

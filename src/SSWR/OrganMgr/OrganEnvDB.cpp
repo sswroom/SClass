@@ -451,9 +451,9 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupItems(Data::ArrayList<OrganGroupItem*
 
 UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp)
 {
-	UTF8Char u8buff[512];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	DB::DBReader *r;
 	if (grp == 0 || grp->GetGroupId() == -1)
 		return 0;
@@ -529,66 +529,66 @@ UOSInt SSWR::OrganMgr::OrganEnvDB::GetGroupImages(Data::ArrayList<OrganImageItem
 				r->GetStr(5, &sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(6, &sb);
-				u8ptr = Text::StrConcatC(u8buff, sb.ToString(), sb.GetLength());
+				sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 
 				exist = false;
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".jpg"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_JPG);
 					}
 				}
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".tif"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".tif"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_TIF);
 					}
 				}
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".wav"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".wav"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_WAV);
 					}
 				}
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".avi"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".avi"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".mts"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".mts"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
 				if (!exist)
 				{
-					u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".m2ts"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptr2)) == IO::Path::PathType::File)
+					sptr2 = Text::StrConcatC(sptr, UTF8STRC(".m2ts"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptr2)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptr2));
+						item->SetFullName(CSTRP(sbuff, sptr2));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
@@ -2257,9 +2257,9 @@ SSWR::OrganMgr::OrganEnvDB::FileStatus SSWR::OrganMgr::OrganEnvDB::AddSpeciesWeb
 	}
 	if (webFileName)
 	{
-		UTF8Char *u8ptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcatC(u8ptr, fileName, (UOSInt)(fileNameEnd - fileName));
+		UTF8Char *sptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		Text::StrConcatC(sptr, fileName, (UOSInt)(fileNameEnd - fileName));
 	}
 	return SSWR::OrganMgr::OrganEnvDB::FS_SUCCESS;
 }
@@ -3336,7 +3336,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 	OSInt i;
 	WebUserInfo *webUser;
 	DataFileInfo *dataFile;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
@@ -3354,7 +3354,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 		{
 			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
 			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
-			sptr = this->cfgDataPath->ConcatTo(u8buff);
+			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3362,7 +3362,7 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetGPSPos(Int32 userId, Data::DateTime *t, Doub
 			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcatC(sptr, dataFile->fileName->v, dataFile->fileName->leng);
-			NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(sptr - u8buff)}, false));
+			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
@@ -3503,10 +3503,10 @@ Bool SSWR::OrganMgr::OrganEnvDB::GetUserFilePath(UserFileInfo *userFile, Text::S
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->AppendI32(userFile->webuserId);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	UTF8Char u8buff[10];
+	UTF8Char sbuff[10];
 	UTF8Char *sptr;
-	sptr = dt.ToString(u8buff, "yyyyMM");
-	sb->AppendP(u8buff, sptr);
+	sptr = dt.ToString(sbuff, "yyyyMM");
+	sb->AppendP(sbuff, sptr);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->AppendC(userFile->dataFileName->v, userFile->dataFileName->leng);
 	return true;
@@ -4604,8 +4604,8 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 	/*	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
 	UserFileInfo *userFile;
 	DB::SQLBuilder sql(this->db);
-	WChar sbuff[512];
-	WChar *sptr;
+	WChar wbuff[512];
+	WChar *wptr;
 	Data::DateTime dt;
 	Text::StringBuilderW sb;
 	OSInt i = 0;
@@ -4616,20 +4616,20 @@ void SSWR::OrganMgr::OrganEnvDB::Test()
 	{
 		userFile = userFileList->GetItem(i);
 		dt.SetTicks(userFile->fileTimeTicks);
-		sptr = Text::StrConcat(sbuff, this->cfgDataPath);
-		if (sptr[-1] != '\\')
+		wptr = Text::StrConcat(wbuff, this->cfgDataPath);
+		if (wptr[-1] != '\\')
 		{
-			*sptr++ = '\\';
+			*wptr++ = '\\';
 		}
-		sptr = Text::StrConcat(sptr, L"UserFile\\");
-		sptr = Text::StrInt32(sptr, userFile->webuserId);
-		sptr = Text::StrConcat(sptr, L"\\");
-		sptr = dt.ToString(sptr, L"yyyyMM");
-		sptr = Text::StrConcat(sptr, L"\\");
-		Text::StrConcat(sptr, userFile->dataFileName);
+		wptr = Text::StrConcat(wptr, L"UserFile\\");
+		wptr = Text::StrInt32(wptr, userFile->webuserId);
+		wptr = Text::StrConcat(wptr, L"\\");
+		wptr = dt.ToString(wptr, L"yyyyMM");
+		wptr = Text::StrConcat(wptr, L"\\");
+		Text::StrConcat(wptr, userFile->dataFileName);
 		if (userFile->fileType == 1)
 		{
-			Media::EXIFData *exif = ParseJPGExif(sbuff);
+			Media::EXIFData *exif = ParseJPGExif(wbuff);
 			if (exif)
 			{
 				const Char *csptr;

@@ -76,10 +76,10 @@ void UI::GUITextBox::SetText(Text::CString txt)
 UTF8Char *UI::GUITextBox::GetText(UTF8Char *buff)
 {
 	UOSInt leng = (UOSInt)GetWindowTextLengthW((HWND)hwnd);
-	WChar *sptr = MemAlloc(WChar, leng + 1);
-	GetWindowTextW((HWND)hwnd, sptr, (int)(leng + 1));
-	buff = Text::StrWChar_UTF8(buff, sptr);
-	MemFree(sptr);
+	WChar *wptr = MemAlloc(WChar, leng + 1);
+	GetWindowTextW((HWND)hwnd, wptr, (int)(leng + 1));
+	buff = Text::StrWChar_UTF8(buff, wptr);
+	MemFree(wptr);
 	return buff;
 }
 

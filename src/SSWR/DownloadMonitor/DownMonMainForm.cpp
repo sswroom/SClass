@@ -119,7 +119,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteTableClicked(void 
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0].v, sarr[0].leng, &webType);
+			id = ParseURL(sarr[0].ToCString(), &webType);
 
 			if (id != 0)
 			{
@@ -246,7 +246,7 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnPasteHTMLClicked(void *
 
 					id = 0;
 					webType = 0;
-					id = ParseURL(url, urlLen, &webType);
+					id = ParseURL(Text::CString(url, urlLen), &webType);
 
 					if (id != 0)
 					{
@@ -442,27 +442,27 @@ void __stdcall SSWR::DownloadMonitor::DownMonMainForm::OnFileEnd(void *userObj, 
 	mutUsage.EndUse();
 }
 
-Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(const UTF8Char *url, UOSInt urlLen, Int32 *webType)
+Int32 SSWR::DownloadMonitor::DownMonMainForm::ParseURL(Text::CString url, Int32 *webType)
 {
 	Int32 id;
-	if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.com/video/")))
+	if (url.StartsWith(UTF8STRC("https://48idol.com/video/")))
 	{
-		id = Text::StrToInt32(&url[25]);
+		id = Text::StrToInt32(&url.v[25]);
 		*webType = 1;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.net/video/")))
+	else if (url.StartsWith(UTF8STRC("https://48idol.net/video/")))
 	{
-		id = Text::StrToInt32(&url[25]);
+		id = Text::StrToInt32(&url.v[25]);
 		*webType = 2;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.tv/archive/video/")))
+	else if (url.StartsWith(UTF8STRC("https://48idol.tv/archive/video/")))
 	{
-		id = Text::StrToInt32(&url[32]);
+		id = Text::StrToInt32(&url.v[32]);
 		*webType = 3;
 	}
-	else if (Text::StrStartsWithC(url, urlLen, UTF8STRC("https://48idol.tv/video/")))
+	else if (url.StartsWith(UTF8STRC("https://48idol.tv/video/")))
 	{
-		id = Text::StrToInt32(&url[24]);
+		id = Text::StrToInt32(&url.v[24]);
 		*webType = 4;
 	}
 	else
@@ -498,7 +498,7 @@ void SSWR::DownloadMonitor::DownMonMainForm::LoadList()
 		{
 			Int32 id = 0;
 			Int32 webType = 0;
-			id = ParseURL(sarr[0].v, sarr[0].leng, &webType);
+			id = ParseURL(sarr[0].ToCString(), &webType);
 
 			if (id != 0)
 			{

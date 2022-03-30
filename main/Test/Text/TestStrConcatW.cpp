@@ -5,10 +5,10 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[32];
+	WChar wbuff[32];
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	Text::StrConcat(sbuff, srcStr);
-	if (Text::StrEquals(sbuff, srcStr))
+	Text::StrConcat(wbuff, srcStr);
+	if (Text::StrEquals(wbuff, srcStr))
 	{
 		return 0;
 	}

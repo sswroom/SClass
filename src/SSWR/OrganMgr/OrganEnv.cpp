@@ -169,7 +169,7 @@ SSWR::OrganMgr::OrganEnv::OrganEnv()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Lang"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Lang"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("zh-hk.txt"));
 	this->langFile = IO::IniFile::Parse(CSTRP(sbuff, sptr), 65001);

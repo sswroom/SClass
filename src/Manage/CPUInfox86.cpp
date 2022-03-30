@@ -505,24 +505,24 @@ Bool Manage::CPUInfo::GetInfoName(UOSInt index, Text::StringBuilderUTF8 *sb)
 }
 
 #if defined(WIN32) || defined(_WIN64)
-UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *u8buff)
+UTF8Char *Manage::CPUInfo::GetCPUName(UTF8Char *sbuff)
 {
 	UTF8Char *ret = 0;
 	IO::Registry *reg = IO::Registry::OpenLocalHardware();
 	IO::Registry *reg2;
-	WChar sbuff[256];
+	WChar wbuff[256];
 	if (reg)
 	{
 		reg2 = reg->OpenSubReg(L"DESCRIPTION\\System\\CentralProcessor\\0");
 		if (reg2)
 		{
-			WChar *sptr;
-			sptr = reg2->GetValueStr(L"ProcessorNameString", sbuff);
+			WChar *wptr;
+			wptr = reg2->GetValueStr(L"ProcessorNameString", wbuff);
 			IO::Registry::CloseRegistry(reg2);
-			if (sptr)
+			if (wptr)
 			{
-				ret = Text::StrWChar_UTF8(u8buff, sbuff);
-				ret = Text::StrTrim(u8buff);
+				ret = Text::StrWChar_UTF8(sbuff, wbuff);
+				ret = Text::StrTrim(sbuff);
 			}
 		}
 		IO::Registry::CloseRegistry(reg);

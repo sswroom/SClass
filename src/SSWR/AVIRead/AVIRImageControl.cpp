@@ -471,7 +471,7 @@ Double *SSWR::AVIRead::AVIRImageControl::GetCameraGamma(Text::CString cameraName
 	this->cameraMap->Put(cameraName, camera);
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, cameraName.v, cameraName.leng);
+	sptr = IO::Path::AppendPath(sbuff, sptr, cameraName);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".gamma"));
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;

@@ -275,10 +275,10 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
+UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CString toAppend)
 {
-	if (toAppend[0] == '/')
-		return Text::StrConcatC(path, toAppend, toAppendLen);
+	if (toAppend.v[0] == '/')
+		return toAppend.ConcatTo(path);
 	UOSInt pathLen = (UOSInt)(pathEnd - path);
 	UOSInt i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	IO::Path::PathType pt = GetPathType({path, pathLen});
@@ -294,7 +294,7 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		pathLen = i;
 		i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 	}
-	while (Text::StrStartsWithC(toAppend, toAppendLen, UTF8STRC("../")))
+	while (toAppend.StartsWith(UTF8STRC("../")))
 	{
 		if (i != INVALID_INDEX)
 		{
@@ -302,11 +302,10 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 			pathLen = i;
 			i = Text::StrLastIndexOfCharC(path, pathLen, '/');
 		}
-		toAppend += 3;
-		toAppendLen -= 3;
+		toAppend = toAppend.Substring(3);
 	}
 	path[pathLen] = '/';
-	return Text::StrConcatC(&path[pathLen + 1], toAppend, toAppendLen);
+	return toAppend.ConcatTo(&path[pathLen + 1]);
 }
 
 WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
@@ -582,7 +581,7 @@ IO::Path::PathType IO::Path::GetPathType(Text::CString path)
 		if (i != INVALID_INDEX)
 		{
 			pathBuff[i + 1] = 0;
-			pathBuffEnd = IO::Path::AppendPathC(pathBuff, &pathBuff[i + 1], (const UTF8Char*)cbuff, (UOSInt)size);
+			pathBuffEnd = IO::Path::AppendPath(pathBuff, &pathBuff[i + 1], Text::CString((const UTF8Char*)cbuff, (UOSInt)size));
 		}
 		return GetPathType(CSTRP(pathBuff, pathBuffEnd));
 	}
@@ -625,55 +624,55 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	str->Release();
 	sb.AllocLeng(512);
 	Char cbuff[512];
-	UTF8Char *u8ptr = sb.ToString();
+	UTF8Char *sptr = sb.ToString();
 	int status;
 	UOSInt i;
 	UOSInt j;
 //	printf("GetFullPath %ls\r\n", path);
 #if defined(__USE_LARGEFILE64)
 	struct stat64 s;
-	status = lstat64((const Char*)u8ptr, &s);
+	status = lstat64((const Char*)sptr, &s);
 #else
 	struct stat s;
-	status = lstat((const Char*)u8ptr, &s);
+	status = lstat((const Char*)sptr, &s);
 #endif
 	if (status != 0)
 	{
-		i = Text::StrLastIndexOfCharC(u8ptr, sb.GetLength(), '/');
+		i = Text::StrLastIndexOfCharC(sptr, sb.GetLength(), '/');
 		while (true)
 		{
 //			printf("GetFullPath: Loop i = %d\r\n", i);
 			if (i == INVALID_INDEX)
 			{
-				return Text::StrUTF8_WChar(buff, u8ptr, 0);
+				return Text::StrUTF8_WChar(buff, sptr, 0);
 			}
-			u8ptr[i] = 0;
+			sptr[i] = 0;
 #if defined(__USE_LARGEFILE64)
-			status = lstat64((const Char*)u8ptr, &s);
+			status = lstat64((const Char*)sptr, &s);
 #else
-			status = lstat((const Char*)u8ptr, &s);
+			status = lstat((const Char*)sptr, &s);
 #endif
 			if (status == 0)
 			{
 				if (S_ISLNK(s.st_mode))
 				{
-					ssize_t size = readlink((const Char*)u8ptr, cbuff, 511);
+					ssize_t size = readlink((const Char*)sptr, cbuff, 511);
 					cbuff[size] = 0;
-//					printf("readlink %s -> %s\r\n", u8ptr, cbuff);
+//					printf("readlink %s -> %s\r\n", sptr, cbuff);
 					//////////////////////////////
-					return Text::StrUTF8_WChar(buff, u8ptr, 0);
+					return Text::StrUTF8_WChar(buff, sptr, 0);
 				}
 				else
 				{
-					u8ptr[i] = '/';
-					return Text::StrUTF8_WChar(buff, u8ptr, 0);
+					sptr[i] = '/';
+					return Text::StrUTF8_WChar(buff, sptr, 0);
 				}
 			}
 			else
 			{
 				j = i;
-				i = Text::StrLastIndexOfCharC(u8ptr, i, '/');
-				u8ptr[j] = '/';
+				i = Text::StrLastIndexOfCharC(sptr, i, '/');
+				sptr[j] = '/';
 			}
 		}
 		
@@ -688,7 +687,7 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 	}
 	else if (S_ISLNK(s.st_mode))
 	{
-		ssize_t size = readlink((const Char*)u8ptr, cbuff, 511);
+		ssize_t size = readlink((const Char*)sptr, cbuff, 511);
 		cbuff[size] = 0;
 		Text::StrConcat(buff, path);
 
@@ -785,13 +784,13 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 
 Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '/');
 	const WChar *fileName = &path[i + 1];
-	Text::StrConcat(sbuff, searchPattern);
+	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;
 	WChar *patternStart = 0;
-	WChar *currPattern = sbuff;
+	WChar *currPattern = wbuff;
 	WChar c;
 	while (true)
 	{

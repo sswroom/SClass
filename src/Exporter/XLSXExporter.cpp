@@ -245,13 +245,13 @@ Bool Exporter::XLSXExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 								}
 								break;
 							case Text::SpreadSheet::CellDataType::Number:
-								sb.AppendC(cell->cellValue->v, cell->cellValue->leng);
+								sb.Append(cell->cellValue);
 								break;
 							case Text::SpreadSheet::CellDataType::DateTime:
 								{
 									Data::DateTime dt;
 									dt.ToLocalTime();
-									dt.SetValue(cell->cellValue->v, cell->cellValue->leng);
+									dt.SetValue(cell->cellValue->ToCString());
 									Text::SBAppendF64(&sb, Text::XLSUtil::Date2Number(&dt));
 								}
 								break;

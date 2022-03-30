@@ -743,7 +743,6 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 {
 	UTF8Char buff[256];
 	UTF8Char *ptr;
-	UTF8Char *u8ptr;
 	if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		OSInt i = 4;
@@ -891,11 +890,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 			NEW_CLASS(col, DB::ColDef(CSTRP(buff, ptr)));
 			col->SetNotNull(!r->GetBool(10));
 			col->SetPK(false);
-			if ((u8ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
+			if ((ptr = r->GetStr(12, buff, sizeof(buff))) != 0)
 			{
 				if (*buff == '{')
 				{
-					u8ptr[-1] = 0;
+					ptr[-1] = 0;
 					col->SetDefVal(&buff[1]);
 				}
 				else

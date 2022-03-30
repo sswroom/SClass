@@ -72,16 +72,16 @@ UTF8Char *IO::Console::GetLine(UTF8Char *buff)
 		return buff;
 	}
 #else
-	WChar sbuff[256];
+	WChar wbuff[256];
 	WChar *ptr;
 #if _MSC_VER >= 1400
-	ptr = _getws_s(sbuff, 256);
+	ptr = _getws_s(wbuff, 256);
 #else
-	ptr = _getws(sbuff);
+	ptr = _getws(wbuff);
 #endif
 	if (ptr)
 	{
-		return Text::StrWChar_UTF8(buff, sbuff);
+		return Text::StrWChar_UTF8(buff, wbuff);
 	}
 	else
 	{

@@ -8,12 +8,12 @@
 void Text::MIMEObj::HTMLMIMEObj::BuildContentType()
 {
 	Text::StringBuilderUTF8 sbc;
-	UTF8Char u8buff[64];
+	UTF8Char sbuff[64];
 	UTF8Char* sptr;
-	u8buff[0] = 0;
+	sbuff[0] = 0;
 	sbc.AppendC(UTF8STRC("text/html; charset="));
-	sptr = Text::EncodingFactory::GetInternetName(u8buff, this->codePage);
-	sbc.AppendC(u8buff, (UOSInt)(sptr - u8buff));
+	sptr = Text::EncodingFactory::GetInternetName(sbuff, this->codePage);
+	sbc.AppendP(sbuff, sptr);
 	this->contType = Text::String::New(sbc.ToString(), sbc.GetLength());
 }
 

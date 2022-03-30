@@ -107,7 +107,7 @@ Bool Media::MonitorColorManager::Load()
 	IO::Registry *regBase;
 	IO::Registry *reg2;
 	IO::Registry *reg;
-	WChar sbuff[512];
+	WChar wbuff[512];
 
 	regBase = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"Color");
 	if (regBase)
@@ -187,10 +187,10 @@ Bool Media::MonitorColorManager::Load()
 		if (reg->GetValueI32(L"MonLuminance", &tmpVal))
 			this->rgb->monLuminance = tmpVal * 0.1;
 
-		if (reg->GetValueStr(L"MonProfileFile", sbuff))
+		if (reg->GetValueStr(L"MonProfileFile", wbuff))
 		{
 			SDEL_STRING(this->monProfileFile);
-			this->monProfileFile = Text::String::NewNotNull(sbuff);
+			this->monProfileFile = Text::String::NewNotNull(wbuff);
 		}
 		if (reg->GetValueI32(L"MonProfileType", &tmpVal))
 		{
@@ -655,8 +655,8 @@ Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 void Media::MonitorColorManager::SetOSProfile()
 {
 #if (defined(_WIN32) || defined(WIN64)) && !defined(_WIN32_WCE)
-	WChar sbuff[512];
-	WChar sbuff2[512];
+	WChar wbuff[512];
+	WChar wbuff2[512];
 	Bool succ = false;
 	DISPLAY_DEVICEW dev;
 	UInt32 i = 0;
@@ -667,20 +667,20 @@ void Media::MonitorColorManager::SetOSProfile()
 		const WChar *wprofileName = Text::StrToWCharNew(this->profileName->v);
 		while (EnumDisplayDevicesW(0, i, &dev, 0) != 0)
 		{
-			Text::StrConcat(sbuff2, dev.DeviceName);
-			if (EnumDisplayDevicesW(sbuff2, 0, &dev, 0) != 0)
+			Text::StrConcat(wbuff2, dev.DeviceName);
+			if (EnumDisplayDevicesW(wbuff2, 0, &dev, 0) != 0)
 			{
 				j = Text::StrIndexOfChar(dev.DeviceID, '\\');
 				if (Text::StrStartsWith(&dev.DeviceID[j + 1], wprofileName))
 				{
-					HDC hdc = CreateDCW(L"DISPLAY", sbuff2, 0, 0);
+					HDC hdc = CreateDCW(L"DISPLAY", wbuff2, 0, 0);
 					if (hdc)
 					{
 						DWORD size;
 						size = 512;
-						if (GetICMProfileW(hdc, &size, sbuff) != 0)
+						if (GetICMProfileW(hdc, &size, wbuff) != 0)
 						{
-							Text::String *s = Text::String::NewNotNull(sbuff);
+							Text::String *s = Text::String::NewNotNull(wbuff);
 							succ = SetFromProfileFile(s);
 							s->Release();
 						}

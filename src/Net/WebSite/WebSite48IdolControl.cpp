@@ -166,7 +166,7 @@ OSInt Net::WebSite::WebSite48IdolControl::GetArcPageItems(OSInt pageNo, Data::Ar
 								sb.ClearStr();
 								reader->ReadNodeText(&sb);
 								sb.Trim();
-								dt.SetValue(sb.ToString(), sb.GetLength());
+								dt.SetValue(sb.ToCString());
 								time = dt.ToTicks();
 							}
 						}

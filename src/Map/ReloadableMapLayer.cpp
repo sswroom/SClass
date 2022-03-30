@@ -611,11 +611,9 @@ void Map::ReloadableMapLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 void Map::ReloadableMapLayer::AddInnerLayer(Text::CString name, Text::CString url, Int32 seconds)
 {
 	Text::StringBuilderUTF8 sb;
-	UOSInt urlLen;
 	sb.Append(this->GetSourceNameObj());
-	urlLen = url.leng;
-	sb.AllocLeng(urlLen);
-	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), url.v, urlLen));
+	sb.AllocLeng(url.leng);
+	sb.SetEndPtr(Text::URLString::AppendURLPath(sb.ToString(), sb.GetEndPtr(), url));
 	InnerLayerInfo *innerLayer;
 	innerLayer = MemAlloc(InnerLayerInfo, 1);
 	innerLayer->innerLayer = 0;

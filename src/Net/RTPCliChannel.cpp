@@ -20,7 +20,7 @@
 void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData)
 {
 	ChannelData *chData = (ChannelData*)userData;
-//	WChar sbuff[32];
+//	WChar wbuff[32];
 
 	if (dataSize < 12)
 		return;
@@ -51,8 +51,8 @@ void __stdcall Net::RTPCliChannel::PacketHdlr(const Net::SocketUtil::AddressInfo
 		chData->lastSeqNumHi++;
 	}
 	chData->lastSeqNumLo = seqNum;
-//	Text::StrConcatC(Text::StrInt32(sbuff, seqNum), UTF8STRC("\r\n"));
-//	IO::Console::PrintStrO(sbuff);
+//	Text::StrConcatC(Text::StrInt32(wbuff, seqNum), UTF8STRC("\r\n"));
+//	IO::Console::PrintStrO(wbuff);
 
 	Sync::MutexUsage mutUsage(chData->packMut);
 	if (chData->packCnt >= chData->buffCnt)
@@ -117,8 +117,8 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 {
 	ChannelData *chData = (ChannelData*)userData;
 	UInt8 tmpBuff[100];
-	UTF8Char u8buff[64];
-	UTF8Char *u8ptr;
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
 	Data::DateTime *dt;
 	Text::StringBuilderUTF8 *sb;
 	UOSInt size = 0;
@@ -182,9 +182,9 @@ void __stdcall Net::RTPCliChannel::PacketCtrlHdlr(const Net::SocketUtil::Address
 				{
 					i = 40;
 					tmpBuff[i] = 1;
-					u8ptr = Net::SocketUtil::GetAddrName(u8buff, addr);
-					Text::StrConcatC(&tmpBuff[i + 2], u8buff, (UOSInt)(u8ptr - u8buff));
-					tmpBuff[i + 1] = (UInt8)(u8ptr - u8buff);
+					sptr = Net::SocketUtil::GetAddrName(sbuff, addr);
+					Text::StrConcatC(&tmpBuff[i + 2], sbuff, (UOSInt)(sptr - sbuff));
+					tmpBuff[i + 1] = (UInt8)(sptr - sbuff);
 					i += (UOSInt)(tmpBuff[i + 1] + 2);
 					tmpBuff[i] = 0;
 					i++;
@@ -617,8 +617,8 @@ Net::RTPCliChannel *Net::RTPCliChannel::CreateChannel(Net::SocketFactory *sockf,
 			}
 			else
 			{
-				Text::StrConcatC(ctrlURL.ConcatTo(sbuff), UTF8STRC("/"));
-				sptr = Text::URLString::AppendURLPath(sbuff, &desc[10], descLen - 10);
+				sptr = Text::StrConcatC(ctrlURL.ConcatTo(sbuff), UTF8STRC("/"));
+				sptr = Text::URLString::AppendURLPath(sbuff, sptr, Text::CString(&desc[10], descLen - 10));
 				ch->SetControlURL(CSTRP(sbuff, sptr));
 			}
 		}

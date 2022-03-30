@@ -59,8 +59,8 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UInt8 buff[256];
 	Map::MapEnv::ImageInfo imgInfo;
 	Exporter::MEVExporter::MEVStrRecord *strRec;
-	UTF8Char u8buff[256];
-	UTF8Char *u8ptr;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Text::String *tmpStr;
 	Data::ArrayList<Exporter::MEVExporter::MEVStrRecord*> *tmpArr;
 
@@ -72,15 +72,15 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	while (i-- > 0)
 	{
 		env->GetImageFileInfo(i, &imgInfo);
-		u8ptr = imgInfo.fileName->ConcatTo(u8buff);
-		j = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
+		sptr = imgInfo.fileName->ConcatTo(sbuff);
+		j = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 		if (j != INVALID_INDEX)
 		{
-			u8buff[j] = 0;
-			si = dirArr->SortedIndexOfPtr(u8buff, j);
+			sbuff[j] = 0;
+			si = dirArr->SortedIndexOfPtr(sbuff, j);
 			if (si < 0)
 			{
-				dirArr->Insert((UOSInt)~si, Text::String::New(u8buff, j));
+				dirArr->Insert((UOSInt)~si, Text::String::New(sbuff, j));
 			}
 		}
 	}
@@ -128,13 +128,13 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	while (i < j)
 	{
 		env->GetImageFileInfo(i, &imgInfo);
-		u8ptr = imgInfo.fileName->ConcatTo(u8buff);
-		k = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
+		sptr = imgInfo.fileName->ConcatTo(sbuff);
+		k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
 
 		*(Int32*)&buff[0] = 0;
-		WriteUInt32(&buff[4], AddString(strArr, &u8buff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
-		u8buff[k] = 0;
-		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOfPtr(u8buff, k);
+		WriteUInt32(&buff[4], AddString(strArr, &sbuff[k + 1], imgInfo.fileName->leng - k - 1, stmPos));
+		sbuff[k] = 0;
+		*(Int32*)&buff[8] = (Int32)dirArr->SortedIndexOfPtr(sbuff, k);
 		*(Int32*)&buff[12] = (Int32)imgInfo.index;
 
 		stm->Write(buff, 16);
@@ -154,13 +154,13 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		UOSInt buffSize;
 		UInt32 buffColor;
 
-		u8ptr = env->GetFontStyleName(i, u8buff);
+		sptr = env->GetFontStyleName(i, sbuff);
 		env->GetFontStyle(i, &fontName, &fontSize, &bold, &fontColor, &buffSize, &buffColor);
 
 		*(Int32*)&buff[0] = 0;
-		if (u8ptr)
+		if (sptr)
 		{
-			WriteUInt32(&buff[4], AddString(strArr, u8buff, (UOSInt)(u8ptr - u8buff), stmPos));
+			WriteUInt32(&buff[4], AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos));
 		}
 		else
 		{
@@ -184,11 +184,11 @@ Bool Exporter::MEVExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	j = env->GetLineStyleCount();
 	while (i < j)
 	{
-		u8ptr = env->GetLineStyleName(i, u8buff);
+		sptr = env->GetLineStyleName(i, sbuff);
 		*(Int32*)&buff[0] = 0;
-		if (u8ptr)
+		if (sptr)
 		{
-			*(UInt32*)&buff[4] = AddString(strArr, u8buff, (UOSInt)(u8ptr - u8buff), stmPos);
+			*(UInt32*)&buff[4] = AddString(strArr, sbuff, (UOSInt)(sptr - sbuff), stmPos);
 		}
 		else
 		{
@@ -337,8 +337,8 @@ UInt32 Exporter::MEVExporter::AddString(Data::StringMap<MEVStrRecord*> *strArr, 
 void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::GroupItem *group, UInt32 *stmPos, IO::SeekableStream *stm, Data::StringMap<Exporter::MEVExporter::MEVStrRecord*> *strArr, Data::ArrayListString *dirArr)
 {
 	UInt8 buff[256];
-	UTF8Char u8buff[256];
-	UTF8Char *u8ptr;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Map::MapEnv::LayerItem setting;
 	UOSInt i = 0;
 	UOSInt j = env->GetItemCount(group);
@@ -373,14 +373,14 @@ void Exporter::MEVExporter::WriteGroupItems(Map::MapEnv *env, Map::MapEnv::Group
 			Map::MapEnv::LayerItem *lyr = (Map::MapEnv::LayerItem*)item;
 			Map::IMapDrawLayer *layer = lyr->layer;
 			*(Int32*)&buff[0] = item->itemType;
-			u8ptr = layer->GetSourceName(u8buff);
+			sptr = layer->GetSourceName(sbuff);
 			*(Int32*)&buff[4] = 0;
-			k = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), IO::Path::PATH_SEPERATOR);
-			*(UInt32*)&buff[8] = AddString(strArr, &u8buff[k + 1], (UOSInt)(u8ptr - &u8buff[k + 1]), 4 + *stmPos);
+			k = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), IO::Path::PATH_SEPERATOR);
+			*(UInt32*)&buff[8] = AddString(strArr, &sbuff[k + 1], (UOSInt)(sptr - &sbuff[k + 1]), 4 + *stmPos);
 			if (k != INVALID_INDEX)
 			{
-				u8buff[k] = 0;
-				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(u8buff, k);
+				sbuff[k] = 0;
+				*(Int32*)&buff[12] = (Int32)dirArr->SortedIndexOfPtr(sbuff, k);
 			}
 			else
 			{

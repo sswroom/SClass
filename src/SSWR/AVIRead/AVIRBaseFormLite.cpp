@@ -271,7 +271,7 @@ typedef enum
 	MNU_BRUTEFORCE
 } MenuItems;
 
-void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF8Char **files, UOSInt nFiles)
+void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::String **files, UOSInt nFiles)
 {
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
@@ -284,8 +284,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 	OSInt i = 0;
 	while (i < nFiles)
 	{
-		UOSInt nameLen = Text::StrCharCnt(files[i]);
-		pt = IO::Path::GetPathType(files[i], nameLen);
+		pt = IO::Path::GetPathType(files[i]->ToCString());
 		if (pt == IO::Path::PathType::Directory)
 		{
 			Bool valid = false;
@@ -314,7 +313,7 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 #endif
 			if (!valid)
 			{
-				NEW_CLASS(pkg, IO::DirectoryPackage({files[i], nameLen}));
+				NEW_CLASS(pkg, IO::DirectoryPackage(files[i]->ToCString()));
 				Parser::ParserList *parsers = me->core->GetParserList();
 				IO::ParserType pt = IO::ParserType::Unknown;
 				IO::ParsedObject *pobj = parsers->ParseObject(pkg, &pt);
@@ -331,11 +330,11 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, const UTF
 		}
 		else if (pt == IO::Path::PathType::File)
 		{
-			NEW_CLASS(fd, IO::StmData::FileData({files[i], nameLen}, false));
+			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
 			if (!me->core->LoadData(fd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
-				sb.AppendC(files[i], nameLen);
+				sb.Append(files[i]);
 				found = true;
 			}
 			DEL_CLASS(fd);
@@ -542,10 +541,10 @@ SSWR::AVIRead::AVIRBaseForm::~AVIRBaseForm()
 
 void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 {
-	UTF8Char u8buff[512];
-	UTF8Char u8buff2[16];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[16];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	Map::TileMap *tileMap;
 	Map::IMapDrawLayer *mapLyr;
 
@@ -598,8 +597,8 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Media::MediaFile *mf;
-				dlg->capture->GetSourceName(u8buff);
-				NEW_CLASS(mf, Media::MediaFile(u8buff));
+				sptr = dlg->capture->GetSourceName(sbuff);
+				NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
 				mf->AddSource(dlg->capture, 0);
 				this->core->OpenObject(mf);
 			}
@@ -678,72 +677,72 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTile"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.openstreetmap.org/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.openstreetmap.org/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMOpenCycleMap"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/cycle/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/cycle/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTransport"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_LANDSCAPE:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMLandscape"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMLandscape"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/landscape/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/landscape/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_OUTDOORS:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMOutdoors"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOutdoors"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/outdoors/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/outdoors/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP_DARK:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMTransportDark"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransportDark"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/transport-dark/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/transport-dark/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_SPINAL:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMSpinalMap"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMSpinalMap"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://b.tile.thunderforest.com/spinal-map/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://c.tile.thunderforest.com/spinal-map/"));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMMapQuest"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(CSTR("http://otile4.mqcdn.com/tiles/1.0.0/osm/"));
@@ -762,12 +761,12 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				const UTF8Char *url = frm->GetSelectedURL();
 				crc.Calc((UInt8*)url, Text::StrCharCnt(url) * sizeof(UTF8Char));
 				crc.GetValue(crcVal);
-				u8ptr = IO::Path::GetProcessFileName(u8buff);
-				u8ptr2 = Text::StrInt32(u8buff2, ReadMInt32(crcVal));
-				u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, u8buff2, (UOSInt)(u8ptr2 - u8buff2));
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				*u8ptr = 0;
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, u8buff, this->core->GetSocketFactory(), 0));
+				sptr = IO::Path::GetProcessFileName(sbuff);
+				sptr2 = Text::StrInt32(sbuff2, ReadMInt32(crcVal));
+				sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				*sptr = 0;
+				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, sbuff, this->core->GetSocketFactory(), 0));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}
@@ -808,7 +807,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt i = fname->IndexOf(':');
 				if (i == INVALID_INDEX || i == 1)
 				{
-					if (IO::Path::GetPathType(fname->v, fname->leng) == IO::Path::PathType::Directory)
+					if (IO::Path::GetPathType(fname->ToCString()) == IO::Path::PathType::Directory)
 					{
 						IO::DirectoryPackage *dp;
 						NEW_CLASS(dp, IO::DirectoryPackage(fname));
@@ -1251,9 +1250,9 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_TEST:
-		u8ptr = IO::Path::GetProcessFileName(u8buff);
-		u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, UTF8STRC("OSMCacheTest"));
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), CSTRP(u8buff, u8ptr), 18, this->core->GetSocketFactory(), 0));
+		sptr = IO::Path::GetProcessFileName(sbuff);
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMCacheTest"));
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(CSTR("http://127.0.0.1/"), CSTRP(sbuff, sptr), 18, this->core->GetSocketFactory(), 0));
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;

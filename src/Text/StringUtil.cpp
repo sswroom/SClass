@@ -17,30 +17,30 @@ const WChar *Text::StringUtil::ToString(Data::DateTime *dt, const Char *pattern)
 {
 	Char tmpbuff[32];
 	dt->ToString(tmpbuff, pattern);
-	Text::StrConcatASCII(sbuff, tmpbuff);
-	return sbuff;
+	Text::StrConcatASCII(wbuff, tmpbuff);
+	return wbuff;
 }
 
 const WChar *Text::StringUtil::ToString(Double val)
 {
-	Text::StrDouble(sbuff, val);
-	return sbuff;
+	Text::StrDouble(wbuff, val);
+	return wbuff;
 }
 
 const WChar *Text::StringUtil::ToString(Double val, const Char *pattern)
 {
-	Text::StrDoubleFmt(sbuff, val, pattern);
-	return sbuff;
+	Text::StrDoubleFmt(wbuff, val, pattern);
+	return wbuff;
 }
 
 const WChar *Text::StringUtil::ToString(Int32 val)
 {
-	Text::StrInt32(sbuff, val);
-	return sbuff;
+	Text::StrInt32(wbuff, val);
+	return wbuff;
 }
 
 const WChar *Text::StringUtil::ToString(Int64 val)
 {
-	Text::StrInt64(sbuff, val);
-	return sbuff;
+	Text::StrInt64(wbuff, val);
+	return wbuff;
 }

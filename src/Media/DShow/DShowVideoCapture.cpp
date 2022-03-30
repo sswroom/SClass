@@ -662,7 +662,7 @@ WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, UOSInt devNo
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UInt32 cnt;
-	WChar *sptr = 0;
+	WChar *wptr = 0;
 
 	if (pEnum == 0)
 	{
@@ -686,13 +686,13 @@ WChar *Media::DShow::DShowVideoCaptureMgr::GetDeviceId(WChar *buff, UOSInt devNo
 			hr = pPropBag->Read(L"DevicePath", &var, 0);
 			if (SUCCEEDED(hr))
 			{
-				sptr = Text::StrConcat(buff, var.bstrVal);
+				wptr = Text::StrConcat(buff, var.bstrVal);
 				VariantClear(&var);
 			}
 
 	        pPropBag->Release();
 			pMoniker->Release();
-			return sptr;
+			return wptr;
 		}
         pMoniker->Release();
 		cnt++;
@@ -706,7 +706,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 	IMoniker *pMoniker;
 	IPropertyBag *pPropBag;
 	UOSInt cnt;
-	WChar sbuff[256];
+	WChar wbuff[256];
 
 	if (pEnum == 0)
 	{
@@ -730,7 +730,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 			VARIANT var;
 			VariantInit(&var);
 
-			sbuff[0] = 0;
+			wbuff[0] = 0;
 
 			hr = pPropBag->Read(L"Description", &var, 0);
 			if (FAILED(hr))
@@ -739,7 +739,7 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 			}
 			if (SUCCEEDED(hr))
 			{
-				Text::StrConcat(sbuff, var.bstrVal);
+				Text::StrConcat(wbuff, var.bstrVal);
 				VariantClear(&var);
 			}
 
@@ -756,12 +756,12 @@ Media::DShow::DShowVideoCapture *Media::DShow::DShowVideoCaptureMgr::GetDevice(U
 			CoGetMalloc(1, &mem);
 			if (SUCCEEDED(pMoniker->GetDisplayName(0, 0, &dispName)))
 			{
-				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, sbuff, dispName));
+				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, dispName));
 				mem->Free(dispName);
 			}
 			else
 			{
-				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, sbuff, 0));
+				NEW_CLASS(capture, Media::DShow::DShowVideoCapture(pCap, pPropBag, wbuff, 0));
 			}
 			pMoniker->Release();
 			return capture;

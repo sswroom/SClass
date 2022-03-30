@@ -419,7 +419,7 @@ WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 		if ((strToDec[0] == 'X' || strToDec[0] == 'x') && (strToDec[1] == 'n' || strToDec[1] == 'N') && strToDec[2] == '-' && strToDec[3] == '-')
 		{
 			strToDec += 4;
-			const WChar *sptr;
+			const WChar *wptr;
 			WChar c;
 
 			UOSInt n = 128;//initial_n
@@ -428,18 +428,18 @@ WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 
 			UOSInt destSize = 0;
 			UOSInt lastMinus = 0;
-			sptr = strToDec;
+			wptr = strToDec;
 			while (true)
 			{
-				c = *sptr;
+				c = *wptr;
 				if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9'))
 				{
-					sptr++;
+					wptr++;
 				}
 				else if (c == '-')
 				{
-					lastMinus = (UOSInt)(sptr - strToDec);
-					sptr++;
+					lastMinus = (UOSInt)(wptr - strToDec);
+					wptr++;
 				}
 				else
 					break;
@@ -447,13 +447,13 @@ WChar *Text::TextBinEnc::Punycode::Decode(WChar *buff, const WChar *strToDec)
 
 			if (lastMinus > 0)
 			{
-				sptr = &strToDec[lastMinus];
-				while (strToDec < sptr)
+				wptr = &strToDec[lastMinus];
+				while (strToDec < wptr)
 				{
 					buff[destSize] = *strToDec++;
 					destSize++;
 				}
-				strToDec = sptr + 1;
+				strToDec = wptr + 1;
 			}
 			UOSInt digit;
 			UOSInt t;

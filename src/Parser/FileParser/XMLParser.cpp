@@ -2234,8 +2234,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									imgLyr->GetSourceName(sbuff);
-									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
+									sbuffEnd = imgLyr->GetSourceName(sbuff);
+									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{
@@ -2257,14 +2257,14 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString(), sb.GetLength());
+										dt.SetValue(sb.ToCString());
 										timeStart = dt.ToUnixTimestamp();
 									}
 									else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString(), sb.GetLength());
+										dt.SetValue(sb.ToCString());
 										timeEnd = dt.ToUnixTimestamp();
 									}
 									else
@@ -2403,8 +2403,8 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 								{
 									sb.ClearStr();
 									reader->ReadNodeText(&sb);
-									imgLyr->GetSourceName(sbuff);
-									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sb.ToString(), sb.GetLength());
+									sbuffEnd = imgLyr->GetSourceName(sbuff);
+									sbuffEnd = Text::URLString::AppendURLPath(sbuff, sbuffEnd, sb.ToCString());
 								}
 								else if (reader->GetNodeType() == Text::XMLNode::NT_ELEMENT)
 								{
@@ -2426,14 +2426,14 @@ Map::IMapDrawLayer *Parser::FileParser::XMLParser::ParseKMLContainer(Text::XMLRe
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString(), sb.GetLength());
+										dt.SetValue(sb.ToCString());
 										timeStart = dt.ToUnixTimestamp();
 									}
 									else if (reader->GetNodeText()->EqualsICase(UTF8STRC("END")))
 									{
 										sb.ClearStr();
 										reader->ReadNodeText(&sb);
-										dt.SetValue(sb.ToString(), sb.GetLength());
+										dt.SetValue(sb.ToCString());
 										timeEnd = dt.ToUnixTimestamp();
 									}
 									else
@@ -2654,7 +2654,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 										while (i < j)
 										{
 											Text::String *s = timeList.GetItem(i);
-											dt.SetValue(s->v, s->leng); 
+											dt.SetValue(s->ToCString());
 											rec.utcTimeTicks = dt.ToTicks();
 											
 											coordList.GetItem(i)->ConcatTo(sbuff);
@@ -2845,7 +2845,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 							while (i < j)
 							{
 								Text::String *s = timeList.GetItem(i);
-								dt.SetValue(s->v, s->leng);
+								dt.SetValue(s->ToCString());
 								rec.utcTimeTicks = dt.ToTicks();
 								
 								coordList.GetItem(i)->ConcatTo(sbuff);
@@ -2945,7 +2945,7 @@ void Parser::FileParser::XMLParser::ParseKMLPlacemarkTrack(Text::XMLReader *read
 					while (i < j)
 					{
 						Text::String *s = timeList.GetItem(i);
-						dt.SetValue(s->v, s->leng); 
+						dt.SetValue(s->ToCString());
 						rec.utcTimeTicks = dt.ToTicks();
 						
 						coordList.GetItem(i)->ConcatTo(sbuff);
@@ -3492,7 +3492,7 @@ Bool Parser::FileParser::XMLParser::ParseGPXPoint(Text::XMLReader *reader, Map::
 			{
 				reader->ReadNodeText(&sb);
 				Data::DateTime dt;
-				dt.SetValue(sb.ToString(), sb.GetLength());
+				dt.SetValue(sb.ToCString());
 				sb.ClearStr();
 				rec->utcTimeTicks = dt.ToTicks();
 			}

@@ -68,7 +68,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DEL_CLASS(jwt);
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("jwtrsa.key"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("jwtrsa.key"));
 	if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::File)
 	{
 		UInt8 keyBuff[4096];

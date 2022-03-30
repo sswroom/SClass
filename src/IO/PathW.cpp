@@ -258,15 +258,15 @@ WChar *IO::Path::GetProcessFileNameW(WChar *buff)
 Bool IO::Path::GetProcessFileName(Text::StringBuilderUTF8 *sb)
 {
 	UInt32 retSize;
-	WChar *sptr = MemAlloc(WChar, 1024);
+	WChar *wptr = MemAlloc(WChar, 1024);
 #ifdef _WIN32_WCE
-	retSize = GetModuleFileNameW(0, sptr, 1024);
+	retSize = GetModuleFileNameW(0, wptr, 1024);
 #else
-	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, sptr, 1024);
+	retSize = GetModuleFileNameExW(GetCurrentProcess(), 0, wptr, 1024);
 #endif
-	sptr[retSize] = 0;
-	sb->AppendW(sptr);
-	MemFree(sptr);
+	wptr[retSize] = 0;
+	sb->AppendW(wptr);
+	MemFree(wptr);
 	return true;
 }
 
@@ -357,7 +357,7 @@ WChar *IO::Path::GetFileExtW(WChar *fileBuff, const WChar *path)
 	}
 }
 
-UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Char *toAppend, UOSInt toAppendLen)
+UTF8Char *IO::Path::AppendPath(UTF8Char *path, UTF8Char *pathEnd, Text::CString toAppend)
 {
 	UTF8Char pathTmp[512];
 	UTF8Char *lastSep;
@@ -367,13 +367,13 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 	UOSInt j;
 	UInt32 i;
 	Int32 k;
-	if (toAppend[1] == ':' && toAppend[2] == '\\')
+	if (toAppend.v[1] == ':' && toAppend.v[2] == '\\')
 	{
-		return Text::StrConcatC(path, toAppend, toAppendLen);
+		return toAppend.ConcatTo(path);
 	}
-	else if (toAppend[0] == '\\' && toAppend[1] == '\\')
+	else if (toAppend.v[0] == '\\' && toAppend.v[1] == '\\')
 	{
-		return Text::StrConcatC(path, toAppend, toAppendLen);
+		return toAppend.ConcatTo(path);
 	}
 	if (path[0] == '\\' && path[1] == '\\')
 	{
@@ -394,9 +394,9 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 	{
 		firstSep = path;
 	}
-	if (toAppend[0] == '\\')
+	if (toAppend.v[0] == '\\')
 	{
-		return Text::StrConcatC(firstSep, toAppend, toAppendLen);
+		return toAppend.ConcatTo(firstSep);
 	}
 	lastSep = &path[Text::StrLastIndexOfCharC(path, (UOSInt)(pathEnd - path), '\\')];
 	if (lastSep < path)
@@ -421,8 +421,8 @@ UTF8Char *IO::Path::AppendPathC(UTF8Char *path, UTF8Char *pathEnd, const UTF8Cha
 		{
 		}
 	}
-	Text::StrConcatC(pathTmp, toAppend, toAppendLen);
-	pathCnt = Text::StrSplitP(pathArr, 5, {pathTmp, toAppendLen}, '\\');
+	toAppend.ConcatTo(pathTmp);
+	pathCnt = Text::StrSplitP(pathArr, 5, {pathTmp, toAppend.leng}, '\\');
 	while (true)
 	{
 		if (pathCnt == 5)
@@ -582,16 +582,16 @@ WChar *IO::Path::AppendPathW(WChar *path, const WChar *toAppend)
 				{
 					if (lastSep > firstSep)
 					{
-						WChar *sptr = lastSep;
-						while (sptr-- > firstSep)
+						WChar *wptr = lastSep;
+						while (wptr-- > firstSep)
 						{
-							if (*sptr == '\\')
+							if (*wptr == '\\')
 							{
 								break;
 							}
 						}
-						sptr[1] = 0;
-						lastSep = sptr;
+						wptr[1] = 0;
+						lastSep = wptr;
 					}
 					k++;
 				}
@@ -1055,13 +1055,13 @@ Bool IO::Path::FilePathMatch(const UTF8Char *path, UOSInt pathLen, const UTF8Cha
 
 Bool IO::Path::FilePathMatchW(const WChar *path, const WChar *searchPattern)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '\\');
 	const WChar *fileName = &path[i + 1];
-	Text::StrConcat(sbuff, searchPattern);
+	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;
 	WChar *patternStart = 0;
-	WChar *currPattern = sbuff;
+	WChar *currPattern = wbuff;
 	WChar c;
 	while (true)
 	{
@@ -1175,12 +1175,12 @@ UTF8Char *IO::Path::GetLocAppDataPath(UTF8Char *buff)
 #ifdef _WIN32_WCE
 	return 0;
 #else
-	WChar sbuff[512];
-	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, sbuff) != S_OK)
+	WChar wbuff[512];
+	if (SHGetFolderPathW(0, CSIDL_LOCAL_APPDATA, 0, SHGFP_TYPE_CURRENT, wbuff) != S_OK)
 	{
 		return 0;
 	}
-	return Text::StrWChar_UTF8(buff, sbuff);
+	return Text::StrWChar_UTF8(buff, wbuff);
 #endif
 }
 
@@ -1257,9 +1257,9 @@ UTF8Char *IO::Path::GetCurrDirectory(UTF8Char *buff)
 #ifdef _WIN32_WCE
 	return Text::StrConcat(buff, (const UTF8Char*)"\\");
 #else
-	WChar sbuff[512];
-	sbuff[GetCurrentDirectoryW(512, sbuff)] = 0;
-	return Text::StrWChar_UTF8(buff, sbuff);
+	WChar wbuff[512];
+	wbuff[GetCurrentDirectoryW(512, wbuff)] = 0;
+	return Text::StrWChar_UTF8(buff, wbuff);
 #endif
 }
 

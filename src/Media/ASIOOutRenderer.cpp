@@ -713,16 +713,16 @@ UOSInt Media::ASIOOutRenderer::GetDeviceCount()
 
 UTF8Char *Media::ASIOOutRenderer::GetDeviceName(UTF8Char *buff, UOSInt devNo)
 {
-	WChar sbuff[MAXDRVNAMELEN];
+	WChar wbuff[MAXDRVNAMELEN];
 	HKEY hkEnum;
 	UTF8Char *ret = 0;
 	DWORD nameLen = MAXDRVNAMELEN;
 	Int32 cr = RegOpenKeyW(HKEY_LOCAL_MACHINE, ASIO_PATH, &hkEnum);
 	if (cr == ERROR_SUCCESS)
 	{
-		if ((cr = RegEnumKeyW(hkEnum, (UInt32)devNo, sbuff, nameLen))== ERROR_SUCCESS)
+		if ((cr = RegEnumKeyW(hkEnum, (UInt32)devNo, wbuff, nameLen))== ERROR_SUCCESS)
 		{
-			ret = Text::StrWChar_UTF8(buff, sbuff);
+			ret = Text::StrWChar_UTF8(buff, wbuff);
 		}
 	}
 	if (hkEnum)

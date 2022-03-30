@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRLogServerForm::OnStartClick(void *userObj)
 		if (sb.ToUInt16(&port))
 		{
 			sptr = IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("LogSvr"));
+			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("LogSvr"));
 			NEW_CLASS(me->svr, Net::LogServer(me->core->GetSocketFactory(), port, CSTRP(sbuff, sptr), 0, false));
 			if (me->svr->IsError())
 			{

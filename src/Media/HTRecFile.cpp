@@ -602,7 +602,7 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 	if (stmData->GetDataSize() != 96 + recCnt * 3)
 		return;
 	UTF8Char sbuff[37];
-	const WChar *sptr;
+	const WChar *wptr;
 	UTF8Char *dptr;
 	NEW_CLASS(this->time1, Data::DateTime());
 	NEW_CLASS(this->time2, Data::DateTime());
@@ -612,7 +612,7 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 	this->address = buff[8];
 	Text::StrConcatC(sbuff, &buff[9], 10);
 	this->serialNo = Text::StrCopyNew(sbuff);
-	sptr = (const WChar*)&buff[19];
+	wptr = (const WChar*)&buff[19];
 	dptr = sbuff;
 	OSInt charLeft = 36;
 	while (true)
@@ -622,7 +622,7 @@ Media::HTRecFile::HTRecFile(IO::IStreamData *stmData) : DB::ReadingDB(stmData->G
 			*dptr = 0;
 			break;
 		}
-		if ((*dptr++ = (UTF8Char)*sptr++) != 0)
+		if ((*dptr++ = (UTF8Char)*wptr++) != 0)
 		{
 		}
 		else

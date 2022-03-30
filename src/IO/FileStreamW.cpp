@@ -510,11 +510,11 @@ IO::FileStream *IO::FileStream::CreateNamedPipe(const UTF8Char *pipeName, UInt32
 #ifdef _WIN32_WCE
 	return 0;
 #else
-	WChar sbuff[256];
-	WChar *sptr = Text::StrConcat(sbuff, L"\\\\.\\pipe\\");
+	WChar wbuff[256];
+	WChar *wptr = Text::StrConcat(wbuff, L"\\\\.\\pipe\\");
 	HANDLE hand;
-	sptr = Text::StrUTF8_WChar(sptr, pipeName, 0);
-	hand = ::CreateNamedPipeW(sbuff, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, buffSize, buffSize, 0, 0);
+	wptr = Text::StrUTF8_WChar(wptr, pipeName, 0);
+	hand = ::CreateNamedPipeW(wbuff, PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE, PIPE_UNLIMITED_INSTANCES, buffSize, buffSize, 0, 0);
 	if (hand == INVALID_HANDLE_VALUE)
 	{
 		return 0;

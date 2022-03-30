@@ -10,7 +10,7 @@ Media::ColorCorr::ColorCorr(UTF8Char *name)
 {
 	Int32 regVal;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	radd = 0;
 	gadd = 0;
 	badd = 0;
@@ -29,8 +29,8 @@ Media::ColorCorr::ColorCorr(UTF8Char *name)
 	uncorrTab32 = 0;
 	uncorrTab32Valid = false;
 
-	sptr = Text::StrConcat(buff, L"Color\\");
-	sptr = Text::StrUTF8_WChar(sptr, name, 0);
+	wptr = Text::StrConcat(buff, L"Color\\");
+	wptr = Text::StrUTF8_WChar(wptr, name, 0);
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	radd = reg->GetValueI32(L"RAdd") * 0.0001;
 	gadd = reg->GetValueI32(L"GAdd") * 0.0001;
@@ -72,9 +72,9 @@ Media::ColorCorr::~ColorCorr()
 Int32 Media::ColorCorr::Save(UTF8Char *name)
 {
 	WChar buff[256];
-	WChar *sptr;
-	sptr = Text::StrConcat(buff, L"Color\\");
-	sptr = Text::StrUTF8_WChar(sptr, name, 0);
+	WChar *wptr;
+	wptr = Text::StrConcat(buff, L"Color\\");
+	wptr = Text::StrUTF8_WChar(wptr, name, 0);
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_ALL, L"SSWR", buff);
 	reg->SetValue(L"RAdd", (Int32)(radd * 10000));
 	reg->SetValue(L"GAdd", (Int32)(gadd * 10000));

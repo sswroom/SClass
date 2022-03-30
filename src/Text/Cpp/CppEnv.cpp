@@ -218,7 +218,7 @@ UTF8Char *Text::Cpp::CppEnv::GetIncludeFilePath(UTF8Char *buff, Text::CString in
 		{
 			sptr = this->baseFile->ConcatTo(buff);
 			Text::String *s = this->includePaths->GetItem(i);
-			sptr = IO::Path::AppendPathC(buff, sptr, s->v, s->leng);
+			sptr = IO::Path::AppendPath(buff, sptr, s->ToCString());
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
 		else
@@ -485,11 +485,11 @@ UTF8Char *Text::Cpp::CppEnv::GetVCInstallDir(UTF8Char *sbuff, Text::VSProject::V
 				sptr = Text::StrWChar_UTF8(sbuff, wbuff);
 				if (vsv == Text::VSProject::VSV_VS71)
 				{
-					sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("..\\..\\Vc7\\"));
+					sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("..\\..\\Vc7\\"));
 				}
 				else
 				{
-					sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("..\\..\\Vc\\"));
+					sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("..\\..\\Vc\\"));
 				}
 			}
 			IO::Registry::CloseRegistry(reg2);
@@ -524,9 +524,9 @@ UTF8Char *Text::Cpp::CppEnv::GetWindowsSdkDir(UTF8Char *sbuff)
 	if (reg == 0)
 		return 0;
 	WChar wbuff[512];
-	WChar *sptr = reg->GetValueStr(L"CurrentInstallFolder", wbuff);
+	WChar *wptr = reg->GetValueStr(L"CurrentInstallFolder", wbuff);
 	IO::Registry::CloseRegistry(reg);
-	if (sptr)
+	if (wptr)
 	{
 		return Text::StrWChar_UTF8(sbuff, wbuff);
 	}
@@ -550,45 +550,45 @@ Bool Text::Cpp::CppEnv::IsCompilerExist(Text::VSProject::VisualStudioVersion vsv
 /*
 Text::Cpp::CppEnv *Text::Cpp::CppEnv::CreateVSEnv()
 {
-	WChar sbuff[512];
-	CompilerType cppVer = GetSystemCompiler(sbuff);
+	WChar wbuff[512];
+	CompilerType cppVer = GetSystemCompiler(wbuff);
 	if (cppVer == Text::Cpp::CppEnv::CT_UNKNOWN)
 		return 0;
 	Text::Cpp::CppEnv *env;
 	NEW_CLASS(env, Text::Cpp::CppEnv());
-	env->includePaths->Add(Text::StrCopyNew(sbuff));
+	env->includePaths->Add(Text::StrCopyNew(wbuff));
 	return env;
 }
 
 Text::Cpp::CppEnv::CompilerType Text::Cpp::CppEnv::GetSystemCompiler(WChar *includePath)
 {
-	WChar *sptr;
-	sptr = IO::Path::GetSystemProgramPath(includePath);
-	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\bin\\ml.exe"));
+	WChar *wptr;
+	wptr = IO::Path::GetSystemProgramPath(includePath);
+	Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\include"));
+		Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 10.0\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS10;
 	}
 
-	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\bin\\ml.exe"));
+	Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\include"));
+		Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 9.0\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS9;
 	}
 
-	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\bin\\ml.exe"));
+	Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\include"));
+		Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio 8\\VC\\include"));
 		return Text::Cpp::CppEnv::CT_VS8;
 	}
 
-	Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\bin\\ml.exe"));
+	Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\bin\\ml.exe"));
 	if (IO::Path::GetPathType(includePath) == IO::Path::PathType::File)
 	{
-		Text::StrConcatC(sptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\include"));
+		Text::StrConcatC(wptr, UTF8STRC("\\Microsoft Visual Studio .NET 2003\\VC7\\include"));
 		return Text::Cpp::CppEnv::CT_VS71;
 	}
 	*includePath = 0;

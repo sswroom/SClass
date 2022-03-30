@@ -41,18 +41,18 @@ UI::FolderDialog::FolderDialog(const WChar *compName, const WChar *appName, cons
 
 /*	OSInt i;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAlloc(WChar, i + 7);
-	sptr = Text::StrConcat(this->dialogName, dialogName);
-	sptr = Text::StrConcat(sptr, L"Dialog");
+	wptr = Text::StrConcat(this->dialogName, dialogName);
+	wptr = Text::StrConcat(wptr, L"Dialog");
 
 	this->fileName = 0;
 	this->lastName = 0;
-	sptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (sptr)
+	wptr = this->reg->GetValueStr(this->dialogName, buff);
+	if (wptr)
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
@@ -87,19 +87,19 @@ void UI::FolderDialog::SetMessage(const UTF8Char *message)
 
 Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
 {
-	WChar sbuff[MAX_PATH];
+	WChar wbuff[MAX_PATH];
 	BROWSEINFOW info;
 	info.hwndOwner = (HWND)ownerHandle;
 	info.pidlRoot = 0;
 	if (this->dirName)
 	{
-		Text::StrUTF8_WChar(sbuff, this->dirName->v, 0);
+		Text::StrUTF8_WChar(wbuff, this->dirName->v, 0);
 	}
 	else
 	{
-		sbuff[0] = 0;
+		wbuff[0] = 0;
 	}
-	info.pszDisplayName = sbuff;
+	info.pszDisplayName = wbuff;
 	const WChar *wptr = 0;
 	if (this->message)
 	{
@@ -128,14 +128,14 @@ Bool UI::FolderDialog::ShowDialog(void *ownerHandle)
 	}
 	else
 	{
-		SHGetPathFromIDListW(idList, sbuff);
+		SHGetPathFromIDListW(idList, wbuff);
 		CoTaskMemFree(idList);
 		if (this->dirName)
 		{
 			this->dirName->Release();
 			this->dirName = 0;
 		}
-		this->dirName = Text::String::NewNotNull(sbuff);
+		this->dirName = Text::String::NewNotNull(wbuff);
 		return true;
 	}
 }

@@ -44,8 +44,8 @@ IO::ParsedObject *Parser::FileParser::LOGParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 //	WChar baseDir[256];
-//	WChar sbuff2[256];
-//	WChar sbuff3[256];
+//	WChar wbuff2[256];
+//	WChar wbuff3[256];
 //	WChar *filePath;
 //	WChar *fileName;
 //	WChar *sarr[10];

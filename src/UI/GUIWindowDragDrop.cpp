@@ -7,7 +7,7 @@
 
 void UI::GUIWindowDragData::LoadData()
 {
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	FORMATETC fmt;
 	FORMATETC *newFmt;
 	IEnumFORMATETC *enumFmt;
@@ -20,11 +20,11 @@ void UI::GUIWindowDragData::LoadData()
 		{
 			newFmt = MemAlloc(FORMATETC, 1);
 			MemCopyNO(newFmt, &fmt, sizeof(fmt));
-			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, u8buff, 512) == 0)
+			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512) == 0)
 			{
-				Text::StrInt32(Text::StrConcatC(u8buff, UTF8STRC("Format ")), fmt.cfFormat);
+				Text::StrInt32(Text::StrConcatC(sbuff, UTF8STRC("Format ")), fmt.cfFormat);
 			}
-			this->dataMap->Put(u8buff, newFmt);
+			this->dataMap->Put(sbuff, newFmt);
 		}
 		enumFmt->Release();
 	}

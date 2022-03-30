@@ -1168,7 +1168,7 @@ void UI::GUITextFileView::EventTimerTick()
 
 void UI::GUITextFileView::DrawImage(Media::DrawImage *dimg)
 {
-//	WChar sbuff[21];
+//	WChar wbuff[21];
 	UTF8Char sbuff[21];
 	UTF8Char *sbuffEnd;
 	Text::String *s;

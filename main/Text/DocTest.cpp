@@ -22,7 +22,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 	fileName = CSTR("test.html");
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, fileName.v, fileName.leng);
+	sptr = IO::Path::AppendPath(sbuff, sptr, fileName);
 
 	NEW_CLASS(exporter, Exporter::DocHTMLExporter());
 	NEW_CLASS(doc, Text::Doc::TextDocument());

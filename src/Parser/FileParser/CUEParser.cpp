@@ -145,7 +145,7 @@ IO::ParsedObject *Parser::FileParser::CUEParser::ParseFile(IO::IStreamData *fd, 
 		IO::ParsedObject *pobj;
 
 		sptr = fd->GetFullName()->ConcatTo(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, fileName->v, fileName->leng);
+		sptr = IO::Path::AppendPath(sbuff, sptr, fileName->ToCString());
 		NEW_CLASS(data, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 		pobj = this->parsers->ParseFile(data, &pt);
 		DEL_CLASS(data);

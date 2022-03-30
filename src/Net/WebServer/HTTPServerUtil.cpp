@@ -268,7 +268,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	if (req->GetHeaderC(&sb2, UTF8STRC("If-Modified-Since")))
 	{
 		Data::DateTime t2;
-		t2.SetValue(sb2.ToString(), sb2.GetLength());
+		t2.SetValue(sb2.ToCString());
 		t2.AddMS(t.GetMS());
 		if (t2.DiffMS(&t) == 0)
 		{
@@ -364,15 +364,15 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 		}
 		fs->SeekFromBeginning(start);
 		resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
-		UTF8Char u8buff[128];
-		UTF8Char *u8ptr;
-		u8ptr = Text::StrConcatC(u8buff, UTF8STRC("bytes "));
-		u8ptr = Text::StrUInt64(u8ptr, start);
-		*u8ptr++ = '-';
-		u8ptr = Text::StrUInt64(u8ptr, start + sizeLeft - 1);
-		*u8ptr++ = '/';
-		u8ptr = Text::StrUInt64(u8ptr, fileSize);
-		resp->AddHeaderC(UTF8STRC("Content-Range"), u8buff, (UOSInt)(u8ptr - u8buff));
+		UTF8Char sbuff[128];
+		UTF8Char *sptr;
+		sptr = Text::StrConcatC(sbuff, UTF8STRC("bytes "));
+		sptr = Text::StrUInt64(sptr, start);
+		*sptr++ = '-';
+		sptr = Text::StrUInt64(sptr, start + sizeLeft - 1);
+		*sptr++ = '/';
+		sptr = Text::StrUInt64(sptr, fileSize);
+		resp->AddHeaderC(UTF8STRC("Content-Range"), sbuff, (UOSInt)(sptr - sbuff));
 	}
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);

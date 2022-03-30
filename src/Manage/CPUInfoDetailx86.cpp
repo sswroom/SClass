@@ -36,12 +36,12 @@ typedef struct
 
 Manage::CPUInfoDetail::CPUInfoDetail()
 {
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	this->cpuModel = CSTR_NULL;
-	if ((sptr = this->GetCPUName(u8buff)) != 0)
+	if ((sptr = this->GetCPUName(sbuff)) != 0)
 	{
-		this->cpuModel = Manage::CPUDB::X86CPUNameToModel({u8buff, (UOSInt)(sptr - u8buff)});
+		this->cpuModel = Manage::CPUDB::X86CPUNameToModel(CSTRP(sbuff, sptr));
 	}
 	if (this->cpuModel.v == 0)
 	{

@@ -7,7 +7,7 @@ namespace Text
 	class StringUtil
 	{
 	private:
-		WChar sbuff[64];
+		WChar wbuff[64];
 	public:
 		StringUtil();
 		~StringUtil();

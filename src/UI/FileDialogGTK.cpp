@@ -23,20 +23,20 @@ UI::FileDialog::FileDialog(const WChar *compName, const WChar *appName, const WC
 {
 	UOSInt i;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	this->reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, compName, appName);
 	this->isSave = isSave;
 	this->filterIndex = (UOSInt)-1;
 	this->allowMulti = false;
 	i = Text::StrCharCnt(dialogName);
 	this->dialogName = MemAlloc(WChar, i + 7);
-	sptr = Text::StrConcat(this->dialogName, dialogName);
-	sptr = Text::StrConcat(sptr, L"Dialog");
+	wptr = Text::StrConcat(this->dialogName, dialogName);
+	wptr = Text::StrConcat(wptr, L"Dialog");
 
 	this->fileName = 0;
 	this->lastName = 0;
-	sptr = this->reg->GetValueStr(this->dialogName, buff);
-	if (sptr)
+	wptr = this->reg->GetValueStr(this->dialogName, buff);
+	if (wptr)
 	{
 		this->lastName = Text::StrCopyNew(buff);
 	}
@@ -114,7 +114,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	WChar fname2[512];
 	WChar fname3[512];
 	WChar fname[MAXFILENAMESIZE];
-	WChar *sptr;
+	WChar *wptr;
 //	WChar *dptr;
 	const WChar *initDir;
 	const WChar *initFileName;
@@ -220,7 +220,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	if (this->lastName)
 	{
 		Text::StrConcat(fname1, this->lastName);
-		WChar *sptr = fnameBuff;
+		WChar *wptr = fnameBuff;
 		WChar *currPtr = fname1;
 		WChar *ptrStart = 0;
 		WChar c;
@@ -231,28 +231,28 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				if (ptrStart)
 				{
 					*currPtr = 0;
-					sptr = Text::StrConcat(sptr, ptrStart);
+					wptr = Text::StrConcat(wptr, ptrStart);
 					ptrStart = 0;
 				}
 				c = *++currPtr;
 				if (c == 'd')
 				{
-					sptr = Text::StrConcat(sptr, initDir);
+					wptr = Text::StrConcat(wptr, initDir);
 				}
 				else if (c == 'n')
 				{
-					sptr = Text::StrConcat(sptr, initFileName);
+					wptr = Text::StrConcat(wptr, initFileName);
 				}
 				else if (c == 'N')
 				{
 					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
-						sptr = Text::StrConcat(sptr, initFileName);
+						wptr = Text::StrConcat(wptr, initFileName);
 					}
 					else
 					{
-						sptr = Text::StrConcatC(sptr, initFileName, i);
+						wptr = Text::StrConcatC(wptr, initFileName, i);
 					}
 				}
 				else if (c == 'x')
@@ -260,7 +260,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i != INVALID_INDEX)
 					{
-						sptr = Text::StrConcat(sptr, &initFileName[i]);
+						wptr = Text::StrConcat(wptr, &initFileName[i]);
 					}
 				}
 			}
@@ -272,7 +272,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		}
 		if (ptrStart)
 		{
-			Text::StrConcat(sptr, ptrStart);
+			Text::StrConcat(wptr, ptrStart);
 		}
 	}
 	
@@ -461,12 +461,12 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			WChar *currPtr;
 			if (Text::StrStartsWith(fnameBuff, initDir))
 			{
-				sptr = Text::StrConcat(fname1, L"|d");
+				wptr = Text::StrConcat(fname1, L"|d");
 				currPtr = &fnameBuff[Text::StrCharCnt(initDir)];
 			}
 			else
 			{
-				sptr = fname1;
+				wptr = fname1;
 				currPtr = fnameBuff;
 			}
 			if (initFileName[0])
@@ -475,16 +475,16 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 				if (i != INVALID_INDEX)
 				{
 					currPtr[i] = 0;
-					sptr = Text::StrConcat(sptr, currPtr);
-					sptr = Text::StrConcat(sptr, L"|n");
-					Text::StrConcat(sptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
+					wptr = Text::StrConcat(wptr, currPtr);
+					wptr = Text::StrConcat(wptr, L"|n");
+					Text::StrConcat(wptr, &currPtr[i + Text::StrCharCnt(initFileName)]);
 				}
 				else
 				{
 					i = Text::StrLastIndexOfChar(initFileName, '.');
 					if (i == INVALID_INDEX)
 					{
-						Text::StrConcat(sptr, currPtr);
+						Text::StrConcat(wptr, currPtr);
 					}
 					else
 					{
@@ -493,31 +493,31 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 						if (j != INVALID_INDEX)
 						{
 							currPtr[j] = 0;
-							sptr = Text::StrConcat(sptr, currPtr);
-							sptr = Text::StrConcat(sptr, L"|N");
+							wptr = Text::StrConcat(wptr, currPtr);
+							wptr = Text::StrConcat(wptr, L"|N");
 							currPtr += i + j;
 						}
 						j = Text::StrIndexOf(currPtr, &initFileName[i]);
 						if (j != INVALID_INDEX)
 						{
-							sptr = Text::StrConcatC(sptr, currPtr, j);
-							sptr = Text::StrConcat(sptr, L"|x");
+							wptr = Text::StrConcatC(wptr, currPtr, j);
+							wptr = Text::StrConcat(wptr, L"|x");
 							currPtr += j + Text::StrCharCnt(&initFileName[i]);
 							if (currPtr[0])
 							{
-								sptr = Text::StrConcat(sptr, currPtr);
+								wptr = Text::StrConcat(wptr, currPtr);
 							}
 						}
 						else
 						{
-							sptr = Text::StrConcat(sptr, currPtr);
+							wptr = Text::StrConcat(wptr, currPtr);
 						}
 					}
 				}
 			}
 			else
 			{
-				Text::StrConcat(sptr, currPtr);
+				Text::StrConcat(wptr, currPtr);
 			}
 			this->reg->SetValue(this->dialogName, fname1);
 		}

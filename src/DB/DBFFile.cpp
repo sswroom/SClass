@@ -13,7 +13,7 @@
 
 DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(stmData->GetFullName())
 {
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UInt8 buff[32];
 	UOSInt currColOfst;
@@ -51,14 +51,14 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 	}
 
 	this->name = 0;
-	sptr = this->stmData->GetShortName().ConcatTo(u8buff);
-	i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(sptr - u8buff), '.');
+	sptr = this->stmData->GetShortName().ConcatTo(sbuff);
+	i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr - sbuff), '.');
 	if (i != INVALID_INDEX)
 	{
-		u8buff[i] = 0;
-		sptr = &u8buff[i];
+		sbuff[i] = 0;
+		sptr = &sbuff[i];
 	}
-	this->name = Text::StrCopyNewC(u8buff, (UOSInt)(sptr - u8buff));
+	this->name = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 DB::DBFFile::~DBFFile()

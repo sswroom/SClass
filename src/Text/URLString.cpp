@@ -206,47 +206,46 @@ UTF8Char *Text::URLString::GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, U
 	}
 }
 
-UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen)
+UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CString path)
 {
-	UOSInt i = Text::StrIndexOfC(path, pathLen, UTF8STRC("://"));
+	UOSInt i = path.IndexOf(UTF8STRC("://"));
 	if (i != INVALID_INDEX)
 	{
-		return Text::StrConcatC(sbuff, path, pathLen);
+		return path.ConcatTo(sbuff);
 	}
-	UTF8Char* sbuffEnd = &sbuff[Text::StrCharCnt(sbuff)];
 	if (sbuff[0] != 0)
 	{
 		if (sbuff[1] == ':' && sbuff[2] == '\\')
 		{
-			UTF8Char *sptr = IO::Path::AppendPathC(sbuff, sbuffEnd, path, pathLen);
+			UTF8Char *sptr = IO::Path::AppendPath(sbuff, sbuffEnd, path);
 			Text::StrReplace(sbuff, '/', '\\');
 			return sptr;
 		}
 		IO::Path::PathType pt = IO::Path::GetPathType(CSTRP(sbuff, sbuffEnd));
 		if (pt != IO::Path::PathType::Unknown)
 		{
-			return IO::Path::AppendPathC(sbuff, sbuffEnd, path, pathLen);
+			return IO::Path::AppendPath(sbuff, sbuffEnd, path);
 		}
 	}
 	i = Text::StrIndexOfC(sbuff, (UOSInt)(sbuffEnd - sbuff), UTF8STRC("://"));
 	if (i == INVALID_INDEX)
 		return 0;
 	sbuff = &sbuff[3];
-	if (path[0] == '/')
+	if (path.v[0] == '/')
 	{
 		i = Text::StrIndexOfCharC(sbuff, (UOSInt)(sbuffEnd - sbuff), '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcatC(sbuffEnd, path, pathLen);
+			return path.ConcatTo(sbuffEnd);
 		}
 		else
 		{
-			return Text::StrConcatC(&sbuff[i], path, pathLen);
+			return path.ConcatTo(&sbuff[i]);
 		}
 	}
 	else
 	{
-		while (path[0] == '.' && path[1] == '.' && path[2] == '/')
+		while (path.v[0] == '.' && path.v[1] == '.' && path.v[2] == '/')
 		{
 			i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sbuffEnd - sbuff), '/');
 			if (i != INVALID_INDEX)
@@ -254,17 +253,16 @@ UTF8Char *Text::URLString::AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, 
 				sbuff[i] = 0;
 				sbuffEnd = &sbuff[i];
 			}
-			path = &path[3];
-			pathLen -= 3;
+			path = path.Substring(3);
 		}
 		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sbuffEnd - sbuff), '/');
 		if (i == INVALID_INDEX)
 		{
-			return Text::StrConcatC(sbuffEnd, path, pathLen);
+			return path.ConcatTo(sbuffEnd);
 		}
 		else
 		{
-			return Text::StrConcatC(&sbuff[i + 1], path, pathLen);
+			return path.ConcatTo(&sbuff[i + 1]);
 		}
 	}
 	////////////////////////////////

@@ -161,20 +161,20 @@ Bool IO::CEControl::IsDirectoryExist(const WChar *ceDir)
 
 Bool IO::CEControl::CreateDirectory(const WChar *ceDir)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	if (IsDirectoryExist(ceDir))
 		return true;
-	Text::StrConcat(sbuff, ceDir);
-	UOSInt i = Text::StrLastIndexOfChar(sbuff, '\\');
+	Text::StrConcat(wbuff, ceDir);
+	UOSInt i = Text::StrLastIndexOfChar(wbuff, '\\');
 	if (i == INVALID_INDEX)
-		return CeCreateDirectory(sbuff, 0) != 0;
-	if (sbuff[i - 1] != ':')
+		return CeCreateDirectory(wbuff, 0) != 0;
+	if (wbuff[i - 1] != ':')
 	{
-		sbuff[i] = 0;
-		this->CreateDirectory(sbuff);
-		sbuff[i] = '\\';
+		wbuff[i] = 0;
+		this->CreateDirectory(wbuff);
+		wbuff[i] = '\\';
 	}
-	return CeCreateDirectory(sbuff, 0) != 0;
+	return CeCreateDirectory(wbuff, 0) != 0;
 }
 
 IO::FileStream *IO::CEControl::OpenFile(const WChar *fileName, IO::FileMode mode, IO::FileShare share)

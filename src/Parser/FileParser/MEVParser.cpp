@@ -62,12 +62,12 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	UInt32 defFontStyle;
 	Parser::FileParser::MEVParser::MEVImageInfo *imgFileArr;
 	const WChar **dirArr;
-	WChar *sptr;
-	WChar *sptr2;
-	WChar sbuff[256];
-	WChar sbuff2[256];
-	UTF8Char u8buff[256];
-	UTF8Char u8buff2[256];
+	WChar *wptr;
+	WChar *wptr2;
+	WChar wbuff[256];
+	WChar wbuff2[256];
+	UTF8Char sbuff[256];
+	UTF8Char sbuff2[256];
 	UTF8Char *u8ptr;
 	UTF8Char *u8ptr2;
 
@@ -100,24 +100,24 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 	defFontStyle = ReadUInt32(&buff[40]);
 
 	fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[16]);
-	sptr = Text::StrUTF8_WCharC(sbuff, &buff[16], ReadUInt32(&buff[12]), 0);
-	sptr2 = Text::StrUTF8_WChar(sbuff2, fd->GetFullName()->v, 0);
-	while (sptr > sbuff && sptr2 > sbuff2)
+	wptr = Text::StrUTF8_WCharC(wbuff, &buff[16], ReadUInt32(&buff[12]), 0);
+	wptr2 = Text::StrUTF8_WChar(wbuff2, fd->GetFullName()->v, 0);
+	while (wptr > wbuff && wptr2 > wbuff2)
 	{
-		if (sptr[-1] != sptr2[-1])
+		if (wptr[-1] != wptr2[-1])
 			break;
-		sptr--;
-		sptr2--;
+		wptr--;
+		wptr2--;
 	}
-	*sptr = 0;
-	*sptr2 = 0;
-	if (sptr == sbuff && sptr2 == sbuff2)
+	*wptr = 0;
+	*wptr2 = 0;
+	if (wptr == wbuff && wptr2 == wbuff2)
 	{
-		sptr2 = 0;
+		wptr2 = 0;
 	}
 	else
 	{
-		Text::StrConcat(sptr2 + 1, sbuff);
+		Text::StrConcat(wptr2 + 1, wbuff);
 	}
 
 	imgFileArr = MemAlloc(MEVImageInfo, imgFileCnt);
@@ -129,12 +129,12 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		if (ReadUInt32(&buff[4]) > 0)
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[8]);
-			Text::StrUTF8_WCharC(sbuff, &buff[8], ReadUInt32(&buff[4]), 0);
-			if (sptr2)
+			Text::StrUTF8_WCharC(wbuff, &buff[8], ReadUInt32(&buff[4]), 0);
+			if (wptr2)
 			{
-				Text::StrReplace(sbuff, sptr2 + 1, sbuff2);
+				Text::StrReplace(wbuff, wptr2 + 1, wbuff2);
 			}
-			dirArr[i] = Text::StrCopyNew(sbuff);
+			dirArr[i] = Text::StrCopyNew(wbuff);
 		}
 		else
 		{
@@ -150,11 +150,11 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currPos, 16, buff);
 		imgFileArr[i].fileIndex = ReadInt32(&buff[12]);
 		fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[16]);
-		sptr = Text::StrConcat(sbuff, dirArr[ReadInt32(&buff[8])]);
-		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrUTF8_WCharC(sptr, &buff[16], ReadUInt32(&buff[4]), 0);
+		wptr = Text::StrConcat(wbuff, dirArr[ReadInt32(&buff[8])]);
+		*wptr++ = IO::Path::PATH_SEPERATOR;
+		Text::StrUTF8_WCharC(wptr, &buff[16], ReadUInt32(&buff[4]), 0);
 
-		Text::String *s = Text::String::NewNotNull(sbuff);
+		Text::String *s = Text::String::NewNotNull(wbuff);
 		imgFileArr[i].envIndex = env->AddImage(s->ToCString(), this->parsers);
 		s->Release();
 		i++;
@@ -168,19 +168,19 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		fd->GetRealData(currPos, 36, buff);
 
 		fd->GetRealData(ReadUInt32(&buff[8]), ReadUInt32(&buff[12]), &buff[36]);
-		u8ptr = Text::StrConcatC(u8buff, &buff[36], ReadUInt32(&buff[12]));
+		u8ptr = Text::StrConcatC(sbuff, &buff[36], ReadUInt32(&buff[12]));
 		if (ReadUInt32(&buff[4]) > 0)
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[36]);
-			u8ptr2 = Text::StrConcatC(u8buff2, &buff[36], ReadUInt32(&buff[4]));
+			u8ptr2 = Text::StrConcatC(sbuff2, &buff[36], ReadUInt32(&buff[4]));
 		}
 		else
 		{
-			u8ptr2 = u8buff2;
+			u8ptr2 = sbuff2;
 			*u8ptr2 = 0;
 		}
 		fontSize = *(Int32*)&buff[16] * 0.75;
-		env->AddFontStyle(CSTRP(u8buff2, u8ptr2), CSTRP(u8buff, u8ptr), fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
+		env->AddFontStyle(CSTRP(sbuff2, u8ptr2), CSTRP(sbuff, u8ptr), fontSize, ReadUInt32(&buff[20]) != 0, ReadUInt32(&buff[24]), ReadUInt32(&buff[28]), ReadUInt32(&buff[32]));
 		
 		i++;
 		currPos += 36;
@@ -195,8 +195,8 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 		if (ReadUInt32(&buff[4]) > 0)
 		{
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12]);
-			u8ptr2 = Text::StrConcatC(u8buff2, &buff[12], ReadUInt32(&buff[4]));
-			env->SetLineStyleName(i, CSTRP(u8buff2, u8ptr2));
+			u8ptr2 = Text::StrConcatC(sbuff2, &buff[12], ReadUInt32(&buff[4]));
+			env->SetLineStyleName(i, CSTRP(sbuff2, u8ptr2));
 		}
 
 		j = ReadUInt32(&buff[8]);
@@ -235,8 +235,8 @@ IO::ParsedObject *Parser::FileParser::MEVParser::ParseFile(IO::IStreamData *fd, 
 void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *env, UInt32 itemCnt, UInt32 *currPos, Map::MapEnv::GroupItem *group, const WChar **dirArr, MEVImageInfo *imgInfos)
 {
 	UInt8 buff[512];
-	WChar sbuff[256];
-	WChar *sptr;
+	WChar wbuff[256];
+	WChar *wptr;
 	UOSInt i = 0;
 	while (i < itemCnt)
 	{
@@ -246,10 +246,10 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 		{
 			fd->GetRealData(*currPos, 12, buff);
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[12]);
-			Text::StrUTF8_WCharC(sbuff, &buff[12], ReadUInt32(&buff[4]), 0);
+			Text::StrUTF8_WCharC(wbuff, &buff[12], ReadUInt32(&buff[4]), 0);
 			*currPos = 12 + *currPos;
 			
-			Text::String *s = Text::String::NewNotNull(sbuff);
+			Text::String *s = Text::String::NewNotNull(wbuff);
 			Map::MapEnv::GroupItem *item = env->AddGroup(group, s->ToCString());
 			s->Release();
 			ReadItems(fd, env, ReadUInt32(&buff[8]), currPos, item, dirArr, imgInfos);
@@ -260,13 +260,13 @@ void Parser::FileParser::MEVParser::ReadItems(IO::IStreamData *fd, Map::MapEnv *
 			*currPos = 20 + *currPos;
 
 			fd->GetRealData(ReadUInt32(&buff[0]), ReadUInt32(&buff[4]), &buff[20]);
-			sptr = Text::StrConcat(Text::StrConcat(sbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
-			Text::StrUTF8_WCharC(sptr, &buff[20], ReadUInt32(&buff[4]), 0);
+			wptr = Text::StrConcat(Text::StrConcat(wbuff, dirArr[ReadUInt32(&buff[8])]), L"\\");
+			Text::StrUTF8_WCharC(wptr, &buff[20], ReadUInt32(&buff[4]), 0);
 			if (ReadUInt32(&buff[12]))
 			{
 				this->parsers->SetCodePage(ReadUInt32(&buff[12]));
 			}
-			Text::String *s = Text::String::NewNotNull(sbuff);
+			Text::String *s = Text::String::NewNotNull(wbuff);
 			Map::IMapDrawLayer *layer = this->mapMgr->LoadLayer(s->ToCString(), this->parsers, env);
 			s->Release();
 			if (layer)

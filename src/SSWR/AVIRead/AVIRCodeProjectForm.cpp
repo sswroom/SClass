@@ -22,13 +22,13 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 			Text::Cpp::CppParseStatus *status;
 			Text::Cpp::CppCodeParser *parser;
 			Text::CodeFile *file = (Text::CodeFile*)obj;
-			UTF8Char u8buff[512];
+			UTF8Char sbuff[512];
 			UTF8Char *sptr;
 			Text::String *s;
-			sptr = me->proj->GetSourceName(u8buff);
+			sptr = me->proj->GetSourceName(sbuff);
 			s = file->GetFileName();
-			sptr = IO::Path::AppendPathC(u8buff, sptr, s->v, s->leng);
-			if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".CPP")))
+			sptr = IO::Path::AppendPath(sbuff, sptr, s->ToCString());
+			if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".CPP")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListString errMsgs;
@@ -38,7 +38,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("0"));
 				status->AddGlobalDef(CSTR("__cplusplus"), CSTR("201103"));
-				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
+				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
 				if (j > 0)
@@ -60,7 +60,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				DEL_CLASS(parser);
 				DEL_CLASS(env);
 			}
-			else if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC(".C")))
+			else if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(".C")))
 			{
 				Text::StringBuilderUTF8 sb;
 				Data::ArrayListString errMsgs;
@@ -69,7 +69,7 @@ void __stdcall SSWR::AVIRead::AVIRCodeProjectForm::OnItemSelected(void *userObj)
 				NEW_CLASS(status, Text::Cpp::CppParseStatus(me->proj->GetSourceNameObj()));
 				env->InitEnvStatus(status);
 				status->AddGlobalDef(CSTR("__STDC__"), CSTR("1"));
-				parser->ParseFile(u8buff, (UOSInt)(sptr - u8buff), &errMsgs, status);
+				parser->ParseFile(sbuff, (UOSInt)(sptr - sbuff), &errMsgs, status);
 				i = 0;
 				j = errMsgs.GetCount();
 				if (j == 0)

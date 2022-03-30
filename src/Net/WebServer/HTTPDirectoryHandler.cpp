@@ -184,12 +184,12 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
 	AddCacheHeader(resp);
 
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	Text::String *s;
 
 	sbOut.AppendNE(UTF8STRC("<html><head><title>Index of "));
-	Text::TextBinEnc::URIEncoding::URIDecode(u8buff, sptr);
-	s = Text::XML::ToNewHTMLText(u8buff);
+	Text::TextBinEnc::URIEncoding::URIDecode(sbuff, sptr);
+	s = Text::XML::ToNewHTMLText(sbuff);
 	sbOut.AppendNE(s);
 	sbOut.AppendNE(UTF8STRC("</title></head>\r\n<body>\r\n"));
 	sbOut.AppendNE(UTF8STRC("<h2>Index Of "));
@@ -209,7 +209,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	}*/
 	sbOut.AppendNE(UTF8STRC("<table><tr><th>Name</th><th>MIME</th><th>Size</th><th>Modified Date</th></tr>\r\n"));
 
-	UTF8Char u8buff2[256];
+	UTF8Char sbuff2[256];
 	UTF8Char *sptr2;
 	Data::DateTime modTime;
 	IO::PackageFile::PackObjectType pot;
@@ -222,16 +222,16 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 		{
 			sbOut.AppendNE(UTF8STRC("<tr><td>"));
 			sbOut.AppendNE(UTF8STRC("<a href=\""));
-			sptr = packageFile->GetItemName(u8buff, i);
-			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
-			sbOut.AppendNE(u8buff2, (UOSInt)(sptr2 - u8buff2));
+			sptr = packageFile->GetItemName(sbuff, i);
+			sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
+			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
 				sbOut.AppendNE(UTF8STRC("/"));
 			}
 			sbOut.AppendNE(UTF8STRC("\">"));
-			sptr2 = Text::XML::ToXMLText(u8buff2, u8buff);
-			sbOut.AppendNE(u8buff2, (UOSInt)(sptr2 - u8buff2));
+			sptr2 = Text::XML::ToXMLText(sbuff2, sbuff);
+			sbOut.AppendNE(sbuff2, (UOSInt)(sptr2 - sbuff2));
 			sbOut.AppendNE(UTF8STRC("</a></td><td>"));
 			if (pot == IO::PackageFile::POT_PACKAGEFILE)
 			{
@@ -241,8 +241,8 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			}
 			else
 			{
-				sptr2 = IO::Path::GetFileExt(u8buff2, u8buff, (UOSInt)(sptr - u8buff));
-				Text::CString mime = Net::MIME::GetMIMEFromExt(u8buff2, (UOSInt)(sptr2 - u8buff2));
+				sptr2 = IO::Path::GetFileExt(sbuff2, sbuff, (UOSInt)(sptr - sbuff));
+				Text::CString mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr2 - sbuff2));
 				sbOut.AppendNE(mime.v, mime.leng);
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
 				sbOut.AppendU64(packageFile->GetItemSize(i));
@@ -670,7 +670,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
 			{
 				Data::DateTime t2;
-				t2.SetValue(hdrVal->v, hdrVal->leng);
+				t2.SetValue(hdrVal->ToCString());
 				t2.AddMS(t.GetMS());
 				if (t2.DiffMS(&t) == 0)
 				{
@@ -1092,7 +1092,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
 		{
 			Data::DateTime t2;
-			t2.SetValue(hdrVal->v, hdrVal->leng);
+			t2.SetValue(hdrVal->ToCString());
 			t2.AddMS(t.GetMS());
 			if (t2.DiffMS(&t) == 0)
 			{
@@ -1236,15 +1236,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			}
 			fs->SeekFromBeginning((UInt64)start);
 			resp->SetStatusCode(Net::WebStatus::SC_PARTIAL_CONTENT);
-			UTF8Char u8buff[128];
-			UTF8Char *u8ptr;
-			u8ptr = Text::StrConcatC(u8buff, UTF8STRC("bytes "));
-			u8ptr = Text::StrInt64(u8ptr, start);
-			*u8ptr++ = '-';
-			u8ptr = Text::StrUInt64(u8ptr, (UInt64)start + sizeLeft - 1);
-			*u8ptr++ = '/';
-			u8ptr = Text::StrUInt64(u8ptr, fileSize);
-			resp->AddHeaderC(UTF8STRC("Content-Range"), u8buff, (UOSInt)(u8ptr - u8buff));
+			UTF8Char sbuff[128];
+			UTF8Char *sptr;
+			sptr = Text::StrConcatC(sbuff, UTF8STRC("bytes "));
+			sptr = Text::StrInt64(sptr, start);
+			*sptr++ = '-';
+			sptr = Text::StrUInt64(sptr, (UInt64)start + sizeLeft - 1);
+			*sptr++ = '/';
+			sptr = Text::StrUInt64(sptr, fileSize);
+			resp->AddHeaderC(UTF8STRC("Content-Range"), sbuff, (UOSInt)(sptr - sbuff));
 			partial = true;
 		}
 		resp->EnableWriteBuffer();

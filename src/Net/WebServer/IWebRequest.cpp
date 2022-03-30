@@ -99,7 +99,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 	Text::String *s = this->GetSHeader(UTF8STRC("If-Modified-Since"));
 	if (s)
 	{
-		if (dt->SetValue(s->v, s->leng))
+		if (dt->SetValue(s->ToCString()))
 		{
 			return true;
 		}

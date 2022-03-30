@@ -429,15 +429,15 @@ Text::String *UI::GUIListView::GetSelectedItemTextNew()
 
 UTF8Char *UI::GUIListView::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	WChar sbuff[256];
-	sbuff[0] = 0;
+	WChar wbuff[256];
+	wbuff[0] = 0;
 	LVITEMW item;
 	item.iItem = (Int32)index;
 	item.iSubItem = 0;
 	item.cchTextMax = 256;
-	item.pszText = sbuff;
+	item.pszText = wbuff;
 	SendMessage((HWND)this->hwnd, LVM_GETITEMTEXTW, index, (LPARAM)&item);
-	return Text::StrWChar_UTF8(buff, sbuff);
+	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Text::String *UI::GUIListView::GetItemTextNew(UOSInt index)

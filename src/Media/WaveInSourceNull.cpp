@@ -19,7 +19,7 @@ UInt32 Media::WaveInSource::GetDeviceCount()
 	return 0;
 }
 
-UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, UInt32 devNo)
+UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *sbuff, UInt32 devNo)
 {
 	return 0;
 }

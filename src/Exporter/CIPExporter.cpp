@@ -57,7 +57,7 @@ Bool Exporter::CIPExporter::GetOutputName(UOSInt index, UTF8Char *nameBuff, UTF8
 Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fileName, IO::ParsedObject *pobj, void *param)
 {
 	UInt8 buff[256];
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (param == 0)
 		return false;
@@ -88,13 +88,13 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	IO::FileStream *cix;
 	IO::FileStream *cib;
 	IO::FileStream *blk;
-	fileName.ConcatTo(u8buff);
-	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("cix"));
-	NEW_CLASS(cix, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("ciu"));
-	NEW_CLASS(cib, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	sptr = IO::Path::ReplaceExt(u8buff, UTF8STRC("blk"));
-	NEW_CLASS(blk, IO::FileStream({u8buff, (UOSInt)(sptr - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	fileName.ConcatTo(sbuff);
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("cix"));
+	NEW_CLASS(cix, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("ciu"));
+	NEW_CLASS(cib, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+	sptr = IO::Path::ReplaceExt(sbuff, UTF8STRC("blk"));
+	NEW_CLASS(blk, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 
 
 	Data::ArrayListInt64 *objIds;
@@ -223,9 +223,9 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 						{
 							strRec = MemAlloc(CIPStrRecord, 1);
 							strRec->recId = (Int32)i;
-							if (layer->GetString(u8buff, sizeof(u8buff), nameArr, objIds->GetItem(i), p->dispCol))
+							if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
 							{
-								strRec->str = Text::StrCopyNew(u8buff);
+								strRec->str = Text::StrCopyNew(sbuff);
 							}
 							else
 							{
@@ -246,9 +246,9 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 						strRec = MemAlloc(CIPStrRecord, 1);
 						strRec->recId = (Int32)i;
-						if (layer->GetString(u8buff, sizeof(u8buff), nameArr, objIds->GetItem(i), p->dispCol))
+						if (layer->GetString(sbuff, sizeof(sbuff), nameArr, objIds->GetItem(i), p->dispCol))
 						{
-							strRec->str = Text::StrCopyNew(u8buff);
+							strRec->str = Text::StrCopyNew(sbuff);
 						}
 						else
 						{

@@ -6,12 +6,12 @@
 void __stdcall SSWR::AVIRead::AVIRDragDropViewerForm::OnTypeSelChg(void *userObj)
 {
 	SSWR::AVIRead::AVIRDragDropViewerForm *me = (SSWR::AVIRead::AVIRDragDropViewerForm*)userObj;
-	WChar sbuff[256];
-	UTF8Char u8buff[256];
-	if (me->lbType->GetSelectedItemText(sbuff))
+	WChar wbuff[256];
+	UTF8Char sbuff[256];
+	if (me->lbType->GetSelectedItemText(wbuff))
 	{
-		Text::StrWChar_UTF8(u8buff, sbuff);
-		const UTF8Char *msg = me->dropMap->Get(u8buff);
+		Text::StrWChar_UTF8(sbuff, wbuff);
+		const UTF8Char *msg = me->dropMap->Get(sbuff);
 		if (msg)
 		{
 			me->txtMain->SetText({msg, Text::StrCharCnt(msg)});
@@ -119,7 +119,7 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 		this->lbType->AddItem({csptr, Text::StrCharCnt(csptr)}, 0);
 		i++;
 	}
-/*	WChar sbuff[512];
+/*	WChar wbuff[512];
 	FORMATETC fmt;
 	IEnumFORMATETC *enumFmt;
 	UInt16 fmtSURL = 0;
@@ -132,9 +132,9 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 	{
 		while (enumFmt->Next(1, &fmt, 0) == S_OK)
 		{
-			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, sbuff, 512) == 0)
+			if (Win32::Clipboard::GetFormatName(fmt.cfFormat, wbuff, 512) == 0)
 			{
-				Text::StrInt32(Text::StrConcat(sbuff, L"Format "), fmt.cfFormat);
+				Text::StrInt32(Text::StrConcat(wbuff, L"Format "), fmt.cfFormat);
 			}
 			if ((hres = pDataObj->GetData(&fmt, &med)) == S_OK)
 			{
@@ -142,19 +142,19 @@ void SSWR::AVIRead::AVIRDragDropViewerForm::DropData(UI::GUIDropData *data, OSIn
 				if (Win32::Clipboard::GetDataTextH(med.hGlobal, fmt.cfFormat, &sb, med.tymed))
 				{
 					this->dropMap->Put(fmt.cfFormat, Text::StrCopyNew(sb.ToString()));
-					this->lbType->AddItem(sbuff, (void*)fmt.cfFormat);
+					this->lbType->AddItem(wbuff, (void*)fmt.cfFormat);
 				}
 				else
 				{
 					this->dropMap->Put(fmt.cfFormat, Text::StrCopyNew(L"Unknown data"));
-					this->lbType->AddItem(sbuff, (void*)fmt.cfFormat);
+					this->lbType->AddItem(wbuff, (void*)fmt.cfFormat);
 				}
 				ReleaseStgMedium(&med);
 			}
 			else
 			{
 				this->dropMap->Put(fmt.cfFormat, Text::StrCopyNew(L"Cannot get data"));
-				this->lbType->AddItem(sbuff, (void*)fmt.cfFormat);
+				this->lbType->AddItem(wbuff, (void*)fmt.cfFormat);
 			}
 		}
 		enumFmt->Release();

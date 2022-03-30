@@ -23,7 +23,7 @@ Map::OruxDBLayer::OruxDBLayer(Text::CString sourceName, Text::CString layerName,
 	UTF8Char *sptr;
 	sptr = sourceName.ConcatTo(sbuff);
 	this->db = 0;
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OruxMapsImages.db"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OruxMapsImages.db"));
 	IO::StmData::FileData *fd;
 	NEW_CLASS(fd, IO::StmData::FileData(CSTRP(sbuff, sptr), false));
 	DB::ReadingDB *db = (DB::ReadingDB*)parsers->ParseFileType(fd, IO::ParserType::ReadingDB);

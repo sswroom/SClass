@@ -16,16 +16,16 @@ Map::Leica::LeicaGSIFile::~LeicaGSIFile()
 
 Map::Leica::LeicaGSIFile *Map::Leica::LeicaGSIFile::Parse(IO::Stream *fs)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	WChar *sarr[10];
 	OSInt colCount;
 	OSInt i;
 	Map::Leica::LeicaGSIFile *retFile = 0;
 	IO::StreamReader *reader;
 	NEW_CLASS(reader, IO::StreamReader(fs, 65001));
-	if (reader->ReadLine(sbuff, 511))
+	if (reader->ReadLine(wbuff, 511))
 	{
-		colCount = Text::StrSplit(sarr, 10, sbuff, ' ');
+		colCount = Text::StrSplit(sarr, 10, wbuff, ' ');
 		if (Text::StrStartsWith(sarr[0], L"410001+"))
 		{
 			if (Text::StrEquals(sarr[0], L"410001+?......1"))
@@ -34,9 +34,9 @@ Map::Leica::LeicaGSIFile *Map::Leica::LeicaGSIFile::Parse(IO::Stream *fs)
 				NEW_CLASS(levelFile, Map::Leica::LeicaLevelFile());
 				ParseHeader(sarr, colCount, levelFile);
 
-				while (reader->ReadLine(sbuff, 511))
+				while (reader->ReadLine(wbuff, 511))
 				{
-					colCount = Text::StrSplit(sarr, 10, sbuff, ' ');
+					colCount = Text::StrSplit(sarr, 10, wbuff, ' ');
 					if (sarr[0][0] == '1' && sarr[0][1] == '1')
 					{
 						Leica::LeicaLevelFile::Measurement point;

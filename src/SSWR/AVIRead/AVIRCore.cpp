@@ -40,16 +40,16 @@ void SSWR::AVIRead::AVIRCore::InitForm(UI::GUIForm *frm)
 
 SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 {
-	WChar sbuff[512];
-	WChar sbuff2[32];
-	UTF8Char u8buff[512];
+	WChar wbuff[512];
+	WChar wbuff2[32];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	this->ui = ui;
 	this->forwardedUI = this->ui->IsForwarded();
 	this->currCodePage = 0;
 	this->eng = ui->CreateDrawEngine();
-	sptr = IO::Path::GetProcessFileName(u8buff);
-	sptr = IO::Path::AppendPathC(u8buff, sptr, UTF8STRC("CacheDir"));
+	sptr = IO::Path::GetProcessFileName(sbuff);
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("CacheDir"));
 	NEW_CLASS(this->parsers, Parser::FullParserList());
 	NEW_CLASS(this->mapMgr, Map::MapManager());
 	NEW_CLASS(this->colorMgr, Media::ColorManager());
@@ -57,7 +57,7 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 	NEW_CLASS(this->encFact, Text::EncodingFactory());
 	NEW_CLASS(this->exporters, Exporter::ExporterList());
 	this->ssl = Net::SSLEngineFactory::Create(this->sockf, true);
-	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, {u8buff, (UOSInt)(sptr - u8buff)}));
+	NEW_CLASS(this->browser, Net::WebBrowser(sockf, this->ssl, CSTRP(sbuff, sptr)));
 	NEW_CLASS(this->frms, Data::ArrayList<UI::GUIForm*>());
 	NEW_CLASS(this->log, IO::LogTool());
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
@@ -93,10 +93,10 @@ SSWR::AVIRead::AVIRCore::AVIRCore(UI::GUICore *ui)
 		OSInt i = 0;
 		while (true)
 		{
-			Text::StrOSInt(Text::StrConcatC(sbuff2, L"AudioDevice", 11), i);
-			if (reg->GetValueStr(sbuff2, sbuff) != 0)
+			Text::StrOSInt(Text::StrConcatC(wbuff2, L"AudioDevice", 11), i);
+			if (reg->GetValueStr(wbuff2, wbuff) != 0)
 			{
-				const UTF8Char *devName = Text::StrToUTF8New(sbuff);
+				const UTF8Char *devName = Text::StrToUTF8New(wbuff);
 				this->audDevice->AddDevice(devName);
 				this->audDevList->Add(devName);
 			}
@@ -358,7 +358,7 @@ Media::MonitorMgr *SSWR::AVIRead::AVIRCore::GetMonitorMgr()
 void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char *> *devList)
 {
 	IO::Registry *reg = IO::Registry::OpenSoftware(IO::Registry::REG_USER_THIS, L"SSWR", L"AVIRead");
-	WChar sbuff[32];
+	WChar wbuff[32];
 	UOSInt i;
 	UOSInt j;
 	i = this->audDevList->GetCount();
@@ -379,14 +379,14 @@ void SSWR::AVIRead::AVIRCore::SetAudioDeviceList(Data::ArrayList<const UTF8Char 
 			j = devList->GetCount();
 			while (i < j)
 			{
-				Text::StrUOSInt(Text::StrConcat(sbuff, L"AudioDevice"), i);
+				Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), i);
 				const WChar *wptr = Text::StrToWCharNew(devList->GetItem(i));
-				reg->SetValue(sbuff, wptr);
+				reg->SetValue(wbuff, wptr);
 				Text::StrDelNew(wptr);
 				i++;
 			}
-			Text::StrUOSInt(Text::StrConcat(sbuff, L"AudioDevice"), j);
-			reg->DelValue(sbuff);
+			Text::StrUOSInt(Text::StrConcat(wbuff, L"AudioDevice"), j);
+			reg->DelValue(wbuff);
 		}
 		IO::Registry::CloseRegistry(reg);
 	}

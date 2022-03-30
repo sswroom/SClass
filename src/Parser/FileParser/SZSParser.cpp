@@ -39,7 +39,7 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 	UInt8 hdr[16];
 	UInt8 fileBuff[272];
 	Text::Encoding enc(932);
-	UTF8Char u8buff[257];
+	UTF8Char sbuff[257];
 	UTF8Char *sptr;
 	OSInt i;
 	Int32 fileCnt;
@@ -71,9 +71,9 @@ IO::ParsedObject *Parser::FileParser::SZSParser::ParseFile(IO::IStreamData *fd, 
 			DEL_CLASS(pf);
 			return 0;
 		}
-		sptr = enc.UTF8FromBytes(u8buff, fileBuff, 256, 0);
-		Text::StrReplace(u8buff, ';', '\\');
-		pf->AddData(fd, fileOfst, fileSize, CSTRP(u8buff, sptr), 0);
+		sptr = enc.UTF8FromBytes(sbuff, fileBuff, 256, 0);
+		Text::StrReplace(sbuff, ';', '\\');
+		pf->AddData(fd, fileOfst, fileSize, CSTRP(sbuff, sptr), 0);
 
 		ofst += 272;
 		i++;

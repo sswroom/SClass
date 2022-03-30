@@ -1,5 +1,6 @@
 #ifndef _SM_TEXT_URLSTRING
 #define _SM_TEXT_URLSTRING
+#include "Text/CString.h"
 
 namespace Text
 {
@@ -15,7 +16,7 @@ namespace Text
 		static UTF8Char *GetURLPathSvr(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 		static UTF8Char *GetURLQueryString(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 
-		static UTF8Char *AppendURLPath(UTF8Char *sbuff, const UTF8Char *path, UOSInt pathLen);
+		static UTF8Char *AppendURLPath(UTF8Char *sbuff, UTF8Char *sbuffEnd, Text::CString path);
 	};
 }
 #endif

@@ -250,27 +250,27 @@ WChar *Net::SocketUtil::GetIPv4Name(WChar *buff, UInt32 ip, UInt16 port)
 
 Bool Net::SocketUtil::GetIPAddr(const WChar *ipName, AddressInfo *addr)
 {
-	WChar sbuff[51];
+	WChar wbuff[51];
 	WChar *sarr[9];
-	WChar *sptr;
+	WChar *wptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
 	Int32 v;
-	sptr = Text::StrConcatS(sbuff,ipName, 51);
-	if ((sptr - sbuff) >= 50)
+	wptr = Text::StrConcatS(wbuff,ipName, 51);
+	if ((wptr - wbuff) >= 50)
 	{
 		return false;
 	}
 
-	i = Text::StrSplit(sarr, 9, sbuff, ':');
+	i = Text::StrSplit(sarr, 9, wbuff, ':');
 	if (i >= 9)
 	{
 		return false;
 	}
 	else if (i == 1)
 	{
-		i = Text::StrSplit(sarr, 9, sbuff, '.');
+		i = Text::StrSplit(sarr, 9, wbuff, '.');
 		if (i != 4)
 		{
 			return false;
@@ -547,12 +547,12 @@ Bool Net::SocketUtil::GetIPAddr(const UTF8Char *ipName, UOSInt ipLen, AddressInf
 
 UInt32 Net::SocketUtil::GetIPAddr(const WChar *ipName)
 {
-	WChar sbuff[32];
+	WChar wbuff[32];
 	WChar *sarr[4];
 	UInt8 ip[4];
-	if ((Text::StrConcatS(sbuff, ipName, 30) - sbuff) > 15)
+	if ((Text::StrConcatS(wbuff, ipName, 30) - wbuff) > 15)
 		return 0;
-	if (Text::StrSplit(sarr, 4, sbuff, '.') != 4)
+	if (Text::StrSplit(sarr, 4, wbuff, '.') != 4)
 		return 0;
 	if (!Text::StrToUInt8(sarr[0], &ip[0]) || !Text::StrToUInt8(sarr[1], &ip[1]) || !Text::StrToUInt8(sarr[2], &ip[2]) || !Text::StrToUInt8(sarr[3], &ip[3]))
 		return 0;

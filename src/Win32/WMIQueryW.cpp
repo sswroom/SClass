@@ -228,7 +228,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 
 DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	if (this->tabNames == 0)
 	{
 		Data::ArrayList<const UTF8Char*> names;
@@ -238,8 +238,8 @@ DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::Arr
 	{
 		return 0;
 	}
-	Text::StrUTF8_WChar(Text::StrConcat(sbuff, L"SELECT * FROM "), tableName, 0);
-	return this->ExecuteReader(sbuff);
+	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName, 0);
+	return this->ExecuteReader(wbuff);
 }
 
 void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
@@ -268,8 +268,8 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 	UOSInt ret = 0;
 	Win32::WMIQuery *query;
 	Win32::WMIReader *reader;
-	WChar sbuff[256];
-	WChar *sptr = Text::StrConcat(sbuff, L"ROOT\\");
+	WChar wbuff[256];
+	WChar *wptr = Text::StrConcat(wbuff, L"ROOT\\");
 
 	NEW_CLASS(query, Win32::WMIQuery(L"ROOT"));
 	if (!query->IsError())
@@ -279,9 +279,9 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 		{
 			while (reader->ReadNext())
 			{
-				if (reader->GetStr(L"Name", sptr))
+				if (reader->GetStr(L"Name", wptr))
 				{
-					nsList->Add(Text::StrCopyNew(sbuff));
+					nsList->Add(Text::StrCopyNew(wbuff));
 				}
 			}
 			query->CloseReader(reader);

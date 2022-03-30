@@ -224,13 +224,13 @@ WChar *IO::Path::GetFullPathW(WChar *buff, const WChar *path)
 
 Bool IO::Path::FileNameMatchW(const WChar *path, const WChar *searchPattern)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	UOSInt i = Text::StrLastIndexOfChar(path, '/');
 	const WChar *fileName = &path[i + 1];
-	Text::StrConcat(sbuff, searchPattern);
+	Text::StrConcat(wbuff, searchPattern);
 	Bool isWC = false;
 	WChar *patternStart = 0;
-	WChar *currPattern = sbuff;
+	WChar *currPattern = wbuff;
 	WChar c;
 	while (true)
 	{

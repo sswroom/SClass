@@ -361,10 +361,9 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 
 	this->imgLine = 0;
 	this->imgFont = 0;
-	UTF8Char sbuff[64];
 	Map::MapEnv::LayerItem setting;
 	Map::MapEnv::LayerItem *lyr;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (this->env->GetLayerProp(&setting, this->group, this->index))
 	{
@@ -373,9 +372,9 @@ SSWR::AVIRead::AVIRGISPropForm::AVIRGISPropForm(UI::GUIClientControl *parent, UI
 		UOSInt i = 0;
 		while (i < j)
 		{
-			if ((sptr = lyr->layer->GetColumnName(u8buff, i)) != 0)
+			if ((sptr = lyr->layer->GetColumnName(sbuff, i)) != 0)
 			{
-				this->cboColName->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, 0);
+				this->cboColName->AddItem(CSTRP(sbuff, sptr), 0);
 			}
 			else
 			{

@@ -493,7 +493,7 @@ Math::Vector2D *Map::TileMapLayer::GetVectorById(void *session, Int64 id)
 	UOSInt k;
 	Media::ImageList *imgList;
 	Double bounds[4];
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 
@@ -503,8 +503,8 @@ Math::Vector2D *Map::TileMapLayer::GetVectorById(void *session, Int64 id)
 		cimg = this->lastImgs->GetItem((UOSInt)i);
 		if (cimg->img == 0)
 			return 0;
-		sptr = this->tileMap->GetImageURL(u8buff, cimg->level, cimg->imgId);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {u8buff, (UOSInt)(sptr - u8buff)}, 0, 0));
+		sptr = this->tileMap->GetImageURL(sbuff, cimg->level, cimg->imgId);
+		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 
@@ -531,8 +531,8 @@ Math::Vector2D *Map::TileMapLayer::GetVectorById(void *session, Int64 id)
 		this->lastImgs->Insert(k, cimg);
 		mutUsage.EndUse();
 
-		sptr = this->tileMap->GetImageURL(u8buff, level, id);
-		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {u8buff, (UOSInt)(sptr - u8buff)}, 0, 0));
+		sptr = this->tileMap->GetImageURL(sbuff, level, id);
+		NEW_CLASS(vimg, Math::VectorImage(this->csys->GetSRID(), cimg->img, cimg->tlx, cimg->tly, cimg->brx, cimg->bry, false, {sbuff, (UOSInt)(sptr - sbuff)}, 0, 0));
 		return vimg;
 	}
 	else

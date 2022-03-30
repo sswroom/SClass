@@ -1746,7 +1746,7 @@ Int64 DB::ODBCReader::GetInt64(UOSInt colIndex)
 
 WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 {
-	UTF8Char u8buff[64];
+	UTF8Char sbuff[64];
 	if (colIndex >= this->colCnt)
 		return 0;
 	if (this->colDatas[colIndex].isNull)
@@ -1773,8 +1773,8 @@ WChar *DB::ODBCReader::GetStr(UOSInt colIndex, WChar *buff)
 		return Text::StrInt64(buff, this->colDatas[colIndex].dataVal);
 	case DB::DBUtil::CT_DateTime:
 	case DB::DBUtil::CT_DateTime2:
-		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(u8buff);
-		return Text::StrUTF8_WChar(buff, u8buff, 0);
+		((Data::DateTime*)this->colDatas[colIndex].colData)->ToString(sbuff);
+		return Text::StrUTF8_WChar(buff, sbuff, 0);
 	case DB::DBUtil::CT_Binary:
 		return 0;
 	case DB::DBUtil::CT_Vector:
@@ -1987,7 +1987,7 @@ DB::DBReader::DateErrType DB::ODBCReader::GetDate(UOSInt colIndex, Data::DateTim
 	case DB::DBUtil::CT_UUID:
 		{
 			Text::StringBuilderUTF8 *sb = (Text::StringBuilderUTF8*)this->colDatas[colIndex].colData;
-			outVal->SetValue(sb->ToString(), sb->GetLength());
+			outVal->SetValue(sb->ToCString());
 		}
 		return DB::DBReader::DET_OK;
 	case DB::DBUtil::CT_Double:

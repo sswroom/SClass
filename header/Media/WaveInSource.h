@@ -26,7 +26,7 @@ namespace Media
 		static void __stdcall AudioBlock(void *hwi, UInt32 uMsg, UInt32 *dwInstance, UInt32 *dwParam1, UInt32 *dwParam2);
 	public:
 		static UInt32 GetDeviceCount();
-		static UTF8Char *GetDeviceName(UTF8Char *u8buff, UInt32 devNo);
+		static UTF8Char *GetDeviceName(UTF8Char *sbuff, UInt32 devNo);
 
 		WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels);
 		WaveInSource(UInt32 devId, UInt32 freq, UInt16 nbits, UInt16 nChannels);

@@ -5,14 +5,14 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[32];
-	WChar sbuff2[32];
-	WChar sbuff3[32];
+	WChar wbuff[32];
+	WChar wbuff2[32];
+	WChar wbuff3[32];
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-	Text::StrConcatS(sbuff, srcStr, 26);
-	Text::StrConcatS(sbuff2, srcStr, 25);
-	Text::StrConcatS(sbuff3, srcStr, 27);
-	if (Text::StrEquals(sbuff, srcStr) && !Text::StrEquals(sbuff2, srcStr) && Text::StrEquals(sbuff3, srcStr))
+	Text::StrConcatS(wbuff, srcStr, 26);
+	Text::StrConcatS(wbuff2, srcStr, 25);
+	Text::StrConcatS(wbuff3, srcStr, 27);
+	if (Text::StrEquals(wbuff, srcStr) && !Text::StrEquals(wbuff2, srcStr) && Text::StrEquals(wbuff3, srcStr))
 	{
 		return 0;
 	}

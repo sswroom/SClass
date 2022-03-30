@@ -688,7 +688,7 @@ DB::DBReader::DateErrType DB::CSVReader::GetDate(UOSInt colIndex, Data::DateTime
 	UTF8Char buff[60];
 	UTF8Char *sptr;
 	sptr = this->GetStr(colIndex, buff, sizeof(buff));
-	outVal->SetValue(buff, (UOSInt)(sptr - buff));
+	outVal->SetValue(CSTRP(buff, sptr));
 	return DB::DBReader::DET_OK;
 }
 

@@ -477,7 +477,7 @@ DB::DBReader::DateErrType DB::SQLiteReader::GetDate(UOSInt colIndex, Data::DateT
 	Text::StringBuilderUTF8 sb;
 	if (!GetStr(colIndex, &sb))
 		return DB::DBReader::DET_NULL;
-	outVal->SetValue(sb.ToString(), sb.GetLength());
+	outVal->SetValue(sb.ToCString());
 	return DB::DBReader::DET_OK;
 }
 

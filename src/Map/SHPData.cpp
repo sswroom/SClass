@@ -12,8 +12,8 @@
 
 Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : Map::IMapDrawLayer(data->GetFullName(), 0, 0)
 {
-	UTF8Char u8buff[256];
-	UTF8Char *u8ptr;
+	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	UInt8 shpBuff[100];
 	Int32 valid;
 	UInt32 fileLen;
@@ -31,22 +31,22 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
 	this->mapRate = 10000000.0;
 
-	u8ptr = data->GetFullFileName()->ConcatTo(u8buff);
-	if ((u8ptr - u8buff) < 4)
+	sptr = data->GetFullFileName()->ConcatTo(sbuff);
+	if ((sptr - sbuff) < 4)
 	{
 		return;
 	}
-	if (u8ptr[-4] == '.')
+	if (sptr[-4] == '.')
 	{
-		Text::StrConcatC(&u8ptr[-3], UTF8STRC("prj"));
+		Text::StrConcatC(&sptr[-3], UTF8STRC("prj"));
 	}
 	else
 	{
-		u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".prj"));
+		sptr = Text::StrConcatC(sptr, UTF8STRC(".prj"));
 	}
-	this->csys = Math::CoordinateSystemManager::ParsePRJFile({u8buff, (UOSInt)(u8ptr - u8buff)});
+	this->csys = Math::CoordinateSystemManager::ParsePRJFile({sbuff, (UOSInt)(sptr - sbuff)});
 
-	Text::StrConcatC(&u8ptr[-3], UTF8STRC("dbf"));
+	Text::StrConcatC(&sptr[-3], UTF8STRC("dbf"));
 
 	if (ReadMInt32(shpHdr) != 9994 || ReadInt32(&shpHdr[28]) != 1000 || (ReadMUInt32(&shpHdr[24]) << 1) != data->GetDataSize())
 	{
@@ -310,7 +310,7 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 	}
 
 	IO::StmData::FileData *dbfData;
-	NEW_CLASS(dbfData, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+	NEW_CLASS(dbfData, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 	if (dbfData->GetDataSize() > 0)
 	{
 		NEW_CLASS(this->dbf, DB::DBFFile(dbfData, codePage));
@@ -325,8 +325,8 @@ Map::SHPData::SHPData(UInt8 *shpHdr, IO::IStreamData *data, UInt32 codePage) : M
 			i = this->dbf->GetColCount();
 			while (i-- > 0)
 			{
-				u8ptr = this->dbf->GetColumnName(i, u8buff);
-				if (Text::StrEndsWithICaseC(u8buff, (UOSInt)(u8ptr - u8buff), UTF8STRC("NAME")))
+				sptr = this->dbf->GetColumnName(i, sbuff);
+				if (Text::StrEndsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("NAME")))
 				{
 					nameCol = i;
 				}

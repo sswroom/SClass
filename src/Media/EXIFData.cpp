@@ -1633,7 +1633,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((const UTF8Char*)item->dataBuff, item->cnt - 1);
+				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}
@@ -1641,7 +1641,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((const UTF8Char*)item->dataBuff, item->cnt - 1);
+				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}
@@ -1658,7 +1658,7 @@ Bool Media::EXIFData::GetPhotoDate(Data::DateTime *dt)
 		{
 			if (item->type == ET_STRING)
 			{
-				dt->SetValue((const UTF8Char*)item->dataBuff, item->cnt - 1);
+				dt->SetValue(Text::CString((const UTF8Char*)item->dataBuff, item->cnt - 1));
 				return true;
 			}
 		}

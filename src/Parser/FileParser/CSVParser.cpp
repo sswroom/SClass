@@ -183,12 +183,12 @@ IO::ParsedObject *Parser::FileParser::CSVParser::ParseFile(IO::IStreamData *fd, 
 			{
 				if (dtCol != INVALID_INDEX)
 				{
-					dt.SetValue(tmpArr2[dtCol].v, tmpArr2[dtCol].leng);
+					dt.SetValue(tmpArr2[dtCol].ToCString());
 				}
 				else
 				{
 					sptr2 = Text::StrConcatC(Text::StrConcatC(Text::StrConcatC(sbuff2, tmpArr2[dateCol].v, tmpArr2[dateCol].leng), UTF8STRC(" ")), tmpArr2[timeCol].v, tmpArr2[timeCol].leng);
-					dt.SetValue(sbuff2, (UOSInt)(sptr2 - sbuff2));
+					dt.SetValue(CSTRP(sbuff2, sptr2));
 				}
 				rec.utcTimeTicks = dt.ToTicks();
 				rec.lat = Text::StrToDouble(tmpArr2[latCol].v);

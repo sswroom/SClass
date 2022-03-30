@@ -110,10 +110,10 @@ void UI::GUIComboBox::SetText(Text::CString text)
 
 UTF8Char *UI::GUIComboBox::GetText(UTF8Char *buff)
 {
-	WChar sbuff[256];
-	sbuff[0] = 0;
-	GetWindowTextW((HWND)hwnd, sbuff, 256);
-	return Text::StrWChar_UTF8(buff, sbuff);
+	WChar wbuff[256];
+	wbuff[0] = 0;
+	GetWindowTextW((HWND)hwnd, wbuff, 256);
+	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Bool UI::GUIComboBox::GetText(Text::StringBuilderUTF8 *sb)
@@ -267,15 +267,15 @@ void *UI::GUIComboBox::GetSelectedItem()
 
 UTF8Char *UI::GUIComboBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	WChar sbuff[512];
-	OSInt strLen = SendMessageW((HWND)hwnd, CB_GETLBTEXT, index, (LPARAM)sbuff);
+	WChar wbuff[512];
+	OSInt strLen = SendMessageW((HWND)hwnd, CB_GETLBTEXT, index, (LPARAM)wbuff);
 	if (strLen == CB_ERR)
 	{
 		return 0;
 	}
 	else
 	{
-		return Text::StrWChar_UTF8(buff, sbuff);
+		return Text::StrWChar_UTF8(buff, wbuff);
 	}
 }
 

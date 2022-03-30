@@ -20,9 +20,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	MemSetLogFile(UTF8STRC("Memory.log"));
 	sptr = IO::Path::GetProcessFileName(sbuff);
 #ifdef _WIN64
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBControl64.log"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl64.log"));
 #else
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBControl.log"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBControl.log"));
 #endif
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_CLOSE));
 	ui = progCtrl->CreateGUICore(progCtrl);

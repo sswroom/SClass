@@ -198,11 +198,11 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateRecvDisp()
 		}
 		else
 		{
-			UTF8Char *u8buff = MemAlloc(UTF8Char, buffSize + 1);
-			MemCopyNO(u8buff, buff, buffSize);
-			u8buff[buffSize] = 0;
-			this->txtRecvDisp->SetText({u8buff, buffSize});
-			MemFree(u8buff);
+			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize + 1);
+			MemCopyNO(sbuff, buff, buffSize);
+			sbuff[buffSize] = 0;
+			this->txtRecvDisp->SetText({sbuff, buffSize});
+			MemFree(sbuff);
 		}
 	}
 	else
@@ -239,11 +239,11 @@ void SSWR::AVIRead::AVIRStreamTermForm::UpdateSendDisp()
 		}
 		else
 		{
-			UTF8Char *u8buff = MemAlloc(UTF8Char, buffSize + 1);
-			MemCopyNO(u8buff, buff, buffSize);
-			u8buff[buffSize] = 0;
-			this->txtSendDisp->SetText({u8buff, buffSize});
-			MemFree(u8buff);
+			UTF8Char *sbuff = MemAlloc(UTF8Char, buffSize + 1);
+			MemCopyNO(sbuff, buff, buffSize);
+			sbuff[buffSize] = 0;
+			this->txtSendDisp->SetText({sbuff, buffSize});
+			MemFree(sbuff);
 		}
 	}
 	else

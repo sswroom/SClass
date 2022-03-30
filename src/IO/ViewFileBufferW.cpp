@@ -13,10 +13,10 @@ IO::ViewFileBuffer::ViewFileBuffer(const UTF8Char *fileName)
 	secAttr.bInheritHandle = TRUE;
 
 	this->filePtr = 0;
-	WChar sbuff[512];
-	Text::StrUTF8_WChar(sbuff, fileName, 0);
+	WChar wbuff[512];
+	Text::StrUTF8_WChar(wbuff, fileName, 0);
 
-	fileHandle = CreateFileW(sbuff, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, 0);
+	fileHandle = CreateFileW(wbuff, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, &secAttr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, 0);
 	if (fileHandle == 0)
 	{
 		return;

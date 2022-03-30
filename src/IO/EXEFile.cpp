@@ -361,7 +361,7 @@ Text::CString IO::EXEFile::GetResourceTypeName(ResourceType rt)
 
 void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUTF8 *sb)
 {
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (res->rt == RT_FONT)
 	{
@@ -564,10 +564,10 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 				}
 				sb->AppendC(UTF8STRC("\r\nCodePage = "));
 				sb->AppendU32(v & 0xffff);
-				if ((sptr = Text::EncodingFactory::GetName(u8buff, v & 0xffff)) != 0)
+				if ((sptr = Text::EncodingFactory::GetName(sbuff, v & 0xffff)) != 0)
 				{
 					sb->AppendC(UTF8STRC(" ("));
-					sb->AppendC(u8buff, (UOSInt)(sptr - u8buff));
+					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					sb->AppendC(UTF8STRC(")"));
 				}
 				Text::Encoding enc(v & 0xffff);
@@ -581,9 +581,9 @@ void IO::EXEFile::GetResourceDesc(const ResourceInfo *res, Text::StringBuilderUT
 						break;
 					sb->AppendC(UTF8STRC("\r\n"));
 					sb->AppendSlow((UTF8Char*)&res->data[i + 4]);
-					sptr = enc.UTF8FromBytes(u8buff, &res->data[i + v - v2], v2, 0);
+					sptr = enc.UTF8FromBytes(sbuff, &res->data[i + v - v2], v2, 0);
 					sb->AppendC(UTF8STRC(" = "));
-					sb->AppendC(u8buff, (UOSInt)(sptr - u8buff));
+					sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 					v2 = (v + 3) & (UInt32)~3;
 					i += v2;
 					strLen -= v2;

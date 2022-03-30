@@ -24,9 +24,9 @@ WChar svcName[256];
 void SvcReportEvent(const WChar *svcName, const WChar *szFunction) 
 { 
 	Win32::WindowsEvent evt(svcName);
-	WChar sbuff[256];
-	Text::StrHexVal32(Text::StrConcat(Text::StrConcat(sbuff, szFunction), L" failed with "), GetLastError());
-	evt.WriteEvent(0xC0020001L, Win32::WindowsEvent::EventType::Error, sbuff, 0, 0);
+	WChar wbuff[256];
+	Text::StrHexVal32(Text::StrConcat(Text::StrConcat(wbuff, szFunction), L" failed with "), GetLastError());
+	evt.WriteEvent(0xC0020001L, Win32::WindowsEvent::EventType::Error, wbuff, 0, 0);
 }
 
 VOID ReportSvcStatus( DWORD dwCurrentState,

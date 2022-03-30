@@ -617,7 +617,7 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 	{
 		NEW_CLASS(date, Data::DateTime());
 		date->ToLocalTime();
-		if (date->SetValue(this->val.str->v, this->val.str->leng))
+		if (date->SetValue(this->val.str->ToCString()))
 		{
 			return date;
 		}

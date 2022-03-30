@@ -4029,7 +4029,7 @@ Map::MapConfig2::MapConfig2(Text::CString fileName, Media::DrawEngine *eng, Data
 				if (forceBase.leng == 0)
 				{
 					baseDir = fileName.ConcatTo(layerName);
-					baseDir = IO::Path::AppendPathC(layerName, baseDir, strs[1].v, strs[1].leng);
+					baseDir = IO::Path::AppendPath(layerName, baseDir, strs[1].ToCString());
 //					baseDir = Text::StrConcat(layerName, strs[1]);
 				}
 				break;

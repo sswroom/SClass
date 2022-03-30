@@ -129,12 +129,12 @@ Bool IO::FileUtil::IsSamePartition(const UTF8Char *file1, const UTF8Char *file2)
 #elif (_WIN32_WINNT >= 0x0500)
 UTF8Char *IO::FileUtil::GetMountPoint(UTF8Char *buff, const UTF8Char *fileName)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	const WChar *wptr = Text::StrToWCharNew(fileName);
-	if (GetVolumePathNameW(wptr, sbuff, 512))
+	if (GetVolumePathNameW(wptr, wbuff, 512))
 	{
 		Text::StrDelNew(wptr);
-		return Text::StrWChar_UTF8(buff, sbuff);
+		return Text::StrWChar_UTF8(buff, wbuff);
 	}
 	else
 	{
@@ -244,9 +244,9 @@ typedef struct
 
 	if (progHdlr)
 	{
-		const UTF8Char *u8ptr = Text::StrToUTF8New(file1);
-		progHdlr->ProgressStart(u8ptr, fileSize);
-		Text::StrDelNew(u8ptr);
+		const UTF8Char *sptr = Text::StrToUTF8New(file1);
+		progHdlr->ProgressStart(sptr, fileSize);
+		Text::StrDelNew(sptr);
 	}
 	if (fileSize < 1048576)
 	{
@@ -469,37 +469,37 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 
 /*Bool FileUtil_CopyDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	WChar dbuff[512];
-	WChar *sptr;
+	WChar *wptr;
 	WChar *dptr;
 	IO::Path::FindFileSession *sess;
 	UInt32 attr = GetFileAttributesW(srcDir);
-	sptr = Text::StrConcat(sbuff, srcDir);
+	wptr = Text::StrConcat(wbuff, srcDir);
 	dptr = Text::StrConcat(dbuff, destDir);
 	IO::Path::CreateDirectory(destDir);
 	if (attr != 0xffffffff)
 		SetFileAttributesW(destDir, attr);
-	if (sptr[-1] != '\\')
+	if (wptr[-1] != '\\')
 	{
-		*sptr++ = '\\';
+		*wptr++ = '\\';
 	}
 	if (dptr[-1] != '\\')
 	{
 		*dptr++ = '\\';
 	}
-	Text::StrConcatC(sptr, IO::Path::ALL_FiLES, IO::Path::ALL_FILES_LEN);
-	sess = IO::Path::FindFile(sbuff);
+	Text::StrConcatC(wptr, IO::Path::ALL_FiLES, IO::Path::ALL_FILES_LEN);
+	sess = IO::Path::FindFile(wbuff);
 	if (sess)
 	{
 		IO::Path::PathType pt;
 		Bool succ = true;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
+		while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
 		{
 			if (pt == IO::Path::PathType::File)
 			{
-				Text::StrConcat(dptr, sptr);
-				if (!CopyFile(sbuff, dbuff, fea, progHdlr, bnt))
+				Text::StrConcat(dptr, wptr);
+				if (!CopyFile(wbuff, dbuff, fea, progHdlr, bnt))
 				{
 					succ = false;
 					break;
@@ -507,16 +507,16 @@ Bool IO::FileUtil::CopyFile(Text::CString file1, Text::CString file2, FileExistA
 			}
 			else if (pt == IO::Path::PathType::Directory)
 			{
-				if (sptr[0] == '.' && sptr[1] == 0)
+				if (wptr[0] == '.' && wptr[1] == 0)
 				{
 				}
-				else if (sptr[0] == '.' && sptr[1] == '.' && sptr[2] == 0)
+				else if (wptr[0] == '.' && wptr[1] == '.' && wptr[2] == 0)
 				{
 				}
 				else
 				{
-					Text::StrConcat(dptr, sptr);
-					if (!CopyDir(sbuff, dbuff, fea, progHdlr, bnt))
+					Text::StrConcat(dptr, wptr);
+					if (!CopyDir(wbuff, dbuff, fea, progHdlr, bnt))
 					{
 						succ = false;
 						break;
@@ -680,9 +680,9 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 
 /*Bool FileUtil_MoveDir(const WChar *srcDir, const WChar *destDir, FileExistAction fea, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	WChar dbuff[512];
-	WChar *sptr;
+	WChar *wptr;
 	WChar *dptr;
 	IO::Path::FindFileSession *sess;
 	Bool succ;
@@ -697,36 +697,36 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 			return false;
 	}
 	IO::Path::CreateDirectory(destDir);
-	sptr = Text::StrConcat(sbuff, srcDir);
+	wptr = Text::StrConcat(wbuff, srcDir);
 	dptr = Text::StrConcat(dbuff, destDir);
-	if (sptr != sbuff && sptr[-1] != '\\')
+	if (wptr != wbuff && wptr[-1] != '\\')
 	{
-		*sptr++ = '\\';
+		*wptr++ = '\\';
 	}
 	if (dptr != dbuff && dptr[-1] != '\\')
 	{
 		*dptr++ = '\\';
 	}
-	Text::StrConcat(sptr, L"*.*");
-	sess = IO::Path::FindFile(sbuff);
+	Text::StrConcat(wptr, L"*.*");
+	sess = IO::Path::FindFile(wbuff);
 	succ = true;
 	if (sess)
 	{
 		IO::Path::PathType pt;
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
+		while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
 		{
-			if (sptr[0] == '.' && sptr[1] == 0)
+			if (wptr[0] == '.' && wptr[1] == 0)
 			{
 			}
-			else if (sptr[0] == '.' && sptr[1] == '.' && sptr[2] == 0)
+			else if (wptr[0] == '.' && wptr[1] == '.' && wptr[2] == 0)
 			{
 			}
 			else
 			{
 				if (pt == IO::Path::PathType::File)
 				{
-					Text::StrConcat(dptr, sptr);
-					succ = IO::FileUtil::MoveFile(sbuff, dbuff, fea, progHdlr, bnt);
+					Text::StrConcat(dptr, wptr);
+					succ = IO::FileUtil::MoveFile(wbuff, dbuff, fea, progHdlr, bnt);
 					if (!succ)
 					{
 						break;
@@ -734,8 +734,8 @@ Bool IO::FileUtil::MoveFile(Text::CString srcFile, Text::CString destFile, FileE
 				}
 				else if (pt == IO::Path::PathType::Directory)
 				{
-					Text::StrConcat(dptr, sptr);
-					succ = IO::FileUtil::MoveDir(sbuff, dbuff, fea, progHdlr, bnt);
+					Text::StrConcat(dptr, wptr);
+					succ = IO::FileUtil::MoveDir(wbuff, dbuff, fea, progHdlr, bnt);
 					if (!succ)
 					{
 						break;

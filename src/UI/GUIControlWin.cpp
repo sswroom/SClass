@@ -192,10 +192,10 @@ void UI::GUIControl::SetText(Text::CString text)
 
 UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 {
-	WChar sbuff[256];
-	sbuff[0] = 0;
-	GetWindowTextW((HWND)hwnd, sbuff, 256);
-	return Text::StrWChar_UTF8(buff, sbuff);
+	WChar wbuff[256];
+	wbuff[0] = 0;
+	GetWindowTextW((HWND)hwnd, wbuff, 256);
+	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 Bool UI::GUIControl::GetText(Text::StringBuilderUTF8 *sb)
@@ -779,11 +779,11 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	Media::GDIFont *fnt;
 	if (this->fontName == 0)
 	{
-		WChar sbuff[256];
+		WChar wbuff[256];
 		HDC hdc = GetDC((HWND)this->hwnd);
 		SelectObject(hdc, (HFONT)f);
-		GetTextFaceW(hdc, 256, sbuff);
-		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, sbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
+		GetTextFaceW(hdc, 256, wbuff);
+		NEW_CLASS(fnt, Media::GDIFont(((Media::GDIImage*)img)->hdcBmp, wbuff, this->fontHeightPt * this->hdpi / this->ddpi / 0.75 * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, img, 0));
 	}
 	else
 	{

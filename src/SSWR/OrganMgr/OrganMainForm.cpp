@@ -195,7 +195,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnDirChanged(void *userObj)
 void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 {
 	OrganMainForm *me = (OrganMainForm*)userObj;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i = me->lbObj->GetSelectedIndex();
 	//System::Int32 i = lbObj->IndexFromPoint(lbObj->PointToClient(this->MousePosition));
@@ -211,8 +211,8 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnObjDblClicked(void *userObj)
 	{
 		me->lastSpeciesObj = 0;
 		me->lastGroupObj = 0;
-		sptr = gi->GetItemName(u8buff);
-		me->lbDir->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, gi);
+		sptr = gi->GetItemName(sbuff);
+		me->lbDir->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, gi);
 		me->groupList->Add((OrganGroup*)gi);
 		me->groupItems->RemoveAt(i);
 		me->lbDir->SetSelectedIndex(me->lbDir->GetCount() - 1);
@@ -1772,7 +1772,7 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 {
 	OrganGroup *grp;
 	OrganGroupItem *item;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	if (ToSaveGroup())
 	{
@@ -1843,8 +1843,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			while (i < j)
 			{
 				item = this->groupItems->GetItem(i);
-				sptr = item->GetItemName(u8buff);
-				k = this->lbObj->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, item);
+				sptr = item->GetItemName(sbuff);
+				k = this->lbObj->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, item);
 				i++;
 			}
 		}
@@ -1870,8 +1870,8 @@ void SSWR::OrganMgr::OrganMainForm::UpdateDir()
 			while (i < j)
 			{
 				item = this->groupItems->GetItem(i);
-				sptr = item->GetItemName(u8buff);
-				k = this->lbObj->AddItem({u8buff, (UOSInt)(sptr - u8buff)}, item);
+				sptr = item->GetItemName(sbuff);
+				k = this->lbObj->AddItem({sbuff, (UOSInt)(sptr - sbuff)}, item);
 				if (i > 0 && this->initSelObj)
 				{
 					if (this->inputMode == IM_SPECIES)
@@ -2255,8 +2255,8 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveGroup()
 
 Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 {
-	UTF8Char u8buff[512];
-	UTF8Char u8buff2[512];
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
@@ -2269,19 +2269,19 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 		{
 //			Int32 id = this->lastSpeciesObj->GetSpeciesId();
 			
-			sptr = this->txtSpeciesDName->GetText(u8buff);
-			if (!this->lastSpeciesObj->GetDirName()->Equals(u8buff, (UOSInt)(sptr - u8buff)))
+			sptr = this->txtSpeciesDName->GetText(sbuff);
+			if (!this->lastSpeciesObj->GetDirName()->Equals(sbuff, (UOSInt)(sptr - sbuff)))
 			{
-				sptr2 = this->env->GetSpeciesDir(this->lastSpeciesObj, u8buff2);
-				sptr = Text::StrConcatC(u8buff, u8buff2, (UOSInt)(sptr2 - u8buff2));
-				i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(sptr2 - u8buff2), IO::Path::PATH_SEPERATOR);
-				sptr2 = this->txtSpeciesDName->GetText(&u8buff2[i + 1]);
+				sptr2 = this->env->GetSpeciesDir(this->lastSpeciesObj, sbuff2);
+				sptr = Text::StrConcatC(sbuff, sbuff2, (UOSInt)(sptr2 - sbuff2));
+				i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), IO::Path::PATH_SEPERATOR);
+				sptr2 = this->txtSpeciesDName->GetText(&sbuff2[i + 1]);
 				
-				if (IO::Path::GetPathType(CSTRP(u8buff, sptr)) == IO::Path::PathType::Directory)
+				if (IO::Path::GetPathType(CSTRP(sbuff, sptr)) == IO::Path::PathType::Directory)
 				{
-					if (IO::FileUtil::MoveFile(CSTRP(u8buff, sptr), CSTRP(u8buff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
+					if (IO::FileUtil::MoveFile(CSTRP(sbuff, sptr), CSTRP(sbuff2, sptr2), IO::FileUtil::FileExistAction::Fail, 0, 0))
 					{
-						this->lastSpeciesObj->SetDirName(CSTRP(&u8buff2[i + 1], sptr2));
+						this->lastSpeciesObj->SetDirName(CSTRP(&sbuff2[i + 1], sptr2));
 					}
 					else
 					{
@@ -2291,7 +2291,7 @@ Bool SSWR::OrganMgr::OrganMainForm::ToSaveSpecies()
 				}
 				else
 				{
-					this->lastSpeciesObj->SetDirName(CSTRP(&u8buff2[i + 1], sptr2));
+					this->lastSpeciesObj->SetDirName(CSTRP(&sbuff2[i + 1], sptr2));
 				}
 			}
 			Text::StringBuilderUTF8 sb;

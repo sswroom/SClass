@@ -66,7 +66,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	UTF8Char baseDir[256];
 	UTF8Char sbuff2[512];
 	UTF8Char sbuff3[256];
-	UTF8Char u8buff[512];
+	UTF8Char sbuff4[512];
 	UTF8Char *fileName;
 	UTF8Char *baseDirEnd;
 	Text::PString sarr[20];
@@ -120,7 +120,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 					return 0;
 				}
 				fileName = fd->GetFullFileName()->ConcatTo(baseDir);
-				fileName = IO::Path::AppendPathC(baseDir, fileName, sarr[1].v, sarr[1].leng);
+				fileName = IO::Path::AppendPath(baseDir, fileName, sarr[1].ToCString());
 			}
 			else if (Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("3,")))
 			{
@@ -339,7 +339,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 				baseDirEnd = Text::StrConcatC(sarr[1].ConcatTo(fileName), UTF8STRC(".cip"));
 				Map::IMapDrawLayer *lyr = this->mapMgr->LoadLayer({baseDir, (UOSInt)(baseDirEnd - baseDir)}, this->parsers, env);
 				baseDirEnd = Text::StrConcat(sbuff3, sbuff2);
-				baseDirEnd = IO::Path::AppendPathC(sbuff3, baseDirEnd, sarr[4].v, sarr[4].leng);
+				baseDirEnd = IO::Path::AppendPath(sbuff3, baseDirEnd, sarr[4].ToCString());
 				si = env->AddImage({sbuff3, (UOSInt)(baseDirEnd - sbuff3)}, this->parsers);
 				if (lyr && si != -1)
 				{
@@ -367,9 +367,9 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 	}
 	else if (fd->IsFullFile() && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("OBJECTID,")) && Text::StrEndsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC(",")))
 	{
-		fileName = fd->GetFullName()->ConcatTo(u8buff);
+		fileName = fd->GetFullName()->ConcatTo(sbuff4);
 		fileName = Text::StrConcatC(&fileName[-4], UTF8STRC("_Coord.txt"));
-		if (IO::Path::GetPathType(CSTRP(u8buff, fileName)) != IO::Path::PathType::File)
+		if (IO::Path::GetPathType(CSTRP(sbuff4, fileName)) != IO::Path::PathType::File)
 		{
 			DEL_CLASS(reader);
 			DEL_CLASS(stm);
@@ -395,7 +395,7 @@ IO::ParsedObject *Parser::FileParser::TXTParser::ParseFile(IO::IStreamData *fd, 
 		Double *ptList;
 		Double *hList;
 
-		NEW_CLASS(fs2, IO::FileStream({u8buff, (UOSInt)(fileName - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs2, IO::FileStream({sbuff4, (UOSInt)(fileName - sbuff4)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader2, IO::StreamReader(fs2, 0));
 		while ((sptr2 = reader2->ReadLine(sbuff2, 512)) != 0)
 		{

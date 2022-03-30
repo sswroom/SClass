@@ -16,10 +16,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	IO::ConsoleWriter *console;
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SMonitorSvrMem.log"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvrMem.log"));
 	MemSetLogFile(sbuff, (UOSInt)(sptr - sbuff));
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SMonitorSvr.err"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SMonitorSvr.err"));
 	NEW_CLASS(exHdlr, Manage::ExceptionRecorder(CSTRP(sbuff, sptr), Manage::ExceptionRecorder::EA_RESTART));
 	NEW_CLASS(console, IO::ConsoleWriter());
 	NEW_CLASS(core, SSWR::SMonitor::SMonitorSvrCore(console, Media::DrawEngineFactory::CreateDrawEngine()));

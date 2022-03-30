@@ -189,7 +189,7 @@ Net::ACMEConn::Order *Net::ACMEConn::OrderParse(const UInt8 *buff, UOSInt buffSi
 			if (s)
 			{
 				Data::DateTime dt;
-				dt.SetValue(s->v, s->leng);
+				dt.SetValue(s->ToCString());
 				order->expires = dt.ToTicks();
 			}
 			order->finalizeURL = o->GetObjectNewString(CSTR("finalize"));

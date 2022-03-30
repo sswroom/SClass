@@ -97,14 +97,14 @@ Bool IO::WPDManager::GetDevName(const WChar *devId, Text::StringBuilderUTF *sb)
 	hr = pPortableDeviceManager->GetDeviceFriendlyName(devId, 0, (DWORD*)&strCnt);
 	if (FAILED(hr))
 		return false;
-	WChar *sptr = sb->BeginAppendW(strCnt - 1);
-	hr = pPortableDeviceManager->GetDeviceFriendlyName(devId, sptr, (DWORD*)&strCnt);
+	WChar *wptr = sb->BeginAppendW(strCnt - 1);
+	hr = pPortableDeviceManager->GetDeviceFriendlyName(devId, wptr, (DWORD*)&strCnt);
 	if (FAILED(hr))
 	{
 		sb->EndAppendW(0);
 		return false;
 	}
-	sb->EndAppendW(sptr + Text::StrCharCnt(sptr));
+	sb->EndAppendW(wptr + Text::StrCharCnt(wptr));
 	return true;
 }
 
@@ -117,14 +117,14 @@ Bool IO::WPDManager::GetDevDesc(const WChar *devId, Text::StringBuilderUTF *sb)
 	hr = pPortableDeviceManager->GetDeviceDescription(devId, 0, (DWORD*)&strCnt);
 	if (FAILED(hr))
 		return false;
-	WChar *sptr = sb->BeginAppendW(strCnt - 1);
-	hr = pPortableDeviceManager->GetDeviceDescription(devId, sptr, (DWORD*)&strCnt);
+	WChar *wptr = sb->BeginAppendW(strCnt - 1);
+	hr = pPortableDeviceManager->GetDeviceDescription(devId, wptr, (DWORD*)&strCnt);
 	if (FAILED(hr))
 	{
 		sb->EndAppendW(0);
 		return false;
 	}
-	sb->EndAppendW(sptr + Text::StrCharCnt(sptr));
+	sb->EndAppendW(wptr + Text::StrCharCnt(wptr));
 	return true;
 }
 
@@ -137,13 +137,13 @@ Bool IO::WPDManager::GetDevManu(const WChar *devId, Text::StringBuilderUTF *sb)
 	hr = pPortableDeviceManager->GetDeviceManufacturer(devId, 0, (DWORD*)&strCnt);
 	if (FAILED(hr))
 		return false;
-	WChar *sptr = sb->BeginAppendW(strCnt - 1);
-	hr = pPortableDeviceManager->GetDeviceManufacturer(devId, sptr, (DWORD*)&strCnt);
+	WChar *wptr = sb->BeginAppendW(strCnt - 1);
+	hr = pPortableDeviceManager->GetDeviceManufacturer(devId, wptr, (DWORD*)&strCnt);
 	if (FAILED(hr))
 	{
 		sb->EndAppendW(0);
 		return false;
 	}
-	sb->EndAppendW(sptr + Text::StrCharCnt(sptr));
+	sb->EndAppendW(wptr + Text::StrCharCnt(wptr));
 	return true;
 }

@@ -103,7 +103,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadLangs()
 	IO::ConfigFile *lang;
 
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Langs"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Langs"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
 	sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
@@ -163,7 +163,7 @@ void SSWR::OrganMgr::OrganWebHandler::LoadCategory()
 				sb.ClearStr();
 				r->GetStr(3, &sb);
 				sptr = this->imageDir->ConcatTo(sbuff);
-				sptr = IO::Path::AppendPathC(sbuff, sptr, sb.ToString(), sb.GetLength());
+				sptr = IO::Path::AppendPath(sbuff, sptr, sb.ToCString());
 				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
 					sptr[0] = IO::Path::PATH_SEPERATOR;
@@ -1076,7 +1076,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime
 /*	OSInt i;
 	WebUserInfo *webUser;
 	DataFileInfo *dataFile;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
@@ -1094,7 +1094,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime
 		{
 			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
 			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
-			sptr = Text::StrConcat(u8buff, this->dataDir);
+			sptr = Text::StrConcat(sbuff, this->dataDir);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -1102,7 +1102,7 @@ Bool SSWR::OrganMgr::OrganWebHandler::UserGPSGetPos(Int32 userId, Data::DateTime
 			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = Text::StrConcat(sptr, dataFile->fileName);
-			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
+			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
@@ -2361,8 +2361,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 		req->GetQueryValueI32(UTF8STRC("fileId"), &fileId))
 	{
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
-		UTF8Char u8buff[512];
-		UTF8Char *u8ptr;
+		UTF8Char sbuff[512];
+		UTF8Char *sptr;
 		SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 		me->dataMut->LockRead();
 		sp = me->spMap->Get(spId);
@@ -2373,34 +2373,34 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			dt.SetTicks(userFile->fileTimeTicks);
 			dt.ToUTCTime();
 
-			u8ptr = me->dataDir->ConcatTo(u8buff);
-			if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+			sptr = me->dataDir->ConcatTo(sbuff);
+			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = dt.ToString(u8ptr, "yyyyMM");
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrInt32(sptr, userFile->webuserId);
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = dt.ToString(sptr, "yyyyMM");
+			*sptr++ = IO::Path::PATH_SEPERATOR;
 			if (userFile->fileType == 3)
 			{
-				u8ptr = Text::StrInt64(u8ptr, userFile->fileTimeTicks);
-				u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("_"));
-				u8ptr = Text::StrHexVal32(u8ptr, userFile->crcVal);
-				u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".png"));
+				sptr = Text::StrInt64(sptr, userFile->fileTimeTicks);
+				sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
+				sptr = Text::StrHexVal32(sptr, userFile->crcVal);
+				sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 			}
 			else
 			{
-				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+				sptr = userFile->dataFileName->ConcatTo(sptr);
 			}
 			me->dataMut->UnlockRead();
 
 			UInt8 *buff;
 			UOSInt buffSize;
 			IO::StmData::FileData *fd;
-			NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			
 			buffSize = fd->GetDataSize();
 			buff = MemAlloc(UInt8, buffSize);
@@ -4387,11 +4387,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		IO::Writer *writer;
 		UOSInt i;
 		UOSInt j;
-		UTF8Char u8buff[512];
-		UTF8Char u8buff2[512];
-		UTF8Char *u8ptr;
-		UTF8Char *u8ptrEnd;
-		UTF8Char *u8ptr2;
+		UTF8Char sbuff[512];
+		UTF8Char sbuff2[512];
+		UTF8Char *sptr;
+		UTF8Char *sptrEnd;
+		UTF8Char *sptr2;
 		IO::Path::FindFileSession *sess;
 		IO::Path::PathType pt;
 		Text::StringBuilderUTF8 sb;
@@ -4428,13 +4428,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 			return true;
 		}
 
-		u8ptr = cate->srcDir->ConcatTo(u8buff);
+		sptr = cate->srcDir->ConcatTo(sbuff);
 		if (IO::Path::PATH_SEPERATOR != '\\')
 		{
-			Text::StrReplace(u8buff, '\\', IO::Path::PATH_SEPERATOR);
+			Text::StrReplace(sbuff, '\\', IO::Path::PATH_SEPERATOR);
 		}
-		u8ptr = species->dirName->ConcatTo(u8ptr);
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = species->dirName->ConcatTo(sptr);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
 
 		if (req->GetQueryValueI32(UTF8STRC("fileId"), &fileId))
 		{
@@ -4524,19 +4524,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				{
 					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
-					u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
+					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 					if (sess)
 					{
 
-						while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
+						while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
+								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
-									u8ptr2[-4] = 0;
-									fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
+									sptr2[-4] = 0;
+									fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -4550,14 +4550,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
-						sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(0)->v);
+						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
-						u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC("web.txt"));
-						NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+						sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -4566,14 +4566,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
-								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
-								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
-								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
+								sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
+								*sptr2++ = IO::Path::PATH_SEPERATOR;
+								sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
+								i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
 								if (i != INVALID_INDEX)
 								{
-									u8buff2[i] = 0;
-									u8ptr2 = &u8buff2[i];
+									sbuff2[i] = 0;
+									sptr2 = &sbuff2[i];
 								}
 								break;
 							}
@@ -4585,15 +4585,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
-							u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -4643,21 +4643,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					IO::StmData::FileData *fd;
 					UInt64 fileSize = 0;
 					Media::MediaFile *mediaFile;
-					u8ptr = me->dataDir->ConcatTo(u8buff);
-					if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+					sptr = me->dataDir->ConcatTo(sbuff);
+					if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 					{
-						*u8ptr++ = IO::Path::PATH_SEPERATOR;
+						*sptr++ = IO::Path::PATH_SEPERATOR;
 					}
-					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = Text::StrInt32(sptr, userFile->webuserId);
+					*sptr++ = IO::Path::PATH_SEPERATOR;
 					dt.SetTicks(userFile->fileTimeTicks);
-					u8ptr = dt.ToString(u8ptr, "yyyyMM");
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+					sptr = dt.ToString(sptr, "yyyyMM");
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = userFile->dataFileName->ConcatTo(sptr);
 					Sync::MutexUsage mutUsage(me->parserMut);
-					NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 					fileSize = fd->GetDataSize();
 					mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 					DEL_CLASS(fd);
@@ -4711,31 +4711,31 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						writer->WriteStrC(UTF8STRC("<b>"));
 						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 						writer->WriteStrC(UTF8STRC("</b> "));
-						u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
-						writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+						sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+						writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 						writer->WriteStrC(UTF8STRC("<br/>"));
 					}
 				}
 				else
 				{
 					Data::DateTime dt;
-					u8ptr = me->dataDir->ConcatTo(u8buff);
-					if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+					sptr = me->dataDir->ConcatTo(sbuff);
+					if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 					{
-						*u8ptr++ = IO::Path::PATH_SEPERATOR;
+						*sptr++ = IO::Path::PATH_SEPERATOR;
 					}
-					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = Text::StrInt32(sptr, userFile->webuserId);
+					*sptr++ = IO::Path::PATH_SEPERATOR;
 					dt.SetTicks(userFile->fileTimeTicks);
-					u8ptr = dt.ToString(u8ptr, "yyyyMM");
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+					sptr = dt.ToString(sptr, "yyyyMM");
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptr = userFile->dataFileName->ConcatTo(sptr);
 
 					IO::StmData::FileData *fd;
 					Media::PhotoInfo *info;
-					NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 					NEW_CLASS(info, Media::PhotoInfo(fd));
 					DEL_CLASS(fd);
 					if (info->HasInfo())
@@ -4753,8 +4753,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						writer->WriteStrC(UTF8STRC("<b>"));
 						writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 						writer->WriteStrC(UTF8STRC("</b> "));
-						u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
-						writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+						sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+						writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 						writer->WriteStrC(UTF8STRC("<br/>"));
 					}
 					DEL_CLASS(info);
@@ -4887,19 +4887,19 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				{
 					NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
-					u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-					sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
+					sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+					sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 					if (sess)
 					{
 
-						while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
+						while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 						{
 							if (pt == IO::Path::PathType::File)
 							{
-								if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
+								if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 								{
-									u8ptr2[-4] = 0;
-									fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
+									sptr2[-4] = 0;
+									fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 								}
 							}
 						}
@@ -4913,14 +4913,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(0)->v);
-						sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(0)->v);
+						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
-						u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC("web.txt"));
-						NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+						sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -4929,14 +4929,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
-								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
-								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
-								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
+								sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
+								*sptr2++ = IO::Path::PATH_SEPERATOR;
+								sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
+								i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
 								if (i != INVALID_INDEX)
 								{
-									u8buff2[i] = 0;
-									u8ptr2 = &u8buff2[i];
+									sbuff2[i] = 0;
+									sptr2 = &sbuff2[i];
 								}
 								break;
 							}
@@ -4948,15 +4948,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
-							u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -5056,11 +5056,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				Bool found;
 				Bool foundNext;
 
-				u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC("web.txt"));
+				sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
 
-				u8ptr2 = Text::StrConcatC(Text::StrConcat(u8buff2, &fileName[4]), UTF8STRC("."));
-				Text::StrToUpperC(u8buff2, u8buff2, (UOSInt)(u8ptr2 - u8buff2));
-				NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+				sptr2 = Text::StrConcatC(Text::StrConcat(sbuff2, &fileName[4]), UTF8STRC("."));
+				Text::StrToUpperC(sbuff2, sbuff2, (UOSInt)(sptr2 - sbuff2));
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
 				sb.ClearStr();
 				found = false;
@@ -5072,13 +5072,13 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (found)
 						{
 							foundNext = true;
-							Text::StrConcatC(u8buff2, sarr[0].v, sarr[0].leng);
+							Text::StrConcatC(sbuff2, sarr[0].v, sarr[0].leng);
 							break;
 						}
 						else
 						{
 							Text::StrToUpperC(sarr[0].v, sarr[0].v, sarr[0].leng);
-							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, u8buff2, (UOSInt)(u8ptr2 - u8buff2)))
+							if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, sbuff2, (UOSInt)(sptr2 - sbuff2)))
 							{
 								found = true;
 								foundNext = false;
@@ -5123,14 +5123,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						u8ptr2 = Text::StrConcatC(u8buff, UTF8STRC("web"));
-						*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-						u8ptr2 = Text::StrConcat(u8ptr2, u8buff2);
-						i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr2 - u8buff), '.');
+						sptr2 = Text::StrConcatC(sbuff, UTF8STRC("web"));
+						*sptr2++ = IO::Path::PATH_SEPERATOR;
+						sptr2 = Text::StrConcat(sptr2, sbuff2);
+						i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptr2 - sbuff), '.');
 						if (i != INVALID_INDEX)
-							u8buff[i] = 0;
-						u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, u8buff);
-						sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+							sbuff[i] = 0;
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sbuff);
+						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
 					{
@@ -5224,18 +5224,18 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				Data::ArrayListICaseString *fileNameList;
 				NEW_CLASS(fileNameList, Data::ArrayListICaseString());
 
-				u8ptr2 = Text::StrConcatC(u8ptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
-				sess = IO::Path::FindFile(CSTRP(u8buff, u8ptr2));
+				sptr2 = Text::StrConcatC(sptr, IO::Path::ALL_FILES, IO::Path::ALL_FILES_LEN);
+				sess = IO::Path::FindFile(CSTRP(sbuff, sptr2));
 				if (sess)
 				{
-					while ((u8ptr2 = IO::Path::FindNextFile(u8ptr, sess, 0, &pt, 0)) != 0)
+					while ((sptr2 = IO::Path::FindNextFile(sptr, sess, 0, &pt, 0)) != 0)
 					{
 						if (pt == IO::Path::PathType::File)
 						{
-							if (Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(u8ptr, (UOSInt)(u8ptr2 - u8ptr), UTF8STRC(".TIF")))
+							if (Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".JPG")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".PCX")) || Text::StrEndsWithICaseC(sptr, (UOSInt)(sptr2 - sptr), UTF8STRC(".TIF")))
 							{
-								u8ptr2[-4] = 0;
-								fileNameList->SortedInsert(Text::String::New(u8ptr, (UOSInt)(u8ptr2 - u8ptr - 4)));
+								sptr2[-4] = 0;
+								fileNameList->SortedInsert(Text::String::New(sptr, (UOSInt)(sptr2 - sptr - 4)));
 							}
 						}
 					}
@@ -5280,14 +5280,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(species->cateId);
 						sb.AppendC(UTF8STRC("&file="));
-						u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, fileNameList->GetItem(i + 1)->v);
-						sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+						sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, fileNameList->GetItem(i + 1)->v);
+						sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					}
 					else
 					{
 						Bool found;
-						u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC("web.txt"));
-						NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
+						sptrEnd = Text::StrConcatC(sptr, UTF8STRC("web.txt"));
+						NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 						NEW_CLASS(reader, Text::UTF8Reader(fs));
 						sb.ClearStr();
 						found = false;
@@ -5296,14 +5296,14 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							if (Text::StrSplitP(sarr, 4, sb, '\t') == 3)
 							{
 								found = true;
-								u8ptr2 = Text::StrConcatC(u8buff2, UTF8STRC("web"));
-								*u8ptr2++ = IO::Path::PATH_SEPERATOR;
-								u8ptr2 = Text::StrConcatC(u8ptr2, sarr[0].v, sarr[0].leng);
-								i = Text::StrLastIndexOfCharC(u8buff2, (UOSInt)(u8ptr2 - u8buff2), '.');
+								sptr2 = Text::StrConcatC(sbuff2, UTF8STRC("web"));
+								*sptr2++ = IO::Path::PATH_SEPERATOR;
+								sptr2 = Text::StrConcatC(sptr2, sarr[0].v, sarr[0].leng);
+								i = Text::StrLastIndexOfCharC(sbuff2, (UOSInt)(sptr2 - sbuff2), '.');
 								if (i != INVALID_INDEX)
 								{
-									u8buff2[i] = 0;
-									u8ptr2 = &u8buff2[i];
+									sbuff2[i] = 0;
+									sptr2 = &sbuff2[i];
 								}
 								break;
 							}
@@ -5315,15 +5315,15 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 						if (found)
 						{
 							sb.ClearStr();
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
-							u8ptr2 = Text::TextBinEnc::URIEncoding::URIEncode(u8buff2, sb.ToString());
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
+							sptr2 = Text::TextBinEnc::URIEncoding::URIEncode(sbuff2, sb.ToString());
 							sb.ClearStr();
 							sb.AppendC(UTF8STRC("photodetail.html?id="));
 							sb.AppendI32(species->speciesId);
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(species->cateId);
 							sb.AppendC(UTF8STRC("&file="));
-							sb.AppendC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+							sb.AppendC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 						}
 						else
 						{
@@ -5363,10 +5363,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 					writer->WriteLineC(UTF8STRC("</td></tr>"));
 					writer->WriteLineC(UTF8STRC("<tr><td align=\"center\">"));
 
-					u8ptrEnd = Text::StrConcatC(Text::StrConcat(u8ptr, fileName), UTF8STRC(".jpg"));
+					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
 					IO::StmData::FileData *fd;
 					Media::PhotoInfo *info;
-					NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, false));
+					NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptrEnd - sbuff)}, false));
 					NEW_CLASS(info, Media::PhotoInfo(fd));
 					DEL_CLASS(fd);
 					if (info->HasInfo())
@@ -5384,8 +5384,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 							writer->WriteStrC(UTF8STRC("<b>"));
 							writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 							writer->WriteStrC(UTF8STRC("</b> "));
-							u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
-							writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+							sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+							writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 							writer->WriteStrC(UTF8STRC("<br/>"));
 						}
 					}
@@ -5450,10 +5450,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
 
-		UTF8Char u8buff[512];
-		UTF8Char u8buff2[512];
-		UTF8Char *u8ptr;
-		UTF8Char *u8ptr2;
+		UTF8Char sbuff[512];
+		UTF8Char sbuff2[512];
+		UTF8Char *sptr;
+		UTF8Char *sptr2;
 		Text::StringBuilderUTF8 sb;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species;
 		Data::DateTime dt;
@@ -5479,11 +5479,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 			NEW_CLASS(writer, Text::UTF8Writer(mstm));
 
 			dt.SetTicks(userFile->captureTimeTicks);
-			dt.ToString(u8buff, "yyyy-MM-dd");
+			dt.ToString(sbuff, "yyyy-MM-dd");
 
-			me->WriteHeader(writer, u8buff, env.user, env.isMobile);
+			me->WriteHeader(writer, sbuff, env.user, env.isMobile);
 			writer->WriteStrC(UTF8STRC("<center><h1>"));
-			s = Text::XML::ToNewHTMLText(u8buff);
+			s = Text::XML::ToNewHTMLText(sbuff);
 			writer->WriteStrC(s->v, s->leng);
 			s->Release();
 			writer->WriteLineC(UTF8STRC("</h1></center>"));
@@ -5544,21 +5544,21 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 				IO::StmData::FileData *fd;
 				UInt64 fileSize = 0;
 				Media::MediaFile *mediaFile;
-				u8ptr = me->dataDir->ConcatTo(u8buff);
-				if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+				sptr = me->dataDir->ConcatTo(sbuff);
+				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
+					*sptr++ = IO::Path::PATH_SEPERATOR;
 				}
-				u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrInt32(sptr, userFile->webuserId);
+				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dt.SetTicks(userFile->fileTimeTicks);
-				u8ptr = dt.ToString(u8ptr, "yyyyMM");
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+				sptr = dt.ToString(sptr, "yyyyMM");
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = userFile->dataFileName->ConcatTo(sptr);
 				Sync::MutexUsage mutUsage(me->parserMut);
-				NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 				fileSize = fd->GetDataSize();
 				mediaFile = (Media::MediaFile*)me->parsers->ParseFileType(fd, IO::ParserType::MediaFile);
 				DEL_CLASS(fd);
@@ -5612,30 +5612,30 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					writer->WriteStrC(UTF8STRC("<b>"));
 					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 					writer->WriteStrC(UTF8STRC("</b> "));
-					u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
-					writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					writer->WriteStrC(UTF8STRC("<br/>"));
 				}
 			}
 			else
 			{
-				u8ptr = me->dataDir->ConcatTo(u8buff);
-				if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+				sptr = me->dataDir->ConcatTo(sbuff);
+				if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 				{
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
+					*sptr++ = IO::Path::PATH_SEPERATOR;
 				}
-				u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = Text::StrInt32(sptr, userFile->webuserId);
+				*sptr++ = IO::Path::PATH_SEPERATOR;
 				dt.SetTicks(userFile->fileTimeTicks);
-				u8ptr = dt.ToString(u8ptr, "yyyyMM");
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+				sptr = dt.ToString(sptr, "yyyyMM");
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = userFile->dataFileName->ConcatTo(sptr);
 
 				IO::StmData::FileData *fd;
 				Media::PhotoInfo *info;
-				NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+				NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 				NEW_CLASS(info, Media::PhotoInfo(fd));
 				DEL_CLASS(fd);
 				if (info->HasInfo())
@@ -5653,8 +5653,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 					writer->WriteStrC(UTF8STRC("<b>"));
 					writer->WriteStr(LangGetValue(lang, UTF8STRC("PhotoDate")));
 					writer->WriteStrC(UTF8STRC("</b> "));
-					u8ptr2 = dt.ToString(u8buff2, "yyyy-MM-dd HH:mm:ss zzzz");
-					writer->WriteStrC(u8buff2, (UOSInt)(u8ptr2 - u8buff2));
+					sptr2 = dt.ToString(sbuff2, "yyyy-MM-dd HH:mm:ss zzzz");
+					writer->WriteStrC(sbuff2, (UOSInt)(sptr2 - sbuff2));
 					writer->WriteStrC(UTF8STRC("<br/>"));
 				}
 				DEL_CLASS(info);
@@ -7782,14 +7782,14 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 {
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
-	UTF8Char u8buff[512];
-	UTF8Char u8buff2[512];
+	UTF8Char sbuff[512];
+	UTF8Char sbuff2[512];
 	UTF8Char *sptr2;
 	IO::FileStream *fs;
 	Text::UTF8Reader *reader;
 	Int32 rotateType = 0;
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptrEnd = u8buff;
+	UTF8Char *sptr;
+	UTF8Char *sptrEnd = sbuff;
 	this->dataMut->LockRead();
 	sp = this->spMap->Get(speciesId);
 	Bool notAdmin = (user == 0 || user->userType != 0);
@@ -7801,26 +7801,26 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 			Text::StringBuilderUTF8 sb;
 			if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 			{
-				u8ptr = this->cacheDir->ConcatTo(u8buff);
-				sptr2 = Text::StrInt32(u8buff2, cate->cateId);
-				u8ptr = IO::Path::AppendPathC(u8buff, u8ptr, u8buff2, (UOSInt)(sptr2 - u8buff2));
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
-				u8ptr = sp->dirName->ConcatTo(u8ptr);
-				IO::Path::CreateDirectory(CSTRP(u8buff, u8ptr));
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = this->cacheDir->ConcatTo(sbuff);
+				sptr2 = Text::StrInt32(sbuff2, cate->cateId);
+				sptr = IO::Path::AppendPath(sbuff, sptr, CSTRP(sbuff2, sptr2));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
+				sptr = sp->dirName->ConcatTo(sptr);
+				IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
+				*sptr++ = IO::Path::PATH_SEPERATOR;
 				if (Text::StrStartsWith(fileName, (const UTF8Char*)"web") && (fileName[3] == IO::Path::PATH_SEPERATOR || fileName[3] == '\\'))
 				{
-					u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("web"));
-					IO::Path::CreateDirectory(CSTRP(u8buff, u8ptr));
-					*u8ptr++ = IO::Path::PATH_SEPERATOR;
-					u8ptrEnd = Text::StrConcatC(Text::StrConcat(u8ptr, &fileName[4]), UTF8STRC(".jpg"));
+					sptr = Text::StrConcatC(sptr, UTF8STRC("web"));
+					IO::Path::CreateDirectory(CSTRP(sbuff, sptr));
+					*sptr++ = IO::Path::PATH_SEPERATOR;
+					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, &fileName[4]), UTF8STRC(".jpg"));
 				}
 				else
 				{
-					u8ptrEnd = Text::StrConcatC(Text::StrConcat(u8ptr, fileName), UTF8STRC(".jpg"));
+					sptrEnd = Text::StrConcatC(Text::StrConcat(sptr, fileName), UTF8STRC(".jpg"));
 				}
 
-				NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				if (fs->IsError())
 				{
 					DEL_CLASS(fs);
@@ -7863,9 +7863,9 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				sb.AppendC(UTF8STRC("."));
 
 				NEW_CLASS(reader, Text::UTF8Reader(fs));
-				while ((sptr2 = reader->ReadLine(u8buff2, 511)) != 0)
+				while ((sptr2 = reader->ReadLine(sbuff2, 511)) != 0)
 				{
-					if (Text::StrSplitP(sarr, 3, {u8buff2, (UOSInt)(sptr2 - u8buff2)}, '\t') == 2)
+					if (Text::StrSplitP(sarr, 3, {sbuff2, (UOSInt)(sptr2 - sbuff2)}, '\t') == 2)
 					{
 						if (Text::StrStartsWithICaseC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength()))
 						{
@@ -8038,7 +8038,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && buffSize > 0)
 						{
-							NEW_CLASS(fs, IO::FileStream(u8buff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							NEW_CLASS(fs, IO::FileStream(sbuff, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							fs->Write(buff, buffSize);
 							DEL_CLASS(fs);
 						}
@@ -8062,7 +8062,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 						if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && mstm->GetLength() > 0)
 						{
-							NEW_CLASS(fs, IO::FileStream({u8buff, (UOSInt)(u8ptrEnd - u8buff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+							NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 							buff = mstm->GetBuff(&buffSize);
 							fs->Write(buff, buffSize);
 							DEL_CLASS(fs);
@@ -8100,10 +8100,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileId)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
-	UTF8Char u8buff2[512];
-	UTF8Char u8buff[512];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::FileStream *fs;
 	SSWR::OrganMgr::OrganWebHandler::UserFileInfo *userFile;
 	Int32 rotateType = 0;
@@ -8119,21 +8119,21 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		dt.ToUTCTime();
 		rotateType = userFile->rotType;
 
-		u8ptr = this->cacheDir->ConcatTo(u8buff2);
-		u8ptr = IO::Path::AppendPathC(u8buff2, u8ptr, UTF8STRC("UserFile"));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = dt.ToString(u8ptr, "yyyyMM");
-		IO::Path::CreateDirectory(CSTRP(u8buff2, u8ptr));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr2 = userFile->dataFileName->ConcatTo(u8ptr);
+		sptr = this->cacheDir->ConcatTo(sbuff2);
+		sptr = IO::Path::AppendPath(sbuff2, sptr, CSTR("UserFile"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrInt32(sptr, userFile->webuserId);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = dt.ToString(sptr, "yyyyMM");
+		IO::Path::CreateDirectory(CSTRP(sbuff2, sptr));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr2 = userFile->dataFileName->ConcatTo(sptr);
 
 		if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && userFile->prevUpdated == 0)
 		{
 			Data::DateTime dt2;
 			Data::DateTime dt3;
-			if (req->GetIfModifiedSince(&dt2) && IO::Path::GetFileTime(u8buff2, &dt3, 0, 0))
+			if (req->GetIfModifiedSince(&dt2) && IO::Path::GetFileTime(sbuff2, &dt3, 0, 0))
 			{
 				Int64 tdiff = dt2.ToTicks() - dt3.ToTicks();
 				if (tdiff >= -1000 && tdiff <= 1000)
@@ -8143,7 +8143,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					return;
 				}
 			}
-			NEW_CLASS(fs, IO::FileStream({u8buff2, (UOSInt)(u8ptr2 - u8buff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+			NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 			UOSInt buffSize = (UOSInt)fs->GetLength();
 			if (fs->IsError() || buffSize == 0)
 			{
@@ -8167,27 +8167,27 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			}
 		}
 
-		u8ptr = this->dataDir->ConcatTo(u8buff);
-		if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+		sptr = this->dataDir->ConcatTo(sbuff);
+		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
+			*sptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("UserFile"));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = Text::StrInt32(u8ptr, userFile->webuserId);
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		u8ptr = dt.ToString(u8ptr, "yyyyMM");
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrConcatC(sptr, UTF8STRC("UserFile"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = Text::StrInt32(sptr, userFile->webuserId);
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		sptr = dt.ToString(sptr, "yyyyMM");
+		*sptr++ = IO::Path::PATH_SEPERATOR;
 		if (userFile->fileType == 3)
 		{
-			u8ptr = Text::StrInt64(u8ptr, userFile->fileTimeTicks);
-			u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("_"));
-			u8ptr = Text::StrHexVal32(u8ptr, userFile->crcVal);
-			u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".png"));
+			sptr = Text::StrInt64(sptr, userFile->fileTimeTicks);
+			sptr = Text::StrConcatC(sptr, UTF8STRC("_"));
+			sptr = Text::StrHexVal32(sptr, userFile->crcVal);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
 		}
 		else
 		{
-			u8ptr = userFile->dataFileName->ConcatTo(u8ptr);
+			sptr = userFile->dataFileName->ConcatTo(sptr);
 		}
 		this->dataMut->UnlockRead();
 
@@ -8197,7 +8197,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 		Media::StaticImage *dimg;
 		IO::StmData::FileData *fd;
 		Sync::MutexUsage mutUsage(this->parserMut);
-		NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+		NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 		imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 		DEL_CLASS(fd);
 		mutUsage.EndUse();
@@ -8359,7 +8359,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream({u8buff2, (UOSInt)(u8ptr2 - u8buff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
@@ -8388,7 +8388,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream({u8buff2, (UOSInt)(u8ptr2 - u8buff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);
@@ -8423,10 +8423,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, SSWR::OrganMgr::OrganWebHandler::WebUserInfo *reqUser, Bool isMobile, Int32 speciesId, Int32 cateId, UInt32 imgWidth, UInt32 imgHeight, Int32 fileWId)
 {
 	SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
-	UTF8Char u8buff2[512];
-	UTF8Char u8buff[512];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptr2;
+	UTF8Char sbuff2[512];
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptr2;
 	IO::FileStream *fs;
 	SSWR::OrganMgr::OrganWebHandler::WebFileInfo *wfile;
 	Int32 rotateType = 0;
@@ -8439,18 +8439,18 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 		{
 			Data::DateTime dt;
 
-			u8ptr = this->cacheDir->ConcatTo(u8buff2);
-			u8ptr = IO::Path::AppendPathC(u8buff2, u8ptr, UTF8STRC("WebFile"));
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = Text::StrInt32(u8ptr, wfile->id >> 10);
-			IO::Path::CreateDirectory(CSTRP(u8buff2, u8ptr));
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = Text::StrInt32(u8ptr, wfile->id);
-			u8ptr2 = Text::StrConcatC(u8ptr, UTF8STRC(".jpg"));
+			sptr = this->cacheDir->ConcatTo(sbuff2);
+			sptr = IO::Path::AppendPath(sbuff2, sptr, CSTR("WebFile"));
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrInt32(sptr, wfile->id >> 10);
+			IO::Path::CreateDirectory(CSTRP(sbuff2, sptr));
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrInt32(sptr, wfile->id);
+			sptr2 = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 
 			if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE && wfile->prevUpdated == 0)
 			{
-				NEW_CLASS(fs, IO::FileStream({u8buff2, (UOSInt)(u8ptr2 - u8buff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+				NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 				UOSInt buffSize = (UOSInt)fs->GetLength();
 				if (fs->IsError() || buffSize == 0)
 				{
@@ -8472,17 +8472,17 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				}
 			}
 
-			u8ptr = this->dataDir->ConcatTo(u8buff);
-			if (u8ptr[-1] != IO::Path::PATH_SEPERATOR)
+			sptr = this->dataDir->ConcatTo(sbuff);
+			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
-				*u8ptr++ = IO::Path::PATH_SEPERATOR;
+				*sptr++ = IO::Path::PATH_SEPERATOR;
 			}
-			u8ptr = Text::StrConcatC(u8ptr, UTF8STRC("WebFile"));
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = Text::StrInt32(u8ptr, wfile->id >> 10);
-			*u8ptr++ = IO::Path::PATH_SEPERATOR;
-			u8ptr = Text::StrInt32(u8ptr, wfile->id);
-			u8ptr = Text::StrConcatC(u8ptr, UTF8STRC(".jpg"));
+			sptr = Text::StrConcatC(sptr, UTF8STRC("WebFile"));
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrInt32(sptr, wfile->id >> 10);
+			*sptr++ = IO::Path::PATH_SEPERATOR;
+			sptr = Text::StrInt32(sptr, wfile->id);
+			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
 			this->dataMut->UnlockRead();
 
 			Media::ImageList *imgList;
@@ -8491,7 +8491,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 			Media::StaticImage *dimg;
 			IO::StmData::FileData *fd;
 			Sync::MutexUsage mutUsage(this->parserMut);
-			NEW_CLASS(fd, IO::StmData::FileData({u8buff, (UOSInt)(u8ptr - u8buff)}, false));
+			NEW_CLASS(fd, IO::StmData::FileData({sbuff, (UOSInt)(sptr - sbuff)}, false));
 			imgList = (Media::ImageList*)this->parsers->ParseFileType(fd, IO::ParserType::ImageList);
 			DEL_CLASS(fd);
 			mutUsage.EndUse();
@@ -8606,7 +8606,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 					if (this->cacheDir && imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
-						NEW_CLASS(fs, IO::FileStream({u8buff2, (UOSInt)(u8ptr2 - u8buff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+						NEW_CLASS(fs, IO::FileStream({sbuff2, (UOSInt)(sptr2 - sbuff2)}, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 						buff = mstm->GetBuff(&buffSize);
 						fs->Write(buff, buffSize);
 						DEL_CLASS(fs);

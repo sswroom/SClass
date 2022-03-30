@@ -1143,7 +1143,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		IO::FileStream *fs;
 		Text::UTF8Reader *reader;
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("UserAgent.txt"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->uaLog->ReadLogs(reader);
@@ -1151,7 +1151,7 @@ SSWR::SMonitor::SMonitorSvrCore::SMonitorSvrCore(IO::Writer *writer, Media::Draw
 		DEL_CLASS(fs);
 
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Referer.txt"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(reader, Text::UTF8Reader(fs));
 		this->refererLog->ReadLogs(reader);
@@ -2585,7 +2585,7 @@ void SSWR::SMonitor::SMonitorSvrCore::UserAgentStore()
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("UserAgent.txt"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("UserAgent.txt"));
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->uaLog->WriteLogs(writer);
@@ -2617,7 +2617,7 @@ void SSWR::SMonitor::SMonitorSvrCore::RefererStore()
 		IO::FileStream *fs;
 		Text::UTF8Writer *writer;
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("Referer.txt"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("Referer.txt"));
 		NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		NEW_CLASS(writer, Text::UTF8Writer(fs));
 		this->refererLog->WriteLogs(writer);

@@ -10,7 +10,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[32];
+	WChar wbuff[32];
 	OSInt i = 100000000;
 	const WChar *srcStr = L"ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	IO::ConsoleWriter *console;
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	clk.Start();
 	while (i-- > 0)
 	{
-		Text::StrConcat(sbuff, srcStr);
+		Text::StrConcat(wbuff, srcStr);
 	}
 	t = clk.GetTimeDiff();
 

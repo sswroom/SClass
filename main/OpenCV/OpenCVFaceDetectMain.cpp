@@ -81,7 +81,7 @@ void __stdcall OnDetectResult(void *userObj, UOSInt objCnt, const Media::OpenCV:
 			imgList->AddImage(simg, 0);
 
 			sptr = IO::Path::GetProcessFileName(sbuff);
-			sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("People_"));
+			sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("People_"));
 			dt.SetCurrTime();
 			sptr = dt.ToString(sptr, "yyyyMMdd_HHmmssfff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));

@@ -14,12 +14,12 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 {
 	void *hand;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	IO::Registry *reg = 0;
-	sptr = Text::StrConcat(buff, L"Software\\");
-	sptr = Text::StrConcat(sptr, compName);
-	sptr = Text::StrConcat(sptr, L"\\");
-	sptr = Text::StrConcat(sptr, appName);
+	wptr = Text::StrConcat(buff, L"Software\\");
+	wptr = Text::StrConcat(wptr, compName);
+	wptr = Text::StrConcat(wptr, L"\\");
+	wptr = Text::StrConcat(wptr, appName);
 	if (usr == IO::Registry::REG_USER_ALL)
 	{
 		if (RegCreateKeyW(HKEY_LOCAL_MACHINE, buff, (HKEY*)&hand) == 0)
@@ -46,10 +46,10 @@ IO::Registry *IO::Registry::OpenSoftware(IO::Registry::RegistryUser usr, const W
 {
 	void *hand;
 	WChar buff[256];
-	WChar *sptr;
+	WChar *wptr;
 	IO::Registry *reg = 0;
-	sptr = Text::StrConcat(buff, L"Software\\");
-	sptr = Text::StrConcat(sptr, compName);
+	wptr = Text::StrConcat(buff, L"Software\\");
+	wptr = Text::StrConcat(wptr, compName);
 	if (usr == IO::Registry::REG_USER_ALL)
 	{
 		if (RegCreateKeyW(HKEY_LOCAL_MACHINE, buff, (HKEY*)&hand) == 0)
@@ -91,10 +91,10 @@ IO::Registry *IO::Registry::OpenLocalHardware()
 IO::Registry *IO::Registry::OpenLocalSoftware(const WChar *softwareName)
 {
 	IO::Registry *reg = 0;
-	WChar sbuff[512];
+	WChar wbuff[512];
 	void *hand;
-	Text::StrConcat(Text::StrConcat(sbuff, L"SOFTWARE\\"), softwareName);
-	if (RegCreateKeyW(HKEY_LOCAL_MACHINE, sbuff, (HKEY*)&hand) == 0)
+	Text::StrConcat(Text::StrConcat(wbuff, L"SOFTWARE\\"), softwareName);
+	if (RegCreateKeyW(HKEY_LOCAL_MACHINE, wbuff, (HKEY*)&hand) == 0)
 	{
 		NEW_CLASS(reg, IO::Registry(hand));
 		return reg;

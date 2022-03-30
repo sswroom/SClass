@@ -269,8 +269,8 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 		IO::FileExporter *fileExp;
 		UTF8Char sbuff1[256];
 		UTF8Char sbuff2[256];
-		UTF8Char u8buff[256];
-		UTF8Char *u8ptr;
+		UTF8Char sbuff3[256];
+		UTF8Char *sptr;
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(exp2, Data::ArrayList<IO::FileExporter*>());
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
@@ -291,14 +291,14 @@ void SSWR::AVIRead::AVIRCoreWin::SaveData(UI::GUIForm *ownerForm, IO::ParsedObje
 			}
 			i++;
 		}
-		if ((u8ptr = pobj->GetSourceName(u8buff)) != 0)
+		if ((sptr = pobj->GetSourceName(sbuff3)) != 0)
 		{
-			if ((i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptr - u8buff), '.')) != INVALID_INDEX)
+			if ((i = Text::StrLastIndexOfCharC(sbuff3, (UOSInt)(sptr - sbuff3), '.')) != INVALID_INDEX)
 			{
-				u8buff[i] = 0;
-				u8ptr = &u8buff[i];
+				sbuff3[i] = 0;
+				sptr = &sbuff3[i];
 			}
-			sfd->SetFileName(CSTRP(u8buff, u8ptr));
+			sfd->SetFileName(CSTRP(sbuff3, sptr));
 		}
 		if (sfd->ShowDialog(ownerForm->GetHandle()))
 		{

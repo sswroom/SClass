@@ -470,7 +470,7 @@ Bool Text::UTF8Reader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 	return true;
 }
 
-UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
+UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *sbuff, UOSInt maxCharCnt)
 {
 #if defined(VERBOSE)
 	printf("UTF8Reader.RL: ofst = %d, size = %d\r\n", (UInt32)this->currOfst, (UInt32)this->buffSize);
@@ -499,15 +499,15 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 		{
 			if (currSize >= maxCharCnt)
 			{
-				u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+				sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 				this->currOfst = currOfst + currSize;
-				return u8buff;
+				return sbuff;
 			}
 			else //if (this->currOfst + currSize >= this->buffSize)
 			{
 				if (currSize > 0)
 				{
-					u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+					sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 					this->currOfst = currOfst + currSize;
 					maxCharCnt -= currSize;
 					writeSize += currSize;
@@ -519,7 +519,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 				}
 				this->FillBuffer();
 				if (this->currOfst >= this->buffSize)
-					return u8buff;
+					return sbuff;
 				currOfst = this->currOfst;
 				buffSize = this->buffSize;
 			}
@@ -535,14 +535,14 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 		{
 			if (c == 10)
 			{
-				u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+				sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 				this->currOfst = currOfst + currSize + 1;
 				this->lineBreak = 2;
-				return u8buff;
+				return sbuff;
 			}
 			else if (c == 13)
 			{
-				u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+				sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 				this->currOfst = currOfst + currSize + 1;
 				if (this->currOfst < this->buffSize && this->buff[this->currOfst] == 10)
 				{
@@ -553,7 +553,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 				{
 					this->lineBreak = 1;
 				}
-				return u8buff;
+				return sbuff;
 			}
 			currSize += 1;
 		}
@@ -582,15 +582,15 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 
 			if (maxCharCnt - currSize < charSize)
 			{
-				u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+				sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 				this->currOfst = currOfst + currSize;
-				return u8buff;
+				return sbuff;
 			}
 			else if (buffSize - currOfst < currSize + charSize)
 			{
 				if (currSize > 0)
 				{
-					u8buff = Text::StrConcatC(u8buff, (const UTF8Char*)&this->buff[currOfst], currSize);
+					sbuff = Text::StrConcatC(sbuff, (const UTF8Char*)&this->buff[currOfst], currSize);
 					this->currOfst = currOfst + currSize;
 					maxCharCnt -= currSize;
 					writeSize += currSize;
@@ -605,7 +605,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 				{
 					if (writeSize <= 0)
 						return 0;
-					return u8buff;
+					return sbuff;
 				}
 				buffSize = this->buffSize;
 				currOfst = this->currOfst;
@@ -618,7 +618,7 @@ UTF8Char *Text::UTF8Reader::ReadLine(UTF8Char *u8buff, UOSInt maxCharCnt)
 			currSize += charSize;
 		}
 	}
-	return u8buff;
+	return sbuff;
 }
 
 UTF8Char *Text::UTF8Reader::GetLastLineBreak(UTF8Char *buff)

@@ -14,33 +14,33 @@ void __stdcall SSWR::AVIRead::AVIRGPUInfoForm::OnGPUSelChange(void *userObj)
 	}
 	else
 	{
-		WChar sbuff[32];
+		WChar wbuff[32];
 		Double val;
 		UOSInt i;
 		me->lvMain->ClearItems();
 		if (gpu->GetTemperature(&val))
 		{
-			Text::StrDouble(sbuff, val);
+			Text::StrDouble(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Temperature"), 0);
-			me->lvMain->SetSubItem(i, 1, sbuff);
+			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
 		if (gpu->GetCoreClock(&val))
 		{
-			Text::StrDouble(sbuff, val);
+			Text::StrDouble(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Core Clock (MHz)"), 0);
-			me->lvMain->SetSubItem(i, 1, sbuff);
+			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
 		if (gpu->GetMemoryClock(&val))
 		{
-			Text::StrDouble(sbuff, val);
+			Text::StrDouble(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Memory Clock (MHz)"), 0);
-			me->lvMain->SetSubItem(i, 1, sbuff);
+			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
 		if (gpu->GetVoltage(&val))
 		{
-			Text::StrDouble(sbuff, val);
+			Text::StrDouble(wbuff, val);
 			i = me->lvMain->AddItem(CSTR("Core Voltage (V)"), 0);
-			me->lvMain->SetSubItem(i, 1, sbuff);
+			me->lvMain->SetSubItem(i, 1, wbuff);
 		}
 	}
 }

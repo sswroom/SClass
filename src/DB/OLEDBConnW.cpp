@@ -1337,7 +1337,7 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 	{
 		return 0;
 	}
-	WChar sbuff[64];
+	WChar wbuff[64];
 	switch (data->dbColInfo[colIndex].wType)
 	{
 	case DBTYPE_WSTR:
@@ -1350,9 +1350,9 @@ Text::String *DB::OLEDBReader::GetNewStr(UOSInt colIndex)
 			return ret;
 		}
 	default:
-		if (GetStr(colIndex, sbuff))
+		if (GetStr(colIndex, wbuff))
 		{
-			return Text::String::NewNotNull(sbuff);
+			return Text::String::NewNotNull(wbuff);
 		}
 		return 0;
 	}

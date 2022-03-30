@@ -1938,8 +1938,8 @@ Int32 Math::BigFloat::GetSize()
 WChar *Math::BigFloat::ToString(WChar *buff)
 {
 	WChar *strBuff;
-	WChar *sptr;
-	WChar *sptr2;
+	WChar *wptr;
+	WChar *wptr2;
 	Int32 vsize = valSize;
 	Int32 vindex = valIndex;
 	OSInt ssize;
@@ -1947,9 +1947,9 @@ WChar *Math::BigFloat::ToString(WChar *buff)
 	MemCopyNO(tmpArr, valArr, vsize = valSize);
 
 	strBuff = MemAlloc(WChar, ssize = vsize * 3);
-	sptr = &strBuff[ssize];
-	*--sptr = 0;
-	sptr2 = sptr;
+	wptr = &strBuff[ssize];
+	*--wptr = 0;
+	wptr2 = wptr;
 	_asm
 	{
 		mov edi,tarr
@@ -1975,14 +1975,14 @@ bftslop5b:
 		cmp edi,ecx
 		jnb bftslop5b
 		add edx,0x30
-		mov ebx,sptr
+		mov ebx,wptr
 		mov word ptr [ebx-2],dx
-		sub sptr,2
+		sub wptr,2
 		jmp bftslop4
 bftslop6:
 	}
 	
-	if (sptr == sptr2)
+	if (wptr == wptr2)
 	{
 		*buff++ = '0';
 		*buff = 0;
@@ -1993,15 +1993,15 @@ bftslop6:
 	{
 		*buff++ = '-';
 	}
-	ssize = sptr2 - sptr;
+	ssize = wptr2 - wptr;
 	if (vindex > 3 || (vindex < -ssize - 2))
 	{
-		*buff++ = *sptr++;
-		if (sptr != sptr2)
+		*buff++ = *wptr++;
+		if (wptr != wptr2)
 		{
 			*buff++ = '.';
-			vindex += (Int32)(sptr2 - sptr);
-			buff = Text::StrConcat(buff, sptr);
+			vindex += (Int32)(wptr2 - wptr);
+			buff = Text::StrConcat(buff, wptr);
 		}
 		if (vindex > 0)
 		{
@@ -2015,7 +2015,7 @@ bftslop6:
 	}
 	else if (vindex >= 0)
 	{
-		buff = Text::StrConcat(buff, sptr);
+		buff = Text::StrConcat(buff, wptr);
 		while (vindex-- > 0)
 		{
 			*buff++ = '0';
@@ -2027,10 +2027,10 @@ bftslop6:
 		ssize = ssize + vindex;
 		while (ssize-- > 0)
 		{
-			*buff++ = *sptr++;
+			*buff++ = *wptr++;
 		}
 		*buff++ = '.';
-		buff = Text::StrConcat(buff, sptr);
+		buff = Text::StrConcat(buff, wptr);
 	}
 	else
 	{
@@ -2041,7 +2041,7 @@ bftslop6:
 		{
 			*buff++ = '0';
 		}
-		buff = Text::StrConcat(buff, sptr);
+		buff = Text::StrConcat(buff, wptr);
 	}
 	MemFree(strBuff);
 	return buff;

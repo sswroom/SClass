@@ -144,8 +144,8 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 	IO::Registry *reg;
 	IO::Registry *comreg;
 	Bool succ = false;
-	WChar sbuff[512];
-	WChar sbuff2[32];
+	WChar wbuff[512];
+	WChar wbuff2[32];
 	reg = IO::Registry::OpenLocalHardware();
 	if (reg)
 	{
@@ -155,48 +155,48 @@ Bool IO::SerialPort::GetAvailablePorts(Data::ArrayList<UOSInt> *ports, Data::Arr
 			UOSInt i;
 			succ = true;
 			i = 0;
-			while (comreg->GetName(sbuff, i))
+			while (comreg->GetName(wbuff, i))
 			{
-				if (comreg->GetValueStr(sbuff, sbuff2))
+				if (comreg->GetValueStr(wbuff, wbuff2))
 				{
-					if (Text::StrStartsWith(sbuff2, L"COM"))
+					if (Text::StrStartsWith(wbuff2, L"COM"))
 					{
-						ports->Add(Text::StrToUOSInt(&sbuff2[3]));
+						ports->Add(Text::StrToUOSInt(&wbuff2[3]));
 						if (portTypes)
 						{
-							if (Text::StrStartsWith(sbuff, L"\\Device\\com0com"))
+							if (Text::StrStartsWith(wbuff, L"\\Device\\com0com"))
 							{
 								portTypes->Add(SPT_COM0COM);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\Serial"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\Serial"))
 							{
 								portTypes->Add(SPT_SERIALPORT);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\DWSerial"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\DWSerial"))
 							{
 								portTypes->Add(SPT_DWSERIAL);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\BthModem"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\BthModem"))
 							{
 								portTypes->Add(SPT_BLUETOOTH);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\USBSER"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\USBSER"))
 							{
 								portTypes->Add(SPT_USBSERIAL);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\Silabser"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\Silabser"))
 							{
 								portTypes->Add(SPT_USBSERIAL);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\QCUSB_COM"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\QCUSB_COM"))
 							{
 								portTypes->Add(SPT_USBSERIAL);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\ProlificSerial"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\ProlificSerial"))
 							{
 								portTypes->Add(SPT_USBSERIAL);
 							}
-							else if (Text::StrStartsWith(sbuff, L"\\Device\\QUADPORTQuadSerial"))
+							else if (Text::StrStartsWith(wbuff, L"\\Device\\QUADPORTQuadSerial"))
 							{
 								portTypes->Add(SPT_USBSERIAL);
 							}
@@ -242,8 +242,8 @@ UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
 	UOSInt port = 0;
 	IO::Registry *reg;
 	IO::Registry *comreg;
-	WChar sbuff[512];
-	WChar sbuff2[32];
+	WChar wbuff[512];
+	WChar wbuff2[32];
 	const WChar *wportName = Text::StrToWCharNew(portName.v);
 	reg = IO::Registry::OpenLocalHardware();
 	if (reg)
@@ -253,17 +253,17 @@ UOSInt IO::SerialPort::GetPortWithType(Text::CString portName)
 		{
 			UOSInt i;
 			i = 0;
-			while (comreg->GetName(sbuff, i))
+			while (comreg->GetName(wbuff, i))
 			{
-				if (comreg->GetValueStr(sbuff, sbuff2))
+				if (comreg->GetValueStr(wbuff, wbuff2))
 				{
-					if (Text::StrIndexOf(sbuff, wportName) != INVALID_INDEX)
+					if (Text::StrIndexOf(wbuff, wportName) != INVALID_INDEX)
 					{
-						if (comreg->GetValueStr(sbuff, sbuff2))
+						if (comreg->GetValueStr(wbuff, wbuff2))
 						{
-							if (Text::StrStartsWith(sbuff2, L"COM"))
+							if (Text::StrStartsWith(wbuff2, L"COM"))
 							{
-								port = Text::StrToUOSInt(&sbuff2[3]);
+								port = Text::StrToUOSInt(&wbuff2[3]);
 								break;
 							}
 						}

@@ -40,11 +40,11 @@ void __stdcall SSWR::ColorDemo::ColorDemoForm::FileHandler(void *userObj, const 
 void __stdcall SSWR::ColorDemo::ColorDemoForm::OnValueChanged(void *userObj, Int32 scrollPos)
 {
 	SSWR::ColorDemo::ColorDemoForm *me = (SSWR::ColorDemo::ColorDemoForm*)userObj;
-	WChar sbuff[32];
+	WChar wbuff[32];
 	Double v = (scrollPos - 400) * 0.01;
-	Text::StrDouble(sbuff, v);
+	Text::StrDouble(wbuff, v);
 	me->currValue = Math_Pow(2, v);
-	me->lblValue->SetText(sbuff);
+	me->lblValue->SetText(wbuff);
 
 	if (me->currImage)
 	{

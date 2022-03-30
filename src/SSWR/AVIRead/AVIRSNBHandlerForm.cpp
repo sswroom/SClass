@@ -25,7 +25,7 @@ void __stdcall SSWR::AVIRead::AVIRSNBHandlerForm::OnTypeSelChg(void *userObj)
 	OSInt val = (OSInt)me->cboType->GetSelectedItem();
 	me->handType = (IO::SNBDongle::HandleType)val;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNBImg"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNBImg"));
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrOSInt(sptr, val);
 	sptr = Text::StrConcatC(sptr, UTF8STRC(".jpg"));

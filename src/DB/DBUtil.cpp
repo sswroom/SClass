@@ -1565,17 +1565,17 @@ UOSInt DB::DBUtil::SDBColUTF8Leng(const UTF8Char *colName, DB::DBUtil::ServerTyp
 
 UTF8Char *DB::DBUtil::SDBColW(UTF8Char *sqlstr, const WChar *colName, DB::DBUtil::ServerType svrType)
 {
-	const UTF8Char *u8ptr = Text::StrToUTF8New(colName);
-	UTF8Char *ret = SDBColUTF8(sqlstr, u8ptr, svrType);
-	Text::StrDelNew(u8ptr);
+	const UTF8Char *sptr = Text::StrToUTF8New(colName);
+	UTF8Char *ret = SDBColUTF8(sqlstr, sptr, svrType);
+	Text::StrDelNew(sptr);
 	return ret;
 }
 
 UOSInt DB::DBUtil::SDBColWLeng(const WChar *colName, DB::DBUtil::ServerType svrType)
 {
-	const UTF8Char *u8ptr = Text::StrToUTF8New(colName);
-	UOSInt ret = SDBColUTF8Leng(u8ptr, svrType);
-	Text::StrDelNew(u8ptr);
+	const UTF8Char *sptr = Text::StrToUTF8New(colName);
+	UOSInt ret = SDBColUTF8Leng(sptr, svrType);
+	Text::StrDelNew(sptr);
 	return ret;
 }
 

@@ -48,11 +48,11 @@ void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, Text::CString s)
 
 void Text::MailCreator::AppendStr(Text::StringBuilderUTF8 *sbc, const WChar *s)
 {
-	const WChar *sptr;
+	const WChar *wptr;
 	WChar c;
 	Bool found = false;
-	sptr = s;
-	while (c = *sptr++)
+	wptr = s;
+	while (c = *wptr++)
 	{
 		if (c >= 0x80)
 		{

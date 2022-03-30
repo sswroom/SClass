@@ -330,7 +330,8 @@ void SSWR::AVIRead::AVIRCoordConvForm::ClearItems()
 
 void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 {
-	WChar sbuff[32];
+	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -390,24 +391,24 @@ void SSWR::AVIRead::AVIRCoordConvForm::UpdateList()
 		x = this->xList->GetItem(i);
 		y = this->yList->GetItem(i);
 		z = this->zList->GetItem(i);
-		Text::StrDouble(sbuff, x);
-		this->lvCoord->SetSubItem(k, 1, sbuff);
-		Text::StrDouble(sbuff, y);
-		this->lvCoord->SetSubItem(k, 2, sbuff);
-		Text::StrDouble(sbuff, z);
-		this->lvCoord->SetSubItem(k, 3, sbuff);
+		sptr = Text::StrDouble(sbuff, x);
+		this->lvCoord->SetSubItem(k, 1, CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, y);
+		this->lvCoord->SetSubItem(k, 2, CSTRP(sbuff, sptr));
+		sptr = Text::StrDouble(sbuff, z);
+		this->lvCoord->SetSubItem(k, 3, CSTRP(sbuff, sptr));
 		if (srcCoord == 0 || destCoord == 0)
 		{
 		}
 		else
 		{
 			Math::CoordinateSystem::ConvertXYZ(srcCoord, destCoord, x, y, z, &destX, &destY, &destZ);
-			Text::StrDouble(sbuff, destX);
-			this->lvCoord->SetSubItem(k, 4, sbuff);
-			Text::StrDouble(sbuff, destY);
-			this->lvCoord->SetSubItem(k, 5, sbuff);
-			Text::StrDouble(sbuff, destZ);
-			this->lvCoord->SetSubItem(k, 6, sbuff);
+			sptr = Text::StrDouble(sbuff, destX);
+			this->lvCoord->SetSubItem(k, 4, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, destY);
+			this->lvCoord->SetSubItem(k, 5, CSTRP(sbuff, sptr));
+			sptr = Text::StrDouble(sbuff, destZ);
+			this->lvCoord->SetSubItem(k, 6, CSTRP(sbuff, sptr));
 		}
 		i++;
 	}

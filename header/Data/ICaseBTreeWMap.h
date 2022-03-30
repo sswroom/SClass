@@ -139,10 +139,10 @@ namespace Data
 
 	template <class T> UInt32 ICaseBTreeWMap<T>::CalHash(const WChar *key)
 	{
-		WChar sbuff[256];
-		OSInt charCnt = Text::StrToUpper(sbuff, key) - sbuff;
+		WChar wbuff[256];
+		OSInt charCnt = Text::StrToUpper(wbuff, key) - wbuff;
 		this->crc->Clear();
-		this->crc->Calc((const UInt8*)sbuff, charCnt * sizeof(WChar));
+		this->crc->Calc((const UInt8*)wbuff, charCnt * sizeof(WChar));
 		UInt8 hash[4];
 		this->crc->GetValue(hash);
 		return ReadMUInt32(hash);

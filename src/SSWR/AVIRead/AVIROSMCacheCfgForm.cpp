@@ -27,28 +27,28 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 	{
 	case 0://MNU_OSM_TILE:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMTile"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTile"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.openstreetmap.org/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.openstreetmap.org/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.openstreetmap.org/"));
 		break;
 	case 1: //MNU_OSM_CYCLE:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMOpenCycleMap"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOpenCycleMap"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/cycle/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/cycle/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/cycle/"));
 		break;
 	case 2: //MNU_OSM_TRANSP:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMTransport"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransport"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/transport/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/transport/"));
 		break;
 	case 3: //MNU_OSM_MAPQUEST:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMMapQuest"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMMapQuest"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://otile1.mqcdn.com/tiles/1.0.0/osm/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://otile2.mqcdn.com/tiles/1.0.0/osm/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://otile3.mqcdn.com/tiles/1.0.0/osm/"));
@@ -56,28 +56,28 @@ void __stdcall SSWR::AVIRead::AVIROSMCacheCfgForm::OnOKClick(void *userObj)
 		break;
 	case 4: //MNU_OSM_LANDSCAPE:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMLandscape"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMLandscape"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/landscape/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/landscape/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/landscape/"));
 		break;
 	case 5: //MNU_OSM_OUTDOORS:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMOutdoors"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMOutdoors"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/outdoors/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/outdoors/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/outdoors/"));
 		break;
 	case 6: //MNU_OSM_TRANSP_DARK:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMTransportDark"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMTransportDark"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/transport-dark/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/transport-dark/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/transport-dark/"));
 		break;
 	case 7: //MNU_OSM_SPINAL:
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("OSMSpinalMap"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("OSMSpinalMap"));
 		NEW_CLASS(hdlr, Map::OSM::OSMCacheHandler(CSTR("http://a.tile.thunderforest.com/spinal-map/"), CSTRP(sbuff, sptr), 18, me->core->GetSocketFactory(), me->ssl));
 		hdlr->AddAlternateURL(UTF8STRC("http://b.tile.thunderforest.com/spinal-map/"));
 		hdlr->AddAlternateURL(UTF8STRC("http://c.tile.thunderforest.com/spinal-map/"));

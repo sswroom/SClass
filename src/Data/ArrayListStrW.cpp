@@ -36,11 +36,11 @@ const WChar *Data::ArrayListStrW::JoinNewStr()
 		strSize += Text::StrCharCnt(arr[j]);
 	}
 	WChar *sbuff = MemAlloc(WChar, strSize + 1);
-	WChar *sptr = sbuff;
+	WChar *wptr = sbuff;
 	j = 0;
 	while (j < k)
 	{
-		sptr = Text::StrConcat(sptr, arr[j]);
+		wptr = Text::StrConcat(wptr, arr[j]);
 		j++;
 	}
 	return sbuff;

@@ -221,11 +221,11 @@ Data::DateTime::DateTime(UInt16 year, UInt8 month, UInt8 day, UInt8 hour, UInt8 
 	t->ms = ms;
 }
 
-Data::DateTime::DateTime(const UTF8Char *dateStr, UOSInt strLen)
+Data::DateTime::DateTime(Text::CString dateStr)
 {
 	this->timeType = TimeType::None;
 	this->tzQhr = 0;
-	SetValue(dateStr, strLen);
+	this->SetValue(dateStr);
 }
 
 Data::DateTime::DateTime(Data::DateTime *dt)
@@ -416,10 +416,10 @@ void Data::DateTime::SetValueNoFix(UInt16 year, UInt8 month, UInt8 day, UInt8 ho
 
 Bool Data::DateTime::SetValueSlow(const Char *dateStr)
 {
-	return this->SetValue((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr));
+	return this->SetValue(Text::CString((const UTF8Char*)dateStr, Text::StrCharCnt(dateStr)));
 }
 
-Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
+Bool Data::DateTime::SetValue(Text::CString dateStr)
 {
 	TimeValue *tval = this->GetTimeValue();
 	UTF8Char buff[32];
@@ -427,19 +427,17 @@ Bool Data::DateTime::SetValue(const UTF8Char *dateStr, UOSInt dateStrLen)
 	Text::PString strs[3];
 	UOSInt nStrs;
 	Bool succ = true;
-	if (dateStr[3] == ',' && Text::StrIndexOfChar(&dateStr[4], ',') == INVALID_INDEX)
+	if (dateStr.v[3] == ',' && Text::StrIndexOfChar(&dateStr.v[4], ',') == INVALID_INDEX)
 	{
-		const UTF8Char *startPtr = dateStr;
-		dateStr += 4;
-		while (*dateStr == ' ')
-			dateStr++;
-		dateStrLen -= (UOSInt)(dateStr - startPtr);
+		dateStr = dateStr.Substring(4);
+		while (dateStr.v[0] == ' ')
+			dateStr = dateStr.Substring(1);
 	}
-	Text::StrConcatC(buff, dateStr, dateStrLen);
-	nStrs = Text::StrSplitTrimP(strs2, 5, {buff, dateStrLen}, ' ');
+	dateStr.ConcatTo(buff);
+	nStrs = Text::StrSplitTrimP(strs2, 5, {buff, dateStr.leng}, ' ');
 	if (nStrs == 1)
 	{
-		nStrs = Text::StrSplitP(strs2, 3, {buff, dateStrLen}, 'T');
+		nStrs = Text::StrSplitP(strs2, 3, {buff, dateStr.leng}, 'T');
 	}
 	if (nStrs == 2)
 	{

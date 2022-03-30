@@ -6,7 +6,7 @@
 
 Manage::EnvironmentVar::EnvironmentVar()
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	WChar *dptr;
 	WChar c;
 	const WChar *currPtr;
@@ -24,13 +24,13 @@ Manage::EnvironmentVar::EnvironmentVar()
 		currPtr = envs;
 		while (*currPtr)
 		{
-			dptr = sbuff;
+			dptr = wbuff;
 			while ((c = *currPtr++) != 0)
 			{
 				if (c == '=')
 				{
 					*dptr = 0;
-					name = Text::StrToUTF8New(sbuff);
+					name = Text::StrToUTF8New(wbuff);
 					val = Text::StrToUTF8New(currPtr);
 					this->names->Put(name, val);
 					Text::StrDelNew(name);
@@ -88,16 +88,16 @@ void Manage::EnvironmentVar::SetValue(const UTF8Char *name, const UTF8Char *val)
 UTF8Char *Manage::EnvironmentVar::GetEnvValue(UTF8Char *buff, const UTF8Char *name)
 {
 #ifndef _WIN32_WCE
-	WChar sbuff[512];
+	WChar wbuff[512];
 	const WChar *wptr = Text::StrToWCharNew(name);
-	UInt32 retSize = GetEnvironmentVariableW(wptr, sbuff, 512);
+	UInt32 retSize = GetEnvironmentVariableW(wptr, wbuff, 512);
 	Text::StrDelNew(wptr);
 	if (retSize == 0)
 		return 0;
 	else if (retSize > 512)
 		return 0;
 	else
-		return Text::StrWChar_UTF8C(buff, sbuff, retSize);
+		return Text::StrWChar_UTF8C(buff, wbuff, retSize);
 #else
 	return 0;
 #endif

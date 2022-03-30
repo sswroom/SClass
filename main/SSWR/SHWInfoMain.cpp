@@ -123,7 +123,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UInt64 memSize;
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[512];
-	UTF8Char u8buff[128];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
@@ -200,9 +199,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Manage::CPUInfoDetail cpuInfo;
 		sb.ClearStr();
 		sb.AppendC(UTF8STRC("CPU Name: "));
-		if ((sptr = cpuInfo.GetCPUName(u8buff)) != 0)
+		if ((sptr = cpuInfo.GetCPUName(sbuff)) != 0)
 		{
-			sb.AppendP(u8buff, sptr);
+			sb.AppendP(sbuff, sptr);
 		}
 		else
 		{

@@ -10,16 +10,16 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputInt32(IO::ConsoleWriter
 	IO::ConsoleWriter::ConsoleState state;
 	if (console->IsFileOutput())
 	{
-		WChar sbuff[256];
-		console->ReadLine(sbuff, 256);
-		if (Text::StrEquals(sbuff, L"0"))
+		WChar wbuff[256];
+		console->ReadLine(wbuff, 256);
+		if (Text::StrEquals(wbuff, L"0"))
 		{
 			*output = 0;
 			return IRT_ENTER;
 		}
 		else
 		{
-			*output = Text::StrToInt32(sbuff);
+			*output = Text::StrToInt32(wbuff);
 			if (*output == 0)
 			{
 				return IRT_ESCAPE;
@@ -190,21 +190,21 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputBool(IO::ConsoleWriter 
 	IO::ConsoleWriter::ConsoleState state;
 	if (console->IsFileOutput())
 	{
-		WChar sbuff[256];
-		console->ReadLine(sbuff, 256);
-		if (sbuff[0] == 'T' || sbuff[0] == 't')
+		WChar wbuff[256];
+		console->ReadLine(wbuff, 256);
+		if (wbuff[0] == 'T' || wbuff[0] == 't')
 		{
 			*output = true;
 			return IRT_ENTER;
 		}
-		else if (sbuff[0] == 'F' || sbuff[0] == 'f')
+		else if (wbuff[0] == 'F' || wbuff[0] == 'f')
 		{
 			*output = false;
 			return IRT_ENTER;
 		}
 		else 
 		{
-			*output = Text::StrToInt32(sbuff) != 0;
+			*output = Text::StrToInt32(wbuff) != 0;
 			return IRT_ENTER;
 		}
 	}
@@ -443,10 +443,10 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		return IRT_UNKNOWN;
 	if (console->IsFileOutput())
 	{
-		WChar sbuff2[256];
-		console->ReadLine(sbuff2, 256);
-		sptr = Text::StrWChar_UTF8(sbuff, sbuff2);
-		output->SetValue(sbuff, (UOSInt)(sptr - sbuff));
+		WChar wbuff2[256];
+		console->ReadLine(wbuff2, 256);
+		sptr = Text::StrWChar_UTF8(sbuff, wbuff2);
+		output->SetValue(CSTRP(sbuff, sptr));
 		return IRT_ENTER;
 	}
 	Int32 values[6];
@@ -631,9 +631,9 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputHexBytes(IO::ConsoleWri
 
 	if (console->IsFileOutput())
 	{
-		WChar sbuff[256];
-		console->ReadLine(sbuff, buffSize * 2);
-		*inputSize = Text::StrHex2Bytes(sbuff, buff);
+		WChar wbuff[256];
+		console->ReadLine(wbuff, buffSize * 2);
+		*inputSize = Text::StrHex2Bytes(wbuff, buff);
 		return IRT_ENTER;
 	}
 
@@ -810,8 +810,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputString(IO::ConsoleWrite
 
 	if (console->IsFileOutput())
 	{
-		WChar sbuff[256];
-		*inputSize = (UOSInt)(console->ReadLine(sbuff, maxCharCnt) - sbuff);
+		WChar wbuff[256];
+		*inputSize = (UOSInt)(console->ReadLine(wbuff, maxCharCnt) - wbuff);
 		return IRT_ENTER;
 	}
 

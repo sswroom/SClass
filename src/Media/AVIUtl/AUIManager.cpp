@@ -5,7 +5,7 @@
 
 Media::AVIUtl::AUIManager::AUIManager()
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	IO::Path::PathType pt;
 	Media::AVIUtl::AUIPlugin *plugin;
 	NEW_CLASS(this->plugins, Data::ArrayList<Media::AVIUtl::AUIPlugin *>());
@@ -13,9 +13,9 @@ Media::AVIUtl::AUIManager::AUIManager()
 	IO::Path::FindFileSession *sess = IO::Path::FindFileW(L"*.aui");
 	if (sess)
 	{
-		while (IO::Path::FindNextFileW(sbuff, sess, 0, &pt, 0))
+		while (IO::Path::FindNextFileW(wbuff, sess, 0, &pt, 0))
 		{
-			plugin = Media::AVIUtl::AUIPlugin::LoadPlugin(sbuff);
+			plugin = Media::AVIUtl::AUIPlugin::LoadPlugin(wbuff);
 			if (plugin)
 			{
 				this->plugins->Add(plugin);

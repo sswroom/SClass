@@ -40,20 +40,20 @@ Bool IO::DebugWriter::WriteLineC(const UTF8Char *str, UOSInt nChar)
 
 /*Bool IO::DebugWriter::WriteW(const WChar *str, UOSInt nChar)
 {
-	WChar sbuff[257];
+	WChar wbuff[257];
 	while (nChar >= 256)
 	{
-		MemCopyNO(sbuff, str, sizeof(WChar) * 256);
+		MemCopyNO(wbuff, str, sizeof(WChar) * 256);
 		str = &str[256];
-		sbuff[256] = 0;
-		OutputDebugStringW(sbuff);
+		wbuff[256] = 0;
+		OutputDebugStringW(wbuff);
 		nChar -= 256;
 	}
 	if (nChar)
 	{
-		MemCopyNO(sbuff, str, nChar << 1);
-		sbuff[nChar] = 0;
-		OutputDebugStringW(sbuff);
+		MemCopyNO(wbuff, str, nChar << 1);
+		wbuff[nChar] = 0;
+		OutputDebugStringW(wbuff);
 	}
 	return true;
 }
@@ -66,22 +66,22 @@ Bool IO::DebugWriter::WriteW(const WChar *str)
 
 Bool IO::DebugWriter::WriteLineW(const WChar *str, UOSInt nChar)
 {
-	WChar sbuff[259];
+	WChar wbuff[259];
 	while (nChar >= 256)
 	{
-		MemCopyNO(sbuff, str, sizeof(WChar) * 256);
+		MemCopyNO(wbuff, str, sizeof(WChar) * 256);
 		str = &str[256];
-		sbuff[256] = 0;
-		OutputDebugStringW(sbuff);
+		wbuff[256] = 0;
+		OutputDebugStringW(wbuff);
 		nChar -= 256;
 	}
 	if (nChar)
 	{
-		MemCopyNO(sbuff, str, nChar << 1);
-		sbuff[nChar] = 13;
-		sbuff[nChar + 1] = 10;
-		sbuff[nChar + 2] = 0;
-		OutputDebugStringW(sbuff);
+		MemCopyNO(wbuff, str, nChar << 1);
+		wbuff[nChar] = 13;
+		wbuff[nChar + 1] = 10;
+		wbuff[nChar + 2] = 0;
+		OutputDebugStringW(wbuff);
 	}
 	else
 	{

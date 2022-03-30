@@ -260,7 +260,7 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 {
 	Map::GPSTrack::GPSRecord2 rec;
 	UInt8 buff[384];
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	const UTF8Char *sptr;
 	UTF8Char *sptr2;
 	UOSInt i;
@@ -271,24 +271,24 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 	Text::String *name = fd->GetFullName();
 	sptr = name->v;
 	i = Text::StrLastIndexOfCharC(sptr, name->leng, IO::Path::PATH_SEPERATOR);
-	sptr2 = Text::StrConcatC(u8buff, &sptr[i + 1], name->leng - i - 1);
-	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr2 - u8buff), UTF8STRC("GLOC")))
+	sptr2 = Text::StrConcatC(sbuff, &sptr[i + 1], name->leng - i - 1);
+	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr2 - sbuff), UTF8STRC("GLOC")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOfChar(u8buff, '_');
+	i = Text::StrIndexOfChar(sbuff, '_');
 	if (i == INVALID_INDEX)
 	{
-		i = Text::StrIndexOfChar(u8buff, '.');
+		i = Text::StrIndexOfChar(sbuff, '.');
 		if (i == INVALID_INDEX)
 			return 0;
-		u8buff[i] = 0;
-		devId = Text::StrToInt64(&u8buff[4]);
+		sbuff[i] = 0;
+		devId = Text::StrToInt64(&sbuff[4]);
 	}
 	else
 	{
-		u8buff[i] = 0;
-		devId = Text::StrToInt64(&u8buff[4]);
+		sbuff[i] = 0;
+		devId = Text::StrToInt64(&sbuff[4]);
 	}
 	if (devId == 0)
 		return 0;
@@ -302,9 +302,9 @@ IO::ParsedObject *Parser::FileParser::GLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 
 	Map::GPSTrack *track;
-	sptr = Text::StrInt64(u8buff, devId);
-	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, {u8buff, (UOSInt)(sptr - u8buff)}));
-	track->SetTrackName({u8buff, (UOSInt)(sptr - u8buff)});
+	sptr = Text::StrInt64(sbuff, devId);
+	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName()->ToCString(), true, 0, {sbuff, (UOSInt)(sptr - sbuff)}));
+	track->SetTrackName({sbuff, (UOSInt)(sptr - sbuff)});
 	GLOCExtraParser *parser;
 	NEW_CLASS(parser, GLOCExtraParser());
 	track->SetExtraParser(parser);

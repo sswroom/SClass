@@ -35,7 +35,7 @@ IO::ParserType Parser::FileParser::DShowParser::GetParserType()
 IO::ParsedObject *Parser::FileParser::DShowParser::ParseFile(IO::IStreamData *fd, IO::PackageFile *pkgFile, IO::ParserType targetType)
 {
 #ifdef USE_DSHOW
-	WChar sbuff[256];
+	WChar wbuff[256];
 	OSInt i;
 	if (!fd->IsFullFile())
 		return 0;

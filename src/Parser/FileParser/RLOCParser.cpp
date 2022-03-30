@@ -202,7 +202,7 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 {
 	Map::GPSTrack::GPSRecord2 rec;
 	UInt8 buff[384];
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt currPos;
@@ -210,24 +210,24 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 	Int32 devId;
 	Text::String *s = fd->GetFullName();
 	i = s->LastIndexOf(IO::Path::PATH_SEPERATOR);
-	sptr = Text::StrConcatC(u8buff, &s->v[i + 1], s->leng - i - 1);
-	if (!Text::StrStartsWithICaseC(u8buff, (UOSInt)(sptr - u8buff), UTF8STRC("LOC")))
+	sptr = Text::StrConcatC(sbuff, &s->v[i + 1], s->leng - i - 1);
+	if (!Text::StrStartsWithICaseC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("LOC")))
 	{
 		return 0;
 	}
-	i = Text::StrIndexOfChar(u8buff, '_');
+	i = Text::StrIndexOfChar(sbuff, '_');
 	if (i == INVALID_INDEX)
 	{
-		i = Text::StrIndexOfChar(u8buff, '.');
+		i = Text::StrIndexOfChar(sbuff, '.');
 		if (i == INVALID_INDEX)
 			return 0;
-		u8buff[i] = 0;
-		devId = Text::StrToInt32(&u8buff[3]);
+		sbuff[i] = 0;
+		devId = Text::StrToInt32(&sbuff[3]);
 	}
 	else
 	{
-		u8buff[i] = 0;
-		devId = Text::StrToInt32(&u8buff[3]);
+		sbuff[i] = 0;
+		devId = Text::StrToInt32(&sbuff[3]);
 	}
 	if (devId == 0)
 		return 0;
@@ -240,8 +240,8 @@ IO::ParsedObject *Parser::FileParser::RLOCParser::ParseFile(IO::IStreamData *fd,
 		return 0;
 
 	Map::GPSTrack *track;
-	sptr = Text::StrInt32(u8buff, devId);
-	s = Text::String::New(u8buff, (UOSInt)(sptr - u8buff));
+	sptr = Text::StrInt32(sbuff, devId);
+	s = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	NEW_CLASS(track, Map::GPSTrack(fd->GetFullName(), true, 0, s));
 	track->SetTrackName(s->ToCString());
 	s->Release();

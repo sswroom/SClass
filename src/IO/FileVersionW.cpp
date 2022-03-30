@@ -35,32 +35,32 @@ Int32 IO::FileVersion::GetFirstLang()
 
 UTF8Char *IO::FileVersion::GetInternalName(Int32 lang, UTF8Char *sbuff)
 {
-	WChar sbuff2[256];
-	WChar *sptr;
-	sptr = Text::StrConcat(sbuff2, L"\\StringFileInfo\\");
-	sptr = Text::StrHexVal32(sptr, lang);
-	sptr = Text::StrConcat(sptr, L"\\InternalName");
+	WChar wbuff2[256];
+	WChar *wptr;
+	wptr = Text::StrConcat(wbuff2, L"\\StringFileInfo\\");
+	wptr = Text::StrHexVal32(wptr, lang);
+	wptr = Text::StrConcat(wptr, L"\\InternalName");
 
 	UInt32 size;
-	if (VerQueryValueW(this->buff, sbuff2, (LPVOID*)&sptr, &size) != 0)
+	if (VerQueryValueW(this->buff, wbuff2, (LPVOID*)&wptr, &size) != 0)
 	{
-		return Text::StrWChar_UTF8(sbuff, sptr);
+		return Text::StrWChar_UTF8(sbuff, wptr);
 	}
 	return 0;
 }
 
 UTF8Char *IO::FileVersion::GetFileDescription(Int32 lang, UTF8Char *sbuff)
 {
-	WChar sbuff2[256];
-	WChar *sptr;
-	sptr = Text::StrConcat(sbuff2, L"\\StringFileInfo\\");
-	sptr = Text::StrHexVal32(sptr, lang);
-	sptr = Text::StrConcat(sptr, L"\\FileDescription");
+	WChar wbuff2[256];
+	WChar *wptr;
+	wptr = Text::StrConcat(wbuff2, L"\\StringFileInfo\\");
+	wptr = Text::StrHexVal32(wptr, lang);
+	wptr = Text::StrConcat(wptr, L"\\FileDescription");
 
 	UInt32 size;
-	if (VerQueryValueW(this->buff, sbuff2, (LPVOID*)&sptr, &size) != 0)
+	if (VerQueryValueW(this->buff, wbuff2, (LPVOID*)&wptr, &size) != 0)
 	{
-		return Text::StrWChar_UTF8(sbuff, sptr);
+		return Text::StrWChar_UTF8(sbuff, wptr);
 	}
 	return 0;
 }

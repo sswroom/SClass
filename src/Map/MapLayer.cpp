@@ -45,7 +45,7 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	WChar layerName[512];
 	WChar *baseDir;
 	WChar *strs[10];
-	WChar *sptr;
+	WChar *wptr;
 	IO::FileStream *fstm;
 	IO::StreamReader *rdr;
 	Int32 maxScale;
@@ -64,9 +64,9 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 	NEW_CLASS(lastFonts, Data::ArrayList<MAP_FONT_STYLE*>());
 
 
-	sptr = Text::StrConcat(fileName, L"MapLayer_");
-	sptr = Text::StrConcat(sptr, lang);
-	sptr = Text::StrConcat(sptr, L".txt");
+	wptr = Text::StrConcat(fileName, L"MapLayer_");
+	wptr = Text::StrConcat(wptr, lang);
+	wptr = Text::StrConcat(wptr, L".txt");
 //	debugMut->Lock();
 	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone));
 	if (fstm->IsError())
@@ -136,13 +136,13 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 					{
 						strs[i++][-1] = ',';
 					}
-					sptr = strs[strCnt-1];
-					while (*sptr++);
+					wptr = strs[strCnt-1];
+					while (*wptr++);
 					currLine = MemAlloc(MAP_LINE_STYLE, 1);
 					currLine->lineType = Text::StrToInt32(strs[2]);
 					currLine->lineWidth = Text::StrToInt32(strs[3]);
 					currLine->color = map_get_color(strs[4]);
-					currLine->styles = MemAlloc(WChar,  sptr - strs[5]);
+					currLine->styles = MemAlloc(WChar,  wptr - strs[5]);
 					Text::StrConcat(currLine->styles, strs[5]);
 					lastLines->Add(currLine);
 				}
@@ -170,9 +170,9 @@ Int32 Map::MapLayer::Draw(UInt8 *buff, Int32 width, Int32 height, Double lat, Do
 
 				currFont = MemAlloc(MAP_FONT_STYLE, 1);
 				currFont->fontType = Text::StrToInt32(strs[2]);
-				sptr = strs[3];
-				while (*sptr++);
-				currFont->fontName = MemAlloc(WChar, sptr - strs[3]);
+				wptr = strs[3];
+				while (*wptr++);
+				currFont->fontName = MemAlloc(WChar, wptr - strs[3]);
 				Text::StrConcat(currFont->fontName, strs[3]);
 				currFont->fontSize = (Text::StrToInt32(strs[4]) * 3) >> 2;
 				currFont->thick = Text::StrToInt32(strs[5]);

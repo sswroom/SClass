@@ -92,7 +92,7 @@ SSWR::AVIRead::AVIRACMEClientForm::AVIRACMEClientForm(UI::GUIClientControl *pare
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("ACMEKey.pem"));
+	sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("ACMEKey.pem"));
 	NEW_CLASS(this->lblHost, UI::GUILabel(ui, this, CSTR("Host")));
 	this->lblHost->SetRect(4, 4, 100, 23, false);
 	NEW_CLASS(this->txtHost, UI::GUITextBox(ui, this, CSTR("acme-staging-v02.api.letsencrypt.org")));

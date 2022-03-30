@@ -96,9 +96,9 @@ IO::IBuddy::IBuddy(OSInt devNo)
 							{
 								if (currId == devNo)
 								{
-									const UTF8Char *u8ptr = Text::StrToUTF8New(&data2[2]);
-									InitDevice(u8ptr);
-									Text::StrDelNew(u8ptr);
+									const UTF8Char *sptr = Text::StrToUTF8New(&data2[2]);
+									InitDevice(sptr);
+									Text::StrDelNew(sptr);
 									break;
 								}
 								currId++;

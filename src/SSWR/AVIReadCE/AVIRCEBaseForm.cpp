@@ -280,8 +280,8 @@ SSWR::AVIReadCE::AVIRCEBaseForm::~AVIRCEBaseForm()
 
 void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 {
-	WChar sbuff[512];
-	WChar sbuff2[16];
+	WChar wbuff[512];
+	WChar wbuff2[16];
 	Map::TileMap *tileMap;
 	Map::IMapDrawLayer *mapLyr;
 
@@ -343,8 +343,8 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 			if (dlg->ShowDialog(this) == UI::GUIForm::DR_OK)
 			{
 				Media::MediaFile *mf;
-				dlg->capture->GetName(sbuff);
-				NEW_CLASS(mf, Media::MediaFile(sbuff));
+				dlg->capture->GetName(wbuff);
+				NEW_CLASS(mf, Media::MediaFile(wbuff));
 				mf->AddSource(dlg->capture, 0);
 				this->core->OpenObject(mf);
 			}
@@ -423,36 +423,36 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 		}
 		break;
 	case MNU_OSM_TILE:
-		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::AppendPath(sbuff, L"OSMTile");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.openstreetmap.org/", sbuff, 18, this->core->GetSocketFactory()));
+		IO::Path::GetProcessFileName(wbuff);
+		IO::Path::AppendPath(wbuff, L"OSMTile");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.openstreetmap.org/", wbuff, 18, this->core->GetSocketFactory()));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.openstreetmap.org/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.openstreetmap.org/");
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_CYCLE:
-		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::AppendPath(sbuff, L"OSMOpenCycleMap");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.opencyclemap.org/cycle/", sbuff, 18, this->core->GetSocketFactory()));
+		IO::Path::GetProcessFileName(wbuff);
+		IO::Path::AppendPath(wbuff, L"OSMOpenCycleMap");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.opencyclemap.org/cycle/", wbuff, 18, this->core->GetSocketFactory()));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.opencyclemap.org/cycle/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.opencyclemap.org/cycle/");
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_TRANSP:
-		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::AppendPath(sbuff, L"OSMTransport");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile2.opencyclemap.org/transport/", sbuff, 18, this->core->GetSocketFactory()));
+		IO::Path::GetProcessFileName(wbuff);
+		IO::Path::AppendPath(wbuff, L"OSMTransport");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile2.opencyclemap.org/transport/", wbuff, 18, this->core->GetSocketFactory()));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile2.opencyclemap.org/transport/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile2.opencyclemap.org/transport/");
 		NEW_CLASS(mapLyr, Map::TileMapLayer(tileMap, this->core->GetParserList()));
 		this->core->OpenObject(mapLyr);
 		break;
 	case MNU_OSM_MAPQUEST:
-		IO::Path::GetProcessFileName(sbuff);
-		IO::Path::AppendPath(sbuff, L"OSMMapQuest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://otile1.mqcdn.com/tiles/1.0.0/osm/", sbuff, 18, this->core->GetSocketFactory()));
+		IO::Path::GetProcessFileName(wbuff);
+		IO::Path::AppendPath(wbuff, L"OSMMapQuest");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://otile1.mqcdn.com/tiles/1.0.0/osm/", wbuff, 18, this->core->GetSocketFactory()));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile2.mqcdn.com/tiles/1.0.0/osm/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile3.mqcdn.com/tiles/1.0.0/osm/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile4.mqcdn.com/tiles/1.0.0/osm/");
@@ -471,10 +471,10 @@ void SSWR::AVIReadCE::AVIRCEBaseForm::EventMenuClicked(UInt16 cmdId)
 				const WChar *url = frm->GetSelectedURL();
 				crc.Calc((UInt8*)url, Text::StrCharCnt(url) * sizeof(WChar));
 				crc.GetValue((UInt8*)&crcVal);
-				IO::Path::GetProcessFileName(sbuff);
-				Text::StrInt32(sbuff2, crcVal);
-				Text::StrConcat(IO::Path::AppendPath(sbuff, sbuff2), L"\\");
-				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, sbuff, this->core->GetSocketFactory()));
+				IO::Path::GetProcessFileName(wbuff);
+				Text::StrInt32(wbuff2, crcVal);
+				Text::StrConcat(IO::Path::AppendPath(wbuff, wbuff2), L"\\");
+				NEW_CLASS(map, Map::ESRI::ESRITileMap(url, wbuff, this->core->GetSocketFactory()));
 				NEW_CLASS(mapLyr, Map::TileMapLayer(map, this->core->GetParserList()));
 				this->core->OpenObject(mapLyr);
 			}

@@ -12,37 +12,37 @@
 
 void SSWR::MapReplay::MapReplayForm::LoadMap(Int32 mapType)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	if (this->tileMap)
 	{
 		DEL_CLASS(this->tileMap);
 	}
 	
-	IO::Path::GetProcessFileName(sbuff);
+	IO::Path::GetProcessFileName(wbuff);
 
 	switch (mapType)
 	{
 	case 0:
-		IO::Path::AppendPath(sbuff, L"OSMTile");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.openstreetmap.org/", sbuff, 18, sockf));
+		IO::Path::AppendPath(wbuff, L"OSMTile");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.openstreetmap.org/", wbuff, 18, sockf));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.openstreetmap.org/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.openstreetmap.org/");
 		break;
 	case 1:
-		IO::Path::AppendPath(sbuff, L"OSMOpenCycleMap");
-        NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.opencyclemap.org/cycle/", sbuff, 18, sockf));
+		IO::Path::AppendPath(wbuff, L"OSMOpenCycleMap");
+        NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile.opencyclemap.org/cycle/", wbuff, 18, sockf));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile.opencyclemap.org/cycle/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile.opencyclemap.org/cycle/");
 		break;
 	case 2:
-		IO::Path::AppendPath(sbuff, L"OSMTransport");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile2.opencyclemap.org/transport/", sbuff, 18, sockf));
+		IO::Path::AppendPath(wbuff, L"OSMTransport");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://a.tile2.opencyclemap.org/transport/", wbuff, 18, sockf));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://b.tile2.opencyclemap.org/transport/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://c.tile2.opencyclemap.org/transport/");
 		break;
 	default:
-		IO::Path::AppendPath(sbuff, L"OSMMapQuest");
-		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://otile1.mqcdn.com/tiles/1.0.0/osm/", sbuff, 18, sockf));
+		IO::Path::AppendPath(wbuff, L"OSMMapQuest");
+		NEW_CLASS(tileMap, Map::OSM::OSMTileMap(L"http://otile1.mqcdn.com/tiles/1.0.0/osm/", wbuff, 18, sockf));
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile2.mqcdn.com/tiles/1.0.0/osm/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile3.mqcdn.com/tiles/1.0.0/osm/");
 		((Map::OSM::OSMTileMap*)tileMap)->AddAlternateURL(L"http://otile4.mqcdn.com/tiles/1.0.0/osm/");
@@ -233,7 +233,7 @@ Bool SSWR::MapReplay::MapReplayForm::HasKMap()
 	return false;
 }
 
-WChar *SSWR::MapReplay::MapReplayForm::ResolveAddress(WChar *sbuff, Double lat, Double lon)
+WChar *SSWR::MapReplay::MapReplayForm::ResolveAddress(WChar *wbuff, Double lat, Double lon)
 {
 	return 0;
 }

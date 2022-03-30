@@ -460,7 +460,7 @@ Net::SNS::SNSManager::SNSManager(Net::SocketFactory *sockf, Net::SSLEngine *ssl,
 	else
 	{
 		sptr = IO::Path::GetProcessFileName(sbuff);
-		sptr = IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("SNS"));
+		sptr = IO::Path::AppendPath(sbuff, sptr, CSTR("SNS"));
 		this->dataPath = Text::String::New(sbuff, (UOSInt)(sptr - sbuff));
 	}
 	if (sptr[-1] != IO::Path::PATH_SEPERATOR)

@@ -44,25 +44,25 @@ OSInt Win32::TerminalService::GetSessions(Data::ArrayListInt *sessions)
 WChar *Win32::TerminalService::GetSessionUser(WChar *buff, Int32 sessId)
 {
 	WChar *name;
-	WChar *sptr;
+	WChar *wptr;
 	UInt32 byteCnt;
 	if (WTSQuerySessionInformationW(this->hand, sessId, WTSUserName, &name, (DWORD*)&byteCnt) == 0)
 		return 0;
-	sptr = Text::StrConcat(buff, name);
+	wptr = Text::StrConcat(buff, name);
 	WTSFreeMemory(name);
-	return sptr;
+	return wptr;
 }
 
 WChar *Win32::TerminalService::GetSessionClientName(WChar *buff, Int32 sessId)
 {
 	WChar *name;
-	WChar *sptr;
+	WChar *wptr;
 	UInt32 byteCnt;
 	if (WTSQuerySessionInformationW(this->hand, sessId, WTSClientName, &name, (DWORD*)&byteCnt) == 0)
 		return 0;
-	sptr = Text::StrConcat(buff, name);
+	wptr = Text::StrConcat(buff, name);
 	WTSFreeMemory(name);
-	return sptr;
+	return wptr;
 }
 
 UInt32 Win32::TerminalService::GetSessionClientIP(Int32 sessId)

@@ -357,35 +357,35 @@ void __stdcall SSWR::AVIRead::AVIRHQMPForm::OnTimerTick(void *userObj)
 	if (me->pbEnd)
 	{
 		me->pbEnd = false;
-		UTF8Char u8buff[512];
+		UTF8Char sbuff[512];
 		UOSInt i;
 		UOSInt j;
-		UTF8Char *u8ptr;
-		UTF8Char *u8ptrEnd;
+		UTF8Char *sptr;
+		UTF8Char *sptrEnd;
 		Int32 partNum;
-		u8ptrEnd = me->GetOpenedFile()->GetSourceName(u8buff);
-		i = Text::StrLastIndexOfCharC(u8buff, (UOSInt)(u8ptrEnd - u8buff), '.');
-		j = Text::StrIndexOfICase(u8buff, (const UTF8Char*)"part");
+		sptrEnd = me->GetOpenedFile()->GetSourceName(sbuff);
+		i = Text::StrLastIndexOfCharC(sbuff, (UOSInt)(sptrEnd - sbuff), '.');
+		j = Text::StrIndexOfICase(sbuff, (const UTF8Char*)"part");
 		if (i > j && i != INVALID_INDEX && j != INVALID_INDEX)
 		{
-			u8buff[i] = 0;
-			partNum = Text::StrToInt32(&u8buff[j + 4]);
+			sbuff[i] = 0;
+			partNum = Text::StrToInt32(&sbuff[j + 4]);
 			if (partNum > 0)
 			{
 				partNum++;
 				if (partNum == 10)
 				{
-					u8ptrEnd = Text::StrConcat(&u8buff[i + 2], &u8buff[i + 1]);
-					u8ptr = Text::StrInt32(&u8buff[j + 4], partNum);
-					*u8ptr++ = '.';
+					sptrEnd = Text::StrConcat(&sbuff[i + 2], &sbuff[i + 1]);
+					sptr = Text::StrInt32(&sbuff[j + 4], partNum);
+					*sptr++ = '.';
 				}
 				else
 				{
-					u8ptr = Text::StrInt32(&u8buff[j + 4], partNum);
-					*u8ptr++ = '.';
+					sptr = Text::StrInt32(&sbuff[j + 4], partNum);
+					*sptr++ = '.';
 				}
 
-				if (me->OpenFile({u8buff, (UOSInt)(u8ptrEnd - u8buff)}))
+				if (me->OpenFile({sbuff, (UOSInt)(sptrEnd - sbuff)}))
 				{
 					if (!me->player->IsPlaying())
 					{

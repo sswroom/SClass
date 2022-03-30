@@ -128,7 +128,7 @@ Bool IO::ServiceManager::ServiceGetDetail(Text::CString svcName, ServiceDetail *
 							{
 								val = val.Substring(4);
 							}
-							if (dt.SetValue(val.v, val.leng))
+							if (dt.SetValue(val.ToCString()))
 							{
 								svcDetail->startTimeTicks = dt.ToTicks();
 							}

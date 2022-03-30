@@ -164,7 +164,7 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 {
 	Map::TileMap *tileMap = this->lyr->GetTileMap();
 	Text::StringBuilderW sb;
-	WChar sbuff[32];
+	WChar wbuff[32];
 	OSInt currLyr;
 	OSInt lyrCnt = tileMap->GetLevelCount();
 	UInt8 *fileBuff = 0;
@@ -185,8 +185,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 	currLyr = 0;
 	while (currLyr < lyrCnt)
 	{
-		Text::StrOSInt(sbuff, currLyr);
-		this->txtLayer->SetText(sbuff);
+		Text::StrOSInt(wbuff, currLyr);
+		this->txtLayer->SetText(wbuff);
 
 		imgIdList.Clear();
 		tileMap->GetImageIDs(currLyr, this->selX1, this->selY1, this->selX2, this->selY2, &imgIdList);
@@ -194,8 +194,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 		i = cnt;
 		while (i-- > 0)
 		{
-			Text::StrOSInt(Text::StrConcat(Text::StrOSInt(sbuff, cnt - i), L"/"), cnt);
-			this->txtImages->SetText(sbuff);
+			Text::StrOSInt(Text::StrConcat(Text::StrOSInt(wbuff, cnt - i), L"/"), cnt);
+			this->txtImages->SetText(wbuff);
 			this->ui->ProcessMessages();
 
 			fd = 0;
@@ -244,8 +244,8 @@ void SSWR::AVIRead::AVIRGISTileDownloadForm::SaveTiles(const WChar *folderName)
 			else
 			{
 				err++;
-				Text::StrOSInt(sbuff, err);
-				this->txtError->SetText(sbuff);
+				Text::StrOSInt(wbuff, err);
+				this->txtError->SetText(wbuff);
 			}
 		}
 		currLyr++;

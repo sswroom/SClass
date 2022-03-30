@@ -401,9 +401,9 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupItems(Data::ArrayList<OrganGroupItem
 
 UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageItem*> *items, OrganGroup *grp)
 {
-	UTF8Char u8buff[512];
-	UTF8Char *u8ptr;
-	UTF8Char *u8ptrEnd;
+	UTF8Char sbuff[512];
+	UTF8Char *sptr;
+	UTF8Char *sptrEnd;
 	DB::DBReader *r;
 	if (grp == 0 || grp->GetGroupId() == -1)
 		return 0;
@@ -481,66 +481,66 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 				r->GetStr(5, &sb);
 				sb.AppendChar(IO::Path::PATH_SEPERATOR, 1);
 				r->GetStr(6, &sb);
-				u8ptr = Text::StrConcatC(u8buff, sb.ToString(), sb.GetLength());
+				sptr = Text::StrConcatC(sbuff, sb.ToString(), sb.GetLength());
 
 				exist = false;
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".jpg"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".jpg"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_JPG);
 					}
 				}
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".tif"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".tif"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_TIF);
 					}
 				}
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".wav"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".wav"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_WAV);
 					}
 				}
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".avi"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".avi"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".mts"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".mts"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
 				if (!exist)
 				{
-					u8ptrEnd = Text::StrConcatC(u8ptr, UTF8STRC(".m2ts"));
-					if (IO::Path::GetPathType(CSTRP(u8buff, u8ptrEnd)) == IO::Path::PathType::File)
+					sptrEnd = Text::StrConcatC(sptr, UTF8STRC(".m2ts"));
+					if (IO::Path::GetPathType(CSTRP(sbuff, sptrEnd)) == IO::Path::PathType::File)
 					{
 						exist = true;
-						item->SetFullName(CSTRP(u8buff, u8ptrEnd));
+						item->SetFullName(CSTRP(sbuff, sptrEnd));
 						item->SetFileType(OrganImageItem::FT_AVI);
 					}
 				}
@@ -2198,20 +2198,20 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	}
 	if (webFileName)
 	{
-		UTF8Char *u8ptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
-		*u8ptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcat(u8ptr, fileName);
+		UTF8Char *sptr = Text::StrConcatC(webFileName, UTF8STRC("web"));
+		*sptr++ = IO::Path::PATH_SEPERATOR;
+		Text::StrConcat(sptr, fileName);
 	}
 	return SSWR::OrganMgr::OrganEnvWeb::FS_SUCCESS;
 }
 
-Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, const UTF8Char *srcURL, const UTF8Char *location)
+Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFile(OrganSpecies *sp, WebFileInfo *wfile, Text::String *srcURL, Text::String *location)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("update webfile set srcUrl="));
-	sql.AppendStrUTF8(srcURL);
+	sql.AppendStr(srcURL);
 	sql.AppendCmdC(CSTR(", location="));
-	sql.AppendStrUTF8(location);
+	sql.AppendStr(location);
 	sql.AppendCmdC(CSTR(" where id="));
 	sql.AppendInt32(wfile->id);
 	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
@@ -3243,7 +3243,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::GetGPSPos(Int32 userId, Data::DateTime *t, Dou
 	Int64 ticks = t->ToTicks();
 	WebUserInfo *webUser;
 	DataFileInfo *dataFile;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::StmData::FileData *fd;
 	if (this->gpsTrk == 0 || this->gpsUserId != userId || this->gpsStartTime->CompareTo(t) > 0 || this->gpsEndTime->CompareTo(t) < 0)
@@ -3261,7 +3261,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::GetGPSPos(Int32 userId, Data::DateTime *t, Dou
 		{
 			this->gpsStartTime->SetTicks(dataFile->startTimeTicks);
 			this->gpsEndTime->SetTicks(dataFile->endTimeTicks);
-			sptr = this->cfgDataPath->ConcatTo(u8buff);
+			sptr = this->cfgDataPath->ConcatTo(sbuff);
 			if (sptr[-1] != IO::Path::PATH_SEPERATOR)
 			{
 				*sptr++ = IO::Path::PATH_SEPERATOR;
@@ -3269,7 +3269,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::GetGPSPos(Int32 userId, Data::DateTime *t, Dou
 			sptr = Text::StrConcatC(sptr, UTF8STRC("DataFile"));
 			*sptr++ = IO::Path::PATH_SEPERATOR;
 			sptr = dataFile->fileName->ConcatTo(sptr);
-			NEW_CLASS(fd, IO::StmData::FileData(u8buff, false));
+			NEW_CLASS(fd, IO::StmData::FileData(sbuff, false));
 			Map::IMapDrawLayer *lyr = (Map::IMapDrawLayer*)this->parsers->ParseFileType(fd, IO::ParserType::MapLayer);
 			DEL_CLASS(fd);
 			if (lyr)
@@ -3403,9 +3403,10 @@ Bool SSWR::OrganMgr::OrganEnvWeb::GetUserFilePath(UserFileInfo *userFile, Text::
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->AppendI32(userFile->webuserId);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
-	UTF8Char u8buff[10];
-	dt.ToString(u8buff, "yyyyMM");
-	sb->Append(u8buff);
+	UTF8Char sbuff[10];
+	UTF8Char *sptr;
+	sptr = dt.ToString(sbuff, "yyyyMM");
+	sb->AppendP(sbuff, sptr);
 	sb->AppendChar(IO::Path::PATH_SEPERATOR, 1);
 	sb->Append(userFile->dataFileName);
 	return true;
@@ -4498,8 +4499,8 @@ void SSWR::OrganMgr::OrganEnvWeb::Test()
 /*	Data::ArrayList<UserFileInfo *> *userFileList = this->userFileMap->GetValues();
 	UserFileInfo *userFile;
 	DB::SQLBuilder sql(this->db);
-	WChar sbuff[512];
-	WChar *sptr;
+	WChar wbuff[512];
+	WChar *wptr;
 	Data::DateTime dt;
 	Text::StringBuilderW sb;
 	OSInt i = 0;
@@ -4510,20 +4511,20 @@ void SSWR::OrganMgr::OrganEnvWeb::Test()
 	{
 		userFile = userFileList->GetItem(i);
 		dt.SetTicks(userFile->fileTimeTicks);
-		sptr = Text::StrConcat(sbuff, this->cfgDataPath);
-		if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+		wptr = Text::StrConcat(wbuff, this->cfgDataPath);
+		if (wptr[-1] != IO::Path::PATH_SEPERATOR)
 		{
-			*sptr++ = IO::Path::PATH_SEPERATOR;
+			*wptr++ = IO::Path::PATH_SEPERATOR;
 		}
-		sptr = Text::StrConcat(sptr, L"UserFile\\");
-		sptr = Text::StrInt32(sptr, userFile->webuserId);
-		sptr = Text::StrConcat(sptr, L"\\");
-		sptr = dt.ToString(sptr, L"yyyyMM");
-		sptr = Text::StrConcat(sptr, L"\\");
-		Text::StrConcat(sptr, userFile->dataFileName);
+		wptr = Text::StrConcat(wptr, L"UserFile\\");
+		wptr = Text::StrInt32(wptr, userFile->webuserId);
+		wptr = Text::StrConcat(wptr, L"\\");
+		wptr = dt.ToString(wptr, L"yyyyMM");
+		wptr = Text::StrConcat(wptr, L"\\");
+		Text::StrConcat(wptr, userFile->dataFileName);
 		if (userFile->fileType == 1)
 		{
-			Media::EXIFData *exif = ParseJPGExif(sbuff);
+			Media::EXIFData *exif = ParseJPGExif(wbuff);
 			if (exif)
 			{
 				const Char *csptr;

@@ -421,7 +421,7 @@ Bool IO::FileCheck::CheckEntryHash(UOSInt index, UInt8 *hashVal)
 	if (hash == 0)
 		return false;
 
-	NEW_CLASS(fs, IO::FileStream({sbuff, (UOSInt)(sptrEnd - sbuff)}, IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
+	NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptrEnd), IO::FileMode::ReadOnly, IO::FileShare::DenyWrite, IO::FileStream::BufferType::NoBuffer));
 	if (fs->IsError())
 	{
 		DEL_CLASS(fs);

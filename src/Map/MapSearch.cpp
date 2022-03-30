@@ -15,7 +15,7 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	UTF8Char u8buff[256];
+	UTF8Char sbuff2[256];
 	UTF8Char *tmp;
 	Text::PString strs[5];
 	IO::FileStream *fs;
@@ -70,12 +70,12 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = 0;
-				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
+				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				lyr->searchStr = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -89,12 +89,12 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
-				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
+				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				lyr->searchStr = 0;
 				this->layersArr[layerId]->Add(lyr);
 			}
@@ -108,12 +108,12 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 			if (this->baseDir && layerId >= 0 && layerId < MAPSEARCH_LAYER_TYPES)
 			{
 				Map::MapSearchLayer *lyr;
-				tmp = this->baseDir->ConcatTo(u8buff);
+				tmp = this->baseDir->ConcatTo(sbuff2);
 				tmp = strs[2].ConcatTo(tmp);
 				lyr = MemAlloc(Map::MapSearchLayer, 1);
 				lyr->searchType = layerType;
 				lyr->searchDist = layerDist;
-				lyr->mapLayer = manager->LoadLayer(CSTRP(u8buff, tmp));
+				lyr->mapLayer = manager->LoadLayer(CSTRP(sbuff2, tmp));
 				if (strs[4].v[0] == 0)
 				{
 					lyr->searchStr = 0;

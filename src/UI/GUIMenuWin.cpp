@@ -459,14 +459,14 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 	UOSInt id = this->itemCnt++;
 	if (shortcutKey)
 	{
-		WChar sbuff[256];
-		UTF8Char u8buff[64];
-		WChar *sptr;
-		sptr = Text::StrUTF8_WChar(sbuff, name.v, 0);
-		sptr = Text::StrConcat(sptr, L"\t");
-		ToKeyDisplay(u8buff, keyModifier, shortcutKey);
-		sptr = Text::StrUTF8_WChar(sptr, u8buff, 0);
-		AppendMenuW((HMENU)this->hMenu, 0, cmdId, sbuff);
+		WChar wbuff[256];
+		UTF8Char sbuff[64];
+		WChar *wptr;
+		wptr = Text::StrUTF8_WChar(wbuff, name.v, 0);
+		wptr = Text::StrConcat(wptr, L"\t");
+		ToKeyDisplay(sbuff, keyModifier, shortcutKey);
+		wptr = Text::StrUTF8_WChar(wptr, sbuff, 0);
+		AppendMenuW((HMENU)this->hMenu, 0, cmdId, wbuff);
 		ShortcutKey *key = MemAlloc(ShortcutKey, 1);
 		key->cmdId = cmdId;
 		key->keyModifier = keyModifier;

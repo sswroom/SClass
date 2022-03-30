@@ -1049,7 +1049,7 @@ DB::DBReader::DateErrType Map::MapLayerReader::GetDate(UOSInt colIndex, Data::Da
 	if (colIndex <= 0)
 		return DB::DBReader::DET_ERROR;
 	sptr = this->layer->GetString(sbuff, sizeof(sbuff), this->nameArr, this->GetCurrObjId(), colIndex - 1);
-	outVal->SetValue(sbuff, (UOSInt)(sptr - sbuff));
+	outVal->SetValue(CSTRP(sbuff, sptr));
 	return DB::DBReader::DET_OK;
 }
 

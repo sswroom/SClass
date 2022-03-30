@@ -246,14 +246,14 @@ void UI::GUITabControl::SetTabPageName(UOSInt index, Text::CString name)
 
 UTF8Char *UI::GUITabControl::GetTabPageName(UOSInt index, UTF8Char *buff)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	TCITEMW item;
 	item.mask = TCIF_TEXT;
-	item.pszText = (LPWSTR)sbuff;
+	item.pszText = (LPWSTR)wbuff;
 	item.cchTextMax = 512;
-	sbuff[0] = 0;
+	wbuff[0] = 0;
 	index = (UOSInt)SendMessageW((HWND)this->hwnd, TCM_GETITEMW, index, (LPARAM)&item);
-	return Text::StrWChar_UTF8(buff, sbuff);
+	return Text::StrWChar_UTF8(buff, wbuff);
 }
 
 void UI::GUITabControl::GetTabPageRect(OSInt *x, OSInt *y, UOSInt *w, UOSInt *h)

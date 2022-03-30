@@ -105,7 +105,7 @@ Bool SSWR::AVIRead::AVIRBTScanLogForm::LogFileStore()
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetProcessFileName(sbuff);
-	IO::Path::AppendPathC(sbuff, sptr, UTF8STRC("BTDevLog.txt"));
+	IO::Path::AppendPath(sbuff, sptr, CSTR("BTDevLog.txt"));
 	return false; //this->btLog->StoreFile(sbuff);
 }
 

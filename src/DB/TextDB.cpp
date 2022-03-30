@@ -121,7 +121,7 @@ public:
 			return DET_NULL;
 		if (this->row[colIndex] == 0)
 			return DET_NULL;
-		return outVal->SetValue(this->row[colIndex]->v, this->row[colIndex]->leng)?DET_OK:DET_ERROR;
+		return outVal->SetValue(this->row[colIndex]->ToCString())?DET_OK:DET_ERROR;
 	}
 
 	virtual Double GetDbl(UOSInt colIndex)

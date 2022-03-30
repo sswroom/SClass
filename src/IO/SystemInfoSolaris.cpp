@@ -64,7 +64,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 {
 	UOSInt retCnt = 0;
 	RAMInfo *ram;
-	WChar sbuff[128];
+	WChar wbuff[128];
 	Win32::SMBIOS *smbios = Win32::SMBIOS::GetSMBIOS();
 	if (smbios)
 	{

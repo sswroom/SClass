@@ -11,7 +11,7 @@
 
 Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	WChar *sarr[3];
 	UOSInt i;
 	MONITORINFOEXW info;
@@ -39,8 +39,8 @@ Media::MonitorInfo::MonitorInfo(MonitorHandle *hMonitor)
 		if (EnumDisplayDevicesW(info.szDevice, 0, &dev, 0))
 		{
 			this->desc = Text::String::NewNotNull(dev.DeviceString);
-			Text::StrConcat(sbuff, dev.DeviceID);
-			i = Text::StrSplit(sarr, 3, sbuff, '\\');
+			Text::StrConcat(wbuff, dev.DeviceID);
+			i = Text::StrSplit(sarr, 3, wbuff, '\\');
 			if (i == 3)
 			{
 				this->monId = Text::String::NewNotNull(sarr[1]);

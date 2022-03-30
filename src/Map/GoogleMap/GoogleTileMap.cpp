@@ -46,7 +46,7 @@ Bool Map::GoogleMap::GoogleTileMap::ImportTiles(IO::PackageFile *pkg)
 	}
 }
 
-Bool Map::GoogleMap::GoogleTileMap::OptimizeToFile(const UTF8Char *fileName)
+Bool Map::GoogleMap::GoogleTileMap::OptimizeToFile(Text::CString fileName)
 {
 	if (this->spkg)
 	{
@@ -182,7 +182,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 {
 	OSInt readSize;
 	UTF8Char filePathU[512];
-	UTF8Char u8buff[64];
+	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
@@ -217,11 +217,11 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgX);
-		IO::Path::CreateDirectory(filePathU);
+		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(filePathU, sptru), false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
@@ -256,7 +256,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData(CSTRP(filePathU, sptru));
 		if (fd)
 		{
 			IO::ParserType pt;
@@ -288,16 +288,16 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendUOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
-	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
+		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -322,7 +322,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 					fs->Write(imgBuff, (OSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
@@ -338,7 +338,7 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (OSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (OSInt)contLeng, CSTRP(filePathU, sptru), dt.ToTicks());
 				}
 			}
 			MemFree(imgBuff);
@@ -350,11 +350,11 @@ Media::ImageList *Map::GoogleMap::GoogleTileMap::LoadTileImage(UOSInt level, Int
 	fd = 0;
 	if (this->cacheDir)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(filePathU, sptru), false));
 	}
 	else if (this->spkg)
 	{
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData(CSTRP(filePathU, sptru));
 	}
 	if (fd)
 	{
@@ -398,7 +398,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 {
 	OSInt readSize;
 	UTF8Char filePathU[512];
-	UTF8Char u8buff[64];
+	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	Text::StringBuilderUTF8 urlSb;
 	UTF8Char *sptru;
@@ -432,11 +432,11 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 		sptru = Text::StrUOSInt(sptru, level);
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgX);
-		IO::Path::CreateDirectory(filePathU);
+		IO::Path::CreateDirectory(CSTRP(filePathU, sptru));
 		*sptru++ = IO::Path::PATH_SEPERATOR;
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(filePathU, sptru), false));
 		if (fd->GetDataSize() > 0)
 		{
 			currTime.SetCurrTimeUTC();
@@ -467,7 +467,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 		*sptru++ = '/';
 		sptru = Text::StrInt32(sptru, imgY);
 		sptru = Text::StrConcatC(sptru, UTF8STRC(".png"));
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData(CSTRP(filePathU, sptru));
 		if (fd)
 		{
 			if (blockX)
@@ -495,16 +495,16 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	urlSb.AppendC(UTF8STRC("&z="));
 	urlSb.AppendOSInt(level);
 
-	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, UTF8STRC("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
-	cli->Connect(urlSb.ToString(), urlSb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
+	cli = Net::HTTPClient::CreateClient(this->sockf, this->ssl, CSTR("GoogleTileMap/1.0 SSWR/1.0"), true, urlSb.StartsWith(UTF8STRC("https://")));
+	cli->Connect(urlSb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, 0, 0, true);
 	if (hasTime)
 	{
-		sptr = Net::HTTPClient::Date2Str(u8buff, &dt);
-		cli->AddHeaderC(UTF8STRC("If-Modified-Since"), u8buff, (UOSInt)(sptr - u8buff));
+		sptr = Net::HTTPClient::Date2Str(sbuff, &dt);
+		cli->AddHeaderC(CSTR("If-Modified-Since"), CSTRP(sbuff, sptr));
 	}
 	if (cli->GetRespStatus() == 304)
 	{
-		NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
+		NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Append, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
 		dt.SetCurrTimeUTC();
 		fs->SetFileTimes(&dt, 0, 0);
 		DEL_CLASS(fs);
@@ -529,8 +529,8 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 			{
 				if (this->cacheDir)
 				{
-					NEW_CLASS(fs, IO::FileStream(filePathU, IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
-					fs->Write(imgBuff, (OSInt)contLeng);
+					NEW_CLASS(fs, IO::FileStream(CSTRP(filePathU, sptru), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
+					fs->Write(imgBuff, (UOSInt)contLeng);
 					if (cli->GetLastModified(&dt))
 					{
 						currTime.SetCurrTimeUTC();
@@ -545,7 +545,7 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 				}
 				else if (this->spkg)
 				{
-					this->spkg->AddFile(imgBuff, (OSInt)contLeng, filePathU, dt.ToTicks());
+					this->spkg->AddFile(imgBuff, (UOSInt)contLeng, CSTRP(filePathU, sptru), dt.ToTicks());
 				}
 			}
 			MemFree(imgBuff);
@@ -557,11 +557,11 @@ IO::IStreamData *Map::GoogleMap::GoogleTileMap::LoadTileImageData(UOSInt level, 
 	fd = 0;
 	if (this->cacheDir)
 	{
-		NEW_CLASS(fd, IO::StmData::FileData(filePathU, false));
+		NEW_CLASS(fd, IO::StmData::FileData(CSTRP(filePathU, sptru), false));
 	}
 	else if (this->spkg)
 	{
-		fd = this->spkg->CreateStreamData(filePathU);
+		fd = this->spkg->CreateStreamData(CSTRP(filePathU, sptru));
 	}
 	if (fd)
 	{

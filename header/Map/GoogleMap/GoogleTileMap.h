@@ -39,7 +39,7 @@ namespace Map
 
 			Bool HasSPackageFile();
 			Bool ImportTiles(IO::PackageFile *pkg);
-			Bool OptimizeToFile(const UTF8Char *fileName);
+			Bool OptimizeToFile(Text::CString fileName);
 
 			virtual Text::CString GetName();
 			virtual Bool IsError();

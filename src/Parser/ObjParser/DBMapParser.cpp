@@ -35,7 +35,7 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 {
 //	DB::ReadingDB *db;
 //	DB::DBReader *r;
-//	WChar sbuff[512];
+//	WChar wbuff[512];
 	Bool valid = false;
 	if (pobj->GetParserType() != IO::ParserType::ReadingDB)
 		return 0;
@@ -66,13 +66,13 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 			k = r->ColCount();
 			while (k-- > 0)
 			{
-				if (r->GetName(k, sbuff))
+				if (r->GetName(k, wbuff))
 				{
-					if (Text::StrCompareICase(sbuff, L"EASTING") == 0)
+					if (Text::StrCompareICase(wbuff, L"EASTING") == 0)
 					{
 						xCol = k;
 					}
-					if (Text::StrCompareICase(sbuff, L"NORTHING") == 0)
+					if (Text::StrCompareICase(wbuff, L"NORTHING") == 0)
 					{
 						yCol = k;
 					}

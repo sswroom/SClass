@@ -589,7 +589,7 @@ DB::DBReader::DateErrType DB::MySQLReader::GetDate(UOSInt colIndex, Data::DateTi
 	if (((MYSQL_ROW)this->row)[colIndex])
 	{
 		const UTF8Char *s = (const UTF8Char*)((MYSQL_ROW)this->row)[colIndex];
-		outVal->SetValue(s, Text::StrCharCnt(s));
+		outVal->SetValue(Text::CString::FromPtr(s));
 		return DB::DBReader::DET_OK;
 	}
 	else

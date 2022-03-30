@@ -11,7 +11,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	Manage::HiResClock *clk;
 
 	NEW_CLASS(clk, Manage::HiResClock());
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000000;
 	while (i-- > 0)
 	{
-		Text::StrInt64(sbuff, i);
+		Text::StrInt64(wbuff, i);
 	}
 	Double t1 = clk->GetTimeDiff();
 
@@ -29,7 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000000;
 	while (i-- > 0)
 	{
-		swprintf(sbuff, 11, L"%ld", i);
+		swprintf(wbuff, 11, L"%ld", i);
 	}
 	Double t1b = clk->GetTimeDiff();
 
@@ -37,7 +37,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 100010000000LL;
 	while (i-- > 100000000000LL)
 	{
-		Text::StrInt64(sbuff, i);
+		Text::StrInt64(wbuff, i);
 	}
 	Double t2 = clk->GetTimeDiff();
 
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 100010000000LL;
 	while (i-- > 100000000000LL)
 	{
-		swprintf(sbuff, 21, L"%ld", i);
+		swprintf(wbuff, 21, L"%ld", i);
 	}
 	Double t2b = clk->GetTimeDiff();
 

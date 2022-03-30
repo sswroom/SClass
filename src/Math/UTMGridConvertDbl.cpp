@@ -412,13 +412,13 @@ WChar *Math::ProjectionConvertDbl::CalGrid(WChar *gridStr, Int32 digits, Double 
 
 	if (gridStr)
 	{
-		WChar *sptr;
-		sptr = gridStr;
+		WChar *wptr;
+		wptr = gridStr;
 		Int32 zoneId = (merid - 3) / 6 + 31;
 		if (latDegree < -80 || latDegree > 84 || *easting < 100000 || *easting > 899999)
 		{
-			*sptr = 0;
-			return sptr;
+			*wptr = 0;
+			return wptr;
 		}
 
 		Int32 ieast = (Int32)*easting;
@@ -428,22 +428,22 @@ WChar *Math::ProjectionConvertDbl::CalGrid(WChar *gridStr, Int32 digits, Double 
 		if (inorth < 0)
 			inorth = -inorth;
 		WChar letters[] = L"ABCDEFGHJKLMNPQRSTUVWXYZ";
-		sptr = Text::StrInt32(sptr, zoneId);
-		*sptr++ = letters[(((Int32)latDegree) >> 3) + 12];
-		if (sptr[-1] > 'X')
+		wptr = Text::StrInt32(wptr, zoneId);
+		*wptr++ = letters[(((Int32)latDegree) >> 3) + 12];
+		if (wptr[-1] > 'X')
 		{
-			sptr[-1] = 'X';
+			wptr[-1] = 'X';
 		}
 		
 		Int32 pos = ((ieast / 100000) % 10) - 1 + (((zoneId + 2) % 3) << 3);
-		*sptr++ = letters[pos];
+		*wptr++ = letters[pos];
 
 		pos = (inorth / 100000) % 20;
 		if ((zoneId & 1) == 0)
 		{
 			pos = (pos + 5) % 20;
 		}
-		*sptr++ = letters[pos];
+		*wptr++ = letters[pos];
 
 		if (digits <= 3)
 		{
@@ -462,22 +462,22 @@ WChar *Math::ProjectionConvertDbl::CalGrid(WChar *gridStr, Int32 digits, Double 
 		}
 
 		Int32 i;
-		sptr += digits << 1;
+		wptr += digits << 1;
 		i = digits;
 		while (i-- > 0)
 		{
-			*--sptr = (inorth % 10) + 0x30;
+			*--wptr = (inorth % 10) + 0x30;
 			inorth = inorth / 10;
 		}
 		i = digits;
 		while (i-- > 0)
 		{
-			*--sptr = (ieast % 10) + 0x30;
+			*--wptr = (ieast % 10) + 0x30;
 			ieast = ieast / 10;
 		}
-		sptr += digits << 1;
-		*sptr = 0;
-		return sptr;
+		wptr += digits << 1;
+		*wptr = 0;
+		return wptr;
 	}
 	else
 	{

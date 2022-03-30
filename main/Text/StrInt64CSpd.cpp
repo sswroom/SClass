@@ -10,7 +10,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	WChar sbuff[256];
+	WChar wbuff[256];
 	Char sbuff2[256];
 	Manage::HiResClock *clk;
 
@@ -29,7 +29,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 10000000;
 	while (i-- > 0)
 	{
-		Text::StrInt64(sbuff, i);
+		Text::StrInt64(wbuff, i);
 	}
 	Double t1b = clk->GetTimeDiff();
 
@@ -45,7 +45,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = 100010000000LL;
 	while (i-- > 100000000000LL)
 	{
-		Text::StrInt64(sbuff, i);
+		Text::StrInt64(wbuff, i);
 	}
 	Double t2b = clk->GetTimeDiff();
 

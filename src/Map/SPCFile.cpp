@@ -40,8 +40,8 @@
 
 void Map::SPCFile::DrawChars(Media::DrawImage *img, const WChar *str1, Int32 scnPosX, Int32 scnPosY, Int32 scaleW, Int32 scaleH, SPCFontStyle *fontStyle, Bool isAlign)
 {
-	WChar sbuff[256];
-	Text::StrConcat(sbuff, str1);
+	WChar wbuff[256];
+	Text::StrConcat(wbuff, str1);
 	Double size[2];
 	UInt16 absH;
 //	Int32 fntCount;
@@ -179,7 +179,7 @@ void Map::SPCFile::DrawChars(Media::DrawImage *img, const WChar *str1, Int32 scn
 		currY = 0;
 
 		OSInt cnt;
-		WChar *lbl = sbuff;
+		WChar *lbl = wbuff;
 		cnt = lblSize;
 
 		while (cnt--)
@@ -441,7 +441,7 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 	Int32 scaleW;
 	Int32 scaleH;
 	Int32 pts[2];
-	WChar *sptr;
+	WChar *wptr;
 	WChar lblStr[128];
 	void *session;
 
@@ -466,9 +466,9 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 					if ((dobj->parts[k] - dobj->parts[k - 1]) > maxSize)
 						maxSize = (dobj->parts[k] - (maxPos = dobj->parts[k - 1]));
 				}
-				lyrs->lyr->GetString(sptr = lblStr, nameArr, i, 0);
+				lyrs->lyr->GetString(wptr = lblStr, nameArr, i, 0);
 
-				if (AddLabel(labels, maxLabels, labelCnt, sptr, maxSize, &dobj->points[maxPos << 1], 0, lyrs->lyr->GetLayerType(), lyrs->fontId, flags, view, debug, dobj->mapRate))
+				if (AddLabel(labels, maxLabels, labelCnt, wptr, maxSize, &dobj->points[maxPos << 1], 0, lyrs->lyr->GetLayerType(), lyrs->fontId, flags, view, debug, dobj->mapRate))
 				{
 					lyrs->lyr->ReleaseObject(session, dobj);
 				}
@@ -479,8 +479,8 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 			}
 			else if (lyrs->lyr->GetLayerType() == 3)
 			{
-				lyrs->lyr->GetString(sptr = lblStr, nameArr, i, 0);
-	//			sptr = (WChar*)arr->GetItem(i);
+				lyrs->lyr->GetString(wptr = lblStr, nameArr, i, 0);
+	//			wptr = (WChar*)arr->GetItem(i);
 				if (dobj->nPoints & 1)
 				{
 					pts[0] = dobj->points[dobj->nPoints - 1];
@@ -504,7 +504,7 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 
 					if ((flags & SFLG_ROTATE) == 0)
 						scaleW = scaleH = 0;
-					DrawChars(img, sptr, pts[0], pts[1], scaleW, scaleH, &fonts[lyrs->fontId], (flags & SFLG_ALIGN) != 0);
+					DrawChars(img, wptr, pts[0], pts[1], scaleW, scaleH, &fonts[lyrs->fontId], (flags & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -513,8 +513,8 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 				Int64 lastPtX = 0;
 				Int64 lastPtY = 0;
 				Int32 *pointPos = dobj->points;
-				lyrs->lyr->GetString(sptr = lblStr, nameArr, i, 0);
-	//			sptr = (WChar*)arr->GetItem(i);
+				lyrs->lyr->GetString(wptr = lblStr, nameArr, i, 0);
+	//			wptr = (WChar*)arr->GetItem(i);
 
 				j = dobj->nPoints;
 				while (j--)
@@ -528,7 +528,7 @@ void Map::SPCFile::DrawString(Media::DrawImage *img, SPCLayerStyle *lyrs, Int32 
 				if (view->InViewXY(pts[0] / dobj->mapRate, pts[1] / dobj->mapRate))
 				{
 					view->IMapXYToScnXY(dobj->mapRate, pts, pts, 1, 0, 0);
-					DrawChars(img, sptr, pts[0], pts[1], 0, 0, &fonts[lyrs->fontId], (flags & SFLG_ALIGN) != 0);
+					DrawChars(img, wptr, pts[0], pts[1], 0, 0, &fonts[lyrs->fontId], (flags & SFLG_ALIGN) != 0);
 				}
 				lyrs->lyr->ReleaseObject(session, dobj);
 			}
@@ -2166,7 +2166,7 @@ void Map::SPCFile::FreeLabels(SPCLabels *labels, Int32 maxLabel, Int32 *labelCnt
 Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<Map::SPDLayer*> *layerList)
 {
 	WChar layerName[512];
-	WChar *sptr;
+	WChar *wptr;
 	IO::FileStream *fstm;
 	Int32 i;
 	Int32 j;
@@ -2314,18 +2314,18 @@ Map::SPCFile::SPCFile(WChar *fileName, Media::DrawEngine *eng, Data::ArrayList<M
 			currLayer->grpId = dataBuff[4];
 #ifdef _WIN32_WCE
 			if (dirs[dataBuff[0]][1] == ':')
-				sptr = Text::StrConcat(layerName, &dirs[dataBuff[0]][2]);
+				wptr = Text::StrConcat(layerName, &dirs[dataBuff[0]][2]);
 			else
-				sptr = Text::StrConcat(layerName, dirs[dataBuff[0]]);
+				wptr = Text::StrConcat(layerName, dirs[dataBuff[0]]);
 #else
-			sptr = Text::StrConcat(layerName, dirs[dataBuff[0]]);
+			wptr = Text::StrConcat(layerName, dirs[dataBuff[0]]);
 #endif
-			*sptr++ = '\\';
+			*wptr++ = '\\';
 			j = (Int32)fstm->GetPosition();
 			fstm->SeekFromBeginning(dataBuff[1]);
-			fstm->Read((UInt8*)sptr, dataBuff[2]);
+			fstm->Read((UInt8*)wptr, dataBuff[2]);
 			fstm->SeekFromBeginning(j);
-			sptr[dataBuff[2] >> 1] = 0;
+			wptr[dataBuff[2] >> 1] = 0;
 			NEW_CLASS(currLayer->lyr, Map::SPDLayer(layerName));
 
 			currLayer->img = 0;

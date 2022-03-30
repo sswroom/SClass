@@ -97,16 +97,16 @@ UInt32 Media::WaveInSource::GetDeviceCount()
 	return waveInGetNumDevs();
 }
 
-UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *u8buff, UInt32 devNo)
+UTF8Char *Media::WaveInSource::GetDeviceName(UTF8Char *sbuff, UInt32 devNo)
 {
 	WAVEINCAPSW caps;
 	waveInGetDevCapsW(devNo, &caps, sizeof(caps));
-	return Text::StrWChar_UTF8(u8buff, caps.szPname);
+	return Text::StrWChar_UTF8(sbuff, caps.szPname);
 }
 
 Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 nbits, UInt16 nChannels)
 {
-	UTF8Char u8buff[256];
+	UTF8Char sbuff[256];
 	UInt32 i;
 	this->devId = (UInt32)-1;
 	this->freq = freq;
@@ -120,8 +120,8 @@ Media::WaveInSource::WaveInSource(const UTF8Char *devName, UInt32 freq, UInt16 n
 	i = GetDeviceCount();
 	while (i-- > 0)
 	{
-		GetDeviceName(u8buff, i);
-		if (Text::StrEquals(u8buff, devName))
+		GetDeviceName(sbuff, i);
+		if (Text::StrEquals(sbuff, devName))
 		{
 			this->devId = i;
 			break;

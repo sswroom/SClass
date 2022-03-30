@@ -23,27 +23,27 @@
 	Int32 maxXBlk;
 	Int32 minYBlk;
 	Int32 maxYBlk;
-	WChar sbuff[512];
-	WChar *sptr;
+	WChar wbuff[512];
+	WChar *wptr;
 	IO::Path::FindFileSession *sess;
 	Int32 currVal;
 	UOSInt i;
 	IO::Path::PathType pt;
 
-	sptr = Text::StrConcat(sbuff, this->tileDir);
-	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
+	wptr = Text::StrConcat(wbuff, this->tileDir);
+	if (wptr[-1] != IO::Path::PATH_SEPERATOR)
 	{
-		*sptr++ = IO::Path::PATH_SEPERATOR;
+		*wptr++ = IO::Path::PATH_SEPERATOR;
 	}
-	Text::StrConcatC(sptr, UTF8STRC("*.*"));
-	sess = IO::Path::FindFile(sbuff);
+	Text::StrConcatC(wptr, UTF8STRC("*.*"));
+	sess = IO::Path::FindFile(wbuff);
 	if (sess)
 	{
-		while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
+		while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
 		{
-			if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
+			if (pt == IO::Path::PathType::Directory && wptr[0] != '.')
 			{
-				if (Text::StrToInt32(sptr, &currVal) && currVal > this->maxLevel)
+				if (Text::StrToInt32(wptr, &currVal) && currVal > this->maxLevel)
 				{
 					this->maxLevel = currVal;
 				}
@@ -55,18 +55,18 @@
 	{
 		minXBlk = -1;
 		maxXBlk = -1;
-		sptr = Text::StrInt32(sptr, this->maxLevel);
-		*sptr++ = IO::Path::PATH_SEPERATOR;
-		Text::StrConcatC(sptr, UTF8STRC("*.*"));
+		wptr = Text::StrInt32(wptr, this->maxLevel);
+		*wptr++ = IO::Path::PATH_SEPERATOR;
+		Text::StrConcatC(wptr, UTF8STRC("*.*"));
 		
-		sess = IO::Path::FindFile(sbuff);
+		sess = IO::Path::FindFile(wbuff);
 		if (sess)
 		{
-			while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
+			while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
 			{
-				if (pt == IO::Path::PathType::Directory && sptr[0] != '.')
+				if (pt == IO::Path::PathType::Directory && wptr[0] != '.')
 				{
-					if (Text::StrToInt32(sptr, &currVal))
+					if (Text::StrToInt32(wptr, &currVal))
 					{
 						if (minXBlk == -1 || minXBlk > currVal)
 						{
@@ -85,22 +85,22 @@
 		{
 			minYBlk = -1;
 			maxYBlk = -1;
-			sptr = Text::StrInt32(sptr, minXBlk);
-			*sptr++ = IO::Path::PATH_SEPERATOR;
-			Text::StrConcatC(sptr, UTF8STRC("*.png"));
+			wptr = Text::StrInt32(wptr, minXBlk);
+			*wptr++ = IO::Path::PATH_SEPERATOR;
+			Text::StrConcatC(wptr, UTF8STRC("*.png"));
 
-			sess = IO::Path::FindFile(sbuff);
+			sess = IO::Path::FindFile(wbuff);
 			if (sess)
 			{
-				while (IO::Path::FindNextFile(sptr, sess, 0, &pt))
+				while (IO::Path::FindNextFile(wptr, sess, 0, &pt))
 				{
 					if (pt == IO::Path::PathType::File)
 					{
-						i = Text::StrIndexOfChar(sptr, '.');
+						i = Text::StrIndexOfChar(wptr, '.');
 						if (i != INVALID_INDEX)
 						{
-							sptr[i] = 0;
-							if (Text::StrToInt32(sptr, &currVal))
+							wptr[i] = 0;
+							if (Text::StrToInt32(wptr, &currVal))
 							{
 								if (minYBlk == -1 || minYBlk > currVal)
 								{
@@ -451,7 +451,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 /*IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(OSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
 	WChar filePath[512];
-	WChar *sptr;
+	WChar *wptr;
 	IO::StmData::FileData *fd;
 	if (level < 0 || level > this->maxLevel)
 		return 0;
@@ -469,15 +469,15 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 	if (x1 > 180 || y1 < -90)
 		return 0;
 
-	sptr = Text::StrConcat(filePath, this->tileDir);
-	if (sptr[-1] != IO::Path::PATH_SEPERATOR)
-		*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrInt32(sptr, (Int32)level);
-	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrInt32(sptr, imgX);
-	*sptr++ = IO::Path::PATH_SEPERATOR;
-	sptr = Text::StrInt32(sptr, imgY);
-	sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
+	wptr = Text::StrConcat(filePath, this->tileDir);
+	if (wptr[-1] != IO::Path::PATH_SEPERATOR)
+		*wptr++ = IO::Path::PATH_SEPERATOR;
+	wptr = Text::StrInt32(wptr, (Int32)level);
+	*wptr++ = IO::Path::PATH_SEPERATOR;
+	wptr = Text::StrInt32(wptr, imgX);
+	*wptr++ = IO::Path::PATH_SEPERATOR;
+	wptr = Text::StrInt32(wptr, imgY);
+	wptr = Text::StrConcatC(wptr, UTF8STRC(".png"));
 	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));
 	if (fd->GetDataSize() > 0)
 	{
@@ -496,7 +496,7 @@ UTF8Char *Map::OSM::OSMLocalTileMap::GetImageURL(UTF8Char *sbuff, UOSInt level, 
 
 IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int64 imgId, Double *boundsXY, Bool localOnly, Int32 *blockX, Int32 *blockY, ImageType *it)
 {
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::IStreamData *fd;
 	if (level < 0 || level > this->maxLevel)
@@ -518,17 +518,17 @@ IO::IStreamData *Map::OSM::OSMLocalTileMap::LoadTileImageData(UOSInt level, Int6
 	IO::PackageFile *xPkg;
 	IO::PackageFile *yPkg;
 	fd = 0;
-	sptr = Text::StrUOSInt(u8buff, level);
-	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(u8buff, sptr)));
+	sptr = Text::StrUOSInt(sbuff, level);
+	xPkg = this->pkgFile->GetItemPack((UOSInt)this->pkgFile->GetItemIndex(CSTRP(sbuff, sptr)));
 	if (xPkg)
 	{
-		sptr = Text::StrInt32(u8buff, imgX);
-		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(u8buff, sptr)));
+		sptr = Text::StrInt32(sbuff, imgX);
+		yPkg = xPkg->GetItemPack((UOSInt)xPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 		if (yPkg)
 		{
-			sptr = Text::StrInt32(u8buff, imgY);
+			sptr = Text::StrInt32(sbuff, imgY);
 			sptr = Text::StrConcatC(sptr, UTF8STRC(".png"));
-			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(CSTRP(u8buff, sptr)));
+			fd = yPkg->GetItemStmData((UOSInt)yPkg->GetItemIndex(CSTRP(sbuff, sptr)));
 			if (fd)
 			{
 				if (blockX)
@@ -562,17 +562,17 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 	Int32 x;
 	Int32 y;
 	Bool found = false;
-	UTF8Char u8buff[512];
+	UTF8Char sbuff[512];
 	i = 0;
 	j = pkgFile->GetCount();
 	while (i < j)
 	{
 		if (pkgFile->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
 		{
-			pkgFile->GetItemName(u8buff, i);
-			if (u8buff[0] != '.')
+			pkgFile->GetItemName(sbuff, i);
+			if (sbuff[0] != '.')
 			{
-				if (Text::StrToInt32(u8buff, &x) && x == (OSInt)level)
+				if (Text::StrToInt32(sbuff, &x) && x == (OSInt)level)
 				{
 					found = true;
 					break;
@@ -600,8 +600,8 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 		{
 			if (levPkg->GetItemType(i) == IO::PackageFile::POT_PACKAGEFILE)
 			{
-				levPkg->GetItemName(u8buff, i);
-				if (Text::StrToInt32(u8buff, &x))
+				levPkg->GetItemName(sbuff, i);
+				if (Text::StrToInt32(sbuff, &x))
 				{
 					if (foundX)
 					{
@@ -622,14 +622,14 @@ Bool Map::OSM::OSMLocalTileMap::GetTileBounds(UOSInt level, Int32 *minX, Int32 *
 						j = xPkg->GetCount();
 						while (j-- > 0)
 						{
-							xPkg->GetItemName(u8buff, j);
+							xPkg->GetItemName(sbuff, j);
 							if (xPkg->GetItemType(j) == IO::PackageFile::POT_STREAMDATA)
 							{
-								k = Text::StrIndexOf(u8buff, (const UTF8Char*)".png");
+								k = Text::StrIndexOf(sbuff, (const UTF8Char*)".png");
 								if (k != INVALID_INDEX)
 								{
-									u8buff[k] = 0;
-									if (Text::StrToInt32(u8buff, &y))
+									sbuff[k] = 0;
+									if (Text::StrToInt32(sbuff, &y))
 									{
 										if (found)
 										{

@@ -1117,26 +1117,26 @@ Int32 Manage::Process::ExecuteProcessW(const WChar *cmd, Text::StringBuilderUTF8
 
 Bool Manage::Process::IsAlreadyStarted()
 {
-	WChar sbuff[512];
+	WChar wbuff[512];
 	Manage::Process::FindProcSess *sess;
 	Bool found = false;
 	UOSInt procId = GetCurrProcId();
 	UOSInt i;
-	IO::Path::GetProcessFileNameW(sbuff);
+	IO::Path::GetProcessFileNameW(wbuff);
 	Manage::Process::ProcessInfo info;
 
-	i = Text::StrLastIndexOfChar(sbuff, IO::Path::PATH_SEPERATOR);
+	i = Text::StrLastIndexOfChar(wbuff, IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
-		sess = Manage::Process::FindProcessW(&sbuff[i + 1]);
+		sess = Manage::Process::FindProcessW(&wbuff[i + 1]);
 	}
 	else
 	{
-		sess = Manage::Process::FindProcessW(sbuff);
+		sess = Manage::Process::FindProcessW(wbuff);
 	}
 	if (sess)
 	{
-		while (Manage::Process::FindProcessNextW(sbuff, sess, &info))
+		while (Manage::Process::FindProcessNextW(wbuff, sess, &info))
 		{
 			if (info.processId != procId)
 			{
