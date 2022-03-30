@@ -90,7 +90,7 @@ IO::ParsedObject *Parser::FileParser::OZF2Parser::ParseFile(IO::IStreamData *fd,
 	UInt8 *imgBuff = MemAlloc(UInt8, 4096);
 	UInt8 *srcBuff = MemAlloc(UInt8, 8192);
 	UInt8 *ptrBuff;
-	Data::Compress::Inflate inf;
+	Data::Compress::Inflate inf(false);
 	scaleTable = MemAlloc(UInt8, (scaleCnt + 1) * 4);
 	fd->GetRealData(ReadUInt32(tmpBuff), scaleCnt * 4, scaleTable);
 	NEW_CLASS(imgList, Media::ImageList(fd->GetFullFileName()));

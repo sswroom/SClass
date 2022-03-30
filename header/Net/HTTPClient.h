@@ -34,6 +34,8 @@ namespace Net
 
 		Bool kaConn;
 		Text::String *url;
+		UInt64 totalUpload;
+		UInt64 totalDownload;
 
 		HTTPClient(Net::SocketFactory *sockf, Bool kaConn);
 	public:
@@ -70,6 +72,8 @@ namespace Net
 		const Net::SocketUtil::AddressInfo *GetSvrAddr();
 		Double GetTotalTime();
 		UOSInt GetHdrLen();
+		UInt64 GetTotalUpload();
+		UInt64 GetTotalDownload();
 
 		static void ParseDateStr(Data::DateTime *dt, Text::CString dateStr);
 		static UTF8Char *Date2Str(UTF8Char *sbuff, Data::DateTime *dt);

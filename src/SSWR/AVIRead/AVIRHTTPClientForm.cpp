@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/Compress/Inflate.h"
 #include "IO/FileStream.h"
 #include "IO/Path.h"
 #include "IO/StmData/MemoryData.h"
@@ -70,6 +71,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 	me->noShutdown = me->chkNoShutdown->IsChecked();
 	me->reqMeth = (Net::WebUtil::RequestMethod)(OSInt)me->cboMethod->GetSelectedItem();
 	me->reqOSClient = me->chkOSClient->IsChecked();
+	me->reqAllowComp = me->chkAllowComp->IsChecked();
 	if ((me->reqMeth == Net::WebUtil::RequestMethod::HTTP_GET) || (me->reqMeth == Net::WebUtil::RequestMethod::HTTP_DELETE))
 	{
 		UOSInt i = 0;
@@ -483,6 +485,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 	Text::String *currUserName;
 	Text::String *currPassword;
 	Text::String *currHeaders;
+	Bool currAllowComp;
 	Net::WebUtil::RequestMethod currMeth;
 	Bool currOSClient;
 	UInt8 buff[4096];
@@ -505,6 +508,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			currPassword = me->reqPassword;
 			currOSClient = me->reqOSClient;
 			currHeaders = me->reqHeaders;
+			currAllowComp = me->reqAllowComp;
 			me->reqURL = 0;
 			me->reqBody = 0;
 			me->reqBodyLen = 0;
@@ -512,6 +516,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 			me->reqUserName = 0;
 			me->reqPassword = 0;
 			me->reqHeaders = 0;
+			me->reqAllowComp = false;
 			
 			Net::HTTPClient *cli;
 			cli = Net::HTTPClient::CreateClient(me->core->GetSocketFactory(), currOSClient?0:me->ssl, me->userAgent->ToCString(), me->noShutdown, currURL->StartsWith(UTF8STRC("https://")));
@@ -532,7 +537,10 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				{
 					cli->AddHeaderC(CSTR("Connection"), CSTR("close"));
 				}
-				cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
+				if (currAllowComp)
+				{
+					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
+				}
 				
 				sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
 				if (sptr)
@@ -578,7 +586,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					totalRead += thisRead;
 				}
 				me->respTimeTotal = cli->GetTotalTime();
-				me->respSize = totalRead;
+				me->respTransfSize = totalRead;
+				me->respULSize = cli->GetTotalUpload();
+				me->respDLSize = cli->GetTotalDownload();
 				me->respStatus = cli->GetRespStatus();
 				if (me->respStatus == 401 && currUserName != 0 && currPassword != 0)
 				{
@@ -640,7 +650,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 							totalRead += thisRead;
 						}
 						me->respTimeTotal = cli->GetTotalTime();
-						me->respSize = totalRead;
+						me->respTransfSize = totalRead;
+						me->respULSize = cli->GetTotalUpload();
+						me->respDLSize = cli->GetTotalDownload();
 						me->respStatus = cli->GetRespStatus();
 					}
 					else
@@ -650,7 +662,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						me->respTimeReq = -1;
 						me->respTimeResp = -1;
 						me->respTimeTotal = -1;
-						me->respSize = 0;
+						me->respTransfSize = 0;
+						me->respULSize = 0;
+						me->respDLSize = 0;
 						me->respStatus = 0;
 					}
 				}
@@ -666,6 +680,32 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				if (cli->GetRespHeader(CSTR("Content-Type"), &sb))
 				{
 					contType = Text::String::New(sb.ToString(), sb.GetLength());
+				}
+				sb.ClearStr();
+				if (cli->GetRespHeader(CSTR("Content-Encoding"), &sb))
+				{
+					if (sb.Equals(UTF8STRC("gzip")))
+					{
+						UOSInt respSize;
+						const UInt8 *respData = mstm->GetBuff(&respSize);
+						if (respSize > 16 && respData[0] == 0x1F && respData[1] == 0x8B && respData[2] == 0x8)
+						{
+							IO::MemoryStream *mstm2;
+							Data::Compress::Inflate inflate(false);
+							i = 10;
+							IO::StmData::MemoryData mdata(&respData[i], respSize - i - 8);
+							NEW_CLASS(mstm2, IO::MemoryStream(ReadUInt32(&respData[respSize - 4]), UTF8STRC("SSWR.AVIRead.AVIRHTTPClientForm.respData")));
+							if (inflate.Decompress(mstm2, &mdata))
+							{
+								DEL_CLASS(mstm);
+								mstm = mstm2;
+							}
+							else
+							{
+								DEL_CLASS(mstm2);
+							}
+						}
+					}
 				}
 				me->respSvrAddr = *cli->GetSvrAddr();
 				Sync::MutexUsage respMutUsage(me->respMut);
@@ -692,7 +732,9 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 				me->respTimeReq = -1;
 				me->respTimeResp = -1;
 				me->respTimeTotal = -1;
-				me->respSize = 0;
+				me->respTransfSize = 0;
+				me->respULSize = 0;
+				me->respDLSize = 0;
 				me->respStatus = 0;
 				Sync::MutexUsage mutUsage(me->respMut);
 				SDEL_STRING(me->respReqURL)
@@ -789,8 +831,21 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnTimerTick(void *userObj)
 			sptr = Text::StrDoubleFmt(sbuff, me->respTimeTotal - me->respTimeResp, "0.0000000000");
 			me->txtTimeTotal->SetText(CSTRP(sbuff, sptr));
 		}
-		sptr = Text::StrUInt64(sbuff, me->respSize);
-		me->txtRespSize->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt64(sbuff, me->respDLSize);
+		me->txtRespDLSize->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt64(sbuff, me->respULSize);
+		me->txtRespULSize->SetText(CSTRP(sbuff, sptr));
+		sptr = Text::StrUInt64(sbuff, me->respTransfSize);
+		me->txtRespTransfSize->SetText(CSTRP(sbuff, sptr));
+		if (me->respData)
+		{
+			sptr = Text::StrUInt64(sbuff, me->respData->GetLength());
+			me->txtRespContSize->SetText(CSTRP(sbuff, sptr));
+		}
+		else
+		{
+			me->txtRespContSize->SetText(CSTR("-"));
+		}
 		sptr = Text::StrInt32(sbuff, me->respStatus);
 		me->txtRespStatus->SetText(CSTRP(sbuff, sptr));
 
@@ -1131,6 +1186,8 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	this->cboMethod->SetSelectedIndex(0);
 	NEW_CLASS(this->chkOSClient, UI::GUICheckBox(ui, this->pnlRequest, CSTR("OS Client"), false));
 	this->chkOSClient->SetRect(204, 28, 100, 23, false);
+	NEW_CLASS(this->chkAllowComp, UI::GUICheckBox(ui, this->pnlRequest, CSTR("Allow ZIP"), true));
+	this->chkAllowComp->SetRect(304, 28, 100, 23, false);
 	NEW_CLASS(this->btnUserAgent, UI::GUIButton(ui, this->pnlRequest, CSTR("User Agent")));
 	this->btnUserAgent->SetRect(4, 52, 75, 23, false);
 	this->btnUserAgent->HandleButtonClick(OnUserAgentClicked, this);
@@ -1186,7 +1243,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 
 	this->tpResponse = this->tcMain->AddTabPage(CSTR("Response"));
 	NEW_CLASS(this->pnlResponse, UI::GUIPanel(ui, this->tpResponse));
-	this->pnlResponse->SetRect(0, 0, 100, 223, false);
+	this->pnlResponse->SetRect(0, 0, 100, 295, false);
 	this->pnlResponse->SetDockType(UI::GUIControl::DOCK_TOP);
 	NEW_CLASS(this->lblReqURL, UI::GUILabel(ui, this->pnlResponse, CSTR("Req URL")));
 	this->lblReqURL->SetRect(4, 4, 100, 23, false);
@@ -1228,11 +1285,26 @@ SSWR::AVIRead::AVIRHTTPClientForm::AVIRHTTPClientForm(UI::GUIClientControl *pare
 	NEW_CLASS(this->txtRespStatus, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
 	this->txtRespStatus->SetRect(104, 172, 150, 23, false);
 	this->txtRespStatus->SetReadOnly(true);
-	NEW_CLASS(this->lblRespSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Size")));
-	this->lblRespSize->SetRect(4, 196, 100, 23, false);
-	NEW_CLASS(this->txtRespSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
-	this->txtRespSize->SetRect(104, 196, 150, 23, false);
-	this->txtRespSize->SetReadOnly(true);
+	NEW_CLASS(this->lblRespDLSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Download Size")));
+	this->lblRespDLSize->SetRect(4, 196, 100, 23, false);
+	NEW_CLASS(this->txtRespDLSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
+	this->txtRespDLSize->SetRect(104, 196, 150, 23, false);
+	this->txtRespDLSize->SetReadOnly(true);
+	NEW_CLASS(this->lblRespULSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Upload Size")));
+	this->lblRespULSize->SetRect(4, 220, 100, 23, false);
+	NEW_CLASS(this->txtRespULSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
+	this->txtRespULSize->SetRect(104, 220, 150, 23, false);
+	this->txtRespULSize->SetReadOnly(true);
+	NEW_CLASS(this->lblRespTransfSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Transfer Size")));
+	this->lblRespTransfSize->SetRect(4, 244, 100, 23, false);
+	NEW_CLASS(this->txtRespTransfSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
+	this->txtRespTransfSize->SetRect(104, 244, 150, 23, false);
+	this->txtRespTransfSize->SetReadOnly(true);
+	NEW_CLASS(this->lblRespContSize, UI::GUILabel(ui, this->pnlResponse, CSTR("Content Size")));
+	this->lblRespContSize->SetRect(4, 268, 100, 23, false);
+	NEW_CLASS(this->txtRespContSize, UI::GUITextBox(ui, this->pnlResponse, CSTR("")));
+	this->txtRespContSize->SetRect(104, 268, 150, 23, false);
+	this->txtRespContSize->SetReadOnly(true);
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this->tpResponse));
 	this->pnlControl->SetRect(0, 0, 100, 31, false);
 	this->pnlControl->SetDockType(UI::GUIControl::DOCK_BOTTOM);

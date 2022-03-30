@@ -607,14 +607,14 @@ Bool IO::PackageFile::RetryMoveFrom(Text::CString fileName, IO::IProgressHandler
 	return this->MoveFrom(fileName, progHdlr, bnt);
 }
 
-Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFileName)
+Bool IO::PackageFile::CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName)
 {
 	IO::PackFileItem *item = this->items->GetItem(index);
 	if (item != 0)
 	{
 		Text::StringBuilderUTF8 sb;
 		Bool succ = true;
-		sb.AppendSlow(destPath);
+		sb.Append(destPath);
 		if (sb.EndsWith(IO::Path::PATH_SEPERATOR))
 		{
 			sb.Append(item->name);
@@ -746,7 +746,7 @@ Bool IO::PackageFile::CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFi
 			UOSInt j = pf->GetCount();
 			while (i < j)
 			{
-				succ = pf->CopyTo(i, sb.ToString(), false);
+				succ = pf->CopyTo(i, sb.ToCString(), false);
 				if (!succ)
 					break;
 				i++;

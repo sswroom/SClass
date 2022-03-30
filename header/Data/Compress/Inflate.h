@@ -8,8 +8,10 @@ namespace Data
 	{
 		class Inflate : public Decompressor
 		{
+		private:
+			Bool hasHeader;
 		public:
-			Inflate();
+			Inflate(Bool hasHeader);
 			virtual ~Inflate();
 
 			virtual Bool Decompress(UInt8 *destBuff, UOSInt *destBuffSize, UInt8 *srcBuff, UOSInt srcBuffSize);

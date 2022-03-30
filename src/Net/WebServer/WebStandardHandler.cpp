@@ -129,7 +129,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				DEL_CLASS(writer);
 				resp->AddContentType(UTF8STRC("text/html"));
 				mstm->SeekFromBeginning(0);
-				Net::WebServer::HTTPServerUtil::SendContent(req, resp, UTF8STRC("text/html"), mstm->GetLength(), mstm);
+				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm->GetLength(), mstm);
 				DEL_CLASS(mstm);
 			}
 		}

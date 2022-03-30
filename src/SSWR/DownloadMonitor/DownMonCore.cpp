@@ -86,7 +86,7 @@ Bool SSWR::DownloadMonitor::DownMonCore::FFMPEGMuxAAC(const UTF8Char *videoFile,
 	}
 }
 
-Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, const UTF8Char *mp4File)
+Bool SSWR::DownloadMonitor::DownMonCore::ExtractZIP(Text::CString zipFile, Text::CString mp4File)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -336,7 +336,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 					sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 					sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 					this->chkStatus = CS_EXTRACTING;
-					if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
+					if (ExtractZIP(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2)))
 					{
 						this->chkStatus = CS_VALIDATING;
 						if (VideoValid(CSTRP(sbuff2, sptr2)))
@@ -401,7 +401,7 @@ void SSWR::DownloadMonitor::DownMonCore::ProcessDir(Text::String *downPath, Text
 						sptr2 = Text::StrConcatC(sbuff2, sbuff, (UOSInt)(sptrEnd - sbuff)) - 4;
 						sptr2 = Text::StrConcatC(sptr2, UTF8STRC(".mp4"));
 						this->chkStatus = CS_EXTRACTING;
-						if (ExtractZIP({sbuff, (UOSInt)(sptrEnd - sbuff)}, sbuff2))
+						if (ExtractZIP(CSTRP(sbuff, sptrEnd), CSTRP(sbuff2, sptr2)))
 						{
 							this->chkStatus = CS_VALIDATING;
 							if (VideoValid(CSTRP(sbuff2, sptr2)))

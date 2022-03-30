@@ -278,7 +278,7 @@ Bool IO::FileAnalyse::PNGFileAnalyse::GetFrameDetail(UOSInt index, Text::StringB
 
 			IO::MemoryStream *mstm;
 			IO::IStreamData *stmData = this->fd->GetPartialData(tag->ofst + i + 3, tag->size - i - 12);
-			Data::Compress::Inflate comp;
+			Data::Compress::Inflate comp(false);
 			NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("IO.FileAnalyse.PNGFileAnalyse")));
 			if (!comp.Decompress(mstm, stmData))
 			{

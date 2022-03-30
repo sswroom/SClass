@@ -112,7 +112,7 @@ namespace IO
 		virtual Bool MoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryCopyFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
 		virtual Bool RetryMoveFrom(Text::CString fileName, IO::IProgressHandler *progHdlr, IO::ActiveStreamReader::BottleNeckType *bnt);
-		virtual Bool CopyTo(UOSInt index, const UTF8Char *destPath, Bool fullFileName);
+		virtual Bool CopyTo(UOSInt index, Text::CString destPath, Bool fullFileName);
 		virtual IO::IStreamData *OpenStreamData(Text::CString fileName);
 
 		void SetInfo(InfoType infoType, const UTF8Char *val);

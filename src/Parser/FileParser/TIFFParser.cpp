@@ -533,7 +533,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 				}
 				else if (compression == 8)
 				{
-					Data::Compress::Inflate inflate;
+					Data::Compress::Inflate inflate(false);
 					if (nStrip == 1)
 					{
 						compImgData = MemAlloc(UInt8, stripLeng);

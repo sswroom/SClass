@@ -14,7 +14,7 @@ Data::Compress::Decompressor *Data::Compress::Decompressor::CreateDecompressor(D
 	switch (compMeth)
 	{
 	case CM_DEFLATE:
-		NEW_CLASS(decomp, Data::Compress::Inflate());
+		NEW_CLASS(decomp, Data::Compress::Inflate(false));
 		break;
 	case CM_LZO:
 		NEW_CLASS(decomp, Data::Compress::LZODecompressor());

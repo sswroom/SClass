@@ -692,7 +692,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 					j = 0;
 					while (j < i)
 					{
-						if (!packFile->CopyTo(selIndices.GetItem(j), dlg->GetFolder()->v, false))
+						if (!packFile->CopyTo(selIndices.GetItem(j), dlg->GetFolder()->ToCString(), false))
 						{
 							UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 							break;
@@ -715,7 +715,7 @@ void SSWR::AVIRead::AVIRPackageForm::EventMenuClicked(UInt16 cmdId)
 				UOSInt j = packFile->GetCount();
 				while (i < j)
 				{
-					if (!packFile->CopyTo(i, dlg->GetFolder()->v, false))
+					if (!packFile->CopyTo(i, dlg->GetFolder()->ToCString(), false))
 					{
 						UI::MessageDialog::ShowDialog(CSTR("Error in copying"), CSTR("Copy To"), this);
 						break;

@@ -157,6 +157,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 					this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 				}
 #endif
+				this->totalDownload += i;
 				this->buffSize += i;
 			}
 			if (this->chunkSizeLeft <= 2)
@@ -185,6 +186,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 						this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 					}
 #endif
+					this->totalDownload += i;
 					this->buffSize += i;
 				}
 				MemCopyO(this->dataBuff, &this->dataBuff[this->chunkSizeLeft], this->buffSize - this->chunkSizeLeft);
@@ -267,6 +269,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 			}
 #endif
+			this->totalDownload += i;
 			this->buffSize += i;
 		}
 		while (INVALID_INDEX == (i = Text::StrIndexOfC(this->dataBuff, this->buffSize, UTF8STRC("\r\n"))))
@@ -301,6 +304,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 #ifdef LOGREPLY
 			this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 #endif
+			this->totalDownload += i;
 			this->buffSize += i;
 			this->dataBuff[this->buffSize] = 0;
 			if (this->dataBuff[0] == '\r' && this->dataBuff[1] == '\n')
@@ -361,6 +365,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 			}
 #endif
+			this->totalDownload += i;
 			this->buffSize += i;
 			i = 0;
 		}
@@ -435,6 +440,7 @@ UOSInt Net::HTTPMyClient::ReadRAW(UInt8 *buff, UOSInt size)
 				return 0;
 			}
 			this->buffSize = cli->Read(this->dataBuff, size);
+			this->totalDownload += this->buffSize;
 #ifdef SHOWDEBUG
 			printf("Read from remote(4) = %d\r\n", (Int32)this->buffSize);
 /*			if (this->buffSize == 0)
@@ -760,6 +766,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 				size = (UOSInt)(this->contLeng - this->contRead);
 			}
 			size = this->cli->Read(this->dataBuff, size);
+			this->totalDownload += size;
 #ifdef SHOWDEBUG
 			printf("Read from remote(5), size = %d\r\n", (Int32)size);
 #endif
@@ -984,6 +991,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #endif
 			if (currSize <= 0)
 				break;
+			this->totalUpload += currSize;
 			writeSize += currSize;
 		}
 		this->reqMstm->Clear();
@@ -1011,6 +1019,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 				this->clsData->fs->Write(&this->dataBuff[this->buffSize], recvSize);
 			}
 #endif
+			this->totalDownload += recvSize;
 			this->buffSize += recvSize;
 			if (recvSize <= 0)
 				break;
@@ -1136,6 +1145,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #ifdef LOGREPLY
 					this->clsData->fs->Write(&this->dataBuff[this->buffSize], i);
 #endif
+					this->totalDownload += i;
 					this->buffSize += i;
 					this->dataBuff[this->buffSize] = 0;
 					ptr = (UTF8Char*)this->dataBuff;

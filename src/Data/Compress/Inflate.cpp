@@ -5,8 +5,9 @@
 #define _ftelli64 ftell
 #include "miniz.h"
 
-Data::Compress::Inflate::Inflate()
+Data::Compress::Inflate::Inflate(Bool hasHeader)
 {
+	this->hasHeader = hasHeader;
 }
 
 Data::Compress::Inflate::~Inflate()
@@ -61,7 +62,7 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 	stm.avail_in = 0;
 	stm.next_out = writeBuff;
 	stm.avail_out = 1048576;
-	mz_inflateInit2(&stm, -MZ_DEFAULT_WINDOW_BITS);
+	mz_inflateInit2(&stm, this->hasHeader?MZ_DEFAULT_WINDOW_BITS:-MZ_DEFAULT_WINDOW_BITS);
 	while (!error)
 	{
 		srcSize = srcData->GetRealData(srcOfst, 1048576, readBuff);
@@ -101,7 +102,7 @@ Bool Data::Compress::Inflate::Decompress(IO::Stream *destStm, IO::IStreamData *s
 	mz_inflateEnd(&stm);
 	MemFree(readBuff);
 	MemFree(writeBuff);
-	return error;
+	return !error;
 }
 
 UOSInt Data::Compress::Inflate::TestCompress(const UInt8 *srcBuff, UOSInt srcBuffSize, Bool hasHeader)

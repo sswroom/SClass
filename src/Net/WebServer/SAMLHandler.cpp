@@ -96,7 +96,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
 			resp->AddContentType(UTF8STRC("application/samlmetadata+xml"));
-			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, UTF8STRC("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
+			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
 		}
 		else if (this->ssoPath->Equals(subReq, subReqLen))
 		{

@@ -53,6 +53,7 @@ namespace SSWR
 			UI::GUILabel *lblMethod;
 			UI::GUIComboBox *cboMethod;
 			UI::GUICheckBox *chkOSClient;
+			UI::GUICheckBox *chkAllowComp;
 			UI::GUIButton *btnUserAgent;
 			UI::GUILabel *lblUserAgent;
 			UI::GUILabel *lblUserName;
@@ -92,8 +93,14 @@ namespace SSWR
 			UI::GUITextBox *txtTimeTotal;
 			UI::GUILabel *lblRespStatus;
 			UI::GUITextBox *txtRespStatus;
-			UI::GUILabel *lblRespSize;
-			UI::GUITextBox *txtRespSize;
+			UI::GUILabel *lblRespDLSize;
+			UI::GUITextBox *txtRespDLSize;
+			UI::GUILabel *lblRespULSize;
+			UI::GUITextBox *txtRespULSize;
+			UI::GUILabel *lblRespTransfSize;
+			UI::GUITextBox *txtRespTransfSize;
+			UI::GUILabel *lblRespContSize;
+			UI::GUITextBox *txtRespContSize;
 			UI::GUIListView *lvHeaders;
 			UI::GUIPanel *pnlControl;
 			UI::GUIButton *btnSave;
@@ -119,6 +126,7 @@ namespace SSWR
 			Text::String *reqHeaders;
 			Net::WebUtil::RequestMethod reqMeth;
 			Bool reqOSClient;
+			Bool reqAllowComp;
 			Bool noShutdown;
 			Text::String *userAgent;
 
@@ -129,7 +137,9 @@ namespace SSWR
 			Double respTimeReq;
 			Double respTimeResp;
 			Double respTimeTotal;
-			UInt64 respSize;
+			UInt64 respTransfSize;
+			UInt64 respDLSize;
+			UInt64 respULSize;
 			Int32 respStatus;
 			Text::String *respReqURL;
 			Data::ArrayList<Text::String*> *respHeaders;
