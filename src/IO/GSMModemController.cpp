@@ -617,11 +617,11 @@ Bool IO::GSMModemController::GPRSServiceSetAttached(Bool attached)
 	}
 }
 
-Bool IO::GSMModemController::GPRSSetAPN(const UTF8Char *apn)
+Bool IO::GSMModemController::GPRSSetAPN(Text::CString apn)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CGDCONT=1,\"IP\",\""));
-	sptr = Text::StrConcat(sptr, apn);
+	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
 	return SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));

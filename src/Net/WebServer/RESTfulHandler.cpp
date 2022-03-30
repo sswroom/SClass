@@ -27,39 +27,39 @@ void Net::WebServer::RESTfulHandler::BuildJSON(Text::JSONBuilder *json, DB::DBRo
 		switch (dtype)
 		{
 		case DB::DBRow::DT_STRING:
-			json->ObjectAddStrUTF8(sb.ToString(), row->GetValueStr(col->GetColName()->v));
+			json->ObjectAddStrUTF8(sb.ToCString(), row->GetValueStr(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_DOUBLE:
-			json->ObjectAddFloat64(sb.ToString(), row->GetValueDouble(col->GetColName()->v));
+			json->ObjectAddFloat64(sb.ToCString(), row->GetValueDouble(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_INT64:
-			json->ObjectAddInt64(sb.ToString(), row->GetValueInt64(col->GetColName()->v));
+			json->ObjectAddInt64(sb.ToCString(), row->GetValueInt64(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_DATETIME:
 			dt = row->GetValueDate(col->GetColName()->v);
 			if (dt)
 			{
 				dt->ToString(sbuff, "yyyy-MM-ddTHH:mm:ss.fffzzzz");
-				json->ObjectAddStrUTF8(sb.ToString(), sbuff);
+				json->ObjectAddStrUTF8(sb.ToCString(), sbuff);
 			}
 			else
 			{
-				json->ObjectAddStrUTF8(sb.ToString(), 0);
+				json->ObjectAddStrUTF8(sb.ToCString(), 0);
 			}
 			break;
 		case DB::DBRow::DT_VECTOR:
-			this->AppendVector(json, sb.ToString(), row->GetValueVector(col->GetColName()->v));
+			this->AppendVector(json, sb.ToCString(), row->GetValueVector(col->GetColName()->v));
 			break;
 		case DB::DBRow::DT_BINARY:
 		case DB::DBRow::DT_UNKNOWN:
-			json->ObjectAddStrUTF8(sb.ToString(), (const UTF8Char*)"?");
+			json->ObjectAddStr(sb.ToCString(), CSTR("?"));
 			break;
 		}
 		i++;
 	}
 }
 
-void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const UTF8Char *name, Math::Vector2D *vec)
+void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, Text::CString name, Math::Vector2D *vec)
 {
 	switch (vec->GetVectorType())
 	{
@@ -77,13 +77,13 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			json->ObjectBeginObject(name);
 			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polygon)
 			{
-				json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polygon");
+				json->ObjectAddStr(CSTR("type"), CSTR("Polygon"));
 			}
 			else
 			{
-				json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Polyline");
+				json->ObjectAddStr(CSTR("type"), CSTR("Polyline"));
 			}
-			json->ObjectBeginArray((const UTF8Char*)"coordinates");
+			json->ObjectBeginArray(CSTR("coordinates"));
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);
 			j = ptOfsts[0];
@@ -120,8 +120,8 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 			Double y;
 			Math::Point *pt = (Math::Point*)vec;
 			json->ObjectBeginObject(name);
-			json->ObjectAddStrUTF8((const UTF8Char*)"type", (const UTF8Char*)"Point");
-			json->ObjectBeginArray((const UTF8Char*)"coordinates");
+			json->ObjectAddStr(CSTR("type"), CSTR("Point"));
+			json->ObjectBeginArray(CSTR("coordinates"));
 			pt->GetCenter(&x, &y);
 			json->ArrayAddFloat64(x);
 			json->ArrayAddFloat64(y);
@@ -136,7 +136,7 @@ void Net::WebServer::RESTfulHandler::AppendVector(Text::JSONBuilder *json, const
 	case Math::Vector2D::VectorType::PieArea:
 	case Math::Vector2D::VectorType::Unknown:
 	default:
-		json->ObjectAddStrUTF8(name, (const UTF8Char*)"?");
+		json->ObjectAddStr(name, CSTR("?"));
 		break;
 	}
 }
@@ -196,9 +196,9 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					req->GetRequestURLBase(&sbURI);
 					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
 					sbURI.AppendP(sbuff, sptr);
-					json.ObjectBeginObject((const UTF8Char*)"_links");
-					json.ObjectBeginObject((const UTF8Char*)"self");
-					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectBeginObject(CSTR("_links"));
+					json.ObjectBeginObject(CSTR("self"));
+					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
 					json.ObjectEnd();
 				}
@@ -232,8 +232,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				DB::DBRow *row;
 				Int64 ikey;
 				this->dbCache->GetTableData(&rows, &subReq[1], page);
-				json.ObjectBeginObject((const UTF8Char*)"_embedded");
-				json.ObjectBeginArray(&subReq[1]);
+				json.ObjectBeginObject(CSTR("_embedded"));
+				json.ObjectBeginArray(Text::CString(&subReq[1], subReqLen - 1));
 				UOSInt i = 0;
 				UOSInt j = rows.GetCount();
 				while (i < j)
@@ -252,9 +252,9 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 							sbURI.AppendUTF8Char('/');
 						}
 						sbURI.AppendI64(ikey);
-						json.ObjectBeginObject((const UTF8Char*)"_links");
-						json.ObjectBeginObject((const UTF8Char*)"self");
-						json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+						json.ObjectBeginObject(CSTR("_links"));
+						json.ObjectBeginObject(CSTR("self"));
+						json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 						json.ObjectEnd();
 						json.ObjectEnd();
 					}
@@ -279,20 +279,20 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				if (!this->noLinks)
 				{
 					sptr = req->GetRequestPath(sbuff, sizeof(sbuff));
-					json.ObjectBeginObject((const UTF8Char*)"_links");
+					json.ObjectBeginObject(CSTR("_links"));
 					sbURI.ClearStr();
 					req->GetRequestURLBase(&sbURI);
 					sbURI.AppendP(sbuff, sptr);
 					sbURI.AppendC(UTF8STRC("?page=0&size="));
 					sbURI.AppendUOSInt(page->GetPageSize());
-					json.ObjectBeginObject((const UTF8Char*)"first");
-					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectBeginObject(CSTR("first"));
+					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
 					sbURI.ClearStr();
 					req->GetRequestURLBase(&sbURI);
 					sbURI.Append(req->GetRequestURI());
-					json.ObjectBeginObject((const UTF8Char*)"self");
-					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectBeginObject(CSTR("self"));
+					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
 					if (page->GetPageNum() + 1 < pageCnt)
 					{
@@ -303,8 +303,8 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 						sbURI.AppendUOSInt(page->GetPageNum() + 1);
 						sbURI.AppendC(UTF8STRC("&size="));
 						sbURI.AppendUOSInt(page->GetPageSize());
-						json.ObjectBeginObject((const UTF8Char*)"next");
-						json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+						json.ObjectBeginObject(CSTR("next"));
+						json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 						json.ObjectEnd();
 					}
 					sbURI.ClearStr();
@@ -314,17 +314,17 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 					sbURI.AppendUOSInt(pageCnt - 1);
 					sbURI.AppendC(UTF8STRC("&size="));
 					sbURI.AppendUOSInt(page->GetPageSize());
-					json.ObjectBeginObject((const UTF8Char*)"last");
-					json.ObjectAddStrUTF8((const UTF8Char*)"href", sbURI.ToString());
+					json.ObjectBeginObject(CSTR("last"));
+					json.ObjectAddStr(CSTR("href"), sbURI.ToCString());
 					json.ObjectEnd();
 					json.ObjectEnd();
 				}
 
-				json.ObjectBeginObject((const UTF8Char*)"page");
-				json.ObjectAddUInt64((const UTF8Char*)"size", page->GetPageSize());
-				json.ObjectAddInt64((const UTF8Char*)"totalElements", cnt);
-				json.ObjectAddUInt64((const UTF8Char*)"totalPages", pageCnt);
-				json.ObjectAddUInt64((const UTF8Char*)"number", page->GetPageNum());
+				json.ObjectBeginObject(CSTR("page"));
+				json.ObjectAddUInt64(CSTR("size"), page->GetPageSize());
+				json.ObjectAddInt64(CSTR("totalElements"), cnt);
+				json.ObjectAddUInt64(CSTR("totalPages"), pageCnt);
+				json.ObjectAddUInt64(CSTR("number"), page->GetPageNum());
 				json.ObjectEnd();
 
 				json.ObjectEnd();

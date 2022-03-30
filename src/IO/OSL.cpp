@@ -297,9 +297,9 @@ UTF8Char *IO::OS::GetVersion(UTF8Char *sbuff)
 		DEL_CLASS(reader);
 		DEL_CLASS(fs);
 
-		if (sptr && Text::StrStartsWith(sbuff, (const UTF8Char*)"mLinux "))
+		if (sptr && Text::StrStartsWithC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("mLinux ")))
 		{
-			return Text::StrConcat(sbuff, &sbuff[7]);
+			return Text::StrConcatC(sbuff, &sbuff[7], (UOSInt)(sptr - &sbuff[7]));
 		}
 	}
 	return 0;

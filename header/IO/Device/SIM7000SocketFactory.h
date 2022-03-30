@@ -43,7 +43,7 @@ namespace IO
 		private:
 			IO::Device::SIM7000 *modem;
 			Bool needRelease;
-			const UTF8Char *apn;
+			Text::String *apn;
 			SocketStatus status[8];
 
 			static void __stdcall OnReceiveData(void *userObj, UOSInt index, UInt32 remoteIP, UInt16 remotePort, const UInt8 *buff, UOSInt buffSize);
@@ -52,8 +52,8 @@ namespace IO
 			SIM7000SocketFactory(IO::Device::SIM7000 *modem, Bool needRelease);
 			virtual ~SIM7000SocketFactory();
 
-			void SetAPN(const UTF8Char *apn);
-			const UTF8Char *GetAPN();
+			void SetAPN(Text::CString apn);
+			Text::String *GetAPN();
 			void Init();
 			Bool NetworkStart();
 			Bool NetworkEnd();

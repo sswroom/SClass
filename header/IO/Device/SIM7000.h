@@ -82,7 +82,7 @@ namespace IO
 			//AT+CIPSHUT
 			Bool NetSetLocalPortTCP(UOSInt index, UInt16 port); //AT+CLPORT
 			Bool NetSetLocalPortUDP(UOSInt index, UInt16 port); //AT+CLPORT
-			Bool NetSetAPN(const UTF8Char *apn); //AT+CSTT
+			Bool NetSetAPN(Text::CString apn); //AT+CSTT
 			Bool NetDataStart(); //AT+CIICR
 			UTF8Char *NetGetIFAddr(UTF8Char *addr); //AT+CIFSR
 			//AT+CIFSREX

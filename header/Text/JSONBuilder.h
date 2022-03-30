@@ -19,6 +19,7 @@ namespace Text
 		ObjectType currType;
 		Bool isFirst;
 
+		void AppendStr(Text::CString val);
 		void AppendStrUTF8(const UTF8Char *val);
 		void AppendStrW(const WChar *val);
 	public:
@@ -33,15 +34,16 @@ namespace Text
 		Bool ArrayBeginArray();
 		Bool ArrayEnd();
 
-		Bool ObjectAddFloat64(const UTF8Char *name, Double val);
-		Bool ObjectAddInt32(const UTF8Char *name, Int32 val);
-		Bool ObjectAddInt64(const UTF8Char *name, Int64 val);
-		Bool ObjectAddUInt64(const UTF8Char *name, UInt64 val);
-		Bool ObjectAddStr(const UTF8Char *name, Text::PString *val);
-		Bool ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *val);
-		Bool ObjectAddStrW(const UTF8Char *name, const WChar *val);
-		Bool ObjectBeginArray(const UTF8Char *name);
-		Bool ObjectBeginObject(const UTF8Char *name);
+		Bool ObjectAddFloat64(Text::CString name, Double val);
+		Bool ObjectAddInt32(Text::CString name, Int32 val);
+		Bool ObjectAddInt64(Text::CString name, Int64 val);
+		Bool ObjectAddUInt64(Text::CString name, UInt64 val);
+		Bool ObjectAddStr(Text::CString name, Text::PString *val);
+		Bool ObjectAddStr(Text::CString name, Text::CString val);
+		Bool ObjectAddStrUTF8(Text::CString name, const UTF8Char *val);
+		Bool ObjectAddStrW(Text::CString name, const WChar *val);
+		Bool ObjectBeginArray(Text::CString name);
+		Bool ObjectBeginObject(Text::CString name);
 		Bool ObjectEnd();
 	};
 }

@@ -236,7 +236,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		while (i < j)
 		{
 			param = me->params->GetItem(i);
-			json->ObjectAddStrUTF8(param->name->v, param->value->v);
+			json->ObjectAddStrUTF8(param->name->ToCString(), param->value->v);
 			i++;
 		}
 		DEL_CLASS(json);

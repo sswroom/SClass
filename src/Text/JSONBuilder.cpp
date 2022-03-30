@@ -4,6 +4,11 @@
 #include "Text/MyStringFloat.h"
 #include "Text/MyStringW.h"
 
+void Text::JSONBuilder::AppendStr(Text::CString val)
+{
+	this->AppendStrUTF8(val.v);
+}
+
 void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 {
 	UTF8Char sbuff[256];
@@ -256,7 +261,7 @@ Bool Text::JSONBuilder::ArrayEnd()
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddFloat64(const UTF8Char *name, Double val)
+Bool Text::JSONBuilder::ObjectAddFloat64(Text::CString name, Double val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -266,13 +271,13 @@ Bool Text::JSONBuilder::ObjectAddFloat64(const UTF8Char *name, Double val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	Text::SBAppendF64(this->sb, val);
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddInt32(const UTF8Char *name, Int32 val)
+Bool Text::JSONBuilder::ObjectAddInt32(Text::CString name, Int32 val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -282,13 +287,13 @@ Bool Text::JSONBuilder::ObjectAddInt32(const UTF8Char *name, Int32 val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	this->sb->AppendI32(val);
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddInt64(const UTF8Char *name, Int64 val)
+Bool Text::JSONBuilder::ObjectAddInt64(Text::CString name, Int64 val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -298,13 +303,13 @@ Bool Text::JSONBuilder::ObjectAddInt64(const UTF8Char *name, Int64 val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	this->sb->AppendI64(val);
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddUInt64(const UTF8Char *name, UInt64 val)
+Bool Text::JSONBuilder::ObjectAddUInt64(Text::CString name, UInt64 val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -314,13 +319,13 @@ Bool Text::JSONBuilder::ObjectAddUInt64(const UTF8Char *name, UInt64 val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	this->sb->AppendU64(val);
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStr(const UTF8Char *name, Text::PString *val)
+Bool Text::JSONBuilder::ObjectAddStr(Text::CString name, Text::PString *val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -330,7 +335,7 @@ Bool Text::JSONBuilder::ObjectAddStr(const UTF8Char *name, Text::PString *val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	if (val == 0)
 	{
@@ -343,7 +348,7 @@ Bool Text::JSONBuilder::ObjectAddStr(const UTF8Char *name, Text::PString *val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *val)
+Bool Text::JSONBuilder::ObjectAddStr(Text::CString name, Text::CString val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -353,7 +358,30 @@ Bool Text::JSONBuilder::ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *v
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
+	this->sb->AppendC(UTF8STRC(":"));
+	if (val.v == 0)
+	{
+		this->sb->AppendC(UTF8STRC("null"));
+	}
+	else
+	{
+		this->AppendStr(val);
+	}
+	return true;
+}
+
+Bool Text::JSONBuilder::ObjectAddStrUTF8(Text::CString name, const UTF8Char *val)
+{
+	if (this->currType != OT_OBJECT)
+		return false;
+	if (this->isFirst)
+		this->isFirst = false;
+	else
+	{
+		this->sb->AppendC(UTF8STRC(","));
+	}
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	if (val == 0)
 	{
@@ -366,7 +394,7 @@ Bool Text::JSONBuilder::ObjectAddStrUTF8(const UTF8Char *name, const UTF8Char *v
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectAddStrW(const UTF8Char *name, const WChar *val)
+Bool Text::JSONBuilder::ObjectAddStrW(Text::CString name, const WChar *val)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -376,7 +404,7 @@ Bool Text::JSONBuilder::ObjectAddStrW(const UTF8Char *name, const WChar *val)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":"));
 	if (val == 0)
 	{
@@ -389,7 +417,7 @@ Bool Text::JSONBuilder::ObjectAddStrW(const UTF8Char *name, const WChar *val)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectBeginArray(const UTF8Char *name)
+Bool Text::JSONBuilder::ObjectBeginArray(Text::CString name)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -399,7 +427,7 @@ Bool Text::JSONBuilder::ObjectBeginArray(const UTF8Char *name)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":["));
 	this->objTypes->Add(OT_OBJECT);
 	this->currType = OT_ARRAY;
@@ -407,7 +435,7 @@ Bool Text::JSONBuilder::ObjectBeginArray(const UTF8Char *name)
 	return true;
 }
 
-Bool Text::JSONBuilder::ObjectBeginObject(const UTF8Char *name)
+Bool Text::JSONBuilder::ObjectBeginObject(Text::CString name)
 {
 	if (this->currType != OT_OBJECT)
 		return false;
@@ -417,7 +445,7 @@ Bool Text::JSONBuilder::ObjectBeginObject(const UTF8Char *name)
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->AppendStrUTF8(name);
+	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":{"));
 	this->objTypes->Add(OT_OBJECT);
 	this->currType = OT_OBJECT;

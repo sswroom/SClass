@@ -53,7 +53,7 @@ namespace Net
 		virtual Crypto::Cert::Certificate *GetServerCert() = 0;
 
 		Bool FormBegin();
-		Bool FormAdd(const UTF8Char *name, const UTF8Char *value);
+		Bool FormAdd(Text::CString name, Text::CString value);
 		void AddTimeHeader(Text::CString name, Data::DateTime *dt);
 		void AddContentType(Text::CString contType);
 		void AddContentLength(UOSInt leng);

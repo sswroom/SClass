@@ -74,7 +74,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		modem->GPRSNetworkReg();
 		modem->GPRSServiceSetAttached(true);
 		console->WriteLineC(UTF8STRC("GPRS Service Attached"));
-		modem->GPRSSetAPN((const UTF8Char*)"");
+		modem->GPRSSetAPN(CSTR(""));
 		console->WriteLineC(UTF8STRC("APN Set"));
 		Int32 plmn = 0;
 		OSInt i = 30;

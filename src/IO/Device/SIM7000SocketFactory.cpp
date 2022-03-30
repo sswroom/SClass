@@ -88,23 +88,23 @@ IO::Device::SIM7000SocketFactory::~SIM7000SocketFactory()
 		DEL_CLASS(this->status[i].dataList);
 		DEL_CLASS(this->status[i].dataEvt);
 	}
-	SDEL_TEXT(this->apn);
+	SDEL_STRING(this->apn);
 	if (this->needRelease)
 	{
 		DEL_CLASS(this->modem);
 	}
 }
 
-void IO::Device::SIM7000SocketFactory::SetAPN(const UTF8Char *apn)
+void IO::Device::SIM7000SocketFactory::SetAPN(Text::CString apn)
 {
-	SDEL_TEXT(this->apn);
-	if (apn)
+	SDEL_STRING(this->apn);
+	if (apn.v)
 	{
-		this->apn = Text::StrCopyNew(apn);
+		this->apn = Text::String::New(apn);
 	}
 }
 
-const UTF8Char *IO::Device::SIM7000SocketFactory::GetAPN()
+Text::String *IO::Device::SIM7000SocketFactory::GetAPN()
 {
 	return this->apn;
 }
@@ -120,6 +120,7 @@ void IO::Device::SIM7000SocketFactory::Init()
 Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 {
 	UTF8Char sbuff[256];
+	UTF8Char *sptr;
 	Bool bVal;
 	modem->GPRSEPSReg();
 	modem->GPRSNetworkReg();
@@ -141,19 +142,19 @@ Bool IO::Device::SIM7000SocketFactory::NetworkStart()
 
 	if (this->apn)
 	{
-		if (!modem->NetSetAPN(this->apn))
+		if (!modem->NetSetAPN(this->apn->ToCString()))
 		{
 //			return false;			
 		}
 	}
 	else
 	{
-		if (modem->SIMCOMGetNetworkAPN(sbuff) == 0)
+		if ((sptr = modem->SIMCOMGetNetworkAPN(sbuff)) == 0)
 		{
 			return false;
 		}
 
-		if (!modem->NetSetAPN(sbuff))
+		if (!modem->NetSetAPN(CSTRP(sbuff, sptr)))
 		{
 	//		return false;
 		}

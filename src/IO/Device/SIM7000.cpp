@@ -369,11 +369,11 @@ Bool IO::Device::SIM7000::NetSetLocalPortUDP(UOSInt index, UInt16 port)
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
-Bool IO::Device::SIM7000::NetSetAPN(const UTF8Char *apn)
+Bool IO::Device::SIM7000::NetSetAPN(Text::CString apn)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr = Text::StrConcatC(sbuff, UTF8STRC("AT+CSTT=\""));
-	sptr = Text::StrConcat(sptr, apn);
+	sptr = apn.ConcatTo(sptr);
 	*sptr++ = '"';
 	*sptr = 0;
 	return this->SendBoolCommandC(sbuff, (UOSInt)(sptr - sbuff));

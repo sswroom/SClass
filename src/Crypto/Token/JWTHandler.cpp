@@ -25,7 +25,7 @@ Crypto::Token::JWTHandler::~JWTHandler()
 	MemFree(this->privateKey);
 }
 
-Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::StringUTF8Map<const UTF8Char*> *payload, JWTParam *param)
+Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::StringMap<const UTF8Char*> *payload, JWTParam *param)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -37,8 +37,8 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	sb->AppendUTF8Char('.');
 	Text::StringBuilderUTF8 sbJson;
 	Text::JSONBuilder *json;
-	Data::ArrayList<const UTF8Char*> *keys = payload->GetKeys();
-	const UTF8Char *key;
+	Data::ArrayList<Text::String*> *keys = payload->GetKeys();
+	Text::String *key;
 	UOSInt i;
 	UOSInt j;
 	NEW_CLASS(json, Text::JSONBuilder(&sbJson, Text::JSONBuilder::OT_OBJECT));
@@ -47,38 +47,38 @@ Bool Crypto::Token::JWTHandler::Generate(Text::StringBuilderUTF8 *sb, Data::Stri
 	while (i < j)
 	{
 		key = keys->GetItem(i);
-		json->ObjectAddStrUTF8(key, payload->Get(key));
+		json->ObjectAddStrUTF8(key->ToCString(), payload->Get(key));
 		i++;
 	}
 	if (param != 0)
 	{
 		if (param->GetIssuer() != 0)
 		{
-			json->ObjectAddStr((const UTF8Char*)"iss", param->GetIssuer());
+			json->ObjectAddStr(CSTR("iss"), param->GetIssuer());
 		}
 		if (param->GetSubject() != 0)
 		{
-			json->ObjectAddStr((const UTF8Char*)"sub", param->GetSubject());
+			json->ObjectAddStr(CSTR("sub"), param->GetSubject());
 		}
 		if (param->GetAudience() != 0)
 		{
-			json->ObjectAddStr((const UTF8Char*)"aud", param->GetAudience());
+			json->ObjectAddStr(CSTR("aud"), param->GetAudience());
 		}
 		if (param->GetExpirationTime() != 0)
 		{
-			json->ObjectAddInt64((const UTF8Char*)"exp", param->GetExpirationTime());
+			json->ObjectAddInt64(CSTR("exp"), param->GetExpirationTime());
 		}
 		if (param->GetNotBefore() != 0)
 		{
-			json->ObjectAddInt64((const UTF8Char*)"nbf", param->GetNotBefore());
+			json->ObjectAddInt64(CSTR("nbf"), param->GetNotBefore());
 		}
 		if (param->GetIssuedAt() != 0)
 		{
-			json->ObjectAddInt64((const UTF8Char*)"iat", param->GetIssuedAt());
+			json->ObjectAddInt64(CSTR("iat"), param->GetIssuedAt());
 		}
 		if (param->GetJWTId() != 0)
 		{
-			json->ObjectAddStr((const UTF8Char*)"jti", param->GetJWTId());
+			json->ObjectAddStr(CSTR("jti"), param->GetJWTId());
 		}
 	}
 	DEL_CLASS(json);

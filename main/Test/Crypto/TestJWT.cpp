@@ -26,8 +26,8 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	param.SetSubject(s);
 	s->Release();
 	param.SetIssuedAt(1516239022);
-	Data::StringUTF8Map<const UTF8Char*> payload;
-	payload.Put((const UTF8Char*)"name", (const UTF8Char*)"John Doe");
+	Data::StringMap<const UTF8Char*> payload;
+	payload.Put(CSTR("name"), (const UTF8Char*)"John Doe");
 	jwt->Generate(&sb, &payload, &param);
 	if (!sb.Equals(UTF8STRC("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJzdWIiOiIxMjM0NTY3ODkwIiwiaWF0IjoxNTE2MjM5MDIyfQ.3uGPWYtY_HtIcBGz4eUmTtcjZ4HnJZK9Z2uhx0Ks4n8")))
 	{

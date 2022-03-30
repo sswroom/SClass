@@ -186,7 +186,7 @@ namespace IO
 		Bool GPRSNetworkReg(); //AT+CEREG
 		Bool GPRSServiceIsAttached(Bool *attached); //AT+CGATT
 		Bool GPRSServiceSetAttached(Bool attached); //AT+CGATT
-		Bool GPRSSetAPN(const UTF8Char *apn); //AT+CGDCONT
+		Bool GPRSSetAPN(Text::CString apn); //AT+CGDCONT
 		Bool GPRSSetPDPActive(Bool active); //AT+CGACT
 
 		// SMS Commands
