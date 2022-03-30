@@ -81,5 +81,5 @@ UOSInt Text::TextBinEnc::HexTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt st
 
 Text::CString Text::TextBinEnc::HexTextBinEnc::GetName()
 {
-	return {UTF8STRC("Hex")};
+	return CSTR("Hex");
 }

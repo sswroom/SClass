@@ -321,54 +321,54 @@ Text::CString Media::CS::TransferFunc::GetTransferFuncName(Media::CS::TransferTy
 	switch (ttype)
 	{
 	case Media::CS::TRANT_sRGB:
-		return {UTF8STRC("sRGB")};
+		return CSTR("sRGB");
 	case Media::CS::TRANT_GAMMA:
-		return {UTF8STRC("Constant Gamma")};
+		return CSTR("Constant Gamma");
 	case Media::CS::TRANT_LINEAR:
-		return {UTF8STRC("Linear RGB")};
+		return CSTR("Linear RGB");
 	case Media::CS::TRANT_BT709:
-		return {UTF8STRC("BT.709")};
+		return CSTR("BT.709");
 	case Media::CS::TRANT_SMPTE240:
-		return {UTF8STRC("SMPTE 240M")};
+		return CSTR("SMPTE 240M");
 	case Media::CS::TRANT_BT1361:
-		return {UTF8STRC("BT.1361")};
+		return CSTR("BT.1361");
 	case Media::CS::TRANT_BT2100:
-		return {UTF8STRC("BT.2100/SMPTE ST 2084 (HDR10)")};
+		return CSTR("BT.2100/SMPTE ST 2084 (HDR10)");
 	case Media::CS::TRANT_HLG:
-		return {UTF8STRC("Hybrid Log Gamma (HLG)")};
+		return CSTR("Hybrid Log Gamma (HLG)");
 	case Media::CS::TRANT_LOG100:
-		return {UTF8STRC("Log Transfer (100:1)")};
+		return CSTR("Log Transfer (100:1)");
 	case Media::CS::TRANT_LOGSQRT10:
-		return {UTF8STRC("Log Transfer (100 * Sqrt(10) : 1)")};
+		return CSTR("Log Transfer (100 * Sqrt(10) : 1)");
 	case Media::CS::TRANT_NLOG:
-		return {UTF8STRC("N-Log")};
+		return CSTR("N-Log");
 	case Media::CS::TRANT_NTSC:
-		return {UTF8STRC("NTSC")};
+		return CSTR("NTSC");
 	case Media::CS::TRANT_SLOG:
-		return {UTF8STRC("Sony S-Log")};
+		return CSTR("Sony S-Log");
 	case Media::CS::TRANT_SLOG1:
-		return {UTF8STRC("Sony S-Log1")};
+		return CSTR("Sony S-Log1");
 	case Media::CS::TRANT_SLOG2:
-		return {UTF8STRC("Sony S-Log2")};
+		return CSTR("Sony S-Log2");
 	case Media::CS::TRANT_SLOG3:
-		return {UTF8STRC("Sony S-Log3")};
+		return CSTR("Sony S-Log3");
 	case Media::CS::TRANT_VLOG:
-		return {UTF8STRC("Panasonic V-Log")};
+		return CSTR("Panasonic V-Log");
 	case Media::CS::TRANT_PROTUNE:
-		return {UTF8STRC("GoPro Protune")};
+		return CSTR("GoPro Protune");
 	case Media::CS::TRANT_LUT:
-		return {UTF8STRC("LUT")};
+		return CSTR("LUT");
 	case Media::CS::TRANT_PARAM1:
-		return {UTF8STRC("Parameter Function1")};
+		return CSTR("Parameter Function1");
 	case Media::CS::TRANT_VDISPLAY:
-		return {UTF8STRC("As Display (Video)")};
+		return CSTR("As Display (Video)");
 	case Media::CS::TRANT_PDISPLAY:
-		return {UTF8STRC("As Display (Picture)")};
+		return CSTR("As Display (Picture)");
 	case Media::CS::TRANT_VUNKNOWN:
-		return {UTF8STRC("Unknown (Video)")};
+		return CSTR("Unknown (Video)");
 	case Media::CS::TRANT_PUNKNOWN:
-		return {UTF8STRC("Unknown (Picture)")};
+		return CSTR("Unknown (Picture)");
 	default:
-		return {UTF8STRC("Unknown function")};
+		return CSTR("Unknown function");
 	}
 }

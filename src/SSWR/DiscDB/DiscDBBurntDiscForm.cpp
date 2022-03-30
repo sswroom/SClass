@@ -181,7 +181,7 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::UpdateVolume()
 
 Bool SSWR::DiscDB::DiscDBBurntDiscForm::UpdateFileInfo()
 {
-	this->selectedFile->cate = ((SSWR::DiscDB::DiscDBEnv::CategoryInfo*)this->cboCategory->GetSelectedItem())->id;
+	this->selectedFile->cate = ((SSWR::DiscDB::DiscDBEnv::CategoryInfo*)this->cboCategory->GetSelectedItem())->id->ToCString();
 	this->BurntFileUpdateVideo(this->selectedFile);
 
 	Text::StringBuilderUTF8 sbName;
@@ -387,7 +387,7 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 				break;
 			if (pt == IO::Path::PathType::File)
 			{
-				file = this->BurntFileNew(sptr, CSTRP(&relPath[1], sptr2), size);
+				file = this->BurntFileNew(CSTRP(sptr, sptr2), CSTRP(&relPath[1], sptr2), size);
 				this->lbFileName->AddItem({&relPath[1], Text::StrCharCnt(&relPath[1])}, file);
 				this->fileList->Add(file);
 				currSize += size;
@@ -406,11 +406,11 @@ UInt64 SSWR::DiscDB::DiscDBBurntDiscForm::SearchSubDir(const UTF8Char *absPath, 
 void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileUpdateVideo(BurntFile *file)
 {
 	file->video = false;
-	if (Text::StrEquals(file->cate, (const UTF8Char*)"ISO"))
+	if (file->cate.Equals(UTF8STRC("ISO")))
 	{
 		file->video = true;
 	}
-	else if (Text::StrEquals(file->cate, (const UTF8Char*)"AC"))
+	else if (file->cate.Equals(UTF8STRC("AC")))
 	{
 		if (file->fname->IndexOfICase(UTF8STRC("DVD")) != INVALID_INDEX)
 		{
@@ -419,104 +419,104 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileUpdateVideo(BurntFile *file)
 	}
 }
 
-SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(const UTF8Char *fileName, Text::CString relPath, UInt64 fileSize)
+SSWR::DiscDB::DiscDBBurntDiscForm::BurntFile *SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileNew(Text::CString fileName, Text::CString relPath, UInt64 fileSize)
 {
 	BurntFile *file;
 	file = MemAlloc(BurntFile, 1);
 	file->fname = Text::String::New(relPath);
 	file->fSize = fileSize;
 	file->videoId = 0;
-	file->cate = (const UTF8Char*)"ISO";
+	file->cate = CSTR("ISO");
 	file->video = true;
 	file->anime = 0;
-	const WChar *wfileName = Text::StrToWCharNew(fileName);
-	if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"EAC") != INVALID_INDEX)
+	const WChar *wfileName = Text::StrToWCharNew(fileName.v);
+	if (fileName.IndexOfICase(UTF8STRC("EAC")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"AC";
+		file->cate = CSTR("AC");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".TS") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".TS")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"DVDISO") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC("DVDISO")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"ISO";
+		file->cate = CSTR("ISO");
 	}
 	else if (Text::StrIndexOf(wfileName, L"アプリ") != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"APP";
+		file->cate = CSTR("APP");
 	}
 	else if (Text::StrIndexOf(wfileName, L"ラジオ") != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"RA";
+		file->cate = CSTR("RA");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".VOB") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".VOB")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"OP";
+		file->cate = CSTR("OP");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"XBOX") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC("XBOX")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"XG";
+		file->cate = CSTR("XG");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".AVI") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".AVI")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".WMV") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".WMV")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".MKV") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".MKV")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".MP4") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".MP4")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)".MOV") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC(".MOV")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"MV";
+		file->cate = CSTR("MV");
 		file->anime = this->MovieColsNew(fileName);
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"PS2") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC("PS2")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"P2G";
+		file->cate = CSTR("P2G");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"WII") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC("WII")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"WII";
+		file->cate = CSTR("WII");
 	}
-	else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"PS") != INVALID_INDEX)
+	else if (fileName.IndexOfICase(UTF8STRC("PS")) != INVALID_INDEX)
 	{
-		file->cate = (const UTF8Char*)"PG";
+		file->cate = CSTR("PG");
 	}
 	else if (Text::StrIndexOf(wfileName, L"ゲーム") != INVALID_INDEX)
 	{
-		if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"DVD") != INVALID_INDEX)
+		if (fileName.IndexOfICase(UTF8STRC("DVD")) != INVALID_INDEX)
 		{
-			file->cate = (const UTF8Char*)"DG";
+			file->cate = CSTR("DG");
 		}
-		else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"CCD") != INVALID_INDEX)
+		else if (fileName.IndexOfICase(UTF8STRC("CCD")) != INVALID_INDEX)
 		{
-			file->cate = (const UTF8Char*)"GC";
+			file->cate = CSTR("GC");
 		}
-		else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"CD") != INVALID_INDEX)
+		else if (fileName.IndexOfICase(UTF8STRC("CD")) != INVALID_INDEX)
 		{
-			file->cate = (const UTF8Char*)"GC";
+			file->cate = CSTR("GC");
 		}
-		else if (Text::StrIndexOfICase(fileName, (const UTF8Char*)"MDS") != INVALID_INDEX)
+		else if (fileName.IndexOfICase(UTF8STRC("MDS")) != INVALID_INDEX)
 		{
-			file->cate = (const UTF8Char*)"DG";
+			file->cate = CSTR("DG");
 		}
 		else
 		{
-			file->cate = (const UTF8Char*)"GC";
+			file->cate = CSTR("GC");
 		}
 	}
 	this->BurntFileUpdateVideo(file);
@@ -534,16 +534,16 @@ void SSWR::DiscDB::DiscDBBurntDiscForm::BurntFileFree(BurntFile *file)
 	MemFree(file);
 }
 
-SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm::MovieColsNew(const UTF8Char *fileName)
+SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm::MovieColsNew(Text::CString fileName)
 {
 	WChar fname[512];
 	WChar *mainTitle;
 	WChar chapterTitle[256];
-	Text::StrUTF8_WChar(fname, fileName, 0);
+	Text::StrUTF8_WChar(fname, fileName.v, 0);
 	UOSInt i;
 	UOSInt j;
 	MovieCols *anime = MemAlloc(MovieCols, 1);
-	anime->type = Text::StrCopyNew((const UTF8Char*)"TV");
+	anime->type = Text::String::New(UTF8STRC("TV"));
 	anime->remark = 0;
 	anime->chapter = 0;
 	anime->aspectRatio = 0;
@@ -559,8 +559,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			{
 				j = 1;
 				fname[i] = 0;
-				Text::StrDelNew(anime->type);
-				anime->type = Text::StrToUTF8New(&fname[1]);
+				anime->type->Release();
+				anime->type = Text::String::NewNotNull(&fname[1]);
 				Text::StrConcat(fname, &fname[i + 1]);
 				Text::StrTrim(fname);
 			}
@@ -572,8 +572,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			{
 				j = 1;
 				fname[i] = 0;
-				Text::StrDelNew(anime->type);
-				anime->type = Text::StrToUTF8New(&fname[1]);
+				anime->type->Release();
+				anime->type = Text::String::NewNotNull(&fname[1]);
 				Text::StrConcat(fname, &fname[i + 1]);
 				Text::StrTrim(fname);
 			}
@@ -585,8 +585,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			{
 				j = 1;
 				fname[i] = 0;
-				Text::StrDelNew(anime->type);
-				anime->type = Text::StrToUTF8New(&fname[1]);
+				anime->type->Release();
+				anime->type = Text::String::NewNotNull(&fname[1]);
 				Text::StrConcat(fname, &fname[i + 1]);
 				Text::StrTrim(fname);
 			}
@@ -598,8 +598,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			{
 				j = 1;
 				fname[i] = 0;
-				Text::StrDelNew(anime->type);
-				anime->type = Text::StrToUTF8New(&fname[1]);
+				anime->type->Release();
+				anime->type = Text::String::NewNotNull(&fname[1]);
 				Text::StrConcat(fname, &fname[i + 1]);
 				Text::StrTrim(fname);
 			}
@@ -611,8 +611,8 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			{
 				j = 1;
 				fname[i] = 0;
-				Text::StrDelNew(anime->type);
-				anime->type = Text::StrToUTF8New(&fname[1]);
+				anime->type->Release();
+				anime->type = Text::String::NewNotNull(&fname[1]);
 				Text::StrConcat(fname, &fname[i + 1]);
 				Text::StrTrim(fname);
 			}
@@ -636,7 +636,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		else if ((i = Text::StrLastIndexOf(chapterTitle, L".")) != INVALID_INDEX)
 		{
 			chapterTitle[i] = 0;
-			anime->remark = Text::StrCopyNew((const UTF8Char*)"");
+			anime->remark = Text::StrCopyNewC(UTF8STRC(""));
 		}
 	}
 	else if ((i = Text::StrIndexOf(fname, L"｢")) != INVALID_INDEX)
@@ -652,7 +652,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 		else if ((i = Text::StrLastIndexOf(chapterTitle, L".")) != INVALID_INDEX)
 		{
 			chapterTitle[i] = 0;
-			anime->remark = Text::StrCopyNew((const UTF8Char*)"");
+			anime->remark = Text::StrCopyNewC(UTF8STRC(""));
 		}
 	}
 	else if ((i = Text::StrIndexOf(fname, L"(")) != INVALID_INDEX)
@@ -682,7 +682,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	else
 	{
 		mainTitle = fname;
-		anime->remark = Text::StrCopyNew((const UTF8Char*)"");
+		anime->remark = Text::StrCopyNewC(UTF8STRC(""));
 	}
 	if ((i = Text::StrIndexOf(mainTitle, L"\\")) != INVALID_INDEX)
 	{
@@ -804,33 +804,33 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 			anime->remark = 0;
 		}
 	}
-	if (Text::StrEquals(anime->type, (const UTF8Char*)"TV"))
+	if (anime->type->Equals(UTF8STRC("TV")))
 	{
 		Text::StrUTF8_WChar(fname, anime->mainTitle, 0);
 		if (Text::StrIndexOf(fname, L"ショウ") != INVALID_INDEX)
 		{
-			Text::StrDelNew(anime->type);
-			anime->type = Text::StrCopyNew((const UTF8Char*)"Live");
+			anime->type->Release();
+			anime->type = Text::String::New(UTF8STRC("Live"));
 		}
 		else if (Text::StrIndexOf(fname, L"OVA") != INVALID_INDEX)
 		{
-			Text::StrDelNew(anime->type);
-			anime->type = Text::StrCopyNew((const UTF8Char*)"OVA");
+			anime->type->Release();
+			anime->type = Text::String::New(UTF8STRC("OVA"));
 		}
 		else if (Text::StrIndexOf(fname, L"劇場版") != INVALID_INDEX)
 		{
-			Text::StrDelNew(anime->type);
-			anime->type = Text::StrCopyNew((const UTF8Char*)"Movie");
+			anime->type->Release();
+			anime->type = Text::String::New(UTF8STRC("Movie"));
 		}
 	}
-	if (Text::StrEndsWithICase(fileName, (const UTF8Char*)".WMV"))
+	if (fileName.EndsWithICase(UTF8STRC(".WMV")))
 	{
-		anime->videoFormat = (const UTF8Char*)"WMV3";
+		anime->videoFormat = CSTR("WMV3");
 		anime->width = 0;
 		anime->height = 0;
 		anime->fps = 0;
 		anime->length = 0;
-		anime->audioFormat = (const UTF8Char*)"WMA";
+		anime->audioFormat = CSTR("WMA");
 		anime->samplingRate = 0;
 		anime->bitRate = 0;
 	}
@@ -839,12 +839,12 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 	}*/
 	else
 	{
-		anime->videoFormat = (const UTF8Char*)"UNK";
+		anime->videoFormat = CSTR("UNK");
 		anime->width = 0;
 		anime->height = 0;
 		anime->fps = 0;
 		anime->length = 0;
-		anime->audioFormat = (const UTF8Char*)"UNK";
+		anime->audioFormat = CSTR("UNK");
 		anime->samplingRate = 0;
 		anime->bitRate = 0;
 	}
@@ -853,7 +853,7 @@ SSWR::DiscDB::DiscDBBurntDiscForm::MovieCols *SSWR::DiscDB::DiscDBBurntDiscForm:
 
 void SSWR::DiscDB::DiscDBBurntDiscForm::MovieColsFree(MovieCols *anime)
 {
-	Text::StrDelNew(anime->type);
+	anime->type->Release();
 	Text::StrDelNew(anime->mainTitle);
 	SDEL_TEXT(anime->chapter);
 	SDEL_TEXT(anime->chapterTitle);
@@ -920,7 +920,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnFileNameSelChg(void *userObj
 	i = cateList.GetCount();
 	while (i-- > 0)
 	{
-		if (Text::StrEquals(me->selectedFile->cate, cateList.GetItem(i)->id))
+		if (me->selectedFile->cate.Equals(cateList.GetItem(i)->id))
 		{
 			me->cboCategory->SetSelectedIndex(i);
 			break;
@@ -1251,11 +1251,11 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnCategorySelChg(void *userObj
 	SSWR::DiscDB::DiscDBEnv::CategoryInfo *cate = (SSWR::DiscDB::DiscDBEnv::CategoryInfo *)me->cboCategory->GetSelectedItem();
 	if (cate)
 	{
-		if (Text::StrEquals(cate->id, (const UTF8Char*)"ISO"))
+		if (cate->id->Equals(UTF8STRC("ISO")))
 		{
 			me->pnlDVDV->SetEnabled(true);
 		}
-		else if (Text::StrEquals(cate->id, (const UTF8Char*)"AC"))
+		else if (cate->id->Equals(UTF8STRC("AC")))
 		{
 			BurntFile *file = (BurntFile*)me->lbFileName->GetSelectedItem();
 			if (file && file->fname->IndexOfICase(UTF8STRC("DVD")) != INVALID_INDEX)
@@ -1349,8 +1349,7 @@ void __stdcall SSWR::DiscDB::DiscDBBurntDiscForm::OnAllFileClicked(void *userObj
 				file = me->fileList->GetItem(i);
 				if (file != me->selectedFile)
 				{
-					Text::StrDelNew(file->cate);
-					file->cate = Text::StrCopyNew(me->selectedFile->cate);
+					file->cate = me->selectedFile->cate;
 					me->BurntFileUpdateVideo(file);
 					file->videoId = me->selectedFile->videoId;
 				}

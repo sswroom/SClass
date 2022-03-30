@@ -623,213 +623,213 @@ Text::CString Manage::CPUInfo::GetCacheInfo(Manage::CPUVendor::CPU_BRAND brand, 
 		switch (descType)
 		{
 		case 0x01:
-			return {UTF8STRC("Instruction TLB: 4 KByte pages, 4-way set associative, 32 entries")};
+			return CSTR("Instruction TLB: 4 KByte pages, 4-way set associative, 32 entries");
 		case 0x02:
-			return {UTF8STRC("Instruction TLB: 4 MByte pages, fully associative, 2 entries")};
+			return CSTR("Instruction TLB: 4 MByte pages, fully associative, 2 entries");
 		case 0x03:
-			return {UTF8STRC("Data TLB: 4 KByte pages, 4-way set associative, 64 entries")};
+			return CSTR("Data TLB: 4 KByte pages, 4-way set associative, 64 entries");
 		case 0x04:
-			return {UTF8STRC("Data TLB: 4 MByte pages, 4-way set associative, 8 entries")};
+			return CSTR("Data TLB: 4 MByte pages, 4-way set associative, 8 entries");
 		case 0x05:
-			return {UTF8STRC("Data TLB1: 4 MByte pages, 4-way set associative, 32 entries")};
+			return CSTR("Data TLB1: 4 MByte pages, 4-way set associative, 32 entries");
 		case 0x06:
-			return {UTF8STRC("1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("1st-level instruction cache: 8 KBytes, 4-way set associative, 32 byte line size");
 		case 0x08:
-			return {UTF8STRC("1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("1st-level instruction cache: 16 KBytes, 4-way set associative, 32 byte line size");
 		case 0x09:
-			return {UTF8STRC("1st-level instruction cache: 32KBytes, 4-way set associative, 64 byte line size")};
+			return CSTR("1st-level instruction cache: 32KBytes, 4-way set associative, 64 byte line size");
 		case 0x0A:
-			return {UTF8STRC("1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size")};
+			return CSTR("1st-level data cache: 8 KBytes, 2-way set associative, 32 byte line size");
 		case 0x0B:
-			return {UTF8STRC("Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries")};
+			return CSTR("Instruction TLB: 4 MByte pages, 4-way set associative, 4 entries");
 		case 0x0C:
-			return {UTF8STRC("1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("1st-level data cache: 16 KBytes, 4-way set associative, 32 byte line size");
 		case 0x0D:
-			return {UTF8STRC("1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 16 KBytes, 4-way set associative, 64 byte line size");
 		case 0x0E:
-			return {UTF8STRC("1st-level data cache: 24 KBytes, 6-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 24 KBytes, 6-way set associative, 64 byte line size");
 		case 0x1D:
-			return {UTF8STRC("2nd-level cache: 128 KBytes, 2-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 128 KBytes, 2-way set associative, 64 byte line size");
 		case 0x21:
-			return {UTF8STRC("2nd-level cache: 256 KBytes, 8-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 256 KBytes, 8-way set associative, 64 byte line size");
 		case 0x22:
-			return {UTF8STRC("3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("3rd-level cache: 512 KBytes, 4-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x23:
-			return {UTF8STRC("3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("3rd-level cache: 1 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x24:
-			return {UTF8STRC("2nd-level cache: 1 MBytes, 16-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 1 MBytes, 16-way set associative, 64 byte line size");
 		case 0x25:
-			return {UTF8STRC("3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("3rd-level cache: 2 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x29:
-			return {UTF8STRC("3rd-level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("3rd-level cache: 4 MBytes, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x2C:
-			return {UTF8STRC("1st-level data cache: 32 KBytes, 8-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 32 KBytes, 8-way set associative, 64 byte line size");
 		case 0x30:
-			return {UTF8STRC("1st-level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size")};
+			return CSTR("1st-level instruction cache: 32 KBytes, 8-way set associative, 64 byte line size");
 		case 0x40:
-			return {UTF8STRC("No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache")};
+			return CSTR("No 2nd-level cache or, if processor contains a valid 2nd-level cache, no 3rd-level cache");
 		case 0x41:
-			return {UTF8STRC("2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 128 KBytes, 4-way set associative, 32 byte line size");
 		case 0x42:
-			return {UTF8STRC("2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 256 KBytes, 4-way set associative, 32 byte line size");
 		case 0x43:
-			return {UTF8STRC("2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 512 KBytes, 4-way set associative, 32 byte line size");
 		case 0x44:
-			return {UTF8STRC("2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 1 MByte, 4-way set associative, 32 byte line size");
 		case 0x45:
-			return {UTF8STRC("2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 2 MByte, 4-way set associative, 32 byte line size");
 		case 0x46:
-			return {UTF8STRC("3rd-level cache: 4 MByte, 4-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 4 MByte, 4-way set associative, 64 byte line size");
 		case 0x47:
-			return {UTF8STRC("3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 8 MByte, 8-way set associative, 64 byte line size");
 		case 0x48:
-			return {UTF8STRC("2nd-level cache: 3MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 3MByte, 12-way set associative, 64 byte line size");
 		case 0x49:
-			return {UTF8STRC("2nd-level cache: 4 MByte, 16-way set associative, 64 byte line size")}; ////3rd-level cache: 4MB, 16-way set associative, 64-byte line size (Intel Xeon processor MP, Family 0FH, Model 06H)
+			return CSTR("2nd-level cache: 4 MByte, 16-way set associative, 64 byte line size"); ////3rd-level cache: 4MB, 16-way set associative, 64-byte line size (Intel Xeon processor MP, Family 0FH, Model 06H)
 		case 0x4A:
-			return {UTF8STRC("3rd-level cache: 6MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 6MByte, 12-way set associative, 64 byte line size");
 		case 0x4B:
-			return {UTF8STRC("3rd-level cache: 8MByte, 16-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 8MByte, 16-way set associative, 64 byte line size");
 		case 0x4C:
-			return {UTF8STRC("3rd-level cache: 12MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 12MByte, 12-way set associative, 64 byte line size");
 		case 0x4D:
-			return {UTF8STRC("3rd-level cache: 16MByte, 16-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 16MByte, 16-way set associative, 64 byte line size");
 		case 0x4E:
-			return {UTF8STRC("2nd-level cache: 6MByte, 24-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 6MByte, 24-way set associative, 64 byte line size");
 		case 0x4F:
-			return {UTF8STRC("Instruction TLB: 4 KByte pages, 32 entries")};
+			return CSTR("Instruction TLB: 4 KByte pages, 32 entries");
 		case 0x50:
-			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries")};
+			return CSTR("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 64 entries");
 		case 0x51:
-			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries")};
+			return CSTR("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 128 entries");
 		case 0x52:
-			return {UTF8STRC("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries")};
+			return CSTR("Instruction TLB: 4 KByte and 2-MByte or 4-MByte pages, 256 entries");
 		case 0x55:
-			return {UTF8STRC("Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries")};
+			return CSTR("Instruction TLB: 2-MByte or 4-MByte pages, fully associative, 7 entries");
 		case 0x56:
-			return {UTF8STRC("Data TLB0: 4 MByte pages, 4-way set associative, 16 entries")};
+			return CSTR("Data TLB0: 4 MByte pages, 4-way set associative, 16 entries");
 		case 0x57:
-			return {UTF8STRC("Data TLB0: 4 KByte pages, 4-way associative, 16 entries")};
+			return CSTR("Data TLB0: 4 KByte pages, 4-way associative, 16 entries");
 		case 0x59:
-			return {UTF8STRC("Data TLB0: 4 KByte pages, fully associative, 16 entries")};
+			return CSTR("Data TLB0: 4 KByte pages, fully associative, 16 entries");
 		case 0x5A:
-			return {UTF8STRC("Data TLB0: 2-MByte or 4 MByte pages, 4-way set associative, 32 entries")};
+			return CSTR("Data TLB0: 2-MByte or 4 MByte pages, 4-way set associative, 32 entries");
 		case 0x5B:
-			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages, 64 entries")};
+			return CSTR("Data TLB: 4 KByte and 4 MByte pages, 64 entries");
 		case 0x5C:
-			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages,128 entries")};
+			return CSTR("Data TLB: 4 KByte and 4 MByte pages,128 entries");
 		case 0x5D:
-			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages,256 entries")};
+			return CSTR("Data TLB: 4 KByte and 4 MByte pages,256 entries");
 		case 0x60:
-			return {UTF8STRC("1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 16 KByte, 8-way set associative, 64 byte line size");
 		case 0x61:
-			return {UTF8STRC("Instruction TLB: 4 KByte pages, fully associative, 48 entries")};
+			return CSTR("Instruction TLB: 4 KByte pages, fully associative, 48 entries");
 		case 0x63:
-			return {UTF8STRC("Data TLB: 1 GByte pages, 4-way set associative, 4 entries")};
+			return CSTR("Data TLB: 1 GByte pages, 4-way set associative, 4 entries");
 		case 0x66:
-			return {UTF8STRC("1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 8 KByte, 4-way set associative, 64 byte line size");
 		case 0x67:
-			return {UTF8STRC("1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 16 KByte, 4-way set associative, 64 byte line size");
 		case 0x68:
-			return {UTF8STRC("1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size")};
+			return CSTR("1st-level data cache: 32 KByte, 4-way set associative, 64 byte line size");
 		case 0x70:
-			return {UTF8STRC("Trace cache: 12 K-μop, 8-way set associative")};
+			return CSTR("Trace cache: 12 K-μop, 8-way set associative");
 		case 0x71:
-			return {UTF8STRC("Trace cache: 16 K-μop, 8-way set associative")};
+			return CSTR("Trace cache: 16 K-μop, 8-way set associative");
 		case 0x72:
-			return {UTF8STRC("Trace cache: 32 K-μop, 8-way set associative")};
+			return CSTR("Trace cache: 32 K-μop, 8-way set associative");
 		case 0x76:
-			return {UTF8STRC("Instruction TLB: 2M/4M pages, fully associative, 8 entries")};
+			return CSTR("Instruction TLB: 2M/4M pages, fully associative, 8 entries");
 		case 0x78:
-			return {UTF8STRC("2nd-level cache: 1 MByte, 4-way set associative, 64byte line size")};
+			return CSTR("2nd-level cache: 1 MByte, 4-way set associative, 64byte line size");
 		case 0x79:
-			return {UTF8STRC("2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("2nd-level cache: 128 KByte, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x7A:
-			return {UTF8STRC("2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("2nd-level cache: 256 KByte, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x7B:
-			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("2nd-level cache: 512 KByte, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x7C:
-			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector")};
+			return CSTR("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size, 2 lines per sector");
 		case 0x7D:
-			return {UTF8STRC("2nd-level cache: 2 MByte, 8-way set associative, 64byte line size")};
+			return CSTR("2nd-level cache: 2 MByte, 8-way set associative, 64byte line size");
 		case 0x7F:
-			return {UTF8STRC("2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size")};
+			return CSTR("2nd-level cache: 512 KByte, 2-way set associative, 64-byte line size");
 		case 0x80:
-			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 64-byte line size")};
+			return CSTR("2nd-level cache: 512 KByte, 8-way set associative, 64-byte line size");
 		case 0x82:
-			return {UTF8STRC("2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 256 KByte, 8-way set associative, 32 byte line size");
 		case 0x83:
-			return {UTF8STRC("2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 512 KByte, 8-way set associative, 32 byte line size");
 		case 0x84:
-			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 1 MByte, 8-way set associative, 32 byte line size");
 		case 0x85:
-			return {UTF8STRC("2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size")};
+			return CSTR("2nd-level cache: 2 MByte, 8-way set associative, 32 byte line size");
 		case 0x86:
-			return {UTF8STRC("2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 512 KByte, 4-way set associative, 64 byte line size");
 		case 0x87:
-			return {UTF8STRC("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size")};
+			return CSTR("2nd-level cache: 1 MByte, 8-way set associative, 64 byte line size");
 		case 0xA0:
-			return {UTF8STRC("DTLB: 4k pages, fully associative, 32 entries")};
+			return CSTR("DTLB: 4k pages, fully associative, 32 entries");
 		case 0xB0:
-			return {UTF8STRC("Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries")};
+			return CSTR("Instruction TLB: 4 KByte pages, 4-way set associative, 128 entries");
 		case 0xB1:
-			return {UTF8STRC("Instruction TLB: 2M pages, 4-way, 8 entries or 4M pages, 4-way, 4 entries")};
+			return CSTR("Instruction TLB: 2M pages, 4-way, 8 entries or 4M pages, 4-way, 4 entries");
 		case 0xB2:
-			return {UTF8STRC("Instruction TLB: 4KByte pages, 4-way set associative, 64 entries")};
+			return CSTR("Instruction TLB: 4KByte pages, 4-way set associative, 64 entries");
 		case 0xB3:
-			return {UTF8STRC("Data TLB: 4 KByte pages, 4-way set associative, 128 entries")};
+			return CSTR("Data TLB: 4 KByte pages, 4-way set associative, 128 entries");
 		case 0xB4:
-			return {UTF8STRC("Data TLB1: 4 KByte pages, 4-way associative, 256 entries")};
+			return CSTR("Data TLB1: 4 KByte pages, 4-way associative, 256 entries");
 		case 0xB5:
-			return {UTF8STRC("Instruction TLB: 4KByte pages, 8-way set associative, 64 entries")};
+			return CSTR("Instruction TLB: 4KByte pages, 8-way set associative, 64 entries");
 		case 0xB6:
-			return {UTF8STRC("Instruction TLB: 4KByte pages, 8-way set associative, 128 entries")};
+			return CSTR("Instruction TLB: 4KByte pages, 8-way set associative, 128 entries");
 		case 0xBA:
-			return {UTF8STRC("Data TLB1: 4 KByte pages, 4-way associative, 64 entries")};
+			return CSTR("Data TLB1: 4 KByte pages, 4-way associative, 64 entries");
 		case 0xC0:
-			return {UTF8STRC("Data TLB: 4 KByte and 4 MByte pages, 4-way associative, 8 entries")};
+			return CSTR("Data TLB: 4 KByte and 4 MByte pages, 4-way associative, 8 entries");
 		case 0xC1:
-			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte/2MByte pages, 8-way associative, 1024 entries")};
+			return CSTR("Shared 2nd-Level TLB: 4 KByte/2MByte pages, 8-way associative, 1024 entries");
 		case 0xC2:
-			return {UTF8STRC("DTLB: 4 KByte/2 MByte pages, 4-way associative, 16 entries")};
+			return CSTR("DTLB: 4 KByte/2 MByte pages, 4-way associative, 16 entries");
 		case 0xC3:
-			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte /2 MByte pages, 6-way associative, 1536 entries. Also 1GBbyte pages, 4-way, 16 entries.")};
+			return CSTR("Shared 2nd-Level TLB: 4 KByte /2 MByte pages, 6-way associative, 1536 entries. Also 1GBbyte pages, 4-way, 16 entries.");
 		case 0xCA:
-			return {UTF8STRC("Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries")};
+			return CSTR("Shared 2nd-Level TLB: 4 KByte pages, 4-way associative, 512 entries");
 		case 0xD0:
-			return {UTF8STRC("3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 512 KByte, 4-way set associative, 64 byte line size");
 		case 0xD1:
-			return {UTF8STRC("3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 1 MByte, 4-way set associative, 64 byte line size");
 		case 0xD2:
-			return {UTF8STRC("3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 2 MByte, 4-way set associative, 64 byte line size");
 		case 0xD6:
-			return {UTF8STRC("3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 1 MByte, 8-way set associative, 64 byte line size");
 		case 0xD7:
-			return {UTF8STRC("3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 2 MByte, 8-way set associative, 64 byte line size");
 		case 0xD8:
-			return {UTF8STRC("3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 4 MByte, 8-way set associative, 64 byte line size");
 		case 0xDC:
-			return {UTF8STRC("3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 1.5 MByte, 12-way set associative, 64 byte line size");
 		case 0xDD:
-			return {UTF8STRC("3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 3 MByte, 12-way set associative, 64 byte line size");
 		case 0xDE:
-			return {UTF8STRC("3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 6 MByte, 12-way set associative, 64 byte line size");
 		case 0xE2:
-			return {UTF8STRC("3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 2 MByte, 16-way set associative, 64 byte line size");
 		case 0xE3:
-			return {UTF8STRC("3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 4 MByte, 16-way set associative, 64 byte line size");
 		case 0xE4:
-			return {UTF8STRC("3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 8 MByte, 16-way set associative, 64 byte line size");
 		case 0xEA:
-			return {UTF8STRC("3rd-level cache: 12MByte, 24-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 12MByte, 24-way set associative, 64 byte line size");
 		case 0xEB:
-			return {UTF8STRC("3rd-level cache: 18MByte, 24-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 18MByte, 24-way set associative, 64 byte line size");
 		case 0xEC:
-			return {UTF8STRC("3rd-level cache: 24MByte, 24-way set associative, 64 byte line size")};
+			return CSTR("3rd-level cache: 24MByte, 24-way set associative, 64 byte line size");
 		case 0xF0:
-			return {UTF8STRC("64-Byte prefetching")};
+			return CSTR("64-Byte prefetching");
 		case 0xF1:
-			return {UTF8STRC("128-Byte prefetching")};
+			return CSTR("128-Byte prefetching");
 		}
 	}
 	return CSTR_NULL;

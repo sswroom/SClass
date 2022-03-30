@@ -96,41 +96,41 @@ Text::CString Net::WebUtil::RequestMethodGetName(RequestMethod reqMeth)
 	switch (reqMeth)
 	{
 	case RequestMethod::HTTP_GET:
-		return {UTF8STRC("GET")};
+		return CSTR("GET");
 	case RequestMethod::HTTP_POST:
-		return {UTF8STRC("POST")};
+		return CSTR("POST");
 	case RequestMethod::HTTP_PUT:
-		return {UTF8STRC("PUT")};
+		return CSTR("PUT");
 	case RequestMethod::HTTP_PATCH:
-		return {UTF8STRC("PATCH")};
+		return CSTR("PATCH");
 	case RequestMethod::HTTP_DELETE:
-		return {UTF8STRC("DELETE")};
+		return CSTR("DELETE");
 	case RequestMethod::HTTP_CONNECT:
-		return {UTF8STRC("CONNECT")};
+		return CSTR("CONNECT");
 	case RequestMethod::RTSP_DESCRIBE:
-		return {UTF8STRC("DESCRIBE")};
+		return CSTR("DESCRIBE");
 	case RequestMethod::RTSP_ANNOUNCE:
-		return {UTF8STRC("ANNOUNCE")};
+		return CSTR("ANNOUNCE");
 	case RequestMethod::RTSP_GET_PARAMETER:
-		return {UTF8STRC("GET_PARAMETER")};
+		return CSTR("GET_PARAMETER");
 	case RequestMethod::RTSP_OPTIONS:
-		return {UTF8STRC("OPTIONS")};
+		return CSTR("OPTIONS");
 	case RequestMethod::RTSP_PAUSE:
-		return {UTF8STRC("PAUSE")};
+		return CSTR("PAUSE");
 	case RequestMethod::RTSP_PLAY:
-		return {UTF8STRC("PLAY")};
+		return CSTR("PLAY");
 	case RequestMethod::RTSP_RECORD:
-		return {UTF8STRC("RECORD")};
+		return CSTR("RECORD");
 	case RequestMethod::RTSP_REDIRECT:
-		return {UTF8STRC("REDIRECT")};
+		return CSTR("REDIRECT");
 	case RequestMethod::RTSP_SETUP:
-		return {UTF8STRC("SETUP")};
+		return CSTR("SETUP");
 	case RequestMethod::RTSP_SET_PARAMETER:
-		return {UTF8STRC("SET_PARAMETER")};
+		return CSTR("SET_PARAMETER");
 	case RequestMethod::RTSP_TEARDOWN:
-		return {UTF8STRC("TEARDOWN")};
+		return CSTR("TEARDOWN");
 	case RequestMethod::Unknown:
 	default:
-		return {UTF8STRC("?")};
+		return CSTR("?");
 	}
 }

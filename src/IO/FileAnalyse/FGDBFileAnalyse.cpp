@@ -119,7 +119,7 @@ IO::FileAnalyse::FGDBFileAnalyse::~FGDBFileAnalyse()
 
 Text::CString IO::FileAnalyse::FGDBFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("FGDB")};
+	return CSTR("FGDB");
 }
 
 UOSInt IO::FileAnalyse::FGDBFileAnalyse::GetFrameCount()
@@ -215,7 +215,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			{
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]);
 				sptr[0] = 0;
-				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Field Name")}, CSTRP(sbuff, sptr));
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, CSTR("Field Name"), CSTRP(sbuff, sptr));
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -231,7 +231,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 			{
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 1], tagData[ofst]);
 				sptr[0] = 0;
-				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, {UTF8STRC("Alias Name")}, CSTRP(sbuff, sptr));
+				frame->AddField(ofst + 1, (UOSInt)tagData[ofst] * 2, CSTR("Alias Name"), CSTRP(sbuff, sptr));
 				ofst += 1 + (UOSInt)tagData[ofst] * 2;
 			}
 			else
@@ -267,14 +267,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FGDBFileAnalyse::GetFrameDetail(U
 					frame->AddUInt(ofst, 2, CSTR("SRS Length"), srsLen);
 					sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&tagData[ofst + 2], srsLen >> 1);
 					*sptr = 0;
-					frame->AddField(ofst + 2, srsLen, {UTF8STRC("SRS")}, CSTRP(sbuff, sptr));
+					frame->AddField(ofst + 2, srsLen, CSTR("SRS"), CSTRP(sbuff, sptr));
 					UOSInt csysLen = (UOSInt)(sptr - sbuff);
 					Math::CoordinateSystem *csys = Math::CoordinateSystemManager::ParsePRJBuff(this->fd->GetFullName()->ToCString(), sbuff, csysLen, &csysLen);
 					if (csys)
 					{
 						Text::StringBuilderUTF8 sb;
 						csys->ToString(&sb);
-						frame->AddField(ofst + 2, srsLen, {UTF8STRC("Coordinate System")}, sb.ToCString());
+						frame->AddField(ofst + 2, srsLen, CSTR("Coordinate System"), sb.ToCString());
 						DEL_CLASS(csys);
 					}
 					ofst += 2 + srsLen;
@@ -740,13 +740,13 @@ Text::CString IO::FileAnalyse::FGDBFileAnalyse::TagTypeGetName(TagType tagType)
 	switch (tagType)
 	{
 	case TagType::Header:
-		return {UTF8STRC("Header")};
+		return CSTR("Header");
 	case TagType::Field:
-		return {UTF8STRC("Field descriptor")};
+		return CSTR("Field descriptor");
 	case TagType::Row:
-		return {UTF8STRC("Row")};
+		return CSTR("Row");
 	case TagType::FreeSpace:
-		return {UTF8STRC("FreeSpace")};
+		return CSTR("FreeSpace");
 	default:
 		return CSTR_NULL;
 	}

@@ -713,95 +713,95 @@ Text::CString Net::DNSClient::TypeGetID(UInt16 type)
 	switch (type)
 	{
 	case 1:
-		return {UTF8STRC("A")};
+		return CSTR("A");
 	case 2:
-		return {UTF8STRC("NS")};
+		return CSTR("NS");
 	case 5:
-		return {UTF8STRC("CNAME")};
+		return CSTR("CNAME");
 	case 6:
-		return {UTF8STRC("SOA")};
+		return CSTR("SOA");
 	case 18:
-		return {UTF8STRC("AFSDB")};
+		return CSTR("AFSDB");
 	case 12:
-		return {UTF8STRC("PTR")};
+		return CSTR("PTR");
 	case 15:
-		return {UTF8STRC("MX")};
+		return CSTR("MX");
 	case 16:
-		return {UTF8STRC("TXT")};
+		return CSTR("TXT");
 	case 17:
-		return {UTF8STRC("RP")};
+		return CSTR("RP");
 	case 24:
-		return {UTF8STRC("SIG")};
+		return CSTR("SIG");
 	case 25:
-		return {UTF8STRC("KEY")};
+		return CSTR("KEY");
 	case 28:
-		return {UTF8STRC("AAAA")};
+		return CSTR("AAAA");
 	case 29:
-		return {UTF8STRC("LOC")};
+		return CSTR("LOC");
 	case 33:
-		return {UTF8STRC("SRV")};
+		return CSTR("SRV");
 	case 35:
-		return {UTF8STRC("NAPTR")};
+		return CSTR("NAPTR");
 	case 36:
-		return {UTF8STRC("KX")};
+		return CSTR("KX");
 	case 37:
-		return {UTF8STRC("CERT")};
+		return CSTR("CERT");
 	case 39:
-		return {UTF8STRC("DNAME")};
+		return CSTR("DNAME");
 	case 41:
-		return {UTF8STRC("OPT")};
+		return CSTR("OPT");
 	case 42:
-		return {UTF8STRC("APL")};
+		return CSTR("APL");
 	case 43:
-		return {UTF8STRC("DS")};
+		return CSTR("DS");
 	case 44:
-		return {UTF8STRC("SSHFP")};
+		return CSTR("SSHFP");
 	case 45:
-		return {UTF8STRC("IPSECKEY")};
+		return CSTR("IPSECKEY");
 	case 46:
-		return {UTF8STRC("RRSIG")};
+		return CSTR("RRSIG");
 	case 47:
-		return {UTF8STRC("NSEC")};
+		return CSTR("NSEC");
 	case 48:
-		return {UTF8STRC("DNSKEY")};
+		return CSTR("DNSKEY");
 	case 49:
-		return {UTF8STRC("DHCID")};
+		return CSTR("DHCID");
 	case 50:
-		return {UTF8STRC("NSEC3")};
+		return CSTR("NSEC3");
 	case 51:
-		return {UTF8STRC("NSEC3PARAM")};
+		return CSTR("NSEC3PARAM");
 	case 52:
-		return {UTF8STRC("TLSA")};
+		return CSTR("TLSA");
 	case 53:
-		return {UTF8STRC("SMIMEA")};
+		return CSTR("SMIMEA");
 	case 55:
-		return {UTF8STRC("HIP")};
+		return CSTR("HIP");
 	case 59:
-		return {UTF8STRC("CDS")};
+		return CSTR("CDS");
 	case 60:
-		return {UTF8STRC("CDNSKEY")};
+		return CSTR("CDNSKEY");
 	case 61:
-		return {UTF8STRC("OPENPGPKEY")};
+		return CSTR("OPENPGPKEY");
 	case 62:
-		return {UTF8STRC("CSYNC")};
+		return CSTR("CSYNC");
 	case 249:
-		return {UTF8STRC("TKEY")};
+		return CSTR("TKEY");
 	case 250:
-		return {UTF8STRC("TSIG")};
+		return CSTR("TSIG");
 	case 251:
-		return {UTF8STRC("IXFR")};
+		return CSTR("IXFR");
 	case 252:
-		return {UTF8STRC("AXFR")};
+		return CSTR("AXFR");
 	case 255:
-		return {UTF8STRC("*")};
+		return CSTR("*");
 	case 256:
-		return {UTF8STRC("URI")};
+		return CSTR("URI");
 	case 257:
-		return {UTF8STRC("CAA")};
+		return CSTR("CAA");
 	case 32768:
-		return {UTF8STRC("TA")};
+		return CSTR("TA");
 	case 32769:
-		return {UTF8STRC("DLV")};
+		return CSTR("DLV");
 	}
 	return CSTR_NULL;
 }

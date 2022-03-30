@@ -284,12 +284,12 @@ Text::CString Media::Image::AlphaTypeGetName(AlphaType atype)
 	switch (atype)
 	{
 	case AT_NO_ALPHA:
-		return {UTF8STRC("No Alpha")};
+		return CSTR("No Alpha");
 	case AT_ALPHA:
-		return {UTF8STRC("Standard Alpha")};
+		return CSTR("Standard Alpha");
 	case AT_PREMUL_ALPHA:
-		return {UTF8STRC("Premul Alpha")};
+		return CSTR("Premul Alpha");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

@@ -12,5 +12,5 @@ Text::TextBinEnc::UTF8TextBinEnc::~UTF8TextBinEnc()
 
 Text::CString Text::TextBinEnc::UTF8TextBinEnc::GetName()
 {
-	return {UTF8STRC("UTF-8 Text")};
+	return CSTR("UTF-8 Text");
 }

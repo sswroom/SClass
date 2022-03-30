@@ -106,7 +106,7 @@ IO::FileAnalyse::PCapFileAnalyse::~PCapFileAnalyse()
 
 Text::CString IO::FileAnalyse::PCapFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("pcap")};
+	return CSTR("pcap");
 }
 
 UOSInt IO::FileAnalyse::PCapFileAnalyse::GetFrameCount()

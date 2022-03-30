@@ -880,24 +880,24 @@ Text::CString IO::PackageFile::GetInfoTypeName(InfoType infoType)
 	switch(infoType)
 	{
 	case IT_SYSTEM_ID:
-		return {UTF8STRC("System")};
+		return CSTR("System");
 	case IT_VOLUME_ID:
-		return {UTF8STRC("Volume")};
+		return CSTR("Volume");
 	case IT_VOLUME_SET_ID:
-		return {UTF8STRC("Volume Set")};
+		return CSTR("Volume Set");
 	case IT_PUBLISHER_ID:
-		return {UTF8STRC("Publisher")};
+		return CSTR("Publisher");
 	case IT_DATA_PREPARER_ID:
-		return {UTF8STRC("Data Preparer")};
+		return CSTR("Data Preparer");
 	case IT_APPLICATION_ID:
-		return {UTF8STRC("Application ID")};
+		return CSTR("Application ID");
 	case IT_COPYRIGHT_FILE_ID:
-		return {UTF8STRC("Copyright File")};
+		return CSTR("Copyright File");
 	case IT_ABSTRACT_FILE_ID:
-		return {UTF8STRC("Abstract File")};
+		return CSTR("Abstract File");
 	case IT_BIBLIOGRAHPICAL_FILE_ID:
-		return {UTF8STRC("Bibliographical File")};
+		return CSTR("Bibliographical File");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

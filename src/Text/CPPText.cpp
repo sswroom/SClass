@@ -302,40 +302,40 @@ Text::CString Text::CPPText::GetCppType(Data::VariItem::ItemType itemType)
 	switch (itemType)
 	{
 	case Data::VariItem::ItemType::F32:
-		return {UTF8STRC("Single")};
+		return CSTR("Single");
 	case Data::VariItem::ItemType::F64:
-		return {UTF8STRC("Double")};
+		return CSTR("Double");
 	case Data::VariItem::ItemType::I8:
-		return {UTF8STRC("Int8")};
+		return CSTR("Int8");
 	case Data::VariItem::ItemType::U8:
-		return {UTF8STRC("UInt8")};
+		return CSTR("UInt8");
 	case Data::VariItem::ItemType::I16:
-		return {UTF8STRC("Int16")};
+		return CSTR("Int16");
 	case Data::VariItem::ItemType::U16:
-		return {UTF8STRC("UInt16")};
+		return CSTR("UInt16");
 	case Data::VariItem::ItemType::I32:
-		return {UTF8STRC("Int32")};
+		return CSTR("Int32");
 	case Data::VariItem::ItemType::U32:
-		return {UTF8STRC("UInt32")};
+		return CSTR("UInt32");
 	case Data::VariItem::ItemType::I64:
-		return {UTF8STRC("Int64")};
+		return CSTR("Int64");
 	case Data::VariItem::ItemType::U64:
-		return {UTF8STRC("UInt64")};
+		return CSTR("UInt64");
 	case Data::VariItem::ItemType::BOOL:
-		return {UTF8STRC("Bool")};
+		return CSTR("Bool");
 	case Data::VariItem::ItemType::Str:
-		return {UTF8STRC("Text::String*")};
+		return CSTR("Text::String*");
 	case Data::VariItem::ItemType::Date:
-		return {UTF8STRC("Data::DateTime*")};
+		return CSTR("Data::DateTime*");
 	case Data::VariItem::ItemType::ByteArr:
-		return {UTF8STRC("Data::ReadonlyArr<UInt8>*")};
+		return CSTR("Data::ReadonlyArr<UInt8>*");
 	case Data::VariItem::ItemType::Vector:
-		return {UTF8STRC("Math::Vector2D*")};
+		return CSTR("Math::Vector2D*");
 	case Data::VariItem::ItemType::UUID:
-		return {UTF8STRC("Data::UUID*")};
+		return CSTR("Data::UUID*");
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Null:
 	default:
-		return {UTF8STRC("void*")};
+		return CSTR("void*");
 	}
 }

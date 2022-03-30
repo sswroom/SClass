@@ -550,5 +550,5 @@ UOSInt Text::TextBinEnc::Punycode::DecodeBin(const UTF8Char *str, UOSInt strLen,
 
 Text::CString Text::TextBinEnc::Punycode::GetName()
 {
-	return {UTF8STRC("Punycode")};
+	return CSTR("Punycode");
 }

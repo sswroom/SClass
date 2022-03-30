@@ -13,91 +13,91 @@ Text::CString IO::FileAnalyse::JPGFileAnalyse::GetTagName(UInt8 tagType)
 	switch (tagType)
 	{
 	case 0x0:
-		return {UTF8STRC("Data")};
+		return CSTR("Data");
 	case 0x01:
-		return {UTF8STRC("TMP")}; //For temporary use in arithmetic coding
+		return CSTR("TMP"); //For temporary use in arithmetic coding
 	case 0xc0:
-		return {UTF8STRC("SOF0")}; //Baseline DCT
+		return CSTR("SOF0"); //Baseline DCT
 	case 0xc1:
-		return {UTF8STRC("SOF1")}; //Extended sequential DCT
+		return CSTR("SOF1"); //Extended sequential DCT
 	case 0xc2:
-		return {UTF8STRC("SOF2")}; //Progressive DCT
+		return CSTR("SOF2"); //Progressive DCT
 	case 0xc3:
-		return {UTF8STRC("SOF3")}; //Lossless (sequential)
+		return CSTR("SOF3"); //Lossless (sequential)
 	case 0xc4:
-		return {UTF8STRC("DHT")}; //Define Huffman Table
+		return CSTR("DHT"); //Define Huffman Table
 	case 0xc5:
-		return {UTF8STRC("SOF5")}; //Differential sequential DCT
+		return CSTR("SOF5"); //Differential sequential DCT
 	case 0xc6:
-		return {UTF8STRC("SOF6")}; //Differential progressive DCT
+		return CSTR("SOF6"); //Differential progressive DCT
 	case 0xc7:
-		return {UTF8STRC("SOF7")}; //Differential Lossless
+		return CSTR("SOF7"); //Differential Lossless
 	case 0xc8:
-		return {UTF8STRC("JPG")}; //JPG Extension
+		return CSTR("JPG"); //JPG Extension
 	case 0xc9:
-		return {UTF8STRC("SOF9")}; //Extended sequantial DCT
+		return CSTR("SOF9"); //Extended sequantial DCT
 	case 0xca:
-		return {UTF8STRC("SOF10")}; //Progressive DCT
+		return CSTR("SOF10"); //Progressive DCT
 	case 0xcb:
-		return {UTF8STRC("SOF11")}; //Lossless (sequential)
+		return CSTR("SOF11"); //Lossless (sequential)
 	case 0xcc:
-		return {UTF8STRC("DAC")}; //Define arithmetic conditioning table
+		return CSTR("DAC"); //Define arithmetic conditioning table
 	case 0xcd:
-		return {UTF8STRC("SOF13")}; //Differential sequential DCT
+		return CSTR("SOF13"); //Differential sequential DCT
 	case 0xce:
-		return {UTF8STRC("SOF14")}; //Differential progressive DCT
+		return CSTR("SOF14"); //Differential progressive DCT
 	case 0xcf:
-		return {UTF8STRC("SOF15")}; //Differential Lossless
+		return CSTR("SOF15"); //Differential Lossless
 	case 0xd8:
-		return {UTF8STRC("SOI")}; //Start of Image
+		return CSTR("SOI"); //Start of Image
 	case 0xd9:
-		return {UTF8STRC("EOI")}; //End of Image
+		return CSTR("EOI"); //End of Image
 	case 0xda:
-		return {UTF8STRC("SOS")}; //Start of Scan
+		return CSTR("SOS"); //Start of Scan
 	case 0xdb:
-		return {UTF8STRC("DQT")}; //Define quantization table
+		return CSTR("DQT"); //Define quantization table
 	case 0xdc:
-		return {UTF8STRC("DNL")}; //Define number of lines
+		return CSTR("DNL"); //Define number of lines
 	case 0xdd:
-		return {UTF8STRC("DRI")}; //Define restart interval
+		return CSTR("DRI"); //Define restart interval
 	case 0xde:
-		return {UTF8STRC("DHP")}; //Define hierarchial progression
+		return CSTR("DHP"); //Define hierarchial progression
 	case 0xdf:
-		return {UTF8STRC("EXP")}; //Expand reference image(s)
+		return CSTR("EXP"); //Expand reference image(s)
 	case 0xe0:
-		return {UTF8STRC("APP0")};
+		return CSTR("APP0");
 	case 0xe1:
-		return {UTF8STRC("APP1")};
+		return CSTR("APP1");
 	case 0xe2:
-		return {UTF8STRC("APP2")};
+		return CSTR("APP2");
 	case 0xe3:
-		return {UTF8STRC("APP3")};
+		return CSTR("APP3");
 	case 0xe4:
-		return {UTF8STRC("APP4")};
+		return CSTR("APP4");
 	case 0xe5:
-		return {UTF8STRC("APP5")};
+		return CSTR("APP5");
 	case 0xe6:
-		return {UTF8STRC("APP6")};
+		return CSTR("APP6");
 	case 0xe7:
-		return {UTF8STRC("APP7")};
+		return CSTR("APP7");
 	case 0xe8:
-		return {UTF8STRC("APP8")};
+		return CSTR("APP8");
 	case 0xe9:
-		return {UTF8STRC("APP9")};
+		return CSTR("APP9");
 	case 0xea:
-		return {UTF8STRC("APP10")};
+		return CSTR("APP10");
 	case 0xeb:
-		return {UTF8STRC("APP11")};
+		return CSTR("APP11");
 	case 0xec:
-		return {UTF8STRC("APP12")};
+		return CSTR("APP12");
 	case 0xed:
-		return {UTF8STRC("APP13")};
+		return CSTR("APP13");
 	case 0xee:
-		return {UTF8STRC("APP14")};
+		return CSTR("APP14");
 	case 0xef:
-		return {UTF8STRC("APP15")};
+		return CSTR("APP15");
 	case 0xfe:
-		return {UTF8STRC("COM")}; //comment
+		return CSTR("COM"); //comment
 	}
 	return CSTR_NULL;
 }
@@ -224,7 +224,7 @@ IO::FileAnalyse::JPGFileAnalyse::~JPGFileAnalyse()
 
 Text::CString IO::FileAnalyse::JPGFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("JPEG")};
+	return CSTR("JPEG");
 }
 
 UOSInt IO::FileAnalyse::JPGFileAnalyse::GetFrameCount()
@@ -743,7 +743,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 					j += 2;
 				}
 			}
-			frame->AddField(5, 128, {UTF8STRC("Table")}, sb.ToCString());
+			frame->AddField(5, 128, CSTR("Table"), sb.ToCString());
 		}
 		else
 		{
@@ -773,7 +773,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 					j++;
 				}
 			}
-			frame->AddField(5, 64, {UTF8STRC("Table")}, sb.ToCString());
+			frame->AddField(5, 64, CSTR("Table"), sb.ToCString());
 		}
 		MemFree(tagData);
 	}
@@ -800,13 +800,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::JPGFileAnalyse::GetFrameDetail(UO
 			switch (tagData[9])
 			{
 				case 10:
-					vName = {UTF8STRC("JPEG format")};
+					vName = CSTR("JPEG format");
 					break;
 				case 11:
-					vName = {UTF8STRC("8-bit palettized format")};
+					vName = CSTR("8-bit palettized format");
 					break;
 				case 13:
-					vName = {UTF8STRC("24-bit RGB format")};
+					vName = CSTR("24-bit RGB format");
 					break;
 			}
 			frame->AddUIntName(9, 1, CSTR("Thumbnail format"), tagData[9], vName);

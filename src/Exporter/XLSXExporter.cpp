@@ -1594,287 +1594,287 @@ Text::CString Exporter::XLSXExporter::PresetColorCode(PresetColor color)
 	switch (color)
 	{
 	case PresetColor::AliceBlue:
-		return {UTF8STRC("aliceBlue")};
+		return CSTR("aliceBlue");
 	case PresetColor::AntiqueWhite:
-		return {UTF8STRC("antiqueWhite")};		
+		return CSTR("antiqueWhite");	
 	case PresetColor::Aqua:
-		return {UTF8STRC("aqua")};		
+		return CSTR("aqua");	
 	case PresetColor::Aquamarine:
-		return {UTF8STRC("aquamarine")};		
+		return CSTR("aquamarine");	
 	case PresetColor::Azure:
-		return {UTF8STRC("azure")};		
+		return CSTR("azure");	
 	case PresetColor::Beige:
-		return {UTF8STRC("beige")};		
+		return CSTR("beige");	
 	case PresetColor::Bisque:
-		return {UTF8STRC("bisque")};		
+		return CSTR("bisque");	
 	case PresetColor::Black:
-		return {UTF8STRC("black")};		
+		return CSTR("black");	
 	case PresetColor::BlanchedAlmond:
-		return {UTF8STRC("blanchedAlmond")};		
+		return CSTR("blanchedAlmond");	
 	case PresetColor::Blue:
-		return {UTF8STRC("blue")};		
+		return CSTR("blue");	
 	case PresetColor::BlueViolet:
-		return {UTF8STRC("blueViolet")};		
+		return CSTR("blueViolet");	
 	case PresetColor::Brown:
-		return {UTF8STRC("brown")};		
+		return CSTR("brown");	
 	case PresetColor::BurlyWood:
-		return {UTF8STRC("burlyWood")};		
+		return CSTR("burlyWood");	
 	case PresetColor::CadetBlue:
-		return {UTF8STRC("cadetBlue")};		
+		return CSTR("cadetBlue");	
 	case PresetColor::Chartreuse:
-		return {UTF8STRC("chartreuse")};		
+		return CSTR("chartreuse");	
 	case PresetColor::Chocolate:
-		return {UTF8STRC("chocolate")};		
+		return CSTR("chocolate");	
 	case PresetColor::Coral:
-		return {UTF8STRC("coral")};		
+		return CSTR("coral");	
 	case PresetColor::CornflowerBlue:
-		return {UTF8STRC("cornflowerBlue")};		
+		return CSTR("cornflowerBlue");	
 	case PresetColor::Cornsilk:
-		return {UTF8STRC("cornsilk")};		
+		return CSTR("cornsilk");	
 	case PresetColor::Crimson:
-		return {UTF8STRC("crimson")};		
+		return CSTR("crimson");	
 	case PresetColor::Cyan:
-		return {UTF8STRC("cyan")};		
+		return CSTR("cyan");	
 	case PresetColor::DeepPink:
-		return {UTF8STRC("deepPink")};		
+		return CSTR("deepPink");	
 	case PresetColor::DeepSkyBlue:
-		return {UTF8STRC("deepSkyBlue")};		
+		return CSTR("deepSkyBlue");	
 	case PresetColor::DimGray:
-		return {UTF8STRC("dimGray")};		
+		return CSTR("dimGray");	
 	case PresetColor::DarkBlue:
-		return {UTF8STRC("dkBlue")};		
+		return CSTR("dkBlue");	
 	case PresetColor::DarkCyan:
-		return {UTF8STRC("dkCyan")};		
+		return CSTR("dkCyan");	
 	case PresetColor::DarkGoldenrod:
-		return {UTF8STRC("dkGoldenrod")};		
+		return CSTR("dkGoldenrod");	
 	case PresetColor::DarkGray:
-		return {UTF8STRC("dkGray")};		
+		return CSTR("dkGray");	
 	case PresetColor::DarkGreen:
-		return {UTF8STRC("dkGreen")};		
+		return CSTR("dkGreen");	
 	case PresetColor::DarkKhaki:
-		return {UTF8STRC("dkKhaki")};		
+		return CSTR("dkKhaki");	
 	case PresetColor::DarkMagenta:
-		return {UTF8STRC("dkMagenta")};		
+		return CSTR("dkMagenta");	
 	case PresetColor::DarkOliveGreen:
-		return {UTF8STRC("dkOliveGreen")};		
+		return CSTR("dkOliveGreen");	
 	case PresetColor::DarkOrange:
-		return {UTF8STRC("dkOrange")};		
+		return CSTR("dkOrange");	
 	case PresetColor::DarkOrchid:
-		return {UTF8STRC("dkOrchid")};		
+		return CSTR("dkOrchid");	
 	case PresetColor::DarkRed:
-		return {UTF8STRC("dkRed")};		
+		return CSTR("dkRed");	
 	case PresetColor::DarkSalmon:
-		return {UTF8STRC("dkSalmon")};		
+		return CSTR("dkSalmon");	
 	case PresetColor::DarkSeaGreen:
-		return {UTF8STRC("dkSeaGreen")};		
+		return CSTR("dkSeaGreen");	
 	case PresetColor::DarkSlateBlue:
-		return {UTF8STRC("dkSlateBlue")};		
+		return CSTR("dkSlateBlue");	
 	case PresetColor::DarkSlateGray:
-		return {UTF8STRC("dkSlateGray")};		
+		return CSTR("dkSlateGray");	
 	case PresetColor::DarkTurquoise:
-		return {UTF8STRC("dkTurquoise")};		
+		return CSTR("dkTurquoise");	
 	case PresetColor::DarkViolet:
-		return {UTF8STRC("dkViolet")};		
+		return CSTR("dkViolet");	
 	case PresetColor::DodgerBlue:
-		return {UTF8STRC("dodgerBlue")};		
+		return CSTR("dodgerBlue");	
 	case PresetColor::Firebrick:
-		return {UTF8STRC("firebrick")};		
+		return CSTR("firebrick");	
 	case PresetColor::FloralWhite:
-		return {UTF8STRC("floralWhite")};		
+		return CSTR("floralWhite");	
 	case PresetColor::ForestGreen:
-		return {UTF8STRC("forestGreen")};		
+		return CSTR("forestGreen");	
 	case PresetColor::Fuchsia:
-		return {UTF8STRC("fuchsia")};		
+		return CSTR("fuchsia");	
 	case PresetColor::Gainsboro:
-		return {UTF8STRC("gainsboro")};		
+		return CSTR("gainsboro");	
 	case PresetColor::GhostWhite:
-		return {UTF8STRC("ghostWhite")};		
+		return CSTR("ghostWhite");	
 	case PresetColor::Gold:
-		return {UTF8STRC("gold")};		
+		return CSTR("gold");	
 	case PresetColor::Goldenrod:
-		return {UTF8STRC("goldenrod")};		
+		return CSTR("goldenrod");	
 	case PresetColor::Gray:
-		return {UTF8STRC("gray")};		
+		return CSTR("gray");	
 	case PresetColor::Green:
-		return {UTF8STRC("green")};		
+		return CSTR("green");	
 	case PresetColor::GreenYellow:
-		return {UTF8STRC("greenYellow")};		
+		return CSTR("greenYellow");	
 	case PresetColor::Honeydew:
-		return {UTF8STRC("honeydew")};		
+		return CSTR("honeydew");	
 	case PresetColor::HotPink:
-		return {UTF8STRC("hotPink")};		
+		return CSTR("hotPink");	
 	case PresetColor::IndianRed:
-		return {UTF8STRC("indianRed")};		
+		return CSTR("indianRed");	
 	case PresetColor::Indigo:
-		return {UTF8STRC("indigo")};		
+		return CSTR("indigo");	
 	case PresetColor::Ivory:
-		return {UTF8STRC("ivory")};		
+		return CSTR("ivory");	
 	case PresetColor::Khaki:
-		return {UTF8STRC("khaki")};		
+		return CSTR("khaki");	
 	case PresetColor::Lavender:
-		return {UTF8STRC("lavender")};		
+		return CSTR("lavender");	
 	case PresetColor::LavenderBlush:
-		return {UTF8STRC("lavenderBlush")};		
+		return CSTR("lavenderBlush");	
 	case PresetColor::LawnGreen:
-		return {UTF8STRC("lawnGreen")};		
+		return CSTR("lawnGreen");	
 	case PresetColor::LemonChiffon:
-		return {UTF8STRC("lemonChiffon")};		
+		return CSTR("lemonChiffon");	
 	case PresetColor::Lime:
-		return {UTF8STRC("lime")};		
+		return CSTR("lime");	
 	case PresetColor::LimeGreen:
-		return {UTF8STRC("limeGreen")};		
+		return CSTR("limeGreen");	
 	case PresetColor::Linen:
-		return {UTF8STRC("linen")};		
+		return CSTR("linen");	
 	case PresetColor::LightBlue:
-		return {UTF8STRC("ltBlue")};		
+		return CSTR("ltBlue");	
 	case PresetColor::LightCoral:
-		return {UTF8STRC("ltCoral")};		
+		return CSTR("ltCoral");	
 	case PresetColor::LightCyan:
-		return {UTF8STRC("ltCyan")};		
+		return CSTR("ltCyan");	
 	case PresetColor::LightGoldenrodYellow:
-		return {UTF8STRC("ltGoldenrodYellow")};		
+		return CSTR("ltGoldenrodYellow");	
 	case PresetColor::LightGray:
-		return {UTF8STRC("ltGray")};		
+		return CSTR("ltGray");	
 	case PresetColor::LightGreen:
-		return {UTF8STRC("ltGreen")};		
+		return CSTR("ltGreen");	
 	case PresetColor::LightPink:
-		return {UTF8STRC("ltPink")};		
+		return CSTR("ltPink");	
 	case PresetColor::LightSalmon:
-		return {UTF8STRC("ltSalmon")};		
+		return CSTR("ltSalmon");	
 	case PresetColor::LightSeaGreen:
-		return {UTF8STRC("ltSeaGreen")};		
+		return CSTR("ltSeaGreen");	
 	case PresetColor::LightSkyBlue:
-		return {UTF8STRC("ltSkyBlue")};		
+		return CSTR("ltSkyBlue");	
 	case PresetColor::LightSlateGray:
-		return {UTF8STRC("ltSlateGray")};		
+		return CSTR("ltSlateGray");	
 	case PresetColor::LightSteelBlue:
-		return {UTF8STRC("ltSteelBlue")};		
+		return CSTR("ltSteelBlue");	
 	case PresetColor::LightYellow:
-		return {UTF8STRC("ltYellow")};		
+		return CSTR("ltYellow");	
 	case PresetColor::Magenta:
-		return {UTF8STRC("magenta")};		
+		return CSTR("magenta");	
 	case PresetColor::Maroon:
-		return {UTF8STRC("maroon")};		
+		return CSTR("maroon");	
 	case PresetColor::MediumAquamarine:
-		return {UTF8STRC("medAquamarine")};		
+		return CSTR("medAquamarine");	
 	case PresetColor::MediumBlue:
-		return {UTF8STRC("medBlue")};		
+		return CSTR("medBlue");	
 	case PresetColor::MediumOrchid:
-		return {UTF8STRC("medOrchid")};		
+		return CSTR("medOrchid");	
 	case PresetColor::MediumPurple:
-		return {UTF8STRC("medPurple")};		
+		return CSTR("medPurple");	
 	case PresetColor::MediumSeaGreen:
-		return {UTF8STRC("medSeaGreen")};		
+		return CSTR("medSeaGreen");	
 	case PresetColor::MediumSlateBlue:
-		return {UTF8STRC("medSlateBlue")};		
+		return CSTR("medSlateBlue");	
 	case PresetColor::MediumSpringGreen:
-		return {UTF8STRC("medSpringGreen")};		
+		return CSTR("medSpringGreen");	
 	case PresetColor::MediumTurquoise:
-		return {UTF8STRC("medTurquoise")};		
+		return CSTR("medTurquoise");	
 	case PresetColor::MediumVioletRed:
-		return {UTF8STRC("medVioletRed")};		
+		return CSTR("medVioletRed");	
 	case PresetColor::MidnightBlue:
-		return {UTF8STRC("midnightBlue")};		
+		return CSTR("midnightBlue");	
 	case PresetColor::MintCream:
-		return {UTF8STRC("mintCream")};		
+		return CSTR("mintCream");	
 	case PresetColor::MistyRose:
-		return {UTF8STRC("mistyRose")};		
+		return CSTR("mistyRose");	
 	case PresetColor::Moccasin:
-		return {UTF8STRC("moccasin")};		
+		return CSTR("moccasin");	
 	case PresetColor::NavajoWhite:
-		return {UTF8STRC("navajoWhite")};		
+		return CSTR("navajoWhite");	
 	case PresetColor::Navy:
-		return {UTF8STRC("navy")};		
+		return CSTR("navy");	
 	case PresetColor::OldLace:
-		return {UTF8STRC("oldLace")};		
+		return CSTR("oldLace");	
 	case PresetColor::Olive:
-		return {UTF8STRC("olive")};		
+		return CSTR("olive");	
 	case PresetColor::OliveDrab:
-		return {UTF8STRC("oliveDrab")};		
+		return CSTR("oliveDrab");	
 	case PresetColor::Orange:
-		return {UTF8STRC("orange")};		
+		return CSTR("orange");	
 	case PresetColor::OrangeRed:
-		return {UTF8STRC("orangeRed")};		
+		return CSTR("orangeRed");	
 	case PresetColor::Orchid:
-		return {UTF8STRC("orchid")};		
+		return CSTR("orchid");	
 	case PresetColor::PaleGoldenrod:
-		return {UTF8STRC("paleGoldenrod")};		
+		return CSTR("paleGoldenrod");	
 	case PresetColor::PaleGreen:
-		return {UTF8STRC("paleGreen")};		
+		return CSTR("paleGreen");	
 	case PresetColor::PaleTurquoise:
-		return {UTF8STRC("paleTurquoise")};		
+		return CSTR("paleTurquoise");	
 	case PresetColor::PaleVioletRed:
-		return {UTF8STRC("paleVioletRed")};		
+		return CSTR("paleVioletRed");	
 	case PresetColor::PapayaWhip:
-		return {UTF8STRC("papayaWhip")};		
+		return CSTR("papayaWhip");	
 	case PresetColor::PeachPuff:
-		return {UTF8STRC("peachPuff")};		
+		return CSTR("peachPuff");	
 	case PresetColor::Peru:
-		return {UTF8STRC("peru")};		
+		return CSTR("peru");	
 	case PresetColor::Pink:
-		return {UTF8STRC("pink")};		
+		return CSTR("pink");	
 	case PresetColor::Plum:
-		return {UTF8STRC("plum")};		
+		return CSTR("plum");	
 	case PresetColor::PowderBlue:
-		return {UTF8STRC("powderBlue")};		
+		return CSTR("powderBlue");	
 	case PresetColor::Purple:
-		return {UTF8STRC("purple")};		
+		return CSTR("purple");	
 	case PresetColor::Red:
-		return {UTF8STRC("red")};		
+		return CSTR("red");	
 	case PresetColor::RosyBrown:
-		return {UTF8STRC("rosyBrown")};		
+		return CSTR("rosyBrown");	
 	case PresetColor::RoyalBlue:
-		return {UTF8STRC("royalBlue")};		
+		return CSTR("royalBlue");	
 	case PresetColor::SaddleBrown:
-		return {UTF8STRC("saddleBrown")};		
+		return CSTR("saddleBrown");	
 	case PresetColor::Salmon:
-		return {UTF8STRC("salmon")};		
+		return CSTR("salmon");	
 	case PresetColor::SandyBrown:
-		return {UTF8STRC("sandyBrown")};		
+		return CSTR("sandyBrown");	
 	case PresetColor::SeaGreen:
-		return {UTF8STRC("seaGreen")};		
+		return CSTR("seaGreen");	
 	case PresetColor::SeaShell:
-		return {UTF8STRC("seaShell")};		
+		return CSTR("seaShell");	
 	case PresetColor::Sienna:
-		return {UTF8STRC("sienna")};		
+		return CSTR("sienna");	
 	case PresetColor::Silver:
-		return {UTF8STRC("silver")};		
+		return CSTR("silver");	
 	case PresetColor::SkyBlue:
-		return {UTF8STRC("skyBlue")};		
+		return CSTR("skyBlue");	
 	case PresetColor::SlateBlue:
-		return {UTF8STRC("slateBlue")};		
+		return CSTR("slateBlue");	
 	case PresetColor::SlateGray:
-		return {UTF8STRC("slateGray")};		
+		return CSTR("slateGray");	
 	case PresetColor::Snow:
-		return {UTF8STRC("snow")};		
+		return CSTR("snow");	
 	case PresetColor::SpringGreen:
-		return {UTF8STRC("springGreen")};		
+		return CSTR("springGreen");	
 	case PresetColor::SteelBlue:
-		return {UTF8STRC("steelBlue")};		
+		return CSTR("steelBlue");	
 	case PresetColor::Tan:
-		return {UTF8STRC("tan")};		
+		return CSTR("tan");	
 	case PresetColor::Teal:
-		return {UTF8STRC("teal")};		
+		return CSTR("teal");	
 	case PresetColor::Thistle:
-		return {UTF8STRC("thistle")};		
+		return CSTR("thistle");	
 	case PresetColor::Tomato:
-		return {UTF8STRC("tomato")};		
+		return CSTR("tomato");	
 	case PresetColor::Turquoise:
-		return {UTF8STRC("turquoise")};		
+		return CSTR("turquoise");	
 	case PresetColor::Violet:
-		return {UTF8STRC("violet")};		
+		return CSTR("violet");	
 	case PresetColor::Wheat:
-		return {UTF8STRC("wheat")};		
+		return CSTR("wheat");	
 	case PresetColor::White:
-		return {UTF8STRC("white")};		
+		return CSTR("white");	
 	case PresetColor::WhiteSmoke:
-		return {UTF8STRC("whiteSmoke")};		
+		return CSTR("whiteSmoke");	
 	case PresetColor::Yellow:
-		return {UTF8STRC("yellow")};		
+		return CSTR("yellow");	
 	case PresetColor::YellowGreen:
-		return {UTF8STRC("yellowGreen")};		
+		return CSTR("yellowGreen");	
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 

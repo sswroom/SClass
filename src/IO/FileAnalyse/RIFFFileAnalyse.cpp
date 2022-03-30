@@ -141,7 +141,7 @@ IO::FileAnalyse::RIFFFileAnalyse::~RIFFFileAnalyse()
 
 Text::CString IO::FileAnalyse::RIFFFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("RIFF")};
+	return CSTR("RIFF");
 }
 
 UOSInt IO::FileAnalyse::RIFFFileAnalyse::GetFrameCount()

@@ -242,5 +242,5 @@ UOSInt Text::TextBinEnc::URIEncoding::DecodeBin(const UTF8Char *str, UOSInt strL
 
 Text::CString Text::TextBinEnc::URIEncoding::GetName()
 {
-	return {UTF8STRC("URI Encoding")};
+	return CSTR("URI Encoding");
 }

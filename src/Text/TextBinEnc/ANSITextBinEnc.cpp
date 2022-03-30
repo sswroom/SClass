@@ -12,5 +12,5 @@ Text::TextBinEnc::ANSITextBinEnc::~ANSITextBinEnc()
 
 Text::CString Text::TextBinEnc::ANSITextBinEnc::GetName()
 {
-	return {UTF8STRC("ANSI Text")};
+	return CSTR("ANSI Text");
 }

@@ -8,7 +8,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	Text::CString domain = {UTF8STRC("sswroom.no-ip.org")};
+	Text::CString domain = CSTR("sswroom.no-ip.org");
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	IO::ConsoleWriter *console;

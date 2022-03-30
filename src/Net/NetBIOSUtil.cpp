@@ -42,26 +42,26 @@ Text::CString Net::NetBIOSUtil::NameTypeGetName(UInt8 nameType)
 	switch (nameType)
 	{
 	case 0:
-		return {UTF8STRC("Workstation Service")};
+		return CSTR("Workstation Service");
 	case 1:
-		return {UTF8STRC("Browser")};
+		return CSTR("Browser");
 	case 3:
-		return {UTF8STRC("Windows Messenger Service")};
+		return CSTR("Windows Messenger Service");
 	case 6:
-		return {UTF8STRC("Remote Access Service")};
+		return CSTR("Remote Access Service");
 	case 27:
-		return {UTF8STRC("Domain Master Browser")};
+		return CSTR("Domain Master Browser");
 	case 28:
-		return {UTF8STRC("Domain Controllers")};
+		return CSTR("Domain Controllers");
 	case 29:
-		return {UTF8STRC("Master Browser")};
+		return CSTR("Master Browser");
 	case 30:
-		return {UTF8STRC("Browser Election Service")};
+		return CSTR("Browser Election Service");
 	case 32:
-		return {UTF8STRC("File Service")};
+		return CSTR("File Service");
 	case 33:
-		return {UTF8STRC("Remote Access Service Client")};
+		return CSTR("Remote Access Service Client");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

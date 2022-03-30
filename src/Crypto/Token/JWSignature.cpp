@@ -101,36 +101,36 @@ Text::CString Crypto::Token::JWSignature::AlgorithmGetName(Algorithm alg)
 	switch (alg)
 	{
 	case Algorithm::HS256:
-		return {UTF8STRC("HS256")};
+		return CSTR("HS256");
 	case Algorithm::HS384:
-		return {UTF8STRC("HS384")};
+		return CSTR("HS384");
 	case Algorithm::HS512:
-		return {UTF8STRC("HS512")};
+		return CSTR("HS512");
 	case Algorithm::PS256:
-		return {UTF8STRC("PS256")};
+		return CSTR("PS256");
 	case Algorithm::PS384:
-		return {UTF8STRC("PS384")};
+		return CSTR("PS384");
 	case Algorithm::PS512:
-		return {UTF8STRC("PS512")};
+		return CSTR("PS512");
 	case Algorithm::RS256:
-		return {UTF8STRC("RS256")};
+		return CSTR("RS256");
 	case Algorithm::RS384:
-		return {UTF8STRC("RS384")};
+		return CSTR("RS384");
 	case Algorithm::RS512:
-		return {UTF8STRC("RS512")};
+		return CSTR("RS512");
 	case Algorithm::ES256:
-		return {UTF8STRC("ES256")};
+		return CSTR("ES256");
 	case Algorithm::ES256K:
-		return {UTF8STRC("ES256K")};
+		return CSTR("ES256K");
 	case Algorithm::ES384:
-		return {UTF8STRC("ES384")};
+		return CSTR("ES384");
 	case Algorithm::ES512:
-		return {UTF8STRC("ES512")};
+		return CSTR("ES512");
 	case Algorithm::EDDSA:
-		return {UTF8STRC("EdDSA")};
+		return CSTR("EdDSA");
 	case Algorithm::Unknown:
 	default:
-		return {UTF8STRC("UNK")};
+		return CSTR("UNK");
 	}
 }
 

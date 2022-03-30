@@ -175,7 +175,7 @@ IO::Registry *IO::Registry::OpenLocalHardware()
 	{
 		return 0;
 	}
-	param.currCate = {UTF8STRC("Hardware")};
+	param.currCate = CSTR("Hardware");
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;
@@ -189,7 +189,7 @@ IO::Registry *IO::Registry::OpenLocalSoftware(const WChar *softwareName)
 	{
 		return 0;
 	}
-	param.currCate = {UTF8STRC("Software")};
+	param.currCate = CSTR("Software");
 	IO::Registry *reg;
 	NEW_CLASS(reg, IO::Registry(&param));
 	return reg;

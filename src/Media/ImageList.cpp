@@ -388,30 +388,30 @@ Text::CString Media::ImageList::GetValueTypeName(Media::ImageList::ValueType val
 	switch (valType)
 	{
 	case VT_IR_WIDTH:
-		return {UTF8STRC("IR Width")};
+		return CSTR("IR Width");
 	case VT_IR_HEIGHT:
-		return {UTF8STRC("IR Height")};
+		return CSTR("IR Height");
 	case VT_VISIBLE_WIDTH:
-		return {UTF8STRC("Visible Width")};
+		return CSTR("Visible Width");
 	case VT_VISIBLE_HEIGHT:
-		return {UTF8STRC("Visible Height")};
+		return CSTR("Visible Height");
 	case VT_FIRMWARE_DATE:
-		return {UTF8STRC("Firmware Date")};
+		return CSTR("Firmware Date");
 	case VT_FIRMWARE_VERSION:
-		return {UTF8STRC("Firmware Version")};
+		return CSTR("Firmware Version");
 	case VT_CAMERA_BRAND:
-		return {UTF8STRC("Camera Brand")};
+		return CSTR("Camera Brand");
 	case VT_CAMERA_MODEL:
-		return {UTF8STRC("Camera Model")};
+		return CSTR("Camera Model");
 	case VT_CAMERA_SN:
-		return {UTF8STRC("Camera SN")};
+		return CSTR("Camera SN");
 	case VT_CAPTURE_DATE:
-		return {UTF8STRC("Capture Date")};
+		return CSTR("Capture Date");
 	case VT_CAPTURE_WIDTH:
-		return {UTF8STRC("Capture Width")};
+		return CSTR("Capture Width");
 	case VT_CAPTURE_HEIGHT:
-		return {UTF8STRC("Capture Height")};
+		return CSTR("Capture Height");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

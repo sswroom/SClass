@@ -136,7 +136,7 @@ Text::String *Net::SNS::SNSInstagram::GetName()
 
 UTF8Char *Net::SNS::SNSInstagram::GetDirName(UTF8Char *dirName)
 {
-	dirName = Text::StrConcat(dirName, (const UTF8Char*)"Instagram_");
+	dirName = Text::StrConcatC(dirName, UTF8STRC("Instagram_"));
 	dirName = this->channelId->ConcatTo(dirName);
 	return dirName;
 }

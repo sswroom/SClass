@@ -1198,7 +1198,7 @@ void Net::PacketAnalyzerBluetooth::AddScanType(IO::FileAnalyse::FrameDetailHandl
 	switch (scanType)
 	{
 	case 1:
-		vName = {UTF8STRC("Active")};
+		vName = CSTR("Active");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, CSTR("Scan Type"), scanType, vName);
@@ -1210,7 +1210,7 @@ void Net::PacketAnalyzerBluetooth::AddScanFilterPolicy(IO::FileAnalyse::FrameDet
 	switch (scanType)
 	{
 	case 0:
-		vName = {UTF8STRC("Accept all advertisements, except directed advertisements not addressed to this device")};
+		vName = CSTR("Accept all advertisements, except directed advertisements not addressed to this device");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, CSTR("Scan Filter Policy"), scanType, vName);
@@ -1242,10 +1242,10 @@ void Net::PacketAnalyzerBluetooth::AddAddrType(IO::FileAnalyse::FrameDetailHandl
 	switch (addrType)
 	{
 	case 0:
-		vName = {UTF8STRC("Public Device Address")};
+		vName = CSTR("Public Device Address");
 		break;
 	case 1:
-		vName = {UTF8STRC("Random Address Type")};
+		vName = CSTR("Random Address Type");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, name, addrType, vName);
@@ -1267,13 +1267,13 @@ void Net::PacketAnalyzerBluetooth::AddAdvEvtType(IO::FileAnalyse::FrameDetailHan
 	switch (evtType)
 	{
 	case 0:
-		vName = {UTF8STRC("Connectable Undirected Advertising")};
+		vName = CSTR("Connectable Undirected Advertising");
 		break;
 	case 3:
-		vName = {UTF8STRC("Non-Connectable Undirected Advertising")};
+		vName = CSTR("Non-Connectable Undirected Advertising");
 		break;
 	case 4:
-		vName = {UTF8STRC("Scan Response")};
+		vName = CSTR("Scan Response");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, CSTR("Event Type"), evtType, vName);
@@ -1354,7 +1354,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 			switch (u16)
 			{
 			case 0xFE24:
-				vName = {UTF8STRC("August Home Inc")};
+				vName = CSTR("August Home Inc");
 				break;
 			}
 			frame->AddHex16Name(frameOfst + i + 2, CSTR("16-bit Service Class UUIDs (incomplete)"), u16, vName);
@@ -1463,49 +1463,49 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 					switch (packet[i + j])
 					{
 					case 2:
-						vName = {UTF8STRC("Proximity Beacons")};
+						vName = CSTR("Proximity Beacons");
 						break;
 					case 3:
-						vName = {UTF8STRC("AirPrint Message")};
+						vName = CSTR("AirPrint Message");
 						break;
 					case 5:
-						vName = {UTF8STRC("AirDrop Message")};
+						vName = CSTR("AirDrop Message");
 						break;
 					case 6:
-						vName = {UTF8STRC("HomeKit Message")};
+						vName = CSTR("HomeKit Message");
 						break;
 					case 7:
-						vName = {UTF8STRC("Proximity Pairing Message")};
+						vName = CSTR("Proximity Pairing Message");
 						break;
 					case 8:
-						vName = {UTF8STRC("Hey Siri Message")};
+						vName = CSTR("Hey Siri Message");
 						break;
 					case 9:
-						vName = {UTF8STRC("Airplay Target Message")};
+						vName = CSTR("Airplay Target Message");
 						break;
 					case 10:
-						vName = {UTF8STRC("Airplay Source Message")};
+						vName = CSTR("Airplay Source Message");
 						break;
 					case 11:
-						vName = {UTF8STRC("Magic Switch Message")};
+						vName = CSTR("Magic Switch Message");
 						break;
 					case 12:
-						vName = {UTF8STRC("Handoff Message")};
+						vName = CSTR("Handoff Message");
 						break;
 					case 13:
-						vName = {UTF8STRC("Tethering Target Message")};
+						vName = CSTR("Tethering Target Message");
 						break;
 					case 14:
-						vName = {UTF8STRC("Tethering Source Message")};
+						vName = CSTR("Tethering Source Message");
 						break;
 					case 15:
-						vName = {UTF8STRC("Nearby Action")};
+						vName = CSTR("Nearby Action");
 						break;
 					case 16:
-						vName = {UTF8STRC("Nearby Info")};
+						vName = CSTR("Nearby Info");
 						break;
 					case 18:
-						vName = {UTF8STRC("Find My Message")};
+						vName = CSTR("Find My Message");
 						break;
 					}
 					frame->AddHex8Name(frameOfst + i + j, CSTR("Apple Type"), packet[i + j], vName);
@@ -1606,67 +1606,67 @@ void Net::PacketAnalyzerBluetooth::AddAdvData(IO::FileAnalyse::FrameDetailHandle
 							switch (packet[i + j + 3])
 							{
 							case 1:
-								vName = {UTF8STRC("Apple TV Setup")};
+								vName = CSTR("Apple TV Setup");
 								break;
 							case 4:
-								vName = {UTF8STRC("Mobile Backup")};
+								vName = CSTR("Mobile Backup");
 								break;
 							case 0x05:
-								vName = {UTF8STRC("Watch Setup")};
+								vName = CSTR("Watch Setup");
 								break;
 							case 0x06:
-								vName = {UTF8STRC("Apple TV Pair")};
+								vName = CSTR("Apple TV Pair");
 								break;
 							case 0x07:
-								vName = {UTF8STRC("Internet Relay")};
+								vName = CSTR("Internet Relay");
 								break;
 							case 0x08:
-								vName = {UTF8STRC("WiFi Password")};
+								vName = CSTR("WiFi Password");
 								break;
 							case 0x09:
-								vName = {UTF8STRC("iOS Setup")};
+								vName = CSTR("iOS Setup");
 								break;
 							case 0x0A:
-								vName = {UTF8STRC("Repair")};
+								vName = CSTR("Repair");
 								break;
 							case 0x0B:
-								vName = {UTF8STRC("Speaker Setupd")};
+								vName = CSTR("Speaker Setupd");
 								break;
 							case 0x0C:
-								vName = {UTF8STRC("Apple Pay")};
+								vName = CSTR("Apple Pay");
 								break;
 							case 0x0D:
-								vName = {UTF8STRC("Whole Home Audio Setup")};
+								vName = CSTR("Whole Home Audio Setup");
 								break;
 							case 0x0E:
-								vName = {UTF8STRC("Developer Tools Pairing Request")};
+								vName = CSTR("Developer Tools Pairing Request");
 								break;
 							case 0x0F:
-								vName = {UTF8STRC("Answered Call")};
+								vName = CSTR("Answered Call");
 								break;
 							case 0x10:
-								vName = {UTF8STRC("Ended Call")};
+								vName = CSTR("Ended Call");
 								break;
 							case 0x11:
-								vName = {UTF8STRC("DD Ping")};
+								vName = CSTR("DD Ping");
 								break;
 							case 0x12:
-								vName = {UTF8STRC("DD Pong")};
+								vName = CSTR("DD Pong");
 								break;
 							case 0x13:
-								vName = {UTF8STRC("Remote Auto Fill")};
+								vName = CSTR("Remote Auto Fill");
 								break;
 							case 0x14:
-								vName = {UTF8STRC("Companion Link Proximity")};
+								vName = CSTR("Companion Link Proximity");
 								break;
 							case 0x15:
-								vName = {UTF8STRC("Remote Management")};
+								vName = CSTR("Remote Management");
 								break;
 							case 0x16:
-								vName = {UTF8STRC("Remote Auto Fill Pong")};
+								vName = CSTR("Remote Auto Fill Pong");
 								break;
 							case 0x17:
-								vName = {UTF8STRC("Remote Display")};
+								vName = CSTR("Remote Display");
 								break;
 							}
 							frame->AddUIntName(frameOfst + i + j + 3, 1, CSTR("Action Type"), packet[i + j + 3], vName);
@@ -1808,7 +1808,7 @@ void Net::PacketAnalyzerBluetooth::AddInquiryLen(IO::FileAnalyse::FrameDetailHan
 	switch (len)
 	{
 	case 4:
-		vName = {UTF8STRC("5.12 sec")};
+		vName = CSTR("5.12 sec");
 		break;
 	}
 	frame->AddUIntName(frameOfst, 1, CSTR("Inquiry Length"), len, vName);
@@ -1820,7 +1820,7 @@ void Net::PacketAnalyzerBluetooth::AddPageScanMode(IO::FileAnalyse::FrameDetailH
 	switch (mode)
 	{
 	case 1:
-		vName = {UTF8STRC("R1")};
+		vName = CSTR("R1");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, CSTR("Page Scan Repetition Mode"), mode, vName);
@@ -1935,10 +1935,10 @@ void Net::PacketAnalyzerBluetooth::AddPHYType(IO::FileAnalyse::FrameDetailHandle
 	switch (phyType)
 	{
 	case 0:
-		vName = {UTF8STRC("No packets")};
+		vName = CSTR("No packets");
 		break;
 	case 1:
-		vName = {UTF8STRC("LE 1M")};
+		vName = CSTR("LE 1M");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, name, phyType, vName);
@@ -1950,7 +1950,7 @@ void Net::PacketAnalyzerBluetooth::AddAdvSID(IO::FileAnalyse::FrameDetailHandler
 	switch (sid)
 	{
 	case 0xFF:
-		vName = {UTF8STRC("Not available")};
+		vName = CSTR("Not available");
 		break;
 	}
 	frame->AddHex8Name(frameOfst, CSTR("Advertising SID"), sid, vName);
@@ -1970,7 +1970,7 @@ void Net::PacketAnalyzerBluetooth::AddPeriodicAdv(IO::FileAnalyse::FrameDetailHa
 	switch (interval)
 	{
 	case 0:
-		vName = {UTF8STRC("No periodic advertising")};
+		vName = CSTR("No periodic advertising");
 		break;
 	}
 	frame->AddHex16Name(frameOfst, CSTR("Periodic Advertising Interval"), interval, vName);
@@ -2205,7 +2205,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt p
 			switch (packet[7])
 			{
 			case 0:
-				vName = {UTF8STRC("Success")};
+				vName = CSTR("Success");
 				break;
 			}
 			frame->AddHex8Name(frameOfst + 7, CSTR("Status"), packet[7], vName);
@@ -2221,7 +2221,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt p
 			switch (packet[10])
 			{
 			case 0:
-				vName = {UTF8STRC("Success")};
+				vName = CSTR("Success");
 				break;
 			}
 			frame->AddHex8Name(frameOfst + 10, CSTR("Status"), packet[10], vName);
@@ -2235,7 +2235,7 @@ void Net::PacketAnalyzerBluetooth::PacketGetDetail(const UInt8 *packet, UOSInt p
 			switch (packet[7])
 			{
 			case 0:
-				vName = {UTF8STRC("Pending")};
+				vName = CSTR("Pending");
 				break;
 			}
 			frame->AddHex8Name(frameOfst + 7, CSTR("Status"), packet[7], vName);
@@ -2363,13 +2363,13 @@ Text::CString Net::PacketAnalyzerBluetooth::CmdGetName(UInt16 cmd)
 	switch (cmd)
 	{
 	case 0x0401:
-		return {UTF8STRC("HCI Inquiry")};
+		return CSTR("HCI Inquiry");
 	case 0x2005:
-		return {UTF8STRC("LE Set Random Address")};
+		return CSTR("LE Set Random Address");
 	case 0x200B:
-		return {UTF8STRC("LE Set Scan Parameter")};
+		return CSTR("LE Set Scan Parameter");
 	case 0x200C:
-		return {UTF8STRC("LE Set Scan Enable")};
+		return CSTR("LE Set Scan Enable");
 	default:
 		return CSTR_NULL;
 	}
@@ -2380,9 +2380,9 @@ Text::CString Net::PacketAnalyzerBluetooth::HCIPacketTypeGetName(UInt8 packetTyp
 	switch (packetType)
 	{
 	case 1:
-		return {UTF8STRC("HCI Command")};
+		return CSTR("HCI Command");
 	case 4:
-		return {UTF8STRC("HCI Event")};
+		return CSTR("HCI Event");
 	default:
 		return CSTR_NULL;	
 	}
@@ -2393,13 +2393,13 @@ Text::CString Net::PacketAnalyzerBluetooth::HCIEventGetName(UInt8 evt)
 	switch (evt)
 	{
 	case 0x0E:
-		return {UTF8STRC("Command Complete")};
+		return CSTR("Command Complete");
 	case 0x0F:
-		return {UTF8STRC("Command Status")};
+		return CSTR("Command Status");
 	case 0x2F:
-		return {UTF8STRC("Extended Inquery Result")};
+		return CSTR("Extended Inquery Result");
 	case 0x3E:
-		return {UTF8STRC("LE Meta")};
+		return CSTR("LE Meta");
 	default:
 		return CSTR_NULL;
 	}
@@ -2410,9 +2410,9 @@ Text::CString Net::PacketAnalyzerBluetooth::LESubEventGetName(UInt8 subEvt)
 	switch (subEvt)
 	{
 	case 0x02:
-		return {UTF8STRC("LE Advertising Report")};
+		return CSTR("LE Advertising Report");
 	case 0x0D:
-		return {UTF8STRC("LE Extended Advertising Report")};
+		return CSTR("LE Extended Advertising Report");
 	default:
 		return CSTR_NULL;
 	}

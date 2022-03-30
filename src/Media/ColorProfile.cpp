@@ -878,22 +878,22 @@ Text::CString Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType y
 		switch (yuvType & Media::ColorProfile::YUVT_MASK)
 		{
 		case Media::ColorProfile::YUVT_BT601:
-			return {UTF8STRC("ITU-T BT. 601 (Full Range)")};
+			return CSTR("ITU-T BT. 601 (Full Range)");
 		case Media::ColorProfile::YUVT_BT709:
-			return {UTF8STRC("ITU-T BT. 709 (Full Range)")};
+			return CSTR("ITU-T BT. 709 (Full Range)");
 		case Media::ColorProfile::YUVT_FCC:
-			return {UTF8STRC("FCC (Full Range)")};
+			return CSTR("FCC (Full Range)");
 		case Media::ColorProfile::YUVT_BT470BG:
-			return {UTF8STRC("ITU-T BT. 470BG (Full Range)")};
+			return CSTR("ITU-T BT. 470BG (Full Range)");
 		case Media::ColorProfile::YUVT_SMPTE170M:
-			return {UTF8STRC("SMPTE 170M (Full Range)")};
+			return CSTR("SMPTE 170M (Full Range)");
 		case Media::ColorProfile::YUVT_SMPTE240M:
-			return {UTF8STRC("SMPTE 240M (Full Range)")};
+			return CSTR("SMPTE 240M (Full Range)");
 		case Media::ColorProfile::YUVT_BT2020:
-			return {UTF8STRC("ITU-T BT. 2020 (Full Range)")};
+			return CSTR("ITU-T BT. 2020 (Full Range)");
 		case Media::ColorProfile::YUVT_UNKNOWN:
 		default:
-			return {UTF8STRC("Unknown (Full Range)")};
+			return CSTR("Unknown (Full Range)");
 		}
 	}
 	else
@@ -901,22 +901,22 @@ Text::CString Media::ColorProfile::YUVTypeGetName(Media::ColorProfile::YUVType y
 		switch (yuvType & Media::ColorProfile::YUVT_MASK)
 		{
 		case Media::ColorProfile::YUVT_BT601:
-			return {UTF8STRC("ITU-T BT. 601")};
+			return CSTR("ITU-T BT. 601");
 		case Media::ColorProfile::YUVT_BT709:
-			return {UTF8STRC("ITU-T BT. 709")};
+			return CSTR("ITU-T BT. 709");
 		case Media::ColorProfile::YUVT_FCC:
-			return {UTF8STRC("FCC")};
+			return CSTR("FCC");
 		case Media::ColorProfile::YUVT_BT470BG:
-			return {UTF8STRC("ITU-T BT. 470BG")};
+			return CSTR("ITU-T BT. 470BG");
 		case Media::ColorProfile::YUVT_SMPTE170M:
-			return {UTF8STRC("SMPTE 170M")};
+			return CSTR("SMPTE 170M");
 		case Media::ColorProfile::YUVT_SMPTE240M:
-			return {UTF8STRC("SMPTE 240M")};
+			return CSTR("SMPTE 240M");
 		case Media::ColorProfile::YUVT_BT2020:
-			return {UTF8STRC("ITU-T BT. 2020")};
+			return CSTR("ITU-T BT. 2020");
 		case Media::ColorProfile::YUVT_UNKNOWN:
 		default:
-			return {UTF8STRC("Unknown")};
+			return CSTR("Unknown");
 		}
 	}
 }
@@ -927,49 +927,49 @@ Text::CString Media::ColorProfile::ColorTypeGetName(ColorType colorType)
 	{
 	case CT_SRGB:
 	case CT_BT709:
-		return {UTF8STRC("BT.709/sRGB")};
+		return CSTR("BT.709/sRGB");
 	case CT_BT470M:
-		return {UTF8STRC("BT.470M")};
+		return CSTR("BT.470M");
 	case CT_BT470BG:
-		return {UTF8STRC("BT.470BG")};
+		return CSTR("BT.470BG");
 	case CT_SMPTE170M:
-		return {UTF8STRC("SMPTE 170M")};
+		return CSTR("SMPTE 170M");
 	case CT_SMPTE240M:
-		return {UTF8STRC("SMPTE 240M")};
+		return CSTR("SMPTE 240M");
 	case CT_GENERIC_FILM:
-		return {UTF8STRC("Generic Film")};
+		return CSTR("Generic Film");
 	case CT_BT2020:
-		return {UTF8STRC("BT.2020")};
+		return CSTR("BT.2020");
 	case CT_ADOBE:
-		return {UTF8STRC("Adobe RGB")};
+		return CSTR("Adobe RGB");
 	case CT_APPLE:
-		return {UTF8STRC("Apple RGB")};
+		return CSTR("Apple RGB");
 	case CT_CIERGB:
-		return {UTF8STRC("CIE RGB")};
+		return CSTR("CIE RGB");
 	case CT_COLORMATCH:
-		return {UTF8STRC("Colormatch RGB")};
+		return CSTR("Colormatch RGB");
 	case CT_WIDE:
-		return {UTF8STRC("Wide")};
+		return CSTR("Wide");
 	case CT_SGAMUT:
-		return {UTF8STRC("Sony S-Gamut")};
+		return CSTR("Sony S-Gamut");
 	case CT_SGAMUTCINE:
-		return {UTF8STRC("Sony S-Gamut3.Cine")};
+		return CSTR("Sony S-Gamut3.Cine");
 	case CT_DCI_P3:
-		return {UTF8STRC("DCI-P3")};
+		return CSTR("DCI-P3");
 	case CT_ACESGAMUT:
-		return {UTF8STRC("ACES-Gamut")};
+		return CSTR("ACES-Gamut");
 	case CT_ALEXAWIDE:
-		return {UTF8STRC("ALEXA Wide Gamut")};
+		return CSTR("ALEXA Wide Gamut");
 	case CT_VGAMUT:
-		return {UTF8STRC("V-Gamut")};
+		return CSTR("V-Gamut");
 	case CT_CUSTOM:
-		return {UTF8STRC("Custom")};
+		return CSTR("Custom");
 	case CT_DISPLAY:
-		return {UTF8STRC("As Display Color")};
+		return CSTR("As Display Color");
 	case CT_PUNKNOWN:
 	case CT_VUNKNOWN:
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 
@@ -978,51 +978,51 @@ Text::CString Media::ColorProfile::CommonProfileTypeGetName(CommonProfileType cp
 	switch (cpt)
 	{
 	case CPT_ADOBE:
-		return {UTF8STRC("Adobe RGB")};
+		return CSTR("Adobe RGB");
 	case CPT_APPLE:
-		return {UTF8STRC("Apple RGB")};
+		return CSTR("Apple RGB");
 	case CPT_CIERGB:
-		return {UTF8STRC("CIE RGB")};
+		return CSTR("CIE RGB");
 	case CPT_COLORMATCH:
-		return {UTF8STRC("ColorMatch RGB")};
+		return CSTR("ColorMatch RGB");
 	case CPT_BT709:
-		return {UTF8STRC("ITU-R Bt.709")};
+		return CSTR("ITU-R Bt.709");
 	case CPT_NTSC:
-		return {UTF8STRC("NTSC")};
+		return CSTR("NTSC");
 	case CPT_PAL:
-		return {UTF8STRC("PAL")};
+		return CSTR("PAL");
 	case CPT_SGI:
-		return {UTF8STRC("SGI")};
+		return CSTR("SGI");
 	case CPT_SMPTE240M:
-		return {UTF8STRC("SMPTE 240M")};
+		return CSTR("SMPTE 240M");
 	case CPT_SMPTEC:
-		return {UTF8STRC("SMPTE C")};
+		return CSTR("SMPTE C");
 	case CPT_SRGB:
-		return {UTF8STRC("sRGB")};
+		return CSTR("sRGB");
 	case CPT_WIDE:
-		return {UTF8STRC("Wide")};
+		return CSTR("Wide");
 	case CPT_BT2020:
-		return {UTF8STRC("BT.2020")};
+		return CSTR("BT.2020");
 	case CPT_BT2100:
-		return {UTF8STRC("BT.2100")};
+		return CSTR("BT.2100");
 	case CPT_FILE:
-		return {UTF8STRC("File")};
+		return CSTR("File");
 	case CPT_CUSTOM:
-		return {UTF8STRC("Custom")};
+		return CSTR("Custom");
 	case CPT_PDISPLAY:
-		return {UTF8STRC("From Display Unit (For Picture)")};
+		return CSTR("From Display Unit (For Picture)");
 	case CPT_VDISPLAY:
-		return {UTF8STRC("From Display Unit (For Video)")};
+		return CSTR("From Display Unit (For Video)");
 	case CPT_OS:
-		return {UTF8STRC("OS")};
+		return CSTR("OS");
 	case CPT_EDID:
-		return {UTF8STRC("From EDID")};
+		return CSTR("From EDID");
 	case CPT_VUNKNOWN:
-		return {UTF8STRC("Unknown (For Video)")};
+		return CSTR("Unknown (For Video)");
 	case CPT_PUNKNOWN:
-		return {UTF8STRC("Unknwon (For Picture)")};
+		return CSTR("Unknwon (For Picture)");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 

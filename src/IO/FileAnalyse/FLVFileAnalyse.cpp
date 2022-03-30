@@ -197,7 +197,7 @@ IO::FileAnalyse::FLVFileAnalyse::~FLVFileAnalyse()
 
 Text::CString IO::FileAnalyse::FLVFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("FLV")};
+	return CSTR("FLV");
 }
 
 UOSInt IO::FileAnalyse::FLVFileAnalyse::GetFrameCount()
@@ -394,13 +394,13 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::FLVFileAnalyse::GetFrameDetail(UO
 	switch (tag->tagType)
 	{
 	case 8:
-		vName = {UTF8STRC("audio")};
+		vName = CSTR("audio");
 		break;
 	case 9:
-		vName = {UTF8STRC("video")};
+		vName = CSTR("video");
 		break;
 	case 18:
-		vName = {UTF8STRC("script data")};
+		vName = CSTR("script data");
 		break;
 	}
 	frame->AddUIntName(0, 1, CSTR("TagType"), buff[0] & 0x1f, vName);

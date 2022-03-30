@@ -49,12 +49,12 @@ Text::MIMEObj::TextMIMEObj::~TextMIMEObj()
 
 Text::CString Text::MIMEObj::TextMIMEObj::GetClassName()
 {
-	return {UTF8STRC("TextMIMEObj")};
+	return CSTR("TextMIMEObj");
 }
 
 Text::CString Text::MIMEObj::TextMIMEObj::GetContentType()
 {
-	return {this->contType->v, this->contType->leng};
+	return this->contType->ToCString();
 }
 
 UOSInt Text::MIMEObj::TextMIMEObj::WriteStream(IO::Stream *stm)

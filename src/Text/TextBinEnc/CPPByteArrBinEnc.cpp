@@ -118,5 +118,5 @@ UOSInt Text::TextBinEnc::CPPByteArrBinEnc::DecodeBin(const UTF8Char *str, UOSInt
 
 Text::CString Text::TextBinEnc::CPPByteArrBinEnc::GetName()
 {
-	return {UTF8STRC("CPP Byte Arr")};
+	return CSTR("CPP Byte Arr");
 }

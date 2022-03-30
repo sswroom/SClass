@@ -42,5 +42,5 @@ UOSInt Text::TextBinEnc::UTF8UCaseTextBinEnc::DecodeBin(const UTF8Char *str, UOS
 
 Text::CString Text::TextBinEnc::UTF8UCaseTextBinEnc::GetName()
 {
-	return {UTF8STRC("UTF-8 UCase Text")};
+	return CSTR("UTF-8 UCase Text");
 }

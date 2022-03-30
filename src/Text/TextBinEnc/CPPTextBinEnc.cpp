@@ -276,5 +276,5 @@ UOSInt Text::TextBinEnc::CPPTextBinEnc::DecodeBin(const UTF8Char *str, UOSInt st
 
 Text::CString Text::TextBinEnc::CPPTextBinEnc::GetName()
 {
-	return {UTF8STRC("CPP String")};
+	return CSTR("CPP String");
 }

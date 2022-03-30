@@ -473,7 +473,7 @@ IO::FileAnalyse::EBMLFileAnalyse::~EBMLFileAnalyse()
 
 Text::CString IO::FileAnalyse::EBMLFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("EMBL")};
+	return CSTR("EMBL");
 }
 
 UOSInt IO::FileAnalyse::EBMLFileAnalyse::GetFrameCount()
@@ -773,36 +773,36 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(U
 	const IO::FileAnalyse::EBMLFileAnalyse::ElementInfo *element = GetElementInfo((UInt32)eleId);
 	if (element)
 	{
-		frame->AddField(0, intSize, {UTF8STRC("Element Name")}, element->elementName);
+		frame->AddField(0, intSize, CSTR("Element Name"), element->elementName);
 		switch (element->type)
 		{
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_MASTER:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Master Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Master Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_SINT:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Signed Integer Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Signed Integer Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_UINT:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Unsigned Integer Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Unsigned Integer Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_FLOAT:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Float Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Float Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_STRING:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("String Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("String Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_UTF8:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("UTF-8 Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("UTF-8 Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_DATE:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Date Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Date Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_BINARY:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Binary Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Binary Element"));
 			break;
 		case IO::FileAnalyse::EBMLFileAnalyse::ET_UNKNOWN:
 		default:
-			frame->AddField(0, intSize, {UTF8STRC("Element Type")}, {UTF8STRC("Unknown Element")});
+			frame->AddField(0, intSize, CSTR("Element Type"), CSTR("Unknown Element"));
 			break;
 		}
 		UInt8 *buff;
@@ -834,7 +834,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::EBMLFileAnalyse::GetFrameDetail(U
 				sb.AppendC(UTF8STRC("\r\n..\r\n"));
 				this->fd->GetRealData(pack->fileOfst + pack->packSize - 32, 32, buff);
 				sb.AppendHexBuff(buff, 32, ' ', Text::LineBreakType::CRLF);
-				frame->AddField(pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, {UTF8STRC("Data")}, sb.ToCString());
+				frame->AddField(pack->hdrSize + (UOSInt)(buffPtr - hdr), sz, CSTR("Data"), sb.ToCString());
 				MemFree(buff);
 			}
 		}

@@ -92,7 +92,7 @@ Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen)
 	UTF8Char sbuff[5];
 	if (extLen > 4 || extLen < 2)
 	{
-		return {UTF8STRC("application/octet-stream")};
+		return CSTR("application/octet-stream");
 	}
 	Text::StrToLowerC(sbuff, ext, extLen);
 	OSInt i = 0;
@@ -116,7 +116,7 @@ Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen)
 			return {mimeList[k].mime, mimeList[k].mimeLen};
 		}
 	}
-	return {UTF8STRC("application/octet-stream")};
+	return CSTR("application/octet-stream");
 }
 
 Text::CString Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt nameLen)
@@ -124,7 +124,7 @@ Text::CString Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt na
 	UOSInt i = Text::StrLastIndexOfCharC(fileName, nameLen, '.');
 	if (i == INVALID_INDEX)
 	{
-		return {UTF8STRC("application/octet-stream")};
+		return CSTR("application/octet-stream");
 	}
 	return GetMIMEFromExt(&fileName[i + 1], nameLen - i - 1);
 }

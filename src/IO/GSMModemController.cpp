@@ -945,34 +945,34 @@ Bool IO::GSMModemController::PBSetStorage(PBStorage storage)
 	switch (storage)
 	{
 	case PBSTORE_SIM:
-		cmd = {UTF8STRC("AT+CPBS=\"SM\"")};
+		cmd = CSTR("AT+CPBS=\"SM\"");
 		break;
 	case PBSTORE_SIM_RESTRICTED:
-		cmd = {UTF8STRC("AT+CPBS=\"FD\"")};
+		cmd = CSTR("AT+CPBS=\"FD\"");
 		break;
 	case PBSTORE_SIM_OWN_NUMBERS:
-		cmd = {UTF8STRC("AT+CPBS=\"ON\"")};
+		cmd = CSTR("AT+CPBS=\"ON\"");
 		break;
 	case PBSTORE_EMERGENCY:
-		cmd = {UTF8STRC("AT+CPBS=\"EN\"")};
+		cmd = CSTR("AT+CPBS=\"EN\"");
 		break;
 	case PBSTORE_LASTNUMDIAL:
-		cmd = {UTF8STRC("AT+CPBS=\"LD\"")};
+		cmd = CSTR("AT+CPBS=\"LD\"");
 		break;
 	case PBSTORE_UNANSWERED:
-		cmd = {UTF8STRC("AT+CPBS=\"MC\"")};
+		cmd = CSTR("AT+CPBS=\"MC\"");
 		break;
 	case PBSTORE_ME:
-		cmd = {UTF8STRC("AT+CPBS=\"ME\"")};
+		cmd = CSTR("AT+CPBS=\"ME\"");
 		break;
 	case PBSTORE_ME_SIM:
-		cmd = {UTF8STRC("AT+CPBS=\"MT\"")};
+		cmd = CSTR("AT+CPBS=\"MT\"");
 		break;
 	case PBSTORE_RECEIVED_CALL:
-		cmd = {UTF8STRC("AT+CPBS=\"RC\"")};
+		cmd = CSTR("AT+CPBS=\"RC\"");
 		break;
 	case PBSTORE_SERVICE_DIALING_NUMBERS:
-		cmd = {UTF8STRC("AT+CPBS=\"SN\"")};
+		cmd = CSTR("AT+CPBS=\"SN\"");
 		break;
 	case PBSTORE_UNKNOWN:
 	default:

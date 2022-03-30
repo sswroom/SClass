@@ -68,7 +68,7 @@ void Crypto::Cert::X509File::AppendSigned(const UInt8 *pdu, const UInt8 *pduEnd,
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("algorithmIdentifier")}, false, 0);
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTR("algorithmIdentifier"), false, 0);
 		}
 	}
 	Text::StrConcat(sptr, ".3");
@@ -165,7 +165,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("signature")}, false, 0);
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + itemLen, sb, CSTR("signature"), false, 0);
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -173,7 +173,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendName(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("issuer")});
+			AppendName(itemPDU, itemPDU + itemLen, sb, CSTR("issuer"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -181,7 +181,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendValidity(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("validity")});
+			AppendValidity(itemPDU, itemPDU + itemLen, sb, CSTR("validity"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -189,7 +189,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendName(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("subject")});
+			AppendName(itemPDU, itemPDU + itemLen, sb, CSTR("subject"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -198,7 +198,7 @@ void Crypto::Cert::X509File::AppendTBSCertificate(const UInt8 *pdu, const UInt8 
 	{
 		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, {UTF8STRC("subjectPublicKeyInfo")});
+			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, CSTR("subjectPublicKeyInfo"));
 			Crypto::Cert::X509PubKey *pubKey;
 			Crypto::Cert::X509Key *key;
 			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), itemPDU, itemOfst + itemLen));
@@ -289,7 +289,7 @@ void Crypto::Cert::X509File::AppendPrivateKeyInfo(const UInt8 *pdu, const UInt8 
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, {UTF8STRC("privateKeyAlgorithm")}, false, &keyType);
+			AppendAlgorithmIdentifier(itemPDU, itemPDU + len, sb, CSTR("privateKeyAlgorithm"), false, &keyType);
 		}
 	}
 	Text::StrConcat(sptr, ".3");
@@ -366,7 +366,7 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 	{
 		if (itemType == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendName(itemPDU, itemPDU + itemLen, sb, {UTF8STRC("subject")});
+			AppendName(itemPDU, itemPDU + itemLen, sb, CSTR("subject"));
 		}
 	}
 	Text::StrUOSInt(sptr, i++);
@@ -375,7 +375,7 @@ void Crypto::Cert::X509File::AppendCertificateRequestInfo(const UInt8 *pdu, cons
 	{
 		if (itemPDU[0] == Net::ASN1Util::IT_SEQUENCE)
 		{
-			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, {UTF8STRC("subjectPublicKeyInfo")});
+			AppendSubjectPublicKeyInfo(itemPDU + itemOfst, itemPDU + itemOfst + itemLen, sb, CSTR("subjectPublicKeyInfo"));
 			Crypto::Cert::X509PubKey *pubKey;
 			Crypto::Cert::X509Key *key;
 			NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), itemPDU, itemOfst + itemLen));
@@ -435,7 +435,7 @@ void Crypto::Cert::X509File::AppendPublicKeyInfo(const UInt8 *pdu, const UInt8 *
 	const UInt8 *buff = Net::ASN1Util::PDUGetItemRAW(pdu, pduEnd, path, &buffSize, &itemOfst);
 	if (buff[0] == Net::ASN1Util::IT_SEQUENCE)
 	{
-		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, {UTF8STRC("PubKey")});
+		AppendSubjectPublicKeyInfo(buff + itemOfst, buff + itemOfst + buffSize, sb, CSTR("PubKey"));
 		Crypto::Cert::X509PubKey *pubKey;
 		Crypto::Cert::X509Key *key;
 		NEW_CLASS(pubKey, Crypto::Cert::X509PubKey(CSTR("PubKey"), buff, itemOfst + buffSize));
@@ -1047,23 +1047,23 @@ Text::CString Crypto::Cert::X509File::FileTypeGetName(FileType fileType)
 	switch (fileType)
 	{
 	case FileType::Cert:
-		return {UTF8STRC("Cert")};
+		return CSTR("Cert");
 	case FileType::CertRequest:
-		return {UTF8STRC("CertReq")};
+		return CSTR("CertReq");
 	case FileType::Key:
-		return {UTF8STRC("Key")};
+		return CSTR("Key");
 	case FileType::PrivateKey:
-		return {UTF8STRC("PrivateKey")};
+		return CSTR("PrivateKey");
 	case FileType::Jks:
-		return {UTF8STRC("JavaKeyStore")};
+		return CSTR("JavaKeyStore");
 	case FileType::PublicKey:
-		return {UTF8STRC("PublicKey")};
+		return CSTR("PublicKey");
 	case FileType::PKCS7:
-		return {UTF8STRC("PKCS7")};
+		return CSTR("PKCS7");
 	case FileType::PKCS12:
-		return {UTF8STRC("PKCS12")};
+		return CSTR("PKCS12");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 
@@ -1072,18 +1072,18 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetName(KeyType keyType)
 	switch (keyType)
 	{
 	case KeyType::RSA:
-		return {UTF8STRC("RSA")};
+		return CSTR("RSA");
 	case KeyType::DSA:
-		return {UTF8STRC("DSA")};
+		return CSTR("DSA");
 	case KeyType::ECDSA:
-		return {UTF8STRC("ECDSA")};
+		return CSTR("ECDSA");
 	case KeyType::ED25519:
-		return {UTF8STRC("ED25519")};
+		return CSTR("ED25519");
 	case KeyType::RSAPublic:
-		return {UTF8STRC("RSAPublic")};
+		return CSTR("RSAPublic");
 	case KeyType::Unknown:
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 
@@ -1092,16 +1092,16 @@ Text::CString Crypto::Cert::X509File::KeyTypeGetOID(KeyType keyType)
 	switch (keyType)
 	{
 	case KeyType::RSA:
-		return {UTF8STRC("1.2.840.113549.1.1.1")};
+		return CSTR("1.2.840.113549.1.1.1");
 	case KeyType::DSA:
-		return {UTF8STRC("1.2.840.10040.4.1")};
+		return CSTR("1.2.840.10040.4.1");
 	case KeyType::ECDSA:
-		return {UTF8STRC("1.2.840.10045.2.1")};
+		return CSTR("1.2.840.10045.2.1");
 	case KeyType::ED25519:
-		return {UTF8STRC("1.3.101.112")};
+		return CSTR("1.3.101.112");
 	case KeyType::RSAPublic:
 	case KeyType::Unknown:
 	default:
-		return {UTF8STRC("1.2.840.113549.1.1.1")};
+		return CSTR("1.2.840.113549.1.1.1");
 	}
 }

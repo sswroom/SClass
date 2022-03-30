@@ -35,12 +35,12 @@ Text::MIMEObj::HTMLMIMEObj::~HTMLMIMEObj()
 
 Text::CString Text::MIMEObj::HTMLMIMEObj::GetClassName()
 {
-	return {UTF8STRC("HTMLMIMEObj")};
+	return CSTR("HTMLMIMEObj");
 }
 
 Text::CString Text::MIMEObj::HTMLMIMEObj::GetContentType()
 {
-	return {this->contType->v, this->contType->leng};
+	return this->contType->ToCString();
 }
 
 UOSInt Text::MIMEObj::HTMLMIMEObj::WriteStream(IO::Stream *stm)

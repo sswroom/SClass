@@ -144,7 +144,7 @@ IO::FileAnalyse::QTFileAnalyse::~QTFileAnalyse()
 
 Text::CString IO::FileAnalyse::QTFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("Quicktime")};
+	return CSTR("Quicktime");
 }
 
 UOSInt IO::FileAnalyse::QTFileAnalyse::GetFrameCount()

@@ -96,7 +96,7 @@ IO::FileAnalyse::MDBFileAnalyse::~MDBFileAnalyse()
 
 Text::CString IO::FileAnalyse::MDBFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("MDB")};
+	return CSTR("MDB");
 }
 
 UOSInt IO::FileAnalyse::MDBFileAnalyse::GetFrameCount()
@@ -190,7 +190,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, CSTRP(sbuff, sptr));
+				frame->AddField(24 + 0x5A, 8, CSTR("Creation date"), CSTRP(sbuff, sptr));
 				frame->AddHexBuff(24 + 0x62, 28, CSTR("Unknown"), &decBuff[0x62], true);
 			}
 			else
@@ -213,14 +213,14 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				WriteUInt32(&decBuff[0x4E], ReadUInt32(&decBuff[0x4E]) ^ ndays);
 				sptr = Text::StrUTF16_UTF8C(sbuff, (const UTF16Char*)&decBuff[0x2A], 20);
 				sptr[0] = 0;
-				frame->AddField(24 + 0x2A, 40, {UTF8STRC("Database Password")}, CSTRP(sbuff, sptr));
+				frame->AddField(24 + 0x2A, 40, CSTR("Database Password"), CSTRP(sbuff, sptr));
 				frame->AddHex32(24 + 0x52, CSTR("Unknown"), ReadUInt32(&decBuff[0x52]));
 				frame->AddUInt(24 + 0x56, 4, CSTR("System Collation"), ReadUInt32(&decBuff[0x56]));
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ddays);
 				dt.ToLocalTime();
 				sptr = Text::StrConcatC(dt.ToString(Text::StrConcatC(Text::StrDouble(sbuff, ddays), UTF8STRC(" (")), "yyyy-MM-dd HH:mm:ss.fff"), UTF8STRC(")"));
-				frame->AddField(24 + 0x5A, 8, {UTF8STRC("Creation date")}, CSTRP(sbuff, sptr));
+				frame->AddField(24 + 0x5A, 8, CSTR("Creation date"), CSTRP(sbuff, sptr));
 				frame->AddHexBuff(24 + 0x62, 30, CSTR("Unknown"), &decBuff[0x62], true);
 
 				frame->AddUInt(152, 4, CSTR("Unknown"), ReadUInt32(&packBuff[152]));
@@ -249,7 +249,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MDBFileAnalyse::GetFrameDetail(UO
 				{
 					sptr = Text::StrConcatC(sptr, UTF8STRC(" (deleted)"));
 				}
-				frame->AddField(14 + i * 2, 2, {UTF8STRC("Record Offset")}, CSTRP(sbuff, sptr));
+				frame->AddField(14 + i * 2, 2, CSTR("Record Offset"), CSTRP(sbuff, sptr));
 				sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Record ")), i);
 				thisOfst &= 0xfff;
 				frame->AddHexBuff(thisOfst, lastOfst - thisOfst, CSTRP(sbuff, sptr), &packBuff[thisOfst], true);
@@ -438,34 +438,34 @@ Text::CString IO::FileAnalyse::MDBFileAnalyse::ColumnTypeGetName(UInt8 colType)
 	switch (colType)
 	{
 	case 1:
-		return {UTF8STRC("BOOL")};
+		return CSTR("BOOL");
 	case 2:
-		return {UTF8STRC("BYTE")};
+		return CSTR("BYTE");
 	case 3:
-		return {UTF8STRC("INT")};
+		return CSTR("INT");
 	case 4:
-		return {UTF8STRC("LONGINT")};
+		return CSTR("LONGINT");
 	case 5:
-		return {UTF8STRC("MONEY")};
+		return CSTR("MONEY");
 	case 6:
-		return {UTF8STRC("FLOAT")};
+		return CSTR("FLOAT");
 	case 7:
-		return {UTF8STRC("DOUBLE")};
+		return CSTR("DOUBLE");
 	case 8:
-		return {UTF8STRC("DATETIME")};
+		return CSTR("DATETIME");
 	case 9:
-		return {UTF8STRC("BINARY")};
+		return CSTR("BINARY");
 	case 0xA:
-		return {UTF8STRC("TEXT")};
+		return CSTR("TEXT");
 	case 0xB:
-		return {UTF8STRC("OLE")}; //Long Binary
+		return CSTR("OLE"); //Long Binary
 	case 0xC:
-		return {UTF8STRC("MEMO")}; //Long Text
+		return CSTR("MEMO"); //Long Text
 	case 0xF:
-		return {UTF8STRC("REPID")};
+		return CSTR("REPID");
 	case 0x10:
-		return {UTF8STRC("NUMERIC")};
+		return CSTR("NUMERIC");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

@@ -792,14 +792,14 @@ Text::CString Net::ACMEConn::AuthorizeTypeGetName(AuthorizeType authType)
 	switch (authType)
 	{
 	case AuthorizeType::HTTP_01:
-		return {UTF8STRC("http-01")};
+		return CSTR("http-01");
 	case AuthorizeType::DNS_01:
-		return {UTF8STRC("dns-01")};
+		return CSTR("dns-01");
 	case AuthorizeType::TLS_ALPN_01:
-		return {UTF8STRC("tls-alpn-01")};
+		return CSTR("tls-alpn-01");
 	case AuthorizeType::Unknown:
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 

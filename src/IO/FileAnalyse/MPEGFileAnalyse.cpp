@@ -162,7 +162,7 @@ IO::FileAnalyse::MPEGFileAnalyse::~MPEGFileAnalyse()
 
 Text::CString IO::FileAnalyse::MPEGFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("MPEG")};
+	return CSTR("MPEG");
 }
 
 UOSInt IO::FileAnalyse::MPEGFileAnalyse::GetFrameCount()
@@ -798,15 +798,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 	switch (packBuff[3])
 	{
 	case 0xb9:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("MPEG program end")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("MPEG program end"));
 		break;
 	case 0xba:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Pack start")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Pack start"));
 		if ((packBuff[4] & 0xc0) == 0x40)
 		{
 			Int64 scr_base;
 			Int32 scr_ext;
-			frame->AddField(4, 1, {UTF8STRC("MPEG Version")}, {UTF8STRC("2")});
+			frame->AddField(4, 1, CSTR("MPEG Version"), CSTR("2"));
 			scr_base = (((Int64)(packBuff[4] & 0x38)) << 27) | ((packBuff[4] & 3) << 28) | (packBuff[5] << 20) | ((packBuff[6] & 0xf8) << 12) | ((packBuff[6] & 3) << 13) | (packBuff[7] << 5) | (packBuff[8] >> 3);
 			scr_ext = ((packBuff[8] & 3) << 7) | (packBuff[9] >> 1);
 			frame->AddInt64V(4, 5, CSTR("System Clock Reference Base"), scr_base);
@@ -817,7 +817,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		else if ((packBuff[4] & 0xf0) == 0x20)
 		{
 			Int64 scr_base;
-			frame->AddField(4, 1, {UTF8STRC("MPEG Version")}, {UTF8STRC("1")});
+			frame->AddField(4, 1, CSTR("MPEG Version"), CSTR("1"));
 			scr_base = (((Int64)(packBuff[4] & 0xe)) << 29) | (packBuff[5] << 22) | ((packBuff[6] & 0xfe) << 14) | (packBuff[7] << 7) | ((packBuff[8] & 0xfe) >> 1);
 			frame->AddInt64V(4, 5, CSTR("System Clock Reference Base"), scr_base);
 			frame->AddUInt(9, 3, CSTR("Program Mux Rate"), (ReadMUInt24(&packBuff[9]) >> 1) & 0x3fffff);
@@ -830,7 +830,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 	case 0xbb:
 		{
 			UOSInt i;
-			frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("System header")});
+			frame->AddField(0, 4, CSTR("Sequence"), CSTR("System header"));
 			frame->AddUInt(6, 3, CSTR("Rate Bound"), (ReadMUInt24(&packBuff[6]) >> 1) & 0x3fffff);
 			frame->AddUInt(9, 1, CSTR("Audio Bound"), (UInt16)(packBuff[9] >> 2));
 			frame->AddUInt(9, 1, CSTR("Fixed Flag"), (UInt16)((packBuff[9] & 2) >> 1));
@@ -844,21 +844,21 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			{
 				if (packBuff[i] & 0x80)
 				{
-					frame->AddText(i, {UTF8STRC("{")});
+					frame->AddText(i, CSTR("{"));
 					frame->AddHex8(i, CSTR("\tStream ID"), packBuff[i]);
 					frame->AddUInt(i + 1, 1, CSTR("\tSTD Buffer Bound Scale"), (packBuff[i + 1] >> 5) & 1);
 					frame->AddInt(i + 1, 2, CSTR("\tSTD Buffer Size Bound"), ReadMInt16(&packBuff[i + 1]) & 0x1fff);
-					frame->AddText(i + 3, {UTF8STRC("}")});
+					frame->AddText(i + 3, CSTR("}"));
 				}
 				i += 3;
 			}
 		}
 		break;
 	case 0xbc:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Program Stream map")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Program Stream map"));
 		break;
 	case 0xbd:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Private Stream 1")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Private Stream 1"));
 		if (this->mpgVer == 2)
 		{
 			UOSInt i;
@@ -937,7 +937,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			frame->AddHex8(i, CSTR("Stream Type"), packBuff[i]);
 			if ((packBuff[i] & 0xf0) == 0xa0)
 			{
-				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("VOB LPCM Audio")});
+				frame->AddField(i, 1, CSTR("Stream Type"), CSTR("VOB LPCM Audio"));
 				frame->AddUInt(i + 5, 1, CSTR("No. of Channels"), (UInt16)((packBuff[i + 5] & 7) + 1));
 				switch (packBuff[i + 5] & 0xc0)
 				{
@@ -957,19 +957,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 			}
 			else if ((packBuff[i] & 0xf0) == 0x80)
 			{
-				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("VOB AC3 Audio")});
+				frame->AddField(i, 1, CSTR("Stream Type"), CSTR("VOB AC3 Audio"));
 				frame->AddHexBuff(i, 4, CSTR("VOB AC3 Header"), &packBuff[i], false);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa0)
 			{
-				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("PSS LPCM Audio")});
+				frame->AddField(i, 1, CSTR("Stream Type"), CSTR("PSS LPCM Audio"));
 				frame->AddHexBuff(i, 4, CSTR("PSS Audio Header"), &packBuff[i], false);
 				i += 4;
 			}
 			else if (packBuff[i] == 0xff && packBuff[i + 1] == 0xa1)
 			{
-				frame->AddField(i, 1, {UTF8STRC("Stream Type")}, {UTF8STRC("PSS ADPCM Audio")});
+				frame->AddField(i, 1, CSTR("Stream Type"), CSTR("PSS ADPCM Audio"));
 				frame->AddHexBuff(i, 4, CSTR("PSS Audio Header"), &packBuff[i], false);
 				i += 4;
 			}
@@ -1027,11 +1027,11 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		}
 		break;
 	case 0xbe:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Padding Stream")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Padding Stream"));
 		frame->AddUInt(4, pack->packSize - 4, CSTR("Padding Size"), pack->packSize);
 		break;
 	case 0xbf:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Private Stream 2")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Private Stream 2"));
 		sptr = Text::StrUOSInt(Text::StrConcatC(sbuff, UTF8STRC("Content Size=")), pack->packSize - 6);
 		frame->AddText(6, CSTRP(sbuff, sptr));
 		frame->AddHexBuff(6, pack->packSize - 6, CSTR("Content"), &packBuff[6], true);
@@ -1040,7 +1040,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		{
 			UOSInt i;
 			Int64 pts;
-			frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Audio Stream 1")});
+			frame->AddField(0, 4, CSTR("Sequence"), CSTR("Audio Stream 1"));
 			i = 6;
 			while (packBuff[i] & 0x80)
 			{
@@ -1086,7 +1086,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::MPEGFileAnalyse::GetFrameDetail(U
 		}
 		break;
 	case 0xe0:
-		frame->AddField(0, 4, {UTF8STRC("Sequence")}, {UTF8STRC("Video Stream")});
+		frame->AddField(0, 4, CSTR("Sequence"), CSTR("Video Stream"));
 		if (this->mpgVer == 2)
 		{
 			UOSInt i;

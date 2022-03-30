@@ -387,11 +387,11 @@ Bool IO::Device::MTKGPSNMEA::SetLogMode(LogMode lm)
 	UInt8 buff[64];
 	if (lm == LM_OVERWRITE)
 	{
-		cmd = {UTF8STRC("$PMTK182,1,6,1")};
+		cmd = CSTR("$PMTK182,1,6,1");
 	}
 	else if (lm == LM_STOP)
 	{
-		cmd = {UTF8STRC("$PMTK182,1,6,2")};
+		cmd = CSTR("$PMTK182,1,6,2");
 	}
 	else
 	{

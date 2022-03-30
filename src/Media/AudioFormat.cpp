@@ -127,23 +127,23 @@ Text::CString Media::AudioFormat::GetNameFormatId(UInt32 formatId)
 	switch (formatId)
 	{
 	case 1:
-		return {UTF8STRC("LPCM (Int)")};
+		return CSTR("LPCM (Int)");
 	case 3:
-		return {UTF8STRC("LPCM (Float)")};
+		return CSTR("LPCM (Float)");
 	case 0x7:
-		return {UTF8STRC("G.711 mu-Law")};
+		return CSTR("G.711 mu-Law");
 	case 0x50:
-		return {UTF8STRC("MPEG-1 Audio Layer 2")};
+		return CSTR("MPEG-1 Audio Layer 2");
 	case 0xFF:
-		return {UTF8STRC("AAC")};
+		return CSTR("AAC");
 	case 0x2080:
-		return {UTF8STRC("ADX")};
+		return CSTR("ADX");
 	case 0x2081:
-		return {UTF8STRC("PSSA")};
+		return CSTR("PSSA");
 	case 0x2082:
-		return {UTF8STRC("XA")};
+		return CSTR("XA");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 
@@ -152,12 +152,12 @@ Text::CString Media::AudioFormat::GetNameIntType(IntType intType)
 	switch (intType)
 	{
 	case IT_NORMAL:
-		return {UTF8STRC("Little Endian")};
+		return CSTR("Little Endian");
 	case IT_BIGENDIAN:
-		return {UTF8STRC("Big Endian")};
+		return CSTR("Big Endian");
 	case IT_BIGENDIAN16:
-		return {UTF8STRC("Big Endian 16-bit")};
+		return CSTR("Big Endian 16-bit");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

@@ -143,7 +143,7 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	{
 		while (!status->threadToStop)
 		{
-			url = {UTF8STRC(URL)};
+			url = CSTR(URL);
 			if (Sync::Interlocked::Decrement(&connLeft) < 0)
 				break;
 			respClk->Start();

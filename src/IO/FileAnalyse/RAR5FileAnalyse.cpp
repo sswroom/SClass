@@ -144,7 +144,7 @@ IO::FileAnalyse::RAR5FileAnalyse::~RAR5FileAnalyse()
 
 Text::CString IO::FileAnalyse::RAR5FileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("RAR5")};
+	return CSTR("RAR5");
 }
 
 UOSInt IO::FileAnalyse::RAR5FileAnalyse::GetFrameCount()
@@ -548,19 +548,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 	switch (iVal)
 	{
 	case 1:
-		vName = {UTF8STRC("Main archive header")};
+		vName = CSTR("Main archive header");
 		break;
 	case 2:
-		vName = {UTF8STRC("File header")};
+		vName = CSTR("File header");
 		break;
 	case 3:
-		vName = {UTF8STRC("Service header")};
+		vName = CSTR("Service header");
 		break;
 	case 4:
-		vName = {UTF8STRC("Archive encryption header")};
+		vName = CSTR("Archive encryption header");
 		break;
 	case 5:
-		vName = {UTF8STRC("End of archive header")};
+		vName = CSTR("End of archive header");
 		break;
 	}
 	frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr - packPtr), CSTR("Header Type"), iVal, vName);
@@ -627,7 +627,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				nextPtr2 = ReadVInt(packPtr, &iVal);
 				if (iVal == 1)
 				{
-					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, {UTF8STRC("Locator")});
+					frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, CSTR("Locator"));
 					packPtr = nextPtr2;
 					packPtr = AddVHex(frame, (UOSInt)(packPtr - packBuff), CSTR("Flags"), packPtr, &iVal);
 					if (iVal & 1)
@@ -712,25 +712,25 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::RAR5FileAnalyse::GetFrameDetail(U
 				switch (iVal)
 				{
 				case 1:
-					vName = {UTF8STRC("File encryption")};
+					vName = CSTR("File encryption");
 					break;
 				case 2:
-					vName = {UTF8STRC("File hash")};
+					vName = CSTR("File hash");
 					break;
 				case 3:
-					vName = {UTF8STRC("File time")};
+					vName = CSTR("File time");
 					break;
 				case 4:
-					vName = {UTF8STRC("File version")};
+					vName = CSTR("File version");
 					break;
 				case 5:
-					vName = {UTF8STRC("Redirection")};
+					vName = CSTR("Redirection");
 					break;
 				case 6:
-					vName = {UTF8STRC("Unix owner")};
+					vName = CSTR("Unix owner");
 					break;
 				case 7:
-					vName = {UTF8STRC("Service data")};
+					vName = CSTR("Service data");
 					break;
 				}
 				frame->AddUInt64Name((UOSInt)(packPtr - packBuff), (UOSInt)(nextPtr2 - packPtr), CSTR("Type"), iVal, vName);

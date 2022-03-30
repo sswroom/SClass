@@ -30,5 +30,5 @@ UOSInt Text::TextBinEnc::ASN1OIDBinEnc::DecodeBin(const UTF8Char *str, UOSInt st
 
 Text::CString Text::TextBinEnc::ASN1OIDBinEnc::GetName()
 {
-	return {UTF8STRC("SNMP OID")};
+	return CSTR("SNMP OID");
 }

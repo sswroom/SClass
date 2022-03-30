@@ -292,47 +292,47 @@ Text::CString Map::ESRI::FileGDBUtil::GeometryTypeGetName(UInt8 t)
 	switch (t)
 	{
 	case 0:
-		return {UTF8STRC("None")};
+		return CSTR("None");
 	case 1:
-		return {UTF8STRC("Point")};
+		return CSTR("Point");
 	case 2:
-		return {UTF8STRC("Multipoint")};
+		return CSTR("Multipoint");
 	case 3:
-		return {UTF8STRC("Polyline")};
+		return CSTR("Polyline");
 	case 4:
-		return {UTF8STRC("Polygon")};
+		return CSTR("Polygon");
 	case 5:
-		return {UTF8STRC("Rectangle")};
+		return CSTR("Rectangle");
 	case 6:
-		return {UTF8STRC("Path")};
+		return CSTR("Path");
 	case 7:
-		return {UTF8STRC("Mixed")};
+		return CSTR("Mixed");
 	case 9:
-		return {UTF8STRC("Multipath")};
+		return CSTR("Multipath");
 	case 11:
-		return {UTF8STRC("Ring")};
+		return CSTR("Ring");
 	case 13:
-		return {UTF8STRC("Line")};
+		return CSTR("Line");
 	case 14:
-		return {UTF8STRC("Circular Arc")};
+		return CSTR("Circular Arc");
 	case 15:
-		return {UTF8STRC("Bezier Curves")};
+		return CSTR("Bezier Curves");
 	case 16:
-		return {UTF8STRC("Elliptic Curves")};
+		return CSTR("Elliptic Curves");
 	case 17:
-		return {UTF8STRC("Geometry Collection")};
+		return CSTR("Geometry Collection");
 	case 18:
-		return {UTF8STRC("Triangle Strip")};
+		return CSTR("Triangle Strip");
 	case 19:
-		return {UTF8STRC("Triangle Fan")};
+		return CSTR("Triangle Fan");
 	case 20:
-		return {UTF8STRC("Ray")};
+		return CSTR("Ray");
 	case 21:
-		return {UTF8STRC("Sphere")};
+		return CSTR("Sphere");
 	case 22:
-		return {UTF8STRC("TIN")};
+		return CSTR("TIN");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 
@@ -341,33 +341,33 @@ Text::CString Map::ESRI::FileGDBUtil::FieldTypeGetName(UInt8 t)
 	switch (t)
 	{
 	case 0:
-		return {UTF8STRC("Int16")};
+		return CSTR("Int16");
 	case 1:
-		return {UTF8STRC("Int32")};
+		return CSTR("Int32");
 	case 2:
-		return {UTF8STRC("Float32")};
+		return CSTR("Float32");
 	case 3:
-		return {UTF8STRC("Float64")};
+		return CSTR("Float64");
 	case 4:
-		return {UTF8STRC("String")};
+		return CSTR("String");
 	case 5:
-		return {UTF8STRC("Datetime")};
+		return CSTR("Datetime");
 	case 6:
-		return {UTF8STRC("ObjectId")};
+		return CSTR("ObjectId");
 	case 7:
-		return {UTF8STRC("Geometry")};
+		return CSTR("Geometry");
 	case 8:
-		return {UTF8STRC("Binary")};
+		return CSTR("Binary");
 	case 9:
-		return {UTF8STRC("Raster")};
+		return CSTR("Raster");
 	case 10:
-		return {UTF8STRC("UUID")};
+		return CSTR("UUID");
 	case 11:
-		return {UTF8STRC("UUID")};
+		return CSTR("UUID");
 	case 12:
-		return {UTF8STRC("XML")};
+		return CSTR("XML");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }
 

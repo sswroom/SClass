@@ -21,19 +21,19 @@ Text::CString IO::JavaClass::CondType2String(CondType ct)
 	switch (ct)
 	{
 	case CondType::EQ:
-		return {UTF8STRC("==")};
+		return CSTR("==");
 	case CondType::NE:
-		return {UTF8STRC("!=")};
+		return CSTR("!=");
 	case CondType::LE:
-		return {UTF8STRC("<=")};
+		return CSTR("<=");
 	case CondType::GE:
-		return {UTF8STRC(">=")};
+		return CSTR(">=");
 	case CondType::LT:
-		return {UTF8STRC("<")};
+		return CSTR("<");
 	case CondType::GT:
-		return {UTF8STRC(">")};
+		return CSTR(">");
 	default:
-		return {UTF8STRC("?")};
+		return CSTR("?");
 	}
 }
 
@@ -42,19 +42,19 @@ Text::CString IO::JavaClass::CondType2IString(CondType ct)
 	switch (ct)
 	{
 	case CondType::EQ:
-		return {UTF8STRC("!=")};
+		return CSTR("!=");
 	case CondType::NE:
-		return {UTF8STRC("==")};
+		return CSTR("==");
 	case CondType::LE:
-		return {UTF8STRC(">")};
+		return CSTR(">");
 	case CondType::GE:
-		return {UTF8STRC("<")};
+		return CSTR("<");
 	case CondType::LT:
-		return {UTF8STRC(">=")};
+		return CSTR(">=");
 	case CondType::GT:
-		return {UTF8STRC("<=")};
+		return CSTR("<=");
 	default:
-		return {UTF8STRC("?")};
+		return CSTR("?");
 	}
 }
 
@@ -8910,16 +8910,16 @@ Text::CString IO::JavaClass::EndTypeGetName(EndType et)
 	switch (et)
 	{
 	case EndType::Error:
-		return {UTF8STRC("Error")};
+		return CSTR("Error");
 	case EndType::CodeEnd:
-		return {UTF8STRC("CodeEnd")};
+		return CSTR("CodeEnd");
 	case EndType::Return:
-		return {UTF8STRC("Return")};
+		return CSTR("Return");
 	case EndType::Goto:
-		return {UTF8STRC("Goto")};
+		return CSTR("Goto");
 	case EndType::Throw:
-		return {UTF8STRC("Throw")};
+		return CSTR("Throw");
 	default:
-		return {UTF8STRC("Unknown")};
+		return CSTR("Unknown");
 	}
 }

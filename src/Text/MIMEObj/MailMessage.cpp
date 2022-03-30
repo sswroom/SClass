@@ -22,12 +22,12 @@ Text::MIMEObj::MailMessage::~MailMessage()
 
 Text::CString Text::MIMEObj::MailMessage::GetClassName()
 {
-	return {UTF8STRC("MailMessage")};
+	return CSTR("MailMessage");
 }
 
 Text::CString Text::MIMEObj::MailMessage::GetContentType()
 {
-	return {UTF8STRC("message/rfc822")};
+	return CSTR("message/rfc822");
 }
 
 UOSInt Text::MIMEObj::MailMessage::WriteStream(IO::Stream *stm)

@@ -128,7 +128,7 @@ IO::FileAnalyse::NFDumpFileAnalyse::~NFDumpFileAnalyse()
 
 Text::CString IO::FileAnalyse::NFDumpFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("NFDump")};
+	return CSTR("NFDump");
 }
 
 UOSInt IO::FileAnalyse::NFDumpFileAnalyse::GetFrameCount()
@@ -778,19 +778,19 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 	NEW_CLASS(frame, IO::FileAnalyse::FrameDetail(pack->fileOfst, (UInt32)pack->packSize));
 	if (pack->packType == 0)
 	{
-		frame->AddHeader({UTF8STRC("Type=File header")});
+		frame->AddHeader(CSTR("Type=File header"));
 	}
 	else if (pack->packType == 1)
 	{
-		frame->AddHeader({UTF8STRC("Type=Stat Record")});
+		frame->AddHeader(CSTR("Type=Stat Record"));
 	}
 	else if (pack->packType == 2)
 	{
-		frame->AddHeader({UTF8STRC("Type=Data Block Header")});
+		frame->AddHeader(CSTR("Type=Data Block Header"));
 	}
 	else if (pack->packType == 3)
 	{
-		frame->AddHeader({UTF8STRC("Type=Data Block")});
+		frame->AddHeader(CSTR("Type=Data Block"));
 	}
 
 	if (pack->packType == 0)
@@ -801,15 +801,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		frame->AddHex32(4, CSTR("Flags"), ReadUInt32(&packBuff[4]));
 		if (packBuff[4] & 1)
 		{
-			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Compressed")});
+			frame->AddField(4, 4, CSTR("Flags"), CSTR(" Compressed"));
 		}
 		if (packBuff[4] & 2)
 		{
-			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Anonimized")});
+			frame->AddField(4, 4, CSTR("Flags"), CSTR(" Anonimized"));
 		}
 		if (packBuff[4] & 4)
 		{
-			frame->AddField(4, 4, {UTF8STRC("Flags")}, {UTF8STRC(" Catalog")});
+			frame->AddField(4, 4, CSTR("Flags"), CSTR(" Catalog"));
 		}
 		frame->AddUInt(8, 4, CSTR("Number of Blocks"), ReadUInt32(&packBuff[8]));
 		UOSInt strLen = Text::StrCharCnt(&packBuff[12]);
@@ -853,15 +853,15 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		frame->AddUInt(10, 2, CSTR("Flags"), ReadUInt16(&packBuff[10]));
 		if (packBuff[10] == 0)
 		{
-			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("kompatibility")});
+			frame->AddField(10, 2, CSTR("Flags"), CSTR("kompatibility"));
 		}
 		else if (packBuff[10] == 1)
 		{
-			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("block uncompressed")});
+			frame->AddField(10, 2, CSTR("Flags"), CSTR("block uncompressed"));
 		}
 		else if (packBuff[10] == 2)
 		{
-			frame->AddField(10, 2, {UTF8STRC("Flags")}, {UTF8STRC("block compressed")});
+			frame->AddField(10, 2, CSTR("Flags"), CSTR("block compressed"));
 		}
 		MemFree(packBuff);
 	}
@@ -876,7 +876,7 @@ IO::FileAnalyse::FrameDetail *IO::FileAnalyse::NFDumpFileAnalyse::GetFrameDetail
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendHexBuff(packBuff, 256, ' ', Text::LineBreakType::CRLF);
-			frame->AddField(0, dispSize, {UTF8STRC("LZO Compressed")}, sb.ToCString());
+			frame->AddField(0, dispSize, CSTR("LZO Compressed"), sb.ToCString());
 			dispSize = 256;
 		}
 		else

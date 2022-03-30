@@ -40,7 +40,7 @@ namespace SSWR
 
 			typedef struct
 			{
-				const UTF8Char *id;
+				Text::String *id;
 				Text::String *name;
 			} CategoryInfo;
 
@@ -82,7 +82,7 @@ namespace SSWR
 			Media::MonitorMgr *monMgr;
 			Data::FastStringMap<BurntDiscInfo*> *discMap;
 			Data::FastStringMap<DVDTypeInfo*> *dvdTypeMap;
-			Data::StringUTF8Map<CategoryInfo*> *cateMap;
+			Data::FastStringMap<CategoryInfo*> *cateMap;
 			Data::FastStringMap<DiscTypeInfo*> *discTypeMap;
 			Data::Int32Map<DVDVideoInfo*> *dvdVideoMap;
 			
@@ -100,7 +100,7 @@ namespace SSWR
 			UOSInt GetBurntDiscs(Data::ArrayList<BurntDiscInfo*> *discList);
 			const BurntDiscInfo *GetBurntDisc(Text::CString discId);
 			OSInt GetBurntDiscIndex(Text::CString discId);
-			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId);
+			Bool NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId);
 			UOSInt GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList);
 			void FreeBurntFiles(Data::ArrayList<DiscFileInfo*> *fileList);
 			UOSInt GetDVDTypeCount();
@@ -115,7 +115,7 @@ namespace SSWR
 			Int32 NewDVDVideo(const UTF8Char *anime, const UTF8Char *series, const UTF8Char *volume, const UTF8Char *dvdType);
 			UOSInt GetDVDVideos(Data::ArrayList<DVDVideoInfo*> *dvdVideoList);
 			const DVDVideoInfo *GetDVDVideo(Int32 videoId);
-			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
+			Bool NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, Text::String *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark);
 			Bool AddMD5(IO::IStreamData *fd);
 		};
 	}

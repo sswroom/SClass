@@ -13,7 +13,7 @@ const UTF8Char *Func1()
 
 Text::CString Func2()
 {
-	return {UTF8STRC("Func2")};
+	return CSTR("Func2");
 }
 
 Text::CString Func2b()

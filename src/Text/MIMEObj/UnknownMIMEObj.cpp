@@ -47,12 +47,12 @@ Text::MIMEObj::UnknownMIMEObj::~UnknownMIMEObj()
 
 Text::CString Text::MIMEObj::UnknownMIMEObj::GetClassName()
 {
-	return {UTF8STRC("UnknownMIMEObj")};
+	return CSTR("UnknownMIMEObj");
 }
 
 Text::CString Text::MIMEObj::UnknownMIMEObj::GetContentType()
 {
-	return {this->contType->v, this->contType->leng};
+	return this->contType->ToCString();
 }
 
 UOSInt Text::MIMEObj::UnknownMIMEObj::WriteStream(IO::Stream *stm)

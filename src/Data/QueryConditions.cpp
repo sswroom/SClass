@@ -237,7 +237,7 @@ Bool Data::QueryConditions::Int32InCondition::ToWhereClause(Text::StringBuilderU
 		sptr = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		sb->AppendC(UTF8STRC(" in ("));
-		Text::StringTool::Int32Join(sb, this->vals, {UTF8STRC(", ")});
+		Text::StringTool::Int32Join(sb, this->vals, CSTR(", "));
 		sb->AppendC(UTF8STRC(")"));
 		return true;
 	}
@@ -1089,19 +1089,19 @@ Text::CString Data::QueryConditions::CompareConditionGetStr(CompareCondition con
 	switch (cond)
 	{
 	case CompareCondition::Equal:
-		return {UTF8STRC(" = ")};
+		return CSTR(" = ");
 	case CompareCondition::Greater:
-		return {UTF8STRC(" > ")};
+		return CSTR(" > ");
 	case CompareCondition::Less:
-		return {UTF8STRC(" < ")};
+		return CSTR(" < ");
 	case CompareCondition::GreaterOrEqual:
-		return {UTF8STRC(" >= ")};
+		return CSTR(" >= ");
 	case CompareCondition::LessOrEqual:
-		return {UTF8STRC(" <= ")};
+		return CSTR(" <= ");
 	case CompareCondition::NotEqual:
-		return {UTF8STRC(" <> ")};
+		return CSTR(" <> ");
 	}
-	return {UTF8STRC("")};
+	return CSTR("");
 }
 
 Bool Data::QueryConditions::ObjectValid(Data::VariObject *obj, Data::ArrayList<Condition*> *conditionList)

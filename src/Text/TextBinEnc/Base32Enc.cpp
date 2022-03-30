@@ -204,7 +204,7 @@ UOSInt Text::TextBinEnc::Base32Enc::DecodeBin(const UTF8Char *b64Str, UOSInt str
 
 Text::CString Text::TextBinEnc::Base32Enc::GetName()
 {
-	return {UTF8STRC("Base32")};
+	return CSTR("Base32");
 }
 
 Bool Text::TextBinEnc::Base32Enc::IsValid(const UTF8Char *b32Str)

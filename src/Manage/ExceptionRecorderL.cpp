@@ -46,29 +46,29 @@ Text::CString Manage::ExceptionRecorder::GetExceptionCodeName(UInt32 exCode)
 	switch (exCode)
 	{
 	case 1: //SIGHUP
-		return {UTF8STRC("Hangup detected on controlling terminal or death of controlling process")};
+		return CSTR("Hangup detected on controlling terminal or death of controlling process");
 	case 2: //SIGINT
-		return {UTF8STRC("Interrupt from keypoard")};
+		return CSTR("Interrupt from keypoard");
 	case 3: //SIGQUIT
-		return {UTF8STRC("Quit from keyboard")};
+		return CSTR("Quit from keyboard");
 	case 4: //SIGILL
-		return {UTF8STRC("Illegal Instruction")};
+		return CSTR("Illegal Instruction");
 	case 6: //SIGABRT
-		return {UTF8STRC("Abort signal")};
+		return CSTR("Abort signal");
 	case 8: //SIGFPE
-		return {UTF8STRC("Floating point exception")};
+		return CSTR("Floating point exception");
 	case 9: //SIGKILL
-		return {UTF8STRC("Kill signal")};
+		return CSTR("Kill signal");
 	case 11: //SIGSEGV
-		return {UTF8STRC("Invalid memory reference")};
+		return CSTR("Invalid memory reference");
 	case 13: //SIGPIPE
-		return {UTF8STRC("Broken pipe: write to pipe with no readers")};
+		return CSTR("Broken pipe: write to pipe with no readers");
 	case 14: //SIGALRM
-		return {UTF8STRC("Timer signal from alarm")};
+		return CSTR("Timer signal from alarm");
 	case 15: //SIGTERM
-		return {UTF8STRC("Termination signal")};
+		return CSTR("Termination signal");
 	default:
-		return {UTF8STRC("Unknown Exception")};
+		return CSTR("Unknown Exception");
 	}
 }
 

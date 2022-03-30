@@ -255,7 +255,7 @@ Text::MIMEObj::MultipartMIMEObj::~MultipartMIMEObj()
 
 Text::CString Text::MIMEObj::MultipartMIMEObj::GetClassName()
 {
-	return {UTF8STRC("MultipartMIMEObj")};
+	return CSTR("MultipartMIMEObj");
 }
 
 Text::CString Text::MIMEObj::MultipartMIMEObj::GetContentType()

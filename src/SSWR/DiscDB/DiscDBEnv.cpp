@@ -68,9 +68,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 		while (r->ReadNext())
 		{
 			cate = MemAlloc(CategoryInfo, 1);
-			sb.ClearStr();
-			r->GetStr(0, &sb);
-			cate->id = Text::StrCopyNew(sb.ToString());
+			cate->id = r->GetNewStr(0);
 			cate->name = r->GetNewStr(1);
 			this->cateMap->Put(cate->id, cate);
 		}
@@ -141,7 +139,7 @@ SSWR::DiscDB::DiscDBEnv::DiscDBEnv()
 	NEW_CLASS(this->monMgr, Media::MonitorMgr());
 	NEW_CLASS(this->discMap, Data::FastStringMap<BurntDiscInfo*>());
 	NEW_CLASS(this->dvdTypeMap, Data::FastStringMap<DVDTypeInfo*>());
-	NEW_CLASS(this->cateMap, Data::StringUTF8Map<CategoryInfo*>());
+	NEW_CLASS(this->cateMap, Data::FastStringMap<CategoryInfo*>());
 	NEW_CLASS(this->discTypeMap, Data::FastStringMap<DiscTypeInfo*>());
 	NEW_CLASS(this->dvdVideoMap, Data::Int32Map<DVDVideoInfo*>());
 
@@ -219,12 +217,11 @@ SSWR::DiscDB::DiscDBEnv::~DiscDBEnv()
 	DEL_CLASS(this->dvdTypeMap);
 
 	CategoryInfo *cate;
-	Data::ArrayList<CategoryInfo*> *cateList = this->cateMap->GetValues();
-	i = cateList->GetCount();
+	i = this->cateMap->GetCount();
 	while (i-- > 0)
 	{
-		cate = cateList->GetItem(i);
-		Text::StrDelNew(cate->id);
+		cate = this->cateMap->GetItem(i);
+		cate->id->Release();
 		cate->name->Release();
 		MemFree(cate);
 	}
@@ -324,7 +321,7 @@ OSInt SSWR::DiscDB::DiscDBEnv::GetBurntDiscIndex(Text::CString discId)
 	return this->discMap->IndexOfC(discId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, const UTF8Char *category, Int32 videoId)
+Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId, const UTF8Char *name, UInt64 fileSize, Text::CString category, Int32 videoId)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into BurntFile (DiscID, FileID, Name, FileSize, Category, VIDEOID) values ("));
@@ -336,7 +333,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt64((Int64)fileSize);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(category);
+	sql.AppendStrC(category);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(videoId);
 	sql.AppendCmdC(CSTR(")"));
@@ -457,7 +454,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetCategories(Data::ArrayList<CategoryInfo*> *cateList)
 {
-	cateList->AddAll(this->cateMap->GetValues());
+	cateList->AddAll(this->cateMap);
 	return this->cateMap->GetCount();
 }
 
@@ -548,7 +545,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDVideoInfo *SSWR::DiscDB::DiscDBEnv::GetDVDVide
 	return this->dvdVideoMap->Get(videoId);
 }
 
-Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, const UTF8Char *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, const UTF8Char *videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, const UTF8Char *audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
+Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, const UTF8Char *mainTitle, Text::String *type, const UTF8Char *chapter, const UTF8Char *chapterTitle, Text::CString videoFormat, Int32 width, Int32 height, Int32 fps, Int32 length, Text::CString audioFormat, Int32 samplingRate, Int32 bitRate, const UTF8Char *aspectRatio, const UTF8Char *remark)
 {
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("insert into Movies (DiscID, FileID, MainTitle, Type, Chapter, ChapterTitle, VideoFormat, Width, Height, fps, length, AudioFormat, SamplingRate, Bitrate, AspectRatio, Remarks) values ("));
@@ -558,13 +555,13 @@ Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, c
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(mainTitle);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(type);
+	sql.AppendStr(type);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(chapter);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(chapterTitle);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(videoFormat);
+	sql.AppendStrC(videoFormat);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(width);
 	sql.AppendCmdC(CSTR(", "));
@@ -574,7 +571,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, c
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(length);
 	sql.AppendCmdC(CSTR(", "));
-	sql.AppendStrUTF8(audioFormat);
+	sql.AppendStrC(audioFormat);
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(samplingRate);
 	sql.AppendCmdC(CSTR(", "));

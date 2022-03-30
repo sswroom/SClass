@@ -93,7 +93,7 @@ IO::FileAnalyse::PNGFileAnalyse::~PNGFileAnalyse()
 
 Text::CString IO::FileAnalyse::PNGFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("PNG")};
+	return CSTR("PNG");
 }
 
 UOSInt IO::FileAnalyse::PNGFileAnalyse::GetFrameCount()

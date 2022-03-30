@@ -19,15 +19,15 @@ namespace SSWR
 			typedef struct
 			{
 				const UTF8Char *mainTitle;
-				const UTF8Char *type;
+				Text::String *type;
 				const UTF8Char *chapter;
 				const UTF8Char *chapterTitle;
-				const UTF8Char *videoFormat;
+				Text::CString videoFormat;
 				Int32 width;
 				Int32 height;
 				Int32 fps;
 				Int32 length;
-				const UTF8Char *audioFormat;
+				Text::CString audioFormat;
 				Int32 samplingRate;
 				Int32 bitRate;
 				const UTF8Char *aspectRatio;
@@ -38,7 +38,7 @@ namespace SSWR
 			{
 				Text::String *fname;
 				UInt64 fSize;
-				const UTF8Char *cate;
+				Text::CString cate;
 				Int32 videoId;
 				Bool video;
 				MovieCols *anime;
@@ -94,10 +94,10 @@ namespace SSWR
 			UInt64 SearchSubDir(const UTF8Char *absPath, const UTF8Char *relPath, UInt64 maxSize);
 
 			void BurntFileUpdateVideo(BurntFile *file);
-			BurntFile *BurntFileNew(const UTF8Char *fileName, Text::CString relPath, UInt64 fileSize);
+			BurntFile *BurntFileNew(Text::CString fileName, Text::CString relPath, UInt64 fileSize);
 			void BurntFileFree(BurntFile *file);
 
-			MovieCols *MovieColsNew(const UTF8Char *fileName); //
+			MovieCols *MovieColsNew(Text::CString fileName); //
 			void MovieColsFree(MovieCols *anime);
 
 			static void __stdcall OnBrowseClicked(void *userObj);

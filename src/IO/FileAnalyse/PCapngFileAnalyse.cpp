@@ -194,7 +194,7 @@ IO::FileAnalyse::PCapngFileAnalyse::~PCapngFileAnalyse()
 
 Text::CString IO::FileAnalyse::PCapngFileAnalyse::GetFormatName()
 {
-	return {UTF8STRC("pcapng")};
+	return CSTR("pcapng");
 }
 
 UOSInt IO::FileAnalyse::PCapngFileAnalyse::GetFrameCount()
