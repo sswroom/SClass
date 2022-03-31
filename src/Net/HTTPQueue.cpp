@@ -44,10 +44,10 @@ Net::HTTPQueue::~HTTPQueue()
 	DEL_CLASS(this->statusEvt);
 }
 
-Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen, Net::WebUtil::RequestMethod method, Bool noShutdown)
+Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown)
 {
 	UTF8Char sbuff[512];
-	Text::URLString::GetURLDomain(sbuff, url, urlLen, 0);
+	Text::URLString::GetURLDomain(sbuff, url, 0);
 	Bool found = false;;
 	DomainStatus *status;
 	Net::HTTPClient *cli;
@@ -59,13 +59,13 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen,
 		{
 			if (status->req1 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 				status->req1 = cli;
 				found = true;
 			}
 			else if (status->req2 == 0)
 			{
-				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
+				cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 				status->req2 = cli;
 				found = true;
 			}
@@ -75,7 +75,7 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(const UTF8Char *url, UOSInt urlLen,
 			status = MemAlloc(DomainStatus, 1);
 			status->req1 = 0;
 			status->req2 = 0;
-			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, {url, urlLen}, method, noShutdown);
+			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 			status->req1 = cli;
 			this->statusMap->Put(sbuff, status);
 			found = true;
@@ -93,7 +93,7 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	UTF8Char sbuff[512];
 	DomainStatus *status;
 	Text::String *url = cli->GetURL();
-	Text::URLString::GetURLDomain(sbuff, url->v, url->leng, 0);
+	Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
 	Sync::MutexUsage mutUsage(this->statusMut);
 	status = this->statusMap->Get(sbuff);

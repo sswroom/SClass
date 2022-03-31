@@ -614,12 +614,12 @@ void Map::WebImageLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::WebImageLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::WebImageLayer::GetNewObjectById(void *session, Int64 id)
 {
 	return 0;
 }
 
-Math::Vector2D *Map::WebImageLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::WebImageLayer::GetNewVectorById(void *session, Int64 id)
 {
 	ImageStat *stat = this->GetImageStat((Int32)id);
 	if (stat)

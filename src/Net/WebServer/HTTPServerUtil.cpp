@@ -377,7 +377,7 @@ Bool Net::WebServer::HTTPServerUtil::ResponseFile(Net::WebServer::IWebRequest *r
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(cacheAge);
 	resp->AddLastModified(&t);
-	mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr2 - sbuff));
+	mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr2));
 	resp->AddContentType(mime.v, mime.leng);
 	resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 	if (sizeLeft <= 0)

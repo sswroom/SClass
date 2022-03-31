@@ -17,11 +17,11 @@ Net::WebServer::WebServiceHandler::~WebServiceHandler()
 	DEL_CLASS(this->services);
 }
 
-Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	Net::WebServer::WebServiceHandler::ServiceInfo *service;
-	service = this->services->GetC({subReq, subReqLen});
-	if (service == 0 && (Text::StrEqualsC(subReq, subReqLen, UTF8STRC("/")) || (subReqLen == 0)))
+	service = this->services->GetC(subReq);
+	if (service == 0 && (subReq.Equals(UTF8STRC("/")) || (subReq.leng == 0)))
 	{
 		if (service == 0) service = this->services->GetC(CSTR("/Default.htm"));
 		if (service == 0) service = this->services->GetC(CSTR("/Default.asp"));
@@ -59,7 +59,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 			return true;
 		}
 	}
-	return this->DoRequest(req, resp, subReq, subReqLen);
+	return this->DoRequest(req, resp, subReq);
 }
 
 Net::WebServer::WebServiceHandler::WebServiceHandler()

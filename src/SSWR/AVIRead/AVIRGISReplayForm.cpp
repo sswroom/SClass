@@ -401,7 +401,7 @@ void SSWR::AVIRead::AVIRGISReplayForm::UpdateRecList()
 	if (recs)
 	{
 		Math::CoordinateSystem *coord = this->track->GetCoordinateSystem();
-		Math::Polyline *pl = (Math::Polyline*)this->track->GetVectorById(0, (Int64)this->currTrackId);
+		Math::Polyline *pl = (Math::Polyline*)this->track->GetNewVectorById(0, (Int64)this->currTrackId);
 		Double dist;
 		if (pl->Support3D())
 		{

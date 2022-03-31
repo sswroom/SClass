@@ -21,9 +21,9 @@ Net::WebServer::WebStandardHandler::~WebStandardHandler()
 	DEL_CLASS(this->relHdlrs);
 }
 
-Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
-	if (subReq[0] != '/')
+	if (subReq.v[0] != '/')
 		return false;
 	UTF8Char tmpBuff[256];
 	UTF8Char *sbuff;
@@ -33,21 +33,19 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 
 	while (true)
 	{
-		c = subReq[i];
+		c = subReq.v[i];
 		if (c == 0)
 		{
 			if (i == 1)
 			{
-				subHdlr = this->hdlrs->GetC({&subReq[1], i - 1});
-				subReq = &subReq[i];
-				subReqLen -= 1;
+				subHdlr = this->hdlrs->GetC({&subReq.v[1], i - 1});
+				subReq = subReq.Substring(i);
 				break;
 			}
 			else
 			{
-				subHdlr = this->hdlrs->GetC({&subReq[1], i - 1});
-				subReq = &subReq[i];
-				subReqLen -= 1;
+				subHdlr = this->hdlrs->GetC({&subReq.v[1], i - 1});
+				subReq = subReq.Substring(i);
 				break;
 			}
 		}
@@ -56,25 +54,24 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 			if (i > 256)
 			{
 				sbuff = MemAlloc(UTF8Char, i);
-				MemCopyNO(sbuff, &subReq[1], (i - 1) * sizeof(UTF8Char));
+				MemCopyNO(sbuff, &subReq.v[1], (i - 1) * sizeof(UTF8Char));
 				sbuff[i - 1] = 0;
 				subHdlr = this->hdlrs->GetC({sbuff, i - 1});
 				MemFree(sbuff);
 			}
 			else
 			{
-				Text::StrConcatC(tmpBuff, &subReq[1], (i - 1));
+				Text::StrConcatC(tmpBuff, &subReq.v[1], (i - 1));
 				subHdlr = this->hdlrs->GetC({tmpBuff, i - 1});
 			}
-			subReq = &subReq[i];
-			subReqLen -= i;
+			subReq = subReq.Substring(i);
 			break;
 		}
 		i++;
 	}
 	if (subHdlr)
 	{
-		return subHdlr->ProcessRequest(req, resp, subReq, subReqLen);
+		return subHdlr->ProcessRequest(req, resp, subReq);
 	}
 	return false;
 }
@@ -106,7 +103,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
 		sptr = Text::URLString::GetURLPathSvr(sbuff, reqURL->v, reqURL->leng);
-		if (!this->ProcessRequest(req, resp, sbuff, (UOSInt)(sptr - sbuff)))
+		if (!this->ProcessRequest(req, resp, CSTRP(sbuff, sptr)))
 		{
 			resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
 			if (req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0 || req->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_1)
@@ -141,9 +138,9 @@ void Net::WebServer::WebStandardHandler::Release()
 	DEL_CLASS(this);
 }
 
-Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::WebStandardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
-	return DoRequest(req, resp, subReq, subReqLen);
+	return DoRequest(req, resp, subReq);
 }
 
 void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath, UOSInt pathLen, Net::WebServer::WebStandardHandler *hdlr, Bool needRelease)

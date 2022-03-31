@@ -30,7 +30,7 @@ namespace Net
 		static Bool __stdcall IPLogReq(EthernetWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp);
 
 	private:
-		virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
+		virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 
 	public:
 		EthernetWebHandler(Net::EthernetAnalyzer *analyzer);

@@ -749,7 +749,7 @@ void Map::CIPLayer2::EndGetObject(void *session)
 	mut->Unlock();
 }
 
-Map::DrawObjectL *Map::CIPLayer2::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::CIPLayer2::GetNewObjectById(void *session, Int64 id)
 {
 	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
 	if (fobj == 0)
@@ -780,7 +780,7 @@ Map::DrawObjectL *Map::CIPLayer2::GetObjectByIdD(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::CIPLayer2::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::CIPLayer2::GetNewVectorById(void *session, Int64 id)
 {
 	Map::CIPLayer2::CIPFileObject *fobj = this->GetFileObject(session, (Int32)id);
 	if (fobj == 0)

@@ -164,7 +164,7 @@ Map::VectorLayer *Map::LayerTools::CombineLayers(Data::ArrayList<Map::IMapDrawLa
 
 				j++;
 			}
-			newLyr->AddVector(lyr->GetVectorById(sess, id), namesArr);
+			newLyr->AddVector(lyr->GetNewVectorById(sess, id), namesArr);
 		}
 		lyr->EndGetObject(sess);
 		i++;

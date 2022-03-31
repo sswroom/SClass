@@ -120,8 +120,8 @@ namespace Map
 
 		virtual void *BeginGetObject() = 0;
 		virtual void EndGetObject(void *session) = 0;
-		virtual DrawObjectL *GetObjectByIdD(void *session, Int64 id) = 0;
-		virtual Math::Vector2D *GetVectorById(void *session, Int64 id) = 0;
+		virtual DrawObjectL *GetNewObjectById(void *session, Int64 id) = 0;
+		virtual Math::Vector2D *GetNewVectorById(void *session, Int64 id) = 0;
 		virtual void ReleaseObject(void *session, DrawObjectL *obj) = 0;
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);

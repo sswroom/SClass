@@ -26,7 +26,7 @@ void SSWR::AVIRead::AVIRGISEditImageForm::UpdateImgStat()
 	Double x2;
 	Double y2;
 	void *sess = this->lyr->BeginGetObject();
-	Math::Vector2D *vec = this->lyr->GetVectorById(sess, this->currImage);
+	Math::Vector2D *vec = this->lyr->GetNewVectorById(sess, this->currImage);
 	if (vec)
 	{
 		vec->GetBounds(&x1, &y1, &x2, &y2);
@@ -105,7 +105,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 > me->imgMinY)
@@ -140,7 +140,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 > me->imgMinY)
@@ -182,7 +182,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			y1 = me->imgMinY;
@@ -217,7 +217,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 < me->imgMaxY)
@@ -259,7 +259,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 < me->imgMaxY)
@@ -294,7 +294,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 < me->imgMaxY)
@@ -336,7 +336,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			y1 = me->imgMinY;
@@ -371,7 +371,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x, y, &x1, &y1);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			if (y1 > me->imgMinY)
@@ -414,7 +414,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISEditImageForm::OnMouseUp(void *userObj, OSI
 		me->navi->ScnXY2MapXY(x - me->downX, y - me->downY, &x2, &y2);
 
 		void *sess = me->lyr->BeginGetObject();
-		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetVectorById(sess, me->currImage);
+		Math::VectorImage *img = (Math::VectorImage*)me->lyr->GetNewVectorById(sess, me->currImage);
 		if (img)
 		{
 			img->SetBounds(me->imgMinX + x2 - x1, me->imgMinY + y2 - y1, me->imgMaxX + x2 - x1, me->imgMaxY + y2 - y1);

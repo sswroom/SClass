@@ -1666,7 +1666,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetObjectByIdD(session, thisId)) != 0)
+					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
 						k = dobj->nPoint;
 						while (k-- > 0)
@@ -1723,7 +1723,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetObjectByIdD(session, thisId)) != 0)
+					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
 						this->mapSch->Draw(dobj);
 					}
@@ -1793,7 +1793,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetObjectByIdD(session, thisId)) != 0)
+					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
 						j = dobj->nPoint;
 						while (j-- > 0)
@@ -1841,7 +1841,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 				if (thisId != lastId)
 				{
 					lastId = thisId;
-					if ((dobj = layer->GetObjectByIdD(session, thisId)) != 0)
+					if ((dobj = layer->GetNewObjectById(session, thisId)) != 0)
 					{
 						this->mapSch->Draw(dobj);
 					}
@@ -1961,7 +1961,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		i = arri->GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetObjectByIdD(session, arri->GetItem(i))) != 0)
+			if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
 			{
 				k = dobj->nPoint;
 				while (k-- > 0)
@@ -2024,7 +2024,7 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		i = arri->GetCount();
 		while (i-- > 0)
 		{
-			if ((dobj = layer->GetObjectByIdD(session, arri->GetItem(i))) != 0)
+			if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
 			{
 				this->mapSch->Draw(dobj);
 			}
@@ -2077,7 +2077,7 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 	i = arri->GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = layer->GetObjectByIdD(session, arri->GetItem(i))) != 0)
+		if ((dobj = layer->GetNewObjectById(session, arri->GetItem(i))) != 0)
 		{
 			sptrEnd = layer->GetString(sptr = lblStr, sizeof(lblStr), arr, arri->GetItem(i), labelCol);
 			if (sptrEnd)
@@ -2234,7 +2234,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	j = arri->GetCount();
 	while (i < j)
 	{
-		vec = layer->GetVectorById(sess, arri->GetItem(i));
+		vec = layer->GetNewVectorById(sess, arri->GetItem(i));
 		if (vec)
 		{
 			if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)

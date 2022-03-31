@@ -9,9 +9,9 @@ namespace Net
 		class OAuth2Handler : public Net::WebServer::WebServiceHandler
 		{
 		private:
-			static Bool __stdcall AuthHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
-			static Bool __stdcall TokenHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
-			static Bool __stdcall UserInfoHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
+			static Bool __stdcall AuthHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall TokenHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall UserInfoHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		public:
 			OAuth2Handler(Text::CString authPath, Text::CString tokenPath, Text::CString userinfoPath);
 			virtual ~OAuth2Handler();

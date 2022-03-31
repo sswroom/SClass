@@ -134,7 +134,7 @@ Bool Exporter::CIPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	while (i < recCnt)
 	{
 		Map::DrawObjectL *dobj;
-		dobj = layer->GetObjectByIdD(sess, objIds->GetItem(i));
+		dobj = layer->GetNewObjectById(sess, objIds->GetItem(i));
 
 		*(Int32*)&buff[0] = (Int32)i;
 		*(Int32*)&buff[4] = (Int32)stmPos;

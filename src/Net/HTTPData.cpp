@@ -16,7 +16,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 	if (fdh->queue)
 	{
 		Sync::MutexUsage mutUsage(fdh->mut);
-		fdh->cli = fdh->queue->MakeRequest(fdh->url->v, fdh->url->leng, Net::WebUtil::RequestMethod::HTTP_GET, true);
+		fdh->cli = fdh->queue->MakeRequest(fdh->url->ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 		mutUsage.EndUse();
 	}
 	else
@@ -46,7 +46,7 @@ UInt32 __stdcall Net::HTTPData::LoadThread(void *userObj)
 			{
 				Sync::MutexUsage mutUsage(fdh->mut);
 				fdh->queue->EndRequest(fdh->cli);
-				fdh->cli = fdh->queue->MakeRequest(sb.ToString(), sb.GetLength(), Net::WebUtil::RequestMethod::HTTP_GET, true);
+				fdh->cli = fdh->queue->MakeRequest(sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, true);
 				mutUsage.EndUse();
 			}
 			else

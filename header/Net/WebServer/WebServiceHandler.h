@@ -11,7 +11,7 @@ namespace Net
 		class WebServiceHandler : public Net::WebServer::WebStandardHandler
 		{
 		public:
-			typedef Bool (__stdcall *ServiceFunc)(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
+			typedef Bool (__stdcall *ServiceFunc)(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 		private:
 			typedef struct
 			{
@@ -23,7 +23,7 @@ namespace Net
 
 		protected:
 			virtual ~WebServiceHandler();
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 		public:
 			WebServiceHandler();
 

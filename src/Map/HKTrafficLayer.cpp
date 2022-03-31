@@ -958,7 +958,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 				if (fromId != 0 && toId != 0)
 				{
 					id = (((Int64)fromId) << 32) | (UInt32)toId;
-					Math::Vector2D *vec = roadLayer->GetVectorById(sess, idArr.GetItem(i));
+					Math::Vector2D *vec = roadLayer->GetNewVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
 						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)
@@ -1272,7 +1272,7 @@ void Map::HKTrafficLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Map::DrawObjectL *obj = 0;
@@ -1318,7 +1318,7 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetObjectByIdD(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::HKTrafficLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Vector2D *vec = 0;

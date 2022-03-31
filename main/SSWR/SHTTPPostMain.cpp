@@ -59,7 +59,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = Text::StrLastIndexOfCharC(file, fileLen, '.');
 			if (i != INVALID_INDEX)
 			{
-				mime = Net::MIME::GetMIMEFromExt(&file[i + 1], fileLen - i - 1);
+				mime = Net::MIME::GetMIMEFromExt(Text::CString(&file[i + 1], fileLen - i - 1));
 			}
 			Text::StringBuilderUTF8 sb;
 			Int32 httpStatus;

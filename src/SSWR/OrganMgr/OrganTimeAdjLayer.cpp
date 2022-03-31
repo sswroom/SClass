@@ -112,7 +112,7 @@ void SSWR::OrganMgr::OrganTimeAdjLayer::EndGetObject(void *session)
 
 }
 
-Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewObjectById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)
@@ -137,7 +137,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganTimeAdjLayer::GetObjectByIdD(void *sessio
 	return dobj;
 }
 
-Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *SSWR::OrganMgr::OrganTimeAdjLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->userFileList->GetItem((UOSInt)id);
 	if (ufile == 0)

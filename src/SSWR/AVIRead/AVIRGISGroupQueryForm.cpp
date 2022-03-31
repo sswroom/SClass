@@ -131,7 +131,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISGroupQueryForm::OnMouseUp(void *userObj, OS
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 				i++;
 			}
-			me->navi->SetSelectedVector(lyr->GetVectorById(sess, id));
+			me->navi->SetSelectedVector(lyr->GetNewVectorById(sess, id));
 			lyr->ReleaseNameArr(nameArr);
 			lyr->EndGetObject(sess);
 		}

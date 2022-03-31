@@ -82,7 +82,7 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
 	{
 		return false;
 	}
-	sptr = Text::URLString::GetURLDomain(domain, hdr->v, hdr->leng, 0);
+	sptr = Text::URLString::GetURLDomain(domain, hdr->ToCString(), 0);
 	if (sptr == 0)
 	{
 		return false;

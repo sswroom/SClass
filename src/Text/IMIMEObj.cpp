@@ -93,7 +93,7 @@ Text::IMIMEObj *Text::IMIMEObj::ParseFromFile(Text::CString fileName)
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	sptr = IO::Path::GetFileExt(sbuff, fileName.v, fileName.leng);
-	contentType = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
+	contentType = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
 	NEW_CLASS(fd, IO::StmData::FileData(fileName, false));
 	if (fd->GetDataSize() <= 0)
 	{

@@ -128,7 +128,7 @@ void UI::ListBoxLogger::LogClosed()
 {
 }
 
-void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, IO::ILogHandler::LogLevel logLev)
+void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, Text::CString logMsg, IO::ILogHandler::LogLevel logLev)
 {
 	Text::StringBuilderUTF8 sb;
 	UTF8Char sbuff[64];
@@ -144,7 +144,7 @@ void UI::ListBoxLogger::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg
 		sb.AppendDate(logTime);
 	}
 	sb.AppendUTF8Char('\t');
-	sb.AppendC(logMsg, msgLen);
+	sb.Append(logMsg);
 	if (this->logCnt < this->maxLog)
 	{
 		this->logCnt++;

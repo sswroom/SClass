@@ -431,7 +431,7 @@ void Map::ReloadableMapLayer::EndGetObject(void *session)
 	this->innerLayerMut->UnlockRead();
 }
 
-Map::DrawObjectL *Map::ReloadableMapLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::ReloadableMapLayer::GetNewObjectById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
@@ -449,7 +449,7 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetObjectByIdD(void *session, Int64 i
 			maxId = innerLayer->innerLayer->GetObjectIdMax();
 			if (id >= currId && id <= currId + maxId)
 			{
-				dobj = innerLayer->innerLayer->GetObjectByIdD(session, id - currId);
+				dobj = innerLayer->innerLayer->GetNewObjectById(session, id - currId);
 				break;
 			}
 			else
@@ -463,7 +463,7 @@ Map::DrawObjectL *Map::ReloadableMapLayer::GetObjectByIdD(void *session, Int64 i
 	return dobj;
 }
 
-Math::Vector2D *Map::ReloadableMapLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::ReloadableMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;
@@ -481,7 +481,7 @@ Math::Vector2D *Map::ReloadableMapLayer::GetVectorById(void *session, Int64 id)
 			maxId = innerLayer->innerLayer->GetObjectIdMax();
 			if (id >= currId && id <= currId + maxId)
 			{
-				vec = innerLayer->innerLayer->GetVectorById(session, id - currId);
+				vec = innerLayer->innerLayer->GetNewVectorById(session, id - currId);
 				break;
 			}
 			else

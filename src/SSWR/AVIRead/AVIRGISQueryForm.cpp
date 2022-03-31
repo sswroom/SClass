@@ -47,7 +47,7 @@ Bool __stdcall SSWR::AVIRead::AVIRGISQueryForm::OnMouseUp(void *userObj, OSInt x
 				sptr = me->lyr->GetString(sbuff, sizeof(sbuff), nameArr, id, i);
 				me->lvInfo->SetSubItem(i, 1, CSTRP(sbuff, sptr));
 			}
-			me->navi->SetSelectedVector(me->lyr->GetVectorById(sess, id));
+			me->navi->SetSelectedVector(me->lyr->GetNewVectorById(sess, id));
 			me->lyr->ReleaseNameArr(nameArr);
 		}
 		me->lyr->EndGetObject(sess);

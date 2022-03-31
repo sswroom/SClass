@@ -368,9 +368,11 @@ UI::GUITreeView::TreeItem *GUITreeView_SearchChildSelected(UI::GUITreeView::Clas
 		itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)child->GetHItem());
 		if (gtk_tree_path_compare(selPath, itemPath) == 0)
 		{
+			gtk_tree_path_free(itemPath);
 			return child;
 		}
 		child = GUITreeView_SearchChildSelected(data, selPath, child);
+		gtk_tree_path_free(itemPath);
 		if (child)
 		{
 			return child;
@@ -397,14 +399,19 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
 			if (gtk_tree_path_compare(selPath, itemPath) == 0)
 			{
+				gtk_tree_path_free(itemPath);
+				gtk_tree_path_free(selPath);
 				return item;
 			}
 			item = GUITreeView_SearchChildSelected(data, selPath, item);
+			gtk_tree_path_free(itemPath);
 			if (item)
 			{
+				gtk_tree_path_free(selPath);
 				return item;
 			}
 		}
+		gtk_tree_path_free(selPath);
 		return 0;
 	}
 	else

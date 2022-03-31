@@ -62,7 +62,7 @@ namespace Net
 			Data::FastStringMap<PackageInfo*> *packageMap;
 
 			void AddCacheHeader(Net::WebServer::IWebResponse *resp);
-			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen, IO::PackageFile *packageFile);
+			void ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, IO::PackageFile *packageFile);
 
 			void StatLoad(StatInfo *stat);
 			void StatSave(StatInfo *stat);
@@ -73,7 +73,7 @@ namespace Net
 		protected:
 			virtual ~HTTPDirectoryHandler();
 		public:
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 			void SetCacheType(CacheType ctype);
 			void SetExpirePeriod(Int32 periodSec);
 			void SetAllowOrigin(Text::CString origin);

@@ -203,10 +203,10 @@ void Net::LogClient::LogClosed()
 	DEL_CLASS(this);
 }
 
-void Net::LogClient::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
+void Net::LogClient::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(this->mut);
-	this->msgList->Add(Text::String::New(logMsg, msgLen));
+	this->msgList->Add(Text::String::New(logMsg));
 	this->dateList->Add(time->ToTicks());
 	mutUsage.EndUse();
 	this->sendEvt->Set();

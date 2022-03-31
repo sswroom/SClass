@@ -101,7 +101,7 @@ Map::PathSearcher::PathSearcher(Map::IMapDrawLayer *layer, Double minAngleRad)
 	i = objIds->GetCount();
 	while (i-- > 0)
 	{
-		pl = (Math::Polyline*)layer->GetVectorById(sess, objIds->GetItem(i));
+		pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 		if (pl)
 		{
 			Double *points;

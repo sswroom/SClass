@@ -300,12 +300,12 @@ void Map::OruxDBLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::OruxDBLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::OruxDBLayer::GetNewObjectById(void *session, Int64 id)
 {
 	return 0;
 }
 
-Math::Vector2D *Map::OruxDBLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	if (this->db == 0)
 		return 0;

@@ -170,7 +170,7 @@ void IO::FileLog::LogClosed()
 		closed = true;
 	}
 }
-void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
+void IO::FileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
 {
 	Sync::MutexUsage mutUsage(mut);
 	Bool newFile = false;
@@ -230,7 +230,7 @@ void IO::FileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt 
 		sptr = time->ToString(buff, this->dateFormat);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
-		sb.AppendC(logMsg, msgLen);
+		sb.Append(logMsg);
 		log->WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	mutUsage.EndUse();

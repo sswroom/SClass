@@ -35,14 +35,13 @@ Net::WebServer::HTTPForwardHandler::~HTTPForwardHandler()
 	DEL_CLASS(this->mut);
 }
 
-Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	UInt8 buff[2048];
 	UTF8Char *sptr;
-	if (subReq[0] == 0)
+	if (subReq.v[0] == 0)
 	{
-		subReq = (const UTF8Char*)"/";
-		subReqLen = 1;
+		subReq = CSTR("/");
 	}
 	Text::StringBuilderUTF8 sb;
 	Text::String *fwdBaseUrl = this->GetNextURL(req);
@@ -51,7 +50,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	{
 		sb.RemoveChars(1);
 	}
-	sb.AppendC(subReq, subReqLen);
+	sb.Append(subReq);
 	Text::String *uri = req->GetRequestURI();
 	UOSInt i = uri->IndexOf('?');
 	UOSInt j;

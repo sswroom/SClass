@@ -14,10 +14,10 @@ namespace SSWR
 			Text::String *logPath;
 			VAMSBTList *btList;
 
-			static Bool __stdcall DevData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
-			static Bool __stdcall KAData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
-			static Bool __stdcall LogData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
-			static Bool __stdcall ListData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me);
+			static Bool __stdcall DevData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall KAData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall LogData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
+			static Bool __stdcall ListData(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me);
 
 		public:
 			VAMSBTWebHandler(Text::String *logPath, VAMSBTList *btList);

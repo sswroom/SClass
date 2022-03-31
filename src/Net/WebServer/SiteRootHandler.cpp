@@ -13,15 +13,15 @@ Net::WebServer::SiteRootHandler::~SiteRootHandler()
 	}
 }
 
-Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
-	if (Text::StrEqualsC(subReq, subReqLen, UTF8STRC("/favicon.ico")))
+	if (subReq.Equals(UTF8STRC("/favicon.ico")))
 	{
 		if (this->faviconBuff)
 		{
 			resp->AddDefHeaders(req);
 			resp->AddContentLength(this->faviconSize);
-			Text::CString mime = Net::MIME::GetMIMEFromExt(UTF8STRC("ico"));
+			Text::CString mime = Net::MIME::GetMIMEFromExt(CSTR("ico"));
 			resp->AddContentType(mime.v, mime.leng);
 			resp->Write(this->faviconBuff, this->faviconSize);
 			return true;
@@ -33,7 +33,7 @@ Bool Net::WebServer::SiteRootHandler::ProcessRequest(Net::WebServer::IWebRequest
 		}
 	}
 
-	return this->DoRequest(req, resp, subReq, subReqLen);
+	return this->DoRequest(req, resp, subReq);
 }
 
 Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CString faviconPath)

@@ -280,7 +280,7 @@ UTF8Char *Map::IMapDrawLayer::GetPGLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 		{
 			lastId = thisId;
 			Math::Polygon *pg;
-			pg = (Math::Polygon*)this->GetVectorById(sess, thisId);
+			pg = (Math::Polygon*)this->GetNewVectorById(sess, thisId);
 			if (pg)
 			{
 				if (pg->InsideVector(lon, lat))
@@ -336,7 +336,7 @@ UTF8Char *Map::IMapDrawLayer::GetPLLabelLatLon(UTF8Char *buff, UOSInt buffSize, 
 		if (thisId != lastId)
 		{
 			lastId = thisId;
-			dobj = this->GetObjectByIdD(sess, thisId);
+			dobj = this->GetNewObjectById(sess, thisId);
 			UTF8Char *sptr = this->GetString(tmpBuff, buffSize, names, thisId, strIndex);
 			if (sptr && sptr != tmpBuff)
 			{
@@ -484,7 +484,7 @@ Int64 Map::IMapDrawLayer::GetNearestObjectId(void *session, Double x, Double y, 
 
 	while (i-- > 0)
 	{
-		Math::Vector2D *vec = this->GetVectorById(session, objIds->GetItem(i));
+		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
 		if (vec)
 		{
 			dist = vec->CalSqrDistance(x, y, &currPtX, &currPtY);
@@ -536,7 +536,7 @@ OSInt Map::IMapDrawLayer::GetNearObjects(void *session, Data::ArrayList<ObjectIn
 
 	while (i-- > 0)
 	{
-		Math::Vector2D *vec = this->GetVectorById(session, objIds->GetItem(i));
+		Math::Vector2D *vec = this->GetNewVectorById(session, objIds->GetItem(i));
 		dist = vec->CalSqrDistance(x, y, &currPtX, &currPtY);
 		if (dist <= sqrMaxDist)
 		{
@@ -640,10 +640,10 @@ Map::VectorLayer *Map::IMapDrawLayer::CreateEditableLayer()
 	j = objIds->GetCount();
 	while (i < j)
 	{
-		vec = this->GetVectorById(sess, objIds->GetItem(i));
+		vec = this->GetNewVectorById(sess, objIds->GetItem(i));
 		if (vec == 0)
 		{
-			vec = this->GetVectorById(sess, objIds->GetItem(i));
+			vec = this->GetNewVectorById(sess, objIds->GetItem(i));
 		}
 		if (vec)
 		{
@@ -774,11 +774,11 @@ Math::Vector2D *Map::IMapDrawLayer::GetVectorByStr(Text::SearchIndexer *srchInd,
 		{
 			if (vec == 0)
 			{
-				vec = this->GetVectorById(session, objIds->GetItem(i));
+				vec = this->GetNewVectorById(session, objIds->GetItem(i));
 			}
 			else
 			{
-				Math::Vector2D *tmpVec = this->GetVectorById(session, objIds->GetItem(i));
+				Math::Vector2D *tmpVec = this->GetNewVectorById(session, objIds->GetItem(i));
 				vec->JoinVector(tmpVec);
 				DEL_CLASS(tmpVec);
 			}
@@ -1088,7 +1088,7 @@ Math::Vector2D *Map::MapLayerReader::GetVector(UOSInt colIndex)
 	if ((UOSInt)this->currIndex >= this->objIds->GetCount() || this->currIndex < 0)
 		return 0;
 	void *sess = this->layer->BeginGetObject();
-	Math::Vector2D *vec = this->layer->GetVectorById(sess, this->GetCurrObjId());
+	Math::Vector2D *vec = this->layer->GetNewVectorById(sess, this->GetCurrObjId());
 	this->layer->EndGetObject(sess);
 	return vec;
 

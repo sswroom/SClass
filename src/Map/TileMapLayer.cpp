@@ -480,12 +480,12 @@ void Map::TileMapLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::TileMapLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::TileMapLayer::GetNewObjectById(void *session, Int64 id)
 {
 	return 0;
 }
 
-Math::Vector2D *Map::TileMapLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 {
 	CachedImage *cimg;
 	Math::VectorImage *vimg;

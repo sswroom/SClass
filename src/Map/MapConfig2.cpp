@@ -2434,7 +2434,7 @@ void Map::MapConfig2::DrawPoints(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	i = arri->GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetObjectByIdD(session, arri->GetItem(i))) != 0)
+		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
 		{
 #ifdef NOSCH
 			j = dobj->nPoints;
@@ -2498,7 +2498,7 @@ void Map::MapConfig2::DrawString(Media::DrawImage *img, MapLayerStyle *lyrs, Map
 	i = arri->GetCount();
 	while (i-- > 0)
 	{
-		if ((dobj = lyrs->lyr->GetObjectByIdD(session, arri->GetItem(i))) != 0)
+		if ((dobj = lyrs->lyr->GetNewObjectById(session, arri->GetItem(i))) != 0)
 		{
 			if (lyrs->bkColor & SFLG_SMART)
 			{
@@ -4602,7 +4602,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((dobj = lyr->GetObjectByIdD(session, thisId)) != 0)
+								if ((dobj = lyr->GetNewObjectById(session, thisId)) != 0)
 								{
 #ifndef NOSCH
 									mapSch->Draw(dobj);
@@ -4707,7 +4707,7 @@ UTF8Char *Map::MapConfig2::DrawMap(Media::DrawImage *img, Map::MapView *view, Bo
 							if (thisId != lastId)
 							{
 								lastId = thisId;
-								if ((dobj = lyr->GetObjectByIdD(session, thisId)) != 0)
+								if ((dobj = lyr->GetNewObjectById(session, thisId)) != 0)
 								{
 #ifndef NOSCH
 									mapSch->Draw(dobj);

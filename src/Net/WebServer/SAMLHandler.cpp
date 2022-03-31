@@ -17,13 +17,13 @@ Net::WebServer::SAMLHandler::~SAMLHandler()
 	SDEL_CLASS(this->signKey);
 }
 
-Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	if (this->initErr == SAMLError::None)
 	{
-		if (this->metadataPath->Equals(subReq, subReqLen))
+		if (this->metadataPath->Equals(subReq.v, subReq.leng))
 		{
 			Text::TextBinEnc::Base64Enc b64;
 			Text::StringBuilderUTF8 sb;
@@ -98,7 +98,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			resp->AddContentType(UTF8STRC("application/samlmetadata+xml"));
 			return Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("application/samlmetadata+xml"), sb.GetLength(), sb.ToString());
 		}
-		else if (this->ssoPath->Equals(subReq, subReqLen))
+		else if (this->ssoPath->Equals(subReq.v, subReq.leng))
 		{
 			Bool succ = false;
 			if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -122,7 +122,7 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 			}
 			return true;
 		}
-		else if (this->logoutPath->Equals(subReq, subReqLen))
+		else if (this->logoutPath->Equals(subReq.v, subReq.leng))
 		{
 			resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 			return true;
@@ -130,13 +130,13 @@ Bool Net::WebServer::SAMLHandler::ProcessRequest(Net::WebServer::IWebRequest *re
 		//////////////////////////////////
 	}
 
-	if (this->DoRequest(req, resp, subReq, subReqLen))
+	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
 	}
 	if (this->defHdlr)
 	{
-		return this->defHdlr->ProcessRequest(req, resp, subReq, subReqLen);
+		return this->defHdlr->ProcessRequest(req, resp, subReq);
 	}
 	return false;
 }

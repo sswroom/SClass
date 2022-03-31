@@ -129,7 +129,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	}
 }
 
-void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen, IO::PackageFile *packageFile)
+void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, IO::PackageFile *packageFile)
 {
 	if (!this->allowBrowsing)
 	{
@@ -242,7 +242,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 			else
 			{
 				sptr2 = IO::Path::GetFileExt(sbuff2, sbuff, (UOSInt)(sptr - sbuff));
-				Text::CString mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr2 - sbuff2));
+				Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
 				sbOut.AppendNE(mime.v, mime.leng);
 				sbOut.AppendNE(UTF8STRC("</td><td>"));
 				sbOut.AppendU64(packageFile->GetItemSize(i));
@@ -400,7 +400,7 @@ Net::WebServer::HTTPDirectoryHandler::~HTTPDirectoryHandler()
 	}
 }
 
-Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	UInt8 buff[2048];
 	Text::StringBuilderUTF8 sb;
@@ -413,7 +413,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	Data::DateTime t;
 	Text::CString mime;
 	UOSInt i;
-	if (this->DoRequest(req, resp, subReq, subReqLen))
+	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
 	}
@@ -425,15 +425,15 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	if (this->packageMap)
 	{
-		i = Text::StrIndexOfCharC(subReq, subReqLen, '?');
+		i = subReq.IndexOf('?');
 		if (i != INVALID_INDEX)
 		{
 			sb.ClearStr();
-			sb.AppendC(subReq, (UOSInt)i);
+			sb.AppendC(subReq.v, (UOSInt)i);
 		}
 		else
 		{
-			sb.AppendC(subReq, subReqLen);
+			sb.Append(subReq);
 		}
 		i = Text::StrIndexOfCharC(&sb.ToString()[1], sb.GetLength() - 1, '/');
 		if (i != INVALID_INDEX)
@@ -448,14 +448,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			if (i == INVALID_INDEX)
 			{
-				ResponsePackageFile(req, resp, subReq, subReqLen, package->packageFile);
+				ResponsePackageFile(req, resp, subReq, package->packageFile);
 				return true;
 			}
 			
 			sptr = &sb.ToString()[i + 2];
 			if (sptr[0] == 0)
 			{
-				ResponsePackageFile(req, resp, subReq, subReqLen, package->packageFile);
+				ResponsePackageFile(req, resp, subReq, package->packageFile);
 				return true;
 			}
 			const IO::PackFileItem *pitem = package->packageFile->GetPackFileItem(sptr);
@@ -472,7 +472,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						stmData->GetRealData(0, dataLen, dataBuff);
 						DEL_CLASS(stmData);
 						sptr3 = IO::Path::GetFileExt(sbuff, sptr, sb.GetLength() - i - 2);
-						mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr3 - sbuff));
+						mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 
 						resp->EnableWriteBuffer();
 						resp->AddDefHeaders(req);
@@ -504,7 +504,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								UInt8 *dataBuff = MemAlloc(UInt8, dataLen);
 								stmData->GetRealData(0, dataLen, dataBuff);
 								DEL_CLASS(stmData);
-								mime = Net::MIME::GetMIMEFromExt(UTF8STRC("html"));
+								mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 
 								resp->EnableWriteBuffer();
 								resp->AddDefHeaders(req);
@@ -521,12 +521,12 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							}
 							else
 							{
-								ResponsePackageFile(req, resp, subReq, subReqLen, innerPF);
+								ResponsePackageFile(req, resp, subReq, innerPF);
 							}
 						}
 						else
 						{
-							ResponsePackageFile(req, resp, subReq, subReqLen, innerPF);
+							ResponsePackageFile(req, resp, subReq, innerPF);
 						}
 						DEL_CLASS(innerPF);
 						return true;
@@ -537,7 +537,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	}
 	CacheInfo *cache;
 	Sync::MutexUsage mutUsage(this->fileCacheMut);
-	cache = this->fileCache->Get({subReq, subReqLen});
+	cache = this->fileCache->Get(subReq);
 	if (cache != 0)
 	{
 		Sync::Interlocked::Increment(&this->fileCacheUsing);
@@ -546,14 +546,14 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		{
 			Net::WebServer::HTTPDirectoryHandler::StatInfo *stat;
 			sb.ClearStr();
-			sb.AppendC(subReq, subReqLen);
+			sb.Append(subReq);
 			i = sb.LastIndexOf('/');
 			sb.TrimToLength(i);
 			Sync::MutexUsage statMutUsage(this->statMut);
 			stat = this->statMap->GetC(sb.ToCString());
 			if (stat)
 			{
-				sb.AppendC(&subReq[i + 1], subReqLen - i - 1);
+				sb.Append(subReq.Substring(i + 1));
 				i = sb.IndexOf('?');
 				if (i != INVALID_INDEX)
 				{
@@ -576,31 +576,31 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		t.SetTicks(cache->t);
 		t.ToLocalTime();
 		resp->AddLastModified(&t);
-		i = Text::StrIndexOfCharC(subReq, subReqLen, '?');
+		i = subReq.IndexOf('?');
 		if (i != INVALID_INDEX)
 		{
 			Text::StringBuilderUTF8 sbc;
-			sbc.AppendC(subReq, (UOSInt)i);
+			sbc.AppendC(subReq.v, (UOSInt)i);
 			if (sbc.EndsWith('/'))
 			{
-				mime = Net::MIME::GetMIMEFromExt(UTF8STRC("html"));
+				mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 			}
 			else
 			{
 				i = Text::StrLastIndexOfCharC(sbc.ToString(), sbc.GetLength(), '.');
-				mime = Net::MIME::GetMIMEFromExt(sbc.ToString() + i + 1, sbc.GetLength() - i - 1);
+				mime = Net::MIME::GetMIMEFromExt(sbc.ToCString().Substring(i + 1));
 			}
 		}
 		else
 		{
-			if (Text::StrEndsWithC(subReq, subReqLen, UTF8STRC("/")))
+			if (subReq.EndsWith('/'))
 			{
-				mime = Net::MIME::GetMIMEFromExt(UTF8STRC("html"));
+				mime = Net::MIME::GetMIMEFromExt(CSTR("html"));
 			}
 			else
 			{
-				i = Text::StrLastIndexOfCharC(subReq, subReqLen, '.');
-				mime = Net::MIME::GetMIMEFromExt(subReq + i + 1, subReqLen - i - 1);
+				i = subReq.LastIndexOf('.');
+				mime = Net::MIME::GetMIMEFromExt(subReq.Substring(i + 1));
 			}
 		}
 		resp->AddContentType(mime.v, mime.leng);
@@ -617,8 +617,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 	{
 		sb.RemoveChars(1);
 	}
-	const UTF8Char *reqTarget = subReq;
-	sb.AppendC(reqTarget, subReqLen);
+	const UTF8Char *reqTarget = subReq.v;
+	sb.AppendC(reqTarget, subReq.leng);
 	sptr = sb.ToString();
 	sptrLen = sb.GetLength();
 	UTF8Char *sptr2 = 0;
@@ -688,7 +688,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			resp->AddDefHeaders(req);
 			AddCacheHeader(resp);
 			resp->AddLastModified(&t);
-			mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr3 - sbuff));
+			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 			resp->AddContentType(mime.v, mime.leng);
 			sizeLeft = fs->GetLength();
 			if (sizeLeft < this->fileCacheSize)
@@ -703,7 +703,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				{
 					Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 					Sync::MutexUsage mutUsage(this->fileCacheMut);
-					this->fileCache->Put({subReq, subReqLen}, cache);
+					this->fileCache->Put(subReq, cache);
 					mutUsage.EndUse();
 				}
 				else
@@ -948,7 +948,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								else
 								{
 									sptr4 = IO::Path::GetFileExt(sbuff2, sptr2, (UOSInt)(sptr3 - sptr2));
-									mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr4 - sbuff2));
+									mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr4));
 									sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 									sbOut.AppendU64(fileSize);
 								}
@@ -1048,7 +1048,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 							else
 							{
 								sptr3 = IO::Path::GetFileExt(sbuff2, ent->fileName->v, ent->fileName->leng);
-								mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr3 - sbuff2));
+								mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr3));
 								sbOut.AppendNE2(mime.v, mime.leng, UTF8STRC("</td><td>"));
 								sbOut.AppendU64(ent->fileSize);
 							}
@@ -1109,7 +1109,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		if (this->statMap)
 		{
 			sb2.ClearStr();
-			sb2.AppendC(subReq, subReqLen);
+			sb2.Append(subReq);
 			i = sb2.IndexOf('?');
 			if (i != INVALID_INDEX)
 			{
@@ -1251,7 +1251,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		resp->AddDefHeaders(req);
 		AddCacheHeader(resp);
 		resp->AddLastModified(&t);
-		mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr3 - sbuff));
+		mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
 		resp->AddContentType(mime.v, mime.leng);
 		resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
 		if (sizeLeft <= 0)
@@ -1286,7 +1286,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			{
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, sizeLeft, cache->buff);
 				Sync::MutexUsage mutUsage(this->fileCacheMut);
-				cache = this->fileCache->Put({subReq, subReqLen}, cache);
+				cache = this->fileCache->Put(subReq, cache);
 				mutUsage.EndUse();
 				if (cache)
 				{

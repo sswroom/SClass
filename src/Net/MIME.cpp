@@ -87,14 +87,14 @@ Net::MIME::MIMEEntry Net::MIME::mimeList[] = {
 	{UTF8STRC("zip"),  UTF8STRC("application/zip")}
 };
 
-Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen)
+Text::CString Net::MIME::GetMIMEFromExt(Text::CString ext)
 {
 	UTF8Char sbuff[5];
-	if (extLen > 4 || extLen < 2)
+	if (ext.leng > 4 || ext.leng < 2)
 	{
 		return CSTR("application/octet-stream");
 	}
-	Text::StrToLowerC(sbuff, ext, extLen);
+	Text::StrToLowerC(sbuff, ext.v, ext.leng);
 	OSInt i = 0;
 	OSInt j = (sizeof(mimeList) / sizeof(mimeList[0])) - 1;
 	OSInt k;
@@ -102,7 +102,7 @@ Text::CString Net::MIME::GetMIMEFromExt(const UTF8Char *ext, UOSInt extLen)
 	while (i <= j)
 	{
 		k = (i + j) >> 1;
-		l = Text::StrCompareFastC(ext, extLen, mimeList[k].ext, mimeList[k].extLen);
+		l = Text::StrCompareFastC(sbuff, ext.leng, mimeList[k].ext, mimeList[k].extLen);
 		if (l > 0)
 		{
 			i = k + 1;
@@ -126,5 +126,5 @@ Text::CString Net::MIME::GetMIMEFromFileName(const UTF8Char *fileName, UOSInt na
 	{
 		return CSTR("application/octet-stream");
 	}
-	return GetMIMEFromExt(&fileName[i + 1], nameLen - i - 1);
+	return GetMIMEFromExt(Text::CString(&fileName[i + 1], nameLen - i - 1));
 }

@@ -52,7 +52,7 @@ void IO::LogTool::Close()
 	dt.SetCurrTime();
 	while (i-- > 0)
 	{
-		hdlrArr->GetItem(i)->LogAdded(&dt, UTF8STRC("End logging normally"),  (IO::ILogHandler::LogLevel)0);
+		hdlrArr->GetItem(i)->LogAdded(&dt, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
 		hdlrArr->GetItem(i)->LogClosed();
 	}
 	mutUsage.EndUse();
@@ -123,7 +123,7 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 	IO::BuildTime::GetBuildTime(&dt2);
 	sb.AppendC(UTF8STRC(", version: "));
 	sb.AppendDate(&dt2);
-	hdlr->LogAdded(&dt, sb.ToString(), sb.GetLength(), (ILogHandler::LogLevel)0);
+	hdlr->LogAdded(&dt, sb.ToCString(), (ILogHandler::LogLevel)0);
 }
 
 void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
@@ -153,7 +153,7 @@ void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 	while (i-- > 0)
 	{
 		if (levArr->GetItem(i) >= level)
-			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg.v, logMsg.leng, level);
+			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg, level);
 	}
 	mutUsage.EndUse();
 }

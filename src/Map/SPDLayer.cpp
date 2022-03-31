@@ -554,7 +554,7 @@ void Map::SPDLayer::EndGetObject(void *session)
 //	this->mut->Unlock();
 }
 
-Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::SPDLayer::GetNewObjectById(void *session, Int64 id)
 {
 	IO::FileStream *cip = (IO::FileStream*)session;
 
@@ -593,7 +593,7 @@ Map::DrawObjectL *Map::SPDLayer::GetObjectByIdD(void *session, Int64 id)
 	return obj;
 }
 
-Math::Vector2D *Map::SPDLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::SPDLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Int32 buff[3];
 

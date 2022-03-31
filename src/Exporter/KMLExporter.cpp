@@ -137,6 +137,8 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	sptr = Text::StrConcatC(sptr, UTF8STRC("<open>1</open>"));
 	writer->WriteStrC(sbuff2, (UOSInt)(sptr - sbuff2));
 
+	writer->WriteStrC(UTF8STRC("<Style id=\"lineLabel\"><LineStyle><gx:labelVisibility>1</gx:labelVisibility></LineStyle></Style>"));
+
 	NEW_CLASS(ids, Data::ArrayListInt64());
 	layer->GetAllObjectIds(ids, &nameArr);
 
@@ -150,9 +152,12 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		if (currId != lastId)
 		{
 			lastId = currId;
+			vec = layer->GetNewVectorById(sess, currId);
+			if (vec == 0)
+			{
 
-			vec = layer->GetVectorById(sess, currId);
-			if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
+			}
+			else if (vec->GetVectorType() == Math::Vector2D::VectorType::Point)
 			{
 				Double x;
 				Double y;
@@ -203,8 +208,9 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<Placemark><name>"));
-				sb.AppendP(sbuff, sptr);
-				sb.AppendC(UTF8STRC("</name><LineString><coordinates>"));
+				sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+				sb.AppendP(sbuff2, sptr);
+				sb.AppendC(UTF8STRC("</name><styleUrl>#lineLabel</styleUrl><LineString><coordinates>"));
 
 				Double *points = pl->GetPointList(&nPoints);
 				if (needConv)
@@ -310,7 +316,8 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				sb.ClearStr();
 				sb.AppendC(UTF8STRC("<Placemark>"));
 				sb.AppendC(UTF8STRC("<name>"));
-				sb.AppendP(sbuff, sptr);
+				sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+				sb.AppendP(sbuff2, sptr);
 				sb.AppendC(UTF8STRC("</name>"));
 				sb.AppendC(UTF8STRC("<Polygon>"));
 				sb.AppendC(UTF8STRC("<tessellate>1</tessellate>"));
@@ -389,7 +396,8 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<ScreenOverlay>"));
 					sb.AppendC(UTF8STRC("<name>"));
-					sb.AppendP(sbuff, sptr);
+					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
@@ -467,7 +475,8 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("<GroundOverlay>"));
 					sb.AppendC(UTF8STRC("<name>"));
-					sb.AppendP(sbuff, sptr);
+					sptr = Text::XML::ToXMLText(sbuff2, sbuff);
+					sb.AppendP(sbuff2, sptr);
 					sb.AppendC(UTF8STRC("</name>"));
 					timeStart = img->GetTimeStart();
 					timeEnd = img->GetTimeEnd();
@@ -548,12 +557,13 @@ Bool Exporter::KMLExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 			}
-			DEL_CLASS(vec);
+			SDEL_CLASS(vec);
 		}
 
 		i++;
 	}
 	layer->EndGetObject(sess);
+	layer->ReleaseNameArr(nameArr);
 
 	DEL_CLASS(destCsys);
 	DEL_CLASS(ids);

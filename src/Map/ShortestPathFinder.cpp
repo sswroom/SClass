@@ -43,7 +43,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		NodeInfo *node;
 		NeighbourInfo *neighbour;
 		Bool valid = true;
-		pl = (Math::Polyline*)this->layer->GetVectorById(sess, toObjId);
+		pl = (Math::Polyline*)this->layer->GetNewVectorById(sess, toObjId);
 		toPointNo = pl->GetPointNo(toX, toY, 0, 0, 0);
 		points = pl->GetPointList(&nPoints);
 		toId1 = this->CoordToId(points[0], points[1]);
@@ -69,7 +69,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		}
 		DEL_CLASS(pl);
 
-		pl = (Math::Polyline*)this->layer->GetVectorById(sess, fromObjId);
+		pl = (Math::Polyline*)this->layer->GetNewVectorById(sess, fromObjId);
 		points = pl->GetPointList(&nPoints);
 		fromPointNo = pl->GetPointNo(fromX, fromY, 0, 0, 0);
 
@@ -132,7 +132,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 		{
 			if (nextId == toId1)
 			{
-				pl = (Math::Polyline*)this->layer->GetVectorById(sess, toObjId);
+				pl = (Math::Polyline*)this->layer->GetNewVectorById(sess, toObjId);
 				points = pl->GetPointList(&nPoints);
 				i = 1;
 				while (i <= toPointNo)
@@ -148,7 +148,7 @@ Bool Map::ShortestPathFinder::SearchShortestPath(Data::ArrayList<Double> *pointL
 			}
 			else if (nextId == toId2)
 			{
-				pl = (Math::Polyline*)this->layer->GetVectorById(sess, toObjId);
+				pl = (Math::Polyline*)this->layer->GetNewVectorById(sess, toObjId);
 				points = pl->GetPointList(&nPoints);
 				i = nPoints - 1;
 				while (i > toPointNo)
@@ -261,7 +261,7 @@ Map::ShortestPathFinder::ShortestPathFinder(Map::IMapDrawLayer *layer, Bool toRe
 	j = idList.GetCount();
 	while (i < j)
 	{
-		vec = layer->GetVectorById(sess, idList.GetItem(i));
+		vec = layer->GetNewVectorById(sess, idList.GetItem(i));
 		if (vec)
 		{
 			if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)

@@ -112,7 +112,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Point*)layer->GetVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Point*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pt->GetCenter(&x, &y);
 			if (i == 0)
 			{
@@ -165,7 +165,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pt = (Math::Point3D*)layer->GetVectorById(sess, objIds->GetItem(i));
+			pt = (Math::Point3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pt->GetCenter3D(&x, &y, &z);
 			if (i == 0)
 			{
@@ -234,7 +234,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Polyline*)layer->GetVectorById(sess, objIds->GetItem(i));
+			pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
@@ -304,7 +304,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pl = (Math::Polyline3D*)layer->GetVectorById(sess, objIds->GetItem(i));
+			pl = (Math::Polyline3D*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pl->GetBounds(&box[0], &box[1], &box[2], &box[3]);
 			ptOfsts = pl->GetPtOfstList(&nPtOfst);
 			points = pl->GetPointList(&nPoint);
@@ -395,7 +395,7 @@ Bool Exporter::SHPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		i = 0;
 		while (i < recCnt)
 		{
-			pg = (Math::Polygon*)layer->GetVectorById(sess, objIds->GetItem(i));
+			pg = (Math::Polygon*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			pg->GetBounds(&box[0], &box[1], &box[2], &box[3]);
 			ptOfsts = pg->GetPtOfstList(&nPtOfst);
 			points = pg->GetPointList(&nPoint);

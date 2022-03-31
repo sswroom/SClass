@@ -527,7 +527,7 @@ void Map::SHPData::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::SHPData::GetNewObjectById(void *session, Int64 id)
 {
 	Map::DrawObjectL *obj;
 	Map::SHPData::RecHdr *rec;
@@ -592,7 +592,7 @@ Map::DrawObjectL *Map::SHPData::GetObjectByIdD(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::SHPData::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::SHPData::GetNewVectorById(void *session, Int64 id)
 {
 	Map::SHPData::RecHdr *rec;
 	UOSInt nPoint;

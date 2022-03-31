@@ -17,7 +17,7 @@ namespace IO
 		WriterLogHandler(IO::Writer *writer, Bool toRelease);
 		virtual ~WriterLogHandler();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);
+		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
 	};
 }
 #endif

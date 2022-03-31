@@ -610,7 +610,7 @@ void Map::VectorLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::VectorLayer::GetNewObjectById(void *session, Int64 id)
 {
 	Map::DrawObjectL *obj;
 	Math::Vector2D *vec = this->vectorList->GetItem((UOSInt)id);
@@ -651,7 +651,7 @@ Map::DrawObjectL *Map::VectorLayer::GetObjectByIdD(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::VectorLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::VectorLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Math::Vector2D *vec = this->vectorList->GetItem((UOSInt)id);
 	if (vec)

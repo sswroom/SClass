@@ -14,7 +14,7 @@ namespace Net
 
 		protected:
 			virtual ~SiteRootHandler();
-			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen);
+			virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq);
 		public:
 			SiteRootHandler(Text::CString faviconPath);
 		};

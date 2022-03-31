@@ -48,7 +48,7 @@ Map::HKTDVehRestrict::HKTDVehRestrict(Map::IMapDrawLayer *routeLyr, DB::DBTool *
 			{
 				if (routeLyr->GetString(sbuff, sizeof(sbuff), nameArr, idArr.GetItem(i), (UOSInt)idCol))
 				{
-					vec = routeLyr->GetVectorById(sess, idArr.GetItem(i));
+					vec = routeLyr->GetNewVectorById(sess, idArr.GetItem(i));
 					if (vec)
 					{
 						if (vec->GetVectorType() == Math::Vector2D::VectorType::Polyline)

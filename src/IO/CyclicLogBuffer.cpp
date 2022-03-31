@@ -28,12 +28,12 @@ IO::CyclicLogBuffer::~CyclicLogBuffer()
 	DEL_CLASS(this->logMut);
 }
 
-void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
+void IO::CyclicLogBuffer::LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev)
 {
-	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + msgLen);
+	UTF8Char *strBuff = MemAlloc(UTF8Char, 25 + logMsg.leng);
 	UTF8Char *sptr = logTime->ToString(strBuff, "yyyy-MM-dd HH:mm:ss.fff");
 	*sptr++ = '\t';
-	sptr = Text::StrConcatC(sptr, logMsg, msgLen);
+	sptr = logMsg.ConcatTo(sptr);
 
 	Sync::MutexUsage mutUsage(this->logMut);
 	if (this->logBuff[this->logInd])

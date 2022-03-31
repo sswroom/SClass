@@ -59,7 +59,7 @@ namespace Map
 		virtual void EndGetObject(void *session);
 		virtual DrawObject *GetObjectById(void *session, Int32 id);
 		virtual DrawObject *GetObjectByIdHP(void *session, Int32 id);
-		virtual Math::Vector2D *GetVectorById(void *session, Int32 id);
+		virtual Math::Vector2D *GetNewVectorById(void *session, Int32 id);
 		virtual void ReleaseObject(void *session, DrawObject *obj);
 	};
 };

@@ -407,7 +407,7 @@ void Map::GPSTrack::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::GPSTrack::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 {
 	Map::DrawObjectL *outObj;
 	UOSInt i;
@@ -503,7 +503,7 @@ Map::DrawObjectL *Map::GPSTrack::GetObjectByIdD(void *session, Int64 id)
 	}
 }
 
-Math::Vector2D *Map::GPSTrack::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt i;
 	UOSInt j;

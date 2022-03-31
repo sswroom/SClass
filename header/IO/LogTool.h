@@ -39,7 +39,7 @@ namespace IO
 		};
 		virtual ~ILogHandler(){};
 
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev) = 0;
+		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev) = 0;
 		virtual void LogClosed() = 0;
 	};
 

@@ -345,13 +345,13 @@ void Map::FileGDBLayer::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::FileGDBLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::FileGDBLayer::GetNewObjectById(void *session, Int64 id)
 {
 	Math::Vector2D *vec = this->objects->Get((Int32)id);
 	return Vector2DrawObject(id, vec, this->layerType);
 }
 
-Math::Vector2D *Map::FileGDBLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::FileGDBLayer::GetNewVectorById(void *session, Int64 id)
 {
 	Math::Vector2D *vec = this->objects->Get((Int32)id);
 	if (vec)

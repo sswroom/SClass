@@ -174,7 +174,7 @@ Bool Exporter::MapCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		j = objIds->GetCount();
 		while (i < j)
 		{
-			Math::Polyline *pl = (Math::Polyline*)layer->GetVectorById(sess, objIds->GetItem(i));
+			Math::Polyline *pl = (Math::Polyline*)layer->GetNewVectorById(sess, objIds->GetItem(i));
 			points = pl->GetPointList(&l);
 			k = 0;
 			while (k < l)

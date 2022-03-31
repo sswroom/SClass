@@ -25,9 +25,9 @@ public:
 
 	}
 
-	virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+	virtual Bool ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 	{
-		if (this->DoRequest(req, resp, subReq, subReqLen))
+		if (this->DoRequest(req, resp, subReq))
 		{
 			return true;
 		}

@@ -127,7 +127,7 @@ void Media::MediaPlayerWebInterface::BrowseRequest(Net::WebServer::IWebRequest *
 			writer->WriteStrC(UTF8STRC("</td><td>"));
 
 			sptr2 = IO::Path::GetFileExt(sbuff2, vfile->fileName->v, vfile->fileName->leng);
-			Text::CString mime = Net::MIME::GetMIMEFromExt(sbuff2, (UOSInt)(sptr2 - sbuff2));
+			Text::CString mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff2, sptr2));
 			writer->WriteStrC(mime.v, mime.leng);
 			writer->WriteLineC(UTF8STRC("</td></tr>"));
 

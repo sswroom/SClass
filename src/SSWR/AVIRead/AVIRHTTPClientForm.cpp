@@ -121,7 +121,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 		DEL_CLASS(fs);
 		if ((sptr = IO::Path::GetFileExt(sbuff, fileName->v, fileName->leng)) != 0)
 		{
-			mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
+			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
 			me->reqBodyType = Text::String::New(mime.v, mime.leng);
 		}
 		else
@@ -193,7 +193,7 @@ void __stdcall SSWR::AVIRead::AVIRHTTPClientForm::OnRequestClicked(void *userObj
 				mstm.Write((const UInt8*)"\"\r\n", 3);
 
 				sptr = IO::Path::GetFileExt(sbuff, &s->v[k], s->leng - k);
-				mime = Net::MIME::GetMIMEFromExt(sbuff, (UOSInt)(sptr - sbuff));
+				mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr));
 				mstm.Write((const UInt8*)"Content-Type: ", 14);
 				mstm.Write(mime.v, mime.leng);
 				mstm.Write((const UInt8*)"\r\n\r\n", 4);
@@ -542,7 +542,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 					cli->AddHeaderC(CSTR("Accept-Encoding"), CSTR("gzip, deflate"));
 				}
 				
-				sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
+				sptr = me->AppendCookie(sbuff, currURL->ToCString());
 				if (sptr)
 				{
 					cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
@@ -607,7 +607,7 @@ UInt32 __stdcall SSWR::AVIRead::AVIRHTTPClientForm::ProcessThread(void *userObj)
 						b64Enc.EncodeBin(&sbAuth, buff, i);
 						cli->AddHeaderC(CSTR("Authorization"), sbAuth.ToCString());
 						
-						sptr = me->AppendCookie(sbuff, currURL->v, currURL->leng);
+						sptr = me->AppendCookie(sbuff, currURL->ToCString());
 						if (sptr)
 						{
 							cli->AddHeaderC(CSTR("Cookie"), CSTRP(sbuff, sptr));
@@ -948,7 +948,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	Bool valid = true;
 	path[0] = 0;
 	pathEnd = path;
-	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL.v, reqURL.leng, 0);
+	UTF8Char *domainEnd = Text::URLString::GetURLDomain(domain, reqURL, 0);
 	Text::StringBuilderUTF8 sb;
 	sb.Append(cookieStr);
 	cnt = Text::StrSplitTrimP(sarr, 2, sb, ';');
@@ -1069,7 +1069,7 @@ SSWR::AVIRead::AVIRHTTPClientForm::HTTPCookie *SSWR::AVIRead::AVIRHTTPClientForm
 	}
 }
 
-UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const UTF8Char *reqURL, UOSInt urlLen)
+UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, Text::CString reqURL)
 {
 	UInt8 buff[4096];
 	UTF8Char *sptr;
@@ -1081,9 +1081,9 @@ UTF8Char *SSWR::AVIRead::AVIRHTTPClientForm::AppendCookie(UTF8Char *sbuff, const
 	UTF8Char *cookiePtr = 0;
 	UTF8Char *pathPtr;
 	UTF8Char *pathPtrEnd;
-	sptr = Text::URLString::GetURLDomain(buff, reqURL, urlLen, 0);
+	sptr = Text::URLString::GetURLDomain(buff, reqURL, 0);
 	pathPtr = sptr + 1;
-	pathPtrEnd = Text::URLString::GetURLPath(pathPtr, reqURL, urlLen);
+	pathPtrEnd = Text::URLString::GetURLPath(pathPtr, reqURL);
 	len1 = (UOSInt)(sptr - buff);;
 	Sync::MutexUsage mutUsage(this->cookieMut);
 	i = 0;

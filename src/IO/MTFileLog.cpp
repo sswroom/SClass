@@ -313,13 +313,13 @@ void IO::MTFileLog::LogClosed()
 		evt->Set();
 	}
 }
-void IO::MTFileLog::LogAdded(Data::DateTime *time, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev)
+void IO::MTFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
 {
 	if (closed)
 		return;
 
 	Sync::MutexUsage mutUsage(mut);
-	this->msgList->Add(Text::String::New(logMsg, msgLen));
+	this->msgList->Add(Text::String::New(logMsg));
 	this->dateList->Add(time->ToTicks());
 	mutUsage.EndUse();
 	evt->Set();

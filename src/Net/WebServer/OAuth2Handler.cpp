@@ -1,17 +1,17 @@
 #include "Stdafx.h"
 #include "Net/WebServer/OAuth2Handler.h"
 
-Bool __stdcall Net::WebServer::OAuth2Handler::AuthHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me)
+Bool __stdcall Net::WebServer::OAuth2Handler::AuthHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
 {
 	return false;
 }
 
-Bool __stdcall Net::WebServer::OAuth2Handler::TokenHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me)
+Bool __stdcall Net::WebServer::OAuth2Handler::TokenHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
 {
 	return false;
 }
 
-Bool __stdcall Net::WebServer::OAuth2Handler::UserInfoHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, WebServiceHandler *me)
+Bool __stdcall Net::WebServer::OAuth2Handler::UserInfoHandler(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *me)
 {
 	return false;
 }

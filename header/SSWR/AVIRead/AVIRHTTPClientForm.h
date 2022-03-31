@@ -166,7 +166,7 @@ namespace SSWR
 			void ClearCookie();
 			void ClearFiles();
 			HTTPCookie *SetCookie(Text::CString cookieStr, Text::CString reqURL);
-			UTF8Char *AppendCookie(UTF8Char *sbuff, const UTF8Char *reqURL, UOSInt urlLen);
+			UTF8Char *AppendCookie(UTF8Char *sbuff, Text::CString reqURL);
 		public:
 			AVIRHTTPClientForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRHTTPClientForm();

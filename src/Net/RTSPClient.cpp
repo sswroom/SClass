@@ -428,7 +428,7 @@ IO::ParsedObject *Net::RTSPClient::ParseURL(Net::SocketFactory *sockf, Text::CSt
 	UOSInt k;
 
 	UInt16 port = 554;
-	sptr = Text::URLString::GetURLDomain(sbuff, url.v, url.leng, &port);
+	sptr = Text::URLString::GetURLDomain(sbuff, url, &port);
 	if (port == 0)
 	{
 		port = 554;

@@ -28,7 +28,7 @@ namespace IO
 		FileLog(Text::CString fileName, LogType style, LogGroup groupStyle, const Char *dateFormat);
 		virtual ~FileLog();
 		virtual void LogClosed();
-		virtual void LogAdded(Data::DateTime *logTime, const UTF8Char *logMsg, UOSInt msgLen, LogLevel logLev);
+		virtual void LogAdded(Data::DateTime *logTime, Text::CString logMsg, LogLevel logLev);
 	};
 }
 #endif

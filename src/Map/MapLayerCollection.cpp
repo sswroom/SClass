@@ -426,7 +426,7 @@ void Map::MapLayerCollection::EndGetObject(void *session)
 {
 }
 
-Map::DrawObjectL *Map::MapLayerCollection::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *Map::MapLayerCollection::GetNewObjectById(void *session, Int64 id)
 {
 	UOSInt k;
 	UOSInt l;
@@ -443,7 +443,7 @@ Map::DrawObjectL *Map::MapLayerCollection::GetObjectByIdD(void *session, Int64 i
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
-			dobj = lyr->GetObjectByIdD(session, id - currId);
+			dobj = lyr->GetNewObjectById(session, id - currId);
 			break;
 		}
 		else
@@ -456,7 +456,7 @@ Map::DrawObjectL *Map::MapLayerCollection::GetObjectByIdD(void *session, Int64 i
 	return dobj;
 }
 
-Math::Vector2D *Map::MapLayerCollection::GetVectorById(void *session, Int64 id)
+Math::Vector2D *Map::MapLayerCollection::GetNewVectorById(void *session, Int64 id)
 {
 	UOSInt k;
 	UOSInt l;
@@ -473,7 +473,7 @@ Math::Vector2D *Map::MapLayerCollection::GetVectorById(void *session, Int64 id)
 		maxId = lyr->GetObjectIdMax();
 		if (id >= currId && id <= currId + maxId)
 		{
-			vec = lyr->GetVectorById(session, id - currId);
+			vec = lyr->GetNewVectorById(session, id - currId);
 			break;
 		}
 		else

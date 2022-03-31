@@ -955,13 +955,13 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 	return true;
 }
 
-Bool Net::EthernetWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::EthernetWebHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
-	if (this->DoRequest(req, resp, subReq, subReqLen))
+	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
 	}
-	RequestHandler reqHdlr = this->reqMap->GetC({subReq, subReqLen});
+	RequestHandler reqHdlr = this->reqMap->GetC(subReq);
 	if (reqHdlr)
 	{
 		return reqHdlr(this, req, resp);

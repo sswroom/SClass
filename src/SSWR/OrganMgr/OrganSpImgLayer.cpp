@@ -152,7 +152,7 @@ void SSWR::OrganMgr::OrganSpImgLayer::EndGetObject(void *session)
 
 }
 
-Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetObjectByIdD(void *session, Int64 id)
+Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetNewObjectById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
 	if (ufile == 0)
@@ -172,7 +172,7 @@ Map::DrawObjectL *SSWR::OrganMgr::OrganSpImgLayer::GetObjectByIdD(void *session,
 	return dobj;
 }
 
-Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetVectorById(void *session, Int64 id)
+Math::Vector2D *SSWR::OrganMgr::OrganSpImgLayer::GetNewVectorById(void *session, Int64 id)
 {
 	UserFileInfo *ufile = this->objList->GetItem((UOSInt)id);
 	if (ufile == 0)

@@ -151,29 +151,30 @@ Net::WebServer::RESTfulHandler::~RESTfulHandler()
 {
 }
 
-Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, const UTF8Char *subReq, UOSInt subReqLen)
+Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
-	if (this->DoRequest(req, resp, subReq, subReqLen))
+	if (this->DoRequest(req, resp, subReq))
 	{
 		return true;
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_GET)
 	{
-		UOSInt i = Text::StrIndexOfChar(&subReq[1], '/');
+		subReq = subReq.Substring(1);
+		UOSInt i = subReq.IndexOf('/');
 		if (i != INVALID_INDEX)
 		{
 			DB::DBRow *row;
 			const UTF8Char *tableName;
 			Int64 ikey;
-			if (!Text::StrToInt64(&subReq[2 + i], &ikey))
+			if (!Text::StrToInt64(&subReq.v[1 + i], &ikey))
 			{
 				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 				return true;
 			}
-			tableName = Text::StrCopyNewC(&subReq[1], (UOSInt)i);
+			tableName = Text::StrCopyNewC(subReq.v, (UOSInt)i);
 			row = this->dbCache->GetTableItem(tableName, ikey);
 			Text::StrDelNew(tableName);
 			if (row == 0)
@@ -216,7 +217,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		{
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
-			if (!this->dbCache->IsTableExist(&subReq[1]))
+			if (!this->dbCache->IsTableExist(subReq.v))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
 				resp->AddDefHeaders(req);
@@ -231,9 +232,9 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				Data::ArrayList<DB::DBRow*> rows;
 				DB::DBRow *row;
 				Int64 ikey;
-				this->dbCache->GetTableData(&rows, &subReq[1], page);
+				this->dbCache->GetTableData(&rows, subReq.v, page);
 				json.ObjectBeginObject(CSTR("_embedded"));
-				json.ObjectBeginArray(Text::CString(&subReq[1], subReqLen - 1));
+				json.ObjectBeginArray(subReq);
 				UOSInt i = 0;
 				UOSInt j = rows.GetCount();
 				while (i < j)
@@ -265,7 +266,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				json.ArrayEnd();
 				json.ObjectEnd();
 
-				OSInt cnt = this->dbCache->GetRowCount(&subReq[1]);
+				OSInt cnt = this->dbCache->GetRowCount(subReq.v);
 				if (cnt < 0)
 				{
 					cnt = 0;
