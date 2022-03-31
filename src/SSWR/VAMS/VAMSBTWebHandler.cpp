@@ -111,15 +111,17 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(Net::WebServer::IWebReques
 	while (i < j)
 	{
 		progId = progList.GetItem(i);
-		sb.AppendC(UTF8STRC("<tr><td>"));
+		sb.AppendC(UTF8STRC("<tr><td><a href=\"listitem?progId="));
 		sb.AppendI32(progId);
-		sb.AppendC(UTF8STRC("</td><td>"));
+		sb.AppendC(UTF8STRC("\">"));
+		sb.AppendI32(progId);
+		sb.AppendC(UTF8STRC("</a></td><td>"));
 		ts = me->btList->GetLastKeepAlive(progId);
 		if (ts)
 		{
 			dt.SetTicks(ts);
 			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
 			sb.AppendP(sbuff, sptr);
 		}
 		else
@@ -129,7 +131,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(Net::WebServer::IWebReques
 		sb.AppendC(UTF8STRC("</td></tr>"));
 		i++;
 	}
-	sb.AppendC(UTF8STRC("</table></body></html>"));
+	sb.AppendC(UTF8STRC("</table><a href=\"listdata\">Back</a></body></html>"));
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);
 	resp->ResponseText(sb.ToCString(), CSTR("text/html"));
@@ -145,38 +147,34 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(Net::WebServer::IWebReques
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;
 	}
-	Data::ArrayList<Int32> progList;
-	me->btList->GetProgList(&progList);
+	Data::ArrayList<SSWR::VAMS::VAMSBTList::AvlBleItem*> itemList;
+	SSWR::VAMS::VAMSBTList::AvlBleItem *item;
+	me->btList->QueryByProgId(&itemList, progId, 30000);
 	Text::StringBuilderUTF8 sb;
 	Data::DateTime dt;
 	UTF8Char sbuff[64];
 	UTF8Char *sptr;
 	UOSInt i;
 	UOSInt j;
-	Int64 ts;
-	sb.AppendC(UTF8STRC("<html><head><title>Prog List</title></head><body>\r\n"));
-	sb.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
-	sb.AppendC(UTF8STRC("<tr><th>Prog Id</th><th>Last KA Time</th></tr>\r\n"));
+	sb.AppendC(UTF8STRC("<html><head><title>Item List</title></head><body>\r\n"));
+	sb.AppendC(UTF8STRC("<h2>Prog Id: "));
+	sb.AppendI32(progId);
+	sb.AppendC(UTF8STRC("</h2><table border=\"1\">\r\n"));
+	sb.AppendC(UTF8STRC("<tr><th>AVL No</th><th>Last Recv Time</th><th>RSSI</th></tr>\r\n"));
 	i = 0;
-	j = progList.GetCount();
+	j = itemList.GetCount();
 	while (i < j)
 	{
-		progId = progList.GetItem(i);
+		item = itemList.GetItem(i);
 		sb.AppendC(UTF8STRC("<tr><td>"));
-		sb.AppendI32(progId);
+		sb.Append(item->avlNo);
 		sb.AppendC(UTF8STRC("</td><td>"));
-		ts = me->btList->GetLastKeepAlive(progId);
-		if (ts)
-		{
-			dt.SetTicks(ts);
-			dt.ToLocalTime();
-			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-			sb.AppendP(sbuff, sptr);
-		}
-		else
-		{
-			sb.AppendUTF8Char('-');
-		}
+		dt.SetTicks(item->lastDevTS);
+		dt.ToLocalTime();
+		sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff zzz");
+		sb.AppendP(sbuff, sptr);
+		sb.AppendC(UTF8STRC("</td><td>"));
+		sb.AppendI16(item->rssi);
 		sb.AppendC(UTF8STRC("</td></tr>"));
 		i++;
 	}
