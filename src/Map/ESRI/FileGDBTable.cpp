@@ -3,9 +3,9 @@
 #include "Map/ESRI/FileGDBReader.h"
 #include "Map/ESRI/FileGDBTable.h"
 
-Map::ESRI::FileGDBTable::FileGDBTable(const UTF8Char *tableName, IO::IStreamData *fd)
+Map::ESRI::FileGDBTable::FileGDBTable(Text::CString tableName, IO::IStreamData *fd)
 {
-	this->tableName = Text::String::NewNotNullSlow(tableName);
+	this->tableName = Text::String::New(tableName);
 	this->fd = fd->GetPartialData(0, fd->GetDataSize());
 	this->tableInfo = 0;
 	this->dataOfst = 0;

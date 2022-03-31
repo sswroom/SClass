@@ -498,8 +498,8 @@ Bool Media::HTRecFile::HTRecReader::GetColDef(UOSInt colIndex, DB::ColDef *colDe
 	colDef->SetNotNull(true);
 	colDef->SetPK(colIndex == 0);
 	colDef->SetAutoInc(false);
-	colDef->SetDefVal((const UTF8Char*)0);
-	colDef->SetAttr((const UTF8Char*)0);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
 	if (this->setting)
 	{
 		switch (colIndex)

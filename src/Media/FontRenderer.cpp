@@ -5,10 +5,6 @@ Media::FontRenderer::FontRenderer(Text::String *sourceName) : IO::ParsedObject(s
 {
 }
 
-Media::FontRenderer::FontRenderer(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
-{
-}
-
 Media::FontRenderer::~FontRenderer()
 {
 }

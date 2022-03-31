@@ -804,29 +804,29 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				col->SetNotNull(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("NO")));
 				ptr = r->GetStr(3, buff, sizeof(buff));
 				col->SetPK(Text::StrEqualsICaseC(buff, (UOSInt)(ptr - buff), UTF8STRC("PRI")));
-				if (r->GetStr(4, buff, sizeof(buff)))
+				if ((ptr = r->GetStr(4, buff, sizeof(buff))) != 0)
 				{
-					col->SetDefVal(buff);
+					col->SetDefVal(CSTRP(buff, ptr));
 				}
 				else
 				{
-					col->SetDefVal((const UTF8Char*)0);
+					col->SetDefVal(CSTR_NULL);
 				}
 				if ((ptr = r->GetStr(5, buff, sizeof(buff))) != 0)
 				{
 					if (Text::StrEqualsC(buff, (UOSInt)(ptr - buff), UTF8STRC("auto_increment")))
 					{
 						col->SetAutoInc(true);
-						col->SetAttr((const UTF8Char*)0);
+						col->SetAttr(CSTR_NULL);
 					}
 					else
 					{
-						col->SetAttr(buff);
+						col->SetAttr(CSTRP(buff, ptr));
 					}
 				}
 				else
 				{
-					col->SetAttr((const UTF8Char*)0);
+					col->SetAttr(CSTR_NULL);
 				}
 				r->GetStr(1, buff, sizeof(buff));
 				UOSInt colSize;
@@ -895,11 +895,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 				if (*buff == '{')
 				{
 					ptr[-1] = 0;
-					col->SetDefVal(&buff[1]);
+					col->SetDefVal(CSTRP(&buff[1], ptr - 1));
 				}
 				else
 				{
-					col->SetDefVal(buff);
+					col->SetDefVal(CSTRP(buff, ptr));
 				}
 			}
 			col->SetColSize((UOSInt)r->GetInt32(6));

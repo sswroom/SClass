@@ -1058,7 +1058,7 @@ void SSWR::AVIRead::AVIRBaseForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_PLAYLIST:
 		{
 			Media::Playlist *playlist;
-			NEW_CLASS(playlist, Media::Playlist((const UTF8Char*)"Untitled", this->core->GetParserList()));
+			NEW_CLASS(playlist, Media::Playlist(CSTR("Untitled"), this->core->GetParserList()));
 			this->core->OpenObject(playlist);
 		}
 		break;

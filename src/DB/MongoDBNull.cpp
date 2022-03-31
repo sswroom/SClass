@@ -4,7 +4,7 @@
 \
 Int32 DB::MongoDB::initCnt = 0;
 
-DB::MongoDB::MongoDB(const UTF8Char *url, const UTF8Char *database, IO::LogTool *log) : DB::ReadingDB(url)
+DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log) : DB::ReadingDB(url)
 {
 }
 
@@ -44,7 +44,7 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 {
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
 {
 }
 

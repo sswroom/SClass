@@ -7,21 +7,9 @@ IO::ParsedObject::ParsedObject(Text::String *sourceName)
 	this->sourceName = SCOPY_STRING(sourceName);
 }
 
-IO::ParsedObject::ParsedObject(const UTF8Char *sourceName)
-{
-	this->sourceName = Text::String::NewOrNullSlow(sourceName);
-}
-
 IO::ParsedObject::ParsedObject(Text::CString sourceName)
 {
-	if (sourceName.v)
-	{
-		this->sourceName = Text::String::New(sourceName.v, sourceName.leng);
-	}
-	else
-	{
-		this->sourceName = 0;
-	}
+	this->sourceName = Text::String::NewOrNull(sourceName);
 }
 
 IO::ParsedObject::~ParsedObject()
@@ -47,11 +35,8 @@ void IO::ParsedObject::SetSourceName(Text::String *sourceName)
 	this->sourceName = SCOPY_STRING(sourceName);
 }
 
-void IO::ParsedObject::SetSourceName(const UTF8Char *sourceName, UOSInt nameLen)
+void IO::ParsedObject::SetSourceName(Text::CString sourceName)
 {
 	SDEL_STRING(this->sourceName);
-	if (sourceName)
-	{
-		this->sourceName = Text::String::New(sourceName, nameLen);
-	}
+	this->sourceName = Text::String::NewOrNull(sourceName);
 }

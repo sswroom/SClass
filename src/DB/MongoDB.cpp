@@ -18,7 +18,7 @@
 
 Int32 DB::MongoDB::initCnt = 0;
 
-DB::MongoDB::MongoDB(const UTF8Char *url, const UTF8Char *database, IO::LogTool *log) : DB::ReadingDB(url)
+DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log) : DB::ReadingDB(url)
 {
 	mongoc_client_t *client;
 	this->log = log;
@@ -27,12 +27,12 @@ DB::MongoDB::MongoDB(const UTF8Char *url, const UTF8Char *database, IO::LogTool 
 	{
 		mongoc_init();
 	}
-	client = mongoc_client_new((const Char*)url);
+	client = mongoc_client_new((const Char*)url.v);
 	this->client = client;
 	this->tableNames = 0;
-	if (database)
+	if (database.v)
 	{
-		this->database = Text::StrCopyNew(database);
+		this->database = Text::String::New(database);
 	}
 	else
 	{
@@ -46,7 +46,7 @@ DB::MongoDB::~MongoDB()
 	{
 		mongoc_client_destroy((mongoc_client_t*)this->client);
 	}
-	SDEL_TEXT(this->database);
+	SDEL_STRING(this->database);
 	if (this->tableNames)
 	{
 		UOSInt i;
@@ -71,7 +71,7 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	{
 		bson_error_t error;
 		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
-		mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database);
+		mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v);
 		char **strv;
 		strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
 		SDEL_STRING(this->errorMsg);
@@ -99,7 +99,7 @@ DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *tableName, Data::ArrayLi
 {
 	if (this->database && this->client)
 	{
-		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database, (const Char*)tableName);
+		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName);
 		if (coll)
 		{
 			DB::MongoDBReader *reader;
@@ -167,19 +167,19 @@ void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 	names->Clear();
 }
 
-void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, Text::CString host, UInt16 port)
+void DB::MongoDB::BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
 	out->AppendC(UTF8STRC("mongodb://"));
-	if (userName)
+	if (userName.v)
 	{
-		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName);
+		sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, userName.v);
 		out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
-		if (password)
+		if (password.v)
 		{
 			out->AppendUTF8Char(':');
-			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password);
+			sptr = Text::TextBinEnc::URIEncoding::URIEncode(sbuff, password.v);
 			out->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 		}
 		out->AppendUTF8Char('@');
@@ -379,8 +379,8 @@ Bool DB::MongoDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
 	colDef->SetColSize(65536);
 	colDef->SetColDP(0);
-	colDef->SetDefVal((const UTF8Char*)0);
-	colDef->SetAttr((const UTF8Char*)0);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
 	colDef->SetAutoInc(false);
 	colDef->SetNotNull(true);
 	colDef->SetPK(false);

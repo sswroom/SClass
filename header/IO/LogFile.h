@@ -11,7 +11,6 @@ namespace IO
 	{
 	public:
 		LogFile(Text::String *sourceName);
-		LogFile(const UTF8Char *sourceName);
 		virtual ~LogFile();
 
 		virtual UOSInt GetCount(IO::ILogHandler::LogLevel logLevel) = 0;

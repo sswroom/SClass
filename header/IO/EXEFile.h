@@ -121,7 +121,6 @@ namespace IO
 
 	public:
 		EXEFile(Text::String *fileName);
-		EXEFile(const UTF8Char *fileName);
 		virtual ~EXEFile();
 
 		virtual IO::ParserType GetParserType();

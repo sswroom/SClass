@@ -19,16 +19,6 @@ IO::EXEFile::EXEFile(Text::String *fileName) : IO::ParsedObject(fileName)
 	this->envDOS = 0;
 }
 
-IO::EXEFile::EXEFile(const UTF8Char *fileName) : IO::ParsedObject(fileName)
-{
-	NEW_CLASS(this->propNames, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->propValues, Data::ArrayList<Text::String *>());
-	NEW_CLASS(this->importList, Data::ArrayList<ImportInfo*>());
-	NEW_CLASS(this->exportList, Data::ArrayList<ExportInfo*>());
-	NEW_CLASS(this->resList, Data::ArrayList<ResourceInfo*>());
-	this->envDOS = 0;
-}
-
 IO::EXEFile::~EXEFile()
 {
 	if (this->envDOS)

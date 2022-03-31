@@ -185,7 +185,7 @@ Text::String *Text::JSText::ToNewJSText(const UTF8Char *s)
 {
 	if (s == 0)
 	{
-		return Text::String::New((const UTF8Char*)"null", 4);
+		return Text::String::New(UTF8STRC("null"));
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;
@@ -217,7 +217,7 @@ Text::String *Text::JSText::ToNewJSTextDQuote(const UTF8Char *s)
 {
 	if (s == 0)
 	{
-		return Text::String::New((const UTF8Char*)"null", 4);
+		return Text::String::New(UTF8STRC("null"));
 	}
 	const UTF8Char *srcPtr;
 	UTF8Char c;

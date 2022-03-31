@@ -1222,7 +1222,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 							sptr = Text::StrConcatC(sbuff, UTF8STRC("MTK_"));
 						}
 						sptr = dt.ToString(sptr, "yyyyMMdd");
-						trk->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));
+						trk->SetSourceName(CSTRP(sbuff, sptr));
 						this->env->AddLayer(0, trk, true);
 						this->mapTree->UpdateTree();
 						this->mapCtrl->UpdateMap();

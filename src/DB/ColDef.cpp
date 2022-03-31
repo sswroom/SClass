@@ -143,10 +143,10 @@ void DB::ColDef::SetAutoInc(Bool autoInc)
 	this->autoInc = autoInc;
 }
 
-void DB::ColDef::SetDefVal(const UTF8Char *defVal)
+void DB::ColDef::SetDefVal(Text::CString defVal)
 {
 	SDEL_STRING(this->defVal);
-	if (defVal) this->defVal = Text::String::NewOrNullSlow(defVal);
+	this->defVal = Text::String::NewOrNull(defVal);
 }
 
 void DB::ColDef::SetDefVal(Text::String *defVal)
@@ -155,10 +155,10 @@ void DB::ColDef::SetDefVal(Text::String *defVal)
 	if (defVal) this->defVal = defVal->Clone();
 }
 
-void DB::ColDef::SetAttr(const UTF8Char *attr)
+void DB::ColDef::SetAttr(Text::CString attr)
 {
 	SDEL_STRING(this->attr);
-	if (attr) this->attr = Text::String::NewOrNullSlow(attr);
+	this->attr = Text::String::NewOrNull(attr);
 }
 
 void DB::ColDef::SetAttr(Text::String *attr)

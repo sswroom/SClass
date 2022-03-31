@@ -10,7 +10,6 @@ namespace Media
 	{
 	public:
 		FontRenderer(Text::String *sourceName);
-		FontRenderer(const UTF8Char *sourceName);
 		virtual ~FontRenderer();
 
 		virtual IO::ParserType GetParserType();

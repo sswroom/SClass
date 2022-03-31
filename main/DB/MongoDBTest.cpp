@@ -7,11 +7,11 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	const UTF8Char *username = (const UTF8Char*)"abc";
-	const UTF8Char *password = (const UTF8Char*)"abc";
+	Text::CString username = CSTR("abc");
+	Text::CString password = CSTR("abc");
 	Text::CString serverhost = CSTR("abc.com");
 	UInt16 serverport = 3717;
-	const UTF8Char *database = (const UTF8Char*)"abc";
+	Text::CString database = CSTR("abc");
 
 	DB::MongoDB *mongoDB;
 	IO::LogTool *log;
@@ -21,7 +21,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	NEW_CLASS(log, IO::LogTool());
 	sb.ClearStr();
 	DB::MongoDB::BuildURL(&sb, username, password, serverhost, serverport);
-	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToString(), database, log));
+	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
 	Data::ArrayList<const UTF8Char*> nameList;
 	UOSInt i;

@@ -1274,6 +1274,7 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		return false;
 	}
 	UTF8Char sbuff[32];
+	UTF8Char *sptr;
 	UOSInt colSize;
 	colDef->SetColName(field->name);
 	colDef->SetColSize(field->fieldSize);
@@ -1287,39 +1288,39 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 		{
 			if (field->defSize == 2)
 			{
-				Text::StrInt16(sbuff, ReadInt16(field->defValue));
-				colDef->SetDefVal(sbuff);
+				sptr = Text::StrInt16(sbuff, ReadInt16(field->defValue));
+				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (field->fieldType == 1)
 		{
 			if (field->defSize == 4)
 			{
-				Text::StrInt32(sbuff, ReadInt32(field->defValue));
-				colDef->SetDefVal(sbuff);
+				sptr = Text::StrInt32(sbuff, ReadInt32(field->defValue));
+				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (field->fieldType == 2)
 		{
 			if (field->defSize == 4)
 			{
-				Text::StrDouble(sbuff, ReadFloat(field->defValue));
-				colDef->SetDefVal(sbuff);
+				sptr = Text::StrDouble(sbuff, ReadFloat(field->defValue));
+				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (field->fieldType == 3)
 		{
 			if (field->defSize == 8)
 			{
-				Text::StrDouble(sbuff, ReadDouble(field->defValue));
-				colDef->SetDefVal(sbuff);
+				sptr = Text::StrDouble(sbuff, ReadDouble(field->defValue));
+				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
 		else if (field->fieldType == 4)
 		{
 			Text::StringBuilderUTF8 sb;
 			sb.AppendC(field->defValue, field->defSize);
-			colDef->SetDefVal(sb.ToString());
+			colDef->SetDefVal(sb.ToCString());
 		}
 		else if (field->fieldType == 5)
 		{
@@ -1327,8 +1328,8 @@ Bool Map::ESRI::FileGDBReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 			{
 				Data::DateTime dt;
 				Text::XLSUtil::Number2Date(&dt, ReadDouble(field->defValue));
-				dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
-				colDef->SetDefVal(sbuff);
+				sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+				colDef->SetDefVal(CSTRP(sbuff, sptr));
 			}
 		}
 	}

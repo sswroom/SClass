@@ -32,7 +32,7 @@ Text::MIMEObj::UnknownMIMEObj::UnknownMIMEObj(UInt8 *dataBuff, UOSInt buffSize, 
 			{
 				sptr = Text::MIMEObj::MIMEHeader::ParseHeaderStr(sbuff, &sarr[0].v[5]);
 			}
-			this->SetSourceName(sbuff, (UOSInt)(sptr - sbuff));
+			this->SetSourceName(CSTRP(sbuff, sptr));
 		}
 
 	}

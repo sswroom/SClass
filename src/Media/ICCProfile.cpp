@@ -323,7 +323,7 @@ Media::LUT *Media::ICCProfile::CreateRLUT()
 				{
 					return 0;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, (const UTF8Char*)"ICC Profile R"));
+				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile R")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;
@@ -373,7 +373,7 @@ Media::LUT *Media::ICCProfile::CreateGLUT()
 				{
 					return 0;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, (const UTF8Char*)"ICC Profile G"));
+				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile G")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;
@@ -423,7 +423,7 @@ Media::LUT *Media::ICCProfile::CreateBLUT()
 				{
 					return 0;
 				}
-				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, (const UTF8Char*)"ICC Profile B"));
+				NEW_CLASS(lut, Media::LUT(1, valCnt, 1, Media::LUT::DF_UINT16, CSTR("ICC Profile B")));
 				stab = &this->iccBuff[tagOfst + 12];
 				dtab = lut->GetTablePtr();
 				i = 0;

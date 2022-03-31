@@ -594,7 +594,7 @@ Bool DB::SQLiteReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
 	colDef->SetAutoInc(false);
-	colDef->SetDefVal((const UTF8Char*)0);
-	colDef->SetAttr((const UTF8Char*)0);
+	colDef->SetDefVal(CSTR_NULL);
+	colDef->SetAttr(CSTR_NULL);
 	return true;
 }

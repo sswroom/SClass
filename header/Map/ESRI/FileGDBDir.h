@@ -17,7 +17,6 @@ namespace Map
 			FileGDBTable *GetTable(const UTF8Char *name);
 
 			FileGDBDir(Text::String *sourceName);
-			FileGDBDir(const UTF8Char *sourceName);
 		public:
 			virtual ~FileGDBDir();
 

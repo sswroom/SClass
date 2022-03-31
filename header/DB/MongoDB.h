@@ -15,12 +15,12 @@ namespace DB
 		static Int32 initCnt;
 	private:
 		void *client;
-		const UTF8Char *database;
+		Text::String *database;
 		Data::ArrayList<const UTF8Char*> *tableNames;
 		IO::LogTool *log;
 		Text::String *errorMsg;
 	public:
-		MongoDB(const UTF8Char *url, const UTF8Char *database, IO::LogTool *log);
+		MongoDB(Text::CString url, Text::CString database, IO::LogTool *log);
 		virtual ~MongoDB();
 		
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
@@ -32,7 +32,7 @@ namespace DB
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 		void FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
 
-		static void BuildURL(Text::StringBuilderUTF8 *out, const UTF8Char *userName, const UTF8Char *password, Text::CString host, UInt16 port);
+		static void BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port);
 	};
 
 	class MongoDBReader : public DB::DBReader

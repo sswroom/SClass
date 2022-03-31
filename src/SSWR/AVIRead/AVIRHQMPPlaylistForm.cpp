@@ -203,7 +203,7 @@ SSWR::AVIRead::AVIRHQMPPlaylistForm::AVIRHQMPPlaylistForm(UI::GUIClientControl *
 
 	this->HandleDropFiles(OnFileDrop, this);
 
-	NEW_CLASS(this->playlist, Media::Playlist((const UTF8Char*)"HQMP", this->core->GetParserList()));
+	NEW_CLASS(this->playlist, Media::Playlist(CSTR("HQMP"), this->core->GetParserList()));
 	if (playlist)
 	{
 		this->playlist->AppendPlaylist(playlist);

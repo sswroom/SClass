@@ -12,7 +12,6 @@ namespace IO
 	protected:
 		Bool ParseLog(UInt8 *dataBuff, UOSInt dataSize, Text::StringBuilderUTF8 *sb, Bool detail);
 		UDPLog(Text::String *sourceName);
-		UDPLog(const UTF8Char *sourceName);
 	public:
 		virtual ~UDPLog();
 	};

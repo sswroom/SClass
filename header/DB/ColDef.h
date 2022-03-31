@@ -45,9 +45,9 @@ namespace DB
 		void SetNotNull(Bool notNull);
 		void SetPK(Bool pk);
 		void SetAutoInc(Bool autoInc);
-		void SetDefVal(const UTF8Char *defVal);
+		void SetDefVal(Text::CString defVal);
 		void SetDefVal(Text::String *defVal);
-		void SetAttr(const UTF8Char *attr);
+		void SetAttr(Text::CString attr);
 		void SetAttr(Text::String *attr);
 
 		void Set(ColDef *colDef);

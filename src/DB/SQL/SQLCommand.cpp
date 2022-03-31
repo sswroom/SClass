@@ -284,7 +284,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 										DEL_CLASS(col);
 										break;
 									}
-									col->SetDefVal(sb.ToString());
+									col->SetDefVal(sb.ToCString());
 									sql = ParseNextWord(sql, &sb, svrType);
 									if (!sb.Equals(UTF8STRC(")")))
 									{
@@ -302,7 +302,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 								}
 								else
 								{
-									col->SetDefVal(sb.ToString());
+									col->SetDefVal(sb.ToCString());
 									sql = ParseNextWord(sql, &sb, svrType);
 								}
 							}

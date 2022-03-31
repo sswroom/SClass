@@ -2099,7 +2099,7 @@ Bool Text::Cpp::CppCodeParser::ParseLine(UTF8Char *lineBuff, UTF8Char *lineBuffE
 						}
 						else
 						{
-							/*this->LogError(status, (const UTF8Char*)"#undef error, define not found", errMsgs);
+							/*this->LogError(status, CSTR("#undef error, define not found"), errMsgs);
 							nextLine = true;
 							parseStatus = false;*/
 							fileStatus->currMode = Text::Cpp::CppParseStatus::PM_NORMAL;

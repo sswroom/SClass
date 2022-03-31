@@ -26,11 +26,6 @@ Map::ESRI::FileGDBDir::FileGDBDir(Text::String *sourceName) : DB::ReadingDB(sour
 	NEW_CLASS(this->tables, Data::ArrayList<FileGDBTable*>());
 }
 
-Map::ESRI::FileGDBDir::FileGDBDir(const UTF8Char *sourceName) : DB::ReadingDB(sourceName)
-{
-	NEW_CLASS(this->tables, Data::ArrayList<FileGDBTable*>());
-}
-
 Map::ESRI::FileGDBDir::~FileGDBDir()
 {
 	LIST_FREE_FUNC(this->tables, DEL_CLASS);
@@ -93,7 +88,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 	{
 		return 0;
 	}
-	NEW_CLASS(table, FileGDBTable((const UTF8Char*)"GDB_SystemCatalog", fd));
+	NEW_CLASS(table, FileGDBTable(CSTR("GDB_SystemCatalog"), fd));
 	DEL_CLASS(fd);
 	if (table->IsError())
 	{
@@ -126,7 +121,7 @@ Map::ESRI::FileGDBDir *Map::ESRI::FileGDBDir::OpenDir(IO::PackageFile *pkg)
 			fd = pkg->GetItemStmData(sbuff, (UOSInt)(sptr - sbuff));
 			if (fd)
 			{
-				NEW_CLASS(innerTable, FileGDBTable(sb.ToString(), fd));
+				NEW_CLASS(innerTable, FileGDBTable(sb.ToCString(), fd));
 				DEL_CLASS(fd);
 				if (innerTable->IsError())
 				{

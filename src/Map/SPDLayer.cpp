@@ -471,11 +471,11 @@ Bool Map::SPDLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColSize(this->maxTextSize);
 	colDef->SetColDP(0);
 	colDef->SetColType(DB::DBUtil::CT_VarChar);
-	colDef->SetDefVal((const UTF8Char*)0);
+	colDef->SetDefVal(CSTR_NULL);
 	colDef->SetNotNull(false);
 	colDef->SetPK(false);
 	colDef->SetAutoInc(false);
-	colDef->SetAttr((const UTF8Char*)0);
+	colDef->SetAttr(CSTR_NULL);
 	return true;
 }
 

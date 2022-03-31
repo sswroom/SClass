@@ -1822,7 +1822,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	UInt8 *buff;
 	UOSInt buffSize;
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
-	const UTF8Char *msg = 0;
+	Text::CString msg = CSTR_NULL;
 	if (sess == 0)
 	{
 		return resp->RedirectURL(req, CSTR("index"), 0);
@@ -1835,32 +1835,32 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 		Text::String *retype = req->GetHTTPFormStr(CSTR("retype"));
 		if (pwd == 0 || pwd->v[0] == 0)
 		{
-			msg = (const UTF8Char*)"Password is empty";
+			msg = CSTR("Password is empty");
 		}
 		else if (retype == 0 || retype->v[0] == 0)
 		{
-			msg = (const UTF8Char*)"Retype is empty";
+			msg = CSTR("Retype is empty");
 		}
 		else if (!pwd->Equals(retype))
 		{
-			msg = (const UTF8Char*)"Password and retype do not match";
+			msg = CSTR("Password and retype do not match");
 		}
 		else
 		{
 			UOSInt len = pwd->leng;
 			if (len < 3)
 			{
-				msg = (const UTF8Char*)"Password is too short";
+				msg = CSTR("Password is too short");
 			}
 			else
 			{
 				if (me->core->UserSetPassword(sess->GetValueInt32(UTF8STRC("UserId")), pwd->v))
 				{
-					msg = (const UTF8Char*)"Password is changed successfully";
+					msg = CSTR("Password is changed successfully");
 				}
 				else
 				{
-					msg = (const UTF8Char*)"Error in changing password";
+					msg = CSTR("Error in changing password");
 				}
 			}
 		}
@@ -1882,7 +1882,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	writer->WriteLineC(UTF8STRC("<tr><td>Retype</td><td><input type=\"password\" name=\"retype\" id=\"retype\"/></td></tr>"));
 	writer->WriteLineC(UTF8STRC("<tr><td></td><td><input type=\"submit\"/></td></tr>"));
 	writer->WriteLineC(UTF8STRC("</table>"));
-	if (msg)
+	if (msg.v)
 	{
 		WriteHTMLText(writer, msg);
 	}
@@ -2237,6 +2237,13 @@ void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *wri
 void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::String *txt)
 {
 	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt->v);
+	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
+	xmlTxt->Release();
+}
+
+void __stdcall SSWR::SMonitor::SMonitorWebHandler::WriteHTMLText(IO::Writer *writer, Text::CString txt)
+{
+	Text::String *xmlTxt = Text::XML::ToNewHTMLText(txt.v);
 	writer->WriteStrC(xmlTxt->v, xmlTxt->leng);
 	xmlTxt->Release();
 }

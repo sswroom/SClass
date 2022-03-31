@@ -16,7 +16,7 @@ namespace Map
 			UInt64 dataOfst;
 			FileGDBTableInfo *tableInfo;
 		public:
-			FileGDBTable(const UTF8Char *tableName, IO::IStreamData *fd);
+			FileGDBTable(Text::CString tableName, IO::IStreamData *fd);
 			~FileGDBTable();
 
 			Bool IsError();

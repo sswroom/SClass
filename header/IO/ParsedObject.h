@@ -43,7 +43,6 @@ namespace IO
 		Text::String *sourceName;
 
 		ParsedObject(Text::String *sourceName);
-		ParsedObject(const UTF8Char *sourceName);
 		ParsedObject(Text::CString sourceName);
 	public:
 		virtual ~ParsedObject();
@@ -52,7 +51,7 @@ namespace IO
 		UTF8Char *GetSourceName(UTF8Char *oriStr);
 		Text::String *GetSourceNameObj();
 		void SetSourceName(Text::String *sourceName);
-		void SetSourceName(const UTF8Char *sourceName, UOSInt nameLen);
+		void SetSourceName(Text::CString sourceName);
 	};
 }
 

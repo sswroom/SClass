@@ -16,7 +16,6 @@ namespace DB
 	public:
 		ReadingDB(Text::String *sourceName);
 		ReadingDB(Text::CString sourceName);
-		ReadingDB(const UTF8Char *sourceName);
 		virtual ~ReadingDB();
 
 		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names) = 0; // no need to release

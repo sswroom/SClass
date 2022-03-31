@@ -9,7 +9,6 @@ namespace IO
 	{
 	public:
 		ISectorData(Text::String *name) : IO::ParsedObject(name){};
-		ISectorData(const UTF8Char *name) : IO::ParsedObject(name){};
 		virtual ~ISectorData(){};
 
 		virtual UInt64 GetSectorCount() = 0;

@@ -6,10 +6,6 @@ IO::LogFile::LogFile(Text::String *sourceName) : IO::ParsedObject(sourceName)
 {
 }
 
-IO::LogFile::LogFile(const UTF8Char *sourceName) : IO::ParsedObject(sourceName)
-{
-}
-
 IO::LogFile::~LogFile()
 {
 }

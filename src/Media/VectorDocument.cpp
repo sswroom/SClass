@@ -3,7 +3,7 @@
 #include "Media/VectorDocument.h"
 #include "Text/MyString.h"
 
-Media::VectorDocument::VectorDocument(UInt32 srid, Media::DrawEngine *refEng) : IO::ParsedObject((const UTF8Char*)"Untitled")
+Media::VectorDocument::VectorDocument(UInt32 srid, Media::DrawEngine *refEng) : IO::ParsedObject(CSTR("Untitled"))
 {
 	NEW_CLASS(this->items, Data::ArrayList<Media::VectorGraph*>());
 	this->currDoc = 0;

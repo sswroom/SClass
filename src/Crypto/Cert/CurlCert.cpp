@@ -40,7 +40,7 @@ Bool Crypto::Cert::CurlCert::GetNotAfter(Data::DateTime *dt)
 		slen = Text::StrCharCnt(slist->data);
 		if (Text::StrStartsWithC((const UTF8Char*)slist->data, slen, UTF8STRC("Expire date:")))
 		{
-			dt->SetValue(Text::CString((const UTF8Char *)slist->data + 12, slen - 12));
+			dt->SetValue(Text::CString((const UTF8Char*)slist->data + 12, slen - 12));
 			return true;
 		}
 	}

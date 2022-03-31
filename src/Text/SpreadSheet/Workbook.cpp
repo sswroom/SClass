@@ -12,7 +12,7 @@ const UInt32 Text::SpreadSheet::Workbook::defPalette[56] = {
 	0xff003366, 0xff339966, 0xff003300, 0xff333300, 0xff993300, 0xff993366, 0xff333399, 0xff333333
 };
 
-Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject((const UTF8Char*)"Untitled")
+Text::SpreadSheet::Workbook::Workbook() : IO::ParsedObject(CSTR("Untitled"))
 {
 	this->author = 0;
 	this->lastAuthor = 0;

@@ -719,14 +719,14 @@ Bool DB::MySQLReader::GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	colDef->SetColDP(field->decimals);
 	if (field->def)
 	{
-		Text::StrConcatC(sbuff, (UInt8*)field->def, field->def_length);
-		colDef->SetDefVal(sbuff);
+		sptr = Text::StrConcatC(sbuff, (UInt8*)field->def, field->def_length);
+		colDef->SetDefVal(CSTRP(sbuff, sptr));
 	}
 	else
 	{
-		colDef->SetDefVal((const UTF8Char*)0);
+		colDef->SetDefVal(CSTR_NULL);
 	}
-	colDef->SetAttr((const UTF8Char*)0);
+	colDef->SetAttr(CSTR_NULL);
 	colDef->SetAutoInc((field->flags & AUTO_INCREMENT_FLAG) != 0);
 	colDef->SetNotNull((field->flags & NOT_NULL_FLAG) != 0);
 	colDef->SetPK((field->flags & PRI_KEY_FLAG) != 0);

@@ -584,7 +584,7 @@ Bool Map::WebImageLayer::GetColumnDef(UOSInt colIndex, DB::ColDef *colDef)
 		colDef->SetColName(CSTR("Name"));
 		colDef->SetColType(DB::DBUtil::CT_VarChar);
 		colDef->SetColSize(256);
-		colDef->SetDefVal((const UTF8Char*)0);
+		colDef->SetDefVal(CSTR_NULL);
 		colDef->SetNotNull(false);
 		return true;
 	}
