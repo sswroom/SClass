@@ -66,6 +66,7 @@ namespace Net
 		UInt64 GetContentLength();
 		UInt32 GetContentCodePage();
 		Bool GetLastModified(Data::DateTime *dt);
+		Bool GetServerDate(Data::DateTime *dt);
 
 		Text::String *GetURL();
 		Net::WebStatus::StatusCode GetRespStatus();

@@ -201,6 +201,19 @@ Bool Net::HTTPClient::GetLastModified(Data::DateTime *dt)
 	return false;
 }
 
+Bool Net::HTTPClient::GetServerDate(Data::DateTime *dt)
+{
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	this->EndRequest(0, 0);
+	if ((sptr = this->GetRespHeader(CSTR("Date"), sbuff)) != 0)
+	{
+		ParseDateStr(dt, CSTRP(sbuff, sptr));
+		return true;
+	}
+	return false;
+}
+
 Text::String *Net::HTTPClient::GetURL()
 {
 	return this->url;
@@ -249,7 +262,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 	UOSInt j;
 	if ((i = dateStr.IndexOf(UTF8STRC(", "))) != INVALID_INDEX)
 	{
-		sptr = dateStr.Substring(i + 1).ConcatTo(sbuff);
+		sptr = dateStr.Substring(i + 2).ConcatTo(sbuff);
 		tmps = sbuff;
 		if (Text::StrIndexOfChar(tmps, '-') == INVALID_INDEX)
 		{
