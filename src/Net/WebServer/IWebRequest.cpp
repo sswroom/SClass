@@ -14,7 +14,7 @@ void Net::WebServer::IWebRequest::ParseUserAgent()
 	this->uaParsed = true;
 	this->reqBrowser = Net::BrowserInfo::BT_UNKNOWN;
 
-	Text::String *uaHdr = this->GetSHeader(UTF8STRC("User-Agent"));
+	Text::String *uaHdr = this->GetSHeader(CSTR("User-Agent"));
 	if (uaHdr == 0)
 	{
 		return;
@@ -77,7 +77,7 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
 	Text::String *hdr;
 	UTF8Char domain[256];
 	UTF8Char *sptr;
-	hdr = this->GetSHeader(UTF8STRC("Referer"));
+	hdr = this->GetSHeader(CSTR("Referer"));
 	if (hdr == 0)
 	{
 		return false;
@@ -96,7 +96,7 @@ Bool Net::WebServer::IWebRequest::GetRefererDomain(Text::StringBuilderUTF8 *sb)
 
 Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 {
-	Text::String *s = this->GetSHeader(UTF8STRC("If-Modified-Since"));
+	Text::String *s = this->GetSHeader(CSTR("If-Modified-Since"));
 	if (s)
 	{
 		if (dt->SetValue(s->ToCString()))
@@ -109,7 +109,7 @@ Bool Net::WebServer::IWebRequest::GetIfModifiedSince(Data::DateTime *dt)
 
 Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, Text::StringBuilderUTF8 *sb)
 {
-	Text::String *cookie = this->GetSHeader(UTF8STRC("Cookie"));
+	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)
 	{
 		return 0;
@@ -141,7 +141,7 @@ Bool Net::WebServer::IWebRequest::GetCookie(Text::CString name, Text::StringBuil
 
 Text::String *Net::WebServer::IWebRequest::GetCookieAsNew(Text::CString name)
 {
-	Text::String *cookie = this->GetSHeader(UTF8STRC("Cookie"));
+	Text::String *cookie = this->GetSHeader(CSTR("Cookie"));
 	if (cookie == 0)
 	{
 		return 0;
@@ -212,57 +212,57 @@ UTF8Char *Net::WebServer::IWebRequest::GetQueryString(UTF8Char *sbuff, UOSInt ma
 	
 }
 
-UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(const UTF8Char *name, UOSInt nameLen, UTF8Char *buff, UOSInt buffSize)
+UTF8Char *Net::WebServer::IWebRequest::GetQueryValueStr(Text::CString name, UTF8Char *buff, UOSInt buffSize)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return 0;
-	return Text::StrConcatS(buff, s->v, buffSize);
+	return Text::StrConcatCS(buff, s->v, s->leng, buffSize);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI16(const UTF8Char *name, UOSInt nameLen, Int16 *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI16(Text::CString name, Int16 *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToInt16(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueU16(const UTF8Char *name, UOSInt nameLen, UInt16 *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueU16(Text::CString name, UInt16 *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToUInt16(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI32(const UTF8Char *name, UOSInt nameLen, Int32 *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI32(Text::CString name, Int32 *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToInt32(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueU32(const UTF8Char *name, UOSInt nameLen, UInt32 *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueU32(Text::CString name, UInt32 *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToUInt32(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueI64(const UTF8Char *name, UOSInt nameLen, Int64 *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueI64(Text::CString name, Int64 *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToInt64(val);
 }
 
-Bool Net::WebServer::IWebRequest::GetQueryValueF64(const UTF8Char *name, UOSInt nameLen, Double *val)
+Bool Net::WebServer::IWebRequest::GetQueryValueF64(Text::CString name, Double *val)
 {
-	Text::String *s = this->GetQueryValue(name, nameLen);
+	Text::String *s = this->GetQueryValue(name);
 	if (s == 0)
 		return false;
 	return s->ToDouble(val);

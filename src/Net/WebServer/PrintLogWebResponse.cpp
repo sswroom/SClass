@@ -41,18 +41,18 @@ Int32 Net::WebServer::PrintLogWebResponse::GetStatusCode()
 	return this->resp->GetStatusCode();
 }
 
-Bool Net::WebServer::PrintLogWebResponse::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+Bool Net::WebServer::PrintLogWebResponse::AddHeader(Text::CString name, Text::CString value)
 {
-	if (this->resp->AddHeaderC(name, nameLen, value, valueLen))
+	if (this->resp->AddHeader(name, value))
 	{
 		Text::StringBuilderUTF8 sb;
 		if (this->prefix)
 		{
 			sb.Append(this->prefix);
 		}
-		sb.AppendC(name, nameLen);
+		sb.Append(name);
 		sb.AppendC(UTF8STRC(": "));
-		sb.AppendC(value, valueLen);
+		sb.Append(value);
 		this->writer->WriteLineC(sb.ToString(), sb.GetLength());
 		return true;
 	}

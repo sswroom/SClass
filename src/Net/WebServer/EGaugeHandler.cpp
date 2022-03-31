@@ -33,7 +33,7 @@ Bool Net::WebServer::EGaugeHandler::ProcessRequest(Net::WebServer::IWebRequest *
 	const UTF8Char *buff = req->GetReqData(&buffSize);
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddContentLength(2);
-	resp->AddContentType(UTF8STRC("text/plain"));
+	resp->AddContentType(CSTR("text/plain"));
 	resp->Write((const UInt8*)"ok", 2);
 	
 	if (this->dataHdlr)

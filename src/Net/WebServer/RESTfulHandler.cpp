@@ -208,7 +208,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			this->dbCache->FreeTableItem(row);
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
-			resp->AddContentType(UTF8STRC("application/json"));
+			resp->AddContentType(CSTR("application/json"));
 			resp->AddContentLength(sb.GetLength());
 			resp->Write(sb.ToString(), sb.GetLength());
 			return true;
@@ -333,7 +333,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 			}
 			resp->AddDefHeaders(req);
 			resp->AddCacheControl(0);
-			resp->AddContentType(UTF8STRC("application/json"));
+			resp->AddContentType(CSTR("application/json"));
 			resp->AddContentLength(sb.GetLength());
 			resp->Write(sb.ToString(), sb.GetLength());
 			return true;
@@ -366,15 +366,15 @@ DB::PageRequest *Net::WebServer::RESTfulHandler::ParsePageReq(Net::WebServer::IW
 {
 	UInt32 pageNum = 0;
 	UInt32 pageSize = 20;
-	req->GetQueryValueU32(UTF8STRC("page"), &pageNum);
-	req->GetQueryValueU32(UTF8STRC("size"), &pageSize);
+	req->GetQueryValueU32(CSTR("page"), &pageNum);
+	req->GetQueryValueU32(CSTR("size"), &pageSize);
 	if (pageSize <= 0)
 	{
 		pageSize = 20;
 	}
 	DB::PageRequest *page;
 	NEW_CLASS(page, DB::PageRequest(pageNum, pageSize));
-	Text::String *sort = req->GetQueryValue(UTF8STRC("sort"));
+	Text::String *sort = req->GetQueryValue(CSTR("sort"));
 	if (sort)
 	{
 		Text::StringBuilderUTF8 sb;

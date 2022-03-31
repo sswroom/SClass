@@ -306,9 +306,9 @@ Text::CString Net::WebServer::WebRequest::ParseHeaderVal(UTF8Char *headerData, U
 	return {outStr, dataLen};
 }
 
-Net::WebServer::WebRequest::WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
+Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort)
 {
-	this->requestURI = Text::String::New(requestURI, uriLen);
+	this->requestURI = Text::String::New(requestURI);
 	this->reqMeth = reqMeth;
 	this->reqProto = reqProto;
 	this->secureConn = secureConn;
@@ -361,15 +361,15 @@ Net::WebServer::WebRequest::~WebRequest()
 	SDEL_CLASS(this->chunkMStm);
 }
 
-void Net::WebServer::WebRequest::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+void Net::WebServer::WebRequest::AddHeader(Text::CString name, Text::CString value)
 {
-	Text::String *s = this->headers->PutC({name, nameLen}, Text::String::New(value, valueLen));
+	Text::String *s = this->headers->PutC(name, Text::String::New(value));
 	SDEL_STRING(s);
 }
 
-Text::String *Net::WebServer::WebRequest::GetSHeader(const UTF8Char *name, UOSInt nameLen)
+Text::String *Net::WebServer::WebRequest::GetSHeader(Text::CString name)
 {
-	return this->headers->GetC({name, nameLen});
+	return this->headers->GetC(name);
 }
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen)
@@ -385,9 +385,9 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString n
 	}
 }
 
-Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen)
+Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name)
 {
-	Text::String *hdr = this->headers->GetC({name, nameLen});
+	Text::String *hdr = this->headers->GetC(name);
 	if (hdr == 0)
 		return false;
 	sb->Append(hdr);
@@ -432,22 +432,22 @@ Net::WebServer::IWebRequest::RequestProtocol Net::WebServer::WebRequest::GetProt
 	return this->reqProto;
 }
 
-Text::String *Net::WebServer::WebRequest::GetQueryValue(const UTF8Char *name, UOSInt nameLen)
+Text::String *Net::WebServer::WebRequest::GetQueryValue(Text::CString name)
 {
 	if (this->queryMap == 0)
 	{
 		this->ParseQuery();
 	}
-	return this->queryMap->GetC({name, nameLen});
+	return this->queryMap->GetC(name);
 }
 
-Bool Net::WebServer::WebRequest::HasQuery(const UTF8Char *name, UOSInt nameLen)
+Bool Net::WebServer::WebRequest::HasQuery(Text::CString name)
 {
 	if (this->queryMap == 0)
 	{
 		this->ParseQuery();
 	}
-	Text::String *sptr = this->queryMap->GetC({name, nameLen});
+	Text::String *sptr = this->queryMap->GetC(name);
 	return sptr != 0;
 }
 
@@ -469,7 +469,7 @@ void Net::WebServer::WebRequest::ParseHTTPForm()
 
 	Text::StringBuilderUTF8 *sb;
 	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	if (this->GetHeaderC(sb, UTF8STRC("Content-Type")))
+	if (this->GetHeaderC(sb, CSTR("Content-Type")))
 	{
 		if (Text::StrEqualsC(sb->ToString(), sb->GetLength(), UTF8STRC("application/x-www-form-urlencoded")))
 		{
@@ -595,7 +595,7 @@ void Net::WebServer::WebRequest::GetRequestURLBase(Text::StringBuilderUTF8 *sb)
 			sb->AppendC(UTF8STRC("http://"));
 			defPort=80;
 		}
-		s = this->GetSHeader(UTF8STRC("Host"));
+		s = this->GetSHeader(CSTR("Host"));
 		if (s)
 		{
 			sb->Append(s);
@@ -645,19 +645,19 @@ const UInt8 *Net::WebServer::WebRequest::GetReqData(UOSInt *dataSize)
 Bool Net::WebServer::WebRequest::HasData()
 {
 	Text::String *contLeng;
-	contLeng = this->GetSHeader(UTF8STRC("Content-Length"));
+	contLeng = this->GetSHeader(CSTR("Content-Length"));
 	if (contLeng == 0)
 	{
 		if (this->GetReqMethod() != Net::WebUtil::RequestMethod::HTTP_POST)
 		{
 			return false;
 		}
-		contLeng = this->GetSHeader(UTF8STRC("Connection"));
+		contLeng = this->GetSHeader(CSTR("Connection"));
 		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("close")))
 		{
 			return false;
 		}
-		contLeng = this->GetSHeader(UTF8STRC("Transfer-Encoding"));
+		contLeng = this->GetSHeader(CSTR("Transfer-Encoding"));
 		if (contLeng == 0 || !contLeng->Equals(UTF8STRC("chunked")))
 		{
 			return false;

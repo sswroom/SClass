@@ -25,7 +25,7 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	if (!this->SetStatusCode(code))
 		return false;
 	this->AddDefHeaders(req);
-	this->AddContentType(UTF8STRC("text/html"));
+	this->AddContentType(CSTR("text/html"));
 	sb.AppendNE(UTF8STRC("<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n"));
 	sb.AppendNE(UTF8STRC("<html><head>\r\n"));
 	sb.AppendNE(UTF8STRC("<title>"));
@@ -44,12 +44,12 @@ Bool Net::WebServer::IWebResponse::ResponseError(Net::WebServer::IWebRequest *re
 	return true;
 }
 
-Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, UOSInt urlLen, OSInt cacheAge)
+Bool Net::WebServer::IWebResponse::RedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge)
 {
 	this->AddDefHeaders(req);
 	this->SetStatusCode(Net::WebStatus::SC_MOVED_TEMPORARILY);
 	this->AddCacheControl(cacheAge);
-	this->AddHeaderC(UTF8STRC("Location"), url, urlLen);
+	this->AddHeader(CSTR("Location"), url);
 	this->AddContentLength(0);
 	return true;
 }
@@ -73,11 +73,11 @@ Bool Net::WebServer::IWebResponse::ResponseText(Text::CString txt, Text::CString
 	this->AddContentLength(txt.leng);
 	if (contentType.v == 0)
 	{
-		this->AddContentType(UTF8STRC("text/plain"));
+		this->AddContentType(CSTR("text/plain"));
 	}
 	else
 	{
-		this->AddContentType(contentType.v, contentType.leng);
+		this->AddContentType(contentType);
 	}
 	this->Write(txt.v, txt.leng);
 	return true;

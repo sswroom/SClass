@@ -88,7 +88,7 @@ void SSWR::AVIRead::AVIRHTTPLog::LogRequest(Net::WebServer::IWebRequest *req)
 		this->entries[i].headerName->Add(names.GetItem(k)->Clone());
 		sb.ClearStr();
 		name = names.GetItem(k);
-		req->GetHeaderC(&sb, name->v, name->leng);
+		req->GetHeaderC(&sb, name->ToCString());
 		this->entries[i].headerVal->Add(Text::String::New(sb.ToString(), sb.GetLength()));
 		k++;
 	}

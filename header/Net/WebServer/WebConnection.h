@@ -64,7 +64,7 @@ namespace Net
 			virtual void EnableWriteBuffer();
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code);
 			virtual Int32 GetStatusCode();
-			virtual Bool AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
+			virtual Bool AddHeader(Text::CString name, Text::CString value);
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req);
 			virtual UInt64 GetRespLength();
 			virtual void ShutdownSend();

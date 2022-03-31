@@ -60,7 +60,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 	}
 	Bool kaConn = true;
 	Text::StringBuilderUTF8 sbHeader;
-	if (req->GetHeaderC(&sbHeader, UTF8STRC("Connection")))
+	if (req->GetHeaderC(&sbHeader, CSTR("Connection")))
 	{
 		if (sbHeader.Equals(UTF8STRC("close")))
 		{
@@ -101,7 +101,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (hdr->EqualsICase(UTF8STRC("Host")))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
+			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
 			{
 				UOSInt k = sbHeader.IndexOf(':');
 				svrHost = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
@@ -114,7 +114,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else if (hdr->EqualsICase(UTF8STRC("X-Forwarded-For")))
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
+			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
 			{
 				fwdFor = Text::String::New(sbHeader.ToString(), sbHeader.GetLength());
 			}
@@ -122,7 +122,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		else
 		{
 			sbHeader.ClearStr();
-			if (req->GetHeaderC(&sbHeader, hdr->v, hdr->leng))
+			if (req->GetHeaderC(&sbHeader, hdr->ToCString()))
 			{
 				cli->AddHeaderC(hdr->ToCString(), sbHeader.ToCString());
 			}
@@ -226,7 +226,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					{
 						sb.AppendC(UTF8STRC("http://"));
 					}
-					req->GetHeaderC(&sb, UTF8STRC("Host"));
+					req->GetHeaderC(&sb, CSTR("Host"));
 					UOSInt urlLen = fwdBaseUrl->leng;
 					if (fwdBaseUrl->v[urlLen - 1] == '/')
 					{
@@ -236,16 +236,16 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 					{
 						sb.AppendC(&sarr[1].v[urlLen], sarr[1].leng - urlLen);
 					}
-					resp->AddHeaderC(sarr[0].v, sarr[0].leng, sb.ToString(), sb.GetLength());
+					resp->AddHeader(sarr[0].ToCString(), sb.ToCString());
 				}
 				else
 				{
-					resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+					resp->AddHeader(sarr[0].ToCString(), sarr[1].ToCString());
 				}
 			}
 			else
 			{
-				resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+				resp->AddHeader(sarr[0].ToCString(), sarr[1].ToCString());
 			}
 		}
 		i++;
@@ -259,7 +259,7 @@ Bool Net::WebServer::HTTPForwardHandler::ProcessRequest(Net::WebServer::IWebRequ
 		if (Text::StrSplitP(sarr, 2, sbHeader, ':') == 2)
 		{
 			sarr[1].Trim();
-			resp->AddHeaderC(sarr[0].v, sarr[0].leng, sarr[1].v, sarr[1].leng);
+			resp->AddHeader(sarr[0].ToCString(), sarr[1].ToCString());
 		}
 		i++;
 	}

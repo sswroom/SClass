@@ -92,8 +92,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::IndexFunc(Net::WebServer::IWe
 	sb.AppendC(UTF8STRC("</table></body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -123,8 +123,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTCurrentFunc(Net::WebServer:
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -156,8 +156,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailFunc(Net::WebServer::
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -188,8 +188,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::BTDetailPubFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -225,8 +225,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiCurrentFunc(Net::WebServe
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -257,8 +257,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDetailFunc(Net::WebServer
 	sb.AppendC(UTF8STRC("</body><html>"));
 
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(sb.GetLength());
 	resp->Write(sb.ToString(), sb.GetLength());
 	return true;
@@ -343,8 +343,8 @@ Bool __stdcall Net::WebServer::CapturerWebHandler::WiFiDownloadFunc(Net::WebServ
 	dt.SetCurrTime();
 	Text::StrConcatC(dt.ToString(sbuff, "yyyyMMddHHmmss"), UTF8STRC(".txt"));
 	resp->AddDefHeaders(req);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-	resp->AddContentType(UTF8STRC("text/plain"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+	resp->AddContentType(CSTR("text/plain"));
 	resp->AddContentLength(sb.GetLength());
 	resp->AddContentDisposition(true, sbuff, req->GetBrowser());
 	resp->Write(sb.ToString(), sb.GetLength());
@@ -374,7 +374,7 @@ void Net::WebServer::CapturerWebHandler::AppendWiFiTable(Text::StringBuilderUTF8
 	sb->AppendC(UTF8STRC(">RSSI</td><td>PHYType</td><td>Frequency</td><td>Manufacturer</td><td>Model</td><td>S/N</td></tr>\r\n"));
 
 	Data::ArrayList<Net::WiFiLogFile::LogFileEntry*> sortList;
-	req->GetQueryValueU32(UTF8STRC("sort"), &sort);
+	req->GetQueryValueU32(CSTR("sort"), &sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);
@@ -445,7 +445,7 @@ void Net::WebServer::CapturerWebHandler::AppendBTTable(Text::StringBuilderUTF8 *
 	sb->AppendC(UTF8STRC(">RSSI</a></td><td>Measure Power</td><td>TX Power</td><td>In Range</td><td>Connected</td><td>last seen</td><td>Company</td><td>AdvType</td></tr>\r\n"));
 
 	Data::ArrayList<IO::BTScanLog::ScanRecord3*> sortList;
-	req->GetQueryValueU32(UTF8STRC("sort"), &sort);
+	req->GetQueryValueU32(CSTR("sort"), &sort);
 	if (sort == 1)
 	{
 		sortList.AddAll(entryList);

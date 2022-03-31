@@ -103,13 +103,13 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	switch (this->ctype)
 	{
 	case CT_PUBLIC:
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("public"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("public"));
 		break;
 	case CT_PRIVATE:
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("private"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("private"));
 		break;
 	case CT_NO_CACHE:
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		break;
 	case CT_DEFAULT:
 	default:
@@ -125,7 +125,7 @@ void Net::WebServer::HTTPDirectoryHandler::AddCacheHeader(Net::WebServer::IWebRe
 	}
 	if (this->allowOrigin)
 	{
-		resp->AddHeaderC(UTF8STRC("Access-Control-Allow-Origin"), this->allowOrigin->v, this->allowOrigin->leng);
+		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
 	}
 }
 
@@ -181,7 +181,7 @@ void Net::WebServer::HTTPDirectoryHandler::ResponsePackageFile(Net::WebServer::I
 	}*/
 
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
+	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	AddCacheHeader(resp);
 
 	UTF8Char sbuff[512];
@@ -481,9 +481,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 						resp->AddLastModified(&t);
 						if (this->allowOrigin)
 						{
-							resp->AddHeaderC(UTF8STRC("Access-Control-Allow-Origin"), this->allowOrigin->v, this->allowOrigin->leng);
+							resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
 						}
-						resp->AddContentType(mime.v, mime.leng);
+						resp->AddContentType(mime);
 						Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
 						MemFree(dataBuff);
 						return true;
@@ -513,9 +513,9 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								resp->AddLastModified(&t);
 								if (this->allowOrigin)
 								{
-									resp->AddHeaderC(UTF8STRC("Access-Control-Allow-Origin"), this->allowOrigin->v, this->allowOrigin->leng);
+									resp->AddHeader(CSTR("Access-Control-Allow-Origin"), this->allowOrigin->ToCString());
 								}
-								resp->AddContentType(mime.v, mime.leng);
+								resp->AddContentType(mime);
 								Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, dataLen, dataBuff);
 								MemFree(dataBuff);
 							}
@@ -603,7 +603,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 				mime = Net::MIME::GetMIMEFromExt(subReq.Substring(i + 1));
 			}
 		}
-		resp->AddContentType(mime.v, mime.leng);
+		resp->AddContentType(mime);
 		Net::WebServer::HTTPServerUtil::SendContent(req, resp, mime, cache->buffSize, cache->buff);
 		Sync::Interlocked::Decrement(&this->fileCacheUsing);
 		return true;
@@ -667,7 +667,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			NEW_CLASS(fs, IO::FileStream({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 			fs->GetFileTimes(0, 0, &t);
 
-			if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
+			if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
 			{
 				Data::DateTime t2;
 				t2.SetValue(hdrVal->ToCString());
@@ -689,7 +689,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			AddCacheHeader(resp);
 			resp->AddLastModified(&t);
 			mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
-			resp->AddContentType(mime.v, mime.leng);
+			resp->AddContentType(mime);
 			sizeLeft = fs->GetLength();
 			if (sizeLeft < this->fileCacheSize)
 			{
@@ -766,7 +766,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 
 				resp->EnableWriteBuffer();
 				resp->AddDefHeaders(req);
-				resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
+				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 				AddCacheHeader(resp);
 
 				Bool isRoot = false;
@@ -799,7 +799,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 								   UTF8STRC("</form>"));
 				}
 
-				s = req->GetQueryValue(UTF8STRC("sort"));
+				s = req->GetQueryValue(CSTR("sort"));
 				if (s)
 				{
 					sort = s->ToInt32();
@@ -1089,7 +1089,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		NEW_CLASS(fs, IO::FileStream({sptr, sptrLen}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
 		fs->GetFileTimes(0, 0, &t);
 
-		if ((hdrVal = req->GetSHeader(UTF8STRC("If-Modified-Since"))) != 0)
+		if ((hdrVal = req->GetSHeader(CSTR("If-Modified-Since"))) != 0)
 		{
 			Data::DateTime t2;
 			t2.SetValue(hdrVal->ToCString());
@@ -1158,7 +1158,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		Bool partial = false;
 		sizeLeft = fs->GetLength();
 		sb2.ClearStr();
-		if (req->GetHeaderC(&sb2, UTF8STRC("Range")))
+		if (req->GetHeaderC(&sb2, CSTR("Range")))
 		{
 			UInt64 fileSize = sizeLeft;
 			if (!sb2.StartsWith(UTF8STRC("bytes=")))
@@ -1244,7 +1244,7 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 			sptr = Text::StrUInt64(sptr, (UInt64)start + sizeLeft - 1);
 			*sptr++ = '/';
 			sptr = Text::StrUInt64(sptr, fileSize);
-			resp->AddHeaderC(UTF8STRC("Content-Range"), sbuff, (UOSInt)(sptr - sbuff));
+			resp->AddHeader(CSTR("Content-Range"), CSTRP(sbuff, sptr));
 			partial = true;
 		}
 		resp->EnableWriteBuffer();
@@ -1252,8 +1252,8 @@ Bool Net::WebServer::HTTPDirectoryHandler::ProcessRequest(Net::WebServer::IWebRe
 		AddCacheHeader(resp);
 		resp->AddLastModified(&t);
 		mime = Net::MIME::GetMIMEFromExt(CSTRP(sbuff, sptr3));
-		resp->AddContentType(mime.v, mime.leng);
-		resp->AddHeaderC(UTF8STRC("Accept-Ranges"), UTF8STRC("bytes"));
+		resp->AddContentType(mime);
+		resp->AddHeader(CSTR("Accept-Ranges"), CSTR("bytes"));
 		if (sizeLeft <= 0)
 		{
 			UOSInt readSize;

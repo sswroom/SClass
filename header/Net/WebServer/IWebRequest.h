@@ -38,9 +38,9 @@ namespace Net
 			IWebRequest();
 			virtual ~IWebRequest();
 
-			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual Text::String *GetSHeader(Text::CString name) = 0;
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen) = 0;
-			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name) = 0;
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names) = 0;
 			Bool GetRefererDomain(Text::StringBuilderUTF8 *sb);
 			Bool GetIfModifiedSince(Data::DateTime *dt);
@@ -51,15 +51,15 @@ namespace Net
 			UTF8Char *GetRequestPath(UTF8Char *sbuff, UOSInt maxLeng);
 			UTF8Char *GetQueryString(UTF8Char *sbuff, UOSInt maxLeng);
 			virtual RequestProtocol GetProtocol() = 0;
-			virtual Text::String *GetQueryValue(const UTF8Char *name, UOSInt nameLen) = 0;
-			UTF8Char *GetQueryValueStr(const UTF8Char *name, UOSInt nameLen, UTF8Char *buff, UOSInt buffSize);
-			Bool GetQueryValueI16(const UTF8Char *name, UOSInt nameLen, Int16 *val);
-			Bool GetQueryValueU16(const UTF8Char *name, UOSInt nameLen, UInt16 *val);
-			Bool GetQueryValueI32(const UTF8Char *name, UOSInt nameLen, Int32 *val);
-			Bool GetQueryValueU32(const UTF8Char *name, UOSInt nameLen, UInt32 *val);
-			Bool GetQueryValueI64(const UTF8Char *name, UOSInt nameLen, Int64 *val);
-			Bool GetQueryValueF64(const UTF8Char *name, UOSInt nameLen, Double *val);
-			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen) = 0;
+			virtual Text::String *GetQueryValue(Text::CString name) = 0;
+			UTF8Char *GetQueryValueStr(Text::CString name, UTF8Char *buff, UOSInt buffSize);
+			Bool GetQueryValueI16(Text::CString name, Int16 *val);
+			Bool GetQueryValueU16(Text::CString name, UInt16 *val);
+			Bool GetQueryValueI32(Text::CString name, Int32 *val);
+			Bool GetQueryValueU32(Text::CString name, UInt32 *val);
+			Bool GetQueryValueI64(Text::CString name, Int64 *val);
+			Bool GetQueryValueF64(Text::CString name, Double *val);
+			virtual Bool HasQuery(Text::CString name) = 0;
 			virtual Net::WebUtil::RequestMethod GetReqMethod() = 0;
 			virtual void ParseHTTPForm() = 0;
 			virtual Text::String *GetHTTPFormStr(Text::CString name) = 0;

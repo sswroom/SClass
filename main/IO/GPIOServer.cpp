@@ -34,9 +34,9 @@ public:
 
 		UInt32 pin;
 		UInt32 outVal;
-		if (req->GetQueryValueU32(UTF8STRC("pin"), &pin))
+		if (req->GetQueryValueU32(CSTR("pin"), &pin))
 		{
-			if (req->GetQueryValueU32(UTF8STRC("output"), &outVal))
+			if (req->GetQueryValueU32(CSTR("output"), &outVal))
 			{
 				this->gpio->SetPinState(pin, outVal != 0);
 			}
@@ -114,7 +114,7 @@ public:
 
 		resp->AddDefHeaders(req);
 		resp->AddContentLength(sb.GetLength());
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddCacheControl(0);
 		resp->Write(sb.ToString(), sb.GetLength());
 		return true;

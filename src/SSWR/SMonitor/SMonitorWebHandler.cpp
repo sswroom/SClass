@@ -37,7 +37,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::OnSessCheck(Net::WebServer::I
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DefaultReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
 {
-	return resp->RedirectURL(req, UTF8STRC("/monitor/index"), -2);
+	return resp->RedirectURL(req, CSTR("/monitor/index"), -2);
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -61,7 +61,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 				if (pwd->leng >= 3 && pwd->Equals(retype))
 				{
 					me->core->UserAdd((const UTF8Char*)"admin", pwd->v, 1);
-					return resp->RedirectURL(req, UTF8STRC("index"), 0);
+					return resp->RedirectURL(req, CSTR("index"), 0);
 				}
 			}
 		}
@@ -105,8 +105,8 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 			userType = 0;
 		}
 
-		Text::String *reqDevId = req->GetQueryValue(UTF8STRC("devid"));
-		Text::String *reqOutput = req->GetQueryValue(UTF8STRC("output"));
+		Text::String *reqDevId = req->GetQueryValue(CSTR("devid"));
+		Text::String *reqOutput = req->GetQueryValue(CSTR("output"));
 		if (reqDevId && reqOutput)
 		{
 			Int64 idevId = reqDevId->ToInt64();
@@ -275,9 +275,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::IndexReq(SSWR::SMonitor::SMon
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -294,7 +294,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	if (sess)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
 	{
@@ -316,7 +316,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 					sess->EndUse();
 					me->core->UserFreeLogin(login);
 
-					return resp->RedirectURL(req, UTF8STRC("index"), 0);
+					return resp->RedirectURL(req, CSTR("index"), 0);
 				}
 				else
 				{
@@ -353,9 +353,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LoginReq(SSWR::SMonitor::SMon
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -369,7 +369,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::LogoutReq(SSWR::SMonitor::SMo
 		sess->EndUse();
 		me->sessMgr->DeleteSession(req, resp);
 	}
-	return resp->RedirectURL(req, UTF8STRC("index"), 0);
+	return resp->RedirectURL(req, CSTR("index"), 0);
 }
 
 Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMonitorWebHandler *me, Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -384,9 +384,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
-	if (req->GetQueryValueI64(UTF8STRC("photo"), &devId))
+	if (req->GetQueryValueI64(CSTR("photo"), &devId))
 	{
 		if (me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), devId))
 		{
@@ -533,9 +533,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReq(SSWR::SMonitor::SMo
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -552,9 +552,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(UTF8STRC("id"));
+	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
 	if (cid)
 	{
@@ -563,12 +563,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -595,7 +595,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 				if (me->core->DeviceModify(cliId, devName->ToCString(), flags))
 				{
 					sess->EndUse();
-					return resp->RedirectURL(req, UTF8STRC("device"), 0);
+					return resp->RedirectURL(req, CSTR("device"), 0);
 				}
 			}
 		}
@@ -655,9 +655,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceEditReq(SSWR::SMonitor:
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -677,9 +677,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(UTF8STRC("id"));
+	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
 	if (cid)
 	{
@@ -688,12 +688,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
 	dev = me->core->DeviceGet(cliId);
@@ -724,7 +724,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 			if (me->core->DeviceSetReadings(dev, sb.ToString()))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, UTF8STRC("device"), 0);
+				return resp->RedirectURL(req, CSTR("device"), 0);
 			}
 		}
 	}
@@ -732,7 +732,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	if (dev->nReading <= 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceReadingReq")));
@@ -799,9 +799,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingReq(SSWR::SMonit
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -821,9 +821,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
-	Text::String *cid = req->GetQueryValue(UTF8STRC("id"));
+	Text::String *cid = req->GetQueryValue(CSTR("id"));
 	Int64 cliId = 0;
 	if (cid)
 	{
@@ -832,12 +832,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (cliId == 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 	if (!me->core->UserHasDevice(sess->GetValueInt32(UTF8STRC("UserId")), sess->GetValueInt32(UTF8STRC("UserType")), cliId))
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
 	dev = me->core->DeviceGet(cliId);
@@ -868,7 +868,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 			if (me->core->DeviceSetDigitals(dev, sb.ToString()))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, UTF8STRC("device"), 0);
+				return resp->RedirectURL(req, CSTR("device"), 0);
 			}
 		}
 	}
@@ -876,7 +876,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	if (dev->ndigital <= 0)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("device"), 0);
+		return resp->RedirectURL(req, CSTR("device"), 0);
 	}
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("SSWR.SMonitor.SMonitorWebHandler.DeviceDigitalsReq")));
@@ -926,9 +926,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceDigitalsReq(SSWR::SMoni
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -944,7 +944,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	Int32 readingId = 0;
 	Int32 readingType = 0;
 	Bool valid = true;
-	s = req->GetQueryValue(UTF8STRC("id"));
+	s = req->GetQueryValue(CSTR("id"));
 	if (s == 0)
 	{
 		valid = false;
@@ -954,7 +954,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("sensor"));
+	s = req->GetQueryValue(CSTR("sensor"));
 	if (s == 0)
 	{
 		valid = false;
@@ -964,7 +964,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("reading"));
+	s = req->GetQueryValue(CSTR("reading"));
 	if (s == 0)
 	{
 		valid = false;
@@ -974,7 +974,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("readingType"));
+	s = req->GetQueryValue(CSTR("readingType"));
 	if (s == 0)
 	{
 		valid = false;
@@ -1034,9 +1034,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 	{
 		buff = mstm->GetBuff(&buffSize);
 		resp->AddDefHeaders(req);
-		resp->AddContentType(UTF8STRC("image/png"));
+		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(buffSize);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 		resp->Write(buff, buffSize);
 		dev->mut->UnlockRead();
 		return true;
@@ -1459,9 +1459,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DeviceReadingImgReq(SSWR::SMo
 
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("image/png"));
+	resp->AddContentType(CSTR("image/png"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 
 	dev->mut->LockWrite();
@@ -1584,9 +1584,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataReq(SSWR::SMoni
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -1602,7 +1602,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 	Int32 sensorId = 0;
 	Int32 readingId = 0;
 	Bool valid = true;
-	s = req->GetQueryValue(UTF8STRC("id"));
+	s = req->GetQueryValue(CSTR("id"));
 	if (s == 0)
 	{
 		valid = false;
@@ -1612,7 +1612,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("sensor"));
+	s = req->GetQueryValue(CSTR("sensor"));
 	if (s == 0)
 	{
 		valid = false;
@@ -1622,7 +1622,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("reading"));
+	s = req->GetQueryValue(CSTR("reading"));
 	if (s == 0)
 	{
 		valid = false;
@@ -1632,7 +1632,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 		valid = false;
 	}
 
-	s = req->GetQueryValue(UTF8STRC("starttime"));
+	s = req->GetQueryValue(CSTR("starttime"));
 	if (s == 0)
 	{
 		valid = false;
@@ -1807,9 +1807,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::DevicePastDataImgReq(SSWR::SM
 
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("image/png"));
+	resp->AddContentType(CSTR("image/png"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -1825,7 +1825,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	const UTF8Char *msg = 0;
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -1894,9 +1894,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserPasswordReq(SSWR::SMonito
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -1913,12 +1913,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 
 	Data::ArrayList<SSWR::SMonitor::ISMonitorCore::WebUser*> userList;
@@ -1964,9 +1964,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UsersReq(SSWR::SMonitor::SMon
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -1981,12 +1981,12 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	Net::WebServer::IWebSession *sess = me->sessMgr->GetSession(req, resp);
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -2004,7 +2004,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 				if (me->core->UserAdd(userName->v, userName->v, 2))
 				{
 					sess->EndUse();
-					return resp->RedirectURL(req, UTF8STRC("users"), 0);
+					return resp->RedirectURL(req, CSTR("users"), 0);
 				}
 			}
 		}
@@ -2031,9 +2031,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAddReq(SSWR::SMonitor::SM
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;
@@ -2053,23 +2053,23 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	UOSInt i;
 	UOSInt j;
 
-	if (!req->GetQueryValueI32(UTF8STRC("id"), &userId))
+	if (!req->GetQueryValueI32(CSTR("id"), &userId))
 	{
-		return resp->RedirectURL(req, UTF8STRC("users"), 0);
+		return resp->RedirectURL(req, CSTR("users"), 0);
 	}
 	user = me->core->UserGet(userId);
 	if (user == 0 || user->userType != 2)
 	{
-		return resp->RedirectURL(req, UTF8STRC("users"), 0);
+		return resp->RedirectURL(req, CSTR("users"), 0);
 	}
 	if (sess == 0)
 	{
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 	if (sess->GetValueInt32(UTF8STRC("UserType")) != 1)
 	{
 		sess->EndUse();
-		return resp->RedirectURL(req, UTF8STRC("index"), 0);
+		return resp->RedirectURL(req, CSTR("index"), 0);
 	}
 
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -2104,7 +2104,7 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 			if (valid && me->core->UserAssign(userId, &devIds))
 			{
 				sess->EndUse();
-				return resp->RedirectURL(req, UTF8STRC("users"), 0);
+				return resp->RedirectURL(req, CSTR("users"), 0);
 			}
 		}
 	}
@@ -2172,9 +2172,9 @@ Bool __stdcall SSWR::SMonitor::SMonitorWebHandler::UserAssignReq(SSWR::SMonitor:
 	DEL_CLASS(writer);
 	buff = mstm->GetBuff(&buffSize);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html"));
+	resp->AddContentType(CSTR("text/html"));
 	resp->AddContentLength(buffSize);
-	resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+	resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 	resp->Write(buff, buffSize);
 	DEL_CLASS(mstm);
 	return true;

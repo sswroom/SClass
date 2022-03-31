@@ -155,8 +155,8 @@ Bool __stdcall Net::EthernetWebHandler::DeviceReq(EthernetWebHandler *me, Net::W
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -218,8 +218,8 @@ Bool __stdcall Net::EthernetWebHandler::IPTransferReq(EthernetWebHandler *me, Ne
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -274,7 +274,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
+		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
@@ -331,8 +331,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv4Req(EthernetWebHandler *me, Net:
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -387,7 +387,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
+		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
@@ -444,8 +444,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqv6Req(EthernetWebHandler *me, Net:
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -500,7 +500,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		}
 		sb.AppendC(UTF8STRC("</td><td valign=\"top\">\r\n"));
 
-		if ((sptr = req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128)) != 0)
+		if ((sptr = req->GetQueryValueStr(CSTR("qry"), sbuff, 128)) != 0)
 		{
 			Data::ArrayList<Net::DNSClient::RequestAnswer *> ansList;
 			Net::DNSClient::RequestAnswer *ans;
@@ -557,8 +557,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSReqOthReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -589,7 +589,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 		sb.AppendC(UTF8STRC("<table border=\"0\"><tr><td>DNS Target</td><td>Info</td></tr>\r\n"));
 		sb.AppendC(UTF8STRC("<tr><td>\r\n"));
 
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
 		{
 			targetIP = Text::StrToUInt32(sbuff);
 		}
@@ -647,8 +647,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSTargetReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -680,7 +680,7 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		sb.AppendC(UTF8STRC("<td>Info</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		sb.AppendC(UTF8STRC("</tr><td>\r\n"));
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
 		{
 			qryVal = Text::StrToUInt32(sbuff);
 		}
@@ -744,8 +744,8 @@ Bool __stdcall Net::EthernetWebHandler::DNSClientReq(EthernetWebHandler *me, Net
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -859,8 +859,8 @@ Bool __stdcall Net::EthernetWebHandler::DHCPReq(EthernetWebHandler *me, Net::Web
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}
@@ -892,7 +892,7 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		sb.AppendC(UTF8STRC("<td>Info</td>"));
 		sb.AppendC(UTF8STRC("</tr>\r\n"));
 		sb.AppendC(UTF8STRC("</tr><td valign=\"top\">\r\n"));
-		if (req->GetQueryValueStr(UTF8STRC("qry"), sbuff, 128))
+		if (req->GetQueryValueStr(CSTR("qry"), sbuff, 128))
 		{
 			qryVal = Text::StrToUInt32(sbuff);
 		}
@@ -943,8 +943,8 @@ Bool __stdcall Net::EthernetWebHandler::IPLogReq(EthernetWebHandler *me, Net::We
 		AppendFooter(&sb);
 
 		resp->AddDefHeaders(req);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
-		resp->AddContentType(UTF8STRC("text/html"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
+		resp->AddContentType(CSTR("text/html"));
 		resp->AddContentLength(sb.GetLength());
 		resp->Write(sb.ToString(), sb.GetLength());
 	}

@@ -18,7 +18,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::UploadReq(SSWR::Benchmark::
 		valid = false;
 	}
 	Text::StringBuilderUTF8 sb;
-	if (req->GetHeaderC(&sb, UTF8STRC("Content-Type")))
+	if (req->GetHeaderC(&sb, CSTR("Content-Type")))
 	{
 		if (!sb.Equals(UTF8STRC("text/plain")))
 		{
@@ -191,7 +191,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 	UTF8Char path[512];
 	UTF8Char *sptr;
 	UTF8Char *sptr2;
-	if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("model"), fileName, 512)) != 0)
+	if ((fileNameEnd = req->GetQueryValueStr(CSTR("model"), fileName, 512)) != 0)
 	{
 		UOSInt fileSize;
 		sptr = IO::Path::GetProcessFileName(path);
@@ -208,7 +208,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 			resp->SetStatusCode(Net::WebStatus::SC_OK);
 			resp->AddDefHeaders(req);
-			resp->AddContentType(UTF8STRC("text/plain"));
+			resp->AddContentType(CSTR("text/plain"));
 			resp->AddContentLength(fileSize);
 			resp->Write(fileBuff, fileSize);
 			MemFree(fileBuff);
@@ -224,9 +224,9 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		Int32 cpuFamily = 0;
 		Int32 cpuModel = 0;
 		Int32 cpuStepping = 0;
-		req->GetQueryValueI32(UTF8STRC("family"), &cpuFamily);
-		req->GetQueryValueI32(UTF8STRC("modelId"), &cpuModel);
-		req->GetQueryValueI32(UTF8STRC("stepping"), &cpuStepping);
+		req->GetQueryValueI32(CSTR("family"), &cpuFamily);
+		req->GetQueryValueI32(CSTR("modelId"), &cpuModel);
+		req->GetQueryValueI32(CSTR("stepping"), &cpuStepping);
 		if (cpuFamily != 0 && cpuModel != 0 && cpuStepping != 0)
 		{
 			req->GetHeader(fileName, CSTR("Content-Length"), 512);
@@ -251,7 +251,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 				resp->SetStatusCode(Net::WebStatus::SC_OK);
 				resp->AddDefHeaders(req);
-				resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
+				resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 				resp->AddContentLength(2);
 				resp->Write((const UInt8*)"ok", 2);
 				return true;
@@ -261,7 +261,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 		{
 			UOSInt fileSize;
 			const UInt8 *fileBuff;
-			if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("file"), fileName, 512)) != 0)
+			if ((fileNameEnd = req->GetQueryValueStr(CSTR("file"), fileName, 512)) != 0)
 			{
 				fileBuff = req->GetReqData(&fileSize);
 				Text::StrConcatC(fileName, UTF8STRC("cpuinfo"));
@@ -440,7 +440,7 @@ Bool __stdcall SSWR::Benchmark::BenchmarkWebHandler::CPUInfoReq(SSWR::Benchmark:
 
 	resp->SetStatusCode(Net::WebStatus::SC_OK);
 	resp->AddDefHeaders(req);
-	resp->AddContentType(UTF8STRC("text/html; charset=UTF-8"));
+	resp->AddContentType(CSTR("text/html; charset=UTF-8"));
 	resp->AddContentLength(sbOut.GetLength());
 	resp->Write(sbOut.ToString(), sbOut.GetLength());
 	return true;

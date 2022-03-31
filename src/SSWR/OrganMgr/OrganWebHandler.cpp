@@ -2320,24 +2320,24 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhoto(Net::WebServer::IWebReq
 	UInt32 height;
 	Int32 spId;
 	Int32 id;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &spId) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
-		req->GetQueryValueU32(UTF8STRC("width"), &width) &&
-		req->GetQueryValueU32(UTF8STRC("height"), &height) &&
+	if (req->GetQueryValueI32(CSTR("id"), &spId) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
+		req->GetQueryValueU32(CSTR("width"), &width) &&
+		req->GetQueryValueU32(CSTR("height"), &height) &&
 		spId > 0 && width > 0 && height > 0 && cateId > 0 && width <= 10000 && height <= 10000
 		)
 	{
-		if (req->GetQueryValueI32(UTF8STRC("fileId"), &id))
+		if (req->GetQueryValueI32(CSTR("fileId"), &id))
 		{
 			me->ResponsePhotoId(req, resp, env.user, env.isMobile, spId, cateId, width, height, id);
 			return true;
 		}
-		else if (req->GetQueryValueI32(UTF8STRC("fileWId"), &id))
+		else if (req->GetQueryValueI32(CSTR("fileWId"), &id))
 		{
 			me->ResponsePhotoWId(req, resp, env.user, env.isMobile, spId, cateId, width, height, id);
 			return true;
 		}
-		else if (req->GetQueryValueStr(UTF8STRC("file"), sbuff, 512))
+		else if (req->GetQueryValueStr(CSTR("file"), sbuff, 512))
 		{
 			me->ResponsePhoto(req, resp, env.user, env.isMobile, spId, cateId, width, height, sbuff);
 			return true;
@@ -2356,9 +2356,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 	Int32 spId;
 	Int32 cateId;
 	Int32 fileId;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &spId) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
-		req->GetQueryValueI32(UTF8STRC("fileId"), &fileId))
+	if (req->GetQueryValueI32(CSTR("id"), &spId) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
+		req->GetQueryValueI32(CSTR("fileId"), &fileId))
 	{
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *sp;
 		UTF8Char sbuff[512];
@@ -2409,11 +2409,11 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDown(Net::WebServer::IWe
 			resp->AddContentLength(buffSize);
 			if (userFile->fileType == 3)
 			{
-				resp->AddContentType(UTF8STRC("image/png"));
+				resp->AddContentType(CSTR("image/png"));
 			}
 			else
 			{
-				resp->AddContentType(UTF8STRC("image/jpeg"));
+				resp->AddContentType(CSTR("image/jpeg"));
 			}
 			resp->Write(buff, buffSize);
 			DEL_CLASS(fd);
@@ -2441,8 +2441,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroup(Net::WebServer::IWebReq
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -2896,8 +2896,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 	Int32 id;
 	Int32 cateId;
 	Int32 groupId = 0;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 		SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
@@ -2929,7 +2929,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 		GroupFlags groupFlags = GF_NONE;
 		Int32 groupTypeId = 0;
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *modGroup = 0;
-		if (req->GetQueryValueI32(UTF8STRC("groupId"), &groupId))
+		if (req->GetQueryValueI32(CSTR("groupId"), &groupId))
 		{
 			modGroup = me->groupMap->Get(groupId);
 			if (modGroup)
@@ -2985,7 +2985,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
+							resp->RedirectURL(req, sb.ToCString(), 0);
 							return true;
 						}
 						else
@@ -3025,7 +3025,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(modGroup->cateId);
 
-							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
+							resp->RedirectURL(req, sb.ToCString(), 0);
 							return true;
 						}
 						else
@@ -3051,7 +3051,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcGroupMod(Net::WebServer::IWeb
 						sb.AppendC(UTF8STRC("&cateId="));
 						sb.AppendI32(cateId);
 
-						resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
+						resp->RedirectURL(req, sb.ToCString(), 0);
 						return true;
 					}
 					else
@@ -3194,8 +3194,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpecies(Net::WebServer::IWebR
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -3915,8 +3915,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 	Int32 id;
 	Int32 cateId;
 	Int32 spId = 0;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		SSWR::OrganMgr::OrganWebHandler::GroupInfo *group;
 		Text::StringBuilderUTF8 sb;
@@ -3939,7 +3939,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 		Text::String *descr = 0;
 		const UTF8Char *bookIgn = 0;
 		SSWR::OrganMgr::OrganWebHandler::SpeciesInfo *species = 0;
-		if (req->GetQueryValueI32(UTF8STRC("spId"), &spId))
+		if (req->GetQueryValueI32(CSTR("spId"), &spId))
 		{
 			species = me->spMap->Get(spId);
 			if (species)
@@ -3994,7 +3994,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
+							resp->RedirectURL(req, sb.ToCString(), 0);
 							return true;
 						}
 						else
@@ -4038,7 +4038,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSpeciesMod(Net::WebServer::IW
 							sb.AppendC(UTF8STRC("&cateId="));
 							sb.AppendI32(cateId);
 
-							resp->RedirectURL(req, sb.ToString(), sb.GetLength(), 0);
+							resp->RedirectURL(req, sb.ToCString(), 0);
 							return true;
 						}
 						else
@@ -4162,9 +4162,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcList(Net::WebServer::IWebRequ
 	Int32 id;
 	UInt32 page = 0;
 	Int32 cateId;
-	req->GetQueryValueU32(UTF8STRC("page"), &page);
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	req->GetQueryValueU32(CSTR("page"), &page);
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Bool imageOnly = subReq.Equals(UTF8STRC("/listimage.html"));
 		Text::String *s;
@@ -4376,8 +4376,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 
 	Int32 id;
 	Int32 cateId;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		UTF8Char fileName[512];
 		UTF8Char *fileNameEnd;
@@ -4436,7 +4436,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 		sptr = species->dirName->ConcatTo(sptr);
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 
-		if (req->GetQueryValueI32(UTF8STRC("fileId"), &fileId))
+		if (req->GetQueryValueI32(CSTR("fileId"), &fileId))
 		{
 			Data::ArrayListICaseString *fileNameList;
 			Bool found = false;
@@ -4843,7 +4843,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				return true;
 			}
 		}
-		else if (req->GetQueryValueI32(UTF8STRC("fileWId"), &fileId))
+		else if (req->GetQueryValueI32(CSTR("fileWId"), &fileId))
 		{
 			Data::ArrayListICaseString *fileNameList;
 			wfile = species->wfiles->Get(fileId);
@@ -5047,7 +5047,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetail(Net::WebServer::I
 				return true;
 			}
 		}
-		else if ((fileNameEnd = req->GetQueryValueStr(UTF8STRC("file"), fileName, 512)) != 0)
+		else if ((fileNameEnd = req->GetQueryValueStr(CSTR("file"), fileName, 512)) != 0)
 		{
 			if (Text::StrStartsWithC(fileName, (UOSInt)(fileNameEnd - fileName), UTF8STRC("web")) && fileName[3] == IO::Path::PATH_SEPERATOR)
 			{
@@ -5443,8 +5443,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDetailD(Net::WebServer::
 	Int32 fileId;
 	UInt32 index;
 	if (env.user != 0 &&
-		req->GetQueryValueI32(UTF8STRC("fileId"), &fileId) &&
-		req->GetQueryValueU32(UTF8STRC("index"), &index))
+		req->GetQueryValueI32(CSTR("fileId"), &fileId) &&
+		req->GetQueryValueU32(CSTR("index"), &index))
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -5705,7 +5705,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoYear(Net::WebServer::IWe
 
 	UInt16 y;
 	if (env.user != 0 &&
-		req->GetQueryValueU16(UTF8STRC("y"), &y))
+		req->GetQueryValueU16(CSTR("y"), &y))
 	{
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
@@ -6007,7 +6007,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoDay(Net::WebServer::IWeb
 
 	Int32 d;
 	if (env.user != 0 &&
-		req->GetQueryValueI32(UTF8STRC("d"), &d))
+		req->GetQueryValueI32(CSTR("d"), &d))
 	{
 		IO::MemoryStream *mstm;
 		IO::Writer *writer;
@@ -6326,7 +6326,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	}
 
 	Text::StringBuilderUTF8 sb;
-	if (!req->GetHeaderC(&sb, UTF8STRC("X-FileName")))
+	if (!req->GetHeaderC(&sb, CSTR("X-FileName")))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_BAD_REQUEST);
 		return true;
@@ -6355,7 +6355,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUploadD(Net::WebServer::
 	resp->AddDefHeaders(req);
 	sptr = Text::StrInt32(sbuff, ret);
 	resp->AddContentLength((UOSInt)(sptr - sbuff));
-	resp->AddContentType(UTF8STRC("text/plain"));
+	resp->AddContentType(CSTR("text/plain"));
 	resp->Write(sbuff, (UOSInt)(sptr - sbuff));
 	return true;
 }
@@ -6370,8 +6370,8 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInside(Net::WebServer::
 	Int32 cateId;
 	Text::String *searchStr;
 	req->ParseHTTPForm();
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
 		(searchStr = req->GetHTTPFormStr(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
@@ -6571,10 +6571,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreS(Net::WebSer
 	UInt32 pageNo;
 	Int32 cateId;
 	Text::String *searchStr;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
-		req->GetQueryValueU32(UTF8STRC("pageNo"), &pageNo) &&
-		(searchStr = req->GetQueryValue(UTF8STRC("searchStr"))) != 0)
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
+		req->GetQueryValueU32(CSTR("pageNo"), &pageNo) &&
+		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -6754,10 +6754,10 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcSearchInsideMoreG(Net::WebSer
 	UInt32 pageNo;
 	Int32 cateId;
 	Text::String *searchStr;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId) &&
-		req->GetQueryValueU32(UTF8STRC("pageNo"), &pageNo) &&
-		(searchStr = req->GetQueryValue(UTF8STRC("searchStr"))) != 0)
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId) &&
+		req->GetQueryValueU32(CSTR("pageNo"), &pageNo) &&
+		(searchStr = req->GetQueryValue(CSTR("searchStr"))) != 0)
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -6934,7 +6934,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookList(Net::WebServer::IWeb
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	Int32 id;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id))
+	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -7072,9 +7072,9 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBook(Net::WebServer::IWebRequ
 	Int32 id;
 	UInt32 pageNo = 0;
 	Int32 cateId;
-	req->GetQueryValueU32(UTF8STRC("pageNo"), &pageNo);
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id) &&
-		req->GetQueryValueI32(UTF8STRC("cateId"), &cateId))
+	req->GetQueryValueU32(CSTR("pageNo"), &pageNo);
+	if (req->GetQueryValueI32(CSTR("id"), &id) &&
+		req->GetQueryValueI32(CSTR("cateId"), &cateId))
 	{
 		Text::String *s;
 		IO::MemoryStream *mstm;
@@ -7265,7 +7265,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	Int32 id;
-	if (req->GetQueryValueI32(UTF8STRC("id"), &id))
+	if (req->GetQueryValueI32(CSTR("id"), &id))
 	{
 		UTF8Char sbuff[512];
 		UTF8Char *sptr;
@@ -7309,7 +7309,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcBookView(Net::WebServer::IWeb
 		me->dataMut->UnlockRead();
 
 		resp->AddDefHeaders(req);
-		resp->AddContentType(UTF8STRC("application/pdf"));
+		resp->AddContentType(CSTR("application/pdf"));
 		resp->AddContentLength(fileLen);
 		UOSInt readSize;
 		UInt64 sizeLeft = fileLen;
@@ -7349,7 +7349,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogin(Net::WebServer::IWebReq
 
 	if (env.user)
 	{
-		resp->RedirectURL(req, UTF8STRC("/"), 0);
+		resp->RedirectURL(req, CSTR("/"), 0);
 		return true;
 	}
 	if (req->GetReqMethod() == Net::WebUtil::RequestMethod::HTTP_POST)
@@ -7432,7 +7432,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcLogout(Net::WebServer::IWebRe
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	me->sessMgr->DeleteSession(req, resp);
-	resp->RedirectURL(req, UTF8STRC("/"), 0);
+	resp->RedirectURL(req, CSTR("/"), 0);
 	return true;
 }
 
@@ -7683,7 +7683,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcCate(Net::WebServer::IWebRequ
 	me->ParseRequestEnv(req, resp, &env, false);
 
 	SSWR::OrganMgr::OrganWebHandler::CategoryInfo *cate;
-	Text::String *cateName = req->GetQueryValue(UTF8STRC("cateName"));
+	Text::String *cateName = req->GetQueryValue(CSTR("cateName"));
 	if (cateName != 0 && (cate = me->cateSMap->Get(cateName)) != 0)
 	{
 		Text::String *s;
@@ -7836,7 +7836,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 						DEL_CLASS(fs);
 						resp->AddDefHeaders(req);
 						resp->AddContentLength(buffSize);
-						resp->AddContentType(UTF8STRC("image/jpeg"));
+						resp->AddContentType(CSTR("image/jpeg"));
 						resp->Write(buff, buffSize);
 						this->dataMut->UnlockRead();
 						MemFree(buff);
@@ -8158,7 +8158,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				DEL_CLASS(fs);
 				resp->AddDefHeaders(req);
 				resp->AddContentLength(buffSize);
-				resp->AddContentType(UTF8STRC("image/jpeg"));
+				resp->AddContentType(CSTR("image/jpeg"));
 				resp->AddLastModified(&dt2);
 				resp->Write(buff, buffSize);
 				this->dataMut->UnlockRead();
@@ -8464,7 +8464,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					DEL_CLASS(fs);
 					resp->AddDefHeaders(req);
 					resp->AddContentLength(buffSize);
-					resp->AddContentType(UTF8STRC("image/jpeg"));
+					resp->AddContentType(CSTR("image/jpeg"));
 					resp->Write(buff, buffSize);
 					this->dataMut->UnlockRead();
 					MemFree(buff);
@@ -8647,7 +8647,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 void SSWR::OrganMgr::OrganWebHandler::ResponseMstm(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, IO::MemoryStream *mstm, Text::CString contType)
 {
 	resp->AddDefHeaders(req);
-	resp->AddContentType(contType.v, contType.leng);
+	resp->AddContentType(contType);
 	mstm->SeekFromBeginning(0);
 	Net::WebServer::HTTPServerUtil::SendContent(req, resp, contType, mstm->GetLength(), mstm);
 }
@@ -9476,7 +9476,7 @@ IO::ConfigFile *SSWR::OrganMgr::OrganWebHandler::LangGet(Net::WebServer::IWebReq
 	Text::PString sarr2[2];
 	UOSInt i;
 	Text::Locale::LocaleEntry *ent;
-	if (req->GetHeaderC(&sb, UTF8STRC("Accept-Language")))
+	if (req->GetHeaderC(&sb, CSTR("Accept-Language")))
 	{
 		sarr[1] = sb;
 		i = 2;

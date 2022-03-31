@@ -23,7 +23,7 @@ namespace Net
 			virtual void EnableWriteBuffer() = 0;
 			virtual Bool SetStatusCode(Net::WebStatus::StatusCode code) = 0;
 			virtual Int32 GetStatusCode() = 0;
-			virtual Bool AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen) = 0;
+			virtual Bool AddHeader(Text::CString name, Text::CString value) = 0;
 			virtual Bool AddDefHeaders(Net::WebServer::IWebRequest *req) = 0;
 			virtual UInt64 GetRespLength() = 0;
 			virtual void ShutdownSend() = 0;
@@ -32,15 +32,15 @@ namespace Net
 			virtual Text::CString GetRespHeaders() = 0;
 
 			Bool ResponseError(Net::WebServer::IWebRequest *req, Net::WebStatus::StatusCode code);
-			Bool RedirectURL(Net::WebServer::IWebRequest *req, const UTF8Char *url, UOSInt urlLen, OSInt cacheAge);
+			Bool RedirectURL(Net::WebServer::IWebRequest *req, Text::CString url, OSInt cacheAge);
 			Bool ResponseNotModified(Net::WebServer::IWebRequest *req, OSInt cacheAge);
 			Bool ResponseText(Text::CString txt);
 			Bool ResponseText(Text::CString txt, Text::CString contentType);
 			Bool ResponseJSONStr(Net::WebServer::IWebRequest *req, OSInt cacheAge, Text::CString json);
 
-			Bool AddHeaderS(const UTF8Char *name, UOSInt nameLen, Text::String *value)
+			Bool AddHeaderS(Text::CString name, Text::String *value)
 			{
-				return AddHeaderC(name, nameLen, value->v, value->leng);
+				return AddHeader(name, value->ToCString());
 			}
 
 			Bool AddCacheControl(OSInt cacheAge)
@@ -51,27 +51,27 @@ namespace Net
 				}
 				else if (cacheAge == -1)
 				{
-					return this->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("private"));
+					return this->AddHeader(CSTR("Cache-Control"), CSTR("private"));
 				}
 				else if (cacheAge == 0)
 				{
-					return this->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("no-cache"));
+					return this->AddHeader(CSTR("Cache-Control"), CSTR("no-cache"));
 				}
 				else
 				{
 					UTF8Char sbuff[256];
 					UTF8Char *sptr;
 					sptr = Text::StrOSInt(Text::StrConcatC(sbuff, UTF8STRC("private; max-age=")), cacheAge);
-					return this->AddHeaderC(UTF8STRC("Cache-Control"), sbuff, (UOSInt)(sptr - sbuff));
+					return this->AddHeader(CSTR("Cache-Control"), CSTRP(sbuff, sptr));
 				}
 				return true;
 			}
 
-			Bool AddTimeHeader(const UTF8Char *name, UOSInt nameLen, Data::DateTime *dt)
+			Bool AddTimeHeader(Text::CString name, Data::DateTime *dt)
 			{
 				UTF8Char sbuff[256];
 				UTF8Char *sptr = ToTimeString(sbuff, dt);
-				return this->AddHeaderC(name, nameLen, sbuff, (UOSInt)(sptr - sbuff));
+				return this->AddHeader(name, CSTRP(sbuff, sptr));
 			}
 
 			Bool AddContentDisposition(Bool isAttachment, const UTF8Char *attFileName, Net::BrowserInfo::BrowserType browser)
@@ -99,46 +99,46 @@ namespace Net
 					}
 					sptr = Text::StrConcatC(sptr, UTF8STRC("\""));
 				}
-				return this->AddHeaderC(UTF8STRC("Content-Disposition"), sbuff, (UOSInt)(sptr - sbuff));
+				return this->AddHeader(CSTR("Content-Disposition"), CSTRP(sbuff, sptr));
 			}
 
 			Bool AddContentLength(UInt64 contentLeng)
 			{
 				UTF8Char sbuff[22];
 				UTF8Char *sptr = Text::StrUInt64(sbuff, contentLeng);
-				return this->AddHeaderC(UTF8STRC("Content-Length"), sbuff, (UOSInt)(sptr - sbuff));
+				return this->AddHeader(CSTR("Content-Length"), CSTRP(sbuff, sptr));
 			}
 
-			Bool AddContentType(const UTF8Char *contentType, UOSInt len)
+			Bool AddContentType(Text::CString contentType)
 			{
-				return this->AddHeaderC(UTF8STRC("Content-Type"), contentType, len);
+				return this->AddHeader(CSTR("Content-Type"), contentType);
 			}
 
 			Bool AddDate(Data::DateTime *dt)
 			{
-				return this->AddTimeHeader(UTF8STRC("Date"), dt);
+				return this->AddTimeHeader(CSTR("Date"), dt);
 			}
 
 			Bool AddExpireTime(Data::DateTime *dt)
 			{
 				if (dt == 0)
 				{
-					return this->AddHeaderC(UTF8STRC("Expires"), UTF8STRC("0"));
+					return this->AddHeader(CSTR("Expires"), CSTR("0"));
 				}
 				else
 				{
-					return this->AddTimeHeader(UTF8STRC("Expires"), dt);
+					return this->AddTimeHeader(CSTR("Expires"), dt);
 				}
 			}
 
 			Bool AddLastModified(Data::DateTime *dt)
 			{
-				return this->AddTimeHeader(UTF8STRC("Last-Modified"), dt);
+				return this->AddTimeHeader(CSTR("Last-Modified"), dt);
 			}
 
-			Bool AddServer(const UTF8Char *server, UOSInt len)
+			Bool AddServer(Text::CString server)
 			{
-				return this->AddHeaderC(UTF8STRC("Server"), server, len);
+				return this->AddHeader(CSTR("Server"), server);
 			}
 
 			static UTF8Char *ToTimeString(UTF8Char *buff, Data::DateTime *dt);

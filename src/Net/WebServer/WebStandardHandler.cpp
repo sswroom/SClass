@@ -92,10 +92,10 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 		UTF8Char *sptr;
 		if ((sptr = req->GetHeader(sbuff, CSTR("CSeq"), 512)) != 0)
 		{
-			resp->AddHeaderC(UTF8STRC("CSeq"), sbuff, (UOSInt)(sptr - sbuff));
+			resp->AddHeader(CSTR("CSeq"), CSTRP(sbuff, sptr));
 		}
 		resp->AddContentLength(0);
-		resp->AddHeaderC(UTF8STRC("Public"), UTF8STRC("DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE"));
+		resp->AddHeader(CSTR("Public"), CSTR("DESCRIBE,SETUP,TEARDOWN,PLAY,PAUSE"));
 		resp->SetStatusCode(Net::WebStatus::SC_OK);
 	}
 	else
@@ -124,7 +124,7 @@ void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest 
 				writer->WriteLineC(UTF8STRC(" was not found on this server.</p>"));
 				writer->WriteLineC(UTF8STRC("</body></html>"));
 				DEL_CLASS(writer);
-				resp->AddContentType(UTF8STRC("text/html"));
+				resp->AddContentType(CSTR("text/html"));
 				mstm->SeekFromBeginning(0);
 				Net::WebServer::HTTPServerUtil::SendContent(req, resp, CSTR("text/html"), mstm->GetLength(), mstm);
 				DEL_CLASS(mstm);

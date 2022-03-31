@@ -54,7 +54,7 @@ Bool Net::WebServer::WebServiceHandler::ProcessRequest(Net::WebServer::IWebReque
 				sb.AppendC(name.v, name.leng);
 				i++;
 			}
-			resp->AddHeaderC(UTF8STRC("Allow"), sb.ToString(), sb.GetLength());
+			resp->AddHeader(CSTR("Allow"), sb.ToCString());
 			resp->ResponseError(req, Net::WebStatus::SC_METHOD_NOT_ALLOWED);
 			return true;
 		}

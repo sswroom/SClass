@@ -136,6 +136,57 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(Net::WebServer::IWebReques
 	return true;
 }
 
+Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq, WebServiceHandler *hdlr)
+{
+	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
+	Int32 progId;
+	if (!req->GetQueryValueI32(CSTR("progId"), &progId))
+	{
+		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
+		return true;
+	}
+	Data::ArrayList<Int32> progList;
+	me->btList->GetProgList(&progList);
+	Text::StringBuilderUTF8 sb;
+	Data::DateTime dt;
+	UTF8Char sbuff[64];
+	UTF8Char *sptr;
+	UOSInt i;
+	UOSInt j;
+	Int64 ts;
+	sb.AppendC(UTF8STRC("<html><head><title>Prog List</title></head><body>\r\n"));
+	sb.AppendC(UTF8STRC("<table border=\"1\">\r\n"));
+	sb.AppendC(UTF8STRC("<tr><th>Prog Id</th><th>Last KA Time</th></tr>\r\n"));
+	i = 0;
+	j = progList.GetCount();
+	while (i < j)
+	{
+		progId = progList.GetItem(i);
+		sb.AppendC(UTF8STRC("<tr><td>"));
+		sb.AppendI32(progId);
+		sb.AppendC(UTF8STRC("</td><td>"));
+		ts = me->btList->GetLastKeepAlive(progId);
+		if (ts)
+		{
+			dt.SetTicks(ts);
+			dt.ToLocalTime();
+			sptr = dt.ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
+			sb.AppendP(sbuff, sptr);
+		}
+		else
+		{
+			sb.AppendUTF8Char('-');
+		}
+		sb.AppendC(UTF8STRC("</td></tr>"));
+		i++;
+	}
+	sb.AppendC(UTF8STRC("</table></body></html>"));
+	resp->AddDefHeaders(req);
+	resp->AddCacheControl(0);
+	resp->ResponseText(sb.ToCString(), CSTR("text/html"));
+	return true;
+}
+
 SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(Text::String *logPath, VAMSBTList *btList)
 {
 	this->logPath = logPath->Clone();
@@ -145,6 +196,7 @@ SSWR::VAMS::VAMSBTWebHandler::VAMSBTWebHandler(Text::String *logPath, VAMSBTList
 	this->AddService(CSTR("/kadata"), Net::WebUtil::RequestMethod::HTTP_POST, KAData);
 	this->AddService(CSTR("/logdata"), Net::WebUtil::RequestMethod::HTTP_POST, LogData);
 	this->AddService(CSTR("/listdata"), Net::WebUtil::RequestMethod::HTTP_GET, ListData);
+	this->AddService(CSTR("/listitem"), Net::WebUtil::RequestMethod::HTTP_GET, ListItem);
 }
 
 SSWR::VAMS::VAMSBTWebHandler::~VAMSBTWebHandler()

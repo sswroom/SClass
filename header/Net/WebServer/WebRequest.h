@@ -45,13 +45,13 @@ namespace Net
 			void ParseFormPart(UInt8 *data, UOSInt dataSize, UOSInt startOfst);
 			Text::CString ParseHeaderVal(UTF8Char *headerData, UOSInt dataLen);
 		public:
-			WebRequest(const UTF8Char *requestURI, UOSInt uriLen, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
+			WebRequest(Text::CString requestURI, Net::WebUtil::RequestMethod reqMeth, RequestProtocol reqProto, Bool secureConn, const Net::SocketUtil::AddressInfo *cliAddr, UInt16 cliPort, UInt16 svrPort);
 			virtual ~WebRequest();
 
-			void AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen);
-			virtual Text::String *GetSHeader(const UTF8Char *name, UOSInt nameLen);
+			void AddHeader(Text::CString name, Text::CString value);
+			virtual Text::String *GetSHeader(Text::CString name);
 			virtual UTF8Char *GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen);
-			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, const UTF8Char *name, UOSInt nameLen);
+			virtual Bool GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name);
 			virtual UOSInt GetHeaderNames(Data::ArrayList<Text::String*> *names);
 			UOSInt GetHeaderCnt();
 			Text::String *GetHeaderName(UOSInt index);
@@ -59,8 +59,8 @@ namespace Net
 
 			virtual Text::String *GetRequestURI();
 			virtual RequestProtocol GetProtocol();
-			virtual Text::String *GetQueryValue(const UTF8Char *name, UOSInt nameLen);
-			virtual Bool HasQuery(const UTF8Char *name, UOSInt nameLen);
+			virtual Text::String *GetQueryValue(Text::CString name);
+			virtual Bool HasQuery(Text::CString name);
 			virtual Net::WebUtil::RequestMethod GetReqMethod();
 			virtual void ParseHTTPForm();
 			virtual Text::String *GetHTTPFormStr(Text::CString name);

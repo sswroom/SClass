@@ -207,10 +207,10 @@ Bool Map::OSM::OSMCacheHandler::ProcessRequest(Net::WebServer::IWebRequest *req,
 	{
 		UInt64 stmLeng = stm->GetLength();
 		resp->AddDefHeaders(req);
-		resp->AddContentType(UTF8STRC("image/png"));
+		resp->AddContentType(CSTR("image/png"));
 		resp->AddContentLength(stmLeng);
-		resp->AddHeaderC(UTF8STRC("Cache-Control"), UTF8STRC("private"));
-		resp->AddHeaderC(UTF8STRC("Access-Control-Allow-Origin"), UTF8STRC("*"));
+		resp->AddHeader(CSTR("Cache-Control"), CSTR("private"));
+		resp->AddHeader(CSTR("Access-Control-Allow-Origin"), CSTR("*"));
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
 		dt.AddMinute(1440);

@@ -168,7 +168,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].leng, reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -229,7 +229,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 							Net::WebUtil::RequestMethod reqMeth = Net::WebUtil::Str2RequestMethod(sarr[0].v, sarr[0].leng);
 							if (reqMeth != Net::WebUtil::RequestMethod::Unknown)
 							{
-								NEW_CLASS(this->currReq, WebRequest(sarr[1].v, sarr[1].leng, reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
+								NEW_CLASS(this->currReq, WebRequest(sarr[1].ToCString(), reqMeth, reqProto, secureConn, &cliAddr, cliPort, svrPort));
 							}
 							else
 							{
@@ -271,7 +271,7 @@ void Net::WebServer::WebConnection::ReceivedData(const UInt8 *buff, UOSInt size)
 						this->dataBuff[i] = 0;
 						if (this->currReq)
 						{
-							this->currReq->AddHeaderC(&this->dataBuff[lineStart], nameLen, &this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex);
+							this->currReq->AddHeader(Text::CString(&this->dataBuff[lineStart], nameLen), Text::CString(&this->dataBuff[lineStart + (UOSInt)strIndex], i - lineStart - strIndex));
 						}
 					}
 				}
@@ -560,7 +560,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 						}
 						else
 						{
-							this->AddHeaderC(sbuffHdr, k, &sbuffHdr[k + 2], (UOSInt)(hdrPtr - &sbuffHdr[k + 2]));
+							this->AddHeader(Text::CString(sbuffHdr, k), CSTRP(&sbuffHdr[k + 2], hdrPtr));
 						}
 					}
 					else
@@ -568,8 +568,8 @@ void Net::WebServer::WebConnection::ProcessResponse()
 					}
 					i++;
 				}
-				this->AddHeaderS(UTF8STRC("Server"), this->svr->GetServerName());
-				this->AddHeaderC(UTF8STRC("Proxy-Connection"), UTF8STRC("closed"));
+				this->AddHeaderS(CSTR("Server"), this->svr->GetServerName());
+				this->AddHeader(CSTR("Proxy-Connection"), CSTR("closed"));
 
 				if (lengFound)
 				{
@@ -668,7 +668,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			}
 			else if (this->currReq->GetProtocol() == Net::WebServer::IWebRequest::RequestProtocol::HTTP1_0)
 			{
-				Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
+				Text::String *connHdr = this->currReq->GetSHeader(CSTR("Connection"));
 				if (connHdr && connHdr->EqualsICase(UTF8STRC("keep-alive")))
 				{
 				}
@@ -679,7 +679,7 @@ void Net::WebServer::WebConnection::ProcessResponse()
 			}
 			else
 			{
-				Text::String *connHdr = this->currReq->GetSHeader(UTF8STRC("Connection"));
+				Text::String *connHdr = this->currReq->GetSHeader(CSTR("Connection"));
 				if (connHdr && connHdr->EqualsICase(UTF8STRC("close")))
 				{
 					this->cli->ShutdownSend();
@@ -721,14 +721,14 @@ Int32 Net::WebServer::WebConnection::GetStatusCode()
 	return this->respStatus;
 }
 
-Bool Net::WebServer::WebConnection::AddHeaderC(const UTF8Char *name, UOSInt nameLen, const UTF8Char *value, UOSInt valueLen)
+Bool Net::WebServer::WebConnection::AddHeader(Text::CString name, Text::CString value)
 {
 	if (this->respHeaderSent)
 		return false;
-	this->respHeaders->AppendNE2(name, nameLen, UTF8STRC(": "));
-	this->respHeaders->AppendC2(value, valueLen, UTF8STRC("\r\n"));
+	this->respHeaders->AppendNE2(name.v, name.leng, UTF8STRC(": "));
+	this->respHeaders->AppendC2(value.v, value.leng, UTF8STRC("\r\n"));
 
-	if (Text::StrEqualsC(value, valueLen, UTF8STRC("chunked")) && Text::StrEqualsICaseC(name, nameLen, UTF8STRC("Transfer-Encoding")))
+	if (value.Equals(UTF8STRC("chunked")) && name.EqualsICase(UTF8STRC("Transfer-Encoding")))
 	{
 		this->respTranEnc = 1;
 		this->cli->SetNoDelay(false);
@@ -741,17 +741,17 @@ Bool Net::WebServer::WebConnection::AddDefHeaders(Net::WebServer::IWebRequest *r
 {
 	Data::DateTime dt;
 	dt.SetCurrTimeUTC();
-	AddTimeHeader(UTF8STRC("Date"), &dt);
-	AddHeaderS(UTF8STRC("Server"), this->svr->GetServerName());
-	Text::String *connHdr = req->GetSHeader(UTF8STRC("Connection"));
+	AddTimeHeader(CSTR("Date"), &dt);
+	AddHeaderS(CSTR("Server"), this->svr->GetServerName());
+	Text::String *connHdr = req->GetSHeader(CSTR("Connection"));
 	if (this->allowKA && connHdr && connHdr->Equals(UTF8STRC("keep-alive")))
 	{
-		AddHeaderC(UTF8STRC("Connection"), UTF8STRC("keep-alive"));
-		AddHeaderC(UTF8STRC("Keep-Alive"), UTF8STRC("timeout=10, max=1000"));
+		AddHeader(CSTR("Connection"), CSTR("keep-alive"));
+		AddHeader(CSTR("Keep-Alive"), CSTR("timeout=10, max=1000"));
 	}
 	else
 	{
-		AddHeaderC(UTF8STRC("Connection"), UTF8STRC("close"));
+		AddHeader(CSTR("Connection"), CSTR("close"));
 	}
 	return false;
 }
@@ -788,7 +788,7 @@ Bool Net::WebServer::WebConnection::ResponseSSE(Int32 timeoutMS, SSEDisconnectHa
 	this->cli->SetTimeout(timeoutMS);
 	this->sseHdlrObj = userObj;
 	this->sseHdlr = hdlr;
-	this->AddContentType(UTF8STRC("text/event-stream"));
+	this->AddContentType(CSTR("text/event-stream"));
 	if (!this->respHeaderSent)
 	{
 		this->SendHeaders(this->currReq->GetProtocol());
