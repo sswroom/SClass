@@ -538,7 +538,7 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		}
 		else if (currPos == 2)
 		{
-			currMax = Data::DateTime::DayInMonth((UInt16)values[0], (UInt8)values[1]);
+			currMax = Data::DateTimeUtil::DayInMonth((UInt16)values[0], (UInt8)values[1]);
 			currMin = 1;
 			console->SetCursorPos(state.currX + 8, state.currY);
 		}
@@ -614,8 +614,8 @@ IO::ConsoleInput::InputReturnType IO::ConsoleInput::InputDateTime(IO::ConsoleWri
 		return IRT_ESCAPE;
 	if (values[currPos] < currMin)
 		values[currPos] = currMin;
-	if (values[2] > Data::DateTime::DayInMonth((UInt16)values[0], (UInt8)values[1]))
-		values[2] = Data::DateTime::DayInMonth((UInt16)values[0], (UInt8)values[1]);
+	if (values[2] > Data::DateTimeUtil::DayInMonth((UInt16)values[0], (UInt8)values[1]))
+		values[2] = Data::DateTimeUtil::DayInMonth((UInt16)values[0], (UInt8)values[1]);
 	output->SetValue((UInt16)values[0], (UInt8)values[1], (UInt8)values[2], (UInt8)values[3], (UInt8)values[4], (UInt8)values[5], 0);
 	if (i == 0xd)
 		return IRT_ENTER;

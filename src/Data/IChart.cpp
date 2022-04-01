@@ -250,13 +250,13 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 	}
     
 	timeDif = max->DiffMS(min);
-	if (timeFormat == 0 || Data::DateTime::MS2Days(timeDif) * minLeng / leng >= 1)
+	if (timeFormat == 0 || Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng >= 1)
 	{
 		sptr = min->ToString(sbuff, dateFormat);
 		locations->Add(0);
 		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 
-		scale = Data::DateTime::MS2Days(timeDif) * minLeng / leng;
+		scale = Data::DateTimeUtil::MS2Days(timeDif) * minLeng / leng;
 		lScale = (Int32)(Math_Log10(scale));
 		iScale = Double2Int32(Math_Pow(10, lScale));
 		if (scale / iScale <= 2)
@@ -275,7 +275,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 		}
 		while (currDate < max)
 		{
-			pos = (Single)(Data::DateTime::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTime::MS2Minutes(max->DiffMS(min)));
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
 			if ((pos > minLeng) && (pos < leng - minLeng))
 			{
 				sptr = currDate.ToString(sbuff, dateFormat);
@@ -290,7 +290,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 		locations->Add(leng);
 		labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 	}
-	else if (Data::DateTime::MS2Hours(timeDif) * minLeng / leng >= 1)
+	else if (Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
@@ -305,7 +305,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 		
-		scale = Data::DateTime::MS2Hours(timeDif) * minLeng / leng;
+		scale = Data::DateTimeUtil::MS2Hours(timeDif) * minLeng / leng;
 		if (scale <= 2)
 			iScale = 2;
 		else if (scale <= 3)
@@ -319,10 +319,10 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		currDate = min;
 		currDate.ClearTime();
-		currDate.AddHour(iScale + (Int32)(Data::DateTime::MS2Hours(min->GetMSPassedDate()) / iScale) * iScale);
+		currDate.AddHour(iScale + (Int32)(Data::DateTimeUtil::MS2Hours(min->GetMSPassedDate()) / iScale) * iScale);
 		while (currDate < max)
 		{
-			pos = (Single)(Data::DateTime::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTime::MS2Minutes(max->DiffMS(min)));
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
 			if ((pos > minLeng) && (pos < leng - minLeng))
 			{
 				if (currDate.GetMSPassedDate() == 0)
@@ -355,7 +355,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
-	else if (!hasSecond || Data::DateTime::MS2Minutes(timeDif) * minLeng / leng >= 1)
+	else if (!hasSecond || Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
@@ -370,7 +370,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 
-		scale = Data::DateTime::MS2Minutes(timeDif) * minLeng / leng;
+		scale = Data::DateTimeUtil::MS2Minutes(timeDif) * minLeng / leng;
 		if (scale <= 1)
 			iScale = 1;
 		else if (scale <= 2)
@@ -388,10 +388,10 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		currDate = min;
 		currDate.ClearTime();
-		currDate.AddMinute(iScale + (Int32)(Data::DateTime::MS2Minutes(min->GetMSPassedDate()) / iScale) * iScale);
+		currDate.AddMinute(iScale + (Int32)(Data::DateTimeUtil::MS2Minutes(min->GetMSPassedDate()) / iScale) * iScale);
 		while (currDate < max)
 		{
-			pos = (Single)(Data::DateTime::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTime::MS2Minutes(max->DiffMS(min)));
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
 			if ((pos > minLeng) && (pos < leng - minLeng))
 			{
 				if (currDate.GetMSPassedDate() == 0)
@@ -424,7 +424,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 	}
-	else if (Data::DateTime::MS2Seconds(timeDif) >= 1)
+	else if (Data::DateTimeUtil::MS2Seconds(timeDif) >= 1)
 	{
 		if (min->GetMSPassedDate() == 0)
 		{
@@ -439,7 +439,7 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 			labels->Add(Text::String::New(sbuff, (UOSInt)(sptr - sbuff)));
 		}
 
-		scale = Data::DateTime::MS2Seconds(timeDif) * minLeng / leng;
+		scale = Data::DateTimeUtil::MS2Seconds(timeDif) * minLeng / leng;
 		if (scale <= 1)
 			iScale = 1;
 		else if (scale <= 2)
@@ -457,10 +457,10 @@ UOSInt Data::IChart::CalScaleMarkDate(Data::ArrayListDbl *locations, Data::Array
 
 		currDate = min;
 		currDate.ClearTime();
-		currDate.AddSecond(iScale + (Int32)(Data::DateTime::MS2Seconds(min->GetMSPassedDate()) / iScale) * iScale);
+		currDate.AddSecond(iScale + (Int32)(Data::DateTimeUtil::MS2Seconds(min->GetMSPassedDate()) / iScale) * iScale);
 		while (currDate < max)
 		{
-			pos = (Single)(Data::DateTime::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTime::MS2Minutes(max->DiffMS(min)));
+			pos = (Single)(Data::DateTimeUtil::MS2Minutes(currDate.DiffMS(min)) * leng / Data::DateTimeUtil::MS2Minutes(max->DiffMS(min)));
 			if ((pos > minLeng) && (pos < leng - minLeng))
 			{
 				if (currDate.GetMSPassedDate() == 0)

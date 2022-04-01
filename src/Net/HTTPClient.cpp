@@ -272,7 +272,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 				j = Text::StrSplitP(ptrs2, 3, ptrs[3], ':');
 				if (j == 3)
 				{
-					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+					dt->SetValue((UInt16)Text::StrToUInt32(ptrs[2].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 				}
 			}
 		}
@@ -283,7 +283,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 			{
 				Text::StrSplitP(ptrs2, 3, ptrs[1], ':');
 				Text::StrSplitP(ptrs3, 3, ptrs[0], '-');
-				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTime::ParseMonthStr(ptrs3[1].v, ptrs3[1].leng), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				dt->SetValue((UInt16)(Text::StrToUInt32(ptrs3[2].v) + (UInt32)((dt->GetYear() / 100) * 100)), Data::DateTimeUtil::ParseMonthStr(ptrs3[1].v, ptrs3[1].leng), Text::StrToInt32(ptrs3[0].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}
@@ -296,7 +296,7 @@ void Net::HTTPClient::ParseDateStr(Data::DateTime *dt, Text::CString dateStr)
 			j = Text::StrSplitP(ptrs2, 3, ptrs[i - 2], ':');
 			if (j == 3)
 			{
-				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTime::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
+				dt->SetValue((UInt16)Text::StrToUInt32(ptrs[i - 1].v), Data::DateTimeUtil::ParseMonthStr(ptrs[1].v, ptrs[1].leng), Text::StrToInt32(ptrs[i - 3].v), Text::StrToInt32(ptrs2[0].v), Text::StrToInt32(ptrs2[1].v), Text::StrToInt32(ptrs2[2].v), 0);
 			}
 		}
 	}

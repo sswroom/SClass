@@ -1,5 +1,6 @@
 #ifndef _SM_DATA_DATETIME
 #define _SM_DATA_DATETIME
+#include "Data/DateTimeUtil.h"
 #include "Data/IComparable.h"
 #include "Text/PString.h"
 
@@ -11,51 +12,27 @@ namespace Data
 {
 	class DateTime// : public Data::IComparable
 	{
-	public:
-		enum class Weekday
-		{
-			Sunday,
-			Monday,
-			Tuesday,
-			Wednesday,
-			Thursday,
-			Friday,
-			Saturday
-		};
-
+	private:
 		enum class TimeType
 		{
 			None,
 			Ticks,
 			Time
 		};
-		struct TimeValue
-		{
-			UInt16 year;
-			UInt8 month;
-			UInt8 day;
-			UInt8 hour;
-			UInt8 minute;
-			UInt8 second;
-			UInt16 ms;
-		};
-	private:
-		static Int8 localTzQhr;
-		static Bool localTzValid;
-
+		
 		TimeType timeType;
 		Int8 tzQhr; //* 15 minutes
 		union
 		{
 			Int64 ticks;
-			TimeValue t;
+			Data::DateTimeUtil::TimeValue t;
 		} val;
 
 	private:
-		TimeValue *GetTimeValue();
+		Data::DateTimeUtil::TimeValue *GetTimeValue();
 
-		static void SetDate(TimeValue *t, Text::PString *dateStrs);
-		static void SetTime(TimeValue *t, Text::PString *timeStrs);
+		static void SetDate(Data::DateTimeUtil::TimeValue *t, Text::PString *dateStrs);
+		static void SetTime(Data::DateTimeUtil::TimeValue *t, Text::PString *timeStrs);
 		void FixValues();
 	public:
 		DateTime();
@@ -139,19 +116,7 @@ namespace Data
 		void ConvertTimeZoneQHR(Int8 tzQhr);
 		void SetTimeZoneQHR(Int8 tzQhr);
 		Int8 GetTimeZoneQHR();
-		Weekday GetWeekday();
-
-		static Int64 TimeValue2Ticks(TimeValue *t, Int8 tzQr);
-		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQr);
-
-		static Bool IsYearLeap(UInt16 year);
-		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);
-		static Double MS2Days(Int64 ms);
-		static Double MS2Hours(Int64 ms);
-		static Double MS2Minutes(Int64 ms);
-		static Double MS2Seconds(Int64 ms);
-		static UInt8 DayInMonth(UInt16 year, UInt8 month);
-		static Int8 GetLocalTzQhr();
+		Data::DateTimeUtil::Weekday GetWeekday();
 	};
 }
 #endif

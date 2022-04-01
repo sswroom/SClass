@@ -107,25 +107,25 @@ Bool Net::Email::EmailMessage::SetSentDate(Data::DateTime *dt)
 	UTF8Char *sptr;
 	switch (dt->GetWeekday())
 	{
-	case Data::DateTime::Weekday::Sunday:
+	case Data::DateTimeUtil::Weekday::Sunday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Sun, "));
 		break;
-	case Data::DateTime::Weekday::Monday:
+	case Data::DateTimeUtil::Weekday::Monday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Mon, "));
 		break;
-	case Data::DateTime::Weekday::Tuesday:
+	case Data::DateTimeUtil::Weekday::Tuesday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Tue, "));
 		break;
-	case Data::DateTime::Weekday::Wednesday:
+	case Data::DateTimeUtil::Weekday::Wednesday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Wed, "));
 		break;
-	case Data::DateTime::Weekday::Thursday:
+	case Data::DateTimeUtil::Weekday::Thursday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Thu, "));
 		break;
-	case Data::DateTime::Weekday::Friday:
+	case Data::DateTimeUtil::Weekday::Friday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Fri, "));
 		break;
-	case Data::DateTime::Weekday::Saturday:
+	case Data::DateTimeUtil::Weekday::Saturday:
 		sptr = Text::StrConcatC(sbuff, UTF8STRC("Sat, "));
 		break;
 	default:

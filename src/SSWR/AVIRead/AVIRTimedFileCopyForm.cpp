@@ -29,7 +29,7 @@ void __stdcall SSWR::AVIRead::AVIRTimedFileCopyForm::OnStartClicked(void *userOb
 		UI::MessageDialog::ShowDialog(CSTR("The start time is after end time"), me->GetFormName(), me);
 		return;
 	}
-	Double days = Data::DateTime::MS2Days(dt2.DiffMS(&dt1));
+	Double days = Data::DateTimeUtil::MS2Days(dt2.DiffMS(&dt1));
 	if (days > 90)
 	{
 		UI::MessageDialog::ShowDialog(CSTR("The time range is longer than 90 days"), me->GetFormName(), me);

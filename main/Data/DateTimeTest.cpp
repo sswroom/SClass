@@ -4,7 +4,9 @@
 #include "Data/DateTime.h"
 #include "IO/ConsoleWriter.h"
 
-#if !defined(_WIN32) && !defined(_WIN32_WCE) && !defined(CPU_AVR)
+#if defined(_WIN32) || defined(_WIN32_WCE)
+#include <windows.h>
+#elif !defined(CPU_AVR)
 #include <sys/time.h>
 #endif
 
@@ -41,18 +43,30 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 #endif
 
+	Int32 newTZ;
+#if defined(_WIN32) || defined(_WIN32_WCE)
+	TIME_ZONE_INFORMATION tz;
+	tz.Bias = 0;
+	GetTimeZoneInformation(&tz);
+	newTZ = tz.Bias / -15;
+#else
 	time_t now = time(0);
 	tm *t = localtime(&now);
-	Int32 newTZ = (Int32)(t->tm_gmtoff / 900);
+	newTZ = (Int32)(t->tm_gmtoff / 900);
+#endif
 	dt.SetTimeZoneQHR((Int8)newTZ);
 
+#if !defined(_WIN32) && !defined(_WIN32_WCE)
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	dt.SetUnixTimestamp(ts.tv_sec);
 	dt.SetMS((UInt16)(ts.tv_nsec / 1000000));
 	sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("clock_gettime: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
+#endif
 
+	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("clock_gettime: ")), Data::DateTimeUtil::GetCurrTimeMillis());
+	console.WriteLineCStr(CSTRP(sbuff, sptr));
 	return 0;
 }
 

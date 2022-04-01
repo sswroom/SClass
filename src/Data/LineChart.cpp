@@ -1361,7 +1361,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < xDataCnt)
 			{
-				currPos[j << 1] = (DRAW_UNIT)(x + y1Leng + this->pointSize + Data::DateTime::MS2Minutes(data[j] - xMinDate) / Data::DateTime::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
+				currPos[j << 1] = (DRAW_UNIT)(x + y1Leng + this->pointSize + Data::DateTimeUtil::MS2Minutes(data[j] - xMinDate) / Data::DateTimeUtil::MS2Minutes(xMaxDate - xMinDate) * xChartLeng);
 				j++;
 			}
 		}
@@ -1454,7 +1454,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 			j = 0;
 			while (j < chart->dataCnt)
 			{
-				currPos[(j << 1) + 1] = (DRAW_UNIT)(y + height - this->pointSize - xLeng - Data::DateTime::MS2Minutes(data[j] - dMin) / Data::DateTime::MS2Minutes(dMax - dMin) * xChartLeng);
+				currPos[(j << 1) + 1] = (DRAW_UNIT)(y + height - this->pointSize - xLeng - Data::DateTimeUtil::MS2Minutes(data[j] - dMin) / Data::DateTimeUtil::MS2Minutes(dMax - dMin) * xChartLeng);
 				j++;
 			}
 		}
@@ -1618,7 +1618,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				tMin = y1MinDate;
 				if (this->refTime >= tMin && this->refTime <= tMax)
 				{
-					yPos = (Single)(y + height - xLeng - Data::DateTime::MS2Minutes(this->refTime - tMin) / Data::DateTime::MS2Minutes(tMax - tMin) * xChartLeng);
+					yPos = (Single)(y + height - xLeng - Data::DateTimeUtil::MS2Minutes(this->refTime - tMin) / Data::DateTimeUtil::MS2Minutes(tMax - tMin) * xChartLeng);
 					img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
 				}
 			}
@@ -1628,7 +1628,7 @@ void Data::LineChart::Plot(Media::DrawImage *img, Double x, Double y, Double wid
 				tMin = y2MinDate;
 				if (this->refTime >= tMin && this->refTime <= tMax)
 				{
-					yPos = (Single)(y + height - xLeng - Data::DateTime::MS2Minutes(this->refTime - tMin) / Data::DateTime::MS2Minutes(tMax - tMin) * xChartLeng);
+					yPos = (Single)(y + height - xLeng - Data::DateTimeUtil::MS2Minutes(this->refTime - tMin) / Data::DateTimeUtil::MS2Minutes(tMax - tMin) * xChartLeng);
 					img->DrawLine((DRAW_UNIT)(x + y1Leng), (DRAW_UNIT)yPos, (DRAW_UNIT)(x + width - y2Leng), (DRAW_UNIT)yPos, refLinePen);
 				}
 			}

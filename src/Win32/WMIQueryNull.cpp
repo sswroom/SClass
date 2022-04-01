@@ -47,7 +47,7 @@ DB::DBConn::ConnType Win32::WMIQuery::GetConnType()
 
 Int8 Win32::WMIQuery::GetTzQhr()
 {
-	return Data::DateTime::GetLocalTzQhr();
+	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 void Win32::WMIQuery::ForceTz(Int8 tzQhr)
