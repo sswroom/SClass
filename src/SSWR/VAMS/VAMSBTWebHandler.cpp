@@ -40,7 +40,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::LogData(Net::WebServer::IWebRequest
 	SSWR::VAMS::VAMSBTWebHandler *me = (SSWR::VAMS::VAMSBTWebHandler*)hdlr;
 	Int32 progId;
 	Int32 logDate;
-	if (!req->GetHTTPFormInt32(CSTR("progId"), &progId) || !req->GetHTTPFormInt32(CSTR("logDate"), &logDate))
+	if (!req->GetQueryValueI32(CSTR("progId"), &progId) || !req->GetQueryValueI32(CSTR("logDate"), &logDate))
 	{
 		resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 		return true;

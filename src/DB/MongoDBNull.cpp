@@ -1,7 +1,7 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
 #include "DB/MongoDB.h"
-\
+
 Int32 DB::MongoDB::initCnt = 0;
 
 DB::MongoDB::MongoDB(Text::CString url, Text::CString database, IO::LogTool *log) : DB::ReadingDB(url)
