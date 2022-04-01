@@ -131,7 +131,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListData(Net::WebServer::IWebReques
 		sb.AppendC(UTF8STRC("</td></tr>"));
 		i++;
 	}
-	sb.AppendC(UTF8STRC("</table><a href=\"listdata\">Back</a></body></html>"));
+	sb.AppendC(UTF8STRC("</table></body></html>"));
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);
 	resp->ResponseText(sb.ToCString(), CSTR("text/html"));
@@ -178,7 +178,7 @@ Bool __stdcall SSWR::VAMS::VAMSBTWebHandler::ListItem(Net::WebServer::IWebReques
 		sb.AppendC(UTF8STRC("</td></tr>"));
 		i++;
 	}
-	sb.AppendC(UTF8STRC("</table></body></html>"));
+	sb.AppendC(UTF8STRC("</table><a href=\"listdata\">Back</a></body></html>"));
 	resp->AddDefHeaders(req);
 	resp->AddCacheControl(0);
 	resp->ResponseText(sb.ToCString(), CSTR("text/html"));
