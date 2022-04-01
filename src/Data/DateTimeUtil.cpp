@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "Data/ByteTool.h"
 #include "Data/DateTimeUtil.h"
 #include "Text/MyString.h"
 
@@ -378,6 +379,498 @@ void Data::DateTimeUtil::Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr)
 Data::DateTimeUtil::Weekday Data::DateTimeUtil::Ticks2Weekday(Int64 ticks, Int8 tzQhr)
 {
 	return (Data::DateTimeUtil::Weekday)(((ticks + tzQhr * 900000) / 86400000 + 4) % 7);
+}
+
+UTF8Char *Data::DateTimeUtil::ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, const UTF8Char *pattern)
+{
+	while (*pattern)
+	{
+		switch (*pattern)
+		{
+		case 'y':
+		{
+			UInt16 thisVal = tval->year;
+			UInt8 digiCnt = 1;
+			pattern++;
+			while (*pattern == 'y')
+			{
+				digiCnt++;
+				pattern++;
+			}
+			sbuff += digiCnt;
+			UTF8Char *src = sbuff;
+			while (digiCnt >= 2)
+			{
+				src -= 2;
+				WriteNUInt16(src, ReadNUInt16(&MyString_StrDigit100U8[(thisVal % 100) * 2]));
+				thisVal = thisVal / 100;
+				digiCnt = (UInt8)(digiCnt - 2);
+			}
+			if (digiCnt > 0)
+			{
+				*--src = (UTF8Char)((thisVal % 10) + 0x30);
+			}
+			break;
+		}
+		case 'm':
+		{
+			pattern++;
+			if (*pattern != 'm')
+			{
+				if (tval->minute < 10)
+				{
+					*sbuff++ = (UTF8Char)(tval->minute + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
+					sbuff += 2;
+				}
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->minute * 2]));
+				sbuff += 2;
+
+				pattern++;
+//				while (*pattern == 'm')
+//					pattern++;
+			}
+			break;
+		}
+		case 's':
+		{
+			pattern++;
+			if (*pattern != 's')
+			{
+				if (tval->second < 10)
+				{
+					*sbuff++ = (UTF8Char)(tval->second + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
+					sbuff += 2;
+				}
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->second * 2]));
+				sbuff += 2;
+
+				pattern++;
+//				while (*pattern == 's')
+//					pattern++;
+			}
+			break;
+		}
+		case 'd':
+		{
+			pattern++;
+			if (*pattern != 'd')
+			{
+				if (tval->day < 10)
+				{
+					*sbuff++ = (UTF8Char)(tval->day + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
+					sbuff += 2;
+				}
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->day * 2]));
+				sbuff += 2;
+
+				pattern++;
+//				while (*pattern == 'd')
+//					pattern++;
+			}
+			break;
+		}
+		case 'f':
+		{
+			if (pattern[1] != 'f')
+			{
+				*sbuff = (UTF8Char)((tval->ms / 100) + 0x30);
+				pattern += 1;
+				sbuff++;
+			}
+			else if (pattern[2] != 'f')
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
+				sbuff += 2;
+				pattern += 2;
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[(tval->ms / 10) * 2]));
+				sbuff[2] = (UTF8Char)((tval->ms % 10) + 0x30);
+				sbuff += 3;
+				pattern += 3;
+			}
+			break;
+		}
+		case 'F':
+		{
+			UInt8 digiCnt;
+			UInt16 thisMS;
+			if (pattern[1] != 'F')
+			{
+				digiCnt = 1;
+				thisMS = tval->ms / 100;
+				pattern += 1;
+			}
+			else if (pattern[2] != 'F')
+			{
+				digiCnt = 2;
+				thisMS = tval->ms / 10;
+				pattern += 2;
+			}
+			else
+			{
+				digiCnt = 3;
+				thisMS = tval->ms ;
+				pattern += 3;
+			}
+
+			while ((thisMS % 10) == 0)
+			{
+				thisMS = thisMS / 10;
+				if (--digiCnt <= 0)
+					break;
+			}
+			sbuff += digiCnt;
+			UTF8Char *src = sbuff;
+			while (digiCnt-- > 0)
+			{
+				*--src = (UTF8Char)((thisMS % 10) + 0x30);
+				thisMS = thisMS / 10;
+			}
+			break;
+		}
+		case 'h':
+		{
+			UInt8 thisH = tval->hour % 12;
+			pattern++;
+			if (*pattern != 'h')
+			{
+				if (thisH < 10)
+				{
+					*sbuff++ = (UTF8Char)(thisH + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
+					sbuff += 2;
+				}
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[thisH * 2]));
+				sbuff += 2;
+				pattern++;
+
+//				while (*pattern == 'h')
+//					pattern++;
+			}
+			break;
+		}
+		case 'H':
+		{
+			pattern++;
+			if (*pattern != 'H')
+			{
+				if (tval->hour < 10)
+				{
+					*sbuff++ = (UTF8Char)(tval->hour + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
+					sbuff += 2;
+				}
+			}
+			else
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->hour * 2]));
+				sbuff += 2;
+
+				pattern++;
+//				while (*pattern == 'H')
+//					pattern++;
+			}
+			break;
+		}
+		case 'M':
+		{
+			if (pattern[1] != 'M')
+			{
+				if (tval->month < 10)
+				{
+					*sbuff++ = (UTF8Char)(tval->month + 0x30);
+				}
+				else
+				{
+					WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
+					sbuff += 2;
+				}
+				pattern += 1;
+			}
+			else if (pattern[2] != 'M')
+			{
+				WriteNUInt16(sbuff, ReadNUInt16(&MyString_StrDigit100U8[tval->month * 2]));
+				sbuff += 2;
+				pattern += 2;
+			}
+			else if (pattern[3] != 'M')
+			{
+				static const Char *monthStr3[] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+				WriteNUInt32(sbuff, ReadNUInt32((const UInt8*)monthStr3[tval->month - 1]));
+				sbuff += 3;
+				pattern += 3;
+			}
+			else
+			{
+				switch (tval->month)
+				{
+				case 1:
+					*sbuff++ = 'J';
+					*sbuff++ = 'a';
+					*sbuff++ = 'n';
+					*sbuff++ = 'u';
+					*sbuff++ = 'a';
+					*sbuff++ = 'r';
+					*sbuff++ = 'y';
+					break;
+				case 2:
+					*sbuff++ = 'F';
+					*sbuff++ = 'e';
+					*sbuff++ = 'b';
+					*sbuff++ = 'r';
+					*sbuff++ = 'u';
+					*sbuff++ = 'a';
+					*sbuff++ = 'r';
+					*sbuff++ = 'y';
+					break;
+				case 3:
+					*sbuff++ = 'M';
+					*sbuff++ = 'a';
+					*sbuff++ = 'r';
+					*sbuff++ = 'c';
+					*sbuff++ = 'h';
+					break;
+				case 4:
+					*sbuff++ = 'A';
+					*sbuff++ = 'p';
+					*sbuff++ = 'r';
+					*sbuff++ = 'i';
+					*sbuff++ = 'l';
+					break;
+				case 5:
+					*sbuff++ = 'M';
+					*sbuff++ = 'a';
+					*sbuff++ = 'y';
+					break;
+				case 6:
+					*sbuff++ = 'J';
+					*sbuff++ = 'u';
+					*sbuff++ = 'n';
+					*sbuff++ = 'e';
+					break;
+				case 7:
+					*sbuff++ = 'J';
+					*sbuff++ = 'u';
+					*sbuff++ = 'l';
+					*sbuff++ = 'y';
+					break;
+				case 8:
+					*sbuff++ = 'A';
+					*sbuff++ = 'u';
+					*sbuff++ = 'g';
+					*sbuff++ = 'u';
+					*sbuff++ = 's';
+					*sbuff++ = 't';
+					break;
+				case 9:
+					*sbuff++ = 'S';
+					*sbuff++ = 'e';
+					*sbuff++ = 'p';
+					*sbuff++ = 't';
+					*sbuff++ = 'e';
+					*sbuff++ = 'm';
+					*sbuff++ = 'b';
+					*sbuff++ = 'e';
+					*sbuff++ = 'r';
+					break;
+				case 10:
+					*sbuff++ = 'O';
+					*sbuff++ = 'c';
+					*sbuff++ = 't';
+					*sbuff++ = 'o';
+					*sbuff++ = 'b';
+					*sbuff++ = 'e';
+					*sbuff++ = 'r';
+					break;
+				case 11:
+					*sbuff++ = 'N';
+					*sbuff++ = 'o';
+					*sbuff++ = 'v';
+					*sbuff++ = 'e';
+					*sbuff++ = 'm';
+					*sbuff++ = 'b';
+					*sbuff++ = 'e';
+					*sbuff++ = 'r';
+					break;
+				case 12:
+					*sbuff++ = 'D';
+					*sbuff++ = 'e';
+					*sbuff++ = 'c';
+					*sbuff++ = 'e';
+					*sbuff++ = 'm';
+					*sbuff++ = 'b';
+					*sbuff++ = 'e';
+					*sbuff++ = 'r';
+					break;
+				}
+
+				pattern += 4;
+				while (*pattern == 'M')
+					pattern++;
+			}
+			break;
+		}
+		case 't':
+		{
+			if (pattern[1] != 't')
+			{
+				if (tval->hour >= 12)
+				{
+					*sbuff++ = 'P';
+				}
+				else
+				{
+					*sbuff++ = 'A';
+				}
+				pattern += 1;
+			}
+			else
+			{
+				if (tval->hour >= 12)
+				{
+					sbuff[0] = 'P';
+				}
+				else
+				{
+					sbuff[0] = 'A';
+				}
+				sbuff[1] = 'M';
+				sbuff += 2;
+				pattern += 2;
+				while (*pattern == 't')
+					pattern++;
+			}
+			break;
+		}
+		case 'z':
+		{
+			Int32 hr = tzQhr >> 2;
+			Int32 min = (tzQhr & 3) * 15;
+			if (pattern[1] != 'z')
+			{
+				if (hr >= 0)
+				{
+					sbuff[0] = '+';
+				}
+				else
+				{
+					sbuff[0] = '-';
+					hr = -hr;
+				}
+				if (hr >= 10)
+				{
+					WriteNUInt16(&sbuff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
+					sbuff += 3;
+				}
+				else
+				{
+					sbuff[1] = (UTF8Char)(hr + 0x30);
+					sbuff += 2;
+				}
+				pattern++;
+			}
+			else if (pattern[2] != 'z')
+			{
+				if (hr >= 0)
+				{
+					sbuff[0] = '+';
+				}
+				else
+				{
+					sbuff[0] = '-';
+					hr = -hr;
+				}
+				WriteNUInt16(&sbuff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
+				sbuff += 3;
+				pattern += 2;
+			}
+			else if (pattern[3] != 'z')
+			{
+				if (hr >= 0)
+				{
+					sbuff[0] = '+';
+				}
+				else
+				{
+					sbuff[0] = '-';
+					hr = -hr;
+				}
+				WriteNUInt16(&sbuff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
+				WriteNUInt16(&sbuff[3], ReadNUInt16(&MyString_StrDigit100U8[min * 2]));
+				sbuff += 5;
+				pattern += 3;
+			}
+			else
+			{
+				if (hr >= 0)
+				{
+					sbuff[0] = '+';
+				}
+				else
+				{
+					sbuff[0] = '-';
+					hr = -hr;
+				}
+				WriteNUInt16(&sbuff[1], ReadNUInt16(&MyString_StrDigit100U8[hr * 2]));
+				sbuff[3] = ':';
+				WriteNUInt16(&sbuff[4], ReadNUInt16(&MyString_StrDigit100U8[min * 2]));
+				sbuff += 6;
+				pattern += 4;
+				while (*pattern == 'z')
+					pattern++;
+			}
+			break;
+		}
+		case '\\':
+		{
+			if (pattern[1] == 0)
+				*sbuff++ = (UTF8Char)*pattern++;
+			else
+			{
+				pattern++;
+				*sbuff++ = (UTF8Char)*pattern++;
+			}
+			break;
+		}
+		default:
+			*sbuff++ = (UTF8Char)*pattern++;
+			break;
+		}
+	}
+	*sbuff = 0;
+	return sbuff;
 }
 
 Bool Data::DateTimeUtil::IsYearLeap(UInt16 year)

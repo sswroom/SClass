@@ -39,6 +39,7 @@ namespace Data
 		static Int64 TimeValue2Ticks(TimeValue *t, Int8 tzQr);
 		static void Ticks2TimeValue(Int64 ticks, TimeValue *t, Int8 tzQhr);
 		static Weekday Ticks2Weekday(Int64 ticks, Int8 tzQhr);
+		static UTF8Char *ToString(UTF8Char *sbuff, const TimeValue *tval, Int8 tzQhr, const UTF8Char *pattern);
 
 		static Bool IsYearLeap(UInt16 year);
 		static UInt8 ParseMonthStr(const UTF8Char *month, UOSInt monthLen);

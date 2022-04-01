@@ -2,6 +2,7 @@
 #include "MyMemory.h"
 #include "Core/Core.h"
 #include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "IO/ConsoleWriter.h"
 
 #if defined(_WIN32) || defined(_WIN32_WCE)
@@ -65,7 +66,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
 #endif
 
-	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("clock_gettime: ")), Data::DateTimeUtil::GetCurrTimeMillis());
+	sptr = Text::StrInt64(Text::StrConcatC(sbuff, UTF8STRC("GetCurrTimeMillis: ")), Data::DateTimeUtil::GetCurrTimeMillis());
+	console.WriteLineCStr(CSTRP(sbuff, sptr));
+
+	sptr = Data::Timestamp::Now().ToString(Text::StrConcatC(sbuff, UTF8STRC("Timestamp.Now: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
 	return 0;
 }
