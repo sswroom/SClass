@@ -63,6 +63,7 @@ nodeps:
 @RC2Test
 @RSATest
 @X509Test
+@DateTimeTest
 @SortSpeed
 @DBDataFileTest
 @FileGDBTest
@@ -238,6 +239,9 @@ X509Test:
 @ConsoleStartup.o
 
 #Data
+DateTimeTest:
+@DateTimeTest.o
+@ConsoleStartup.o
 SortSpeed:
 @SortSpeed.o
 @ConsoleStartup.o
@@ -868,6 +872,7 @@ JasyptEncryptorTest.o: ../../main/CryptoTest/JasyptEncryptorTest.cpp
 RC2Test.o: ../../main/CryptoTest/RC2Test.cpp
 RSATest.o: ../../main/CryptoTest/RSATest.cpp
 X509Test.o: ../../main/CryptoTest/X509Test.cpp
+DateTimeTest.o: ../../main/Data/DateTimeTest.cpp
 SortSpeed.o: ../../main/Data/SortSpeed.cpp
 DBDataFileTest.o: ../../main/DB/DBDataFileTest.cpp
 FileGDBTest.o: ../../main/DB/FileGDBTest.cpp
