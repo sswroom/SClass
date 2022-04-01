@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(tableName->ToCString(), 0, 0, 0, 0, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -57,14 +57,14 @@ Data::Int32Map<const UTF8Char **> *Map::FileGDBLayer::ReadNameArr()
 	}
 }
 
-Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourceName, const UTF8Char *tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
+Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
 {
 	UInt8 *buff = 0; 
 	conn->UseObject();
 	this->conn = conn;
 	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
 	NEW_CLASS(this->colNames, Data::ArrayList<Text::String*>());
-	this->tableName = Text::StrCopyNew(tableName);
+	this->tableName = Text::String::New(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
@@ -79,13 +79,13 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseDB(&mutUsage);
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, 0, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, 0, 0);
 	if (r)
 	{
 		UOSInt i;
 		UOSInt j;
 		DB::ColDef *colDef;
-		NEW_CLASS(colDef, DB::ColDef((const UTF8Char*)""));
+		NEW_CLASS(colDef, DB::ColDef(CSTR("")));
 		i = 0;
 		j = r->ColCount();
 		while (i < j)
@@ -98,13 +98,13 @@ Map::FileGDBLayer::FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourc
 				if (prj && prj->v[0])
 				{
 					Math::CoordinateSystem *csys2 = 0;
-					if (Text::StrStartsWith(prj->v, (const UTF8Char*)"EPSG:"))
+					if (prj->StartsWith(UTF8STRC("EPSG:")))
 					{
 						csys2 = Math::CoordinateSystemManager::SRCreateCSys(Text::StrToUInt32(&prj->v[5]));
 					}
 					else
 					{
-						csys2 = Math::CoordinateSystemManager::ParsePRJFile(prj->v);
+						csys2 = Math::CoordinateSystemManager::ParsePRJFile(prj->ToCString());
 					}
 					if (csys2)
 					{
@@ -197,7 +197,7 @@ Map::FileGDBLayer::~FileGDBLayer()
 		DEL_CLASS(vec);
 	}
 	DEL_CLASS(this->objects);
-	Text::StrDelNew(tableName);
+	this->tableName->Release();
 }
 
 Map::DrawLayerType Map::FileGDBLayer::GetLayerType()
@@ -228,7 +228,7 @@ UOSInt Map::FileGDBLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void *
 	}
 	UOSInt cnt = 0;
 	Data::ArrayList<Math::Vector2D*> *vecList = this->objects->GetValues();
-	Data::SortableArrayList<Int32> *vecKeys = this->objects->GetKeys();
+	Data::SortableArrayListNative<Int32> *vecKeys = this->objects->GetKeys();
 	Double minX;
 	Double minY;
 	Double maxX;
@@ -374,19 +374,19 @@ void Map::FileGDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 }
 
-UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Map::FileGDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	names->Add(this->tableName);
+	names->Add(this->tableName->ToCString());
 	return 1;
 }
 
-DB::DBReader *Map::FileGDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, const UTF8Char *ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::FileGDBLayer::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseDB(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *rdr = this->currDB->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::FileGDBLReader *r;
@@ -405,7 +405,7 @@ void Map::FileGDBLayer::CloseReader(DB::DBReader *r)
 	this->currDB = 0;
 }
 
-void Map::FileGDBLayer::GetErrorMsg(Text::StringBuilderUTF *str)
+void Map::FileGDBLayer::GetErrorMsg(Text::StringBuilderUTF8 *str)
 {
 	if (this->lastDB)
 	{
@@ -466,7 +466,7 @@ WChar *Map::FileGDBLReader::GetStr(UOSInt colIndex, WChar *buff)
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, buff);
 }
 
-Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb)
+Bool Map::FileGDBLReader::GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb)
 {
 	return this->r->GetStr((colIndex > 0)?(colIndex + 1):colIndex, sb);
 }

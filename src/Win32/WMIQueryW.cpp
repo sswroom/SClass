@@ -70,7 +70,7 @@ Win32::WMIQuery::~WMIQuery()
 		UOSInt i = this->tabNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tabNames->GetItem(i));
+			this->tabNames->GetItem(i)->Release();
 		}
 		DEL_CLASS(this->tabNames);
 	}
@@ -94,7 +94,7 @@ DB::DBConn::ConnType Win32::WMIQuery::GetConnType()
 
 Int8 Win32::WMIQuery::GetTzQhr()
 {
-	return Data::DateTime::GetLocalTzQhr();
+	return Data::DateTimeUtil::GetLocalTzQhr();
 }
 
 void Win32::WMIQuery::ForceTz(Int8 tzQhr)
@@ -117,29 +117,29 @@ void Win32::WMIQuery::Close()
 	}
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CString sql)
 {
-	const WChar *wptr = Text::StrToWCharNew(sql);
-	OSInt ret = ExecuteNonQuery(wptr);
+	const WChar *wptr = Text::StrToWCharNew(sql.v);
+	OSInt ret = this->ExecuteNonQueryW(wptr);
 	Text::StrDelNew(wptr);
 	return ret;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(const WChar *sql)
+OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 {
 	this->lastDataError = DE_EXEC_SQL_ERROR;
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReaderSlow(const UTF8Char *sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CString sqlCmd)
 {
-	const WChar *wptr = Text::StrToWCharNew(sqlCmd);
-	DB::DBReader *r = ExecuteReader(wptr);
+	const WChar *wptr = Text::StrToWCharNew(sqlCmd.v);
+	DB::DBReader *r = this->ExecuteReaderW(wptr);
 	Text::StrDelNew(wptr);
 	return r;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(const WChar *sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 {
 	HRESULT hr;
 	BSTR query = SysAllocString(sqlCmd);
@@ -180,7 +180,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 {
 }
 
-UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->pService == 0)
 	{
@@ -189,7 +189,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	if (this->tabNames == 0)
 	{
 		IEnumWbemClassObject *pEnum;
-		NEW_CLASS(this->tabNames, Data::ArrayListStrUTF8());
+		NEW_CLASS(this->tabNames, Data::ArrayListString());
 		HRESULT hr = ((IWbemServices *)this->pService)->CreateClassEnum(0, WBEM_FLAG_DEEP | WBEM_FLAG_RETURN_IMMEDIATELY, 0, &pEnum);
 		if (SUCCEEDED(hr))
 		{
@@ -208,7 +208,7 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 					if (SUCCEEDED(pObject->Get(L"__CLASS", 0, &v, 0, 0)))
 					{
 						BSTR bs = V_BSTR(&v);
-						this->tabNames->SortedInsert(Text::StrToUTF8New(bs));
+						this->tabNames->SortedInsert(Text::String::NewNotNull(bs));
 					}
 					VariantClear(&v);
 					pObject->Release();
@@ -222,24 +222,30 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		}
 	}
 
-	names->AddAll(this->tabNames);
-	return this->tabNames->GetCount();
+	UOSInt i = 0;
+	UOSInt j = this->tabNames->GetCount();
+	while (i < j)
+	{
+		names->Add(this->tabNames->GetItem(i)->ToCString());
+		i++;
+	}
+	return j;
 }
 
-DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
 	if (this->tabNames == 0)
 	{
-		Data::ArrayList<const UTF8Char*> names;
+		Data::ArrayList<Text::CString> names;
 		this->GetTableNames(&names);
 	}
-	if (this->tabNames->SortedIndexOf(tableName) < 0)
+	if (this->tabNames->SortedIndexOfPtr(tableName.v, tableName.leng) < 0)
 	{
 		return 0;
 	}
-	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName, 0);
-	return this->ExecuteReader(wbuff);
+	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
+	return this->ExecuteReaderW(wbuff);
 }
 
 void Win32::WMIQuery::CloseReader(DB::DBReader *reader)
@@ -274,7 +280,7 @@ UOSInt Win32::WMIQuery::GetNSList(Data::ArrayList<const WChar *> *nsList)
 	NEW_CLASS(query, Win32::WMIQuery(L"ROOT"));
 	if (!query->IsError())
 	{
-		reader = (Win32::WMIReader*)query->ExecuteReader(L"select * from __NAMESPACE");
+		reader = (Win32::WMIReader*)query->ExecuteReaderW(L"select * from __NAMESPACE");
 		if (reader)
 		{
 			while (reader->ReadNext())

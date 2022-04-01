@@ -31,13 +31,13 @@ OSInt Map::AssistedRReverseGeocoder::GetLangIndex(Int32 lcid)
 	return -i - 1;
 }
 
-Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, IO::Writer *errWriter)
+Map::AssistedRReverseGeocoder::AssistedRReverseGeocoder(Text::CString dsn, Text::CString uid, Text::CString pwd, IO::LogTool *log, IO::Writer *errWriter)
 {
 	NEW_CLASS(revGeos, Data::ArrayList<Map::IReverseGeocoder*>());
 	NEW_CLASS(mut, Sync::Mutex());
 	NEW_CLASS(langMaps, Data::ArrayList<LangMap*>());
 	this->conn = 0;
-	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, 0, log, (const UTF8Char*)"MAPDB: ");
+	this->conn = DB::ODBCConn::CreateDBTool(dsn, uid, pwd, CSTR_NULL, log, CSTR("MAPDB: "));
 	this->errWriter = errWriter;
 	this->nextCoder = 0;
 }
@@ -90,7 +90,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 	sql->AppendInt32(xind);
 	sql->AppendCmdC(CSTR(" and yind = "));
 	sql->AppendInt32(yind);
-	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
+	r = this->conn->ExecuteReader(sql->ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -134,7 +134,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffS
 		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
 		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
+		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
 		mut->Unlock();
@@ -173,7 +173,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 	sql->AppendInt32(xind);
 	sql->AppendCmdC(CSTR(" and yind = "));
 	sql->AppendInt32(yind);
-	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
+	r = this->conn->ExecuteReader(sql->ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -217,7 +217,7 @@ UTF8Char *Map::AssistedRReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSi
 		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
 		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
+		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
 		mut->Unlock();

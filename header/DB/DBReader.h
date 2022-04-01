@@ -51,7 +51,7 @@ namespace DB
 		virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize) = 0;
 		virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef) = 0;
 
-		TableDef *GenTableDef(const UTF8Char *tableName);
+		TableDef *GenTableDef(Text::CString tableName);
 		Data::VariObject *CreateVariObject();
 		Data::Class *CreateClass();
 		template <class T> Bool ReadAll(Data::ArrayList<T*> *outList, Data::NamedClass<T> *cls);

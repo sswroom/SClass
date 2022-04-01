@@ -33,7 +33,7 @@ namespace DB
 
 /*		static DBTool *NullSource(IO::LogTool *);*/
 
-		OSInt ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len);
+		OSInt ExecuteNonQuery(Text::CString sqlCmd);
 		void BeginTrans();
 		void EndTrans(Bool toCommit);
 		Int32 GetLastIdentity32();

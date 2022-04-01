@@ -269,7 +269,7 @@ UOSInt IO::SystemInfo::GetRAMInfo(Data::ArrayList<RAMInfo*> *ramList)
 
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\CIMV2"));
 //	r = db->ExecuteReader(L"select DeviceLocator, Manufacturer, PartNumber, SerialNumber, Speed from CIM_PhysicalMemory");
-	r = db->ExecuteReader(L"select * from CIM_PhysicalMemory");
+	r = db->ExecuteReaderW(L"select * from CIM_PhysicalMemory");
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;

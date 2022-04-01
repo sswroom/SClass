@@ -1,8 +1,9 @@
 #ifndef _SM_EXPORTER_DBPLISTEXPORTER
 #define _SM_EXPORTER_DBPLISTEXPORTER
-#include "IO/FileExporter.h"
 #include "Data/ArrayListStrUTF8.h"
 #include "DB/ReadingDB.h"
+#include "IO/FileExporter.h"
+#include "Text/CString.h"
 
 namespace Exporter
 {
@@ -13,7 +14,7 @@ namespace Exporter
 		{
 			DB::ReadingDB *db;
 			UOSInt tableIndex;
-			Data::ArrayListStrUTF8 *names;
+			Data::ArrayList<Text::CString> *names;
 		} DBParam;
 
 	private:

@@ -4,10 +4,10 @@
 #include "DB/TableDef.h"
 #include "Text/MyString.h"
 
-DB::TableDef::TableDef(const UTF8Char *tableName)
+DB::TableDef::TableDef(Text::CString tableName)
 {
 	this->databaseName = 0;
-	this->tableName = Text::StrCopyNew(tableName);
+	this->tableName = Text::String::New(tableName);
 	this->engine = 0;
 	this->charset = 0;
 	this->attr = 0;
@@ -19,8 +19,8 @@ DB::TableDef::TableDef(const UTF8Char *tableName)
 DB::TableDef::~TableDef()
 {
 	UOSInt i;
-	SDEL_TEXT(this->databaseName);
-	SDEL_TEXT(this->tableName);
+	SDEL_STRING(this->databaseName);
+	SDEL_STRING(this->tableName);
 	SDEL_STRING(this->engine);
 	SDEL_STRING(this->charset);
 	SDEL_TEXT(this->attr);
@@ -34,12 +34,12 @@ DB::TableDef::~TableDef()
 	this->cols = 0;
 }
 
-const UTF8Char *DB::TableDef::GetDatabaseName()
+Text::String *DB::TableDef::GetDatabaseName()
 {
 	return this->databaseName;
 }
 
-const UTF8Char *DB::TableDef::GetTableName()
+Text::String *DB::TableDef::GetTableName()
 {
 	return this->tableName;
 }
@@ -107,17 +107,17 @@ DB::TableDef *DB::TableDef::AddCol(DB::ColDef *col)
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetDatabaseName(const UTF8Char *databaseName)
+DB::TableDef *DB::TableDef::SetDatabaseName(Text::CString databaseName)
 {
-	SDEL_TEXT(this->databaseName);
-	this->databaseName = SCOPY_TEXT(databaseName);
+	SDEL_STRING(this->databaseName);
+	this->databaseName = Text::String::NewOrNull(databaseName);
 	return this;
 }
 
-DB::TableDef *DB::TableDef::SetTableName(const UTF8Char *tableName)
+DB::TableDef *DB::TableDef::SetTableName(Text::CString tableName)
 {
-	SDEL_TEXT(this->tableName);
-	this->tableName = SCOPY_TEXT(tableName);
+	SDEL_STRING(this->tableName);
+	this->tableName = Text::String::NewOrNull(tableName);
 	return this;
 }
 
@@ -158,8 +158,8 @@ DB::TableDef *DB::TableDef::SetSvrType(DB::DBUtil::ServerType svrType)
 DB::TableDef *DB::TableDef::Clone()
 {
 	DB::TableDef *newObj;
-	NEW_CLASS(newObj, DB::TableDef(this->tableName));
-	newObj->SetDatabaseName(this->databaseName);
+	NEW_CLASS(newObj, DB::TableDef(this->tableName->ToCString()));
+	newObj->SetDatabaseName(STR_CSTR(this->databaseName));
 	newObj->SetEngine(STR_CSTR(this->engine));
 	newObj->SetCharset(STR_CSTR(this->charset));
 	newObj->SetAttr(this->attr);

@@ -624,7 +624,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						if (cmd->hdlr == 0)
 						{
 							i = 3;
-							while ((sqlRet = me->db->ExecuteNonQueryC(s->v, s->leng)) == -2)
+							while ((sqlRet = me->db->ExecuteNonQuery(s->ToCString())) == -2)
 							{
 								i -= 1;
 								if (i <= 0)
@@ -644,7 +644,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 						else
 						{
 							i = 3;
-							DB::DBReader *r = me->db->ExecuteReaderC(s->v, s->leng);
+							DB::DBReader *r = me->db->ExecuteReader(s->ToCString());
 							while (r == 0)
 							{
 								i -= 1;
@@ -653,7 +653,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 									me->WriteError((const UTF8Char*)"3 Times", s);
 									break;
 								}
-								r = me->db->ExecuteReaderC(s->v, s->leng);
+								r = me->db->ExecuteReader(s->ToCString());
 							}
 							if (r)
 							{
@@ -707,7 +707,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								while (k < grp->strs->GetCount())
 								{
 									s = grp->strs->GetItem(k);
-									if (me->db->ExecuteNonQueryC(s->v, s->leng) == -2)
+									if (me->db->ExecuteNonQuery(s->ToCString()) == -2)
 									{
 										i -= 1;
 										if (i <= 0)
@@ -732,7 +732,7 @@ UInt32 __stdcall DB::DBHandler::ProcessSQL(void *userObj)
 								while (k < grp->strs->GetCount())
 								{
 									s = grp->strs->GetItem(k);
-									rdr = me->db->ExecuteReaderC(s->v, s->leng);
+									rdr = me->db->ExecuteReader(s->ToCString());
 									if (rdr == 0)
 									{
 										i -= 1;

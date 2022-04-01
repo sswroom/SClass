@@ -26,22 +26,22 @@ void __stdcall SSWR::AVIRead::AVIRDBForm::OnTableSelChg(void *userObj)
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
 	SSWR::AVIRead::AVIRDBForm *me = (SSWR::AVIRead::AVIRDBForm*)userObj;
-	me->lbTable->GetSelectedItemText(sbuff);
+	sptr = me->lbTable->GetSelectedItemText(sbuff);
 
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
 	if (me->dbt)
 	{
-		tabDef = me->dbt->GetTableDef(sbuff);
+		tabDef = me->dbt->GetTableDef(CSTRP(sbuff, sptr));
 
-		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		r = me->db->QueryTableData(CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	}
 	else
 	{
-		r = me->db->GetTableData(sbuff, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+		r = me->db->QueryTableData(CSTRP(sbuff, sptr), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 		if (r)
 		{
-			tabDef = r->GenTableDef(sbuff);
+			tabDef = r->GenTableDef(CSTRP(sbuff, sptr));
 		}
 	}
 	if (r)
@@ -192,7 +192,7 @@ void SSWR::AVIRead::AVIRDBForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(const UTF8Char *name)
+Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(Text::CString name)
 {
 	if (this->dbt)
 	{
@@ -204,7 +204,7 @@ Data::Class *SSWR::AVIRead::AVIRDBForm::CreateTableClass(const UTF8Char *name)
 			return cls;
 		}
 	}
-	DB::DBReader *r = this->db->GetTableData(name, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->db->QueryTableData(name, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::Class *cls = r->CreateClass();
@@ -304,15 +304,15 @@ SSWR::AVIRead::AVIRDBForm::~AVIRDBForm()
 
 void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 {
-	Data::ArrayListStrUTF8 *tableNames;
+	Data::ArrayList<Text::CString> *tableNames;
 	UOSInt i;
 	UOSInt j;
 
 	this->lbTable->ClearItems();
-	NEW_CLASS(tableNames, Data::ArrayListStrUTF8());
+	NEW_CLASS(tableNames, Data::ArrayList<Text::CString>());
 	if (this->dbt)
 	{
-		this->dbt->GetTableNames(tableNames);
+		this->dbt->QueryTableNames(tableNames);
 	}
 	else
 	{
@@ -322,8 +322,8 @@ void SSWR::AVIRead::AVIRDBForm::UpdateTables()
 	j = tableNames->GetCount();
 	while (i < j)
 	{
-		const UTF8Char *tableName = tableNames->GetItem(i);
-		this->lbTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
+		Text::CString tableName = tableNames->GetItem(i);
+		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
 
@@ -374,7 +374,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_HEADER:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(sbuff);
+			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -391,7 +391,7 @@ void SSWR::AVIRead::AVIRDBForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(sbuff);
+			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};

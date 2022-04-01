@@ -52,7 +52,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 		return false;
 	}
 
-	const UTF8Char *name = 0;
+	Text::CString name = CSTR_NULL;
 	if (param)
 	{
 		DBParam *dbParam = (DBParam*)param;
@@ -60,7 +60,7 @@ Bool Exporter::DBCSVExporter::ExportFile(IO::SeekableStream *stm, Text::CString 
 	}
 	DB::ReadingDB *db = (DB::ReadingDB*)pobj;
 	DB::DBReader *r;
-	r = db->GetTableData(name, 0, 0, 0, CSTR_NULL, 0);
+	r = db->QueryTableData(name, 0, 0, 0, CSTR_NULL, 0);
 	if (r == 0)
 	{
 		return false;
@@ -156,7 +156,7 @@ void *Exporter::DBCSVExporter::CreateParam(IO::ParsedObject *pobj)
 {
 	DBParam *param = MemAlloc(DBParam, 1);
 	param->db = (DB::ReadingDB *)pobj;
-	NEW_CLASS(param->names, Data::ArrayListStrUTF8());
+	NEW_CLASS(param->names, Data::ArrayList<Text::CString>());
 	param->db->GetTableNames(param->names);
 	param->tableIndex = 0;
 	return param;
@@ -230,10 +230,10 @@ UTF8Char *Exporter::DBCSVExporter::GetParamSelItems(void *param, UOSInt index, U
 	if (index == 0)
 	{
 		DBParam *dbParam = (DBParam*)param;
-		const UTF8Char *name = dbParam->names->GetItem(itemIndex);
-		if (name)
+		Text::CString name = dbParam->names->GetItem(itemIndex);
+		if (name.v)
 		{
-			return Text::StrConcat(buff, name);
+			return name.ConcatTo(buff);
 		}
 		return 0;
 	}

@@ -1,6 +1,6 @@
 #ifndef _SM_WIN32_WMIQUERY
 #define _SM_WIN32_WMIQUERY
-#include "Data/ArrayListStrUTF8.h"
+#include "Data/ArrayListString.h"
 #include "DB/DBConn.h"
 #include "Win32/WMIReader.h"
 
@@ -11,7 +11,7 @@ namespace Win32
 	private:
 		const WChar *ns;
 		void *pService;
-		Data::ArrayListStrUTF8 *tabNames;
+		Data::ArrayListString *tabNames;
 		static Int32 securityCnt;
 
 		void InitQuery(const WChar *ns);
@@ -28,18 +28,18 @@ namespace Win32
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
-		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual DB::DBReader *ExecuteReaderSlow(const UTF8Char *sql);
-		virtual DB::DBReader *ExecuteReader(const WChar *sql);
+		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		OSInt ExecuteNonQueryW(const WChar *sql);
+		virtual DB::DBReader *ExecuteReader(Text::CString sql);
+		DB::DBReader *ExecuteReaderW(const WChar *sql);
 		virtual Bool IsLastDataError();
 
 		virtual void *BeginTransaction();
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *reader);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();

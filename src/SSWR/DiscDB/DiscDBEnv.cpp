@@ -18,7 +18,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	Text::StringBuilderUTF8 sb;
 	BurntDiscInfo *disc;
 	Data::DateTime dt;
-	r = this->db->ExecuteReaderC(UTF8STRC("select DiscID, DiscTypeID, BurntDate, Status from BurntDisc"));
+	r = this->db->ExecuteReader(CSTR("select DiscID, DiscTypeID, BurntDate, Status from BurntDisc"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -47,7 +47,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DVDTypeInfo *dvdType;
-	r = this->db->ExecuteReaderC(UTF8STRC("select DiscTypeID, Name, Description from DVDType"));
+	r = this->db->ExecuteReader(CSTR("select DiscTypeID, Name, Description from DVDType"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -62,7 +62,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	CategoryInfo *cate;
-	r = this->db->ExecuteReaderC(UTF8STRC("select ID, Name from Category"));
+	r = this->db->ExecuteReader(CSTR("select ID, Name from Category"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -76,7 +76,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DiscTypeInfo *discType;
-	r = this->db->ExecuteReaderC(UTF8STRC("select DiscTypeID, Brand, Name, Speed, DVDType, MadeIn, MID, TID, Revision, QCTest, Remark from DiscType"));
+	r = this->db->ExecuteReader(CSTR("select DiscTypeID, Brand, Name, Speed, DVDType, MadeIn, MID, TID, Revision, QCTest, Remark from DiscType"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -113,7 +113,7 @@ void SSWR::DiscDB::DiscDBEnv::LoadDB()
 	}
 
 	DVDVideoInfo *dvdVideo;
-	r = this->db->ExecuteReaderC(UTF8STRC("select VIDEOID, ANIME, SERIES, VOLUME, DISCTYPE from DVDVIDEO order by VIDEOID"));
+	r = this->db->ExecuteReader(CSTR("select VIDEOID, ANIME, SERIES, VOLUME, DISCTYPE from DVDVIDEO order by VIDEOID"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -288,7 +288,7 @@ const SSWR::DiscDB::DiscDBEnv::BurntDiscInfo *SSWR::DiscDB::DiscDBEnv::NewBurntD
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(0);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		BurntDiscInfo *disc;
 		disc = MemAlloc(BurntDiscInfo, 1);
@@ -337,7 +337,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewBurntFile(const UTF8Char *discId, UOSInt fileId
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(videoId);
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0;
+	return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
 UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayList<DiscFileInfo*> *fileList)
@@ -348,7 +348,7 @@ UOSInt SSWR::DiscDB::DiscDBEnv::GetBurntFiles(Text::CString discId, Data::ArrayL
 	sql.AppendCmdC(CSTR("select FileID, Name, FileSize, Category, VIDEOID from BurntFile where DiscID = "));
 	sql.AppendStrUTF8(discId.v);
 	sql.AppendCmdC(CSTR(" order by FileID"));
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -416,7 +416,7 @@ Bool SSWR::DiscDB::DiscDBEnv::ModifyDVDType(Text::CString discTypeID, Text::CStr
 	sql.AppendStrUTF8(desc.v);
 	sql.AppendCmdC(CSTR(" where DiscTypeID = "));
 	sql.AppendStrUTF8(discTypeID.v);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		dvdType->name->Release();
 		dvdType->description->Release();
@@ -440,7 +440,7 @@ const SSWR::DiscDB::DiscDBEnv::DVDTypeInfo *SSWR::DiscDB::DiscDBEnv::NewDVDType(
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(desc.v);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		dvdType = MemAlloc(DVDTypeInfo, 1);
 		dvdType->discTypeID = Text::String::New(discTypeID.v, discTypeID.leng);
@@ -503,7 +503,7 @@ Int32 SSWR::DiscDB::DiscDBEnv::NewDVDVideo(const UTF8Char *anime, const UTF8Char
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(dvdType);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		DVDVideoInfo *dvdVideo = MemAlloc(DVDVideoInfo, 1);
 		dvdVideo->videoId = this->db->GetLastIdentity32();
@@ -581,7 +581,7 @@ Bool SSWR::DiscDB::DiscDBEnv::NewMovies(const UTF8Char *discId, UOSInt fileId, c
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(remark);
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0;
+	return this->db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
 Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
@@ -618,7 +618,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 	sql.Clear();
 	sql.AppendCmdC(CSTR("select Name, FileID from BurntFile where DiscID = "));
 	sql.AppendStrUTF8(sbDiscId.ToString());
-	r = db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -656,7 +656,7 @@ Bool SSWR::DiscDB::DiscDBEnv::AddMD5(IO::IStreamData *fd)
 			sql.AppendCmdC(CSTR(" and Name = "));
 			sql.AppendStrUTF8(&fileName[k + 2]);
 		}
-		db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+		db->ExecuteNonQuery(sql.ToCString());
 		i++;
 	}
 	DEL_CLASS(fileChk);

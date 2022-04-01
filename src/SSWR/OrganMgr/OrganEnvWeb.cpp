@@ -81,7 +81,7 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 		return;
 	}
 
-	DB::DBReader *r = this->db->ExecuteReaderC(UTF8STRC("select cate_id, chi_name, dirName, srcDir from category"));
+	DB::DBReader *r = this->db->ExecuteReader(CSTR("select cate_id, chi_name, dirName, srcDir from category"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -98,7 +98,7 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select id from webuser where id = "));
 	sql.AppendInt32(this->userId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -117,7 +117,7 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 		this->errType = ERR_DB;
 		return;
 	}
-	r = this->db->ExecuteReaderC(UTF8STRC("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by id"));
+	r = this->db->ExecuteReader(CSTR("select id, fileType, startTime, endTime, oriFileName, dataFileName, webuser_id from datafile order by id"));
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -149,7 +149,7 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 		this->db->CloseReader(r);
 	}
 
-	r = this->db->ExecuteReaderC(UTF8STRC("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, descript, cropLeft, cropTop, cropRight, cropBottom from userfile order by id"));
+	r = this->db->ExecuteReader(CSTR("select id, fileType, oriFileName, fileTime, lat, lon, webuser_id, species_id, captureTime, dataFileName, crcVal, rotType, camera, descript, cropLeft, cropTop, cropRight, cropBottom from userfile order by id"));
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -213,7 +213,7 @@ SSWR::OrganMgr::OrganEnvWeb::OrganEnvWeb() : OrganEnv()
 		this->db->CloseReader(r);
 	}
 
-	r = this->db->ExecuteReaderC(UTF8STRC("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile"));
+	r = this->db->ExecuteReader(CSTR("select id, species_id, crcVal, imgUrl, srcUrl, prevUpdated, cropLeft, cropTop, cropRight, cropBottom, location from webfile"));
 	if (r)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -302,7 +302,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupItems(Data::ArrayList<OrganGroupItem
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(CSTR(" order by eng_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -353,7 +353,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupItems(Data::ArrayList<OrganGroupItem
 		sql.AppendCmdC(CSTR(" and cate_id = "));
 		sql.AppendInt32(this->currCate->cateId);
 		sql.AppendCmdC(CSTR(" order by sci_name"));
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			while (r->ReadNext())
@@ -419,7 +419,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupImages(Data::ArrayList<OrganImageIte
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(CSTR(" order by sci_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -847,7 +847,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesImages(Data::ArrayList<OrganImageI
 		sql.AppendInt32(newFlags);
 		sql.AppendCmdC(CSTR(" where id = "));
 		sql.AppendInt32(sp->GetSpeciesId());
-		this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+		this->db->ExecuteNonQuery(sql.ToCString());
 	}
 	return 0;
 }
@@ -891,7 +891,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupAllSpecies(Data::ArrayList<OrganSpec
 		sql.AppendCmdC(CSTR(") and cate_id = "));
 		sql.AppendInt32(this->currCate->cateId);
 		thisId.Clear();
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			while (r->ReadNext())
@@ -918,7 +918,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupAllSpecies(Data::ArrayList<OrganSpec
 		i++;
 	}
 	sql.AppendCmdC(CSTR(") order by sci_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		OrganSpecies *sp;
@@ -998,7 +998,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupAllUserFile(Data::ArrayList<UserFile
 		sql.AppendCmdC(CSTR(") and cate_id = "));
 		sql.AppendInt32(this->currCate->cateId);
 		thisId.Clear();
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			while (r->ReadNext())
@@ -1025,7 +1025,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupAllUserFile(Data::ArrayList<UserFile
 		i++;
 	}
 	sql.AppendCmdC(CSTR(") order by sci_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		SpeciesInfo *species;
@@ -1076,7 +1076,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesItems(Data::ArrayList<OrganGroupIt
 		i++;
 	}
 	sql.AppendCmdC(CSTR(") order by sci_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -1129,7 +1129,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvWeb::GetGroup(Int32 groupId,
 	OrganGroup *foundGroup = 0;
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, parent_id, photo_group, photo_species, idKey, flags from groups where id = "));
 	sql.AppendInt32(groupId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -1180,7 +1180,7 @@ SSWR::OrganMgr::OrganSpecies *SSWR::OrganMgr::OrganEnvWeb::GetSpecies(Int32 spec
 	sql.AppendInt32(speciesId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -1256,7 +1256,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::IsSpeciesExist(const UTF8Char *sName)
 	Bool found = false;
 	sql.AppendCmdC(CSTR("select id from species where sci_name = "));
 	sql.AppendStrUTF8(sName);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		found = r->ReadNext();
@@ -1276,7 +1276,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::IsBookSpeciesExist(const UTF8Char *sName, Text
 	Bool found;
 	sql.AppendCmdC(CSTR("select species_id from species_book where dispName = "));
 	sql.AppendStrUTF8(sName);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -1305,7 +1305,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::IsBookSpeciesExist(const UTF8Char *sName, Text
 			i++;
 		}
 		sql.AppendCmdC(CSTR(")"));
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			found = false;
@@ -1348,7 +1348,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddSpecies(OrganSpecies *sp)
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(0xff4040ff);
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= -1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= -1;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::DelSpecies(OrganSpecies *sp)
@@ -1358,19 +1358,19 @@ Bool SSWR::OrganMgr::OrganEnvWeb::DelSpecies(OrganSpecies *sp)
 	sql.Clear();
 	sql.AppendCmdC(CSTR("update groups set photo_group=NULL, photo_species=NULL where photo_species="));
 	sql.AppendInt32(sp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < -1)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < -1)
 		succ = false;
 
 	sql.Clear();
 	sql.AppendCmdC(CSTR("delete from species where id="));
 	sql.AppendInt32(sp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < -1)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < -1)
 		succ = false;
 
 	sql.Clear();
 	sql.AppendCmdC(CSTR("delete from species_book where species_id="));
 	sql.AppendInt32(sp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < -1)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < -1)
 		succ = false;
 	return succ;
 }
@@ -1622,7 +1622,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendDbl(0);
 					sql.AppendCmdC(CSTR(")"));
-					if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
@@ -1835,7 +1835,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesF
 					sql.AppendCmdC(CSTR(", "));
 					sql.AppendStrUTF8(0);
 					sql.AppendCmdC(CSTR(")"));
-					if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+					if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 					{
 						userFile = MemAlloc(UserFileInfo, 1);
 						userFile->id = this->db->GetLastIdentity32();
@@ -2024,7 +2024,7 @@ SSWR::OrganMgr::OrganEnvWeb::FileStatus SSWR::OrganMgr::OrganEnvWeb::AddSpeciesW
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrC(CSTR(""));
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 	{
 		id = this->db->GetLastIdentity32();
 		
@@ -2214,7 +2214,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateSpeciesWebFile(OrganSpecies *sp, WebFile
 	sql.AppendStr(location);
 	sql.AppendCmdC(CSTR(" where id="));
 	sql.AppendInt32(wfile->id);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		SDEL_STRING(wfile->srcUrl);
 		SDEL_STRING(wfile->location);
@@ -2321,7 +2321,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::SaveSpecies(OrganSpecies *sp)
 	sql.AppendInt32(sp->GetMapColor());
 	sql.AppendCmdC(CSTR(" where id="));
 	sql.AppendInt32(sp->GetSpeciesId());
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= -1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= -1;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::SaveGroup(OrganGroup *grp)
@@ -2346,7 +2346,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::SaveGroup(OrganGroup *grp)
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(CSTR(" where id="));
 	sql.AppendInt32(grp->GetGroupId());
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= -1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= -1;
 }
 
 UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupCount(Int32 groupId)
@@ -2357,7 +2357,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetGroupCount(Int32 groupId)
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		UOSInt cnt = 0;
@@ -2382,7 +2382,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesCount(Int32 groupId)
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
- 	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+ 	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		UOSInt cnt = 0;
@@ -2424,7 +2424,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddGroup(OrganGroup *grp, Int32 parGroupId)
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(flags);
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == 1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) == 1;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::DelGroup(Int32 groupId)
@@ -2434,7 +2434,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::DelGroup(Int32 groupId)
 	sql.AppendInt32(groupId);
 	sql.AppendCmdC(CSTR(" and cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == 1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) == 1;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::SetGroupDefSp(OrganGroup *grp, OrganImageItem *img)
@@ -2449,7 +2449,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::SetGroupDefSp(OrganGroup *grp, OrganImageItem 
 		sql.AppendInt32(sp->GetSpeciesId());
 		sql.AppendCmdC(CSTR(" where id=");
 		sql.AppendInt32(grp->GetGroupId());
-		this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+		this->db->ExecuteNonQuery(sql.ToCString());
 	}
 	else
 	{
@@ -2457,7 +2457,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::SetGroupDefSp(OrganGroup *grp, OrganImageItem 
 		sql.AppendInt32(sp->GetSpeciesId());
 		sql.AppendCmdC(CSTR(" where photo_species=");
 		sql.AppendInt32(oldId);
-		this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+		this->db->ExecuteNonQuery(sql.ToCString());
 	}
 	sp->SetIsDefault(true);*/
 	return true;
@@ -2489,7 +2489,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveGroups(Data::ArrayList<OrganGroup*> *grpLi
 		i++;
 	}
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= 0;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::MoveSpecies(Data::ArrayList<OrganSpecies*> *spList, OrganGroup *destGroup)
@@ -2526,7 +2526,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveSpecies(Data::ArrayList<OrganSpecies*> *sp
 	sql.AppendCmdC(CSTR(")"));
 	sql2.AppendCmdC(CSTR(")"));
 	db->ExecuteNonQuery(sql2.ToString());
-	return db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0;
+	return db->ExecuteNonQuery(sql.ToCString()) > 0;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgList, OrganSpecies *destSp, UI::GUIForm *frm)
@@ -2575,7 +2575,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 				sql.AppendInt32(userFile->speciesId);
 				sql.AppendCmdC(CSTR(" where id = "));
 				sql.AppendInt32(userFile->id);
-				this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+				this->db->ExecuteNonQuery(sql.ToCString());
 			}
 		}
 		else if (img->GetImgItem()->GetFileType() == OrganImageItem::FT_WEBFILE)
@@ -2596,7 +2596,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::MoveImages(Data::ArrayList<OrganImages*> *imgL
 				sql.AppendInt32(wfile->speciesId);
 				sql.AppendCmdC(CSTR(" where id = "));
 				sql.AppendInt32(wfile->id);
-				this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+				this->db->ExecuteNonQuery(sql.ToCString());
 			}
 		}
 		else
@@ -2757,7 +2757,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::CombineSpecies(OrganSpecies *destSp, OrganSpec
 	sql.AppendInt32(destSp->GetSpeciesId());
 	sql.AppendCmdC(CSTR(" where species_id = "));
 	sql.AppendInt32(srcSp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < 0)
 	{
 		return false;
 	}
@@ -2766,14 +2766,14 @@ Bool SSWR::OrganMgr::OrganEnvWeb::CombineSpecies(OrganSpecies *destSp, OrganSpec
 	sql.AppendInt32(destSp->GetSpeciesId());
 	sql.AppendCmdC(CSTR(" where species_id = "));
 	sql.AppendInt32(srcSp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < 0)
 	{
 		return false;
 	}
 	sql.Clear();
 	sql.AppendCmdC(CSTR("delete from species where id = "));
 	sql.AppendInt32(srcSp->GetSpeciesId());
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < 0)
 	{
 		return false;
 	}
@@ -2792,7 +2792,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetWebUsers(Data::ArrayList<OrganWebUser*> *
 	UOSInt initCnt = userList->GetCount();
 	OrganWebUser *user;
 	Text::StringBuilderUTF8 sb;
-	DB::DBReader *r = this->db->ExecuteReaderC(UTF8STRC("select id, userName, watermark from webuser"));
+	DB::DBReader *r = this->db->ExecuteReader(CSTR("select id, userName, watermark from webuser"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -2817,7 +2817,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddWebUser(const UTF8Char *userName, const UTF
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select id from webuser where userName = "));
 	sql.AppendStrUTF8(userName);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 		return false;
 	if (r->ReadNext())
@@ -2843,7 +2843,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddWebUser(const UTF8Char *userName, const UTF
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(watermark);
 	sql.AppendCmdC(CSTR(")"));
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 1;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= 1;
 }
 
 Bool SSWR::OrganMgr::OrganEnvWeb::ModifyWebUser(Int32 id, const UTF8Char *userName, const UTF8Char *pwd, const UTF8Char *watermark)
@@ -2851,7 +2851,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::ModifyWebUser(Int32 id, const UTF8Char *userNa
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select id from webuser where userName = "));
 	sql.AppendStrUTF8(userName);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 		return false;
 	if (r->ReadNext())
@@ -2882,7 +2882,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::ModifyWebUser(Int32 id, const UTF8Char *userNa
 	sql.AppendStrUTF8(watermark);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(id);
-	return this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0;
+	return this->db->ExecuteNonQuery(sql.ToCString()) >= 0;
 }
 
 void SSWR::OrganMgr::OrganEnvWeb::ReleaseWebUsers(Data::ArrayList<OrganWebUser*> *userList)
@@ -2907,10 +2907,10 @@ Bool SSWR::OrganMgr::OrganEnvWeb::IsSpeciesBookExist(Int32 speciesId, Int32 book
 	sql.AppendInt32(speciesId);
 	sql.AppendCmdC(CSTR(" and book_id = "));
 	sql.AppendInt32(bookId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 	{
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r == 0)
 		{
 			return false;
@@ -2932,7 +2932,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::NewSpeciesBook(Int32 speciesId, Int32 bookId, 
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(dispName);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == -2)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) == -2)
 	{
 		return false;
 	}
@@ -2954,7 +2954,7 @@ UOSInt SSWR::OrganMgr::OrganEnvWeb::GetSpeciesBooks(Data::ArrayList<SpeciesBook*
 
 	sql.AppendCmdC(CSTR("select book_id, dispName, id from species_book where species_id = "));
 	sql.AppendInt32(speciesId);
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 		return 0;
 	j = 0;
@@ -3010,7 +3010,7 @@ Int32 SSWR::OrganMgr::OrganEnvWeb::NewBook(const UTF8Char *title, const UTF8Char
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendStrUTF8(url);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) < -1)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) < -1)
 	{
 		return 0;
 	}
@@ -3106,7 +3106,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddDataFile(const UTF8Char *fileName)
 			{
 				if (Text::StrEquals(tables.GetItem(0), (const UTF8Char*)"Setting") && Text::StrEquals(tables.GetItem(1), (const UTF8Char*)"Records"))
 				{
-					DB::DBReader *reader = db->GetTableData((const UTF8Char*)"Records", 0, 0, 0, 0, 0);
+					DB::DBReader *reader = db->QueryTableData((const UTF8Char*)"Records", 0, 0, 0, 0, 0);
 					Bool found = false;
 					if (reader)
 					{
@@ -3164,7 +3164,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::AddDataFile(const UTF8Char *fileName)
 			sql.AppendCmdC(CSTR(", "));
 			sql.AppendInt32(this->userId);
 			sql.AppendCmdC(CSTR(")"));
-			if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 1)
+			if (this->db->ExecuteNonQuery(sql.ToCString()) >= 1)
 			{
 				chg = true;
 				dataFile = MemAlloc(DataFileInfo, 1);
@@ -3220,7 +3220,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::DelDataFile(DataFileInfo *dataFile)
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("delete from datafile where id = "));
 	sql.AppendInt32(dataFile->id);
-	this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+	this->db->ExecuteNonQuery(sql.ToCString());
 	this->dataFiles->RemoveAt(i);
 	if (dataFile->fileType == 1)
 	{
@@ -3343,7 +3343,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpdateUserFileCrop(UserFileInfo *userFile, Dou
 	sql.AppendCmdC(CSTR(", prevUpdated = 1"));
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userFile->id);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		userFile->cropLeft = cropLeft;
 		userFile->cropTop = cropTop;
@@ -3362,7 +3362,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpdateUserFileRot(UserFileInfo *userFile, Int3
 		sql.AppendCmdC(CSTR(", prevUpdated = 1"));
 		sql.AppendCmdC(CSTR(" where id = "));
 		sql.AppendInt32(userFile->id);
-		this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+		this->db->ExecuteNonQuery(sql.ToCString());
 		userFile->rotType = rotType;
 	}
 }
@@ -3379,7 +3379,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateUserFilePos(UserFileInfo *userFile, Data
 	sql.AppendDbl(lon);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userFile->id);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		succ = true;
 		userFile->captureTimeTicks = captureTime->ToTicks();
@@ -3420,7 +3420,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::UpdateUserFileDesc(UserFileInfo *userFile, con
 	sql.AppendStrUTF8(descript);
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(userFile->id);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		succ = true;
 		SDEL_STRING(userFile->descript);
@@ -3443,7 +3443,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpdateWebFileCrop(WebFileInfo *wfile, Double c
 	sql.AppendCmdC(CSTR(", prevUpdated = 1"));
 	sql.AppendCmdC(CSTR(" where id = "));
 	sql.AppendInt32(wfile->id);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) >= 0)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) >= 0)
 	{
 		wfile->cropLeft = cropLeft;
 		wfile->cropTop = cropTop;
@@ -3468,7 +3468,7 @@ void SSWR::OrganMgr::OrganEnvWeb::TripReload(Int32 cateId)
 	sql.AppendCmdC(CSTR("select locType, engName, chiName from location_type where cate_id = "));
 	sql.AppendInt32(cateId);
 	sql.AppendCmdC(CSTR(" order by locType"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -3485,7 +3485,7 @@ void SSWR::OrganMgr::OrganEnvWeb::TripReload(Int32 cateId)
 	sql.AppendCmdC(CSTR("select id, parentId, ename, cname, locType from location where cate_id = "));
 	sql.AppendInt32(cateId);
 	sql.AppendCmdC(CSTR(" order by id"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -3504,7 +3504,7 @@ void SSWR::OrganMgr::OrganEnvWeb::TripReload(Int32 cateId)
 	sql.AppendCmdC(CSTR(" and webuser_id = "));
 	sql.AppendInt32(this->userId);
 	sql.AppendCmdC(CSTR(" order by fromDate"));
-	r = db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		Data::DateTime dt;
@@ -3542,7 +3542,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::TripAdd(Data::DateTime *fromDate, Data::DateTi
 			sql.AppendCmdC(CSTR(", "));
 			sql.AppendInt32(this->userId);
 			sql.AppendCmdC(CSTR(")"));
-			if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) != -2)
+			if (this->db->ExecuteNonQuery(sql.ToCString()) != -2)
 			{
 				Trip *t;
 				NEW_CLASS(t, Trip(fromDate, toDate, locId));
@@ -3578,7 +3578,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::LocationUpdate(Int32 locId, const UTF8Char *en
 	sql.AppendStrUTF8(chiName);
 	sql.AppendCmdC(CSTR(" where id="));
 	sql.AppendInt32(locId);
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == -2)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) == -2)
 		return false;
 	else
 	{
@@ -3624,7 +3624,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::LocationAdd(Int32 locId, const UTF8Char *engNa
 	sql.AppendCmdC(CSTR(", "));
 	sql.AppendInt32(lType);
 	sql.AppendCmdC(CSTR(")"));
-	if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) == -2)
+	if (this->db->ExecuteNonQuery(sql.ToCString()) == -2)
 		return false;
 	else
 	{
@@ -3632,7 +3632,7 @@ Bool SSWR::OrganMgr::OrganEnvWeb::LocationAdd(Int32 locId, const UTF8Char *engNa
 		sql.Clear();
 		sql.AppendCmdC(CSTR("select max(id) from location where parentId = "));
 		sql.AppendInt32(locId);
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			if (r->ReadNext())
@@ -3734,7 +3734,7 @@ void SSWR::OrganMgr::OrganEnvWeb::BooksInit()
 
 	NEW_CLASS(this->bookIds, Data::ArrayListInt32());
 	NEW_CLASS(this->bookObjs, Data::ArrayList<OrganBook*>());
-	r = this->db->ExecuteReaderC(UTF8STRC("select id, title, dispAuthor, press, publishDate, groupId, url from book"));
+	r = this->db->ExecuteReader(CSTR("select id, title, dispAuthor, press, publishDate, groupId, url from book"));
 	while (r->ReadNext())
 	{
 		NEW_CLASS(book, OrganBook());
@@ -4201,7 +4201,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvWeb::SearchObject(const UTF8
 	sql.AppendStrUTF8(searchStr);
 	sql.AppendCmdC(CSTR(" or sci_name = "));
 	sql.AppendStrUTF8(searchStr);
-	r =this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r =this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -4218,7 +4218,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvWeb::SearchObject(const UTF8
 		sql.AppendCmdC(CSTR("select group_id, sci_name from species s, species_book sb where sb.dispName = "));
 		sql.AppendStrUTF8(searchStr);
 		sql.AppendCmdC(CSTR(" and s.id = sb.species_id group by sb.species_id"));
-		r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		r = this->db->ExecuteReader(sql.ToCString());
 		if (r)
 		{
 			if (r->ReadNext())
@@ -4246,7 +4246,7 @@ SSWR::OrganMgr::OrganGroup *SSWR::OrganMgr::OrganEnvWeb::SearchObject(const UTF8
 		sql.AppendStrUTF8(sbuff);
 		Text::StrConcat(resultStr, searchStr);
 	}
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -4379,7 +4379,7 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganGroup*>*> *SSWR::OrganMgr::O
 	sql.AppendCmdC(CSTR("select id, group_type, eng_name, chi_name, description, photo_group, photo_species, idKey, parent_id, flags from groups where cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(CSTR(" order by parent_id, eng_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -4443,7 +4443,7 @@ Data::Int32Map<Data::ArrayList<SSWR::OrganMgr::OrganSpecies*>*> *SSWR::OrganMgr:
 	sql.AppendCmdC(CSTR("SELECT id, chi_name, sci_name, eng_name, description, dirName, photo, idKey, flags, group_id, photoId, mapColor FROM species where cate_id = "));
 	sql.AppendInt32(this->currCate->cateId);
 	sql.AppendCmdC(CSTR(" order by group_id, sci_name"));
-	r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		while (r->ReadNext())
@@ -4561,7 +4561,7 @@ void SSWR::OrganMgr::OrganEnvWeb::Test()
 					sql.AppendStr(sb.ToString());
 					sql.AppendCmdC(CSTR(" where id = ");
 					sql.AppendInt32(userFile->id);
-					this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+					this->db->ExecuteNonQuery(sql.ToCString());
 				}
 			}
 		}
@@ -4603,7 +4603,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 	Bool isCover;
 
 	DB::SQLBuilder sql(this->db);
-	r = this->db->ExecuteReaderC(UTF8STRC("select id, dirName, photo, photoId, photoWId from species"));
+	r = this->db->ExecuteReader(CSTR("select id, dirName, photo, photoId, photoWId from species"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -4686,7 +4686,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 						sql.AppendCmdC(CSTR(", "));
 						sql.AppendStrUTF8((const UTF8Char*)"");
 						sql.AppendCmdC(CSTR(")"));
-						if (this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) > 0)
+						if (this->db->ExecuteNonQuery(sql.ToCString()) > 0)
 						{
 							id = this->db->GetLastIdentity32();
 							
@@ -4746,7 +4746,7 @@ void SSWR::OrganMgr::OrganEnvWeb::UpgradeDB2()
 									sql.AppendInt32(id);
 									sql.AppendCmdC(CSTR(" where id = "));
 									sql.AppendInt32(sp->id);
-									this->db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+									this->db->ExecuteNonQuery(sql.ToCString());
 								}
 								spInfo = this->GetSpeciesInfo(sp->id, true);
 								spInfo->wfileMap->Put(wfile->id, wfile);
@@ -4845,7 +4845,7 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 	*sptr2++ = IO::Path::PATH_SEPERATOR;
 	sptr3 = this->cfgImgDirBase->ConcatTo(sbuff2);
 	*sptr3++ = IO::Path::PATH_SEPERATOR;
-	DB::DBReader *r = this->db->ExecuteReaderC(UTF8STRC("select srcDir from category"));
+	DB::DBReader *r = this->db->ExecuteReader(CSTR("select srcDir from category"));
 	if (r)
 	{
 		while (r->ReadNext())
@@ -4872,7 +4872,7 @@ void SSWR::OrganMgr::OrganEnvWeb::ExportLite(const UTF8Char *folder)
 	Text::StrConcatC(sptr3, UTF8STRC("DataFile"));
 	IO::FileUtil::CopyDir(sbuff2, sbuff, IO::FileUtil::FileExistAction::Fail, 0, 0);
 
-	r = this->db->ExecuteReaderC(UTF8STRC("select fileType, fileTime, webuser_id, dataFileName from userfile"));
+	r = this->db->ExecuteReader(CSTR("select fileType, fileTime, webuser_id, dataFileName from userfile"));
 	if (r)
 	{
 		Media::Resizer::LanczosResizerH8_8 *resizer;

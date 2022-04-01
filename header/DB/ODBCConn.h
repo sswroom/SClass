@@ -41,7 +41,7 @@ namespace DB
 		Bool enableDebug;
 		Bool forceTz;
 		Int8 tzQhr;
-		Data::ArrayList<const UTF8Char *> *tableNames;
+		Data::ArrayList<Text::String *> *tableNames;
 
 	private:
 		void PrintError();
@@ -65,10 +65,8 @@ namespace DB
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		void Dispose();
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
-//		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual DB::DBReader *ExecuteReaderSlow(const UTF8Char *sql);
-//		virtual DB::DBReader *ExecuteReader(const WChar *sql);
+		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		virtual DB::DBReader *ExecuteReader(Text::CString sql);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
@@ -84,8 +82,8 @@ namespace DB
 		UTF8Char *ShowTablesCmd(UTF8Char *sbuff);
 
 		DBReader *GetTablesInfo();
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
+		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 	public:
 		void ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg);

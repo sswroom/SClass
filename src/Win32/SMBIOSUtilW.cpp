@@ -42,7 +42,7 @@ Win32::SMBIOS *Win32::SMBIOSUtil::GetSMBIOS()
 	Win32::WMIQuery *db;
 	DB::DBReader *r;
 	NEW_CLASS(db, Win32::WMIQuery(L"ROOT\\WMI"));
-	r = db->ExecuteReader(L"select * from MSSMBios_RawSMBiosTables");
+	r = db->ExecuteReaderW(L"select * from MSSMBios_RawSMBiosTables");
 	if (r)
 	{
 		UOSInt i;

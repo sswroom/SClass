@@ -57,7 +57,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 	DB::ReadingDBTool *srcDB;
 	DB::DBReader *r;
 	DB::TableDef *tabDef;
-	Data::ArrayList<const UTF8Char *> tables;
+	Data::ArrayList<Text::CString> tables;
 	UOSInt i;
 	UOSInt j;
 	OSInt k;
@@ -86,7 +86,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 			tabDef = srcDB->GetTableDef(tables.GetItem(i));
 			if (tabDef)
 			{
-				r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
+				r = srcDB->QueryTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
 				if (r == 0)
 				{
 					DEL_CLASS(tabDef);
@@ -102,7 +102,7 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		}
 		else
 		{
-			r = sDB->GetTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
+			r = sDB->QueryTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
 				tabDef = r->GenTableDef(tables.GetItem(i));
@@ -115,8 +115,8 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 		if (r)
 		{
 			sql.Clear();
-			destDB->GenCreateTableCmd(&sql, tables.GetItem(i), tabDef);
-			if (destDB->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= -2)
+			destDB->GenCreateTableCmd(&sql, tables.GetItem(i).v, tabDef);
+			if (destDB->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
@@ -144,8 +144,8 @@ Bool Exporter::SQLiteExporter::ExportFile(IO::SeekableStream *stm, Text::CString
 					k = 10000;
 				}
 				sql.Clear();
-				destDB->GenInsertCmd(&sql, tables.GetItem(i), r);
-				if (destDB->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= 0)
+				destDB->GenInsertCmd(&sql, tables.GetItem(i).v, r);
+				if (destDB->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
 					destDB->GetLastErrorMsg(&sb);

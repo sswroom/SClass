@@ -77,11 +77,11 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		return 0;
 	}
 
-	Data::ArrayListStrUTF8 *tableNames;
-	Data::ArrayListStrUTF8 *shpTables;
+	Data::ArrayList<Text::CString> *tableNames;
+	Data::ArrayList<Text::CString> *shpTables;
 	DB::ColDef *colDef;
-	NEW_CLASS(tableNames, Data::ArrayListStrUTF8());
-	NEW_CLASS(shpTables, Data::ArrayListStrUTF8());
+	NEW_CLASS(tableNames, Data::ArrayList<Text::CString>());
+	NEW_CLASS(shpTables, Data::ArrayList<Text::CString>());
 	NEW_CLASS(colDef, DB::ColDef(CSTR("")));
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
@@ -91,9 +91,9 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 	UOSInt i = tableNames->GetCount();
 	while (i-- > 0)
 	{
-		const UTF8Char *tableName = tableNames->GetItem(i);
-		DB::DBReader *rdr = mdb->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
-		if (tableName && Text::StrEqualsICaseC(tableName, Text::StrCharCnt(tableName), UTF8STRC("GDB_SpatialRefs")))
+		Text::CString tableName = tableNames->GetItem(i);
+		DB::DBReader *rdr = mdb->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+		if (tableName.v && tableName.EqualsICase(UTF8STRC("GDB_SpatialRefs")))
 		{
 			hasSpRef = true;
 		}
@@ -137,7 +137,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 
 		if (hasSpRef)
 		{
-			DB::DBReader *rdr = mdb->GetTableData((const UTF8Char*)"GDB_SpatialRefs", 0, 0, 0, CSTR_NULL, 0);
+			DB::DBReader *rdr = mdb->QueryTableData(CSTR("GDB_SpatialRefs"), 0, 0, 0, CSTR_NULL, 0);
 			if (rdr)
 			{
 				if (rdr->ColCount() >= 2)
@@ -166,7 +166,7 @@ IO::ParsedObject *Parser::FileParser::MDBParser::ParseFile(IO::IStreamData *fd, 
 		i = shpTables->GetCount();
 		while (i-- > 0)
 		{
-			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), Text::CString::FromPtr(shpTables->GetItem(i))));
+			NEW_CLASS(lyr, Map::ESRI::ESRIMDBLayer(conn, srid, fd->GetFullFileName(), shpTables->GetItem(i)));
 			
 			if (csys)
 			{

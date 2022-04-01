@@ -58,7 +58,7 @@ namespace SSWR
 			void UpdateTableData(Text::String *tableName);
 			void UpdateResult(DB::DBReader *r);
 
-			Data::Class *CreateTableClass(const UTF8Char *tableName);
+			Data::Class *CreateTableClass(Text::CString tableName);
 		public:
 			AVIRDBManagerForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core);
 			virtual ~AVIRDBManagerForm();

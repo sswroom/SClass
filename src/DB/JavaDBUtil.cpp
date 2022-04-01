@@ -305,7 +305,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	sbFieldOrder.AppendC(UTF8STRC("\t\treturn new String[] {\r\n"));
 
 	sb->AppendC(UTF8STRC("{\r\n"));
-	DB::TableDef *tableDef = db->GetTableDef(tableName->v);
+	DB::TableDef *tableDef = db->GetTableDef(tableName->ToCString());
 	Text::String *colName;
 	if (tableDef)
 	{
@@ -331,7 +331,7 @@ Bool DB::JavaDBUtil::ToJavaEntity(Text::StringBuilderUTF8 *sb, Text::String *tab
 	}
 	else
 	{
-		DB::DBReader *r = db->GetTableData(tableName->v, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = db->QueryTableData(tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			DB::ColDef colDef(CSTR(""));

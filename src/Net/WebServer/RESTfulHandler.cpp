@@ -167,16 +167,16 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		if (i != INVALID_INDEX)
 		{
 			DB::DBRow *row;
-			const UTF8Char *tableName;
+			Text::String *tableName;
 			Int64 ikey;
 			if (!Text::StrToInt64(&subReq.v[1 + i], &ikey))
 			{
 				resp->ResponseError(req, Net::WebStatus::SC_NOT_FOUND);
 				return true;
 			}
-			tableName = Text::StrCopyNewC(subReq.v, (UOSInt)i);
-			row = this->dbCache->GetTableItem(tableName, ikey);
-			Text::StrDelNew(tableName);
+			tableName = Text::String::New(subReq.v, (UOSInt)i);
+			row = this->dbCache->GetTableItem(tableName->ToCString(), ikey);
+			tableName->Release();
 			if (row == 0)
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
@@ -217,7 +217,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 		{
 			Text::StringBuilderUTF8 sbURI;
 			Text::StringBuilderUTF8 sb;
-			if (!this->dbCache->IsTableExist(subReq.v))
+			if (!this->dbCache->IsTableExist(subReq))
 			{
 				resp->SetStatusCode(Net::WebStatus::SC_NOT_FOUND);
 				resp->AddDefHeaders(req);
@@ -232,7 +232,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				Data::ArrayList<DB::DBRow*> rows;
 				DB::DBRow *row;
 				Int64 ikey;
-				this->dbCache->GetTableData(&rows, subReq.v, page);
+				this->dbCache->QueryTableData(&rows, subReq, page);
 				json.ObjectBeginObject(CSTR("_embedded"));
 				json.ObjectBeginArray(subReq);
 				UOSInt i = 0;
@@ -266,7 +266,7 @@ Bool Net::WebServer::RESTfulHandler::ProcessRequest(Net::WebServer::IWebRequest 
 				json.ArrayEnd();
 				json.ObjectEnd();
 
-				OSInt cnt = this->dbCache->GetRowCount(subReq.v);
+				OSInt cnt = this->dbCache->GetRowCount(subReq);
 				if (cnt < 0)
 				{
 					cnt = 0;

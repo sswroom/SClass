@@ -53,7 +53,7 @@ DB::MongoDB::~MongoDB()
 		i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tableNames->GetItem(i));
+			Text::StrDelNew(this->tableNames->GetItem(i).v);
 		}
 		DEL_CLASS(this->tableNames);
 	}
@@ -63,14 +63,14 @@ DB::MongoDB::~MongoDB()
 	}
 }
 
-UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->database == 0 || this->client == 0)
 		return 0;
 	if (this->tableNames == 0)
 	{
 		bson_error_t error;
-		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
+		NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
 		mongoc_database_t *db = mongoc_client_get_database((mongoc_client_t*)this->client, (const Char*)this->database->v);
 		char **strv;
 		strv = mongoc_database_get_collection_names_with_opts(db, 0, &error);
@@ -81,10 +81,12 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 		}
 		else
 		{
+			UOSInt len;
 			OSInt i = 0;
 			while (strv[i])
 			{
-				this->tableNames->Add(Text::StrCopyNew((const UTF8Char*)strv[i]));
+				len = Text::StrCharCnt(strv[i]);
+				this->tableNames->Add(Text::CString(Text::StrCopyNewC((const UTF8Char*)strv[i], len), len));
 				i++;
 			}
 			bson_strfreev(strv);
@@ -95,11 +97,11 @@ UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (this->database && this->client)
 	{
-		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName);
+		mongoc_collection_t *coll = mongoc_client_get_collection((mongoc_client_t*)this->client, (const Char*)this->database->v, (const Char*)tableName.v);
 		if (coll)
 		{
 			DB::MongoDBReader *reader;
@@ -132,7 +134,7 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 	bson_error_t error;
 	SDEL_STRING(this->errorMsg);
@@ -149,7 +151,7 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 		UOSInt i = 0;
 		while (strv[i])
 		{
-			names->Add(Text::StrCopyNew((const UTF8Char*)strv[i]));
+			names->Add(Text::String::NewNotNullSlow((const UTF8Char*)strv[i]));
 			i++;
 		}
 		bson_strfreev(strv);
@@ -157,12 +159,12 @@ UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
+void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 	UOSInt i = names->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(names->GetItem(i));
+		names->GetItem(i)->Release();
 	}
 	names->Clear();
 }

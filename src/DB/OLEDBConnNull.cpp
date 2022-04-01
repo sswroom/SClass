@@ -77,7 +77,7 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
@@ -173,19 +173,19 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
-	UTF8Char *sptr = Text::StrConcat(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")), tableName);
-	return ExecuteReaderC(tmpBuff, (UOSInt)(sptr - tmpBuff));
+	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
+	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 
-DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CString sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;

@@ -98,7 +98,7 @@ DB::MySQLConn::~MySQLConn()
 		UOSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tableNames->GetItem(i));
+			Text::StrDelNew(this->tableNames->GetItem(i).v);
 		}
 		DEL_CLASS(this->tableNames);
 	}
@@ -152,7 +152,7 @@ void DB::MySQLConn::Dispose()
 	DEL_CLASS(this);
 }
 
-OSInt DB::MySQLConn::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt DB::MySQLConn::ExecuteNonQuery(Text::CString sql)
 {
 	if (this->mysql == 0)
 	{
@@ -160,8 +160,7 @@ OSInt DB::MySQLConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 		return -2;
 	}
 
-	UOSInt i = Text::StrCharCnt(sql);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (UInt32)i) == 0)
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v, (UInt32)sql.leng) == 0)
 	{
 		MYSQL_RES *result;
 		this->lastDataError = DE_NO_ERROR;
@@ -214,7 +213,7 @@ OSInt DB::MySQLConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 	}
 }*/
 
-DB::DBReader *DB::MySQLConn::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *DB::MySQLConn::ExecuteReader(Text::CString sql)
 {
 	if (this->mysql == 0)
 	{
@@ -222,8 +221,7 @@ DB::DBReader *DB::MySQLConn::ExecuteReaderSlow(const UTF8Char *sql)
 		return 0;
 	}
 
-	UOSInt i = Text::StrCharCnt(sql);
-	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql, (UInt32)i) == 0)
+	if (mysql_real_query((MYSQL*)this->mysql, (const Char*)sql.v, (UInt32)sql.leng) == 0)
 	{
 		MYSQL_RES *result;
 		result = mysql_use_result((MYSQL*)this->mysql);
@@ -283,7 +281,7 @@ void DB::MySQLConn::Rollback(void *tran)
 {
 }
 
-UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->tableNames)
 	{
@@ -293,14 +291,17 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	else
 	{
 		UTF8Char sbuff[256];
-		DB::DBReader *rdr = this->ExecuteReaderC(UTF8STRC("show tables"));
-		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
+		UTF8Char *sptr;
+		UOSInt len;
+		DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
+		NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
 		if (rdr)
 		{
 			while (rdr->ReadNext())
 			{
-				rdr->GetStr(0, sbuff, sizeof(sbuff));
-				this->tableNames->Add(Text::StrCopyNew(sbuff));
+				sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
+				len = (UOSInt)(sptr - sbuff);
+				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sbuff, len), len));
 			}
 			this->CloseReader(rdr);
 		}
@@ -309,7 +310,7 @@ UOSInt DB::MySQLConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MySQLConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -320,14 +321,14 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 	UOSInt j;
 	while (true)
 	{
-		j = Text::StrIndexOfChar(&tableName[i], '.');
+		j = Text::StrIndexOfChar(&tableName.v[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName[i], DB::DBUtil::ServerType::MySQL);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &tableName.v[i], DB::DBUtil::ServerType::MySQL);
 			sb.AppendP(sbuff, sptr);
 			break;
 		}
-		sptr = Text::StrConcatC(sbuff, &tableName[i], (UOSInt)j);
+		sptr = Text::StrConcatC(sbuff, &tableName.v[i], (UOSInt)j);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, DB::DBUtil::ServerType::MySQL);
 		sb.AppendP(sptr + 1, sptr2);
 		sb.AppendUTF8Char('.');
@@ -338,7 +339,7 @@ DB::DBReader *DB::MySQLConn::GetTableData(const UTF8Char *tableName, Data::Array
 		sb.AppendC(UTF8STRC(" LIMIT "));
 		sb.AppendUOSInt(maxCnt);
 	}
-	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
+	return this->ExecuteReader(sb.ToCString());
 }
 
 Bool DB::MySQLConn::IsConnError()

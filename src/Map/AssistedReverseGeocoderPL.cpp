@@ -50,7 +50,7 @@ Map::AssistedReverseGeocoderPL::AssistedReverseGeocoderPL(DB::DBTool *db, IO::Wr
 	{
 		DB::DBReader *r;
 		Manage::HiResClock clk;
-		r = this->conn->ExecuteReaderC(UTF8STRC("select lcid, keyx, keyy, address from addrdb")); // order by lcid, keyx, keyy
+		r = this->conn->ExecuteReader(CSTR("select lcid, keyx, keyy, address from addrdb")); // order by lcid, keyx, keyy
 		Double t1 = clk.GetTimeDiff();
 		if (r)
 		{
@@ -206,9 +206,9 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
 		sql->AppendCmdC(CSTR(")"));
-		if (this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength()) <= 0)
+		if (this->conn->ExecuteNonQuery(sql->ToCString()) <= 0)
 		{
-			this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
+			this->conn->ExecuteNonQuery(sql->ToCString());
 		}
 		DEL_CLASS(sql);
 

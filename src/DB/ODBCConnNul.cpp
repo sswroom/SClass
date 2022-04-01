@@ -272,12 +272,12 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo()
 	return 0;
 }
 
-UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }

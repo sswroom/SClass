@@ -11,7 +11,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	UTF8Char sbuff[512];
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(this->tableName->ToCString(), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::Int32Map<const UTF8Char **> *nameArr;
@@ -57,7 +57,7 @@ Data::Int32Map<const UTF8Char **> *Map::ESRI::ESRIMDBLayer::ReadNameArr()
 	}
 }
 
-void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UTF8Char *tableName)
+void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, Text::CString tableName)
 {
 	UTF8Char sbuff[256];
 	UTF8Char *sptr;
@@ -68,7 +68,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 	this->conn = conn;
 	NEW_CLASS(this->objects, Data::Int32Map<Math::Vector2D*>());
 	NEW_CLASS(this->colNames, Data::ArrayListString());
-	this->tableName = Text::StrCopyNew(tableName);
+	this->tableName = Text::String::New(tableName);
 	this->currDB = 0;
 	this->lastDB = 0;
 	this->layerType = Map::DRAW_LAYER_UNKNOWN;
@@ -82,7 +82,7 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 
 	Sync::MutexUsage mutUsage;
 	this->currDB = this->conn->UseConn(&mutUsage);
-	DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		UOSInt i;
@@ -204,12 +204,12 @@ void Map::ESRI::ESRIMDBLayer::Init(DB::SharedDBConn *conn, UInt32 srid, const UT
 Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::String *sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName->ToCString(), 0, tableName)
 {
 	SDEL_STRING(this->layerName);
-	this->Init(conn, srid, tableName.v);
+	this->Init(conn, srid, tableName);
 }
 
 Map::ESRI::ESRIMDBLayer::ESRIMDBLayer(DB::SharedDBConn *conn, UInt32 srid, Text::CString sourceName, Text::CString tableName) : Map::IMapDrawLayer(sourceName, 0, tableName)
 {
-	this->Init(conn, srid, tableName.v);
+	this->Init(conn, srid, tableName);
 }
 
 Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
@@ -228,7 +228,7 @@ Map::ESRI::ESRIMDBLayer::~ESRIMDBLayer()
 		DEL_CLASS(vec);
 	}
 	DEL_CLASS(this->objects);
-	Text::StrDelNew(tableName);
+	this->tableName->Release();
 }
 
 Map::DrawLayerType Map::ESRI::ESRIMDBLayer::GetLayerType()
@@ -405,19 +405,19 @@ void Map::ESRI::ESRIMDBLayer::RemoveUpdatedHandler(UpdatedHandler hdlr, void *ob
 {
 }
 
-UOSInt Map::ESRI::ESRIMDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Map::ESRI::ESRIMDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	names->Add(this->tableName);
+	names->Add(this->tableName->ToCString());
 	return 1;
 }
 
-DB::DBReader *Map::ESRI::ESRIMDBLayer::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::ESRIMDBLayer::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Sync::MutexUsage *mutUsage;
 	NEW_CLASS(mutUsage, Sync::MutexUsage());
 	this->currDB = this->conn->UseConn(mutUsage);
 	this->lastDB = this->currDB;
-	DB::DBReader *rdr = this->currDB->GetTableData(name, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *rdr = this->currDB->QueryTableData(name, columnNames, ofst, maxCnt, ordering, condition);
 	if (rdr)
 	{
 		Map::ESRI::ESRIMDBReader *r;

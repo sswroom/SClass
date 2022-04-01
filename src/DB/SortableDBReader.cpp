@@ -13,7 +13,7 @@ Data::VariItem *DB::SortableDBReader::GetItem(UOSInt colIndex)
 	return obj->GetItem(this->cols->GetItem(colIndex)->GetColName()->v);
 }
 
-DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, Text::CString tableName, Data::ArrayList<Text::String*> *colNames, UOSInt dataOfst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	this->currIndex = INVALID_INDEX;
 	this->objList = 0;
@@ -24,7 +24,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 	Data::VariObject *obj;
 	if (colNames == 0 || colNames->GetCount() == 0)
 	{
-		DB::DBReader *r = db->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = db->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (r == 0)
 		{
 			return;
@@ -87,7 +87,7 @@ DB::SortableDBReader::SortableDBReader(DB::ReadingDB *db, const UTF8Char *tableN
 				i++;
 			}
 		}
-		DB::DBReader *r = db->GetTableData(tableName, &dbColNames, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = db->QueryTableData(tableName, &dbColNames, 0, 0, CSTR_NULL, 0);
 		if (r == 0)
 		{
 			return;

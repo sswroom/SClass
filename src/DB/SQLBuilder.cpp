@@ -115,25 +115,25 @@ void DB::SQLBuilder::AppendBinary(const UInt8 *buff, UOSInt buffSize)
 
 void DB::SQLBuilder::AppendTableName(DB::TableDef *table)
 {
-	const UTF8Char *name;
+	Text::String *name;
 	if ((name = table->GetDatabaseName()) != 0)
 	{
-		this->AppendCol(name);
+		this->AppendCol(name->v);
 		sb->AppendUTF8Char('.');
 	}
 	name = table->GetTableName();
-	UOSInt i = Text::StrIndexOfChar(name, '.');
+	UOSInt i = name->IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		const UTF8Char *catalog = Text::StrCopyNewC(name, i);
+		const UTF8Char *catalog = Text::StrCopyNewC(name->v, i);
 		this->AppendCol(catalog);
 		sb->AppendUTF8Char('.');
 		Text::StrDelNew(catalog);
-		this->AppendCol(name + i + 1);
+		this->AppendCol(name->v + i + 1);
 	}
 	else
 	{
-		this->AppendCol(name);
+		this->AppendCol(name->v);
 	}
 }
 
@@ -170,6 +170,11 @@ const UTF8Char *DB::SQLBuilder::ToString()
 UOSInt DB::SQLBuilder::GetLength()
 {
 	return sb->GetLength();
+}
+
+Text::CString DB::SQLBuilder::ToCString()
+{
+	return sb->ToCString();
 }
 
 Text::String *DB::SQLBuilder::ToNewString()

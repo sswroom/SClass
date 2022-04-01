@@ -29,12 +29,12 @@ DB::DBTool::~DBTool()
 {
 }
 
-OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
+OSInt DB::DBTool::ExecuteNonQuery(Text::CString sqlCmd)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteNonQuery: "));
-		logMsg.AppendC(sqlCmd, len);
+		logMsg.Append(sqlCmd);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
@@ -45,7 +45,7 @@ OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQueryC(sqlCmd, len);
+	OSInt i = ((DB::DBConn*)this->db)->ExecuteNonQuery(sqlCmd);
 	if (i >= -1)
 	{
 		Data::DateTime t3;
@@ -69,7 +69,7 @@ OSInt DB::DBTool::ExecuteNonQueryC(const UTF8Char *sqlCmd, UOSInt len)
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
-			logMsg.AppendC(sqlCmd, len);
+			logMsg.Append(sqlCmd);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
@@ -118,7 +118,7 @@ Int32 DB::DBTool::GetLastIdentity32()
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReaderC(UTF8STRC("select @@identity"));
+		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int32 id = 0;
 		if (reader)
 		{
@@ -140,7 +140,7 @@ Int64 DB::DBTool::GetLastIdentity64()
 {
 	if (this->svrType == DB::DBUtil::ServerType::MySQL || this->svrType == DB::DBUtil::ServerType::MSSQL || this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *reader = this->ExecuteReaderC(UTF8STRC("select @@identity"));
+		DB::DBReader *reader = this->ExecuteReader(CSTR("select @@identity"));
 		Int64 id = 0;
 		if (reader)
 		{

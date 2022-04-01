@@ -22,9 +22,9 @@ void IO::ProtoHdlr::ProtoCortexHandler::DeleteStreamData(IO::Stream *stm, void *
 
 UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(IO::Stream *stm, void *stmObj, void *stmData, const UInt8 *buff, UOSInt buffSize)
 {
-	OSInt i;
-	OSInt j;
-	OSInt k;
+	UOSInt i;
+	UOSInt j;
+	UOSInt k;
 	UInt8 cmdSize;
 	UInt8 chk;
 	i = 0;
@@ -72,7 +72,7 @@ UOSInt IO::ProtoHdlr::ProtoCortexHandler::ParseProtocol(IO::Stream *stm, void *s
 UOSInt IO::ProtoHdlr::ProtoCortexHandler::BuildPacket(UInt8 *buff, Int32 cmdType, Int32 seqId, const UInt8 *cmd, UOSInt cmdSize, void *stmData)
 {
 	UInt8 chk;
-	OSInt i;
+	UOSInt i;
 	buff[0] = 0xff;
 	buff[1] = (UInt8)(cmdType & 0xff);
 	buff[2] = (UInt8)(cmdSize & 0xff);

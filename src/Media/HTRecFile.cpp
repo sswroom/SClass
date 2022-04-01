@@ -676,7 +676,7 @@ Media::HTRecFile::~HTRecFile()
 	SDEL_TEXT(this->testName);
 }
 
-UOSInt Media::HTRecFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Media::HTRecFile::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->recBuff == 0)
 	{
@@ -684,21 +684,21 @@ UOSInt Media::HTRecFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 	else
 	{
-		names->Add((const UTF8Char*)"Setting");
-		names->Add((const UTF8Char*)"Records");
+		names->Add(CSTR("Setting"));
+		names->Add(CSTR("Records"));
 		return 2;
 	}
 }
 
-DB::DBReader *Media::HTRecFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Media::HTRecFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	if (Text::StrEquals(tableName, (const UTF8Char*)"Setting"))
+	if (tableName.Equals(UTF8STRC("Setting")))
 	{
 		HTRecReader *reader;
 		NEW_CLASS(reader, HTRecReader(this, true));
 		return reader;
 	}
-	else if (Text::StrEquals(tableName, (const UTF8Char*)"Records"))
+	else if (tableName.Equals(UTF8STRC("Records")))
 	{
 		HTRecReader *reader;
 		NEW_CLASS(reader, HTRecReader(this, false));

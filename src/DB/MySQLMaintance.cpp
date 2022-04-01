@@ -18,7 +18,7 @@ DB::MySQLMaintance::~MySQLMaintance()
 
 void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilderUTF8 *sb)
 {
-	Data::ArrayList<const UTF8Char*> tableNames;
+	Data::ArrayList<Text::CString> tableNames;
 	if (!this->cli->ChangeSchema(schema))
 	{
 		this->cli->GetErrorMsg(sb);
@@ -36,12 +36,12 @@ void DB::MySQLMaintance::RepairSchema(const UTF8Char *schema, Text::StringBuilde
 	}
 }
 
-void DB::MySQLMaintance::RepairTable(const UTF8Char *tableName, Text::StringBuilderUTF8 *sb)
+void DB::MySQLMaintance::RepairTable(Text::CString tableName, Text::StringBuilderUTF8 *sb)
 {
 	DB::SQLBuilder sql(this->cli->GetSvrType(), this->cli->GetTzQhr());
 	sql.AppendCmdC(CSTR("check table "));
-	sql.AppendCol(tableName);
-	DB::DBReader *r = this->cli->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	sql.AppendCol(tableName.v);
+	DB::DBReader *r = this->cli->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		UOSInt i;

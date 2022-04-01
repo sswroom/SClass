@@ -323,7 +323,7 @@ Math::Vector2D *Map::OruxDBLayer::GetNewVectorById(void *session, Int64 id)
 	sql.AppendInt32(y);
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 		return 0;
 	Media::ImageList *imgList = 0;
@@ -371,14 +371,14 @@ void Map::OruxDBLayer::ReleaseObject(void *session, DrawObjectL *obj)
 {
 }
 
-UOSInt Map::OruxDBLayer::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Map::OruxDBLayer::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	return this->db->GetTableNames(names);
 }
 
-DB::DBReader *Map::OruxDBLayer::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::OruxDBLayer::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
-	return this->db->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	return this->db->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 }
 
 void Map::OruxDBLayer::CloseReader(DB::DBReader *r)
@@ -417,7 +417,7 @@ Bool Map::OruxDBLayer::GetObjectData(Int64 objectId, IO::Stream *stm, Int32 *til
 	sql.AppendInt32(y);
 	sql.AppendCmdC(CSTR(" and z = "));
 	sql.AppendInt32((Int32)this->currLayer);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r == 0)
 		return false;
 	Bool succ = false;

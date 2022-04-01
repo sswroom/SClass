@@ -119,15 +119,15 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableList()
 	{
 		return;
 	}
-	const UTF8Char *tableName;
-	Data::ArrayList<const UTF8Char*> tableNames;
+	Text::CString tableName;
+	Data::ArrayList<Text::CString> tableNames;
 	UOSInt i = 0;
-	UOSInt j = this->currDB->GetTableNames(&tableNames);
+	UOSInt j = this->currDB->QueryTableNames(&tableNames);
 	ArtificialQuickSort_Sort(&tableNames, 0, (OSInt)j - 1);
 	while (i < j)
 	{
 		tableName = tableNames.GetItem(i);
-		this->lbTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
+		this->lbTable->AddItem(tableName, 0);
 		i++;
 	}
 	this->currDB->ReleaseTableNames(&tableNames);
@@ -146,9 +146,9 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateTableData(Text::String *tableName)
 	UTF8Char *sptr;
 	DB::TableDef *tabDef = 0;
 	DB::DBReader *r;
-	tabDef = this->currDB->GetTableDef(tableName?tableName->v:0);
+	tabDef = this->currDB->GetTableDef(STR_CSTR(tableName));
 
-	r = this->currDB->GetTableData(tableName?tableName->v:0, 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
+	r = this->currDB->QueryTableData(STR_CSTR(tableName), 0, 0, MAX_ROW_CNT, CSTR_NULL, 0);
 	if (r)
 	{
 		this->UpdateResult(r);
@@ -296,7 +296,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::UpdateResult(DB::DBReader *r)
 	MemFree(colSize);
 }
 
-Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(const UTF8Char *tableName)
+Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(Text::CString tableName)
 {
 	if (this->currDB)
 	{
@@ -308,7 +308,7 @@ Data::Class *SSWR::AVIRead::AVIRDBManagerForm::CreateTableClass(const UTF8Char *
 			return cls;
 		}
 
-		DB::DBReader *r = this->currDB->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+		DB::DBReader *r = this->currDB->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Data::Class *cls = r->CreateClass();
@@ -536,7 +536,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_HEADER:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(sbuff);
+			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};
@@ -553,7 +553,7 @@ void SSWR::AVIRead::AVIRDBManagerForm::EventMenuClicked(UInt16 cmdId)
 	case MNU_TABLE_CPP_SOURCE:
 		if ((sptr = this->lbTable->GetSelectedItemText(sbuff)) != 0)
 		{
-			Data::Class *cls = this->CreateTableClass(sbuff);
+			Data::Class *cls = this->CreateTableClass(CSTRP(sbuff, sptr));
 			if (cls)
 			{
 				Text::PString hdr = {sbuff2, 0};

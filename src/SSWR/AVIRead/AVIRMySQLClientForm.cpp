@@ -115,7 +115,7 @@ void __stdcall SSWR::AVIRead::AVIRMySQLClientForm::OnQueryClicked(void *userObj)
 	{
 		return;
 	}
-	DB::DBReader *reader = me->cli->ExecuteReaderC(sb.ToString(), sb.GetLength());
+	DB::DBReader *reader = me->cli->ExecuteReader(sb.ToCString());
 	if (reader)
 	{
 		me->UpdateResult(reader);

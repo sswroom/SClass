@@ -782,7 +782,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			Data::ArrayList<LamppostData*> dataList2;
 			Data::NamedClass<LamppostData> *cls = LamppostData().CreateClass();
 			LamppostData *data;
-			DB::DBReader *r = db->GetTableData((const UTF8Char*)"dbo.lamppost_data", 0, 0, 0, CSTR_NULL, 0);
+			DB::DBReader *r = db->QueryTableData(CSTR("dbo.lamppost_data"), 0, 0, 0, CSTR_NULL, 0);
 			if (r)
 			{
 				r->ReadAll(&dataList, cls);

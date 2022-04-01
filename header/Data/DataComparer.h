@@ -2,6 +2,7 @@
 #define _SM_DATA_DATACOMPARER
 #include "Data/UUID.h"
 #include "Math/Vector2D.h"
+#include "Text/CString.h"
 namespace Data
 {
 	class DataComparer
@@ -18,6 +19,7 @@ namespace Data
 		static OSInt Compare(const UInt8 *val1, UOSInt cnt1, const UInt8 *val2, UOSInt cnt2);
 		static OSInt Compare(Math::Vector2D *val1, Math::Vector2D *val2);
 		static OSInt Compare(Data::UUID *val1, Data::UUID *val2);
+		static OSInt Compare(Text::CString val1, Text::CString val2);
 
 		static Bool NearlyEquals(Double val1, Double val2);
 	};

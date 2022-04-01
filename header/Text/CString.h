@@ -23,6 +23,12 @@ namespace Text
 		{
 		}
 
+		CString(const Int32 *nul)
+		{
+			this->v = 0;
+			this->leng = 0;
+		}
+
 		CString(const UTF8Char *v, UOSInt leng)
 		{
 			this->v = v;

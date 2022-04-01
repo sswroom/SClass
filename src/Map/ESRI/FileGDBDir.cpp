@@ -6,14 +6,13 @@
 
 #include <stdio.h>
 
-Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(const UTF8Char *name)
+Map::ESRI::FileGDBTable *Map::ESRI::FileGDBDir::GetTable(Text::CString name)
 {
-	UOSInt nameLen = Text::StrCharCnt(name);
 	UOSInt i = this->tables->GetCount();
 	while (i-- > 0)
 	{
 		FileGDBTable *table = this->tables->GetItem(i);
-		if (table->GetName()->EqualsICase(name, nameLen))
+		if (table->GetName()->EqualsICase(name.v, name.leng))
 		{
 			return table;
 		}
@@ -32,19 +31,19 @@ Map::ESRI::FileGDBDir::~FileGDBDir()
 	DEL_CLASS(this->tables);
 }
 
-UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Map::ESRI::FileGDBDir::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	UOSInt i = 0;
 	UOSInt j = this->tables->GetCount();
 	while (i < j)
 	{
-		names->Add(this->tables->GetItem(i)->GetName()->v);
+		names->Add(this->tables->GetItem(i)->GetName()->ToCString());
 		i++;
 	}
 	return j;
 }
 
-DB::DBReader *Map::ESRI::FileGDBDir::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::ESRI::FileGDBDir::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	FileGDBTable *table = this->GetTable(tableName);
 	if (table == 0)

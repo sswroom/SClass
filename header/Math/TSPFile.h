@@ -19,8 +19,8 @@ namespace Math
 		TSPFile(IO::IStreamData *fd);
 		virtual ~TSPFile();
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
+		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();

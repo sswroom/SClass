@@ -58,7 +58,7 @@ IO::ParsedObject *Parser::ObjParser::DBMapParser::ParseObject(IO::ParsedObject *
 	j = tableNames.GetCount();
 	while (i < j)
 	{
-		r = db->GetTableData(tableNames.GetItem(i);
+		r = db->QueryTableData(tableNames.GetItem(i);
 		if (r)
 		{
 			xCol = -1;

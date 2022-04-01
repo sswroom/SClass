@@ -153,7 +153,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 	if (!isSave && filterCnt > 0)
 	{
 		sb.AppendC(UTF8STRC("Supported Files"));
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 1);
 		while (i < filterCnt)
 		{
 			if (i > 0)
@@ -162,7 +162,7 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 			}
 			sb.Append(this->patterns->GetItem(i++));
 		}
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 1);
 	}
 
 	i = 0;
@@ -171,17 +171,16 @@ Bool UI::FileDialog::ShowDialog(ControlHandle *ownerHandle)
 		sb.Append(this->names->GetItem(i));
 		sb.AppendC(UTF8STRC(" ("));
 		sb.Append(this->patterns->GetItem(i));
-		sb.AppendUTF8Char('\0');
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 2);
 		sb.Append(this->patterns->GetItem(i++));
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 1);
 	}
 	if (!this->isSave)
 	{
 		sb.AppendC(UTF8STRC("All Files (*.*)"));
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 1);
 		sb.AppendC(UTF8STRC("*.*"));
-		sb.AppendUTF8Char('\0');
+		sb.AppendChar('\0', 1);
 	}
 	if (this->allowMulti && !this->isSave)
 	{

@@ -1,11 +1,11 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "DB/DBModel.h"
 #include "Text/StringBuilderUTF8.h"
 
 DB::DBModel::DBModel()
 {
-	NEW_CLASS(this->tableMap, Data::ICaseStringUTF8Map<TableDef*>());
+	NEW_CLASS(this->tableMap, Data::ICaseStringMap<TableDef*>());
 	NEW_CLASS(this->tables, Data::ArrayList<TableDef*>());
 }
 
@@ -16,19 +16,19 @@ DB::DBModel::~DBModel()
 	DEL_CLASS(this->tables);
 }
 
-Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
+Bool DB::DBModel::LoadDatabase(DB::DBTool *db, Text::CString dbName)
 {
-	if (dbName && !db->ChangeDatabase(dbName))
+	if (dbName.v && !db->ChangeDatabase(dbName.v))
 	{
 		return false;
 	}
 	Text::StringBuilderUTF8 sb;
-	Data::ArrayList<const UTF8Char *> tableNames;
+	Data::ArrayList<Text::CString> tableNames;
 	DB::TableDef *table;
-	const UTF8Char *tableName;
+	Text::String *tableName;
 	UOSInt i;
 	UOSInt j;
-	db->GetTableNames(&tableNames);
+	db->QueryTableNames(&tableNames);
 	i = tableNames.GetCount();
 	while (i-- > 0)
 	{
@@ -38,27 +38,36 @@ Bool DB::DBModel::LoadDatabase(DB::DBTool *db, const UTF8Char *dbName)
 			table->SetDatabaseName(dbName);
 			this->tables->Add(table);
 			sb.ClearStr();
-			if (dbName)
+			if (dbName.v)
 			{
-				sb.AppendSlow(dbName);
+				sb.Append(dbName);
 				sb.AppendUTF8Char('.');
 			}
-			sb.AppendSlow(tableName = table->GetTableName());
-			this->tableMap->Put(sb.ToString(), table);
-			j = Text::StrIndexOfChar(tableName, '.');
-			this->tableMap->Put(tableName + j + 1, table);
+			tableName = table->GetTableName();
+			sb.Append(tableName);
+			this->tableMap->Put(sb.ToCString(), table);
+			j = tableName->IndexOf('.');
+			this->tableMap->Put(tableName->ToCString().Substring(j + 1), table);
 		}
 	}
-	db->ReleaseDatabaseNames(&tableNames);
+	db->ReleaseTableNames(&tableNames);
 	return true;
 }
 
-DB::TableDef *DB::DBModel::GetTable(const UTF8Char *tableName)
+DB::TableDef *DB::DBModel::GetTable(Text::CString tableName)
 {
 	return this->tableMap->Get(tableName);
 }
 
-UOSInt DB::DBModel::GetTableNames(Data::ArrayList<const UTF8Char*> *tableNames)
+UOSInt DB::DBModel::GetTableNames(Data::ArrayList<Text::CString> *tableNames)
 {
-	return tableNames->AddAll(this->tableMap->GetKeys());
+	Data::ArrayList<Text::String*> *keys = this->tableMap->GetKeys();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
+	while (i < j)
+	{
+		tableNames->Add(keys->GetItem(i)->ToCString());
+		i++;
+	}
+	return j;
 }

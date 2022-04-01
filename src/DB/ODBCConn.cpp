@@ -104,7 +104,7 @@ void DB::ODBCConn::UpdateConnInfo()
 
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select getdate(), GETUTCDATE()"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("select getdate(), GETUTCDATE()"));
 		if (r)
 		{
 			Data::DateTime dt1;
@@ -224,7 +224,7 @@ Bool DB::ODBCConn::Connect(Text::String *dsn, Text::String *uid, Text::String *p
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("use "));
 		sb.Append(schema);
-		this->ExecuteNonQueryC(sb.ToString(), sb.GetLength());
+		this->ExecuteNonQuery(sb.ToCString());
 	}
 	return true;
 }
@@ -434,7 +434,7 @@ DB::ODBCConn::~ODBCConn()
 		UOSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tableNames->GetItem(i));
+			this->tableNames->GetItem(i)->Release();
 		}
 		DEL_CLASS(this->tableNames);
 		this->tableNames = 0;
@@ -499,7 +499,7 @@ void DB::ODBCConn::Dispose()
 	delete this;
 }
 
-OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt DB::ODBCConn::ExecuteNonQuery(Text::CString sql)
 {
 	if (this->connHand == 0)
 	{
@@ -524,11 +524,11 @@ OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 	}
 
 	#if _WCHAR_SIZE == 2
-	const WChar *wptr = Text::StrToWCharNew(sql);
+	const WChar *wptr = Text::StrToWCharNew(sql.v);
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
-	ret = SQLPrepareA(hStmt, (SQLCHAR*)sql, SQL_NTS);
+	ret = SQLPrepareA(hStmt, (SQLCHAR*)sql.v, SQL_NTS);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -610,7 +610,7 @@ OSInt DB::ODBCConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 	return rowCnt;
 }*/
 
-DB::DBReader *DB::ODBCConn::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *DB::ODBCConn::ExecuteReader(Text::CString sql)
 {
 	if (this->connHand == 0)
 	{
@@ -634,11 +634,11 @@ DB::DBReader *DB::ODBCConn::ExecuteReaderSlow(const UTF8Char *sql)
 	}
 
 	#if _WCHAR_SIZE == 2
-	const WChar *wptr = Text::StrToWCharNew(sql);
+	const WChar *wptr = Text::StrToWCharNew(sql.v);
 	ret = SQLPrepareW(hStmt, (SQLWCHAR*)wptr, SQL_NTS);
 	Text::StrDelNew(wptr);
 	#else
-	ret = SQLPrepare(hStmt, (SQLCHAR*)sql, SQL_NTS);
+	ret = SQLPrepare(hStmt, (SQLCHAR*)sql.v, SQL_NTS);
 	#endif
 	if (ret != SQL_SUCCESS && ret != SQL_SUCCESS_WITH_INFO)
 	{
@@ -952,7 +952,7 @@ DB::DBReader *DB::ODBCConn::GetTablesInfo()
 	return r;
 }
 
-UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->tableNames)
 	{
@@ -964,7 +964,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 //		ShowTablesCmd(sbuff);
 //		DB::ReadingDB::DBReader *rdr = this->ExecuteReader(sbuff);
 		DB::DBReader *rdr = this->GetTablesInfo();
-		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
+		NEW_CLASS(this->tableNames, Data::ArrayList<Text::String *>());
 		if (rdr)
 		{
 			sbuff[0] = 0;
@@ -981,7 +981,7 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 				}
 				else
 				{
-					this->tableNames->Add(Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff)));
+					this->tableNames->Add(Text::String::NewP(sbuff, sptr));
 				}
 			}
 			this->CloseReader(rdr);
@@ -991,14 +991,14 @@ UOSInt DB::ODBCConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	UOSInt j = this->tableNames->GetCount();
 	while (i < j)
 	{
-		names->Add(this->tableNames->GetItem(i));
+		names->Add(this->tableNames->GetItem(i)->ToCString());
 		i++;
 	}
 	//names->AddRange(this->tableNames);
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ODBCConn::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -1039,14 +1039,14 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 	i = 0;
 	while (true)
 	{
-		j = Text::StrIndexOfChar(&name[i], '.');
+		j = Text::StrIndexOfChar(&name.v[i], '.');
 		if (j == INVALID_INDEX)
 		{
-			sptr = DB::DBUtil::SDBColUTF8(sbuff, &name[i], this->svrType);
+			sptr = DB::DBUtil::SDBColUTF8(sbuff, &name.v[i], this->svrType);
 			sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			break;
 		}
-		sptr = Text::StrConcatC(sbuff, &name[i], (UOSInt)j);
+		sptr = Text::StrConcatC(sbuff, &name.v[i], (UOSInt)j);
 		sptr2 = DB::DBUtil::SDBColUTF8(sptr + 1, sbuff, this->svrType);
 		sb.AppendC(sptr + 1, (UOSInt)(sptr2 - sptr - 1));
 		sb.AppendUTF8Char('.');
@@ -1060,7 +1060,7 @@ DB::DBReader *DB::ODBCConn::GetTableData(const UTF8Char *name, Data::ArrayList<T
 			sb.AppendUOSInt(maxCnt);
 		}
 	}
-	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
+	return this->ExecuteReader(sb.ToCString());
 }
 
 void DB::ODBCConn::ShowSQLError(const UTF16Char *state, const UTF16Char *errMsg)

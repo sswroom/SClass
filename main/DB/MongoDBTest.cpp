@@ -23,10 +23,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	DB::MongoDB::BuildURL(&sb, username, password, serverhost, serverport);
 	NEW_CLASS(mongoDB, DB::MongoDB(sb.ToCString(), database, log));
 	
-	Data::ArrayList<const UTF8Char*> nameList;
+	Data::ArrayList<Text::CString> tableList;
+	Data::ArrayList<Text::String*> dbList;
 	UOSInt i;
 	UOSInt j;
-	j = mongoDB->GetDatabaseNames(&nameList);
+	j = mongoDB->GetDatabaseNames(&dbList);
 	if (j <= 0)
 	{
 		console->WriteLineC(UTF8STRC("Error in getting Database List:"));
@@ -38,23 +39,22 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		console->WriteLineC(UTF8STRC("Database List:"));
 		i = 0;
-		j = nameList.GetCount();
+		j = dbList.GetCount();
 		while (i < j)
 		{
-			console->WriteLineCStr(Text::CString::FromPtr(nameList.GetItem(i)));
+			console->WriteLineCStr(dbList.GetItem(i)->ToCString());
 			i++;
 		}
-		mongoDB->FreeDatabaseNames(&nameList);
+		mongoDB->FreeDatabaseNames(&dbList);
 	}
 	console->WriteLine();
 	console->WriteLineC(UTF8STRC("Table List:"));
-	nameList.Clear();
-	mongoDB->GetTableNames(&nameList);
+	mongoDB->GetTableNames(&tableList);
 	i = 0;
-	j = nameList.GetCount();
+	j = tableList.GetCount();
 	while (i < j)
 	{
-		console->WriteLineCStr(Text::CString::FromPtr(nameList.GetItem(i)));
+		console->WriteLineCStr(tableList.GetItem(i));
 		i++;
 	}
 

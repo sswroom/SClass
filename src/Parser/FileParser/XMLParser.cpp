@@ -1341,7 +1341,7 @@ IO::ParsedObject *Parser::FileParser::XMLParser::ParseStream(Text::EncodingFacto
 													i++;
 												}
 												NEW_CLASS(db, DB::TextDB(fileName));
-												db->AddTable(sbTableName.ToString(), &colList);
+												db->AddTable(sbTableName.ToCString(), &colList);
 											}
 											Bool eq = true;
 											if (colList.GetCount() == nameList.GetCount())

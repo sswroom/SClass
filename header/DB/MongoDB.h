@@ -16,21 +16,21 @@ namespace DB
 	private:
 		void *client;
 		Text::String *database;
-		Data::ArrayList<const UTF8Char*> *tableNames;
+		Data::ArrayList<Text::CString> *tableNames;
 		IO::LogTool *log;
 		Text::String *errorMsg;
 	public:
 		MongoDB(Text::CString url, Text::CString database, IO::LogTool *log);
 		virtual ~MongoDB();
 		
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
+		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
-		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
-		void FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names);
+		UOSInt GetDatabaseNames(Data::ArrayList<Text::String*> *names);
+		void FreeDatabaseNames(Data::ArrayList<Text::String*> *names);
 
 		static void BuildURL(Text::StringBuilderUTF8 *out, Text::CString userName, Text::CString password, Text::CString host, UInt16 port);
 	};

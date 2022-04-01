@@ -52,7 +52,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	sql->AppendInt32(keyx);
 	sql->AppendCmdC(CSTR(" and keyy = "));
 	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
+	r = this->conn->ExecuteReader(sql->ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -96,7 +96,7 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
 		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
+		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
 		mutUsage.EndUse();
@@ -129,7 +129,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	sql->AppendInt32(keyx);
 	sql->AppendCmdC(CSTR(" and keyy = "));
 	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReaderC(sql->ToString(), sql->GetLength());
+	r = this->conn->ExecuteReader(sql->ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -173,7 +173,7 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 		sql->AppendCmdC(CSTR(", "));
 		sql->AppendDate(&dt);
 		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQueryC(sql->ToString(), sql->GetLength());
+		this->conn->ExecuteNonQuery(sql->ToCString());
 
 		DEL_CLASS(sql);
 		mutUsage.EndUse();

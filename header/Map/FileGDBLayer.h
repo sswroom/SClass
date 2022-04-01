@@ -23,12 +23,12 @@ namespace Map
 		Double maxY;
 		UOSInt objIdCol;
 		UOSInt shapeCol;
-		const UTF8Char *tableName;
+		Text::String *tableName;
 
 	private:
 		Data::Int32Map<const UTF8Char **> *ReadNameArr();
 	public:
-		FileGDBLayer(DB::SharedReadingDB *conn, const UTF8Char *sourceName, const UTF8Char *tableName);
+		FileGDBLayer(DB::SharedReadingDB *conn, Text::CString sourceName, Text::CString tableName);
 		virtual ~FileGDBLayer();
 
 		virtual DrawLayerType GetLayerType();
@@ -53,10 +53,10 @@ namespace Map
 		virtual void AddUpdatedHandler(UpdatedHandler hdlr, void *obj);
 		virtual void RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
+		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DB::DBReader *r);
-		virtual void GetErrorMsg(Text::StringBuilderUTF *str);
+		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
 		virtual ObjectClass GetObjectClass();
@@ -79,7 +79,7 @@ namespace Map
 		virtual Int32 GetInt32(UOSInt colIndex);
 		virtual Int64 GetInt64(UOSInt colIndex);
 		virtual WChar *GetStr(UOSInt colIndex, WChar *buff);
-		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF *sb);
+		virtual Bool GetStr(UOSInt colIndex, Text::StringBuilderUTF8 *sb);
 		virtual Text::String *GetNewStr(UOSInt colIndex);
 		virtual UTF8Char *GetStr(UOSInt colIndex, UTF8Char *buff, UOSInt buffSize);
 		virtual DateErrType GetDate(UOSInt colIndex, Data::DateTime *outVal); //return 0 = ok, 2 = Error

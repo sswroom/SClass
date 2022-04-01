@@ -42,7 +42,7 @@ namespace SSWR
 			static void __stdcall OnTableSelChg(void *userObj);
 
 			void UpdateResult(DB::DBReader *r);
-			Data::Class *CreateTableClass(const UTF8Char *name);
+			Data::Class *CreateTableClass(Text::CString name);
 		public:
 			AVIRDBForm(UI::GUIClientControl *parent, UI::GUICore *ui, SSWR::AVIRead::AVIRCore *core, DB::ReadingDB *db, Bool needRelease);
 			virtual ~AVIRDBForm();

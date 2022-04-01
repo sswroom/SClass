@@ -49,7 +49,7 @@ struct DB::OLEDBConn::ClassData
 	IDBInitialize *pIDBInitialize;
 	IDBCreateSession *pSession;
 	ITransactionLocal *pITransactionLocal;
-	Data::ArrayList<const UTF8Char *> *tableNames;
+	Data::ArrayList<Text::String *> *tableNames;
 };
 
 struct DB::OLEDBReader::ClassData
@@ -210,7 +210,7 @@ DB::OLEDBConn::~OLEDBConn()
 		UOSInt i = data->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(data->tableNames->GetItem(i));
+			data->tableNames->GetItem(i)->Release();
 		}
 		DEL_CLASS(data->tableNames);
 		data->tableNames = 0;
@@ -291,7 +291,7 @@ void DB::OLEDBConn::Close()
 {
 }
 
-OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt DB::OLEDBConn::ExecuteNonQuery(Text::CString sql)
 {
 	ClassData *data = this->clsData;
 	if (data->pSession == 0)
@@ -318,7 +318,7 @@ OSInt DB::OLEDBConn::ExecuteNonQuerySlow(const UTF8Char *sql)
 		return -2;
 	}
 
-	const WChar *wptr = Text::StrToWCharNew(sql);
+	const WChar *wptr = Text::StrToWCharNew(sql.v);
 	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr);
 	if (FAILED(hr))
 	{
@@ -477,7 +477,7 @@ void DB::OLEDBConn::Reconnect()
 {
 }
 
-UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	ClassData *data = this->clsData;
 	if (data->tableNames)
@@ -487,9 +487,10 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	{
 		HRESULT hr;
 		UTF8Char sbuff[256];
+		UTF8Char *sptr;
 		IDBSchemaRowset *pIDBSchemaRowset;
 		IRowset *pIRowset;
-		NEW_CLASS(data->tableNames, Data::ArrayList<const UTF8Char*>());
+		NEW_CLASS(data->tableNames, Data::ArrayList<Text::String*>());
 
 		hr = data->pSession->CreateSession(0, IID_IDBSchemaRowset, (IUnknown**)&pIDBSchemaRowset);
 		if (SUCCEEDED(hr))
@@ -523,9 +524,9 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 				}
 				while (rdr->ReadNext())
 				{
-					if (rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff)))
+					if ((sptr = rdr->GetStr(tableNameCol, sbuff, sizeof(sbuff))) != 0)
 					{
-						data->tableNames->Add(Text::StrCopyNew(sbuff));
+						data->tableNames->Add(Text::String::NewP(sbuff, sptr));
 					}
 				}
 				DEL_CLASS(rdr);
@@ -537,20 +538,20 @@ UOSInt DB::OLEDBConn::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	UOSInt j = data->tableNames->GetCount();
 	while (i < j)
 	{
-		names->Add(data->tableNames->GetItem(i));
+		names->Add(data->tableNames->GetItem(i)->ToCString());
 		i++;
 	}
 	return data->tableNames->GetCount();
 }
 
-DB::DBReader *DB::OLEDBConn::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::OLEDBConn::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char tmpBuff[256];
-	UTF8Char *sptr = Text::StrConcat(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")), tableName);
-	return ExecuteReaderC(tmpBuff, (UOSInt)(sptr - tmpBuff));
+	UTF8Char *sptr = tableName.ConcatTo(Text::StrConcatC(tmpBuff, UTF8STRC("select * from ")));
+	return ExecuteReader(CSTRP(tmpBuff, sptr));
 }
 
-DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *DB::OLEDBConn::ExecuteReader(Text::CString sql)
 {
 	ClassData *data = this->clsData;
 	if (data->pSession == 0)
@@ -577,7 +578,7 @@ DB::DBReader *DB::OLEDBConn::ExecuteReaderSlow(const UTF8Char *sql)
 		return 0;
 	}
 
-	const WChar *wptr = Text::StrToWCharNew(sql);
+	const WChar *wptr = Text::StrToWCharNew(sql.v);
 	hr = pICommandText->SetCommandText(DBGUID_DEFAULT, wptr);
 	if (FAILED(hr))
 	{

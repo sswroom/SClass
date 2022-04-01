@@ -84,18 +84,18 @@ Bool Exporter::DBExcelXMLExporter::ExportFile(IO::SeekableStream *stm, Text::CSt
 	writer->WriteLineC(UTF8STRC(" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\""));
 	writer->WriteLineC(UTF8STRC(" xmlns:html=\"http://www.w3.org/TR/REC-html40\">"));
 
-	Data::ArrayListStrUTF8 *names;
-	NEW_CLASS(names, Data::ArrayListStrUTF8());
+	Data::ArrayList<Text::CString> *names;
+	NEW_CLASS(names, Data::ArrayList<Text::CString>());
 	tableCnt = db->GetTableNames(names);
 	j = 0;
 	while (j < tableCnt)
 	{
-		const UTF8Char *tableName = names->GetItem(j);
-		r = db->GetTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
+		Text::CString tableName = names->GetItem(j);
+		r = db->QueryTableData(tableName, 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
-			UOSInt ind = Text::StrLastIndexOfChar(tableName, '\\');
-			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName[ind + 1]), UTF8STRC(">"));
+			UOSInt ind = tableName.LastIndexOf('\\');
+			sptr = Text::StrConcatC(Text::XML::ToAttrText(Text::StrConcatC(lineBuff1, UTF8STRC(" <Worksheet ss:Name=")), &tableName.v[ind + 1]), UTF8STRC(">"));
 			Text::StrReplace(lineBuff1, '?', '_');
 			Text::StrReplace(lineBuff1, '\\', '_');
 			writer->WriteLineC(lineBuff1, (UOSInt)(sptr - lineBuff1));

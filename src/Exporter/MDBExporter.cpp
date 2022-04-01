@@ -67,7 +67,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	DB::DBReader *r;
 	DB::TableDef *tabDef;
 	DB::ColDef *colDef;
-	Data::ArrayList<const UTF8Char *> tables;
+	Data::ArrayList<Text::CString> tables;
 	UOSInt i;
 	UOSInt j;
 	UOSInt k;
@@ -84,7 +84,7 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	j = tables.GetCount();
 	while (i < j)
 	{
-		r = srcDB->GetTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
+		r = srcDB->QueryTableData(tables.GetItem(i), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			NEW_CLASS(tabDef, DB::TableDef(tables.GetItem(i)));
@@ -98,8 +98,8 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				k++;
 			}
 			sql.Clear();
-			mdb->GenCreateTableCmd(&sql, tables.GetItem(i), tabDef);
-			if (mdb->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= -2)
+			mdb->GenCreateTableCmd(&sql, tables.GetItem(i).v, tabDef);
+			if (mdb->ExecuteNonQuery(sql.ToCString()) <= -2)
 			{
 /*				IO::FileStream *debugFS;
 				Text::UTF8Writer *debugWriter;
@@ -117,8 +117,8 @@ Bool Exporter::MDBExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			while (r->ReadNext())
 			{
 				sql.Clear();
-				mdb->GenInsertCmd(&sql, tables.GetItem(i), r);
-				if (mdb->ExecuteNonQueryC(sql.ToString(), sql.GetLength()) <= 0)
+				mdb->GenInsertCmd(&sql, tables.GetItem(i).v, r);
+				if (mdb->ExecuteNonQuery(sql.ToCString()) <= 0)
 				{
 					sb.ClearStr();
 					mdb->GetLastErrorMsg(&sb);

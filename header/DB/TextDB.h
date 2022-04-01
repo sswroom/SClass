@@ -1,6 +1,6 @@
 #ifndef _SM_DB_TEXTDB
 #define _SM_DB_TEXTDB
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "DB/ReadingDB.h"
 #include "Text/String.h"
 
@@ -11,25 +11,25 @@ namespace DB
 	public:
 		typedef struct
 		{
-			const UTF8Char *name;
+			Text::String *name;
 			Data::ArrayList<const UTF8Char *> *colList;
 			Data::ArrayList<Text::String **> *valList;
 		} DBData;
 
 	private:
-		Data::StringUTF8Map<DBData*> *dbMap;
+		Data::StringMap<DBData*> *dbMap;
 		DBData *currDB;
 	public:
 		TextDB(Text::CString sourceName);
 		virtual ~TextDB();
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
+		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual void Reconnect();
 
-		Bool AddTable(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colList);
+		Bool AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList);
 		Bool AddTableData(Data::ArrayList<const UTF8Char*> *valList);
 	};
 }

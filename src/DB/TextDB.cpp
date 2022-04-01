@@ -238,7 +238,7 @@ public:
 
 DB::TextDB::TextDB(Text::CString sourceName) : DB::ReadingDB(sourceName)
 {
-	NEW_CLASS(this->dbMap, Data::StringUTF8Map<DBData*>());
+	NEW_CLASS(this->dbMap, Data::StringMap<DBData*>());
 	this->currDB = 0;
 }
 
@@ -272,23 +272,29 @@ DB::TextDB::~TextDB()
 		}
 		DEL_CLASS(data->colList);
 		DEL_CLASS(data->valList);
-		Text::StrDelNew(data->name);
+		data->name->Release();
 		MemFree(data);
 	}
 	DEL_CLASS(this->dbMap);
 }
 
-UOSInt DB::TextDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::TextDB::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	UOSInt initCnt = names->GetCount();
-	names->AddAll(this->dbMap->GetKeys());
-	return names->GetCount() - initCnt;
+	Data::ArrayList<Text::String*> *keys = this->dbMap->GetKeys();
+	UOSInt i = 0;
+	UOSInt j = keys->GetCount();
+	while (i < j)
+	{
+		names->Add(keys->GetItem(i)->ToCString());
+		i++;
+	}
+	return j;
 }
 
-DB::DBReader *DB::TextDB::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::TextDB::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DBData *data;
-	if (tableName == 0)
+	if (tableName.v == 0)
 	{
 		if (this->dbMap->GetCount() == 1)
 		{
@@ -328,7 +334,7 @@ void DB::TextDB::Reconnect()
 
 }
 
-Bool DB::TextDB::AddTable(const UTF8Char *tableName, Data::ArrayList<const UTF8Char*> *colList)
+Bool DB::TextDB::AddTable(Text::CString tableName, Data::ArrayList<const UTF8Char*> *colList)
 {
 	DBData *data = this->dbMap->Get(tableName);
 	if (data)
@@ -336,7 +342,7 @@ Bool DB::TextDB::AddTable(const UTF8Char *tableName, Data::ArrayList<const UTF8C
 	UOSInt i;
 	UOSInt j;
 	data = MemAlloc(DBData, 1);
-	data->name = Text::StrCopyNew(tableName);
+	data->name = Text::String::New(tableName);
 	NEW_CLASS(data->colList, Data::ArrayList<const UTF8Char*>());
 	i = 0;
 	j = colList->GetCount();

@@ -44,7 +44,7 @@ namespace Net
 		UInt16 connStatus;
 		Text::String *lastError;
 		
-		Data::ArrayList<const UTF8Char *> *tableNames;
+		Data::ArrayList<Text::CString> *tableNames;
 
 		Sync::Mutex *cmdMut;
 		Sync::Event *cmdEvt;
@@ -66,12 +66,10 @@ namespace Net
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
-		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
-		virtual DB::DBReader *ExecuteReaderSlow(const UTF8Char *sql);
-		virtual DB::DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
-		DB::DBReader *ExecuteReaderTextC(const UTF8Char *sql, UOSInt sqlLen);
-		DB::DBReader *ExecuteReaderBinaryC(const UTF8Char *sql, UOSInt sqlLen);
+		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		virtual DB::DBReader *ExecuteReader(Text::CString sql);
+		DB::DBReader *ExecuteReaderText(Text::CString sql);
+		DB::DBReader *ExecuteReaderBinary(Text::CString sql);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
@@ -81,8 +79,8 @@ namespace Net
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
+		virtual DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 		Bool ChangeSchema(const UTF8Char *schemaName);
 
 		Bool IsError();

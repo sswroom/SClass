@@ -300,7 +300,7 @@ Bool Media::ProfiledResizer::LoadProfile(Text::CString fileName)
 		NEW_CLASS(csv, DB::CSVFile(fileName, 65001));
 	}
 	csv->SetNoHeader(true);
-	DB::DBReader *r = csv->GetTableData(0, 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = csv->QueryTableData(0, 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		UOSInt i;

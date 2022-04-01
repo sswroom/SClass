@@ -28,7 +28,7 @@ namespace Map
 	private:
 		OSInt GetLangIndex(Int32 lcid);
 	public:
-		AssistedRReverseGeocoder(const UTF8Char *dsn, const UTF8Char *uid, const UTF8Char *pwd, IO::LogTool *log, IO::Writer *errWriter);
+		AssistedRReverseGeocoder(Text::CString dsn, Text::CString uid, Text::CString pwd, IO::LogTool *log, IO::Writer *errWriter);
 		virtual ~AssistedRReverseGeocoder();
 
 		virtual UTF8Char *SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Int32 lcid);

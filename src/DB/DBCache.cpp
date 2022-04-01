@@ -1,10 +1,10 @@
 #include "Stdafx.h"
-#include "Data/ICaseStringUTF8Map.h"
+#include "Data/ICaseStringMap.h"
 #include "DB/DBCache.h"
 #include "DB/DBReader.h"
 #include "Sync/MutexUsage.h"
 
-DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
+DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(Text::CString tableName)
 {
 	DB::DBCache::TableInfo *table;
 	Sync::MutexUsage mutUsage(this->tableMut);
@@ -18,13 +18,13 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 		return 0;
 	}
 	table = MemAlloc(DB::DBCache::TableInfo, 1);
-	table->tableName = Text::StrCopyNew(tableName);
+	table->tableName = Text::String::New(tableName);
 	table->def = def;
 	table->dataCnt = 0;
 	DB::SQLBuilder sql(this->db);
 	sql.AppendCmdC(CSTR("select count(*) from "));
 	sql.AppendTableName(def);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -38,7 +38,7 @@ DB::DBCache::TableInfo *DB::DBCache::GetTableInfo(const UTF8Char *tableName)
 	mutUsage.EndUse();
 	if (oldTable)
 	{
-		Text::StrDelNew(oldTable->tableName);
+		oldTable->tableName->Release();
 		MemFree(oldTable);
 	}
 	return table;
@@ -70,7 +70,7 @@ DB::DBCache::DBCache(DB::DBModel *model, DB::DBTool *db)
 	this->db = db;
 	this->cacheCnt = 4000;
 	NEW_CLASS(this->tableMut, Sync::Mutex());
-	NEW_CLASS(this->tableMap, Data::ICaseStringUTF8Map<DB::DBCache::TableInfo*>());
+	NEW_CLASS(this->tableMap, Data::ICaseStringMap<DB::DBCache::TableInfo*>());
 }
 
 DB::DBCache::~DBCache()
@@ -81,14 +81,14 @@ DB::DBCache::~DBCache()
 	while (i-- > 0)
 	{
 		table = tableList->GetItem(i);
-		Text::StrDelNew(table->tableName);
+		table->tableName->Release();
 		MemFree(table);
 	}
 	DEL_CLASS(this->tableMap);
 	DEL_CLASS(this->tableMut);
 }
 
-OSInt DB::DBCache::GetRowCount(const UTF8Char *tableName)
+OSInt DB::DBCache::GetRowCount(Text::CString tableName)
 {
 	DB::DBCache::TableInfo *table = this->GetTableInfo(tableName);
 	if (table)
@@ -101,7 +101,7 @@ OSInt DB::DBCache::GetRowCount(const UTF8Char *tableName)
 	}
 }
 
-UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF8Char *tableName, DB::PageRequest *page)
+UOSInt DB::DBCache::QueryTableData(Data::ArrayList<DB::DBRow*> *outRows, Text::CString tableName, DB::PageRequest *page)
 {
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
@@ -109,7 +109,7 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 	UOSInt ret = 0;
 	DB::SQLBuilder sql(this->db);
 	DB::DBTool::PageStatus status = this->db->GenSelectCmdPage(&sql, tableInfo->def, page);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		DB::DBRow *row;
@@ -143,7 +143,7 @@ UOSInt DB::DBCache::GetTableData(Data::ArrayList<DB::DBRow*> *outRows, const UTF
 	return ret;
 }
 
-DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
+DB::DBRow *DB::DBCache::GetTableItem(Text::CString tableName, Int64 pk)
 {
 	DB::DBCache::TableInfo *tableInfo = this->GetTableInfo(tableName);
 	if (tableInfo == 0)
@@ -186,7 +186,7 @@ DB::DBRow *DB::DBCache::GetTableItem(const UTF8Char *tableName, Int64 pk)
 	sql.AppendCol(col->GetColName()->v);
 	sql.AppendCmdC(CSTR(" = "));
 	sql.AppendInt64(pk);
-	DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+	DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
@@ -222,7 +222,7 @@ void DB::DBCache::FreeTableItem(DB::DBRow *row)
 	DEL_CLASS(row);
 }
 
-Bool DB::DBCache::IsTableExist(const UTF8Char *tableName)
+Bool DB::DBCache::IsTableExist(Text::CString tableName)
 {
 	return this->GetTableInfo(tableName) != 0;
 }

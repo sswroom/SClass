@@ -1906,7 +1906,7 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 		UOSInt i = this->tableNames->GetCount();
 		while (i-- > 0)
 		{
-			Text::StrDelNew(this->tableNames->GetItem(i));
+			Text::StrDelNew(this->tableNames->GetItem(i).v);
 		}
 		DEL_CLASS(this->tableNames);
 	}
@@ -1956,14 +1956,9 @@ void Net::MySQLTCPClient::Dispose()
 	this->Close();
 }
 
-OSInt Net::MySQLTCPClient::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt Net::MySQLTCPClient::ExecuteNonQuery(Text::CString sql)
 {
-	return ExecuteNonQueryC(sql, Text::StrCharCnt(sql));
-}
-
-OSInt Net::MySQLTCPClient::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
-{
-	DB::DBReader *reader = ExecuteReaderTextC(sql, sqlLen);
+	DB::DBReader *reader = ExecuteReaderText(sql);
 	if (reader == 0)
 	{
 		return -2;
@@ -1976,24 +1971,19 @@ OSInt Net::MySQLTCPClient::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderSlow(const UTF8Char *sql)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReader(Text::CString sql)
 {
-	return ExecuteReaderC(sql, Text::StrCharCnt(sql));
-}
-
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
-{
-	if (Text::StrStartsWithC(sql, sqlLen, UTF8STRC("check table ")))
+	if (sql.StartsWith(UTF8STRC("check table ")))
 	{
-		return ExecuteReaderTextC(sql, sqlLen);
+		return ExecuteReaderText(sql);
 	}
 	else
 	{
-		return ExecuteReaderBinaryC(sql, sqlLen);
+		return ExecuteReaderBinary(sql);
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderTextC(const UTF8Char *sql, UOSInt sqlLen)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2015,11 +2005,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderTextC(const UTF8Char *sql, UOSIn
 	this->cmdSeqNum = 1;
 	NEW_CLASS(reader, MySQLTCPReader(mutUsage));
 	this->cmdReader = reader;
-	UInt8 *buff = MemAlloc(UInt8, sqlLen + 5);
-	WriteInt32(buff, (Int32)(sqlLen + 1));
+	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
+	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 3;
-	MemCopyNO(&buff[5], sql, sqlLen);
-	if (this->cli->Write(buff, 5 + sqlLen) != 5 + sqlLen)
+	MemCopyNO(&buff[5], sql.v, sql.leng);
+	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdReader = 0;
 		DEL_CLASS(reader);
@@ -2049,7 +2039,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderTextC(const UTF8Char *sql, UOSIn
 	return reader;
 }
 
-DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinaryC(const UTF8Char *sql, UOSInt sqlLen)
+DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 {
 	if (this->cli == 0 || !this->recvRunning)
 	{
@@ -2071,11 +2061,11 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinaryC(const UTF8Char *sql, UOS
 	this->cmdSeqNum = 1;
 	NEW_CLASS(reader, MySQLTCPBinaryReader(mutUsage));
 	this->cmdReader = reader;
-	UInt8 *buff = MemAlloc(UInt8, sqlLen + 5);
-	WriteInt32(buff, (Int32)(sqlLen + 1));
+	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
+	WriteInt32(buff, (Int32)(sql.leng + 1));
 	buff[4] = 22;
-	MemCopyNO(&buff[5], sql, sqlLen);
-	if (this->cli->Write(buff, 5 + sqlLen) != 5 + sqlLen)
+	MemCopyNO(&buff[5], sql.v, sql.leng);
+	if (this->cli->Write(buff, 5 + sql.leng) != 5 + sql.leng)
 	{
 		this->cmdReader = 0;
 		DEL_CLASS(reader);
@@ -2178,7 +2168,7 @@ void Net::MySQLTCPClient::Reconnect()
 
 void *Net::MySQLTCPClient::BeginTransaction()
 {
-	if (this->ExecuteNonQueryC(UTF8STRC("START TRANSACTION")) != -2)
+	if (this->ExecuteNonQuery(CSTR("START TRANSACTION")) != -2)
 	{
 		return (void*)-1;
 	}
@@ -2186,15 +2176,15 @@ void *Net::MySQLTCPClient::BeginTransaction()
 }
 void Net::MySQLTCPClient::Commit(void *tran)
 {
-	this->ExecuteNonQueryC(UTF8STRC("COMMIT"));
+	this->ExecuteNonQuery(CSTR("COMMIT"));
 }
 
 void Net::MySQLTCPClient::Rollback(void *tran)
 {
-	this->ExecuteNonQueryC(UTF8STRC("ROLLBACK"));
+	this->ExecuteNonQuery(CSTR("ROLLBACK"));
 }
 
-UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->tableNames)
 	{
@@ -2204,14 +2194,17 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	else
 	{
 		UTF8Char sbuff[256];
-		DB::DBReader *rdr = this->ExecuteReaderC(UTF8STRC("show tables"));
-		NEW_CLASS(this->tableNames, Data::ArrayList<const UTF8Char*>());
+		UTF8Char *sptr;
+		UOSInt len;
+		DB::DBReader *rdr = this->ExecuteReader(CSTR("show tables"));
+		NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
 		if (rdr)
 		{
 			while (rdr->ReadNext())
 			{
-				rdr->GetStr(0, sbuff, sizeof(sbuff));
-				this->tableNames->Add(Text::StrCopyNew(sbuff));
+				sptr = rdr->GetStr(0, sbuff, sizeof(sbuff));
+				len = (UOSInt)(sptr - sbuff);
+				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sbuff, len), len));
 			}
 			this->CloseReader(rdr);
 		}
@@ -2220,7 +2213,7 @@ UOSInt Net::MySQLTCPClient::GetTableNames(Data::ArrayList<const UTF8Char*> *name
 	}
 }
 
-DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Net::MySQLTCPClient::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
@@ -2248,14 +2241,14 @@ DB::DBReader *Net::MySQLTCPClient::GetTableData(const UTF8Char *tableName, Data:
 		}
 	}
 	sb.AppendC(UTF8STRC(" from "));
-	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName, DB::DBUtil::ServerType::MySQL);
+	sptr = DB::DBUtil::SDBColUTF8(sbuff, tableName.v, DB::DBUtil::ServerType::MySQL);
 	sb.AppendC(sbuff, (UOSInt)(sptr - sbuff));
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
 		sb.AppendUOSInt(maxCnt);
 	}
-	return this->ExecuteReaderC(sb.ToString(), sb.GetLength());
+	return this->ExecuteReader(sb.ToCString());
 }
 
 Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
@@ -2277,11 +2270,15 @@ Bool Net::MySQLTCPClient::ChangeSchema(const UTF8Char *schemaName)
 		sptr2 = DB::DBUtil::SDBColUTF8(sbuff, schemaName, DB::DBUtil::ServerType::MySQL);
 		sb.AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	}
-	if (this->ExecuteNonQueryC(sb.ToString(), sb.GetLength()) >= 0)
+	if (this->ExecuteNonQuery(sb.ToCString()) >= 0)
 	{
 		if (this->tableNames)
 		{
-			LIST_FREE_FUNC(this->tableNames, Text::StrDelNew);
+			UOSInt i = this->tableNames->GetCount();
+			while (i-- > 0)
+			{
+				Text::StrDelNew(this->tableNames->GetItem(i).v);
+			}
 			DEL_CLASS(this->tableNames);
 			this->tableNames = 0;
 		}

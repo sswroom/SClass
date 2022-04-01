@@ -23,7 +23,7 @@ namespace DB
 		Text::String *pwd;
 		IO::LogTool *log;
 
-		Data::ArrayList<const UTF8Char *> *tableNames;
+		Data::ArrayList<Text::CString> *tableNames;
 
 		void Connect();
 
@@ -39,9 +39,9 @@ namespace DB
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
 		virtual void Dispose();
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
+		virtual OSInt ExecuteNonQuery(Text::CString sql);
 //		virtual OSInt ExecuteNonQuery(const WChar *sql);
-		virtual DBReader *ExecuteReaderSlow(const UTF8Char *sql);
+		virtual DBReader *ExecuteReader(Text::CString sql);
 //		virtual DBReader *ExecuteReader(const WChar *sql);
 		virtual void CloseReader(DB::DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
@@ -52,8 +52,8 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names);
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names);
+		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		Bool IsConnError();
 		Text::String *GetConnServer();

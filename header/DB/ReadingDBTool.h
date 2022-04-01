@@ -19,7 +19,7 @@ namespace DB
 			NonQueryTrigger = 1
 		} TriggerType;
 
-		typedef Int32 (__stdcall * SQLFailedFunc)(const UTF8Char *sqlCmd, TriggerType trigType);
+		typedef Int32 (__stdcall * SQLFailedFunc)(Text::CString sqlCmd, TriggerType trigType);
 
 	protected:
 		DB::DBConn *db;
@@ -56,7 +56,7 @@ namespace DB
 		virtual ~ReadingDBTool();
 
 		void SetFailTrigger(SQLFailedFunc trig);
-		DB::DBReader *ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt len);
+		DB::DBReader *ExecuteReader(Text::CString sqlCmd);
 		void CloseReader(DB::DBReader *r);
 		DB::DBUtil::ServerType GetSvrType();
 		Bool IsDataError(const UTF8Char *errCode);
@@ -79,10 +79,10 @@ namespace DB
 
 		UInt32 GetDataCnt();
 
-		DB::DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
-		UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *arr);
-		void ReleaseTableNames(Data::ArrayList<const UTF8Char*> *arr);
-		DB::TableDef *GetTableDef(const UTF8Char *tableName);
+		DB::DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		UOSInt QueryTableNames(Data::ArrayList<Text::CString> *arr);
+		void ReleaseTableNames(Data::ArrayList<Text::CString> *arr);
+		DB::TableDef *GetTableDef(Text::CString tableName);
 
 		UOSInt GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);
 		void ReleaseDatabaseNames(Data::ArrayList<const UTF8Char*> *arr);

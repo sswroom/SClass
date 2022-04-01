@@ -14,7 +14,7 @@ namespace DB
 	private:
 		Text::String *fileName;
 		void *db;
-		Data::ArrayListStrUTF8 *tableNames;
+		Data::ArrayList<Text::CString> *tableNames;
 		Bool delOnClose;
 		Text::String *lastErrMsg;
 
@@ -30,10 +30,8 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr);
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb);
 		virtual void Close();
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql);
-		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
-		virtual DBReader *ExecuteReaderSlow(const UTF8Char *sql);
-		virtual DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
+		virtual OSInt ExecuteNonQuery(Text::CString sql);
+		virtual DBReader *ExecuteReader(Text::CString sql);
 		virtual void CloseReader(DBReader *r);
 		virtual void GetErrorMsg(Text::StringBuilderUTF8 *str);
 		virtual Bool IsLastDataError();
@@ -43,8 +41,8 @@ namespace DB
 		virtual void Commit(void *tran);
 		virtual void Rollback(void *tran);
 
-		virtual UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *names); // no need to release
-		virtual DBReader *GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
+		virtual UOSInt GetTableNames(Data::ArrayList<Text::CString> *names); // no need to release
+		virtual DBReader *QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition);
 
 		void SetDeleteOnClose(Bool delOnClose);
 		Bool IsError();

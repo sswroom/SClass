@@ -695,17 +695,17 @@ void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 	mutUsage.EndUse();
 }
 
-UOSInt Map::GPSTrack::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Map::GPSTrack::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
-	names->Add(this->sourceName->v);
-	names->Add((const UTF8Char*)"GPSData");
+	names->Add(this->sourceName->ToCString());
+	names->Add(CSTR("GPSData"));
 	return 2;
 }
 
-DB::DBReader *Map::GPSTrack::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String *> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Map::GPSTrack::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String *> *columnName, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *r;
-	if (tableName != 0 && Text::StrEquals(tableName, (const UTF8Char*)"GPSData"))
+	if (tableName.v != 0 && tableName.Equals(UTF8STRC("GPSData")))
 	{
 		NEW_CLASS(r, Map::GPSDataReader(this));
 	}

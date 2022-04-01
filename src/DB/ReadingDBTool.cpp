@@ -350,12 +350,12 @@ void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
 	this->trig = trig;
 }
 
-DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt len)
+DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
-		logMsg.AppendC(sqlCmd, len);
+		logMsg.Append(sqlCmd);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
@@ -367,7 +367,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	DB::DBReader *r = this->db->ExecuteReaderC(sqlCmd, len);
+	DB::DBReader *r = this->db->ExecuteReader(sqlCmd);
 	if (r)
 	{
 		Data::DateTime t3;
@@ -393,7 +393,7 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReaderC(const UTF8Char *sqlCmd, UOSInt l
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
-			logMsg.AppendC(sqlCmd, len);
+			logMsg.Append(sqlCmd);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
@@ -540,12 +540,12 @@ UInt32 DB::ReadingDBTool::GetDataCnt()
 	return this->dataCnt;
 }
 
-DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("GetTableData: "));
-		logMsg.AppendSlow(tableName);
+		logMsg.Append(tableName);
 		AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_RAW);
 	}
 	if (this->db == 0)
@@ -557,7 +557,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 
 	Data::DateTime t1;
 	Data::DateTime t2;
-	DB::DBReader *r = this->db->GetTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
+	DB::DBReader *r = this->db->QueryTableData(tableName, columnNames, ofst, maxCnt, ordering, condition);
 	if (r)
 	{
 		Data::DateTime t3;
@@ -583,7 +583,7 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot get table data: "));
-			logMsg.AppendSlow(tableName);
+			logMsg.Append(tableName);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
 		}
 
@@ -616,12 +616,12 @@ DB::DBReader *DB::ReadingDBTool::GetTableData(const UTF8Char *tableName, Data::A
 	}
 }
 
-UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
+UOSInt DB::ReadingDBTool::QueryTableNames(Data::ArrayList<Text::CString> *arr)
 {
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		UOSInt ret = 0;
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("select TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.TABLES where TABLE_TYPE='BASE TABLE'"));
 		if (r)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -634,7 +634,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 				}
 				if (r->GetStr(1, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -644,7 +644,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("show tables"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("show tables"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -654,7 +654,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -668,7 +668,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::SQLite)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name from sqlite_master where type = 'table'"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("select name from sqlite_master where type = 'table'"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -678,7 +678,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 				sb.ClearStr();
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -692,7 +692,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::Access || this->svrType == DB::DBUtil::ServerType::MDBTools)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name, type from MSysObjects where type = 1"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("select name, type from MSysObjects where type = 1"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -703,7 +703,7 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 				//Int32 type = r->GetInt32(1);
 				if (r->GetStr(0, &sb))
 				{
-					arr->Add(Text::StrCopyNew(sb.ToString()));
+					arr->Add(Text::CString(Text::StrCopyNewC(sb.ToString(), sb.GetLength()), sb.GetLength()));
 					ret++;
 				}
 			}
@@ -717,29 +717,31 @@ UOSInt DB::ReadingDBTool::GetTableNames(Data::ArrayList<const UTF8Char*> *arr)
 	}
 	else
 	{
-		Data::ArrayList<const UTF8Char*> tables;
+		Data::ArrayList<Text::CString> tables;
+		Text::CString tableName;
 		this->db->GetTableNames(&tables);
 		UOSInt i = 0;
 		UOSInt j = tables.GetCount();
 		while (i < j)
 		{
-			arr->Add(Text::StrCopyNew(tables.GetItem(i)));
+			tableName = tables.GetItem(i);
+			arr->Add(Text::CString(Text::StrCopyNewC(tableName.v, tableName.leng), tableName.leng));
 			i++;
 		}
 		return j;
 	}
 }
 
-void DB::ReadingDBTool::ReleaseTableNames(Data::ArrayList<const UTF8Char*> *arr)
+void DB::ReadingDBTool::ReleaseTableNames(Data::ArrayList<Text::CString> *arr)
 {
 	UOSInt i = arr->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(arr->RemoveAt(i));
+		Text::StrDelNew(arr->RemoveAt(i).v);
 	}
 }
 
-DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
+DB::TableDef *DB::ReadingDBTool::GetTableDef(Text::CString tableName)
 {
 	UTF8Char buff[256];
 	UTF8Char *ptr;
@@ -748,11 +750,11 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		OSInt i = 4;
 		DB::DBReader *r = 0;
 		ptr = Text::StrConcatC(buff, UTF8STRC("show table status where Name = "));
-		ptr = this->DBStrUTF8(ptr, tableName);
+		ptr = this->DBStrUTF8(ptr, tableName.v);
 
 		while (i-- > 0 && r == 0)
 		{
-			r = this->ExecuteReaderC(buff, (UOSInt)(ptr - buff));
+			r = this->ExecuteReader(CSTRP(buff, ptr));
 		}
 		if (r == 0)
 			return 0;
@@ -761,8 +763,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 
 		if (r->ReadNext())
 		{
-			r->GetStr(0, buff, sizeof(buff));
-			NEW_CLASS(tab, DB::TableDef(buff));
+			ptr = r->GetStr(0, buff, sizeof(buff));
+			NEW_CLASS(tab, DB::TableDef(CSTRP(buff, ptr)));
 			ptr = r->GetStr(1, buff, sizeof(buff));
 			tab->SetEngine(CSTRP(buff, ptr));
 			if (r->GetStr(17, buff, sizeof(buff)))
@@ -792,8 +794,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		}
 		DB::ColDef *col;
 		ptr = Text::StrConcatC(buff, UTF8STRC("desc "));
-		ptr = this->DBColUTF8(ptr, tableName);
-		r = this->ExecuteReaderC(buff, (UOSInt)(ptr - buff));
+		ptr = this->DBColUTF8(ptr, tableName.v);
+		r = this->ExecuteReader(CSTRP(buff, ptr));
 		if (r)
 		{
 			while (r->ReadNext())
@@ -855,22 +857,22 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		DB::DBReader *r = 0;
 		UOSInt ind;
 		ptr = Text::StrConcatC(buff, UTF8STRC("exec sp_columns "));
-		ind = Text::StrIndexOfChar(tableName, '.');
+		ind = tableName.IndexOf('.');
 		if (ind != INVALID_INDEX)
 		{
-			ptr = this->DBStrUTF8(ptr, &tableName[ind + 1]);
+			ptr = this->DBStrUTF8(ptr, &tableName.v[ind + 1]);
 			ptr = Text::StrConcatC(ptr, UTF8STRC(", "));
-			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName, (UOSInt)ind);
+			const UTF8Char *tmpPtr = Text::StrCopyNewC(tableName.v, (UOSInt)ind);
 			ptr = this->DBStrUTF8(ptr, tmpPtr);
 			Text::StrDelNew(tmpPtr);
 		}
 		else
 		{
-			ptr = this->DBStrUTF8(ptr, tableName);
+			ptr = this->DBStrUTF8(ptr, tableName.v);
 		}
 		while (i-- > 0 && r == 0)
 		{
-			r = this->ExecuteReaderC(buff, (UOSInt)(ptr - buff));
+			r = this->ExecuteReader(CSTRP(buff, ptr));
 		}
 		if (r == 0)
 			return 0;
@@ -920,13 +922,13 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 		sb.AppendC(UTF8STRC(" inner join sys.columns c ON ic.object_id = c.object_id AND c.column_id = ic.column_id"));
 		sb.AppendC(UTF8STRC(" WHERE i.is_primary_key = 1"));
 		sb.AppendC(UTF8STRC(" and i.object_ID = OBJECT_ID('"));
-		sb.AppendSlow(tableName);
+		sb.Append(tableName);
 		sb.AppendC(UTF8STRC("')"));
 		r = 0;
 		i = 4;
 		while (i-- > 0 && r == 0)
 		{
-			r = this->ExecuteReaderC(sb.ToString(), sb.GetLength());
+			r = this->ExecuteReader(sb.ToCString());
 		}
 		if (r == 0)
 			return tab;
@@ -961,8 +963,8 @@ DB::TableDef *DB::ReadingDBTool::GetTableDef(const UTF8Char *tableName)
 	{
 		DB::SQLBuilder sql(this->svrType, this->GetTzQhr());
 		sql.AppendCmdC(CSTR("select sql from sqlite_master where type='table' and name="));
-		sql.AppendStrUTF8(tableName);
-		DB::DBReader *r = this->db->ExecuteReaderC(sql.ToString(), sql.GetLength());
+		sql.AppendStrC(tableName);
+		DB::DBReader *r = this->db->ExecuteReader(sql.ToCString());
 		if (r == 0)
 		{
 			return 0;
@@ -996,7 +998,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 {
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("select name from master.dbo.sysdatabases"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("select name from master.dbo.sysdatabases"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -1020,7 +1022,7 @@ UOSInt DB::ReadingDBTool::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *arr
 	}
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
-		DB::DBReader *r = this->ExecuteReaderC(UTF8STRC("show databases"));
+		DB::DBReader *r = this->ExecuteReader(CSTR("show databases"));
 		if (r)
 		{
 			UOSInt ret = 0;
@@ -1079,7 +1081,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	if (this->svrType == DB::DBUtil::ServerType::MSSQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
-		DB::DBReader *r = this->ExecuteReaderC(sbuff, (UOSInt)(sptr - sbuff));
+		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{
 			OSInt rowChg = r->GetRowChanged();
@@ -1094,7 +1096,7 @@ Bool DB::ReadingDBTool::ChangeDatabase(const UTF8Char *databaseName)
 	else if (this->svrType == DB::DBUtil::ServerType::MySQL)
 	{
 		UTF8Char *sptr = this->DBColUTF8(Text::StrConcatC(sbuff, UTF8STRC("use ")), databaseName);
-		DB::DBReader *r = this->ExecuteReaderC(sbuff, (UOSInt)(sptr - sbuff));
+		DB::DBReader *r = this->ExecuteReader(CSTRP(sbuff, sptr));
 		if (r)
 		{
 			OSInt rowChg = r->GetRowChanged();

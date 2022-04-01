@@ -90,8 +90,8 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			}
 
 			me->lvTable->ClearItems();
-			Data::ArrayList<const UTF8Char*> tableNames;
-			const UTF8Char *tableName;
+			Data::ArrayList<Text::CString> tableNames;
+			Text::CString tableName;
 			UTF8Char sbuff[32];
 			UTF8Char *sptr;
 			UOSInt i;
@@ -103,7 +103,7 @@ void __stdcall SSWR::AVIRead::AVIRRESTfulForm::OnStartClick(void *userObj)
 			while (i < j)
 			{
 				tableName = tableNames.GetItem(i);
-				k = me->lvTable->AddItem({tableName, Text::StrCharCnt(tableName)}, 0);
+				k = me->lvTable->AddItem(tableName, 0);
 				sptr = Text::StrOSInt(sbuff, me->dbCache->GetRowCount(tableName));
 				me->lvTable->SetSubItem(k, 1, CSTRP(sbuff, sptr));
 				i++;

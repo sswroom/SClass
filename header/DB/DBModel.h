@@ -1,6 +1,6 @@
 #ifndef _SM_DB_DBMODEL
 #define _SM_DB_DBMODEL
-#include "Data/StringUTF8Map.h"
+#include "Data/StringMap.h"
 #include "DB/DBTool.h"
 #include "DB/TableDef.h"
 
@@ -10,15 +10,15 @@ namespace DB
 	{
 	private:
 		Data::ArrayList<TableDef*> *tables;
-		Data::StringUTF8Map<TableDef*> *tableMap;
+		Data::StringMap<TableDef*> *tableMap;
 
 	public:
 		DBModel();
 		~DBModel();
 
-		Bool LoadDatabase(DB::DBTool *db, const UTF8Char *dbName);
-		TableDef *GetTable(const UTF8Char *tableName);
-		UOSInt GetTableNames(Data::ArrayList<const UTF8Char*> *tableNames);
+		Bool LoadDatabase(DB::DBTool *db, Text::CString dbName);
+		TableDef *GetTable(Text::CString tableName);
+		UOSInt GetTableNames(Data::ArrayList<Text::CString> *tableNames);
 	};
 }
 #endif

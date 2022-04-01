@@ -385,7 +385,7 @@ IO::ConsoleWriter *console;
 void TextReadAll(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
-	DB::DBReader *r = db->GetTableData((const UTF8Char*)"userfile", 0, 0, 0, CSTR_NULL, 0);
+	DB::DBReader *r = db->QueryTableData(CSTR("userfile"), 0, 0, 0, CSTR_NULL, 0);
 	if (r)
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();
@@ -412,7 +412,7 @@ void TestBinaryRead(DB::DBTool *db)
 {
 	Data::ArrayList<Userfile*> dataList;
 	Net::MySQLTCPClient *conn = (Net::MySQLTCPClient*)db->GetDBConn();
-	DB::DBReader *r = conn->ExecuteReaderBinaryC(UTF8STRC("select * from userfile"));
+	DB::DBReader *r = conn->ExecuteReaderBinary(CSTR("select * from userfile"));
 	if (r)
 	{
 		Data::NamedClass<Userfile> *cls = Userfile().CreateClass();

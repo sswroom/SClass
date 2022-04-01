@@ -822,19 +822,21 @@ void DB::DBRow::ToString(Text::StringBuilderUTF8 *sb)
 
 void DB::DBRow::AppendTableName(Text::StringBuilderUTF8 *sb)
 {
-	const UTF8Char *tableName = this->table->GetTableName();
-	UOSInt i = Text::StrIndexOfChar(tableName, '.');
+	Text::CString tableName = this->table->GetTableName()->ToCString();
+	UOSInt i = tableName.IndexOf('.');
 	if (i != INVALID_INDEX)
 	{
-		tableName = tableName + i + 1;
+		tableName = tableName.Substring(i + 1);
 	}
 	Bool nextCap = true;
 	UTF8Char c;
+	i = 0;
 	while (true)
 	{
-		c = *tableName++;
+		c = tableName.v[i];
 		if (c == 0)
 			break;
+		i++;
 		if (c == '_')
 		{
 			nextCap = true;

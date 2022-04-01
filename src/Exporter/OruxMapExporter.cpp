@@ -134,10 +134,10 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 			Map::TileMap::ImageType it;
 			IO::IStreamData *fd;
 			DB::SQLBuilder sql(db->GetSvrType(), db->GetTzQhr());
-			db->ExecuteNonQueryC(UTF8STRC("CREATE TABLE android_metadata (locale TEXT)"));
-			db->ExecuteNonQueryC(UTF8STRC("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
-			db->ExecuteNonQueryC(UTF8STRC("delete from android_metadata"));
-			db->ExecuteNonQueryC(UTF8STRC("delete from tiles"));
+			db->ExecuteNonQuery(CSTR("CREATE TABLE android_metadata (locale TEXT)"));
+			db->ExecuteNonQuery(CSTR("CREATE TABLE tiles (x int, y int, z int, image blob, PRIMARY KEY (x,y,z))"));
+			db->ExecuteNonQuery(CSTR("delete from android_metadata"));
+			db->ExecuteNonQuery(CSTR("delete from tiles"));
 			Text::Locale::LocaleEntry *loc = Text::Locale::GetLocaleEntry(Text::EncodingFactory::GetSystemLCID());
 			if (loc)
 			{
@@ -145,7 +145,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 				sql.AppendCmdC(CSTR("insert into android_metadata (locale) values ("));
 				sql.AppendStrUTF8((const UTF8Char*)"zh_TW");//loc->shortName);
 				sql.AppendCmdC(CSTR(")"));
-				db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+				db->ExecuteNonQuery(sql.ToCString());
 			}
 			succ = true;
 			Map::OSM::OSMLocalTileMap *osm = (Map::OSM::OSMLocalTileMap*)tileMap;
@@ -269,7 +269,7 @@ Bool Exporter::OruxMapExporter::ExportFile(IO::SeekableStream *stm, Text::CStrin
 							sql.AppendCmdC(CSTR(", "));
 							sql.AppendBinary(imgBuff, imgSize);
 							sql.AppendCmdC(CSTR(")"));
-							db->ExecuteNonQueryC(sql.ToString(), sql.GetLength());
+							db->ExecuteNonQuery(sql.ToCString());
 							MemFree(imgBuff);
 							DEL_CLASS(fd);
 							if (j != 0 && (j & 0x3fff) == 0)

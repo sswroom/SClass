@@ -969,7 +969,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		Data::QueryConditions cond;
 		cond.Int32Equals(UTF8STRC("OBJECTID"), 40);
 		DB::DBReader *r;
-/*		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
+/*		r = fileGDB->QueryTableData((const UTF8Char*)"LAMPPOST", &colNames, 0, 10, (const UTF8Char*)"OBJECTID desc", 0);//&cond);
 		if (r)
 		{
 			while (r->ReadNext())
@@ -985,7 +985,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 
 		Data::NamedClass<Lamppost> *cls = Lamppost().CreateClass();
 
-		r = fileGDB->GetTableData((const UTF8Char*)"LAMPPOST", 0, 0, 0, CSTR_NULL, 0);
+		r = fileGDB->QueryTableData(CSTR("LAMPPOST"), 0, 0, 0, CSTR_NULL, 0);
 		if (r)
 		{
 			Lamppost *lamppost;
@@ -1013,7 +1013,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			DB::CSVFile *csv;
 			NEW_CLASS(csv, DB::CSVFile(CSTRP(sbuff, sptr), 65001));
 			csv->SetNullIfEmpty(true);
-			r = csv->GetTableData((const UTF8Char*)"Lamppost", 0, 0, 0, CSTR_NULL, 0);
+			r = csv->QueryTableData(CSTR("Lamppost"), 0, 0, 0, CSTR_NULL, 0);
 			clk.Start();
 			r->ReadAll(&lamppostListCSV, cls);
 			t3 = clk.GetTimeDiff();

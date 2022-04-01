@@ -21,7 +21,7 @@ void DB::SQLiteFile::Init()
 	this->delOnClose = false;
 	this->lastErrMsg = 0;
 	db = 0;
-	NEW_CLASS(this->tableNames, Data::ArrayListStrUTF8());
+	NEW_CLASS(this->tableNames, Data::ArrayList<Text::CString>());
 	sqlite3_initialize();
 	ret = sqlite3_open_v2((const Char*)fileName->v, &db, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE | SQLITE_OPEN_SHAREDCACHE, 0);
 	
@@ -30,14 +30,14 @@ void DB::SQLiteFile::Init()
 		Text::StringBuilderUTF8 *sb;
 		NEW_CLASS(sb, Text::StringBuilderUTF8());
 		this->db = db;
-		DB::DBReader *r = ExecuteReaderC(UTF8STRC("SELECT name FROM sqlite_master WHERE type='table'"));
+		DB::DBReader *r = ExecuteReader(CSTR("SELECT name FROM sqlite_master WHERE type='table'"));
 		if (r)
 		{
 			while (r->ReadNext())
 			{
 				sb->ClearStr();
 				r->GetStr(0, sb);
-				this->tableNames->Add(Text::StrCopyNew(sb->ToString()));
+				this->tableNames->Add(Text::CString(Text::StrCopyNewC(sb->ToString(), sb->GetLength()), sb->GetLength()));
 			}
 			this->CloseReader(r);
 		}
@@ -77,7 +77,7 @@ DB::SQLiteFile::~SQLiteFile()
 	i = this->tableNames->GetCount();
 	while (i-- > 0)
 	{
-		Text::StrDelNew(this->tableNames->GetItem(i));
+		Text::StrDelNew(this->tableNames->GetItem(i).v);
 	}
 	DEL_CLASS(this->tableNames);
 	if (this->delOnClose)
@@ -123,27 +123,14 @@ void DB::SQLiteFile::Close()
 	}
 }
 
-OSInt DB::SQLiteFile::ExecuteNonQuerySlow(const UTF8Char *sql)
-{
-	if (this->db)
-	{
-		return ExecuteNonQueryC(sql, Text::StrCharCnt(sql));
-	}
-	else
-	{
-		this->lastDataError = DE_CONN_ERROR;
-		return -2;
-	}
-}
-
-OSInt DB::SQLiteFile::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
+OSInt DB::SQLiteFile::ExecuteNonQuery(Text::CString sql)
 {
 	OSInt chg = -2;
 	if (this->db)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)sqlLen + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			if (sqlite3_step(stmt) == SQLITE_DONE)
 			{
@@ -173,26 +160,13 @@ OSInt DB::SQLiteFile::ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen)
 	}
 }
 
-DB::DBReader *DB::SQLiteFile::ExecuteReaderSlow(const UTF8Char *sql)
-{
-	if (this->db)
-	{
-		return ExecuteReaderC(sql, Text::StrCharCnt(sql));
-	}
-	else
-	{
-		this->lastDataError = DE_CONN_ERROR;
-		return 0;
-	}
-}
-
-DB::DBReader *DB::SQLiteFile::ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen)
+DB::DBReader *DB::SQLiteFile::ExecuteReader(Text::CString sql)
 {
 	if (this->db)
 	{
 		sqlite3_stmt *stmt;
 		const char *tmp;
-		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql, (Int32)sqlLen + 1, &stmt, &tmp) == SQLITE_OK)
+		if (sqlite3_prepare_v2((sqlite3*)this->db, (const Char*)sql.v, (Int32)sql.leng + 1, &stmt, &tmp) == SQLITE_OK)
 		{
 			this->lastDataError = DE_NO_ERROR;
 			DB::SQLiteReader *r;
@@ -250,37 +224,37 @@ void DB::SQLiteFile::Reconnect()
 
 void *DB::SQLiteFile::BeginTransaction()
 {
-	ExecuteNonQueryC(UTF8STRC("begin"));
+	ExecuteNonQuery(CSTR("begin"));
 	return (void*)-1;
 }
 
 void DB::SQLiteFile::Commit(void *tran)
 {
-	ExecuteNonQueryC(UTF8STRC("end"));
+	ExecuteNonQuery(CSTR("end"));
 }
 
 void DB::SQLiteFile::Rollback(void *tran)
 {
-	ExecuteNonQueryC(UTF8STRC("end"));
+	ExecuteNonQuery(CSTR("end"));
 }
 
-UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::SQLiteFile::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	names->AddAll(this->tableNames);
 	return this->tableNames->GetCount();
 }
 
-DB::DBReader *DB::SQLiteFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::SQLiteFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("select * from "));
-	sb.AppendSlow(tableName);
+	sb.Append(tableName);
 	if (maxCnt > 0)
 	{
 		sb.AppendC(UTF8STRC(" LIMIT "));
 		sb.AppendOSInt((OSInt)maxCnt);
 	}
-	return ExecuteReaderC(sb.ToString(), sb.GetLength());
+	return ExecuteReader(sb.ToCString());
 }
 
 void DB::SQLiteFile::SetDeleteOnClose(Bool delOnClose)

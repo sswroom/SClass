@@ -69,6 +69,8 @@ namespace Text
 
 		Double MatchRating(StringBase<UTF8Char> *s) const;
 		Double MatchRating(const UTF8Char *targetStr, UOSInt strLen) const;
+
+		Bool operator==(StringBase<T> s) const;
 	};
 }
 
@@ -475,6 +477,11 @@ template <typename T> Double Text::StringBase<T>::MatchRating(const UTF8Char *ta
 	{
 		return 0.0;
 	}
+}
+
+template <typename T> Bool Text::StringBase<T>::operator==(StringBase<T> s) const
+{
+	return Text::StrEqualsC(this->v, this->leng, s.v, s.leng);
 }
 
 #endif

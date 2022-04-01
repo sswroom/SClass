@@ -68,14 +68,14 @@ Math::TSPFile::~TSPFile()
 	}
 }
 
-UOSInt Math::TSPFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Math::TSPFile::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->rowCnt > 0)
 	{
-		names->Add((const UTF8Char*)"Points");
+		names->Add(CSTR("Points"));
 		if (fileType == 2 || fileType == 3)
 		{
-			names->Add((const UTF8Char*)"StationSetup");
+			names->Add(CSTR("StationSetup"));
 		}
 		return 1;
 	}
@@ -85,10 +85,10 @@ UOSInt Math::TSPFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	}
 }
 
-DB::DBReader *Math::TSPFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Math::TSPFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	DB::DBReader *reader;
-	if (tableName != 0 && Text::StrEquals(tableName, (const UTF8Char*)"StationSetup"))
+	if (tableName.v != 0 && tableName.Equals(UTF8STRC("StationSetup")))
 	{
 		NEW_CLASS(reader, Math::TSPHReader(this));
 	}

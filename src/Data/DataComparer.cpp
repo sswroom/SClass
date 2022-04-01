@@ -177,6 +177,11 @@ OSInt Data::DataComparer::Compare(Data::UUID *val1, Data::UUID *val2)
 	return val1->CompareTo(val2);
 }
 
+OSInt Data::DataComparer::Compare(Text::CString val1, Text::CString val2)
+{
+	return Text::StrCompare(val1.v, val2.v);
+}
+
 Bool Data::DataComparer::NearlyEquals(Double val1, Double val2)
 {
 	val1 = val1 - val2;

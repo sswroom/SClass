@@ -95,7 +95,7 @@ Bool DB::DBReader::GetVariItem(UOSInt colIndex, Data::VariItem *item)
 	}
 }
 
-DB::TableDef *DB::DBReader::GenTableDef(const UTF8Char *tableName)
+DB::TableDef *DB::DBReader::GenTableDef(Text::CString tableName)
 {
 	DB::TableDef *table;
 	DB::ColDef *colDef;

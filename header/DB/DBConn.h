@@ -42,10 +42,8 @@ namespace DB
 		virtual void ForceTz(Int8 tzQhr) = 0;
 		virtual void GetConnName(Text::StringBuilderUTF8 *sb) = 0;
 		virtual void Close() = 0;
-		virtual OSInt ExecuteNonQuerySlow(const UTF8Char *sql) = 0;
-		virtual OSInt ExecuteNonQueryC(const UTF8Char *sql, UOSInt sqlLen);
-		virtual DBReader *ExecuteReaderSlow(const UTF8Char *sql) = 0;
-		virtual DBReader *ExecuteReaderC(const UTF8Char *sql, UOSInt sqlLen);
+		virtual OSInt ExecuteNonQuery(Text::CString sql) = 0;
+		virtual DBReader *ExecuteReader(Text::CString sql) = 0;
 		virtual Bool IsLastDataError() = 0;
 		DataError GetLastDataError();
 

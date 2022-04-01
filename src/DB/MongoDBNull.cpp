@@ -12,12 +12,12 @@ DB::MongoDB::~MongoDB()
 {
 }
 
-UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::MongoDB::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	return 0;
 }
 
-DB::DBReader *DB::MongoDB::GetTableData(const UTF8Char *name, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::MongoDB::QueryTableData(Text::CString name, Data::ArrayList<Text::String*> *columNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	return 0;
 }
@@ -35,12 +35,12 @@ void DB::MongoDB::Reconnect()
 
 }
 
-UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::MongoDB::GetDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 	return 0;
 }
 
-void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<const UTF8Char*> *names)
+void DB::MongoDB::FreeDatabaseNames(Data::ArrayList<Text::String*> *names)
 {
 }
 

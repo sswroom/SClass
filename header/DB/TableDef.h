@@ -10,8 +10,8 @@ namespace DB
 	class TableDef
 	{
 	private:
-		const UTF8Char *databaseName;
-		const UTF8Char *tableName;
+		Text::String *databaseName;
+		Text::String *tableName;
 		Text::String *engine;
 		Text::String *charset;
 		const UTF8Char *attr;
@@ -21,11 +21,11 @@ namespace DB
 		Data::ArrayList<ColDef*> *cols;
 
 	public:
-		TableDef(const UTF8Char *tableName);
+		TableDef(Text::CString tableName);
 		~TableDef();
 
-		const UTF8Char *GetDatabaseName();
-		const UTF8Char *GetTableName();
+		Text::String *GetDatabaseName();
+		Text::String *GetTableName();
 		Text::String *GetEngine();
 		Text::String *GetCharset();
 		const UTF8Char *GetAttr();
@@ -36,8 +36,8 @@ namespace DB
 		DB::ColDef *GetSinglePKCol();
 
 		TableDef *AddCol(DB::ColDef *col);
-		TableDef *SetDatabaseName(const UTF8Char *databaseName);
-		TableDef *SetTableName(const UTF8Char *tableName);
+		TableDef *SetDatabaseName(Text::CString databaseName);
+		TableDef *SetTableName(Text::CString tableName);
 		TableDef *SetEngine(Text::CString engine);
 		TableDef *SetCharset(Text::CString charset);
 		TableDef *SetAttr(const UTF8Char *attr);

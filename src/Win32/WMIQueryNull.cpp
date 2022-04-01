@@ -63,25 +63,25 @@ void Win32::WMIQuery::Close()
 {
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuerySlow(const UTF8Char *sql)
+OSInt Win32::WMIQuery::ExecuteNonQuery(Text::CString sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
 }
 
-OSInt Win32::WMIQuery::ExecuteNonQuery(const WChar *sql)
+OSInt Win32::WMIQuery::ExecuteNonQueryW(const WChar *sql)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return -2;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReaderSlow(const UTF8Char *sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReader(Text::CString sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
 }
 
-DB::DBReader *Win32::WMIQuery::ExecuteReader(const WChar *sqlCmd)
+DB::DBReader *Win32::WMIQuery::ExecuteReaderW(const WChar *sqlCmd)
 {
 	this->lastDataError = DE_CONN_ERROR;
 	return 0;
@@ -106,7 +106,7 @@ void Win32::WMIQuery::Rollback(void *tran)
 }
 
 
-UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->pService == 0)
 	{
@@ -115,11 +115,11 @@ UOSInt Win32::WMIQuery::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
 	return 0;
 }
 
-DB::DBReader *Win32::WMIQuery::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *Win32::WMIQuery::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	WChar wbuff[256];
-	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName, 0);
-	return this->ExecuteReader(wbuff);
+	Text::StrUTF8_WChar(Text::StrConcat(wbuff, L"SELECT * FROM "), tableName.v, 0);
+	return this->ExecuteReaderW(wbuff);
 }
 
 void Win32::WMIQuery::CloseReader(DB::DBReader *reader)

@@ -83,7 +83,7 @@ DB::SQL::SQLCommand *DB::SQL::SQLCommand::Parse(const UTF8Char *sql, DB::DBUtil:
 			else
 			{
 				DB::TableDef *tab;
-				NEW_CLASS(tab, DB::TableDef(sb.ToString()));
+				NEW_CLASS(tab, DB::TableDef(sb.ToCString()));
 				sql = ParseNextWord(sql, &sb, svrType);
 				if (sb.Equals(UTF8STRC("(")))
 				{

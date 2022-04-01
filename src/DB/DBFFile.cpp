@@ -58,7 +58,7 @@ DB::DBFFile::DBFFile(IO::IStreamData *stmData, UInt32 codePage) : DB::ReadingDB(
 		sbuff[i] = 0;
 		sptr = &sbuff[i];
 	}
-	this->name = Text::StrCopyNewC(sbuff, (UOSInt)(sptr - sbuff));
+	this->name = Text::String::NewP(sbuff, sptr);
 }
 
 DB::DBFFile::~DBFFile()
@@ -79,11 +79,7 @@ DB::DBFFile::~DBFFile()
 		DEL_CLASS(enc);
 		enc = 0;
 	}
-	if (this->name)
-	{
-		Text::StrDelNew(this->name);
-		this->name = 0;
-	}
+	SDEL_STRING(this->name);
 	if (this->stmData)
 	{
 		DEL_CLASS(this->stmData);
@@ -91,20 +87,20 @@ DB::DBFFile::~DBFFile()
 	}
 }
 
-UOSInt DB::DBFFile::GetTableNames(Data::ArrayList<const UTF8Char*> *names)
+UOSInt DB::DBFFile::GetTableNames(Data::ArrayList<Text::CString> *names)
 {
 	if (this->name)
 	{
-		names->Add(this->name);
+		names->Add(this->name->ToCString());
 	}
 	else
 	{
-		names->Add((const UTF8Char*)"DBF");
+		names->Add(CSTR("DBF"));
 	}
 	return 1;
 }
 
-DB::DBReader *DB::DBFFile::GetTableData(const UTF8Char *tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
+DB::DBReader *DB::DBFFile::QueryTableData(Text::CString tableName, Data::ArrayList<Text::String*> *columnNames, UOSInt ofst, UOSInt maxCnt, Text::CString ordering, Data::QueryConditions *condition)
 {
 	if (cols)
 	{
