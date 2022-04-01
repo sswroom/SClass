@@ -405,6 +405,9 @@ extern MemCopyFunc MemCopyAC;
 extern MemCopyFunc MemCopyANC;
 extern MemCopyFunc MemCopyNAC;
 extern MemCopyFunc MemCopyNANC;
+
+#undef MemCopyNO
+#define MemCopyNO(destPtr, srcPtr, len) MyMemCopy(destPtr, srcPtr, len)
 #else
 #define MemClearANC(buff, count) MemClear(buff, count);
 #define MemClearAC(buff, count) MemClear(buff, count);
@@ -436,4 +439,54 @@ FORCEINLINE void MemXOR(const UInt8 *srcBuff1, const UInt8 *srcBuff2, UInt8 *des
 }
 
 void MemTool_Init();
+
+typedef void (__stdcall *MemCopyBFunc)(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+
+void __stdcall MyMemCopy0(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy1(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy2(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy3(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy4(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy5(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy6(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy7(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy8(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy9(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy10(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy11(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy12(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy13(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy14(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy15(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+
+static MemCopyBFunc MemCopyArr[16] = {
+	MyMemCopy0,
+	MyMemCopy1,
+	MyMemCopy2,
+	MyMemCopy3,
+	MyMemCopy4,
+	MyMemCopy5,
+	MyMemCopy6,
+	MyMemCopy7,
+	MyMemCopy8,
+	MyMemCopy9,
+	MyMemCopy10,
+	MyMemCopy11,
+	MyMemCopy12,
+	MyMemCopy13,
+	MyMemCopy14,
+	MyMemCopy15
+};
+
+FORCEINLINE void MyMemCopy(void *destPtr, const void *srcPtr, UOSInt size)
+{
+	if (size < 16)
+	{
+		MemCopyArr[size]((UInt8*)destPtr, (const UInt8*)srcPtr, size);
+	}
+	else
+	{
+		memcpy(destPtr, srcPtr, size);
+	}
+}
 #endif

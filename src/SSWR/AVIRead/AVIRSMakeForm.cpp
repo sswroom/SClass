@@ -10,9 +10,9 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 	me->lbProgSource->ClearItems();
 	if (progName)
 	{
-		Data::ArrayListString objList;
-		Data::ArrayListString liblist;
-		Data::ArrayListString procList;
+		Data::FastStringMap<Int32> objList;
+		Data::FastStringMap<Int32> liblist;
+		Data::FastStringMap<Int32> procList;
 		Data::ArrayListString headerList;
 		Int64 latestTime;
 		Bool progGroup;
@@ -26,12 +26,12 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = objList.GetCount();
 		while (i < j)
 		{
-			s = objList.GetItem(i);
+			s = objList.GetKey(i);
 			me->lbProgObject->AddItem(s, 0);
 			prog = me->smake->GetProgItem(s->ToCString());
 			if (prog && prog->srcFile)
 			{
-				procList.SortedInsert(prog->srcFile);
+				procList.Put(prog->srcFile, 1);
 			}
 			i++;
 		}
@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgSelChg(void *userObj)
 		j = procList.GetCount();
 		while (i < j)
 		{
-			s = procList.GetItem(i);
+			s = procList.GetKey(i);
 			if (s->v[0] == '@')
 			{
 				me->lbProgSource->AddItem({s->v + 1, s->leng - 1}, 0);

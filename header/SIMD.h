@@ -1,3 +1,5 @@
+#ifndef _SM_SIMD
+#define _SM_SIMD
 #define ENABLE_SSE
 #define ENABLE_NEON
 
@@ -1785,4 +1787,5 @@ UInt8x8 FORCEINLINE SI32ToU8x8(Int32x4 val1, Int32x4 val2)
 	ret.vals[7] = SI32ToU8(val2.vals[3]);
 	return ret;
 }
+#endif
 #endif

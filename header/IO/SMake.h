@@ -50,22 +50,22 @@ namespace IO
 		Text::String *debugObj;
 		Sync::ParallelTask *tasks;
 
-		void AppendCfgItem(Text::StringBuilderUTF8 *sb, const UTF8Char *val, UOSInt valLen);
-		void AppendCfgPath(Text::StringBuilderUTF8 *sb, const UTF8Char *path, UOSInt pathLen);
-		void AppendCfg(Text::StringBuilderUTF8 *sb, const UTF8Char *compileCfg, UOSInt cfgLen);
+		void AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val);
+		void AppendCfgPath(Text::StringBuilderUTF8 *sb, Text::CString path);
+		void AppendCfg(Text::StringBuilderUTF8 *sb, Text::CString compileCfg);
 
 		Bool ExecuteCmd(Text::CString cmd);
 		Bool LoadConfigFile(Text::CString cfgFile);
 
-		Bool ParseSource(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, const UTF8Char *sourceFile, UOSInt sourceFileLen);
-		Bool ParseHeader(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, const UTF8Char *sourceFile, UOSInt sourceFileLen);
-		Bool ParseProgInternal(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
+		Bool ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile);
+		Bool ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, Text::CString sourceFile);
+		Bool ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, const ProgramItem *prog);
 
 		static void __stdcall CompileTask(void *userObj);
-		void CompileObject(Bool *errorState, const UTF8Char *cmd, UOSInt cmdLeng);
+		void CompileObject(Bool *errorState, Text::CString cmd);
 		Bool CompileProgInternal(ProgramItem *prog, Bool asmListing, Bool enableTest);
 
-		void SetErrorMsg(const UTF8Char *msg, UOSInt msgLen);
+		void SetErrorMsg(Text::CString msg);
 	public:
 		SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter);
 		virtual ~SMake();
@@ -82,7 +82,7 @@ namespace IO
 		Data::ArrayList<ConfigItem*> *GetConfigList();
 		Bool HasProg(Text::CString progName);
 		Bool CompileProg(Text::CString progName, Bool asmListing);
-		Bool ParseProg(Data::ArrayListString *objList, Data::ArrayListString *libList, Data::ArrayListString *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
+		Bool ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName);
 
 		void CleanFiles();
 
