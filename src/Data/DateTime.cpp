@@ -279,27 +279,18 @@ Data::DateTime *Data::DateTime::SetCurrTime()
 	this->tzQhr = (Int8)(-tz.Bias / 15);
 #endif
 	return this;
-#elif defined(__sun__)
-	time_t now = time(0);
-	tm *t = localtime(&now);
-	Int32 newTZ = mktime(t) - now;
-	if (t->tm_isdst > 0)
-	{
-    	newTZ = newTZ - 60 * 60;
-	}
-	this->tzQhr = newTZ / 900;
-	printf("timezone = %d\r\n", newTZ);
-
-	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	this->SetUnixTimestamp(ts.tv_sec);
-	this->SetMS(ts.tv_nsec / 1000000);
-	return this;
 #elif !defined(CPU_AVR)
-	struct timespec ts;
-	clock_gettime(CLOCK_REALTIME, &ts);
-	this->SetUnixTimestamp(ts.tv_sec);
-	this->SetMS((UInt16)(ts.tv_nsec / 1000000));
+	struct timeval tv;
+	if (gettimeofday(&tv, 0) == 0)
+	{
+		this->SetTicks(1000 * (Int64)tv.tv_sec + tv.tv_usec / 1000);
+	}
+	else
+	{
+		struct timespec ts;
+		clock_gettime(CLOCK_REALTIME, &ts);
+		this->SetTicks(1000 * (Int64)ts.tv_sec + (ts.tv_nsec / 1000000));
+	}
 	this->ToLocalTime();
 	return this;
 #else

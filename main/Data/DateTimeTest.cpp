@@ -60,7 +60,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
 	dt.SetUnixTimestamp(ts.tv_sec);
-	dt.SetMS((UInt16)(ts.tv_nsec / 1000000));
+	dt.SetTicks(dt.ToTicks() + (UInt16)(ts.tv_nsec / 1000000));
 	sptr = dt.ToString(Text::StrConcatC(sbuff, UTF8STRC("clock_gettime: ")), "yyyy-MM-dd HH:mm:ss.fffzzzz");
 	console.WriteLineCStr(CSTRP(sbuff, sptr));
 #endif
