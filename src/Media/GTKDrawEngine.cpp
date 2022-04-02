@@ -732,6 +732,7 @@ Bool Media::GTKDrawImage::DrawStringB(Double tlx, Double tly, Text::CString str,
 			//gimg->SetTextAlign(this->strAlign);
 			gimg->DrawString(OSInt2Double(sx) + tlx - OSInt2Double(px),
 				OSInt2Double(sy) + tly - OSInt2Double(py), str, f, whiteB);
+			gimg->DelBrush(whiteB);
 
 			UOSInt bpl = (sz[0] + (buffSize << 1)) << 2;
 			UOSInt dbpl = this->info->dispWidth << 2;

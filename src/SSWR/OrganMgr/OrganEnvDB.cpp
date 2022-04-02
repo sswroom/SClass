@@ -3600,7 +3600,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 		{
 			sbuffEnd = r->GetStr(1, sbuff, sizeof(sbuff));
 			sbuff2End = r->GetStr(2, sbuff2, sizeof(sbuff2));
-			NEW_CLASS(locT, LocationType(r->GetInt32(0), CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}))
+			NEW_CLASS(locT, LocationType(r->GetInt32(0), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End)))
 			this->locType->Add(locT);
 		}
 		this->db->CloseReader(r);
@@ -3617,7 +3617,7 @@ void SSWR::OrganMgr::OrganEnvDB::TripReload(Int32 cateId)
 		{
 			sbuffEnd = r->GetStr(2, sbuff, sizeof(sbuff));
 			sbuff2End = r->GetStr(3, sbuff2, sizeof(sbuff2));
-			NEW_CLASS(loc, Location(r->GetInt32(0), r->GetInt32(1), CSTRP(sbuff, sbuffEnd), {sbuff2, (UOSInt)(sbuff2End - sbuff2)}, r->GetInt32(4)));
+			NEW_CLASS(loc, Location(r->GetInt32(0), r->GetInt32(1), CSTRP(sbuff, sbuffEnd), CSTRP(sbuff2, sbuff2End), r->GetInt32(4)));
 			this->locs->Add(loc);
 		}
 		this->db->CloseReader(r);

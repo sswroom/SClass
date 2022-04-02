@@ -2190,6 +2190,10 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 					layer->ReleaseObject(session, dobj);
 				}
 			}
+			else
+			{
+				layer->ReleaseObject(session, dobj);
+			}
 		}
 	}
 	layer->EndGetObject(session);
