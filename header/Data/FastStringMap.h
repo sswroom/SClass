@@ -22,7 +22,7 @@ namespace Data
 		UOSInt capacity;
 		UOSInt cnt;
 		StringItem *items;
-		Crypto::Hash::CRC32RC *crc;
+		Crypto::Hash::CRC32RC crc;
 
 		void Insert(UOSInt index, UInt32 hash, Text::String *s, T val);
 	public:
@@ -91,7 +91,6 @@ namespace Data
 	{
 		this->capacity = 64;
 		this->cnt = 0;
-		NEW_CLASS(this->crc, Crypto::Hash::CRC32RC());
 		this->items = MemAlloc(StringItem, this->capacity);
 	}
 
@@ -99,7 +98,6 @@ namespace Data
 	{
 		this->capacity = map->capacity;
 		this->cnt = map->cnt;
-		NEW_CLASS(this->crc, Crypto::Hash::CRC32RC());
 		this->items = MemAlloc(StringItem, this->capacity);
 		UOSInt i = 0;
 		UOSInt j = this->cnt;
@@ -120,7 +118,6 @@ namespace Data
 			this->items[i].s->Release();
 		}
 		MemFree(this->items);
-		DEL_CLASS(this->crc);
 	}
 
 	template <class T> UOSInt FastStringMap<T>::GetCount()
@@ -151,7 +148,7 @@ namespace Data
 		OSInt i;
 		OSInt j;
 		OSInt k;
-		OSInt l;
+//		OSInt l;
 		i = 0;
 		j = (OSInt)this->cnt - 1;
 		while (i <= j)
@@ -159,7 +156,22 @@ namespace Data
 			k = (i + j) >> 1;
 			if (this->items[k].hash == hash)
 			{
-				l = this->items[k].s->CompareToFast({s, len});
+				while (k > 0 && this->items[k - 1].hash == hash)
+				{
+					k--;
+				}
+				while (true)
+				{
+					if (this->items[k].s->Equals(s, len))
+					{
+						return k;
+					}
+					if (++k >= j || this->items[k].hash != hash)
+					{
+						return ~k;
+					}
+				}
+/*				l = this->items[k].s->CompareToFast({s, len});
 				if (l > 0)
 				{
 					j = k - 1;
@@ -171,7 +183,7 @@ namespace Data
 				else
 				{
 					return k;
-				}
+				}*/
 			}
 			else if (this->items[k].hash > hash)
 			{
@@ -187,19 +199,19 @@ namespace Data
 
 	template <class T> OSInt FastStringMap<T>::IndexOf(Text::String *s)
 	{
-		UInt32 hash = this->crc->CalcDirect(s->v, s->leng);
+		UInt32 hash = this->crc.CalcDirect(s->v, s->leng);
 		return IndexOf(hash, s->v, s->leng);
 	}
 
 	template <class T> OSInt FastStringMap<T>::IndexOfC(Text::CString s)
 	{
-		UInt32 hash = this->crc->CalcDirect(s.v, s.leng);
+		UInt32 hash = this->crc.CalcDirect(s.v, s.leng);
 		return IndexOf(hash, s.v, s.leng);
 	}
 
 	template <class T> T FastStringMap<T>::Put(Text::String *key, T val)
 	{
-		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
+		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index < 0)
 		{
@@ -216,7 +228,7 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::PutC(Text::CString key, T val)
 	{
-		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index < 0)
 		{
@@ -233,7 +245,7 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::Get(Text::String *key)
 	{
-		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
+		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
@@ -244,7 +256,7 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::GetC(Text::CString key)
 	{
-		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
@@ -255,7 +267,7 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::Remove(Text::String *key)
 	{
-		UInt32 hash = this->crc->CalcDirect(key->v, key->leng);
+		UInt32 hash = this->crc.CalcDirect(key->v, key->leng);
 		OSInt index = this->IndexOf(hash, key->v, key->leng);
 		if (index >= 0)
 		{
@@ -273,7 +285,7 @@ namespace Data
 
 	template <class T> T FastStringMap<T>::RemoveC(Text::CString key)
 	{
-		UInt32 hash = this->crc->CalcDirect(key.v, key.leng);
+		UInt32 hash = this->crc.CalcDirect(key.v, key.leng);
 		OSInt index = this->IndexOf(hash, key.v, key.leng);
 		if (index >= 0)
 		{
@@ -306,7 +318,7 @@ namespace Data
 
 	template <class T> UInt32 FastStringMap<T>::CalcHash(const UTF8Char *s, UOSInt len)
 	{
-		return this->crc->CalcDirect(s, len);
+		return this->crc.CalcDirect(s, len);
 	}
 }
 

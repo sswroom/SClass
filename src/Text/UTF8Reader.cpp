@@ -21,6 +21,7 @@ void Text::UTF8Reader::FillBuffer()
 		{
 			this->buffSize = 0;
 			this->currOfst = 0;
+			this->lastPos = currPos;
 		}
 	}
 
@@ -43,10 +44,7 @@ void Text::UTF8Reader::FillBuffer()
 	printf("UTF8Reader.FB read %d bytes, ofst = %d, size = %d\r\n", (UInt32)readSize, (UInt32)this->currOfst, (UInt32)this->buffSize);
 #endif
 	this->buffSize += readSize;
-	if (stm->CanSeek())
-	{
-		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
-	}
+	this->lastPos += readSize;
 }
 
 void Text::UTF8Reader::CheckHeader()

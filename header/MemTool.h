@@ -458,8 +458,24 @@ void __stdcall MyMemCopy12(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 void __stdcall MyMemCopy13(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 void __stdcall MyMemCopy14(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 void __stdcall MyMemCopy15(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy16(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy17(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy18(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy19(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy20(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy21(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy22(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy23(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy24(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy25(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy26(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy27(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy28(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy29(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy30(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
+void __stdcall MyMemCopy31(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size);
 
-static MemCopyBFunc MemCopyArr[16] = {
+static MemCopyBFunc MemCopyArr[32] = {
 	MyMemCopy0,
 	MyMemCopy1,
 	MyMemCopy2,
@@ -475,12 +491,28 @@ static MemCopyBFunc MemCopyArr[16] = {
 	MyMemCopy12,
 	MyMemCopy13,
 	MyMemCopy14,
-	MyMemCopy15
+	MyMemCopy15,
+	MyMemCopy16,
+	MyMemCopy17,
+	MyMemCopy18,
+	MyMemCopy19,
+	MyMemCopy20,
+	MyMemCopy21,
+	MyMemCopy22,
+	MyMemCopy23,
+	MyMemCopy24,
+	MyMemCopy25,
+	MyMemCopy26,
+	MyMemCopy27,
+	MyMemCopy28,
+	MyMemCopy29,
+	MyMemCopy30,
+	MyMemCopy31
 };
 
 FORCEINLINE void MyMemCopy(void *destPtr, const void *srcPtr, UOSInt size)
 {
-	if (size < 16)
+	if (size < 32)
 	{
 		MemCopyArr[size]((UInt8*)destPtr, (const UInt8*)srcPtr, size);
 	}

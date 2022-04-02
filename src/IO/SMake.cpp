@@ -143,8 +143,6 @@ Bool IO::SMake::ExecuteCmd(Text::CString cmd)
 
 Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 {
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	Bool ret = false;
 	if (this->messageWriter)
 	{
@@ -153,10 +151,9 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		sb.Append(cfgFile);
 		this->messageWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	NEW_CLASS(fs, IO::FileStream(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(cfgFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		Text::StringBuilderUTF8 sb;
 		sb.AppendC(UTF8STRC("Error in opening "));
 		sb.Append(cfgFile);
@@ -173,10 +170,10 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 	UOSInt i;
 	IO::SMake::ConfigItem *cfg;
 	IO::SMake::ProgramItem *prog = 0;
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(&fs);
 	sb.ClearStr();
 	ret = true;
-	while (reader->ReadLine(&sb, 1024))
+	while (reader.ReadLine(&sb, 1024))
 	{
 		if (sb.ToString()[0] == '#')
 		{
@@ -498,52 +495,48 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		}
 		sb.ClearStr();
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return ret;
 }
 
 
 Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::CString sourceFile)
 {
-	IO::FileStream *fs;
 	Text::StringBuilderUTF8 sb;
+	Text::CString fileName;
 	if (IO::Path::PATH_SEPERATOR == '\\')
 	{
 		sb.Append(sourceFile);
 		sb.Replace('/', '\\');
-		NEW_CLASS(fs, IO::FileStream(sb.ToCString(), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-//		printf("Opening %s\r\n", sb.ToString());
+		fileName = sb.ToCString();
 	}
 	else
 	{
-		NEW_CLASS(fs, IO::FileStream(sourceFile, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-//		printf("Opening %s\r\n", sourceFile);
+		fileName = sourceFile;
 	}
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+//		printf("Opening %s\r\n", fileName.v);
+	if (fs.IsError())
 	{
 		Text::StringBuilderUTF8 sb2;
 		sb2.AppendC(UTF8STRC("Error in opening source \""));
 		sb2.Append(sourceFile);
 		sb2.AppendC(UTF8STRC("\""));
 		this->SetErrorMsg(sb2.ToCString());
-		DEL_CLASS(fs);
 		return false;
 	}
 	Int64 lastTime;
 	Int64 thisTime;
 	Data::DateTime dt;
-	fs->GetFileTimes(0, 0, &dt);
+	fs.GetFileTimes(0, 0, &dt);
 	lastTime = dt.ToTicks();
-	Text::UTF8Reader *reader;
 	Text::PString line;
 	UTF8Char *sptr1;
 	UTF8Char *sptr1End;
 	UOSInt i;
 	IO::SMake::ProgramItem *prog;
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(&fs);
 	sb.ClearStr();
-	while (reader->ReadLine(&sb, 1024))
+	while (reader.ReadLine(&sb, 1024))
 	{
 		line = sb.TrimAsNew();
 		if (line.StartsWith(UTF8STRC("#include")))
@@ -581,8 +574,6 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							sb2.AppendC(UTF8STRC(" not found in "));
 							sb2.Append(sourceFile);
 							this->SetErrorMsg(sb2.ToCString());
-							DEL_CLASS(reader);
-							DEL_CLASS(fs);
 							return false;
 						}
 						else
@@ -618,8 +609,6 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							}
 							if (!this->ParseHeader(objList, libList, procList, headerList, &thisTime, prog->name, sourceFile))
 							{
-								DEL_CLASS(reader);
-								DEL_CLASS(fs);
 								return false;
 							}
 							if (thisTime > lastTime)
@@ -630,8 +619,6 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 							{
 								if (!this->ParseSource(objList, libList, procList, headerList, &thisTime, prog->srcFile->ToCString()))
 								{
-									DEL_CLASS(reader);
-									DEL_CLASS(fs);
 									return false;
 								}
 								fileTimeMap->Put(prog->srcFile, thisTime);
@@ -644,8 +631,6 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 		sb.ClearStr();
 	}
 	*latestTime = lastTime;
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return true;
 }
 

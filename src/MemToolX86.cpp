@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MemTool.h"
+#include "SIMD.h"
 #include "Manage/CPUInfo.h"
 #include "Manage/CPUInst.h"
 
@@ -217,4 +218,117 @@ void __stdcall MyMemCopy15(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
 	*(Int32*)&destPtr[8] = *(Int32*)&srcPtr[8];
 	*(Int16*)&destPtr[12] = *(Int16*)&srcPtr[12];
 	destPtr[14] = srcPtr[14];
+}
+
+
+void __stdcall MyMemCopy16(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+}
+
+void __stdcall MyMemCopy17(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	destPtr[16] = srcPtr[16];
+}
+
+void __stdcall MyMemCopy18(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int16*)&destPtr[16] = *(Int16*)&srcPtr[16];
+}
+
+void __stdcall MyMemCopy19(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int16*)&destPtr[16] = *(Int16*)&srcPtr[16];
+	destPtr[18] = srcPtr[18];
+}
+
+void __stdcall MyMemCopy20(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int32*)&destPtr[16] = *(Int32*)&srcPtr[16];
+}
+
+void __stdcall MyMemCopy21(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int32*)&destPtr[16] = *(Int32*)&srcPtr[16];
+	destPtr[20] = srcPtr[20];
+}
+
+void __stdcall MyMemCopy22(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int32*)&destPtr[16] = *(Int32*)&srcPtr[16];
+	*(Int16*)&destPtr[20] = *(Int16*)&srcPtr[20];
+}
+
+void __stdcall MyMemCopy23(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int32*)&destPtr[16] = *(Int32*)&srcPtr[16];
+	*(Int16*)&destPtr[20] = *(Int16*)&srcPtr[20];
+	destPtr[22] = srcPtr[22];
+}
+
+void __stdcall MyMemCopy24(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+}
+
+void __stdcall MyMemCopy25(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	destPtr[24] = srcPtr[24];
+}
+
+void __stdcall MyMemCopy26(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int16*)&destPtr[24] = *(Int16*)&srcPtr[24];
+}
+
+void __stdcall MyMemCopy27(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int16*)&destPtr[24] = *(Int16*)&srcPtr[24];
+	destPtr[26] = srcPtr[26];
+}
+
+void __stdcall MyMemCopy28(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int32*)&destPtr[24] = *(Int32*)&srcPtr[24];
+}
+
+void __stdcall MyMemCopy29(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int32*)&destPtr[24] = *(Int32*)&srcPtr[24];
+	destPtr[28] = srcPtr[28];
+}
+
+void __stdcall MyMemCopy30(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int32*)&destPtr[24] = *(Int32*)&srcPtr[24];
+	*(Int16*)&destPtr[28] = *(Int16*)&srcPtr[28];
+}
+
+void __stdcall MyMemCopy31(UInt8 *destPtr, const UInt8 *srcPtr, UOSInt size)
+{
+	PStoreUInt32x4(destPtr, PLoadUInt32x4(srcPtr));
+	*(Int64*)&destPtr[16] = *(Int64*)&srcPtr[16];
+	*(Int32*)&destPtr[24] = *(Int32*)&srcPtr[24];
+	*(Int16*)&destPtr[28] = *(Int16*)&srcPtr[28];
+	destPtr[30] = srcPtr[30];
 }

@@ -109,28 +109,25 @@ Manage::CPUInfo::CPUInfo()
 		info->cpuName = Text::StrCopyNew((const UTF8Char*)pinfo.pi_processor_type);
 	}
 #else
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	Text::StringBuilderUTF8 sb;
-	UOSInt i;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		sb.ClearStr();
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
-		while (reader->ReadLine(&sb, 512))
+		UOSInt i;
+		IO::FileStream fs(CSTR("/proc/cpuinfo"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			if (sb.StartsWith(UTF8STRC("model name")))
+			Text::StringBuilderUTF8 sb;
+			Text::UTF8Reader reader(&fs);
+			while (reader.ReadLine(&sb, 512))
 			{
-				i = sb.IndexOf(UTF8STRC(": "));
-				info->cpuName = Text::StrCopyNewC(sb.ToString() + i + 2, sb.GetLength() - i - 2);
-				break;
+				if (sb.StartsWith(UTF8STRC("model name")))
+				{
+					i = sb.IndexOf(UTF8STRC(": "));
+					info->cpuName = Text::StrCopyNewC(sb.ToString() + i + 2, sb.GetLength() - i - 2);
+					break;
+				}
+				sb.ClearStr();
 			}
-			sb.ClearStr();
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 #endif
 	this->clsData = info;
 #endif
