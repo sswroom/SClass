@@ -95,8 +95,6 @@ void UI::GUIControl::InitControl(void *hInst, UI::GUIClientControl *parent, cons
 
 UI::GUIControl::GUIControl(GUICore *ui, UI::GUIClientControl *parent)
 {
-	NEW_CLASS(this->resizeHandlers, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->resizeHandlersObjs, Data::ArrayList<void*>());
 	this->dropHdlr = 0;
 	this->inited = false;
 	this->selfResize = false;
@@ -129,8 +127,6 @@ UI::GUIControl::~GUIControl()
 	{
 		SetWindowLongPtr((HWND)hwnd, GWL_USERDATA, 0);
 	}
-	DEL_CLASS(this->resizeHandlers);
-	DEL_CLASS(this->resizeHandlersObjs);
 	if (this->hFont)
 	{
 		DeleteObject(hFont);
@@ -499,10 +495,10 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->currHMon = (MonitorHandle*)hMon;
 		this->OnMonitorChanged();
 	}
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 
@@ -526,8 +522,8 @@ void UI::GUIControl::OnShow()
 
 void UI::GUIControl::HandleSizeChanged(UIEvent handler, void *userObj)
 {
-	this->resizeHandlers->Add(handler);
-	this->resizeHandlersObjs->Add(userObj);
+	this->resizeHandlers.Add(handler);
+	this->resizeHandlersObjs.Add(userObj);
 }
 
 void UI::GUIControl::UpdateFont()

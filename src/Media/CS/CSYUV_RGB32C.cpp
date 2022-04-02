@@ -166,11 +166,11 @@ void Media::CS::CSYUV_RGB32C::SetupRGB13_LR()
 	Media::RGBLUTGen lutGen(this->colorSess);
 	if (this->destPF == Media::PF_LE_A2B10G10R10)
 	{
-		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile->rtransfer));
+		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile->rtransfer));
 	}
 	else
 	{
-		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile->rtransfer));
+		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile->rtransfer));
 	}
 }
 

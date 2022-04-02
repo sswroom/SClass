@@ -28,10 +28,10 @@ namespace UI
 		} ShortcutKey;
 
 	private:
-		Data::ArrayList<GUIMenu*> *subMenus;
+		Data::ArrayList<GUIMenu*> subMenus;
 		UOSInt itemCnt;
-		Data::ArrayList<ShortcutKey*> *keys;
-		Data::ArrayList<void *> *items;
+		Data::ArrayList<ShortcutKey*> keys;
+		Data::ArrayList<void *> items;
 		Double hdpi;
 		Double ddpi;
 

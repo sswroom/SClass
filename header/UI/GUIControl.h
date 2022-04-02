@@ -214,8 +214,8 @@ namespace UI
 
 
 	protected:
-		Data::ArrayList<UIEvent> *resizeHandlers;
-		Data::ArrayList<void *> *resizeHandlersObjs;
+		Data::ArrayList<UIEvent> resizeHandlers;
+		Data::ArrayList<void *> resizeHandlersObjs;
 		Bool inited;
 		ControlHandle *hwnd;
 		void *hFont;

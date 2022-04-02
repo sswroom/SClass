@@ -117,8 +117,8 @@ namespace Media
 	public:
 		FrameInfo();
 		~FrameInfo();
-		void Init();
-		void Deinit();
+		void InitFrameInfo();
+		void DeinitFrameInfo();
 		void Clear();
 		void Set(const FrameInfo *info);
 		void ToString(Text::StringBuilderUTF8 *sb);

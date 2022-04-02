@@ -2036,7 +2036,7 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 			this->buffs[i].srcBuff = MemAllocA64(UInt8, frameSize);
 		}
 
-		this->currSrcRefLuminance = Media::CS::TransferFunc::GetRefLuminance(info.color->rtransfer);
+		this->currSrcRefLuminance = Media::CS::TransferFunc::GetRefLuminance(&info.color->rtransfer);
 		this->srcColor->Set(info.color);
 		this->srcYUVType = info.yuvType;
 		i = this->threadCnt;

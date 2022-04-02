@@ -360,7 +360,7 @@ void Media::Resizer::LanczosResizer16_C8::UpdateRGBTable()
 		this->rgbTable = MemAlloc(UInt8, 65536 * 4 + 65536 * 4 * 8);
 	}
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcProfile->rtransfer));
+	lutGen.GenLRGB_BGRA8(this->rgbTable, this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile->rtransfer));
 	lutGen.GenRGB16_LRGBC((Int64*)&this->rgbTable[262144], this->srcProfile, this->destProfile->GetPrimaries(), 14);
 }
 

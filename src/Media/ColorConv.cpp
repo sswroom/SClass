@@ -15,7 +15,7 @@ Media::ColorConv::ColorConv(const Media::ColorProfile *srcColor, const Media::Co
 	this->rgbTable = MemAlloc(UInt8, 256 * 4 * 8 + 262144);
 	Media::RGBLUTGen rgbGen(this->colorSess);
 	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor->GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor->rtransfer));
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor->rtransfer));
 }
 
 Media::ColorConv::~ColorConv()
@@ -29,7 +29,7 @@ void Media::ColorConv::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rg
 {
 	Media::RGBLUTGen rgbGen(this->colorSess);
 	rgbGen.GenRGBA8_LRGBC((Int64*)this->rgbTable, this->srcColor, this->destColor->GetPrimaries(), 14);
-	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(this->srcColor->rtransfer));
+	rgbGen.GenLRGB_BGRA8(this->rgbTable + 8192, this->destColor, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcColor->rtransfer));
 }
 
 UInt32 Media::ColorConv::ConvRGB8(UInt32 c)

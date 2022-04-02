@@ -524,35 +524,23 @@ void Media::ColorProfile::ColorPrimaries::GetAdaptationMatrix(Math::Matrix3 *mat
 
 Media::ColorProfile::ColorProfile()
 {
-	NEW_CLASS(this->rtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->gtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->btransfer, Media::CS::TransferParam());
 	this->rawICC = 0;
 }
 
 Media::ColorProfile::ColorProfile(const ColorProfile *profile)
 {
-	NEW_CLASS(this->rtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->gtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->btransfer, Media::CS::TransferParam());
 	this->rawICC = 0;
 	this->Set(profile);
 }
 
 Media::ColorProfile::ColorProfile(CommonProfileType cpt)
 {
-	NEW_CLASS(this->rtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->gtransfer, Media::CS::TransferParam());
-	NEW_CLASS(this->btransfer, Media::CS::TransferParam());
 	this->rawICC = 0;
 	this->SetCommonProfile(cpt);
 }
 
 Media::ColorProfile::~ColorProfile()
 {
-	DEL_CLASS(this->rtransfer);
-	DEL_CLASS(this->gtransfer);
-	DEL_CLASS(this->btransfer);
 	if (this->rawICC)
 	{
 		MemFree((UInt8*)this->rawICC);
@@ -562,9 +550,9 @@ Media::ColorProfile::~ColorProfile()
 
 void Media::ColorProfile::Set(const ColorProfile *profile)
 {
-	this->rtransfer->Set(profile->rtransfer);
-	this->gtransfer->Set(profile->gtransfer);
-	this->btransfer->Set(profile->btransfer);
+	this->rtransfer.Set(&profile->rtransfer);
+	this->gtransfer.Set(&profile->gtransfer);
+	this->btransfer.Set(&profile->btransfer);
 	this->primaries.Set(&profile->primaries);
 	this->SetRAWICC(profile->rawICC);
 }
@@ -575,114 +563,114 @@ void Media::ColorProfile::SetCommonProfile(Media::ColorProfile::CommonProfileTyp
 	{
 	case CPT_ADOBE:
 		this->primaries.SetColorType(Media::ColorProfile::CT_ADOBE);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
 		break;
 	case CPT_APPLE:
 		this->primaries.SetColorType(Media::ColorProfile::CT_APPLE);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
 		break;
 	case CPT_CIERGB:
 		this->primaries.SetColorType(Media::ColorProfile::CT_CIERGB);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 2.19921875);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 2.19921875);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 2.19921875);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.19921875);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.19921875);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 2.19921875);
 		break;
 	case CPT_COLORMATCH:
 		this->primaries.SetColorType(Media::ColorProfile::CT_COLORMATCH);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 1.80078125);
 		break;
 	case CPT_BT709:
 		this->primaries.SetColorType(Media::ColorProfile::CT_BT709);
-		this->rtransfer->Set(Media::CS::TRANT_BT709, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_BT709, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_BT709, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
 	case CPT_NTSC:
 		this->primaries.SetColorType(Media::ColorProfile::CT_BT470M);
-		this->rtransfer->Set(Media::CS::TRANT_NTSC, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_NTSC, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_NTSC, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_NTSC, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_NTSC, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_NTSC, 2.2);
 		break;
 	case CPT_PAL:
 		this->primaries.SetColorType(Media::ColorProfile::CT_BT470BG);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 2.8);////////////////
 		break;
 	case CPT_SGI: //////////////////
 		this->primaries.SetColorType(Media::ColorProfile::CT_APPLE);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
 		break;
 	case CPT_SMPTE240M:
 		this->primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
 		break;
 	case CPT_SMPTEC:
 		this->primaries.SetColorType(Media::ColorProfile::CT_SMPTE240M);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 2.2);
 		break;
 	case CPT_SRGB:
 		this->primaries.SetColorType(Media::ColorProfile::CT_SRGB);
-		this->rtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_sRGB, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 		break;
 	case CPT_WIDE:
 		this->primaries.SetColorType(Media::ColorProfile::CT_WIDE);
-		this->rtransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
-		this->gtransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
-		this->btransfer->Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->rtransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->gtransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
+		this->btransfer.Set(Media::CS::TRANT_GAMMA, 563.0 / 256.0);
 		break;
 	case CPT_BT2020:
 		this->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
-		this->rtransfer->Set(Media::CS::TRANT_BT709, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_BT709, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_BT709, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_BT709, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_BT709, 2.2);
 		break;
 	case CPT_BT2100:
 		this->primaries.SetColorType(Media::ColorProfile::CT_BT2020);
-		this->rtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_BT2100, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_BT2100, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_BT2100, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_BT2100, 2.2);
 		break;
 	case CPT_CUSTOM:
 		this->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 		break;
 	case CPT_PDISPLAY:
 		this->primaries.SetColorType(Media::ColorProfile::CT_DISPLAY);
-		this->rtransfer->Set(Media::CS::TRANT_PDISPLAY, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_PDISPLAY, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_PDISPLAY, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_PDISPLAY, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_PDISPLAY, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_PDISPLAY, 2.2);
 		break;
 	case CPT_VDISPLAY:
 		this->primaries.SetColorType(Media::ColorProfile::CT_DISPLAY);
-		this->rtransfer->Set(Media::CS::TRANT_VDISPLAY, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_VDISPLAY, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_VDISPLAY, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_VDISPLAY, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_VDISPLAY, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_VDISPLAY, 2.2);
 		break;
 	case CPT_PUNKNOWN:
 		this->primaries.SetColorType(Media::ColorProfile::CT_PUNKNOWN);
-		this->rtransfer->Set(Media::CS::TRANT_PUNKNOWN, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_PUNKNOWN, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_PUNKNOWN, 2.2);
 		break;
 	case CPT_VUNKNOWN:
 		this->primaries.SetColorType(Media::ColorProfile::CT_VUNKNOWN);
-		this->rtransfer->Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		this->gtransfer->Set(Media::CS::TRANT_VUNKNOWN, 2.2);
-		this->btransfer->Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		this->rtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		this->gtransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
+		this->btransfer.Set(Media::CS::TRANT_VUNKNOWN, 2.2);
 		break;
 	case CPT_FILE:
 	case CPT_OS:
@@ -695,9 +683,9 @@ void Media::ColorProfile::RGB32ToXYZ(Int32 rgb, Double *X, Double *Y, Double *Z)
 {
 	Math::Matrix3 matrix;
 	this->primaries.GetConvMatrix(&matrix);
-	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(&this->rtransfer);
+	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(&this->gtransfer);
+	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(&this->btransfer);
 	Double mul = 1 / 255.0;
 	Double r = rtrant->InverseTransfer(((rgb >> 16) & 255) * mul);
 	Double g = gtrant->InverseTransfer(((rgb >> 8) & 255) * mul);
@@ -717,9 +705,9 @@ Int32 Media::ColorProfile::XYZToRGB32(Double a, Double X, Double Y, Double Z)
 	Int32 outVal;
 	Int32 iVal;
 	this->primaries.GetConvMatrix(&matrix);
-	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(this->rtransfer);
-	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(this->gtransfer);
-	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(this->btransfer);
+	Media::CS::TransferFunc *rtrant = Media::CS::TransferFunc::CreateFunc(&this->rtransfer);
+	Media::CS::TransferFunc *gtrant = Media::CS::TransferFunc::CreateFunc(&this->gtransfer);
+	Media::CS::TransferFunc *btrant = Media::CS::TransferFunc::CreateFunc(&this->btransfer);
 	matrix.Inverse();
 	matrix.Multiply(X, Y, Z, &R, &G, &B);
 	R = rtrant->ForwardTransfer(R);
@@ -783,22 +771,22 @@ void Media::ColorProfile::XYZWPTransform(WhitePointType srcWP, Double srcX, Doub
 
 Bool Media::ColorProfile::Equals(const ColorProfile *profile)
 {
-	return this->primaries.Equals(&profile->primaries) && this->rtransfer->Equals(profile->rtransfer) && this->gtransfer->Equals(profile->gtransfer) && this->btransfer->Equals(profile->btransfer);
+	return this->primaries.Equals(&profile->primaries) && this->rtransfer.Equals(&profile->rtransfer) && this->gtransfer.Equals(&profile->gtransfer) && this->btransfer.Equals(&profile->btransfer);
 }
 
 Media::CS::TransferParam *Media::ColorProfile::GetRTranParam()
 {
-	return this->rtransfer;
+	return &this->rtransfer;
 }
 
 Media::CS::TransferParam *Media::ColorProfile::GetGTranParam()
 {
-	return this->gtransfer;
+	return &this->gtransfer;
 }
 
 Media::CS::TransferParam *Media::ColorProfile::GetBTranParam()
 {
-	return this->btransfer;
+	return &this->btransfer;
 }
 
 Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimaries()
@@ -1101,12 +1089,12 @@ void Media::ColorProfile::RGB2RGB(Media::ColorProfile *srcColor, Media::ColorPro
 	destColor->primaries.GetConvMatrix(&mat2);
 	mat2.Inverse();
 	mat.MyMultiply(&mat2);
-	func1r = Media::CS::TransferFunc::CreateFunc(srcColor->rtransfer);
-	func1g = Media::CS::TransferFunc::CreateFunc(srcColor->gtransfer);
-	func1b = Media::CS::TransferFunc::CreateFunc(srcColor->btransfer);
-	func2r = Media::CS::TransferFunc::CreateFunc(destColor->rtransfer);
-	func2g = Media::CS::TransferFunc::CreateFunc(destColor->gtransfer);
-	func2b = Media::CS::TransferFunc::CreateFunc(destColor->btransfer);
+	func1r = Media::CS::TransferFunc::CreateFunc(&srcColor->rtransfer);
+	func1g = Media::CS::TransferFunc::CreateFunc(&srcColor->gtransfer);
+	func1b = Media::CS::TransferFunc::CreateFunc(&srcColor->btransfer);
+	func2r = Media::CS::TransferFunc::CreateFunc(&destColor->rtransfer);
+	func2g = Media::CS::TransferFunc::CreateFunc(&destColor->gtransfer);
+	func2b = Media::CS::TransferFunc::CreateFunc(&destColor->btransfer);
 	v1 = func1r->InverseTransfer(srcR);
 	v2 = func1g->InverseTransfer(srcG);
 	v3 = func1b->InverseTransfer(srcB);

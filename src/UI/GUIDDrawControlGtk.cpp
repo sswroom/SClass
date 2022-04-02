@@ -365,7 +365,6 @@ void UI::GUIDDrawControl::CreateSubSurface()
 		this->primarySurface->info->atype = Media::AT_ALPHA;
 		OSInt lineAdd;
 		ImageUtil_ColorFill32((UInt8*)this->primarySurface->LockSurface(&lineAdd), this->surfaceW * this->surfaceH, 0xff000000);
-		g_object_ref(buf);
 		this->clsData->pixBuf = buf;
 		this->clsData->pSurfaceUpdated = true;
 	}

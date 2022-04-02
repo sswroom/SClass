@@ -140,7 +140,7 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 				WriteInt32(&buff[118], 0);
 			}
 		}
-		else if (ct == Media::ColorProfile::CT_SRGB && img->info->color->rtransfer->GetTranType() == Media::CS::TRANT_sRGB)
+		else if (ct == Media::ColorProfile::CT_SRGB && img->info->color->rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
 		{
 			hdrSize = 124;
 			WriteInt32(&buff[70], ReadInt32((const UInt8*)"BGRs")); //bV5CSType = LCS_sRGB
@@ -189,9 +189,9 @@ Bool Exporter::BMPExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 			WriteInt32(&buff[102], Double2Int32(xyzVec.val[1] * 0x40000000));
 			WriteInt32(&buff[106], Double2Int32(xyzVec.val[2] * 0x40000000));
 
-			WriteInt32(&buff[110], Double2Int32(img->info->color->rtransfer->GetGamma() * 65536));
-			WriteInt32(&buff[114], Double2Int32(img->info->color->gtransfer->GetGamma() * 65536));
-			WriteInt32(&buff[118], Double2Int32(img->info->color->btransfer->GetGamma() * 65536));
+			WriteInt32(&buff[110], Double2Int32(img->info->color->rtransfer.GetGamma() * 65536));
+			WriteInt32(&buff[114], Double2Int32(img->info->color->gtransfer.GetGamma() * 65536));
+			WriteInt32(&buff[118], Double2Int32(img->info->color->btransfer.GetGamma() * 65536));
 
 			WriteInt32(&buff[122], 8); //LCS_GM_ABS_COLORIMETRIC
 			WriteInt32(&buff[126], 0);

@@ -1563,17 +1563,17 @@ Bool Exporter::PNGExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		}
 		else
 		{
-			if (img->info->color->rtransfer && img->info->color->rtransfer->GetTranType() == Media::CS::TRANT_GAMMA)
+			if (img->info->color->rtransfer.GetTranType() == Media::CS::TRANT_GAMMA)
 			{
 				WriteMInt32(&hdr[0], 4);
 				*(Int32*)&hdr[4] = *(Int32*)"gAMA";
-				WriteMInt32(&hdr[8], Double2Int32(100000.0 / img->info->color->rtransfer->GetGamma()));
+				WriteMInt32(&hdr[8], Double2Int32(100000.0 / img->info->color->rtransfer.GetGamma()));
 				crc.Clear();
 				crc.Calc(&hdr[4], 8);
 				crc.GetValue(&hdr[12]);
 				stm->Write(hdr, 16);
 			}
-			else if (img->info->color->rtransfer && img->info->color->rtransfer->GetTranType() == Media::CS::TRANT_sRGB)
+			else if (img->info->color->rtransfer.GetTranType() == Media::CS::TRANT_sRGB)
 			{
 				WriteMInt32(&hdr[0], 1);
 				*(Int32*)&hdr[4] = *(Int32*)"sRGB";

@@ -258,10 +258,10 @@ void UI::GUIClientControl::OnSizeChanged(Bool updateScn)
 	}
 
 	this->UpdateChildrenSize(false);
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 

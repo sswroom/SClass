@@ -8,15 +8,6 @@
 
 Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
 {
-	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());
-	NEW_CLASS(this->imgTimes, Data::ArrayListUInt32());
-	NEW_CLASS(this->imgTypeList, Data::ArrayList<ImageType>());
-	NEW_CLASS(this->valTypeI32, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valI32, Data::ArrayList<Int32>());
-	NEW_CLASS(this->valTypeI64, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valI64, Data::ArrayList<Int64>());
-	NEW_CLASS(this->valTypeStr, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valStr, Data::ArrayList<Text::String *>());
 	this->author = 0;
 	this->imgName = 0;
 	this->thermoPtr = 0;
@@ -24,15 +15,6 @@ Media::ImageList::ImageList(Text::String *name) : IO::ParsedObject(name)
 
 Media::ImageList::ImageList(Text::CString fileName) : IO::ParsedObject(fileName)
 {
-	NEW_CLASS(this->imgList, Data::ArrayList<Media::Image*>());
-	NEW_CLASS(this->imgTimes, Data::ArrayListUInt32());
-	NEW_CLASS(this->imgTypeList, Data::ArrayList<ImageType>());
-	NEW_CLASS(this->valTypeI32, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valI32, Data::ArrayList<Int32>());
-	NEW_CLASS(this->valTypeI64, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valI64, Data::ArrayList<Int64>());
-	NEW_CLASS(this->valTypeStr, Data::ArrayList<ValueType>());
-	NEW_CLASS(this->valStr, Data::ArrayList<Text::String *>());
 	this->author = 0;
 	this->imgName = 0;
 	this->thermoPtr = 0;
@@ -40,40 +22,23 @@ Media::ImageList::ImageList(Text::CString fileName) : IO::ParsedObject(fileName)
 
 Media::ImageList::~ImageList()
 {
-	UOSInt i = imgList->GetCount();
+	UOSInt i = this->imgList.GetCount();
 	while (i-- > 0)
 	{
-		DEL_CLASS(imgList->RemoveAt(i));
+		DEL_CLASS(this->imgList.RemoveAt(i));
 	}
-	DEL_CLASS(this->imgList);
-	DEL_CLASS(this->imgTimes);
-	DEL_CLASS(this->imgTypeList);
-	DEL_CLASS(this->valTypeI32);
-	DEL_CLASS(this->valI32);
-	DEL_CLASS(this->valTypeI64);
-	DEL_CLASS(this->valI64);
-	DEL_CLASS(this->valTypeStr);
-	i = this->valStr->GetCount();
+	i = this->valStr.GetCount();
 	while (i-- > 0)
 	{
-		this->valStr->GetItem(i)->Release();
+		this->valStr.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->valStr);
 	if (this->thermoPtr)
 	{
 		MemFree(this->thermoPtr);
 		this->thermoPtr = 0;
 	}
-	if (this->author)
-	{
-		Text::StrDelNew(this->author);
-		this->author = 0;
-	}
-	if (this->imgName)
-	{
-		Text::StrDelNew(this->imgName);
-		this->imgName = 0;
-	}
+	SDEL_TEXT(this->author);
+	SDEL_TEXT(this->imgName);
 }
 
 IO::ParserType Media::ImageList::GetParserType()
@@ -83,21 +48,21 @@ IO::ParserType Media::ImageList::GetParserType()
 
 UOSInt Media::ImageList::AddImage(Media::Image *img, UInt32 imageDelay)
 {
-	this->imgTimes->Add(imageDelay);
-	this->imgTypeList->Add(Media::ImageList::IT_UNKNOWN);
-	return this->imgList->Add(img);
+	this->imgTimes.Add(imageDelay);
+	this->imgTypeList.Add(Media::ImageList::IT_UNKNOWN);
+	return this->imgList.Add(img);
 }
 
 void Media::ImageList::ReplaceImage(UOSInt index, Media::Image *img)
 {
-	Media::Image *oldImg = this->imgList->GetItem(index);
-	this->imgList->SetItem(index, img);
+	Media::Image *oldImg = this->imgList.GetItem(index);
+	this->imgList.SetItem(index, img);
 	DEL_CLASS(oldImg);
 }
 
 Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
 {
-	Media::Image *oldImg = this->imgList->RemoveAt(index);
+	Media::Image *oldImg = this->imgList.RemoveAt(index);
 	if (oldImg == 0)
 		return false;
 	if (toRelease)
@@ -109,39 +74,39 @@ Bool  Media::ImageList::RemoveImage(UOSInt index, Bool toRelease)
 
 UOSInt Media::ImageList::GetCount()
 {
-	return imgList->GetCount();
+	return this->imgList.GetCount();
 }
 
 Media::Image *Media::ImageList::GetImage(UOSInt index, UInt32 *imageDelay)
 {
 	if (imageDelay)
 	{
-		*imageDelay = imgTimes->GetItem(index);
+		*imageDelay = this->imgTimes.GetItem(index);
 	}
-	return (Media::Image*)imgList->GetItem(index);
+	return this->imgList.GetItem(index);
 }
 
 Media::ImageList::ImageType Media::ImageList::GetImageType(UOSInt index)
 {
-	return this->imgTypeList->GetItem(index);
+	return this->imgTypeList.GetItem(index);
 }
 
 void Media::ImageList::SetImageType(UOSInt index, ImageType imgType)
 {
-	if (index >= imgList->GetCount())
+	if (index >= this->imgList.GetCount())
 	{
 		return;
 	}
-	this->imgTypeList->SetItem(index, imgType);
+	this->imgTypeList.SetItem(index, imgType);
 }
 
 void Media::ImageList::ToStaticImage(UOSInt index)
 {
-	Media::Image *img = imgList->GetItem(index);
+	Media::Image *img = this->imgList.GetItem(index);
 	if (img == 0 || img->GetImageType() == Media::Image::IT_STATIC)
 		return;
 	Media::StaticImage *simg = img->CreateStaticImage();
-	imgList->SetItem(index, simg);
+	this->imgList.SetItem(index, simg);
 	DEL_CLASS(img);
 }
 
@@ -248,20 +213,20 @@ Double Media::ImageList::GetThermoValue(Double x, Double y)
 
 void Media::ImageList::SetValueInt32(Media::ImageList::ValueType valType, Int32 val)
 {
-	this->valI32->Add(val);
-	this->valTypeI32->Add(valType);
+	this->valI32.Add(val);
+	this->valTypeI32.Add(valType);
 }
 
 void Media::ImageList::SetValueInt64(Media::ImageList::ValueType valType, Int64 val)
 {
-	this->valI64->Add(val);
-	this->valTypeI64->Add(valType);
+	this->valI64.Add(val);
+	this->valTypeI64.Add(valType);
 }
 
 void Media::ImageList::SetValueStr(Media::ImageList::ValueType valType, Text::CString val)
 {
-	this->valStr->Add(Text::String::New(val));
-	this->valTypeStr->Add(valType);
+	this->valStr.Add(Text::String::New(val));
+	this->valTypeStr.Add(valType);
 }
 
 Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
@@ -270,7 +235,7 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 	UOSInt j;
 	Bool found = false;
 	ValueType vt;
-	if ((j = this->valStr->GetCount()) != 0)
+	if ((j = this->valStr.GetCount()) != 0)
 	{
 		i = 0;
 		while (i < j)
@@ -279,15 +244,15 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			vt = this->valTypeStr->GetItem(i);
+			vt = this->valTypeStr.GetItem(i);
 			sb->Append(GetValueTypeName(vt));
 			sb->AppendC(UTF8STRC(" = "));
-			sb->Append(this->valStr->GetItem(i));
+			sb->Append(this->valStr.GetItem(i));
 			found = true;
 			i++;
 		}
 	}
-	if ((j = this->valI32->GetCount()) != 0)
+	if ((j = this->valI32.GetCount()) != 0)
 	{
 		Int32 v;
 		i = 0;
@@ -297,10 +262,10 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			vt = this->valTypeI32->GetItem(i);
+			vt = this->valTypeI32.GetItem(i);
 			sb->Append(GetValueTypeName(vt));
 			sb->AppendC(UTF8STRC(" = "));
-			v = this->valI32->GetItem(i);
+			v = this->valI32.GetItem(i);
 			if (vt == VT_FIRMWARE_VERSION)
 			{
 				sb->AppendI32(v >> 24);
@@ -317,7 +282,7 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 			i++;
 		}
 	}
-	if ((j = this->valI64->GetCount()) != 0)
+	if ((j = this->valI64.GetCount()) != 0)
 	{
 		Data::DateTime dt;
 		Int64 v;
@@ -328,10 +293,10 @@ Bool Media::ImageList::ToValueString(Text::StringBuilderUTF8 *sb)
 			{
 				sb->AppendC(UTF8STRC("\r\n"));
 			}
-			vt = this->valTypeI64->GetItem(i);
+			vt = this->valTypeI64.GetItem(i);
 			sb->Append(GetValueTypeName(vt));
 			sb->AppendC(UTF8STRC(" = "));
-			v = this->valI64->GetItem(i);
+			v = this->valI64.GetItem(i);
 			if (vt == VT_CAPTURE_DATE)
 			{
 				dt.SetTicks(v);

@@ -13,8 +13,6 @@ extern "C"
 
 UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 {
-	NEW_CLASS(this->resizeHandlers, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->resizeHandlersObjs, Data::ArrayList<void*>());
 	this->ui = ui;
 	this->parent = parent;
 	this->selfResize = false;
@@ -31,8 +29,6 @@ UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 
 UI::GUIControl::~GUIControl()
 {
-	DEL_CLASS(this->resizeHandlers);
-	DEL_CLASS(this->resizeHandlersObjs);
 /*	if (this->dropHdlr)
 	{
 		UI::GUIDragDropGTK *dragDrop = (UI::GUIDragDropGTK*)this->dropHdlr;
@@ -65,7 +61,7 @@ void UI::GUIControl::Close()
 //	gtk_widget_destroy((GtkWidget*)this->hwnd);
 }
 
-void UI::GUIControl::SetText(const UTF8Char *text)
+void UI::GUIControl::SetText(Text::CString text)
 {
 	/////////////////////////////////
 }
@@ -76,7 +72,7 @@ UTF8Char *UI::GUIControl::GetText(UTF8Char *buff)
 	return 0;
 }
 
-Bool UI::GUIControl::GetText(Text::StringBuilderUTF *sb)
+Bool UI::GUIControl::GetText(Text::StringBuilderUTF8 *sb)
 {
 	///////////////////////////////
 	return false;
@@ -87,7 +83,7 @@ void UI::GUIControl::SetSize(Double width, Double height)
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width, this->lyPos + height, true);
 }
 
-void UI::GUIControl::SetSizeP(OSInt width, OSInt height)
+void UI::GUIControl::SetSizeP(UOSInt width, UOSInt height)
 {
 	this->SetArea(this->lxPos, this->lyPos, this->lxPos + width * this->ddpi / this->hdpi, this->lyPos + height * this->ddpi / this->hdpi, true);
 }
@@ -101,7 +97,7 @@ void UI::GUIControl::GetSize(Double *width, Double *height)
 //	printf("Control.GetSize %lf, %lf\r\n", *width, *height);
 }
 
-void UI::GUIControl::GetSizeP(OSInt *width, OSInt *height)
+void UI::GUIControl::GetSizeP(UOSInt *width, UOSInt *height)
 {
 	if (width)
 		*width = Double2Int32((this->lxPos2 - this->lxPos) * this->hdpi / this->ddpi);
@@ -221,7 +217,7 @@ void UI::GUIControl::SetRect(Double left, Double top, Double width, Double heigh
 	this->SetArea(left, top, left + width, top + height, updateScn);
 }
 
-void UI::GUIControl::SetFont(const UTF8Char *name, Double size, Bool isBold)
+void UI::GUIControl::SetFont(const UTF8Char *name, UOSInt nameLen, Double size, Bool isBold)
 {
 /*	PangoFontDescription *font = pango_font_description_new();
 	if (name)
@@ -276,7 +272,7 @@ void UI::GUIControl::SetEnabled(Bool isEnable)
 //	gtk_widget_set_sensitive((GtkWidget*)this->hwnd, isEnable);
 }
 
-void UI::GUIControl::SetBGColor(Int32 bgColor)
+void UI::GUIControl::SetBGColor(UInt32 bgColor)
 {
 /*	if (bgColor)
 	{
@@ -337,10 +333,10 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->lyPos2 = this->lyPos + outH * this->ddpi / this->hdpi;
 	}*/
 
-	OSInt i = this->resizeHandlers->GetCount();
+	OSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 
@@ -361,8 +357,8 @@ void UI::GUIControl::OnMonitorChanged()
 
 void UI::GUIControl::HandleSizeChanged(UIEvent handler, void *userObj)
 {
-	this->resizeHandlers->Add(handler);
-	this->resizeHandlersObjs->Add(userObj);
+	this->resizeHandlers.Add(handler);
+	this->resizeHandlersObjs.Add(userObj);
 }
 
 void UI::GUIControl::UpdateFont()
@@ -417,11 +413,11 @@ UI::GUIClientControl *UI::GUIControl::GetParent()
 UI::GUIForm *UI::GUIControl::GetRootForm()
 {
 	UI::GUIControl *ctrl = this;
-	const UTF8Char *objCls;
+	Text::CString objCls;
 	while (ctrl)
 	{
 		objCls = ctrl->GetObjectClass();
-		if (Text::StrEquals(objCls, (const UTF8Char*)"WinForm"))
+		if (objCls.Equals(UTF8STRC("WinForm")))
 		{
 			if (ctrl->GetParent() == 0)
 				return (UI::GUIForm*)ctrl;
@@ -431,12 +427,12 @@ UI::GUIForm *UI::GUIControl::GetRootForm()
 	return 0;
 }
 
-void *UI::GUIControl::GetHandle()
+ControlHandle *UI::GUIControl::GetHandle()
 {
 	return this->hwnd;
 }
 
-void *UI::GUIControl::GetHMonitor()
+MonitorHandle *UI::GUIControl::GetHMonitor()
 {
 /*
 #if GDK_MAJOR_VERSION > 3 || (GDK_MAJOR_VERSION == 3 && GDK_MINOR_VERSION >= 22)
@@ -527,12 +523,12 @@ Media::DrawFont *UI::GUIControl::CreateDrawFont(Media::DrawImage *img)
 	}
 	else
 	{
-		fnt = img->NewFontH(this->fontName, this->fontHeight * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
+		fnt = img->NewFontPt(this->fontName->ToCString(), this->fontHeightPt * this->hdpi / this->ddpi * 72.0 / img->GetHDPI(), this->fontIsBold?Media::DrawEngine::DFS_BOLD:Media::DrawEngine::DFS_NORMAL, 0);
 	}
 	return fnt;
 }
 
-Int32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)
+UInt32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)
 {
 /*	switch (guiKey)
 	{
@@ -784,7 +780,7 @@ Int32 UI::GUIControl::GUIKey2OSKey(UI::GUIControl::GUIKey guiKey)
 	}*/
 }
 
-UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(Int32 osKey)
+UI::GUIControl::GUIKey UI::GUIControl::OSKey2GUIKey(UInt32 osKey)
 {
 /*	switch (osKey)
 	{

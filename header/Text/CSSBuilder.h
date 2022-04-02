@@ -34,7 +34,7 @@ namespace Text
 			BS_ENTRY_FIRST
 		} BuildState;
 
-		Text::StringBuilderUTF8 *sb;
+		Text::StringBuilderUTF8 sb;
 		PrettyMode pm;
 		BuildState bstate;
 

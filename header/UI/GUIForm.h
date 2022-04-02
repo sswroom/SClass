@@ -41,17 +41,17 @@ namespace UI
 
 	private:
 		Bool virtualMode;
-		Data::ArrayList<FormClosedEvent> *closeHandlers;
-		Data::ArrayList<void*> *closeHandlersObj;
-		Data::ArrayList<FileEvent> *dropFileHandlers;
-		Data::ArrayList<void*> *dropFileHandlersObj;
-		Data::ArrayList<MenuEvent> *menuClickedHandlers;
-		Data::ArrayList<void*> *menuClickedHandlersObj;
-		Data::ArrayList<KeyEvent> *keyDownHandlers;
-		Data::ArrayList<void*> *keyDownHandlersObj;
-		Data::ArrayList<KeyEvent> *keyUpHandlers;
-		Data::ArrayList<void*> *keyUpHandlersObj;
-		Data::ArrayList<GUITimer*> *timers;
+		Data::ArrayList<FormClosedEvent> closeHandlers;
+		Data::ArrayList<void*> closeHandlersObj;
+		Data::ArrayList<FileEvent> dropFileHandlers;
+		Data::ArrayList<void*> dropFileHandlersObj;
+		Data::ArrayList<MenuEvent> menuClickedHandlers;
+		Data::ArrayList<void*> menuClickedHandlersObj;
+		Data::ArrayList<KeyEvent> keyDownHandlers;
+		Data::ArrayList<void*> keyDownHandlersObj;
+		Data::ArrayList<KeyEvent> keyUpHandlers;
+		Data::ArrayList<void*> keyUpHandlersObj;
+		Data::ArrayList<GUITimer*> timers;
 		FormClosingEvent closingHdlr;
 		void *closingHdlrObj;
 		Bool exitOnClose;

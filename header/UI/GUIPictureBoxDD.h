@@ -14,18 +14,18 @@ namespace UI
 	public:
 		typedef void (__stdcall *DrawHandler32)(void *userObj, UInt8 *imgPtr, UOSInt w, UOSInt h, UOSInt bpl);
 	private:
-		Data::ArrayList<MouseEventHandler> *mouseDownHdlrs;
-		Data::ArrayList<void *> *mouseDownObjs;
-		Data::ArrayList<MouseEventHandler> *mouseUpHdlrs;
-		Data::ArrayList<void *> *mouseUpObjs;
-		Data::ArrayList<MouseEventHandler> *mouseMoveHdlrs;
-		Data::ArrayList<void *> *mouseMoveObjs;
-		Data::ArrayList<DrawHandler32> *drawHdlrs;
-		Data::ArrayList<void *> *drawObjs;
-		Data::ArrayList<UI::UIEvent> *moveToNextHdlrs;
-		Data::ArrayList<void *> *moveToNextObjs;
-		Data::ArrayList<UI::UIEvent> *moveToPrevHdlrs;
-		Data::ArrayList<void *> *moveToPrevObjs;
+		Data::ArrayList<MouseEventHandler> mouseDownHdlrs;
+		Data::ArrayList<void *> mouseDownObjs;
+		Data::ArrayList<MouseEventHandler> mouseUpHdlrs;
+		Data::ArrayList<void *> mouseUpObjs;
+		Data::ArrayList<MouseEventHandler> mouseMoveHdlrs;
+		Data::ArrayList<void *> mouseMoveObjs;
+		Data::ArrayList<DrawHandler32> drawHdlrs;
+		Data::ArrayList<void *> drawObjs;
+		Data::ArrayList<UI::UIEvent> moveToNextHdlrs;
+		Data::ArrayList<void *> moveToNextObjs;
+		Data::ArrayList<UI::UIEvent> moveToPrevHdlrs;
+		Data::ArrayList<void *> moveToPrevObjs;
 
 		UInt8 *bgBuff;
 		UOSInt bgBuffW;

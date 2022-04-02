@@ -156,9 +156,9 @@ namespace Media
 			static void GetAdaptationMatrix(Math::Matrix3 *mat, WhitePointType srcWP, WhitePointType destWP);
 		};
 
-		Media::CS::TransferParam *rtransfer;
-		Media::CS::TransferParam *gtransfer;
-		Media::CS::TransferParam *btransfer;
+		Media::CS::TransferParam rtransfer;
+		Media::CS::TransferParam gtransfer;
+		Media::CS::TransferParam btransfer;
 		Media::ColorProfile::ColorPrimaries primaries;
 		const UInt8 *rawICC;
 

@@ -434,9 +434,6 @@ UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI
 
 UI::GUIMenu::GUIMenu(Bool isPopup)
 {
-	NEW_CLASS(this->subMenus, Data::ArrayList<UI::GUIMenu*>());
-	NEW_CLASS(this->keys, Data::ArrayList<ShortcutKey*>());
-	NEW_CLASS(this->items, Data::ArrayList<void*>());
 	this->hdpi = 96.0;
 	this->mnuForm = 0;
 
@@ -478,7 +475,7 @@ UI::GUIMenu::~GUIMenu()
 	DEL_CLASS(this->items);*/
 }
 
-UOSInt UI::GUIMenu::AddItem(const UTF8Char *name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
+UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyModifier, UI::GUIControl::GUIKey shortcutKey)
 {
 /*	UOSInt id = this->itemCnt++;
 	Char buff[128];
@@ -536,7 +533,7 @@ void UI::GUIMenu::AddSeperator()
 	gtk_widget_show(menuItem);*/
 }
 
-UI::GUIMenu *UI::GUIMenu::AddSubMenu(const UTF8Char *name)
+UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 {
 /*	UI::GUIMenu *subMenu;
 	NEW_CLASS(subMenu, UI::GUIMenu(true));
@@ -577,15 +574,15 @@ void *UI::GUIMenu::GetHMenu()
 	return this->hMenu;
 }
 
-OSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
+UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
 {
-	OSInt keyCnt = this->keys->GetCount();
-	keys->AddRange(this->keys);
-	OSInt j = this->subMenus->GetCount();
-	OSInt i = 0;
+	UOSInt keyCnt = this->keys.GetCount();
+	keys->AddAll(&this->keys);
+	UOSInt j = this->subMenus.GetCount();
+	UOSInt i = 0;
 	while (i < j)
 	{
-		keyCnt += this->subMenus->GetItem(i)->GetAllKeys(keys);
+		keyCnt += this->subMenus.GetItem(i)->GetAllKeys(keys);
 		i++;
 	}
 	return keyCnt;
@@ -635,10 +632,10 @@ void UI::GUIMenu::SetMenuForm(GUIForm *mnuForm)
 	UI::GUIMenu *item;
 	OSInt i;
 	this->mnuForm = mnuForm;
-	i = this->subMenus->GetCount();
+	i = this->subMenus.GetCount();
 	while (i-- > 0)
 	{
-		item = this->subMenus->GetItem(i);
+		item = this->subMenus.GetItem(i);
 		item->SetMenuForm(mnuForm);
 	}
 }

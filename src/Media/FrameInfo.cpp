@@ -5,22 +5,22 @@
 
 Media::FrameInfo::FrameInfo()
 {
-	this->Init();
+	this->InitFrameInfo();
 }
 
 Media::FrameInfo::~FrameInfo()
 {
-	this->Deinit();
+	this->DeinitFrameInfo();
 }
 
-void Media::FrameInfo::Init()
+void Media::FrameInfo::InitFrameInfo()
 {
-	NEW_CLASS(color, Media::ColorProfile());
+	NEW_CLASS(this->color, Media::ColorProfile());
 }
 
-void Media::FrameInfo::Deinit()
+void Media::FrameInfo::DeinitFrameInfo()
 {
-	SDEL_CLASS(color);
+	SDEL_CLASS(this->color);
 }
 
 void Media::FrameInfo::Clear()

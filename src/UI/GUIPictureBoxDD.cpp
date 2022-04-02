@@ -17,7 +17,7 @@ void UI::GUIPictureBoxDD::UpdateSubSurface()
 	if (this->imgBuff && this->currImage && this->IsSurfaceReady())
 	{
 		UOSInt bpl;
-		if (this->drawHdlrs->GetCount() > 0)
+		if (this->drawHdlrs.GetCount() > 0)
 		{
 			if (this->bgBuff == 0 || this->surfaceW != this->bgBuffW || this->surfaceH != this->bgBuffH)
 			{
@@ -294,7 +294,7 @@ void UI::GUIPictureBoxDD::CreateResizer()
 	Double refLuminance = 0;
 	if (this->currImage)
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(this->currImage->info->color->rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(&this->currImage->info->color->rtransfer);
 	}
 	if (this->curr10Bit)
 	{
@@ -340,10 +340,10 @@ void UI::GUIPictureBoxDD::DrawFromBG()
 		UOSInt j;
 		ImageCopy_ImgCopy(this->bgBuff, dptr, this->bgBuffW << 2, this->bgBuffH, (OSInt)this->bgBuffW << 2, (OSInt)bpl);
 		i = 0;
-		j = this->drawHdlrs->GetCount();
+		j = this->drawHdlrs.GetCount();
 		while (i < j)
 		{
-			this->drawHdlrs->GetItem(i)(this->drawObjs->GetItem(i), dptr, this->bgBuffW, this->bgBuffH, bpl);
+			this->drawHdlrs.GetItem(i)(this->drawObjs.GetItem(i), dptr, this->bgBuffW, this->bgBuffH, bpl);
 			i++;
 		}
 		this->LockSurfaceEnd();
@@ -354,7 +354,7 @@ void UI::GUIPictureBoxDD::OnPaint()
 {
 	if (this->currScnMode != SM_FS && this->currScnMode != SM_VFS)
 	{
-		if (this->bgBuff && this->drawHdlrs->GetCount() > 0)
+		if (this->bgBuff && this->drawHdlrs.GetCount() > 0)
 		{
 			DrawFromBG();
 		}
@@ -373,18 +373,6 @@ UI::GUIPictureBoxDD::GUIPictureBoxDD(UI::GUICore *ui, UI::GUIClientControl *pare
 {
 	this->colorSess = colorSess;
 	this->colorSess->AddHandler(this);
-	NEW_CLASS(this->mouseDownHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseDownObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseUpHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseUpObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseEventHandler>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->drawHdlrs, Data::ArrayList<DrawHandler32>());
-	NEW_CLASS(this->drawObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->moveToNextHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->moveToNextObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->moveToPrevHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->moveToPrevObjs, Data::ArrayList<void *>());
 	this->enableLRGBLimit = false;
 
 	this->bgBuff = 0;
@@ -422,18 +410,6 @@ UI::GUIPictureBoxDD::~GUIPictureBoxDD()
 		this->csconv = 0;
 	}
 	DEL_CLASS(this->resizer);
-	DEL_CLASS(this->mouseDownHdlrs);
-	DEL_CLASS(this->mouseDownObjs);
-	DEL_CLASS(this->mouseUpHdlrs);
-	DEL_CLASS(this->mouseUpObjs);
-	DEL_CLASS(this->mouseMoveHdlrs);
-	DEL_CLASS(this->mouseMoveObjs);
-	DEL_CLASS(this->drawHdlrs);
-	DEL_CLASS(this->drawObjs);
-	DEL_CLASS(this->moveToNextHdlrs);
-	DEL_CLASS(this->moveToNextObjs);
-	DEL_CLASS(this->moveToPrevHdlrs);
-	DEL_CLASS(this->moveToPrevObjs);
 	if (this->bgBuff)
 	{
 		MemFreeA(this->bgBuff);
@@ -803,10 +779,10 @@ void UI::GUIPictureBoxDD::OnMouseMove(OSInt x, OSInt y)
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->mouseMoveHdlrs->GetCount();
+	j = this->mouseMoveHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y, UI::GUIControl::MBTN_LEFT))
+		if (this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), x, y, UI::GUIControl::MBTN_LEFT))
 		{
 			return;
 		}
@@ -826,10 +802,10 @@ void UI::GUIPictureBoxDD::OnMouseDown(OSInt x, OSInt y, MouseButton button)
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->mouseDownHdlrs->GetCount();
+	j = this->mouseDownHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseDownHdlrs->GetItem(i)(this->mouseDownObjs->GetItem(i), x, y, button))
+		if (this->mouseDownHdlrs.GetItem(i)(this->mouseDownObjs.GetItem(i), x, y, button))
 		{
 			return;
 		}
@@ -848,10 +824,10 @@ void UI::GUIPictureBoxDD::OnMouseUp(OSInt x, OSInt y, MouseButton button)
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->mouseUpHdlrs->GetCount();
+	j = this->mouseUpHdlrs.GetCount();
 	while (i < j)
 	{
-		if (this->mouseUpHdlrs->GetItem(i)(this->mouseUpObjs->GetItem(i), x, y, button))
+		if (this->mouseUpHdlrs.GetItem(i)(this->mouseUpObjs.GetItem(i), x, y, button))
 		{
 			return;
 		}
@@ -1039,10 +1015,10 @@ void UI::GUIPictureBoxDD::EventMoveToNext()
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->moveToNextHdlrs->GetCount();
+	j = this->moveToNextHdlrs.GetCount();
 	while (i < j)
 	{
-		this->moveToNextHdlrs->GetItem(i)(this->moveToNextObjs->GetItem(i));
+		this->moveToNextHdlrs.GetItem(i)(this->moveToNextObjs.GetItem(i));
 		i++;
 	}
 }
@@ -1052,10 +1028,10 @@ void UI::GUIPictureBoxDD::EventMoveToPrev()
 	UOSInt i;
 	UOSInt j;
 	i = 0;
-	j = this->moveToPrevHdlrs->GetCount();
+	j = this->moveToPrevHdlrs.GetCount();
 	while (i < j)
 	{
-		this->moveToPrevHdlrs->GetItem(i)(this->moveToPrevObjs->GetItem(i));
+		this->moveToPrevHdlrs.GetItem(i)(this->moveToPrevObjs.GetItem(i));
 		i++;
 	}
 }
@@ -1113,7 +1089,7 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info->fourcc, image->info->storeBPP, image->info->pf, image->info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info->color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(image->info->color->rtransfer), pf));
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info->color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(&image->info->color->rtransfer), pf));
 	csConv->ConvertV2(&image->data, prevImgData, image->info->dispWidth, image->info->dispHeight, image->info->storeWidth, image->info->storeHeight, (OSInt)image->info->dispWidth * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
 	NEW_CLASS(outImage, Media::StaticImage(image->info->dispWidth, image->info->dispHeight, 0, 32, pf, 0, image->info->color, Media::ColorProfile::YUVT_UNKNOWN, image->info->atype, image->info->ycOfst));
@@ -1127,38 +1103,38 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 
 void UI::GUIPictureBoxDD::HandleMouseDown(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseDownHdlrs->Add(hdlr);
-	this->mouseDownObjs->Add(userObj);
+	this->mouseDownHdlrs.Add(hdlr);
+	this->mouseDownObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::HandleMouseMove(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseMoveHdlrs->Add(hdlr);
-	this->mouseMoveObjs->Add(userObj);
+	this->mouseMoveHdlrs.Add(hdlr);
+	this->mouseMoveObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::HandleMouseUp(MouseEventHandler hdlr, void *userObj)
 {
-	this->mouseUpHdlrs->Add(hdlr);
-	this->mouseUpObjs->Add(userObj);
+	this->mouseUpHdlrs.Add(hdlr);
+	this->mouseUpObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::HandleDraw(DrawHandler32 hdlr, void *userObj)
 {
-	this->drawHdlrs->Add(hdlr);
-	this->drawObjs->Add(userObj);
+	this->drawHdlrs.Add(hdlr);
+	this->drawObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::HandleMoveToNext(UI::UIEvent hdlr, void *userObj)
 {
-	this->moveToNextHdlrs->Add(hdlr);
-	this->moveToNextObjs->Add(userObj);
+	this->moveToNextHdlrs.Add(hdlr);
+	this->moveToNextObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::HandleMoveToPrev(UI::UIEvent hdlr, void *userObj)
 {
-	this->moveToPrevHdlrs->Add(hdlr);
-	this->moveToPrevObjs->Add(userObj);
+	this->moveToPrevHdlrs.Add(hdlr);
+	this->moveToPrevObjs.Add(userObj);
 }
 
 void UI::GUIPictureBoxDD::Scn2ImagePos(OSInt x, OSInt y, Double *imgX, Double *imgY)

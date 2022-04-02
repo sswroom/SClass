@@ -418,8 +418,6 @@ UTF8Char *UI::GUIMenu::ToKeyDisplay(UTF8Char *sbuff, KeyModifier keyModifier, UI
 
 UI::GUIMenu::GUIMenu(Bool isPopup)
 {
-	NEW_CLASS(this->subMenus, Data::ArrayList<UI::GUIMenu*>());
-	NEW_CLASS(this->keys, Data::ArrayList<ShortcutKey*>());
 	this->hdpi = 96.0;
 
 	if (isPopup)
@@ -438,19 +436,17 @@ UI::GUIMenu::~GUIMenu()
 {
 	UI::GUIMenu *item;
 	UOSInt i;
-	i = this->keys->GetCount();
+	i = this->keys.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->keys->GetItem(i));
+		MemFree(this->keys.GetItem(i));
 	}
-	DEL_CLASS(this->keys);
-	i = this->subMenus->GetCount();
+	i = this->subMenus.GetCount();
 	while (i-- > 0)
 	{
-		item = this->subMenus->GetItem(i);
+		item = this->subMenus.GetItem(i);
 		DEL_CLASS(item);
 	}
-	DEL_CLASS(this->subMenus);
 	DestroyMenu((HMENU)this->hMenu);
 }
 
@@ -471,7 +467,7 @@ UOSInt UI::GUIMenu::AddItem(Text::CString name, UInt16 cmdId, KeyModifier keyMod
 		key->cmdId = cmdId;
 		key->keyModifier = keyModifier;
 		key->shortcutKey = shortcutKey;
-		this->keys->Add(key);
+		this->keys.Add(key);
 	}
 	else
 	{
@@ -492,7 +488,7 @@ UI::GUIMenu *UI::GUIMenu::AddSubMenu(Text::CString name)
 {
 	UI::GUIMenu *subMenu;
 	NEW_CLASS(subMenu, UI::GUIMenu(true));
-	this->subMenus->Add(subMenu);
+	this->subMenus.Add(subMenu);
 	
 	const WChar *wptr = Text::StrToWCharNew(name.v);
 	AppendMenuW((HMENU)this->hMenu, MF_POPUP, (UOSInt)subMenu->hMenu, wptr);
@@ -508,13 +504,13 @@ void *UI::GUIMenu::GetHMenu()
 
 UOSInt UI::GUIMenu::GetAllKeys(Data::ArrayList<ShortcutKey*> *keys)
 {
-	UOSInt keyCnt = this->keys->GetCount();
-	keys->AddAll(this->keys);
-	UOSInt j = this->subMenus->GetCount();
+	UOSInt keyCnt = this->keys.GetCount();
+	keys->AddAll(&this->keys);
+	UOSInt j = this->subMenus.GetCount();
 	UOSInt i = 0;
 	while (i < j)
 	{
-		keyCnt += this->subMenus->GetItem(i)->GetAllKeys(keys);
+		keyCnt += this->subMenus.GetItem(i)->GetAllKeys(keys);
 		i++;
 	}
 	return keyCnt;
@@ -529,19 +525,19 @@ void UI::GUIMenu::ClearItems()
 {
 	UI::GUIMenu *item;
 	UOSInt i;
-	i = this->keys->GetCount();
+	i = this->keys.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->keys->GetItem(i));
+		MemFree(this->keys.GetItem(i));
 	}
-	this->keys->Clear();
-	i = this->subMenus->GetCount();
+	this->keys.Clear();
+	i = this->subMenus.GetCount();
 	while (i-- > 0)
 	{
-		item = this->subMenus->GetItem(i);
+		item = this->subMenus.GetItem(i);
 		DEL_CLASS(item);
 	}
-	this->subMenus->Clear();
+	this->subMenus.Clear();
 
 #ifdef _WIN32_WCE
 	i = 0;

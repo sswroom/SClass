@@ -112,20 +112,8 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 	this->exitOnClose = false;
 	this->isDialog = false;
 	this->dialogResult = DR_UNKNOWN;
-	this->timers = 0;
 	this->okBtn = 0;
 	this->cancelBtn = 0;
-	NEW_CLASS(this->closeHandlers, Data::ArrayList<FormClosedEvent>());
-	NEW_CLASS(this->closeHandlersObj, Data::ArrayList<void *>());
-	NEW_CLASS(this->dropFileHandlers, Data::ArrayList<FileEvent>());
-	NEW_CLASS(this->dropFileHandlersObj, Data::ArrayList<void *>());
-	NEW_CLASS(this->menuClickedHandlers, Data::ArrayList<MenuEvent>());
-	NEW_CLASS(this->menuClickedHandlersObj, Data::ArrayList<void *>());
-	NEW_CLASS(this->keyDownHandlers, Data::ArrayList<KeyEvent>());
-	NEW_CLASS(this->keyDownHandlersObj, Data::ArrayList<void *>());
-	NEW_CLASS(this->keyUpHandlers, Data::ArrayList<KeyEvent>());
-	NEW_CLASS(this->keyUpHandlersObj, Data::ArrayList<void *>());
-	NEW_CLASS(this->timers, Data::ArrayList<UI::GUITimer*>());
 	this->closingHdlr = 0;
 	this->closingHdlrObj = 0;
 	this->menu = 0;
@@ -184,16 +172,12 @@ UI::GUIForm::GUIForm(GUIClientControl *parent, Double initW, Double initH, GUICo
 UI::GUIForm::~GUIForm()
 {
 	GUITimer *tmr;
-	if (this->timers != 0)
+	UOSInt i;
+	i = this->timers.GetCount();
+	while (i-- > 0)
 	{
-		UOSInt i;
-		i = this->timers->GetCount();
-		while (i-- > 0)
-		{
-			tmr = this->timers->GetItem(i);
-			DEL_CLASS(tmr);
-		}
-		DEL_CLASS(this->timers);
+		tmr = this->timers.GetItem(i);
+		DEL_CLASS(tmr);
 	}
 	this->isDialog = true;
 	GtkWidget *widget = (GtkWidget*)this->hwnd;
@@ -202,16 +186,6 @@ UI::GUIForm::~GUIForm()
 	{
 		gtk_widget_destroy(widget);
 	}
-	DEL_CLASS(this->dropFileHandlers);
-	DEL_CLASS(this->dropFileHandlersObj);
-	DEL_CLASS(this->closeHandlers);
-	DEL_CLASS(this->closeHandlersObj);
-	DEL_CLASS(this->menuClickedHandlers);
-	DEL_CLASS(this->menuClickedHandlersObj);
-	DEL_CLASS(this->keyDownHandlers);
-	DEL_CLASS(this->keyDownHandlersObj);
-	DEL_CLASS(this->keyUpHandlers);
-	DEL_CLASS(this->keyUpHandlersObj);
 	if (this->menu)
 	{
 		DEL_CLASS(this->menu);
@@ -287,13 +261,13 @@ void UI::GUIForm::Close()
 {
 	gtk_window_close((GtkWindow*)this->hwnd);
 	UOSInt i;
-	i = this->closeHandlers->GetCount();
+	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->closeHandlers->GetItem(i)(this->closeHandlersObj->GetItem(i), this);
+		this->closeHandlers.GetItem(i)(this->closeHandlersObj.GetItem(i), this);
 	}
-	this->closeHandlers->Clear();
-	this->closeHandlersObj->Clear();
+	this->closeHandlers.Clear();
+	this->closeHandlersObj.Clear();
 }
 
 void UI::GUIForm::SetText(Text::CString text)
@@ -353,30 +327,23 @@ void UI::GUIForm::SetNoResize(Bool noResize)
 
 UI::GUITimer *UI::GUIForm::AddTimer(UInt32 interval, UI::UIEvent handler, void *userObj)
 {
-	if (this->timers == 0)
-	{
-		NEW_CLASS(this->timers, Data::ArrayList<UI::GUITimer*>());
-	}
 	UI::GUITimer *tmr;
 	NEW_CLASS(tmr, UI::GUITimer(this->ui, this, 0, interval, handler, userObj));
-	this->timers->Add(tmr);
+	this->timers.Add(tmr);
 	return tmr;
 }
 
 void UI::GUIForm::RemoveTimer(UI::GUITimer *tmr)
 {
-	if (this->timers)
+	UOSInt i;
+	i = this->timers.GetCount();	
+	while (i-- > 0)
 	{
-		UOSInt i;
-		i = this->timers->GetCount();	
-		while (i-- > 0)
+		if (tmr == this->timers.GetItem(i))
 		{
-			if (tmr == this->timers->GetItem(i))
-			{
-				this->timers->RemoveAt(i);
-				DEL_CLASS(tmr);
-				break;
-			}
+			this->timers.RemoveAt(i);
+			DEL_CLASS(tmr);
+			break;
 		}
 	}
 }
@@ -510,10 +477,10 @@ void UI::GUIForm::OnSizeChanged(Bool updateScn)
 		}
 		this->UpdateChildrenSize(false);
 		this->selfResize = true;
-		UOSInt i = this->resizeHandlers->GetCount();
+		UOSInt i = this->resizeHandlers.GetCount();
 		while (i-- > 0)
 		{
-			this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+			this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 		}
 		this->selfResize = false;
 	}
@@ -527,10 +494,10 @@ Bool UI::GUIForm::OnPaint()
 void UI::GUIForm::EventMenuClicked(UInt16 cmdId)
 {
 	UOSInt i;
-	i = this->menuClickedHandlers->GetCount();
+	i = this->menuClickedHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->menuClickedHandlers->GetItem(i)(this->menuClickedHandlersObj->GetItem(i), cmdId);
+		this->menuClickedHandlers.GetItem(i)(this->menuClickedHandlersObj.GetItem(i), cmdId);
 	}
 }
 
@@ -542,14 +509,14 @@ void UI::GUIForm::ShowMouseCursor(Bool toShow)
 
 void UI::GUIForm::HandleFormClosed(FormClosedEvent handler, void *userObj)
 {
-	this->closeHandlers->Add(handler);
-	this->closeHandlersObj->Add(userObj);
+	this->closeHandlers.Add(handler);
+	this->closeHandlersObj.Add(userObj);
 }
 
 void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 {
-	this->dropFileHandlers->Add(handler);
-	this->dropFileHandlersObj->Add(userObj);
+	this->dropFileHandlers.Add(handler);
+	this->dropFileHandlersObj.Add(userObj);
 	static GtkTargetEntry target_table[] = {
 	{ (gchar*)"text/uri-list", 0, 0 }
 	};
@@ -560,20 +527,20 @@ void UI::GUIForm::HandleDropFiles(FileEvent handler, void *userObj)
 
 void UI::GUIForm::HandleMenuClicked(MenuEvent handler, void *userObj)
 {
-	this->menuClickedHandlers->Add(handler);
-	this->menuClickedHandlersObj->Add(userObj);
+	this->menuClickedHandlers.Add(handler);
+	this->menuClickedHandlersObj.Add(userObj);
 }
 
 void UI::GUIForm::HandleKeyDown(KeyEvent handler, void *userObj)
 {
-	this->keyDownHandlers->Add(handler);
-	this->keyDownHandlersObj->Add(userObj);
+	this->keyDownHandlers.Add(handler);
+	this->keyDownHandlersObj.Add(userObj);
 }
 
 void UI::GUIForm::HandleKeyUp(KeyEvent handler, void *userObj)
 {
-	this->keyUpHandlers->Add(handler);
-	this->keyUpHandlersObj->Add(userObj);
+	this->keyUpHandlers.Add(handler);
+	this->keyUpHandlersObj.Add(userObj);
 }
 
 void UI::GUIForm::SetClosingHandler(FormClosingEvent handler, void *userObj)
@@ -611,13 +578,13 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 void UI::GUIForm::EventClosed()
 {
 	UOSInt i;
-	i = this->closeHandlers->GetCount();
+	i = this->closeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->closeHandlers->GetItem(i)(this->closeHandlersObj->GetItem(i), this);
+		this->closeHandlers.GetItem(i)(this->closeHandlersObj.GetItem(i), this);
 	}
-	this->closeHandlers->Clear();
-	this->closeHandlersObj->Clear();
+	this->closeHandlers.Clear();
+	this->closeHandlersObj.Clear();
 	if (this->exitOnClose)
 	{
 		gtk_main_quit();
@@ -648,10 +615,10 @@ void UI::GUIForm::OnDisplaySizeChange(UOSInt dispWidth, UOSInt dispHeight)
 void UI::GUIForm::OnFileDrop(Text::String **files, UOSInt nFiles)
 {
 	UOSInt i;
-	i = this->dropFileHandlers->GetCount();
+	i = this->dropFileHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->dropFileHandlers->GetItem(i)(this->dropFileHandlersObj->GetItem(i), files, nFiles);
+		this->dropFileHandlers.GetItem(i)(this->dropFileHandlersObj.GetItem(i), files, nFiles);
 	}
 }
 

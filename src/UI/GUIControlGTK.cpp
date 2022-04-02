@@ -37,8 +37,6 @@ void GUIControl_SizeChanged(GtkWidget *wnd, GdkEvent *event, gpointer data)
 
 UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 {
-	NEW_CLASS(this->resizeHandlers, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->resizeHandlersObjs, Data::ArrayList<void*>());
 	this->ui = ui;
 	this->parent = parent;
 	this->selfResize = false;
@@ -67,8 +65,6 @@ UI::GUIControl::GUIControl(UI::GUICore *ui, GUIClientControl *parent)
 
 UI::GUIControl::~GUIControl()
 {
-	DEL_CLASS(this->resizeHandlers);
-	DEL_CLASS(this->resizeHandlersObjs);
 	if (this->dropHdlr)
 	{
 		UI::GUIDragDropGTK *dragDrop = (UI::GUIDragDropGTK*)this->dropHdlr;
@@ -449,10 +445,10 @@ void UI::GUIControl::OnSizeChanged(Bool updateScn)
 		this->lyPos2 = this->lyPos + outH * this->ddpi / this->hdpi;
 	}
 
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 
@@ -473,8 +469,8 @@ void UI::GUIControl::OnMonitorChanged()
 
 void UI::GUIControl::HandleSizeChanged(UIEvent handler, void *userObj)
 {
-	this->resizeHandlers->Add(handler);
-	this->resizeHandlersObjs->Add(userObj);
+	this->resizeHandlers.Add(handler);
+	this->resizeHandlersObjs.Add(userObj);
 }
 
 void UI::GUIControl::UpdateFont()

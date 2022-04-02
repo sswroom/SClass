@@ -2625,9 +2625,9 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 						if (icc)
 						{
 							icc->GetColorPrimaries(&info.color->primaries);
-							icc->GetRedTransferParam(info.color->rtransfer);
-							icc->GetGreenTransferParam(info.color->gtransfer);
-							icc->GetBlueTransferParam(info.color->btransfer);
+							icc->GetRedTransferParam(&info.color->rtransfer);
+							icc->GetGreenTransferParam(&info.color->gtransfer);
+							icc->GetBlueTransferParam(&info.color->btransfer);
 							info.color->SetRAWICC(iccBuff);
 							DEL_CLASS(icc);
 
@@ -2657,9 +2657,9 @@ IO::ParsedObject *Parser::FileParser::PNGParser::ParseFile(IO::IStreamData *fd, 
 					if (g != 0)
 					{
 						g = 100000 / g;
-						info.color->rtransfer->Set(Media::CS::TRANT_GAMMA, g);
-						info.color->gtransfer->Set(Media::CS::TRANT_GAMMA, g);
-						info.color->btransfer->Set(Media::CS::TRANT_GAMMA, g);
+						info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, g);
+						info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, g);
+						info.color->btransfer.Set(Media::CS::TRANT_GAMMA, g);
 					}
 				}
 				MemFree(chunkData);

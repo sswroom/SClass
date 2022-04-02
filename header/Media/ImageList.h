@@ -42,17 +42,17 @@ namespace Media
 			TT_FLIR
 		} ThermoType;
 	public:
-		Data::ArrayList<Media::Image*> *imgList;
-		Data::ArrayList<ImageType> *imgTypeList;
-		Data::ArrayListUInt32 *imgTimes;
+		Data::ArrayList<Media::Image*> imgList;
+		Data::ArrayList<ImageType> imgTypeList;
+		Data::ArrayListUInt32 imgTimes;
 		const UTF8Char *author;
 		const UTF8Char *imgName;
-		Data::ArrayList<ValueType> *valTypeI32;
-		Data::ArrayList<Int32> *valI32;
-		Data::ArrayList<ValueType> *valTypeI64;
-		Data::ArrayList<Int64> *valI64;
-		Data::ArrayList<ValueType> *valTypeStr;
-		Data::ArrayList<Text::String *> *valStr;
+		Data::ArrayList<ValueType> valTypeI32;
+		Data::ArrayList<Int32> valI32;
+		Data::ArrayList<ValueType> valTypeI64;
+		Data::ArrayList<Int64> valI64;
+		Data::ArrayList<ValueType> valTypeStr;
+		Data::ArrayList<Text::String *> valStr;
 
 		UOSInt thermoWidth;
 		UOSInt thermoHeight;

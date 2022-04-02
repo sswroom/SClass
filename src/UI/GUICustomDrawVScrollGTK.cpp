@@ -52,6 +52,7 @@ gboolean GUICustomDrawVScroll_OnDraw(GtkWidget *widget, cairo_t *cr, gpointer da
 		b = dimg->NewBrushARGB(0xffcccccc);
 		UOSInt range = clsData->max - clsData->min;
 		dimg->DrawRect(0, UOSInt2Double((UOSInt)height * (clsData->currPos - clsData->min) / range), OSInt2Double(clsData->scrollSize), UOSInt2Double((UOSInt)height * clsData->pageSize / range), 0, b);
+		dimg->DelBrush(b);
 		me->deng->DeleteImage(dimg);
 	}
 	else
@@ -298,10 +299,10 @@ OSInt UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 

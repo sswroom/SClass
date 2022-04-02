@@ -477,9 +477,9 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				outImg->info->color->primaries.by = xyYVec.val[1];
 				outImg->info->color->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 
-				outImg->info->color->rtransfer->Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
-				outImg->info->color->gtransfer->Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
-				outImg->info->color->btransfer->Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
+				outImg->info->color->rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
+				outImg->info->color->gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
+				outImg->info->color->btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
 			}
 		}
 	}

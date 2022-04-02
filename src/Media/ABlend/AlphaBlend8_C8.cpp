@@ -126,7 +126,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 	}
 
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(this->sProfile->rtransfer));
+	lutGen.GenLRGB_BGRA8(this->rgbTable, this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->sProfile->rtransfer));
 	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], this->sProfile, &this->oProfile->primaries, 14);
 	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], this->dProfile, &this->oProfile->primaries, 14);
 }

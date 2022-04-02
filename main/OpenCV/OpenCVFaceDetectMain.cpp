@@ -113,7 +113,7 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 		j = 512;
 		while (i < j)
 		{
-			formats[i].info.Init();
+			formats[i].info.InitFrameInfo();
 			formats[i].info.Clear();
 			formats[i].frameRateDenorm = 0;
 			formats[i].frameRateNorm = 0;
@@ -154,7 +154,7 @@ Media::IVideoCapture *OpenCapture(UOSInt defIndex)
 		j = 512;
 		while (i < j)
 		{
-			formats[i].info.Deinit();
+			formats[i].info.DeinitFrameInfo();
 			i++;
 		}
 		MemFree(formats);

@@ -215,10 +215,10 @@ OSInt UI::GUICustomDrawVScroll::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUICustomDrawVScroll::OnSizeChanged(Bool updateScn)
 {
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 

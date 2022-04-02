@@ -148,10 +148,10 @@ void UI::GUIVideoBoxDD::OnSizeChanged(Bool updateScn)
 	this->curr10Bit = curr10Bit;
 	this->toClear = true;
 
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 

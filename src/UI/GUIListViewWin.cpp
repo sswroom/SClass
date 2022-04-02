@@ -578,10 +578,10 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 	{
 		SendMessage((HWND)this->hwnd, LVM_ARRANGE, LVA_DEFAULT, 0);
 	}
-	UOSInt i = this->resizeHandlers->GetCount();
+	UOSInt i = this->resizeHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->resizeHandlers->GetItem(i)(this->resizeHandlersObjs->GetItem(i));
+		this->resizeHandlers.GetItem(i)(this->resizeHandlersObjs.GetItem(i));
 	}
 }
 

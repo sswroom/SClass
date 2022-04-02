@@ -160,7 +160,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				j = 128;
 				while (i < j)
 				{
-					formats[i].info.Init();
+					formats[i].info.InitFrameInfo();
 					formats[i].info.Clear();
 					formats[i].frameRateDenorm = 0;
 					formats[i].frameRateNorm = 0;
@@ -252,7 +252,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				j = 128;
 				while (i < j)
 				{
-					formats[i].info.Deinit();
+					formats[i].info.DeinitFrameInfo();
 					i++;
 				}
 				MemFree(formats);

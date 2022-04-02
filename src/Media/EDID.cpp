@@ -149,15 +149,15 @@ Bool Media::EDID::SetColorProfile(EDIDInfo *info, Media::ColorProfile *cp)
 		cp->primaries.by = info->by;
 		if (info->gamma >= 3.5)
 		{
-			cp->rtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
-			cp->gtransfer->Set(Media::CS::TRANT_sRGB, 2.2);
-			cp->btransfer->Set(Media::CS::TRANT_sRGB, 2.2);
+			cp->rtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+			cp->gtransfer.Set(Media::CS::TRANT_sRGB, 2.2);
+			cp->btransfer.Set(Media::CS::TRANT_sRGB, 2.2);
 		}
 		else
 		{
-			cp->rtransfer->Set(Media::CS::TRANT_GAMMA, info->gamma);
-			cp->gtransfer->Set(Media::CS::TRANT_GAMMA, info->gamma);
-			cp->btransfer->Set(Media::CS::TRANT_GAMMA, info->gamma);
+			cp->rtransfer.Set(Media::CS::TRANT_GAMMA, info->gamma);
+			cp->gtransfer.Set(Media::CS::TRANT_GAMMA, info->gamma);
+			cp->btransfer.Set(Media::CS::TRANT_GAMMA, info->gamma);
 		}
 		return true;
 	}
