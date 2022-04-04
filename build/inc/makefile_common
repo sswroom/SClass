@@ -178,6 +178,9 @@ ByteTool.o: $(CLASSDIR)src/Data/ByteTool.cpp
 DateTime.o: $(CLASSDIR)src/Data/DateTime.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 
+DateTimeUtil.o: $(CLASSDIR)src/Data/DateTimeUtil.cpp
+	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
+
 IChart.o: $(CLASSDIR)src/Data/IChart.cpp
 	$(CC) $(CFLAGS) $(LDFLAGS) -c -o $@ $< $(CSUFFIX)
 

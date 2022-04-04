@@ -75,6 +75,7 @@ extern "C" void MemClear(void *buff, UOSInt count);
 #define MemCopyNO(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 #define MemClear(buff, count) memset(buff, 0, count);
 #endif
+#define MemCopyNOShort(destPtr, srcPtr, len) memcpy(destPtr, srcPtr, len)
 
 #if defined(HAS_ASM32)
 extern "C"
@@ -406,8 +407,14 @@ extern MemCopyFunc MemCopyANC;
 extern MemCopyFunc MemCopyNAC;
 extern MemCopyFunc MemCopyNANC;
 
-#undef MemCopyNO
-#define MemCopyNO(destPtr, srcPtr, len) MyMemCopy(destPtr, srcPtr, len)
+#if !defined(_MSC_VER) && !defined(__MINGW32__)
+extern "C"
+{
+	void MemCopyNAC_SSE(void *destPtr, const void *srcPtr, UOSInt leng);
+}
+#undef MemCopyNOShort
+#define MemCopyNOShort(destPtr, srcPtr, len) MemCopyNAC_SSE(destPtr, srcPtr, len)
+#endif
 #else
 #define MemClearANC(buff, count) MemClear(buff, count);
 #define MemClearAC(buff, count) MemClear(buff, count);

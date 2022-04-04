@@ -68,7 +68,7 @@ namespace Text
 		StringBuilderUTF8 *AppendNE(const UTF8Char *s, UOSInt charCnt)
 		{
 			this->AllocLeng(charCnt);
-			MemCopyNO(&this->v[this->leng], s, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s, charCnt);
 			this->leng += charCnt;
 			return this;
 		}
@@ -78,9 +78,9 @@ namespace Text
 			UOSInt tlen = len1 + len2;
 			this->AllocLeng(tlen);
 			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNO(dptr, str1, len1);
+			MemCopyNOShort(dptr, str1, len1);
 			dptr += len1;
-			MemCopyNO(dptr, str2, len2);
+			MemCopyNOShort(dptr, str2, len2);
 			dptr += len2;
 			this->leng += tlen;
 			return this;
@@ -90,7 +90,7 @@ namespace Text
 		{
 			UOSInt charCnt = s->leng;
 			this->AllocLeng(charCnt);
-			MemCopyNO(&this->v[this->leng], s->v, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s->v, charCnt);
 			this->leng += charCnt;
 			return this;
 		}
@@ -98,7 +98,7 @@ namespace Text
 		StringBuilderUTF8 *AppendC(const UTF8Char *s, UOSInt charCnt)
 		{
 			this->AllocLeng(charCnt);
-			MemCopyNO(&this->v[this->leng], s, charCnt);
+			MemCopyNOShort(&this->v[this->leng], s, charCnt);
 			this->leng += charCnt;
 			this->v[this->leng] = 0;
 			return this;
@@ -109,9 +109,9 @@ namespace Text
 			UOSInt tlen = len1 + len2;
 			this->AllocLeng(tlen);
 			UTF8Char *dptr = &this->v[this->leng];
-			MemCopyNO(dptr, str1, len1);
+			MemCopyNOShort(dptr, str1, len1);
 			dptr += len1;
-			MemCopyNO(dptr, str2, len2);
+			MemCopyNOShort(dptr, str2, len2);
 			dptr += len2;
 			*dptr = 0;
 			this->leng += tlen;

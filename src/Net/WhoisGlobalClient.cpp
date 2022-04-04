@@ -294,6 +294,11 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 	case 143:
 	case 144:
 	case 146:
+		if (ipCmp >= 0x92FF0000 && ipCmp <= 0x92FFFFFF) //146.255.0.0 - 146.255.255.255
+		{
+			whoisHost = CSTR("whois.ripe.net");
+			break;
+		}
 	case 147:
 		if (ipCmp >= 0x934B0000 && ipCmp <= 0x934BFFFF) //147.75.0.0 - 147.75.255.255
 		{
