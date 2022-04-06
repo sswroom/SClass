@@ -600,12 +600,12 @@ void Net::SNS::SNSManager::Use(Sync::MutexUsage *mutUsage)
 	mutUsage->ReplaceMutex(this->mut);
 }
 
-UOSInt Net::SNS::SNSManager::GetCount()
+UOSInt Net::SNS::SNSManager::GetCount() const
 {
 	return this->channelList->GetCount();
 }
 
-Net::SNS::SNSControl *Net::SNS::SNSManager::GetItem(UOSInt index)
+Net::SNS::SNSControl *Net::SNS::SNSManager::GetItem(UOSInt index) const
 {
 	return this->channelList->GetItem(index)->ctrl;
 }

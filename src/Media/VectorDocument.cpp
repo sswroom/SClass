@@ -158,12 +158,12 @@ const UTF8Char *Media::VectorDocument::GetProducer()
 	return this->producer;
 }
 
-UOSInt Media::VectorDocument::GetCount()
+UOSInt Media::VectorDocument::GetCount() const
 {
 	return this->items->GetCount();
 }
 
-Media::VectorGraph *Media::VectorDocument::GetItem(UOSInt Index)
+Media::VectorGraph *Media::VectorDocument::GetItem(UOSInt Index) const
 {
 	return this->items->GetItem(Index);
 }

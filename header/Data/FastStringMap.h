@@ -30,8 +30,8 @@ namespace Data
 		FastStringMap(FastStringMap<T> *map);
 		virtual ~FastStringMap();
 
-		virtual UOSInt GetCount();
-		virtual T GetItem(UOSInt index);
+		virtual UOSInt GetCount() const;
+		virtual T GetItem(UOSInt index) const;
 		Text::String *GetKey(UOSInt index);
 		virtual OSInt IndexOf(UInt32 hash, const UTF8Char *s, UOSInt len);
 		OSInt IndexOf(Text::String *s);
@@ -120,12 +120,12 @@ namespace Data
 		MemFree(this->items);
 	}
 
-	template <class T> UOSInt FastStringMap<T>::GetCount()
+	template <class T> UOSInt FastStringMap<T>::GetCount() const
 	{
 		return this->cnt;
 	}
 
-	template <class T> T FastStringMap<T>::GetItem(UOSInt index)
+	template <class T> T FastStringMap<T>::GetItem(UOSInt index) const
 	{
 		if (index >= this->cnt)
 		{

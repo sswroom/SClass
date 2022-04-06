@@ -58,8 +58,8 @@ namespace Text
 			Bool GetVisitedLinkColor(UInt32 *visitedLinkColor);
 
 			virtual UOSInt Add(DocSection *section);
-			virtual UOSInt GetCount();
-			virtual DocSection *GetItem(UOSInt Index);
+			virtual UOSInt GetCount() const;
+			virtual DocSection *GetItem(UOSInt Index) const;
 
 			virtual Bool BeginPrint(Media::IPrintDocument *doc);
 			virtual Bool PrintPage(Media::DrawImage *printPage); 

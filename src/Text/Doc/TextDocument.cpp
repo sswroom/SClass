@@ -150,12 +150,12 @@ UOSInt Text::Doc::TextDocument::Add(Text::Doc::DocSection *val)
 	return this->items->Add(val);
 }
 
-UOSInt Text::Doc::TextDocument::GetCount()
+UOSInt Text::Doc::TextDocument::GetCount() const
 {
 	return this->items->GetCount();
 }
 
-Text::Doc::DocSection *Text::Doc::TextDocument::GetItem(UOSInt index)
+Text::Doc::DocSection *Text::Doc::TextDocument::GetItem(UOSInt index) const
 {
 	return this->items->GetItem(index);
 }

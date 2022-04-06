@@ -29,20 +29,21 @@ namespace IO
 			Text::String *value;
 		} ConfigItem;
 
-		typedef struct
+		class ProgramItem
 		{
+		public:
 			Text::String *name;
 			Text::String *srcFile;
 			Text::String *compileCfg;
-			Data::ArrayList<Text::String *> *subItems;
-			Data::ArrayList<Text::String *> *libs;
-		} ProgramItem;
+			Data::ArrayList<Text::String *> subItems;
+			Data::ArrayList<Text::String *> libs;
+		};
 
 	private:
-		Data::StringMap<ConfigItem*> *cfgMap;
-		Data::FastStringMap<ProgramItem*> *progMap;
-		Data::FastStringMap<Int64> *fileTimeMap;
-		Sync::Mutex *errorMsgMut;
+		Data::StringMap<ConfigItem*> cfgMap;
+		Data::FastStringMap<ProgramItem*> progMap;
+		Data::FastStringMap<Int64> fileTimeMap;
+		Sync::Mutex errorMsgMut;
 		Text::String *errorMsg;
 		Text::String *basePath;
 		IO::Writer *messageWriter;

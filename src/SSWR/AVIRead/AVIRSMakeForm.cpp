@@ -76,10 +76,10 @@ void __stdcall SSWR::AVIRead::AVIRSMakeForm::OnProgGroupSelChg(void *userObj)
 		if (prog)
 		{
 			UOSInt i = 0;
-			UOSInt j = prog->subItems->GetCount();
+			UOSInt j = prog->subItems.GetCount();
 			while (i < j)
 			{
-				me->lbProgGroupItems->AddItem(prog->subItems->GetItem(i), 0);
+				me->lbProgGroupItems->AddItem(prog->subItems.GetItem(i), 0);
 				i++;
 			}
 		}

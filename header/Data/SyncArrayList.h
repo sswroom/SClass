@@ -27,10 +27,10 @@ namespace Data
 		T RemoveLast();
 		SyncArrayList *Clone();
 
-		virtual UOSInt GetCount();
+		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity();
 
-		virtual T GetItem(UOSInt index);
+		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
 		Data::ArrayList<T> *GetArrayList(Sync::MutexUsage *mutUsage);
 	};
@@ -116,7 +116,7 @@ namespace Data
 		return newArr;
 	}
 
-	template <class T> UOSInt Data::SyncArrayList<T>::GetCount()
+	template <class T> UOSInt Data::SyncArrayList<T>::GetCount() const
 	{
 		return this->arr->GetCount();
 	}
@@ -126,7 +126,7 @@ namespace Data
 		return this->arr->GetCapacity();
 	}
 
-	template <class T> T Data::SyncArrayList<T>::GetItem(UOSInt index)
+	template <class T> T Data::SyncArrayList<T>::GetItem(UOSInt index) const
 	{
 		Sync::MutexUsage mutUsage(this->mut);
 		return this->arr->GetItem(index);

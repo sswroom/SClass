@@ -44,7 +44,7 @@ void IO::SMake::AppendCfgItem(Text::StringBuilderUTF8 *sb, Text::CString val)
 		{
 			sptr = Text::StrConcatC(sbuff, &val.v[i + 2], (UOSInt)j - 2);
 			i += j + 1;
-			cfg = cfgMap->Get(CSTRP(sbuff, sptr));
+			cfg = this->cfgMap.Get(CSTRP(sbuff, sptr));
 			if (cfg)
 			{
 				sb->Append(cfg->value);
@@ -183,7 +183,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		{
 			if (prog)
 			{
-				prog->subItems->Add(Text::String::New(sb.SubstrTrim(1).ToCString()));
+				prog->subItems.Add(Text::String::New(sb.SubstrTrim(1).ToCString()));
 			}
 		}
 		else if (sb.ToString()[0] == '!')
@@ -216,7 +216,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 						}
 						else
 						{
-							cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+							cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 							if (cfg)
 							{
 								val1 = cfg->value->ToInt32();
@@ -228,7 +228,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 						}
 						else
 						{
-							cfg = cfgMap->Get({&sptr1[i + 2], (UOSInt)(sptr1End - &sptr1[i + 2])});
+							cfg = this->cfgMap.Get({&sptr1[i + 2], (UOSInt)(sptr1End - &sptr1[i + 2])});
 							if (cfg)
 							{
 								val2 = cfg->value->ToInt32();
@@ -266,7 +266,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			}
 			if (valid && prog)
 			{
-				prog->libs->Add(Text::String::NewP(sptr1, sptr1End));
+				prog->libs.Add(Text::String::NewP(sptr1, sptr1End));
 			}
 		}
 		else if (sb.ToString()[0] == '$')
@@ -298,7 +298,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			{
 				const UTF8Char *ccfg = sptr1;
 				const UTF8Char *ccfgEnd = sptr1End;
-				IO::SMake::ConfigItem *cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+				IO::SMake::ConfigItem *cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 				if (cfg)
 				{
 					ccfg = cfg->value->v;
@@ -321,7 +321,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 		}
 		else if (sb.StartsWith(UTF8STRC("export ")))
 		{
-			cfg = cfgMap->Get({sb.ToString() + 7, sb.GetLength() - 7});
+			cfg = this->cfgMap.Get({sb.ToString() + 7, sb.GetLength() - 7});
 			if (cfg)
 			{
 				Manage::EnvironmentVar env;
@@ -335,7 +335,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			sptr1[i] = 0;
 			sptr1End = Text::StrTrimC(sptr1, i);
 			sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-			cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+			cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 			if (cfg)
 			{
 				if (cfg->value->leng > 0)
@@ -362,7 +362,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				sb2.ClearStr();
 				AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
 				cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-				cfgMap->Put(cfg->name, cfg);
+				this->cfgMap.Put(cfg->name, cfg);
 			}
 		}
 		else if ((i = sb.IndexOf(UTF8STRC(":"))) != INVALID_INDEX)
@@ -374,7 +374,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				sptr1[i] = 0;
 				sptr1End = Text::StrTrimC(sptr1, i);
 				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 2);
-				cfg = cfgMap->Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+				cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
 				if (cfg)
 				{
 					cfg->value->Release();
@@ -389,7 +389,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					sb2.ClearStr();
 					AppendCfgItem(&sb2, CSTRP(sptr2, sptr2End));
 					cfg->value = Text::String::New(sb2.ToString(), sb2.GetLength());
-					cfgMap->Put(cfg->name, cfg);
+					this->cfgMap.Put(cfg->name, cfg);
 				}
 			}
 			else
@@ -401,13 +401,13 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 				sptr2End = Text::StrTrimC(sptr2, sb.GetLength() - i - 1);
 				if (sptr1[0] == '+')
 				{
-					prog = progMap->GetC({sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1)});
+					prog = this->progMap.GetC({sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1)});
 					if (prog)
 					{
 					}
 					else
 					{
-						prog = MemAlloc(IO::SMake::ProgramItem, 1);
+						NEW_CLASS(prog, IO::SMake::ProgramItem());
 						prog->name = Text::String::New(sptr1 + 1, (UOSInt)(sptr1End - sptr1 - 1));
 						if (sptr2[0])
 						{
@@ -417,15 +417,13 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 						{
 							prog->srcFile = 0;
 						}
-						NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
-						NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
 						prog->compileCfg = 0;
-						progMap->Put(prog->name, prog);
+						this->progMap.Put(prog->name, prog);
 					}
 				}
 				else
 				{
-					prog = progMap->GetC({sptr1, (UOSInt)(sptr1End - sptr1)});
+					prog = this->progMap.GetC({sptr1, (UOSInt)(sptr1End - sptr1)});
 					if (prog)
 					{
 						ret = false;
@@ -437,7 +435,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 					}
 					else
 					{
-						prog = MemAlloc(IO::SMake::ProgramItem, 1);
+						NEW_CLASS(prog, IO::SMake::ProgramItem());
 						prog->name = Text::String::New(sptr1, (UOSInt)(sptr1End - sptr1));
 						if (sptr2[0])
 						{
@@ -447,10 +445,8 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 						{
 							prog->srcFile = 0;
 						}
-						NEW_CLASS(prog->subItems, Data::ArrayList<Text::String*>());
-						NEW_CLASS(prog->libs, Data::ArrayList<Text::String*>());
 						prog->compileCfg = 0;
-						progMap->Put(prog->name, prog);
+						this->progMap.Put(prog->name, prog);
 					}
 				}
 			}
@@ -554,7 +550,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 					sptr1End = &sptr1[i];
 					if (procList->IndexOfC(Text::CString(sptr1, i)) >= 0)
 					{
-						thisTime = fileTimeMap->GetC({sptr1, i});
+						thisTime = this->fileTimeMap.GetC({sptr1, i});
 						if (thisTime && thisTime > lastTime)
 						{
 							lastTime = thisTime;
@@ -566,7 +562,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 					}
 					else
 					{
-						prog = progMap->GetC({sptr1, i});
+						prog = this->progMap.GetC({sptr1, i});
 						if (prog == 0)
 						{
 							Text::StringBuilderUTF8 sb2;
@@ -580,10 +576,10 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 						{
 							procList->Put(prog->name, 1);
 
-							UOSInt i = prog->subItems->GetCount();
+							UOSInt i = prog->subItems.GetCount();
 							while (i-- > 0)
 							{
-								Text::String *subItem = prog->subItems->GetItem(i);
+								Text::String *subItem = prog->subItems.GetItem(i);
 								if (this->debugObj && this->messageWriter && subItem->Equals(this->debugObj))
 								{
 									Text::StringBuilderUTF8 sb2;
@@ -594,10 +590,10 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 								}
 								objList->Put(subItem, 1);
 							}
-							i = prog->libs->GetCount();
+							i = prog->libs.GetCount();
 							while (i-- > 0)
 							{
-								libList->Put(prog->libs->GetItem(i), 1);
+								libList->Put(prog->libs.GetItem(i), 1);
 							}
 							if (this->debugObj && this->messageWriter && prog->name->Equals(this->debugObj))
 							{
@@ -621,7 +617,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 								{
 									return false;
 								}
-								fileTimeMap->Put(prog->srcFile, thisTime);
+								this->fileTimeMap.Put(prog->srcFile, thisTime);
 							}
 						}
 					}
@@ -636,7 +632,7 @@ Bool IO::SMake::ParseSource(Data::FastStringMap<Int32> *objList, Data::FastStrin
 
 Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Text::String *headerFile, Text::CString sourceFile)
 {
-	IO::SMake::ConfigItem *cfg = this->cfgMap->Get(CSTR("INCLUDEPATH"));
+	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("INCLUDEPATH"));
 	if (cfg == 0)
 	{
 		this->SetErrorMsg(CSTR("INCLUDEPATH config not found"));
@@ -669,7 +665,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 			}
 			if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr)))
 			{
-				fileTimeMap->Put(headerFile, *latestTime);
+				this->fileTimeMap.Put(headerFile, *latestTime);
 				return true;
 			}
 			else
@@ -702,7 +698,7 @@ Bool IO::SMake::ParseHeader(Data::FastStringMap<Int32> *objList, Data::FastStrin
 		}
 		if (this->ParseSource(objList, libList, procList, headerList, latestTime, CSTRP(sbuff, sptr)))
 		{
-			fileTimeMap->Put(headerFile, *latestTime);
+			this->fileTimeMap.Put(headerFile, *latestTime);
 			return true;
 		}
 		else
@@ -729,10 +725,10 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 	Int64 thisTime;
 	*latestTime = 0;
 	*progGroup = true;
-	i = prog->subItems->GetCount();
+	i = prog->subItems.GetCount();
 	while (i-- > 0)
 	{
-		subItem = prog->subItems->GetItem(i);
+		subItem = prog->subItems.GetItem(i);
 		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			*progGroup = false;
@@ -753,10 +749,10 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		return true;
 	}
 
-	IO::SMake::ConfigItem *cfg = cfgMap->Get(CSTR("DEPS"));
+	IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTR("DEPS"));
 	if (cfg)
 	{
-		subProg = progMap->Get(cfg->value);
+		subProg = this->progMap.Get(cfg->value);
 		if (subProg == 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -771,15 +767,15 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		{
 			return false;
 		}
-		fileTimeMap->Put(subProg->srcFile, thisTime);
+		this->fileTimeMap.Put(subProg->srcFile, thisTime);
 		*latestTime = thisTime;
 	}
 
-	i = prog->subItems->GetCount();
+	i = prog->subItems.GetCount();
 	while (i-- > 0)
 	{
-		subItem = prog->subItems->GetItem(i);
-		subProg = progMap->Get(subItem);
+		subItem = prog->subItems.GetItem(i);
+		subProg = this->progMap.Get(subItem);
 		if (subProg == 0)
 		{
 			Text::StringBuilderUTF8 sb;
@@ -793,7 +789,7 @@ Bool IO::SMake::ParseProgInternal(Data::FastStringMap<Int32> *objList, Data::Fas
 		{
 			return false;
 		}
-		fileTimeMap->Put(subProg->srcFile, thisTime);
+		this->fileTimeMap.Put(subProg->srcFile, thisTime);
 		if (thisTime > *latestTime)
 		{
 			*latestTime = thisTime;
@@ -844,7 +840,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 	if (!enableTest && prog->name->Equals(UTF8STRC("test")))
 	{
-		IO::SMake::ConfigItem *testCfg = cfgMap->Get(CSTR("ENABLE_TEST"));
+		IO::SMake::ConfigItem *testCfg = this->cfgMap.Get(CSTR("ENABLE_TEST"));
 		if (testCfg && testCfg->value->Equals(UTF8STRC("1")))
 		{
 			enableTest = true;
@@ -861,7 +857,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		j = objList.GetCount();
 		while (i < j)
 		{
-			subProg = progMap->Get(objList.GetKey(i));
+			subProg = this->progMap.Get(objList.GetKey(i));
 			if (subProg == 0)
 			{
 				Text::StringBuilderUTF8 sb;
@@ -882,12 +878,12 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 	Text::StringBuilderUTF8 sb;
 	Text::StringBuilderUTF8 sb2;
-	IO::SMake::ConfigItem *cppCfg = cfgMap->Get(CSTR("CXX"));
-	IO::SMake::ConfigItem *ccCfg = cfgMap->Get(CSTR("CC"));
-	IO::SMake::ConfigItem *asmCfg = cfgMap->Get(CSTR("ASM"));
-	IO::SMake::ConfigItem *asmflagsCfg = cfgMap->Get(CSTR("ASMFLAGS"));
-	IO::SMake::ConfigItem *cflagsCfg = cfgMap->Get(CSTR("CFLAGS"));
-	IO::SMake::ConfigItem *libsCfg = cfgMap->Get(CSTR("LIBS"));
+	IO::SMake::ConfigItem *cppCfg = this->cfgMap.Get(CSTR("CXX"));
+	IO::SMake::ConfigItem *ccCfg = this->cfgMap.Get(CSTR("CC"));
+	IO::SMake::ConfigItem *asmCfg = this->cfgMap.Get(CSTR("ASM"));
+	IO::SMake::ConfigItem *asmflagsCfg = this->cfgMap.Get(CSTR("ASMFLAGS"));
+	IO::SMake::ConfigItem *cflagsCfg = this->cfgMap.Get(CSTR("CFLAGS"));
+	IO::SMake::ConfigItem *libsCfg = this->cfgMap.Get(CSTR("LIBS"));
 	Data::DateTime dt1;
 	Data::DateTime dt2;
 	Bool errorState = false;
@@ -912,7 +908,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 	j = objList.GetCount();
 	while (i < j)
 	{
-		subProg = progMap->Get(objList.GetKey(i));
+		subProg = this->progMap.Get(objList.GetKey(i));
 		if (subProg == 0)
 		{
 			sb.ClearStr();
@@ -932,10 +928,10 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 			return false;
 		}
 
-		k = subProg->libs->GetCount();
+		k = subProg->libs.GetCount();
 		while (k-- > 0)
 		{
-			libList.Put(subProg->libs->GetItem(k), 1);
+			libList.Put(subProg->libs.GetItem(k), 1);
 		}
 
 		Bool updateToDate = false;
@@ -960,7 +956,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 				return false;
 			}
 			lastTime = dt1.ToTicks();
-			thisTime = fileTimeMap->Get(subProg->srcFile);
+			thisTime = this->fileTimeMap.Get(subProg->srcFile);
 			if (thisTime && thisTime > lastTime)
 			{
 				lastTime = thisTime;
@@ -1132,7 +1128,7 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 		return false;
 	}
 
-	IO::SMake::ConfigItem *postfixItem = this->cfgMap->Get(CSTR("OUTPOSTFIX"));
+	IO::SMake::ConfigItem *postfixItem = this->cfgMap.Get(CSTR("OUTPOSTFIX"));
 	sb.ClearStr();
 	sb.Append(this->basePath);
 	sb.AppendC(UTF8STRC("bin"));
@@ -1227,18 +1223,14 @@ Bool IO::SMake::CompileProgInternal(IO::SMake::ProgramItem *prog, Bool asmListin
 
 void IO::SMake::SetErrorMsg(Text::CString msg)
 {
-	Sync::MutexUsage mutUsage(this->errorMsgMut);
+	Sync::MutexUsage mutUsage(&this->errorMsgMut);
 	SDEL_STRING(this->errorMsg);
 	this->errorMsg = Text::String::New(msg);
 }
 
 IO::SMake::SMake(Text::CString cfgFile, UOSInt threadCnt, IO::Writer *messageWriter) : IO::ParsedObject(cfgFile)
 {
-	NEW_CLASS(this->cfgMap, Data::StringMap<IO::SMake::ConfigItem*>());
-	NEW_CLASS(this->progMap, Data::FastStringMap<IO::SMake::ProgramItem*>());
-	NEW_CLASS(this->fileTimeMap, Data::FastStringMap<Int64>());
 	NEW_CLASS(this->tasks, Sync::ParallelTask(threadCnt, false));
-	NEW_CLASS(this->errorMsgMut, Sync::Mutex());
 	this->errorMsg = 0;
 	UOSInt i = cfgFile.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	UTF8Char sbuff[512];
@@ -1267,7 +1259,7 @@ IO::SMake::~SMake()
 	UOSInt i;
 	UOSInt j;
 	IO::SMake::ConfigItem *cfg;
-	Data::ArrayList<IO::SMake::ConfigItem *> *cfgList = this->cfgMap->GetValues();
+	Data::ArrayList<IO::SMake::ConfigItem *> *cfgList = this->cfgMap.GetValues();
 	i = cfgList->GetCount();
 	while (i-- > 0)
 	{
@@ -1276,37 +1268,31 @@ IO::SMake::~SMake()
 		cfg->value->Release();
 		MemFree(cfg);
 	}
-	DEL_CLASS(cfgMap);
 
 //	Data::ArrayList<IO::SMake::ProgramItem*> *progList = progMap->GetValues();
 	IO::SMake::ProgramItem *prog;
 //	i = progList->GetCount();
-	i = progMap->GetCount();
+	i = this->progMap.GetCount();
 	while (i-- > 0)
 	{
 //		prog = progList->GetItem(i);
-		prog = progMap->GetItem(i);
+		prog = this->progMap.GetItem(i);
 		prog->name->Release();
 		SDEL_STRING(prog->srcFile);
 		SDEL_STRING(prog->compileCfg);
-		j = prog->subItems->GetCount();
+		j = prog->subItems.GetCount();
 		while (j-- > 0)
 		{
-			prog->subItems->GetItem(j)->Release();
+			prog->subItems.GetItem(j)->Release();
 		}
-		DEL_CLASS(prog->subItems);
-		j = prog->libs->GetCount();
+		j = prog->libs.GetCount();
 		while (j-- > 0)
 		{
-			prog->libs->GetItem(j)->Release();
+			prog->libs.GetItem(j)->Release();
 		}
-		DEL_CLASS(prog->libs);
-		MemFree(prog);
+		DEL_CLASS(prog);
 	}
-	DEL_CLASS(progMap);
-	DEL_CLASS(fileTimeMap);
 	DEL_CLASS(this->tasks);
-	DEL_CLASS(this->errorMsgMut);
 	SDEL_STRING(this->errorMsg);
 	SDEL_STRING(this->basePath);
 	SDEL_STRING(this->debugObj);
@@ -1325,7 +1311,7 @@ Bool IO::SMake::IsLoadFailed()
 Bool IO::SMake::GetErrorMsg(Text::StringBuilderUTF8 *sb)
 {
 	Bool ret;
-	Sync::MutexUsage mutUsage(this->errorMsgMut);
+	Sync::MutexUsage mutUsage(&this->errorMsgMut);
 	if (this->errorMsg)
 	{
 		sb->Append(this->errorMsg);
@@ -1368,17 +1354,17 @@ void IO::SMake::SetThreadCnt(UOSInt threadCnt)
 
 Data::ArrayList<IO::SMake::ConfigItem*> *IO::SMake::GetConfigList()
 {
-	return this->cfgMap->GetValues();
+	return this->cfgMap.GetValues();
 }
 
 Bool IO::SMake::HasProg(Text::CString progName)
 {
-	return this->progMap->GetC(progName) != 0;
+	return this->progMap.GetC(progName) != 0;
 }
 
 Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName);
+	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
 	if (prog == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1396,7 +1382,7 @@ Bool IO::SMake::CompileProg(Text::CString progName, Bool asmListing)
 
 Bool IO::SMake::ParseProg(Data::FastStringMap<Int32> *objList, Data::FastStringMap<Int32> *libList, Data::FastStringMap<Int32> *procList, Data::ArrayListString *headerList, Int64 *latestTime, Bool *progGroup, Text::String *progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName->ToCString());
+	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName->ToCString());
 	if (prog == 0)
 	{
 		Text::StringBuilderUTF8 sb;
@@ -1441,10 +1427,10 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 	Text::String *prog;
 	UOSInt ret = 0;
 	UOSInt i = 0;
-	UOSInt j = this->progMap->GetCount();
+	UOSInt j = this->progMap.GetCount();
 	while (i < j)
 	{
-		prog = this->progMap->GetKey(i);
+		prog = this->progMap.GetKey(i);
 		if (prog->EndsWith(UTF8STRC(".o")))
 		{
 
@@ -1465,17 +1451,17 @@ UOSInt IO::SMake::GetProgList(Data::ArrayList<Text::String*> *progList)
 
 Bool IO::SMake::IsProgGroup(Text::CString progName)
 {
-	IO::SMake::ProgramItem *prog = this->progMap->GetC(progName);
+	IO::SMake::ProgramItem *prog = this->progMap.GetC(progName);
 	if (prog == 0)
 	{
 		return false;
 	}
 
 	Text::String *subItem;
-	UOSInt i = prog->subItems->GetCount();
+	UOSInt i = prog->subItems.GetCount();
 	while (i-- > 0)
 	{
-		subItem = prog->subItems->GetItem(i);
+		subItem = prog->subItems.GetItem(i);
 		if (subItem->EndsWith(UTF8STRC(".o")))
 		{
 			return false;
@@ -1486,5 +1472,5 @@ Bool IO::SMake::IsProgGroup(Text::CString progName)
 
 const IO::SMake::ProgramItem *IO::SMake::GetProgItem(Text::CString progName)
 {
-	return this->progMap->GetC(progName);
+	return this->progMap.GetC(progName);
 }

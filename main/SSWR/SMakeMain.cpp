@@ -7,8 +7,7 @@
 
 Int32 MyMain(Core::IProgControl *progCtrl)
 {
-	IO::ConsoleWriter *console;
-	IO::SMake *smake;
+	IO::ConsoleWriter console;
 	Bool showHelp;
 	Bool asmListing = false;
 	UOSInt cmdCnt;
@@ -16,7 +15,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	UOSInt j;
 	UOSInt k;
 	UTF8Char **cmdLines = progCtrl->GetCommandLines(progCtrl, &cmdCnt);
-	NEW_CLASS(console, IO::ConsoleWriter());
 	showHelp = true;
 
 	Bool verbose = false;
@@ -33,17 +31,17 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		i++;
 	}
 
-	NEW_CLASS(smake, IO::SMake(CSTR("SMake.cfg"), 0, verbose?console:0));
-	if (smake->IsLoadFailed())
+	IO::SMake smake(CSTR("SMake.cfg"), 0, verbose?&console:0);
+	if (smake.IsLoadFailed())
 	{
-		console->WriteLineC(UTF8STRC("Error in loading SMake.cfg"));
+		console.WriteLineC(UTF8STRC("Error in loading SMake.cfg"));
 		Text::StringBuilderUTF8 sb;
-		smake->GetErrorMsg(&sb);
-		console->WriteLineC(sb.ToString(), sb.GetLength());
+		smake.GetErrorMsg(&sb);
+		console.WriteLineC(sb.ToString(), sb.GetLength());
 	}
 	else
 	{
-		smake->SetCommandWriter(console);
+		smake.SetCommandWriter(&console);
 		i = 1;
 		while (i < cmdCnt)
 		{
@@ -51,12 +49,12 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			{
 				if (cmdLines[i][1] == 'D')
 				{
-					smake->SetDebugObj({&cmdLines[i][2], Text::StrCharCnt(&cmdLines[i][2])});
+					smake.SetDebugObj({&cmdLines[i][2], Text::StrCharCnt(&cmdLines[i][2])});
 				}
 				else if (cmdLines[i][1] == 'V')
 				{
-					smake->SetMessageWriter(console);
-					Data::ArrayList<IO::SMake::ConfigItem*> *cfgList = smake->GetConfigList();
+					smake.SetMessageWriter(&console);
+					Data::ArrayList<IO::SMake::ConfigItem*> *cfgList = smake.GetConfigList();
 					IO::SMake::ConfigItem *cfg;
 					Text::StringBuilderUTF8 sb;
 					j = 0;
@@ -68,7 +66,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.Append(cfg->name);
 						sb.AppendC(UTF8STRC(" = "));
 						sb.Append(cfg->value);
-						console->WriteLineC(sb.ToString(), sb.GetLength());
+						console.WriteLineC(sb.ToString(), sb.GetLength());
 						j++;
 					}
 				}
@@ -78,11 +76,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				}
 				else if (cmdLines[i][1] == 'q')
 				{
-					smake->SetCommandWriter(0);
+					smake.SetCommandWriter(0);
 				}
 				else if (cmdLines[i][1] == 's')
 				{
-					smake->SetThreadCnt(1);
+					smake.SetThreadCnt(1);
 				}
 			}
 			i++;
@@ -97,20 +95,20 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (Text::StrEqualsC(cmdLines[i], cmdLineLen, UTF8STRC("clean")))
 				{
 					showHelp = false;
-					smake->CleanFiles();
+					smake.CleanFiles();
 				}
 				else
 				{
-					if (smake->HasProg({cmdLines[i], cmdLineLen}))
+					if (smake.HasProg({cmdLines[i], cmdLineLen}))
 					{
 						showHelp = false;
-						if (!smake->CompileProg({cmdLines[i], cmdLineLen}, asmListing))
+						if (!smake.CompileProg({cmdLines[i], cmdLineLen}, asmListing))
 						{
 							Text::StringBuilderUTF8 sb;
-							smake->GetErrorMsg(&sb);
-							console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
-							console->WriteLineC(sb.ToString(), sb.GetLength());
-							console->ResetTextColor();
+							smake.GetErrorMsg(&sb);
+							console.SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+							console.WriteLineC(sb.ToString(), sb.GetLength());
+							console.ResetTextColor();
 						}
 					}
 					else
@@ -119,9 +117,9 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 						sb.AppendC(UTF8STRC("Program "));
 						sb.AppendC(cmdLines[i], cmdLineLen);
 						sb.AppendC(UTF8STRC(" not found"));
-						console->SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
-						console->WriteLineC(sb.ToString(), sb.GetLength());
-						console->ResetTextColor();
+						console.SetTextColor(IO::ConsoleWriter::CC_RED, IO::ConsoleWriter::CC_BLACK);
+						console.WriteLineC(sb.ToString(), sb.GetLength());
+						console.ResetTextColor();
 					}
 				}
 			}
@@ -130,15 +128,13 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	}
 	if (showHelp)
 	{
-		console->WriteLineC(UTF8STRC("Usage: smake [Options] [File To Compile]"));
-		console->WriteLineC(UTF8STRC("Options:"));
-		console->WriteLineC(UTF8STRC("-D[object name]    Display object related file"));
-		console->WriteLineC(UTF8STRC("-V                 Verbose"));
-		console->WriteLineC(UTF8STRC("-a                 Assembly listing"));
-		console->WriteLineC(UTF8STRC("-q                 Quiet"));
-		console->WriteLineC(UTF8STRC("-s                 Single Thread"));
+		console.WriteLineC(UTF8STRC("Usage: smake [Options] [File To Compile]"));
+		console.WriteLineC(UTF8STRC("Options:"));
+		console.WriteLineC(UTF8STRC("-D[object name]    Display object related file"));
+		console.WriteLineC(UTF8STRC("-V                 Verbose"));
+		console.WriteLineC(UTF8STRC("-a                 Assembly listing"));
+		console.WriteLineC(UTF8STRC("-q                 Quiet"));
+		console.WriteLineC(UTF8STRC("-s                 Single Thread"));
 	}
-	DEL_CLASS(smake);
-	DEL_CLASS(console);
 	return 0;
 }

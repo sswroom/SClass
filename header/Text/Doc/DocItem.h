@@ -32,8 +32,8 @@ namespace Text
 			virtual DocItemType GetItemType() = 0;
 
 			virtual UOSInt Add(DocItem *item);
-			virtual UOSInt GetCount();
-			virtual DocItem *GetItem(UOSInt index);
+			virtual UOSInt GetCount() const;
+			virtual DocItem *GetItem(UOSInt index) const;
 		};
 	}
 }

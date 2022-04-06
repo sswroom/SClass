@@ -16,8 +16,8 @@ namespace IO
 			ProtoDecList();
 			virtual ~ProtoDecList();
 
-			virtual UOSInt GetCount();
-			virtual IProtocolDecoder *GetItem(UOSInt index);
+			virtual UOSInt GetCount() const;
+			virtual IProtocolDecoder *GetItem(UOSInt index) const;
 		};
 	}
 }

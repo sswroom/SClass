@@ -21,8 +21,8 @@ namespace Text
 			Bool IsLandscape();
 
 			virtual UOSInt Add(DocItem *item);
-			virtual UOSInt GetCount();
-			virtual DocItem *GetItem(UOSInt index);
+			virtual UOSInt GetCount() const;
+			virtual DocItem *GetItem(UOSInt index) const;
 		};
 	}
 }

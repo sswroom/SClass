@@ -38,12 +38,12 @@ UOSInt Text::Doc::DocSection::Add(Text::Doc::DocItem *item)
 	return this->items->Add(item);
 }
 
-UOSInt Text::Doc::DocSection::GetCount()
+UOSInt Text::Doc::DocSection::GetCount() const
 {
 	return this->items->GetCount();
 }
 
-Text::Doc::DocItem *Text::Doc::DocSection::GetItem(UOSInt index)
+Text::Doc::DocItem *Text::Doc::DocSection::GetItem(UOSInt index) const
 {
 	return this->items->GetItem(index);
 }

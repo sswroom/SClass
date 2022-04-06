@@ -30,11 +30,11 @@ namespace Data
 		virtual void Clear();
 		virtual ArrayList<T> *Clone();
 
-		virtual UOSInt GetCount();
+		virtual UOSInt GetCount() const;
 		virtual UOSInt GetCapacity();
 		void EnsureCapacity(UOSInt capacity);
 
-		virtual T GetItem(UOSInt index);
+		virtual T GetItem(UOSInt index) const;
 		virtual void SetItem(UOSInt index, T val);
 		void CopyItems(UOSInt destIndex, UOSInt srcIndex, UOSInt count);
 		UOSInt GetRange(T *outArr, UOSInt index, UOSInt cnt);
@@ -231,7 +231,7 @@ namespace Data
 		return newArr;
 	}
 
-	template <class T> UOSInt ArrayList<T>::GetCount()
+	template <class T> UOSInt ArrayList<T>::GetCount() const
 	{
 		return this->objCnt;
 	}
@@ -257,7 +257,7 @@ namespace Data
 		}
 	}
 
-	template <class T> T ArrayList<T>::GetItem(UOSInt Index)
+	template <class T> T ArrayList<T>::GetItem(UOSInt Index) const
 	{
 		if (Index >= this->objCnt || Index < 0)
 			return (T)0;

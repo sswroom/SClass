@@ -31,12 +31,12 @@ IO::ProtoDec::ProtoDecList::~ProtoDecList()
 	DEL_CLASS(this->decList);
 }
 
-UOSInt IO::ProtoDec::ProtoDecList::GetCount()
+UOSInt IO::ProtoDec::ProtoDecList::GetCount() const
 {
 	return this->decList->GetCount();
 }
 
-IO::ProtoDec::IProtocolDecoder *IO::ProtoDec::ProtoDecList::GetItem(UOSInt index)
+IO::ProtoDec::IProtocolDecoder *IO::ProtoDec::ProtoDecList::GetItem(UOSInt index) const
 {
 	return this->decList->GetItem(index);
 }

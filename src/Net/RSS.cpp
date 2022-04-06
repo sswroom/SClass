@@ -677,14 +677,14 @@ UOSInt Net::RSS::Add(Net::RSSItem* val)
 	return this->items->Add(val);
 }
 
-UOSInt Net::RSS::GetCount()
+UOSInt Net::RSS::GetCount() const
 {
 	if (this->items == 0)
 		return 0;
 	return this->items->GetCount();
 }
 
-Net::RSSItem *Net::RSS::GetItem(UOSInt Index)
+Net::RSSItem *Net::RSS::GetItem(UOSInt Index) const
 {
 	if (this->items == 0)
 		return 0;

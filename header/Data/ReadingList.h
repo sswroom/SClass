@@ -5,8 +5,8 @@ namespace Data
 	template <class T> class ReadingList
 	{
 	public:
-		virtual UOSInt GetCount() = 0;
-		virtual T GetItem(UOSInt index) = 0;
+		virtual UOSInt GetCount() const = 0;
+		virtual T GetItem(UOSInt index) const = 0;
 	};
 }
 #endif

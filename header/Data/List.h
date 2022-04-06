@@ -16,10 +16,10 @@ namespace Data
 		virtual UOSInt IndexOf(T val) = 0; //INVALID_INDEX = not found
 		virtual void Clear() = 0;
 
-		virtual UOSInt GetCount() = 0;
+		virtual UOSInt GetCount() const = 0;
 		virtual UOSInt GetCapacity() = 0;
 
-		virtual T GetItem(UOSInt index) = 0;
+		virtual T GetItem(UOSInt index) const = 0;
 		virtual void SetItem(UOSInt index, T val) = 0;
 	};
 }

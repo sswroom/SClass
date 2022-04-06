@@ -48,8 +48,8 @@ namespace Media
 		void SetProducer(const UTF8Char *producer);
 		const UTF8Char *GetProducer();
 
-		virtual UOSInt GetCount();
-		virtual Media::VectorGraph *GetItem(UOSInt Index);
+		virtual UOSInt GetCount() const;
+		virtual Media::VectorGraph *GetItem(UOSInt Index) const;
 
 		virtual Bool BeginPrint(IPrintDocument *doc);
 		virtual Bool PrintPage(Media::DrawImage *printPage); //return has more pages 

@@ -60,8 +60,8 @@ namespace Net
 
 		Bool IsError();
 		virtual UOSInt Add(RSSItem* val);
-		virtual UOSInt GetCount();
-		virtual RSSItem *GetItem(UOSInt Index);
+		virtual UOSInt GetCount() const;
+		virtual RSSItem *GetItem(UOSInt Index) const;
 
 		Text::String *GetTitle();
 		Text::String *GetLink();
