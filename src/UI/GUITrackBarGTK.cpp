@@ -18,18 +18,15 @@ void UI::GUITrackBar::EventScrolled()
 	UOSInt i;
 	UOSInt pos;
 	pos = (UOSInt)Double2OSInt(gtk_range_get_value((GtkRange*)this->hwnd));
-	i = this->scrollHandlers->GetCount();
+	i = this->scrollHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->scrollHandlers->GetItem(i)(this->scrollHandlersObj->GetItem(i), pos);
+		this->scrollHandlers.GetItem(i)(this->scrollHandlersObj.GetItem(i), pos);
 	}
 }
 
 UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSInt minVal, UOSInt maxVal, UOSInt currVal) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->scrollHandlers, Data::ArrayList<ScrollEvent>());
-	NEW_CLASS(this->scrollHandlersObj, Data::ArrayList<void *>());
-
 	if (minVal >= maxVal)
 	{
 		maxVal = minVal + 1;
@@ -44,8 +41,6 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 
 UI::GUITrackBar::~GUITrackBar()
 {
-	DEL_CLASS(this->scrollHandlersObj);
-	DEL_CLASS(this->scrollHandlers);
 }
 
 Text::CString UI::GUITrackBar::GetObjectClass()
@@ -75,6 +70,6 @@ UOSInt UI::GUITrackBar::GetPos()
 
 void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)
 {
-	this->scrollHandlers->Add(hdlr);
-	this->scrollHandlersObj->Add(userObj);
+	this->scrollHandlers.Add(hdlr);
+	this->scrollHandlersObj.Add(userObj);
 }

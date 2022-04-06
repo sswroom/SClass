@@ -64,9 +64,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	switch (img->info->pf)
+	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
 		return IO::FileExporter::SupportType::NormalStream;
@@ -121,22 +121,22 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 	if (imgList->GetCount() != 1)
 		return 0;
 	Media::Image *img = imgList->GetImage(0, 0);
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 		return 0;
 	Gdiplus::Bitmap *gimg;
-	Gdiplus::Rect rc(0, 0, (INT)img->info->dispWidth, (INT)img->info->dispHeight);
+	Gdiplus::Rect rc(0, 0, (INT)img->info.dispWidth, (INT)img->info.dispHeight);
 	Gdiplus::BitmapData bd;
 	Gdiplus::ColorPalette *pal;
-	switch (img->info->pf)
+	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat32bppARGB));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
-		if (img->info->atype == Media::AT_NO_ALPHA)
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat32bppARGB));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
+		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppRGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 				gimg->UnlockBits(&bd);
 			}
 		}
@@ -144,35 +144,35 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 		{
 			if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat32bppARGB, &bd) == Gdiplus::Ok)
 			{
-				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+				img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 				gimg->UnlockBits(&bd);
 			}
 		}
 		return gimg;
 	case Media::PF_B8G8R8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat24bppRGB));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat24bppRGB));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat24bppRGB, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
 	case Media::PF_LE_R5G6B5:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat16bppRGB565));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat16bppRGB565));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat16bppRGB565, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 			gimg->UnlockBits(&bd);
 		}
 		return gimg;
 	case Media::PF_PAL_8:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat8bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat8bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat8bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -185,12 +185,12 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 
 		return gimg;
 	case Media::PF_PAL_4:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat4bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat4bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat4bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 			gimg->UnlockBits(&bd);
 		}
 
@@ -203,12 +203,12 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 
 		return gimg;
 	case Media::PF_PAL_1:
-		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info->dispWidth, (INT)img->info->dispHeight, PixelFormat1bppIndexed));
-		gimg->SetResolution((Gdiplus::REAL)img->info->hdpi, (Gdiplus::REAL)img->info->vdpi);
+		NEW_CLASS(gimg, Gdiplus::Bitmap((INT)img->info.dispWidth, (INT)img->info.dispHeight, PixelFormat1bppIndexed));
+		gimg->SetResolution((Gdiplus::REAL)img->info.hdpi, (Gdiplus::REAL)img->info.vdpi);
 
 		if (gimg->LockBits(&rc, Gdiplus::ImageLockModeWrite, PixelFormat1bppIndexed, &bd) == Gdiplus::Ok)
 		{
-			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info->dispWidth, img->info->dispHeight, (UOSInt)(OSInt)bd.Stride, false);
+			img->GetImageData((UInt8*)bd.Scan0, 0, 0, img->info.dispWidth, img->info.dispHeight, (UOSInt)(OSInt)bd.Stride, false);
 			gimg->UnlockBits(&bd);
 		}
 

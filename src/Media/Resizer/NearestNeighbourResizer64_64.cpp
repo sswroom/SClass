@@ -93,22 +93,22 @@ void Media::Resizer::NearestNeighbourResizer64_64::Resize(UInt8 *src, OSInt sbpl
 
 Bool Media::Resizer::NearestNeighbourResizer64_64::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
-	if (srcImg->info->fourcc != 0 && srcImg->info->fourcc != *(UInt32*)"DIB")
+	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (destImg->info->fourcc != 0 && destImg->info->fourcc != *(UInt32*)"DIB")
+	if (destImg->info.fourcc != 0 && destImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (srcImg->info->pf != Media::PF_LE_B16G16R16A16 || destImg->info->pf != Media::PF_LE_B16G16R16A16)
+	if (srcImg->info.pf != Media::PF_LE_B16G16R16A16 || destImg->info.pf != Media::PF_LE_B16G16R16A16)
 		return false;
-	destImg->info->color->Set(srcImg->info->color);
-	if (srcImg->info->fourcc == destImg->info->fourcc)
+	destImg->info.color->Set(srcImg->info.color);
+	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 	else
 	{
 		OSInt dbpl = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info.storeHeight - 1) * dbpl, -dbpl, destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 }
@@ -126,7 +126,7 @@ Media::StaticImage *Media::Resizer::NearestNeighbourResizer64_64::ProcessToNewPa
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (!IsSupported(srcImage->info))
+	if (!IsSupported(&srcImage->info))
 	{
 		return 0;
 	}
@@ -140,13 +140,13 @@ Media::StaticImage *Media::Resizer::NearestNeighbourResizer64_64::ProcessToNewPa
 	{
 		targetHeight = Double2Int32(srcY2 - srcY1);
 	}
-	CalOutputSize(srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, this->rar);
-	destInfo.color->Set(srcImage->info->color);
-	destInfo.atype = srcImage->info->atype;
+	CalOutputSize(&srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, this->rar);
+	destInfo.color->Set(srcImage->info.color);
+	destInfo.atype = srcImage->info.atype;
 	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (tlx << 3) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info->dispWidth, newImage->info->dispHeight);
+	Resize(srcImage->data + (tlx << 3) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
 	return newImage;
 
 }

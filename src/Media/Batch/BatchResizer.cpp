@@ -94,8 +94,8 @@ void Media::Batch::BatchResizer::ImageOutput(Media::ImageList *imgList, const UT
 			newImg = (Media::StaticImage*)imgList->GetImage(j, 0);
 			if (param->sizeType == 1)
 			{
-				resizer->SetTargetWidth((UInt32)Double2Int32(UOSInt2Double(newImg->info->dispWidth * param->width) / newImg->info->hdpi));
-				resizer->SetTargetHeight((UInt32)Double2Int32(UOSInt2Double(newImg->info->dispHeight * param->height) / newImg->info->vdpi));
+				resizer->SetTargetWidth((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispWidth * param->width) / newImg->info.hdpi));
+				resizer->SetTargetHeight((UInt32)Double2Int32(UOSInt2Double(newImg->info.dispHeight * param->height) / newImg->info.vdpi));
 				newImg = resizer->ProcessToNew(newImg);
 			}
 			else

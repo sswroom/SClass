@@ -1346,13 +1346,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			if (predictor == 2)
 			{
 				imgData = (UInt8*)img->data;
-				if (img->info->pf == Media::PF_PAL_W8)
+				if (img->info.pf == Media::PF_PAL_W8)
 				{
-					i = img->info->dispHeight;
+					i = img->info.dispHeight;
 					while (i-- > 0)
 					{
 						imgData += 1;
-						j = img->info->dispWidth - 1;
+						j = img->info.dispWidth - 1;
 						while (j-- > 0)
 						{
 							imgData[0] = (UInt8)(imgData[0] + imgData[-1]);
@@ -1360,13 +1360,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						}
 					}
 				}
-				else if (img->info->pf == Media::PF_W8A8)
+				else if (img->info.pf == Media::PF_W8A8)
 				{
-					i = img->info->dispHeight;
+					i = img->info.dispHeight;
 					while (i-- > 0)
 					{
 						imgData += 2;
-						j = img->info->dispWidth - 1;
+						j = img->info.dispWidth - 1;
 						while (j-- > 0)
 						{
 							imgData[0] = (UInt8)(imgData[0] + imgData[-2]);
@@ -1375,13 +1375,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						}
 					}
 				}
-				else if (img->info->pf == Media::PF_B8G8R8)
+				else if (img->info.pf == Media::PF_B8G8R8)
 				{
-					i = img->info->dispHeight;
+					i = img->info.dispHeight;
 					while (i-- > 0)
 					{
 						imgData += 3;
-						j = img->info->dispWidth - 1;
+						j = img->info.dispWidth - 1;
 						while (j-- > 0)
 						{
 							imgData[0] = (UInt8)(imgData[0] + imgData[-3]);
@@ -1391,13 +1391,13 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 						}
 					}
 				}
-				else if (img->info->pf == Media::PF_B8G8R8A8)
+				else if (img->info.pf == Media::PF_B8G8R8A8)
 				{
-					i = img->info->dispHeight;
+					i = img->info.dispHeight;
 					while (i-- > 0)
 					{
 						imgData += 4;
-						j = img->info->dispWidth - 1;
+						j = img->info.dispWidth - 1;
 						while (j-- > 0)
 						{
 							imgData[0] = (UInt8)(imgData[0] + imgData[-4]);
@@ -1418,11 +1418,11 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 			Double dpi;
 			if ((dpi = exif->GetHDPI()) != 0)
 			{
-				img->info->hdpi = dpi;
+				img->info.hdpi = dpi;
 			}
 			if ((dpi = exif->GetVDPI()) != 0)
 			{
-				img->info->vdpi = dpi;
+				img->info.vdpi = dpi;
 			}
 			imgList->AddImage(img, 1000);
 			if (stripOfsts)
@@ -1448,7 +1448,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 		Double maxX;
 		Double maxY;
 		UInt32 srid;
-		if (img->exif->GetGeoBounds(img->info->dispWidth, img->info->dispHeight, &srid, &minX, &minY, &maxX, &maxY))
+		if (img->exif->GetGeoBounds(img->info.dispWidth, img->info.dispHeight, &srid, &minX, &minY, &maxX, &maxY))
 		{
 			Map::VectorLayer *lyr;
 			Math::VectorImage *vimg;
@@ -1536,7 +1536,7 @@ IO::ParsedObject *Parser::FileParser::TIFFParser::ParseFile(IO::IStreamData *fd,
 					NEW_CLASS(lyr, Map::VectorLayer(Map::DRAW_LAYER_IMAGE, fd->GetFullName(), 0, 0, csys, 0, 0, 0, 0, 0));
 					img->To32bpp();
 					NEW_CLASS(simg, Media::SharedImage(imgList, true));
-					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info->dispHeight) - 0.5), xCoord + xPxSize * (UOSInt2Double(img->info->dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
+					NEW_CLASS(vimg, Math::VectorImage(csys->GetSRID(), simg, xCoord - xPxSize * 0.5, yCoord + yPxSize * (UOSInt2Double(img->info.dispHeight) - 0.5), xCoord + xPxSize * (UOSInt2Double(img->info.dispWidth) - 0.5), yCoord - yPxSize * 0.5, false, fd->GetFullName(), 0, 0));
 					lyr->AddVector(vimg, (const UTF8Char**)0);
 					DEL_CLASS(simg);
 					

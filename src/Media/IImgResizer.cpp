@@ -51,8 +51,8 @@ void Media::IImgResizer::SetSrcRefLuminance(Double srcRefLuminance)
 
 Media::StaticImage *Media::IImgResizer::ProcessToNew(Media::StaticImage *srcImage)
 {
-	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(&srcImage->info->color->rtransfer));
-	return ProcessToNewPartial(srcImage, 0, 0, UOSInt2Double(srcImage->info->dispWidth), UOSInt2Double(srcImage->info->dispHeight));
+	this->SetSrcRefLuminance(Media::CS::TransferFunc::GetRefLuminance(&srcImage->info.color->rtransfer));
+	return ProcessToNewPartial(srcImage, 0, 0, UOSInt2Double(srcImage->info.dispWidth), UOSInt2Double(srcImage->info.dispHeight));
 }
 
 void Media::IImgResizer::CalOutputSize(Media::FrameInfo *srcInfo, UOSInt targetWidth, UOSInt targetHeight, Media::FrameInfo *destInfo, Media::IImgResizer::ResizeAspectRatio rar)

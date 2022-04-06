@@ -320,9 +320,9 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			Double srcH = UOSInt2Double(this->currHeight) * rate;
 			Double srcX = OSInt2Double(this->gZoomX) - OSInt2Double(this->gZoomCurrX) * rate;
 			Double srcY = OSInt2Double(this->gZoomY) - OSInt2Double(this->gZoomCurrY) * rate;
-			drawImg->info->hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info->vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
+			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+			drawImg->info.color->Set(this->colorSess->GetRGBParam()->monProfile);
 
 			if (srcX < 0)
 			{
@@ -346,7 +346,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			}
 			Int32 srcIX = (Int32)srcX;
 			Int32 srcIY = (Int32)srcY;
-			resizer.Resize((srcIX * 4) + (srcIY * (OSInt)(srcImg->info->storeWidth * 4)) + srcImg->data, (OSInt)srcImg->info->storeWidth * 4, srcW, srcH, srcX - srcIX, srcY - srcIY, drawImg->data, (OSInt)drawImg->info->storeWidth * 4, w, h);
+			resizer.Resize((srcIX * 4) + (srcIY * (OSInt)(srcImg->info.storeWidth * 4)) + srcImg->data, (OSInt)srcImg->info.storeWidth * 4, srcW, srcH, srcX - srcIX, srcY - srcIY, drawImg->data, (OSInt)drawImg->info.storeWidth * 4, w, h);
 		}
 		else
 		{
@@ -356,10 +356,10 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			tlx = OSInt2Double(this->gZoomCurrX) - OSInt2Double(this->gZoomX) * rate;
 			tly = OSInt2Double(this->gZoomCurrY) - OSInt2Double(this->gZoomY) * rate;
 			NEW_CLASS(drawImg, Media::StaticImage(this->currWidth, this->currHeight, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-			drawImg->info->hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info->vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info->color->Set(this->colorSess->GetRGBParam()->monProfile);
-			resizer.Resize(srcImg->data, (OSInt)srcImg->info->storeWidth * 4, UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 0, 0, drawImg->data, (OSInt)drawImg->info->storeWidth * 4, w, h);
+			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
+			drawImg->info.color->Set(this->colorSess->GetRGBParam()->monProfile);
+			resizer.Resize(srcImg->data, (OSInt)srcImg->info.storeWidth * 4, UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 0, 0, drawImg->data, (OSInt)drawImg->info.storeWidth * 4, w, h);
 		}
 		mutUsage.EndUse();
 		DEL_CLASS(srcImg);

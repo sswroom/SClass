@@ -48,8 +48,8 @@ Media::StaticImage *Media::BitmapUtil::ParseDIBBuffer(const UInt8 *dataBuff, UOS
 	}
 
 	NEW_CLASS(outImg, Media::StaticImage((UOSInt)imgWidth, (UOSInt)imgHeight, 0, bpp, Media::PixelFormatGetDef(0, bpp), 0, 0, Media::ColorProfile::YUVT_UNKNOWN, (bpp == 32)?Media::AT_ALPHA:Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	outImg->info->hdpi = hdpi;
-	outImg->info->vdpi = vdpi;
+	outImg->info.hdpi = hdpi;
+	outImg->info.vdpi = vdpi;
 	UInt8 *pBits = (UInt8*)outImg->data;
 	UOSInt lineW;
 	UOSInt lineW2;

@@ -43,18 +43,18 @@ namespace Map
 		UOSInt threadNext;
 
 		UOSInt lastLevel;
-		Sync::Mutex *lastMut;
-		Data::ArrayListInt64 *lastIds;
-		Data::ArrayList<CachedImage *> *lastImgs;
-		Sync::Mutex *idleMut;
-		Data::ArrayList<CachedImage *> *idleImgs;
+		Sync::Mutex lastMut;
+		Data::ArrayListInt64 lastIds;
+		Data::ArrayList<CachedImage *> lastImgs;
+		Sync::Mutex idleMut;
+		Data::ArrayList<CachedImage *> idleImgs;
 
-		Data::SyncLinkedList *taskQueued;
-		Sync::Event *taskEvt;
-		Sync::Mutex *taskMut;
-		Sync::Mutex *updMut;
-		Data::ArrayList<UpdatedHandler> *updHdlrs;
-		Data::ArrayList<void *> *updObjs;
+		Data::SyncLinkedList taskQueued;
+		Sync::Event taskEvt;
+		Sync::Mutex taskMut;
+		Sync::Mutex updMut;
+		Data::ArrayList<UpdatedHandler> updHdlrs;
+		Data::ArrayList<void *> updObjs;
 
 		static UInt32 __stdcall TaskThread(void *userObj);
 		void AddTask(CachedImage *cimg);

@@ -27,10 +27,6 @@ UI::GUIListView::GUIListView(UI::GUICore *ui, UI::GUIClientControl *parent, List
 	}
 	this->colCnt = 0;
 
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->dblClkHdlrs, Data::ArrayList<ItemEvent>());
-	NEW_CLASS(this->dblClkObjs, Data::ArrayList<void*>());
 	this->himgList = 0;
 	this->lvStyle = lvstyle;
 	parent->GetClientSize(&w, &h);
@@ -66,10 +62,6 @@ UI::GUIListView::~GUIListView()
 	{
 		ImageList_Destroy((HIMAGELIST)this->himgList);
 	}
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClkHdlrs);
-	DEL_CLASS(this->dblClkObjs);
 }
 
 void UI::GUIListView::ResetImages(UInt32 width, UInt32 height)
@@ -588,20 +580,20 @@ void UI::GUIListView::OnSizeChanged(Bool updateScn)
 void UI::GUIListView::EventSelChg()
 {
 	UOSInt i;
-	i = this->selChgHdlrs->GetCount();
+	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 {
 	UOSInt i;
-	i = this->dblClkHdlrs->GetCount();
+	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs->GetItem(i)(this->dblClkObjs->GetItem(i), itemIndex);
+		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i), itemIndex);
 	}
 }
 
@@ -640,12 +632,12 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIListView::HandleSelChg(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUIListView::HandleDblClk(ItemEvent hdlr, void *userObj)
 {
-	this->dblClkHdlrs->Add(hdlr);
-	this->dblClkObjs->Add(userObj);
+	this->dblClkHdlrs.Add(hdlr);
+	this->dblClkObjs.Add(userObj);
 }

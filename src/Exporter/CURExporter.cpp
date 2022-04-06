@@ -9,31 +9,31 @@
 
 Bool Exporter::CURExporter::ImageSupported(Media::Image *img)
 {
-	if (img->info->dispWidth <= 0 || img->info->dispWidth > 256 || img->info->dispHeight <= 0 || img->info->dispHeight > 256)
+	if (img->info.dispWidth <= 0 || img->info.dispWidth > 256 || img->info.dispHeight <= 0 || img->info.dispHeight > 256)
 	{
 		return false;
 	}
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 	{
 		return false;
 	}
-	if (img->info->pf == Media::PF_B8G8R8A8)
+	if (img->info.pf == Media::PF_B8G8R8A8)
 	{
 		return true;
 	}
-	else if (img->info->pf == Media::PF_B8G8R8A1)
+	else if (img->info.pf == Media::PF_B8G8R8A1)
 	{
 		return true;
 	}
-	else if (img->info->pf == Media::PF_PAL_1_A1)
+	else if (img->info.pf == Media::PF_PAL_1_A1)
 	{
 		return true;
 	}
-	else if (img->info->pf == Media::PF_PAL_4_A1)
+	else if (img->info.pf == Media::PF_PAL_4_A1)
 	{
 		return true;
 	}
-	else if (img->info->pf == Media::PF_PAL_8_A1)
+	else if (img->info.pf == Media::PF_PAL_8_A1)
 	{
 		return true;
 	}
@@ -54,79 +54,79 @@ UOSInt Exporter::CURExporter::CalcBuffSize(Media::ImageList *imgList)
 	while (i < j)
 	{
 		img = imgList->GetImage(i, &imgDelay);
-		if (img->info->fourcc != 0)
+		if (img->info.fourcc != 0)
 		{
 			return 0;
 		}
-		if (img->info->dispWidth <= 0 || img->info->dispWidth > 256 || img->info->dispHeight <= 0 || img->info->dispHeight > 256)
+		if (img->info.dispWidth <= 0 || img->info.dispWidth > 256 || img->info.dispHeight <= 0 || img->info.dispHeight > 256)
 		{
 			return 0;
 		}
-		if (img->info->pf == Media::PF_B8G8R8A8)
+		if (img->info.pf == Media::PF_B8G8R8A8)
 		{
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			imgSize = img->info->dispWidth * 4;
-			retSize += 16 + 40 + (imgSize + maskSize) * img->info->dispHeight;
+			imgSize = img->info.dispWidth * 4;
+			retSize += 16 + 40 + (imgSize + maskSize) * img->info.dispHeight;
 		}
-		else if (img->info->pf == Media::PF_B8G8R8A1)
+		else if (img->info.pf == Media::PF_B8G8R8A1)
 		{
-			imgSize = img->info->dispWidth * 3;
+			imgSize = img->info.dispWidth * 3;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + (imgSize + maskSize) * img->info->dispHeight;
+			retSize += 16 + 40 + (imgSize + maskSize) * img->info.dispHeight;
 		}
-		else if (img->info->pf == Media::PF_PAL_1_A1)
+		else if (img->info.pf == Media::PF_PAL_1_A1)
 		{
-			imgSize = (img->info->dispWidth + 7) >> 3;
+			imgSize = (img->info.dispWidth + 7) >> 3;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 8 + (imgSize + maskSize) * img->info->dispHeight;
+			retSize += 16 + 40 + 8 + (imgSize + maskSize) * img->info.dispHeight;
 		}
-		else if (img->info->pf == Media::PF_PAL_4_A1)
+		else if (img->info.pf == Media::PF_PAL_4_A1)
 		{
-			imgSize = (img->info->dispWidth + 1) >> 1;
+			imgSize = (img->info.dispWidth + 1) >> 1;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 64 + (imgSize + maskSize) * img->info->dispHeight;
+			retSize += 16 + 40 + 64 + (imgSize + maskSize) * img->info.dispHeight;
 		}
-		else if (img->info->pf == Media::PF_PAL_8_A1)
+		else if (img->info.pf == Media::PF_PAL_8_A1)
 		{
-			imgSize = img->info->dispWidth;
+			imgSize = img->info.dispWidth;
 			if (imgSize & 3)
 			{
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			if (maskSize & 3)
 			{
 				maskSize += 4 - (maskSize & 3);
 			}
-			retSize += 16 + 40 + 1024 + (imgSize + maskSize) * img->info->dispHeight;
+			retSize += 16 + 40 + 1024 + (imgSize + maskSize) * img->info.dispHeight;
 		}
 		else
 		{
@@ -178,30 +178,30 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 	{
 		imgList->ToStaticImage(i);
 		img = (Media::StaticImage*)imgList->GetImage(i, &imgDelay);
-		if (img->info->fourcc != 0)
+		if (img->info.fourcc != 0)
 		{
 			return 0;
 		}
-		if (img->info->dispWidth <= 0 || img->info->dispWidth > 256 || img->info->dispHeight <= 0 || img->info->dispHeight > 256)
+		if (img->info.dispWidth <= 0 || img->info.dispWidth > 256 || img->info.dispHeight <= 0 || img->info.dispHeight > 256)
 		{
 			return 0;
 		}
 
-		if (img->info->dispWidth >= 256)
+		if (img->info.dispWidth >= 256)
 		{
 			indexPtr[0] = 0;
 		}
 		else
 		{
-			indexPtr[0] = (UInt8)img->info->dispWidth;
+			indexPtr[0] = (UInt8)img->info.dispWidth;
 		}
-		if (img->info->dispHeight >= 256)
+		if (img->info.dispHeight >= 256)
 		{
 			indexPtr[1] = 0;
 		}
 		else
 		{
-			indexPtr[1] = (UInt8)img->info->dispHeight;
+			indexPtr[1] = (UInt8)img->info.dispHeight;
 		}
 		indexPtr[3] = 0;
 		if (hasHotSpot)
@@ -213,8 +213,8 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			}
 			else
 			{
-				WriteInt16(&indexPtr[4], img->info->dispWidth >> 1);
-				WriteInt16(&indexPtr[6], img->info->dispHeight >> 1);
+				WriteInt16(&indexPtr[4], img->info.dispWidth >> 1);
+				WriteInt16(&indexPtr[6], img->info.dispHeight >> 1);
 			}
 		}
 		else
@@ -223,10 +223,10 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 		}
 		WriteInt32(&indexPtr[12], (Int32)retSize);
 
-		if (img->info->pf == Media::PF_B8G8R8A8)
+		if (img->info.pf == Media::PF_B8G8R8A8)
 		{
-			imgSize = img->info->dispWidth * 4;
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			imgSize = img->info.dispWidth * 4;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			maskAdd = 0;
 			if (maskSize & 3)
 			{
@@ -239,15 +239,15 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			{
 				WriteInt16(&indexPtr[6], 32);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info->dispHeight));
+			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispHeight));
 
 			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info->dispWidth);
-			WriteInt32(&imgPtr[8], (Int32)img->info->dispHeight * 2);
+			WriteInt32(&imgPtr[4], (Int32)img->info.dispWidth);
+			WriteInt32(&imgPtr[8], (Int32)img->info.dispHeight * 2);
 			WriteInt16(&imgPtr[12], 1);
 			WriteInt16(&imgPtr[14], 32);
 			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info->dispHeight));
+			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispHeight));
 			WriteInt32(&imgPtr[24], 0);
 			WriteInt32(&imgPtr[28], 0);
 			WriteInt32(&imgPtr[32], 0);
@@ -255,17 +255,17 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 40;
 			retSize += 40;
 
-			srcPtr = img->data + (img->info->storeWidth * 4 * img->info->dispHeight);
-			maskPtr = imgPtr + (img->info->storeWidth * 4) * img->info->dispHeight;
-			l = img->info->dispHeight;
+			srcPtr = img->data + (img->info.storeWidth * 4 * img->info.dispHeight);
+			maskPtr = imgPtr + (img->info.storeWidth * 4) * img->info.dispHeight;
+			l = img->info.dispHeight;
 			while (l-- > 0)
 			{
-				srcPtr -= img->info->storeWidth * 4;
-				MemCopyNO(imgPtr, srcPtr, img->info->dispWidth * 4);
-				imgPtr += img->info->dispWidth * 4;
+				srcPtr -= img->info.storeWidth * 4;
+				MemCopyNO(imgPtr, srcPtr, img->info.dispWidth * 4);
+				imgPtr += img->info.dispWidth * 4;
 
 				currPtr = srcPtr;
-				k = img->info->dispWidth >> 3;
+				k = img->info.dispWidth >> 3;
 				while (k-- > 0)
 				{
 					mask  = (UInt8)((currPtr[3] != 0) << 7);
@@ -280,7 +280,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 					currPtr += 32;
 				}
-				k = img->info->dispWidth & 7;
+				k = img->info.dispWidth & 7;
 				if (k != 0)
 				{
 					mask = 0;
@@ -302,18 +302,18 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 				}
 			}
 			imgPtr = maskPtr;
-			retSize += (imgSize + maskSize) * img->info->dispHeight;
+			retSize += (imgSize + maskSize) * img->info.dispHeight;
 		}
-		else if (img->info->pf == Media::PF_B8G8R8A1)
+		else if (img->info.pf == Media::PF_B8G8R8A1)
 		{
-			imgSize = img->info->dispWidth * 3;
+			imgSize = img->info.dispWidth * 3;
 			imgAdd = 0;
 			if (imgSize & 3)
 			{
 				imgAdd = 4 - (imgSize & 3);
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			maskAdd = 0;
 			if (maskSize & 3)
 			{
@@ -326,15 +326,15 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			{
 				WriteInt16(&indexPtr[6], 24);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info->dispHeight));
+			WriteInt32(&indexPtr[8], (Int32)(40 + (imgSize + maskSize) * img->info.dispHeight));
 
 			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info->dispWidth);
-			WriteInt32(&imgPtr[8], (Int32)img->info->dispHeight * 2);
+			WriteInt32(&imgPtr[4], (Int32)img->info.dispWidth);
+			WriteInt32(&imgPtr[8], (Int32)img->info.dispHeight * 2);
 			WriteInt16(&imgPtr[12], 1);
 			WriteInt16(&imgPtr[14], 24);
 			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info->dispHeight));
+			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispHeight));
 			WriteInt32(&imgPtr[24], 0);
 			WriteInt32(&imgPtr[28], 0);
 			WriteInt32(&imgPtr[32], 0);
@@ -342,14 +342,14 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 40;
 			retSize += 40;
 
-			srcPtr = img->data + (img->info->storeWidth * 4 * img->info->dispHeight);
-			maskPtr = imgPtr + imgSize * img->info->dispHeight;
-			l = img->info->dispHeight;
+			srcPtr = img->data + (img->info.storeWidth * 4 * img->info.dispHeight);
+			maskPtr = imgPtr + imgSize * img->info.dispHeight;
+			l = img->info.dispHeight;
 			while (l-- > 0)
 			{
-				srcPtr -= img->info->storeWidth * 4;
+				srcPtr -= img->info.storeWidth * 4;
 				currPtr = srcPtr;
-				k = img->info->dispWidth >> 3;
+				k = img->info.dispWidth >> 3;
 				while (k-- > 0)
 				{
 					imgPtr[0] = currPtr[0];
@@ -397,7 +397,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 					currPtr += 32;
 				}
-				k = img->info->dispWidth & 7;
+				k = img->info.dispWidth & 7;
 				if (k != 0)
 				{
 					mask = 0;
@@ -429,19 +429,19 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 				}
 			}
-			retSize += (imgSize + maskSize) * img->info->dispHeight;
+			retSize += (imgSize + maskSize) * img->info.dispHeight;
 			imgPtr = maskPtr;
 		}
-		else if (img->info->pf == Media::PF_PAL_1_A1)
+		else if (img->info.pf == Media::PF_PAL_1_A1)
 		{
-			imgSize = (img->info->dispWidth + 7) >> 3;
+			imgSize = (img->info.dispWidth + 7) >> 3;
 			imgAdd = 0;
 			if (imgSize & 3)
 			{
 				imgAdd = 4 - (imgSize & 3);
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			maskAdd = 0;
 			if (maskSize & 3)
 			{
@@ -454,15 +454,15 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			{
 				WriteInt16(&indexPtr[6], 1);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + 8 + (imgSize + maskSize) * img->info->dispHeight));
+			WriteInt32(&indexPtr[8], (Int32)(40 + 8 + (imgSize + maskSize) * img->info.dispHeight));
 
 			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info->dispWidth);
-			WriteInt32(&imgPtr[8], (Int32)img->info->dispHeight * 2);
+			WriteInt32(&imgPtr[4], (Int32)img->info.dispWidth);
+			WriteInt32(&imgPtr[8], (Int32)img->info.dispHeight * 2);
 			WriteInt16(&imgPtr[12], 1);
 			WriteInt16(&imgPtr[14], 1);
 			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info->dispHeight));
+			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispHeight));
 			WriteInt32(&imgPtr[24], 0);
 			WriteInt32(&imgPtr[28], 0);
 			WriteInt32(&imgPtr[32], 2);
@@ -474,18 +474,18 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 8;
 			retSize += 8;
 
-			sbpl = (OSInt)((img->info->dispWidth + 7) >> 3) * 2;
-			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
-			maskPtr = imgPtr + imgSize * img->info->dispHeight;
-			l = img->info->dispHeight;
+			sbpl = (OSInt)((img->info.dispWidth + 7) >> 3) * 2;
+			srcPtr = img->data + sbpl * (OSInt)img->info.dispHeight;
+			maskPtr = imgPtr + imgSize * img->info.dispHeight;
+			l = img->info.dispHeight;
 			while (l-- > 0)
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info->dispWidth + 7) >> 3);
-				currPtr += (img->info->dispWidth + 7) >> 3;
-				imgPtr += (img->info->dispWidth + 7) >> 3;
-				k = (img->info->dispWidth + 7) >> 3;
+				MemCopyNO(imgPtr, currPtr, (img->info.dispWidth + 7) >> 3);
+				currPtr += (img->info.dispWidth + 7) >> 3;
+				imgPtr += (img->info.dispWidth + 7) >> 3;
+				k = (img->info.dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
 					maskPtr[0] = (UInt8)~currPtr[0];
@@ -505,19 +505,19 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 				}
 			}
-			retSize += (imgSize + maskSize) * img->info->dispHeight;
+			retSize += (imgSize + maskSize) * img->info.dispHeight;
 			imgPtr = maskPtr;
 		}
-		else if (img->info->pf == Media::PF_PAL_4_A1)
+		else if (img->info.pf == Media::PF_PAL_4_A1)
 		{
-			imgSize = (img->info->dispWidth + 1) >> 1;
+			imgSize = (img->info.dispWidth + 1) >> 1;
 			imgAdd = 0;
 			if (imgSize & 3)
 			{
 				imgAdd = 4 - (imgSize & 3);
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			maskAdd = 0;
 			if (maskSize & 3)
 			{
@@ -530,15 +530,15 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			{
 				WriteInt16(&indexPtr[6], 4);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + 64 + (imgSize + maskSize) * img->info->dispHeight));
+			WriteInt32(&indexPtr[8], (Int32)(40 + 64 + (imgSize + maskSize) * img->info.dispHeight));
 
 			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info->dispWidth);
-			WriteInt32(&imgPtr[8], (Int32)img->info->dispHeight * 2);
+			WriteInt32(&imgPtr[4], (Int32)img->info.dispWidth);
+			WriteInt32(&imgPtr[8], (Int32)img->info.dispHeight * 2);
 			WriteInt16(&imgPtr[12], 1);
 			WriteInt16(&imgPtr[14], 4);
 			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info->dispHeight));
+			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispHeight));
 			WriteInt32(&imgPtr[24], 0);
 			WriteInt32(&imgPtr[28], 0);
 			WriteInt32(&imgPtr[32], 16);
@@ -550,18 +550,18 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 64;
 			retSize += 64;
 
-			sbpl = (OSInt)(((img->info->dispWidth + 7) >> 3) + ((img->info->dispWidth + 1) >> 1));
-			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
-			maskPtr = imgPtr + imgSize * img->info->dispHeight;
-			l = img->info->dispHeight;
+			sbpl = (OSInt)(((img->info.dispWidth + 7) >> 3) + ((img->info.dispWidth + 1) >> 1));
+			srcPtr = img->data + sbpl * (OSInt)img->info.dispHeight;
+			maskPtr = imgPtr + imgSize * img->info.dispHeight;
+			l = img->info.dispHeight;
 			while (l-- > 0)
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, (img->info->dispWidth + 1) >> 1);
-				currPtr += (img->info->dispWidth + 1) >> 1;
-				imgPtr += (img->info->dispWidth + 1) >> 1;
-				k = (img->info->dispWidth + 7) >> 3;
+				MemCopyNO(imgPtr, currPtr, (img->info.dispWidth + 1) >> 1);
+				currPtr += (img->info.dispWidth + 1) >> 1;
+				imgPtr += (img->info.dispWidth + 1) >> 1;
+				k = (img->info.dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
 					maskPtr[0] = (UInt8)~currPtr[0];
@@ -581,19 +581,19 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 				}
 			}
-			retSize += (imgSize + maskSize) * img->info->dispHeight;
+			retSize += (imgSize + maskSize) * img->info.dispHeight;
 			imgPtr = maskPtr;
 		}
-		else if (img->info->pf == Media::PF_PAL_8_A1)
+		else if (img->info.pf == Media::PF_PAL_8_A1)
 		{
-			imgSize = img->info->dispWidth;
+			imgSize = img->info.dispWidth;
 			imgAdd = 0;
 			if (imgSize & 3)
 			{
 				imgAdd = 4 - (imgSize & 3);
 				imgSize += 4 - (imgSize & 3);
 			}
-			maskSize = (img->info->dispWidth + 7) >> 3;
+			maskSize = (img->info.dispWidth + 7) >> 3;
 			maskAdd = 0;
 			if (maskSize & 3)
 			{
@@ -606,15 +606,15 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			{
 				WriteInt16(&indexPtr[6], 8);
 			}
-			WriteInt32(&indexPtr[8], (Int32)(40 + 1024 + (imgSize + maskSize) * img->info->dispHeight));
+			WriteInt32(&indexPtr[8], (Int32)(40 + 1024 + (imgSize + maskSize) * img->info.dispHeight));
 
 			WriteInt32(&imgPtr[0], 40);
-			WriteInt32(&imgPtr[4], (Int32)img->info->dispWidth);
-			WriteInt32(&imgPtr[8], (Int32)img->info->dispHeight * 2);
+			WriteInt32(&imgPtr[4], (Int32)img->info.dispWidth);
+			WriteInt32(&imgPtr[8], (Int32)img->info.dispHeight * 2);
 			WriteInt16(&imgPtr[12], 1);
 			WriteInt16(&imgPtr[14], 8);
 			WriteInt32(&imgPtr[16], 0); //compression
-			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info->dispHeight));
+			WriteInt32(&imgPtr[20], (Int32)(imgSize * img->info.dispHeight));
 			WriteInt32(&imgPtr[24], 0);
 			WriteInt32(&imgPtr[28], 0);
 			WriteInt32(&imgPtr[32], 256);
@@ -626,18 +626,18 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 			imgPtr += 1024;
 			retSize += 1024;
 
-			sbpl = (OSInt)(((img->info->dispWidth + 7) >> 3) + img->info->dispWidth);
-			srcPtr = img->data + sbpl * (OSInt)img->info->dispHeight;
-			maskPtr = imgPtr + imgSize * img->info->dispHeight;
-			l = img->info->dispHeight;
+			sbpl = (OSInt)(((img->info.dispWidth + 7) >> 3) + img->info.dispWidth);
+			srcPtr = img->data + sbpl * (OSInt)img->info.dispHeight;
+			maskPtr = imgPtr + imgSize * img->info.dispHeight;
+			l = img->info.dispHeight;
 			while (l-- > 0)
 			{
 				srcPtr -= sbpl;
 				currPtr = srcPtr;
-				MemCopyNO(imgPtr, currPtr, img->info->dispWidth);
-				currPtr += img->info->dispWidth;
-				imgPtr += img->info->dispWidth;
-				k = (img->info->dispWidth + 7) >> 3;
+				MemCopyNO(imgPtr, currPtr, img->info.dispWidth);
+				currPtr += img->info.dispWidth;
+				imgPtr += img->info.dispWidth;
+				k = (img->info.dispWidth + 7) >> 3;
 				while (k-- > 0)
 				{
 					maskPtr[0] = (UInt8)(~currPtr[0]);
@@ -657,7 +657,7 @@ UOSInt Exporter::CURExporter::BuildBuff(UInt8 *buff, Media::ImageList *imgList, 
 					maskPtr++;
 				}
 			}
-			retSize += (imgSize + maskSize) * img->info->dispHeight;
+			retSize += (imgSize + maskSize) * img->info.dispHeight;
 			imgPtr = maskPtr;
 		}
 		else

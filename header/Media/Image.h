@@ -19,7 +19,7 @@ namespace Media
 		} ImageType;
 
 	public:
-		Media::FrameInfo *info;
+		Media::FrameInfo info;
 		Media::EXIFData *exif;
 		Bool hasHotSpot;
 		OSInt hotSpotX;

@@ -167,7 +167,7 @@ namespace Text
 	class JSONObject : public JSONBase
 	{
 	private:
-		Data::FastStringMap<Text::JSONBase *> *objVals;
+		Data::FastStringMap<Text::JSONBase *> objVals;
 	public:
 		JSONObject();
 	private:

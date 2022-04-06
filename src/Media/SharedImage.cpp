@@ -33,12 +33,12 @@ Media::SharedImage::SharedImage(Media::ImageList *imgList, Bool genPreview)
 	if (genPreview && imgCnt == 1)
 	{
 		Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-		if (img->info->dispWidth >= 640 || img->info->dispHeight >= 640)
+		if (img->info.dispWidth >= 640 || img->info.dispHeight >= 640)
 		{
-			UOSInt currWidth = img->info->dispWidth;
-			UOSInt currHeight = img->info->dispHeight;
+			UOSInt currWidth = img->info.dispWidth;
+			UOSInt currHeight = img->info.dispHeight;
 			Media::StaticImage *simg;
-			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info->color, img->info->color, 0, img->info->atype);
+			Media::Resizer::LanczosResizer8_C8 resizer(3, 3, img->info.color, img->info.color, 0, img->info.atype);
 			img->To32bpp();
 			NEW_CLASS(this->imgStatus->prevList, Data::ArrayList<Media::StaticImage*>());
 
@@ -156,12 +156,12 @@ Media::StaticImage *Media::SharedImage::GetPrevImage(Double width, Double height
 	while (i-- > 0)
 	{
 		currImg = this->imgStatus->prevList->GetItem(i);
-		if (UOSInt2Double(currImg->info->dispWidth) >= width && UOSInt2Double(currImg->info->dispHeight) >= height)
+		if (UOSInt2Double(currImg->info.dispWidth) >= width && UOSInt2Double(currImg->info.dispHeight) >= height)
 		{
-			if (minImg == 0 || minWidth > currImg->info->dispWidth)
+			if (minImg == 0 || minWidth > currImg->info.dispWidth)
 			{
 				minImg = currImg;
-				minWidth = currImg->info->dispWidth;
+				minWidth = currImg->info.dispWidth;
 			}
 		}
 	}

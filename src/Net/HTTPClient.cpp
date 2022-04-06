@@ -29,20 +29,13 @@ Net::HTTPClient::HTTPClient(Net::SocketFactory *sockf, Bool kaConn) : IO::Stream
 	this->totalDownload = 0;
 	this->kaConn = kaConn;
 	this->svrAddr.addrType = Net::AddrType::Unknown;
-	NEW_CLASS(this->headers, Data::ArrayList<Text::String*>());
-	NEW_CLASS(this->clk, Manage::HiResClock());
 }
 
 Net::HTTPClient::~HTTPClient()
 {
-	if (this->headers)
-	{
-		LIST_FREE_STRING(this->headers);
-		DEL_CLASS(this->headers);
-	}
+	LIST_FREE_STRING(&this->headers);
 	SDEL_CLASS(this->formSb);
 	SDEL_STRING(this->url);
-	DEL_CLASS(this->clk);
 }
 
 Bool Net::HTTPClient::IsDown()
@@ -105,12 +98,12 @@ void Net::HTTPClient::AddContentLength(UOSInt leng)
 
 UOSInt Net::HTTPClient::GetRespHeaderCnt()
 {
-	return this->headers->GetCount();
+	return this->headers.GetCount();
 }
 
 UTF8Char *Net::HTTPClient::GetRespHeader(UOSInt index, UTF8Char *buff)
 {
-	return this->headers->GetItem(index)->ConcatTo(buff);
+	return this->headers.GetItem(index)->ConcatTo(buff);
 }
 
 UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff)
@@ -120,10 +113,10 @@ UTF8Char *Net::HTTPClient::GetRespHeader(Text::CString name, UTF8Char *valueBuff
 	Text::String *s;
 	UOSInt i;
 	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
-	i = this->headers->GetCount();
+	i = this->headers.GetCount();
 	while (i-- > 0)
 	{
-		s = this->headers->GetItem(i);
+		s = this->headers.GetItem(i);
 		if (s->StartsWith(buff, (UOSInt)(s2 - buff)))
 		{
 			return Text::StrConcatC(valueBuff, &s->v[s2 - buff], s->leng - (UOSInt)(s2 - buff));
@@ -139,10 +132,10 @@ Bool Net::HTTPClient::GetRespHeader(Text::CString name, Text::StringBuilderUTF8 
 	Text::String *s;
 	UOSInt i;
 	s2 = Text::StrConcatC(name.ConcatTo(buff), UTF8STRC(": "));
-	i = this->headers->GetCount();
+	i = this->headers.GetCount();
 	while (i-- > 0)
 	{
-		s = this->headers->GetItem(i);
+		s = this->headers.GetItem(i);
 		if (s->StartsWithICase(buff, (UOSInt)(s2 - buff)))
 		{
 			sb->AppendC(&s->v[s2-buff], s->leng - (UOSInt)(s2 - buff));
@@ -154,7 +147,7 @@ Bool Net::HTTPClient::GetRespHeader(Text::CString name, Text::StringBuilderUTF8 
 
 Text::String *Net::HTTPClient::GetRespHeader(UOSInt index)
 {
-	return this->headers->GetItem(index);
+	return this->headers.GetItem(index);
 }
 
 UInt64 Net::HTTPClient::GetContentLength()
@@ -227,7 +220,7 @@ Net::WebStatus::StatusCode Net::HTTPClient::GetRespStatus()
 
 Double Net::HTTPClient::GetTotalTime()
 {
-	return this->clk->GetTimeDiff();
+	return this->clk.GetTimeDiff();
 }
 
 UOSInt Net::HTTPClient::GetHdrLen()

@@ -1127,24 +1127,24 @@ void Media::Resizer::LanczosResizer8_C8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 Bool Media::Resizer::LanczosResizer8_C8::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
-	if (srcImg->info->fourcc != 0 && srcImg->info->fourcc != *(UInt32*)"DIB")
+	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (destImg->info->fourcc != 0 && destImg->info->fourcc != *(UInt32*)"DIB")
+	if (destImg->info.fourcc != 0 && destImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (srcImg->info->pf != Media::PF_B8G8R8A8 || destImg->info->pf != Media::PF_B8G8R8A8)
+	if (srcImg->info.pf != Media::PF_B8G8R8A8 || destImg->info.pf != Media::PF_B8G8R8A8)
 		return false;
-	//destImg->info->color.rgbGamma = srcImg->info->color.rgbGamma;
-	SetDestProfile(destImg->info->color);
-	SetSrcProfile(srcImg->info->color);
-	if (srcImg->info->fourcc == destImg->info->fourcc)
+	//destImg->info.color.rgbGamma = srcImg->info.color.rgbGamma;
+	SetDestProfile(destImg->info.color);
+	SetSrcProfile(srcImg->info.color);
+	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 	else
 	{
 		OSInt dbpl = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dbpl, -dbpl, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info.storeHeight - 1) * dbpl, -dbpl, destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 }
@@ -1201,7 +1201,7 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *newImage;
-	if (!IsSupported(srcImage->info))
+	if (!IsSupported(&srcImage->info))
 	{
 		return 0;
 	}
@@ -1215,9 +1215,9 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 	{
 		targetHeight = (UOSInt)Double2Int32(srcY2 - srcY1);
 	}
-	CalOutputSize(srcImage->info, targetWidth, targetHeight, &destInfo, this->rar);
-	this->SetSrcProfile(srcImage->info->color);
-	this->SetSrcAlphaType(srcImage->info->atype);
+	CalOutputSize(&srcImage->info, targetWidth, targetHeight, &destInfo, this->rar);
+	this->SetSrcProfile(srcImage->info.color);
+	this->SetSrcAlphaType(srcImage->info.atype);
 	if (this->destProfile->GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destProfile->GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
 		destInfo.color->GetRTranParam()->Set(this->destProfile->GetRTranParam());
@@ -1229,6 +1229,6 @@ Media::StaticImage *Media::Resizer::LanczosResizer8_C8::ProcessToNewPartial(Medi
 	NEW_CLASS(newImage, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info->dispWidth, newImage->info->dispHeight);
+	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, newImage->data, (OSInt)newImage->GetDataBpl(), newImage->info.dispWidth, newImage->info.dispHeight);
 	return newImage;
 }

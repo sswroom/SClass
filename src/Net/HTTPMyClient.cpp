@@ -663,7 +663,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 	}
 
-	this->clk->Start();
+	this->clk.Start();
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::String::New(urltmp, urltmpLen);
@@ -685,7 +685,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 		if (timeDNS)
 		{
-			*timeDNS = clk->GetTimeDiff();
+			*timeDNS = this->clk.GetTimeDiff();
 		}
 		this->svrAddr = addr;
 		if (addr.addrType != Net::AddrType::Unknown)
@@ -718,7 +718,7 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			this->canWrite = false;
 			return false;
 		}
-		t1 = clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeConn)
 		{
 			*timeConn = t1;
@@ -796,12 +796,12 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			*timeConn = 0;
 		}
 		this->contRead = 0;
-		i = this->headers->GetCount();
+		i = this->headers.GetCount();
 		while (i-- > 0)
 		{
-			this->headers->RemoveAt(i)->Release();
+			this->headers.RemoveAt(i)->Release();
 		}
-		this->headers->Clear();
+		this->headers.Clear();
 		LIST_FREE_STRING(this->reqHeaders);
 		this->reqHeaders->Clear();
 	}
@@ -1000,7 +1000,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		if (!this->kaConn && !this->cli->IsSSL())
 			this->cli->ShutdownSend();
 		this->cli->SetTimeout(this->timeOutMS);
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeReq)
 		{
 			*timeReq = t1;
@@ -1024,7 +1024,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			if (recvSize <= 0)
 				break;
 		}
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeResp)
 		{
 			*timeResp = t1;
@@ -1089,7 +1089,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 #ifdef SHOWDEBUG
 					printf("Read Header: %s\r\n", s->v);
 #endif
-					this->headers->Add(s);
+					this->headers.Add(s);
 
 					if (s->StartsWithICase(UTF8STRC("Transfer-Encoding: ")))
 					{

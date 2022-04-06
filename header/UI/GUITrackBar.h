@@ -10,8 +10,8 @@ namespace UI
 		typedef void (__stdcall *ScrollEvent)(void *userObj, UOSInt scrollPos);
 
 	private:
-		Data::ArrayList<ScrollEvent> *scrollHandlers;
-		Data::ArrayList<void *> *scrollHandlersObj;
+		Data::ArrayList<ScrollEvent> scrollHandlers;
+		Data::ArrayList<void *> scrollHandlersObj;
 
 	public:
 		void EventScrolled();

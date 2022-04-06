@@ -10,7 +10,7 @@ Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surf
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
 		if (this->primarySurface)
 		{
-			this->UpdateDispInfo(this->primarySurface->info->dispWidth, this->primarySurface->info->dispHeight, this->primarySurface->info->storeBPP, this->primarySurface->info->pf);
+			this->UpdateDispInfo(this->primarySurface->info.dispWidth, this->primarySurface->info.dispHeight, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 		}
 	}
 	else
@@ -35,15 +35,15 @@ void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 	Sync::MutexUsage mutUsage(this->mut);
 	if (this->primarySurface)
 	{
-		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info->rotateType, rotateType);
+		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info.rotateType, rotateType);
 		UOSInt tmpV;
-		this->primarySurface->info->rotateType = rotateType;
+		this->primarySurface->info.rotateType = rotateType;
 		if (rtChange == Media::RotateType::CW_90 || rtChange == Media::RotateType::CW_270)
 		{
-			tmpV = this->primarySurface->info->dispWidth;
-			this->primarySurface->info->dispWidth = this->primarySurface->info->dispHeight;
-			this->primarySurface->info->dispHeight = tmpV;
-			this->UpdateDispInfo(this->primarySurface->info->dispWidth, this->primarySurface->info->dispHeight, this->primarySurface->info->storeBPP, this->primarySurface->info->pf);
+			tmpV = this->primarySurface->info.dispWidth;
+			this->primarySurface->info.dispWidth = this->primarySurface->info.dispHeight;
+			this->primarySurface->info.dispHeight = tmpV;
+			this->UpdateDispInfo(this->primarySurface->info.dispWidth, this->primarySurface->info.dispHeight, this->primarySurface->info.storeBPP, this->primarySurface->info.pf);
 			mutUsage.EndUse();
 		}
 	}	

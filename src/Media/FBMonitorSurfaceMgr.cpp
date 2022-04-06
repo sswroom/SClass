@@ -115,7 +115,7 @@ Bool Media::FBMonitorSurfaceMgr::CreatePrimarySurfaceWithBuffer(MonitorHandle *h
 	Media::MonitorSurface *pSurface = this->CreatePrimarySurface(hMon, 0, rotateType);
 	if (pSurface)
 	{
-		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info->dispWidth, pSurface->info->dispHeight, pSurface->info->storeBPP);
+		Media::MonitorSurface *bSurface = this->CreateSurface(pSurface->info.dispWidth, pSurface->info.dispHeight, pSurface->info.storeBPP);
 		if (bSurface)
 		{
 			((Media::FBSurface*)pSurface)->SetBuffSurface(bSurface);

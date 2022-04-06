@@ -70,7 +70,7 @@ Net::HTTPOSClient::HTTPOSClient(Net::SocketFactory *sockf, Text::CString userAge
 	this->clsData = MemAlloc(ClassData, 1);
 	this->clsData->curl = curl_easy_init();
 	this->clsData->headers = 0;
-	this->clsData->respHeaders = this->headers;
+	this->clsData->respHeaders = &this->headers;
 	NEW_CLASS(this->clsData->respData, IO::MemoryStream(UTF8STRC("Net.HTTPOSClient.respData")));
 	this->clsData->contLen = 0x7fffffff;
 	this->cliHost = 0;
@@ -301,7 +301,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 	}
 
-	this->clk->Start();
+	this->clk.Start();
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
@@ -318,10 +318,10 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 		if (timeDNS)
 		{
-			*timeDNS = clk->GetTimeDiff();
+			*timeDNS = this->clk.GetTimeDiff();
 		}
 
-		t1 = clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeConn)
 		{
 			*timeConn = t1;
@@ -345,12 +345,12 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			*timeConn = 0;
 		}
 		this->contRead = 0;
-		i = this->headers->GetCount();
+		i = this->headers.GetCount();
 		while (i-- > 0)
 		{
-			this->headers->RemoveAt(i)->Release();
+			this->headers.RemoveAt(i)->Release();
 		}
-		this->headers->Clear();
+		this->headers.Clear();
 	}
 	else
 	{
@@ -499,7 +499,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->reqMstm->Clear();
 		this->clsData->respData->SeekFromBeginning(0);
 		this->contLeng = this->clsData->contLen;
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeReq)
 		{
 			*timeReq = t1;
@@ -518,7 +518,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 		{
 			printf("CURL error: %d\r\n", res);
 		}
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeResp)
 		{
 			*timeResp = t1;

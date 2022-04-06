@@ -89,12 +89,12 @@ void __stdcall Media::MediaPlayer::OnAudioEnd(void *userObj)
 void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
 	Media::MediaPlayer *me = (Media::MediaPlayer*)userObj;
-	UOSInt w = img->info->dispWidth;
-	UOSInt h = img->info->dispHeight;
+	UOSInt w = img->info.dispWidth;
+	UOSInt h = img->info.dispHeight;
 	UInt8 *yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
-	if (img->info->fourcc == *(UInt32*)"YV12")
+	if (img->info.fourcc == *(UInt32*)"YV12")
 	{
 		if (w & 3)
 		{
@@ -102,7 +102,7 @@ void __stdcall Media::MediaPlayer::VideoCropImage(void *userObj, UInt32 frameTim
 		}
 		ySplit = 1;
 	}
-	else if (img->info->fourcc == *(UInt32*)"YUY2")
+	else if (img->info.fourcc == *(UInt32*)"YUY2")
 	{
 		ySplit = 2;
 	}

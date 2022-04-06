@@ -11,24 +11,23 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight)
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
-	NEW_CLASS(this->info, Media::FrameInfo());
-	info->dispWidth = dispWidth;
-	info->dispHeight = dispHeight;
-	info->storeWidth = dispWidth;
-	info->storeHeight = dispHeight;
-	info->fourcc = 0;
-	info->storeBPP = 32;
-	info->pf = Media::PF_B8G8R8A8;
-	info->byteSize = dispWidth * dispHeight * 4;
-	info->par2 = 1;
-	info->hdpi = 96;
-	info->vdpi = 96;
-	info->color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
-	info->atype = Media::AT_ALPHA;
-	info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	info->rotateType = Media::RotateType::None;
-	info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	info->ftype = Media::FT_NON_INTERLACE;
+	this->info.dispWidth = dispWidth;
+	this->info.dispHeight = dispHeight;
+	this->info.storeWidth = dispWidth;
+	this->info.storeHeight = dispHeight;
+	this->info.fourcc = 0;
+	this->info.storeBPP = 32;
+	this->info.pf = Media::PF_B8G8R8A8;
+	this->info.byteSize = dispWidth * dispHeight * 4;
+	this->info.par2 = 1;
+	this->info.hdpi = 96;
+	this->info.vdpi = 96;
+	this->info.color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
+	this->info.atype = Media::AT_ALPHA;
+	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	this->info.rotateType = Media::RotateType::None;
+	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->info.ftype = Media::FT_NON_INTERLACE;
 	this->pal = 0;
 }
 
@@ -38,55 +37,54 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 	this->hasHotSpot = false;
 	this->hotSpotX = 0;
 	this->hotSpotY = 0;
-	NEW_CLASS(this->info, Media::FrameInfo());
-	info->dispWidth = dispWidth;
-	info->dispHeight = dispHeight;
-	info->storeWidth = storeWidth;
-	info->storeHeight = storeHeight;
-	info->fourcc = fourcc;
-	info->storeBPP = bpp;
-	info->pf = pf;
-	info->byteSize = maxSize;
-	info->par2 = 1;
-	info->hdpi = 96;
-	info->vdpi = 96;
+	this->info.dispWidth = dispWidth;
+	this->info.dispHeight = dispHeight;
+	this->info.storeWidth = storeWidth;
+	this->info.storeHeight = storeHeight;
+	this->info.fourcc = fourcc;
+	this->info.storeBPP = bpp;
+	this->info.pf = pf;
+	this->info.byteSize = maxSize;
+	this->info.par2 = 1;
+	this->info.hdpi = 96;
+	this->info.vdpi = 96;
 	if (color == 0)
 	{
-		info->color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
+		this->info.color->SetCommonProfile(Media::ColorProfile::CPT_PUNKNOWN);
 	}
 	else
 	{
-		info->color->Set(color);
+		this->info.color->Set(color);
 	}
-	info->atype = atype;
-	info->yuvType = yuvType;
-	info->ycOfst = ycOfst;
-	info->ftype = Media::FT_NON_INTERLACE;
-	info->rotateType = Media::RotateType::None;
+	this->info.atype = atype;
+	this->info.yuvType = yuvType;
+	this->info.ycOfst = ycOfst;
+	this->info.ftype = Media::FT_NON_INTERLACE;
+	this->info.rotateType = Media::RotateType::None;
 
 	if (pf == Media::PF_PAL_1_A1)
 	{
-		info->storeWidth = dispHeight;
-		info->storeHeight = dispWidth;
-		info->byteSize = ((dispWidth + 7) >> 3) * dispHeight * 2;
+		this->info.storeWidth = dispHeight;
+		this->info.storeHeight = dispWidth;
+		this->info.byteSize = ((dispWidth + 7) >> 3) * dispHeight * 2;
 	}
 	else if (pf == Media::PF_PAL_2_A1)
 	{
-		info->storeWidth = dispHeight;
-		info->storeHeight = dispWidth;
-		info->byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 3) >> 2)) * dispHeight;
+		this->info.storeWidth = dispHeight;
+		this->info.storeHeight = dispWidth;
+		this->info.byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 3) >> 2)) * dispHeight;
 	}
 	else if (pf == Media::PF_PAL_4_A1)
 	{
-		info->storeWidth = dispHeight;
-		info->storeHeight = dispWidth;
-		info->byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 1) >> 1)) * dispHeight;
+		this->info.storeWidth = dispHeight;
+		this->info.storeHeight = dispWidth;
+		this->info.byteSize = (((dispWidth + 7) >> 3) + ((dispWidth + 1) >> 1)) * dispHeight;
 	}
 	else if (pf == Media::PF_PAL_8_A1)
 	{
-		info->storeWidth = dispHeight;
-		info->storeHeight = dispWidth;
-		info->byteSize = (((dispWidth + 7) >> 3) + dispWidth) * dispHeight;
+		this->info.storeWidth = dispHeight;
+		this->info.storeHeight = dispWidth;
+		this->info.byteSize = (((dispWidth + 7) >> 3) + dispWidth) * dispHeight;
 	}
 	else
 	{
@@ -94,14 +92,14 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 		{
 			storeWidth = dispWidth;
 			storeHeight = dispHeight;
-			info->storeHeight = storeHeight;
-			info->storeWidth = storeWidth;
+			this->info.storeHeight = storeHeight;
+			this->info.storeWidth = storeWidth;
 			if (pf == Media::PF_PAL_1 || pf == Media::PF_PAL_W1)
 			{
 				if (dispWidth & 7)
 				{
 					storeWidth = dispWidth + 8 - (dispWidth & 7);
-					info->storeWidth = storeWidth;
+					this->info.storeWidth = storeWidth;
 				}
 			}
 			else if (pf == Media::PF_PAL_2 || pf == Media::PF_PAL_W2 || pf == Media::PF_PAL_2_A1)
@@ -109,7 +107,7 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 				if (dispWidth & 3)
 				{
 					storeWidth = dispWidth + 4 - (dispWidth & 3);
-					info->storeWidth = storeWidth;
+					this->info.storeWidth = storeWidth;
 				}
 			}
 			else if (pf == Media::PF_PAL_4 || pf == Media::PF_PAL_W4 || pf == Media::PF_PAL_4_A1)
@@ -117,20 +115,20 @@ Media::Image::Image(UOSInt dispWidth, UOSInt dispHeight, UOSInt storeWidth, UOSI
 				if (dispWidth & 1)
 				{
 					storeWidth = dispWidth + 2 - (dispWidth & 1);
-					info->storeWidth = storeWidth;
+					this->info.storeWidth = storeWidth;
 				}
 			}
 		}
 		if (bpp)
 		{
-			info->byteSize = storeWidth * bpp;
-			if (info->byteSize & 7)
-				info->byteSize += 8 - (info->byteSize & 7);
-			info->byteSize = storeHeight * (info->byteSize >> 3);
+			this->info.byteSize = storeWidth * bpp;
+			if (this->info.byteSize & 7)
+				this->info.byteSize += 8 - (this->info.byteSize & 7);
+			this->info.byteSize = storeHeight * (this->info.byteSize >> 3);
 		}
 	}
 	this->pal = 0;
-	if (info->fourcc == 0)
+	if (this->info.fourcc == 0)
 	{
 		if (pf == Media::PF_PAL_1_A1)
 		{
@@ -166,39 +164,38 @@ Media::Image::~Image()
 	{
 		DEL_CLASS(this->exif);
 	}
-	DEL_CLASS(this->info);
 }
 
 UOSInt Media::Image::GetDataBpl()
 {
-	if (this->info->fourcc == *(UInt32*)"LRGB")
+	if (this->info.fourcc == *(UInt32*)"LRGB")
 	{
-		return (this->info->storeWidth << 3);
+		return (this->info.storeWidth << 3);
 	}
-	if (this->info->fourcc != 0 && this->info->fourcc != *(UInt32*)"DIBS")
+	if (this->info.fourcc != 0 && this->info.fourcc != *(UInt32*)"DIBS")
 		return 0;
-	if (this->info->pf == Media::PF_PAL_1_A1)
+	if (this->info.pf == Media::PF_PAL_1_A1)
 	{
-		return ((this->info->dispWidth + 7) >> 3) * 2;
+		return ((this->info.dispWidth + 7) >> 3) * 2;
 	}
-	else if (this->info->pf == Media::PF_PAL_2_A1)
+	else if (this->info.pf == Media::PF_PAL_2_A1)
 	{
-		return (((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 3) >> 2));
+		return (((this->info.dispWidth + 7) >> 3) + ((this->info.dispWidth + 3) >> 2));
 	}
-	else if (this->info->pf == Media::PF_PAL_4_A1)
+	else if (this->info.pf == Media::PF_PAL_4_A1)
 	{
-		return (((this->info->dispWidth + 7) >> 3) + ((this->info->dispWidth + 1) >> 1));
+		return (((this->info.dispWidth + 7) >> 3) + ((this->info.dispWidth + 1) >> 1));
 	}
-	else if (this->info->pf == Media::PF_PAL_8_A1)
+	else if (this->info.pf == Media::PF_PAL_8_A1)
 	{
-		return (((this->info->dispWidth + 7) >> 3) + this->info->dispWidth);
+		return (((this->info.dispWidth + 7) >> 3) + this->info.dispWidth);
 	}
-	else if (this->info->storeBPP <= 0)
-		return (this->info->storeWidth * (this->info->storeBPP >> 3));
-	else if (this->info->storeBPP == 4)
-		return ((this->info->storeWidth >> 1) + (this->info->storeWidth & 1));
+	else if (this->info.storeBPP <= 0)
+		return (this->info.storeWidth * (this->info.storeBPP >> 3));
+	else if (this->info.storeBPP == 4)
+		return ((this->info.storeWidth >> 1) + (this->info.storeWidth & 1));
 	else
-		return ((this->info->storeWidth * this->info->storeBPP) >> 3);
+		return ((this->info.storeWidth * this->info.storeBPP) >> 3);
 }
 
 Bool Media::Image::IsUpsideDown()
@@ -231,22 +228,22 @@ OSInt Media::Image::GetHotSpotY()
 Media::StaticImage *Media::Image::CreateStaticImage()
 {
 	Media::StaticImage *outImg;
-	NEW_CLASS(outImg, Media::StaticImage(this->info));
+	NEW_CLASS(outImg, Media::StaticImage(&this->info));
 	if (this->exif)
 	{
 		outImg->exif = this->exif->Clone();
 	}
-	this->GetImageData(outImg->data, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
+	this->GetImageData(outImg->data, 0, 0, this->info.dispWidth, this->info.dispHeight, this->GetDataBpl(), false);
 	if (this->pal)
 	{
 		UOSInt size;
-		if (this->info->pf == Media::PF_PAL_1_A1 || this->info->pf == Media::PF_PAL_2_A1 || this->info->pf == Media::PF_PAL_4_A1 || this->info->pf == Media::PF_PAL_8_A1)
+		if (this->info.pf == Media::PF_PAL_1_A1 || this->info.pf == Media::PF_PAL_2_A1 || this->info.pf == Media::PF_PAL_4_A1 || this->info.pf == Media::PF_PAL_8_A1)
 		{
-			size = ((UOSInt)4 << (this->info->storeBPP - 1));
+			size = ((UOSInt)4 << (this->info.storeBPP - 1));
 		}
 		else
 		{
-			size = ((UOSInt)4 << this->info->storeBPP);
+			size = ((UOSInt)4 << this->info.storeBPP);
 		}
 		MemCopyNO(outImg->pal, this->pal, size);
 	}
@@ -262,7 +259,7 @@ Media::EXIFData *Media::Image::SetEXIFData(Media::EXIFData *exif)
 
 void Media::Image::ToString(Text::StringBuilderUTF8 *sb)
 {
-	this->info->ToString(sb);
+	this->info.ToString(sb);
 	if (this->HasHotSpot())
 	{
 		sb->AppendC(UTF8STRC("\r\nHot Spot: ("));

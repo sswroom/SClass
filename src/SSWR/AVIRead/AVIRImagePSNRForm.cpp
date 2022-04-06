@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRImagePSNRForm::OnCompareClicked(void *userObj)
 		imgList2->ToStaticImage(0);
 		simg1 = (Media::StaticImage*)imgList1->GetImage(0, 0);
 		simg2 = (Media::StaticImage*)imgList2->GetImage(0, 0);
-		if (simg1->info->storeWidth == simg2->info->storeWidth && simg1->info->dispHeight == simg2->info->dispHeight)
+		if (simg1->info.storeWidth == simg2->info.storeWidth && simg1->info.dispHeight == simg2->info.dispHeight)
 		{
 			Double psnr;
 			if (me->radMode16Bit->IsSelected())

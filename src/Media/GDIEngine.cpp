@@ -475,15 +475,15 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 	{
 		return 0;
 	}
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 	{
 		return 0; 
 	}
-	Media::GDIImage *gimg = (Media::GDIImage*)CreateImage32(img->info->dispWidth, img->info->dispHeight, img->info->atype);
+	Media::GDIImage *gimg = (Media::GDIImage*)CreateImage32(img->info.dispWidth, img->info.dispHeight, img->info.atype);
 	if (gimg == 0)
 		return 0;
-	gimg->SetHDPI(img->info->hdpi);
-	gimg->SetVDPI(img->info->vdpi);
+	gimg->SetHDPI(img->info.hdpi);
+	gimg->SetVDPI(img->info.vdpi);
 	if (img->GetImageType() == Media::Image::IT_STATIC)
 	{
 		Media::StaticImage *simg = (Media::StaticImage*)img;
@@ -491,9 +491,9 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
-			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
-			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
-			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
+			OSInt sbpl = (OSInt)simg->info.storeWidth << 2;
+			OSInt dbpl = (OSInt)simg->info.dispWidth << 2;
+			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info.dispHeight - 1)), simg->info.dispWidth << 2, simg->info.dispHeight, sbpl, -dbpl);
 		}
 	}
 	else
@@ -503,9 +503,9 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 		{
 			UInt8 *sptr = (UInt8*)simg->data;
 			UInt8 *dptr = (UInt8*)gimg->bmpBits;
-			OSInt sbpl = (OSInt)simg->info->storeWidth << 2;
-			OSInt dbpl = (OSInt)simg->info->dispWidth << 2;
-			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info->dispHeight - 1)), simg->info->dispWidth << 2, simg->info->dispHeight, sbpl, -dbpl);
+			OSInt sbpl = (OSInt)simg->info.storeWidth << 2;
+			OSInt dbpl = (OSInt)simg->info.dispWidth << 2;
+			ImageCopy_ImgCopy(sptr, dptr + ((UOSInt)dbpl * (simg->info.dispHeight - 1)), simg->info.dispWidth << 2, simg->info.dispHeight, sbpl, -dbpl);
 		}
 		DEL_CLASS(simg);
 	}
@@ -515,7 +515,7 @@ Media::DrawImage *Media::GDIEngine::ConvImage(Media::Image *img)
 Media::DrawImage *Media::GDIEngine::CloneImage(Media::DrawImage *img)
 {
 	Media::GDIImage *newImg = (Media::GDIImage*)this->CreateImage32(img->GetWidth(), img->GetHeight(), img->GetAlphaType());
-	newImg->info->Set(((Media::GDIImage*)img)->info);
+	newImg->info.Set(&((Media::GDIImage*)img)->info);
 	if (img->GetBitCount() == 32)
 	{
 		MemCopyNO(newImg->bmpBits, ((Media::GDIImage*)img)->bmpBits, newImg->GetWidth() * newImg->GetHeight() * 4);
@@ -754,39 +754,39 @@ UInt32 Media::GDIImage::GetBitCount()
 
 Media::ColorProfile *Media::GDIImage::GetColorProfile()
 {
-	return this->info->color;
+	return this->info.color;
 }
 
 void Media::GDIImage::SetColorProfile(const Media::ColorProfile *color)
 {
-	return this->info->color->Set(color);
+	return this->info.color->Set(color);
 }
 
 Media::AlphaType Media::GDIImage::GetAlphaType()
 {
-	return this->info->atype;
+	return this->info.atype;
 }
 
 void Media::GDIImage::SetAlphaType(Media::AlphaType atype)
 {
-	this->info->atype = atype;
+	this->info.atype = atype;
 }
 
 Double Media::GDIImage::GetHDPI()
 {
-	return this->info->hdpi;
+	return this->info.hdpi;
 }
 
 Double Media::GDIImage::GetVDPI()
 {
-	return this->info->vdpi;
+	return this->info.vdpi;
 }
 
 void Media::GDIImage::SetHDPI(Double dpi)
 {
 	if (dpi > 0)
 	{
-		this->info->hdpi = dpi;
+		this->info.hdpi = dpi;
 	}
 }
 
@@ -794,7 +794,7 @@ void Media::GDIImage::SetVDPI(Double dpi)
 {
 	if (dpi > 0)
 	{
-		this->info->vdpi = dpi;
+		this->info.vdpi = dpi;
 	}
 }
 
@@ -820,7 +820,7 @@ Media::EXIFData *Media::GDIImage::GetEXIF()
 
 Media::PixelFormat Media::GDIImage::GetPixelFormat()
 {
-	return this->info->pf;
+	return this->info.pf;
 }
 
 Bool Media::GDIImage::DrawLine(Double x1, Double y1, Double x2, Double y2, DrawPen *p)
@@ -955,7 +955,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 	}
 	else
 	{
-		if (this->info->atype == Media::AT_NO_ALPHA && (((GDIBrush*)b)->oriColor & 0xff000000) == 0xff000000)
+		if (this->info.atype == Media::AT_NO_ALPHA && (((GDIBrush*)b)->oriColor & 0xff000000) == 0xff000000)
 		{
 			if (this->currBrush != b)
 			{
@@ -982,8 +982,8 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 			UInt32 bCol = ((GDIBrush*)b)->oriColor;
 			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
-			bmih.biWidth = (LONG)this->info->dispWidth;
-			bmih.biHeight = (LONG)this->info->dispHeight;
+			bmih.biWidth = (LONG)this->info.dispWidth;
+			bmih.biHeight = (LONG)this->info.dispHeight;
 			bmih.biPlanes = 1;
 			bmih.biBitCount = 32;
 			bmih.biCompression = BI_RGB;
@@ -997,7 +997,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 			HBITMAP hBmp = CreateDIBSection(hdcBmp, (BITMAPINFO*)&bmih, 0, &pbits, 0, 0);
 			if (hBmp)
 			{
-				MemClear(pbits, this->info->dispWidth * this->info->dispHeight * 4);
+				MemClear(pbits, this->info.dispWidth * this->info.dispHeight * 4);
 				SelectObject(hdcBmp, hBmp);
 				HBRUSH hbr = CreateSolidBrush(0xffffff);
 				SelectObject(hdcBmp, hbr);
@@ -1006,7 +1006,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 
 				UInt32 *sptr = (UInt32*)pbits;
 				UInt32 *dptr = (UInt32*)this->bmpBits;
-				OSInt cnt = this->info->dispWidth * this->info->dispHeight;
+				OSInt cnt = this->info.dispWidth * this->info.dispHeight;
 				while (cnt-- > 0)
 				{
 					if (*sptr)
@@ -1030,8 +1030,8 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 			UInt32 bCol = ((GDIBrush*)b)->oriColor;
 			BITMAPINFOHEADER bmih;
 			bmih.biSize = sizeof(bmih);
-			bmih.biWidth = (LONG)this->info->dispWidth;
-			bmih.biHeight = (LONG)this->info->dispHeight;
+			bmih.biWidth = (LONG)this->info.dispWidth;
+			bmih.biHeight = (LONG)this->info.dispHeight;
 			bmih.biPlanes = 1;
 			bmih.biBitCount = 32;
 			bmih.biCompression = BI_RGB;
@@ -1045,7 +1045,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 			HBITMAP hBmp = CreateDIBSection(hdcBmp, (BITMAPINFO*)&bmih, 0, &pbits, 0, 0);
 			if (hBmp)
 			{
-				MemClear(pbits, this->info->dispWidth * this->info->dispHeight * 4);
+				MemClear(pbits, this->info.dispWidth * this->info.dispHeight * 4);
 				SelectObject(hdcBmp, hBmp);
 				HBRUSH hbr = CreateSolidBrush(0xffffff);
 				SelectObject(hdcBmp, hbr);
@@ -1054,7 +1054,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 
 
 				UInt32 *ptr = (UInt32*)pbits;
-				OSInt cnt = this->info->dispWidth * this->info->dispHeight;
+				OSInt cnt = this->info.dispWidth * this->info.dispHeight;
 				while (cnt-- > 0)
 				{
 					if (*ptr)
@@ -1068,7 +1068,7 @@ Bool Media::GDIImage::DrawPolyPolygonI(Int32 *points, UInt32 *pointCnt, UOSInt n
 				bf.BlendFlags = 0;
 				bf.SourceConstantAlpha = 255;
 				bf.AlphaFormat = AC_SRC_ALPHA;
-				AlphaBlend((HDC)this->hdcBmp, 0, 0, (int)this->info->dispWidth, (int)this->info->dispHeight, hdcBmp, 0, 0, (int)this->info->dispWidth, (int)this->info->dispHeight, bf);
+				AlphaBlend((HDC)this->hdcBmp, 0, 0, (int)this->info.dispWidth, (int)this->info.dispHeight, hdcBmp, 0, 0, (int)this->info.dispWidth, (int)this->info.dispHeight, bf);
 
 				if (p)
 				{
@@ -1245,7 +1245,7 @@ Bool Media::GDIImage::DrawRect(Double x, Double y, Double w, Double h, DrawPen *
 
 Bool Media::GDIImage::DrawEllipse(Double tlx, Double tly, Double w, Double h, DrawPen *p, DrawBrush *b)
 {
-	if (this->info->atype == Media::AT_NO_ALPHA)
+	if (this->info.atype == Media::AT_NO_ALPHA)
 	{
 		if (b == 0)
 		{
@@ -1344,7 +1344,7 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 	GDIBrush *brush = (GDIBrush*)b;
 	const WChar *src = str;
 	while (*src++);
-	if (this->bmpBits == 0 || (this->info->atype == Media::AT_NO_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
+	if (this->bmpBits == 0 || (this->info.atype == Media::AT_NO_ALPHA && (brush->oriColor & 0xff000000) == 0xff000000))
 	{
 		SetTextColor((HDC)this->hdcBmp, brush->color);
 		if (this->currFont != f)
@@ -1375,8 +1375,8 @@ Bool Media::GDIImage::DrawStringW(Double tlx, Double tly, const WChar *str, Draw
 		Media::DrawBrush *b2 = tmpImg->NewBrushARGB(0xffffffff);
 		tmpImg->DrawStringW(0, 0, str, f, b2);
 		tmpImg->DelBrush(b2);
-		ImageUtil_ColorReplace32((UInt8*)tmpImg->bmpBits, tmpImg->info->storeWidth, tmpImg->info->storeHeight, ((GDIBrush*)b)->oriColor);
-		tmpImg->info->atype = Media::AT_ALPHA;
+		ImageUtil_ColorReplace32((UInt8*)tmpImg->bmpBits, tmpImg->info.storeWidth, tmpImg->info.storeHeight, ((GDIBrush*)b)->oriColor);
+		tmpImg->info.atype = Media::AT_ALPHA;
 		Double x;
 		Double y;
 		if (this->strAlign == Media::DrawEngine::DRAW_POS_TOPLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_CENTERLEFT || this->strAlign == Media::DrawEngine::DRAW_POS_BOTTOMLEFT)
@@ -1861,9 +1861,9 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 	GDIImage *image = (GDIImage *)img;
 	if (this->hBmp == 0)
 	{
-		return this->DrawImageRect(img, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + image->GetWidth() * this->info->hdpi / image->GetHDPI()), Double2Int32(tly + image->GetHeight() * this->info->vdpi / image->GetVDPI()));
+		return this->DrawImageRect(img, Double2Int32(tlx), Double2Int32(tly), Double2Int32(tlx + image->GetWidth() * this->info.hdpi / image->GetHDPI()), Double2Int32(tly + image->GetHeight() * this->info.vdpi / image->GetVDPI()));
 	}
-	if (image->info->atype == Media::AT_NO_ALPHA)
+	if (image->info.atype == Media::AT_NO_ALPHA)
 	{
 		if (this->IsOffScreen())
 		{
@@ -1939,15 +1939,15 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(image->info->color);
-				this->eng->iab->SetDestProfile(this->info->color);
-				this->eng->iab->SetOutputProfile(this->info->color);
-				this->eng->iab->Blend(dbits + (this->height - (Int32)tly - h) * dbpl + (((Int32)tlx) * 4), dbpl, sbits, sbpl, w, h, image->info->atype);
+				this->eng->iab->SetSourceProfile(image->info.color);
+				this->eng->iab->SetDestProfile(this->info.color);
+				this->eng->iab->SetOutputProfile(this->info.color);
+				this->eng->iab->Blend(dbits + (this->height - (Int32)tly - h) * dbpl + (((Int32)tlx) * 4), dbpl, sbits, sbpl, w, h, image->info.atype);
 			}
 		}
 		else
 		{
-			if (image->info->atype == Media::AT_PREMUL_ALPHA)
+			if (image->info.atype == Media::AT_PREMUL_ALPHA)
 			{
 				BLENDFUNCTION bf;
 				bf.SourceConstantAlpha = 255;
@@ -1967,7 +1967,7 @@ Bool Media::GDIImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 			}
 		}
 #elif (!defined(_WIN32_WCE) || (_WIN32_WCE >= 0x0500))
-		if (image->info->atype == Media::AT_PREMUL_ALPHA)
+		if (image->info.atype == Media::AT_PREMUL_ALPHA)
 		{
 			BLENDFUNCTION bf;
 			bf.SourceConstantAlpha = 255;
@@ -1998,14 +1998,14 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 	{
 		Media::StaticImage *simg = img;
 		simg->To32bpp();
-		if (simg->info->atype == Media::AT_NO_ALPHA)
+		if (simg->info.atype == Media::AT_NO_ALPHA)
 		{
 			Int32 x = Double2Int32(tlx);
 			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
-			OSInt w = simg->info->dispWidth;
-			OSInt h = simg->info->dispHeight;
+			OSInt w = simg->info.dispWidth;
+			OSInt h = simg->info.dispHeight;
 			OSInt bpl = this->width << 2;
 			if (x < 0)
 			{
@@ -2029,17 +2029,17 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(simg->data + (sy * simg->info->storeWidth << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->height - y - 1) * bpl + (x << 2), w << 2, h, simg->info->storeWidth << 2, -(OSInt)this->width << 2);
+				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeWidth << 2) + (sx << 2), ((UInt8*)this->bmpBits) + (this->height - y - 1) * bpl + (x << 2), w << 2, h, simg->info.storeWidth << 2, -(OSInt)this->width << 2);
 			}
 		}
 		else
 		{
-			OSInt w = (OSInt)simg->info->dispWidth;
-			OSInt h = (OSInt)simg->info->dispHeight;
+			OSInt w = (OSInt)simg->info.dispWidth;
+			OSInt h = (OSInt)simg->info.dispHeight;
 			UInt8 *dbits = (UInt8*)this->bmpBits;
 			UInt8 *sbits = simg->data;
 			UOSInt dbpl = this->width << 2;
-			UOSInt sbpl = simg->info->storeWidth << 2;
+			UOSInt sbpl = simg->info.storeWidth << 2;
 
 			if (tlx < 0)
 			{
@@ -2064,10 +2064,10 @@ Bool Media::GDIImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double t
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(simg->info->color);
-				this->eng->iab->SetDestProfile(this->info->color);
-				this->eng->iab->SetOutputProfile(this->info->color);
-				this->eng->iab->Blend(dbits + (this->height - Double2Int32(tly) - 1) * dbpl + (Double2Int32(tlx) * 4), -dbpl, sbits, sbpl, w, h, simg->info->atype);
+				this->eng->iab->SetSourceProfile(simg->info.color);
+				this->eng->iab->SetDestProfile(this->info.color);
+				this->eng->iab->SetOutputProfile(this->info.color);
+				this->eng->iab->Blend(dbits + (this->height - Double2Int32(tly) - 1) * dbpl + (Double2Int32(tlx) * 4), -dbpl, sbits, sbpl, w, h, simg->info.atype);
 			}
 		}
 		return true;
@@ -2090,9 +2090,9 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 	GDIImage *image = (GDIImage *)img;
 	if (this->hBmp == 0)
 	{
-		return this->DrawImageRect(img, Double2Int32(destX), Double2Int32(destY), Double2Int32(destX + srcW * this->info->hdpi / image->GetHDPI()), Double2Int32(destY + srcH * this->info->vdpi / image->GetVDPI()));
+		return this->DrawImageRect(img, Double2Int32(destX), Double2Int32(destY), Double2Int32(destX + srcW * this->info.hdpi / image->GetHDPI()), Double2Int32(destY + srcH * this->info.vdpi / image->GetVDPI()));
 	}
-	if (image->info->atype == Media::AT_NO_ALPHA)
+	if (image->info.atype == Media::AT_NO_ALPHA)
 	{
 		if (this->IsOffScreen())
 		{
@@ -2172,15 +2172,15 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab->SetSourceProfile(image->info->color);
-				this->eng->iab->SetDestProfile(this->info->color);
-				this->eng->iab->SetOutputProfile(this->info->color);
-				this->eng->iab->Blend(dbits + (this->height - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, image->info->atype);
+				this->eng->iab->SetSourceProfile(image->info.color);
+				this->eng->iab->SetDestProfile(this->info.color);
+				this->eng->iab->SetOutputProfile(this->info.color);
+				this->eng->iab->Blend(dbits + (this->height - y - h) * dbpl + (x * 4), dbpl, sbits + (sh - sy - h) * sbpl + (sx << 2), sbpl, w, h, image->info.atype);
 			}
 		}
 		else
 		{
-			if (image->info->atype == Media::AT_PREMUL_ALPHA)
+			if (image->info.atype == Media::AT_PREMUL_ALPHA)
 			{
 				BLENDFUNCTION bf;
 				bf.SourceConstantAlpha = 255;
@@ -2200,7 +2200,7 @@ Bool Media::GDIImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, D
 			}
 		}
 #elif (!defined(_WIN32_WCE) || (_WIN32_WCE >= 0x0500))
-		if (image->info->atype == Media::AT_PREMUL_ALPHA)
+		if (image->info.atype == Media::AT_PREMUL_ALPHA)
 		{
 			BLENDFUNCTION bf;
 			bf.SourceConstantAlpha = 255;
@@ -2298,7 +2298,7 @@ Media::DrawFont *Media::GDIImage::NewFontPx(Text::CString name, Double pxSize, M
 {
 	GDIFont *f;
 	const WChar *wptr = Text::StrToWCharNew(name.v);
-	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize * 72.0 / this->info->hdpi, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, wptr, pxSize * 72.0 / this->info.hdpi, fontStyle, this, codePage));
 	Text::StrDelNew(wptr);
 	return f;
 }
@@ -2306,7 +2306,7 @@ Media::DrawFont *Media::GDIImage::NewFontPx(Text::CString name, Double pxSize, M
 Media::DrawFont *Media::GDIImage::NewFontPxW(const WChar *name, Double pxSize, Media::DrawEngine::DrawFontStyle fontStyle, UInt32 codePage)
 {
 	GDIFont *f;
-	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info->hdpi, fontStyle, this, codePage));
+	NEW_CLASS(f, GDIFont(this->hdcBmp, name, pxSize * 72.0 / this->info.hdpi, fontStyle, this, codePage));
 	return f;
 }
 
@@ -3062,7 +3062,7 @@ void Media::GDIImage::FillAlphaRect(OSInt left, OSInt top, OSInt width, OSInt he
 		return;
 	if (height <= 0)
 		return;
-	if (this->info->storeBPP == 32 && this->bmpBits && this->info->pf == Media::PF_B8G8R8A8)
+	if (this->info.storeBPP == 32 && this->bmpBits && this->info.pf == Media::PF_B8G8R8A8)
 	{
 		UInt8 *pbits = (UInt8*)this->bmpBits;
 		UOSInt bpl = this->width * 4;

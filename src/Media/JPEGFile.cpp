@@ -124,11 +124,11 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 				Media::ICCProfile *icc = Media::ICCProfile::Parse(&tagBuff[14], j - 14);
 				if (icc)
 				{
-					icc->GetRedTransferParam(img->info->color->GetRTranParam());
-					icc->GetGreenTransferParam(img->info->color->GetGTranParam());
-					icc->GetBlueTransferParam(img->info->color->GetBTranParam());
-					icc->GetColorPrimaries(img->info->color->GetPrimaries());
-					img->info->color->SetRAWICC(&tagBuff[14]);
+					icc->GetRedTransferParam(img->info.color->GetRTranParam());
+					icc->GetGreenTransferParam(img->info.color->GetGTranParam());
+					icc->GetBlueTransferParam(img->info.color->GetBTranParam());
+					icc->GetColorPrimaries(img->info.color->GetPrimaries());
+					img->info.color->SetRAWICC(&tagBuff[14]);
 					DEL_CLASS(icc);
 				}
 			}
@@ -210,16 +210,16 @@ Bool Media::JPEGFile::ParseJPEGHeader(IO::IStreamData *fd, Media::Image *img, Me
 								{
 									innerImg = innerImgList->GetImage(i, &delay);
 									stImg = innerImg->CreateStaticImage();
-									if (stImg->info->pf == Media::PF_LE_W16)
+									if (stImg->info.pf == Media::PF_LE_W16)
 									{
 										UInt8 *imgPtr = stImg->data;
-										UOSInt pixelCnt = stImg->info->dispWidth * stImg->info->dispHeight;
+										UOSInt pixelCnt = stImg->info.dispWidth * stImg->info.dispHeight;
 										while (pixelCnt-- > 0)
 										{
 											WriteInt16(imgPtr, ReadMInt16(imgPtr));
 											imgPtr += 2;
 										}
-										imgList->SetThermoImage(stImg->info->dispWidth, stImg->info->dispHeight, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
+										imgList->SetThermoImage(stImg->info.dispWidth, stImg->info.dispHeight, 16, stImg->data, 0.95, 0, 0, Media::ImageList::TT_FLIR);
 									}
 									imgList->AddImage(stImg, delay);
 									i++;
@@ -460,7 +460,7 @@ Bool Media::JPEGFile::ParseJPEGHeaders(IO::IStreamData *fd, Media::EXIFData **ex
 
 void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSInt buffSize, Media::Image *oriImg)
 {
-	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info->color->GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
+	if (oriImg != 0 && (oriImg->exif != 0 || oriImg->info.color->GetRAWICC() != 0) && jpgBuff[0] == 0xff && jpgBuff[1] == 0xd8)
 	{
 		UOSInt i;
 		UOSInt j;
@@ -479,7 +479,7 @@ void Media::JPEGFile::WriteJPGBuffer(IO::Stream *stm, const UInt8 *jpgBuff, UOSI
 			}
 			if (jpgBuff[i + 1] == 0xdb)
 			{
-				const UInt8 *iccBuff = oriImg->info->color->GetRAWICC();
+				const UInt8 *iccBuff = oriImg->info.color->GetRAWICC();
 				if (iccBuff)
 				{
 					UOSInt iccLeng = ReadMUInt32(iccBuff);

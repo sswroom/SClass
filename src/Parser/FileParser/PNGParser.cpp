@@ -2272,7 +2272,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info->atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_NO_ALPHA;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2319,7 +2319,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info->atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_NO_ALPHA;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2371,7 +2371,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info->atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_NO_ALPHA;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}
@@ -2418,7 +2418,7 @@ void Parser::FileParser::PNGParser::ParseImage(UInt8 bitDepth, UInt8 colorType, 
 				}
 				if (!semiTr)
 				{
-					simg->info->atype = Media::AT_NO_ALPHA;
+					simg->info.atype = Media::AT_NO_ALPHA;
 				}
 				imgList->AddImage(simg, imgDelay);
 			}

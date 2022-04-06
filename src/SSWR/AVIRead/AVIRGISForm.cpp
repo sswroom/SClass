@@ -182,34 +182,34 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::FileHandler(void *userObj, Text::Stri
 				{
 					Double hsX;
 					Double hsY;
-					if (stimg->info->par2 > 1)
+					if (stimg->info.par2 > 1)
 					{
 						hsX = OSInt2Double(stimg->GetHotSpotX());
-						hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info->par2;
-						calcImgW = UOSInt2Double(stimg->info->dispWidth);
-						calcImgH = UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						hsY = OSInt2Double(stimg->GetHotSpotY()) * stimg->info.par2;
+						calcImgW = UOSInt2Double(stimg->info.dispWidth);
+						calcImgH = UOSInt2Double(stimg->info.dispHeight) * stimg->info.par2;
 					}
 					else
 					{
-						hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info->par2;
+						hsX = OSInt2Double(stimg->GetHotSpotX()) / stimg->info.par2;
 						hsY = OSInt2Double(stimg->GetHotSpotY());
-						calcImgW = UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = UOSInt2Double(stimg->info->dispHeight);
+						calcImgW = UOSInt2Double(stimg->info.dispWidth) / stimg->info.par2;
+						calcImgH = UOSInt2Double(stimg->info.dispHeight);
 					}
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) - hsX, OSInt2Double(mousePosY) - hsY, &x1, &y1);
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW - hsX, OSInt2Double(mousePosY) + calcImgH - hsY, &x2, &y2);
 				}
 				else
 				{
-					if (stimg->info->par2 > 1)
+					if (stimg->info.par2 > 1)
 					{
-						calcImgW = UOSInt2Double(stimg->info->dispWidth);
-						calcImgH = UOSInt2Double(stimg->info->dispHeight) * stimg->info->par2;
+						calcImgW = UOSInt2Double(stimg->info.dispWidth);
+						calcImgH = UOSInt2Double(stimg->info.dispHeight) * stimg->info.par2;
 					}
 					else
 					{
-						calcImgW = UOSInt2Double(stimg->info->dispWidth) / stimg->info->par2;
-						calcImgH = UOSInt2Double(stimg->info->dispHeight);
+						calcImgW = UOSInt2Double(stimg->info.dispWidth) / stimg->info.par2;
+						calcImgH = UOSInt2Double(stimg->info.dispHeight);
 					}
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) - calcImgW * 0.5, OSInt2Double(mousePosY) - calcImgH * 0.5, &x1, &y1);
 					me->mapCtrl->ScnXYD2MapXY(OSInt2Double(mousePosX) + calcImgW * 0.5, OSInt2Double(mousePosY) + calcImgH * 0.5, &x2, &y2);

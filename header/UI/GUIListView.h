@@ -21,10 +21,10 @@ namespace UI
 	protected:
 		void *clsData;
 	private:
-		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
-		Data::ArrayList<void*> *selChgObjs;
-		Data::ArrayList<ItemEvent> *dblClkHdlrs;
-		Data::ArrayList<void*> *dblClkObjs;
+		Data::ArrayList<UI::UIEvent> selChgHdlrs;
+		Data::ArrayList<void*> selChgObjs;
+		Data::ArrayList<ItemEvent> dblClkHdlrs;
+		Data::ArrayList<void*> dblClkObjs;
 		void *himgList;
 		UInt32 imgW;
 		UInt32 imgH;

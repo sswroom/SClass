@@ -268,14 +268,14 @@ void UI::GUIPictureBoxDD::UpdateMinScale()
 //	Double outH;
 	Double srcW = UOSInt2Double(this->currImageW);
 	Double srcH = UOSInt2Double(this->currImageH);
-	if (srcW * this->currImage->info->par2 * UOSInt2Double(this->surfaceH) > UOSInt2Double(this->surfaceW) * srcH)
+	if (srcW * this->currImage->info.par2 * UOSInt2Double(this->surfaceH) > UOSInt2Double(this->surfaceW) * srcH)
 	{
 		outW = UOSInt2Double(this->surfaceW);
-//		outH = this->surfaceW / this->currImage->info->par2 * srcH / srcW;
+//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
 	}
 	else
 	{
-		outW = UOSInt2Double(this->surfaceH) * this->currImage->info->par2 * srcW / srcH;
+		outW = UOSInt2Double(this->surfaceH) * this->currImage->info.par2 * srcW / srcH;
 //		outH = OSInt2Double(this->surfaceH);
 	}
 	outZoomScale = outW / srcW;
@@ -294,7 +294,7 @@ void UI::GUIPictureBoxDD::CreateResizer()
 	Double refLuminance = 0;
 	if (this->currImage)
 	{
-		refLuminance = Media::CS::TransferFunc::GetRefLuminance(&this->currImage->info->color->rtransfer);
+		refLuminance = Media::CS::TransferFunc::GetRefLuminance(&this->currImage->info.color->rtransfer);
 	}
 	if (this->curr10Bit)
 	{
@@ -496,23 +496,23 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 	if (this->currImage)
 	{
 		Media::EXIFData::RotateType rotType = Media::EXIFData::RT_NONE;
-		this->currImageW = this->currImage->info->dispWidth;
-		this->currImageH = this->currImage->info->dispHeight;
+		this->currImageW = this->currImage->info.dispWidth;
+		this->currImageH = this->currImage->info.dispHeight;
 		if (this->currImage->exif)
 		{
 			rotType = this->currImage->exif->GetRotateType();
 			if (rotType == Media::EXIFData::RT_CW90)
 			{
-				this->currImageH = this->currImage->info->dispWidth;
-				this->currImageW = this->currImage->info->dispHeight;
+				this->currImageH = this->currImage->info.dispWidth;
+				this->currImageW = this->currImage->info.dispHeight;
 			}
 			else if (rotType == Media::EXIFData::RT_CW180)
 			{
 			}
 			else if (rotType == Media::EXIFData::RT_CW270)
 			{
-				this->currImageH = this->currImage->info->dispWidth;
-				this->currImageW = this->currImage->info->dispHeight;
+				this->currImageH = this->currImage->info.dispWidth;
+				this->currImageW = this->currImage->info.dispHeight;
 			}
 		}
 		if (!sameImg || oriW != this->currImageW || oriH != this->currImageH)
@@ -524,7 +524,7 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			this->UpdateZoomRange();
 		}
 		Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
-		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info->fourcc, this->currImage->info->storeBPP, this->currImage->info->pf, this->currImage->info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, this->currImage->info->yuvType, this->colorSess);
+		this->csconv = Media::CS::CSConverter::NewConverter(this->currImage->info.fourcc, this->currImage->info.storeBPP, this->currImage->info.pf, this->currImage->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, this->currImage->info.yuvType, this->colorSess);
 		if (this->csconv)
 		{
 			if (this->currImage->pal)
@@ -534,18 +534,18 @@ void UI::GUIPictureBoxDD::SetImage(Media::Image *currImage, Bool sameImg)
 			this->imgBuff = MemAllocA(UInt8, this->currImageW * this->currImageH * 8);
 			if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
 			{
-				this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+				this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			}
 			else
 			{
-				UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->storeHeight);
-				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
-				this->csconv->ConvertV2(&imgData, this->imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+				UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeHeight);
+				this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+				this->csconv->ConvertV2(&imgData, this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 				MemFreeA(imgData);
 			}
 			if (this->enableLRGBLimit)
 			{
-				LRGBLimiter_LimitImageLRGB(this->imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight);
+				LRGBLimiter_LimitImageLRGB(this->imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 			}
 
 			if (rotType == Media::EXIFData::RT_CW90)
@@ -600,18 +600,18 @@ void UI::GUIPictureBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *
 		}
 		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
 		{
-			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->storeHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
-			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.storeHeight);
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight);
+			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 		}
 		if (rotType == Media::EXIFData::RT_CW90)
 		{
@@ -653,18 +653,18 @@ void UI::GUIPictureBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 
 		}
 		if (this->currImage->GetImageType() == Media::Image::IT_STATIC)
 		{
-			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+			this->csconv->ConvertV2(&((Media::StaticImage*)this->currImage)->data, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 		}
 		else
 		{
-			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info->dispHeight);
-			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info->storeWidth, this->currImage->info->dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
-			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight, this->currImage->info->storeWidth, this->currImage->info->storeHeight, (OSInt)this->currImage->info->dispWidth << 3, this->currImage->info->ftype, this->currImage->info->ycOfst);
+			UInt8 *imgData = MemAllocA(UInt8, this->currImage->GetDataBpl() * this->currImage->info.dispHeight);
+			this->currImage->GetImageData(imgData, 0, 0, this->currImage->info.storeWidth, this->currImage->info.dispHeight, this->currImage->GetDataBpl(), this->currImage->IsUpsideDown());
+			this->csconv->ConvertV2(&imgData, imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight, this->currImage->info.storeWidth, this->currImage->info.storeHeight, (OSInt)this->currImage->info.dispWidth << 3, this->currImage->info.ftype, this->currImage->info.ycOfst);
 			MemFreeA(imgData);
 		}
 		if (this->enableLRGBLimit)
 		{
-			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info->dispWidth, this->currImage->info->dispHeight);
+			LRGBLimiter_LimitImageLRGB(imgBuff, this->currImage->info.dispWidth, this->currImage->info.dispHeight);
 		}
 		if (rotType == Media::EXIFData::RT_CW90)
 		{
@@ -1079,21 +1079,21 @@ Media::StaticImage *UI::GUIPictureBoxDD::CreatePreviewImage(Media::StaticImage *
 {
 	Media::StaticImage *outImage;
 	UOSInt prevSize[2];
-	this->GetImageViewSize(prevSize, image->info->dispWidth, image->info->dispHeight);
+	this->GetImageViewSize(prevSize, image->info.dispWidth, image->info.dispHeight);
 
-	UInt8 *prevImgData = MemAllocA(UInt8, image->info->dispWidth * image->info->dispHeight * 8);
-	Media::ColorProfile color(image->info->color);
+	UInt8 *prevImgData = MemAllocA(UInt8, image->info.dispWidth * image->info.dispHeight * 8);
+	Media::ColorProfile color(image->info.color);
 	color.GetRTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetGTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
 	color.GetBTranParam()->Set(Media::CS::TRANT_LINEAR, 1.0);
-	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info->fourcc, image->info->storeBPP, image->info->pf, image->info->color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
+	Media::CS::CSConverter *csConv = Media::CS::CSConverter::NewConverter(image->info.fourcc, image->info.storeBPP, image->info.pf, image->info.color, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 	Media::Resizer::LanczosResizerLR_C32 *resizer;
 	Media::PixelFormat pf = Media::PF_B8G8R8A8;
-	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info->color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(&image->info->color->rtransfer), pf));
-	csConv->ConvertV2(&image->data, prevImgData, image->info->dispWidth, image->info->dispHeight, image->info->storeWidth, image->info->storeHeight, (OSInt)image->info->dispWidth * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
+	NEW_CLASS(resizer, Media::Resizer::LanczosResizerLR_C32(4, 4, image->info.color, this->colorSess, Media::AT_NO_ALPHA, Media::CS::TransferFunc::GetRefLuminance(&image->info.color->rtransfer), pf));
+	csConv->ConvertV2(&image->data, prevImgData, image->info.dispWidth, image->info.dispHeight, image->info.storeWidth, image->info.storeHeight, (OSInt)image->info.dispWidth * 8, Media::FT_NON_INTERLACE, Media::YCOFST_C_TOP_LEFT);
 
-	NEW_CLASS(outImage, Media::StaticImage(image->info->dispWidth, image->info->dispHeight, 0, 32, pf, 0, image->info->color, Media::ColorProfile::YUVT_UNKNOWN, image->info->atype, image->info->ycOfst));
-	resizer->Resize(prevImgData, (OSInt)image->info->dispWidth * 8, UOSInt2Double(image->info->dispWidth), UOSInt2Double(image->info->dispHeight), 0, 0, outImage->data, (OSInt)outImage->GetDataBpl(), outImage->info->dispWidth, outImage->info->dispHeight);
+	NEW_CLASS(outImage, Media::StaticImage(image->info.dispWidth, image->info.dispHeight, 0, 32, pf, 0, image->info.color, Media::ColorProfile::YUVT_UNKNOWN, image->info.atype, image->info.ycOfst));
+	resizer->Resize(prevImgData, (OSInt)image->info.dispWidth * 8, UOSInt2Double(image->info.dispWidth), UOSInt2Double(image->info.dispHeight), 0, 0, outImage->data, (OSInt)outImage->GetDataBpl(), outImage->info.dispWidth, outImage->info.dispHeight);
 
 	DEL_CLASS(resizer);
 	DEL_CLASS(csConv);
@@ -1210,14 +1210,14 @@ void UI::GUIPictureBoxDD::ZoomToFit()
 //	Double outH;
 	Double srcW = UOSInt2Double(this->currImageW);
 	Double srcH = UOSInt2Double(this->currImageH);
-	if (srcW * this->currImage->info->par2 * UOSInt2Double(this->surfaceH) > UOSInt2Double(this->surfaceW) * srcH)
+	if (srcW * this->currImage->info.par2 * UOSInt2Double(this->surfaceH) > UOSInt2Double(this->surfaceW) * srcH)
 	{
 		outW = UOSInt2Double(this->surfaceW);
-//		outH = this->surfaceW / this->currImage->info->par2 * srcH / srcW;
+//		outH = this->surfaceW / this->currImage->info.par2 * srcH / srcW;
 	}
 	else
 	{
-		outW = UOSInt2Double(this->surfaceH) * this->currImage->info->par2 * srcW / srcH;
+		outW = UOSInt2Double(this->surfaceH) * this->currImage->info.par2 * srcW / srcH;
 //		outH = OSInt2Double(this->surfaceH);
 	}
 	outZoomScale = outW / srcW;

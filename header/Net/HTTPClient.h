@@ -20,7 +20,7 @@ namespace Net
 	{
 	protected:
 		Net::SocketFactory *sockf;
-		Manage::HiResClock *clk;
+		Manage::HiResClock clk;
 
 		Net::SocketUtil::AddressInfo svrAddr;
 		Bool canWrite;
@@ -29,7 +29,7 @@ namespace Net
 
 		UInt64 contLeng;
 		Net::WebStatus::StatusCode respStatus;
-		Data::ArrayList<Text::String*> *headers;
+		Data::ArrayList<Text::String*> headers;
 		UOSInt hdrLen;
 
 		Bool kaConn;

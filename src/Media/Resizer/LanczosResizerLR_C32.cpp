@@ -1302,30 +1302,30 @@ Media::StaticImage *Media::Resizer::LanczosResizerLR_C32::ProcessToNewPartial(Me
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (!IsSupported(srcImage->info))
+	if (!IsSupported(&srcImage->info))
 		return 0;
 	OSInt targetWidth = (OSInt)this->targetWidth;
 	OSInt targetHeight = (OSInt)this->targetHeight;
 	if (targetWidth == 0)
 	{
-		targetWidth = Double2Int32(srcX2 - srcX1);//srcImage->info->width;
+		targetWidth = Double2Int32(srcX2 - srcX1);//srcImage->info.width;
 	}
 	if (targetHeight == 0)
 	{
-		targetHeight = Double2Int32(srcY2 - srcY1);//srcImage->info->height;
+		targetHeight = Double2Int32(srcY2 - srcY1);//srcImage->info.height;
 	}
-	CalOutputSize(srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
+	CalOutputSize(&srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
 	destInfo.fourcc = 0;
 	destInfo.storeBPP = 32;
 	destInfo.pf = this->pf;
-	destInfo.color->GetPrimaries()->Set(srcImage->info->color->GetPrimaries());
+	destInfo.color->GetPrimaries()->Set(srcImage->info.color->GetPrimaries());
 	if (this->destColor->GetRTranParam()->GetTranType() != Media::CS::TRANT_VUNKNOWN && this->destColor->GetRTranParam()->GetTranType() != Media::CS::TRANT_PUNKNOWN)
 	{
 		destInfo.color->GetRTranParam()->Set(this->destColor->GetRTranParam());
 		destInfo.color->GetGTranParam()->Set(this->destColor->GetGTranParam());
 		destInfo.color->GetBTranParam()->Set(this->destColor->GetBTranParam());
 	}
-//	this->srcAlphaType = srcImage->info->atype;
+//	this->srcAlphaType = srcImage->info.atype;
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;

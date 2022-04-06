@@ -9,8 +9,7 @@ Sync::RWMutex::RWMutex()
 {
 	this->writeTId = 0;
 	this->readCnt = 0;
-	this->hand = 0;
-	this->mutHand = 0;
+	this->clsData = 0;
 }
 
 Sync::RWMutex::~RWMutex()

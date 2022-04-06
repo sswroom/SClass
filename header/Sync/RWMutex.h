@@ -5,9 +5,10 @@ namespace Sync
 {
 	class RWMutex
 	{
+	public:
+		struct ClassData;
 	private:
-		void *hand;
-		void *mutHand;
+		ClassData *clsData;
 		UInt32 writeTId;
 		Int32 readCnt;
 	public:

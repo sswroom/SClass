@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRImageBatchForm::OnImageChanged(void *userObj, 
 			me->pbMain->GetSizeP(&w, &h);
 			me->resizer->SetTargetWidth(w);
 			me->resizer->SetTargetHeight(h);
-			me->resizer->SetDestProfile(img->info->color);
+			me->resizer->SetDestProfile(img->info.color);
 			me->previewImage = me->resizer->ProcessToNew(img);
 			me->filteredImage = me->previewImage->CreateStaticImage();
 			me->initPos = true;

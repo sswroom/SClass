@@ -14,7 +14,7 @@
 
 void BMPParser_ReadPal(Media::StaticImage *img, IO::IStreamData *fd, UOSInt palStart, Int32 palType, UOSInt colorUsed)
 {
-	UOSInt maxColor = (UOSInt)1 << img->info->storeBPP;
+	UOSInt maxColor = (UOSInt)1 << img->info.storeBPP;
 	if (palType == 0)
 	{
 		if (colorUsed <= 0 || colorUsed >= maxColor)
@@ -393,9 +393,9 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 	if (imgWidth > 0 && imgHeight > 0 && bpp != 0 && imgWidth <= 32768 && imgHeight <= 32768 && headerValid)
 	{
 		NEW_CLASS(outImg, Media::StaticImage(imgWidth, uimgHeight, 0, bpp, pf, 0, 0, Media::ColorProfile::YUVT_UNKNOWN, atype, Media::YCOFST_C_CENTER_LEFT));
-		outImg->info->hdpi = hdpi;
-		outImg->info->vdpi = vdpi;
-		outImg->info->par2 = hdpi / vdpi;
+		outImg->info.hdpi = hdpi;
+		outImg->info.vdpi = vdpi;
+		outImg->info.par2 = hdpi / vdpi;
 		if (headerSize >= 124 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"DEBM")) //BITMAPV5HEADER
 		{
 			UInt32 imgDataSize = ReadUInt32(&hdr[126]);
@@ -409,11 +409,11 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 					Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, iccSize);
 					if (icc)
 					{
-						icc->GetRedTransferParam(outImg->info->color->GetRTranParam());
-						icc->GetGreenTransferParam(outImg->info->color->GetGTranParam());
-						icc->GetBlueTransferParam(outImg->info->color->GetBTranParam());
-						icc->GetColorPrimaries(outImg->info->color->GetPrimaries());
-						outImg->info->color->SetRAWICC(iccBuff);
+						icc->GetRedTransferParam(outImg->info.color->GetRTranParam());
+						icc->GetGreenTransferParam(outImg->info.color->GetGTranParam());
+						icc->GetBlueTransferParam(outImg->info.color->GetBTranParam());
+						icc->GetColorPrimaries(outImg->info.color->GetPrimaries());
+						outImg->info.color->SetRAWICC(iccBuff);
 						DEL_CLASS(icc);
 					}
 				}
@@ -422,7 +422,7 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == ReadInt32((const UInt8*)"BGRs"))
 		{
-			outImg->info->color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+			outImg->info.color->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 		}
 		else if (headerSize >= 108 && ReadInt32(&hdr[70]) == 0)
 		{
@@ -459,27 +459,27 @@ IO::ParsedObject *Parser::FileParser::BMPParser::ParseFile(IO::IStreamData *fd, 
 				xyzVec.val[1] = ry / (Double)0x40000000;
 				xyzVec.val[2] = rz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info->color->primaries.rx = xyYVec.val[0];
-				outImg->info->color->primaries.ry = xyYVec.val[1];
+				outImg->info.color->primaries.rx = xyYVec.val[0];
+				outImg->info.color->primaries.ry = xyYVec.val[1];
 
 				xyzVec.val[0] = gx / (Double)0x40000000;
 				xyzVec.val[1] = gy / (Double)0x40000000;
 				xyzVec.val[2] = gz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info->color->primaries.gx = xyYVec.val[0];
-				outImg->info->color->primaries.gy = xyYVec.val[1];
+				outImg->info.color->primaries.gx = xyYVec.val[0];
+				outImg->info.color->primaries.gy = xyYVec.val[1];
 
 				xyzVec.val[0] = bx / (Double)0x40000000;
 				xyzVec.val[1] = by / (Double)0x40000000;
 				xyzVec.val[2] = bz / (Double)0x40000000;
 				Media::ColorProfile::ColorPrimaries::XYZToxyY(&xyzVec, &xyYVec);
-				outImg->info->color->primaries.bx = xyYVec.val[0];
-				outImg->info->color->primaries.by = xyYVec.val[1];
-				outImg->info->color->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
+				outImg->info.color->primaries.bx = xyYVec.val[0];
+				outImg->info.color->primaries.by = xyYVec.val[1];
+				outImg->info.color->primaries.colorType = Media::ColorProfile::CT_CUSTOM;
 
-				outImg->info->color->rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
-				outImg->info->color->gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
-				outImg->info->color->btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
+				outImg->info.color->rtransfer.Set(Media::CS::TRANT_GAMMA, rg / 65536.0);
+				outImg->info.color->gtransfer.Set(Media::CS::TRANT_GAMMA, gg / 65536.0);
+				outImg->info.color->btransfer.Set(Media::CS::TRANT_GAMMA, bg / 65536.0);
 			}
 		}
 	}

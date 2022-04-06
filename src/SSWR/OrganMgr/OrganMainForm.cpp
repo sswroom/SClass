@@ -510,11 +510,11 @@ Bool __stdcall SSWR::OrganMgr::OrganMainForm::OnImgMouseUp(void *userObj, OSInt 
 			Media::Image *img = me->dispImage->GetImage(0, 0);
 			if (me->dispImageUF)
 			{
-				me->env->UpdateUserFileCrop(me->dispImageUF, ptX1, ptY1, UOSInt2Double(img->info->dispWidth) - ptX2, UOSInt2Double(img->info->dispHeight) - ptY2);
+				me->env->UpdateUserFileCrop(me->dispImageUF, ptX1, ptY1, UOSInt2Double(img->info.dispWidth) - ptX2, UOSInt2Double(img->info.dispHeight) - ptY2);
 			}
 			else if (me->dispImageWF)
 			{
-				me->env->UpdateWebFileCrop(me->dispImageWF, ptX1, ptY1, UOSInt2Double(img->info->dispWidth) - ptX2, UOSInt2Double(img->info->dispHeight) - ptY2);
+				me->env->UpdateWebFileCrop(me->dispImageWF, ptX1, ptY1, UOSInt2Double(img->info.dispWidth) - ptX2, UOSInt2Double(img->info.dispHeight) - ptY2);
 			}
 		}
 
@@ -553,7 +553,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
 				me->pbImg->Image2ScnPos(me->dispImageUF->cropLeft, me->dispImageUF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(UOSInt2Double(img->info->dispWidth) - me->dispImageUF->cropRight, UOSInt2Double(img->info->dispHeight) - me->dispImageUF->cropBottom, &x2, &y2);
+				me->pbImg->Image2ScnPos(UOSInt2Double(img->info.dispWidth) - me->dispImageUF->cropRight, UOSInt2Double(img->info.dispHeight) - me->dispImageUF->cropBottom, &x2, &y2);
 				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
 				{
 
@@ -577,7 +577,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnImgDraw(void *userObj, UInt8 *im
 			{
 				Media::Image *img = me->dispImage->GetImage(0, 0);
 				me->pbImg->Image2ScnPos(me->dispImageWF->cropLeft, me->dispImageWF->cropTop, &x1, &y1);
-				me->pbImg->Image2ScnPos(UOSInt2Double(img->info->dispWidth) - me->dispImageWF->cropRight, UOSInt2Double(img->info->dispHeight) - me->dispImageWF->cropBottom, &x2, &y2);
+				me->pbImg->Image2ScnPos(UOSInt2Double(img->info.dispWidth) - me->dispImageWF->cropRight, UOSInt2Double(img->info.dispHeight) - me->dispImageWF->cropBottom, &x2, &y2);
 				if (x2 < 0 || x1 >= UOSInt2Double(w) || y2 < 0 || y1 >= UOSInt2Double(h))
 				{
 
@@ -1681,7 +1681,7 @@ void __stdcall SSWR::OrganMgr::OrganMainForm::OnMapDraw(void *userObj, Media::Dr
 		UOSInt scnH;
 		me->mcMap->GetSizeP(&scnW, &scnH);
 		dimg->DrawImagePt(me->mapCurrImage, OSInt2Double(xOfst), OSInt2Double(yOfst + (OSInt)(scnH - me->mapCurrImage->GetHeight())));
-		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info->dispHeight, me->mapCurrImage->info->dispWidth, me->mapCurrImage->info->dispHeight, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
+		//BitBlt((HDC)hdc, 0, scnH - me->mapCurrImage->info.dispHeight, me->mapCurrImage->info.dispWidth, me->mapCurrImage->info.dispHeight, (HDC)me->mapCurrImage->GetHDC(), 0, 0, SRCCOPY);
 	}
 }
 
@@ -1737,13 +1737,13 @@ Bool SSWR::OrganMgr::OrganMainForm::CalcCropRect(OSInt *rect)
 	}
 
 	Media::Image *img = this->dispImage->GetImage(0, 0);
-	if ((OSInt)img->info->dispWidth * drawHeight > (OSInt)img->info->dispHeight * drawWidth)
+	if ((OSInt)img->info.dispWidth * drawHeight > (OSInt)img->info.dispHeight * drawWidth)
 	{
-		drawHeight = MulDivOS(drawWidth, (OSInt)img->info->dispHeight, (OSInt)img->info->dispWidth);
+		drawHeight = MulDivOS(drawWidth, (OSInt)img->info.dispHeight, (OSInt)img->info.dispWidth);
 	}
 	else
 	{
-		drawWidth = MulDivOS(drawHeight, (OSInt)img->info->dispWidth, (OSInt)img->info->dispHeight);
+		drawWidth = MulDivOS(drawHeight, (OSInt)img->info.dispWidth, (OSInt)img->info.dispHeight);
 	}
 
 	if (this->dispImageDownX < this->dispImageCurrX)

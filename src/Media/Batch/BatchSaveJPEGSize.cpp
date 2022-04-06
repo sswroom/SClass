@@ -44,7 +44,7 @@ void Media::Batch::BatchSaveJPEGSize::ImageOutput(Media::ImageList *imgList, con
 	sptr = Text::StrConcatC(Text::StrConcat(sptr, targetId), UTF8STRC(".jpg"));
 
 	img = imgList->GetImage(0, 0);
-	targetSize = (img->info->dispWidth * img->info->dispHeight * img->info->storeBPP >> 3) / this->sizePercent;
+	targetSize = (img->info.dispWidth * img->info.dispHeight * img->info.storeBPP >> 3) / this->sizePercent;
 
 	NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Media.Batch.BatchSaveJPEGSize")));
 	param = exporter->CreateParam(imgList);

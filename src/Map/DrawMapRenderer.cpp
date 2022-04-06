@@ -1497,8 +1497,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								spotY = OSInt2Double(layer.layer->GetIconStyleSpotY());
 								if (pimg != 0 && (spotX == -1 || spotY == -1))
 								{
-									spotX = UOSInt2Double(pimg->info->dispWidth) * 0.5;
-									spotY = UOSInt2Double(pimg->info->dispHeight) * 0.5;
+									spotX = UOSInt2Double(pimg->info.dispWidth) * 0.5;
+									spotY = UOSInt2Double(pimg->info.dispHeight) * 0.5;
 								}
 							}
 							if (pimg == 0)
@@ -1506,8 +1506,8 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								pimg = denv->env->GetImage(layer.imgIndex, &imgDurMS);
 								if (pimg)
 								{
-									spotX = UOSInt2Double(pimg->info->dispWidth) * 0.5;
-									spotY = UOSInt2Double(pimg->info->dispHeight) * 0.5;
+									spotX = UOSInt2Double(pimg->info.dispWidth) * 0.5;
+									spotY = UOSInt2Double(pimg->info.dispHeight) * 0.5;
 								}
 								else
 								{
@@ -1522,7 +1522,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								{
 									if (pimg)
 									{
-										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
+										DrawLabel(denv, layer.layer, layer.fontStyle, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layerType, layer.fontType);
 									}
 									else
 									{
@@ -1539,7 +1539,7 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 								denv->layerFontColor->Add(b);
 								if (pimg)
 								{
-									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispWidth) * denv->img->GetHDPI() / pimg->info->hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info->dispHeight) * denv->img->GetVDPI() / pimg->info->vdpi), layerType, layer.fontType);
+									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layerType, layer.fontType);
 								}
 								else
 								{
@@ -1886,8 +1886,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		spotY = OSInt2Double(layer->GetIconStyleSpotY());
 		if (img != 0 && (spotX == -1 || spotY == -1))
 		{
-			spotX = UOSInt2Double(img->info->dispWidth) * 0.5;
-			spotY = UOSInt2Double(img->info->dispHeight) * 0.5;
+			spotX = UOSInt2Double(img->info.dispWidth) * 0.5;
+			spotY = UOSInt2Double(img->info.dispHeight) * 0.5;
 		}
 	}
 	if (img == 0)
@@ -1895,8 +1895,8 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		img = denv->env->GetImage(imgIndex, &imgTimeMS);
 		if (img == 0)
 			return;
-		spotX = UOSInt2Double(img->info->dispWidth) * 0.5;
-		spotY = UOSInt2Double(img->info->dispHeight) * 0.5;
+		spotX = UOSInt2Double(img->info.dispWidth) * 0.5;
+		spotY = UOSInt2Double(img->info.dispHeight) * 0.5;
 	}
 	if (imgTimeMS != 0)
 	{
@@ -1925,17 +1925,17 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		Media::DrawImage *dimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
-			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
-			if (newW > img->info->dispWidth || newH > img->info->dispHeight)
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispWidth) * denv->img->GetHDPI() / img->info.hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info.dispHeight) * denv->img->GetVDPI() / img->info.vdpi);
+			if (newW > img->info.dispWidth || newH > img->info.dispHeight)
 			{
 				this->resizer->SetTargetWidth(newW);
 				this->resizer->SetTargetHeight(newH);
 				Media::StaticImage *img2 = this->resizer->ProcessToNew((Media::StaticImage*)img);
 				if (img2)
 				{
-					spotX = spotX * denv->img->GetHDPI() / img->info->hdpi;
-					spotY = spotY * denv->img->GetVDPI() / img->info->vdpi;
+					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
+					spotY = spotY * denv->img->GetVDPI() / img->info.vdpi;
 					dimg = this->eng->ConvImage(img2);
 					DEL_CLASS(img2);
 				}
@@ -1988,17 +1988,17 @@ void Map::DrawMapRenderer::DrawPTLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		Media::DrawImage *dimg;
 		if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 		{
-			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / img->info->hdpi);
-			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / img->info->vdpi);
-			if (newW != img->info->dispWidth || newH != img->info->dispHeight)
+			UInt32 newW = (UInt32)Double2Int32(UOSInt2Double(img->info.dispWidth) * denv->img->GetHDPI() / img->info.hdpi);
+			UInt32 newH = (UInt32)Double2Int32(UOSInt2Double(img->info.dispHeight) * denv->img->GetVDPI() / img->info.vdpi);
+			if (newW != img->info.dispWidth || newH != img->info.dispHeight)
 			{
 				this->resizer->SetTargetWidth(newW);
 				this->resizer->SetTargetHeight(newH);
 				Media::StaticImage *img2 = this->resizer->ProcessToNew((Media::StaticImage*)img);
 				if (img2)
 				{
-					spotX = spotX * denv->img->GetHDPI() / img->info->hdpi;
-					spotY = spotY * denv->img->GetVDPI() / img->info->vdpi;
+					spotX = spotX * denv->img->GetHDPI() / img->info.hdpi;
+					spotY = spotY * denv->img->GetVDPI() / img->info.vdpi;
 					dimg = this->eng->ConvImage(img2);
 					DEL_CLASS(img2);
 				}
@@ -2325,8 +2325,8 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 	{
 		if (this->drawType == DT_VECTORDRAW)
 		{
-			img->info->hdpi = UOSInt2Double(img->info->dispWidth) * denv->img->GetHDPI() / (scnX2 - scnX1);
-			img->info->vdpi = UOSInt2Double(img->info->dispHeight) * denv->img->GetVDPI() / (scnY2 - scnY1);
+			img->info.hdpi = UOSInt2Double(img->info.dispWidth) * denv->img->GetHDPI() / (scnX2 - scnX1);
+			img->info.vdpi = UOSInt2Double(img->info.dispHeight) * denv->img->GetVDPI() / (scnY2 - scnY1);
 			denv->img->DrawImagePt2(img, scnX1, scnY1);
 		}
 		else
@@ -2346,16 +2346,16 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 					{
 						newImg->MultiplyAlpha(srcAlpha);
 					}
-					newImg->info->hdpi = denv->img->GetHDPI();
-					newImg->info->vdpi = denv->img->GetVDPI();
+					newImg->info.hdpi = denv->img->GetHDPI();
+					newImg->info.vdpi = denv->img->GetVDPI();
 					denv->img->DrawImagePt2(newImg, scnX1, scnY1);
 					DEL_CLASS(newImg);
 				}
 			}
 			else
 			{
-				cimgX2 = UOSInt2Double(img->info->dispWidth);
-				cimgY2 = UOSInt2Double(img->info->dispHeight);
+				cimgX2 = UOSInt2Double(img->info.dispWidth);
+				cimgY2 = UOSInt2Double(img->info.dispHeight);
 				cimgX = 0;
 				cimgY = 0;
 				if (scnX1 < 0)
@@ -2380,7 +2380,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 				}
 				if (cimgX == cimgX2)
 				{
-					if (cimgX2 >= UOSInt2Double(img->info->dispWidth))
+					if (cimgX2 >= UOSInt2Double(img->info.dispWidth))
 					{
 						cimgX = cimgX2 - 1;
 					}
@@ -2391,7 +2391,7 @@ void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *im
 				}
 				if (cimgY == cimgY2)
 				{
-					if (cimgY2 >= UOSInt2Double(img->info->dispHeight))
+					if (cimgY2 >= UOSInt2Double(img->info.dispHeight))
 					{
 						cimgY = cimgY2 - 1;
 					}

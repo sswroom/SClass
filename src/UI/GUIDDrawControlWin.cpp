@@ -304,9 +304,9 @@ Bool UI::GUIDDrawControl::CreateSurface()
 		Bool succ = this->surfaceMgr->CreatePrimarySurfaceWithBuffer(this->surfaceMon, &this->primarySurface, &this->buffSurface, Media::RotateType::None);
 		if (succ)
 		{
-			this->bitDepth = this->primarySurface->info->storeBPP;
-			this->scnW = this->primarySurface->info->dispWidth;
-			this->scnH = this->primarySurface->info->dispHeight;
+			this->bitDepth = this->primarySurface->info.storeBPP;
+			this->scnW = this->primarySurface->info.dispWidth;
+			this->scnH = this->primarySurface->info.dispHeight;
 		}
 		return succ;
 	}
@@ -335,9 +335,9 @@ Bool UI::GUIDDrawControl::CreateSurface()
 			{
 				Text::StringBuilderUTF8 sb;
 				sb.AppendC(UTF8STRC("Primary surface desc: Size = "));
-				sb.AppendUOSInt(this->primarySurface->info->dispWidth);
+				sb.AppendUOSInt(this->primarySurface->info.dispWidth);
 				sb.AppendC(UTF8STRC(" x "));
-				sb.AppendUOSInt(this->primarySurface->info->dispHeight);
+				sb.AppendUOSInt(this->primarySurface->info.dispHeight);
 				sb.AppendC(UTF8STRC(", bpl = "));
 				sb.AppendUOSInt(this->primarySurface->GetDataBpl());
 				sb.AppendC(UTF8STRC(", hMon = "));
@@ -346,9 +346,9 @@ Bool UI::GUIDDrawControl::CreateSurface()
 				sb.AppendOSInt((OSInt)hWnd);
 				this->debugWriter->WriteLineC(sb.ToString(), sb.GetLength());
 			}
-			this->bitDepth = this->primarySurface->info->storeBPP;
-			this->scnW = this->primarySurface->info->dispWidth;
-			this->scnH = this->primarySurface->info->dispHeight;
+			this->bitDepth = this->primarySurface->info.storeBPP;
+			this->scnW = this->primarySurface->info.dispWidth;
+			this->scnH = this->primarySurface->info.dispHeight;
 
 			CreateSubSurface();
 			return true;
@@ -395,7 +395,7 @@ void UI::GUIDDrawControl::CreateSubSurface()
 			this->surfaceW = w;
 			this->surfaceH = h;
 		}
-		this->buffSurface = this->surfaceMgr->CreateSurface(w, h, this->primarySurface->info->storeBPP);
+		this->buffSurface = this->surfaceMgr->CreateSurface(w, h, this->primarySurface->info.storeBPP);
 	}
 }
 

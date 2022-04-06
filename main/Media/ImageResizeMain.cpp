@@ -67,7 +67,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		UInt32 delay;
 		imgList->ToStaticImage(0);
 		Media::Image *img = imgList->GetImage(0, &delay);
-		Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info->color, img->info->color, 0, img->info->atype);
+		Media::Resizer::LanczosResizer8_C8 resizer(4, 4, img->info.color, img->info.color, 0, img->info.atype);
 		resizer.SetTargetWidth(pxSize);
 		resizer.SetTargetHeight(pxSize);
 		Media::StaticImage *simg = (Media::StaticImage*)img;

@@ -1066,9 +1066,9 @@ void SSWR::AVIRead::AVIRImageControl::ApplySetting(Media::StaticImage *srcImg, M
 	}
 
 	Sync::MutexUsage mutUsage(this->filterMut);
-	this->filter->SetParameter((setting->brightness - 1.0) * setting->contrast, setting->contrast, setting->gamma, srcImg->info->color, srcImg->info->storeBPP, srcImg->info->pf, (setting->flags & 240) >> 4);
+	this->filter->SetParameter((setting->brightness - 1.0) * setting->contrast, setting->contrast, setting->gamma, srcImg->info.color, srcImg->info.storeBPP, srcImg->info.pf, (setting->flags & 240) >> 4);
 	this->filter->SetGammaCorr(gammaParam, gammaCnt);
-	this->filter->ProcessImage(srcImg->data, destImg->data, srcImg->info->dispWidth, srcImg->info->dispHeight, (srcImg->info->storeWidth * (srcImg->info->storeBPP >> 3)), (destImg->info->storeWidth * (srcImg->info->storeBPP >> 3)), false);
+	this->filter->ProcessImage(srcImg->data, destImg->data, srcImg->info.dispWidth, srcImg->info.dispHeight, (srcImg->info.storeWidth * (srcImg->info.storeBPP >> 3)), (destImg->info.storeWidth * (srcImg->info.storeBPP >> 3)), false);
 	mutUsage.EndUse();
 }
 

@@ -6,23 +6,23 @@
 Media::MemorySurface::MemorySurface(UOSInt width, UOSInt height, UOSInt bitPerPixel, Media::ColorProfile *color, Double dpi)
 {
 	this->buffPtr = MemAllocA(UInt8, width * height * (bitPerPixel >> 3));
-	this->info->fourcc = 0;
-	this->info->ftype = Media::FT_NON_INTERLACE;
-	this->info->atype = Media::AT_NO_ALPHA;
-	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	this->info->storeBPP = (UInt32)bitPerPixel;
-	this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
-	this->info->dispWidth = width;
-	this->info->dispHeight = height;
-	this->info->storeWidth = width;
-	this->info->storeHeight = height;
-	this->info->byteSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
-	this->info->par2 = 1.0;
-	this->info->hdpi = dpi;
-	this->info->vdpi = dpi;
-	this->info->color->Set(color);
-	this->info->rotateType = Media::RotateType::None;
+	this->info.fourcc = 0;
+	this->info.ftype = Media::FT_NON_INTERLACE;
+	this->info.atype = Media::AT_NO_ALPHA;
+	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	this->info.storeBPP = (UInt32)bitPerPixel;
+	this->info.pf = Media::PixelFormatGetDef(0, this->info.storeBPP);
+	this->info.dispWidth = width;
+	this->info.dispHeight = height;
+	this->info.storeWidth = width;
+	this->info.storeHeight = height;
+	this->info.byteSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	this->info.par2 = 1.0;
+	this->info.hdpi = dpi;
+	this->info.vdpi = dpi;
+	this->info.color->Set(color);
+	this->info.rotateType = Media::RotateType::None;
 }
 
 Media::MemorySurface::~MemorySurface()
@@ -38,7 +38,7 @@ Bool Media::MemorySurface::IsError()
 Media::Image *Media::MemorySurface::Clone()
 {
 	Media::MemorySurface *surface;
-	NEW_CLASS(surface, Media::MemorySurface(this->info->dispWidth, this->info->dispHeight, this->info->storeBPP, this->info->color, this->info->hdpi));
+	NEW_CLASS(surface, Media::MemorySurface(this->info.dispWidth, this->info.dispHeight, this->info.storeBPP, this->info.color, this->info.hdpi));
 	return surface;
 }
 
@@ -51,17 +51,17 @@ void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, 
 {
 	OSInt right = left + (OSInt)width;
 	OSInt bottom = top + (OSInt)height;
-	if (left >= (OSInt)this->info->dispWidth || top >= (OSInt)this->info->dispHeight || right <= 0 || bottom <= 0)
+	if (left >= (OSInt)this->info.dispWidth || top >= (OSInt)this->info.dispHeight || right <= 0 || bottom <= 0)
 	{
 		return;
 	}
-	if ((UOSInt)right > this->info->dispWidth)
+	if ((UOSInt)right > this->info.dispWidth)
 	{
-		right = (OSInt)this->info->dispWidth;
+		right = (OSInt)this->info.dispWidth;
 	}
-	if ((UOSInt)bottom > this->info->dispHeight)
+	if ((UOSInt)bottom > this->info.dispHeight)
 	{
-		bottom = (OSInt)this->info->dispHeight;
+		bottom = (OSInt)this->info.dispHeight;
 	}
 	if (upsideDown)
 	{
@@ -71,7 +71,7 @@ void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, 
 	{
 		if (left < 0)
 		{
-			destBuff += (-left) * (OSInt)(this->info->storeBPP >> 3);
+			destBuff += (-left) * (OSInt)(this->info.storeBPP >> 3);
 			left = 0;
 		}
 		if (top < 0)
@@ -81,7 +81,7 @@ void Media::MemorySurface::GetImageData(UInt8 *destBuff, OSInt left, OSInt top, 
 		}
 		width = (UOSInt)(right - left);
 		height = (UOSInt)(bottom - top);
-		ImageCopy_ImgCopyR(this->buffPtr + (left * (OSInt)(this->info->storeBPP >> 3)) + (top * (OSInt)this->GetDataBpl()), destBuff, width * this->info->storeBPP >> 3, height, this->GetDataBpl(), destBpl, upsideDown);
+		ImageCopy_ImgCopyR(this->buffPtr + (left * (OSInt)(this->info.storeBPP >> 3)) + (top * (OSInt)this->GetDataBpl()), destBuff, width * this->info.storeBPP >> 3, height, this->GetDataBpl(), destBpl, upsideDown);
 	}
 }
 
@@ -101,22 +101,22 @@ Bool Media::MemorySurface::DrawFromBuff()
 
 Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank)
 {
-	if (surface && surface->info->dispWidth == this->info->dispWidth && surface->info->dispHeight == this->info->dispHeight && surface->info->storeBPP == this->info->storeBPP)
+	if (surface && surface->info.dispWidth == this->info.dispWidth && surface->info.dispHeight == this->info.dispHeight && surface->info.storeBPP == this->info.storeBPP)
 	{
 		if (waitForVBlank) this->WaitForVBlank();
-		if (this->info->atype == Media::AT_ALPHA && surface->info->atype == Media::AT_NO_ALPHA)
+		if (this->info.atype == Media::AT_ALPHA && surface->info.atype == Media::AT_NO_ALPHA)
 		{
 			OSInt lineAdd;
 			UInt8 *srcPtr = surface->LockSurface(&lineAdd);
 			if (srcPtr)
 			{
-				ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr, this->buffPtr, this->info->dispWidth, this->info->dispHeight, lineAdd, (OSInt)this->GetDataBpl());
+				ImageUtil_ConvR8G8B8N8_ARGB32(srcPtr, this->buffPtr, this->info.dispWidth, this->info.dispHeight, lineAdd, (OSInt)this->GetDataBpl());
 				surface->UnlockSurface();
 			}
 		}
 		else
 		{
-			surface->GetImageData(this->buffPtr, 0, 0, this->info->dispWidth, this->info->dispHeight, this->GetDataBpl(), false);
+			surface->GetImageData(this->buffPtr, 0, 0, this->info.dispWidth, this->info.dispHeight, this->GetDataBpl(), false);
 		}
 		return true;
 	}
@@ -125,8 +125,8 @@ Bool Media::MemorySurface::DrawFromSurface(Media::MonitorSurface *surface, Bool 
 
 Bool Media::MemorySurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
 {
-	OSInt destWidth = (OSInt)this->info->dispWidth;
-	OSInt destHeight = (OSInt)this->info->dispHeight;
+	OSInt destWidth = (OSInt)this->info.dispWidth;
+	OSInt destHeight = (OSInt)this->info.dispHeight;
 	Bool succ = false;
 	if (waitForVBlank) this->WaitForVBlank();
 	OSInt drawX = 0;
@@ -153,17 +153,17 @@ Bool Media::MemorySurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, 
 	}
 	if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 	{
-		if (this->info->atype == Media::AT_ALPHA && this->info->storeBPP == 32)
+		if (this->info.atype == Media::AT_ALPHA && this->info.storeBPP == 32)
 		{
-			ImageUtil_ConvR8G8B8N8_ARGB32(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
-				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info->storeBPP >> 3),
+			ImageUtil_ConvR8G8B8N8_ARGB32(buff + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
+				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info.storeBPP >> 3),
 				buffW, buffH, lineAdd, (OSInt)this->GetDataBpl());
 		}
 		else
 		{
-			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
-				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info->storeBPP >> 3),
-				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, this->GetDataBpl(), false);
+			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
+				(UInt8*)this->buffPtr + destY * (OSInt)this->GetDataBpl() + destX * ((OSInt)this->info.storeBPP >> 3),
+				buffW * (this->info.storeBPP >> 3), buffH, (UOSInt)lineAdd, this->GetDataBpl(), false);
 		}
 
 		if (clearScn)
@@ -183,7 +183,7 @@ Bool Media::MemorySurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, 
 			}
 			if (destX + (OSInt)buffW < (OSInt)destWidth)
 			{
-				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl() + ((UOSInt)destX + buffW) * (this->info->storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, this->GetDataBpl(), c);
+				ImageUtil_ImageColorFill32((UInt8*)this->buffPtr + (UOSInt)destY * this->GetDataBpl() + ((UOSInt)destX + buffW) * (this->info.storeBPP >> 3), (UOSInt)destWidth - (UOSInt)destX - buffW, buffH, this->GetDataBpl(), c);
 			}
 		}
 	}

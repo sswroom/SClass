@@ -76,7 +76,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CString url, Net::WebUtil::RequestMetho
 		{
 			Text::StrConcatC(svrname, ptrs[0].v, ptrs[0].leng);
 		}
-		this->clk->Start();
+		this->clk.Start();
 		Double t1;
 
 		if (timeDNS)
@@ -87,7 +87,7 @@ Bool Net::HTTPProxyClient::Connect(Text::CString url, Net::WebUtil::RequestMetho
 		WriteNUInt32(this->svrAddr.addr, this->proxyIP);
 
 		NEW_CLASS(cli, Net::TCPClient(sockf, this->proxyIP, this->proxyPort));
-		t1 = clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeConn)
 		{
 			*timeConn = t1;

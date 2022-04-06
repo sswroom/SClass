@@ -222,12 +222,12 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::OnFileDblClicked(void *userObj)
 void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt32 frameTime, UInt32 frameNum, Media::StaticImage *img)
 {
 	SSWR::AVIRead::AVIRMediaForm *me = (SSWR::AVIRead::AVIRMediaForm*)userObj;
-	UOSInt w = img->info->dispWidth;
-	UOSInt h = img->info->dispHeight;
+	UOSInt w = img->info.dispWidth;
+	UOSInt h = img->info.dispHeight;
 	UInt8 *yptr = img->data;
 	UOSInt ySplit;
 	UOSInt crops[4];
-	if (img->info->fourcc == *(UInt32*)"YV12")
+	if (img->info.fourcc == *(UInt32*)"YV12")
 	{
 		if (w & 3)
 		{
@@ -235,7 +235,7 @@ void __stdcall SSWR::AVIRead::AVIRMediaForm::VideoCropImage(void *userObj, UInt3
 		}
 		ySplit = 1;
 	}
-	else if (img->info->fourcc == *(UInt32*)"YUY2")
+	else if (img->info.fourcc == *(UInt32*)"YUY2")
 	{
 		ySplit = 2;
 	}

@@ -233,12 +233,12 @@ void UI::GUIPictureBox::UpdatePreview()
 			Media::StaticImage *tmpImage = resizer->ProcessToNew(this->currImage);
 			if (tmpImage)
 			{
-				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info->storeBPP == 32, 8, (int)(OSInt)tmpImage->info->dispWidth, (int)(OSInt)tmpImage->info->dispHeight, (int)(OSInt)tmpImage->info->storeWidth << 2, 0, 0);
+				GdkPixbuf *buf = gdk_pixbuf_new_from_data(tmpImage->data, GDK_COLORSPACE_RGB, tmpImage->info.storeBPP == 32, 8, (int)(OSInt)tmpImage->info.dispWidth, (int)(OSInt)tmpImage->info.dispHeight, (int)(OSInt)tmpImage->info.storeWidth << 2, 0, 0);
 				guchar *pixels = gdk_pixbuf_get_pixels(buf);
-				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
-				if (this->currImage->info->atype != Media::AT_ALPHA)
+				ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info.dispHeight, 32);
+				if (this->currImage->info.atype != Media::AT_ALPHA)
 				{
-					ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
+					ImageUtil_ImageFillAlpha32(pixels, this->currImage->info.dispWidth, this->currImage->info.dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 				}
 				data->pixbuf = buf;
 				data->tmpImage = tmpImage;
@@ -247,12 +247,12 @@ void UI::GUIPictureBox::UpdatePreview()
 		}
 		else
 		{
-			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, this->currImage->info->storeBPP == 32, 8, (int)(OSInt)this->currImage->info->dispWidth, (int)(OSInt)this->currImage->info->dispHeight, (int)(OSInt)this->currImage->info->storeWidth << 2, 0, 0);
+			GdkPixbuf *buf = gdk_pixbuf_new_from_data(this->currImage->data, GDK_COLORSPACE_RGB, this->currImage->info.storeBPP == 32, 8, (int)(OSInt)this->currImage->info.dispWidth, (int)(OSInt)this->currImage->info.dispHeight, (int)(OSInt)this->currImage->info.storeWidth << 2, 0, 0);
 			guchar *pixels = gdk_pixbuf_get_pixels(buf);
-			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info->dispHeight, 32);
-			if (this->currImage->info->atype != Media::AT_ALPHA)
+			ImageUtil_SwapRGB(pixels, (UInt32)gdk_pixbuf_get_rowstride(buf) / 4 * this->currImage->info.dispHeight, 32);
+			if (this->currImage->info.atype != Media::AT_ALPHA)
 			{
-				ImageUtil_ImageFillAlpha32(pixels, this->currImage->info->dispWidth, this->currImage->info->dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
+				ImageUtil_ImageFillAlpha32(pixels, this->currImage->info.dispWidth, this->currImage->info.dispHeight, (UInt32)gdk_pixbuf_get_rowstride(buf), 255);
 			}
 			data->pixbuf = buf;
 			gtk_image_set_from_pixbuf((GtkImage*)data->gtkImage, buf);

@@ -12,10 +12,10 @@ void UI::GUITrackBar::EventScrolled()
 	UOSInt i;
 	OSInt pos;
 	pos = SendMessage((HWND)this->hwnd, TBM_GETPOS, 0, 0);
-	i = this->scrollHandlers->GetCount();
+	i = this->scrollHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->scrollHandlers->GetItem(i)(this->scrollHandlersObj->GetItem(i), (UOSInt)pos);
+		this->scrollHandlers.GetItem(i)(this->scrollHandlersObj.GetItem(i), (UOSInt)pos);
 	}
 }
 
@@ -26,9 +26,6 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
     icex.dwICC = ICC_BAR_CLASSES;
     InitCommonControlsEx(&icex);
-
-	NEW_CLASS(this->scrollHandlers, Data::ArrayList<ScrollEvent>());
-	NEW_CLASS(this->scrollHandlersObj, Data::ArrayList<void *>());
 
 	UInt32 style = WS_CHILD | TBS_NOTICKS;
 	if (parent->IsChildVisible())
@@ -43,8 +40,6 @@ UI::GUITrackBar::GUITrackBar(UI::GUICore *ui, UI::GUIClientControl *parent, UOSI
 
 UI::GUITrackBar::~GUITrackBar()
 {
-	DEL_CLASS(this->scrollHandlersObj);
-	DEL_CLASS(this->scrollHandlers);
 }
 
 Text::CString UI::GUITrackBar::GetObjectClass()
@@ -93,6 +88,6 @@ UOSInt UI::GUITrackBar::GetPos()
 
 void UI::GUITrackBar::HandleScrolled(ScrollEvent hdlr, void *userObj)
 {
-	this->scrollHandlers->Add(hdlr);
-	this->scrollHandlersObj->Add(userObj);
+	this->scrollHandlers.Add(hdlr);
+	this->scrollHandlersObj.Add(userObj);
 }

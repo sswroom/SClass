@@ -33,27 +33,27 @@ Media::DDrawSurface::DDrawSurface(DDrawManager *mgr, void *lpDD, void *surface, 
 	ddsd.dwSize = sizeof(ddsd);
 	this->clsData->surface->GetSurfaceDesc(&ddsd);
 
-	this->info->fourcc = 0;
-	this->info->ftype = Media::FT_NON_INTERLACE;
-	this->info->atype = Media::AT_NO_ALPHA;
-	this->info->ycOfst = Media::YCOFST_C_CENTER_LEFT;
-	this->info->yuvType = Media::ColorProfile::YUVT_UNKNOWN;
-	this->info->storeBPP = ddsd.ddpfPixelFormat.dwRGBBitCount;
-	this->info->pf = Media::PixelFormatGetDef(0, this->info->storeBPP);
-	if (this->info->storeBPP == 32 && mgr->Is10BitColor(hMon))
+	this->info.fourcc = 0;
+	this->info.ftype = Media::FT_NON_INTERLACE;
+	this->info.atype = Media::AT_NO_ALPHA;
+	this->info.ycOfst = Media::YCOFST_C_CENTER_LEFT;
+	this->info.yuvType = Media::ColorProfile::YUVT_UNKNOWN;
+	this->info.storeBPP = ddsd.ddpfPixelFormat.dwRGBBitCount;
+	this->info.pf = Media::PixelFormatGetDef(0, this->info.storeBPP);
+	if (this->info.storeBPP == 32 && mgr->Is10BitColor(hMon))
 	{
-		this->info->pf = Media::PF_LE_A2B10G10R10;
+		this->info.pf = Media::PF_LE_A2B10G10R10;
 	}
-	this->info->dispWidth = ddsd.dwWidth;
-	this->info->dispHeight = ddsd.dwHeight;
-	this->info->storeWidth = (UOSInt)ddsd.lPitch / (this->info->storeBPP >> 3);
-	this->info->storeHeight = ddsd.dwHeight;
-	this->info->byteSize = this->info->storeWidth * this->info->storeHeight * (this->info->storeBPP >> 3);
-	this->info->par2 = 1.0;
-	this->info->hdpi = mgr->GetMonitorDPI(hMon);;
-	this->info->vdpi = this->info->hdpi;
-	this->info->color->Set(mgr->GetMonProfile(hMon));
-	this->info->rotateType = Media::RotateType::None; //rotateType;
+	this->info.dispWidth = ddsd.dwWidth;
+	this->info.dispHeight = ddsd.dwHeight;
+	this->info.storeWidth = (UOSInt)ddsd.lPitch / (this->info.storeBPP >> 3);
+	this->info.storeHeight = ddsd.dwHeight;
+	this->info.byteSize = this->info.storeWidth * this->info.storeHeight * (this->info.storeBPP >> 3);
+	this->info.par2 = 1.0;
+	this->info.hdpi = mgr->GetMonitorDPI(hMon);;
+	this->info.vdpi = this->info.hdpi;
+	this->info.color->Set(mgr->GetMonProfile(hMon));
+	this->info.rotateType = Media::RotateType::None; //rotateType;
 }
 
 Media::DDrawSurface::~DDrawSurface()
@@ -136,8 +136,8 @@ Bool Media::DDrawSurface::DrawFromBuff()
 
 Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool waitForVBlank)
 {
-	OSInt drawWidth = (OSInt)this->info->dispWidth;
-	OSInt drawHeight = (OSInt)this->info->dispHeight;
+	OSInt drawWidth = (OSInt)this->info.dispWidth;
+	OSInt drawHeight = (OSInt)this->info.dispHeight;
 	RECT rc;
 	HWND hWnd;
 	if (this->clsData->clipper)
@@ -159,15 +159,15 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 			rc.bottom -= info.rcMonitor.bottom;
 		}
 	}
-	if (surface && (OSInt)surface->info->dispWidth == drawWidth && (OSInt)surface->info->dispHeight == drawHeight && surface->info->storeBPP == this->info->storeBPP)
+	if (surface && (OSInt)surface->info.dispWidth == drawWidth && (OSInt)surface->info.dispHeight == drawHeight && surface->info.storeBPP == this->info.storeBPP)
 	{
 		Bool succ = false;
 		RECT rcSrc;
 		DDSURFACEDESC2 ddsd;
 		rcSrc.left = 0;
 		rcSrc.top = 0;
-		rcSrc.right = (LONG)this->info->dispWidth;
-		rcSrc.bottom = (LONG)this->info->dispHeight;
+		rcSrc.right = (LONG)this->info.dispWidth;
+		rcSrc.bottom = (LONG)this->info.dispHeight;
 		MemClear(&ddsd, sizeof(ddsd));
 		ddsd.dwSize = sizeof(ddsd);
 
@@ -182,13 +182,13 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 			if (waitForVBlank) this->WaitForVBlank();
 			if (this->clsData->clipper)
 			{
-				if (rc.right > (OSInt)this->info->dispWidth)
+				if (rc.right > (OSInt)this->info.dispWidth)
 				{
-					rc.right = (LONG)(OSInt)this->info->dispWidth;
+					rc.right = (LONG)(OSInt)this->info.dispWidth;
 				}
-				if (rc.bottom > (OSInt)this->info->dispHeight)
+				if (rc.bottom > (OSInt)this->info.dispHeight)
 				{
-					rc.bottom = (LONG)(OSInt)this->info->dispHeight;
+					rc.bottom = (LONG)(OSInt)this->info.dispHeight;
 				}
 				OSInt drawX = 0;
 				OSInt drawY = 0;
@@ -206,12 +206,12 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 				drawHeight = (OSInt)rc.bottom - rc.top;
 				if (drawWidth > 0 && drawHeight > 0)
 				{
-					surface->GetImageData((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), drawX, drawY, (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, false);
+					surface->GetImageData((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), drawX, drawY, (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, false);
 				}
 			}
 			else
 			{
-				surface->GetImageData((UInt8*)ddsd.lpSurface, 0, 0, this->info->dispWidth, this->info->dispHeight, (UInt32)ddsd.lPitch, false);
+				surface->GetImageData((UInt8*)ddsd.lpSurface, 0, 0, this->info.dispWidth, this->info.dispHeight, (UInt32)ddsd.lPitch, false);
 			}
 			this->clsData->surface->Unlock(0);
 			succ = true;
@@ -223,8 +223,8 @@ Bool Media::DDrawSurface::DrawFromSurface(Media::MonitorSurface *surface, Bool w
 
 Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffW, UOSInt buffH, Bool clearScn, Bool waitForVBlank)
 {
-	OSInt drawWidth = (OSInt)this->info->dispWidth;
-	OSInt drawHeight = (OSInt)this->info->dispHeight;
+	OSInt drawWidth = (OSInt)this->info.dispWidth;
+	OSInt drawHeight = (OSInt)this->info.dispHeight;
 	RECT rc;
 	HWND hWnd;
 	if (this->clsData->clipper)
@@ -258,8 +258,8 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 	DDSURFACEDESC2 ddsd;
 	rcSrc.left = 0;
 	rcSrc.top = 0;
-	rcSrc.right = (LONG)this->info->dispWidth;
-	rcSrc.bottom = (LONG)this->info->dispHeight;
+	rcSrc.right = (LONG)this->info.dispWidth;
+	rcSrc.bottom = (LONG)this->info.dispHeight;
 	MemClear(&ddsd, sizeof(ddsd));
 	ddsd.dwSize = sizeof(ddsd);
 
@@ -286,13 +286,13 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 			buffH += (UOSInt)destY;
 			destY = 0;
 		}
-		if (rc.right > (OSInt)this->info->dispWidth)
+		if (rc.right > (OSInt)this->info.dispWidth)
 		{
-			rc.right = (LONG)(OSInt)this->info->dispWidth;
+			rc.right = (LONG)(OSInt)this->info.dispWidth;
 		}
-		if (rc.bottom > (OSInt)this->info->dispHeight)
+		if (rc.bottom > (OSInt)this->info.dispHeight)
 		{
-			rc.bottom = (LONG)(OSInt)this->info->dispHeight;
+			rc.bottom = (LONG)(OSInt)this->info.dispHeight;
 		}
 		if (rc.left < 0)
 		{
@@ -316,19 +316,19 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 		}
 		if ((OSInt)buffW > 0 && (OSInt)buffH > 0)
 		{
-			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info->storeBPP >> 3),
-				(UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info->storeBPP >> 3),
-				buffW * (this->info->storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)ddsd.lPitch, false);
+			ImageCopy_ImgCopyR(buff + drawY * lineAdd + drawX * (OSInt)(this->info.storeBPP >> 3),
+				(UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (rc.left + destX) * ((OSInt)this->info.storeBPP >> 3),
+				buffW * (this->info.storeBPP >> 3), buffH, (UOSInt)lineAdd, (UInt32)ddsd.lPitch, false);
 
 			if (clearScn)
 			{
 				if (destY > 0)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)destY, (UInt32)ddsd.lPitch, 0);
 				}
 				if (destY + (OSInt)buffH < (OSInt)drawHeight)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY + (OSInt)buffH) * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)(drawHeight - (OSInt)buffH - destY), (UInt32)ddsd.lPitch, 0);
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY + (OSInt)buffH) * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)(drawHeight - (OSInt)buffH - destY), (UInt32)ddsd.lPitch, 0);
 				}
 				if (destX > 0)
 				{
@@ -336,13 +336,13 @@ Bool Media::DDrawSurface::DrawFromMem(UInt8 *buff, OSInt lineAdd, OSInt destX, O
 				}
 				if (destX + (OSInt)buffW < (OSInt)drawWidth)
 				{
-					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (destX + (OSInt)buffW) * (OSInt)(this->info->storeBPP >> 3), (UOSInt)drawWidth - (UOSInt)destX - buffW, buffH, (UInt32)ddsd.lPitch, 0);
+					ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (rc.top + destY) * ddsd.lPitch + (destX + (OSInt)buffW) * (OSInt)(this->info.storeBPP >> 3), (UOSInt)drawWidth - (UOSInt)destX - buffW, buffH, (UInt32)ddsd.lPitch, 0);
 				}
 			}
 		}
 		else if (clearScn)
 		{
-			ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info->storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, 0);
+			ImageUtil_ImageColorFill32((UInt8*)ddsd.lpSurface + (OSInt)rc.top * ddsd.lPitch + rc.left * ((OSInt)this->info.storeBPP >> 3), (UOSInt)drawWidth, (UOSInt)drawHeight, (UInt32)ddsd.lPitch, 0);
 		}
 
 		this->clsData->surface->Unlock(0);
@@ -360,8 +360,8 @@ UInt8 *Media::DDrawSurface::LockSurface(OSInt *lineAdd)
 	ddsd.dwSize = sizeof(ddsd);
 	rcSrc.left = 0;
 	rcSrc.top = 0;
-	rcSrc.right = (LONG)this->info->dispWidth;
-	rcSrc.bottom = (LONG)this->info->dispHeight;
+	rcSrc.right = (LONG)this->info.dispWidth;
+	rcSrc.bottom = (LONG)this->info.dispHeight;
 
 	hRes = this->clsData->surface->Lock(&rcSrc, &ddsd, DDLOCK_WAIT, 0);
 	if (hRes == DDERR_SURFACELOST)

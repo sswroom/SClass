@@ -6287,7 +6287,7 @@ Bool __stdcall SSWR::OrganMgr::OrganWebHandler::SvcPhotoUpload(Net::WebServer::I
 			Media::Image *img = imgList->GetImage(0, &imgDelay);
 			if (img)
 			{
-				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info->dispWidth), UTF8STRC(" x ")), img->info->dispHeight);
+				Text::StrUOSInt(Text::StrConcatC(Text::StrUOSInt(sbuff, img->info.dispWidth), UTF8STRC(" x ")), img->info.dispHeight);
 				writer->Write(sbuff);
 			}
 			else
@@ -7923,20 +7923,20 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
-					this->csconvFCC = simg->info->fourcc;
-					this->csconvBpp = simg->info->storeBPP;
-					this->csconvPF = simg->info->pf;
-					this->csconvColor->Set(simg->info->color);
+					this->csconvFCC = simg->info.fourcc;
+					this->csconvBpp = simg->info.storeBPP;
+					this->csconvPF = simg->info.pf;
+					this->csconvColor->Set(simg->info.color);
 					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{
@@ -7947,7 +7947,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 
 				if (lrimg)
 				{
-					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
+					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 					Sync::MutexUsage mutUsage(this->resizerMut);
 					resizerLR->SetResizeAspectRatio(Media::IImgResizer::RAR_SQUAREPIXEL);
 					resizerLR->SetTargetWidth(imgWidth);
@@ -7965,7 +7965,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
-					dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 					if (rotateType == 1)
 					{
 						dimg->RotateImage(Media::StaticImage::RT_CW90);
@@ -8000,10 +8000,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhoto(Net::WebServer::IWebRequest 
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz[0] <= dimg->info->dispWidth && sz[1] <= dimg->info->dispHeight)
+							if (sz[0] <= dimg->info.dispWidth && sz[1] <= dimg->info.dispHeight)
 							{
-								xRand = Double2Int32(dimg->info->dispWidth - sz[0]);
-								yRand = Double2Int32(dimg->info->dispHeight - sz[1]);
+								xRand = Double2Int32(dimg->info.dispWidth - sz[0]);
+								yRand = Double2Int32(dimg->info.dispHeight - sz[1]);
 								iWidth = Double2Int32(sz[0]);
 								iHeight = Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
@@ -8206,20 +8206,20 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 			simg = imgList->GetImage(0, 0)->CreateStaticImage();
 			DEL_CLASS(imgList);
 			Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-			NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+			NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			Sync::MutexUsage mutUsage(this->csconvMut);
-			if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
+			if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
 			{
 				SDEL_CLASS(this->csconv);
-				this->csconvFCC = simg->info->fourcc;
-				this->csconvBpp = simg->info->storeBPP;
-				this->csconvPF = simg->info->pf;
-				this->csconvColor->Set(simg->info->color);
+				this->csconvFCC = simg->info.fourcc;
+				this->csconvBpp = simg->info.storeBPP;
+				this->csconvPF = simg->info.pf;
+				this->csconvColor->Set(simg->info.color);
 				this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 			}
 			if (this->csconv)
 			{
-				this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
 			else
 			{
@@ -8230,7 +8230,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 
 			if (lrimg)
 			{
-				LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
+				LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 				if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 				{
 					Sync::MutexUsage mutUsage(this->resizerMut);
@@ -8239,27 +8239,27 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 					resizerLR->SetTargetHeight(imgHeight);
 					Double x1 = userFile->cropLeft;
 					Double y1 = userFile->cropTop;
-					Double x2 = UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight;
-					Double y2 = UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom;
+					Double x2 = UOSInt2Double(lrimg->info.dispWidth) - userFile->cropRight;
+					Double y2 = UOSInt2Double(lrimg->info.dispHeight) - userFile->cropBottom;
 					if (userFile->cropLeft < 0)
 					{
 						x1 = 0;
-						x2 = UOSInt2Double(lrimg->info->dispWidth) - userFile->cropRight - userFile->cropLeft;
+						x2 = UOSInt2Double(lrimg->info.dispWidth) - userFile->cropRight - userFile->cropLeft;
 					}
 					else if (userFile->cropRight < 0)
 					{
 						x1 = userFile->cropLeft + userFile->cropRight;
-						x2 = UOSInt2Double(lrimg->info->dispWidth);
+						x2 = UOSInt2Double(lrimg->info.dispWidth);
 					}
 					if (userFile->cropTop < 0)
 					{
 						y1 = 0;
-						y2 = UOSInt2Double(lrimg->info->dispHeight) - userFile->cropBottom - userFile->cropTop;
+						y2 = UOSInt2Double(lrimg->info.dispHeight) - userFile->cropBottom - userFile->cropTop;
 					}
 					else if (userFile->cropBottom < 0)
 					{
 						y1 = userFile->cropBottom + userFile->cropTop;
-						y2 = UOSInt2Double(lrimg->info->dispHeight);
+						y2 = UOSInt2Double(lrimg->info.dispHeight);
 					}
 					dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
 					mutUsage.EndUse();
@@ -8284,7 +8284,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 				IO::MemoryStream *mstm;
 				UInt8 *buff;
 				UOSInt buffSize;
-				dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+				dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 				if (rotateType == 1)
 				{
@@ -8321,10 +8321,10 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoId(Net::WebServer::IWebReques
 								gimg->DelFont(f);
 								break;
 							}
-							if (sz[0] <= UOSInt2Double(dimg->info->dispWidth) && sz[1] <= UOSInt2Double(dimg->info->dispHeight))
+							if (sz[0] <= UOSInt2Double(dimg->info.dispWidth) && sz[1] <= UOSInt2Double(dimg->info.dispHeight))
 							{
-								xRand = Double2Int32(UOSInt2Double(dimg->info->dispWidth) - sz[0]);
-								yRand = Double2Int32(UOSInt2Double(dimg->info->dispHeight) - sz[1]);
+								xRand = Double2Int32(UOSInt2Double(dimg->info.dispWidth) - sz[0]);
+								yRand = Double2Int32(UOSInt2Double(dimg->info.dispHeight) - sz[1]);
 								iWidth = (UInt32)Double2Int32(sz[0]);
 								iHeight = (UInt32)Double2Int32(sz[1]);
 								gimg2 = this->eng->CreateImage32(iWidth, iHeight, Media::AT_NO_ALPHA);
@@ -8500,20 +8500,20 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 				simg = imgList->GetImage(0, 0)->CreateStaticImage();
 				DEL_CLASS(imgList);
 				Media::ColorProfile color(Media::ColorProfile::CPT_SRGB);
-				NEW_CLASS(lrimg, Media::StaticImage(simg->info->dispWidth, simg->info->dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
+				NEW_CLASS(lrimg, Media::StaticImage(simg->info.dispWidth, simg->info.dispHeight, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, 0, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 				Sync::MutexUsage mutUsage(this->csconvMut);
-				if (this->csconv == 0 || this->csconvFCC != simg->info->fourcc || this->csconvBpp != simg->info->storeBPP || this->csconvPF != simg->info->pf || !simg->info->color->Equals(this->csconvColor))
+				if (this->csconv == 0 || this->csconvFCC != simg->info.fourcc || this->csconvBpp != simg->info.storeBPP || this->csconvPF != simg->info.pf || !simg->info.color->Equals(this->csconvColor))
 				{
 					SDEL_CLASS(this->csconv);
-					this->csconvFCC = simg->info->fourcc;
-					this->csconvBpp = simg->info->storeBPP;
-					this->csconvPF = simg->info->pf;
-					this->csconvColor->Set(simg->info->color);
+					this->csconvFCC = simg->info.fourcc;
+					this->csconvBpp = simg->info.storeBPP;
+					this->csconvPF = simg->info.pf;
+					this->csconvColor->Set(simg->info.color);
 					this->csconv = Media::CS::CSConverter::NewConverter(this->csconvFCC, this->csconvBpp, this->csconvPF, this->csconvColor, *(UInt32*)"LRGB", 64, Media::PF_UNKNOWN, &color, Media::ColorProfile::YUVT_UNKNOWN, this->colorSess);
 				}
 				if (this->csconv)
 				{
-					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info->dispWidth, simg->info->dispHeight, simg->info->storeWidth, simg->info->storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+					this->csconv->ConvertV2(&simg->data, lrimg->data, simg->info.dispWidth, simg->info.dispHeight, simg->info.storeWidth, simg->info.storeHeight, (OSInt)lrimg->GetDataBpl(), Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 				}
 				else
 				{
@@ -8524,7 +8524,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 
 				if (lrimg)
 				{
-					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info->dispWidth, lrimg->info->dispHeight);
+					LRGBLimiter_LimitImageLRGB(lrimg->data, lrimg->info.dispWidth, lrimg->info.dispHeight);
 					if (imgWidth == PREVIEW_SIZE && imgHeight == PREVIEW_SIZE)
 					{
 						Sync::MutexUsage mutUsage(this->resizerMut);
@@ -8533,27 +8533,27 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 						resizerLR->SetTargetHeight(imgHeight);
 						Double x1 = wfile->cropLeft;
 						Double y1 = wfile->cropTop;
-						Double x2 = UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight;
-						Double y2 = UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom;
+						Double x2 = UOSInt2Double(lrimg->info.dispWidth) - wfile->cropRight;
+						Double y2 = UOSInt2Double(lrimg->info.dispHeight) - wfile->cropBottom;
 						if (wfile->cropLeft < 0)
 						{
 							x1 = 0;
-							x2 = UOSInt2Double(lrimg->info->dispWidth) - wfile->cropRight - wfile->cropLeft;
+							x2 = UOSInt2Double(lrimg->info.dispWidth) - wfile->cropRight - wfile->cropLeft;
 						}
 						else if (wfile->cropRight < 0)
 						{
 							x1 = wfile->cropLeft + wfile->cropRight;
-							x2 = UOSInt2Double(lrimg->info->dispWidth);
+							x2 = UOSInt2Double(lrimg->info.dispWidth);
 						}
 						if (wfile->cropTop < 0)
 						{
 							y1 = 0;
-							y2 = UOSInt2Double(lrimg->info->dispHeight) - wfile->cropBottom - wfile->cropTop;
+							y2 = UOSInt2Double(lrimg->info.dispHeight) - wfile->cropBottom - wfile->cropTop;
 						}
 						else if (wfile->cropBottom < 0)
 						{
 							y1 = wfile->cropBottom + wfile->cropTop;
-							y2 = UOSInt2Double(lrimg->info->dispHeight);
+							y2 = UOSInt2Double(lrimg->info.dispHeight);
 						}
 						dimg = resizerLR->ProcessToNewPartial(lrimg, x1, y1, x2, y2);
 						mutUsage.EndUse();
@@ -8578,7 +8578,7 @@ void SSWR::OrganMgr::OrganWebHandler::ResponsePhotoWId(Net::WebServer::IWebReque
 					IO::MemoryStream *mstm;
 					UInt8 *buff;
 					UOSInt buffSize;
-					dimg->info->color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
+					dimg->info.color->SetRAWICC(Media::ICCProfile::GetSRGBICCData());
 
 					if (rotateType == 1)
 					{

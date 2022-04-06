@@ -933,8 +933,8 @@ void UtilUI::ColorDialog::GenMainImage()
 	UOSInt i;
 	Bool found;
 	UInt8 *imgPtr = this->mainImg->data;
-	UOSInt w = this->mainImg->info->dispWidth;
-	UOSInt h = this->mainImg->info->dispHeight;
+	UOSInt w = this->mainImg->info.dispWidth;
+	UOSInt h = this->mainImg->info.dispHeight;
 
 	UOSInt lastIndex = h;
 	UOSInt thisIndex;
@@ -984,8 +984,8 @@ void UtilUI::ColorDialog::GenSubImage()
 
 	UInt8 c[4];
 	UInt8 *imgPtr = this->subImg->data;
-	UOSInt w = this->subImg->info->dispWidth;
-	UOSInt h = this->subImg->info->dispHeight;
+	UOSInt w = this->subImg->info.dispWidth;
+	UOSInt h = this->subImg->info.dispHeight;
 	const Media::IColorHandler::RGBPARAM2 *rgbParam = this->colorSess->GetRGBParam();
 	Double rGammaVal;
 	Double gGammaVal;

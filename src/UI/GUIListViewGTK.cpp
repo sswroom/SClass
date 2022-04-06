@@ -47,11 +47,6 @@ gboolean GUIListView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 
 UI::GUIListView::GUIListView(GUICore *ui, GUIClientControl *parent, ListViewStyle lvstyle, UOSInt colCount) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->dblClkHdlrs, Data::ArrayList<ItemEvent>());
-	NEW_CLASS(this->dblClkObjs, Data::ArrayList<void*>());
-
 	GUIListViewData *data = MemAlloc(GUIListViewData, 1);
 	data->noChgEvt = false;
 	UOSInt i;
@@ -117,10 +112,6 @@ UI::GUIListView::~GUIListView()
 	MemFree(data->colSizes);
 	DEL_CLASS(data->rows);
 	MemFree(data);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClkHdlrs);
-	DEL_CLASS(this->dblClkObjs);
 }
 
 void UI::GUIListView::ChangeColumnCnt(UOSInt newColCnt)
@@ -616,20 +607,20 @@ void UI::GUIListView::EventSelChg()
 	if (data->noChgEvt)
 		return;
 	UOSInt i;
-	i = this->selChgHdlrs->GetCount();
+	i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListView::EventDblClk(UOSInt itemIndex)
 {
 	UOSInt i;
-	i = this->dblClkHdlrs->GetCount();
+	i = this->dblClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClkHdlrs->GetItem(i)(this->dblClkObjs->GetItem(i), itemIndex);
+		this->dblClkHdlrs.GetItem(i)(this->dblClkObjs.GetItem(i), itemIndex);
 	}
 }
 
@@ -661,13 +652,13 @@ void UI::GUIListView::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIListView::HandleSelChg(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUIListView::HandleDblClk(ItemEvent hdlr, void *userObj)
 {
-	this->dblClkHdlrs->Add(hdlr);
-	this->dblClkObjs->Add(userObj);
+	this->dblClkHdlrs.Add(hdlr);
+	this->dblClkObjs.Add(userObj);
 }
 

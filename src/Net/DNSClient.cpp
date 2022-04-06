@@ -13,24 +13,24 @@ void __stdcall Net::DNSClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 {
 	Net::DNSClient *me = (Net::DNSClient*)userData;
 	RequestStatus *req;
-	Sync::MutexUsage mutUsage(me->reqMut);
-	req = me->reqMap->Get(ReadMUInt16(buff));
+	Sync::MutexUsage mutUsage(&me->reqMut);
+	req = me->reqMap.Get(ReadMUInt16(buff));
 	if (req)
 	{
 		MemCopyNO(req->respBuff, buff, dataSize);
 		req->respSize = dataSize;
-		req->finEvt->Set();
+		req->finEvt.Set();
 	}
 	mutUsage.EndUse();
 }
 
 Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 {
-	RequestStatus *req = MemAlloc(RequestStatus, 1);
+	RequestStatus *req;
+	NEW_CLASS(req, RequestStatus());
 	req->respSize = 0;
-	NEW_CLASS(req->finEvt, Sync::Event(true));
-	Sync::MutexUsage mutUsage(this->reqMut);
-	this->reqMap->Put(id, req);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	this->reqMap.Put(id, req);
 	mutUsage.EndUse();
 	return req;
 }
@@ -38,13 +38,12 @@ Net::DNSClient::RequestStatus *Net::DNSClient::NewReq(UInt32 id)
 void Net::DNSClient::DelReq(UInt32 id)
 {
 	RequestStatus *req;
-	Sync::MutexUsage mutUsage(this->reqMut);
-	req = this->reqMap->Remove(id);
+	Sync::MutexUsage mutUsage(&this->reqMut);
+	req = this->reqMap.Remove(id);
 	mutUsage.EndUse();
 	if (req)
 	{
-		DEL_CLASS(req->finEvt);
-		MemFree(req);
+		DEL_CLASS(req);
 	}
 }
 
@@ -62,16 +61,12 @@ Net::DNSClient::DNSClient(Net::SocketFactory *sockf, const Net::SocketUtil::Addr
 	this->sockf = sockf;
 	this->serverAddr = *serverAddr;
 	this->lastID = random.NextInt15();
-	NEW_CLASS(this->reqMut, Sync::Mutex());
-	NEW_CLASS(this->reqMap, Data::UInt32Map<RequestStatus*>());
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, 0, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
 }
 
 Net::DNSClient::~DNSClient()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->reqMap);
-	DEL_CLASS(this->reqMut);
 }
 
 UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
@@ -180,7 +175,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 	
 	RequestStatus *req = this->NewReq(currId);
 	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
-	req->finEvt->Wait(2000);
+	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
 		ret = ParseAnswers(req->respBuff, req->respSize, answers);
@@ -229,7 +224,7 @@ UOSInt Net::DNSClient::GetByIPv4Name(Data::ArrayList<RequestAnswer*> *answers, U
 	
 	RequestStatus *req = this->NewReq(currId);
 	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
-	req->finEvt->Wait(2000);
+	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
 		ret = ParseAnswers(req->respBuff, req->respSize, answers);
@@ -365,7 +360,7 @@ UOSInt Net::DNSClient::GetByAddrName(Data::ArrayList<RequestAnswer*> *answers, c
 	
 	RequestStatus *req = this->NewReq(currId);
 	this->svr->SendTo(&this->serverAddr, 53, buff, (UOSInt)(ptr1 - ptr2));
-	req->finEvt->Wait(2000);
+	req->finEvt.Wait(2000);
 	if (req->respSize > 12)
 	{
 		ret = ParseAnswers(req->respBuff, req->respSize, answers);

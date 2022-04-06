@@ -22,20 +22,21 @@ namespace Net
 		} RequestAnswer;
 
 	private:
-		typedef struct
+		class RequestStatus
 		{
+		public:
 			UInt8 respBuff[512];
 			UOSInt respSize;
-			Sync::Event *finEvt;
-		} RequestStatus;
+			Sync::Event finEvt;
+		};
 
 		Net::UDPServer *svr;
 		Net::SocketFactory *sockf;
 		UInt32 lastID;
 		Net::SocketUtil::AddressInfo serverAddr;
 
-		Sync::Mutex *reqMut;
-		Data::UInt32Map<RequestStatus*> *reqMap;
+		Sync::Mutex reqMut;
+		Data::UInt32Map<RequestStatus*> reqMap;
 
 		static void __stdcall PacketHdlr(const Net::SocketUtil::AddressInfo *addr, UInt16 port, const UInt8 *buff, UOSInt dataSize, void *userData);
 		RequestStatus *NewReq(UInt32 id);

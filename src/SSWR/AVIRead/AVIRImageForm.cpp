@@ -50,19 +50,19 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		OSInt yPos = Double2Int32(imgY);
 		if (xPos < 0)
 			xPos = 0;
-		else if ((UOSInt)xPos >= me->currImg->info->dispWidth)
-			xPos = (OSInt)me->currImg->info->dispWidth - 1;
+		else if ((UOSInt)xPos >= me->currImg->info.dispWidth)
+			xPos = (OSInt)me->currImg->info.dispWidth - 1;
 		if (yPos < 0)
 			yPos = 0;
-		else if ((UOSInt)yPos >= me->currImg->info->dispHeight)
-			yPos = (OSInt)me->currImg->info->dispHeight - 1;
+		else if ((UOSInt)yPos >= me->currImg->info.dispHeight)
+			yPos = (OSInt)me->currImg->info.dispHeight - 1;
 		me->currImg->GetImageData(pixel, xPos, yPos, 1, 1, 16, false);
 		sb.AppendC(UTF8STRC("(x, y) = ("));
 		sb.AppendOSInt(xPos);
 		sb.AppendC(UTF8STRC(", "));
 		sb.AppendOSInt(yPos);
 		sb.AppendC(UTF8STRC(")"));
-		if (me->currImg->info->pf == Media::PF_PAL_1 || me->currImg->info->pf == Media::PF_PAL_W1)
+		if (me->currImg->info.pf == Media::PF_PAL_1 || me->currImg->info.pf == Media::PF_PAL_W1)
 		{
 			UInt8 i = 0;
 			UInt8 *p;
@@ -109,7 +109,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_2 || me->currImg->info->pf == Media::PF_PAL_W2)
+		else if (me->currImg->info.pf == Media::PF_PAL_2 || me->currImg->info.pf == Media::PF_PAL_W2)
 		{
 			UInt8 i = 0;
 			UInt8 *p;
@@ -144,7 +144,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_4 || me->currImg->info->pf == Media::PF_PAL_W4)
+		else if (me->currImg->info.pf == Media::PF_PAL_4 || me->currImg->info.pf == Media::PF_PAL_W4)
 		{
 			UInt8 i = 0;
 			UInt8 *p;
@@ -173,7 +173,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_8 || me->currImg->info->pf == Media::PF_PAL_W8)
+		else if (me->currImg->info.pf == Media::PF_PAL_8 || me->currImg->info.pf == Media::PF_PAL_W8)
 		{
 			UInt8 *p;
 			sb.AppendC(UTF8STRC(", I"));
@@ -192,7 +192,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_1_A1)
+		else if (me->currImg->info.pf == Media::PF_PAL_1_A1)
 		{
 			UInt8 i = 0;
 			UInt8 a = 0;
@@ -247,7 +247,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_2_A1)
+		else if (me->currImg->info.pf == Media::PF_PAL_2_A1)
 		{
 			UInt8 i = 0;
 			UInt8 a = 0;
@@ -309,7 +309,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_4_A1)
+		else if (me->currImg->info.pf == Media::PF_PAL_4_A1)
 		{
 			UInt8 i = 0;
 			UInt8 a = 0;
@@ -365,7 +365,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_PAL_8_A1)
+		else if (me->currImg->info.pf == Media::PF_PAL_8_A1)
 		{
 			UInt8 *p;
 			UInt8 a = 0;
@@ -384,7 +384,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = p[1] / 255.0;
 			dB = p[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_R5G5B5)
+		else if (me->currImg->info.pf == Media::PF_LE_R5G5B5)
 		{
 			sb.AppendC(UTF8STRC(", R"));
 			UInt16 p = ReadUInt16(pixel);
@@ -397,7 +397,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = ((p >> 5) & 0x1f) / 31.0;
 			dB = (p & 0x1f) / 31.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_R5G6B5)
+		else if (me->currImg->info.pf == Media::PF_LE_R5G6B5)
 		{
 			sb.AppendC(UTF8STRC(", R"));
 			UInt16 p = ReadUInt16(pixel);
@@ -410,7 +410,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = ((p >> 5) & 0x3f) / 63.0;
 			dB = (p & 0x1f) / 31.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_B8G8R8)
+		else if (me->currImg->info.pf == Media::PF_B8G8R8)
 		{
 			sb.AppendC(UTF8STRC(", R"));
 			sb.AppendU32(pixel[2]);
@@ -422,7 +422,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = pixel[1] / 255.0;
 			dB = pixel[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_B8G8R8A8)
+		else if (me->currImg->info.pf == Media::PF_B8G8R8A8)
 		{
 			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(pixel[3]);
@@ -436,7 +436,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = pixel[1] / 255.0;
 			dB = pixel[0] / 255.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_B16G16R16)
+		else if (me->currImg->info.pf == Media::PF_LE_B16G16R16)
 		{
 			sb.AppendC(UTF8STRC(", R"));
 			sb.AppendU32(ReadUInt16(&pixel[4]));
@@ -448,7 +448,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = ReadUInt16(&pixel[2]) / 65535.0;
 			dB = ReadUInt16(&pixel[0]) / 65535.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_B16G16R16A16)
+		else if (me->currImg->info.pf == Media::PF_LE_B16G16R16A16)
 		{
 			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(ReadUInt16(&pixel[6]));
@@ -462,7 +462,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = ReadUInt16(&pixel[2]) / 65535.0;
 			dB = ReadUInt16(&pixel[0]) / 65535.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_A2B10G10R10)
+		else if (me->currImg->info.pf == Media::PF_LE_A2B10G10R10)
 		{
 			UInt32 p = ReadUInt32(&pixel[0]);
 			sb.AppendC(UTF8STRC(", A"));
@@ -477,7 +477,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = ((p >> 10) & 0x3ff) / 1023.0;
 			dB = ((p >> 20) & 0x3ff) / 1023.0;
 		}
-		else if (me->currImg->info->pf == Media::PF_W8A8)
+		else if (me->currImg->info.pf == Media::PF_W8A8)
 		{
 			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(pixel[1]);
@@ -485,7 +485,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = dR;
 			dB = dR;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_W16)
+		else if (me->currImg->info.pf == Media::PF_LE_W16)
 		{
 			sb.AppendC(UTF8STRC(", W"));
 			sb.AppendU32(ReadUInt16(&pixel[0]));
@@ -493,7 +493,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = dR;
 			dB = dR;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_W16A16)
+		else if (me->currImg->info.pf == Media::PF_LE_W16A16)
 		{
 			sb.AppendC(UTF8STRC(", A"));
 			sb.AppendU32(ReadUInt16(&pixel[2]));
@@ -503,7 +503,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 			dG = dR;
 			dB = dR;
 		}
-		else if (me->currImg->info->pf == Media::PF_LE_FB32G32R32A32)
+		else if (me->currImg->info.pf == Media::PF_LE_FB32G32R32A32)
 		{
 			sb.AppendC(UTF8STRC(", A"));
 			Text::SBAppendF32(&sb, ReadFloat(&pixel[12]));
@@ -526,7 +526,7 @@ Bool __stdcall SSWR::AVIRead::AVIRImageForm::OnImageMouseMove(void *userObj, OSI
 		if (me->imgList && me->imgList->HasThermoImage())
 		{
 			sb.AppendC(UTF8STRC(", T = "));
-			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / UOSInt2Double(me->currImg->info->dispWidth), imgY / UOSInt2Double(me->currImg->info->dispHeight)));
+			Text::SBAppendF64(&sb, me->imgList->GetThermoValue(imgX / UOSInt2Double(me->currImg->info.dispWidth), imgY / UOSInt2Double(me->currImg->info.dispHeight)));
 		}
 		sb.AppendC(UTF8STRC(", RGB("));
 		Text::SBAppendF64(&sb, dR);
@@ -549,7 +549,7 @@ void __stdcall SSWR::AVIRead::AVIRImageForm::OnInfoICCClicked(void *userObj)
 	SSWR::AVIRead::AVIRImageForm *me = (SSWR::AVIRead::AVIRImageForm *)userObj;
 	if (me->currImg)
 	{
-		const UInt8 *iccBuff = me->currImg->info->color->rawICC;
+		const UInt8 *iccBuff = me->currImg->info.color->rawICC;
 		if (iccBuff)
 		{
 			Media::ICCProfile *icc = Media::ICCProfile::Parse(iccBuff, ReadMUInt32(iccBuff));
@@ -578,7 +578,7 @@ void SSWR::AVIRead::AVIRImageForm::UpdateInfo()
 			this->imgList->ToValueString(&sb);
 		}
 		this->txtInfo->SetText(sb.ToCString());
-		if (this->currImg->info->color->GetRAWICC())
+		if (this->currImg->info.color->GetRAWICC())
 		{
 			this->btnInfoICC->SetEnabled(true);
 		}
@@ -724,7 +724,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			if (img)
 			{
 				Bool valid = false;
-				if (img->info->storeBPP == 32 && img->info->pf == Media::PF_B8G8R8A8)
+				if (img->info.storeBPP == 32 && img->info.pf == Media::PF_B8G8R8A8)
 				{
 					valid = true;
 				}
@@ -767,7 +767,7 @@ void SSWR::AVIRead::AVIRImageForm::EventMenuClicked(UInt16 cmdId)
 			if (img)
 			{
 				Bool valid = false;
-				if (img->info->pf == Media::PF_B8G8R8A8 || img->info->pf == Media::PF_LE_B16G16R16A16)
+				if (img->info.pf == Media::PF_B8G8R8A8 || img->info.pf == Media::PF_LE_B16G16R16A16)
 				{
 					valid = true;
 				}

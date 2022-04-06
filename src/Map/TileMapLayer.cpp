@@ -24,8 +24,8 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 	{
 		while (!stat->toStop)
 		{
-			Sync::MutexUsage mutUsage(stat->me->taskMut);
-			cimg = (CachedImage*)stat->me->taskQueued->Get();
+			Sync::MutexUsage mutUsage(&stat->me->taskMut);
+			cimg = (CachedImage*)stat->me->taskQueued.Get();
 			mutUsage.EndUse();
 			if (cimg == 0)
 				break;
@@ -42,11 +42,11 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 					NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
 					cimg->isFinish = true;
 					
-					Sync::MutexUsage mutUsage(stat->me->updMut);
-					UOSInt i = stat->me->updHdlrs->GetCount();
+					Sync::MutexUsage mutUsage(&stat->me->updMut);
+					UOSInt i = stat->me->updHdlrs.GetCount();
 					while (i-- > 0)
 					{
-						stat->me->updHdlrs->GetItem(i)(stat->me->updObjs->GetItem(i));
+						stat->me->updHdlrs.GetItem(i)(stat->me->updObjs.GetItem(i));
 					}
 					mutUsage.EndUse();
 				}
@@ -66,8 +66,8 @@ UInt32 __stdcall Map::TileMapLayer::TaskThread(void *userObj)
 
 void Map::TileMapLayer::AddTask(CachedImage *cimg)
 {
-	Sync::MutexUsage mutUsage(this->taskMut);
-	this->taskQueued->Put(cimg);
+	Sync::MutexUsage mutUsage(&this->taskMut);
+	this->taskQueued.Put(cimg);
 	mutUsage.EndUse();
 	this->threads[this->threadNext].evt->Set();
 	this->threadNext = (this->threadNext + 1) % this->threadCnt;
@@ -75,40 +75,38 @@ void Map::TileMapLayer::AddTask(CachedImage *cimg)
 
 void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 {
-	if (this->lastIds->GetCount() <= 0)
+	if (this->lastIds.GetCount() <= 0)
 		return;
 
 	CachedImage *cimg;
-	Data::ArrayListInt64 *cacheIds;
-	Data::ArrayList<CachedImage *> *cacheImgs;
+	Data::ArrayListInt64 cacheIds;
+	Data::ArrayList<CachedImage *> cacheImgs;
 	UOSInt i;
 	OSInt j;
 	UOSInt k;
-	NEW_CLASS(cacheIds, Data::ArrayListInt64());
-	NEW_CLASS(cacheImgs, Data::ArrayList<CachedImage*>());
-	Sync::MutexUsage lastMutUsage(this->lastMut);
-	cacheIds->AddAll(this->lastIds);
-	cacheImgs->AddAll(this->lastImgs);
-	this->lastIds->Clear();
-	this->lastImgs->Clear();
+	Sync::MutexUsage lastMutUsage(&this->lastMut);
+	cacheIds.AddAll(&this->lastIds);
+	cacheImgs.AddAll(&this->lastImgs);
+	this->lastIds.Clear();
+	this->lastImgs.Clear();
 
 	i = currIDs->GetCount();
 	while (i-- > 0)
 	{
-		j = cacheIds->SortedIndexOf(currIDs->GetItem(i));
+		j = cacheIds.SortedIndexOf(currIDs->GetItem(i));
 		if (j >= 0)
 		{
-			k = this->lastIds->SortedInsert(cacheIds->RemoveAt((UOSInt)j));
-			this->lastImgs->Insert(k, cimg = cacheImgs->RemoveAt((UOSInt)j));
+			k = this->lastIds.SortedInsert(cacheIds.RemoveAt((UOSInt)j));
+			this->lastImgs.Insert(k, cimg = cacheImgs.RemoveAt((UOSInt)j));
 		}
 	}
 	lastMutUsage.EndUse();
 
-	Sync::MutexUsage idleMutUsage(this->idleMut);
-	i = cacheImgs->GetCount();
+	Sync::MutexUsage idleMutUsage(&this->idleMut);
+	i = cacheImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = cacheImgs->GetItem(i);
+		cimg = cacheImgs.GetItem(i);
 		if (cimg->isFinish)
 		{
 			if (cimg->img)
@@ -120,21 +118,17 @@ void Map::TileMapLayer::CheckCache(Data::ArrayListInt64 *currIDs)
 		else
 		{
 			cimg->isCancel = true;
-			this->idleImgs->Add(cimg);
+			this->idleImgs.Add(cimg);
 		}
 	}
-	idleMutUsage.EndUse();
-	DEL_CLASS(cacheIds);
-	DEL_CLASS(cacheImgs);
 
-	idleMutUsage.BeginUse();
-	i = this->idleImgs->GetCount();
+	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs->GetItem(i);
+		cimg = this->idleImgs.GetItem(i);
 		if (cimg->isFinish)
 		{
-			this->idleImgs->RemoveAt(i);
+			this->idleImgs.RemoveAt(i);
 			if (cimg->img)
 			{
 				DEL_CLASS(cimg->img);
@@ -153,19 +147,7 @@ Map::TileMapLayer::TileMapLayer(Map::TileMap *tileMap, Parser::ParserList *parse
 
 	this->lastLevel = (UOSInt)-1;
 	this->threadNext = 0;
-	NEW_CLASS(this->updMut, Sync::Mutex());
-	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
-	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	NEW_CLASS(this->lastIds, Data::ArrayListInt64());
-	NEW_CLASS(this->lastImgs, Data::ArrayList<CachedImage*>());
-	NEW_CLASS(this->lastMut, Sync::Mutex());
-
-	NEW_CLASS(this->idleImgs, Data::ArrayList<CachedImage*>());
-	NEW_CLASS(this->idleMut, Sync::Mutex());
-	NEW_CLASS(this->taskQueued, Data::SyncLinkedList());
-	NEW_CLASS(this->taskEvt, Sync::Event(true));
-	NEW_CLASS(this->taskMut, Sync::Mutex());
 
 	UOSInt i;
 	this->threadCnt = this->tileMap->GetConcurrentCount();
@@ -207,9 +189,9 @@ Map::TileMapLayer::~TileMapLayer()
 	CachedImage *cimg;
 	UOSInt i;
 	Bool running;
-	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs->Clear();
-	this->updObjs->Clear();
+	Sync::MutexUsage mutUsage(&this->updMut);
+	this->updHdlrs.Clear();
+	this->updObjs.Clear();
 	mutUsage.EndUse();
 
 	i = this->threadCnt;
@@ -243,37 +225,26 @@ Map::TileMapLayer::~TileMapLayer()
 	}
 	MemFree(this->threads);
 
-	i = this->lastImgs->GetCount();
+	i = this->lastImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->lastImgs->GetItem(i);
+		cimg = this->lastImgs.GetItem(i);
 		if (cimg->img)
 		{
 			DEL_CLASS(cimg->img);
 		}
 		MemFree(cimg);
 	}
-	i = this->idleImgs->GetCount();
+	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs->GetItem(i);
+		cimg = this->idleImgs.GetItem(i);
 		if (cimg->img)
 		{
 			DEL_CLASS(cimg->img);
 		}
 		MemFree(cimg);
 	}
-	DEL_CLASS(this->taskQueued);
-	DEL_CLASS(this->taskEvt);
-	DEL_CLASS(this->taskMut);
-	DEL_CLASS(this->idleImgs);
-	DEL_CLASS(this->idleMut);
-	DEL_CLASS(this->lastImgs);
-	DEL_CLASS(this->lastIds);
-	DEL_CLASS(this->lastMut);
-	DEL_CLASS(this->updMut);
-	DEL_CLASS(this->updHdlrs);
-	DEL_CLASS(this->updObjs);
 	DEL_CLASS(this->tileMap);
 }
 
@@ -286,13 +257,13 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 	if (this->lastLevel != level)
 	{
-		Sync::MutexUsage lastMutUsage(this->lastMut);
-		Sync::MutexUsage idleMutUsage(this->idleMut);
+		Sync::MutexUsage lastMutUsage(&this->lastMut);
+		Sync::MutexUsage idleMutUsage(&this->idleMut);
 		this->lastLevel = level;
-		j = this->lastImgs->GetCount();
+		j = this->lastImgs.GetCount();
 		while (j-- > 0)
 		{
-			cimg = this->lastImgs->GetItem(j);
+			cimg = this->lastImgs.GetItem(j);
 			if (cimg->isFinish)
 			{
 				if (cimg->img)
@@ -304,11 +275,11 @@ void Map::TileMapLayer::SetCurrScale(Double scale)
 			else
 			{
 				cimg->isCancel = true;
-				this->idleImgs->Add(cimg);
+				this->idleImgs.Add(cimg);
 			}
 		}
-		this->lastIds->Clear();
-		this->lastImgs->Clear();
+		this->lastIds.Clear();
+		this->lastImgs.Clear();
 		idleMutUsage.EndUse();
 		lastMutUsage.EndUse();
 	}
@@ -497,10 +468,10 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 	UTF8Char *sptr;
 	UOSInt level = this->tileMap->GetNearestLevel(scale);
 
-	i = this->lastIds->SortedIndexOf(id);
+	i = this->lastIds.SortedIndexOf(id);
 	if (i >= 0)
 	{
-		cimg = this->lastImgs->GetItem((UOSInt)i);
+		cimg = this->lastImgs.GetItem((UOSInt)i);
 		if (cimg->img == 0)
 			return 0;
 		sptr = this->tileMap->GetImageURL(sbuff, cimg->level, cimg->imgId);
@@ -526,9 +497,9 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		cimg->isCancel = false;
 		NEW_CLASS(cimg->img, Media::SharedImage(imgList, false));
 
-		Sync::MutexUsage mutUsage(this->lastMut);
-		k = this->lastIds->SortedInsert(id);
-		this->lastImgs->Insert(k, cimg);
+		Sync::MutexUsage mutUsage(&this->lastMut);
+		k = this->lastIds.SortedInsert(id);
+		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
 
 		sptr = this->tileMap->GetImageURL(sbuff, level, id);
@@ -549,9 +520,9 @@ Math::Vector2D *Map::TileMapLayer::GetNewVectorById(void *session, Int64 id)
 		cimg->img = 0;
 		AddTask(cimg);
 
-		Sync::MutexUsage mutUsage(this->lastMut);
-		k = this->lastIds->SortedInsert(id);
-		this->lastImgs->Insert(k, cimg);
+		Sync::MutexUsage mutUsage(&this->lastMut);
+		k = this->lastIds.SortedInsert(id);
+		this->lastImgs.Insert(k, cimg);
 		mutUsage.EndUse();
 
 		return 0;
@@ -569,23 +540,23 @@ Map::IMapDrawLayer::ObjectClass Map::TileMapLayer::GetObjectClass()
 
 void Map::TileMapLayer::AddUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs->Add(hdlr);
-	this->updObjs->Add(obj);
+	Sync::MutexUsage mutUsage(&this->updMut);
+	this->updHdlrs.Add(hdlr);
+	this->updObjs.Add(obj);
 	mutUsage.EndUse();
 }
 
 void Map::TileMapLayer::RemoveUpdatedHandler(Map::MapRenderer::UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->updMut);
-	i = this->updHdlrs->GetCount();
+	Sync::MutexUsage mutUsage(&this->updMut);
+	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs->GetItem(i) == hdlr && this->updObjs->GetItem(i) == obj)
+		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
 		{
-			this->updObjs->RemoveAt(i);
-			this->updHdlrs->RemoveAt(i);
+			this->updObjs.RemoveAt(i);
+			this->updHdlrs.RemoveAt(i);
 		}
 	}
 	mutUsage.EndUse();
@@ -596,11 +567,11 @@ Bool Map::TileMapLayer::IsCaching(UOSInt level, Int64 imgId)
 	UOSInt i;
 	Bool found = false;
 	CachedImage *cimg;
-	Sync::MutexUsage mutUsage(this->idleMut);
-	i = this->idleImgs->GetCount();
+	Sync::MutexUsage mutUsage(&this->idleMut);
+	i = this->idleImgs.GetCount();
 	while (i-- > 0)
 	{
-		cimg = this->idleImgs->GetItem(i);
+		cimg = this->idleImgs.GetItem(i);
 		if (cimg->level == level && cimg->imgId == imgId && !cimg->isFinish)
 		{
 			found = true;

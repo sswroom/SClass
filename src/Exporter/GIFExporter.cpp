@@ -29,11 +29,11 @@ IO::FileExporter::SupportType Exporter::GIFExporter::IsObjectSupported(IO::Parse
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	if (img->info->pf == Media::PF_PAL_8 || img->info->pf == Media::PF_PAL_W8)
+	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
-		if (img->info->atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_NO_ALPHA)
 			return IO::FileExporter::SupportType::NormalStream;
 		OSInt i;
 		Bool found = false;
@@ -86,9 +86,9 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 	UOSInt transparentIndex = INVALID_INDEX;
 	UOSInt i;
 	UOSInt j;
-	if (img->info->pf == Media::PF_PAL_8 || img->info->pf == Media::PF_PAL_W8)
+	if (img->info.pf == Media::PF_PAL_8 || img->info.pf == Media::PF_PAL_W8)
 	{
-		if (img->info->atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 		}
 		else
@@ -114,11 +114,11 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		buff[3] = '8';
 		buff[4] = '9';
 		buff[5] = 'a';
-		WriteInt16(&buff[6], (Int16)img->info->dispWidth);
-		WriteInt16(&buff[8], (Int16)img->info->dispHeight);
+		WriteInt16(&buff[6], (Int16)img->info.dispWidth);
+		WriteInt16(&buff[8], (Int16)img->info.dispHeight);
 		buff[10] = 0xf7;
 		buff[11] = 0;
-		buff[12] = (UInt8)(Double2Int32(img->info->par2 * 64.0) - 15);
+		buff[12] = (UInt8)(Double2Int32(img->info.par2 * 64.0) - 15);
 		stm->Write(buff, 13);
 
 		UInt8 *palBuff = MemAlloc(UInt8, 768);
@@ -151,23 +151,23 @@ Bool Exporter::GIFExporter::ExportFile(IO::SeekableStream *stm, Text::CString fi
 		buff[0] = 0x2c;
 		WriteInt16(&buff[1], 0);
 		WriteInt16(&buff[3], 0);
-		WriteInt16(&buff[5], (Int16)img->info->dispWidth);
-		WriteInt16(&buff[7], (Int16)img->info->dispHeight);
+		WriteInt16(&buff[5], (Int16)img->info.dispWidth);
+		WriteInt16(&buff[7], (Int16)img->info.dispHeight);
 		buff[9] = 0;
 		buff[10] = 8;
 		stm->Write(buff, 11);
 
-		UInt8 *imgData = MemAlloc(UInt8, img->info->dispHeight * img->info->dispWidth);
+		UInt8 *imgData = MemAlloc(UInt8, img->info.dispHeight * img->info.dispWidth);
 		UOSInt imgSize;
 		IO::MemoryStream *mstm;
 		Data::Compress::LZWEncStream2 *lzw;
-		imgSize = img->info->dispHeight * img->info->dispWidth >> 1;
+		imgSize = img->info.dispHeight * img->info.dispWidth >> 1;
 		if (imgSize < 4096)
 			imgSize = 4096;
 		NEW_CLASS(mstm, IO::MemoryStream(imgSize, UTF8STRC("Exporter.GIFExporter.ExportFile")));
 		NEW_CLASS(lzw, Data::Compress::LZWEncStream2(mstm, true, 8, 12, 0));
-		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, img->info->dispWidth, false);
-		lzw->Write(imgData, img->info->dispHeight * img->info->dispWidth);
+		img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, img->info.dispWidth, false);
+		lzw->Write(imgData, img->info.dispHeight * img->info.dispWidth);
 		MemFree(imgData);
 		DEL_CLASS(lzw);
 		imgData = mstm->GetBuff(&imgSize);

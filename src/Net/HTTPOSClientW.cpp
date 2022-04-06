@@ -341,7 +341,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 	}
 
-	this->clk->Start();
+	this->clk.Start();
 	if (this->cliHost == 0)
 	{
 		this->cliHost = Text::StrCopyNew(urltmp);
@@ -358,7 +358,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		}
 		if (timeDNS)
 		{
-			*timeDNS = clk->GetTimeDiff();
+			*timeDNS = this->clk.GetTimeDiff();
 		}
 
 		const WChar *wptr = Text::StrToWCharNew(this->cliHost);
@@ -371,7 +371,7 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			this->canWrite = false;
 			return false;
 		}
-		t1 = clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeConn)
 		{
 			*timeConn = t1;
@@ -400,12 +400,12 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			*timeConn = 0;
 		}
 		this->contRead = 0;
-		i = this->headers->GetCount();
+		i = this->headers.GetCount();
 		while (i-- > 0)
 		{
-			MemFree(this->headers->RemoveAt(i));
+			MemFree(this->headers.RemoveAt(i));
 		}
-		this->headers->Clear();
+		this->headers.Clear();
 	}
 	else
 	{
@@ -527,7 +527,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 			succ = WinHttpSendRequest(data->hRequest, WINHTTP_NO_ADDITIONAL_HEADERS, 0, reqBuff, (DWORD)reqSize, (DWORD)reqSize, 0);
 		}
 		this->reqMstm->Clear();
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeReq)
 		{
 			*timeReq = t1;
@@ -585,7 +585,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 							{
 								wptr[i] = 0;
 								s = Text::String::NewNotNull(wptr);
-								this->headers->Add(s);
+								this->headers.Add(s);
 
 								if (s->StartsWith(UTF8STRC("Content-Length: ")))
 								{
@@ -600,7 +600,7 @@ void Net::HTTPOSClient::EndRequest(Double *timeReq, Double *timeResp)
 				}
 			}
 		}
-		t1 = this->clk->GetTimeDiff();
+		t1 = this->clk.GetTimeDiff();
 		if (timeResp)
 		{
 			*timeResp = t1;

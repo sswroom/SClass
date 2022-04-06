@@ -25,9 +25,9 @@ IO::FileExporter::SupportType Exporter::GUIExporter::IsObjectSupported(IO::Parse
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, 0);
-	if (img->info->fourcc != 0)
+	if (img->info.fourcc != 0)
 		return IO::FileExporter::SupportType::NotSupported;
-	switch (img->info->pf)
+	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
 		return IO::FileExporter::SupportType::NormalStream;
@@ -85,34 +85,34 @@ void *Exporter::GUIExporter::ToImage(IO::ParsedObject *pobj, UInt8 **relBuff)
 	}
 	imgList->ToStaticImage(0);
 	Media::StaticImage *img = (Media::StaticImage*)imgList->GetImage(0, 0);
-	if (img == 0 || img->info->fourcc != 0)
+	if (img == 0 || img->info.fourcc != 0)
 	{
 		return 0;
 	}
 
 	UInt8 *tmpBuff;
 	GdkPixbuf *pixBuf = 0;
-	switch (img->info->pf)
+	switch (img->info.pf)
 	{
 	case Media::PF_B8G8R8A8:
-		tmpBuff = MemAllocA(UInt8, img->info->dispHeight * img->info->storeWidth * 4);
-		MemCopyANC(tmpBuff, img->data, img->info->dispHeight * img->info->storeWidth * 4);
-		if (img->info->atype == Media::AT_NO_ALPHA)
+		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
+		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
+		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
-			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info->dispWidth, img->info->dispHeight, (OSInt)img->info->storeWidth * 4, (OSInt)img->info->storeWidth * 4);
+			ImageUtil_ConvR8G8B8N8_ARGB32(tmpBuff, tmpBuff, img->info.dispWidth, img->info.dispHeight, (OSInt)img->info.storeWidth * 4, (OSInt)img->info.storeWidth * 4);
 		}
 		else
 		{
-			ImageUtil_SwapRGB(tmpBuff, img->info->dispHeight * img->info->storeWidth, 32);
+			ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 32);
 		}
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info->dispWidth, (int)img->info->dispHeight, (int)img->info->storeWidth << 2, 0, 0);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, true, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth << 2, 0, 0);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_B8G8R8:
-		tmpBuff = MemAllocA(UInt8, img->info->dispHeight * img->info->storeWidth * 4);
-		MemCopyANC(tmpBuff, img->data, img->info->dispHeight * img->info->storeWidth * 4);
-		ImageUtil_SwapRGB(tmpBuff, img->info->dispHeight * img->info->storeWidth, 32);
-		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info->dispWidth, (int)img->info->dispHeight, (int)img->info->storeWidth * 3, 0, 0);
+		tmpBuff = MemAllocA(UInt8, img->info.dispHeight * img->info.storeWidth * 4);
+		MemCopyANC(tmpBuff, img->data, img->info.dispHeight * img->info.storeWidth * 4);
+		ImageUtil_SwapRGB(tmpBuff, img->info.dispHeight * img->info.storeWidth, 32);
+		pixBuf = gdk_pixbuf_new_from_data(tmpBuff, GDK_COLORSPACE_RGB, false, 8, (int)img->info.dispWidth, (int)img->info.dispHeight, (int)img->info.storeWidth * 3, 0, 0);
 		*relBuff = tmpBuff;
 		return pixBuf;
 	case Media::PF_R8G8B8A8:

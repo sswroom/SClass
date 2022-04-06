@@ -84,8 +84,8 @@ Media::StaticImage *Media::MSFontRenderer::CreateImage(UTF32Char charCode, UOSIn
 	Media::StaticImage *simg;
 	Media::ColorProfile color(Media::ColorProfile::CPT_PUNKNOWN);
 	NEW_CLASS(simg, Media::StaticImage(fntW, fntH, 0, 1, Media::PF_PAL_W1, imgSize, &color, Media::ColorProfile::YUVT_UNKNOWN, Media::AT_PREMUL_ALPHA, Media::YCOFST_C_CENTER_LEFT));
-	simg->info->hdpi = ReadUInt16(&this->fontBuff[72]);
-	simg->info->vdpi = ReadUInt16(&this->fontBuff[70]);
+	simg->info.hdpi = ReadUInt16(&this->fontBuff[72]);
+	simg->info.vdpi = ReadUInt16(&this->fontBuff[70]);
 	simg->pal[0] = 0;
 	simg->pal[1] = 0;
 	simg->pal[2] = 0;

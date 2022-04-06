@@ -155,45 +155,45 @@ IO::FileExporter::SupportType Exporter::TIFFExporter::IsObjectSupported(IO::Pars
 	if (imgList->GetCount() != 1)
 		return IO::FileExporter::SupportType::NotSupported;
 	Media::Image *img = imgList->GetImage(0, &imgTime);
-	if (img->info->fourcc == 0)
+	if (img->info.fourcc == 0)
 	{
-		if (img->info->pf == Media::PF_PAL_W1)
+		if (img->info.pf == Media::PF_PAL_W1)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_W2)
+		if (img->info.pf == Media::PF_PAL_W2)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_W4)
+		if (img->info.pf == Media::PF_PAL_W4)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_1)
+		if (img->info.pf == Media::PF_PAL_1)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_2)
+		if (img->info.pf == Media::PF_PAL_2)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_4)
+		if (img->info.pf == Media::PF_PAL_4)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_8)
+		if (img->info.pf == Media::PF_PAL_8)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_B8G8R8A8)
+		if (img->info.pf == Media::PF_B8G8R8A8)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_B8G8R8)
+		if (img->info.pf == Media::PF_B8G8R8)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_W8A8)
+		if (img->info.pf == Media::PF_W8A8)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_PAL_W8)
+		if (img->info.pf == Media::PF_PAL_W8)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_B16G16R16A16)
+		if (img->info.pf == Media::PF_LE_B16G16R16A16)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_B16G16R16)
+		if (img->info.pf == Media::PF_LE_B16G16R16)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_W16A16)
+		if (img->info.pf == Media::PF_LE_W16A16)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_W16)
+		if (img->info.pf == Media::PF_LE_W16)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_FB32G32R32A32)
+		if (img->info.pf == Media::PF_LE_FB32G32R32A32)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_FB32G32R32)
+		if (img->info.pf == Media::PF_LE_FB32G32R32)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_FW32A32)
+		if (img->info.pf == Media::PF_LE_FW32A32)
 			return IO::FileExporter::SupportType::NormalStream;
-		if (img->info->pf == Media::PF_LE_FW32)
+		if (img->info.pf == Media::PF_LE_FW32)
 			return IO::FileExporter::SupportType::NormalStream;
 	}
 	return IO::FileExporter::SupportType::NotSupported;
@@ -239,7 +239,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		UInt32 stripCnt = 1;
 		i++;
 
-		if (img->info->fourcc != 0)
+		if (img->info.fourcc != 0)
 			continue;
 
 
@@ -254,7 +254,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		}
 		UInt32 ibuff[4];
 		UInt16 sibuff[4];
-		if (img->info->pf == Media::PF_PAL_W1)
+		if (img->info.pf == Media::PF_PAL_W1)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -267,7 +267,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_W2)
+		else if (img->info.pf == Media::PF_PAL_W2)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -280,7 +280,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_W4)
+		else if (img->info.pf == Media::PF_PAL_W4)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -293,7 +293,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_1)
+		else if (img->info.pf == Media::PF_PAL_1)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -323,7 +323,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_2)
+		else if (img->info.pf == Media::PF_PAL_2)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -353,7 +353,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_4)
+		else if (img->info.pf == Media::PF_PAL_4)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -383,7 +383,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_8)
+		else if (img->info.pf == Media::PF_PAL_8)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -413,7 +413,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_B8G8R8A8)
+		else if (img->info.pf == Media::PF_B8G8R8A8)
 		{
 			sibuff[0] = 4;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -431,7 +431,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->AddUInt16(338, 1, sibuff); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_B8G8R8)
+		else if (img->info.pf == Media::PF_B8G8R8)
 		{
 			sibuff[0] = 3;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -447,7 +447,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_W8A8)
+		else if (img->info.pf == Media::PF_W8A8)
 		{
 			sibuff[0] = 2;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -463,7 +463,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->AddUInt16(338, 1, sibuff); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_PAL_W8)
+		else if (img->info.pf == Media::PF_PAL_W8)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -476,7 +476,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_B16G16R16A16)
+		else if (img->info.pf == Media::PF_LE_B16G16R16A16)
 		{
 			sibuff[0] = 4;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -494,7 +494,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->AddUInt16(338, 1, sibuff); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_B16G16R16)
+		else if (img->info.pf == Media::PF_LE_B16G16R16)
 		{
 			sibuff[0] = 3;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -510,7 +510,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_W16A16)
+		else if (img->info.pf == Media::PF_LE_W16A16)
 		{
 			sibuff[0] = 2;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -526,7 +526,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->AddUInt16(338, 1, sibuff); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_W16)
+		else if (img->info.pf == Media::PF_LE_W16)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -539,7 +539,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			newExif->Remove(338); //ExtraSamples
 			newExif->Remove(339); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_FB32G32R32A32)
+		else if (img->info.pf == Media::PF_LE_FB32G32R32A32)
 		{
 			sibuff[0] = 4;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -561,7 +561,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			sibuff[3] = 3;
 			newExif->AddUInt16(339, 4, sibuff); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_FB32G32R32)
+		else if (img->info.pf == Media::PF_LE_FB32G32R32)
 		{
 			sibuff[0] = 3;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -580,7 +580,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			sibuff[2] = 3;
 			newExif->AddUInt16(339, 3, sibuff); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_FW32A32)
+		else if (img->info.pf == Media::PF_LE_FW32A32)
 		{
 			sibuff[0] = 2;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -598,7 +598,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			sibuff[1] = 3;
 			newExif->AddUInt16(339, 2, sibuff); //SampleFormat
 		}
-		else if (img->info->pf == Media::PF_LE_FW32)
+		else if (img->info.pf == Media::PF_LE_FW32)
 		{
 			sibuff[0] = 1;
 			newExif->AddUInt16(277, 1, sibuff); //SamplesPerPixel
@@ -617,39 +617,39 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			DEL_CLASS(newExif);
 			continue;
 		}
-		ibuff[0] = (UInt32)img->info->dispWidth;
+		ibuff[0] = (UInt32)img->info.dispWidth;
 		newExif->AddUInt32(256, 1, ibuff); //Width
-		ibuff[0] = (UInt32)img->info->dispHeight;
+		ibuff[0] = (UInt32)img->info.dispHeight;
 		newExif->AddUInt32(257, 1, ibuff); //Height
 		sibuff[0] = 1;
 		newExif->AddUInt16(259, 1, sibuff); //Compression
 
 		ibuff[0] = 0;
 		newExif->AddUInt32(273, 1, ibuff); //StripOffsets
-		if (img->info->storeBPP < 8)
+		if (img->info.storeBPP < 8)
 		{
-			UOSInt lineSize = (img->info->dispWidth * img->info->storeBPP + 7) >> 3;
-			ibuff[0] = (UInt32)(lineSize * img->info->dispHeight);
+			UOSInt lineSize = (img->info.dispWidth * img->info.storeBPP + 7) >> 3;
+			ibuff[0] = (UInt32)(lineSize * img->info.dispHeight);
 		}
 		else
 		{
-			ibuff[0] = (UInt32)(img->info->dispWidth * img->info->dispHeight * img->info->storeBPP >> 3);
+			ibuff[0] = (UInt32)(img->info.dispWidth * img->info.dispHeight * img->info.storeBPP >> 3);
 		}
 		newExif->AddUInt32(279, 1, ibuff); //StripByteCounts
-		ibuff[0] = (UInt32)img->info->dispHeight;
+		ibuff[0] = (UInt32)img->info.dispHeight;
 		newExif->AddUInt32(278, 1, ibuff); //RowsPerStrip
 		stripCnt = 1;
 
-		ibuff[0] = (UInt32)Double2Int32(img->info->hdpi * 100);
+		ibuff[0] = (UInt32)Double2Int32(img->info.hdpi * 100);
 		ibuff[1] = 100;
 		newExif->AddRational(282, 1, ibuff); //XResolution
-		ibuff[0] = (UInt32)Double2Int32(img->info->vdpi * 100);
+		ibuff[0] = (UInt32)Double2Int32(img->info.vdpi * 100);
 		ibuff[1] = 100;
 		newExif->AddRational(283, 1, ibuff); //YResolution
 		sibuff[0] = 2;
 		newExif->AddUInt16(296, 1, sibuff); //ResolutionUnit
 		newExif->Remove(317); //Predictor
-		const UInt8 *rawICC = img->info->color->GetRAWICC();
+		const UInt8 *rawICC = img->info.color->GetRAWICC();
 		if (rawICC)
 		{
 			newExif->AddOther(34675, ReadMUInt32(rawICC), rawICC);
@@ -827,10 +827,10 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			else
 			{
 				UInt32 currSOfst = (UInt32)currOfst;
-				UInt32 sofstStep = (UInt32)(img->info->dispWidth * (img->info->storeBPP >> 3) * 10);
+				UInt32 sofstStep = (UInt32)(img->info.dispWidth * (img->info.storeBPP >> 3) * 10);
 				UInt32 *stripBuff;
 				UInt32 *stripCntBuff;
-				UOSInt sizeLeft = img->info->dispWidth * img->info->dispHeight * (img->info->storeBPP >> 3);
+				UOSInt sizeLeft = img->info.dispWidth * img->info.dispHeight * (img->info.storeBPP >> 3);
 				stripBuff = MemAlloc(UInt32, stripCnt);
 				stripCntBuff = MemAlloc(UInt32, stripCnt);
 				k = 0;
@@ -859,11 +859,11 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 			}
 		}
 		stm->SeekFromBeginning(currOfst);
-		UOSInt imgSize = img->info->dispHeight * ((img->info->dispWidth * img->info->storeBPP + 7) >> 3);
+		UOSInt imgSize = img->info.dispHeight * ((img->info.dispWidth * img->info.storeBPP + 7) >> 3);
 		UInt8 *imgData;
 		imgData = MemAlloc(UInt8, imgSize);
-		img->GetImageData(imgData, 0, 0, img->info->dispWidth, img->info->dispHeight, (img->info->dispWidth * img->info->storeBPP + 7) >> 3, false);
-		switch (img->info->pf)
+		img->GetImageData(imgData, 0, 0, img->info.dispWidth, img->info.dispHeight, (img->info.dispWidth * img->info.storeBPP + 7) >> 3, false);
+		switch (img->info.pf)
 		{
 		case Media::PF_B8G8R8A8:
 		case Media::PF_LE_B16G16R16A16:
@@ -871,12 +871,12 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 		case Media::PF_B8G8R8:
 		case Media::PF_LE_B16G16R16:
 		case Media::PF_LE_FB32G32R32:
-			ImageUtil_SwapRGB(imgData, img->info->dispWidth * img->info->dispHeight, img->info->storeBPP);
-			if (img->info->atype == Media::AT_NO_ALPHA)
+			ImageUtil_SwapRGB(imgData, img->info.dispWidth * img->info.dispHeight, img->info.storeBPP);
+			if (img->info.atype == Media::AT_NO_ALPHA)
 			{
 				UInt8 *tmpPtr = imgData;
-				UOSInt cnt = img->info->dispWidth * img->info->dispHeight;
-				if (img->info->pf == Media::PF_B8G8R8A8)
+				UOSInt cnt = img->info.dispWidth * img->info.dispHeight;
+				if (img->info.pf == Media::PF_B8G8R8A8)
 				{
 					while (cnt-- > 0)
 					{
@@ -884,7 +884,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 						tmpPtr += 4;
 					}
 				}
-				else if (img->info->pf == Media::PF_LE_B16G16R16A16)
+				else if (img->info.pf == Media::PF_LE_B16G16R16A16)
 				{
 					while (cnt-- > 0)
 					{
@@ -892,7 +892,7 @@ Bool Exporter::TIFFExporter::ExportFile(IO::SeekableStream *stm, Text::CString f
 						tmpPtr += 8;
 					}
 				}
-				else if (img->info->pf == Media::PF_LE_FB32G32R32A32)
+				else if (img->info.pf == Media::PF_LE_FB32G32R32A32)
 				{
 					while (cnt-- > 0)
 					{

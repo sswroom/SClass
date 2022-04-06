@@ -1128,21 +1128,21 @@ void Media::Resizer::LanczosResizerH8_8::Resize(UInt8 *src, OSInt sbpl, Double s
 
 Bool Media::Resizer::LanczosResizerH8_8::Resize(Media::StaticImage *srcImg, Media::StaticImage *destImg)
 {
-	if (srcImg->info->fourcc != 0 && srcImg->info->fourcc != *(UInt32*)"DIB")
+	if (srcImg->info.fourcc != 0 && srcImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (destImg->info->fourcc != 0 && destImg->info->fourcc != *(UInt32*)"DIB")
+	if (destImg->info.fourcc != 0 && destImg->info.fourcc != *(UInt32*)"DIB")
 		return false;
-	if (srcImg->info->pf != Media::PF_B8G8R8A8 || destImg->info->pf != Media::PF_B8G8R8A8)
+	if (srcImg->info.pf != Media::PF_B8G8R8A8 || destImg->info.pf != Media::PF_B8G8R8A8)
 		return false;
-	if (srcImg->info->fourcc == destImg->info->fourcc)
+	if (srcImg->info.fourcc == destImg->info.fourcc)
 	{
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data, (OSInt)destImg->GetDataBpl(), destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 	else
 	{
 		OSInt dAdd = (OSInt)destImg->GetDataBpl();
-		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info->dispWidth), UOSInt2Double(srcImg->info->dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info->storeHeight - 1) * dAdd, -dAdd, destImg->info->dispWidth, destImg->info->dispHeight);
+		Resize(srcImg->data, (OSInt)srcImg->GetDataBpl(), UOSInt2Double(srcImg->info.dispWidth), UOSInt2Double(srcImg->info.dispHeight), 0, 0, destImg->data + (OSInt)(destImg->info.storeHeight - 1) * dAdd, -dAdd, destImg->info.dispWidth, destImg->info.dispHeight);
 		return true;
 	}
 }
@@ -1160,19 +1160,19 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(Medi
 {
 	Media::FrameInfo destInfo;
 	Media::StaticImage *img;
-	if (!IsSupported(srcImage->info))
+	if (!IsSupported(&srcImage->info))
 		return 0;
 	OSInt targetWidth = (OSInt)this->targetWidth;
 	OSInt targetHeight = (OSInt)this->targetHeight;
 	if (targetWidth == 0)
 	{
-		targetWidth = Double2Int32(srcX2 - srcX1);//srcImage->info->width;
+		targetWidth = Double2Int32(srcX2 - srcX1);//srcImage->info.width;
 	}
 	if (targetHeight == 0)
 	{
-		targetHeight = Double2Int32(srcX2 - srcX1);//srcImage->info->height;
+		targetHeight = Double2Int32(srcX2 - srcX1);//srcImage->info.height;
 	}
-	CalOutputSize(srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
+	CalOutputSize(&srcImage->info, (UOSInt)targetWidth, (UOSInt)targetHeight, &destInfo, rar);
 	NEW_CLASS(img, Media::StaticImage(&destInfo));
 	if (srcImage->exif)
 	{
@@ -1180,11 +1180,11 @@ Media::StaticImage *Media::Resizer::LanczosResizerH8_8::ProcessToNewPartial(Medi
 	}
 	Int32 tlx = (Int32)srcX1;
 	Int32 tly = (Int32)srcY1;
-	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, (OSInt)img->GetDataBpl(), img->info->dispWidth, img->info->dispHeight);
+	Resize(srcImage->data + (tlx << 2) + tly * (OSInt)srcImage->GetDataBpl(), (OSInt)srcImage->GetDataBpl(), srcX2 - srcX1, srcY2 - srcY1, srcX1 - tlx, srcY1 - tly, img->data, (OSInt)img->GetDataBpl(), img->info.dispWidth, img->info.dispHeight);
 	if (img->exif)
 	{
-		img->exif->SetWidth((UInt32)img->info->dispWidth);
-		img->exif->SetHeight((UInt32)img->info->dispHeight);
+		img->exif->SetWidth((UInt32)img->info.dispWidth);
+		img->exif->SetHeight((UInt32)img->info.dispHeight);
 	}
 	return img;
 }

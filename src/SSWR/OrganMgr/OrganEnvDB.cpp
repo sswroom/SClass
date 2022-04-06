@@ -5109,7 +5109,7 @@ void SSWR::OrganMgr::OrganEnvDB::ExportLite(const UTF8Char *folder)
 						Media::StaticImage *newImg;
 						if (simg)
 						{
-							if (simg->info->dispWidth > 1920 || simg->info->dispHeight > 1920)
+							if (simg->info.dispWidth > 1920 || simg->info.dispHeight > 1920)
 							{
 								resizer->SetTargetWidth(1920);
 								resizer->SetTargetHeight(1920);

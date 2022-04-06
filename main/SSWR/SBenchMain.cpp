@@ -1574,7 +1574,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			sb.AppendC(UTF8STRC(" x "));
 			sb.AppendUOSInt(imgHeight);
 			sb.AppendC(UTF8STRC(" "));
-			sb.AppendU32(srcImg->info->storeBPP);
+			sb.AppendU32(srcImg->info.storeBPP);
 			sb.AppendC(UTF8STRC(" bpp"));
 			console->WriteLineC(sb.ToString(), sb.GetLength());
 			writer->WriteLineC(sb.ToString(), sb.GetLength());
@@ -1810,7 +1810,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			console->WriteLineC(UTF8STRC("Initialized"));
 
 			clk->Start();
-			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+			csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispWidth, srcImg->info.dispHeight, srcImg->info.storeWidth, srcImg->info.storeHeight, (OSInt)srcImg->info.dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			t = clk->GetTimeDiff();
 			sb.ClearStr();
 			sb.AppendC(UTF8STRC("CSConv (1st): t = "));
@@ -1826,7 +1826,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 			i = cnt;
 			while (i-- > 0)
 			{
-				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info->dispWidth, srcImg->info->dispHeight, srcImg->info->storeWidth, srcImg->info->storeHeight, (OSInt)srcImg->info->dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
+				csconv->ConvertV2(&srcImg->data, tmpBuff, srcImg->info.dispWidth, srcImg->info.dispHeight, srcImg->info.storeWidth, srcImg->info.storeHeight, (OSInt)srcImg->info.dispWidth << 3, Media::FT_NON_INTERLACE, Media::YCOFST_C_CENTER_LEFT);
 			}
 			t = clk->GetTimeDiff() / UOSInt2Double(cnt);
 			sb.ClearStr();
@@ -1889,7 +1889,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeLR_C32A.tif"));
-			newImg->info->atype = Media::AT_ALPHA;
+			newImg->info.atype = Media::AT_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);
@@ -1930,7 +1930,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeLR_C32NA.tif"));
-			newImg->info->atype = Media::AT_NO_ALPHA;
+			newImg->info.atype = Media::AT_NO_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);
@@ -1996,7 +1996,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize8_C8NA.tif"));
-			newImg->info->atype = Media::AT_NO_ALPHA;
+			newImg->info.atype = Media::AT_NO_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);
@@ -2037,7 +2037,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResize8_C8A.tif"));
-			newImg->info->atype = Media::AT_ALPHA;
+			newImg->info.atype = Media::AT_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);
@@ -2078,7 +2078,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("LResizeH8_8.tif"));
-			newImg->info->atype = Media::AT_NO_ALPHA;
+			newImg->info.atype = Media::AT_NO_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);
@@ -2119,7 +2119,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 #if defined(EXPORT_IMAGE)
 			sptr = IO::Path::GetProcessFileName(sbuff);
 			sptr = IO::Path::AppendPath(sbuff, sptr, cstr = CSTR("NNResize32_32.tif"));
-			newImg->info->atype = Media::AT_NO_ALPHA;
+			newImg->info.atype = Media::AT_NO_ALPHA;
 			NEW_CLASS(efs, IO::FileStream(CSTRP(sbuff, sptr), IO::FileMode::Create, IO::FileShare::DenyNone, IO::FileStream::BufferType::NoWriteBuffer));
 			exporter.ExportFile(efs, cstr, imgList, 0);
 			DEL_CLASS(efs);

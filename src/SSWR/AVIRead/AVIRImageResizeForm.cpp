@@ -29,17 +29,17 @@ void __stdcall SSWR::AVIRead::AVIRImageResizeForm::OnOKClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Invalid input"), CSTR("Error"), me);
 		return;
 	}
-	if (me->srcImg->info->pf == Media::PF_B8G8R8A8)
+	if (me->srcImg->info.pf == Media::PF_B8G8R8A8)
 	{
-		Media::Resizer::LanczosResizer8_C8 resizer(nTap, nTap, me->srcImg->info->color, me->srcImg->info->color, 0, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizer8_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
 		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 		resizer.SetTargetWidth(outW);
 		resizer.SetTargetHeight(outH);
 		me->outImg = resizer.ProcessToNew(me->srcImg);
 	}
-	else if (me->srcImg->info->pf == Media::PF_LE_B16G16R16A16)
+	else if (me->srcImg->info.pf == Media::PF_LE_B16G16R16A16)
 	{
-		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info->color, me->srcImg->info->color, 0, Media::AT_NO_ALPHA);
+		Media::Resizer::LanczosResizer16_C8 resizer(nTap, nTap, me->srcImg->info.color, me->srcImg->info.color, 0, Media::AT_NO_ALPHA);
 		resizer.SetResizeAspectRatio(Media::IImgResizer::RAR_IGNOREAR);
 		resizer.SetTargetWidth(outW);
 		resizer.SetTargetHeight(outH);
@@ -107,10 +107,10 @@ SSWR::AVIRead::AVIRImageResizeForm::AVIRImageResizeForm(UI::GUIClientControl *pa
 	this->txtOutW->Focus();
 	if (this->srcImg)
 	{
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info->dispWidth);
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispWidth);
 		this->txtOriW->SetText(CSTRP(sbuff, sptr));
 		this->txtOutW->SetText(CSTRP(sbuff, sptr));
-		sptr = Text::StrUOSInt(sbuff, this->srcImg->info->dispHeight);
+		sptr = Text::StrUOSInt(sbuff, this->srcImg->info.dispHeight);
 		this->txtOriH->SetText(CSTRP(sbuff, sptr));
 		this->txtOutH->SetText(CSTRP(sbuff, sptr));
 	}
