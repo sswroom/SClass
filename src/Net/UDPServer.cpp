@@ -43,7 +43,7 @@ UInt32 __stdcall Net::UDPServer::DataV4Thread(void *obj)
 
 			if (stat->me->logPrefix)
 			{
-				Sync::MutexUsage mutUsage(stat->me->logFileMut);
+				Sync::MutexUsage mutUsage(&stat->me->logFileMut);
 				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
 				{
 					if (stat->me->logFileR)
@@ -115,7 +115,7 @@ UInt32 __stdcall Net::UDPServer::DataV6Thread(void *obj)
 
 			if (stat->me->logPrefix)
 			{
-				Sync::MutexUsage mutUsage(stat->me->logFileMut);
+				Sync::MutexUsage mutUsage(&stat->me->logFileMut);
 				if ((logTime.GetDay() != stat->me->logDateR->GetDay()) || (stat->me->logFileR == 0))
 				{
 					if (stat->me->logFileR)
@@ -166,7 +166,6 @@ Net::UDPServer::UDPServer(Net::SocketFactory *sockf, Net::SocketUtil::AddressInf
 	this->logFileR = 0;
 	this->logFileS = 0;
 	this->ctrlEvt = 0;
-	NEW_CLASS(this->logFileMut, Sync::Mutex());
 	this->msgLog = msgLog;
 	this->msgPrefix = Text::String::NewOrNull(msgPrefix);
 	this->port = port;
@@ -408,7 +407,6 @@ Net::UDPServer::~UDPServer()
 		this->socV6 = 0;
 	}
 
-	DEL_CLASS(this->logFileMut);
 	SDEL_CLASS(this->logDateR);
 	SDEL_CLASS(this->logDateS);
 	SDEL_CLASS(this->logFileS);
@@ -443,7 +441,7 @@ Bool Net::UDPServer::SendTo(const Net::SocketUtil::AddressInfo *addr, UInt16 por
 		Data::DateTime logTime;
 		logTime.SetCurrTimeUTC();
 
-		Sync::MutexUsage mutUsage(this->logFileMut);
+		Sync::MutexUsage mutUsage(&this->logFileMut);
 		if ((logTime.GetDay() != this->logDateS->GetDay()) || (logFileS == 0))
 		{
 			if (logFileS)

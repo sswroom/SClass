@@ -33,7 +33,6 @@ Map::AssistedReverseGeocoder::~AssistedReverseGeocoder()
 
 UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
-	DB::SQLBuilder *sql;
 	DB::DBReader *r;
 	UTF8Char *sptr = 0;
 	if (this->conn == 0)
@@ -45,21 +44,20 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 		return 0;
 
 	Sync::MutexUsage mutUsage(mut);
-	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmdC(CSTR("select address from addrdb where lcid = "));
-	sql->AppendInt32((Int32)lcid);
-	sql->AppendCmdC(CSTR(" and keyx = "));
-	sql->AppendInt32(keyx);
-	sql->AppendCmdC(CSTR(" and keyy = "));
-	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReader(sql->ToCString());
+	DB::SQLBuilder sql(this->conn);
+	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
+	sql.AppendInt32((Int32)lcid);
+	sql.AppendCmdC(CSTR(" and keyx = "));
+	sql.AppendInt32(keyx);
+	sql.AppendCmdC(CSTR(" and keyy = "));
+	sql.AppendInt32(keyy);
+	r = this->conn->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
 		{
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
-			DEL_CLASS(sql);
 			mutUsage.EndUse();
 			return sptr;
 		}
@@ -84,27 +82,25 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		sql->Clear();
-		sql->AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
-		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyx);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyy);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendStrUTF8(buff);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendDate(&dt);
-		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQuery(sql->ToCString());
+		sql.Clear();
+		sql.AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
+		sql.AppendInt32((Int32)lcid);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyx);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyy);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStrUTF8(buff);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendDate(&dt);
+		sql.AppendCmdC(CSTR(")"));
+		this->conn->ExecuteNonQuery(sql.ToCString());
 
-		DEL_CLASS(sql);
 		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
-		DEL_CLASS(sql);
 		mutUsage.EndUse();
 		return 0;
 	}
@@ -112,7 +108,6 @@ UTF8Char *Map::AssistedReverseGeocoder::SearchName(UTF8Char *buff, UOSInt buffSi
 
 UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
 {
-	DB::SQLBuilder *sql;
 	DB::DBReader *r;
 	UTF8Char *sptr = 0;
 	if (this->conn == 0)
@@ -122,21 +117,20 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	Int32 keyy = Double2Int32(lat * 5000);
 
 	Sync::MutexUsage mutUsage(mut);
-	NEW_CLASS(sql, DB::SQLBuilder(this->conn));
-	sql->AppendCmdC(CSTR("select address from addrdb where lcid = "));
-	sql->AppendInt32((Int32)lcid);
-	sql->AppendCmdC(CSTR(" and keyx = "));
-	sql->AppendInt32(keyx);
-	sql->AppendCmdC(CSTR(" and keyy = "));
-	sql->AppendInt32(keyy);
-	r = this->conn->ExecuteReader(sql->ToCString());
+	DB::SQLBuilder sql(this->conn);
+	sql.AppendCmdC(CSTR("select address from addrdb where lcid = "));
+	sql.AppendInt32((Int32)lcid);
+	sql.AppendCmdC(CSTR(" and keyx = "));
+	sql.AppendInt32(keyx);
+	sql.AppendCmdC(CSTR(" and keyy = "));
+	sql.AppendInt32(keyy);
+	r = this->conn->ExecuteReader(sql.ToCString());
 	if (r)
 	{
 		if (r->ReadNext())
 		{
 			sptr = r->GetStr(0, buff, buffSize);
 			this->conn->CloseReader(r);
-			DEL_CLASS(sql);
 			mutUsage.EndUse();
 			return sptr;
 		}
@@ -161,27 +155,24 @@ UTF8Char *Map::AssistedReverseGeocoder::CacheName(UTF8Char *buff, UOSInt buffSiz
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		sql->Clear();
-		sql->AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
-		sql->AppendInt32((Int32)lcid);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyx);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendInt32(keyy);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendStrUTF8(buff);
-		sql->AppendCmdC(CSTR(", "));
-		sql->AppendDate(&dt);
-		sql->AppendCmdC(CSTR(")"));
-		this->conn->ExecuteNonQuery(sql->ToCString());
-
-		DEL_CLASS(sql);
+		sql.Clear();
+		sql.AppendCmdC(CSTR("insert into addrdb (lcid, keyx, keyy, address, addrTime) values ("));
+		sql.AppendInt32((Int32)lcid);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyx);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendInt32(keyy);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendStrUTF8(buff);
+		sql.AppendCmdC(CSTR(", "));
+		sql.AppendDate(&dt);
+		sql.AppendCmdC(CSTR(")"));
+		this->conn->ExecuteNonQuery(sql.ToCString());
 		mutUsage.EndUse();
 		return sptr;
 	}
 	else
 	{
-		DEL_CLASS(sql);
 		mutUsage.EndUse();
 		return 0;
 	}

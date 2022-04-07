@@ -13,7 +13,6 @@
 
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 {
-	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
 	this->parent = 0;
@@ -22,7 +21,6 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CString txt)
 {
-	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = hTreeItem;
 	this->itemObj = itemObj;
 	this->parent = 0;
@@ -33,19 +31,18 @@ UI::GUITreeView::TreeItem::~TreeItem()
 {
 	TreeItem *item;
 	UOSInt i;
-	i = this->children->GetCount();
+	i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		item = this->children->GetItem(i);
+		item = this->children.GetItem(i);
 		DEL_CLASS(item);
 	}
-	DEL_CLASS(this->children);
 	SDEL_STRING(this->txt);
 }
 
 void UI::GUITreeView::TreeItem::AddChild(UI::GUITreeView::TreeItem *child)
 {
-	this->children->Add(child);
+	this->children.Add(child);
 	child->SetParent(this);
 }
 void UI::GUITreeView::TreeItem::SetParent(UI::GUITreeView::TreeItem *parent)
@@ -90,12 +87,12 @@ Text::String *UI::GUITreeView::TreeItem::GetText()
 
 UOSInt UI::GUITreeView::TreeItem::GetChildCount()
 {
-	return this->children->GetCount();
+	return this->children.GetCount();
 }
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(UOSInt index)
 {
-	return this->children->GetItem(index);
+	return this->children.GetItem(index);
 }
 
 OSInt __stdcall UI::GUITreeView::TVWndProc(void *hWnd, UInt32 msg, UOSInt wParam, OSInt lParam)
@@ -160,10 +157,10 @@ void UI::GUITreeView::FreeItems()
 {
 	TreeItem *item;
 	UOSInt i;
-	i = this->treeItems->GetCount();
+	i = this->treeItems.GetCount();
 	while (i-- > 0)
 	{
-		item = this->treeItems->RemoveAt(i);
+		item = this->treeItems.RemoveAt(i);
 		DEL_CLASS(item);
 	}
 }
@@ -172,11 +169,6 @@ UI::GUITreeView::GUITreeView(UI::GUICore *ui, UI::GUIClientControl *parent) : UI
 {
 	Double w;
 	Double h;
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->rightClkHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->rightClkObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->treeItems, Data::ArrayList<TreeItem*>());
 	parent->GetClientSize(&w, &h);
 	UInt32 style = WS_TABSTOP | WS_CHILD | WS_VSCROLL | WS_BORDER | TVS_EDITLABELS;
 	if (parent->IsChildVisible())
@@ -194,19 +186,14 @@ UI::GUITreeView::~GUITreeView()
 {
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 	FreeItems();
-	DEL_CLASS(this->treeItems);
-	DEL_CLASS(this->rightClkHdlrs);
-	DEL_CLASS(this->rightClkObjs);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
 }
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
@@ -216,10 +203,10 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	UOSInt i = this->rightClkHdlrs->GetCount();
+	UOSInt i = this->rightClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->rightClkHdlrs->GetItem(i)(this->rightClkObjs->GetItem(i));
+		this->rightClkHdlrs.GetItem(i)(this->rightClkObjs.GetItem(i));
 	}
 }
 
@@ -279,7 +266,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	}
 	else
 	{
-		this->treeItems->Add(item);
+		this->treeItems.Add(item);
 	}
 	return item;
 }
@@ -325,19 +312,19 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	}
 	else
 	{
-		this->treeItems->Add(item);
+		this->treeItems.Add(item);
 	}
 	return item;
 }
 
 void *UI::GUITreeView::RemoveItem(UI::GUITreeView::TreeItem *item)
 {
-	UOSInt i = this->treeItems->IndexOf(item);
+	UOSInt i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
 		void *obj = item->GetItemObj();
 		SendMessage((HWND)hwnd, TVM_DELETEITEM, 0, (LPARAM)item->GetHItem());
-		this->treeItems->RemoveAt(i);
+		this->treeItems.RemoveAt(i);
 		DEL_CLASS(item);
 		return obj;
 	}
@@ -355,12 +342,12 @@ void UI::GUITreeView::ClearItems()
 
 UOSInt UI::GUITreeView::GetRootCount()
 {
-	return this->treeItems->GetCount();
+	return this->treeItems.GetCount();
 }
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
 {
-	return this->treeItems->GetItem(index);
+	return this->treeItems.GetItem(index);
 }
 
 void UI::GUITreeView::ExpandItem(UI::GUITreeView::TreeItem *titem)
@@ -557,12 +544,12 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITreeView::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUITreeView::HandleRightClick(UI::UIEvent hdlr, void *userObj)
 {
-	this->rightClkHdlrs->Add(hdlr);
-	this->rightClkObjs->Add(userObj);
+	this->rightClkHdlrs.Add(hdlr);
+	this->rightClkObjs.Add(userObj);
 }

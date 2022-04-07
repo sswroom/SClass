@@ -302,15 +302,15 @@ UInt32 __stdcall Net::TCPServer::SvrThread2(void *o)
 
 	while (!svr->toStop)
 	{
-		while (svr->socs->HasItems())
+		while (svr->socs.HasItems())
 		{
-			Socket *s = (Socket*)svr->socs->Get();
+			Socket *s = (Socket*)svr->socs.Get();
 			str = Text::StrConcatC(buff, UTF8STRC("Client connected: "));
 			str = svr->socf->GetRemoteName(str, s);
 			svr->AddLogMsgC(buff, (UOSInt)(str - buff), IO::ILogHandler::LOG_LEVEL_ACTION);
 			svr->hdlr(s, svr->userObj);
 		}
-		svr->socsEvt->Wait(100);
+		svr->socsEvt.Wait(100);
 	}
 	svr->threadRunning &= ~2;
 	return 0;
@@ -335,13 +335,13 @@ void Net::TCPServer::AcceptSocket(Socket *svrSoc)
 	}
 	else
 	{
-		if (this->socs->GetLastNoRemove() == s)
+		if (this->socs.GetLastNoRemove() == s)
 		{
 		}
 		else
 		{
-			this->socs->Put(s);
-			this->socsEvt->Set();
+			this->socs.Put(s);
+			this->socsEvt.Set();
 		}
 /*		str = Text::StrConcatC(buff, UTF8STRC("Client connected: ");
 		str = this->socf->GetRemoteName(str, (UInt32*)s);
@@ -363,8 +363,6 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 	this->hdlr = hdlr;
 	this->userObj = userObj;
 	this->threadRunning = 0;
-	NEW_CLASS(this->socs, Data::SyncLinkedList());
-	NEW_CLASS(this->socsEvt, Sync::Event(true));
 
 	Sync::Thread::Create(Svrv4Thread, this);
 	while (true)
@@ -388,13 +386,11 @@ Net::TCPServer::TCPServer(SocketFactory *socf, UInt16 port, IO::LogTool *log, TC
 Net::TCPServer::~TCPServer()
 {
 	this->Close();
-	DEL_CLASS(this->socs);
 	while (threadRunning)
 	{
 		Sync::Thread::Sleep(10);
 	}
 	SDEL_STRING(this->logPrefix);
-	DEL_CLASS(this->socsEvt);
 }
 
 void Net::TCPServer::Close()
@@ -410,7 +406,7 @@ void Net::TCPServer::Close()
 		{
 			socf->DestroySocket(this->svrSocv6);
 		}
-		this->socsEvt->Set();
+		this->socsEvt.Set();
 	}
 }
 

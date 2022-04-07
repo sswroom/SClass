@@ -45,27 +45,24 @@ private:
 		UInt8 decimals;
 	} ColumnDef;
 
-	Data::ArrayList<ColumnDef*> *cols;
+	Data::ArrayList<ColumnDef*> cols;
 	UOSInt colCount;
 	OSInt rowChanged;
 	Text::String **currRow;
 	Text::String **nextRow;
 	Bool nextRowReady;
-	Sync::Event *rowEvt;
-	Sync::Event *nextRowEvt;
-	Sync::MutexUsage *mutUsage;
+	Sync::Event rowEvt;
+	Sync::Event nextRowEvt;
+	Sync::MutexUsage mutUsage;
 public:
-	MySQLTCPReader(Sync::MutexUsage *mutUsage)
+	MySQLTCPReader(Sync::Mutex *mut)
 	{
-		this->mutUsage = mutUsage;
-		NEW_CLASS(this->cols, Data::ArrayList<ColumnDef*>());
+		this->mutUsage.ReplaceMutex(mut);
 		this->rowChanged = -1;
 		this->currRow = 0;
 		this->nextRow = 0;
 		this->colCount = 0;
 		this->nextRowReady = false;
-		NEW_CLASS(this->nextRowEvt, Sync::Event(true));
-		NEW_CLASS(this->rowEvt, Sync::Event(true));
 	}
 
 	virtual ~MySQLTCPReader()
@@ -75,18 +72,14 @@ public:
 		{
 
 		}
-		UOSInt i = this->cols->GetCount();
+		UOSInt i = this->cols.GetCount();
 		while (i-- > 0)
 		{
-			col = this->cols->GetItem(i);
+			col = this->cols.GetItem(i);
 			col->name->Release();
 			SDEL_STRING(col->defValues);
 			MemFree(col); 
 		}
-		DEL_CLASS(this->cols);
-		DEL_CLASS(this->rowEvt);
-		DEL_CLASS(this->nextRowEvt);
-		DEL_CLASS(this->mutUsage);
 	}
 
 	virtual Bool ReadNext()
@@ -104,13 +97,13 @@ public:
 		}
 		while (!this->nextRowReady)
 		{
-			this->rowEvt->Wait(1000);
+			this->rowEvt.Wait(1000);
 		}
 		if (this->nextRow)
 		{
 			this->currRow = this->nextRow;
 			this->nextRowReady = false;
-			this->nextRowEvt->Set();
+			this->nextRowEvt.Set();
 			return true;
 		}
 		else
@@ -329,17 +322,17 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
-			return Text::StrConcat(buff, col->name->v);
+			return col->name->ConcatTo(buff);
 		}
 		return 0;
 	}
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
 			*colSize = col->colLen;
@@ -350,7 +343,7 @@ public:
 
 	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
 			colDef->SetColName(col->name);
@@ -409,7 +402,7 @@ public:
 				col->defValues = Text::String::New(colDef, (UOSInt)v);
 			}
 		}
-		this->cols->Add(col);
+		this->cols.Add(col);
 		this->colCount++;
 	}
 
@@ -436,11 +429,11 @@ public:
 		}
 		while (this->nextRowReady)
 		{
-			this->nextRowEvt->Wait(1000);
+			this->nextRowEvt.Wait(1000);
 		}
 		this->nextRow = row;
 		this->nextRowReady = true;
-		this->rowEvt->Set();
+		this->rowEvt.Set();
 	}
 
 	void EndData()
@@ -451,11 +444,11 @@ public:
 		}
 		while (this->nextRowReady)
 		{
-			this->nextRowEvt->Wait(1000);
+			this->nextRowEvt.Wait(1000);
 		}
 		this->nextRow = 0;
 		this->nextRowReady = true;
-		this->rowEvt->Set();
+		this->rowEvt.Set();
 	}
 };
 
@@ -489,22 +482,21 @@ private:
 		RowColumn *cols;
 	} RowData;	
 
-	Data::ArrayList<ColumnDef*> *cols;
+	Data::ArrayList<ColumnDef*> cols;
 	Net::MySQLUtil::MySQLType *colTypes;
 	UOSInt colCount;
 	OSInt rowChanged;
 	RowData *currRow;
 	RowData *nextRow;
 	Bool nextRowReady;
-	Sync::Event *rowEvt;
-	Sync::Event *nextRowEvt;
-	Sync::MutexUsage *mutUsage;
+	Sync::Event rowEvt;
+	Sync::Event nextRowEvt;
+	Sync::MutexUsage mutUsage;
 	UInt32 stmtId;
 public:
-	MySQLTCPBinaryReader(Sync::MutexUsage *mutUsage)
+	MySQLTCPBinaryReader(Sync::Mutex *mut)
 	{
-		this->mutUsage = mutUsage;
-		NEW_CLASS(this->cols, Data::ArrayList<ColumnDef*>());
+		this->mutUsage.ReplaceMutex(mut);
 		this->colTypes = 0;
 		this->rowChanged = -1;
 		this->currRow = 0;
@@ -512,8 +504,6 @@ public:
 		this->colCount = 0;
 		this->nextRowReady = false;
 		this->stmtId = 0;
-		NEW_CLASS(this->nextRowEvt, Sync::Event(true));
-		NEW_CLASS(this->rowEvt, Sync::Event(true));
 	}
 
 	virtual ~MySQLTCPBinaryReader()
@@ -523,15 +513,14 @@ public:
 		{
 
 		}
-		UOSInt i = this->cols->GetCount();
+		UOSInt i = this->cols.GetCount();
 		while (i-- > 0)
 		{
-			col = this->cols->GetItem(i);
+			col = this->cols.GetItem(i);
 			col->name->Release();
 			SDEL_STRING(col->defValues);
 			MemFree(col); 
 		}
-		DEL_CLASS(this->cols);
 		if (this->nextRow)
 		{
 			MemFree(this->nextRow->cols);
@@ -546,9 +535,6 @@ public:
 			MemFree(this->currRow);
 			this->currRow = 0;
 		}
-		DEL_CLASS(this->rowEvt);
-		DEL_CLASS(this->nextRowEvt);
-		DEL_CLASS(this->mutUsage);
 		if (this->colTypes)
 		{
 			MemFree(this->colTypes);
@@ -560,7 +546,7 @@ public:
 	{
 		while (!this->nextRowReady)
 		{
-			this->rowEvt->Wait(1000);
+			this->rowEvt.Wait(1000);
 		}
 		if (this->nextRow)
 		{
@@ -568,7 +554,7 @@ public:
 			this->currRow = this->nextRow;
 			this->nextRow = row;
 			this->nextRowReady = false;
-			this->nextRowEvt->Set();
+			this->nextRowEvt.Set();
 			return true;
 		}
 		else
@@ -970,7 +956,7 @@ public:
 
 	virtual UTF8Char *GetName(UOSInt colIndex, UTF8Char *buff)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
 			return Text::StrConcat(buff, col->name->v);
@@ -980,7 +966,7 @@ public:
 
 	virtual DB::DBUtil::ColType GetColType(UOSInt colIndex, UOSInt *colSize)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
 			*colSize = col->colLen;
@@ -991,7 +977,7 @@ public:
 
 	virtual Bool GetColDef(UOSInt colIndex, DB::ColDef *colDef)
 	{
-		ColumnDef *col = this->cols->GetItem(colIndex);
+		ColumnDef *col = this->cols.GetItem(colIndex);
 		if (col)
 		{
 			colDef->SetColName(col->name);
@@ -1050,7 +1036,7 @@ public:
 				col->defValues = Text::String::New(colDef, (UOSInt)v);
 			}
 		}
-		this->cols->Add(col);
+		this->cols.Add(col);
 		this->colCount++;
 	}
 
@@ -1058,7 +1044,7 @@ public:
 	{
 		while (this->nextRowReady)
 		{
-			this->nextRowEvt->Wait(1000);
+			this->nextRowEvt.Wait(1000);
 		}
 		if (this->nextRow == 0)
 		{
@@ -1184,7 +1170,7 @@ public:
 			i++;
 		}
 		this->nextRowReady = true;
-		this->rowEvt->Set();
+		this->rowEvt.Set();
 	}
 
 	void EndCols()
@@ -1195,7 +1181,7 @@ public:
 			UOSInt i = this->colCount;
 			while (i-- > 0)
 			{
-				this->colTypes[i] = this->cols->GetItem(i)->colType;
+				this->colTypes[i] = this->cols.GetItem(i)->colType;
 			}
 		}
 	}
@@ -1208,12 +1194,12 @@ public:
 		}
 		while (this->nextRowReady)
 		{
-			this->nextRowEvt->Wait(1000);
+			this->nextRowEvt.Wait(1000);
 		}
 		RowData *row = this->nextRow;
 		this->nextRow = 0;
 		this->nextRowReady = true;
-		this->rowEvt->Set();
+		this->rowEvt.Set();
 
 		if (row)
 		{
@@ -1575,13 +1561,13 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								if (me->cmdReader)
 								{
 									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt->Set();
+									me->cmdEvt.Set();
 									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
 								}
 								else
 								{
 									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt->Set();
+									me->cmdEvt.Set();
 								}
 #if defined(VERBOSE)
 								printf("MySQLTCP COM_STMT_PREPARE Error\r\n");
@@ -1590,7 +1576,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							else
 							{
 								me->cmdResultType = CmdResultType::Error;
-								me->cmdEvt->Set();
+								me->cmdEvt.Set();
 								if (me->cmdReader)
 								{
 									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
@@ -1608,13 +1594,13 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								if (me->cmdReader)
 								{
 									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt->Set();
+									me->cmdEvt.Set();
 									((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
 								}
 								else
 								{
 									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt->Set();
+									me->cmdEvt.Set();
 								}
 #if defined(VERBOSE)
 								printf("MySQLTCP COM_STMT_EXECUTE Error\r\n");
@@ -1635,7 +1621,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 								Net::MySQLUtil::ReadLenencInt(&buff[readSize + 5], &val);
 								((MySQLTCPReader*)me->cmdReader)->SetRowChanged((Int64)val);
 								me->cmdResultType = CmdResultType::ResultEnd;
-								me->cmdEvt->Set();
+								me->cmdEvt.Set();
 #if defined(VERBOSE)
 								printf("MySQLTCP Command OK, row changed = %lld\r\n", val);
 #endif
@@ -1648,14 +1634,14 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 									if (me->cmdResultType == CmdResultType::Processing)
 									{
 										me->cmdResultType = CmdResultType::Error;
-										me->cmdEvt->Set();
+										me->cmdEvt.Set();
 									}
 									((MySQLTCPReader*)me->cmdReader)->EndData();
 								}
 								else
 								{
 									me->cmdResultType = CmdResultType::Error;
-									me->cmdEvt->Set();
+									me->cmdEvt.Set();
 								}
 	//							me->cli->Close();
 							}
@@ -1677,7 +1663,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						{
 						case CmdResultType::Processing:
 							me->cmdResultType = CmdResultType::ResultReady;
-							me->cmdEvt->Set();
+							me->cmdEvt.Set();
 							break;
 						case CmdResultType::ProcessingBinary:
 						{
@@ -1694,13 +1680,13 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 							printf("MySQLTCP EOF found, execute statment id %d\r\n", stmtId);
 #endif
 							me->cmdResultType = CmdResultType::BinaryExecuting;
-							me->cmdEvt->Set();
+							me->cmdEvt.Set();
 							break;
 						}
 						case CmdResultType::BinaryExecuting:
 							me->cmdResultType = CmdResultType::BinaryResultReady;
 							((MySQLTCPBinaryReader*)me->cmdReader)->EndCols();
-							me->cmdEvt->Set();
+							me->cmdEvt.Set();
 							break;
 						case CmdResultType::BinaryResultReady:
 							WriteUInt32(&sbuff[0], 5);
@@ -1711,7 +1697,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 
 							me->cmdResultType = CmdResultType::ResultEnd;
 							((MySQLTCPBinaryReader*)me->cmdReader)->EndData();
-							me->cmdEvt->Set();
+							me->cmdEvt.Set();
 
 							break;
 						case CmdResultType::ResultEnd:
@@ -1720,7 +1706,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 						default:
 							me->cmdResultType = CmdResultType::ResultEnd;
 							((MySQLTCPReader*)me->cmdReader)->EndData();
-							me->cmdEvt->Set();
+							me->cmdEvt.Set();
 							break;
 						}
 					}
@@ -1794,7 +1780,7 @@ UInt32 __stdcall Net::MySQLTCPClient::RecvThread(void *userObj)
 			printf("MySQLTCP End Conn: signal waiting\r\n");
 #endif
 			me->cmdResultType = CmdResultType::Error;
-			me->cmdEvt->Set();
+			me->cmdEvt.Set();
 		}
 		else
 		{
@@ -1841,12 +1827,9 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->userName = userName->Clone();
 	this->password = password->Clone();
 	this->database = SCOPY_STRING(database);
-	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
 	this->cmdResultType = CmdResultType::Processing;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
 	this->cli = 0;
 	this->Reconnect();
 }
@@ -1868,12 +1851,9 @@ Net::MySQLTCPClient::MySQLTCPClient(Net::SocketFactory *sockf, const Net::Socket
 	this->userName = Text::String::New(userName);
 	this->password = Text::String::New(password);
 	this->database = Text::String::NewOrNull(database);
-	NEW_CLASS(this->cmdMut, Sync::Mutex());
-	NEW_CLASS(this->cmdEvt, Sync::Event(true));
 	this->cmdSeqNum = 0;
 	this->cmdReader = 0;
 	this->cmdResultType = CmdResultType::Processing;
-	NEW_CLASS(this->cliMut, Sync::Mutex());
 	this->cli = 0;
 	this->Reconnect();
 }
@@ -1893,9 +1873,6 @@ Net::MySQLTCPClient::~MySQLTCPClient()
 		DEL_CLASS(this->cli);
 		this->cli = 0;
 	}
-	DEL_CLASS(this->cliMut);
-	DEL_CLASS(this->cmdMut);
-	DEL_CLASS(this->cmdEvt);
 	this->userName->Release();
 	this->password->Release();
 	SDEL_STRING(this->database);
@@ -1999,11 +1976,9 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 		Sync::Thread::Sleep(10);
 	}
 	MySQLTCPReader *reader;
-	Sync::MutexUsage *mutUsage;
-	NEW_CLASS(mutUsage, Sync::MutexUsage(this->cmdMut));
+	NEW_CLASS(reader, MySQLTCPReader(&this->cmdMut));
 	this->cmdResultType = CmdResultType::Processing;
 	this->cmdSeqNum = 1;
-	NEW_CLASS(reader, MySQLTCPReader(mutUsage));
 	this->cmdReader = reader;
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
@@ -2025,7 +2000,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderText(Text::CString sql)
 //	startTime = dt.ToTicks();
 	while (this->cmdResultType == CmdResultType::Processing)
 	{
-		this->cmdEvt->Wait(10000);
+		this->cmdEvt.Wait(10000);
 	}
 	if (this->cmdResultType == CmdResultType::Error)
 	{
@@ -2055,11 +2030,9 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 		Sync::Thread::Sleep(10);
 	}
 	MySQLTCPBinaryReader *reader;
-	Sync::MutexUsage *mutUsage;
-	NEW_CLASS(mutUsage, Sync::MutexUsage(this->cmdMut));
+	NEW_CLASS(reader, MySQLTCPBinaryReader(&this->cmdMut));
 	this->cmdResultType = CmdResultType::ProcessingBinary;
 	this->cmdSeqNum = 1;
-	NEW_CLASS(reader, MySQLTCPBinaryReader(mutUsage));
 	this->cmdReader = reader;
 	UInt8 *buff = MemAlloc(UInt8, sql.leng + 5);
 	WriteInt32(buff, (Int32)(sql.leng + 1));
@@ -2081,7 +2054,7 @@ DB::DBReader *Net::MySQLTCPClient::ExecuteReaderBinary(Text::CString sql)
 //	startTime = dt.ToTicks();
 	while (this->cmdResultType == CmdResultType::ProcessingBinary || this->cmdResultType == CmdResultType::BinaryExecuting)
 	{
-		this->cmdEvt->Wait(10000);
+		this->cmdEvt.Wait(10000);
 	}
 	if (this->cmdResultType == CmdResultType::Error)
 	{
@@ -2102,7 +2075,7 @@ void Net::MySQLTCPClient::CloseReader(DB::DBReader *r)
 	}
 	while (this->cmdResultType != CmdResultType::ResultEnd && this->cmdResultType != CmdResultType::Error)
 	{
-		this->cmdEvt->Wait(10000);
+		this->cmdEvt.Wait(10000);
 	}
 	this->cmdReader = 0;
 	MySQLTCPReader *reader = (MySQLTCPReader*)r;

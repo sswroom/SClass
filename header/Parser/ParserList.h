@@ -12,8 +12,8 @@ namespace Parser
 	class ParserList
 	{
 	private:
-		Data::ArrayList<IO::FileParser*> *filePArr;
-		Data::ArrayList<IO::IObjectParser*> *objPArr;
+		Data::ArrayList<IO::FileParser*> filePArr;
+		Data::ArrayList<IO::IObjectParser*> objPArr;
 
 	protected:
 		ParserList();

@@ -64,7 +64,7 @@ namespace Net
 		UOSInt maxThreadCnt;
 		UOSInt currThreadCnt;
 		Bool threadToStop;
-		Sync::Mutex *threadMut;
+		Sync::Mutex threadMut;
 		ThreadState *threadSt;
 
 		static UInt32 __stdcall ServerThread(void *userObj);

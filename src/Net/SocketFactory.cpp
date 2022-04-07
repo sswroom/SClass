@@ -14,7 +14,6 @@
 
 Net::SocketFactory::SocketFactory(Bool noV6DNS)
 {
-	NEW_CLASS(this->dnsMut, Sync::Mutex());
 	this->dnsHdlr = 0;
 	this->noV6DNS = noV6DNS;
 }
@@ -22,7 +21,6 @@ Net::SocketFactory::SocketFactory(Bool noV6DNS)
 Net::SocketFactory::~SocketFactory()
 {
 	SDEL_CLASS(this->dnsHdlr);
-	DEL_CLASS(this->dnsMut);
 }
 
 Bool Net::SocketFactory::AdapterSetHWAddr(Text::CString adapterName, const UInt8 *hwAddr)
@@ -37,7 +35,7 @@ Bool Net::SocketFactory::AdapterEnable(Text::CString adapterName, Bool enable)
 
 Bool Net::SocketFactory::ReloadDNS()
 {
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	SDEL_CLASS(this->dnsHdlr);
 	return true;
 }
@@ -50,7 +48,7 @@ Bool Net::SocketFactory::DNSResolveIP(const UTF8Char *host, UOSInt hostLen, Net:
 		return true;
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;
@@ -85,7 +83,7 @@ UInt32 Net::SocketFactory::DNSResolveIPv4(const UTF8Char *host, UOSInt hostLen)
 	}
 
 	UTF8Char *sptr = Text::TextBinEnc::Punycode::Encode(sbuff, Text::CString(host, hostLen));
-	Sync::MutexUsage mutUsage(this->dnsMut);
+	Sync::MutexUsage mutUsage(&this->dnsMut);
 	if (this->dnsHdlr == 0)
 	{
 		Net::SocketUtil::AddressInfo dnsAddr;

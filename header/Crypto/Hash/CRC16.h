@@ -2,6 +2,12 @@
 #define _SM_CRYPTO_HASH_CRC16
 #include "Crypto/Hash/IHash.h"
 
+extern "C"
+{
+	void CRC16_InitTable(UInt16 *tab, UInt16 polynomial);
+	UInt16 CRC16_Calc(const UInt8 *buff, UOSInt buffSize, UInt16 *tab, UInt16 currVal);
+}
+
 namespace Crypto
 {
 	namespace Hash
@@ -28,6 +34,11 @@ namespace Crypto
 			virtual UOSInt GetResultSize();
 
 			void SetValue(UInt16 val);
+
+			UInt16 CalcDirect(const UInt8 *buff, UOSInt buffSize)
+			{
+				return CRC16_Calc(buff, buffSize, this->crctab, 0);
+			}
 
 			static UInt16 GetPolynomialANSI();
 			static UInt16 GetPolynomialCCITT();

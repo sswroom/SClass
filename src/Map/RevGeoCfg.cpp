@@ -13,26 +13,18 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 	UTF8Char sbuff[512];
 	Text::PString sptrs[2];
 	UTF8Char *sptr;
-	OSInt i = REVGEO_MAXID;
 	Int32 srchType;
 	Int32 srchLyr;
-	IO::StreamReader *reader;
-	IO::FileStream *fs;
 	Map::RevGeoCfg::SearchLayer *layer;
 	Map::IMapSearchLayer *mdata;
 
 	filePathName = filePath;
 
-	while (i-- > 0)
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		NEW_CLASS(layers[i], Data::ArrayList<Map::RevGeoCfg::SearchLayer*>());
-	}
-
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
-	{
-		NEW_CLASS(reader, IO::StreamReader(fs));
-		while ((sptr = reader->ReadLine(sbuff, 511)) != 0)
+		IO::StreamReader reader(&fs);
+		while ((sptr = reader.ReadLine(sbuff, 511)) != 0)
 		{
 			if (Text::StrSplitP(sptrs, 2, {sbuff, (UOSInt)(sptr - sbuff)}, ',') == 2)
 			{
@@ -58,15 +50,13 @@ Map::RevGeoCfg::RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrch
 							layer->searchType = srchType;
 							layer->usedCnt = 1;
 							layer->data = mdata;
-							this->layers[srchLyr]->Add(layer);
+							this->layers[srchLyr].Add(layer);
 						}
 					}
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	DEL_CLASS(fs);
 }
 
 Map::RevGeoCfg::~RevGeoCfg()
@@ -76,17 +66,16 @@ Map::RevGeoCfg::~RevGeoCfg()
 	Map::RevGeoCfg::SearchLayer *layer;
 	while (i-- > 0)
 	{
-		j = layers[i]->GetCount();
+		j = this->layers[i].GetCount();
 		while (j-- > 0)
 		{
-			layer = (Map::RevGeoCfg::SearchLayer *)layers[i]->GetItem(j);
+			layer = this->layers[i].GetItem(j);
 			if (--layer->usedCnt <= 0)
 			{
 				layer->layerName->Release();
 				MemFree(layer);
 			}
 		}
-		DEL_CLASS(layers[i]);
 	}
 }
 
@@ -107,7 +96,7 @@ UTF8Char *Map::RevGeoCfg::GetStreetName(UTF8Char *buff, UOSInt buffSize, Double 
 	Data::ArrayList<Map::RevGeoCfg::SearchLayer*> *layers;
 	while (i < REVGEO_MAXID)
 	{
-		layers = this->layers[i];
+		layers = &this->layers[i];
 		minDist = -1;
 		j = 0;
 		k = layers->GetCount();

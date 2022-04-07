@@ -13,9 +13,6 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 	IO::Path::FindFileSession *sess;
 	IO::Path::PathType pt;
 
-
-	NEW_CLASS(files, Data::ArrayList<RevGeoFile*>());
-	NEW_CLASS(mapSrchMgr, Map::MapSearchManager());
 	this->defLCID = defLCID;
 
 	sptr = cfgDir.ConcatTo(sbuff);
@@ -40,7 +37,7 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 			Map::RevGeoCfg *revGeo;
 			RevGeoFile *file;
 			UOSInt i;
-			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), this->mapSrchMgr));
+			NEW_CLASS(revGeo, Map::RevGeoCfg(CSTRP(sbuff, sptr2), &this->mapSrchMgr));
 			file = MemAlloc(RevGeoFile, 1);
 			file->cfg = revGeo;
 			i = Text::StrIndexOfChar(sptr, '.');
@@ -53,7 +50,7 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 			{
 				file->lcid = 0;
 			}
-			this->files->Add(file);
+			this->files.Add(file);
 			errWriter->WriteLineC(UTF8STRC("Success"));
 
 		}
@@ -65,15 +62,13 @@ Map::RevGeoDir::RevGeoDir(Text::CString cfgDir, UInt32 defLCID, IO::Writer *errW
 Map::RevGeoDir::~RevGeoDir()
 {
 	RevGeoFile *file;
-	UOSInt i = this->files->GetCount();
+	UOSInt i = this->files.GetCount();
 	while (i-- > 0)
 	{
-		file = this->files->GetItem(i);
+		file = this->files.GetItem(i);
 		DEL_CLASS(file->cfg);
 		MemFree(file);
 	}
-	DEL_CLASS(files);
-	DEL_CLASS(mapSrchMgr);
 }
 
 UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, UInt32 lcid)
@@ -81,11 +76,11 @@ UTF8Char *Map::RevGeoDir::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat
 	UOSInt i;
 	RevGeoFile *file;
 	RevGeoFile *tmpFile;
-	file = this->files->GetItem(0);
-	i = this->files->GetCount();
+	file = this->files.GetItem(0);
+	i = this->files.GetCount();
 	while (i-- > 0)
 	{
-		tmpFile = this->files->GetItem(i);
+		tmpFile = this->files.GetItem(i);
 		if (tmpFile->lcid == lcid)
 		{
 			file = tmpFile;

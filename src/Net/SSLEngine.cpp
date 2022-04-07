@@ -43,8 +43,7 @@ Net::SSLEngine::SSLEngine(Net::SocketFactory *sockf)
 	this->sockf = sockf;
 	this->maxThreadCnt = 10;
 	this->currThreadCnt = 0;
-	NEW_CLASS(this->threadMut, Sync::Mutex());
-	this->threadMut->SetDebName((const UTF8Char*)"SSLEngine");
+	this->threadMut.SetDebName((const UTF8Char*)"SSLEngine");
 	this->threadSt = MemAlloc(ThreadState, this->maxThreadCnt);
 	this->threadToStop = false;
 	UOSInt i = this->maxThreadCnt;
@@ -91,7 +90,6 @@ Net::SSLEngine::~SSLEngine()
 		DEL_CLASS(this->threadSt[i].evt);
 	}
 	MemFree(this->threadSt);
-	DEL_CLASS(this->threadMut);
 }
 
 Bool Net::SSLEngine::SetServerCerts(Text::CString certFile, Text::CString keyFile)
@@ -132,7 +130,7 @@ void Net::SSLEngine::ServerInit(Socket *s, ClientReadyHandler readyHdlr, void *u
 	UOSInt i = 0;
 	UOSInt j = INVALID_INDEX;
 	Bool found = false;
-	Sync::MutexUsage mutUsage(this->threadMut);
+	Sync::MutexUsage mutUsage(&this->threadMut);
 	while (!found)
 	{
 		i = 0;

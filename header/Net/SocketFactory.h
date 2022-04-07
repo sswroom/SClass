@@ -140,7 +140,7 @@ namespace Net
 			ET_NO_ERROR = 1024
 		} ErrorType;
 	private:
-		Sync::Mutex *dnsMut;
+		Sync::Mutex dnsMut;
 		Bool noV6DNS;
 	protected:
 		Net::DNSHandler *dnsHdlr;

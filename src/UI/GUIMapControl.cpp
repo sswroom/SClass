@@ -118,10 +118,10 @@ void UI::GUIMapControl::OnMouseMove(OSInt scnX, OSInt scnY)
 	{
 		OSInt x = scnX;
 		OSInt y = scnY;
-		UOSInt i = this->mouseMoveHdlrs->GetCount();
+		UOSInt i = this->mouseMoveHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mouseMoveHdlrs->GetItem(i)(this->mouseMoveObjs->GetItem(i), x, y);
+			this->mouseMoveHdlrs.GetItem(i)(this->mouseMoveObjs.GetItem(i), x, y);
 		}
 	}
 /*	if (me->IsFormFocused())
@@ -295,7 +295,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		UOSInt w;
 		UOSInt h;
 
-		Sync::MutexUsage mutUsage(this->drawMut);
+		Sync::MutexUsage mutUsage(&this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *tmpImg = this->eng->CloneImage(this->bgImg);
@@ -408,7 +408,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 		}
 		img->DelBrush(bgBrush);
 
-		Sync::MutexUsage mutUsage(this->drawMut);
+		Sync::MutexUsage mutUsage(&this->drawMut);
 		if (this->drawHdlr)
 		{
 			Media::DrawImage *drawImg = this->eng->CloneImage(this->bgImg);
@@ -744,17 +744,10 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 	this->renderer = renderer;
 	this->pauseUpdate = false;
 	this->releaseRenderer = false;
-	NEW_CLASS(this->drawMut, Sync::Mutex());
 
 	this->view = view;
 	view->SetDPI(this->hdpi, this->ddpi);
 	view->ChangeViewXY(this->currWidth, this->currHeight, 114.2, 22.4, 10000);
-	NEW_CLASS(this->scaleChgHdlrs, Data::ArrayList<ScaleChangedHandler>());
-	NEW_CLASS(this->scaleChgObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mapUpdHdlrs, Data::ArrayList<MapUpdatedHandler>());
-	NEW_CLASS(this->mapUpdObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseMoveHandler>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
 	this->SetBGColor(bgColor);
 	if (this->renderer)
 	{
@@ -794,17 +787,10 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 	Media::ColorProfile color(Media::ColorProfile::CPT_PDISPLAY);
 	NEW_CLASS(this->renderer, Map::DrawMapRenderer(this->eng, mapEnv, &color, this->colorSess, Map::DrawMapRenderer::DT_PIXELDRAW));
 	this->releaseRenderer = true;
-	NEW_CLASS(this->drawMut, Sync::Mutex());
 
 	this->view = mapEnv->CreateMapView(640, 480);
 	view->SetDPI(this->hdpi, this->ddpi);
 	view->ChangeViewXY(this->currWidth, this->currHeight, 114.2, 22.4, 10000);
-	NEW_CLASS(this->scaleChgHdlrs, Data::ArrayList<ScaleChangedHandler>());
-	NEW_CLASS(this->scaleChgObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mapUpdHdlrs, Data::ArrayList<MapUpdatedHandler>());
-	NEW_CLASS(this->mapUpdObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseMoveHandler>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void *>());
 
 	this->SetBGColor(bgColor);
 	if (this->renderer)
@@ -839,13 +825,6 @@ UI::GUIMapControl::~GUIMapControl()
 		DEL_CLASS(this->renderer);
 	}
 	DEL_CLASS(this->view);
-	DEL_CLASS(this->scaleChgHdlrs);
-	DEL_CLASS(this->scaleChgObjs);
-	DEL_CLASS(this->mouseMoveHdlrs);
-	DEL_CLASS(this->mouseMoveObjs);
-	DEL_CLASS(this->mapUpdHdlrs);
-	DEL_CLASS(this->mapUpdObjs);
-	DEL_CLASS(this->drawMut);
 	if (this->colorSess)
 	{
 		this->colorSess->RemoveHandler(this);
@@ -854,7 +833,7 @@ UI::GUIMapControl::~GUIMapControl()
 
 void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 {
-	Sync::MutexUsage mutUsage(this->drawMut);
+	Sync::MutexUsage mutUsage(&this->drawMut);
 	this->GetSizeP(&this->currWidth, &this->currHeight);
 	this->view->UpdateSize(this->currWidth, this->currHeight);
 	if (this->bgImg)
@@ -912,10 +891,10 @@ void UI::GUIMapControl::SetDPI(Double hdpi, Double ddpi)
 
 void UI::GUIMapControl::EventScaleChanged(Double newScale)
 {
-	UOSInt i = this->scaleChgHdlrs->GetCount();
+	UOSInt i = this->scaleChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->scaleChgHdlrs->GetItem(i)(this->scaleChgObjs->GetItem(i), newScale);
+		this->scaleChgHdlrs.GetItem(i)(this->scaleChgObjs.GetItem(i), newScale);
 	}
 }
 
@@ -934,7 +913,7 @@ void UI::GUIMapControl::SetBGColor(UInt32 bgColor)
 
 void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 {
-	Sync::MutexUsage mutUsage(this->drawMut);
+	Sync::MutexUsage mutUsage(&this->drawMut);
 	if (this->renderer)
 	{
 		this->renderer->SetUpdatedHandler(0, 0);
@@ -953,7 +932,7 @@ void UI::GUIMapControl::SetRenderer(Map::DrawMapRenderer *renderer)
 
 void UI::GUIMapControl::UpdateMap()
 {
-	Sync::MutexUsage mutUsage(this->drawMut);
+	Sync::MutexUsage mutUsage(&this->drawMut);
 	if (this->bgImg && this->renderer)
 	{
 		Double centerX;
@@ -979,10 +958,10 @@ void UI::GUIMapControl::UpdateMap()
 		{
 			this->imgTimeoutTick = 0;
 		}
-		i = this->mapUpdHdlrs->GetCount();
+		i = this->mapUpdHdlrs.GetCount();
 		while (i-- > 0)
 		{
-			this->mapUpdHdlrs->GetItem(i)(this->mapUpdObjs->GetItem(i), centerX, centerY, t);
+			this->mapUpdHdlrs.GetItem(i)(this->mapUpdObjs.GetItem(i), centerX, centerY, t);
 		}
 	}
 	mutUsage.EndUse();
@@ -1117,21 +1096,21 @@ void UI::GUIMapControl::SetSelectedVector(Math::Vector2D *vec)
 
 void UI::GUIMapControl::HandleScaleChanged(ScaleChangedHandler hdlr, void *userObj)
 {
-	this->scaleChgHdlrs->Add(hdlr);
-	this->scaleChgObjs->Add(userObj);
+	this->scaleChgHdlrs.Add(hdlr);
+	this->scaleChgObjs.Add(userObj);
 	hdlr(userObj, this->view->GetMapScale());
 }
 
 void UI::GUIMapControl::HandleMapUpdated(MapUpdatedHandler hdlr, void *userObj)
 {
-	this->mapUpdHdlrs->Add(hdlr);
-	this->mapUpdObjs->Add(userObj);
+	this->mapUpdHdlrs.Add(hdlr);
+	this->mapUpdObjs.Add(userObj);
 }
 
 void UI::GUIMapControl::HandleMouseMove(MouseMoveHandler hdlr, void *userObj)
 {
-	this->mouseMoveHdlrs->Add(hdlr);
-	this->mouseMoveObjs->Add(userObj);
+	this->mouseMoveHdlrs.Add(hdlr);
+	this->mouseMoveObjs.Add(userObj);
 }
 
 void UI::GUIMapControl::HandleMouseUp(MouseEventHandler hdlr, void *userObj)

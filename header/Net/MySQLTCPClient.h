@@ -28,7 +28,7 @@ namespace Net
 		Net::SocketUtil::AddressInfo addr;
 		UInt16 port;
 		Net::TCPClient *cli;
-		Sync::Mutex *cliMut;
+		Sync::Mutex cliMut;
 		Bool recvRunning;
 		Bool recvStarted;
 		Text::String *userName;
@@ -46,8 +46,8 @@ namespace Net
 		
 		Data::ArrayList<Text::CString> *tableNames;
 
-		Sync::Mutex *cmdMut;
-		Sync::Event *cmdEvt;
+		Sync::Mutex cmdMut;
+		Sync::Event cmdEvt;
 		UOSInt cmdSeqNum;
 		DB::DBReader *cmdReader;
 		CmdResultType cmdResultType;

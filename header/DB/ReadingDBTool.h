@@ -36,7 +36,7 @@ namespace DB
 		Bool isWorking;
 		Int32 workId;
 		SQLFailedFunc trig;
-		Text::StringBuilderUTF8 *lastErrMsg;
+		Text::StringBuilderUTF8 lastErrMsg;
 
 		UInt32 dataCnt;
 

@@ -20,7 +20,7 @@ namespace Map
 		} SearchLayer;
 
 	private:
-		Data::ArrayList<SearchLayer*> *layers[REVGEO_MAXID];
+		Data::ArrayList<SearchLayer*> layers[REVGEO_MAXID];
 
 	public:
 		RevGeoCfg(Text::CString fileName, Map::MapSearchManager *mapSrchMgr);

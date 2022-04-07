@@ -46,12 +46,12 @@ void Text::JSONBuilder::AppendStrUTF8(const UTF8Char *val)
 		}
 		if (sptr - sbuff >= 254)
 		{
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			this->sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	this->sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 void Text::JSONBuilder::AppendStrW(const WChar *val)
@@ -94,17 +94,16 @@ void Text::JSONBuilder::AppendStrW(const WChar *val)
 		}
 		if (sptr - sbuff >= 250)
 		{
-			sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+			this->sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 			sptr = sbuff;
 		}
 	}
 	*sptr++ = '\"';
-	sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
+	this->sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
 }
 
 Text::JSONBuilder::JSONBuilder(Text::StringBuilderUTF8 *sb, ObjectType rootType)
 {
-	NEW_CLASS(this->objTypes, Data::ArrayList<ObjectType>());
 	this->sb = sb;
 	this->currType = rootType;
 	this->isFirst = true;
@@ -129,10 +128,10 @@ Text::JSONBuilder::~JSONBuilder()
 	{
 		this->sb->AppendUTF8Char('}');
 	}
-	i = this->objTypes->GetCount();
+	i = this->objTypes.GetCount();
 	while (i-- > 0)
 	{
-		if (this->objTypes->GetItem(i) == OT_OBJECT)
+		if (this->objTypes.GetItem(i) == OT_OBJECT)
 		{
 			this->sb->AppendUTF8Char('}');
 		}
@@ -141,7 +140,6 @@ Text::JSONBuilder::~JSONBuilder()
 			this->sb->AppendUTF8Char(']');
 		}
 	}
-	DEL_CLASS(this->objTypes);
 }
 
 Bool Text::JSONBuilder::ArrayAddInt32(Int32 val)
@@ -224,7 +222,7 @@ Bool Text::JSONBuilder::ArrayBeginObject()
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->objTypes->Add(OT_ARRAY);
+	this->objTypes.Add(OT_ARRAY);
 	this->currType = OT_OBJECT;
 	this->isFirst = true;
 	this->sb->AppendUTF8Char('{');
@@ -241,7 +239,7 @@ Bool Text::JSONBuilder::ArrayBeginArray()
 	{
 		this->sb->AppendC(UTF8STRC(","));
 	}
-	this->objTypes->Add(OT_ARRAY);
+	this->objTypes.Add(OT_ARRAY);
 	this->currType = OT_ARRAY;
 	this->isFirst = true;
 	this->sb->AppendUTF8Char('[');
@@ -252,10 +250,10 @@ Bool Text::JSONBuilder::ArrayEnd()
 {
 	if (this->currType != OT_ARRAY)
 		return false;
-	UOSInt i = this->objTypes->GetCount();
+	UOSInt i = this->objTypes.GetCount();
 	if (i <= 0)
 		return false;
-	this->currType = this->objTypes->RemoveAt(i - 1);
+	this->currType = this->objTypes.RemoveAt(i - 1);
 	this->isFirst = false;
 	this->sb->AppendUTF8Char(']');
 	return true;
@@ -429,7 +427,7 @@ Bool Text::JSONBuilder::ObjectBeginArray(Text::CString name)
 	}
 	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":["));
-	this->objTypes->Add(OT_OBJECT);
+	this->objTypes.Add(OT_OBJECT);
 	this->currType = OT_ARRAY;
 	this->isFirst = true;
 	return true;
@@ -447,7 +445,7 @@ Bool Text::JSONBuilder::ObjectBeginObject(Text::CString name)
 	}
 	this->AppendStr(name);
 	this->sb->AppendC(UTF8STRC(":{"));
-	this->objTypes->Add(OT_OBJECT);
+	this->objTypes.Add(OT_OBJECT);
 	this->currType = OT_OBJECT;
 	this->isFirst = true;
 	return true;
@@ -457,10 +455,10 @@ Bool Text::JSONBuilder::ObjectEnd()
 {
 	if (this->currType != OT_OBJECT)
 		return false;
-	UOSInt i = this->objTypes->GetCount();
+	UOSInt i = this->objTypes.GetCount();
 	if (i <= 0)
 		return false;
-	this->currType = this->objTypes->RemoveAt(i - 1);
+	this->currType = this->objTypes.RemoveAt(i - 1);
 	this->isFirst = false;
 	this->sb->AppendUTF8Char('}');
 	return true;

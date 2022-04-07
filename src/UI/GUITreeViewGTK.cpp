@@ -36,7 +36,6 @@ gboolean GUITreeView_ButtonClick(GtkWidget *widget, GdkEventButton *event, gpoin
 
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 {
-	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = 0;
@@ -45,7 +44,6 @@ UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::String *txt)
 
 UI::GUITreeView::TreeItem::TreeItem(void *itemObj, Text::CString txt)
 {
-	NEW_CLASS(this->children, Data::ArrayList<UI::GUITreeView::TreeItem *>());
 	this->hTreeItem = 0;
 	this->itemObj = itemObj;
 	this->parent = 0;
@@ -56,13 +54,12 @@ UI::GUITreeView::TreeItem::~TreeItem()
 {
 	TreeItem *item;
 	UOSInt i;
-	i = this->children->GetCount();
+	i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		item = this->children->GetItem(i);
+		item = this->children.GetItem(i);
 		DEL_CLASS(item);
 	}
-	DEL_CLASS(this->children);
 	SDEL_STRING(this->txt);
 	if (this->hTreeItem)
 	{
@@ -72,7 +69,7 @@ UI::GUITreeView::TreeItem::~TreeItem()
 
 void UI::GUITreeView::TreeItem::AddChild(UI::GUITreeView::TreeItem *child)
 {
-	this->children->Add(child);
+	this->children.Add(child);
 	child->SetParent(this);
 }
 void UI::GUITreeView::TreeItem::SetParent(UI::GUITreeView::TreeItem *parent)
@@ -117,34 +114,28 @@ Text::String *UI::GUITreeView::TreeItem::GetText()
 
 UOSInt UI::GUITreeView::TreeItem::GetChildCount()
 {
-	return this->children->GetCount();
+	return this->children.GetCount();
 }
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::TreeItem::GetChild(UOSInt index)
 {
-	return this->children->GetItem(index);
+	return this->children.GetItem(index);
 }
 
 void UI::GUITreeView::FreeItems()
 {
 	UI::GUITreeView::TreeItem *item;
 	UOSInt i;
-	i = this->treeItems->GetCount();
+	i = this->treeItems.GetCount();
 	while (i-- > 0)
 	{
-		item = this->treeItems->RemoveAt(i);
+		item = this->treeItems.RemoveAt(i);
 		DEL_CLASS(item);
 	}
 }
 
 UI::GUITreeView::GUITreeView(GUICore *ui, UI::GUIClientControl *parent) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->rightClkHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->rightClkObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->treeItems, Data::ArrayList<UI::GUITreeView::TreeItem*>());
-
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->autoFocus = false;
 	this->editing = false;
@@ -176,19 +167,14 @@ UI::GUITreeView::~GUITreeView()
 	ClassData *data = this->clsData;
 	FreeItems();
 	MemFree(data);
-	DEL_CLASS(this->treeItems);
-	DEL_CLASS(this->rightClkHdlrs);
-	DEL_CLASS(this->rightClkObjs);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
 }
 
 void UI::GUITreeView::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
@@ -198,10 +184,10 @@ void UI::GUITreeView::EventDoubleClick()
 
 void UI::GUITreeView::EventRightClicked()
 {
-	UOSInt i = this->rightClkHdlrs->GetCount();
+	UOSInt i = this->rightClkHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->rightClkHdlrs->GetItem(i)(this->rightClkObjs->GetItem(i));
+		this->rightClkHdlrs.GetItem(i)(this->rightClkObjs.GetItem(i));
 	}
 }
 
@@ -248,7 +234,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(TreeItem *parent, TreeIte
 	}
 	else
 	{
-		this->treeItems->Add(item);
+		this->treeItems.Add(item);
 	}
 	return item;
 }
@@ -282,7 +268,7 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 	}
 	else
 	{
-		this->treeItems->Add(item);
+		this->treeItems.Add(item);
 	}
 	return item;
 }
@@ -290,12 +276,12 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::InsertItem(UI::GUITreeView::TreeItem
 void *UI::GUITreeView::RemoveItem(TreeItem *item)
 {
 	ClassData *data = this->clsData;
-	UOSInt i = this->treeItems->IndexOf(item);
+	UOSInt i = this->treeItems.IndexOf(item);
 	if (i != INVALID_INDEX)
 	{
 		void *obj = item->GetItemObj();
 		gtk_tree_store_remove(data->treeStore, (GtkTreeIter*)item->GetHItem());
-		this->treeItems->RemoveAt(i);
+		this->treeItems.RemoveAt(i);
 		DEL_CLASS(item);
 		return obj;
 	}
@@ -314,12 +300,12 @@ void UI::GUITreeView::ClearItems()
 
 UOSInt UI::GUITreeView::GetRootCount()
 {
-	return this->treeItems->GetCount();
+	return this->treeItems.GetCount();
 }
 
 UI::GUITreeView::TreeItem *UI::GUITreeView::GetRootItem(UOSInt index)
 {
-	return this->treeItems->GetItem(index);
+	return this->treeItems.GetItem(index);
 }
 
 void UI::GUITreeView::ExpandItem(TreeItem *item)
@@ -391,11 +377,11 @@ UI::GUITreeView::TreeItem *UI::GUITreeView::GetSelectedItem()
 		GtkTreePath *selPath = gtk_tree_model_get_path(GTK_TREE_MODEL(data->treeStore), &iter);
 		GtkTreePath *itemPath;
 		UOSInt i = 0;
-		UOSInt j = this->treeItems->GetCount();
+		UOSInt j = this->treeItems.GetCount();
 		UI::GUITreeView::TreeItem *item;
 		while (i < j)
 		{
-			item = this->treeItems->GetItem(i);
+			item = this->treeItems.GetItem(i);
 			itemPath = gtk_tree_model_get_path((GtkTreeModel*)data->treeStore, (GtkTreeIter*)item->GetHItem());
 			if (gtk_tree_path_compare(selPath, itemPath) == 0)
 			{
@@ -441,13 +427,13 @@ OSInt UI::GUITreeView::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUITreeView::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUITreeView::HandleRightClick(UI::UIEvent hdlr, void *userObj)
 {
-	this->rightClkHdlrs->Add(hdlr);
-	this->rightClkObjs->Add(userObj);
+	this->rightClkHdlrs.Add(hdlr);
+	this->rightClkObjs.Add(userObj);
 }
 

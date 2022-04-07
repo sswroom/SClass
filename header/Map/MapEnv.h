@@ -114,14 +114,14 @@ namespace Map
 		} FontStyle;
 		
 	private:
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 		UInt32 bgColor;
-		Data::ArrayList<MapItem*> *mapLayers;
-		Data::ArrayList<LineStyle*> *lineStyles;
-		Data::ArrayList<FontStyle*> *fontStyles;
-		Data::StringMap<ImageInfo*> *images;
-		Data::ArrayList<ImageInfo*> *imgList;
-		Data::RandomOS *random;
+		Data::ArrayList<MapItem*> mapLayers;
+		Data::ArrayList<LineStyle*> lineStyles;
+		Data::ArrayList<FontStyle*> fontStyles;
+		Data::StringMap<ImageInfo*> images;
+		Data::ArrayList<ImageInfo*> imgList;
+		Data::RandomOS random;
 		UOSInt nStr;
 		UOSInt defLineStyle;
 		UOSInt defFontStyle;

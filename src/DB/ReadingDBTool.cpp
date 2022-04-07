@@ -49,7 +49,6 @@ DB::ReadingDBTool::ReadingDBTool(DB::DBConn *db, Bool needRelease, IO::LogTool *
 	this->readerCnt = 0;
 	this->readerFail = 0;
 	this->openFail = 0;
-	NEW_CLASS(this->lastErrMsg, Text::StringBuilderUTF8());
 	this->logPrefix = Text::String::NewOrNull(logPrefix);
 	this->isWorking = false;
 	this->workId = 0;
@@ -338,11 +337,6 @@ DB::ReadingDBTool::~ReadingDBTool()
 		DEL_CLASS(db);
 		db = 0;
 	}
-	if (this->lastErrMsg)
-	{
-		DEL_CLASS(this->lastErrMsg);
-		this->lastErrMsg = 0;
-	}
 }
 
 void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
@@ -352,6 +346,7 @@ void DB::ReadingDBTool::SetFailTrigger(DB::ReadingDBTool::SQLFailedFunc trig)
 
 DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 {
+	if (this->log)
 	{
 		Text::StringBuilderUTF8 logMsg;
 		logMsg.AppendC(UTF8STRC("ExecuteReader: "));
@@ -390,19 +385,18 @@ DB::DBReader *DB::ReadingDBTool::ExecuteReader(Text::CString sqlCmd)
 	}
 	else
 	{
+		if (this->log)
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Cannot execute the sql command: "));
 			logMsg.Append(sqlCmd);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERROR);
-		}
 
-		{
-			Text::StringBuilderUTF8 logMsg;
+			logMsg.ClearStr();
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
-			this->lastErrMsg->ClearStr();
-			this->db->GetErrorMsg(this->lastErrMsg);
-			logMsg.AppendSB(this->lastErrMsg);
+			this->lastErrMsg.ClearStr();
+			this->db->GetErrorMsg(&this->lastErrMsg);
+			logMsg.AppendSB(&this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 		}
 
@@ -590,9 +584,9 @@ DB::DBReader *DB::ReadingDBTool::QueryTableData(Text::CString tableName, Data::A
 		{
 			Text::StringBuilderUTF8 logMsg;
 			logMsg.AppendC(UTF8STRC("Exception detail: "));
-			this->lastErrMsg->ClearStr();
-			this->db->GetErrorMsg(this->lastErrMsg);
-			logMsg.AppendSB(this->lastErrMsg);
+			this->lastErrMsg.ClearStr();
+			this->db->GetErrorMsg(&this->lastErrMsg);
+			logMsg.AppendSB(&this->lastErrMsg);
 			AddLogMsgC(logMsg.ToString(), logMsg.GetLength(), IO::ILogHandler::LOG_LEVEL_ERR_DETAIL);
 		}
 
