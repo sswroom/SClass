@@ -20,8 +20,8 @@ namespace Map
 			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Data::DateTime *lastSrchDate;
-			Sync::Mutex *mut;
+			Data::DateTime lastSrchDate;
+			Sync::Mutex mut;
 			IO::Writer *errWriter;
 			Int32 lastIsError;
 			UInt32 srchCnt;

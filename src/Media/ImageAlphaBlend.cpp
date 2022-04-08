@@ -2,44 +2,38 @@
 #include "MyMemory.h"
 #include "Media/ImageAlphaBlend.h"
 
-Media::ImageAlphaBlend::ImageAlphaBlend()
+Media::ImageAlphaBlend::ImageAlphaBlend() : sProfile(Media::ColorProfile::CPT_SRGB), dProfile(Media::ColorProfile::CPT_SRGB), oProfile(Media::ColorProfile::CPT_SRGB)
 {
-	NEW_CLASS(this->sProfile, Media::ColorProfile(Media::ColorProfile::CPT_SRGB));
-	NEW_CLASS(this->dProfile, Media::ColorProfile(Media::ColorProfile::CPT_SRGB));
-	NEW_CLASS(this->oProfile, Media::ColorProfile(Media::ColorProfile::CPT_SRGB));
 	this->changed = true;
 }
 
 Media::ImageAlphaBlend::~ImageAlphaBlend()
 {
-	DEL_CLASS(this->sProfile);
-	DEL_CLASS(this->dProfile);
-	DEL_CLASS(this->oProfile);
 }
 
 void Media::ImageAlphaBlend::SetSourceProfile(const Media::ColorProfile *sProfile)
 {
-	if (!this->sProfile->Equals(sProfile))
+	if (!this->sProfile.Equals(sProfile))
 	{
-		this->sProfile->Set(sProfile);
+		this->sProfile.Set(sProfile);
 		this->changed = true;
 	}
 }
 
 void Media::ImageAlphaBlend::SetDestProfile(const Media::ColorProfile *dProfile)
 {
-	if (!this->dProfile->Equals(dProfile))
+	if (!this->dProfile.Equals(dProfile))
 	{
-		this->dProfile->Set(dProfile);
+		this->dProfile.Set(dProfile);
 		this->changed = true;
 	}
 }
 
 void Media::ImageAlphaBlend::SetOutputProfile(const Media::ColorProfile *oProfile)
 {
-	if (!this->oProfile->Equals(oProfile))
+	if (!this->oProfile.Equals(oProfile))
 	{
-		this->oProfile->Set(oProfile);
+		this->oProfile.Set(oProfile);
 		this->changed = true;
 	}
 }

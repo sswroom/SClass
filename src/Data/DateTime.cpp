@@ -808,56 +808,85 @@ Data::DateTime *Data::DateTime::AddMonth(OSInt val)
 
 Data::DateTime *Data::DateTime::AddDay(OSInt val)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	OSInt newDay = tval->day + val;
-	OSInt dayim;
-	if (newDay < 1)
+	switch (this->timeType)
 	{
-		while (newDay < 1)
+	case TimeType::Time:
 		{
-			if (--tval->month <= 0)
+			Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+			OSInt newDay = tval->day + val;
+			OSInt dayim;
+			if (newDay < 1)
 			{
-				tval->year--;
-				tval->month = (UInt8)(tval->month + 12);
+				while (newDay < 1)
+				{
+					if (--tval->month <= 0)
+					{
+						tval->year--;
+						tval->month = (UInt8)(tval->month + 12);
+					}
+					newDay += Data::DateTimeUtil::DayInMonth(tval->year, tval->month);
+				}
 			}
-			newDay += Data::DateTimeUtil::DayInMonth(tval->year, tval->month);
-		}
-	}
-	else
-	{
-		while (newDay > (dayim = Data::DateTimeUtil::DayInMonth(tval->year, tval->month)))
-		{
-			newDay = newDay - dayim;
-			if (++tval->month > 12)
+			else
 			{
-				tval->year++;
-				tval->month = (UInt8)(tval->month - 12);
+				while (newDay > (dayim = Data::DateTimeUtil::DayInMonth(tval->year, tval->month)))
+				{
+					newDay = newDay - dayim;
+					if (++tval->month > 12)
+					{
+						tval->year++;
+						tval->month = (UInt8)(tval->month - 12);
+					}
+				}
 			}
+			tval->day = (UInt8)newDay;
 		}
+		break;
+	case TimeType::None:
+		this->timeType = TimeType::Ticks;
+		this->val.ticks = val * 86400000LL;
+		break;
+	case TimeType::Ticks:
+		this->val.ticks += val * 86400000LL;
+		break;
 	}
-	tval->day = (UInt8)newDay;
 	return this;
 }
 
 Data::DateTime *Data::DateTime::AddHour(OSInt val)
 {
-	Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
-	OSInt day = val / 24;
-	OSInt outHour;
-	outHour = val - day * 24 + tval->hour;
-	while (outHour < 0)
+	switch (this->timeType)
 	{
-		outHour += 24;
-		day--;
+	case TimeType::Time:
+		{
+			Data::DateTimeUtil::TimeValue *tval = this->GetTimeValue();
+			OSInt day = val / 24;
+			OSInt outHour;
+			outHour = val - day * 24 + tval->hour;
+			while (outHour < 0)
+			{
+				outHour += 24;
+				day--;
+			}
+			while (outHour >= 24)
+			{
+				outHour -= 24;
+				day++;
+			}
+			tval->hour = (UInt8)outHour;
+			if (day)
+				AddDay(day);
+		}
+		break;
+	case TimeType::Ticks:
+		this->val.ticks += val * 3600000LL;
+		break;
+	case TimeType::None:
+	default:
+		this->val.ticks = val * 3600000LL;
+		this->timeType = TimeType::Ticks;
+		break;
 	}
-	while (outHour >= 24)
-	{
-		outHour -= 24;
-		day++;
-	}
-	tval->hour = (UInt8)outHour;
-	if (day)
-		AddDay(day);
 	return this;
 }
 

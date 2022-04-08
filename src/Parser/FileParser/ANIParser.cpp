@@ -7,12 +7,10 @@
 
 Parser::FileParser::ANIParser::ANIParser()
 {
-	NEW_CLASS(icop, Parser::FileParser::ICOParser());
 }
 
 Parser::FileParser::ANIParser::~ANIParser()
 {
-	DEL_CLASS(icop);
 }
 
 Int32 Parser::FileParser::ANIParser::GetName()
@@ -114,7 +112,7 @@ IO::ParsedObject *Parser::FileParser::ANIParser::ParseFile(IO::IStreamData *fd, 
 						DEL_CLASS(currImage);
 					}
 					IO::IStreamData *data = fd->GetPartialData(currOfst + 20 + buffOfst, *(UInt32*)&buff[4]);
-					currImage = (Media::ImageList *)this->icop->ParseFile(data, pkgFile, IO::ParserType::ImageList);
+					currImage = (Media::ImageList *)this->icop.ParseFile(data, pkgFile, IO::ParserType::ImageList);
 					DEL_CLASS(data);
 				}
 

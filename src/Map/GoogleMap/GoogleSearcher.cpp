@@ -41,9 +41,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 		this->gooPrivKeyLeng = 0;
 		this->gooKey = SCOPY_STRING(gooKey);
 	}
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 }
 
 Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString gooKey, Text::CString gooCliId, Text::CString gooPrivKey, IO::Writer *errWriter)
@@ -67,9 +65,7 @@ Map::GoogleMap::GoogleSearcher::GoogleSearcher(Net::SocketFactory *sockf, Net::S
 		this->gooPrivKey = 0;
 		this->gooKey = Text::String::NewOrNull(gooKey);
 	}
-	NEW_CLASS(this->lastSrchDate, Data::DateTime());
-	NEW_CLASS(this->mut, Sync::Mutex());
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 }
 
 Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
@@ -81,16 +77,6 @@ Map::GoogleMap::GoogleSearcher::~GoogleSearcher()
 		this->gooPrivKey = 0;
 	}
 	SDEL_STRING(this->gooKey);
-	if (this->lastSrchDate)
-	{
-		DEL_CLASS(this->lastSrchDate);
-		this->lastSrchDate = 0;
-	}
-	if (this->mut)
-	{
-		DEL_CLASS(this->mut);
-		this->mut = 0;
-	}
 }
 
 UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buffSize, Double lat, Double lon, Text::CString lang)
@@ -105,11 +91,11 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	UOSInt i;
 	Char *ptrs[3];
 
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->srchCnt++;
 	currDt.SetCurrTimeUTC();
 	this->lastIsError = 0;
-	if ((si = (OSInt)currDt.DiffMS(this->lastSrchDate)) < 200)
+	if ((si = (OSInt)currDt.DiffMS(&this->lastSrchDate)) < 200)
 	{
 		if (si >= 0)
 		{
@@ -220,7 +206,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 		sb.AppendC(url, (UOSInt)(sptr - url));
 		errWriter->WriteLineC(sb.ToString(), sb.GetLength());
 	}
-	this->lastSrchDate->SetCurrTimeUTC();
+	this->lastSrchDate.SetCurrTimeUTC();
 	DEL_CLASS(cli);
 	mutUsage.EndUse();
 	return buff;
@@ -232,7 +218,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::SearchName(UTF8Char *buff, UOSInt buff
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(this->lastSrchDate) < 60000)
+		if (dt.DiffMS(&this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);
@@ -247,7 +233,7 @@ UTF8Char *Map::GoogleMap::GoogleSearcher::CacheName(UTF8Char *buff, UOSInt buffS
 	{
 		Data::DateTime dt;
 		dt.SetCurrTimeUTC();
-		if (dt.DiffMS(this->lastSrchDate) < 60000)
+		if (dt.DiffMS(&this->lastSrchDate) < 60000)
 			return 0;
 	}
 	Text::Locale::LocaleEntry *ent = Text::Locale::GetLocaleEntry(lcid);

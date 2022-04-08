@@ -690,7 +690,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	{
 		UInt32 ipv4;
 		UInt8 mac[16];
-		Data::DateTime *dt;
+		Data::Timestamp ts;
 		Net::ConnectionInfo *connInfo;
 		Data::ArrayList<Net::ConnectionInfo*> connInfoList;
 		Net::SocketFactory *sockf;
@@ -812,10 +812,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				console->WriteLineC(sb.ToString(), sb.GetLength());
 				writer->WriteLineC(sb.ToString(), sb.GetLength());
 
-				dt = connInfo->GetDhcpLeaseTime();
-				if (dt)
+				ts = connInfo->GetDhcpLeaseTime();
+				if (ts.ToTicks() != 0)
 				{
-					sptr = dt->ToString(sbuff);
+					sptr = ts.ToString(sbuff);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.AppendP(sbuff, sptr);
@@ -823,10 +823,10 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 					writer->WriteLineC(sb.ToString(), sb.GetLength());
 				}
 
-				dt = connInfo->GetDhcpLeaseExpire();
-				if (dt)
+				ts = connInfo->GetDhcpLeaseExpire();
+				if (ts.ToTicks() != 0)
 				{
-					sptr = dt->ToString(sbuff);
+					sptr = ts.ToString(sbuff);
 					sb.ClearStr();
 					sb.AppendC(UTF8STRC("DHCP Lease Time: "));
 					sb.AppendP(sbuff, sptr);

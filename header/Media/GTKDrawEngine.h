@@ -11,7 +11,7 @@ namespace Media
 	class GTKDrawEngine : public Media::DrawEngine
 	{
 	public:
-		Media::ABlend::AlphaBlend8_C8 *iab;
+		Media::ABlend::AlphaBlend8_C8 iab;
 	public:
 		GTKDrawEngine();
 		virtual ~GTKDrawEngine();

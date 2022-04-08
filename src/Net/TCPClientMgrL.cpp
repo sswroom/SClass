@@ -258,50 +258,54 @@ UInt32 __stdcall Net::TCPClientMgr::WorkerThread(void *o)
 	Net::TCPClientMgr::TCPClientStatus *cliStat;
 	Int64 lastCheckTime = 0;
 	UOSInt i;
-	stat->running = true;
-	while (!stat->toStop)
 	{
-		while ((cliStat = me->workerTasks.Get()) != 0)
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->running = true;
+		while (!stat->toStop)
 		{
-			stat->working = true;
-			currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-			cliStat->timeStart = currTime;
-			cliStat->timeAlerted = false;
-			cliStat->processing = true;
-			me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
-			cliStat->processing = false;
-			Sync::MutexUsage mutUsage(&cliStat->readMut);
-			cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;
-			cliStat->reading = true;
-			mutUsage.EndUse();
-			clsData->hasData = true;
-			if (write(clsData->pipewrfd, "", 1) == -1)
+			while ((cliStat = me->workerTasks.Get()) != 0)
 			{
-				printf("TCPClientMgr: Error in writing to pipe\r\n");
-			}
-		}
-		stat->working = false;
-		if (stat->isPrimary)
-		{
-			currTime = Data::DateTimeUtil::GetCurrTimeMillis();
-			if ((currTime - lastCheckTime) >= 10000)
-			{
-				lastCheckTime = currTime;
-				Sync::MutexUsage mutUsage(&me->cliMut);
-				i = me->cliArr.GetCount();
-				while (i-- > 0)
-				{
-					cliStat = me->cliArr.GetItem(i);
-					if ((currTime - cliStat->lastDataTimeTicks) > cliStat->cli->GetTimeoutMS())
-					{
-		//				printf("Client data timeout\r\n");
-						cliStat->cli->Close();
-					}
-				}
+				stat->working = true;
+				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+				cliStat->timeStart = currTime;
+				cliStat->timeAlerted = false;
+				cliStat->processing = true;
+				me->dataHdlr(cliStat->cli, me->userObj, cliStat->cliData, cliStat->buff, cliStat->buffSize);
+				cliStat->processing = false;
+				Sync::MutexUsage mutUsage(&cliStat->readMut);
+				cliStat->recvDataExist = cliStat->cli->GetRecvBuffSize() > 0;
+				cliStat->reading = true;
 				mutUsage.EndUse();
+				clsData->hasData = true;
+				if (write(clsData->pipewrfd, "", 1) == -1)
+				{
+					printf("TCPClientMgr: Error in writing to pipe\r\n");
+				}
 			}
+			stat->working = false;
+			if (stat->isPrimary)
+			{
+				currTime = Data::DateTimeUtil::GetCurrTimeMillis();
+				if ((currTime - lastCheckTime) >= 10000)
+				{
+					lastCheckTime = currTime;
+					Sync::MutexUsage mutUsage(&me->cliMut);
+					i = me->cliArr.GetCount();
+					while (i-- > 0)
+					{
+						cliStat = me->cliArr.GetItem(i);
+						if ((currTime - cliStat->lastDataTimeTicks) > cliStat->cli->GetTimeoutMS())
+						{
+			//				printf("Client data timeout\r\n");
+							cliStat->cli->Close();
+						}
+					}
+					mutUsage.EndUse();
+				}
+			}
+			stat->evt->Wait(700);
 		}
-		stat->evt->Wait(700);
 	}
 	stat->running = false;
 	return 0;
@@ -362,7 +366,6 @@ Net::TCPClientMgr::TCPClientMgr(Int32 timeOutSeconds, TCPClientEvent evtHdlr, TC
 			this->workers[workerCnt].isPrimary = (workerCnt == 0);
 			this->workers[workerCnt].working = false;
 			this->workers[workerCnt].me = this;
-			NEW_CLASS(this->workers[workerCnt].evt, Sync::Event(true));
 
 			Sync::Thread::Create(WorkerThread, &this->workers[workerCnt]);
 		}
@@ -430,11 +433,6 @@ Net::TCPClientMgr::~TCPClientMgr()
 			if (!exist)
 				break;
 			Sync::Thread::Sleep(10);
-		}
-		i = this->workerCnt;
-		while (i-- > 0)
-		{
-			DEL_CLASS(this->workers[i].evt);
 		}
 		MemFree(this->workers);
 	}

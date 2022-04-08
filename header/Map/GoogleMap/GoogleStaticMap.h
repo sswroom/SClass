@@ -18,8 +18,6 @@ namespace Map
 			UOSInt gooPrivKeyLeng;
 			Net::SocketFactory *sockf;
 			Net::SSLEngine *ssl;
-			Data::DateTime *lastSrchDate;
-			Sync::Mutex *mut;
 			
 		public:
 			GoogleStaticMap(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::String *gooKey, Text::String *gooCliId, Text::String *gooPrivKey);

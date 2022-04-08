@@ -3365,7 +3365,7 @@ Bool Text::StrEndsWithC(const UTF8Char *str1, UOSInt len1, const UTF8Char *str2,
 	{
 		len2 -= 2;
 		len1 -= 2;
-		if (ReadNInt16(&str1[len1]) != ReadNInt32(&str2[len2]))
+		if (ReadNInt16(&str1[len1]) != ReadNInt16(&str2[len2]))
 		{
 			return false;
 		}

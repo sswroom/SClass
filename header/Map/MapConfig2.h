@@ -48,7 +48,7 @@ namespace Map
 		Data::ArrayList<MapFontStyle*> **fonts;
 		Data::ArrayList<MapLayerStyle*> *drawList;
 		Media::DrawEngine *drawEng;
-		Data::ArrayList<MapArea*> *areaList;
+		Data::ArrayList<MapArea*> areaList;
 
 		static Bool IsDoorNum(const UTF8Char *txt);
 		static void DrawChars(Media::DrawImage *img, Text::CString str1, Double xPos, Double yPos, Double scaleW, Double scaleH, Data::ArrayList<MapFontStyle*> *fontStyle, Bool isAlign);

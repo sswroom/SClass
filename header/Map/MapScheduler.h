@@ -34,11 +34,11 @@ namespace Map
 		UOSInt *objCnt;
 		UOSInt maxCnt;
 
-		Sync::Mutex *taskMut;
-		Data::ArrayList<Map::DrawObjectL *> *tasks;
+		Sync::Mutex taskMut;
+		Data::ArrayList<Map::DrawObjectL *> tasks;
 		Bool toStop;
-		Sync::Event *taskEvt;
-		Sync::Event *finishEvt;
+		Sync::Event taskEvt;
+		Sync::Event finishEvt;
 		Bool threadRunning;
 		Bool taskFinish;
 		Bool isFirst;

@@ -39,7 +39,7 @@ void Media::ABlend::AlphaBlend8_C8::MTBlend(UInt8 *dest, OSInt dbpl, const UInt8
 		Bool found;
 		while (true)
 		{
-			this->mainEvt->Wait(1000);
+			this->mainEvt.Wait(1000);
 			found = false;
 			i = this->threadCnt;
 			while (i-- > 0)
@@ -83,7 +83,7 @@ void Media::ABlend::AlphaBlend8_C8::MTBlendPA(UInt8 *dest, OSInt dbpl, const UIn
 		Bool found;
 		while (true)
 		{
-			this->mainEvt->Wait(1000);
+			this->mainEvt.Wait(1000);
 			found = false;
 			i = this->threadCnt;
 			while (i-- > 0)
@@ -110,7 +110,7 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 		while (i-- > 0)
 		{
 			lut = this->lutList->GetItem(i);
-			if (lut->sProfile->Equals(this->sProfile) && lut->dProfile->Equals(this->dProfile) && lut->oProfile->Equals(this->oProfile))
+			if (lut->sProfile->Equals(&this->sProfile) && lut->dProfile->Equals(&this->dProfile) && lut->oProfile->Equals(&this->oProfile))
 			{
 				this->rgbTable = lut->rgbTable;
 				return;
@@ -126,38 +126,42 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 	}
 
 	Media::RGBLUTGen lutGen(this->colorSess);
-	lutGen.GenLRGB_BGRA8(this->rgbTable, this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->sProfile->rtransfer));
-	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], this->sProfile, &this->oProfile->primaries, 14);
-	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], this->dProfile, &this->oProfile->primaries, 14);
+	lutGen.GenLRGB_BGRA8(this->rgbTable, &this->oProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->sProfile.rtransfer));
+	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144], &this->sProfile, &this->oProfile.primaries, 14);
+	lutGen.GenRGBA8_LRGBC((Int64*)&this->rgbTable[262144 + 8192], &this->dProfile, &this->oProfile.primaries, 14);
 }
 
 UInt32 __stdcall Media::ABlend::AlphaBlend8_C8::ProcessThread(void *userObj)
 {
 	ThreadStat *stat = (ThreadStat *)userObj;
-	stat->status = 1;
-	stat->me->mainEvt->Set();
-	while (true)
 	{
-		stat->evt->Wait(10000);
-		if (stat->status == 2)
+		Sync::Event evt;
+		stat->status = 1;
+		stat->evt = &evt;
+		stat->me->mainEvt.Set();
+		while (true)
 		{
-			break;
-		}
-		else if (stat->status == 4)
-		{
-			AlphaBlend8_C8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
-			stat->status = 1;
-			stat->me->mainEvt->Set();
-		}
-		else if (stat->status == 5)
-		{
-			AlphaBlend8_C8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
-			stat->status = 1;
-			stat->me->mainEvt->Set();
+			stat->evt->Wait(10000);
+			if (stat->status == 2)
+			{
+				break;
+			}
+			else if (stat->status == 4)
+			{
+				AlphaBlend8_C8_DoBlend(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
+				stat->status = 1;
+				stat->me->mainEvt.Set();
+			}
+			else if (stat->status == 5)
+			{
+				AlphaBlend8_C8_DoBlendPA(stat->dest, stat->dbpl, stat->src, stat->sbpl, stat->width, stat->height, stat->me->rgbTable);
+				stat->status = 1;
+				stat->me->mainEvt.Set();
+			}
 		}
 	}
 	stat->status = 3;
-	stat->me->mainEvt->Set();
+	stat->me->mainEvt.Set();
 	return 0;
 }
 
@@ -178,8 +182,6 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 		this->lutList = 0;
 		this->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
 	}
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadCnt = Sync::Thread::GetThreadCnt();
 	if (this->threadCnt > 4)
 	{
@@ -191,14 +193,13 @@ Media::ABlend::AlphaBlend8_C8::AlphaBlend8_C8(Media::ColorSess *colorSess, Bool 
 	while (i-- > 0)
 	{
 		this->stats[i].me = this;
-		NEW_CLASS(this->stats[i].evt, Sync::Event(true));
 		this->stats[i].status = 0;
 		Sync::Thread::Create(ProcessThread, &this->stats[i], 65536);
 	}
 	Bool found;
 	while (true)
 	{
-		this->mainEvt->Wait(1000);
+		this->mainEvt.Wait(1000);
 		found = false;
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -225,7 +226,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 	}
 	while (true)
 	{
-		this->mainEvt->Wait(1000);
+		this->mainEvt.Wait(1000);
 		found = false;
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -239,14 +240,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 		if (!found)
 			break;
 	}
-	i = this->threadCnt;
-	while (i-- > 0)
-	{
-		DEL_CLASS(this->stats[i].evt);
-	}
 	MemFree(this->stats);
-	DEL_CLASS(this->mut);
-	DEL_CLASS(this->mainEvt);
 	if (this->colorSess)
 	{
 		this->colorSess->RemoveHandler(this);
@@ -275,7 +269,7 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 
 void Media::ABlend::AlphaBlend8_C8::Blend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height, Media::AlphaType srcAType)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -304,7 +298,7 @@ void Media::ABlend::AlphaBlend8_C8::PremulAlpha(UInt8 *dest, OSInt dbpl, const U
 
 	sbpl = sbpl - (OSInt)(width << 2);
 	dbpl = dbpl - (OSInt)(width << 2);
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->changed)
 	{
 		this->changed = false;
@@ -341,7 +335,7 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 {
 	if (this->lutList)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		LUTInfo *lut;
 		UOSInt i;
 		i = this->lutList->GetCount();

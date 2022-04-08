@@ -41,8 +41,8 @@ namespace Media
 			Media::ColorSess *colorSess;
 			ThreadStat *stats;
 			UOSInt threadCnt;
-			Sync::Mutex *mut;
-			Sync::Event *mainEvt;
+			Sync::Mutex mut;
+			Sync::Event mainEvt;
 			
 			void MTBlend(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);
 			void MTBlendPA(UInt8 *dest, OSInt dbpl, const UInt8 *src, OSInt sbpl, UOSInt width, UOSInt height);

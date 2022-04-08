@@ -8,7 +8,7 @@
 namespace Data
 {
 	template <class T> class StringUTF8Map : public ArrayCmpMap<const UTF8Char*, T>
-	{
+	{		
 	public:
 		StringUTF8Map();
 		virtual ~StringUTF8Map();

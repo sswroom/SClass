@@ -24,7 +24,7 @@ namespace Text
 		static LocaleEntry *GetLocaleEntryByCodePage(UInt32 codePage);
 
 	private:
-		Data::FastStringMap<LocaleEntry*> *names;
+		Data::FastStringMap<LocaleEntry*> names;
 	public:
 		Locale();
 		~Locale();

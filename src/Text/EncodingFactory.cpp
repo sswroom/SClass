@@ -197,7 +197,6 @@ latin-greek
 
 Text::EncodingFactory::EncodingFactory()
 {
-	NEW_CLASS(encMap, Data::FastStringMap<Text::EncodingFactory::EncodingInfo*>());
 	UOSInt i = (sizeof(encInfo) / sizeof(encInfo[0]));
 	UOSInt j;
 	Text::String *s;
@@ -212,7 +211,7 @@ Text::EncodingFactory::EncodingFactory()
 				len = Text::StrCharCnt(encInfo[i].internetNames[j]);
 				s = Text::String::New(len);
 				Text::StrToLowerC(s->v, (const UTF8Char*)encInfo[i].internetNames[j], len);
-				encMap->Put(s, &encInfo[i]);
+				this->encMap.Put(s, &encInfo[i]);
 				s->Release();
 			}
 			else
@@ -226,7 +225,6 @@ Text::EncodingFactory::EncodingFactory()
 
 Text::EncodingFactory::~EncodingFactory()
 {
-	DEL_CLASS(encMap);
 }
 
 UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
@@ -237,7 +235,7 @@ UInt32 Text::EncodingFactory::GetCodePage(Text::CString shortName)
 	}
 	UTF8Char sbuff[MAX_SHORT_LEN + 1];
 	Text::StrToLowerC(sbuff, shortName.v, shortName.leng);
-	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap->GetC({sbuff, shortName.leng});
+	Text::EncodingFactory::EncodingInfo *encInfo = this->encMap.GetC({sbuff, shortName.leng});
 	if (encInfo)
 	{
 		return encInfo->codePage;

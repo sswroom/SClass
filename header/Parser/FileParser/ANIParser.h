@@ -9,7 +9,7 @@ namespace Parser
 		class ANIParser : public IO::FileParser
 		{
 		private:
-			Parser::FileParser::ICOParser *icop;
+			Parser::FileParser::ICOParser icop;
 		public:
 			ANIParser();
 			virtual ~ANIParser();

@@ -17,17 +17,15 @@ Text::HKSCSFix::HKSCSFix()
 	sptr = IO::Path::GetFileDirectory(dir, fileName);
 	*sptr++ = IO::Path::PATH_SEPERATOR;
 	sptr = Text::StrConcatC(sptr, UTF8STRC("HKSCSTab.dat"));
-	IO::FileStream *file;
-	NEW_CLASS(file, IO::FileStream({dir, (UOSInt)(sptr - dir)}, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!file->IsError())
+	IO::FileStream file(CSTRP(dir, sptr), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!file.IsError())
 	{
-		if (file->GetLength() == 32768)
+		if (file.GetLength() == 32768)
 		{
 			this->tab = MemAlloc(Int32, 8192);
-			file->Read((UInt8*)this->tab, 32768);
+			file.Read((UInt8*)this->tab, 32768);
 		}
 	}
-	DEL_CLASS(file);
 }
 
 Text::HKSCSFix::~HKSCSFix()

@@ -18,28 +18,28 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 		Map::DrawObjectL *dobj;
 		if (me->dt == Map::MapScheduler::MSDT_CLEAR)
 		{
-			Sync::MutexUsage mutUsage(me->taskMut);
-			j = me->tasks->GetCount();
+			Sync::MutexUsage mutUsage(&me->taskMut);
+			j = me->tasks.GetCount();
 			while (j-- > 0)
 			{
-				dobj = me->tasks->GetItem(j);
+				dobj = me->tasks.GetItem(j);
 				me->lyr->ReleaseObject(0, dobj);
 			}
-			me->tasks->Clear();
+			me->tasks.Clear();
 			i = 0;
 			me->dt = Map::MapScheduler::MSDT_POINTS;
 			mutUsage.EndUse();
-			me->finishEvt->Set();
+			me->finishEvt.Set();
 		}
 		else
 		{
 			while (true)
 			{
-				Sync::MutexUsage mutUsage(me->taskMut);
-				j = me->tasks->GetCount();
+				Sync::MutexUsage mutUsage(&me->taskMut);
+				j = me->tasks.GetCount();
 				if (i < j)
 				{
-					dobj = me->tasks->GetItem(i);
+					dobj = me->tasks.GetItem(i);
 					if (dobj)
 					{
 						mutUsage.EndUse();
@@ -47,7 +47,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 					}
 					else
 					{
-						me->tasks->RemoveAt(i);
+						me->tasks.RemoveAt(i);
 						i = 0;
 						mutUsage.EndUse();
 						continue;
@@ -57,7 +57,7 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				{
 					me->taskFinish = true;
 					mutUsage.EndUse();
-					me->finishEvt->Set();
+					me->finishEvt.Set();
 					break;
 				}
 
@@ -122,10 +122,10 @@ UInt32 __stdcall Map::MapScheduler::MapThread(void *obj)
 				}
 			}
 		}
-		me->taskEvt->Wait();
+		me->taskEvt.Wait();
 	}
 	me->threadRunning = false;
-	me->finishEvt->Set();
+	me->finishEvt.Set();
 	return 0;
 }
 
@@ -175,11 +175,7 @@ Map::MapScheduler::MapScheduler()
 	this->b = 0;
 	this->ico = 0;
 	this->dt = Map::MapScheduler::MSDT_POINTS;
-	NEW_CLASS(taskMut, Sync::Mutex());
-	NEW_CLASS(tasks, Data::ArrayList<Map::DrawObjectL *>());
 	this->toStop = false;
-	NEW_CLASS(taskEvt, Sync::Event());
-	NEW_CLASS(finishEvt, Sync::Event());
 	this->threadRunning = false;
 	this->taskFinish = true;
 	this->isLayerEmpty = 0;
@@ -189,15 +185,11 @@ Map::MapScheduler::MapScheduler()
 Map::MapScheduler::~MapScheduler()
 {
 	this->toStop = true;
-	this->taskEvt->Set();
+	this->taskEvt.Set();
 	while (this->threadRunning)
 	{
-		this->finishEvt->Wait();
+		this->finishEvt.Wait();
 	}
-	DEL_CLASS(this->taskEvt);
-	DEL_CLASS(this->taskMut);
-	DEL_CLASS(this->finishEvt);
-	DEL_CLASS(this->tasks);
 }
 
 void Map::MapScheduler::SetMapView(Map::MapView *map, Media::DrawImage *img)
@@ -210,7 +202,7 @@ void Map::MapScheduler::SetDrawType(Map::IMapDrawLayer *lyr, DrawType dt, Media:
 {
 	while (this->dt == Map::MapScheduler::MSDT_CLEAR)
 	{
-		this->finishEvt->Wait();
+		this->finishEvt.Wait();
 	}
 	this->dt = dt;
 	this->p = p;
@@ -232,18 +224,18 @@ void Map::MapScheduler::SetDrawObjs(Double *objBounds, UOSInt *objCnt, UOSInt ma
 
 void Map::MapScheduler::Draw(Map::DrawObjectL *obj)
 {
-	Sync::MutexUsage mutUsage(this->taskMut);
+	Sync::MutexUsage mutUsage(&this->taskMut);
 	this->taskFinish = false;
-	this->tasks->Add(obj);
+	this->tasks.Add(obj);
 	mutUsage.EndUse();
-	this->taskEvt->Set();
+	this->taskEvt.Set();
 }
 
 void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
 {
 	while (!this->taskFinish)
 	{
-		this->finishEvt->Wait();
+		this->finishEvt.Wait();
 	}
 	if (this->b)
 	{
@@ -257,19 +249,19 @@ void Map::MapScheduler::DrawNextType(Media::DrawPen *p, Media::DrawBrush *b)
 	}
 	this->p = p;
 	this->b = b;
-	Sync::MutexUsage mutUsage(this->taskMut);
+	Sync::MutexUsage mutUsage(&this->taskMut);
 	this->taskFinish = false;
 	this->isFirst = false;
-	this->tasks->Add(0);
+	this->tasks.Add(0);
 	mutUsage.EndUse();
-	this->taskEvt->Set();
+	this->taskEvt.Set();
 }
 
 void Map::MapScheduler::WaitForFinish()
 {
 	while (!this->taskFinish)
 	{
-		this->finishEvt->Wait();
+		this->finishEvt.Wait();
 	}
 	if (this->b)
 	{
@@ -282,5 +274,5 @@ void Map::MapScheduler::WaitForFinish()
 		this->p = 0;
 	}
 	this->dt = Map::MapScheduler::MSDT_CLEAR;
-	this->taskEvt->Set();
+	this->taskEvt.Set();
 }
