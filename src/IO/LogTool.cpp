@@ -19,26 +19,18 @@
 
 IO::LogTool::LogTool()
 {
-	NEW_CLASS(this->hdlrArr, Data::ArrayList<IO::ILogHandler*>());
-	NEW_CLASS(this->hdlrMut, Sync::Mutex());
-	NEW_CLASS(this->levArr, Data::ArrayListInt32());
-	NEW_CLASS(this->fileLogArr, Data::ArrayList<IO::ILogHandler*>());
 	closed = false;
 }
 
 IO::LogTool::~LogTool()
 {
 	Close();
-	UOSInt i = fileLogArr->GetCount();
+	UOSInt i = this->fileLogArr.GetCount();
 	while (i-- > 0)
 	{
-		IO::ILogHandler *logHdlr = fileLogArr->GetItem(i);
+		IO::ILogHandler *logHdlr = this->fileLogArr.GetItem(i);
 		DEL_CLASS(logHdlr);
 	}
-	DEL_CLASS(this->fileLogArr);
-	DEL_CLASS(this->levArr);
-	DEL_CLASS(this->hdlrMut);
-	DEL_CLASS(this->hdlrArr);
 }
 
 void IO::LogTool::Close()
@@ -46,14 +38,14 @@ void IO::LogTool::Close()
 	if (closed)
 		return;
 	closed = true;
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = hdlrArr->GetCount();
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt i = this->hdlrArr.GetCount();
 	Data::DateTime dt;
 	dt.SetCurrTime();
 	while (i-- > 0)
 	{
-		hdlrArr->GetItem(i)->LogAdded(&dt, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
-		hdlrArr->GetItem(i)->LogClosed();
+		this->hdlrArr.GetItem(i)->LogAdded(&dt, CSTR("End logging normally"),  (IO::ILogHandler::LogLevel)0);
+		this->hdlrArr.GetItem(i)->LogClosed();
 	}
 	mutUsage.EndUse();
 }
@@ -67,14 +59,14 @@ void IO::LogTool::AddFileLog(Text::String *fileName, ILogHandler::LogType style,
 		IO::FileLog *logs;
 		NEW_CLASS(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
-		fileLogArr->Add(logs);
+		this->fileLogArr.Add(logs);
 	}
 	else
 	{
 		IO::MTFileLog *logs;
 		NEW_CLASS(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
-		fileLogArr->Add(logs);
+		this->fileLogArr.Add(logs);
 	}
 }
 
@@ -87,14 +79,14 @@ void IO::LogTool::AddFileLog(Text::CString fileName, ILogHandler::LogType style,
 		IO::FileLog *logs;
 		NEW_CLASS(logs, IO::FileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
-		fileLogArr->Add(logs);
+		this->fileLogArr.Add(logs);
 	}
 	else
 	{
 		IO::MTFileLog *logs;
 		NEW_CLASS(logs, IO::MTFileLog(fileName, style, groupStyle, dateFormat));
 		AddLogHandler(logs, logLev);
-		fileLogArr->Add(logs);
+		this->fileLogArr.Add(logs);
 	}
 }
 
@@ -102,9 +94,9 @@ void IO::LogTool::AddLogHandler(ILogHandler *hdlr, IO::ILogHandler::LogLevel log
 {
 	if (closed)
 		return;
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	this->hdlrArr->Add(hdlr);
-	this->levArr->Add(logLev);
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	this->hdlrArr.Add(hdlr);
+	this->levArr.Add(logLev);
 	mutUsage.EndUse();
 
 	UTF8Char buff[256];
@@ -130,14 +122,14 @@ void IO::LogTool::RemoveLogHandler(ILogHandler *hdlr)
 {
 	if (closed)
 		return;
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = this->hdlrArr->GetCount();
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
-		if (this->hdlrArr->GetItem(i) == hdlr)
+		if (this->hdlrArr.GetItem(i) == hdlr)
 		{
-			this->hdlrArr->RemoveAt(i);
-			this->levArr->RemoveAt(i);
+			this->hdlrArr.RemoveAt(i);
+			this->levArr.RemoveAt(i);
 			break;
 		}
 	}
@@ -148,17 +140,17 @@ void IO::LogTool::LogMessage(Text::CString logMsg, ILogHandler::LogLevel level)
 {
 	Data::DateTime dt;
 	dt.SetCurrTime();
-	Sync::MutexUsage mutUsage(this->hdlrMut);
-	UOSInt i = hdlrArr->GetCount();
+	Sync::MutexUsage mutUsage(&this->hdlrMut);
+	UOSInt i = this->hdlrArr.GetCount();
 	while (i-- > 0)
 	{
-		if (levArr->GetItem(i) >= level)
-			this->hdlrArr->GetItem(i)->LogAdded(&dt, logMsg, level);
+		if (this->levArr.GetItem(i) >= level)
+			this->hdlrArr.GetItem(i)->LogAdded(&dt, logMsg, level);
 	}
 	mutUsage.EndUse();
 }
 
 IO::ILogHandler *IO::LogTool::GetLastFileLog()
 {
-	return this->fileLogArr->GetItem(this->fileLogArr->GetCount() - 1);
+	return this->fileLogArr.GetItem(this->fileLogArr.GetCount() - 1);
 }

@@ -10,302 +10,295 @@
 UInt32 __stdcall IO::ProgCtrl::BluetoothCtlProgCtrl::ReadThread(void *obj)
 {
 	IO::ProgCtrl::BluetoothCtlProgCtrl *me = (IO::ProgCtrl::BluetoothCtlProgCtrl*)obj;
-	Text::StringBuilderUTF8 *sb;
 	UInt8 buff[512];
-	Text::StringBuilderUTF8 *sbBuff;
 	UOSInt readSize;
 	Text::PString sarr[2];
 	UOSInt i;
 	IO::BTScanLog::ScanRecord3 *dev;
-	Data::DateTime *dt;
 
 	me->threadRunning = true;
-	NEW_CLASS(dt, Data::DateTime());
-	NEW_CLASS(sb, Text::StringBuilderUTF8());
-	NEW_CLASS(sbBuff, Text::StringBuilderUTF8());
-	while (!me->threadToStop)
 	{
-		readSize = me->prog->Read(buff, 512);
-//		sb->ClearStr();
-//		sb->AppendHexBuff(buff, readSize, ' ', Text::LineBreakType::CRLF);
-//		printf("Read Size: %d\r\n", (Int32)readSize);
-//		printf("%s\r\n", sb->ToString());
-
-		sbBuff->AppendC(buff, readSize);
-		sbBuff->RemoveANSIEscapes();
-		sarr[1] = *sbBuff;
-		while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
+		Text::StringBuilderUTF8 sb;
+		Text::StringBuilderUTF8 sbBuff;
+		while (!me->threadToStop)
 		{
-			Sync::MutexUsage mutUsage(me->lastCmdMut);
-			if (me->lastCmd && me->lastCmd->Equals(sarr[0].v, sarr[0].leng))
-			{
-				me->cmdReady = true;
-			}
-			else
-			{
-				mutUsage.EndUse();
-				 if (sarr[0].v[0] == 0 || sarr[0].v[0] == ' ' || sarr[0].v[0] == '\t')
-				{
+			readSize = me->prog->Read(buff, 512);
+			sb.ClearStr();
+			sb.AppendHexBuff(buff, readSize, ' ', Text::LineBreakType::CRLF);
+			printf("Read Size: %d\r\n", (Int32)readSize);
+			printf("%s\r\n", sb.ToString());
 
-				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent registered")))
+			sbBuff.AppendC(buff, readSize);
+			sbBuff.RemoveANSIEscapes();
+			sarr[1] = sbBuff;
+			while ((i = Text::StrSplitLineP(sarr, 2, sarr[1])) == 2)
+			{
+				Sync::MutexUsage mutUsage(&me->lastCmdMut);
+				if (me->lastCmd && me->lastCmd->Equals(sarr[0].v, sarr[0].leng))
 				{
-					me->agentOn = true;
+					me->cmdReady = true;
 				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent is already registered")))
+				else
 				{
-					me->agentOn = true;
-				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent unregistered")))
-				{
-					me->agentOn = false;
-				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("No agent is registered")))
-				{
-					me->agentOn = false;
-				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery started")))
-				{
-					me->scanOn = true;
-				}
-				else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery stopped")))
-				{
-					me->scanOn = false;
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Controller ")))
-				{
-					//[CHG] Controller 04:EA:56:8E:0C:46 Discovering: yes
-					if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Discovering: ")))
+					mutUsage.EndUse();
+					if (sarr[0].v[0] == 0 || sarr[0].v[0] == ' ' || sarr[0].v[0] == '\t')
+					{
+
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent registered")))
+					{
+						me->agentOn = true;
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent is already registered")))
+					{
+						me->agentOn = true;
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Agent unregistered")))
+					{
+						me->agentOn = false;
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("No agent is registered")))
+					{
+						me->agentOn = false;
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery started")))
+					{
+						me->scanOn = true;
+					}
+					else if (Text::StrEqualsC(sarr[0].v, sarr[0].leng, UTF8STRC("Discovery stopped")))
+					{
+						me->scanOn = false;
+					}
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Controller ")))
+					{
+						//[CHG] Controller 04:EA:56:8E:0C:46 Discovering: yes
+						if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Discovering: ")))
+						{
+							
+						}
+						//[CHG] Controller 04:EA:56:8E:0C:46 Class: 0x0000010c
+						else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Class: ")))
+						{
+							
+						}
+						//[CHG] Controller 04:EA:56:8E:0C:46 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
+						else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("UUIDs: ")))
+						{
+							
+						}
+						//[CHG] Controller 04:EA:56:8E:0C:46 Alias: BlueZ 5.50
+						else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Alias: ")))
+						{
+							
+						}
+						//[CHG] Controller 04:EA:56:8E:0C:46 Name: debiandell
+						else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Name: ")))
+						{
+							
+						}
+						else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Pairable: ")))
+						{
+							
+						}
+						else
+						{
+							printf("Unknown Line: %s\r\n", sarr[0].v);
+						}
+					}
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Device ")))
+					{
+						//[NEW] Device 51:87:A3:4B:EA:4E Sabbat E16
+						sarr[0].v[30] = 0;
+						dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
+						if (dev)
+						{
+							SDEL_STRING(dev->name);
+							dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31);
+							dev->inRange = true;
+							dev->lastSeenTime = Data::DateTimeUtil::GetCurrTimeMillis();
+							if (me->recHdlr) me->recHdlr(dev, UT_NEW_DEVICE, me->recHdlrObj);
+						}
+						else
+						{
+							printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
+						}
+					}
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Primary Service")))
+					{
+
+					}
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Characteristic")))
 					{
 						
 					}
-					//[CHG] Controller 04:EA:56:8E:0C:46 Class: 0x0000010c
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Class: ")))
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Descriptor")))
 					{
 						
 					}
-					//[CHG] Controller 04:EA:56:8E:0C:46 UUIDs: 00001112-0000-1000-8000-00805f9b34fb
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("UUIDs: ")))
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Device ")))
 					{
-						
+						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
+						sarr[0].v[30] = 0;
+						dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
+						if (dev)
+						{
+							dev->inRange = true;
+							dev->lastSeenTime = Data::DateTimeUtil::GetCurrTimeMillis();
+							//[CHG] Device ED:8E:0E:77:6E:15 Connected: yes
+							//[CHG] Device ED:8E:0E:77:6E:15 Connected: no
+							if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Connected: ")))
+							{
+								dev->connected = Text::StrEqualsC(&sarr[0].v[42], sarr[0].leng - 42, UTF8STRC("yes"));
+								if (me->recHdlr) me->recHdlr(dev, UT_CONNECT, me->recHdlrObj);
+							}
+							//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Name: ")))
+							{
+								SDEL_STRING(dev->name);
+								dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37);
+								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
+							}
+							//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Alias: ")))
+							{
+								SDEL_STRING(dev->name);
+								dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38);
+								if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
+							}
+							//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI: ")))
+							{
+								dev->rssi = (Int8)Text::StrToInt32(&sarr[0].v[37]);
+								if (me->recHdlr) me->recHdlr(dev, UT_RSSI, me->recHdlrObj);
+							}
+							//[CHG] Device 90:DD:5D:C2:E6:DA TxPower: 12
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower: ")))
+							{
+								dev->txPower = (Int8)Text::StrToInt32(&sarr[0].v[40]);
+								if (me->recHdlr) me->recHdlr(dev, UT_TXPOWER, me->recHdlrObj);
+							}
+							//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Key: ")))
+							{
+								UInt16 key;
+								if (Text::StrToUInt16(&sarr[0].v[53], &key))
+								{
+									dev->company = key;
+									if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);
+								}
+							}
+							//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Value:")))
+							{
+
+							}
+							//[CHG] Device E8:50:BD:A8:07:D4 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("UUIDs: ")))
+							{
+
+							}
+							//[CHG] Device ED:8E:0E:77:6E:15 ServicesResolved: yes
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServicesResolved: ")))
+							{
+
+							}
+							//[CHG] Device 00:1C:88:30:A0:B9 LegacyPairing: yes
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("LegacyPairing: ")))
+							{
+
+							}
+							//[CHG] Device D8:16:35:2D:60:F3 Appearance: 0x00c0
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Appearance: ")))
+							{
+
+							}
+							//[CHG] Device A4:30:7A:91:5E:EF Icon: audio-card
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Icon: ")))
+							{
+
+							}
+							//[CHG] Device FF:02:2F:D2:23:49 ServiceData Key: 000002a0-0000-1000-8000-00805f9b34fb
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Key: ")))
+							{
+
+							}
+							//[CHG] Device C9:CE:83:47:9A:0E ServiceData Value:
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Value:")))
+							{
+
+							}
+							//[CHG] Device 04:23:09:C3:75:46 Class: 0x00040424
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Class: ")))
+							{
+
+							}
+							//[CHG] Device 00:7C:2D:08:6B:8D Modalias: bluetooth:v04E8p8080d0000
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Modalias: ")))
+							{
+
+							}
+							//[CHG] Device 10:00:18:28:57:54 RSSI is nil
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI is nil")))
+							{
+
+							}
+							//[CHG] Device 68:BF:A1:3A:57:F1 TxPower is nil
+							else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower is nil")))
+							{
+
+							}
+							else
+							{
+								sarr[0].v[30] = ' ';
+								printf("Unknown Line: %s\r\n", sarr[0].v);
+							}
+						}
+						else
+						{
+							printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
+						}
 					}
-					//[CHG] Controller 04:EA:56:8E:0C:46 Alias: BlueZ 5.50
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Alias: ")))
+					else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[DEL] Device ")))
 					{
-						
+						//[DEL] Device ED:8E:0E:77:6D:15 RAPOO BT4.0 MS
+						sarr[0].v[30] = 0;
+						dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
+						if (dev)
+						{
+							dev->inRange = false;
+							if (me->recHdlr) me->recHdlr(dev, UT_OTHER, me->recHdlrObj);
+						}
+						else
+						{
+							printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
+						}
 					}
-					//[CHG] Controller 04:EA:56:8E:0C:46 Name: debiandell
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Name: ")))
+					else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
 					{
-						
-					}
-					else if (Text::StrStartsWithC(&sarr[0].v[35], sarr[0].leng - 35, UTF8STRC("Pairable: ")))
-					{
-						
+						if (!me->cmdReady)
+						{
+							//printf("cmdReady = true\r\n");
+						}
+						me->cmdReady = true;
 					}
 					else
 					{
 						printf("Unknown Line: %s\r\n", sarr[0].v);
 					}
 				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Device ")))
-				{
-					//[NEW] Device 51:87:A3:4B:EA:4E Sabbat E16
-					sarr[0].v[30] = 0;
-					dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
-					if (dev)
-					{
-						SDEL_STRING(dev->name);
-						dev->name = Text::String::New(&sarr[0].v[31], sarr[0].leng - 31);
-						dev->inRange = true;
-						dt->SetCurrTimeUTC();
-						dev->lastSeenTime = dt->ToTicks();
-						if (me->recHdlr) me->recHdlr(dev, UT_NEW_DEVICE, me->recHdlrObj);
-					}
-					else
-					{
-						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
-					}
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Primary Service")))
-				{
-
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Characteristic")))
-				{
-					
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[NEW] Descriptor")))
-				{
-					
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[CHG] Device ")))
-				{
-					//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
-					sarr[0].v[30] = 0;
-					dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
-					if (dev)
-					{
-						dt->SetCurrTimeUTC();
-						dev->inRange = true;
-						dev->lastSeenTime = dt->ToTicks();
-						//[CHG] Device ED:8E:0E:77:6E:15 Connected: yes
-						//[CHG] Device ED:8E:0E:77:6E:15 Connected: no
-						if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Connected: ")))
-						{
-							dev->connected = Text::StrEqualsC(&sarr[0].v[42], sarr[0].leng - 42, UTF8STRC("yes"));
-							if (me->recHdlr) me->recHdlr(dev, UT_CONNECT, me->recHdlrObj);
-						}
-						//[CHG] Device 19:08:19:32:09:3A Name: Ble T70939
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Name: ")))
-						{
-							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[37], sarr[0].leng - 37);
-							if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
-						}
-						//[CHG] Device 19:08:19:32:09:3A Alias: Ble T70939
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Alias: ")))
-						{
-							SDEL_STRING(dev->name);
-							dev->name = Text::String::New(&sarr[0].v[38], sarr[0].leng - 38);
-							if (me->recHdlr) me->recHdlr(dev, UT_NAME, me->recHdlrObj);
-						}
-						//[CHG] Device ED:8E:0E:77:6E:15 RSSI: -64
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI: ")))
-						{
-							dev->rssi = (Int8)Text::StrToInt32(&sarr[0].v[37]);
-							if (me->recHdlr) me->recHdlr(dev, UT_RSSI, me->recHdlrObj);
-						}
-						//[CHG] Device 90:DD:5D:C2:E6:DA TxPower: 12
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower: ")))
-						{
-							dev->txPower = (Int8)Text::StrToInt32(&sarr[0].v[40]);
-							if (me->recHdlr) me->recHdlr(dev, UT_TXPOWER, me->recHdlrObj);
-						}
-						//[CHG] Device ED:8E:0E:77:6E:15 ManufacturerData Key: 0x3512
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Key: ")))
-						{
-							UInt16 key;
-							if (Text::StrToUInt16(&sarr[0].v[53], &key))
-							{
-								dev->company = key;
-								if (me->recHdlr) me->recHdlr(dev, UT_COMPANY, me->recHdlrObj);
-							}
-						}
-						//[CHG] Device E8:50:BD:A8:07:D4 ManufacturerData Value:
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ManufacturerData Value:")))
-						{
-
-						}
-						//[CHG] Device E8:50:BD:A8:07:D4 UUIDs: 0000180a-0000-1000-8000-00805f9b34fb
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("UUIDs: ")))
-						{
-
-						}
-						//[CHG] Device ED:8E:0E:77:6E:15 ServicesResolved: yes
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServicesResolved: ")))
-						{
-
-						}
-						//[CHG] Device 00:1C:88:30:A0:B9 LegacyPairing: yes
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("LegacyPairing: ")))
-						{
-
-						}
-						//[CHG] Device D8:16:35:2D:60:F3 Appearance: 0x00c0
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Appearance: ")))
-						{
-
-						}
-						//[CHG] Device A4:30:7A:91:5E:EF Icon: audio-card
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Icon: ")))
-						{
-
-						}
-						//[CHG] Device FF:02:2F:D2:23:49 ServiceData Key: 000002a0-0000-1000-8000-00805f9b34fb
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Key: ")))
-						{
-
-						}
-						//[CHG] Device C9:CE:83:47:9A:0E ServiceData Value:
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("ServiceData Value:")))
-						{
-
-						}
-						//[CHG] Device 04:23:09:C3:75:46 Class: 0x00040424
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Class: ")))
-						{
-
-						}
-						//[CHG] Device 00:7C:2D:08:6B:8D Modalias: bluetooth:v04E8p8080d0000
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("Modalias: ")))
-						{
-
-						}
-						//[CHG] Device 10:00:18:28:57:54 RSSI is nil
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("RSSI is nil")))
-						{
-
-						}
-						//[CHG] Device 68:BF:A1:3A:57:F1 TxPower is nil
-						else if (Text::StrStartsWithC(&sarr[0].v[31], sarr[0].leng - 31, UTF8STRC("TxPower is nil")))
-						{
-
-						}
-						else
-						{
-							sarr[0].v[30] = ' ';
-							printf("Unknown Line: %s\r\n", sarr[0].v);
-						}
-					}
-					else
-					{
-						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
-					}
-				}
-				else if (Text::StrStartsWithC(sarr[0].v, sarr[0].leng, UTF8STRC("[DEL] Device ")))
-				{
-					//[DEL] Device ED:8E:0E:77:6D:15 RAPOO BT4.0 MS
-					sarr[0].v[30] = 0;
-					dev = me->DeviceGetByStr(&sarr[0].v[13], 30 - 13);
-					if (dev)
-					{
-						dev->inRange = false;
-						if (me->recHdlr) me->recHdlr(dev, UT_OTHER, me->recHdlrObj);
-					}
-					else
-					{
-						printf("Error in getting device \"%s\"\r\n", &sarr[0].v[13]);
-					}
-				}
-				else if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
-				{
-					if (!me->cmdReady)
-					{
-						//printf("cmdReady = true\r\n");
-					}
-					me->cmdReady = true;
-				}
-				else
-				{
-					printf("Unknown Line: %s\r\n", sarr[0].v);
-				}
 			}
-		}
 
-		if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
-		{
-			if (!me->cmdReady)
+			if (sarr[0].v[0] == '[' && Text::StrIndexOfC(sarr[0].v, sarr[0].leng, UTF8STRC("]# ")) != INVALID_INDEX)
 			{
-				//printf("cmdReady = true\r\n");
+				if (!me->cmdReady)
+				{
+					//printf("cmdReady = true\r\n");
+				}
+				me->cmdReady = true;
 			}
-			me->cmdReady = true;
+			sbBuff.SetSubstr((UOSInt)(sarr[0].v - sb.ToString()));
 		}
-		sbBuff->SetSubstr((UOSInt)(sarr[0].v - sb->ToString()));
 	}
-	DEL_CLASS(sbBuff);
-	DEL_CLASS(sb);
-	DEL_CLASS(dt);
 	me->threadRunning = false;
 	return 0;
 }
@@ -322,7 +315,7 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::SendCmd(const UTF8Char *cmd, UOSInt cmd
 	//printf("cmdReady = false\r\n");
 	this->cmdReady = false;
 	{
-		Sync::MutexUsage mutUsage(this->lastCmdMut);
+		Sync::MutexUsage mutUsage(&this->lastCmdMut);
 		SDEL_STRING(this->lastCmd);
 		this->lastCmd = Text::String::New(cmd, cmdLen);
 	}
@@ -367,8 +360,8 @@ IO::BTScanLog::ScanRecord3 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	macBuff[7] = Text::StrHex2UInt8C(sarr[5]);
 	UInt64 macInt = ReadMUInt64(macBuff);
 	IO::BTScanLog::ScanRecord3 *dev;
-	Sync::MutexUsage mutUsage(this->devMut);
-	dev = this->devMap->Get(macInt);
+	Sync::MutexUsage mutUsage(&this->devMut);
+	dev = this->devMap.Get(macInt);
 	if (dev)
 		return dev;
 	dev = MemAlloc(IO::BTScanLog::ScanRecord3, 1);
@@ -385,7 +378,7 @@ IO::BTScanLog::ScanRecord3 *IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceGetByStr(c
 	dev->company = 0;
 	dev->measurePower = 0;
 	dev->advType = IO::BTScanLog::ADVT_UNKNOWN;
-	this->devMap->Put(macInt, dev);
+	this->devMap.Put(macInt, dev);
 	return dev;
 }
 
@@ -397,10 +390,6 @@ void IO::ProgCtrl::BluetoothCtlProgCtrl::DeviceFree(IO::BTScanLog::ScanRecord3 *
 
 IO::ProgCtrl::BluetoothCtlProgCtrl::BluetoothCtlProgCtrl()
 {
-	NEW_CLASS(this->devMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
-	NEW_CLASS(this->randDevMap, Data::UInt64Map<IO::BTScanLog::ScanRecord3*>());
-	NEW_CLASS(this->devMut, Sync::Mutex());
-	NEW_CLASS(this->lastCmdMut, Sync::Mutex());
 	this->lastCmd = 0;
 	this->recHdlr = 0;
 	this->recHdlrObj = 0;
@@ -424,13 +413,9 @@ IO::ProgCtrl::BluetoothCtlProgCtrl::~BluetoothCtlProgCtrl()
 {
 	this->Close();
 	DEL_CLASS(this->prog);
-	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->devMap->GetValues();
+	Data::ArrayList<IO::BTScanLog::ScanRecord3*> *devList = this->devMap.GetValues();
 	LIST_CALL_FUNC(devList, DeviceFree);
-	DEL_CLASS(this->devMap);
-	DEL_CLASS(this->randDevMap);
-	DEL_CLASS(this->devMut);
 	SDEL_STRING(this->lastCmd);
-	DEL_CLASS(this->lastCmdMut);
 }
 
 void IO::ProgCtrl::BluetoothCtlProgCtrl::HandleRecordUpdate(RecordHandler hdlr, void *userObj)
@@ -512,12 +497,12 @@ Bool IO::ProgCtrl::BluetoothCtlProgCtrl::WaitForCmdReady()
 
 Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetPublicMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->devMut);
-	return this->devMap;
+	mutUsage->ReplaceMutex(&this->devMut);
+	return &this->devMap;
 }
 
 Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *IO::ProgCtrl::BluetoothCtlProgCtrl::GetRandomMap(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->devMut);
-	return this->devMap;
+	mutUsage->ReplaceMutex(&this->devMut);
+	return &this->devMap;
 }

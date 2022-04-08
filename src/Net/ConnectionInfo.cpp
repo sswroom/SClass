@@ -38,34 +38,12 @@ Net::ConnectionInfo::ConnectionInfo(const Net::ConnectionInfo::ConnectionEntry *
 	{
 		this->ent.dnsSuffix = 0;
 	}
-	NEW_CLASS(this->ent.ipaddr, Data::ArrayListUInt32());
-	if (ent->ipaddr)
-	{
-		this->ent.ipaddr->AddAll(ent->ipaddr);
-	}
-	NEW_CLASS(this->ent.dnsaddr, Data::ArrayListUInt32());
-	if (ent->dnsaddr)
-	{
-		this->ent.dnsaddr->AddAll(ent->dnsaddr);
-	}
+	this->ent.ipaddr.AddAll(&ent->ipaddr);
+	this->ent.dnsaddr.AddAll(&ent->dnsaddr);
 	this->ent.defGW = ent->defGW;
 	this->ent.dhcpSvr = ent->dhcpSvr;
-	if (ent->dhcpLeaseTime)
-	{
-		NEW_CLASS(this->ent.dhcpLeaseTime, Data::DateTime(ent->dhcpLeaseTime));
-	}
-	else
-	{
-		this->ent.dhcpLeaseTime = 0;
-	}
-	if (ent->dhcpLeaseExpire)
-	{
-		NEW_CLASS(this->ent.dhcpLeaseExpire, Data::DateTime(ent->dhcpLeaseExpire));
-	}
-	else
-	{
-		this->ent.dhcpLeaseExpire = 0;
-	}
+	this->ent.dhcpLeaseTime = ent->dhcpLeaseTime;
+	this->ent.dhcpLeaseExpire = ent->dhcpLeaseExpire;
 	if (ent->physicalAddr)
 	{
 		this->ent.physicalAddrLeng = ent->physicalAddrLeng;
@@ -89,10 +67,6 @@ Net::ConnectionInfo::~ConnectionInfo()
 	SDEL_TEXT(this->ent.name);
 	SDEL_TEXT(this->ent.description);
 	SDEL_TEXT(this->ent.dnsSuffix);
-	SDEL_CLASS(this->ent.ipaddr);
-	SDEL_CLASS(this->ent.dnsaddr);
-	SDEL_CLASS(this->ent.dhcpLeaseTime);
-	SDEL_CLASS(this->ent.dhcpLeaseExpire);
 	if (this->ent.physicalAddr)
 	{
 		MemFree(this->ent.physicalAddr);
@@ -122,16 +96,16 @@ UTF8Char *Net::ConnectionInfo::GetDNSSuffix(UTF8Char *buff)
 
 UInt32 Net::ConnectionInfo::GetIPAddress(UOSInt index)
 {
-	if (this->ent.ipaddr->GetCount() <= index)
+	if (this->ent.ipaddr.GetCount() <= index)
 		return 0;
-	return (UInt32)this->ent.ipaddr->GetItem(index);
+	return (UInt32)this->ent.ipaddr.GetItem(index);
 }
 
 UInt32 Net::ConnectionInfo::GetDNSAddress(UOSInt index)
 {
-	if (this->ent.dnsaddr->GetCount() <= index)
+	if (this->ent.dnsaddr.GetCount() <= index)
 		return 0;
-	return (UInt32)this->ent.dnsaddr->GetItem(index);
+	return (UInt32)this->ent.dnsaddr.GetItem(index);
 }
 
 UInt32 Net::ConnectionInfo::GetDefaultGW()
@@ -171,12 +145,13 @@ UInt32 Net::ConnectionInfo::GetDhcpServer()
 {
 	return this->ent.dhcpSvr;
 }
-Data::DateTime *Net::ConnectionInfo::GetDhcpLeaseTime()
+
+Data::Timestamp Net::ConnectionInfo::GetDhcpLeaseTime()
 {
 	return this->ent.dhcpLeaseTime;
 }
 
-Data::DateTime *Net::ConnectionInfo::GetDhcpLeaseExpire()
+Data::Timestamp Net::ConnectionInfo::GetDhcpLeaseExpire()
 {
 	return this->ent.dhcpLeaseExpire;
 }

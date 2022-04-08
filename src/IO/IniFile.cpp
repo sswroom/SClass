@@ -12,23 +12,17 @@
 IO::ConfigFile *IO::IniFile::Parse(IO::Stream *stm, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
-	IO::StreamReader *reader;
-	NEW_CLASS(reader, IO::StreamReader(stm, codePage));
-	cfg = ParseReader(reader);
-	DEL_CLASS(reader);
+	IO::StreamReader reader(stm, codePage);
+	cfg = ParseReader(&reader);
 	return cfg;
 }
 
 IO::ConfigFile *IO::IniFile::Parse(Text::CString fileName, UInt32 codePage)
 {
 	IO::ConfigFile *cfg;
-	IO::FileStream *fstm;
-	IO::StreamReader *reader;
-	NEW_CLASS(fstm, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential));
-	NEW_CLASS(reader, IO::StreamReader(fstm, codePage));
-	cfg = ParseReader(reader);
-	DEL_CLASS(reader);
-	DEL_CLASS(fstm);
+	IO::FileStream fstm(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Sequential);
+	IO::StreamReader reader(&fstm, codePage);
+	cfg = ParseReader(&reader);
 	return cfg;
 }
 
@@ -113,11 +107,9 @@ IO::ConfigFile *IO::IniFile::ParseReader(IO::StreamReader *reader)
 
 Bool IO::IniFile::SaveConfig(IO::Stream *stm, UInt32 codePage, IO::ConfigFile *cfg)
 {
-	IO::StreamWriter *writer;
 	Bool ret;
-	NEW_CLASS(writer, IO::StreamWriter(stm, codePage));
-	ret = SaveConfig(writer, cfg);
-	DEL_CLASS(writer);
+	IO::StreamWriter writer(stm, codePage);
+	ret = SaveConfig(&writer, cfg);
 	return ret;
 }
 

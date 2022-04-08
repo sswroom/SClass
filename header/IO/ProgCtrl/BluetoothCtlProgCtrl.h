@@ -16,10 +16,10 @@ namespace IO
 		{
 		private:
 			Manage::ProcessExecution *prog;
-			Sync::Mutex *devMut;
-			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *devMap;
-			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> *randDevMap;
-			Sync::Mutex *lastCmdMut;
+			Sync::Mutex devMut;
+			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> devMap;
+			Data::UInt64Map<IO::BTScanLog::ScanRecord3*> randDevMap;
+			Sync::Mutex lastCmdMut;
 			Text::String *lastCmd;
 			IO::BTScanner::RecordHandler recHdlr;
 			void *recHdlrObj;

@@ -21,7 +21,7 @@ namespace Data
 		virtual ~ArrayList();
 
 		virtual UOSInt Add(T val);
-		UOSInt AddAll(ReadingList<T> *arr);
+		UOSInt AddAll(const ReadingList<T> *arr);
 		virtual UOSInt AddRange(T *arr, UOSInt cnt);
 		virtual Bool Remove(T val);
 		virtual T RemoveAt(UOSInt index);
@@ -82,7 +82,7 @@ namespace Data
 		return ret;
 	}
 
-	template <class T> UOSInt ArrayList<T>::AddAll(ReadingList<T> *arr)
+	template <class T> UOSInt ArrayList<T>::AddAll(const ReadingList<T> *arr)
 	{
 		UOSInt cnt = arr->GetCount();
 		if (objCnt + cnt >= this->capacity)

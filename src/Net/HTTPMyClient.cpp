@@ -33,7 +33,7 @@ struct Net::HTTPMyClient::ClassData
 
 #define BUFFSIZE 8192
 
-Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn)
+Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString userAgent, Bool kaConn) : Net::HTTPClient(sockf, kaConn), reqMstm(1024, UTF8STRC("Net.HTTPMyClient.reqMstm"))
 {
 	if (userAgent.v == 0)
 	{
@@ -62,8 +62,6 @@ Net::HTTPMyClient::HTTPMyClient(Net::SocketFactory *sockf, Net::SSLEngine *ssl, 
 	this->timeOutMS = 5000;
 	this->userAgent = Text::String::New(userAgent.v, userAgent.leng);
 	this->dataBuff = MemAlloc(UInt8, BUFFSIZE);
-	NEW_CLASS(this->reqHeaders, Data::ArrayListString());
-	NEW_CLASS(this->reqMstm, IO::MemoryStream(1024, UTF8STRC("Net.HTTPMyClient.reqMstm")));
 }
 
 Net::HTTPMyClient::~HTTPMyClient()
@@ -81,13 +79,11 @@ Net::HTTPMyClient::~HTTPMyClient()
 		MemFree(this->dataBuff);
 		this->dataBuff = 0;
 	}
-	UOSInt i = this->reqHeaders->GetCount();
+	UOSInt i = this->reqHeaders.GetCount();
 	while (i-- > 0)
 	{
-		this->reqHeaders->GetItem(i)->Release();
+		this->reqHeaders.GetItem(i)->Release();
 	}
-	DEL_CLASS(this->reqHeaders);
-	DEL_CLASS(this->reqMstm);
 	this->userAgent->Release();
 #if defined(LOGREPLY)
 	DEL_CLASS(this->clsData->fs);
@@ -504,11 +500,11 @@ UOSInt Net::HTTPMyClient::Write(const UInt8 *buff, UOSInt size)
 		if (!writing)
 		{
 			//cli->Write((UInt8*)"\r\n", 2);
-			this->reqMstm->Write((UInt8*)"\r\n", 2);
+			this->reqMstm.Write((UInt8*)"\r\n", 2);
 		}
 		writing = true;
 		//return cli->Write(buff, size);
-		return this->reqMstm->Write(buff, size);
+		return this->reqMstm.Write(buff, size);
 	}
 	return 0;
 }
@@ -802,8 +798,8 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 			this->headers.RemoveAt(i)->Release();
 		}
 		this->headers.Clear();
-		LIST_FREE_STRING(this->reqHeaders);
-		this->reqHeaders->Clear();
+		LIST_FREE_STRING(&this->reqHeaders);
+		this->reqHeaders.Clear();
 	}
 	else
 	{
@@ -886,8 +882,8 @@ Bool Net::HTTPMyClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		cptr = Text::StrConcatC(cptr, UTF8STRC(" RTSP/1.0\r\n"));
 		break;
 	}
-	this->reqMstm->Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
-	this->reqMstm->Write((UInt8*)host, hostLen);
+	this->reqMstm.Write(dataBuff, (UOSInt)(cptr - (UTF8Char*)dataBuff));
+	this->reqMstm.Write((UInt8*)host, hostLen);
 
 	if (defHeaders)
 	{
@@ -910,17 +906,17 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 {
 	UInt8 buff[512];
 	UTF8Char *sptr;
-	if (this->reqHeaders->SortedIndexOfPtr(name.v, name.leng) >= 0)
+	if (this->reqHeaders.SortedIndexOfPtr(name.v, name.leng) >= 0)
 		return;
 
 	if (this->cli && !this->writing)
 	{
 		if (name.leng + value.leng + 5 > 512)
 		{
-			this->reqMstm->Write(name.v, name.leng);
-			this->reqMstm->Write(UTF8STRC(": "));
-			this->reqMstm->Write(value.v, value.leng);
-			this->reqMstm->Write(UTF8STRC("\r\n"));
+			this->reqMstm.Write(name.v, name.leng);
+			this->reqMstm.Write(UTF8STRC(": "));
+			this->reqMstm.Write(value.v, value.leng);
+			this->reqMstm.Write(UTF8STRC("\r\n"));
 #ifdef SHOWDEBUG
 			printf("Add Header: %s: %s\r\n", name.v, value.v);
 #endif
@@ -940,9 +936,9 @@ void Net::HTTPMyClient::AddHeaderC(Text::CString name, Text::CString value)
 			*sptr = 0;
 			printf("Add Header: %s", buff);
 #endif
-			this->reqMstm->Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
+			this->reqMstm.Write(buff, (UOSInt)(sptr - (UTF8Char*)buff));
 		}
-		this->reqHeaders->SortedInsert(Text::String::New(name.v, name.leng));
+		this->reqHeaders.SortedInsert(Text::String::New(name.v, name.leng));
 	}
 }
 
@@ -978,11 +974,11 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 		this->canWrite = false;
 		this->writing = true;
 
-		this->reqMstm->Write((UInt8*)"\r\n", 2);
+		this->reqMstm.Write((UInt8*)"\r\n", 2);
 		UOSInt reqSize;
 		UOSInt writeSize = 0;
 		UOSInt currSize = 0;
-		UInt8 *reqBuff = this->reqMstm->GetBuff(&reqSize);
+		UInt8 *reqBuff = this->reqMstm.GetBuff(&reqSize);
 		while (writeSize < reqSize)
 		{
 			currSize = this->cli->Write(&reqBuff[writeSize], reqSize - writeSize);
@@ -994,7 +990,7 @@ void Net::HTTPMyClient::EndRequest(Double *timeReq, Double *timeResp)
 			this->totalUpload += currSize;
 			writeSize += currSize;
 		}
-		this->reqMstm->Clear();
+		this->reqMstm.Clear();
 
 		this->sockf->SetLinger(cli->GetSocket(), 0);
 		if (!this->kaConn && !this->cli->IsSSL())

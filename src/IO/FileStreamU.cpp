@@ -113,7 +113,7 @@ IO::FileStream::FileStream(Text::CString fileName, FileMode mode, FileShare shar
 	}
 	ClassData *clsData = MemAlloc(ClassData, 1);
 	this->handle = clsData;
-	clsData->fileName = Text::String::New(fileName.v, fileName.leng);
+	clsData->fileName = this->sourceName->Clone();
 	this->InitStream(0, mode, share, buffType);
 }
 

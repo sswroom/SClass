@@ -10,7 +10,7 @@ namespace IO
 	class StreamReader : public IO::Reader
 	{
 	private:
-		Text::Encoding *enc;
+		Text::Encoding enc;
 		IO::Stream *stm;
 
 		WChar *wcbuff;

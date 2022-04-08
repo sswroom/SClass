@@ -2,7 +2,7 @@
 #define _SM_NET_CONNECTIONINFO
 #include "Data/ArrayList.h"
 #include "Data/ArrayListUInt32.h"
-#include "Data/DateTime.h"
+#include "Data/Timestamp.h"
 #include "Net/SocketUtil.h"
 #include "Text/CString.h"
 
@@ -33,26 +33,29 @@ namespace Net
 			CS_LOWERLAYERDOWN = 7
 		} ConnectionStatus;
 
-		typedef struct
+		class ConnectionEntry
 		{
+		public:
 			UOSInt index;
 			const Char *internalName;
 			const UTF8Char *name;
 			const UTF8Char *description;
 			const UTF8Char *dnsSuffix;
-			Data::ArrayListUInt32 *ipaddr;
-			Data::ArrayListUInt32 *dnsaddr;
+			Data::ArrayListUInt32 ipaddr;
+			Data::ArrayListUInt32 dnsaddr;
 			UInt32 defGW;
 			UInt32 dhcpSvr;
-			Data::DateTime *dhcpLeaseTime;
-			Data::DateTime *dhcpLeaseExpire;
+			Data::Timestamp dhcpLeaseTime;
+			Data::Timestamp dhcpLeaseExpire;
 			UInt8 *physicalAddr;
 			UOSInt physicalAddrLeng;
 			UInt32 mtu;
 			Bool dhcpEnabled;
 			ConnectionType connType;
 			ConnectionStatus connStatus;
-		} ConnectionEntry;
+
+			ConnectionEntry() : ipaddr(4), dnsaddr(4) {}
+		};
 	private:
 		ConnectionEntry ent;
 
@@ -75,8 +78,8 @@ namespace Net
 		UInt32 GetMTU();
 		Bool IsDhcpEnabled();
 		UInt32 GetDhcpServer();
-		Data::DateTime *GetDhcpLeaseTime();
-		Data::DateTime *GetDhcpLeaseExpire();
+		Data::Timestamp GetDhcpLeaseTime();
+		Data::Timestamp GetDhcpLeaseExpire();
 		ConnectionType GetConnectionType();
 		ConnectionStatus GetConnectionStatus();
 

@@ -132,13 +132,13 @@ void IO::MTFileLog::WriteArr(Text::String **msgArr, Int64 *dateArr, UOSInt arrCn
 			NEW_CLASS(log, Text::UTF8Writer(cstm));
 			log->WriteSignature();
 
-			sptr = Text::StrConcatC(time.ToString(buff, this->dateFormat), UTF8STRC("Program running"));
+			sptr = Text::StrConcatC(time.ToString(buff, (const Char*)this->dateFormat), UTF8STRC("Program running"));
 			log->WriteLineC(buff, (UOSInt)(sptr - buff));
 			newFile = false;
 			this->hasNewFile = true;
 		}
 
-		sptr = time.ToString(buff, this->dateFormat);
+		sptr = time.ToString(buff, (const Char*)this->dateFormat);
 		sb.ClearStr();
 		sb.AppendC(buff, (UOSInt)(sptr - buff));
 		sb.Append(msgArr[i]);
@@ -162,15 +162,15 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 	me->running = true;
 	while (!me->closed)
 	{
-		Sync::MutexUsage mutUsage(me->mut);
-		if ((arrCnt = me->msgList->GetCount()) > 0)
+		Sync::MutexUsage mutUsage(&me->mut);
+		if ((arrCnt = me->msgList.GetCount()) > 0)
 		{
 			msgArr = MemAlloc(Text::String *, arrCnt);
 			dateArr = MemAlloc(Int64, arrCnt);
-			me->msgList->GetRange(msgArr, 0, arrCnt);
-			me->dateList->GetRange(dateArr, 0, arrCnt);
-			me->msgList->RemoveRange(0, arrCnt);
-			me->dateList->RemoveRange(0, arrCnt);
+			me->msgList.GetRange(msgArr, 0, arrCnt);
+			me->dateList.GetRange(dateArr, 0, arrCnt);
+			me->msgList.RemoveRange(0, arrCnt);
+			me->dateList.RemoveRange(0, arrCnt);
 		}
 		mutUsage.EndUse();
 		
@@ -180,17 +180,17 @@ UInt32 __stdcall IO::MTFileLog::FileThread(void *userObj)
 			MemFree(msgArr);
 			MemFree(dateArr);
 		}
-		me->evt->Wait(1000);
+		me->evt.Wait(1000);
 	}
 
-	if ((arrCnt = me->msgList->GetCount()) > 0)
+	if ((arrCnt = me->msgList.GetCount()) > 0)
 	{
 		msgArr = MemAlloc(Text::String *, arrCnt);
 		dateArr = MemAlloc(Int64, arrCnt);
-		me->msgList->GetRange(msgArr, 0, arrCnt);
-		me->dateList->GetRange(dateArr, 0, arrCnt);
-		me->msgList->RemoveRange(0, arrCnt);
-		me->dateList->RemoveRange(0, arrCnt);
+		me->msgList.GetRange(msgArr, 0, arrCnt);
+		me->dateList.GetRange(dateArr, 0, arrCnt);
+		me->msgList.RemoveRange(0, arrCnt);
+		me->dateList.RemoveRange(0, arrCnt);
 		me->WriteArr(msgArr, dateArr, arrCnt);
 		MemFree(msgArr);
 		MemFree(dateArr);
@@ -204,20 +204,15 @@ void IO::MTFileLog::Init(LogType style, LogGroup groupStyle, const Char *dateFor
 {
 	UTF8Char buff[256];
 	UTF8Char *sptr;
-	Char cbuff[256];
 	UOSInt i;
-	NEW_CLASS(mut, Sync::Mutex());
-	NEW_CLASS(evt, Sync::Event(true));
-	NEW_CLASS(dateList, Data::ArrayListInt64());
-	NEW_CLASS(msgList, Data::ArrayListString());
 	if (dateFormat == 0)
 	{
-		this->dateFormat = Text::StrCopyNew("yyyy-MM-dd HH:mm:ss\t");
+		this->dateFormat = Text::StrCopyNewC(UTF8STRC("yyyy-MM-dd HH:mm:ss\t"));
 	}
 	else
 	{
-		Text::StrConcatC(Text::StrConcat(cbuff, dateFormat), "\t", 1);
-		this->dateFormat = Text::StrCopyNew(cbuff);
+		sptr = Text::StrConcatC(Text::StrConcat(buff, (const UTF8Char*)dateFormat), UTF8STRC("\t"));
+		this->dateFormat = Text::StrCopyNewC(buff, (UOSInt)(sptr - buff));
 	}
 	this->logStyle = style;
 	this->groupStyle = groupStyle;
@@ -277,14 +272,14 @@ IO::MTFileLog::~MTFileLog()
 	if (!closed)
 	{
 		closed = true;
-		evt->Set();
+		this->evt.Set();
 	}
 
 	while (running)
 	{
 		Sync::Thread::Sleep(10);
 	}
-	Sync::MutexUsage mutUsage(mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	log->Close();
 	mutUsage.EndUse();
 
@@ -296,13 +291,7 @@ IO::MTFileLog::~MTFileLog()
 	SDEL_CLASS(cstm);
 	SDEL_CLASS(fileStm);
 
-	DEL_CLASS(dateList);
-	DEL_CLASS(msgList);
 	Text::StrDelNew(this->dateFormat);
-	DEL_CLASS(evt);
-	evt = 0;
-	DEL_CLASS(mut);
-	mut = 0;
 }
 
 void IO::MTFileLog::LogClosed()
@@ -310,7 +299,7 @@ void IO::MTFileLog::LogClosed()
 	if (!closed)
 	{
 		closed = true;
-		evt->Set();
+		this->evt.Set();
 	}
 }
 void IO::MTFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLevel logLev)
@@ -318,11 +307,11 @@ void IO::MTFileLog::LogAdded(Data::DateTime *time, Text::CString logMsg, LogLeve
 	if (closed)
 		return;
 
-	Sync::MutexUsage mutUsage(mut);
-	this->msgList->Add(Text::String::New(logMsg));
-	this->dateList->Add(time->ToTicks());
+	Sync::MutexUsage mutUsage(&this->mut);
+	this->msgList.Add(Text::String::New(logMsg));
+	this->dateList.Add(time->ToTicks());
 	mutUsage.EndUse();
-	evt->Set();
+	this->evt.Set();
 }
 
 Bool IO::MTFileLog::HasNewFile()

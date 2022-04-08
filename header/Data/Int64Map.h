@@ -9,6 +9,8 @@ namespace Data
 {
 	template <class T> class Int64Map : public ArrayMap<Int64, T>
 	{
+	private:
+		Data::ArrayListInt64 keyList;
 	public:
 		Int64Map();
 		virtual ~Int64Map();
@@ -16,12 +18,11 @@ namespace Data
 
 	template <class T> Int64Map<T>::Int64Map() : ArrayMap<Int64, T>()
 	{
-		NEW_CLASS(this->keys, Data::ArrayListInt64());
+		this->keys = &this->keyList;
 	}
 
 	template <class T> Int64Map<T>::~Int64Map()
 	{
-		DEL_CLASS(this->keys);
 	}
 }
 

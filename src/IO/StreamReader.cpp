@@ -59,7 +59,7 @@ void IO::StreamReader::FillBuffer()
 		convSize = buffSize;
 	if (convSize)
 	{
-		dest = this->enc->WFromBytes(&wcbuff[wcSize], buff, convSize, &i);
+		dest = this->enc.WFromBytes(&wcbuff[wcSize], buff, convSize, &i);
 		if (dest)
 		{
 			wcSize = (UOSInt)(dest - wcbuff);
@@ -80,20 +80,20 @@ void IO::StreamReader::CheckHeader()
 	buffSize += stm->Read(&buff[buffSize], 4 - buffSize);
 	if (buffSize >= 3 && buff[0] == 0xef && buff[1] == 0xbb && buff[2] == 0xbf)
 	{
-		enc->SetCodePage(65001);
+		this->enc.SetCodePage(65001);
 		buff[0] = buff[3];
 		buffSize -= 3;
 	}
 	else if (buffSize >= 2 && buff[0] == 0xff && buff[1] == 0xfe)
 	{
-		enc->SetCodePage(1200);
+		this->enc.SetCodePage(1200);
 		buff[0] = buff[2];
 		buff[1] = buff[3];
 		buffSize -= 2;
 	}
 	else if (buffSize >= 2 && buff[0] == 0xfe && buff[1] == 0xff)
 	{
-		enc->SetCodePage(1201);
+		this->enc.SetCodePage(1201);
 		buff[0] = buff[2];
 		buff[1] = buff[3];
 		buffSize -= 2;
@@ -125,12 +125,11 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 		this->lastPos = 0;
 	}
 	this->lineBreak = 0;
-	NEW_CLASS(this->enc, Text::Encoding());
 	CheckHeader();
 	FillBuffer();
 }
 
-IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage)
+IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 {
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
@@ -147,7 +146,6 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage)
 		this->lastPos = 0;
 	}
 	this->lineBreak = 0;
-	NEW_CLASS(this->enc, Text::Encoding(codePage));
 	CheckHeader();
 	FillBuffer();
 }
@@ -156,10 +154,6 @@ IO::StreamReader::~StreamReader()
 {
 	MemFree(this->buff);
 	MemFree(this->wcbuff);
-	if (this->enc)
-	{
-		DEL_CLASS(this->enc);
-	}
 }
 
 void IO::StreamReader::Close()

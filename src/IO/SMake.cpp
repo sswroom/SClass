@@ -298,7 +298,7 @@ Bool IO::SMake::LoadConfigFile(Text::CString cfgFile)
 			{
 				const UTF8Char *ccfg = sptr1;
 				const UTF8Char *ccfgEnd = sptr1End;
-				IO::SMake::ConfigItem *cfg = this->cfgMap.Get({sptr1, (UOSInt)(sptr1End - sptr1)});
+				IO::SMake::ConfigItem *cfg = this->cfgMap.Get(CSTRP(sptr1, sptr1End));
 				if (cfg)
 				{
 					ccfg = cfg->value->v;
