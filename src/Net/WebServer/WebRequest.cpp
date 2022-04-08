@@ -315,7 +315,6 @@ Net::WebServer::WebRequest::WebRequest(Text::CString requestURI, Net::WebUtil::R
 	this->cliAddr = *cliAddr;
 	this->cliPort = cliPort;
 	this->svrPort = svrPort;
-	NEW_CLASS(this->headers, Data::FastStringMap<Text::String*>());
 	this->queryMap = 0;
 	this->formMap = 0;
 	this->formFileList = 0;
@@ -328,8 +327,7 @@ Net::WebServer::WebRequest::~WebRequest()
 {
 	UOSInt i;
 	this->requestURI->Release();
-	LIST_FREE_STRING(this->headers);
-	DEL_CLASS(this->headers);
+	LIST_FREE_STRING(&this->headers);
 	if (this->queryMap)
 	{
 		LIST_FREE_STRING(this->queryMap);
@@ -363,18 +361,18 @@ Net::WebServer::WebRequest::~WebRequest()
 
 void Net::WebServer::WebRequest::AddHeader(Text::CString name, Text::CString value)
 {
-	Text::String *s = this->headers->PutC(name, Text::String::New(value));
+	Text::String *s = this->headers.PutC(name, Text::String::New(value));
 	SDEL_STRING(s);
 }
 
 Text::String *Net::WebServer::WebRequest::GetSHeader(Text::CString name)
 {
-	return this->headers->GetC(name);
+	return this->headers.GetC(name);
 }
 
 UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString name, UOSInt buffLen)
 {
-	Text::String *s = this->headers->GetC(name);
+	Text::String *s = this->headers.GetC(name);
 	if (s)
 	{
 		return s->ConcatToS(sbuff, buffLen);
@@ -387,7 +385,7 @@ UTF8Char *Net::WebServer::WebRequest::GetHeader(UTF8Char *sbuff, Text::CString n
 
 Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, Text::CString name)
 {
-	Text::String *hdr = this->headers->GetC(name);
+	Text::String *hdr = this->headers.GetC(name);
 	if (hdr == 0)
 		return false;
 	sb->Append(hdr);
@@ -397,11 +395,11 @@ Bool Net::WebServer::WebRequest::GetHeaderC(Text::StringBuilderUTF8 *sb, Text::C
 UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<Text::String*> *names)
 {
 	UOSInt i = 0;
-	UOSInt j = this->headers->GetCount();
+	UOSInt j = this->headers.GetCount();
 	names->EnsureCapacity(j);
 	while (i < j)
 	{
-		names->Add(this->headers->GetKey(i));
+		names->Add(this->headers.GetKey(i));
 		i++;
 	}
 	return j;
@@ -409,17 +407,17 @@ UOSInt Net::WebServer::WebRequest::GetHeaderNames(Data::ArrayList<Text::String*>
 
 UOSInt Net::WebServer::WebRequest::GetHeaderCnt()
 {
-	return this->headers->GetCount();
+	return this->headers.GetCount();
 }
 
 Text::String *Net::WebServer::WebRequest::GetHeaderName(UOSInt index)
 {
-	return this->headers->GetKey(index);
+	return this->headers.GetKey(index);
 }
 
 Text::String *Net::WebServer::WebRequest::GetHeaderValue(UOSInt index)
 {
-	return this->headers->GetItem(index);
+	return this->headers.GetItem(index);
 }
 
 Text::String *Net::WebServer::WebRequest::GetRequestURI()

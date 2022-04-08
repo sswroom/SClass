@@ -6,18 +6,22 @@
 UInt32 __stdcall Sync::ParallelTask::WorkerThread(void *userObj)
 {
 	ThreadStatus *stat = (ThreadStatus*)userObj;
-	stat->running = true;
-	stat->me->mainEvt->Set();
-	while (!stat->toStop)
 	{
-		if (stat->currTaskFunc)
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->running = true;
+		stat->me->mainEvt->Set();
+		while (!stat->toStop)
 		{
-			stat->currTaskFunc(stat->currTaskObj);
-			stat->currTaskObj = 0;
-			stat->currTaskFunc = 0;
-			stat->me->mainEvt->Set();
+			if (stat->currTaskFunc)
+			{
+				stat->currTaskFunc(stat->currTaskObj);
+				stat->currTaskObj = 0;
+				stat->currTaskFunc = 0;
+				stat->me->mainEvt->Set();
+			}
+			stat->evt->Wait(1000);
 		}
-		stat->evt->Wait(1000);
 	}
 	stat->running = false;
 	stat->me->mainEvt->Set();
@@ -41,7 +45,6 @@ Sync::ParallelTask::ParallelTask(UOSInt threadCnt, Bool taskQueue)
 		UOSInt i = this->threadCnt;
 		while (i-- > 0)
 		{
-			NEW_CLASS(this->stats[i].evt, Sync::Event(true));
 			this->stats[i].me = this;
 			this->stats[i].running = false;
 			this->stats[i].toStop = false;
@@ -112,11 +115,6 @@ Sync::ParallelTask::~ParallelTask()
 			}
 		}
 #endif
-		i = this->threadCnt;
-		while (i-- > 0)
-		{
-			DEL_CLASS(this->stats[i].evt);
-		}
 		DEL_CLASS(this->mainEvt);
 		MemFree(this->stats);
 	}

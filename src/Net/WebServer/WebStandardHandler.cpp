@@ -11,14 +11,12 @@
 Net::WebServer::WebStandardHandler::~WebStandardHandler()
 {
 	Net::WebServer::WebStandardHandler *hdlr;
-	UOSInt i = this->relHdlrs->GetCount();
+	UOSInt i = this->relHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		hdlr = this->relHdlrs->GetItem(i);
+		hdlr = this->relHdlrs.GetItem(i);
 		hdlr->Release();
 	}
-	DEL_CLASS(this->hdlrs);
-	DEL_CLASS(this->relHdlrs);
 }
 
 Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp, Text::CString subReq)
@@ -38,13 +36,13 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 		{
 			if (i == 1)
 			{
-				subHdlr = this->hdlrs->GetC({&subReq.v[1], i - 1});
+				subHdlr = this->hdlrs.GetC({&subReq.v[1], i - 1});
 				subReq = subReq.Substring(i);
 				break;
 			}
 			else
 			{
-				subHdlr = this->hdlrs->GetC({&subReq.v[1], i - 1});
+				subHdlr = this->hdlrs.GetC({&subReq.v[1], i - 1});
 				subReq = subReq.Substring(i);
 				break;
 			}
@@ -56,13 +54,13 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 				sbuff = MemAlloc(UTF8Char, i);
 				MemCopyNO(sbuff, &subReq.v[1], (i - 1) * sizeof(UTF8Char));
 				sbuff[i - 1] = 0;
-				subHdlr = this->hdlrs->GetC({sbuff, i - 1});
+				subHdlr = this->hdlrs.GetC({sbuff, i - 1});
 				MemFree(sbuff);
 			}
 			else
 			{
 				Text::StrConcatC(tmpBuff, &subReq.v[1], (i - 1));
-				subHdlr = this->hdlrs->GetC({tmpBuff, i - 1});
+				subHdlr = this->hdlrs.GetC({tmpBuff, i - 1});
 			}
 			subReq = subReq.Substring(i);
 			break;
@@ -78,8 +76,6 @@ Bool Net::WebServer::WebStandardHandler::DoRequest(Net::WebServer::IWebRequest *
 
 Net::WebServer::WebStandardHandler::WebStandardHandler()
 {
-	NEW_CLASS(this->hdlrs, Data::FastStringMap<Net::WebServer::WebStandardHandler*>());
-	NEW_CLASS(this->relHdlrs, Data::ArrayList<Net::WebServer::WebStandardHandler*>());
 }
 
 void Net::WebServer::WebStandardHandler::WebRequest(Net::WebServer::IWebRequest *req, Net::WebServer::IWebResponse *resp)
@@ -160,10 +156,10 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 	UTF8Char *sbuff;
 	if (i == INVALID_INDEX)
 	{
-		this->hdlrs->PutC({&absolutePath[1], pathLen - 1}, hdlr);
+		this->hdlrs.PutC({&absolutePath[1], pathLen - 1}, hdlr);
 		if (needRelease)
 		{
-			this->relHdlrs->Add(hdlr);
+			this->relHdlrs.Add(hdlr);
 		}
 	}
 	else
@@ -172,12 +168,12 @@ void Net::WebServer::WebStandardHandler::HandlePath(const UTF8Char *absolutePath
 		MemCopyNO(sbuff, &absolutePath[1], sizeof(UTF8Char) * i);
 		sbuff[i] = 0;
 
-		subHdlr = this->hdlrs->GetC({sbuff, i});
+		subHdlr = this->hdlrs.GetC({sbuff, i});
 		if (subHdlr == 0)
 		{
 			NEW_CLASS(subHdlr, Net::WebServer::WebStandardHandler());
-			this->hdlrs->PutC({sbuff, i}, subHdlr);
-			this->relHdlrs->Add(subHdlr);
+			this->hdlrs.PutC({sbuff, i}, subHdlr);
+			this->relHdlrs.Add(subHdlr);
 		}
 		MemFree(sbuff);
 		subHdlr->HandlePath(&absolutePath[i + 1], pathLen - i - 1, hdlr, needRelease);

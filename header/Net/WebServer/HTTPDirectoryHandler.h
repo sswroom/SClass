@@ -53,8 +53,8 @@ namespace Net
 			Int32 expirePeriod;
 			UInt64 fileCacheSize;
 			Text::String *allowOrigin;
-			Data::BTreeUTF8Map<CacheInfo*> *fileCache;
-			Sync::Mutex *fileCacheMut;
+			Data::BTreeUTF8Map<CacheInfo*> fileCache;
+			Sync::Mutex fileCacheMut;
 			Data::FastStringMap<StatInfo*> *statMap;
 			Sync::Mutex *statMut;
 			Int32 fileCacheUsing;

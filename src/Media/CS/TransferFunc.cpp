@@ -187,34 +187,31 @@ Bool Media::CS::TransferParam::Equals(const TransferParam *tran)
 	}
 }
 
-Media::CS::TransferFunc::TransferFunc(TransferType tranType, Double gamma)
+Media::CS::TransferFunc::TransferFunc(TransferType tranType, Double gamma) : param(tranType, gamma)
 {
-	NEW_CLASS(this->param, Media::CS::TransferParam(tranType, gamma));
 }
 
-Media::CS::TransferFunc::TransferFunc(Media::LUT *lut)
+Media::CS::TransferFunc::TransferFunc(Media::LUT *lut) : param(lut)
 {
-	NEW_CLASS(this->param, Media::CS::TransferParam(lut));
 }
 
 Media::CS::TransferFunc::~TransferFunc()
 {
-	DEL_CLASS(this->param);
 }
 
 Media::CS::TransferType Media::CS::TransferFunc::GetTransferType()
 {
-	return this->param->GetTranType();
+	return this->param.GetTranType();
 }
 
 Double Media::CS::TransferFunc::GetTransferGamma()
 {
-	return this->param->GetGamma();
+	return this->param.GetGamma();
 }
 
 const Media::CS::TransferParam *Media::CS::TransferFunc::GetTransferParam()
 {
-	return this->param;
+	return &this->param;
 }
 
 Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(Media::CS::TransferParam *param)

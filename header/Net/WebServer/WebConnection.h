@@ -36,7 +36,7 @@ namespace Net
 			Bool respHeaderSent;
 			Bool respDataEnd;
 			Net::WebStatus::StatusCode respStatus;
-			Text::StringBuilderUTF8 *respHeaders;
+			Text::StringBuilderUTF8 respHeaders;
 			UInt64 respLeng;
 			UInt32 respTranEnc;
 

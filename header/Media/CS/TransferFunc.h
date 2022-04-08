@@ -10,7 +10,7 @@ namespace Media
 		class TransferFunc
 		{
 		protected:
-			TransferParam *param;
+			TransferParam param;
 		public:
 			TransferFunc(TransferType tranType, Double gamma);
 			TransferFunc(Media::LUT *lut);

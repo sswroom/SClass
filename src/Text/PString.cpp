@@ -93,16 +93,12 @@ UOSInt Text::PString::Replace(UTF8Char fromChar, UTF8Char toChar)
 
 UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 0;
+	UOSInt i = 1;
 	UTF8Char c;
 	UTF8Char *sptr = strToSplit.v;
-	strs[i] = strToSplit;
-	i++;
-	while (i < maxStrs)
+	strs[0] = strToSplit;
+	while ((c = *sptr++) != 0)
 	{
-		c = *sptr++;
-		if (c == 0)
-			break;
 		if (c == splitChar)
 		{
 			strs[i].leng = strs[i - 1].leng;
@@ -111,6 +107,10 @@ UOSInt Text::StrSplitP(PString *strs, UOSInt maxStrs, PString strToSplit, UTF8Ch
 			strs[i].leng -= strs[i - 1].leng + 1;
 			sptr[-1] = 0;
 			i++;
+			if (i >= maxStrs)
+			{
+				break;
+			}
 		}
 	}
 	return i;

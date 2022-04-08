@@ -57,129 +57,131 @@ UInt32 __stdcall ProcessThread(void *userObj)
 	UOSInt i;
 	UOSInt j;
 	UInt32 cnt;
-	Manage::HiResClock *respClk;
 	Double respT;
 	UOSInt recvSize;
-	Interlocked_IncrementU32(&threadCurrCnt);
-	status->threadRunning = true;
-	NEW_CLASS(respClk, Manage::HiResClock());
-	if (kaConn)
 	{
-		cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, false);
-		while (!status->threadToStop)
+		Sync::Event evt;
+		status->evt = &evt;
+		Interlocked_IncrementU32(&threadCurrCnt);
+		status->threadRunning = true;
+		Manage::HiResClock respClk;
+		if (kaConn)
 		{
-			if (Interlocked_DecrementI32(&connLeft) < 0)
-				break;
-			respClk->Start();
-			if (cli->Connect(paramUrl, METHOD, &timeDNS, &timeConn, false))
+			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, false);
+			while (!status->threadToStop)
 			{
-				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
+				if (Interlocked_DecrementI32(&connLeft) < 0)
+					break;
+				respClk.Start();
+				if (cli->Connect(paramUrl, METHOD, &timeDNS, &timeConn, false))
 				{
-					i = POSTSIZE;
-					sptr = Text::StrUOSInt(buff, i);
-					cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
-					while (i >= 2048)
+					cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
+					if (reqMeth == Net::WebUtil::RequestMethod::HTTP_POST)
 					{
-						j = cli->Write(buff, 2048);
-						if (j <= 0)
+						i = POSTSIZE;
+						sptr = Text::StrUOSInt(buff, i);
+						cli->AddHeaderC(CSTR("Content-Length"), {buff, (UOSInt)(sptr - buff)});
+						while (i >= 2048)
 						{
-							break;
+							j = cli->Write(buff, 2048);
+							if (j <= 0)
+							{
+								break;
+							}
+							i -= j;
 						}
-						i -= j;
-					}
-					if (i > 0)
-					{
-						cli->Write(buff, i);
-					}
-				}
-				cli->EndRequest(&timeReq, &timeResp);
-				if (timeResp >= 0)
-				{
-					status->connCnt++;
-					if (timeResp > 0.5)
-					{
-						if (timeConn > 0.5)
+						if (i > 0)
 						{
-							i = 0;
-						}
-						else
-						{
-							i = 0;
+							cli->Write(buff, i);
 						}
 					}
-					while ((recvSize = cli->Read(buff, 2048)) > 0)
+					cli->EndRequest(&timeReq, &timeResp);
+					if (timeResp >= 0)
 					{
-						status->recvSize += recvSize;
+						status->connCnt++;
+						if (timeResp > 0.5)
+						{
+							if (timeConn > 0.5)
+							{
+								i = 0;
+							}
+							else
+							{
+								i = 0;
+							}
+						}
+						while ((recvSize = cli->Read(buff, 2048)) > 0)
+						{
+							status->recvSize += recvSize;
+						}
+						respT = respClk.GetTimeDiff();
+						status->hdrSize += cli->GetHdrLen();
+						status->totalRespTime += respT;
+						if (respT > status->maxRespTime)
+						{
+							status->maxRespTime = respT;
+						}
 					}
-					respT = respClk->GetTimeDiff();
-					status->hdrSize += cli->GetHdrLen();
-					status->totalRespTime += respT;
-					if (respT > status->maxRespTime)
+					else
 					{
-						status->maxRespTime = respT;
+						status->failCnt++;
+					}
+					if (cli->IsError())
+					{
+						DEL_CLASS(cli);
+						cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
 					}
 				}
 				else
-				{
-					status->failCnt++;
-				}
-				if (cli->IsError())
 				{
 					DEL_CLASS(cli);
 					cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+					status->failCnt++;
 				}
 			}
-			else
-			{
-				DEL_CLASS(cli);
-				cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
-				status->failCnt++;
-			}
+			DEL_CLASS(cli);
 		}
-		DEL_CLASS(cli);
-	}
-	else
-	{
-		while (!status->threadToStop)
+		else
 		{
-			url = CSTR(URL);
-			if (Sync::Interlocked::Decrement(&connLeft) < 0)
-				break;
-			respClk->Start();
-			cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
-			if (cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
+			while (!status->threadToStop)
 			{
-				cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
-				cli->EndRequest(&timeReq, &timeResp);
-				if (timeResp >= 0)
+				url = CSTR(URL);
+				if (Sync::Interlocked::Decrement(&connLeft) < 0)
+					break;
+				respClk.Start();
+				cli = Net::HTTPClient::CreateClient(sockf, ssl, CSTR_NULL, true, url.StartsWith(UTF8STRC("https://")));
+				if (cli->Connect(url, Net::WebUtil::RequestMethod::HTTP_GET, &timeDNS, &timeConn, false))
 				{
-					while ((recvSize = cli->Read(buff, 2048)) > 0)
+					cli->AddHeaderC(CSTR("Connection"), CSTR("keep-alive"));
+					cli->EndRequest(&timeReq, &timeResp);
+					if (timeResp >= 0)
 					{
-						status->recvSize += recvSize;
+						while ((recvSize = cli->Read(buff, 2048)) > 0)
+						{
+							status->recvSize += recvSize;
+						}
+						respT = respClk.GetTimeDiff();
+						status->hdrSize += cli->GetHdrLen();
+						status->connCnt++;
+						status->totalRespTime += respT;
+						if (respT > status->maxRespTime)
+						{
+							status->maxRespTime = respT;
+						}
 					}
-					respT = respClk->GetTimeDiff();
-					status->hdrSize += cli->GetHdrLen();
-					status->connCnt++;
-					status->totalRespTime += respT;
-					if (respT > status->maxRespTime)
+					else
 					{
-						status->maxRespTime = respT;
+						status->failCnt++;
 					}
 				}
 				else
 				{
 					status->failCnt++;
 				}
+				DEL_CLASS(cli);
 			}
-			else
-			{
-				status->failCnt++;
-			}
-			DEL_CLASS(cli);
 		}
 	}
-	DEL_CLASS(respClk);
 	status->threadToStop = false;
 	status->threadRunning = false;
 	cnt = Interlocked_DecrementU32(&threadCurrCnt);
@@ -254,8 +256,11 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	threadCurrCnt = 0;
 	connLeft = (Int32)paramConnCnt;
 	t = 0;
-	NEW_CLASS(clk, Manage::HiResClock());
-	NEW_CLASS(sockf, Net::OSSocketFactory(true));
+
+	Manage::HiResClock localClk;
+	Net::OSSocketFactory localSockf(true);
+	clk = &localClk;
+	sockf = &localSockf;
 	ssl = Net::SSLEngineFactory::Create(sockf, true);
 	ThreadStatus *threadStatus = MemAlloc(ThreadStatus, threadCnt);
 	clk->Start();
@@ -270,7 +275,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		threadStatus[i].maxRespTime = 0;
 		threadStatus[i].recvSize = 0;
 		threadStatus[i].hdrSize = 0;
-		NEW_CLASS(threadStatus[i].evt, Sync::Event(true));
 		Sync::Thread::Create(ProcessThread, &threadStatus[i]);
 	}
 	while (threadCurrCnt > 0 || connLeft > 0)
@@ -286,7 +290,6 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	i = threadCnt;
 	while (i-- > 0)
 	{
-		DEL_CLASS(threadStatus[i].evt);
 		connCnt += threadStatus[i].connCnt;
 		failCnt += threadStatus[i].failCnt;
 		recvSize += threadStatus[i].recvSize;
@@ -325,7 +328,5 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 	printf("Transfer/s = %s\r\n", sbuff);
 	
 	SDEL_CLASS(ssl);
-	DEL_CLASS(sockf);
-	DEL_CLASS(clk);
 	return 0;
 }

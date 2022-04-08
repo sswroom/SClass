@@ -2189,18 +2189,19 @@ Int64 Text::StrOct2Int64(const UTF8Char *str)
 
 UOSInt Text::StrSplit(UTF8Char **strs, UOSInt maxStrs, UTF8Char *strToSplit, UTF8Char splitChar)
 {
-	UOSInt i = 0;
+	UOSInt i = 1;
 	UTF8Char c;
-	strs[i++] = strToSplit;
-	while (i < maxStrs)
+	strs[0] = strToSplit;
+	while ((c = *strToSplit++) != 0)
 	{
-		c = *strToSplit++;
-		if (c == 0)
-			break;
 		if (c == splitChar)
 		{
 			strToSplit[-1] = 0;
 			strs[i++] = strToSplit;
+			if (i >= maxStrs)
+			{
+				break;
+			}
 		}
 	}
 	return i;
