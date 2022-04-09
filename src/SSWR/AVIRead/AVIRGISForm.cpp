@@ -271,10 +271,10 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseMove(void *userObj, OSInt x
 	me->txtUTMGrid->SetText(CSTRP(sbuff, sptr));
 
 	UOSInt i;
-	i = me->mouseMoveHdlrs->GetCount();
+	i = me->mouseMoveHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		me->mouseMoveHdlrs->GetItem(i)(me->mouseMoveObjs->GetItem(i), x, y);
+		me->mouseMoveHdlrs.GetItem(i)(me->mouseMoveObjs.GetItem(i), x, y);
 	}
 }
 
@@ -283,10 +283,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseDown(void *userObj, OSInt x
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	Bool ret = false;
 	UOSInt i;
-	i = me->mouseDownHdlrs->GetCount();
+	i = me->mouseDownHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		ret = me->mouseDownHdlrs->GetItem(i)(me->mouseDownObjs->GetItem(i), x, y);
+		ret = me->mouseDownHdlrs.GetItem(i)(me->mouseDownObjs.GetItem(i), x, y);
 		if (ret)
 			return true;
 	}
@@ -298,10 +298,10 @@ Bool __stdcall SSWR::AVIRead::AVIRGISForm::OnMapMouseUp(void *userObj, OSInt x, 
 	AVIRead::AVIRGISForm *me = (AVIRead::AVIRGISForm*)userObj;
 	Bool ret = false;
 	UOSInt i;
-	i = me->mouseUpHdlrs->GetCount();
+	i = me->mouseUpHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		ret = me->mouseUpHdlrs->GetItem(i)(me->mouseUpObjs->GetItem(i), x, y);
+		ret = me->mouseUpHdlrs.GetItem(i)(me->mouseUpObjs.GetItem(i), x, y);
 		if (ret)
 			return true;
 	}
@@ -397,7 +397,7 @@ void __stdcall SSWR::AVIRead::AVIRGISForm::OnCtrlFormClosed(void *userObj, UI::G
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnSubFormClosed(void *userObj, UI::GUIForm *frm)
 {
 	SSWR::AVIRead::AVIRGISForm *me = (SSWR::AVIRead::AVIRGISForm*)userObj;
-	me->subForms->RemoveAt(me->subForms->IndexOf(frm));
+	me->subForms.RemoveAt(me->subForms.IndexOf(frm));
 }
 
 void __stdcall SSWR::AVIRead::AVIRGISForm::OnMapLayerUpdated(void *userObj)
@@ -564,32 +564,32 @@ void SSWR::AVIRead::AVIRGISForm::HKOPortal(Text::CString listFile, Text::CString
 	UTF8Char *timeStrEnd;
 	Text::StringBuilderUTF8 sb;
 	Net::HTTPClient *cli;
-	Text::UTF8Reader *reader;
 	dt.SetCurrTimeUTC();
 	sb.AppendC(UTF8STRC("https://maps.weather.gov.hk/gis-portal/web/data/dirList/"));
 	sb.Append(listFile);
 	sb.AppendC(UTF8STRC("?t="));
 	sb.AppendI64(dt.ToTicks());
 	cli = Net::HTTPClient::CreateConnect(this->core->GetSocketFactory(), this->ssl, sb.ToCString(), Net::WebUtil::RequestMethod::HTTP_GET, false);
-	NEW_CLASS(reader, Text::UTF8Reader(cli));
-	dateStr = 0;
-	dateStrEnd = 0;
-	timeStr = 0;
-	timeStrEnd = 0;
-	while (true)
 	{
-		sb.ClearStr();
-		if (!reader->ReadLine(&sb, 4096))
-			break;
-		if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.ToString(), ',') == 2)
+		Text::UTF8Reader reader(cli);
+		dateStr = 0;
+		dateStrEnd = 0;
+		timeStr = 0;
+		timeStrEnd = 0;
+		while (true)
 		{
-			dateStr = sbuff;
-			dateStrEnd = Text::StrConcat(dateStr, sarr[0]);
-			timeStr = dateStrEnd + 1;
-			timeStrEnd = Text::StrConcat(timeStr, sarr[1]);
+			sb.ClearStr();
+			if (!reader.ReadLine(&sb, 4096))
+				break;
+			if (sb.GetLength() < 30 && Text::StrSplit(sarr, 3, sb.ToString(), ',') == 2)
+			{
+				dateStr = sbuff;
+				dateStrEnd = Text::StrConcat(dateStr, sarr[0]);
+				timeStr = dateStrEnd + 1;
+				timeStrEnd = Text::StrConcat(timeStr, sarr[1]);
+			}
 		}
 	}
-	DEL_CLASS(reader);
 	DEL_CLASS(cli);
 	if (dateStr && timeStr)
 	{
@@ -636,21 +636,13 @@ SSWR::AVIRead::AVIRGISForm::AVIRGISForm(UI::GUIClientControl *parent, UI::GUICor
 	this->currTime = 0;
 	this->printer = 0;
 	this->currCursor = UI::GUIControl::CT_ARROW;
-	NEW_CLASS(this->mouseDownHdlrs, Data::ArrayList<MouseEvent>());
-	NEW_CLASS(this->mouseDownObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->mouseUpHdlrs, Data::ArrayList<MouseEvent>());
-	NEW_CLASS(this->mouseUpObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->mouseMoveHdlrs, Data::ArrayList<MouseEvent>());
-	NEW_CLASS(this->mouseMoveObjs, Data::ArrayList<void*>());
 	this->mapUpdTChanged = false;
 	this->mapUpdT = 0;
 	this->pauseUpdate = false;
 	this->mapLyrUpdated = false;
 
 	this->wgs84CSys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
-	NEW_CLASS(this->ta, Text::TextAnalyzer());
-	NEW_CLASS(this->subForms, Data::ArrayList<UI::GUIForm*>());
-	UpdateTitle();
+	this->UpdateTitle();
 	this->SetFont(0, 0, 8.25, false);
 
 	NEW_CLASS(this->pnlControl, UI::GUIPanel(ui, this));
@@ -798,23 +790,15 @@ SSWR::AVIRead::AVIRGISForm::~AVIRGISForm()
 	UOSInt i;
 	this->pauseUpdate = true;
 	this->CloseCtrlForm(true);
-	i = this->subForms->GetCount();
+	i = this->subForms.GetCount();
 	while (i-- > 0)
 	{
-		this->subForms->GetItem(i)->Close();
+		this->subForms.GetItem(i)->Close();
 	}
-	DEL_CLASS(this->subForms);
-	DEL_CLASS(this->mouseDownHdlrs);
-	DEL_CLASS(this->mouseDownObjs);
-	DEL_CLASS(this->mouseUpHdlrs);
-	DEL_CLASS(this->mouseUpObjs);
-	DEL_CLASS(this->mouseMoveHdlrs);
-	DEL_CLASS(this->mouseMoveObjs);
 	DEL_CLASS(this->mnuLayer);
 	DEL_CLASS(this->mnuGroup);
 	DEL_CLASS(this->envRenderer);
 	DEL_CLASS(this->env);
-	DEL_CLASS(this->ta);
 	DEL_CLASS(this->wgs84CSys);
 	SDEL_CLASS(this->ssl);
 	this->ClearChildren();
@@ -998,7 +982,7 @@ void SSWR::AVIRead::AVIRGISForm::EventMenuClicked(UInt16 cmdId)
 			Map::MapEnv::LayerItem setting;
 			this->env->GetLayerProp(&setting, ind->group, ind->index);
 			Map::MapEnv::LayerItem *layer = (Map::MapEnv::LayerItem*)ind->item;
-			Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(ta, setting.labelCol);
+			Text::SearchIndexer *searching = layer->layer->CreateSearchIndexer(&this->ta, setting.labelCol);
 			if (searching)
 			{
 				this->AddSubForm(NEW_CLASS_D(AVIRGISSearchForm(0, ui, this->core, this, layer->layer, searching, setting.labelCol, setting.flags)));
@@ -1619,7 +1603,7 @@ void SSWR::AVIRead::AVIRGISForm::AddLayers(::Data::ArrayList<Map::IMapDrawLayer*
 void SSWR::AVIRead::AVIRGISForm::AddSubForm(UI::GUIForm *frm)
 {
 	frm->HandleFormClosed(OnSubFormClosed, this);
-	this->subForms->Add(frm);
+	this->subForms.Add(frm);
 	frm->Show();
 }
 
@@ -1696,50 +1680,50 @@ void SSWR::AVIRead::AVIRGISForm::SetMapCursor(UI::GUIControl::CursorType curType
 
 void SSWR::AVIRead::AVIRGISForm::HandleMapMouseDown(MouseEvent evt, void *userObj)
 {
-	this->mouseDownHdlrs->Add(evt);
-	this->mouseDownObjs->Add(userObj);
+	this->mouseDownHdlrs.Add(evt);
+	this->mouseDownObjs.Add(userObj);
 }
 
 void SSWR::AVIRead::AVIRGISForm::HandleMapMouseUp(MouseEvent evt, void *userObj)
 {
-	this->mouseUpHdlrs->Add(evt);
-	this->mouseUpObjs->Add(userObj);
+	this->mouseUpHdlrs.Add(evt);
+	this->mouseUpObjs.Add(userObj);
 }
 
 void SSWR::AVIRead::AVIRGISForm::HandleMapMouseMove(MouseEvent evt, void *userObj)
 {
-	this->mouseMoveHdlrs->Add(evt);
-	this->mouseMoveObjs->Add(userObj);
+	this->mouseMoveHdlrs.Add(evt);
+	this->mouseMoveObjs.Add(userObj);
 }
 
 void SSWR::AVIRead::AVIRGISForm::UnhandleMapMouse(void *userObj)
 {
 	UOSInt i;
-	i = this->mouseDownObjs->GetCount();
+	i = this->mouseDownObjs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseDownObjs->GetItem(i))
+		if (userObj == this->mouseDownObjs.GetItem(i))
 		{
-			this->mouseDownHdlrs->RemoveAt(i);
-			this->mouseDownObjs->RemoveAt(i);
+			this->mouseDownHdlrs.RemoveAt(i);
+			this->mouseDownObjs.RemoveAt(i);
 		}
 	}
-	i = this->mouseUpObjs->GetCount();
+	i = this->mouseUpObjs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseUpObjs->GetItem(i))
+		if (userObj == this->mouseUpObjs.GetItem(i))
 		{
-			this->mouseUpHdlrs->RemoveAt(i);
-			this->mouseUpObjs->RemoveAt(i);
+			this->mouseUpHdlrs.RemoveAt(i);
+			this->mouseUpObjs.RemoveAt(i);
 		}
 	}
-	i = this->mouseMoveObjs->GetCount();
+	i = this->mouseMoveObjs.GetCount();
 	while (i-- > 0)
 	{
-		if (userObj == this->mouseMoveObjs->GetItem(i))
+		if (userObj == this->mouseMoveObjs.GetItem(i))
 		{
-			this->mouseMoveHdlrs->RemoveAt(i);
-			this->mouseMoveObjs->RemoveAt(i);
+			this->mouseMoveHdlrs.RemoveAt(i);
+			this->mouseMoveObjs.RemoveAt(i);
 		}
 	}
 	if (this->currCursor != UI::GUIControl::CT_ARROW)

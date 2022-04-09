@@ -28,7 +28,7 @@ namespace SSWR
 			UI::GUIForm *ctrlForm;
 			UI::GUITreeView::TreeItem *ctrlItem;
 			Media::ColorManagerSess *colorSess;
-			Data::ArrayList<UI::GUIForm *> *subForms;
+			Data::ArrayList<UI::GUIForm *> subForms;
 			UI::GUIMapControl *mapCtrl;
 			UI::GUIMapTreeView *mapTree;
 			UI::GUIHSplitter *splitter;
@@ -49,7 +49,7 @@ namespace SSWR
 			Map::DrawMapRenderer *envRenderer;
 			Bool scaleChanging;
 			UI::GUITreeView::TreeItem *popNode;
-			Text::TextAnalyzer *ta;
+			Text::TextAnalyzer ta;
 			Math::GeographicCoordinateSystem *wgs84CSys;
 
 			Bool useTime;
@@ -61,12 +61,12 @@ namespace SSWR
 			Double mapUpdT;
 			Bool pauseUpdate;
 
-			Data::ArrayList<MouseEvent> *mouseDownHdlrs;
-			Data::ArrayList<void*> *mouseDownObjs;
-			Data::ArrayList<MouseEvent> *mouseUpHdlrs;
-			Data::ArrayList<void *> *mouseUpObjs;
-			Data::ArrayList<MouseEvent> *mouseMoveHdlrs;
-			Data::ArrayList<void *> *mouseMoveObjs;
+			Data::ArrayList<MouseEvent> mouseDownHdlrs;
+			Data::ArrayList<void*> mouseDownObjs;
+			Data::ArrayList<MouseEvent> mouseUpHdlrs;
+			Data::ArrayList<void *> mouseUpObjs;
+			Data::ArrayList<MouseEvent> mouseMoveHdlrs;
+			Data::ArrayList<void *> mouseMoveObjs;
 
 			Media::Printer *printer;
 

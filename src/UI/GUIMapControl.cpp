@@ -747,7 +747,7 @@ UI::GUIMapControl::GUIMapControl(UI::GUICore *ui, UI::GUIClientControl *parent, 
 
 	this->view = view;
 	view->SetDPI(this->hdpi, this->ddpi);
-	view->ChangeViewXY(this->currWidth, this->currHeight, 114.2, 22.4, 10000);
+	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 114.2, 22.4, 10000);
 	this->SetBGColor(bgColor);
 	if (this->renderer)
 	{
@@ -790,7 +790,7 @@ UI::GUIMapControl::GUIMapControl(GUICore *ui, UI::GUIClientControl *parent, Medi
 
 	this->view = mapEnv->CreateMapView(640, 480);
 	view->SetDPI(this->hdpi, this->ddpi);
-	view->ChangeViewXY(this->currWidth, this->currHeight, 114.2, 22.4, 10000);
+	view->ChangeViewXY(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 114.2, 22.4, 10000);
 
 	this->SetBGColor(bgColor);
 	if (this->renderer)
@@ -835,7 +835,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 {
 	Sync::MutexUsage mutUsage(&this->drawMut);
 	this->GetSizeP(&this->currWidth, &this->currHeight);
-	this->view->UpdateSize(this->currWidth, this->currHeight);
+	this->view->UpdateSize(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight));
 	if (this->bgImg)
 	{
 		this->eng->DeleteImage(this->bgImg);
@@ -1142,7 +1142,7 @@ void UI::GUIMapControl::UpdateMapView(Map::MapView *view)
 	{
 		DEL_CLASS(this->view);
 		this->view = view;
-		this->view->UpdateSize(this->currWidth, this->currHeight);
+		this->view->UpdateSize(UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight));
 		this->EventScaleChanged(this->view->GetMapScale());
 	}
 }

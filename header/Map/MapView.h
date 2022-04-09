@@ -8,17 +8,17 @@ namespace Map
 	class MapView
 	{
 	protected:
-		UOSInt scnWidth;
-		UOSInt scnHeight;
+		Double scnWidth;
+		Double scnHeight;
 		
 	public:
-		MapView(UOSInt scnWidth, UOSInt scnHeight);
+		MapView(Double scnWidth, Double scnHeight);
 		virtual ~MapView();
 
-		virtual void ChangeViewXY(UOSInt scnWidth, UOSInt scnHeight, Double centX, Double centY, Double scale) = 0;
+		virtual void ChangeViewXY(Double scnWidth, Double scnHeight, Double centX, Double centY, Double scale) = 0;
 		virtual void SetCenterXY(Double x, Double y) = 0;
 		virtual void SetMapScale(Double scale) = 0;
-		virtual void UpdateSize(UOSInt width, UOSInt height) = 0;
+		virtual void UpdateSize(Double width, Double height) = 0;
 		virtual void SetDPI(Double hdpi, Double ddpi) = 0;
 
 		virtual Double GetLeftX() = 0;
@@ -40,8 +40,8 @@ namespace Map
 		virtual void ScnXYToMapXY(Double scnX, Double scnY, Double *mapX, Double *mapY) = 0;
 		virtual Map::MapView *Clone() = 0;
 
-		UOSInt GetScnWidth();
-		UOSInt GetScnHeight();
+		Double GetScnWidth();
+		Double GetScnHeight();
 
 		void SetDestImage(Media::DrawImage *img);
 		void ToPointCnt(Int32 *parts, Int32 nParts, Int32 nPoints);

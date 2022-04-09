@@ -57,10 +57,10 @@ namespace Media
 			void Set(TransferType tranType, Double *params, UOSInt paramCnt);
 			void Set(Media::LUT *lut);
 			void Set(const TransferParam *tran);
-			TransferType GetTranType() const;
-			Double GetGamma() const;
-			Media::LUT *GetLUT();
-			const Media::LUT *GetLUTRead() const;
+			TransferType GetTranType() const { return this->tranType; }
+			Double GetGamma() const { return this->gamma; }
+			Media::LUT *GetLUT() { return this->lut; }
+			const Media::LUT *GetLUTRead() const { return this->lut; }
 			Bool Equals(const TransferParam *tran);
 		};
 	}

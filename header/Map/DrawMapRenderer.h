@@ -47,8 +47,9 @@ namespace Map
 			Media::DrawBrush *buffBrush;
 		} DrawFontStyle;
 
-		typedef struct
+		class DrawEnv
 		{
+		public:
 			Map::MapEnv *env;
 			Media::DrawImage *img;
 			Map::MapView *view;
@@ -62,10 +63,10 @@ namespace Map
 			DrawFontStyle *fontStyles;
 			UInt32 imgDurMS;
 
-			Data::ArrayListInt64 *idArr;
-			Data::ArrayList<Media::DrawFont*> *layerFont;
-			Data::ArrayList<Media::DrawBrush*> *layerFontColor;
-		} DrawEnv;
+			Data::ArrayListInt64 idArr;
+			Data::ArrayList<Media::DrawFont*> layerFont;
+			Data::ArrayList<Media::DrawBrush*> layerFontColor;
+		};
 
 	private:
 		Map::MapScheduler *mapSch;

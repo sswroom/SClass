@@ -99,7 +99,7 @@ Int64 Map::IMapDrawLayer::GetTimeEndTS()
 	return 0;
 }
 
-Map::MapView *Map::IMapDrawLayer::CreateMapView(UOSInt width, UOSInt height)
+Map::MapView *Map::IMapDrawLayer::CreateMapView(Double width, Double height)
 {
 	Map::MapView *view;
 	Double xMin;

@@ -140,26 +140,6 @@ void Media::CS::TransferParam::Set(const TransferParam *tran)
 	this->gamma = tran->gamma;
 }
 
-Media::CS::TransferType Media::CS::TransferParam::GetTranType() const
-{
-	return this->tranType;
-}
-
-Double Media::CS::TransferParam::GetGamma() const
-{
-	return this->gamma;
-}
-
-Media::LUT *Media::CS::TransferParam::GetLUT()
-{
-	return this->lut;
-}
-
-const Media::LUT *Media::CS::TransferParam::GetLUTRead() const
-{
-	return this->lut;
-}
-
 Bool Media::CS::TransferParam::Equals(const TransferParam *tran)
 {
 	if (this->tranType != tran->tranType)

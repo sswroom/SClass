@@ -2,6 +2,7 @@
 #include "IO/FileStream.h"
 #include "IO/MemoryStream.h"
 #include "IO/Path.h"
+#include "IO/StmData/BufferedStreamData.h"
 #include "IO/StmData/FileData.h"
 #include "Math/Math.h"
 #include "Map/OSM/OSMTileMap.h"
@@ -266,12 +267,12 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			if (dt.CompareTo(&currTime) > 0)
 			{
 				IO::ParserType pt;
-				pobj = parsers->ParseFile(fd, &pt);
+				IO::StmData::BufferedStreamData bsd(fd);
+				pobj = parsers->ParseFile(&bsd, &pt);
 				if (pobj)
 				{
 					if (pt == IO::ParserType::ImageList)
 					{
-						DEL_CLASS(fd);
 						return (Media::ImageList*)pobj;
 					}
 					DEL_CLASS(pobj);
@@ -280,9 +281,13 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 			else
 			{
 				hasTime = true;
+				DEL_CLASS(fd);
 			}
 		}
-		DEL_CLASS(fd);
+		else
+		{
+			DEL_CLASS(fd);
+		}
 	}
 	else if (this->spkg)
 	{
@@ -296,17 +301,16 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		if (fd)
 		{
 			IO::ParserType pt;
-			pobj = parsers->ParseFile(fd, &pt);
+			IO::StmData::BufferedStreamData bsd(fd);
+			pobj = parsers->ParseFile(&bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
 				{
-					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;
 				}
 				DEL_CLASS(pobj);
 			}
-			DEL_CLASS(fd);
 //			printf("Get SPKG Img error parsing: %s\r\n", filePathU);
 		}
 		else
@@ -404,18 +408,21 @@ Media::ImageList *Map::OSM::OSMTileMap::LoadTileImage(UOSInt level, Int64 imgId,
 		if (fd->GetDataSize() > 0)
 		{
 			IO::ParserType pt;
-			pobj = parsers->ParseFile(fd, &pt);
+			IO::StmData::BufferedStreamData bsd(fd);
+			pobj = parsers->ParseFile(&bsd, &pt);
 			if (pobj)
 			{
 				if (pt == IO::ParserType::ImageList)
 				{
-					DEL_CLASS(fd);
 					return (Media::ImageList*)pobj;
 				}
 				DEL_CLASS(pobj);
 			}
 		}
-		DEL_CLASS(fd);
+		else
+		{
+			DEL_CLASS(fd);
+		}
 	}
 	return 0;
 }

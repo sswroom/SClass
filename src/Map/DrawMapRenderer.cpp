@@ -1438,11 +1438,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
-								UOSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont.GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont->Add(f);
-								denv->layerFontColor->Add(b);
+								denv->layerFont.Add(f);
+								denv->layerFontColor.Add(b);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 							}
 						}
@@ -1471,11 +1471,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
-								UOSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont.GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont->Add(f);
-								denv->layerFontColor->Add(b);
+								denv->layerFont.Add(f);
+								denv->layerFontColor.Add(b);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, layerType, layer.fontType);
 							}
 						}
@@ -1532,11 +1532,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
-								UOSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont.GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont->Add(f);
-								denv->layerFontColor->Add(b);
+								denv->layerFont.Add(f);
+								denv->layerFontColor.Add(b);
 								if (pimg)
 								{
 									DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispWidth) * denv->img->GetHDPI() / pimg->info.hdpi), (UOSInt)Double2Int32(UOSInt2Double(pimg->info.dispHeight) * denv->img->GetVDPI() / pimg->info.vdpi), layerType, layer.fontType);
@@ -1584,11 +1584,11 @@ void Map::DrawMapRenderer::DrawLayers(Map::DrawMapRenderer::DrawEnv *denv, Map::
 							}
 							else if (layer.fontType == Map::MapEnv::FontType::LayerStyle)
 							{
-								UOSInt fs = denv->layerFont->GetCount();
+								UOSInt fs = denv->layerFont.GetCount();
 								Media::DrawFont *f = denv->img->NewFontPt(layer.fontName->ToCString(), layer.fontSizePt, Media::DrawEngine::DFS_NORMAL, 0);
 								Media::DrawBrush *b = denv->img->NewBrushARGB(this->colorConv->ConvRGB8(layer.fontColor));
-								denv->layerFont->Add(f);
-								denv->layerFontColor->Add(b);
+								denv->layerFont.Add(f);
+								denv->layerFontColor.Add(b);
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYLINE3D);
 								DrawLabel(denv, layer.layer, fs, layer.labelCol, layer.priority, layer.flags, 0, 0, Map::DRAW_LAYER_POLYLINE3D, layer.fontType);
 								layer.layer->SetMixedType(Map::DRAW_LAYER_POLYGON);
@@ -1623,7 +1623,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
 
-	denv->idArr->Clear();
+	denv->idArr.Clear();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
 		Double x1;
@@ -1636,9 +1636,9 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		y2 = denv->view->GetBottomY();
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x1, y1, 0, &x1, &y1, 0);
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(denv->idArr, 0, x1, y1, x2, y2, true);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, x1, y1, x2, y2, true);
 
-		if ((i = denv->idArr->GetCount()) > 0)
+		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
 			UOSInt thick;
@@ -1662,7 +1662,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			i = 0;
 			while (i < j)
 			{
-				thisId = denv->idArr->GetItem(i);
+				thisId = denv->idArr.GetItem(i);
 				if (thisId != lastId)
 				{
 					lastId = thisId;
@@ -1693,9 +1693,9 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
 
-		if ((i = denv->idArr->GetCount()) > 0)
+		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
 			UOSInt thick;
@@ -1719,7 +1719,7 @@ void Map::DrawMapRenderer::DrawPLLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			i = 0;
 			while (i < j)
 			{
-				thisId = denv->idArr->GetItem(i);
+				thisId = denv->idArr.GetItem(i);
 				if (thisId != lastId)
 				{
 					lastId = thisId;
@@ -1758,7 +1758,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	Map::DrawObjectL *dobj;
 	Math::CoordinateSystem *lyrCSys = layer->GetCoordinateSystem();
 	Math::CoordinateSystem *envCSys = this->env->GetCoordinateSystem();
-	denv->idArr->Clear();
+	denv->idArr.Clear();
 	if (lyrCSys != 0 && envCSys != 0 && !lyrCSys->Equals(envCSys))
 	{
 		Double x1;
@@ -1771,9 +1771,9 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 		y2 = denv->view->GetBottomY();
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x1, y1, 0, &x1, &y1, 0);
 		Math::CoordinateSystem::ConvertXYZ(envCSys, lyrCSys, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(denv->idArr, 0, x1, y1, x2, y2, true);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, x1, y1, x2, y2, true);
 
-		if ((i = denv->idArr->GetCount()) > 0)
+		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
 			UOSInt thick;
@@ -1789,7 +1789,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			lastId = -1;
 			while (i-- > 0)
 			{
-				thisId = denv->idArr->GetItem(i);
+				thisId = denv->idArr.GetItem(i);
 				if (thisId != lastId)
 				{
 					lastId = thisId;
@@ -1819,9 +1819,9 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
+		layer->GetObjectIdsMapXY(&denv->idArr, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), true);
 
-		if ((i = denv->idArr->GetCount()) > 0)
+		if ((i = denv->idArr.GetCount()) > 0)
 		{
 			UInt32 color;
 			UOSInt thick;
@@ -1837,7 +1837,7 @@ void Map::DrawMapRenderer::DrawPGLayer(Map::DrawMapRenderer::DrawEnv *denv, Map:
 			lastId = -1;
 			while (i-- > 0)
 			{
-				thisId = denv->idArr->GetItem(i);
+				thisId = denv->idArr.GetItem(i);
 				if (thisId != lastId)
 				{
 					lastId = thisId;
@@ -2203,7 +2203,6 @@ void Map::DrawMapRenderer::DrawLabel(DrawEnv *denv, Map::IMapDrawLayer *layer, U
 
 void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *layer)
 {
-	Data::ArrayListInt64 *arri;
 	Math::Vector2D *vec;
 	Math::VectorImage *vimg;
 	UOSInt i;
@@ -2213,7 +2212,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	void *sess;
 	geoConv = !denv->env->GetCoordinateSystem()->Equals(coord);
 
-	NEW_CLASS(arri, Data::ArrayListInt64());
+	Data::ArrayListInt64 arri;
 	if (this->drawType == Map::DrawMapRenderer::DT_PIXELDRAW)
 	{
 		layer->SetCurrScale(denv->view->GetMapScale());
@@ -2226,19 +2225,19 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		Double y2 = denv->view->GetBottomY();
 		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, x1, y1, 0, &x1, &y1, 0);
 		Math::CoordinateSystem::ConvertXYZ(denv->env->GetCoordinateSystem(), coord, x2, y2, 0, &x2, &y2, 0);
-		layer->GetObjectIdsMapXY(arri, 0, x1, y1, x2, y2, false);
+		layer->GetObjectIdsMapXY(&arri, 0, x1, y1, x2, y2, false);
 	}
 	else
 	{
-		layer->GetObjectIdsMapXY(arri, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), false);
+		layer->GetObjectIdsMapXY(&arri, 0, denv->view->GetLeftX(), denv->view->GetTopY(), denv->view->GetRightX(), denv->view->GetBottomY(), false);
 	}
 	Data::ArrayList<Math::VectorImage *> imgList;
 	sess = layer->BeginGetObject();
 	i = 0;
-	j = arri->GetCount();
+	j = arri.GetCount();
 	while (i < j)
 	{
-		vec = layer->GetNewVectorById(sess, arri->GetItem(i));
+		vec = layer->GetNewVectorById(sess, arri.GetItem(i));
 		if (vec)
 		{
 			if (vec->GetVectorType() == Math::Vector2D::VectorType::Image)
@@ -2260,33 +2259,27 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 	j = imgList.GetCount();
 	while (i < j)
 	{
-		Double minX;
-		Double minY;
-		Double maxX;
-		Double maxY;
-		Double scnX;
-		Double scnY;
-		Double scnX2;
-		Double scnY2;
+		Double mapCoords[4];
+		Double scnCoords[4];
 		vimg = imgList.GetItem(i);
 		if (vimg->IsScnCoord())
 		{
-			vimg->GetScreenBounds(denv->view->GetScnWidth(), denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnX, &scnY, &scnX2, &scnY2);
+			vimg->GetScreenBounds(denv->view->GetScnWidth(), denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0], &scnCoords[1], &scnCoords[2], &scnCoords[3]);
 		}
 		else
 		{
-			vimg->GetBounds(&minX, &minY, &maxX, &maxY);
+			vimg->GetBounds(&mapCoords[0], &mapCoords[3], &mapCoords[2], &mapCoords[1]);
 			if (geoConv)
 			{
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), minX, maxY, 0, &minX, &maxY, 0);
-				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), maxX, minY, 0, &maxX, &minY, 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[0], mapCoords[1], 0, &mapCoords[0], &mapCoords[1], 0);
+				Math::CoordinateSystem::ConvertXYZ(coord, denv->env->GetCoordinateSystem(), mapCoords[2], mapCoords[3], 0, &mapCoords[2], &mapCoords[3], 0);
 			}
-			denv->view->MapXYToScnXY(minX, maxY, &scnX, &scnY);
-			denv->view->MapXYToScnXY(maxX, minY, &scnX2, &scnY2);
+			denv->view->MapXYToScnXY(mapCoords[0], mapCoords[1], &scnCoords[0], &scnCoords[1]);
+			denv->view->MapXYToScnXY(mapCoords[2], mapCoords[3], &scnCoords[2], &scnCoords[3]);
 		}
 		UInt32 imgTimeMS;
-		Media::StaticImage *simg = vimg->GetImage(scnX2 - scnX, scnY2 - scnY, &imgTimeMS);
-		DrawImageObject(denv, simg, scnX, scnY, scnX2, scnY2, vimg->GetSrcAlpha());
+		Media::StaticImage *simg = vimg->GetImage(scnCoords[2] - scnCoords[0], scnCoords[3] - scnCoords[1], &imgTimeMS);
+		DrawImageObject(denv, simg, scnCoords[0], scnCoords[1], scnCoords[2], scnCoords[3], vimg->GetSrcAlpha());
 		if (imgTimeMS != 0)
 		{
 			if (denv->imgDurMS == 0)
@@ -2302,7 +2295,6 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		DEL_CLASS(vimg);
 		i++;
 	}
-	DEL_CLASS(arri);
 }
 
 void Map::DrawMapRenderer::DrawImageObject(DrawEnv *denv, Media::StaticImage *img, Double scnX1, Double scnY1, Double scnX2, Double scnY2, Double srcAlpha)
@@ -2438,7 +2430,7 @@ void Map::DrawMapRenderer::GetCharsSize(DrawEnv *denv, Double *size, Text::CStri
 	Media::DrawFont *df;
 	if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
-		df = denv->layerFont->GetItem(fontStyle);
+		df = denv->layerFont.GetItem(fontStyle);
 		buffSize = 0;
 	}
 	else
@@ -2524,8 +2516,8 @@ void Map::DrawMapRenderer::DrawChars(DrawEnv *denv, Text::CString str1, Double s
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont->GetItem(fontStyle);
-		db = denv->layerFontColor->GetItem(fontStyle);
+		df = denv->layerFont.GetItem(fontStyle);
+		db = denv->layerFontColor.GetItem(fontStyle);
 		if (df == 0 || db == 0)
 			return;
 	}
@@ -2754,8 +2746,8 @@ void Map::DrawMapRenderer::DrawCharsL(Map::DrawMapRenderer::DrawEnv *denv, Text:
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont->GetItem(fontStyle);
-		db = denv->layerFontColor->GetItem(fontStyle);
+		df = denv->layerFont.GetItem(fontStyle);
+		db = denv->layerFontColor.GetItem(fontStyle);
 		if (df == 0 || db == 0)
 			return;
 	}
@@ -3341,8 +3333,8 @@ void Map::DrawMapRenderer::DrawCharsLA(DrawEnv *denv, Text::CString str1, Double
 	else if (fontType == Map::MapEnv::FontType::LayerStyle)
 	{
 		font = 0;
-		df = denv->layerFont->GetItem(fontStyle);
-		db = denv->layerFontColor->GetItem(fontStyle);
+		df = denv->layerFont.GetItem(fontStyle);
+		db = denv->layerFontColor.GetItem(fontStyle);
 		if (df == 0 || db == 0)
 			return;
 	}
@@ -3949,8 +3941,6 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 	denv.fontStyleCnt = env->GetFontStyleCount();
 	denv.fontStyles = MemAlloc(Map::DrawMapRenderer::DrawFontStyle, denv.fontStyleCnt);
 	denv.imgDurMS = 0;
-	NEW_CLASS(denv.layerFont, Data::ArrayList<Media::DrawFont*>());
-	NEW_CLASS(denv.layerFontColor, Data::ArrayList<Media::DrawBrush*>());
 	i = denv.fontStyleCnt;
 	while (i-- > 0)
 	{
@@ -3975,7 +3965,6 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 			font->buffBrush = 0;
 		}
 	}
-	NEW_CLASS(denv.idArr, Data::ArrayListInt64());
 
 	this->DrawLayers(&denv, 0);
 	DrawLabels(&denv);
@@ -3991,16 +3980,13 @@ void Map::DrawMapRenderer::DrawMap(Media::DrawImage *img, Map::MapView *view, UI
 			img->DelBrush(font->buffBrush);
 		}
 	}
-	i = denv.layerFont->GetCount();
+	i = denv.layerFont.GetCount();
 	while (i-- > 0)
 	{
-		img->DelFont(denv.layerFont->GetItem(i));
-		img->DelBrush(denv.layerFontColor->GetItem(i));
+		img->DelFont(denv.layerFont.GetItem(i));
+		img->DelBrush(denv.layerFontColor.GetItem(i));
 	}
-	DEL_CLASS(denv.layerFont);
-	DEL_CLASS(denv.layerFontColor);
 	MemFree(denv.fontStyles);
-	DEL_CLASS(denv.idArr);
 	MemFree(denv.objBounds);
 	MemFree(denv.labels);
 

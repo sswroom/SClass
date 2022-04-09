@@ -3,7 +3,7 @@
 #include "Map/MapView.h"
 #include "Math/Math.h"
 
-Map::MapView::MapView(UOSInt scnWidth, UOSInt scnHeight)
+Map::MapView::MapView(Double scnWidth, Double scnHeight)
 {
 	this->scnWidth = scnWidth;
 	this->scnHeight = scnHeight;
@@ -13,22 +13,22 @@ Map::MapView::~MapView()
 {
 }
 
-UOSInt Map::MapView::GetScnWidth()
+Double Map::MapView::GetScnWidth()
 {
 	return this->scnWidth;
 }
 
-UOSInt Map::MapView::GetScnHeight()
+Double Map::MapView::GetScnHeight()
 {
 	return this->scnHeight;
 }
 
 void Map::MapView::SetDestImage(Media::DrawImage *img)
 {
-	if (this->scnWidth != img->GetWidth() || this->scnHeight != img->GetHeight() || this->GetDDPI() != img->GetHDPI())
+	if (this->scnWidth != UOSInt2Double(img->GetWidth()) || this->scnHeight != UOSInt2Double(img->GetHeight()) || this->GetDDPI() != img->GetHDPI())
 	{
 		this->SetDPI(this->GetHDPI(), img->GetHDPI());
-		ChangeViewXY(img->GetWidth(), img->GetHeight(), this->GetCenterX(), this->GetCenterY(), this->GetMapScale());
+		ChangeViewXY(UOSInt2Double(img->GetWidth()), UOSInt2Double(img->GetHeight()), this->GetCenterX(), this->GetCenterY(), this->GetMapScale());
 	}
 }
 

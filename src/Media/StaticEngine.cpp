@@ -150,44 +150,44 @@ Media::StaticDrawImage::~StaticDrawImage()
 
 UOSInt Media::StaticDrawImage::GetWidth()
 {
-	return this->info->dispWidth;
+	return this->info.dispWidth;
 }
 
 UOSInt Media::StaticDrawImage::GetHeight()
 {
-	return this->info->dispHeight;
+	return this->info.dispHeight;
 }
 
 UInt32 Media::StaticDrawImage::GetBitCount()
 {
-	return this->info->storeBPP;
+	return this->info.storeBPP;
 }
 
 Media::ColorProfile *Media::StaticDrawImage::GetColorProfile()
 {
-	return this->info->color;
+	return this->info.color;
 }
 
 Media::AlphaType Media::StaticDrawImage::GetAlphaType()
 {
-	return this->info->atype;
+	return this->info.atype;
 }
 
 Double Media::StaticDrawImage::GetHDPI()
 {
-	return this->info->hdpi;
+	return this->info.hdpi;
 }
 
 Double Media::StaticDrawImage::GetVDPI()
 {
-	return this->info->vdpi;
+	return this->info.vdpi;
 }
 
 void Media::StaticDrawImage::SetHDPI(Double dpi)
 {
 	if (dpi > 0)
 	{
-		this->info->hdpi = dpi;
+		this->info.hdpi = dpi;
 	}
 }
 
@@ -195,7 +195,7 @@ void Media::StaticDrawImage::SetVDPI(Double dpi)
 {
 	if (dpi > 0)
 	{
-		this->info->vdpi = dpi;
+		this->info.vdpi = dpi;
 	}
 }
 
@@ -215,22 +215,22 @@ Bool Media::StaticDrawImage::DrawImagePt(DrawImage *img, Double tlx, Double tly)
 
 Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, Double tly)
 {
-	if (this->info->fourcc != 0)
+	if (this->info.fourcc != 0)
 	{
 		return false;
 	}
-	if (this->info->pf == Media::PF_B8G8R8A8)
+	if (this->info.pf == Media::PF_B8G8R8A8)
 	{
 		img->To32bpp();
-		if (img->info->atype == Media::AT_NO_ALPHA)
+		if (img->info.atype == Media::AT_NO_ALPHA)
 		{
 			Int32 x = Double2Int32(tlx);
 			Int32 y = Double2Int32(tly);
 			Int32 sx = 0;
 			Int32 sy = 0;
-			OSInt w = img->info->dispWidth;
-			OSInt h = img->info->dispHeight;
-			OSInt bpl = this->info->storeWidth << 2;
+			OSInt w = img->info.dispWidth;
+			OSInt h = img->info.dispHeight;
+			OSInt bpl = this->info.storeWidth << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -243,27 +243,27 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 				sy = -y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info->dispWidth)
+			if (x + w > (OSInt)this->info.dispWidth)
 			{
-				w = this->info->dispWidth - x;
+				w = this->info.dispWidth - x;
 			}
-			if (y + h > (OSInt)this->info->dispHeight)
+			if (y + h > (OSInt)this->info.dispHeight)
 			{
-				h = this->info->dispHeight - y;
+				h = this->info.dispHeight - y;
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(img->data + (sy * img->info->storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, img->info->storeWidth << 2, this->info->storeWidth << 2);
+				ImageCopy_ImgCopy(img->data + (sy * img->info.storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, img->info.storeWidth << 2, this->info.storeWidth << 2);
 			}
 		}
 		else
 		{
-			OSInt w = img->info->dispWidth;
-			OSInt h = img->info->dispHeight;
+			OSInt w = img->info.dispWidth;
+			OSInt h = img->info.dispHeight;
 			UInt8 *dbits = this->data;
 			UInt8 *sbits = img->data;
-			OSInt dbpl = this->info->storeWidth << 2;
-			OSInt sbpl = img->info->storeWidth << 2;
+			OSInt dbpl = this->info.storeWidth << 2;
+			OSInt sbpl = img->info.storeWidth << 2;
 
 			if (tlx < 0)
 			{
@@ -278,20 +278,20 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 				tly = 0;
 			}
 
-			if (tlx + w > this->info->dispWidth)
+			if (tlx + w > this->info.dispWidth)
 			{
-				w = this->info->dispWidth - Double2Int32(tlx);
+				w = this->info.dispWidth - Double2Int32(tlx);
 			}
-			if (tly + h > this->info->dispHeight)
+			if (tly + h > this->info.dispHeight)
 			{
-				h = this->info->dispHeight - Double2Int32(tly);
+				h = this->info.dispHeight - Double2Int32(tly);
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab32->SetSourceProfile(img->info->color);
-				this->eng->iab32->SetDestProfile(this->info->color);
-				this->eng->iab32->SetOutputProfile(this->info->color);
-				this->eng->iab32->Blend(dbits + Double2Int32(tly) * dbpl + (Double2Int32(tlx) * 4), dbpl, sbits, sbpl, w, h, img->info->atype);
+				this->eng->iab32->SetSourceProfile(img->info.color);
+				this->eng->iab32->SetDestProfile(this->info.color);
+				this->eng->iab32->SetOutputProfile(this->info.color);
+				this->eng->iab32->Blend(dbits + Double2Int32(tly) * dbpl + (Double2Int32(tlx) * 4), dbpl, sbits, sbpl, w, h, img->info.atype);
 			}
 		}
 		return true;
@@ -302,14 +302,14 @@ Bool Media::StaticDrawImage::DrawImagePt2(Media::StaticImage *img, Double tlx, D
 Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double destY, Double srcX, Double srcY, Double srcW, Double srcH)
 {
 	Media::StaticDrawImage *simg = (Media::StaticDrawImage *)img;
-	if (this->info->fourcc != 0)
+	if (this->info.fourcc != 0)
 	{
 		return false;
 	}
-	if (this->info->pf == Media::PF_B8G8R8A8)
+	if (this->info.pf == Media::PF_B8G8R8A8)
 	{
 		simg->To32bpp();
-		if (simg->info->atype == Media::AT_NO_ALPHA)
+		if (simg->info.atype == Media::AT_NO_ALPHA)
 		{
 			Int32 x = Double2Int32(destX);
 			Int32 y = Double2Int32(destY);
@@ -317,7 +317,7 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 			Int32 sy = Double2Int32(srcY);
 			OSInt w = Double2Int32(srcW);
 			OSInt h = Double2Int32(srcH);
-			OSInt bpl = this->info->storeWidth << 2;
+			OSInt bpl = this->info.storeWidth << 2;
 			if (x < 0)
 			{
 				w += x;
@@ -330,17 +330,17 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info->dispWidth)
+			if (x + w > (OSInt)this->info.dispWidth)
 			{
-				w = this->info->dispWidth - x;
+				w = this->info.dispWidth - x;
 			}
-			if (y + h > (OSInt)this->info->dispHeight)
+			if (y + h > (OSInt)this->info.dispHeight)
 			{
-				h = this->info->dispHeight - y;
+				h = this->info.dispHeight - y;
 			}
 			if (w > 0 && h > 0)
 			{
-				ImageCopy_ImgCopy(simg->data + (sy * simg->info->storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, simg->info->storeWidth << 2, bpl);
+				ImageCopy_ImgCopy(simg->data + (sy * simg->info.storeWidth << 2) + (sx << 2), this->data + y * bpl + (x << 2), w << 2, h, simg->info.storeWidth << 2, bpl);
 			}
 		}
 		else
@@ -353,8 +353,8 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 			OSInt h = Double2Int32(srcH);
 			UInt8 *dbits = (UInt8*)this->data;
 			UInt8 *sbits = (UInt8*)simg->data;
-			OSInt dbpl = this->info->storeWidth << 2;
-			OSInt sbpl = simg->info->storeWidth << 2;
+			OSInt dbpl = this->info.storeWidth << 2;
+			OSInt sbpl = simg->info.storeWidth << 2;
 
 			if (x < 0)
 			{
@@ -368,20 +368,20 @@ Bool Media::StaticDrawImage::DrawImagePt3(DrawImage *img, Double destX, Double d
 				sy -= y;
 				y = 0;
 			}
-			if (x + w > (OSInt)this->info->dispWidth)
+			if (x + w > (OSInt)this->info.dispWidth)
 			{
-				w = this->info->dispWidth - x;
+				w = this->info.dispWidth - x;
 			}
-			if (y + h > (OSInt)this->info->dispHeight)
+			if (y + h > (OSInt)this->info.dispHeight)
 			{
-				h = this->info->dispHeight - y;
+				h = this->info.dispHeight - y;
 			}
 			if (w > 0 && h > 0)
 			{
-				this->eng->iab32->SetSourceProfile(simg->info->color);
-				this->eng->iab32->SetDestProfile(this->info->color);
-				this->eng->iab32->SetOutputProfile(this->info->color);
-				this->eng->iab32->Blend(dbits + y * dbpl + (x * 4), dbpl, sbits + sy * sbpl + (sx << 2), sbpl, w, h, simg->info->atype);
+				this->eng->iab32->SetSourceProfile(simg->info.color);
+				this->eng->iab32->SetDestProfile(this->info.color);
+				this->eng->iab32->SetOutputProfile(this->info.color);
+				this->eng->iab32->Blend(dbits + y * dbpl + (x * 4), dbpl, sbits + sy * sbpl + (sx << 2), sbpl, w, h, simg->info.atype);
 			}
 		}
 		return true;
@@ -432,7 +432,7 @@ UOSInt Media::StaticDrawImage::SaveGIF(IO::SeekableStream *stm)
 	Media::ImageList *imgList;
 	NEW_CLASS(imgList, Media::ImageList(CSTR("GIFTemp")));
 	imgList->AddImage(simg, 0);
-	Bool succ = exporter.ExportFile(stm, (const UTF8Char*)"Temp", imgList, 0);
+	Bool succ = exporter.ExportFile(stm, CSTR("Temp"), imgList, 0);
 	DEL_CLASS(imgList);
 	return succ?0:-1;
 }

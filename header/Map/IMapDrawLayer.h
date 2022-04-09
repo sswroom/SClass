@@ -101,7 +101,7 @@ namespace Map
 		virtual void SetCurrTimeTS(Int64 timeStamp);
 		virtual Int64 GetTimeStartTS();
 		virtual Int64 GetTimeEndTS();
-		virtual Map::MapView *CreateMapView(UOSInt width, UOSInt height);
+		virtual Map::MapView *CreateMapView(Double width, Double height);
 
 		virtual DrawLayerType GetLayerType() = 0;
 		virtual void SetMixedType(DrawLayerType mixedType);

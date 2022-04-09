@@ -1463,7 +1463,7 @@ Bool Map::MapEnv::GetBoundsDbl(Map::MapEnv::GroupItem *group, Double *minX, Doub
 	return !isFirst;
 }
 
-Map::MapView *Map::MapEnv::CreateMapView(UOSInt width, UOSInt height)
+Map::MapView *Map::MapEnv::CreateMapView(Double width, Double height)
 {
 	Map::IMapDrawLayer *baseLayer = GetFirstLayer(0);
 	if (baseLayer)
