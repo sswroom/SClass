@@ -13,15 +13,15 @@ namespace Media
 			Bool yuvUpdated;
 			YUVPARAM yuvParam;
 			Bool rgbUpdated;
-			RGBPARAM2 *rgbParam;
+			RGBPARAM2 rgbParam;
 			TransferFunc *frFunc;
 			TransferFunc *fgFunc;
 			TransferFunc *fbFunc;
 			TransferFunc *irFunc;
 			TransferFunc *igFunc;
 			TransferFunc *ibFunc;
-			Media::ColorProfile *srcColor;
-			Media::ColorProfile *destColor;
+			Media::ColorProfile srcColor;
+			Media::ColorProfile destColor;
 			Media::ColorProfile::YUVType yuvType;
 
 		protected:

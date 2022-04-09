@@ -15,8 +15,8 @@ namespace Media
 			Double ddpi;
 		} MonitorSetting;
 	private:
-		Sync::Mutex *monMut;
-		Data::FastStringMap<MonitorSetting*> *monMap;
+		Sync::Mutex monMut;
+		Data::FastStringMap<MonitorSetting*> monMap;
 
 	public:
 		MonitorMgr();

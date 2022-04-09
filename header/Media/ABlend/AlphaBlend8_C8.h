@@ -28,13 +28,14 @@ namespace Media
 				UOSInt height;
 			} ThreadStat;
 
-			typedef struct
+			class LUTInfo
 			{
-				Media::ColorProfile *sProfile;
-				Media::ColorProfile *dProfile;
-				Media::ColorProfile *oProfile;
+			public:
+				Media::ColorProfile sProfile;
+				Media::ColorProfile dProfile;
+				Media::ColorProfile oProfile;
 				UInt8 *rgbTable;
-			} LUTInfo;
+			};
 		private:
 			Data::ArrayList<LUTInfo*> *lutList;
 			UInt8 *rgbTable;

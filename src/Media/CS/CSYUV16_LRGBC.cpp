@@ -10,25 +10,25 @@ void Media::CS::CSYUV16_LRGBC::SetupRGB13_LR()
 	Double thisV;
 	UInt16 v[4];
 	Media::ColorProfile *srcColor;
-	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcColor = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 	{
 		srcColor = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
 		srcColor = this->colorSess->GetDefPProfile();
 	}
 	else
 	{
-		srcColor = this->srcProfile;
+		srcColor = &this->srcProfile;
 	}
 
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcColor->GetRTranParam());
@@ -42,23 +42,23 @@ void Media::CS::CSYUV16_LRGBC::SetupRGB13_LR()
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
 	Math::Vector3 vec3;
-	this->srcProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	if (this->destProfile->GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
+	this->srcProfile.GetPrimaries()->GetConvMatrix(&mat1);
+	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		this->rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->rgbParam->monProfile->GetPrimaries()->wx, this->rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->wx, this->rgbParam.monProfile.GetPrimaries()->wy, 1.0);
 	}
 	else
 	{
-		this->destProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->destProfile->GetPrimaries()->wx, this->destProfile->GetPrimaries()->wy, 1.0);
+		this->destProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->destProfile.GetPrimaries()->wx, this->destProfile.GetPrimaries()->wy, 1.0);
 	}
 	mat5.Inverse();
 
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();
-	vec1.Set(this->srcProfile->GetPrimaries()->wx, this->srcProfile->GetPrimaries()->wy, 1.0);
+	vec1.Set(this->srcProfile.GetPrimaries()->wx, this->srcProfile.GetPrimaries()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec2, &vec3);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec1, &vec2);
 	mat2.Multiply(&vec2, &vec1);
@@ -379,21 +379,17 @@ void Media::CS::CSYUV16_LRGBC::SetupYUV14_RGB13()
 	}
 }
 
-Media::CS::CSYUV16_LRGBC::CSYUV16_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess)
+Media::CS::CSYUV16_LRGBC::CSYUV16_LRGBC(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	this->yuvType = yuvType;
 	this->rgbGammaCorr = MemAlloc(Int64, 65536 * 3);
 	this->yuv2rgb = MemAlloc(Int64, 65536 * 3);
 	this->yuv2rgb14 = MemAlloc(Int64, 65536 * 3);
-	NEW_CLASS(this->rgbParam, Media::IColorHandler::RGBPARAM2());
-	NEW_CLASS(this->srcProfile, Media::ColorProfile(srcProfile));
-	NEW_CLASS(this->destProfile, Media::ColorProfile(destProfile));
-
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
-	this->rgbParam->Set(colorSess->GetRGBParam());
+	this->rgbParam.Set(colorSess->GetRGBParam());
 }
 
 Media::CS::CSYUV16_LRGBC::~CSYUV16_LRGBC()
@@ -401,9 +397,6 @@ Media::CS::CSYUV16_LRGBC::~CSYUV16_LRGBC()
 	MemFree(this->rgbGammaCorr);
 	MemFree(this->yuv2rgb);
 	MemFree(this->yuv2rgb14);
-	DEL_CLASS(this->rgbParam);
-	DEL_CLASS(this->srcProfile);
-	DEL_CLASS(this->destProfile);
 }
 
 void Media::CS::CSYUV16_LRGBC::UpdateTable()
@@ -429,7 +422,7 @@ void Media::CS::CSYUV16_LRGBC::YUVParamChanged(const Media::IColorHandler::YUVPA
 
 void Media::CS::CSYUV16_LRGBC::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
 {
-	this->rgbParam->Set(rgb);
+	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;
 }
 

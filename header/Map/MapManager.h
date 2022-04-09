@@ -19,7 +19,7 @@ namespace Map
 		} MapLayerInfo;
 
 	private:
-		Data::StringUTF8Map<MapLayerInfo*> *layerArr;
+		Data::StringUTF8Map<MapLayerInfo*> layerArr;
 
 	public:
 		MapManager();

@@ -322,7 +322,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			Double srcY = OSInt2Double(this->gZoomY) - OSInt2Double(this->gZoomCurrY) * rate;
 			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color->Set(this->colorSess->GetRGBParam()->monProfile);
+			drawImg->info.color->Set(&this->colorSess->GetRGBParam()->monProfile);
 
 			if (srcX < 0)
 			{
@@ -358,7 +358,7 @@ void UI::GUIMapControl::OnDraw(Media::DrawImage *img)
 			NEW_CLASS(drawImg, Media::StaticImage(this->currWidth, this->currHeight, 0, 32, Media::PF_B8G8R8A8, 0, 0, Media::ColorProfile::YUVT_BT601, Media::AT_NO_ALPHA, Media::YCOFST_C_CENTER_LEFT));
 			drawImg->info.hdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
 			drawImg->info.vdpi = this->view->GetHDPI() / this->view->GetDDPI() * 96.0;
-			drawImg->info.color->Set(this->colorSess->GetRGBParam()->monProfile);
+			drawImg->info.color->Set(&this->colorSess->GetRGBParam()->monProfile);
 			resizer.Resize(srcImg->data, (OSInt)srcImg->info.storeWidth * 4, UOSInt2Double(this->currWidth), UOSInt2Double(this->currHeight), 0, 0, drawImg->data, (OSInt)drawImg->info.storeWidth * 4, w, h);
 		}
 		mutUsage.EndUse();
@@ -846,7 +846,7 @@ void UI::GUIMapControl::OnSizeChanged(Bool updateScn)
 		this->bgImg = this->eng->CreateImage32(this->currWidth, this->currHeight, Media::AT_NO_ALPHA);
 		this->bgImg->SetHDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
 		this->bgImg->SetVDPI(this->view->GetHDPI() / this->view->GetDDPI() * 96.0);
-		this->bgImg->SetColorProfile(this->colorSess->GetRGBParam()->monProfile);
+		this->bgImg->SetColorProfile(&this->colorSess->GetRGBParam()->monProfile);
 	}
 	mutUsage.EndUse();
 	this->UpdateMap();
@@ -868,7 +868,7 @@ void UI::GUIMapControl::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *r
 	this->SetBGColor(this->bgColor);
 	if (this->bgImg)
 	{
-		this->bgImg->SetColorProfile(rgbParam->monProfile);
+		this->bgImg->SetColorProfile(&rgbParam->monProfile);
 	}
 }
 

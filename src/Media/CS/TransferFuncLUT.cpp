@@ -4,7 +4,7 @@
 #include "Media/CS/TransferFuncLUT.h"
 
 #if _OSINT_SIZE != 16
-Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::TransferFunc(lut)
+Media::CS::TransferFuncLUT::TransferFuncLUT(const Media::LUT *lut) : Media::CS::TransferFunc(lut)
 {
 	this->srcCnt = lut->GetInputLevel();
 	this->fwdLUT = MemAlloc(Double, 65536);
@@ -19,7 +19,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 		Double valAdd;
 		UInt8 lastV = 0;
 		UInt8 thisV;
-		UInt8 *srcTab = lut->GetTablePtr();
+		const UInt8 *srcTab = lut->GetTablePtrRead();
 		Double destMul = 1 / (Double)(this->srcCnt - 1);
 		currV = 0;
 		valAdd = 1 / 65535.0;
@@ -63,7 +63,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 		Double valAdd;
 		UInt16 lastV = 0;
 		UInt16 thisV;
-		UInt16 *srcTab = (UInt16*)lut->GetTablePtr();
+		const UInt16 *srcTab = (const UInt16*)lut->GetTablePtrRead();
 		Double destMul = 1 / (Double)(this->srcCnt - 1);
 		currV = 0;
 		valAdd = 1 / 65535.0;
@@ -106,7 +106,7 @@ Media::CS::TransferFuncLUT::TransferFuncLUT(Media::LUT *lut) : Media::CS::Transf
 		Double valAdd;
 		Double lastV = 0;
 		Double thisV;
-		Single *srcTab = (Single*)lut->GetTablePtr();
+		const Single *srcTab = (const Single*)lut->GetTablePtrRead();
 		Double destMul = 1 / (Double)(this->srcCnt - 1);
 		currV = 0;
 		valAdd = 1 / 65535.0;

@@ -19,7 +19,7 @@ namespace Media
 		virtual ~FBMonitorSurfaceMgr();
 
 		Double GetMonitorDPI(MonitorHandle *hMonitor);
-		Media::ColorProfile *GetMonitorColor(MonitorHandle *hMonitor);
+		const Media::ColorProfile *GetMonitorColor(MonitorHandle *hMonitor);
 		Bool Is10BitColor(MonitorHandle *hMonitor);
 
 		virtual Bool SetFSMode(MonitorHandle *hMon, ControlHandle *hWnd, Bool fs);

@@ -253,7 +253,7 @@ void Media::ColorProfile::ColorPrimaries::GetWhitexy(Double *x, Double *y)
 	*y = this->wy;
 }
 
-void Media::ColorProfile::ColorPrimaries::GetConvMatrix(Math::Matrix3 *matrix)
+void Media::ColorProfile::ColorPrimaries::GetConvMatrix(Math::Matrix3 *matrix) const
 {
 	Double Sr;
 	Double Sg;
@@ -789,7 +789,27 @@ Media::CS::TransferParam *Media::ColorProfile::GetBTranParam()
 	return &this->btransfer;
 }
 
+const Media::CS::TransferParam *Media::ColorProfile::GetRTranParamRead() const
+{
+	return &this->rtransfer;
+}
+
+const Media::CS::TransferParam *Media::ColorProfile::GetGTranParamRead() const
+{
+	return &this->gtransfer;
+}
+
+const Media::CS::TransferParam *Media::ColorProfile::GetBTranParamRead() const
+{
+	return &this->btransfer;
+}
+
 Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimaries()
+{
+	return &this->primaries;
+}
+
+const Media::ColorProfile::ColorPrimaries *Media::ColorProfile::GetPrimariesRead() const
 {
 	return &this->primaries;
 }

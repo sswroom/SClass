@@ -296,7 +296,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 		}
 		MemFree(sel);
 
-		audOut = Media::AudioDevice::CreateRenderer(audioDevice->v);
+		audOut = Media::AudioDevice::CreateRenderer(audioDevice->ToCString());
 		if (audOut)
 		{
 			Int32 vol = audOut->GetDeviceVolume();

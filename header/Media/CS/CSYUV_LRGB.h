@@ -11,11 +11,11 @@ namespace Media
 		{
 		protected:
 			YUVPARAM yuvParam;
-			RGBPARAM2 *rgbParam;
+			RGBPARAM2 rgbParam;
 			TransferFunc *irFunc;
 			TransferFunc *igFunc;
 			TransferFunc *ibFunc;
-			Media::ColorProfile *srcColor;
+			Media::ColorProfile srcColor;
 			Media::ColorProfile::YUVType yuvType;
 
 			Bool yuvUpdated;

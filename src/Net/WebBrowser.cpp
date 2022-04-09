@@ -37,9 +37,9 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 		*sptr++ = IO::Path::PATH_SEPERATOR;
 		url = &url[Text::StrIndexOfCharC(url, urlLen, ':') + 3];
 		url = &url[Text::StrIndexOfCharC(url, (UOSInt)(urlEnd - url), '/')];
-		this->hash->Clear();
-		this->hash->Calc(url, (UOSInt)(urlEnd - url));
-		this->hash->GetValue(hashResult);
+		this->hash.Clear();
+		this->hash.Calc(url, (UOSInt)(urlEnd - url));
+		this->hash.GetValue(hashResult);
 		Text::StrHexBytes(sptr, hashResult, 4, 0);
 		return Text::StrConcat(sbuff, buff);
 	}
@@ -49,20 +49,17 @@ UTF8Char *Net::WebBrowser::GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url
 	}
 }
 
-Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir)
+Net::WebBrowser::WebBrowser(Net::SocketFactory *sockf, Net::SSLEngine *ssl, Text::CString cacheDir) : queue(sockf, ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->cacheDir = Text::String::New(cacheDir.v, cacheDir.leng);
-	NEW_CLASS(this->hash, Crypto::Hash::CRC32R(Crypto::Hash::CRC32::GetPolynormialIEEE()));
-	NEW_CLASS(this->queue, Net::HTTPQueue(sockf, ssl));
 }
 
 Net::WebBrowser::~WebBrowser()
 {
-	DEL_CLASS(this->queue);
+	this->queue.Clear();
 	this->cacheDir->Release();
-	DEL_CLASS(this->hash);
 }
 
 IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, UTF8Char *contentType)
@@ -100,14 +97,14 @@ IO::IStreamData *Net::WebBrowser::GetData(Text::CString url, Bool forceReload, U
 	{
 		Net::HTTPData *data;
 		sptr = GetLocalFileName(sbuff, url.v, url.leng);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("HTTPS")))
 	{
 		Net::HTTPData *data;
 		sptr = GetLocalFileName(sbuff, url.v, url.leng);
-		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, this->queue, url, CSTRP(sbuff, sptr), forceReload));
+		NEW_CLASS(data, Net::HTTPData(this->sockf, this->ssl, &this->queue, url, CSTRP(sbuff, sptr), forceReload));
 		return data;
 	}
 	else if (Text::StrEqualsC(sbuff, (UOSInt)(sptr - sbuff), UTF8STRC("FTP")))

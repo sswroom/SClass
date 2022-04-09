@@ -922,10 +922,10 @@ void UI::GUIForm::SetDPI(Double hdpi, Double ddpi)
 	{
 		this->menu->SetDPI(hdpi, ddpi);
 	}
-	UOSInt i = this->children->GetCount();
+	UOSInt i = this->children.GetCount();
 	while (i-- > 0)
 	{
-		this->children->GetItem(i)->SetDPI(hdpi, ddpi);
+		this->children.GetItem(i)->SetDPI(hdpi, ddpi);
 	}
 	this->UpdateChildrenSize(true);
 }

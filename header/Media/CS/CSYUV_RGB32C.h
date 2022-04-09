@@ -10,10 +10,10 @@ namespace Media
 		{
 		protected:
 			YUVPARAM yuvParam;
-			RGBPARAM2 *rgbParam;
+			RGBPARAM2 rgbParam;
 			Media::ColorProfile::YUVType yuvType;
-			Media::ColorProfile *srcProfile;
-			Media::ColorProfile *destProfile;
+			Media::ColorProfile srcProfile;
+			Media::ColorProfile destProfile;
 
 			Bool yuvUpdated;
 			Bool rgbUpdated;

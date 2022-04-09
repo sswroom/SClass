@@ -9,7 +9,6 @@
 UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 {
 	UTF8Char sbuff[512];
-	IO::FileStream *fs;
 	UOSInt edidSize;
 	UInt8 edid[1025];
 	UInt8 *ret = 0;
@@ -45,10 +44,10 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (!fs->IsError())
+						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						if (!fs.IsError())
 						{
-							edidSize = fs->Read(edid, 1024);
+							edidSize = fs.Read(edid, 1024);
 							if (edidSize > 0)
 							{
 								ret = MemAlloc(UInt8, edidSize);
@@ -56,7 +55,6 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 								*edidSizeRet = edidSize;
 							}
 						}
-						DEL_CLASS(fs);
 						if (ret)
 							break;
 					}
@@ -84,10 +82,10 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
-									NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-									if (!fs->IsError())
+									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+									if (!fs.IsError())
 									{
-										edidSize = fs->Read(edid, 1024);
+										edidSize = fs.Read(edid, 1024);
 										if (edidSize > 0)
 										{
 											ret = MemAlloc(UInt8, edidSize);
@@ -95,7 +93,6 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 											*edidSizeRet = edidSize;
 										}
 									}
-									DEL_CLASS(fs);
 									if (ret)
 										break;
 								}
@@ -121,28 +118,29 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 		return ret;
 
 	// hdmi
-	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		edidSize = fs->Read(edid, 1024);
-		if (edidSize > 0)
+		IO::FileStream fs(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			*edidSizeRet = edidSize;
-			ret = MemAlloc(UInt8, edidSize);
-			MemCopyNO(ret, edid, edidSize);
+			edidSize = fs.Read(edid, 1024);
+			if (edidSize > 0)
+			{
+				*edidSizeRet = edidSize;
+				ret = MemAlloc(UInt8, edidSize);
+				MemCopyNO(ret, edid, edidSize);
+			}
 		}
 	}
-	DEL_CLASS(fs);
 	if (ret)
 		return ret;
 
 	// Amlogic
 	if (ret == 0)
 	{
-		NEW_CLASS(fs, IO::FileStream(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			edidSize = fs->Read(edid, 1024);
+			edidSize = fs.Read(edid, 1024);
 			if (edidSize > 0)
 			{
 				ret = MemAlloc(UInt8, edidSize >> 1);
@@ -151,7 +149,6 @@ UInt8 *DDCReader_GetMonitorEDID(void *hMon, UOSInt *edidSizeRet)
 				*edidSizeRet = edidSize;
 			}
 		}
-		DEL_CLASS(fs);
 	}
 	return ret;
 }
@@ -201,7 +198,6 @@ UInt8 *Media::DDCReader::GetEDID(UOSInt *size)
 UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerList)
 {
 	UTF8Char sbuff[512];
-	IO::FileStream *fs;
 	UOSInt edidSize;
 	UInt8 edid[1025];
 	Media::DDCReader *reader;
@@ -238,10 +234,10 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 					while ((sptr3 = IO::Path::FindNextFile(sptr2, sess2, 0, &pt, 0)) != 0)
 					{
 						sptr3 = Text::StrConcatC(sptr3, UTF8STRC("/edid"));
-						NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-						if (!fs->IsError())
+						IO::FileStream fs(CSTRP(sbuff, sptr3), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+						if (!fs.IsError())
 						{
-							edidSize = fs->Read(edid, 1024);
+							edidSize = fs.Read(edid, 1024);
 							if (edidSize > 0)
 							{
 								NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
@@ -249,7 +245,6 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 								ret++;
 							}
 						}
-						DEL_CLASS(fs);
 					}
 					IO::Path::FindFileClose(sess2);
 				}
@@ -273,10 +268,10 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 								while ((sptr4 = IO::Path::FindNextFile(sptr3, sess3, 0, &pt, 0)) != 0)
 								{
 									sptr4 = Text::StrConcatC(sptr4, UTF8STRC("/edid"));
-									NEW_CLASS(fs, IO::FileStream(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-									if (!fs->IsError())
+									IO::FileStream fs(CSTRP(sbuff, sptr4), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+									if (!fs.IsError())
 									{
-										edidSize = fs->Read(edid, 1024);
+										edidSize = fs.Read(edid, 1024);
 										if (edidSize > 0)
 										{
 											NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
@@ -284,7 +279,6 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 											ret++;
 										}
 									}
-									DEL_CLASS(fs);
 								}
 								IO::Path::FindFileClose(sess3);
 							}
@@ -302,26 +296,27 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 	}
 
 	// hdmi
-	NEW_CLASS(fs, IO::FileStream(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
 	{
-		edidSize = fs->Read(edid, 1024);
-		if (edidSize > 0)
+		IO::FileStream fs(CSTR("/sys/class/hdmi/hdmi/attr/edid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
-			readerList->Add(reader);
-			ret++;
+			edidSize = fs.Read(edid, 1024);
+			if (edidSize > 0)
+			{
+				NEW_CLASS(reader, Media::DDCReader(edid, edidSize));
+				readerList->Add(reader);
+				ret++;
+			}
 		}
 	}
-	DEL_CLASS(fs);
 
 	// Amlogic
 	if (ret == 0)
 	{
-		NEW_CLASS(fs, IO::FileStream(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-		if (!fs->IsError())
+		IO::FileStream fs(CSTR("/sys/class/amhdmitx/amhdmitx0/rawedid"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+		if (!fs.IsError())
 		{
-			edidSize = fs->Read(edid, 1024);
+			edidSize = fs.Read(edid, 1024);
 			if (edidSize > 0)
 			{
 				UInt8 *edidData = MemAlloc(UInt8, edidSize >> 1);
@@ -333,7 +328,6 @@ UOSInt Media::DDCReader::CreateDDCReaders(Data::ArrayList<DDCReader*> *readerLis
 				ret++;
 			}
 		}
-		DEL_CLASS(fs);
 	}
 	return ret;
 }

@@ -32,17 +32,18 @@ namespace Media
 		void SetRemark(Text::String *remark);
 		void SetRemark(Text::CString remark);
 		Text::String *GetRemark();
-		UOSInt GetInputCh();
-		DataFormat GetFormat();
-		UOSInt GetInputLevel();
-		UOSInt GetOutputCh();
+		UOSInt GetInputCh() const;
+		DataFormat GetFormat() const;
+		UOSInt GetInputLevel() const;
+		UOSInt GetOutputCh() const;
 
 		UInt8 *GetTablePtr();
+		const UInt8 *GetTablePtrRead() const;
 		void GetValueUInt8(UInt32 *inputVals, UInt8 *outVals);
 		void GetValueUInt16(UInt32 *inputVals, UInt16 *outVals);
 		void GetValueSingle(UInt32 *inputVals, Single *outVals);
 
-		LUT *Clone();
+		LUT *Clone() const;
 		Bool Equals(Media::LUT *lut);
 	};
 }

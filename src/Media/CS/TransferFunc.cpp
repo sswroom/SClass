@@ -31,7 +31,7 @@ Media::CS::TransferParam::TransferParam()
 	this->paramCnt = 0;
 }
 
-Media::CS::TransferParam::TransferParam(TransferParam *tran)
+Media::CS::TransferParam::TransferParam(const TransferParam *tran)
 {
 	if (tran->lut)
 	{
@@ -61,7 +61,7 @@ Media::CS::TransferParam::TransferParam(TransferType tranType, Double gamma)
 	this->paramCnt = 0;
 }
 
-Media::CS::TransferParam::TransferParam(Media::LUT *lut)
+Media::CS::TransferParam::TransferParam(const Media::LUT *lut)
 {
 	this->lut = lut->Clone();
 	this->tranType = Media::CS::TRANT_LUT;
@@ -140,17 +140,22 @@ void Media::CS::TransferParam::Set(const TransferParam *tran)
 	this->gamma = tran->gamma;
 }
 
-Media::CS::TransferType Media::CS::TransferParam::GetTranType()
+Media::CS::TransferType Media::CS::TransferParam::GetTranType() const
 {
 	return this->tranType;
 }
 
-Double Media::CS::TransferParam::GetGamma()
+Double Media::CS::TransferParam::GetGamma() const
 {
 	return this->gamma;
 }
 
 Media::LUT *Media::CS::TransferParam::GetLUT()
+{
+	return this->lut;
+}
+
+const Media::LUT *Media::CS::TransferParam::GetLUTRead() const
 {
 	return this->lut;
 }
@@ -191,7 +196,7 @@ Media::CS::TransferFunc::TransferFunc(TransferType tranType, Double gamma) : par
 {
 }
 
-Media::CS::TransferFunc::TransferFunc(Media::LUT *lut) : param(lut)
+Media::CS::TransferFunc::TransferFunc(const Media::LUT *lut) : param(lut)
 {
 }
 
@@ -214,7 +219,7 @@ const Media::CS::TransferParam *Media::CS::TransferFunc::GetTransferParam()
 	return &this->param;
 }
 
-Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(Media::CS::TransferParam *param)
+Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(const Media::CS::TransferParam *param)
 {
 	Media::CS::TransferFunc *func;
 	if (param->GetTranType() == Media::CS::TRANT_sRGB)
@@ -279,7 +284,7 @@ Media::CS::TransferFunc *Media::CS::TransferFunc::CreateFunc(Media::CS::Transfer
 	}
 	else if (param->GetTranType() == Media::CS::TRANT_LUT)
 	{
-		NEW_CLASS(func, Media::CS::TransferFuncLUT(param->GetLUT()));
+		NEW_CLASS(func, Media::CS::TransferFuncLUT(param->GetLUTRead()));
 	}
 	else if (param->GetTranType() == Media::CS::TRANT_BT2100)
 	{

@@ -8,20 +8,17 @@
 IO::ConfigFile *IO::WSConfigFile::Parse(Text::CString fileName)
 {
 	IO::ConfigFile *cfg;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
-		DEL_CLASS(fs);
 		return 0;
 	}
 	Text::StringBuilderUTF8 sb;
 	UOSInt i;
 	Text::PString sarr[2];
-	NEW_CLASS(reader, Text::UTF8Reader(fs));
+	Text::UTF8Reader reader(&fs);
 	NEW_CLASS(cfg, IO::ConfigFile());
-	while (reader->ReadLine(&sb, 4096))
+	while (reader.ReadLine(&sb, 4096))
 	{
 		i = sb.IndexOf('#');
 		if (i != INVALID_INDEX)
@@ -34,7 +31,5 @@ IO::ConfigFile *IO::WSConfigFile::Parse(Text::CString fileName)
 			cfg->SetValue(CSTR_NULL, sarr[0].ToCString(), sarr[1].ToCString());
 		}
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 	return cfg;
 }

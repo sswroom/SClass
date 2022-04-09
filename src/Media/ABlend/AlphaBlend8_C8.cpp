@@ -110,16 +110,13 @@ void Media::ABlend::AlphaBlend8_C8::UpdateLUT()
 		while (i-- > 0)
 		{
 			lut = this->lutList->GetItem(i);
-			if (lut->sProfile->Equals(&this->sProfile) && lut->dProfile->Equals(&this->dProfile) && lut->oProfile->Equals(&this->oProfile))
+			if (lut->sProfile.Equals(&this->sProfile) && lut->dProfile.Equals(&this->dProfile) && lut->oProfile.Equals(&this->oProfile))
 			{
 				this->rgbTable = lut->rgbTable;
 				return;
 			}
 		}
-		lut = MemAlloc(LUTInfo, 1);
-		NEW_CLASS(lut->sProfile, Media::ColorProfile(this->sProfile));
-		NEW_CLASS(lut->dProfile, Media::ColorProfile(this->dProfile));
-		NEW_CLASS(lut->oProfile, Media::ColorProfile(this->oProfile));
+		NEW_CLASS(lut, LUTInfo());
 		lut->rgbTable = MemAlloc(UInt8, 262144 + 8192 + 8192);
 		this->lutList->Add(lut);
 		this->rgbTable = lut->rgbTable;
@@ -253,11 +250,8 @@ Media::ABlend::AlphaBlend8_C8::~AlphaBlend8_C8()
 		while (i-- > 0)
 		{
 			lut = this->lutList->GetItem(i);
-			DEL_CLASS(lut->sProfile);
-			DEL_CLASS(lut->dProfile);
-			DEL_CLASS(lut->oProfile);
 			MemFree(lut->rgbTable);
-			MemFree(lut);
+			DEL_CLASS(lut);
 		}
 		DEL_CLASS(this->lutList);
 	}
@@ -342,11 +336,8 @@ void Media::ABlend::AlphaBlend8_C8::RGBParamChanged(const Media::IColorHandler::
 		while (i-- > 0)
 		{
 			lut = this->lutList->GetItem(i);
-			DEL_CLASS(lut->sProfile);
-			DEL_CLASS(lut->dProfile);
-			DEL_CLASS(lut->oProfile);
 			MemFree(lut->rgbTable);
-			MemFree(lut);
+			DEL_CLASS(lut);
 		}
 		this->lutList->Clear();
 		this->changed = true;

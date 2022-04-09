@@ -77,27 +77,32 @@ Text::String *Media::LUT::GetRemark()
 	return this->remark;
 }
 
-UOSInt Media::LUT::GetInputCh()
+UOSInt Media::LUT::GetInputCh() const
 {
 	return this->inputCh;
 }
 
-Media::LUT::DataFormat Media::LUT::GetFormat()
+Media::LUT::DataFormat Media::LUT::GetFormat() const
 {
 	return this->fmt;
 }
 
-UOSInt Media::LUT::GetInputLevel()
+UOSInt Media::LUT::GetInputLevel() const
 {
 	return this->inputLev;
 }
 
-UOSInt Media::LUT::GetOutputCh()
+UOSInt Media::LUT::GetOutputCh() const
 {
 	return this->outputCh;
 }
 
 UInt8 *Media::LUT::GetTablePtr()
+{
+	return this->luTable;
+}
+
+const UInt8 *Media::LUT::GetTablePtrRead() const
 {
 	return this->luTable;
 }
@@ -269,7 +274,7 @@ void Media::LUT::GetValueSingle(UInt32 *inputVals, Single *outVals)
 	}
 }
 
-Media::LUT *Media::LUT::Clone()
+Media::LUT *Media::LUT::Clone() const
 {
 	Media::LUT *newLut;
 	NEW_CLASS(newLut, Media::LUT(this->inputCh, this->inputLev, this->outputCh, this->fmt, this->sourceName));

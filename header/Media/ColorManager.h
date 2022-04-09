@@ -82,8 +82,8 @@ namespace Media
 	class ColorManager
 	{
 	private:
-		Data::FastStringMap<MonitorColorManager*> *monColor;
-		Sync::Mutex *mut;
+		Data::FastStringMap<MonitorColorManager*> monColor;
+		Sync::Mutex mut;
 
 		Media::ColorProfile::YUVType defYUVType;
 		Media::ColorProfile defVProfile;

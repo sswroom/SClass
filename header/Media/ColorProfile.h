@@ -141,7 +141,7 @@ namespace Media
 			void Set(const ColorPrimaries *primaries);
 			void SetColorType(ColorType colorType);
 			void GetWhitexy(Double *x, Double *y);
-			void GetConvMatrix(Math::Matrix3 *matrix);
+			void GetConvMatrix(Math::Matrix3 *matrix) const;
 			void SetConvMatrix(Math::Matrix3 *matrix);
 
 			Bool Equals(const ColorPrimaries *primaries);
@@ -177,7 +177,11 @@ namespace Media
 		Media::CS::TransferParam *GetRTranParam();
 		Media::CS::TransferParam *GetGTranParam();
 		Media::CS::TransferParam *GetBTranParam();
+		const Media::CS::TransferParam *GetRTranParamRead() const;
+		const Media::CS::TransferParam *GetGTranParamRead() const;
+		const Media::CS::TransferParam *GetBTranParamRead() const;
 		Media::ColorProfile::ColorPrimaries *GetPrimaries();
+		const Media::ColorProfile::ColorPrimaries *GetPrimariesRead() const;
 		void ToString(Text::StringBuilderUTF8 *sb);
 
 		void SetRAWICC(const UInt8 *iccData);

@@ -10,8 +10,8 @@ namespace UI
 		struct ClassData;
 	private:
 		ClassData *clsData;
-		Data::ArrayList<UI::UIEvent> *txtChgHdlrs;
-		Data::ArrayList<void *> *txtChgObjs;
+		Data::ArrayList<UI::UIEvent> txtChgHdlrs;
+		Data::ArrayList<void *> txtChgObjs;
 
 	public:
 		GUITextBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText);

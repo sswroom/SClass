@@ -8,40 +8,11 @@ Net::HTTPQueue::HTTPQueue(Net::SocketFactory *sockf, Net::SSLEngine *ssl)
 {
 	this->sockf = sockf;
 	this->ssl = ssl;
-	NEW_CLASS(this->statusMap, Data::StringUTF8Map<DomainStatus*>());
-	NEW_CLASS(this->statusMut, Sync::Mutex());
-	NEW_CLASS(this->statusEvt, Sync::Event(true));
 }
 
 Net::HTTPQueue::~HTTPQueue()
 {
-	Data::ArrayList<DomainStatus*> *statusList;
-	DomainStatus *status;
-	UOSInt i;
-
-	Sync::MutexUsage mutUsage(this->statusMut);
-	statusList = this->statusMap->GetValues();
-	i = statusList->GetCount();
-	while (i-- > 0)
-	{
-		status = statusList->GetItem(i);
-		if (status->req1)
-		{
-			status->req1->Close();
-		}
-		if (status->req2)
-		{
-			status->req2->Close();
-		}
-	}
-	mutUsage.EndUse();
-	while (this->statusMap->GetCount() > 0)
-	{
-		Sync::Thread::Sleep(10);
-	}
-	DEL_CLASS(this->statusMap);
-	DEL_CLASS(this->statusMut);
-	DEL_CLASS(this->statusEvt);
+	this->Clear();
 }
 
 Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::RequestMethod method, Bool noShutdown)
@@ -53,8 +24,8 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::Re
 	Net::HTTPClient *cli;
 	while (true)
 	{
-		Sync::MutexUsage mutUsage(this->statusMut);
-		status = this->statusMap->Get(sbuff);
+		Sync::MutexUsage mutUsage(&this->statusMut);
+		status = this->statusMap.Get(sbuff);
 		if (status)
 		{
 			if (status->req1 == 0)
@@ -77,13 +48,13 @@ Net::HTTPClient *Net::HTTPQueue::MakeRequest(Text::CString url, Net::WebUtil::Re
 			status->req2 = 0;
 			cli = Net::HTTPClient::CreateConnect(this->sockf, this->ssl, url, method, noShutdown);
 			status->req1 = cli;
-			this->statusMap->Put(sbuff, status);
+			this->statusMap.Put(sbuff, status);
 			found = true;
 		}
 		mutUsage.EndUse();
 		if (found)
 			break;
-		this->statusEvt->Wait(1000);
+		this->statusEvt.Wait(1000);
 	}
 	return cli;
 }
@@ -95,8 +66,8 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 	Text::String *url = cli->GetURL();
 	Text::URLString::GetURLDomain(sbuff, url->ToCString(), 0);
 
-	Sync::MutexUsage mutUsage(this->statusMut);
-	status = this->statusMap->Get(sbuff);
+	Sync::MutexUsage mutUsage(&this->statusMut);
+	status = this->statusMap.Get(sbuff);
 	if (status)
 	{
 		if (status->req1 == cli)
@@ -111,13 +82,41 @@ void Net::HTTPQueue::EndRequest(Net::HTTPClient *cli)
 		if (status->req1 == 0 && status->req2 == 0)
 		{
 			MemFree(status);
-			this->statusMap->Remove(sbuff);
+			this->statusMap.Remove(sbuff);
 		}
-		this->statusEvt->Set();
+		this->statusEvt.Set();
 	}
 	else
 	{
 		DEL_CLASS(cli);
 	}
 	mutUsage.EndUse();
+}
+
+void Net::HTTPQueue::Clear()
+{
+	Data::ArrayList<DomainStatus*> *statusList;
+	DomainStatus *status;
+	UOSInt i;
+
+	Sync::MutexUsage mutUsage(&this->statusMut);
+	statusList = this->statusMap.GetValues();
+	i = statusList->GetCount();
+	while (i-- > 0)
+	{
+		status = statusList->GetItem(i);
+		if (status->req1)
+		{
+			status->req1->Close();
+		}
+		if (status->req2)
+		{
+			status->req2->Close();
+		}
+	}
+	mutUsage.EndUse();
+	while (this->statusMap.GetCount() > 0)
+	{
+		Sync::Thread::Sleep(10);
+	}
 }

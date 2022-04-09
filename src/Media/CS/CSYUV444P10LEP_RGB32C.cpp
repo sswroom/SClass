@@ -17,25 +17,25 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	UInt16 v[4];
 
 	Media::ColorProfile *srcProfile;
-	if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcProfile->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcProfile.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
 	}
 	else
 	{
-		srcProfile = this->srcProfile;
+		srcProfile = &this->srcProfile;
 	}
 
 	Media::CS::TransferFunc *rtFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
@@ -49,23 +49,23 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	Math::Vector3 vec1;
 	Math::Vector3 vec2;
 	Math::Vector3 vec3;
-	this->srcProfile->GetPrimaries()->GetConvMatrix(&mat1);
-	if (this->destProfile->GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
+	this->srcProfile.GetPrimaries()->GetConvMatrix(&mat1);
+	if (this->destProfile.GetPrimaries()->colorType == Media::ColorProfile::CT_DISPLAY)
 	{
-		this->rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->rgbParam->monProfile->GetPrimaries()->wx, this->rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+		this->rgbParam.monProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->rgbParam.monProfile.GetPrimaries()->wx, this->rgbParam.monProfile.GetPrimaries()->wy, 1.0);
 	}
 	else
 	{
-		this->destProfile->GetPrimaries()->GetConvMatrix(&mat5);
-		vec2.Set(this->destProfile->GetPrimaries()->wx, this->destProfile->GetPrimaries()->wy, 1.0);
+		this->destProfile.GetPrimaries()->GetConvMatrix(&mat5);
+		vec2.Set(this->destProfile.GetPrimaries()->wx, this->destProfile.GetPrimaries()->wy, 1.0);
 	}
 	mat5.Inverse();
 
 	Media::ColorProfile::ColorPrimaries::GetMatrixBradford(&mat2);
 	mat3.Set(&mat2);
 	mat4.SetIdentity();
-	vec1.Set(this->srcProfile->GetPrimaries()->wx, this->srcProfile->GetPrimaries()->wy, 1.0);
+	vec1.Set(this->srcProfile.GetPrimaries()->wx, this->srcProfile.GetPrimaries()->wy, 1.0);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec2, &vec3);
 	Media::ColorProfile::ColorPrimaries::xyYToXYZ(&vec1, &vec2);
 	mat2.Multiply(&vec2, &vec1);
@@ -159,11 +159,11 @@ void Media::CS::CSYUV444P10LEP_RGB32C::SetupRGB13_LR()
 	Media::RGBLUTGen lutGen(this->colorSess);
 	if (this->destPF == Media::PF_LE_A2B10G10R10)
 	{
-		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile->rtransfer));
+		lutGen.GenLARGB_A2B10G10R10((UInt8*)&this->rgbGammaCorr[196608], &this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile.rtransfer));
 	}
 	else
 	{
-		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile->rtransfer));
+		lutGen.GenLARGB_B8G8R8A8((UInt8*)&this->rgbGammaCorr[196608], &this->destProfile, 14, Media::CS::TransferFunc::GetRefLuminance(&this->srcProfile.rtransfer));
 	}
 }
 
@@ -298,25 +298,28 @@ UInt32 Media::CS::CSYUV444P10LEP_RGB32C::WorkerThread(void *obj)
 	CSYUV444P10LEP_RGB32C *converter = (CSYUV444P10LEP_RGB32C*)obj;
 	UOSInt threadId = converter->currId;
 	THREADSTAT *ts = &converter->stats[threadId];
-
-	ts->status = 1;
-	converter->evtMain->Set();
-	while (true)
 	{
-		ts->evt->Wait();
-		if (ts->status == 2)
+		Sync::Event evt;
+		ts->evt = &evt;
+		ts->status = 1;
+		converter->evtMain.Set();
+		while (true)
 		{
-			break;
-		}
-		else if (ts->status == 3)
-		{
-			CSYUV444P10LEP_RGB32C_convert(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb, converter->rgbGammaCorr);
-			ts->status = 4;
-			converter->evtMain->Set();
+			ts->evt->Wait();
+			if (ts->status == 2)
+			{
+				break;
+			}
+			else if (ts->status == 3)
+			{
+				CSYUV444P10LEP_RGB32C_convert(ts->yPtr, ts->uPtr, ts->vPtr, ts->dest, ts->width, ts->height, ts->dbpl, ts->yBpl, converter->yuv2rgb, converter->rgbGammaCorr);
+				ts->status = 4;
+				converter->evtMain.Set();
+			}
 		}
 	}
 	converter->stats[threadId].status = 0;
-	converter->evtMain->Set();
+	converter->evtMain.Set();
 	return 0;
 }
 
@@ -339,45 +342,40 @@ void Media::CS::CSYUV444P10LEP_RGB32C::WaitForWorker(Int32 jobStatus)
 		}
 		if (exited)
 			break;
-		this->evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
-Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess)
+Media::CS::CSYUV444P10LEP_RGB32C::CSYUV444P10LEP_RGB32C(const Media::ColorProfile *srcProfile, const Media::ColorProfile *destProfile, Media::ColorProfile::YUVType yuvType, Media::ColorManagerSess *colorSess, Media::PixelFormat destPF) : Media::CS::CSConverter(colorSess), srcProfile(srcProfile), destProfile(destProfile)
 {
 	UOSInt i;
 	this->yuvType = yuvType;
 	this->destPF = destPF;
 	this->rgbGammaCorr = MemAlloc(Int64, 65536 * 3 + 65536 * 2);
 	this->yuv2rgb = MemAlloc(Int64, 65536 * 3);
-	NEW_CLASS(this->srcProfile, Media::ColorProfile(srcProfile));
-	NEW_CLASS(this->destProfile, Media::ColorProfile(destProfile));
-	NEW_CLASS(this->rgbParam, Media::IColorHandler::RGBPARAM2());
 
 	this->rgbUpdated = true;
 	this->yuvUpdated = true;
 
 	MemCopyNO(&this->yuvParam, colorSess->GetYUVParam(), sizeof(YUVPARAM));
-	this->rgbParam->Set(colorSess->GetRGBParam());
+	this->rgbParam.Set(colorSess->GetRGBParam());
 
 	this->nThread = Sync::Thread::GetThreadCnt();
 	if (this->nThread > 2)
 	{
 		this->nThread = 2;
 	}
-	NEW_CLASS(evtMain, Sync::Event());
 	stats = MemAlloc(THREADSTAT, nThread);
 	i = nThread;
 	while(i-- > 0)
 	{
-		NEW_CLASS(stats[i].evt, Sync::Event());
 		stats[i].status = 0;
 
 		currId = i;
 		Sync::Thread::Create(WorkerThread, this, 65536);
 		while (stats[i].status == 0)
 		{
-			evtMain->Wait();
+			this->evtMain.Wait();
 		}
 	}
 }
@@ -426,21 +424,12 @@ Media::CS::CSYUV444P10LEP_RGB32C::~CSYUV444P10LEP_RGB32C()
 		if (exited)
 			break;
 
-		evtMain->Wait(100);
+		this->evtMain.Wait(100);
 	}
-	i = nThread;
-	while (i-- > 0)
-	{
-		DEL_CLASS(stats[i].evt);
-	}
-	DEL_CLASS(evtMain);
 	MemFree(stats);
 
 	MemFree(this->rgbGammaCorr);
 	MemFree(this->yuv2rgb);
-	DEL_CLASS(this->rgbParam);
-	DEL_CLASS(this->srcProfile);
-	DEL_CLASS(this->destProfile);
 }
 
 void Media::CS::CSYUV444P10LEP_RGB32C::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
@@ -502,7 +491,7 @@ void Media::CS::CSYUV444P10LEP_RGB32C::YUVParamChanged(const Media::IColorHandle
 
 void Media::CS::CSYUV444P10LEP_RGB32C::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *rgb)
 {
-	this->rgbParam->Set(rgb);
+	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;
 }
 

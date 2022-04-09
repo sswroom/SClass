@@ -1,6 +1,6 @@
 #ifndef _SM_NET_WEBBROWSER
 #define _SM_NET_WEBBROWSER
-#include "Crypto/Hash/IHash.h"
+#include "Crypto/Hash/CRC32RIEEE.h"
 #include "IO/IStreamData.h"
 #include "Net/HTTPQueue.h"
 #include "Net/SocketFactory.h"
@@ -16,8 +16,8 @@ namespace Net
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Text::String *cacheDir;
-		Crypto::Hash::IHash *hash;
-		Net::HTTPQueue *queue;
+		Crypto::Hash::CRC32RIEEE hash;
+		Net::HTTPQueue queue;
 
 		UTF8Char *GetLocalFileName(UTF8Char *sbuff, const UTF8Char *url, UOSInt urlLen);
 	public:

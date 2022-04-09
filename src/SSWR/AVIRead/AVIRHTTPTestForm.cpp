@@ -287,7 +287,7 @@ void SSWR::AVIRead::AVIRHTTPTestForm::ClearURLs()
 	{
 		this->connURLs->RemoveAt(i)->Release();
 	}
-	if (this->children->GetCount() > 0)
+	if (this->children.GetCount() > 0)
 	{
 		this->lbURL->ClearItems();
 	}

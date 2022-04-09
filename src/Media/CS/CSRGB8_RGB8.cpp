@@ -32,55 +32,55 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	}
 	Media::ColorProfile *srcProfile;
 	Media::ColorProfile *destProfile;
-	if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
+	if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefVProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 	{
 		srcProfile = this->colorSess->GetDefPProfile();
 	}
-	else if (this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY || this->srcColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		srcProfile = this->rgbParam->monProfile;
+		srcProfile = &this->rgbParam.monProfile;
 	}
 	else
 	{
-		srcProfile = this->srcColor;
+		srcProfile = &this->srcColor;
 	}
-	if (this->destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
+	if (this->destColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VDISPLAY)
 	{
-		rGammaVal = this->rgbParam->MonRGamma;
-		gGammaVal = this->rgbParam->MonGGamma;
-		bGammaVal = this->rgbParam->MonBGamma;
-		rBright = this->rgbParam->MonRBright;
-		gBright = this->rgbParam->MonGBright;
-		bBright = this->rgbParam->MonBBright;
-		rContr = this->rgbParam->MonRContr;
-		gContr = this->rgbParam->MonGContr;
-		bContr = this->rgbParam->MonBContr;
-		tMul = this->rgbParam->MonVBrightness;
-		rMul = this->rgbParam->MonRBrightness * tMul;
-		gMul = this->rgbParam->MonGBrightness * tMul;
-		bMul = this->rgbParam->MonBBrightness * tMul;
-		destProfile = this->rgbParam->monProfile;
+		rGammaVal = this->rgbParam.MonRGamma;
+		gGammaVal = this->rgbParam.MonGGamma;
+		bGammaVal = this->rgbParam.MonBGamma;
+		rBright = this->rgbParam.MonRBright;
+		gBright = this->rgbParam.MonGBright;
+		bBright = this->rgbParam.MonBBright;
+		rContr = this->rgbParam.MonRContr;
+		gContr = this->rgbParam.MonGContr;
+		bContr = this->rgbParam.MonBContr;
+		tMul = this->rgbParam.MonVBrightness;
+		rMul = this->rgbParam.MonRBrightness * tMul;
+		gMul = this->rgbParam.MonGBrightness * tMul;
+		bMul = this->rgbParam.MonBBrightness * tMul;
+		destProfile = &this->rgbParam.monProfile;
 	}
-	else if (this->destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
+	else if (this->destColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY)
 	{
-		rGammaVal = this->rgbParam->MonRGamma;
-		gGammaVal = this->rgbParam->MonGGamma;
-		bGammaVal = this->rgbParam->MonBGamma;
-		rBright = this->rgbParam->MonRBright;
-		gBright = this->rgbParam->MonGBright;
-		bBright = this->rgbParam->MonBBright;
-		rContr = this->rgbParam->MonRContr;
-		gContr = this->rgbParam->MonGContr;
-		bContr = this->rgbParam->MonBContr;
-		tMul = this->rgbParam->MonPBrightness;
-		rMul = this->rgbParam->MonRBrightness * tMul;
-		gMul = this->rgbParam->MonGBrightness * tMul;
-		bMul = this->rgbParam->MonBBrightness * tMul;
-		destProfile = this->rgbParam->monProfile;
+		rGammaVal = this->rgbParam.MonRGamma;
+		gGammaVal = this->rgbParam.MonGGamma;
+		bGammaVal = this->rgbParam.MonBGamma;
+		rBright = this->rgbParam.MonRBright;
+		gBright = this->rgbParam.MonGBright;
+		bBright = this->rgbParam.MonBBright;
+		rContr = this->rgbParam.MonRContr;
+		gContr = this->rgbParam.MonGContr;
+		bContr = this->rgbParam.MonBContr;
+		tMul = this->rgbParam.MonPBrightness;
+		rMul = this->rgbParam.MonRBrightness * tMul;
+		gMul = this->rgbParam.MonGBrightness * tMul;
+		bMul = this->rgbParam.MonBBrightness * tMul;
+		destProfile = &this->rgbParam.monProfile;
 	}
 	else
 	{
@@ -97,13 +97,13 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 		rMul = 1.0;
 		gMul = 1.0;
 		bMul = 1.0;
-		if (this->destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN || this->destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
+		if (this->destColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN || this->destColor.GetRTranParam()->GetTranType() == Media::CS::TRANT_PUNKNOWN)
 		{
 			destProfile = srcProfile;
 		}
 		else
 		{
-			destProfile = this->destColor;
+			destProfile = &this->destColor;
 		}
 	}
 	Media::CS::TransferFunc *irFunc = Media::CS::TransferFunc::CreateFunc(srcProfile->GetRTranParam());
@@ -139,18 +139,15 @@ void Media::CS::CSRGB8_RGB8::UpdateRGBTable()
 	}
 }
 
-Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess)
+Media::CS::CSRGB8_RGB8::CSRGB8_RGB8(UOSInt srcNBits, Media::PixelFormat srcPF, UOSInt destNBits, Media::PixelFormat destPF, Bool invert, const Media::ColorProfile *srcColor, const Media::ColorProfile *destColor, Media::ColorManagerSess *colorSess) : Media::CS::CSConverter(colorSess), srcColor(srcColor), destColor(destColor)
 {
 	this->srcNBits = srcNBits;
 	this->destNBits = destNBits;
-	NEW_CLASS(this->rgbParam, Media::IColorHandler::RGBPARAM2());
-	NEW_CLASS(this->srcColor, Media::ColorProfile(srcColor));
-	NEW_CLASS(this->destColor, Media::ColorProfile(destColor));
 	this->invert = invert;
 	this->srcPal = 0;
 	this->destPal = 0;
 
-	this->rgbParam->Set(colorSess->GetRGBParam());
+	this->rgbParam.Set(colorSess->GetRGBParam());
 	if (this->srcNBits <= 8)
 	{
 		UOSInt palSize = (UOSInt)(4 << this->srcNBits);
@@ -178,9 +175,6 @@ Media::CS::CSRGB8_RGB8::~CSRGB8_RGB8()
 		MemFree(this->destPal);
 		this->destPal = 0;
 	}
-	DEL_CLASS(this->srcColor);
-	DEL_CLASS(this->destColor);
-	DEL_CLASS(this->rgbParam);
 }
 
 void Media::CS::CSRGB8_RGB8::ConvertV2(UInt8 **srcPtr, UInt8 *destPtr, UOSInt dispWidth, UOSInt dispHeight, UOSInt srcStoreWidth, UOSInt srcStoreHeight, OSInt destRGBBpl, Media::FrameType ftype, Media::YCOffset ycOfst)
@@ -224,7 +218,7 @@ void Media::CS::CSRGB8_RGB8::YUVParamChanged(const YUVPARAM *yuv)
 
 void Media::CS::CSRGB8_RGB8::RGBParamChanged(const RGBPARAM2 *rgb)
 {
-	this->rgbParam->Set(rgb);
+	this->rgbParam.Set(rgb);
 	this->rgbUpdated = true;
 }
 

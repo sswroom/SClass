@@ -54,7 +54,7 @@ void Media::MonitorColorManager::SetDefaultRGB(Media::IColorHandler::RGBPARAM2 *
 	rgb->MonBBrightness = 1;
 
 	rgb->monProfileType = Media::ColorProfile::CPT_EDID;
-	rgb->monProfile->SetCommonProfile(rgb->monProfileType);
+	rgb->monProfile.SetCommonProfile(rgb->monProfileType);
 	rgb->monLuminance = 250.0;
 }
 
@@ -163,26 +163,26 @@ Bool Media::MonitorColorManager::Load()
 
 		if (reg->GetValueI32(L"MonTransfer", &tmpVal))
 		{
-			this->rgb->monProfile->GetRTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
-			this->rgb->monProfile->GetGTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
-			this->rgb->monProfile->GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb->monProfile.GetRTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb->monProfile.GetGTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb->monProfile.GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 		}
 		if (reg->GetValueI32(L"MonRX", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->rx = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->rx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonRY", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->ry = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->ry = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGX", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->gx = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->gx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGY", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->gy = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->gy = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBX", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->bx = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->bx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBY", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->by = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->by = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWX", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->wx = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->wx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWY", &tmpVal))
-			this->rgb->monProfile->GetPrimaries()->wy = tmpVal * 0.000000001;
+			this->rgb->monProfile.GetPrimaries()->wy = tmpVal * 0.000000001;
 
 		if (reg->GetValueI32(L"MonLuminance", &tmpVal))
 			this->rgb->monLuminance = tmpVal * 0.1;
@@ -199,7 +199,7 @@ Bool Media::MonitorColorManager::Load()
 			{
 				if (!SetFromProfileFile(this->monProfileFile))
 				{
-					this->rgb->monProfile->SetCommonProfile(this->rgb->monProfileType);
+					this->rgb->monProfile.SetCommonProfile(this->rgb->monProfileType);
 				}
 			}
 			else if (this->rgb->monProfileType == Media::ColorProfile::CPT_OS)
@@ -212,7 +212,7 @@ Bool Media::MonitorColorManager::Load()
 			}
 			else
 			{
-				this->rgb->monProfile->SetCommonProfile(this->rgb->monProfileType);
+				this->rgb->monProfile.SetCommonProfile(this->rgb->monProfileType);
 			}
 		}
 
@@ -286,15 +286,15 @@ Bool Media::MonitorColorManager::Save()
 		reg->SetValue(L"MonGBright", Double2Int32(this->rgb->MonGBrightness * 1000.0));
 		reg->SetValue(L"MonBBright", Double2Int32(this->rgb->MonBBrightness * 1000.0));
 
-		reg->SetValue(L"MonTransfer", (Int32)this->rgb->monProfile->GetRTranParam()->GetTranType());
-		reg->SetValue(L"MonRX", Double2Int32(this->rgb->monProfile->GetPrimaries()->rx * 1000000000.0));
-		reg->SetValue(L"MonRY", Double2Int32(this->rgb->monProfile->GetPrimaries()->ry * 1000000000.0));
-		reg->SetValue(L"MonGX", Double2Int32(this->rgb->monProfile->GetPrimaries()->gx * 1000000000.0));
-		reg->SetValue(L"MonGY", Double2Int32(this->rgb->monProfile->GetPrimaries()->gy * 1000000000.0));
-		reg->SetValue(L"MonBX", Double2Int32(this->rgb->monProfile->GetPrimaries()->bx * 1000000000.0));
-		reg->SetValue(L"MonBY", Double2Int32(this->rgb->monProfile->GetPrimaries()->by * 1000000000.0));
-		reg->SetValue(L"MonWX", Double2Int32(this->rgb->monProfile->GetPrimaries()->wx * 1000000000.0));
-		reg->SetValue(L"MonWY", Double2Int32(this->rgb->monProfile->GetPrimaries()->wy * 1000000000.0));
+		reg->SetValue(L"MonTransfer", (Int32)this->rgb->monProfile.GetRTranParam()->GetTranType());
+		reg->SetValue(L"MonRX", Double2Int32(this->rgb->monProfile.GetPrimaries()->rx * 1000000000.0));
+		reg->SetValue(L"MonRY", Double2Int32(this->rgb->monProfile.GetPrimaries()->ry * 1000000000.0));
+		reg->SetValue(L"MonGX", Double2Int32(this->rgb->monProfile.GetPrimaries()->gx * 1000000000.0));
+		reg->SetValue(L"MonGY", Double2Int32(this->rgb->monProfile.GetPrimaries()->gy * 1000000000.0));
+		reg->SetValue(L"MonBX", Double2Int32(this->rgb->monProfile.GetPrimaries()->bx * 1000000000.0));
+		reg->SetValue(L"MonBY", Double2Int32(this->rgb->monProfile.GetPrimaries()->by * 1000000000.0));
+		reg->SetValue(L"MonWX", Double2Int32(this->rgb->monProfile.GetPrimaries()->wx * 1000000000.0));
+		reg->SetValue(L"MonWY", Double2Int32(this->rgb->monProfile.GetPrimaries()->wy * 1000000000.0));
 
 		reg->SetValue(L"MonProfileType", (Int32)this->rgb->monProfileType);
 		if (this->monProfileFile)
@@ -546,7 +546,7 @@ void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonPr
 		}
 		else
 		{
-			this->rgb->monProfile->SetCommonProfile(newVal);
+			this->rgb->monProfile.SetCommonProfile(newVal);
 			this->RGBUpdated();
 		}
 	}
@@ -571,7 +571,7 @@ Bool Media::MonitorColorManager::SetMonProfileFile(Text::String *fileName)
 void Media::MonitorColorManager::SetMonProfile(Media::ColorProfile *color)
 {
 	this->rgb->monProfileType = Media::ColorProfile::CPT_CUSTOM;
-	this->rgb->monProfile->Set(color);
+	this->rgb->monProfile.Set(color);
 	this->RGBUpdated();
 }
 
@@ -622,15 +622,14 @@ Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 {
 	Bool succ = false;
 	UInt8 *fileBuff;
-	IO::FileStream *fs;
 	UInt64 fileSize;
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	fileSize = fs->GetLength();
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	fileSize = fs.GetLength();
 	if (fileSize > 0 && fileSize < 1048576)
 	{
 		Media::ICCProfile *profile;
 		fileBuff = MemAlloc(UInt8, (UOSInt)fileSize);
-		if (fs->Read(fileBuff, (UOSInt)fileSize) == fileSize)
+		if (fs.Read(fileBuff, (UOSInt)fileSize) == fileSize)
 		{
 			profile = Media::ICCProfile::Parse(fileBuff, (UOSInt)fileSize);
 			if (profile)
@@ -639,8 +638,8 @@ Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 				if (profile->GetColorPrimaries(cp.GetPrimaries()) && profile->GetRedTransferParam(cp.GetRTranParam()) && profile->GetGreenTransferParam(cp.GetGTranParam()) && profile->GetBlueTransferParam(cp.GetBTranParam()))
 				{
 					succ = true;
-					this->rgb->monProfile->Set(&cp);
-					this->rgb->monProfile->SetRAWICC(fileBuff);
+					this->rgb->monProfile.Set(&cp);
+					this->rgb->monProfile.SetRAWICC(fileBuff);
 				}
 				DEL_CLASS(profile);
 			}
@@ -648,7 +647,6 @@ Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 
 		MemFree(fileBuff);
 	}
-	DEL_CLASS(fs);
 	return succ;
 }
 
@@ -696,10 +694,10 @@ void Media::MonitorColorManager::SetOSProfile()
 	}
 	if (!succ)
 	{
-		this->rgb->monProfile->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+		this->rgb->monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 	}
 #else
-	this->rgb->monProfile->SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+	this->rgb->monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 #endif
 }
 
@@ -716,7 +714,7 @@ void Media::MonitorColorManager::SetEDIDProfile()
 			Media::EDID::EDIDInfo info;
 			if (Media::EDID::Parse(edid, &info))
 			{
-				if (Media::EDID::SetColorProfile(&info, this->rgb->monProfile))
+				if (Media::EDID::SetColorProfile(&info, &this->rgb->monProfile))
 				{
 					succ = true;
 				}
@@ -757,9 +755,6 @@ void Media::MonitorColorManager::YUVUpdated()
 
 Media::ColorManager::ColorManager()
 {
-	NEW_CLASS(this->monColor, Data::FastStringMap<MonitorColorManager*>());
-	NEW_CLASS(this->mut, Sync::Mutex());
-
 	this->defVProfileType = Media::ColorProfile::CPT_BT709;
 	this->defVProfile.SetCommonProfile(this->defVProfileType);
 	this->defPProfileType = Media::ColorProfile::CPT_SRGB;
@@ -770,14 +765,12 @@ Media::ColorManager::ColorManager()
 Media::ColorManager::~ColorManager()
 {
 	MonitorColorManager *monColor;
-	UOSInt i = this->monColor->GetCount();
+	UOSInt i = this->monColor.GetCount();
 	while (i-- > 0)
 	{
-		monColor = this->monColor->GetItem(i);
+		monColor = this->monColor.GetItem(i);
 		DEL_CLASS(monColor);
 	}
-	DEL_CLASS(this->monColor);
-	DEL_CLASS(this->mut);
 }
 
 Bool Media::ColorManager::LoadDef()
@@ -891,25 +884,25 @@ Media::ColorProfile::YUVType Media::ColorManager::GetDefYUVType()
 Media::MonitorColorManager *Media::ColorManager::GetMonColorManager(Text::String *profileName)
 {
 	Media::MonitorColorManager *monColor;
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (profileName == 0)
 	{
-		monColor = this->monColor->GetC(CSTR(""));
+		monColor = this->monColor.GetC(CSTR(""));
 	}
 	else
 	{
-		monColor = this->monColor->Get(profileName);
+		monColor = this->monColor.Get(profileName);
 	}
 	if (monColor == 0)
 	{
 		NEW_CLASS(monColor, Media::MonitorColorManager(profileName));
 		if (profileName == 0)
 		{
-			this->monColor->Put(Text::String::NewEmpty(), monColor);
+			this->monColor.Put(Text::String::NewEmpty(), monColor);
 		}
 		else
 		{
-			this->monColor->Put(profileName, monColor);
+			this->monColor.Put(profileName, monColor);
 		}
 	}
 	mutUsage.EndUse();

@@ -14,11 +14,11 @@ namespace Media
 			Media::PixelFormat srcPF;
 			UOSInt destNBits;
 			Media::PixelFormat destPF;
-			Media::ColorProfile *srcProfile;
-			Media::ColorProfile *destProfile;
+			Media::ColorProfile srcProfile;
+			Media::ColorProfile destProfile;
 			Bool invert;
 
-			Media::IColorHandler::RGBPARAM2 *rgbParam;
+			Media::IColorHandler::RGBPARAM2 rgbParam;
 			UInt8 *rgbTable;
 			Bool rgbUpdated;
 		private:

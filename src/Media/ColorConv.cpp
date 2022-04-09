@@ -138,9 +138,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		else
 		{
 			rgbParam = colorSess->GetRGBParam();
-			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile->GetRTranParam()));
-			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile->GetGTranParam()));
-			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile->GetBTranParam()));
+			NEW_CLASS(rTran, Media::CS::TransferParam(rgbParam->monProfile.GetRTranParamRead()));
+			NEW_CLASS(gTran, Media::CS::TransferParam(rgbParam->monProfile.GetGTranParamRead()));
+			NEW_CLASS(bTran, Media::CS::TransferParam(rgbParam->monProfile.GetBTranParamRead()));
 		}
 	}
 	else if (srcColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_VUNKNOWN)
@@ -199,8 +199,8 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		if (colorSess)
 		{
 			rgbParam = colorSess->GetRGBParam();
-			rgbParam->monProfile->GetPrimaries()->GetConvMatrix(&mat5);
-			vec2.Set(rgbParam->monProfile->GetPrimaries()->wx, rgbParam->monProfile->GetPrimaries()->wy, 1.0);
+			rgbParam->monProfile.GetPrimariesRead()->GetConvMatrix(&mat5);
+			vec2.Set(rgbParam->monProfile.GetPrimariesRead()->wx, rgbParam->monProfile.GetPrimariesRead()->wy, 1.0);
 		}
 		else
 		{
@@ -249,9 +249,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		rTran->Set(rgbParam->monProfile->GetRTranParam());
-		gTran->Set(rgbParam->monProfile->GetGTranParam());
-		bTran->Set(rgbParam->monProfile->GetBTranParam());
+		rTran->Set(rgbParam->monProfile.GetRTranParamRead());
+		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
+		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else if (destColor->GetRTranParam()->GetTranType() == Media::CS::TRANT_PDISPLAY && colorSess != 0)
 	{
@@ -270,9 +270,9 @@ UInt32 Media::ColorConv::ConvARGB(Media::ColorProfile *srcColor, Media::ColorPro
 		rMul = rgbParam->MonRBrightness * tMul;
 		gMul = rgbParam->MonGBrightness * tMul;
 		bMul = rgbParam->MonBBrightness * tMul;
-		rTran->Set(rgbParam->monProfile->GetRTranParam());
-		gTran->Set(rgbParam->monProfile->GetGTranParam());
-		bTran->Set(rgbParam->monProfile->GetBTranParam());
+		rTran->Set(rgbParam->monProfile.GetRTranParamRead());
+		gTran->Set(rgbParam->monProfile.GetGTranParamRead());
+		bTran->Set(rgbParam->monProfile.GetBTranParamRead());
 	}
 	else
 	{

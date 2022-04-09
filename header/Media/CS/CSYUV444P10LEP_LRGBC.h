@@ -25,10 +25,10 @@ namespace Media
 			} THREADSTAT;
 
 			YUVPARAM yuvParam;
-			RGBPARAM2 *rgbParam;
+			RGBPARAM2 rgbParam;
 			Media::ColorProfile::YUVType yuvType;
-			Media::ColorProfile *srcProfile;
-			Media::ColorProfile *destProfile;
+			Media::ColorProfile srcProfile;
+			Media::ColorProfile destProfile;
 
 			Bool yuvUpdated;
 			Bool rgbUpdated;
@@ -37,7 +37,7 @@ namespace Media
 
 			UOSInt currId;
 			UOSInt nThread;
-			Sync::Event *evtMain;
+			Sync::Event evtMain;
 			THREADSTAT *stats;
 
 			void SetupRGB13_LR();
