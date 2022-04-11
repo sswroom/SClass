@@ -31,7 +31,8 @@ namespace Data
 			BOOL,
 			ByteArr,
 			Vector,
-			UUID
+			UUID,
+			CStr
 		};
 	
 		union ItemValue
@@ -52,10 +53,11 @@ namespace Data
 			Data::ReadonlyArray<UInt8> *byteArr;
 			Math::Vector2D *vector;
 			Data::UUID *uuid;
+			struct { const UTF8Char *v; UOSInt leng; } cstr;
 		};
 	private:
-		ItemType itemType;
 		ItemValue val;
+		ItemType itemType;
 		
 		VariItem(ItemType itemType, ItemValue val);
 		void FreeItem();

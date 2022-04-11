@@ -31,6 +31,7 @@ void Data::VariItem::FreeItem()
 	case ItemType::I64:
 	case ItemType::U64:
 	case ItemType::BOOL:
+	case ItemType::CStr:
 		break;
 	case ItemType::Str:
 		this->val.str->Release();
@@ -99,6 +100,8 @@ Single Data::VariItem::GetAsF32()
 		return (Single)(this->val.boolean?1:0);
 	case ItemType::Str:
 		return (Single)Text::StrToDouble(this->val.str->v);
+	case ItemType::CStr:
+		return (Single)Text::StrToDouble(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -138,6 +141,8 @@ Double Data::VariItem::GetAsF64()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return Text::StrToDouble(this->val.str->v);
+	case ItemType::CStr:
+		return Text::StrToDouble(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -177,6 +182,8 @@ Int8 Data::VariItem::GetAsI8()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return (Int8)Text::StrToInt32(this->val.str->v);
+	case ItemType::CStr:
+		return (Int8)Text::StrToInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -216,6 +223,8 @@ UInt8 Data::VariItem::GetAsU8()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return (UInt8)Text::StrToUInt32(this->val.str->v);
+	case ItemType::CStr:
+		return (UInt8)Text::StrToUInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -255,6 +264,8 @@ Int16 Data::VariItem::GetAsI16()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return (Int16)Text::StrToInt32(this->val.str->v);
+	case ItemType::CStr:
+		return (Int16)Text::StrToInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -294,6 +305,8 @@ UInt16 Data::VariItem::GetAsU16()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return (UInt16)Text::StrToUInt32(this->val.str->v);
+	case ItemType::CStr:
+		return (UInt16)Text::StrToUInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -333,6 +346,8 @@ Int32 Data::VariItem::GetAsI32()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return Text::StrToInt32(this->val.str->v);
+	case ItemType::CStr:
+		return Text::StrToInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -372,6 +387,8 @@ UInt32 Data::VariItem::GetAsU32()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return Text::StrToUInt32(this->val.str->v);
+	case ItemType::CStr:
+		return Text::StrToUInt32(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -411,6 +428,8 @@ Int64 Data::VariItem::GetAsI64()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return Text::StrToInt64(this->val.str->v);
+	case ItemType::CStr:
+		return Text::StrToInt64(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -450,6 +469,8 @@ UInt64 Data::VariItem::GetAsU64()
 		return this->val.boolean?1:0;
 	case ItemType::Str:
 		return Text::StrToUInt64(this->val.str->v);
+	case ItemType::CStr:
+		return Text::StrToUInt64(this->val.cstr.v);
 	case ItemType::Date:
 	case ItemType::ByteArr:
 	case ItemType::Vector:
@@ -519,6 +540,9 @@ void Data::VariItem::GetAsString(Text::StringBuilderUTF8 *sb)
 	case ItemType::Str:
 		sb->AppendC(this->val.str->v, this->val.str->leng);
 		return;
+	case ItemType::CStr:
+		sb->AppendC(this->val.cstr.v, this->val.cstr.leng);
+		return;
 	case ItemType::Date:
 		sptr = this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendC(sbuff, (UOSInt)(sptr - sbuff));
@@ -581,6 +605,8 @@ UTF8Char *Data::VariItem::GetAsStringS(UTF8Char *sbuff, UOSInt buffSize)
 		break;
 	case ItemType::Str:
 		return this->val.str->ConcatToS(sbuff, buffSize);
+	case ItemType::CStr:
+		return Text::StrConcatCS(sbuff, this->val.cstr.v, this->val.cstr.leng, buffSize);
 	case ItemType::Date:
 		return this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 	case ItemType::ByteArr:
@@ -613,6 +639,17 @@ Data::DateTime *Data::VariItem::GetAsNewDate()
 		NEW_CLASS(date, Data::DateTime(this->val.date));
 		return date;
 	}
+	else if (this->itemType == ItemType::CStr)
+	{
+		NEW_CLASS(date, Data::DateTime());
+		date->ToLocalTime();
+		if (date->SetValue(Text::CString(this->val.cstr.v, this->val.cstr.leng)))
+		{
+			return date;
+		}
+		DEL_CLASS(date);
+		return 0;
+	}
 	else if (this->itemType == ItemType::Str)
 	{
 		NEW_CLASS(date, Data::DateTime());
@@ -639,14 +676,21 @@ Data::ReadonlyArray<UInt8> *Data::VariItem::GetAsNewByteArr()
 
 Math::Vector2D *Data::VariItem::GetAsNewVector()
 {
-	if (this->itemType == ItemType::Str)
+	if (this->itemType == ItemType::Vector)
+	{
+		return this->val.vector->Clone();;
+	}
+	else if (this->itemType == ItemType::CStr)
+	{
+		Math::WKTReader reader(0);
+		return reader.ParseWKT(this->val.cstr.v);
+	}
+	else if (this->itemType == ItemType::Str)
 	{
 		Math::WKTReader reader(0);
 		return reader.ParseWKT(this->val.str->v);
 	}
-	if (this->itemType != ItemType::Vector)
-		return 0;
-	return this->val.vector->Clone();;
+	return 0;
 }
 
 Data::UUID *Data::VariItem::GetAsNewUUID()
@@ -704,8 +748,9 @@ void Data::VariItem::SetStrSlow(const UTF8Char *str)
 	this->FreeItem();
 	if (str)
 	{
-		this->val.str = Text::String::NewNotNullSlow(str);
-		this->itemType = ItemType::Str;
+		this->val.cstr.v = str;
+		this->val.cstr.leng = Text::StrCharCnt(str);
+		this->itemType = ItemType::CStr;
 	}
 	else
 	{
@@ -719,8 +764,9 @@ void Data::VariItem::SetStr(const UTF8Char *str, UOSInt strLen)
 	this->FreeItem();
 	if (str)
 	{
-		this->val.str = Text::String::New(str, strLen);
-		this->itemType = ItemType::Str;
+		this->val.cstr.v = str;
+		this->val.cstr.leng = strLen;
+		this->itemType = ItemType::CStr;
 	}
 	else
 	{
@@ -934,6 +980,10 @@ void Data::VariItem::Set(VariItem *item)
 	case ItemType::BOOL:
 		this->val.boolean = item->val.boolean;
 		break;
+	case ItemType::CStr:
+		this->val.cstr.v = item->val.cstr.v;
+		this->val.cstr.leng = item->val.cstr.leng;
+		break;
 	case ItemType::Str:
 		this->val.str = item->val.str->Clone();
 		break;
@@ -999,6 +1049,10 @@ Data::VariItem *Data::VariItem::Clone()
 		break;
 	case ItemType::Str:
 		ival.str = this->val.str->Clone();
+		break;
+	case ItemType::CStr:
+		ival.cstr.v = this->val.cstr.v;
+		ival.cstr.leng = this->val.cstr.leng;
 		break;
 	case ItemType::Date:
 		NEW_CLASS(ival.date, Data::DateTime(this->val.date));
@@ -1068,6 +1122,11 @@ void Data::VariItem::ToString(Text::StringBuilderUTF8 *sb)
 		sb->Append(s);
 		s->Release();
 		return;
+	case ItemType::CStr:
+		s = Text::JSText::ToNewJSTextDQuote(this->val.cstr.v);
+		sb->Append(s);
+		s->Release();
+		return;
 	case ItemType::Date:
 		sptr = this->val.date->ToString(sbuff, "yyyy-MM-dd HH:mm:ss.fff");
 		sb->AppendUTF8Char('\"');
@@ -1108,9 +1167,10 @@ Data::VariItem *Data::VariItem::NewStrSlow(const UTF8Char *str)
 {
 	if (str == 0) return NewNull();
 	ItemValue ival;
-	ival.str = Text::String::NewNotNullSlow(str);
+	ival.cstr.v = str;
+	ival.cstr.leng = Text::StrCharCnt(str);
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::CStr, ival));
 	return item;
 }
 
@@ -1118,9 +1178,10 @@ Data::VariItem *Data::VariItem::NewStr(Text::CString str)
 {
 	if (str.v == 0) return NewNull();
 	ItemValue ival;
-	ival.str = Text::String::New(str);
+	ival.cstr.v = str.v;
+	ival.cstr.leng = str.leng;
 	Data::VariItem *item;
-	NEW_CLASS(item, Data::VariItem(ItemType::Str, ival));
+	NEW_CLASS(item, Data::VariItem(ItemType::CStr, ival));
 	return item;
 }
 
@@ -1343,6 +1404,8 @@ Data::VariItem *Data::VariItem::NewFromPtr(void *ptr, ItemType itemType)
 		return NewNull();
 	case ItemType::Str:
 		return NewStr(*(Text::String**)ptr);
+	case ItemType::CStr:
+		return NewStr(*(Text::CString*)ptr);
 	case ItemType::Date:
 		return NewDate(*(Data::DateTime**)ptr);
 	case ItemType::ByteArr:
@@ -1399,6 +1462,12 @@ void Data::VariItem::SetFromPtr(Data::VariItem *item, void *ptr, ItemType itemTy
 		return;
 	case ItemType::Str:
 		item->SetStr(*(Text::String**)ptr);
+		return;
+	case ItemType::CStr:
+		{
+			Text::CString cstr = *(Text::CString*)ptr;
+			item->SetStr(cstr.v, cstr.leng);
+		}
 		return;
 	case ItemType::Date:
 		item->SetDate(*(Data::DateTime**)ptr);
@@ -1458,19 +1527,51 @@ void Data::VariItem::SetPtr(void *ptr, ItemType itemType, VariItem *item)
 	case ItemType::Null:
 		*(void**)ptr = 0;
 	case ItemType::Str:
-		if (item->GetItemType() == ItemType::Null)
 		{
-			*(Text::String**)ptr = 0;
+			ItemType itemType = item->GetItemType();
+			if (itemType == ItemType::Null)
+			{
+				*(Text::String**)ptr = 0;
+			}
+			else if (itemType == ItemType::Str)
+			{
+				*(Text::String**)ptr = item->GetItemValue().str->Clone();
+			}
+			else if (itemType == ItemType::CStr)
+			{
+				const ItemValue ival = item->GetItemValue();
+				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng);
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				item->GetAsString(&sb);
+				*(Text::String**)ptr = Text::String::New(sb.ToCString());
+			}
 		}
-		else if (item->GetItemType() == ItemType::Str)
+		break;
+	case ItemType::CStr:
 		{
-			*(Text::String**)ptr = item->GetItemValue().str->Clone();
-		}
-		else
-		{
-			Text::StringBuilderUTF8 sb;
-			item->GetAsString(&sb);
-			*(Text::String**)ptr = Text::String::New(sb.ToCString());
+			ItemType itemType = item->GetItemType();
+			if (itemType == ItemType::Null)
+			{
+				*(Text::CString*)ptr = 0;
+			}
+			else if (itemType == ItemType::Str)
+			{
+				*(Text::CString*)ptr = item->GetItemValue().str->ToCString();
+			}
+			else if (itemType == ItemType::CStr)
+			{
+				const ItemValue ival = item->GetItemValue();
+				*(Text::CString*)ptr = Text::CString(ival.cstr.v, ival.cstr.leng);
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				item->GetAsString(&sb);
+				*(Text::CString*)ptr = sb.ToCString();
+			}
 		}
 		break;
 	case ItemType::Date:
@@ -1533,19 +1634,51 @@ void Data::VariItem::SetPtrAndNotKeep(void *ptr, ItemType itemType, VariItem *it
 	case ItemType::Null:
 		*(void**)ptr = 0;
 	case ItemType::Str:
-		if (item->GetItemType() == ItemType::Null)
 		{
-			*(Text::String**)ptr = 0;
+			ItemType itemType = item->GetItemType();
+			if (itemType == ItemType::Null)
+			{
+				*(Text::String**)ptr = 0;
+			}
+			else if (itemType == ItemType::Str)
+			{
+				*(Text::String**)ptr = item->GetItemValue().str->Clone();
+			}
+			else if (itemType == ItemType::CStr)
+			{
+				const ItemValue ival = item->GetItemValue();
+				*(Text::String**)ptr = Text::String::New(ival.cstr.v, ival.cstr.leng);
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				item->GetAsString(&sb);
+				*(Text::String**)ptr = Text::String::New(sb.ToCString());
+			}
 		}
-		else if (item->GetItemType() == ItemType::Str)
+		break;
+	case ItemType::CStr:
 		{
-			*(Text::String**)ptr = item->GetItemValue().str->Clone();
-		}
-		else
-		{
-			Text::StringBuilderUTF8 sb;
-			item->GetAsString(&sb);
-			*(Text::String**)ptr = Text::String::New(sb.ToCString());
+			ItemType itemType = item->GetItemType();
+			if (itemType == ItemType::Null)
+			{
+				*(Text::CString*)ptr = 0;
+			}
+			else if (itemType == ItemType::Str)
+			{
+				*(Text::CString*)ptr = item->GetItemValue().str->ToCString();
+			}
+			else if (itemType == ItemType::CStr)
+			{
+				const ItemValue ival = item->GetItemValue();
+				*(Text::CString*)ptr = Text::CString(ival.cstr.v, ival.cstr.leng);
+			}
+			else
+			{
+				Text::StringBuilderUTF8 sb;
+				item->GetAsString(&sb);
+				*(Text::CString*)ptr = sb.ToCString();
+			}
 		}
 		break;
 	case ItemType::Date:
@@ -1638,6 +1771,13 @@ Bool Data::VariItem::PtrEquals(void *ptr1, void *ptr2, ItemType itemType)
 			return Text::StrEquals(val1->v, val2->v);
 		}
 		break;
+	case ItemType::CStr:
+		{
+			Text::CString val1 = *(Text::CString*)ptr1;
+			Text::CString val2 = *(Text::CString*)ptr2;
+			return val1.Equals(val2.v, val2.leng);
+		}
+		break;
 	case ItemType::Date:
 		{
 			Data::DateTime *val1 = *(Data::DateTime**)ptr1;
@@ -1722,6 +1862,8 @@ UOSInt Data::VariItem::GetItemSize(ItemType itemType)
 		return sizeof(Int64);
 	case ItemType::BOOL:
 		return sizeof(Bool);
+	case ItemType::CStr:
+		return sizeof(Text::CString);
 	case ItemType::Unknown:
 	case ItemType::Null:
 	case ItemType::Str:

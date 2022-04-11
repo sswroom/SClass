@@ -336,6 +336,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC(");\r\n"));
 			break;
+		case Data::VariItem::ItemType::CStr:
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
 		case Data::VariItem::ItemType::I8:
@@ -443,6 +444,7 @@ void Data::Class::ToCppClassSource(Text::StringBase<UTF8Char> *clsPrefix, Text::
 			sb->Append(field->name);
 			sb->AppendC(UTF8STRC("->Clone():0"));
 			break;
+		case Data::VariItem::ItemType::CStr:
 		case Data::VariItem::ItemType::F32:
 		case Data::VariItem::ItemType::F64:
 		case Data::VariItem::ItemType::I8:

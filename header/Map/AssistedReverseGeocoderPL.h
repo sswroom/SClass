@@ -37,13 +37,13 @@ namespace Map
 			virtual OSInt Compare(AddressEntry *a, AddressEntry *b);
 		};
 	private:
-		Data::ArrayList<Map::IReverseGeocoder *> *revGeos;
+		Data::ArrayList<Map::IReverseGeocoder *> revGeos;
 		UOSInt nextCoder;
 		DB::DBTool *conn;
 		IO::Writer *errWriter;
-		Data::BTreeMap<Text::String *> *strMap;
-		Data::UInt32Map<LCIDInfo *> *lcidMap;
-		Sync::Mutex *mut;
+		Data::BTreeMap<Text::String *> strMap;
+		Data::UInt32Map<LCIDInfo *> lcidMap;
+		Sync::Mutex mut;
 	public:
 		AssistedReverseGeocoderPL(DB::DBTool *db, IO::Writer *errWriter);
 		virtual ~AssistedReverseGeocoderPL();

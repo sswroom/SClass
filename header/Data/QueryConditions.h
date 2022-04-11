@@ -158,10 +158,10 @@ namespace Data
 		class StringEqualsCondition : public FieldCondition
 		{
 		private:
-			const UTF8Char *val;
+			Text::String *val;
 
 		public:
-			StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
+			StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, Text::CString val);
 			virtual ~StringEqualsCondition();
 
 			virtual ConditionType GetType();
@@ -248,7 +248,7 @@ namespace Data
 		QueryConditions *DoubleLE(const UTF8Char *fieldName, UOSInt nameLen, Double val);
 		QueryConditions *StrIn(const UTF8Char *fieldName, UOSInt nameLen, Data::ArrayList<const UTF8Char*> *vals);
 		QueryConditions *StrContains(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
-		QueryConditions *StrEquals(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val);
+		QueryConditions *StrEquals(const UTF8Char *fieldName, UOSInt nameLen, Text::CString val);
 		QueryConditions *BoolEquals(const UTF8Char *fieldName, UOSInt nameLen, Bool val);
 		QueryConditions *NotNull(const UTF8Char* fieldName, UOSInt nameLen);
 

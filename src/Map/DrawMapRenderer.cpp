@@ -2264,7 +2264,7 @@ void Map::DrawMapRenderer::DrawImageLayer(DrawEnv *denv, Map::IMapDrawLayer *lay
 		vimg = imgList.GetItem(i);
 		if (vimg->IsScnCoord())
 		{
-			vimg->GetScreenBounds(denv->view->GetScnWidth(), denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0], &scnCoords[1], &scnCoords[2], &scnCoords[3]);
+			vimg->GetScreenBounds((UOSInt)denv->view->GetScnWidth(), (UOSInt)denv->view->GetScnHeight(), denv->view->GetHDPI(), denv->view->GetHDPI(), &scnCoords[0], &scnCoords[1], &scnCoords[2], &scnCoords[3]);
 		}
 		else
 		{

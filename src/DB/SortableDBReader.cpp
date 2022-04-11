@@ -278,6 +278,7 @@ Int32 DB::SortableDBReader::GetInt32(UOSInt colIndex)
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
@@ -322,6 +323,7 @@ Int64 DB::SortableDBReader::GetInt64(UOSInt colIndex)
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
@@ -424,6 +426,7 @@ Double DB::SortableDBReader::GetDbl(UOSInt colIndex)
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:

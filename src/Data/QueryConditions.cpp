@@ -92,6 +92,7 @@ Bool Data::QueryConditions::TimeBetweenCondition::TestValid(Data::VariItem *item
 	case Data::VariItem::ItemType::U64:
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::ByteArr:
@@ -166,6 +167,7 @@ Bool Data::QueryConditions::Int32Condition::TestValid(Data::VariItem *item)
 		break;
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Date:
@@ -281,6 +283,7 @@ Bool Data::QueryConditions::Int32InCondition::TestValid(Data::VariItem *item)
 		break;
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Date:
@@ -365,6 +368,7 @@ Bool Data::QueryConditions::DoubleCondition::TestValid(Data::VariItem *item)
 		break;
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Date:
@@ -490,6 +494,17 @@ Bool Data::QueryConditions::StringInCondition::TestValid(Data::VariItem *item)
 			}
 		}
 		return false;
+	case Data::VariItem::ItemType::CStr:
+		csptr = item->GetItemValue().cstr.v;
+		i = this->vals->GetCount();
+		while (i-- > 0)
+		{
+			if (Text::StrEquals(csptr, this->vals->GetItem(i)))
+			{
+				return true;
+			}
+		}
+		return false;
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:
@@ -561,6 +576,11 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	{
 	case Data::VariItem::ItemType::Str:
 		return item->GetItemValue().str->IndexOf(this->val->v, this->val->leng) != INVALID_INDEX;
+	case Data::VariItem::ItemType::CStr:
+	{
+		Data::VariItem::ItemValue ival = item->GetItemValue();
+		return Text::StrIndexOfC(ival.cstr.v, ival.cstr.leng, this->val->v, this->val->leng) != INVALID_INDEX;
+	}
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:
@@ -583,14 +603,14 @@ Bool Data::QueryConditions::StringContainsCondition::TestValid(Data::VariItem *i
 	}
 }
 
-Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val) : FieldCondition(fieldName, nameLen)
+Data::QueryConditions::StringEqualsCondition::StringEqualsCondition(const UTF8Char *fieldName, UOSInt nameLen, Text::CString val) : FieldCondition(fieldName, nameLen)
 {
-	this->val = Text::StrCopyNew(val);
+	this->val = Text::String::New(val);
 }
 
 Data::QueryConditions::StringEqualsCondition::~StringEqualsCondition()
 {
-	Text::StrDelNew(this->val);
+	this->val->Release();
 }
 
 Data::QueryConditions::ConditionType Data::QueryConditions::StringEqualsCondition::GetType()
@@ -605,16 +625,16 @@ Bool Data::QueryConditions::StringEqualsCondition::ToWhereClause(Text::StringBui
 	sptr2 = DB::DBUtil::SDBColUTF8(sbuff, this->fieldName->v, svrType);
 	sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	sb->AppendC(UTF8STRC(" = "));
-	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(this->val, svrType);
+	UOSInt size = DB::DBUtil::SDBStrUTF8Leng(this->val->v, svrType);
 	if (size < 512)
 	{
-		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, this->val, svrType);
+		sptr2 = DB::DBUtil::SDBStrUTF8(sbuff, this->val->v, svrType);
 		sb->AppendC(sbuff, (UOSInt)(sptr2 - sbuff));
 	}
 	else
 	{
 		UTF8Char *sptr = MemAlloc(UTF8Char, size + 1);
-		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, this->val, svrType);
+		sptr2 = DB::DBUtil::SDBStrUTF8(sptr, this->val->v, svrType);
 		sb->AppendC(sptr, (UOSInt)(sptr2 - sptr));
 		MemFree(sptr);
 	}
@@ -627,7 +647,12 @@ Bool Data::QueryConditions::StringEqualsCondition::TestValid(Data::VariItem *ite
 	switch (item->GetItemType())
 	{
 	case Data::VariItem::ItemType::Str:
-		return Text::StrEquals(item->GetItemValue().str->v, this->val);
+		return item->GetItemValue().str->Equals(this->val);
+	case Data::VariItem::ItemType::CStr:
+	{
+		Data::VariItem::ItemValue ival = item->GetItemValue();
+		return this->val->Equals(ival.cstr.v, ival.cstr.leng);		
+	}
 	case Data::VariItem::ItemType::F32:
 	case Data::VariItem::ItemType::F64:
 	case Data::VariItem::ItemType::I8:
@@ -717,6 +742,7 @@ Bool Data::QueryConditions::BooleanCondition::TestValid(Data::VariItem *item)
 		bVal = item->GetItemValue().boolean;
 		break;
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Null:
 	case Data::VariItem::ItemType::Unknown:
 	case Data::VariItem::ItemType::Date:
@@ -769,6 +795,7 @@ Bool Data::QueryConditions::NotNullCondition::TestValid(Data::VariItem *item)
 	case Data::VariItem::ItemType::U64:
 	case Data::VariItem::ItemType::BOOL:
 	case Data::VariItem::ItemType::Str:
+	case Data::VariItem::ItemType::CStr:
 	case Data::VariItem::ItemType::Date:
 	case Data::VariItem::ItemType::ByteArr:
 	case Data::VariItem::ItemType::Vector:
@@ -1066,7 +1093,7 @@ Data::QueryConditions *Data::QueryConditions::StrContains(const UTF8Char *fieldN
 	return this;
 }
 
-Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, UOSInt nameLen, const UTF8Char *val)
+Data::QueryConditions *Data::QueryConditions::StrEquals(const UTF8Char *fieldName, UOSInt nameLen, Text::CString val)
 {
 	this->conditionList->Add(NEW_CLASS_D(StringEqualsCondition(fieldName, nameLen, val)));
 	return this;
