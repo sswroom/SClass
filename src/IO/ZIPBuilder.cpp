@@ -12,8 +12,6 @@ IO::ZIPBuilder::ZIPBuilder(IO::SeekableStream *stm)
 	this->stm = stm;
 	this->baseOfst = this->stm->GetPosition();
 	this->currOfst = 0;
-	NEW_CLASS(this->crc, Crypto::Hash::CRC32RIEEE());
-	NEW_CLASS(this->files, Data::ArrayList<IO::ZIPBuilder::FileInfo*>());
 }
 
 IO::ZIPBuilder::~ZIPBuilder()
@@ -24,10 +22,10 @@ IO::ZIPBuilder::~ZIPBuilder()
 	UOSInt hdrLen;
 	UOSInt cdLen = 0;
 	UOSInt i = 0;
-	UOSInt j = this->files->GetCount();
+	UOSInt j = this->files.GetCount();
 	while (i < j)
 	{
-		file = this->files->GetItem(i);
+		file = this->files.GetItem(i);
 
 		dt.SetTicks(file->fileTimeTicks);
 		WriteInt32(&hdrBuff[0], 0x02014b50);
@@ -82,9 +80,6 @@ IO::ZIPBuilder::~ZIPBuilder()
 	WriteInt32(&hdrBuff[16], (Int32)this->currOfst);
 	WriteInt16(&hdrBuff[20], 0);
 	this->stm->Write(hdrBuff, 22);
-
-	DEL_CLASS(this->files);
-	DEL_CLASS(this->crc);
 }
 
 Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, UOSInt fileSize, Int64 fileTimeTicks, Bool storeOnly)
@@ -102,9 +97,9 @@ Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, U
 		compSize = (UOSInt)Data::Compress::Inflate::Compress(fileContent, fileSize, outBuff, false);
 	}
 	UInt8 crcBuff[4];
-	this->crc->Clear();
-	this->crc->Calc(fileContent, fileSize);
-	this->crc->GetValue(crcBuff);
+	this->crc.Clear();
+	this->crc.Calc(fileContent, fileSize);
+	this->crc.GetValue(crcBuff);
 	
 	Data::DateTime dt;
 	dt.SetTicks(fileTimeTicks);
@@ -147,7 +142,7 @@ Bool IO::ZIPBuilder::AddFile(Text::CString fileName, const UInt8 *fileContent, U
 	file->uncompSize = fileSize;
 	file->compMeth = 8;
 	file->compSize = compSize;
-	this->files->Add(file);
+	this->files.Add(file);
 	if (compSize >= fileSize)
 	{
 		UOSInt writeSize;

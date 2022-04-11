@@ -22,10 +22,10 @@ namespace IO
 		
 	private:
 		IO::SeekableStream *stm;
-		Crypto::Hash::CRC32RIEEE *crc;
+		Crypto::Hash::CRC32RIEEE crc;
 		UInt64 baseOfst;
 		UInt64 currOfst;
-		Data::ArrayList<FileInfo*> *files;
+		Data::ArrayList<FileInfo*> files;
 
 	public:
 		ZIPBuilder(IO::SeekableStream *stm);

@@ -1,5 +1,6 @@
 #include "Stdafx.h"
 #include "MyMemory.h"
+#include "SIMD.h"
 #include "Map/ScaledMapView.h"
 #include "Math/Math.h"
 
@@ -230,7 +231,7 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOS
 		return false;
 	}
 
-	Double xmul = this->scnWidth / (rightX - leftX);
+/*	Double xmul = this->scnWidth / (rightX - leftX);
 	Double ymul = this->scnHeight / (bottomY - topY);
 	Double dleft = leftX;
 	Double dbottom = bottomY;
@@ -261,7 +262,32 @@ Bool Map::ScaledMapView::MapXYToScnXY(const Double *srcArr, Double *destArr, UOS
 				imaxY = thisY;
 		}
 	}
-	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);
+	return (imaxX >= 0) && (iminX < scnWidth) && (imaxY >= 0) && (iminY < scnHeight);*/
+
+	Double dleft = leftX;
+	Double dbottom = bottomY;
+	Doublex2 ptMul = PDoublex2Set(this->scnWidth / (rightX - leftX), this->scnHeight / (bottomY - topY));
+	Doublex2 ptOfst = PDoublex2Set(ofstX, ofstY);
+	Doublex2 thisVal;
+	Doublex2 minVal;
+	Doublex2 maxVal;
+	thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+	minVal = maxVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
+	PStoreDoublex2(destArr, minVal);
+	srcArr += 2;
+	destArr += 2;
+	nPoints--;
+	while (nPoints-- > 0)
+	{
+		thisVal = PDoublex2Set((srcArr[0]  - dleft), (dbottom - srcArr[1]));
+		thisVal = PADDPD(PMULPD(thisVal, ptMul), ptOfst);
+		PStoreDoublex2(destArr, thisVal);
+		srcArr += 2;
+		destArr += 2;
+		minVal = PMINPD(minVal, thisVal);
+		maxVal = PMAXPD(maxVal, thisVal);
+	}
+	return (Doublex2GetLo(maxVal) >= 0) && (Doublex2GetLo(minVal) < scnWidth) && (Doublex2GetHi(maxVal) >= 0) && (Doublex2GetHi(minVal) < scnHeight);
 }
 
 Bool Map::ScaledMapView::IMapXYToScnXY(Double mapRate, const Int32 *srcArr, Int32 *destArr, UOSInt nPoints, Int32 ofstX, Int32 ofstY)

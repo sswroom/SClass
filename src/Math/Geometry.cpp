@@ -779,8 +779,10 @@ Double Math::Geometry::SphereDistDeg(Double lat1, Double lon1, Double lat2, Doub
 	rLon1 = lon1 * scale;
 	rLat2 = lat2 * scale;
 	rLon2 = lon2 * scale;
+	Double cLat1 = Math_Cos(rLat1);
+	Double cLat2 = Math_Cos(rLat2);
 
-	tmpV = Math_Cos(rLat1) * Math_Cos(rLon1) * Math_Cos(rLat2) * Math_Cos(rLon2) + Math_Cos(rLat1) * Math_Sin(rLon1) * Math_Cos(rLat2) * Math_Sin(rLon2) + Math_Sin(rLat1) * Math_Sin(rLat2);
+	tmpV = cLat1 * Math_Cos(rLon1) * cLat2 * Math_Cos(rLon2) + cLat1 * Math_Sin(rLon1) * cLat2 * Math_Sin(rLon2) + Math_Sin(rLat1) * Math_Sin(rLat2);
 	if (tmpV >= 1)
 		return 0;
 	return Math_ArcCos(tmpV) * radius;
@@ -801,14 +803,13 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	UOSInt k;
 	UOSInt j;
 	UOSInt i = nPoints;
-	Data::ArrayListInt32 *ptArr;
 	if (i <= 0)
 	{
 		*outPtX = 0;
 		*outPtY = 0;
 		return;
 	}
-	NEW_CLASS(ptArr, Data::ArrayListInt32(4));
+	Data::ArrayListInt32 ptArr(4);
 
 	maxX = minX = points[0];
 	maxY = minY = points[1];
@@ -848,7 +849,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 			if ((lastY >= centY && thisY < centY) || (thisY >= centY && lastY < centY))
 			{
 				tempX = lastX + MulDiv32(centY - lastY, thisX - lastX, thisY - lastY);
-				ptArr->SortedInsert(tempX);
+				ptArr.SortedInsert(tempX);
 			}
 			lastX = thisX;
 			lastY = thisY;
@@ -856,10 +857,9 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 
 		i = k;
 	}
-	j = ptArr->GetCount();
+	j = ptArr.GetCount();
 	if ((j & 1) == 1 || j == 0)
 	{
-		DEL_CLASS(ptArr);
 		*outPtX = 0;
 		*outPtY = 0;
 		return;
@@ -868,7 +868,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		k += (UOSInt)(ptArr->GetItem(i + 1) - ptArr->GetItem(i));
+		k += (UOSInt)(ptArr.GetItem(i + 1) - ptArr.GetItem(i));
 		i += 2;
 	}
 
@@ -876,11 +876,10 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		lastX = ptArr->GetItem(i);
-		thisX = ptArr->GetItem(i + 1);
+		lastX = ptArr.GetItem(i);
+		thisX = ptArr.GetItem(i + 1);
 		if ((thisX - lastX) > (OSInt)k)
 		{
-			DEL_CLASS(ptArr);
 			*outPtX = (Int32)(lastX + (OSInt)k);
 			*outPtY = centY;
 			return;
@@ -888,7 +887,6 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 		k -= (UOSInt)(thisX - lastX);
 		i += 2;
 	}
-	DEL_CLASS(ptArr);
 	*outPtX = 0;
 	*outPtY = 0;
 	return;
@@ -910,14 +908,13 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	UOSInt k;
 	UOSInt j;
 	UOSInt i = nPoints;
-	Data::ArrayListDbl *ptArr;
 	if (i <= 0)
 	{
 		*outPtX = 0;
 		*outPtY = 0;
 		return;
 	}
-	NEW_CLASS(ptArr, Data::ArrayListDbl(4));
+	Data::ArrayListDbl ptArr(4);
 
 	maxX = minX = points[0];
 	maxY = minY = points[1];
@@ -957,7 +954,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 			if ((lastY >= centY && thisY < centY) || (thisY >= centY && lastY < centY))
 			{
 				tempX = lastX + (centY - lastY) * (thisX - lastX) / (thisY - lastY);
-				ptArr->SortedInsert(tempX);
+				ptArr.SortedInsert(tempX);
 			}
 			lastX = thisX;
 			lastY = thisY;
@@ -965,10 +962,9 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 
 		i = k;
 	}
-	j = ptArr->GetCount();
+	j = ptArr.GetCount();
 	if ((j & 1) == 1 || j == 0)
 	{
-		DEL_CLASS(ptArr);
 		*outPtX = 0;
 		*outPtY = 0;
 		return;
@@ -977,7 +973,7 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		sum += ptArr->GetItem(i + 1) - ptArr->GetItem(i);
+		sum += ptArr.GetItem(i + 1) - ptArr.GetItem(i);
 		i += 2;
 	}
 
@@ -985,11 +981,10 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 	i = 0;
 	while (i < j)
 	{
-		lastX = ptArr->GetItem(i);
-		thisX = ptArr->GetItem(i + 1);
+		lastX = ptArr.GetItem(i);
+		thisX = ptArr.GetItem(i + 1);
 		if ((thisX - lastX) > sum)
 		{
-			DEL_CLASS(ptArr);
 			*outPtX = (lastX + sum);
 			*outPtY = centY;
 			return;
@@ -997,7 +992,6 @@ void Math::Geometry::GetPolygonCenter(UOSInt nParts, UOSInt nPoints, UInt32 *par
 		sum -= thisX - lastX;
 		i += 2;
 	}
-	DEL_CLASS(ptArr);
 	*outPtX = 0;
 	*outPtY = 0;
 	return;

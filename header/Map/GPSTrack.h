@@ -66,18 +66,18 @@ namespace Map
 		Double minLat;
 		Double minLon;
 		Text::String *currTrackName;
-		Sync::Mutex *recMut;
-		Data::ArrayListInt64 *currTimes;
-		Data::ArrayList<GPSRecord2*> *currRecs;
-		Data::ArrayList<const UInt8 *> *currExtraData;
-		Data::ArrayList<UOSInt> *currExtraSize;
-		Data::ArrayList<TrackRecord*> *currTracks;
+		Sync::Mutex recMut;
+		Data::ArrayListInt64 currTimes;
+		Data::ArrayList<GPSRecord2*> currRecs;
+		Data::ArrayList<const UInt8 *> currExtraData;
+		Data::ArrayList<UOSInt> currExtraSize;
+		Data::ArrayList<TrackRecord*> currTracks;
 		Map::GPSTrack::GPSRecord2 *tmpRecord;
 		GPSExtraParser *extraParser;
 
-		Sync::Mutex *updMut;
-		Data::ArrayList<Map::IMapDrawLayer::UpdatedHandler> *updHdlrs;
-		Data::ArrayList<void *> *updObjs;
+		Sync::Mutex updMut;
+		Data::ArrayList<Map::IMapDrawLayer::UpdatedHandler> updHdlrs;
+		Data::ArrayList<void *> updObjs;
 
 	public:
 		GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codePage, Text::String *layerName);

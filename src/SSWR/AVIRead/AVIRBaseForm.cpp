@@ -420,7 +420,6 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 	SSWR::AVIRead::AVIRBaseForm *me = (AVIRead::AVIRBaseForm*)userObj;
 	IO::Path::PathType pt;
 	IO::StmData::FileData *fd;
-	IO::StmData::BufferedStreamData *buffFd;
 	IO::DirectoryPackage *pkg;
 	Text::StringBuilderUTF8 sb;
 	sb.AppendC(UTF8STRC("Cannot parse:"));
@@ -476,14 +475,13 @@ void __stdcall SSWR::AVIRead::AVIRBaseForm::FileHandler(void *userObj, Text::Str
 		else if (pt == IO::Path::PathType::File)
 		{
 			NEW_CLASS(fd, IO::StmData::FileData(files[i]->ToCString(), false));
-			NEW_CLASS(buffFd, IO::StmData::BufferedStreamData(fd));
-			if (!me->core->LoadData(buffFd, 0))
+			IO::StmData::BufferedStreamData buffFd(fd);
+			if (!me->core->LoadData(&buffFd, 0))
 			{
 				sb.AppendC(UTF8STRC("\n"));
 				sb.Append(files[i]);
 				found = true;
 			}
-			DEL_CLASS(buffFd);
 		}
 		i++;
 	}

@@ -12,8 +12,7 @@
 void IO::StreamReader::FillBuffer()
 {
 	UOSInt i;
-	WChar *src;
-	WChar *dest;
+	UTF8Char *dest;
 
 	if (stm->CanSeek())
 	{
@@ -21,29 +20,24 @@ void IO::StreamReader::FillBuffer()
 		if (this->lastPos != currPos)
 		{
 			buffSize = 0;
-			wcSize = 0;
-			wcPos = 0;
+			cSize = 0;
+			cPos = 0;
 		}
 	}
 
-	if (wcPos)
+	if (cPos)
 	{
-		if (wcSize > wcPos)
+		if (cSize > cPos)
 		{
-			i = wcSize - wcPos;
-			src = &wcbuff[wcPos];
-			dest = &wcbuff[0];
-			wcSize = i;
-			wcPos = 0;
-			while (i-- > 0)
-			{
-				*dest++ = *src++;
-			}
+			i = cSize - cPos;
+			MemCopyO(&cbuff[0], &cbuff[cPos], i);
+			cSize = i;
+			cPos = 0;
 		}
 		else
 		{
-			wcPos = 0;
-			wcSize = 0;
+			cPos = 0;
+			cSize = 0;
 		}
 	}
 
@@ -54,15 +48,15 @@ void IO::StreamReader::FillBuffer()
 	}
 	if (buffSize <= 0)
 		return;
-	UOSInt convSize = BUFFSIZE - wcSize;
+	UOSInt convSize = BUFFSIZE - cSize;
 	if (convSize > buffSize)
 		convSize = buffSize;
 	if (convSize)
 	{
-		dest = this->enc.WFromBytes(&wcbuff[wcSize], buff, convSize, &i);
+		dest = this->enc.UTF8FromBytes(&cbuff[cSize], buff, convSize, &i);
 		if (dest)
 		{
-			wcSize = (UOSInt)(dest - wcbuff);
+			cSize = (UOSInt)(dest - cbuff);
 			MemCopyO(buff, &buff[i], buffSize - i);
 			buffSize -= i;
 		}
@@ -113,9 +107,9 @@ IO::StreamReader::StreamReader(IO::Stream *stm)
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
-	this->wcbuff = MemAlloc(WChar, BUFFSIZE + 1);
-	this->wcSize = 0;
-	this->wcPos = 0;
+	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
+	this->cSize = 0;
+	this->cPos = 0;
 	if (stm->CanSeek())
 	{
 		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
@@ -134,9 +128,9 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 	this->stm = stm;
 	this->buff = MemAlloc(UInt8, BUFFSIZE);
 	this->buffSize = 0;
-	this->wcbuff = MemAlloc(WChar, BUFFSIZE + 1);
-	this->wcSize = 0;
-	this->wcPos = 0;
+	this->cbuff = MemAlloc(UTF8Char, BUFFSIZE + 1);
+	this->cSize = 0;
+	this->cPos = 0;
 	if (stm->CanSeek())
 	{
 		this->lastPos = ((IO::SeekableStream*)stm)->GetPosition();
@@ -153,7 +147,7 @@ IO::StreamReader::StreamReader(IO::Stream *stm, UInt32 codePage) : enc(codePage)
 IO::StreamReader::~StreamReader()
 {
 	MemFree(this->buff);
-	MemFree(this->wcbuff);
+	MemFree(this->cbuff);
 }
 
 void IO::StreamReader::Close()
@@ -161,158 +155,24 @@ void IO::StreamReader::Close()
 	this->stm->Close();
 }
 
-Int32 IO::StreamReader::Peek()
-{
-	if (wcPos < wcSize)
-	{
-		return (Int32)wcbuff[wcPos];
-	}
-	else
-	{
-		FillBuffer();
-		if (wcPos < wcSize)
-		{
-			return (Int32)wcbuff[wcPos];
-		}
-		else
-		{
-			return 0;
-		}
-	}
-}
-
-WChar IO::StreamReader::Read()
-{
-	if (wcPos < wcSize)
-	{
-		return wcbuff[wcPos++];
-	}
-	else
-	{
-		FillBuffer();
-		if (wcPos < wcSize)
-		{
-			return wcbuff[wcPos++];
-		}
-		else
-		{
-			return 0;
-		}
-	}
-}
-
-WChar *IO::StreamReader::Read(WChar *buff, UOSInt charCnt)
-{
-	WChar *dest = buff;
-	while (true)
-	{
-		WChar *src = &wcbuff[wcPos];
-		while (wcPos < wcSize)
-		{
-			if (charCnt-- <= 0)
-			{
-				*dest = 0;
-				return dest;
-			}
-			*dest++ = *src++;
-			wcPos++;
-		}
-		FillBuffer();
-		if (wcSize <= wcPos)
-		{
-			if (buff == dest)
-			{
-				return 0;
-			}
-			else
-			{
-				*dest = 0;
-				return dest;
-			}
-		}
-	}
-	return 0;
-}
-
-WChar *IO::StreamReader::ReadLine(WChar *buff)
-{
-	WChar *dest = buff;
-	Bool tmp = false;
-	while (true)
-	{
-		WChar *src = &wcbuff[wcPos];
-		while (wcPos < wcSize)
-		{
-			if (*src == 13)
-			{
-				if (!tmp && src + 1 == &wcbuff[wcSize])
-				{
-					tmp = true;
-					break;
-				}
-				if (src[1] == 10)
-				{
-					*dest = 0;
-					wcPos += 2;
-					this->lineBreak = 3;
-					return dest;
-				}
-				else
-				{
-					*dest = 0;
-					wcPos += 1;
-					this->lineBreak = 1;
-					return dest;
-				}
-			}
-			else if (*src == 10)
-			{
-				*dest = 0;
-				wcPos += 1;
-				this->lineBreak = 2;
-				return dest;
-			}
-			*dest++ = *src++;
-			wcPos++;
-		}
-		FillBuffer();
-		if (wcSize <= wcPos)
-		{
-			if (buff == dest)
-			{
-				return 0;
-			}
-			else
-			{
-				*dest = 0;
-				this->lineBreak = 0;
-				return dest;
-			}
-		}
-	}
-	return 0;
-}
-
 UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 {
-#if _WCHAR_SIZE == 2
 	UTF8Char *dest = buff;
 	Bool tmp = false;
-	UOSInt currPos = wcPos;
-	UOSInt currSize = wcSize;
-	WChar c;
-	UInt32 code;
+	UOSInt currPos = cPos;
+	UOSInt currSize = cSize;
+	UTF8Char c;
 	while (true)
 	{
-		currPos = wcPos;
-		currSize = wcSize;
-		WChar *src = &wcbuff[currPos];
+		currPos = cPos;
+		currSize = cSize;
+		UTF8Char *src = &cbuff[currPos];
 		while (currPos < currSize)
 		{
 			c = *src;
 			if (c == 13)
 			{
-				if (!tmp && src + 1 == &wcbuff[currSize])
+				if (!tmp && src + 1 == &cbuff[currSize])
 				{
 					tmp = true;
 					break;
@@ -320,14 +180,14 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 				if (src[1] == 10)
 				{
 					*dest = 0;
-					this->wcPos = currPos + 2;
+					this->cPos = currPos + 2;
 					this->lineBreak = 3;
 					return dest;
 				}
 				else
 				{
 					*dest = 0;
-					this->wcPos = currPos + 1;
+					this->cPos = currPos + 1;
 					this->lineBreak = 1;
 					return dest;
 				}
@@ -335,364 +195,7 @@ UTF8Char *IO::StreamReader::ReadLine(UTF8Char *buff, UOSInt maxCharCnt)
 			else if (c == 10)
 			{
 				*dest = 0;
-				this->wcPos = currPos + 1;
-				this->lineBreak = 2;
-				return dest;
-			}
-			else if (c < 0x80)
-			{
-				if (maxCharCnt <= 0)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UInt8)c;
-				maxCharCnt--;
-				src++;
-				currPos++;
-			}
-			else if (c < 0x800)
-			{
-				if (maxCharCnt <= 1)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xc0 | (c >> 6));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 2;
-				src++;
-				currPos++;
-			}
-			else if (c >= 0xd800 && c < 0xdc00)
-			{
-				if (currPos + 1 >= currSize)
-				{
-					if (currPos == 0)
-					{
-						if (maxCharCnt <= 2)
-						{
-							*dest = 0;
-							this->lineBreak = 0;
-							this->wcPos = currPos;
-							return dest;
-						}
-						*dest++ = (UTF8Char)(0xe0 | (c >> 12));
-						*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-						maxCharCnt -= 3;
-						src++;
-						currPos++;
-					}
-					else
-					{
-						break;
-					}
-				}
-				else if (src[1] >= 0xdc00 && src[1] < 0xe000)
-				{
-					code = 0x10000 + ((UTF32Char)(c - 0xd800) << 10) + (UTF32Char)(src[1] - 0xdc00);
-					if (code < 0x200000)
-					{
-						if (maxCharCnt <= 3)
-						{
-							*dest = 0;
-							this->lineBreak = 0;
-							this->wcPos = currPos;
-							return dest;
-						}
-						*dest++ = (UTF8Char)(0xf0 | (code >> 18));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
-						maxCharCnt -= 4;
-					}
-					else if (code < 0x4000000)
-					{
-						if (maxCharCnt <= 4)
-						{
-							*dest = 0;
-							this->lineBreak = 0;
-							this->wcPos = currPos;
-							return dest;
-						}
-						*dest++ = (UTF8Char)(0xf8 | (code >> 24));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
-						maxCharCnt -= 5;
-					}
-					else
-					{
-						if (maxCharCnt <= 5)
-						{
-							*dest = 0;
-							this->lineBreak = 0;
-							this->wcPos = currPos;
-							return dest;
-						}
-						*dest++ = (UTF8Char)(0xfc | (code >> 30));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 24) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 18) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 12) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | ((code >> 6) & 0x3f));
-						*dest++ = (UTF8Char)(0x80 | (code & 0x3f));
-						maxCharCnt -= 6;
-					}
-					src += 2;
-					currPos += 2;
-				}
-				else
-				{
-					if (maxCharCnt <= 2)
-					{
-						*dest = 0;
-						this->lineBreak = 0;
-						this->wcPos = currPos;
-						return dest;
-					}
-					*dest++ = (UTF8Char)(0xe0 | (c >> 12));
-					*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-					*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-					maxCharCnt -= 3;
-					src++;
-					currPos++;
-				}
-			}
-			else
-			{
-				if (maxCharCnt <= 2)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xe0 | (c >> 12));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 3;
-				src++;
-				currPos++;
-			}
-		}
-		this->wcPos = currPos;
-		FillBuffer();
-		if (wcSize <= wcPos)
-		{
-			if (buff == dest)
-			{
-				return 0;
-			}
-			else
-			{
-				*dest = 0;
-				this->lineBreak = 0;
-				return dest;
-			}
-		}
-	}
-	return 0;
-#elif _WCHAR_SIZE == 4
-	UTF8Char *dest = buff;
-	Bool tmp = false;
-	UOSInt currPos = wcPos;
-	UOSInt currSize = wcSize;
-	WChar c;
-	while (true)
-	{
-		currPos = wcPos;
-		currSize = wcSize;
-		WChar *src = &wcbuff[currPos];
-		while (currPos < currSize)
-		{
-			c = *src;
-			if (c == 13)
-			{
-				if (!tmp && src + 1 == &wcbuff[currSize])
-				{
-					tmp = true;
-					break;
-				}
-				if (src[1] == 10)
-				{
-					*dest = 0;
-					this->wcPos = currPos + 2;
-					this->lineBreak = 3;
-					return dest;
-				}
-				else
-				{
-					*dest = 0;
-					this->wcPos = currPos + 1;
-					this->lineBreak = 1;
-					return dest;
-				}
-			}
-			else if (c == 10)
-			{
-				*dest = 0;
-				this->wcPos = currPos + 1;
-				this->lineBreak = 2;
-				return dest;
-			}
-			else if (c < 0x80)
-			{
-				if (maxCharCnt <= 0)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UInt8)c;
-				maxCharCnt--;
-			}
-			else if (c < 0x800)
-			{
-				if (maxCharCnt <= 1)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xc0 | (c >> 6));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 2;
-			}
-			else if (c < 0x10000)
-			{
-				if (maxCharCnt <= 2)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xe0 | (c >> 12));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 3;
-			}
-			else if (c < 0x200000)
-			{
-				if (maxCharCnt <= 3)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xf0 | (c >> 18));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 4;
-			}
-			else if (c < 0x4000000)
-			{
-				if (maxCharCnt <= 4)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xf8 | (c >> 24));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 5;
-			}
-			else
-			{
-				if (maxCharCnt <= 5)
-				{
-					*dest = 0;
-					this->lineBreak = 0;
-					this->wcPos = currPos;
-					return dest;
-				}
-				*dest++ = (UTF8Char)(0xfc | (c >> 30));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 24) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 18) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 12) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | ((c >> 6) & 0x3f));
-				*dest++ = (UTF8Char)(0x80 | (c & 0x3f));
-				maxCharCnt -= 6;
-			}
-
-			src++;
-			currPos++;
-		}
-		this->wcPos = currPos;
-		FillBuffer();
-		if (wcSize <= wcPos)
-		{
-			if (buff == dest)
-			{
-				return 0;
-			}
-			else
-			{
-				*dest = 0;
-				this->lineBreak = 0;
-				return dest;
-			}
-		}
-	}
-	return 0;
-#endif
-}
-
-WChar *IO::StreamReader::ReadLine(WChar *buff, UOSInt maxCharCnt)
-{
-	WChar *dest = buff;
-	Bool tmp = false;
-	UOSInt currPos = wcPos;
-	UOSInt currSize = wcSize;
-	WChar c;
-	while (true)
-	{
-		currPos = wcPos;
-		currSize = wcSize;
-		WChar *src = &wcbuff[currPos];
-		while (currPos < currSize)
-		{
-			c = *src;
-			if (c == 13)
-			{
-				if (!tmp && src + 1 == &wcbuff[currSize])
-				{
-					tmp = true;
-					break;
-				}
-				if (src[1] == 10)
-				{
-					*dest = 0;
-					this->wcPos = currPos + 2;
-					this->lineBreak = 3;
-					return dest;
-				}
-				else
-				{
-					*dest = 0;
-					this->wcPos = currPos + 1;
-					this->lineBreak = 1;
-					return dest;
-				}
-			}
-			else if (c == 10)
-			{
-				*dest = 0;
-				this->wcPos = currPos + 1;
+				this->cPos = currPos + 1;
 				this->lineBreak = 2;
 				return dest;
 			}
@@ -700,7 +203,7 @@ WChar *IO::StreamReader::ReadLine(WChar *buff, UOSInt maxCharCnt)
 			{
 				*dest = 0;
 				this->lineBreak = 0;
-				this->wcPos = currPos;
+				this->cPos = currPos;
 				return dest;
 			}
 
@@ -709,9 +212,9 @@ WChar *IO::StreamReader::ReadLine(WChar *buff, UOSInt maxCharCnt)
 			currPos++;
 			maxCharCnt--;
 		}
-		this->wcPos = currPos;
+		this->cPos = currPos;
 		FillBuffer();
-		if (wcSize <= wcPos)
+		if (cSize <= cPos)
 		{
 			if (buff == dest)
 			{
@@ -730,18 +233,14 @@ WChar *IO::StreamReader::ReadLine(WChar *buff, UOSInt maxCharCnt)
 
 Bool IO::StreamReader::ReadLine(Text::StringBuilderUTF8 *sb, UOSInt maxCharCnt)
 {
-	WChar *wptr = MemAlloc(WChar, maxCharCnt + 1);
-	WChar *end = ReadLine(wptr, maxCharCnt);
-	if (end == 0)
+	sb->AllocLeng(maxCharCnt);
+	UTF8Char *endPtr = this->ReadLine(sb->GetEndPtr(), maxCharCnt);
+	if (endPtr)
 	{
-		MemFree(wptr);
-		return false;
+		sb->SetEndPtr(endPtr);
+		return true;
 	}
-	Text::String *s = Text::String::NewNotNull(wptr);
-	sb->Append(s);
-	s->Release();
-	MemFree(wptr);
-	return true;
+	return false;
 }
 
 UTF8Char *IO::StreamReader::GetLastLineBreak(UTF8Char *buff)
@@ -775,69 +274,17 @@ Bool IO::StreamReader::GetLastLineBreak(Text::StringBuilderUTF8 *sb)
 	}
 	else if (this->lineBreak == 2)
 	{
-		sb->AppendC((const UTF8Char*)"\r\n", 2);
+		sb->AppendC(UTF8STRC("\r\n"));
 	}
 	return true;
-}
-
-WChar *IO::StreamReader::GetLastLineBreak(WChar *buff)
-{
-	if (this->lineBreak == 1)
-	{
-		*buff++ = 13;
-	}
-	else if (this->lineBreak == 2)
-	{
-		*buff++ = 10;
-	}
-	else if (this->lineBreak == 3)
-	{
-		*buff++ = 13;
-		*buff++ = 10;
-	}
-	*buff = 0;
-	return buff;
-}
-
-WChar *IO::StreamReader::ReadToEnd(WChar *buff)
-{
-	WChar *src;
-	WChar *dest;
-	FillBuffer();
-	dest = buff;
-	while (wcSize > wcPos)
-	{
-		src = &wcbuff[wcPos];
-		while (wcPos < wcSize)
-		{
-			*dest++ = *src++;
-			wcPos++;
-		}
-		FillBuffer();
-	}
-	*dest = 0;
-	return dest;
 }
 
 Bool IO::StreamReader::ReadToEnd(Text::StringBuilderUTF8 *sb)
 {
 	Bool succ = false;
-	WChar *wptr = MemAlloc(WChar, 4096);
-	WChar *wptr2;
-	Text::String *s;
-	while (true)
+	while (this->ReadLine(sb, BUFFSIZE))
 	{
-		wptr2 = ReadLine(wptr, 4093);
-		if (wptr2 == 0)
-		{
-			break;
-		}
-		succ = true;
-		wptr2 = this->GetLastLineBreak(wptr2);
-		s = Text::String::NewNotNull(wptr);
-		sb->Append(s);
-		s->Release();
+		succ = this->GetLastLineBreak(sb);
 	}
-	MemFree(wptr);
 	return succ;
 }

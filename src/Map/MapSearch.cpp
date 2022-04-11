@@ -18,8 +18,6 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 	UTF8Char sbuff2[256];
 	UTF8Char *tmp;
 	Text::PString strs[5];
-	IO::FileStream *fs;
-	IO::StreamReader *reader;
 	UOSInt i;
 	Int32 layerId;
 	Int32 layerType;
@@ -35,9 +33,9 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 		NEW_CLASS(this->layersArr[i], Data::ArrayList<Map::MapSearchLayer*>());
 	}
 
-	NEW_CLASS(fs, IO::FileStream(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	NEW_CLASS(reader, IO::StreamReader(fs));
-	sptr = reader->ReadLine(sbuff, 256);
+	IO::FileStream fs(fileName, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	IO::StreamReader reader(&fs);
+	sptr = reader.ReadLine(sbuff, 256);
 	while (sptr)
 	{
 		i = Text::StrSplitP(strs, 5, {sbuff, (UOSInt)(sptr - sbuff)}, ',');
@@ -126,10 +124,8 @@ Map::MapSearch::MapSearch(Text::CString fileName, Map::MapSearchManager *manager
 			}
 
 		}
-		sptr = reader->ReadLine(sbuff, 256);
+		sptr = reader.ReadLine(sbuff, 256);
 	}
-	DEL_CLASS(reader);
-	DEL_CLASS(fs);
 }
 
 Map::MapSearch::~MapSearch()

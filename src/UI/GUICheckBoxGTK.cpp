@@ -14,8 +14,6 @@ void GUICheckBox_CheckedChange(GtkToggleButton *btn, gpointer data)
 UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked) : UI::GUIControl(ui, parent)
 {
 	this->checked = false;
-	NEW_CLASS(this->checkedChangeHdlrs, Data::ArrayList<CheckedChangeHandler>());
-	NEW_CLASS(this->checkedChangeObjs, Data::ArrayList<void *>());
 
 	this->hwnd = (ControlHandle*)gtk_check_button_new_with_label((const Char*)initText.v);
 	parent->AddChild(this);
@@ -29,8 +27,6 @@ UI::GUICheckBox::GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CS
 
 UI::GUICheckBox::~GUICheckBox()
 {
-	DEL_CLASS(this->checkedChangeHdlrs);
-	DEL_CLASS(this->checkedChangeObjs);
 }
 
 Text::CString UI::GUICheckBox::GetObjectClass()
@@ -45,10 +41,10 @@ OSInt UI::GUICheckBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUICheckBox::EventCheckedChange(Bool newState)
 {
-	UOSInt i = this->checkedChangeHdlrs->GetCount();
+	UOSInt i = this->checkedChangeHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->checkedChangeHdlrs->GetItem(i)(this->checkedChangeObjs->GetItem(i), newState);
+		this->checkedChangeHdlrs.GetItem(i)(this->checkedChangeObjs.GetItem(i), newState);
 	}
 }
 
@@ -64,7 +60,7 @@ void UI::GUICheckBox::SetChecked(Bool checked)
 
 void UI::GUICheckBox::HandleCheckedChange(CheckedChangeHandler hdlr, void *obj)
 {
-	this->checkedChangeHdlrs->Add(hdlr);
-	this->checkedChangeObjs->Add(obj);
+	this->checkedChangeHdlrs.Add(hdlr);
+	this->checkedChangeObjs.Add(obj);
 }
 

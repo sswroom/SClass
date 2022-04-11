@@ -17,16 +17,7 @@ Map::GPSTrack::GPSTrack(Text::String *sourceName, Bool hasAltitude, UInt32 codeP
 	this->codePage = codePage;
 	this->currTrackName = 0;
 	this->extraParser = 0;
-	NEW_CLASS(this->recMut, Sync::Mutex());
-	NEW_CLASS(this->currTimes, Data::ArrayListInt64());
-	NEW_CLASS(this->currRecs, Data::ArrayList<Map::GPSTrack::GPSRecord2*>());
-	NEW_CLASS(this->currTracks, Data::ArrayList<TrackRecord*>());
-	NEW_CLASS(this->currExtraData, Data::ArrayList<const UInt8*>());
-	NEW_CLASS(this->currExtraSize, Data::ArrayList<UOSInt>());
 	this->tmpRecord = 0;
-	NEW_CLASS(this->updMut, Sync::Mutex());
-	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
-	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
@@ -37,16 +28,7 @@ Map::GPSTrack::GPSTrack(Text::CString sourceName, Bool hasAltitude, UInt32 codeP
 	this->codePage = codePage;
 	this->currTrackName = 0;
 	this->extraParser = 0;
-	NEW_CLASS(this->recMut, Sync::Mutex());
-	NEW_CLASS(this->currTimes, Data::ArrayListInt64());
-	NEW_CLASS(this->currRecs, Data::ArrayList<Map::GPSTrack::GPSRecord2*>());
-	NEW_CLASS(this->currTracks, Data::ArrayList<TrackRecord*>());
-	NEW_CLASS(this->currExtraData, Data::ArrayList<const UInt8*>());
-	NEW_CLASS(this->currExtraSize, Data::ArrayList<UOSInt>());
 	this->tmpRecord = 0;
-	NEW_CLASS(this->updMut, Sync::Mutex());
-	NEW_CLASS(this->updHdlrs, Data::ArrayList<UpdatedHandler>());
-	NEW_CLASS(this->updObjs, Data::ArrayList<void *>());
 	this->maxLat = this->minLat = this->maxLon = this->minLon = 0;
 	this->hasAltitude = hasAltitude;
 	this->csys = Math::CoordinateSystemManager::CreateGeogCoordinateSystemDefName(Math::CoordinateSystemManager::GCST_WGS84);
@@ -56,26 +38,22 @@ Map::GPSTrack::~GPSTrack()
 {
 	UOSInt i;
 	const UInt8 *data;
-	DEL_CLASS(currTimes);
-	i = currRecs->GetCount();
+	i = this->currRecs.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->currRecs->GetItem(i));
-		data = this->currExtraData->GetItem(i);
+		MemFree(this->currRecs.GetItem(i));
+		data = this->currExtraData.GetItem(i);
 		if (data)
 		{
 			MemFree((void*)data);
 		}
 	}
-	DEL_CLASS(this->currRecs);
-	DEL_CLASS(this->currExtraData);
-	DEL_CLASS(this->currExtraSize);
 	SDEL_CLASS(this->extraParser);
-	i = currTracks->GetCount();
+	i = this->currTracks.GetCount();
 	while (i-- > 0)
 	{
 		Map::GPSTrack::TrackRecord *rec;
-		rec = (Map::GPSTrack::TrackRecord*)currTracks->GetItem(i);
+		rec = this->currTracks.GetItem(i);
 		if (rec->name)
 		{
 			rec->name->Release();
@@ -85,7 +63,6 @@ Map::GPSTrack::~GPSTrack()
 		MemFree(rec->records);
 		MemFree(rec);
 	}
-	DEL_CLASS(currTracks);
 	if (tmpRecord)
 	{
 		MemFree(tmpRecord);
@@ -96,10 +73,6 @@ Map::GPSTrack::~GPSTrack()
 		this->currTrackName->Release();
 		this->currTrackName = 0;
 	}
-	DEL_CLASS(this->recMut);
-	DEL_CLASS(this->updMut);
-	DEL_CLASS(this->updHdlrs);
-	DEL_CLASS(this->updObjs);
 }
 
 Map::DrawLayerType Map::GPSTrack::GetLayerType()
@@ -116,15 +89,15 @@ Map::DrawLayerType Map::GPSTrack::GetLayerType()
 
 UOSInt Map::GPSTrack::GetAllObjectIds(Data::ArrayListInt64 *outArr, void **nameArr)
 {
-	Sync::MutexUsage mutUsage(this->recMut);
+	Sync::MutexUsage mutUsage(&this->recMut);
 	UOSInt i = 0;
-	UOSInt j = this->currTracks->GetCount();
+	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
 	{
 		outArr->Add((Int64)i);
 		i++;
 	}
-	if (this->currTimes->GetCount() > 0)
+	if (this->currTimes.GetCount() > 0)
 	{
 		outArr->Add((Int64)j);
 		mutUsage.EndUse();
@@ -144,7 +117,7 @@ UOSInt Map::GPSTrack::GetObjectIds(Data::ArrayListInt64 *outArr, void **nameArr,
 
 UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nameArr, Double x1, Double y1, Double x2, Double y2, Bool keepEmpty)
 {
-	Sync::MutexUsage mutUsage(this->recMut);
+	Sync::MutexUsage mutUsage(&this->recMut);
 	Double tmpVal;
 	if (x1 > x2)
 	{
@@ -160,11 +133,11 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 	}
 	Int32 cnt = 0;
 	UOSInt i = 0;
-	UOSInt j = this->currTracks->GetCount();
+	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
 	{
 		Map::GPSTrack::TrackRecord *track;
-		track = (Map::GPSTrack::TrackRecord*)this->currTracks->GetItem(i);
+		track = this->currTracks.GetItem(i);
 		if (track->minLon <= x2 && track->maxLon >= x1 && track->minLat <= y2 && track->maxLat >= y1)
 		{
 			outArr->Add((Int64)i);
@@ -172,7 +145,7 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 		}
 		i++;
 	}
-	if (this->currTimes->GetCount() > 0)
+	if (this->currTimes.GetCount() > 0)
 	{
 		if (this->currMinLon <= x2 && this->currMaxLon >= x1 && this->currMinLat <= y2 && this->currMaxLat >= y1)
 		{
@@ -186,13 +159,13 @@ UOSInt Map::GPSTrack::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void **nam
 
 Int64 Map::GPSTrack::GetObjectIdMax()
 {
-	if (this->currTimes->GetCount() > 0)
+	if (this->currTimes.GetCount() > 0)
 	{
-		return (Int64)this->currTracks->GetCount();
+		return (Int64)this->currTracks.GetCount();
 	}
 	else
 	{
-		return (Int64)this->currTracks->GetCount() - 1;
+		return (Int64)this->currTracks.GetCount() - 1;
 	}
 }
 
@@ -205,31 +178,31 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 	if (strIndex >= 3)
 		return 0;
 
-	if ((UInt64)id > this->currTracks->GetCount())
+	if ((UInt64)id > this->currTracks.GetCount())
 		return 0;
 	if (id < 0)
 		return 0;
 	Data::DateTime dt;
 	UTF8Char *sptr;
-	if ((UInt64)id == this->currTracks->GetCount())
+	if ((UInt64)id == this->currTracks.GetCount())
 	{
 		if (strIndex == 0)
 		{
-			dt.SetTicks(this->currTimes->GetItem(0));
+			dt.SetTicks(this->currTimes.GetItem(0));
 			sptr = dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 			sptr = Text::StrConcatC(sptr, UTF8STRC(" - "));
-			dt.SetTicks(this->currTimes->GetItem(this->currTimes->GetCount() - 1));
+			dt.SetTicks(this->currTimes.GetItem(this->currTimes.GetCount() - 1));
 			sptr = dt.ToString(sptr, "yyyy-MM-dd HH:mm:ss.fff");
 			return sptr;
 		}
 		else if (strIndex == 1)
 		{
-			dt.SetTicks(this->currTimes->GetItem(0));
+			dt.SetTicks(this->currTimes.GetItem(0));
 			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 		}
 		else if (strIndex == 2)
 		{
-			dt.SetTicks(this->currTimes->GetItem(this->currTimes->GetCount() - 1));
+			dt.SetTicks(this->currTimes.GetItem(this->currTimes.GetCount() - 1));
 			return dt.ToString(buff, "yyyy-MM-dd HH:mm:ss.fff");
 		}
 		else
@@ -239,7 +212,7 @@ UTF8Char *Map::GPSTrack::GetString(UTF8Char *buff, UOSInt buffSize, void *nameAr
 	}
 	else
 	{
-		Map::GPSTrack::TrackRecord *track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
+		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem((UOSInt)id);
 		if (strIndex == 0)
 		{
 			dt.SetTicks(track->records[0].utcTimeTicks);
@@ -417,15 +390,15 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 	Double *ptPtr;
 	if (id < 0)
 		return 0;
-	Sync::MutexUsage mutUsage(this->recMut);
-	if ((UInt64)id > this->currTracks->GetCount())
+	Sync::MutexUsage mutUsage(&this->recMut);
+	if ((UInt64)id > this->currTracks.GetCount())
 	{
 		mutUsage.EndUse();
 		return 0;
 	}
-	else if ((UInt64)id == this->currTracks->GetCount())
+	else if ((UInt64)id == this->currTracks.GetCount())
 	{
-		if (this->currTimes->GetCount() > 0)
+		if (this->currTimes.GetCount() > 0)
 		{
 			Map::GPSTrack::GPSRecord2 *rec;
 			lastLat = 0;
@@ -433,7 +406,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 			outObj = MemAlloc(Map::DrawObjectL, 1);
 			outObj->objId = id;
 			outObj->nPtOfst = 1;
-			outObj->nPoint = (UInt32)(j = this->currRecs->GetCount());
+			outObj->nPoint = (UInt32)(j = this->currRecs.GetCount());
 			outObj->ptOfstArr = MemAlloc(UInt32, 1);
 			outObj->pointArr = MemAlloc(Double, outObj->nPoint * 2);
 			outObj->ptOfstArr[0] = 0;
@@ -441,7 +414,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 			i = 0;
 			while (i < j)
 			{
-				rec = (Map::GPSTrack::GPSRecord2*)this->currRecs->GetItem(i);
+				rec = this->currRecs.GetItem(i);
 				if (rec->lat == 0 && rec->lon == 0)
 				{
 					ptPtr[0] = lastLon;
@@ -471,7 +444,7 @@ Map::DrawObjectL *Map::GPSTrack::GetNewObjectById(void *session, Int64 id)
 		Map::GPSTrack::TrackRecord *track;
 		lastLat = 0;
 		lastLon = 0;
-		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
+		track = this->currTracks.GetItem((UOSInt)id);
 		outObj = MemAlloc(Map::DrawObjectL, 1);
 		outObj->objId = id;
 		outObj->nPtOfst = 1;
@@ -514,15 +487,15 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 	Double *altList;
 	if (id < 0)
 		return 0;
-	Sync::MutexUsage mutUsage(this->recMut);
-	if ((UInt64)id > this->currTracks->GetCount())
+	Sync::MutexUsage mutUsage(&this->recMut);
+	if ((UInt64)id > this->currTracks.GetCount())
 	{
 		mutUsage.EndUse();
 		return 0;
 	}
-	else if ((UInt64)id == this->currTracks->GetCount())
+	else if ((UInt64)id == this->currTracks.GetCount())
 	{
-		if (this->currTimes->GetCount() > 0)
+		if (this->currTimes.GetCount() > 0)
 		{
 			Map::GPSTrack::GPSRecord2 *rec;
 			lastLat = 0;
@@ -532,14 +505,14 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			{
 				Math::Polyline3D *pl;
 
-				NEW_CLASS(pl, Math::Polyline3D(4326, 1, j = this->currRecs->GetCount()));
+				NEW_CLASS(pl, Math::Polyline3D(4326, 1, j = this->currRecs.GetCount()));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				altList = pl->GetAltitudeList(&j);
 				i = 0;
 				while (i < j)
 				{
-					rec = (Map::GPSTrack::GPSRecord2*)this->currRecs->GetItem(i);
+					rec = this->currRecs.GetItem(i);
 					if (rec->lat == 0 && rec->lon == 0)
 					{
 						ptPtr[0] = lastLon;
@@ -561,13 +534,13 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 			else
 			{
 				Math::Polyline *pl;
-				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs->GetCount()));
+				NEW_CLASS(pl, Math::Polyline(4326, 1, j = this->currRecs.GetCount()));
 				pl->GetPtOfstList(&i)[0] = 0;
 				ptPtr = pl->GetPointList(&j);
 				i = 0;
 				while (i < j)
 				{
-					rec = (Map::GPSTrack::GPSRecord2*)this->currRecs->GetItem(i);
+					rec = this->currRecs.GetItem(i);
 					if (rec->lat == 0 && rec->lon == 0)
 					{
 						ptPtr[0] = lastLon;
@@ -598,7 +571,7 @@ Math::Vector2D *Map::GPSTrack::GetNewVectorById(void *session, Int64 id)
 		lastLat = 0;
 		lastLon = 0;
 		lastAlt = 0;
-		track = (Map::GPSTrack::TrackRecord *)this->currTracks->GetItem((UOSInt)id);
+		track = this->currTracks.GetItem((UOSInt)id);
 		if (this->hasAltitude)
 		{
 			Math::Polyline3D *pl;
@@ -673,23 +646,23 @@ void Map::GPSTrack::ReleaseObject(void *session, DrawObjectL *obj)
 
 void Map::GPSTrack::AddUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
-	Sync::MutexUsage mutUsage(this->updMut);
-	this->updHdlrs->Add(hdlr);
-	this->updObjs->Add(obj);
+	Sync::MutexUsage mutUsage(&this->updMut);
+	this->updHdlrs.Add(hdlr);
+	this->updObjs.Add(obj);
 	mutUsage.EndUse();
 }
 
 void Map::GPSTrack::RemoveUpdatedHandler(UpdatedHandler hdlr, void *obj)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->updMut);
-	i = this->updHdlrs->GetCount();
+	Sync::MutexUsage mutUsage(&this->updMut);
+	i = this->updHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		if (this->updHdlrs->GetItem(i) == hdlr && this->updObjs->GetItem(i) == obj)
+		if (this->updHdlrs.GetItem(i) == hdlr && this->updObjs.GetItem(i) == obj)
 		{
-			this->updHdlrs->RemoveAt(i);
-			this->updObjs->RemoveAt(i);
+			this->updHdlrs.RemoveAt(i);
+			this->updObjs.RemoveAt(i);
 		}
 	}
 	mutUsage.EndUse();
@@ -723,15 +696,15 @@ Map::IMapDrawLayer::ObjectClass Map::GPSTrack::GetObjectClass()
 
 void Map::GPSTrack::NewTrack()
 {
-	if (this->currTimes->GetCount() > 0)
+	if (this->currTimes.GetCount() > 0)
 	{
-		Sync::MutexUsage mutUsage(this->recMut);
+		Sync::MutexUsage mutUsage(&this->recMut);
 		Map::GPSTrack::TrackRecord *rec;
 		Map::GPSTrack::GPSRecord2 *recPtr;
 		Map::GPSTrack::GPSRecord2 *gpsrec;
 		UOSInt i;
 		rec = MemAlloc(Map::GPSTrack::TrackRecord, 1);
-		rec->nRecords = this->currTimes->GetCount();
+		rec->nRecords = this->currTimes.GetCount();
 		rec->maxLat = this->currMaxLat;
 		rec->maxLon = this->currMaxLon;
 		rec->minLat = this->currMinLat;
@@ -741,21 +714,21 @@ void Map::GPSTrack::NewTrack()
 		i = 0;
 		while (i < rec->nRecords)
 		{
-			gpsrec = (Map::GPSTrack::GPSRecord2*)this->currRecs->GetItem(i);
+			gpsrec = this->currRecs.GetItem(i);
 			MemCopyNO(recPtr, gpsrec, sizeof(Map::GPSTrack::GPSRecord2));
 			MemFree(gpsrec);
 			recPtr++;
 			i++;
 		}
 		rec->extraData = MemAlloc(const UInt8 *, rec->nRecords);
-		MemCopyNO(rec->extraData, this->currExtraData->GetArray(&i), sizeof(const UInt8*) * rec->nRecords);
+		MemCopyNO(rec->extraData, this->currExtraData.GetArray(&i), sizeof(const UInt8*) * rec->nRecords);
 		rec->extraDataSize = MemAlloc(UOSInt, rec->nRecords);
-		MemCopyNO(rec->extraDataSize, this->currExtraSize->GetArray(&i), sizeof(UOSInt) * rec->nRecords);
-		this->currRecs->Clear();
-		this->currTimes->Clear();
-		this->currExtraData->Clear();
-		this->currExtraSize->Clear();
-		this->currTracks->Add(rec);
+		MemCopyNO(rec->extraDataSize, this->currExtraSize.GetArray(&i), sizeof(UOSInt) * rec->nRecords);
+		this->currRecs.Clear();
+		this->currTimes.Clear();
+		this->currExtraData.Clear();
+		this->currExtraSize.Clear();
+		this->currTracks.Add(rec);
 		this->currTrackName = 0;
 		mutUsage.EndUse();
 		if (this->tmpRecord)
@@ -768,12 +741,12 @@ void Map::GPSTrack::NewTrack()
 
 UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord2 *rec)
 {
-	Sync::MutexUsage mutUsage(this->recMut);
-	if (this->currTimes->GetCount() == 0)
+	Sync::MutexUsage mutUsage(&this->recMut);
+	if (this->currTimes.GetCount() == 0)
 	{
 		this->currMaxLat = this->currMinLat = rec->lat;
 		this->currMaxLon = this->currMinLon = rec->lon;
-		if (this->currTracks->GetCount() == 0)
+		if (this->currTracks.GetCount() == 0)
 		{
 			this->maxLat = this->minLat = rec->lat;
 			this->maxLon = this->minLon = rec->lon;
@@ -819,10 +792,10 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord2 *rec)
 	Map::GPSTrack::GPSRecord2 *newRec;
 	newRec = MemAlloc(Map::GPSTrack::GPSRecord2, 1);
 	MemCopyNO(newRec, rec, sizeof(Map::GPSTrack::GPSRecord2));
-	UOSInt i = this->currTimes->SortedInsert(rec->utcTimeTicks);
-	this->currRecs->Insert(i, newRec);
-	this->currExtraData->Insert(i, 0);
-	this->currExtraSize->Insert(i, 0);
+	UOSInt i = this->currTimes.SortedInsert(rec->utcTimeTicks);
+	this->currRecs.Insert(i, newRec);
+	this->currExtraData.Insert(i, 0);
+	this->currExtraSize.Insert(i, 0);
 	if (this->tmpRecord)
 	{
 		MemFree(this->tmpRecord);
@@ -831,11 +804,11 @@ UOSInt Map::GPSTrack::AddRecord(Map::GPSTrack::GPSRecord2 *rec)
 	mutUsage.EndUse();
 	
 	UOSInt j;
-	Sync::MutexUsage updMutUsage(this->updMut);
-	j = this->updHdlrs->GetCount();
+	Sync::MutexUsage updMutUsage(&this->updMut);
+	j = this->updHdlrs.GetCount();
 	while (j-- > 0)
 	{
-		this->updHdlrs->GetItem(j)(this->updObjs->GetItem(j));
+		this->updHdlrs.GetItem(j)(this->updObjs.GetItem(j));
 	}
 	updMutUsage.EndUse();
 	return i;
@@ -847,20 +820,20 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 	{
 		return false;
 	}
-	if (index > this->currTracks->GetCount())
+	if (index > this->currTracks.GetCount())
 	{
 		return false;
 	}
-	else if (index == this->currTracks->GetCount())
+	else if (index == this->currTracks.GetCount())
 	{
 		const UInt8 *data;
-		Sync::MutexUsage mutUsage(this->recMut);
-		this->currTimes->RemoveRange(recStart, recEnd - recStart + 1);
+		Sync::MutexUsage mutUsage(&this->recMut);
+		this->currTimes.RemoveRange(recStart, recEnd - recStart + 1);
 		recEnd++;
 		while (recEnd-- > recStart)
 		{
-			MemFree(this->currRecs->RemoveAt(recEnd));
-			data = this->currExtraData->RemoveAt(recEnd);
+			MemFree(this->currRecs.RemoveAt(recEnd));
+			data = this->currExtraData.RemoveAt(recEnd);
 			if (data)
 			{
 				MemFree((void*)data);
@@ -877,8 +850,8 @@ Bool Map::GPSTrack::RemoveRecordRange(UOSInt index, UOSInt recStart, UOSInt recE
 	else
 	{
 		UOSInt currCnt;
-		Sync::MutexUsage mutUsage(this->recMut);
-		Map::GPSTrack::TrackRecord *recs = this->currTracks->GetItem(index);
+		Sync::MutexUsage mutUsage(&this->recMut);
+		Map::GPSTrack::TrackRecord *recs = this->currTracks.GetItem(index);
 		currCnt = recs->nRecords;
 		recEnd++;
 		recs->nRecords -= recEnd - recStart;
@@ -921,13 +894,13 @@ void Map::GPSTrack::SetTrackName(Text::CString name)
 void Map::GPSTrack::GetTrackNames(Data::ArrayListString *nameArr)
 {
 	UOSInt i = 0;
-	UOSInt j = this->currTracks->GetCount();
+	UOSInt j = this->currTracks.GetCount();
 	while (i < j)
 	{
-		nameArr->Add(this->currTracks->GetItem(i)->name);
+		nameArr->Add(this->currTracks.GetItem(i)->name);
 		i++;
 	}
-	if (this->currRecs->GetCount() > 0)
+	if (this->currRecs.GetCount() > 0)
 	{
 		nameArr->Add(this->currTrackName);
 	}
@@ -935,11 +908,11 @@ void Map::GPSTrack::GetTrackNames(Data::ArrayListString *nameArr)
 
 Text::String *Map::GPSTrack::GetTrackName(UOSInt index)
 {
-	if (index < this->currTracks->GetCount())
+	if (index < this->currTracks.GetCount())
 	{
-		return this->currTracks->GetItem(index)->name;
+		return this->currTracks.GetItem(index)->name;
 	}
-	else if (index == this->currTracks->GetCount() && this->currTimes->GetCount() > 0)
+	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
 	{
 		return this->currTrackName;
 	}
@@ -952,15 +925,15 @@ Text::String *Map::GPSTrack::GetTrackName(UOSInt index)
 
 Bool Map::GPSTrack::GetTrackStartTime(UOSInt index, Data::DateTime *dt)
 {
-	if (index < this->currTracks->GetCount())
+	if (index < this->currTracks.GetCount())
 	{
-		Map::GPSTrack::TrackRecord *track = this->currTracks->GetItem(index);
+		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
 		dt->SetTicks(track->records[0].utcTimeTicks);
 		return true;
 	}
-	else if (index == this->currTracks->GetCount() && this->currTimes->GetCount() > 0)
+	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
 	{
-		dt->SetTicks(this->currTimes->GetItem(0));
+		dt->SetTicks(this->currTimes.GetItem(0));
 		return true;
 	}
 	else
@@ -971,15 +944,15 @@ Bool Map::GPSTrack::GetTrackStartTime(UOSInt index, Data::DateTime *dt)
 
 Bool Map::GPSTrack::GetTrackEndTime(UOSInt index, Data::DateTime *dt)
 {
-	if (index < this->currTracks->GetCount())
+	if (index < this->currTracks.GetCount())
 	{
-		Map::GPSTrack::TrackRecord *track = this->currTracks->GetItem(index);
+		Map::GPSTrack::TrackRecord *track = this->currTracks.GetItem(index);
 		dt->SetTicks(track->records[track->nRecords - 1].utcTimeTicks);
 		return true;
 	}
-	else if (index == this->currTracks->GetCount() && this->currTimes->GetCount() > 0)
+	else if (index == this->currTracks.GetCount() && this->currTimes.GetCount() > 0)
 	{
-		dt->SetTicks(this->currTimes->GetItem(this->currTimes->GetCount() - 1));
+		dt->SetTicks(this->currTimes.GetItem(this->currTimes.GetCount() - 1));
 		return true;
 	}
 	else
@@ -990,37 +963,37 @@ Bool Map::GPSTrack::GetTrackEndTime(UOSInt index, Data::DateTime *dt)
 
 UOSInt Map::GPSTrack::GetTrackCnt()
 {
-	UOSInt cnt = this->currTracks->GetCount();
-	if (this->currTimes->GetCount() > 0)
+	UOSInt cnt = this->currTracks.GetCount();
+	if (this->currTimes.GetCount() > 0)
 		cnt++;
 	return cnt;
 }
 
 Map::GPSTrack::GPSRecord2 *Map::GPSTrack::GetTrack(UOSInt index, UOSInt *recordCnt)
 {
-	if (this->currTracks->GetCount() < index)
+	if (this->currTracks.GetCount() < index)
 		return 0;
-	if (this->currTracks->GetCount() == index)
+	if (this->currTracks.GetCount() == index)
 	{
-		if (this->currTimes->GetCount() == 0)
+		if (this->currTimes.GetCount() == 0)
 			return 0;
-		UOSInt i = this->currTimes->GetCount();
+		UOSInt i = this->currTimes.GetCount();
 		if (recordCnt)
 			*recordCnt = i;
 		if (this->tmpRecord)
 		{
 			return this->tmpRecord;
 		}
-		this->tmpRecord = MemAlloc(Map::GPSTrack::GPSRecord2, this->currTimes->GetCount());
+		this->tmpRecord = MemAlloc(Map::GPSTrack::GPSRecord2, this->currTimes.GetCount());
 		while (i-- > 0)
 		{
-			MemCopyNO(&this->tmpRecord[i], this->currRecs->GetItem(i), sizeof(Map::GPSTrack::GPSRecord2));
+			MemCopyNO(&this->tmpRecord[i], this->currRecs.GetItem(i), sizeof(Map::GPSTrack::GPSRecord2));
 		}
 		return this->tmpRecord;
 	}
 	else
 	{
-		Map::GPSTrack::TrackRecord *rec = (Map::GPSTrack::TrackRecord*)this->currTracks->GetItem(index);
+		Map::GPSTrack::TrackRecord *rec = this->currTracks.GetItem(index);
 		if (recordCnt)
 			*recordCnt = rec->nRecords;
 		return rec->records;
@@ -1035,14 +1008,14 @@ void Map::GPSTrack::GetLatLonByTime(Data::DateTime *dt, Double *lat, Double *lon
 void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 {
 	OSInt si;
-	if (this->currTimes->GetCount() > 0)
+	if (this->currTimes.GetCount() > 0)
 	{
-		if (ticks >= this->currTimes->GetItem(0) && ticks <= this->currTimes->GetItem(this->currTimes->GetCount() - 1))
+		if (ticks >= this->currTimes.GetItem(0) && ticks <= this->currTimes.GetItem(this->currTimes.GetCount() - 1))
 		{
-			si = this->currTimes->SortedIndexOf(ticks);
+			si = this->currTimes.SortedIndexOf(ticks);
 			if (si >= 0)
 			{
-				Map::GPSTrack::GPSRecord2 *rec = this->currRecs->GetItem((UOSInt)si);
+				Map::GPSTrack::GPSRecord2 *rec = this->currRecs.GetItem((UOSInt)si);
 				*lat = rec->lat;
 				*lon = rec->lon;
 				return;
@@ -1050,8 +1023,8 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 			else
 			{
 				Int64 tDiff;
-				Map::GPSTrack::GPSRecord2 *rec1 = this->currRecs->GetItem((UOSInt)~si - 1);
-				Map::GPSTrack::GPSRecord2 *rec2 = this->currRecs->GetItem((UOSInt)~si);
+				Map::GPSTrack::GPSRecord2 *rec1 = this->currRecs.GetItem((UOSInt)~si - 1);
+				Map::GPSTrack::GPSRecord2 *rec2 = this->currRecs.GetItem((UOSInt)~si);
 				tDiff = rec2->utcTimeTicks - rec1->utcTimeTicks;
 				*lat = (rec1->lat * (Double)(rec2->utcTimeTicks - ticks) + rec2->lat * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
 				*lon = (rec1->lon * (Double)(rec2->utcTimeTicks - ticks) + rec2->lon * (Double)(ticks - rec1->utcTimeTicks)) / (Double)tDiff;
@@ -1059,15 +1032,15 @@ void Map::GPSTrack::GetLatLonByTicks(Int64 ticks, Double *lat, Double *lon)
 			}
 		}
 	}
-	if (this->currTracks->GetCount() > 0)
+	if (this->currTracks.GetCount() > 0)
 	{
 		Map::GPSTrack::TrackRecord *rec;
 		UOSInt i;
 		UOSInt j;
-		i = this->currTracks->GetCount();
+		i = this->currTracks.GetCount();
 		while (i-- > 0)
 		{
-			rec = this->currTracks->GetItem(i);
+			rec = this->currTracks.GetItem(i);
 			if (ticks >= rec->records[0].utcTimeTicks && ticks <= rec->records[rec->nRecords - 1].utcTimeTicks)
 			{
 				j = 0;
@@ -1106,14 +1079,14 @@ void Map::GPSTrack::SetExtraParser(GPSExtraParser *parser)
 
 void Map::GPSTrack::SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt dataSize)
 {
-	Sync::MutexUsage mutUsage(this->recMut);
-	if (recIndex < this->currExtraData->GetCount())
+	Sync::MutexUsage mutUsage(&this->recMut);
+	if (recIndex < this->currExtraData.GetCount())
 	{
 		UInt8 *newData = MemAlloc(UInt8, dataSize);
 		MemCopyNO(newData, data, dataSize);
-		data = this->currExtraData->GetItem(recIndex);
-		this->currExtraData->SetItem(recIndex, newData);
-		this->currExtraSize->SetItem(recIndex, dataSize);
+		data = this->currExtraData.GetItem(recIndex);
+		this->currExtraData.SetItem(recIndex, newData);
+		this->currExtraSize.SetItem(recIndex, dataSize);
 		if (data)
 		{
 			MemFree((void*)data);
@@ -1124,22 +1097,22 @@ void Map::GPSTrack::SetExtraDataIndex(UOSInt recIndex, const UInt8 *data, UOSInt
 
 const UInt8 *Map::GPSTrack::GetExtraData(UOSInt trackIndex, UOSInt recIndex, UOSInt *dataSize)
 {
-	if (this->currTracks->GetCount() < trackIndex)
+	if (this->currTracks.GetCount() < trackIndex)
 		return 0;
-	if (this->currTracks->GetCount() == trackIndex)
+	if (this->currTracks.GetCount() == trackIndex)
 	{
-		if (this->currTimes->GetCount() <= recIndex)
+		if (this->currTimes.GetCount() <= recIndex)
 			return 0;
 		const UInt8 *data;
-		Sync::MutexUsage mutUsage(this->recMut);
-		*dataSize = this->currExtraSize->GetItem(recIndex);
-		data = this->currExtraData->GetItem(recIndex);
+		Sync::MutexUsage mutUsage(&this->recMut);
+		*dataSize = this->currExtraSize.GetItem(recIndex);
+		data = this->currExtraData.GetItem(recIndex);
 		mutUsage.EndUse();
 		return data;
 	}
 	else
 	{
-		Map::GPSTrack::TrackRecord *rec = (Map::GPSTrack::TrackRecord*)this->currTracks->GetItem(trackIndex);
+		Map::GPSTrack::TrackRecord *rec = this->currTracks.GetItem(trackIndex);
 		if (rec->nRecords <= recIndex)
 			return 0;
 		*dataSize = rec->extraDataSize[recIndex];

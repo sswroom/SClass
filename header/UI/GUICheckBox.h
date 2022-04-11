@@ -11,8 +11,8 @@ namespace UI
 		typedef void (__stdcall *CheckedChangeHandler)(void *userObj, Bool newState);
 	private:
 		Bool checked;
-		Data::ArrayList<CheckedChangeHandler> *checkedChangeHdlrs;
-		Data::ArrayList<void*> *checkedChangeObjs;
+		Data::ArrayList<CheckedChangeHandler> checkedChangeHdlrs;
+		Data::ArrayList<void*> checkedChangeObjs;
 	public:
 		GUICheckBox(GUICore *ui, UI::GUIClientControl *parent, Text::CString initText, Bool checked);
 		virtual ~GUICheckBox();
