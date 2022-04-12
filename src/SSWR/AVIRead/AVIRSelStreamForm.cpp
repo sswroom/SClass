@@ -125,7 +125,7 @@ void __stdcall SSWR::AVIRead::AVIRSelStreamForm::OnOKClick(void *userObj)
 			Net::SocketUtil::AddressInfo addr;
 			UInt16 port;
 			me->txtTCPCliHost->GetText(&sb);
-			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
+			if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 			{
 				UI::MessageDialog::ShowDialog(CSTR("Host is not valid"), CSTR("Error"), me);
 				return;

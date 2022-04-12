@@ -11,8 +11,8 @@ namespace IO
 	{
 	private:
 		Bool modified;
-		Sync::Mutex *mut;
-		Data::ArrayListString *strList;
+		Sync::Mutex mut;
+		Data::ArrayListString strList;
 
 	public:
 		StringLogger();

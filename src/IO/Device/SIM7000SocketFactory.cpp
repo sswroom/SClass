@@ -543,7 +543,7 @@ Bool IO::Device::SIM7000SocketFactory::SocketGetReadBuff(Socket *socket, UInt32 
 
 Bool IO::Device::SIM7000SocketFactory::DNSResolveIPDef(const Char *host, Net::SocketUtil::AddressInfo *addr)
 {
-	return this->modem->NetDNSResolveIP((const UTF8Char*)host, addr);
+	return this->modem->NetDNSResolveIP(Text::CString::FromPtr((const UTF8Char*)host), addr);
 }
 
 Bool IO::Device::SIM7000SocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
@@ -590,7 +590,7 @@ UOSInt IO::Device::SIM7000SocketFactory::GetConnInfoList(Data::ArrayList<Net::Co
 		ent.name = 0;
 		ent.description = 0;
 		ent.dnsSuffix = 0;
-		ent.ipaddr.Add(Net::SocketUtil::GetIPAddr(sbuff, (UOSInt)(sptr - sbuff)));
+		ent.ipaddr.Add(Net::SocketUtil::GetIPAddr(CSTRP(sbuff, sptr)));
 		ent.defGW = 0;
 		ent.dhcpSvr = 0;
 		ent.physicalAddr = 0;

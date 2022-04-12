@@ -8,7 +8,6 @@
 IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 {
 	IO::PackageFile *pkg = 0;
-	IO::StmData::FileData *fd;
 	UOSInt i = filePath.LastIndexOf(IO::Path::PATH_SEPERATOR);
 	if (i != INVALID_INDEX)
 	{
@@ -16,9 +15,11 @@ IO::ParsedObject *IO::FileParser::ParseFilePath(Text::CString filePath)
 		NEW_CLASS(pkg, IO::DirectoryPackage(dir));
 		dir->Release();
 	}
-	NEW_CLASS(fd, IO::StmData::FileData(filePath, false));	
-	IO::ParsedObject *pobj = this->ParseFile(fd, pkg, IO::ParserType::Unknown);
-	DEL_CLASS(fd);
+	IO::ParsedObject *pobj;
+	{
+		IO::StmData::FileData fd(filePath, false);	
+		pobj = this->ParseFile(&fd, pkg, IO::ParserType::Unknown);
+	}
 	SDEL_CLASS(pkg);
 	return pobj;
 }

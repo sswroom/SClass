@@ -196,7 +196,7 @@ namespace Text
 	class JSONArray : public JSONBase
 	{
 	private:
-		Data::ArrayList<Text::JSONBase *> *arrVals;
+		Data::ArrayList<Text::JSONBase *> arrVals;
 	public:
 		JSONArray();
 	private:

@@ -205,7 +205,7 @@ Net::ConnectionInfo::ConnectionInfo(void *info)
 				{
 					if (Text::StrSplitWSP(sarr, 3, sb) >= 2)
 					{
-						this->ent.dnsaddr.Add(Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng));
+						this->ent.dnsaddr.Add(Net::SocketUtil::GetIPAddr(sarr[1].ToCString()));
 					}
 				}
 				sb.ClearStr();

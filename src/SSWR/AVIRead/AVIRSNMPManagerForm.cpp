@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRSNMPManagerForm::OnAgentAddClicked(void *userO
 	UTF8Char sbuff[128];
 	UTF8Char *sptr;
 	me->txtAgentAddr->GetText(&sb);
-	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToString(), sb.GetLength(), &addr))
+	if (!me->core->GetSocketFactory()->DNSResolveIP(sb.ToCString(), &addr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Error in parsing Agent Address"), CSTR("SNMP Manager"), me);
 		return;

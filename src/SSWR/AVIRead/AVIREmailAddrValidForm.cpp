@@ -6,7 +6,7 @@ void __stdcall SSWR::AVIRead::AVIREmailAddrValidForm::OnValidateClicked(void *us
 	SSWR::AVIRead::AVIREmailAddrValidForm *me = (SSWR::AVIRead::AVIREmailAddrValidForm *)userObj;
 	Text::StringBuilderUTF8 sb;
 	me->txtAddr->GetText(&sb);
-	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToString());
+	Net::Email::EmailValidator::Status status = me->validator->Validate(sb.ToCString());
 	me->txtStatus->SetText(Net::Email::EmailValidator::StatusGetName(status));
 }
 

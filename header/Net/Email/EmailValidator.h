@@ -27,7 +27,7 @@ namespace Net
 			EmailValidator(Net::SocketFactory *sockf);
 			~EmailValidator();
 
-			Status Validate(const UTF8Char *emailAddr);
+			Status Validate(Text::CString emailAddr);
 			static Text::CString StatusGetName(Status status);
 		};
 	}

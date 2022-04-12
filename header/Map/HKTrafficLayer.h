@@ -57,9 +57,9 @@ namespace Map
 		Net::SocketFactory *sockf;
 		Net::SSLEngine *ssl;
 		Text::EncodingFactory *encFact;
-		Sync::Mutex *roadMut;
-		Data::Int64Map<RoadInfo*> *roadMap;
-		Data::Int64Map<CenterlineInfo*> *vecMap;
+		Sync::Mutex roadMut;
+		Data::Int64Map<RoadInfo*> roadMap;
+		Data::Int64Map<CenterlineInfo*> vecMap;
 
 		static const NodeInfo *GetNodeInfo(Int32 nodeId);
 		void SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel lev, Int32 trafficSpeed);

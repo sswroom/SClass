@@ -203,7 +203,7 @@ UTF8Char *Map::AssistedReverseGeocoderPL::SearchName(UTF8Char *buff, UOSInt buff
 		}
 		DEL_CLASS(sql);
 
-		addr = this->strMap.Get(buff);
+		addr = this->strMap.Get(CSTRP(buff, sptr));
 		if (addr == 0)
 		{
 			addr = Text::String::New(buff, (UOSInt)(sptr - buff));

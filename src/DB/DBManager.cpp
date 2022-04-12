@@ -330,7 +330,7 @@ DB::DBTool *DB::DBManager::OpenConn(const UTF8Char *connStr, IO::LogTool *log, N
 			cnt = Text::StrSplitP(sarr, 2, sarr[1], ';');
 			if (sarr[0].StartsWithICase(UTF8STRC("SERVER=")))
 			{
-				Net::SocketUtil::GetIPAddr(sarr[0].v + 7, sarr[0].leng - 7, &addr);
+				Net::SocketUtil::GetIPAddr(sarr[0].ToCString().Substring(7), &addr);
 			}
 			else if (sarr[0].StartsWithICase(UTF8STRC("PORT=")))
 			{

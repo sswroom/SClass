@@ -69,17 +69,17 @@ Net::DNSClient::~DNSClient()
 	DEL_CLASS(this->svr);
 }
 
-UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
+UOSInt Net::DNSClient::GetByEmailDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
 {
-	return GetByType(answers, domain, domainLen, 15);
+	return GetByType(answers, domain, 15);
 }
 
-UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
+UOSInt Net::DNSClient::GetByDomainName(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
 {
-	return GetByType(answers, domain, domainLen, 1);
+	return GetByType(answers, domain, 1);
 }
 
-UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen, UInt16 reqType)
+UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain, UInt16 reqType)
 {
 	UOSInt ret = 0;
 	UInt8 buff[512];
@@ -101,7 +101,7 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 	if (reqType == 12)
 	{
 		Net::SocketUtil::AddressInfo addr;
-		if (Net::SocketUtil::GetIPAddr(domain, domainLen, &addr))
+		if (Net::SocketUtil::GetIPAddr(domain, &addr))
 		{
 			if (addr.addrType == Net::AddrType::IPv4)
 			{
@@ -132,17 +132,17 @@ UOSInt Net::DNSClient::GetByType(Data::ArrayList<RequestAnswer*> *answers, const
 			}
 			else
 			{
-				cptr1 = domain;
+				cptr1 = domain.v;
 			}
 		}
 		else
 		{
-			cptr1 = domain;
+			cptr1 = domain.v;
 		}
 	}
 	else
 	{
-		cptr1 = domain;
+		cptr1 = domain.v;
 	}
 	while (true)
 	{
@@ -374,9 +374,9 @@ UOSInt Net::DNSClient::GetServerName(Data::ArrayList<RequestAnswer*> *answers)
 	return GetByAddrName(answers, &this->serverAddr);
 }
 
-UOSInt Net::DNSClient::GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, const UTF8Char *domain, UOSInt domainLen)
+UOSInt Net::DNSClient::GetCAARecord(Data::ArrayList<RequestAnswer*> *answers, Text::CString domain)
 {
-	return GetByType(answers, domain, domainLen, 257);
+	return GetByType(answers, domain, 257);
 }
 
 void Net::DNSClient::UpdateDNSAddr(const Net::SocketUtil::AddressInfo *serverAddr)

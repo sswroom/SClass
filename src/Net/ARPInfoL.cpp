@@ -94,40 +94,38 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 	close(sock);
 
 	UOSInt ret = 0;
-	UTF8Char *sarr[7];
+	Text::PString sarr[7];
 	UTF8Char *sarr2[7];
 	Text::StringBuilderUTF8 sb;
-	IO::FileStream *fs;
-	Text::UTF8Reader *reader;
 	ARPData data;
 	Int32 flags;
 	Net::ARPInfo *arp;
-	NEW_CLASS(fs, IO::FileStream(CSTR("/proc/net/arp"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (fs->IsError())
+	IO::FileStream fs(CSTR("/proc/net/arp"), IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (fs.IsError())
 	{
 
 	}
 	else
 	{
-		NEW_CLASS(reader, Text::UTF8Reader(fs));
+		Text::UTF8Reader reader(&fs);
 		sb.ClearStr();
-		if (reader->ReadLine(&sb, 1024))
+		if (reader.ReadLine(&sb, 1024))
 		{
 			while (true)
 			{
 				sb.ClearStr();
-				if (!reader->ReadLine(&sb, 1024))
+				if (!reader.ReadLine(&sb, 1024))
 				{
 					break;
 				}
 
-				if (Text::StrSplitWS(sarr, 7, sb.ToString()) >= 6)
+				if (Text::StrSplitWSP(sarr, 7, sb) >= 6)
 				{
-					data.ifIndex = indexMap.Get(sarr[5]);
-					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0], Text::StrCharCnt(sarr[0]));
-					flags = Text::StrToInt32(sarr[2]);
+					data.ifIndex = indexMap.Get(sarr[5].v);
+					data.ipAddr = Net::SocketUtil::GetIPAddr(sarr[0].ToCString());
+					flags = Text::StrToInt32(sarr[2].v);
 					data.arpType = (flags & 4)?ARPT_STATIC:ARPT_DYNAMIC;
-					if (Text::StrSplit(sarr2, 7, sarr[3], ':') == 6)
+					if (Text::StrSplit(sarr2, 7, sarr[3].v, ':') == 6)
 					{
 						data.addr[0] = Text::StrHex2UInt8C(sarr2[0]);
 						data.addr[1] = Text::StrHex2UInt8C(sarr2[1]);
@@ -142,9 +140,6 @@ UOSInt Net::ARPInfo::GetARPInfoList(Data::ArrayList<Net::ARPInfo*> *arpInfoList)
 				}
 			}
 		}
-		DEL_CLASS(reader);
 	}
-	
-	DEL_CLASS(fs);
 	return ret;
 }

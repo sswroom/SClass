@@ -19,7 +19,7 @@ namespace Net
 				Data::Int32Map<ServiceFunc> *funcs;
 			} ServiceInfo;
 			
-			Data::FastStringMap<ServiceInfo *> *services;
+			Data::FastStringMap<ServiceInfo *> services;
 
 		protected:
 			virtual ~WebServiceHandler();

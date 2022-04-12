@@ -40,9 +40,9 @@ namespace Map
 			} ThreadStatus;
 
 		private:
-			Data::ArrayListString *urls;
+			Data::ArrayListString urls;
 			UOSInt urlNext;
-			Sync::Mutex *urlMut;
+			Sync::Mutex urlMut;
 
 			Text::String *cacheDir;
 			Int32 maxLevel;

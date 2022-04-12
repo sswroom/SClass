@@ -13,9 +13,9 @@ namespace IO
 		public:
 			typedef void (__stdcall *ReceiveHandler)(void *userObj, UOSInt index, UInt32 ip, UInt16 port, const UInt8 *buff, UOSInt buffSize);
 		private:
-			Sync::Event *respEvt;
-			Sync::Mutex *dnsMut;
-			const UTF8Char *dnsReq;
+			Sync::Event respEvt;
+			Sync::Mutex dnsMut;
+			Text::CString dnsReq;
 			Net::SocketUtil::AddressInfo *dnsResp;
 			Bool dnsResult;
 
@@ -88,7 +88,7 @@ namespace IO
 			//AT+CIFSREX
 			//AT+CIPSTATUS
 			Bool NetGetDNSList(Data::ArrayList<UInt32> *dnsList); //AT+CDNSCFG
-			Bool NetDNSResolveIP(const UTF8Char *domain, Net::SocketUtil::AddressInfo *addr); //AT+CDNSGIP //////////////////////////////
+			Bool NetDNSResolveIP(Text::CString domain, Net::SocketUtil::AddressInfo *addr); //AT+CDNSGIP //////////////////////////////
 			//AT+CIPHEAD
 			//AT+CIPATS
 			//AT+CIPSPRT

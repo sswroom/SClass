@@ -165,7 +165,7 @@ Bool Net::SSDPClient::Scan()
 	}
 	sb.AppendC(UTF8STRC("\r\n\r\n"));
 	Net::SocketUtil::AddressInfo addr;
-	Net::SocketUtil::GetIPAddr(UTF8STRC("239.255.255.250"), &addr);
+	Net::SocketUtil::GetIPAddr(CSTR("239.255.255.250"), &addr);
 	return this->udp->SendTo(&addr, 1900, sb.ToString(), sb.GetLength());
 }
 

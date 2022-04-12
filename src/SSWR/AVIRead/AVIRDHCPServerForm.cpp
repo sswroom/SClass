@@ -40,7 +40,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 
 		sb.ClearStr();
 		me->txtSubnet->GetText(&sb);
-		subnet = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+		subnet = Net::SocketUtil::GetIPAddr(sb.ToCString());
 		if (!Net::SocketUtil::IPv4SubnetValid(subnet))
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Subnet is not valid"), CSTR("Error"), me);
@@ -79,7 +79,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		{
 			gateway = 0;
 		}
-		else if ((gateway = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
+		else if ((gateway = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("Gateway is not valid"), CSTR("Error"), me);
 			return;
@@ -91,7 +91,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		if (sb.GetLength() == 0)
 		{
 		}
-		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
+		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("DNS1 is not valid"), CSTR("Error"), me);
 			return;
@@ -106,7 +106,7 @@ void __stdcall SSWR::AVIRead::AVIRDHCPServerForm::OnStartClicked(void *userObj)
 		if (sb.GetLength() == 0)
 		{
 		}
-		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength())) == 0)
+		else if ((tmpIP = Net::SocketUtil::GetIPAddr(sb.ToCString())) == 0)
 		{
 			UI::MessageDialog::ShowDialog(CSTR("DNS2 is not valid"), CSTR("Error"), me);
 			return;

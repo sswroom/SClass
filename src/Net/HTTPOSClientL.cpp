@@ -308,9 +308,9 @@ Bool Net::HTTPOSClient::Connect(Text::CString url, Net::WebUtil::RequestMethod m
 		if (Text::StrEqualsICaseC(svrname, (UOSInt)(svrnameEnd- svrname), UTF8STRC("localhost")))
 		{
 			this->svrAddr.addrType = Net::AddrType::IPv4;
-			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(UTF8STRC("127.0.0.1")));
+			WriteNUInt32(this->svrAddr.addr, Net::SocketUtil::GetIPAddr(CSTR("127.0.0.1")));
 		}
-		else if (!sockf->DNSResolveIP(svrname, (UOSInt)(svrnameEnd - svrname), &this->svrAddr))
+		else if (!sockf->DNSResolveIP(CSTRP(svrname, svrnameEnd), &this->svrAddr))
 		{
 			this->writing = true;
 			this->canWrite = false;

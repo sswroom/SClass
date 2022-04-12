@@ -948,7 +948,7 @@ Bool Net::OSSocketFactory::GetDefDNS(Net::SocketUtil::AddressInfo *addr)
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), addr))
 					{
 						ret = true;
 						break;
@@ -992,7 +992,7 @@ UOSInt Net::OSSocketFactory::GetDNSList(Data::ArrayList<UInt32> *dnsList)
 			{
 				if (sarr[0].Equals(UTF8STRC("nameserver")))
 				{
-					if (Net::SocketUtil::GetIPAddr(sarr[1].v, sarr[1].leng, &addr))
+					if (Net::SocketUtil::GetIPAddr(sarr[1].ToCString(), &addr))
 					{
 						if (addr.addrType == Net::AddrType::IPv4)
 						{
@@ -1033,7 +1033,7 @@ Bool Net::OSSocketFactory::LoadHosts(Net::DNSHandler *dnsHdlr)
 			i = Text::StrSplitWSP(sarr, 2, sb);
 			if (i == 2)
 			{
-				if (Net::SocketUtil::GetIPAddr(sarr[0].v, sarr[0].leng, &addr))
+				if (Net::SocketUtil::GetIPAddr(sarr[0].ToCString(), &addr))
 				{
 					while (true)
 					{

@@ -18,7 +18,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	UOSInt j;
 	UOSInt bestInd;
 	me->txtServer->GetText(&sb);
-	if (!Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength(), &dnsAddr))
+	if (!Net::SocketUtil::GetIPAddr(sb.ToCString(), &dnsAddr))
 	{
 		UI::MessageDialog::ShowDialog(CSTR("Invalid server input"), CSTR("Error"), me);
 		return;
@@ -30,7 +30,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 		UI::MessageDialog::ShowDialog(CSTR("Please enter request"), CSTR("Error"), me);
 		return;
 	}
-	reqIP = Net::SocketUtil::GetIPAddr(sb.ToString(), sb.GetLength());
+	reqIP = Net::SocketUtil::GetIPAddr(sb.ToCString());
 
 	NEW_CLASS(dnsCli, Net::DNSClient(me->sockf, &dnsAddr));
 	NEW_CLASS(clk, Manage::HiResClock());
@@ -41,7 +41,7 @@ void __stdcall SSWR::AVIRead::AVIRDNSClientForm::OnRequestClicked(void *userObj)
 	{
 		UInt16 reqType = (UInt16)(UOSInt)me->cboRequest->GetSelectedItem();
 		clk->Start();
-		dnsCli->GetByType(me->ansList, sb.ToString(), sb.GetLength(), reqType);
+		dnsCli->GetByType(me->ansList, sb.ToCString(), reqType);
 		t = clk->GetTimeDiff();
 	}
 	else

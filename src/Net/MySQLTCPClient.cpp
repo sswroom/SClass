@@ -2334,7 +2334,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::S
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (sockf->DNSResolveIP(serverName->v, serverName->leng, &addr))
+	if (sockf->DNSResolveIP(serverName->ToCString(), &addr))
 	{
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)
@@ -2359,7 +2359,7 @@ DB::DBTool *Net::MySQLTCPClient::CreateDBTool(Net::SocketFactory *sockf, Text::C
 	Net::MySQLTCPClient *conn;
 	DB::DBTool *db;
 	Net::SocketUtil::AddressInfo addr;
-	if (sockf->DNSResolveIP(serverName.v, serverName.leng, &addr))
+	if (sockf->DNSResolveIP(serverName, &addr))
 	{
 		NEW_CLASS(conn, Net::MySQLTCPClient(sockf, &addr, 3306, uid, pwd, dbName));
 		if (conn->IsError() == 0)

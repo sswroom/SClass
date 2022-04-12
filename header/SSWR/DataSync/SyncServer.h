@@ -27,16 +27,16 @@ namespace SSWR
 			typedef void (__stdcall *DataHandler)(void *userObj, const UInt8 *data, UOSInt dataSize);
 		private:
 			Net::SocketFactory *sockf;
-			IO::IProtocolHandler *protoHdlr;
+			IO::ProtoHdlr::ProtoSyncHandler protoHdlr;
 			Net::TCPServer *svr;
 			Net::TCPClientMgr *cliMgr;
 			DataHandler dataHdlr;
 			void *dataObj;
 
-			Sync::RWMutex *svrMut;
-			Data::Int32Map<ServerInfo*> *svrMap;
+			Sync::RWMutex svrMut;
+			Data::Int32Map<ServerInfo*> svrMap;
 
-			Data::ArrayList<SyncClient*> *syncCliList;
+			Data::ArrayList<SyncClient*> syncCliList;
 
 			static void __stdcall OnClientConn(Socket *s, void *userObj);
 			static void __stdcall OnClientEvent(Net::TCPClient *cli, void *userObj, void *cliData, Net::TCPClientMgr::TCPEventType evtType);

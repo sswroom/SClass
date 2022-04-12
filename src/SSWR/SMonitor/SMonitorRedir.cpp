@@ -127,7 +127,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReading(Int64 cliId, const SSWR::SMon
 	buff[i + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, i + 2);
 	}
@@ -149,7 +149,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevName(Int64 cliId, const UTF8Char *nam
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -175,7 +175,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevPlatform(Int64 cliId, const UTF8Char 
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -197,7 +197,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevCPUName(Int64 cliId, const UTF8Char *
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -222,7 +222,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevReadingName(Int64 cliId, UOSInt index
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}
@@ -245,7 +245,7 @@ Bool SSWR::SMonitor::SMonitorRedir::SendDevVersion(Int64 cliId, Int64 progVersio
 	buff[size + 1] = calcVal[1] ^ 0x34;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (this->sockf->DNSResolveIP(this->hostName->v, this->hostName->leng, &addr))
+	if (this->sockf->DNSResolveIP(this->hostName->ToCString(), &addr))
 	{
 		this->svr->SendTo(&addr, this->port, buff, size + 2);
 	}

@@ -209,7 +209,7 @@ Int32 MyMain(Core::IProgControl *progCtrl)
 				if (valid)
 				{
 					console->WriteStrC(UTF8STRC("Resolving www.google.com: "));
-					if (sockf->DNSResolveIP(UTF8STRC("www.google.com"), &addr))
+					if (sockf->DNSResolveIP(CSTR("www.google.com"), &addr))
 					{
 						sptr = Net::SocketUtil::GetAddrName(sbuff, &addr);
 						console->WriteLineC(sbuff, (UOSInt)(sptr - sbuff));

@@ -752,8 +752,8 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 	Int64 id = (((Int64)fromId) << 32) | (UInt32)toId;
 	RoadInfo *road;
 
-	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap->Get(id);
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	road = this->roadMap.Get(id);
 	if (road == 0)
 	{
 		road = MemAlloc(RoadInfo, 1);
@@ -763,9 +763,9 @@ void Map::HKTrafficLayer::SetSpeedMap(Int32 fromId, Int32 toId, SaturationLevel 
 		road->vec = 0;
 		road->lev = lev;
 		road->spd = trafficSpeed;
-		this->roadMap->Put(id, road);
+		this->roadMap.Put(id, road);
 
-		CenterlineInfo *lineInfo = this->vecMap->Get(id);
+		CenterlineInfo *lineInfo = this->vecMap.Get(id);
 		if (lineInfo)
 		{
 			road->vec = lineInfo->pl->Clone();
@@ -847,9 +847,6 @@ Map::HKTrafficLayer::HKTrafficLayer(Net::SocketFactory *sockf, Net::SSLEngine *s
 	this->sockf = sockf;
 	this->ssl = ssl;
 	this->encFact = encFact;
-	NEW_CLASS(this->roadMut, Sync::Mutex());
-	NEW_CLASS(this->roadMap, Data::Int64Map<RoadInfo*>());
-	NEW_CLASS(this->vecMap, Data::Int64Map<CenterlineInfo*>());
 	this->minX = 0;
 	this->minY = 0;
 	this->maxX = 0;
@@ -865,7 +862,7 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 	Data::ArrayList<RoadInfo*> *roadList;
 	RoadInfo *road;
 
-	roadList = this->roadMap->GetValues();
+	roadList = this->roadMap.GetValues();
 	i = roadList->GetCount();
 	while (i-- > 0)
 	{
@@ -876,12 +873,10 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 		}
 		MemFree(road);
 	}
-	DEL_CLASS(this->roadMut);
-	DEL_CLASS(this->roadMap);
 
 	Data::ArrayList<CenterlineInfo*> *lineList;
 	CenterlineInfo *lineInfo;
-	lineList = this->vecMap->GetValues();
+	lineList = this->vecMap.GetValues();
 	i = lineList->GetCount();
 	while (i-- > 0)
 	{
@@ -889,7 +884,6 @@ Map::HKTrafficLayer::~HKTrafficLayer()
 		DEL_CLASS(lineInfo->pl);
 		MemFree(lineInfo);
 	}
-	DEL_CLASS(this->vecMap);
 	this->url->Release();
 }
 
@@ -988,7 +982,7 @@ Bool Map::HKTrafficLayer::AddRoadLayer(Map::IMapDrawLayer *roadLayer)
 							lineInfo->fromId = fromId;
 							lineInfo->toId = toId;
 							lineInfo->pl = (Math::Polyline*)vec;
-							lineInfo = this->vecMap->Put(id, lineInfo);
+							lineInfo = this->vecMap.Put(id, lineInfo);
 							if (lineInfo)
 							{
 								DEL_CLASS(lineInfo->pl);
@@ -1021,37 +1015,35 @@ void Map::HKTrafficLayer::ReloadData()
 	UInt8 buff[2048];
 	UOSInt readSize;
 	IO::Stream *stm;
-	IO::MemoryStream *mstm;
 //	printf("Reloading traffic data...");
 	stm = this->OpenURLStream();
 	if (stm)
 	{
-		NEW_CLASS(mstm, IO::MemoryStream(UTF8STRC("Map.HKTrafficLayer.ReloadData.mstm")));
+		IO::MemoryStream mstm(UTF8STRC("Map.HKTrafficLayer.ReloadData.mstm"));
 		while (true)
 		{
 			readSize = stm->Read(buff, 2048);
 			if (readSize <= 0)
 				break;
-			mstm->Write(buff, readSize);
+			mstm.Write(buff, readSize);
 		}
-		const UInt8 *xmlBuff = mstm->GetBuff(&readSize);
-		Text::XMLDocument *doc;
+		const UInt8 *xmlBuff = mstm.GetBuff(&readSize);
 		Text::XMLNode *node1;
 		Text::XMLNode *node2;
 		Text::XMLNode *node3;
-		NEW_CLASS(doc, Text::XMLDocument());
+		Text::XMLDocument doc;
 //		printf(".");
-		if (doc->ParseBuff(this->encFact, xmlBuff, readSize))
+		if (doc.ParseBuff(this->encFact, xmlBuff, readSize))
 		{
 //			printf("success\r\n");
 			UOSInt i = 0;
-			UOSInt j = doc->GetChildCnt();
+			UOSInt j = doc.GetChildCnt();
 			UOSInt k;
 			Text::StringBuilderUTF8 sb;
 			UTF8Char *sarr[2];
 			while (i < j)
 			{
-				node1 = doc->GetChild(i);
+				node1 = doc.GetChild(i);
 				if (node1->GetNodeType() == Text::XMLNode::NT_ELEMENT && node1->name->EqualsICase(UTF8STRC("jtis_speedlist")))
 				{
 					i = 0;
@@ -1121,8 +1113,6 @@ void Map::HKTrafficLayer::ReloadData()
 		{
 //			printf("failed\r\n");
 		}
-		DEL_CLASS(doc);
-		DEL_CLASS(mstm);
 		DEL_CLASS(stm);
 	}
 	else
@@ -1144,8 +1134,8 @@ UOSInt Map::HKTrafficLayer::GetAllObjectIds(Data::ArrayListInt64 *outArr, void *
 	UOSInt j;
 	RoadInfo *road;
 	Data::ArrayList<RoadInfo*> *roadList;
-	Sync::MutexUsage mutUsage(this->roadMut);
-	roadList = this->roadMap->GetValues();
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	roadList = this->roadMap.GetValues();
 	i = 0;
 	j = roadList->GetCount();
 	while (i < j)
@@ -1187,8 +1177,8 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 		y2 = y1;
 		y1 = tmp;
 	}
-	Sync::MutexUsage mutUsage(this->roadMut);
-	roadList = this->roadMap->GetValues();
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	roadList = this->roadMap.GetValues();
 	i = 0;
 	j = roadList->GetCount();
 	while (i < j)
@@ -1208,8 +1198,8 @@ UOSInt Map::HKTrafficLayer::GetObjectIdsMapXY(Data::ArrayListInt64 *outArr, void
 Int64 Map::HKTrafficLayer::GetObjectIdMax()
 {
 	Int64 ret = 0;
-	Sync::MutexUsage mutUsage(this->roadMut);
-	Data::ArrayList<Int64> *keys = this->roadMap->GetKeys();
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	Data::ArrayList<Int64> *keys = this->roadMap.GetKeys();
 	ret = keys->GetItem(keys->GetCount() - 1);
 	mutUsage.EndUse();
 	return ret;
@@ -1276,8 +1266,8 @@ Map::DrawObjectL *Map::HKTrafficLayer::GetNewObjectById(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Map::DrawObjectL *obj = 0;
-	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap->Get(id);
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{
 		Math::Polyline *pl = (Math::Polyline*)road->vec;
@@ -1322,8 +1312,8 @@ Math::Vector2D *Map::HKTrafficLayer::GetNewVectorById(void *session, Int64 id)
 {
 	RoadInfo *road;
 	Math::Vector2D *vec = 0;
-	Sync::MutexUsage mutUsage(this->roadMut);
-	road = this->roadMap->Get(id);
+	Sync::MutexUsage mutUsage(&this->roadMut);
+	road = this->roadMap.Get(id);
 	if (road && road->vec)
 	{
 		vec = road->vec->Clone();

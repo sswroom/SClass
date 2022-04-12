@@ -247,6 +247,20 @@ template <class T> void DB::DBDataFile<T>::AddRecord(T *obj)
 				m += s->leng;
 			}
 			break;
+		case Data::VariItem::ItemType::CStr:
+			if (item.GetItemType() == Data::VariItem::ItemType::Null)
+			{
+				this->recordBuff[m] = 0xff;
+				m += 1;
+			}
+			else
+			{
+				Data::VariItem::ItemValue ival = item.GetItemValue();
+				m = WriteInt(this->recordBuff, m, ival.cstr.leng);
+				MemCopyNO(&this->recordBuff[m], ival.cstr.v, ival.cstr.leng);
+				m += ival.cstr.leng;
+			}
+			break;
 		case Data::VariItem::ItemType::Date:
 			if (item.GetItemType() == Data::VariItem::ItemType::Null)
 			{
@@ -488,6 +502,7 @@ template <class T> Bool DB::DBDataFile<T>::LoadFile(Text::CString fileName, Data
 							m2 += 1;
 							break;
 						case Data::VariItem::ItemType::Str:
+						case Data::VariItem::ItemType::CStr:
 							if (buff[m2] == 0xff)
 							{
 								m2 += 1;

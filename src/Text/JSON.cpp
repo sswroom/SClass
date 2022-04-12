@@ -1242,17 +1242,15 @@ Int64 Text::JSONObject::GetObjectInt64(Text::CString name)
 
 Text::JSONArray::JSONArray()
 {
-	NEW_CLASS(this->arrVals, Data::ArrayList<Text::JSONBase*>());
 }
 
 Text::JSONArray::~JSONArray()
 {
-	UOSInt i = this->arrVals->GetCount();
+	UOSInt i = this->arrVals.GetCount();
 	while (i-- > 0)
 	{
-		this->arrVals->GetItem(i)->EndUse();
+		this->arrVals.GetItem(i)->EndUse();
 	}
-	DEL_CLASS(this->arrVals);
 }
 
 Text::JSONType Text::JSONArray::GetType()
@@ -1264,7 +1262,7 @@ void Text::JSONArray::ToJSONString(Text::StringBuilderUTF8 *sb)
 {
 	Text::JSONBase *obj;
 	UOSInt i = 0;
-	UOSInt j = this->arrVals->GetCount();
+	UOSInt j = this->arrVals.GetCount();
 	sb->AppendUTF8Char('[');
 	while (i < j)
 	{
@@ -1272,7 +1270,7 @@ void Text::JSONArray::ToJSONString(Text::StringBuilderUTF8 *sb)
 		{
 			sb->AppendC(UTF8STRC(", "));
 		}
-		obj = this->arrVals->GetItem(i);
+		obj = this->arrVals.GetItem(i);
 		if (obj)
 		{
 			obj->ToJSONString(sb);
@@ -1304,12 +1302,12 @@ void Text::JSONArray::SetArrayValue(UOSInt index, Text::JSONBase *val)
 		val->BeginUse();
 	}
 	Text::JSONBase *obj;
-	obj = this->arrVals->GetItem(index);
+	obj = this->arrVals.GetItem(index);
 	if (obj)
 	{
 		obj->EndUse();
 	}
-	this->arrVals->SetItem(index, val);
+	this->arrVals.SetItem(index, val);
 	////////////////////////////////////
 }
 
@@ -1319,17 +1317,17 @@ void Text::JSONArray::AddArrayValue(Text::JSONBase *val)
 	{
 		val->BeginUse();
 	}
-	this->arrVals->Add(val);
+	this->arrVals.Add(val);
 }
 
 Text::JSONBase *Text::JSONArray::GetArrayValue(UOSInt index)
 {
-	return this->arrVals->GetItem(index);
+	return this->arrVals.GetItem(index);
 }
 
 Double Text::JSONArray::GetArrayDouble(UOSInt index)
 {
-	Text::JSONBase *baseObj = this->arrVals->GetItem(index);
+	Text::JSONBase *baseObj = this->arrVals.GetItem(index);
 	if (baseObj == 0)
 	{
 		return 0;
@@ -1339,7 +1337,7 @@ Double Text::JSONArray::GetArrayDouble(UOSInt index)
 
 UOSInt Text::JSONArray::GetArrayLength()
 {
-	return this->arrVals->GetCount();
+	return this->arrVals.GetCount();
 }
 
 Text::JSONNull::JSONNull()

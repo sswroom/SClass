@@ -125,7 +125,7 @@ Net::Email::SMTPConn::SMTPConn(Net::SocketFactory *sockf, Net::SSLEngine *ssl, T
 	this->authPlain = false;
 	Net::SocketUtil::AddressInfo addr;
 	addr.addrType = Net::AddrType::Unknown;
-	sockf->DNSResolveIP(host.v, host.leng, &addr);
+	sockf->DNSResolveIP(host, &addr);
 	this->logWriter = logWriter;
 	NEW_CLASS(this->evt, Sync::Event(true));
 	if (connType == CT_SSL)
@@ -434,11 +434,11 @@ Bool Net::Email::SMTPConn::SendMailFrom(Text::CString fromEmail)
 	return code == 250;
 }
 
-Bool Net::Email::SMTPConn::SendRcptTo(const UTF8Char *toEmail)
+Bool Net::Email::SMTPConn::SendRcptTo(Text::CString toEmail)
 {
 	UTF8Char sbuff[512];
 	UTF8Char *sptr;
-	sptr = Text::StrConcatC(Text::StrConcat(Text::StrConcatC(sbuff, UTF8STRC("RCPT TO: <")), toEmail), UTF8STRC(">"));
+	sptr = Text::StrConcatC(toEmail.ConcatTo(Text::StrConcatC(sbuff, UTF8STRC("RCPT TO: <"))), UTF8STRC(">"));
 	this->statusChg = false;
 	if (this->logWriter)
 	{

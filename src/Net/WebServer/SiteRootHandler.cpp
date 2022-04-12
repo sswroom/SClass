@@ -40,21 +40,19 @@ Net::WebServer::SiteRootHandler::SiteRootHandler(Text::CString faviconPath)
 {
 	this->faviconBuff = 0;
 	this->faviconSize = 0;
-	IO::FileStream *fs;
-	NEW_CLASS(fs, IO::FileStream(faviconPath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal));
-	if (!fs->IsError())
+	IO::FileStream fs(faviconPath, IO::FileMode::ReadOnly, IO::FileShare::DenyNone, IO::FileStream::BufferType::Normal);
+	if (!fs.IsError())
 	{
-		UInt64 leng = fs->GetLength();
+		UInt64 leng = fs.GetLength();
 		if (leng > 0 || leng < 65536)
 		{
 			this->faviconSize = (UOSInt)leng;
 			this->faviconBuff = MemAlloc(UInt8, this->faviconSize);
-			if (fs->Read(this->faviconBuff, this->faviconSize) != this->faviconSize)
+			if (fs.Read(this->faviconBuff, this->faviconSize) != this->faviconSize)
 			{
 				MemFree(this->faviconBuff);
 				this->faviconSize = 0;
 			}
 		}
 	}
-	DEL_CLASS(fs);
 }

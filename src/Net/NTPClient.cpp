@@ -25,7 +25,7 @@ void __stdcall Net::NTPClient::PacketHdlr(const Net::SocketUtil::AddressInfo *ad
 	{
 		Net::NTPServer::ReadTime(&buff[32], me->resultTime);
 		me->hasResult = true;
-		me->evt->Set();
+		me->evt.Set();
 	}
 }
 
@@ -33,22 +33,18 @@ Net::NTPClient::NTPClient(Net::SocketFactory *sockf, UInt16 port)
 {
 	this->sockf = sockf;
 	this->resultTime = 0;
-	NEW_CLASS(this->mut, Sync::Mutex());
-	NEW_CLASS(this->evt, Sync::Event(true));
 	NEW_CLASS(this->svr, Net::UDPServer(sockf, 0, port, CSTR_NULL, PacketHdlr, this, 0, CSTR_NULL, 1, false));
 }
 
 Net::NTPClient::~NTPClient()
 {
 	DEL_CLASS(this->svr);
-	DEL_CLASS(this->evt);
-	DEL_CLASS(this->mut);
 }
 
 Bool Net::NTPClient::GetServerTime(Text::CString host, UInt16 port, Data::DateTime *svrTime)
 {
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(host.v, host.leng, &addr))
+	if (!sockf->DNSResolveIP(host, &addr))
 		return false;
 	return GetServerTime(&addr, port, svrTime);
 }
@@ -63,7 +59,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 		port = 123;
 	}
 
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	MemClear(buff, 48);
 	buff[0] = 0xe3;
 	buff[12] = 'S';
@@ -80,7 +76,7 @@ Bool Net::NTPClient::GetServerTime(const Net::SocketUtil::AddressInfo *addr, UIn
 	clk.Start();
 	while (!this->hasResult)
 	{
-		this->evt->Wait(1000);
+		this->evt.Wait(1000);
 		if (clk.GetTimeDiff() >= 10)
 			break;
 	}

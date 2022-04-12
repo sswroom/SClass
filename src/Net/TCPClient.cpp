@@ -26,7 +26,7 @@ Net::TCPClient::TCPClient(Net::SocketFactory *sockf, Text::CString name, UInt16 
 	this->timeoutMS = 0;
 
 	Net::SocketUtil::AddressInfo addr;
-	if (!sockf->DNSResolveIP(name.v, name.leng, &addr))
+	if (!sockf->DNSResolveIP(name, &addr))
 	{
 		this->flags = 12;
 		return;

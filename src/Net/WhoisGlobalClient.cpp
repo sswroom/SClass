@@ -361,5 +361,5 @@ Net::WhoisRecord *Net::WhoisGlobalClient::RequestIP(UInt32 ip)
 		break;
 	}
 
-	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost.v, whoisHost.leng), prefix);
+	return Net::WhoisClient::RequestIP(ip, this->sockf->DNSResolveIPv4(whoisHost), prefix);
 }

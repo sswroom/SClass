@@ -35,14 +35,14 @@ namespace Data
 		void FillArr(T **arr, BTreeNode<T> *node);
 		void FillNameArr(Text::String ***arr, BTreeNode<T> *node);
 		virtual UInt32 CalHash(Text::String *key);
-		UInt32 CalHash(const UTF8Char *key);
+		UInt32 CalHash(Text::CString key);
 	public:
 		BTreeMap();
 		virtual ~BTreeMap();
 
 		virtual T Put(Text::String *key, T val);
 		virtual T Get(Text::String *key);
-		T Get(const UTF8Char *key);
+		T Get(Text::CString key);
 		virtual T Remove(Text::String *key);
 		virtual Bool IsEmpty();
 		virtual T *ToArray(UOSInt *objCnt);
@@ -115,7 +115,7 @@ namespace Data
 		OSInt i;
 		if (node->nodeHash == hash)
 		{
-			i = node->nodeStr->CompareTo(key);
+			i = node->nodeStr->CompareToFast(key->ToCString());
 		}
 		else if (node->nodeHash > hash)
 		{
@@ -354,10 +354,9 @@ namespace Data
 		return this->crc->CalcDirect(key->v, key->leng);
 	}
 
-	template <class T> UInt32 BTreeMap<T>::CalHash(const UTF8Char *key)
+	template <class T> UInt32 BTreeMap<T>::CalHash(Text::CString key)
 	{
-		UOSInt len = Text::StrCharCnt(key);
-		return this->crc->CalcDirect(key, len);
+		return this->crc->CalcDirect(key.v, key.leng);
 	}
 
 	template <class T> void BTreeMap<T>::FillArr(T **arr, BTreeNode<T> *node)
@@ -421,7 +420,7 @@ namespace Data
 			OSInt i;
 			if (node->nodeHash == hash)
 			{
-				i = node->nodeStr->CompareTo(key);
+				i = node->nodeStr->CompareToFast(key->ToCString());
 			}
 			else if (node->nodeHash > hash)
 			{
@@ -447,7 +446,7 @@ namespace Data
 		return 0;
 	}
 
-	template <class T> T BTreeMap<T>::Get(const UTF8Char *key)
+	template <class T> T BTreeMap<T>::Get(Text::CString key)
 	{
 		UInt32 hash = CalHash(key);
 		BTreeNode<T> *node = this->rootNode;
@@ -456,7 +455,7 @@ namespace Data
 			OSInt i;
 			if (node->nodeHash == hash)
 			{
-				i = node->nodeStr->CompareTo(key);
+				i = node->nodeStr->CompareToFast(key);
 			}
 			else if (node->nodeHash > hash)
 			{
@@ -502,7 +501,7 @@ namespace Data
 				OSInt i;
 				if (node->nodeHash == hash)
 				{
-					i = node->nodeStr->CompareTo(key);
+					i = node->nodeStr->CompareToFast(key->ToCString());
 				}
 				else if (node->nodeHash > hash)
 				{
