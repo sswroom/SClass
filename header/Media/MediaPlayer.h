@@ -13,9 +13,9 @@ namespace Media
 	private:
 		Media::AudioDevice *audioDev;
 		Media::VideoRenderer *vrenderer;
-		Media::Decoder::VideoDecoderFinder *vdecoders;
-		Media::Decoder::AudioDecoderFinder *adecoders;
-		Media::RefClock *clk;
+		Media::Decoder::VideoDecoderFinder vdecoders;
+		Media::Decoder::AudioDecoderFinder adecoders;
+		Media::RefClock clk;
 
 		Media::IAudioRenderer *arenderer;
 		Media::IAudioSource *currADecoder;

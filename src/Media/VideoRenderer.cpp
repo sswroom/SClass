@@ -25,7 +25,7 @@ void Media::VideoRenderer::CalDisplayRect(UOSInt srcWidth, UOSInt srcHeight, Dra
 	Double par;
 	if (this->forcePAR == 0)
 	{
-		par = this->videoInfo->par2 / this->monPAR;
+		par = this->videoInfo.par2 / this->monPAR;
 	}
 	else
 	{
@@ -61,7 +61,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 	Double par;
 	if (tstat->me->forcePAR == 0)
 	{
-		par = tstat->me->videoInfo->par2 / tstat->me->monPAR;
+		par = tstat->me->videoInfo.par2 / tstat->me->monPAR;
 	}
 	else
 	{
@@ -71,7 +71,7 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 	if (tstat->me->captureFrame)
 	{
 		tstat->me->captureFrame = false;
-		Media::FrameInfo *info = tstat->me->videoInfo;
+		Media::FrameInfo *info = &tstat->me->videoInfo;
 		Media::ColorProfile::YUVType yuvType = info->yuvType;
 		if (yuvType == Media::ColorProfile::YUVT_UNKNOWN)
 		{
@@ -132,21 +132,21 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 		}
 	}
 
-	if ((vbuff->frameType == Media::FT_NON_INTERLACE || vbuff->frameType == Media::FT_INTERLACED_NODEINT) && par == 1.0 && cropTotal == 0 && tstat->me->videoInfo->dispWidth == tstat->me->outputWidth && tstat->me->videoInfo->dispHeight <= tstat->me->outputHeight && tstat->me->outputBpp == 32)
+	if ((vbuff->frameType == Media::FT_NON_INTERLACE || vbuff->frameType == Media::FT_INTERLACED_NODEINT) && par == 1.0 && cropTotal == 0 && tstat->me->videoInfo.dispWidth == tstat->me->outputWidth && tstat->me->videoInfo.dispHeight <= tstat->me->outputHeight && tstat->me->outputBpp == 32)
 	{
 		if (tstat->procType != 2)
 		{
 			tstat->procType = 2;
 			tstat->cs10Bit = tstat->me->curr10Bit;
-			tstat->me->CreateCSConv(tstat, tstat->me->videoInfo);
+			tstat->me->CreateCSConv(tstat, &tstat->me->videoInfo);
 		}
 		else if (tstat->cs10Bit != tstat->me->curr10Bit)
 		{
 			tstat->cs10Bit = tstat->me->curr10Bit;
-			tstat->me->CreateCSConv(tstat, tstat->me->videoInfo);
+			tstat->me->CreateCSConv(tstat, &tstat->me->videoInfo);
 		}
-		vbuff->destW = tstat->me->videoInfo->dispWidth;
-		vbuff->destH = tstat->me->videoInfo->dispHeight;
+		vbuff->destW = tstat->me->videoInfo.dispWidth;
+		vbuff->destH = tstat->me->videoInfo.dispHeight;
 		vbuff->destBitDepth = 32;
 		if (vbuff->destSize < vbuff->destW * vbuff->destH)
 		{
@@ -158,21 +158,21 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			vbuff->destBuff = MemAllocA64(UInt8, vbuff->destSize << 2);
 		}
 		Manage::HiResClock clk;
-		tstat->csconv->ConvertV2(&vbuff->srcBuff, vbuff->destBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, (OSInt)tstat->me->videoInfo->dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
+		tstat->csconv->ConvertV2(&vbuff->srcBuff, vbuff->destBuff, tstat->me->videoInfo.dispWidth, tstat->me->videoInfo.dispHeight, tstat->me->videoInfo.storeWidth, tstat->me->videoInfo.storeHeight, (OSInt)tstat->me->videoInfo.dispWidth * 4, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
-		Sync::MutexUsage mutUsage(tstat->me->buffMut);
+		Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 		vbuff->isOutputReady = true;
 		vbuff->isProcessing = false;
 		mutUsage.EndUse();
-		tstat->me->dispEvt->Set();
+		tstat->me->dispEvt.Set();
 	}
 	else
 	{
 		if (tstat->procType == 2)
 		{
 			tstat->me->CreateThreadResizer(tstat);
-			tstat->me->CreateCSConv(tstat, tstat->me->videoInfo);
+			tstat->me->CreateCSConv(tstat, &tstat->me->videoInfo);
 		}
 		else if ((tstat->resizerBitDepth != tstat->me->outputBpp || tstat->resizer10Bit != tstat->me->curr10Bit) && tstat->me->outputBpp != 0)
 		{
@@ -192,15 +192,15 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 		}
 
 		Manage::HiResClock clk;
-		tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, tstat->me->videoInfo->dispWidth, tstat->me->videoInfo->dispHeight, tstat->me->videoInfo->storeWidth, tstat->me->videoInfo->storeHeight, (OSInt)tstat->me->videoInfo->dispWidth * 8, vbuff->frameType, vbuff->ycOfst);
+		tstat->csconv->ConvertV2(&vbuff->srcBuff, tstat->lrBuff, tstat->me->videoInfo.dispWidth, tstat->me->videoInfo.dispHeight, tstat->me->videoInfo.storeWidth, tstat->me->videoInfo.storeHeight, (OSInt)tstat->me->videoInfo.dispWidth * 8, vbuff->frameType, vbuff->ycOfst);
 		tstat->csTime = clk.GetTimeDiff();
 
 		if (tstat->procType == 1)
 		{
 			if (vbuff->frameType == Media::FT_NON_INTERLACE)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - tstat->me->cropLeft - tstat->me->cropRight;
 				cropHeight = srcHeight - tstat->me->cropTop - tstat->me->cropBottom;
 				cropDY = tstat->me->cropTop;
@@ -223,8 +223,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_TF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight << 1;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight << 1;
 				cropWidth = srcWidth - ((tstat->me->cropLeft + tstat->me->cropRight) << 1);
 				cropHeight = srcHeight - ((tstat->me->cropTop + tstat->me->cropBottom) << 1);
 				cropDY = tstat->me->cropTop << 1;
@@ -248,8 +248,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_BF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight << 1;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight << 1;
 				cropWidth = srcWidth - ((tstat->me->cropLeft + tstat->me->cropRight) << 1);
 				cropHeight = srcHeight - ((tstat->me->cropTop + tstat->me->cropBottom) << 1);
 				cropDY = tstat->me->cropTop << 1;
@@ -272,8 +272,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -296,8 +296,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -320,8 +320,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -344,8 +344,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -368,8 +368,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - tstat->me->cropLeft - tstat->me->cropRight;
 				cropHeight = srcHeight - tstat->me->cropTop - tstat->me->cropBottom;
 				cropDY = tstat->me->cropTop;
@@ -415,11 +415,11 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				Sync::MutexUsage mutUsage(tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 				{
@@ -433,15 +433,15 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->isOutputReady = true;
 				vbuff2->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 			}
 
 			tstat->hTime = ((Media::Resizer::DeintResizerLR_C32*)tstat->dresizer)->GetHAvgTime();
@@ -451,8 +451,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 		{
 			if (vbuff->frameType == Media::FT_NON_INTERLACE)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - tstat->me->cropLeft - tstat->me->cropRight;
 				cropHeight = srcHeight - tstat->me->cropTop - tstat->me->cropBottom;
 				cropDY = tstat->me->cropTop;
@@ -460,8 +460,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_TF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight << 1;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight << 1;
 				cropWidth = srcWidth - ((tstat->me->cropLeft + tstat->me->cropRight) << 1);
 				cropHeight = srcHeight - ((tstat->me->cropTop + tstat->me->cropBottom) << 1);
 				cropDY = tstat->me->cropTop << 1;
@@ -488,8 +488,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_FIELD_BF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight << 1;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight << 1;
 				cropWidth = srcWidth - ((tstat->me->cropLeft + tstat->me->cropRight) << 1);
 				cropHeight = srcHeight - ((tstat->me->cropTop + tstat->me->cropBottom) << 1);
 				cropDY = tstat->me->cropTop << 1;
@@ -516,8 +516,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_TF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -544,8 +544,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_MERGED_BF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -572,8 +572,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_TFF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -600,8 +600,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_BFF)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - (tstat->me->cropLeft + tstat->me->cropRight);
 				cropHeight = srcHeight - (tstat->me->cropTop + tstat->me->cropBottom);
 				cropDY = tstat->me->cropTop;
@@ -628,8 +628,8 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 			}
 			else if (vbuff->frameType == Media::FT_INTERLACED_NODEINT)
 			{
-				srcWidth = tstat->me->videoInfo->dispWidth;
-				srcHeight = tstat->me->videoInfo->dispHeight;
+				srcWidth = tstat->me->videoInfo.dispWidth;
+				srcHeight = tstat->me->videoInfo.dispHeight;
 				cropWidth = srcWidth - tstat->me->cropLeft - tstat->me->cropRight;
 				cropHeight = srcHeight - tstat->me->cropTop - tstat->me->cropBottom;
 				cropDY = tstat->me->cropTop;
@@ -677,11 +677,11 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->frameNum = vbuff->frameNum;
 				vbuff2->frameTime = vbuff->frameTime + 16;
 
-				Sync::MutexUsage mutUsage(tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 
 				if (vbuff2->frameType == Media::FT_INTERLACED_TFF)
 				{
@@ -696,15 +696,15 @@ void Media::VideoRenderer::ProcessVideo(ThreadStat *tstat, VideoBuff *vbuff, Vid
 				vbuff2->isOutputReady = true;
 				vbuff2->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 			}
 			else
 			{
-				Sync::MutexUsage mutUsage(tstat->me->buffMut);
+				Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 				vbuff->isOutputReady = true;
 				vbuff->isProcessing = false;
 				mutUsage.EndUse();
-				tstat->me->dispEvt->Set();
+				tstat->me->dispEvt.Set();
 			}
 			tstat->hTime = 0;
 			tstat->vTime = 0;
@@ -846,14 +846,14 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 		{
 			found = false;
 			frameIndex = 0;
-			me->dispMut->LockRead();
+			me->dispMut.LockRead();
 			while (frameIndex < me->allBuffCnt && me->playing)
 			{
 				if (!me->buffs[frameIndex].isProcessing)
 				{
 					me->buffs[frameIndex].isEmpty = true;
 					me->buffs[frameIndex].isOutputReady = false;
-					me->buffEvt->Set();
+					me->buffEvt.Set();
 				}
 				else
 				{
@@ -862,16 +862,16 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 
 				frameIndex++;
 			}
-			me->dispMut->UnlockRead();
+			me->dispMut.UnlockRead();
 			if (!found)
 			{
 				break;
 			}
-			me->dispEvt->Wait(100);
+			me->dispEvt.Wait(100);
 		}
-		me->dispMut->LockRead();
+		me->dispMut.LockRead();
 		me->dispClk->Start((UInt32)((Int32)frameTime - me->timeDelay - me->avOfst));
-		me->dispMut->UnlockRead();
+		me->dispMut.UnlockRead();
 	}
 	if (frameType == Media::FT_DISCARD)
 		return;
@@ -883,7 +883,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 	{
 		buffCnt = me->allBuffCnt;
 	}
-	Sync::MutexUsage mutUsage(me->buffMut);
+	Sync::MutexUsage mutUsage(&me->buffMut);
 	while (!found)
 	{
 		mutUsage.BeginUse();
@@ -900,7 +900,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 		if (found)
 			break;
 		mutUsage.EndUse();
-		me->buffEvt->Wait(10);
+		me->buffEvt.Wait(10);
 		if(!me->playing)
 			return;
 	}
@@ -911,44 +911,44 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 	}
 
 	i = 0;
-	j = me->imgFilters->GetCount();
+	j = me->imgFilters.GetCount();
 	while (i < j)
 	{
-		me->imgFilters->GetItem(i)->ProcessImage(imgData[0], me->videoInfo->fourcc, me->videoInfo->storeBPP, me->videoInfo->pf, me->videoInfo->dispWidth, me->videoInfo->dispHeight, frameType, ycOfst);
+		me->imgFilters.GetItem(i)->ProcessImage(imgData[0], me->videoInfo.fourcc, me->videoInfo.storeBPP, me->videoInfo.pf, me->videoInfo.dispWidth, me->videoInfo.dispHeight, frameType, ycOfst);
 		i++;
 	}
 
-	if (me->videoInfo->fourcc == FFMT_YUV444P10LE)
+	if (me->videoInfo.fourcc == FFMT_YUV444P10LE)
 	{
-		if (me->videoInfo->storeWidth & 31)
+		if (me->videoInfo.storeWidth & 31)
 		{
-			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 2, imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 4, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 2, imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 4, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
 		}
 		else
 		{
-			MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 2, imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 4, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
+			MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 2, imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+			MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 4, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
 		}
-		//			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight, 0);
+		//			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight, 0);
 	}
-	else if (me->videoInfo->fourcc == FFMT_YUV420P10LE)
+	else if (me->videoInfo.fourcc == FFMT_YUV420P10LE)
 	{
-		ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2, 6);
-		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo->storeWidth * me->videoInfo->storeHeight << 1), imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2, 6);
+		ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2, 6);
+		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeWidth * me->videoInfo.storeHeight << 1), imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2, 6);
 	}
-	else if (me->videoInfo->fourcc == FFMT_YUV420P12LE)
+	else if (me->videoInfo.fourcc == FFMT_YUV420P12LE)
 	{
-		ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2, 4);
-		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo->storeWidth * me->videoInfo->storeHeight << 1), imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2, 4);
+		ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2, 4);
+		ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeWidth * me->videoInfo.storeHeight << 1), imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2, 4);
 	}
-	else if (me->videoInfo->fourcc == FFMT_YUV420P8)
+	else if (me->videoInfo.fourcc == FFMT_YUV420P8)
 	{
-		MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight);
-		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2);
-		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight + (me->videoInfo->storeWidth * me->videoInfo->storeHeight >> 2), imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2);
+		MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight);
+		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2);
+		MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight + (me->videoInfo.storeWidth * me->videoInfo.storeHeight >> 2), imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2);
 	}
 	else
 	{
@@ -1091,7 +1091,7 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 			if (found)
 				break;
 			mutUsage.EndUse();
-			me->buffEvt->Wait(10);
+			me->buffEvt.Wait(10);
 			if(!me->playing)
 				return;
 		}
@@ -1101,37 +1101,37 @@ void __stdcall Media::VideoRenderer::OnVideoFrame(UInt32 frameTime, UInt32 frame
 			return;
 		}
 
-		if (me->videoInfo->fourcc == FFMT_YUV444P10LE)
+		if (me->videoInfo.fourcc == FFMT_YUV444P10LE)
 		{
-			if (me->videoInfo->storeWidth & 31)
+			if (me->videoInfo.storeWidth & 31)
 			{
-				MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 2, imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 4, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
+				MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 2, imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+				MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 4, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
 			}
 			else
 			{
-				MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 2, imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
-				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight * 4, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2);
+				MemCopyANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 2, imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
+				MemCopyANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight * 4, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2);
 			}
-//			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight, 0);
+//			ImageUtil_YUV_Y416ShiftW(me->buffs[frameIndex].srcBuff, imgData[0], imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight, 0);
 		}
-		else if (me->videoInfo->fourcc == FFMT_YUV420P10LE)
+		else if (me->videoInfo.fourcc == FFMT_YUV420P10LE)
 		{
-			ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2, 6);
-			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo->storeWidth * me->videoInfo->storeHeight << 1), imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2, 6);
+			ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2, 6);
+			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeWidth * me->videoInfo.storeHeight << 1), imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2, 6);
 		}
-		else if (me->videoInfo->fourcc == FFMT_YUV420P12LE)
+		else if (me->videoInfo.fourcc == FFMT_YUV420P12LE)
 		{
-			ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo->storeWidth * me->videoInfo->dispHeight * 2, 4);
-			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo->storeWidth * me->videoInfo->storeHeight << 1), imgData[1], imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2, 4);
+			ImageUtil_CopyShiftW(imgData[0], me->buffs[frameIndex].srcBuff, me->videoInfo.storeWidth * me->videoInfo.dispHeight * 2, 4);
+			ImageUtil_UVInterleaveShiftW(me->buffs[frameIndex].srcBuff + (me->videoInfo.storeWidth * me->videoInfo.storeHeight << 1), imgData[1], imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2, 4);
 		}
-		else if (me->videoInfo->fourcc == FFMT_YUV420P8)
+		else if (me->videoInfo.fourcc == FFMT_YUV420P8)
 		{
-			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo->storeWidth * me->videoInfo->dispHeight);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight, imgData[2], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2);
-			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo->storeWidth * me->videoInfo->storeHeight + (me->videoInfo->storeWidth * me->videoInfo->storeHeight >> 2), imgData[1], me->videoInfo->storeWidth * me->videoInfo->dispHeight >> 2);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff, imgData[0], me->videoInfo.storeWidth * me->videoInfo.dispHeight);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight, imgData[2], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2);
+			MemCopyNANC(me->buffs[frameIndex].srcBuff + me->videoInfo.storeWidth * me->videoInfo.storeHeight + (me->videoInfo.storeWidth * me->videoInfo.storeHeight >> 2), imgData[1], me->videoInfo.storeWidth * me->videoInfo.dispHeight >> 2);
 		}
 		else
 		{
@@ -1169,7 +1169,7 @@ void __stdcall Media::VideoRenderer::OnVideoChange(Media::IVideoSource::FrameCha
 	if (fc == Media::IVideoSource::FC_PAR)
 	{
 		me->VideoBeginProc();
-		me->video->GetVideoInfo(me->videoInfo, &frameRateNorm, &frameRateDenorm, &frameSize);
+		me->video->GetVideoInfo(&me->videoInfo, &frameRateNorm, &frameRateDenorm, &frameSize);
 		me->frameRateNorm = frameRateNorm;
 		me->frameRateDenorm = frameRateDenorm;
 		me->VideoEndProc();
@@ -1203,7 +1203,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 	while (!tstat->me->threadToStop)
 	{
 		found = false;
-		Sync::MutexUsage mutUsage(tstat->me->buffMut);
+		Sync::MutexUsage mutUsage(&tstat->me->buffMut);
 		i = tstat->me->allBuffCnt;
 		while (i-- > 0)
 		{
@@ -1261,7 +1261,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 					mutUsage.EndUse();
 					if (buff2)
 						break;
-					tstat->me->buffEvt->Wait(10);
+					tstat->me->buffEvt.Wait(10);
 				}
 			}
 			else
@@ -1272,7 +1272,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 			UInt32 currTime = 0;
 			Bool toSkip = false;
 
-			tstat->me->dispMut->LockRead();
+			tstat->me->dispMut.LockRead();
 			if (tstat->me->dispClk)
 			{
 				if (!tstat->me->dispClk->Running() || buff->discontTime)
@@ -1298,7 +1298,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 			{
 				toSkip = true;;
 			}
-			tstat->me->dispMut->UnlockRead();
+			tstat->me->dispMut.UnlockRead();
 
 			if (toSkip)
 			{
@@ -1313,7 +1313,7 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 					buff2->isEmpty = true;
 				}
 				mutUsage.EndUse();
-				tstat->me->buffEvt->Set();
+				tstat->me->buffEvt.Set();
 				Sync::Interlocked::Increment(&tstat->me->frameSkipBeforeProc);
 			}
 			else
@@ -1328,13 +1328,13 @@ UInt32 __stdcall Media::VideoRenderer::ProcessThread(void *userObj)
 				}
 				tstat->me->VideoEndProc();
 				t = clk.GetTimeDiff();
-				tstat->me->procMut->LockWrite();
+				tstat->me->procMut.LockWrite();
 				tstat->me->procDelayBuff[tstat->me->procThisCount & (PROCDELAYBUFF - 1)] = t;
 				tstat->me->procThisCount++;
 				tstat->me->procCnt++;
-				tstat->me->procMut->UnlockWrite();
+				tstat->me->procMut.UnlockWrite();
 			}
-			tstat->me->dispEvt->Set();
+			tstat->me->dispEvt.Set();
 		}
 		else
 		{
@@ -1413,7 +1413,7 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 			}
 			if (found)
 			{
-				me->dispMut->LockRead();
+				me->dispMut.LockRead();
 				if (me->dispClk)
 				{
 					if (me->buffs[minIndex].isOutputReady)
@@ -1433,8 +1433,8 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 						if (skipFrame)
 						{
 							me->buffs[minIndex].isEmpty = true;
-							me->buffEvt->Set();
-							me->dispMut->UnlockRead();
+							me->buffEvt.Set();
+							me->dispMut.UnlockRead();
 
 							me->frameSkipAfterProc++;
 						}
@@ -1469,23 +1469,23 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 								{
 									if ((Int32)frameTime - t > 3000 && me->videoDelay > -3000)
 										break;
-									me->dispEvt->Wait((UOSInt)(OSInt)((Int32)frameTime - t));
+									me->dispEvt.Wait((UOSInt)(OSInt)((Int32)frameTime - t));
 									if (me->dispToStop || !me->playing)
 										break;
 								}
 							}
 							UInt32 startTime = me->dispClk->GetCurrTime();
 							me->videoDelay = (Int32)(startTime - frameTime);
-							me->dispMut->UnlockRead();
+							me->dispMut.UnlockRead();
 							clk.Start();
 							me->VideoBeginProc();
 							Sync::MutexUsage mutUsage;
 							me->LockUpdateSize(&mutUsage);
 
 							DrawRect rect;
-							UOSInt vwidth = me->videoInfo->dispWidth - me->cropLeft - me->cropRight;
-							UOSInt vheight = me->videoInfo->dispHeight - me->cropTop - me->cropBottom;
-							if (me->videoInfo->ftype == Media::FT_FIELD_BF || me->videoInfo->ftype == Media::FT_FIELD_TF)
+							UOSInt vwidth = me->videoInfo.dispWidth - me->cropLeft - me->cropRight;
+							UOSInt vheight = me->videoInfo.dispHeight - me->cropTop - me->cropBottom;
+							if (me->videoInfo.ftype == Media::FT_FIELD_BF || me->videoInfo.ftype == Media::FT_FIELD_TF)
 							{
 								vheight = vheight << 1;
 							}
@@ -1511,26 +1511,26 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 								}
 							}
 							me->buffs[minIndex].isEmpty = true;
-							me->buffEvt->Set();
+							me->buffEvt.Set();
 
 							me->dispFrameTime = frameTime;
 							me->dispFrameNum = frameNum;
 							mutUsage.EndUse();
 							me->VideoEndProc();
 							dispT = clk.GetTimeDiff();
-							me->dispDelayMut->LockWrite();
+							me->dispDelayMut.LockWrite();
 							me->dispDelayBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = dispT;
 							me->dispJitterBuff[me->dispCnt & (DISPDELAYBUFF - 1)] = (startTime + dispT * 1000.0) - (Int32)frameTime + me->timeDelay + me->avOfst;
 							me->dispCnt++;
-							me->dispDelayMut->UnlockWrite();
+							me->dispDelayMut.UnlockWrite();
 							
 							me->frameDispCnt++;
 						}
 					}
 					else
 					{
-						me->dispMut->UnlockRead();
-						me->dispEvt->Wait(10);
+						me->dispMut.UnlockRead();
+						me->dispEvt.Wait(10);
 					}
 				}
 				else
@@ -1540,18 +1540,18 @@ UInt32 __stdcall Media::VideoRenderer::DisplayThread(void *userObj)
 					{
 						me->buffs[i].isEmpty = true;
 					}
-					me->dispMut->UnlockRead();
-					me->buffEvt->Set();
+					me->dispMut.UnlockRead();
+					me->buffEvt.Set();
 				}
 			}
 			else
 			{
-				me->dispEvt->Wait(1000);
+				me->dispEvt.Wait(1000);
 			}
 		}
 		else
 		{
-			me->dispEvt->Wait(1000);
+			me->dispEvt.Wait(1000);
 		}
 	}
 	me->dispRunning = false;
@@ -1573,7 +1573,7 @@ void Media::VideoRenderer::StopThreads()
 		this->tstats[i].evt->Set();
 	}
 	this->dispToStop = true;
-	this->dispEvt->Set();
+	this->dispEvt.Set();
 	while (true)
 	{
 		found = false;
@@ -1631,7 +1631,7 @@ Int32 Media::VideoRenderer::CalProcDelay()
 	Int32 procDelay;
 	Double totalTime;
 	OSInt i;
-	this->procMut->LockRead();
+	this->procMut.LockRead();
 	if (this->procThisCount == 0)
 	{
 		procDelay = 0;
@@ -1656,7 +1656,7 @@ Int32 Media::VideoRenderer::CalProcDelay()
 		}
 		procDelay = Double2Int32(1000 * totalTime / PROCDELAYBUFF);
 	}
-	this->procMut->UnlockRead();
+	this->procMut.UnlockRead();
 	return procDelay;
 }
 
@@ -1666,7 +1666,7 @@ Int32 Media::VideoRenderer::CalDispDelay()
 	Double totalTime;
 	OSInt i;
 //	return 0;
-	this->dispDelayMut->LockRead();
+	this->dispDelayMut.LockRead();
 	if (this->dispCnt == 0)
 	{
 		dispDelay = 0;
@@ -1691,7 +1691,7 @@ Int32 Media::VideoRenderer::CalDispDelay()
 		}
 		dispDelay = Double2Int32(1000 * totalTime / DISPDELAYBUFF);
 	}
-	this->dispDelayMut->UnlockRead();
+	this->dispDelayMut.UnlockRead();
 	return dispDelay;
 }
 
@@ -1700,7 +1700,7 @@ Int32 Media::VideoRenderer::CalDispJitter()
 	Int32 dispJitter;
 	Double totalJitter;
 	OSInt i;
-	this->dispDelayMut->LockRead();
+	this->dispDelayMut.LockRead();
 	if (this->dispCnt == 0)
 	{
 		dispJitter = 0;
@@ -1725,7 +1725,7 @@ Int32 Media::VideoRenderer::CalDispJitter()
 		}
 		dispJitter = Double2Int32(totalJitter / (Double)DISPDELAYBUFF);
 	}
-	this->dispDelayMut->UnlockRead();
+	this->dispDelayMut.UnlockRead();
 	return dispJitter;
 }
 
@@ -1748,7 +1748,7 @@ void Media::VideoRenderer::UpdateDispInfo(UOSInt width, UOSInt height, UInt32 bp
 	this->outputPf = pf;
 }
 
-Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt)
+Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt buffCnt, UOSInt threadCnt) : srcColor(Media::ColorProfile::CPT_VUNKNOWN), ivtc(0), uvOfst(0), autoCrop(0)
 {
 	UOSInt i;
 	this->colorSess = colorSess;
@@ -1771,26 +1771,19 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	this->dispFrameNum = 0;
 	this->updatingSize = false;
 	this->srcYUVType = Media::ColorProfile::YUVT_UNKNOWN;
-	NEW_CLASS(this->srcColor, Media::ColorProfile(Media::ColorProfile::CPT_VUNKNOWN));
-	NEW_CLASS(this->videoInfo, Media::FrameInfo());
-	NEW_CLASS(this->outputCopier, Media::ImageCopy());
-	this->videoInfo->Clear();
+	this->videoInfo.Clear();
 	this->frameRateDenorm = 1;
 	this->frameRateNorm = 30;
 	this->ignoreFrameTime = false;
 	this->forcePAR = 0;
 	this->monPAR = 1.0;
-	this->videoInfo->par2 = 1.0;
+	this->videoInfo.par2 = 1.0;
 	this->deintType = DT_FROM_VIDEO;
 	this->curr10Bit = false;
 	this->currSrcRefLuminance = 0;
 	this->toClear = false;
-	NEW_CLASS(this->ivtc, Media::VideoFilter::IVTCFilter(0));
-	this->ivtc->SetEnabled(false);
-	NEW_CLASS(this->uvOfst, Media::VideoFilter::UVOffsetFilter(0));
-	NEW_CLASS(this->autoCrop, Media::VideoFilter::AutoCropFilter(0));
-	this->autoCrop->SetEnabled(false);
-	NEW_CLASS(this->imgFilters, Data::ArrayList<Media::IImgFilter*>());
+	this->ivtc.SetEnabled(false);
+	this->autoCrop.SetEnabled(false);
 	this->cropLeft = 0;
 	this->cropTop = 0;
 	this->cropRight = 0;
@@ -1808,20 +1801,14 @@ Media::VideoRenderer::VideoRenderer(Media::ColorManagerSess *colorSess, UOSInt b
 	this->allBuffCnt = buffCnt;
 	this->threadToStop = false;
 	this->timeDelay = 0;
-	NEW_CLASS(this->buffMut, Sync::Mutex());
-	NEW_CLASS(this->buffEvt, Sync::Event(true));
-	NEW_CLASS(this->dispEvt, Sync::Event(true));
-	NEW_CLASS(this->dispMut, Sync::RWMutex());
 	this->videoPause = false;
 	this->videoProcCnt = 0;
 	this->avOfst = 0;
 
-	NEW_CLASS(this->procMut, Sync::RWMutex());
 	this->procDelayBuff = MemAlloc(Double, PROCDELAYBUFF);
 	this->procThisCount = 0;
 	this->procCnt = 0;
 
-	NEW_CLASS(this->dispDelayMut, Sync::RWMutex());
 	this->dispDelayBuff = MemAlloc(Double, DISPDELAYBUFF);
 	this->dispJitterBuff = MemAlloc(Double, DISPDELAYBUFF);
 
@@ -1900,8 +1887,6 @@ Media::VideoRenderer::~VideoRenderer()
 	UOSInt i;
 	this->updatingSize = true;
 	this->StopThreads();
-	DEL_CLASS(this->dispEvt);
-	DEL_CLASS(this->dispMut);
 
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1940,28 +1925,17 @@ Media::VideoRenderer::~VideoRenderer()
 		}
 	}
 	Media::IImgFilter *imgFilter;
-	i = this->imgFilters->GetCount();
+	i = this->imgFilters.GetCount();
 	while (i-- > 0)
 	{
-		imgFilter = this->imgFilters->GetItem(i);
+		imgFilter = this->imgFilters.GetItem(i);
 		DEL_CLASS(imgFilter);
 	}
-	DEL_CLASS(this->imgFilters);
 
-	DEL_CLASS(this->ivtc);
-	DEL_CLASS(this->uvOfst);
-	DEL_CLASS(this->autoCrop);
-	DEL_CLASS(this->procMut);
 	MemFree(this->procDelayBuff);
-	DEL_CLASS(this->dispDelayMut);
 	MemFree(this->dispDelayBuff);
 	MemFree(this->dispJitterBuff);
 	MemFree(this->buffs);
-	DEL_CLASS(this->buffEvt);
-	DEL_CLASS(this->buffMut);
-	DEL_CLASS(this->videoInfo);
-	DEL_CLASS(this->srcColor);
-	DEL_CLASS(this->outputCopier);
 }
 
 
@@ -1970,29 +1944,29 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 	UOSInt i;
 	///////////////////////////////////////
 	this->playing = false;
-	this->dispMut->LockWrite();
+	this->dispMut.LockWrite();
 	this->dispClk = 0;
-	this->dispMut->UnlockWrite();
+	this->dispMut.UnlockWrite();
 
 	this->VideoBeginLoad();
 	this->avOfst = 0;
 	if (this->video)
 	{
-		this->uvOfst->Stop();
+		this->uvOfst.Stop();
 	}
 
 	this->video = video;
 	if (this->video)
 	{
-		this->ivtc->SetSourceVideo(this->video);
-		this->autoCrop->SetSourceVideo(this->ivtc);
-		this->uvOfst->SetSourceVideo(this->autoCrop);
+		this->ivtc.SetSourceVideo(this->video);
+		this->autoCrop.SetSourceVideo(&this->ivtc);
+		this->uvOfst.SetSourceVideo(&this->autoCrop);
 	}
 	else
 	{
-		this->ivtc->SetSourceVideo(0);
-		this->autoCrop->SetSourceVideo(0);
-		this->uvOfst->SetSourceVideo(0);
+		this->ivtc.SetSourceVideo(0);
+		this->autoCrop.SetSourceVideo(0);
+		this->uvOfst.SetSourceVideo(0);
 	}
 //	this->forseFT = false;
 	i = this->allBuffCnt;
@@ -2016,14 +1990,14 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
  		if (!this->video->GetVideoInfo(&info, &frameRateNorm, &frameRateDenorm, &frameSize))
 		{
 			this->video = 0;
-			this->ivtc->SetSourceVideo(0);
-			this->autoCrop->SetSourceVideo(0);
-			this->uvOfst->SetSourceVideo(0);
+			this->ivtc.SetSourceVideo(0);
+			this->autoCrop.SetSourceVideo(0);
+			this->uvOfst.SetSourceVideo(0);
 			return;
 		}
 
 		this->VideoBeginLoad();
-		this->videoInfo->Set(&info);
+		this->videoInfo.Set(&info);
 		this->frameRateNorm = frameRateNorm;
 		this->frameRateDenorm = frameRateDenorm;
 		if (info.fourcc == FFMT_YUV444P10LE)
@@ -2037,7 +2011,7 @@ void Media::VideoRenderer::SetVideo(Media::IVideoSource *video)
 		}
 
 		this->currSrcRefLuminance = Media::CS::TransferFunc::GetRefLuminance(&info.color->rtransfer);
-		this->srcColor->Set(info.color);
+		this->srcColor.Set(info.color);
 		this->srcYUVType = info.yuvType;
 		i = this->threadCnt;
 		while (i-- > 0)
@@ -2068,7 +2042,7 @@ void Media::VideoRenderer::VideoInit(Media::RefClock *clk)
 		{
 			this->dispClk = clk;
 			//this->video->Init(OnVideoFrame, OnVideoChange, this);
-			this->uvOfst->Init(OnVideoFrame, OnVideoChange, this);
+			this->uvOfst.Init(OnVideoFrame, OnVideoChange, this);
 		}
 		this->ClearBuff();
 	}
@@ -2081,7 +2055,7 @@ void Media::VideoRenderer::VideoStart()
 		this->ClearBuff();
 		if (this->video)
 		{
-			if (this->uvOfst->Start())
+			if (this->uvOfst.Start())
 			{
 				this->captureFrame = false;
 				this->playing = true;
@@ -2095,13 +2069,13 @@ void Media::VideoRenderer::StopPlay()
 	if (this->video)
 	{
 		this->playing = false;
-		this->uvOfst->Stop();
-		this->dispEvt->Set();
+		this->uvOfst.Stop();
+		this->dispEvt.Set();
 
 		this->ClearBuff();
-		this->dispMut->LockWrite();
+		this->dispMut.LockWrite();
 		this->dispClk = 0;
-		this->dispMut->UnlockWrite();
+		this->dispMut.UnlockWrite();
 	}
 }
 
@@ -2156,16 +2130,16 @@ void Media::VideoRenderer::SetSrcRGBType(Media::CS::TransferType rgbType)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo->color->GetRTranParam()->Set(rgbType, 2.2);
-	this->videoInfo->color->GetGTranParam()->Set(rgbType, 2.2);
-	this->videoInfo->color->GetBTranParam()->Set(rgbType, 2.2);
-	this->srcColor->GetRTranParam()->Set(rgbType, 2.2);
-	this->srcColor->GetGTranParam()->Set(rgbType, 2.2);
-	this->srcColor->GetBTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color->GetRTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color->GetGTranParam()->Set(rgbType, 2.2);
+	this->videoInfo.color->GetBTranParam()->Set(rgbType, 2.2);
+	this->srcColor.GetRTranParam()->Set(rgbType, 2.2);
+	this->srcColor.GetGTranParam()->Set(rgbType, 2.2);
+	this->srcColor.GetBTranParam()->Set(rgbType, 2.2);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], this->videoInfo);
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2176,16 +2150,16 @@ void Media::VideoRenderer::SetSrcPrimaries(Media::ColorProfile::ColorType colorT
 	this->VideoBeginLoad();
 	if (colorType == Media::ColorProfile::CT_VUNKNOWN)
 	{
-		this->videoInfo->color->GetPrimaries()->Set(this->srcColor->GetPrimaries());
+		this->videoInfo.color->GetPrimaries()->Set(this->srcColor.GetPrimaries());
 	}
 	else
 	{
-		this->videoInfo->color->GetPrimaries()->SetColorType(colorType);
+		this->videoInfo.color->GetPrimaries()->SetColorType(colorType);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], this->videoInfo);
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2194,12 +2168,12 @@ void Media::VideoRenderer::SetSrcWP(Media::ColorProfile::WhitePointType wpType)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo->color->GetPrimaries()->SetWhiteType(wpType);
-	this->videoInfo->color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
+	this->videoInfo.color->GetPrimaries()->SetWhiteType(wpType);
+	this->videoInfo.color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], this->videoInfo);
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2208,12 +2182,12 @@ void Media::VideoRenderer::SetSrcWPTemp(Double colorTemp)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo->color->GetPrimaries()->SetWhiteTemp(colorTemp);
-	this->videoInfo->color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
+	this->videoInfo.color->GetPrimaries()->SetWhiteTemp(colorTemp);
+	this->videoInfo.color->GetPrimaries()->colorType = Media::ColorProfile::CT_CUSTOM;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], this->videoInfo);
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2222,12 +2196,12 @@ void Media::VideoRenderer::SetSrcYUVType(Media::ColorProfile::YUVType yuvType)
 {
 	UOSInt i;
 	this->VideoBeginLoad();
-	this->videoInfo->yuvType = yuvType;
+	this->videoInfo.yuvType = yuvType;
 	this->srcYUVType = yuvType;
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
-		CreateCSConv(&this->tstats[i], this->videoInfo);
+		CreateCSConv(&this->tstats[i], &this->videoInfo);
 	}
 	this->VideoEndLoad();
 }
@@ -2244,17 +2218,17 @@ void Media::VideoRenderer::SetMonPAR(Double forcePAR)
 
 void Media::VideoRenderer::SetIVTCEnable(Bool enableIVTC)
 {
-	this->ivtc->SetEnabled(enableIVTC);
+	this->ivtc.SetEnabled(enableIVTC);
 }
 
 void Media::VideoRenderer::SetUVOfst(Int32 uOfst, Int32 vOfst)
 {
-	this->uvOfst->SetOffset(uOfst, vOfst);
+	this->uvOfst.SetOffset(uOfst, vOfst);
 }
 
 void Media::VideoRenderer::SetAutoCropEnable(Bool enableCrop)
 {
-	this->autoCrop->SetEnabled(enableCrop);
+	this->autoCrop.SetEnabled(enableCrop);
 }
 
 Int32 Media::VideoRenderer::GetAVOfst()
@@ -2274,7 +2248,7 @@ void Media::VideoRenderer::SetIgnoreFrameTime(Bool ignoreFrameTime)
 
 void Media::VideoRenderer::AddImgFilter(Media::IImgFilter *imgFilter)
 {
-	this->imgFilters->Add(imgFilter);
+	this->imgFilters.Add(imgFilter);
 }
 
 void Media::VideoRenderer::Snapshot()
@@ -2287,7 +2261,7 @@ void Media::VideoRenderer::Snapshot()
 
 void Media::VideoRenderer::GetStatus(RendererStatus *status)
 {
-	this->dispMut->LockRead();
+	this->dispMut.LockRead();
 	if (this->dispClk && this->dispClk->Running())
 	{
 		status->currTime = this->dispClk->GetCurrTime();
@@ -2296,7 +2270,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	{
 		status->currTime = 0;
 	}
-	this->dispMut->UnlockRead();
+	this->dispMut.UnlockRead();
 	status->dispDelay = this->CalDispDelay();
 	status->procDelay = this->CalProcDelay();
 	status->dispJitter = this->CalDispJitter();
@@ -2309,10 +2283,10 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	status->srcDelay = this->timeDelay;
 	status->dispFrameNum = this->dispFrameNum;
 	status->srcYUVType = this->srcYUVType;
-	status->color->Set(this->videoInfo->color);
+	status->color->Set(this->videoInfo.color);
 	status->dispBitDepth = this->outputBpp;
-	status->srcWidth = this->videoInfo->dispWidth;
-	status->srcHeight = this->videoInfo->dispHeight;
+	status->srcWidth = this->videoInfo.dispWidth;
+	status->srcHeight = this->videoInfo.dispHeight;
 	status->dispWidth = this->outputWidth;
 	status->dispHeight = this->outputHeight;
 	if (this->video)
@@ -2337,10 +2311,10 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	}
 	else
 	{
-		status->par = this->videoInfo->par2 / this->monPAR;
+		status->par = this->videoInfo.par2 / this->monPAR;
 	}
 	UOSInt i;
-	status->format = this->videoInfo->fourcc;
+	status->format = this->videoInfo.fourcc;
 	status->buffProc = 0;
 	status->buffReady = 0;
 	Double hTime = 0;
@@ -2357,7 +2331,7 @@ void Media::VideoRenderer::GetStatus(RendererStatus *status)
 	status->vTime = vTime / UOSInt2Double(this->threadCnt);
 	status->csTime = csTime / UOSInt2Double(this->threadCnt);
 
-	Sync::MutexUsage mutUsage(this->buffMut);
+	Sync::MutexUsage mutUsage(&this->buffMut);
 	i = 0;
 	while (i < this->allBuffCnt)
 	{

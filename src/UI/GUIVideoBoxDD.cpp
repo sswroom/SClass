@@ -162,7 +162,7 @@ void UI::GUIVideoBoxDD::YUVParamChanged(const Media::IColorHandler::YUVPARAM *yu
 		if (!playing)
 		{
 			this->dispForceUpdate = true;
-			this->dispEvt->Set();
+			this->dispEvt.Set();
 		}
 	}
 }
@@ -174,7 +174,7 @@ void UI::GUIVideoBoxDD::RGBParamChanged(const Media::IColorHandler::RGBPARAM2 *r
 		if (!playing)
 		{
 			this->dispForceUpdate = true;
-			this->dispEvt->Set();
+			this->dispEvt.Set();
 		}
 	}
 }
@@ -192,7 +192,7 @@ void UI::GUIVideoBoxDD::OnSurfaceCreated()
 	if (!playing)
 	{
 		this->dispForceUpdate = true;
-		this->dispEvt->Set();
+		this->dispEvt.Set();
 	}
 }
 

@@ -9,10 +9,10 @@ namespace UI
 	public:
 		typedef void (__stdcall *UpDownEvent)(void *userObj, Bool isDown);
 	private:
-		Data::ArrayList<UIEvent> *btnClkHandlers;
-		Data::ArrayList<void *> *btnClkHandlersObjs;
-		Data::ArrayList<UpDownEvent> *btnUpDownHandlers;
-		Data::ArrayList<void *> *btnUpDownHandlersObjs;
+		Data::ArrayList<UIEvent> btnClkHandlers;
+		Data::ArrayList<void *> btnClkHandlersObjs;
+		Data::ArrayList<UpDownEvent> btnUpDownHandlers;
+		Data::ArrayList<void *> btnUpDownHandlersObjs;
 		OSInt btnId;
 		void *oriWndProc;
 		static OSInt nextId;

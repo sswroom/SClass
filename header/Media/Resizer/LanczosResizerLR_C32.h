@@ -25,7 +25,7 @@ namespace Media
 			Int32 currId;
 			UOSInt hnTap;
 			UOSInt vnTap;
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Media::Resizer::LanczosResizerLR_C32Action *action;
 
 			Double hsSize;
@@ -45,7 +45,7 @@ namespace Media
 			UOSInt vTap;
 			Media::Resizer::LanczosResizerLR_C32Action::VertFilter *vFilter;
 
-			Media::ColorProfile *destColor;
+			Media::ColorProfile destColor;
 			Media::ColorManagerSess *colorSess;
 			Double srcRefLuminance;
 			Bool rgbChanged;

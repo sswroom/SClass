@@ -10,7 +10,7 @@ namespace Media
 		{
 		protected:
 			Media::IVideoSource *srcVideo;
-			Media::FrameInfo *videoInfo;
+			Media::FrameInfo videoInfo;
 			FrameCallback videoCb;
 			FrameChangeCallback fcCb;
 			void *userData;

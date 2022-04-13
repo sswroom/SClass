@@ -18,12 +18,12 @@ namespace Media
 		Text::String *profileName;
 
 		Media::IColorHandler::YUVPARAM yuv;
-		Media::IColorHandler::RGBPARAM2 *rgb;
+		Media::IColorHandler::RGBPARAM2 rgb;
 		Text::String *monProfileFile;
 		Bool color10Bit;
 
-		Data::ArrayList<Media::ColorManagerSess *> *sessList;
-		Sync::Mutex *sessMut;
+		Data::ArrayList<Media::ColorManagerSess *> sessList;
+		Sync::Mutex sessMut;
 	public:
 		static void SetDefaultYUV(Media::IColorHandler::YUVPARAM *yuv);
 		static void SetDefaultRGB(Media::IColorHandler::RGBPARAM2 *rgb);

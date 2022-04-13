@@ -51,7 +51,7 @@ Media::FBSurface::FBSurface(MonitorHandle *hMon, const Media::ColorProfile *colo
 	this->clsData->ttyfd = open("/dev/tty1", O_WRONLY);
 	if (this->clsData->ttyfd < 0)
 	{
-		printf("error in opening tty %d\r\n", errno);
+		printf("FBSurface: Error in opening tty %d\r\n", errno);
 	}
 	ioctl(this->clsData->fd, FBIOGET_VSCREENINFO, &this->clsData->vinfo);
 	ioctl(this->clsData->fd, FBIOGET_FSCREENINFO, &this->clsData->finfo);

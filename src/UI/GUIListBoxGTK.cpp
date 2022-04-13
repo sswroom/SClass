@@ -52,13 +52,6 @@ void GUIListBox_Show(GtkWidget *widget, gpointer user_data)
 
 UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool multiSelect) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->dblClickHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->dblClickObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->rightClickHdlrs, Data::ArrayList<UI::GUIControl::MouseEventHandler>());
-	NEW_CLASS(this->rightClickObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->items, Data::ArrayList<ItemData*>());
 	this->mulSel = multiSelect;
 	ClassData *data = MemAlloc(ClassData, 1);
 	this->clsData = data;
@@ -84,20 +77,13 @@ UI::GUIListBox::~GUIListBox()
 	ClassData *data = this->clsData;
 	ItemData *item;
 	UOSInt i;
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClickHdlrs);
-	DEL_CLASS(this->dblClickObjs);
-	DEL_CLASS(this->rightClickHdlrs);
-	DEL_CLASS(this->rightClickObjs);
-	i = this->items->GetCount();
+	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		item->txt->Release();
 		MemFree(item);
 	}
-	DEL_CLASS(this->items);
 	MemFree(data);
 }
 
@@ -120,26 +106,26 @@ void UI::GUIListBox::EventSelectionChange()
 		data->showTime = 0;
 	}
 
-	UOSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListBox::EventDoubleClick()
 {
-	UOSInt i = this->dblClickHdlrs->GetCount();
+	UOSInt i = this->dblClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClickHdlrs->GetItem(i)(this->dblClickObjs->GetItem(i));
+		this->dblClickHdlrs.GetItem(i)(this->dblClickObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 {
 	ClassData *data = this->clsData;
-	UOSInt i = this->rightClickHdlrs->GetCount();
+	UOSInt i = this->rightClickHdlrs.GetCount();
 	GtkListBoxRow *row = gtk_list_box_get_row_at_y((GtkListBox*)data->listbox, (gint)y);
 	if (row)
 	{
@@ -151,7 +137,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 	{
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs->GetItem(i)(this->rightClickObjs->GetItem(i), x, y, UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), x, y, UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }
@@ -178,7 +164,7 @@ UOSInt UI::GUIListBox::AddItem(Text::String *itemText, void *itemObj)
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
-	UOSInt ret = this->items->Add(item);
+	UOSInt ret = this->items.Add(item);
 	return ret;
 }
 
@@ -204,7 +190,7 @@ UOSInt UI::GUIListBox::AddItem(Text::CString itemText, void *itemObj)
 	gtk_widget_show(item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
-	UOSInt ret = this->items->Add(item);
+	UOSInt ret = this->items.Add(item);
 	return ret;
 }
 
@@ -230,7 +216,7 @@ UOSInt UI::GUIListBox::AddItem(const WChar *itemText, void *itemObj)
 	gtk_container_add(GTK_CONTAINER(item->row), item->lbl);
 	gtk_widget_show((GtkWidget*)item->row);
 	gtk_list_box_insert((GtkListBox*)data->listbox, (GtkWidget*)item->row, -1);
-	UOSInt ret = this->items->Add(item);
+	UOSInt ret = this->items.Add(item);
 	return ret;
 }
 
@@ -259,11 +245,11 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::String *itemText, void *it
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		i = (OSInt)this->items->Add(item);
+		i = (OSInt)this->items.Add(item);
 	}
 	else
 	{
-		this->items->Insert((UOSInt)i, item);
+		this->items.Insert((UOSInt)i, item);
 	}
 	return (UOSInt)i;
 }
@@ -293,11 +279,11 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, Text::CString itemText, void *it
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		i = (OSInt)this->items->Add(item);
+		i = (OSInt)this->items.Add(item);
 	}
 	else
 	{
-		this->items->Insert((UOSInt)i, item);
+		this->items.Insert((UOSInt)i, item);
 	}
 	return (UOSInt)i;
 }
@@ -327,11 +313,11 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 	OSInt i = gtk_list_box_row_get_index(item->row);
 	if (i == -1)
 	{
-		i = (OSInt)this->items->Add(item);
+		i = (OSInt)this->items.Add(item);
 	}
 	else
 	{
-		this->items->Insert((UOSInt)i, item);
+		this->items.Insert((UOSInt)i, item);
 	}
 	return (UOSInt)i;
 }
@@ -339,20 +325,20 @@ UOSInt UI::GUIListBox::InsertItem(UOSInt index, const WChar *itemText, void *ite
 void *UI::GUIListBox::RemoveItem(UOSInt index)
 {
 	ClassData *data = this->clsData;
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	gtk_container_remove(GTK_CONTAINER(data->listbox), (GtkWidget*)item->row);
 	void *ret = item->userData;
 	item->txt->Release();
 	MemFree(item);
-	this->items->RemoveAt(index);
+	this->items.RemoveAt(index);
 	return ret;
 }
 
 void *UI::GUIListBox::GetItem(UOSInt index)
 {
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	return item->userData;
@@ -371,25 +357,25 @@ void UI::GUIListBox::ClearItems()
 	g_list_free(list);
 	UOSInt i;
 	ItemData *item;
-	i = this->items->GetCount();
+	i = this->items.GetCount();
 	while (i-- > 0)
 	{
-		item = this->items->GetItem(i);
+		item = this->items.GetItem(i);
 		item->txt->Release();
 		MemFree(item);
 	}
-	this->items->Clear();
+	this->items.Clear();
 }
 
 UOSInt UI::GUIListBox::GetCount()
 {
-	return this->items->GetCount();
+	return this->items.GetCount();
 }
 
 void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 {
 	ClassData *data = this->clsData;
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return;
 	data->isShown = true;
@@ -397,7 +383,7 @@ void UI::GUIListBox::SetSelectedIndex(UOSInt index)
 	gtk_list_box_select_row((GtkListBox*)data->listbox, item->row);
 
 	int h = gtk_widget_get_allocated_height(data->listbox);
-	Double itemH = h / (Double)this->items->GetCount();
+	Double itemH = h / (Double)this->items.GetCount();
 	Double targetTop = itemH * UOSInt2Double(index);
 	Double targetBottom = targetTop + itemH;
 	GtkAdjustment *adj = gtk_scrolled_window_get_vadjustment((GtkScrolledWindow*)this->hwnd);
@@ -474,7 +460,7 @@ Text::String *UI::GUIListBox::GetSelectedItemTextNew()
 
 UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 {
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	return Text::StrConcatC(buff, item->txt->v, item->txt->leng);
@@ -482,7 +468,7 @@ UTF8Char *UI::GUIListBox::GetItemText(UTF8Char *buff, UOSInt index)
 
 WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 {
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	return Text::StrUTF8_WChar(buff, item->txt->v, 0);
@@ -490,7 +476,7 @@ WChar *UI::GUIListBox::GetItemText(WChar *buff, UOSInt index)
 
 void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
 {
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return;
 	gtk_label_set_text((GtkLabel*)item->lbl, (const Char*)text.v);
@@ -500,7 +486,7 @@ void UI::GUIListBox::SetItemText(UOSInt index, Text::CString text)
 
 Text::String *UI::GUIListBox::GetItemTextNew(UOSInt index)
 {
-	ItemData *item = this->items->GetItem(index);
+	ItemData *item = this->items.GetItem(index);
 	if (item == 0)
 		return 0;
 	return item->txt->Clone();
@@ -523,18 +509,18 @@ OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIListBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUIListBox::HandleDoubleClicked(UI::UIEvent hdlr, void *userObj)
 {
-	this->dblClickHdlrs->Add(hdlr);
-	this->dblClickObjs->Add(userObj);
+	this->dblClickHdlrs.Add(hdlr);
+	this->dblClickObjs.Add(userObj);
 }
 
 void UI::GUIListBox::HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, void *userObj)
 {
-	this->rightClickHdlrs->Add(hdlr);
-	this->rightClickObjs->Add(userObj);
+	this->rightClickHdlrs.Add(hdlr);
+	this->rightClickObjs.Add(userObj);
 }

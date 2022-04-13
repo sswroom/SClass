@@ -20,6 +20,7 @@ namespace SSWR
 			UI::GUILabel *lblPort;
 			UI::GUITextBox *txtPort;
 			UI::GUIButton *btnStop;
+			UI::GUIButton *btnCaptureDev;
 			UI::GUILabel *lblRotate;
 			UI::GUIComboBox *cboRotate;
 
@@ -29,6 +30,7 @@ namespace SSWR
 			Net::WebServer::WebListener *listener;
 
 			static void __stdcall OnStopClicked(void *userObj);
+			static void __stdcall OnCaptureDevClicked(void *userObj);
 			static void __stdcall OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles);
 			static void __stdcall OnRotateChg(void *userObj);
 

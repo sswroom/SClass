@@ -44,7 +44,7 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 	Media::VideoCaptureMgr::DeviceInfo *devInfo = (Media::VideoCaptureMgr::DeviceInfo*)me->lbDevice->GetSelectedItem();
 	if (devInfo)
 	{
-		me->currCapture = me->captureMgr->CreateDevice(devInfo->devType, devInfo->devId);
+		me->currCapture = me->captureMgr.CreateDevice(devInfo->devType, devInfo->devId);
 	}
 	else
 	{
@@ -126,9 +126,12 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 				sb.AppendC(UTF8STRC(" bits RGB"));
 			}
 			sb.AppendC(UTF8STRC(")"));
+			sb.AppendC(UTF8STRC(" "));
+			sb.AppendDouble(cfmt->frameRateNumer / (Double)cfmt->frameRateDenom);
+			sb.AppendC(UTF8STRC(" fps"));
 
 			me->cboFormat->AddItem(sb.ToCString(), cfmt);
-			me->currFormats->Add(cfmt);
+			me->currFormats.Add(cfmt);
 
 			devInfo.AppendUOSInt(cfmt->width);
 			devInfo.AppendC(UTF8STRC(" x "));
@@ -162,10 +165,10 @@ void __stdcall SSWR::AVIRead::AVIRCaptureDevForm::OnDevChg(void *userObj)
 
 void SSWR::AVIRead::AVIRCaptureDevForm::ReleaseFormats()
 {
-	UOSInt i = this->currFormats->GetCount();
+	UOSInt i = this->currFormats.GetCount();
 	while (i-- > 0)
 	{
-		MemFree(this->currFormats->RemoveAt(i));
+		MemFree(this->currFormats.RemoveAt(i));
 	}
 }
 
@@ -199,13 +202,10 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	this->SetDefaultButton(this->btnOK);
 	this->SetCancelButton(this->btnCancel);
 
-	NEW_CLASS(this->devInfoList, Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*>());
-	NEW_CLASS(this->captureMgr, Media::VideoCaptureMgr());
-	NEW_CLASS(this->currFormats, Data::ArrayList<SSWR::AVIRead::AVIRCaptureDevForm::CaptureFormat*>());
 	this->currCapture = 0;
 	this->capture = 0;
-	this->captureMgr->GetDeviceList(this->devInfoList);
-	UOSInt cnt = this->devInfoList->GetCount();
+	this->captureMgr.GetDeviceList(&this->devInfoList);
+	UOSInt cnt = this->devInfoList.GetCount();
 	if (cnt == 0)
 	{
 		return;
@@ -214,7 +214,7 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 	i = 0;
 	while (i < cnt)
 	{
-		Media::VideoCaptureMgr::DeviceInfo *dev = this->devInfoList->GetItem(i);
+		Media::VideoCaptureMgr::DeviceInfo *dev = this->devInfoList.GetItem(i);
 		this->lbDevice->AddItem({dev->devName, Text::StrCharCnt(dev->devName)}, dev);
 		i++;
 	}
@@ -224,15 +224,13 @@ SSWR::AVIRead::AVIRCaptureDevForm::AVIRCaptureDevForm(UI::GUIClientControl *pare
 SSWR::AVIRead::AVIRCaptureDevForm::~AVIRCaptureDevForm()
 {
 	this->ClearChildren();
-	this->captureMgr->FreeDeviceList(this->devInfoList);
+	this->captureMgr.FreeDeviceList(&this->devInfoList);
 	if (this->currCapture)
 	{
 		DEL_CLASS(this->currCapture);
 		this->currCapture = 0;
 	}
 	this->ReleaseFormats();
-	DEL_CLASS(this->currFormats);
-	DEL_CLASS(this->captureMgr);
 }
 
 void SSWR::AVIRead::AVIRCaptureDevForm::OnMonitorChanged()

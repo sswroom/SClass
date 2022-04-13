@@ -4,12 +4,12 @@
 
 void Media::VideoFilter::UVOffsetFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, void *userData, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+	if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 	{
 		Int32 uOfst = this->uOfst;
 		Int32 vOfst = this->vOfst;
-		UOSInt w = this->videoInfo->storeWidth;
-		UOSInt h = this->videoInfo->storeHeight;
+		UOSInt w = this->videoInfo.storeWidth;
+		UOSInt h = this->videoInfo.storeHeight;
 		UOSInt hh = h >> 1;
 		UOSInt wh = w >> 1;
 		UInt8 *imgPtr = imgData[0] + w * h;

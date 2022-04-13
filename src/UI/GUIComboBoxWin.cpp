@@ -13,9 +13,6 @@
 
 UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool allowTyping) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->itemTexts, Data::ArrayList<Text::String *>());
 	this->autoComplete = false;
 	this->minVisible = 5;
 	this->allowEdit = allowTyping;
@@ -42,17 +39,14 @@ UI::GUIComboBox::GUIComboBox(GUICore *ui, UI::GUIClientControl *parent, Bool all
 UI::GUIComboBox::~GUIComboBox()
 {
 	this->ClearItems();
-	DEL_CLASS(this->itemTexts);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
 }
 
 void UI::GUIComboBox::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
@@ -65,13 +59,13 @@ void UI::GUIComboBox::EventTextChanged()
 		if (sb.GetLength() > this->lastTextLeng)
 		{
 			UOSInt i = 0;
-			UOSInt j = this->itemTexts->GetCount();
+			UOSInt j = this->itemTexts.GetCount();
 			while (i < j)
 			{
-				if (this->itemTexts->GetItem(i)->StartsWith(sb.ToString(), sb.GetLength()))
+				if (this->itemTexts.GetItem(i)->StartsWith(sb.ToString(), sb.GetLength()))
 				{
 					this->SetSelectedIndex(i);
-					this->SetTextSelection(sb.GetLength(), this->itemTexts->GetItem(i)->leng);
+					this->SetTextSelection(sb.GetLength(), this->itemTexts.GetItem(i)->leng);
 				}
 				i++;
 			}
@@ -147,7 +141,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::String *itemText, void *itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Add(itemText->Clone());
+	this->itemTexts.Add(itemText->Clone());
 	return (UOSInt)i;
 }
 
@@ -162,7 +156,7 @@ UOSInt UI::GUIComboBox::AddItem(Text::CString itemText, void *itemObj)
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Add(Text::String::New(itemText));
+	this->itemTexts.Add(Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
@@ -177,7 +171,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::String *itemText, void *i
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Insert(index, itemText->Clone());
+	this->itemTexts.Insert(index, itemText->Clone());
 	return (UOSInt)i;
 }
 
@@ -192,7 +186,7 @@ UOSInt UI::GUIComboBox::InsertItem(UOSInt index, Text::CString itemText, void *i
 	{
 		SendMessage((HWND)hwnd, CB_SETITEMDATA, (WPARAM)i, (LPARAM)itemObj);
 	}
-	this->itemTexts->Insert(index, Text::String::New(itemText));
+	this->itemTexts.Insert(index, Text::String::New(itemText));
 	return (UOSInt)i;
 }
 
@@ -200,7 +194,7 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 {
 	void *obj = (void*)SendMessage((HWND)hwnd, CB_GETITEMDATA, index, 0);
 	SendMessage((HWND)hwnd, CB_DELETESTRING, index, 0);
-	Text::String *s = this->itemTexts->RemoveAt(index);
+	Text::String *s = this->itemTexts.RemoveAt(index);
 	if (s)
 		s->Release();
 	return obj;
@@ -209,10 +203,10 @@ void *UI::GUIComboBox::RemoveItem(UOSInt index)
 void UI::GUIComboBox::ClearItems()
 {
 	SendMessage((HWND)hwnd, CB_RESETCONTENT, 0, 0);
-	UOSInt i = this->itemTexts->GetCount();
+	UOSInt i = this->itemTexts.GetCount();
 	while (i-- > 0)
 	{
-		this->itemTexts->RemoveAt(i)->Release();
+		this->itemTexts.RemoveAt(i)->Release();
 	}
 }
 
@@ -239,10 +233,10 @@ UOSInt UI::GUIComboBox::GetSelectedIndex()
 	{
 		Text::StringBuilderUTF8 sb;
 		this->GetText(&sb);
-		UOSInt i = this->itemTexts->GetCount();
+		UOSInt i = this->itemTexts.GetCount();
 		while (i-- > 0)
 		{
-			if (this->itemTexts->GetItem(i)->Equals(sb.ToString(), sb.GetLength()))
+			if (this->itemTexts.GetItem(i)->Equals(sb.ToString(), sb.GetLength()))
 				return i;
 		}
 	}
@@ -338,8 +332,8 @@ OSInt UI::GUIComboBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIComboBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUIComboBox::UpdatePos(Bool redraw)

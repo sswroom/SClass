@@ -61,17 +61,17 @@ namespace Media
 			UOSInt fieldDataSize;
 			Bool fieldIsDiscont;
 
-			Sync::Mutex *mut;
+			Sync::Mutex mut;
 			Bool enabled;
 
-			Sync::Event *mainEvt;
+			Sync::Event mainEvt;
 			UOSInt threadCnt;
 			ThreadStat *threadStats;
 			IO::FileStream *debugFS;
 			IO::Writer *debugLog;
 
 			Bool ivtcTToStop;
-			Sync::Event *ivtcTEvt;
+			Sync::Event ivtcTEvt;
 			Int32 ivtcTStatus; //0=not running, 1=idle, 2=processing
 			Bool ivtcTRequest;
             UInt32 ivtcTFrameTime;

@@ -45,10 +45,6 @@ UI::GUIButton::GUIButton(GUICore *ui, UI::GUIClientControl *parent, Text::CStrin
 		style |= WS_VISIBLE;
 	}
 	this->InitControl(((UI::GUICoreWin*)ui)->GetHInst(), parent, L"BUTTON", txt.v, style, 0, 0, 0, 200, 24);
-	NEW_CLASS(this->btnClkHandlers, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->btnClkHandlersObjs, Data::ArrayList<void *>());
-	NEW_CLASS(this->btnUpDownHandlers, Data::ArrayList<UpDownEvent>());
-	NEW_CLASS(this->btnUpDownHandlersObjs, Data::ArrayList<void *>());
 #ifndef _WIN32_WCE
 	SetWindowLongPtr((HWND)this->hwnd, GWLP_ID, (Int32)(this->btnId = nextId++));
 #else
@@ -69,10 +65,6 @@ UI::GUIButton::~GUIButton()
 #else
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->oriWndProc);
 #endif
-	DEL_CLASS(this->btnClkHandlers);
-	DEL_CLASS(this->btnClkHandlersObjs);
-	DEL_CLASS(this->btnUpDownHandlers);
-	DEL_CLASS(this->btnUpDownHandlersObjs);
 }
 
 void UI::GUIButton::SetText(Text::CString text)
@@ -133,30 +125,30 @@ void UI::GUIButton::OnFocusLost()
 void UI::GUIButton::EventButtonClick()
 {
 	UOSInt i;
-	i = this->btnClkHandlers->GetCount();
+	i = this->btnClkHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnClkHandlers->GetItem(i)(this->btnClkHandlersObjs->GetItem(i));
+		this->btnClkHandlers.GetItem(i)(this->btnClkHandlersObjs.GetItem(i));
 	}
 }
 
 void UI::GUIButton::EventButtonDown()
 {
 	UOSInt i;
-	i = this->btnUpDownHandlers->GetCount();
+	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers->GetItem(i)(this->btnUpDownHandlersObjs->GetItem(i), true);
+		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), true);
 	}
 }
 
 void UI::GUIButton::EventButtonUp()
 {
 	UOSInt i;
-	i = this->btnUpDownHandlers->GetCount();
+	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers->GetItem(i)(this->btnUpDownHandlersObjs->GetItem(i), false);
+		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), false);
 	}
 }
 
@@ -172,12 +164,12 @@ void UI::GUIButton::SetDefaultBtnLook()
 
 void UI::GUIButton::HandleButtonClick(UIEvent handler, void *userObj)
 {
-	this->btnClkHandlers->Add(handler);
-	this->btnClkHandlersObjs->Add(userObj);
+	this->btnClkHandlers.Add(handler);
+	this->btnClkHandlersObjs.Add(userObj);
 }
 
 void UI::GUIButton::HandleButtonUpDown(UpDownEvent handler, void *userObj)
 {
-	this->btnUpDownHandlers->Add(handler);
-	this->btnUpDownHandlersObjs->Add(userObj);
+	this->btnUpDownHandlers.Add(handler);
+	this->btnUpDownHandlersObjs.Add(userObj);
 }

@@ -16,7 +16,8 @@ namespace Media
 			const UTF8Char *devName;
 		} DeviceInfo;
 	private:
-		void *mgrData;
+		struct ClassData;
+		ClassData *clsData;
 	public:
 		VideoCaptureMgr();
 		~VideoCaptureMgr();

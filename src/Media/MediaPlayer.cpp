@@ -32,12 +32,12 @@ void Media::MediaPlayer::PlayTime(UInt32 time)
 	Bool found = false;
 	if (this->arenderer)
 	{
-		this->arenderer->AudioInit(this->clk);
+		this->arenderer->AudioInit(&this->clk);
 		this->arenderer->SetEndNotify(OnAudioEnd, this);
 	}
 	if (this->vrenderer)
 	{
-		this->vrenderer->VideoInit(this->clk);
+		this->vrenderer->VideoInit(&this->clk);
 		this->vrenderer->SetEndNotify(OnVideoEnd, this);
 	}
 	if (this->arenderer)
@@ -136,7 +136,7 @@ Bool Media::MediaPlayer::SwitchAudioSource(Media::IAudioSource *asrc, Int32 sync
 	}
 	else
 	{
-		this->currADecoder = this->adecoders->DecodeAudio(asrc);
+		this->currADecoder = this->adecoders.DecodeAudio(asrc);
 		if (this->currADecoder)
 		{
 			if ((this->arenderer = this->audioDev->BindAudio(this->currADecoder)) != 0)
@@ -158,9 +158,6 @@ Media::MediaPlayer::MediaPlayer(Media::VideoRenderer *vrenderer, Media::AudioDev
 {
 	this->audioDev = audioDev;
 	this->vrenderer = vrenderer;
-	NEW_CLASS(this->vdecoders, Media::Decoder::VideoDecoderFinder());
-	NEW_CLASS(this->adecoders, Media::Decoder::AudioDecoderFinder());
-	NEW_CLASS(this->clk, Media::RefClock());
 
 	this->currFile = 0;
 	this->currChapInfo = 0;
@@ -182,9 +179,6 @@ Media::MediaPlayer::~MediaPlayer()
 	{
 		this->LoadMedia(0);
 	}
-	DEL_CLASS(this->clk);
-	DEL_CLASS(this->vdecoders);
-	DEL_CLASS(this->adecoders);
 }
 
 void Media::MediaPlayer::SetEndHandler(PBEndHandler hdlr, void *userObj)
@@ -227,18 +221,18 @@ Bool Media::MediaPlayer::LoadMedia(Media::MediaFile *file)
 		if (mt == Media::MEDIA_TYPE_VIDEO && !videoFound)
 		{
 			Media::IVideoSource *vsrc = (Media::IVideoSource*)msrc;
-			this->currVDecoder = this->vdecoders->DecodeVideo(vsrc);
+			this->currVDecoder = this->vdecoders.DecodeVideo(vsrc);
 			if (this->currVDecoder)
 			{
 				this->currVStm = vsrc;
 				this->vrenderer->SetVideo(this->currVDecoder);
-				this->clk->Stop();
+				this->clk.Stop();
 			}
 			else
 			{
 				this->currVStm = vsrc;
 				this->vrenderer->SetVideo(this->currVStm);
-				this->clk->Stop();
+				this->clk.Stop();
 			}
 		}
 		else if (mt == Media::MEDIA_TYPE_AUDIO && this->arenderer == 0)
@@ -343,7 +337,7 @@ Bool Media::MediaPlayer::PrevChapter()
 	UOSInt i;
 	if (this->IsPlaying() && this->currChapInfo)
 	{
-		currTime = this->clk->GetCurrTime();
+		currTime = this->clk.GetCurrTime();
 		i = this->currChapInfo->GetChapterIndex(currTime);
 		if (i + 1 == this->pbLastChapter)
 		{
@@ -369,7 +363,7 @@ Bool Media::MediaPlayer::NextChapter()
 	UOSInt i;
 	if (this->currChapInfo && this->IsPlaying())
 	{
-		currTime = this->clk->GetCurrTime();
+		currTime = this->clk.GetCurrTime();
 		i = this->currChapInfo->GetChapterIndex(currTime);
 		if (i + 1 == this->pbLastChapter)
 		{
@@ -401,7 +395,7 @@ Bool Media::MediaPlayer::GotoChapter(UOSInt chapter)
 
 UInt32 Media::MediaPlayer::GetCurrTime()
 {
-	return this->clk->GetCurrTime();
+	return this->clk.GetCurrTime();
 }
 
 Bool Media::MediaPlayer::GetVideoSize(UOSInt *w, UOSInt *h)

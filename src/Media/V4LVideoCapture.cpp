@@ -20,61 +20,66 @@ UInt32 __stdcall Media::V4LVideoCapture::PlayThread(void *userObj)
 	struct timeval tv;
 	fd_set fds;
 	UInt32 frameNum;
-	Manage::HiResClock *clk;
 	Double t;
 	enum v4l2_buf_type type;
 	struct v4l2_buffer buf;
 	me->threadStarted = true;
 	me->threadRunning = true;
-	NEW_CLASS(clk, Manage::HiResClock());
-	frameNum = 0;
-	while (!me->threadToStop)
 	{
-		tv.tv_sec = 10;
-		tv.tv_usec = 0;
+		Manage::HiResClock clk;
+		Text::StringBuilderUTF8 debugSb;
+		frameNum = 0;
+		while (!me->threadToStop)
+		{
+			tv.tv_sec = 10;
+			tv.tv_usec = 0;
 
-		FD_ZERO(&fds);
-		FD_SET(me->fd, &fds);
-		int r = select(me->fd + 1, &fds, 0, 0, &tv);
-		t = clk->GetTimeDiff();
-		if (r < 0 && errno != EINTR)
-		{
-			printf("Error in select: %d\r\n", errno);
-			break;
-		}
-		if (r == 0)
-		{
-			printf("Error in select: timeout\r\n");
-			break;
-		}
-		
-		MemClear(&buf, sizeof(buf));
-		buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
-		buf.memory = V4L2_MEMORY_USERPTR;
-		r = ioctl(me->fd, VIDIOC_DQBUF, &buf);
-		if (r == 0)
-		{
-			if (me->cb)
+			FD_ZERO(&fds);
+			FD_SET(me->fd, &fds);
+			int r = select(me->fd + 1, &fds, 0, 0, &tv);
+			t = clk.GetTimeDiff();
+			if (r < 0 && errno != EINTR)
 			{
-				me->cb((UInt32)Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
-			}
-			frameNum++;
-			ioctl(me->fd, VIDIOC_QBUF, &buf);
-		}
-		else
-		{
-			if (errno == ENODEV)
-			{
-				printf("Error in dqbuf: %d\r\n", errno);
-			}
-			else if (errno != EAGAIN && errno != EINTR)
-			{
-				printf("Error in dqbuf: %d\r\n", errno);
+				printf("Error in select: %d\r\n", errno);
 				break;
+			}
+			if (r == 0)
+			{
+				printf("Error in select: timeout\r\n");
+				break;
+			}
+			
+			MemClear(&buf, sizeof(buf));
+			buf.type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
+			buf.memory = V4L2_MEMORY_USERPTR;
+			r = ioctl(me->fd, VIDIOC_DQBUF, &buf);
+			if (r == 0)
+			{
+				if (buf.bytesused == 4 && ReadMUInt32((const UInt8*)buf.m.userptr) == 0xFFD8FFD9)
+				{
+
+				}
+				else if (me->cb)
+				{
+					me->cb((UInt32)Double2Int32(t * 1000), frameNum, (UInt8**)&buf.m.userptr, buf.bytesused, Media::IVideoSource::FS_I, me->userData, me->frameInfo.ftype, Media::IVideoSource::FF_REALTIME, me->frameInfo.ycOfst);
+				}
+				frameNum++;
+				ioctl(me->fd, VIDIOC_QBUF, &buf);
+			}
+			else
+			{
+				if (errno == ENODEV)
+				{
+					printf("Error in dqbuf: %d\r\n", errno);
+				}
+				else if (errno != EAGAIN && errno != EINTR)
+				{
+					printf("Error in dqbuf: %d\r\n", errno);
+					break;
+				}
 			}
 		}
 	}
-	DEL_CLASS(clk);
 	type = V4L2_BUF_TYPE_VIDEO_CAPTURE;
 	ioctl(me->fd, VIDIOC_STREAMOFF, &type);
 	me->threadRunning = false;

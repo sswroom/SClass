@@ -44,11 +44,6 @@ gboolean GUIButton_OnFocusLost(void *window, void *userObj)
 
 UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CString label) : UI::GUIControl(ui, parent)
 {
-	NEW_CLASS(this->btnClkHandlers, Data::ArrayList<UIEvent>());
-	NEW_CLASS(this->btnClkHandlersObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->btnUpDownHandlers, Data::ArrayList<UpDownEvent>());
-	NEW_CLASS(this->btnUpDownHandlersObjs, Data::ArrayList<void *>());
-
 	this->hwnd = (ControlHandle*)gtk_button_new();
 	this->SetText(label);
 //	gtk_container_set_border_width((GtkContainer*)this->hwnd, 0);
@@ -66,10 +61,6 @@ UI::GUIButton::GUIButton(UI::GUICore *ui, UI::GUIClientControl *parent, Text::CS
 
 UI::GUIButton::~GUIButton()
 {
-	DEL_CLASS(this->btnClkHandlers);
-	DEL_CLASS(this->btnClkHandlersObjs);
-	DEL_CLASS(this->btnUpDownHandlers);
-	DEL_CLASS(this->btnUpDownHandlersObjs);
 }
 
 void UI::GUIButton::SetText(Text::CString text)
@@ -145,41 +136,41 @@ void UI::GUIButton::OnFocusLost()
 void UI::GUIButton::EventButtonClick()
 {
 	UOSInt i;
-	i = this->btnClkHandlers->GetCount();
+	i = this->btnClkHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnClkHandlers->GetItem(i)(this->btnClkHandlersObjs->GetItem(i));
+		this->btnClkHandlers.GetItem(i)(this->btnClkHandlersObjs.GetItem(i));
 	}
 }
 
 void UI::GUIButton::EventButtonDown()
 {
 	UOSInt i;
-	i = this->btnUpDownHandlers->GetCount();
+	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers->GetItem(i)(this->btnUpDownHandlersObjs->GetItem(i), true);
+		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), true);
 	}
 }
 
 void UI::GUIButton::EventButtonUp()
 {
 	UOSInt i;
-	i = this->btnUpDownHandlers->GetCount();
+	i = this->btnUpDownHandlers.GetCount();
 	while (i-- > 0)
 	{
-		this->btnUpDownHandlers->GetItem(i)(this->btnUpDownHandlersObjs->GetItem(i), false);
+		this->btnUpDownHandlers.GetItem(i)(this->btnUpDownHandlersObjs.GetItem(i), false);
 	}
 }
 
 void UI::GUIButton::HandleButtonClick(UIEvent handler, void *userObj)
 {
-	this->btnClkHandlers->Add(handler);
-	this->btnClkHandlersObjs->Add(userObj);
+	this->btnClkHandlers.Add(handler);
+	this->btnClkHandlersObjs.Add(userObj);
 }
 
 void UI::GUIButton::HandleButtonUpDown(UpDownEvent handler, void *userObj)
 {
-	this->btnUpDownHandlers->Add(handler);
-	this->btnUpDownHandlersObjs->Add(userObj);
+	this->btnUpDownHandlers.Add(handler);
+	this->btnUpDownHandlersObjs.Add(userObj);
 }

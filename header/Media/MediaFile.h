@@ -11,9 +11,9 @@ namespace Media
 	class MediaFile : public IO::ParsedObject
 	{
 	private:
-		Data::ArrayList<Media::IMediaSource*> *sources;
-		Data::ArrayListInt32 *keepSources;
-		Data::ArrayListInt32 *syncTime;
+		Data::ArrayList<Media::IMediaSource*> sources;
+		Data::ArrayListInt32 keepSources;
+		Data::ArrayListInt32 syncTime;
 		Bool releaseChapter;
 		Media::ChapterInfo *chapters;
 

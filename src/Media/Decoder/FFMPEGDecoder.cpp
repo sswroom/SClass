@@ -269,7 +269,7 @@ void Media::Decoder::FFMPEGDecoder::ProcVideoFrame(UInt32 frameTime, UInt32 fram
 		{
 			outFrameType = Media::FT_NON_INTERLACE;
 		}
-		outFlags = Media::IVideoSource::FF_BFRAMEPROC;
+		outFlags = (Media::IVideoSource::FrameFlag)(Media::IVideoSource::FF_BFRAMEPROC | (flags & Media::IVideoSource::FF_REALTIME));
 		UInt8 **outFrameBuff = &data->frameBuff;
 
 		UInt8 *frameTempBuff = 0;

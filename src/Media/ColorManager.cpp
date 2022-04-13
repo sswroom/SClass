@@ -62,9 +62,6 @@ Media::MonitorColorManager::MonitorColorManager(Text::String *profileName)
 {
 	this->profileName = SCOPY_STRING(profileName);
 	this->monProfileFile = 0;
-	NEW_CLASS(this->sessList, Data::ArrayList<Media::ColorManagerSess*>());
-	NEW_CLASS(this->sessMut, Sync::Mutex());
-	NEW_CLASS(this->rgb, Media::IColorHandler::RGBPARAM2());
 	this->SetDefault();
 	this->Load();
 }
@@ -73,9 +70,6 @@ Media::MonitorColorManager::MonitorColorManager(Text::CString profileName)
 {
 	this->profileName = Text::String::NewOrNull(profileName);
 	this->monProfileFile = 0;
-	NEW_CLASS(this->sessList, Data::ArrayList<Media::ColorManagerSess*>());
-	NEW_CLASS(this->sessMut, Sync::Mutex());
-	NEW_CLASS(this->rgb, Media::IColorHandler::RGBPARAM2());
 	this->SetDefault();
 	this->Load();
 }
@@ -84,15 +78,12 @@ Media::MonitorColorManager::~MonitorColorManager()
 {
 	UOSInt i;
 	Media::ColorManagerSess *colorSess;
-	i = this->sessList->GetCount();
+	i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
-		colorSess = this->sessList->GetItem(i);
+		colorSess = this->sessList.GetItem(i);
 		DEL_CLASS(colorSess);
 	}
-	DEL_CLASS(this->sessList);
-	DEL_CLASS(this->sessMut);
-	DEL_CLASS(this->rgb);
 	SDEL_STRING(this->monProfileFile);
 	SDEL_STRING(this->profileName);
 }
@@ -130,62 +121,62 @@ Bool Media::MonitorColorManager::Load()
 		Int32 tmpVal;
 
 		if (reg->GetValueI32(L"MonRB", &tmpVal))
-			this->rgb->MonRBright = tmpVal * 0.001;
+			this->rgb.MonRBright = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonRC", &tmpVal))
-			this->rgb->MonRContr = tmpVal * 0.001;
+			this->rgb.MonRContr = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonRG", &tmpVal))
-			this->rgb->MonRGamma = tmpVal * 0.001;
+			this->rgb.MonRGamma = tmpVal * 0.001;
 
 		if (reg->GetValueI32(L"MonGB", &tmpVal))
-			this->rgb->MonGBright = tmpVal * 0.001;
+			this->rgb.MonGBright = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonGC", &tmpVal))
-			this->rgb->MonGContr = tmpVal * 0.001;
+			this->rgb.MonGContr = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonGG", &tmpVal))
-			this->rgb->MonGGamma = tmpVal * 0.001;
+			this->rgb.MonGGamma = tmpVal * 0.001;
 
 		if (reg->GetValueI32(L"MonBB", &tmpVal))
-			this->rgb->MonBBright = tmpVal * 0.001;
+			this->rgb.MonBBright = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonBC", &tmpVal))
-			this->rgb->MonBContr = tmpVal * 0.001;
+			this->rgb.MonBContr = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonBG", &tmpVal))
-			this->rgb->MonBGamma = tmpVal * 0.001;
+			this->rgb.MonBGamma = tmpVal * 0.001;
 
 		if (reg->GetValueI32(L"MonBright", &tmpVal))
-			this->rgb->MonVBrightness = tmpVal * 0.001;
+			this->rgb.MonVBrightness = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonPBright", &tmpVal))
-			this->rgb->MonPBrightness = tmpVal * 0.001;
+			this->rgb.MonPBrightness = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonRBright", &tmpVal))
-			this->rgb->MonRBrightness = tmpVal * 0.001;
+			this->rgb.MonRBrightness = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonGBright", &tmpVal))
-			this->rgb->MonGBrightness = tmpVal * 0.001;
+			this->rgb.MonGBrightness = tmpVal * 0.001;
 		if (reg->GetValueI32(L"MonBBright", &tmpVal))
-			this->rgb->MonBBrightness = tmpVal * 0.001;
+			this->rgb.MonBBrightness = tmpVal * 0.001;
 
 		if (reg->GetValueI32(L"MonTransfer", &tmpVal))
 		{
-			this->rgb->monProfile.GetRTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
-			this->rgb->monProfile.GetGTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
-			this->rgb->monProfile.GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb.monProfile.GetRTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb.monProfile.GetGTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
+			this->rgb.monProfile.GetBTranParam()->Set((Media::CS::TransferType)tmpVal, 2.2);
 		}
 		if (reg->GetValueI32(L"MonRX", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->rx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->rx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonRY", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->ry = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->ry = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGX", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->gx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->gx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonGY", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->gy = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->gy = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBX", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->bx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->bx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonBY", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->by = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->by = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWX", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->wx = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->wx = tmpVal * 0.000000001;
 		if (reg->GetValueI32(L"MonWY", &tmpVal))
-			this->rgb->monProfile.GetPrimaries()->wy = tmpVal * 0.000000001;
+			this->rgb.monProfile.GetPrimaries()->wy = tmpVal * 0.000000001;
 
 		if (reg->GetValueI32(L"MonLuminance", &tmpVal))
-			this->rgb->monLuminance = tmpVal * 0.1;
+			this->rgb.monLuminance = tmpVal * 0.1;
 
 		if (reg->GetValueStr(L"MonProfileFile", wbuff))
 		{
@@ -194,25 +185,25 @@ Bool Media::MonitorColorManager::Load()
 		}
 		if (reg->GetValueI32(L"MonProfileType", &tmpVal))
 		{
-			this->rgb->monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
-			if (this->rgb->monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile != 0)
+			this->rgb.monProfileType = (Media::ColorProfile::CommonProfileType)tmpVal;
+			if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile != 0)
 			{
 				if (!SetFromProfileFile(this->monProfileFile))
 				{
-					this->rgb->monProfile.SetCommonProfile(this->rgb->monProfileType);
+					this->rgb.monProfile.SetCommonProfile(this->rgb.monProfileType);
 				}
 			}
-			else if (this->rgb->monProfileType == Media::ColorProfile::CPT_OS)
+			else if (this->rgb.monProfileType == Media::ColorProfile::CPT_OS)
 			{
 				this->SetOSProfile();
 			}
-			else if (this->rgb->monProfileType == Media::ColorProfile::CPT_EDID)
+			else if (this->rgb.monProfileType == Media::ColorProfile::CPT_EDID)
 			{
 				this->SetEDIDProfile();
 			}
 			else
 			{
-				this->rgb->monProfile.SetCommonProfile(this->rgb->monProfileType);
+				this->rgb.monProfile.SetCommonProfile(this->rgb.monProfileType);
 			}
 		}
 
@@ -268,42 +259,42 @@ Bool Media::MonitorColorManager::Save()
 			reg = reg2;
 		}
 
-		reg->SetValue(L"MonRB", Double2Int32(this->rgb->MonRBright * 1000.0));
-		reg->SetValue(L"MonRC", Double2Int32(this->rgb->MonRContr * 1000.0));
-		reg->SetValue(L"MonRG", Double2Int32(this->rgb->MonRGamma * 1000.0));
+		reg->SetValue(L"MonRB", Double2Int32(this->rgb.MonRBright * 1000.0));
+		reg->SetValue(L"MonRC", Double2Int32(this->rgb.MonRContr * 1000.0));
+		reg->SetValue(L"MonRG", Double2Int32(this->rgb.MonRGamma * 1000.0));
 		
-		reg->SetValue(L"MonGB", Double2Int32(this->rgb->MonGBright * 1000.0));
-		reg->SetValue(L"MonGC", Double2Int32(this->rgb->MonGContr * 1000.0));
-		reg->SetValue(L"MonGG", Double2Int32(this->rgb->MonGGamma * 1000.0));
+		reg->SetValue(L"MonGB", Double2Int32(this->rgb.MonGBright * 1000.0));
+		reg->SetValue(L"MonGC", Double2Int32(this->rgb.MonGContr * 1000.0));
+		reg->SetValue(L"MonGG", Double2Int32(this->rgb.MonGGamma * 1000.0));
 
-		reg->SetValue(L"MonBB", Double2Int32(this->rgb->MonBBright * 1000.0));
-		reg->SetValue(L"MonBC", Double2Int32(this->rgb->MonBContr * 1000.0));
-		reg->SetValue(L"MonBG", Double2Int32(this->rgb->MonBGamma * 1000.0));
+		reg->SetValue(L"MonBB", Double2Int32(this->rgb.MonBBright * 1000.0));
+		reg->SetValue(L"MonBC", Double2Int32(this->rgb.MonBContr * 1000.0));
+		reg->SetValue(L"MonBG", Double2Int32(this->rgb.MonBGamma * 1000.0));
 
-		reg->SetValue(L"MonBright", Double2Int32(this->rgb->MonVBrightness * 1000.0));
-		reg->SetValue(L"MonPBright", Double2Int32(this->rgb->MonPBrightness * 1000.0));
-		reg->SetValue(L"MonRBright", Double2Int32(this->rgb->MonRBrightness * 1000.0));
-		reg->SetValue(L"MonGBright", Double2Int32(this->rgb->MonGBrightness * 1000.0));
-		reg->SetValue(L"MonBBright", Double2Int32(this->rgb->MonBBrightness * 1000.0));
+		reg->SetValue(L"MonBright", Double2Int32(this->rgb.MonVBrightness * 1000.0));
+		reg->SetValue(L"MonPBright", Double2Int32(this->rgb.MonPBrightness * 1000.0));
+		reg->SetValue(L"MonRBright", Double2Int32(this->rgb.MonRBrightness * 1000.0));
+		reg->SetValue(L"MonGBright", Double2Int32(this->rgb.MonGBrightness * 1000.0));
+		reg->SetValue(L"MonBBright", Double2Int32(this->rgb.MonBBrightness * 1000.0));
 
-		reg->SetValue(L"MonTransfer", (Int32)this->rgb->monProfile.GetRTranParam()->GetTranType());
-		reg->SetValue(L"MonRX", Double2Int32(this->rgb->monProfile.GetPrimaries()->rx * 1000000000.0));
-		reg->SetValue(L"MonRY", Double2Int32(this->rgb->monProfile.GetPrimaries()->ry * 1000000000.0));
-		reg->SetValue(L"MonGX", Double2Int32(this->rgb->monProfile.GetPrimaries()->gx * 1000000000.0));
-		reg->SetValue(L"MonGY", Double2Int32(this->rgb->monProfile.GetPrimaries()->gy * 1000000000.0));
-		reg->SetValue(L"MonBX", Double2Int32(this->rgb->monProfile.GetPrimaries()->bx * 1000000000.0));
-		reg->SetValue(L"MonBY", Double2Int32(this->rgb->monProfile.GetPrimaries()->by * 1000000000.0));
-		reg->SetValue(L"MonWX", Double2Int32(this->rgb->monProfile.GetPrimaries()->wx * 1000000000.0));
-		reg->SetValue(L"MonWY", Double2Int32(this->rgb->monProfile.GetPrimaries()->wy * 1000000000.0));
+		reg->SetValue(L"MonTransfer", (Int32)this->rgb.monProfile.GetRTranParam()->GetTranType());
+		reg->SetValue(L"MonRX", Double2Int32(this->rgb.monProfile.GetPrimaries()->rx * 1000000000.0));
+		reg->SetValue(L"MonRY", Double2Int32(this->rgb.monProfile.GetPrimaries()->ry * 1000000000.0));
+		reg->SetValue(L"MonGX", Double2Int32(this->rgb.monProfile.GetPrimaries()->gx * 1000000000.0));
+		reg->SetValue(L"MonGY", Double2Int32(this->rgb.monProfile.GetPrimaries()->gy * 1000000000.0));
+		reg->SetValue(L"MonBX", Double2Int32(this->rgb.monProfile.GetPrimaries()->bx * 1000000000.0));
+		reg->SetValue(L"MonBY", Double2Int32(this->rgb.monProfile.GetPrimaries()->by * 1000000000.0));
+		reg->SetValue(L"MonWX", Double2Int32(this->rgb.monProfile.GetPrimaries()->wx * 1000000000.0));
+		reg->SetValue(L"MonWY", Double2Int32(this->rgb.monProfile.GetPrimaries()->wy * 1000000000.0));
 
-		reg->SetValue(L"MonProfileType", (Int32)this->rgb->monProfileType);
+		reg->SetValue(L"MonProfileType", (Int32)this->rgb.monProfileType);
 		if (this->monProfileFile)
 		{
 			const WChar *wptr = Text::StrToWCharNew(this->monProfileFile->v);
 			reg->SetValue(L"MonProfileFile", wptr);
 			Text::StrDelNew(wptr);
 		}
-		reg->SetValue(L"MonLuminance", Double2Int32(this->rgb->monLuminance * 10.0));
+		reg->SetValue(L"MonLuminance", Double2Int32(this->rgb.monLuminance * 10.0));
 
 		reg->SetValue(L"Brightness", Double2Int32(this->yuv.Brightness * 1000.0));
 		reg->SetValue(L"Contrast", Double2Int32(this->yuv.Contrast * 1000.0));
@@ -328,14 +319,14 @@ Bool Media::MonitorColorManager::Save()
 
 void Media::MonitorColorManager::SetDefault()
 {
-	SetDefaultRGB(this->rgb);
+	SetDefaultRGB(&this->rgb);
 	SetDefaultYUV(&this->yuv);
 	this->color10Bit = false;
-	if (this->rgb->monProfileType == Media::ColorProfile::CPT_EDID)
+	if (this->rgb.monProfileType == Media::ColorProfile::CPT_EDID)
 	{
 		this->SetEDIDProfile();
 	}
-	else if (this->rgb->monProfileType == Media::ColorProfile::CPT_OS)
+	else if (this->rgb.monProfileType == Media::ColorProfile::CPT_OS)
 	{
 		this->SetOSProfile();
 	}
@@ -348,131 +339,131 @@ const Media::IColorHandler::YUVPARAM *Media::MonitorColorManager::GetYUVParam()
 
 const Media::IColorHandler::RGBPARAM2 *Media::MonitorColorManager::GetRGBParam()
 {
-	return this->rgb;
+	return &this->rgb;
 }
 
 void Media::MonitorColorManager::SetMonVBright(Double newVal)
 {
-	if (newVal != this->rgb->MonVBrightness && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonVBrightness && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonVBrightness = newVal;
+		this->rgb.MonVBrightness = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetMonPBright(Double newVal)
 {
-	if (newVal != this->rgb->MonPBrightness && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonPBrightness && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonPBrightness = newVal;
+		this->rgb.MonPBrightness = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetMonRBright(Double newVal)
 {
-	if (newVal != this->rgb->MonRBrightness && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonRBrightness && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonRBrightness = newVal;
+		this->rgb.MonRBrightness = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetMonGBright(Double newVal)
 {
-	if (newVal != this->rgb->MonGBrightness && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonGBrightness && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonGBrightness = newVal;
+		this->rgb.MonGBrightness = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetMonBBright(Double newVal)
 {
-	if (newVal != this->rgb->MonBBrightness && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonBBrightness && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonBBrightness = newVal;
+		this->rgb.MonBBrightness = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetRMonBright(Double newVal)
 {
-	if (newVal != this->rgb->MonRBright && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonRBright && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonRBright = newVal;
+		this->rgb.MonRBright = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetRMonContr(Double newVal)
 {
-	if (newVal != this->rgb->MonRContr && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonRContr && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonRContr = newVal;
+		this->rgb.MonRContr = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetRMonGamma(Double newVal)
 {
-	if (newVal != this->rgb->MonRGamma && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonRGamma && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonRGamma = newVal;
+		this->rgb.MonRGamma = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetGMonBright(Double newVal)
 {
-	if (newVal != this->rgb->MonGBright && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonGBright && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonGBright = newVal;
+		this->rgb.MonGBright = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetGMonContr(Double newVal)
 {
-	if (newVal != this->rgb->MonGContr && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonGContr && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonGContr = newVal;
+		this->rgb.MonGContr = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetGMonGamma(Double newVal)
 {
-	if (newVal != this->rgb->MonGGamma && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonGGamma && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonGGamma = newVal;
+		this->rgb.MonGGamma = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetBMonBright(Double newVal)
 {
-	if (newVal != this->rgb->MonBBright && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonBBright && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonBBright = newVal;
+		this->rgb.MonBBright = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetBMonContr(Double newVal)
 {
-	if (newVal != this->rgb->MonBContr && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonBContr && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonBContr = newVal;
+		this->rgb.MonBContr = newVal;
 		this->RGBUpdated();
 	}
 }
 
 void Media::MonitorColorManager::SetBMonGamma(Double newVal)
 {
-	if (newVal != this->rgb->MonBGamma && newVal >= 0 && newVal <= 4)
+	if (newVal != this->rgb.MonBGamma && newVal >= 0 && newVal <= 4)
 	{
-		this->rgb->MonBGamma = newVal;
+		this->rgb.MonBGamma = newVal;
 		this->RGBUpdated();
 	}
 }
@@ -524,29 +515,29 @@ void Media::MonitorColorManager::SetCGamma(Double newVal)
 
 void Media::MonitorColorManager::SetMonProfileType(Media::ColorProfile::CommonProfileType newVal)
 {
-	if (newVal != this->rgb->monProfileType)
+	if (newVal != this->rgb.monProfileType)
 	{
-		this->rgb->monProfileType = newVal;
-		if (this->rgb->monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile)
+		this->rgb.monProfileType = newVal;
+		if (this->rgb.monProfileType == Media::ColorProfile::CPT_FILE && this->monProfileFile)
 		{
 			if (SetFromProfileFile(this->monProfileFile))
 			{
 				this->RGBUpdated();
 			}
 		}
-		else if (this->rgb->monProfileType == Media::ColorProfile::CPT_OS)
+		else if (this->rgb.monProfileType == Media::ColorProfile::CPT_OS)
 		{
 			SetOSProfile();
 			this->RGBUpdated();
 		}
-		else if (this->rgb->monProfileType == Media::ColorProfile::CPT_EDID)
+		else if (this->rgb.monProfileType == Media::ColorProfile::CPT_EDID)
 		{
 			SetEDIDProfile();
 			this->RGBUpdated();
 		}
 		else
 		{
-			this->rgb->monProfile.SetCommonProfile(newVal);
+			this->rgb.monProfile.SetCommonProfile(newVal);
 			this->RGBUpdated();
 		}
 	}
@@ -558,7 +549,7 @@ Bool Media::MonitorColorManager::SetMonProfileFile(Text::String *fileName)
 	{
 		SDEL_STRING(this->monProfileFile);
 		this->monProfileFile = fileName->Clone();
-		this->rgb->monProfileType = Media::ColorProfile::CPT_FILE;
+		this->rgb.monProfileType = Media::ColorProfile::CPT_FILE;
 		this->RGBUpdated();
 		return true;
 	}
@@ -570,8 +561,8 @@ Bool Media::MonitorColorManager::SetMonProfileFile(Text::String *fileName)
 
 void Media::MonitorColorManager::SetMonProfile(Media::ColorProfile *color)
 {
-	this->rgb->monProfileType = Media::ColorProfile::CPT_CUSTOM;
-	this->rgb->monProfile.Set(color);
+	this->rgb.monProfileType = Media::ColorProfile::CPT_CUSTOM;
+	this->rgb.monProfile.Set(color);
 	this->RGBUpdated();
 }
 
@@ -582,9 +573,9 @@ Text::String *Media::MonitorColorManager::GetMonProfileFile()
 
 void Media::MonitorColorManager::SetMonLuminance(Double newVal)
 {
-	if (newVal != this->rgb->monLuminance && newVal >= 0 && newVal >= 10.0)
+	if (newVal != this->rgb.monLuminance && newVal >= 0 && newVal >= 10.0)
 	{
-		this->rgb->monLuminance = newVal;
+		this->rgb.monLuminance = newVal;
 		this->RGBUpdated();
 	}
 }
@@ -601,19 +592,19 @@ void Media::MonitorColorManager::Set10BitColor(Bool color10Bit)
 
 void Media::MonitorColorManager::AddSess(Media::ColorManagerSess *colorSess)
 {
-	Sync::MutexUsage mutUsage(this->sessMut);
-	this->sessList->Add(colorSess);
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	this->sessList.Add(colorSess);
 	mutUsage.EndUse();
 }
 
 void Media::MonitorColorManager::RemoveSess(Media::ColorManagerSess *colorSess)
 {
 	UOSInt i;
-	Sync::MutexUsage mutUsage(this->sessMut);
-	i = this->sessList->IndexOf(colorSess);
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	i = this->sessList.IndexOf(colorSess);
 	if (i != INVALID_INDEX)
 	{
-		this->sessList->RemoveAt((UOSInt)i);
+		this->sessList.RemoveAt((UOSInt)i);
 	}
 	mutUsage.EndUse();
 }
@@ -638,8 +629,8 @@ Bool Media::MonitorColorManager::SetFromProfileFile(Text::String *fileName)
 				if (profile->GetColorPrimaries(cp.GetPrimaries()) && profile->GetRedTransferParam(cp.GetRTranParam()) && profile->GetGreenTransferParam(cp.GetGTranParam()) && profile->GetBlueTransferParam(cp.GetBTranParam()))
 				{
 					succ = true;
-					this->rgb->monProfile.Set(&cp);
-					this->rgb->monProfile.SetRAWICC(fileBuff);
+					this->rgb.monProfile.Set(&cp);
+					this->rgb.monProfile.SetRAWICC(fileBuff);
 				}
 				DEL_CLASS(profile);
 			}
@@ -694,10 +685,10 @@ void Media::MonitorColorManager::SetOSProfile()
 	}
 	if (!succ)
 	{
-		this->rgb->monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+		this->rgb.monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 	}
 #else
-	this->rgb->monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
+	this->rgb.monProfile.SetCommonProfile(Media::ColorProfile::CPT_SRGB);
 #endif
 }
 
@@ -714,7 +705,7 @@ void Media::MonitorColorManager::SetEDIDProfile()
 			Media::EDID::EDIDInfo info;
 			if (Media::EDID::Parse(edid, &info))
 			{
-				if (Media::EDID::SetColorProfile(&info, &this->rgb->monProfile))
+				if (Media::EDID::SetColorProfile(&info, &this->rgb.monProfile))
 				{
 					succ = true;
 				}
@@ -730,12 +721,12 @@ void Media::MonitorColorManager::SetEDIDProfile()
 void Media::MonitorColorManager::RGBUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	Sync::MutexUsage mutUsage(this->sessMut);
-	UOSInt i = this->sessList->GetCount();
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	UOSInt i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
-		colorSess = this->sessList->GetItem(i);
-		colorSess->RGBUpdated(this->rgb);
+		colorSess = this->sessList.GetItem(i);
+		colorSess->RGBUpdated(&this->rgb);
 	}
 	mutUsage.EndUse();
 }
@@ -743,11 +734,11 @@ void Media::MonitorColorManager::RGBUpdated()
 void Media::MonitorColorManager::YUVUpdated()
 {
 	Media::ColorManagerSess *colorSess;
-	Sync::MutexUsage mutUsage(this->sessMut);
-	UOSInt i = this->sessList->GetCount();
+	Sync::MutexUsage mutUsage(&this->sessMut);
+	UOSInt i = this->sessList.GetCount();
 	while (i-- > 0)
 	{
-		colorSess = this->sessList->GetItem(i);
+		colorSess = this->sessList.GetItem(i);
 		colorSess->YUVUpdated(&this->yuv);
 	}
 	mutUsage.EndUse();

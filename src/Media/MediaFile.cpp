@@ -10,37 +10,28 @@
 
 Media::MediaFile::MediaFile(Text::String *name) : IO::ParsedObject(name)
 {
-	NEW_CLASS(this->sources, Data::ArrayList<Media::IMediaSource*>());
-	NEW_CLASS(this->syncTime, Data::ArrayListInt32());
-	NEW_CLASS(this->keepSources, Data::ArrayListInt32());
 	this->chapters = 0;
 	this->releaseChapter = false;
 }
 
 Media::MediaFile::MediaFile(Text::CString name) : IO::ParsedObject(name)
 {
-	NEW_CLASS(this->sources, Data::ArrayList<Media::IMediaSource*>());
-	NEW_CLASS(this->syncTime, Data::ArrayListInt32());
-	NEW_CLASS(this->keepSources, Data::ArrayListInt32());
 	this->chapters = 0;
 	this->releaseChapter = false;
 }
 
 Media::MediaFile::~MediaFile()
 {
-	UOSInt i = this->sources->GetCount();
+	UOSInt i = this->sources.GetCount();
 	Media::IMediaSource *src;
 	while (i-- > 0)
 	{
-		if (this->keepSources->GetItem(i) == 0)
+		if (this->keepSources.GetItem(i) == 0)
 		{
-			src = (Media::IMediaSource*)this->sources->GetItem(i);
+			src = this->sources.GetItem(i);
 			DEL_CLASS(src);
 		}
 	}
-	DEL_CLASS(this->sources);
-	DEL_CLASS(this->syncTime);
-	DEL_CLASS(this->keepSources);
 	if (this->chapters && this->releaseChapter)
 	{
 		DEL_CLASS(this->chapters);
@@ -54,27 +45,27 @@ IO::ParserType Media::MediaFile::GetParserType()
 
 UOSInt Media::MediaFile::AddSource(Media::IMediaSource *src, Int32 syncTime)
 {
-	this->sources->Add(src);
-	this->syncTime->Add(syncTime);
-	this->keepSources->Add(0);
-	return this->sources->GetCount() - 1;
+	UOSInt ret = this->sources.Add(src);
+	this->syncTime.Add(syncTime);
+	this->keepSources.Add(0);
+	return ret;
 }
 
 Media::IMediaSource *Media::MediaFile::GetStream(UOSInt index, Int32 *syncTime)
 {
 	if (syncTime)
 	{
-		*syncTime = this->syncTime->GetItem(index);
+		*syncTime = this->syncTime.GetItem(index);
 	}
-	return (Media::IMediaSource *)this->sources->GetItem(index);
+	return (Media::IMediaSource *)this->sources.GetItem(index);
 }
 
 void Media::MediaFile::KeepStream(UOSInt index, Bool toKeep)
 {
-	if (index >= this->sources->GetCount())
+	if (index >= this->sources.GetCount())
 		return;
 
-	this->keepSources->SetItem(index, toKeep?1:0);
+	this->keepSources.SetItem(index, toKeep?1:0);
 }
 
 Media::ChapterInfo *Media::MediaFile::GetChapterInfo()
@@ -97,21 +88,21 @@ Bool Media::MediaFile::TrimFile(UInt32 trimTimeStart, Int32 trimTimeEnd)
 	if (trimTimeStart == 0 && trimTimeEnd == -1)
 		return true;
 	Int32 syncTime;
-	UOSInt i = this->sources->GetCount();
+	UOSInt i = this->sources.GetCount();
 	Media::IMediaSource *src;
 	while (i-- > 0)
 	{
-		src = this->sources->GetItem(i);
-		syncTime = this->syncTime->GetItem(i);
+		src = this->sources.GetItem(i);
+		syncTime = this->syncTime.GetItem(i);
 		if (trimTimeEnd == -1)
 		{
 			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)trimTimeEnd, &syncTime);
-			this->syncTime->SetItem(i, syncTime);
+			this->syncTime.SetItem(i, syncTime);
 		}
 		else
 		{
 			src->TrimStream((UInt32)((Int32)trimTimeStart + syncTime), (UInt32)(trimTimeEnd + syncTime), &syncTime);
-			this->syncTime->SetItem(i, syncTime);
+			this->syncTime.SetItem(i, syncTime);
 		}
 	}
 

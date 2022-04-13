@@ -44,33 +44,37 @@ void Media::ImageCopy::MT_Copy(UInt8 *inPt, UInt8 *outPt, UOSInt copySize, UOSIn
 		}
 		if (fin)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 
 UInt32 Media::ImageCopy::WorkerThread(void *obj)
 {
 	IMGCOPYSTAT *stat = (IMGCOPYSTAT*)obj;
-	stat->status = 1;
-	stat->evtMain->Set();
-	while (true)
 	{
-		stat->evt->Wait();
-		if (stat->status == 2)
+		Sync::Event evt;
+		stat->evt = &evt;
+		stat->status = 1;
+		stat->evtMain->Set();
+		while (true)
 		{
-			break;
-		}
-		else if (stat->status == 3)
-		{
-			ImageCopy_ImgCopy(stat->inPt, stat->outPt, stat->copySize, stat->height, stat->sstep, stat->dstep);
-			stat->status = 1;
-			stat->evtMain->Set();
-		}
-		else if (stat->status == 4)
-		{
-			Sync::Thread::SetPriority((Sync::Thread::ThreadPriority)stat->copySize);
-			stat->status = 1;
-			stat->evtMain->Set();
+			stat->evt->Wait();
+			if (stat->status == 2)
+			{
+				break;
+			}
+			else if (stat->status == 3)
+			{
+				ImageCopy_ImgCopy(stat->inPt, stat->outPt, stat->copySize, stat->height, stat->sstep, stat->dstep);
+				stat->status = 1;
+				stat->evtMain->Set();
+			}
+			else if (stat->status == 4)
+			{
+				Sync::Thread::SetPriority((Sync::Thread::ThreadPriority)stat->copySize);
+				stat->status = 1;
+				stat->evtMain->Set();
+			}
 		}
 	}
 	stat->status = 0;
@@ -81,7 +85,6 @@ Media::ImageCopy::ImageCopy()
 {
 	UOSInt i;
 	Bool found;
-	NEW_CLASS(evtMain, Sync::Event(true));
 #if defined(CPU_X86_64)
 	if (CPUBrand == 2)
 	{
@@ -103,13 +106,12 @@ Media::ImageCopy::ImageCopy()
 	while (i-- > 0)
 	{
 		stats[i].status = 0;
-		NEW_CLASS(stats[i].evt, Sync::Event(true));
-		stats[i].evtMain = this->evtMain;
+		stats[i].evtMain = &this->evtMain;
 		Sync::Thread::Create(WorkerThread, &stats[i]);
 	}
 	while (true)
 	{
-		evtMain->Wait();
+		this->evtMain.Wait();
 		i = nThread;
 		found = false;
 		while (i-- > 0)
@@ -153,13 +155,7 @@ Media::ImageCopy::~ImageCopy()
 		}
 		if (!found)
 		{
-			i = nThread;
-			while (i-- > 0)
-			{
-				DEL_CLASS(stats[i].evt);
-			}
 			MemFree(stats);
-			DEL_CLASS(evtMain);
 			break;
 		}
 	}
@@ -213,7 +209,7 @@ void Media::ImageCopy::SetThreadPriority(Sync::Thread::ThreadPriority tp)
 		}
 		if (fin)
 			break;
-		evtMain->Wait();
+		this->evtMain.Wait();
 	}
 }
 

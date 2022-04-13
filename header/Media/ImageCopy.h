@@ -22,7 +22,7 @@ namespace Media
 	class ImageCopy
 	{
 	private:
-		Sync::Event *evtMain;
+		Sync::Event evtMain;
 		IMGCOPYSTAT *stats;
 		UOSInt nThread;
 

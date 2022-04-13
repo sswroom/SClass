@@ -3,39 +3,36 @@
 #include "Media/VideoCaptureMgr.h"
 #include "Media/DShow/DShowVideoCapture.h"
 
-typedef struct
+struct Media::VideoCaptureMgr::ClassData
 {
 	Media::DShow::DShowVideoCaptureMgr *dshowMgr;
-} ManagerData;
+};
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
-	ManagerData *data = MemAlloc(ManagerData, 1);
-	NEW_CLASS(data->dshowMgr, Media::DShow::DShowVideoCaptureMgr());
-	this->mgrData = data;
+	this->clsData = MemAlloc(ClassData, 1);
+	NEW_CLASS(this->clsData->dshowMgr, Media::DShow::DShowVideoCaptureMgr());
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()
 {
-	ManagerData *data = (ManagerData*)this->mgrData;;
-	DEL_CLASS(data->dshowMgr);
-	MemFree(data);
+	DEL_CLASS(this->clsData->dshowMgr);
+	MemFree(this->clsData);
 }
 
 UOSInt Media::VideoCaptureMgr::GetDeviceList(Data::ArrayList<DeviceInfo *> *devList)
 {
-	ManagerData *data = (ManagerData*)this->mgrData;
 	DeviceInfo *devInfo;
 	UTF8Char sbuff[512];
 	UOSInt ret = 0;
 	UOSInt i = 0;
-	UOSInt j = data->dshowMgr->GetDeviceCount();
+	UOSInt j = this->clsData->dshowMgr->GetDeviceCount();
 	while (i < j)
 	{
 		devInfo = MemAlloc(DeviceInfo, 1);
 		devInfo->devType = 0;
 		devInfo->devId = i;
-		data->dshowMgr->GetDeviceName(sbuff, i);
+		this->clsData->dshowMgr->GetDeviceName(sbuff, i);
 		devInfo->devName = Text::StrCopyNew(sbuff);
 		devList->Add(devInfo);
 		ret++;
@@ -58,10 +55,9 @@ void Media::VideoCaptureMgr::FreeDeviceList(Data::ArrayList<DeviceInfo *> *devLi
 
 Media::IVideoCapture *Media::VideoCaptureMgr::CreateDevice(Int32 devType, UOSInt devId)
 {
-	ManagerData *data = (ManagerData*)this->mgrData;
 	if (devType == 0)
 	{
-		return data->dshowMgr->GetDevice(devId);
+		return this->clsData->dshowMgr->GetDevice(devId);
 	}
 	else
 	{

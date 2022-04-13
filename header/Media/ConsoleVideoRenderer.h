@@ -14,7 +14,7 @@ namespace Media
 	private:
 		Media::MonitorSurfaceMgr *surfaceMgr;
 		Media::MonitorSurface *primarySurface;
-		Sync::Mutex *mut;
+		Sync::Mutex mut;
 
 	public:
 		ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surfaceMgr, Media::ColorManagerSess *colorSess);

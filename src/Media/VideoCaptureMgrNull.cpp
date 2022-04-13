@@ -4,7 +4,7 @@
 
 Media::VideoCaptureMgr::VideoCaptureMgr()
 {
-	this->mgrData = 0;
+	this->clsData = 0;
 }
 
 Media::VideoCaptureMgr::~VideoCaptureMgr()

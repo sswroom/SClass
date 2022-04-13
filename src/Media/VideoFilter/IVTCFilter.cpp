@@ -19,7 +19,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 {
 	if (flags & Media::IVideoSource::FF_DISCONTTIME)
 	{
-		Sync::MutexUsage mutUsage(this->mut);
+		Sync::MutexUsage mutUsage(&this->mut);
 		if (this->enabled)
 		{
 			this->ClearIVTC();
@@ -31,23 +31,23 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 
 	while (this->ivtcTStatus == 2)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->enabled)
 	{
 		if (this->fieldExist)
 		{
-			if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+			if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 			{
 				if (this->fieldFrameType == Media::FT_MERGED_TF)
 				{
 					if (frameType == Media::FT_MERGED_BF)
 					{
-//						UOSInt dw = this->videoInfo->dispWidth;
-						UOSInt dh = this->videoInfo->dispHeight >> 1;
-						UOSInt sw = this->videoInfo->storeWidth;
-//						UOSInt sh = this->videoInfo->storeHeight >> 1;
+//						UOSInt dw = this->videoInfo.dispWidth;
+						UOSInt dh = this->videoInfo.dispHeight >> 1;
+						UOSInt sw = this->videoInfo.storeWidth;
+//						UOSInt sh = this->videoInfo.storeHeight >> 1;
 						UOSInt sw2 = sw << 1;
 						UOSInt swh = sw >> 1;
 //						UOSInt dwh = dw >> 1;
@@ -87,7 +87,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							}
 							if (!found)
 								break;
-							this->mainEvt->Wait(100);
+							this->mainEvt.Wait(100);
 						}
 						srcPtr += sw2 * dh - swh;
 						destPtr += sw2 * dh - swh;
@@ -117,7 +117,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							}
 							if (!found)
 								break;
-							this->mainEvt->Wait(100);
+							this->mainEvt.Wait(100);
 						}
 
 						frameType = Media::FT_INTERLACED_TFF;
@@ -171,10 +171,10 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 				{
 					if (frameType == Media::FT_MERGED_TF)
 					{
-//						UOSInt dw = this->videoInfo->dispWidth;
-						UOSInt dh = this->videoInfo->dispHeight >> 1;
-						UOSInt sw = this->videoInfo->storeWidth;
-//						UOSInt sh = this->videoInfo->storeHeight >> 1;
+//						UOSInt dw = this->videoInfo.dispWidth;
+						UOSInt dh = this->videoInfo.dispHeight >> 1;
+						UOSInt sw = this->videoInfo.storeWidth;
+//						UOSInt sh = this->videoInfo.storeHeight >> 1;
 						UOSInt sw2 = sw << 1;
 						UOSInt swh = sw >> 1;
 //						UOSInt dwh = dw >> 1;
@@ -214,7 +214,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							}
 							if (!found)
 								break;
-							this->mainEvt->Wait(100);
+							this->mainEvt.Wait(100);
 						}
 						srcPtr += sw2 * dh;
 						destPtr += sw2 * dh;
@@ -244,7 +244,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 							}
 							if (!found)
 								break;
-							this->mainEvt->Wait(100);
+							this->mainEvt.Wait(100);
 						}
 
 						frameType = Media::FT_INTERLACED_BFF;
@@ -271,7 +271,7 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 		}
 		if (!this->fieldExist)
 		{
-			if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+			if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 			{
 				if (frameType == Media::FT_FIELD_TF || frameType == Media::FT_FIELD_BF)
 				{
@@ -284,10 +284,10 @@ void Media::VideoFilter::IVTCFilter::ProcessVideoFrame(UInt32 frameTime, UInt32 
 						this->fieldBuffSize = dataSize * 2;
 						this->fieldBuff = MemAllocA64(UInt8, this->fieldBuffSize);
 					}
-					UOSInt sw = this->videoInfo->storeWidth;
+					UOSInt sw = this->videoInfo.storeWidth;
 //					UOSInt sh = this->videoInfo->storeHeight;
 //					UOSInt dw = this->videoInfo->dispWidth;
-					UOSInt dh = this->videoInfo->dispHeight;
+					UOSInt dh = this->videoInfo.dispHeight;
 					UOSInt sw2 = sw << 1;
 //					UOSInt dw2 = dw << 1;
 					UOSInt swh = sw >> 1;
@@ -388,14 +388,14 @@ void Media::VideoFilter::IVTCFilter::OnFrameChange(Media::IVideoSource::FrameCha
 	{
 		while (this->ivtcTStatus == 2)
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 }
 
 void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, UInt8 **imgData, UOSInt dataSize, Media::IVideoSource::FrameStruct frameStruct, Media::FrameType frameType, Media::IVideoSource::FrameFlag flags, Media::YCOffset ycOfst)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->enabled)
 	{
 		if (frameType == Media::FT_INTERLACED_TFF || frameType == Media::FT_INTERLACED_BFF)
@@ -426,7 +426,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				this->ivtcCurrFrame = MemAllocA64(UInt8, this->ivtcFrameBuffSize);
 			}
 
-			if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+			if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 			{
 				UInt32 oddDiff = 0;
 				UInt32 oddMDiff = 0;
@@ -444,11 +444,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					UInt8 *ivtcPtr = imgData[0];
 					UInt8 *ivtcLPtr = this->ivtcLastFrame;
 					UOSInt ivtcW;
-					UOSInt ivtcH = this->videoInfo->dispHeight;
+					UOSInt ivtcH = this->videoInfo.dispHeight;
 
 					while (ivtcH > 1)
 					{
-						ivtcW = this->videoInfo->dispWidth;
+						ivtcW = this->videoInfo.dispWidth;
 						while (ivtcW-- > 0)
 						{
 							diff = *ivtcPtr - *ivtcLPtr;
@@ -460,7 +460,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							ivtcPtr++;
 							ivtcLPtr++;
 						}
-						ivtcW = this->videoInfo->dispWidth;
+						ivtcW = this->videoInfo.dispWidth;
 						while (ivtcW-- > 0)
 						{
 							diff = *ivtcPtr - *ivtcLPtr;
@@ -477,7 +477,7 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					}
 				}
 
-				Double pixelCnt = UOSInt2Double(this->videoInfo->dispWidth * this->videoInfo->dispHeight);
+				Double pixelCnt = UOSInt2Double(this->videoInfo.dispWidth * this->videoInfo.dispHeight);
 				Double oddDDiff = oddDiff / pixelCnt;
 				Double evenDDiff = evenDiff / pixelCnt;
 				
@@ -500,10 +500,10 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 							UInt8 *evenPtr;
 							FieldStat iFieldStat;
 							FieldStat pFieldStat;
-							UOSInt sw = this->videoInfo->storeWidth;
+							UOSInt sw = this->videoInfo.storeWidth;
 //							OSInt sh = this->videoInfo->storeHeight;
 //							OSInt dw = this->videoInfo->dispWidth;
-							UOSInt dh = this->videoInfo->dispHeight;
+							UOSInt dh = this->videoInfo.dispHeight;
 //							OSInt sw2 = sw << 1;
 //							OSInt sw4 = sw << 2;
 //							OSInt dw2 = dw << 1;
@@ -783,8 +783,8 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 								oddBuff = this->ivtcLastFrame;
 								evenBuff = imgData[0];
 							}
-							UOSInt ivtcW = this->videoInfo->dispWidth;
-							UOSInt ivtcH = this->videoInfo->dispHeight;
+							UOSInt ivtcW = this->videoInfo.dispWidth;
+							UOSInt ivtcH = this->videoInfo.dispHeight;
 							UOSInt ivtcW2 = ivtcW << 1;
 							UOSInt ivtcWH = ivtcW >> 1;
 							UOSInt ivtcCnt = ivtcH;
@@ -1024,12 +1024,12 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 					{
 						ivtcPtr = imgData[0];
 					}
-					this->CalcFieldStatP(&fieldStat, ivtcPtr, this->videoInfo->storeWidth, this->videoInfo->storeHeight);
+					this->CalcFieldStatP(&fieldStat, ivtcPtr, this->videoInfo.storeWidth, this->videoInfo.storeHeight);
 				}
 				UOSInt fieldRate;
 				if (this->ivtcLastSC)
 				{
-					fieldRate = this->videoInfo->storeWidth * this->videoInfo->dispHeight * 2;
+					fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;
 					if (frameType == Media::FT_DISCARD)
 					{
 						this->ivtcLastField = 0;
@@ -1043,11 +1043,11 @@ void Media::VideoFilter::IVTCFilter::do_IVTC(UInt32 frameTime, UInt32 frameNum, 
 				{
 					if (this->ivtcLastField == 0)
 					{
-						fieldRate = this->videoInfo->storeWidth * this->videoInfo->dispHeight * 2;
+						fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;
 					}
 					else
 					{
-						fieldRate = this->videoInfo->storeWidth * this->videoInfo->dispHeight * 2;//me->ivtcLastField * 2;
+						fieldRate = this->videoInfo.storeWidth * this->videoInfo.dispHeight * 2;//me->ivtcLastField * 2;
 					}
 				}
 				Bool needDI = false;
@@ -1236,10 +1236,10 @@ void Media::VideoFilter::IVTCFilter::StartIVTC(UInt32 frameTime, UInt32 frameNum
 	this->ivtcTFlags = flags;
 	this->ivtcTYCOfst = ycOfst;
 	this->ivtcTRequest = true;
-	this->ivtcTEvt->Set();
+	this->ivtcTEvt.Set();
 	while (this->ivtcTRequest == true && this->ivtcTStatus == 1)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 }
 
@@ -1248,7 +1248,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 	Media::VideoFilter::IVTCFilter *me = (Media::VideoFilter::IVTCFilter *)userObj;
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	me->ivtcTStatus = 1;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	while (!me->ivtcTToStop)
 	{
 		if (me->ivtcTRequest)
@@ -1264,15 +1264,15 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::IVTCThread(void *userObj)
 
 			me->ivtcTStatus = 2;
 			me->ivtcTRequest = false;
-			me->mainEvt->Set();
+			me->mainEvt.Set();
 			me->do_IVTC(frameTime, frameNum, &imgData, dataSize, frameStruct, frameType, flags, ycOfst);
 			me->ivtcTStatus = 1;
-			me->mainEvt->Set();
+			me->mainEvt.Set();
 		}
-		me->ivtcTEvt->Wait(1000);
+		me->ivtcTEvt.Wait(1000);
 	}
 	me->ivtcTStatus = 0;
-	me->mainEvt->Set();
+	me->mainEvt.Set();
 	return 0;
 }
 
@@ -1281,7 +1281,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 	ThreadStat *tStat = (ThreadStat*)userObj;
 	Sync::Thread::SetPriority(Sync::Thread::TP_HIGHEST);
 	tStat->threadStat = 1;
-	tStat->me->mainEvt->Set();
+	tStat->me->mainEvt.Set();
 	while (true)
 	{
 		if (tStat->currCmd == 1)
@@ -1294,7 +1294,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 			do_CalcFieldStat(&tStat->fieldStat, tStat->oddPtr, tStat->evenPtr, tStat->sw, tStat->h);
 			tStat->threadStat = 1;
 			tStat->currCmd = 0;
-			tStat->me->mainEvt->Set();
+			tStat->me->mainEvt.Set();
 		}
 		else if (tStat->currCmd == 3)
 		{
@@ -1302,7 +1302,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 			do_CalcFieldStatP(&tStat->fieldStat, tStat->oddPtr, tStat->sw, tStat->h);
 			tStat->threadStat = 1;
 			tStat->currCmd = 0;
-			tStat->me->mainEvt->Set();
+			tStat->me->mainEvt.Set();
 		}
 		else if (tStat->currCmd == 4)
 		{
@@ -1328,7 +1328,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 			}
 			tStat->threadStat = 1;
 			tStat->currCmd = 0;
-			tStat->me->mainEvt->Set();
+			tStat->me->mainEvt.Set();
 		}
 		else if (tStat->currCmd == 0)
 		{
@@ -1341,7 +1341,7 @@ UInt32 __stdcall Media::VideoFilter::IVTCFilter::CalcThread(void *userObj)
 	}
 	tStat->currCmd = 0;
 	tStat->threadStat = 0;
-	tStat->me->mainEvt->Set();
+	tStat->me->mainEvt.Set();
 	return 0;
 }
 
@@ -1863,7 +1863,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStat(Media::VideoFilter::IVTCFilte
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1920,7 +1920,7 @@ void Media::VideoFilter::IVTCFilter::CalcFieldStatP(FieldStat *fieldStat, UInt8 
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1941,7 +1941,6 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	UOSInt i;
 	Bool found;
 	this->enabled = true;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	this->fieldBuff = 0;
 	this->fieldBuffSize = 0;
 	this->fieldExist = false;
@@ -1965,7 +1964,6 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 	{
 		this->threadCnt = 1;
 	}
-	NEW_CLASS(this->mainEvt, Sync::Event(true));
 	this->threadStats = MemAlloc(ThreadStat, this->threadCnt);
 	i = this->threadCnt;
 	while (i-- > 0)
@@ -1988,16 +1986,15 @@ Media::VideoFilter::IVTCFilter::IVTCFilter(Media::IVideoSource *srcVideo) : Medi
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	this->ivtcTToStop = false;
-	NEW_CLASS(this->ivtcTEvt, Sync::Event(true));
 	this->ivtcTStatus = 0;
 	this->ivtcTRequest = false;
 	Sync::Thread::Create(IVTCThread, this);
 	while (this->ivtcTStatus == 0)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 }
 
@@ -2006,10 +2003,10 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 	UOSInt i;
 	Bool found = true;
 	this->ivtcTToStop = true;
-	this->ivtcTEvt->Set();
+	this->ivtcTEvt.Set();
 	while (this->ivtcTStatus != 0)
 	{
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	while (true)
 	{
@@ -2029,7 +2026,7 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 		}
 		if (!found)
 			break;
-		this->mainEvt->Wait(100);
+		this->mainEvt.Wait(100);
 	}
 	
 	if (this->ivtcLastFrame)
@@ -2044,15 +2041,12 @@ Media::VideoFilter::IVTCFilter::~IVTCFilter()
 		MemFreeA64(this->fieldBuff);
 		this->fieldBuff = 0;
 	}
-	DEL_CLASS(this->mut);
 	i = this->threadCnt;
 	while (i-- > 0)
 	{
 		DEL_CLASS(this->threadStats[i].evt);
 	}
-	DEL_CLASS(this->ivtcTEvt);
 	MemFree(this->threadStats);
-	DEL_CLASS(this->mainEvt);
 #ifdef _DEBUG
 	DEL_CLASS(this->debugLog);
 	DEL_CLASS(this->debugFS);
@@ -2066,7 +2060,7 @@ Text::CString Media::VideoFilter::IVTCFilter::GetFilterName()
 
 void Media::VideoFilter::IVTCFilter::SetEnabled(Bool enabled)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	this->enabled = enabled;
 	this->ClearIVTC();
 	mutUsage.EndUse();
@@ -2079,7 +2073,7 @@ void Media::VideoFilter::IVTCFilter::Stop()
 		this->srcVideo->Stop();
 		while (this->ivtcTStatus == 2)
 		{
-			this->mainEvt->Wait(100);
+			this->mainEvt.Wait(100);
 		}
 	}
 }

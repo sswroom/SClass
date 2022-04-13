@@ -28,20 +28,18 @@ Media::VideoFilter::VideoFilterBase::VideoFilterBase(Media::IVideoSource *srcVid
 	UInt32 frameRateDenorm;
 	UOSInt maxFrameSize;
 	this->srcVideo = srcVideo;
-	NEW_CLASS(this->videoInfo, Media::FrameInfo());
 	this->fcCb = 0;
 	this->videoCb = 0;
 	this->userData = 0;
 
 	if (this->srcVideo)
 	{
-		this->srcVideo->GetVideoInfo(this->videoInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+		this->srcVideo->GetVideoInfo(&this->videoInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	}
 }
 
 Media::VideoFilter::VideoFilterBase::~VideoFilterBase()
 {
-	DEL_CLASS(this->videoInfo);
 }
 
 void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *srcVideo)
@@ -52,7 +50,7 @@ void Media::VideoFilter::VideoFilterBase::SetSourceVideo(Media::IVideoSource *sr
 	this->srcVideo = srcVideo;
 	if (this->srcVideo)
 	{
-		this->srcVideo->GetVideoInfo(this->videoInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
+		this->srcVideo->GetVideoInfo(&this->videoInfo, &frameRateNorm, &frameRateDenorm, &maxFrameSize);
 	}
 	this->OnFrameChange(Media::IVideoSource::FC_SRCCHG);
 	if (this->fcCb)
@@ -84,10 +82,10 @@ Bool Media::VideoFilter::VideoFilterBase::GetVideoInfo(Media::FrameInfo *info, U
 {
 	if (this->srcVideo)
 	{
-		Bool succ = this->srcVideo->GetVideoInfo(this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
+		Bool succ = this->srcVideo->GetVideoInfo(&this->videoInfo, frameRateNorm, frameRateDenorm, maxFrameSize);
 		if (succ)
 		{
-			info->Set(this->videoInfo);
+			info->Set(&this->videoInfo);
 		}
 		return succ;
 	}

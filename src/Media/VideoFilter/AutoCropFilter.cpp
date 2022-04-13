@@ -11,7 +11,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 {
 	if (this->enabled && frameStruct == Media::IVideoSource::FS_I)
 	{
-		if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+		if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 		{
 			UOSInt oriCropLeft;
 			UOSInt oriCropTop;
@@ -24,14 +24,14 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 			}
 			if (!this->hasCrop)
 			{
-				oriCropLeft = this->videoInfo->dispWidth >> 1;
-				oriCropRight = this->videoInfo->dispWidth >> 1;
-				oriCropTop = this->videoInfo->dispHeight >> 1;
-				oriCropBottom = this->videoInfo->dispHeight >> 1;
+				oriCropLeft = this->videoInfo.dispWidth >> 1;
+				oriCropRight = this->videoInfo.dispWidth >> 1;
+				oriCropTop = this->videoInfo.dispHeight >> 1;
+				oriCropBottom = this->videoInfo.dispHeight >> 1;
 			}
 
-			UOSInt w = this->videoInfo->dispWidth;
-			UOSInt h = this->videoInfo->dispHeight;
+			UOSInt w = this->videoInfo.dispWidth;
+			UOSInt h = this->videoInfo.dispHeight;
 			UInt8 *yptr = imgData[0];
 			UOSInt ySplit;
 			UOSInt crops[4];
@@ -39,7 +39,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 			crops[1] = oriCropTop;
 			crops[2] = oriCropRight;
 			crops[3] = oriCropBottom;
-			if (this->videoInfo->fourcc == *(UInt32*)"YV12")
+			if (this->videoInfo.fourcc == *(UInt32*)"YV12")
 			{
 				if (w & 3)
 				{
@@ -47,7 +47,7 @@ void Media::VideoFilter::AutoCropFilter::ProcessVideoFrame(UInt32 frameTime, UIn
 				}
 				ySplit = 1;
 			}
-			else if (this->videoInfo->fourcc == *(UInt32*)"YUY2")
+			else if (this->videoInfo.fourcc == *(UInt32*)"YUY2")
 			{
 				ySplit = 2;
 			}
@@ -130,7 +130,7 @@ void Media::VideoFilter::AutoCropFilter::GetBorderCrop(UOSInt *cropLeft, UOSInt 
 	}
 	else
 	{
-		UOSInt w = this->videoInfo->dispWidth;
+		UOSInt w = this->videoInfo.dispWidth;
 		if ((oriCropLeft + oriCropRight + oriCropTop + oriCropBottom) > (w >> 1))
 		{
 			cropValid = false;

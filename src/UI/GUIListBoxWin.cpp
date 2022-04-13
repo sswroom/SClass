@@ -37,12 +37,6 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 {
 	Double w;
 	Double h;
-	NEW_CLASS(this->selChgHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->selChgObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->dblClickHdlrs, Data::ArrayList<UI::UIEvent>());
-	NEW_CLASS(this->dblClickObjs, Data::ArrayList<void*>());
-	NEW_CLASS(this->rightClickHdlrs, Data::ArrayList<UI::GUIControl::MouseEventHandler>());
-	NEW_CLASS(this->rightClickObjs, Data::ArrayList<void*>());
 	this->mulSel = multiSelect;
 
 	parent->GetClientSize(&w, &h);
@@ -62,35 +56,29 @@ UI::GUIListBox::GUIListBox(UI::GUICore *ui, UI::GUIClientControl *parent, Bool m
 UI::GUIListBox::~GUIListBox()
 {
 	UI::GUICoreWin::MSSetWindowObj(this->hwnd, GWLP_WNDPROC, (OSInt)this->clsData);
-	DEL_CLASS(this->selChgHdlrs);
-	DEL_CLASS(this->selChgObjs);
-	DEL_CLASS(this->dblClickHdlrs);
-	DEL_CLASS(this->dblClickObjs);
-	DEL_CLASS(this->rightClickHdlrs);
-	DEL_CLASS(this->rightClickObjs);
 }
 
 void UI::GUIListBox::EventSelectionChange()
 {
-	UOSInt i = this->selChgHdlrs->GetCount();
+	UOSInt i = this->selChgHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->selChgHdlrs->GetItem(i)(this->selChgObjs->GetItem(i));
+		this->selChgHdlrs.GetItem(i)(this->selChgObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListBox::EventDoubleClick()
 {
-	UOSInt i = this->dblClickHdlrs->GetCount();
+	UOSInt i = this->dblClickHdlrs.GetCount();
 	while (i-- > 0)
 	{
-		this->dblClickHdlrs->GetItem(i)(this->dblClickObjs->GetItem(i));
+		this->dblClickHdlrs.GetItem(i)(this->dblClickObjs.GetItem(i));
 	}
 }
 
 void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 {
-	UOSInt i = this->rightClickHdlrs->GetCount();
+	UOSInt i = this->rightClickHdlrs.GetCount();
 	if (i > 0)
 	{
 		OSInt scnX;
@@ -98,7 +86,7 @@ void UI::GUIListBox::EventRightClick(OSInt x, OSInt y)
 		this->GetScreenPosP(&scnX, &scnY);
 		while (i-- > 0)
 		{
-			this->rightClickHdlrs->GetItem(i)(this->rightClickObjs->GetItem(i), x + scnX, y + scnY, UI::GUIControl::MBTN_RIGHT);
+			this->rightClickHdlrs.GetItem(i)(this->rightClickObjs.GetItem(i), x + scnX, y + scnY, UI::GUIControl::MBTN_RIGHT);
 		}
 	}
 }
@@ -360,18 +348,18 @@ OSInt UI::GUIListBox::OnNotify(UInt32 code, void *lParam)
 
 void UI::GUIListBox::HandleSelectionChange(UI::UIEvent hdlr, void *userObj)
 {
-	this->selChgHdlrs->Add(hdlr);
-	this->selChgObjs->Add(userObj);
+	this->selChgHdlrs.Add(hdlr);
+	this->selChgObjs.Add(userObj);
 }
 
 void UI::GUIListBox::HandleDoubleClicked(UI::UIEvent hdlr, void *userObj)
 {
-	this->dblClickHdlrs->Add(hdlr);
-	this->dblClickObjs->Add(userObj);
+	this->dblClickHdlrs.Add(hdlr);
+	this->dblClickObjs.Add(userObj);
 }
 
 void UI::GUIListBox::HandleRightClicked(UI::GUIControl::MouseEventHandler hdlr, void *userObj)
 {
-	this->rightClickHdlrs->Add(hdlr);
-	this->rightClickObjs->Add(userObj);
+	this->rightClickHdlrs.Add(hdlr);
+	this->rightClickObjs.Add(userObj);
 }

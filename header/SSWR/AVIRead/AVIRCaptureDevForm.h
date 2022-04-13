@@ -30,10 +30,10 @@ namespace SSWR
 			Media::IVideoCapture *capture;
 		private:
 			SSWR::AVIRead::AVIRCore *core;
-			Media::VideoCaptureMgr *captureMgr;
+			Media::VideoCaptureMgr captureMgr;
 			Media::IVideoCapture *currCapture;
-			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> *devInfoList;
-			Data::ArrayList<CaptureFormat*> *currFormats;
+			Data::ArrayList<Media::VideoCaptureMgr::DeviceInfo*> devInfoList;
+			Data::ArrayList<CaptureFormat*> currFormats;
 			UI::GUILabel *lblDevice;
 			UI::GUIListBox *lbDevice;
 			UI::GUILabel *lblFormat;

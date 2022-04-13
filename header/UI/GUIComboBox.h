@@ -11,11 +11,11 @@ namespace UI
 		struct ClassData;
 		ClassData *clsData;
 		
-		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
-		Data::ArrayList<void *> *selChgObjs;
+		Data::ArrayList<UI::UIEvent> selChgHdlrs;
+		Data::ArrayList<void *> selChgObjs;
 		UOSInt minVisible;
-		Data::ArrayList<void *> *items;
-		Data::ArrayList<Text::String *> *itemTexts;
+		Data::ArrayList<void *> items;
+		Data::ArrayList<Text::String *> itemTexts;
 		Bool allowEdit;
 		Bool autoComplete;
 		UOSInt lastTextLeng;

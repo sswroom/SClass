@@ -1,4 +1,5 @@
 #include "Stdafx.h"
+#include "SSWR/AVIRead/AVIRCaptureDevForm.h"
 #include "SSWR/AVIRead/AVIRConsoleMediaPlayerForm.h"
 #include "UI/MessageDialog.h"
 
@@ -6,6 +7,22 @@ void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnStopClicked(void *us
 {
 	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
 	me->player->PBStop();
+}
+
+void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnCaptureDevClicked(void *userObj)
+{
+	SSWR::AVIRead::AVIRConsoleMediaPlayerForm *me = (SSWR::AVIRead::AVIRConsoleMediaPlayerForm*)userObj;
+	SSWR::AVIRead::AVIRCaptureDevForm dlg(0, me->ui, me->core);
+	if (dlg.ShowDialog(me) == UI::GUIForm::DR_OK)
+	{
+		UTF8Char sbuff[256];
+		UTF8Char *sptr;
+		Media::MediaFile *mf;
+		sptr = dlg.capture->GetSourceName(sbuff);
+		NEW_CLASS(mf, Media::MediaFile(CSTRP(sbuff, sptr)));
+		mf->AddSource(dlg.capture, 0);
+		me->player->OpenVideo(mf);
+	}
 }
 
 void __stdcall SSWR::AVIRead::AVIRConsoleMediaPlayerForm::OnFileDrop(void *userObj, Text::String **files, UOSInt nFiles)
@@ -47,10 +64,13 @@ SSWR::AVIRead::AVIRConsoleMediaPlayerForm::AVIRConsoleMediaPlayerForm(UI::GUICli
 	NEW_CLASS(this->btnStop, UI::GUIButton(ui, this, CSTR("Stop")));
 	this->btnStop->SetRect(4, 28, 75, 23, false);
 	this->btnStop->HandleButtonClick(OnStopClicked, this);
+	NEW_CLASS(this->btnCaptureDev, UI::GUIButton(ui, this, CSTR("Capture Device")));
+	this->btnCaptureDev->SetRect(4, 52, 150, 23, false);
+	this->btnCaptureDev->HandleButtonClick(OnCaptureDevClicked, this);
 	NEW_CLASS(this->lblRotate, UI::GUILabel(ui, this, CSTR("Rotate")));
-	this->lblRotate->SetRect(4, 52, 100, 23, false);
+	this->lblRotate->SetRect(4, 76, 100, 23, false);
 	NEW_CLASS(this->cboRotate, UI::GUIComboBox(ui, this, false));
-	this->cboRotate->SetRect(104, 52, 100, 23, false);
+	this->cboRotate->SetRect(104, 76, 100, 23, false);
 	this->cboRotate->AddItem(CSTR("No Rotate"), (void*)Media::RotateType::None);
 	this->cboRotate->AddItem(CSTR("CW 90"), (void*)Media::RotateType::CW_90);
 	this->cboRotate->AddItem(CSTR("CW 180"), (void*)Media::RotateType::CW_180);

@@ -13,13 +13,13 @@ namespace UI
 		struct ItemData;
 
 	private:
-		Data::ArrayList<UI::UIEvent> *selChgHdlrs;
-		Data::ArrayList<void *> *selChgObjs;
-		Data::ArrayList<UI::UIEvent> *dblClickHdlrs;
-		Data::ArrayList<void *> *dblClickObjs;
-		Data::ArrayList<UI::GUIControl::MouseEventHandler> *rightClickHdlrs;
-		Data::ArrayList<void *> *rightClickObjs;
-		Data::ArrayList<ItemData *> *items;
+		Data::ArrayList<UI::UIEvent> selChgHdlrs;
+		Data::ArrayList<void *> selChgObjs;
+		Data::ArrayList<UI::UIEvent> dblClickHdlrs;
+		Data::ArrayList<void *> dblClickObjs;
+		Data::ArrayList<UI::GUIControl::MouseEventHandler> rightClickHdlrs;
+		Data::ArrayList<void *> rightClickObjs;
+		Data::ArrayList<ItemData *> items;
 		ClassData *clsData;
 		Bool mulSel;
 

@@ -118,10 +118,10 @@ namespace Media
 	protected:
 		Media::ColorManagerSess *colorSess;
 		Media::IVideoSource *video;
-		Media::FrameInfo *videoInfo;
+		Media::FrameInfo videoInfo;
 		UInt32 frameRateNorm;
 		UInt32 frameRateDenorm;
-		Media::ImageCopy *outputCopier;
+		Media::ImageCopy outputCopier;
 		Bool hasAudio;
 		UInt32 refRate;
 		Bool manualDeint;
@@ -132,27 +132,27 @@ namespace Media
 		UOSInt buffCnt;
 		UOSInt allBuffCnt;
 		VideoBuff *buffs;
-		Sync::Mutex *buffMut;
-		Sync::Event *buffEvt;
+		Sync::Mutex buffMut;
+		Sync::Event buffEvt;
 		ThreadStat *tstats;
 		Bool threadToStop;
 		Double forcePAR;
 		Double monPAR;
 		Bool toClear;
 
-		Sync::Event *dispEvt;
+		Sync::Event dispEvt;
 		Bool dispToStop;
 		Bool dispRunning;
 		Bool dispForceUpdate;
-		Sync::RWMutex *dispMut;
+		Sync::RWMutex dispMut;
 		Media::RefClock *dispClk;
 
-		Sync::RWMutex *procMut;
+		Sync::RWMutex procMut;
 		Int32 procThisCount;
 		Double *procDelayBuff;
 		Int32 procCnt;
 
-		Sync::RWMutex *dispDelayMut;
+		Sync::RWMutex dispDelayMut;
 		Double *dispDelayBuff;
 		Double *dispJitterBuff;
 		Int32 dispCnt;
@@ -181,7 +181,7 @@ namespace Media
 		UInt32 frameSkipAfterProc;
 		Int32 avOfst;
 		Media::ColorProfile::YUVType srcYUVType;
-		Media::ColorProfile *srcColor;
+		Media::ColorProfile srcColor;
 		Bool curr10Bit;
 		Double currSrcRefLuminance;
 
@@ -190,10 +190,10 @@ namespace Media
 		UInt32 outputBpp;
 		Media::PixelFormat outputPf;
 
-		Media::VideoFilter::IVTCFilter *ivtc;
-		Media::VideoFilter::UVOffsetFilter *uvOfst;
-		Media::VideoFilter::AutoCropFilter *autoCrop;
-		Data::ArrayList<Media::IImgFilter*> *imgFilters;
+		Media::VideoFilter::IVTCFilter ivtc;
+		Media::VideoFilter::UVOffsetFilter uvOfst;
+		Media::VideoFilter::AutoCropFilter autoCrop;
+		Data::ArrayList<Media::IImgFilter*> imgFilters;
 
 		Int32 picCnt;
 		EndNotifier endHdlr;

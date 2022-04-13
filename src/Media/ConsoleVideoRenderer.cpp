@@ -4,7 +4,6 @@
 Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surfaceMgr, Media::ColorManagerSess *colorSess) : Media::VideoRenderer(colorSess, 6, 2)
 {
 	this->surfaceMgr = surfaceMgr;
-	NEW_CLASS(this->mut, Sync::Mutex());
 	if (this->surfaceMgr)
 	{
 		this->primarySurface = this->surfaceMgr->CreatePrimarySurface(this->surfaceMgr->GetMonitorHandle(0), 0, Media::RotateType::None);
@@ -22,7 +21,6 @@ Media::ConsoleVideoRenderer::ConsoleVideoRenderer(Media::MonitorSurfaceMgr *surf
 Media::ConsoleVideoRenderer::~ConsoleVideoRenderer()
 {
 	SDEL_CLASS(this->primarySurface);
-	DEL_CLASS(this->mut);
 }
 
 Bool Media::ConsoleVideoRenderer::IsError()
@@ -32,7 +30,7 @@ Bool Media::ConsoleVideoRenderer::IsError()
 
 void Media::ConsoleVideoRenderer::SetRotateType(Media::RotateType rotateType)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->primarySurface)
 	{
 		Media::RotateType rtChange = Media::RotateTypeCalc(this->primarySurface->info.rotateType, rotateType);
@@ -56,12 +54,12 @@ Bool Media::ConsoleVideoRenderer::IsUpdatingSize()
 
 void Media::ConsoleVideoRenderer::LockUpdateSize(Sync::MutexUsage *mutUsage)
 {
-	mutUsage->ReplaceMutex(this->mut);
+	mutUsage->ReplaceMutex(&this->mut);
 }
 
 void Media::ConsoleVideoRenderer::DrawFromMem(UInt8 *memPtr, OSInt lineAdd, OSInt destX, OSInt destY, UOSInt buffWidth, UOSInt buffHeight, Bool clearScn)
 {
-	Sync::MutexUsage mutUsage(this->mut);
+	Sync::MutexUsage mutUsage(&this->mut);
 	if (this->primarySurface)
 	{
 		this->primarySurface->DrawFromMem(memPtr, lineAdd, destX, destY, buffWidth, buffHeight, clearScn, true);
