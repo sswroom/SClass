@@ -382,6 +382,11 @@ void Media::DDrawSurface::UnlockSurface()
 	this->clsData->surface->Unlock(0);
 }
 
+void Media::DDrawSurface::SetSurfaceBugMode(Bool surfaceBugMode)
+{
+
+}
+
 void Media::DDrawSurface::SetClipWindow(ControlHandle *clipWindow)
 {
 	if (this->clsData->clipper)
